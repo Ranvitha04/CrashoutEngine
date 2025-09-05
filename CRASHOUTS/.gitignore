@@ -89,3 +89,4 @@ Debug/
 Release/
 dist/
 *.dSYM/
+.vs/
