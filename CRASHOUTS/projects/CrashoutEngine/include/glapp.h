@@ -24,9 +24,9 @@ objects participating in the application.
 #include <string>
 
 // ImGui headers for callbacks
-//#include "../imgui-master/imgui.h"
-//#include "../imgui-master/backends/imgui_impl_glfw.h"
-//#include "../imgui-master/backends/imgui_impl_opengl3.h"
+#include <imgui.h>
+#include <backends/imgui_impl_glfw.h>
+#include <backends/imgui_impl_opengl3.h>
 
 /*  _________________________________________________________________________ */
 struct GLApp
