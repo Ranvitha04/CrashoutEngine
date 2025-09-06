@@ -11,6 +11,7 @@ Provides common vector math operations and a constant for PI
 
 #include "CEVec2.h"
 #include <cmath>
+#include "CEVec3.h"
 using CE::f32;
 
 namespace CEMath
@@ -66,5 +67,67 @@ namespace CEMath
 		return CEVec2{ 0.0f, 0.0f }; //return zero vector if length is zero to avoid division by zero
 	}
 
+	/*!
+	@brief Calculate the dot product of two 3D vectors
+	@param leftVector  The first vector
+	@param rightVector The second vector
+	@return The dot product
+	*/
+	inline f32 Dot(const CEVec3& leftVector, const CEVec3& rightVector)
+	{
+		return (leftVector.x * rightVector.x) +
+			   (leftVector.y * rightVector.y) +
+			   (leftVector.z * rightVector.z);
+	}
+
+	/*!
+	@brief Calculate the cross product of two 3D vectors
+	@param leftVector  The first vector
+	@param rightVector The second vector
+	@return A new vector perpendicular to both inputs
+	*/
+	inline CEVec3 Cross(const CEVec3& leftVector, const CEVec3& rightVector)
+	{
+		return CEVec3(
+			leftVector.y * rightVector.z - leftVector.z * rightVector.y,
+			leftVector.z * rightVector.x - leftVector.x * rightVector.z,
+			leftVector.x * rightVector.y - leftVector.y * rightVector.x
+		);
+	}
+
+	/*!
+	@brief Calculate the squared length of a 3D vector
+	@param vector The input vector
+	@return The squared length of the vector
+	*/
+	inline f32 LengthSq(const CEVec3& vector)
+	{
+		return Dot(vector, vector);
+	}
+
+	/*!
+	@brief Calculate the length of a 3D vector
+	@param vector The input vector
+	@return The length of the vector
+	*/
+	inline f32 Length(const CEVec3& vector)
+	{
+		return std::sqrt(LengthSq(vector));
+	}
+
+	/*!
+	@brief Normalize a 3D vector to unit length
+	@param vector The input vector
+	@return A normalized vector or zero vector if the input has zero length
+	*/
+	inline CEVec3 Normalize(const CEVec3& vector)
+	{
+		f32 length = Length(vector);
+		if (length != 0.0f)
+		{
+			return CEVec3{ vector.x / length, vector.y / length, vector.z / length };
+		}
+		return CEVec3{ 0.0f, 0.0f, 0.0f };
+	}
 
 }
