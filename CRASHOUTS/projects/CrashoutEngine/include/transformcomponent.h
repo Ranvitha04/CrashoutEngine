@@ -3,18 +3,16 @@
 @author     lee.r@digipen.edu
 @date       05/09/2025
 
-This file defines the TransformComponent, a simple data structure used to store an entity's
-3D position, rotation, and scale.
+This file defines the TransformComponent, a simple data structure used to 
+store an entity's 3D position, rotation, and scale.
 //__________________________________________________________________________*/
-#pragma once
 
 /*                                                                   includes
 ----------------------------------------------------------------------------- */
-#include <glm/glm.hpp>
 
 /*                                                                   
 ----------------------------------------------------------------------------- */
-namespace framework {
+namespace Component {
 
 	struct TransformComponent {
 		// X Y Z position
