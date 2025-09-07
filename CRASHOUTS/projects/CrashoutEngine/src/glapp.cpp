@@ -213,7 +213,6 @@ This function is called when keyboard buttons are pressed.
 When the ESC key is pressed, the close flag of the window is set.
 */
 void GLApp::key_cb(GLFWwindow* pwin, int key, int scancode, int action, int mod) {
-    //ImGui_ImplGlfw_KeyCallback(pwin, key, scancode, action, mod);
     if (GLFW_PRESS == action) {
 #ifdef _DEBUG
         std::cout << "Key pressed" << std::endl;
@@ -258,7 +257,6 @@ were held down
 This function is called when mouse buttons are pressed.
 */
 void GLApp::mousebutton_cb(GLFWwindow* pwin, int button, int action, int mod) {
-    //ImGui_ImplGlfw_MouseButtonCallback(pwin, button, action, mod);
     switch (button) {
     case GLFW_MOUSE_BUTTON_LEFT:
 #ifdef _DEBUG
@@ -303,7 +301,6 @@ This functions receives the cursor position, measured in screen coordinates but
 relative to the top-left corner of the window client area.
 */
 void GLApp::mousepos_cb(GLFWwindow* pwin, double xpos, double ypos) {
-    //ImGui_ImplGlfw_CursorPosCallback(pwin, xpos, ypos);
 #ifdef _DEBUG
     std::cout << "Mouse cursor position: (" << xpos << ", " << ypos << ")" << std::endl;
 #endif
@@ -328,7 +325,6 @@ touchpad gesture. Although the function receives 2D scroll offsets, a simple
 mouse scroll wheel, being vertical, provides offsets only along the Y-axis.
 */
 void GLApp::mousescroll_cb(GLFWwindow* pwin, double xoffset, double yoffset) {
-    //ImGui_ImplGlfw_ScrollCallback(pwin, xoffset, yoffset);
 #ifdef _DEBUG
     std::cout << "Mouse scroll wheel offset: ("
         << xoffset << ", " << yoffset << ")" << std::endl;

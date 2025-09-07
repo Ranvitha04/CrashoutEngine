@@ -18,15 +18,20 @@ context and implement a game loop.
 #include "../include/transformcomponent.h"
 #include "../include/performanceViewer.h"
 
+// ImGui headers for callbacks
+#include <imgui.h>
+#include <imgui_impl_glfw.h>
+#include <imgui_impl_opengl3.h>
+
 #include <iostream>
 
 /*                                                   type declarations
 ----------------------------------------------------------------------------- */
 
 // ECS instance and entity storage
-static framework::ECS globalECS;
-static std::vector<framework::Entity> globalEntities;
-static framework::Entity globalSelectedEntity = 0;
+static ECS::ECS globalECS;
+static std::vector<ECS::Entity> globalEntities;
+static ECS::Entity globalSelectedEntity = 0;
 
 // ImGui in-game performance viewer
 static bool show_perf = false;
@@ -39,7 +44,7 @@ static double gPerfSnapshotTotalMs = 0.0;
 static void draw();
 static void update();
 static void ImGuiDraw();
-//static void init();
+static void init();
 
 /*                                                   objects with file scope
 ----------------------------------------------------------------------------- */
@@ -64,14 +69,7 @@ int main() {
         std::exit(EXIT_FAILURE);
     }
 
-    // Setup ImGUI context
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO(); (void)io;
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
-    ImGui::StyleColorsDark();
-    ImGui_ImplGlfw_InitForOpenGL(GLApp::ptr_window, true);
-    ImGui_ImplOpenGL3_Init("#version 450");
+    init();
 
     // window's close flag is set by clicking close widget or Alt+F4
     while (!glfwWindowShouldClose(GLApp::ptr_window)) {
@@ -86,6 +84,21 @@ int main() {
     GLApp::cleanup();
 
     return EXIT_SUCCESS;
+}
+
+static void init() {
+    // Setup ImGUI context
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+
+    ImGui::StyleColorsDark();
+
+    // Initializing the backends
+    ImGui_ImplGlfw_InitForOpenGL(GLApp::ptr_window, true);
+    //ImGui_ImplOpenGL3_Init("#version 450");
+    ImGui_ImplOpenGL3_Init("#version 330");
 }
 
 /*  _________________________________________________________________________ */
@@ -141,11 +154,6 @@ static void update() {
     // 
     // animate scene
     GLApp::update();
-
-    // Start the Dear ImGui frame
-    ImGui_ImplOpenGL3_NewFrame();
-    ImGui_ImplGlfw_NewFrame();
-    ImGui::NewFrame();
 }
 
 
@@ -159,18 +167,24 @@ static void update() {
 This function handles all the ImGui UI drawing for the ECS demonstration. It creates a main window
 with buttons to manage entities and their components.
 */
-static void ImGuiDraw() {
-    ImGui::Begin("ECS Demo");
+static void ImGuiDraw() {    
+    using namespace ECS;
 
-    // Toggle Button to show performance
-    if (ImGui::Button(show_perf ? "Hide Performance" : "Show Performance")) {
-        show_perf = !show_perf;
-    }
+    // Start the Dear ImGui frame
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplGlfw_NewFrame();
+    ImGui::NewFrame();
+
+    // Create ImGui window
+    ImGui::Begin("ECS Demo");
 
     // Create a new entity
     if (ImGui::Button("Create Entity")) {
-        framework::Entity newEntity = globalECS.CreateEntity();
+        Entity newEntity = globalECS.CreateEntity();
         globalEntities.push_back(newEntity);
+        if (!globalECS.HasComponent<NameComponent>(newEntity)) {
+            globalECS.AddComponent<NameComponent>(newEntity, "Entity " + std::to_string(newEntity));
+        }
     }
 
     ImGui::Separator();
@@ -182,7 +196,14 @@ static void ImGuiDraw() {
     }
     else {
         for (const auto& entity : globalEntities) {
-            std::string entity_label = "Entity: " + std::to_string(entity);
+            std::string entity_label;
+            if (globalECS.HasComponent<NameComponent>(entity)) {
+                NameComponent* nameComp = globalECS.GetComponent<NameComponent>(entity);
+                entity_label = nameComp->name;
+            }
+            else {
+                entity_label = "Entity: " + std::to_string(entity);
+            }
             if (ImGui::Selectable(entity_label.c_str(), globalSelectedEntity == entity)) {
                 globalSelectedEntity = entity;
             }
@@ -209,87 +230,70 @@ static void ImGuiDraw() {
         ImGui::Separator();
         ImGui::Text("Add Components");
         if (ImGui::Button("Add NameComponent")) {
-            /*if (!globalECS.HasComponent<framework::NameComponent>(globalSelectedEntity)) {
-                globalECS.AddComponent<framework::NameComponent>(globalSelectedEntity, "Unnamed Entity");
-            }*/
+            if (!globalECS.HasComponent<NameComponent>(globalSelectedEntity)) {
+                globalECS.AddComponent<NameComponent>(globalSelectedEntity, "Unnamed Entity");
+            }
         }
         if (ImGui::Button("Add TransformComponent")) {
-            /*if (!globalECS.HasComponent<framework::TransformComponent>(globalSelectedEntity)) {
-                globalECS.AddComponent<framework::TransformComponent>(globalSelectedEntity, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f);
-            }*/
+            if (!globalECS.HasComponent<TransformComponent>(globalSelectedEntity)) {
+                globalECS.AddComponent<TransformComponent>(globalSelectedEntity, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f);
+            }
         }
     }
 
     ImGui::Separator();
     ImGui::Text("Components on Selected Entity");
-    /*if (globalSelectedEntity != 0) {
+    if (globalSelectedEntity != 0) {
         // Display NameComponent
-        framework::NameComponent* name_comp = globalECS.GetComponent<framework::NameComponent>(globalSelectedEntity);
-        if (name_comp) {
-            ImGui::Text("NameComponent:");
-            ImGui::InputText("Name", &name_comp->name);
+        NameComponent* nameComp = globalECS.GetComponent<NameComponent>(globalSelectedEntity);
+        if (nameComp) {
+            char buffer[256];
+            strncpy(buffer, nameComp->name.c_str(), sizeof(buffer) - 1);
+            buffer[sizeof(buffer) - 1] = '\0';      // Ensure null termination
+
+            ImGui::Text("Name: ");
+            if (ImGui::InputText("##Name", buffer, sizeof(buffer))) {
+                nameComp->name = buffer;
+            }
         }
 
         // Display TransformComponent
-        framework::TransformComponent* transform_comp = globalECS.GetComponent<framework::TransformComponent>(globalSelectedEntity);
-        if (transform_comp) {
+        TransformComponent* transformComp = globalECS.GetComponent<TransformComponent>(globalSelectedEntity);
+        if (transformComp) {
             ImGui::Text("TransformComponent:");
-            ImGui::DragFloat3("Position", &transform_comp->posX);
-            ImGui::DragFloat3("Rotation", &transform_comp->rotX);
-            ImGui::DragFloat3("Scale", &transform_comp->scaleX);
+            ImGui::DragFloat3("Position", &transformComp->posX);
+            ImGui::DragFloat3("Rotation", &transformComp->rotX);
+            ImGui::DragFloat3("Scale", &transformComp->scaleX);
+
+            ImGui::Separator();
+            if (ImGui::Button("Destroy Component")) {
+                globalECS.RemoveComponent<TransformComponent>(globalSelectedEntity);
+            }
+
+            ImGui::Separator();
         }
 
-        if (!name_comp && !transform_comp) {
+        if (!nameComp && !transformComp) {
             ImGui::Text("No components found.");
         }
 
     }
-
     else {
         ImGui::Text("Select an entity to view components.");
-    } */
-
-    if (show_perf) {
-        if (gProfiler.present_ready()) {
-            gPerfSnapshot = gProfiler.results();
-            gPerfSnapshotTotalMs = gProfiler.total_ms();
-        }
-
-        ImGui::Begin("Performance", &show_perf);
-        ImGui::Text("Frame: %.3f ms (%.1f FPS)", gPerfSnapshotTotalMs, GLApp::fps);
-        ImGui::Separator();
-
-        if (ImGui::BeginTable("perf_table", 3, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
-            ImGui::TableSetupColumn("System");
-            ImGui::TableSetupColumn("ms");
-            ImGui::TableSetupColumn("% of frame");
-            ImGui::TableHeadersRow();
-
-            for (const auto& s : gPerfSnapshot) {
-                ImGui::TableNextRow();
-                ImGui::TableSetColumnIndex(0); ImGui::TextUnformatted(s.name.c_str());
-                ImGui::TableSetColumnIndex(1); ImGui::Text("%.3f", s.ms);
-                ImGui::TableSetColumnIndex(2); ImGui::Text("%.1f%%", s.pct);
-                ImGui::ProgressBar((float)(s.pct / 100.0), ImVec2(-1, 0), "");
-            }
-            ImGui::EndTable();
-        }
-        ImGui::End();
     }
 
     ImGui::End();
 
     // Rendering
-    FrameProfiler::Scoped _imgui(gProfiler, "ImGui");
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
     // Handle ImGui viewports for multiple windows
     ImGuiIO& io = ImGui::GetIO();
-    /* if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable) {
+    if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable) {
         GLFWwindow* backup_current_context = glfwGetCurrentContext();
         ImGui::UpdatePlatformWindows();
         ImGui::RenderPlatformWindowsDefault();
         glfwMakeContextCurrent(backup_current_context);
-    }*/
+    }
 }

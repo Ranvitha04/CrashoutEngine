@@ -14,8 +14,7 @@ objects participating in the application.
 
 /*                                                                      guard
 ----------------------------------------------------------------------------- */
-#ifndef GLAPP_H
-#define GLAPP_H
+#pragma once
 
 /*                                                                   includes
 ----------------------------------------------------------------------------- */
@@ -58,4 +57,3 @@ struct GLApp
 
 };
 
-#endif /* GLAPP_H */
