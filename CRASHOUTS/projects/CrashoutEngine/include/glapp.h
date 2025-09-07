@@ -14,19 +14,13 @@ objects participating in the application.
 
 /*                                                                      guard
 ----------------------------------------------------------------------------- */
-#ifndef GLAPP_H
-#define GLAPP_H
+#pragma once
 
 /*                                                                   includes
 ----------------------------------------------------------------------------- */
 #include <GL/glew.h> // for access to OpenGL API declarations 
 #include <GLFW/glfw3.h>
 #include <string>
-
-// ImGui headers for callbacks
-//#include "../imgui-master/imgui.h"
-//#include "../imgui-master/backends/imgui_impl_glfw.h"
-//#include "../imgui-master/backends/imgui_impl_opengl3.h"
 
 /*  _________________________________________________________________________ */
 struct GLApp
@@ -58,4 +52,3 @@ struct GLApp
 
 };
 
-#endif /* GLAPP_H */
