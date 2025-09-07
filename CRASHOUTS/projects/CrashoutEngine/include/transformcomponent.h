@@ -14,6 +14,10 @@ store an entity's 3D position, rotation, and scale.
 ----------------------------------------------------------------------------- */
 namespace Component {
 
+	/*!
+	@struct	TransformComponent
+	@brief	A component that holds an entity's position, rotation, and scale.
+	*/
 	struct TransformComponent {
 		// X Y Z position
 		float posX, posY, posZ;

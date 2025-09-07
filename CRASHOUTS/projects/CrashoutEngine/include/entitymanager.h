@@ -28,6 +28,14 @@ namespace ECS {
 
 	class IComponentArray;
 
+	/*!
+	@class ECS
+	@brief The core Entity-Component-System (ECS) manager.
+
+	This class serves as the central hub for the ECS framework. It is responsible for creating,
+	destroying, and managing entities and their associated components. It maintains a collection
+	of component arrays, one for each component type, enabling efficient data access and manipulation.
+	*/
 	class ECS {
 	public:
 		// Create a new entity and return ID
@@ -89,12 +97,30 @@ namespace ECS {
 		ComponentArray<T>& GetComponentArray();
 	};
 
+	/*!
+	@class IComponentArray
+	@brief An abstract interface for component arrays.
+
+	This base class provides a polymorphic way to remove components from an entity
+	without knowing their specific type. This is particularly useful when destroying an
+	entity, as the ECS can iterate through all component arrays and call a single
+	`RemoveComponent` function for each one.
+	*/
 	class IComponentArray {
 	public:
 		virtual	~IComponentArray() = default;
 		virtual void RemoveComponent(Entity entityId) = 0;
 	};
 
+	/*!
+	@class ComponentArray
+	@brief A templated array for storing a specific type of component.
+
+	This class is the core of the ECS's data storage. It uses a sparse-set data
+	structure to store components of type `T` in a contiguous vector (`dense`).
+	It maintains efficient mappings between entity IDs and component indices,
+	allowing for fast component access and O(1) removals.
+	*/
 	template<typename T>
 	class ECS::ComponentArray : public IComponentArray {
 	public:

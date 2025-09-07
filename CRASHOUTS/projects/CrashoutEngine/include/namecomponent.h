@@ -17,6 +17,10 @@ entity's name.
 ----------------------------------------------------------------------------- */
 namespace Component {
 
+	/*!
+	@struct	NameComponent
+	@brief	A component that provides a human-readable name for an entity.
+	*/
 	struct NameComponent {
 		std::string name;
 	};
