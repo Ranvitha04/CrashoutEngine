@@ -14,8 +14,6 @@ context and implement a game loop.
 // Extension loader library's header must be included before GLFW's header!!!
 #include "../include/glapp.h"
 #include "../include/entitymanager.h"
-#include "../include/namecomponent.h"
-#include "../include/transformcomponent.h"
 #include "../include/performanceViewer.h"
 
 // ImGui headers for callbacks
@@ -38,6 +36,7 @@ static bool show_perf = false;
 static FrameProfiler gProfiler;
 static std::vector<ProfilerSample> gPerfSnapshot;
 static double gPerfSnapshotTotalMs = 0.0;
+
 
 /*                                                      function declarations
 ----------------------------------------------------------------------------- */
@@ -73,8 +72,8 @@ int main() {
 
     // window's close flag is set by clicking close widget or Alt+F4
     while (!glfwWindowShouldClose(GLApp::ptr_window)) {
-        update();
         draw();
+        update();
     }
 
     // Cleanup
@@ -113,6 +112,7 @@ Uses GLHelper::GLFWWindow* to get handle to OpenGL context.
 */
 static void draw() {
     FrameProfiler::Scoped s(gProfiler, "Graphics/Scene");
+
     // render scene
     GLApp::draw();
 
@@ -122,8 +122,8 @@ static void draw() {
     // swap buffers: front <-> back
     // GLApp::ptr_window is handle to window that defines the OpenGL context
     glfwSwapBuffers(GLApp::ptr_window);
-    
-    // end frame profiling
+
+    // end of frame profiling
     gProfiler.end_frame();
 }
 
@@ -148,10 +148,10 @@ static void update() {
     // main loop computes fps and other time related stuff once for all apps ...
     GLApp::update_time(1.0);
 
-    
     FrameProfiler::Scoped s(gProfiler, "Game/Update");
     // place any per-system updates here (ECS, AI, Physics, etc...)
     // 
+
     // animate scene
     GLApp::update();
 }
@@ -167,7 +167,7 @@ static void update() {
 This function handles all the ImGui UI drawing for the ECS demonstration. It creates a main window
 with buttons to manage entities and their components.
 */
-static void ImGuiDraw() {    
+static void ImGuiDraw() {
     using namespace ECS;
 
     // Start the Dear ImGui frame
@@ -185,6 +185,13 @@ static void ImGuiDraw() {
         if (!globalECS.HasComponent<NameComponent>(newEntity)) {
             globalECS.AddComponent<NameComponent>(newEntity, "Entity " + std::to_string(newEntity));
         }
+    }
+
+    ImGui::Separator();
+
+    // Toggle Button to show performance
+    if (ImGui::Button(show_perf ? "Hide Performance" : "Show Performance")) {
+        show_perf = !show_perf;
     }
 
     ImGui::Separator();
@@ -282,9 +289,39 @@ static void ImGuiDraw() {
         ImGui::Text("Select an entity to view components.");
     }
 
+    // display performance viewer
+    if (show_perf) {
+        if (gProfiler.present_ready()) {
+            gPerfSnapshot = gProfiler.results();
+            gPerfSnapshotTotalMs = gProfiler.total_ms();
+        }
+
+        ImGui::Begin("Performance", &show_perf);
+        ImGui::Text("Frame: %.3f ms (%.1f FPS)", gPerfSnapshotTotalMs, GLApp::fps);
+        ImGui::Separator();
+
+        if (ImGui::BeginTable("perf_table", 3, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
+            ImGui::TableSetupColumn("System");
+            ImGui::TableSetupColumn("ms");
+            ImGui::TableSetupColumn("% of frame");
+            ImGui::TableHeadersRow();
+
+            for (const auto& s : gPerfSnapshot) {
+                ImGui::TableNextRow();
+                ImGui::TableSetColumnIndex(0); ImGui::TextUnformatted(s.name.c_str());
+                ImGui::TableSetColumnIndex(1); ImGui::Text("%.3f", s.ms);
+                ImGui::TableSetColumnIndex(2); ImGui::Text("%.1f%%", s.pct);
+                ImGui::ProgressBar((float)(s.pct / 100.0), ImVec2(-1, 0), "");
+            }
+            ImGui::EndTable();
+        }
+        ImGui::End();
+    }
+
     ImGui::End();
 
     // Rendering
+    FrameProfiler::Scoped _imgui(gProfiler, "ImGui");
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
