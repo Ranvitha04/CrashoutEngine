@@ -3,30 +3,61 @@
 @author     mohamadamirakmal.b@digipen.edu
 @date       06/09/2025
 
-This file provides a small profiling utility for real-time applications.
+This file provides profiling and memory tracking utilities for Crashout Engine.
 //__________________________________________________________________________*/
 
 #pragma once
 
 /*                                                                   includes
 ----------------------------------------------------------------------------- */
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
+#endif
+#ifndef NOMINMAX
+#define NOMINMAX
+#endif
+#include <windows.h>
+#include <atomic>
+#include <new>
 #include <vector>
 #include <string>
 #include <unordered_map>
 #include <chrono> // time tracking lib
 #include <algorithm>
 #include <cmath>
-/*
------------------------------------------------------------------------------ */
+#include <cstdint>
+#include <imgui.h>
 
+
+// ---- Windows process-memory helper (Working Set & Private Bytes in MB) ----
+#include <psapi.h>
+#pragma comment(lib, "psapi.lib")
+
+static inline void _fp_get_process_mem_mb(double& rssMB, double& privMB) {
+    PROCESS_MEMORY_COUNTERS_EX pmc{};
+    if (GetProcessMemoryInfo(GetCurrentProcess(),
+        reinterpret_cast<PROCESS_MEMORY_COUNTERS*>(&pmc),
+        sizeof(pmc))) {
+        rssMB = pmc.WorkingSetSize / (1024.0 * 1024.0);
+        privMB = pmc.PrivateUsage / (1024.0 * 1024.0);
+        return;
+    }
+    rssMB = privMB = 0.0;
+}
+
+
+
+/*
+* Frame Profiler
+----------------------------------------------------------------------------- */
 /*!
 @struct ProfilerSample
 @brief  A single row for UI presentation.
-@var ProfilerSample::name
+@var name
       label.
-@var ProfilerSample::ms
+@var ms
       smoothed milliseconds (Exponential Moving Average - EMA) attributed to the region.
-@var ProfilerSample::pct
+@var pct
       percentage of the chosen budget (see @ref FrameProfiler::PercentMode).
 */
 struct ProfilerSample {
@@ -65,8 +96,13 @@ public:
     @note   call exactly once near the start of each frame.
     */
     void begin_frame() {
+        if (frameOpen) {
+            // guard against accidental re-entry
+            return;
+        }            
         sampleMS.clear();
         frameStart = Clock::now();
+        frameOpen = true;
     }
 
     /*!
@@ -83,8 +119,8 @@ public:
         @param  p     owning profiler instance.
         @param  name  label for the timed region (must outlive the scope).
         */
-        Scoped(FrameProfiler& p, const char* name)
-            : p_(p), name(name), t0(Clock::now()) {
+        Scoped(FrameProfiler& p, const char* name) : p_(p), name(name), t0(Clock::now()) {
+
         }
 
         /*!
@@ -137,10 +173,10 @@ public:
         frameMSDisplay = (frameMSDisplay <= 0.0) ? frameMSReal : (1.0 - alpha) * frameMSDisplay + alpha * frameMSReal;
 
         // 4) build rows
-        rowsTmp.clear();
+        rowsTmp.clear(); 
         rowsTmp.reserve(emaMS.size());
-
         double sum_ema = 0.0;
+
         for (auto& kv : emaMS) {
             sum_ema += kv.second;
         }
@@ -155,7 +191,8 @@ public:
             s.name = kv.first;
             s.ms = kv.second;
             s.pct = (s.ms / denom) * 100.0;
-            // clamp to [0,100] with tiny epsilon to avoid showing "100.0%" due to rounding
+
+            // clamp to [0,100]
             if (s.pct < 0.0) s.pct = 0.0;
             if (s.pct > 100.0) s.pct = 100.0;
             rowsTmp.push_back(std::move(s));
@@ -163,7 +200,7 @@ public:
 
         // 5) sort by descending ms
         std::sort(rowsTmp.begin(), rowsTmp.end(),
-            [](const ProfilerSample& a, const ProfilerSample& b) {
+            [](auto& a, auto& b) {
                 return a.ms > b.ms;
             });
 
@@ -181,6 +218,7 @@ public:
         else {
             presentReady = false;
         }
+        frameOpen = false;
     }
 
     // ----------------------------- UI readouts ------------------------------
@@ -233,7 +271,10 @@ public:
 
 
 private:
+
     using Clock = std::chrono::steady_clock;
+
+    bool frameOpen = false;
 
     // raw per-frame accumulation
     std::unordered_map<std::string, double> sampleMS;
@@ -257,3 +298,116 @@ private:
     // % mode
     PercentMode pctMode = PercentMode::NormalizeToEmaSum;
 };
+
+/*
+* Memory Tracking
+----------------------------------------------------------------------------- */
+/*!
+
+/*!
+@class  MemTag
+@brief  Categories for memory taggings
+*/
+enum class MemTag : uint8_t {
+    Unknown = 0,
+    Update,
+    Physics,
+    Graphics,
+    AI,
+    Audio,
+    ECS,
+    Resources,
+    UI,
+    Renderer,
+    Count
+};
+
+/*!
+@struct MemTracker
+@brief  Stores global counters (atomic) - singleton access via MemTracker::instance()
+@var live[]
+      bytes currently alive
+@var allocs[]
+      total allocated
+@var frees[]
+      total freed
+*/
+struct MemTracker {
+    std::atomic<long long> live[(size_t)MemTag::Count]{};
+    std::atomic<long long> allocs[(size_t)MemTag::Count]{};
+    std::atomic<long long> frees[(size_t)MemTag::Count]{};
+    static inline MemTracker& instance() { static MemTracker T; return T; }
+};
+
+// Current tag for this thread; set by ScopedMemTag.
+inline thread_local MemTag g_memTagTLS = MemTag::Unknown;
+
+/*!
+@struct ScopedMemTag
+@brief  RAII helper to set a temporary tag in a scope
+*/
+struct ScopedMemTag {
+    MemTag prev;
+    explicit ScopedMemTag(MemTag t) : prev(g_memTagTLS)
+    {
+        g_memTagTLS = t;
+    }
+
+    ~ScopedMemTag()
+    {
+        g_memTagTLS = prev;
+    }
+};
+
+// Manual accounting helpers for custom allocators/arenas (optional).
+inline void memtag_add(MemTag t, size_t bytes) { MemTracker::instance().live[(size_t)t] += (long long)bytes; }
+inline void memtag_sub(MemTag t, size_t bytes) { MemTracker::instance().live[(size_t)t] -= (long long)bytes; }
+
+// Process memory helper (Working Set & Private Bytes, MB).
+inline void get_process_mem_mb(double& workingSetMB, double& privateBytesMB) {
+#ifdef _WIN32
+    PROCESS_MEMORY_COUNTERS_EX pmc{};
+    if (GetProcessMemoryInfo(GetCurrentProcess(),
+        reinterpret_cast<PROCESS_MEMORY_COUNTERS*>(&pmc),
+        sizeof(pmc))) {
+        workingSetMB = pmc.WorkingSetSize / (1024.0 * 1024.0);
+        privateBytesMB = pmc.PrivateUsage / (1024.0 * 1024.0);
+        return;
+    }
+#endif
+    workingSetMB = privateBytesMB = 0.0;
+}
+
+// ------------------------------ Rendering ----------------------------------
+/*!
+    @brief  Visualize memory per tag with ImGUI
+    @note   Display Working Set, Private Bytes and total TAGGED memory.
+*/
+inline void DrawEngineMemoryPanel() {
+    auto& tr = MemTracker::instance();
+    const char* N[(size_t)MemTag::Count] = {
+        "Unknown","Update","Physics","Graphics","AI","Audio","ECS","Resources","UI","Renderer"
+    };
+
+    double wsMB = 0.0, privMB = 0.0; 
+    get_process_mem_mb(wsMB, privMB);
+
+    ImGui::SeparatorText("Engine Memory - when you create allocations, reserve, commit or release things - Doesn't work yet");
+    double totalLiveMB = 0.0;
+    for (size_t i = 0; i < (size_t)MemTag::Count; ++i) {
+        double mb = tr.live[i].load() / (1024.0 * 1024.0);
+        // Will hide other rows
+        if (mb <= 0.0) {
+            continue;
+        }
+        totalLiveMB += mb;
+        ImGui::Text("%-10s  %8.2f MB", N[i], mb);
+        float frac = (float)((privMB > 0.0) ? (mb / privMB) : 0.0);
+        ImGui::ProgressBar(frac, ImVec2(-1, 0), "");
+    }
+
+    ImGui::SeparatorText("Process Memory - what we own (committed for the process)");
+    ImGui::Text("Working Set: %.2f MB", wsMB);
+    ImGui::Text("Private Bytes (process total): %.2f MB", privMB);
+    ImGui::Text("Sum of tagged live: %.2f MB", totalLiveMB);
+}
