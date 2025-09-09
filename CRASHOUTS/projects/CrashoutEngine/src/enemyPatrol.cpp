@@ -1,9 +1,10 @@
 #include "enemyPatrol.h"
 #include <cmath> 
+/*
 namespace Patrol {
 
-    CE::f32& Tx(CEMtx33* m) { return m->m[0][2]; } 
-    CE::f32& Ty(CEMtx33* m) { return m->m[1][2]; }
+   // CE::f32& Tx(CEMtx33* m) { return m->m[0][2]; } 
+    //CE::f32& Ty(CEMtx33* m) { return m->m[1][2]; }
 
     void UpdateAB(CEMtx33* transform, ABPatrol* data, CE::f32 dt)
     {
@@ -50,5 +51,5 @@ namespace Patrol {
         }
 
     }
-
-} 
+    
+} */
