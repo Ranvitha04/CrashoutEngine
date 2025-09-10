@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['namecomponent_0',['NameComponent',['../structComponent_1_1NameComponent.html',1,'Component']]]
+  ['namecomponent_0',['NameComponent',['../struct_component_1_1_name_component.html',1,'Component']]]
 ];
