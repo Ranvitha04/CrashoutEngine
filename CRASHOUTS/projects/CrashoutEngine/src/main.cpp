@@ -15,6 +15,8 @@ context and implement a game loop.
 #include "../include/glapp.h"
 #include "../include/entitymanager.h"
 #include "../include/performanceViewer.h"
+#include "../include/Collision.h"
+#include "../include/Physics.h"
 
 // ImGui headers for callbacks
 #include <imgui.h>
@@ -76,6 +78,11 @@ int main() {
 
     // window's close flag is set by clicking close widget or Alt+F4
     while (!glfwWindowShouldClose(GLApp::ptr_window)) {
+        //TEMPORARY TO BE REPLACED BY ECS INPUT SYSTEM - Rain
+        glfwPollEvents();
+        InputManager::Update();
+        GLApp::update_time();
+        Physics::PhysicsHandler::runSystem(globalECS, globalEntities, GLApp::delta_time);
         draw();
         update();
     }
