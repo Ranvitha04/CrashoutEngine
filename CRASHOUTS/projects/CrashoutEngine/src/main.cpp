@@ -14,6 +14,8 @@ context and implement a game loop.
 // Extension loader library's header must be included before GLFW's header!!!
 #include "../include/glapp.h"
 #include "../include/entitymanager.h"
+#include "../include/Collision.h"
+#include "../include/Physics.h"
 
 // ImGui headers for callbacks
 #include <imgui.h>
@@ -62,8 +64,27 @@ int main() {
 
     init();
 
-    // window's close flag is set by clicking close widget or Alt+F4
+    /*ECS::Entity test = globalECS.CreateEntity();
+    ECS::Entity test2 = globalECS.CreateEntity();
+
+    globalEntities.push_back(test);
+    globalEntities.push_back(test2);
+    globalECS.AddComponent<Component::ColliderComponent>(test, Component::ColliderComponent{ std::make_unique<Collision::AABBRect>(Collision::AABBRect{CEVec3{10.f, 20.f, 0.f}, CEVec3{1000.f, 20.f, 0.f}} ) });
+    globalECS.AddComponent<Component::ColliderComponent>(test2, Component::ColliderComponent{ std::make_unique<Collision::AABBRect>(Collision::AABBRect{CEVec3{30.f, 20.f, 0.f}, CEVec3{40.f, 20.f, 0.f}}) });
+
+    Component::ColliderComponent* wow{ globalECS.GetComponent<Component::ColliderComponent>(test) };
+    Component::ColliderComponent* wow2{ globalECS.GetComponent<Component::ColliderComponent>(test2) };
+
+    Collision::AABBRect& rect1{ dynamic_cast<Collision::AABBRect&>(*(wow->collider)) };
+    Collision::AABBRect& rect2{ dynamic_cast<Collision::AABBRect&>(*(wow2->collider)) };*/
+
+    
+    
+
+    //// window's close flag is set by clicking close widget or Alt+F4
     while (!glfwWindowShouldClose(GLApp::ptr_window)) {
+        f32 delta{1.f/60.f};
+        Physics::PhysicsHandler::runSystem(globalECS, globalEntities, delta);
         draw();
         update();
     }
@@ -150,6 +171,7 @@ with buttons to manage entities and their components.
 static void ImGuiDraw() {    
     using namespace ECS;
 
+
     // Start the Dear ImGui frame
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
@@ -218,6 +240,10 @@ static void ImGuiDraw() {
             if (!globalECS.HasComponent<TransformComponent>(globalSelectedEntity)) {
                 globalECS.AddComponent<TransformComponent>(globalSelectedEntity, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f);
             }
+        } if (ImGui::Button("Add ColliderComponent")) {
+            /*if (!globalECS.HasComponent<TransformComponent>(globalSelectedEntity)) {
+                globalECS.AddComponent<TransformComponent>(globalSelectedEntity, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f);
+            }*/
         }
     }
 
