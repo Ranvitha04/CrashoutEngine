@@ -6,6 +6,7 @@
 This file defines the TransformComponent, a simple data structure used to 
 store an entity's 3D position, rotation, and scale.
 //__________________________________________________________________________*/
+#pragma once
 
 /*                                                                   includes
 ----------------------------------------------------------------------------- */
