@@ -22,6 +22,11 @@ objects participating in the application.
 #include <GLFW/glfw3.h>
 #include <string>
 
+// ImGui headers for callbacks
+#include <imgui.h>
+#include <backends/imgui_impl_glfw.h>
+#include <backends/imgui_impl_opengl3.h>
+
 /*  _________________________________________________________________________ */
 struct GLApp
 	/*! GLApp structure to encapsulate initialization stuff ...

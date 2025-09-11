@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['update_0',['update',['../structGLApp.html#a71b3e9694a98189b3625ee53ff672491',1,'GLApp']]],
-  ['update_5ftime_1',['update_time',['../structGLApp.html#a32a81f7b7a0f7791cebe56c9e958a06c',1,'GLApp']]]
+  ['normalize_0',['Normalize',['../_c_e_math_8h.html#ae6c6be16580090a06ef945ab26df9f19',1,'CEMath::Normalize(const CEVec2 &amp;vector)'],['../_c_e_math_8h.html#ad43439338fa337351badc9eaf7e0f6e3',1,'CEMath::Normalize(const CEVec3 &amp;vector)']]]
 ];
