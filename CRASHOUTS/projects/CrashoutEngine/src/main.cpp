@@ -69,7 +69,7 @@ Note that the C++ compiler will insert a return 0 statement if one is missing.
 int main() {
     // start with a 16:9 aspect ratio
     if (!GLApp::init(1280, 720, "Tutorial 0 | Setting up OpenGL 4.5")) {
-        Log::Error("Unable to create OpenGL context");
+        LOG_ERROR("Unable to create OpenGL context");
         std::exit(EXIT_FAILURE);
     }
 
@@ -79,6 +79,7 @@ int main() {
     while (!glfwWindowShouldClose(GLApp::ptr_window)) {
         draw();
         update();
+
     }
 
     // Cleanup
@@ -107,6 +108,10 @@ static void init() {
     ImGui_ImplGlfw_InitForOpenGL(GLApp::ptr_window, true);
     //ImGui_ImplOpenGL3_Init("#version 450");
     ImGui_ImplOpenGL3_Init("#version 330");
+
+    LOG_SUCCESS("OpenGL context created successfully");
+    LOG_WARN("Running in debug mode may reduce performance");
+    LOG_INFO("Engine initialized");
 }
 
 /*  _________________________________________________________________________ */
@@ -374,6 +379,28 @@ static void ImGuiDraw() {
         }
         ImGui::End();
     }
+
+    ImGui::End();
+
+    ImGui::Begin("Console");
+
+    const auto& logs = Logger::Instance().GetMessages();
+    for (const auto& log : logs) {
+        ImVec4 color;
+        switch (log.level) {
+        case LogMessage::Level::Info:    color = ImVec4(0.4f, 0.8f, 1.0f, 1.0f); break; // cyan
+        case LogMessage::Level::Warning: color = ImVec4(1.0f, 0.9f, 0.4f, 1.0f); break; // yellow
+        case LogMessage::Level::Error:   color = ImVec4(1.0f, 0.3f, 0.3f, 1.0f); break; // red
+        case LogMessage::Level::Success: color = ImVec4(0.4f, 1.0f, 0.4f, 1.0f); break; // green
+        }
+        ImGui::PushStyleColor(ImGuiCol_Text, color);
+        ImGui::TextUnformatted(log.text.c_str());
+        ImGui::PopStyleColor();
+    }
+
+    // Auto-scroll to bottom
+    if (ImGui::GetScrollY() >= ImGui::GetScrollMaxY())
+        ImGui::SetScrollHereY(1.0f);
 
     ImGui::End();
 

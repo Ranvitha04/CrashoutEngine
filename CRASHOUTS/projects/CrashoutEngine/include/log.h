@@ -1,30 +1,57 @@
 #pragma once
 #include <iostream>
 #include <string>
+#include <vector>
+#include <mutex>
+
+struct LogMessage {
+    std::string text;
+    enum class Level {
+        Info,
+        Warning,
+        Error,
+        Success
+    } level;
+};
 
 
-namespace Log {
-
-    // escape color codes
-    constexpr const char* RESET = "\033[0m";
-    constexpr const char* RED = "\033[31m";
-    constexpr const char* YELLOW = "\033[33m";
-    constexpr const char* GREEN = "\033[32m";
-    constexpr const char* CYAN = "\033[36m";
-
-    inline void Info(const std::string& msg) {
-        std::cout << CYAN << "[INFO] " << msg << RESET << std::endl;
+class Logger {
+public:
+    static Logger& Instance(){
+        static Logger instance;
+        return instance;
     }
 
-    inline void Warning(const std::string& msg) {
-        std::cout << YELLOW << "[WARNING] " << msg << RESET << std::endl;
+    void Add(LogMessage::Level lvl, const std::string& msg) {
+        std::lock_guard<std::mutex> lock(mutex);
+        messages.push_back({ msg, lvl });
+
+        switch (lvl) {
+        case LogMessage::Level::Info:
+            std::cout << "\033[36m[Info] " << msg << "\033[0m\n"; 
+            break;
+        case LogMessage::Level::Warning:
+            std::cout << "\033[33m[Warning] " << msg << "\033[0m\n";
+            break;
+        case LogMessage::Level::Error:
+            std::cout << "\033[31m[Error] " << msg << "\033[0m\n";
+            break;
+        case LogMessage::Level::Success:
+            std::cout << "\033[32m[Success " << msg << "\033[0m\n";
+            break;
+        }
     }
 
-    inline void Error(const std::string& msg) {
-        std::cout << RED << "[ERROR] " << msg << RESET << std::endl;
+    const std::vector<LogMessage>& GetMessages() const {
+        return messages;
     }
+  
+private:
+    std::vector<LogMessage> messages;
+    std::mutex mutex;
+};
 
-    inline void Success(const std::string& msg) {
-        std::cout << GREEN << "[SUCCESS] " << msg << RESET << std::endl;
-    }
-}
+#define LOG_INFO(x)    Logger::Instance().Add(LogMessage::Level::Info, x)
+#define LOG_WARN(x)    Logger::Instance().Add(LogMessage::Level::Warning, x)
+#define LOG_ERROR(x)   Logger::Instance().Add(LogMessage::Level::Error, x)
+#define LOG_SUCCESS(x) Logger::Instance().Add(LogMessage::Level::Success, x)
