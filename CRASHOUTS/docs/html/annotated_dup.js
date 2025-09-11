@@ -13,5 +13,13 @@ var annotated_dup =
     [ "CEVec3", "struct_c_e_vec3.html", "struct_c_e_vec3" ],
     [ "ComponentArray", "class_component_array.html", null ],
     [ "ECS", "class_e_c_s.html", null ],
-    [ "GLApp", "struct_g_l_app.html", null ]
+    [ "FrameProfiler", "class_frame_profiler.html", "class_frame_profiler" ],
+    [ "GLApp", "struct_g_l_app.html", null ],
+    [ "InputManager", "class_input_manager.html", null ],
+    [ "MemTag", "class_mem_tag.html", null ],
+    [ "MemTracker", "struct_mem_tracker.html", null ],
+    [ "ProfilerSample", "struct_profiler_sample.html", null ],
+    [ "scoped", "classscoped.html", null ],
+    [ "ScopedMemTag", "struct_scoped_mem_tag.html", null ],
+    [ "Settings", "class_settings.html", null ]
 ];

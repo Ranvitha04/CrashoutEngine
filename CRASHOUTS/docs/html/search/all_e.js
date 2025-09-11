@@ -1,6 +1,8 @@
 var searchData=
 [
-  ['removecomponent_0',['RemoveComponent',['../class_e_c_s_1_1_e_c_s.html#ac79cc3a6ffdb212b164f627cb9b38f17',1,'ECS::ECS::RemoveComponent(Entity entityId)'],['../class_e_c_s_1_1_e_c_s.html#aebe13df5fc1a34f5cd6426eebf9866fb',1,'ECS::ECS::RemoveComponent(std::string entityName)']]],
-  ['rotationdegrees_1',['RotationDegrees',['../struct_c_e_mtx33.html#a4d06d6806efff4a5fbfa381f5d7c01c3',1,'CEMtx33']]],
-  ['rotationradians_2',['RotationRadians',['../struct_c_e_mtx33.html#ac5130cdbf9551ef16c6a1e9674b6fbed',1,'CEMtx33']]]
+  ['percentmode_0',['PercentMode',['../class_frame_profiler.html#a109795db112b1e14ae2520e1436b8c3b',1,'FrameProfiler']]],
+  ['performanceviewer_2eh_1',['performanceViewer.h',['../performance_viewer_8h.html',1,'']]],
+  ['pi_2',['PI',['../_c_e_math_8h.html#a058640d6eaba29d247aee93f5be27388',1,'CEMath']]],
+  ['present_5fready_3',['present_ready',['../class_frame_profiler.html#af6cd83c9e4af824e1f2ccc0707e83bf7',1,'FrameProfiler']]],
+  ['profilersample_4',['ProfilerSample',['../struct_profiler_sample.html',1,'']]]
 ];

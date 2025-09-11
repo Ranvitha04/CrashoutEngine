@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['namecomponent_0',['NameComponent',['../struct_component_1_1_name_component.html',1,'Component']]]
+  ['icomponentarray_0',['IComponentArray',['../class_e_c_s_1_1_i_component_array.html',1,'ECS']]],
+  ['inputmanager_1',['InputManager',['../class_input_manager.html',1,'']]]
 ];

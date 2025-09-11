@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['fbsize_5fcb_0',['fbsize_cb',['../struct_g_l_app.html#a0f5f03a036644d71c5d3d65bdab1b06d',1,'GLApp']]],
-  ['findentitybyname_1',['FindEntityByName',['../class_e_c_s_1_1_e_c_s.html#a3f374d3cea50a3b1e6e0c5ccac87cad2',1,'ECS::ECS']]]
+  ['end_5fframe_0',['end_frame',['../class_frame_profiler.html#ab7d67c11ea26034973b6ccd9e7907582',1,'FrameProfiler']]],
+  ['error_5fcb_1',['error_cb',['../struct_g_l_app.html#ad2f5d8c902d19f2c8658927a5e4ec98f',1,'GLApp']]]
 ];

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['glapp_0',['GLApp',['../struct_g_l_app.html',1,'']]]
+  ['frameprofiler_0',['FrameProfiler',['../class_frame_profiler.html',1,'']]]
 ];

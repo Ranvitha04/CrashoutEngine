@@ -1,8 +1,21 @@
 var searchData=
 [
-  ['transformcomponent_0',['TransformComponent',['../struct_component_1_1_transform_component.html',1,'Component']]],
-  ['transformcomponent_2eh_1',['transformcomponent.h',['../transformcomponent_8h.html',1,'']]],
-  ['translation_2',['Translation',['../struct_c_e_mtx33.html#a8e21d46daf71b84d2baa0e63ae65d57d',1,'CEMtx33::Translation(f32 tx, f32 ty)'],['../struct_c_e_mtx33.html#ac8e1ed89e4586420bdc4b7dee68dc3a1',1,'CEMtx33::Translation(const CEVec2 &amp;vector)']]],
-  ['transpose_3',['Transpose',['../struct_c_e_mtx33.html#adce2ec8a62cb6c7e5d7419f4b08a0a46',1,'CEMtx33']]],
-  ['trs_4',['TRS',['../struct_c_e_mtx33.html#aa3c2763b4d8cdc8b937d7020a1afdc3f',1,'CEMtx33']]]
+  ['s16_0',['s16',['../namespace_c_e.html#a09a11620f000ffc60182651aad257b39',1,'CE']]],
+  ['s32_1',['s32',['../namespace_c_e.html#a2e407acd9dd88d1ecf63cfaec6e55a49',1,'CE']]],
+  ['s64_2',['s64',['../namespace_c_e.html#adc8c20c96c8fdf5fcf6b6411f396a4ef',1,'CE']]],
+  ['s8_3',['s8',['../namespace_c_e.html#acb435001523a8e91e3d2edf93ed17675',1,'CE']]],
+  ['savetofile_4',['SaveToFile',['../class_settings.html#a7a871dca9c80f0b53a3ced9513588cec',1,'Settings']]],
+  ['scale_5',['Scale',['../struct_c_e_mtx33.html#a345038304b13368efd3e4a3f5af67365',1,'CEMtx33']]],
+  ['scoped_6',['Scoped',['../class_frame_profiler_1_1_scoped.html',1,'FrameProfiler::Scoped'],['../class_frame_profiler_1_1_scoped.html#af01ef4a6e3e99960e3c9d6842c2c515e',1,'FrameProfiler::Scoped::Scoped()']]],
+  ['scoped_7',['scoped',['../classscoped.html',1,'']]],
+  ['scopedmemtag_8',['ScopedMemTag',['../struct_scoped_mem_tag.html',1,'']]],
+  ['set_5fema_5falpha_9',['set_ema_alpha',['../class_frame_profiler.html#abd62fccc0d21ff0dcdb7e369d270ea76',1,'FrameProfiler']]],
+  ['set_5fpercent_5fmode_10',['set_percent_mode',['../class_frame_profiler.html#a7fef65dfb8b98425ac896ba77ed86ce3',1,'FrameProfiler']]],
+  ['set_5fpresent_5finterval_11',['set_present_interval',['../class_frame_profiler.html#acaf8b5b3d0ef9fd6a777a79fa70452e8',1,'FrameProfiler']]],
+  ['setscreensize_12',['SetScreenSize',['../class_settings.html#a03b58e38e0337223b4cc9fc8dbfbd686',1,'Settings']]],
+  ['settings_13',['Settings',['../class_settings.html',1,'']]],
+  ['settings_2ecpp_14',['settings.cpp',['../settings_8cpp.html',1,'']]],
+  ['settings_2eh_15',['settings.h',['../settings_8h.html',1,'']]],
+  ['slash_16',['Slash',['../key_8h.html#ab3c7af4820830f9166ede9e5623c4e73a358cfe58715d680d9ab09f82e4010cbc',1,'key.h']]],
+  ['space_17',['Space',['../key_8h.html#ab3c7af4820830f9166ede9e5623c4e73ad511f8439ecde36647437fbba67a4394',1,'key.h']]]
 ];

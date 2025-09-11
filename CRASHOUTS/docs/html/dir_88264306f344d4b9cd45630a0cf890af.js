@@ -7,7 +7,10 @@ var dir_88264306f344d4b9cd45630a0cf890af =
     [ "CEVec3.h", "_c_e_vec3_8h.html", "_c_e_vec3_8h" ],
     [ "entitymanager.h", "entitymanager_8h.html", "entitymanager_8h" ],
     [ "glapp.h", "glapp_8h_source.html", null ],
+    [ "inputmanager.h", "inputmanager_8h.html", "inputmanager_8h" ],
     [ "key.h", "key_8h.html", "key_8h" ],
     [ "namecomponent.h", "namecomponent_8h.html", "namecomponent_8h" ],
+    [ "performanceViewer.h", "performance_viewer_8h.html", "performance_viewer_8h" ],
+    [ "settings.h", "settings_8h.html", "settings_8h" ],
     [ "transformcomponent.h", "transformcomponent_8h.html", "transformcomponent_8h" ]
 ];

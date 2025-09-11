@@ -105,4 +105,3 @@ add_custom_command(
 add_custom_target(docs ALL
     DEPENDS ${DOC_OUTPUT_DIR}/.doxygen.stamp
 )
-# ======================= END AUTO CONFIGURATION =========================
