@@ -15,6 +15,7 @@ context and implement a game loop.
 #include "../include/glapp.h"
 #include "../include/entitymanager.h"
 #include "../include/performanceViewer.h"
+#include "../include/log.h"
 
 // ImGui headers for callbacks
 #include <imgui.h>
@@ -68,7 +69,7 @@ Note that the C++ compiler will insert a return 0 statement if one is missing.
 int main() {
     // start with a 16:9 aspect ratio
     if (!GLApp::init(1280, 720, "Tutorial 0 | Setting up OpenGL 4.5")) {
-        std::cout << "Unable to create OpenGL context" << std::endl;
+        Log::Error("Unable to create OpenGL context");
         std::exit(EXIT_FAILURE);
     }
 
