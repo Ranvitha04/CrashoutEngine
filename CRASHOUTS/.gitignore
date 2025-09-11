@@ -90,3 +90,4 @@ Release/
 dist/
 *.dSYM/
 .vs/
+CRASHOUTS/docs/

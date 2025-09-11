@@ -35,10 +35,10 @@ static inline char* alloc_block(size_t sz, uint8_t tag) {
     @brief  redirects all allocation to alloc_block()
 */
 void* operator new(size_t sz) {
-    return alloc_block(sz, (uint8_t)g_memtagTLS);
+    return alloc_block(sz, (uint8_t)g_memTagTLS);
 }
 void* operator new[](size_t sz) {
-    return alloc_block(sz, (uint8_t)g_memtagTLS);
+    return alloc_block(sz, (uint8_t)g_memTagTLS);
 }
 
 /*!
