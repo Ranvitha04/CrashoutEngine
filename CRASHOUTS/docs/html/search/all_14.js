@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['z_0',['z',['../struct_c_e_vec3.html#a217a411fc8e803244f3bdb4212b87d3f',1,'CEVec3']]],
-  ['zero_1',['Zero',['../struct_c_e_mtx33.html#a3642b111915ce28e8d50470c452789e4',1,'CEMtx33']]]
+  ['y_0',['y',['../struct_c_e_vec2.html#af4afad934c8178ef891b1f785342bbc0',1,'CEVec2::y'],['../struct_c_e_vec3.html#ab0016240177627e098fe06ba4aa21e6c',1,'CEVec3::y']]]
 ];
