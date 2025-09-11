@@ -1,3 +1,11 @@
+/*!
+@file       Physics.h
+@author     miratristan.d@digipen.edu
+@date       08/09/2025
+@brief      Contains Physics runSystem function for collision detection and physics resolution (calculate new pos by vel)
+
+//__________________________________________________________________________*/
+
 #pragma once
 
 #include "CEVec3.h"
@@ -17,6 +25,12 @@ namespace Component {
 namespace Physics {
 	class PhysicsHandler {
 		public:
+			/*!
+			@brief Modify Transform Component, and do Collision checks and resolutions
+			@param globalECS ECS object for ECS functions
+			@param globalEntities Collection of Entities
+			@param deltaTime Time taken for the previous frame
+			*/
 			static void runSystem(ECS::ECS& globalECS, std::vector<ECS::Entity>& globalEntities, f32 deltaTime) {
 				/*DETECT COLLISION AND RESOLVE COLLISION*/
 				for (ECS::Entity &entity1 : globalEntities) {
@@ -26,10 +40,11 @@ namespace Physics {
 						if (!globalECS.HasComponent<Component::ColliderComponent>(entity2) || !globalECS.HasComponent<Component::TransformComponent>(entity2)) continue;
 					
 						/*DISPATCH COLLISION FUNCT*/
+						/*TODO MESSAGING SYSTEM*/
 					}
 				}
 
-				/*PHYSICS SIM*/
+				/*PHYSICS SIM, UPDATE POSITION*/
 				for (ECS::Entity& entity : globalEntities) {
 					if (!globalECS.HasComponent<Component::RigidBodyComponent>(entity) || !globalECS.HasComponent<Component::TransformComponent>(entity)) continue;
 					Component::TransformComponent* transform { globalECS.GetComponent<Component::TransformComponent>(entity) };
