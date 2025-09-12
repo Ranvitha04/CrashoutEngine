@@ -14,8 +14,7 @@ objects participating in the application.
 
 /*                                                                      guard
 ----------------------------------------------------------------------------- */
-#ifndef GLAPP_H
-#define GLAPP_H
+#pragma once
 
 /*                                                                   includes
 ----------------------------------------------------------------------------- */
@@ -26,9 +25,9 @@ objects participating in the application.
 
 
 // ImGui headers for callbacks
-//#include "../imgui-master/imgui.h"
-//#include "../imgui-master/backends/imgui_impl_glfw.h"
-//#include "../imgui-master/backends/imgui_impl_opengl3.h"
+#include <imgui.h>
+#include <backends/imgui_impl_glfw.h>
+#include <backends/imgui_impl_opengl3.h>
 
 /*  _________________________________________________________________________ */
 struct GLApp
@@ -60,4 +59,3 @@ struct GLApp
 
 };
 
-#endif /* GLAPP_H */

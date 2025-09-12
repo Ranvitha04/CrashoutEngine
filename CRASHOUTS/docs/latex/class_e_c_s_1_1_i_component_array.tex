@@ -1,0 +1,27 @@
+\doxysection{ECS\+::IComponent\+Array Class Reference}
+\hypertarget{class_e_c_s_1_1_i_component_array}{}\label{class_e_c_s_1_1_i_component_array}\index{ECS::IComponentArray@{ECS::IComponentArray}}
+
+
+An abstract interface for component arrays.  
+
+
+
+
+{\ttfamily \#include $<$entitymanager.\+h$>$}
+
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_e_c_s_1_1_i_component_array_a749a75deed0824ee0700114997490a4d}\label{class_e_c_s_1_1_i_component_array_a749a75deed0824ee0700114997490a4d} 
+virtual void {\bfseries Remove\+Component} (Entity entity\+Id)=0
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+An abstract interface for component arrays. 
+
+This base class provides a polymorphic way to remove components from an entity without knowing their specific type. This is particularly useful when destroying an entity, as the \doxylink{class_e_c_s_1_1_e_c_s}{ECS} can iterate through all component arrays and call a single {\ttfamily Remove\+Component} function for each one. 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+projects/\+Crashout\+Engine/include/\mbox{\hyperlink{entitymanager_8h}{entitymanager.\+h}}\end{DoxyCompactItemize}
