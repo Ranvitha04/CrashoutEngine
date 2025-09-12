@@ -21,13 +21,7 @@ rendering resources associated with these primitives.
 /*                                                                   includes
 ----------------------------------------------------------------------------- */
 
-
-
-#include "rendering.h"
-#include "entitymanager.h"
 #include "CEVec3.h"
-#include <array>
-#include <GL/glew.h>
 
 namespace Component {
 

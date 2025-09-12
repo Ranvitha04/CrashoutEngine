@@ -23,12 +23,14 @@ scaling) to shape vertices for flexible rendering.
 ----------------------------------------------------------------------------- */
 
 #include "shapes.h"
+#include "rendering.h"
+#include "entitymanager.h"
+#include <array>
+#include <GL/glew.h>
 #include "glapp.h"
 #include <iostream>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-
-
 
 namespace Component {
     // Store the last created rendering components to keep them alive for at least one frame

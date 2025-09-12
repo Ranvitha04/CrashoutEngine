@@ -12,9 +12,9 @@ context and implement a game loop.
 /*                                                                   includes
 ----------------------------------------------------------------------------- */
 // Extension loader library's header must be included before GLFW's header!!!
-#include "../include/glapp.h"
-#include "../include/entitymanager.h"
-#include "../include/performanceViewer.h"
+#include "glapp.h"
+#include "performanceViewer.h"
+#include "entitymanager.h"
 
 // ImGui headers for callbacks
 #include <imgui.h>
@@ -27,9 +27,9 @@ context and implement a game loop.
 ----------------------------------------------------------------------------- */
 
 // ECS instance and entity storage
-static ECS::ECS globalECS;
-static std::vector<ECS::Entity> globalEntities;
-static ECS::Entity globalSelectedEntity = 0;
+static CrashoutsEngine::ECS globalECS;
+static std::vector<CrashoutsEngine::Entity> globalEntities;
+static CrashoutsEngine::Entity globalSelectedEntity = 0;
 
 // ImGui in-game performance viewer
 static bool show_perf = false;
@@ -204,7 +204,7 @@ This function handles all the ImGui UI drawing for the ECS demonstration. It cre
 with buttons to manage entities and their components.
 */
 static void ImGuiDraw() {
-    using namespace ECS;
+    using namespace CrashoutsEngine;
 
     FrameProfiler::Scoped _imgui(gProfiler, "ImGui");
 

@@ -21,14 +21,12 @@ and OpenGL 4.x core profile functions for buffer and vertex array management.
 ----------------------------------------------------------------------------- */
 
 #include "rendering.h"
-#include "shader.h"
 #include "entitymanager.h"
+#include <string>
 #include "CEVec3.h"
 #include "CEVec2.h"
-#include <glm/glm.hpp>
 #include <vector>
 #include <array>
-#include <string>
 #include <iostream>
 #include <fstream>
 #include <filesystem>
@@ -106,7 +104,7 @@ namespace Component {
         // Use absolute paths to ensure shaders are found
         const std::string Shader = "../../../projects/CrashoutEngine/shaders/CrashoutShader.frag";
 
-        //const std::string Shader = "..//CrashoutEngine//shaders//CrashoutShader.frag";
+        //const std::string Shader = "..//CrashoutsEngine//shaders//CrashoutShader.frag";
         const std::string Vertex = "../../../projects/CrashoutEngine/shaders/CrashoutShader.vert";
 
         // Automation hook. [!WARNING!] Do not alter/remove this

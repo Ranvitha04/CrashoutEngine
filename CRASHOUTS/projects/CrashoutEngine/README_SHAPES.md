@@ -1,7 +1,7 @@
 # Shapes Drawing Library
 
 ## Overview
-This library provides simple functions to draw basic shapes in OpenGL using the existing rendering infrastructure of the CrashoutEngine. Each shape can be positioned, scaled, rotated, and colored as needed.
+This library provides simple functions to draw basic shapes in OpenGL using the existing rendering infrastructure of the CrashoutsEngine. Each shape can be positioned, scaled, rotated, and colored as needed.
 
 ## Available Shapes
 - Squares

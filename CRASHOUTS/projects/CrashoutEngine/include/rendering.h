@@ -24,11 +24,9 @@ rendering pipelines.
 ----------------------------------------------------------------------------- */
 
 
-#include "shader.h"	
-#include "entitymanager.h"
-#include <string>
 #include <GL/glew.h>
-
+#include <glm/glm.hpp>
+#include "shader.h"	
 
 namespace Component {
 

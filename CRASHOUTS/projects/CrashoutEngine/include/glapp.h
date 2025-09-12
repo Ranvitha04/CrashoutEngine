@@ -21,13 +21,7 @@ objects participating in the application.
 #include <GL/glew.h> // for access to OpenGL API declarations 
 #include <GLFW/glfw3.h>
 #include <string>
-#include "rendering.h"
 
-
-// ImGui headers for callbacks
-#include <imgui.h>
-#include <backends/imgui_impl_glfw.h>
-#include <backends/imgui_impl_opengl3.h>
 
 /*  _________________________________________________________________________ */
 struct GLApp
