@@ -26,6 +26,7 @@ This file provides profiling and memory tracking utilities for Crashout Engine.
 #include <algorithm>
 #include <cmath>
 #include <cstdint>
+#include <array>
 #include <imgui.h>
 
 
@@ -72,6 +73,10 @@ struct ProfilerSample {
 */
 class FrameProfiler {
 public:
+    static constexpr size_t kHistory = 240;              // ~4s @60fps
+    using HistArray = std::array<float, kHistory>;
+    using EmaHistMap = std::unordered_map<std::string, HistArray>;
+
     /*!
     @enum PercentMode
     @brief how the percent column is computed for display.
@@ -209,6 +214,17 @@ public:
         if (lastPresent.time_since_epoch().count() == 0) lastPresent = now;
         const double since = duration<double>(now - lastPresent).count();
 
+        frameMSHist[histIndex] = static_cast<float>(frameMSDisplay);
+
+        // ensure every region seen so far has a history slot
+        for (auto& kv : emaMS) {
+            auto& arr = emaHist[kv.first];
+            arr[histIndex] = static_cast<float>(kv.second);
+        }
+
+        histIndex = (histIndex + 1) % kHistory;
+        histCount = std::min(histCount + 1, kHistory);
+
         if (since >= presentIntervalSec) {
             snapShot = rowsTmp;
             snapShotFrameMS = frameMSDisplay;
@@ -269,6 +285,14 @@ public:
     */
     void set_percent_mode(PercentMode m) { pctMode = m; }
 
+    // Read-only accessors for UI
+    static constexpr size_t history_capacity() { return kHistory; }
+    size_t history_count() const { return histCount; }
+    size_t history_index() const { return histIndex; }
+
+    const HistArray& frame_ms_history() const { return frameMSHist; }
+    const EmaHistMap& ema_history()   const { return emaHist; }
+
 
 private:
 
@@ -297,6 +321,12 @@ private:
 
     // % mode
     PercentMode pctMode = PercentMode::NormalizeToEmaSum;
+
+    size_t histIndex = 0;
+    size_t histCount = 0;
+    HistArray  frameMSHist{};  // total frame ms
+    EmaHistMap emaHist;        // per-region EMA history
+
 };
 
 /*
@@ -410,4 +440,44 @@ inline void DrawEngineMemoryPanel() {
     ImGui::Text("Working Set: %.2f MB", wsMB);
     ImGui::Text("Private Bytes (process total): %.2f MB", privMB);
     ImGui::Text("Sum of tagged live: %.2f MB", totalLiveMB);
+}
+
+inline void DrawProfilerPanel(FrameProfiler& P) {
+    using namespace ImGui;
+
+    const bool ready = P.present_ready();
+    const auto& rows = P.results();
+    const double frameMs = P.total_ms();
+
+    if (Begin("Profiler")) {
+        SeparatorText("CPU Frame (ms) - Stream");
+
+        // history pointers
+        const size_t count = P.history_count();
+        const size_t cap = FrameProfiler::history_capacity();
+        const size_t idx = P.history_index();
+        const int    icount = static_cast<int>(count);
+        const int    offset = static_cast<int>((idx + cap - count) % cap);
+
+        if (count > 0) {
+            const auto& fh = P.frame_ms_history();
+            PlotLines("Frame ms",
+                fh.data(), icount, offset,
+                nullptr, 0.0f, 33.0f, ImVec2(-1, 60));
+        }
+
+        SeparatorText("Systems (EMA ms) - Streams");
+        const auto& eh = P.ema_history();
+        for (auto const& r : rows) {
+            auto it = eh.find(r.name);
+            if (it == eh.end()) continue;
+
+            TextUnformatted(r.name.c_str());
+            std::string id = "##spark_" + r.name;   // unique ID per row
+            PlotLines(id.c_str(),
+                it->second.data(), icount, offset,
+                nullptr, 0.0f, 10.0f, ImVec2(-1, 40));
+        }
+    }
+    End();
 }

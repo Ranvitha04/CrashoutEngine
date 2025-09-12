@@ -61,3 +61,12 @@ void operator delete(void* p) noexcept { free_block(p); }
 void operator delete[](void* p) noexcept { free_block(p); }
 void operator delete(void* p, size_t) noexcept { free_block(p); }
 void operator delete[](void* p, size_t) noexcept { free_block(p); }
+
+void* operator new(size_t sz, const std::nothrow_t&) noexcept(false) {
+    return alloc_block(sz, (uint8_t)g_memTagTLS);
+}
+void* operator new[](size_t sz, const std::nothrow_t&) noexcept(false) {
+    return alloc_block(sz, (uint8_t)g_memTagTLS);
+}
+void operator delete(void* p, const std::nothrow_t&) noexcept { free_block(p); }
+void operator delete[](void* p, const std::nothrow_t&) noexcept { free_block(p); }

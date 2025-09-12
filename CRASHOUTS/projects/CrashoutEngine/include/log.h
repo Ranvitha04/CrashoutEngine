@@ -11,7 +11,19 @@ struct LogMessage {
         Warning,
         Error,
         Success
-    } level;
+    };
+    enum class Subsystem {
+        Core,
+        Physics,
+        Collision,
+        Input,
+        AI,
+        ECS,
+        Renderer,
+        UI
+    };
+    Level level;
+    Subsystem system;
 };
 
 
@@ -22,27 +34,24 @@ public:
         return instance;
     }
 
-    void Add(LogMessage::Level lvl, const std::string& msg) {
+    void Add(LogMessage::Level lvl, LogMessage::Subsystem sys, const std::string& msg) {
         std::lock_guard<std::mutex> lock(mutex);
-        messages.push_back({ msg, lvl });
+        messages.push_back({ msg, lvl, sys });
 
-        switch (lvl) {
-        case LogMessage::Level::Info:
-            std::cout << "\033[36m[Info] " << msg << "\033[0m\n"; 
-            break;
-        case LogMessage::Level::Warning:
-            std::cout << "\033[33m[Warning] " << msg << "\033[0m\n";
-            break;
-        case LogMessage::Level::Error:
-            std::cout << "\033[31m[Error] " << msg << "\033[0m\n";
-            break;
-        case LogMessage::Level::Success:
-            std::cout << "\033[32m[Success " << msg << "\033[0m\n";
-            break;
-        }
+        // terminal colours
+        const char* RESET = "\033[0m"; 
+        const char* RED = "\033[31m"; 
+        const char* YEL = "\033[33m";
+        const char* GRN = "\033[32m"; 
+        const char* CYN = "\033[36m";
+
+        const char* lvlTag = (lvl == LogMessage::Level::Error) ? "[Error]" : (lvl == LogMessage::Level::Warning) ? "[Warning]" : (lvl == LogMessage::Level::Success) ? "[Success]" : "[Info]";
+        const char* col = (lvl == LogMessage::Level::Error) ? RED : (lvl == LogMessage::Level::Warning) ? YEL : (lvl == LogMessage::Level::Success) ? GRN : CYN;
+        std::ostream& os = (lvl == LogMessage::Level::Error) ? std::cerr : std::cout;
+        os << col << lvlTag << " " << msg << RESET << std::endl;
     }
 
-    const std::vector<LogMessage>& GetMessages() const {
+    const std::vector<LogMessage>& Get() const {
         return messages;
     }
   
@@ -51,7 +60,8 @@ private:
     std::mutex mutex;
 };
 
-#define LOG_INFO(x)    Logger::Instance().Add(LogMessage::Level::Info, x)
-#define LOG_WARN(x)    Logger::Instance().Add(LogMessage::Level::Warning, x)
-#define LOG_ERROR(x)   Logger::Instance().Add(LogMessage::Level::Error, x)
-#define LOG_SUCCESS(x) Logger::Instance().Add(LogMessage::Level::Success, x)
+// LOGI - INFO, LOGW - WARNING, LOGE - ERROR, LOGS - SUCCESS
+#define LOGI(sys, msg) Logger::Instance().Add(LogMessage::Level::Info,    LogMessage::Subsystem::sys, (msg))
+#define LOGW(sys, msg) Logger::Instance().Add(LogMessage::Level::Warning, LogMessage::Subsystem::sys, (msg))
+#define LOGE(sys, msg) Logger::Instance().Add(LogMessage::Level::Error,   LogMessage::Subsystem::sys, (msg))
+#define LOGS(sys, msg) Logger::Instance().Add(LogMessage::Level::Success, LogMessage::Subsystem::sys, (msg))

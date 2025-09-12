@@ -69,7 +69,7 @@ Note that the C++ compiler will insert a return 0 statement if one is missing.
 int main() {
     // start with a 16:9 aspect ratio
     if (!GLApp::init(1280, 720, "Tutorial 0 | Setting up OpenGL 4.5")) {
-        LOG_ERROR("Unable to create OpenGL context");
+        LOGE(Core, "Unable to create OpenGL context");
         std::exit(EXIT_FAILURE);
     }
 
@@ -95,6 +95,13 @@ static void init() {
     // Setup ImGUI context
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
+
+    ImGui::SetAllocatorFunctions(
+        [](size_t sz, void*) { return ::operator new(sz); },
+        [](void* p, void*) { ::operator delete(p); },
+        nullptr
+    );
+
     ImGuiIO& io = ImGui::GetIO(); (void)io;
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 
@@ -109,9 +116,9 @@ static void init() {
     //ImGui_ImplOpenGL3_Init("#version 450");
     ImGui_ImplOpenGL3_Init("#version 330");
 
-    LOG_SUCCESS("OpenGL context created successfully");
-    LOG_WARN("Running in debug mode may reduce performance");
-    LOG_INFO("Engine initialized");
+    LOGS(Core, "Engine initialized successfully");
+    LOGW(Core, "Debug mode is ON");
+    LOGI(Core, "Welcome to Crashout Engine console test!");
 }
 
 /*  _________________________________________________________________________ */
@@ -361,6 +368,8 @@ static void ImGuiDraw() {
         ImGui::Separator();
         DrawEngineMemoryPanel();
         ImGui::Separator();
+        DrawProfilerPanel(gProfiler);
+        ImGui::Separator();
 
         if (ImGui::BeginTable("perf_table", 3, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
             ImGui::TableSetupColumn("System");
@@ -382,26 +391,65 @@ static void ImGuiDraw() {
 
     ImGui::End();
 
+    static bool showInfo = true, showWarn = true, showErr = true, showSucc = true;
+    static bool sysCore = true, sysPhys = true, sysColl = true, sysInput = true, sysAI = true, sysECS = true, sysRend = true, sysUI = true;
+
     ImGui::Begin("Console");
 
-    const auto& logs = Logger::Instance().GetMessages();
+    // level filters
+    ImGui::Checkbox("Info", &showInfo); ImGui::SameLine();
+    ImGui::Checkbox("Warn", &showWarn); ImGui::SameLine();
+    ImGui::Checkbox("Error", &showErr); ImGui::SameLine();
+    ImGui::Checkbox("Success", &showSucc);
+
+    // subsystem filters
+    ImGui::Separator();
+    ImGui::TextUnformatted("Subsystems:");
+    ImGui::Checkbox("Core", &sysCore); ImGui::SameLine();
+    ImGui::Checkbox("Physics", &sysPhys); ImGui::SameLine();
+    ImGui::Checkbox("Collision", &sysColl); ImGui::SameLine();
+    ImGui::Checkbox("Input", &sysInput);
+    ImGui::Checkbox("AI", &sysAI); ImGui::SameLine();
+    ImGui::Checkbox("ECS", &sysECS); ImGui::SameLine();
+    ImGui::Checkbox("Renderer", &sysRend); ImGui::SameLine();
+    ImGui::Checkbox("UI", &sysUI);
+
+    ImGui::Separator();
+
+    const auto& logs = Logger::Instance().Get();
     for (const auto& log : logs) {
-        ImVec4 color;
-        switch (log.level) {
-        case LogMessage::Level::Info:    color = ImVec4(0.4f, 0.8f, 1.0f, 1.0f); break; // cyan
-        case LogMessage::Level::Warning: color = ImVec4(1.0f, 0.9f, 0.4f, 1.0f); break; // yellow
-        case LogMessage::Level::Error:   color = ImVec4(1.0f, 0.3f, 0.3f, 1.0f); break; // red
-        case LogMessage::Level::Success: color = ImVec4(0.4f, 1.0f, 0.4f, 1.0f); break; // green
-        }
+        // level gate
+        if ((log.level == LogMessage::Level::Info && !showInfo) ||
+            (log.level == LogMessage::Level::Warning && !showWarn) ||
+            (log.level == LogMessage::Level::Error && !showErr) ||
+            (log.level == LogMessage::Level::Success && !showSucc)) continue;
+
+        // subsystem gate
+        bool sysPass =
+            (log.system == LogMessage::Subsystem::Core && sysCore) ||
+            (log.system == LogMessage::Subsystem::Physics && sysPhys) ||
+            (log.system == LogMessage::Subsystem::Collision && sysColl) ||
+            (log.system == LogMessage::Subsystem::Input && sysInput) ||
+            (log.system == LogMessage::Subsystem::AI && sysAI) ||
+            (log.system == LogMessage::Subsystem::ECS && sysECS) ||
+            (log.system == LogMessage::Subsystem::Renderer && sysRend) ||
+            (log.system == LogMessage::Subsystem::UI && sysUI);
+        if (!sysPass) continue;
+
+        ImVec4 color =
+            (log.level == LogMessage::Level::Error) ? ImVec4(1, 0.3f, 0.3f, 1) :
+            (log.level == LogMessage::Level::Warning) ? ImVec4(1, 0.9f, 0.4f, 1) :
+            (log.level == LogMessage::Level::Success) ? ImVec4(0.4f, 1, 0.4f, 1) :
+            ImVec4(0.4f, 0.8f, 1, 1);
         ImGui::PushStyleColor(ImGuiCol_Text, color);
         ImGui::TextUnformatted(log.text.c_str());
         ImGui::PopStyleColor();
     }
-
-    // Auto-scroll to bottom
-    if (ImGui::GetScrollY() >= ImGui::GetScrollMaxY())
-        ImGui::SetScrollHereY(1.0f);
-
+    if (ImGui::Button("Clear")) {
+        // Quick hack: clear by casting away const
+        const_cast<std::vector<LogMessage>&>(logs).clear();
+    }
+    // optional: autoscroll, clear button, etc.
     ImGui::End();
 
     // Rendering

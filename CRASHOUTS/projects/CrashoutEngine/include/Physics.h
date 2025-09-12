@@ -11,6 +11,7 @@
 #include "CEVec3.h"
 #include "entitymanager.h"
 #include "Collision.h"
+#include "log.h"
 
 namespace Component {
 	struct RigidBodyComponent {
@@ -41,6 +42,7 @@ namespace Physics {
 					
 						/*DISPATCH COLLISION FUNCT*/
 						/*TODO MESSAGING SYSTEM*/
+
 					}
 				}
 
@@ -54,6 +56,7 @@ namespace Physics {
 					transform->posX += deltaTime * rigidBody->velocity.x;
 					transform->posY += deltaTime * rigidBody->velocity.y;
 					transform->posZ += deltaTime * rigidBody->velocity.z;
+					LOGI(Physics, "Entity " + std::to_string(entity) + " moved to " + std::to_string(transform->posX) + ", " + std::to_string(transform->posY));
 				}
 			}
 	};

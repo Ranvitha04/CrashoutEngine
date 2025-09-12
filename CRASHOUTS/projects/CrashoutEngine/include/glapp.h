@@ -27,6 +27,9 @@ objects participating in the application.
 #include <backends/imgui_impl_glfw.h>
 #include <backends/imgui_impl_opengl3.h>
 
+// Log headers for logging
+#include "../include/log.h"
+
 /*  _________________________________________________________________________ */
 struct GLApp
 	/*! GLApp structure to encapsulate initialization stuff ...
