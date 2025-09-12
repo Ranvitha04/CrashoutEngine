@@ -41,6 +41,8 @@ foreach(child ${children})
             ${CMAKE_CURRENT_LIST_DIR}/projects/${child}/src/*.cpp
             ${CMAKE_CURRENT_LIST_DIR}/projects/${child}/include/*.h
             ${CMAKE_CURRENT_LIST_DIR}/projects/${child}/include/*.hpp
+            ${CMAKE_CURRENT_LIST_DIR}/projects/${child}/state/*.h
+            ${CMAKE_CURRENT_LIST_DIR}/projects/${child}/state/*.hpp
         )
 
         # Create executable
@@ -88,7 +90,7 @@ file(GLOB_RECURSE DOXY_INPUTS CONFIGURE_DEPENDS
      ${CMAKE_SOURCE_DIR}/*.md
      ${CMAKE_SOURCE_DIR}/docs/*.md)
 
-# Produce a stamp file when doxygen finishes; depend on all inputs
+# Produce a stamp file when doxygen finishes, depend on all inputs
 add_custom_command(
     OUTPUT ${DOC_OUTPUT_DIR}/.doxygen.stamp
     COMMAND ${CMAKE_COMMAND} -E make_directory ${DOC_OUTPUT_DIR}

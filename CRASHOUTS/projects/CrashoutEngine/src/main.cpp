@@ -27,6 +27,11 @@ context and implement a game loop.
 
 #include <iostream>
 
+#include "mainmenu.h"
+#include "gamestatesystem.h"
+#include "gamestate.h"
+#include "gamestatecomponent.h"
+
 /*                                                   type declarations
 ----------------------------------------------------------------------------- */
 
@@ -44,6 +49,8 @@ static double gPerfSnapshotTotalMs = 0.0;
 // tests
 static bool gOnce = false;
 
+// game state prototype
+static GameStateSystem gGameStateSystem;
 
 
 /*                                                      function declarations
@@ -77,7 +84,6 @@ int main() {
         LOGE(Core, "Unable to create OpenGL context");
         std::exit(EXIT_FAILURE);
     }
-
     init();
 
     InputManager::Init(GLApp::ptr_window);
@@ -137,6 +143,10 @@ static void init() {
     LOGS(Core, "Engine initialized successfully");
     LOGW(Core, "Debug mode is ON");
     LOGI(Core, "Welcome to Crashout Engine console test!");
+
+    //gsm
+    gGameStateSystem.Init(globalECS, GameState::MAIN_MENU);
+    gGameStateSystem.SetCallbacks(GameState::MAIN_MENU, States::EnterMainMenu, States::ExitMainMenu);
 }
 
 /*  _________________________________________________________________________ */
@@ -198,7 +208,7 @@ static void update() {
     const double dt = 1.0 / 60.0;
     playerTransform.posX += playerRigidBody.velocity.x * static_cast<float>(dt);
 
-
+    gGameStateSystem.Tick();
     // testing
     /*
     if (!gOnce) {
