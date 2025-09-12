@@ -32,11 +32,11 @@ namespace Physics {
 			@param globalEntities Collection of Entities
 			@param deltaTime Time taken for the previous frame
 			*/
-			static void runSystem(ECS::ECS& globalECS, std::vector<ECS::Entity>& globalEntities, double deltaTime) {
+			static void runSystem(CrashoutsEngine::ECS& globalECS, std::vector<CrashoutsEngine::Entity>& globalEntities, double deltaTime) {
 				/*DETECT COLLISION AND RESOLVE COLLISION*/
-				for (ECS::Entity &entity1 : globalEntities) {
+				for (CrashoutsEngine::Entity &entity1 : globalEntities) {
 					if (!globalECS.HasComponent<Component::ColliderComponent>(entity1) || !globalECS.HasComponent<Component::TransformComponent>(entity1)) continue; 
-					for (ECS::Entity const& entity2 : globalEntities) {
+					for (CrashoutsEngine::Entity const& entity2 : globalEntities) {
 						if (entity1 == entity2) continue;
 						if (!globalECS.HasComponent<Component::ColliderComponent>(entity2) || !globalECS.HasComponent<Component::TransformComponent>(entity2)) continue;
 					
@@ -47,7 +47,7 @@ namespace Physics {
 				}
 
 				/*PHYSICS SIM, UPDATE POSITION*/
-				for (ECS::Entity& entity : globalEntities) {
+				for (CrashoutsEngine::Entity& entity : globalEntities) {
 					if (!globalECS.HasComponent<Component::RigidBodyComponent>(entity) || !globalECS.HasComponent<Component::TransformComponent>(entity)) continue;
 					Component::TransformComponent* transform { globalECS.GetComponent<Component::TransformComponent>(entity) };
 					Component::RigidBodyComponent* rigidBody { globalECS.GetComponent<Component::RigidBodyComponent>(entity) };
