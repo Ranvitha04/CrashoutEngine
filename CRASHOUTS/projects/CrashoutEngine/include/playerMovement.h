@@ -1,13 +1,12 @@
 #pragma once
-#ifndef PLAYER_HPP
-#define PLAYER_HPP
 
-#include <GLFW/glfw3.h>
-#include "key.h"
+#include "inputmanager.h"   
+#include "key.h"            
+#include "Physics.h"        
+
+namespace Player {
 
 
-struct Player {
-    float x = 0.0f;
-    float y = 0.0f;
-    float moveSpeed = 6.0f;   
-};
+	void UpdateVelocity(Component::RigidBodyComponent& rb, float moveSpeed);
+
+} 

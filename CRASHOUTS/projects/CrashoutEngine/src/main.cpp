@@ -15,6 +15,10 @@ context and implement a game loop.
 #include "../include/glapp.h"
 #include "../include/entitymanager.h"
 #include "../include/performanceViewer.h"
+#include "playerMovement.h"     // Player::UpdateADVelocity
+#include "Physics.h"            // Component::RigidBodyComponent
+#include "transformcomponent.h" // Component::TransformComponent
+
 
 // ImGui headers for callbacks
 #include <imgui.h>
@@ -56,6 +60,8 @@ static void init();
 
 /*                                                      function definitions
 ----------------------------------------------------------------------------- */
+static Component::RigidBodyComponent  playerRigidBody{};
+static Component::TransformComponent  playerTransform{};
 /*  _________________________________________________________________________ */
 /*! main
 
@@ -167,7 +173,14 @@ static void update() {
 
     FrameProfiler::Scoped s(gProfiler, "Game/Update");
     ScopedMemTag mem(MemTag::Update);
-    // place any per-system updates here (ECS, AI, Physics, etc...)
+    // 6 and 7
+    const float moveSpeed = 6.7f;
+    //Update 
+    Player::UpdateVelocity(playerRigidBody, moveSpeed);     
+
+    const double dt = 1.0 / 60.0;
+    playerTransform.posX += playerRigidBody.velocity.x * static_cast<float>(dt);
+
 
     // testing
     /*
