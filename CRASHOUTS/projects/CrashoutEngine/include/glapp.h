@@ -22,10 +22,6 @@ objects participating in the application.
 #include <GLFW/glfw3.h>
 #include <string>
 
-// ImGui headers for callbacks
-#include <imgui.h>
-#include <backends/imgui_impl_glfw.h>
-#include <backends/imgui_impl_opengl3.h>
 
 // Log headers for logging
 #include "../include/log.h"

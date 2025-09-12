@@ -14,16 +14,26 @@ integration.
 
 /* _________________________________________________________________________
 ----------------------------------------------------------------------------- */
-#include "../include/glapp.h"
+#include "glapp.h"
+
+#include "rendering.h"
+#include "entitymanager.h"
+#include "shapes.h"
 #include <glm/glm.hpp>
 #include <iostream>
 #include <sstream>
 #include <iomanip>
+#include <array>
+
+// ImGui headers for callbacks
+#include <imgui.h>
+#include <backends/imgui_impl_glfw.h>
+#include <backends/imgui_impl_opengl3.h>
 
 // Before asking GLFW to create an OpenGL context, we specify the minimum constraints
 // in that context:
-#define GL_MINOR 5
-#define GL_MAJOR 4
+constexpr int GL_MINOR{ 5 };
+constexpr int GL_MAJOR{ 4 };
 
 /* _________________________________________________________________________
 ----------------------------------------------------------------------------- */
@@ -33,6 +43,21 @@ GLdouble GLApp::fps;
 GLdouble GLApp::delta_time;
 std::string GLApp::title;
 GLFWwindow* GLApp::ptr_window;
+
+Component::Rendering model;
+Component::Shapes shapes;
+
+std::array<CEVec3, 4> clr_vtx{
+    CEVec3(1.f, 1.f, 1.f), // Center - white
+    CEVec3(1.f, 0.f, 0.f), // Bottom-right - red
+    CEVec3(0.f, 1.f, 0.f), // Top-right - green
+    CEVec3(0.f, 0.f, 1.f)  // Top-left - blue
+};
+
+std::array<CEVec3, 4> InitVtx = clr_vtx;
+
+std::vector<CEVec3> current_positions;
+std::vector<CEVec3> current_colors;
 
 /* _________________________________________________________________________ */
 /*! init
@@ -134,6 +159,10 @@ bool GLApp::init(GLint w, GLint h, std::string t) {
     glfwGetFramebufferSize(ptr_window, &vp_width_height.x, &vp_width_height.y);
     GLApp::fbsize_cb(ptr_window, vp_width_height.x, vp_width_height.y);
 
+    model.Setup_VAO();
+    model.Setup_Shdrpgm();
+
+
     return true;
 }
 
@@ -153,6 +182,17 @@ void GLApp::update() {
     sstr << std::fixed << std::setprecision(2) << GLApp::title << " | " << GLApp::fps;
     glfwSetWindowTitle(GLApp::ptr_window, sstr.str().c_str());
 
+    GLsizei position_data_offset = 0;
+    GLsizei position_attribute_size = sizeof(glm::vec3); // Changed from vec2 to vec3 to match rendering.cpp
+    GLsizei position_data_size = position_attribute_size * 4;
+    GLsizei color_data_offset = position_data_size;
+    GLsizei color_attribute_size = sizeof(glm::vec3);
+    GLsizei color_data_size = color_attribute_size * static_cast<GLsizei>(clr_vtx.size());
+
+    glNamedBufferSubData(model.vbo_hdl, color_data_offset,
+        color_data_size, clr_vtx.data());
+
+
 }
 
 /* _________________________________________________________________________ */
@@ -169,6 +209,28 @@ void GLApp::draw() {
     // clear colorbuffer with RGBA value in glClearColor ...
     glClearColor(0, 0, 0, 0);
     glClear(GL_COLOR_BUFFER_BIT);
+    //model.Draw();
+
+    // ---- choose which shape to draw by uncommenting ----
+    CEVec3 pos(0.0f, 0.0f, 0.0f);
+    float rotation = 35.0f;
+    float scale = 1.0f;
+
+    // Testing for drawing Square
+    //shapes.CreateSquare(pos, 0.5f, rotation, scale, CEVec3(.0f, 1.0f, 0.0f));
+
+    // Testing for drawing Line
+    shapes.CreateLine(CEVec3(-0.5f, -0.5f, 0), CEVec3(0.5f, 0.5f, 0), 0.01f, rotation, scale, CEVec3(0, 1, 0));
+
+    // Testing for drawing Rectangle
+    //shapes.CreateRectangle(pos, 0.8f, 0.4f, rotation, scale, CEVec3(0,0,1));
+
+    // Testing for drawing Triangle
+    //shapes.CreateTriangle(CEVec3(0,0.5,0), CEVec3(-0.4,-0.5,0), CEVec3(0.4,-0.5,0), rotation, scale, CEVec3(1,1,0));
+
+    // Draw current model
+    //model.Draw();
+
 }
 
 /* _________________________________________________________________________ */
@@ -214,6 +276,7 @@ This function is called when keyboard buttons are pressed.
 When the ESC key is pressed, the close flag of the window is set.
 */
 void GLApp::key_cb(GLFWwindow* pwin, int key, int scancode, int action, int mod) {
+    //ImGui_ImplGlfw_KeyCallback(pwin, key, scancode, action, mod);
     if (GLFW_PRESS == action) {
 #ifdef _DEBUG
         LOGI(Input, "Key is pressed");
@@ -258,6 +321,7 @@ were held down
 This function is called when mouse buttons are pressed.
 */
 void GLApp::mousebutton_cb(GLFWwindow* pwin, int button, int action, int mod) {
+    //ImGui_ImplGlfw_MouseButtonCallback(pwin, button, action, mod);
     switch (button) {
     case GLFW_MOUSE_BUTTON_LEFT:
 #ifdef _DEBUG
@@ -302,6 +366,7 @@ This functions receives the cursor position, measured in screen coordinates but
 relative to the top-left corner of the window client area.
 */
 void GLApp::mousepos_cb(GLFWwindow* pwin, double xpos, double ypos) {
+    //ImGui_ImplGlfw_CursorPosCallback(pwin, xpos, ypos);
 #ifdef _DEBUG
     //std::cout << "Mouse cursor position: (" << xpos << ", " << ypos << ")" << std::endl;
 #endif
@@ -326,6 +391,7 @@ touchpad gesture. Although the function receives 2D scroll offsets, a simple
 mouse scroll wheel, being vertical, provides offsets only along the Y-axis.
 */
 void GLApp::mousescroll_cb(GLFWwindow* pwin, double xoffset, double yoffset) {
+    //ImGui_ImplGlfw_ScrollCallback(pwin, xoffset, yoffset);
 #ifdef _DEBUG
     //std::cout << "Mouse scroll wheel offset: ("
     //    << xoffset << ", " << yoffset << ")" << std::endl;
