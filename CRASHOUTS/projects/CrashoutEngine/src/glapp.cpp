@@ -166,8 +166,8 @@ as black.
 */
 void GLApp::draw() {
     // clear colorbuffer with RGBA value in glClearColor ...
-    glClear(GL_COLOR_BUFFER_BIT);
     glClearColor(0, 0, 0, 0);
+    glClear(GL_COLOR_BUFFER_BIT);
 }
 
 /* _________________________________________________________________________ */

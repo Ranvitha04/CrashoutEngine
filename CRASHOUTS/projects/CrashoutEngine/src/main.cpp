@@ -14,6 +14,9 @@ context and implement a game loop.
 // Extension loader library's header must be included before GLFW's header!!!
 #include "../include/glapp.h"
 #include "../include/entitymanager.h"
+#include "../include/performanceViewer.h"
+#include "../include/Collision.h"
+#include "../include/Physics.h"
 
 // ImGui headers for callbacks
 #include <imgui.h>
@@ -29,6 +32,17 @@ context and implement a game loop.
 static ECS::ECS globalECS;
 static std::vector<ECS::Entity> globalEntities;
 static ECS::Entity globalSelectedEntity = 0;
+
+// ImGui in-game performance viewer
+static bool show_perf = false;
+static FrameProfiler gProfiler;
+static std::vector<ProfilerSample> gPerfSnapshot;
+static double gPerfSnapshotTotalMs = 0.0;
+
+// tests
+static bool gOnce = false;
+
+
 
 /*                                                      function declarations
 ----------------------------------------------------------------------------- */
@@ -64,6 +78,11 @@ int main() {
 
     // window's close flag is set by clicking close widget or Alt+F4
     while (!glfwWindowShouldClose(GLApp::ptr_window)) {
+        //TEMPORARY TO BE REPLACED BY ECS INPUT SYSTEM - Rain
+        glfwPollEvents();
+        InputManager::Update();
+        GLApp::update_time();
+        Physics::PhysicsHandler::runSystem(globalECS, globalEntities, GLApp::delta_time);
         draw();
         update();
     }
@@ -84,7 +103,11 @@ static void init() {
     ImGuiIO& io = ImGui::GetIO(); (void)io;
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 
+    // docking enable just means you can move it move it
+    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
     ImGui::StyleColorsDark();
+
+    ScopedMemTag boot(MemTag::Resources);
 
     // Initializing the backends
     ImGui_ImplGlfw_InitForOpenGL(GLApp::ptr_window, true);
@@ -103,11 +126,17 @@ Call application to draw and then swap front and back frame buffers ...
 Uses GLHelper::GLFWWindow* to get handle to OpenGL context.
 */
 static void draw() {
+    FrameProfiler::Scoped s(gProfiler, "Graphics/Scene");
+    ScopedMemTag mem(MemTag::Graphics);
     // render scene
     GLApp::draw();
-
+   
     // Render ImGui UI on top of the scene
     ImGuiDraw();
+
+
+    // end of frame profiling
+    gProfiler.end_frame();
 
     // swap buffers: front <-> back
     // GLApp::ptr_window is handle to window that defines the OpenGL context
@@ -129,8 +158,42 @@ static void update() {
     // process events if any associated with input devices
     glfwPollEvents();
 
+    // start frame profiling
+    gProfiler.begin_frame();
+
     // main loop computes fps and other time related stuff once for all apps ...
     GLApp::update_time(1.0);
+
+    FrameProfiler::Scoped s(gProfiler, "Game/Update");
+    ScopedMemTag mem(MemTag::Update);
+    // place any per-system updates here (ECS, AI, Physics, etc...)
+
+    // testing
+    /*
+    if (!gOnce) {
+        gOnce = true;
+
+        // 1) observe counters before
+        auto beforeAlloc = MemTracker::instance().allocs[(size_t)MemTag::Resources].load();
+        auto beforeLive = MemTracker::instance().live[(size_t)MemTag::Resources].load();
+
+        // 2) do a tagged allocation that MUST go through our global operator new
+        {
+            ScopedMemTag tag(MemTag::Resources);           // set TLS tag:contentReference[oaicite:3]{index=3}
+            void* p = ::operator new(1024 * 1024);         // 1 MB
+            // keep it alive for a bit so UI can see it
+            static void* hold = p;
+        }
+
+        // 3) read counters after
+        auto afterAlloc = MemTracker::instance().allocs[(size_t)MemTag::Resources].load();
+        auto afterLive = MemTracker::instance().live[(size_t)MemTag::Resources].load();
+
+        // 4) log to console
+        std::cout << "[MemTest] allocs(Resources): " << beforeAlloc << " -> " << afterAlloc
+            << " | live(Resources): " << beforeLive << " -> " << afterLive << std::endl;
+    }*/
+
 
     // animate scene
     GLApp::update();
@@ -147,17 +210,29 @@ static void update() {
 This function handles all the ImGui UI drawing for the ECS demonstration. It creates a main window
 with buttons to manage entities and their components.
 */
-static void ImGuiDraw() {    
+static void ImGuiDraw() {
     using namespace ECS;
+
+    FrameProfiler::Scoped _imgui(gProfiler, "ImGui");
+
+    static bool lockLayout = false;
+    
 
     // Start the Dear ImGui frame
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
 
-    // Create ImGui window
-    ImGui::Begin("ECS Demo");
+    ImGuiWindowFlags lockFlags = lockLayout ? (ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoDocking) : ImGuiWindowFlags_None;
 
+    // Create ImGui window
+    ImGui::Begin("ECS Demo", nullptr, lockFlags);
+
+    if (ImGui::Button(lockLayout ? "Unlock" : "Lock"))
+    {
+        lockLayout = !lockLayout;
+    }
+    
     // Create a new entity
     if (ImGui::Button("Create Entity")) {
         Entity newEntity = globalECS.CreateEntity();
@@ -165,6 +240,13 @@ static void ImGuiDraw() {
         if (!globalECS.HasComponent<NameComponent>(newEntity)) {
             globalECS.AddComponent<NameComponent>(newEntity, "Entity " + std::to_string(newEntity));
         }
+    }
+
+    ImGui::Separator();
+
+    // Toggle Button to show performance
+    if (ImGui::Button(show_perf ? "Hide Performance" : "Show Performance")) {
+        show_perf = !show_perf;
     }
 
     ImGui::Separator();
@@ -262,9 +344,47 @@ static void ImGuiDraw() {
         ImGui::Text("Select an entity to view components.");
     }
 
+    // display performance viewer
+    if (show_perf) {
+        if (gProfiler.present_ready()) {
+            gPerfSnapshot = gProfiler.results();
+            gPerfSnapshotTotalMs = gProfiler.total_ms();
+        }
+
+        ImGui::Begin("Performance", &show_perf, lockFlags);
+        if (ImGui::Button(lockLayout ? "Unlock" : "Lock"))
+        {
+            lockLayout = !lockLayout;
+        }
+        ImGui::Separator();
+        ImGui::Text("Frame: %.3f ms (%.1f FPS)", gPerfSnapshotTotalMs, GLApp::fps);
+
+        ImGui::Separator();
+        DrawEngineMemoryPanel();
+        ImGui::Separator();
+
+        if (ImGui::BeginTable("perf_table", 3, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
+            ImGui::TableSetupColumn("System");
+            ImGui::TableSetupColumn("ms");
+            ImGui::TableSetupColumn("% of frame");
+            ImGui::TableHeadersRow();
+
+            for (const auto& s : gPerfSnapshot) {
+                ImGui::TableNextRow();
+                ImGui::TableSetColumnIndex(0); ImGui::TextUnformatted(s.name.c_str());
+                ImGui::TableSetColumnIndex(1); ImGui::Text("%.3f", s.ms);
+                ImGui::TableSetColumnIndex(2); ImGui::Text("%.1f%%", s.pct);
+                ImGui::ProgressBar((float)(s.pct / 100.0), ImVec2(-1, 0), "");
+            }
+            ImGui::EndTable();
+        }
+        ImGui::End();
+    }
+
     ImGui::End();
 
     // Rendering
+    ScopedMemTag mem(MemTag::UI);
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 

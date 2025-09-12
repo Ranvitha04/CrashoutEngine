@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['hascomponent_0',['HasComponent',['../class_e_c_s_1_1_e_c_s.html#a03ec2de442ca19669a044b9dcb472bb4',1,'ECS::ECS::HasComponent(Entity entityId)'],['../class_e_c_s_1_1_e_c_s.html#abf2d54e93ed9fc1a4dead303cfccc85c',1,'ECS::ECS::HasComponent(std::string entityName)']]]
+  ['getcomponent_0',['GetComponent',['../class_e_c_s_1_1_e_c_s.html#a789bc02ceb0d9d711d52b457a0907d6f',1,'ECS::ECS::GetComponent(Entity entityId)'],['../class_e_c_s_1_1_e_c_s.html#a07040ce131b154f4703d43b7b0082e75',1,'ECS::ECS::GetComponent(std::string entityName)']]],
+  ['getcomponentarray_1',['GetComponentArray',['../class_e_c_s_1_1_e_c_s.html#a1a5e29feb6ecc5213dea29633cfb1084',1,'ECS::ECS']]]
 ];
