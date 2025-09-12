@@ -198,8 +198,8 @@ namespace Component {
       #include "../shaders/my-shader.frag"
     };*/
 
-    const ::std::string Shader = "../shaders/CrashoutShader.frag";
-    const ::std::string Vertex = "../shaders/CrashoutShader.vert";
+    const ::std::string Shader = "../../../projects/CrashoutEngine/shaders/CrashoutShader.frag";
+    const ::std::string Vertex = "../../../projects/CrashoutEngine/shaders/CrashoutShader.vert";
 
 #define AUTOMATION_HOOK_SHADER(shdr_pgm, shdr_files) \
 shdr_files.clear(); \
