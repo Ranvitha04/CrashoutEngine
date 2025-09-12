@@ -32,7 +32,7 @@ namespace Physics {
 			@param globalEntities Collection of Entities
 			@param deltaTime Time taken for the previous frame
 			*/
-			static void runSystem(ECS::ECS& globalECS, std::vector<ECS::Entity>& globalEntities, f32 deltaTime) {
+			static void runSystem(ECS::ECS& globalECS, std::vector<ECS::Entity>& globalEntities, double deltaTime) {
 				/*DETECT COLLISION AND RESOLVE COLLISION*/
 				for (ECS::Entity &entity1 : globalEntities) {
 					if (!globalECS.HasComponent<Component::ColliderComponent>(entity1) || !globalECS.HasComponent<Component::TransformComponent>(entity1)) continue; 
@@ -53,9 +53,9 @@ namespace Physics {
 					Component::RigidBodyComponent* rigidBody { globalECS.GetComponent<Component::RigidBodyComponent>(entity) };
 					
 					rigidBody->prevVelocity = CEVec3{ transform->posX, transform->posY, transform->posZ };
-					transform->posX += deltaTime * rigidBody->velocity.x;
-					transform->posY += deltaTime * rigidBody->velocity.y;
-					transform->posZ += deltaTime * rigidBody->velocity.z;
+					transform->posX += static_cast<float>(deltaTime) * rigidBody->velocity.x;
+					transform->posY += static_cast<float>(deltaTime) * rigidBody->velocity.y;
+					transform->posZ += static_cast<float>(deltaTime) * rigidBody->velocity.z;
 					LOGI(Physics, "Entity " + std::to_string(entity) + " moved to " + std::to_string(transform->posX) + ", " + std::to_string(transform->posY));
 				}
 			}

@@ -142,7 +142,7 @@ namespace ECS {
 	@param  entityId
 	The ID of the entity to be destroyed.
 	*/
-	void ECS::DestroyEntity(Entity entityId) {
+	inline void ECS::DestroyEntity(Entity entityId) {
 		// Iterate through all component arrays to remove components
 		for (auto const& pair : componentArrays) {
 			pair.second->RemoveComponent(entityId);
@@ -158,7 +158,7 @@ namespace ECS {
 	@param  name
 	The name of the entity to be destroyed.
 	*/
-	void ECS::DestroyEntity(std::string name) {
+	inline void ECS::DestroyEntity(std::string name) {
 		Entity entityId = FindEntityByName(name);
 		// Iterate through all component arrays to remove components
 		for (auto const& pair : componentArrays) {
@@ -178,7 +178,7 @@ namespace ECS {
 	@return Entity
 	The ID of the found entity, or 0 if no entity with that name exists.
 	*/
-	Entity ECS::FindEntityByName(std::string name) {
+	inline Entity ECS::FindEntityByName(std::string name) {
 		// Check if NameComponent array exists
 		if (!HasComponent<NameComponent>(0)) return 0;		
 

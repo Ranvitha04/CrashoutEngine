@@ -16,6 +16,10 @@ context and implement a game loop.
 #include "../include/entitymanager.h"
 #include "../include/performanceViewer.h"
 #include "../include/log.h"
+#include "playerMovement.h"     // Player::UpdateADVelocity
+#include "Physics.h"            // Component::RigidBodyComponent
+#include "transformcomponent.h" // Component::TransformComponent
+
 
 // ImGui headers for callbacks
 #include <imgui.h>
@@ -23,6 +27,8 @@ context and implement a game loop.
 #include <imgui_impl_opengl3.h>
 
 #include <iostream>
+
+#include "inputmanager.h"
 
 /*                                                   type declarations
 ----------------------------------------------------------------------------- */
@@ -55,6 +61,8 @@ static void init();
 
 /*                                                      function definitions
 ----------------------------------------------------------------------------- */
+static Component::RigidBodyComponent  playerRigidBody{};
+static Component::TransformComponent  playerTransform{};
 /*  _________________________________________________________________________ */
 /*! main
 
@@ -68,15 +76,21 @@ Note that the C++ compiler will insert a return 0 statement if one is missing.
 */
 int main() {
     // start with a 16:9 aspect ratio
-    if (!GLApp::init(1280, 720, "Tutorial 0 | Setting up OpenGL 4.5")) {
+    if (!GLApp::init(1280, 720, "CRASHOUTS")) {
         LOGE(Core, "Unable to create OpenGL context");
         std::exit(EXIT_FAILURE);
     }
 
     init();
 
+    InputManager::Init(GLApp::ptr_window);
+
     // window's close flag is set by clicking close widget or Alt+F4
     while (!glfwWindowShouldClose(GLApp::ptr_window)) {
+        //TEMPORARY TO BE REPLACED BY ECS INPUT SYSTEM - Rain
+        glfwPollEvents();
+        InputManager::Update();
+        GLApp::update_time();
         draw();
         update();
 
@@ -180,7 +194,14 @@ static void update() {
 
     FrameProfiler::Scoped s(gProfiler, "Game/Update");
     ScopedMemTag mem(MemTag::Update);
-    // place any per-system updates here (ECS, AI, Physics, etc...)
+    // 6 and 7
+    const float moveSpeed = 6.7f;
+    //Update 
+    Player::UpdateVelocity(playerRigidBody, moveSpeed);     
+
+    const double dt = 1.0 / 60.0;
+    playerTransform.posX += playerRigidBody.velocity.x * static_cast<float>(dt);
+
 
     // testing
     /*
