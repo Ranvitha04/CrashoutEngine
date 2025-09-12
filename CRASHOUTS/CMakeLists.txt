@@ -41,8 +41,6 @@ foreach(child ${children})
             ${CMAKE_CURRENT_LIST_DIR}/projects/${child}/src/*.cpp
             ${CMAKE_CURRENT_LIST_DIR}/projects/${child}/include/*.h
             ${CMAKE_CURRENT_LIST_DIR}/projects/${child}/include/*.hpp
-            ${CMAKE_CURRENT_LIST_DIR}/projects/${child}/shaders/*.vert
-            ${CMAKE_CURRENT_LIST_DIR}/projects/${child}/shaders/*.frag
         )
 
         # Create executable

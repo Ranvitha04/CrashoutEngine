@@ -104,10 +104,10 @@ namespace Component {
     void Component::Rendering::Setup_Shdrpgm() {
 
         // Use absolute paths to ensure shaders are found
-        const std::string Shader = "c:\\Users\\ranvi\\Desktop\\Gam-Git\\csd2401f25_team_crashouts\\CRASHOUTS\\projects\\CrashoutEngine\\shaders\\CrashoutShader.frag";
+        const std::string Shader = "../../../projects/CrashoutEngine/shaders/CrashoutShader.frag";
 
         //const std::string Shader = "..//CrashoutEngine//shaders//CrashoutShader.frag";
-        const std::string Vertex = "c:\\Users\\ranvi\\Desktop\\Gam-Git\\csd2401f25_team_crashouts\\CRASHOUTS\\projects\\CrashoutEngine\\shaders\\CrashoutShader.vert";
+        const std::string Vertex = "../../../projects/CrashoutEngine/shaders/CrashoutShader.vert";
 
         // Automation hook. [!WARNING!] Do not alter/remove this
         AUTOMATION_HOOK_SHADER(shdr_pgm, shdr_files);
