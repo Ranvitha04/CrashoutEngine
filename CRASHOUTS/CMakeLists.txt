@@ -70,4 +70,39 @@ foreach(child ${children})
     endif()
 endforeach()
 
+# Doxygen: rebuild only when files change
+find_package(Doxygen QUIET)
+
+set(DOXYFILE_IN ${CMAKE_SOURCE_DIR}/Doxyfile)
+set(DOC_OUTPUT_DIR ${CMAKE_SOURCE_DIR}/docs)
+
+# Everything that should trigger a doc rebuild
+file(GLOB_RECURSE DOXY_INPUTS CONFIGURE_DEPENDS
+     ${CMAKE_SOURCE_DIR}/include/*.h
+     ${CMAKE_SOURCE_DIR}/include/*.hpp
+     ${CMAKE_SOURCE_DIR}/src/*.h
+     ${CMAKE_SOURCE_DIR}/src/*.hpp
+     ${CMAKE_SOURCE_DIR}/src/*.c
+     ${CMAKE_SOURCE_DIR}/src/*.cc
+     ${CMAKE_SOURCE_DIR}/src/*.cpp
+     ${CMAKE_SOURCE_DIR}/*.md
+     ${CMAKE_SOURCE_DIR}/docs/*.md)
+
+# Produce a stamp file when doxygen finishes; depend on all inputs
+add_custom_command(
+    OUTPUT ${DOC_OUTPUT_DIR}/.doxygen.stamp
+    COMMAND ${CMAKE_COMMAND} -E make_directory ${DOC_OUTPUT_DIR}
+    COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYFILE_IN}
+    COMMAND ${CMAKE_COMMAND} -E touch ${DOC_OUTPUT_DIR}/.doxygen.stamp
+    DEPENDS ${DOXYFILE_IN} ${DOXY_INPUTS}
+    BYPRODUCTS ${DOC_OUTPUT_DIR}/html/index.html
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+    COMMENT "Running Doxygen because files changed"
+    VERBATIM
+)
+
+# Part of the normal build will re-run only if any DEPENDS changed
+add_custom_target(docs ALL
+    DEPENDS ${DOC_OUTPUT_DIR}/.doxygen.stamp
+)
 # ======================= END AUTO CONFIGURATION =========================

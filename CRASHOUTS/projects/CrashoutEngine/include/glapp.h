@@ -22,6 +22,8 @@ objects participating in the application.
 #include <GL/glew.h> // for access to OpenGL API declarations 
 #include <GLFW/glfw3.h>
 #include <string>
+#include "rendering.h"
+
 
 // ImGui headers for callbacks
 //#include "../imgui-master/imgui.h"
