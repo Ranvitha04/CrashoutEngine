@@ -15,6 +15,10 @@ context and implement a game loop.
 #include "glapp.h"
 #include "performanceViewer.h"
 #include "entitymanager.h"
+#include "log.h"
+#include "playerMovement.h"     // Player::UpdateADVelocity
+#include "Physics.h"            // Component::RigidBodyComponent
+#include "inputmanager.h"
 
 // ImGui headers for callbacks
 #include <imgui.h>
@@ -54,6 +58,8 @@ static void init();
 
 /*                                                      function definitions
 ----------------------------------------------------------------------------- */
+static Component::RigidBodyComponent  playerRigidBody{};
+static Component::TransformComponent  playerTransform{};
 /*  _________________________________________________________________________ */
 /*! main
 
@@ -67,17 +73,24 @@ Note that the C++ compiler will insert a return 0 statement if one is missing.
 */
 int main() {
     // start with a 16:9 aspect ratio
-    if (!GLApp::init(1280, 720, "Tutorial 0 | Setting up OpenGL 4.5")) {
-        std::cout << "Unable to create OpenGL context" << std::endl;
+    if (!GLApp::init(1280, 720, "CRASHOUTS")) {
+        LOGE(Core, "Unable to create OpenGL context");
         std::exit(EXIT_FAILURE);
     }
 
     init();
 
+    InputManager::Init(GLApp::ptr_window);
+
     // window's close flag is set by clicking close widget or Alt+F4
     while (!glfwWindowShouldClose(GLApp::ptr_window)) {
+        //TEMPORARY TO BE REPLACED BY ECS INPUT SYSTEM - Rain
+        glfwPollEvents();
+        InputManager::Update();
+        GLApp::update_time();
         draw();
         update();
+
     }
 
     // Cleanup
@@ -93,11 +106,25 @@ static void init() {
     // Setup ImGUI context
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
+
+    ImGui::SetAllocatorFunctions(
+        [](size_t sz, void*) {
+            ScopedMemTag tag(MemTag::UI);
+            return ::operator new(sz);
+        },
+        [](void* p, void*) {
+            ScopedMemTag tag(MemTag::UI);
+            ::operator delete(p);
+        },
+        nullptr
+    );
+
     ImGuiIO& io = ImGui::GetIO(); (void)io;
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 
     // docking enable just means you can move it move it
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+
     ImGui::StyleColorsDark();
 
     ScopedMemTag boot(MemTag::Resources);
@@ -106,6 +133,10 @@ static void init() {
     ImGui_ImplGlfw_InitForOpenGL(GLApp::ptr_window, true);
     //ImGui_ImplOpenGL3_Init("#version 450");
     ImGui_ImplOpenGL3_Init("#version 330");
+
+    LOGS(Core, "Engine initialized successfully");
+    LOGW(Core, "Debug mode is ON");
+    LOGI(Core, "Welcome to Crashout Engine console test!");
 }
 
 /*  _________________________________________________________________________ */
@@ -123,7 +154,7 @@ static void draw() {
     ScopedMemTag mem(MemTag::Graphics);
     // render scene
     GLApp::draw();
-   
+
     // Render ImGui UI on top of the scene
     ImGuiDraw();
 
@@ -159,7 +190,14 @@ static void update() {
 
     FrameProfiler::Scoped s(gProfiler, "Game/Update");
     ScopedMemTag mem(MemTag::Update);
-    // place any per-system updates here (ECS, AI, Physics, etc...)
+    // 6 and 7
+    const float moveSpeed = 6.7f;
+    //Update 
+    Player::UpdateVelocity(playerRigidBody, moveSpeed);
+
+    const double dt = 1.0 / 60.0;
+    playerTransform.posX += playerRigidBody.velocity.x * static_cast<float>(dt);
+
 
     // testing
     /*
@@ -207,9 +245,10 @@ static void ImGuiDraw() {
     using namespace CrashoutsEngine;
 
     FrameProfiler::Scoped _imgui(gProfiler, "ImGui");
+    ScopedMemTag mem(MemTag::UI);
 
     static bool lockLayout = false;
-    
+
 
     // Start the Dear ImGui frame
     ImGui_ImplOpenGL3_NewFrame();
@@ -225,7 +264,7 @@ static void ImGuiDraw() {
     {
         lockLayout = !lockLayout;
     }
-    
+
     // Create a new entity
     if (ImGui::Button("Create Entity")) {
         Entity newEntity = globalECS.CreateEntity();
@@ -355,6 +394,8 @@ static void ImGuiDraw() {
         ImGui::Separator();
         DrawEngineMemoryPanel();
         ImGui::Separator();
+        DrawProfilerPanel(gProfiler);
+        ImGui::Separator();
 
         if (ImGui::BeginTable("perf_table", 3, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
             ImGui::TableSetupColumn("System");
@@ -376,8 +417,74 @@ static void ImGuiDraw() {
 
     ImGui::End();
 
+    static bool showInfo = true, showWarn = true, showErr = true, showSucc = true;
+    static bool sysCore = true, sysPhys = true, sysColl = true, sysInput = true, sysAI = true, sysECS = true, sysRend = true, sysUI = true;
+
+    ImGui::Begin("Console");
+
+    if (ImGui::Button(lockLayout ? "Unlock" : "Lock"))
+    {
+        lockLayout = !lockLayout;
+    }
+    ImGui::Separator();
+
+    // level filters
+    ImGui::Checkbox("Info", &showInfo); ImGui::SameLine();
+    ImGui::Checkbox("Warn", &showWarn); ImGui::SameLine();
+    ImGui::Checkbox("Error", &showErr); ImGui::SameLine();
+    ImGui::Checkbox("Success", &showSucc);
+
+    // subsystem filters
+    ImGui::Separator();
+    ImGui::TextUnformatted("Subsystems:");
+    ImGui::Checkbox("Core", &sysCore); ImGui::SameLine();
+    ImGui::Checkbox("Physics", &sysPhys); ImGui::SameLine();
+    ImGui::Checkbox("Collision", &sysColl); ImGui::SameLine();
+    ImGui::Checkbox("Input", &sysInput);
+    ImGui::Checkbox("AI", &sysAI); ImGui::SameLine();
+    ImGui::Checkbox("ECS", &sysECS); ImGui::SameLine();
+    ImGui::Checkbox("Renderer", &sysRend); ImGui::SameLine();
+    ImGui::Checkbox("UI", &sysUI);
+
+    ImGui::Separator();
+
+    const auto& logs = Logger::Instance().Get();
+    for (const auto& log : logs) {
+        // level gate
+        if ((log.level == LogMessage::Level::Info && !showInfo) ||
+            (log.level == LogMessage::Level::Warning && !showWarn) ||
+            (log.level == LogMessage::Level::Error && !showErr) ||
+            (log.level == LogMessage::Level::Success && !showSucc)) continue;
+
+        // subsystem gate
+        bool sysPass =
+            (log.system == LogMessage::Subsystem::Core && sysCore) ||
+            (log.system == LogMessage::Subsystem::Physics && sysPhys) ||
+            (log.system == LogMessage::Subsystem::Collision && sysColl) ||
+            (log.system == LogMessage::Subsystem::Input && sysInput) ||
+            (log.system == LogMessage::Subsystem::AI && sysAI) ||
+            (log.system == LogMessage::Subsystem::ECS && sysECS) ||
+            (log.system == LogMessage::Subsystem::Renderer && sysRend) ||
+            (log.system == LogMessage::Subsystem::UI && sysUI);
+        if (!sysPass) continue;
+
+        ImVec4 color =
+            (log.level == LogMessage::Level::Error) ? ImVec4(1, 0.3f, 0.3f, 1) :
+            (log.level == LogMessage::Level::Warning) ? ImVec4(1, 0.9f, 0.4f, 1) :
+            (log.level == LogMessage::Level::Success) ? ImVec4(0.4f, 1, 0.4f, 1) :
+            ImVec4(0.4f, 0.8f, 1, 1);
+        ImGui::PushStyleColor(ImGuiCol_Text, color);
+        ImGui::TextUnformatted(log.text.c_str());
+        ImGui::PopStyleColor();
+    }
+    if (ImGui::Button("Clear")) {
+        // Quick hack: clear by casting away const
+        const_cast<std::vector<LogMessage>&>(logs).clear();
+    }
+    // optional: autoscroll, clear button, etc.
+    ImGui::End();
+
     // Rendering
-    ScopedMemTag mem(MemTag::UI);
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
