@@ -97,8 +97,14 @@ static void init() {
     ImGui::CreateContext();
 
     ImGui::SetAllocatorFunctions(
-        [](size_t sz, void*) { return ::operator new(sz); },
-        [](void* p, void*) { ::operator delete(p); },
+        [](size_t sz, void*) {
+            ScopedMemTag tag(MemTag::UI);
+            return ::operator new(sz);
+        },
+        [](void* p, void*) {
+            ScopedMemTag tag(MemTag::UI);
+            ::operator delete(p);
+        },
         nullptr
     );
 
@@ -107,6 +113,8 @@ static void init() {
 
     // docking enable just means you can move it move it
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+    // viewport just means you can dock it dock it
+    io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
     ImGui::StyleColorsDark();
 
     ScopedMemTag boot(MemTag::Resources);
@@ -220,9 +228,10 @@ static void ImGuiDraw() {
     using namespace ECS;
 
     FrameProfiler::Scoped _imgui(gProfiler, "ImGui");
+    ScopedMemTag mem(MemTag::UI);
 
     static bool lockLayout = false;
-    
+
 
     // Start the Dear ImGui frame
     ImGui_ImplOpenGL3_NewFrame();
@@ -396,6 +405,12 @@ static void ImGuiDraw() {
 
     ImGui::Begin("Console");
 
+    if (ImGui::Button(lockLayout ? "Unlock" : "Lock"))
+    {
+        lockLayout = !lockLayout;
+    }
+    ImGui::Separator();
+
     // level filters
     ImGui::Checkbox("Info", &showInfo); ImGui::SameLine();
     ImGui::Checkbox("Warn", &showWarn); ImGui::SameLine();
@@ -453,7 +468,6 @@ static void ImGuiDraw() {
     ImGui::End();
 
     // Rendering
-    ScopedMemTag mem(MemTag::UI);
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 

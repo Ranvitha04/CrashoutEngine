@@ -423,17 +423,28 @@ inline void DrawEngineMemoryPanel() {
     get_process_mem_mb(wsMB, privMB);
 
     ImGui::SeparatorText("Engine Memory - when you create allocations, reserve, commit or release things - Doesn't work yet");
+    double maxTagMB = 0.0;
     double totalLiveMB = 0.0;
     for (size_t i = 0; i < (size_t)MemTag::Count; ++i) {
-        double mb = tr.live[i].load() / (1024.0 * 1024.0);
-        // Will hide other rows
-        if (mb <= 0.0) {
-            continue;
-        }
+        double mb = MemTracker::instance().live[i].load() / (1024.0 * 1024.0);
+        maxTagMB = std::max(maxTagMB, mb);
         totalLiveMB += mb;
-        ImGui::Text("%-10s  %8.2f MB", N[i], mb);
-        float frac = (float)((privMB > 0.0) ? (mb / privMB) : 0.0);
-        ImGui::ProgressBar(frac, ImVec2(-1, 0), "");
+    }
+
+    // --- render each tag row ---
+    const double kEpsMB = 0.002; // ~2 KB
+    for (size_t i = 0; i < (size_t)MemTag::Count; ++i) {
+        double mb = MemTracker::instance().live[i].load() / (1024.0 * 1024.0);
+        if (mb <= kEpsMB) continue;
+
+        ImGui::Text("%-10s  %8.3f MB", N[i], mb);
+        float fracRel = (maxTagMB > 0.0) ? (float)(mb / maxTagMB) : 0.0f;
+        ImGui::ProgressBar(fracRel, ImVec2(-1, 0), "relative");
+
+        double wsMB = 0.0, privMB = 0.0;
+        get_process_mem_mb(wsMB, privMB);
+        float fracProc = (privMB > 0.0) ? (float)(mb / privMB) : 0.0f;
+        ImGui::ProgressBar(fracProc, ImVec2(-1, 0), "process");
     }
 
     ImGui::SeparatorText("Process Memory - what we own (committed for the process)");
@@ -454,16 +465,21 @@ inline void DrawProfilerPanel(FrameProfiler& P) {
 
         // history pointers
         const size_t count = P.history_count();
-        const size_t cap = FrameProfiler::history_capacity();
+        constexpr size_t cap = FrameProfiler::history_capacity();
         const size_t idx = P.history_index();
         const int    icount = static_cast<int>(count);
         const int    offset = static_cast<int>((idx + cap - count) % cap);
 
         if (count > 0) {
             const auto& fh = P.frame_ms_history();
-            PlotLines("Frame ms",
-                fh.data(), icount, offset,
-                nullptr, 0.0f, 33.0f, ImVec2(-1, 60));
+            float maxFrame = 0.0f;
+            for (int i = 0; i < icount; ++i) {
+                int j = (offset + i) % (int)cap;
+                maxFrame = std::max(maxFrame, fh[j]);
+            }
+            float yMaxFrame = std::max(1.0f, maxFrame * 1.15f);
+
+            PlotLines("Frame ms", fh.data(), icount, offset, nullptr, 0.0f, yMaxFrame, ImVec2(-1, 60));
         }
 
         SeparatorText("Systems (EMA ms) - Streams");
@@ -473,10 +489,15 @@ inline void DrawProfilerPanel(FrameProfiler& P) {
             if (it == eh.end()) continue;
 
             TextUnformatted(r.name.c_str());
-            std::string id = "##spark_" + r.name;   // unique ID per row
-            PlotLines(id.c_str(),
-                it->second.data(), icount, offset,
-                nullptr, 0.0f, 10.0f, ImVec2(-1, 40));
+            float localMax = 0.0f;
+            for (int i = 0; i < icount; ++i) {
+                int j = (offset + i) % (int)cap;
+                localMax = std::max(localMax, it->second[j]);
+            }
+            float yMaxRow = std::max(0.5f, localMax * 1.25f);
+
+            std::string id = "##spark_" + r.name;
+            PlotLines(id.c_str(), it->second.data(), icount, offset, nullptr, 0.0f, yMaxRow, ImVec2(-1, 40));
         }
     }
     End();
