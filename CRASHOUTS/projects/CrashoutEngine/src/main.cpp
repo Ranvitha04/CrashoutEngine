@@ -80,7 +80,7 @@ int main() {
     while (!glfwWindowShouldClose(GLApp::ptr_window)) {
         //TEMPORARY TO BE REPLACED BY ECS INPUT SYSTEM - Rain
         glfwPollEvents();
-        InputManager::Update();
+       // InputManager::Update();
         GLApp::update_time();
         Physics::PhysicsHandler::runSystem(globalECS, globalEntities, GLApp::delta_time);
         draw();
