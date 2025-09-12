@@ -127,8 +127,7 @@ static void init() {
 
     // docking enable just means you can move it move it
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-    // viewport just means you can dock it dock it
-    io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+
     ImGui::StyleColorsDark();
 
     ScopedMemTag boot(MemTag::Resources);
