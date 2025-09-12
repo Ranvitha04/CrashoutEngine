@@ -21,7 +21,7 @@ This file implements
 
 /*                                                                   
 ----------------------------------------------------------------------------- */
-namespace ECS {
+namespace CrashoutsEngine {
 	using namespace Component;
 
 	using Entity = uint32_t;
@@ -132,66 +132,6 @@ namespace ECS {
 		std::unordered_map<Entity, size_t> entityToIndex;
 		std::vector<Entity> indexToEntity;
 	};
-	
-	/*!
-	@brief  Destroys a specific entity.
-
-	This function removes the entity's ID from the system and
-	iterates through all component arrays to remove any associated components, ensuring a complete and clean removal.
-
-	@param  entityId
-	The ID of the entity to be destroyed.
-	*/
-	inline void ECS::DestroyEntity(Entity entityId) {
-		// Iterate through all component arrays to remove components
-		for (auto const& pair : componentArrays) {
-			pair.second->RemoveComponent(entityId);
-		}
-	}
-
-	/*!
-	@brief  Destroys an entity by its name.
-
-	This function finds the entity's ID using its name and then calls the
-	ID-based `DestroyEntity` function to perform the removal.
-
-	@param  name
-	The name of the entity to be destroyed.
-	*/
-	inline void ECS::DestroyEntity(std::string name) {
-		Entity entityId = FindEntityByName(name);
-		// Iterate through all component arrays to remove components
-		for (auto const& pair : componentArrays) {
-			pair.second->RemoveComponent(entityId);
-		}
-	}
-
-	/*!
-	@brief Finds an entity by its name.
-
-	This function iterates through all entities that have a `NameComponent`
-	and returns the first entity ID that matches the provided name.
-
-	@param name
-	The name of the entity to search for.
-
-	@return Entity
-	The ID of the found entity, or 0 if no entity with that name exists.
-	*/
-	inline Entity ECS::FindEntityByName(std::string name) {
-		// Check if NameComponent array exists
-		if (!HasComponent<NameComponent>(0)) return 0;		
-
-		auto& nameCompArray = GetComponentArray<NameComponent>();
-		for (size_t i = 0; i < nameCompArray.dense.size(); ++i) {
-			if (nameCompArray.dense[i].name == name) {
-				return nameCompArray.indexToEntity[i];
-			}
-		}
-
-		// Return 0 if not found
-		return 0;
-	}
 
 	/*!
 	@brief  Adds a component to a specified entity.

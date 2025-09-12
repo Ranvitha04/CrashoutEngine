@@ -1,0 +1,6 @@
+#version 450 core
+layout (location=0) in vec3 vColor;
+out vec4 fFragColor;
+void main () {
+    fFragColor = vec4(vColor, 1.0);
+}
