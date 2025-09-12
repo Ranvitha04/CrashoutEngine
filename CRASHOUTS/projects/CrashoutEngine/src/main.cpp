@@ -15,8 +15,6 @@ context and implement a game loop.
 #include "../include/glapp.h"
 #include "../include/entitymanager.h"
 #include "../include/performanceViewer.h"
-#include "../include/Collision.h"
-#include "../include/Physics.h"
 
 // ImGui headers for callbacks
 #include <imgui.h>
@@ -24,6 +22,8 @@ context and implement a game loop.
 #include <imgui_impl_opengl3.h>
 
 #include <iostream>
+
+#include "inputmanager.h"
 
 /*                                                   type declarations
 ----------------------------------------------------------------------------- */
@@ -69,20 +69,21 @@ Note that the C++ compiler will insert a return 0 statement if one is missing.
 */
 int main() {
     // start with a 16:9 aspect ratio
-    if (!GLApp::init(1280, 720, "Tutorial 0 | Setting up OpenGL 4.5")) {
+    if (!GLApp::init(1280, 720, "CRASHOUTS")) {
         std::cout << "Unable to create OpenGL context" << std::endl;
         std::exit(EXIT_FAILURE);
     }
 
     init();
 
+    InputManager::Init(GLApp::ptr_window);
+
     // window's close flag is set by clicking close widget or Alt+F4
     while (!glfwWindowShouldClose(GLApp::ptr_window)) {
         //TEMPORARY TO BE REPLACED BY ECS INPUT SYSTEM - Rain
         glfwPollEvents();
-       // InputManager::Update();
+        InputManager::Update();
         GLApp::update_time();
-        Physics::PhysicsHandler::runSystem(globalECS, globalEntities, GLApp::delta_time);
         draw();
         update();
     }
