@@ -199,34 +199,6 @@ static void update() {
     const double dt = 1.0 / 60.0;
     playerTransform.posX += playerRigidBody.velocity.x * static_cast<float>(dt);
 
-
-    // testing
-    /*
-    if (!gOnce) {
-        gOnce = true;
-
-        // 1) observe counters before
-        auto beforeAlloc = MemTracker::instance().allocs[(size_t)MemTag::Resources].load();
-        auto beforeLive = MemTracker::instance().live[(size_t)MemTag::Resources].load();
-
-        // 2) do a tagged allocation that MUST go through our global operator new
-        {
-            ScopedMemTag tag(MemTag::Resources);           // set TLS tag:contentReference[oaicite:3]{index=3}
-            void* p = ::operator new(1024 * 1024);         // 1 MB
-            // keep it alive for a bit so UI can see it
-            static void* hold = p;
-        }
-
-        // 3) read counters after
-        auto afterAlloc = MemTracker::instance().allocs[(size_t)MemTag::Resources].load();
-        auto afterLive = MemTracker::instance().live[(size_t)MemTag::Resources].load();
-
-        // 4) log to console
-        std::cout << "[MemTest] allocs(Resources): " << beforeAlloc << " -> " << afterAlloc
-            << " | live(Resources): " << beforeLive << " -> " << afterLive << std::endl;
-    }*/
-
-
     // animate scene
     GLApp::update();
 }
