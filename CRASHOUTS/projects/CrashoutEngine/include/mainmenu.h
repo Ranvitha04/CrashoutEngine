@@ -1,10 +1,10 @@
 #pragma once
 
-#include "entitymanager.h"
-#include "gamestatesystem.h"
+#include "gamestatemanager.h"
 
-namespace States
-{
-	void EnterMainMenu(CrashoutsEngine::ECS& ecs);
-	void ExitMainMenu(CrashoutsEngine::ECS& ecs);
-}
+void LoadMainMenu();
+void InitMainMenu();
+void UpdateMainMenu();
+void RenderMainMenu();
+void FreeMainMenu();
+void UnloadMainMenu();

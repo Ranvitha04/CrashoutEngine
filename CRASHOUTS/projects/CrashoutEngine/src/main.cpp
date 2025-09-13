@@ -26,11 +26,9 @@ context and implement a game loop.
 #include <imgui_impl_opengl3.h>
 
 #include <iostream>
-
 #include "mainmenu.h"
-#include "gamestatesystem.h"
-#include "gamestate.h"
-#include "gamestatecomponent.h"
+#include "gamestatemanager.h"
+#include "registergamestate.h"
 
 /*                                                   type declarations
 ----------------------------------------------------------------------------- */
@@ -49,8 +47,6 @@ static double gPerfSnapshotTotalMs = 0.0;
 // tests
 static bool gOnce = false;
 
-// game state prototype
-static GameStateSystem gGameStateSystem;
 
 
 /*                                                      function declarations
@@ -85,6 +81,9 @@ int main() {
         std::exit(EXIT_FAILURE);
     }
     init();
+	/// register game states and start with main menu
+    registerAllStates();
+    initGameStateManager(MAIN_MENU);
 
     InputManager::Init(GLApp::ptr_window);
 
@@ -95,6 +94,7 @@ int main() {
         InputManager::Update();
         GLApp::update_time();
         draw();
+        updateGameStateManager();
         update();
 
     }
@@ -145,8 +145,6 @@ static void init() {
     LOGI(Core, "Welcome to Crashout Engine console test!");
 
     //gsm
-    gGameStateSystem.Init(globalECS, GameState::MAIN_MENU);
-    gGameStateSystem.SetCallbacks(GameState::MAIN_MENU, States::EnterMainMenu, States::ExitMainMenu);
 }
 
 /*  _________________________________________________________________________ */
@@ -208,7 +206,6 @@ static void update() {
     const double dt = 1.0 / 60.0;
     playerTransform.posX += playerRigidBody.velocity.x * static_cast<float>(dt);
 
-    gGameStateSystem.Tick();
     // testing
     /*
     if (!gOnce) {
