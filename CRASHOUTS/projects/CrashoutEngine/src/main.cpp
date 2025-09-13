@@ -105,7 +105,6 @@ int main() {
 static void init() {
     // Setup ImGUI context
     IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
 
     ImGui::SetAllocatorFunctions(
         [](size_t sz, void*) {
@@ -119,6 +118,8 @@ static void init() {
         nullptr
     );
 
+    ImGui::CreateContext();
+    
     ImGuiIO& io = ImGui::GetIO(); (void)io;
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 
