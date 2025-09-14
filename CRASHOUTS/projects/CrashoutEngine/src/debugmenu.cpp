@@ -1,4 +1,13 @@
+/*!
+@file       debugmenu.cpp
+@author     mohamadamirakmal.b@digipen.edu
+@date       14/09/2025
 
+This file provides the graphics for Crashout Engine's ImGUI.
+//__________________________________________________________________________*/
+
+/*                                                                   includes
+----------------------------------------------------------------------------- */
 // Engine / app headers
 #include "glapp.h"
 #include "performanceViewer.h"
@@ -15,6 +24,9 @@
 #include <vector>
 #include <string>
 #include <cstring>
+
+/*                                                                   
+----------------------------------------------------------------------------- */
 
 using CrashoutsEngine::Entity;
 using CrashoutsEngine::ECS;

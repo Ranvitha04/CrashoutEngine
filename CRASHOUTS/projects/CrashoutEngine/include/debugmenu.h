@@ -1,3 +1,13 @@
+/*!
+@file       debugmenu.h
+@author     mohamadamirakmal.b@digipen.edu
+@date       14/09/2025
+
+This header provides the graphics for Crashout Engine's ImGUI.
+//__________________________________________________________________________*/
+
+/*                                                                   includes
+----------------------------------------------------------------------------- */
 #pragma once
 #include <GLFW/glfw3.h>
 
