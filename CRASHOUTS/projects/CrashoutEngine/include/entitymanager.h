@@ -3,7 +3,15 @@
 @author     lee.r@digipen.edu
 @date       05/09/2025
 
-This file implements
+@brief	This file contains the declaration and implementation of the 
+		**ECS (Entity-Component-System)** framework. This file implements 
+		the core ECS classes: `ECS` (the main manager), `IComponentArray` 
+		(an abstract interface for component containers), and 
+		`ComponentArray<T>` (a templated class for storing components of a 
+		specific type). The system uses a sparse-set data structure for 
+		efficient O(1) component addition, retrieval, and removal, optimizing 
+		memory layout for performance. It also includes utility functions for
+		managing entities by both their ID and name.
 //__________________________________________________________________________*/
 #pragma once
 
