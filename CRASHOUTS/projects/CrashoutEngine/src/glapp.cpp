@@ -219,10 +219,10 @@ void GLApp::draw() {
     //shapes.CreateSquare(pos, 0.5f, rotation, scale, CEVec3(.0f, 1.0f, 0.0f));
 
     // Testing for drawing Line
-    shapes.CreateLine(CEVec3(-0.5f, -0.5f, 0), CEVec3(0.5f, 0.5f, 0), 0.01f, rotation, scale, CEVec3(0, 1, 0));
+    //shapes.CreateLine(CEVec3(-0.5f, -0.5f, 0), CEVec3(0.5f, 0.5f, 0), 0.01f, rotation, scale, CEVec3(0, 1, 0));
 
     // Testing for drawing Rectangle
-    //shapes.CreateRectangle(pos, 0.8f, 0.4f, rotation, scale, CEVec3(0,0,1));
+    shapes.CreateRectangle(pos, 0.8f, 0.4f, rotation, scale, CEVec3(0,0,1));
 
     // Testing for drawing Triangle
     //shapes.CreateTriangle(CEVec3(0,0.5,0), CEVec3(-0.4,-0.5,0), CEVec3(0.4,-0.5,0), rotation, scale, CEVec3(1,1,0));

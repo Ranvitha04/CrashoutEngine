@@ -43,9 +43,16 @@ namespace Component {
 		void Setup_Shdrpgm();
 		void Draw();
 
+	//};
+
+		~Rendering() {
+			if (ebo_hdl) glDeleteBuffers(1, &ebo_hdl);
+			if (vbo_hdl) glDeleteBuffers(1, &vbo_hdl);
+			if (vaoid)   glDeleteVertexArrays(1, &vaoid);
+		}
 	};
 
-	extern Rendering model;
+	//extern Rendering model;
 
 
 
