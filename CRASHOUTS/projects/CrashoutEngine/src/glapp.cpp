@@ -17,7 +17,7 @@ integration.
 #include "glapp.h"
 
 #include "rendering.h"
-#include "entitymanager.h"
+#include "managers/entitymanager.h"
 #include "shapes.h"
 #include <glm/glm.hpp>
 #include <iostream>

@@ -8,8 +8,8 @@
 
 #pragma once
 
-#include "CEVec3.h"
-#include "entitymanager.h"
+#include "math/CEVec3.h"
+#include "managers/entitymanager.h"
 #include "Collision.h"
 #include "log.h"
 

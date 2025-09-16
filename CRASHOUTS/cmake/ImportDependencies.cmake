@@ -86,6 +86,21 @@ macro(import_imgui)
     endif()
 endmacro()
 
+# Macro to import stb
+macro(import_stb)
+    if(NOT TARGET stb)  # Guard to prevent multiple inclusion
+        FetchContent_Declare(
+            stb
+            GIT_REPOSITORY https://github.com/nothings/stb.git
+            GIT_TAG master
+        )
+        FetchContent_MakeAvailable(stb)
+
+        add_library(stb INTERFACE)
+        target_include_directories(stb INTERFACE ${stb_SOURCE_DIR})
+    endif()
+endmacro()
+
 # Macro to import all dependencies
 macro(importDependencies)
     message(STATUS "Starting to import dependencies...")
@@ -105,6 +120,10 @@ macro(importDependencies)
     message(STATUS "Importing ImGui...")
     import_imgui()
     message(STATUS "ImGui imported successfully.")
+
+    message(STATUS "Importing stb...")
+    import_stb()
+    message(STATUS "stb imported successfully.")
 
     message(STATUS "All dependencies have been imported successfully.")
 endmacro()

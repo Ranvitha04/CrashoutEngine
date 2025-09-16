@@ -1,7 +1,7 @@
 /*!
-@file       entitymanager.h
-@author     lee.r@digipen.edu
-@date       05/09/2025
+@file   entitymanager.h
+@author lee.r@digipen.edu
+@date   05/09/2025
 
 @brief	This file contains the declaration and implementation of the 
 		**ECS (Entity-Component-System)** framework. This file implements 
@@ -24,8 +24,8 @@
 #include <utility>
 
 // Include components here:
-#include "namecomponent.h"
-#include "transformcomponent.h"
+#include "components/namecomponent.h"
+#include "components/transformcomponent.h"
 
 /*                                                                   
 ----------------------------------------------------------------------------- */

@@ -6,7 +6,7 @@
 
 Handles keyboard mouse and scroll wheel input using GLFW
 */
-#include "inputmanager.h"
+#include "managers/inputmanager.h"
 #include "settings.h"
 #include <glm/glm.hpp>
 //ENTIRE INPUTMANAGER IS TO BE REFACTORED/REMOVED LATER TO ADHERE TO ECS - Rain

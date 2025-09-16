@@ -22,9 +22,9 @@ safer handling of shader program lifecycles.
 ----------------------------------------------------------------------------- */
 
 
-#include "CEVec2.h"
-#include "CEVec3.h"
-#include "namecomponent.h"
+#include "math/CEVec2.h"
+#include "math/CEVec3.h"
+#include "components/namecomponent.h"
 #include <GL/glew.h>
 #include <glm/glm.hpp>
 #include <string>

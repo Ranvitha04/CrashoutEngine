@@ -14,11 +14,11 @@ context and implement a game loop.
 // Extension loader library's header must be included before GLFW's header!!!
 #include "glapp.h"
 #include "performanceViewer.h"
-#include "entitymanager.h"
+#include "managers/entitymanager.h"
 #include "log.h"
 #include "playerMovement.h"     // Player::UpdateADVelocity
 #include "Physics.h"            // Component::RigidBodyComponent
-#include "inputmanager.h"
+#include "managers/inputmanager.h"
 
 // ImGui headers for callbacks
 #include <imgui.h>
