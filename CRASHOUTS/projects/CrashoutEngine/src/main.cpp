@@ -76,8 +76,8 @@ int main() {
     }
     init();
 	/// register game states and start with main menu
-    registerAllStates();
-    initGameStateManager(MAIN_MENU);
+    RegisterAllStates();
+    InitGameStateManager(MAIN_MENU);
 
     InputManager::Init(GLApp::ptr_window);
     UI::Init(GLApp::ptr_window); // NEW
@@ -89,7 +89,7 @@ int main() {
         InputManager::Update();
         GLApp::update_time();
         draw();
-        updateGameStateManager();
+        UpdateGameStateManager();
         update();
 
     }
