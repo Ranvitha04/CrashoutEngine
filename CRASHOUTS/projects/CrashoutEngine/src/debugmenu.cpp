@@ -75,6 +75,10 @@ namespace UI {
         // Initializing the backends
         ImGui_ImplGlfw_InitForOpenGL(window, true);
         ImGui_ImplOpenGL3_Init("#version 330");
+
+        LOGS(Core, "Engine initialized successfully");
+        LOGW(Core, "Debug mode is ON");
+        LOGI(Core, "Welcome to Crashout Engine Debugger!");
     }
 
     static void RenderEcsDemo(FrameProfiler& profiler) {
