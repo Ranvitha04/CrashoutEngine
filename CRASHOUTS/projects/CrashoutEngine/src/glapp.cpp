@@ -212,15 +212,15 @@ void GLApp::draw() {
     //model.Draw();
 
     // ---- choose which shape to draw by uncommenting ----
-    CEVec3 pos(0.0f, 0.0f, 0.0f);
-    float rotation = 35.0f;
-    float scale = 1.0f;
+    //CEVec3 pos(0.0f, 0.0f, 0.0f);
+    //float rotation = 35.0f;
+    //float scale = 1.0f;
 
     // Testing for drawing Square
     //shapes.CreateSquare(pos, 0.5f, rotation, scale, CEVec3(.0f, 1.0f, 0.0f));
 
     // Testing for drawing Line
-    shapes.CreateLine(CEVec3(-0.5f, -0.5f, 0), CEVec3(0.5f, 0.5f, 0), 0.01f, rotation, scale, CEVec3(0, 1, 0));
+    //shapes.CreateLine(CEVec3(-0.5f, -0.5f, 0), CEVec3(0.5f, 0.5f, 0), 0.01f, rotation, scale, CEVec3(0, 1, 0));
 
     // Testing for drawing Rectangle
     //shapes.CreateRectangle(pos, 0.8f, 0.4f, rotation, scale, CEVec3(0,0,1));
@@ -230,7 +230,6 @@ void GLApp::draw() {
 
     // Draw current model
     //model.Draw();
-
 }
 
 /* _________________________________________________________________________ */
