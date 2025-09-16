@@ -9,7 +9,7 @@ The file defines a 2D vector structure with basic arithmetic and comparison oper
 
 #pragma once
 
-#include "CETypes.h"
+#include "math/CETypes.h"
 
 using CE::f32;
 

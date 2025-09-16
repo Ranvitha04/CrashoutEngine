@@ -19,10 +19,11 @@ add_definitions(-DUSE_CSD3151_AUTOMATION=0) # Used for instructor's automation
 
 # List of external libraries
 set(ALL_LIBS
-  PRIVATE glfw
-  PRIVATE libglew_static
-  PRIVATE imgui
-  PRIVATE stb
+    PRIVATE glfw
+    PRIVATE libglew_static
+    PRIVATE imgui
+    PRIVATE glm::glm
+    PRIVATE stb
 )
 
 # Include path for GLM (optional if not using FetchContent)
@@ -96,14 +97,12 @@ add_custom_command(
     COMMAND ${CMAKE_COMMAND} -E make_directory ${DOC_OUTPUT_DIR}
     COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYFILE_IN}
     COMMAND ${CMAKE_COMMAND} -E touch ${DOC_OUTPUT_DIR}/.doxygen.stamp
-    DEPENDS ${DOXYFILE_IN} ${DOXY_INPUTS}
     BYPRODUCTS ${DOC_OUTPUT_DIR}/html/index.html
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-    COMMENT "Running Doxygen because files changed"
+    COMMENT "Running Doxygen on every build"
     VERBATIM
 )
 
-# Part of the normal build will re-run only if any DEPENDS changed
 add_custom_target(docs ALL
     DEPENDS ${DOC_OUTPUT_DIR}/.doxygen.stamp
 )

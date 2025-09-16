@@ -11,7 +11,7 @@ This file provides the graphics for Crashout Engine's ImGUI.
 // Engine / app headers
 #include "glapp.h"
 #include "performanceViewer.h"
-#include "entitymanager.h"
+#include "managers/entitymanager.h"
 #include "log.h"
 #include "debugmenu.h"
 

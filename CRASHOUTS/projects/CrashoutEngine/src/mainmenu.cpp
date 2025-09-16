@@ -1,5 +1,5 @@
 #include "mainmenu.h"
-#include "entitymanager.h"
+#include "managers/entitymanager.h"
 #include "log.h"
 #include "rendering.h"
 #include "shapes.h"
