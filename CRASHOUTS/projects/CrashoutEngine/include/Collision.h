@@ -11,6 +11,7 @@
 
 #include "CEVec3.h"
 #include "transformcomponent.h"
+#include "log.h"
 #include <memory>
 #include <iostream>
 #include <cmath>
@@ -101,6 +102,7 @@ namespace Collision {
 
 			if (collisionIntersectRectRectStatic(aabb1, aabb2)) {
 				return true;
+				LOGW(Collision, "Collision detected between two AABBs!");
 			};
 
 			AABBRect const& aabb1Temp{ dynamic_cast<AABBRect const&>(*aabb1) };
