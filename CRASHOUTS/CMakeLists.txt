@@ -28,7 +28,6 @@ set(ALL_LIBS
 include_directories(${CMAKE_CURRENT_LIST_DIR}/lib/glm)
 
 # ======================= AUTO PROJECT DISCOVERY =========================
-#[===[
 # Get all subdirectories in the projects folder
 file(GLOB children RELATIVE "${CMAKE_CURRENT_LIST_DIR}/projects" "${CMAKE_CURRENT_LIST_DIR}/projects/*")
 
@@ -71,44 +70,6 @@ foreach(child ${children})
         )
     endif()
 endforeach()
-#]===]
-# Get all subdirectories in the projects folder
-file(GLOB children RELATIVE "${CMAKE_CURRENT_LIST_DIR}/projects" "${CMAKE_CURRENT_LIST_DIR}/projects/*")
-
-foreach(child ${children})
-  if(IS_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/projects/${child}")
-    message(STATUS "Configuring project: ${child}")
-
-    # Find real source files
-    file(GLOB_RECURSE ${child}_sources
-      "${CMAKE_CURRENT_LIST_DIR}/projects/${child}/*.c"
-      "${CMAKE_CURRENT_LIST_DIR}/projects/${child}/*.cc"
-      "${CMAKE_CURRENT_LIST_DIR}/projects/${child}/*.cpp"
-    )
-
-    if(NOT ${child}_sources)
-      message(WARNING "Skipping ${child}: no .c/.cc/.cpp sources found")
-      continue()
-    endif()
-
-    add_executable(${child} ${${child}_sources})
-
-    target_link_libraries(${child} ${ALL_LIBS})
-    set_property(TARGET ${child} PROPERTY CXX_STANDARD 20)
-
-    if (CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
-      target_compile_options(${child} PRIVATE -Wall ${DisableWarnings})
-    elseif (MSVC)
-      target_compile_options(${child} PRIVATE /W3 /WX-)
-    endif()
-
-    target_include_directories(${child} PRIVATE
-      "${CMAKE_CURRENT_LIST_DIR}/projects/${child}/include"
-      "${CMAKE_CURRENT_LIST_DIR}/lib/glm"
-    )
-  endif()
-endforeach()
-
 
 # Doxygen: rebuild only when files change
 find_package(Doxygen QUIET)
