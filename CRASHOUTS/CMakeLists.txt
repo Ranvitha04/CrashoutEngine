@@ -103,6 +103,6 @@ add_custom_command(
     VERBATIM
 )
 
-add_custom_target(docs ALL
+add_custom_target(doxygen_docs ALL
     DEPENDS ${DOC_OUTPUT_DIR}/.doxygen.stamp
 )
