@@ -64,13 +64,17 @@ namespace Component {
 
         // Create transformation matrix
         glm::mat4 model = glm::mat4(1.0f);
-        model = glm::scale(model, glm::vec3(scale, scale, 1.0f));
-        model = glm::rotate(model, glm::radians(rotation), glm::vec3(0, 0, 1));
+        
         model = glm::translate(model, glm::vec3(position.x, position.y, position.z));
+        model = glm::rotate(model, glm::radians(rotation), glm::vec3(0, 0, 1));
+        model = glm::scale(model, glm::vec3(scale, scale, 1.0f));
+
+        float aspect = static_cast<float>(GLApp::width) / GLApp::height;
+        glm::mat4 projection = glm::ortho(-aspect, aspect, -1.0f, 1.0f, -1.0f, 1.0f);
 
         renderer.shdr_pgm.SetUniform("uModel", model);
         renderer.shdr_pgm.SetUniform("uView", glm::mat4(1.0f));
-        renderer.shdr_pgm.SetUniform("uProjection", glm::mat4(1.0f));
+        renderer.shdr_pgm.SetUniform("uProjection", projection);
 
         renderer.Draw();
     }
@@ -112,9 +116,13 @@ namespace Component {
         model = glm::rotate(model, glm::radians(rotation), glm::vec3(0, 0, 1));
         model = glm::scale(model, glm::vec3(scale, scale, 1.0f));
 
+        float aspect = static_cast<float>(GLApp::width) / GLApp::height;
+
+        glm::mat4 projection = glm::ortho(-aspect, aspect, -1.0f, 1.0f, -1.0f, 1.0f);
+
         renderer.shdr_pgm.SetUniform("uModel", model);
         renderer.shdr_pgm.SetUniform("uView", glm::mat4(1.0f));
-        renderer.shdr_pgm.SetUniform("uProjection", glm::mat4(1.0f));
+        renderer.shdr_pgm.SetUniform("uProjection", projection);
 
         renderer.Draw();
     }
@@ -149,9 +157,13 @@ namespace Component {
         model = model * glm::rotate(glm::mat4(1.0f), glm::radians(rotation), glm::vec3(0, 0, 1));
         model = model * glm::scale(glm::mat4(1.0f), glm::vec3(scale, scale, 1.0f));
 
+        float aspect = static_cast<float>(GLApp::width) / GLApp::height;
+
+        glm::mat4 projection = glm::ortho(-aspect, aspect, -1.0f, 1.0f, -1.0f, 1.0f);
+
         renderer.shdr_pgm.SetUniform("uModel", model);
         renderer.shdr_pgm.SetUniform("uView", glm::mat4(1.0f));
-        renderer.shdr_pgm.SetUniform("uProjection", glm::mat4(1.0f));
+        renderer.shdr_pgm.SetUniform("uProjection", projection);
 
         renderer.Draw();
     }
@@ -186,9 +198,13 @@ namespace Component {
         model = glm::rotate(model, glm::radians(rotation), glm::vec3(0, 0, 1));
         model = glm::scale(model, glm::vec3(scale, scale, 1.0f));
 
+        float aspect = static_cast<float>(GLApp::width) / GLApp::height;
+
+        glm::mat4 projection = glm::ortho(-aspect, aspect, -1.0f, 1.0f, -1.0f, 1.0f);
+
         renderer.shdr_pgm.SetUniform("uModel", model);
         renderer.shdr_pgm.SetUniform("uView", glm::mat4(1.0f));
-        renderer.shdr_pgm.SetUniform("uProjection", glm::mat4(1.0f));
+        renderer.shdr_pgm.SetUniform("uProjection", projection);
 
         renderer.Draw();
     }
