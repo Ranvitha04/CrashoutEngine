@@ -21,7 +21,8 @@ namespace Component {
 	@brief	A component that provides
 	*/
 	struct CameraComponent {
-		
+		// set fov
+		// get eye tgt up then view mtx then proj mtx
 	};
 
 }

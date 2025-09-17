@@ -74,7 +74,7 @@ foreach(child ${children})
 endforeach()
 
 # Doxygen: rebuild only when files change
-find_package(Doxygen QUIET)
+find_package(Doxygen REQUIRED)
 
 set(DOXYFILE_IN ${CMAKE_SOURCE_DIR}/Doxyfile)
 set(DOC_OUTPUT_DIR ${CMAKE_SOURCE_DIR}/docs)
