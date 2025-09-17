@@ -8,7 +8,7 @@
 //__________________________________________________________________________*/
 
 #include "Collision.h"
-#include "CEMath.h"
+#include "math/CEMath.h"
 #include <cmath>
 #include <algorithm>
 

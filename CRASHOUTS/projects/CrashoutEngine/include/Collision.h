@@ -12,7 +12,7 @@
 #include "math/CEVec3.h"
 #include "components/transformcomponent.h"
 #include "log.h"
-#include "entitymanager.h"
+#include "managers/entitymanager.h"
 #include <memory>
 #include <iostream>
 #include <cmath>

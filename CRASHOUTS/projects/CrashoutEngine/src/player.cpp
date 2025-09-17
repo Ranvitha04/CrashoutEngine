@@ -13,7 +13,7 @@ namespace Player {
         if (InputManager::IsKeyPressed(Key::D)) h += 1.0f;
 
         //how fast and direction
-        rb.addForce(CEVec3{ h * moveSpeed, 0.f, 0.f });
+        rb.setVelocity(CEVec3{ h * moveSpeed, 0.f, 0.f });
 
         // show how much velocity is being used this frame
         std::cout <<  rb.getVelocity().x << " Units per second\n";

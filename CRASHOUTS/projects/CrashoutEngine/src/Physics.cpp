@@ -8,7 +8,7 @@
 
 #include "Physics.h"
 
-#include "CEMath.h"
+#include "math/CEMath.h"
 
 namespace Component {
 	

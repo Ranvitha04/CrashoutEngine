@@ -74,6 +74,7 @@ int main() {
     if (!GLApp::init(1280, 720, "CRASHOUTS")) {
         std::exit(EXIT_FAILURE);
     }
+    Physics::PhysicsHandler physicsSystem;
     init();
 	/// register game states and start with main menu
     RegisterAllStates();
@@ -88,6 +89,7 @@ int main() {
         glfwPollEvents();
         InputManager::Update();
         GLApp::update_time();
+        physicsSystem.update(globalECS, globalEntities, GLApp::delta_time);
         draw();
         UpdateGameStateManager();
         update();
