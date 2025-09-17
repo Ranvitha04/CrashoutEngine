@@ -14,10 +14,23 @@
 ----------------------------------------------------------------------------- */
 #pragma once
 #include <GLFW/glfw3.h>
+#include <vector>
 
+// -----------------------------------------------------------------------------
 // Forward declarations
+// -----------------------------------------------------------------------------
+/*!
+ @class FrameProfiler
+ @brief Forward declaration for the engine's frame profiler.
+ @details
+ Used to collect timing and performance statistics per frame.
+ The full definition is provided in the performance profiling module.
+*/
 class FrameProfiler;
-namespace CrashoutsEngine { class ECS; }
+namespace CrashoutsEngine { 
+    class ECS;
+    using Entity = unsigned;
+}
 namespace Physics { class PhysicsHandler; }
 namespace Collision { struct CollisionEvent; }
 
