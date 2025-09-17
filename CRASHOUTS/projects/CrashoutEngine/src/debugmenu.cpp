@@ -36,27 +36,40 @@ using namespace Component;
 
 namespace { //----------------------------------------------------------------------------- file-local state & helpers
 
-    // Local ECS sandbox used by the demo panel (kept for compatibility)
-    ECS gECS;
-    std::vector<Entity> gEntities;
-    Entity gSelectedEntity = 0;
-
-    // Perf viewer snapshot (same behavior as before)
-    bool gShowPhysics = false;
-    std::vector<ProfilerSample> gPerfSnapshot;
-    double gPerfSnapshotTotalMs = 0.0;
+    /*!
+     @brief File-local helpers and state for ImGui panels.
+    */
+    ECS gECS;                                   //!< Local ECS sandbox for demo purposes
+    std::vector<Entity> gEntities;              //!< Sandbox entities
+    Entity gSelectedEntity = 0;                 //!< Currently selected entity
+    bool gShowPhysics = false;                  //!< Physics overlay toggle
+    std::vector<ProfilerSample> gPerfSnapshot;  //!< Performance profiler snapshot
+    double gPerfSnapshotTotalMs = 0.0;          //!< Total frame time in ms
 
     // Small UI helpers
+
+    /*!
+     @brief RAII wrapper to automatically open and close ImGui windows.
+    */
     struct ScopedWindow {
         ScopedWindow(const char* title, ImGuiWindowFlags flags = 0) { ImGui::Begin(title, nullptr, flags); }
         ~ScopedWindow() { ImGui::End(); }
     };
 
+    /*!
+     @brief Locks or unlocks ImGui window movement and resizing.
+     @param locked Whether to lock the window.
+     @return ImGuiWindowFlags
+    */
     inline ImGuiWindowFlags LockFlags(bool locked) {
         return locked ? (ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoDocking)
             : ImGuiWindowFlags_None;
     }
 
+    /*!
+     @brief Displays a small tooltip helper next to UI elements.
+     @param text Tooltip text.
+    */
     inline void Help(const char* text) {
         ImGui::SameLine();
         ImGui::TextDisabled("(?)");
@@ -77,6 +90,10 @@ namespace UI { // --------------------------------------------------------------
     static void DrawCollisionOverlayInternal(ECS& ecs, const std::vector<Collision::CollisionEvent>& events);
 
     // -- Lifecycle ------------------------------------------------------------
+    /*!
+     @brief Initializes ImGui context, allocators, and platform bindings.
+     @param window GLFW window handle.
+    */
     void Init(GLFWwindow* window) {
         IMGUI_CHECKVERSION();
 
@@ -108,6 +125,9 @@ namespace UI { // --------------------------------------------------------------
         LOGI(Core, "Welcome to Crashout Engine Debugger!");
     }
 
+    /*!
+     @brief Shuts down ImGui and cleans up resources.
+    */
     void Shutdown() {
         ImGui_ImplOpenGL3_Shutdown();
         ImGui_ImplGlfw_Shutdown();
@@ -115,12 +135,18 @@ namespace UI { // --------------------------------------------------------------
     }
 
     // -- Frame ownership (exactly one pair per frame) -------------------------
+    /*!
+     @brief Begins a new ImGui frame.
+    */
     void BeginFrame() {
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
     }
 
+    /*!
+     @brief Ends the current ImGui frame and renders all draw data.
+    */
     void EndFrame() {
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -135,6 +161,13 @@ namespace UI { // --------------------------------------------------------------
     }
 
     // -- Panels ---------------------------------------------------------------
+    /*!
+     @brief Renders the ECS debug panel, allowing creation, deletion, and inspection of entities.
+     @param profiler Frame profiler reference.
+     @param ecs ECS reference.
+     @param entities List of ECS entities.
+     @param selected Currently selected entity.
+    */
     void RenderEcsPanel(FrameProfiler& profiler,
         ECS& ecs,
         std::vector<Entity>& entities,
@@ -278,6 +311,11 @@ namespace UI { // --------------------------------------------------------------
         }
     }
 
+    /*!
+     @brief Renders the performance panel with profiler results.
+     @param profiler Frame profiler reference.
+     @param ui UI state toggles.
+    */
     void RenderPerformancePanel(FrameProfiler& profiler, UIState& ui) {
         if (!ui.showPerf) return;
 
@@ -312,6 +350,10 @@ namespace UI { // --------------------------------------------------------------
         }
     }
 
+    /*!
+     @brief Renders the console log viewer panel.
+     @param ui UI state toggles.
+    */
     void RenderConsolePanel(UIState& ui) {
         if (!ui.showConsole) return;
 
@@ -375,6 +417,13 @@ namespace UI { // --------------------------------------------------------------
         }
     }
 
+    /*!
+     @brief Renders the physics panel, including collision event listings and controls.
+     @param profiler Frame profiler reference.
+     @param ecs ECS reference.
+     @param phys Physics handler reference.
+     @param ui UI state toggles.
+    */
     void RenderPhysicsPanel(FrameProfiler&, ECS& ecs, Physics::PhysicsHandler& phys, UIState& ui)
     {
         ScopedWindow w("Physics / Collision", LockFlags(ui.lockLayout));
@@ -424,6 +473,11 @@ namespace UI { // --------------------------------------------------------------
     }
 
     // -- Overlays -------------------------------------------------------------
+    /*!
+     @brief Draws collision overlays.
+     @param ecs ECS reference.
+     @param events List of collision events.
+    */
     static void DrawCollisionOverlayInternal(ECS& ecs, const std::vector<Collision::CollisionEvent>& events) {
         ImDrawList* dl = ImGui::GetForegroundDrawList();
         auto W2S = [](ImVec2 p) { return p; }; // TODO: plug in real camera W2S
@@ -445,7 +499,12 @@ namespace UI { // --------------------------------------------------------------
         }
     }
 
-    // Public wrapper (lets external callers draw it if they want)
+    /*!
+     @brief Draws collision overlays directly on the viewport.
+     @param ecs ECS reference.
+     @param events List of collision events.
+     @param ui UI state toggles.
+    */
     void DrawCollisionOverlay(ECS& ecs, const std::vector<Collision::CollisionEvent>& events, const UIState& ui)
     {
         if (!ui.drawCollOverlay) return;
@@ -453,6 +512,16 @@ namespace UI { // --------------------------------------------------------------
     }
 
     // -- Coordinator(s) --------------------------------------------------------
+
+    /*!
+     @brief Renders all panels and overlays in a single call.
+     @param profiler Frame profiler reference.
+     @param ecs ECS reference.
+     @param phys Physics handler reference.
+     @param ui UI state toggles.
+     @param entities List of ECS entities.
+     @param selected Currently selected entity.
+    */
     void RenderAll(FrameProfiler& profiler, ECS& ecs, Physics::PhysicsHandler& phys, UIState& ui, std::vector<Entity>& entities, Entity& selected)
     {
         BeginFrame();
@@ -463,7 +532,14 @@ namespace UI { // --------------------------------------------------------------
         EndFrame();
     }
 
-    // Backward-compatible single entry point (kept)
+    /*!
+     @brief Backward-compatible wrapper for rendering without explicit UIState.
+     @param profiler Frame profiler reference.
+     @param ecs ECS reference.
+     @param phys Physics handler reference.
+     @param entities List of ECS entities.
+     @param selected Currently selected entity.
+    */
     void Render(FrameProfiler& profiler, ECS& ecs, Physics::PhysicsHandler& phys, std::vector<Entity>& entities, Entity& selected)
     {
         static UIState ui;
