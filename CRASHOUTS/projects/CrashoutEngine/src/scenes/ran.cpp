@@ -1,5 +1,5 @@
 #include "scenes/ran.h"
-
+#include "log.h"
 void LoadRan()
 {
 
@@ -7,7 +7,7 @@ void LoadRan()
 
 void InitRan()
 {
-
+	LOGI(Core, "Ran Initialized");
 }
 
 void UpdateRan()

@@ -1,5 +1,5 @@
 #include "scenes/renfred.h"
-
+#include "log.h"
 void LoadRenfred()
 {
 	// Load resources specific to Renfred state
@@ -8,6 +8,7 @@ void LoadRenfred()
 void InitRenfred()
 {
 	// Initialize Renfred state
+	LOGI(Core, "Renfred Initialized");
 }
 
 void UpdateRenfred()

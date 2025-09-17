@@ -1,5 +1,5 @@
 #include "scenes/amir.h"
-
+#include "log.h"
 void LoadAmir()
 {
 
@@ -7,7 +7,7 @@ void LoadAmir()
 
 void InitAmir()
 {
-
+	LOGI(Core, "Amir Initialized");
 }
 
 void UpdateAmir()

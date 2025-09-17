@@ -1,5 +1,5 @@
 #include "scenes/rain.h"
-
+#include "log.h"
 void LoadRain()
 {
 	// Load resources specific to Rain state
@@ -8,6 +8,7 @@ void LoadRain()
 void InitRain()
 {
 	// Initialize Rain state
+	LOGI(Core, "Rain Initialized");
 }
 
 void UpdateRain()
