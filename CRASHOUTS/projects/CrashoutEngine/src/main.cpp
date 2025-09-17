@@ -27,7 +27,6 @@ context and implement a game loop.
 #include <imgui_impl_opengl3.h>
 
 #include <iostream>
-#include "mainmenu.h"
 #include "gamestatemanager.h"
 #include "registergamestate.h"
 

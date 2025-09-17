@@ -1,4 +1,4 @@
-#include "mainmenu.h"
+#include "scenes/mainmenu.h"
 #include "managers/entitymanager.h"
 #include "log.h"
 #include "rendering.h"
