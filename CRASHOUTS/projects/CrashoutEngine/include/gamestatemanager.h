@@ -19,6 +19,12 @@ void RestartGameState();
 enum GameState{
 	QUIT,
 	MAIN_MENU,
+	RENFRED,
+	RAIN,
+	AMIR,
+	AFIQ,
+	TRISTAN,
+	RAN,
 };
 
 /// Descriptor for a game state containing lifecycle function pointers

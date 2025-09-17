@@ -17,7 +17,7 @@ context and implement a game loop.
 #include "managers/entitymanager.h"
 #include "log.h"
 #include "playerMovement.h"     // Player::UpdateADVelocity
-#include "Physics.h"            // Component::RigidBodyComponent
+#include "managers/physicsmanager.h"            // Component::RigidBodyComponent
 #include "managers/inputmanager.h"
 #include "debugmenu.h"
 
@@ -27,7 +27,6 @@ context and implement a game loop.
 #include <imgui_impl_opengl3.h>
 
 #include <iostream>
-#include "mainmenu.h"
 #include "gamestatemanager.h"
 #include "registergamestate.h"
 
@@ -74,6 +73,7 @@ int main() {
     if (!GLApp::init(1280, 720, "CRASHOUTS")) {
         std::exit(EXIT_FAILURE);
     }
+    Physics::PhysicsHandler physicsSystem;
     init();
 	/// register game states and start with main menu
     RegisterAllStates();
@@ -88,6 +88,7 @@ int main() {
         glfwPollEvents();
         InputManager::Update();
         GLApp::update_time();
+        physicsSystem.update(globalECS, globalEntities, GLApp::delta_time);
         draw();
         UpdateGameStateManager();
         update();
@@ -162,7 +163,7 @@ static void update() {
     Player::UpdateVelocity(playerRigidBody, moveSpeed);
 
     const double dt = 1.0 / 60.0;
-    playerTransform.posX += playerRigidBody.velocity.x * static_cast<float>(dt);
+    //playerTransform.posX += playerRigidBody.velocity.x * static_cast<float>(dt);
 
     // animate scene
     GLApp::update();

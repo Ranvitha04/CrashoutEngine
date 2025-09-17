@@ -2,7 +2,7 @@
 
 #include "managers/inputmanager.h"   
 #include "key.h"            
-#include "Physics.h"        
+#include "managers/physicsmanager.h"        
 
 namespace Player {
 
