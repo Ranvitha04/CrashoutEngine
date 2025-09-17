@@ -74,7 +74,6 @@ int main() {
     if (!GLApp::init(1280, 720, "CRASHOUTS")) {
         std::exit(EXIT_FAILURE);
     }
-    Physics::PhysicsHandler physicsSystem;
     init();
 	/// register game states and start with main menu
     RegisterAllStates();
@@ -124,7 +123,7 @@ static void draw() {
     GLApp::draw();
 
     // Render ImGui UI on top of the scene
-    UI::Render(gProfiler, globalECS, physicsSystem);
+    UI::Render(gProfiler, globalECS, physicsSystem, globalEntities, globalSelectedEntity);
 
 
     // end of frame profiling
