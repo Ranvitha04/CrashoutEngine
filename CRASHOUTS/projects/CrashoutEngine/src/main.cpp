@@ -20,7 +20,15 @@ context and implement a game loop.
 #include "Physics.h"            // Component::RigidBodyComponent
 #include "inputmanager.h"
 #include "debugmenu.h"
-
+#include <vector>
+#include <string>
+#include <fmod_studio.hpp>
+#include <fmod.hpp>
+#include <fmod_errors.h>
+#include <thread>
+#include <chrono>
+#include <cstdio>
+#include <filesystem>
 // ImGui headers for callbacks
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
@@ -66,7 +74,39 @@ Indicates how the program existed. Normal exit is signaled by a return value of
 0. Abnormal termination is signaled by a non-zero return value.
 Note that the C++ compiler will insert a return 0 statement if one is missing.
 */
+
+// testing fmod
+static FMOD::Studio::System* gStudio = nullptr;
+static bool ok(FMOD_RESULT r, const char* w) { if (r != FMOD_OK) { std::fprintf(stderr, "FMOD %s: %s\n", w, FMOD_ErrorString(r)); return false; } return true; }
 int main() {
+    
+    std::cout << "CWD: " << std::filesystem::current_path() << "\n";
+    std::cout << "banks exist? "
+        << std::filesystem::exists("assets/audio/banks/Master.strings.bank") << " "
+        << std::filesystem::exists("assets/audio/banks/Master.bank") << " "
+        << std::filesystem::exists("assets/audio/banks/sfx.bank") << "\n";
+
+    //testing fmod
+
+    if (!ok(FMOD::Studio::System::create(&gStudio), "create")) return 1;
+    if (!ok(gStudio->initialize(1024, FMOD_STUDIO_INIT_NORMAL, FMOD_INIT_NORMAL, nullptr), "initialize")) return 1;
+
+    FMOD::Studio::Bank* b = nullptr;
+    ok(gStudio->loadBankFile("assets/audio/banks/Master.strings.bank", FMOD_STUDIO_LOAD_BANK_NORMAL, &b), "load strings");
+    ok(gStudio->loadBankFile("assets/audio/banks/Master.bank", FMOD_STUDIO_LOAD_BANK_NORMAL, &b), "load master");
+    ok(gStudio->loadBankFile("assets/audio/banks/sfx.bank", FMOD_STUDIO_LOAD_BANK_NORMAL, &b), "load sfx");
+
+    FMOD::Studio::EventDescription* desc = nullptr;
+    if (!ok(gStudio->getEvent("event:/sfexbeep", &desc), "getEvent")) return 1; 
+    FMOD::Studio::EventInstance* inst = nullptr;
+    ok(desc->createInstance(&inst), "createInstance");
+    ok(inst->start(), "start");
+    inst->release();
+
+    for (int i = 0; i < 240; ++i) { gStudio->update(); std::this_thread::sleep_for(std::chrono::milliseconds(16)); }
+    gStudio->unloadAll(); gStudio->release();
+    return 0;
+    
     // start with a 16:9 aspect ratio
     if (!GLApp::init(1280, 720, "CRASHOUTS")) {
         std::exit(EXIT_FAILURE);

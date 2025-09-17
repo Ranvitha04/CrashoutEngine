@@ -13,6 +13,29 @@ set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
 include(ImportDependencies)
 importDependencies()
 
+# --- FMOD: imported libs live in CRASHOUTS/third_party/fmod ---
+set(FMOD_DIR "${CMAKE_SOURCE_DIR}/third_party/fmod")
+set(FMOD_INCLUDE_DIR "${FMOD_DIR}/include")   
+
+add_library(fmod SHARED IMPORTED GLOBAL)
+set_target_properties(fmod PROPERTIES               
+  IMPORTED_CONFIGURATIONS "Debug;Release"
+  IMPORTED_IMPLIB_RELEASE   "${FMOD_DIR}/lib/x64/fmod_vc.lib"
+  IMPORTED_LOCATION_RELEASE "${FMOD_DIR}/bin/x64/fmod.dll"
+  IMPORTED_IMPLIB_DEBUG     "${FMOD_DIR}/lib/x64/fmodL_vc.lib"
+  IMPORTED_LOCATION_DEBUG   "${FMOD_DIR}/bin/x64/fmodL.dll"
+)
+# studio
+add_library(fmodstudio SHARED IMPORTED GLOBAL)
+set_target_properties(fmodstudio PROPERTIES       
+  IMPORTED_CONFIGURATIONS "Debug;Release"
+  IMPORTED_IMPLIB_RELEASE   "${FMOD_DIR}/lib/x64/fmodstudio_vc.lib"
+  IMPORTED_LOCATION_RELEASE "${FMOD_DIR}/bin/x64/fmodstudio.dll"
+  IMPORTED_IMPLIB_DEBUG     "${FMOD_DIR}/lib/x64/fmodstudioL_vc.lib"
+  IMPORTED_LOCATION_DEBUG   "${FMOD_DIR}/bin/x64/fmodstudioL.dll"
+)
+set(FMOD_INCLUDE_DIR "${FMOD_DIR}/include")
+
 # Global compile flags and macros
 add_definitions(-DGLEW_STATIC)
 add_definitions(-DUSE_CSD3151_AUTOMATION=0) # Used for instructor's automation
@@ -43,11 +66,10 @@ foreach(child ${children})
             ${CMAKE_CURRENT_LIST_DIR}/projects/${child}/include/*.hpp
         )
 
-        # Create executable
+       # Create executable
         add_executable(${child}
             ${${child}_source_files}
         )
-
         # Link libraries
         target_link_libraries(${child}
             ${ALL_LIBS}
@@ -67,6 +89,28 @@ foreach(child ${children})
         target_include_directories(${child} PRIVATE
             ${CMAKE_CURRENT_LIST_DIR}/projects/${child}/include
         )
+         # ---------- FMOD for CrashoutEngine only ----------
+        if (${child} STREQUAL "CrashoutEngine")
+          target_include_directories(${child} PRIVATE "${FMOD_INCLUDE_DIR}")   # <-- CHANGED: uses FMOD_INCLUDE_DIR
+          target_link_libraries(${child} PRIVATE fmodstudio fmod)
+
+          # Copy the correct FMOD DLLs next to the .exe (handles Debug/Release)  <-- NEW
+          add_custom_command(TARGET ${child} POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different
+              "$<IF:$<CONFIG:Debug>,${FMOD_DIR}/bin/x64/fmodL.dll,${FMOD_DIR}/bin/x64/fmod.dll>"
+              "$<TARGET_FILE_DIR:${child}>"
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different
+              "$<IF:$<CONFIG:Debug>,${FMOD_DIR}/bin/x64/fmodstudioL.dll,${FMOD_DIR}/bin/x64/fmodstudio.dll>"
+              "$<TARGET_FILE_DIR:${child}>"
+          )
+
+          # Copy your .bank files next to the .exe so relative paths work       <-- NEW
+          add_custom_command(TARGET ${child} POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_directory
+              "${CMAKE_SOURCE_DIR}/projects/CrashoutEngine/assets/audio/banks"
+              "$<TARGET_FILE_DIR:${child}>/assets/audio/banks"
+          )
+        endif()     # closes STREQUAL "CrashoutEngine"    
     endif()
 endforeach()
 
