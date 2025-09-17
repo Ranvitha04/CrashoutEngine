@@ -9,7 +9,7 @@ bruh
 
 #pragma once
 
-#include "CETypes.h"
+#include "math/CETypes.h"
 #include "CEVec2.h"
 #include "CEVec3.h"
 #include <cmath>

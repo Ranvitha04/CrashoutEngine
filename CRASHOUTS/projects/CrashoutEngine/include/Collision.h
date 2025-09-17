@@ -9,8 +9,8 @@
 
 #pragma once
 
-#include "CEVec3.h"
-#include "transformcomponent.h"
+#include "math/CEVec3.h"
+#include "components/transformcomponent.h"
 #include "log.h"
 #include "entitymanager.h"
 #include <memory>

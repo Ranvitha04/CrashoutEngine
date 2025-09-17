@@ -1,6 +1,6 @@
 #pragma once
 
-#include "inputmanager.h"   
+#include "managers/inputmanager.h"   
 #include "key.h"            
 #include "Physics.h"        
 

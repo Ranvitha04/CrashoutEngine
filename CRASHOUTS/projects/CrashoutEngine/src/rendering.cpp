@@ -21,10 +21,10 @@ and OpenGL 4.x core profile functions for buffer and vertex array management.
 ----------------------------------------------------------------------------- */
 
 #include "rendering.h"
-#include "entitymanager.h"
+#include "managers/entitymanager.h"
 #include <string>
-#include "CEVec3.h"
-#include "CEVec2.h"
+#include "math/CEVec3.h"
+#include "math/CEVec2.h"
 #include <vector>
 #include <array>
 #include <iostream>

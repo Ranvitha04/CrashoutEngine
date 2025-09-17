@@ -2,9 +2,9 @@
 
 
 #include <cmath>       
-#include "CETypes.h"   
-#include "CEVec2.h"     
-#include "CEMtx33.h"   
+#include "math/CETypes.h"   
+#include "math/CEVec2.h"     
+#include "math/CEMtx33.h"   
 
 namespace Patrol {
 
