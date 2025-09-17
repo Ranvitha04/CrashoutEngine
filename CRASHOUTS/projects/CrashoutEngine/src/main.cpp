@@ -38,6 +38,7 @@ context and implement a game loop.
 static CrashoutsEngine::ECS globalECS;
 static std::vector<CrashoutsEngine::Entity> globalEntities;
 static CrashoutsEngine::Entity globalSelectedEntity = 0;
+static Physics::PhysicsHandler physicsSystem;
 
 // ImGui in-game performance viewer
 static FrameProfiler gProfiler;
@@ -124,7 +125,7 @@ static void draw() {
     GLApp::draw();
 
     // Render ImGui UI on top of the scene
-    UI::Render(gProfiler);
+    UI::Render(gProfiler, globalECS, physicsSystem);
 
 
     // end of frame profiling

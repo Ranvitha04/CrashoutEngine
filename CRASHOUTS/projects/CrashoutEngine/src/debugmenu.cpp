@@ -12,6 +12,8 @@ This file provides the graphics for Crashout Engine's ImGUI.
 #include "glapp.h"
 #include "performanceViewer.h"
 #include "managers/entitymanager.h"
+#include "managers/collisionmanager.h"
+#include "managers/physicsmanager.h"
 #include "log.h"
 #include "debugmenu.h"
 
@@ -33,7 +35,7 @@ using CrashoutsEngine::ECS;
 using namespace Component;
 
 namespace {
-    // State that used to live in main.cpp is now private to this translation unit
+
     // ECS instance and entity storage
     ECS gECS;
     std::vector<Entity> gEntities;
@@ -41,11 +43,34 @@ namespace {
 
     // ImGui in-game performance viewer
     bool gShowPerf = false;
+    bool gShowPhysics = false;
     std::vector<ProfilerSample> gPerfSnapshot;
     double gPerfSnapshotTotalMs = 0.0;
 }
 
 namespace UI {
+
+    static void DrawCollisionOverlay(ECS& ecs, const std::vector<Collision::CollisionEvent>& events)
+    {
+        ImDrawList* dl = ImGui::GetForegroundDrawList();
+        // Simple world->screen shim; replace with your camera if you have one
+        auto W2S = [](ImVec2 p) { return p; }; // TODO hook to your camera
+
+        for (auto const& ev : events) {
+            // Draw contact point(s)
+            for (auto const& cp : ev.colManifold.contactPoints) {
+                ImVec2 p = W2S(ImVec2(cp.x, cp.y));
+                dl->AddCircleFilled(p, 4.0f, IM_COL32(255, 200, 0, 255));
+            }
+            // Draw normal (from contact 0)
+            const auto& cp0 = ev.colManifold.contactPoints[0];
+            ImVec2 p0 = W2S(ImVec2(cp0.x, cp0.y));
+            ImVec2 p1 = W2S(ImVec2(cp0.x + ev.colManifold.normal.x * 20.0f,
+                cp0.y + ev.colManifold.normal.y * 20.0f));
+            dl->AddLine(p0, p1, IM_COL32(255, 100, 0, 255), 2.0f);
+        }
+
+    }
 
     void Init(GLFWwindow* window) {
         // Setup ImGUI context
@@ -87,11 +112,6 @@ namespace UI {
         ScopedMemTag mem(MemTag::UI);
 
         static bool lockLayout = false;
-
-        // Start the Dear ImGui frame
-        ImGui_ImplOpenGL3_NewFrame();
-        ImGui_ImplGlfw_NewFrame();
-        ImGui::NewFrame();
 
         ImGuiWindowFlags lockFlags = lockLayout ? (ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoDocking) : ImGuiWindowFlags_None;
 
@@ -320,23 +340,76 @@ namespace UI {
             const_cast<std::vector<LogMessage>&>(logs).clear();
         }
         ImGui::End();
+    }
 
-        // Rendering
-        ImGui::Render();
-        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+    static void RenderPhysicsPanel(FrameProfiler& profiler, ECS& ecs, Physics::PhysicsHandler& phys)
+    {
+        ImGui::Begin("Physics / Collision");
 
-        // Handle ImGui viewports for multiple windows
-        ImGuiIO& io = ImGui::GetIO();
-        if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable) {
-            GLFWwindow* backup_current_context = glfwGetCurrentContext();
-            ImGui::UpdatePlatformWindows();
-            ImGui::RenderPlatformWindowsDefault();
-            glfwMakeContextCurrent(backup_current_context);
+        // Controls
+        bool paused = Physics::PhysicsHandler::GetPaused();
+        if (ImGui::Checkbox("Paused", &paused)) Physics::PhysicsHandler::SetPaused(paused);
+        if (ImGui::Button("Step")) Physics::PhysicsHandler::StepOnce();
+
+        static bool overrideDt = false; ImGui::SameLine();
+        ImGui::Checkbox("Override dt", &overrideDt);
+        Physics::PhysicsHandler::SetOverrideDt(overrideDt);
+
+        static double dbgDt = 1.0 / 30.0;
+        if (overrideDt) {
+            ImGui::SameLine();
+            if (ImGui::DragScalar("dt", ImGuiDataType_Double, &dbgDt, 0.001f, 0, 0, "%.4f")) {
+                Physics::PhysicsHandler::SetDebugDt(dbgDt);
+            }
+        }
+
+        ImGui::Separator();
+
+        // Collisions table
+        const auto& evs = phys.collisions();
+        if (ImGui::BeginTable("coll_table", 4, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
+            ImGui::TableSetupColumn("Entity A"); ImGui::TableSetupColumn("Entity B");
+            ImGui::TableSetupColumn("Depth");    ImGui::TableSetupColumn("Normal");
+            ImGui::TableHeadersRow();
+            for (auto const& e : evs) {
+                ImGui::TableNextRow();
+                ImGui::TableSetColumnIndex(0); ImGui::Text("%u", (unsigned)e.entity1);
+                ImGui::TableSetColumnIndex(1); ImGui::Text("%u", (unsigned)e.entity2);
+                ImGui::TableSetColumnIndex(2); ImGui::Text("%.3f", e.colManifold.depth);
+                ImGui::TableSetColumnIndex(3); ImGui::Text("(%.2f, %.2f)", e.colManifold.normal.x, e.colManifold.normal.y);
+            }
+            ImGui::EndTable();
+        }
+
+        // Overlay toggle
+        static bool drawOverlay = true;
+        ImGui::Checkbox("Draw overlay", &drawOverlay);
+
+        ImGui::End();
+
+        if (drawOverlay) {
+            DrawCollisionOverlay(ecs, evs);
         }
     }
 
-    void Render(FrameProfiler& profiler) {
+    void Render(FrameProfiler& profiler, ECS& ecs, Physics::PhysicsHandler& phys) {
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+
         RenderEcsDemo(profiler);
+        RenderPhysicsPanel(profiler, ecs, phys);
+
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+        ImGuiIO& io = ImGui::GetIO();
+        if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable) {
+            GLFWwindow* backup = glfwGetCurrentContext();
+            ImGui::UpdatePlatformWindows();
+            ImGui::RenderPlatformWindowsDefault();
+            glfwMakeContextCurrent(backup);
+        }
     }
 
     void Shutdown() {

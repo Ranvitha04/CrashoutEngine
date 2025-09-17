@@ -45,6 +45,12 @@ namespace Physics {
 			std::vector<Collision::CollisionEvent> collisionEvents;
 			void applyImpulse(Collision::CollisionEvent const& event, CrashoutsEngine::ECS& globalECS);
 			Collision::CollisionHandler collisionHandler;
+
+			// --- Debug state (static so UI can toggle globally) ---
+			static inline bool sPaused = false;
+			static inline bool sStepOnce = false;
+			static inline bool sOverrideDt = false;
+			static inline double sDebugDt = 1.0 / 60.0;
 		public:
 			PhysicsHandler() = default;
 
@@ -63,5 +69,15 @@ namespace Physics {
 			@param deltaTime Time taken for the previous frame
 			*/
 			void updatePhysics(Component::TransformComponent *transformComp, Component::RigidBodyComponent *rigidBodyComp, double deltaTime);
+
+			// --- Debug API ---
+			const std::vector<Collision::CollisionEvent>& collisions() const { return collisionEvents; }
+			void clearCollisions() { collisionEvents.clear(); }
+
+			static void SetPaused(bool p) { sPaused = p; }
+			static bool GetPaused() { return sPaused; }
+			static void StepOnce() { sStepOnce = true; }
+			static void SetOverrideDt(bool o) { sOverrideDt = o; }
+			static void SetDebugDt(double dt) { sDebugDt = dt; }
 	};
 }

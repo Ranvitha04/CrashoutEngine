@@ -90,6 +90,19 @@ namespace Physics {
 		transformComp->posX += currentVel.x * newDelta;
 		transformComp->posY += currentVel.y * newDelta;
 		transformComp->posZ += currentVel.z * newDelta;
+
+		// Debug stepping
+		if (sOverrideDt) deltaTime = sDebugDt;
+		if (sPaused && !sStepOnce) return;
+		sStepOnce = false;
+
+		collisionEvents.clear();
+		// ... your broadphase/narrowphase that fills collisionEvents and resolves ...
+
+		// Optional: summarize events to the logger
+		for (auto const& ev : collisionEvents) {
+			LOGI(Physics, "Collision pair registered"); // keep it light; UI shows details
+		}
 	}
 
 	void PhysicsHandler::applyImpulse(Collision::CollisionEvent const& event, CrashoutsEngine::ECS& globalECS) {
@@ -227,4 +240,5 @@ namespace Physics {
 		/*TODO, FIND A MORE EFFICIENT WAY/REPLACE WITH MESSAGING SYSTEM FOR COLLISION EVENTS*/
 		collisionEvents.clear();
 	}
+
 }

@@ -19,7 +19,7 @@ namespace UI {
     void Init(GLFWwindow* window);
 
     // Render all UI each frame
-    void Render(FrameProfiler& profiler);
+    void Render(FrameProfiler& profiler, CrashoutsEngine::ECS& ecs, Physics::PhysicsHandler& phys);
 
     // Shutdown / free ImGui resources
     void Shutdown();
