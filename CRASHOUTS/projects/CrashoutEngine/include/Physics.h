@@ -12,52 +12,56 @@
 #include "entitymanager.h"
 #include "Collision.h"
 #include "log.h"
+#include <vector>
 
 namespace Component {
-	struct RigidBodyComponent {
-		f32 mass;
-		f32 force;
-		bool bGravity;
-		CEVec3 velocity;
-		CEVec3 prevVelocity;
+	class RigidBodyComponent {
+		private:
+			CEVec3 mVelocity;
+			CEVec3 mMaximumVel;
+			f32 mMass;
+			CEVec3 mNetForce;
+			f32 mRestitutionCoeff; /*Measure of elasticity*/
+		public:
+
+			/*Constructor*/
+			RigidBodyComponent(CEVec3 maximumVel = CEVec3{}, f32 mass = 0.f, f32 restitutionCoeff = 0.f);
+
+			/*Member Functions*/
+			f32 getInverseMass();
+			f32 getMass();
+			void addForce(CEVec3 force);
+			void clearForceAccumulator();
+			void updatePhysics(double dt);
+			CEVec3 getVelocity();
+			void setVelocity(CEVec3 const& newVel);
+			f32 getCoeff();
 	};
 }
 
 namespace Physics {
 	class PhysicsHandler {
+		private:
+			std::vector<Collision::CollisionEvent> collisionEvents;
+			void applyImpulse(Collision::CollisionEvent const& event, CrashoutsEngine::ECS& globalECS);
+			Collision::CollisionHandler collisionHandler;
 		public:
+			PhysicsHandler() = default;
+
 			/*!
-			@brief Modify Transform Component, and do Collision checks and resolutions
+			@brief Modify Transform Component, and do Collision checks and resolutions. Call this function for the main PHYSICS update. Every entity with a rigidbody, collider and transform component will get their transforms modified
 			@param globalECS ECS object for ECS functions
 			@param globalEntities Collection of Entities
 			@param deltaTime Time taken for the previous frame
 			*/
-			static void runSystem(CrashoutsEngine::ECS& globalECS, std::vector<CrashoutsEngine::Entity>& globalEntities, double deltaTime) {
-				/*DETECT COLLISION AND RESOLVE COLLISION*/
-				for (CrashoutsEngine::Entity &entity1 : globalEntities) {
-					if (!globalECS.HasComponent<Component::ColliderComponent>(entity1) || !globalECS.HasComponent<Component::TransformComponent>(entity1)) continue; 
-					for (CrashoutsEngine::Entity const& entity2 : globalEntities) {
-						if (entity1 == entity2) continue;
-						if (!globalECS.HasComponent<Component::ColliderComponent>(entity2) || !globalECS.HasComponent<Component::TransformComponent>(entity2)) continue;
-					
-						/*DISPATCH COLLISION FUNCT*/
-						/*TODO MESSAGING SYSTEM*/
+			void update(CrashoutsEngine::ECS& globalECS, std::vector<CrashoutsEngine::Entity>& globalEntities, double deltaTime);
 
-					}
-				}
-
-				/*PHYSICS SIM, UPDATE POSITION*/
-				for (CrashoutsEngine::Entity& entity : globalEntities) {
-					if (!globalECS.HasComponent<Component::RigidBodyComponent>(entity) || !globalECS.HasComponent<Component::TransformComponent>(entity)) continue;
-					Component::TransformComponent* transform { globalECS.GetComponent<Component::TransformComponent>(entity) };
-					Component::RigidBodyComponent* rigidBody { globalECS.GetComponent<Component::RigidBodyComponent>(entity) };
-					
-					rigidBody->prevVelocity = CEVec3{ transform->posX, transform->posY, transform->posZ };
-					transform->posX += static_cast<float>(deltaTime) * rigidBody->velocity.x;
-					transform->posY += static_cast<float>(deltaTime) * rigidBody->velocity.y;
-					transform->posZ += static_cast<float>(deltaTime) * rigidBody->velocity.z;
-					LOGI(Physics, "Entity " + std::to_string(entity) + " moved to " + std::to_string(transform->posX) + ", " + std::to_string(transform->posY));
-				}
-			}
+			/*!
+			@brief Based on the velocity of the current RigidBodyComponent, modify the transformComponent accordingly
+			@param transformComp The transform component to modify
+			@param rigidBodyComp The rigidbody component to get the velocity from
+			@param deltaTime Time taken for the previous frame
+			*/
+			void updatePhysics(Component::TransformComponent *transformComp, Component::RigidBodyComponent *rigidBodyComp, double deltaTime);
 	};
 }
