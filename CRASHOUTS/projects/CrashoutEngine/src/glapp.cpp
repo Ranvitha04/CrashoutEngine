@@ -161,6 +161,7 @@ bool GLApp::init(GLint w, GLint h, std::string t) {
     model.Setup_VAO();
     model.Setup_Shdrpgm();
 
+    Component::Rendering::Initialize();
 
     return true;
 }
@@ -212,8 +213,8 @@ void GLApp::draw() {
 
     // ---- choose which shape to draw by uncommenting ----
     CEVec3 pos(0.0f, 0.0f, 0.0f);
-    float rotation = 35.0f;
-    float scale = 1.0f;
+    float rotation = 85.0f;
+    float scale = 0.5f;
 
     // Testing for drawing Square
     //shapes.CreateSquare(pos, 0.5f, rotation, scale, CEVec3(.0f, 1.0f, 0.0f));
@@ -222,13 +223,15 @@ void GLApp::draw() {
     //shapes.CreateLine(CEVec3(-0.5f, -0.5f, 0), CEVec3(0.5f, 0.5f, 0), 0.01f, rotation, scale, CEVec3(0, 1, 0));
 
     // Testing for drawing Rectangle
-    shapes.CreateRectangle(pos, 0.8f, 0.4f, rotation, scale, CEVec3(0,0,1));
+    //shapes.CreateRectangle(pos, 0.8f, 0.4f, rotation, scale, CEVec3(0,0,1));
 
     // Testing for drawing Triangle
     //shapes.CreateTriangle(CEVec3(0,0.5,0), CEVec3(-0.4,-0.5,0), CEVec3(0.4,-0.5,0), rotation, scale, CEVec3(1,1,0));
 
     // Draw current model
     //model.Draw();
+
+    Component::Shapes::CreateSquare(CEVec3(0.0f, 0.0f, 0.0f), 1.0f, 35.0f, 1.0f, CEVec3(1.0f, 0.0f, 0.0f));
 
 }
 
@@ -245,6 +248,10 @@ gracefully terminate.
 */
 void GLApp::cleanup() {
     glfwTerminate();
+
+    Component::Rendering::Cleanup();
+
+
 }
 
 

@@ -30,32 +30,39 @@ rendering pipelines.
 
 namespace Component {
 
-	struct Rendering {
 
-		GLenum primitive_type = GL_LINE; 
-		GLSLShader shdr_pgm;
-		GLuint vaoid = 0; 
-		GLuint vbo_hdl = 0; 
-		GLuint ebo_hdl = 0;
-		GLuint idx_elem_cnt = 0;   
+    class Rendering {
+    public:
+        
+        Rendering() = default;
+        
+        static Rendering& Get();
+        static void Initialize();
+        static void Cleanup();
 
-		void Setup_VAO();
-		void Setup_Shdrpgm();
-		void Draw();
+        
+        Rendering(const Rendering&) = delete;
+        Rendering& operator=(const Rendering&) = delete;
 
-	//};
+        // OpenGL resources
+        GLuint vaoid{ 0 };
+        GLuint vbo_hdl{ 0 };
+        GLuint ebo_hdl{ 0 };
+        GLuint primitive_type{ GL_TRIANGLES };
+        GLuint idx_elem_cnt{ 0 };
+        GLSLShader shdr_pgm;
 
-		~Rendering() {
-			if (ebo_hdl) glDeleteBuffers(1, &ebo_hdl);
-			if (vbo_hdl) glDeleteBuffers(1, &vbo_hdl);
-			if (vaoid)   glDeleteVertexArrays(1, &vaoid);
-		}
-	};
+        
+        void Setup_VAO();
+        void Setup_Shdrpgm();
+        void Draw();
 
-	//extern Rendering model;
-
-
-
+        // Dynamic rendering 
+        void SetupBuffers(const void* vertices, size_t vertex_size,
+            const void* colors, size_t color_size,
+            const void* indices, size_t index_count,
+            GLenum primitive);
+    };
 
 }
 
