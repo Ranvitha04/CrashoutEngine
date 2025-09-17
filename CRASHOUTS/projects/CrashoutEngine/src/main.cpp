@@ -17,7 +17,7 @@ context and implement a game loop.
 #include "managers/entitymanager.h"
 #include "log.h"
 #include "playerMovement.h"     // Player::UpdateADVelocity
-#include "Physics.h"            // Component::RigidBodyComponent
+#include "managers/physicsmanager.h"            // Component::RigidBodyComponent
 #include "managers/inputmanager.h"
 #include "debugmenu.h"
 

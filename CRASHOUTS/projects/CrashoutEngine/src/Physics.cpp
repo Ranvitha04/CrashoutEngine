@@ -6,7 +6,7 @@
 
 //__________________________________________________________________________*/
 
-#include "Physics.h"
+#include "managers/physicsmanager.h"
 
 #include "math/CEMath.h"
 

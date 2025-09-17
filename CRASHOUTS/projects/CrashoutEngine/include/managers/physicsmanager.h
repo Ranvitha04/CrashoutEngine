@@ -10,7 +10,7 @@
 
 #include "math/CEVec3.h"
 #include "managers/entitymanager.h"
-#include "Collision.h"
+#include "managers/collisionmanager.h"
 #include "log.h"
 #include <vector>
 
