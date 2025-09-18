@@ -47,7 +47,7 @@ namespace Component {
 		/*TODO PREVENT VELOCITY FROM GOING FURTHER FROM MAX velocity*/
 		mVelocity += static_cast<f32>(dt) * acceleration;
 
-		clearForceAccumulator(); /*Reset forces acting upon object in an interation*/
+		clearForceAccumulator(); /*Reset forces acting upon object in an iteration*/
 
 	}
 
@@ -96,12 +96,12 @@ namespace Physics {
 		if (sPaused && !sStepOnce) return;
 		sStepOnce = false;
 
-		collisionEvents.clear();
+		//collisionEvents.clear(); /*Commented out for now as bug with the collision events
 		// ... your broadphase/narrowphase that fills collisionEvents and resolves ...
 
 		// Optional: summarize events to the logger
 		for (auto const& ev : collisionEvents) {
-			LOGI(Physics, "Collision pair registered"); // keep it light; UI shows details
+			//LOGI(Physics, "Collision pair registered"); // keep it light; UI shows details
 		}
 	}
 
@@ -158,10 +158,10 @@ namespace Physics {
 
 			//LOOSE FRICTION IMPLEMENTATION
 			if ( CEMath::LengthSq(rigidBody->getVelocity()) > 0.f) {
-				rigidBody->addForce(-(rigidBody->getVelocity() * 1.5f * rigidBody->getMass()));
+				rigidBody->addForce(-(rigidBody->getVelocity() * 2.0f * rigidBody->getMass()));
 			}
 
-			rigidBody->addForce(CEVec3{ 0.f, -4.f, 0.f } * rigidBody->getMass()); /*GRAVITY*/
+			rigidBody->addForce(CEVec3{ 0.f, -2.f, 0.f } * rigidBody->getMass()); /*GRAVITY*/
 
 		}
 
@@ -209,12 +209,39 @@ namespace Physics {
 					updatePhysics(&newTransform1, &newRigidBody1, deltaTime);
 				}
 
-				/*STORE COLLISION EVENT IN BUFFER*/
-				collisionEvents.push_back(Collision::CollisionEvent{
-					collisionManifold,
-					entity1,
-					entity2
-				});
+				if (collisionManifold.collisionOccured) {
+
+					/*STORE COLLISION EVENT IN BUFFER*/
+
+					bool registered{ false };
+
+					for (Collision::CollisionEvent& collEvent : collisionEvents) {
+						CrashoutsEngine::Entity const* id1{ &collEvent.entity1 };
+						CrashoutsEngine::Entity const* id2{ &collEvent.entity2 };
+
+						CrashoutsEngine::Entity const* id3{ &entity1 };
+						CrashoutsEngine::Entity const* id4{ &entity2 };
+						if (*id1 < *id2) {
+							std::swap(id1, id2);
+						}
+
+						if (*id3 < *id4) {
+							std::swap(id3, id4);
+						}
+
+						if (*id1 == *id3 && *id2 == *id4) {
+							registered = true;
+						}
+
+					}
+					if (!registered) {
+						collisionEvents.push_back(Collision::CollisionEvent{
+							collisionManifold,
+							entity1,
+							entity2
+						});
+					}
+				}
 
 			}
 		}

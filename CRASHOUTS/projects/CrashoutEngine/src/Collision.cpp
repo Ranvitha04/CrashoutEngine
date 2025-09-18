@@ -87,60 +87,42 @@ namespace Collision {
 	CollisionManifold CollisionHandler::SphereToAABBCollision(CollisionProps const& coll1, CollisionProps const& coll2) {
 		CollisionManifold result{};
 
-		CollisionProps const* coll1Ptr{ &coll1 };
-		CollisionProps const* coll2Ptr{ &coll2 };
-		if (coll1Ptr->collider->type > coll2Ptr->collider->type) {
-			std::swap(coll1Ptr, coll2Ptr);
+		CollisionProps const* spherePtr{ &coll1 };
+		CollisionProps const* aabbPtr{ &coll2 };
+		if (spherePtr->collider->type > aabbPtr->collider->type) {
+			std::swap(spherePtr, aabbPtr);
 		}
 
-		Sphere const& sphere1Temp = dynamic_cast<Sphere const&>(*(coll1Ptr->collider));
+		Sphere const& sphere1Temp = dynamic_cast<Sphere const&>(*(spherePtr->collider));
 
-		AABBRect const& aabb2Temp = dynamic_cast<AABBRect const&>(*(coll2Ptr->collider));
+		AABBRect const& aabb2Temp = dynamic_cast<AABBRect const&>(*(aabbPtr->collider));
 
-		CEVec3 minAABB{ CEVec3 {coll2Ptr->position.x - aabb2Temp.max.x, coll2Ptr->position.y - aabb2Temp.max.y, 0.f} };
-		CEVec3 maxAABB{ CEVec3 {coll2Ptr->position.x + aabb2Temp.max.x, coll2Ptr->position.y + aabb2Temp.max.y, 0.f} };
+		CEVec3 minAABB{ aabbPtr->position.x - aabb2Temp.max.x, aabbPtr->position.y - aabb2Temp.max.y, 0.f };
+		CEVec3 maxAABB{ aabbPtr->position.x + aabb2Temp.max.x, aabbPtr->position.y + aabb2Temp.max.y, 0.f };
 
-		CEVec3 bounds{coll1Ptr->position};
-		if (coll1Ptr->position.x < minAABB.x) bounds.x = minAABB.x;
-		if (coll1Ptr->position.x > maxAABB.x) bounds.x = maxAABB.x;
+		
+		CEVec3 pos{ spherePtr->position };
 
-		if (coll1Ptr->position.y < minAABB.y) bounds.y = minAABB.y;
-		if (coll1Ptr->position.y > maxAABB.y) bounds.y = maxAABB.y;
+		CEVec3 closestPt{pos}; /*CLOSEST POINT OF THE CENTER OF THE CIRCLE TO THE EDGES OF THE AABB*/
 
-		CEVec3 delta{ coll1Ptr->position - bounds };
-		f32 squaredDistance{ CEMath::LengthSq(delta) };
 
-		if (squaredDistance < sphere1Temp.radius * sphere1Temp.radius) {
+		if (pos.x < minAABB.x) { closestPt.x = minAABB.x; }
+		if (pos.x > maxAABB.x) { closestPt.x = maxAABB.x; }
 
-			if (squaredDistance == 0.f) {
-				CEVec3 posDelta{ coll1Ptr->position - coll2Ptr->position };
 
-				float xd{ sphere1Temp.radius + aabb2Temp.max.x - std::abs(posDelta.x) };
-				float yd{ sphere1Temp.radius + aabb2Temp.max.y - std::abs(posDelta.y) };
+		if (pos.y < minAABB.y) { closestPt.y = minAABB.y; }
+		if (pos.y > maxAABB.y) { closestPt.y = maxAABB.y; }
 
-				CEVec3 normal{};
-				f32 depth{};
+		CEVec3 ClosestPtToCirc{ closestPt - pos };
 
-				if (xd < yd) {
-					normal = posDelta.x < 0 ? CEVec3{ -1.f, 0.f, 0.f } : CEVec3{ 1.f, 0.f, 0.f };
-					depth = xd;
-				} else {
-					normal = posDelta.y < 0 ? CEVec3{ 0.f, -1.f, 0.f } : CEVec3{ 0.f, 1.f, 0.f };
-					depth = yd;
-				}
-				result.depth = depth;
-				result.normal = normal;
-				result.collisionOccured = true;
+		if (CEMath::LengthSq(ClosestPtToCirc) < sphere1Temp.radius*sphere1Temp.radius) {
 
-			} else {
+			f32 distance{ CEMath::Length(ClosestPtToCirc) };
 
-				f32 depth{CEMath::Length(delta)};
-				delta = CEMath::Normalize(delta);
-				result.normal = -delta;
-				result.depth = -(depth - sphere1Temp.radius);
-				result.collisionOccured = true;
+			result.collisionOccured = true;
+			result.depth = sphere1Temp.radius - distance;
+			result.normal = CEMath::Normalize(ClosestPtToCirc);
 
-			}
 		}
 
 		return result;

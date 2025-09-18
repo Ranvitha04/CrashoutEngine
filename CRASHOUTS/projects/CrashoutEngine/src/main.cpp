@@ -77,7 +77,7 @@ int main() {
     init();
 	/// register game states and start with main menu
     RegisterAllStates();
-    InitGameStateManager(MAIN_MENU);
+    InitGameStateManager(TRISTAN);
 
     InputManager::Init(GLApp::ptr_window);
     UI::Init(GLApp::ptr_window); // NEW
