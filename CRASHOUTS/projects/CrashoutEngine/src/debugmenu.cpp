@@ -461,7 +461,7 @@ namespace UI { // --------------------------------------------------------------
         }
         ImGui::SameLine;
         if (ImGui::Button("Quit")) {
-            ChangeGameState(QUIT);
+            glfwSetWindowShouldClose(GLApp::ptr_window, GLFW_TRUE);
         }
     }
 
