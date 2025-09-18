@@ -103,6 +103,8 @@ namespace UI {
     @param ui UI state toggles.
     */
     void RenderConsolePanel(UIState& ui);
+
+    void RenderGameStatePanel(UIState& ui);
     
     /*!
     @brief Renders the physics and collision panel.

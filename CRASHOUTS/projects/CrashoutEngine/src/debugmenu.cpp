@@ -14,6 +14,7 @@ This file provides the graphics for Crashout Engine's ImGUI.
 #include "managers/entitymanager.h"
 #include "managers/collisionmanager.h"
 #include "managers/physicsmanager.h"
+#include "gamestatemanager.h"
 #include "log.h"
 #include "debugmenu.h"
 
@@ -418,6 +419,53 @@ namespace UI { // --------------------------------------------------------------
     }
 
     /*!
+     @brief Renders the gameState panel
+     @param state gameState reference.
+     @param ui UI state toggles.
+    */
+    void RenderGameStatePanel(UIState& ui) {
+        ScopedWindow w("GameState", LockFlags(ui.lockLayout));
+
+        ImGui::Text("Current: %d", (int)CurrentGameState);
+        ImGui::Text("Previous: %d", (int)PreviousGameState);
+        ImGui::Text("Next: %d", (int)NextGameState);
+
+        //Helper function to make a button for each state
+        auto stateButton = [](const char* label, GameState gs) {
+            bool pressed = ImGui::Button(label);
+            if (pressed) {
+                ChangeGameState(gs);
+            }
+            ImGui::SameLine();
+            return pressed;
+        };
+
+        // Row 1
+        stateButton("Main Menu", MAIN_MENU);
+        stateButton("Renfred", RENFRED);
+        stateButton("Rain", RAIN);
+
+        ImGui::NewLine;
+
+        // Row 2
+        stateButton("Amir", AMIR);
+        stateButton("Afiq", AFIQ);
+        stateButton("Tristan", TRISTAN);
+        stateButton("Ranvitha", RAN);
+
+        ImGui::Separator;
+
+        // Utility Action
+        if (ImGui::Button("Restart Current State")) {
+            RestartGameState();
+        }
+        ImGui::SameLine;
+        if (ImGui::Button("Quit")) {
+            ChangeGameState(QUIT);
+        }
+    }
+
+    /*!
      @brief Renders the physics panel, including collision event listings and controls.
      @param profiler Frame profiler reference.
      @param ecs ECS reference.
@@ -529,6 +577,7 @@ namespace UI { // --------------------------------------------------------------
         RenderPhysicsPanel(profiler, ecs, phys, ui);
         RenderPerformancePanel(profiler, ui);
         RenderConsolePanel(ui);
+        RenderGameStatePanel(ui);
         EndFrame();
     }
 
