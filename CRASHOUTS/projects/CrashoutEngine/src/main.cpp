@@ -37,6 +37,7 @@ context and implement a game loop.
 static CrashoutsEngine::ECS globalECS;
 static std::vector<CrashoutsEngine::Entity> globalEntities;
 static CrashoutsEngine::Entity globalSelectedEntity = 0;
+static Physics::PhysicsHandler physicsSystem;
 
 // ImGui in-game performance viewer
 static FrameProfiler gProfiler;
@@ -73,7 +74,6 @@ int main() {
     if (!GLApp::init(1280, 720, "CRASHOUTS")) {
         std::exit(EXIT_FAILURE);
     }
-    Physics::PhysicsHandler physicsSystem;
     init();
 	/// register game states and start with main menu
     RegisterAllStates();
@@ -123,7 +123,7 @@ static void draw() {
     GLApp::draw();
 
     // Render ImGui UI on top of the scene
-    UI::Render(gProfiler);
+    UI::Render(gProfiler, globalECS, physicsSystem, globalEntities, globalSelectedEntity);
 
 
     // end of frame profiling
