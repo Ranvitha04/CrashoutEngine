@@ -29,6 +29,7 @@ context and implement a game loop.
 #include <iostream>
 #include "gamestatemanager.h"
 #include "registergamestate.h"
+#include "settings.h"
 
 /*                                                   type declarations
 ----------------------------------------------------------------------------- */
@@ -71,9 +72,14 @@ Note that the C++ compiler will insert a return 0 statement if one is missing.
 */
 int main() {
     // start with a 16:9 aspect ratio
-    if (!GLApp::init(1280, 720, "CRASHOUTS")) {
+    if (!GLApp::init(Settings::GetScreenWidth(), Settings::GetScreenHeight(), "CRASHOUTS")) {
         std::exit(EXIT_FAILURE);
     }
+    std::cout << Settings::GetScreenWidth()
+        << "x"
+        << Settings::GetScreenHeight()
+        << std::endl;
+
     init();
 	/// register game states and start with main menu
     RegisterAllStates();
