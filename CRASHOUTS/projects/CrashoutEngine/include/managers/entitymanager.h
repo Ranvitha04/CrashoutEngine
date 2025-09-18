@@ -26,6 +26,7 @@
 // Include components here:
 #include "components/namecomponent.h"
 #include "components/transformcomponent.h"
+#include "shapes.h"
 
 /*                                                                   
 ----------------------------------------------------------------------------- */

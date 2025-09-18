@@ -163,7 +163,7 @@ static void update() {
     Player::UpdateVelocity(playerRigidBody, moveSpeed);
 
     const double dt = 1.0 / 60.0;
-    //playerTransform.posX += playerRigidBody.velocity.x * static_cast<float>(dt);
+    //playerTransform.position.x += playerRigidBody.velocity.x * static_cast<float>(dt);
 
     // animate scene
     GLApp::update();

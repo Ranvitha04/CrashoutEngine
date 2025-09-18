@@ -68,15 +68,15 @@ namespace Component {
 /*TEMP*/
 namespace {
 	void operator+=(Component::TransformComponent* component, CEVec3 const& trans) {
-		component->posX += trans.x;
-		component->posY += trans.y;
-		component->posZ += trans.z;
+		component->position.x += trans.x;
+		component->position.y += trans.y;
+		component->position.z += trans.z;
 	}
 
 	void operator-=(Component::TransformComponent* component, CEVec3 const& trans) {
-		component->posX -= trans.x;
-		component->posY -= trans.y;
-		component->posZ -= trans.z;
+		component->position.x -= trans.x;
+		component->position.y -= trans.y;
+		component->position.z -= trans.z;
 	}
 }
 
@@ -87,9 +87,9 @@ namespace Physics {
 		f32 newDelta{ static_cast<float>(deltaTime) };
 		rigidBodyComp->updatePhysics(deltaTime); /*UPDATE CURRENT VELOCITY AND RESET NET FORCE*/
 		CEVec3 currentVel{ rigidBodyComp->getVelocity() };
-		transformComp->posX += currentVel.x * newDelta;
-		transformComp->posY += currentVel.y * newDelta;
-		transformComp->posZ += currentVel.z * newDelta;
+		transformComp->position.x += currentVel.x * newDelta;
+		transformComp->position.y += currentVel.y * newDelta;
+		transformComp->position.z += currentVel.z * newDelta;
 
 		// Debug stepping
 		if (sOverrideDt) deltaTime = sDebugDt;
@@ -195,12 +195,12 @@ namespace Physics {
 						Collision::CollisionProps{
 							collider1->collider,
 							CEVec3{},
-							CEVec3{newTransform1.posX, newTransform1.posY, newTransform1.posZ}
+							CEVec3{newTransform1.position.x, newTransform1.position.y, newTransform1.position.z}
 						},
 						Collision::CollisionProps{
 							collider2->collider,
 							CEVec3{},
-							CEVec3{transform2->posX, transform2->posY, transform2->posZ}
+							CEVec3{transform2->position.x, transform2->position.y, transform2->position.z}
 					});
 					if (collisionManifold.collisionOccured) {
 						*transform1 = newTransform1;
@@ -260,7 +260,7 @@ namespace Physics {
 
 			updatePhysics(transform, rigidBody, deltaTime);
 
-			//LOGI(Physics, std::to_string(transform->posY));
+			//LOGI(Physics, std::to_string(transform->position.y));
 
 		}
 
