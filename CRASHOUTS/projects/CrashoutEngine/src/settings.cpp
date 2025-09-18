@@ -8,14 +8,25 @@ Stores and manages screen resolution settings
 */
 
 #include "settings.h"
-#include <iostream> 
+#include <iostream>
+#include <fstream>
+#include "rapidjson/document.h"
+#include "rapidjson/istreamwrapper.h"
 
-//TEMPORARY USE TO BE REMOVED AS IT DOESNT ADHERE TO ECS - Rain
 /// Default screen width before loading from file
 unsigned int Settings::screenWidth = 1280;
 
 /// Default screen height before loading from file
 unsigned int Settings::screenHeight = 720;
+
+struct SettingsLoader {
+    SettingsLoader() {
+        Settings::LoadFromFile("assets/settings.json");
+        Settings::SetScreenSize(Settings::GetScreenWidth(), Settings::GetScreenHeight());
+    }
+};
+
+static SettingsLoader SLoader;
 
 /**
  * @brief Set the screen size
@@ -53,6 +64,28 @@ unsigned int Settings::GetScreenHeight() {
 
 void Settings::LoadFromFile(const char* path) {
     //for future me to read from JSON
+    std::ifstream ifs(path);
+    if (!ifs.is_open()) {
+        std::cerr << "Could not open settings file " << path << std::endl;
+        return;
+    }
+
+    rapidjson::IStreamWrapper isw(ifs);
+    rapidjson::Document json;
+    json.ParseStream(isw);
+
+    if (json.HasParseError()) {
+        std::cerr << "JSON parse error at " << path << std::endl;
+        return;
+    }
+
+    if (json.HasMember("width") && json["width"].IsUint()) {
+        screenWidth = json["width"].GetUint();
+    }
+
+    if (json.HasMember("height") && json["height"].IsUint()) {
+        screenHeight = json["height"].GetUint();
+    }
 }
 
 /**
