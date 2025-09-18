@@ -43,7 +43,6 @@ namespace { //------------------------------------------------------------------
     ECS gECS;                                   //!< Local ECS sandbox for demo purposes
     std::vector<Entity> gEntities;              //!< Sandbox entities
     Entity gSelectedEntity = 0;                 //!< Currently selected entity
-    bool gShowPhysics = false;                  //!< Physics overlay toggle
     std::vector<ProfilerSample> gPerfSnapshot;  //!< Performance profiler snapshot
     double gPerfSnapshotTotalMs = 0.0;          //!< Total frame time in ms
 
@@ -169,18 +168,14 @@ namespace UI { // --------------------------------------------------------------
      @param entities List of ECS entities.
      @param selected Currently selected entity.
     */
-    void RenderEcsPanel(FrameProfiler& profiler,
-        ECS& ecs,
-        std::vector<Entity>& entities,
-        Entity& selected)
+    void RenderEcsPanel(FrameProfiler& profiler, ECS& ecs, std::vector<Entity>& entities, Entity& selected, UIState& ui)
     {
         FrameProfiler::Scoped s(profiler, "ImGui");
         ScopedMemTag mem(MemTag::UI);
 
-        static bool lockLayout = false;
-        ScopedWindow win("ECS Demo", LockFlags(lockLayout));
+        ScopedWindow win("ECS Demo", LockFlags(ui.lockLayout));
 
-        ImGui::Checkbox("Lock layout", &lockLayout);
+        ImGui::Checkbox("Lock layout", &ui.lockLayout);
         ImGui::Separator();
 
         // Create entity in the REAL ECS
@@ -424,6 +419,7 @@ namespace UI { // --------------------------------------------------------------
      @param ui UI state toggles.
     */
     void RenderGameStatePanel(UIState& ui) {
+        if (!ui.showGameState) return;
         ScopedWindow w("GameState", LockFlags(ui.lockLayout));
 
         ImGui::Text("Current: %d", (int)CurrentGameState);
@@ -474,6 +470,7 @@ namespace UI { // --------------------------------------------------------------
     */
     void RenderPhysicsPanel(FrameProfiler&, ECS& ecs, Physics::PhysicsHandler& phys, UIState& ui)
     {
+        if (!ui.showPhysics) return;
         ScopedWindow w("Physics / Collision", LockFlags(ui.lockLayout));
 
         bool paused = Physics::PhysicsHandler::GetPaused();
@@ -573,7 +570,7 @@ namespace UI { // --------------------------------------------------------------
     void RenderAll(FrameProfiler& profiler, ECS& ecs, Physics::PhysicsHandler& phys, UIState& ui, std::vector<Entity>& entities, Entity& selected)
     {
         BeginFrame();
-        RenderEcsPanel(profiler, ecs, entities, selected);
+        RenderEcsPanel(profiler, ecs, entities, selected, ui);
         RenderPhysicsPanel(profiler, ecs, phys, ui);
         RenderPerformancePanel(profiler, ui);
         RenderConsolePanel(ui);

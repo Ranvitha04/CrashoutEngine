@@ -44,6 +44,9 @@ namespace UI {
         bool lockLayout = false;
         bool showPerf = true;
         bool showConsole = true;
+        bool showECS = true;
+        bool showGameState = true;
+        bool showPhysics = true;
         bool drawCollOverlay = true;
     };
 
@@ -89,7 +92,7 @@ namespace UI {
     @param entities List of ECS entities.
     @param selected Currently selected entity.
     */
-    void RenderEcsPanel(FrameProfiler& profiler, CrashoutsEngine::ECS& ecs, std::vector<CrashoutsEngine::Entity>& entities, CrashoutsEngine::Entity& selected);
+    void RenderEcsPanel(FrameProfiler& profiler, CrashoutsEngine::ECS& ecs, std::vector<CrashoutsEngine::Entity>& entities, CrashoutsEngine::Entity& selected, UIState& ui);
     
     /*!
     @brief Renders the performance profiling panel.
