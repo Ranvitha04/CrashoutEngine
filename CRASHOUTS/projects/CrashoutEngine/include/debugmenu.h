@@ -47,6 +47,7 @@ namespace UI {
         bool showECS = true;
         bool showGameState = true;
         bool showPhysics = true;
+        bool showAudio = true;
         bool drawCollOverlay = true;
     };
 
@@ -107,6 +108,11 @@ namespace UI {
     */
     void RenderConsolePanel(UIState& ui);
 
+    /*!
+     @brief Renders the gameState panel
+     @param state gameState reference.
+     @param ui UI state toggles.
+    */
     void RenderGameStatePanel(UIState& ui);
     
     /*!
@@ -118,6 +124,14 @@ namespace UI {
     */
     void RenderPhysicsPanel(FrameProfiler& profiler, CrashoutsEngine::ECS& ecs, Physics::PhysicsHandler& phys, UIState& ui);
     
+    /*!
+     @brief Renders the audio panel.
+     @param profiler Frame profiler reference.
+     @param ecs ECS reference.
+     @param ui UI state toggles.
+    */
+    void RenderAudioPanel(FrameProfiler&, CrashoutsEngine::ECS& ecs, UIState& ui);
+
     /*!
     @brief Draws collision overlays in the viewport.
     @param ecs ECS reference.

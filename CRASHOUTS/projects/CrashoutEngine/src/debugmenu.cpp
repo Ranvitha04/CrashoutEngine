@@ -493,7 +493,7 @@ namespace UI { // --------------------------------------------------------------
      @param phys Physics handler reference.
      @param ui UI state toggles.
     */
-    void RenderPhysicsPanel(FrameProfiler&, ECS& ecs, Physics::PhysicsHandler& phys, UIState& ui)
+    void RenderPhysicsPanel(FrameProfiler& profiler, ECS& ecs, Physics::PhysicsHandler& phys, UIState& ui)
     {
         if (!ui.showPhysics) return;
         ScopedWindow w("Physics / Collision", LockFlags(ui.lockLayout));
@@ -540,6 +540,21 @@ namespace UI { // --------------------------------------------------------------
         if (ui.drawCollOverlay) {
             DrawCollisionOverlayInternal(ecs, evs);
         }
+    }
+
+    /*!
+     @brief Renders the audio panel.
+     @param profiler Frame profiler reference.
+     @param ecs ECS reference.
+     @param ui UI state toggles.
+    */
+    void RenderAudioPanel(FrameProfiler& profiler, ECS& ecs, UIState& ui) {
+        if (!ui.showAudio) return;
+        ScopedWindow w("Audio", LockFlags(ui.lockLayout));
+
+        // Testing Purposes
+        int vol = 10;
+        ImGui::SliderInt("Audio", &vol, 0, 100);
     }
 
     // -- Overlays -------------------------------------------------------------
@@ -597,6 +612,7 @@ namespace UI { // --------------------------------------------------------------
         BeginFrame();
         RenderEcsPanel(profiler, ecs, entities, selected, ui);
         RenderPhysicsPanel(profiler, ecs, phys, ui);
+        RenderAudioPanel(profiler, ecs, ui);
         RenderPerformancePanel(profiler, ui);
         RenderConsolePanel(ui);
         RenderGameStatePanel(ui);
