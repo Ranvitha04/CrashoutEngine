@@ -17,6 +17,12 @@ using namespace std;
 // Internal helpers
 // ---------------------------------------------------------------------------
 
+/*!
+@brief  Allocate a bookkeeping block and return the user pointer.
+@param  sz   Requested user size in bytes.
+@param  tag  Active tag at the time of allocation.
+@returns Pointer to user block; throws std::bad_alloc on failure.
+*/
 static inline char* alloc_block(size_t sz, uint8_t tag) {
     const size_t total = sz + sizeof(size_t) + 1;
     char* p = (char*)std::malloc(total);
@@ -30,6 +36,11 @@ static inline char* alloc_block(size_t sz, uint8_t tag) {
     return p + sizeof(size_t) + 1;
 }
 
+/*!
+@brief  Free a block previously returned by @ref alloc_block.
+@param  vp   User pointer.
+@note   Safely handles null pointers.
+*/
 static inline void free_block(void* vp) noexcept {
     if (!vp) return;
     char* q = (char*)vp - (sizeof(size_t) + 1);
@@ -42,6 +53,9 @@ static inline void free_block(void* vp) noexcept {
     std::free(q);
 }
 
+/*!
+@brief  Dispatch helper that tags allocations using thread-local @ref g_memTagTLS.
+*/
 static inline void* alloc_dispatch(size_t sz) {
     try { return alloc_block(sz, (uint8_t)g_memTagTLS); }
     catch (...) { return nullptr; }

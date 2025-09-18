@@ -18,10 +18,10 @@ namespace Player {
             rb.velocity.y = 0.0f;        // stop moving up when released
         }
         //how fast and direction
-        rb.velocity.x = h * moveSpeed;
+        rb.setVelocity(CEVec3{ h * moveSpeed, 0.f, 0.f });
 
         // show how much velocity is being used this frame
-        std::cout <<  rb.velocity.x << " Units per second\n";
+        std::cout <<  rb.getVelocity().x << " Units per second\n";
     }
 }
 

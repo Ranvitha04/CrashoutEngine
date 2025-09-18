@@ -42,16 +42,17 @@ add_definitions(-DUSE_CSD3151_AUTOMATION=0) # Used for instructor's automation
 
 # List of external libraries
 set(ALL_LIBS
-  PRIVATE glfw
-  PRIVATE libglew_static
-  PRIVATE imgui
+    PRIVATE glfw
+    PRIVATE libglew_static
+    PRIVATE imgui
+    PRIVATE glm::glm
+    PRIVATE stb
 )
 
 # Include path for GLM (optional if not using FetchContent)
 include_directories(${CMAKE_CURRENT_LIST_DIR}/lib/glm)
 
 # ======================= AUTO PROJECT DISCOVERY =========================
-
 # Get all subdirectories in the projects folder
 file(GLOB children RELATIVE "${CMAKE_CURRENT_LIST_DIR}/projects" "${CMAKE_CURRENT_LIST_DIR}/projects/*")
 
@@ -64,6 +65,8 @@ foreach(child ${children})
             ${CMAKE_CURRENT_LIST_DIR}/projects/${child}/src/*.cpp
             ${CMAKE_CURRENT_LIST_DIR}/projects/${child}/include/*.h
             ${CMAKE_CURRENT_LIST_DIR}/projects/${child}/include/*.hpp
+            ${CMAKE_CURRENT_LIST_DIR}/projects/${child}/state/*.h
+            ${CMAKE_CURRENT_LIST_DIR}/projects/${child}/state/*.hpp
         )
 
        # Create executable
@@ -132,20 +135,18 @@ file(GLOB_RECURSE DOXY_INPUTS CONFIGURE_DEPENDS
      ${CMAKE_SOURCE_DIR}/*.md
      ${CMAKE_SOURCE_DIR}/docs/*.md)
 
-# Produce a stamp file when doxygen finishes; depend on all inputs
+# Produce a stamp file when doxygen finishes, depend on all inputs
 add_custom_command(
     OUTPUT ${DOC_OUTPUT_DIR}/.doxygen.stamp
     COMMAND ${CMAKE_COMMAND} -E make_directory ${DOC_OUTPUT_DIR}
     COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYFILE_IN}
     COMMAND ${CMAKE_COMMAND} -E touch ${DOC_OUTPUT_DIR}/.doxygen.stamp
-    DEPENDS ${DOXYFILE_IN} ${DOXY_INPUTS}
     BYPRODUCTS ${DOC_OUTPUT_DIR}/html/index.html
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-    COMMENT "Running Doxygen because files changed"
+    COMMENT "Running Doxygen on every build"
     VERBATIM
 )
 
-# Part of the normal build will re-run only if any DEPENDS changed
-add_custom_target(docs ALL
+add_custom_target(doxygen_docs ALL
     DEPENDS ${DOC_OUTPUT_DIR}/.doxygen.stamp
 )

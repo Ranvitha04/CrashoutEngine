@@ -21,7 +21,7 @@ rendering resources associated with these primitives.
 /*                                                                   includes
 ----------------------------------------------------------------------------- */
 
-#include "CEVec3.h"
+#include "math/CEVec3.h"
 
 namespace Component {
 
@@ -41,6 +41,8 @@ namespace Component {
     
     // Function to clean up all shape rendering resources
     static void Cleanup();
+
+    /*static void Transform(const CEVec3 &InputPosition, );*/
 
     };
 

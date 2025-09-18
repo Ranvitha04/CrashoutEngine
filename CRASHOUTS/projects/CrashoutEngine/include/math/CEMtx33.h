@@ -9,9 +9,9 @@ bruh
 
 #pragma once
 
-#include "CETypes.h"
-#include "CEVec2.h"
-#include "CEVec3.h"
+#include "math/CETypes.h"
+#include "math/CEVec2.h"
+#include "math/CEVec3.h"
 #include <cmath>
 #include "CEMath.h"
 

@@ -17,7 +17,7 @@ integration.
 #include "glapp.h"
 
 #include "rendering.h"
-#include "entitymanager.h"
+#include "managers/entitymanager.h"
 #include "shapes.h"
 #include <glm/glm.hpp>
 #include <iostream>
@@ -58,6 +58,8 @@ std::array<CEVec3, 4> InitVtx = clr_vtx;
 
 std::vector<CEVec3> current_positions;
 std::vector<CEVec3> current_colors;
+
+static float TestRotation = 0.0f; // global rotation angle
 
 /* _________________________________________________________________________ */
 /*! init
@@ -162,6 +164,7 @@ bool GLApp::init(GLint w, GLint h, std::string t) {
     model.Setup_VAO();
     model.Setup_Shdrpgm();
 
+    Component::Rendering::Initialize();
 
     return true;
 }
@@ -207,29 +210,31 @@ as black.
 */
 void GLApp::draw() {
     // clear colorbuffer with RGBA value in glClearColor ...
-    glClearColor(0, 0, 0, 0);
-    glClear(GL_COLOR_BUFFER_BIT);
+    //glClearColor(0, 0, 0, 0);
+    //glClear(GL_COLOR_BUFFER_BIT);
     //model.Draw();
 
     // ---- choose which shape to draw by uncommenting ----
-    CEVec3 pos(0.0f, 0.0f, 0.0f);
-    float rotation = 35.0f;
-    float scale = 1.0f;
+    //CEVec3 pos(0.0f, 0.0f, 0.0f);
+    //float rotation = 35.0f;
+    //float scale = 1.0f;
 
     // Testing for drawing Square
-    //shapes.CreateSquare(pos, 0.5f, rotation, scale, CEVec3(.0f, 1.0f, 0.0f));
+    //Component::Shapes::CreateSquare(pos, 0.5f, TestRotation, scale, CEVec3(.0f, 1.0f, 0.0f));
 
     // Testing for drawing Line
-    shapes.CreateLine(CEVec3(-0.5f, -0.5f, 0), CEVec3(0.5f, 0.5f, 0), 0.01f, rotation, scale, CEVec3(0, 1, 0));
+    //Component::Shapes::CreateLine(CEVec3(-0.5f, -0.5f, 0), CEVec3(0.5f, 0.5f, 0), 0.01f,TestRotation, scale, CEVec3(0, 1, 0));
 
     // Testing for drawing Rectangle
-    //shapes.CreateRectangle(pos, 0.8f, 0.4f, rotation, scale, CEVec3(0,0,1));
+    //Component::Shapes::CreateRectangle(CEVec3(0.0f, 0.0f, 0.0f), 1.0f, 1.3f, TestRotation, 1.0f, CEVec3(1.0f, 0.0f, 0.0f));
 
     // Testing for drawing Triangle
-    //shapes.CreateTriangle(CEVec3(0,0.5,0), CEVec3(-0.4,-0.5,0), CEVec3(0.4,-0.5,0), rotation, scale, CEVec3(1,1,0));
+    //Component::Shapes::CreateTriangle(CEVec3(0,0.5,0), CEVec3(-0.4,-0.5,0), CEVec3(0.4,-0.5,0), TestRotation, scale, CEVec3(1,1,0));
 
     // Draw current model
     //model.Draw();
+
+    //Component::Shapes::CreateSquare(CEVec3(0.0f, 0.0f, 0.0f), 1.0f, 45.0f, 1.0f, CEVec3(1.0f, 0.0f, 0.0f));
 
 }
 
@@ -246,6 +251,10 @@ gracefully terminate.
 */
 void GLApp::cleanup() {
     glfwTerminate();
+
+    Component::Rendering::Cleanup();
+
+
 }
 
 
@@ -291,6 +300,13 @@ void GLApp::key_cb(GLFWwindow* pwin, int key, int scancode, int action, int mod)
 #ifdef _DEBUG
         LOGI(Input, "Key is released");
 #endif
+    }
+
+    if (GLFW_PRESS == action) {
+        if (key == GLFW_KEY_R) { // Rotate with 'R'
+            TestRotation += 10.0f;  // rotate 10 degrees each press
+            if (TestRotation >= 360.0f) TestRotation -= 360.0f;
+        }
     }
 
     if (GLFW_KEY_ESCAPE == key && GLFW_PRESS == action) {

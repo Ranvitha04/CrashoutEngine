@@ -14,11 +14,11 @@ context and implement a game loop.
 // Extension loader library's header must be included before GLFW's header!!!
 #include "glapp.h"
 #include "performanceViewer.h"
-#include "entitymanager.h"
+#include "managers/entitymanager.h"
 #include "log.h"
 #include "playerMovement.h"     // Player::UpdateADVelocity
-#include "Physics.h"            // Component::RigidBodyComponent
-#include "inputmanager.h"
+#include "managers/physicsmanager.h"            // Component::RigidBodyComponent
+#include "managers/inputmanager.h"
 #include "debugmenu.h"
 #include <vector>
 #include <string>
@@ -35,6 +35,8 @@ context and implement a game loop.
 #include <imgui_impl_opengl3.h>
 
 #include <iostream>
+#include "gamestatemanager.h"
+#include "registergamestate.h"
 
 /*                                                   type declarations
 ----------------------------------------------------------------------------- */
@@ -43,6 +45,7 @@ context and implement a game loop.
 static CrashoutsEngine::ECS globalECS;
 static std::vector<CrashoutsEngine::Entity> globalEntities;
 static CrashoutsEngine::Entity globalSelectedEntity = 0;
+static Physics::PhysicsHandler physicsSystem;
 
 // ImGui in-game performance viewer
 static FrameProfiler gProfiler;
@@ -111,8 +114,10 @@ int main() {
     if (!GLApp::init(1280, 720, "CRASHOUTS")) {
         std::exit(EXIT_FAILURE);
     }
-
     init();
+	/// register game states and start with main menu
+    RegisterAllStates();
+    InitGameStateManager(MAIN_MENU);
 
     InputManager::Init(GLApp::ptr_window);
     UI::Init(GLApp::ptr_window); // NEW
@@ -123,7 +128,9 @@ int main() {
         glfwPollEvents();
         InputManager::Update();
         GLApp::update_time();
+        physicsSystem.update(globalECS, globalEntities, GLApp::delta_time);
         draw();
+        UpdateGameStateManager();
         update();
 
     }
@@ -156,7 +163,7 @@ static void draw() {
     GLApp::draw();
 
     // Render ImGui UI on top of the scene
-    UI::Render(gProfiler);
+    UI::Render(gProfiler, globalECS, physicsSystem, globalEntities, globalSelectedEntity);
 
 
     // end of frame profiling
@@ -196,7 +203,7 @@ static void update() {
     Player::UpdateVelocity(playerRigidBody, moveSpeed);
 
     const double dt = 1.0 / 60.0;
-    playerTransform.posX += playerRigidBody.velocity.x * static_cast<float>(dt);
+    //playerTransform.posX += playerRigidBody.velocity.x * static_cast<float>(dt);
 
     // animate scene
     GLApp::update();

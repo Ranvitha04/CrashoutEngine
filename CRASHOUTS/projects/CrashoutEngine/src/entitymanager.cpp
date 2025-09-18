@@ -10,7 +10,7 @@ This file implements
 /* _________________________________________________________________________
 ----------------------------------------------------------------------------- */
 
-#include "entitymanager.h"
+#include "managers/entitymanager.h"
 using Entity = uint32_t;
 /*!
 	@brief  Destroys a specific entity.
