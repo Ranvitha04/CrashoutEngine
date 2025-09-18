@@ -9,9 +9,9 @@ Provides common vector math operations and a constant for PI
 
 #pragma once
 
-#include "CEVec2.h"
+#include "math/CEVec2.h"
 #include <cmath>
-#include "CEVec3.h"
+#include "math/CEVec3.h"
 using CE::f32;
 
 namespace CEMath

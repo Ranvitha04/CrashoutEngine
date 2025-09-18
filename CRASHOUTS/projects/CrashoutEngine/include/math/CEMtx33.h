@@ -10,8 +10,8 @@ bruh
 #pragma once
 
 #include "math/CETypes.h"
-#include "CEVec2.h"
-#include "CEVec3.h"
+#include "math/CEVec2.h"
+#include "math/CEVec3.h"
 #include <cmath>
 #include "CEMath.h"
 
