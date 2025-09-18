@@ -42,6 +42,8 @@ namespace Component {
     // Function to clean up all shape rendering resources
     static void Cleanup();
 
+    /*static void Transform(const CEVec3 &InputPosition, );*/
+
     };
 
 }
