@@ -29,12 +29,17 @@ context and implement a game loop.
 #include <iostream>
 #include "gamestatemanager.h"
 #include "registergamestate.h"
+#include "settings.h"
 
 /*                                                   type declarations
 ----------------------------------------------------------------------------- */
 
+// ECS Singletons
+CrashoutsEngine::ECS* CrashoutsEngine::ECS::instancePtr = nullptr;
+std::mutex CrashoutsEngine::ECS::mtx;
+
 // ECS instance and entity storage
-static CrashoutsEngine::ECS globalECS;
+static CrashoutsEngine::ECS* globalECS = nullptr;
 static std::vector<CrashoutsEngine::Entity> globalEntities;
 static CrashoutsEngine::Entity globalSelectedEntity = 0;
 static Physics::PhysicsHandler physicsSystem;
@@ -69,13 +74,25 @@ Indicates how the program existed. Normal exit is signaled by a return value of
 0. Abnormal termination is signaled by a non-zero return value.
 Note that the C++ compiler will insert a return 0 statement if one is missing.
 */
+
+#include <Windows.h>
+
+#ifdef DEBUG
+
 int main() {
+    globalECS = CrashoutsEngine::ECS::getInstance();
+
     // start with a 16:9 aspect ratio
-    if (!GLApp::init(1280, 720, "CRASHOUTS")) {
+    if (!GLApp::init(Settings::GetScreenWidth(), Settings::GetScreenHeight(), "CRASHOUTS")) {
         std::exit(EXIT_FAILURE);
     }
+    std::cout << Settings::GetScreenWidth()
+        << "x"
+        << Settings::GetScreenHeight()
+        << std::endl;
+
     init();
-	/// register game states and start with main menu
+    /// register game states and start with main menu
     RegisterAllStates();
     InitGameStateManager(MAIN_MENU);
 
@@ -88,7 +105,7 @@ int main() {
         glfwPollEvents();
         InputManager::Update();
         GLApp::update_time();
-        physicsSystem.update(globalECS, globalEntities, GLApp::delta_time);
+        physicsSystem.update(globalEntities, GLApp::delta_time);
         draw();
         UpdateGameStateManager();
         update();
@@ -101,6 +118,50 @@ int main() {
 
     return EXIT_SUCCESS;
 }
+
+#else
+
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
+    PSTR lpCmdLine, int nCmdShow){
+    CrashoutsEngine::ECS* globalECS =
+        CrashoutsEngine::ECS::getInstance();
+
+    // start with a 16:9 aspect ratio
+    if (!GLApp::init(1280, 720, "CRASHOUTS")) {
+        std::exit(EXIT_FAILURE);
+    }
+    init();
+    /// register game states and start with main menu
+    RegisterAllStates();
+    InitGameStateManager(MAIN_MENU);
+
+    InputManager::Init(GLApp::ptr_window);
+    UI::Init(GLApp::ptr_window); // NEW
+
+    // window's close flag is set by clicking close widget or Alt+F4
+    while (!glfwWindowShouldClose(GLApp::ptr_window)) {
+        //TEMPORARY TO BE REPLACED BY ECS INPUT SYSTEM - Rain
+        glfwPollEvents();
+        InputManager::Update();
+        GLApp::update_time();
+        physicsSystem.update(globalEntities, GLApp::delta_time);
+        draw();
+        UpdateGameStateManager();
+        update();
+
+    }
+
+    // Cleanup
+    UI::Shutdown();
+    GLApp::cleanup();
+
+    return 0;
+}
+
+#endif
+
+
+
 
 static void init() {
     
@@ -123,7 +184,7 @@ static void draw() {
     GLApp::draw();
 
     // Render ImGui UI on top of the scene
-    UI::Render(gProfiler, globalECS, physicsSystem, globalEntities, globalSelectedEntity);
+    UI::Render(gProfiler, *globalECS, physicsSystem, globalEntities, globalSelectedEntity);
 
 
     // end of frame profiling

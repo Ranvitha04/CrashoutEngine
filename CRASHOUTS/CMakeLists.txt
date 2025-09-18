@@ -26,6 +26,10 @@ set(ALL_LIBS
     PRIVATE stb
 )
 
+add_compile_definitions(
+    $<$<CONFIG:Debug>:-DDEBUG=1>
+)
+
 # Include path for GLM (optional if not using FetchContent)
 include_directories(${CMAKE_CURRENT_LIST_DIR}/lib/glm)
 
@@ -50,6 +54,11 @@ foreach(child ${children})
         add_executable(${child}
             ${${child}_source_files}
         )
+        add_custom_command(TARGET ${child} POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_directory
+            ${CMAKE_CURRENT_LIST_DIR}/projects/${child}/assets
+            $<TARGET_FILE_DIR:${child}>/assets
+)
 
         # Link libraries
         target_link_libraries(${child}
