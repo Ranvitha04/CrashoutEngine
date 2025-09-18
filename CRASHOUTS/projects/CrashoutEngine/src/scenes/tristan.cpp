@@ -1,5 +1,6 @@
 #include "scenes/tristan.h"
 #include "log.h"
+#include "GLFW/glfw3.h"
 void LoadTristan()
 {
 

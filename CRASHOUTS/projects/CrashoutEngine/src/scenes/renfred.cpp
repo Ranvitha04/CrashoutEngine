@@ -1,5 +1,6 @@
 #include "scenes/renfred.h"
 #include "log.h"
+#include "GLFW/glfw3.h"
 void LoadRenfred()
 {
 	// Load resources specific to Renfred state
