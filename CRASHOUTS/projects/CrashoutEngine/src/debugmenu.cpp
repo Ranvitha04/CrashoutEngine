@@ -175,9 +175,6 @@ namespace UI { // --------------------------------------------------------------
 
         ScopedWindow win("ECS Demo", LockFlags(ui.lockLayout));
 
-        ImGui::Checkbox("Lock layout", &ui.lockLayout);
-        ImGui::Separator();
-
         // Create entity in the REAL ECS
         if (ImGui::Button("Create Entity")) {
             Entity e = ecs.CreateEntity();
@@ -557,6 +554,47 @@ namespace UI { // --------------------------------------------------------------
         ImGui::SliderInt("Audio", &vol, 0, 100);
     }
 
+    static void RenderTogglesWindow(UIState& ui)
+    {
+        ImGui::SetNextWindowSize(ImVec2(260.f, 240.f), ImGuiCond_FirstUseEver);
+        if (ImGui::Begin("Debug Controls", nullptr, LockFlags(ui.lockLayout))) {
+            ImGui::TextDisabled("Visibility");
+            ImGui::Separator();
+            ImGui::Checkbox("ECS", &ui.showECS);
+            ImGui::Checkbox("Physics", &ui.showPhysics);
+            ImGui::Checkbox("Performance", &ui.showPerf);
+            ImGui::Checkbox("Console", &ui.showConsole);
+            ImGui::Checkbox("Game State", &ui.showGameState);
+
+            ImGui::Spacing();
+            ImGui::TextDisabled("Settings");
+            ImGui::Separator();
+            ImGui::Checkbox("Lock Layout", &ui.lockLayout);
+            ImGui::Checkbox("Draw Colliders", &ui.drawCollOverlay);
+
+            // Quick actions
+            ImGui::Spacing();
+            if (ImGui::Button("Show All")) {
+                ui.showECS = ui.showPhysics = ui.showPerf = ui.showConsole = ui.showGameState = true;
+            }
+            ImGui::SameLine();
+            if (ImGui::Button("Hide All")) {
+                ui.showECS = ui.showPhysics = ui.showPerf = ui.showConsole = ui.showGameState = false;
+            }
+
+            // (Optional) Save/Load layout using ImGui .ini
+            ImGui::Spacing();
+            if (ImGui::Button("Save Layout")) {
+                ImGui::SaveIniSettingsToDisk(nullptr); // default imgui.ini
+            }
+            ImGui::SameLine();
+            if (ImGui::Button("Reload Layout")) {
+                ImGui::LoadIniSettingsFromDisk(nullptr);
+            }
+        }
+        ImGui::End();
+    }
+
     // -- Overlays -------------------------------------------------------------
     /*!
      @brief Draws collision overlays.
@@ -610,12 +648,25 @@ namespace UI { // --------------------------------------------------------------
     void RenderAll(FrameProfiler& profiler, ECS& ecs, Physics::PhysicsHandler& phys, UIState& ui, std::vector<Entity>& entities, Entity& selected)
     {
         BeginFrame();
-        RenderEcsPanel(profiler, ecs, entities, selected, ui);
-        RenderPhysicsPanel(profiler, ecs, phys, ui);
-        RenderAudioPanel(profiler, ecs, ui);
-        RenderPerformancePanel(profiler, ui);
-        RenderConsolePanel(ui);
-        RenderGameStatePanel(ui);
+        RenderTogglesWindow(ui);
+        if (ui.showECS) {
+            RenderEcsPanel(profiler, ecs, entities, selected, ui); 
+        }
+        if (ui.showPhysics) {
+            RenderPhysicsPanel(profiler, ecs, phys, ui);
+        }
+        if (ui.showAudio) {
+            RenderAudioPanel(profiler, ecs, ui);
+        }
+        if (ui.showPerf) {
+            RenderPerformancePanel(profiler, ui);
+        }
+        if (ui.showConsole) {
+            RenderConsolePanel(ui);
+        }
+        if (ui.showGameState) {
+            RenderGameStatePanel(ui);
+        }
         EndFrame();
     }
 

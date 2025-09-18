@@ -42,12 +42,12 @@ namespace UI {
     */
     struct UIState {
         bool lockLayout = false;
-        bool showPerf = true;
-        bool showConsole = true;
-        bool showECS = true;
-        bool showGameState = true;
-        bool showPhysics = true;
-        bool showAudio = true;
+        bool showPerf = false;
+        bool showConsole = false;
+        bool showECS = false;
+        bool showGameState = false;
+        bool showPhysics = false;
+        bool showAudio = false;
         bool drawCollOverlay = true;
     };
 
@@ -131,6 +131,8 @@ namespace UI {
      @param ui UI state toggles.
     */
     void RenderAudioPanel(FrameProfiler&, CrashoutsEngine::ECS& ecs, UIState& ui);
+
+    static void RenderTogglesWindow(UIState& ui);
 
     /*!
     @brief Draws collision overlays in the viewport.
