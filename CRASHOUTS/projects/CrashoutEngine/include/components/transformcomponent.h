@@ -25,7 +25,7 @@ namespace Component {
 		// Rotational transform
 		float rotation;
 		// Scaling transform
-		CEVec2 size{};
+		CEVec2 size{0.5f, 0.5f};
 		// X Y Z position
 		CEVec3 position{};
 	};

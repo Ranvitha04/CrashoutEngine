@@ -26,6 +26,10 @@ set(ALL_LIBS
     PRIVATE stb
 )
 
+add_compile_definitions(
+    $<$<CONFIG:Debug>:-DDEBUG=1>
+)
+
 # Include path for GLM (optional if not using FetchContent)
 include_directories(${CMAKE_CURRENT_LIST_DIR}/lib/glm)
 
