@@ -31,8 +31,7 @@ This file provides the graphics for Crashout Engine's ImGUI.
 /*                                                                   
 ----------------------------------------------------------------------------- */
 
-using CrashoutsEngine::Entity;
-using CrashoutsEngine::ECS;
+using namespace CrashoutsEngine;
 using namespace Component;
 
 namespace { //----------------------------------------------------------------------------- file-local state & helpers
@@ -40,7 +39,7 @@ namespace { //------------------------------------------------------------------
     /*!
      @brief File-local helpers and state for ImGui panels.
     */
-    ECS gECS;                                   //!< Local ECS sandbox for demo purposes
+    ECS* gECS{ nullptr };                                   //!< Local ECS sandbox for demo purposes
     std::vector<Entity> gEntities;              //!< Sandbox entities
     Entity gSelectedEntity = 0;                 //!< Currently selected entity
     bool gShowPhysics = false;                  //!< Physics overlay toggle
@@ -228,6 +227,7 @@ namespace UI { // --------------------------------------------------------------
         if (ImGui::Button("Add NameComponent") && !ecs.HasComponent<NameComponent>(selected)) {
             ecs.AddComponent<NameComponent>(selected, "Unnamed Entity");
         }
+        ImGui::Separator();
 
         // Transform Component
         if (ImGui::Button("Add TransformComponent") && !ecs.HasComponent<TransformComponent>(selected)) {
@@ -236,11 +236,17 @@ namespace UI { // --------------------------------------------------------------
                 CEVec2(),
                 CEVec3());
         }
+        ImGui::Separator();
 
         // Shape Component
         if (ImGui::Button("Add ShapeComponent") && !ecs.HasComponent<Component::Shapes>(selected)) {
+            if (!ecs.HasComponent<TransformComponent>(selected))
+            {
+                ecs.AddComponent<Component::TransformComponent>(selected);
+            }
             ecs.AddComponent<Component::Shapes>(selected);
         }
+        ImGui::Separator();
 
         // Rigid Body Component - Need make Component File
         if (ImGui::Button("Add RigidBodyComponent") && !ecs.HasComponent<Component::RigidBodyComponent>(selected)) {
@@ -248,6 +254,7 @@ namespace UI { // --------------------------------------------------------------
             CEVec3 maxVel{ 100.f, 100.f, 0.f };
             ecs.AddComponent<Component::RigidBodyComponent>(selected, maxVel, mass, restitution);
         }
+        ImGui::Separator();
 
         // Sphere Collider - Need make Sphere Component File
         if (ImGui::Button("Add Sphere Collider") && !ecs.HasComponent<Component::ColliderComponent>(selected)) {
@@ -255,6 +262,7 @@ namespace UI { // --------------------------------------------------------------
             cc.collider = std::make_unique<Collision::Sphere>(32.0f, CEVec3{ 0,0,0 });
             ecs.AddComponent<Component::ColliderComponent>(selected, std::move(cc));
         }
+        ImGui::Separator();
 
         // AABB Collider - Need make AABB Component File
         if (ImGui::Button("Add AABB Collider") && !ecs.HasComponent<Component::ColliderComponent>(selected)) {
@@ -288,9 +296,6 @@ namespace UI { // --------------------------------------------------------------
         if (auto* s = ecs.GetComponent<Component::Shapes>(selected)) {
             if(ecs.HasComponent<TransformComponent>(selected))
             {
-                auto* t = ecs.GetComponent<TransformComponent>(selected);
-                Shapes::CreateRectangle(t->position, t->size.x, t->size.y, t->rotation);
-
                 if (ImGui::Button("Remove ShapeComponent")) {
                     ecs.RemoveComponent<Component::Shapes>(selected);
                 }

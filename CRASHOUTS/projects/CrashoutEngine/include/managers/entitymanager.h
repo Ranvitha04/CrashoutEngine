@@ -22,6 +22,7 @@
 #include <unordered_map>
 #include <memory>
 #include <utility>
+#include <mutex>
 
 // Include components here:
 #include "components/namecomponent.h"
@@ -46,7 +47,42 @@ namespace CrashoutsEngine {
 	of component arrays, one for each component type, enabling efficient data access and manipulation.
 	*/
 	class ECS {
+	private:
+		Entity nextEntityId{ 1 };
+		// Store unique references to each component array of different type
+		std::unordered_map<std::type_index, std::unique_ptr<IComponentArray>> componentArrays;
+
+		// Default constructor 
+		ECS() {}
+
+		// Mutex to ensure thread safety
+		static std::mutex mtx;
+
+		// Inititalizing instancePtr with an instance (Outside of this class we
+		// are initializing instancePtr with an object.)
+		static ECS* instancePtr;
+
 	public:
+		template<typename T>
+		class ComponentArray;
+		
+		template<typename T>
+		ComponentArray<T>& GetComponentArray();
+
+		// deleting copy constructor
+		ECS(const ECS& obj) = delete;
+
+		// Static method to get the Singleton instance
+		static ECS* getInstance() {
+			if (instancePtr == nullptr) {
+				std::lock_guard<std::mutex> lock(mtx);
+				if (instancePtr == nullptr) {
+					instancePtr = new ECS();
+				}
+			}
+			return instancePtr;
+		}
+
 		// Create a new entity and return ID
 		Entity CreateEntity() {
 			Entity newId = nextEntityId++;
@@ -94,16 +130,11 @@ namespace CrashoutsEngine {
 		template<typename T>
 		bool HasComponent(std::string entityName);
 
-	private:
-		Entity nextEntityId{ 1 };
-		// Store unique references to each component array of different type
-		std::unordered_map<std::type_index, std::unique_ptr<IComponentArray>> componentArrays;
-
-		template<typename T>
-		class ComponentArray;
-		
-		template<typename T>
-		ComponentArray<T>& GetComponentArray();
+		// Explicitly delete dynamically allocated members in the destructor
+		~ECS() {
+			delete instancePtr;
+			instancePtr = nullptr;
+		}
 	};
 
 	/*!
