@@ -42,7 +42,7 @@ namespace UI {
     */
     struct UIState {
         bool lockLayout = false;
-        bool showPerf = false;
+        bool showPerf = true;
         bool showConsole = true;
         bool drawCollOverlay = true;
     };
