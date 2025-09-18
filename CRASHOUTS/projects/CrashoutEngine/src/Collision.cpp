@@ -136,7 +136,7 @@ namespace Collision {
 
 				f32 depth{CEMath::Length(delta)};
 				delta = CEMath::Normalize(delta);
-				result.normal = delta;
+				result.normal = -delta;
 				result.depth = -(depth - sphere1Temp.radius);
 				result.collisionOccured = true;
 

@@ -148,7 +148,7 @@ namespace Physics {
 				rigidBody->addForce(-(rigidBody->getVelocity() * 1.5f * rigidBody->getMass()));
 			}
 
-			rigidBody->addForce(CEVec3{ 0.f, -4.f, 0.f }); /*GRAVITY*/
+			rigidBody->addForce(CEVec3{ 0.f, -4.f, 0.f } * rigidBody->getMass()); /*GRAVITY*/
 
 		}
 
