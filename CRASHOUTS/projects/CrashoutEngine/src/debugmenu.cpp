@@ -232,7 +232,14 @@ namespace UI { // --------------------------------------------------------------
         // Transform Component
         if (ImGui::Button("Add TransformComponent") && !ecs.HasComponent<TransformComponent>(selected)) {
             ecs.AddComponent<TransformComponent>(selected,
-                0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 1.f, 1.f, 1.f);
+                0.f,
+                CEVec2(),
+                CEVec3());
+        }
+
+        // Shape Component
+        if (ImGui::Button("Add ShapeComponent") && !ecs.HasComponent<Component::Shapes>(selected)) {
+            ecs.AddComponent<Component::Shapes>(selected);
         }
 
         // Rigid Body Component - Need make Component File
@@ -267,9 +274,27 @@ namespace UI { // --------------------------------------------------------------
         }
 
         if (auto* t = ecs.GetComponent<TransformComponent>(selected)) {
-            ImGui::DragFloat3("Position", &t->posX, 0.1f);
-            ImGui::DragFloat3("Rotation", &t->rotX, 1.0f);
-            ImGui::DragFloat3("Scale", &t->scaleX, 0.05f);
+            float tmpPos[3] = { t->position.x, t->position.y, t->position.z };
+            float tmpSize[2] = { t->size.x, t->size.y };
+            ImGui::DragFloat3("Position", tmpPos, 0.1f);
+            ImGui::DragFloat2("Scale", tmpSize, 0.05f);
+            ImGui::DragFloat("Rotation", &t->rotation, 1.0f);
+
+            // Set values
+            t->position = CEVec3(tmpPos[0], tmpPos[1], tmpPos[2]);
+            t->size = CEVec2(tmpSize[0], tmpSize[1]);
+        }
+
+        if (auto* s = ecs.GetComponent<Component::Shapes>(selected)) {
+            if(ecs.HasComponent<TransformComponent>(selected))
+            {
+                auto* t = ecs.GetComponent<TransformComponent>(selected);
+                Shapes::CreateRectangle(t->position, t->size.x, t->size.y, t->rotation);
+
+                if (ImGui::Button("Remove ShapeComponent")) {
+                    ecs.RemoveComponent<Component::Shapes>(selected);
+                }
+            }
         }
 
         if (auto* rb = ecs.GetComponent<Component::RigidBodyComponent>(selected)) {

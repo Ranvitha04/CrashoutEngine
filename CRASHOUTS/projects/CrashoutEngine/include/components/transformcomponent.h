@@ -10,6 +10,8 @@
 
 /*                                                                   includes
 ----------------------------------------------------------------------------- */
+#include "math/CEVec3.h"
+#include "math/CEVec2.h"
 
 /*                                                                   
 ----------------------------------------------------------------------------- */
@@ -20,12 +22,12 @@ namespace Component {
 	@brief	A component that holds an entity's position, rotation, and scale.
 	*/
 	struct TransformComponent {
-		// X Y Z position
-		float posX, posY, posZ;
 		// Rotational transform
-		float rotX, rotY, rotZ;
+		float rotation;
 		// Scaling transform
-		float scaleX, scaleY, scaleZ;
+		CEVec2 size{};
+		// X Y Z position
+		CEVec3 position{};
 	};
 
 }
