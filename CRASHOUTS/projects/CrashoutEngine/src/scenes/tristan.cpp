@@ -1,33 +1,120 @@
 #include "scenes/tristan.h"
 #include "log.h"
-#include "GLFW/glfw3.h"
-void LoadTristan()
-{
+#include "glapp.h"
+#include "math/CEVec3.h"
+#include "shapes.h"
+#include "./managers/entitymanager.h"
+#include "./managers/collisionmanager.h"
+#include "./managers/physicsmanager.h"
+#include "./managers/inputmanager.h"
+#include <memory>
 
+
+CrashoutsEngine::ECS globalECS;
+std::vector<CrashoutsEngine::Entity> globalEntities;
+
+CrashoutsEngine::Entity entity1;
+CrashoutsEngine::Entity entity2;
+CrashoutsEngine::Entity entity3;
+//CrashoutsEngine::Entity entity4;
+//CrashoutsEngine::Entity entity5;
+
+Physics::PhysicsHandler physics;
+
+//CEVec3 convertToNDC(CEVec3 const &pos, CEVec3 &dimensions) {
+//
+//	CEVec3 newPos{ pos };
+//
+//	dimensions.x *= 0.5f;
+//
+//
+//	dimensions.y *= 0.5f;
+//
+//	newPos.x += dimensions.x;
+//	newPos.y += dimensions.y;
+//
+//	newPos.x /= dimensions.x;
+//	newPos.y /= dimensions.y;
+//
+//	return newPos;
+//}
+
+
+void LoadTristan() {
+	LOGI(Core, "Tristan Initialized");
+	entity1 = globalECS.CreateEntity();
+	entity2 = globalECS.CreateEntity();
+	entity3 = globalECS.CreateEntity();
+	//entity4 = globalECS.CreateEntity();
+	//entity5 = globalECS.CreateEntity();
+
+	globalEntities.push_back(entity1);
+	globalEntities.push_back(entity2);
+	globalEntities.push_back(entity3);
+
+	globalECS.AddComponent<Component::TransformComponent>(entity1, Component::TransformComponent{ 0.f, CEVec2{}, CEVec3{0.f, 1.f, 0.f} });
+	globalECS.AddComponent<Component::RigidBodyComponent>(entity1, Component::RigidBodyComponent{ CEVec3{}, 5.f, 0.f });
+	globalECS.AddComponent<Component::ColliderComponent>(entity1, Component::ColliderComponent{ std::make_unique<Collision::Sphere>(Collision::Sphere{
+		0.125f,
+		CEVec3{}
+	}) });
+
+	globalECS.AddComponent<Component::TransformComponent>(entity2, Component::TransformComponent{ 0.f, CEVec2{}, CEVec3{0.f, 0.f, 0.f} });
+	globalECS.AddComponent<Component::RigidBodyComponent>(entity2, Component::RigidBodyComponent{ CEVec3{}, 0.f, 0.f });
+	globalECS.AddComponent<Component::ColliderComponent>(entity2, Component::ColliderComponent{ std::make_unique<Collision::AABBRect>(Collision::AABBRect{
+		CEVec3{},
+		CEVec3{1.f, 0.125f, 0.f}
+	}) });
+
+	globalECS.AddComponent<Component::TransformComponent>(entity3, Component::TransformComponent{ 0.f, CEVec2{}, CEVec3{0.5f, 1.0f, 0.f} });
+	globalECS.AddComponent<Component::RigidBodyComponent>(entity3, Component::RigidBodyComponent{ CEVec3{}, 5.f, 0.f });
+	globalECS.AddComponent<Component::ColliderComponent>(entity3, Component::ColliderComponent{ std::make_unique<Collision::AABBRect>(Collision::AABBRect{
+		CEVec3{0.f, 0.f, 0.f},
+		CEVec3{0.125f, 0.125f, 0.f}
+	}) });
+
+	physics = Physics::PhysicsHandler();
 }
 
-void InitTristan()
-{
-	LOGI(Core, "Tristan Initialized");
+void InitTristan() {
+	
 }
 
 void UpdateTristan()
 {
+	Component::RigidBodyComponent *rigidBody { globalECS.GetComponent<Component::RigidBodyComponent>(entity1) };
+
+	if (InputManager::IsKeyPressed(Key::A)) rigidBody->addForce(CEVec3{ -5.f, 0.f, 0.f });
+	if (InputManager::IsKeyPressed(Key::D)) rigidBody->addForce(CEVec3{ 5.f, 0.f, 0.f });
+	if (InputManager::IsKeyPressed(Key::W)) rigidBody->addForce(CEVec3{ 0.f, 15.f, 0.f });
+
+	/*FOR NOW, TREAT AS IF THE UPDATES ARE HAPPENING AT 60 frames*/
+	physics.update(globalECS, globalEntities, 1. / 120.);
 
 }
 
-void RenderTristan()
-{
+void RenderTristan() {
 	glClearColor(0.1f, 0.2f, 0.4f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
+
+	Component::TransformComponent* transform1{ globalECS.GetComponent<Component::TransformComponent>(entity1) };
+	Component::TransformComponent* transform2{ globalECS.GetComponent<Component::TransformComponent>(entity2) };
+	Component::TransformComponent* transform3{ globalECS.GetComponent<Component::TransformComponent>(entity3) };
+
+	Component::Shapes::CreateRectangle(CEVec3{ transform1->position.x, transform1->position.y, transform1->position.z }, 0.25, 0.25, 0.f, 1.f);
+	Component::Shapes::CreateRectangle(CEVec3{ transform2->position.x, transform2->position.y, transform2->position.z }, 2., 0.25, 0.f, 1.f);
+	Component::Shapes::CreateRectangle(CEVec3{ transform3->position.x, transform3->position.y, transform3->position.z }, 0.25, 0.25, 0.f, 1.f);
+
+
 }
 
-void FreeTristan()
-{
+void FreeTristan() {
 
 }
 
 void UnloadTristan()
 {
-
+	globalECS.DestroyEntity(entity1);
+	globalECS.DestroyEntity(entity2);
+	globalECS.DestroyEntity(entity3);
 }
