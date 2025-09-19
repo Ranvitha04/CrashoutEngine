@@ -23,7 +23,7 @@ set(ALL_LIBS
     PRIVATE libglew_static
     PRIVATE imgui
     PRIVATE glm::glm
-    PRIVATE stb
+
 )
 
 add_compile_definitions(
@@ -32,6 +32,25 @@ add_compile_definitions(
 
 # Include path for GLM (optional if not using FetchContent)
 include_directories(${CMAKE_CURRENT_LIST_DIR}/lib/glm)
+
+# --- FMOD SDK setup (EDIT THIS PATH) ---
+# Point this to where you installed/extracted the FMOD Studio API SDK.
+# Examples:
+#   C:/SDKs/FMOD
+#   C:/Program Files/FMOD/FMOD Studio API Windows
+set(FMOD_SDK "C:/SDKs/FMOD")  # <-- CHANGE ME
+
+# Include directories
+set(FMOD_INC_CORE   "${FMOD_SDK}/api/core/inc")
+set(FMOD_INC_STUDIO "${FMOD_SDK}/api/studio/inc")
+
+# Library directories (assuming 64-bit build)
+set(FMOD_LIB_CORE_DIR   "${FMOD_SDK}/api/core/lib/x64")
+set(FMOD_LIB_STUDIO_DIR "${FMOD_SDK}/api/studio/lib/x64")
+
+# Runtime DLLs to copy next to each built exe
+set(FMOD_DLL_CORE   "${FMOD_SDK}/api/core/bin/x64/fmod.dll")
+set(FMOD_DLL_STUDIO "${FMOD_SDK}/api/studio/bin/x64/fmodstudio.dll")
 
 # ======================= AUTO PROJECT DISCOVERY =========================
 # Get all subdirectories in the projects folder
@@ -63,6 +82,29 @@ foreach(child ${children})
         # Link libraries
         target_link_libraries(${child}
             ${ALL_LIBS}
+        )
+        # --- FMOD: add include paths for this target ---
+        target_include_directories(${child} PRIVATE
+            "${FMOD_INC_CORE}"
+            "${FMOD_INC_STUDIO}"
+        )
+
+        # --- FMOD: link directories + libraries ---
+        target_link_directories(${child} PRIVATE
+            "${FMOD_LIB_CORE_DIR}"
+            "${FMOD_LIB_STUDIO_DIR}"
+        )
+        # MSVC import lib names (64-bit). For logging builds use fmodL_vc / fmodstudioL_vc.
+        target_link_libraries(${child} PRIVATE fmod_vc fmodstudio_vc)
+
+        # --- FMOD: copy runtime DLLs next to the exe so it runs without PATH edits ---
+        add_custom_command(TARGET ${child} POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                "${FMOD_DLL_CORE}"   "$<TARGET_FILE_DIR:${child}>/fmod.dll"
+        )
+        add_custom_command(TARGET ${child} POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                "${FMOD_DLL_STUDIO}" "$<TARGET_FILE_DIR:${child}>/fmodstudio.dll"
         )
 
         # Set C++ standard
