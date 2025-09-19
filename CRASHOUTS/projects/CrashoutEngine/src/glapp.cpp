@@ -58,8 +58,10 @@ std::array<CEVec3, 4> InitVtx = clr_vtx;
 
 std::vector<CEVec3> current_positions;
 std::vector<CEVec3> current_colors;
+std::vector<GLApp::GLViewport> GLApp::vps;
 
 static float TestRotation = 0.0f; // global rotation angle
+static float RightTest = 0.0f;
 
 /* _________________________________________________________________________ */
 /*! init
@@ -88,6 +90,8 @@ bool GLApp::init(GLint w, GLint h, std::string t) {
     GLApp::height = h;
     GLApp::title = t;
 
+    GLApp::vps.resize(4);
+
     if (!glfwInit()) {
         std::cout << "GLFW init has failed - abort program!!!" << std::endl;
         return false;
@@ -104,7 +108,7 @@ bool GLApp::init(GLint w, GLint h, std::string t) {
     glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_TRUE);
     // default behavior: colorbuffer is 32-bit RGBA, depthbuffer is 24-bits
     // don't change size of window
-    glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+    glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
 
     // size of viewport: width x height
     GLApp::ptr_window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
@@ -168,6 +172,8 @@ bool GLApp::init(GLint w, GLint h, std::string t) {
     return true;
 }
 
+
+
 /* _________________________________________________________________________ */
 /*! update
 
@@ -194,6 +200,19 @@ void GLApp::update() {
     glNamedBufferSubData(model.vbo_hdl, color_data_offset,
         color_data_size, clr_vtx.data());
 
+    GLint w{ GLApp::width }, h{ GLApp::height };
+    static GLint old_w{}, old_h{};
+    // update viewport settings in vps only if window's dimension change
+    if (w != old_w || h != old_h) {
+        GLint hs{ h / 3 }, ws{ hs };
+        GLApp::vps[0] = { 0, 0, w - ws, h };
+        GLApp::vps[1] = { w - ws, 2 * hs, ws, hs };
+        GLApp::vps[2] = { w - ws, hs, ws, hs };
+        GLApp::vps[3] = { w - ws, 0, ws, hs };
+        old_w = w;
+        old_h = h;
+    }
+
 
 }
 
@@ -214,12 +233,12 @@ void GLApp::draw() {
     //model.Draw();
 
     // ---- choose which shape to draw by uncommenting ----
-    CEVec3 pos(0.0f, 0.0f, 0.0f);
+    CEVec3 pos(RightTest, 0.0f, 0.0f);
     float rotation = 85.0f;
-    float scale = 0.5f;
+    float scale = 45.f;
 
     // Testing for drawing Square
-    //Component::Shapes::CreateSquare(pos, 0.5f, TestRotation, scale, CEVec3(.0f, 1.0f, 0.0f));
+    Component::Shapes::CreateSquare(pos, 0.5f, TestRotation, scale, CEVec3(.0f, 1.0f, 0.0f));
 
     // Testing for drawing Line
     //Component::Shapes::CreateLine(CEVec3(-0.5f, -0.5f, 0), CEVec3(0.5f, 0.5f, 0), 0.01f,TestRotation, scale, CEVec3(0, 1, 0));
@@ -228,7 +247,7 @@ void GLApp::draw() {
     //Component::Shapes::CreateRectangle(CEVec3(0.0f, 0.0f, 0.0f), 1.0f, 1.3f, TestRotation, 1.0f, CEVec3(1.0f, 0.0f, 0.0f));
 
     // Testing for drawing Triangle
-    //Component::Shapes::CreateTriangle(CEVec3(0,0.5,0), CEVec3(-0.4,-0.5,0), CEVec3(0.4,-0.5,0), TestRotation, scale, CEVec3(1,1,0));
+    //Component::Shapes::CreateTriangle(pos, CEVec3(-0.4,-0.5,0), CEVec3(0.4,-0.5,0), TestRotation, scale, CEVec3(1,1,0));
 
     // Draw current model
     //model.Draw();
@@ -308,6 +327,13 @@ void GLApp::key_cb(GLFWwindow* pwin, int key, int scancode, int action, int mod)
         }
     }
 
+    if (GLFW_PRESS == action) {
+        if (key == GLFW_KEY_I) {
+            RightTest += 25.0f;
+            std::cout << RightTest << std::endl;
+        }
+    }
+
     if (GLFW_KEY_ESCAPE == key && GLFW_PRESS == action) {
         glfwSetWindowShouldClose(pwin, GLFW_TRUE);
     }
@@ -383,7 +409,7 @@ relative to the top-left corner of the window client area.
 void GLApp::mousepos_cb(GLFWwindow* pwin, double xpos, double ypos) {
     //ImGui_ImplGlfw_CursorPosCallback(pwin, xpos, ypos);
 #ifdef _DEBUG
-    std::cout << "Mouse cursor position: (" << xpos << ", " << ypos << ")" << std::endl;
+    //std::cout << "Mouse cursor position: (" << xpos << ", " << ypos << ")" << std::endl;
 #endif
 }
 
@@ -452,6 +478,9 @@ void GLApp::fbsize_cb(GLFWwindow* ptr_win, int width, int height) {
     // use the entire framebuffer as drawing region
     glViewport(0, 0, width, height);
     // later, if working in 3D, we'll have to set the projection matrix here ...
+
+    GLApp::width = width;
+    GLApp::height = height;
 }
 
 /* _________________________________________________________________________*/
