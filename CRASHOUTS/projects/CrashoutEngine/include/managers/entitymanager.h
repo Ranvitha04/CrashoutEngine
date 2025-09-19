@@ -72,7 +72,13 @@ namespace CrashoutsEngine {
 		// deleting copy constructor
 		ECS(const ECS& obj) = delete;
 
-		// Static method to get the Singleton instance
+		/**
+		 * @brief Get Singleton of ECS.
+		 *
+		 * This function gives a Singleton to ECS class.
+		 *
+		 * @note This is a thread-safe operation.
+		 */
 		static ECS* getInstance() {
 			if (instancePtr == nullptr) {
 				std::lock_guard<std::mutex> lock(mtx);
@@ -81,6 +87,25 @@ namespace CrashoutsEngine {
 				}
 			}
 			return instancePtr;
+		}
+
+		/**
+		 * @brief Clears all entities and components from the ECS.
+		 *
+		 * This function resets the ECS to a clean, empty state. It clears all
+		 * component arrays and resets the entity ID counter.
+		 *
+		 * @note This is a thread-safe operation.
+		 */
+		void Reset() {
+			// Lock the mutex to ensure no other threads are modifying the ECS during reset.
+			std::lock_guard<std::mutex> lock(mtx);
+
+			// Clear arrays
+			componentArrays.clear();
+
+			// Reset id
+			nextEntityId = 1;
 		}
 
 		// Create a new entity and return ID

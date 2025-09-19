@@ -171,6 +171,7 @@ namespace UI { // --------------------------------------------------------------
     */
     void RenderEcsPanel(FrameProfiler& profiler, ECS& ecs, std::vector<Entity>& entities, Entity& selected, UIState& ui)
     {
+
         FrameProfiler::Scoped s(profiler, "ImGui");
         ScopedMemTag mem(MemTag::UI);
 
@@ -788,8 +789,9 @@ namespace UI { // --------------------------------------------------------------
      @param entities List of ECS entities.
      @param selected Currently selected entity.
     */
-    void RenderAll(FrameProfiler& profiler, ECS& ecs, Physics::PhysicsHandler& phys, UIState& ui, std::vector<Entity>& entities, Entity& selected)
+    void RenderAll(FrameProfiler& profiler, Physics::PhysicsHandler& phys, UIState& ui, ECS& ecs, std::vector<Entity>& entities, Entity& selected)
     {
+
         BeginFrame();
         RenderTogglesWindow(ui);
         if (ui.showECS) {
@@ -821,10 +823,16 @@ namespace UI { // --------------------------------------------------------------
      @param entities List of ECS entities.
      @param selected Currently selected entity.
     */
-    void Render(FrameProfiler& profiler, ECS& ecs, Physics::PhysicsHandler& phys, std::vector<Entity>& entities, Entity& selected)
+    void Render(FrameProfiler& profiler, Physics::PhysicsHandler& phys, Entity& selected)
     {
+        ECS* ecs = ECS::getInstance();
+
+        std::vector<CrashoutsEngine::Entity> entities =
+            ecs->GetComponentArray<Component::NameComponent>().indexToEntity;
+        //std::cout << entities.size() << " ";
+
         static UIState ui;
-        RenderAll(profiler, ecs, phys, ui, entities, selected);
+        RenderAll(profiler, phys, ui, *ecs, entities, selected);
     }
 
 } // namespace UI

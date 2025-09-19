@@ -79,7 +79,7 @@ namespace UI {
     @param entities List of entities currently tracked.
     @param selected Currently selected entity.
     */
-    void Render(FrameProfiler& profiler, CrashoutsEngine::ECS& ecs, Physics::PhysicsHandler& phys, std::vector<CrashoutsEngine::Entity>& entities, CrashoutsEngine::Entity& selected);
+    void Render(FrameProfiler& profiler, Physics::PhysicsHandler& phys, CrashoutsEngine::Entity& selected);
 
     // -- Helper Functions ---------------------------------------------
     /*!
@@ -159,6 +159,6 @@ namespace UI {
     @param entities List of ECS entities.
     @param selected Currently selected entity.
     */
-    void RenderAll(FrameProfiler& profiler, CrashoutsEngine::ECS& ecs, Physics::PhysicsHandler& phys, UIState& ui, std::vector<CrashoutsEngine::Entity>& entities, CrashoutsEngine::Entity& selected);
+    void RenderAll(FrameProfiler& profiler, Physics::PhysicsHandler& phys, UIState& ui, CrashoutsEngine::ECS& ecs, std::vector<CrashoutsEngine::Entity>& entities, CrashoutsEngine::Entity& selected);
 
 } // namespace UI

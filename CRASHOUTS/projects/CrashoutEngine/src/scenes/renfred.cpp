@@ -17,12 +17,13 @@ This file implements
 /*                                                   Global Variables
 ----------------------------------------------------------------------------- */
 
-CrashoutsEngine::ECS* globalECS;
+static CrashoutsEngine::ECS* globalECS;
 
 void LoadRenfred()
 {
 	// Load resources specific to Renfred state
 	globalECS = CrashoutsEngine::ECS::getInstance();
+	globalECS->Reset();
 }
 
 void InitRenfred()
