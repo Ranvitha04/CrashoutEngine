@@ -40,7 +40,6 @@ std::mutex CrashoutsEngine::ECS::mtx;
 
 // ECS instance and entity storage
 static CrashoutsEngine::ECS* globalECS = nullptr;
-static std::vector<CrashoutsEngine::Entity> globalEntities;
 static CrashoutsEngine::Entity globalSelectedEntity = 0;
 static Physics::PhysicsHandler physicsSystem;
 
@@ -81,6 +80,8 @@ Note that the C++ compiler will insert a return 0 statement if one is missing.
 
 int main() {
     globalECS = CrashoutsEngine::ECS::getInstance();
+    static std::vector<CrashoutsEngine::Entity> globalEntities = 
+        globalECS->GetComponentArray<Component::NameComponent>().indexToEntity;
 
     // start with a 16:9 aspect ratio
     if (!GLApp::init(Settings::GetScreenWidth(), Settings::GetScreenHeight(), "CRASHOUTS")) {
@@ -184,7 +185,7 @@ static void draw() {
     GLApp::draw();
 
     // Render ImGui UI on top of the scene
-    UI::Render(gProfiler, *globalECS, physicsSystem, globalEntities, globalSelectedEntity);
+    UI::Render(gProfiler, physicsSystem, globalSelectedEntity);
 
 
     // end of frame profiling

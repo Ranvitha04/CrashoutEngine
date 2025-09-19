@@ -1,9 +1,15 @@
 #include "scenes/rain.h"
 #include "log.h"
 #include "GLFW/glfw3.h"
+#include "managers/entitymanager.h"
+
+static CrashoutsEngine::ECS* globalECS;
+
 void LoadRain()
 {
-	// Load resources specific to Rain state
+	// Load resources specific to Renfred state
+	globalECS = CrashoutsEngine::ECS::getInstance();
+	globalECS->Reset();
 }
 
 void InitRain()

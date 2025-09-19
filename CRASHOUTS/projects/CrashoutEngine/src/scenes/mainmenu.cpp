@@ -5,8 +5,14 @@
 #include "shapes.h"
 #include "glapp.h"
 
+#include "managers/entitymanager.h"
+
+static CrashoutsEngine::ECS* globalECS;
+
 void LoadMainMenu()
 {
+	globalECS = CrashoutsEngine::ECS::getInstance();
+	globalECS->Reset();
 	LOGI(Core, "Main Menu Loaded");
 }
 
