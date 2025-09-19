@@ -291,6 +291,10 @@ namespace UI { // --------------------------------------------------------------
         if (auto* s = ecs.GetComponent<Component::Shapes>(selected)) {
             if(ecs.HasComponent<TransformComponent>(selected))
             {
+                // I implemented this back so I can see if the colliders will work on ECS entities
+                // fyi it works, but sphere collider is in the shape of the object so I need to take a look at a later date
+                // auto* t = ecs.GetComponent<TransformComponent>(selected);
+                // Shapes::CreateRectangle(t->position, t->size.x, t->size.y, t->rotation);
                 if (ImGui::Button("Remove ShapeComponent")) {
                     ecs.RemoveComponent<Component::Shapes>(selected);
                 }
@@ -703,68 +707,77 @@ namespace UI { // --------------------------------------------------------------
         }
     }
 
+    /*!
+     @brief Draws collider shapes and optional contact normals in the scene.
+     @param ecs ECS reference used to query transforms, colliders, and shapes.
+     @param events List of collision events from the current frame.
+     @param lineThickness Line thickness for normal/marker rendering.
+     @param drawNormals Whether to render collision contact normals and points.
+    */
     static void DrawColliderWireframesOutlineGL(CrashoutsEngine::ECS& ecs, const std::vector<Collision::CollisionEvent>& events, float lineThickness, bool drawNormals)
     {
         auto& collArr = ecs.GetComponentArray<Component::ColliderComponent>();
 
         auto isColliding = [&](CrashoutsEngine::Entity e)->bool {
-            for (const auto& ev : events) if (ev.entity1 == e || ev.entity2 == e) return true;
+            for (const auto& ev : events)
+            {
+                if (ev.entity1 == e || ev.entity2 == e) { 
+                    return true;
+                }
+            }
             return false;
             };
 
-        // --- 1) Wireframes for all colliders ---
+        // --- 1) Wireframes for all colliders (but actually not because currently they are solid shapes) ---
         for (auto e : collArr.indexToEntity) {
             auto* t = ecs.GetComponent<Component::TransformComponent>(e);
             auto* cc = ecs.GetComponent<Component::ColliderComponent>(e);
             if (!t || !cc || !cc->collider) continue;
 
-            CEVec3 ok = CEVec3(0.2f, 1.0f, 0.6f);
-            CEVec3 hit = CEVec3(1.0f, 0.3f, 0.3f);
+            const CEVec3 ok = CEVec3(0.2f, 1.0f, 0.6f);
+            const CEVec3 hit = CEVec3(1.0f, 0.3f, 0.3f);
             const CEVec3 color = isColliding(e) ? hit : ok;
 
+            bool drawn = false;
+
+            // Draw via existing shape components - honestly sphere gonna be gaslit to be a square here ngl
+            if (ecs.HasComponent<Component::Shapes>(e)) {
+                Component::Shapes::CreateRectangle(t->position, t->size.x, t->size.y, t->rotation, 1.0f, color);
+                drawn = true;
+            }
+
+            if (drawn) continue;
+
+            // if no shape component, take directly from shape.cpp
             if (cc->collider->type == Collision::AABB) {
                 auto* a = dynamic_cast<Collision::AABBRect*>(cc->collider.get());
                 if (!a) continue;
 
-                // local center from corners
-                const float cx_local = 0.5f * (a->min.x + a->max.x);
-                const float cy_local = 0.5f * (a->min.y + a->max.y);
-
-                // half-extents: robust to min != -max (matches collision’s notion of “radius” per axis)
                 const float hx = std::max(std::fabs(a->min.x), std::fabs(a->max.x));
                 const float hy = std::max(std::fabs(a->min.y), std::fabs(a->max.y));
 
-                // world center = entity pos + local center
-                const float cx = t->position.x;
-                const float cy = t->position.y;
-
-                // draw filled box using center + full size
-                Component::Shapes::CreateRectangle(CEVec3(cx, cy, 0.0f), 2.0f * hx, 2.0f * hy, 0.0f, 1.0f, color);
+                Component::Shapes::CreateRectangle(CEVec3(t->position.x, t->position.y, 0.0f), 2.0f * hx, 2.0f * hy, 0.0f, 1.0f, color);
             }
-
             else if (cc->collider->type == Collision::SPHERE) {
                 auto* s = dynamic_cast<Collision::Sphere*>(cc->collider.get());
                 if (!s) continue;
 
                 const float cx = t->position.x + s->center.x;
                 const float cy = t->position.y + s->center.y;
-                const float r = s->radius;
-
-                // filled circle (triangle fan)
-                Component::Shapes::CreateCircleFilled(CEVec3(cx, cy, 0.0f), r, 48, 0.0f, 1.0f, color);
+                Component::Shapes::CreateCircleFilled(CEVec3(cx, cy, 0.0f), s->radius, 48, 0.0f, 1.0f, color);
             }
         }
 
-        // --- 2) Contact normals (optional) ---
+        // --- 2) Contact normals ---
         if (drawNormals) {
             for (const auto& ev : events) {
                 for (const auto& cp : ev.colManifold.contactPoints) {
                     CEVec3 p(cp.x, cp.y, 0);
                     CEVec3 n(ev.colManifold.normal.x, ev.colManifold.normal.y, 0);
-                    // normal line in yellow
-                    Component::Shapes::CreateLine(p, p + n * ev.colManifold.depth,
-                        lineThickness, 0.0f, 1.0f, CEVec3(1, 1, 0));
-                    // small dot at contact (tiny cross)
+
+                    Component::Shapes::CreateLine(
+                        p, p + n * ev.colManifold.depth, lineThickness, 0.0f, 1.0f, CEVec3(1, 1, 0));
+
                     float d = 0.02f;
                     Component::Shapes::CreateLine(CEVec3(p.x - d, p.y, 0), CEVec3(p.x + d, p.y, 0), lineThickness, 0, 1, CEVec3(1, 1, 0));
                     Component::Shapes::CreateLine(CEVec3(p.x, p.y - d, 0), CEVec3(p.x, p.y + d, 0), lineThickness, 0, 1, CEVec3(1, 1, 0));
