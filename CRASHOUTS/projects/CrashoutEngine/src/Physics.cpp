@@ -7,7 +7,8 @@
 //__________________________________________________________________________*/
 
 #include "managers/physicsmanager.h"
-
+#include "log.h"
+#include <cstdio>
 #include "math/CEMath.h"
 
 namespace Component {
@@ -84,25 +85,27 @@ namespace Physics {
 
 	/*UPDATE BOTH THE RIGIDBODY AND TRANSFORM COMPONENT*/
 	void PhysicsHandler::updatePhysics(Component::TransformComponent *transformComp, Component::RigidBodyComponent *rigidBodyComp, double deltaTime) {
-		f32 newDelta{ static_cast<float>(deltaTime) };
-		rigidBodyComp->updatePhysics(deltaTime); /*UPDATE CURRENT VELOCITY AND RESET NET FORCE*/
+		
+		// Debug Stepping one
+		double dt = sOverrideDt ? sDebugDt : deltaTime;
+		if (sPaused) {
+			if (!sStepOnce) return;
+			// allow exactly one tick when paused+Step pressed
+		}
+
+		// Integrate Physics
+		f32 newDelta{ static_cast<float>(dt) };
+		rigidBodyComp->updatePhysics(dt); /*UPDATE CURRENT VELOCITY AND RESET NET FORCE*/
 		CEVec3 currentVel{ rigidBodyComp->getVelocity() };
 		transformComp->position.x += currentVel.x * newDelta;
 		transformComp->position.y += currentVel.y * newDelta;
 		transformComp->position.z += currentVel.z * newDelta;
 
-		// Debug stepping
-		if (sOverrideDt) deltaTime = sDebugDt;
-		if (sPaused && !sStepOnce) return;
-		sStepOnce = false;
+		// Debug stepping two
+		if (sPaused && sStepOnce) sStepOnce = false;
 
 		//collisionEvents.clear(); /*Commented out for now as bug with the collision events
 		// ... your broadphase/narrowphase that fills collisionEvents and resolves ...
-
-		// Optional: summarize events to the logger
-		for (auto const& ev : collisionEvents) {
-			//LOGI(Physics, "Collision pair registered"); // keep it light; UI shows details
-		}
 	}
 
 	void PhysicsHandler::applyImpulse(Collision::CollisionEvent const& event, CrashoutsEngine::ECS& globalECS) {

@@ -41,7 +41,7 @@ namespace { //------------------------------------------------------------------
     /*!
      @brief File-local helpers and state for ImGui panels.
     */
-    ECS* gECS{ nullptr };                                   //!< Local ECS sandbox for demo purposes
+    ECS* gECS{ nullptr };                       //!< Local ECS sandbox for demo purposes
     std::vector<Entity> gEntities;              //!< Sandbox entities
     Entity gSelectedEntity = 0;                 //!< Currently selected entity
     std::vector<ProfilerSample> gPerfSnapshot;  //!< Performance profiler snapshot
@@ -544,12 +544,23 @@ namespace UI { // --------------------------------------------------------------
             ImGui::TableSetupColumn("Depth");
             ImGui::TableSetupColumn("Normal");
             ImGui::TableHeadersRow();
-            for (auto const& e : evs) {
+            auto getEntityLabel = [&](CrashoutsEngine::Entity e) -> const char* {
+                if (ecs.HasComponent<NameComponent>(e)) {
+                    return ecs.GetComponent<NameComponent>(e)->name.c_str();   // const char*
+                }
+                else {
+                    static thread_local char buf[32];
+                    std::snprintf(buf, sizeof(buf), "Entity %u", (unsigned)e);
+                    return buf;                                                // decays to const char*
+                }
+            };
+
+            for (auto const& ev : evs) {
                 ImGui::TableNextRow();
-                ImGui::TableSetColumnIndex(0); ImGui::Text("%u", (unsigned)e.entity1);
-                ImGui::TableSetColumnIndex(1); ImGui::Text("%u", (unsigned)e.entity2);
-                ImGui::TableSetColumnIndex(2); ImGui::Text("%.3f", e.colManifold.depth);
-                ImGui::TableSetColumnIndex(3); ImGui::Text("(%.2f, %.2f)", e.colManifold.normal.x, e.colManifold.normal.y);
+                ImGui::TableSetColumnIndex(0); ImGui::TextUnformatted(getEntityLabel(ev.entity1));
+                ImGui::TableSetColumnIndex(1); ImGui::TextUnformatted(getEntityLabel(ev.entity2));
+                ImGui::TableSetColumnIndex(2); ImGui::Text("%.3f", ev.colManifold.depth);
+                ImGui::TableSetColumnIndex(3); ImGui::Text("(%.2f, %.2f)", ev.colManifold.normal.x, ev.colManifold.normal.y);
             }
             ImGui::EndTable();
         }
@@ -707,19 +718,22 @@ namespace UI { // --------------------------------------------------------------
                 auto* a = dynamic_cast<Collision::AABBRect*>(cc->collider.get());
                 if (!a) continue;
 
-                const float xmin = t->position.x + a->min.x;
-                const float ymin = t->position.y + a->min.y;
-                const float xmax = t->position.x + a->max.x;
-                const float ymax = t->position.y + a->max.y;
+                // local center from corners
+                const float cx_local = 0.5f * (a->min.x + a->max.x);
+                const float cy_local = 0.5f * (a->min.y + a->max.y);
 
-                // filled rectangle: compute center + size
-                const float cx = (xmin + xmax) * 0.5f;
-                const float cy = (ymin + ymax) * 0.5f;
-                const float w = (xmax - xmin);
-                const float h = (ymax - ymin);
+                // half-extents: robust to min != -max (matches collision’s notion of “radius” per axis)
+                const float hx = std::max(std::fabs(a->min.x), std::fabs(a->max.x));
+                const float hy = std::max(std::fabs(a->min.y), std::fabs(a->max.y));
 
-                Component::Shapes::CreateRectangle(CEVec3(cx, cy, 0.0f), w, h, 0.0f, 1.0f, color);
+                // world center = entity pos + local center
+                const float cx = t->position.x;
+                const float cy = t->position.y;
+
+                // draw filled box using center + full size
+                Component::Shapes::CreateRectangle(CEVec3(cx, cy, 0.0f), 2.0f * hx, 2.0f * hy, 0.0f, 1.0f, color);
             }
+
             else if (cc->collider->type == Collision::SPHERE) {
                 auto* s = dynamic_cast<Collision::Sphere*>(cc->collider.get());
                 if (!s) continue;
