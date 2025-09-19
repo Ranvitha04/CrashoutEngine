@@ -15,6 +15,7 @@ This file provides the graphics for Crashout Engine's ImGUI.
 #include "managers/collisionmanager.h"
 #include "managers/physicsmanager.h"
 #include "gamestatemanager.h"
+#include "shapes.h"
 #include "log.h"
 #include "debugmenu.h"
 
@@ -27,6 +28,7 @@ This file provides the graphics for Crashout Engine's ImGUI.
 #include <vector>
 #include <string>
 #include <cstring>
+#include "math/CEVec3.h"
 
 /*                                                                   
 ----------------------------------------------------------------------------- */
@@ -468,7 +470,7 @@ namespace UI { // --------------------------------------------------------------
         stateButton("Renfred", RENFRED);
         stateButton("Rain", RAIN);
 
-        ImGui::NewLine;
+        ImGui::NewLine();
 
         // Row 2
         stateButton("Amir", AMIR);
@@ -476,13 +478,13 @@ namespace UI { // --------------------------------------------------------------
         stateButton("Tristan", TRISTAN);
         stateButton("Ranvitha", RAN);
 
-        ImGui::Separator;
+        ImGui::Separator();
 
         // Utility Action
         if (ImGui::Button("Restart Current State")) {
             RestartGameState();
         }
-        ImGui::SameLine;
+        ImGui::SameLine();
         if (ImGui::Button("Quit")) {
             glfwSetWindowShouldClose(GLApp::ptr_window, GLFW_TRUE);
         }
@@ -501,10 +503,17 @@ namespace UI { // --------------------------------------------------------------
         ScopedWindow w("Physics / Collision", LockFlags(ui.lockLayout));
 
         bool paused = Physics::PhysicsHandler::GetPaused();
-        if (ImGui::Checkbox("Paused", &paused)) Physics::PhysicsHandler::SetPaused(paused);
+        if (ImGui::Checkbox("Paused", &paused)) {
+            Physics::PhysicsHandler::SetPaused(paused);
+        }
         ImGui::SameLine();
-        if (ImGui::Button("Step")) Physics::PhysicsHandler::StepOnce(); Help("Advance one simulation tick when paused.");
+        if (ImGui::Button("Step")) {
+            Physics::PhysicsHandler::StepOnce(); Help("Advance one simulation tick when paused.");
+        }
 
+        ImGui::Checkbox("Freeze on collision", &ui.freezeOnCollision);
+        ImGui::SameLine(); Help("Automatically pause when any collision is detected this frame.");
+       
         static bool overrideDt = false;
         static double dbgDt = 1.0 / 30.0;
         ImGui::Checkbox("Override dt", &overrideDt); ImGui::SameLine();
@@ -518,8 +527,17 @@ namespace UI { // --------------------------------------------------------------
 
         ImGui::Separator();
 
-        // Collisions table
         const auto& evs = phys.collisions();
+
+        // auto pause if requested and collision occured
+        if (ui.freezeOnCollision && !paused && !evs.empty()) {
+            Physics::PhysicsHandler::SetPaused(true);
+            paused = true;
+        }
+
+        ImGui::Separator();
+
+        // Collisions table
         if (ImGui::BeginTable("coll_table", 4, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
             ImGui::TableSetupColumn("Entity A");
             ImGui::TableSetupColumn("Entity B");
@@ -537,10 +555,19 @@ namespace UI { // --------------------------------------------------------------
         }
 
         ImGui::Checkbox("Draw overlay", &ui.drawCollOverlay);
+        ImGui::SameLine(); ImGui::Checkbox("All colliders", &ui.drawAllColliders);
+        ImGui::SameLine(); ImGui::Checkbox("Velocities", &ui.drawVelocities);
+        ImGui::DragFloat("Line thickness", &ui.overlayThickness, 0.1f, 1.0f, 8.0f, "%.1f");
+
+        ImGui::TextDisabled("Pairs this frame: %d", (int)evs.size());
 
         // Overlay drawn after windows so it appears on top
         if (ui.drawCollOverlay) {
             DrawCollisionOverlayInternal(ecs, evs);
+        }
+
+        if (ui.drawAllColliders) {
+            DrawColliderWireframesOutlineGL(ecs, evs, ui.overlayThickness, true);
         }
     }
 
@@ -606,24 +633,121 @@ namespace UI { // --------------------------------------------------------------
      @param ecs ECS reference.
      @param events List of collision events.
     */
-    static void DrawCollisionOverlayInternal(ECS& ecs, const std::vector<Collision::CollisionEvent>& events) {
+    static void DrawCollisionOverlayInternal(CrashoutsEngine::ECS& ecs, const std::vector<Collision::CollisionEvent>& events)
+    {
         ImDrawList* dl = ImGui::GetForegroundDrawList();
-        auto W2S = [](ImVec2 p) { return p; }; // TODO: plug in real camera W2S
 
+        // TODO: replace with real world->screen transform
+        auto W2S = [](const ImVec2& p) -> ImVec2 { return p; };
+
+        auto drawCollider = [&](CrashoutsEngine::Entity e, ImU32 color) {
+            if (auto* t = ecs.GetComponent<TransformComponent>(e)) {
+                if (auto* cc = ecs.GetComponent<Component::ColliderComponent>(e)) {
+                    if (cc->collider) {
+                        const Collision::Collider* base = cc->collider.get();
+                        if (base->type == Collision::SPHERE) {
+                            if (auto const* s = dynamic_cast<const Collision::Sphere*>(base)) {
+                                ImVec2 c = W2S(ImVec2(t->position.x + s->center.x, t->position.y + s->center.y));
+                                dl->AddCircle(c, s->radius, IM_COL32(255, 80, 80, 220), 32, 2.0f);
+                            }
+                        }
+                        else if (base->type == Collision::AABB) {
+                            if (auto const* a = dynamic_cast<const Collision::AABBRect*>(base)) {
+                                ImVec2 pmin = W2S(ImVec2(t->position.x + a->min.x, t->position.y + a->min.y));
+                                ImVec2 pmax = W2S(ImVec2(t->position.x + a->max.x, t->position.y + a->max.y));
+                                dl->AddRect(pmin, pmax, IM_COL32(255, 80, 80, 220), 0.0f, 0, 2.0f);
+                            }
+                        }
+                    }
+                }
+            }
+            };
+
+        // Draw only colliding pairs + contacts
         for (const auto& ev : events) {
-            if (ev.colManifold.contactPoints.empty()) continue;
+            drawCollider(ev.entity1, IM_COL32(255, 80, 80, 220));
+            drawCollider(ev.entity2, IM_COL32(255, 80, 80, 220));
 
-            // Points
-            for (auto const& cp : ev.colManifold.contactPoints) {
+            // Contact points
+            for (const auto& cp : ev.colManifold.contactPoints) {
                 ImVec2 p = W2S(ImVec2(cp.x, cp.y));
                 dl->AddCircleFilled(p, 4.0f, IM_COL32(255, 200, 0, 255));
             }
+            // Normal (if any points exist)
+            if (!ev.colManifold.contactPoints.empty()) {
+                const auto& cp0 = ev.colManifold.contactPoints[0];
+                ImVec2 p0 = W2S(ImVec2(cp0.x, cp0.y));
+                ImVec2 p1 = W2S(ImVec2(cp0.x + ev.colManifold.normal.x * 20.0f,
+                    cp0.y + ev.colManifold.normal.y * 20.0f));
+                dl->AddLine(p0, p1, IM_COL32(255, 100, 0, 255), 2.0f);
+            }
+        }
+    }
 
-            // Normal from first point
-            const auto& c0 = ev.colManifold.contactPoints[0];
-            ImVec2 p0 = W2S(ImVec2(c0.x, c0.y));
-            ImVec2 p1 = W2S(ImVec2(c0.x + ev.colManifold.normal.x * 20.0f, c0.y + ev.colManifold.normal.y * 20.0f));
-            dl->AddLine(p0, p1, IM_COL32(255, 100, 0, 255), 2.0f);
+    static void DrawColliderWireframesOutlineGL(CrashoutsEngine::ECS& ecs, const std::vector<Collision::CollisionEvent>& events, float lineThickness, bool drawNormals)
+    {
+        auto& collArr = ecs.GetComponentArray<Component::ColliderComponent>();
+
+        auto isColliding = [&](CrashoutsEngine::Entity e)->bool {
+            for (const auto& ev : events) if (ev.entity1 == e || ev.entity2 == e) return true;
+            return false;
+            };
+
+        // --- 1) Wireframes for all colliders ---
+        for (auto e : collArr.indexToEntity) {
+            auto* t = ecs.GetComponent<Component::TransformComponent>(e);
+            auto* cc = ecs.GetComponent<Component::ColliderComponent>(e);
+            if (!t || !cc || !cc->collider) continue;
+
+            CEVec3 ok = CEVec3(0.2f, 1.0f, 0.6f);
+            CEVec3 hit = CEVec3(1.0f, 0.3f, 0.3f);
+            const CEVec3 color = isColliding(e) ? hit : ok;
+
+            if (cc->collider->type == Collision::AABB) {
+                auto* a = dynamic_cast<Collision::AABBRect*>(cc->collider.get());
+                if (!a) continue;
+
+                const float xmin = t->position.x + a->min.x;
+                const float ymin = t->position.y + a->min.y;
+                const float xmax = t->position.x + a->max.x;
+                const float ymax = t->position.y + a->max.y;
+
+                // filled rectangle: compute center + size
+                const float cx = (xmin + xmax) * 0.5f;
+                const float cy = (ymin + ymax) * 0.5f;
+                const float w = (xmax - xmin);
+                const float h = (ymax - ymin);
+
+                Component::Shapes::CreateRectangle(CEVec3(cx, cy, 0.0f), w, h, 0.0f, 1.0f, color);
+            }
+            else if (cc->collider->type == Collision::SPHERE) {
+                auto* s = dynamic_cast<Collision::Sphere*>(cc->collider.get());
+                if (!s) continue;
+
+                const float cx = t->position.x + s->center.x;
+                const float cy = t->position.y + s->center.y;
+                const float r = s->radius;
+
+                // filled circle (triangle fan)
+                Component::Shapes::CreateCircleFilled(CEVec3(cx, cy, 0.0f), r, 48, 0.0f, 1.0f, color);
+            }
+        }
+
+        // --- 2) Contact normals (optional) ---
+        if (drawNormals) {
+            for (const auto& ev : events) {
+                for (const auto& cp : ev.colManifold.contactPoints) {
+                    CEVec3 p(cp.x, cp.y, 0);
+                    CEVec3 n(ev.colManifold.normal.x, ev.colManifold.normal.y, 0);
+                    // normal line in yellow
+                    Component::Shapes::CreateLine(p, p + n * ev.colManifold.depth,
+                        lineThickness, 0.0f, 1.0f, CEVec3(1, 1, 0));
+                    // small dot at contact (tiny cross)
+                    float d = 0.02f;
+                    Component::Shapes::CreateLine(CEVec3(p.x - d, p.y, 0), CEVec3(p.x + d, p.y, 0), lineThickness, 0, 1, CEVec3(1, 1, 0));
+                    Component::Shapes::CreateLine(CEVec3(p.x, p.y - d, 0), CEVec3(p.x, p.y + d, 0), lineThickness, 0, 1, CEVec3(1, 1, 0));
+                }
+            }
         }
     }
 

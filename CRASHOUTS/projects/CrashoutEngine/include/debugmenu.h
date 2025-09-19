@@ -49,6 +49,12 @@ namespace UI {
         bool showPhysics = false;
         bool showAudio = false;
         bool drawCollOverlay = true;
+
+        bool freezeOnCollision = false;
+
+        bool drawAllColliders = true;   // draw wireframes for every collider, not just colliding ones
+        bool drawVelocities = false;  // draw velocity arrows if RigidBodyComponent exists
+        float overlayThickness = 2.0f;  // line thickness for wireframes
     };
 
     // -- Lifecycle ----------------------------------------------------
@@ -140,7 +146,9 @@ namespace UI {
     @param events List of collision events.
     @param ui UI state toggles.
     */
-    void DrawCollisionOverlay(CrashoutsEngine::ECS& ecs, const std::vector<Collision::CollisionEvent>& events, const UIState& ui);
+    static void DrawCollisionOverlayInternal(CrashoutsEngine::ECS& ecs, const std::vector<Collision::CollisionEvent>& events);
+
+    static void DrawColliderWireframesOutlineGL(CrashoutsEngine::ECS& ecs, const std::vector<Collision::CollisionEvent>& events, float lineThickness, bool drawNormals);
 
     /*!
     @brief Renders all UI panels and overlays in sequence.

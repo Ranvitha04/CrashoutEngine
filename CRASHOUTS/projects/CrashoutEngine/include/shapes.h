@@ -38,6 +38,8 @@ namespace Component {
 
     // Function to create and draw a triangle
     static void CreateTriangle(const CEVec3& p1, const CEVec3& p2, const CEVec3& p3, float rotation = 0.0f, float scale = 1.0f, const CEVec3& color = CEVec3(1.0f, 1.0f, 1.0f));
+
+    static void CreateCircleFilled(const CEVec3& center, float radius, int segments = 48, float rotation = 0.0f, float scale = 1.0f, const CEVec3& color = CEVec3(1.0f, 1.0f, 1.0f));
     
     // Function to clean up all shape rendering resources
     static void Cleanup();
