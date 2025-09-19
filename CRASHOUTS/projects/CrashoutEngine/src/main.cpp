@@ -20,6 +20,7 @@ context and implement a game loop.
 #include "managers/physicsmanager.h"            // Component::RigidBodyComponent
 #include "managers/inputmanager.h"
 #include "debugmenu.h"
+#include "crashlogger.h"
 
 // ImGui headers for callbacks
 #include <imgui.h>
@@ -79,6 +80,7 @@ Note that the C++ compiler will insert a return 0 statement if one is missing.
 #ifdef DEBUG
 
 int main() {
+    InstallCrashLogger("CrashoutsEngine");
     globalECS = CrashoutsEngine::ECS::getInstance();
     static std::vector<CrashoutsEngine::Entity> globalEntities = 
         globalECS->GetComponentArray<Component::NameComponent>().indexToEntity;
@@ -124,6 +126,7 @@ int main() {
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     PSTR lpCmdLine, int nCmdShow){
+    InstallCrashLogger("CrashoutsEngine");
     CrashoutsEngine::ECS* globalECS =
         CrashoutsEngine::ECS::getInstance();
 

@@ -758,13 +758,15 @@ namespace UI { // --------------------------------------------------------------
 
                 Component::Shapes::CreateRectangle(CEVec3(t->position.x, t->position.y, 0.0f), 2.0f * hx, 2.0f * hy, 0.0f, 1.0f, color);
             }
+
+            // Currently using createrect for this
             else if (cc->collider->type == Collision::SPHERE) {
                 auto* s = dynamic_cast<Collision::Sphere*>(cc->collider.get());
                 if (!s) continue;
 
                 const float cx = t->position.x + s->center.x;
                 const float cy = t->position.y + s->center.y;
-                Component::Shapes::CreateCircleFilled(CEVec3(cx, cy, 0.0f), s->radius, 48, 0.0f, 1.0f, color);
+                Component::Shapes::CreateRectangle(CEVec3(t->position.x, t->position.y, 0.0f), 2.0f * hx, 2.0f * hy, 0.0f, 1.0f, color);
             }
         }
 
