@@ -627,7 +627,7 @@ namespace UI { // --------------------------------------------------------------
 
         std::vector<CrashoutsEngine::Entity> entities =
             ecs->GetComponentArray<Component::NameComponent>().indexToEntity;
-        std::cout << entities.size() << " ";
+        //std::cout << entities.size() << " ";
 
         static UIState ui;
         RenderAll(profiler, phys, ui, *ecs, entities, selected);
