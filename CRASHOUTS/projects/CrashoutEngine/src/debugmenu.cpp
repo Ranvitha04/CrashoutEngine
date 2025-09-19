@@ -31,8 +31,7 @@ This file provides the graphics for Crashout Engine's ImGUI.
 /*                                                                   
 ----------------------------------------------------------------------------- */
 
-using CrashoutsEngine::Entity;
-using CrashoutsEngine::ECS;
+using namespace CrashoutsEngine;
 using namespace Component;
 
 namespace { //----------------------------------------------------------------------------- file-local state & helpers
@@ -40,7 +39,7 @@ namespace { //------------------------------------------------------------------
     /*!
      @brief File-local helpers and state for ImGui panels.
     */
-    ECS gECS;                                   //!< Local ECS sandbox for demo purposes
+    ECS* gECS{ nullptr };                                   //!< Local ECS sandbox for demo purposes
     std::vector<Entity> gEntities;              //!< Sandbox entities
     Entity gSelectedEntity = 0;                 //!< Currently selected entity
     bool gShowPhysics = false;                  //!< Physics overlay toggle
@@ -174,6 +173,7 @@ namespace UI { // --------------------------------------------------------------
         std::vector<Entity>& entities,
         Entity& selected)
     {
+
         FrameProfiler::Scoped s(profiler, "ImGui");
         ScopedMemTag mem(MemTag::UI);
 
@@ -228,12 +228,26 @@ namespace UI { // --------------------------------------------------------------
         if (ImGui::Button("Add NameComponent") && !ecs.HasComponent<NameComponent>(selected)) {
             ecs.AddComponent<NameComponent>(selected, "Unnamed Entity");
         }
+        ImGui::Separator();
 
         // Transform Component
         if (ImGui::Button("Add TransformComponent") && !ecs.HasComponent<TransformComponent>(selected)) {
             ecs.AddComponent<TransformComponent>(selected,
-                0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 1.f, 1.f, 1.f);
+                0.f,
+                CEVec2(),
+                CEVec3());
         }
+        ImGui::Separator();
+
+        // Shape Component
+        if (ImGui::Button("Add ShapeComponent") && !ecs.HasComponent<Component::Shapes>(selected)) {
+            if (!ecs.HasComponent<TransformComponent>(selected))
+            {
+                ecs.AddComponent<Component::TransformComponent>(selected);
+            }
+            ecs.AddComponent<Component::Shapes>(selected);
+        }
+        ImGui::Separator();
 
         // Rigid Body Component - Need make Component File
         if (ImGui::Button("Add RigidBodyComponent") && !ecs.HasComponent<Component::RigidBodyComponent>(selected)) {
@@ -241,6 +255,7 @@ namespace UI { // --------------------------------------------------------------
             CEVec3 maxVel{ 100.f, 100.f, 0.f };
             ecs.AddComponent<Component::RigidBodyComponent>(selected, maxVel, mass, restitution);
         }
+        ImGui::Separator();
 
         // Sphere Collider - Need make Sphere Component File
         if (ImGui::Button("Add Sphere Collider") && !ecs.HasComponent<Component::ColliderComponent>(selected)) {
@@ -248,6 +263,7 @@ namespace UI { // --------------------------------------------------------------
             cc.collider = std::make_unique<Collision::Sphere>(32.0f, CEVec3{ 0,0,0 });
             ecs.AddComponent<Component::ColliderComponent>(selected, std::move(cc));
         }
+        ImGui::Separator();
 
         // AABB Collider - Need make AABB Component File
         if (ImGui::Button("Add AABB Collider") && !ecs.HasComponent<Component::ColliderComponent>(selected)) {
@@ -267,9 +283,24 @@ namespace UI { // --------------------------------------------------------------
         }
 
         if (auto* t = ecs.GetComponent<TransformComponent>(selected)) {
-            ImGui::DragFloat3("Position", &t->posX, 0.1f);
-            ImGui::DragFloat3("Rotation", &t->rotX, 1.0f);
-            ImGui::DragFloat3("Scale", &t->scaleX, 0.05f);
+            float tmpPos[3] = { t->position.x, t->position.y, t->position.z };
+            float tmpSize[2] = { t->size.x, t->size.y };
+            ImGui::DragFloat3("Position", tmpPos, 0.1f);
+            ImGui::DragFloat2("Scale", tmpSize, 0.05f);
+            ImGui::DragFloat("Rotation", &t->rotation, 1.0f);
+
+            // Set values
+            t->position = CEVec3(tmpPos[0], tmpPos[1], tmpPos[2]);
+            t->size = CEVec2(tmpSize[0], tmpSize[1]);
+        }
+
+        if (auto* s = ecs.GetComponent<Component::Shapes>(selected)) {
+            if(ecs.HasComponent<TransformComponent>(selected))
+            {
+                if (ImGui::Button("Remove ShapeComponent")) {
+                    ecs.RemoveComponent<Component::Shapes>(selected);
+                }
+            }
         }
 
         if (auto* rb = ecs.GetComponent<Component::RigidBodyComponent>(selected)) {
@@ -461,7 +492,7 @@ namespace UI { // --------------------------------------------------------------
         }
         ImGui::SameLine;
         if (ImGui::Button("Quit")) {
-            ChangeGameState(QUIT);
+            glfwSetWindowShouldClose(GLApp::ptr_window, GLFW_TRUE);
         }
     }
 
@@ -570,8 +601,9 @@ namespace UI { // --------------------------------------------------------------
      @param entities List of ECS entities.
      @param selected Currently selected entity.
     */
-    void RenderAll(FrameProfiler& profiler, ECS& ecs, Physics::PhysicsHandler& phys, UIState& ui, std::vector<Entity>& entities, Entity& selected)
+    void RenderAll(FrameProfiler& profiler, Physics::PhysicsHandler& phys, UIState& ui, ECS& ecs, std::vector<Entity>& entities, Entity& selected)
     {
+
         BeginFrame();
         RenderEcsPanel(profiler, ecs, entities, selected);
         RenderPhysicsPanel(profiler, ecs, phys, ui);
@@ -589,10 +621,16 @@ namespace UI { // --------------------------------------------------------------
      @param entities List of ECS entities.
      @param selected Currently selected entity.
     */
-    void Render(FrameProfiler& profiler, ECS& ecs, Physics::PhysicsHandler& phys, std::vector<Entity>& entities, Entity& selected)
+    void Render(FrameProfiler& profiler, Physics::PhysicsHandler& phys, Entity& selected)
     {
+        ECS* ecs = ECS::getInstance();
+
+        std::vector<CrashoutsEngine::Entity> entities =
+            ecs->GetComponentArray<Component::NameComponent>().indexToEntity;
+        std::cout << entities.size() << " ";
+
         static UIState ui;
-        RenderAll(profiler, ecs, phys, ui, entities, selected);
+        RenderAll(profiler, phys, ui, *ecs, entities, selected);
     }
 
 } // namespace UI

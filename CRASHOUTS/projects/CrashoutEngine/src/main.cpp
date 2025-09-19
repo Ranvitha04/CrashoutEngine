@@ -20,15 +20,7 @@ context and implement a game loop.
 #include "managers/physicsmanager.h"            // Component::RigidBodyComponent
 #include "managers/inputmanager.h"
 #include "debugmenu.h"
-#include <vector>
-#include <string>
-#include <fmod_studio.hpp>
-#include <fmod.hpp>
-#include <fmod_errors.h>
-#include <thread>
-#include <chrono>
-#include <cstdio>
-#include <filesystem>
+
 // ImGui headers for callbacks
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
@@ -37,13 +29,17 @@ context and implement a game loop.
 #include <iostream>
 #include "gamestatemanager.h"
 #include "registergamestate.h"
+#include "settings.h"
 
 /*                                                   type declarations
 ----------------------------------------------------------------------------- */
 
+// ECS Singletons
+CrashoutsEngine::ECS* CrashoutsEngine::ECS::instancePtr = nullptr;
+std::mutex CrashoutsEngine::ECS::mtx;
+
 // ECS instance and entity storage
-static CrashoutsEngine::ECS globalECS;
-static std::vector<CrashoutsEngine::Entity> globalEntities;
+static CrashoutsEngine::ECS* globalECS = nullptr;
 static CrashoutsEngine::Entity globalSelectedEntity = 0;
 static Physics::PhysicsHandler physicsSystem;
 
@@ -78,44 +74,26 @@ Indicates how the program existed. Normal exit is signaled by a return value of
 Note that the C++ compiler will insert a return 0 statement if one is missing.
 */
 
-// testing fmod
-static FMOD::Studio::System* gStudio = nullptr;
-static bool ok(FMOD_RESULT r, const char* w) { if (r != FMOD_OK) { std::fprintf(stderr, "FMOD %s: %s\n", w, FMOD_ErrorString(r)); return false; } return true; }
+#include <Windows.h>
+
+#ifdef DEBUG
+
 int main() {
-    
-    std::cout << "CWD: " << std::filesystem::current_path() << "\n";
-    std::cout << "banks exist? "
-        << std::filesystem::exists("assets/audio/banks/Master.strings.bank") << " "
-        << std::filesystem::exists("assets/audio/banks/Master.bank") << " "
-        << std::filesystem::exists("assets/audio/banks/sfx.bank") << "\n";
+    globalECS = CrashoutsEngine::ECS::getInstance();
+    static std::vector<CrashoutsEngine::Entity> globalEntities = 
+        globalECS->GetComponentArray<Component::NameComponent>().indexToEntity;
 
-    //testing fmod
-
-    if (!ok(FMOD::Studio::System::create(&gStudio), "create")) return 1;
-    if (!ok(gStudio->initialize(1024, FMOD_STUDIO_INIT_NORMAL, FMOD_INIT_NORMAL, nullptr), "initialize")) return 1;
-
-    FMOD::Studio::Bank* b = nullptr;
-    ok(gStudio->loadBankFile("assets/audio/banks/Master.strings.bank", FMOD_STUDIO_LOAD_BANK_NORMAL, &b), "load strings");
-    ok(gStudio->loadBankFile("assets/audio/banks/Master.bank", FMOD_STUDIO_LOAD_BANK_NORMAL, &b), "load master");
-    ok(gStudio->loadBankFile("assets/audio/banks/sfx.bank", FMOD_STUDIO_LOAD_BANK_NORMAL, &b), "load sfx");
-
-    FMOD::Studio::EventDescription* desc = nullptr;
-    if (!ok(gStudio->getEvent("event:/sfexbeep", &desc), "getEvent")) return 1; 
-    FMOD::Studio::EventInstance* inst = nullptr;
-    ok(desc->createInstance(&inst), "createInstance");
-    ok(inst->start(), "start");
-    inst->release();
-
-    for (int i = 0; i < 240; ++i) { gStudio->update(); std::this_thread::sleep_for(std::chrono::milliseconds(16)); }
-    gStudio->unloadAll(); gStudio->release();
-    return 0;
-    
     // start with a 16:9 aspect ratio
-    if (!GLApp::init(1280, 720, "CRASHOUTS")) {
+    if (!GLApp::init(Settings::GetScreenWidth(), Settings::GetScreenHeight(), "CRASHOUTS")) {
         std::exit(EXIT_FAILURE);
     }
+    std::cout << Settings::GetScreenWidth()
+        << "x"
+        << Settings::GetScreenHeight()
+        << std::endl;
+
     init();
-	/// register game states and start with main menu
+    /// register game states and start with main menu
     RegisterAllStates();
     InitGameStateManager(MAIN_MENU);
 
@@ -128,7 +106,7 @@ int main() {
         glfwPollEvents();
         InputManager::Update();
         GLApp::update_time();
-        physicsSystem.update(globalECS, globalEntities, GLApp::delta_time);
+        physicsSystem.update(globalEntities, GLApp::delta_time);
         draw();
         UpdateGameStateManager();
         update();
@@ -141,6 +119,50 @@ int main() {
 
     return EXIT_SUCCESS;
 }
+
+#else
+
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
+    PSTR lpCmdLine, int nCmdShow){
+    CrashoutsEngine::ECS* globalECS =
+        CrashoutsEngine::ECS::getInstance();
+
+    // start with a 16:9 aspect ratio
+    if (!GLApp::init(1280, 720, "CRASHOUTS")) {
+        std::exit(EXIT_FAILURE);
+    }
+    init();
+    /// register game states and start with main menu
+    RegisterAllStates();
+    InitGameStateManager(MAIN_MENU);
+
+    InputManager::Init(GLApp::ptr_window);
+    UI::Init(GLApp::ptr_window); // NEW
+
+    // window's close flag is set by clicking close widget or Alt+F4
+    while (!glfwWindowShouldClose(GLApp::ptr_window)) {
+        //TEMPORARY TO BE REPLACED BY ECS INPUT SYSTEM - Rain
+        glfwPollEvents();
+        InputManager::Update();
+        GLApp::update_time();
+        physicsSystem.update(globalEntities, GLApp::delta_time);
+        draw();
+        UpdateGameStateManager();
+        update();
+
+    }
+
+    // Cleanup
+    UI::Shutdown();
+    GLApp::cleanup();
+
+    return 0;
+}
+
+#endif
+
+
+
 
 static void init() {
     
@@ -163,7 +185,7 @@ static void draw() {
     GLApp::draw();
 
     // Render ImGui UI on top of the scene
-    UI::Render(gProfiler, globalECS, physicsSystem, globalEntities, globalSelectedEntity);
+    UI::Render(gProfiler, physicsSystem, globalSelectedEntity);
 
 
     // end of frame profiling
@@ -203,7 +225,7 @@ static void update() {
     Player::UpdateVelocity(playerRigidBody, moveSpeed);
 
     const double dt = 1.0 / 60.0;
-    //playerTransform.posX += playerRigidBody.velocity.x * static_cast<float>(dt);
+    //playerTransform.position.x += playerRigidBody.velocity.x * static_cast<float>(dt);
 
     // animate scene
     GLApp::update();
