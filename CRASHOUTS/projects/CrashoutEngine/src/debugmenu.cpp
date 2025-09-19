@@ -761,11 +761,11 @@ namespace UI { // --------------------------------------------------------------
 
             // Currently using createrect for this
             else if (cc->collider->type == Collision::SPHERE) {
-                auto* s = dynamic_cast<Collision::Sphere*>(cc->collider.get());
+                auto* s = dynamic_cast<Collision::AABBRect*>(cc->collider.get());
                 if (!s) continue;
 
-                const float cx = t->position.x + s->center.x;
-                const float cy = t->position.y + s->center.y;
+                const float hx = std::max(std::fabs(s->min.x), std::fabs(s->max.x));
+                const float hy = std::max(std::fabs(s->min.y), std::fabs(s->max.y));
                 Component::Shapes::CreateRectangle(CEVec3(t->position.x, t->position.y, 0.0f), 2.0f * hx, 2.0f * hy, 0.0f, 1.0f, color);
             }
         }
