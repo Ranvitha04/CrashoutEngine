@@ -539,6 +539,8 @@ namespace UI { // --------------------------------------------------------------
         ImGui::Separator();
 
         // Collisions table
+        // Will be implemented later
+        /*
         if (ImGui::BeginTable("coll_table", 4, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
             ImGui::TableSetupColumn("Entity A");
             ImGui::TableSetupColumn("Entity B");
@@ -565,11 +567,16 @@ namespace UI { // --------------------------------------------------------------
             }
             ImGui::EndTable();
         }
+        */
 
         ImGui::Checkbox("Draw overlay", &ui.drawCollOverlay);
         ImGui::SameLine(); ImGui::Checkbox("All colliders", &ui.drawAllColliders);
-        ImGui::SameLine(); ImGui::Checkbox("Velocities", &ui.drawVelocities);
-        ImGui::DragFloat("Line thickness", &ui.overlayThickness, 0.1f, 1.0f, 8.0f, "%.1f");
+
+        // When a way to implement the velocity line happens
+        // ImGui::SameLine(); ImGui::Checkbox("Velocities", &ui.drawVelocities);
+
+        // When a way to figure out how to make it a line instead of a whole shape
+        //ImGui::DragFloat("Line thickness", &ui.overlayThickness, 0.1f, 1.0f, 8.0f, "%.1f");
 
         ImGui::TextDisabled("Pairs this frame: %d", (int)evs.size());
 
