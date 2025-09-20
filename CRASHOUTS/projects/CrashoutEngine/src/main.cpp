@@ -31,6 +31,7 @@ context and implement a game loop.
 #include "gamestatemanager.h"
 #include "registergamestate.h"
 #include "settings.h"
+#include <filesystem>
 
 /*                                                   type declarations
 ----------------------------------------------------------------------------- */
@@ -168,7 +169,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 
 static void init() {
-    
+
 }
 
 /*  _________________________________________________________________________ */
