@@ -21,7 +21,7 @@ rendering resources associated with these primitives.
 /*                                                                   includes
 ----------------------------------------------------------------------------- */
 
-#include "CEVec3.h"
+#include "math/CEVec3.h"
 
 namespace Component {
 

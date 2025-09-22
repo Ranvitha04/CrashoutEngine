@@ -17,7 +17,7 @@ integration.
 
 #include "glapp.h"
 #include "rendering.h"
-#include "entitymanager.h"
+#include "managers/entitymanager.h"
 #include "shapes.h"
 #include "texture.h"
 #include <glm/glm.hpp>
@@ -95,7 +95,7 @@ bool GLApp::init(GLint w, GLint h, std::string t) {
     GLApp::vps.resize(4);
 
     if (!glfwInit()) {
-        std::cout << "GLFW init has failed - abort program!!!" << std::endl;
+        LOGE(Core, "GLFW init has failed - abort program!!!");
         return false;
     }
     // In case a GLFW function fails, an error is reported to callback function
@@ -116,6 +116,7 @@ bool GLApp::init(GLint w, GLint h, std::string t) {
     GLApp::ptr_window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
     if (!GLApp::ptr_window) {
         std::cerr << "GLFW unable to create OpenGL context - abort program\n";
+        LOGE(Core, "GLFW unable to create OpenGL context - abort program!!!");
         glfwTerminate();
         return false;
     }
@@ -238,14 +239,17 @@ as black.
 */
 void GLApp::draw() {
     // clear colorbuffer with RGBA value in glClearColor ...
-    glClearColor(0, 0, 0, 0);
-    glClear(GL_COLOR_BUFFER_BIT);
+    //glClearColor(0, 0, 0, 0);
+    //glClear(GL_COLOR_BUFFER_BIT);
     //model.Draw();
 
     // ---- choose which shape to draw by uncommenting ----
     CEVec3 pos(RightTest, 0.0f, 0.0f);
     float rotation = 85.0f;
     float scale = 45.f;
+    //CEVec3 pos(0.0f, 0.0f, 0.0f);
+    //float rotation = 35.0f;
+    //float scale = 1.0f;
 
     // Testing for drawing Square
     //Component::Shapes::CreateSquare(pos, 0.5f, TestRotation, scale, CEVec3(.0f, 1.0f, 0.0f));
@@ -337,17 +341,17 @@ void GLApp::key_cb(GLFWwindow* pwin, int key, int scancode, int action, int mod)
     //ImGui_ImplGlfw_KeyCallback(pwin, key, scancode, action, mod);
     if (GLFW_PRESS == action) {
 #ifdef _DEBUG
-        std::cout << "Key pressed" << std::endl;
+        LOGI(Input, "Key is pressed");
 #endif
     }
     else if (GLFW_REPEAT == action) {
 #ifdef _DEBUG
-        std::cout << "Key repeatedly pressed" << std::endl;
+        LOGI(Input, "Key is repeatedly pressed");
 #endif
     }
     else if (GLFW_RELEASE == action) {
 #ifdef _DEBUG
-        std::cout << "Key released" << std::endl;
+        LOGI(Input, "Key is released");
 #endif
     }
 
@@ -397,24 +401,24 @@ void GLApp::mousebutton_cb(GLFWwindow* pwin, int button, int action, int mod) {
     switch (button) {
     case GLFW_MOUSE_BUTTON_LEFT:
 #ifdef _DEBUG
-        std::cout << "Left mouse button ";
+        //LOGI(Input, "Left Mouse button ");
 #endif
         break;
     case GLFW_MOUSE_BUTTON_RIGHT:
 #ifdef _DEBUG
-        std::cout << "Right mouse button ";
+        //LOGI(Input, "Right Mouse button ");
 #endif
         break;
     }
     switch (action) {
     case GLFW_PRESS:
 #ifdef _DEBUG
-        std::cout << "pressed!!!" << std::endl;
+        //LOGI(Input, "is pressed!");
 #endif
         break;
     case GLFW_RELEASE:
 #ifdef _DEBUG
-        std::cout << "released!!!" << std::endl;
+        //LOGI(Input, "is released!");
 #endif
         break;
     }
@@ -465,8 +469,8 @@ mouse scroll wheel, being vertical, provides offsets only along the Y-axis.
 void GLApp::mousescroll_cb(GLFWwindow* pwin, double xoffset, double yoffset) {
     //ImGui_ImplGlfw_ScrollCallback(pwin, xoffset, yoffset);
 #ifdef _DEBUG
-    std::cout << "Mouse scroll wheel offset: ("
-        << xoffset << ", " << yoffset << ")" << std::endl;
+    //std::cout << "Mouse scroll wheel offset: ("
+    //    << xoffset << ", " << yoffset << ")" << std::endl;
 #endif
 }
 
@@ -485,7 +489,7 @@ The error callback receives a human-readable description of the error and
 (when possible) its cause.
 */
 void GLApp::error_cb(int error, char const* description) {
-    std::cerr << "GLFW error: " << description << std::endl;
+    LOGE(Core, description);
 }
 
 /* _________________________________________________________________________ */

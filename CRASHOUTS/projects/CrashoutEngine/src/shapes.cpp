@@ -24,7 +24,7 @@ scaling) to shape vertices for flexible rendering.
 
 #include "shapes.h"
 #include "rendering.h"
-#include "entitymanager.h"
+#include "managers/entitymanager.h"
 #include <array>
 #include <GL/glew.h>
 #include "glapp.h"

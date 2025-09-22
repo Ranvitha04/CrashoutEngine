@@ -13,10 +13,15 @@ This file provides the Crashout Engine's ImGUI to track allocation, deallocation
 #include <new>
 //---------------------------------------------------------------------------
 using namespace std;
+// ---------------------------------------------------------------------------
+// Internal helpers
+// ---------------------------------------------------------------------------
 
 /*!
-    @brief  wraps malloc with metadata
-    @return the pointer to the user memory
+@brief  Allocate a bookkeeping block and return the user pointer.
+@param  sz   Requested user size in bytes.
+@param  tag  Active tag at the time of allocation.
+@returns Pointer to user block; throws std::bad_alloc on failure.
 */
 static inline char* alloc_block(size_t sz, uint8_t tag) {
     const size_t total = sz + sizeof(size_t) + 1;
@@ -32,18 +37,9 @@ static inline char* alloc_block(size_t sz, uint8_t tag) {
 }
 
 /*!
-    @brief  redirects all allocation to alloc_block()
-*/
-void* operator new(size_t sz) {
-    return alloc_block(sz, (uint8_t)g_memTagTLS);
-}
-void* operator new[](size_t sz) {
-    return alloc_block(sz, (uint8_t)g_memTagTLS);
-}
-
-/*!
-    @brief  retrieves the metadata from header, updates live and frees
-    @return calls for free
+@brief  Free a block previously returned by @ref alloc_block.
+@param  vp   User pointer.
+@note   Safely handles null pointers.
 */
 static inline void free_block(void* vp) noexcept {
     if (!vp) return;
@@ -57,7 +53,36 @@ static inline void free_block(void* vp) noexcept {
     std::free(q);
 }
 
-void operator delete(void* p) noexcept { free_block(p); }
-void operator delete[](void* p) noexcept { free_block(p); }
-void operator delete(void* p, size_t) noexcept { free_block(p); }
-void operator delete[](void* p, size_t) noexcept { free_block(p); }
+/*!
+@brief  Dispatch helper that tags allocations using thread-local @ref g_memTagTLS.
+*/
+static inline void* alloc_dispatch(size_t sz) {
+    try { return alloc_block(sz, (uint8_t)g_memTagTLS); }
+    catch (...) { return nullptr; }
+}
+
+// ---------------------------------------------------------------------------
+// Global operator new/delete overrides
+// ---------------------------------------------------------------------------
+
+// normal new/delete
+void* operator new(size_t sz) { return alloc_dispatch(sz); }
+void* operator new[](size_t sz) { return alloc_dispatch(sz); }
+void  operator delete(void* p) noexcept { free_block(p); }
+void  operator delete[](void* p) noexcept { free_block(p); }
+
+// sized delete (C++14)
+void  operator delete(void* p, size_t) noexcept { free_block(p); }
+void  operator delete[](void* p, size_t) noexcept { free_block(p); }
+
+// nothrow new/delete
+void* operator new(size_t sz, const std::nothrow_t&) noexcept { return alloc_dispatch(sz); }
+void* operator new[](size_t sz, const std::nothrow_t&) noexcept { return alloc_dispatch(sz); }
+
+// aligned new/delete
+void* operator new(size_t sz, std::align_val_t) { return alloc_dispatch(sz); }
+void* operator new[](size_t sz, std::align_val_t) { return alloc_dispatch(sz); }
+void  operator delete(void* p, std::align_val_t) noexcept { free_block(p); }
+void  operator delete[](void* p, std::align_val_t) noexcept { free_block(p); }
+void  operator delete(void* p, size_t, std::align_val_t) noexcept { free_block(p); }
+void  operator delete[](void* p, size_t, std::align_val_t) noexcept { free_block(p); }

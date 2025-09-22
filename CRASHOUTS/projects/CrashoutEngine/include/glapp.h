@@ -24,6 +24,9 @@ objects participating in the application.
 #include <vector>
 
 
+// Log headers for logging
+#include "../include/log.h"
+
 /*  _________________________________________________________________________ */
 struct GLApp
 	/*! GLApp structure to encapsulate initialization stuff ...
