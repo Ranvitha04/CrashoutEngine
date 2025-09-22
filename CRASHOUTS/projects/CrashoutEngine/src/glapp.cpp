@@ -14,11 +14,12 @@ integration.
 
 /* _________________________________________________________________________
 ----------------------------------------------------------------------------- */
-#include "glapp.h"
 
+#include "glapp.h"
 #include "rendering.h"
 #include "entitymanager.h"
 #include "shapes.h"
+#include "texture.h"
 #include <glm/glm.hpp>
 #include <iostream>
 #include <sstream>
@@ -46,6 +47,7 @@ GLFWwindow* GLApp::ptr_window;
 
 Component::Rendering model;
 Component::Shapes shapes;
+Component::Texture texture;
 
 std::array<CEVec3, 4> clr_vtx{
     CEVec3(1.f, 1.f, 1.f), // Center - white
@@ -167,7 +169,15 @@ bool GLApp::init(GLint w, GLint h, std::string t) {
     model.Setup_VAO();
     model.Setup_Shdrpgm();
 
+
     Component::Rendering::Initialize();
+
+    //Component::Texture::Initialize();
+
+    texture.LoadTexture("../../../projects/CrashoutEngine/images/duck-rgba-256.tex");
+
+    //model.texobj = Component::Texture::LoadTexture("../../../projects/CrashoutEngine/images/duck-rgba-256.tex");
+   
 
     return true;
 }
@@ -238,7 +248,7 @@ void GLApp::draw() {
     float scale = 45.f;
 
     // Testing for drawing Square
-    Component::Shapes::CreateSquare(pos, 0.5f, TestRotation, scale, CEVec3(.0f, 1.0f, 0.0f));
+    //Component::Shapes::CreateSquare(pos, 0.5f, TestRotation, scale, CEVec3(.0f, 1.0f, 0.0f));
 
     // Testing for drawing Line
     //Component::Shapes::CreateLine(CEVec3(-0.5f, -0.5f, 0), CEVec3(0.5f, 0.5f, 0), 0.01f,TestRotation, scale, CEVec3(0, 1, 0));
@@ -254,6 +264,25 @@ void GLApp::draw() {
 
     //Component::Shapes::CreateSquare(CEVec3(0.0f, 0.0f, 0.0f), 1.0f, 45.0f, 1.0f, CEVec3(1.0f, 0.0f, 0.0f));
 
+     // Draw a textured quad using the global system - similar to shapes!
+        
+    //render jpg
+        Component::Texture::CreateTexturedQuad("../../../projects/CrashoutEngine/images/duck.jpg",
+            CEVec3(0.0f, 0.0f, 0.0f),
+            CEVec2(1.0f, 1.0f),
+            0.0f, 1.0f,
+            CEVec3(1.0f, 1.0f, 1.0f));
+    //render .tex
+    //Component::Texture::CreateTexturedQuad("../../../projects/CrashoutEngine/images/duck-rgba-256.tex",
+    //    CEVec3(0.0f, 0.0f, 0.0f),
+    //    CEVec2(1.0f, 1.0f),
+    //    0.0f, 1.0f,
+    //    CEVec3(1.0f, 1.0f, 1.0f));
+
+
+    
+    
+
 }
 
 /* _________________________________________________________________________ */
@@ -268,10 +297,12 @@ The only task is to have GLFW return resources back to the system and
 gracefully terminate.
 */
 void GLApp::cleanup() {
-    glfwTerminate();
+
+    Component::Texture::Cleanup();
 
     Component::Rendering::Cleanup();
 
+    glfwTerminate();
 
 }
 

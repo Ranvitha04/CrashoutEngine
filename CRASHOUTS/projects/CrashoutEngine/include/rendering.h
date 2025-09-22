@@ -50,6 +50,7 @@ namespace Component {
         GLuint ebo_hdl{ 0 };
         GLuint primitive_type{ GL_TRIANGLES };
         GLuint idx_elem_cnt{ 0 };
+        GLuint texobj{ 0 };
         GLSLShader shdr_pgm;
 
         
