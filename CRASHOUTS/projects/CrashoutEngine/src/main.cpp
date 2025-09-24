@@ -82,6 +82,7 @@ Note that the C++ compiler will insert a return 0 statement if one is missing.
 #ifdef DEBUG
 
 int main() {
+	glfwSwapInterval(0); // disable vsync
     globalECS = CrashoutsEngine::ECS::getInstance();
     static std::vector<CrashoutsEngine::Entity> globalEntities = 
         globalECS->GetComponentArray<Component::NameComponent>().indexToEntity;
@@ -110,9 +111,9 @@ int main() {
         InputManager::Update();
         GLApp::update_time();
         physicsSystem.update(globalEntities, FRC.DT());
-        draw();
         UpdateGameStateManager();
         update();
+        draw();
 
         FRC.FrameEnd();
     }
@@ -120,7 +121,6 @@ int main() {
     // Cleanup
     UI::Shutdown();
     GLApp::cleanup();
-
     return EXIT_SUCCESS;
 }
 
@@ -213,7 +213,7 @@ Let application update state changes (such as animation).
 */
 static void update() {
     // process events if any associated with input devices
-    glfwPollEvents();
+    //glfwPollEvents();
 
     // start frame profiling
     gProfiler.begin_frame();
