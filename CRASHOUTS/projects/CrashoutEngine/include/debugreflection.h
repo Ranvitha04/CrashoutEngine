@@ -31,6 +31,20 @@ namespace DebugReflection {
         std::vector<IComponentAdapter*> list;
     };
 
+    // Game State provider (reflection-lite)
+    struct IGameStateProvider {
+        virtual ~IGameStateProvider() = default;
+        virtual int  current()  const = 0;
+        virtual int  previous() const = 0;
+        virtual int  next()     const = 0;
+        virtual void changeTo(int id) = 0;
+        virtual const std::vector<std::pair<const char*, int>>& states() const = 0;
+    };
+
+    // Set/get the active provider (game installs it at startup)
+    void SetGameStateProvider(IGameStateProvider* p);
+    IGameStateProvider* GetGameStateProvider();
+
     // ---------- Simple debug panel registry -------------
     using PanelFn = std::function<void()>;
 

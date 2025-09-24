@@ -8,6 +8,7 @@
 #include "components/shapescomponent.h"
 #include "managers/physicsmanager.h"
 #include "managers/collisionmanager.h"
+#include "gamestatemanager.h"
 
 #include "shapes.h"
 
@@ -247,15 +248,36 @@ namespace {
         }
     };
 
+    struct MyGameStateProvider final : DebugReflection::IGameStateProvider {
+        int  current()  const override { return (int)CurrentGameState; }
+        int  previous() const override { return (int)PreviousGameState; }
+        int  next()     const override { return (int)NextGameState; }
+        void changeTo(int id) override { ChangeGameState((GameState)id); }
+
+        const std::vector<std::pair<const char*, int>>& states() const override {
+            static const std::vector<std::pair<const char*, int>> kStates = {
+                {"Main Menu",(int)MAIN_MENU},
+                {"Renfred",  (int)RENFRED},
+                {"Rain",     (int)RAIN},
+                {"Amir",     (int)AMIR},
+                {"Afiq",     (int)AFIQ},
+                {"Tristan",  (int)TRISTAN},
+                {"Ranvitha", (int)RAN},
+                {"Quit",     (int)QUIT},
+            };
+            return kStates;
+        }
+    };
+
     static NameAdapter gNameAdapter;
     static TransformAdapter gTransformAdapter;
     static RigidBodyAdapter gRigidBodyAdapter;
     static ColliderAdapter gColliderAdapter;
     static ShapeAdapter gShapeAdapter;
+    static MyGameStateProvider gProvider;
 
-} // anon
+}
 
-// Call this once at startup (after ECS is ready)
 extern "C" void RegisterBuiltinComponentAdapters() {
     using namespace DebugReflection;
     ComponentRegistry::instance().registerAdapter(&gNameAdapter);
@@ -263,4 +285,6 @@ extern "C" void RegisterBuiltinComponentAdapters() {
     ComponentRegistry::instance().registerAdapter(&gRigidBodyAdapter);
     ComponentRegistry::instance().registerAdapter(&gColliderAdapter);
     ComponentRegistry::instance().registerAdapter(&gShapeAdapter);
+    DebugReflection::SetGameStateProvider(&gProvider);
+
 }

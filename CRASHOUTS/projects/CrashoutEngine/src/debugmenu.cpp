@@ -383,32 +383,29 @@ namespace UI { // --------------------------------------------------------------
         if (!ui.showGameState) return;
         ScopedWindow w("GameState", LockFlags(ui.lockLayout));
 
-        ImGui::Text("Current: %d", (int)CurrentGameState);
-        ImGui::Text("Previous: %d", (int)PreviousGameState);
-        ImGui::Text("Next: %d", (int)NextGameState);
+        auto* P = DebugReflection::GetGameStateProvider();
+        if (!P) { ImGui::TextDisabled("No GameStateProvider registered."); return; }
 
-        //Helper function to make a button for each state
-        auto stateButton = [](const char* label, GameState gs) {
-            bool pressed = ImGui::Button(label);
-            if (pressed) {
-                ChangeGameState(gs);
+        auto nameFor = [&](int id) -> const char* {
+            for (auto const& kv : P->states()) {
+                if (kv.second == id) return kv.first;   // kv = {label, id}
             }
-            ImGui::SameLine();
-            return pressed;
+            return "(unknown)";
         };
 
-        // Row 1
-        stateButton("Main Menu", MAIN_MENU);
-        stateButton("Renfred", RENFRED);
-        stateButton("Rain", RAIN);
+        const int cur = P->current() ? P->current() : -1;
+        const int prev = P->previous() ? P->previous() : -1;
+        const int next = P->next() ? P->next() : -1;
 
-        ImGui::NewLine();
+        ImGui::Text("Current:  %s", nameFor(cur));
+        ImGui::Text("Previous: %s", nameFor(prev));
 
-        // Row 2
-        stateButton("Amir", AMIR);
-        stateButton("Afiq", AFIQ);
-        stateButton("Tristan", TRISTAN);
-        stateButton("Ranvitha", RAN);
+        ImGui::Separator();
+        int col = 0;
+        for (auto const& [label, id] : P->states()) {
+            if (ImGui::Button(label)) P->changeTo(id);
+            if (++col % 4 != 0) ImGui::SameLine();
+        }
 
         ImGui::Separator();
 
@@ -681,7 +678,7 @@ namespace UI { // --------------------------------------------------------------
 
             bool drawn = false;
 
-            // Draw via existing shape components - honestly sphere gonna be gaslit to be a square here ngl
+            // Draw via existing shape components - honestly sphere gonna be gaslit to be a square here for now
             if (ecs.HasComponent<Component::Shapes>(e)) {
                 Component::Shapes::CreateRectangle(t->position, t->size.x, t->size.y, t->rotation, 1.0f, color);
                 drawn = true;
