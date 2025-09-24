@@ -1,6 +1,7 @@
 /*!
 @file   textures.h
 @author lee.r@digipen.edu
+@co-author ranvitha@digipen.edu
 @date   16/09/2025
 
 @brief	This file contains the declaration of the Texture class, a concrete
@@ -12,118 +13,6 @@
 //
 ///*                                                                   includes
 //----------------------------------------------------------------------------- */
-//#include "managers/resourcemanager.h"
-//#include <stb_image.h>
-//#include <GL/glew.h>	
-//
-///*
-//----------------------------------------------------------------------------- */
-//namespace CrashoutsEngine {
-//	namespace Assets {
-//
-//		/*!
-//		@class Texture
-//		@brief A concrete asset class for managing texture data.
-//
-//		This class inherits from IAsset and encapsulates the raw pixel data,
-//		dimensions, and lifetime management of a texture. It uses a private
-//		constructor and a public static factory method to ensure that all
-//		Texture objects are created correctly and safely.
-//		*/
-//		class Texture : public IAsset {
-//
-//		using texdata = unsigned char*;
-//
-//		private:
-//			int width, height;
-//			texdata data;
-//
-//			// Private constructor so only our factory can create it 
-//			Texture(int w, int h, texdata inputData) :
-//				width{ w }, height{ h }, data{ inputData } {}
-//
-//			// The copy constructor and assignment operators are correctly deleted.
-//			Texture(const Texture&) = delete;
-//			Texture& operator=(const Texture&) = delete;
-//
-//			/*!
-//			@brief Static factory method to create a new Texture asset from a file.
-//
-//			This function encapsulates all the image loading details, including
-//			memory allocation and error handling, returning a fully constructed
-//			Texture object or nullptr if loading fails.
-//
-//			@param filePath The path to the image file.
-//			@return A unique_ptr to the new Texture object, or nullptr on failure.
-//			*/
-//			static texdata LoadImageData(const std::string& filePath, int& width, int& height) {
-//				int channels;
-//				// Use stb_image to load the image data
-//				texdata data = stbi_load(filePath.c_str(), &width, &height, &channels, 4);
-//				// Force 4 channels (RGBA) for consistency
-//				return data;
-//			}
-//
-//		public:
-//			/*!
-//			@brief Static factory method to create a new Texture asset from a file.
-//
-//			This function loads image data from the specified file path, handling the
-//			memory allocation and error checking. It then returns a fully constructed
-//			`Texture` object wrapped in a `std::unique_ptr` to ensure proper resource management.
-//
-//			@param filePath The path to the image file to load.
-//
-//			@return A `std::unique_ptr` to the new `Texture` object if loading is
-//			successful, or `nullptr` if the file cannot be loaded.
-//			*/
-//			static std::unique_ptr<Texture> Create(const std::string& filePath) {
-//				int w, h;
-//				texdata loadedData = LoadImageData(filePath, w, h);
-//				if (!loadedData) return nullptr;
-//				
-//				return std::unique_ptr<Texture>(new Texture(w, h, loadedData));
-//			}
-//
-//			// Destructor
-//			~Texture() override { stbi_image_free(data); }
-//
-//			// Accessors for texture data and dimensions
-//			int GetWidth() const { return width; }
-//			int GetHeight() const { return height; }
-//			texdata GetData() const { return data; }
-//
-//			// Move Constructor for the Assetmanager std::move
-//			Texture(Texture&& other) noexcept :
-//				width(other.width), height(other.height), data(other.data) {
-//				// Nullify the other object 
-//				other.data = nullptr;
-//				other.width = 0;
-//				other.height = 0;
-//			}
-//
-//			// Move Assignment Operator
-//			Texture& operator=(Texture&& other) noexcept{
-//				if (this != &other) {
-//					// delete existing data
-//					stbi_image_free(data);
-//
-//					// Steal resources
-//					width = other.width; 
-//					height = other.height;
-//					data = other.data;
-//
-//					// Nullify the other object 
-//					other.data = nullptr;
-//					other.width = 0;
-//					other.height = 0;
-//				}
-//				return *this;
-//			}
-//		};
-//	}
-//}
-
 
 #ifndef TEXTURES_H
 #define TEXTURES_H
@@ -132,6 +21,7 @@
 #include <string>
 #include <unordered_map>
 #include <memory>
+#include <array>
 #include "managers/entitymanager.h"
 #include "rendering.h"
 #include "math/CEVec2.h"
@@ -142,28 +32,27 @@ namespace CrashoutsEngine {
     namespace Assets {
         class IAsset {
         public:
-            virtual ~IAsset() = default;
-        };
-
-        /*!
-        @class Texture
-        @brief A concrete asset class for managing texture data.
-        This class inherits from IAsset and encapsulates the raw pixel data,
-        dimensions, and lifetime management of a texture.
-        */
-        class Texture : public IAsset {
             using texdata = unsigned char*;
 
-        private:
+            // Public members (matching implementation)
             int width, height;
             texdata data;
+            GLuint glHandle;
+            bool uploaded;
 
-            // Private constructor - only factory method can create instances
-            Texture(int w, int h, texdata inputData);
+            // Constructor (matching implementation pattern)
+            IAsset(int w, int h, texdata inputData);
 
             // Deleted copy operations
-            Texture(const Texture&) = delete;
-            Texture& operator=(const Texture&) = delete;
+            IAsset(const IAsset&) = delete;
+            IAsset& operator=(const IAsset&) = delete;
+
+            // Move constructor and assignment
+            IAsset(IAsset&& other) noexcept;
+            IAsset& operator=(IAsset&& other) noexcept;
+
+            // Virtual destructor
+            virtual ~IAsset();
 
             /*!
             @brief Internal method to load image data from file
@@ -174,37 +63,55 @@ namespace CrashoutsEngine {
             */
             static texdata LoadImageData(const std::string& filePath, int& width, int& height);
 
-        public:
             /*!
-            @brief Factory method to create a new Texture asset from file
+            @brief Factory method to create a new Asset from file
             @param filePath Path to the image file to load
-            @return unique_ptr to Texture object or nullptr on failure
+            @return unique_ptr to IAsset object or nullptr on failure
             */
-            static std::unique_ptr<Texture> Create(const std::string& filePath);
+            static std::unique_ptr<IAsset> Create(const std::string& filePath);
 
-            // Destructor
-            virtual ~Texture();
+            // GPU management methods
+            bool UploadToGPU();
+            void FreeGPU();
 
             // Accessors
             int GetWidth() const { return width; }
             int GetHeight() const { return height; }
             texdata GetData() const { return data; }
-
-            // Move constructor
-            Texture(Texture&& other) noexcept;
-
-            // Move assignment operator
-            Texture& operator=(Texture&& other) noexcept;
+            GLuint GetGLHandle() const { return glHandle; }
+            bool IsUploaded() const { return uploaded; }
         };
+
+        // Alias for backward compatibility
+        using Texture = IAsset;
+        using TextureAsset = IAsset;
     }
 }
 
 namespace Component {
+    // Constants used in the implementation
+    constexpr int VERTEX_SIZE = 8;  // 3 pos + 3 color + 2 texcoord
+    constexpr int INDICES_COUNT = 6;
+
+    // Default quad vertices (position, color, texcoord)
+    constexpr std::array<float, 32> DEFAULT_VERTICES = {
+        // positions        // colors         // texture coords
+        -0.5f, -0.5f, 0.0f,  1.0f, 1.0f, 1.0f,  0.0f, 0.0f, // bottom left
+         0.5f, -0.5f, 0.0f,  1.0f, 1.0f, 1.0f,  1.0f, 0.0f, // bottom right
+         0.5f,  0.5f, 0.0f,  1.0f, 1.0f, 1.0f,  1.0f, 1.0f, // top right
+        -0.5f,  0.5f, 0.0f,  1.0f, 1.0f, 1.0f,  0.0f, 1.0f  // top left
+    };
+
+    constexpr std::array<unsigned short, 6> DEFAULT_INDICES = {
+        0, 1, 2,   // first triangle
+        2, 3, 0    // second triangle
+    };
+
     /*!
-    @class Texture
+    @class TextureRenderer
     @brief Component class for efficient texture rendering with caching and shared resources
     */
-    class Texture {
+    class TextureRenderer {
     private:
         // Static shared resources for all texture rendering
         static GLuint sharedVAO, sharedVBO, sharedEBO;
@@ -224,11 +131,18 @@ namespace Component {
         static GLuint LoadBinaryTexture(const std::string& pathname);
 
         /*!
-        @brief Load texture using the asset system
+        @brief Load texture using the asset system (for image files)
         @param pathname Path to texture file
         @return OpenGL texture handle or 0 on failure
         */
         static GLuint LoadTextureFromAsset(const std::string& pathname);
+
+        /*!
+        @brief Load image texture using stb_image (renamed for clarity)
+        @param pathname Path to texture file
+        @return OpenGL texture handle or 0 on failure
+        */
+        static GLuint LoadImageTexture(const std::string& pathname);
 
         /*!
         @brief Determine texture format and load appropriately
@@ -296,4 +210,4 @@ namespace Component {
 
 } // namespace Component
 
-#endif // TEXTURE_H
+#endif // TEXTURES_H

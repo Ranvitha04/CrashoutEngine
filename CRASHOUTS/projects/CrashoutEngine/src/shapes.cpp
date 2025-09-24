@@ -31,197 +31,8 @@ scaling) to shape vertices for flexible rendering.
 #include <iostream>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include "resources/textures.h"
 
-//namespace Component {
-//
-//    void Shapes::Cleanup() {
-//        Component::Rendering::Cleanup();
-//    }
-//
-//    void Shapes::CreateSquare(const CEVec3& position, float size, float rotation, float scale, const CEVec3& color) {
-//        Component::Rendering& renderer = Component::Rendering::Get();
-//
-//        // Define square vertices centered at origin
-//        float halfSize = size / 2.0f;
-//        std::array<CEVec3, 4> pos_vtx{
-//            CEVec3(-halfSize, -halfSize, 0.0f),
-//            CEVec3(halfSize, -halfSize, 0.0f),
-//            CEVec3(halfSize, halfSize, 0.0f),
-//            CEVec3(-halfSize, halfSize, 0.0f)
-//        };
-//
-//        std::array<CEVec3, 4> clr_vtx{ color, color, color, color };
-//        std::array<GLushort, 4> idx_vtx{ 0, 1, 2, 3 };
-//
-//        // Setup buffers for this shape
-//        renderer.SetupBuffers(pos_vtx.data(), sizeof(pos_vtx),
-//            clr_vtx.data(), sizeof(clr_vtx),
-//            idx_vtx.data(), idx_vtx.size(),
-//            GL_TRIANGLE_FAN);
-//
-//        // Setup shader and draw
-//        renderer.shdr_pgm.Use();
-//
-//        // Create transformation matrix
-//        glm::mat4 model = glm::mat4(1.0f);
-//        
-//        model = glm::translate(model, glm::vec3(position.x, position.y, position.z));
-//        model = glm::rotate(model, glm::radians(rotation), glm::vec3(0, 0, 1));
-//        model = glm::scale(model, glm::vec3(scale, scale, 1.0f));
-//
-//        float aspect = static_cast<float>(GLApp::width) / GLApp::height;
-//        glm::mat4 projection = glm::ortho(-aspect, aspect, -1.0f, 1.0f, -1.0f, 1.0f);
-//
-//        renderer.shdr_pgm.SetUniform("uModel", model);
-//        renderer.shdr_pgm.SetUniform("uView", glm::mat4(1.0f));
-//        renderer.shdr_pgm.SetUniform("uProjection", projection);
-//
-//        renderer.Draw();
-//    }
-//
-//    void Shapes::CreateLine(const CEVec3& start, const CEVec3& end, float thickness, float rotation, float scale, const CEVec3& color) {
-//        Component::Rendering& renderer = Component::Rendering::Get();
-//
-//        // Direction and perpendicular vector
-//        CEVec3 dir = end - start;
-//        glm::vec3 gdir(dir.x, dir.y, dir.z);
-//        glm::vec3 normal(-gdir.y, gdir.x, 0.0f);
-//        normal = glm::normalize(normal) * (thickness / 2.0f);
-//
-//        // 4 vertices for thick line (quad)
-//        std::array<CEVec3, 4> pos_vtx{
-//            CEVec3(start.x + normal.x, start.y + normal.y, start.z),
-//            CEVec3(start.x - normal.x, start.y - normal.y, start.z),
-//            CEVec3(end.x - normal.x, end.y - normal.y, end.z),
-//            CEVec3(end.x + normal.x, end.y + normal.y, end.z)
-//        };
-//
-//        std::array<CEVec3, 4> clr_vtx{ color, color, color, color };
-//        std::array<GLushort, 6> idx_vtx{ 0, 1, 2, 0, 2, 3 };
-//
-//        // Setup buffers
-//        renderer.SetupBuffers(pos_vtx.data(), sizeof(pos_vtx),
-//            clr_vtx.data(), sizeof(clr_vtx),
-//            idx_vtx.data(), idx_vtx.size(),
-//            GL_TRIANGLES);
-//
-//        // Center for transformations
-//        CEVec3 center = (start + end) / 2.0f;
-//
-//        // Setup shader and draw
-//        renderer.shdr_pgm.Use();
-//
-//        glm::mat4 model = glm::mat4(1.0f);
-//        model = glm::translate(model, glm::vec3(center.x, center.y, center.z));
-//        model = glm::rotate(model, glm::radians(rotation), glm::vec3(0, 0, 1));
-//        model = glm::scale(model, glm::vec3(scale, scale, 1.0f));
-//
-//        float aspect = static_cast<float>(GLApp::width) / GLApp::height;
-//
-//        glm::mat4 projection = glm::ortho(-aspect, aspect, -1.0f, 1.0f, -1.0f, 1.0f);
-//
-//        renderer.shdr_pgm.SetUniform("uModel", model);
-//        renderer.shdr_pgm.SetUniform("uView", glm::mat4(1.0f));
-//        renderer.shdr_pgm.SetUniform("uProjection", projection);
-//
-//        renderer.Draw();
-//    }
-//
-//    void Shapes::CreateRectangle(const CEVec3& position, float width, float height, float rotation, float scale, const CEVec3& color) {
-//        Component::Rendering& renderer = Component::Rendering::Get();
-//
-//        // Define rectangle vertices centered at origin
-//        float halfWidth = width / 2.0f;
-//        float halfHeight = height / 2.0f;
-//        std::array<CEVec3, 4> pos_vtx{
-//            CEVec3(-halfWidth, -halfHeight, 0.0f),
-//            CEVec3(halfWidth, -halfHeight, 0.0f),
-//            CEVec3(halfWidth, halfHeight, 0.0f),
-//            CEVec3(-halfWidth, halfHeight, 0.0f)
-//        };
-//
-//        std::array<CEVec3, 4> clr_vtx{ color, color, color, color };
-//        std::array<GLushort, 4> idx_vtx{ 0, 1, 2, 3 };
-//
-//        // Setup buffers
-//        renderer.SetupBuffers(pos_vtx.data(), sizeof(pos_vtx),
-//            clr_vtx.data(), sizeof(clr_vtx),
-//            idx_vtx.data(), idx_vtx.size(),
-//            GL_TRIANGLE_FAN);
-//
-//        // Setup shader and draw
-//        renderer.shdr_pgm.Use();
-//
-//        glm::mat4 model = glm::mat4(1.0f);
-//        model = glm::translate(glm::mat4(1.0f), glm::vec3(position.x, position.y, position.z));
-//        model = model * glm::rotate(glm::mat4(1.0f), glm::radians(rotation), glm::vec3(0, 0, 1));
-//        model = model * glm::scale(glm::mat4(1.0f), glm::vec3(scale, scale, 1.0f));
-//
-//        float aspect = static_cast<float>(GLApp::width) / GLApp::height;
-//
-//        glm::mat4 projection = glm::ortho(-aspect, aspect, -1.0f, 1.0f, -1.0f, 1.0f);
-//
-//        renderer.shdr_pgm.SetUniform("uModel", model);
-//        renderer.shdr_pgm.SetUniform("uView", glm::mat4(1.0f));
-//        renderer.shdr_pgm.SetUniform("uProjection", projection);
-//
-//        renderer.Draw();
-//    }
-//
-//    void Shapes::CreateTriangle(const CEVec3& p1, const CEVec3& p2, const CEVec3& p3, float rotation, float scale, const CEVec3& color) {
-//        Component::Rendering& renderer = Component::Rendering::Get();
-//
-//        // Define the triangle vertices
-//        std::array<CEVec3, 3> pos_vtx{
-//            CEVec3(p1.x, p1.y, p1.z),
-//            CEVec3(p2.x, p2.y, p2.z),
-//            CEVec3(p3.x, p3.y, p3.z)
-//        };
-//
-//        std::array<CEVec3, 3> clr_vtx{ color, color, color };
-//        std::array<GLushort, 3> idx_vtx{ 0, 1, 2 };
-//
-//        // Setup buffers
-//        renderer.SetupBuffers(pos_vtx.data(), sizeof(pos_vtx),
-//            clr_vtx.data(), sizeof(clr_vtx),
-//            idx_vtx.data(), idx_vtx.size(),
-//            GL_TRIANGLES);
-//
-//        // Compute centroid for rotation
-//        CEVec3 centroid = (p1 + p2 + p3) / 3.0f;
-//
-//        // Setup shader and draw
-//        renderer.shdr_pgm.Use();
-//
-//        glm::mat4 model = glm::mat4(1.0f);
-//        model = glm::translate(model, glm::vec3(centroid.x, centroid.y, centroid.z));
-//        model = glm::rotate(model, glm::radians(rotation), glm::vec3(0, 0, 1));
-//        model = glm::scale(model, glm::vec3(scale, scale, 1.0f));
-//
-//        float aspect = static_cast<float>(GLApp::width) / GLApp::height;
-//
-//        glm::mat4 projection = glm::ortho(-aspect, aspect, -1.0f, 1.0f, -1.0f, 1.0f);
-//
-//        renderer.shdr_pgm.SetUniform("uModel", model);
-//        renderer.shdr_pgm.SetUniform("uView", glm::mat4(1.0f));
-//        renderer.shdr_pgm.SetUniform("uProjection", projection);
-//
-//        renderer.Draw();
-//    }
-//
-//}
-
-// Modified shapes.cpp for centered world coordinates (0,0 at center)
-
-#include "shapes.h"
-#include "rendering.h"
-#include "entitymanager.h"
-#include <array>
-#include <GL/glew.h>
-#include "glapp.h"
-#include <iostream>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
 
 namespace Component {
 
@@ -416,6 +227,210 @@ namespace Component {
         renderer.shdr_pgm.SetUniform("uProjection", projection);
 
         renderer.Draw();
+    }
+
+    void Shapes::CreateTexturedSquare(const std::string& texturePath, const CEVec3& position, float size,
+        float rotation, float scale, const CEVec3& tint) {
+        Component::Rendering& renderer = Component::Rendering::Get();
+
+        // Get or load the texture
+        GLuint textureHandle = Component::TextureRenderer::GetOrLoadTexture(texturePath);
+        if (textureHandle == 0) {
+            std::cerr << "Failed to load texture: " << texturePath << std::endl;
+            return;
+        }
+
+        // Define square vertices with texture coordinates
+        float halfSize = size / 2.0f;
+
+        // Position data
+        std::array<CEVec3, 4> pos_vtx{
+            CEVec3(-halfSize, -halfSize, 0.0f), // bottom left
+            CEVec3(halfSize, -halfSize, 0.0f),  // bottom right
+            CEVec3(halfSize, halfSize, 0.0f),   // top right
+            CEVec3(-halfSize, halfSize, 0.0f)   // top left
+        };
+
+        // Color data (will be used as tint)
+        std::array<CEVec3, 4> clr_vtx{ tint, tint, tint, tint };
+
+        // Texture coordinate data
+        std::array<CEVec2, 4> tex_vtx{
+            CEVec2(0.0f, 0.0f), // bottom left
+            CEVec2(1.0f, 0.0f), // bottom right  
+            CEVec2(1.0f, 1.0f), // top right
+            CEVec2(0.0f, 1.0f)  // top left
+        };
+
+        std::array<GLushort, 6> idx_vtx{ 0, 1, 2, 0, 2, 3 }; // Two triangles
+
+        // Setup buffers with texture coordinates
+        renderer.SetupTexturedBuffers(pos_vtx.data(), sizeof(pos_vtx),
+            clr_vtx.data(), sizeof(clr_vtx),
+            tex_vtx.data(), sizeof(tex_vtx),
+            idx_vtx.data(), idx_vtx.size(),
+            GL_TRIANGLES);
+
+        renderer.shdr_pgm.Use();
+
+        // Create model matrix
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(position.x, position.y, position.z));
+        model = glm::rotate(model, glm::radians(rotation), glm::vec3(0, 0, 1));
+        model = glm::scale(model, glm::vec3(scale, scale, 1.0f));
+
+        glm::mat4 projection = CreateCenteredWorldProjection();
+
+        // Set uniforms
+        renderer.shdr_pgm.SetUniform("uModel", model);
+        renderer.shdr_pgm.SetUniform("uView", glm::mat4(1.0f));
+        renderer.shdr_pgm.SetUniform("uProjection", projection);
+
+        // Enable texture rendering
+        GLint useTexture_loc = glGetUniformLocation(renderer.shdr_pgm.GetHandle(), "u_useTexture");
+        if (useTexture_loc != -1) {
+            glUniform1i(useTexture_loc, 1);
+        }
+
+        GLint tex_loc = glGetUniformLocation(renderer.shdr_pgm.GetHandle(), "uTex2d");
+        if (tex_loc != -1) {
+            glUniform1i(tex_loc, 0);
+        }
+
+        GLint tint_loc = glGetUniformLocation(renderer.shdr_pgm.GetHandle(), "u_tint");
+        if (tint_loc != -1) {
+            glUniform3f(tint_loc, tint.x, tint.y, tint.z);
+        }
+
+        // Bind texture and draw
+        glBindTextureUnit(0, textureHandle);
+        renderer.Draw();
+        glBindTextureUnit(0, 0);
+    }
+
+    void Shapes::CreateTexturedRectangle(const std::string& texturePath, const CEVec3& position,
+        float width, float height, float rotation, float scale, const CEVec3& tint) {
+        Component::Rendering& renderer = Component::Rendering::Get();
+
+        GLuint textureHandle = Component::TextureRenderer::GetOrLoadTexture(texturePath);
+        if (textureHandle == 0) {
+            std::cerr << "Failed to load texture: " << texturePath << std::endl;
+            return;
+        }
+
+        float halfWidth = width / 2.0f;
+        float halfHeight = height / 2.0f;
+
+        std::array<CEVec3, 4> pos_vtx{
+            CEVec3(-halfWidth, -halfHeight, 0.0f),
+            CEVec3(halfWidth, -halfHeight, 0.0f),
+            CEVec3(halfWidth, halfHeight, 0.0f),
+            CEVec3(-halfWidth, halfHeight, 0.0f)
+        };
+
+        std::array<CEVec3, 4> clr_vtx{ tint, tint, tint, tint };
+
+        std::array<CEVec2, 4> tex_vtx{
+            CEVec2(0.0f, 0.0f), CEVec2(1.0f, 0.0f),
+            CEVec2(1.0f, 1.0f), CEVec2(0.0f, 1.0f)
+        };
+
+        std::array<GLushort, 6> idx_vtx{ 0, 1, 2, 0, 2, 3 };
+
+        renderer.SetupTexturedBuffers(pos_vtx.data(), sizeof(pos_vtx),
+            clr_vtx.data(), sizeof(clr_vtx),
+            tex_vtx.data(), sizeof(tex_vtx),
+            idx_vtx.data(), idx_vtx.size(),
+            GL_TRIANGLES);
+
+        renderer.shdr_pgm.Use();
+
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(position.x, position.y, position.z));
+        model = glm::rotate(model, glm::radians(rotation), glm::vec3(0, 0, 1));
+        model = glm::scale(model, glm::vec3(scale, scale, 1.0f));
+
+        glm::mat4 projection = CreateCenteredWorldProjection();
+
+        renderer.shdr_pgm.SetUniform("uModel", model);
+        renderer.shdr_pgm.SetUniform("uView", glm::mat4(1.0f));
+        renderer.shdr_pgm.SetUniform("uProjection", projection);
+
+        // Texture uniforms
+        GLint useTexture_loc = glGetUniformLocation(renderer.shdr_pgm.GetHandle(), "u_useTexture");
+        if (useTexture_loc != -1) glUniform1i(useTexture_loc, 1);
+
+        GLint tex_loc = glGetUniformLocation(renderer.shdr_pgm.GetHandle(), "uTex2d");
+        if (tex_loc != -1) glUniform1i(tex_loc, 0);
+
+        GLint tint_loc = glGetUniformLocation(renderer.shdr_pgm.GetHandle(), "u_tint");
+        if (tint_loc != -1) glUniform3f(tint_loc, tint.x, tint.y, tint.z);
+
+        glBindTextureUnit(0, textureHandle);
+        renderer.Draw();
+        glBindTextureUnit(0, 0);
+    }
+
+    void Shapes::CreateTexturedTriangle(const std::string& texturePath, const CEVec3& p1, const CEVec3& p2,
+        const CEVec3& p3, float rotation, float scale, const CEVec3& tint) {
+        Component::Rendering& renderer = Component::Rendering::Get();
+
+        GLuint textureHandle = Component::TextureRenderer::GetOrLoadTexture(texturePath);
+        if (textureHandle == 0) {
+            std::cerr << "Failed to load texture: " << texturePath << std::endl;
+            return;
+        }
+
+        std::array<CEVec3, 3> pos_vtx{
+            CEVec3(p1.x, p1.y, p1.z),
+            CEVec3(p2.x, p2.y, p2.z),
+            CEVec3(p3.x, p3.y, p3.z)
+        };
+
+        std::array<CEVec3, 3> clr_vtx{ tint, tint, tint };
+
+        // Triangle texture coordinates
+        std::array<CEVec2, 3> tex_vtx{
+            CEVec2(0.0f, 0.0f), // bottom left
+            CEVec2(1.0f, 0.0f), // bottom right
+            CEVec2(0.5f, 1.0f)  // top center
+        };
+
+        std::array<GLushort, 3> idx_vtx{ 0, 1, 2 };
+
+        renderer.SetupTexturedBuffers(pos_vtx.data(), sizeof(pos_vtx),
+            clr_vtx.data(), sizeof(clr_vtx),
+            tex_vtx.data(), sizeof(tex_vtx),
+            idx_vtx.data(), idx_vtx.size(),
+            GL_TRIANGLES);
+
+        renderer.shdr_pgm.Use();
+
+        CEVec3 centroid = (p1 + p2 + p3) / 3.0f;
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(centroid.x, centroid.y, centroid.z));
+        model = glm::rotate(model, glm::radians(rotation), glm::vec3(0, 0, 1));
+        model = glm::scale(model, glm::vec3(scale, scale, 1.0f));
+        model = glm::translate(model, glm::vec3(-centroid.x, -centroid.y, -centroid.z));
+
+        glm::mat4 projection = CreateCenteredWorldProjection();
+
+        renderer.shdr_pgm.SetUniform("uModel", model);
+        renderer.shdr_pgm.SetUniform("uView", glm::mat4(1.0f));
+        renderer.shdr_pgm.SetUniform("uProjection", projection);
+
+        GLint useTexture_loc = glGetUniformLocation(renderer.shdr_pgm.GetHandle(), "u_useTexture");
+        if (useTexture_loc != -1) glUniform1i(useTexture_loc, 1);
+
+        GLint tex_loc = glGetUniformLocation(renderer.shdr_pgm.GetHandle(), "uTex2d");
+        if (tex_loc != -1) glUniform1i(tex_loc, 0);
+
+        GLint tint_loc = glGetUniformLocation(renderer.shdr_pgm.GetHandle(), "u_tint");
+        if (tint_loc != -1) glUniform3f(tint_loc, tint.x, tint.y, tint.z);
+
+        glBindTextureUnit(0, textureHandle);
+        renderer.Draw();
+        glBindTextureUnit(0, 0);
     }
 
 }

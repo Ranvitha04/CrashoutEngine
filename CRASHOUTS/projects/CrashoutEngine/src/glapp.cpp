@@ -19,7 +19,8 @@ integration.
 #include "rendering.h"
 #include "managers/entitymanager.h"
 #include "shapes.h"
-#include "texture.h"
+#include "resources/textures.h"
+#include "resources/texture.cpp"
 #include <glm/glm.hpp>
 #include <iostream>
 #include <sstream>
@@ -47,7 +48,8 @@ GLFWwindow* GLApp::ptr_window;
 
 Component::Rendering model;
 Component::Shapes shapes;
-Component::Texture texture;
+//Component::Texture texture;
+
 
 std::array<CEVec3, 4> clr_vtx{
     CEVec3(1.f, 1.f, 1.f), // Center - white
@@ -64,6 +66,7 @@ std::vector<GLApp::GLViewport> GLApp::vps;
 
 static float TestRotation = 0.0f; // global rotation angle
 static float RightTest = 0.0f;
+static float TestScale = 0.0f;
 
 /* _________________________________________________________________________ */
 /*! init
@@ -175,7 +178,9 @@ bool GLApp::init(GLint w, GLint h, std::string t) {
 
     //Component::Texture::Initialize();
 
-    texture.LoadTexture("../../../projects/CrashoutEngine/images/duck-rgba-256.tex");
+    Component::TextureRenderer::Initialize();
+
+    //texture.LoadTexture("../../../projects/CrashoutEngine/images/duck-rgba-256.tex");
 
     //model.texobj = Component::Texture::LoadTexture("../../../projects/CrashoutEngine/images/duck-rgba-256.tex");
    
@@ -266,23 +271,18 @@ void GLApp::draw() {
     // Draw current model
     //model.Draw();
 
-    //Component::Shapes::CreateSquare(CEVec3(0.0f, 0.0f, 0.0f), 1.0f, 45.0f, 1.0f, CEVec3(1.0f, 0.0f, 0.0f));
+    Component::Shapes::CreateTexturedTriangle("../../../projects/CrashoutEngine/images/duck-rgba-256.tex", pos, CEVec3(-0.4, -0.5, 0), CEVec3(0.4, -0.5, 0), TestRotation, TestScale, CEVec3(1, 1, 0));
 
-     // Draw a textured quad using the global system - similar to shapes!
-        
-    //render jpg
-        Component::Texture::CreateTexturedQuad("../../../projects/CrashoutEngine/images/duck.jpg",
-            CEVec3(0.0f, 0.0f, 0.0f),
-            CEVec2(1.0f, 1.0f),
-            0.0f, 1.0f,
-            CEVec3(1.0f, 1.0f, 1.0f));
-    //render .tex
-    //Component::Texture::CreateTexturedQuad("../../../projects/CrashoutEngine/images/duck-rgba-256.tex",
-    //    CEVec3(0.0f, 0.0f, 0.0f),
-    //    CEVec2(1.0f, 1.0f),
-    //    0.0f, 1.0f,
-    //    CEVec3(1.0f, 1.0f, 1.0f));
 
+    //Component::TextureRenderer::CreateTexturedQuad(
+    //    "../../../projects/CrashoutEngine/images/duck.jpg",
+    //CEVec3(0.0f, 0.0f, 0.0f),  // position
+    //    CEVec2(1.0f, 1.0f),        // size
+    //    TestRotation,                       // rotation
+    //    scale,                       // scale
+    //    CEVec3(1.0f, 1.0f, 1.0f),  // tint
+    //    false;                      // modulate
+    //);
 
     
     
@@ -302,9 +302,11 @@ gracefully terminate.
 */
 void GLApp::cleanup() {
 
-    Component::Texture::Cleanup();
+    //Component::Texture::Cleanup();
 
     Component::Rendering::Cleanup();
+
+    Component::TextureRenderer::Cleanup();
 
     glfwTerminate();
 
@@ -366,6 +368,13 @@ void GLApp::key_cb(GLFWwindow* pwin, int key, int scancode, int action, int mod)
         if (key == GLFW_KEY_I) {
             RightTest += 25.0f;
             std::cout << RightTest << std::endl;
+        }
+    }
+
+    if (GLFW_PRESS == action) {
+        if (key == GLFW_KEY_S) { // Rotate with 'R'
+            TestScale += 10.0f;  // rotate 10 degrees each press
+            
         }
     }
 

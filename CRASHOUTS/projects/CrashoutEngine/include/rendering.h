@@ -27,6 +27,8 @@ rendering pipelines.
 #include <GL/glew.h>
 #include <glm/glm.hpp>
 #include "shader.h"	
+#include "managers/entitymanager.h"
+#include "resources/textures.h"
 
 namespace Component {
 
@@ -50,6 +52,7 @@ namespace Component {
         GLuint ebo_hdl{ 0 };
         GLuint primitive_type{ GL_TRIANGLES };
         GLuint idx_elem_cnt{ 0 };
+        GLuint tex_vbo_hdl{ 0 };
         GLuint texobj{ 0 };
         GLSLShader shdr_pgm;
 
@@ -63,6 +66,15 @@ namespace Component {
             const void* colors, size_t color_size,
             const void* indices, size_t index_count,
             GLenum primitive);
+
+        
+        void SetupTexturedBuffers(const void* vertices, size_t vertex_size,
+            const void* colors, size_t color_size,
+            const void* tex_coords, size_t tex_coord_size,
+            const void* indices, size_t index_count,
+            GLenum primitive);
+
+
     };
 
 }
