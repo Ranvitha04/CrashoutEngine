@@ -82,6 +82,12 @@ namespace {
 }
 
 namespace Physics {
+	
+	// Setters and Getters
+	void PhysicsHandler::SetGravity(const CEVec3& g) { sGravity = g; }
+	CEVec3 PhysicsHandler::GetGravity() { return sGravity; }
+	void PhysicsHandler::SetLinearDamping(float c) { sLinDamp = c; }
+	float PhysicsHandler::GetLinearDamping() { return sLinDamp; }
 
 	/*UPDATE BOTH THE RIGIDBODY AND TRANSFORM COMPONENT*/
 	void PhysicsHandler::updatePhysics(Component::TransformComponent *transformComp, Component::RigidBodyComponent *rigidBodyComp, double deltaTime) {

@@ -456,6 +456,18 @@ namespace UI { // --------------------------------------------------------------
 
         ImGui::Separator();
 
+        ImGui::TextDisabled("Forces & Integrators");
+
+        for (auto* p : DebugReflection::PhysicsRegistry::instance().all()) {
+            if (!p) continue;
+            if (ImGui::TreeNode(p->name())) {
+                p->draw(ecs);            // <- use the ecs param from this function
+                ImGui::TreePop();
+            }
+        }
+
+        ImGui::Separator();
+
         const auto& evs = phys.collisions();
 
         // auto pause if requested and collision occured
@@ -465,37 +477,6 @@ namespace UI { // --------------------------------------------------------------
         }
 
         ImGui::Separator();
-
-        // Collisions table
-        // Will be implemented later
-        /*
-        if (ImGui::BeginTable("coll_table", 4, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
-            ImGui::TableSetupColumn("Entity A");
-            ImGui::TableSetupColumn("Entity B");
-            ImGui::TableSetupColumn("Depth");
-            ImGui::TableSetupColumn("Normal");
-            ImGui::TableHeadersRow();
-            auto getEntityLabel = [&](CrashoutsEngine::Entity e) -> const char* {
-                if (ecs.HasComponent<NameComponent>(e)) {
-                    return ecs.GetComponent<NameComponent>(e)->name.c_str();   // const char*
-                }
-                else {
-                    static thread_local char buf[32];
-                    std::snprintf(buf, sizeof(buf), "Entity %u", (unsigned)e);
-                    return buf;                                                // decays to const char*
-                }
-            };
-
-            for (auto const& ev : evs) {
-                ImGui::TableNextRow();
-                ImGui::TableSetColumnIndex(0); ImGui::TextUnformatted(getEntityLabel(ev.entity1));
-                ImGui::TableSetColumnIndex(1); ImGui::TextUnformatted(getEntityLabel(ev.entity2));
-                ImGui::TableSetColumnIndex(2); ImGui::Text("%.3f", ev.colManifold.depth);
-                ImGui::TableSetColumnIndex(3); ImGui::Text("(%.2f, %.2f)", ev.colManifold.normal.x, ev.colManifold.normal.y);
-            }
-            ImGui::EndTable();
-        }
-        */
 
         ImGui::Checkbox("Draw overlay", &ui.drawCollOverlay);
         ImGui::SameLine(); ImGui::Checkbox("All colliders", &ui.drawAllColliders);

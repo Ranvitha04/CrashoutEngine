@@ -1,3 +1,17 @@
+/*!
+@file       debugreflection.h
+@author     mohamadamirakmal.b@digipen.edu
+@date       25/09/2025
+
+@brief      Lightweight reflection hooks for the Debug Menu. Provides:
+            - IComponentAdapter + ComponentRegistry: ECS inspectors (add/remove/edit)
+            - IGameStateProvider setter/getter: data-driven Game State panel
+            - PanelRegistry: register custom ImGui panels at runtime
+            - IPhysicsProvider + PhysicsRegistry: physics debug controls
+
+These APIs let the debug UI be data-driven without hardcoding per-project UI.
+//__________________________________________________________________________*/
+
 #pragma once
 #include <functional>
 #include <string>
@@ -64,6 +78,22 @@ namespace DebugReflection {
 
     private:
         std::vector<Panel> list;
+    };
+
+    // Physics provider
+    struct IPhysicsProvider {
+        virtual ~IPhysicsProvider() = default;
+        virtual const char* name() const = 0;
+        virtual void draw(CrashoutsEngine::ECS& ecs) = 0;  // render ImGui for this provider
+    };
+
+    class PhysicsRegistry {
+    public:
+        static PhysicsRegistry& instance();
+        void registerProvider(IPhysicsProvider* p);
+        const std::vector<IPhysicsProvider*>& all() const;
+    private:
+        std::vector<IPhysicsProvider*> providers_;
     };
 
 } // namespace DebugReflection
