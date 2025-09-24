@@ -30,6 +30,8 @@ This file provides the graphics for Crashout Engine's ImGUI.
 #include <cstring>
 #include "math/CEVec3.h"
 
+#include "frameratecontroller.h"
+
 /*                                                                   
 ----------------------------------------------------------------------------- */
 
@@ -355,7 +357,7 @@ namespace UI { // --------------------------------------------------------------
             gPerfSnapshot = profiler.results();
             gPerfSnapshotTotalMs = profiler.total_ms();
         }
-        ImGui::Text("Frame: %.3f ms (%.1f FPS)", gPerfSnapshotTotalMs, GLApp::fps);
+        ImGui::Text("Frame: %.3f ms (%.1f FPS)", gPerfSnapshotTotalMs, FrameRateController::GetInstance().FPS());
 
         ImGui::Separator();
         DrawEngineMemoryPanel();

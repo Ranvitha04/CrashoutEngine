@@ -28,6 +28,8 @@ context and implement a game loop.
 #include <imgui_impl_opengl3.h>
 
 #include <iostream>
+
+#include "frameratecontroller.h"
 #include "gamestatemanager.h"
 #include "registergamestate.h"
 #include "settings.h"
@@ -50,7 +52,8 @@ static FrameProfiler gProfiler;
 
 // tests
 static bool gOnce = false;
-
+// frame rate controller
+auto& FRC = FrameRateController::GetInstance();
 /*                                                      function declarations
 ----------------------------------------------------------------------------- */
 static void draw();
@@ -105,15 +108,16 @@ int main() {
 
     // window's close flag is set by clicking close widget or Alt+F4
     while (!glfwWindowShouldClose(GLApp::ptr_window)) {
-        //TEMPORARY TO BE REPLACED BY ECS INPUT SYSTEM - Rain
+        FRC.FrameStart();
         glfwPollEvents();
         InputManager::Update();
         GLApp::update_time();
-        physicsSystem.update(globalEntities, GLApp::delta_time);
+        physicsSystem.update(globalEntities, FRC.DT());
         draw();
         UpdateGameStateManager();
         update();
 
+        FRC.FrameEnd();
     }
 
     // Cleanup

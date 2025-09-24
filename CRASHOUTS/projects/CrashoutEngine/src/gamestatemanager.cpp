@@ -8,7 +8,6 @@ Handles registration initialization updating and transitions between different g
 */
 
 #include "gamestatemanager.h"
-
 #include <unordered_map>
 
  /// Registry that maps game states to their descriptors
