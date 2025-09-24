@@ -9,6 +9,13 @@
 #include "managers/physicsmanager.h"
 
 #include "math/CEMath.h"
+#include "messaging/observer.h"
+
+namespace {
+	void testEvents(Messaging::Messages&) {
+		std::cout << "COLLISION DETECTED";
+	}
+}
 
 namespace Component {
 	
@@ -81,6 +88,11 @@ namespace {
 }
 
 namespace Physics {
+
+	PhysicsHandler::PhysicsHandler() : Messaging::Observer{ "Physics" } {
+		//attachHandler(Messaging::getCollisionMsgID(), testEvents);
+	}
+
 
 	/*UPDATE BOTH THE RIGIDBODY AND TRANSFORM COMPONENT*/
 	void PhysicsHandler::updatePhysics(Component::TransformComponent *transformComp, Component::RigidBodyComponent *rigidBodyComp, double deltaTime) {

@@ -11,6 +11,7 @@
 
 #include "math/CEVec3.h"
 #include "components/transformcomponent.h"
+#include "messaging/observable.h"
 #include "log.h"
 #include "managers/entitymanager.h"
 #include <memory>
@@ -18,6 +19,7 @@
 #include <cmath>
 #include <array>
 #include <algorithm>
+#include <utility>
 
 
 namespace Collision {
@@ -90,6 +92,17 @@ namespace Collision {
 
 namespace Collision {
 
+	class CollisionMessage : public Messaging::Messages {
+		private:
+			CollisionManifold colManifold;
+			CrashoutsEngine::Entity entity1;
+			CrashoutsEngine::Entity entity2;
+		public:
+			CollisionMessage(const std::string& id, CollisionManifold const &colManifold, CrashoutsEngine::Entity entity1, CrashoutsEngine::Entity entity2);
+			std::pair<CrashoutsEngine::Entity, CrashoutsEngine::Entity> getCollisionPair();
+			CollisionManifold getCollisionManifold();
+	};
+
 	/*!
 	@struct	CollisionProps
 	@brief	Used to pass data about entities(collider, velocity and position)
@@ -106,7 +119,7 @@ namespace Collision {
 	@class	CollisionHandler
 	@brief	Used to contain functions for checking collision and able to return a function pointer based on the type of collision passed in
 	*/
-	class CollisionHandler {
+	class CollisionHandler : public Messaging::Observable {
 		private:
 
 			static constexpr int TYPES_OF_COLLISION{ 2 };
@@ -122,6 +135,8 @@ namespace Collision {
 		public:
 
 			CollisionHandler();
+
+			void update(std::vector<CrashoutsEngine::Entity>& globalEntities, double deltaTime);
 
 			/*!
 			@brief Return a function pointer to call the appropriate collision function

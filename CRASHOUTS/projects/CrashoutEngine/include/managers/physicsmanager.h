@@ -11,6 +11,7 @@
 #include "math/CEVec3.h"
 #include "managers/entitymanager.h"
 #include "managers/collisionmanager.h"
+#include "messaging/observer.h"
 #include "log.h"
 #include <vector>
 
@@ -40,7 +41,7 @@ namespace Component {
 }
 
 namespace Physics {
-	class PhysicsHandler {
+	class PhysicsHandler : public Messaging::Observer {
 		private:
 			std::vector<Collision::CollisionEvent> collisionEvents;
 			void applyImpulse(Collision::CollisionEvent const& event, CrashoutsEngine::ECS& globalECS);
@@ -52,7 +53,9 @@ namespace Physics {
 			static inline bool sOverrideDt = false;
 			static inline double sDebugDt = 1.0 / 60.0;
 		public:
-			PhysicsHandler() = default;
+			PhysicsHandler();
+
+			~PhysicsHandler() = default;
 
 			/*!
 			@brief Modify Transform Component, and do Collision checks and resolutions. Call this function for the main PHYSICS update. Every entity with a rigidbody, collider and transform component will get their transforms modified
@@ -69,6 +72,8 @@ namespace Physics {
 			@param deltaTime Time taken for the previous frame
 			*/
 			void updatePhysics(Component::TransformComponent *transformComp, Component::RigidBodyComponent *rigidBodyComp, double deltaTime);
+
+			//void fixedUpdate();
 
 			// --- Debug API ---
 			const std::vector<Collision::CollisionEvent>& collisions() const { return collisionEvents; }
