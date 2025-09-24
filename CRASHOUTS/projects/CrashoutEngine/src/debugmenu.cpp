@@ -19,6 +19,7 @@ This file provides the graphics for Crashout Engine's ImGUI.
 #include "log.h"
 #include "debugmenu.h"
 #include "debugreflection.h"
+#include "debugdefaults.h"
 
 
 // ImGui headers

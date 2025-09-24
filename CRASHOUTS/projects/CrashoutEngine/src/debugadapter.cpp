@@ -1,6 +1,7 @@
 #include "debugreflection.h"
 #include "managers/entitymanager.h"
 #include <imgui.h>
+#include "debugdefaults.h"
 
 // current components:
 #include "components/namecomponent.h"
@@ -22,7 +23,8 @@ namespace {
             return ecs.HasComponent<Component::NameComponent>(e);
         }
         void add(ECS& ecs, Entity e) override {
-            if (!has(ecs, e)) ecs.AddComponent<Component::NameComponent>(e, "Unnamed Entity");
+            auto& D = GetDebugDefaults();
+            if (!has(ecs, e)) ecs.AddComponent<Component::NameComponent>(e, D.name_default);
         }
         void remove(ECS& ecs, Entity e) override {
             if (has(ecs, e)) ecs.RemoveComponent<Component::NameComponent>(e);
@@ -48,12 +50,13 @@ namespace {
             if (has(ecs, e)) ecs.RemoveComponent<Component::TransformComponent>(e);
         }
         void drawInspector(ECS& ecs, Entity e) override {
+            auto& D = GetDebugDefaults();
             if (auto* t = ecs.GetComponent<Component::TransformComponent>(e)) {
                 float pos[3] = { t->position.x, t->position.y, t->position.z };
                 float size[2] = { t->size.x, t->size.y };
-                ImGui::DragFloat3("Position", pos, 0.1f);
-                ImGui::DragFloat2("Scale", size, 0.05f);
-                ImGui::DragFloat("Rotation", &t->rotation, 1.0f);
+                ImGui::DragFloat3("Position", pos, D.drag_medium);
+                ImGui::DragFloat2("Scale", size, D.drag_small);
+                ImGui::DragFloat("Rotation", &t->rotation, D.drag_rotation);
                 t->position.x = pos[0]; t->position.y = pos[1]; t->position.z = pos[2];
                 t->size.x = size[0]; t->size.y = size[1];
             }
@@ -68,8 +71,8 @@ namespace {
         }
 
         void add(ECS& ecs, Entity e) override {
-            // Defaults: max vel (10,10,0), mass 1.0, restitution 0.2  (tweak as you like)
-            ecs.AddComponent<RigidBodyComponent>(e, CEVec3{ 10.f,10.f,0.f }, 1.f, 0.2f);
+            auto& D = GetDebugDefaults();
+            ecs.AddComponent<RigidBodyComponent>(e, D.rb_init_velocity, D.rb_mass, D.rb_restitution);
         }
 
         void remove(ECS& ecs, Entity e) override {
@@ -111,11 +114,12 @@ namespace {
         }
 
         void add(ECS& ecs, Entity e) override {
+            auto& D = GetDebugDefaults();
             // Default to a 1.0-radius sphere at the entity's transform position (if present)
             CEVec3 center{ 0.f,0.f,0.f };
             if (auto* t = ecs.GetComponent<TransformComponent>(e)) center = t->position;
 
-            auto col = std::make_unique<Collision::Sphere>(1.f, center);
+            auto col = std::make_unique<Collision::Sphere>(D.sphere_radius, center);
             ecs.AddComponent<ColliderComponent>(e, ColliderComponent{ std::move(col) });
         }
 
@@ -125,6 +129,7 @@ namespace {
 
         void drawInspector(ECS& ecs, Entity e) override {
             auto* cc = ecs.GetComponent<ColliderComponent>(e);
+            auto& D = GetDebugDefaults();
             if (!cc || !cc->collider) return;
 
             // Type selector
@@ -137,15 +142,15 @@ namespace {
                 if (type == Collision::SPHERE) {
                     CEVec3 center{ 0.f,0.f,0.f };
                     if (auto* t = ecs.GetComponent<TransformComponent>(e)) center = t->position;
-                    cc->collider = std::make_unique<Collision::Sphere>(1.f, center);
+                    cc->collider = std::make_unique<Collision::Sphere>(D.sphere_radius, center);
                 }
                 else {
                     // AABB centered on transform with ±0.5 extents
                     CEVec3 c{ 0.f,0.f,0.f };
                     if (auto* t = ecs.GetComponent<TransformComponent>(e)) c = t->position;
                     cc->collider = std::make_unique<Collision::AABBRect>(
-                        CEVec3{ c.x - 0.5f, c.y - 0.5f, c.z - 0.5f },
-                        CEVec3{ c.x + 0.5f, c.y + 0.5f, c.z + 0.5f }
+                        CEVec3{ c.x - D.aabb_half, c.y - D.aabb_half, c.z - D.aabb_half },
+                        CEVec3{ c.x + D.aabb_half, c.y + D.aabb_half, c.z + D.aabb_half }
                     );
                 }
             }
@@ -154,7 +159,7 @@ namespace {
             if (cc->collider->type == Collision::SPHERE) {
                 auto* s = static_cast<Collision::Sphere*>(cc->collider.get());
                 float r = s->radius;
-                if (ImGui::DragFloat("Radius", &r, 0.05f, 0.0f, 1e6f)) s->radius = r;
+                if (ImGui::DragFloat("Radius", &r, D.drag_small, D.min_zero, D.max_large)) s->radius = r;
 
                 // Optionally sync sphere center to Transform each frame:
                 if (auto* t = ecs.GetComponent<TransformComponent>(e)) {
@@ -207,6 +212,7 @@ namespace {
         void drawInspector(ECS& ecs, Entity e) override {
             using namespace Component;
             auto* sc = ecs.GetComponent<ShapeComponent>(e);
+            auto& D = GetDebugDefaults();
             if (!sc) return;
 
             // type
@@ -217,9 +223,9 @@ namespace {
             }
 
             // shared
-            ImGui::DragFloat3("Color", &sc->color.x, 0.01f, 0.f, 1.f);
-            ImGui::DragFloat("Rotation", &sc->rotation, 1.f);
-            ImGui::DragFloat("Scale", &sc->scale, 0.01f, 0.01f, 100.f);
+            ImGui::DragFloat3("Color", &sc->color.x, D.drag_small, 0.f, 1.f);
+            ImGui::DragFloat("Rotation", &sc->rotation, D.drag_rotation);
+            ImGui::DragFloat("Scale", &sc->scale, D.drag_small, 0.01f, 100.f);
 
             // per-type
             switch (sc->type) {
@@ -255,17 +261,13 @@ namespace {
         void changeTo(int id) override { ChangeGameState((GameState)id); }
 
         const std::vector<std::pair<const char*, int>>& states() const override {
-            static const std::vector<std::pair<const char*, int>> kStates = {
-                {"Main Menu",(int)MAIN_MENU},
-                {"Renfred",  (int)RENFRED},
-                {"Rain",     (int)RAIN},
-                {"Amir",     (int)AMIR},
-                {"Afiq",     (int)AFIQ},
-                {"Tristan",  (int)TRISTAN},
-                {"Ranvitha", (int)RAN},
-                {"Quit",     (int)QUIT},
-            };
-            return kStates;
+            static std::vector<std::pair<const char*, int>> cache;
+            cache.clear();
+            for (auto const& [st, desc] : GetStateRegistry()) {
+                const char* label = desc.Label ? desc.Label : "(unnamed)";
+                cache.emplace_back(label, (int)st);
+            }
+            return cache;
         }
     };
 
