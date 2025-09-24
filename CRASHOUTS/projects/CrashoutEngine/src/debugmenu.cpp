@@ -359,7 +359,7 @@ namespace UI { // --------------------------------------------------------------
             gPerfSnapshot = profiler.results();
             gPerfSnapshotTotalMs = profiler.total_ms();
         }
-        ImGui::Text("Frame: %.3f ms (%.1f FPS)", gPerfSnapshotTotalMs, FrameRateController::GetInstance().FPS());
+        ImGui::Text("Frame: %.3f ms (%.1f FPS)", gPerfSnapshotTotalMs, GLApp::fps);
 
         ImGui::Separator();
         DrawEngineMemoryPanel();
