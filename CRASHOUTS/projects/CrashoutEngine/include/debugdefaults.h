@@ -6,9 +6,9 @@ struct DebugDefaults {
     const char* name_default = "Unnamed Entity";
 
     // RigidBody
-    CEVec3 rb_init_velocity{ 10.f, 10.f, 0.f };
-    float  rb_mass = 1.f;
-    float  rb_restitution = 0.2f;
+    CEVec3 rb_init_velocity{ 0.f, 0.f, 0.f };
+    float  rb_mass = 5.f;
+    float  rb_restitution = 0.f;
 
     // Colliders
     float  sphere_radius = 1.f;

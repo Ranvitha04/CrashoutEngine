@@ -185,7 +185,7 @@ namespace {
                     a->min = { mn[0], mn[1], mn[2] };
                     a->max = { mx[0], mx[1], mx[2] };
                 }
-                // Optional helper: snap AABB around Transform
+                // optional: snap AABB around Transform
                 if (auto* t = ecs.GetComponent<TransformComponent>(e)) {
                     if (ImGui::Button("Fit around Transform##aabb")) {
                         const float hx = 0.5f * t->size.x;
@@ -251,6 +251,18 @@ namespace {
             if (ImGui::Button(sc->preview ? "Stop Preview##shape" : "Start Preview##shape")) {
                 sc->preview = !sc->preview;
             }
+
+            if (sc->preview) {
+                CEVec3 pos{ 0,0,0 };
+                if (auto* tf = ecs.GetComponent<Component::TransformComponent>(e)) pos = tf->position;
+                switch (sc->type) {
+                case Component::ShapeType::Square:    Component::Shapes::CreateSquare(pos, sc->size, sc->rotation, sc->scale, sc->color); break;
+                case Component::ShapeType::Rectangle: Component::Shapes::CreateRectangle(pos, sc->width, sc->height, sc->rotation, sc->scale, sc->color); break;
+                case Component::ShapeType::Line:      Component::Shapes::CreateLine(sc->p1, sc->p2, sc->thickness, sc->rotation, sc->scale, sc->color); break;
+                case Component::ShapeType::Triangle:  Component::Shapes::CreateTriangle(sc->t1, sc->t2, sc->t3, sc->rotation, sc->scale, sc->color); break;
+                }
+            }
+            // reminder to ask how/where is the rendering of the shapes done in general, i don't wanna hunt for functions
         }
     };
 

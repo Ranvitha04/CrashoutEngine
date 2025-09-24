@@ -88,8 +88,7 @@ int main() {
     InstallCrashLogger("CrashoutsEngine");
 	glfwSwapInterval(0); // disable vsync
     globalECS = CrashoutsEngine::ECS::getInstance();
-    static std::vector<CrashoutsEngine::Entity> globalEntities = 
-        globalECS->GetComponentArray<Component::NameComponent>().indexToEntity;
+    std::vector<CrashoutsEngine::Entity> globalEntities;
 
     // start with a 16:9 aspect ratio
     if (!GLApp::init(Settings::GetScreenWidth(), Settings::GetScreenHeight(), "CRASHOUTS")) {
@@ -116,6 +115,7 @@ int main() {
         glfwPollEvents();
         InputManager::Update();
         GLApp::update_time();
+        globalEntities = globalECS->GetComponentArray<Component::TransformComponent>().indexToEntity;
         physicsSystem.update(globalEntities, FRC.DT());
         UpdateGameStateManager();
         update();
