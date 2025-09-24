@@ -67,6 +67,7 @@ static void init();
 ----------------------------------------------------------------------------- */
 static Component::RigidBodyComponent  playerRigidBody{};
 static Component::TransformComponent  playerTransform{};
+extern "C" void RegisterBuiltinComponentAdapters();
 /*  _________________________________________________________________________ */
 /*! main
 
@@ -102,6 +103,8 @@ int main() {
     /// register game states and start with main menu
     RegisterAllStates();
     InitGameStateManager(MAIN_MENU);
+
+    RegisterBuiltinComponentAdapters();
 
     InputManager::Init(GLApp::ptr_window);
     UI::Init(GLApp::ptr_window); // NEW

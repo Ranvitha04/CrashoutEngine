@@ -18,6 +18,7 @@ This file provides the graphics for Crashout Engine's ImGUI.
 #include "shapes.h"
 #include "log.h"
 #include "debugmenu.h"
+#include "debugreflection.h"
 
 
 // ImGui headers
@@ -195,10 +196,14 @@ namespace UI { // --------------------------------------------------------------
         }
         else {
             for (Entity e : entities) {
-                std::string label = ecs.HasComponent<NameComponent>(e)
-                    ? ecs.GetComponent<NameComponent>(e)->name
-                    : ("Entity " + std::to_string(e));
-                if (ImGui::Selectable(label.c_str(), selected == e)) {
+                // build visible name
+                std::string visible = ecs.HasComponent<NameComponent>(e) ? ecs.GetComponent<NameComponent>(e)->name : ("Entity " + std::to_string(e));
+
+                // make the ID unique via "##"
+                std::string id = visible + "##ent" + std::to_string((unsigned)e);
+
+                bool isSel = (e == selected);
+                if (ImGui::Selectable(id.c_str(), isSel)) {
                     selected = e;
                 }
             }
@@ -220,126 +225,47 @@ namespace UI { // --------------------------------------------------------------
         ImGui::Separator();
         ImGui::TextUnformatted("Add Components");
 
-        // Name Component
-        if (ImGui::Button("Add NameComponent") && !ecs.HasComponent<NameComponent>(selected)) {
-            ecs.AddComponent<NameComponent>(selected, "Unnamed Entity");
-        }
-        ImGui::Separator();
-
-        // Transform Component
-        if (ImGui::Button("Add TransformComponent") && !ecs.HasComponent<TransformComponent>(selected)) {
-            ecs.AddComponent<TransformComponent>(selected,
-                0.f,
-                CEVec2(),
-                CEVec3());
-        }
-        ImGui::Separator();
-
-        // Shape Component
-        if (ImGui::Button("Add ShapeComponent") && !ecs.HasComponent<Component::Shapes>(selected)) {
-            if (!ecs.HasComponent<TransformComponent>(selected))
-            {
-                ecs.AddComponent<Component::TransformComponent>(selected);
+        // List all registered component types with an "Add" button
+        for (auto* ad : DebugReflection::ComponentRegistry::instance().all()) {
+            ImGui::PushID(ad);
+            bool has = ad->has(ecs, selected);
+            ImGui::BeginDisabled(has);
+            if (ImGui::Button(ad->name())) {
+                ad->add(ecs, selected);
             }
-            ecs.AddComponent<Component::Shapes>(selected);
-        }
-        ImGui::Separator();
+            ImGui::EndDisabled();
+            ImGui::SameLine();
+            ImGui::TextUnformatted(ad->name());
 
-        // Rigid Body Component - Need make Component File
-        if (ImGui::Button("Add RigidBodyComponent") && !ecs.HasComponent<Component::RigidBodyComponent>(selected)) {
-            float mass = 1.0f, restitution = 0.25f;
-            CEVec3 maxVel{ 100.f, 100.f, 0.f };
-            ecs.AddComponent<Component::RigidBodyComponent>(selected, maxVel, mass, restitution);
+            ImGui::PopID();
         }
-        ImGui::Separator();
+        ImGui::NewLine();
 
-        // Sphere Collider - Need make Sphere Component File
-        if (ImGui::Button("Add Sphere Collider") && !ecs.HasComponent<Component::ColliderComponent>(selected)) {
-            Component::ColliderComponent cc;
-            cc.collider = std::make_unique<Collision::Sphere>(32.0f, CEVec3{ 0,0,0 });
-            ecs.AddComponent<Component::ColliderComponent>(selected, std::move(cc));
-        }
-        ImGui::Separator();
-
-        // AABB Collider - Need make AABB Component File
-        if (ImGui::Button("Add AABB Collider") && !ecs.HasComponent<Component::ColliderComponent>(selected)) {
-            Component::ColliderComponent cc;
-            cc.collider = std::make_unique<Collision::AABBRect>(
-                CEVec3{ -16, -16, 0 }, CEVec3{ 16, 16, 0 });
-            ecs.AddComponent<Component::ColliderComponent>(selected, std::move(cc));
-        }
-
+        // --- Inspect components present on selected entity ---
         ImGui::Separator();
         ImGui::TextUnformatted("Components on Selected Entity");
 
-        if (auto* name = ecs.GetComponent<NameComponent>(selected)) {
-            char buf[256]{};
-            std::strncpy(buf, name->name.c_str(), sizeof(buf) - 1);
-            if (ImGui::InputText("Name", buf, sizeof(buf))) name->name = buf;
-        }
+        for (auto* ad : DebugReflection::ComponentRegistry::instance().all()) {
+            if (!ad->has(ecs, selected)) continue;
 
-        if (auto* t = ecs.GetComponent<TransformComponent>(selected)) {
-            float tmpPos[3] = { t->position.x, t->position.y, t->position.z };
-            float tmpSize[2] = { t->size.x, t->size.y };
-            ImGui::DragFloat3("Position", tmpPos, 0.1f);
-            ImGui::DragFloat2("Scale", tmpSize, 0.05f);
-            ImGui::DragFloat("Rotation", &t->rotation, 1.0f);
+            ImGui::PushID(ad); // unique scope for this component’s UI
 
-            // Set values
-            t->position = CEVec3(tmpPos[0], tmpPos[1], tmpPos[2]);
-            t->size = CEVec2(tmpSize[0], tmpSize[1]);
-        }
+            // TreeNode label can be the display name now that ID is scoped
+            if (ImGui::TreeNode("Component")) {   // id = "Component" under PushID(ad)
+                ad->drawInspector(ecs, selected);
 
-        if (auto* s = ecs.GetComponent<Component::Shapes>(selected)) {
-            if(ecs.HasComponent<TransformComponent>(selected))
-            {
-                // I implemented this back so I can see if the colliders will work on ECS entities
-                // fyi it works, but sphere collider is in the shape of the object so I need to take a look at a later date
-                // auto* t = ecs.GetComponent<TransformComponent>(selected);
-                // Shapes::CreateRectangle(t->position, t->size.x, t->size.y, t->rotation);
-                if (ImGui::Button("Remove ShapeComponent")) {
-                    ecs.RemoveComponent<Component::Shapes>(selected);
+                if (ImGui::Button("Remove##btn")) {  // id = "Remove##btn" under PushID(ad)
+                    ad->remove(ecs, selected);
+                    ImGui::TreePop();
+                    ImGui::PopID();
+                    break; // components changed; bail this frame
                 }
+                ImGui::TreePop();
             }
-        }
-
-        if (auto* rb = ecs.GetComponent<Component::RigidBodyComponent>(selected)) {
-            CEVec3 v = rb->getVelocity();
-            if (ImGui::DragFloat3("Velocity", &v.x, 0.1f)) {
-                rb->setVelocity(v);
-            }
-
-            if (ImGui::Button("Nudge +X")) rb->addForce(CEVec3{ 10.f, 0.f, 0.f });
             ImGui::SameLine();
-            if (ImGui::Button("Nudge +Y")) rb->addForce(CEVec3{ 0.f, 10.f, 0.f });
+            ImGui::TextDisabled("%s", ad->name()); // visible label next to the node
 
-            ImGui::Text("Mass: %.3f  (inv: %.3f)", rb->getMass(), rb->getInverseMass());
-            ImGui::Text("Restitution: %.3f", rb->getCoeff());
-        }
-
-        if (auto* col = ecs.GetComponent<Component::ColliderComponent>(selected)) {
-            auto* base = col->collider.get();
-            if (!base) {
-                ImGui::TextDisabled("No collider data");
-            }
-            else if (base->type == Collision::SPHERE) {
-                auto* s = dynamic_cast<Collision::Sphere*>(base);
-                if (s) {
-                    ImGui::DragFloat("Radius", &s->radius, 0.1f, 0.0f);
-                    ImGui::DragFloat3("Center", &s->center.x, 0.1f);
-                }
-            }
-            else if (base->type == Collision::AABB) {
-                auto* a = dynamic_cast<Collision::AABBRect*>(base);
-                if (a) {
-                    ImGui::DragFloat3("Min", &a->min.x, 0.1f);
-                    ImGui::DragFloat3("Max", &a->max.x, 0.1f);
-                }
-            }
-
-            if (ImGui::Button("Remove Collider")) {
-                ecs.RemoveComponent<Component::ColliderComponent>(selected);
-            }
+            ImGui::PopID();
         }
     }
 
@@ -392,8 +318,7 @@ namespace UI { // --------------------------------------------------------------
         ScopedWindow w("Console", LockFlags(ui.lockLayout));
 
         static bool showInfo = true, showWarn = true, showErr = true, showSucc = true;
-        static bool sysCore = true, sysPhys = true, sysColl = true, sysInput = true,
-            sysAI = true, sysECS = true, sysRend = true, sysUI = true;
+        static bool sysCore = true, sysPhys = true, sysColl = true, sysInput = true, sysAI = true, sysECS = true, sysRend = true, sysUI = true;
 
         if (ImGui::Checkbox("Info", &showInfo)) {}
         ImGui::SameLine(); ImGui::Checkbox("Warn", &showWarn);
@@ -613,15 +538,30 @@ namespace UI { // --------------------------------------------------------------
 
     static void RenderTogglesWindow(UIState& ui)
     {
-        ImGui::SetNextWindowSize(ImVec2(260.f, 240.f), ImGuiCond_FirstUseEver);
+        ImGui::SetNextWindowSize(ImVec2(260.f, 300.f), ImGuiCond_FirstUseEver);
         if (ImGui::Begin("Debug Controls", nullptr, LockFlags(ui.lockLayout))) {
             ImGui::TextDisabled("Visibility");
             ImGui::Separator();
+
+            // Default / legacy toggles (kept so old projects still work)
             ImGui::Checkbox("ECS", &ui.showECS);
             ImGui::Checkbox("Physics", &ui.showPhysics);
             ImGui::Checkbox("Performance", &ui.showPerf);
             ImGui::Checkbox("Console", &ui.showConsole);
             ImGui::Checkbox("Game State", &ui.showGameState);
+
+            // Dynamically registered panels
+            ImGui::Spacing();
+            ImGui::TextDisabled("Panels");
+            ImGui::Separator();
+            for (auto const& p : DebugReflection::PanelRegistry::instance().panels()) {
+                if (p.toggleFlag) {
+                    ImGui::Checkbox(p.name.c_str(), p.toggleFlag);
+                }
+                else {
+                    ImGui::TextDisabled("%s (always on-demand)", p.name.c_str());
+                }
+            }
 
             ImGui::Spacing();
             ImGui::TextDisabled("Settings");
@@ -629,25 +569,24 @@ namespace UI { // --------------------------------------------------------------
             ImGui::Checkbox("Lock Layout", &ui.lockLayout);
             ImGui::Checkbox("Draw Colliders", &ui.drawCollOverlay);
 
-            // Quick actions
             ImGui::Spacing();
             if (ImGui::Button("Show All")) {
                 ui.showECS = ui.showPhysics = ui.showPerf = ui.showConsole = ui.showGameState = true;
+                // Also turn on any registered, toggle-backed panels:
+                for (auto const& p : DebugReflection::PanelRegistry::instance().panels())
+                    if (p.toggleFlag) *p.toggleFlag = true;
             }
             ImGui::SameLine();
             if (ImGui::Button("Hide All")) {
                 ui.showECS = ui.showPhysics = ui.showPerf = ui.showConsole = ui.showGameState = false;
+                for (auto const& p : DebugReflection::PanelRegistry::instance().panels())
+                    if (p.toggleFlag) *p.toggleFlag = false;
             }
 
-            // (Optional) Save/Load layout using ImGui .ini
             ImGui::Spacing();
-            if (ImGui::Button("Save Layout")) {
-                ImGui::SaveIniSettingsToDisk(nullptr); // default imgui.ini
-            }
+            if (ImGui::Button("Save Layout")) ImGui::SaveIniSettingsToDisk(nullptr);
             ImGui::SameLine();
-            if (ImGui::Button("Reload Layout")) {
-                ImGui::LoadIniSettingsFromDisk(nullptr);
-            }
+            if (ImGui::Button("Reload Layout")) ImGui::LoadIniSettingsFromDisk(nullptr);
         }
         ImGui::End();
     }

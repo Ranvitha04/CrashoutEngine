@@ -131,6 +131,23 @@ static void SignalCrashHandler(int signalNumber)
 }
 
 /*!
+ @brief Called automatically on normal exit to record the exit code.
+*/
+static void OnExit()
+{
+    DWORD code = 0;
+    if (GetExitCodeProcess(GetCurrentProcess(), &code))
+    {
+        if (code != 0)
+        {
+            char buf[128];
+            std::sprintf(buf, "Process exited with code %lu (0x%lX)", code, code);
+            WriteCrashLog(buf);
+        }
+    }
+}
+
+/*!
  @brief Install the global crash logger.
 
  @param name Application name to include in crash log entries.
@@ -153,4 +170,7 @@ void InstallCrashLogger(const char* name)
 
     // Create the folder right away so path problems appear early
     (void)EnsureCrashLogFolder();
+    
+    // Log exit codes too
+    std::atexit(OnExit);
 }
