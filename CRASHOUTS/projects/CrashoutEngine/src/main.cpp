@@ -87,10 +87,10 @@ Note that the C++ compiler will insert a return 0 statement if one is missing.
 #ifdef DEBUG
 
 int main() {
-    collisionSystem.registerObserver(Messaging::getCollisionMsgID(), physicsSystem);
     InstallCrashLogger("CrashoutsEngine");
 	glfwSwapInterval(0); // disable vsync
     globalECS = CrashoutsEngine::ECS::getInstance();
+    collisionSystem.registerObserver(Messaging::getCollisionMsgID(), physicsSystem); /*Listen to messages(collisions)*/
 
     // start with a 16:9 aspect ratio
     if (!GLApp::init(Settings::GetScreenWidth(), Settings::GetScreenHeight(), "CRASHOUTS")) {

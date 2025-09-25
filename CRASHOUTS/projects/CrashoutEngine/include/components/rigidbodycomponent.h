@@ -1,3 +1,11 @@
+/*!
+@file       rigidbodycomponent.h
+@author     miratristan.d@digipen.edu
+@date       08/09/2025
+@brief      Declaration for the class RigidBodyComponent, used for Phyics system
+
+//__________________________________________________________________________*/
+
 #pragma once
 
 namespace Component {

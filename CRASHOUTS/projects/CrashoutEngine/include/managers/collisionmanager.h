@@ -92,6 +92,10 @@ namespace Collision {
 
 namespace Collision {
 
+	/*!
+	@class	CollisionMessage
+	@brief	Used as the data to collision messages
+	*/
 	class CollisionMessage : public Messaging::Messages {
 		private:
 			CollisionManifold colManifold;

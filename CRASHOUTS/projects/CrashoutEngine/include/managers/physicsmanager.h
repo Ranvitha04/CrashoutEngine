@@ -40,6 +40,8 @@ namespace Physics {
 
 			~PhysicsHandler() = default;
 
+			static void handleCollisionMessages(Collision::CollisionMessage& collEvent);
+
 			/*!
 			@brief Modify Transform Component, and do Collision checks and resolutions. Call this function for the main PHYSICS update. Every entity with a rigidbody, collider and transform component will get their transforms modified
 			@param globalECS ECS object for ECS functions

@@ -85,7 +85,7 @@ namespace {
 
 namespace Physics {
 
-	void handleCollisionMessages(Collision::CollisionMessage& collEvent) {
+	void PhysicsHandler::handleCollisionMessages(Collision::CollisionMessage& collEvent) {
 
 		CrashoutsEngine::ECS& globalECS = *(CrashoutsEngine::ECS::getInstance());
 		std::pair<CrashoutsEngine::Entity, CrashoutsEngine::Entity> colPair{ collEvent.getCollisionPair() };
@@ -95,7 +95,7 @@ namespace Physics {
 	}
 
 	PhysicsHandler::PhysicsHandler() : Messaging::Observer{ "Physics" } {
-		attachHandler(Messaging::getCollisionMsgID(), (Messaging::HANDLER)handleCollisionMessages);
+		attachHandler(Messaging::getCollisionMsgID(), (Messaging::HANDLER)PhysicsHandler::handleCollisionMessages);
 	}
 
 	
