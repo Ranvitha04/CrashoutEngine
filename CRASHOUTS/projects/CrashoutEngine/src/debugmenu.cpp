@@ -19,7 +19,8 @@ This file provides the graphics for Crashout Engine's ImGUI.
 #include "log.h"
 #include "debugmenu.h"
 #include "debugreflection.h"
-
+#include "debugcollision.h"
+#include "frameratecontroller.h"
 
 // ImGui headers
 #include <imgui.h>
@@ -30,8 +31,6 @@ This file provides the graphics for Crashout Engine's ImGUI.
 #include <string>
 #include <cstring>
 #include "math/CEVec3.h"
-
-#include "frameratecontroller.h"
 
 /*                                                                   
 ----------------------------------------------------------------------------- */
@@ -90,8 +89,6 @@ namespace { //------------------------------------------------------------------
 
 namespace UI { // ----------------------------------------------------------------------------- public UI API
 
-    // Forward so panels can call it
-    static void DrawCollisionOverlayInternal(ECS& ecs, const std::vector<Collision::CollisionEvent>& events);
 
     // -- Lifecycle ------------------------------------------------------------
     /*!
@@ -174,7 +171,8 @@ namespace UI { // --------------------------------------------------------------
     */
     void RenderEcsPanel(FrameProfiler& profiler, ECS& ecs, std::vector<Entity>& entities, Entity& selected, UIState& ui)
     {
-
+        static std::vector<Entity> pinned;      // keep these inspectors visible
+        static bool showAllInspectors = false;  // renders inspectors for every entity
         FrameProfiler::Scoped s(profiler, "ImGui");
         ScopedMemTag mem(MemTag::UI);
 
@@ -212,7 +210,73 @@ namespace UI { // --------------------------------------------------------------
         ImGui::Separator();
         ImGui::Text("Selected Entity: %u", (unsigned)selected);
 
-        if (!selected) return;
+        // --- Pinned Inspectors ---
+        if (!pinned.empty()) {
+            ImGui::Separator();
+            ImGui::TextDisabled("Pinned Inspectors");
+
+            // Avoid duplicating the selected entity if it is pinned
+            std::vector<Entity> toShow;
+            toShow.reserve(pinned.size());
+            for (Entity e : pinned) if (e != selected) toShow.push_back(e);
+
+            for (Entity e : toShow) {
+                // Header with name / ID
+                std::string visible = ecs.HasComponent<NameComponent>(e)
+                    ? ecs.GetComponent<NameComponent>(e)->name
+                    : ("Entity " + std::to_string((unsigned)e));
+
+                ImGui::Separator();
+                ImGui::PushID((int)e);
+                ImGui::Text("%s  (ID %u)", visible.c_str(), (unsigned)e);
+                ImGui::SameLine();
+                if (ImGui::SmallButton("Unpin")) {
+                    pinned.erase(std::remove(pinned.begin(), pinned.end(), e), pinned.end());
+                    ImGui::PopID();
+                    continue;
+                }
+
+                // Components for this pinned entity
+                for (auto* ad : DebugReflection::ComponentRegistry::instance().all()) {
+                    if (!ad->has(ecs, e)) continue;
+                    ImGui::PushID(ad);
+                    if (ImGui::TreeNode(ad->name())) {
+                        ad->drawInspector(ecs, e);
+                        if (ImGui::Button("Remove##btn")) {
+                            ad->remove(ecs, e);
+                            ImGui::TreePop();
+                            ImGui::PopID();
+                            break;
+                        }
+                        ImGui::TreePop();
+                    }
+                    ImGui::PopID();
+                }
+                ImGui::PopID();
+            }
+        }
+
+        // --- pin/unpin + global toggle ---
+        if (selected) {
+            ImGui::SameLine();
+            if (ImGui::Button("Pin Selected")) {
+                if (std::find(pinned.begin(), pinned.end(), selected) == pinned.end())
+                    pinned.push_back(selected);
+            }
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("Unpin All")) pinned.clear();
+
+        ImGui::Checkbox("Show All Inspectors (may be heavy)", &showAllInspectors);
+
+        // Cull pins that no longer exist (adjust to your “is alive” rules)
+        pinned.erase(std::remove_if(pinned.begin(), pinned.end(),
+            [&](Entity e) {
+                bool exists =
+                    ecs.HasComponent<NameComponent>(e) ||
+                    ecs.HasComponent<TransformComponent>(e);
+                return !exists;
+            }), pinned.end());
 
         if (ImGui::Button("Destroy Selected")) {
             ecs.DestroyEntity(selected);
@@ -251,7 +315,7 @@ namespace UI { // --------------------------------------------------------------
             ImGui::PushID(ad); // unique scope for this component’s UI
 
             // TreeNode label can be the display name now that ID is scoped
-            if (ImGui::TreeNode("Component")) {   // id = "Component" under PushID(ad)
+            if (ImGui::TreeNode(ad->name())) {   // id = "Component" under PushID(ad)
                 ad->drawInspector(ecs, selected);
 
                 if (ImGui::Button("Remove##btn")) {  // id = "Remove##btn" under PushID(ad)
@@ -488,15 +552,6 @@ namespace UI { // --------------------------------------------------------------
         //ImGui::DragFloat("Line thickness", &ui.overlayThickness, 0.1f, 1.0f, 8.0f, "%.1f");
 
         ImGui::TextDisabled("Pairs this frame: %d", (int)evs.size());
-
-        // Overlay drawn after windows so it appears on top
-        if (ui.drawCollOverlay) {
-            DrawCollisionOverlayInternal(ecs, evs);
-        }
-
-        if (ui.drawAllColliders) {
-            DrawColliderWireframesOutlineGL(ecs, evs, ui.overlayThickness, true);
-        }
     }
 
     /*!
@@ -569,156 +624,6 @@ namespace UI { // --------------------------------------------------------------
         ImGui::End();
     }
 
-    // -- Overlays -------------------------------------------------------------
-    /*!
-     @brief Draws collision overlays.
-     @param ecs ECS reference.
-     @param events List of collision events.
-    */
-    static void DrawCollisionOverlayInternal(CrashoutsEngine::ECS& ecs, const std::vector<Collision::CollisionEvent>& events)
-    {
-        ImDrawList* dl = ImGui::GetForegroundDrawList();
-
-        // TODO: replace with real world->screen transform
-        auto W2S = [](const ImVec2& p) -> ImVec2 { return p; };
-
-        auto drawCollider = [&](CrashoutsEngine::Entity e, ImU32 color) {
-            if (auto* t = ecs.GetComponent<TransformComponent>(e)) {
-                if (auto* cc = ecs.GetComponent<Component::ColliderComponent>(e)) {
-                    if (cc->collider) {
-                        const Collision::Collider* base = cc->collider.get();
-                        if (base->type == Collision::SPHERE) {
-                            if (auto const* s = dynamic_cast<const Collision::Sphere*>(base)) {
-                                ImVec2 c = W2S(ImVec2(t->position.x + s->center.x, t->position.y + s->center.y));
-                                dl->AddCircle(c, s->radius, IM_COL32(255, 80, 80, 220), 32, 2.0f);
-                            }
-                        }
-                        else if (base->type == Collision::AABB) {
-                            if (auto const* a = dynamic_cast<const Collision::AABBRect*>(base)) {
-                                ImVec2 pmin = W2S(ImVec2(t->position.x + a->min.x, t->position.y + a->min.y));
-                                ImVec2 pmax = W2S(ImVec2(t->position.x + a->max.x, t->position.y + a->max.y));
-                                dl->AddRect(pmin, pmax, IM_COL32(255, 80, 80, 220), 0.0f, 0, 2.0f);
-                            }
-                        }
-                    }
-                }
-            }
-            };
-
-        // Draw only colliding pairs + contacts
-        for (const auto& ev : events) {
-            drawCollider(ev.entity1, IM_COL32(255, 80, 80, 220));
-            drawCollider(ev.entity2, IM_COL32(255, 80, 80, 220));
-
-            // Contact points
-            for (const auto& cp : ev.colManifold.contactPoints) {
-                ImVec2 p = W2S(ImVec2(cp.x, cp.y));
-                dl->AddCircleFilled(p, 4.0f, IM_COL32(255, 200, 0, 255));
-            }
-            // Normal (if any points exist)
-            if (!ev.colManifold.contactPoints.empty()) {
-                const auto& cp0 = ev.colManifold.contactPoints[0];
-                ImVec2 p0 = W2S(ImVec2(cp0.x, cp0.y));
-                ImVec2 p1 = W2S(ImVec2(cp0.x + ev.colManifold.normal.x * 20.0f,
-                    cp0.y + ev.colManifold.normal.y * 20.0f));
-                dl->AddLine(p0, p1, IM_COL32(255, 100, 0, 255), 2.0f);
-            }
-        }
-    }
-
-    /*!
-     @brief Draws collider shapes and optional contact normals in the scene.
-     @param ecs ECS reference used to query transforms, colliders, and shapes.
-     @param events List of collision events from the current frame.
-     @param lineThickness Line thickness for normal/marker rendering.
-     @param drawNormals Whether to render collision contact normals and points.
-    */
-    static void DrawColliderWireframesOutlineGL(CrashoutsEngine::ECS& ecs, const std::vector<Collision::CollisionEvent>& events, float lineThickness, bool drawNormals)
-    {
-        auto& collArr = ecs.GetComponentArray<Component::ColliderComponent>();
-
-        auto isColliding = [&](CrashoutsEngine::Entity e)->bool {
-            for (const auto& ev : events)
-            {
-                if (ev.entity1 == e || ev.entity2 == e) { 
-                    return true;
-                }
-            }
-            return false;
-            };
-
-        // --- 1) Wireframes for all colliders (but actually not because currently they are solid shapes) ---
-        for (auto e : collArr.indexToEntity) {
-            auto* t = ecs.GetComponent<Component::TransformComponent>(e);
-            auto* cc = ecs.GetComponent<Component::ColliderComponent>(e);
-            if (!t || !cc || !cc->collider) continue;
-
-            const CEVec3 ok = CEVec3(0.2f, 1.0f, 0.6f);
-            const CEVec3 hit = CEVec3(1.0f, 0.3f, 0.3f);
-            const CEVec3 color = isColliding(e) ? hit : ok;
-
-            bool drawn = false;
-
-            // Draw via existing shape components - honestly sphere gonna be gaslit to be a square here for now
-            if (ecs.HasComponent<Component::Shapes>(e)) {
-                Component::Shapes::CreateRectangle(t->position, t->size.x, t->size.y, t->rotation, 1.0f, color);
-                drawn = true;
-            }
-
-            if (drawn) continue;
-
-            // if no shape component, take directly from shape.cpp
-            if (cc->collider->type == Collision::AABB) {
-                auto* a = dynamic_cast<Collision::AABBRect*>(cc->collider.get());
-                if (!a) continue;
-
-                const float hx = std::max(std::fabs(a->min.x), std::fabs(a->max.x));
-                const float hy = std::max(std::fabs(a->min.y), std::fabs(a->max.y));
-
-                Component::Shapes::CreateRectangle(CEVec3(t->position.x, t->position.y, 0.0f), 2.0f * hx, 2.0f * hy, 0.0f, 1.0f, color);
-            }
-
-            // Currently using createrect for this
-            else if (cc->collider->type == Collision::SPHERE) {
-                auto* s = dynamic_cast<Collision::AABBRect*>(cc->collider.get());
-                if (!s) continue;
-
-                const float hx = std::max(std::fabs(s->min.x), std::fabs(s->max.x));
-                const float hy = std::max(std::fabs(s->min.y), std::fabs(s->max.y));
-                Component::Shapes::CreateRectangle(CEVec3(t->position.x, t->position.y, 0.0f), 2.0f * hx, 2.0f * hy, 0.0f, 1.0f, color);
-            }
-        }
-
-        // --- 2) Contact normals ---
-        if (drawNormals) {
-            for (const auto& ev : events) {
-                for (const auto& cp : ev.colManifold.contactPoints) {
-                    CEVec3 p(cp.x, cp.y, 0);
-                    CEVec3 n(ev.colManifold.normal.x, ev.colManifold.normal.y, 0);
-
-                    Component::Shapes::CreateLine(
-                        p, p + n * ev.colManifold.depth, lineThickness, 0.0f, 1.0f, CEVec3(1, 1, 0));
-
-                    float d = 0.02f;
-                    Component::Shapes::CreateLine(CEVec3(p.x - d, p.y, 0), CEVec3(p.x + d, p.y, 0), lineThickness, 0, 1, CEVec3(1, 1, 0));
-                    Component::Shapes::CreateLine(CEVec3(p.x, p.y - d, 0), CEVec3(p.x, p.y + d, 0), lineThickness, 0, 1, CEVec3(1, 1, 0));
-                }
-            }
-        }
-    }
-
-    /*!
-     @brief Draws collision overlays directly on the viewport.
-     @param ecs ECS reference.
-     @param events List of collision events.
-     @param ui UI state toggles.
-    */
-    void DrawCollisionOverlay(ECS& ecs, const std::vector<Collision::CollisionEvent>& events, const UIState& ui)
-    {
-        if (!ui.drawCollOverlay) return;
-        DrawCollisionOverlayInternal(ecs, events);
-    }
-
     // -- Coordinator(s) --------------------------------------------------------
 
     /*!
@@ -754,6 +659,10 @@ namespace UI { // --------------------------------------------------------------
             RenderGameStatePanel(ui);
         }
         EndFrame();
+
+        auto& collisions = phys.collisions();
+        CollisionGizmos::DrawAllColliders(ecs, &collisions, 0.02f);
+        CollisionGizmos::DrawContactsAndNormals(collisions, 0.25f, 0.02f); 
     }
 
     /*!

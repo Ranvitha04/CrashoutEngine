@@ -59,9 +59,14 @@ namespace {
         }
         void drawInspector(ECS& ecs, Entity e) override {
             if (auto* c = ecs.GetComponent<Component::NameComponent>(e)) {
+                // Keep a small per-item buffer and commit on deactivate to survive collapse/click-away
                 char buf[256]{};
                 if (c->name.size() < sizeof(buf)) std::memcpy(buf, c->name.data(), c->name.size());
-                if (ImGui::InputText("Name", buf, sizeof(buf))) c->name = buf;
+
+                ImGui::InputText("Name", buf, sizeof(buf));
+                if (ImGui::IsItemEdited() || ImGui::IsItemDeactivatedAfterEdit()) {
+                    c->name = buf;
+                }
             }
         }
     };
@@ -84,13 +89,26 @@ namespace {
         void drawInspector(ECS& ecs, Entity e) override {
             auto& D = GetDebugDefaults();
             if (auto* t = ecs.GetComponent<Component::TransformComponent>(e)) {
+                // Position
                 float pos[3] = { t->position.x, t->position.y, t->position.z };
-                float size[2] = { t->size.x, t->size.y };
                 ImGui::DragFloat3("Position", pos, D.drag_medium);
+                if (ImGui::IsItemEdited() || ImGui::IsItemDeactivatedAfterEdit()) {
+                    t->position = { pos[0], pos[1], pos[2] };
+                }
+
+                // Scale (size)
+                float size[2] = { t->size.x, t->size.y };
                 ImGui::DragFloat2("Scale", size, D.drag_small);
-                ImGui::DragFloat("Rotation", &t->rotation, D.drag_rotation);
-                t->position.x = pos[0]; t->position.y = pos[1]; t->position.z = pos[2];
-                t->size.x = size[0]; t->size.y = size[1];
+                if (ImGui::IsItemEdited() || ImGui::IsItemDeactivatedAfterEdit()) {
+                    t->size = { size[0], size[1] };
+                }
+
+                // Rotation
+                float rot = t->rotation;
+                ImGui::DragFloat("Rotation", &rot, D.drag_rotation);
+                if (ImGui::IsItemEdited() || ImGui::IsItemDeactivatedAfterEdit()) {
+                    t->rotation = rot;
+                }
             }
         }
     };
@@ -121,7 +139,12 @@ namespace {
                 CEVec3 v = rb->getVelocity();
                 float vel[3]{ v.x, v.y, v.z };
                 if (ImGui::DragFloat3("Velocity", vel, 0.1f)) {
-                    rb->setVelocity({ vel[0], vel[1], vel[2] });
+                    CEVec3 v = rb->getVelocity();
+                    float vel[3]{ v.x, v.y, v.z };
+                    ImGui::DragFloat3("Velocity", vel, 0.1f);
+                    if (ImGui::IsItemEdited() || ImGui::IsItemDeactivatedAfterEdit()) {
+                        rb->setVelocity({ vel[0], vel[1], vel[2] });
+                    }
                 }
 
                 // Mass & restitution (read-only with current API)
@@ -161,6 +184,11 @@ namespace {
 
             auto col = std::make_unique<Collision::Sphere>(D.sphere_radius, center);
             ecs.AddComponent<ColliderComponent>(e, ColliderComponent{ std::move(col) });
+
+            if (!ecs.HasComponent<RigidBodyComponent>(e)) {
+                auto& D2 = GetDebugDefaults();
+                ecs.AddComponent<RigidBodyComponent>(e, CEVec3{ 0.f,0.f,0.f }, 0.0f, D2.rb_restitution);
+            }
         }
 
         void remove(ECS& ecs, Entity e) override {
@@ -171,6 +199,13 @@ namespace {
             auto* cc = ecs.GetComponent<ColliderComponent>(e);
             auto& D = GetDebugDefaults();
             if (!cc || !cc->collider) return;
+
+            if (!ecs.HasComponent<RigidBodyComponent>(e)) {
+                if (ImGui::Button("Add Static RigidBody (mass=0)")) {
+                    auto& D3 = GetDebugDefaults();
+                    ecs.AddComponent<RigidBodyComponent>(e, CEVec3{ 0.f,0.f,0.f }, 0.0f, D3.rb_restitution);
+                }
+            }
 
             // Type selector
             int type = static_cast<int>(cc->collider->type);
@@ -197,31 +232,35 @@ namespace {
 
             // Draw fields per type
             if (cc->collider->type == Collision::SPHERE) {
+                // Sphere
                 auto* s = static_cast<Collision::Sphere*>(cc->collider.get());
-                float r = s->radius;
-                if (ImGui::DragFloat("Radius", &r, D.drag_small, D.min_zero, D.max_large)) s->radius = r;
 
-                // Optionally sync sphere center to Transform each frame:
-                if (auto* t = ecs.GetComponent<TransformComponent>(e)) {
-                    ImGui::TextDisabled("Center follows Transform (pos: %.2f, %.2f, %.2f)",
-                        t->position.x, t->position.y, t->position.z);
-                    s->center = t->position; // keep collider centered on entity
+                // Radius
+                float r = s->radius;
+                ImGui::DragFloat("Radius", &r, 0.05f, 0.0f, 1e6f);
+                if (ImGui::IsItemEdited() || ImGui::IsItemDeactivatedAfterEdit()) {
+                    s->radius = r;
                 }
-                else {
-                    float c[3]{ s->center.x, s->center.y, s->center.z };
-                    if (ImGui::DragFloat3("Center", c, 0.1f)) s->center = { c[0], c[1], c[2] };
+
+                // Center
+                float c[3]{ s->center.x, s->center.y, s->center.z };
+                ImGui::DragFloat3("Center", c, 0.1f);
+                if (ImGui::IsItemEdited() || ImGui::IsItemDeactivatedAfterEdit()) {
+                    s->center = { c[0], c[1], c[2] };
                 }
             }
-            else { // AABB
+            else { 
+                // AABB
                 auto* a = static_cast<Collision::AABBRect*>(cc->collider.get());
                 float mn[3]{ a->min.x, a->min.y, a->min.z };
                 float mx[3]{ a->max.x, a->max.y, a->max.z };
-                bool changed = false;
-                changed |= ImGui::DragFloat3("Min", mn, 0.05f);
-                changed |= ImGui::DragFloat3("Max", mx, 0.05f);
-                if (changed) {
-                    // Ensure min <= max
-                    for (int i = 0; i < 3; ++i) if (mn[i] > mx[i]) std::swap(mn[i], mx[i]);
+
+                bool edited = false;
+                ImGui::DragFloat3("Min", mn, 0.05f);  edited |= ImGui::IsItemEdited() || ImGui::IsItemDeactivatedAfterEdit();
+                ImGui::DragFloat3("Max", mx, 0.05f);  edited |= ImGui::IsItemEdited() || ImGui::IsItemDeactivatedAfterEdit();
+
+                if (edited) {
+                    for (int i = 0; i < 3; ++i) if (mn[i] > mx[i]) std::swap(mn[i], mx[i]); // clamp
                     a->min = { mn[0], mn[1], mn[2] };
                     a->max = { mx[0], mx[1], mx[2] };
                 }
@@ -292,19 +331,13 @@ namespace {
                 break;
             }
 
-            if (ImGui::Button(sc->preview ? "Stop Preview##shape" : "Start Preview##shape")) {
-                sc->preview = !sc->preview;
-            }
-
-            if (sc->preview) {
-                CEVec3 pos{ 0,0,0 };
-                if (auto* tf = ecs.GetComponent<Component::TransformComponent>(e)) pos = tf->position;
-                switch (sc->type) {
-                case Component::ShapeType::Square:    Component::Shapes::CreateSquare(pos, sc->size, sc->rotation, sc->scale, sc->color); break;
-                case Component::ShapeType::Rectangle: Component::Shapes::CreateRectangle(pos, sc->width, sc->height, sc->rotation, sc->scale, sc->color); break;
-                case Component::ShapeType::Line:      Component::Shapes::CreateLine(sc->p1, sc->p2, sc->thickness, sc->rotation, sc->scale, sc->color); break;
-                case Component::ShapeType::Triangle:  Component::Shapes::CreateTriangle(sc->t1, sc->t2, sc->t3, sc->rotation, sc->scale, sc->color); break;
-                }
+            CEVec3 pos{ 0,0,0 };
+            if (auto* tf = ecs.GetComponent<Component::TransformComponent>(e)) pos = tf->position;
+            switch (sc->type) {
+            case Component::ShapeType::Square:    Component::Shapes::CreateSquare(pos, sc->size, sc->rotation, sc->scale, sc->color); break;
+            case Component::ShapeType::Rectangle: Component::Shapes::CreateRectangle(pos, sc->width, sc->height, sc->rotation, sc->scale, sc->color); break;
+            case Component::ShapeType::Line:      Component::Shapes::CreateLine(sc->p1, sc->p2, sc->thickness, sc->rotation, sc->scale, sc->color); break;
+            case Component::ShapeType::Triangle:  Component::Shapes::CreateTriangle(sc->t1, sc->t2, sc->t3, sc->rotation, sc->scale, sc->color); break;
             }
             // reminder to ask how/where is the rendering of the shapes done in general, i don't wanna hunt for functions
         }

@@ -142,16 +142,6 @@ namespace UI {
     static void RenderTogglesWindow(UIState& ui);
 
     /*!
-    @brief Draws collision overlays in the viewport.
-    @param ecs ECS reference.
-    @param events List of collision events.
-    @param ui UI state toggles.
-    */
-    static void DrawCollisionOverlayInternal(CrashoutsEngine::ECS& ecs, const std::vector<Collision::CollisionEvent>& events);
-
-    static void DrawColliderWireframesOutlineGL(CrashoutsEngine::ECS& ecs, const std::vector<Collision::CollisionEvent>& events, float lineThickness, bool drawNormals);
-
-    /*!
     @brief Renders all UI panels and overlays in sequence.
     @param profiler Frame profiler reference.
     @param ecs ECS reference.

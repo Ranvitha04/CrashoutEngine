@@ -13,6 +13,7 @@ struct DebugDefaults {
     // Colliders
     float  sphere_radius = 1.f;
     float  aabb_half = 0.5f; // half extent around transform
+    bool   gFollowColliderToTransform = true;
 
     // Shape UI
     // If you want this data-driven, store the display names here:
