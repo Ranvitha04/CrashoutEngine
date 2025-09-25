@@ -84,8 +84,6 @@ Note that the C++ compiler will insert a return 0 statement if one is missing.
 int main() {
 	glfwSwapInterval(0); // disable vsync
     globalECS = CrashoutsEngine::ECS::getInstance();
-    static std::vector<CrashoutsEngine::Entity> globalEntities = 
-        globalECS->GetComponentArray<Component::NameComponent>().indexToEntity;
 
     // start with a 16:9 aspect ratio
     if (!GLApp::init(Settings::GetScreenWidth(), Settings::GetScreenHeight(), "CRASHOUTS")) {
@@ -110,7 +108,7 @@ int main() {
         glfwPollEvents();
         InputManager::Update();
         GLApp::update_time();
-        physicsSystem.update(globalEntities, FRC.DT());
+        physicsSystem.update(FRC.DT());
         UpdateGameStateManager();
         update();
         draw();
@@ -164,9 +162,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 }
 
 #endif
-
-
-
 
 static void init() {
     
@@ -227,6 +222,8 @@ static void update() {
     const float moveSpeed = 6.7f;
     //Update 
     Player::UpdateVelocity(playerRigidBody, moveSpeed);
+
+
 
     const double dt = 1.0 / 60.0;
     //playerTransform.position.x += playerRigidBody.velocity.x * static_cast<float>(dt);

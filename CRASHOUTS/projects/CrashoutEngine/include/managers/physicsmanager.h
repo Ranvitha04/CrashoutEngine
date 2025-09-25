@@ -60,7 +60,7 @@ namespace Physics {
 			@param globalEntities Collection of Entities
 			@param deltaTime Time taken for the previous frame
 			*/
-			void update(std::vector<CrashoutsEngine::Entity>& globalEntities, double deltaTime);
+			void update(double deltatime);
 
 			/*!
 			@brief Based on the velocity of the current RigidBodyComponent, modify the transformComponent accordingly
