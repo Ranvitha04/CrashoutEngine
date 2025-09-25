@@ -187,10 +187,10 @@ namespace Physics {
 
 			//LOOSE FRICTION IMPLEMENTATION
 			if (CEMath::LengthSq(rigidBody->getVelocity()) > 0.f) {
-				rigidBody->addForce(-(rigidBody->getVelocity() * 2.0f * rigidBody->getMass()));
+				rigidBody->addForce(-(rigidBody->getVelocity() * 1.0f * rigidBody->getMass()));
 			}
 
-			rigidBody->addForce(CEVec3{ 0.f, -2.f, 0.f } *rigidBody->getMass()); /*GRAVITY*/
+			rigidBody->addForce(CEVec3{ 0.f, -60.f, 0.f } *rigidBody->getMass()); /*GRAVITY*/
 
 		}
 

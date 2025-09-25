@@ -63,6 +63,8 @@ namespace Collision {
 
 		std::vector<CrashoutsEngine::Entity> globalEntities = globalECS.GetComponentArray<Component::NameComponent>().indexToEntity;
 
+
+
 		/*DETECT COLLISION AND UPDATE COLLISION EVENTS MEMBER*/
 		for (CrashoutsEngine::Entity& entity1 : globalEntities) {
 
@@ -116,6 +118,8 @@ namespace Collision {
 					CrashoutsEngine::Entity const* entity2Ptr{ &entity2 };
 
 					if (*entity1Ptr < *entity2Ptr) std::swap(entity1Ptr, entity2Ptr);
+
+
 
 					if (std::find(currentCollisions.begin(), currentCollisions.end(), std::pair{*entity1Ptr, *entity2Ptr}) == currentCollisions.end()) {
 						currentCollisions.push_back(std::pair{ *entity1Ptr, *entity2Ptr });
