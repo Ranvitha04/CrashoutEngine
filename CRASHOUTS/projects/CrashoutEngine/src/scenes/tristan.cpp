@@ -20,6 +20,7 @@ CrashoutsEngine::Entity entity3;
 //CrashoutsEngine::Entity entity5;
 
 Physics::PhysicsHandler physics;
+Collision::CollisionHandler collision;
 
 //CEVec3 convertToNDC(CEVec3 const &pos, CEVec3 &dimensions) {
 //
@@ -42,6 +43,7 @@ Physics::PhysicsHandler physics;
 
 void LoadTristan() {
 	LOGI(Core, "Tristan Initialized");
+	collision = Collision::CollisionHandler{};
 	globalECS = CrashoutsEngine::ECS::getInstance();
 	entity1 = globalECS->CreateEntity();
 	entity2 = globalECS->CreateEntity();
@@ -75,6 +77,8 @@ void LoadTristan() {
 	}) });
 
 	physics = Physics::PhysicsHandler();
+
+	collision.registerObserver(Messaging::getCollisionMsgID(), physics);
 }
 
 void InitTristan() {
@@ -87,9 +91,10 @@ void UpdateTristan()
 
 	if (InputManager::IsKeyPressed(Key::A)) rigidBody->addForce(CEVec3{ -5.f, 0.f, 0.f });
 	if (InputManager::IsKeyPressed(Key::D)) rigidBody->addForce(CEVec3{ 5.f, 0.f, 0.f });
-	if (InputManager::IsKeyPressed(Key::W)) rigidBody->addForce(CEVec3{ 0.f, 15.f, 0.f });
+	if (InputManager::IsKeyPressed(Key::W)) rigidBody->addForce(CEVec3{ 0.f, 50.f, 0.f });
 
-	/*FOR NOW, TREAT AS IF THE UPDATES ARE HAPPENING AT 60 frames*/
+	/*FOR NOW, TREAT AS IF THE UPDATES ARE HAPPENING AT 120 frames*/
+	collision.update(globalEntities, 1. / 120.f);
 	physics.update(globalEntities, 1. / 120.);
 
 }
@@ -100,7 +105,7 @@ void RenderTristan() {
 
 	const CrashoutsEngine::ECS::ComponentArray<Component::TransformComponent>& shapeArray = globalECS->GetComponentArray<Component::TransformComponent>();
 	for (const CrashoutsEngine::Entity & id : shapeArray.indexToEntity) {
-		// Get entity number
+
 		Component::TransformComponent* t = globalECS->GetComponent<Component::TransformComponent>(id);
 		if (globalECS->HasComponent<Component::RigidBodyComponent>(id) && globalECS->HasComponent<Component::ColliderComponent>(id)) {
 			Component::ColliderComponent const& collider{ *globalECS->GetComponent<Component::ColliderComponent>(id) };
@@ -133,4 +138,5 @@ void UnloadTristan()
 	globalECS->DestroyEntity(entity1);
 	globalECS->DestroyEntity(entity2);
 	globalECS->DestroyEntity(entity3);
+	collision = Collision::CollisionHandler{};
 }

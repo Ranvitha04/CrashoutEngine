@@ -12,39 +12,17 @@
 #include "managers/entitymanager.h"
 #include "managers/collisionmanager.h"
 #include "messaging/observer.h"
+#include "components/rigidbodycomponent.h"
 #include "log.h"
 #include <vector>
 
-namespace Component {
-	class RigidBodyComponent {
-		private:
-			CEVec3 mVelocity;
-			CEVec3 mMaximumVel;
-			f32 mMass;
-			CEVec3 mNetForce;
-			f32 mRestitutionCoeff; /*Measure of elasticity*/
-		public:
-
-			/*Constructor*/
-			RigidBodyComponent(CEVec3 maximumVel = CEVec3{}, f32 mass = 0.f, f32 restitutionCoeff = 0.f);
-
-			/*Member Functions*/
-			f32 getInverseMass();
-			f32 getMass();
-			void addForce(CEVec3 force);
-			void clearForceAccumulator();
-			void updatePhysics(double dt);
-			CEVec3 getVelocity();
-			void setVelocity(CEVec3 const& newVel);
-			f32 getCoeff();
-	};
-}
-
 namespace Physics {
+
+	void applyImpulse(Collision::CollisionEvent const& event, CrashoutsEngine::ECS& globalECS);
+
 	class PhysicsHandler : public Messaging::Observer {
 		private:
 			std::vector<Collision::CollisionEvent> collisionEvents;
-			void applyImpulse(Collision::CollisionEvent const& event, CrashoutsEngine::ECS& globalECS);
 			Collision::CollisionHandler collisionHandler;
 
 			// --- Debug state (static so UI can toggle globally) ---
@@ -53,6 +31,8 @@ namespace Physics {
 			static inline bool sOverrideDt = false;
 			static inline double sDebugDt = 1.0 / 60.0;
 		public:
+
+
 			PhysicsHandler();
 
 			~PhysicsHandler() = default;

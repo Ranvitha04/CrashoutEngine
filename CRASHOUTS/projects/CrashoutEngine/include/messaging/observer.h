@@ -2,6 +2,9 @@
 
 #include <map>
 #include <string>
+#include <list>
+#include <vector>
+#include <memory>
 #include "messages.h"
 
 namespace Messaging {
@@ -9,11 +12,12 @@ namespace Messaging {
 
 	class Observer {
 		protected:
-			Observer() : mId{ "Default_id" } {}
-			Observer(const std::string& id) : mId{ id } {}
+			Observer() : mId{ "Default_id" }, delayed{ false } {}
+			Observer(const std::string& id, bool delayed = false) : mId{ id }, delayed{delayed} {}
 		private:
 			std::map<std::string, HANDLER> mHandlers;
 			std::string mId;
+			bool delayed;
 		public:
 			virtual ~Observer() = default;
 
@@ -21,8 +25,14 @@ namespace Messaging {
 				mHandlers[messageId] = callBackFn;
 			}
 
+			bool isDelayed() {
+				return delayed;
+			}
+
 			HANDLER getHandler(const std::string& messageId) {
 				return mHandlers[messageId];
 			}
+
+		
 	};
 }

@@ -8,6 +8,7 @@
 //__________________________________________________________________________*/
 
 #include "managers/collisionmanager.h"
+#include "components/rigidbodycomponent.h"
 #include "math/CEMath.h"
 #include <cmath>
 #include <algorithm>
@@ -58,6 +59,88 @@ namespace Collision {
 	void CollisionHandler::update(std::vector<CrashoutsEngine::Entity>& globalEntities, double deltaTime) {
 		CrashoutsEngine::ECS& globalECS = *(CrashoutsEngine::ECS::getInstance());
 
+		std::vector<std::pair<CrashoutsEngine::Entity, CrashoutsEngine::Entity>> currentCollisions{};
+
+		/*APPLY FORCES, FOR NOW PUT IN THE COLLISION HANDLER*/
+		/*UPDATE FORCES*/
+		for (CrashoutsEngine::Entity& entity : globalEntities) {
+			if (!globalECS.HasComponent<Component::RigidBodyComponent>(entity)) continue;
+			Component::RigidBodyComponent* rigidBody{ globalECS.GetComponent<Component::RigidBodyComponent>(entity) };
+
+			/*APPLY ANY FORCE GENERATOR HERE, EVERY ENTITY IS AFFECTED*/
+
+			//LOOSE FRICTION IMPLEMENTATION
+			if (CEMath::LengthSq(rigidBody->getVelocity()) > 0.f) {
+				rigidBody->addForce(-(rigidBody->getVelocity() * 2.0f * rigidBody->getMass()));
+			}
+
+			rigidBody->addForce(CEVec3{ 0.f, -2.f, 0.f } *rigidBody->getMass()); /*GRAVITY*/
+
+		}
+
+		/*DETECT COLLISION AND UPDATE COLLISION EVENTS MEMBER*/
+		for (CrashoutsEngine::Entity& entity1 : globalEntities) {
+
+			if (!globalECS.HasComponent<Component::ColliderComponent>(entity1) || !globalECS.HasComponent<Component::TransformComponent>(entity1) || !globalECS.HasComponent<Component::RigidBodyComponent>(entity1)) continue;
+			for (CrashoutsEngine::Entity const& entity2 : globalEntities) {
+				if (entity1 == entity2) continue;
+				if (!globalECS.HasComponent<Component::ColliderComponent>(entity2) || !globalECS.HasComponent<Component::TransformComponent>(entity2) || !globalECS.HasComponent<Component::RigidBodyComponent>(entity2)) continue;
+
+				Component::ColliderComponent* collider1{ globalECS.GetComponent<Component::ColliderComponent>(entity1) };
+				Component::TransformComponent* transform1{ globalECS.GetComponent<Component::TransformComponent>(entity1) };
+				Component::RigidBodyComponent* rigidBody1{ globalECS.GetComponent<Component::RigidBodyComponent>(entity1) };
+
+				Component::ColliderComponent* collider2{ globalECS.GetComponent<Component::ColliderComponent>(entity2) };
+				Component::TransformComponent* transform2{ globalECS.GetComponent<Component::TransformComponent>(entity2) };
+				Component::RigidBodyComponent* rigidBody2{ globalECS.GetComponent<Component::RigidBodyComponent>(entity2) };
+
+				/*CHECK FOR COLLISION and call collision function*/
+				Collision::CollisionManifold collisionManifold{};
+				int tolerance{ 2 };
+
+				Component::TransformComponent newTransform1{ *transform1 };
+				Component::RigidBodyComponent newRigidBody1{ *rigidBody1 };
+
+				newRigidBody1.setVelocity(newRigidBody1.getVelocity() / static_cast<float>(tolerance));
+
+				for (int i{}; i < tolerance; ++i) {
+					collisionManifold = callCollFunct(collider1->collider->type, collider2->collider->type)(
+						Collision::CollisionProps{
+							collider1->collider,
+							CEVec3{},
+							CEVec3{newTransform1.position.x, newTransform1.position.y, newTransform1.position.z}
+						},
+						Collision::CollisionProps{
+							collider2->collider,
+							CEVec3{},
+							CEVec3{transform2->position.x, transform2->position.y, transform2->position.z}
+						});
+					/*if (collisionManifold.collisionOccured) {
+						*transform1 = newTransform1;
+						break;
+					}*/
+
+					/*TODO UPDATE*/
+					//updatePhysics(&newTransform1, &newRigidBody1, deltaTime);
+				}
+
+				if (collisionManifold.collisionOccured) {
+					CollisionMessage colMessage{ Messaging::getCollisionMsgID(), collisionManifold, entity1, entity2 };
+					
+					CrashoutsEngine::Entity const* entity1Ptr{ &entity1 };
+					CrashoutsEngine::Entity const* entity2Ptr{ &entity2 };
+
+					if (*entity1Ptr < *entity1Ptr) std::swap(entity1Ptr, entity2Ptr);
+
+					if (std::find(currentCollisions.begin(), currentCollisions.end(), std::pair{*entity1Ptr, *entity2Ptr}) == currentCollisions.end()) {
+						currentCollisions.push_back(std::pair{ entity1, entity2 });
+						sendMessage(colMessage);
+					}
+					
+				}
+
+			}
+		}
 
 
 	}
