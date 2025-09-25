@@ -47,7 +47,7 @@
 // The XInput extension provides raw mouse motion input
 #include <X11/extensions/XInput2.h>
 
-// The Shape extension provides custom window shapes
+// The MeshComponent extension provides custom window shapes
 #include <X11/extensions/shape.h>
 
 #define GLX_VENDOR 1

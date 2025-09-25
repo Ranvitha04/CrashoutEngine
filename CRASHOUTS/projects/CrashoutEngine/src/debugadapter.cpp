@@ -4,7 +4,7 @@
 @date       25/09/2025
 
 Declares and registers built-in Debug Menu adapters & providers:
-- ECS component adapters: Name, Transform, RigidBody, Collider, Shape
+- ECS component adapters: Name, Transform, RigidBody, Collider, MeshComponent
 - GameStateProvider: bridges GameStateManager to the UI
 - BuiltinPhysicsProvider: gravity & damping controls via reflection
 
@@ -282,7 +282,7 @@ namespace {
     @details Edits type-specific parameters and supports a per-entity preview toggle.
     */
     struct ShapeAdapter : DebugReflection::IComponentAdapter {
-        const char* name() const override { return "Shape"; }
+        const char* name() const override { return "MeshComponent"; }
         bool has(ECS& ecs, Entity e) const override {
             return ecs.HasComponent<Component::ShapeComponent>(e);
         }
@@ -307,7 +307,7 @@ namespace {
 
             // shared
             ImGui::DragFloat3("Color", &sc->color.x, D.drag_small, 0.f, 255.f);
-            ImGui::DragFloat("Rotation", &sc->rotation, D.drag_rotation);
+            //ImGui::DragFloat("Rotation", &sc->rotation, D.drag_rotation);
             ImGui::DragFloat("Scale", &sc->scale, D.drag_small, 0.01f, 100.f);
 
             // per-type

@@ -40,15 +40,17 @@ void RenderAmir()
 
 			CEVec3 pos{ 0,0,0 };
 			CEVec2 scale{ 1.f, 1.f };
+			float rot{ 0.f };
 			if (auto* tf = globalECS->GetComponent<Component::TransformComponent>(id)) {
 				pos = tf->position;
 				scale = tf->size;
+				rot = tf->rotation;
 			}
 			switch (sc->type) {
-			case Component::ShapeType::Square:    Component::Shapes::CreateSquare(pos, sc->size * scale.x, sc->rotation, sc->scale, sc->color * (1 / 255.f)); break;
-			case Component::ShapeType::Rectangle: Component::Shapes::CreateRectangle(pos, sc->width * scale.x, sc->height * scale.y, sc->rotation, sc->scale, sc->color * (1 / 255.f)); break;
-			case Component::ShapeType::Line:      Component::Shapes::CreateLine(sc->p1, sc->p2, sc->thickness, sc->rotation, sc->scale, sc->color * (1 / 255.f)); break;
-			case Component::ShapeType::Triangle:  Component::Shapes::CreateTriangle(sc->t1, sc->t2, sc->t3, sc->rotation, sc->scale * scale.x, sc->color * (1 / 255.f)); break;
+			case Component::ShapeType::Square:    Component::Shapes::CreateSquare(pos, sc->size * scale.x, rot, sc->scale, sc->color * (1 / 255.f)); break;
+			case Component::ShapeType::Rectangle: Component::Shapes::CreateRectangle(pos, sc->width * scale.x, sc->height * scale.y, rot, sc->scale, sc->color * (1 / 255.f)); break;
+			case Component::ShapeType::Line:      Component::Shapes::CreateLine(sc->p1, sc->p2, sc->thickness, rot, sc->scale, sc->color * (1 / 255.f)); break;
+			case Component::ShapeType::Triangle:  Component::Shapes::CreateTriangle(sc->t1, sc->t2, sc->t3, rot, sc->scale * scale.x, sc->color * (1 / 255.f)); break;
 			}
 		}
 	}

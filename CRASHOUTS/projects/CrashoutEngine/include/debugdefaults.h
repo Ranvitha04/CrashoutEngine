@@ -15,7 +15,7 @@ struct DebugDefaults {
     float  aabb_half = 0.5f; // half extent around transform
     bool   gFollowColliderToTransform = true;
 
-    // Shape UI
+    // MeshComponent UI
     // If you want this data-driven, store the display names here:
     const char* shape_types[4] = { "Square","Rectangle","Line","Triangle" };
     int         shape_type_count = 4;
