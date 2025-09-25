@@ -68,7 +68,6 @@ static void init();
 static Component::RigidBodyComponent  playerRigidBody{};
 static Component::TransformComponent  playerTransform{};
 extern "C" void RegisterBuiltinComponentAdapters();
-extern "C" void RegisterBuiltinPhysicsProvider();
 /*  _________________________________________________________________________ */
 /*! main
 
@@ -106,7 +105,6 @@ int main() {
     InitGameStateManager(MAIN_MENU);
 
     RegisterBuiltinComponentAdapters();
-    RegisterBuiltinPhysicsProvider();
 
     InputManager::Init(GLApp::ptr_window);
     UI::Init(GLApp::ptr_window); // NEW
