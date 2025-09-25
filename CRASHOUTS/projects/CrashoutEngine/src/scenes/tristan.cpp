@@ -94,8 +94,7 @@ void UpdateTristan()
 	if (InputManager::IsKeyPressed(Key::W)) rigidBody->addForce(CEVec3{ 0.f, 50.f, 0.f });
 
 	/*FOR NOW, TREAT AS IF THE UPDATES ARE HAPPENING AT 120 frames*/
-	collision.update(globalEntities, 1. / 120.f);
-	physics.update(globalEntities, 1. / 120.);
+
 
 }
 

@@ -56,27 +56,12 @@ namespace Collision {
 		collideFuncts[sphereIdx * TYPES_OF_COLLISION + AABBIdx] = SphereToAABBCollision;
 	}
 
-	void CollisionHandler::update(std::vector<CrashoutsEngine::Entity>& globalEntities, double deltaTime) {
+	void CollisionHandler::update(double deltaTime) {
 		CrashoutsEngine::ECS& globalECS = *(CrashoutsEngine::ECS::getInstance());
 
 		std::vector<std::pair<CrashoutsEngine::Entity, CrashoutsEngine::Entity>> currentCollisions{};
 
-		/*APPLY FORCES, FOR NOW PUT IN THE COLLISION HANDLER*/
-		/*UPDATE FORCES*/
-		for (CrashoutsEngine::Entity& entity : globalEntities) {
-			if (!globalECS.HasComponent<Component::RigidBodyComponent>(entity)) continue;
-			Component::RigidBodyComponent* rigidBody{ globalECS.GetComponent<Component::RigidBodyComponent>(entity) };
-
-			/*APPLY ANY FORCE GENERATOR HERE, EVERY ENTITY IS AFFECTED*/
-
-			//LOOSE FRICTION IMPLEMENTATION
-			if (CEMath::LengthSq(rigidBody->getVelocity()) > 0.f) {
-				rigidBody->addForce(-(rigidBody->getVelocity() * 2.0f * rigidBody->getMass()));
-			}
-
-			rigidBody->addForce(CEVec3{ 0.f, -2.f, 0.f } *rigidBody->getMass()); /*GRAVITY*/
-
-		}
+		std::vector<CrashoutsEngine::Entity> globalEntities = globalECS.GetComponentArray<Component::NameComponent>().indexToEntity;
 
 		/*DETECT COLLISION AND UPDATE COLLISION EVENTS MEMBER*/
 		for (CrashoutsEngine::Entity& entity1 : globalEntities) {

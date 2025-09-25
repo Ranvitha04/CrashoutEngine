@@ -175,6 +175,24 @@ namespace Physics {
 	void PhysicsHandler::update(double deltaTime){
 		CrashoutsEngine::ECS& globalECS = *(CrashoutsEngine::ECS::getInstance());
 
+		std::vector<CrashoutsEngine::Entity> globalEntities = globalECS.GetComponentArray<Component::NameComponent>().indexToEntity;
+
+		/*APPLY FORCES, FOR NOW PUT IN THE COLLISION HANDLER*/
+		/*UPDATE FORCES*/
+		for (CrashoutsEngine::Entity& entity : globalEntities) {
+			if (!globalECS.HasComponent<Component::RigidBodyComponent>(entity)) continue;
+			Component::RigidBodyComponent* rigidBody{ globalECS.GetComponent<Component::RigidBodyComponent>(entity) };
+
+			/*APPLY ANY FORCE GENERATOR HERE, EVERY ENTITY IS AFFECTED*/
+
+			//LOOSE FRICTION IMPLEMENTATION
+			if (CEMath::LengthSq(rigidBody->getVelocity()) > 0.f) {
+				rigidBody->addForce(-(rigidBody->getVelocity() * 2.0f * rigidBody->getMass()));
+			}
+
+			rigidBody->addForce(CEVec3{ 0.f, -2.f, 0.f } *rigidBody->getMass()); /*GRAVITY*/
+
+		}
 
 		/*PHYSICS SIM, UPDATE POSITION*/
 		for (CrashoutsEngine::Entity& entity : globalEntities) {

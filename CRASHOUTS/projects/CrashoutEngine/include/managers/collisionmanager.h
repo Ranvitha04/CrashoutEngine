@@ -136,7 +136,7 @@ namespace Collision {
 
 			CollisionHandler();
 
-			void update(std::vector<CrashoutsEngine::Entity>& globalEntities, double deltaTime);
+			void update(double deltaTime);
 
 			/*!
 			@brief Return a function pointer to call the appropriate collision function

@@ -46,6 +46,8 @@ std::mutex CrashoutsEngine::ECS::mtx;
 static CrashoutsEngine::ECS* globalECS = nullptr;
 static CrashoutsEngine::Entity globalSelectedEntity = 0;
 static Physics::PhysicsHandler physicsSystem;
+static Collision::CollisionHandler collisionSystem;
+
 
 // ImGui in-game performance viewer
 static FrameProfiler gProfiler;
@@ -85,6 +87,7 @@ Note that the C++ compiler will insert a return 0 statement if one is missing.
 #ifdef DEBUG
 
 int main() {
+    collisionSystem.registerObserver(Messaging::getCollisionMsgID(), physicsSystem);
     InstallCrashLogger("CrashoutsEngine");
 	glfwSwapInterval(0); // disable vsync
     globalECS = CrashoutsEngine::ECS::getInstance();
@@ -114,6 +117,7 @@ int main() {
         glfwPollEvents();
         InputManager::Update();
         GLApp::update_time();
+        collisionSystem.update(FRC.DT());
         physicsSystem.update(FRC.DT());
         UpdateGameStateManager();
         update();
