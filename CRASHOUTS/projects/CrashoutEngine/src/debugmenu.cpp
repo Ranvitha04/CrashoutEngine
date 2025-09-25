@@ -210,74 +210,8 @@ namespace UI { // --------------------------------------------------------------
         ImGui::Separator();
         ImGui::Text("Selected Entity: %u", (unsigned)selected);
 
-        // --- Pinned Inspectors ---
-        if (!pinned.empty()) {
-            ImGui::Separator();
-            ImGui::TextDisabled("Pinned Inspectors");
-
-            // Avoid duplicating the selected entity if it is pinned
-            std::vector<Entity> toShow;
-            toShow.reserve(pinned.size());
-            for (Entity e : pinned) if (e != selected) toShow.push_back(e);
-
-            for (Entity e : toShow) {
-                // Header with name / ID
-                std::string visible = ecs.HasComponent<NameComponent>(e)
-                    ? ecs.GetComponent<NameComponent>(e)->name
-                    : ("Entity " + std::to_string((unsigned)e));
-
-                ImGui::Separator();
-                ImGui::PushID((int)e);
-                ImGui::Text("%s  (ID %u)", visible.c_str(), (unsigned)e);
-                ImGui::SameLine();
-                if (ImGui::SmallButton("Unpin")) {
-                    pinned.erase(std::remove(pinned.begin(), pinned.end(), e), pinned.end());
-                    ImGui::PopID();
-                    continue;
-                }
-
-                // Components for this pinned entity
-                for (auto* ad : DebugReflection::ComponentRegistry::instance().all()) {
-                    if (!ad->has(ecs, e)) continue;
-                    ImGui::PushID(ad);
-                    if (ImGui::TreeNode(ad->name())) {
-                        ad->drawInspector(ecs, e);
-                        if (ImGui::Button("Remove##btn")) {
-                            ad->remove(ecs, e);
-                            ImGui::TreePop();
-                            ImGui::PopID();
-                            break;
-                        }
-                        ImGui::TreePop();
-                    }
-                    ImGui::PopID();
-                }
-                ImGui::PopID();
-            }
-        }
-
-        // --- pin/unpin + global toggle ---
-        if (selected) {
-            ImGui::SameLine();
-            if (ImGui::Button("Pin Selected")) {
-                if (std::find(pinned.begin(), pinned.end(), selected) == pinned.end())
-                    pinned.push_back(selected);
-            }
-        }
-        ImGui::SameLine();
-        if (ImGui::Button("Unpin All")) pinned.clear();
-
-        ImGui::Checkbox("Show All Inspectors (may be heavy)", &showAllInspectors);
-
-        // Cull pins that no longer exist (adjust to your “is alive” rules)
-        pinned.erase(std::remove_if(pinned.begin(), pinned.end(),
-            [&](Entity e) {
-                bool exists =
-                    ecs.HasComponent<NameComponent>(e) ||
-                    ecs.HasComponent<TransformComponent>(e);
-                return !exists;
-            }), pinned.end());
-
+        if (!selected) return;
+        
         if (ImGui::Button("Destroy Selected")) {
             ecs.DestroyEntity(selected);
             if (auto it = std::find(entities.begin(), entities.end(), selected);
@@ -315,7 +249,7 @@ namespace UI { // --------------------------------------------------------------
             ImGui::PushID(ad); // unique scope for this component’s UI
 
             // TreeNode label can be the display name now that ID is scoped
-            if (ImGui::TreeNode(ad->name())) {   // id = "Component" under PushID(ad)
+            if (ImGui::TreeNode("Component")) {   // id = "Component" under PushID(ad)
                 ad->drawInspector(ecs, selected);
 
                 if (ImGui::Button("Remove##btn")) {  // id = "Remove##btn" under PushID(ad)
