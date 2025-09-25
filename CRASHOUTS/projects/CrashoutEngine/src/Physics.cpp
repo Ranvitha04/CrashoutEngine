@@ -86,7 +86,6 @@ namespace Physics {
 
 	void handleCollisionMessages(Collision::CollisionMessage& collEvent) {
 
-		std::pair<CrashoutsEngine::Entity, CrashoutsEngine::Entity> collPair{ collEvent.getCollisionPair() };
 		CrashoutsEngine::ECS& globalECS = *(CrashoutsEngine::ECS::getInstance());
 		std::pair<CrashoutsEngine::Entity, CrashoutsEngine::Entity> colPair{ collEvent.getCollisionPair() };
 		if (!globalECS.HasComponent<Component::RigidBodyComponent>(colPair.first) || !globalECS.HasComponent<Component::RigidBodyComponent>(colPair.second)) return;
@@ -165,6 +164,7 @@ namespace Physics {
 	/*Main Physics update*/
 	void PhysicsHandler::update(std::vector<CrashoutsEngine::Entity>& globalEntities, double deltaTime){
 		CrashoutsEngine::ECS& globalECS = *(CrashoutsEngine::ECS::getInstance());
+
 
 		/*PHYSICS SIM, UPDATE POSITION*/
 		for (CrashoutsEngine::Entity& entity : globalEntities) {

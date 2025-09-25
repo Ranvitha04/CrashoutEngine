@@ -130,10 +130,10 @@ namespace Collision {
 					CrashoutsEngine::Entity const* entity1Ptr{ &entity1 };
 					CrashoutsEngine::Entity const* entity2Ptr{ &entity2 };
 
-					if (*entity1Ptr < *entity1Ptr) std::swap(entity1Ptr, entity2Ptr);
+					if (*entity1Ptr < *entity2Ptr) std::swap(entity1Ptr, entity2Ptr);
 
 					if (std::find(currentCollisions.begin(), currentCollisions.end(), std::pair{*entity1Ptr, *entity2Ptr}) == currentCollisions.end()) {
-						currentCollisions.push_back(std::pair{ entity1, entity2 });
+						currentCollisions.push_back(std::pair{ *entity1Ptr, *entity2Ptr });
 						sendMessage(colMessage);
 					}
 					
@@ -141,7 +141,6 @@ namespace Collision {
 
 			}
 		}
-
 
 	}
 
