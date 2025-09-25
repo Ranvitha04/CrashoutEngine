@@ -306,7 +306,7 @@ namespace {
             }
 
             // shared
-            ImGui::DragFloat3("Color", &sc->color.x, D.drag_small, 0.f, 1.f);
+            ImGui::DragFloat3("Color", &sc->color.x, D.drag_small, 0.f, 255.f);
             ImGui::DragFloat("Rotation", &sc->rotation, D.drag_rotation);
             ImGui::DragFloat("Scale", &sc->scale, D.drag_small, 0.01f, 100.f);
 

@@ -45,10 +45,10 @@ void RenderRan()
 				scale = tf->size;
 			}
 			switch (sc->type) {
-			case Component::ShapeType::Square:    Component::Shapes::CreateSquare(pos, sc->size * scale.x, sc->rotation, sc->scale, sc->color); break;
-			case Component::ShapeType::Rectangle: Component::Shapes::CreateRectangle(pos, sc->width * scale.x, sc->height * scale.y, sc->rotation, sc->scale, sc->color); break;
-			case Component::ShapeType::Line:      Component::Shapes::CreateLine(sc->p1, sc->p2, sc->thickness, sc->rotation, sc->scale, sc->color); break;
-			case Component::ShapeType::Triangle:  Component::Shapes::CreateTriangle(sc->t1, sc->t2, sc->t3, sc->rotation, sc->scale * scale.x, sc->color); break;
+			case Component::ShapeType::Square:    Component::Shapes::CreateSquare(pos, sc->size * scale.x, sc->rotation, sc->scale, sc->color * (1 / 255.f)); break;
+			case Component::ShapeType::Rectangle: Component::Shapes::CreateRectangle(pos, sc->width * scale.x, sc->height * scale.y, sc->rotation, sc->scale, sc->color * (1 / 255.f)); break;
+			case Component::ShapeType::Line:      Component::Shapes::CreateLine(sc->p1, sc->p2, sc->thickness, sc->rotation, sc->scale, sc->color * (1 / 255.f)); break;
+			case Component::ShapeType::Triangle:  Component::Shapes::CreateTriangle(sc->t1, sc->t2, sc->t3, sc->rotation, sc->scale * scale.x, sc->color * (1 / 255.f)); break;
 			}
 		}
 	}
