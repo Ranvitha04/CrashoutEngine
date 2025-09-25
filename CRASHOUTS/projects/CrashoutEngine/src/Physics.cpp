@@ -156,8 +156,10 @@ namespace Physics {
 	}
 
 	/*Main Physics update*/
-	void PhysicsHandler::update(std::vector<CrashoutsEngine::Entity>& globalEntities, double deltaTime){
+	void PhysicsHandler::update(double deltaTime){
 		CrashoutsEngine::ECS& globalECS = *(CrashoutsEngine::ECS::getInstance());
+		std::vector<CrashoutsEngine::Entity> globalEntities = 
+			globalECS.GetComponentArray<Component::NameComponent>().indexToEntity;
 		/*UPDATE FORCES*/
 		for (CrashoutsEngine::Entity& entity : globalEntities) {
 			if (!globalECS.HasComponent<Component::RigidBodyComponent>(entity)) continue;
