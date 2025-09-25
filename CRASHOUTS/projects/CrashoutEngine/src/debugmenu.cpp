@@ -185,6 +185,9 @@ namespace UI { // --------------------------------------------------------------
             if (!ecs.HasComponent<NameComponent>(e)) {
                 ecs.AddComponent<NameComponent>(e, "Entity " + std::to_string(e));
             }
+            if (!ecs.HasComponent<TransformComponent>(e)) {
+                ecs.AddComponent<TransformComponent>(e);
+            }
         }
 
         ImGui::Separator();
