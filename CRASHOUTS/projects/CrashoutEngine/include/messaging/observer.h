@@ -8,8 +8,14 @@
 #include "messages.h"
 
 namespace Messaging {
-	using HANDLER = void (*)(Messages&);
+	class Observer;
 
+	using HANDLER = void (*)(Messages&, Observer&);
+
+	/*!
+	@class Observer
+	@brief Base class that executes HANDLER when appropriate message is received from Observable
+	*/
 	class Observer {
 		protected:
 			Observer() : mId{ "Default_id" }, delayed{ false } {}
@@ -21,6 +27,11 @@ namespace Messaging {
 		public:
 			virtual ~Observer() = default;
 
+			/*!
+			@brief Set the function that will handle messages of a certain messageId
+			@param messageId type of message to react to
+			@param callBackFn function that will execute to handle the message
+			*/
 			void attachHandler(const std::string& messageId, HANDLER callBackFn) {
 				mHandlers[messageId] = callBackFn;
 			}
@@ -29,6 +40,10 @@ namespace Messaging {
 				return delayed;
 			}
 
+			/*!
+			@brief Getter for callback functions
+			@param messageId type of message to get the callback function from
+			*/
 			HANDLER getHandler(const std::string& messageId) {
 				return mHandlers[messageId];
 			}

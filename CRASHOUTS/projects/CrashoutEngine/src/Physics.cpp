@@ -85,13 +85,20 @@ namespace {
 
 namespace Physics {
 
-	void PhysicsHandler::handleCollisionMessages(Collision::CollisionMessage& collEvent) {
+	void PhysicsHandler::handleCollisionMessages(Collision::CollisionMessage& collEvent, PhysicsHandler &observer) {
 
 		CrashoutsEngine::ECS& globalECS = *(CrashoutsEngine::ECS::getInstance());
 		std::pair<CrashoutsEngine::Entity, CrashoutsEngine::Entity> colPair{ collEvent.getCollisionPair() };
 		if (!globalECS.HasComponent<Component::RigidBodyComponent>(colPair.first) || !globalECS.HasComponent<Component::RigidBodyComponent>(colPair.second)) return;
-		applyImpulse(Collision::CollisionEvent{collEvent.getCollisionManifold(), colPair.first, colPair.second}, globalECS);
+		Collision::CollisionEvent evnt{ collEvent.getCollisionManifold(), colPair.first, colPair.second };
+		applyImpulse(evnt, globalECS);
+		observer.setCollisionEvent(evnt); /*TEMP FOR NOW*/
 
+	}
+
+
+	void PhysicsHandler::setCollisionEvent(Collision::CollisionEvent const& event) {
+		collisionEvents.push_back(event);
 	}
 
 	PhysicsHandler::PhysicsHandler() : Messaging::Observer{ "Physics" } {
@@ -203,6 +210,8 @@ namespace Physics {
 			updatePhysics(transform, rigidBody, deltaTime);
 
 		}
+
+		collisionEvents.clear();
 
 	}
 

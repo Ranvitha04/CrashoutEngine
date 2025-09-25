@@ -14,7 +14,7 @@ namespace Messaging {
 		std::pair<Multimap::iterator, Multimap::iterator> range = mMessageMap.equal_range(message.id());
 		for (Multimap::iterator it{ range.first }; it != range.second; ++it) {
 			//std::cout << "Message Processed by Observer: " << it->second->GetId() << std::endl;
-			it->second.getHandler(message.id())(message);
+			it->second.getHandler(message.id())(message, it->second);
 		}
 	}
 	std::string Observable::id() {

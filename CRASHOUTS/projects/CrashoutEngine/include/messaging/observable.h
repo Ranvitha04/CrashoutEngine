@@ -6,6 +6,11 @@
 #include "observer.h"
 
 namespace Messaging {
+
+	/*!
+	@class Observable
+	@brief Base class for Observers to watch events from.
+	*/
 	class Observable {
 		protected:
 			Observable();
@@ -18,11 +23,18 @@ namespace Messaging {
 
 			virtual ~Observable() = default;
 
-			/*REGISTER OBSERVERS TO LISTEN TO THE MESSAGEID*/
+			/*!
+			@brief Constructor for message
+			@param messageId
+			@param observer
+			*/
 			void registerObserver(const std::string& messageId, Observer& observer);
 
-			/*SEND */
-			void sendMessage(Messages&);
+			/*!
+			@brief Call the callback function for the appropriate message passed in
+			@param msg the data used to identify which callback function to execute
+			*/
+			void sendMessage(Messages& msg);
 
 			std::string id();
 

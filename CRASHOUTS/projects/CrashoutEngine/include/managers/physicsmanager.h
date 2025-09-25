@@ -40,7 +40,7 @@ namespace Physics {
 
 			~PhysicsHandler() = default;
 
-			static void handleCollisionMessages(Collision::CollisionMessage& collEvent);
+			static void handleCollisionMessages(Collision::CollisionMessage& collEvent, PhysicsHandler &observer);
 
 			/*!
 			@brief Modify Transform Component, and do Collision checks and resolutions. Call this function for the main PHYSICS update. Every entity with a rigidbody, collider and transform component will get their transforms modified
@@ -57,6 +57,8 @@ namespace Physics {
 			@param deltaTime Time taken for the previous frame
 			*/
 			void updatePhysics(Component::TransformComponent *transformComp, Component::RigidBodyComponent *rigidBodyComp, double deltaTime);
+
+			void setCollisionEvent(Collision::CollisionEvent const& event);
 
 			//void fixedUpdate();
 
