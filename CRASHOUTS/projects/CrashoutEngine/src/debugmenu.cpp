@@ -15,9 +15,12 @@ This file provides the graphics for Crashout Engine's ImGUI.
 #include "managers/collisionmanager.h"
 #include "managers/physicsmanager.h"
 #include "gamestatemanager.h"
+#include "shapes.h"
 #include "log.h"
 #include "debugmenu.h"
-
+#include "debugreflection.h"
+#include "debugcollision.h"
+#include "frameratecontroller.h"
 
 // ImGui headers
 #include <imgui.h>
@@ -27,6 +30,7 @@ This file provides the graphics for Crashout Engine's ImGUI.
 #include <vector>
 #include <string>
 #include <cstring>
+#include "math/CEVec3.h"
 
 /*                                                                   
 ----------------------------------------------------------------------------- */
@@ -39,10 +43,9 @@ namespace { //------------------------------------------------------------------
     /*!
      @brief File-local helpers and state for ImGui panels.
     */
-    ECS* gECS{ nullptr };                                   //!< Local ECS sandbox for demo purposes
+    ECS* gECS{ nullptr };                       //!< Local ECS sandbox for demo purposes
     std::vector<Entity> gEntities;              //!< Sandbox entities
     Entity gSelectedEntity = 0;                 //!< Currently selected entity
-    bool gShowPhysics = false;                  //!< Physics overlay toggle
     std::vector<ProfilerSample> gPerfSnapshot;  //!< Performance profiler snapshot
     double gPerfSnapshotTotalMs = 0.0;          //!< Total frame time in ms
 
@@ -86,8 +89,6 @@ namespace { //------------------------------------------------------------------
 
 namespace UI { // ----------------------------------------------------------------------------- public UI API
 
-    // Forward so panels can call it
-    static void DrawCollisionOverlayInternal(ECS& ecs, const std::vector<Collision::CollisionEvent>& events);
 
     // -- Lifecycle ------------------------------------------------------------
     /*!
@@ -168,20 +169,14 @@ namespace UI { // --------------------------------------------------------------
      @param entities List of ECS entities.
      @param selected Currently selected entity.
     */
-    void RenderEcsPanel(FrameProfiler& profiler,
-        ECS& ecs,
-        std::vector<Entity>& entities,
-        Entity& selected)
+    void RenderEcsPanel(FrameProfiler& profiler, ECS& ecs, std::vector<Entity>& entities, Entity& selected, UIState& ui)
     {
-
+        static std::vector<Entity> pinned;      // keep these inspectors visible
+        static bool showAllInspectors = false;  // renders inspectors for every entity
         FrameProfiler::Scoped s(profiler, "ImGui");
         ScopedMemTag mem(MemTag::UI);
 
-        static bool lockLayout = false;
-        ScopedWindow win("ECS Demo", LockFlags(lockLayout));
-
-        ImGui::Checkbox("Lock layout", &lockLayout);
-        ImGui::Separator();
+        ScopedWindow win("ECS Demo", LockFlags(ui.lockLayout));
 
         // Create entity in the REAL ECS
         if (ImGui::Button("Create Entity")) {
@@ -199,10 +194,14 @@ namespace UI { // --------------------------------------------------------------
         }
         else {
             for (Entity e : entities) {
-                std::string label = ecs.HasComponent<NameComponent>(e)
-                    ? ecs.GetComponent<NameComponent>(e)->name
-                    : ("Entity " + std::to_string(e));
-                if (ImGui::Selectable(label.c_str(), selected == e)) {
+                // build visible name
+                std::string visible = ecs.HasComponent<NameComponent>(e) ? ecs.GetComponent<NameComponent>(e)->name : ("Entity " + std::to_string(e));
+
+                // make the ID unique via "##"
+                std::string id = visible + "##ent" + std::to_string((unsigned)e);
+
+                bool isSel = (e == selected);
+                if (ImGui::Selectable(id.c_str(), isSel)) {
                     selected = e;
                 }
             }
@@ -212,7 +211,7 @@ namespace UI { // --------------------------------------------------------------
         ImGui::Text("Selected Entity: %u", (unsigned)selected);
 
         if (!selected) return;
-
+        
         if (ImGui::Button("Destroy Selected")) {
             ecs.DestroyEntity(selected);
             if (auto it = std::find(entities.begin(), entities.end(), selected);
@@ -224,122 +223,47 @@ namespace UI { // --------------------------------------------------------------
         ImGui::Separator();
         ImGui::TextUnformatted("Add Components");
 
-        // Name Component
-        if (ImGui::Button("Add NameComponent") && !ecs.HasComponent<NameComponent>(selected)) {
-            ecs.AddComponent<NameComponent>(selected, "Unnamed Entity");
-        }
-        ImGui::Separator();
-
-        // Transform Component
-        if (ImGui::Button("Add TransformComponent") && !ecs.HasComponent<TransformComponent>(selected)) {
-            ecs.AddComponent<TransformComponent>(selected,
-                0.f,
-                CEVec2(),
-                CEVec3());
-        }
-        ImGui::Separator();
-
-        // Shape Component
-        if (ImGui::Button("Add ShapeComponent") && !ecs.HasComponent<Component::Shapes>(selected)) {
-            if (!ecs.HasComponent<TransformComponent>(selected))
-            {
-                ecs.AddComponent<Component::TransformComponent>(selected);
+        // List all registered component types with an "Add" button
+        for (auto* ad : DebugReflection::ComponentRegistry::instance().all()) {
+            ImGui::PushID(ad);
+            bool has = ad->has(ecs, selected);
+            ImGui::BeginDisabled(has);
+            if (ImGui::Button(ad->name())) {
+                ad->add(ecs, selected);
             }
-            ecs.AddComponent<Component::Shapes>(selected);
-        }
-        ImGui::Separator();
+            ImGui::EndDisabled();
+            ImGui::SameLine();
+            ImGui::TextUnformatted(ad->name());
 
-        // Rigid Body Component - Need make Component File
-        if (ImGui::Button("Add RigidBodyComponent") && !ecs.HasComponent<Component::RigidBodyComponent>(selected)) {
-            float mass = 1.0f, restitution = 0.25f;
-            CEVec3 maxVel{ 100.f, 100.f, 0.f };
-            ecs.AddComponent<Component::RigidBodyComponent>(selected, maxVel, mass, restitution);
+            ImGui::PopID();
         }
-        ImGui::Separator();
+        ImGui::NewLine();
 
-        // Sphere Collider - Need make Sphere Component File
-        if (ImGui::Button("Add Sphere Collider") && !ecs.HasComponent<Component::ColliderComponent>(selected)) {
-            Component::ColliderComponent cc;
-            cc.collider = std::make_unique<Collision::Sphere>(32.0f, CEVec3{ 0,0,0 });
-            ecs.AddComponent<Component::ColliderComponent>(selected, std::move(cc));
-        }
-        ImGui::Separator();
-
-        // AABB Collider - Need make AABB Component File
-        if (ImGui::Button("Add AABB Collider") && !ecs.HasComponent<Component::ColliderComponent>(selected)) {
-            Component::ColliderComponent cc;
-            cc.collider = std::make_unique<Collision::AABBRect>(
-                CEVec3{ -16, -16, 0 }, CEVec3{ 16, 16, 0 });
-            ecs.AddComponent<Component::ColliderComponent>(selected, std::move(cc));
-        }
-
+        // --- Inspect components present on selected entity ---
         ImGui::Separator();
         ImGui::TextUnformatted("Components on Selected Entity");
 
-        if (auto* name = ecs.GetComponent<NameComponent>(selected)) {
-            char buf[256]{};
-            std::strncpy(buf, name->name.c_str(), sizeof(buf) - 1);
-            if (ImGui::InputText("Name", buf, sizeof(buf))) name->name = buf;
-        }
+        for (auto* ad : DebugReflection::ComponentRegistry::instance().all()) {
+            if (!ad->has(ecs, selected)) continue;
 
-        if (auto* t = ecs.GetComponent<TransformComponent>(selected)) {
-            float tmpPos[3] = { t->position.x, t->position.y, t->position.z };
-            float tmpSize[2] = { t->size.x, t->size.y };
-            ImGui::DragFloat3("Position", tmpPos, 0.1f);
-            ImGui::DragFloat2("Scale", tmpSize, 0.05f);
-            ImGui::DragFloat("Rotation", &t->rotation, 1.0f);
+            ImGui::PushID(ad); // unique scope for this component’s UI
 
-            // Set values
-            t->position = CEVec3(tmpPos[0], tmpPos[1], tmpPos[2]);
-            t->size = CEVec2(tmpSize[0], tmpSize[1]);
-        }
+            // TreeNode label can be the display name now that ID is scoped
+            if (ImGui::TreeNode("Component")) {   // id = "Component" under PushID(ad)
+                ad->drawInspector(ecs, selected);
 
-        if (auto* s = ecs.GetComponent<Component::Shapes>(selected)) {
-            if(ecs.HasComponent<TransformComponent>(selected))
-            {
-                if (ImGui::Button("Remove ShapeComponent")) {
-                    ecs.RemoveComponent<Component::Shapes>(selected);
+                if (ImGui::Button("Remove##btn")) {  // id = "Remove##btn" under PushID(ad)
+                    ad->remove(ecs, selected);
+                    ImGui::TreePop();
+                    ImGui::PopID();
+                    break; // components changed; bail this frame
                 }
+                ImGui::TreePop();
             }
-        }
-
-        if (auto* rb = ecs.GetComponent<Component::RigidBodyComponent>(selected)) {
-            CEVec3 v = rb->getVelocity();
-            if (ImGui::DragFloat3("Velocity", &v.x, 0.1f)) {
-                rb->setVelocity(v);
-            }
-
-            if (ImGui::Button("Nudge +X")) rb->addForce(CEVec3{ 10.f, 0.f, 0.f });
             ImGui::SameLine();
-            if (ImGui::Button("Nudge +Y")) rb->addForce(CEVec3{ 0.f, 10.f, 0.f });
+            ImGui::TextDisabled("%s", ad->name()); // visible label next to the node
 
-            ImGui::Text("Mass: %.3f  (inv: %.3f)", rb->getMass(), rb->getInverseMass());
-            ImGui::Text("Restitution: %.3f", rb->getCoeff());
-        }
-
-        if (auto* col = ecs.GetComponent<Component::ColliderComponent>(selected)) {
-            auto* base = col->collider.get();
-            if (!base) {
-                ImGui::TextDisabled("No collider data");
-            }
-            else if (base->type == Collision::SPHERE) {
-                auto* s = dynamic_cast<Collision::Sphere*>(base);
-                if (s) {
-                    ImGui::DragFloat("Radius", &s->radius, 0.1f, 0.0f);
-                    ImGui::DragFloat3("Center", &s->center.x, 0.1f);
-                }
-            }
-            else if (base->type == Collision::AABB) {
-                auto* a = dynamic_cast<Collision::AABBRect*>(base);
-                if (a) {
-                    ImGui::DragFloat3("Min", &a->min.x, 0.1f);
-                    ImGui::DragFloat3("Max", &a->max.x, 0.1f);
-                }
-            }
-
-            if (ImGui::Button("Remove Collider")) {
-                ecs.RemoveComponent<Component::ColliderComponent>(selected);
-            }
+            ImGui::PopID();
         }
     }
 
@@ -392,8 +316,7 @@ namespace UI { // --------------------------------------------------------------
         ScopedWindow w("Console", LockFlags(ui.lockLayout));
 
         static bool showInfo = true, showWarn = true, showErr = true, showSucc = true;
-        static bool sysCore = true, sysPhys = true, sysColl = true, sysInput = true,
-            sysAI = true, sysECS = true, sysRend = true, sysUI = true;
+        static bool sysCore = true, sysPhys = true, sysColl = true, sysInput = true, sysAI = true, sysECS = true, sysRend = true, sysUI = true;
 
         if (ImGui::Checkbox("Info", &showInfo)) {}
         ImGui::SameLine(); ImGui::Checkbox("Warn", &showWarn);
@@ -455,42 +378,40 @@ namespace UI { // --------------------------------------------------------------
      @param ui UI state toggles.
     */
     void RenderGameStatePanel(UIState& ui) {
+        if (!ui.showGameState) return;
         ScopedWindow w("GameState", LockFlags(ui.lockLayout));
 
-        ImGui::Text("Current: %d", (int)CurrentGameState);
-        ImGui::Text("Previous: %d", (int)PreviousGameState);
-        ImGui::Text("Next: %d", (int)NextGameState);
+        auto* P = DebugReflection::GetGameStateProvider();
+        if (!P) { ImGui::TextDisabled("No GameStateProvider registered."); return; }
 
-        //Helper function to make a button for each state
-        auto stateButton = [](const char* label, GameState gs) {
-            bool pressed = ImGui::Button(label);
-            if (pressed) {
-                ChangeGameState(gs);
+        auto nameFor = [&](int id) -> const char* {
+            for (auto const& kv : P->states()) {
+                if (kv.second == id) return kv.first;   // kv = {label, id}
             }
-            ImGui::SameLine();
-            return pressed;
+            return "(unknown)";
         };
 
-        // Row 1
-        stateButton("Main Menu", MAIN_MENU);
-        stateButton("Renfred", RENFRED);
-        stateButton("Rain", RAIN);
+        const int cur = P->current() ? P->current() : -1;
+        const int prev = P->previous() ? P->previous() : -1;
+        const int next = P->next() ? P->next() : -1;
 
-        ImGui::NewLine;
+        ImGui::Text("Current:  %s", nameFor(cur));
+        ImGui::Text("Previous: %s", nameFor(prev));
 
-        // Row 2
-        stateButton("Amir", AMIR);
-        stateButton("Afiq", AFIQ);
-        stateButton("Tristan", TRISTAN);
-        stateButton("Ranvitha", RAN);
+        ImGui::Separator();
+        int col = 0;
+        for (auto const& [label, id] : P->states()) {
+            if (ImGui::Button(label)) P->changeTo(id);
+            if (++col % 4 != 0) ImGui::SameLine();
+        }
 
-        ImGui::Separator;
+        ImGui::Separator();
 
         // Utility Action
         if (ImGui::Button("Restart Current State")) {
             RestartGameState();
         }
-        ImGui::SameLine;
+        ImGui::SameLine();
         if (ImGui::Button("Quit")) {
             glfwSetWindowShouldClose(GLApp::ptr_window, GLFW_TRUE);
         }
@@ -503,15 +424,23 @@ namespace UI { // --------------------------------------------------------------
      @param phys Physics handler reference.
      @param ui UI state toggles.
     */
-    void RenderPhysicsPanel(FrameProfiler&, ECS& ecs, Physics::PhysicsHandler& phys, UIState& ui)
+    void RenderPhysicsPanel(FrameProfiler& profiler, ECS& ecs, Physics::PhysicsHandler& phys, UIState& ui)
     {
+        if (!ui.showPhysics) return;
         ScopedWindow w("Physics / Collision", LockFlags(ui.lockLayout));
 
         bool paused = Physics::PhysicsHandler::GetPaused();
-        if (ImGui::Checkbox("Paused", &paused)) Physics::PhysicsHandler::SetPaused(paused);
+        if (ImGui::Checkbox("Paused", &paused)) {
+            Physics::PhysicsHandler::SetPaused(paused);
+        }
         ImGui::SameLine();
-        if (ImGui::Button("Step")) Physics::PhysicsHandler::StepOnce(); Help("Advance one simulation tick when paused.");
+        if (ImGui::Button("Step")) {
+            Physics::PhysicsHandler::StepOnce(); Help("Advance one simulation tick when paused.");
+        }
 
+        ImGui::Checkbox("Freeze on collision", &ui.freezeOnCollision);
+        ImGui::SameLine(); Help("Automatically pause when any collision is detected this frame.");
+       
         static bool overrideDt = false;
         static double dbgDt = 1.0 / 30.0;
         ImGui::Checkbox("Override dt", &overrideDt); ImGui::SameLine();
@@ -525,69 +454,108 @@ namespace UI { // --------------------------------------------------------------
 
         ImGui::Separator();
 
-        // Collisions table
-        const auto& evs = phys.collisions();
-        if (ImGui::BeginTable("coll_table", 4, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
-            ImGui::TableSetupColumn("Entity A");
-            ImGui::TableSetupColumn("Entity B");
-            ImGui::TableSetupColumn("Depth");
-            ImGui::TableSetupColumn("Normal");
-            ImGui::TableHeadersRow();
-            for (auto const& e : evs) {
-                ImGui::TableNextRow();
-                ImGui::TableSetColumnIndex(0); ImGui::Text("%u", (unsigned)e.entity1);
-                ImGui::TableSetColumnIndex(1); ImGui::Text("%u", (unsigned)e.entity2);
-                ImGui::TableSetColumnIndex(2); ImGui::Text("%.3f", e.colManifold.depth);
-                ImGui::TableSetColumnIndex(3); ImGui::Text("(%.2f, %.2f)", e.colManifold.normal.x, e.colManifold.normal.y);
+        ImGui::TextDisabled("Forces & Integrators");
+
+        for (auto* p : DebugReflection::PhysicsRegistry::instance().all()) {
+            if (!p) continue;
+            if (ImGui::TreeNode(p->name())) {
+                p->draw(ecs);            // <- use the ecs param from this function
+                ImGui::TreePop();
             }
-            ImGui::EndTable();
         }
+
+        ImGui::Separator();
+
+        const auto& evs = phys.collisions();
+
+        // auto pause if requested and collision occured
+        if (ui.freezeOnCollision && !paused && !evs.empty()) {
+            Physics::PhysicsHandler::SetPaused(true);
+            paused = true;
+        }
+
+        ImGui::Separator();
 
         ImGui::Checkbox("Draw overlay", &ui.drawCollOverlay);
+        ImGui::SameLine(); ImGui::Checkbox("All colliders", &ui.drawAllColliders);
 
-        // Overlay drawn after windows so it appears on top
-        if (ui.drawCollOverlay) {
-            DrawCollisionOverlayInternal(ecs, evs);
-        }
-    }
+        // When a way to implement the velocity line happens
+        // ImGui::SameLine(); ImGui::Checkbox("Velocities", &ui.drawVelocities);
 
-    // -- Overlays -------------------------------------------------------------
-    /*!
-     @brief Draws collision overlays.
-     @param ecs ECS reference.
-     @param events List of collision events.
-    */
-    static void DrawCollisionOverlayInternal(ECS& ecs, const std::vector<Collision::CollisionEvent>& events) {
-        ImDrawList* dl = ImGui::GetForegroundDrawList();
-        auto W2S = [](ImVec2 p) { return p; }; // TODO: plug in real camera W2S
+        // When a way to figure out how to make it a line instead of a whole shape
+        //ImGui::DragFloat("Line thickness", &ui.overlayThickness, 0.1f, 1.0f, 8.0f, "%.1f");
 
-        for (const auto& ev : events) {
-            if (ev.colManifold.contactPoints.empty()) continue;
-
-            // Points
-            for (auto const& cp : ev.colManifold.contactPoints) {
-                ImVec2 p = W2S(ImVec2(cp.x, cp.y));
-                dl->AddCircleFilled(p, 4.0f, IM_COL32(255, 200, 0, 255));
-            }
-
-            // Normal from first point
-            const auto& c0 = ev.colManifold.contactPoints[0];
-            ImVec2 p0 = W2S(ImVec2(c0.x, c0.y));
-            ImVec2 p1 = W2S(ImVec2(c0.x + ev.colManifold.normal.x * 20.0f, c0.y + ev.colManifold.normal.y * 20.0f));
-            dl->AddLine(p0, p1, IM_COL32(255, 100, 0, 255), 2.0f);
-        }
+        ImGui::TextDisabled("Pairs this frame: %d", (int)evs.size());
     }
 
     /*!
-     @brief Draws collision overlays directly on the viewport.
+     @brief Renders the audio panel.
+     @param profiler Frame profiler reference.
      @param ecs ECS reference.
-     @param events List of collision events.
      @param ui UI state toggles.
     */
-    void DrawCollisionOverlay(ECS& ecs, const std::vector<Collision::CollisionEvent>& events, const UIState& ui)
+    void RenderAudioPanel(FrameProfiler& profiler, ECS& ecs, UIState& ui) {
+        if (!ui.showAudio) return;
+        ScopedWindow w("Audio", LockFlags(ui.lockLayout));
+
+        // Testing Purposes
+        int vol = 10;
+        ImGui::SliderInt("Audio", &vol, 0, 100);
+    }
+
+    static void RenderTogglesWindow(UIState& ui)
     {
-        if (!ui.drawCollOverlay) return;
-        DrawCollisionOverlayInternal(ecs, events);
+        ImGui::SetNextWindowSize(ImVec2(260.f, 300.f), ImGuiCond_FirstUseEver);
+        if (ImGui::Begin("Debug Controls", nullptr, LockFlags(ui.lockLayout))) {
+            ImGui::TextDisabled("Visibility");
+            ImGui::Separator();
+
+            // Default / legacy toggles (kept so old projects still work)
+            ImGui::Checkbox("ECS", &ui.showECS);
+            ImGui::Checkbox("Physics", &ui.showPhysics);
+            ImGui::Checkbox("Performance", &ui.showPerf);
+            ImGui::Checkbox("Console", &ui.showConsole);
+            ImGui::Checkbox("Game State", &ui.showGameState);
+
+            // Dynamically registered panels
+            ImGui::Spacing();
+            ImGui::TextDisabled("Panels");
+            ImGui::Separator();
+            for (auto const& p : DebugReflection::PanelRegistry::instance().panels()) {
+                if (p.toggleFlag) {
+                    ImGui::Checkbox(p.name.c_str(), p.toggleFlag);
+                }
+                else {
+                    ImGui::TextDisabled("%s (always on-demand)", p.name.c_str());
+                }
+            }
+
+            ImGui::Spacing();
+            ImGui::TextDisabled("Settings");
+            ImGui::Separator();
+            ImGui::Checkbox("Lock Layout", &ui.lockLayout);
+            ImGui::Checkbox("Draw Colliders", &ui.drawCollOverlay);
+
+            ImGui::Spacing();
+            if (ImGui::Button("Show All")) {
+                ui.showECS = ui.showPhysics = ui.showPerf = ui.showConsole = ui.showGameState = true;
+                // Also turn on any registered, toggle-backed panels:
+                for (auto const& p : DebugReflection::PanelRegistry::instance().panels())
+                    if (p.toggleFlag) *p.toggleFlag = true;
+            }
+            ImGui::SameLine();
+            if (ImGui::Button("Hide All")) {
+                ui.showECS = ui.showPhysics = ui.showPerf = ui.showConsole = ui.showGameState = false;
+                for (auto const& p : DebugReflection::PanelRegistry::instance().panels())
+                    if (p.toggleFlag) *p.toggleFlag = false;
+            }
+
+            ImGui::Spacing();
+            if (ImGui::Button("Save Layout")) ImGui::SaveIniSettingsToDisk(nullptr);
+            ImGui::SameLine();
+            if (ImGui::Button("Reload Layout")) ImGui::LoadIniSettingsFromDisk(nullptr);
+        }
+        ImGui::End();
     }
 
     // -- Coordinator(s) --------------------------------------------------------
@@ -605,12 +573,30 @@ namespace UI { // --------------------------------------------------------------
     {
 
         BeginFrame();
-        RenderEcsPanel(profiler, ecs, entities, selected);
-        RenderPhysicsPanel(profiler, ecs, phys, ui);
-        RenderPerformancePanel(profiler, ui);
-        RenderConsolePanel(ui);
-        RenderGameStatePanel(ui);
+        RenderTogglesWindow(ui);
+        if (ui.showECS) {
+            RenderEcsPanel(profiler, ecs, entities, selected, ui); 
+        }
+        if (ui.showPhysics) {
+            RenderPhysicsPanel(profiler, ecs, phys, ui);
+        }
+        if (ui.showAudio) {
+            RenderAudioPanel(profiler, ecs, ui);
+        }
+        if (ui.showPerf) {
+            RenderPerformancePanel(profiler, ui);
+        }
+        if (ui.showConsole) {
+            RenderConsolePanel(ui);
+        }
+        if (ui.showGameState) {
+            RenderGameStatePanel(ui);
+        }
         EndFrame();
+
+        auto& collisions = phys.collisions();
+        CollisionGizmos::DrawAllColliders(ecs, &collisions, 0.02f);
+        CollisionGizmos::DrawContactsAndNormals(collisions, 0.25f, 0.02f); 
     }
 
     /*!

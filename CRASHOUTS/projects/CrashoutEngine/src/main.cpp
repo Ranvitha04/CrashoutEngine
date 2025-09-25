@@ -20,6 +20,7 @@ context and implement a game loop.
 #include "managers/physicsmanager.h"            // Component::RigidBodyComponent
 #include "managers/inputmanager.h"
 #include "debugmenu.h"
+#include "crashlogger.h"
 
 // ImGui headers for callbacks
 #include <imgui.h>
@@ -27,9 +28,12 @@ context and implement a game loop.
 #include <imgui_impl_opengl3.h>
 
 #include <iostream>
+
+#include "frameratecontroller.h"
 #include "gamestatemanager.h"
 #include "registergamestate.h"
 #include "settings.h"
+#include <filesystem>
 
 /*                                                   type declarations
 ----------------------------------------------------------------------------- */
@@ -48,7 +52,8 @@ static FrameProfiler gProfiler;
 
 // tests
 static bool gOnce = false;
-
+// frame rate controller
+auto& FRC = FrameRateController::GetInstance();
 /*                                                      function declarations
 ----------------------------------------------------------------------------- */
 static void draw();
@@ -62,6 +67,7 @@ static void init();
 ----------------------------------------------------------------------------- */
 static Component::RigidBodyComponent  playerRigidBody{};
 static Component::TransformComponent  playerTransform{};
+extern "C" void RegisterBuiltinComponentAdapters();
 /*  _________________________________________________________________________ */
 /*! main
 
@@ -79,9 +85,9 @@ Note that the C++ compiler will insert a return 0 statement if one is missing.
 #ifdef DEBUG
 
 int main() {
+    InstallCrashLogger("CrashoutsEngine");
+	glfwSwapInterval(0); // disable vsync
     globalECS = CrashoutsEngine::ECS::getInstance();
-    static std::vector<CrashoutsEngine::Entity> globalEntities = 
-        globalECS->GetComponentArray<Component::NameComponent>().indexToEntity;
 
     // start with a 16:9 aspect ratio
     if (!GLApp::init(Settings::GetScreenWidth(), Settings::GetScreenHeight(), "CRASHOUTS")) {
@@ -97,26 +103,28 @@ int main() {
     RegisterAllStates();
     InitGameStateManager(MAIN_MENU);
 
+    RegisterBuiltinComponentAdapters();
+
     InputManager::Init(GLApp::ptr_window);
     UI::Init(GLApp::ptr_window); // NEW
 
     // window's close flag is set by clicking close widget or Alt+F4
     while (!glfwWindowShouldClose(GLApp::ptr_window)) {
-        //TEMPORARY TO BE REPLACED BY ECS INPUT SYSTEM - Rain
+        FRC.FrameStart();
         glfwPollEvents();
         InputManager::Update();
         GLApp::update_time();
-        physicsSystem.update(globalEntities, GLApp::delta_time);
-        draw();
+        physicsSystem.update(FRC.DT());
         UpdateGameStateManager();
         update();
+        draw();
 
+        FRC.FrameEnd();
     }
 
     // Cleanup
     UI::Shutdown();
     GLApp::cleanup();
-
     return EXIT_SUCCESS;
 }
 
@@ -124,6 +132,7 @@ int main() {
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     PSTR lpCmdLine, int nCmdShow){
+    InstallCrashLogger("CrashoutsEngine");
     CrashoutsEngine::ECS* globalECS =
         CrashoutsEngine::ECS::getInstance();
 
@@ -161,11 +170,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 #endif
 
-
-
-
 static void init() {
-    
+
 }
 
 /*  _________________________________________________________________________ */
@@ -209,7 +215,7 @@ Let application update state changes (such as animation).
 */
 static void update() {
     // process events if any associated with input devices
-    glfwPollEvents();
+    //glfwPollEvents();
 
     // start frame profiling
     gProfiler.begin_frame();
@@ -223,6 +229,8 @@ static void update() {
     const float moveSpeed = 6.7f;
     //Update 
     Player::UpdateVelocity(playerRigidBody, moveSpeed);
+
+
 
     const double dt = 1.0 / 60.0;
     //playerTransform.position.x += playerRigidBody.velocity.x * static_cast<float>(dt);
