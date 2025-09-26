@@ -27,16 +27,9 @@ void LoadTristan() {
 	globalECS->AddComponent<Component::TransformComponent>(entity1, Component::TransformComponent{ 0.f, CEVec2{}, CEVec3{0.f, 20.f, 0.f} });
 	globalECS->AddComponent<Component::RigidBodyComponent>(entity1, Component::RigidBodyComponent{ CEVec3{}, 5.f, 0.f });
 	globalECS->AddComponent<Component::ColliderComponent>(entity1, Component::ColliderComponent{ std::make_unique<Collision::Sphere>(Collision::Sphere{
-		2.0, CEVec3{}
+		10.0, CEVec3{}
 	}) });
-
-	globalECS->AddComponent<Component::NameComponent>(entity2, Component::NameComponent{ "SCENE_EX2" });
-	globalECS->AddComponent<Component::TransformComponent>(entity2, Component::TransformComponent{ 0.f, CEVec2{}, CEVec3{40.f, 20.f, 0.f} });
-	globalECS->AddComponent<Component::RigidBodyComponent>(entity2, Component::RigidBodyComponent{ CEVec3{}, 5.f, 0.f });
-	globalECS->AddComponent<Component::ColliderComponent>(entity2, Component::ColliderComponent{ std::make_unique<Collision::AABBRect>(Collision::AABBRect{
-		CEVec3{0.f, 0.f, 0.f},
-		CEVec3{6.f, 6.f, 0.f}
-	}) });
+	globalECS->AddComponent<Component::ShapeComponent>(entity1, Component::ShapeComponent{.type=Component::ShapeType::Rectangle, .width=20.f, .height=20.f});
 
 
 	globalECS->AddComponent<Component::NameComponent>(entity3, Component::NameComponent{ "SCENE_EX3" });
@@ -44,9 +37,9 @@ void LoadTristan() {
 	globalECS->AddComponent<Component::RigidBodyComponent>(entity3, Component::RigidBodyComponent{ CEVec3{}, 0.f, 0.f });
 	globalECS->AddComponent<Component::ColliderComponent>(entity3, Component::ColliderComponent{ std::make_unique<Collision::AABBRect>(Collision::AABBRect{
 		CEVec3{0.f, 0.f, 0.f},
-		CEVec3{50.f, 10.f, 0.f}
+		CEVec3{50.f, 5.f, 0.f}
 	}) });
-
+	globalECS->AddComponent<Component::ShapeComponent>(entity3, Component::ShapeComponent{ .type = Component::ShapeType::Rectangle, .width = 100.f, .height = 10.f });
 
 }
 
@@ -68,30 +61,27 @@ void RenderTristan() {
 	glClearColor(0.1f, 0.2f, 0.4f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	const CrashoutsEngine::ECS::ComponentArray<Component::NameComponent>& shapeArray = globalECS->GetComponentArray<Component::NameComponent>();
-	for (const CrashoutsEngine::Entity & id : shapeArray.indexToEntity) {
+	using namespace CrashoutsEngine;
 
-
-		if (globalECS->HasComponent<Component::RigidBodyComponent>(id) && globalECS->HasComponent<Component::ColliderComponent>(id) && globalECS->HasComponent<Component::NameComponent>(id)) {
+	const ECS::ComponentArray<Component::ShapeComponent>& shapeArray = globalECS->GetComponentArray<Component::ShapeComponent>();
+	//std::cout << shapeArray.dense.size() << std::endl;
+	for (const Entity& id : shapeArray.indexToEntity) {
+	
+		if (globalECS->HasComponent<TransformComponent>(id)) {
 			Component::TransformComponent* t = globalECS->GetComponent<Component::TransformComponent>(id);
-			Component::ColliderComponent const& collider{ *globalECS->GetComponent<Component::ColliderComponent>(id) };
-			switch (collider.collider->type) {
-				case Collision::SPHERE: {
-					Collision::Sphere const& sphere = dynamic_cast<Collision::Sphere const&>(*(collider.collider));
-					Component::Shapes::CreateRectangle(t->position, sphere.radius*2.f, sphere.radius*2.f, t->rotation);
-				}
-				break;
+			Component::ShapeComponent* sc = globalECS->GetComponent<Component::ShapeComponent>(id);
+			
+			if (globalECS->HasComponent<ColliderComponent>(id)) {
 
-				case Collision::AABB: {
-					Collision::AABBRect const& aabb = dynamic_cast<Collision::AABBRect const&>(*(collider.collider));
-					Component::Shapes::CreateRectangle(t->position, aabb.max.x*2.f, aabb.max.y*2.f, t->rotation);
+				Component::ColliderComponent* cc = globalECS->GetComponent<Component::ColliderComponent>(id);
+				switch (sc->type) {
+					case Component::ShapeType::Square:    Component::Shapes::CreateSquare(t->position, sc->size, t->rotation, sc->scale, sc->color * (1 / 255.f)); break;
+					case Component::ShapeType::Rectangle: Component::Shapes::CreateRectangle(t->position, sc->width, sc->height * 1.f, t->rotation, sc->scale, sc->color * (1 / 255.f)); break;
 				}
-				break;
 			}
+		
 		}
 	}
-
-
 
 }
 

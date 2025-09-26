@@ -24,6 +24,7 @@ namespace Component {
 			/*Member Functions*/
 			f32 getInverseMass();
 			f32 getMass();
+			void setMass(f32 newMass);
 			void addForce(CEVec3 force);
 			void clearForceAccumulator();
 			void updatePhysics(double dt);
