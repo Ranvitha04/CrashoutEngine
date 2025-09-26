@@ -8,6 +8,7 @@
 //__________________________________________________________________________*/
 
 #include "managers/collisionmanager.h"
+#include "components/rigidbodycomponent.h"
 #include "math/CEMath.h"
 #include <cmath>
 #include <algorithm>
@@ -21,6 +22,117 @@ namespace Collision {
 }
 
 namespace Collision {
+
+	/*--------------------------------------COLLISION MESSAGE DEFINITION---------------------------------------*/
+
+	CollisionMessage::CollisionMessage(const std::string& id, CollisionManifold const& colManifold, CrashoutsEngine::Entity entity1, CrashoutsEngine::Entity entity2) 
+	: Messages::Messages{ id }, colManifold{colManifold}, entity1{entity1}, entity2{entity2}
+	{ /*EMPTY BY DESIGN*/ }
+
+	std::pair<CrashoutsEngine::Entity, CrashoutsEngine::Entity> CollisionMessage::getCollisionPair() {
+		return std::pair{ entity1, entity2 };
+	}
+
+	CollisionManifold CollisionMessage::getCollisionManifold() {
+		return colManifold;
+	}
+	/*----------------------------------------------------------------------------------------------------------*/
+
+
+	/*----------------COLLISIONHANDLER CLASS DEFINITIONS--------------------------------------------------------*/
+
+	CollisionHandler::CollisionHandler() : Messaging::Observable{"Collision"}, collideFuncts{
+		std::array<Collision::FunctionDispatchType, TYPES_OF_COLLISION * TYPES_OF_COLLISION> {
+			nullptr, nullptr,
+			nullptr, nullptr
+		}
+	} {
+		int sphereIdx{ static_cast<int>(SPHERE) };
+		int AABBIdx{ static_cast<int>(AABB) };
+
+		/*Fill in the table of collisions, e.g collideFuncts[0] will be SPHERE TO SPHERE collision (2 total collider types will have 2^2 permutations(different types of collisions possible) ) */
+		collideFuncts[sphereIdx] = SphereToSphereCollision; 
+		collideFuncts[AABBIdx * TYPES_OF_COLLISION + AABBIdx] = AABBToAABBCollision;
+		collideFuncts[sphereIdx * TYPES_OF_COLLISION + AABBIdx] = SphereToAABBCollision;
+	}
+
+	void CollisionHandler::update(double deltaTime) {
+		CrashoutsEngine::ECS& globalECS = *(CrashoutsEngine::ECS::getInstance());
+
+		std::vector<std::pair<CrashoutsEngine::Entity, CrashoutsEngine::Entity>> currentCollisions{};
+
+		std::vector<CrashoutsEngine::Entity> globalEntities = globalECS.GetComponentArray<Component::NameComponent>().indexToEntity;
+
+
+
+		/*DETECT COLLISION AND UPDATE COLLISION EVENTS MEMBER*/
+		for (CrashoutsEngine::Entity& entity1 : globalEntities) {
+
+			if (!globalECS.HasComponent<Component::ColliderComponent>(entity1) || !globalECS.HasComponent<Component::TransformComponent>(entity1) || !globalECS.HasComponent<Component::RigidBodyComponent>(entity1)) continue;
+			for (CrashoutsEngine::Entity const& entity2 : globalEntities) {
+				if (entity1 == entity2) continue;
+				if (!globalECS.HasComponent<Component::ColliderComponent>(entity2) || !globalECS.HasComponent<Component::TransformComponent>(entity2) || !globalECS.HasComponent<Component::RigidBodyComponent>(entity2)) continue;
+
+				Component::ColliderComponent* collider1{ globalECS.GetComponent<Component::ColliderComponent>(entity1) };
+				Component::TransformComponent* transform1{ globalECS.GetComponent<Component::TransformComponent>(entity1) };
+				Component::RigidBodyComponent* rigidBody1{ globalECS.GetComponent<Component::RigidBodyComponent>(entity1) };
+
+				Component::ColliderComponent* collider2{ globalECS.GetComponent<Component::ColliderComponent>(entity2) };
+				Component::TransformComponent* transform2{ globalECS.GetComponent<Component::TransformComponent>(entity2) };
+				Component::RigidBodyComponent* rigidBody2{ globalECS.GetComponent<Component::RigidBodyComponent>(entity2) };
+
+				/*CHECK FOR COLLISION and call collision function*/
+				Collision::CollisionManifold collisionManifold{};
+				int tolerance{ 2 };
+
+				Component::TransformComponent newTransform1{ *transform1 };
+				Component::RigidBodyComponent newRigidBody1{ *rigidBody1 };
+
+				newRigidBody1.setVelocity(newRigidBody1.getVelocity() / static_cast<float>(tolerance));
+
+				for (int i{}; i < tolerance; ++i) {
+					collisionManifold = callCollFunct(collider1->collider->type, collider2->collider->type)(
+						Collision::CollisionProps{
+							collider1->collider,
+							CEVec3{},
+							CEVec3{newTransform1.position.x, newTransform1.position.y, newTransform1.position.z}
+						},
+						Collision::CollisionProps{
+							collider2->collider,
+							CEVec3{},
+							CEVec3{transform2->position.x, transform2->position.y, transform2->position.z}
+						});
+					/*if (collisionManifold.collisionOccured) {
+						*transform1 = newTransform1;
+						break;
+					}*/
+
+					/*TODO UPDATE*/
+					//updatePhysics(&newTransform1, &newRigidBody1, deltaTime);
+				}
+
+				if (collisionManifold.collisionOccured) {
+					CollisionMessage colMessage{ Messaging::getCollisionMsgID(), collisionManifold, entity1, entity2 };
+					
+					CrashoutsEngine::Entity const* entity1Ptr{ &entity1 };
+					CrashoutsEngine::Entity const* entity2Ptr{ &entity2 };
+
+					if (*entity1Ptr < *entity2Ptr) std::swap(entity1Ptr, entity2Ptr);
+
+
+
+					if (std::find(currentCollisions.begin(), currentCollisions.end(), std::pair{*entity1Ptr, *entity2Ptr}) == currentCollisions.end()) {
+						currentCollisions.push_back(std::pair{ *entity1Ptr, *entity2Ptr });
+						sendMessage(colMessage);
+					}
+					
+				}
+
+			}
+		}
+
+	}
+
 	CollisionManifold CollisionHandler::SphereToSphereCollision(CollisionProps const& coll1, CollisionProps const& coll2) {
 
 		CollisionManifold result;
@@ -128,20 +240,6 @@ namespace Collision {
 		return result;
 	}
 
-	CollisionHandler::CollisionHandler() : collideFuncts {
-		std::array<Collision::FunctionDispatchType, TYPES_OF_COLLISION * TYPES_OF_COLLISION> {
-			nullptr, nullptr,
-			nullptr, nullptr
-		}
-	} {
-		int sphereIdx{ static_cast<int>(SPHERE) };
-		int AABBIdx{ static_cast<int>(AABB) };
-
-		/*Fill in the table of collisions, e.g collideFuncts[0] will be SPHERE TO SPHERE collision (2 total collider types will have 2^2 permutations(different types of collisions possible) ) */
-		collideFuncts[sphereIdx] = SphereToSphereCollision; 
-		collideFuncts[AABBIdx * TYPES_OF_COLLISION + AABBIdx] = AABBToAABBCollision;
-		collideFuncts[sphereIdx * TYPES_OF_COLLISION + AABBIdx] = SphereToAABBCollision;
-	}
 	FunctionDispatchType CollisionHandler::callCollFunct(Collision::ColliderType type1, Collision::ColliderType type2) {
 
 		/*Swap the type according to enum order, e.g function exists for sphere to aabb but not aabb to sphere*/
@@ -154,4 +252,6 @@ namespace Collision {
 
 		return collideFuncts[idx1 * TYPES_OF_COLLISION + idx2];
 	}
+
+	/*----------------------------------------------------------------------------------------------------------*/
 }

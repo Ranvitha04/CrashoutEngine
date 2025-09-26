@@ -46,6 +46,8 @@ std::mutex CrashoutsEngine::ECS::mtx;
 static CrashoutsEngine::ECS* globalECS = nullptr;
 static CrashoutsEngine::Entity globalSelectedEntity = 0;
 static Physics::PhysicsHandler physicsSystem;
+static Collision::CollisionHandler collisionSystem;
+
 
 // ImGui in-game performance viewer
 static FrameProfiler gProfiler;
@@ -88,6 +90,7 @@ int main() {
     InstallCrashLogger("CrashoutsEngine");
 	glfwSwapInterval(0); // disable vsync
     globalECS = CrashoutsEngine::ECS::getInstance();
+    collisionSystem.registerObserver(Messaging::getCollisionMsgID(), physicsSystem); /*Listen to messages(collisions)*/
 
     // start with a 16:9 aspect ratio
     if (!GLApp::init(Settings::GetScreenWidth(), Settings::GetScreenHeight(), "CRASHOUTS")) {
@@ -114,6 +117,7 @@ int main() {
         glfwPollEvents();
         InputManager::Update();
         GLApp::update_time();
+        collisionSystem.update(FRC.DT());
         physicsSystem.update(FRC.DT());
         UpdateGameStateManager();
         update();
