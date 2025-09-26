@@ -51,6 +51,9 @@ namespace Physics {
 			static inline bool sStepOnce = false;
 			static inline bool sOverrideDt = false;
 			static inline double sDebugDt = 1.0 / 60.0;
+
+			static inline CEVec3 sGravity{ 0.f, -2.f, 0.f };
+			static inline float  sLinDamp = 2.0f;
 		public:
 			PhysicsHandler() = default;
 
@@ -60,7 +63,7 @@ namespace Physics {
 			@param globalEntities Collection of Entities
 			@param deltaTime Time taken for the previous frame
 			*/
-			void update(std::vector<CrashoutsEngine::Entity>& globalEntities, double deltaTime);
+			void update(double deltatime);
 
 			/*!
 			@brief Based on the velocity of the current RigidBodyComponent, modify the transformComponent accordingly
@@ -79,5 +82,10 @@ namespace Physics {
 			static void StepOnce() { sStepOnce = true; }
 			static void SetOverrideDt(bool o) { sOverrideDt = o; }
 			static void SetDebugDt(double dt) { sDebugDt = dt; }
+
+			static void SetGravity(const CEVec3& g);
+			static CEVec3 GetGravity();
+			static void SetLinearDamping(float c);
+			static float GetLinearDamping();
 	};
 }

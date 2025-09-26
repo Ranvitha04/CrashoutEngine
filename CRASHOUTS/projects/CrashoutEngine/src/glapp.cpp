@@ -30,6 +30,8 @@ integration.
 #include <backends/imgui_impl_glfw.h>
 #include <backends/imgui_impl_opengl3.h>
 
+#include "frameratecontroller.h"
+
 // Before asking GLFW to create an OpenGL context, we specify the minimum constraints
 // in that context:
 constexpr int GL_MINOR{ 5 };
@@ -104,7 +106,7 @@ bool GLApp::init(GLint w, GLint h, std::string t) {
     glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_TRUE);
     // default behavior: colorbuffer is 32-bit RGBA, depthbuffer is 24-bits
     // don't change size of window
-    glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+    glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
 
     // size of viewport: width x height
     GLApp::ptr_window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
@@ -182,7 +184,7 @@ to window title bar.
 void GLApp::update() {
     // write window title with current fps ...
     std::stringstream sstr;
-    sstr << std::fixed << std::setprecision(2) << GLApp::title << " | " << GLApp::fps;
+    sstr << std::fixed << std::setprecision(2) << GLApp::title << " | " << FrameRateController::GetInstance().FPS();
     glfwSetWindowTitle(GLApp::ptr_window, sstr.str().c_str());
 
     GLsizei position_data_offset = 0;

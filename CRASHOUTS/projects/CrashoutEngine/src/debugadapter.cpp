@@ -1,0 +1,432 @@
+/*!
+@file       debugadapter.cpp
+@author     mohamadamirakmal.b@digipen.edu
+@date       25/09/2025
+
+Declares and registers built-in Debug Menu adapters & providers:
+- ECS component adapters: Name, Transform, RigidBody, Collider, MeshComponent
+- GameStateProvider: bridges GameStateManager to the UI
+- BuiltinPhysicsProvider: gravity & damping controls via reflection
+
+These adapters make the ECS inspector and physics/game-state panels
+runtime-extensible and project-agnostic.
+//__________________________________________________________________________*/
+
+/*                                                                   includes
+----------------------------------------------------------------------------- */
+#include "debugreflection.h"
+#include "managers/entitymanager.h"
+#include <imgui.h>
+#include "debugdefaults.h"
+
+/*                                                         component includes
+----------------------------------------------------------------------------- */
+#include "components/namecomponent.h"
+#include "components/transformcomponent.h"
+#include "components/shapescomponent.h"
+#include "managers/physicsmanager.h"
+#include "managers/collisionmanager.h"
+#include "gamestatemanager.h"
+#include "shapes.h"
+
+using namespace CrashoutsEngine;
+
+//----------------------------------------------------------------------------- file-local state & helpers
+
+/*!
+ @brief File-local adapters/providers and registration.
+
+ All adapters/providers live in an anonymous namespace and are registered
+ once via RegisterBuiltinComponentAdapters(), which the app calls at startup.
+*/
+namespace {
+
+    /*!
+    @brief Adapter for editing Component::NameComponent (text name).
+    @details Shows a single InputText and syncs the value back to the ECS component.
+    */
+    struct NameAdapter : DebugReflection::IComponentAdapter {
+        const char* name() const override { return "NameComponent"; }
+        bool has(ECS& ecs, Entity e) const override {
+            return ecs.HasComponent<Component::NameComponent>(e);
+        }
+        void add(ECS& ecs, Entity e) override {
+            auto& D = GetDebugDefaults();
+            if (!has(ecs, e)) ecs.AddComponent<Component::NameComponent>(e, D.name_default);
+        }
+        void remove(ECS& ecs, Entity e) override {
+            if (has(ecs, e)) ecs.RemoveComponent<Component::NameComponent>(e);
+        }
+        void drawInspector(ECS& ecs, Entity e) override {
+            if (auto* c = ecs.GetComponent<Component::NameComponent>(e)) {
+                // Keep a small per-item buffer and commit on deactivate to survive collapse/click-away
+                char buf[256]{};
+                if (c->name.size() < sizeof(buf)) std::memcpy(buf, c->name.data(), c->name.size());
+
+                ImGui::InputText("Name", buf, sizeof(buf));
+                if (ImGui::IsItemEdited() || ImGui::IsItemDeactivatedAfterEdit()) {
+                    c->name = buf;
+                }
+            }
+        }
+    };
+
+    /*!
+    @brief Adapter for editing Component::TransformComponent (position/scale/rotation).
+    @details Uses ImGui drag controls and writes values back to the ECS each frame.
+    */
+    struct TransformAdapter : DebugReflection::IComponentAdapter {
+        const char* name() const override { return "TransformComponent"; }
+        bool has(ECS& ecs, Entity e) const override {
+            return ecs.HasComponent<Component::TransformComponent>(e);
+        }
+        void add(ECS& ecs, Entity e) override {
+            if (!has(ecs, e)) ecs.AddComponent<Component::TransformComponent>(e);
+        }
+        void remove(ECS& ecs, Entity e) override {
+            if (has(ecs, e)) ecs.RemoveComponent<Component::TransformComponent>(e);
+        }
+        void drawInspector(ECS& ecs, Entity e) override {
+            auto& D = GetDebugDefaults();
+            if (auto* t = ecs.GetComponent<Component::TransformComponent>(e)) {
+                // Position
+                float pos[3] = { t->position.x, t->position.y, t->position.z };
+                ImGui::DragFloat3("Position", pos, D.drag_medium);
+                if (ImGui::IsItemEdited() || ImGui::IsItemDeactivatedAfterEdit()) {
+                    t->position = { pos[0], pos[1], pos[2] };
+                }
+
+                // Scale (size)
+                float size[2] = { t->size.x, t->size.y };
+                ImGui::DragFloat2("Scale", size, D.drag_small);
+                if (ImGui::IsItemEdited() || ImGui::IsItemDeactivatedAfterEdit()) {
+                    t->size = { size[0], size[1] };
+                }
+
+                // Rotation
+                float rot = t->rotation;
+                ImGui::DragFloat("Rotation", &rot, D.drag_rotation);
+                if (ImGui::IsItemEdited() || ImGui::IsItemDeactivatedAfterEdit()) {
+                    t->rotation = rot;
+                }
+            }
+        }
+    };
+
+    /*!
+    @brief Adapter for editing Component::RigidBodyComponent (velocity / forces).
+    @details Displays editable velocity, read-only mass & restitution (with current API), and provides one-shot force utilities for quick testing.
+    */
+    struct RigidBodyAdapter : DebugReflection::IComponentAdapter {
+        const char* name() const override { return "RigidBody"; }
+
+        bool has(ECS& ecs, Entity e) const override {
+            return ecs.HasComponent<RigidBodyComponent>(e);
+        }
+
+        void add(ECS& ecs, Entity e) override {
+            auto& D = GetDebugDefaults();
+            ecs.AddComponent<RigidBodyComponent>(e, D.rb_init_velocity, D.rb_mass, D.rb_restitution);
+        }
+
+        void remove(ECS& ecs, Entity e) override {
+            if (has(ecs, e)) ecs.RemoveComponent<RigidBodyComponent>(e);
+        }
+
+        void drawInspector(ECS& ecs, Entity e) override {
+            if (auto* rb = ecs.GetComponent<RigidBodyComponent>(e)) {
+                // Velocity (editable)
+                CEVec3 v = rb->getVelocity();
+                float vel[3]{ v.x, v.y, v.z };
+                if (ImGui::DragFloat3("Velocity", vel, 0.1f)) {
+                    CEVec3 v = rb->getVelocity();
+                    float vel[3]{ v.x, v.y, v.z };
+                    ImGui::DragFloat3("Velocity", vel, 0.1f);
+                    if (ImGui::IsItemEdited() || ImGui::IsItemDeactivatedAfterEdit()) {
+                        rb->setVelocity({ vel[0], vel[1], vel[2] });
+                    }
+                }
+
+                // Mass & restitution (read-only with current API)
+                ImGui::Text("Mass: %.3f", rb->getMass());
+                ImGui::Text("Restitution: %.3f", rb->getCoeff());
+
+                // One-shot force
+                static float f[3]{ 0.f,0.f,0.f };
+                ImGui::InputFloat3("Force to apply", f);
+                ImGui::SameLine();
+                if (ImGui::Button("Apply Force##rb")) {
+                    rb->addForce({ f[0], f[1], f[2] });
+                }
+                if (ImGui::Button("Clear Force Accumulator##rb")) {
+                    rb->clearForceAccumulator();
+                }
+            }
+        }
+    };
+
+    /*!
+    @brief Adapter for editing Component::ColliderComponent (Sphere / AABB).
+    @details Lets users switch collider type and tweak radius/min/max; can snap to Transform.
+    */
+    struct ColliderAdapter : DebugReflection::IComponentAdapter {
+        const char* name() const override { return "Collider"; }
+
+        bool has(ECS& ecs, Entity e) const override {
+            return ecs.HasComponent<ColliderComponent>(e);
+        }
+
+        void add(ECS& ecs, Entity e) override {
+            auto& D = GetDebugDefaults();
+            // Default to a 1.0-radius sphere at the entity's transform position (if present)
+            CEVec3 center{ 0.f,0.f,0.f };
+            if (auto* t = ecs.GetComponent<TransformComponent>(e)) center = t->position;
+
+            auto col = std::make_unique<Collision::Sphere>(D.sphere_radius, center);
+            ecs.AddComponent<ColliderComponent>(e, ColliderComponent{ std::move(col) });
+
+            if (!ecs.HasComponent<RigidBodyComponent>(e)) {
+                auto& D2 = GetDebugDefaults();
+                ecs.AddComponent<RigidBodyComponent>(e, CEVec3{ 0.f,0.f,0.f }, 0.0f, D2.rb_restitution);
+            }
+        }
+
+        void remove(ECS& ecs, Entity e) override {
+            if (has(ecs, e)) ecs.RemoveComponent<ColliderComponent>(e);
+        }
+
+        void drawInspector(ECS& ecs, Entity e) override {
+            auto* cc = ecs.GetComponent<ColliderComponent>(e);
+            auto& D = GetDebugDefaults();
+            if (!cc || !cc->collider) return;
+
+            if (!ecs.HasComponent<RigidBodyComponent>(e)) {
+                if (ImGui::Button("Add Static RigidBody (mass=0)")) {
+                    auto& D3 = GetDebugDefaults();
+                    ecs.AddComponent<RigidBodyComponent>(e, CEVec3{ 0.f,0.f,0.f }, 0.0f, D3.rb_restitution);
+                }
+            }
+
+            // Type selector
+            int type = static_cast<int>(cc->collider->type);
+            const char* items[] = { "Sphere","AABB" };
+            ImGui::Combo("Type", &type, items, IM_ARRAYSIZE(items));
+
+            // If type changed, rebuild collider (keep a sane default size)
+            if (type != static_cast<int>(cc->collider->type)) {
+                if (type == Collision::SPHERE) {
+                    CEVec3 center{ 0.f,0.f,0.f };
+                    if (auto* t = ecs.GetComponent<TransformComponent>(e)) center = t->position;
+                    cc->collider = std::make_unique<Collision::Sphere>(D.sphere_radius, center);
+                }
+                else {
+                    // AABB centered on transform with ±0.5 extents
+                    CEVec3 c{ 0.f,0.f,0.f };
+                    if (auto* t = ecs.GetComponent<TransformComponent>(e)) c = t->position;
+                    cc->collider = std::make_unique<Collision::AABBRect>(
+                        CEVec3{ c.x - D.aabb_half, c.y - D.aabb_half, c.z - D.aabb_half },
+                        CEVec3{ c.x + D.aabb_half, c.y + D.aabb_half, c.z + D.aabb_half }
+                    );
+                }
+            }
+
+            // Draw fields per type
+            if (cc->collider->type == Collision::SPHERE) {
+                // Sphere
+                auto* s = static_cast<Collision::Sphere*>(cc->collider.get());
+
+                // Radius
+                float r = s->radius;
+                ImGui::DragFloat("Radius", &r, 0.05f, 0.0f, 1e6f);
+                if (ImGui::IsItemEdited() || ImGui::IsItemDeactivatedAfterEdit()) {
+                    s->radius = r;
+                }
+
+                // Center
+                float c[3]{ s->center.x, s->center.y, s->center.z };
+                ImGui::DragFloat3("Center", c, 0.1f);
+                if (ImGui::IsItemEdited() || ImGui::IsItemDeactivatedAfterEdit()) {
+                    s->center = { c[0], c[1], c[2] };
+                }
+            }
+            else { 
+                // AABB
+                auto* a = static_cast<Collision::AABBRect*>(cc->collider.get());
+                float mn[3]{ a->min.x, a->min.y, a->min.z };
+                float mx[3]{ a->max.x, a->max.y, a->max.z };
+
+                bool edited = false;
+                ImGui::DragFloat3("Min", mn, 0.05f);  edited |= ImGui::IsItemEdited() || ImGui::IsItemDeactivatedAfterEdit();
+                ImGui::DragFloat3("Max", mx, 0.05f);  edited |= ImGui::IsItemEdited() || ImGui::IsItemDeactivatedAfterEdit();
+
+                if (edited) {
+                    for (int i = 0; i < 3; ++i) if (mn[i] > mx[i]) std::swap(mn[i], mx[i]); // clamp
+                    a->min = { mn[0], mn[1], mn[2] };
+                    a->max = { mx[0], mx[1], mx[2] };
+                }
+                // optional: snap AABB around Transform
+                if (auto* t = ecs.GetComponent<TransformComponent>(e)) {
+                    if (ImGui::Button("Fit around Transform##aabb")) {
+                        const float hx = 0.5f * t->size.x;
+                        const float hy = 0.5f * t->size.y;
+                        a->min = { t->position.x - hx, t->position.y - hy, t->position.z - 0.5f };
+                        a->max = { t->position.x + hx, t->position.y + hy, t->position.z + 0.5f };
+                    }
+                }
+            }
+        }
+    };
+
+    /*!
+    @brief Adapter for editing Component::ShapeComponent (debug primitives).
+    @details Edits type-specific parameters and supports a per-entity preview toggle.
+    */
+    struct ShapeAdapter : DebugReflection::IComponentAdapter {
+        const char* name() const override { return "MeshComponent"; }
+        bool has(ECS& ecs, Entity e) const override {
+            return ecs.HasComponent<Component::ShapeComponent>(e);
+        }
+        void add(ECS& ecs, Entity e) override {
+            if (!has(ecs, e)) ecs.AddComponent<Component::ShapeComponent>(e);
+        }
+        void remove(ECS& ecs, Entity e) override {
+            if (has(ecs, e)) ecs.RemoveComponent<Component::ShapeComponent>(e);
+        }
+        void drawInspector(ECS& ecs, Entity e) override {
+            using namespace Component;
+            auto* sc = ecs.GetComponent<ShapeComponent>(e);
+            auto& D = GetDebugDefaults();
+            if (!sc) return;
+
+            // type
+            int t = (int)sc->type;
+            const char* items[] = { "Square","Rectangle","Line","Triangle" };
+            if (ImGui::Combo("Type", &t, items, IM_ARRAYSIZE(items))) {
+                sc->type = (ShapeType)t;
+            }
+
+            // shared
+            ImGui::DragFloat3("Color", &sc->color.x, D.drag_small, 0.f, 255.f);
+            //ImGui::DragFloat("Rotation", &sc->rotation, D.drag_rotation);
+            ImGui::DragFloat("Scale", &sc->scale, D.drag_small, 0.01f, 100.f);
+
+            // per-type
+            switch (sc->type) {
+            case ShapeType::Square:
+                ImGui::DragFloat("Size", &sc->size, 0.5f, 0.0f, 1e6f);
+                break;
+            case ShapeType::Rectangle:
+                ImGui::DragFloat("Width", &sc->width, 0.5f, 0.0f, 1e6f);
+                ImGui::DragFloat("Height", &sc->height, 0.5f, 0.0f, 1e6f);
+                break;
+            case ShapeType::Line:
+                ImGui::DragFloat3("P1", &sc->p1.x, 0.5f);
+                ImGui::DragFloat3("P2", &sc->p2.x, 0.5f);
+                ImGui::DragFloat("Thickness", &sc->thickness, 0.1f, 0.0f, 1e6f);
+                break;
+            case ShapeType::Triangle:
+                ImGui::DragFloat3("T1", &sc->t1.x, 0.5f);
+                ImGui::DragFloat3("T2", &sc->t2.x, 0.5f);
+                ImGui::DragFloat3("T3", &sc->t3.x, 0.5f);
+                break;
+            }
+
+            /*CEVec3 pos{ 0,0,0 };
+            if (auto* tf = ecs.GetComponent<Component::TransformComponent>(e)) pos = tf->position;
+            switch (sc->type) {
+            case Component::ShapeType::Square:    Component::Shapes::CreateSquare(pos, sc->size, sc->rotation, sc->scale, sc->color); break;
+            case Component::ShapeType::Rectangle: Component::Shapes::CreateRectangle(pos, sc->width, sc->height, sc->rotation, sc->scale, sc->color); break;
+            case Component::ShapeType::Line:      Component::Shapes::CreateLine(sc->p1, sc->p2, sc->thickness, sc->rotation, sc->scale, sc->color); break;
+            case Component::ShapeType::Triangle:  Component::Shapes::CreateTriangle(sc->t1, sc->t2, sc->t3, sc->rotation, sc->scale, sc->color); break;
+            }*/
+            // reminder to ask how/where is the rendering of the shapes done in general, i don't wanna hunt for functions
+        }
+    };
+
+    /*!
+    @brief Game-state provider installed at runtime (no hardcoded state list).
+    @details Bridges GameStateManager to the Debug Menu; exposes current/previous/next and issues ChangeGameState() transitions from a reflected state list.
+    */
+    struct GameStateProvider final : DebugReflection::IGameStateProvider {
+        int  current()  const override { return (int)CurrentGameState; }
+        int  previous() const override { return (int)PreviousGameState; }
+        int  next()     const override { return (int)NextGameState; }
+        void changeTo(int id) override { ChangeGameState((GameState)id); }
+
+        const std::vector<std::pair<const char*, int>>& states() const override {
+            static std::vector<std::pair<const char*, int>> cache;
+            cache.clear();
+            for (auto const& [st, desc] : GetStateRegistry()) {
+                const char* label = desc.Label ? desc.Label : "(unnamed)";
+                cache.emplace_back(label, (int)st);
+            }
+            return cache;
+        }
+    };
+
+    /*!
+    @brief Physics debug provider (global forces / integrators).
+    @details Exposes gravity vector and linear damping via PhysicsHandler getters/setters.
+    */
+    struct BuiltinPhysicsProvider final : DebugReflection::IPhysicsProvider {
+        const char* name() const override { return "Global Forces"; }
+        void draw(CrashoutsEngine::ECS&) override {
+            // Gravity
+            CEVec3 g = Physics::PhysicsHandler::GetGravity();
+            float gv[3]{ g.x,g.y,g.z };
+            if (ImGui::DragFloat3("Gravity (m/s^2)", gv, 0.1f)) {
+                Physics::PhysicsHandler::SetGravity({ gv[0],gv[1],gv[2] });
+            }
+            ImGui::SameLine();
+            if (ImGui::Button("Reset g##phys")) {
+                Physics::PhysicsHandler::SetGravity({ 0.f,-2.f,0.f });
+            }
+
+            // Linear damping
+            float d = Physics::PhysicsHandler::GetLinearDamping();
+            if (ImGui::DragFloat("Linear damping", &d, 0.05f, 0.f, 100.f)) {
+                Physics::PhysicsHandler::SetLinearDamping(d);
+            }
+        }
+    };
+
+    //----------------------------------------------------------------------------- registration singletons
+
+    /*!
+    @brief File-local instances of adapters and debug providers registered with reflection.
+    @details These live for the lifetime of the process. The registries store raw pointers to
+             these singletons; keep them in an anonymous namespace to avoid ODR/linkage issues.
+             Adapters drive the ECS inspector; providers extend the Physics/Game State panels.
+    */
+    static NameAdapter gNameAdapter;
+    static TransformAdapter gTransformAdapter;
+    static RigidBodyAdapter gRigidBodyAdapter;
+    static ColliderAdapter gColliderAdapter;
+    static ShapeAdapter gShapeAdapter;
+    static GameStateProvider gProvider;
+    static BuiltinPhysicsProvider gBuiltinPhys;
+
+}
+
+/*!
+ @brief Registers all built-in component adapters and debug providers.
+ @details Call once during startup (after ECS and GameStateManager are initialized).
+          - Registers ECS component adapters with DebugReflection::ComponentRegistry
+          - Installs the Game State provider used by the Game State panel
+          - Registers physics providers (e.g., gravity/damping) with PhysicsRegistry
+ @note    Safe to call exactly once; repeated calls will duplicate entries.
+ @see     DebugReflection::ComponentRegistry
+ @see     DebugReflection::PhysicsRegistry
+ @see     DebugReflection::SetGameStateProvider
+*/
+extern "C" void RegisterBuiltinComponentAdapters() {
+    using namespace DebugReflection;
+    ComponentRegistry::instance().registerAdapter(&gNameAdapter);
+    ComponentRegistry::instance().registerAdapter(&gTransformAdapter);
+    ComponentRegistry::instance().registerAdapter(&gRigidBodyAdapter);
+    ComponentRegistry::instance().registerAdapter(&gColliderAdapter);
+    ComponentRegistry::instance().registerAdapter(&gShapeAdapter);
+    DebugReflection::SetGameStateProvider(&gProvider);
+    DebugReflection::PhysicsRegistry::instance().registerProvider(&gBuiltinPhys);
+
+}

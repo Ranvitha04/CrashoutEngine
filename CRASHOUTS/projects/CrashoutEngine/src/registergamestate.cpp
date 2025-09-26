@@ -22,6 +22,7 @@ Builds descriptors for different scenes
 */
 void RegisterAllStates(){
 	GameStateDescriptor MainMenu = {
+		"Main Menu",
 		LoadMainMenu,
 		InitMainMenu,
 		UpdateMainMenu,
@@ -31,6 +32,7 @@ void RegisterAllStates(){
 	};
 
 	GameStateDescriptor Renfred = {
+		"Renfred",
 		LoadRenfred,
 		InitRenfred,
 		UpdateRenfred,
@@ -40,6 +42,7 @@ void RegisterAllStates(){
 	};
 
 	GameStateDescriptor Rain = {
+		"Rain",
 		LoadRain,
 		InitRain,
 		UpdateRain,
@@ -49,6 +52,7 @@ void RegisterAllStates(){
 	};
 
 	GameStateDescriptor Amir = {
+		"Amir",
 		LoadAmir,
 		InitAmir,
 		UpdateAmir,
@@ -58,6 +62,7 @@ void RegisterAllStates(){
 	};
 
 	GameStateDescriptor Afiq = {
+		"Afiq",
 		LoadAfiq,
 		InitAfiq,
 		UpdateAfiq,
@@ -67,6 +72,7 @@ void RegisterAllStates(){
 	};
 
 	GameStateDescriptor Tristan = {
+		"Tristan",
 		LoadTristan,
 		InitTristan,
 		UpdateTristan,
@@ -76,6 +82,7 @@ void RegisterAllStates(){
 	};
 
 	GameStateDescriptor Ran = {
+		"Ran",
 		LoadRan,
 		InitRan,
 		UpdateRan,

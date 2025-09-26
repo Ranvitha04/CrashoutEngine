@@ -9,8 +9,6 @@ Handles registration initialization updating and transitions between different g
 
 #include "gamestatemanager.h"
 
-#include <unordered_map>
-
  /// Registry that maps game states to their descriptors
 static std::unordered_map<GameState, GameStateDescriptor> StateRegistry;
 
@@ -39,6 +37,13 @@ void RestartGameState() {
 */
 void RegisterGameState(GameState state, GameStateDescriptor descriptor){
 	StateRegistry[state] = descriptor;
+}
+
+/*!
+@brief Exposes a view over the registry so that ImGui can read IDs
+*/
+const std::unordered_map<GameState, GameStateDescriptor>& GetStateRegistry() {
+    return StateRegistry; // existing static in this translation unit
 }
 
 /*!
