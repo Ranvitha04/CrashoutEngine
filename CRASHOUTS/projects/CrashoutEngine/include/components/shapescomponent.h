@@ -11,7 +11,7 @@ namespace Component {
         // shared
         CEVec3 color{ 1.f,1.f,1.f };
         // float rotation{ 0.f };
-        float scale{ 1.f };
+        // float scale{ 1.f };
 
         // square
         float size{ 64.f };
