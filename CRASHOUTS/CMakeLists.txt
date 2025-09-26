@@ -32,25 +32,29 @@ add_compile_definitions(
 
 # Include path for GLM (optional if not using FetchContent)
 include_directories(${CMAKE_CURRENT_LIST_DIR}/lib/glm)
+# --- FMOD (vendored in repo) ---
+set(FMOD_INC_CORE   "${CMAKE_SOURCE_DIR}/third_party/fmod/include")
+set(FMOD_INC_STUDIO "${CMAKE_SOURCE_DIR}/third_party/fmod/include")
+set(FMOD_LIB_DIR_CORE   "${CMAKE_SOURCE_DIR}/third_party/fmod/lib/x64")
+set(FMOD_LIB_DIR_STUDIO "${CMAKE_SOURCE_DIR}/third_party/fmod/lib/x64")
+set(FMOD_DLL_CORE       "${CMAKE_SOURCE_DIR}/third_party/fmod/bin/x64/fmod.dll")
+set(FMOD_DLL_STUDIO     "${CMAKE_SOURCE_DIR}/third_party/fmod/bin/x64/fmodstudio.dll")
 
-# --- FMOD SDK setup (EDIT THIS PATH) ---
-# Point this to where you installed/extracted the FMOD Studio API SDK.
-# Examples:
-#   C:/SDKs/FMOD
-#   C:/Program Files/FMOD/FMOD Studio API Windows
-set(FMOD_SDK "C:/SDKs/FMOD")  # <-- CHANGE ME
+# Fail fast if something is missing
+if(NOT EXISTS "${FMOD_INC_CORE}/fmod.hpp")
+  message(FATAL_ERROR "Missing header: ${FMOD_INC_CORE}/fmod.hpp")
+endif()
+if(NOT EXISTS "${FMOD_INC_STUDIO}/fmod_studio.hpp")
+  message(FATAL_ERROR "Missing header: ${FMOD_INC_STUDIO}/fmod_studio.hpp")
+endif()
+if(NOT EXISTS "${FMOD_LIB_DIR_CORE}/fmod_vc.lib")
+  message(FATAL_ERROR "Missing lib: ${FMOD_LIB_DIR_CORE}/fmod_vc.lib")
+endif()
+if(NOT EXISTS "${FMOD_LIB_DIR_STUDIO}/fmodstudio_vc.lib")
+  message(FATAL_ERROR "Missing lib: ${FMOD_LIB_DIR_STUDIO}/fmodstudio_vc.lib")
+endif()
 
-# Include directories
-set(FMOD_INC_CORE   "${FMOD_SDK}/api/core/inc")
-set(FMOD_INC_STUDIO "${FMOD_SDK}/api/studio/inc")
 
-# Library directories (assuming 64-bit build)
-set(FMOD_LIB_CORE_DIR   "${FMOD_SDK}/api/core/lib/x64")
-set(FMOD_LIB_STUDIO_DIR "${FMOD_SDK}/api/studio/lib/x64")
-
-# Runtime DLLs to copy next to each built exe
-set(FMOD_DLL_CORE   "${FMOD_SDK}/api/core/bin/x64/fmod.dll")
-set(FMOD_DLL_STUDIO "${FMOD_SDK}/api/studio/bin/x64/fmodstudio.dll")
 
 # ======================= AUTO PROJECT DISCOVERY =========================
 # Get all subdirectories in the projects folder
@@ -91,8 +95,8 @@ foreach(child ${children})
 
         # --- FMOD: link directories + libraries ---
         target_link_directories(${child} PRIVATE
-            "${FMOD_LIB_CORE_DIR}"
-            "${FMOD_LIB_STUDIO_DIR}"
+          "${FMOD_LIB_DIR_CORE}"
+          "${FMOD_LIB_DIR_STUDIO}"
         )
         # MSVC import lib names (64-bit). For logging builds use fmodL_vc / fmodstudioL_vc.
         target_link_libraries(${child} PRIVATE fmod_vc fmodstudio_vc)
