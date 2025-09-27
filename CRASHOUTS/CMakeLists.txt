@@ -25,6 +25,7 @@ set(ALL_LIBS
     PRIVATE glm::glm
     PRIVATE stb
     PRIVATE freetype
+    PRIVATE reflect
 )
 
 add_compile_definitions(

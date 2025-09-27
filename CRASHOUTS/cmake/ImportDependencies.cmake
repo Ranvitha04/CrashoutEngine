@@ -95,6 +95,21 @@ macro(import_freetype)
     endif()
 endmacro()
 
+# -------------------- reflect.cpp --------------------
+macro(import_reflect)
+    if(NOT TARGET reflect)
+        FetchContent_Declare(
+            reflect
+            GIT_REPOSITORY https://github.com/getml/reflect-cpp.git
+            GIT_TAG v0.20.0
+        )
+        FetchContent_Populate(reflect)
+
+        add_library(reflect INTERFACE)
+        target_include_directories(reflect INTERFACE ${reflect_SOURCE_DIR}/include)
+    endif()
+endmacro()
+
 # -------------------- Import all --------------------
 macro(importDependencies)
     message(STATUS "Starting to import dependencies...")
@@ -116,6 +131,9 @@ macro(importDependencies)
 
     import_freetype()
     message(STATUS "FreeType imported successfully.")
+
+    import_reflect()
+    message(STATUS "reflect.cpp imported successfully.")
 
     message(STATUS "All dependencies have been imported successfully.")
 endmacro()
