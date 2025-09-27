@@ -24,6 +24,7 @@ set(ALL_LIBS
     PRIVATE imgui
     PRIVATE glm::glm
     PRIVATE stb
+    PRIVATE freetype
 )
 
 add_compile_definitions(

@@ -83,6 +83,18 @@ macro(import_stb)
     endif()
 endmacro()
 
+# -------------------- freetype --------------------
+macro(import_freetype)
+    if(NOT TARGET freetype)
+        FetchContent_Declare(
+            freetype
+            GIT_REPOSITORY https://github.com/freetype/freetype.git
+            GIT_TAG VER-2-13-2 
+        )
+        FetchContent_MakeAvailable(freetype)
+    endif()
+endmacro()
+
 # -------------------- Import all --------------------
 macro(importDependencies)
     message(STATUS "Starting to import dependencies...")
@@ -101,6 +113,9 @@ macro(importDependencies)
 
     import_stb()
     message(STATUS "stb imported successfully.")
+
+    import_freetype()
+    message(STATUS "FreeType imported successfully.")
 
     message(STATUS "All dependencies have been imported successfully.")
 endmacro()
