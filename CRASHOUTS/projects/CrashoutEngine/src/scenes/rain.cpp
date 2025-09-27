@@ -1,5 +1,8 @@
 #include "scenes/rain.h"
 #include "log.h"
+#include "rendererconnector.h"
+#include "settings.h"
+#include "TextRenderer.h"
 #include "GLFW/glfw3.h"
 #include "managers/entitymanager.h"
 
@@ -10,6 +13,12 @@ void LoadRain()
 	// Load resources specific to Renfred state
 	globalECS = CrashoutsEngine::ECS::getInstance();
 	globalECS->Reset();
+	GLuint shaderID = loadShaderProgram("shaders/textShader.vert", "shaders/textShader.frag");
+	if (shaderID == 0) {
+		std::cerr << "Failed to load text shader.\n";
+		return;
+	}
+	gTextRenderer = new TextRenderer("assets/fonts/arial.ttf", Settings::GetScreenWidth(), Settings::GetScreenHeight());
 }
 
 void InitRain()
@@ -28,7 +37,7 @@ void RenderRain()
 	// Render Rain state
 	glClearColor(0.1f, 0.2f, 0.4f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
-
+	gTextRenderer->renderCenteredText("Hello", 0.0f, 0.0f, 1.0f, glm::vec3(1.0f, 1.0f, 1.0f));
 	using namespace CrashoutsEngine;
 
 	const ECS::ComponentArray<Component::ShapeComponent>& shapeArray = globalECS->GetComponentArray<Component::ShapeComponent>();
@@ -61,6 +70,8 @@ void RenderRain()
 void FreeRain()
 {
 	// Free resources specific to Rain state
+	delete gTextRenderer;
+	gTextRenderer = nullptr;
 }
 
 void UnloadRain()
