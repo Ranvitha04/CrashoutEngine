@@ -6,9 +6,10 @@
 @details    Provides a small set of `draw_field(...)` overloads and one public
             function `draw_reflected(T&)` that iterates the reflected fields
             of any type `T` and renders appropriate ImGui editors.
+//__________________________________________________________________________*/
 
-*/
-
+/*                                                                   includes
+----------------------------------------------------------------------------- */
 #pragma once
 #include <type_traits>
 #include <tuple>
@@ -20,7 +21,7 @@
 #include <rfl/to_view.hpp>
 #include <rfl/tuple.hpp>   // for rfl::apply and rfl tuples
 
-/* =====================  scalar & string widgets  ===================== */
+// -- scalar & string widgets ------------------------------------------------------------
 
 inline bool draw_field(const char* label, bool& v) { return ImGui::Checkbox(label, &v); }
 inline bool draw_field(const char* label, int& v) { return ImGui::DragInt(label, &v, 1.0f); }
@@ -36,20 +37,20 @@ inline bool draw_field(const char* label, std::string& s) {
     return ch;
 }
 
-/* =====================  traits only for vec-likes  ===================== */
+// -- traits only for vec-likes ------------------------------------------------------------
 
 template <class T, class = void> struct has_xy : std::false_type {};
 template <class T> struct has_xy<T, std::void_t<decltype(std::declval<T&>().x), decltype(std::declval<T&>().y)>> : std::true_type {};
 template <class T, class = void> struct has_xyz : std::false_type {};
 template <class T> struct has_xyz<T, std::void_t<decltype(std::declval<T&>().x), decltype(std::declval<T&>().y), decltype(std::declval<T&>().z)>> : std::true_type {};
 
-/* =====================  enums: skip (keep your Combo)  ===================== */
+// -- enums: skip  ------------------------------------------------------------
 
 template <class E>
 inline std::enable_if_t<std::is_enum<E>::value, bool>
 draw_field(const char*, E&) { return false; }
 
-/* =====================  vec-like editors  ===================== */
+// -- vec-like editors ------------------------------------------------------------
 
 template <class T>
 inline std::enable_if_t<has_xyz<T>::value, bool>
@@ -70,7 +71,8 @@ draw_field(const char* label, T& v) {
 }
 
 /* =====================  fallback for unsupported types  ===================== */
-/* Do NOT probe reflection in SFINAE (prevents num_fields.hpp static_assert).  */
+// -- fallback for unsupported types ------------------------------------------------------------
+
 
 template <class T>
 inline std::enable_if_t<!std::is_enum<T>::value
@@ -81,7 +83,7 @@ inline std::enable_if_t<!std::is_enum<T>::value
     return false;
 }
 
-/* =====================  main API  ===================== */
+// -- main API ------------------------------------------------------------
 
 template <class T>
 bool draw_reflected(T& obj, const char* group_label = nullptr) {

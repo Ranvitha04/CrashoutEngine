@@ -281,11 +281,12 @@ namespace UI { // --------------------------------------------------------------
 
         ScopedWindow w("Performance", LockFlags(ui.lockLayout));
 
-        if (profiler.present_ready()) {
-            gPerfSnapshot = profiler.results();
-            gPerfSnapshotTotalMs = profiler.total_ms();
-        }
-        ImGui::Text("Frame: %.3f ms (%.1f FPS)", gPerfSnapshotTotalMs, GLApp::fps);
+        auto& frc = FrameRateController::GetInstance();
+        const double frame_ms = frc.DT() * 1000.0;
+        const double fps = frc.FPS();
+        const int cap = frc.CAP();
+
+        ImGui::Text("Frame: %.3f ms (%.1f FPS)", frame_ms, fps);
 
         ImGui::Separator();
         DrawEngineMemoryPanel();
@@ -319,7 +320,7 @@ namespace UI { // --------------------------------------------------------------
 
         ScopedWindow w("Console", LockFlags(ui.lockLayout));
 
-        // Dynamic filters driven by the X-macro lists
+        // Dynamic filters driven by the X-macro lists - I don't even know if this is like the socially acceptable way of doing it
         static bool levelOn[] = {
     #define X(n) true,
             LOG_LEVELS(X)
