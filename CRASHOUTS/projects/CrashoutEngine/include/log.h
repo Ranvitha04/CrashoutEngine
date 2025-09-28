@@ -9,10 +9,13 @@
 /*                                                                   includes
 ----------------------------------------------------------------------------- */
 #pragma once
+#include "logdefs.h"
 #include <iostream>
 #include <string>
 #include <vector>
 #include <mutex>
+#include <chrono>
+#include <thread>
 /*                                                                  
 ----------------------------------------------------------------------------- */
 /*!
@@ -21,25 +24,44 @@
 */
 struct LogMessage {
     std::string text;
-    enum class Level {
-        Info,
-        Warning,
-        Error,
-        Success
+
+    // Enums generated from the X-macro lists (compact underlying type).
+    enum class Level : unsigned char {
+#define LOG_LEVEL_ITEM(n) n,
+        LOG_LEVELS(LOG_LEVEL_ITEM)
+#undef LOG_LEVEL_ITEM
     };
-    enum class Subsystem {
-        Core,
-        Physics,
-        Collision,
-        Input,
-        AI,
-        ECS,
-        Renderer,
-        UI
+
+    enum class Subsystem : unsigned char {
+#define LOG_SYS_ITEM(n) n,
+        LOG_SYSTEMS(LOG_SYS_ITEM)
+#undef LOG_SYS_ITEM
     };
-    Level level;
-    Subsystem system;
+
+    Level level{};
+    Subsystem system{};
+
+    // Optional metadata for sinks/search/export.
+    std::chrono::system_clock::time_point ts{};
+    std::thread::id tid{};
 };
+
+inline const char* ToString(LogMessage::Level v) {
+    static const char* k[] = {
+#define X(n) #n,
+        LOG_LEVELS(X)
+#undef X
+    };
+    return k[static_cast<int>(v)];
+}
+inline const char* ToString(LogMessage::Subsystem v) {
+    static const char* k[] = {
+#define X(n) #n,
+        LOG_SYSTEMS(X)
+#undef X
+    };
+    return k[static_cast<int>(v)];
+}
 
 /*!
 @class  Logger
@@ -67,7 +89,14 @@ public:
     */
     void Add(LogMessage::Level lvl, LogMessage::Subsystem sys, const std::string& msg) {
         std::lock_guard<std::mutex> lock(mutex);
-        messages.push_back({ msg, lvl, sys });
+
+        LogMessage m{ msg, lvl, sys };
+        m.ts = std::chrono::system_clock::now();
+        m.tid = std::this_thread::get_id();
+        messages.push_back(m);
+        if (messages.size() > maxCapacity) {
+            messages.erase(messages.begin()); // simple ring behavior
+        }
 
         // terminal colours
         const char* RESET = "\033[0m"; 
@@ -76,10 +105,11 @@ public:
         const char* GRN = "\033[32m"; 
         const char* CYN = "\033[36m";
 
-        const char* lvlTag = (lvl == LogMessage::Level::Error) ? "[Error]" : (lvl == LogMessage::Level::Warning) ? "[Warning]" : (lvl == LogMessage::Level::Success) ? "[Success]" : "[Info]";
-        const char* col = (lvl == LogMessage::Level::Error) ? RED : (lvl == LogMessage::Level::Warning) ? YEL : (lvl == LogMessage::Level::Success) ? GRN : CYN;
+        const char* col =
+            (lvl == LogMessage::Level::Error) ? RED : (lvl == LogMessage::Level::Warning) ? YEL : (lvl == LogMessage::Level::Success) ? GRN : CYN;
+
         std::ostream& os = (lvl == LogMessage::Level::Error) ? std::cerr : std::cout;
-        os << col << lvlTag << " " << msg << RESET << std::endl;
+        os << col << "[" << ToString(lvl) << "][" << ToString(sys) << "] " << msg << RESET << std::endl;
     }
 
     /*!
@@ -89,10 +119,24 @@ public:
     const std::vector<LogMessage>& Get() const {
         return messages;
     }
+
+    void Clear() {
+        std::lock_guard<std::mutex> lock(mutex);
+        messages.clear();
+    }
+
+    void SetCapacity(size_t max) {
+        std::lock_guard<std::mutex> lock(mutex);
+        maxCapacity = max;
+        if (messages.size() > maxCapacity) {
+            messages.erase(messages.begin(), messages.end() - maxCapacity);
+        }
+    }
   
 private:
     std::vector<LogMessage> messages;
     std::mutex mutex;
+    size_t maxCapacity = 10000;
 };
 
 // LOGI - INFO, LOGW - WARNING, LOGE - ERROR, LOGS - SUCCESS
