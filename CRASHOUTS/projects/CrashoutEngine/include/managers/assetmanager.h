@@ -1,5 +1,5 @@
 /*!
-@file   resourcemanager.h
+@file   assetmanager.h
 @author lee.r@digipen.edu
 @date   15/09/2025
 
@@ -13,6 +13,7 @@
 ----------------------------------------------------------------------------- */
 #include <unordered_map>
 #include <memory>
+#include <mutex>
 #include <string>
 #include <utility>
 
@@ -21,6 +22,19 @@
 namespace CrashoutsEngine {
 		
 	namespace Assets {
+
+		// Path for assets
+		const std::string assetPath = "../../../projects/CrashoutEngine/assets/";
+		const std::string manifestPath = assetPath + "json/assetmanifest.json";
+
+		/*!
+		@brief Scans asset directories and generates a JSON manifest file.
+		 
+		@param rootAssetPath The path to the main 'assets' folder.
+		@param outputManifestPath The full path where the 'assets.json' file will be saved.
+		*/
+		void GenerateAssetManifest(const std::string& rootAssetPath = assetPath, 
+			const std::string& outputManifestPath = manifestPath);
 
 		/*!
 		@brief Interface class for all assets.
@@ -67,9 +81,14 @@ namespace CrashoutsEngine {
 
 			@return A reference to the single AssetManager instance.
 			*/
-			static AssetManager& GetInstance(){
-				static AssetManager instance;
-				return instance;
+			static AssetManager* GetInstance(){
+				if (instancePtr == nullptr) {
+					std::lock_guard<std::mutex> lock(mtx);
+					if (instancePtr == nullptr) {
+						instancePtr = new AssetManager();
+					}
+				}
+				return instancePtr;
 			}
 
 			/*!
@@ -80,9 +99,10 @@ namespace CrashoutsEngine {
 			The ownership of the asset is transferred to the manager via std::move.
 
 			@param name The name to associate with the asset.
-			@param asset The unique_ptr to the asset object to be stored.
+			@param 
 			*/
-			void Load(const std::string& name, std::unique_ptr<IAsset> asset) {
+			//template <typename T, typename... Args>
+			void Load(const std::string& name, std::unique_ptr<IAsset> asset) {	
 				if (Exists(name)) return;
 
 				// Use a static counter to generate a unique ID
@@ -152,6 +172,13 @@ namespace CrashoutsEngine {
 
 			std::unordered_map<unsigned int, std::unique_ptr<IAsset>> assets;
 			std::unordered_map<std::string, unsigned int> assetNames;
+
+			// Mutex to ensure thread safety
+			static std::mutex mtx;
+
+			// Inititalizing instancePtr with an instance (Outside of this class we
+			// are initializing instancePtr with an object.)
+			static AssetManager* instancePtr;
 		};		
 	}
 }

@@ -23,6 +23,7 @@
 #include <memory>
 #include <array>
 #include "managers/entitymanager.h"
+#include "managers/assetmanager.h"
 #include "rendering.h"
 #include "math/CEVec2.h"
 #include "math/CEVec3.h"
@@ -30,7 +31,7 @@
 // Forward declarations
 namespace CrashoutsEngine {
     namespace Assets {
-        class IAsset {
+        class Texture : public IAsset {
         public:
             using texdata = unsigned char*;
 
@@ -41,18 +42,18 @@ namespace CrashoutsEngine {
             bool uploaded;
 
             // Constructor (matching implementation pattern)
-            IAsset(int w, int h, texdata inputData);
+            Texture(int w, int h, texdata inputData);
 
             // Deleted copy operations
-            IAsset(const IAsset&) = delete;
-            IAsset& operator=(const IAsset&) = delete;
+            Texture(const Texture&) = delete;
+            Texture& operator=(const Texture&) = delete;
 
             // Move constructor and assignment
-            IAsset(IAsset&& other) noexcept;
-            IAsset& operator=(IAsset&& other) noexcept;
+            Texture(Texture&& other) noexcept;
+            Texture& operator=(Texture&& other) noexcept;
 
             // Virtual destructor
-            virtual ~IAsset();
+            virtual ~Texture();
 
             /*!
             @brief Internal method to load image data from file
@@ -66,9 +67,9 @@ namespace CrashoutsEngine {
             /*!
             @brief Factory method to create a new Asset from file
             @param filePath Path to the image file to load
-            @return unique_ptr to IAsset object or nullptr on failure
+            @return unique_ptr to Texture object or nullptr on failure
             */
-            static std::unique_ptr<IAsset> Create(const std::string& filePath);
+            static std::unique_ptr<Texture> Create(const std::string& filePath);
 
             // GPU management methods
             bool UploadToGPU();
@@ -81,10 +82,6 @@ namespace CrashoutsEngine {
             GLuint GetGLHandle() const { return glHandle; }
             bool IsUploaded() const { return uploaded; }
         };
-
-        // Alias for backward compatibility
-        using Texture = IAsset;
-        using TextureAsset = IAsset;
     }
 }
 
