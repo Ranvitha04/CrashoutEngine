@@ -20,7 +20,6 @@ integration.
 #include "managers/entitymanager.h"
 #include "shapes.h"
 #include "resources/textures.h"
-#include "resources/texture.cpp"
 #include <glm/glm.hpp>
 #include <iostream>
 #include <sstream>

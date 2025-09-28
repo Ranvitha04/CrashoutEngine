@@ -6,7 +6,7 @@
 This file implements the texture management and rendering functionality
 for CrashoutsEngine. It contains:
 
-- **CrashoutsEngine::Assets::IAsset**:
+- **CrashoutsEngine::Assets::Texture**:
   Manages raw image data, GPU upload, and cleanup. Provides static helpers
   to load image data (via stb_image) and create asset objects.
 - **Component::TextureRenderer**:
@@ -21,7 +21,7 @@ and centralized texture lifecycle management.
 Usage:
 - Call `TextureRenderer::CreateTexturedQuad()` to draw textured quads.
 - Call `TextureRenderer::PreloadTexture()` to load textures in advance.
-- Use `IAsset::Create()` for lower-level texture asset creation.
+- Use `Texture::Create()` for lower-level texture asset creation.
 
 Clean-up functions are provided to release GPU resources and clear caches
 when shutting down the engine.
@@ -29,27 +29,18 @@ when shutting down the engine.
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "resources/textures.h"
-#include "managers/entitymanager.h"
-#include <stb_image.h>
-#include <iostream>
-#include <fstream>
-#include <algorithm>
-#include <cctype>
-#include <vector>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
 
 namespace CrashoutsEngine {
     namespace Assets {
 
         /*!
-        @brief Constructs an IAsset with given width, height, and raw pixel data.
+        @brief Constructs an Texture with given width, height, and raw pixel data.
         @param w      Width of the texture in pixels.
         @param h      Height of the texture in pixels.
         @param inputData Raw pointer to the texture data (RGBA).
         */
 
-        IAsset::IAsset(int w, int h, texdata inputData) :
+        Texture::Texture(int w, int h, texdata inputData) :
             width(w), height(h), data(inputData), glHandle(0), uploaded(false) {
         }
 
@@ -62,10 +53,9 @@ namespace CrashoutsEngine {
         */
 
 
-        IAsset::texdata IAsset::LoadImageData(const std::string& filePath, int& width, int& height) {
+        Texture::texdata Texture::LoadImageData(const std::string& filePath, int& width, int& height) {
             int channels;
 
-            
             texdata data = stbi_load(filePath.c_str(), &width, &height, &channels, STBI_rgb_alpha);
             if (!data) {
                 std::cerr << "Error loading image: " << filePath << " - " << stbi_failure_reason() << std::endl;
@@ -74,27 +64,26 @@ namespace CrashoutsEngine {
         }
 
         /*!
-        @brief Creates a new IAsset from an image file.
+        @brief Creates a new Texture from an image file.
         @param filePath Path to the image file.
-        @return Unique pointer to a valid IAsset, or nullptr on failure.
+        @return Unique pointer to a valid Texture, or nullptr on failure.
         */
 
-        std::unique_ptr<IAsset> IAsset::Create(const std::string& filePath) {
+        std::unique_ptr<Texture> Texture::Create(const std::string& filePath) {
             int w, h;
             texdata loadedData = LoadImageData(filePath, w, h);
             if (!loadedData) {
                 return nullptr;
             }
 
-           
-            return std::unique_ptr<IAsset>(new IAsset(w, h, loadedData));
+            return std::unique_ptr<Texture>(new Texture(w, h, loadedData));
         }
 
         /*!
         @brief Destructor. Frees GPU resources and image memory.
         */
 
-        IAsset::~IAsset() {
+        Texture::~Texture() {
             FreeGPU();
             if (data) {
                 stbi_image_free(data);
@@ -106,7 +95,7 @@ namespace CrashoutsEngine {
         @brief Move constructor. Transfers ownership of resources.
         */
 
-        IAsset::IAsset(IAsset&& other) noexcept :
+        Texture::Texture(Texture&& other) noexcept :
             width(other.width),
             height(other.height),
             data(other.data),
@@ -125,7 +114,7 @@ namespace CrashoutsEngine {
         @brief Move assignment operator. Cleans up current resources and transfers ownership.
         */
 
-        IAsset& IAsset::operator=(IAsset&& other) noexcept {
+        Texture& Texture::operator=(Texture&& other) noexcept {
             if (this != &other) {
                 // Clean up existing resources
                 FreeGPU();
@@ -155,7 +144,7 @@ namespace CrashoutsEngine {
         @return True if successfully uploaded, false otherwise.
         */
 
-        bool IAsset::UploadToGPU() {
+        bool Texture::UploadToGPU() {
             if (uploaded || !data) {
                 return uploaded; // Already uploaded or no data
             }
@@ -183,7 +172,7 @@ namespace CrashoutsEngine {
         @brief Frees the GPU texture resource if allocated.
         */
 
-        void IAsset::FreeGPU() {
+        void Texture::FreeGPU() {
             if (uploaded && glHandle != 0) {
                 glDeleteTextures(1, &glHandle);
                 glHandle = 0;
@@ -280,7 +269,8 @@ namespace CrashoutsEngine {
             }
 
             // Get or load texture (uses cache)
-            GLuint textureHandle = GetOrLoadTexture(texturePath);
+            //GLuint textureHandle = GetOrLoadTexture(texturePath);
+            GLuint textureHandle = GetTextureHandle(texturePath);
             if (textureHandle == 0) {
                 std::cerr << "Failed to load texture: " << texturePath << std::endl;
                 return;
@@ -329,23 +319,48 @@ namespace CrashoutsEngine {
         */
 
 
-        GLuint TextureRenderer::GetOrLoadTexture(const std::string& texturePath) {
-            // Check cache first
-            auto it = textureCache.find(texturePath);
-            if (it != textureCache.end()) {
-                return it->second; // Return cached texture
+        //GLuint TextureRenderer::GetOrLoadTexture(const std::string& texturePath) {
+        //    // Check cache first
+        //    auto it = textureCache.find(texturePath);
+        //    if (it != textureCache.end()) {
+        //        return it->second; // Return cached texture
+        //    }
+
+        /*!
+        @brief Retrieves a cached texture handle using its asset name.
+        @param assetName The unique name of the asset (from the manifest).
+        @return OpenGL texture handle, or 0 on failure.
+        */
+        GLuint TextureRenderer::GetTextureHandle(std::string const& assetName) {
+            using namespace CrashoutsEngine::Assets;
+
+            // Use the AssetManager to retrieve the *already loaded* Texture object
+            Texture* texture = AssetManager::GetInstance().Get<Texture>(assetName);
+
+            if (texture) {
+                // Return the OpenGL handle stored inside the asset object
+                if (texture->IsUploaded()) {
+                    return texture->GetGLHandle();
+                }
+                std::cerr << "Warning: Texture '" << assetName << "' found but not uploaded to GPU." << std::endl;
+                return 0;
             }
 
-            // Load new texture
-            GLuint textureHandle = LoadTexture(texturePath);
-            if (textureHandle != 0) {
-                // Cache the texture
-                textureCache[texturePath] = textureHandle;
-                std::cout << "Cached texture: " << texturePath << std::endl;
-            }
-
-            return textureHandle;
+            // Asset not found, indicating problem in manifest or loading phase
+            std::cerr << "Error: Texture asset not found in AssetManager: " << assetName << std::endl;
+            return 0;
         }
+
+        //    // Load new texture
+        //    GLuint textureHandle = LoadTexture(texturePath);
+        //    if (textureHandle != 0) {
+        //        // Cache the texture
+        //        textureCache[texturePath] = textureHandle;
+        //        std::cout << "Cached texture: " << texturePath << std::endl;
+        //    }
+
+        //    return textureHandle;
+        //}
 
         /*!
         @brief Loads and caches a texture in advance.
@@ -353,9 +368,9 @@ namespace CrashoutsEngine {
         @return True if successfully loaded, false otherwise.
         */
 
-        bool TextureRenderer::PreloadTexture(const std::string& texturePath) {
+        bool TextureRenderer::PreloadTexture(const std::string& assetName) {
             // Check if already loaded
-            if (textureCache.find(texturePath) != textureCache.end()) {
+            /*if (textureCache.find(texturePath) != textureCache.end()) {
                 return true;
             }
 
@@ -366,7 +381,8 @@ namespace CrashoutsEngine {
                 return true;
             }
 
-            return false;
+            return false;*/
+            return GetTextureHandle(assetName) != 0;
         }
 
         /*!
@@ -440,6 +456,9 @@ namespace CrashoutsEngine {
             glBindTextureUnit(6, 0);
             renderer.shdr_pgm.UnUse();
         }
+
+
+#if 0
 
         /*!
         @brief Loads a texture from file depending on its extension.
@@ -569,6 +588,8 @@ namespace CrashoutsEngine {
             // This method is now an alias to LoadImageTexture for consistency
             return LoadImageTexture(pathname);
         }
+
+#endif
 
         /*!
         @brief Unloads a single texture from the cache and deletes its GPU resource.

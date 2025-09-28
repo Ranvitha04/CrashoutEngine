@@ -22,15 +22,25 @@
 #include <unordered_map>
 #include <memory>
 #include <array>
+#include "managers/assetmanager.h"
 #include "managers/entitymanager.h"
 #include "rendering.h"
 #include "math/CEVec2.h"
 #include "math/CEVec3.h"
 
+#include <stb_image.h>
+#include <iostream>
+#include <fstream>
+#include <algorithm>
+#include <cctype>
+#include <vector>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
 // Forward declarations
 namespace CrashoutsEngine {
     namespace Assets {
-        class IAsset {
+        class Texture : public IAsset {
         public:
             using texdata = unsigned char*;
 
@@ -41,18 +51,18 @@ namespace CrashoutsEngine {
             bool uploaded;
 
             // Constructor (matching implementation pattern)
-            IAsset(int w, int h, texdata inputData);
+            Texture(int w, int h, texdata inputData);
 
             // Deleted copy operations
-            IAsset(const IAsset&) = delete;
-            IAsset& operator=(const IAsset&) = delete;
+            Texture(const Texture&) = delete;
+            Texture& operator=(const Texture&) = delete;
 
             // Move constructor and assignment
-            IAsset(IAsset&& other) noexcept;
-            IAsset& operator=(IAsset&& other) noexcept;
+            Texture(Texture&& other) noexcept;
+            Texture& operator=(Texture&& other) noexcept;
 
             // Virtual destructor
-            virtual ~IAsset();
+            virtual ~Texture();
 
             /*!
             @brief Internal method to load image data from file
@@ -66,9 +76,9 @@ namespace CrashoutsEngine {
             /*!
             @brief Factory method to create a new Asset from file
             @param filePath Path to the image file to load
-            @return unique_ptr to IAsset object or nullptr on failure
+            @return unique_ptr to Texture object or nullptr on failure
             */
-            static std::unique_ptr<IAsset> Create(const std::string& filePath);
+            static std::unique_ptr<Texture> Create(const std::string& filePath);
 
             // GPU management methods
             bool UploadToGPU();
@@ -83,8 +93,8 @@ namespace CrashoutsEngine {
         };
 
         // Alias for backward compatibility
-        using Texture = IAsset;
-        using TextureAsset = IAsset;
+        using Texture = Texture;
+        using TextureAsset = Texture;
     }
 }
 
@@ -128,28 +138,28 @@ namespace Component {
         @param pathname Path to binary texture file
         @return OpenGL texture handle or 0 on failure
         */
-        static GLuint LoadBinaryTexture(const std::string& pathname);
+        //static GLuint LoadBinaryTexture(const std::string& pathname);
 
         /*!
         @brief Load texture using the asset system (for image files)
         @param pathname Path to texture file
         @return OpenGL texture handle or 0 on failure
         */
-        static GLuint LoadTextureFromAsset(const std::string& pathname);
+        //static GLuint LoadTextureFromAsset(const std::string& pathname);
 
         /*!
         @brief Load image texture using stb_image (renamed for clarity)
         @param pathname Path to texture file
         @return OpenGL texture handle or 0 on failure
         */
-        static GLuint LoadImageTexture(const std::string& pathname);
+        //static GLuint LoadImageTexture(const std::string& pathname);
 
         /*!
         @brief Determine texture format and load appropriately
         @param pathname Path to texture file
         @return OpenGL texture handle or 0 on failure
         */
-        static GLuint LoadTexture(const std::string& pathname);
+        //static GLuint LoadTexture(const std::string& pathname);
 
         /*!
         @brief Core rendering function for textured quads
@@ -168,12 +178,19 @@ namespace Component {
         @param texturePath Path to texture file
         @return OpenGL texture handle or 0 on failure
         */
-        static GLuint GetOrLoadTexture(const std::string& texturePath);
+        //static GLuint GetOrLoadTexture(const std::string& texturePath);
 
         /*!
-        @brief Create and render a textured quad from file path
+        @brief Retrieves a cached texture handle using its asset name.
+        @param assetName The unique name of the asset (from the manifest).
+        @return OpenGL texture handle, or 0 on failure.
         */
-        static void CreateTexturedQuad(const std::string& texturePath, const CEVec3& position,
+        static GLuint GetTextureHandle(std::string const& assetName);
+
+        /*!
+        @brief Create and render a textured quad from asset name
+        */
+        static void CreateTexturedQuad(const std::string& textureName, const CEVec3& position,
             const CEVec2& size, float rotation = 0.0f, float scale = 1.0f,
             const CEVec3& tint = CEVec3(1.0f, 1.0f, 1.0f), bool modulate = false);
 
