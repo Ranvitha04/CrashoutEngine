@@ -22,6 +22,7 @@ rendering resources associated with these primitives.
 ----------------------------------------------------------------------------- */
 
 #include "math/CEVec3.h"
+#include <iostream>
 
 namespace Component {
 
@@ -42,7 +43,16 @@ namespace Component {
     // Function to clean up all shape rendering resources
     static void Cleanup();
 
-    /*static void Transform(const CEVec3 &InputPosition, );*/
+    static void CreateTexturedSquare(const std::string& texturePath, const CEVec3& position, float size,
+        float rotation = 0.0f, float scale = 1.0f, const CEVec3& tint = CEVec3(1, 1, 1));
+
+    static void CreateTexturedRectangle(const std::string& texturePath, const CEVec3& position,
+        float width, float height, float rotation = 0.0f,
+        float scale = 1.0f, const CEVec3& tint = CEVec3(1, 1, 1));
+
+    static void CreateTexturedTriangle(const std::string& texturePath, const CEVec3& p1, const CEVec3& p2,
+        const CEVec3& p3, float rotation = 0.0f, float scale = 1.0f,
+        const CEVec3& tint = CEVec3(1, 1, 1));
 
     };
 
