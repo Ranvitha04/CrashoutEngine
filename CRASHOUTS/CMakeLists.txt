@@ -26,6 +26,7 @@ set(ALL_LIBS
     PRIVATE stb
     PRIVATE freetype
     PRIVATE reflect
+    PRIVATE rapidjson
 )
 
 add_compile_definitions(

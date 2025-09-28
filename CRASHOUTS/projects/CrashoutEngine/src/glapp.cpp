@@ -273,7 +273,7 @@ void GLApp::draw() {
     // Draw current model
     //model.Draw();
 
-    Component::Shapes::CreateTexturedTriangle("../../../projects/CrashoutEngine/images/duck-rgba-256.tex", pos, CEVec3(-0.4, -0.5, 0), CEVec3(0.4, -0.5, 0), TestRotation, TestScale, CEVec3(1, 1, 0));
+    //Component::Shapes::CreateTexturedTriangle("../../../projects/CrashoutEngine/assets/images/duck-rgba-256.tex", pos, CEVec3(-0.4, -0.5, 0), CEVec3(0.4, -0.5, 0), TestRotation, TestScale, CEVec3(1, 1, 0));
 
 
     //Component::TextureRenderer::CreateTexturedQuad(
