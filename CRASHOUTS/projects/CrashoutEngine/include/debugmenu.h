@@ -33,7 +33,7 @@ namespace CrashoutsEngine {
 }
 namespace Physics { class PhysicsHandler; }
 namespace Collision { struct CollisionEvent; }
-namespace DebugReflection { class PanelRegistry; }
+namespace EditorRegistry { class PanelRegistry; }
 
 namespace UI {
 

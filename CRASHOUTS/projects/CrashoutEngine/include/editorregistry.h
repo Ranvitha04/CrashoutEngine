@@ -1,9 +1,9 @@
 /*!
-@file       debugreflection.h
+@file       editorregistry.h
 @author     mohamadamirakmal.b@digipen.edu
 @date       25/09/2025
 
-@brief      Lightweight reflection hooks for the Debug Menu. Provides:
+@brief      Lightweight registry hooks for the Debug Menu. Provides:
             - IComponentAdapter + ComponentRegistry: ECS inspectors (add/remove/edit)
             - IGameStateProvider setter/getter: data-driven Game State panel
             - PanelRegistry: register custom ImGui panels at runtime
@@ -20,7 +20,7 @@ These APIs let the debug UI be data-driven without hardcoding per-project UI.
 
 namespace CrashoutsEngine { class ECS; using Entity = unsigned; }
 
-namespace DebugReflection {
+namespace EditorRegistry {
 
     // ---------- Component Adapters ----------
     // Each adapter knows how to: check, add, remove, and draw its inspector UI.
@@ -96,4 +96,4 @@ namespace DebugReflection {
         std::vector<IPhysicsProvider*> providers_;
     };
 
-} // namespace DebugReflection
+} // namespace EditorRegistry
