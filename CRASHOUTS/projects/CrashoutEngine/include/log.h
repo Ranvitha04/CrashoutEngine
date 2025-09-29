@@ -27,15 +27,15 @@ struct LogMessage {
 
     // Enums generated from the X-macro lists (compact underlying type).
     enum class Level : unsigned char {
-#define LOG_LEVEL_ITEM(n) n,
+        #define LOG_LEVEL_ITEM(n) n,
         LOG_LEVELS(LOG_LEVEL_ITEM)
-#undef LOG_LEVEL_ITEM
+        #undef LOG_LEVEL_ITEM
     };
 
     enum class Subsystem : unsigned char {
-#define LOG_SYS_ITEM(n) n,
+        #define LOG_SYS_ITEM(n) n,
         LOG_SYSTEMS(LOG_SYS_ITEM)
-#undef LOG_SYS_ITEM
+        #undef LOG_SYS_ITEM
     };
 
     Level level{};
@@ -48,17 +48,17 @@ struct LogMessage {
 
 inline const char* ToString(LogMessage::Level v) {
     static const char* k[] = {
-#define X(n) #n,
+        #define X(n) #n,
         LOG_LEVELS(X)
-#undef X
+        #undef X
     };
     return k[static_cast<int>(v)];
 }
 inline const char* ToString(LogMessage::Subsystem v) {
     static const char* k[] = {
-#define X(n) #n,
+        #define X(n) #n,
         LOG_SYSTEMS(X)
-#undef X
+        #undef X
     };
     return k[static_cast<int>(v)];
 }
