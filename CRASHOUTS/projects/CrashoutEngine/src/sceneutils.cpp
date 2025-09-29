@@ -8,6 +8,7 @@ This file implements
 */
 
 #include "sceneutils.h"
+#include "resources/textures.h"
 #include "managers/assetmanager.h"
 
 namespace Scene {
@@ -33,21 +34,35 @@ namespace Scene {
 				}
 				CEVec2 finalScale{ sc->width * scale.x, sc->height * scale.y };
 
+				if (sc->enableTexture) {
+					using namespace Assets;
+					Texture* tex = Assets::AssetManager::GetInstance().Get<Texture>(sc->textureName);
+					if (tex) {
+						tex->SetTextureMode(
+							static_cast<TextureMode>(sc->wrapModeU),
+							static_cast<TextureMode>(sc->wrapModeV)
+						);
+					}
+				}
+
 				switch (sc->type) {
 				case Component::ShapeType::Square:    Component::Shapes::CreateSquare(pos, sc->size, rot, (scale.x > scale.y) ? scale.x : scale.y, sc->color * (1 / 255.f)); break;
+				// ==========================================RECTANGLE===================================================
 				case Component::ShapeType::Rectangle:
 					if (sc->enableTexture) {
-						// I dont think the bottom part works so 
 						Component::Shapes::CreateTexturedRectangle(sc->textureName,
-							pos, sc->width * scale.x, sc->height * scale.y, rot, 1.0f, sc->color * (1 / 255.f)); break;
+							pos, sc->width * scale.x, sc->height * scale.y, rot, 1.0f, sc->color * (1 / 255.f), sc->uvSize); 
+						break;
 					}
 					else Component::Shapes::CreateRectangle(pos, sc->width * scale.x, sc->height * scale.y, rot, 1.0f, sc->color * (1 / 255.f)); break;
+				// ============================================LINE======================================================
 				case Component::ShapeType::Line:
 					Component::Shapes::CreateLine(sc->p1, sc->p2, sc->thickness, rot, (scale.x > scale.y) ? scale.x : scale.y, sc->color * (1 / 255.f)); break;
-				case Component::ShapeType::Triangle:
+				// ==========================================TRIANGLE====================================================
 					if (sc->enableTexture) {
+				case Component::ShapeType::Triangle:
 						Component::Shapes::CreateTexturedTriangle(sc->textureName,
-							sc->t1, sc->t2, sc->t3, rot, (scale.x > scale.y) ? scale.x : scale.y, sc->color * (1 / 255.f)); break;
+							sc->t1, sc->t2, sc->t3, rot, (scale.x > scale.y) ? scale.x : scale.y, sc->color * (1 / 255.f), sc->uvSize); break;
 					}
 					else Component::Shapes::CreateTriangle(sc->t1, sc->t2, sc->t3, rot, (scale.x > scale.y) ? scale.x : scale.y, sc->color * (1 / 255.f)); break;
 				}

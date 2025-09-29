@@ -40,6 +40,13 @@
 // Forward declarations
 namespace CrashoutsEngine {
     namespace Assets {
+
+        enum class TextureMode {
+            ClampToEdge,
+            Repeat,
+            Mirror
+        };
+
         class Texture : public IAsset {
         public:
             using texdata = unsigned char*;
@@ -80,6 +87,12 @@ namespace CrashoutsEngine {
             */
             static std::unique_ptr<Texture> Create(const std::string& filePath);
 
+            // Helper function to get Texture mode
+            static GLuint GetTextureMode(TextureMode mode);
+
+            // Function to set texture mode at runtime
+            void SetTextureMode(TextureMode modeS, TextureMode modeT);
+
             // GPU management methods
             bool UploadToGPU();
             void FreeGPU();
@@ -90,13 +103,20 @@ namespace CrashoutsEngine {
             texdata GetData() const { return data; }
             GLuint GetGLHandle() const { return glHandle; }
             bool IsUploaded() const { return uploaded; }
+
+        private:
+            TextureMode currentModeS = TextureMode::ClampToEdge;
+            TextureMode currentModeT = TextureMode::ClampToEdge;
+
         };
 
         // Alias for backward compatibility
-        using Texture = Texture;
+        //using Texture = Texture;
         using TextureAsset = Texture;
+
     }
 }
+
 
 namespace Component {
     // Constants used in the implementation

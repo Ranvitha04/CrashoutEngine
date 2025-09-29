@@ -230,7 +230,7 @@ namespace Component {
     }
 
     void Shapes::CreateTexturedSquare(const std::string& texturePath, const CEVec3& position, float size,
-        float rotation, float scale, const CEVec3& tint) {
+        float rotation, float scale, const CEVec3& tint, const CEVec2& uvSize) {
         Component::Rendering& renderer = Component::Rendering::Get();
 
         // Get or load the texture
@@ -254,12 +254,15 @@ namespace Component {
         // Color data (will be used as tint)
         std::array<CEVec3, 4> clr_vtx{ tint, tint, tint, tint };
 
+        float uvWidthMax = uvSize.x;
+        float uvHeightMax = uvSize.y;
+
         // Texture coordinate data
         std::array<CEVec2, 4> tex_vtx{
-            CEVec2(0.0f, 1.0f), // bottom left
-            CEVec2(1.0f, 1.0f), // bottom right  
-            CEVec2(1.0f, 0.0f), // top right
-            CEVec2(0.0f, 0.0f)  // top left
+            CEVec2(0.0f,        uvHeightMax), // bottom left
+            CEVec2(uvWidthMax,  uvHeightMax), // bottom right  
+            CEVec2(uvWidthMax,  0.0f), // top right
+            CEVec2(0.0f,        0.0f)  // top left
         };
 
         std::array<GLushort, 6> idx_vtx{ 0, 1, 2, 0, 2, 3 }; // Two triangles
@@ -309,7 +312,7 @@ namespace Component {
     }
 
     void Shapes::CreateTexturedRectangle(const std::string& texturePath, const CEVec3& position,
-        float width, float height, float rotation, float scale, const CEVec3& tint) {
+        float width, float height, float rotation, float scale, const CEVec3& tint, const CEVec2& uvSize) {
         Component::Rendering& renderer = Component::Rendering::Get();
 
         GLuint textureHandle = Component::TextureRenderer::GetTextureHandle(texturePath);
@@ -330,9 +333,14 @@ namespace Component {
 
         std::array<CEVec3, 4> clr_vtx{ tint, tint, tint, tint };
 
+        float uvWidthMax = uvSize.x;
+        float uvHeightMax = uvSize.y;
+
         std::array<CEVec2, 4> tex_vtx{
-            CEVec2(0.0f, 1.0f), CEVec2(1.0f, 1.0f),
-            CEVec2(1.0f, 0.0f), CEVec2(0.0f, 0.0f)
+            CEVec2(0.0f,        uvHeightMax), // bottom left
+            CEVec2(uvWidthMax,  uvHeightMax), // bottom right  
+            CEVec2(uvWidthMax,  0.0f), // top right
+            CEVec2(0.0f,        0.0f)  // top left
         };
 
         std::array<GLushort, 6> idx_vtx{ 0, 1, 2, 0, 2, 3 };
@@ -372,7 +380,7 @@ namespace Component {
     }
 
     void Shapes::CreateTexturedTriangle(const std::string& texturePath, const CEVec3& p1, const CEVec3& p2,
-        const CEVec3& p3, float rotation, float scale, const CEVec3& tint) {
+        const CEVec3& p3, float rotation, float scale, const CEVec3& tint, const CEVec2& uvSize) {
         Component::Rendering& renderer = Component::Rendering::Get();
 
         GLuint textureHandle = Component::TextureRenderer::GetTextureHandle(texturePath);
@@ -389,11 +397,14 @@ namespace Component {
 
         std::array<CEVec3, 3> clr_vtx{ tint, tint, tint };
 
+        float uvWidthMax = uvSize.x;
+        float uvHeightMax = uvSize.y;
+
         // Triangle texture coordinates
         std::array<CEVec2, 3> tex_vtx{
-            CEVec2(0.0f, 1.0f), // bottom left
-            CEVec2(1.0f, 1.0f), // bottom right
-            CEVec2(0.5f, 0.0f)  // top center
+            CEVec2(0.0f, uvHeightMax), // bottom left
+            CEVec2(uvWidthMax, uvHeightMax), // bottom right
+            CEVec2(uvWidthMax * 0.5f, 0.0f)  // top center
         };
 
         std::array<GLushort, 3> idx_vtx{ 0, 1, 2 };

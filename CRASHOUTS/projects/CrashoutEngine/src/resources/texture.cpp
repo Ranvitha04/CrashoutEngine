@@ -79,6 +79,39 @@ namespace CrashoutsEngine {
             return std::unique_ptr<Texture>(new Texture(w, h, loadedData));
         }
 
+        // Helper function to get Texture mode
+        GLuint Texture::GetTextureMode(TextureMode mode) {
+            switch (mode) {
+            case TextureMode::Repeat:
+                return GL_REPEAT;
+            case TextureMode::Mirror:
+                return GL_MIRRORED_REPEAT;
+            case TextureMode::ClampToEdge:
+                return GL_CLAMP_TO_EDGE;
+            default:
+                return GL_CLAMP_TO_EDGE;
+            }
+        }
+
+        // Function to set texture mode at runtime
+        void Texture::SetTextureMode(TextureMode modeS, TextureMode modeT) {
+            if (glHandle == 0) {
+                std::cout << "Warning: Cannot set wrap mode on uninitialized texture." << std::endl;
+                return;
+            }
+
+            // Apply the new modes using the Direct State Access function
+            if (currentModeS != modeS) {
+                glTextureParameteri(glHandle, GL_TEXTURE_WRAP_S, GetTextureMode(modeS));
+                currentModeS = modeS;
+            }
+
+            if (currentModeT != modeS) {
+                glTextureParameteri(glHandle, GL_TEXTURE_WRAP_T, GetTextureMode(modeT));
+                currentModeT = modeT;
+            }
+        }
+
         /*!
         @brief Destructor. Frees GPU resources and image memory.
         */
