@@ -256,10 +256,10 @@ namespace Component {
 
         // Texture coordinate data
         std::array<CEVec2, 4> tex_vtx{
-            CEVec2(0.0f, 0.0f), // bottom left
-            CEVec2(1.0f, 0.0f), // bottom right  
-            CEVec2(1.0f, 1.0f), // top right
-            CEVec2(0.0f, 1.0f)  // top left
+            CEVec2(0.0f, 1.0f), // bottom left
+            CEVec2(1.0f, 1.0f), // bottom right  
+            CEVec2(1.0f, 0.0f), // top right
+            CEVec2(0.0f, 0.0f)  // top left
         };
 
         std::array<GLushort, 6> idx_vtx{ 0, 1, 2, 0, 2, 3 }; // Two triangles
@@ -331,8 +331,8 @@ namespace Component {
         std::array<CEVec3, 4> clr_vtx{ tint, tint, tint, tint };
 
         std::array<CEVec2, 4> tex_vtx{
-            CEVec2(0.0f, 0.0f), CEVec2(1.0f, 0.0f),
-            CEVec2(1.0f, 1.0f), CEVec2(0.0f, 1.0f)
+            CEVec2(0.0f, 1.0f), CEVec2(1.0f, 1.0f),
+            CEVec2(1.0f, 0.0f), CEVec2(0.0f, 0.0f)
         };
 
         std::array<GLushort, 6> idx_vtx{ 0, 1, 2, 0, 2, 3 };
@@ -391,9 +391,9 @@ namespace Component {
 
         // Triangle texture coordinates
         std::array<CEVec2, 3> tex_vtx{
-            CEVec2(0.0f, 0.0f), // bottom left
-            CEVec2(1.0f, 0.0f), // bottom right
-            CEVec2(0.5f, 1.0f)  // top center
+            CEVec2(0.0f, 1.0f), // bottom left
+            CEVec2(1.0f, 1.0f), // bottom right
+            CEVec2(0.5f, 0.0f)  // top center
         };
 
         std::array<GLushort, 3> idx_vtx{ 0, 1, 2 };

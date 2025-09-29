@@ -12,25 +12,25 @@ namespace Component {
         ShapeType type{ ShapeType::Rectangle };
 
         // shared
-        CEVec3 color{ 1.f,1.f,1.f };
+        CEVec3 color{ 255.f,255.f,255.f };
         // float rotation{ 0.f };
         // float scale{ 1.f };
 
         // square
-        float size{ 64.f };
+        float size{ 32.f };
 
         // rectangle
-        float width{ 64.f }, height{ 32.f };
+        float width{ 32.f }, height{ 32.f };
 
         // line
         CEVec3 p1{ 0.f,0.f,0.f };
-        CEVec3 p2{ 64.f,0.f,0.f };
-        float thickness{ 2.f };
+        CEVec3 p2{ 32.f,0.f,0.f };
+        float thickness{ 1.f };
 
         // triangle
-        CEVec3 t1{ 0.f,0.f,0.f };
-        CEVec3 t2{ 64.f,0.f,0.f };
-        CEVec3 t3{ 32.f,32.f,0.f };
+        CEVec3 t1{ -16.f,-16.f,0.f };
+        CEVec3 t2{ 16.f,-16.f,0.f };
+        CEVec3 t3{ 0.f,16.f,0.f };
 
         // toggle
         bool preview = false;
