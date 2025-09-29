@@ -46,6 +46,6 @@ private:
 	double mDT{};
 	//Exponential moving average of FPS
 	///EMA calculate smoothed fps to avoid jumping fps values
-	double mFPSEma{};
+	double mFPS{};
 	double defaultFallBack{ 60.0 };
 };
