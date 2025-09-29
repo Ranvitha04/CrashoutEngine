@@ -262,6 +262,7 @@ namespace {
         void drawInspector(ECS& ecs, Entity e) override {
             using namespace Component;
             auto* sc = ecs.GetComponent<ShapeComponent>(e);
+            auto& D = GetDebugDefaults();
             if (!sc) return;
 
             // type
