@@ -180,7 +180,7 @@ namespace {
                     cc->collider = std::make_unique<Collision::Sphere>(D.sphere_radius, center);
                 }
                 else {
-                    // AABB centered on transform with ±0.5 extents
+                    // AABB centered on transform with ï¿½0.5 extents
                     CEVec3 c{ 0.f,0.f,0.f };
                     if (auto* t = ecs.GetComponent<TransformComponent>(e)) c = t->position;
                     cc->collider = std::make_unique<Collision::AABBRect>(
@@ -271,7 +271,43 @@ namespace {
                 sc->type = (ShapeType)t;
             }
 
-            draw_reflected(*sc, "Shape");
+            //draw_reflected(*sc, "Shape");
+            
+            // shared
+            ImGui::Checkbox("Use Texture", &sc->enableTexture);
+
+            char buf[256]{};
+            if (sc->textureName.size() < sizeof(buf)) std::memcpy(buf, sc->textureName.data(), sc->textureName.size());
+
+            ImGui::InputText("Texture Name", buf, sizeof(buf));
+            if (ImGui::IsItemEdited() || ImGui::IsItemDeactivatedAfterEdit()) {
+                sc->textureName = buf;
+            }
+
+            ImGui::DragFloat3("Color", &sc->color.x, D.drag_small, 0.f, 255.f);
+            //ImGui::DragFloat("Rotation", &sc->rotation, D.drag_rotation);
+            //ImGui::DragFloat("Scale", &sc->scale, D.drag_small, 0.01f, 100.f);
+
+            // per-type
+            switch (sc->type) {
+            case ShapeType::Square:
+                ImGui::DragFloat("Size", &sc->size, 0.5f, 0.0f, 1e6f);
+                break;
+            case ShapeType::Rectangle:
+                ImGui::DragFloat("Width", &sc->width, 0.5f, 0.0f, 1e6f);
+                ImGui::DragFloat("Height", &sc->height, 0.5f, 0.0f, 1e6f);
+                break;
+            case ShapeType::Line:
+                ImGui::DragFloat3("P1", &sc->p1.x, 0.5f);
+                ImGui::DragFloat3("P2", &sc->p2.x, 0.5f);
+                ImGui::DragFloat("Thickness", &sc->thickness, 0.1f, 0.0f, 1e6f);
+                break;
+            case ShapeType::Triangle:
+                ImGui::DragFloat3("T1", &sc->t1.x, 0.5f);
+                ImGui::DragFloat3("T2", &sc->t2.x, 0.5f);
+                ImGui::DragFloat3("T3", &sc->t3.x, 0.5f);
+                break;
+            }
 
             /*CEVec3 pos{ 0,0,0 };
             if (auto* tf = ecs.GetComponent<Component::TransformComponent>(e)) pos = tf->position;

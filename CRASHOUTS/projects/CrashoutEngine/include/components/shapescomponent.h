@@ -6,7 +6,10 @@ namespace Component {
     enum class ShapeType { Square, Rectangle, Line, Triangle };
 
     struct ShapeComponent {
-        ShapeType type{ ShapeType::Square };
+        bool enableTexture{ false };
+        std::string textureName{};
+
+        ShapeType type{ ShapeType::Rectangle };
 
         // shared
         CEVec3 color{ 1.f,1.f,1.f };
