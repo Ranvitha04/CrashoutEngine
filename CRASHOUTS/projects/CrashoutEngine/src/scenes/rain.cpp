@@ -11,6 +11,7 @@ static CrashoutsEngine::ECS* globalECS;
 void LoadRain()
 {
 	// Load resources specific to Renfred state
+	LOGI(Core, "Loaded");
 	globalECS = CrashoutsEngine::ECS::getInstance();
 	globalECS->Reset();
 	GLuint shaderID = loadShaderProgram("shaders/textShader.vert", "shaders/textShader.frag");
@@ -37,7 +38,11 @@ void RenderRain()
 	// Render Rain state
 	glClearColor(0.1f, 0.2f, 0.4f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
-	gTextRenderer->renderCenteredText("Hello", 0.0f, 0.0f, 1.0f, glm::vec3(1.0f, 1.0f, 1.0f));
+	std::cout << "[Rain] RenderRain gTextRenderer = " << gTextRenderer << "\n";
+	if (gTextRenderer) {
+		gTextRenderer->renderCenteredText("Hello", 0.0f, 0.0f, 1.0f, glm::vec3(1.0f));
+	}
+
 	using namespace CrashoutsEngine;
 
 	const ECS::ComponentArray<Component::ShapeComponent>& shapeArray = globalECS->GetComponentArray<Component::ShapeComponent>();
