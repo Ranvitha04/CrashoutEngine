@@ -306,6 +306,16 @@ namespace {
             }
 
             // shared
+            ImGui::Checkbox("Use Texture", &sc->enableTexture);
+
+            char buf[256]{};
+            if (sc->textureName.size() < sizeof(buf)) std::memcpy(buf, sc->textureName.data(), sc->textureName.size());
+
+            ImGui::InputText("Texture Name", buf, sizeof(buf));
+            if (ImGui::IsItemEdited() || ImGui::IsItemDeactivatedAfterEdit()) {
+                sc->textureName = buf;
+            }
+
             ImGui::DragFloat3("Color", &sc->color.x, D.drag_small, 0.f, 255.f);
             //ImGui::DragFloat("Rotation", &sc->rotation, D.drag_rotation);
             //ImGui::DragFloat("Scale", &sc->scale, D.drag_small, 0.01f, 100.f);
