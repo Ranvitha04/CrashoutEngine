@@ -20,7 +20,7 @@ These APIs let the debug UI be data-driven without hardcoding per-project UI.
 
 namespace CrashoutsEngine { class ECS; using Entity = unsigned; }
 
-namespace EditorRegistry {
+namespace DebugReflection {
 
     // ---------- Component Adapters ----------
     // Each adapter knows how to: check, add, remove, and draw its inspector UI.
@@ -96,4 +96,4 @@ namespace EditorRegistry {
         std::vector<IPhysicsProvider*> providers_;
     };
 
-} // namespace EditorRegistry
+} // namespace DebugReflection

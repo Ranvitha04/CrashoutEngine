@@ -14,7 +14,7 @@ runtime-extensible and project-agnostic.
 
 /*                                                                   includes
 ----------------------------------------------------------------------------- */
-#include "editorregistry.h"
+#include "debugreflection.h"
 #include "managers/entitymanager.h"
 #include <imgui.h>
 #include "debugdefaults.h"
@@ -46,7 +46,7 @@ namespace {
     @brief Adapter for editing Component::NameComponent (text name).
     @details Shows a single InputText and syncs the value back to the ECS component.
     */
-    struct NameAdapter : EditorRegistry::IComponentAdapter {
+    struct NameAdapter : DebugReflection::IComponentAdapter {
         const char* name() const override { return "NameComponent"; }
         bool has(ECS& ecs, Entity e) const override {
             return ecs.HasComponent<Component::NameComponent>(e);
@@ -69,7 +69,7 @@ namespace {
     @brief Adapter for editing Component::TransformComponent (position/scale/rotation).
     @details Uses ImGui drag controls and writes values back to the ECS each frame.
     */
-    struct TransformAdapter : EditorRegistry::IComponentAdapter {
+    struct TransformAdapter : DebugReflection::IComponentAdapter {
         const char* name() const override { return "TransformComponent"; }
         bool has(ECS& ecs, Entity e) const override {
             return ecs.HasComponent<Component::TransformComponent>(e);
@@ -91,7 +91,7 @@ namespace {
     @brief Adapter for editing Component::RigidBodyComponent (velocity / forces).
     @details Displays editable velocity, read-only mass & restitution (with current API), and provides one-shot force utilities for quick testing.
     */
-    struct RigidBodyAdapter : EditorRegistry::IComponentAdapter {
+    struct RigidBodyAdapter : DebugReflection::IComponentAdapter {
         const char* name() const override { return "RigidBody"; }
 
         bool has(ECS& ecs, Entity e) const override {
@@ -129,7 +129,7 @@ namespace {
     @brief Adapter for editing Component::ColliderComponent (Sphere / AABB).
     @details Lets users switch collider type and tweak radius/min/max; can snap to Transform.
     */
-    struct ColliderAdapter : EditorRegistry::IComponentAdapter {
+    struct ColliderAdapter : DebugReflection::IComponentAdapter {
         const char* name() const override { return "Collider"; }
 
         bool has(ECS& ecs, Entity e) const override {
@@ -248,7 +248,7 @@ namespace {
     @brief Adapter for editing Component::ShapeComponent (debug primitives).
     @details Edits type-specific parameters and supports a per-entity preview toggle.
     */
-    struct ShapeAdapter : EditorRegistry::IComponentAdapter {
+    struct ShapeAdapter : DebugReflection::IComponentAdapter {
         const char* name() const override { return "ShapeComponent"; }
         bool has(ECS& ecs, Entity e) const override {
             return ecs.HasComponent<Component::ShapeComponent>(e);
@@ -349,7 +349,7 @@ namespace {
     @brief Game-state provider installed at runtime (no hardcoded state list).
     @details Bridges GameStateManager to the Debug Menu; exposes current/previous/next and issues ChangeGameState() transitions from a reflected state list.
     */
-    struct GameStateProvider final : EditorRegistry::IGameStateProvider {
+    struct GameStateProvider final : DebugReflection::IGameStateProvider {
         int  current()  const override { return (int)CurrentGameState; }
         int  previous() const override { return (int)PreviousGameState; }
         int  next()     const override { return (int)NextGameState; }
@@ -370,7 +370,7 @@ namespace {
     @brief Physics debug provider (global forces / integrators).
     @details Exposes gravity vector and linear damping via PhysicsHandler getters/setters.
     */
-    struct BuiltinPhysicsProvider final : EditorRegistry::IPhysicsProvider {
+    struct BuiltinPhysicsProvider final : DebugReflection::IPhysicsProvider {
         const char* name() const override { return "Global Forces"; }
         void draw(CrashoutsEngine::ECS&) override {
             // Gravity
@@ -413,22 +413,22 @@ namespace {
 /*!
  @brief Registers all built-in component adapters and debug providers.
  @details Call once during startup (after ECS and GameStateManager are initialized).
-          - Registers ECS component adapters with EditorRegistry::ComponentRegistry
+          - Registers ECS component adapters with DebugReflection::ComponentRegistry
           - Installs the Game State provider used by the Game State panel
           - Registers physics providers (e.g., gravity/damping) with PhysicsRegistry
  @note    Safe to call exactly once; repeated calls will duplicate entries.
- @see     EditorRegistry::ComponentRegistry
- @see     EditorRegistry::PhysicsRegistry
- @see     EditorRegistry::SetGameStateProvider
+ @see     DebugReflection::ComponentRegistry
+ @see     DebugReflection::PhysicsRegistry
+ @see     DebugReflection::SetGameStateProvider
 */
 extern "C" void RegisterBuiltinComponentAdapters() {
-    using namespace EditorRegistry;
+    using namespace DebugReflection;
     ComponentRegistry::instance().registerAdapter(&gNameAdapter);
     ComponentRegistry::instance().registerAdapter(&gTransformAdapter);
     ComponentRegistry::instance().registerAdapter(&gRigidBodyAdapter);
     ComponentRegistry::instance().registerAdapter(&gColliderAdapter);
     ComponentRegistry::instance().registerAdapter(&gShapeAdapter);
-    EditorRegistry::SetGameStateProvider(&gProvider);
-    EditorRegistry::PhysicsRegistry::instance().registerProvider(&gBuiltinPhys);
+    DebugReflection::SetGameStateProvider(&gProvider);
+    DebugReflection::PhysicsRegistry::instance().registerProvider(&gBuiltinPhys);
 
 }

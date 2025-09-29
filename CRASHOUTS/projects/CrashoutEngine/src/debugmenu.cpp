@@ -19,7 +19,7 @@ This file provides the graphics for Crashout Engine's ImGUI.
 #include "log.h"
 #include "logdefs.h"
 #include "debugmenu.h"
-#include "editorregistry.h"
+#include "debugreflection.h"
 #include "debugcollision.h"
 #include "frameratecontroller.h"
 
@@ -229,7 +229,7 @@ namespace UI { // --------------------------------------------------------------
             ImGui::TextUnformatted("Add Components");
 
             // List all registered component types with an "Add" button
-            for (auto* ad : EditorRegistry::ComponentRegistry::instance().all()) {
+            for (auto* ad : DebugReflection::ComponentRegistry::instance().all()) {
                 ImGui::PushID(ad);
                 bool has = ad->has(ecs, selected);
                 ImGui::BeginDisabled(has);
@@ -248,7 +248,7 @@ namespace UI { // --------------------------------------------------------------
             ImGui::Separator();
             ImGui::TextUnformatted("Components on Selected Entity");
 
-            for (auto* ad : EditorRegistry::ComponentRegistry::instance().all()) {
+            for (auto* ad : DebugReflection::ComponentRegistry::instance().all()) {
                 if (!ad->has(ecs, selected)) continue;
 
                 ImGui::PushID(ad); // unique scope for this component�s UI
@@ -404,7 +404,7 @@ namespace UI { // --------------------------------------------------------------
         if (!ui.showGameState) return;
         ScopedWindow w("GameState", LockFlags(ui.lockLayout));
 
-        auto* P = EditorRegistry::GetGameStateProvider();
+        auto* P = DebugReflection::GetGameStateProvider();
         if (!P) { ImGui::TextDisabled("No GameStateProvider registered."); return; }
 
         auto nameFor = [&](int id) -> const char* {
@@ -479,7 +479,7 @@ namespace UI { // --------------------------------------------------------------
 
         ImGui::TextDisabled("Forces & Integrators");
 
-        for (auto* p : EditorRegistry::PhysicsRegistry::instance().all()) {
+        for (auto* p : DebugReflection::PhysicsRegistry::instance().all()) {
             if (!p) continue;
             if (ImGui::TreeNode(p->name())) {
                 p->draw(ecs);            // <- use the ecs param from this function
@@ -544,7 +544,7 @@ namespace UI { // --------------------------------------------------------------
             ImGui::Spacing();
             ImGui::TextDisabled("Panels");
             ImGui::Separator();
-            for (auto const& p : EditorRegistry::PanelRegistry::instance().panels()) {
+            for (auto const& p : DebugReflection::PanelRegistry::instance().panels()) {
                 if (p.toggleFlag) {
                     ImGui::Checkbox(p.name.c_str(), p.toggleFlag);
                 }
@@ -563,13 +563,13 @@ namespace UI { // --------------------------------------------------------------
             if (ImGui::Button("Show All")) {
                 ui.showECS = ui.showPhysics = ui.showPerf = ui.showConsole = ui.showGameState = true;
                 // Also turn on any registered, toggle-backed panels:
-                for (auto const& p : EditorRegistry::PanelRegistry::instance().panels())
+                for (auto const& p : DebugReflection::PanelRegistry::instance().panels())
                     if (p.toggleFlag) *p.toggleFlag = true;
             }
             ImGui::SameLine();
             if (ImGui::Button("Hide All")) {
                 ui.showECS = ui.showPhysics = ui.showPerf = ui.showConsole = ui.showGameState = false;
-                for (auto const& p : EditorRegistry::PanelRegistry::instance().panels())
+                for (auto const& p : DebugReflection::PanelRegistry::instance().panels())
                     if (p.toggleFlag) *p.toggleFlag = false;
             }
 

@@ -15,7 +15,7 @@ These registries allow the UI to be data-driven instead of hardcoded.
 /*                                                                   includes
 ----------------------------------------------------------------------------- */
 
-#include "editorregistry.h"
+#include "debugreflection.h"
 
 //----------------------------------------------------------------------------- file-local state & helpers
 /*!
@@ -25,7 +25,7 @@ These registries allow the UI to be data-driven instead of hardcoded.
  without manual initialization. The Game State provider is a single pointer
  the game installs once at startup.
 */
-namespace EditorRegistry {
+namespace DebugReflection {
 
     // COMPONENT
     ComponentRegistry& ComponentRegistry::instance() {
@@ -64,4 +64,4 @@ namespace EditorRegistry {
         return providers_;
     }
 
-} // namespace EditorRegistry
+} // namespace DebugReflection
