@@ -1,4 +1,5 @@
 {
+    "audio": [],
     "fonts": [
         {
             "name": "arial",
@@ -14,10 +15,6 @@
         }
     ],
     "images": [
-        {
-            "name": "amazon-logo-transparent",
-            "path": "amazon-logo-transparent.png"
-        },
         {
             "name": "duck-rgba-256",
             "path": "duck-rgba-256.tex"

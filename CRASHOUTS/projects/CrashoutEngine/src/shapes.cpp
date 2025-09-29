@@ -228,13 +228,13 @@ namespace Component {
 
         renderer.Draw();
     }
-
+#if 0
     void Shapes::CreateTexturedSquare(const std::string& texturePath, const CEVec3& position, float size,
         float rotation, float scale, const CEVec3& tint) {
         Component::Rendering& renderer = Component::Rendering::Get();
 
         // Get or load the texture
-        GLuint textureHandle = Component::TextureRenderer::GetTextureHandle(texturePath);
+        GLuint textureHandle = Component::TextureRenderer::GetOrLoadTexture(texturePath);
         if (textureHandle == 0) {
             std::cerr << "Failed to load texture: " << texturePath << std::endl;
             return;
@@ -312,7 +312,7 @@ namespace Component {
         float width, float height, float rotation, float scale, const CEVec3& tint) {
         Component::Rendering& renderer = Component::Rendering::Get();
 
-        GLuint textureHandle = Component::TextureRenderer::GetTextureHandle(texturePath);
+        GLuint textureHandle = Component::TextureRenderer::GetOrLoadTexture(texturePath);
         if (textureHandle == 0) {
             std::cerr << "Failed to load texture: " << texturePath << std::endl;
             return;
@@ -375,7 +375,7 @@ namespace Component {
         const CEVec3& p3, float rotation, float scale, const CEVec3& tint) {
         Component::Rendering& renderer = Component::Rendering::Get();
 
-        GLuint textureHandle = Component::TextureRenderer::GetTextureHandle(texturePath);
+        GLuint textureHandle = Component::TextureRenderer::GetOrLoadTexture(texturePath);
         if (textureHandle == 0) {
             std::cerr << "Failed to load texture: " << texturePath << std::endl;
             return;
@@ -432,4 +432,5 @@ namespace Component {
         renderer.Draw();
         glBindTextureUnit(0, 0);
     }
+#endif
 }
