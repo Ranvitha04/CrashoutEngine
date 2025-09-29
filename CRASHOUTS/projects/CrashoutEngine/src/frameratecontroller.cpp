@@ -27,7 +27,7 @@ void FrameRateController::Reset()
 	mFrameStart = ClockTime::now();
 	//prevent division by zero
 	mDT = 1.0 / (mTargetFPS > 0 ? static_cast<double>(mTargetFPS) : defaultFallBack);
-	mFPSEma = defaultFallBack;
+	mFPS = defaultFallBack;
 }
 
 void FrameRateController::FrameStart()
@@ -41,49 +41,16 @@ void FrameRateController::FrameEnd()
 	double elapsed = duration<double>(ClockTime::now() - mFrameStart).count();
 	//only update dt and fps if capped
 	if (mTargetFPS > 0) {
-		//const double target = mTargetDT;
-		//time remaining in the frame budget
-		/*double remain = mTargetDT - elapsed;
-		//sleep if enough time is left
-		if (remain > 0.001) {
-			std::this_thread::sleep_for(duration<double>(remain));
-			//recalculate elapsed time after sleep
-			elapsed = duration<double>(ClockTime::now() - mFrameStart).count();
-		}*/
 		while (elapsed < mTargetDT) {
 			elapsed = duration<double>(ClockTime::now() - mFrameStart).count();
 		}
-		//i cannot get this to work properly and instead of the engine blowing up, i did - Rain
-		/*
-		const double sleepGuard = 0.001;
-		const double sleepMin = 0.002;
-
-		// sleep most of the remainder
-		while (true) {
-			elapsed = duration<double>(ClockTime::now() - mFrameStart).count();
-			double remain = target - elapsed;
-			if (remain <= 0.0) break;
-			if (remain > sleepMin) {
-				std::this_thread::sleep_for(duration<double>(remain - sleepGuard));
-			}
-			else {
-				break;
-			}
-		}
-		
-		while (duration<double>(ClockTime::now() - mFrameStart).count() < target) { }
-
-		elapsed = duration<double>(ClockTime::now() - mFrameStart).count();*/
-
 	}
 	//clamp dt between 0.1ms and 250ms so the game does not blow up - Rain
 	mDT = std::clamp(elapsed, 0.0001, 0.25);
 
-	//smoothing factor
-	const double alpha = 0.1;
 	//instant fps this frame
 	double inst = 1.0 / mDT;
-	mFPSEma = mFPSEma > 0.0 ? (1.0 - alpha) * mFPSEma + alpha * inst : inst;
+	mFPS = inst;
 }
 
 double FrameRateController::DT() const
@@ -93,7 +60,7 @@ double FrameRateController::DT() const
 
 double FrameRateController::FPS() const
 {
-	return mFPSEma;
+	return mFPS;
 }
 
 int FrameRateController::CAP() const
