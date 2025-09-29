@@ -229,7 +229,7 @@ namespace UI { // --------------------------------------------------------------
             ImGui::TextUnformatted("Add Components");
 
             // List all registered component types with an "Add" button
-            for (auto* ad : DebugReflection::ComponentRegistry::instance().all()) {
+            for (auto* ad : EditorRegistry::ComponentRegistry::instance().all()) {
                 ImGui::PushID(ad);
                 bool has = ad->has(ecs, selected);
                 ImGui::BeginDisabled(has);
@@ -248,7 +248,7 @@ namespace UI { // --------------------------------------------------------------
             ImGui::Separator();
             ImGui::TextUnformatted("Components on Selected Entity");
 
-            for (auto* ad : DebugReflection::ComponentRegistry::instance().all()) {
+            for (auto* ad : EditorRegistry::ComponentRegistry::instance().all()) {
                 if (!ad->has(ecs, selected)) continue;
 
                 ImGui::PushID(ad); // unique scope for this component�s UI
