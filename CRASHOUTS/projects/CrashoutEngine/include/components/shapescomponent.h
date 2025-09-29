@@ -7,6 +7,10 @@ namespace Component {
 
     struct ShapeComponent {
         bool enableTexture{ false };
+
+        int wrapModeU{ 0 };
+        int wrapModeV{ 0 };
+        CEVec2 uvSize{ 1.f, 1.f };
         std::string textureName{};
 
         ShapeType type{ ShapeType::Rectangle };

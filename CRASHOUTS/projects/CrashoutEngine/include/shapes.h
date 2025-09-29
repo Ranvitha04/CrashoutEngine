@@ -22,6 +22,7 @@ rendering resources associated with these primitives.
 ----------------------------------------------------------------------------- */
 
 #include "math/CEVec3.h"
+#include "math/CEVec2.h"
 #include <iostream>
 
 namespace Component {
@@ -44,15 +45,18 @@ namespace Component {
     static void Cleanup();
 
     static void CreateTexturedSquare(const std::string& textureName, const CEVec3& position, float size,
-        float rotation = 0.0f, float scale = 1.0f, const CEVec3& tint = CEVec3(255.0f, 255.0f, 255.0f));
+        float rotation = 0.0f, float scale = 1.0f, const CEVec3& tint = CEVec3(255.0f, 255.0f, 255.0f),
+        CEVec2 const& uvSize = CEVec2(1.f, 1.f));
 
     static void CreateTexturedRectangle(const std::string& textureName, const CEVec3& position,
         float width, float height, float rotation = 0.0f,
-        float scale = 1.0f, const CEVec3& tint = CEVec3(255.0f, 255.0f, 255.0f));
+        float scale = 1.0f, const CEVec3& tint = CEVec3(255.0f, 255.0f, 255.0f),
+        CEVec2 const& uvSize = CEVec2(1.f, 1.f));
 
     static void CreateTexturedTriangle(const std::string& textureName, const CEVec3& p1, const CEVec3& p2,
         const CEVec3& p3, float rotation = 0.0f, float scale = 1.0f,
-        const CEVec3& tint = CEVec3(255.0f, 255.0f, 255.0f));
+        const CEVec3& tint = CEVec3(255.0f, 255.0f, 255.0f),
+        CEVec2 const& uvSize = CEVec2(1.f, 1.f));
 
     };
 

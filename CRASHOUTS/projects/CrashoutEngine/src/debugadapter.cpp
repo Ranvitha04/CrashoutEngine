@@ -285,6 +285,29 @@ namespace {
                 sc->textureName = buf;
             }
 
+            // If using texture, enable the texture options
+            if (sc->enableTexture) {
+
+                const char* wrapModes[] = { "Clamp To Edge","Repeat","Mirror" };
+                const int numWrapModes = IM_ARRAYSIZE(wrapModes);
+
+                // U (HORIZONTAL) WRAP MODE
+                if (ImGui::Combo("U Wrap Mode", &sc->wrapModeU, wrapModes, numWrapModes)) {
+                }
+
+                // V (HORIZONTAL) WRAP MODE
+                if (ImGui::Combo("V Wrap Mode", &sc->wrapModeV, wrapModes, numWrapModes)) {
+                }
+
+                // UV size
+                float size[2] = { sc->uvSize.x, sc->uvSize.y };
+                ImGui::DragFloat2("UV", size, D.drag_small);
+                if (ImGui::IsItemEdited() || ImGui::IsItemDeactivatedAfterEdit()) {
+                    sc->uvSize = { size[0], size[1] };
+                }
+
+            }
+
             ImGui::DragFloat3("Color", &sc->color.x, D.drag_small, 0.f, 255.f);
             //ImGui::DragFloat("Rotation", &sc->rotation, D.drag_rotation);
             //ImGui::DragFloat("Scale", &sc->scale, D.drag_small, 0.01f, 100.f);
