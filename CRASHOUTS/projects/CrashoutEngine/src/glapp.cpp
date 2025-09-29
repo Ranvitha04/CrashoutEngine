@@ -14,11 +14,12 @@ integration.
 
 /* _________________________________________________________________________
 ----------------------------------------------------------------------------- */
-#include "glapp.h"
 
+#include "glapp.h"
 #include "rendering.h"
 #include "managers/entitymanager.h"
 #include "shapes.h"
+#include "resources/textures.h"
 #include <glm/glm.hpp>
 #include <iostream>
 #include <sstream>
@@ -48,6 +49,8 @@ GLFWwindow* GLApp::ptr_window;
 
 Component::Rendering model;
 Component::Shapes shapes;
+//Component::Texture texture;
+
 
 std::array<CEVec3, 4> clr_vtx{
     CEVec3(1.f, 1.f, 1.f), // Center - white
@@ -60,8 +63,11 @@ std::array<CEVec3, 4> InitVtx = clr_vtx;
 
 std::vector<CEVec3> current_positions;
 std::vector<CEVec3> current_colors;
+std::vector<GLApp::GLViewport> GLApp::vps;
 
 static float TestRotation = 0.0f; // global rotation angle
+static float RightTest = 0.0f;
+static float TestScale = 0.0f;
 
 /* _________________________________________________________________________ */
 /*! init
@@ -89,6 +95,8 @@ bool GLApp::init(GLint w, GLint h, std::string t) {
     GLApp::width = w;
     GLApp::height = h;
     GLApp::title = t;
+
+    GLApp::vps.resize(4);
 
     if (!glfwInit()) {
         LOGE(Core, "GLFW init has failed - abort program!!!");
@@ -166,10 +174,22 @@ bool GLApp::init(GLint w, GLint h, std::string t) {
     model.Setup_VAO();
     model.Setup_Shdrpgm();
 
+
     Component::Rendering::Initialize();
+
+    //Component::Texture::Initialize();
+
+    Component::TextureRenderer::Initialize();
+
+    //texture.LoadTexture("../../../projects/CrashoutEngine/images/duck-rgba-256.tex");
+
+    //model.texobj = Component::Texture::LoadTexture("../../../projects/CrashoutEngine/images/duck-rgba-256.tex");
+   
 
     return true;
 }
+
+
 
 /* _________________________________________________________________________ */
 /*! update
@@ -197,6 +217,19 @@ void GLApp::update() {
     glNamedBufferSubData(model.vbo_hdl, color_data_offset,
         color_data_size, clr_vtx.data());
 
+    GLint w{ GLApp::width }, h{ GLApp::height };
+    static GLint old_w{}, old_h{};
+    // update viewport settings in vps only if window's dimension change
+    if (w != old_w || h != old_h) {
+        GLint hs{ h / 3 }, ws{ hs };
+        GLApp::vps[0] = { 0, 0, w - ws, h };
+        GLApp::vps[1] = { w - ws, 2 * hs, ws, hs };
+        GLApp::vps[2] = { w - ws, hs, ws, hs };
+        GLApp::vps[3] = { w - ws, 0, ws, hs };
+        old_w = w;
+        old_h = h;
+    }
+
 
 }
 
@@ -217,6 +250,9 @@ void GLApp::draw() {
     //model.Draw();
 
     // ---- choose which shape to draw by uncommenting ----
+    CEVec3 pos(RightTest, 0.0f, 0.0f);
+    float rotation = 85.0f;
+    float scale = 45.f;
     //CEVec3 pos(0.0f, 0.0f, 0.0f);
     //float rotation = 35.0f;
     //float scale = 1.0f;
@@ -231,12 +267,26 @@ void GLApp::draw() {
     //Component::Shapes::CreateRectangle(CEVec3(0.0f, 0.0f, 0.0f), 1.0f, 1.3f, TestRotation, 1.0f, CEVec3(1.0f, 0.0f, 0.0f));
 
     // Testing for drawing Triangle
-    //Component::Shapes::CreateTriangle(CEVec3(0,0.5,0), CEVec3(-0.4,-0.5,0), CEVec3(0.4,-0.5,0), TestRotation, scale, CEVec3(1,1,0));
+    //Component::Shapes::CreateTriangle(pos, CEVec3(-0.4,-0.5,0), CEVec3(0.4,-0.5,0), TestRotation, scale, CEVec3(1,1,0));
 
     // Draw current model
     //model.Draw();
 
-    //Component::Shapes::CreateSquare(CEVec3(0.0f, 0.0f, 0.0f), 1.0f, 45.0f, 1.0f, CEVec3(1.0f, 0.0f, 0.0f));
+    //Component::Shapes::CreateTexturedTriangle("../../../projects/CrashoutEngine/assets/images/duck-rgba-256.tex", pos, CEVec3(-0.4, -0.5, 0), CEVec3(0.4, -0.5, 0), TestRotation, TestScale, CEVec3(1, 1, 0));
+
+
+    //Component::TextureRenderer::CreateTexturedQuad(
+    //    "../../../projects/CrashoutEngine/images/duck.jpg",
+    //CEVec3(0.0f, 0.0f, 0.0f),  // position
+    //    CEVec2(1.0f, 1.0f),        // size
+    //    TestRotation,                       // rotation
+    //    scale,                       // scale
+    //    CEVec3(1.0f, 1.0f, 1.0f),  // tint
+    //    false;                      // modulate
+    //);
+
+    
+    
 
 }
 
@@ -252,10 +302,14 @@ The only task is to have GLFW return resources back to the system and
 gracefully terminate.
 */
 void GLApp::cleanup() {
-    glfwTerminate();
+
+    //Component::Texture::Cleanup();
 
     Component::Rendering::Cleanup();
 
+    Component::TextureRenderer::Cleanup();
+
+    glfwTerminate();
 
 }
 
@@ -308,6 +362,20 @@ void GLApp::key_cb(GLFWwindow* pwin, int key, int scancode, int action, int mod)
         if (key == GLFW_KEY_R) { // Rotate with 'R'
             TestRotation += 10.0f;  // rotate 10 degrees each press
             if (TestRotation >= 360.0f) TestRotation -= 360.0f;
+        }
+    }
+
+    if (GLFW_PRESS == action) {
+        if (key == GLFW_KEY_I) {
+            RightTest += 25.0f;
+            std::cout << RightTest << std::endl;
+        }
+    }
+
+    if (GLFW_PRESS == action) {
+        if (key == GLFW_KEY_S) { // Rotate with 'R'
+            TestScale += 10.0f;  // rotate 10 degrees each press
+            
         }
     }
 
@@ -455,6 +523,9 @@ void GLApp::fbsize_cb(GLFWwindow* ptr_win, int width, int height) {
     // use the entire framebuffer as drawing region
     glViewport(0, 0, width, height);
     // later, if working in 3D, we'll have to set the projection matrix here ...
+
+    GLApp::width = width;
+    GLApp::height = height;
 }
 
 /* _________________________________________________________________________*/

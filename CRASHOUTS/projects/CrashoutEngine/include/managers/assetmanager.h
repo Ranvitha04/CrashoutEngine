@@ -22,6 +22,19 @@ namespace CrashoutsEngine {
 		
 	namespace Assets {
 
+		const std::string rootPath = "../../../projects/CrashoutEngine/assets/";
+		const std::string assetManifestPath = rootPath + "json/assetmanifest.json";
+		
+		// Function to load assets in a json
+		/*!
+		@brief Scans asset directories and generates a JSON manifest file.
+
+		@param rootAssetPath The path to the main 'assets' folder.
+		@param outputManifestPath The full path where the 'assets.json' file will be saved.
+		*/
+		void GenerateAssetManifest(const std::string& rootAssetPath = rootPath,
+			const std::string& outputManifestPath = assetManifestPath);
+
 		/*!
 		@brief Interface class for all assets.
 
@@ -72,6 +85,9 @@ namespace CrashoutsEngine {
 				return instance;
 			}
 
+			void LoadManifestAssets(const std::string& rootAssetPath = rootPath,
+				const std::string& manifestPath = assetManifestPath);
+
 			/*!
 			@brief Loads and stores a new asset.
 
@@ -86,20 +102,21 @@ namespace CrashoutsEngine {
 				if (Exists(name)) return;
 
 				// Use a static counter to generate a unique ID
-				static unsigned int nextId = 0;
-
+				// static unsigned int nextId = 0;
+				unsigned int id = nextAssetID;
+				 
 				// Set the name of the asset
 				asset->name = name;
 
 				// Store the name-to-ID mapping
-				assetNames[name] = nextId;
+				assetNames[name] = id;
 
 				// Store the unique_ptr in the main map
 				// Use unique_ptr for automatic memory management
-				assets[nextId] = std::move(asset);
+				assets[id] = std::move(asset);
 
 				// Increment nextId
-				nextId++;
+				nextAssetID++;
 			}
 
 			/*!
@@ -119,15 +136,15 @@ namespace CrashoutsEngine {
 			*/
 			template <typename T>
 			T* Get(const std::string& name) {
-				std::unordered_map<std::string, unsigned int>::iterator 
-					assetId = assetNames.find(name);
-				if (assetId == assetNames.end()) {
+				auto assetIdIt = assetNames.find(name);
+				if (assetIdIt == assetNames.end()) {
 					return nullptr;
 				}
 
-				std::unordered_map<unsigned int, std::unique_ptr<IAsset>>::iterator
-					it = assets.find(assetId);
-				if (it == assets.end()) {
+				unsigned int id = assetIdIt->second;
+
+				auto it = assets.find(id);
+				if (it != assets.end()) {
 					return dynamic_cast<T*>(it->second.get());
 				}
 				return nullptr;
@@ -152,9 +169,8 @@ namespace CrashoutsEngine {
 
 			std::unordered_map<unsigned int, std::unique_ptr<IAsset>> assets;
 			std::unordered_map<std::string, unsigned int> assetNames;
+
+			unsigned int nextAssetID = 0;
 		};		
 	}
 }
-
-// INCLUDE ASSET TYPES HERE:
-#include "textures.h"

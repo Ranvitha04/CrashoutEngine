@@ -110,6 +110,21 @@ macro(import_reflect)
     endif()
 endmacro()
 
+# -------------------- rapidjson (header-only) --------------------
+macro(import_rapidjson)
+    if(NOT TARGET rapidjson)
+        FetchContent_Declare(
+            rapidjson
+            GIT_REPOSITORY https://github.com/Tencent/rapidjson.git
+            GIT_TAG v1.1.0
+        )
+        FetchContent_Populate(rapidjson)
+
+        add_library(rapidjson INTERFACE)
+        target_include_directories(rapidjson INTERFACE ${rapidjson_SOURCE_DIR}/include)
+    endif()
+endmacro()
+
 # -------------------- Import all --------------------
 macro(importDependencies)
     message(STATUS "Starting to import dependencies...")
@@ -134,6 +149,9 @@ macro(importDependencies)
 
     import_reflect()
     message(STATUS "reflect.cpp imported successfully.")
+
+    import_rapidjson()
+    message(STATUS "rapidjson imported successfully.")
 
     message(STATUS "All dependencies have been imported successfully.")
 endmacro()

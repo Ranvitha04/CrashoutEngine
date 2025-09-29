@@ -10,9 +10,14 @@ This file implements
 /*                                                   Includes
 ----------------------------------------------------------------------------- */
 #include "scenes/renfred.h"
+
+// Resources
+#include "resources/textures.h"
 #include "log.h"
 #include "GLFW/glfw3.h"
 #include "managers/entitymanager.h"
+#include "managers/assetmanager.h"
+
 
 /*                                                   Global Variables
 ----------------------------------------------------------------------------- */
@@ -24,6 +29,10 @@ void LoadRenfred()
 	// Load resources specific to Renfred state
 	globalECS = CrashoutsEngine::ECS::getInstance();
 	globalECS->Reset();
+
+	CrashoutsEngine::Assets::GenerateAssetManifest();
+
+	CrashoutsEngine::Assets::AssetManager::GetInstance().LoadManifestAssets();
 }
 
 void InitRenfred()
@@ -62,12 +71,16 @@ void RenderRenfred()
 				scale = tf->size;
 				rot = tf->rotation;
 			}
+
 			switch (sc->type) {
 			case Component::ShapeType::Square:    Component::Shapes::CreateSquare(pos, sc->size, rot, (scale.x > scale.y) ? scale.x : scale.y, sc->color * (1 / 255.f)); break;
 			case Component::ShapeType::Rectangle: Component::Shapes::CreateRectangle(pos, sc->width * scale.x, sc->height * scale.y, rot, 1.0f, sc->color * (1 / 255.f)); break;
 			case Component::ShapeType::Line:      Component::Shapes::CreateLine(sc->p1, sc->p2, sc->thickness, rot, (scale.x > scale.y) ? scale.x : scale.y, sc->color * (1 / 255.f)); break;
 			case Component::ShapeType::Triangle:  Component::Shapes::CreateTriangle(sc->t1, sc->t2, sc->t3, rot, (scale.x > scale.y) ? scale.x : scale.y, sc->color * (1 / 255.f)); break;
 			}
+			//Component::TextureRenderer::
+			CEVec2 finalScale{ sc->width * scale.x, sc->height * scale.y };
+			Component::TextureRenderer::CreateTexturedQuad("duck", pos, finalScale, rot);
 		}
 	}
 }
