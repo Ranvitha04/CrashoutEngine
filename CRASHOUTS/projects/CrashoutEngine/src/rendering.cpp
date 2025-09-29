@@ -40,7 +40,15 @@ Rendering& Rendering::Get() {
 }
 
 void Rendering::Initialize() {
-    Get().Setup_Shdrpgm();
+    Rendering& instance = Get();
+
+    // Enable Blending for Transparency
+    glEnable(GL_BLEND);
+    // Set the standard alpha blending function
+    // (Source Alpha * Source Color + (1 - Source Alpha) * Destination Color)
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    instance.Setup_Shdrpgm();
 }
 
 void Rendering::Cleanup() {
@@ -187,6 +195,9 @@ void Rendering::SetupBuffers(const void* vertices, size_t vertex_size,
     glVertexArrayVertexBuffer(vaoid, 1, vbo_hdl, vertex_size, sizeof(CEVec3));
     glVertexArrayAttribFormat(vaoid, 1, 3, GL_FLOAT, GL_FALSE, 0);
     glVertexArrayAttribBinding(vaoid, 1, 1);
+
+    // Disable unused texture coordinate attribute (location 2)
+    glDisableVertexArrayAttrib(vaoid, 2);
 
     // Create EBO if indices provided
     if (indices && index_count > 0) {

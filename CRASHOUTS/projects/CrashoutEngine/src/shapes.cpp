@@ -178,6 +178,8 @@ namespace Component {
 
         renderer.shdr_pgm.Use();
 
+
+
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(position.x, position.y, position.z));
         model = glm::rotate(model, glm::radians(rotation), glm::vec3(0, 0, 1));
@@ -186,8 +188,10 @@ namespace Component {
         glm::mat4 projection = CreateCenteredWorldProjection();
 
         renderer.shdr_pgm.SetUniform("uModel", model);
+        renderer.shdr_pgm.SetUniform("u_useTexture", 0);
         renderer.shdr_pgm.SetUniform("uView", glm::mat4(1.0f));
         renderer.shdr_pgm.SetUniform("uProjection", projection);
+        renderer.shdr_pgm.SetUniform("u_tint", 1.0f, 1.0f, 1.0f);
 
         renderer.Draw();
     }
