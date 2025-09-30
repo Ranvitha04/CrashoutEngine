@@ -14,9 +14,9 @@ void LoadRain()
 	LOGI(Core, "Loaded");
 	globalECS = CrashoutsEngine::ECS::getInstance();
 	globalECS->Reset();
-	GLuint shaderID = loadShaderProgram("shaders/textShader.vert", "shaders/textShader.frag");
+	GLuint shaderID = loadShaderProgram("../../../projects/CrashoutEngine/shaders/shaders/textShader.vert", "../../../projects/CrashoutEngine/shaders/shaders/textShader.frag");
 	if (shaderID == 0) {
-		std::cerr << "Failed to load text shader.\n";
+		std::cout << "Failed to load text shader.\n";
 		return;
 	}
 	gTextRenderer = new TextRenderer("assets/fonts/arial.ttf", Settings::GetScreenWidth(), Settings::GetScreenHeight());
@@ -38,7 +38,6 @@ void RenderRain()
 	// Render Rain state
 	glClearColor(0.1f, 0.2f, 0.4f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
-	std::cout << "[Rain] RenderRain gTextRenderer = " << gTextRenderer << "\n";
 	if (gTextRenderer) {
 		gTextRenderer->renderCenteredText("Hello", 0.0f, 0.0f, 1.0f, glm::vec3(1.0f));
 	}
