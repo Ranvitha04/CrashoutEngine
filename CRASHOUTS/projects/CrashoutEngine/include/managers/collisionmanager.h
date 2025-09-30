@@ -173,12 +173,31 @@ namespace Component {
 		// Default constructor for empty component
 		ColliderComponent() = default;
 
+		// Custom Copy Constructor to build from unique_ptr
+		// Explicitly handles calls like AddComponent(e, std::make_unique<...>)
+		explicit ColliderComponent(std::unique_ptr<Collision::Collider> col)
+			: collider(std::move(col)) {}
+
 		// Custom Copy Constructor
 		ColliderComponent(const ColliderComponent& other) {
 			if (other.collider) {
 				// Use the virtual clone method for a deep copy
 				collider = other.collider->clone();
 			}
+		}
+	
+		// Custom Copy Assignment Operator for Deep Copies
+		ColliderComponent& operator=(const ColliderComponent& other) {
+			// Check for self-assignment
+			if (this == &other) return *this;
+
+			if (other.collider) {
+				collider = other.collider->clone();	// Deep Copy
+			}
+			else {
+				collider.reset();	// Clear if the other is empty
+			}
+			return *this;
 		}
 
 		ColliderComponent(ColliderComponent&&) noexcept = default;

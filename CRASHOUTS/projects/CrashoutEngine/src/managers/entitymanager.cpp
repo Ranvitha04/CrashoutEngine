@@ -68,7 +68,7 @@ CrashoutsEngine::Entity CrashoutsEngine::ECS::CloneEntity(CrashoutsEngine::Entit
 	}
 
 	NameComponent* newName = GetComponent<NameComponent>(dstEntityId);
-	if (newName) newName->name += "_Clone";
+	if (newName) newName->name += "_Clone" + std::to_string(dstEntityId);
 
 	return dstEntityId;
 }
