@@ -283,6 +283,11 @@ namespace UI { // --------------------------------------------------------------
 
         ScopedWindow w("Performance", LockFlags(ui.lockLayout));
 
+        if (profiler.present_ready()) {
+            gPerfSnapshot = profiler.results();
+            gPerfSnapshotTotalMs = profiler.total_ms();
+        }
+
         auto& frc = FrameRateController::GetInstance();
         const double frame_ms = frc.DT() * 1000.0;
         const double fps = frc.FPS();
@@ -324,14 +329,14 @@ namespace UI { // --------------------------------------------------------------
 
         // Dynamic filters driven by the X-macro lists - I don't even know if this is like the socially acceptable way of doing it
         static bool levelOn[] = {
-    #define X(n) true,
+        #define X(n) true,
             LOG_LEVELS(X)
-    #undef X
+        #undef X
         };
         static bool systemOn[] = {
-    #define X(n) true,
+        #define X(n) true,
             LOG_SYSTEMS(X)
-    #undef X
+        #undef X
         };
         static char search[128] = { 0 };
         static bool autoscroll = true;
@@ -339,18 +344,18 @@ namespace UI { // --------------------------------------------------------------
         // Level row
         ImGui::TextDisabled("Levels:");
         int li = 0;
-    #define X(n) do { if (li > 0) ImGui::SameLine(); ImGui::Checkbox(#n, &levelOn[li++]); } while(0);
-        LOG_LEVELS(X)
-    #undef X
+        #define X(n) do { if (li > 0) ImGui::SameLine(); ImGui::Checkbox(#n, &levelOn[li++]); } while(0);
+            LOG_LEVELS(X)
+        #undef X
 
         // Subsystems row (simple grid)
         ImGui::Separator();
         ImGui::TextDisabled("Subsystems:");
         int si = 0;
         const int cols = 4;
-    #define X(n) do { if (si % cols != 0) ImGui::SameLine(); ImGui::Checkbox(#n, &systemOn[si++]); } while(0);
-        LOG_SYSTEMS(X)
-    #undef X
+        #define X(n) do { if (si % cols != 0) ImGui::SameLine(); ImGui::Checkbox(#n, &systemOn[si++]); } while(0);
+            LOG_SYSTEMS(X)
+        #undef X
 
         // Search & options
         ImGui::Separator();
