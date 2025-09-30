@@ -1,9 +1,9 @@
 /*!
-@file       debugreflection.h
+@file       editorregistry.h
 @author     mohamadamirakmal.b@digipen.edu
 @date       25/09/2025
 
-@brief      Lightweight reflection hooks for the Debug Menu. Provides:
+@brief      Lightweight registry hooks for the Debug Menu. Provides:
             - IComponentAdapter + ComponentRegistry: ECS inspectors (add/remove/edit)
             - IGameStateProvider setter/getter: data-driven Game State panel
             - PanelRegistry: register custom ImGui panels at runtime
