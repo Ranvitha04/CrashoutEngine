@@ -178,8 +178,6 @@ namespace Component {
 
         renderer.shdr_pgm.Use();
 
-
-
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(position.x, position.y, position.z));
         model = glm::rotate(model, glm::radians(rotation), glm::vec3(0, 0, 1));
@@ -227,9 +225,10 @@ namespace Component {
         glm::mat4 projection = CreateCenteredWorldProjection();
 
         renderer.shdr_pgm.SetUniform("uModel", model);
+        renderer.shdr_pgm.SetUniform("u_useTexture", 0);
         renderer.shdr_pgm.SetUniform("uView", glm::mat4(1.0f));
         renderer.shdr_pgm.SetUniform("uProjection", projection);
-
+        renderer.shdr_pgm.SetUniform("u_tint", 1.0f, 1.0f, 1.0f);
         renderer.Draw();
     }
 
@@ -309,6 +308,12 @@ namespace Component {
             glUniform3f(tint_loc, tint.x, tint.y, tint.z);
         }
 
+        // Enable Blending for Transparency
+        glEnable(GL_BLEND);
+        // Set the standard alpha blending function
+        // (Source Alpha * Source Color + (1 - Source Alpha) * Destination Color)
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
         // Bind texture and draw
         glBindTextureUnit(0, textureHandle);
         renderer.Draw();
@@ -378,6 +383,12 @@ namespace Component {
         GLint tint_loc = glGetUniformLocation(renderer.shdr_pgm.GetHandle(), "u_tint");
         if (tint_loc != -1) glUniform3f(tint_loc, tint.x, tint.y, tint.z);
 
+        // Enable Blending for Transparency
+        glEnable(GL_BLEND);
+        // Set the standard alpha blending function
+        // (Source Alpha * Source Color + (1 - Source Alpha) * Destination Color)
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
         glBindTextureUnit(0, textureHandle);
         renderer.Draw();
         glBindTextureUnit(0, 0);
@@ -442,6 +453,12 @@ namespace Component {
 
         GLint tint_loc = glGetUniformLocation(renderer.shdr_pgm.GetHandle(), "u_tint");
         if (tint_loc != -1) glUniform3f(tint_loc, tint.x, tint.y, tint.z);
+
+        // Enable Blending for Transparency
+        glEnable(GL_BLEND);
+        // Set the standard alpha blending function
+        // (Source Alpha * Source Color + (1 - Source Alpha) * Destination Color)
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         glBindTextureUnit(0, textureHandle);
         renderer.Draw();

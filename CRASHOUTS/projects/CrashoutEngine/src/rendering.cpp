@@ -40,15 +40,7 @@ Rendering& Rendering::Get() {
 }
 
 void Rendering::Initialize() {
-    Rendering& instance = Get();
-
-    // Enable Blending for Transparency
-    glEnable(GL_BLEND);
-    // Set the standard alpha blending function
-    // (Source Alpha * Source Color + (1 - Source Alpha) * Destination Color)
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-    instance.Setup_Shdrpgm();
+    Get().Setup_Shdrpgm();
 }
 
 void Rendering::Cleanup() {

@@ -38,7 +38,17 @@ struct CEVec2
 	*/
 	CEVec2(f32 x, f32 y) : x(x), y(y) {}
 
+	// Copy constructor
+	CEVec2(const CEVec2&) = default;
 
+	// Copy assignment
+	CEVec2& operator=(const CEVec2&) = default;
+
+	// Move constructor
+	CEVec2(CEVec2&&) noexcept = default;
+
+	// Move assignment
+	CEVec2& operator=(CEVec2&&) noexcept = default;
 
 	//unary plus and minus
 	/*!

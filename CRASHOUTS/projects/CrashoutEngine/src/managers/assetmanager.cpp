@@ -5,7 +5,6 @@
 
 @brief	This file contains
 //__________________________________________________________________________*/
-#pragma once
 
 /*                                                                   includes
 ----------------------------------------------------------------------------- */
@@ -14,6 +13,7 @@
 #include <filesystem>
 
 #include "managers/assetmanager.h"
+#include "rapidjson/rapidjson.h"
 #include "rapidjson/document.h"
 #include "rapidjson/prettywriter.h"
 #include "rapidjson/stringbuffer.h"

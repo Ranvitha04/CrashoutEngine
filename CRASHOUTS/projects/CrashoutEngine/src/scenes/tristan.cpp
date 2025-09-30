@@ -29,35 +29,35 @@ void LoadTristan() {
 	globalECS->AddComponent<Component::NameComponent>(entity1, Component::NameComponent{ "SCENE_EX" });
 	globalECS->AddComponent<Component::TransformComponent>(entity1, Component::TransformComponent{ 0.f, CEVec2{}, CEVec3{0.f, 20.f, 0.f} });
 	globalECS->AddComponent<Component::RigidBodyComponent>(entity1, Component::RigidBodyComponent{ CEVec3{}, 5.f, 0.f });
-	globalECS->AddComponent<Component::ColliderComponent>(entity1, Component::ColliderComponent{ std::make_unique<Collision::Sphere>(Collision::Sphere{
+	globalECS->AddComponent<Component::ColliderComponent>(entity1, std::make_unique<Collision::Sphere>(Collision::Sphere{
 		10.0, CEVec3{}
-	}) });
+	}));
 	globalECS->AddComponent<Component::ShapeComponent>(entity1, Component::ShapeComponent{.type=Component::ShapeType::Rectangle, .width=20.f, .height=20.f});
 
 	globalECS->AddComponent<Component::NameComponent>(entity2, Component::NameComponent{ "SCENE_EX2" });
 	globalECS->AddComponent<Component::TransformComponent>(entity2, Component::TransformComponent{ 0.f, CEVec2{}, CEVec3{30.f, 20.f, 0.f} });
 	globalECS->AddComponent<Component::RigidBodyComponent>(entity2, Component::RigidBodyComponent{ CEVec3{}, 5.f, 0.f });
-	globalECS->AddComponent<Component::ColliderComponent>(entity2, Component::ColliderComponent{ std::make_unique<Collision::Sphere>(Collision::Sphere{
+	globalECS->AddComponent<Component::ColliderComponent>(entity2, std::make_unique<Collision::Sphere>(Collision::Sphere{
 		10.0, CEVec3{}
-	}) });
+	}));
 	globalECS->AddComponent<Component::ShapeComponent>(entity2, Component::ShapeComponent{ .type = Component::ShapeType::Rectangle, .width = 20.f, .height = 20.f });
 
 	globalECS->AddComponent<Component::NameComponent>(entity4, Component::NameComponent{ "SCENE_EX2" });
 	globalECS->AddComponent<Component::TransformComponent>(entity4, Component::TransformComponent{ 0.f, CEVec2{}, CEVec3{40.f, 20.f, 0.f} });
 	globalECS->AddComponent<Component::RigidBodyComponent>(entity4, Component::RigidBodyComponent{ CEVec3{}, 5.f, 0.f });
-	globalECS->AddComponent<Component::ColliderComponent>(entity4, Component::ColliderComponent{ std::make_unique<Collision::Sphere>(Collision::Sphere{
+	globalECS->AddComponent<Component::ColliderComponent>(entity4, std::make_unique<Collision::Sphere>(Collision::Sphere{
 		10.0, CEVec3{}
-	}) });
+	}));
 	globalECS->AddComponent<Component::ShapeComponent>(entity4, Component::ShapeComponent{ .type = Component::ShapeType::Rectangle, .width = 20.f, .height = 20.f });
 
 
 	globalECS->AddComponent<Component::NameComponent>(entity3, Component::NameComponent{ "SCENE_EX3" });
 	globalECS->AddComponent<Component::TransformComponent>(entity3, Component::TransformComponent{ 0.f, CEVec2{}, CEVec3{0.5f, 0.0f, 0.f} });
 	globalECS->AddComponent<Component::RigidBodyComponent>(entity3, Component::RigidBodyComponent{ CEVec3{}, 0.f, 0.f });
-	globalECS->AddComponent<Component::ColliderComponent>(entity3, Component::ColliderComponent{ std::make_unique<Collision::AABBRect>(Collision::AABBRect{
+	globalECS->AddComponent<Component::ColliderComponent>(entity3, std::make_unique<Collision::AABBRect>(Collision::AABBRect{
 		CEVec3{0.f, 0.f, 0.f},
 		CEVec3{50.f, 5.f, 0.f}
-	}) });
+	}) );
 	globalECS->AddComponent<Component::ShapeComponent>(entity3, Component::ShapeComponent{ .type = Component::ShapeType::Rectangle, .width = 100.f, .height = 10.f });
 
 }
