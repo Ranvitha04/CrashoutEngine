@@ -71,8 +71,6 @@ namespace Collision {
 	void CollisionHandler::update(double deltaTime) {
 		CrashoutsEngine::ECS& globalECS = *(CrashoutsEngine::ECS::getInstance());
 
-		std::vector<std::pair<CrashoutsEngine::Entity, CrashoutsEngine::Entity>> currentCollisions{};
-
 		std::vector<CrashoutsEngine::Entity> globalEntities = globalECS.GetComponentArray<Component::NameComponent>().indexToEntity;
 
 
@@ -123,9 +121,8 @@ namespace Collision {
 					CrashoutsEngine::Entity const* entity1Ptr{ &entity1 };
 					CrashoutsEngine::Entity const* entity2Ptr{ &entity2 };
 
-					currentCollisions.push_back(std::pair{ *entity1Ptr, *entity2Ptr });
 					sendMessage(colMessage);
-					
+
 				}
 
 			}
@@ -217,23 +214,48 @@ namespace Collision {
 
 		CEVec3 closestPt{pos}; /*CLOSEST POINT OF THE CENTER OF THE CIRCLE TO THE EDGES OF THE AABB*/
 
-
+		/*CLAMP THE POINT OF THE CENTER OF THE CIRCLE TO THE POINT ON THE SIDE OF AABB*/
 		if (pos.x < minAABB.x) { closestPt.x = minAABB.x; }
 		if (pos.x > maxAABB.x) { closestPt.x = maxAABB.x; }
-
 
 		if (pos.y < minAABB.y) { closestPt.y = minAABB.y; }
 		if (pos.y > maxAABB.y) { closestPt.y = maxAABB.y; }
 
 		CEVec3 ClosestPtToCirc{ closestPt - pos };
+		float closestPtSquared{ CEMath::LengthSq(ClosestPtToCirc) };
 
-		if (CEMath::LengthSq(ClosestPtToCirc) < sphere1Temp.radius*sphere1Temp.radius) {
+		
+		if (closestPtSquared < sphere1Temp.radius*sphere1Temp.radius) {
 
-			f32 distance{ CEMath::Length(ClosestPtToCirc) };
 
 			result.collisionOccured = true;
-			result.depth = sphere1Temp.radius - distance;
-			result.normal = CEMath::Normalize(ClosestPtToCirc);
+
+			/*Center of Circle is already inside AABB*/
+			if (closestPtSquared == 0.f) {
+				CEVec3 vecFromAABBToCirc{ spherePtr->position - aabbPtr->position };
+				
+				float depthX{ sphere1Temp.radius + aabb2Temp.extents.x - fabsf(vecFromAABBToCirc.x) };
+
+				float depthY{ sphere1Temp.radius + aabb2Temp.extents.y - fabsf(vecFromAABBToCirc.y) };
+
+				if (depthX < depthY) {
+					result.depth = depthX;
+					result.normal = vecFromAABBToCirc.x < 0.f ? CEVec3{ -1.f, 0.f, 0.f } : CEVec3{ 1.f, 0.f, 0.f };
+
+				} else {
+					result.depth = depthY;
+					result.normal = vecFromAABBToCirc.y < 0.f ? CEVec3{ 0.f, -1.f, 0.f } : CEVec3{ 0.f, 1.f, 0.f };
+				}
+
+
+			} else {
+				f32 distance{ CEMath::Length(ClosestPtToCirc) };
+
+				result.depth = sphere1Temp.radius - distance;
+				result.normal = CEMath::Normalize(ClosestPtToCirc);
+			}
+
+			
 
 		}
 

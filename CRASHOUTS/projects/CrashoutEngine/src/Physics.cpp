@@ -96,7 +96,7 @@ namespace Physics {
 		if (!globalECS.HasComponent<Component::RigidBodyComponent>(colPair.first) || !globalECS.HasComponent<Component::RigidBodyComponent>(colPair.second)) return;
 		Collision::CollisionEvent evnt{ collEvent.getCollisionManifold(), colPair.first, colPair.second };
 		applyImpulse(evnt, globalECS);
-		//observer.setCollisionEvent(evnt); /*TEMP FOR NOW*/
+		observer.setCollisionEvent(evnt); /*TEMP FOR NOW*/
 
 	}
 
@@ -184,6 +184,7 @@ namespace Physics {
 
 	/*Main Physics update*/
 	void PhysicsHandler::update(double deltaTime){
+
 		CrashoutsEngine::ECS& globalECS = *(CrashoutsEngine::ECS::getInstance());
 
 		std::vector<CrashoutsEngine::Entity> globalEntities = globalECS.GetComponentArray<Component::NameComponent>().indexToEntity;
@@ -193,6 +194,7 @@ namespace Physics {
 
 		if (sPaused) {
 			if (!sStepOnce) return;
+			collisionEvents.clear();
 			// allow exactly one tick when paused+Step pressed
 		}
 
@@ -217,11 +219,6 @@ namespace Physics {
 			Component::TransformComponent* transform{ globalECS.GetComponent<Component::TransformComponent>(entity) };
 			Component::RigidBodyComponent* rigidBody{ globalECS.GetComponent<Component::RigidBodyComponent>(entity) };
 
-			if (sPaused) {
-				if (!sStepOnce) return;
-				// allow exactly one tick when paused+Step pressed
-			}
-
 			updatePhysics(transform, rigidBody, deltaTime);
 
 			if (globalECS.HasComponent<Component::ColliderComponent>(entity)) {
@@ -231,7 +228,7 @@ namespace Physics {
 
 		}
 
-		//collisionEvents.clear();
+		collisionEvents.clear();
 
 	}
 
