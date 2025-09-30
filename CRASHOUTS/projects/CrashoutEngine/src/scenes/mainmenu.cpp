@@ -57,7 +57,7 @@ void RenderMainMenu()
 		gTextRenderer->renderCenteredText("Hello", -900.0f, 0.0f, 1.0f, glm::vec3(1.0f));
 	}
 	if (gTextRendererA) {
-		gTextRendererA->renderCenteredText("Hello", -900.0f, 100.0f, 1.0f, glm::vec3(1.0f, 0.0f, 0.0f));
+		gTextRendererA->renderCenteredText("Bye", -900.0f, 100.0f, 1.0f, glm::vec3(1.0f, 0.0f, 0.0f));
 	}
 
 	Scene::RenderScene(*globalECS);
