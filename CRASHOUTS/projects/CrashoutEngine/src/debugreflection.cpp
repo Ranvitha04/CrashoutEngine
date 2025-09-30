@@ -1,5 +1,5 @@
 /*!
-@file       debugreflection.cpp
+@file       editorregistry.cpp
 @author     mohamadamirakmal.b@digipen.edu
 @date       25/09/2025
 

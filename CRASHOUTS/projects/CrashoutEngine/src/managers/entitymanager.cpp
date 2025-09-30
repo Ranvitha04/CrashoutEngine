@@ -46,6 +46,34 @@ void CrashoutsEngine::ECS::DestroyEntity(std::string name) {
 }
 
 /*!
+@brief Clones an entity, copying all its components to a new entity ID.
+
+@param srcEntityId
+The ID of the entity to clone from.
+
+@return Entity
+The ID of the newly created clone entity.
+*/
+CrashoutsEngine::Entity CrashoutsEngine::ECS::CloneEntity(CrashoutsEngine::Entity srcEntityId) {
+	// Create new entity ID
+	Entity dstEntityId = nextEntityId++;
+
+	// Iterate over all component arrays
+	for (auto const& pair : componentArrays) {
+		// pair.second is std::unique_ptr<IComponentArray>
+		IComponentArray* componentArray = pair.second.get();
+
+		// Call clonecomponent for this type
+		componentArray->CloneComponent(srcEntityId, dstEntityId);
+	}
+
+	NameComponent* newName = GetComponent<NameComponent>(dstEntityId);
+	if (newName) newName->name += "_Clone" + std::to_string(dstEntityId);
+
+	return dstEntityId;
+}
+
+/*!
 @brief Finds an entity by its name.
 
 This function iterates through all entities that have a `NameComponent`

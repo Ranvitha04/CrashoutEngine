@@ -32,6 +32,18 @@ struct CEVec3
     */
     CEVec3() : x(0.0f), y(0.0f), z(0.0f) {}
 
+    // Copy constructor
+    CEVec3(const CEVec3&) = default;
+
+    // Copy assignment
+    CEVec3& operator=(const CEVec3&) = default;
+
+    // Move constructor
+    CEVec3(CEVec3&&) noexcept = default;
+
+    // Move assignment
+    CEVec3& operator=(CEVec3&&) noexcept = default;
+
     /*!
     @brief Construct from x, y and z values
     @param x The x component

@@ -28,6 +28,7 @@ runtime-extensible and project-agnostic.
 #include "managers/collisionmanager.h"
 #include "gamestatemanager.h"
 #include "shapes.h"
+#include "reflectimgui.h"
 
 using namespace CrashoutsEngine;
 
@@ -59,14 +60,7 @@ namespace {
         }
         void drawInspector(ECS& ecs, Entity e) override {
             if (auto* c = ecs.GetComponent<Component::NameComponent>(e)) {
-                // Keep a small per-item buffer and commit on deactivate to survive collapse/click-away
-                char buf[256]{};
-                if (c->name.size() < sizeof(buf)) std::memcpy(buf, c->name.data(), c->name.size());
-
-                ImGui::InputText("Name", buf, sizeof(buf));
-                if (ImGui::IsItemEdited() || ImGui::IsItemDeactivatedAfterEdit()) {
-                    c->name = buf;
-                }
+                draw_reflected(*c, "Name");
             }
         }
     };
@@ -87,28 +81,8 @@ namespace {
             if (has(ecs, e)) ecs.RemoveComponent<Component::TransformComponent>(e);
         }
         void drawInspector(ECS& ecs, Entity e) override {
-            auto& D = GetDebugDefaults();
             if (auto* t = ecs.GetComponent<Component::TransformComponent>(e)) {
-                // Position
-                float pos[3] = { t->position.x, t->position.y, t->position.z };
-                ImGui::DragFloat3("Position", pos, D.drag_medium);
-                if (ImGui::IsItemEdited() || ImGui::IsItemDeactivatedAfterEdit()) {
-                    t->position = { pos[0], pos[1], pos[2] };
-                }
-
-                // Scale (size)
-                float size[2] = { t->size.x, t->size.y };
-                ImGui::DragFloat2("Scale", size, D.drag_small);
-                if (ImGui::IsItemEdited() || ImGui::IsItemDeactivatedAfterEdit()) {
-                    t->size = { size[0], size[1] };
-                }
-
-                // Rotation
-                float rot = t->rotation;
-                ImGui::DragFloat("Rotation", &rot, D.drag_rotation);
-                if (ImGui::IsItemEdited() || ImGui::IsItemDeactivatedAfterEdit()) {
-                    t->rotation = rot;
-                }
+                draw_reflected(*t, "Transform");
             }
         }
     };
@@ -135,32 +109,18 @@ namespace {
 
         void drawInspector(ECS& ecs, Entity e) override {
             if (auto* rb = ecs.GetComponent<RigidBodyComponent>(e)) {
-                // Velocity (editable)
-                CEVec3 v = rb->getVelocity();
-                float vel[3]{ v.x, v.y, v.z };
-                if (ImGui::DragFloat3("Velocity", vel, 0.1f)) {
-                    CEVec3 v = rb->getVelocity();
-                    float vel[3]{ v.x, v.y, v.z };
-                    ImGui::DragFloat3("Velocity", vel, 0.1f);
-                    if (ImGui::IsItemEdited() || ImGui::IsItemDeactivatedAfterEdit()) {
-                        rb->setVelocity({ vel[0], vel[1], vel[2] });
-                    }
+
+                auto ref = rb->reflection();
+                if (draw_reflected(ref, "RigidBody (data)")) {
+                    *rb = RigidBodyComponent(ref);
                 }
 
-                // Mass & restitution (read-only with current API)
-                ImGui::Text("Mass: %.3f", rb->getMass());
-                ImGui::Text("Restitution: %.3f", rb->getCoeff());
-
-                // One-shot force
-                static float f[3]{ 0.f,0.f,0.f };
+                ImGui::SeparatorText("Forces");
+                static float f[3]{ 0.f, 0.f, 0.f };
                 ImGui::InputFloat3("Force to apply", f);
                 ImGui::SameLine();
-                if (ImGui::Button("Apply Force##rb")) {
-                    rb->addForce({ f[0], f[1], f[2] });
-                }
-                if (ImGui::Button("Clear Force Accumulator##rb")) {
-                    rb->clearForceAccumulator();
-                }
+                if (ImGui::Button("Apply Force##rb")) rb->addForce({ f[0], f[1], f[2] });
+                if (ImGui::Button("Clear Force Accumulator##rb")) rb->clearForceAccumulator();
             }
         }
     };
@@ -183,7 +143,7 @@ namespace {
             if (auto* t = ecs.GetComponent<TransformComponent>(e)) center = t->position;
 
             auto col = std::make_unique<Collision::Sphere>(D.sphere_radius, center);
-            ecs.AddComponent<ColliderComponent>(e, ColliderComponent{ std::move(col) });
+            ecs.AddComponent<ColliderComponent>(e, std::move(col));
 
             if (!ecs.HasComponent<RigidBodyComponent>(e)) {
                 auto& D2 = GetDebugDefaults();
@@ -220,7 +180,7 @@ namespace {
                     cc->collider = std::make_unique<Collision::Sphere>(D.sphere_radius, center);
                 }
                 else {
-                    // AABB centered on transform with ±0.5 extents
+                    // AABB centered on transform with ï¿½0.5 extents
                     CEVec3 c{ 0.f,0.f,0.f };
                     if (auto* t = ecs.GetComponent<TransformComponent>(e)) c = t->position;
                     cc->collider = std::make_unique<Collision::AABBRect>(
@@ -235,10 +195,13 @@ namespace {
                 // Sphere
                 auto* s = static_cast<Collision::Sphere*>(cc->collider.get());
 
+                ImGui::SeparatorText("Sphere");
+
                 // Radius
                 float r = s->radius;
                 ImGui::DragFloat("Radius", &r, 0.05f, 0.0f, 1e6f);
                 if (ImGui::IsItemEdited() || ImGui::IsItemDeactivatedAfterEdit()) {
+                    if (r < 0.0f) r = 0.0f; // clamping
                     s->radius = r;
                 }
 
@@ -249,9 +212,12 @@ namespace {
                     s->center = { c[0], c[1], c[2] };
                 }
             }
-            else { 
+            else {
                 // AABB
                 auto* a = static_cast<Collision::AABBRect*>(cc->collider.get());
+
+                ImGui::SeparatorText("AABB");
+
                 float mn[3]{ a->min.x, a->min.y, a->min.z };
                 float mx[3]{ a->max.x, a->max.y, a->max.z };
 
@@ -265,6 +231,7 @@ namespace {
                     a->max = { mx[0], mx[1], mx[2] };
                     a->extents = (a->max - a->min) * 0.5f;
                 }
+
                 // optional: snap AABB around Transform
                 if (auto* t = ecs.GetComponent<TransformComponent>(e)) {
                     if (ImGui::Button("Fit around Transform##aabb")) {
@@ -281,7 +248,7 @@ namespace {
     @details Edits type-specific parameters and supports a per-entity preview toggle.
     */
     struct ShapeAdapter : DebugReflection::IComponentAdapter {
-        const char* name() const override { return "MeshComponent"; }
+        const char* name() const override { return "ShapeComponent"; }
         bool has(ECS& ecs, Entity e) const override {
             return ecs.HasComponent<Component::ShapeComponent>(e);
         }
@@ -304,6 +271,8 @@ namespace {
                 sc->type = (ShapeType)t;
             }
 
+            //draw_reflected(*sc, "Shape");
+            
             // shared
             ImGui::Checkbox("Use Texture", &sc->enableTexture);
 

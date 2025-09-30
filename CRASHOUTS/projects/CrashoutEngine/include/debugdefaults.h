@@ -1,3 +1,14 @@
+/*!
+@file       debugdefaults.h
+@author     mohamadamirakmal.b@digipen.edu
+@date       25/09/2025
+
+Declare struct defaults used across Debug Menu adapters
+(e.g., drag speeds, initial rigidbody values, default collider sizes).
+//__________________________________________________________________________*/
+
+/*                                                                   includes
+----------------------------------------------------------------------------- */
 #pragma once
 #include "math/CEVec3.h"
 

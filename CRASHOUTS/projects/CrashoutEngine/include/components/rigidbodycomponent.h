@@ -7,6 +7,7 @@
 //__________________________________________________________________________*/
 
 #pragma once
+#include <math/CEVec3.h>
 
 namespace Component {
 	class RigidBodyComponent {
@@ -17,6 +18,27 @@ namespace Component {
 			CEVec3 mNetForce;
 			f32 mRestitutionCoeff; /*Measure of elasticity*/
 		public:
+
+			struct ReflectionType {
+				CEVec3 velocity{};
+				CEVec3 max_velocity{};
+				f32 mass{ 0.f };
+				f32 restitution{ 0.f };
+			};
+
+			RigidBodyComponent(const ReflectionType& r)
+				: RigidBodyComponent(r.max_velocity, r.mass, r.restitution) {
+				setVelocity(r.velocity);
+			}
+
+			ReflectionType reflection() const {
+				return ReflectionType{
+					.velocity = mVelocity,
+					.max_velocity = mMaximumVel,
+					.mass = mMass,
+					.restitution = mRestitutionCoeff
+				};
+			}
 
 			/*Constructor*/
 			RigidBodyComponent(CEVec3 maximumVel = CEVec3{}, f32 mass = 0.f, f32 restitutionCoeff = 0.f);
