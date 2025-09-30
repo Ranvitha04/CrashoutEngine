@@ -85,6 +85,73 @@ macro(import_imgui)
         target_link_libraries(imgui PUBLIC glfw libglew_static)
     endif()
 endmacro()
+# -------------------- stb (header-only) --------------------
+macro(import_stb)
+    if(NOT TARGET stb)
+        FetchContent_Declare(
+            stb
+            GIT_REPOSITORY https://github.com/nothings/stb.git
+            GIT_TAG master
+        )
+        FetchContent_Populate(stb)
+
+        add_library(stb INTERFACE)
+        target_include_directories(stb INTERFACE ${stb_SOURCE_DIR})
+    endif()
+endmacro()
+
+# -------------------- freetype --------------------
+macro(import_freetype)
+    if(NOT TARGET freetype)
+        FetchContent_Declare(
+            freetype
+            GIT_REPOSITORY https://github.com/freetype/freetype.git
+            GIT_TAG VER-2-13-2 
+        )
+        FetchContent_MakeAvailable(freetype)
+    endif()
+endmacro()
+
+# -------------------- reflect.cpp --------------------
+macro(import_reflect)
+    if(NOT TARGET reflect)
+        FetchContent_Declare(
+            reflect
+            GIT_REPOSITORY https://github.com/getml/reflect-cpp.git
+            GIT_TAG v0.20.0
+        )
+        FetchContent_Populate(reflect)
+
+        add_library(reflect INTERFACE)
+        target_include_directories(reflect INTERFACE ${reflect_SOURCE_DIR}/include)
+    endif()
+endmacro()
+
+# -------------------- rapidjson (header-only) --------------------
+macro(import_rapidjson)
+    if(NOT TARGET rapidjson)
+        FetchContent_Declare(
+            rapidjson
+            GIT_REPOSITORY https://github.com/Tencent/rapidjson.git
+            GIT_TAG v1.1.0
+        )
+        FetchContent_Populate(rapidjson)
+
+        add_library(rapidjson INTERFACE)
+        target_include_directories(rapidjson SYSTEM INTERFACE ${rapidjson_SOURCE_DIR}/include)
+
+        # SUPRESS DEPRECATED WARNINGS FOR RAPIDJSON
+        if(MSVC)
+            # Suppress C++17 std::iterator deprecation warning (STL4015)
+            # caused by rapidjson v1.1.0, which uses a deprecated base class.
+            # add_compile_definitions(_SILENCE_CXX17_ITERATOR_BASE_CLASS_DEPRECATION_WARNING)
+            target_compile_options(rapidjson INTERFACE
+                $<$<COMPILE_LANGUAGE:CXX>:/wd26495 /wd33010>
+            )
+        endif()
+
+    endif()
+endmacro()
 
 # Expected repo layout:
 # third_party/fmod/
@@ -181,6 +248,17 @@ macro(importDependencies)
     message(STATUS "Importing ImGui...")
     import_imgui()
     message(STATUS "ImGui imported successfully.")
+        import_stb()
+    message(STATUS "stb imported successfully.")
+
+    import_freetype()
+    message(STATUS "FreeType imported successfully.")
+
+    import_reflect()
+    message(STATUS "reflect.cpp imported successfully.")
+
+    import_rapidjson()
+    message(STATUS "rapidjson imported successfully.")
 
     message(STATUS "All dependencies have been imported successfully.")
 endmacro()

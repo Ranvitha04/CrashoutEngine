@@ -1,9 +1,3 @@
-@file        renfred.cpp
-@author      lee.r@digipen.edu
-@date        09 / 18 / 2025
-@brief       Implements the
-
-
 #include "scenes/afiq.h"
 #include "log.h"
 #include "GLFW/glfw3.h"
