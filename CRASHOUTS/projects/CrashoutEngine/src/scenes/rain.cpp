@@ -14,12 +14,12 @@ void LoadRain()
 	LOGI(Core, "Loaded");
 	globalECS = CrashoutsEngine::ECS::getInstance();
 	globalECS->Reset();
-	GLuint shaderID = loadShaderProgram("../../../projects/CrashoutEngine/shaders/shaders/textShader.vert", "../../../projects/CrashoutEngine/shaders/shaders/textShader.frag");
+	GLuint shaderID = loadShaderProgram("../../../projects/CrashoutEngine/shaders/textShader.vert", "../../../projects/CrashoutEngine/shaders/textShader.frag");
 	if (shaderID == 0) {
 		std::cout << "Failed to load text shader.\n";
 		return;
 	}
-	gTextRenderer = new TextRenderer("assets/fonts/arial.ttf", Settings::GetScreenWidth(), Settings::GetScreenHeight());
+	gTextRenderer = new TextRenderer("../../../projects/CrashoutEngine/assets/fonts/arial.ttf", Settings::GetScreenWidth(), Settings::GetScreenHeight());
 }
 
 void InitRain()

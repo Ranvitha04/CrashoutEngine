@@ -20,7 +20,7 @@
   * @param screenHeight Screen height used for orthographic projection
   */
 TextRenderer::TextRenderer(const std::string& fontPath, GLuint screenWidth, GLuint screenHeight){
-    shaderID = loadShaderProgram("shaders/textShader.vert", "shaders/textShader.frag");
+    shaderID = loadShaderProgram("../../../projects/CrashoutEngine/shaders/textShader.vert", "../../../projects/CrashoutEngine/shaders/textShader.frag");
     if (shaderID == 0) {
         std::cerr << "Failed to load text shader.\n";
         return;
