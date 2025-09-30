@@ -18,7 +18,19 @@ namespace Collision {
 
 	Sphere::Sphere(f32 radius, CEVec3 const& center) : Collider{ SPHERE }, radius{ radius }, center{ center } { /*EMPTY BY DESIGN*/ }
 
-	AABBRect::AABBRect(CEVec3 const& min, CEVec3 const& max) : Collider{ AABB }, min{ min }, max{ max } { /*EMPTY BY DESIGN*/ }
+	void Sphere::updateCollider(CEVec3 const &newPos) {
+		center = newPos;
+	}
+
+	AABBRect::AABBRect(CEVec3 const& min, CEVec3 const& max) : Collider{ AABB }, min{ min }, max{ max } { 
+		extents = (max - min) * 0.5f;
+	}
+
+	void AABBRect::updateCollider(CEVec3 const& newPos) { 
+		max = newPos + extents;
+		min = newPos - extents;
+	}
+
 }
 
 namespace Collision {
@@ -161,10 +173,10 @@ namespace Collision {
 
 		CEVec3 posDelta{ coll2.position - coll1.position }; /*Vector showing distance + the direction*/
 
-		f32 xDiff{ aabb1Temp.max.x + aabb2Temp.max.x - std::abs(posDelta.x)};
+		f32 xDiff{ aabb1Temp.extents.x + aabb2Temp.extents.x - std::abs(posDelta.x)};
 
 		if (xDiff > 0.f) {
-			f32 yDiff{ aabb1Temp.max.y + aabb2Temp.max.y - std::abs(posDelta.y) };
+			f32 yDiff{ aabb1Temp.extents.y + aabb2Temp.extents.y - std::abs(posDelta.y) };
 
 			if (yDiff > 0.f) {
 
@@ -197,8 +209,8 @@ namespace Collision {
 
 		AABBRect const& aabb2Temp = dynamic_cast<AABBRect const&>(*(aabbPtr->collider));
 
-		CEVec3 minAABB{ aabbPtr->position.x - aabb2Temp.max.x, aabbPtr->position.y - aabb2Temp.max.y, 0.f };
-		CEVec3 maxAABB{ aabbPtr->position.x + aabb2Temp.max.x, aabbPtr->position.y + aabb2Temp.max.y, 0.f };
+		CEVec3 minAABB{ aabbPtr->position.x - aabb2Temp.extents.x, aabbPtr->position.y - aabb2Temp.extents.y, 0.f };
+		CEVec3 maxAABB{ aabbPtr->position.x + aabb2Temp.extents.x, aabbPtr->position.y + aabb2Temp.extents.y, 0.f };
 
 		
 		CEVec3 pos{ spherePtr->position };
