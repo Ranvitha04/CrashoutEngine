@@ -96,7 +96,7 @@ namespace Physics {
 		if (!globalECS.HasComponent<Component::RigidBodyComponent>(colPair.first) || !globalECS.HasComponent<Component::RigidBodyComponent>(colPair.second)) return;
 		Collision::CollisionEvent evnt{ collEvent.getCollisionManifold(), colPair.first, colPair.second };
 		applyImpulse(evnt, globalECS);
-		observer.setCollisionEvent(evnt); /*TEMP FOR NOW*/
+		//observer.setCollisionEvent(evnt); /*TEMP FOR NOW*/
 
 	}
 
@@ -121,10 +121,10 @@ namespace Physics {
 		
 		// Debug Stepping one
 		double dt = sOverrideDt ? sDebugDt : deltaTime;
-		if (sPaused) {
-			if (!sStepOnce) return;
-			// allow exactly one tick when paused+Step pressed
-		}
+		//if (sPaused) {
+		//	if (!sStepOnce) return;
+		//	// allow exactly one tick when paused+Step pressed
+		//}
 
 		// Integrate Physics
 		f32 newDelta{ static_cast<float>(dt) };
@@ -190,6 +190,12 @@ namespace Physics {
 
 		/*APPLY FORCES, FOR NOW PUT IN THE COLLISION HANDLER*/
 		/*UPDATE FORCES*/
+
+		if (sPaused) {
+			if (!sStepOnce) return;
+			// allow exactly one tick when paused+Step pressed
+		}
+
 		for (CrashoutsEngine::Entity& entity : globalEntities) {
 			if (!globalECS.HasComponent<Component::RigidBodyComponent>(entity)) continue;
 			Component::RigidBodyComponent* rigidBody{ globalECS.GetComponent<Component::RigidBodyComponent>(entity) };
@@ -211,11 +217,21 @@ namespace Physics {
 			Component::TransformComponent* transform{ globalECS.GetComponent<Component::TransformComponent>(entity) };
 			Component::RigidBodyComponent* rigidBody{ globalECS.GetComponent<Component::RigidBodyComponent>(entity) };
 
+			if (sPaused) {
+				if (!sStepOnce) return;
+				// allow exactly one tick when paused+Step pressed
+			}
+
 			updatePhysics(transform, rigidBody, deltaTime);
+
+			if (globalECS.HasComponent<Component::ColliderComponent>(entity)) {
+				Component::ColliderComponent* c { globalECS.GetComponent<Component::ColliderComponent>(entity) };
+				c->collider->updateCollider(transform->position);
+			}
 
 		}
 
-		collisionEvents.clear();
+		//collisionEvents.clear();
 
 	}
 

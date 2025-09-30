@@ -263,14 +263,13 @@ namespace {
                     for (int i = 0; i < 3; ++i) if (mn[i] > mx[i]) std::swap(mn[i], mx[i]); // clamp
                     a->min = { mn[0], mn[1], mn[2] };
                     a->max = { mx[0], mx[1], mx[2] };
+                    a->extents = (a->max - a->min) * 0.5f;
                 }
                 // optional: snap AABB around Transform
                 if (auto* t = ecs.GetComponent<TransformComponent>(e)) {
                     if (ImGui::Button("Fit around Transform##aabb")) {
-                        const float hx = 0.5f * t->size.x;
-                        const float hy = 0.5f * t->size.y;
-                        a->min = { t->position.x - hx, t->position.y - hy, t->position.z - 0.5f };
-                        a->max = { t->position.x + hx, t->position.y + hy, t->position.z + 0.5f };
+                        a->min = t->position - a->extents;
+                        a->max = t->position + a->extents;
                     }
                 }
             }

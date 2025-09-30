@@ -51,7 +51,7 @@ namespace CollisionGizmos {
             auto* cc = ecs.GetComponent<Component::ColliderComponent>(e);
             if (!cc || !cc->collider) continue;
 
-            const CEVec3 color = IsColliding(e, events) ? hit : ok;
+            const CEVec3 color = /*IsColliding(e, events) ? hit : */  /*TEMP FOR NOW*/ ok;
             const Collision::Collider* base = cc->collider.get();
 
             if (base->type == Collision::SPHERE) {

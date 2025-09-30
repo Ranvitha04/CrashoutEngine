@@ -63,6 +63,7 @@ namespace Collision {
 			ColliderType type;
 			Collider(ColliderType type);
 			virtual ~Collider() = default;
+			virtual void updateCollider(CEVec3 const& newPos) {};
 	};
 
 	/*!
@@ -75,6 +76,7 @@ namespace Collision {
 			CEVec3 center;
 			Sphere(f32 radius, CEVec3 const& center);
 			~Sphere() = default;
+			virtual void updateCollider(CEVec3 const& newPos);
 	};
 
 	/*!
@@ -85,8 +87,10 @@ namespace Collision {
 		public:
 			CEVec3 min;
 			CEVec3 max;
+			CEVec3 extents;
 			AABBRect(CEVec3 const& min, CEVec3 const& max);
 			~AABBRect() = default;
+			virtual void updateCollider(CEVec3 const& newPos);
 	};
 }
 

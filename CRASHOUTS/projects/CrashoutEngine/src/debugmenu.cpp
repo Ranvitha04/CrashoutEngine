@@ -600,7 +600,7 @@ namespace UI { // --------------------------------------------------------------
         EndFrame();
 
         auto& collisions = phys.collisions();
-        CollisionGizmos::DrawAllColliders(ecs, &collisions, 0.02f);
+        CollisionGizmos::DrawAllColliders(ecs, &collisions, 0.06f);
         CollisionGizmos::DrawContactsAndNormals(collisions, 0.25f, 0.02f); 
     }
 
