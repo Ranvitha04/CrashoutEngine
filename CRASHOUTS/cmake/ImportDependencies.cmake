@@ -121,7 +121,18 @@ macro(import_rapidjson)
         FetchContent_Populate(rapidjson)
 
         add_library(rapidjson INTERFACE)
-        target_include_directories(rapidjson INTERFACE ${rapidjson_SOURCE_DIR}/include)
+        target_include_directories(rapidjson SYSTEM INTERFACE ${rapidjson_SOURCE_DIR}/include)
+
+        # SUPRESS DEPRECATED WARNINGS FOR RAPIDJSON
+        if(MSVC)
+            # Suppress C++17 std::iterator deprecation warning (STL4015)
+            # caused by rapidjson v1.1.0, which uses a deprecated base class.
+            # add_compile_definitions(_SILENCE_CXX17_ITERATOR_BASE_CLASS_DEPRECATION_WARNING)
+            target_compile_options(rapidjson INTERFACE
+                $<$<COMPILE_LANGUAGE:CXX>:/wd26495 /wd33010>
+            )
+        endif()
+
     endif()
 endmacro()
 

@@ -143,7 +143,7 @@ namespace {
             if (auto* t = ecs.GetComponent<TransformComponent>(e)) center = t->position;
 
             auto col = std::make_unique<Collision::Sphere>(D.sphere_radius, center);
-            ecs.AddComponent<ColliderComponent>(e, ColliderComponent{ std::move(col) });
+            ecs.AddComponent<ColliderComponent>(e, std::move(col));
 
             if (!ecs.HasComponent<RigidBodyComponent>(e)) {
                 auto& D2 = GetDebugDefaults();

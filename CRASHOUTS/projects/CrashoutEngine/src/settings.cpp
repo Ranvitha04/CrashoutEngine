@@ -10,6 +10,7 @@ Stores and manages screen resolution settings
 #include "settings.h"
 #include <iostream>
 #include <fstream>
+#include "rapidjson/rapidjson.h"
 #include "rapidjson/document.h"
 #include "rapidjson/istreamwrapper.h"
 

@@ -28,6 +28,7 @@
 #include "components/namecomponent.h"
 #include "components/transformcomponent.h"
 #include "components/shapescomponent.h"
+#include "components/rigidbodycomponent.h"
 #include "shapes.h"
 
 /*                                                                   
@@ -115,6 +116,9 @@ namespace CrashoutsEngine {
 			return newId;
 		}
 
+		// Clone a new entity and return ID
+		Entity CloneEntity(Entity srcEntityId);
+
 		// Find Entity by name
 		Entity FindEntityByName(std::string name);
 
@@ -170,12 +174,14 @@ namespace CrashoutsEngine {
 	This base class provides a polymorphic way to remove components from an entity
 	without knowing their specific type. This is particularly useful when destroying an
 	entity, as the ECS can iterate through all component arrays and call a single
-	`RemoveComponent` function for each one.
+	`RemoveComponent` function for each one. There is a virtual clone component function
+	to handle cloning of components for a specific entity ID.
 	*/
 	class IComponentArray {
 	public:
 		virtual	~IComponentArray() = default;
 		virtual void RemoveComponent(Entity entityId) = 0;
+		virtual void CloneComponent(Entity srcEntity, Entity dstEntity) = 0;
 	};
 
 	/*!
@@ -191,6 +197,7 @@ namespace CrashoutsEngine {
 	class ECS::ComponentArray : public IComponentArray {
 	public:
 		void RemoveComponent(Entity entityId) override;
+		void CloneComponent(Entity srcEntity, Entity dstEntity) override;
 
 		// Public members for dense set implementation
 		// Component values stored in dense
@@ -287,7 +294,7 @@ namespace CrashoutsEngine {
 	@param entityId
 	The ID of the entity whose component will be removed.
 	*/
-	template<typename T>
+	template <typename T>
 	void ECS::RemoveComponent(Entity entityId) {
 		GetComponentArray<T>().RemoveComponent(entityId);
 	}
@@ -436,6 +443,41 @@ namespace CrashoutsEngine {
 		entityToIndex.erase(entityId);
 		dense.pop_back();
 		indexToEntity.pop_back();
+	}
+
+	/*!
+	@brief Clones a component from one entity to another.
+
+	This templated function retrieves the component from the source entity,
+	creates a copy, and adds the copy to the destination entity.
+
+	@tparam T
+	The type of the component being cloned.
+
+	@param srcEntity
+	The ID of the entity to clone from.
+
+	@param dstEntity
+	The ID of the entity to clone to.
+	*/
+	template <typename T>
+	void ECS::ComponentArray<T>::CloneComponent(Entity srcEntity, Entity dstEntity) {
+		// Check if the source entity even has the component
+		if (entityToIndex.find(srcEntity) == entityToIndex.end()) {
+			return;	// Source entity does not have this component
+		}
+
+		// Get reference to the source component
+		size_t srcIndex = entityToIndex[srcEntity];
+		const T& srcComponent = dense[srcIndex];
+
+		// Add a new component to destination entity by copying source
+		dense.emplace_back(srcComponent);
+
+		// Update sparse-set for the destination entity
+		size_t newIndex = dense.size() - 1;
+		entityToIndex[dstEntity] = newIndex;
+		indexToEntity.push_back(dstEntity);
 	}
 
 	/*!

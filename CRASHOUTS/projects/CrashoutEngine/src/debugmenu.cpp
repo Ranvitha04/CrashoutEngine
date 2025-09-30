@@ -217,6 +217,11 @@ namespace UI { // --------------------------------------------------------------
         if (!selected) return;
         
         if (entities.size() > 0) {
+            if (ImGui::Button("Clone Selected")) {
+                selected = ecs.CloneEntity(selected);
+                return;
+            }
+
             if (ImGui::Button("Destroy Selected")) {
                 ecs.DestroyEntity(selected);
                 if (auto it = std::find(entities.begin(), entities.end(), selected);

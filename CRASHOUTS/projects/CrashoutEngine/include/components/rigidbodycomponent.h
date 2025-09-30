@@ -7,6 +7,7 @@
 //__________________________________________________________________________*/
 
 #pragma once
+#include <math/CEVec3.h>
 
 namespace Component {
 	class RigidBodyComponent {

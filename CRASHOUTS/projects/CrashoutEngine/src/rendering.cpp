@@ -188,6 +188,9 @@ void Rendering::SetupBuffers(const void* vertices, size_t vertex_size,
     glVertexArrayAttribFormat(vaoid, 1, 3, GL_FLOAT, GL_FALSE, 0);
     glVertexArrayAttribBinding(vaoid, 1, 1);
 
+    // Disable unused texture coordinate attribute (location 2)
+    glDisableVertexArrayAttrib(vaoid, 2);
+
     // Create EBO if indices provided
     if (indices && index_count > 0) {
         glCreateBuffers(1, &ebo_hdl);

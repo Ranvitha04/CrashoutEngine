@@ -63,6 +63,7 @@ namespace Collision {
 			ColliderType type;
 			Collider(ColliderType type);
 			virtual ~Collider() = default;
+			virtual std::unique_ptr<Collider> clone() const = 0;
 	};
 
 	/*!
@@ -75,6 +76,10 @@ namespace Collision {
 			CEVec3 center;
 			Sphere(f32 radius, CEVec3 const& center);
 			~Sphere() = default;
+
+			virtual std::unique_ptr<Collider> clone() const override {
+				return std::make_unique<Sphere>(*this);
+			}
 	};
 
 	/*!
@@ -87,6 +92,10 @@ namespace Collision {
 			CEVec3 max;
 			AABBRect(CEVec3 const& min, CEVec3 const& max);
 			~AABBRect() = default;
+
+			virtual std::unique_ptr<Collider> clone() const override {
+				return std::make_unique<AABBRect>(*this);
+			}
 	};
 }
 
@@ -154,13 +163,45 @@ namespace Collision {
 }
 
 namespace Component {
-
 	/*!
 	@struct	ColliderComponent
 	@brief	Collider component in order to put custom colliders on an entity
 	*/
 	struct ColliderComponent {
 		std::unique_ptr<Collision::Collider> collider;
+
+		// Default constructor for empty component
+		ColliderComponent() = default;
+
+		// Custom Copy Constructor to build from unique_ptr
+		// Explicitly handles calls like AddComponent(e, std::make_unique<...>)
+		explicit ColliderComponent(std::unique_ptr<Collision::Collider> col)
+			: collider(std::move(col)) {}
+
+		// Custom Copy Constructor
+		ColliderComponent(const ColliderComponent& other) {
+			if (other.collider) {
+				// Use the virtual clone method for a deep copy
+				collider = other.collider->clone();
+			}
+		}
+	
+		// Custom Copy Assignment Operator for Deep Copies
+		ColliderComponent& operator=(const ColliderComponent& other) {
+			// Check for self-assignment
+			if (this == &other) return *this;
+
+			if (other.collider) {
+				collider = other.collider->clone();	// Deep Copy
+			}
+			else {
+				collider.reset();	// Clear if the other is empty
+			}
+			return *this;
+		}
+
+		ColliderComponent(ColliderComponent&&) noexcept = default;
+		ColliderComponent& operator=(ColliderComponent&&) noexcept = default;
 	};
 }
 
