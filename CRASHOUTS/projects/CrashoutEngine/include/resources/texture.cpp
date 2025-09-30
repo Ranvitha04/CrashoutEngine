@@ -30,6 +30,7 @@ when shutting down the engine.
 #define STB_IMAGE_IMPLEMENTATION
 #include "resources/textures.h"
 #include "managers/entitymanager.h"
+#include "glapp.h"
 #include <stb_image.h>
 #include <iostream>
 #include <fstream>
@@ -291,6 +292,132 @@ namespace CrashoutsEngine {
         }
 
         /*!
+        @brief Creates and renders a sprite sheet frame with horizontal flipping support.
+        @param textureHandle OpenGL texture ID.
+        @param position      3D position of the sprite.
+        @param size          2D size of the sprite.
+        @param frameX        Frame column (0-based).
+        @param frameY        Frame row (0-based).
+        @param totalCols     Total columns in sprite sheet.
+        @param totalRows     Total rows in sprite sheet.
+        @param flipHorizontal Whether to flip the sprite horizontally.
+        @param rotation      Rotation in degrees (around Z axis).
+        @param scale         Scale factor applied to size.
+        @param tint          RGB tint applied to texture.
+        @param modulate      Whether to modulate with vertex color.
+        */
+        void TextureRenderer::CreateSpriteFrameFlipped(GLuint textureHandle,
+            const CEVec3& position,
+            const CEVec2& size,
+            int frameX, int frameY,
+            int totalCols, int totalRows,
+            bool flipHorizontal,
+            float rotation,
+            float scale,
+            const CEVec3& tint,
+            bool modulate) {
+
+            // Auto-initialize if needed
+            if (!initialized) {
+                Initialize();
+            }
+
+            if (textureHandle == 0) {
+                std::cerr << "Invalid texture handle!" << std::endl;
+                return;
+            }
+
+            // Calculate UV coordinates for the specified frame
+            float u1, v1, u2, v2;
+            CalculateFrameUV(frameX, frameY, totalCols, totalRows, u1, v1, u2, v2);
+
+            // Flip horizontally by swapping u1 and u2 if needed
+            if (flipHorizontal) {
+                float temp = u1;
+                u1 = u2;
+                u2 = temp;
+            }
+
+            // Render the quad with custom UV coordinates
+            RenderQuadWithUV(textureHandle, position, size, rotation, scale, tint, modulate, u1, v1, u2, v2);
+        }
+
+        /*!
+        @brief Creates and renders a sprite sheet frame from a file path.
+        @param texturePath   Path to the sprite sheet texture file.
+        @param position      3D position of the sprite.
+        @param size          2D size of the sprite.
+        @param frameX        Frame column (0-based).
+        @param frameY        Frame row (0-based).
+        @param totalCols     Total columns in sprite sheet.
+        @param totalRows     Total rows in sprite sheet.
+        @param rotation      Rotation in degrees (around Z axis).
+        @param scale         Scale factor applied to size.
+        @param tint          RGB tint applied to texture.
+        @param modulate      Whether to modulate with vertex color.
+        */
+        void TextureRenderer::CreateSpriteFrame(const std::string& texturePath,
+            const CEVec3& position,
+            const CEVec2& size,
+            int frameX, int frameY,
+            int totalCols, int totalRows,
+            float rotation,
+            float scale,
+            const CEVec3& tint,
+            bool modulate) {
+
+            GLuint textureHandle = GetOrLoadTexture(texturePath);
+            if (textureHandle == 0) {
+                std::cerr << "Failed to load texture: " << texturePath << std::endl;
+                return;
+            }
+
+            CreateSpriteFrame(textureHandle, position, size, frameX, frameY, totalCols, totalRows, rotation, scale, tint, modulate);
+        }
+
+        /*!
+        @brief Creates and renders a sprite sheet frame using an existing OpenGL texture handle.
+        @param textureHandle OpenGL texture ID.
+        @param position      3D position of the sprite.
+        @param size          2D size of the sprite.
+        @param frameX        Frame column (0-based).
+        @param frameY        Frame row (0-based).
+        @param totalCols     Total columns in sprite sheet.
+        @param totalRows     Total rows in sprite sheet.
+        @param rotation      Rotation in degrees (around Z axis).
+        @param scale         Scale factor applied to size.
+        @param tint          RGB tint applied to texture.
+        @param modulate      Whether to modulate with vertex color.
+        */
+        void TextureRenderer::CreateSpriteFrame(GLuint textureHandle,
+            const CEVec3& position,
+            const CEVec2& size,
+            int frameX, int frameY,
+            int totalCols, int totalRows,
+            float rotation,
+            float scale,
+            const CEVec3& tint,
+            bool modulate) {
+
+            // Auto-initialize if needed
+            if (!initialized) {
+                Initialize();
+            }
+
+            if (textureHandle == 0) {
+                std::cerr << "Invalid texture handle!" << std::endl;
+                return;
+            }
+
+            // Calculate UV coordinates for the specified frame
+            float u1, v1, u2, v2;
+            CalculateFrameUV(frameX, frameY, totalCols, totalRows, u1, v1, u2, v2);
+
+            // Render the quad with custom UV coordinates
+            RenderQuadWithUV(textureHandle, position, size, rotation, scale, tint, modulate, u1, v1, u2, v2);
+        }
+
+        /*!
         @brief Creates and renders a textured quad using an existing OpenGL texture handle.
         @param textureHandle OpenGL texture ID.
         @param position      3D position of the quad.
@@ -398,7 +525,38 @@ namespace CrashoutsEngine {
             model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 0.0f, 1.0f));
             model = glm::scale(model, glm::vec3(size.x * scale, size.y * scale, 1.0f));
 
-            // Pass transformation matrix to shader
+            // Set up projection matrix (orthographic, centered world coordinates)
+            float aspect = static_cast<float>(GLApp::width) / GLApp::height;
+            float BASE_SIZE = 100.0f;
+            float worldWidth, worldHeight;
+            
+            if (aspect >= 1.0f) {
+                worldHeight = BASE_SIZE;
+                worldWidth = worldHeight * aspect;
+            } else {
+                worldWidth = BASE_SIZE;
+                worldHeight = worldWidth / aspect;
+            }
+            
+            glm::mat4 projection = glm::ortho(
+                -worldWidth / 2.0f, worldWidth / 2.0f,
+                -worldHeight / 2.0f, worldHeight / 2.0f,
+                -1.0f, 1.0f
+            );
+            
+            glm::mat4 view = glm::mat4(1.0f); // Identity view matrix
+            
+            // Pass matrices to shader
+            GLint projection_loc = glGetUniformLocation(renderer.shdr_pgm.GetHandle(), "uProjection");
+            if (projection_loc != -1) {
+                glUniformMatrix4fv(projection_loc, 1, GL_FALSE, glm::value_ptr(projection));
+            }
+            
+            GLint view_loc = glGetUniformLocation(renderer.shdr_pgm.GetHandle(), "uView");
+            if (view_loc != -1) {
+                glUniformMatrix4fv(view_loc, 1, GL_FALSE, glm::value_ptr(view));
+            }
+            
             GLint model_loc = glGetUniformLocation(renderer.shdr_pgm.GetHandle(), "uModel");
             if (model_loc != -1) {
                 glUniformMatrix4fv(model_loc, 1, GL_FALSE, glm::value_ptr(model));
@@ -439,6 +597,140 @@ namespace CrashoutsEngine {
             // Unbind texture and shader
             glBindTextureUnit(6, 0);
             renderer.shdr_pgm.UnUse();
+        }
+
+        /*!
+        @brief Renders a quad with custom UV coordinates for sprite sheets.
+        @param textureHandle OpenGL texture ID.
+        @param position      3D position of the quad.
+        @param size          2D size of the quad.
+        @param rotation      Rotation in degrees (around Z axis).
+        @param scale         Scale factor applied to size.
+        @param tint          RGB tint applied to texture.
+        @param modulate      Whether to modulate with vertex color.
+        @param u1, v1, u2, v2 Custom UV coordinates.
+        */
+        void TextureRenderer::RenderQuadWithUV(GLuint textureHandle,
+            const CEVec3& position,
+            const CEVec2& size,
+            float rotation,
+            float scale,
+            const CEVec3& tint,
+            bool modulate,
+            float u1, float v1, float u2, float v2) {
+
+            // Create dynamic vertex data with custom UV coordinates
+            float vertices[] = {
+                // positions        // colors         // texture coords
+                -0.5f, -0.5f, 0.0f,  1.0f, 1.0f, 1.0f,  u1, v2, // bottom left
+                 0.5f, -0.5f, 0.0f,  1.0f, 1.0f, 1.0f,  u2, v2, // bottom right
+                 0.5f,  0.5f, 0.0f,  1.0f, 1.0f, 1.0f,  u2, v1, // top right
+                -0.5f,  0.5f, 0.0f,  1.0f, 1.0f, 1.0f,  u1, v1  // top left
+            };
+
+            // Create temporary VAO/VBO for this custom UV quad
+            GLuint tempVAO, tempVBO;
+            glGenVertexArrays(1, &tempVAO);
+            glBindVertexArray(tempVAO);
+
+            glGenBuffers(1, &tempVBO);
+            glBindBuffer(GL_ARRAY_BUFFER, tempVBO);
+            glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_DYNAMIC_DRAW);
+
+            // Position attribute (location 0)
+            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+            glEnableVertexAttribArray(0);
+
+            // Color attribute (location 1)
+            glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+            glEnableVertexAttribArray(1);
+
+            // Texture coordinate attribute (location 2)
+            glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+            glEnableVertexAttribArray(2);
+
+            // Bind the shared EBO
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, sharedEBO);
+
+            // Get the rendering instance and use shader
+            Rendering& renderer = Rendering::Get();
+            renderer.shdr_pgm.Use();
+
+            // Setup transformation matrix
+            glm::mat4 model = glm::mat4(1.0f);
+            model = glm::translate(model, glm::vec3(position.x, position.y, position.z));
+            model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 0.0f, 1.0f));
+            model = glm::scale(model, glm::vec3(size.x * scale, size.y * scale, 1.0f));
+
+            // Pass transformation matrix to shader
+            GLint model_loc = glGetUniformLocation(renderer.shdr_pgm.GetHandle(), "uModel");
+            if (model_loc != -1) {
+                glUniformMatrix4fv(model_loc, 1, GL_FALSE, glm::value_ptr(model));
+            }
+
+            // Enable texture usage in shader
+            GLint useTexture_loc = glGetUniformLocation(renderer.shdr_pgm.GetHandle(), "u_useTexture");
+            if (useTexture_loc != -1) {
+                glUniform1i(useTexture_loc, 1); // Enable texture
+            }
+
+            // Set texture sampler
+            GLint tex_loc = glGetUniformLocation(renderer.shdr_pgm.GetHandle(), "uTex2d");
+            if (tex_loc != -1) {
+                glUniform1i(tex_loc, 6);
+            }
+
+            // Set modulation (whether to multiply by vertex color)
+            GLint modulate_loc = glGetUniformLocation(renderer.shdr_pgm.GetHandle(), "u_modulate");
+            if (modulate_loc != -1) {
+                glUniform1i(modulate_loc, modulate ? 1 : 0);
+            }
+
+            // Set tint color
+            GLint tint_loc = glGetUniformLocation(renderer.shdr_pgm.GetHandle(), "u_tint");
+            if (tint_loc != -1) {
+                glUniform3f(tint_loc, tint.x, tint.y, tint.z);
+            }
+
+            // Bind texture to texture unit 6
+            glBindTextureUnit(6, textureHandle);
+
+            // Render the quad
+            glDrawElements(GL_TRIANGLES, INDICES_COUNT, GL_UNSIGNED_SHORT, 0);
+
+            // Cleanup temporary resources
+            glBindVertexArray(0);
+            glDeleteBuffers(1, &tempVBO);
+            glDeleteVertexArrays(1, &tempVAO);
+
+            // Unbind texture and shader
+            glBindTextureUnit(6, 0);
+            renderer.shdr_pgm.UnUse();
+        }
+
+        /*!
+        @brief Calculate UV coordinates for a sprite sheet frame
+        @param frameX Frame column (0-based)
+        @param frameY Frame row (0-based)
+        @param totalCols Total columns in sprite sheet
+        @param totalRows Total rows in sprite sheet
+        @param u1, v1, u2, v2 Output UV coordinates
+        */
+        void TextureRenderer::CalculateFrameUV(int frameX, int frameY, int totalCols, int totalRows,
+            float& u1, float& v1, float& u2, float& v2) {
+            
+            // Calculate frame dimensions in UV space
+            float frameWidth = 1.0f / static_cast<float>(totalCols);
+            float frameHeight = 1.0f / static_cast<float>(totalRows);
+            
+            // Calculate UV coordinates for this frame
+            u1 = frameX * frameWidth;
+            v1 = frameY * frameHeight;
+            u2 = u1 + frameWidth;
+            v2 = v1 + frameHeight;
+            
+            /*std::cout << "[DEBUG] UV Calculation - Frame(" << frameX << "," << frameY << ") in " << totalCols << "x" << totalRows << " grid" << std::endl;
+            std::cout << "[DEBUG] UV Coords: (" << u1 << "," << v1 << ") to (" << u2 << "," << v2 << ")" << std::endl;*/
         }
 
         /*!
@@ -512,8 +804,8 @@ namespace CrashoutsEngine {
             glTextureSubImage2D(texobj_hdl, 0, 0, 0, width, height,
                 GL_RGBA, GL_UNSIGNED_BYTE, buffer.data());
 
-            glTextureParameteri(texobj_hdl, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-            glTextureParameteri(texobj_hdl, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            glTextureParameteri(texobj_hdl, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+            glTextureParameteri(texobj_hdl, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
             glTextureParameteri(texobj_hdl, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
             glTextureParameteri(texobj_hdl, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
@@ -550,8 +842,8 @@ namespace CrashoutsEngine {
             glTextureSubImage2D(texobj_hdl, 0, 0, 0, width, height,
                 GL_RGBA, GL_UNSIGNED_BYTE, data);
 
-            glTextureParameteri(texobj_hdl, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-            glTextureParameteri(texobj_hdl, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            glTextureParameteri(texobj_hdl, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+            glTextureParameteri(texobj_hdl, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
             glTextureParameteri(texobj_hdl, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
             glTextureParameteri(texobj_hdl, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 

@@ -25,11 +25,6 @@ void main() {
 
         // Apply tint
         baseColor *= vec4(u_tint, 1.0);
-
-        // If texture is almost transparent, fallback to vertex color * tint
-        if (texColor.a < 0.01) {
-            baseColor = vec4(color * u_tint, 1.0);
-        }
     } else {
         // No texture ? use vertex color * tint
         baseColor = vec4(color * u_tint, 1.0);

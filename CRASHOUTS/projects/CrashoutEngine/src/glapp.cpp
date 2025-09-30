@@ -20,11 +20,12 @@ integration.
 #include "managers/entitymanager.h"
 #include "shapes.h"
 #include "resources/textures.h"
-#include "resources/texture.cpp"
-#include "resources/spriteanimation.h"
-#include "spriteRendering.cpp"
+#include "resources/texture.cpp" 
+//#include "spriteanimation.h"
+//#include "spriteRendering.h"
+#include "spriteAnimation.h"
 #include <glm/glm.hpp>
-#include <iostream>
+#include <iostream>      
 #include <sstream>
 #include <iomanip>
 #include <array>
@@ -50,7 +51,9 @@ GLFWwindow* GLApp::ptr_window;
 
 Component::Rendering model;
 Component::Shapes shapes;
+Component::Sprite m_sprite;
 //Component::Texture texture;
+
 
 
 std::array<CEVec3, 4> clr_vtx{
@@ -68,175 +71,13 @@ std::vector<GLApp::GLViewport> GLApp::vps;
 
 static float TestRotation = 0.0f; // global rotation angle
 static float RightTest = 0.0f;
-static float TestScale = 0.0f;
+static float TestScale = 1.0f;
 
-namespace DuckController {
-    // Simple input state tracking
-    struct InputState {
-        bool leftPressed = false;
-        bool rightPressed = false;
-        bool upPressed = false;
-        bool downPressed = false;
-
-        bool IsMoving() const {
-            return leftPressed || rightPressed || upPressed || downPressed;
-        }
-
-        CEVec2 GetDirection() const {
-            CEVec2 dir(0.0f, 0.0f);
-            if (leftPressed) dir.x -= 1.0f;
-            if (rightPressed) dir.x += 1.0f;
-            if (upPressed) dir.y += 1.0f;
-            if (downPressed) dir.y -= 1.0f;
-
-            // Normalize diagonal movement
-            if (dir.x != 0.0f && dir.y != 0.0f) {
-                float length = sqrt(dir.x * dir.x + dir.y * dir.y);
-                if (length > 0.0f) {
-                    dir.x /= length;
-                    dir.y /= length;
-                }
-            }
-            return dir;
-        }
-    };
-
-    // Duck sprite sheet configuration
-    const int SHEET_COLUMNS = 6;
-    const int SHEET_ROWS = 3;
-    const int FRAME_WIDTH = 32;
-    const int FRAME_HEIGHT = 32;
-
-    // Frame coordinate arrays (x, y positions in the grid)
-    const std::array<std::pair<int, int>, 2> IDLE_BOUNCE_FRAMES = { {
-        {2, 1}, {3, 1}  // Adjust these based on your actual sprite sheet layout
-    } };
-
-    const std::array<std::pair<int, int>, 6> WALK_BOUNCE_FRAMES = { {
-        {0, 2}, {1, 2}, {2, 2}, {3, 2}, {4, 2}, {5, 2}  // Adjust these based on your actual sprite sheet layout
-    } };
-
-    // Animation timing
-    const float IDLE_FRAME_DURATION = 0.5f;
-    const float WALK_FRAME_DURATION = 0.15f;
-    const float MOVE_SPEED = 200.0f; // pixels per second
-
-    class SimpleDuckController {
-    private:
-        InputState input;
-        CEVec3 position;
-        CEVec2 size;
-        float scale;
-        std::string spriteSheetPath;
-        std::string currentAnimation;
-
-        // Simple animation state
-        float animationTime;
-        int currentFrameIndex;
-
-    public:
-        SimpleDuckController(const std::string& sheetPath)
-            : position(0.0f, 0.0f, 0.0f), size(64.0f, 64.0f), scale(2.0f),
-            spriteSheetPath(sheetPath), currentAnimation("idle_bounce"),
-            animationTime(0.0f), currentFrameIndex(0) {
-        }
-
-        void SetKeyState(int key, bool pressed) {
-            switch (key) {
-            case GLFW_KEY_LEFT:
-            case GLFW_KEY_A:
-                input.leftPressed = pressed;
-                break;
-            case GLFW_KEY_RIGHT:
-            case GLFW_KEY_D:
-                input.rightPressed = pressed;
-                break;
-            case GLFW_KEY_UP:
-            case GLFW_KEY_W:
-                input.upPressed = pressed;
-                break;
-            case GLFW_KEY_DOWN:
-            case GLFW_KEY_S:
-                input.downPressed = pressed;
-                break;
-            }
-        }
-
-        void Update(float deltaTime) {
-            // Update position based on input
-            if (input.IsMoving()) {
-                CEVec2 direction = input.GetDirection();
-                position.x += direction.x * MOVE_SPEED * deltaTime;
-                position.y += direction.y * MOVE_SPEED * deltaTime;
-            }
-
-            // Determine which animation to play
-            std::string newAnimation = input.IsMoving() ? "walk_bounce" : "idle_bounce";
-
-            // Check if animation changed
-            if (newAnimation != currentAnimation) {
-                currentAnimation = newAnimation;
-                animationTime = 0.0f;
-                currentFrameIndex = 0;
-            }
-
-            // Update animation timing
-            const auto& frames = GetCurrentFrameArray();
-            float frameDuration = input.IsMoving() ? WALK_FRAME_DURATION : IDLE_FRAME_DURATION;
-
-            animationTime += deltaTime;
-            if (animationTime >= frameDuration) {
-                animationTime -= frameDuration;
-                currentFrameIndex = (currentFrameIndex + 1) % frames.size();
-            }
-        }
-
-        void Render() {
-            const auto& frames = GetCurrentFrameArray();
-            if (frames.empty()) return;
-
-            // Get current frame coordinates
-            auto frameCoord = frames[currentFrameIndex];
-
-            // For now, just render the whole sprite sheet (you can implement UV coordinates later)
-            Component::TextureRenderer::CreateTexturedQuad(
-                spriteSheetPath,
-                position,
-                size,
-                0.0f,      // rotation
-                scale,
-                CEVec3(1.0f, 1.0f, 1.0f), // tint
-                false      // modulate
-            );
-
-            // Debug output
-            std::cout << "Duck: " << currentAnimation << " Frame: " << currentFrameIndex
-                << " Coord: (" << frameCoord.first << "," << frameCoord.second << ")" << std::endl;
-        }
-
-        // Getters and setters
-        CEVec3 GetPosition() const { return position; }
-        void SetPosition(const CEVec3& pos) { position = pos; }
-        void SetSize(const CEVec2& s) { size = s; }
-        void SetScale(float s) { scale = s; }
-        bool IsMoving() const { return input.IsMoving(); }
-        std::string GetCurrentAnimation() const { return currentAnimation; }
-
-    private:
-        std::vector<std::pair<int, int>> GetCurrentFrameArray() const {
-            if (currentAnimation == "idle_bounce") {
-                return std::vector<std::pair<int, int>>(IDLE_BOUNCE_FRAMES.begin(), IDLE_BOUNCE_FRAMES.end());
-            }
-            else if (currentAnimation == "walk_bounce") {
-                return std::vector<std::pair<int, int>>(WALK_BOUNCE_FRAMES.begin(), WALK_BOUNCE_FRAMES.end());
-            }
-            return std::vector<std::pair<int, int>>(IDLE_BOUNCE_FRAMES.begin(), IDLE_BOUNCE_FRAMES.end());
-        }
-    };
-}
-
-// Global duck controller instance
-static DuckController::SimpleDuckController* duckController = nullptr;
+// Duck movement state variables
+static bool isMovingLeft = false;
+static bool isMovingRight = false;
+static float duckFacingDirection = 1.0f; // 1.0f = right, -1.0f = left
+static bool isJump = false;
 
 
 /* _________________________________________________________________________ */
@@ -341,6 +182,14 @@ bool GLApp::init(GLint w, GLint h, std::string t) {
     glfwGetFramebufferSize(ptr_window, &vp_width_height.x, &vp_width_height.y);
     GLApp::fbsize_cb(ptr_window, vp_width_height.x, vp_width_height.y);
 
+    // Enable transparency/blending for sprites
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    
+    // Enable depth testing but allow transparent objects
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LEQUAL);
+
     model.Setup_VAO();
     model.Setup_Shdrpgm();
 
@@ -355,10 +204,27 @@ bool GLApp::init(GLint w, GLint h, std::string t) {
 
     //model.texobj = Component::Texture::LoadTexture("../../../projects/CrashoutEngine/images/duck-rgba-256.tex");
 
-    duckController = new DuckController::SimpleDuckController("../../../projects/CrashoutEngine/sprite_sheet/ducky_2_spritesheet.png");
-    duckController->SetPosition(CEVec3(400.0f, 300.0f, 0.0f)); // Center of screen
-    duckController->SetSize(CEVec2(64.0f, 64.0f));
-    duckController->SetScale(2.0f);
+  
+
+    // Init duck sprite with proper animation system
+    
+    Component::Sprite::m_sprite.init("../../../projects/CrashoutEngine/sprite_sheet/ducky_2_spritesheet.png", 4, 6, 0.3f);
+    
+    // Setup duck animations
+    Component::Sprite::m_sprite.addAnimationState("idle_normal", Component::AnimationState(0, 2, 0.5f, true));
+    Component::Sprite::m_sprite.addAnimationState("walk_normal", Component::AnimationState(6, 6, 0.15f, true));
+    Component::Sprite::m_sprite.addAnimationState("idle_bounce", Component::AnimationState(12, 4, 0.25f, true));
+    Component::Sprite::m_sprite.addAnimationState("walk_bounce", Component::AnimationState(16, 2, 0.12f, true));
+    
+    // Set position and scale for the duck
+   
+    Component::Sprite::m_sprite.setPosition(0.0f, 0.0f);  
+    Component::Sprite::m_sprite.setScale(TestScale);
+    Component::Sprite::m_sprite.setRotation(TestRotation);
+    
+    
+    Component::Sprite::m_sprite.setAnimationState("walk_normal");
+
 
 
     return true;
@@ -405,10 +271,39 @@ void GLApp::update() {
         old_h = h;
     }
 
-    if (duckController) {
-        duckController->Update(static_cast<float>(GLApp::delta_time));
+    // Duck movement and animation logic
+    float moveSpeed = 15.0f; // world units per second
+    static float duckPosX = 0.0f;
+    static float duckPosY = 0.0f;
+    //static std::string currentAnimationState = "idle_bounce";
+    static std::string currentAnimationState = "walk_normal";
+    
+    // Determine what animation should be playing
+    std::string targetAnimationState;
+    if (isMovingLeft || isMovingRight) {
+        float movement = (isMovingRight ? moveSpeed : -moveSpeed) * static_cast<float>(delta_time);
+        duckPosX += movement;
+        targetAnimationState = "walk_normal";
+    } else {
+        targetAnimationState = "idle_bounce";
     }
+    
+    // Only change animation state if it's different from current
+    if (targetAnimationState != currentAnimationState) {
+        Component::Sprite::m_sprite.setAnimationState(targetAnimationState);
+        currentAnimationState = targetAnimationState;
+    }
+    
 
+    Component::Sprite::m_sprite.setPosition(duckPosX, duckPosY);
+
+    Component::Sprite::m_sprite.setFlipHorizontal(duckFacingDirection < 0.0f);  
+    
+    Component::Sprite::m_sprite.setScale(TestScale);
+  
+    Component::Sprite::m_sprite.setRotation(TestRotation);
+    
+    Component::Sprite::m_sprite.update(static_cast<float>(delta_time));
 
 }
 
@@ -424,11 +319,11 @@ as black.
 */
 void GLApp::draw() {
     // clear colorbuffer with RGBA value in glClearColor ...
-    //glClearColor(0, 0, 0, 0);
-    //glClear(GL_COLOR_BUFFER_BIT);
+    glClearColor(0.2f, 0.2f, 0.2f, 1.0f);  // Dark gray background
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     //model.Draw();
 
-    // ---- choose which shape to draw by uncommenting ----
+    
     CEVec3 pos(RightTest, 0.0f, 0.0f);
     float rotation = 85.0f;
     float scale = 45.f;
@@ -451,7 +346,7 @@ void GLApp::draw() {
     // Draw current model
     //model.Draw();
 
-    Component::Shapes::CreateTexturedTriangle("../../../projects/CrashoutEngine/images/duck-rgba-256.tex", pos, CEVec3(-0.4, -0.5, 0), CEVec3(0.4, -0.5, 0), TestRotation, TestScale, CEVec3(1, 1, 0));
+    //Component::Shapes::CreateTexturedTriangle("../../../projects/CrashoutEngine/images/duck-rgba-256.tex", pos, CEVec3(-0.4, -0.5, 0), CEVec3(0.4, -0.5, 0), TestRotation, TestScale, CEVec3(1, 1, 0));
 
 
     //Component::TextureRenderer::CreateTexturedQuad(
@@ -463,13 +358,15 @@ void GLApp::draw() {
     //    CEVec3(1.0f, 1.0f, 1.0f),  // tint
     //    false;                      // modulate
     //);
-   
-    if (duckController) {
-        duckController->Render();
-    }
 
-    
-    
+    //Component::Shapes::CreateTexturedRectangle("../../../projects/CrashoutEngine/images/duck.jpg",
+    //    CEVec3(0.0f, 0.0f, 0.0f),  // position
+    //    1.0f, 1.0f,        // size
+    //    TestRotation,                       // rotation
+    //    TestScale,                       // scale
+    //    CEVec3(1.0f, 1.0f, 1.0f));
+   
+    Component::Sprite::m_sprite.render();
 
 }
 
@@ -492,10 +389,7 @@ void GLApp::cleanup() {
 
     Component::TextureRenderer::Cleanup();
 
-    if (duckController) {
-        delete duckController;
-        duckController = nullptr;
-    }
+    Component::Sprite::m_sprite.cleanup();
 
 
     glfwTerminate();
@@ -532,12 +426,6 @@ When the ESC key is pressed, the close flag of the window is set.
 void GLApp::key_cb(GLFWwindow* pwin, int key, int scancode, int action, int mod) {
     //ImGui_ImplGlfw_KeyCallback(pwin, key, scancode, action, mod);
 
-    if (duckController) {
-        if (action == GLFW_PRESS || action == GLFW_RELEASE) {
-            bool pressed = (action == GLFW_PRESS);
-            duckController->SetKeyState(key, pressed);
-        }
-    }
     if (GLFW_PRESS == action) {
 #ifdef _DEBUG
         LOGI(Input, "Key is pressed");
@@ -554,24 +442,54 @@ void GLApp::key_cb(GLFWwindow* pwin, int key, int scancode, int action, int mod)
 #endif
     }
 
+    // Duck movement controls
+    if (key == GLFW_KEY_A) {
+        if (action == GLFW_PRESS) {
+            isMovingLeft = true;
+            isMovingRight = false;
+            duckFacingDirection = -1.0f; // Face left 
+
+        } else if (action == GLFW_RELEASE) {
+            isMovingLeft = false;
+        }
+    }
+    
+    if (key == GLFW_KEY_D) {
+        if (action == GLFW_PRESS) {
+            isMovingRight = true;
+            isMovingLeft = false;
+            duckFacingDirection = 1.0f; // Face right
+        } else if (action == GLFW_RELEASE) {
+            isMovingRight = false;
+        }
+    }
+
+    if (key == GLFW_KEY_SPACE) {
+        if (action == GLFW_PRESS) {
+
+        }
+    }
+
+    // Test controls (keep existing functionality)
     if (GLFW_PRESS == action) {
         if (key == GLFW_KEY_R) { // Rotate with 'R'
             TestRotation += 10.0f;  // rotate 10 degrees each press
             if (TestRotation >= 360.0f) TestRotation -= 360.0f;
         }
-    }
-
-    if (GLFW_PRESS == action) {
+        
         if (key == GLFW_KEY_I) {
             RightTest += 25.0f;
             std::cout << RightTest << std::endl;
         }
-    }
-
-    if (GLFW_PRESS == action) {
-        if (key == GLFW_KEY_S) { // Rotate with 'R'
-            TestScale += 10.0f;  // rotate 10 degrees each press
-            
+        
+        if (key == GLFW_KEY_S) { // Scale up with S
+            TestScale += 2.f;  
+            std::cout << "Scale: " << TestScale << std::endl;
+        }
+        if (key == GLFW_KEY_Q) { // Scale down with q
+            TestScale -= 2.f;  
+            if (TestScale < 0.1f) TestScale = 0.1f; 
+            std::cout << "Scale: " << TestScale << std::endl;
         }
     }
 
