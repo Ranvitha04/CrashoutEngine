@@ -12,6 +12,7 @@
 #include <sstream>
 #include <iostream>
 
+#include "settings.h"
 
 /**
   * @brief Construct a new TextRenderer
@@ -20,7 +21,7 @@
   * @param screenHeight Screen height used for orthographic projection
   */
 TextRenderer::TextRenderer(const std::string& fontPath, GLuint screenWidth, GLuint screenHeight){
-    shaderID = loadShaderProgram("shaders/textShader.vert", "shaders/textShader.frag");
+    shaderID = loadShaderProgram("../../../projects/CrashoutEngine/shaders/textShader.vert", "../../../projects/CrashoutEngine/shaders/textShader.frag");
     if (shaderID == 0) {
         std::cerr << "Failed to load text shader.\n";
         return;
@@ -45,8 +46,8 @@ TextRenderer::TextRenderer(const std::string& fontPath, GLuint screenWidth, GLui
     glm::mat4 projection = glm::ortho(
 		-static_cast<float>(screenWidth) / 2.0f, // left edge
         static_cast<float>(screenWidth) / 2.0f,  // right edge
-        -static_cast<float>(screenHeight) / 2.0f,// bottom edge
-        static_cast<float>(screenHeight) / 2.0f  // top edge
+        static_cast<float>(screenHeight) / 2.0f,// bottom edge
+        -static_cast<float>(screenHeight) / 2.0f  // top edge
     );
 
 
@@ -160,7 +161,12 @@ void TextRenderer::renderText(const std::string& text, GLfloat x, GLfloat y, GLf
         { xpos + w, ypos + h,   1.0f, 1.0f }
         };
 
+        // Enable blending
+        glEnable(GL_BLEND);
 
+        // Set blend function
+        // Use the incoming fragment alpha 
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         glBindTexture(GL_TEXTURE_2D, ch.TextureID);
         glBindBuffer(GL_ARRAY_BUFFER, VBO);

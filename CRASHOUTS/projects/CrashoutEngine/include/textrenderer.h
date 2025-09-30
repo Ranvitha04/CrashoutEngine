@@ -78,7 +78,7 @@ public:
      * @param color RGB color of the text
      */
     void renderText(const std::string& text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color);
-
+   
     /**
      * @brief Render centered text
      * @param text String to render
