@@ -102,13 +102,7 @@ namespace Collision {
 							CEVec3{},
 							CEVec3{transform2->position.x, transform2->position.y, transform2->position.z}
 						});
-					/*if (collisionManifold.collisionOccured) {
-						*transform1 = newTransform1;
-						break;
-					}*/
 
-					/*TODO UPDATE*/
-					//updatePhysics(&newTransform1, &newRigidBody1, deltaTime);
 				}
 
 				if (collisionManifold.collisionOccured) {
@@ -117,14 +111,8 @@ namespace Collision {
 					CrashoutsEngine::Entity const* entity1Ptr{ &entity1 };
 					CrashoutsEngine::Entity const* entity2Ptr{ &entity2 };
 
-					if (*entity1Ptr < *entity2Ptr) std::swap(entity1Ptr, entity2Ptr);
-
-
-
-					if (std::find(currentCollisions.begin(), currentCollisions.end(), std::pair{*entity1Ptr, *entity2Ptr}) == currentCollisions.end()) {
-						currentCollisions.push_back(std::pair{ *entity1Ptr, *entity2Ptr });
-						sendMessage(colMessage);
-					}
+					currentCollisions.push_back(std::pair{ *entity1Ptr, *entity2Ptr });
+					sendMessage(colMessage);
 					
 				}
 

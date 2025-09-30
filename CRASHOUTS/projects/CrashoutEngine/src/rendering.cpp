@@ -53,6 +53,10 @@ void Rendering::Cleanup() {
         glDeleteBuffers(1, &instance.vbo_hdl);
         instance.vbo_hdl = 0;
     }
+    if (instance.tex_vbo_hdl != 0) { 
+        glDeleteBuffers(1, &instance.tex_vbo_hdl);
+        instance.tex_vbo_hdl = 0;
+    }
     if (instance.ebo_hdl != 0) {
         glDeleteBuffers(1, &instance.ebo_hdl);
         instance.ebo_hdl = 0;
@@ -184,6 +188,9 @@ void Rendering::SetupBuffers(const void* vertices, size_t vertex_size,
     glVertexArrayAttribFormat(vaoid, 1, 3, GL_FLOAT, GL_FALSE, 0);
     glVertexArrayAttribBinding(vaoid, 1, 1);
 
+    // Disable unused texture coordinate attribute (location 2)
+    glDisableVertexArrayAttrib(vaoid, 2);
+
     // Create EBO if indices provided
     if (indices && index_count > 0) {
         glCreateBuffers(1, &ebo_hdl);
@@ -194,6 +201,69 @@ void Rendering::SetupBuffers(const void* vertices, size_t vertex_size,
 
     primitive_type = primitive;
 }
+
+void Rendering::SetupTexturedBuffers(const void* vertices, size_t vertex_size,
+    const void* colors, size_t color_size,
+    const void* tex_coords, size_t tex_coord_size,
+    const void* indices, size_t index_count,
+    GLenum primitive) {
+    // Clean up existing buffers if they exist
+    if (vaoid != 0) {
+        glDeleteVertexArrays(1, &vaoid);
+    }
+    if (vbo_hdl != 0) {
+        glDeleteBuffers(1, &vbo_hdl);
+    }
+    if (tex_vbo_hdl != 0) {
+        glDeleteBuffers(1, &tex_vbo_hdl);
+    }
+    if (ebo_hdl != 0) {
+        glDeleteBuffers(1, &ebo_hdl);
+    }
+
+    // Create main VBO for positions and colors
+    glCreateBuffers(1, &vbo_hdl);
+    glNamedBufferStorage(vbo_hdl, vertex_size + color_size, nullptr, GL_DYNAMIC_STORAGE_BIT);
+    glNamedBufferSubData(vbo_hdl, 0, vertex_size, vertices);
+    glNamedBufferSubData(vbo_hdl, vertex_size, color_size, colors);
+
+    // Create separate VBO for texture coordinates
+    glCreateBuffers(1, &tex_vbo_hdl);
+    glNamedBufferStorage(tex_vbo_hdl, tex_coord_size, tex_coords, GL_DYNAMIC_STORAGE_BIT);
+
+    // Create VAO
+    glCreateVertexArrays(1, &vaoid);
+
+    // Position attribute (location 0)
+    glEnableVertexArrayAttrib(vaoid, 0);
+    glVertexArrayVertexBuffer(vaoid, 0, vbo_hdl, 0, sizeof(CEVec3));
+    glVertexArrayAttribFormat(vaoid, 0, 3, GL_FLOAT, GL_FALSE, 0);
+    glVertexArrayAttribBinding(vaoid, 0, 0);
+
+    // Color attribute (location 1)
+    glEnableVertexArrayAttrib(vaoid, 1);
+    glVertexArrayVertexBuffer(vaoid, 1, vbo_hdl, vertex_size, sizeof(CEVec3));
+    glVertexArrayAttribFormat(vaoid, 1, 3, GL_FLOAT, GL_FALSE, 0);
+    glVertexArrayAttribBinding(vaoid, 1, 1);
+
+    // Texture coordinate attribute (location 2)
+    glEnableVertexArrayAttrib(vaoid, 2);
+    glVertexArrayVertexBuffer(vaoid, 2, tex_vbo_hdl, 0, sizeof(CEVec2));
+    glVertexArrayAttribFormat(vaoid, 2, 2, GL_FLOAT, GL_FALSE, 0);
+    glVertexArrayAttribBinding(vaoid, 2, 2);
+
+    // Create EBO if indices provided
+    if (indices && index_count > 0) {
+        glCreateBuffers(1, &ebo_hdl);
+        glNamedBufferStorage(ebo_hdl, sizeof(GLushort) * index_count, indices, GL_DYNAMIC_STORAGE_BIT);
+        glVertexArrayElementBuffer(vaoid, ebo_hdl);
+        idx_elem_cnt = static_cast<GLuint>(index_count);
+    }
+
+    primitive_type = primitive;
+}
+
+
 
 void Rendering::Draw() {
     shdr_pgm.Use();

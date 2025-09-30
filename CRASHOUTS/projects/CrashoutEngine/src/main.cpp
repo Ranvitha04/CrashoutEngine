@@ -82,13 +82,60 @@ Indicates how the program existed. Normal exit is signaled by a return value of
 Note that the C++ compiler will insert a return 0 statement if one is missing.
 */
 
-#include <Windows.h>
+#include <cstdio>
+#include <windows.h>
 
-#ifdef DEBUG
+/*  _________________________________________________________________________ */
+/*! SetupConsole
 
-int main() {
+@param none
+
+@return none
+
+Call to create a cmd console for debugging purposes
+*/
+void SetupConsole() {
+    // Create a new window
+    if (AllocConsole()) {
+        // Redirect standard I/O streams to the new console
+
+        // C/C++ standard input
+        // The "CONOUT$" decide is the console screen buffer.
+        (void)freopen("CONIN$", "r", stdin);
+
+        // C/C++ standard output
+        // The "CONOUT$" decide is the console screen buffer.
+        (void)freopen("CONOUT$", "w", stdout);
+
+        // C/C++ standard error
+        // The "CONOUT$" decide is the console screen buffer.
+        (void)freopen("CONERR$", "w", stderr);
+
+        // Clear the error flags for C++ streams
+        std::wcout.clear();
+        std::cout.clear();
+        std::wcerr.clear();
+        std::cerr.clear();
+        std::wcin.clear();
+        std::wcin.clear();
+    }
+}
+
+int WINAPI WinMain(
+    _In_     HINSTANCE hInstance,
+    _In_opt_ HINSTANCE hPrevInstance,
+    _In_     LPSTR     lpCmdLine,
+    _In_     int       nCmdShow
+){
+
+    #ifdef DEBUG
+    
+    SetupConsole();
+
+    #endif
+
     InstallCrashLogger("CrashoutsEngine");
-	glfwSwapInterval(0); // disable vsync
+    glfwSwapInterval(0); // disable vsync
     globalECS = CrashoutsEngine::ECS::getInstance();
     collisionSystem.registerObserver(Messaging::getCollisionMsgID(), physicsSystem); /*Listen to messages(collisions)*/
 
@@ -131,48 +178,6 @@ int main() {
     GLApp::cleanup();
     return EXIT_SUCCESS;
 }
-
-#else
-
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
-    PSTR lpCmdLine, int nCmdShow){
-    InstallCrashLogger("CrashoutsEngine");
-    CrashoutsEngine::ECS* globalECS =
-        CrashoutsEngine::ECS::getInstance();
-
-    // start with a 16:9 aspect ratio
-    if (!GLApp::init(1280, 720, "CRASHOUTS")) {
-        std::exit(EXIT_FAILURE);
-    }
-    init();
-    /// register game states and start with main menu
-    RegisterAllStates();
-    InitGameStateManager(MAIN_MENU);
-
-    InputManager::Init(GLApp::ptr_window);
-    UI::Init(GLApp::ptr_window); // NEW
-
-    // window's close flag is set by clicking close widget or Alt+F4
-    while (!glfwWindowShouldClose(GLApp::ptr_window)) {
-        //TEMPORARY TO BE REPLACED BY ECS INPUT SYSTEM - Rain
-        glfwPollEvents();
-        InputManager::Update();
-        GLApp::update_time();
-        physicsSystem.update(globalEntities, GLApp::delta_time);
-        draw();
-        UpdateGameStateManager();
-        update();
-
-    }
-
-    // Cleanup
-    UI::Shutdown();
-    GLApp::cleanup();
-
-    return 0;
-}
-
-#endif
 
 static void init() {
 

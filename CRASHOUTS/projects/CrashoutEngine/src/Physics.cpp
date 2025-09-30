@@ -24,6 +24,10 @@ namespace Component {
 		return mMass;
 	}
 
+	void RigidBodyComponent::setMass(f32 newMass) {
+		mMass = newMass;
+	}
+
 	void RigidBodyComponent::addForce(CEVec3 force) {
 		mNetForce += force;
 	}

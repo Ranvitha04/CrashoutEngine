@@ -24,6 +24,9 @@ set(ALL_LIBS
     PRIVATE imgui
     PRIVATE glm::glm
     PRIVATE stb
+    PRIVATE freetype
+    PRIVATE reflect
+    PRIVATE rapidjson
 )
 
 add_compile_definitions(
@@ -51,7 +54,7 @@ foreach(child ${children})
         )
 
         # Create executable
-        add_executable(${child}
+        add_executable(${child} WIN32
             ${${child}_source_files}
         )
         add_custom_command(TARGET ${child} POST_BUILD
@@ -69,6 +72,9 @@ foreach(child ${children})
 
         # Set C++ standard
         set_property(TARGET ${child} PROPERTY CXX_STANDARD 20)
+
+        # Enable WIN32
+        set_property(TARGET ${child} PROPERTY WIN32 TRUE)
 
         # Warnings based on compiler
         if (CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")

@@ -23,12 +23,11 @@ namespace Component {
 	*/
 	struct TransformComponent {
 		// Rotational transform
-		float rotation;
+		float rotation = 0.f;
 		// Scaling transform
-		CEVec2 size{0.5f, 0.5f};
+		CEVec2 size{1.f, 1.f};
 		// X Y Z position
-		CEVec3 position{};
+		CEVec3 position{ 0.f,0.f,0.f };
 	};
-
 }
 

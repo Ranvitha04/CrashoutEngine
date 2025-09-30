@@ -1,5 +1,8 @@
 #include "scenes/rain.h"
 #include "log.h"
+#include "rendererconnector.h"
+#include "settings.h"
+#include "TextRenderer.h"
 #include "GLFW/glfw3.h"
 #include "managers/entitymanager.h"
 
@@ -10,6 +13,12 @@ void LoadRain()
 	// Load resources specific to Renfred state
 	globalECS = CrashoutsEngine::ECS::getInstance();
 	globalECS->Reset();
+	GLuint shaderID = loadShaderProgram("shaders/textShader.vert", "shaders/textShader.frag");
+	if (shaderID == 0) {
+		std::cerr << "Failed to load text shader.\n";
+		return;
+	}
+	gTextRenderer = new TextRenderer("assets/fonts/arial.ttf", Settings::GetScreenWidth(), Settings::GetScreenHeight());
 }
 
 void InitRain()
@@ -28,7 +37,7 @@ void RenderRain()
 	// Render Rain state
 	glClearColor(0.1f, 0.2f, 0.4f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
-
+	gTextRenderer->renderCenteredText("Hello", 0.0f, 0.0f, 1.0f, glm::vec3(1.0f, 1.0f, 1.0f));
 	using namespace CrashoutsEngine;
 
 	const ECS::ComponentArray<Component::ShapeComponent>& shapeArray = globalECS->GetComponentArray<Component::ShapeComponent>();
@@ -49,10 +58,10 @@ void RenderRain()
 				rot = tf->rotation;
 			}
 			switch (sc->type) {
-			case Component::ShapeType::Square:    Component::Shapes::CreateSquare(pos, sc->size * scale.x, rot, sc->scale, sc->color * (1 / 255.f)); break;
-			case Component::ShapeType::Rectangle: Component::Shapes::CreateRectangle(pos, sc->width * scale.x, sc->height * scale.y, rot, sc->scale, sc->color * (1 / 255.f)); break;
-			case Component::ShapeType::Line:      Component::Shapes::CreateLine(sc->p1, sc->p2, sc->thickness, rot, sc->scale, sc->color * (1 / 255.f)); break;
-			case Component::ShapeType::Triangle:  Component::Shapes::CreateTriangle(sc->t1, sc->t2, sc->t3, rot, sc->scale * scale.x, sc->color * (1 / 255.f)); break;
+			//case Component::ShapeType::Square:    Component::Shapes::CreateSquare(pos, sc->size, rot, (scale.x > scale.y) ? scale.x : scale.y, sc->color * (1 / 255.f)); break;
+			case Component::ShapeType::Rectangle: Component::Shapes::CreateRectangle(pos, sc->width * scale.x, sc->height * scale.y, rot, 1.0f, sc->color * (1 / 255.f)); break;
+			case Component::ShapeType::Line:      Component::Shapes::CreateLine(sc->p1, sc->p2, sc->thickness, rot, (scale.x > scale.y) ? scale.x : scale.y, sc->color * (1 / 255.f)); break;
+			case Component::ShapeType::Triangle:  Component::Shapes::CreateTriangle(sc->t1, sc->t2, sc->t3, rot, (scale.x > scale.y) ? scale.x : scale.y, sc->color * (1 / 255.f)); break;
 			}
 		}
 	}
@@ -61,6 +70,8 @@ void RenderRain()
 void FreeRain()
 {
 	// Free resources specific to Rain state
+	delete gTextRenderer;
+	gTextRenderer = nullptr;
 }
 
 void UnloadRain()

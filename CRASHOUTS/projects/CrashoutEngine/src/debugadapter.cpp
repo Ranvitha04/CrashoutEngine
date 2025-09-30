@@ -183,7 +183,7 @@ namespace {
             if (auto* t = ecs.GetComponent<TransformComponent>(e)) center = t->position;
 
             auto col = std::make_unique<Collision::Sphere>(D.sphere_radius, center);
-            ecs.AddComponent<ColliderComponent>(e, ColliderComponent{ std::move(col) });
+            ecs.AddComponent<ColliderComponent>(e, std::move(col));
 
             if (!ecs.HasComponent<RigidBodyComponent>(e)) {
                 auto& D2 = GetDebugDefaults();
@@ -306,9 +306,42 @@ namespace {
             }
 
             // shared
+            ImGui::Checkbox("Use Texture", &sc->enableTexture);
+
+            char buf[256]{};
+            if (sc->textureName.size() < sizeof(buf)) std::memcpy(buf, sc->textureName.data(), sc->textureName.size());
+
+            ImGui::InputText("Texture Name", buf, sizeof(buf));
+            if (ImGui::IsItemEdited() || ImGui::IsItemDeactivatedAfterEdit()) {
+                sc->textureName = buf;
+            }
+
+            // If using texture, enable the texture options
+            if (sc->enableTexture) {
+
+                const char* wrapModes[] = { "Clamp To Edge","Repeat","Mirror" };
+                const int numWrapModes = IM_ARRAYSIZE(wrapModes);
+
+                // U (HORIZONTAL) WRAP MODE
+                if (ImGui::Combo("U Wrap Mode", &sc->wrapModeU, wrapModes, numWrapModes)) {
+                }
+
+                // V (HORIZONTAL) WRAP MODE
+                if (ImGui::Combo("V Wrap Mode", &sc->wrapModeV, wrapModes, numWrapModes)) {
+                }
+
+                // UV size
+                float size[2] = { sc->uvSize.x, sc->uvSize.y };
+                ImGui::DragFloat2("UV", size, D.drag_small);
+                if (ImGui::IsItemEdited() || ImGui::IsItemDeactivatedAfterEdit()) {
+                    sc->uvSize = { size[0], size[1] };
+                }
+
+            }
+
             ImGui::DragFloat3("Color", &sc->color.x, D.drag_small, 0.f, 255.f);
             //ImGui::DragFloat("Rotation", &sc->rotation, D.drag_rotation);
-            ImGui::DragFloat("Scale", &sc->scale, D.drag_small, 0.01f, 100.f);
+            //ImGui::DragFloat("Scale", &sc->scale, D.drag_small, 0.01f, 100.f);
 
             // per-type
             switch (sc->type) {

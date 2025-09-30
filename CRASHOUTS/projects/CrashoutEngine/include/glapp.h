@@ -1,4 +1,4 @@
-/* !
+/**
 @file    	glapp.h
 @author  	pghali@digipen.edu
 @co-author  parminder.singh@digipen.edu
@@ -21,6 +21,7 @@ objects participating in the application.
 #include <GL/glew.h> // for access to OpenGL API declarations 
 #include <GLFW/glfw3.h>
 #include <string>
+#include <vector>
 
 
 // Log headers for logging
@@ -53,6 +54,13 @@ struct GLApp
 	static std::string title;
 	static GLFWwindow* ptr_window;
 	static GLfloat clear_color[4]; // rgba normalize components in range 0.0f to 1.0f
+
+	struct GLViewport {
+		GLint x, y;
+		GLsizei width, height;
+	};
+
+	static std::vector<GLViewport> vps;
 
 };
 

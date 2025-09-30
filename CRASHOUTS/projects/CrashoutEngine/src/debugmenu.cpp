@@ -215,58 +215,65 @@ namespace UI { // --------------------------------------------------------------
 
         if (!selected) return;
         
-        if (ImGui::Button("Destroy Selected")) {
-            ecs.DestroyEntity(selected);
-            if (auto it = std::find(entities.begin(), entities.end(), selected);
-                it != entities.end()) entities.erase(it);
-            selected = 0;
-            return;
-        }
-
-        ImGui::Separator();
-        ImGui::TextUnformatted("Add Components");
-
-        // List all registered component types with an "Add" button
-        for (auto* ad : DebugReflection::ComponentRegistry::instance().all()) {
-            ImGui::PushID(ad);
-            bool has = ad->has(ecs, selected);
-            ImGui::BeginDisabled(has);
-            if (ImGui::Button(ad->name())) {
-                ad->add(ecs, selected);
+        if (entities.size() > 0) {
+            if (ImGui::Button("Clone Selected")) {
+                selected = ecs.CloneEntity(selected);
+                return;
             }
-            ImGui::EndDisabled();
-            ImGui::SameLine();
-            ImGui::TextUnformatted(ad->name());
 
-            ImGui::PopID();
-        }
-        ImGui::NewLine();
+            if (ImGui::Button("Destroy Selected")) {
+                ecs.DestroyEntity(selected);
+                if (auto it = std::find(entities.begin(), entities.end(), selected);
+                    it != entities.end()) entities.erase(it);
+                selected = 0;
+                return;
+            }
 
-        // --- Inspect components present on selected entity ---
-        ImGui::Separator();
-        ImGui::TextUnformatted("Components on Selected Entity");
+            ImGui::Separator();
+            ImGui::TextUnformatted("Add Components");
 
-        for (auto* ad : DebugReflection::ComponentRegistry::instance().all()) {
-            if (!ad->has(ecs, selected)) continue;
-
-            ImGui::PushID(ad); // unique scope for this component’s UI
-
-            // TreeNode label can be the display name now that ID is scoped
-            if (ImGui::TreeNode("Component")) {   // id = "Component" under PushID(ad)
-                ad->drawInspector(ecs, selected);
-
-                if (ImGui::Button("Remove##btn")) {  // id = "Remove##btn" under PushID(ad)
-                    ad->remove(ecs, selected);
-                    ImGui::TreePop();
-                    ImGui::PopID();
-                    break; // components changed; bail this frame
+            // List all registered component types with an "Add" button
+            for (auto* ad : DebugReflection::ComponentRegistry::instance().all()) {
+                ImGui::PushID(ad);
+                bool has = ad->has(ecs, selected);
+                ImGui::BeginDisabled(has);
+                if (ImGui::Button(ad->name())) {
+                    ad->add(ecs, selected);
                 }
-                ImGui::TreePop();
-            }
-            ImGui::SameLine();
-            ImGui::TextDisabled("%s", ad->name()); // visible label next to the node
+                ImGui::EndDisabled();
+                ImGui::SameLine();
+                ImGui::TextUnformatted(ad->name());
 
-            ImGui::PopID();
+                ImGui::PopID();
+            }
+            ImGui::NewLine();
+
+            // --- Inspect components present on selected entity ---
+            ImGui::Separator();
+            ImGui::TextUnformatted("Components on Selected Entity");
+
+            for (auto* ad : DebugReflection::ComponentRegistry::instance().all()) {
+                if (!ad->has(ecs, selected)) continue;
+
+                ImGui::PushID(ad); // unique scope for this component’s UI
+
+                // TreeNode label can be the display name now that ID is scoped
+                if (ImGui::TreeNode("Component")) {   // id = "Component" under PushID(ad)
+                    ad->drawInspector(ecs, selected);
+
+                    if (ImGui::Button("Remove##btn")) {  // id = "Remove##btn" under PushID(ad)
+                        ad->remove(ecs, selected);
+                        ImGui::TreePop();
+                        ImGui::PopID();
+                        break; // components changed; bail this frame
+                    }
+                    ImGui::TreePop();
+                }
+                ImGui::SameLine();
+                ImGui::TextDisabled("%s", ad->name()); // visible label next to the node
+
+                ImGui::PopID();
+            }
         }
     }
 

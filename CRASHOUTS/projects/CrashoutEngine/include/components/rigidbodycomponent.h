@@ -7,6 +7,7 @@
 //__________________________________________________________________________*/
 
 #pragma once
+#include <math/CEVec3.h>
 
 namespace Component {
 	class RigidBodyComponent {
@@ -24,6 +25,7 @@ namespace Component {
 			/*Member Functions*/
 			f32 getInverseMass();
 			f32 getMass();
+			void setMass(f32 newMass);
 			void addForce(CEVec3 force);
 			void clearForceAccumulator();
 			void updatePhysics(double dt);
