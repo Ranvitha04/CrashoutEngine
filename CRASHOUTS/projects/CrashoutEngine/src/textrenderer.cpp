@@ -12,6 +12,7 @@
 #include <sstream>
 #include <iostream>
 
+#include "settings.h"
 
 /**
   * @brief Construct a new TextRenderer

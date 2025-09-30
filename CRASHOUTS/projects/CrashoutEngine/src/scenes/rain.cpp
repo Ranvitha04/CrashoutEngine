@@ -39,7 +39,7 @@ void RenderRain()
 	glClearColor(0.1f, 0.2f, 0.4f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 	if (gTextRenderer) {
-		gTextRenderer->renderCenteredText("Hello", 0.0f, 0.0f, 1.0f, glm::vec3(0.0f));
+		gTextRenderer->renderCenteredText("Hello", 0.0f, 0.0f, 1.0f, glm::vec3(1.0f));
 	}
 
 	using namespace CrashoutsEngine;
