@@ -89,11 +89,22 @@ macro(import_freetype)
         FetchContent_Declare(
             freetype
             GIT_REPOSITORY https://github.com/freetype/freetype.git
-            GIT_TAG VER-2-13-2 
+            GIT_TAG VER-2-13-2
         )
         FetchContent_MakeAvailable(freetype)
+        if (TARGET freetype)
+            get_target_property(freetype_cflags freetype COMPILE_OPTIONS)
+            if (freetype_cflags)
+                string(REGEX REPLACE "/W[0-4]" "" freetype_cflags "${freetype_cflags}")
+                set_target_properties(freetype PROPERTIES COMPILE_OPTIONS "${freetype_cflags} /W0")
+            else()
+                set_target_properties(freetype PROPERTIES COMPILE_OPTIONS "/W0")
+            endif()
+        endif()
     endif()
 endmacro()
+
+
 
 # -------------------- reflect.cpp --------------------
 macro(import_reflect)

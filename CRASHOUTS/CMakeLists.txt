@@ -45,6 +45,15 @@ add_compile_definitions(
 include_directories(${CMAKE_CURRENT_LIST_DIR}/lib/glm)
 
 include_directories(${_FMOD_INC})
+# ======================= Global Warning Level =========================
+if (MSVC)
+    # Clear warning level flags and enforce /W4 /WX
+    string (REGEX REPLACE "/W[0-4]" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4 /permissive- /WX")
+elseif (CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    add_compile_options(-Wall -Wextra -Wpedantic -Werror)
+endif()
+
 # ======================= AUTO PROJECT DISCOVERY =========================
 # Get all subdirectories in the projects folder
 file(GLOB children RELATIVE "${CMAKE_CURRENT_LIST_DIR}/projects" "${CMAKE_CURRENT_LIST_DIR}/projects/*")
@@ -83,14 +92,14 @@ foreach(child ${children})
 
         # Enable WIN32
         set_property(TARGET ${child} PROPERTY WIN32 TRUE)
-
+        #[[
         # Warnings based on compiler
         if (CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
             target_compile_options(${child} PRIVATE -Wall ${DisableWarnings})
         elseif (MSVC)
             target_compile_options(${child} PRIVATE /W3 /WX-)
         endif()
-
+        ]]
         # Include path for each project
         target_include_directories(${child} PRIVATE
             ${CMAKE_CURRENT_LIST_DIR}/projects/${child}/include
