@@ -47,7 +47,6 @@ namespace Messaging {
 			HANDLER getHandler(const std::string& messageId) {
 				return mHandlers[messageId];
 			}
-
 		
 	};
 }

@@ -9,7 +9,6 @@
 #include <string>
 #include <unordered_map>
 #include <memory>
-
 #include <fmod_studio.hpp>
 #include <fmod.hpp>
 #include <fmod_errors.h>
