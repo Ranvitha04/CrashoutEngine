@@ -54,6 +54,9 @@ void InitGameStateManager(GameState state);
 /// Update the game state manager handling transitions updates and rendering
 void UpdateGameStateManager();
 
+// Shutdown the game state manager and free allocated data
+void ShutdownGameStateManager();
+
 /**
  * @brief Change the game state
  * @param newState The new state to switch to

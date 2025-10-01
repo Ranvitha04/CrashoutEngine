@@ -251,7 +251,7 @@ void GLApp::draw() {
     //model.Draw();
 
     // ---- choose which shape to draw by uncommenting ----
-    CEVec3 pos(RightTest, 0.0f, 0.0f);
+    //CEVec3 pos(RightTest, 0.0f, 0.0f);
     //float rotation = 85.0f;
     //float scale = 45.f;
     //CEVec3 pos(0.0f, 0.0f, 0.0f);

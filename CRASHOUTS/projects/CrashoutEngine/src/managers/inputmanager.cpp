@@ -61,6 +61,25 @@ void InputManager::Update() {
     }
 }
 
+void InputManager::Shutdown() {
+    // 1. Decouple callbacks from the window
+    if (Window != nullptr) {
+        // Set all callbacks back to NULL or a safe stub
+        glfwSetKeyCallback(Window, nullptr);
+        glfwSetMouseButtonCallback(Window, nullptr);
+        glfwSetScrollCallback(Window, nullptr);
+
+        // Clear the window pointer
+        Window = nullptr;
+    }
+
+    // 2. Clear internal state (frees memory used by the maps)
+    Keys.clear();
+    MouseButtons.clear();
+    ScrollYAccum = 0.0f;
+    ScrollYFrame = 0.0f;
+}
+
 /*!
 @brief Check if a specific key is pressed using Key enum
 @param key The Key enum value

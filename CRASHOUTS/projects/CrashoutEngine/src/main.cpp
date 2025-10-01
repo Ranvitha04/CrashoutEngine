@@ -148,7 +148,6 @@ int WINAPI WinMain(
 
     InstallCrashLogger("CrashoutsEngine");
     glfwSwapInterval(0); // disable vsync
-    globalECS = CrashoutsEngine::ECS::getInstance();
     collisionSystem.registerObserver(Messaging::getCollisionMsgID(), physicsSystem); /*Listen to messages(collisions)*/
 
     // start with a 16:9 aspect ratio
@@ -189,6 +188,10 @@ int WINAPI WinMain(
     UI::Shutdown();
     Logger::Instance().Clear();
     GLApp::cleanup();
+    InputManager::Shutdown();
+    ShutdownGameStateManager();
+
+    CrashoutsEngine::ECS::DestroyInstance();
 
     _CrtMemCheckpoint(&stateEnd);
     if (_CrtMemDifference(&stateDiff, &stateStart, &stateEnd)) {
