@@ -90,8 +90,8 @@ namespace CollisionGizmos {
             auto* pColliderComp = ecs.GetComponent<Component::ColliderComponent>(e);
             if (!pColliderComp || !pColliderComp->collider) continue;
 
-            const CEVec3 color = IsColliding(e, events) ? hit : ok;
-            const Collision::Collider* pBase = pColliderComp->collider.get();
+            const CEVec3 color = /*IsColliding(e, events) ? hit : */  /*TEMP FOR NOW*/ ok;
+            const Collision::Collider* base = cc->collider.get();
 
             if (pBase->type == Collision::SPHERE) {
                 auto const* pSphere = dynamic_cast<const Collision::Sphere*>(pBase);
@@ -112,7 +112,7 @@ namespace CollisionGizmos {
      @param normalLen      Length of the normal vector drawn from the first contact.
      @param wireThickness  Line thickness for points and normal.
      @note For each event, all contact points are marked with a small cross.
-           If any contact exists, the manifold’s normal is drawn starting at
+           If any contact exists, the manifoldï¿½s normal is drawn starting at
            the first contact point with length @p normalLen.
     */
     void DrawContactsAndNormals(const std::vector<Collision::CollisionEvent>& events, float normalLen, float wireThickness) {

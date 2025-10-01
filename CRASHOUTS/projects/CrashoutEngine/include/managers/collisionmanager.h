@@ -64,6 +64,7 @@ namespace Collision {
 			Collider(ColliderType type);
 			virtual ~Collider() = default;
 			virtual std::unique_ptr<Collider> clone() const = 0;
+			virtual void updateCollider(CEVec3 const& newPos) {};
 	};
 
 	/*!
@@ -76,6 +77,7 @@ namespace Collision {
 			CEVec3 center;
 			Sphere(f32 radius, CEVec3 const& center);
 			~Sphere() = default;
+			virtual void updateCollider(CEVec3 const& newPos);
 
 			virtual std::unique_ptr<Collider> clone() const override {
 				return std::make_unique<Sphere>(*this);
@@ -90,8 +92,10 @@ namespace Collision {
 		public:
 			CEVec3 min;
 			CEVec3 max;
+			CEVec3 extents;
 			AABBRect(CEVec3 const& min, CEVec3 const& max);
 			~AABBRect() = default;
+			virtual void updateCollider(CEVec3 const& newPos);
 
 			virtual std::unique_ptr<Collider> clone() const override {
 				return std::make_unique<AABBRect>(*this);
