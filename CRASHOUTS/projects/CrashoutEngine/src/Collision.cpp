@@ -255,8 +255,6 @@ namespace Collision {
 				result.normal = CEMath::Normalize(ClosestPtToCirc);
 			}
 
-			
-
 		}
 
 		return result;
