@@ -343,7 +343,9 @@ When the ESC key is pressed, the close flag of the window is set.
 */
 void GLApp::key_cb(GLFWwindow* pwin, int key, [[maybe_unused]] int scancode, int action, [[maybe_unused]] int mod) {
     //ImGui_ImplGlfw_KeyCallback(pwin, key, scancode, action, mod);
+#ifdef _DEBUG
     Key k = static_cast<Key>(key);
+#endif
     if (GLFW_PRESS == action) {
 #ifdef _DEBUG
         LOGI(Input, std::string(KeyToString(k)) + " is pressed");
@@ -408,9 +410,11 @@ were held down
 
 This function is called when mouse buttons are pressed.
 */
-void GLApp::mousebutton_cb([[maybe_unused]] GLFWwindow* pwin, int button, int action, [[maybe_unused]] int mod) {
+void GLApp::mousebutton_cb([[maybe_unused]] GLFWwindow* pwin, [[maybe_unused]] int button, [[maybe_unused]] int action, [[maybe_unused]] int mod) {
     //ImGui_ImplGlfw_MouseButtonCallback(pwin, button, action, mod);
+#ifdef DEBUG
     Key k = static_cast<Key>(button);
+#endif // DEBUG
 
 #ifdef _DEBUG
     if (action == GLFW_PRESS) {
