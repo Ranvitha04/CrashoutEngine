@@ -96,17 +96,14 @@ macro(import_freetype)
 endmacro()
 
 # -------------------- reflect.cpp --------------------
-macro(import_reflect)
-    if(NOT TARGET reflect)
-        FetchContent_Declare(
-            reflect
-            GIT_REPOSITORY https://github.com/getml/reflect-cpp.git
-            GIT_TAG v0.20.0
+# Macro to import reflcpp
+macro(import_reflcpp)
+    if(NOT TARGET reflcpp)  # Guard to prevent multiple inclusion
+        FetchContent_Declare(reflcpp
+            GIT_REPOSITORY https://github.com/veselink1/refl-cpp.git
+            GIT_TAG v0.12.4
         )
-        FetchContent_Populate(reflect)
-
-        add_library(reflect INTERFACE)
-        target_include_directories(reflect INTERFACE ${reflect_SOURCE_DIR}/include)
+        FetchContent_MakeAvailable(reflcpp)
     endif()
 endmacro()
 
@@ -158,8 +155,8 @@ macro(importDependencies)
     import_freetype()
     message(STATUS "FreeType imported successfully.")
 
-    import_reflect()
-    message(STATUS "reflect.cpp imported successfully.")
+    import_reflcpp()
+    message(STATUS "refl imported successfully.")
 
     import_rapidjson()
     message(STATUS "rapidjson imported successfully.")

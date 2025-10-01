@@ -4,6 +4,9 @@ cmake_minimum_required(VERSION 2.8...3.13)
 # Set the CMake policy version (this enables all policies up to CMake 3.5)
 cmake_policy(VERSION 3.5)
 
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 project(CRASHOUTS)
 
 # Set the directory where custom CMake modules are stored
@@ -25,7 +28,7 @@ set(ALL_LIBS
     PRIVATE glm::glm
     PRIVATE stb
     PRIVATE freetype
-    PRIVATE reflect
+    PRIVATE refl-cpp::refl-cpp
     PRIVATE rapidjson
 )
 
@@ -87,37 +90,3 @@ foreach(child ${children})
         )
     endif()
 endforeach()
-
-# Doxygen: rebuild only when files change
-find_package(Doxygen REQUIRED)
-
-set(DOXYFILE_IN ${CMAKE_SOURCE_DIR}/Doxyfile)
-set(DOC_OUTPUT_DIR ${CMAKE_SOURCE_DIR}/docs)
-
-# Everything that should trigger a doc rebuild
-file(GLOB_RECURSE DOXY_INPUTS CONFIGURE_DEPENDS
-     ${CMAKE_SOURCE_DIR}/include/*.h
-     ${CMAKE_SOURCE_DIR}/include/*.hpp
-     ${CMAKE_SOURCE_DIR}/src/*.h
-     ${CMAKE_SOURCE_DIR}/src/*.hpp
-     ${CMAKE_SOURCE_DIR}/src/*.c
-     ${CMAKE_SOURCE_DIR}/src/*.cc
-     ${CMAKE_SOURCE_DIR}/src/*.cpp
-     ${CMAKE_SOURCE_DIR}/*.md
-     ${CMAKE_SOURCE_DIR}/docs/*.md)
-
-# Produce a stamp file when doxygen finishes, depend on all inputs
-add_custom_command(
-    OUTPUT ${DOC_OUTPUT_DIR}/.doxygen.stamp
-    COMMAND ${CMAKE_COMMAND} -E make_directory ${DOC_OUTPUT_DIR}
-    COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYFILE_IN}
-    COMMAND ${CMAKE_COMMAND} -E touch ${DOC_OUTPUT_DIR}/.doxygen.stamp
-    BYPRODUCTS ${DOC_OUTPUT_DIR}/html/index.html
-    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-    COMMENT "Running Doxygen on every build"
-    VERBATIM
-)
-
-add_custom_target(doxygen_docs ALL
-    DEPENDS ${DOC_OUTPUT_DIR}/.doxygen.stamp
-)

@@ -1,5 +1,4 @@
 {
-    "audio": [],
     "fonts": [
         {
             "name": "arial",
@@ -33,5 +32,6 @@
             "name": "assetmanifest",
             "path": "assetmanifest.json"
         }
-    ]
+    ],
+    "scenes": []
 }
