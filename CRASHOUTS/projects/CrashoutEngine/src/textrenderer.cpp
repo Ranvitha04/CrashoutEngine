@@ -1,9 +1,11 @@
-/**
- * @file TextRenderer.cpp
- * @brief Implementation of the TextRenderer class
- *
- * Handles font loading character atlas creation and text rendering with FreeType and OpenGL
- */
+/*!
+@file       textrenderer.cpp
+@author     m.biniswandi@digipen.edu
+@date       25/09/2025
+@brief      Implementation of the TextRenderer class
+ 
+Handles font loading character atlas creation and text rendering with FreeType and OpenGL
+*/
 
 #include "TextRenderer.h"
 #include <glm/gtc/matrix_transform.hpp>
@@ -14,12 +16,12 @@
 
 #include "settings.h"
 
-/**
-  * @brief Construct a new TextRenderer
-  * @param fontPath Path to the font file
-  * @param screenWidth Screen width used for orthographic projection
-  * @param screenHeight Screen height used for orthographic projection
-  */
+/*!
+@brief Construct a new TextRenderer
+@param fontPath Path to the font file
+@param screenWidth Screen width used
+@param screenHeight Screen height used
+*/
 TextRenderer::TextRenderer(const std::string& fontPath, GLuint screenWidth, GLuint screenHeight){
     shaderID = LoadShaderProgram("../../../projects/CrashoutEngine/shaders/textShader.vert", "../../../projects/CrashoutEngine/shaders/textShader.frag");
     if (shaderID == 0) {
@@ -75,11 +77,11 @@ TextRenderer::~TextRenderer() {
     }
 }
 
-/**
- * @brief Load a font and create character textures
- * @param fontPath Path to the font file
- * @return True if font loaded successfully false otherwise
- */
+/*!
+@brief Load a font and create character textures
+@param fontPath Path to the font file
+@return True if font loaded successfully false otherwise
+*/
 bool TextRenderer::LoadFont(const std::string& fontPath) {
     FT_Library ft;
     if (FT_Init_FreeType(&ft)) {
@@ -141,14 +143,14 @@ bool TextRenderer::LoadFont(const std::string& fontPath) {
     return true;
 }
 
-/**
- * @brief Render text at a given position
- * @param text String to render
- * @param x Left aligned X position in screen space
- * @param y Baseline Y position in screen space
- * @param scale Scale factor for text size
- * @param color RGB color of the text
- */
+/*!
+@brief Render text at a given position
+@param text String to render
+@param x Left aligned X position in screen space
+@param y Baseline Y position in screen space
+@param scale Scale factor for text size
+@param color RGB color of the text
+*/
 void TextRenderer::RenderText(const std::string& text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color) {
     glUseProgram(shaderID);
     glUniform3f(glGetUniformLocation(shaderID, "textColor"), color.x, color.y, color.z);
@@ -194,16 +196,16 @@ void TextRenderer::RenderText(const std::string& text, GLfloat x, GLfloat y, GLf
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-/**
- * @brief Render centered text
- * @param text String to render
- * @param x Center X position
- * @param y Center Y position
- * @param scale Scale factor for text size
- * @param color RGB color of the text
- *
- * Measures text dimensions and adjusts position so that text is centered on the given coordinates
- */
+/*!
+@brief Render centered text
+@param text String to render
+@param x Center X position
+@param y Center Y position
+@param scale Scale factor for text size
+@param color RGB color of the text
+
+Measures text dimensions and adjusts position so that text is centered on the given coordinates
+*/
 void TextRenderer::RenderCenteredText(const std::string& text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color) {
     // Measure total width and max full height (including descent)
     GLfloat textWidth = 0.0f;
@@ -227,12 +229,12 @@ void TextRenderer::RenderCenteredText(const std::string& text, GLfloat x, GLfloa
     RenderText(text, originX, originY, scale, color);
 }
 
-/**
- * @brief Compile a shader from source code
- * @param type OpenGL shader type such as GL_VERTEX_SHADER or GL_FRAGMENT_SHADER
- * @param source GLSL shader source code
- * @return Compiled shader ID or 0 if compilation fails
- */
+/*!
+@brief Compile a shader from source code
+@param type OpenGL shader type such as GL_VERTEX_SHADER or GL_FRAGMENT_SHADER
+@param source GLSL shader source code
+@return Compiled shader ID or 0 if compilation fails
+*/
 GLuint CompileShader(GLenum type, const std::string& source) {
     GLuint shader = glCreateShader(type);
     const char* src = source.c_str();
@@ -253,11 +255,11 @@ GLuint CompileShader(GLenum type, const std::string& source) {
     return shader;
 }
 
-/**
- * @brief Read the contents of a file into a string
- * @param path Path to the file
- * @return File contents as a string or empty string if reading fails
- */
+/*!
+@brief Read the contents of a file into a string
+@param path Path to the file
+@return File contents as a string or empty string if reading fails
+*/
 std::string ReadFile(const std::string& path) {
     std::ifstream file(path);
     std::stringstream buffer;
@@ -271,12 +273,12 @@ std::string ReadFile(const std::string& path) {
     return buffer.str();
 }
 
-/**
- * @brief Load and link a shader program from vertex and fragment shader files
- * @param vertexPath Path to the vertex shader file
- * @param fragmentPath Path to the fragment shader file
- * @return Linked shader program ID or 0 if linking fails
- */
+/*!
+@brief Load and link a shader program from vertex and fragment shader files
+@param vertexPath Path to the vertex shader file
+@param fragmentPath Path to the fragment shader file
+@return Linked shader program ID or 0 if linking fails
+*/
 GLuint LoadShaderProgram(const std::string& vertexPath, const std::string& fragmentPath) {
     std::string vertexCode = ReadFile(vertexPath);
     std::string fragmentCode = ReadFile(fragmentPath);

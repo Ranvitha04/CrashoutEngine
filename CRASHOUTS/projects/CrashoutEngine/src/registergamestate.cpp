@@ -1,6 +1,8 @@
 /*!
-@file registergamestate.cpp
-@brief Registers all available game states
+@file		registergamestate.cpp
+@author     m.biniswandi@digipen.edu
+@date       13/09/2025
+@brief		Registers all available game states
 
 Creates descriptors for each state and registers them with the game state manager
 */
