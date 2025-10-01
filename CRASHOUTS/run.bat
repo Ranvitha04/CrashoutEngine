@@ -1,7 +1,16 @@
 @echo off
 REM ===============================================
 REM Windows Build and Run Script
+REM Usage: run.bat [release | debug]
 REM ===============================================
+
+REM --- Script Configuration ---
+set TARGET_EXE=CrashoutEngine.exe
+set BUILD_CONFIG=Release
+
+REM --- Argument Processing ---
+if /I "%1"=="debug" set BUILD_CONFIG=Debug
+if /I "%1"=="release" set BUILD_CONFIG=Release
 
 echo.
 echo ===============================================
@@ -70,7 +79,7 @@ REM Run the application
 echo Running the application...
 echo.
 cd Debug
-GlWithCMake.exe
+CrashoutEngine.exe
 if %errorlevel% neq 0 (
     echo.
     echo Application exited with error code: %errorlevel%
