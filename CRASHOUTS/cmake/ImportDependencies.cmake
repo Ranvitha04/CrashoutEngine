@@ -157,7 +157,7 @@ endmacro()
 # third_party/fmod/
 #   include/            fmod.hpp, fmod_studio.hpp
 #   lib/x64/            fmod_vc.lib, fmodstudio_vc.lib
-#   bin/x64/            fmod.dll (or fmodL.dll), fmodstudio.dll
+#   bin/x64/            fmod.dll (or fmodL.dll),fmodstudio.dll
 
 set(_FMOD          "${CMAKE_SOURCE_DIR}/third_party/fmod")
 set(_FMOD_INC      "${_FMOD}/include")
@@ -225,8 +225,6 @@ target_link_libraries(CrashoutsAudio PUBLIC FMOD::Core FMOD::Studio)
 
 # (optional) log once so we know it ran
 message(STATUS "[CrashoutsAudio] src='${CA_SRC}/audioSystem.cpp'")
-
-
 # Macro to import all dependencies
 macro(importDependencies)
     message(STATUS "Starting to import dependencies...")
