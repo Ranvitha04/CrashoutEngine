@@ -4,6 +4,8 @@ cmake_minimum_required(VERSION 3.5)
 # Set the CMake policy version (this enables all policies up to CMake 3.5)
 cmake_policy(VERSION 3.24)
 
+set(CMAKE_POLICY_VERSION_MINIMUM 3.5)
+
 project(CRASHOUTS CXX)
 
 set(CMAKE_CXX_STANDARD 20)
