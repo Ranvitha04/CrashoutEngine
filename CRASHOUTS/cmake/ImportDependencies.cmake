@@ -1,4 +1,21 @@
 include(FetchContent)
+function(disable_warnings_for target)
+    if (MSVC)
+        # Get existing compile options for the target
+        get_target_property(existing_compile_options ${target} COMPILE_OPTIONS)
+
+        if (existing_compile_options)
+            # Remove any /W0–/W4 already present
+            string(REGEX REPLACE "/W[0-4]" "" existing_compile_options "${existing_compile_options}")
+            set_target_properties(${target} PROPERTIES COMPILE_OPTIONS "${existing_compile_options};/W0")
+        else()
+            # If no options yet, just add /W0
+            set_target_properties(${target} PROPERTIES COMPILE_OPTIONS "/W0")
+        endif()
+    else()
+        target_compile_options(${target} PRIVATE -w)
+    endif()
+endfunction()
 
 # -------------------- GLFW --------------------
 macro(import_glfw)
@@ -93,13 +110,7 @@ macro(import_freetype)
         )
         FetchContent_MakeAvailable(freetype)
         if (TARGET freetype)
-            get_target_property(freetype_cflags freetype COMPILE_OPTIONS)
-            if (freetype_cflags)
-                string(REGEX REPLACE "/W[0-4]" "" freetype_cflags "${freetype_cflags}")
-                set_target_properties(freetype PROPERTIES COMPILE_OPTIONS "${freetype_cflags} /W0")
-            else()
-                set_target_properties(freetype PROPERTIES COMPILE_OPTIONS "/W0")
-            endif()
+            disable_warnings_for(freetype)
         endif()
     endif()
 endmacro()
