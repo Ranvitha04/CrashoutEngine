@@ -68,7 +68,7 @@ namespace Collision {
 		collideFuncts[sphereIdx * TYPES_OF_COLLISION + AABBIdx] = SphereToAABBCollision;
 	}
 
-	void CollisionHandler::update(double deltaTime) {
+	void CollisionHandler::update([[maybe_unused]] double deltaTime) {
 		CrashoutsEngine::ECS& globalECS = *(CrashoutsEngine::ECS::getInstance());
 
 		std::vector<CrashoutsEngine::Entity> globalEntities = globalECS.GetComponentArray<Component::NameComponent>().indexToEntity;
@@ -89,7 +89,7 @@ namespace Collision {
 
 				Component::ColliderComponent* collider2{ globalECS.GetComponent<Component::ColliderComponent>(entity2) };
 				Component::TransformComponent* transform2{ globalECS.GetComponent<Component::TransformComponent>(entity2) };
-				Component::RigidBodyComponent* rigidBody2{ globalECS.GetComponent<Component::RigidBodyComponent>(entity2) };
+				//Component::RigidBodyComponent* rigidBody2{ globalECS.GetComponent<Component::RigidBodyComponent>(entity2) };
 
 				/*CHECK FOR COLLISION and call collision function*/
 				Collision::CollisionManifold collisionManifold{};
@@ -118,8 +118,8 @@ namespace Collision {
 				if (collisionManifold.collisionOccured) {
 					CollisionMessage colMessage{ Messaging::getCollisionMsgID(), collisionManifold, entity1, entity2 };
 					
-					CrashoutsEngine::Entity const* entity1Ptr{ &entity1 };
-					CrashoutsEngine::Entity const* entity2Ptr{ &entity2 };
+					//CrashoutsEngine::Entity const* entity1Ptr{ &entity1 };
+					//CrashoutsEngine::Entity const* entity2Ptr{ &entity2 };
 
 					sendMessage(colMessage);
 

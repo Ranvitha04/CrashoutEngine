@@ -296,7 +296,7 @@ namespace UI { // --------------------------------------------------------------
         auto& frc = FrameRateController::GetInstance();
         const double frame_ms = frc.DT() * 1000.0;
         const double fps = frc.FPS();
-        const int cap = frc.CAP();
+        //const int cap = frc.CAP();
 
         ImGui::Text("Frame: %.3f ms (%.1f FPS)", frame_ms, fps);
 
@@ -426,7 +426,7 @@ namespace UI { // --------------------------------------------------------------
 
         const int cur = P->current() ? P->current() : -1;
         const int prev = P->previous() ? P->previous() : -1;
-        const int next = P->next() ? P->next() : -1;
+        //const int next = P->next() ? P->next() : -1;
 
         ImGui::Text("Current:  %s", nameFor(cur));
         ImGui::Text("Previous: %s", nameFor(prev));
@@ -457,7 +457,7 @@ namespace UI { // --------------------------------------------------------------
      @param phys Physics handler reference.
      @param ui UI state toggles.
     */
-    void RenderPhysicsPanel(FrameProfiler& profiler, ECS& ecs, Physics::PhysicsHandler& phys, UIState& ui)
+    void RenderPhysicsPanel([[maybe_unused]] FrameProfiler& profiler, ECS& ecs, Physics::PhysicsHandler& phys, UIState& ui)
     {
         if (!ui.showPhysics) return;
         ScopedWindow w("Physics / Collision", LockFlags(ui.lockLayout));
@@ -527,7 +527,7 @@ namespace UI { // --------------------------------------------------------------
      @param ecs ECS reference.
      @param ui UI state toggles.
     */
-    void RenderAudioPanel(FrameProfiler& profiler, ECS& ecs, UIState& ui) {
+    void RenderAudioPanel([[maybe_unused]] FrameProfiler& profiler, [[maybe_unused]] ECS& ecs, UIState& ui) {
         if (!ui.showAudio) return;
         ScopedWindow w("Audio", LockFlags(ui.lockLayout));
 

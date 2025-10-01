@@ -152,7 +152,7 @@ namespace Physics {
 		f32 invMass1{ rigidBody1->getInverseMass() };
 		f32 invMass2{ rigidBody2->getInverseMass() };
 		f32 sumInvMass{ invMass1 + invMass2 };
-		f32 totalMass{ rigidBody1->getMass() + rigidBody2->getMass()};
+		//f32 totalMass{ rigidBody1->getMass() + rigidBody2->getMass()};
 		if (sumInvMass == 0.f) {
 			return;
 		}

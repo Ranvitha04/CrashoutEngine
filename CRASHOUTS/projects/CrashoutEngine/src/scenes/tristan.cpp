@@ -92,7 +92,7 @@ void RenderTristan() {
 
 
 				CEVec2 scale{ 1.f, 1.f };
-				Component::ColliderComponent* cc = globalECS->GetComponent<Component::ColliderComponent>(id);
+				//Component::ColliderComponent* cc = globalECS->GetComponent<Component::ColliderComponent>(id);
 				switch (sc->type) {
 				case Component::ShapeType::Square:    Component::Shapes::CreateSquare(t->position, sc->size, t->rotation, 1.f, sc->color * (1 / 255.f)); break;
 				case Component::ShapeType::Rectangle: Component::Shapes::CreateRectangle(t->position, sc->width, sc->height * 1.f, t->rotation, 1.f, sc->color * (1 / 255.f)); break;

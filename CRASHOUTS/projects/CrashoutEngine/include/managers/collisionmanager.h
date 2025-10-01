@@ -64,7 +64,7 @@ namespace Collision {
 			Collider(ColliderType type);
 			virtual ~Collider() = default;
 			virtual std::unique_ptr<Collider> clone() const = 0;
-			virtual void updateCollider(CEVec3 const& newPos) {};
+			virtual void updateCollider([[maybe_unused]] CEVec3 const& newPos) {};
 	};
 
 	/*!

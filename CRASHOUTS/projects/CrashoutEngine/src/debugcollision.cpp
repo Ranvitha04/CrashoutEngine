@@ -23,7 +23,7 @@ using namespace Component;
  @param events       Optional pointer to a collision event list. If null, returns false.
  @return             True if the entity is part of at least one event; false otherwise.
 */
-static bool IsColliding(Entity e, const std::vector<Collision::CollisionEvent>* events) {
+[[maybe_unused]] static bool IsColliding(Entity e, const std::vector<Collision::CollisionEvent>* events) {
     if (!events) return false;
     for (const auto& ev : *events) {
         if (ev.entity1 == e || ev.entity2 == e) return true;
@@ -81,7 +81,7 @@ namespace CollisionGizmos {
      @note When @p events is provided, colliders for entities present in any event
            are tinted with a hit color to visually distinguish collisions.
     */
-    void DrawAllColliders(ECS& ecs, const std::vector<Collision::CollisionEvent>* events, float wireThickness) {
+    void DrawAllColliders(ECS& ecs, [[maybe_unused]] const std::vector<Collision::CollisionEvent>* events, float wireThickness) {
         auto& collArr = ecs.GetComponentArray<Component::ColliderComponent>();
         const CEVec3 ok(0.2f, 1.0f, 0.6f);   // non-colliding tint
         const CEVec3 hit(1.0f, 0.3f, 0.3f);  // colliding tint

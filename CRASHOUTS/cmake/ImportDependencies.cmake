@@ -126,9 +126,11 @@ macro(import_reflect)
             GIT_TAG v0.20.0
         )
         FetchContent_Populate(reflect)
-
+        if (TARGET reflect)
+            disable_warnings_for(reflect)
+        endif()
         add_library(reflect INTERFACE)
-        target_include_directories(reflect INTERFACE ${reflect_SOURCE_DIR}/include)
+        target_include_directories(reflect SYSTEM INTERFACE ${reflect_SOURCE_DIR}/include)
     endif()
 endmacro()
 

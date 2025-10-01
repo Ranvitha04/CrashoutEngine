@@ -434,7 +434,7 @@ inline void get_process_mem_mb(double& workingSetMB, double& privateBytesMB) {
     @note   Display Working Set, Private Bytes and total TAGGED memory.
 */
 inline void DrawEngineMemoryPanel() {
-    auto& tr = MemTracker::instance();
+    //auto& tr = MemTracker::instance();
     const char* N[(size_t)MemTag::Count] = {
         "Unknown","Update","Physics","Graphics","AI","Audio","ECS","Resources","UI","Renderer"
     };
@@ -461,7 +461,8 @@ inline void DrawEngineMemoryPanel() {
         float fracRel = (maxTagMB > 0.0) ? (float)(mb / maxTagMB) : 0.0f;
         ImGui::ProgressBar(fracRel, ImVec2(-1, 0), "relative");
 
-        double wsMB = 0.0, privMB = 0.0;
+        wsMB = 0.0;
+    	privMB = 0.0;
         get_process_mem_mb(wsMB, privMB);
         float fracProc = (privMB > 0.0) ? (float)(mb / privMB) : 0.0f;
         ImGui::ProgressBar(fracProc, ImVec2(-1, 0), "process");
@@ -481,9 +482,9 @@ inline void DrawEngineMemoryPanel() {
 inline void DrawProfilerPanel(FrameProfiler& P) {
     using namespace ImGui;
 
-    const bool ready = P.present_ready();
+    //const bool ready = P.present_ready();
     const auto& rows = P.results();
-    const double frameMs = P.total_ms();
+    //const double frameMs = P.total_ms();
 
     if (Begin("Profiler")) {
         SeparatorText("CPU Frame (ms) - Stream");

@@ -122,10 +122,10 @@ void SetupConsole() {
 }
 
 int WINAPI WinMain(
-    _In_     HINSTANCE hInstance,
+    [[maybe_unused]] _In_     HINSTANCE hInstance,
     _In_opt_ HINSTANCE hPrevInstance,
     _In_     LPSTR     lpCmdLine,
-    _In_     int       nCmdShow
+    [[maybe_unused]] _In_     int       nCmdShow
 ){
     _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
     //_CrtSetBreakAlloc(619178);
@@ -252,7 +252,7 @@ static void update() {
 
 
 
-    const double dt = 1.0 / 60.0;
+    //const double dt = 1.0 / 60.0;
     //playerTransform.position.x += playerRigidBody.velocity.x * static_cast<float>(dt);
 
     // animate scene

@@ -33,7 +33,7 @@ void RenderAmir()
 	//std::cout << shapeArray.dense.size() << std::endl;
 	for (const Entity& id : shapeArray.indexToEntity) {
 		// Get entity number
-		Component::TransformComponent* t = globalECS->GetComponent<Component::TransformComponent>(id);
+		//Component::TransformComponent* t = globalECS->GetComponent<Component::TransformComponent>(id);
 		Component::ShapeComponent* sc = globalECS->GetComponent<Component::ShapeComponent>(id);
 		// Can add more data to create rect like color etc
 		if (globalECS->HasComponent<ShapeComponent>(id)) {
