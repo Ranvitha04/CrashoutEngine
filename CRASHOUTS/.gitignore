@@ -75,12 +75,13 @@ Temporary Items
 
 # Ignore binary files
 *.exe
-*.dll
 *.pdb
 *.o
 *.a
 *.so
 *.dylib
+*.lib
+*.dll
 
 
 # Ignore other intermediate or output directories
@@ -91,3 +92,7 @@ dist/
 *.dSYM/
 .vs/
 docs/
+
+# Force-include third_party folder and all its contents
+!/CRASHOUTS/third_party/
+!/CRASHOUTS/third_party/**
