@@ -193,8 +193,8 @@ namespace Physics {
 		/*UPDATE FORCES*/
 
 		if (sPaused) {
-			if (!sStepOnce) return;
 			collisionEvents.clear();
+			if (!sStepOnce) return;
 			// allow exactly one tick when paused+Step pressed
 		}
 
