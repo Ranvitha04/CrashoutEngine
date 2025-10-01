@@ -135,7 +135,48 @@ macro(import_rapidjson)
 
     endif()
 endmacro()
+#[[
+# FMOD paths
+set(_FMOD          "${CMAKE_SOURCE_DIR}/third_party/fmod")
+set(_FMOD_INC      "${_FMOD}/include")
+set(_FMOD_LIBDIR   "${_FMOD}/lib/x64")
+set(_FMOD_BINDIR   "${_FMOD}/bin/x64")
+# Core
+find_library(FMOD_CORE_LIB
+    NAMES fmod_vc fmod fmodL_vc
+    PATHS ${_FMOD_LIBDIR}
+    NO_DEFAULT_PATH
+)
 
+# Studio
+find_library(FMOD_STUDIO_LIB
+    NAMES fmodstudio_vc fmodstudio
+    PATHS ${_FMOD_LIBDIR}
+    NO_DEFAULT_PATH
+)
+
+if(NOT FMOD_CORE_LIB)
+    message(FATAL_ERROR "[FMOD] Could not find FMOD Core lib in ${_FMOD_LIBDIR}")
+endif()
+
+if(NOT FMOD_STUDIO_LIB)
+    message(FATAL_ERROR "[FMOD] Could not find FMOD Studio lib in ${_FMOD_LIBDIR}")
+endif()
+
+add_library(FMOD::Core SHARED IMPORTED)
+set_target_properties(FMOD::Core PROPERTIES
+    IMPORTED_IMPLIB               "${FMOD_CORE_LIB}"
+    IMPORTED_LOCATION             "${_FMOD_BINDIR}/fmod.dll"
+    INTERFACE_INCLUDE_DIRECTORIES "${_FMOD_INC}"
+)
+
+add_library(FMOD::Studio SHARED IMPORTED)
+set_target_properties(FMOD::Studio PROPERTIES
+    IMPORTED_IMPLIB               "${FMOD_STUDIO_LIB}"
+    IMPORTED_LOCATION             "${_FMOD_BINDIR}/fmodstudio.dll"
+    INTERFACE_INCLUDE_DIRECTORIES "${_FMOD_INC}"
+)
+]]
 # Expected repo layout:
 # third_party/fmod/
 #   include/            fmod.hpp, fmod_studio.hpp
