@@ -33,7 +33,7 @@ set(ALL_LIBS
     PRIVATE glm::glm
     PRIVATE stb
     PRIVATE freetype
-    PRIVATE reflect
+    PRIVATE refl-cpp::refl-cpp
     PRIVATE rapidjson
 )
 
