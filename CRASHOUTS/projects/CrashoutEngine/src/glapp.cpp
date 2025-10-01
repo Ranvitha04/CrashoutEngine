@@ -414,9 +414,7 @@ void GLApp::mousebutton_cb([[maybe_unused]] GLFWwindow* pwin, [[maybe_unused]] i
     //ImGui_ImplGlfw_MouseButtonCallback(pwin, button, action, mod);
 #ifdef DEBUG
     Key k = static_cast<Key>(button);
-#endif // DEBUG
 
-#ifdef _DEBUG
     if (action == GLFW_PRESS) {
         LOGI(Input, (KeyToString(k) + " is pressed").c_str());
     }

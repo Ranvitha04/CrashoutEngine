@@ -1,11 +1,11 @@
 @echo off
 REM ===============================================
-REM CRASHOUTS CrashoutsEngine Build and Run Script
+REM Windows Build and Run Script
 REM ===============================================
 
 echo.
 echo ===============================================
-echo   Minimal C++ Console Application - Windows
+echo   CRASHOUTS Console Application - Windows
 echo ===============================================
 echo.
 
