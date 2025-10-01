@@ -152,14 +152,4 @@ CEVec2 InputManager::GetMouseNDC() {
     return CEVec2(ndcX, ndcY);
 }
 
-static void OnInput(Key key, int action) {
-#ifdef _DEBUG
-    if (action == GLFW_PRESS) {
-        LOGI(Input, "Pressed: %s", KeyToString(key).c_str());
-    }
-    else if (action == GLFW_RELEASE) {
-        LOGI(Input, "Released: %s", KeyToString(key).c_str());
-    }
-#endif
-}
 

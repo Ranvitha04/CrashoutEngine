@@ -4,6 +4,9 @@ cmake_minimum_required(VERSION 2.8...3.13)
 # Set the CMake policy version (this enables all policies up to CMake 3.5)
 cmake_policy(VERSION 3.5)
 
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 project(CRASHOUTS)
 
 # Set the directory where custom CMake modules are stored
@@ -66,9 +69,7 @@ foreach(child ${children})
         # Link libraries
         target_link_libraries(${child}
             ${ALL_LIBS}
-            CrashoutsAudio 
         )
-        link_fmod_to(${child})   
 
         # Set C++ standard
         set_property(TARGET ${child} PROPERTY CXX_STANDARD 20)
