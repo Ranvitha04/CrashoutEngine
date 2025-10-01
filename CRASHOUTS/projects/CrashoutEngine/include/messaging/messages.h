@@ -1,3 +1,11 @@
+/*!
+@file       messages.h
+@author     miratristan.d@digipen.edu
+@date       19/09/2025
+@brief      Declaration for the Base class Messages, and common IDS for messages to listen to.
+
+//__________________________________________________________________________*/
+
 #pragma once
 
 #include <string>
