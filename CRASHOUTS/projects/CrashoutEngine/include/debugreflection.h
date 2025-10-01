@@ -100,6 +100,8 @@ namespace DebugReflection {
         /*! @brief Returns a list of all registered adapters. */
         const std::vector<IComponentAdapter*>& all() const { return list; }
 
+        void clear() { list.clear(); }
+
     private:
         std::vector<IComponentAdapter*> list;
     };
@@ -197,6 +199,8 @@ namespace DebugReflection {
         /*! @brief Returns all registered panels. */
         const std::vector<Panel>& panels() const { return list; }
 
+        void clear() { list.clear(); }
+
     private:
         std::vector<Panel> list;
     };
@@ -245,6 +249,8 @@ namespace DebugReflection {
 
         /*! @brief Returns all registered providers. */
         const std::vector<IPhysicsProvider*>& all() const;
+
+        void clear() { providers_.clear(); }
 
     private:
         std::vector<IPhysicsProvider*> providers_;

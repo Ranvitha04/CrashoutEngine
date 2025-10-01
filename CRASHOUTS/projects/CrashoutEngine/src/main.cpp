@@ -19,6 +19,7 @@ context and implement a game loop.
 #include "playerMovement.h"     // Player::UpdateADVelocity
 #include "managers/physicsmanager.h"            // Component::RigidBodyComponent
 #include "managers/inputmanager.h"
+#include "debugreflection.h"
 #include "debugmenu.h"
 #include "crashlogger.h"
 
@@ -128,7 +129,7 @@ int WINAPI WinMain(
     [[maybe_unused]] _In_     int       nCmdShow
 ){
     _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-    //_CrtSetBreakAlloc(619178);
+    //_CrtSetBreakAlloc(2235);
     UNREFERENCED_PARAMETER(hPrevInstance);
     UNREFERENCED_PARAMETER(lpCmdLine);
     _CrtMemState stateStart, stateEnd, stateDiff;
@@ -180,6 +181,7 @@ int WINAPI WinMain(
 
     // Cleanup
     UI::Shutdown();
+    Logger::Instance().Clear();
     GLApp::cleanup();
 
     _CrtMemCheckpoint(&stateEnd);
