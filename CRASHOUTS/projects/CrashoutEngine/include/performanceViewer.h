@@ -3,7 +3,18 @@
 @author     mohamadamirakmal.b@digipen.edu
 @date       06/09/2025
 
-This file provides profiling and memory tracking utilities for Crashout Engine.
+@brief      CPU profiling and memory tracking utilities for Crashout Engine.
+@details    This header provides two major runtime diagnostic tools:
+            - **Frame Profiler**: Measures per-frame CPU time across subsystems,
+              with EMA smoothing, percent normalization, history tracking,
+              and ImGui visualization.
+            - **Memory Tracker**: Tracks memory allocations per subsystem
+              (`MemTag`), monitors process memory usage (Working Set &
+              Private Bytes), and renders a memory usage panel.
+
+            These tools are intended for development builds to monitor
+            performance bottlenecks, visualize profiling history, and
+            analyze memory consumption in real-time.
 //__________________________________________________________________________*/
 
 #pragma once
@@ -34,6 +45,12 @@ This file provides profiling and memory tracking utilities for Crashout Engine.
 #include <psapi.h>
 #pragma comment(lib, "psapi.lib")
 
+/*!
+ @brief Retrieves the current process's Working Set and Private Bytes (in MB).
+ @param rssMB   Output reference for Working Set size in MB.
+ @param privMB  Output reference for Private Bytes in MB.
+ @note  Returns 0.0 for both values if retrieval fails.
+*/
 static inline void _fp_get_process_mem_mb(double& rssMB, double& privMB) {
     PROCESS_MEMORY_COUNTERS_EX pmc{};
     if (GetProcessMemoryInfo(GetCurrentProcess(),
@@ -353,14 +370,11 @@ enum class MemTag : uint8_t {
 };
 
 /*!
-@struct MemTracker
-@brief  Stores global counters (atomic) - singleton access via MemTracker::instance()
-@var live[]
-      bytes currently alive
-@var allocs[]
-      total allocated
-@var frees[]
-      total freed
+ @struct MemTracker
+ @brief Global memory tracking counters.
+ @details
+ Tracks total live, allocated, and freed memory for each `MemTag` category.
+ Accessed as a singleton via `MemTracker::instance()`.
 */
 struct MemTracker {
     std::atomic<long long> live[(size_t)MemTag::Count]{};
@@ -389,11 +403,17 @@ struct ScopedMemTag {
     }
 };
 
-// Manual accounting helpers for custom allocators/arenas (optional).
+/*! @brief Increments live memory for a given tag. */
 inline void memtag_add(MemTag t, size_t bytes) { MemTracker::instance().live[(size_t)t] += (long long)bytes; }
+
+/*! @brief Decrements live memory for a given tag. */
 inline void memtag_sub(MemTag t, size_t bytes) { MemTracker::instance().live[(size_t)t] -= (long long)bytes; }
 
-// Process memory helper (Working Set & Private Bytes, MB).
+/*!
+ @brief Retrieves process Working Set and Private Bytes in MB.
+ @param workingSetMB   Output: current working set.
+ @param privateBytesMB Output: current private bytes.
+*/
 inline void get_process_mem_mb(double& workingSetMB, double& privateBytesMB) {
 #ifdef _WIN32
     PROCESS_MEMORY_COUNTERS_EX pmc{};
@@ -453,6 +473,11 @@ inline void DrawEngineMemoryPanel() {
     ImGui::Text("Sum of tagged live: %.2f MB", totalLiveMB);
 }
 
+
+/*!
+ @brief Draws an ImGui profiler panel with per-frame CPU usage.
+ @param P Reference to a `FrameProfiler` instance.
+*/
 inline void DrawProfilerPanel(FrameProfiler& P) {
     using namespace ImGui;
 
