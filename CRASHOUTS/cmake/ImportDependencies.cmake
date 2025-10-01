@@ -5,7 +5,7 @@ function(disable_warnings_for target)
         get_target_property(existing_compile_options ${target} COMPILE_OPTIONS)
 
         if (existing_compile_options)
-            # Remove any /W0ï¿½/W4 already present
+            # Remove any /W0–/W4 already present
             string(REGEX REPLACE "/W[0-4]" "" existing_compile_options "${existing_compile_options}")
             set_target_properties(${target} PROPERTIES COMPILE_OPTIONS "${existing_compile_options};/W0")
         else()
@@ -118,14 +118,19 @@ endmacro()
 
 
 # -------------------- reflect.cpp --------------------
-# Macro to import reflcpp
-macro(import_reflcpp)
-    if(NOT TARGET reflcpp)  # Guard to prevent multiple inclusion
-        FetchContent_Declare(reflcpp
-            GIT_REPOSITORY https://github.com/veselink1/refl-cpp.git
-            GIT_TAG v0.12.4
+macro(import_reflect)
+    if(NOT TARGET reflect)
+        FetchContent_Declare(
+            reflect
+            GIT_REPOSITORY https://github.com/getml/reflect-cpp.git
+            GIT_TAG v0.20.0
         )
-        FetchContent_MakeAvailable(reflcpp)
+        FetchContent_Populate(reflect)
+        if (TARGET reflect)
+            disable_warnings_for(reflect)
+        endif()
+        add_library(reflect INTERFACE)
+        target_include_directories(reflect SYSTEM INTERFACE ${reflect_SOURCE_DIR}/include)
     endif()
 endmacro()
 
@@ -290,8 +295,8 @@ macro(importDependencies)
     import_freetype()
     message(STATUS "FreeType imported successfully.")
 
-    import_reflcpp()
-    message(STATUS "refl imported successfully.")
+    import_reflect()
+    message(STATUS "reflect.cpp imported successfully.")
 
     import_rapidjson()
     message(STATUS "rapidjson imported successfully.")
