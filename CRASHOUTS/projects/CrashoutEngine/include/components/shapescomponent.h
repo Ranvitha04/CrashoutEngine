@@ -2,8 +2,8 @@
 @file       shapescomponents.h
 @author     mohamadamirakmal.b@digipen.edu
 @date       28/09/2025
-@brief	    This file defines the TransformComponent, a simple data structure
-            used to store an entity's 3D position, rotation, and scale.
+@brief	    This file defines the ShapesComponent, a simple data structure
+            used to store an entity's shape type and variables.
 
 //__________________________________________________________________________*/
 
