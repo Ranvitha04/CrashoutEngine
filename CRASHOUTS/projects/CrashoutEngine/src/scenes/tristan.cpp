@@ -60,10 +60,15 @@ void InitTristan() {
 void UpdateTristan()
 {
 	Component::RigidBodyComponent *rigidBody { globalECS->GetComponent<Component::RigidBodyComponent>(entity1) };
+	Component::RigidBodyComponent* rigidBody2 { globalECS->GetComponent<Component::RigidBodyComponent>(entity2) };
 
 	if (InputManager::IsKeyPressed(Key::A)) rigidBody->addForce(CEVec3{ -100.f, 0.f, 0.f });
 	if (InputManager::IsKeyPressed(Key::D)) rigidBody->addForce(CEVec3{ 100.f, 0.f, 0.f });
 	if (InputManager::IsKeyPressed(Key::W)) rigidBody->addForce(CEVec3{ 0.f, 300.f, 0.f }*rigidBody->getMass());
+
+	if (InputManager::IsKeyPressed(Key::Left)) rigidBody2->addForce(CEVec3{ -100.f, 0.f, 0.f });
+	if (InputManager::IsKeyPressed(Key::Right)) rigidBody2->addForce(CEVec3{ 100.f, 0.f, 0.f });
+	if (InputManager::IsKeyPressed(Key::Up)) rigidBody2->addForce(CEVec3{ 0.f, 300.f, 0.f }*rigidBody2->getMass());
 
 }
 
