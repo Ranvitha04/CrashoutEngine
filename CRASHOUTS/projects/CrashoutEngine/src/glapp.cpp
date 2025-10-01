@@ -32,6 +32,7 @@ integration.
 #include <backends/imgui_impl_opengl3.h>
 
 #include "frameratecontroller.h"
+#include "key.h"
 
 // Before asking GLFW to create an OpenGL context, we specify the minimum constraints
 // in that context:
@@ -342,19 +343,20 @@ When the ESC key is pressed, the close flag of the window is set.
 */
 void GLApp::key_cb(GLFWwindow* pwin, int key, int scancode, int action, int mod) {
     //ImGui_ImplGlfw_KeyCallback(pwin, key, scancode, action, mod);
+    Key k = static_cast<Key>(key);
     if (GLFW_PRESS == action) {
 #ifdef _DEBUG
-        LOGI(Input, "Key is pressed");
+        LOGI(Input, std::string(KeyToString(k)) + " is pressed");
 #endif
     }
     else if (GLFW_REPEAT == action) {
 #ifdef _DEBUG
-        LOGI(Input, "Key is repeatedly pressed");
+        LOGI(Input, std::string(KeyToString(k)) + " is repeatedly pressed");
 #endif
     }
     else if (GLFW_RELEASE == action) {
-#ifdef _DEBUG
-        LOGI(Input, "Key is released");
+#ifdef _DEBUG;
+        LOGI(Input, std::string(KeyToString(k)) + " is released");
 #endif
     }
 
@@ -408,6 +410,18 @@ This function is called when mouse buttons are pressed.
 */
 void GLApp::mousebutton_cb(GLFWwindow* pwin, int button, int action, int mod) {
     //ImGui_ImplGlfw_MouseButtonCallback(pwin, button, action, mod);
+    Key k = static_cast<Key>(button);
+
+#ifdef _DEBUG
+    if (action == GLFW_PRESS) {
+        LOGI(Input, (KeyToString(k) + " is pressed").c_str());
+    }
+    else if (action == GLFW_RELEASE) {
+        LOGI(Input, (KeyToString(k) + " is released").c_str());
+    }
+#endif
+}
+	/*
     switch (button) {
     case GLFW_MOUSE_BUTTON_LEFT:
 #ifdef _DEBUG
@@ -433,6 +447,7 @@ void GLApp::mousebutton_cb(GLFWwindow* pwin, int button, int action, int mod) {
         break;
     }
 }
+*/
 
 /* _________________________________________________________________________*/
 /*! mousepos_cb

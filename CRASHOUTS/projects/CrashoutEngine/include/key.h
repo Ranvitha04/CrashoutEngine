@@ -11,6 +11,7 @@ Provides a wrapper around GLFW key codes
 
 
 #include <GLFW/glfw3.h>
+#include <string>
 
  /**
   * @enum Key
@@ -56,5 +57,68 @@ enum class Key {
     Escape = GLFW_KEY_ESCAPE,
     Enter = GLFW_KEY_ENTER,
     Tab = GLFW_KEY_TAB,
-    Backspace = GLFW_KEY_BACKSPACE
+    Backspace = GLFW_KEY_BACKSPACE,
+
+    /// mouse buttons
+    MouseLeft = GLFW_MOUSE_BUTTON_LEFT,
+    MouseRight = GLFW_MOUSE_BUTTON_RIGHT,
+    MouseMiddle = GLFW_MOUSE_BUTTON_MIDDLE,
+    Mouse4 = GLFW_MOUSE_BUTTON_4,
+    Mouse5 = GLFW_MOUSE_BUTTON_5,
+    Mouse6 = GLFW_MOUSE_BUTTON_6,
+    Mouse7 = GLFW_MOUSE_BUTTON_7,
+    Mouse8 = GLFW_MOUSE_BUTTON_8
 };
+//i died here - Rain
+inline std::string KeyToString(Key key) {
+    switch (key) {
+
+    case Key::A: return "A"; case Key::B: return "B"; case Key::C: return "C";
+    case Key::D: return "D"; case Key::E: return "E"; case Key::F: return "F";
+    case Key::G: return "G"; case Key::H: return "H"; case Key::I: return "I";
+    case Key::J: return "J"; case Key::K: return "K"; case Key::L: return "L";
+    case Key::M: return "M"; case Key::N: return "N"; case Key::O: return "O";
+    case Key::P: return "P"; case Key::Q: return "Q"; case Key::R: return "R";
+    case Key::S: return "S"; case Key::T: return "T"; case Key::U: return "U";
+    case Key::V: return "V"; case Key::W: return "W"; case Key::X: return "X";
+    case Key::Y: return "Y"; case Key::Z: return "Z";
+
+    case Key::Num0: return "0"; case Key::Num1: return "1"; case Key::Num2: return "2";
+    case Key::Num3: return "3"; case Key::Num4: return "4"; case Key::Num5: return "5";
+    case Key::Num6: return "6"; case Key::Num7: return "7"; case Key::Num8: return "8";
+    case Key::Num9: return "9";
+
+    case Key::Slash: return "/";
+    case Key::Backslash: return "\\";
+    case Key::LeftBracket: return "[";
+    case Key::RightBracket: return "]";
+    case Key::Semicolon: return ";";
+    case Key::Apostrophe: return "'";
+    case Key::Comma: return ",";
+    case Key::Period: return ".";
+    case Key::Minus: return "-";
+    case Key::Equal: return "=";
+
+    case Key::Up: return "Arrow Up";
+    case Key::Down: return "Arrow Down";
+    case Key::Left: return "Arrow Left";
+    case Key::Right: return "Arrow Right";
+
+    case Key::Space: return "Space";
+    case Key::Escape: return "Escape";
+    case Key::Enter: return "Enter";
+    case Key::Tab: return "Tab";
+    case Key::Backspace: return "Backspace";
+
+    case Key::MouseLeft: return "Mouse Left";
+    case Key::MouseRight: return "Mouse Right";
+    case Key::MouseMiddle: return "Mouse Middle";
+    case Key::Mouse4: return "Mouse 4";
+    case Key::Mouse5: return "Mouse 5";
+    case Key::Mouse6: return "Mouse 6";
+    case Key::Mouse7: return "Mouse 7";
+    case Key::Mouse8: return "Mouse 8";
+
+    default: return "Unknown";
+    }
+}

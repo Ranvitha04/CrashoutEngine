@@ -11,7 +11,12 @@ namespace Player {
         //A is move left D is move right 
         if (InputManager::IsKeyPressed(Key::A)) h -= 1.0f;
         if (InputManager::IsKeyPressed(Key::D)) h += 1.0f;
-
+        if (InputManager::IsKeyPressed(Key::Space)) {
+        //    rb.velocity.y = moveSpeed;   // use same speed as X; change if you want different
+        }
+        else {
+          //  rb.velocity.y = 0.0f;        // stop moving up when released
+        }
         //how fast and direction
         rb.setVelocity(CEVec3{ h * moveSpeed, 0.f, 0.f });
 

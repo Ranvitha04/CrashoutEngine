@@ -4,10 +4,18 @@ cmake_minimum_required(VERSION 2.8...3.13)
 # Set the CMake policy version (this enables all policies up to CMake 3.5)
 cmake_policy(VERSION 3.5)
 
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 project(CRASHOUTS)
 
 # Set the directory where custom CMake modules are stored
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
+
+# Disable GLFW examples, tests and docs to avoid extra executables
+set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
 
 # Include project-wide utility and dependency modules
 include(ImportDependencies)
@@ -36,6 +44,7 @@ add_compile_definitions(
 # Include path for GLM (optional if not using FetchContent)
 include_directories(${CMAKE_CURRENT_LIST_DIR}/lib/glm)
 
+include_directories(${_FMOD_INC})
 # ======================= AUTO PROJECT DISCOVERY =========================
 # Get all subdirectories in the projects folder
 file(GLOB children RELATIVE "${CMAKE_CURRENT_LIST_DIR}/projects" "${CMAKE_CURRENT_LIST_DIR}/projects/*")
@@ -66,8 +75,9 @@ foreach(child ${children})
         # Link libraries
         target_link_libraries(${child}
             ${ALL_LIBS}
+            CrashoutsAudio
         )
-
+        link_fmod_to(${child}) 
         # Set C++ standard
         set_property(TARGET ${child} PROPERTY CXX_STANDARD 20)
 

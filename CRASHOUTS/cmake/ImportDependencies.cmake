@@ -135,8 +135,121 @@ macro(import_rapidjson)
 
     endif()
 endmacro()
+#[[
+# FMOD paths
+set(_FMOD          "${CMAKE_SOURCE_DIR}/third_party/fmod")
+set(_FMOD_INC      "${_FMOD}/include")
+set(_FMOD_LIBDIR   "${_FMOD}/lib/x64")
+set(_FMOD_BINDIR   "${_FMOD}/bin/x64")
+# Core
+find_library(FMOD_CORE_LIB
+    NAMES fmod_vc fmod fmodL_vc
+    PATHS ${_FMOD_LIBDIR}
+    NO_DEFAULT_PATH
+)
 
-# -------------------- Import all --------------------
+# Studio
+find_library(FMOD_STUDIO_LIB
+    NAMES fmodstudio_vc fmodstudio
+    PATHS ${_FMOD_LIBDIR}
+    NO_DEFAULT_PATH
+)
+
+if(NOT FMOD_CORE_LIB)
+    message(FATAL_ERROR "[FMOD] Could not find FMOD Core lib in ${_FMOD_LIBDIR}")
+endif()
+
+if(NOT FMOD_STUDIO_LIB)
+    message(FATAL_ERROR "[FMOD] Could not find FMOD Studio lib in ${_FMOD_LIBDIR}")
+endif()
+
+add_library(FMOD::Core SHARED IMPORTED)
+set_target_properties(FMOD::Core PROPERTIES
+    IMPORTED_IMPLIB               "${FMOD_CORE_LIB}"
+    IMPORTED_LOCATION             "${_FMOD_BINDIR}/fmod.dll"
+    INTERFACE_INCLUDE_DIRECTORIES "${_FMOD_INC}"
+)
+
+add_library(FMOD::Studio SHARED IMPORTED)
+set_target_properties(FMOD::Studio PROPERTIES
+    IMPORTED_IMPLIB               "${FMOD_STUDIO_LIB}"
+    IMPORTED_LOCATION             "${_FMOD_BINDIR}/fmodstudio.dll"
+    INTERFACE_INCLUDE_DIRECTORIES "${_FMOD_INC}"
+)
+]]
+# Expected repo layout:
+# third_party/fmod/
+#   include/            fmod.hpp, fmod_studio.hpp
+#   lib/x64/            fmod_vc.lib, fmodstudio_vc.lib
+#   bin/x64/            fmod.dll (or fmodL.dll),fmodstudio.dll
+
+set(_FMOD          "${CMAKE_SOURCE_DIR}/third_party/fmod")
+set(_FMOD_INC      "${_FMOD}/include")
+set(_FMOD_LIBDIR   "${_FMOD}/lib/x64")
+set(_FMOD_BINDIR   "${_FMOD}/bin/x64")
+
+
+foreach(_need
+  "${_FMOD_INC}/fmod.hpp"
+  "${_FMOD_INC}/fmod_studio.hpp"
+  "${_FMOD_LIBDIR}/fmod_vc.lib"
+  "${_FMOD_LIBDIR}/fmodstudio_vc.lib"
+  "${_FMOD_BINDIR}/fmod.dll"          
+  "${_FMOD_BINDIR}/fmodstudio.dll")
+  if(NOT EXISTS "${_need}")
+    message(FATAL_ERROR "[FMOD] Missing: ${_need}")
+  endif()
+endforeach()
+
+
+add_library(FMOD::Core SHARED IMPORTED)
+set_target_properties(FMOD::Core PROPERTIES
+  IMPORTED_IMPLIB               "${_FMOD_LIBDIR}/fmod_vc.lib"
+  IMPORTED_LOCATION             "${_FMOD_BINDIR}/fmod.dll"target_compile_features(CrashoutsAudio PUBLIC cxx_std_17)
+  IMPORTED_LOCATION_DEBUG       "${_FMOD_BINDIR}/fmodL.dll"  
+  INTERFACE_INCLUDE_DIRECTORIES "${_FMOD_INC}"
+)
+
+add_library(FMOD::Studio SHARED IMPORTED)
+set_target_properties(FMOD::Studio PROPERTIES
+  IMPORTED_IMPLIB               "${_FMOD_LIBDIR}/fmodstudio_vc.lib"
+  IMPORTED_LOCATION             "${_FMOD_BINDIR}/fmodstudio.dll"
+  INTERFACE_INCLUDE_DIRECTORIES "${_FMOD_INC}"
+)
+
+
+function(link_fmod_to target)
+  target_link_libraries(${target} PRIVATE FMOD::Core FMOD::Studio)
+  add_custom_command(TARGET ${target} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different "${_FMOD_BINDIR}/fmod.dll"        "$<TARGET_FILE_DIR:${target}>"
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different "${_FMOD_BINDIR}/fmodL.dll"       "$<TARGET_FILE_DIR:${target}>"  
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different "${_FMOD_BINDIR}/fmodstudio.dll" "$<TARGET_FILE_DIR:${target}>"
+  )
+endfunction()
+
+
+function(copy_fmod_banks target banks_dir)
+  add_custom_command(TARGET ${target} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E make_directory "$<TARGET_FILE_DIR:${target}>/assets/audio/banks"
+    COMMAND ${CMAKE_COMMAND} -E copy_directory "${banks_dir}" "$<TARGET_FILE_DIR:${target}>/assets/audio/banks"
+  )
+  endfunction()
+
+set(CA_INC "${CMAKE_SOURCE_DIR}/projects/CrashoutEngine/include")
+set(CA_SRC "${CMAKE_SOURCE_DIR}/projects/CrashoutEngine/src")
+
+
+add_library(CrashoutsAudio STATIC
+
+  "${CA_SRC}/audioSystem.cpp"         
+)
+target_compile_features(CrashoutsAudio PUBLIC cxx_std_17)
+target_include_directories(CrashoutsAudio PUBLIC "${CA_INC}")
+target_link_libraries(CrashoutsAudio PUBLIC FMOD::Core FMOD::Studio)
+
+# (optional) log once so we know it ran
+message(STATUS "[CrashoutsAudio] src='${CA_SRC}/audioSystem.cpp'")
+# Macro to import all dependencies
 macro(importDependencies)
     message(STATUS "Starting to import dependencies...")
 
