@@ -91,7 +91,7 @@ namespace CollisionGizmos {
             if (!pColliderComp || !pColliderComp->collider) continue;
 
             const CEVec3 color = /*IsColliding(e, events) ? hit : */  /*TEMP FOR NOW*/ ok;
-            const Collision::Collider* base = cc->collider.get();
+            const Collision::Collider* pBase = pColliderComp->collider.get();
 
             if (pBase->type == Collision::SPHERE) {
                 auto const* pSphere = dynamic_cast<const Collision::Sphere*>(pBase);

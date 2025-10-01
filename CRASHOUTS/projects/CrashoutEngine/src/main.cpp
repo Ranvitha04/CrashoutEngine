@@ -127,7 +127,12 @@ int WINAPI WinMain(
     _In_     LPSTR     lpCmdLine,
     _In_     int       nCmdShow
 ){
-
+    _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+    //_CrtSetBreakAlloc(619178);
+    UNREFERENCED_PARAMETER(hPrevInstance);
+    UNREFERENCED_PARAMETER(lpCmdLine);
+    _CrtMemState stateStart, stateEnd, stateDiff;
+    _CrtMemCheckpoint(&stateStart);
     #ifdef DEBUG
     
     SetupConsole();
@@ -176,6 +181,12 @@ int WINAPI WinMain(
     // Cleanup
     UI::Shutdown();
     GLApp::cleanup();
+
+    _CrtMemCheckpoint(&stateEnd);
+    if (_CrtMemDifference(&stateDiff, &stateStart, &stateEnd)) {
+        OutputDebugString("Memory leaks detected!\n");
+        _CrtMemDumpStatistics(&stateDiff);
+    }
     return EXIT_SUCCESS;
 }
 
