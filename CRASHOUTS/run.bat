@@ -61,7 +61,7 @@ if %errorlevel% neq 0 (
 
 REM Build the project
 echo [4/4] Building project...
-cmake --build . --config Debug
+cmake --build . --config %BUILD_CONFIG%
 if %errorlevel% neq 0 (
     echo ERROR: Build failed
     cd ..
