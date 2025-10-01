@@ -182,26 +182,23 @@ inline std::enable_if_t<!std::is_enum<T>::value &&
 template <class T>
 bool draw_reflected(T& obj, const char* group_label = nullptr) {
     bool changed = false;
-    if (group_label)
-        ImGui::SeparatorText(group_label);
+    if (group_label) ImGui::SeparatorText(group_label);
 
     auto view = rfl::to_view(obj);
-    auto values = view.values(); // tuple of field pointers
 
-    // Iterate over all field pointers using rfl::apply
-    rfl::apply([&](auto*... ptrs) {
-        size_t index = 0;
-        ((ptrs ? ([&] {
-            char id[32];
-#if defined(_MSC_VER)
-            _snprintf_s(id, sizeof(id), _TRUNCATE, "Field##%zu", index++);
-#else
-            std::snprintf(id, sizeof(id), "Field##%zu", index++);
-#endif
-            if (draw_field(id, *ptrs))
-                changed = true;
-            }(), 0) : 0), ...);
-        }, values);
+    // Iterate rfl::NamedTuple fields: each 'f' has f.name() and f.value()
+    view.apply([&](auto f) {
+        auto name_lit = f.name(); // compile-time literal with string-view conversion
+        std::string_view sv = name_lit; // convert to runtime view
+        auto* ptr = f.value(); // pointer to the actual field
+
+        // Visible label is the field name; ID after '##' keeps it unique per field
+        char label[128];
+
+        _snprintf_s(label, sizeof(label), _TRUNCATE, "%.*s##%p", (int)sv.size(), sv.data(), (void*)ptr);
+
+        if (draw_field(label, *ptr)) changed = true;
+        });
 
     return changed;
 }
