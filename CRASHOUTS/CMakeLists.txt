@@ -106,7 +106,7 @@ foreach(child ${children})
         )
     endif()
 endforeach()
-
+#[[
 # Doxygen: rebuild only when files change
 find_package(Doxygen REQUIRED)
 
@@ -140,3 +140,4 @@ add_custom_command(
 add_custom_target(doxygen_docs ALL
     DEPENDS ${DOC_OUTPUT_DIR}/.doxygen.stamp
 )
+]]
