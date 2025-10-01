@@ -75,6 +75,7 @@ Temporary Items
 
 # Ignore binary files
 *.exe
+*.dll
 *.pdb
 *.o
 *.a
