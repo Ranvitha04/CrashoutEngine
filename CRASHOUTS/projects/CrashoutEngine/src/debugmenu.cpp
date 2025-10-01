@@ -551,7 +551,7 @@ namespace UI { // --------------------------------------------------------------
             ImGui::Checkbox("Game State", &ui.showGameState);
 
             // Dynamically registered panels
-            ImGui::Spacing();
+            /*ImGui::Spacing();
             ImGui::TextDisabled("Panels");
             ImGui::Separator();
             for (auto const& p : DebugReflection::PanelRegistry::instance().panels()) {
@@ -561,7 +561,7 @@ namespace UI { // --------------------------------------------------------------
                 else {
                     ImGui::TextDisabled("%s (always on-demand)", p.name.c_str());
                 }
-            }
+            }*/
 
             ImGui::Spacing();
             ImGui::TextDisabled("Settings");
@@ -583,10 +583,11 @@ namespace UI { // --------------------------------------------------------------
                     if (p.toggleFlag) *p.toggleFlag = false;
             }
 
-            ImGui::Spacing();
+            // To be fixed later
+            /*ImGui::Spacing();
             if (ImGui::Button("Save Layout")) ImGui::SaveIniSettingsToDisk(nullptr);
             ImGui::SameLine();
-            if (ImGui::Button("Reload Layout")) ImGui::LoadIniSettingsFromDisk(nullptr);
+            if (ImGui::Button("Reload Layout")) ImGui::LoadIniSettingsFromDisk(nullptr);*/
         }
         ImGui::End();
     }
