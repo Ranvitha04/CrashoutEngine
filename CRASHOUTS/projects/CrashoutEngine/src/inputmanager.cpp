@@ -7,8 +7,14 @@
 Handles keyboard mouse and scroll wheel input using GLFW
 */
 #include "managers/inputmanager.h"
+
+#include <iostream>
+#include <ostream>
+#include <log.h>
 #include "settings.h"
 #include <glm/glm.hpp>
+
+#include "math/CEVec2.h"
 //ENTIRE INPUTMANAGER IS TO BE REFACTORED/REMOVED LATER TO ADHERE TO ECS - Rain
 /// Static storage for the GLFW window pointer
 GLFWwindow* InputManager::Window = nullptr;
@@ -73,6 +79,26 @@ bool InputManager::IsKeyPressed(int glfwKey) {
     return glfwGetKey(Window, glfwKey) == GLFW_PRESS;
 }
 
+std::vector<Key> InputManager::GetPressedKeys() {
+    std::vector<Key> pressed;
+
+    // keys
+    for (const auto& [key, state] : Keys) {
+        if (state) {
+            pressed.push_back(static_cast<Key>(key));
+        }
+    }
+
+    // mouse buttons
+    for (const auto& [button, state] : MouseButtons) {
+        if (state) {
+            pressed.push_back(static_cast<Key>(button));
+        }
+    }
+
+    return pressed;
+}
+
 /*!
 @brief Check if a mouse button is pressed
 @param button The GLFW mouse button code
@@ -95,10 +121,10 @@ void InputManager::GetMousePosition(double& x, double& y) {
 @brief Get the current mouse position in pixels
 @return 2D vector with X and Y position
 */
-glm::vec2 InputManager::GetMousePosition() {
+CEVec2 InputManager::GetMousePosition() {
     double x, y;
     GetMousePosition(x, y);
-    return glm::vec2(static_cast<float>(x), static_cast<float>(y));
+    return CEVec2(static_cast<float>(x), static_cast<float>(y));
 }
 
 /*!
@@ -115,7 +141,7 @@ float InputManager::GetMouseWheelDelta() {
 Converts screen pixel coordinates to NDC range [-1 1]
 @return 2D vector with X and Y in NDC space
 */
-glm::vec2 InputManager::GetMouseNDC() {
+CEVec2 InputManager::GetMouseNDC() {
     double x, y;
     GetMousePosition(x, y);
 
@@ -123,5 +149,17 @@ glm::vec2 InputManager::GetMouseNDC() {
 
     float ndcY = static_cast<float>(y / Settings::GetScreenHeight()) * 2.0f - 1.0f;
 
-    return glm::vec2(ndcX, ndcY);
+    return CEVec2(ndcX, ndcY);
 }
+
+static void OnInput(Key key, int action) {
+#ifdef _DEBUG
+    if (action == GLFW_PRESS) {
+        LOGI(Input, "Pressed: %s", KeyToString(key).c_str());
+    }
+    else if (action == GLFW_RELEASE) {
+        LOGI(Input, "Released: %s", KeyToString(key).c_str());
+    }
+#endif
+}
+
