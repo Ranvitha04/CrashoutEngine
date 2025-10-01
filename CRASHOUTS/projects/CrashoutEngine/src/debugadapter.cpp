@@ -17,6 +17,7 @@ runtime-extensible and project-agnostic.
 #include "debugreflection.h"
 #include "managers/entitymanager.h"
 #include <imgui.h>
+#include <algorithm>
 #include "debugdefaults.h"
 
 /*                                                         component includes
@@ -33,6 +34,12 @@ runtime-extensible and project-agnostic.
 using namespace CrashoutsEngine;
 
 //----------------------------------------------------------------------------- file-local state & helpers
+
+namespace {
+    f32 max(f32 x1, f32 y2, f32 z3) {
+        return std::max(std::max(x1, y2), z3);
+    }
+}
 
 /*!
  @brief File-local adapters/providers and registration.
@@ -235,8 +242,42 @@ namespace {
                 // optional: snap AABB around Transform
                 if (auto* t = ecs.GetComponent<TransformComponent>(e)) {
                     if (ImGui::Button("Fit around Transform##aabb")) {
-                        a->min = t->position - a->extents;
-                        a->max = t->position + a->extents;
+                        if (ecs.HasComponent<Component::ShapeComponent>(e)) {
+                            auto* shape{ ecs.GetComponent<Component::ShapeComponent>(e) };
+                            CEVec3 extents{};
+                            
+
+                            switch (shape->type) {
+                                case ShapeType::Rectangle: {
+                                    extents.x = shape->width * 0.5f;
+                                    extents.y = shape->height * 0.5f;
+
+                                }
+                                break;
+                                case ShapeType::Square: {
+                                    extents.x = shape->size * 0.5f;
+                                    extents.y = shape->size * 0.5f;
+                                }
+                                break;
+                                case ShapeType::Triangle: {
+                                    CEVec3 diffP1P2{ shape->t1 - shape->t2 };
+                                    CEVec3 diffP1P3{ shape->t1 - shape->t3 };
+                                    CEVec3 diffP2P3{ shape->t2 - shape->t3 };
+
+
+                                    extents.x = max(std::fabs(diffP1P2.x), std::fabsf(diffP1P3.x), std::fabsf(diffP2P3.x)) * 0.5f;
+                                    extents.y = max(std::fabs(diffP1P2.y), std::fabsf(diffP1P3.y), std::fabsf(diffP2P3.y)) * 0.5f;
+                                }
+                                break;
+                            }
+
+                            a->min = t->position - extents;
+                            a->max = t->position + extents;
+                            a->extents = (a->max - a->min) * 0.5f;
+                        }
+                       
+
+                        
                     }
                 }
             }

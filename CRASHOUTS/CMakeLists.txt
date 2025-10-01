@@ -66,7 +66,9 @@ foreach(child ${children})
         # Link libraries
         target_link_libraries(${child}
             ${ALL_LIBS}
+            CrashoutsAudio 
         )
+        link_fmod_to(${child})   
 
         # Set C++ standard
         set_property(TARGET ${child} PROPERTY CXX_STANDARD 20)
