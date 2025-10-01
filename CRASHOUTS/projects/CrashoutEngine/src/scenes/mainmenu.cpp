@@ -27,14 +27,14 @@ void LoadMainMenu()
 	CrashoutsEngine::Assets::GenerateAssetManifest();
 
 	CrashoutsEngine::Assets::AssetManager::GetInstance().LoadManifestAssets();
-
-	GLuint shaderID = loadShaderProgram("../../../projects/CrashoutEngine/shaders/textShader.vert", "../../../projects/CrashoutEngine/shaders/textShader.frag");
+	
+	GLuint shaderID = LoadShaderProgram("../../../projects/CrashoutEngine/shaders/textShader.vert", "../../../projects/CrashoutEngine/shaders/textShader.frag");
 	if (shaderID == 0) {
 		std::cout << "Failed to load text shader.\n";
 		return;
 	}
 	gTextRenderer = new TextRenderer("../../../projects/CrashoutEngine/assets/fonts/arial.ttf", Settings::GetScreenWidth(), Settings::GetScreenHeight());
-	gTextRendererA = new TextRenderer("../../../projects/CrashoutEngine/assets/fonts/Exo2-Regular.ttf", Settings::GetScreenWidth(), Settings::GetScreenHeight());
+	gTextRendererA = new TextRenderer("../../../projects/CrashoutEngine/assets/fonts/Exo2-Regular.ttf", Settings::GetScreenWidth(), Settings::GetScreenHeight()); 
 }
 
 void InitMainMenu()
@@ -54,12 +54,12 @@ void RenderMainMenu()
 	glClearColor(0.1f, 0.2f, 0.4f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 	if (gTextRenderer) {
-		gTextRenderer->renderCenteredText("Hello", -900.0f, 0.0f, 1.0f, glm::vec3(1.0f));
+		gTextRenderer->RenderCenteredText("Hello", -900.0f, 0.0f, 1.0f, glm::vec3(1.0f));
 	}
 	if (gTextRendererA) {
-		gTextRendererA->renderCenteredText("Bye", -900.0f, 100.0f, 1.0f, glm::vec3(1.0f, 0.0f, 0.0f));
+		gTextRendererA->RenderCenteredText("Bye", -900.0f, 100.0f, 1.0f, glm::vec3(1.0f, 0.0f, 0.0f));
 	}
-
+	
 	Scene::RenderScene(*globalECS);
 }
 

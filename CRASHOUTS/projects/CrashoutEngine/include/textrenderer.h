@@ -77,7 +77,7 @@ public:
      * @param scale Scale factor for text size
      * @param color RGB color of the text
      */
-    void renderText(const std::string& text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color);
+    void RenderText(const std::string& text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color);
    
     /**
      * @brief Render centered text
@@ -87,7 +87,7 @@ public:
      * @param scale Scale factor for text size
      * @param color RGB color of the text
      */
-    void renderCenteredText(const std::string& text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color);
+    void RenderCenteredText(const std::string& text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color);
 
 
 private:
@@ -96,7 +96,7 @@ private:
      * @param fontPath Path to the font file
      * @return True if loaded successfully false otherwise
      */
-    bool loadFont(const std::string& fontPath);
+    bool LoadFont(const std::string& fontPath);
 };
 /**
  * @brief Load and link a shader program from vertex and fragment shader files
@@ -104,4 +104,4 @@ private:
  * @param fragmentPath Path to the fragment shader file
  * @return Linked shader program ID or 0 if linking fails
  */
-GLuint loadShaderProgram(const std::string& vertexPath, const std::string& fragmentPath);
+GLuint LoadShaderProgram(const std::string& vertexPath, const std::string& fragmentPath);
