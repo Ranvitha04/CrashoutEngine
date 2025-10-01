@@ -1,72 +1,54 @@
 include(FetchContent)
 
-# Macro to import GLFW
+# -------------------- GLFW --------------------
 macro(import_glfw)
-    if(NOT TARGET glfw)  # Guard to prevent multiple inclusion
+    if(NOT TARGET glfw)
         FetchContent_Declare(
             glfw
             GIT_REPOSITORY https://github.com/glfw/glfw.git
             GIT_TAG 3.3.8
         )
-        if(NOT glfw_POPULATED)
-            set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
-            set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
-            set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
-            FetchContent_Populate(glfw)
-        endif()
-
-        add_subdirectory(${glfw_SOURCE_DIR})
-        include_directories(${GLFW_SOURCE_DIR}/include)
+        FetchContent_MakeAvailable(glfw)
     endif()
 endmacro()
 
-# Macro to import glm
+# -------------------- GLM (header-only) --------------------
 macro(import_glm)
-    if(NOT TARGET glm)  # Guard to prevent multiple inclusion
+    if(NOT TARGET glm::glm)
         FetchContent_Declare(
             glm
             GIT_REPOSITORY https://github.com/g-truc/glm.git
             GIT_TAG master
         )
         FetchContent_MakeAvailable(glm)
-
-        include_directories(${glm_SOURCE_DIR})
+        # glm already provides glm::glm target, no manual include needed
     endif()
 endmacro()
 
-# Macro to import glew
+# -------------------- GLEW --------------------
 macro(import_glew)
-    if(NOT TARGET glew_s)  # Guard to prevent multiple inclusion
-        include(FetchContent)
-
+    if(NOT TARGET libglew_static)
         FetchContent_Declare(
             glew
             GIT_REPOSITORY https://github.com/omniavinco/glew-cmake.git
-            GIT_TAG master  # Or use a specific commit or tag if preferred
+            GIT_TAG master
         )
-
-        # Disable shared builds if needed
-        set(BUILD_SHARED_LIBS OFF CACHE BOOL "Build shared libs" FORCE)
+        set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
         FetchContent_MakeAvailable(glew)
-
-        # Optional: include directories if needed manually (though target_link_libraries handles it)
-        include_directories(${glew_SOURCE_DIR}/include)
+        # glew-cmake defines libglew_static target
     endif()
 endmacro()
 
-# Macro to import ImGui - DOCKING version
+# -------------------- ImGui --------------------
 macro(import_imgui)
-    if(NOT TARGET imgui)  # Guard to prevent multiple inclusion
+    if(NOT TARGET imgui)
         FetchContent_Declare(
             imgui
             GIT_REPOSITORY https://github.com/ocornut/imgui.git
             GIT_TAG docking
         )
-        if(NOT imgui_POPULATED)
-            FetchContent_Populate(imgui)
-        endif()
+        FetchContent_Populate(imgui)
 
-        # Create ImGui library manually since it doesn't have CMakeLists.txt
         set(IMGUI_SOURCES
             ${imgui_SOURCE_DIR}/imgui.cpp
             ${imgui_SOURCE_DIR}/imgui_demo.cpp
@@ -77,14 +59,15 @@ macro(import_imgui)
             ${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.cpp
         )
 
-         add_library(imgui STATIC ${IMGUI_SOURCES})
-        target_include_directories(imgui PUBLIC 
+        add_library(imgui STATIC ${IMGUI_SOURCES})
+        target_include_directories(imgui PUBLIC
             ${imgui_SOURCE_DIR}
             ${imgui_SOURCE_DIR}/backends
         )
         target_link_libraries(imgui PUBLIC glfw libglew_static)
     endif()
 endmacro()
+
 # -------------------- stb (header-only) --------------------
 macro(import_stb)
     if(NOT TARGET stb)
@@ -152,7 +135,48 @@ macro(import_rapidjson)
 
     endif()
 endmacro()
+#[[
+# FMOD paths
+set(_FMOD          "${CMAKE_SOURCE_DIR}/third_party/fmod")
+set(_FMOD_INC      "${_FMOD}/include")
+set(_FMOD_LIBDIR   "${_FMOD}/lib/x64")
+set(_FMOD_BINDIR   "${_FMOD}/bin/x64")
+# Core
+find_library(FMOD_CORE_LIB
+    NAMES fmod_vc fmod fmodL_vc
+    PATHS ${_FMOD_LIBDIR}
+    NO_DEFAULT_PATH
+)
 
+# Studio
+find_library(FMOD_STUDIO_LIB
+    NAMES fmodstudio_vc fmodstudio
+    PATHS ${_FMOD_LIBDIR}
+    NO_DEFAULT_PATH
+)
+
+if(NOT FMOD_CORE_LIB)
+    message(FATAL_ERROR "[FMOD] Could not find FMOD Core lib in ${_FMOD_LIBDIR}")
+endif()
+
+if(NOT FMOD_STUDIO_LIB)
+    message(FATAL_ERROR "[FMOD] Could not find FMOD Studio lib in ${_FMOD_LIBDIR}")
+endif()
+
+add_library(FMOD::Core SHARED IMPORTED)
+set_target_properties(FMOD::Core PROPERTIES
+    IMPORTED_IMPLIB               "${FMOD_CORE_LIB}"
+    IMPORTED_LOCATION             "${_FMOD_BINDIR}/fmod.dll"
+    INTERFACE_INCLUDE_DIRECTORIES "${_FMOD_INC}"
+)
+
+add_library(FMOD::Studio SHARED IMPORTED)
+set_target_properties(FMOD::Studio PROPERTIES
+    IMPORTED_IMPLIB               "${FMOD_STUDIO_LIB}"
+    IMPORTED_LOCATION             "${_FMOD_BINDIR}/fmodstudio.dll"
+    INTERFACE_INCLUDE_DIRECTORIES "${_FMOD_INC}"
+)
+]]
 # Expected repo layout:
 # third_party/fmod/
 #   include/            fmod.hpp, fmod_studio.hpp
@@ -228,25 +252,20 @@ message(STATUS "[CrashoutsAudio] src='${CA_SRC}/audioSystem.cpp'")
 # Macro to import all dependencies
 macro(importDependencies)
     message(STATUS "Starting to import dependencies...")
-    add_library(stb INTERFACE)
-    target_include_directories(stb INTERFACE "${CMAKE_SOURCE_DIR}/third_party/stb")
-    target_include_directories(stb INTERFACE "${CMAKE_BINARY_DIR}/_deps/stb-src")
-    message(STATUS "Importing GLFW...")
+
     import_glfw()
     message(STATUS "GLFW imported successfully.")
 
-    message(STATUS "Importing GLM...")
     import_glm()
     message(STATUS "GLM imported successfully.")
 
-    message(STATUS "Importing GLEW...")
     import_glew()
     message(STATUS "GLEW imported successfully.")
 
-    message(STATUS "Importing ImGui...")
     import_imgui()
     message(STATUS "ImGui imported successfully.")
-        import_stb()
+
+    import_stb()
     message(STATUS "stb imported successfully.")
 
     import_freetype()
