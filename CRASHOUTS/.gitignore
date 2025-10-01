@@ -82,6 +82,7 @@ Temporary Items
 *.so
 *.dylib
 
+
 # Ignore other intermediate or output directories
 out/
 Debug/
