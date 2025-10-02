@@ -26,9 +26,10 @@ rendering pipelines.
 
 #include <GL/glew.h>
 #include <glm/glm.hpp>
+#include <vector>
+#include <cstddef>
 #include "shader.h"	
 #include "managers/entitymanager.h"
-#include "resources/textures.h"
 
 namespace Component {
 
@@ -36,7 +37,10 @@ namespace Component {
     class Rendering {
     public:
         
-        Rendering() = default;
+        Rendering() : vaoid(0), vbo_hdl(0), ebo_hdl(0), primitive_type(GL_TRIANGLES), 
+                      idx_elem_cnt(0), tex_vbo_hdl(0), texobj(0), current_vbo_size(0), 
+                      current_ebo_size(0), mapped_vbo_ptr(nullptr), mapped_ebo_ptr(nullptr), 
+                      buffers_initialized(false) {}
         
         static Rendering& Get();
         static void Initialize();
@@ -55,6 +59,29 @@ namespace Component {
         GLuint tex_vbo_hdl{ 0 };
         GLuint texobj{ 0 };
         GLSLShader shdr_pgm;
+        
+        
+        size_t current_vbo_size{ 0 };
+        size_t current_ebo_size{ 0 };
+        
+        
+        void* mapped_vbo_ptr{ nullptr };
+        void* mapped_ebo_ptr{ nullptr };
+        
+        // Buffer reuse or not bool
+        bool buffers_initialized{ false };
+
+    private:
+        // Performance optimization members
+        struct BufferPool {
+            std::vector<GLuint> available_vbos;
+            std::vector<GLuint> available_vaos;
+            std::vector<GLuint> available_ebos;
+            size_t max_pool_size = 100;
+        };
+        static BufferPool buffer_pool;
+
+    public:
 
         
         void Setup_VAO();
@@ -73,6 +100,32 @@ namespace Component {
             const void* tex_coords, size_t tex_coord_size,
             const void* indices, size_t index_count,
             GLenum primitive);
+
+        // 
+        void SetupBuffersOptimized(const void* vertices, size_t vertex_size,
+            const void* colors, size_t color_size,
+            const void* indices, size_t index_count,
+            GLenum primitive);
+            
+        void SetupTexturedBuffersOptimized(const void* vertices, size_t vertex_size,
+            const void* colors, size_t color_size,
+            const void* tex_coords, size_t tex_coord_size,
+            const void* indices, size_t index_count,
+            GLenum primitive);
+            
+        void UpdateBuffersInPlace(const void* vertices, size_t vertex_size,
+            const void* colors, size_t color_size,
+            const void* indices, size_t index_count);
+            
+        // Buffer pool management
+        GLuint GetPooledVBO();
+        GLuint GetPooledVAO();
+        GLuint GetPooledEBO();
+        void ReturnToPool(GLuint vbo, GLuint vao, GLuint ebo);
+        
+        
+        void InitializePersistentBuffers(size_t max_vertex_size, size_t max_index_size);
+        void CleanupPersistentBuffers();
 
 
     };

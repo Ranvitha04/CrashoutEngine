@@ -23,7 +23,7 @@ rendering resources associated with these primitives.
 
 #include "math/CEVec3.h"
 #include <iostream>
-
+                         
 namespace Component {
 
     struct Shapes {
@@ -54,7 +54,18 @@ namespace Component {
         const CEVec3& p3, float rotation = 0.0f, float scale = 1.0f,
         const CEVec3& tint = CEVec3(1, 1, 1));
 
+    static void CreateCircle(const CEVec3& position, float radius = 1.0f, int segments = 32, float rotation = 0.0f, float scale = 1.0f, const CEVec3& color = CEVec3(1.0f, 1.0f, 1.0f));
+
+    // Instanced rendering for multiple objects
+    static void CreateInstancedSquares(const CEVec3* positions, const CEVec3* colors, 
+                                     const float* rotations, const float* scales, 
+                                     int count, float baseSize = 1.0f);
+
     };
+
+    
+
+
 
 }
 
