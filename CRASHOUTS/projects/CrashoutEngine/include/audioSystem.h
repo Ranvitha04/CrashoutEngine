@@ -29,9 +29,16 @@ namespace CrashoutsEngine {
 
             bool playOneShot(const std::string& eventPath);
             FMOD::Studio::EventInstance* createInstance(const std::string& eventPath);
-
+            bool stopAllOnBus(const std::string& busPath, bool fadeOut = true);
+            bool stopAll(bool fadeOut = true); 
             FMOD::Studio::System* studio() { return mStudio.get(); }
             FMOD::System* core() { return mCore.get(); }
+            bool setBusMute(const std::string& busPath, bool muted);
+            bool setBusVolume(const std::string& busPath, float vol01);
+            bool stopAndMuteBus(const std::string& busPath, bool fadeOut = true);
+            bool setVCAVolume(const std::string& vcaPath, float vol01);
+            bool cutVCA(const std::string& vcaPath) { return setVCAVolume(vcaPath, 0.0f); }
+
 
         private:
             AudioSystem() = default;
