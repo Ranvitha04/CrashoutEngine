@@ -163,7 +163,7 @@ namespace Component {
         /*!
         @brief Configure duck-specific animations (predefined setup).
         */
-        void setupDuckAnimations();
+        //void setupDuckAnimations();
 
         static Sprite m_blinkSprite;
         static Sprite m_walkSprite;

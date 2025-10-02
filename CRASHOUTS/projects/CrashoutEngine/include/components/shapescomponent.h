@@ -1,5 +1,5 @@
 /*!
-@file       shapescomponents.h
+@file       shapescomponent.h
 @author     mohamadamirakmal.b@digipen.edu
 @date       28/09/2025
 @brief	    This file defines the ShapesComponent, a simple data structure
@@ -61,7 +61,7 @@ namespace Component {
 
         // -------------------- Shared (All Shapes) -----------------
 
-        CEVec3 color{ 255.f, 255.f, 255.f }; ///< RGB color (0–255 range expected).
+        CEVec3 color{ 255.f, 255.f, 255.f }; ///< RGB color
 
         // -------------------- Square ------------------------------
 

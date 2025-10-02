@@ -1,5 +1,5 @@
 /*!
-@file       editorregistry.h
+@file       debugreflection.h
 @author     mohamadamirakmal.b@digipen.edu
 @date       25/09/2025
 

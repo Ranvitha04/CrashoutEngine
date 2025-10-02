@@ -7,7 +7,6 @@
 Provides enums structures and functions for handling game state registration initialization updates and transitions
 */
 #pragma once
-#include "math/CETypes.h"
 #include <unordered_map>
 
 

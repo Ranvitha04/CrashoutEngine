@@ -1,5 +1,5 @@
 /*!
-@file       Collision.h
+@file       collisionmanager.h
 @author     miratristan.d@digipen.edu
 @date       08/09/2025
 @brief      Basic Collision Functions and Colliders(Plane, AABB and Circle)
@@ -10,13 +10,10 @@
 #pragma once
 
 #include "math/CEVec3.h"
-#include "components/transformcomponent.h"
 #include "messaging/observable.h"
 #include "log.h"
 #include "managers/entitymanager.h"
 #include <memory>
-#include <iostream>
-#include <cmath>
 #include <array>
 #include <algorithm>
 #include <utility>

@@ -5,15 +5,13 @@
 @brief      Declaration of the InputManager class
 
 Provides static functions to handle keyboard mouse and scroll wheel input using GLFW
- */
+*/
 #pragma once
 
 #include <GLFW/glfw3.h>
 #include <unordered_map>
-#include <glm/glm.hpp>
 #include "key.h"
 #include "math/CEVec2.h"
-//ENTIRE INPUTMANAGER IS TO BE REFACTORED/REMOVED LATER TO ADHERE TO ECS - Rain
 /*!
 @class InputManager
 @brief Handles input state management for keys mouse buttons and scroll wheel
@@ -24,7 +22,7 @@ class InputManager {
 public:
     /*!
     @brief Initialize the input manager with a GLFW window
-    @param window Pointer to the GLFW window
+    @param ptr_window Pointer to the GLFW window
     */
     static void Init(GLFWwindow* ptr_window);
 

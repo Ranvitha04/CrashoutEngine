@@ -1,5 +1,5 @@
 /*!
-@file       Physics.h
+@file       physicsmanager.h
 @author     miratristan.d@digipen.edu
 @date       08/09/2025
 @brief      Contains Physics runSystem function for collision detection and physics resolution (calculate new pos by vel)
@@ -46,7 +46,7 @@ namespace Physics {
 			@brief Modify Transform Component, and do Collision checks and resolutions. Call this function for the main PHYSICS update. Every entity with a rigidbody, collider and transform component will get their transforms modified
 			@param globalECS ECS object for ECS functions
 			@param globalEntities Collection of Entities
-			@param deltaTime Time taken for the previous frame
+			@param deltatime Time taken for the previous frame
 			*/
 			void update(double deltatime);
 
