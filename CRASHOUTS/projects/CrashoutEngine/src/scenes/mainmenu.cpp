@@ -76,10 +76,6 @@ void LoadMainMenu()
 	globalECS = CrashoutsEngine::ECS::getInstance();
 	globalECS->Reset();
 
-	CrashoutsEngine::Assets::GenerateAssetManifest();
-
-	CrashoutsEngine::Assets::AssetManager::GetInstance().LoadManifestAssets();
-
 	GLuint shaderID = loadShaderProgram("../../../projects/CrashoutEngine/shaders/textShader.vert", "../../../projects/CrashoutEngine/shaders/textShader.frag");
 	if (shaderID == 0) {
 		std::cout << "Failed to load text shader.\n";
@@ -113,10 +109,15 @@ void InitMainMenu()
 	);
 
 	// Initialize MainMenu state
+
+	CrashoutsEngine::Assets::GenerateAssetManifest();
+
+	CrashoutsEngine::Assets::AssetManager::GetInstance().LoadManifestAssets();
+
 	LOGI(Core, "MainMenu Initialized");
 }
 
-void CreateThing() {
+void CreateRandBox() {
 	Component::ShapeComponent shape;
 	int entityId = globalECS->CreateEntity();
 	Component::TransformComponent t;
@@ -148,7 +149,7 @@ void UpdateMainMenu()
 	if (itemCount < 2500 && InputManager::IsKeyPressed(Key::Num1)) {
 		int newCount = 0;
 		while (newCount < 10) {
-			CreateThing();
+			CreateRandBox();
 			newCount++;
 			itemCount++;
 		}
