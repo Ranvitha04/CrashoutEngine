@@ -80,6 +80,73 @@ bool AudioSystem::loadBank(const std::string& bankFile) {
     return true;
 }
 
+bool AudioSystem::stopAllOnBus(const std::string& busPath, bool fadeOut) {
+    if (!mStudio) return false;
+
+    FMOD::Studio::Bus* bus = nullptr;
+    FMOD_RESULT r = mStudio->getBus(busPath.c_str(), &bus);
+    ok(r, "getBus");                   // log success/fail (uses your ok())
+    if (r != FMOD_OK || !bus) return false;
+
+    r = bus->stopAllEvents(fadeOut ? FMOD_STUDIO_STOP_ALLOWFADEOUT
+        : FMOD_STUDIO_STOP_IMMEDIATE);
+    ok(r, "stopAllEvents");            // log result
+    mStudio->flushCommands();          // ensure the stop executes now
+    return r == FMOD_OK;
+}
+bool AudioSystem::setBusMute(const std::string& busPath, bool muted) {
+    if (!mStudio) return false;
+    FMOD::Studio::Bus* bus = nullptr;
+    FMOD_RESULT r = mStudio->getBus(busPath.c_str(), &bus);
+    if (r != FMOD_OK || !bus) return false;
+    r = bus->setMute(muted);
+    if (mStudio) mStudio->flushCommands();
+    return r == FMOD_OK;
+}
+
+bool AudioSystem::setBusVolume(const std::string& busPath, float vol01) {
+    if (!mStudio) return false;
+    FMOD::Studio::Bus* bus = nullptr;
+    FMOD_RESULT r = mStudio->getBus(busPath.c_str(), &bus);
+    if (r != FMOD_OK || !bus) return false;
+    r = bus->setVolume(vol01);
+    if (mStudio) mStudio->flushCommands();
+    return r == FMOD_OK;
+}
+
+bool AudioSystem::stopAndMuteBus(const std::string& busPath, bool fadeOut) {
+    if (!mStudio) return false;
+    FMOD::Studio::Bus* bus = nullptr;
+    FMOD_RESULT r = mStudio->getBus(busPath.c_str(), &bus);
+    if (r != FMOD_OK || !bus) return false;
+
+    // 1) Stop everything on the bus
+    r = bus->stopAllEvents(fadeOut ? FMOD_STUDIO_STOP_ALLOWFADEOUT
+        : FMOD_STUDIO_STOP_IMMEDIATE);
+    if (r != FMOD_OK) return false;
+
+    // 2) Hard cut: mute the bus
+    r = bus->setMute(true);
+    if (mStudio) mStudio->flushCommands(); // ensure both stop+mute apply now
+    return r == FMOD_OK;
+}
+
+
+bool AudioSystem::stopAll(bool fadeOut) {
+    // Master bus stops *everything* (music + sfx)
+    return stopAllOnBus("bus:/", fadeOut);
+}
+bool AudioSystem::setVCAVolume(const std::string& vcaPath, float vol01) {
+    if (!mStudio) return false;
+    FMOD::Studio::VCA* vca = nullptr;
+    FMOD_RESULT r = mStudio->getVCA(vcaPath.c_str(), &vca);
+    ok(r, "getVCA");
+    if (r != FMOD_OK || !vca) return false;
+
+    r = vca->setVolume(vol01);
+    if (mStudio) mStudio->flushCommands();
+    return r == FMOD_OK;
+}
 
 void AudioSystem::unloadAllBanks() {
     for (std::unordered_map<std::string, FMOD::Studio::Bank*>::iterator it = mBanks.begin();
