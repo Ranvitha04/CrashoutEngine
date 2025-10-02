@@ -10,10 +10,15 @@
 #include "managers/entitymanager.h"
 #include "managers/assetmanager.h"
 #include "managers/inputmanager.h"
+#include "managers/collisionmanager.h"
+#include "managers/physicsmanager.h"
 #include <random>
+#include <string>
 #include <chrono> // Used to seed the random number generator
 #include "glm/vec3.hpp"
 #include "GLFW/glfw3.h"
+
+
 
 float random_min_max(float const& min, float const& max) {
 	// 1. Setup the Random Number Generator (RNG)
@@ -42,6 +47,29 @@ static CrashoutsEngine::ECS* globalECS;
 
 static int itemCount = 0;
 
+static CrashoutsEngine::Entity entity1;
+static CrashoutsEngine::Entity entity2;
+static CrashoutsEngine::Entity entity3;
+
+void AddPhysicsEntity(CrashoutsEngine::Entity &entity, Component::RigidBodyComponent&& rigidBody, 
+	Component::TransformComponent&& transform, Component::ShapeComponent &&shape) {
+
+	entity = globalECS->CreateEntity();
+
+	CEVec3 extents{ shape.width * 0.5f, shape.height * 0.5f, 0.f };
+
+	globalECS->AddComponent<Component::NameComponent>(entity, Component::NameComponent{std::to_string(entity)});
+	globalECS->AddComponent<Component::RigidBodyComponent>(entity, rigidBody);
+	globalECS->AddComponent<Component::TransformComponent>(entity, transform);
+	globalECS->AddComponent<Component::ShapeComponent>(entity, shape);
+	globalECS->AddComponent<Component::ColliderComponent>(entity, Component::ColliderComponent{
+		std::make_unique<Collision::AABBRect>(Collision::AABBRect{
+			CEVec3{transform.position - extents },
+			CEVec3{transform.position + extents}
+		})
+	});
+}
+
 void LoadMainMenu()
 {
 	// Load resources specific to MainMenu state
@@ -63,6 +91,27 @@ void LoadMainMenu()
 
 void InitMainMenu()
 {
+	AddPhysicsEntity(
+		entity1,
+		Component::RigidBodyComponent{ CEVec3{}, 5.f, 0.f },
+		Component::TransformComponent{ .position = CEVec3{0.f, 20.f, 0.f} },
+		Component::ShapeComponent{.enableTexture=true, .textureName="duck", .width = 10.f, .height = 10.f}
+	);
+
+	AddPhysicsEntity(
+		entity2,
+		Component::RigidBodyComponent{ CEVec3{}, 0.f, 0.f },
+		Component::TransformComponent{ .position = CEVec3{0.f, -10.f, 0.f} },
+		Component::ShapeComponent{ .type = Component::ShapeType::Rectangle, .width = 80.f, .height = 10.f }
+	);
+
+	AddPhysicsEntity(
+		entity3,
+		Component::RigidBodyComponent{ CEVec3{}, 5.f, 0.f },
+		Component::TransformComponent{ .position = CEVec3{5.f, 20.f, 0.f} },
+		Component::ShapeComponent{ .type = Component::ShapeType::Rectangle, .width = 10.f, .height = 10.f }
+	);
+
 	// Initialize MainMenu state
 	LOGI(Core, "MainMenu Initialized");
 }
@@ -78,26 +127,58 @@ void CreateThing() {
 	t.rotation = random_min_max(0.f, 360.f);
 	t.size = CEVec2(1.f, 1.f);
 
-	shape.width = random_min_max(5.f, 25.f);
-	shape.height = random_min_max(5.f, 25.f);
+	shape.width = random_min_max(2.f, 3.f);
+	shape.height = random_min_max(2.f, 5.f);
 	shape.color = CEVec3(random_min_max(0.f, 255.f), random_min_max(0.f, 255.f), random_min_max(0.f, 255.f));
 	shape.type = Component::ShapeType::Rectangle;
 
 	globalECS->AddComponent<Component::TransformComponent>(entityId, t);
 	globalECS->AddComponent<Component::ShapeComponent>(entityId, shape);
+
 }
 
 void UpdateMainMenu()
 {
-	// Update logic for MainMenu state
 
-	if (itemCount < 2500 && InputManager::IsKeyPressed(Key::S)) {
+	Component::RigidBodyComponent* rigidBody{ globalECS->GetComponent<Component::RigidBodyComponent>(entity1) };
+	Component::TransformComponent* transform{ globalECS->GetComponent<Component::TransformComponent>(entity1) };
+
+	Component::RigidBodyComponent* rigidBody2{ globalECS->GetComponent<Component::RigidBodyComponent>(entity3) };
+
+	if (itemCount < 2500 && InputManager::IsKeyPressed(Key::Num1)) {
 		int newCount = 0;
 		while (newCount < 10) {
 			CreateThing();
 			newCount++;
 			itemCount++;
 		}
+	} 
+	
+	if (rigidBody) {
+		if (InputManager::IsKeyPressed(Key::A)) rigidBody->addForce(CEVec3{ -100.f, 0.f, 0.f });
+		if (InputManager::IsKeyPressed(Key::D)) rigidBody->addForce(CEVec3{ 100.f, 0.f, 0.f });
+		if (InputManager::IsKeyPressed(Key::W)) rigidBody->addForce(CEVec3{ 0.f, 300.f, 0.f }*rigidBody->getMass());
+	}
+
+	if (rigidBody2) {
+		if (InputManager::IsKeyPressed(Key::Left)) rigidBody2->addForce(CEVec3{ -100.f, 0.f, 0.f });
+		if (InputManager::IsKeyPressed(Key::Right)) rigidBody2->addForce(CEVec3{ 100.f, 0.f, 0.f });
+		if (InputManager::IsKeyPressed(Key::Up)) rigidBody2->addForce(CEVec3{ 0.f, 300.f, 0.f }*rigidBody2->getMass());
+	}
+
+	/*SCALE UP*/
+	if (InputManager::IsKeyPressed(Key::S)) {
+		transform->size *= 0.9f;
+	}
+
+	/*SCALE DOWN*/
+	if (InputManager::IsKeyPressed(Key::Q)) {
+		transform->size *= 1.1f;
+	}
+
+	/*ROTATE*/
+	if (InputManager::IsKeyPressed(Key::R)) {
+		transform->rotation += 3.f;
 	}
 }
 
@@ -125,6 +206,10 @@ void FreeMainMenu()
 
 	delete gTextRendererA;
 	gTextRendererA = nullptr;
+
+	globalECS->DestroyEntity(entity1);
+	globalECS->DestroyEntity(entity2);
+	globalECS->DestroyEntity(entity3);
 }
 
 void UnloadMainMenu()
