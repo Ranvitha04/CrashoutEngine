@@ -2,7 +2,7 @@
 REM --- Configuration Options ---
 set "BUILD_DIR=build"
 set "PROJECT_NAME=CrashoutEngine"
-set "BUILD_TYPE=Release"
+set "BUILD_TYPE=Debug"
 
 REM --- Set the current directory to the script's directory ---
 PUSHD "%~dp0"
