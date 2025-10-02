@@ -218,5 +218,6 @@
             "name": "assetmanifest",
             "path": "assetmanifest.json"
         }
-    ]
+    ],
+    "scenes": []
 }

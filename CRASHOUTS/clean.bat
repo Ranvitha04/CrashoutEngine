@@ -1,23 +1,22 @@
 @echo off
-REM ===============================================
-REM CRASHOUTS CrashoutsEngine Clean Script
-REM ===============================================
+setlocal
+pushd "%~dp0"
 
-echo.
-echo ===============================================
-echo   Cleaning Build Directory - Windows
-echo ===============================================
-echo.
+echo Cleaning build artifacts...
 
-REM Clean build directory
-if exist build (
-    echo Removing build directory...
-    rmdir /s /q build
-    echo Build directory removed successfully!
+REM Delete the 'out' directory completely
+if exist out (
+  rmdir /s /q out
+  echo Removed build directory.
 ) else (
-    echo No build directory found - nothing to clean.
+  echo No build directory found.
 )
 
-echo.
-echo Clean completed!
+REM Optionally remove cache/config files if any left
+if exist CMakeCache.txt del /f /q CMakeCache.txt
+if exist CMakeFiles rmdir /s /q CMakeFiles
+
+echo Cleanup complete.
+popd
+endlocal
 pause

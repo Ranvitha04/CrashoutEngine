@@ -1,93 +1,115 @@
 @echo off
-REM ===============================================
-REM Windows Build and Run Script
-REM Usage: run.bat [release | debug]
-REM ===============================================
+setlocal
+pushd "%~dp0"
+set "BUILD_DIR=out\build"
+set "ARCH=x64"
+set "EXE_NAME=THECARBS_code.exe"
 
-REM --- Script Configuration ---
-set TARGET_EXE=CrashoutEngine.exe
-set BUILD_CONFIG=Release
+REM --- Configuration Selection for Running (defaults to Debug) ---
+REM Allows running as 'run.bat Release' or 'run.bat Debug'
+set "CONFIG=%1"
+if not defined CONFIG (
+    set "CONFIG=Debug"
+)
+REM Normalize case for directory lookup
+if /i "%CONFIG%"=="debug" set "CONFIG=Debug"
+if /i "%CONFIG%"=="release" set "CONFIG=Release"
 
-REM --- Argument Processing ---
-if /I "%1"=="debug" set BUILD_CONFIG=Debug
-if /I "%1"=="release" set BUILD_CONFIG=Release
+echo Configuration to Run: %CONFIG%
 
-echo.
-echo ===============================================
-echo   CRASHOUTS Console Application - Windows
-echo ===============================================
-echo.
+echo STEP 1: Ensure build dir exists...
+if not exist "%BUILD_DIR%" mkdir "%BUILD_DIR%"
 
-REM Check if CMake is available
-cmake --version >nul 2>&1
-if %errorlevel% neq 0 (
-    echo ERROR: CMake is not installed or not in PATH
-    echo Please install CMake from https://cmake.org/download/
-    pause
-    exit /b 1
+echo STEP 2: Remove old CMake cache and FetchContent sub-builds if present...
+if exist "%BUILD_DIR%\CMakeCache.txt" (
+    echo Removing old CMake cache and files to avoid generator/platform mismatch...
+    rmdir /s /q "%BUILD_DIR%\CMakeFiles"
+    del /f /q "%BUILD_DIR%\CMakeCache.txt"
+)
+if exist "%BUILD_DIR%\_deps" (
+    echo Removing FetchContent _deps directory...
+    rmdir /s /q "%BUILD_DIR%\_deps"
+)
+if exist "%BUILD_DIR%\_deps\glfw-build" (
+    echo Removing glfw sub-build directory...
+    rmdir /s /q "%BUILD_DIR%\_deps\glfw-build"
 )
 
-REM Check if Visual Studio Build Tools are available
-where cl >nul 2>&1
-if %errorlevel% neq 0 (
-    echo WARNING: Visual Studio Build Tools not found in PATH
-    echo Make sure you have Visual Studio or Build Tools installed
-    echo.
+echo STEP 3: Configure (generate solution)...
+cmake -S . -B "%BUILD_DIR%" -DCMAKE_POLICY_VERSION_MINIMUM=3.5
+if ERRORLEVEL 1 goto FAIL_CONFIGURE
+
+echo STEP 4: Build (Debug and Release)...
+REM Build the Debug configuration
+echo Building Debug...
+cmake --build "%BUILD_DIR%" --config Debug
+if ERRORLEVEL 1 goto FAIL_BUILD
+
+REM Build the Release configuration
+echo Building Release...
+cmake --build "%BUILD_DIR%" --config Release
+if ERRORLEVEL 1 goto FAIL_BUILD
+
+echo STEP 5: Locate your executable deterministically in %CONFIG%...
+
+set "FOUND_EXE="
+REM Note: %CONFIG% is used here to target the specific executable directory
+set "CAND1=%BUILD_DIR%\%CONFIG%\%EXE_NAME%"
+set "CAND2=%BUILD_DIR%\%EXE_NAME%"
+set "CAND3=%BUILD_DIR%\bin\%CONFIG%\%EXE_NAME%"
+
+if exist "%CAND1%" set "FOUND_EXE=%CAND1%"
+if not defined FOUND_EXE if exist "%CAND2%" set "FOUND_EXE=%CAND2%"
+if not defined FOUND_EXE if exist "%CAND3%" set "FOUND_EXE=%CAND3%"
+
+if not defined FOUND_EXE (
+    for /R "%BUILD_DIR%" %%F in ("%EXE_NAME%") do (
+        set "FOUND_EXE=%%~fF"
+        goto :FOUND_EXE_LABEL
+    )
 )
 
-REM Clean previous build
-echo [1/4] Cleaning previous build...
-if exist build (
-    rmdir /s /q build
-    echo    Previous build directory removed
+if not defined FOUND_EXE (
+    for /R "%BUILD_DIR%" %%F in (*.exe) do (
+        echo %%~nF | findstr /i "CompilerIdC" >nul
+        if errorlevel 1 (
+            set "FOUND_EXE=%%~fF"
+            goto :FOUND_EXE_LABEL
+        )
+    )
+)
+
+:FOUND_EXE_LABEL
+if defined FOUND_EXE (
+    echo Found executable: %FOUND_EXE%
+    echo Launching game...
+
+    REM Find the directory of the found executable (%%~dpF gets path)
+    for %%F in ("%FOUND_EXE%") do set "EXE_DIR=%%~dpF"
+
+    REM Force working directory to the executable's directory (where DLLs/Assets should be)
+    pushd "%EXE_DIR%"
+    echo Current working directory: %CD%
+
+    REM Execute the program using the full path
+    "%FOUND_EXE%"
+
+    popd
 ) else (
-    echo    No previous build found
+    echo ERROR: No executable found for configuration %CONFIG%. Inspect build output.
+    goto END
 )
 
-REM Create build directory
-echo [2/4] Creating build directory...
-mkdir build
-cd build
+echo SUCCESS: launched executable.
+goto END
 
-REM Configure with CMake
-echo [3/4] Configuring project with CMake...
-cmake .. -G "Visual Studio 17 2022" -A x64
-if %errorlevel% neq 0 (
-    echo ERROR: CMake configuration failed
-    cd ..
-    pause
-    exit /b 1
-)
+:FAIL_BUILD
+echo CMake Build FAILED for one or more configurations. See messages above.
+goto END
 
-REM Build the project
-echo [4/4] Building project...
-cmake --build . --config %BUILD_CONFIG%
-if %errorlevel% neq 0 (
-    echo ERROR: Build failed
-    cd ..
-    pause
-    exit /b 1
-)
-
-echo.
-echo ===============================================
-echo   Build completed successfully!
-echo ===============================================
-echo.
-
-REM Run the application
-echo Running the application...
-echo.
-cd Debug
-CrashoutEngine.exe
-if %errorlevel% neq 0 (
-    echo.
-    echo Application exited with error code: %errorlevel%
-) else (
-    echo.
-    echo Application completed successfully!
-)
-
-echo.
-echo Press any key to exit...
-pause >nul
+:FAIL_CONFIGURE
+echo CMake Configure FAILED. See messages above.
+:END
+popd
+endlocal
+pause
