@@ -1,8 +1,7 @@
 /*!
 @file    	main.cpp
-@author  	pghali@digipen.edu
-@co-author  parminder.singh@digipen.edu
-@date    	17/04/2024
+@author  	lee.r@digipen.edu
+@date    	17/09/2025
 
 This file uses functionality defined in type GLApp to initialize an OpenGL
 context and implement a game loop.
@@ -134,15 +133,21 @@ int WINAPI WinMain(
     UNREFERENCED_PARAMETER(lpCmdLine);
     _CrtMemState stateStart, stateEnd, stateDiff;
     _CrtMemCheckpoint(&stateStart);
+
     #ifdef DEBUG
     
     SetupConsole();
+
+    #else
+
+    (void)stateStart;
+    (void)stateEnd;
+    (void)stateDiff;
 
     #endif
 
     InstallCrashLogger("CrashoutsEngine");
     glfwSwapInterval(0); // disable vsync
-    globalECS = CrashoutsEngine::ECS::getInstance();
     collisionSystem.registerObserver(Messaging::getCollisionMsgID(), physicsSystem); /*Listen to messages(collisions)*/
 
     // start with a 16:9 aspect ratio
@@ -186,6 +191,10 @@ int WINAPI WinMain(
     DebugReflection::PhysicsRegistry::instance().clear();
     Logger::Instance().Clear();
     GLApp::cleanup();
+    InputManager::Shutdown();
+    ShutdownGameStateManager();
+
+    CrashoutsEngine::ECS::DestroyInstance();
 
     _CrtMemCheckpoint(&stateEnd);
     if (_CrtMemDifference(&stateDiff, &stateStart, &stateEnd)) {

@@ -1,3 +1,11 @@
+/*!
+@file       observable.cpp
+@author     miratristan.d@digipen.edu
+@date       19/09/2025
+@brief      Member Function definitions for the Base class Observable. Includes definitions for registerObserver, sendMessage.
+
+//__________________________________________________________________________*/
+
 #include "messaging/observable.h"
 #include <utility>
 #include <algorithm>
