@@ -33,6 +33,7 @@ namespace CrashoutsEngine {
 }
 namespace Physics { class PhysicsHandler; }
 namespace Collision { struct CollisionEvent; }
+namespace DebugReflection { class PanelRegistry; }
 
 namespace UI {
 
@@ -42,9 +43,19 @@ namespace UI {
     */
     struct UIState {
         bool lockLayout = false;
-        bool showPerf = true;
-        bool showConsole = true;
+        bool showPerf = false;
+        bool showConsole = false;
+        bool showECS = false;
+        bool showGameState = false;
+        bool showPhysics = false;
+        bool showAudio = false;
         bool drawCollOverlay = true;
+
+        bool freezeOnCollision = false;
+
+        bool drawAllColliders = true;   // draw wireframes for every collider, not just colliding ones
+        bool drawVelocities = false;  // draw velocity arrows if RigidBodyComponent exists
+        float overlayThickness = 2.0f;  // line thickness for wireframes
     };
 
     // -- Lifecycle ----------------------------------------------------
@@ -89,7 +100,7 @@ namespace UI {
     @param entities List of ECS entities.
     @param selected Currently selected entity.
     */
-    void RenderEcsPanel(FrameProfiler& profiler, CrashoutsEngine::ECS& ecs, std::vector<CrashoutsEngine::Entity>& entities, CrashoutsEngine::Entity& selected);
+    void RenderEcsPanel(FrameProfiler& profiler, CrashoutsEngine::ECS& ecs, std::vector<CrashoutsEngine::Entity>& entities, CrashoutsEngine::Entity& selected, UIState& ui);
     
     /*!
     @brief Renders the performance profiling panel.
@@ -104,6 +115,11 @@ namespace UI {
     */
     void RenderConsolePanel(UIState& ui);
 
+    /*!
+     @brief Renders the gameState panel
+     @param state gameState reference.
+     @param ui UI state toggles.
+    */
     void RenderGameStatePanel(UIState& ui);
     
     /*!
@@ -116,12 +132,14 @@ namespace UI {
     void RenderPhysicsPanel(FrameProfiler& profiler, CrashoutsEngine::ECS& ecs, Physics::PhysicsHandler& phys, UIState& ui);
     
     /*!
-    @brief Draws collision overlays in the viewport.
-    @param ecs ECS reference.
-    @param events List of collision events.
-    @param ui UI state toggles.
+     @brief Renders the audio panel.
+     @param profiler Frame profiler reference.
+     @param ecs ECS reference.
+     @param ui UI state toggles.
     */
-    void DrawCollisionOverlay(CrashoutsEngine::ECS& ecs, const std::vector<Collision::CollisionEvent>& events, const UIState& ui);
+    void RenderAudioPanel(FrameProfiler&, CrashoutsEngine::ECS& ecs, UIState& ui);
+
+    static void RenderTogglesWindow(UIState& ui);
 
     /*!
     @brief Renders all UI panels and overlays in sequence.

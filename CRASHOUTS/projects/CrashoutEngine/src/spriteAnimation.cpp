@@ -147,7 +147,7 @@ namespace Component {
     @brief Renders the current animation frame to the screen.
 
     @details
-    Computes the current frame’s position within the sprite sheet and draws it using
+    Computes the current frameï¿½s position within the sprite sheet and draws it using
     the texture renderer. Supports horizontal flipping, scaling, rotation, and tinting.
     */
 
@@ -182,7 +182,7 @@ namespace Component {
     }
 
     /*!
-    @brief Cleans up the sprite’s internal state and resets all properties.
+    @brief Cleans up the spriteï¿½s internal state and resets all properties.
 
     @details
     Does not delete the texture (as it is managed by the texture renderer), but resets
@@ -235,7 +235,7 @@ namespace Component {
     }
 
    /*!
-   @brief Sets the sprite’s position on the screen.
+   @brief Sets the spriteï¿½s position on the screen.
    @param x X-coordinate.
    @param y Y-coordinate.
    */

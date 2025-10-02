@@ -1,0 +1,50 @@
+{
+    "audio": [
+        {
+            "name": "Master",
+            "path": "banks\\Master.bank"
+        },
+        {
+            "name": "Master.strings",
+            "path": "banks\\Master.strings.bank"
+        },
+        {
+            "name": "sfx",
+            "path": "banks\\sfx.bank"
+        }
+    ],
+    "fonts": [
+        {
+            "name": "arial",
+            "path": "arial.ttf"
+        },
+        {
+            "name": "Exo2-Regular",
+            "path": "Exo2-Regular.ttf"
+        },
+        {
+            "name": "Silver",
+            "path": "Silver.ttf"
+        }
+    ],
+    "images": [
+        {
+            "name": "amazon-logo-transparent",
+            "path": "amazon-logo-transparent.png"
+        },
+        {
+            "name": "duck-rgba-256",
+            "path": "duck-rgba-256.tex"
+        },
+        {
+            "name": "duck",
+            "path": "duck.jpg"
+        }
+    ],
+    "json": [
+        {
+            "name": "assetmanifest",
+            "path": "assetmanifest.json"
+        }
+    ]
+}

@@ -11,39 +11,18 @@
 #include "math/CEVec3.h"
 #include "managers/entitymanager.h"
 #include "managers/collisionmanager.h"
+#include "messaging/observer.h"
+#include "components/rigidbodycomponent.h"
 #include "log.h"
 #include <vector>
 
-namespace Component {
-	class RigidBodyComponent {
-		private:
-			CEVec3 mVelocity;
-			CEVec3 mMaximumVel;
-			f32 mMass;
-			CEVec3 mNetForce;
-			f32 mRestitutionCoeff; /*Measure of elasticity*/
-		public:
-
-			/*Constructor*/
-			RigidBodyComponent(CEVec3 maximumVel = CEVec3{}, f32 mass = 0.f, f32 restitutionCoeff = 0.f);
-
-			/*Member Functions*/
-			f32 getInverseMass();
-			f32 getMass();
-			void addForce(CEVec3 force);
-			void clearForceAccumulator();
-			void updatePhysics(double dt);
-			CEVec3 getVelocity();
-			void setVelocity(CEVec3 const& newVel);
-			f32 getCoeff();
-	};
-}
-
 namespace Physics {
-	class PhysicsHandler {
+
+	void applyImpulse(Collision::CollisionEvent const& event, CrashoutsEngine::ECS& globalECS);
+
+	class PhysicsHandler : public Messaging::Observer {
 		private:
 			std::vector<Collision::CollisionEvent> collisionEvents;
-			void applyImpulse(Collision::CollisionEvent const& event, CrashoutsEngine::ECS& globalECS);
 			Collision::CollisionHandler collisionHandler;
 
 			// --- Debug state (static so UI can toggle globally) ---
@@ -51,8 +30,17 @@ namespace Physics {
 			static inline bool sStepOnce = false;
 			static inline bool sOverrideDt = false;
 			static inline double sDebugDt = 1.0 / 60.0;
+
+			static inline CEVec3 sGravity{ 0.f, -2.f, 0.f };
+			static inline float  sLinDamp = 2.0f;
 		public:
-			PhysicsHandler() = default;
+
+
+			PhysicsHandler();
+
+			~PhysicsHandler() = default;
+
+			static void handleCollisionMessages(Collision::CollisionMessage& collEvent, PhysicsHandler &observer);
 
 			/*!
 			@brief Modify Transform Component, and do Collision checks and resolutions. Call this function for the main PHYSICS update. Every entity with a rigidbody, collider and transform component will get their transforms modified
@@ -60,7 +48,7 @@ namespace Physics {
 			@param globalEntities Collection of Entities
 			@param deltaTime Time taken for the previous frame
 			*/
-			void update(std::vector<CrashoutsEngine::Entity>& globalEntities, double deltaTime);
+			void update(double deltatime);
 
 			/*!
 			@brief Based on the velocity of the current RigidBodyComponent, modify the transformComponent accordingly
@@ -69,6 +57,10 @@ namespace Physics {
 			@param deltaTime Time taken for the previous frame
 			*/
 			void updatePhysics(Component::TransformComponent *transformComp, Component::RigidBodyComponent *rigidBodyComp, double deltaTime);
+
+			void setCollisionEvent(Collision::CollisionEvent const& event);
+
+			//void fixedUpdate();
 
 			// --- Debug API ---
 			const std::vector<Collision::CollisionEvent>& collisions() const { return collisionEvents; }
@@ -79,5 +71,10 @@ namespace Physics {
 			static void StepOnce() { sStepOnce = true; }
 			static void SetOverrideDt(bool o) { sOverrideDt = o; }
 			static void SetDebugDt(double dt) { sDebugDt = dt; }
+
+			static void SetGravity(const CEVec3& g);
+			static CEVec3 GetGravity();
+			static void SetLinearDamping(float c);
+			static float GetLinearDamping();
 	};
 }

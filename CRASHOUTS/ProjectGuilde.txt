@@ -1,0 +1,72 @@
+==================================================
+  PROJECT SETUP AND BUILD GUIDE
+==================================================
+
+Welcome! This guide provides instructions on how to install the necessary tools, generate the project files, and build the application using Windows and Visual Studio 2022.
+
+***
+
+## Prerequisites
+
+Before you begin, make sure you have **Visual Studio 2022** installed with the **"Desktop development with C++"** workload.
+* You can download it here: https://visualstudio.microsoft.com/downloads/
+
+***
+
+## Step 1: Install CMake ⚙️
+
+This project uses CMake to generate the Visual Studio solution (`.sln`) file.
+
+1.  **Download CMake**:
+    * Go to the official download page: https://cmake.org/download/
+    * Under the "Binary distributions" section, download the latest "Windows x64 Installer" (`.msi` file).
+
+2.  **Run the Installer**:
+    * During installation, you will reach an "Install Options" screen.
+    * **IMPORTANT**: You must choose either **"Add CMake to the system PATH for all users"** or **"Add CMake to the system PATH for the current user"**. This allows the scripts to find and run CMake from the command line.
+
+    
+
+3.  **Verify Installation**:
+    * After installation, open a new Command Prompt and type `cmake --version`. If it prints a version number, you are all set!
+
+***
+
+## Step 2: Generate the Visual Studio Project 🚀
+
+The project generation process is automated with a script.
+
+* **How to run**: In the project's root folder, simply **double-click the `run.bat` file**.
+
+* **What it does**:
+    1.  Creates a `build` folder for all generated files.
+    2.  Runs CMake to produce a Visual Studio 2022 solution.
+    3.  Automatically opens the generated `CRASHOUTS.sln` file in Visual Studio.
+
+Alternative: Command-Line Build (Advanced)
+
+For users who prefer to build directly from the command line after project generation, you can use the cmake --build command with a configuration variable. This is especially useful for CI/CD or scripting.
+
+    Variable-based Build: The cmake --build command now uses the %BUILD_CONFIG% variable (e.g., set to Debug or Release) to specify which version to build.
+
+	cmake --build . --config %BUILD_CONFIG%
+
+    You would execute this command from within the generated build directory, ensuring the environment variable is set beforehand (e.g., set BUILD_CONFIG=Release).
+
+***
+
+## Step 3: Build and Run in Visual Studio
+
+Once the solution is open in Visual Studio:
+
+1.  **Set Startup Project**: In the "Solution Explorer" panel, right-click on the executable project (e.g., `CrashoutEngine`) and select **"Set as StartUp Project"**.
+2.  **Select Configuration**: Use the dropdowns at the top to ensure the configuration is set to **Debug** and the platform is **x64**.
+3.  **Run**: Press **F5** or the green "Local Windows Debugger" button to compile and run the project.
+
+***
+
+## Cleaning Up 🧹
+
+If you need to delete all generated files and start over, a script is provided for that.
+
+* **How to run**: Simply **double-click the `clean.bat` file**. This will safely and completely remove the `build` directory.

@@ -9,8 +9,6 @@ Handles registration initialization updating and transitions between different g
 
 #include "gamestatemanager.h"
 
-#include <unordered_map>
-
  /// Registry that maps game states to their descriptors
 static std::unordered_map<GameState, GameStateDescriptor> StateRegistry;
 
@@ -39,6 +37,13 @@ void RestartGameState() {
 */
 void RegisterGameState(GameState state, GameStateDescriptor descriptor){
 	StateRegistry[state] = descriptor;
+}
+
+/*!
+@brief Exposes a view over the registry so that ImGui can read IDs
+*/
+const std::unordered_map<GameState, GameStateDescriptor>& GetStateRegistry() {
+    return StateRegistry; // existing static in this translation unit
 }
 
 /*!
@@ -122,6 +127,26 @@ void UpdateGameStateManager() {
 }
 
 /*!
+@brief Shuts down the Game State Manager.
+@details
+Clears the static registry map to explicitly free all dynamically allocated
+memory associated with the registered state descriptors before program exit.
+*/
+void ShutdownGameStateManager() {
+    // Clean up the currently active state's resources
+    if (CurrentDescriptor) {
+        if (CurrentDescriptor->Free) CurrentDescriptor->Free();
+        if (CurrentDescriptor->Unload) CurrentDescriptor->Unload();
+    }
+
+    StateRegistry.clear();
+
+    CurrentDescriptor = nullptr;
+    CurrentGameState = NextGameState = PreviousGameState = MAIN_MENU;
+    RestartRequested = false;
+}
+
+/*!
 @brief Reset the frame rate controller
 
 Placeholder for resetting frame timing
@@ -156,3 +181,4 @@ Placeholder for ending frame timing
 void EndFrameRateController() {
 	// End frame rate controller here
 }
+

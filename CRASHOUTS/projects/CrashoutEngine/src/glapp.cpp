@@ -35,6 +35,9 @@ integration.
 #include <backends/imgui_impl_glfw.h>
 #include <backends/imgui_impl_opengl3.h>
 
+#include "frameratecontroller.h"
+#include "key.h"
+
 // Before asking GLFW to create an OpenGL context, we specify the minimum constraints
 // in that context:
 constexpr int GL_MINOR{ 5 };
@@ -190,10 +193,10 @@ to window title bar.
 void GLApp::update() {
     // write window title with current fps ...
     std::stringstream sstr;
-    sstr << std::fixed << std::setprecision(2) << GLApp::title << " | " << GLApp::fps;
+    sstr << std::fixed << std::setprecision(2) << GLApp::title << " | " << FrameRateController::GetInstance().FPS();
     glfwSetWindowTitle(GLApp::ptr_window, sstr.str().c_str());
 
-    GLsizei position_data_offset = 0;
+    //GLsizei position_data_offset = 0;
     GLsizei position_attribute_size = sizeof(glm::vec3); // Changed from vec2 to vec3 to match rendering.cpp
     GLsizei position_data_size = position_attribute_size * 4;
     GLsizei color_data_offset = position_data_size;
@@ -247,7 +250,7 @@ void GLApp::draw() {
 
 /* _________________________________________________________________________ */
 /*! cleanup
-             x`
+
 @param none
 
 @return none
@@ -263,7 +266,6 @@ void GLApp::cleanup() {
     Component::Rendering::Cleanup();
 
     Component::TextureRenderer::Cleanup();
-
 
     glfwTerminate();
 
@@ -296,22 +298,21 @@ were held down
 This function is called when keyboard buttons are pressed.
 When the ESC key is pressed, the close flag of the window is set.
 */
-void GLApp::key_cb(GLFWwindow* pwin, int key, int scancode, int action, int mod) {
+void GLApp::key_cb(GLFWwindow* pwin, int key, [[maybe_unused]] int scancode, int action, [[maybe_unused]] int mod) {
     //ImGui_ImplGlfw_KeyCallback(pwin, key, scancode, action, mod);
-
     if (GLFW_PRESS == action) {
 #ifdef _DEBUG
-        LOGI(Input, "Key is pressed");
+        LOGI(Input, std::string(KeyToString(k)) + " is pressed");
 #endif
     }
     else if (GLFW_REPEAT == action) {
 #ifdef _DEBUG
-        LOGI(Input, "Key is repeatedly pressed");
+        LOGI(Input, std::string(KeyToString(k)) + " is repeatedly pressed");
 #endif
     }
     else if (GLFW_RELEASE == action) {
 #ifdef _DEBUG
-        LOGI(Input, "Key is released");
+        LOGI(Input, std::string(KeyToString(k)) + " is released");
 #endif
     }
 
@@ -345,8 +346,20 @@ were held down
 
 This function is called when mouse buttons are pressed.
 */
-void GLApp::mousebutton_cb(GLFWwindow* pwin, int button, int action, int mod) {
+void GLApp::mousebutton_cb([[maybe_unused]] GLFWwindow* pwin, [[maybe_unused]] int button, [[maybe_unused]] int action, [[maybe_unused]] int mod) {
     //ImGui_ImplGlfw_MouseButtonCallback(pwin, button, action, mod);
+#ifdef DEBUG
+    Key k = static_cast<Key>(button);
+
+    if (action == GLFW_PRESS) {
+        LOGI(Input, (KeyToString(k) + " is pressed").c_str());
+    }
+    else if (action == GLFW_RELEASE) {
+        LOGI(Input, (KeyToString(k) + " is released").c_str());
+    }
+#endif
+}
+	/*
     switch (button) {
     case GLFW_MOUSE_BUTTON_LEFT:
 #ifdef _DEBUG
@@ -372,6 +385,7 @@ void GLApp::mousebutton_cb(GLFWwindow* pwin, int button, int action, int mod) {
         break;
     }
 }
+*/
 
 /* _________________________________________________________________________*/
 /*! mousepos_cb
@@ -390,7 +404,7 @@ new cursor y-coordinate, relative to the top edge of the client area
 This functions receives the cursor position, measured in screen coordinates but
 relative to the top-left corner of the window client area.
 */
-void GLApp::mousepos_cb(GLFWwindow* pwin, double xpos, double ypos) {
+void GLApp::mousepos_cb([[maybe_unused]] GLFWwindow* pwin, [[maybe_unused]] double xpos, [[maybe_unused]] double ypos) {
     //ImGui_ImplGlfw_CursorPosCallback(pwin, xpos, ypos);
 #ifdef _DEBUG
     //std::cout << "Mouse cursor position: (" << xpos << ", " << ypos << ")" << std::endl;
@@ -415,7 +429,7 @@ This function is called when the user scrolls, whether with a mouse wheel or
 touchpad gesture. Although the function receives 2D scroll offsets, a simple
 mouse scroll wheel, being vertical, provides offsets only along the Y-axis.
 */
-void GLApp::mousescroll_cb(GLFWwindow* pwin, double xoffset, double yoffset) {
+void GLApp::mousescroll_cb([[maybe_unused]] GLFWwindow* pwin, [[maybe_unused]] double xoffset, [[maybe_unused]] double yoffset) {
     //ImGui_ImplGlfw_ScrollCallback(pwin, xoffset, yoffset);
 #ifdef _DEBUG
     //std::cout << "Mouse scroll wheel offset: ("
@@ -437,7 +451,7 @@ Human-readable description of the code
 The error callback receives a human-readable description of the error and
 (when possible) its cause.
 */
-void GLApp::error_cb(int error, char const* description) {
+void GLApp::error_cb([[maybe_unused]] int error, char const* description) {
     LOGE(Core, description);
 }
 
@@ -458,14 +472,15 @@ Height in pixels of new window size
 This function is called when the window is resized - it receives the new size
 of the window in pixels.
 */
-void GLApp::fbsize_cb(GLFWwindow* ptr_win, int width, int height) {
+void GLApp::fbsize_cb([[maybe_unused]] GLFWwindow* ptr_win, int fbWidth, int fbHeight) {
     // use the entire framebuffer as drawing region
-    glViewport(0, 0, width, height);
+    glViewport(0, 0, fbWidth, fbHeight);;
     // later, if working in 3D, we'll have to set the projection matrix here ...
 
-    GLApp::width = width;
-    GLApp::height = height;
+    GLApp::width = fbWidth;
+    GLApp::height = fbHeight;
 }
+
 
 /* _________________________________________________________________________*/
 /*! update_time

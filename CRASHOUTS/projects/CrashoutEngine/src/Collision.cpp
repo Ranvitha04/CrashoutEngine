@@ -8,6 +8,7 @@
 //__________________________________________________________________________*/
 
 #include "managers/collisionmanager.h"
+#include "components/rigidbodycomponent.h"
 #include "math/CEMath.h"
 #include <cmath>
 #include <algorithm>
@@ -17,10 +18,118 @@ namespace Collision {
 
 	Sphere::Sphere(f32 radius, CEVec3 const& center) : Collider{ SPHERE }, radius{ radius }, center{ center } { /*EMPTY BY DESIGN*/ }
 
-	AABBRect::AABBRect(CEVec3 const& min, CEVec3 const& max) : Collider{ AABB }, min{ min }, max{ max } { /*EMPTY BY DESIGN*/ }
+	void Sphere::updateCollider(CEVec3 const &newPos) {
+		center = newPos;
+	}
+
+	AABBRect::AABBRect(CEVec3 const& min, CEVec3 const& max) : Collider{ AABB }, min{ min }, max{ max } { 
+		extents = (max - min) * 0.5f;
+	}
+
+	void AABBRect::updateCollider(CEVec3 const& newPos) { 
+		max = newPos + extents;
+		min = newPos - extents;
+	}
+
 }
 
 namespace Collision {
+
+	/*--------------------------------------COLLISION MESSAGE DEFINITION---------------------------------------*/
+
+	CollisionMessage::CollisionMessage(const std::string& id, CollisionManifold const& colManifold, CrashoutsEngine::Entity entity1, CrashoutsEngine::Entity entity2) 
+	: Messages::Messages{ id }, colManifold{colManifold}, entity1{entity1}, entity2{entity2}
+	{ /*EMPTY BY DESIGN*/ }
+
+	std::pair<CrashoutsEngine::Entity, CrashoutsEngine::Entity> CollisionMessage::getCollisionPair() {
+		return std::pair{ entity1, entity2 };
+	}
+
+	CollisionManifold CollisionMessage::getCollisionManifold() {
+		return colManifold;
+	}
+	/*----------------------------------------------------------------------------------------------------------*/
+
+
+	/*----------------COLLISIONHANDLER CLASS DEFINITIONS--------------------------------------------------------*/
+
+	CollisionHandler::CollisionHandler() : Messaging::Observable{"Collision"}, collideFuncts{
+		std::array<Collision::FunctionDispatchType, TYPES_OF_COLLISION * TYPES_OF_COLLISION> {
+			nullptr, nullptr,
+			nullptr, nullptr
+		}
+	} {
+		int sphereIdx{ static_cast<int>(SPHERE) };
+		int AABBIdx{ static_cast<int>(AABB) };
+
+		/*Fill in the table of collisions, e.g collideFuncts[0] will be SPHERE TO SPHERE collision (2 total collider types will have 2^2 permutations(different types of collisions possible) ) */
+		collideFuncts[sphereIdx] = SphereToSphereCollision; 
+		collideFuncts[AABBIdx * TYPES_OF_COLLISION + AABBIdx] = AABBToAABBCollision;
+		collideFuncts[sphereIdx * TYPES_OF_COLLISION + AABBIdx] = SphereToAABBCollision;
+	}
+
+	void CollisionHandler::update([[maybe_unused]] double deltaTime) {
+		CrashoutsEngine::ECS& globalECS = *(CrashoutsEngine::ECS::getInstance());
+
+		std::vector<CrashoutsEngine::Entity> globalEntities = globalECS.GetComponentArray<Component::NameComponent>().indexToEntity;
+
+
+
+		/*DETECT COLLISION AND UPDATE COLLISION EVENTS MEMBER*/
+		for (CrashoutsEngine::Entity& entity1 : globalEntities) {
+
+			if (!globalECS.HasComponent<Component::ColliderComponent>(entity1) || !globalECS.HasComponent<Component::TransformComponent>(entity1) || !globalECS.HasComponent<Component::RigidBodyComponent>(entity1)) continue;
+			for (CrashoutsEngine::Entity const& entity2 : globalEntities) {
+				if (entity1 == entity2) continue;
+				if (!globalECS.HasComponent<Component::ColliderComponent>(entity2) || !globalECS.HasComponent<Component::TransformComponent>(entity2) || !globalECS.HasComponent<Component::RigidBodyComponent>(entity2)) continue;
+
+				Component::ColliderComponent* collider1{ globalECS.GetComponent<Component::ColliderComponent>(entity1) };
+				Component::TransformComponent* transform1{ globalECS.GetComponent<Component::TransformComponent>(entity1) };
+				Component::RigidBodyComponent* rigidBody1{ globalECS.GetComponent<Component::RigidBodyComponent>(entity1) };
+
+				Component::ColliderComponent* collider2{ globalECS.GetComponent<Component::ColliderComponent>(entity2) };
+				Component::TransformComponent* transform2{ globalECS.GetComponent<Component::TransformComponent>(entity2) };
+				//Component::RigidBodyComponent* rigidBody2{ globalECS.GetComponent<Component::RigidBodyComponent>(entity2) };
+
+				/*CHECK FOR COLLISION and call collision function*/
+				Collision::CollisionManifold collisionManifold{};
+				int tolerance{ 2 };
+
+				Component::TransformComponent newTransform1{ *transform1 };
+				Component::RigidBodyComponent newRigidBody1{ *rigidBody1 };
+
+				newRigidBody1.setVelocity(newRigidBody1.getVelocity() / static_cast<float>(tolerance));
+
+				for (int i{}; i < tolerance; ++i) {
+					collisionManifold = callCollFunct(collider1->collider->type, collider2->collider->type)(
+						Collision::CollisionProps{
+							collider1->collider,
+							CEVec3{},
+							CEVec3{newTransform1.position.x, newTransform1.position.y, newTransform1.position.z}
+						},
+						Collision::CollisionProps{
+							collider2->collider,
+							CEVec3{},
+							CEVec3{transform2->position.x, transform2->position.y, transform2->position.z}
+						});
+
+				}
+
+				if (collisionManifold.collisionOccured) {
+					CollisionMessage colMessage{ Messaging::getCollisionMsgID(), collisionManifold, entity1, entity2 };
+					
+					//CrashoutsEngine::Entity const* entity1Ptr{ &entity1 };
+					//CrashoutsEngine::Entity const* entity2Ptr{ &entity2 };
+
+					sendMessage(colMessage);
+
+				}
+
+			}
+		}
+
+	}
+
 	CollisionManifold CollisionHandler::SphereToSphereCollision(CollisionProps const& coll1, CollisionProps const& coll2) {
 
 		CollisionManifold result;
@@ -61,10 +170,10 @@ namespace Collision {
 
 		CEVec3 posDelta{ coll2.position - coll1.position }; /*Vector showing distance + the direction*/
 
-		f32 xDiff{ aabb1Temp.max.x + aabb2Temp.max.x - std::abs(posDelta.x)};
+		f32 xDiff{ aabb1Temp.extents.x + aabb2Temp.extents.x - std::abs(posDelta.x)};
 
 		if (xDiff > 0.f) {
-			f32 yDiff{ aabb1Temp.max.y + aabb2Temp.max.y - std::abs(posDelta.y) };
+			f32 yDiff{ aabb1Temp.extents.y + aabb2Temp.extents.y - std::abs(posDelta.y) };
 
 			if (yDiff > 0.f) {
 
@@ -97,51 +206,60 @@ namespace Collision {
 
 		AABBRect const& aabb2Temp = dynamic_cast<AABBRect const&>(*(aabbPtr->collider));
 
-		CEVec3 minAABB{ aabbPtr->position.x - aabb2Temp.max.x, aabbPtr->position.y - aabb2Temp.max.y, 0.f };
-		CEVec3 maxAABB{ aabbPtr->position.x + aabb2Temp.max.x, aabbPtr->position.y + aabb2Temp.max.y, 0.f };
+		CEVec3 minAABB{ aabbPtr->position.x - aabb2Temp.extents.x, aabbPtr->position.y - aabb2Temp.extents.y, 0.f };
+		CEVec3 maxAABB{ aabbPtr->position.x + aabb2Temp.extents.x, aabbPtr->position.y + aabb2Temp.extents.y, 0.f };
 
 		
 		CEVec3 pos{ spherePtr->position };
 
 		CEVec3 closestPt{pos}; /*CLOSEST POINT OF THE CENTER OF THE CIRCLE TO THE EDGES OF THE AABB*/
 
-
+		/*CLAMP THE POINT OF THE CENTER OF THE CIRCLE TO THE POINT ON THE SIDE OF AABB*/
 		if (pos.x < minAABB.x) { closestPt.x = minAABB.x; }
 		if (pos.x > maxAABB.x) { closestPt.x = maxAABB.x; }
-
 
 		if (pos.y < minAABB.y) { closestPt.y = minAABB.y; }
 		if (pos.y > maxAABB.y) { closestPt.y = maxAABB.y; }
 
 		CEVec3 ClosestPtToCirc{ closestPt - pos };
+		float closestPtSquared{ CEMath::LengthSq(ClosestPtToCirc) };
 
-		if (CEMath::LengthSq(ClosestPtToCirc) < sphere1Temp.radius*sphere1Temp.radius) {
+		
+		if (closestPtSquared < sphere1Temp.radius*sphere1Temp.radius) {
 
-			f32 distance{ CEMath::Length(ClosestPtToCirc) };
 
 			result.collisionOccured = true;
-			result.depth = sphere1Temp.radius - distance;
-			result.normal = CEMath::Normalize(ClosestPtToCirc);
+
+			/*Center of Circle is already inside AABB*/
+			if (closestPtSquared == 0.f) {
+				CEVec3 vecFromAABBToCirc{ spherePtr->position - aabbPtr->position };
+				
+				float depthX{ sphere1Temp.radius + aabb2Temp.extents.x - fabsf(vecFromAABBToCirc.x) };
+
+				float depthY{ sphere1Temp.radius + aabb2Temp.extents.y - fabsf(vecFromAABBToCirc.y) };
+
+				if (depthX < depthY) {
+					result.depth = depthX;
+					result.normal = vecFromAABBToCirc.x < 0.f ? CEVec3{ -1.f, 0.f, 0.f } : CEVec3{ 1.f, 0.f, 0.f };
+
+				} else {
+					result.depth = depthY;
+					result.normal = vecFromAABBToCirc.y < 0.f ? CEVec3{ 0.f, -1.f, 0.f } : CEVec3{ 0.f, 1.f, 0.f };
+				}
+
+
+			} else {
+				f32 distance{ CEMath::Length(ClosestPtToCirc) };
+
+				result.depth = sphere1Temp.radius - distance;
+				result.normal = CEMath::Normalize(ClosestPtToCirc);
+			}
 
 		}
 
 		return result;
 	}
 
-	CollisionHandler::CollisionHandler() : collideFuncts {
-		std::array<Collision::FunctionDispatchType, TYPES_OF_COLLISION * TYPES_OF_COLLISION> {
-			nullptr, nullptr,
-			nullptr, nullptr
-		}
-	} {
-		int sphereIdx{ static_cast<int>(SPHERE) };
-		int AABBIdx{ static_cast<int>(AABB) };
-
-		/*Fill in the table of collisions, e.g collideFuncts[0] will be SPHERE TO SPHERE collision (2 total collider types will have 2^2 permutations(different types of collisions possible) ) */
-		collideFuncts[sphereIdx] = SphereToSphereCollision; 
-		collideFuncts[AABBIdx * TYPES_OF_COLLISION + AABBIdx] = AABBToAABBCollision;
-		collideFuncts[sphereIdx * TYPES_OF_COLLISION + AABBIdx] = SphereToAABBCollision;
-	}
 	FunctionDispatchType CollisionHandler::callCollFunct(Collision::ColliderType type1, Collision::ColliderType type2) {
 
 		/*Swap the type according to enum order, e.g function exists for sphere to aabb but not aabb to sphere*/
@@ -154,4 +272,6 @@ namespace Collision {
 
 		return collideFuncts[idx1 * TYPES_OF_COLLISION + idx2];
 	}
+
+	/*----------------------------------------------------------------------------------------------------------*/
 }

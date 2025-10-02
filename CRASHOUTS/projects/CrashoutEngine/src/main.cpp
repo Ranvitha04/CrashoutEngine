@@ -1,8 +1,7 @@
 /*!
 @file    	main.cpp
-@author  	pghali@digipen.edu
-@co-author  parminder.singh@digipen.edu
-@date    	17/04/2024
+@author  	lee.r@digipen.edu
+@date    	17/09/2025
 
 This file uses functionality defined in type GLApp to initialize an OpenGL
 context and implement a game loop.
@@ -19,7 +18,9 @@ context and implement a game loop.
 #include "playerMovement.h"     // Player::UpdateADVelocity
 #include "managers/physicsmanager.h"            // Component::RigidBodyComponent
 #include "managers/inputmanager.h"
+#include "debugreflection.h"
 #include "debugmenu.h"
+#include "crashlogger.h"
 
 // ImGui headers for callbacks
 #include <imgui.h>
@@ -27,9 +28,12 @@ context and implement a game loop.
 #include <imgui_impl_opengl3.h>
 
 #include <iostream>
+
+#include "frameratecontroller.h"
 #include "gamestatemanager.h"
 #include "registergamestate.h"
 #include "settings.h"
+#include <filesystem>
 
 /*                                                   type declarations
 ----------------------------------------------------------------------------- */
@@ -42,13 +46,16 @@ std::mutex CrashoutsEngine::ECS::mtx;
 static CrashoutsEngine::ECS* globalECS = nullptr;
 static CrashoutsEngine::Entity globalSelectedEntity = 0;
 static Physics::PhysicsHandler physicsSystem;
+static Collision::CollisionHandler collisionSystem;
+
 
 // ImGui in-game performance viewer
 static FrameProfiler gProfiler;
 
 // tests
 static bool gOnce = false;
-
+// frame rate controller
+auto& FRC = FrameRateController::GetInstance();
 /*                                                      function declarations
 ----------------------------------------------------------------------------- */
 static void draw();
@@ -62,6 +69,7 @@ static void init();
 ----------------------------------------------------------------------------- */
 static Component::RigidBodyComponent  playerRigidBody{};
 static Component::TransformComponent  playerTransform{};
+extern "C" void RegisterBuiltinComponentAdapters();
 /*  _________________________________________________________________________ */
 /*! main
 
@@ -74,14 +82,73 @@ Indicates how the program existed. Normal exit is signaled by a return value of
 Note that the C++ compiler will insert a return 0 statement if one is missing.
 */
 
-#include <Windows.h>
+#include <cstdio>
+#include <windows.h>
 
-#ifdef DEBUG
+/*  _________________________________________________________________________ */
+/*! SetupConsole
 
-int main() {
-    globalECS = CrashoutsEngine::ECS::getInstance();
-    static std::vector<CrashoutsEngine::Entity> globalEntities = 
-        globalECS->GetComponentArray<Component::NameComponent>().indexToEntity;
+@param none
+
+@return none
+
+Call to create a cmd console for debugging purposes
+*/
+void SetupConsole() {
+    // Create a new window
+    if (AllocConsole()) {
+        // Redirect standard I/O streams to the new console
+
+        // C/C++ standard input
+        // The "CONOUT$" decide is the console screen buffer.
+        (void)freopen("CONIN$", "r", stdin);
+
+        // C/C++ standard output
+        // The "CONOUT$" decide is the console screen buffer.
+        (void)freopen("CONOUT$", "w", stdout);
+
+        // C/C++ standard error
+        // The "CONOUT$" decide is the console screen buffer.
+        (void)freopen("CONERR$", "w", stderr);
+
+        // Clear the error flags for C++ streams
+        std::wcout.clear();
+        std::cout.clear();
+        std::wcerr.clear();
+        std::cerr.clear();
+        std::wcin.clear();
+        std::wcin.clear();
+    }
+}
+
+int WINAPI WinMain(
+    [[maybe_unused]] _In_     HINSTANCE hInstance,
+    _In_opt_ HINSTANCE hPrevInstance,
+    _In_     LPSTR     lpCmdLine,
+    [[maybe_unused]] _In_     int       nCmdShow
+){
+    _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+    //_CrtSetBreakAlloc(2235);
+    UNREFERENCED_PARAMETER(hPrevInstance);
+    UNREFERENCED_PARAMETER(lpCmdLine);
+    _CrtMemState stateStart, stateEnd, stateDiff;
+    _CrtMemCheckpoint(&stateStart);
+
+    #ifdef DEBUG
+    
+    SetupConsole();
+
+    #else
+
+    (void)stateStart;
+    (void)stateEnd;
+    (void)stateDiff;
+
+    #endif
+
+    InstallCrashLogger("CrashoutsEngine");
+    glfwSwapInterval(0); // disable vsync
+    collisionSystem.registerObserver(Messaging::getCollisionMsgID(), physicsSystem); /*Listen to messages(collisions)*/
 
     // start with a 16:9 aspect ratio
     if (!GLApp::init(Settings::GetScreenWidth(), Settings::GetScreenHeight(), "CRASHOUTS")) {
@@ -97,75 +164,45 @@ int main() {
     RegisterAllStates();
     InitGameStateManager(MAIN_MENU);
 
+    RegisterBuiltinComponentAdapters();
+
     InputManager::Init(GLApp::ptr_window);
     UI::Init(GLApp::ptr_window); // NEW
 
     // window's close flag is set by clicking close widget or Alt+F4
     while (!glfwWindowShouldClose(GLApp::ptr_window)) {
-        //TEMPORARY TO BE REPLACED BY ECS INPUT SYSTEM - Rain
+        FRC.FrameStart();
         glfwPollEvents();
         InputManager::Update();
         GLApp::update_time();
-        physicsSystem.update(globalEntities, GLApp::delta_time);
-        draw();
+        collisionSystem.update(FRC.DT());
+        physicsSystem.update(FRC.DT());
         UpdateGameStateManager();
         update();
+        draw();
 
+        FRC.FrameEnd();
     }
 
     // Cleanup
     UI::Shutdown();
+    Logger::Instance().Clear();
     GLApp::cleanup();
+    InputManager::Shutdown();
+    ShutdownGameStateManager();
 
+    CrashoutsEngine::ECS::DestroyInstance();
+
+    _CrtMemCheckpoint(&stateEnd);
+    if (_CrtMemDifference(&stateDiff, &stateStart, &stateEnd)) {
+        OutputDebugString("Memory leaks detected!\n");
+        _CrtMemDumpStatistics(&stateDiff);
+    }
     return EXIT_SUCCESS;
 }
 
-#else
-
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
-    PSTR lpCmdLine, int nCmdShow){
-    CrashoutsEngine::ECS* globalECS =
-        CrashoutsEngine::ECS::getInstance();
-
-    // start with a 16:9 aspect ratio
-    if (!GLApp::init(1280, 720, "CRASHOUTS")) {
-        std::exit(EXIT_FAILURE);
-    }
-    init();
-    /// register game states and start with main menu
-    RegisterAllStates();
-    InitGameStateManager(MAIN_MENU);
-
-    InputManager::Init(GLApp::ptr_window);
-    UI::Init(GLApp::ptr_window); // NEW
-
-    // window's close flag is set by clicking close widget or Alt+F4
-    while (!glfwWindowShouldClose(GLApp::ptr_window)) {
-        //TEMPORARY TO BE REPLACED BY ECS INPUT SYSTEM - Rain
-        glfwPollEvents();
-        InputManager::Update();
-        GLApp::update_time();
-        physicsSystem.update(globalEntities, GLApp::delta_time);
-        draw();
-        UpdateGameStateManager();
-        update();
-
-    }
-
-    // Cleanup
-    UI::Shutdown();
-    GLApp::cleanup();
-
-    return 0;
-}
-
-#endif
-
-
-
-
 static void init() {
-    
+
 }
 
 /*  _________________________________________________________________________ */
@@ -209,7 +246,7 @@ Let application update state changes (such as animation).
 */
 static void update() {
     // process events if any associated with input devices
-    glfwPollEvents();
+    //glfwPollEvents();
 
     // start frame profiling
     gProfiler.begin_frame();
@@ -224,7 +261,9 @@ static void update() {
     //Update 
     Player::UpdateVelocity(playerRigidBody, moveSpeed);
 
-    const double dt = 1.0 / 60.0;
+
+
+    //const double dt = 1.0 / 60.0;
     //playerTransform.position.x += playerRigidBody.velocity.x * static_cast<float>(dt);
 
     // animate scene

@@ -1,13 +1,24 @@
 # ======================= Project Configuration =========================
-cmake_minimum_required(VERSION 2.8...3.13)
+cmake_minimum_required(VERSION 3.5)
 
 # Set the CMake policy version (this enables all policies up to CMake 3.5)
-cmake_policy(VERSION 3.5)
+cmake_policy(VERSION 3.24)
 
-project(CRASHOUTS)
+set(CMAKE_POLICY_VERSION_MINIMUM 3.5)
+
+project(CRASHOUTS CXX)
+
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
 # Set the directory where custom CMake modules are stored
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
+
+# Disable GLFW examples, tests and docs to avoid extra executables
+set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
 
 # Include project-wide utility and dependency modules
 include(ImportDependencies)
@@ -24,6 +35,9 @@ set(ALL_LIBS
     PRIVATE imgui
     PRIVATE glm::glm
     PRIVATE stb
+    PRIVATE freetype
+    PRIVATE reflect
+    PRIVATE rapidjson
 )
 
 add_compile_definitions(
@@ -32,6 +46,19 @@ add_compile_definitions(
 
 # Include path for GLM (optional if not using FetchContent)
 include_directories(${CMAKE_CURRENT_LIST_DIR}/lib/glm)
+
+include_directories(${_FMOD_INC})
+# ======================= Global Warning Level =========================
+if (MSVC)
+    # Use target_compile_options to ensure flags are applied correctly and universally
+    add_compile_options(
+        /W4          # Level 4 warnings (Good)
+        /permissive- # Strict conformance
+        /WX          # Warnings as Errors
+    )
+elseif (CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    add_compile_options(-Wall -Wextra -Wpedantic -Werror)
+endif()
 
 # ======================= AUTO PROJECT DISCOVERY =========================
 # Get all subdirectories in the projects folder
@@ -51,7 +78,7 @@ foreach(child ${children})
         )
 
         # Create executable
-        add_executable(${child}
+        add_executable(${child} WIN32
             ${${child}_source_files}
         )
         add_custom_command(TARGET ${child} POST_BUILD
@@ -63,25 +90,29 @@ foreach(child ${children})
         # Link libraries
         target_link_libraries(${child}
             ${ALL_LIBS}
+            CrashoutsAudio
         )
+        link_fmod_to(${child}) 
 
-        # Set C++ standard
-        set_property(TARGET ${child} PROPERTY CXX_STANDARD 20)
-
-        # Warnings based on compiler
-        if (CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
-            target_compile_options(${child} PRIVATE -Wall ${DisableWarnings})
-        elseif (MSVC)
-            target_compile_options(${child} PRIVATE /W3 /WX-)
-        endif()
-
-        # Include path for each project
+        # Apply common include directories
         target_include_directories(${child} PRIVATE
             ${CMAKE_CURRENT_LIST_DIR}/projects/${child}/include
+            ${CMAKE_CURRENT_LIST_DIR}/lib/glm           # Added GLM include
+            ${_FMOD_INC}                                # Added FMOD include
         )
+        
+        # Copy assets (Simplified path variables)
+        add_custom_command(TARGET ${child} POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_directory
+            ${CMAKE_CURRENT_LIST_DIR}/projects/${child}/assets
+            $<TARGET_FILE_DIR:${child}>/assets
+        )
+        
+        # WIN32 property only needs to be set once
+        set_property(TARGET ${child} PROPERTY WIN32 TRUE)
     endif()
 endforeach()
-
+#[[
 # Doxygen: rebuild only when files change
 find_package(Doxygen QUIET)
 
@@ -115,3 +146,4 @@ add_custom_command(
 add_custom_target(doxygen_docs ALL
     DEPENDS ${DOC_OUTPUT_DIR}/.doxygen.stamp
 )
+]]

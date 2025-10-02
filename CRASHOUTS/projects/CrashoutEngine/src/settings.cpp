@@ -10,6 +10,7 @@ Stores and manages screen resolution settings
 #include "settings.h"
 #include <iostream>
 #include <fstream>
+#include "rapidjson/rapidjson.h"
 #include "rapidjson/document.h"
 #include "rapidjson/istreamwrapper.h"
 
@@ -94,6 +95,6 @@ void Settings::LoadFromFile(const char* path) {
  *
  * For future implementation to save JSON configuration
  */
-void Settings::SaveToFile(const char* path) {
+void Settings::SaveToFile([[maybe_unused]] const char* path) {
     //for future me to write to JSON
 }

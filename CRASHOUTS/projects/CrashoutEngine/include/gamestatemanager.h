@@ -8,6 +8,7 @@ Provides enums structures and functions for handling game state registration ini
 */
 #pragma once
 #include "math/CETypes.h"
+#include <unordered_map>
 
 
 /// Function pointer type for state lifecycle functions
@@ -29,6 +30,7 @@ enum GameState{
 
 /// Descriptor for a game state containing lifecycle function pointers
 struct GameStateDescriptor {
+	const char* Label;
 	FP Load;
 	FP Init;
 	FP Update;
@@ -52,6 +54,9 @@ void InitGameStateManager(GameState state);
 /// Update the game state manager handling transitions updates and rendering
 void UpdateGameStateManager();
 
+// Shutdown the game state manager and free allocated data
+void ShutdownGameStateManager();
+
 /**
  * @brief Change the game state
  * @param newState The new state to switch to
@@ -64,6 +69,11 @@ void ChangeGameState(GameState newState);
  * @param descriptor The descriptor containing state lifecycle functions
  */
 void RegisterGameState(GameState state, GameStateDescriptor descriptor);
+
+/*!
+@brief Exposes a view over the registry so that ImGui can read IDs - Amir was here
+*/
+const std::unordered_map<GameState, GameStateDescriptor>& GetStateRegistry();
 
 /// Reset the frame rate controller
 extern void ResetFrameRateController();

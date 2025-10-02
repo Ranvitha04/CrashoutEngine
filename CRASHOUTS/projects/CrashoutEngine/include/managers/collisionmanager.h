@@ -11,6 +11,7 @@
 
 #include "math/CEVec3.h"
 #include "components/transformcomponent.h"
+#include "messaging/observable.h"
 #include "log.h"
 #include "managers/entitymanager.h"
 #include <memory>
@@ -18,6 +19,7 @@
 #include <cmath>
 #include <array>
 #include <algorithm>
+#include <utility>
 
 
 namespace Collision {
@@ -61,6 +63,8 @@ namespace Collision {
 			ColliderType type;
 			Collider(ColliderType type);
 			virtual ~Collider() = default;
+			virtual std::unique_ptr<Collider> clone() const = 0;
+			virtual void updateCollider([[maybe_unused]] CEVec3 const& newPos) {};
 	};
 
 	/*!
@@ -73,6 +77,11 @@ namespace Collision {
 			CEVec3 center;
 			Sphere(f32 radius, CEVec3 const& center);
 			~Sphere() = default;
+			virtual void updateCollider(CEVec3 const& newPos);
+
+			virtual std::unique_ptr<Collider> clone() const override {
+				return std::make_unique<Sphere>(*this);
+			}
 	};
 
 	/*!
@@ -83,12 +92,33 @@ namespace Collision {
 		public:
 			CEVec3 min;
 			CEVec3 max;
+			CEVec3 extents;
 			AABBRect(CEVec3 const& min, CEVec3 const& max);
 			~AABBRect() = default;
+			virtual void updateCollider(CEVec3 const& newPos);
+
+			virtual std::unique_ptr<Collider> clone() const override {
+				return std::make_unique<AABBRect>(*this);
+			}
 	};
 }
 
 namespace Collision {
+
+	/*!
+	@class	CollisionMessage
+	@brief	Used as the data to collision messages
+	*/
+	class CollisionMessage : public Messaging::Messages {
+		private:
+			CollisionManifold colManifold;
+			CrashoutsEngine::Entity entity1;
+			CrashoutsEngine::Entity entity2;
+		public:
+			CollisionMessage(const std::string& id, CollisionManifold const &colManifold, CrashoutsEngine::Entity entity1, CrashoutsEngine::Entity entity2);
+			std::pair<CrashoutsEngine::Entity, CrashoutsEngine::Entity> getCollisionPair();
+			CollisionManifold getCollisionManifold();
+	};
 
 	/*!
 	@struct	CollisionProps
@@ -106,7 +136,7 @@ namespace Collision {
 	@class	CollisionHandler
 	@brief	Used to contain functions for checking collision and able to return a function pointer based on the type of collision passed in
 	*/
-	class CollisionHandler {
+	class CollisionHandler : public Messaging::Observable {
 		private:
 
 			static constexpr int TYPES_OF_COLLISION{ 2 };
@@ -123,6 +153,8 @@ namespace Collision {
 
 			CollisionHandler();
 
+			void update(double deltaTime);
+
 			/*!
 			@brief Return a function pointer to call the appropriate collision function
 			@param type1 The first collider type
@@ -135,13 +167,45 @@ namespace Collision {
 }
 
 namespace Component {
-
 	/*!
 	@struct	ColliderComponent
 	@brief	Collider component in order to put custom colliders on an entity
 	*/
 	struct ColliderComponent {
 		std::unique_ptr<Collision::Collider> collider;
+
+		// Default constructor for empty component
+		ColliderComponent() = default;
+
+		// Custom Copy Constructor to build from unique_ptr
+		// Explicitly handles calls like AddComponent(e, std::make_unique<...>)
+		explicit ColliderComponent(std::unique_ptr<Collision::Collider> col)
+			: collider(std::move(col)) {}
+
+		// Custom Copy Constructor
+		ColliderComponent(const ColliderComponent& other) {
+			if (other.collider) {
+				// Use the virtual clone method for a deep copy
+				collider = other.collider->clone();
+			}
+		}
+	
+		// Custom Copy Assignment Operator for Deep Copies
+		ColliderComponent& operator=(const ColliderComponent& other) {
+			// Check for self-assignment
+			if (this == &other) return *this;
+
+			if (other.collider) {
+				collider = other.collider->clone();	// Deep Copy
+			}
+			else {
+				collider.reset();	// Clear if the other is empty
+			}
+			return *this;
+		}
+
+		ColliderComponent(ColliderComponent&&) noexcept = default;
+		ColliderComponent& operator=(ColliderComponent&&) noexcept = default;
 	};
 }
 

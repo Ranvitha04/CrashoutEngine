@@ -1,4 +1,21 @@
 include(FetchContent)
+function(disable_warnings_for target)
+    if (MSVC)
+        # Get existing compile options for the target
+        get_target_property(existing_compile_options ${target} COMPILE_OPTIONS)
+
+        if (existing_compile_options)
+            # Remove any /W0–/W4 already present
+            string(REGEX REPLACE "/W[0-4]" "" existing_compile_options "${existing_compile_options}")
+            set_target_properties(${target} PROPERTIES COMPILE_OPTIONS "${existing_compile_options};/W0")
+        else()
+            # If no options yet, just add /W0
+            set_target_properties(${target} PROPERTIES COMPILE_OPTIONS "/W0")
+        endif()
+    else()
+        target_compile_options(${target} PRIVATE -w)
+    endif()
+endfunction()
 
 # -------------------- GLFW --------------------
 macro(import_glfw)
@@ -83,7 +100,180 @@ macro(import_stb)
     endif()
 endmacro()
 
-# -------------------- Import all --------------------
+# -------------------- freetype --------------------
+macro(import_freetype)
+    if(NOT TARGET freetype)
+        FetchContent_Declare(
+            freetype
+            GIT_REPOSITORY https://github.com/freetype/freetype.git
+            GIT_TAG VER-2-13-2
+        )
+        FetchContent_MakeAvailable(freetype)
+        if (TARGET freetype)
+            disable_warnings_for(freetype)
+        endif()
+    endif()
+endmacro()
+
+
+
+# -------------------- reflect.cpp --------------------
+macro(import_reflect)
+    if(NOT TARGET reflect)
+        FetchContent_Declare(
+            reflect
+            GIT_REPOSITORY https://github.com/getml/reflect-cpp.git
+            GIT_TAG v0.20.0
+        )
+        FetchContent_Populate(reflect)
+        if (TARGET reflect)
+            disable_warnings_for(reflect)
+        endif()
+        add_library(reflect INTERFACE)
+        target_include_directories(reflect SYSTEM INTERFACE ${reflect_SOURCE_DIR}/include)
+    endif()
+endmacro()
+
+# -------------------- rapidjson (header-only) --------------------
+macro(import_rapidjson)
+    if(NOT TARGET rapidjson)
+        FetchContent_Declare(
+            rapidjson
+            GIT_REPOSITORY https://github.com/Tencent/rapidjson.git
+            GIT_TAG v1.1.0
+        )
+        FetchContent_Populate(rapidjson)
+
+        add_library(rapidjson INTERFACE)
+        target_include_directories(rapidjson SYSTEM INTERFACE ${rapidjson_SOURCE_DIR}/include)
+
+        # SUPRESS DEPRECATED WARNINGS FOR RAPIDJSON
+        if(MSVC)
+            # Suppress C++17 std::iterator deprecation warning (STL4015)
+            # caused by rapidjson v1.1.0, which uses a deprecated base class.
+            # add_compile_definitions(_SILENCE_CXX17_ITERATOR_BASE_CLASS_DEPRECATION_WARNING)
+            target_compile_options(rapidjson INTERFACE
+                $<$<COMPILE_LANGUAGE:CXX>:/wd26495 /wd33010>
+            )
+        endif()
+
+    endif()
+endmacro()
+#[[
+# FMOD paths
+set(_FMOD          "${CMAKE_SOURCE_DIR}/third_party/fmod")
+set(_FMOD_INC      "${_FMOD}/include")
+set(_FMOD_LIBDIR   "${_FMOD}/lib/x64")
+set(_FMOD_BINDIR   "${_FMOD}/bin/x64")
+# Core
+find_library(FMOD_CORE_LIB
+    NAMES fmod_vc fmod fmodL_vc
+    PATHS ${_FMOD_LIBDIR}
+    NO_DEFAULT_PATH
+)
+
+# Studio
+find_library(FMOD_STUDIO_LIB
+    NAMES fmodstudio_vc fmodstudio
+    PATHS ${_FMOD_LIBDIR}
+    NO_DEFAULT_PATH
+)
+
+if(NOT FMOD_CORE_LIB)
+    message(FATAL_ERROR "[FMOD] Could not find FMOD Core lib in ${_FMOD_LIBDIR}")
+endif()
+
+if(NOT FMOD_STUDIO_LIB)
+    message(FATAL_ERROR "[FMOD] Could not find FMOD Studio lib in ${_FMOD_LIBDIR}")
+endif()
+
+add_library(FMOD::Core SHARED IMPORTED)
+set_target_properties(FMOD::Core PROPERTIES
+    IMPORTED_IMPLIB               "${FMOD_CORE_LIB}"
+    IMPORTED_LOCATION             "${_FMOD_BINDIR}/fmod.dll"
+    INTERFACE_INCLUDE_DIRECTORIES "${_FMOD_INC}"
+)
+
+add_library(FMOD::Studio SHARED IMPORTED)
+set_target_properties(FMOD::Studio PROPERTIES
+    IMPORTED_IMPLIB               "${FMOD_STUDIO_LIB}"
+    IMPORTED_LOCATION             "${_FMOD_BINDIR}/fmodstudio.dll"
+    INTERFACE_INCLUDE_DIRECTORIES "${_FMOD_INC}"
+)
+]]
+# Expected repo layout:
+# third_party/fmod/
+#   include/            fmod.hpp, fmod_studio.hpp
+#   lib/x64/            fmod_vc.lib, fmodstudio_vc.lib
+#   bin/x64/            fmod.dll (or fmodL.dll),fmodstudio.dll
+
+set(_FMOD          "${CMAKE_SOURCE_DIR}/third_party/fmod")
+set(_FMOD_INC      "${_FMOD}/include")
+set(_FMOD_LIBDIR   "${_FMOD}/lib/x64")
+set(_FMOD_BINDIR   "${_FMOD}/bin/x64")
+
+
+foreach(_need
+  "${_FMOD_INC}/fmod.hpp"
+  "${_FMOD_INC}/fmod_studio.hpp"
+  "${_FMOD_LIBDIR}/fmod_vc.lib"
+  "${_FMOD_LIBDIR}/fmodstudio_vc.lib"
+  "${_FMOD_BINDIR}/fmod.dll"          
+  "${_FMOD_BINDIR}/fmodstudio.dll")
+  if(NOT EXISTS "${_need}")
+    message(FATAL_ERROR "[FMOD] Missing: ${_need}")
+  endif()
+endforeach()
+
+
+add_library(FMOD::Core SHARED IMPORTED)
+set_target_properties(FMOD::Core PROPERTIES
+  IMPORTED_IMPLIB               "${_FMOD_LIBDIR}/fmod_vc.lib"
+  IMPORTED_LOCATION             "${_FMOD_BINDIR}/fmod.dll"target_compile_features(CrashoutsAudio PUBLIC cxx_std_17)
+  IMPORTED_LOCATION_DEBUG       "${_FMOD_BINDIR}/fmodL.dll"  
+  INTERFACE_INCLUDE_DIRECTORIES "${_FMOD_INC}"
+)
+
+add_library(FMOD::Studio SHARED IMPORTED)
+set_target_properties(FMOD::Studio PROPERTIES
+  IMPORTED_IMPLIB               "${_FMOD_LIBDIR}/fmodstudio_vc.lib"
+  IMPORTED_LOCATION             "${_FMOD_BINDIR}/fmodstudio.dll"
+  INTERFACE_INCLUDE_DIRECTORIES "${_FMOD_INC}"
+)
+
+
+function(link_fmod_to target)
+  target_link_libraries(${target} PRIVATE FMOD::Core FMOD::Studio)
+  add_custom_command(TARGET ${target} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different "${_FMOD_BINDIR}/fmod.dll"        "$<TARGET_FILE_DIR:${target}>"
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different "${_FMOD_BINDIR}/fmodL.dll"       "$<TARGET_FILE_DIR:${target}>"  
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different "${_FMOD_BINDIR}/fmodstudio.dll" "$<TARGET_FILE_DIR:${target}>"
+  )
+endfunction()
+
+
+function(copy_fmod_banks target banks_dir)
+  add_custom_command(TARGET ${target} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E make_directory "$<TARGET_FILE_DIR:${target}>/assets/audio/banks"
+    COMMAND ${CMAKE_COMMAND} -E copy_directory "${banks_dir}" "$<TARGET_FILE_DIR:${target}>/assets/audio/banks"
+  )
+  endfunction()
+
+set(CA_INC "${CMAKE_SOURCE_DIR}/projects/CrashoutEngine/include")
+set(CA_SRC "${CMAKE_SOURCE_DIR}/projects/CrashoutEngine/src")
+
+
+add_library(CrashoutsAudio STATIC
+
+  "${CA_SRC}/audioSystem.cpp"         
+)
+target_compile_features(CrashoutsAudio PUBLIC cxx_std_17)
+target_include_directories(CrashoutsAudio PUBLIC "${CA_INC}")
+target_link_libraries(CrashoutsAudio PUBLIC FMOD::Core FMOD::Studio)
+
+# (optional) log once so we know it ran
+message(STATUS "[CrashoutsAudio] src='${CA_SRC}/audioSystem.cpp'")
+# Macro to import all dependencies
 macro(importDependencies)
     message(STATUS "Starting to import dependencies...")
 
@@ -101,6 +291,15 @@ macro(importDependencies)
 
     import_stb()
     message(STATUS "stb imported successfully.")
+
+    import_freetype()
+    message(STATUS "FreeType imported successfully.")
+
+    import_reflect()
+    message(STATUS "reflect.cpp imported successfully.")
+
+    import_rapidjson()
+    message(STATUS "rapidjson imported successfully.")
 
     message(STATUS "All dependencies have been imported successfully.")
 endmacro()
