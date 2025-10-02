@@ -151,6 +151,8 @@ namespace CrashoutsEngine {
 			// --- Loading AUDIO ----
 
 			// --- Loading SCENES ---
+			if (doc.HasMember("scenes") && doc["scenes"].IsArray())
+				std::cout << ("Loading Scenes...");
 		}
 	}
 }

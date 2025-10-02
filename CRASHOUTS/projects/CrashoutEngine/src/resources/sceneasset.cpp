@@ -19,8 +19,27 @@
 namespace CrashoutsEngine {
     namespace Assets {
 
-        bool SceneAsset::SaveSceneData(const std::string& sceneName) {
+        /*!
+        @brief Creates a new SceneAsset from a json file.
+        @param filePath Path to the SceneAsset(JSON) file.
+        @return Unique pointer to a valid TextureAsset, or nullptr on failure.
+        */
 
+        std::unique_ptr<SceneAsset> SceneAsset::Create(const std::string& filePath) {
+
+			// Load the JSON file from filePath
+            SceneAsset loadedData;
+
+            if (!loadedData) {
+                return nullptr;
+            }
+
+            return std::unique_ptr<SceneAsset>(new SceneAsset(loadedData));
+        }
+
+        bool SceneAsset::SaveSceneData(const std::string& sceneName) {
+			// Read the rapidjson::document member variable and save it to a file
+            // at main path + sceneName
         }
         
     }

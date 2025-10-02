@@ -28,24 +28,56 @@ namespace CrashoutsEngine {
 
         class SceneAsset : public IAsset {
         public:
+            // Default Constructor
+            SceneAsset() = default;
+
+            // Custom Constructor 
+            SceneAsset(rapidjson::Document&& doc, const std::string& sceneName) :
+                sceneData(std::move(doc)), sceneName(sceneName) {
+            }
+
+            // Deleted copy operations
+            SceneAsset(const SceneAsset&) = delete;
+            SceneAsset& operator=(const SceneAsset&) = delete;
+
+            // Move constructor and assignment
+            SceneAsset(SceneAsset&& other) noexcept :
+                sceneData{std::move(other.sceneData)},
+                sceneName{std::move(other.sceneName)}
+            {};
+
+            SceneAsset& operator=(SceneAsset&& other) noexcept 
+            {
+                if (this != &other) {
+                    sceneData = std::move(other.sceneData);
+                    sceneName = std::move(other.sceneName);
+
+					other.sceneData.SetObject();
+					other.sceneName.clear();
+                }
+            }
+
+			// Default Destructor
+            ~SceneAsset() = default;
 
             // Public member functions
             // GETTERS
 			rapidjson::Document& GetSceneData() { return sceneData; }
 			const std::string& GetSceneName() const { return sceneName; }
-			const std::string& GetSceneFilePath() const { return sceneFilePath; }
 
             // SETTERS
             bool SaveSceneData(const std::string& sceneName);
 
-            // Constructor (matching implementation pattern)
-            SceneAsset() : sceneData{}, sceneName{}, sceneFilePath{} {}
+            /*!
+            @brief Factory method to create a new Asset from file
+            @param filePath Path to the SceneAsset file to load
+            @return unique_ptr to SceneAsset object or nullptr on failure
+            */
+            static std::unique_ptr<SceneAsset> Create(const std::string& filePath);
             
         private:
 			rapidjson::Document sceneData; // RapidJSON document to hold scene data
 			std::string sceneName;         // Name of the scene
-			std::string sceneFilePath;     // File path to the scene file
-
         };
     }
 }
