@@ -42,22 +42,13 @@ void LoadTristan() {
 	}));
 	globalECS->AddComponent<Component::ShapeComponent>(entity2, Component::ShapeComponent{ .type = Component::ShapeType::Rectangle, .width = 20.f, .height = 20.f });
 
-	globalECS->AddComponent<Component::NameComponent>(entity4, Component::NameComponent{ "SCENE_EX2" });
-	globalECS->AddComponent<Component::TransformComponent>(entity4, Component::TransformComponent{ 0.f, CEVec2{}, CEVec3{40.f, 20.f, 0.f} });
-	globalECS->AddComponent<Component::RigidBodyComponent>(entity4, Component::RigidBodyComponent{ CEVec3{}, 5.f, 0.f });
-	globalECS->AddComponent<Component::ColliderComponent>(entity4, std::make_unique<Collision::Sphere>(Collision::Sphere{
-		10.0, CEVec3{}
-	}));
-	globalECS->AddComponent<Component::ShapeComponent>(entity4, Component::ShapeComponent{ .type = Component::ShapeType::Rectangle, .width = 20.f, .height = 20.f });
-
-
 	globalECS->AddComponent<Component::NameComponent>(entity3, Component::NameComponent{ "SCENE_EX3" });
-	globalECS->AddComponent<Component::TransformComponent>(entity3, Component::TransformComponent{ 0.f, CEVec2{}, CEVec3{0.5f, 0.0f, 0.f} });
+	globalECS->AddComponent<Component::TransformComponent>(entity3, Component::TransformComponent{ 0.f, CEVec2{}, CEVec3{0.0f, 0.0f, 0.f} });
 	globalECS->AddComponent<Component::RigidBodyComponent>(entity3, Component::RigidBodyComponent{ CEVec3{}, 0.f, 0.f });
 	globalECS->AddComponent<Component::ColliderComponent>(entity3, std::make_unique<Collision::AABBRect>(Collision::AABBRect{
-		CEVec3{0.f, 0.f, 0.f},
+		CEVec3{-50.f, -5.f, 0.f},
 		CEVec3{50.f, 5.f, 0.f}
-	}) );
+	}));
 	globalECS->AddComponent<Component::ShapeComponent>(entity3, Component::ShapeComponent{ .type = Component::ShapeType::Rectangle, .width = 100.f, .height = 10.f });
 
 }
@@ -69,10 +60,15 @@ void InitTristan() {
 void UpdateTristan()
 {
 	Component::RigidBodyComponent *rigidBody { globalECS->GetComponent<Component::RigidBodyComponent>(entity1) };
+	Component::RigidBodyComponent* rigidBody2 { globalECS->GetComponent<Component::RigidBodyComponent>(entity2) };
 
 	if (InputManager::IsKeyPressed(Key::A)) rigidBody->addForce(CEVec3{ -100.f, 0.f, 0.f });
 	if (InputManager::IsKeyPressed(Key::D)) rigidBody->addForce(CEVec3{ 100.f, 0.f, 0.f });
 	if (InputManager::IsKeyPressed(Key::W)) rigidBody->addForce(CEVec3{ 0.f, 300.f, 0.f }*rigidBody->getMass());
+
+	if (InputManager::IsKeyPressed(Key::Left)) rigidBody2->addForce(CEVec3{ -100.f, 0.f, 0.f });
+	if (InputManager::IsKeyPressed(Key::Right)) rigidBody2->addForce(CEVec3{ 100.f, 0.f, 0.f });
+	if (InputManager::IsKeyPressed(Key::Up)) rigidBody2->addForce(CEVec3{ 0.f, 300.f, 0.f }*rigidBody2->getMass());
 
 }
 
@@ -96,7 +92,7 @@ void RenderTristan() {
 
 
 				CEVec2 scale{ 1.f, 1.f };
-				Component::ColliderComponent* cc = globalECS->GetComponent<Component::ColliderComponent>(id);
+				//Component::ColliderComponent* cc = globalECS->GetComponent<Component::ColliderComponent>(id);
 				switch (sc->type) {
 				case Component::ShapeType::Square:    Component::Shapes::CreateSquare(t->position, sc->size, t->rotation, 1.f, sc->color * (1 / 255.f)); break;
 				case Component::ShapeType::Rectangle: Component::Shapes::CreateRectangle(t->position, sc->width, sc->height * 1.f, t->rotation, 1.f, sc->color * (1 / 255.f)); break;

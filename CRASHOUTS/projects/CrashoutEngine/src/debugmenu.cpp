@@ -17,6 +17,7 @@ This file provides the graphics for Crashout Engine's ImGUI.
 #include "gamestatemanager.h"
 #include "shapes.h"
 #include "log.h"
+#include "logdefs.h"
 #include "debugmenu.h"
 #include "debugreflection.h"
 #include "debugcollision.h"
@@ -255,7 +256,7 @@ namespace UI { // --------------------------------------------------------------
             for (auto* ad : DebugReflection::ComponentRegistry::instance().all()) {
                 if (!ad->has(ecs, selected)) continue;
 
-                ImGui::PushID(ad); // unique scope for this component’s UI
+                ImGui::PushID(ad); // unique scope for this componentï¿½s UI
 
                 // TreeNode label can be the display name now that ID is scoped
                 if (ImGui::TreeNode("Component")) {   // id = "Component" under PushID(ad)
@@ -291,7 +292,13 @@ namespace UI { // --------------------------------------------------------------
             gPerfSnapshot = profiler.results();
             gPerfSnapshotTotalMs = profiler.total_ms();
         }
-        ImGui::Text("Frame: %.3f ms (%.1f FPS)", gPerfSnapshotTotalMs, GLApp::fps);
+
+        auto& frc = FrameRateController::GetInstance();
+        const double frame_ms = frc.DT() * 1000.0;
+        const double fps = frc.FPS();
+        //const int cap = frc.CAP();
+
+        ImGui::Text("Frame: %.3f ms (%.1f FPS)", frame_ms, fps);
 
         ImGui::Separator();
         DrawEngineMemoryPanel();
@@ -325,60 +332,76 @@ namespace UI { // --------------------------------------------------------------
 
         ScopedWindow w("Console", LockFlags(ui.lockLayout));
 
-        static bool showInfo = true, showWarn = true, showErr = true, showSucc = true;
-        static bool sysCore = true, sysPhys = true, sysColl = true, sysInput = true, sysAI = true, sysECS = true, sysRend = true, sysUI = true;
+        // Dynamic filters driven by the X-macro lists - I don't even know if this is like the socially acceptable way of doing it
+        static bool levelOn[] = {
+        #define X(n) true,
+            LOG_LEVELS(X)
+        #undef X
+        };
+        static bool systemOn[] = {
+        #define X(n) true,
+            LOG_SYSTEMS(X)
+        #undef X
+        };
+        static char search[128] = { 0 };
+        static bool autoscroll = true;
 
-        if (ImGui::Checkbox("Info", &showInfo)) {}
-        ImGui::SameLine(); ImGui::Checkbox("Warn", &showWarn);
-        ImGui::SameLine(); ImGui::Checkbox("Error", &showErr);
-        ImGui::SameLine(); ImGui::Checkbox("Success", &showSucc);
+        // Level row
+        ImGui::TextDisabled("Levels:");
+        int li = 0;
+        #define X(n) do { if (li > 0) ImGui::SameLine(); ImGui::Checkbox(#n, &levelOn[li++]); } while(0);
+            LOG_LEVELS(X)
+        #undef X
+
+        // Subsystems row (simple grid)
+        ImGui::Separator();
+        ImGui::TextDisabled("Subsystems:");
+        int si = 0;
+        const int cols = 4;
+        #define X(n) do { if (si % cols != 0) ImGui::SameLine(); ImGui::Checkbox(#n, &systemOn[si++]); } while(0);
+            LOG_SYSTEMS(X)
+        #undef X
+
+        // Search & options
+        ImGui::Separator();
+        ImGui::InputTextWithHint("##search", "search text...", search, sizeof(search));
+        ImGui::SameLine();
+        ImGui::Checkbox("Auto-scroll", &autoscroll);
 
         ImGui::Separator();
-        ImGui::TextUnformatted("Subsystems:");
-        ImGui::Checkbox("Core", &sysCore); ImGui::SameLine();
-        ImGui::Checkbox("Physics", &sysPhys); ImGui::SameLine();
-        ImGui::Checkbox("Collision", &sysColl); ImGui::SameLine();
-        ImGui::Checkbox("Input", &sysInput);
-        ImGui::Checkbox("AI", &sysAI); ImGui::SameLine();
-        ImGui::Checkbox("ECS", &sysECS); ImGui::SameLine();
-        ImGui::Checkbox("Renderer", &sysRend); ImGui::SameLine();
-        ImGui::Checkbox("UI", &sysUI);
 
-        ImGui::Separator();
-
+        // Log list
         const auto& logs = Logger::Instance().Get();
-        for (const auto& log : logs) {
-            // Level filter
-            if ((log.level == LogMessage::Level::Info && !showInfo) ||
-                (log.level == LogMessage::Level::Warning && !showWarn) ||
-                (log.level == LogMessage::Level::Error && !showErr) ||
-                (log.level == LogMessage::Level::Success && !showSucc)) continue;
+        for (const auto& log : logs)
+        {
+            // Filters
+            if (!levelOn[static_cast<int>(log.level)])  continue;
+            if (!systemOn[static_cast<int>(log.system)]) continue;
+            if (search[0] && std::string(log.text).find(search) == std::string::npos) continue;
 
-            // Subsystem filter
-            bool sysPass =
-                (log.system == LogMessage::Subsystem::Core && sysCore) ||
-                (log.system == LogMessage::Subsystem::Physics && sysPhys) ||
-                (log.system == LogMessage::Subsystem::Collision && sysColl) ||
-                (log.system == LogMessage::Subsystem::Input && sysInput) ||
-                (log.system == LogMessage::Subsystem::AI && sysAI) ||
-                (log.system == LogMessage::Subsystem::ECS && sysECS) ||
-                (log.system == LogMessage::Subsystem::Renderer && sysRend) ||
-                (log.system == LogMessage::Subsystem::UI && sysUI);
-            if (!sysPass) continue;
-
+            // Color by level
             ImVec4 color =
-                (log.level == LogMessage::Level::Error) ? ImVec4(1, 0.3f, 0.3f, 1) :
-                (log.level == LogMessage::Level::Warning) ? ImVec4(1, 0.9f, 0.4f, 1) :
-                (log.level == LogMessage::Level::Success) ? ImVec4(0.4f, 1, 0.4f, 1) :
-                ImVec4(0.4f, 0.8f, 1, 1);
+                (log.level == LogMessage::Level::Error) ? ImVec4(1.0f, 0.3f, 0.3f, 1.0f) :
+                (log.level == LogMessage::Level::Warning) ? ImVec4(1.0f, 0.9f, 0.4f, 1.0f) :
+                (log.level == LogMessage::Level::Success) ? ImVec4(0.4f, 1.0f, 0.4f, 1.0f) :
+                ImVec4(0.4f, 0.8f, 1.0f, 1.0f);
             ImGui::PushStyleColor(ImGuiCol_Text, color);
-            ImGui::TextUnformatted(log.text.c_str());
+
+            // Prefix with level/system for readability
+            ImGui::Text("[%s][%s] %s",
+                ToString(log.level),
+                ToString(log.system),
+                log.text.c_str());
+
             ImGui::PopStyleColor();
         }
 
+        // Controls
+        if (autoscroll && ImGui::GetScrollY() >= ImGui::GetScrollMaxY())
+            ImGui::SetScrollHereY(1.0f);
+
         if (ImGui::Button("Clear")) {
-            // Non-intrusive: only clear if Logger exposes a non-const view.
-            const_cast<std::vector<LogMessage>&>(logs).clear();
+            Logger::Instance().Clear();
         }
     }
 
@@ -403,7 +426,7 @@ namespace UI { // --------------------------------------------------------------
 
         const int cur = P->current() ? P->current() : -1;
         const int prev = P->previous() ? P->previous() : -1;
-        const int next = P->next() ? P->next() : -1;
+        //const int next = P->next() ? P->next() : -1;
 
         ImGui::Text("Current:  %s", nameFor(cur));
         ImGui::Text("Previous: %s", nameFor(prev));
@@ -434,7 +457,7 @@ namespace UI { // --------------------------------------------------------------
      @param phys Physics handler reference.
      @param ui UI state toggles.
     */
-    void RenderPhysicsPanel(FrameProfiler& profiler, ECS& ecs, Physics::PhysicsHandler& phys, UIState& ui)
+    void RenderPhysicsPanel([[maybe_unused]] FrameProfiler& profiler, ECS& ecs, Physics::PhysicsHandler& phys, UIState& ui)
     {
         if (!ui.showPhysics) return;
         ScopedWindow w("Physics / Collision", LockFlags(ui.lockLayout));
@@ -504,7 +527,7 @@ namespace UI { // --------------------------------------------------------------
      @param ecs ECS reference.
      @param ui UI state toggles.
     */
-    void RenderAudioPanel(FrameProfiler& profiler, ECS& ecs, UIState& ui) {
+    void RenderAudioPanel([[maybe_unused]] FrameProfiler& profiler, [[maybe_unused]] ECS& ecs, UIState& ui) {
         if (!ui.showAudio) return;
         ScopedWindow w("Audio", LockFlags(ui.lockLayout));
 
@@ -528,7 +551,7 @@ namespace UI { // --------------------------------------------------------------
             ImGui::Checkbox("Game State", &ui.showGameState);
 
             // Dynamically registered panels
-            ImGui::Spacing();
+            /*ImGui::Spacing();
             ImGui::TextDisabled("Panels");
             ImGui::Separator();
             for (auto const& p : DebugReflection::PanelRegistry::instance().panels()) {
@@ -538,7 +561,7 @@ namespace UI { // --------------------------------------------------------------
                 else {
                     ImGui::TextDisabled("%s (always on-demand)", p.name.c_str());
                 }
-            }
+            }*/
 
             ImGui::Spacing();
             ImGui::TextDisabled("Settings");
@@ -560,10 +583,11 @@ namespace UI { // --------------------------------------------------------------
                     if (p.toggleFlag) *p.toggleFlag = false;
             }
 
-            ImGui::Spacing();
+            // To be fixed later
+            /*ImGui::Spacing();
             if (ImGui::Button("Save Layout")) ImGui::SaveIniSettingsToDisk(nullptr);
             ImGui::SameLine();
-            if (ImGui::Button("Reload Layout")) ImGui::LoadIniSettingsFromDisk(nullptr);
+            if (ImGui::Button("Reload Layout")) ImGui::LoadIniSettingsFromDisk(nullptr);*/
         }
         ImGui::End();
     }
@@ -605,7 +629,7 @@ namespace UI { // --------------------------------------------------------------
         EndFrame();
 
         auto& collisions = phys.collisions();
-        CollisionGizmos::DrawAllColliders(ecs, &collisions, 0.02f);
+        CollisionGizmos::DrawAllColliders(ecs, &collisions, 0.06f);
         CollisionGizmos::DrawContactsAndNormals(collisions, 0.25f, 0.02f); 
     }
 

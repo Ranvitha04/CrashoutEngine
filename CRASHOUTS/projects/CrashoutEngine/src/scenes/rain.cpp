@@ -11,14 +11,15 @@ static CrashoutsEngine::ECS* globalECS;
 void LoadRain()
 {
 	// Load resources specific to Renfred state
+	LOGI(Core, "Loaded");
 	globalECS = CrashoutsEngine::ECS::getInstance();
 	globalECS->Reset();
-	GLuint shaderID = loadShaderProgram("shaders/textShader.vert", "shaders/textShader.frag");
+	GLuint shaderID = loadShaderProgram("../../../projects/CrashoutEngine/shaders/textShader.vert", "../../../projects/CrashoutEngine/shaders/textShader.frag");
 	if (shaderID == 0) {
-		std::cerr << "Failed to load text shader.\n";
+		std::cout << "Failed to load text shader.\n";
 		return;
 	}
-	gTextRenderer = new TextRenderer("assets/fonts/arial.ttf", Settings::GetScreenWidth(), Settings::GetScreenHeight());
+	gTextRenderer = new TextRenderer("../../../projects/CrashoutEngine/assets/fonts/arial.ttf", Settings::GetScreenWidth(), Settings::GetScreenHeight());
 }
 
 void InitRain()
@@ -37,14 +38,17 @@ void RenderRain()
 	// Render Rain state
 	glClearColor(0.1f, 0.2f, 0.4f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
-	gTextRenderer->renderCenteredText("Hello", 0.0f, 0.0f, 1.0f, glm::vec3(1.0f, 1.0f, 1.0f));
+	if (gTextRenderer) {
+		gTextRenderer->renderCenteredText("Hello", 0.0f, 0.0f, 1.0f, glm::vec3(1.0f));
+	}
+
 	using namespace CrashoutsEngine;
 
 	const ECS::ComponentArray<Component::ShapeComponent>& shapeArray = globalECS->GetComponentArray<Component::ShapeComponent>();
 	//std::cout << shapeArray.dense.size() << std::endl;
 	for (const Entity& id : shapeArray.indexToEntity) {
 		// Get entity number
-		Component::TransformComponent* t = globalECS->GetComponent<Component::TransformComponent>(id);
+		//Component::TransformComponent* t = globalECS->GetComponent<Component::TransformComponent>(id);
 		Component::ShapeComponent* sc = globalECS->GetComponent<Component::ShapeComponent>(id);
 		// Can add more data to create rect like color etc
 		if (globalECS->HasComponent<ShapeComponent>(id)) {

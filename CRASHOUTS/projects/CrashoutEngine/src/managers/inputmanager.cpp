@@ -7,8 +7,14 @@
 Handles keyboard mouse and scroll wheel input using GLFW
 */
 #include "managers/inputmanager.h"
+
+#include <iostream>
+#include <ostream>
+#include <log.h>
 #include "settings.h"
 #include <glm/glm.hpp>
+
+#include "math/CEVec2.h"
 //ENTIRE INPUTMANAGER IS TO BE REFACTORED/REMOVED LATER TO ADHERE TO ECS - Rain
 /// Static storage for the GLFW window pointer
 GLFWwindow* InputManager::Window = nullptr;
@@ -55,6 +61,25 @@ void InputManager::Update() {
     }
 }
 
+void InputManager::Shutdown() {
+    // 1. Decouple callbacks from the window
+    if (Window != nullptr) {
+        // Set all callbacks back to NULL or a safe stub
+        glfwSetKeyCallback(Window, nullptr);
+        glfwSetMouseButtonCallback(Window, nullptr);
+        glfwSetScrollCallback(Window, nullptr);
+
+        // Clear the window pointer
+        Window = nullptr;
+    }
+
+    // 2. Clear internal state (frees memory used by the maps)
+    Keys.clear();
+    MouseButtons.clear();
+    ScrollYAccum = 0.0f;
+    ScrollYFrame = 0.0f;
+}
+
 /*!
 @brief Check if a specific key is pressed using Key enum
 @param key The Key enum value
@@ -71,6 +96,26 @@ bool InputManager::IsKeyPressed(Key key) {
 */
 bool InputManager::IsKeyPressed(int glfwKey) {
     return glfwGetKey(Window, glfwKey) == GLFW_PRESS;
+}
+
+std::vector<Key> InputManager::GetPressedKeys() {
+    std::vector<Key> pressed;
+
+    // keys
+    for (const auto& [key, state] : Keys) {
+        if (state) {
+            pressed.push_back(static_cast<Key>(key));
+        }
+    }
+
+    // mouse buttons
+    for (const auto& [button, state] : MouseButtons) {
+        if (state) {
+            pressed.push_back(static_cast<Key>(button));
+        }
+    }
+
+    return pressed;
 }
 
 /*!
@@ -95,10 +140,10 @@ void InputManager::GetMousePosition(double& x, double& y) {
 @brief Get the current mouse position in pixels
 @return 2D vector with X and Y position
 */
-glm::vec2 InputManager::GetMousePosition() {
+CEVec2 InputManager::GetMousePosition() {
     double x, y;
     GetMousePosition(x, y);
-    return glm::vec2(static_cast<float>(x), static_cast<float>(y));
+    return CEVec2(static_cast<float>(x), static_cast<float>(y));
 }
 
 /*!
@@ -115,7 +160,7 @@ float InputManager::GetMouseWheelDelta() {
 Converts screen pixel coordinates to NDC range [-1 1]
 @return 2D vector with X and Y in NDC space
 */
-glm::vec2 InputManager::GetMouseNDC() {
+CEVec2 InputManager::GetMouseNDC() {
     double x, y;
     GetMousePosition(x, y);
 
@@ -123,5 +168,7 @@ glm::vec2 InputManager::GetMouseNDC() {
 
     float ndcY = static_cast<float>(y / Settings::GetScreenHeight()) * 2.0f - 1.0f;
 
-    return glm::vec2(ndcX, ndcY);
+    return CEVec2(ndcX, ndcY);
 }
+
+

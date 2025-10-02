@@ -1,4 +1,18 @@
 {
+    "audio": [
+        {
+            "name": "Master",
+            "path": "banks\\Master.bank"
+        },
+        {
+            "name": "Master.strings",
+            "path": "banks\\Master.strings.bank"
+        },
+        {
+            "name": "sfx",
+            "path": "banks\\sfx.bank"
+        }
+    ],
     "fonts": [
         {
             "name": "arial",
@@ -32,6 +46,5 @@
             "name": "assetmanifest",
             "path": "assetmanifest.json"
         }
-    ],
-    "scenes": []
+    ]
 }

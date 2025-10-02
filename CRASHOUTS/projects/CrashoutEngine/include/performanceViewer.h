@@ -3,7 +3,18 @@
 @author     mohamadamirakmal.b@digipen.edu
 @date       06/09/2025
 
-This file provides profiling and memory tracking utilities for Crashout Engine.
+@brief      CPU profiling and memory tracking utilities for Crashout Engine.
+@details    This header provides two major runtime diagnostic tools:
+            - **Frame Profiler**: Measures per-frame CPU time across subsystems,
+              with EMA smoothing, percent normalization, history tracking,
+              and ImGui visualization.
+            - **Memory Tracker**: Tracks memory allocations per subsystem
+              (`MemTag`), monitors process memory usage (Working Set &
+              Private Bytes), and renders a memory usage panel.
+
+            These tools are intended for development builds to monitor
+            performance bottlenecks, visualize profiling history, and
+            analyze memory consumption in real-time.
 //__________________________________________________________________________*/
 
 #pragma once
@@ -28,25 +39,12 @@ This file provides profiling and memory tracking utilities for Crashout Engine.
 #include <cstdint>
 #include <array>
 #include <imgui.h>
+#include <thread>
 
 
 // ---- Windows process-memory helper (Working Set & Private Bytes in MB) ----
 #include <psapi.h>
 #pragma comment(lib, "psapi.lib")
-
-static inline void _fp_get_process_mem_mb(double& rssMB, double& privMB) {
-    PROCESS_MEMORY_COUNTERS_EX pmc{};
-    if (GetProcessMemoryInfo(GetCurrentProcess(),
-        reinterpret_cast<PROCESS_MEMORY_COUNTERS*>(&pmc),
-        sizeof(pmc))) {
-        rssMB = pmc.WorkingSetSize / (1024.0 * 1024.0);
-        privMB = pmc.PrivateUsage / (1024.0 * 1024.0);
-        return;
-    }
-    rssMB = privMB = 0.0;
-}
-
-
 
 /*
 * Frame Profiler
@@ -353,14 +351,11 @@ enum class MemTag : uint8_t {
 };
 
 /*!
-@struct MemTracker
-@brief  Stores global counters (atomic) - singleton access via MemTracker::instance()
-@var live[]
-      bytes currently alive
-@var allocs[]
-      total allocated
-@var frees[]
-      total freed
+ @struct MemTracker
+ @brief Global memory tracking counters.
+ @details
+ Tracks total live, allocated, and freed memory for each `MemTag` category.
+ Accessed as a singleton via `MemTracker::instance()`.
 */
 struct MemTracker {
     std::atomic<long long> live[(size_t)MemTag::Count]{};
@@ -389,23 +384,29 @@ struct ScopedMemTag {
     }
 };
 
-// Manual accounting helpers for custom allocators/arenas (optional).
+/*! @brief Increments live memory for a given tag. */
 inline void memtag_add(MemTag t, size_t bytes) { MemTracker::instance().live[(size_t)t] += (long long)bytes; }
+
+/*! @brief Decrements live memory for a given tag. */
 inline void memtag_sub(MemTag t, size_t bytes) { MemTracker::instance().live[(size_t)t] -= (long long)bytes; }
 
-// Process memory helper (Working Set & Private Bytes, MB).
+/*!
+ @brief Retrieves the current process's Working Set and Private Bytes (in MB).
+ @param workingSetMB   Output reference for Working Set size in MB.
+ @param privateBytesMB  Output reference for Private Bytes in MB.
+ @note  Returns 0.0 for both values if retrieval fails.
+*/
 inline void get_process_mem_mb(double& workingSetMB, double& privateBytesMB) {
-#ifdef _WIN32
     PROCESS_MEMORY_COUNTERS_EX pmc{};
     if (GetProcessMemoryInfo(GetCurrentProcess(),
         reinterpret_cast<PROCESS_MEMORY_COUNTERS*>(&pmc),
         sizeof(pmc))) {
         workingSetMB = pmc.WorkingSetSize / (1024.0 * 1024.0);
         privateBytesMB = pmc.PrivateUsage / (1024.0 * 1024.0);
-        return;
     }
-#endif
-    workingSetMB = privateBytesMB = 0.0;
+    else {
+        workingSetMB = privateBytesMB = 0.0;
+    }
 }
 
 // ------------------------------ Rendering ----------------------------------
@@ -414,51 +415,30 @@ inline void get_process_mem_mb(double& workingSetMB, double& privateBytesMB) {
     @note   Display Working Set, Private Bytes and total TAGGED memory.
 */
 inline void DrawEngineMemoryPanel() {
-    auto& tr = MemTracker::instance();
-    const char* N[(size_t)MemTag::Count] = {
-        "Unknown","Update","Physics","Graphics","AI","Audio","ECS","Resources","UI","Renderer"
-    };
+    double workingSetMB = 0.0;
+    double privateBytesMB = 0.0;
+    get_process_mem_mb(workingSetMB, privateBytesMB);
 
-    double wsMB = 0.0, privMB = 0.0; 
-    get_process_mem_mb(wsMB, privMB);
+    ImGui::SeparatorText("Memory Usage");
+    ImGui::Text("Working Set: %.2f MB", workingSetMB);
+    ImGui::Text("Private Bytes: %.2f MB", privateBytesMB);
+    // Add more performance stats here if you want
 
-    ImGui::SeparatorText("Engine Memory - when you create allocations, reserve, commit or release things - Doesn't work yet");
-    double maxTagMB = 0.0;
-    double totalLiveMB = 0.0;
-    for (size_t i = 0; i < (size_t)MemTag::Count; ++i) {
-        double mb = MemTracker::instance().live[i].load() / (1024.0 * 1024.0);
-        maxTagMB = std::max(maxTagMB, mb);
-        totalLiveMB += mb;
-    }
-
-    // --- render each tag row ---
-    const double kEpsMB = 0.002; // ~2 KB
-    for (size_t i = 0; i < (size_t)MemTag::Count; ++i) {
-        double mb = MemTracker::instance().live[i].load() / (1024.0 * 1024.0);
-        if (mb <= kEpsMB) continue;
-
-        ImGui::Text("%-10s  %8.3f MB", N[i], mb);
-        float fracRel = (maxTagMB > 0.0) ? (float)(mb / maxTagMB) : 0.0f;
-        ImGui::ProgressBar(fracRel, ImVec2(-1, 0), "relative");
-
-        double wsMB = 0.0, privMB = 0.0;
-        get_process_mem_mb(wsMB, privMB);
-        float fracProc = (privMB > 0.0) ? (float)(mb / privMB) : 0.0f;
-        ImGui::ProgressBar(fracProc, ImVec2(-1, 0), "process");
-    }
-
-    ImGui::SeparatorText("Process Memory - what we own (committed for the process)");
-    ImGui::Text("Working Set: %.2f MB", wsMB);
-    ImGui::Text("Private Bytes (process total): %.2f MB", privMB);
-    ImGui::Text("Sum of tagged live: %.2f MB", totalLiveMB);
+    ImGui::SeparatorText("Framerate");
+    ImGui::Text("FPS: %.1f", ImGui::GetIO().Framerate);
 }
 
+
+/*!
+ @brief Draws an ImGui profiler panel with per-frame CPU usage.
+ @param P Reference to a `FrameProfiler` instance.
+*/
 inline void DrawProfilerPanel(FrameProfiler& P) {
     using namespace ImGui;
 
-    const bool ready = P.present_ready();
+    //const bool ready = P.present_ready();
     const auto& rows = P.results();
-    const double frameMs = P.total_ms();
+    //const double frameMs = P.total_ms();
 
     if (Begin("Profiler")) {
         SeparatorText("CPU Frame (ms) - Stream");

@@ -104,7 +104,8 @@ namespace Component {
         renderer.shdr_pgm.SetUniform("uModel", model);
         renderer.shdr_pgm.SetUniform("uView", glm::mat4(1.0f));
         renderer.shdr_pgm.SetUniform("uProjection", projection);
-
+        renderer.shdr_pgm.SetUniform("u_useTexture", 0);
+        renderer.shdr_pgm.SetUniform("u_tint", 1.0f, 1.0f, 1.0f);
         renderer.Draw();
     }
 
@@ -151,7 +152,8 @@ namespace Component {
         renderer.shdr_pgm.SetUniform("uModel", model);
         renderer.shdr_pgm.SetUniform("uView", glm::mat4(1.0f));
         renderer.shdr_pgm.SetUniform("uProjection", projection);
-
+        renderer.shdr_pgm.SetUniform("u_useTexture", 0);
+        renderer.shdr_pgm.SetUniform("u_tint", 1.0f, 1.0f, 1.0f);
         renderer.Draw();
     }
 

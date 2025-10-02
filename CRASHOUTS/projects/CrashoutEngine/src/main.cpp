@@ -1,8 +1,7 @@
 /*!
 @file    	main.cpp
-@author  	pghali@digipen.edu
-@co-author  parminder.singh@digipen.edu
-@date    	17/04/2024
+@author  	lee.r@digipen.edu
+@date    	17/09/2025
 
 This file uses functionality defined in type GLApp to initialize an OpenGL
 context and implement a game loop.
@@ -19,6 +18,7 @@ context and implement a game loop.
 #include "playerMovement.h"     // Player::UpdateADVelocity
 #include "managers/physicsmanager.h"            // Component::RigidBodyComponent
 #include "managers/inputmanager.h"
+#include "debugreflection.h"
 #include "debugmenu.h"
 #include "crashlogger.h"
 
@@ -122,21 +122,32 @@ void SetupConsole() {
 }
 
 int WINAPI WinMain(
-    _In_     HINSTANCE hInstance,
+    [[maybe_unused]] _In_     HINSTANCE hInstance,
     _In_opt_ HINSTANCE hPrevInstance,
     _In_     LPSTR     lpCmdLine,
-    _In_     int       nCmdShow
+    [[maybe_unused]] _In_     int       nCmdShow
 ){
+    _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+    //_CrtSetBreakAlloc(2235);
+    UNREFERENCED_PARAMETER(hPrevInstance);
+    UNREFERENCED_PARAMETER(lpCmdLine);
+    _CrtMemState stateStart, stateEnd, stateDiff;
+    _CrtMemCheckpoint(&stateStart);
 
     #ifdef DEBUG
     
     SetupConsole();
 
+    #else
+
+    (void)stateStart;
+    (void)stateEnd;
+    (void)stateDiff;
+
     #endif
 
     InstallCrashLogger("CrashoutsEngine");
     glfwSwapInterval(0); // disable vsync
-    globalECS = CrashoutsEngine::ECS::getInstance();
     collisionSystem.registerObserver(Messaging::getCollisionMsgID(), physicsSystem); /*Listen to messages(collisions)*/
 
     // start with a 16:9 aspect ratio
@@ -175,7 +186,18 @@ int WINAPI WinMain(
 
     // Cleanup
     UI::Shutdown();
+    Logger::Instance().Clear();
     GLApp::cleanup();
+    InputManager::Shutdown();
+    ShutdownGameStateManager();
+
+    CrashoutsEngine::ECS::DestroyInstance();
+
+    _CrtMemCheckpoint(&stateEnd);
+    if (_CrtMemDifference(&stateDiff, &stateStart, &stateEnd)) {
+        OutputDebugString("Memory leaks detected!\n");
+        _CrtMemDumpStatistics(&stateDiff);
+    }
     return EXIT_SUCCESS;
 }
 
@@ -241,7 +263,7 @@ static void update() {
 
 
 
-    const double dt = 1.0 / 60.0;
+    //const double dt = 1.0 / 60.0;
     //playerTransform.position.x += playerRigidBody.velocity.x * static_cast<float>(dt);
 
     // animate scene

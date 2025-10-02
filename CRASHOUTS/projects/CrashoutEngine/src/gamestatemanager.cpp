@@ -127,6 +127,26 @@ void UpdateGameStateManager() {
 }
 
 /*!
+@brief Shuts down the Game State Manager.
+@details
+Clears the static registry map to explicitly free all dynamically allocated
+memory associated with the registered state descriptors before program exit.
+*/
+void ShutdownGameStateManager() {
+    // Clean up the currently active state's resources
+    if (CurrentDescriptor) {
+        if (CurrentDescriptor->Free) CurrentDescriptor->Free();
+        if (CurrentDescriptor->Unload) CurrentDescriptor->Unload();
+    }
+
+    StateRegistry.clear();
+
+    CurrentDescriptor = nullptr;
+    CurrentGameState = NextGameState = PreviousGameState = MAIN_MENU;
+    RestartRequested = false;
+}
+
+/*!
 @brief Reset the frame rate controller
 
 Placeholder for resetting frame timing
@@ -161,3 +181,4 @@ Placeholder for ending frame timing
 void EndFrameRateController() {
 	// End frame rate controller here
 }
+

@@ -121,10 +121,10 @@ namespace Physics {
 		
 		// Debug Stepping one
 		double dt = sOverrideDt ? sDebugDt : deltaTime;
-		if (sPaused) {
-			if (!sStepOnce) return;
-			// allow exactly one tick when paused+Step pressed
-		}
+		//if (sPaused) {
+		//	if (!sStepOnce) return;
+		//	// allow exactly one tick when paused+Step pressed
+		//}
 
 		// Integrate Physics
 		f32 newDelta{ static_cast<float>(dt) };
@@ -152,7 +152,7 @@ namespace Physics {
 		f32 invMass1{ rigidBody1->getInverseMass() };
 		f32 invMass2{ rigidBody2->getInverseMass() };
 		f32 sumInvMass{ invMass1 + invMass2 };
-		f32 totalMass{ rigidBody1->getMass() + rigidBody2->getMass()};
+		//f32 totalMass{ rigidBody1->getMass() + rigidBody2->getMass()};
 		if (sumInvMass == 0.f) {
 			return;
 		}
@@ -184,12 +184,20 @@ namespace Physics {
 
 	/*Main Physics update*/
 	void PhysicsHandler::update(double deltaTime){
+
 		CrashoutsEngine::ECS& globalECS = *(CrashoutsEngine::ECS::getInstance());
 
 		std::vector<CrashoutsEngine::Entity> globalEntities = globalECS.GetComponentArray<Component::NameComponent>().indexToEntity;
 
 		/*APPLY FORCES, FOR NOW PUT IN THE COLLISION HANDLER*/
 		/*UPDATE FORCES*/
+
+		if (sPaused) {
+			collisionEvents.clear();
+			if (!sStepOnce) return;
+			// allow exactly one tick when paused+Step pressed
+		}
+
 		for (CrashoutsEngine::Entity& entity : globalEntities) {
 			if (!globalECS.HasComponent<Component::RigidBodyComponent>(entity)) continue;
 			Component::RigidBodyComponent* rigidBody{ globalECS.GetComponent<Component::RigidBodyComponent>(entity) };
@@ -212,6 +220,11 @@ namespace Physics {
 			Component::RigidBodyComponent* rigidBody{ globalECS.GetComponent<Component::RigidBodyComponent>(entity) };
 
 			updatePhysics(transform, rigidBody, deltaTime);
+
+			if (globalECS.HasComponent<Component::ColliderComponent>(entity)) {
+				Component::ColliderComponent* c { globalECS.GetComponent<Component::ColliderComponent>(entity) };
+				c->collider->updateCollider(transform->position);
+			}
 
 		}
 

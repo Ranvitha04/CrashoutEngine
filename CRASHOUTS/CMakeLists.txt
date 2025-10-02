@@ -1,16 +1,24 @@
 # ======================= Project Configuration =========================
-cmake_minimum_required(VERSION 2.8...3.13)
+cmake_minimum_required(VERSION 3.5)
 
 # Set the CMake policy version (this enables all policies up to CMake 3.5)
-cmake_policy(VERSION 3.5)
+cmake_policy(VERSION 3.24)
+
+set(CMAKE_POLICY_VERSION_MINIMUM 3.5)
+
+project(CRASHOUTS CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
-project(CRASHOUTS)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
 # Set the directory where custom CMake modules are stored
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
+
+# Disable GLFW examples, tests and docs to avoid extra executables
+set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
 
 # Include project-wide utility and dependency modules
 include(ImportDependencies)
@@ -28,7 +36,7 @@ set(ALL_LIBS
     PRIVATE glm::glm
     PRIVATE stb
     PRIVATE freetype
-    PRIVATE refl-cpp::refl-cpp
+    PRIVATE reflect
     PRIVATE rapidjson
 )
 
@@ -38,6 +46,19 @@ add_compile_definitions(
 
 # Include path for GLM (optional if not using FetchContent)
 include_directories(${CMAKE_CURRENT_LIST_DIR}/lib/glm)
+
+include_directories(${_FMOD_INC})
+# ======================= Global Warning Level =========================
+if (MSVC)
+    # Use target_compile_options to ensure flags are applied correctly and universally
+    add_compile_options(
+        /W4          # Level 4 warnings (Good)
+        /permissive- # Strict conformance
+        /WX          # Warnings as Errors
+    )
+elseif (CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    add_compile_options(-Wall -Wextra -Wpedantic -Werror)
+endif()
 
 # ======================= AUTO PROJECT DISCOVERY =========================
 # Get all subdirectories in the projects folder
@@ -69,24 +90,60 @@ foreach(child ${children})
         # Link libraries
         target_link_libraries(${child}
             ${ALL_LIBS}
+            CrashoutsAudio
         )
+        link_fmod_to(${child}) 
 
-        # Set C++ standard
-        set_property(TARGET ${child} PROPERTY CXX_STANDARD 20)
-
-        # Enable WIN32
-        set_property(TARGET ${child} PROPERTY WIN32 TRUE)
-
-        # Warnings based on compiler
-        if (CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
-            target_compile_options(${child} PRIVATE -Wall ${DisableWarnings})
-        elseif (MSVC)
-            target_compile_options(${child} PRIVATE /W3 /WX-)
-        endif()
-
-        # Include path for each project
+        # Apply common include directories
         target_include_directories(${child} PRIVATE
             ${CMAKE_CURRENT_LIST_DIR}/projects/${child}/include
+            ${CMAKE_CURRENT_LIST_DIR}/lib/glm           # Added GLM include
+            ${_FMOD_INC}                                # Added FMOD include
         )
+        
+        # Copy assets (Simplified path variables)
+        add_custom_command(TARGET ${child} POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_directory
+            ${CMAKE_CURRENT_LIST_DIR}/projects/${child}/assets
+            $<TARGET_FILE_DIR:${child}>/assets
+        )
+        
+        # WIN32 property only needs to be set once
+        set_property(TARGET ${child} PROPERTY WIN32 TRUE)
     endif()
 endforeach()
+#[[
+# Doxygen: rebuild only when files change
+find_package(Doxygen REQUIRED)
+
+set(DOXYFILE_IN ${CMAKE_SOURCE_DIR}/Doxyfile)
+set(DOC_OUTPUT_DIR ${CMAKE_SOURCE_DIR}/docs)
+
+# Everything that should trigger a doc rebuild
+file(GLOB_RECURSE DOXY_INPUTS CONFIGURE_DEPENDS
+     ${CMAKE_SOURCE_DIR}/include/*.h
+     ${CMAKE_SOURCE_DIR}/include/*.hpp
+     ${CMAKE_SOURCE_DIR}/src/*.h
+     ${CMAKE_SOURCE_DIR}/src/*.hpp
+     ${CMAKE_SOURCE_DIR}/src/*.c
+     ${CMAKE_SOURCE_DIR}/src/*.cc
+     ${CMAKE_SOURCE_DIR}/src/*.cpp
+     ${CMAKE_SOURCE_DIR}/*.md
+     ${CMAKE_SOURCE_DIR}/docs/*.md)
+
+# Produce a stamp file when doxygen finishes, depend on all inputs
+add_custom_command(
+    OUTPUT ${DOC_OUTPUT_DIR}/.doxygen.stamp
+    COMMAND ${CMAKE_COMMAND} -E make_directory ${DOC_OUTPUT_DIR}
+    COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYFILE_IN}
+    COMMAND ${CMAKE_COMMAND} -E touch ${DOC_OUTPUT_DIR}/.doxygen.stamp
+    BYPRODUCTS ${DOC_OUTPUT_DIR}/html/index.html
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+    COMMENT "Running Doxygen on every build"
+    VERBATIM
+)
+
+add_custom_target(doxygen_docs ALL
+    DEPENDS ${DOC_OUTPUT_DIR}/.doxygen.stamp
+)
+]]

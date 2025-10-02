@@ -1,3 +1,11 @@
+/*!
+@file       observer.h
+@author     miratristan.d@digipen.edu
+@date       19/09/2025
+@brief      Declaration for the Base class Observar. Allows other system to inherit from this class to listen to messages emitted by
+			Observables
+//__________________________________________________________________________*/
+
 #pragma once
 
 #include <map>
@@ -47,7 +55,6 @@ namespace Messaging {
 			HANDLER getHandler(const std::string& messageId) {
 				return mHandlers[messageId];
 			}
-
 		
 	};
 }

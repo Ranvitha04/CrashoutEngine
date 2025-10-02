@@ -18,7 +18,19 @@ namespace Collision {
 
 	Sphere::Sphere(f32 radius, CEVec3 const& center) : Collider{ SPHERE }, radius{ radius }, center{ center } { /*EMPTY BY DESIGN*/ }
 
-	AABBRect::AABBRect(CEVec3 const& min, CEVec3 const& max) : Collider{ AABB }, min{ min }, max{ max } { /*EMPTY BY DESIGN*/ }
+	void Sphere::updateCollider(CEVec3 const &newPos) {
+		center = newPos;
+	}
+
+	AABBRect::AABBRect(CEVec3 const& min, CEVec3 const& max) : Collider{ AABB }, min{ min }, max{ max } { 
+		extents = (max - min) * 0.5f;
+	}
+
+	void AABBRect::updateCollider(CEVec3 const& newPos) { 
+		max = newPos + extents;
+		min = newPos - extents;
+	}
+
 }
 
 namespace Collision {
@@ -56,10 +68,8 @@ namespace Collision {
 		collideFuncts[sphereIdx * TYPES_OF_COLLISION + AABBIdx] = SphereToAABBCollision;
 	}
 
-	void CollisionHandler::update(double deltaTime) {
+	void CollisionHandler::update([[maybe_unused]] double deltaTime) {
 		CrashoutsEngine::ECS& globalECS = *(CrashoutsEngine::ECS::getInstance());
-
-		std::vector<std::pair<CrashoutsEngine::Entity, CrashoutsEngine::Entity>> currentCollisions{};
 
 		std::vector<CrashoutsEngine::Entity> globalEntities = globalECS.GetComponentArray<Component::NameComponent>().indexToEntity;
 
@@ -79,7 +89,7 @@ namespace Collision {
 
 				Component::ColliderComponent* collider2{ globalECS.GetComponent<Component::ColliderComponent>(entity2) };
 				Component::TransformComponent* transform2{ globalECS.GetComponent<Component::TransformComponent>(entity2) };
-				Component::RigidBodyComponent* rigidBody2{ globalECS.GetComponent<Component::RigidBodyComponent>(entity2) };
+				//Component::RigidBodyComponent* rigidBody2{ globalECS.GetComponent<Component::RigidBodyComponent>(entity2) };
 
 				/*CHECK FOR COLLISION and call collision function*/
 				Collision::CollisionManifold collisionManifold{};
@@ -108,12 +118,11 @@ namespace Collision {
 				if (collisionManifold.collisionOccured) {
 					CollisionMessage colMessage{ Messaging::getCollisionMsgID(), collisionManifold, entity1, entity2 };
 					
-					CrashoutsEngine::Entity const* entity1Ptr{ &entity1 };
-					CrashoutsEngine::Entity const* entity2Ptr{ &entity2 };
+					//CrashoutsEngine::Entity const* entity1Ptr{ &entity1 };
+					//CrashoutsEngine::Entity const* entity2Ptr{ &entity2 };
 
-					currentCollisions.push_back(std::pair{ *entity1Ptr, *entity2Ptr });
 					sendMessage(colMessage);
-					
+
 				}
 
 			}
@@ -161,10 +170,10 @@ namespace Collision {
 
 		CEVec3 posDelta{ coll2.position - coll1.position }; /*Vector showing distance + the direction*/
 
-		f32 xDiff{ aabb1Temp.max.x + aabb2Temp.max.x - std::abs(posDelta.x)};
+		f32 xDiff{ aabb1Temp.extents.x + aabb2Temp.extents.x - std::abs(posDelta.x)};
 
 		if (xDiff > 0.f) {
-			f32 yDiff{ aabb1Temp.max.y + aabb2Temp.max.y - std::abs(posDelta.y) };
+			f32 yDiff{ aabb1Temp.extents.y + aabb2Temp.extents.y - std::abs(posDelta.y) };
 
 			if (yDiff > 0.f) {
 
@@ -197,31 +206,54 @@ namespace Collision {
 
 		AABBRect const& aabb2Temp = dynamic_cast<AABBRect const&>(*(aabbPtr->collider));
 
-		CEVec3 minAABB{ aabbPtr->position.x - aabb2Temp.max.x, aabbPtr->position.y - aabb2Temp.max.y, 0.f };
-		CEVec3 maxAABB{ aabbPtr->position.x + aabb2Temp.max.x, aabbPtr->position.y + aabb2Temp.max.y, 0.f };
+		CEVec3 minAABB{ aabbPtr->position.x - aabb2Temp.extents.x, aabbPtr->position.y - aabb2Temp.extents.y, 0.f };
+		CEVec3 maxAABB{ aabbPtr->position.x + aabb2Temp.extents.x, aabbPtr->position.y + aabb2Temp.extents.y, 0.f };
 
 		
 		CEVec3 pos{ spherePtr->position };
 
 		CEVec3 closestPt{pos}; /*CLOSEST POINT OF THE CENTER OF THE CIRCLE TO THE EDGES OF THE AABB*/
 
-
+		/*CLAMP THE POINT OF THE CENTER OF THE CIRCLE TO THE POINT ON THE SIDE OF AABB*/
 		if (pos.x < minAABB.x) { closestPt.x = minAABB.x; }
 		if (pos.x > maxAABB.x) { closestPt.x = maxAABB.x; }
-
 
 		if (pos.y < minAABB.y) { closestPt.y = minAABB.y; }
 		if (pos.y > maxAABB.y) { closestPt.y = maxAABB.y; }
 
 		CEVec3 ClosestPtToCirc{ closestPt - pos };
+		float closestPtSquared{ CEMath::LengthSq(ClosestPtToCirc) };
 
-		if (CEMath::LengthSq(ClosestPtToCirc) < sphere1Temp.radius*sphere1Temp.radius) {
+		
+		if (closestPtSquared < sphere1Temp.radius*sphere1Temp.radius) {
 
-			f32 distance{ CEMath::Length(ClosestPtToCirc) };
 
 			result.collisionOccured = true;
-			result.depth = sphere1Temp.radius - distance;
-			result.normal = CEMath::Normalize(ClosestPtToCirc);
+
+			/*Center of Circle is already inside AABB*/
+			if (closestPtSquared == 0.f) {
+				CEVec3 vecFromAABBToCirc{ spherePtr->position - aabbPtr->position };
+				
+				float depthX{ sphere1Temp.radius + aabb2Temp.extents.x - fabsf(vecFromAABBToCirc.x) };
+
+				float depthY{ sphere1Temp.radius + aabb2Temp.extents.y - fabsf(vecFromAABBToCirc.y) };
+
+				if (depthX < depthY) {
+					result.depth = depthX;
+					result.normal = vecFromAABBToCirc.x < 0.f ? CEVec3{ -1.f, 0.f, 0.f } : CEVec3{ 1.f, 0.f, 0.f };
+
+				} else {
+					result.depth = depthY;
+					result.normal = vecFromAABBToCirc.y < 0.f ? CEVec3{ 0.f, -1.f, 0.f } : CEVec3{ 0.f, 1.f, 0.f };
+				}
+
+
+			} else {
+				f32 distance{ CEMath::Length(ClosestPtToCirc) };
+
+				result.depth = sphere1Temp.radius - distance;
+				result.normal = CEMath::Normalize(ClosestPtToCirc);
+			}
 
 		}
 

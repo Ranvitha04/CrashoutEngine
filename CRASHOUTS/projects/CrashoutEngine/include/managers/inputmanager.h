@@ -12,6 +12,7 @@ Provides static functions to handle keyboard mouse and scroll wheel input using 
 #include <unordered_map>
 #include <glm/glm.hpp>
 #include "key.h"
+#include "math/CEVec2.h"
 //ENTIRE INPUTMANAGER IS TO BE REFACTORED/REMOVED LATER TO ADHERE TO ECS - Rain
 /*!
 @class InputManager
@@ -26,6 +27,11 @@ public:
     @param window Pointer to the GLFW window
     */
     static void Init(GLFWwindow* ptr_window);
+
+    /*!
+    @brief Shutdown and cleanup the input manager
+    */
+    static void Shutdown();
 
     /*!
     @brief Update input states for the current frame
@@ -53,6 +59,9 @@ public:
     */
     static bool IsMouseButtonPressed(int button);
 
+    /// Get all currently pressed keys and mouse buttons
+    static std::vector<Key> GetPressedKeys();
+
     /*!
     @brief Get the mouse position in pixels
     @param x Reference to store X position
@@ -64,7 +73,7 @@ public:
     @brief Get the mouse position in pixels as a 2D vector
     @return Mouse position in pixels
     */
-    static glm::vec2 GetMousePosition();
+    static CEVec2 GetMousePosition();
 
     /*!
     @brief Get the mouse scroll delta for the current frame
@@ -76,7 +85,7 @@ public:
     @brief Get the mouse position in normalized device coordinates
     @return Mouse position mapped to NDC range [-1 1]
     */
-    static glm::vec2 GetMouseNDC();
+    static CEVec2 GetMouseNDC();
 
 private:
     /// Pointer to the GLFW window
