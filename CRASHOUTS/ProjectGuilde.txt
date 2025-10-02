@@ -41,18 +41,8 @@ The project generation process is automated with a script.
 * **What it does**:
     1.  Creates a `build` folder for all generated files.
     2.  Runs CMake to produce a Visual Studio 2022 solution.
-    3.  Automatically opens the generated `CRASHOUTS.sln` file in Visual Studio.
-
-Alternative: Command-Line Build (Advanced)
-
-For users who prefer to build directly from the command line after project generation, you can use the cmake --build command with a configuration variable. This is especially useful for CI/CD or scripting.
-
-    Variable-based Build: The cmake --build command now uses the %BUILD_CONFIG% variable (e.g., set to Debug or Release) to specify which version to build.
-
-	cmake --build . --config %BUILD_CONFIG%
-
-    You would execute this command from within the generated build directory, ensuring the environment variable is set beforehand (e.g., set BUILD_CONFIG=Release).
-
+    3.  Automatically opens the generated `CRASHOUTS.sln` file in Visual Studio. 
+    4.  Provides build for both 'Debug' and 'Release' mode.
 ***
 
 ## Step 3: Build and Run in Visual Studio
