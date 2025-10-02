@@ -95,7 +95,7 @@ void InitMainMenu()
 		entity1,
 		Component::RigidBodyComponent{ CEVec3{}, 5.f, 0.f },
 		Component::TransformComponent{ .position = CEVec3{0.f, 20.f, 0.f} },
-		Component::ShapeComponent{.enableTexture=true, .textureName="duck", .width = 10.f, .height = 10.f}
+		Component::ShapeComponent{.enableTexture=true, .textureName="Concept", .width = 10.f, .height = 10.f}
 	);
 
 	AddPhysicsEntity(
