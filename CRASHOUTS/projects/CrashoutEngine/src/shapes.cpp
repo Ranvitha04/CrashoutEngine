@@ -31,7 +31,7 @@ scaling) to shape vertices for flexible rendering.
 #include <iostream>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include "resources/textures.h"
+#include "resources/textureasset.h"
 
 
 namespace Component {
@@ -262,7 +262,7 @@ namespace Component {
         float uvWidthMax = uvSize.x;
         float uvHeightMax = uvSize.y;
 
-        // Texture coordinate data
+        // TextureAsset coordinate data
         std::array<CEVec2, 4> tex_vtx{
             CEVec2(0.0f,        uvHeightMax), // bottom left
             CEVec2(uvWidthMax,  uvHeightMax), // bottom right  
@@ -375,7 +375,7 @@ namespace Component {
         renderer.shdr_pgm.SetUniform("uView", glm::mat4(1.0f));
         renderer.shdr_pgm.SetUniform("uProjection", projection);
 
-        // Texture uniforms
+        // TextureAsset uniforms
         GLint useTexture_loc = glGetUniformLocation(renderer.shdr_pgm.GetHandle(), "u_useTexture");
         if (useTexture_loc != -1) glUniform1i(useTexture_loc, 1);
 

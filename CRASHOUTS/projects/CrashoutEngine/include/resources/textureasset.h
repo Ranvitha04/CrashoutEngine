@@ -1,10 +1,10 @@
 /*!
-@file   textures.h
+@file   textureasset.h
 @author lee.r@digipen.edu       - 70%
 @co-author ranvitha@digipen.edu - 30%
 @date   16/09/2025
 
-@brief	This file contains the declaration of the Texture class, a concrete
+@brief	This file contains the declaration of the TextureAsset class, a concrete
 		asset type that encapsulates a texture's raw data and dimensions. The class
 		is designed to be used with the AssetManager and provides a static factory
 		method for safe creation and resource management.
@@ -14,8 +14,8 @@
 ///*                                                                   includes
 //----------------------------------------------------------------------------- */
 
-#ifndef TEXTURES_H
-#define TEXTURES_H
+#ifndef TEXTUREASSET_H
+#define TEXTUREASSET_H
 
 #include <GL/glew.h>
 #include <string>
@@ -47,7 +47,7 @@ namespace CrashoutsEngine {
             Mirror
         };
 
-        class Texture : public IAsset {
+        class TextureAsset : public IAsset {
         public:
             using texdata = unsigned char*;
 
@@ -58,18 +58,18 @@ namespace CrashoutsEngine {
             bool uploaded;
 
             // Constructor (matching implementation pattern)
-            Texture(int w, int h, texdata inputData);
+            TextureAsset(int w, int h, texdata inputData);
 
             // Deleted copy operations
-            Texture(const Texture&) = delete;
-            Texture& operator=(const Texture&) = delete;
+            TextureAsset(const TextureAsset&) = delete;
+            TextureAsset& operator=(const TextureAsset&) = delete;
 
             // Move constructor and assignment
-            Texture(Texture&& other) noexcept;
-            Texture& operator=(Texture&& other) noexcept;
+            TextureAsset(TextureAsset&& other) noexcept;
+            TextureAsset& operator=(TextureAsset&& other) noexcept;
 
             // Virtual destructor
-            virtual ~Texture();
+            virtual ~TextureAsset();
 
             /*!
             @brief Internal method to load image data from file
@@ -83,11 +83,11 @@ namespace CrashoutsEngine {
             /*!
             @brief Factory method to create a new Asset from file
             @param filePath Path to the image file to load
-            @return unique_ptr to Texture object or nullptr on failure
+            @return unique_ptr to TextureAsset object or nullptr on failure
             */
-            static std::unique_ptr<Texture> Create(const std::string& filePath);
+            static std::unique_ptr<TextureAsset> Create(const std::string& filePath);
 
-            // Helper function to get Texture mode
+            // Helper function to get TextureAsset mode
             static GLuint GetTextureMode(TextureMode mode);
 
             // Function to set texture mode at runtime
@@ -111,8 +111,8 @@ namespace CrashoutsEngine {
         };
 
         // Alias for backward compatibility
-        //using Texture = Texture;
-        using TextureAsset = Texture;
+        //using TextureAsset = TextureAsset;
+        using TextureAsset = TextureAsset;
 
     }
 }

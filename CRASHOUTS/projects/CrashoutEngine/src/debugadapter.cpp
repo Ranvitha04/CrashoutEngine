@@ -315,12 +315,12 @@ namespace {
             //draw_reflected(*sc, "Shape");
             
             // shared
-            ImGui::Checkbox("Use Texture", &sc->enableTexture);
+            ImGui::Checkbox("Use TextureAsset", &sc->enableTexture);
 
             char buf[256]{};
             if (sc->textureName.size() < sizeof(buf)) std::memcpy(buf, sc->textureName.data(), sc->textureName.size());
 
-            ImGui::InputText("Texture Name", buf, sizeof(buf));
+            ImGui::InputText("TextureAsset Name", buf, sizeof(buf));
             if (ImGui::IsItemEdited() || ImGui::IsItemDeactivatedAfterEdit()) {
                 sc->textureName = buf;
             }

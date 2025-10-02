@@ -41,7 +41,7 @@ __________________________________________________________________________*/
 #include <GLFW/glfw3.h>
 #include "managers/entitymanager.h"
 #include "rendering.h"
-#include "resources/textures.h"
+#include "resources/textureasset.h"
 
 #ifndef SPRITE_H
 #define SPRITE_H

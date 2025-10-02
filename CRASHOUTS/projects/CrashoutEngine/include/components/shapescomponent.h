@@ -44,7 +44,7 @@ namespace Component {
      * - Debug/preview toggles.
      */
     struct ShapeComponent {
-        // -------------------- Texture Settings --------------------
+        // -------------------- TextureAsset Settings --------------------
 
         bool enableTexture{ false }; ///< Toggle to enable texturing for this shape.
 

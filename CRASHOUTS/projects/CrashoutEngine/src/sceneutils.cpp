@@ -8,7 +8,7 @@ This file implements
 */
 
 #include "sceneutils.h"
-#include "resources/textures.h"
+#include "resources/textureasset.h"
 #include "managers/assetmanager.h"
 
 namespace Scene {
@@ -36,7 +36,7 @@ namespace Scene {
 
 				if (sc->enableTexture) {
 					using namespace Assets;
-					Texture* tex = Assets::AssetManager::GetInstance().Get<Texture>(sc->textureName);
+					TextureAsset* tex = Assets::AssetManager::GetInstance().Get<TextureAsset>(sc->textureName);
 					if (tex) {
 						tex->SetTextureMode(
 							static_cast<TextureMode>(sc->wrapModeU),
