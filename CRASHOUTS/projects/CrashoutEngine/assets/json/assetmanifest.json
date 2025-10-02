@@ -29,6 +29,18 @@
     ],
     "images": [
         {
+            "name": "1",
+            "path": "1.png"
+        },
+        {
+            "name": "2",
+            "path": "2.png"
+        },
+        {
+            "name": "4",
+            "path": "4.png"
+        },
+        {
             "name": "amazon-logo-transparent",
             "path": "amazon-logo-transparent.png"
         },
@@ -39,6 +51,1350 @@
         {
             "name": "duck",
             "path": "duck.jpg"
+        },
+        {
+            "name": ".DS_Store",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\Clouds\\.DS_Store"
+        },
+        {
+            "name": "1",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\Clouds\\Clouds 1\\1.png"
+        },
+        {
+            "name": "2",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\Clouds\\Clouds 1\\2.png"
+        },
+        {
+            "name": "3",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\Clouds\\Clouds 1\\3.png"
+        },
+        {
+            "name": "4",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\Clouds\\Clouds 1\\4.png"
+        },
+        {
+            "name": "1",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\Clouds\\Clouds 2\\1.png"
+        },
+        {
+            "name": "2",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\Clouds\\Clouds 2\\2.png"
+        },
+        {
+            "name": "3",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\Clouds\\Clouds 2\\3.png"
+        },
+        {
+            "name": "4",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\Clouds\\Clouds 2\\4.png"
+        },
+        {
+            "name": "1",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\Clouds\\Clouds 3\\1.png"
+        },
+        {
+            "name": "2",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\Clouds\\Clouds 3\\2.png"
+        },
+        {
+            "name": "3",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\Clouds\\Clouds 3\\3.png"
+        },
+        {
+            "name": "4",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\Clouds\\Clouds 3\\4.png"
+        },
+        {
+            "name": "1",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\Clouds\\Clouds 4\\1.png"
+        },
+        {
+            "name": "2",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\Clouds\\Clouds 4\\2.png"
+        },
+        {
+            "name": "3",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\Clouds\\Clouds 4\\3.png"
+        },
+        {
+            "name": "4",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\Clouds\\Clouds 4\\4.png"
+        },
+        {
+            "name": "1",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\Clouds\\Clouds 5\\1.png"
+        },
+        {
+            "name": "2",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\Clouds\\Clouds 5\\2.png"
+        },
+        {
+            "name": "3",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\Clouds\\Clouds 5\\3.png"
+        },
+        {
+            "name": "4",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\Clouds\\Clouds 5\\4.png"
+        },
+        {
+            "name": "5",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\Clouds\\Clouds 5\\5.png"
+        },
+        {
+            "name": "1",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\Clouds\\Clouds 6\\1.png"
+        },
+        {
+            "name": "2",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\Clouds\\Clouds 6\\2.png"
+        },
+        {
+            "name": "3",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\Clouds\\Clouds 6\\3.png"
+        },
+        {
+            "name": "4",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\Clouds\\Clouds 6\\4.png"
+        },
+        {
+            "name": "5",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\Clouds\\Clouds 6\\5.png"
+        },
+        {
+            "name": "6",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\Clouds\\Clouds 6\\6.png"
+        },
+        {
+            "name": "1",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\Clouds\\Clouds 7\\1.png"
+        },
+        {
+            "name": "2",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\Clouds\\Clouds 7\\2.png"
+        },
+        {
+            "name": "3",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\Clouds\\Clouds 7\\3.png"
+        },
+        {
+            "name": "4",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\Clouds\\Clouds 7\\4.png"
+        },
+        {
+            "name": "1",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\Clouds\\Clouds 8\\1.png"
+        },
+        {
+            "name": "2",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\Clouds\\Clouds 8\\2.png"
+        },
+        {
+            "name": "3",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\Clouds\\Clouds 8\\3.png"
+        },
+        {
+            "name": "4",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\Clouds\\Clouds 8\\4.png"
+        },
+        {
+            "name": "5",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\Clouds\\Clouds 8\\5.png"
+        },
+        {
+            "name": "6",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\Clouds\\Clouds 8\\6.png"
+        },
+        {
+            "name": "Free Assets Craftpix!",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\Free Assets Craftpix!.url"
+        },
+        {
+            "name": "License",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\License.txt"
+        },
+        {
+            "name": "Patreon",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\Patreon.txt"
+        },
+        {
+            "name": "._Clouds",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\__MACOSX\\._Clouds"
+        },
+        {
+            "name": "._Free Assets Craftpix!",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\__MACOSX\\._Free Assets Craftpix!.url"
+        },
+        {
+            "name": "._License",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\__MACOSX\\._License.txt"
+        },
+        {
+            "name": "._Patreon",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\__MACOSX\\._Patreon.txt"
+        },
+        {
+            "name": "._",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\__MACOSX\\Clouds\\._.DS_Store"
+        },
+        {
+            "name": "._Clouds 1",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\__MACOSX\\Clouds\\._Clouds 1"
+        },
+        {
+            "name": "._Clouds 2",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\__MACOSX\\Clouds\\._Clouds 2"
+        },
+        {
+            "name": "._Clouds 3",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\__MACOSX\\Clouds\\._Clouds 3"
+        },
+        {
+            "name": "._Clouds 4",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\__MACOSX\\Clouds\\._Clouds 4"
+        },
+        {
+            "name": "._Clouds 5",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\__MACOSX\\Clouds\\._Clouds 5"
+        },
+        {
+            "name": "._Clouds 6",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\__MACOSX\\Clouds\\._Clouds 6"
+        },
+        {
+            "name": "._Clouds 7",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\__MACOSX\\Clouds\\._Clouds 7"
+        },
+        {
+            "name": "._Clouds 8",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\__MACOSX\\Clouds\\._Clouds 8"
+        },
+        {
+            "name": "._1",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\__MACOSX\\Clouds\\Clouds 1\\._1.png"
+        },
+        {
+            "name": "._2",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\__MACOSX\\Clouds\\Clouds 1\\._2.png"
+        },
+        {
+            "name": "._3",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\__MACOSX\\Clouds\\Clouds 1\\._3.png"
+        },
+        {
+            "name": "._4",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\__MACOSX\\Clouds\\Clouds 1\\._4.png"
+        },
+        {
+            "name": "._1",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\__MACOSX\\Clouds\\Clouds 2\\._1.png"
+        },
+        {
+            "name": "._2",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\__MACOSX\\Clouds\\Clouds 2\\._2.png"
+        },
+        {
+            "name": "._3",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\__MACOSX\\Clouds\\Clouds 2\\._3.png"
+        },
+        {
+            "name": "._4",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\__MACOSX\\Clouds\\Clouds 2\\._4.png"
+        },
+        {
+            "name": "._1",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\__MACOSX\\Clouds\\Clouds 3\\._1.png"
+        },
+        {
+            "name": "._2",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\__MACOSX\\Clouds\\Clouds 3\\._2.png"
+        },
+        {
+            "name": "._3",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\__MACOSX\\Clouds\\Clouds 3\\._3.png"
+        },
+        {
+            "name": "._4",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\__MACOSX\\Clouds\\Clouds 3\\._4.png"
+        },
+        {
+            "name": "._1",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\__MACOSX\\Clouds\\Clouds 4\\._1.png"
+        },
+        {
+            "name": "._2",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\__MACOSX\\Clouds\\Clouds 4\\._2.png"
+        },
+        {
+            "name": "._3",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\__MACOSX\\Clouds\\Clouds 4\\._3.png"
+        },
+        {
+            "name": "._4",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\__MACOSX\\Clouds\\Clouds 4\\._4.png"
+        },
+        {
+            "name": "._1",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\__MACOSX\\Clouds\\Clouds 5\\._1.png"
+        },
+        {
+            "name": "._2",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\__MACOSX\\Clouds\\Clouds 5\\._2.png"
+        },
+        {
+            "name": "._3",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\__MACOSX\\Clouds\\Clouds 5\\._3.png"
+        },
+        {
+            "name": "._4",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\__MACOSX\\Clouds\\Clouds 5\\._4.png"
+        },
+        {
+            "name": "._5",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\__MACOSX\\Clouds\\Clouds 5\\._5.png"
+        },
+        {
+            "name": "._1",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\__MACOSX\\Clouds\\Clouds 6\\._1.png"
+        },
+        {
+            "name": "._2",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\__MACOSX\\Clouds\\Clouds 6\\._2.png"
+        },
+        {
+            "name": "._3",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\__MACOSX\\Clouds\\Clouds 6\\._3.png"
+        },
+        {
+            "name": "._4",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\__MACOSX\\Clouds\\Clouds 6\\._4.png"
+        },
+        {
+            "name": "._5",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\__MACOSX\\Clouds\\Clouds 6\\._5.png"
+        },
+        {
+            "name": "._6",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\__MACOSX\\Clouds\\Clouds 6\\._6.png"
+        },
+        {
+            "name": "._1",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\__MACOSX\\Clouds\\Clouds 7\\._1.png"
+        },
+        {
+            "name": "._2",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\__MACOSX\\Clouds\\Clouds 7\\._2.png"
+        },
+        {
+            "name": "._3",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\__MACOSX\\Clouds\\Clouds 7\\._3.png"
+        },
+        {
+            "name": "._4",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\__MACOSX\\Clouds\\Clouds 7\\._4.png"
+        },
+        {
+            "name": "._1",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\__MACOSX\\Clouds\\Clouds 8\\._1.png"
+        },
+        {
+            "name": "._2",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\__MACOSX\\Clouds\\Clouds 8\\._2.png"
+        },
+        {
+            "name": "._3",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\__MACOSX\\Clouds\\Clouds 8\\._3.png"
+        },
+        {
+            "name": "._4",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\__MACOSX\\Clouds\\Clouds 8\\._4.png"
+        },
+        {
+            "name": "._5",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\__MACOSX\\Clouds\\Clouds 8\\._5.png"
+        },
+        {
+            "name": "._6",
+            "path": "free-sky-with-clouds-background-pixel-art-set\\__MACOSX\\Clouds\\Clouds 8\\._6.png"
+        },
+        {
+            "name": "free-sky-with-clouds-background-pixel-art-set",
+            "path": "free-sky-with-clouds-background-pixel-art-set.zip"
+        },
+        {
+            "name": "__Attack",
+            "path": "FreeKnight_v1\\Colour1\\NoOutline\\120x80_gifs\\__Attack.gif"
+        },
+        {
+            "name": "__Attack2",
+            "path": "FreeKnight_v1\\Colour1\\NoOutline\\120x80_gifs\\__Attack2.gif"
+        },
+        {
+            "name": "__Attack2NoMovement",
+            "path": "FreeKnight_v1\\Colour1\\NoOutline\\120x80_gifs\\__Attack2NoMovement.gif"
+        },
+        {
+            "name": "__AttackCombo2hit",
+            "path": "FreeKnight_v1\\Colour1\\NoOutline\\120x80_gifs\\__AttackCombo2hit.gif"
+        },
+        {
+            "name": "__AttackComboNoMovement",
+            "path": "FreeKnight_v1\\Colour1\\NoOutline\\120x80_gifs\\__AttackComboNoMovement.gif"
+        },
+        {
+            "name": "__AttackNoMovement",
+            "path": "FreeKnight_v1\\Colour1\\NoOutline\\120x80_gifs\\__AttackNoMovement.gif"
+        },
+        {
+            "name": "__Crouch",
+            "path": "FreeKnight_v1\\Colour1\\NoOutline\\120x80_gifs\\__Crouch.gif"
+        },
+        {
+            "name": "__CrouchAll",
+            "path": "FreeKnight_v1\\Colour1\\NoOutline\\120x80_gifs\\__CrouchAll.gif"
+        },
+        {
+            "name": "__CrouchAttack",
+            "path": "FreeKnight_v1\\Colour1\\NoOutline\\120x80_gifs\\__CrouchAttack.gif"
+        },
+        {
+            "name": "__CrouchTransition",
+            "path": "FreeKnight_v1\\Colour1\\NoOutline\\120x80_gifs\\__CrouchTransition.gif"
+        },
+        {
+            "name": "__CrouchWalk",
+            "path": "FreeKnight_v1\\Colour1\\NoOutline\\120x80_gifs\\__CrouchWalk.gif"
+        },
+        {
+            "name": "__Dash",
+            "path": "FreeKnight_v1\\Colour1\\NoOutline\\120x80_gifs\\__Dash.gif"
+        },
+        {
+            "name": "__Death",
+            "path": "FreeKnight_v1\\Colour1\\NoOutline\\120x80_gifs\\__Death.gif"
+        },
+        {
+            "name": "__DeathNoMovement",
+            "path": "FreeKnight_v1\\Colour1\\NoOutline\\120x80_gifs\\__DeathNoMovement.gif"
+        },
+        {
+            "name": "__Fall",
+            "path": "FreeKnight_v1\\Colour1\\NoOutline\\120x80_gifs\\__Fall.gif"
+        },
+        {
+            "name": "__Hit",
+            "path": "FreeKnight_v1\\Colour1\\NoOutline\\120x80_gifs\\__Hit.gif"
+        },
+        {
+            "name": "__Idle",
+            "path": "FreeKnight_v1\\Colour1\\NoOutline\\120x80_gifs\\__Idle.gif"
+        },
+        {
+            "name": "__Jump",
+            "path": "FreeKnight_v1\\Colour1\\NoOutline\\120x80_gifs\\__Jump.gif"
+        },
+        {
+            "name": "__JumpFallInbetween",
+            "path": "FreeKnight_v1\\Colour1\\NoOutline\\120x80_gifs\\__JumpFallInbetween.gif"
+        },
+        {
+            "name": "__Roll",
+            "path": "FreeKnight_v1\\Colour1\\NoOutline\\120x80_gifs\\__Roll.gif"
+        },
+        {
+            "name": "__Run",
+            "path": "FreeKnight_v1\\Colour1\\NoOutline\\120x80_gifs\\__Run.gif"
+        },
+        {
+            "name": "__Slide",
+            "path": "FreeKnight_v1\\Colour1\\NoOutline\\120x80_gifs\\__Slide.gif"
+        },
+        {
+            "name": "__SlideAll",
+            "path": "FreeKnight_v1\\Colour1\\NoOutline\\120x80_gifs\\__SlideAll.gif"
+        },
+        {
+            "name": "__SlideTransitionEnd",
+            "path": "FreeKnight_v1\\Colour1\\NoOutline\\120x80_gifs\\__SlideTransitionEnd.gif"
+        },
+        {
+            "name": "__SlideTransitionStart",
+            "path": "FreeKnight_v1\\Colour1\\NoOutline\\120x80_gifs\\__SlideTransitionStart.gif"
+        },
+        {
+            "name": "__TurnAround",
+            "path": "FreeKnight_v1\\Colour1\\NoOutline\\120x80_gifs\\__TurnAround.gif"
+        },
+        {
+            "name": "__WallClimb",
+            "path": "FreeKnight_v1\\Colour1\\NoOutline\\120x80_gifs\\__WallClimb.gif"
+        },
+        {
+            "name": "__WallClimbNoMovement",
+            "path": "FreeKnight_v1\\Colour1\\NoOutline\\120x80_gifs\\__WallClimbNoMovement.gif"
+        },
+        {
+            "name": "__WallHang",
+            "path": "FreeKnight_v1\\Colour1\\NoOutline\\120x80_gifs\\__WallHang.gif"
+        },
+        {
+            "name": "__WallSlide",
+            "path": "FreeKnight_v1\\Colour1\\NoOutline\\120x80_gifs\\__WallSlide.gif"
+        },
+        {
+            "name": "_Attack",
+            "path": "FreeKnight_v1\\Colour1\\NoOutline\\120x80_PNGSheets\\_Attack.png"
+        },
+        {
+            "name": "_Attack2",
+            "path": "FreeKnight_v1\\Colour1\\NoOutline\\120x80_PNGSheets\\_Attack2.png"
+        },
+        {
+            "name": "_Attack2NoMovement",
+            "path": "FreeKnight_v1\\Colour1\\NoOutline\\120x80_PNGSheets\\_Attack2NoMovement.png"
+        },
+        {
+            "name": "_AttackCombo",
+            "path": "FreeKnight_v1\\Colour1\\NoOutline\\120x80_PNGSheets\\_AttackCombo.png"
+        },
+        {
+            "name": "_AttackComboNoMovement",
+            "path": "FreeKnight_v1\\Colour1\\NoOutline\\120x80_PNGSheets\\_AttackComboNoMovement.png"
+        },
+        {
+            "name": "_AttackNoMovement",
+            "path": "FreeKnight_v1\\Colour1\\NoOutline\\120x80_PNGSheets\\_AttackNoMovement.png"
+        },
+        {
+            "name": "_Crouch",
+            "path": "FreeKnight_v1\\Colour1\\NoOutline\\120x80_PNGSheets\\_Crouch.png"
+        },
+        {
+            "name": "_CrouchAttack",
+            "path": "FreeKnight_v1\\Colour1\\NoOutline\\120x80_PNGSheets\\_CrouchAttack.png"
+        },
+        {
+            "name": "_CrouchFull",
+            "path": "FreeKnight_v1\\Colour1\\NoOutline\\120x80_PNGSheets\\_CrouchFull.png"
+        },
+        {
+            "name": "_CrouchTransition",
+            "path": "FreeKnight_v1\\Colour1\\NoOutline\\120x80_PNGSheets\\_CrouchTransition.png"
+        },
+        {
+            "name": "_CrouchWalk",
+            "path": "FreeKnight_v1\\Colour1\\NoOutline\\120x80_PNGSheets\\_CrouchWalk.png"
+        },
+        {
+            "name": "_Dash",
+            "path": "FreeKnight_v1\\Colour1\\NoOutline\\120x80_PNGSheets\\_Dash.png"
+        },
+        {
+            "name": "_Death",
+            "path": "FreeKnight_v1\\Colour1\\NoOutline\\120x80_PNGSheets\\_Death.png"
+        },
+        {
+            "name": "_DeathNoMovement",
+            "path": "FreeKnight_v1\\Colour1\\NoOutline\\120x80_PNGSheets\\_DeathNoMovement.png"
+        },
+        {
+            "name": "_Fall",
+            "path": "FreeKnight_v1\\Colour1\\NoOutline\\120x80_PNGSheets\\_Fall.png"
+        },
+        {
+            "name": "_Hit",
+            "path": "FreeKnight_v1\\Colour1\\NoOutline\\120x80_PNGSheets\\_Hit.png"
+        },
+        {
+            "name": "_Idle",
+            "path": "FreeKnight_v1\\Colour1\\NoOutline\\120x80_PNGSheets\\_Idle.png"
+        },
+        {
+            "name": "_Jump",
+            "path": "FreeKnight_v1\\Colour1\\NoOutline\\120x80_PNGSheets\\_Jump.png"
+        },
+        {
+            "name": "_JumpFallInbetween",
+            "path": "FreeKnight_v1\\Colour1\\NoOutline\\120x80_PNGSheets\\_JumpFallInbetween.png"
+        },
+        {
+            "name": "_Roll",
+            "path": "FreeKnight_v1\\Colour1\\NoOutline\\120x80_PNGSheets\\_Roll.png"
+        },
+        {
+            "name": "_Run",
+            "path": "FreeKnight_v1\\Colour1\\NoOutline\\120x80_PNGSheets\\_Run.png"
+        },
+        {
+            "name": "_Slide",
+            "path": "FreeKnight_v1\\Colour1\\NoOutline\\120x80_PNGSheets\\_Slide.png"
+        },
+        {
+            "name": "_SlideFull",
+            "path": "FreeKnight_v1\\Colour1\\NoOutline\\120x80_PNGSheets\\_SlideFull.png"
+        },
+        {
+            "name": "_SlideTransitionEnd",
+            "path": "FreeKnight_v1\\Colour1\\NoOutline\\120x80_PNGSheets\\_SlideTransitionEnd.png"
+        },
+        {
+            "name": "_SlideTransitionStart",
+            "path": "FreeKnight_v1\\Colour1\\NoOutline\\120x80_PNGSheets\\_SlideTransitionStart.png"
+        },
+        {
+            "name": "_TurnAround",
+            "path": "FreeKnight_v1\\Colour1\\NoOutline\\120x80_PNGSheets\\_TurnAround.png"
+        },
+        {
+            "name": "_WallClimb",
+            "path": "FreeKnight_v1\\Colour1\\NoOutline\\120x80_PNGSheets\\_WallClimb.png"
+        },
+        {
+            "name": "_WallClimbNoMovement",
+            "path": "FreeKnight_v1\\Colour1\\NoOutline\\120x80_PNGSheets\\_WallClimbNoMovement.png"
+        },
+        {
+            "name": "_WallHang",
+            "path": "FreeKnight_v1\\Colour1\\NoOutline\\120x80_PNGSheets\\_WallHang.png"
+        },
+        {
+            "name": "_WallSlide",
+            "path": "FreeKnight_v1\\Colour1\\NoOutline\\120x80_PNGSheets\\_WallSlide.png"
+        },
+        {
+            "name": "__Attack",
+            "path": "FreeKnight_v1\\Colour1\\Outline\\120x80_gifs\\__Attack.gif"
+        },
+        {
+            "name": "__Attack2",
+            "path": "FreeKnight_v1\\Colour1\\Outline\\120x80_gifs\\__Attack2.gif"
+        },
+        {
+            "name": "__Attack2NoMovement",
+            "path": "FreeKnight_v1\\Colour1\\Outline\\120x80_gifs\\__Attack2NoMovement.gif"
+        },
+        {
+            "name": "__AttackCombo2hit",
+            "path": "FreeKnight_v1\\Colour1\\Outline\\120x80_gifs\\__AttackCombo2hit.gif"
+        },
+        {
+            "name": "__AttackComboNoMovement",
+            "path": "FreeKnight_v1\\Colour1\\Outline\\120x80_gifs\\__AttackComboNoMovement.gif"
+        },
+        {
+            "name": "__AttackNoMovement",
+            "path": "FreeKnight_v1\\Colour1\\Outline\\120x80_gifs\\__AttackNoMovement.gif"
+        },
+        {
+            "name": "__Crouch",
+            "path": "FreeKnight_v1\\Colour1\\Outline\\120x80_gifs\\__Crouch.gif"
+        },
+        {
+            "name": "__CrouchAll",
+            "path": "FreeKnight_v1\\Colour1\\Outline\\120x80_gifs\\__CrouchAll.gif"
+        },
+        {
+            "name": "__CrouchAttack",
+            "path": "FreeKnight_v1\\Colour1\\Outline\\120x80_gifs\\__CrouchAttack.gif"
+        },
+        {
+            "name": "__CrouchTransition",
+            "path": "FreeKnight_v1\\Colour1\\Outline\\120x80_gifs\\__CrouchTransition.gif"
+        },
+        {
+            "name": "__CrouchWalk",
+            "path": "FreeKnight_v1\\Colour1\\Outline\\120x80_gifs\\__CrouchWalk.gif"
+        },
+        {
+            "name": "__Dash",
+            "path": "FreeKnight_v1\\Colour1\\Outline\\120x80_gifs\\__Dash.gif"
+        },
+        {
+            "name": "__Death",
+            "path": "FreeKnight_v1\\Colour1\\Outline\\120x80_gifs\\__Death.gif"
+        },
+        {
+            "name": "__DeathNoMovement",
+            "path": "FreeKnight_v1\\Colour1\\Outline\\120x80_gifs\\__DeathNoMovement.gif"
+        },
+        {
+            "name": "__Fall",
+            "path": "FreeKnight_v1\\Colour1\\Outline\\120x80_gifs\\__Fall.gif"
+        },
+        {
+            "name": "__Hit",
+            "path": "FreeKnight_v1\\Colour1\\Outline\\120x80_gifs\\__Hit.gif"
+        },
+        {
+            "name": "__Idle",
+            "path": "FreeKnight_v1\\Colour1\\Outline\\120x80_gifs\\__Idle.gif"
+        },
+        {
+            "name": "__Jump",
+            "path": "FreeKnight_v1\\Colour1\\Outline\\120x80_gifs\\__Jump.gif"
+        },
+        {
+            "name": "__JumpFallInbetween",
+            "path": "FreeKnight_v1\\Colour1\\Outline\\120x80_gifs\\__JumpFallInbetween.gif"
+        },
+        {
+            "name": "__Roll",
+            "path": "FreeKnight_v1\\Colour1\\Outline\\120x80_gifs\\__Roll.gif"
+        },
+        {
+            "name": "__Run",
+            "path": "FreeKnight_v1\\Colour1\\Outline\\120x80_gifs\\__Run.gif"
+        },
+        {
+            "name": "__Slide",
+            "path": "FreeKnight_v1\\Colour1\\Outline\\120x80_gifs\\__Slide.gif"
+        },
+        {
+            "name": "__SlideAll",
+            "path": "FreeKnight_v1\\Colour1\\Outline\\120x80_gifs\\__SlideAll.gif"
+        },
+        {
+            "name": "__SlideTransitionEnd",
+            "path": "FreeKnight_v1\\Colour1\\Outline\\120x80_gifs\\__SlideTransitionEnd.gif"
+        },
+        {
+            "name": "__SlideTransitionStart",
+            "path": "FreeKnight_v1\\Colour1\\Outline\\120x80_gifs\\__SlideTransitionStart.gif"
+        },
+        {
+            "name": "__TurnAround",
+            "path": "FreeKnight_v1\\Colour1\\Outline\\120x80_gifs\\__TurnAround.gif"
+        },
+        {
+            "name": "__WallClimb",
+            "path": "FreeKnight_v1\\Colour1\\Outline\\120x80_gifs\\__WallClimb.gif"
+        },
+        {
+            "name": "__WallClimbNoMovement",
+            "path": "FreeKnight_v1\\Colour1\\Outline\\120x80_gifs\\__WallClimbNoMovement.gif"
+        },
+        {
+            "name": "__WallHang",
+            "path": "FreeKnight_v1\\Colour1\\Outline\\120x80_gifs\\__WallHang.gif"
+        },
+        {
+            "name": "__WallSlide",
+            "path": "FreeKnight_v1\\Colour1\\Outline\\120x80_gifs\\__WallSlide.gif"
+        },
+        {
+            "name": "_Attack",
+            "path": "FreeKnight_v1\\Colour1\\Outline\\120x80_PNGSheets\\_Attack.png"
+        },
+        {
+            "name": "_Attack2",
+            "path": "FreeKnight_v1\\Colour1\\Outline\\120x80_PNGSheets\\_Attack2.png"
+        },
+        {
+            "name": "_Attack2NoMovement",
+            "path": "FreeKnight_v1\\Colour1\\Outline\\120x80_PNGSheets\\_Attack2NoMovement.png"
+        },
+        {
+            "name": "_AttackCombo2hit",
+            "path": "FreeKnight_v1\\Colour1\\Outline\\120x80_PNGSheets\\_AttackCombo2hit.png"
+        },
+        {
+            "name": "_AttackComboNoMovement",
+            "path": "FreeKnight_v1\\Colour1\\Outline\\120x80_PNGSheets\\_AttackComboNoMovement.png"
+        },
+        {
+            "name": "_AttackNoMovement",
+            "path": "FreeKnight_v1\\Colour1\\Outline\\120x80_PNGSheets\\_AttackNoMovement.png"
+        },
+        {
+            "name": "_Crouch",
+            "path": "FreeKnight_v1\\Colour1\\Outline\\120x80_PNGSheets\\_Crouch.png"
+        },
+        {
+            "name": "_CrouchAttack",
+            "path": "FreeKnight_v1\\Colour1\\Outline\\120x80_PNGSheets\\_CrouchAttack.png"
+        },
+        {
+            "name": "_CrouchFull",
+            "path": "FreeKnight_v1\\Colour1\\Outline\\120x80_PNGSheets\\_CrouchFull.png"
+        },
+        {
+            "name": "_CrouchTransition",
+            "path": "FreeKnight_v1\\Colour1\\Outline\\120x80_PNGSheets\\_CrouchTransition.png"
+        },
+        {
+            "name": "_CrouchWalk",
+            "path": "FreeKnight_v1\\Colour1\\Outline\\120x80_PNGSheets\\_CrouchWalk.png"
+        },
+        {
+            "name": "_Dash",
+            "path": "FreeKnight_v1\\Colour1\\Outline\\120x80_PNGSheets\\_Dash.png"
+        },
+        {
+            "name": "_Death",
+            "path": "FreeKnight_v1\\Colour1\\Outline\\120x80_PNGSheets\\_Death.png"
+        },
+        {
+            "name": "_DeathNoMovement",
+            "path": "FreeKnight_v1\\Colour1\\Outline\\120x80_PNGSheets\\_DeathNoMovement.png"
+        },
+        {
+            "name": "_Fall",
+            "path": "FreeKnight_v1\\Colour1\\Outline\\120x80_PNGSheets\\_Fall.png"
+        },
+        {
+            "name": "_Hit",
+            "path": "FreeKnight_v1\\Colour1\\Outline\\120x80_PNGSheets\\_Hit.png"
+        },
+        {
+            "name": "_Idle",
+            "path": "FreeKnight_v1\\Colour1\\Outline\\120x80_PNGSheets\\_Idle.png"
+        },
+        {
+            "name": "_Jump",
+            "path": "FreeKnight_v1\\Colour1\\Outline\\120x80_PNGSheets\\_Jump.png"
+        },
+        {
+            "name": "_JumpFallInbetween",
+            "path": "FreeKnight_v1\\Colour1\\Outline\\120x80_PNGSheets\\_JumpFallInbetween.png"
+        },
+        {
+            "name": "_Roll",
+            "path": "FreeKnight_v1\\Colour1\\Outline\\120x80_PNGSheets\\_Roll.png"
+        },
+        {
+            "name": "_Run",
+            "path": "FreeKnight_v1\\Colour1\\Outline\\120x80_PNGSheets\\_Run.png"
+        },
+        {
+            "name": "_Slide",
+            "path": "FreeKnight_v1\\Colour1\\Outline\\120x80_PNGSheets\\_Slide.png"
+        },
+        {
+            "name": "_SlideFull",
+            "path": "FreeKnight_v1\\Colour1\\Outline\\120x80_PNGSheets\\_SlideFull.png"
+        },
+        {
+            "name": "_SlideTransitionEnd",
+            "path": "FreeKnight_v1\\Colour1\\Outline\\120x80_PNGSheets\\_SlideTransitionEnd.png"
+        },
+        {
+            "name": "_SlideTransitionStart",
+            "path": "FreeKnight_v1\\Colour1\\Outline\\120x80_PNGSheets\\_SlideTransitionStart.png"
+        },
+        {
+            "name": "_TurnAround",
+            "path": "FreeKnight_v1\\Colour1\\Outline\\120x80_PNGSheets\\_TurnAround.png"
+        },
+        {
+            "name": "_WallClimb",
+            "path": "FreeKnight_v1\\Colour1\\Outline\\120x80_PNGSheets\\_WallClimb.png"
+        },
+        {
+            "name": "_WallClimbNoMovement",
+            "path": "FreeKnight_v1\\Colour1\\Outline\\120x80_PNGSheets\\_WallClimbNoMovement.png"
+        },
+        {
+            "name": "_WallHang",
+            "path": "FreeKnight_v1\\Colour1\\Outline\\120x80_PNGSheets\\_WallHang.png"
+        },
+        {
+            "name": "_WallSlide",
+            "path": "FreeKnight_v1\\Colour1\\Outline\\120x80_PNGSheets\\_WallSlide.png"
+        },
+        {
+            "name": "__Attack",
+            "path": "FreeKnight_v1\\Colour2\\NoOutline\\120x80_gifs\\__Attack.gif"
+        },
+        {
+            "name": "__Attack2",
+            "path": "FreeKnight_v1\\Colour2\\NoOutline\\120x80_gifs\\__Attack2.gif"
+        },
+        {
+            "name": "__Attack2NoMovement",
+            "path": "FreeKnight_v1\\Colour2\\NoOutline\\120x80_gifs\\__Attack2NoMovement.gif"
+        },
+        {
+            "name": "__AttackCombo2hit",
+            "path": "FreeKnight_v1\\Colour2\\NoOutline\\120x80_gifs\\__AttackCombo2hit.gif"
+        },
+        {
+            "name": "__AttackComboNoMovement",
+            "path": "FreeKnight_v1\\Colour2\\NoOutline\\120x80_gifs\\__AttackComboNoMovement.gif"
+        },
+        {
+            "name": "__AttackNoMovement",
+            "path": "FreeKnight_v1\\Colour2\\NoOutline\\120x80_gifs\\__AttackNoMovement.gif"
+        },
+        {
+            "name": "__Crouch",
+            "path": "FreeKnight_v1\\Colour2\\NoOutline\\120x80_gifs\\__Crouch.gif"
+        },
+        {
+            "name": "__CrouchAll",
+            "path": "FreeKnight_v1\\Colour2\\NoOutline\\120x80_gifs\\__CrouchAll.gif"
+        },
+        {
+            "name": "__CrouchAttack",
+            "path": "FreeKnight_v1\\Colour2\\NoOutline\\120x80_gifs\\__CrouchAttack.gif"
+        },
+        {
+            "name": "__CrouchTransition",
+            "path": "FreeKnight_v1\\Colour2\\NoOutline\\120x80_gifs\\__CrouchTransition.gif"
+        },
+        {
+            "name": "__CrouchWalk",
+            "path": "FreeKnight_v1\\Colour2\\NoOutline\\120x80_gifs\\__CrouchWalk.gif"
+        },
+        {
+            "name": "__Dash",
+            "path": "FreeKnight_v1\\Colour2\\NoOutline\\120x80_gifs\\__Dash.gif"
+        },
+        {
+            "name": "__Death",
+            "path": "FreeKnight_v1\\Colour2\\NoOutline\\120x80_gifs\\__Death.gif"
+        },
+        {
+            "name": "__DeathNoMovement",
+            "path": "FreeKnight_v1\\Colour2\\NoOutline\\120x80_gifs\\__DeathNoMovement.gif"
+        },
+        {
+            "name": "__Fall",
+            "path": "FreeKnight_v1\\Colour2\\NoOutline\\120x80_gifs\\__Fall.gif"
+        },
+        {
+            "name": "__Hit",
+            "path": "FreeKnight_v1\\Colour2\\NoOutline\\120x80_gifs\\__Hit.gif"
+        },
+        {
+            "name": "__Idle",
+            "path": "FreeKnight_v1\\Colour2\\NoOutline\\120x80_gifs\\__Idle.gif"
+        },
+        {
+            "name": "__Jump",
+            "path": "FreeKnight_v1\\Colour2\\NoOutline\\120x80_gifs\\__Jump.gif"
+        },
+        {
+            "name": "__JumpFallInbetween",
+            "path": "FreeKnight_v1\\Colour2\\NoOutline\\120x80_gifs\\__JumpFallInbetween.gif"
+        },
+        {
+            "name": "__Roll",
+            "path": "FreeKnight_v1\\Colour2\\NoOutline\\120x80_gifs\\__Roll.gif"
+        },
+        {
+            "name": "__Run",
+            "path": "FreeKnight_v1\\Colour2\\NoOutline\\120x80_gifs\\__Run.gif"
+        },
+        {
+            "name": "__Slide",
+            "path": "FreeKnight_v1\\Colour2\\NoOutline\\120x80_gifs\\__Slide.gif"
+        },
+        {
+            "name": "__SlideAll",
+            "path": "FreeKnight_v1\\Colour2\\NoOutline\\120x80_gifs\\__SlideAll.gif"
+        },
+        {
+            "name": "__SlideTransitionEnd",
+            "path": "FreeKnight_v1\\Colour2\\NoOutline\\120x80_gifs\\__SlideTransitionEnd.gif"
+        },
+        {
+            "name": "__SlideTransitionStart",
+            "path": "FreeKnight_v1\\Colour2\\NoOutline\\120x80_gifs\\__SlideTransitionStart.gif"
+        },
+        {
+            "name": "__TurnAround",
+            "path": "FreeKnight_v1\\Colour2\\NoOutline\\120x80_gifs\\__TurnAround.gif"
+        },
+        {
+            "name": "__WallClimb",
+            "path": "FreeKnight_v1\\Colour2\\NoOutline\\120x80_gifs\\__WallClimb.gif"
+        },
+        {
+            "name": "__WallClimbNoMovement",
+            "path": "FreeKnight_v1\\Colour2\\NoOutline\\120x80_gifs\\__WallClimbNoMovement.gif"
+        },
+        {
+            "name": "__WallHang",
+            "path": "FreeKnight_v1\\Colour2\\NoOutline\\120x80_gifs\\__WallHang.gif"
+        },
+        {
+            "name": "__WallSlide",
+            "path": "FreeKnight_v1\\Colour2\\NoOutline\\120x80_gifs\\__WallSlide.gif"
+        },
+        {
+            "name": "_Attack",
+            "path": "FreeKnight_v1\\Colour2\\NoOutline\\120x80_PNGSheets\\_Attack.png"
+        },
+        {
+            "name": "_Attack2",
+            "path": "FreeKnight_v1\\Colour2\\NoOutline\\120x80_PNGSheets\\_Attack2.png"
+        },
+        {
+            "name": "_Attack2NoMovement",
+            "path": "FreeKnight_v1\\Colour2\\NoOutline\\120x80_PNGSheets\\_Attack2NoMovement.png"
+        },
+        {
+            "name": "_AttackCombo",
+            "path": "FreeKnight_v1\\Colour2\\NoOutline\\120x80_PNGSheets\\_AttackCombo.png"
+        },
+        {
+            "name": "_AttackComboNoMovement",
+            "path": "FreeKnight_v1\\Colour2\\NoOutline\\120x80_PNGSheets\\_AttackComboNoMovement.png"
+        },
+        {
+            "name": "_AttackNoMovement",
+            "path": "FreeKnight_v1\\Colour2\\NoOutline\\120x80_PNGSheets\\_AttackNoMovement.png"
+        },
+        {
+            "name": "_Crouch",
+            "path": "FreeKnight_v1\\Colour2\\NoOutline\\120x80_PNGSheets\\_Crouch.png"
+        },
+        {
+            "name": "_CrouchAll",
+            "path": "FreeKnight_v1\\Colour2\\NoOutline\\120x80_PNGSheets\\_CrouchAll.png"
+        },
+        {
+            "name": "_CrouchAttack",
+            "path": "FreeKnight_v1\\Colour2\\NoOutline\\120x80_PNGSheets\\_CrouchAttack.png"
+        },
+        {
+            "name": "_CrouchTransition",
+            "path": "FreeKnight_v1\\Colour2\\NoOutline\\120x80_PNGSheets\\_CrouchTransition.png"
+        },
+        {
+            "name": "_CrouchWalk",
+            "path": "FreeKnight_v1\\Colour2\\NoOutline\\120x80_PNGSheets\\_CrouchWalk.png"
+        },
+        {
+            "name": "_Dash",
+            "path": "FreeKnight_v1\\Colour2\\NoOutline\\120x80_PNGSheets\\_Dash.png"
+        },
+        {
+            "name": "_Death",
+            "path": "FreeKnight_v1\\Colour2\\NoOutline\\120x80_PNGSheets\\_Death.png"
+        },
+        {
+            "name": "_DeathNoMovement",
+            "path": "FreeKnight_v1\\Colour2\\NoOutline\\120x80_PNGSheets\\_DeathNoMovement.png"
+        },
+        {
+            "name": "_Fall",
+            "path": "FreeKnight_v1\\Colour2\\NoOutline\\120x80_PNGSheets\\_Fall.png"
+        },
+        {
+            "name": "_Hit",
+            "path": "FreeKnight_v1\\Colour2\\NoOutline\\120x80_PNGSheets\\_Hit.png"
+        },
+        {
+            "name": "_Idle",
+            "path": "FreeKnight_v1\\Colour2\\NoOutline\\120x80_PNGSheets\\_Idle.png"
+        },
+        {
+            "name": "_Jump",
+            "path": "FreeKnight_v1\\Colour2\\NoOutline\\120x80_PNGSheets\\_Jump.png"
+        },
+        {
+            "name": "_JumpFallInbetween",
+            "path": "FreeKnight_v1\\Colour2\\NoOutline\\120x80_PNGSheets\\_JumpFallInbetween.png"
+        },
+        {
+            "name": "_Roll",
+            "path": "FreeKnight_v1\\Colour2\\NoOutline\\120x80_PNGSheets\\_Roll.png"
+        },
+        {
+            "name": "_Run",
+            "path": "FreeKnight_v1\\Colour2\\NoOutline\\120x80_PNGSheets\\_Run.png"
+        },
+        {
+            "name": "_Slide",
+            "path": "FreeKnight_v1\\Colour2\\NoOutline\\120x80_PNGSheets\\_Slide.png"
+        },
+        {
+            "name": "_SlideAll",
+            "path": "FreeKnight_v1\\Colour2\\NoOutline\\120x80_PNGSheets\\_SlideAll.png"
+        },
+        {
+            "name": "_SlideTransitionEnd",
+            "path": "FreeKnight_v1\\Colour2\\NoOutline\\120x80_PNGSheets\\_SlideTransitionEnd.png"
+        },
+        {
+            "name": "_SlideTransitionStart",
+            "path": "FreeKnight_v1\\Colour2\\NoOutline\\120x80_PNGSheets\\_SlideTransitionStart.png"
+        },
+        {
+            "name": "_TurnAround",
+            "path": "FreeKnight_v1\\Colour2\\NoOutline\\120x80_PNGSheets\\_TurnAround.png"
+        },
+        {
+            "name": "_WallClimb",
+            "path": "FreeKnight_v1\\Colour2\\NoOutline\\120x80_PNGSheets\\_WallClimb.png"
+        },
+        {
+            "name": "_WallClimbNoMovement",
+            "path": "FreeKnight_v1\\Colour2\\NoOutline\\120x80_PNGSheets\\_WallClimbNoMovement.png"
+        },
+        {
+            "name": "_WallHang",
+            "path": "FreeKnight_v1\\Colour2\\NoOutline\\120x80_PNGSheets\\_WallHang.png"
+        },
+        {
+            "name": "_WallSlide",
+            "path": "FreeKnight_v1\\Colour2\\NoOutline\\120x80_PNGSheets\\_WallSlide.png"
+        },
+        {
+            "name": "__Attack",
+            "path": "FreeKnight_v1\\Colour2\\Outline\\120x80_gifs\\__Attack.gif"
+        },
+        {
+            "name": "__Attack2",
+            "path": "FreeKnight_v1\\Colour2\\Outline\\120x80_gifs\\__Attack2.gif"
+        },
+        {
+            "name": "__Attack2NoMovement",
+            "path": "FreeKnight_v1\\Colour2\\Outline\\120x80_gifs\\__Attack2NoMovement.gif"
+        },
+        {
+            "name": "__AttackCombo2hit",
+            "path": "FreeKnight_v1\\Colour2\\Outline\\120x80_gifs\\__AttackCombo2hit.gif"
+        },
+        {
+            "name": "__AttackComboNoMovement",
+            "path": "FreeKnight_v1\\Colour2\\Outline\\120x80_gifs\\__AttackComboNoMovement.gif"
+        },
+        {
+            "name": "__AttackNoMovement",
+            "path": "FreeKnight_v1\\Colour2\\Outline\\120x80_gifs\\__AttackNoMovement.gif"
+        },
+        {
+            "name": "__Crouch",
+            "path": "FreeKnight_v1\\Colour2\\Outline\\120x80_gifs\\__Crouch.gif"
+        },
+        {
+            "name": "__CrouchAll",
+            "path": "FreeKnight_v1\\Colour2\\Outline\\120x80_gifs\\__CrouchAll.gif"
+        },
+        {
+            "name": "__CrouchAttack",
+            "path": "FreeKnight_v1\\Colour2\\Outline\\120x80_gifs\\__CrouchAttack.gif"
+        },
+        {
+            "name": "__CrouchTransition",
+            "path": "FreeKnight_v1\\Colour2\\Outline\\120x80_gifs\\__CrouchTransition.gif"
+        },
+        {
+            "name": "__CrouchWalk",
+            "path": "FreeKnight_v1\\Colour2\\Outline\\120x80_gifs\\__CrouchWalk.gif"
+        },
+        {
+            "name": "__Dash",
+            "path": "FreeKnight_v1\\Colour2\\Outline\\120x80_gifs\\__Dash.gif"
+        },
+        {
+            "name": "__Death",
+            "path": "FreeKnight_v1\\Colour2\\Outline\\120x80_gifs\\__Death.gif"
+        },
+        {
+            "name": "__DeathNoMovement",
+            "path": "FreeKnight_v1\\Colour2\\Outline\\120x80_gifs\\__DeathNoMovement.gif"
+        },
+        {
+            "name": "__Fall",
+            "path": "FreeKnight_v1\\Colour2\\Outline\\120x80_gifs\\__Fall.gif"
+        },
+        {
+            "name": "__Hit",
+            "path": "FreeKnight_v1\\Colour2\\Outline\\120x80_gifs\\__Hit.gif"
+        },
+        {
+            "name": "__Idle",
+            "path": "FreeKnight_v1\\Colour2\\Outline\\120x80_gifs\\__Idle.gif"
+        },
+        {
+            "name": "__Jump",
+            "path": "FreeKnight_v1\\Colour2\\Outline\\120x80_gifs\\__Jump.gif"
+        },
+        {
+            "name": "__JumpFallInbetween",
+            "path": "FreeKnight_v1\\Colour2\\Outline\\120x80_gifs\\__JumpFallInbetween.gif"
+        },
+        {
+            "name": "__Roll",
+            "path": "FreeKnight_v1\\Colour2\\Outline\\120x80_gifs\\__Roll.gif"
+        },
+        {
+            "name": "__Run",
+            "path": "FreeKnight_v1\\Colour2\\Outline\\120x80_gifs\\__Run.gif"
+        },
+        {
+            "name": "__Slide",
+            "path": "FreeKnight_v1\\Colour2\\Outline\\120x80_gifs\\__Slide.gif"
+        },
+        {
+            "name": "__SlideAll",
+            "path": "FreeKnight_v1\\Colour2\\Outline\\120x80_gifs\\__SlideAll.gif"
+        },
+        {
+            "name": "__SlideTransitionEnd",
+            "path": "FreeKnight_v1\\Colour2\\Outline\\120x80_gifs\\__SlideTransitionEnd.gif"
+        },
+        {
+            "name": "__SlideTransitionStart",
+            "path": "FreeKnight_v1\\Colour2\\Outline\\120x80_gifs\\__SlideTransitionStart.gif"
+        },
+        {
+            "name": "__TurnAround",
+            "path": "FreeKnight_v1\\Colour2\\Outline\\120x80_gifs\\__TurnAround.gif"
+        },
+        {
+            "name": "__WallClimb",
+            "path": "FreeKnight_v1\\Colour2\\Outline\\120x80_gifs\\__WallClimb.gif"
+        },
+        {
+            "name": "__WallClimbNoMovement",
+            "path": "FreeKnight_v1\\Colour2\\Outline\\120x80_gifs\\__WallClimbNoMovement.gif"
+        },
+        {
+            "name": "__WallHang",
+            "path": "FreeKnight_v1\\Colour2\\Outline\\120x80_gifs\\__WallHang.gif"
+        },
+        {
+            "name": "__WallSlide",
+            "path": "FreeKnight_v1\\Colour2\\Outline\\120x80_gifs\\__WallSlide.gif"
+        },
+        {
+            "name": "_Attack",
+            "path": "FreeKnight_v1\\Colour2\\Outline\\120x80_PNGSheets\\_Attack.png"
+        },
+        {
+            "name": "_Attack2",
+            "path": "FreeKnight_v1\\Colour2\\Outline\\120x80_PNGSheets\\_Attack2.png"
+        },
+        {
+            "name": "_Attack2NoMovement",
+            "path": "FreeKnight_v1\\Colour2\\Outline\\120x80_PNGSheets\\_Attack2NoMovement.png"
+        },
+        {
+            "name": "_AttackCombo",
+            "path": "FreeKnight_v1\\Colour2\\Outline\\120x80_PNGSheets\\_AttackCombo.png"
+        },
+        {
+            "name": "_AttackComboNoMovement",
+            "path": "FreeKnight_v1\\Colour2\\Outline\\120x80_PNGSheets\\_AttackComboNoMovement.png"
+        },
+        {
+            "name": "_AttackNoMovement",
+            "path": "FreeKnight_v1\\Colour2\\Outline\\120x80_PNGSheets\\_AttackNoMovement.png"
+        },
+        {
+            "name": "_Crouch",
+            "path": "FreeKnight_v1\\Colour2\\Outline\\120x80_PNGSheets\\_Crouch.png"
+        },
+        {
+            "name": "_CrouchAll",
+            "path": "FreeKnight_v1\\Colour2\\Outline\\120x80_PNGSheets\\_CrouchAll.png"
+        },
+        {
+            "name": "_CrouchAttack",
+            "path": "FreeKnight_v1\\Colour2\\Outline\\120x80_PNGSheets\\_CrouchAttack.png"
+        },
+        {
+            "name": "_CrouchTransition",
+            "path": "FreeKnight_v1\\Colour2\\Outline\\120x80_PNGSheets\\_CrouchTransition.png"
+        },
+        {
+            "name": "_CrouchWalk",
+            "path": "FreeKnight_v1\\Colour2\\Outline\\120x80_PNGSheets\\_CrouchWalk.png"
+        },
+        {
+            "name": "_Dash",
+            "path": "FreeKnight_v1\\Colour2\\Outline\\120x80_PNGSheets\\_Dash.png"
+        },
+        {
+            "name": "_Death",
+            "path": "FreeKnight_v1\\Colour2\\Outline\\120x80_PNGSheets\\_Death.png"
+        },
+        {
+            "name": "_DeathNoMovement",
+            "path": "FreeKnight_v1\\Colour2\\Outline\\120x80_PNGSheets\\_DeathNoMovement.png"
+        },
+        {
+            "name": "_Fall",
+            "path": "FreeKnight_v1\\Colour2\\Outline\\120x80_PNGSheets\\_Fall.png"
+        },
+        {
+            "name": "_Hit",
+            "path": "FreeKnight_v1\\Colour2\\Outline\\120x80_PNGSheets\\_Hit.png"
+        },
+        {
+            "name": "_Idle",
+            "path": "FreeKnight_v1\\Colour2\\Outline\\120x80_PNGSheets\\_Idle.png"
+        },
+        {
+            "name": "_Jump",
+            "path": "FreeKnight_v1\\Colour2\\Outline\\120x80_PNGSheets\\_Jump.png"
+        },
+        {
+            "name": "_JumpFallInbetween",
+            "path": "FreeKnight_v1\\Colour2\\Outline\\120x80_PNGSheets\\_JumpFallInbetween.png"
+        },
+        {
+            "name": "_Roll",
+            "path": "FreeKnight_v1\\Colour2\\Outline\\120x80_PNGSheets\\_Roll.png"
+        },
+        {
+            "name": "_Run",
+            "path": "FreeKnight_v1\\Colour2\\Outline\\120x80_PNGSheets\\_Run.png"
+        },
+        {
+            "name": "_Slide",
+            "path": "FreeKnight_v1\\Colour2\\Outline\\120x80_PNGSheets\\_Slide.png"
+        },
+        {
+            "name": "_SlideAll",
+            "path": "FreeKnight_v1\\Colour2\\Outline\\120x80_PNGSheets\\_SlideAll.png"
+        },
+        {
+            "name": "_SlideTransitionEnd",
+            "path": "FreeKnight_v1\\Colour2\\Outline\\120x80_PNGSheets\\_SlideTransitionEnd.png"
+        },
+        {
+            "name": "_SlideTransitionStart",
+            "path": "FreeKnight_v1\\Colour2\\Outline\\120x80_PNGSheets\\_SlideTransitionStart.png"
+        },
+        {
+            "name": "_TurnAround",
+            "path": "FreeKnight_v1\\Colour2\\Outline\\120x80_PNGSheets\\_TurnAround.png"
+        },
+        {
+            "name": "_WallClimb",
+            "path": "FreeKnight_v1\\Colour2\\Outline\\120x80_PNGSheets\\_WallClimb.png"
+        },
+        {
+            "name": "_WallClimbNoMovement",
+            "path": "FreeKnight_v1\\Colour2\\Outline\\120x80_PNGSheets\\_WallClimbNoMovement.png"
+        },
+        {
+            "name": "_WallHang",
+            "path": "FreeKnight_v1\\Colour2\\Outline\\120x80_PNGSheets\\_WallHang.png"
+        },
+        {
+            "name": "_WallSlide",
+            "path": "FreeKnight_v1\\Colour2\\Outline\\120x80_PNGSheets\\_WallSlide.png"
+        },
+        {
+            "name": "Comparison2x",
+            "path": "FreeKnight_v1\\Comparison2x.png"
+        },
+        {
+            "name": "PromoAnimated2x",
+            "path": "FreeKnight_v1\\PromoAnimated2x.gif"
+        },
+        {
+            "name": "FreeKnight_v1",
+            "path": "FreeKnight_v1.zip"
+        },
+        {
+            "name": "spritesheet",
+            "path": "spritesheet.png"
         }
     ],
     "json": [

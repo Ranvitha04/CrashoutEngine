@@ -59,7 +59,7 @@ namespace Scene {
 						sc->color * (1 / 255.f)); break;
 				// ============================================LINE======================================================
 				case Component::ShapeType::Line:
-					Component::Shapes::CreateLine(sc->p1, sc->p2, sc->thickness, rot, (scale.x > scale.y) ? scale.x : scale.y, 
+					Component::Shapes::CreateLine(sc->p1 + pos, sc->p2 + pos, sc->thickness, rot, (scale.x > scale.y) ? scale.x : scale.y,
 						sc->color * (1 / 255.f)); break;
 				// ==========================================TRIANGLE====================================================
 				case Component::ShapeType::Triangle:

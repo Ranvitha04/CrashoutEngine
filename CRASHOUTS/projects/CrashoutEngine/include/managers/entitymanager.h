@@ -92,6 +92,20 @@ namespace CrashoutsEngine {
 		}
 
 		/**
+		* @brief Destroys the singleton instance of the ECS.
+		*
+		* This function frees the memory allocated for the ECS object.
+		* This should be called exactly once before application exit.
+		*/
+		static void DestroyInstance() {
+			std::lock_guard<std::mutex> lock(mtx);
+			if (instancePtr != nullptr) {
+				delete instancePtr;
+				instancePtr = nullptr;
+			}
+		}
+
+		/**
 		 * @brief Clears all entities and components from the ECS.
 		 *
 		 * This function resets the ECS to a clean, empty state. It clears all
@@ -160,11 +174,7 @@ namespace CrashoutsEngine {
 		template<typename T>
 		bool HasComponent(std::string entityName);
 
-		// Explicitly delete dynamically allocated members in the destructor
-		~ECS() {
-			delete instancePtr;
-			instancePtr = nullptr;
-		}
+		~ECS() = default;
 	};
 
 	/*!

@@ -1,3 +1,11 @@
+/*!
+@file       observable.h
+@author     miratristan.d@digipen.edu
+@date       19/09/2025
+@brief      Declaration for the Base class Observable. Allows other systems to inherit from this class to register Observers.
+
+//__________________________________________________________________________*/
+
 #pragma once
 
 #include <map>

@@ -29,6 +29,11 @@ public:
     static void Init(GLFWwindow* ptr_window);
 
     /*!
+    @brief Shutdown and cleanup the input manager
+    */
+    static void Shutdown();
+
+    /*!
     @brief Update input states for the current frame
     */
     static void Update();
