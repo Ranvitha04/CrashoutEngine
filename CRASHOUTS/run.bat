@@ -1,93 +1,45 @@
 @echo off
-REM ===============================================
-REM Windows Build and Run Script
-REM Usage: run.bat [release | debug]
-REM ===============================================
+REM --- Configuration Options ---
+set "BUILD_DIR=build"
+set "PROJECT_NAME=CrashoutEngine"
+set "BUILD_TYPE=Release"
 
-REM --- Script Configuration ---
-set TARGET_EXE=CrashoutEngine.exe
-set BUILD_CONFIG=Release
+REM --- Set the current directory to the script's directory ---
+PUSHD "%~dp0"
 
-REM --- Argument Processing ---
-if /I "%1"=="debug" set BUILD_CONFIG=Debug
-if /I "%1"=="release" set BUILD_CONFIG=Release
-
-echo.
-echo ===============================================
-echo   CRASHOUTS Console Application - Windows
-echo ===============================================
-echo.
-
-REM Check if CMake is available
-cmake --version >nul 2>&1
-if %errorlevel% neq 0 (
-    echo ERROR: CMake is not installed or not in PATH
-    echo Please install CMake from https://cmake.org/download/
-    pause
-    exit /b 1
+REM --- 1. Configure the project ---
+IF NOT EXIST "%BUILD_DIR%" (
+    echo [Step 1/3] Creating and configuring build directory: %BUILD_DIR%
+    cmake -S . -B "%BUILD_DIR%" -DCMAKE_BUILD_TYPE="%BUILD_TYPE%"
+    IF ERRORLEVEL 1 (
+        echo CMake Configure FAILED!
+        GOTO :END
+    )
+) ELSE (
+    echo [Step 1/3] Build directory already exists. Skipping configure.
+    REM You might want to re-run cmake config here if CMakeLists.txt changes a lot
 )
 
-REM Check if Visual Studio Build Tools are available
-where cl >nul 2>&1
-if %errorlevel% neq 0 (
-    echo WARNING: Visual Studio Build Tools not found in PATH
-    echo Make sure you have Visual Studio or Build Tools installed
-    echo.
-)
-
-REM Clean previous build
-echo [1/4] Cleaning previous build...
-if exist build (
-    rmdir /s /q build
-    echo    Previous build directory removed
-) else (
-    echo    No previous build found
-)
-
-REM Create build directory
-echo [2/4] Creating build directory...
-mkdir build
-cd build
-
-REM Configure with CMake
-echo [3/4] Configuring project with CMake...
-cmake .. -G "Visual Studio 17 2022" -A x64
-if %errorlevel% neq 0 (
-    echo ERROR: CMake configuration failed
-    cd ..
-    pause
-    exit /b 1
-)
-
-REM Build the project
-echo [4/4] Building project...
-cmake --build . --config %BUILD_CONFIG%
-if %errorlevel% neq 0 (
-    echo ERROR: Build failed
-    cd ..
-    pause
-    exit /b 1
-)
-
+REM --- 2. Build the project ---
 echo.
-echo ===============================================
-echo   Build completed successfully!
-echo ===============================================
-echo.
-
-REM Run the application
-echo Running the application...
-echo.
-cd Debug
-CrashoutEngine.exe
-if %errorlevel% neq 0 (
-    echo.
-    echo Application exited with error code: %errorlevel%
-) else (
-    echo.
-    echo Application completed successfully!
+echo [Step 2/3] Building the project...
+REM Using --config is necessary for multi-config generators like Visual Studio
+cmake --build "%BUILD_DIR%" --config "%BUILD_TYPE%"
+IF ERRORLEVEL 1 (
+    echo CMake Build FAILED!
+    GOTO :END
 )
 
+REM --- 3. Execute the program ---
 echo.
-echo Press any key to exit...
-pause >nul
+echo [Step 3/3] Running the executable: %PROJECT_NAME%.exe
+REM The executable is typically located in the build sub-directory corresponding to the configuration type
+"%BUILD_DIR%\%BUILD_TYPE%\%PROJECT_NAME%.exe"
+IF ERRORLEVEL 1 (
+    echo Execution FAILED!
+)
+
+:END
+echo.
+pause
+POPD
