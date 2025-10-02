@@ -424,8 +424,8 @@ inline void DrawEngineMemoryPanel() {
     ImGui::Text("Private Bytes: %.2f MB", privateBytesMB);
     // Add more performance stats here if you want
 
-    ImGui::SeparatorText("Framerate");
-    ImGui::Text("FPS: %.1f", ImGui::GetIO().Framerate);
+    //ImGui::SeparatorText("Framerate");
+    //ImGui::Text("FPS: %.1f", ImGui::GetIO().Framerate);
 }
 
 

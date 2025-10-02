@@ -6,7 +6,7 @@
 This file implements the texture management and rendering functionality
 for CrashoutsEngine. It contains:
 
-- **CrashoutsEngine::Assets::Texture**:
+- **CrashoutsEngine::Assets::TextureAsset**:
   Manages raw image data, GPU upload, and cleanup. Provides static helpers
   to load image data (via stb_image) and create asset objects.
 - **Component::TextureRenderer**:
@@ -21,14 +21,14 @@ and centralized texture lifecycle management.
 Usage:
 - Call `TextureRenderer::CreateTexturedQuad()` to draw textured quads.
 - Call `TextureRenderer::PreloadTexture()` to load textures in advance.
-- Use `Texture::Create()` for lower-level texture asset creation.
+- Use `TextureAsset::Create()` for lower-level texture asset creation.
 
 Clean-up functions are provided to release GPU resources and clear caches
 when shutting down the engine.
 */
 
 #define STB_IMAGE_IMPLEMENTATION
-#include "resources/textures.h"
+#include "resources/textureasset.h"
 #include "managers/entitymanager.h"
 #include "glapp.h"
 //#include <stb_image.h>
@@ -44,13 +44,13 @@ namespace CrashoutsEngine {
     namespace Assets {
 
         /*!
-        @brief Constructs an Texture with given width, height, and raw pixel data.
+        @brief Constructs an TextureAsset with given width, height, and raw pixel data.
         @param w      Width of the texture in pixels.
         @param h      Height of the texture in pixels.
         @param inputData Raw pointer to the texture data (RGBA).
         */
 
-        Texture::Texture(int w, int h, texdata inputData) :
+        TextureAsset::TextureAsset(int w, int h, texdata inputData) :
             width(w), height(h), data(inputData), glHandle(0), uploaded(false) {
         }
 
@@ -63,7 +63,7 @@ namespace CrashoutsEngine {
         */
 
 
-        Texture::texdata Texture::LoadImageData(const std::string& filePath, int& width, int& height) {
+        TextureAsset::texdata TextureAsset::LoadImageData(const std::string& filePath, int& width, int& height) {
             int channels;
 
             texdata data = stbi_load(filePath.c_str(), &width, &height, &channels, STBI_rgb_alpha);
@@ -74,23 +74,23 @@ namespace CrashoutsEngine {
         }
 
         /*!
-        @brief Creates a new Texture from an image file.
+        @brief Creates a new TextureAsset from an image file.
         @param filePath Path to the image file.
-        @return Unique pointer to a valid Texture, or nullptr on failure.
+        @return Unique pointer to a valid TextureAsset, or nullptr on failure.
         */
 
-        std::unique_ptr<Texture> Texture::Create(const std::string& filePath) {
+        std::unique_ptr<TextureAsset> TextureAsset::Create(const std::string& filePath) {
             int w, h;
             texdata loadedData = LoadImageData(filePath, w, h);
             if (!loadedData) {
                 return nullptr;
             }
 
-            return std::unique_ptr<Texture>(new Texture(w, h, loadedData));
+            return std::unique_ptr<TextureAsset>(new TextureAsset(w, h, loadedData));
         }
 
-        // Helper function to get Texture mode
-        GLuint Texture::GetTextureMode(TextureMode mode) {
+        // Helper function to get TextureAsset mode
+        GLuint TextureAsset::GetTextureMode(TextureMode mode) {
             switch (mode) {
             case TextureMode::Repeat:
                 return GL_REPEAT;
@@ -104,7 +104,7 @@ namespace CrashoutsEngine {
         }
 
         // Function to set texture mode at runtime
-        void Texture::SetTextureMode(TextureMode modeS, TextureMode modeT) {
+        void TextureAsset::SetTextureMode(TextureMode modeS, TextureMode modeT) {
             if (glHandle == 0) {
                 std::cout << "Warning: Cannot set wrap mode on uninitialized texture." << std::endl;
                 return;
@@ -126,7 +126,7 @@ namespace CrashoutsEngine {
         @brief Destructor. Frees GPU resources and image memory.
         */
 
-        Texture::~Texture() {
+        TextureAsset::~TextureAsset() {
             FreeGPU();
             if (data) {
                 stbi_image_free(data);
@@ -138,7 +138,7 @@ namespace CrashoutsEngine {
         @brief Move constructor. Transfers ownership of resources.
         */
 
-        Texture::Texture(Texture&& other) noexcept :
+        TextureAsset::TextureAsset(TextureAsset&& other) noexcept :
             width(other.width),
             height(other.height),
             data(other.data),
@@ -157,7 +157,7 @@ namespace CrashoutsEngine {
         @brief Move assignment operator. Cleans up current resources and transfers ownership.
         */
 
-        Texture& Texture::operator=(Texture&& other) noexcept {
+        TextureAsset& TextureAsset::operator=(TextureAsset&& other) noexcept {
             if (this != &other) {
                 // Clean up existing resources
                 FreeGPU();
@@ -187,7 +187,7 @@ namespace CrashoutsEngine {
         @return True if successfully uploaded, false otherwise.
         */
 
-        bool Texture::UploadToGPU() {
+        bool TextureAsset::UploadToGPU() {
             if (uploaded || !data) {
                 return uploaded; // Already uploaded or no data
             }
@@ -215,7 +215,7 @@ namespace CrashoutsEngine {
         @brief Frees the GPU texture resource if allocated.
         */
 
-        void Texture::FreeGPU() {
+        void TextureAsset::FreeGPU() {
             if (uploaded && glHandle != 0) {
                 glDeleteTextures(1, &glHandle);
                 glHandle = 0;
@@ -280,7 +280,7 @@ namespace CrashoutsEngine {
             glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, VERTEX_SIZE * sizeof(float), (void*)(3 * sizeof(float)));
             glEnableVertexAttribArray(1);
 
-            // Texture coordinate attribute (location 2)
+            // TextureAsset coordinate attribute (location 2)
             glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, VERTEX_SIZE * sizeof(float), (void*)(6 * sizeof(float)));
             glEnableVertexAttribArray(2);
 
@@ -504,20 +504,20 @@ namespace CrashoutsEngine {
         GLuint TextureRenderer::GetTextureHandle(std::string const& assetName) {
             using namespace CrashoutsEngine::Assets;
 
-            // Use the AssetManager to retrieve the *already loaded* Texture object
-            Texture* texture = AssetManager::GetInstance().Get<Texture>(assetName);
+            // Use the AssetManager to retrieve the *already loaded* TextureAsset object
+            TextureAsset* texture = AssetManager::GetInstance().Get<TextureAsset>(assetName);
 
             if (texture) {
                 // Return the OpenGL handle stored inside the asset object
                 if (texture->IsUploaded()) {
                     return texture->GetGLHandle();
                 }
-                std::cerr << "Warning: Texture '" << assetName << "' found but not uploaded to GPU." << std::endl;
+                std::cerr << "Warning: TextureAsset '" << assetName << "' found but not uploaded to GPU." << std::endl;
                 return 0;
             }
 
             // Asset not found, indicating problem in manifest or loading phase
-            std::cerr << "Error: Texture asset not found in AssetManager: " << assetName << std::endl;
+            std::cerr << "Error: TextureAsset asset not found in AssetManager: " << assetName << std::endl;
             return 0;
         }
 
@@ -704,7 +704,7 @@ namespace CrashoutsEngine {
             glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
             glEnableVertexAttribArray(1);
 
-            // Texture coordinate attribute (location 2)
+            // TextureAsset coordinate attribute (location 2)
             glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
             glEnableVertexAttribArray(2);
 

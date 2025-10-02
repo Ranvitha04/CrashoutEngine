@@ -186,6 +186,9 @@ int WINAPI WinMain(
 
     // Cleanup
     UI::Shutdown();
+    DebugReflection::ComponentRegistry::instance().clear();
+    DebugReflection::PanelRegistry::instance().clear();
+    DebugReflection::PhysicsRegistry::instance().clear();
     Logger::Instance().Clear();
     GLApp::cleanup();
     InputManager::Shutdown();
