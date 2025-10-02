@@ -585,9 +585,9 @@ namespace UI { // --------------------------------------------------------------
 
             // To be fixed later
             /*ImGui::Spacing();
-            if (ImGui::Button("Save Layout")) ImGui::SaveIniSettingsToDisk(nullptr);
+            if (ImGui::Button("Save Layout")) ImGui::SaveIniSettingsToDisk(nullptr);*/
             ImGui::SameLine();
-            if (ImGui::Button("Reload Layout")) ImGui::LoadIniSettingsFromDisk(nullptr);*/
+            if (ImGui::Button("Simulate Crash")) ImGui::LoadIniSettingsFromDisk(nullptr);
         }
         ImGui::End();
     }
