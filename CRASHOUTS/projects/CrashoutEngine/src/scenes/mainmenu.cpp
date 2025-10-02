@@ -109,10 +109,10 @@ void RenderMainMenu()
 	Scene::RenderScene(*globalECS);
 	
 	if (gTextRenderer) {
-		gTextRenderer->renderCenteredText("Hello", -900.0f, 0.0f, 1.0f, glm::vec3(0.0f));
+		gTextRenderer->RenderCenteredText("Hello", -900.0f, 0.0f, 1.0f, glm::vec3(0.0f));
 	}
 	if (gTextRendererA) {
-		gTextRendererA->renderCenteredText(std::to_string(itemCount), -900.0f, 100.0f, 1.0f, glm::vec3(1.0f, 1.0f, 1.0f));
+		gTextRendererA->RenderCenteredText(std::to_string(itemCount), -900.0f, 100.0f, 1.0f, glm::vec3(1.0f, 1.0f, 1.0f));
 	}
 
 }
