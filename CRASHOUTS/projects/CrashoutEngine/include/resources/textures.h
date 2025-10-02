@@ -1,7 +1,7 @@
 /*!
 @file   textures.h
-@author lee.r@digipen.edu
-@co-author ranvitha@digipen.edu
+@author lee.r@digipen.edu       - 70%
+@co-author ranvitha@digipen.edu - 30%
 @date   16/09/2025
 
 @brief	This file contains the declaration of the Texture class, a concrete
