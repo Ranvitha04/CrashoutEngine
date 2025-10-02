@@ -127,7 +127,7 @@ namespace CrashoutsEngine {
 			then uses that ID to access the asset pointer. It then attempts to
 			safely cast the pointer to the specified type.
 
-			@tparam T The type of the asset to retrieve (e.g., Texture, Model).
+			@tparam T The type of the asset to retrieve (e.g., TextureAsset, Model).
 
 			@param name The name of the asset to find.
 

@@ -19,7 +19,7 @@ integration.
 #include "rendering.h"
 #include "managers/entitymanager.h"
 #include "shapes.h"
-#include "resources/textures.h"
+#include "resources/textureasset.h"
 #include <glm/glm.hpp>
 #include <iostream>
 #include <sstream>
@@ -50,7 +50,7 @@ GLFWwindow* GLApp::ptr_window;
 
 Component::Rendering model;
 Component::Shapes shapes;
-//Component::Texture texture;
+//Component::TextureAsset texture;
 
 
 std::array<CEVec3, 4> clr_vtx{
@@ -178,13 +178,13 @@ bool GLApp::init(GLint w, GLint h, std::string t) {
 
     Component::Rendering::Initialize();
 
-    //Component::Texture::Initialize();
+    //Component::TextureAsset::Initialize();
 
     Component::TextureRenderer::Initialize();
 
     //texture.LoadTexture("../../../projects/CrashoutEngine/images/duck-rgba-256.tex");
 
-    //model.texobj = Component::Texture::LoadTexture("../../../projects/CrashoutEngine/images/duck-rgba-256.tex");
+    //model.texobj = Component::TextureAsset::LoadTexture("../../../projects/CrashoutEngine/images/duck-rgba-256.tex");
    
 
     return true;
@@ -304,7 +304,7 @@ gracefully terminate.
 */
 void GLApp::cleanup() {
 
-    //Component::Texture::Cleanup();
+    //Component::TextureAsset::Cleanup();
 
     Component::Rendering::Cleanup();
 

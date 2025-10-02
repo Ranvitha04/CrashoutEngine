@@ -20,7 +20,7 @@
 #include "rapidjson/istreamwrapper.h"
 
 // Include Asset Types if required
-#include "resources/textures.h"
+#include "resources/textureasset.h"
 
 /*
 ----------------------------------------------------------------------------- */
@@ -130,15 +130,15 @@ namespace CrashoutsEngine {
 						// Full path is asset root path + "images/" + relativepath
 						std::string fullPath = rootAssetPath + "images/" + relativePath;
 
-						// 1. Create the Texture object from file data
-						std::unique_ptr<Texture> newTexture = Texture::Create(fullPath);
+						// 1. Create the TextureAsset object from file data
+						std::unique_ptr<TextureAsset> newTexture = TextureAsset::Create(fullPath);
 
 						// Validate
 						if (newTexture) {
 							// 2. Upload to GPU
 							newTexture->UploadToGPU();
 
-							// 3. Load the Texture asset into the AssetManager
+							// 3. Load the TextureAsset asset into the AssetManager
 							AssetManager::GetInstance().Load(name, std::move(newTexture));
 
 							// Optional: Preload handle into TextureRenderer Cache (IDK HOW)

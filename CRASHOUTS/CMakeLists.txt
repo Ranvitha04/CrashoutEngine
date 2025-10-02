@@ -6,7 +6,7 @@ cmake_policy(VERSION 3.24)
 
 set(CMAKE_POLICY_VERSION_MINIMUM 3.5)
 
-project(CRASHOUTS CXX)
+project(CrashoutEngine CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)

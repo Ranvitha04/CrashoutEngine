@@ -27,7 +27,7 @@ __________________________________________________________________________*/
 
 #include "spriteAnimation.h"
 #include "rendering.h"
-#include "resources/textures.h"
+#include "resources/textureasset.h"
 #include "managers/entitymanager.h"
 #include "math/CEVec2.h"
 #include "math/CEVec3.h"
@@ -193,7 +193,7 @@ namespace Component {
     void Sprite::cleanup() {
         if (!initialized) return;
 
-        // Texture is managed by TextureRenderer
+        // TextureAsset is managed by TextureRenderer
         textureId = 0;
         initialized = false;
         currentFrame = 0;

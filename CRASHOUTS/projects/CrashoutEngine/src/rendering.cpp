@@ -246,7 +246,7 @@ void Rendering::SetupTexturedBuffers(const void* vertices, size_t vertex_size,
     glVertexArrayAttribFormat(vaoid, 1, 3, GL_FLOAT, GL_FALSE, 0);
     glVertexArrayAttribBinding(vaoid, 1, 1);
 
-    // Texture coordinate attribute (location 2)
+    // TextureAsset coordinate attribute (location 2)
     glEnableVertexArrayAttrib(vaoid, 2);
     glVertexArrayVertexBuffer(vaoid, 2, tex_vbo_hdl, 0, sizeof(CEVec2));
     glVertexArrayAttribFormat(vaoid, 2, 2, GL_FLOAT, GL_FALSE, 0);
