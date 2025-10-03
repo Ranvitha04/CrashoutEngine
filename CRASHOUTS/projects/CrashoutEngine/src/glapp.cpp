@@ -247,7 +247,7 @@ as black.
 void GLApp::draw() {
     // clear colorbuffer with RGBA value in glClearColor ...
     //glClearColor(0, 0, 0, 0);
-    //glClear(GL_COLOR_BUFFER_BIT);
+    //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     //model.Draw();
 
     // ---- choose which shape to draw by uncommenting ----

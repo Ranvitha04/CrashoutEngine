@@ -24,7 +24,7 @@ void LoadRain()
 
 	CrashoutsEngine::Assets::AssetManager::GetInstance().LoadManifestAssets();
 
-	GLuint shaderID = loadShaderProgram("../../../projects/CrashoutEngine/shaders/textShader.vert", "../../../projects/CrashoutEngine/shaders/textShader.frag");
+	GLuint shaderID = LoadShaderProgram("../../../projects/CrashoutEngine/shaders/textShader.vert", "../../../projects/CrashoutEngine/shaders/textShader.frag");
 	if (shaderID == 0) {
 		std::cout << "Failed to load text shader.\n";
 		return;
@@ -49,7 +49,7 @@ void RenderRain()
 {
 	// Render Rain state
 	glClearColor(0.1f, 0.2f, 0.4f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	if (gTextRenderer) {
 		gTextRenderer->RenderCenteredText("Hello", 0.0f, 0.0f, 1.0f, glm::vec3(1.0f));
 	}

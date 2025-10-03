@@ -67,7 +67,7 @@ void UpdateAfiq()
 void RenderAfiq()
 {
     glClearColor(0.1f, 0.2f, 0.4f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     Scene::RenderScene(*globalECS);
 }

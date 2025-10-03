@@ -222,5 +222,11 @@
             "name": "assetmanifest",
             "path": "assetmanifest.json"
         }
+    ],
+    "scenes": [
+        {
+            "name": "renfred",
+            "path": "renfred"
+        }
     ]
 }

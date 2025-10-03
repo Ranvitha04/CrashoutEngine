@@ -178,7 +178,7 @@ namespace CrashoutsEngine {
 
                 // Set Entity Transform
                 // { "transform": {rot}, {pos}, {scale} }
-                if (entityValue.HasMember(Keys::TRANSFORM_COMPONENT) && entityValue[Keys::TRANSFORM_COMPONENT].IsArray()) {
+                if (entityValue.HasMember(Keys::TRANSFORM_COMPONENT) && entityValue[Keys::TRANSFORM_COMPONENT].IsObject()) {
                     const rapidjson::Value& transformValue = entityValue[Keys::TRANSFORM_COMPONENT];
 
                     // 1. Rotation (single float)
