@@ -21,7 +21,6 @@ integration.
 #include "managers/entitymanager.h"
 #include "shapes.h"
 #include "resources/textures.h"
-#include "resources/texture.cpp" 
 #include "spriteAnimation.h"
 #include "scenes/ran.h"
 #include <glm/glm.hpp>
@@ -300,6 +299,9 @@ When the ESC key is pressed, the close flag of the window is set.
 */
 void GLApp::key_cb(GLFWwindow* pwin, int key, [[maybe_unused]] int scancode, int action, [[maybe_unused]] int mod) {
     //ImGui_ImplGlfw_KeyCallback(pwin, key, scancode, action, mod);
+#ifdef _DEBUG
+    Key k = static_cast<Key>(key);
+#endif
     if (GLFW_PRESS == action) {
 #ifdef _DEBUG
         LOGI(Input, std::string(KeyToString(k)) + " is pressed");

@@ -2,19 +2,26 @@
 @file        rendering.cpp
 @author      ranvitha@digipen.edu
 @date        09/12/2025
-@brief       Implements the Rendering struct functions for OpenGL rendering.
+@brief       Implementation of the Rendering class for high-performance OpenGL rendering.
 
-This file implements the functions of the Component::Rendering struct declared in rendering.h.
-It provides functionality for setting up vertex data, configuring VAO/VBO/EBO objects,
-compiling and linking shaders, and rendering primitives.
+This file provides the complete implementation of the Component::Rendering class,
+which serves as the core rendering infrastructure for the CrashoutEngine. It implements
+advanced OpenGL rendering techniques with a focus on performance optimization and
+efficient resource management.
 
-Functions implemented:
-- Setup_VAO(): Initializes vertex and color buffers, sets up a VAO, and configures attributes.
-- Setup_Shdrpgm(): Compiles and links vertex and fragment shaders, validates the shader program.
-- Draw(): Binds the shader program and VAO, and issues a draw call using glDrawElements.
+- Support for both textured and non-textured geometry
+- Configurable vertex attribute layouts (position, color, texture coordinates)
+- Multiple primitive types (triangles, triangle fans, lines, etc.)
+- Indexed and non-indexed rendering support
 
-This file uses CEVec3 for vertex positions and colors, GLSLShader for shader management,
-and OpenGL 4.x core profile functions for buffer and vertex array management.
+- Memory-mapped buffers for ultra-fast data streaming
+- In-place buffer updates to minimize GPU state changes
+- Buffer reuse through sophisticated pooling mechanisms
+- Optimized vertex attribute configuration
+
+This implementation provides the foundation for all 2D rendering operations
+in the CrashoutEngine, with particular emphasis on performance-critical
+applications such as sprite animation, particle systems, and dynamic geometry.
 */
 
 /*                                                                   includes
@@ -45,6 +52,23 @@ namespace Component {
     }
 
     // Buffer pool management
+    /*!
+    @brief Retrieve a VBO from the pool or create a new one if pool is empty.
+    @return OpenGL handle to a Vertex Buffer Object ready for use
+    @details
+    Implements efficient VBO pooling to reduce OpenGL object creation overhead.
+    The function first checks if any VBOs are available in the pool. If found,
+    it removes and returns the most recently added VBO (LIFO order for better
+    cache locality). If the pool is empty, creates a new VBO using the modern
+    glCreateBuffers function (OpenGL 4.5+).
+    
+    Performance benefits:
+    - Eliminates frequent glGenBuffers/glDeleteBuffers calls
+    - Reduces GPU driver overhead for buffer management
+    - Maintains warm buffer objects that may still be in GPU cache
+    
+    The returned VBO is unbound and ready for configuration.
+    */
     GLuint Rendering::GetPooledVBO() {
         if (!buffer_pool.available_vbos.empty()) {
             GLuint vbo = buffer_pool.available_vbos.back();
@@ -57,6 +81,22 @@ namespace Component {
         return vbo;
     }
 
+    /*!
+    @brief Retrieve a VAO from the pool or create a new one if pool is empty.
+    @return OpenGL handle to a Vertex Array Object ready for configuration
+    @details
+    Similar to GetPooledVBO but for Vertex Array Objects. VAOs are particularly
+    expensive to create as they store complex vertex attribute state, making
+    pooling especially beneficial for performance.
+    
+    The function uses glCreateVertexArrays (OpenGL 4.5+) for direct state
+    access, which is more efficient than the traditional glGenVertexArrays
+    approach. The returned VAO has no vertex attributes configured and is
+    ready for setup.
+    
+    VAO pooling is critical for applications that frequently switch between
+    different vertex layouts, such as UI rendering mixed with sprite rendering.
+    */
     GLuint Rendering::GetPooledVAO() {
         if (!buffer_pool.available_vaos.empty()) {
             GLuint vao = buffer_pool.available_vaos.back();
@@ -69,6 +109,21 @@ namespace Component {
         return vao;
     }
 
+    /*!
+    @brief Retrieve an EBO from the pool or create a new one if pool is empty.
+    @return OpenGL handle to an Element Buffer Object ready for use
+    @details
+    Provides pooled access to Element Buffer Objects (index buffers) using
+    the same efficient pooling strategy as VBOs. EBOs are used for indexed
+    rendering to reduce vertex duplication in geometry with shared vertices.
+    
+    Uses glCreateBuffers for direct buffer creation without binding, which
+    is part of the modern OpenGL 4.5+ direct state access (DSA) API.
+    This approach is more efficient and less error-prone than traditional
+    buffer creation methods.
+    
+    The returned EBO is unbound and ready for index data upload.
+    */
     GLuint Rendering::GetPooledEBO() {
         if (!buffer_pool.available_ebos.empty()) {
             GLuint ebo = buffer_pool.available_ebos.back();
@@ -81,6 +136,27 @@ namespace Component {
         return ebo;
     }
 
+    /*!
+    @brief Return OpenGL buffer objects to their respective pools for reuse.
+    @param vbo Vertex Buffer Object handle to return (0 = skip)
+    @param vao Vertex Array Object handle to return (0 = skip)  
+    @param ebo Element Buffer Object handle to return (0 = skip)
+    @details
+    Implements intelligent buffer recycling with pool size management.
+    Each buffer type has a maximum pool size to prevent unbounded memory
+    growth. When a pool reaches its limit, additional buffers are deleted
+    immediately rather than stored.
+    
+    Pool management strategy:
+    - Buffers are added to pools only if space is available
+    - Pool size limits prevent memory bloat in long-running applications
+    - LIFO ordering (stack-like) for better cache locality
+    - Zero handles are safely ignored (no-op)
+    
+    This function should be called when buffers are no longer needed
+    to maintain the efficiency of the pooling system. Proper usage
+    prevents both memory leaks and excessive buffer creation overhead.
+    */
     void Rendering::ReturnToPool(GLuint vbo, GLuint vao, GLuint ebo) {
         if (buffer_pool.available_vbos.size() < buffer_pool.max_pool_size && vbo != 0) {
             buffer_pool.available_vbos.push_back(vbo);
@@ -144,6 +220,40 @@ namespace Component {
         buffer_pool.available_ebos.clear();
     }
 
+    /*!
+    @brief Initialize persistent mapped buffers for maximum performance data streaming.
+    @param max_vertex_size Maximum size in bytes for the vertex buffer
+    @param max_index_size Maximum size in bytes for the index buffer (0 to skip EBO)
+    @details
+    Creates persistent mapped buffers using OpenGL 4.4+ buffer storage functionality
+    to achieve the highest possible performance for dynamic geometry updates. This
+    approach eliminates the overhead of mapping/unmapping buffers for each update.
+    
+    **Buffer Storage Flags:**
+    - GL_DYNAMIC_STORAGE_BIT: Allows buffer content modification after creation
+    - GL_MAP_WRITE_BIT: Enables CPU write access to buffer memory
+    - GL_MAP_PERSISTENT_BIT: Buffer remains mapped across OpenGL calls
+    
+    **Mapping Flags:**
+    - GL_MAP_WRITE_BIT: CPU can write to the mapped memory
+    - GL_MAP_PERSISTENT_BIT: Mapping persists across OpenGL operations
+    - GL_MAP_FLUSH_EXPLICIT_BIT: Manual synchronization control for optimal performance
+    
+    **Performance Benefits:**
+    - Zero-copy data uploads via direct memory access
+    - No map/unmap overhead per frame
+    - Optimal for frequently updated geometry (sprites, particles, UI)
+    - Eliminates GPU pipeline stalls from buffer operations
+    
+    **Safety Features:**
+    - Automatically cleans up existing buffers before initialization
+    - Validates buffer creation success
+    - Handles optional index buffer creation
+    - Sets initialization flag for state tracking
+    
+    @note Requires OpenGL 4.4+ or ARB_buffer_storage extension
+    @warning Buffer sizes cannot be changed after creation - choose carefully
+    */
     void Rendering::InitializePersistentBuffers(size_t max_vertex_size, size_t max_index_size) {
         
         if (vbo_hdl != 0) {
@@ -173,6 +283,33 @@ namespace Component {
         buffers_initialized = true;
     }
 
+    /*!
+    @brief Clean up persistent mapped buffers and release all associated resources.
+    @details
+    Properly unmaps and releases persistent buffers created by InitializePersistentBuffers.
+    This function ensures clean resource management and prevents memory leaks.
+    
+    **Cleanup Operations:**
+    - Unmaps VBO memory if currently mapped
+    - Unmaps EBO memory if currently mapped  
+    - Resets all mapped pointers to nullptr for safety
+    - Clears the initialization flag
+    - Preserves buffer handles for potential deletion by other cleanup functions
+    
+    **Safety Features:**
+    - Null pointer checks prevent double-unmapping errors
+    - Graceful handling of partially initialized state
+    - State flag management for proper tracking
+    
+    This function should be called:
+    - During engine shutdown
+    - Before reinitializing with different buffer sizes
+    - When switching rendering contexts
+    - As part of error recovery procedures
+    
+    @note Does not delete the actual OpenGL buffer objects - only unmaps them
+    @warning Accessing mapped_vbo_ptr or mapped_ebo_ptr after this call is undefined behavior
+    */
     void Rendering::CleanupPersistentBuffers() {
         if (mapped_vbo_ptr) {
             glUnmapNamedBuffer(vbo_hdl);
@@ -185,6 +322,46 @@ namespace Component {
         buffers_initialized = false;
     }
 
+    /*!
+    @brief Set up a default Vertex Array Object with a unit quad geometry.
+    @details
+    Creates a complete VAO configuration for rendering a basic unit quad with
+    position and color attributes. This function serves as the foundation for
+    basic shape rendering and demonstrates proper OpenGL 4.5+ DSA usage.
+    
+    **Geometry Configuration:**
+    - Unit quad from -0.5 to 0.5 in X and Y axes
+    - Z coordinate set to 0.0 for 2D rendering
+    - Vertex order: bottom-left, bottom-right, top-right, top-left
+    - Triangle fan primitive for efficient rendering (2 triangles, 4 vertices)
+    
+    **Color Configuration:**
+    - Bottom-left: White (1.0, 1.0, 1.0)
+    - Bottom-right: Red (1.0, 0.0, 0.0)  
+    - Top-right: Green (0.0, 1.0, 0.0)
+    - Top-left: Blue (0.0, 0.0, 1.0)
+    
+    **Vertex Attribute Layout:**
+    - Location 0: Position (3 floats, 12 bytes)
+    - Location 1: Color (3 floats, 12 bytes)
+    - Total vertex size: 24 bytes
+    
+    **Buffer Organization:**
+    - Interleaved buffer layout with separate attribute streams
+    - Position data at offset 0
+    - Color data at offset (position_data_size)
+    - Element buffer with indices [0, 1, 2, 3] for triangle fan
+    
+    **OpenGL Features Used:**
+    - Direct State Access (DSA) for all operations
+    - glCreateBuffers/glCreateVertexArrays for object creation
+    - glNamedBufferStorage for immutable buffer storage
+    - glVertexArrayVertexBuffer for attribute binding
+    - glVertexArrayElementBuffer for index buffer binding
+    
+    This function creates a reusable quad geometry that can be transformed
+    and rendered for basic shape drawing operations.
+    */
     void Rendering::Setup_VAO() {
         std::array<CEVec3, 4> pos_vtx{
             CEVec3(-0.5f, -0.5f, 0.0f), // Bottom-left
@@ -244,6 +421,46 @@ namespace Component {
         glBindVertexArray(0);
     }
 
+    /*!
+    @brief Compile and link the default shader program with comprehensive error checking.
+    @details
+    Loads, compiles, and links the default vertex and fragment shaders for the
+    CrashoutEngine rendering system. This function performs extensive validation
+    and error reporting to ensure shader program integrity.
+    
+    **Shader Files:**
+    - Vertex Shader: CrashoutShader.vert (handles vertex transformations)
+    - Fragment Shader: CrashoutShader.frag (handles pixel color output)
+    - Path: ../../../projects/CrashoutEngine/shaders/
+    
+    **Compilation Process:**
+    1. Vertex shader compilation with error checking
+    2. Fragment shader compilation with error checking  
+    3. Program linking with validation
+    4. Runtime validation in current OpenGL context
+    
+    **Error Handling:**
+    - Detailed error messages for each compilation stage
+    - Shader log output for debugging compilation issues
+    - Application termination on any shader errors (fail-fast approach)
+    - Comprehensive validation ensures shader program correctness
+    
+    **Automation Support:**
+    - Includes automation hook for testing framework integration
+    - Maintains compatibility with automated shader validation systems
+    
+    **Validation Stages:**
+    - Compilation: Checks shader syntax and OpenGL compatibility
+    - Linking: Verifies vertex/fragment shader interface compatibility
+    - Validation: Ensures program can execute in current OpenGL state
+    
+    This function must be called after OpenGL context creation and before
+    any rendering operations. Shader compilation errors will terminate the
+    application with descriptive error messages for debugging.
+    
+    @note Requires valid OpenGL context and GLSL shader files to be present
+    @warning Application exits on any shader compilation or linking errors
+    */
     void Rendering::Setup_Shdrpgm() {
 
         const std::string Shader = "../../../projects/CrashoutEngine/shaders/CrashoutShader.frag";
@@ -349,7 +566,7 @@ namespace Component {
             }
             
             // Create new VBO with extra space 
-            size_t padded_size = total_vertex_size * 1.5f; 
+            size_t padded_size = static_cast<size_t>(total_vertex_size * 1.5f); 
             glCreateBuffers(1, &vbo_hdl);
             glNamedBufferStorage(vbo_hdl, padded_size, nullptr, 
                 GL_DYNAMIC_STORAGE_BIT | GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT);
@@ -371,12 +588,12 @@ namespace Component {
                 glDeleteBuffers(1, &ebo_hdl);
             }
             
-            size_t padded_ebo_size = total_index_size * 1.5f;
+            size_t padded_ebo_size = static_cast<size_t>(total_index_size * 1.5);
             glCreateBuffers(1, &ebo_hdl);
-            glNamedBufferStorage(ebo_hdl, padded_ebo_size, nullptr,
+            glNamedBufferStorage(ebo_hdl, static_cast<GLsizeiptr>(padded_ebo_size), nullptr,
                 GL_DYNAMIC_STORAGE_BIT | GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT);
             
-            mapped_ebo_ptr = glMapNamedBufferRange(ebo_hdl, 0, padded_ebo_size,
+            mapped_ebo_ptr = glMapNamedBufferRange(ebo_hdl, 0, static_cast<GLsizeiptr>(padded_ebo_size),
                 GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_FLUSH_EXPLICIT_BIT);
             
             current_ebo_size = padded_ebo_size;
@@ -469,7 +686,7 @@ namespace Component {
                 glDeleteBuffers(1, &vbo_hdl);
             }
             
-            size_t padded_vbo_size = total_vertex_size * 1.5f;
+            size_t padded_vbo_size = static_cast<size_t>(total_vertex_size * 1.5f);
             glCreateBuffers(1, &vbo_hdl);
             glNamedBufferStorage(vbo_hdl, padded_vbo_size, nullptr,
                 GL_DYNAMIC_STORAGE_BIT | GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT);
@@ -493,15 +710,15 @@ namespace Component {
                 glDeleteBuffers(1, &ebo_hdl);
             }
             
-            float padded_ebo_size = total_index_size * 1.5f;
+            size_t padded_ebo_size = static_cast<size_t>(total_index_size * 1.5);
             glCreateBuffers(1, &ebo_hdl);
-            glNamedBufferStorage(ebo_hdl, padded_ebo_size, nullptr,
+            glNamedBufferStorage(ebo_hdl, static_cast<GLsizeiptr>(padded_ebo_size), nullptr,
                 GL_DYNAMIC_STORAGE_BIT | GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT);
             
-            mapped_ebo_ptr = glMapNamedBufferRange(ebo_hdl, 0, padded_ebo_size,
+            mapped_ebo_ptr = glMapNamedBufferRange(ebo_hdl, 0, static_cast<GLsizeiptr>(padded_ebo_size),
                 GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_FLUSH_EXPLICIT_BIT);
             
-            current_ebo_size = static_cast<size_t>(padded_ebo_size);
+            current_ebo_size = padded_ebo_size;
         }
         
         // Ultra-fast data upload
@@ -617,6 +834,15 @@ namespace Component {
 
 
 
+    /*!
+    @brief Execute a complete draw call using the current VAO and shader state.
+    @details
+    Performs a complete rendering operation by activating the shader program,
+    binding the vertex array object, issuing the draw call, and properly
+    cleaning up OpenGL state. This function represents the final stage of
+    the rendering pipeline.
+
+    */
     void Rendering::Draw() {
         shdr_pgm.Use();
         glBindVertexArray(vaoid);

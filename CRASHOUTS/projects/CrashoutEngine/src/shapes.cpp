@@ -43,13 +43,44 @@ scaling) to shape vertices for flexible rendering.
 
 namespace Component {
 
-    // Centered world coordinate system settings
+    /*!
+    @struct WorldSettings
+    @brief Configuration settings for the world coordinate system.
+    @details
+    Defines the base size for the world coordinate system used in shape rendering.
+    The BASE_SIZE determines the world units for the smaller dimension of the screen,
+    with the larger dimension scaled proportionally based on aspect ratio.
+    */
     struct WorldSettings {
-
-        //float const& WindowWidth = static_cast<float>(GLApp::width);
+        /*!
+        @brief Base world size in units for the smaller screen dimension.
+        @details
+        This value determines the world coordinate range. For example, with BASE_SIZE = 100.0f,
+        a square screen would have world coordinates from -50 to +50 in both dimensions.
+        */
         inline static float BASE_SIZE = 100.0f;
     };
 
+    // Static buffers for GPU instancing (created once, reused)
+    static GLuint s_instanceVAO = 0;
+    static GLuint s_instanceVBO = 0;  // Base geometry
+    static GLuint s_instanceEBO = 0;  // Indices
+    static GLuint s_instanceDataVBO = 0;  // Instance data (positions, colors, etc.)
+    static bool s_instanceBuffersInitialized = false;
+
+    /*!
+    @brief Create an orthographic projection matrix for centered world coordinates.
+    @return Orthographic projection matrix for the current screen aspect ratio
+    @details
+    Creates an orthographic projection matrix that centers the world coordinate system
+    at (0,0) and scales the world to maintain consistent proportions across different
+    screen aspect ratios. The world dimensions are calculated as follows:
+    - For wide/square screens: height = BASE_SIZE, width = height * aspect
+    - For tall screens: width = BASE_SIZE, height = width / aspect
+    
+    The resulting coordinate system has (0,0) at the center of the screen with
+    positive X to the right and positive Y upward.
+    */
     glm::mat4 CreateCenteredWorldProjection() {
         float aspect = static_cast<float>(GLApp::width) / GLApp::height;
 
@@ -75,8 +106,45 @@ namespace Component {
 
     void Shapes::Cleanup() {
         Component::Rendering::Cleanup();
+        
+        // Clean up static instancing buffers
+        if (s_instanceBuffersInitialized) {
+            if (s_instanceVAO != 0) {
+                glDeleteVertexArrays(1, &s_instanceVAO);
+                s_instanceVAO = 0;
+            }
+            if (s_instanceVBO != 0) {
+                glDeleteBuffers(1, &s_instanceVBO);
+                s_instanceVBO = 0;
+            }
+            if (s_instanceEBO != 0) {
+                glDeleteBuffers(1, &s_instanceEBO);
+                s_instanceEBO = 0;
+            }
+            if (s_instanceDataVBO != 0) {
+                glDeleteBuffers(1, &s_instanceDataVBO);
+                s_instanceDataVBO = 0;
+            }
+            s_instanceBuffersInitialized = false;
+        }
     }
 
+    /*!
+    @brief Create and render a colored square with full transformation support.
+    @param position World position for the square center (x, y, z coordinates)
+    @param size Side length of the square in world units
+    @param rotation Rotation angle in degrees around the Z-axis
+    @param scale Uniform scaling factor applied to the square
+    @param color RGB color values for the square (0.0-1.0 range)
+    @details
+    Creates and immediately renders a square primitive with comprehensive
+    transformation support and optimized rendering pipeline integration.
+    The square is generated with vertex colors and uses the centered world
+    coordinate system for consistent positioning across different screen sizes.
+    
+    @note Requires active OpenGL context and initialized Rendering system
+    @warning Color values outside 0.0-1.0 range may produce unexpected results
+    */
     void Shapes::CreateSquare(const CEVec3& position, float size, float rotation, float scale, const CEVec3& color) {
         Component::Rendering& renderer = Component::Rendering::Get();
 
@@ -92,7 +160,7 @@ namespace Component {
         std::array<CEVec3, 4> clr_vtx{ color, color, color, color };
         std::array<GLushort, 4> idx_vtx{ 0, 1, 2, 3 };
 
-        // Use optimized buffer setup for maximum performance
+        
         renderer.SetupBuffersOptimized(pos_vtx.data(), sizeof(pos_vtx),
             clr_vtx.data(), sizeof(clr_vtx),
             idx_vtx.data(), idx_vtx.size(),
@@ -122,6 +190,25 @@ namespace Component {
         renderer.Draw();
     }
 
+    /*!
+    @brief Create and render multiple squares using GPU instancing for optimal performance.
+    @param positions Array of world positions for each square center
+    @param colors Array of RGB color values for each square
+    @param rotations Array of rotation angles in degrees for each square
+    @param scales Array of scaling factors for each square
+    @param count Number of squares to render (must match array sizes)
+    @param baseSize Base side length for squares before individual scaling
+    @details
+    Renders multiple squares in a single draw call using OpenGL instancing
+    for maximum performance. Each square can have individual position, color,
+    rotation, and scale while sharing the same base geometry. This function
+    is ideal for particle systems, UI elements, or any scenario requiring
+    many similar shapes with different properties.
+    
+    @note Requires arrays of size 'count' for all parameter arrays
+    @warning Array sizes must match count parameter to avoid memory access errors
+    @note First call initializes static buffers; subsequent calls reuse them
+    */
     void Shapes::CreateInstancedSquares(const CEVec3* positions, const CEVec3* colors, 
                                       const float* rotations, const float* scales, 
                                       int count, float baseSize) {
@@ -129,119 +216,114 @@ namespace Component {
         
         Component::Rendering& renderer = Component::Rendering::Get();
 
+        // Initialize static buffers once
+        if (!s_instanceBuffersInitialized) {
+            // Define base square vertices (only 4 vertices, not count*4!)
+            float halfSize = baseSize / 2.0f;
+            std::array<CEVec3, 4> base_vertices{
+                CEVec3(-halfSize, -halfSize, 0.0f),
+                CEVec3(halfSize, -halfSize, 0.0f),
+                CEVec3(halfSize, halfSize, 0.0f),
+                CEVec3(-halfSize, halfSize, 0.0f)
+            };
 
+            // Base indices for one quad
+            std::array<GLushort, 6> base_indices{
+                0, 1, 2,  // First triangle
+                0, 2, 3   // Second triangle
+            };
 
-        // Define base square vertices centered at origin
-        float halfSize = baseSize / 2.0f;
-        std::array<CEVec3, 4> base_vertices{
-            CEVec3(-halfSize, -halfSize, 0.0f),
-            CEVec3(halfSize, -halfSize, 0.0f),
-            CEVec3(halfSize, halfSize, 0.0f),
-            CEVec3(-halfSize, halfSize, 0.0f)
-        };
+            // Create VAO and buffers
+            glGenVertexArrays(1, &s_instanceVAO);
+            glGenBuffers(1, &s_instanceVBO);
+            glGenBuffers(1, &s_instanceEBO);
+            glGenBuffers(1, &s_instanceDataVBO);
 
-        // Create vertex and color data for all instances
-        std::vector<CEVec3> all_vertices;
-        std::vector<CEVec3> all_colors;
-        std::vector<GLushort> all_indices;
-        
-        all_vertices.reserve(count * 4);
-        all_colors.reserve(count * 4);
-        all_indices.reserve(count * 6); // 6 indices per quad (2 triangles)
+            glBindVertexArray(s_instanceVAO);
+
+            // Setup base geometry (vertices)
+            glBindBuffer(GL_ARRAY_BUFFER, s_instanceVBO);
+            glBufferData(GL_ARRAY_BUFFER, sizeof(base_vertices), base_vertices.data(), GL_STATIC_DRAW);
+            
+            // Vertex positions (location 0)
+            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(CEVec3), (void*)0);
+            glEnableVertexAttribArray(0);
+
+            // Setup indices
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, s_instanceEBO);
+            glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(base_indices), base_indices.data(), GL_STATIC_DRAW);
+
+            //  instance data buffer 
+            glBindBuffer(GL_ARRAY_BUFFER, s_instanceDataVBO);
+            
+            // Instance position (location 3) 
+            glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 8, (void*)0);
+            glEnableVertexAttribArray(3);
+            glVertexAttribDivisor(3, 1);  
+            
+            // Instance color (location 4) 
+            glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 8, (void*)(sizeof(float) * 3));
+            glEnableVertexAttribArray(4);
+            glVertexAttribDivisor(4, 1);
+            
+            // Instance rotation (location 5)
+            glVertexAttribPointer(5, 1, GL_FLOAT, GL_FALSE, sizeof(float) * 8, (void*)(sizeof(float) * 6));
+            glEnableVertexAttribArray(5);
+            glVertexAttribDivisor(5, 1);
+            
+            // Instance scale (location 6) 
+            glVertexAttribPointer(6, 1, GL_FLOAT, GL_FALSE, sizeof(float) * 8, (void*)(sizeof(float) * 7));
+            glEnableVertexAttribArray(6);
+            glVertexAttribDivisor(6, 1);
+
+            s_instanceBuffersInitialized = true;
+        }
+
+        // Prepare instance data (position, color, rotation, scale per instance)
+        std::vector<float> instanceData;
+        instanceData.reserve(count * 8);  // 8 floats per instance
 
         for (int i = 0; i < count; ++i) {
-            // Transform vertices for this instance
-            glm::mat4 model = glm::mat4(1.0f);
-            model = glm::translate(model, glm::vec3(positions[i].x, positions[i].y, positions[i].z));
-            model = glm::rotate(model, glm::radians(rotations[i]), glm::vec3(0, 0, 1));
-            model = glm::scale(model, glm::vec3(scales[i], scales[i], 1.0f));
 
-            // Transform each vertex
-            for (int v = 0; v < 4; ++v) {
-                glm::vec4 transformed = model * glm::vec4(base_vertices[v].x, base_vertices[v].y, base_vertices[v].z, 1.0f);
-                all_vertices.push_back(CEVec3(transformed.x, transformed.y, transformed.z));
-                all_colors.push_back(colors[i]);
-            }
-
-            // Add indices for this quad as two triangles (offset by current vertex count)
-            GLushort base_index = static_cast<GLushort>(i * 4);
-            // First triangle: 0, 1, 2
-            all_indices.push_back(base_index + 0);
-            all_indices.push_back(base_index + 1);
-            all_indices.push_back(base_index + 2);
-            // Second triangle: 0, 2, 3
-            all_indices.push_back(base_index + 0);
-            all_indices.push_back(base_index + 2);
-            all_indices.push_back(base_index + 3);
+            // Position 
+            instanceData.push_back(positions[i].x);
+            instanceData.push_back(positions[i].y);
+            instanceData.push_back(positions[i].z);
+            
+            // Color 
+            instanceData.push_back(colors[i].x);
+            instanceData.push_back(colors[i].y);
+            instanceData.push_back(colors[i].z);
+            
+            // Rotation
+            instanceData.push_back(rotations[i]);
+            
+            // Scale 
+            instanceData.push_back(scales[i]);
         }
 
-        if (renderer.vaoid != 0) {
-            glDeleteVertexArrays(1, &renderer.vaoid);
-            renderer.vaoid = 0;
-        }
+        // Update instance data buffer
+        glBindBuffer(GL_ARRAY_BUFFER, s_instanceDataVBO);
+        glBufferData(GL_ARRAY_BUFFER, instanceData.size() * sizeof(float), instanceData.data(), GL_DYNAMIC_DRAW);
 
-      
-        renderer.SetupBuffersOptimized(
-            all_vertices.data(), all_vertices.size() * sizeof(CEVec3),
-            all_colors.data(), all_colors.size() * sizeof(CEVec3),
-            all_indices.data(), all_indices.size(),
-            GL_TRIANGLES  // Use GL_TRIANGLES for modern OpenGL compatibility
-        );
-    
-
+        // Render using instanced drawing
         renderer.shdr_pgm.Use();
         
-        // Verify the shader program is alive
-        GLint current_program;
-        glGetIntegerv(GL_CURRENT_PROGRAM, &current_program);
-
-        // Use identity matrices since we've already transformed the vertices
-        glm::mat4 identity = glm::mat4(1.0f);
         glm::mat4 projection = CreateCenteredWorldProjection();
-
-        renderer.shdr_pgm.SetUniform("uModel", identity);
-        renderer.shdr_pgm.SetUniform("uView", identity);
+        renderer.shdr_pgm.SetUniform("uModel", glm::mat4(1.0f));
+        renderer.shdr_pgm.SetUniform("uView", glm::mat4(1.0f));
         renderer.shdr_pgm.SetUniform("uProjection", projection);
 
-        // Ensure texture state is properly reset for non-textured rendering
-        glBindTextureUnit(0, 0); // Unbind any texture from unit 0
-        
         GLint useTexture_loc = glGetUniformLocation(renderer.shdr_pgm.GetHandle(), "u_useTexture");
-        if (useTexture_loc != -1) glUniform1i(useTexture_loc, 0); // Use vertex colors
-
-        GLint tex_loc = glGetUniformLocation(renderer.shdr_pgm.GetHandle(), "uTex2d");
-        if (tex_loc != -1) glUniform1i(tex_loc, 0); // Set texture sampler to unit 0
+        if (useTexture_loc != -1) glUniform1i(useTexture_loc, 0);
 
         GLint tint_loc = glGetUniformLocation(renderer.shdr_pgm.GetHandle(), "u_tint");
-        if (tint_loc != -1) glUniform3f(tint_loc, 1.0f, 1.0f, 1.0f); // No tint
+        if (tint_loc != -1) glUniform3f(tint_loc, 1.0f, 1.0f, 1.0f);
 
-        // Upload dynamic vertex and color data to GPU
-        GLsizei position_data_size = sizeof(CEVec3) * static_cast<GLsizei>(all_vertices.size());
-        GLsizei color_data_size = sizeof(CEVec3) * static_cast<GLsizei>(all_colors.size());
-        GLsizei total_data_size = position_data_size + color_data_size;
-        
-        // Resize buffer if needed
-        glNamedBufferData(renderer.vbo_hdl, total_data_size, nullptr, GL_DYNAMIC_DRAW);
-        
-        // Upload vertex positions
-        glNamedBufferSubData(renderer.vbo_hdl, 0, position_data_size, all_vertices.data());
-        
-        // Upload vertex colors
-        glNamedBufferSubData(renderer.vbo_hdl, position_data_size, color_data_size, all_colors.data());
-        
-        // Update VAO to use new data layout
-        glVertexArrayVertexBuffer(renderer.vaoid, 0, renderer.vbo_hdl, 0, sizeof(CEVec3));
-        glVertexArrayVertexBuffer(renderer.vaoid, 1, renderer.vbo_hdl, position_data_size, sizeof(CEVec3));
-        
-        // Upload index data
-        GLsizei index_data_size = sizeof(GLushort) * static_cast<GLsizei>(all_indices.size());
-        glNamedBufferData(renderer.ebo_hdl, index_data_size, all_indices.data(), GL_DYNAMIC_DRAW);
-        
-        // Update element count for drawing
-        renderer.idx_elem_cnt = static_cast<GLuint>(all_indices.size());
-        renderer.primitive_type = GL_TRIANGLES;
-        
-        renderer.Draw();
+        // Bind VAO and draw instances
+        glBindVertexArray(s_instanceVAO);
+        glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, 0, count);
+        glBindVertexArray(0);
     }
 
     void Shapes::CreateLine(const CEVec3& start, const CEVec3& end, float thickness, float rotation, float scale, const CEVec3& color) {
@@ -265,7 +347,7 @@ namespace Component {
         std::array<CEVec3, 4> clr_vtx{ color, color, color, color };
         std::array<GLushort, 6> idx_vtx{ 0, 1, 2, 0, 2, 3 };
 
-        // Use optimized buffer setup for maximum performance
+        
         renderer.SetupBuffersOptimized(pos_vtx.data(), sizeof(pos_vtx),
             clr_vtx.data(), sizeof(clr_vtx),
             idx_vtx.data(), idx_vtx.size(),
@@ -407,21 +489,22 @@ namespace Component {
 
         // Generate perimeter vertices
         for (int i = 0; i <= segments; ++i) {
-            float angle = 2.0f * M_PI * i / segments;
-            float x = radius * cos(angle);
-            float y = radius * sin(angle);
+            float angle = 2.0f * M_PI * static_cast<float>(i) / static_cast<float>(segments);
+            float x = radius * cosf(angle);
+            float y = radius * sinf(angle);
             pos_vtx.push_back(CEVec3(x, y, 0.0f));
             clr_vtx.push_back(color);
         }
 
         // Generate indices for triangle fan
         for (int i = 0; i < segments; ++i) {
-            idx_vtx.push_back(0);           // Center vertex
-            idx_vtx.push_back(i + 1);       // Current perimeter vertex
-            idx_vtx.push_back(i + 2);       // Next perimeter vertex
+            // Ensure indices fit within GLushort range (0-65535)
+            idx_vtx.push_back(0);                                  // Center vertex
+            idx_vtx.push_back(static_cast<GLushort>(i + 1));       // Current perimeter vertex
+            idx_vtx.push_back(static_cast<GLushort>(i + 2));       // Next perimeter vertex
         }
 
-        // Use optimized buffer setup for maximum performance
+        
         renderer.SetupBuffersOptimized(pos_vtx.data(), pos_vtx.size() * sizeof(CEVec3),
             clr_vtx.data(), clr_vtx.size() * sizeof(CEVec3),
             idx_vtx.data(), idx_vtx.size(),
@@ -444,6 +527,26 @@ namespace Component {
         renderer.Draw();
     }
 
+    /*!
+    @brief Create and render a textured square with full transformation and tinting support.
+    @param texturePath File path to the texture image (relative or absolute)
+    @param position World position for the square center (x, y, z coordinates)
+    @param size Side length of the square in world units
+    @param rotation Rotation angle in degrees around the Z-axis
+    @param scale Uniform scaling factor applied to the square
+    @param tint RGB color tint applied to the texture (0.0-1.0 range)
+    @param uvSize UV coordinate scaling for texture tiling effects
+    @details
+    Creates and immediately renders a textured square with comprehensive
+    transformation support, color tinting, and UV coordinate control.
+    The function integrates with CrashoutEngine's texture management system
+    for efficient texture loading and binding, while supporting alpha blending
+    for transparent textures.
+    
+    @note Requires valid texture file and active OpenGL context
+    @warning Invalid texture paths will result in early function return
+    @note Alpha blending is automatically enabled for transparency support
+    */
     void Shapes::CreateTexturedSquare(const std::string& texturePath, const CEVec3& position, float size,
         float rotation, float scale, const CEVec3& tint, const CEVec2& uvSize) {
         Component::Rendering& renderer = Component::Rendering::Get();

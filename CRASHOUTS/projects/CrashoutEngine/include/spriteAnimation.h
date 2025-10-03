@@ -24,7 +24,7 @@
         variables (`m_currentSprite`, `m_spriteMode`) are provided for
         quick access and sprite state switching.
 
-        This module integrates with the engine’s rendering system and
+        This module integrates with the engineï¿½s rendering system and
         dependencies (`entitymanager`, `rendering`, and
         `resources/textures`) to support a component-based entity system
         with animated 2D graphics.

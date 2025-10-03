@@ -39,6 +39,10 @@
         {
             "name": "duck",
             "path": "duck.jpg"
+        },
+        {
+            "name": "ducky_2_spritesheet",
+            "path": "ducky_2_spritesheet.png"
         }
     ],
     "json": [
@@ -46,5 +50,6 @@
             "name": "assetmanifest",
             "path": "assetmanifest.json"
         }
-    ]
+    ],
+    "sprite_sheet": []
 }

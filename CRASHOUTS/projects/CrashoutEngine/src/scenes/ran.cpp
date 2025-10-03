@@ -1,3 +1,44 @@
+/*!
+@file       ran.cpp
+@author     ranvitha@digipen.edu
+@date       05/09/2025
+
+@brief      Implementation of Ran's test scene for the Crashout Engine.
+@details    This file implements a comprehensive test scene that demonstrates
+            various rendering and animation capabilities of the Crashout Engine:
+
+            **Display Modes:**
+            - Mode 0: Basic shape rendering with clear background
+            - Mode 1: Textured background rendering
+            - Mode 2: Instanced rendering for multiple objects
+            - Mode 3: Sprite animation with duck character
+
+            **Key Features:**
+            - Entity Component System (ECS) integration
+            - Multiple geometric primitive rendering
+            - Sprite animation system with state management
+            - Input handling for character movement
+            - Instanced rendering for performance testing
+            - Dynamic display mode switching
+
+            **Animation System:**
+            The scene includes a duck character with multiple animation states:
+            - idle_normal: Basic idle animation
+            - walk_normal: Walking animation
+            - idle_bounce: Bouncing idle animation
+            - walk_bounce: Bouncing walk animation
+
+            **Input Controls:**
+            - Arrow keys or WASD for movement
+            - G key to cycle display modes
+            - Various transformation controls for testing
+
+            This scene serves as both a feature demonstration and a testing
+            ground for the engine's 2D rendering capabilities.
+//__________________________________________________________________________*/
+
+/*                                                                   includes
+----------------------------------------------------------------------------- */
 #include "scenes/ran.h"
 #include "log.h"
 #include <GL/glew.h>
@@ -53,6 +94,12 @@ static bool g_instancesInitialized = false;
 const int maxObjectCount = 2500;
 
 
+/*!
+@brief Load resources and initialize ECS for Ran's scene.
+@details
+Obtains the singleton ECS instance and resets it to prepare for the scene.
+This ensures a clean state when entering Ran's test scene.
+*/
 void LoadRan()
 {
     
@@ -60,6 +107,15 @@ void LoadRan()
     globalECS->Reset();
 }
 
+/*!
+@brief Initialize Ran's scene components and systems.
+@details
+Performs scene-specific initialization including:
+- Logging scene initialization
+- Setting up instanced rendering system
+- Initializing sprite animation system
+Called after LoadRan() to prepare the scene for rendering.
+*/
 void InitRan()
 {
     LOGI(Core, "Ran Initialized");
@@ -67,32 +123,66 @@ void InitRan()
     InitializeSpriteAnimation();
 }
 
+/*!
+@brief Initialize the sprite animation system with duck character.
+@details
+Sets up the duck sprite with a 4x6 sprite sheet containing 24 frames:
+- Row 0 (frames 0-5): idle_normal animation (2 frames used)
+- Row 1 (frames 6-11): walk_normal animation (6 frames used)
+- Row 2 (frames 12-17): idle_bounce animation (4 frames used)
+- Row 3 (frames 18-23): walk_bounce animation (2 frames used)
 
+Configures initial sprite properties including position, scale, rotation,
+and sets the default animation state to "walk_normal".
+*/
 void InitializeSpriteAnimation()
 {
-    // Init duck sprite 
-    Component::Sprite::m_sprite.init("../../../projects/CrashoutEngine/sprite_sheet/ducky_2_spritesheet.png", 4, 6, 0.3f);
+    // Init duck sprite - 4 rows, 6 columns (24 total frames)
+    Component::Sprite::m_sprite.init("ducky_2_spritesheet", 4, 6, 0.3f);
 
-    // Setup duck animations
-    Component::Sprite::m_sprite.addAnimationState("idle_normal", Component::AnimationState(0, 2, 0.05f, true));
-    Component::Sprite::m_sprite.addAnimationState("walk_normal", Component::AnimationState(6, 6, 0.02f, true));
-    Component::Sprite::m_sprite.addAnimationState("idle_bounce", Component::AnimationState(12, 4, 0.04f, true));
-    Component::Sprite::m_sprite.addAnimationState("walk_bounce", Component::AnimationState(16, 2, 0.015f, true));
+    // Setup duck animations for 4x6 sprite sheet layout:
+    // Row 0 (frames 0-5): idle_normal animation (use first 2 frames)
+    // Row 1 (frames 6-11): walk_normal animation (use all 6 frames)  
+    // Row 2 (frames 12-17): idle_bounce animation (use first 4 frames)
+    // Row 3 (frames 18-23): walk_bounce animation (use first 2 frames)
+    
+    Component::Sprite::m_sprite.addAnimationState("idle_normal", Component::AnimationState(0, 2, 0.3f, true));
+    Component::Sprite::m_sprite.addAnimationState("walk_normal", Component::AnimationState(6, 6, 0.08f, true));  // Faster walking animation
+    Component::Sprite::m_sprite.addAnimationState("idle_bounce", Component::AnimationState(12, 4, 0.2f, true));
+    Component::Sprite::m_sprite.addAnimationState("walk_bounce", Component::AnimationState(18, 2, 0.12f, true));
 
     // Set position and scale for the duck
     Component::Sprite::m_sprite.setPosition(0.0f, 0.0f);
-    Component::Sprite::m_sprite.setScale(TestScale);
+    Component::Sprite::m_sprite.setScale(TestScale * 8.0f); // Increase scale for better visibility
     Component::Sprite::m_sprite.setRotation(TestRotation);
 
     Component::Sprite::m_sprite.setAnimationState("walk_normal");
 }
 
+/*!
+@brief Update Ran's scene logic per frame.
+@details
+Calls the sprite animation update function to handle per-frame
+animation logic, movement, and state transitions.
+*/
 void UpdateRan()
 {
     UpdateSpriteAnimation();
 }
 
-// Function to update sprite animation (moved from glapp.cpp)
+/*!
+@brief Update sprite animation logic and movement.
+@details
+Handles duck character movement and animation state management:
+- Calculates movement based on input flags and delta time
+- Determines appropriate animation state (walk vs idle)
+- Updates sprite position, facing direction, scale, and rotation
+- Manages animation state transitions
+- Updates sprite animation frame progression
+
+Movement speed is set to 15.0 world units per second. Animation states
+are switched between "walk_normal" when moving and "idle_bounce" when stationary.
+*/
 void UpdateSpriteAnimation()
 {
     // Duck movement and animation logic
@@ -127,9 +217,34 @@ void UpdateSpriteAnimation()
 
 void RenderRan()
 {
-    glClearColor(0.2f, 0.2f, 0.2f, 1.0f);  // Dark gray background
+    // Clear the screen
+    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    switch (displayMode) {
+    case 0: // Clear background with shapes
+        RenderShapes();
+        break;
+    case 1: // JPG background
+        RenderBackground();
+        break;
+    case 2: // Instancing on clear background
+        RenderInstancing();
+        break;
+    case 3: // Sprite animation
+        RenderSpriteAnimation();
+        break;
+    }
+}
+
+void RenderShapes()
+{
+    // Render basic shapes - this can be expanded based on needs
+    // For now, just clear background
+}
+
+void RenderBackground()
+{
     // Calculate world dimensions for background
     float aspect = static_cast<float>(GLApp::width) / GLApp::height;
     float worldWidth, worldHeight;
@@ -143,43 +258,35 @@ void RenderRan()
         worldHeight = worldWidth / aspect;
     }
 
+    // Display JPG background
+    Component::Shapes::CreateTexturedRectangle(
+        "duck",
+        CEVec3(0.0f, 0.0f, -0.9f),  // Position at center, behind other objects
+        worldWidth,                  // Full world width
+        worldHeight,                 // Full world height
+        0.0f,                       // No rotation
+        1.0f,                       // Normal scale
+        CEVec3(1.0f, 1.0f, 1.0f)    // No tint
+    );
+}
 
+void RenderInstancing()
+{
+    // Use instanced rendering to draw all squares in one call
+    Component::Shapes::CreateInstancedSquares(
+        g_positions.data(),
+        g_colors.data(),
+        g_rotations.data(),
+        g_scales.data(),
+        maxObjectCount,
+        0.5f  // base size
+    );
+}
 
-    // Display Mode 1 JPG background
-    if (displayMode == 1 ) {
-        /*g_instancesInitialized = true;*/
-        Component::Shapes::CreateTexturedRectangle(
-            "../../../projects/CrashoutEngine/images/duck.jpg",
-            CEVec3(0.0f, 0.0f, -0.9f),  // Position at center, behind other objects
-            worldWidth,                  // Full world width
-            worldHeight,                 // Full world height
-            0.0f,                       // No rotation
-            1.0f,                       // Normal scale
-            CEVec3(1.0f, 1.0f, 1.0f)    // No tint
-        );
-
-
-    }
-
-    // Display Mode 2 Instancing on clear background
-    else if (displayMode == 2) {
-
-    
-        // Use instanced rendering to draw all squares in one call
-        Component::Shapes::CreateInstancedSquares(
-            g_positions.data(),
-            g_colors.data(),
-            g_rotations.data(),
-            g_scales.data(),
-            maxObjectCount,
-            0.5f  // base size
-        );
-    }
-
-    // Display Mode 3 Sprite animation
-    else if (displayMode == 3) {
-        Component::Sprite::m_sprite.render();
-    }
+void RenderSpriteAnimation()
+{
+    // Render the sprite animation
+    Component::Sprite::m_sprite.render();
 }
 
 void FreeRan()
