@@ -60,7 +60,7 @@ namespace CrashoutsEngine {
 		// Mutex to ensure thread safety
 		static std::mutex mtx;
 
-		// Inititalizing instancePtr with an instance (Outside of this class we
+		// Initializing instancePtr with an instance (Outside of this class we
 		// are initializing instancePtr with an object.)
 		static ECS* instancePtr;
 

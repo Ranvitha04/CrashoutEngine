@@ -9,6 +9,10 @@
             "path": "banks\\Master.strings.bank"
         },
         {
+            "name": "Music",
+            "path": "banks\\Music.bank"
+        },
+        {
             "name": "sfx",
             "path": "banks\\sfx.bank"
         }
@@ -217,12 +221,6 @@
         {
             "name": "assetmanifest",
             "path": "assetmanifest.json"
-        }
-    ],
-    "scenes": [
-        {
-            "name": "renfred",
-            "path": "renfred"
         }
     ]
 }

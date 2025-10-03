@@ -1,5 +1,5 @@
 /*!
-@file   resourcemanager.h
+@file   assetmanager.h
 @author lee.r@digipen.edu
 @date   15/09/2025
 

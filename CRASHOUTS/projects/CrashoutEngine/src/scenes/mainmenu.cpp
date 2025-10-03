@@ -76,13 +76,13 @@ void LoadMainMenu()
 	globalECS = CrashoutsEngine::ECS::getInstance();
 	globalECS->Reset();
 
-	GLuint shaderID = loadShaderProgram("../../../projects/CrashoutEngine/shaders/textShader.vert", "../../../projects/CrashoutEngine/shaders/textShader.frag");
+	GLuint shaderID = LoadShaderProgram("../../../projects/CrashoutEngine/shaders/textShader.vert", "../../../projects/CrashoutEngine/shaders/textShader.frag");
 	if (shaderID == 0) {
 		std::cout << "Failed to load text shader.\n";
 		return;
 	}
 	gTextRenderer = new TextRenderer("../../../projects/CrashoutEngine/assets/fonts/arial.ttf", Settings::GetScreenWidth(), Settings::GetScreenHeight());
-	gTextRendererA = new TextRenderer("../../../projects/CrashoutEngine/assets/fonts/Exo2-Regular.ttf", Settings::GetScreenWidth(), Settings::GetScreenHeight());
+	gTextRendererA = new TextRenderer("../../../projects/CrashoutEngine/assets/fonts/Exo2-Regular.ttf", Settings::GetScreenWidth(), Settings::GetScreenHeight()); 
 }
 
 void InitMainMenu()
@@ -191,10 +191,10 @@ void RenderMainMenu()
 	Scene::RenderScene(*globalECS);
 	
 	if (gTextRenderer) {
-		gTextRenderer->renderCenteredText("Hello", -900.0f, 0.0f, 1.0f, glm::vec3(0.0f));
+		gTextRenderer->RenderCenteredText("Hello", -900.0f, 0.0f, 1.0f, glm::vec3(0.0f));
 	}
 	if (gTextRendererA) {
-		gTextRendererA->renderCenteredText(std::to_string(itemCount), -900.0f, 100.0f, 1.0f, glm::vec3(1.0f, 1.0f, 1.0f));
+		gTextRendererA->RenderCenteredText(std::to_string(itemCount), -900.0f, 100.0f, 1.0f, glm::vec3(1.0f, 1.0f, 1.0f));
 	}
 
 }

@@ -12,11 +12,9 @@
 ----------------------------------------------------------------------------- */
 #pragma once
 #include <type_traits>
-#include <tuple>
 #include <string>
 #include <cstring>
 #include <utility>
-#include <initializer_list>
 #include <imgui.h>
 #include <rfl/to_view.hpp>
 #include <rfl/tuple.hpp>   // for rfl::apply and rfl tuples

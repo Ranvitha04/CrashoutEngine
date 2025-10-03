@@ -29,17 +29,13 @@
 #endif
 #include <windows.h>
 #include <atomic>
-#include <new>
 #include <vector>
 #include <string>
 #include <unordered_map>
 #include <chrono> // time tracking lib
 #include <algorithm>
-#include <cmath>
-#include <cstdint>
 #include <array>
 #include <imgui.h>
-#include <thread>
 
 
 // ---- Windows process-memory helper (Working Set & Private Bytes in MB) ----

@@ -15,6 +15,7 @@ static FMOD::Studio::EventInstance* s_menuMusic = nullptr;
 static CrashoutsEngine::ECS* globalECS;
 static const char* sceneName = "afiq";
 
+// <CHANGE> tell AudioSystem where the .bank files live (CMake copies to "<exe>/assets")
 void LoadAfiq()
 {
     // Load resources specific to Renfred state
@@ -26,13 +27,14 @@ void LoadAfiq()
     CrashoutsEngine::Assets::AssetManager::GetInstance().LoadManifestAssets();
 
     if (!s_audioReady) {
-        s_audioReady = AudioSystem::instance().init();  
+        s_audioReady = AudioSystem::instance().init("assets");  // <� was init()
         if (s_audioReady) {
-         
             AudioSystem::instance().loadBank("sfx.bank");
+            AudioSystem::instance().loadBank("Music.bank");      // <ADD> you start Menu music later
         }
     }
 }
+
 
 
 void InitAfiq()

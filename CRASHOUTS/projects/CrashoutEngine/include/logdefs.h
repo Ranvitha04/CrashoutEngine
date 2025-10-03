@@ -1,5 +1,5 @@
 /*!
-@file       logdef.h
+@file       logdefs.h
 @author     mohamadamirakmal.b@digipen.edu
 @date       28/09/2025
 

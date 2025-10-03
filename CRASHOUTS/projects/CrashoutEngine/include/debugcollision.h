@@ -14,9 +14,6 @@
 ----------------------------------------------------------------------------- */
 #include "managers/entitymanager.h"
 #include "managers/collisionmanager.h"
-#include "components/transformcomponent.h"
-#include "components/shapescomponent.h"
-#include "shapes.h"
 
 namespace CollisionGizmos {
 

@@ -22,7 +22,9 @@ This file provides the graphics for Crashout Engine's ImGUI.
 #include "debugreflection.h"
 #include "debugcollision.h"
 #include "frameratecontroller.h"
-
+#include "audioSystem.h"
+#include <fmod_studio.hpp> 
+using CrashoutsEngine::Audio::AudioSystem;
 // ImGui headers
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
@@ -49,6 +51,40 @@ namespace { //------------------------------------------------------------------
     Entity gSelectedEntity = 0;                 //!< Currently selected entity
     std::vector<ProfilerSample> gPerfSnapshot;  //!< Performance profiler snapshot
     double gPerfSnapshotTotalMs = 0.0;          //!< Total frame time in ms
+    // --- File-local audio state used by the panel ---
+
+    static bool g_audioReady = false;
+    static bool g_banksLoaded = false;
+
+    // SFX
+    static const char* kSfx_Beep = "event:/sfexbeep"; // must exist in sfx.bank
+
+    // Music A (fixed path)
+    static const char* kEvent_MusicA = "event:/Music/Menu";
+    static FMOD::Studio::EventInstance* s_musicA = nullptr;
+    static float s_musicAVol = 1.0f;
+
+    // Music B (editable path)
+    static FMOD::Studio::EventInstance* s_musicB = nullptr;
+    static float s_musicBVol = 1.0f;
+    static char  g_musicBPath[128] = "event:/Music/Alt"; // type another event path if needed
+
+    // Ensure audio is initialized and both banks are loaded
+    static bool ensureAudio() {
+        if (!g_audioReady) {
+            // keep your current API; do NOT change signature
+            g_audioReady = AudioSystem::instance().init();
+        }
+        if (g_audioReady && !g_banksLoaded) {
+            bool ok = true;
+            ok = ok && AudioSystem::instance().loadBank("sfx.bank");
+            ok = ok && AudioSystem::instance().loadBank("Music.bank");
+            g_banksLoaded = ok;
+        }
+        return g_audioReady && g_banksLoaded;
+    }
+
+
 
     // Small UI helpers
 
@@ -527,14 +563,34 @@ namespace UI { // --------------------------------------------------------------
      @param ecs ECS reference.
      @param ui UI state toggles.
     */
-    void RenderAudioPanel([[maybe_unused]] FrameProfiler& profiler, [[maybe_unused]] ECS& ecs, UIState& ui) {
+    void UI::RenderAudioPanel([[maybe_unused]] FrameProfiler& profiler,
+        [[maybe_unused]] ECS& ecs,
+        UIState& ui)
+    {
         if (!ui.showAudio) return;
         ScopedWindow w("Audio", LockFlags(ui.lockLayout));
 
-        // Testing Purposes
-        int vol = 10;
-        ImGui::SliderInt("Audio", &vol, 0, 100);
+        // Init + banks
+        if (!ensureAudio()) {
+            ImGui::TextDisabled("FMOD not initialized or banks missing.");
+            if (ImGui::Button("Initialize Audio & Load Banks")) {
+                ensureAudio();
+            }
+            return;
+        }
+
+        // Global info
+        ImGui::TextDisabled("Banks loaded: Master.*, sfx.bank, Music.bank");
+
+        // ---------- SFX (works already) ----------
+        if (ImGui::Button("Play One-Shot Beep")) {
+            AudioSystem::instance().playOneShot(kSfx_Beep);
+        }
+
+        // Keep FMOD pumping
+        AudioSystem::instance().update();
     }
+
 
     static void RenderTogglesWindow(UIState& ui)
     {
@@ -549,7 +605,7 @@ namespace UI { // --------------------------------------------------------------
             ImGui::Checkbox("Performance", &ui.showPerf);
             ImGui::Checkbox("Console", &ui.showConsole);
             ImGui::Checkbox("Game State", &ui.showGameState);
-
+            ImGui::Checkbox("Audio", &ui.showAudio);
             // Dynamically registered panels
             /*ImGui::Spacing();
             ImGui::TextDisabled("Panels");
