@@ -59,9 +59,8 @@ namespace { //------------------------------------------------------------------
 
     // SFX
     static const char* kSfx_Beep = "event:/sfexbeep"; // must exist in sfx.bank
-
     // Music A (fixed path)
-    static const char* kEvent_MusicA = "event:/Music/Menu";
+    static const char* kEvent_MusicA = "event:/Steven Beddall - Hold My ";
     static FMOD::Studio::EventInstance* s_musicA = nullptr;
     static float s_musicAVol = 1.0f;
 
@@ -594,14 +593,12 @@ namespace UI { // --------------------------------------------------------------
      @param ecs ECS reference.
      @param ui UI state toggles.
     */
-    void UI::RenderAudioPanel([[maybe_unused]] FrameProfiler& profiler,
-        [[maybe_unused]] ECS& ecs,
-        UIState& ui)
-    {
+    void UI::RenderAudioPanel([[maybe_unused]] FrameProfiler& profiler, [[maybe_unused]] CrashoutsEngine::ECS& ecs, UIState& ui) {
+
         if (!ui.showAudio) return;
         ScopedWindow w("Audio", LockFlags(ui.lockLayout));
 
-        // Init + banks
+        // shows that fmod is there
         if (!ensureAudio()) {
             ImGui::TextDisabled("FMOD not initialized or banks missing.");
             if (ImGui::Button("Initialize Audio & Load Banks")) {
@@ -609,16 +606,23 @@ namespace UI { // --------------------------------------------------------------
             }
             return;
         }
-
-        // Global info
+        //shows what is loaded
         ImGui::TextDisabled("Banks loaded: Master.*, sfx.bank, Music.bank");
-
-        // ---------- SFX (works already) ----------
-        if (ImGui::Button("Play One-Shot Beep")) {
+        //button to play the first song
+        if (ImGui::Button("Play song")) {
+            AudioSystem::instance().playOneShot(kSfx_Beep); 
+        }
+        //button to play the second song
+        if (ImGui::Button("Play SFX )")) {
+          
             AudioSystem::instance().playOneShot(kSfx_Beep);
         }
+       
+        //Stop all music
+        if (ImGui::Button("Stop")) {
+            AudioSystem::instance().stopAll(true); 
+        }
 
-        // Keep FMOD pumping
         AudioSystem::instance().update();
     }
 
