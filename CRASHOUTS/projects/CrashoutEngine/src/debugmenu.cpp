@@ -24,6 +24,7 @@ This file provides the graphics for Crashout Engine's ImGUI.
 #include "frameratecontroller.h"
 #include "audioSystem.h"
 #include <fmod_studio.hpp> 
+#include "prefab.h"
 using CrashoutsEngine::Audio::AudioSystem;
 // ImGui headers
 #include <imgui.h>
@@ -226,7 +227,37 @@ namespace UI { // --------------------------------------------------------------
                 ecs.AddComponent<TransformComponent>(e);
             }
         }
+        ImGui::SeparatorText("Prefab Creator");
+        static char nameBuf[128] = { 0 };
+        ImGui::InputTextWithHint("Prefab name", "e.g. Box, Platform, Player...", nameBuf, IM_ARRAYSIZE(nameBuf));
+        ImGui::SameLine();
+        if (ImGui::Button("Create##PrefabByName")) {
+            std::string n = nameBuf;
+            if (n.empty()) n = "Entity";
+            Prefab::Create(ecs, n);      // calls your prefab module (registered names or fallback)
+            nameBuf[0] = '\0';
+        }
 
+        // Optional: quick picker of registered prefab names
+        {
+            auto names = Prefab::Names();
+            if (!names.empty()) {
+                static int sel = 0;
+                if (sel >= (int)names.size()) sel = 0;
+                if (ImGui::BeginCombo("Choose prefab", names[sel].c_str())) {
+                    for (int i = 0; i < (int)names.size(); ++i) {
+                        bool isSel = (i == sel);
+                        if (ImGui::Selectable(names[i].c_str(), isSel)) sel = i;
+                        if (isSel) ImGui::SetItemDefaultFocus();
+                    }
+                    ImGui::EndCombo();
+                }
+                ImGui::SameLine();
+                if (ImGui::Button("Create Selected##Prefab")) {
+                    Prefab::Create(ecs, names[sel]);
+                }
+            }
+        }
         ImGui::Separator();
         ImGui::TextUnformatted("Entities");
         if (entities.empty()) {
