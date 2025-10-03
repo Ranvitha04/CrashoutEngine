@@ -24,6 +24,7 @@ This file provides the graphics for Crashout Engine's ImGUI.
 #include "frameratecontroller.h"
 #include "audioSystem.h"
 #include <fmod_studio.hpp> 
+#include "prefab.h"
 using CrashoutsEngine::Audio::AudioSystem;
 // ImGui headers
 #include <imgui.h>
@@ -58,9 +59,8 @@ namespace { //------------------------------------------------------------------
 
     // SFX
     static const char* kSfx_Beep = "event:/sfexbeep"; // must exist in sfx.bank
-
     // Music A (fixed path)
-    static const char* kEvent_MusicA = "event:/Music/Menu";
+    static const char* kEvent_MusicA = "event:/Steven Beddall - Hold My ";
     static FMOD::Studio::EventInstance* s_musicA = nullptr;
     static float s_musicAVol = 1.0f;
 
@@ -226,7 +226,37 @@ namespace UI { // --------------------------------------------------------------
                 ecs.AddComponent<TransformComponent>(e);
             }
         }
+        ImGui::SeparatorText("Prefab Creator");
+        static char nameBuf[128] = { 0 };
+        ImGui::InputTextWithHint("Prefab name", "e.g. Box, Platform, Player...", nameBuf, IM_ARRAYSIZE(nameBuf));
+        ImGui::SameLine();
+        if (ImGui::Button("Create##PrefabByName")) {
+            std::string n = nameBuf;
+            if (n.empty()) n = "Entity";
+            Prefab::Create(ecs, n);      // calls your prefab module (registered names or fallback)
+            nameBuf[0] = '\0';
+        }
 
+        // Optional: quick picker of registered prefab names
+        {
+            auto names = Prefab::Names();
+            if (!names.empty()) {
+                static int sel = 0;
+                if (sel >= (int)names.size()) sel = 0;
+                if (ImGui::BeginCombo("Choose prefab", names[sel].c_str())) {
+                    for (int i = 0; i < (int)names.size(); ++i) {
+                        bool isSel = (i == sel);
+                        if (ImGui::Selectable(names[i].c_str(), isSel)) sel = i;
+                        if (isSel) ImGui::SetItemDefaultFocus();
+                    }
+                    ImGui::EndCombo();
+                }
+                ImGui::SameLine();
+                if (ImGui::Button("Create Selected##Prefab")) {
+                    Prefab::Create(ecs, names[sel]);
+                }
+            }
+        }
         ImGui::Separator();
         ImGui::TextUnformatted("Entities");
         if (entities.empty()) {
@@ -563,14 +593,12 @@ namespace UI { // --------------------------------------------------------------
      @param ecs ECS reference.
      @param ui UI state toggles.
     */
-    void UI::RenderAudioPanel([[maybe_unused]] FrameProfiler& profiler,
-        [[maybe_unused]] ECS& ecs,
-        UIState& ui)
-    {
+    void UI::RenderAudioPanel([[maybe_unused]] FrameProfiler& profiler, [[maybe_unused]] CrashoutsEngine::ECS& ecs, UIState& ui) {
+
         if (!ui.showAudio) return;
         ScopedWindow w("Audio", LockFlags(ui.lockLayout));
 
-        // Init + banks
+        // shows that fmod is there
         if (!ensureAudio()) {
             ImGui::TextDisabled("FMOD not initialized or banks missing.");
             if (ImGui::Button("Initialize Audio & Load Banks")) {
@@ -578,16 +606,23 @@ namespace UI { // --------------------------------------------------------------
             }
             return;
         }
-
-        // Global info
+        //shows what is loaded
         ImGui::TextDisabled("Banks loaded: Master.*, sfx.bank, Music.bank");
-
-        // ---------- SFX (works already) ----------
-        if (ImGui::Button("Play One-Shot Beep")) {
+        //button to play the first song
+        if (ImGui::Button("Play song")) {
+            AudioSystem::instance().playOneShot(kSfx_Beep); 
+        }
+        //button to play the second song
+        if (ImGui::Button("Play SFX )")) {
+          
             AudioSystem::instance().playOneShot(kSfx_Beep);
         }
+       
+        //Stop all music
+        if (ImGui::Button("Stop")) {
+            AudioSystem::instance().stopAll(true); 
+        }
 
-        // Keep FMOD pumping
         AudioSystem::instance().update();
     }
 

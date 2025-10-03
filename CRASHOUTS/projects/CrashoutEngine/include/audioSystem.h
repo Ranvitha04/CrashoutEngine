@@ -1,8 +1,8 @@
 /*!
 @file        audioSystem.h
-@author      afiq.edu
+@author      b.mohamadafiq@digipen.edu
 @date        28/9/2025
-@brief       audio
+@brief       Header file that defines the AudioSystem class and a simple wrapper around FMOD
 
 */
 #pragma once
