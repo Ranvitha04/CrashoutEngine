@@ -28,20 +28,56 @@ namespace CrashoutsEngine {
 
         class SceneAsset : public IAsset {
         public:
-
-            // Public members (matching implementation)
-			rapidjson::Document sceneData; // RapidJSON document to hold scene data
-			std::string sceneName;         // Name of the scene
-			std::string sceneFilePath;     // File path to the scene file
-
-            // Constructor (matching implementation pattern)
+            // Default Constructor
             SceneAsset() = default;
 
+            // Custom Constructor 
+            SceneAsset(const std::string& sceneName) :
+                sceneName(sceneName) {
+            }
+
+            // Deleted copy operations
+            SceneAsset(const SceneAsset&) = delete;
+            SceneAsset& operator=(const SceneAsset&) = delete;
+
+            // Move constructor and assignment
+            SceneAsset(SceneAsset&& other) noexcept :
+                sceneName{std::move(other.sceneName)}
+            {};
+
+            SceneAsset& operator=(SceneAsset&& other) noexcept 
+            {
+                if (this != &other) {
+                    sceneName = std::move(other.sceneName);
+					other.sceneName.clear();
+                }
+            }
+
+			// Default Destructor
+            ~SceneAsset() = default;
+
+            // Public member functions
+            // GETTERS
+			const std::string& GetSceneName() const { return sceneName; }
+
+            //void SetSceneData(rapidjson::Document&& newDoc);
+
+            /*!
+            @brief Factory method to create a new Asset from file
+            @param filePath Path to the SceneAsset file to load
+            @return unique_ptr to SceneAsset object or nullptr on failure
+            */
+            static std::unique_ptr<SceneAsset> Create(const std::string& filePath);
             
         private:
-
+			std::string sceneName;         // Name of the scene
         };
+    }
 
+    namespace Serialization {
+        
+        void LoadScenes(std::string const& sceneName);
+        void SaveScenes(std::string const& sceneName);
     }
 }
 

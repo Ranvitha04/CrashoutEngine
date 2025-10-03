@@ -21,6 +21,7 @@
 
 // Include Asset Types if required
 #include "resources/textureasset.h"
+#include "resources/sceneasset.h"
 
 /*
 ----------------------------------------------------------------------------- */
@@ -151,6 +152,38 @@ namespace CrashoutsEngine {
 			// --- Loading AUDIO ----
 
 			// --- Loading SCENES ---
+			if (doc.HasMember("scenes") && doc["scenes"].IsArray()) {
+				std::cout << "Loading Scenes..." << std::endl;
+
+				const rapidjson::Value& sceneArray = doc["scenes"];
+
+				for (rapidjson::SizeType i = 0; i < sceneArray.Size(); ++i) {
+					const rapidjson::Value& asset = sceneArray[i];
+					if (asset.HasMember("name") && asset.HasMember("path")) {
+						std::string name = asset["name"].GetString();
+						std::string relativePath = asset["path"].GetString();
+
+						fs::path fullPath = fs::path(rootAssetPath) / "scenes" / relativePath;
+
+						// Create SceneAsset object from file data (JSON)
+						std::unique_ptr<SceneAsset> newScene = SceneAsset::Create(fullPath.string());
+
+						// Validate 
+						if (newScene) {
+							// Load the SceneAsset into AssetManager
+							AssetManager::GetInstance().Load(name, std::move(newScene));
+							std::cout << "AssetManager loaded scene data: " << name << "(" << fullPath.string() << ")"
+								<< std::endl;
+						}
+						else {
+							std::cerr << "Failed to create SceneAsset: " << name << std::endl;
+						}
+					}
+					else {
+						std::cerr << "Warning: Scene asset entry missing 'name' or 'path' in manifest." << std::endl;
+					}
+				}
+			}
 		}
 	}
 }

@@ -41,6 +41,7 @@ Rendering& Rendering::Get() {
 
 void Rendering::Initialize() {
     Get().Setup_Shdrpgm();
+    glEnable(GL_DEPTH_TEST);
 }
 
 void Rendering::Cleanup() {

@@ -5,15 +5,25 @@
 #include "TextRenderer.h"
 #include "GLFW/glfw3.h"
 #include "managers/entitymanager.h"
+#include "sceneutils.h"
+#include "managers/assetmanager.h"
+#include "resources/sceneasset.h"
 
 static CrashoutsEngine::ECS* globalECS;
+static const char* sceneName = "rain";
 
 void LoadRain()
 {
 	// Load resources specific to Renfred state
 	LOGI(Core, "Loaded");
+	
 	globalECS = CrashoutsEngine::ECS::getInstance();
 	globalECS->Reset();
+
+	CrashoutsEngine::Assets::GenerateAssetManifest();
+
+	CrashoutsEngine::Assets::AssetManager::GetInstance().LoadManifestAssets();
+
 	GLuint shaderID = LoadShaderProgram("../../../projects/CrashoutEngine/shaders/textShader.vert", "../../../projects/CrashoutEngine/shaders/textShader.frag");
 	if (shaderID == 0) {
 		std::cout << "Failed to load text shader.\n";
@@ -25,6 +35,8 @@ void LoadRain()
 void InitRain()
 {
 	// Initialize Rain state
+	CrashoutsEngine::Serialization::LoadScenes(sceneName);
+
 	LOGI(Core, "Rain Initialized");
 }
 
@@ -37,43 +49,19 @@ void RenderRain()
 {
 	// Render Rain state
 	glClearColor(0.1f, 0.2f, 0.4f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	if (gTextRenderer) {
 		gTextRenderer->RenderCenteredText("Hello", 0.0f, 0.0f, 1.0f, glm::vec3(1.0f));
 	}
 
-	using namespace CrashoutsEngine;
-
-	const ECS::ComponentArray<Component::ShapeComponent>& shapeArray = globalECS->GetComponentArray<Component::ShapeComponent>();
-	//std::cout << shapeArray.dense.size() << std::endl;
-	for (const Entity& id : shapeArray.indexToEntity) {
-		// Get entity number
-		//Component::TransformComponent* t = globalECS->GetComponent<Component::TransformComponent>(id);
-		Component::ShapeComponent* sc = globalECS->GetComponent<Component::ShapeComponent>(id);
-		// Can add more data to create rect like color etc
-		if (globalECS->HasComponent<ShapeComponent>(id)) {
-
-			CEVec3 pos{ 0,0,0 };
-			CEVec2 scale{ 1.f, 1.f };
-			float rot{ 0.f };
-			if (auto* tf = globalECS->GetComponent<Component::TransformComponent>(id)) {
-				pos = tf->position;
-				scale = tf->size;
-				rot = tf->rotation;
-			}
-			switch (sc->type) {
-			//case Component::ShapeType::Square:    Component::Shapes::CreateSquare(pos, sc->size, rot, (scale.x > scale.y) ? scale.x : scale.y, sc->color * (1 / 255.f)); break;
-			case Component::ShapeType::Rectangle: Component::Shapes::CreateRectangle(pos, sc->width * scale.x, sc->height * scale.y, rot, 1.0f, sc->color * (1 / 255.f)); break;
-			case Component::ShapeType::Line:      Component::Shapes::CreateLine(sc->p1, sc->p2, sc->thickness, rot, (scale.x > scale.y) ? scale.x : scale.y, sc->color * (1 / 255.f)); break;
-			case Component::ShapeType::Triangle:  Component::Shapes::CreateTriangle(sc->t1, sc->t2, sc->t3, rot, (scale.x > scale.y) ? scale.x : scale.y, sc->color * (1 / 255.f)); break;
-			}
-		}
-	}
+	Scene::RenderScene(*globalECS);
 }
 
 void FreeRain()
 {
 	// Free resources specific to Rain state
+	CrashoutsEngine::Serialization::SaveScenes(sceneName);
+
 	delete gTextRenderer;
 	gTextRenderer = nullptr;
 }
