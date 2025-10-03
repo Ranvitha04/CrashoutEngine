@@ -1,17 +1,78 @@
 {
     "entities": [
         {
-            "name": "Player",
+            "name": "Backdrop",
             "transform": {
-                "rotation": 3.9000000953674318,
+                "rotation": 0.0,
                 "position": {
-                    "x": -45.20000076293945,
-                    "y": -2.200000047683716,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": -0.30000001192092898
+                },
+                "size": {
+                    "x": 10.0,
+                    "y": 10.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "size": 32.0,
+                "width": 32.0,
+                "height": 32.0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 1,
+                "textureName": "",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 59.75,
+                    "y": 24.299999237060548,
+                    "z": 17.350000381469728
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "t1": {
+                    "x": -16.0,
+                    "y": -16.0,
+                    "z": 0.0
+                },
+                "t2": {
+                    "x": 16.0,
+                    "y": -16.0,
+                    "z": 0.0
+                },
+                "t3": {
+                    "x": 0.0,
+                    "y": 16.0,
+                    "z": 0.0
+                }
+            }
+        },
+        {
+            "name": "BG_Base_1",
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -57.79999923706055,
+                    "y": 25.299999237060548,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 3.200000047683716,
-                    "y": 1.0
+                    "x": 3.0,
+                    "y": 3.0
                 }
             },
             "shape": {
@@ -20,6 +81,250 @@
                 "wrapModeV": 0,
                 "size": 32.0,
                 "width": 32.0,
+                "height": 32.0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 1,
+                "textureName": "bg 1 base",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 100.0,
+                    "y": 100.0,
+                    "z": 100.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "t1": {
+                    "x": -16.0,
+                    "y": -16.0,
+                    "z": 0.0
+                },
+                "t2": {
+                    "x": 16.0,
+                    "y": -16.0,
+                    "z": 0.0
+                },
+                "t3": {
+                    "x": 0.0,
+                    "y": 16.0,
+                    "z": 0.0
+                }
+            }
+        },
+        {
+            "name": "BG_Base_1_Clone3",
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -1.100000023841858,
+                    "y": 25.299999237060548,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 3.0,
+                    "y": 3.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "size": 32.0,
+                "width": 32.0,
+                "height": 32.0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 1,
+                "textureName": "bg 1 base",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 100.0,
+                    "y": 100.0,
+                    "z": 100.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "t1": {
+                    "x": -16.0,
+                    "y": -16.0,
+                    "z": 0.0
+                },
+                "t2": {
+                    "x": 16.0,
+                    "y": -16.0,
+                    "z": 0.0
+                },
+                "t3": {
+                    "x": 0.0,
+                    "y": 16.0,
+                    "z": 0.0
+                }
+            }
+        },
+        {
+            "name": "BG_Base_1_Clone3_Clone4",
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 70.9000015258789,
+                    "y": 25.299999237060548,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 3.0,
+                    "y": 3.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "size": 32.0,
+                "width": 32.0,
+                "height": 32.0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 1,
+                "textureName": "bg 1 base",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 100.0,
+                    "y": 100.0,
+                    "z": 100.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "t1": {
+                    "x": -16.0,
+                    "y": -16.0,
+                    "z": 0.0
+                },
+                "t2": {
+                    "x": 16.0,
+                    "y": -16.0,
+                    "z": 0.0
+                },
+                "t3": {
+                    "x": 0.0,
+                    "y": 16.0,
+                    "z": 0.0
+                }
+            }
+        },
+        {
+            "name": "BG_1",
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": -38.20000076293945,
+                    "z": 0.10000000149011612
+                },
+                "size": {
+                    "x": 2.0,
+                    "y": 2.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "size": 20.5,
+                "width": 101.5,
+                "height": 32.0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 1,
+                "textureName": "Concept",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 31.649999618530275,
+                    "y": 14.350000381469727,
+                    "z": 7.550000190734863
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "t1": {
+                    "x": -16.0,
+                    "y": -16.0,
+                    "z": 0.0
+                },
+                "t2": {
+                    "x": 16.0,
+                    "y": -16.0,
+                    "z": 0.0
+                },
+                "t3": {
+                    "x": 0.0,
+                    "y": 16.0,
+                    "z": 0.0
+                }
+            }
+        },
+        {
+            "name": "Player",
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": -6.900000095367432,
+                    "z": 0.5
+                },
+                "size": {
+                    "x": 2.0,
+                    "y": 2.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "size": 32.0,
+                "width": 20.0,
                 "height": 32.0,
                 "thickness": 1.0,
                 "preview": false,
@@ -62,17 +367,17 @@
             }
         },
         {
-            "name": "BG1",
+            "name": "Pillar_Clone17_Clone18",
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
+                    "x": 22.200000762939454,
+                    "y": -19.0,
+                    "z": 0.699999988079071
                 },
                 "size": {
-                    "x": 1.0,
-                    "y": 1.0
+                    "x": 4.699999809265137,
+                    "y": 5.0
                 }
             },
             "shape": {
@@ -85,15 +390,15 @@
                 "thickness": 1.0,
                 "preview": false,
                 "type": 1,
-                "textureName": "bg 1 base",
+                "textureName": "bg3 p1",
                 "uvSize": {
                     "x": 1.0,
                     "y": 1.0
                 },
                 "color": {
-                    "x": 255.0,
-                    "y": 255.0,
-                    "z": 255.0
+                    "x": 200.0,
+                    "y": 200.0,
+                    "z": 200.0
                 },
                 "p1": {
                     "x": 0.0,
@@ -123,17 +428,17 @@
             }
         },
         {
-            "name": "BG1_Clone3",
+            "name": "Pillar 2",
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
+                    "x": -13.100000381469727,
+                    "y": -1.5,
+                    "z": 0.5
                 },
                 "size": {
-                    "x": 1.0,
-                    "y": 1.0
+                    "x": 2.0,
+                    "y": 2.0
                 }
             },
             "shape": {
@@ -146,15 +451,15 @@
                 "thickness": 1.0,
                 "preview": false,
                 "type": 1,
-                "textureName": "bg 1 base",
+                "textureName": "bg2 p2",
                 "uvSize": {
                     "x": 1.0,
                     "y": 1.0
                 },
                 "color": {
-                    "x": 255.0,
-                    "y": 255.0,
-                    "z": 255.0
+                    "x": 200.0,
+                    "y": 200.0,
+                    "z": 200.0
                 },
                 "p1": {
                     "x": 0.0,
@@ -184,17 +489,17 @@
             }
         },
         {
-            "name": "BG1_Clone3_Clone4",
+            "name": "Foreground",
             "transform": {
                 "rotation": 0.0,
                 "position": {
                     "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
+                    "y": -17.200000762939454,
+                    "z": 0.30000001192092898
                 },
                 "size": {
-                    "x": 1.0,
-                    "y": 1.0
+                    "x": 2.0,
+                    "y": 2.0
                 }
             },
             "shape": {
@@ -207,15 +512,15 @@
                 "thickness": 1.0,
                 "preview": false,
                 "type": 1,
-                "textureName": "bg 1 base",
+                "textureName": "bg3 base",
                 "uvSize": {
                     "x": 1.0,
                     "y": 1.0
                 },
                 "color": {
-                    "x": 255.0,
-                    "y": 255.0,
-                    "z": 255.0
+                    "x": 220.0,
+                    "y": 220.0,
+                    "z": 220.0
                 },
                 "p1": {
                     "x": 0.0,
@@ -245,17 +550,17 @@
             }
         },
         {
-            "name": "BG1Pillar",
+            "name": "Foreground_Clone13",
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 0.0,
-                    "y": -17.299999237060548,
-                    "z": 1.0
+                    "x": -62.70000076293945,
+                    "y": -17.200000762939454,
+                    "z": 0.5
                 },
                 "size": {
-                    "x": 1.0,
-                    "y": 1.0
+                    "x": -2.0,
+                    "y": 2.0
                 }
             },
             "shape": {
@@ -268,15 +573,198 @@
                 "thickness": 1.0,
                 "preview": false,
                 "type": 1,
-                "textureName": "bg 1 pillar",
+                "textureName": "bg3 base",
                 "uvSize": {
                     "x": 1.0,
                     "y": 1.0
                 },
                 "color": {
-                    "x": 255.0,
-                    "y": 208.8000030517578,
-                    "z": 255.0
+                    "x": 220.0,
+                    "y": 220.0,
+                    "z": 220.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "t1": {
+                    "x": -16.0,
+                    "y": -16.0,
+                    "z": 0.0
+                },
+                "t2": {
+                    "x": 16.0,
+                    "y": -16.0,
+                    "z": 0.0
+                },
+                "t3": {
+                    "x": 0.0,
+                    "y": 16.0,
+                    "z": 0.0
+                }
+            }
+        },
+        {
+            "name": "Foreground_Clone13_Clone14",
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 63.70000076293945,
+                    "y": -17.200000762939454,
+                    "z": 0.5
+                },
+                "size": {
+                    "x": -2.0,
+                    "y": 2.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "size": 32.0,
+                "width": 32.0,
+                "height": 32.0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 1,
+                "textureName": "bg3 base",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 220.0,
+                    "y": 220.0,
+                    "z": 220.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "t1": {
+                    "x": -16.0,
+                    "y": -16.0,
+                    "z": 0.0
+                },
+                "t2": {
+                    "x": 16.0,
+                    "y": -16.0,
+                    "z": 0.0
+                },
+                "t3": {
+                    "x": 0.0,
+                    "y": 16.0,
+                    "z": 0.0
+                }
+            }
+        },
+        {
+            "name": "Pillar 2_Clone15",
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -13.100000381469727,
+                    "y": 62.099998474121097,
+                    "z": 0.5
+                },
+                "size": {
+                    "x": 2.0,
+                    "y": 2.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "size": 32.0,
+                "width": 32.0,
+                "height": 32.0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 1,
+                "textureName": "bg2 p2",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": -1.0
+                },
+                "color": {
+                    "x": 200.0,
+                    "y": 200.0,
+                    "z": 200.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "t1": {
+                    "x": -16.0,
+                    "y": -16.0,
+                    "z": 0.0
+                },
+                "t2": {
+                    "x": 16.0,
+                    "y": -16.0,
+                    "z": 0.0
+                },
+                "t3": {
+                    "x": 0.0,
+                    "y": 16.0,
+                    "z": 0.0
+                }
+            }
+        },
+        {
+            "name": "Pillar_Clone17_Clone18_Clone19",
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 22.200000762939454,
+                    "y": -19.0,
+                    "z": 0.699999988079071
+                },
+                "size": {
+                    "x": 4.699999809265137,
+                    "y": 5.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "size": 32.0,
+                "width": 32.0,
+                "height": 32.0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 1,
+                "textureName": "bg3 p1",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 200.0,
+                    "y": 200.0,
+                    "z": 200.0
                 },
                 "p1": {
                     "x": 0.0,
