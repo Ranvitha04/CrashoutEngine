@@ -32,8 +32,8 @@ namespace CrashoutsEngine {
             SceneAsset() = default;
 
             // Custom Constructor 
-            SceneAsset(rapidjson::Document&& doc, const std::string& sceneName) :
-                sceneData(std::move(doc)), sceneName(sceneName) {
+            SceneAsset(const std::string& sceneName) :
+                sceneName(sceneName) {
             }
 
             // Deleted copy operations
@@ -42,17 +42,13 @@ namespace CrashoutsEngine {
 
             // Move constructor and assignment
             SceneAsset(SceneAsset&& other) noexcept :
-                sceneData{std::move(other.sceneData)},
                 sceneName{std::move(other.sceneName)}
             {};
 
             SceneAsset& operator=(SceneAsset&& other) noexcept 
             {
                 if (this != &other) {
-                    sceneData = std::move(other.sceneData);
                     sceneName = std::move(other.sceneName);
-
-					other.sceneData.SetObject();
 					other.sceneName.clear();
                 }
             }
@@ -62,11 +58,9 @@ namespace CrashoutsEngine {
 
             // Public member functions
             // GETTERS
-			rapidjson::Document& GetSceneData() { return sceneData; }
 			const std::string& GetSceneName() const { return sceneName; }
 
-            // SETTERS
-            bool SaveSceneData(const std::string& sceneName);
+            //void SetSceneData(rapidjson::Document&& newDoc);
 
             /*!
             @brief Factory method to create a new Asset from file
@@ -76,9 +70,14 @@ namespace CrashoutsEngine {
             static std::unique_ptr<SceneAsset> Create(const std::string& filePath);
             
         private:
-			rapidjson::Document sceneData; // RapidJSON document to hold scene data
 			std::string sceneName;         // Name of the scene
         };
+    }
+
+    namespace Serialization {
+        
+        void LoadScenes(std::string const& sceneName);
+        void SaveScenes(std::string const& sceneName);
     }
 }
 

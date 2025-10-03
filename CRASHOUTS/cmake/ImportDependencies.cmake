@@ -100,6 +100,10 @@ macro(import_stb)
         )
         FetchContent_Populate(stb)
 
+        if (TARGET stb)
+            disable_warnings_for(stb)
+        endif()
+
         add_library(stb INTERFACE)
         target_include_directories(stb INTERFACE ${stb_SOURCE_DIR})
     endif()

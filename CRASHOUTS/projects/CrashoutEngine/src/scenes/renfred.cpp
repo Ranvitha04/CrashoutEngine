@@ -2,9 +2,9 @@
 @file        renfred.cpp
 @author      lee.r@digipen.edu
 @date        18/09/2025
-@brief       Implements the 
+@brief       
 
-This file implements
+This file 
 */
 
 /*                                                   Includes
@@ -16,12 +16,13 @@ This file implements
 #include "GLFW/glfw3.h"
 #include "managers/entitymanager.h"
 #include "managers/assetmanager.h"
-
+#include "resources/sceneasset.h"
 
 /*                                                   Global Variables
 ----------------------------------------------------------------------------- */
 
 static CrashoutsEngine::ECS* globalECS;
+static const char* sceneName = "renfred";
 
 void LoadRenfred()
 {
@@ -37,6 +38,8 @@ void LoadRenfred()
 void InitRenfred()
 {
 	// Initialize Renfred state
+	CrashoutsEngine::Serialization::LoadScenes(sceneName);
+
 	LOGI(Core, "Renfred Initialized");
 }
 
@@ -56,6 +59,8 @@ void RenderRenfred()
 
 void FreeRenfred()
 {
+	CrashoutsEngine::Serialization::SaveScenes(sceneName);
+
 	// Free resources specific to Renfred state
 }
 
