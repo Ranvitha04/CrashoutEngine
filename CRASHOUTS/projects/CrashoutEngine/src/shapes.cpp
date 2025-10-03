@@ -311,15 +311,15 @@ namespace Component {
         }
 
         // Enable Blending for Transparency
-        glEnable(GL_BLEND);
-        // Set the standard alpha blending function
-        // (Source Alpha * Source Color + (1 - Source Alpha) * Destination Color)
+        glDepthMask(GL_FALSE); // Stop writing new depth values to the depth buffer
+        glEnable(GL_BLEND);    // Ensure blending is enabled
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-        // Bind texture and draw
         glBindTextureUnit(0, textureHandle);
         renderer.Draw();
         glBindTextureUnit(0, 0);
+        //Reset Depth Mask for the next frame or subsequent opaque rendering
+        glDepthMask(GL_TRUE); // Re-enable writing
     }
 
     void Shapes::CreateTexturedRectangle(const std::string& texturePath, const CEVec3& position,
@@ -386,14 +386,15 @@ namespace Component {
         if (tint_loc != -1) glUniform3f(tint_loc, tint.x, tint.y, tint.z);
 
         // Enable Blending for Transparency
-        glEnable(GL_BLEND);
-        // Set the standard alpha blending function
-        // (Source Alpha * Source Color + (1 - Source Alpha) * Destination Color)
+        glDepthMask(GL_FALSE); // Stop writing new depth values to the depth buffer
+        glEnable(GL_BLEND);    // Ensure blending is enabled
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         glBindTextureUnit(0, textureHandle);
         renderer.Draw();
         glBindTextureUnit(0, 0);
+        //Reset Depth Mask for the next frame or subsequent opaque rendering
+        glDepthMask(GL_TRUE); // Re-enable writing
     }
 
     void Shapes::CreateTexturedTriangle(const std::string& texturePath, const CEVec3& p1, const CEVec3& p2,
@@ -457,13 +458,14 @@ namespace Component {
         if (tint_loc != -1) glUniform3f(tint_loc, tint.x, tint.y, tint.z);
 
         // Enable Blending for Transparency
-        glEnable(GL_BLEND);
-        // Set the standard alpha blending function
-        // (Source Alpha * Source Color + (1 - Source Alpha) * Destination Color)
+        glDepthMask(GL_FALSE); // Stop writing new depth values to the depth buffer
+        glEnable(GL_BLEND);    // Ensure blending is enabled
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         glBindTextureUnit(0, textureHandle);
         renderer.Draw();
         glBindTextureUnit(0, 0);
+        //Reset Depth Mask for the next frame or subsequent opaque rendering
+        glDepthMask(GL_TRUE); // Re-enable writing
     }
 }
