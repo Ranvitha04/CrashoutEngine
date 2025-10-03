@@ -92,6 +92,7 @@ static FMOD::Studio::EventInstance* s_menuMusic = nullptr;
 // ============================================================================
 void LoadAfiq()
 {
+    InitPrefabs();
     // One-time prefab registration
     InitPrefabsOnce();
 
