@@ -225,6 +225,10 @@
     ],
     "scenes": [
         {
+            "name": "amir",
+            "path": "amir"
+        },
+        {
             "name": "renfred",
             "path": "renfred"
         }

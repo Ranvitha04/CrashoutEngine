@@ -1,4 +1,4 @@
-// afiq.cpp � scene bootstrap + audio + in-file prefab registry (no ImGui here)
+// afiq.cpp — scene bootstrap + audio + in-file prefab registry (no ImGui here)
 #include "scenes/afiq.h"
 #include "log.h"
 #include "GLFW/glfw3.h"
@@ -11,11 +11,7 @@
 #include <string>
 
 // AUDIO
-#include "sceneutils.h"
-#include "managers/assetmanager.h"
-#include "resources/sceneasset.h"
 #include "audioSystem.h"
-
 using CrashoutsEngine::Audio::AudioSystem;
 
 using namespace CrashoutsEngine;
@@ -27,8 +23,6 @@ using namespace Component;
 namespace {
     using Factory = std::function<void(ECS&)>;
     using Fallback = std::function<void(ECS&, const std::string&)>;
-static CrashoutsEngine::ECS* globalECS;
-static const char* sceneName = "afiq";
 
     static std::unordered_map<std::string, Factory> gPrefabReg;
     static Fallback gPrefabFallback;
@@ -105,16 +99,6 @@ void LoadAfiq()
     // Audio init + banks
     if (!s_audioReady) {
         s_audioReady = AudioSystem::instance().init("assets"); // looks in <exe>/assets
-    // Load resources specific to Renfred state
-    globalECS = CrashoutsEngine::ECS::getInstance();
-    globalECS->Reset();
-
-    CrashoutsEngine::Assets::GenerateAssetManifest();
-
-    CrashoutsEngine::Assets::AssetManager::GetInstance().LoadManifestAssets();
-
-    if (!s_audioReady) {
-        s_audioReady = AudioSystem::instance().init("assets");  // <� was init()
         if (s_audioReady) {
             AudioSystem::instance().loadBank("sfx.bank");
             AudioSystem::instance().loadBank("Music.bank");
@@ -124,6 +108,7 @@ void LoadAfiq()
 
 void InitAfiq()
 {
+    LOGI(Core, "Afiq Initialized");
 
     if (!s_audioReady) return;
 
@@ -135,10 +120,6 @@ void InitAfiq()
     if (s_menuMusic) {
         s_menuMusic->start();
     }
-
-    CrashoutsEngine::Serialization::LoadScenes(sceneName);
-
-    LOGI(Core, "Afiq Initialized");
 }
 
 void UpdateAfiq()
@@ -151,9 +132,10 @@ void UpdateAfiq()
 void RenderAfiq()
 {
     glClearColor(0.1f, 0.2f, 0.4f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT);
 
-    Scene::RenderScene(*globalECS);
+    // NOTE: do NOT draw ImGui windows here.
+    // If you want a Prefab Creator UI, put it inside an existing debug window (e.g., ECS panel).
 }
 
 void FreeAfiq()
@@ -163,8 +145,6 @@ void FreeAfiq()
         s_menuMusic->release();
         s_menuMusic = nullptr;
     }
-
-    CrashoutsEngine::Serialization::SaveScenes(sceneName);
 }
 
 void UnloadAfiq()
