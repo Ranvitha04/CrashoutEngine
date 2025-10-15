@@ -4,7 +4,7 @@ pushd "%~dp0"
 
 echo Cleaning build artifacts...
 
-REM Delete the 'out' directory completely
+REM Delete the 'build' directory completely
 if exist out (
   rmdir /s /q out
   echo Removed build directory.
