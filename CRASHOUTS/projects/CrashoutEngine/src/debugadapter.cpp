@@ -15,18 +15,18 @@ runtime-extensible and project-agnostic.
 /*                                                                   includes
 ----------------------------------------------------------------------------- */
 #include "debugreflection.h"
-#include "managers/entitymanager.h"
+#include "entitymanager.h"
 #include <imgui.h>
 #include <algorithm>
 #include "debugdefaults.h"
 
 /*                                                         component includes
 ----------------------------------------------------------------------------- */
-#include "components/namecomponent.h"
-#include "components/transformcomponent.h"
-#include "components/shapescomponent.h"
-#include "managers/physicsmanager.h"
-#include "managers/collisionmanager.h"
+#include "namecomponent.h"
+#include "transformcomponent.h"
+#include "shapescomponent.h"
+#include "physicsmanager.h"
+#include "collisionmanager.h"
 #include "gamestatemanager.h"
 #include "shapes.h"
 #include "reflectimgui.h"

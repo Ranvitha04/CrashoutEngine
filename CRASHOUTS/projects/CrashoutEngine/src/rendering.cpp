@@ -21,10 +21,10 @@ and OpenGL 4.x core profile functions for buffer and vertex array management.
 ----------------------------------------------------------------------------- */
 
 #include "rendering.h"
-#include "managers/entitymanager.h"
+#include "entitymanager.h"
 #include <string>
-#include "math/CEVec3.h"
-#include "math/CEVec2.h"
+#include "CEVec3.h"
+#include "CEVec2.h"
 #include <vector>
 #include <array>
 #include <iostream>
@@ -124,8 +124,8 @@ void Rendering::Setup_VAO() {
 }
 
 void Rendering::Setup_Shdrpgm() {
-    const std::string Shader = "../../../projects/CrashoutEngine/shaders/CrashoutShader.frag";
-    const std::string Vertex = "../../../projects/CrashoutEngine/shaders/CrashoutShader.vert";
+    const std::string Shader = "assets/shaders/CrashoutShader.frag";
+    const std::string Vertex = "assets/shaders/CrashoutShader.vert";
 
     // Automation hook. [!WARNING!] Do not alter/remove this
     AUTOMATION_HOOK_SHADER(shdr_pgm, shdr_files);

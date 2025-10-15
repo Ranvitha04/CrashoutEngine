@@ -18,7 +18,7 @@
         Integration with the `TextureRenderer` system allows efficient
         rendering of sprite frames using OpenGL. This system is designed
         to work in conjunction with other engine modules such as
-        `entitymanager`, `rendering`, and `resources/textures` to support
+        `entitymanager`, `rendering`, and `textures` to support
         a component-based entity system.
 __________________________________________________________________________*/
 
@@ -27,10 +27,10 @@ __________________________________________________________________________*/
 
 #include "spriteAnimation.h"
 #include "rendering.h"
-#include "resources/textureasset.h"
-#include "managers/entitymanager.h"
-#include "math/CEVec2.h"
-#include "math/CEVec3.h"
+#include "textureasset.h"
+#include "entitymanager.h"
+#include "CEVec2.h"
+#include "CEVec3.h"
 #include <GL/glew.h>
 #include <iostream>
 #include <glm/glm.hpp>

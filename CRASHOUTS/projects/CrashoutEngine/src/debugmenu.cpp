@@ -11,9 +11,9 @@ This file provides the graphics for Crashout Engine's ImGUI.
 // Engine / app headers
 #include "glapp.h"
 #include "performanceViewer.h"
-#include "managers/entitymanager.h"
-#include "managers/collisionmanager.h"
-#include "managers/physicsmanager.h"
+#include "entitymanager.h"
+#include "collisionmanager.h"
+#include "physicsmanager.h"
 #include "gamestatemanager.h"
 #include "shapes.h"
 #include "log.h"
@@ -34,7 +34,7 @@ using CrashoutsEngine::Audio::AudioSystem;
 #include <vector>
 #include <string>
 #include <cstring>
-#include "math/CEVec3.h"
+#include "CEVec3.h"
 
 /*                                                                   
 ----------------------------------------------------------------------------- */

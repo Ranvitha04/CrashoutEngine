@@ -7,9 +7,9 @@
 
 //__________________________________________________________________________*/
 
-#include "managers/collisionmanager.h"
-#include "components/rigidbodycomponent.h"
-#include "math/CEMath.h"
+#include "collisionmanager.h"
+#include "rigidbodycomponent.h"
+#include "CEMath.h"
 #include <cmath>
 #include <algorithm>
 

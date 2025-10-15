@@ -27,8 +27,8 @@ rendering pipelines.
 #include <GL/glew.h>
 #include <glm/glm.hpp>
 #include "shader.h"	
-#include "managers/entitymanager.h"
-#include "resources/textureasset.h"
+#include "entitymanager.h"
+#include "textureasset.h"
 
 namespace Component {
 

@@ -7,8 +7,8 @@
 */
 #include "prefab_init.h"
 #include "prefab.h"
-#include "managers/entitymanager.h"
-#include "managers/collisionmanager.h"
+#include "entitymanager.h"
+#include "collisionmanager.h"
 #include <memory>
 
 using namespace CrashoutsEngine;

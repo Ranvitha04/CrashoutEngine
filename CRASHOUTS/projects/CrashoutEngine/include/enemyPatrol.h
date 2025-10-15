@@ -1,7 +1,7 @@
 #pragma once
 
-#include "math/CETypes.h"   
-#include "math/CEVec2.h"     
+#include "CETypes.h"   
+#include "CEVec2.h"     
 
 namespace Patrol {
 

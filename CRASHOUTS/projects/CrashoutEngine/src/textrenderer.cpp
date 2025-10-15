@@ -23,7 +23,7 @@ Handles font loading character atlas creation and text rendering with FreeType a
 @param screenHeight Screen height used
 */
 TextRenderer::TextRenderer(const std::string& fontPath, GLuint screenWidth, GLuint screenHeight){
-    shaderID = LoadShaderProgram("../../../projects/CrashoutEngine/shaders/textShader.vert", "../../../projects/CrashoutEngine/shaders/textShader.frag");
+    shaderID = LoadShaderProgram("assets/shaders/textShader.vert", "assets/shaders/textShader.frag");
     if (shaderID == 0) {
         std::cerr << "Failed to load text shader.\n";
         return;
