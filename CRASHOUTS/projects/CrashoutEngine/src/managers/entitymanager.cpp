@@ -2,8 +2,7 @@
 @file        entitymanager.cpp
 @author      lee.r@digipen.edu
 @date        13/09/2025
-
-This file implements 
+@brief		 This file implements an entity manager
 
 *//*__________________________________________________________________________*/
 

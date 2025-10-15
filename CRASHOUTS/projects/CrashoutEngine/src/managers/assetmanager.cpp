@@ -3,7 +3,7 @@
 @author lee.r@digipen.edu
 @date   28/09/2025
 
-@brief	This file contains
+@brief	This file implements an Asset Manager
 //__________________________________________________________________________*/
 
 /*                                                                   includes

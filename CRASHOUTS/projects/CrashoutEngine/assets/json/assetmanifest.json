@@ -19,10 +19,6 @@
     ],
     "fonts": [
         {
-            "name": "arial",
-            "path": "arial.ttf"
-        },
-        {
             "name": "Exo2-Regular",
             "path": "Exo2-Regular.ttf"
         },
