@@ -86,16 +86,16 @@ The name of the entity to search for.
 The ID of the found entity, or 0 if no entity with that name exists.
 */
 CrashoutsEngine::Entity CrashoutsEngine::ECS::FindEntityByName(std::string name) {
-	// Check if NameComponent array exists
-	if (!HasComponent<NameComponent>(0)) return 0;
+    // Check if NameComponent array exists
+    // if (!HasComponent<NameComponent>(0)) return 0;
 
-	auto& nameCompArray = GetComponentArray<NameComponent>();
-	for (size_t i = 0; i < nameCompArray.dense.size(); ++i) {
-		if (nameCompArray.dense[i].name == name) {
-			return nameCompArray.indexToEntity[i];
-		}
-	}
+    auto& nameCompArray = GetComponentArray<NameComponent>();
+    for (size_t i = 0; i < nameCompArray.dense.size(); ++i) {
+        if (nameCompArray.dense[i].name == name) {
+            return nameCompArray.indexToEntity[i];
+        }
+    }
 
-	// Return 0 if not found
-	return 0;
+    // Return 0 if not found
+    return 0;
 }

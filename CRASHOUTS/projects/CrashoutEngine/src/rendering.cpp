@@ -847,6 +847,18 @@ namespace Component {
         shdr_pgm.Use();
         glBindVertexArray(vaoid);
         glDrawElements(primitive_type, idx_elem_cnt, GL_UNSIGNED_SHORT, NULL);
+
+        // Ensure the GPU has finished reading from the persistently-mapped buffers
+        // before we overwrite them for the next draw.
+        GLsync fence = glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
+        while (true) {
+            GLenum status = glClientWaitSync(fence, GL_SYNC_FLUSH_COMMANDS_BIT, 0);
+            if (status == GL_ALREADY_SIGNALED || status == GL_CONDITION_SATISFIED) break;
+            if (status == GL_WAIT_FAILED) break;
+            // Spin until the draw completes; acceptable for low draw counts.
+        }
+        glDeleteSync(fence);
+
         glBindVertexArray(0);
         shdr_pgm.UnUse();
     }

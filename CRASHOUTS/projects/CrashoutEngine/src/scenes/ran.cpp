@@ -48,6 +48,8 @@
 #include "spriteAnimation.h"
 #include "glapp.h"
 #include "rendering.h"
+#include "sceneutils.h"
+#include "managers/assetmanager.h"
 
 static CrashoutsEngine::ECS* globalECS;
 
@@ -100,11 +102,94 @@ const int maxObjectCount = 2500;
 Obtains the singleton ECS instance and resets it to prepare for the scene.
 This ensures a clean state when entering Ran's test scene.
 */
+
+static void SetupECSGraphicsForMode()
+{
+    if (!globalECS) return;
+
+    globalECS->Reset();
+
+    using namespace CrashoutsEngine;
+    using namespace Component;
+
+    // Default-off toggle: shapes will not be created unless set to true
+    const bool renderShapesByDefault = false;
+
+    switch (displayMode) {
+    case 0: {
+        if (renderShapesByDefault) {
+            Entity e1 = globalECS->CreateEntity();
+            globalECS->AddComponent<NameComponent>(e1, "Square");
+            TransformComponent t1;
+            t1.position = CEVec3(-20.f, 0.f, 0.f);
+            t1.size = CEVec2(1.f, 1.f);
+            t1.rotation = 0.f;
+            globalECS->AddComponent<TransformComponent>(e1, t1);
+            ShapeComponent s1;
+            s1.type = ShapeType::Square;
+            s1.size = 12.f;
+            s1.color = CEVec3(255.f, 0.f, 0.f);
+            globalECS->AddComponent<ShapeComponent>(e1, s1);
+
+            Entity e2 = globalECS->CreateEntity();
+            globalECS->AddComponent<NameComponent>(e2, "Rect");
+            TransformComponent t2;
+            t2.position = CEVec3(20.f, 0.f, 0.f);
+            t2.size = CEVec2(1.f, 1.f);
+            t2.rotation = 0.f;
+            globalECS->AddComponent<TransformComponent>(e2, t2);
+            ShapeComponent s2;
+            s2.type = ShapeType::Rectangle;
+            s2.width = 30.f;
+            s2.height = 15.f;
+            s2.color = CEVec3(0.f, 128.f, 255.f);
+            globalECS->AddComponent<ShapeComponent>(e2, s2);
+        }
+        break;
+    }
+    case 1: {
+        float aspect = static_cast<float>(GLApp::width) / GLApp::height;
+        float worldWidth, worldHeight;
+        if (aspect >= 1.0f) {
+            worldHeight = 100.0f;
+            worldWidth = worldHeight * aspect;
+        }
+        else {
+            worldWidth = 100.0f;
+            worldHeight = worldWidth / aspect;
+        }
+
+        Entity bg = globalECS->CreateEntity();
+        globalECS->AddComponent<NameComponent>(bg, "Background");
+        TransformComponent t;
+        t.position = CEVec3(0.0f, 0.0f, -0.9f);
+        t.size = CEVec2(1.f, 1.f);
+        t.rotation = 0.f;
+        globalECS->AddComponent<TransformComponent>(bg, t);
+        ShapeComponent sc;
+        sc.type = ShapeType::Rectangle;
+        sc.width = worldWidth;
+        sc.height = worldHeight;
+        sc.enableTexture = true;
+        sc.textureName = "duck";
+        sc.color = CEVec3(255.f, 255.f, 255.f);
+        globalECS->AddComponent<ShapeComponent>(bg, sc);
+        break;
+    }
+    default:
+        break;
+    }
+}
+
 void LoadRan()
 {
-    
     globalECS = CrashoutsEngine::ECS::getInstance();
     globalECS->Reset();
+
+    CrashoutsEngine::Assets::GenerateAssetManifest();
+    CrashoutsEngine::Assets::AssetManager::GetInstance().LoadManifestAssets();
+
+    SetupECSGraphicsForMode();
 }
 
 /*!
@@ -217,16 +302,22 @@ void UpdateSpriteAnimation()
 
 void RenderRan()
 {
+    // Ensure ECS is initialized before rendering
+    if (!globalECS) {
+        globalECS = CrashoutsEngine::ECS::getInstance();
+        SetupECSGraphicsForMode();
+    }
+
     // Clear the screen
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     switch (displayMode) {
-    case 0: // Clear background with shapes
-        RenderShapes();
+    case 0: // Clear background with shapes (ECS-driven)
+        Scene::RenderScene(*globalECS);
         break;
-    case 1: // JPG background
-        RenderBackground();
+    case 1: // JPG background (ECS-driven textured rectangle)
+        Scene::RenderScene(*globalECS);
         break;
     case 2: // Instancing on clear background
         RenderInstancing();
@@ -371,6 +462,8 @@ void CycleDisplayMode()
         std::cout << "Display Mode: Sprite animation" << std::endl;
         break;
     }
+    // Reconfigure ECS content to match the new display mode
+    SetupECSGraphicsForMode();
 }
 
 // Function to initialize instancing data
@@ -403,3 +496,5 @@ void InitializeInstancing()
         std::cout << "Instancing initialized with " << maxObjectCount << " objects" << std::endl;
     }
 }
+
+
