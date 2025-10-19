@@ -463,8 +463,8 @@ namespace Component {
     */
     void Rendering::Setup_Shdrpgm() {
 
-        const std::string Shader = "../../../projects/CrashoutEngine/shaders/CrashoutShader.frag";
-        const std::string Vertex = "../../../projects/CrashoutEngine/shaders/CrashoutShader.vert";
+        const std::string Shader = "assets/shaders/CrashoutShader.frag";
+        const std::string Vertex = "assets/shaders/CrashoutShader.vert";
 
         // Variable needed for automation hook
         std::vector<std::pair<GLenum, std::string>> shdr_files;

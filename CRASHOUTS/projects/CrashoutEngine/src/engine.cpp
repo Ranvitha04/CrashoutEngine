@@ -111,7 +111,7 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
     FrameProfiler::Scoped s(gProfiler, "Graphics/Scene");
     ScopedMemTag mem(MemTag::Graphics);
     // render scene
-    GLApp::draw();
+    // GLApp::draw();
 
     // Render ImGui UI on top of the scene
     UI::Render(gProfiler, physicsSystem, globalSelectedEntity);
