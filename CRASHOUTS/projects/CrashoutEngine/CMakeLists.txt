@@ -57,7 +57,9 @@ set(other_include_files ${all_include_files})
 # --- 5. Create the library (lib) with ALL files ---
 add_library(${PROJECT_NAME} STATIC
     ${categorized_src_files}
+    ${categorized_include_files}
     ${other_src_files}
+    ${other_include_files}
 )
 
 # --- 6. Assign ALL file groups to filters ✨ ---
