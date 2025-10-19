@@ -1,7 +1,7 @@
 /*!
-@file    	main.cpp
+@file    	engine.cpp
 @author  	lee.r@digipen.edu
-@date    	17/09/2025
+@date    	18/10/2025
 
 This file uses functionality defined in type GLApp to initialize an OpenGL
 context and implement a game loop.
@@ -11,29 +11,7 @@ context and implement a game loop.
 /*                                                                   includes
 ----------------------------------------------------------------------------- */
 // Extension loader library's header must be included before GLFW's header!!!
-#include "glapp.h"
-#include "performanceViewer.h"
-#include "entitymanager.h"
-#include "log.h"
-#include "playerMovement.h"     // Player::UpdateADVelocity
-#include "physicsmanager.h"            // Component::RigidBodyComponent
-#include "inputmanager.h"
-#include "debugreflection.h"
-#include "debugmenu.h"
-#include "crashlogger.h"
-
-// ImGui headers for callbacks
-#include <imgui.h>
-#include <imgui_impl_glfw.h>
-#include <imgui_impl_opengl3.h>
-
-#include <iostream>
-
-#include "frameratecontroller.h"
-#include "gamestatemanager.h"
-#include "registergamestate.h"
-#include "settings.h"
-#include <filesystem>
+#include "engine.h"
 
 /*                                                   type declarations
 ----------------------------------------------------------------------------- */
@@ -42,48 +20,13 @@ context and implement a game loop.
 CrashoutsEngine::ECS* CrashoutsEngine::ECS::instancePtr = nullptr;
 std::mutex CrashoutsEngine::ECS::mtx;
 
-// ECS instance and entity storage
-static CrashoutsEngine::ECS* globalECS = nullptr;
-static CrashoutsEngine::Entity globalSelectedEntity = 0;
 static Physics::PhysicsHandler physicsSystem;
 static Collision::CollisionHandler collisionSystem;
-
 
 // ImGui in-game performance viewer
 static FrameProfiler gProfiler;
 
-// tests
-static bool gOnce = false;
-// frame rate controller
-auto& FRC = FrameRateController::GetInstance();
-/*                                                      function declarations
------------------------------------------------------------------------------ */
-static void draw();
-static void update();
-static void init();
-
-/*                                                   objects with file scope
------------------------------------------------------------------------------ */
-
-/*                                                      function definitions
------------------------------------------------------------------------------ */
-static Component::RigidBodyComponent  playerRigidBody{};
-static Component::TransformComponent  playerTransform{};
 extern "C" void RegisterBuiltinComponentAdapters();
-/*  _________________________________________________________________________ */
-/*! main
-
-@param none
-
-@return int
-
-Indicates how the program existed. Normal exit is signaled by a return value of
-0. Abnormal termination is signaled by a non-zero return value.
-Note that the C++ compiler will insert a return 0 statement if one is missing.
-*/
-
-#include <cstdio>
-#include <windows.h>
 
 /*  _________________________________________________________________________ */
 /*! SetupConsole
@@ -121,31 +64,15 @@ void SetupConsole() {
     }
 }
 
-int WINAPI WinMain(
-    [[maybe_unused]] _In_     HINSTANCE hInstance,
-    _In_opt_ HINSTANCE hPrevInstance,
-    _In_     LPSTR     lpCmdLine,
-    [[maybe_unused]] _In_     int       nCmdShow
-){
-    _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-    //_CrtSetBreakAlloc(2235);
-    UNREFERENCED_PARAMETER(hPrevInstance);
-    UNREFERENCED_PARAMETER(lpCmdLine);
-    _CrtMemState stateStart, stateEnd, stateDiff;
-    _CrtMemCheckpoint(&stateStart);
+/*  _________________________________________________________________________ */
+/*! init
 
-    #ifdef DEBUG
-    
-    SetupConsole();
+@param 
 
-    #else
+@return none
 
-    (void)stateStart;
-    (void)stateEnd;
-    (void)stateDiff;
-
-    #endif
-
+*/
+void Init() {
     InstallCrashLogger("CrashoutsEngine");
     glfwSwapInterval(0); // disable vsync
     collisionSystem.registerObserver(Messaging::getCollisionMsgID(), physicsSystem); /*Listen to messages(collisions)*/
@@ -159,7 +86,6 @@ int WINAPI WinMain(
         << Settings::GetScreenHeight()
         << std::endl;
 
-    init();
     /// register game states and start with main menu
     RegisterAllStates();
     InitGameStateManager(MAIN_MENU);
@@ -168,57 +94,20 @@ int WINAPI WinMain(
 
     InputManager::Init(GLApp::ptr_window);
     UI::Init(GLApp::ptr_window); // NEW
-
-    // window's close flag is set by clicking close widget or Alt+F4
-    while (!glfwWindowShouldClose(GLApp::ptr_window)) {
-        FRC.FrameStart();
-        glfwPollEvents();
-        InputManager::Update();
-        GLApp::update_time();
-        collisionSystem.update(FRC.DT());
-        physicsSystem.update(FRC.DT());
-        UpdateGameStateManager();
-        update();
-        draw();
-
-        FRC.FrameEnd();
-    }
-
-    // Cleanup
-    UI::Shutdown();
-    DebugReflection::ComponentRegistry::instance().clear();
-    DebugReflection::PanelRegistry::instance().clear();
-    DebugReflection::PhysicsRegistry::instance().clear();
-    Logger::Instance().Clear();
-    GLApp::cleanup();
-    InputManager::Shutdown();
-    ShutdownGameStateManager();
-
-    CrashoutsEngine::ECS::DestroyInstance();
-
-    _CrtMemCheckpoint(&stateEnd);
-    if (_CrtMemDifference(&stateDiff, &stateStart, &stateEnd)) {
-        OutputDebugString("Memory leaks detected!\n");
-        _CrtMemDumpStatistics(&stateDiff);
-    }
-    return EXIT_SUCCESS;
-}
-
-static void init() {
-
 }
 
 /*  _________________________________________________________________________ */
 /*! draw
 
-@param none
+@param 
 
 @return none
 
 Call application to draw and then swap front and back frame buffers ...
 Uses GLHelper::GLFWWindow* to get handle to OpenGL context.
 */
-static void draw() {
+void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
+
     FrameProfiler::Scoped s(gProfiler, "Graphics/Scene");
     ScopedMemTag mem(MemTag::Graphics);
     // render scene
@@ -247,7 +136,15 @@ Make sure callbacks are invoked when state changes in input devices occur.
 Ensure time per frame and FPS are recorded.
 Let application update state changes (such as animation).
 */
-static void update() {
+void Update(Component::RigidBodyComponent& playerRigidBody, double const& dt) {
+
+    InputManager::Update();
+    GLApp::update_time();
+    UpdateGameStateManager();
+
+    collisionSystem.update(dt);
+    physicsSystem.update(dt);
+
     // process events if any associated with input devices
     //glfwPollEvents();
 
@@ -264,11 +161,28 @@ static void update() {
     //Update 
     Player::UpdateVelocity(playerRigidBody, moveSpeed);
 
-
-
-    //const double dt = 1.0 / 60.0;
-    //playerTransform.position.x += playerRigidBody.velocity.x * static_cast<float>(dt);
-
     // animate scene
     GLApp::update();
+}
+
+/*  _________________________________________________________________________ */
+/*! CleanUp
+
+@param none
+
+@return none
+
+Release resources
+*/
+void CleanUp() {
+    UI::Shutdown();
+    DebugReflection::ComponentRegistry::instance().clear();
+    DebugReflection::PanelRegistry::instance().clear();
+    DebugReflection::PhysicsRegistry::instance().clear();
+    Logger::Instance().Clear();
+    GLApp::cleanup();
+    InputManager::Shutdown();
+    ShutdownGameStateManager();
+
+    CrashoutsEngine::ECS::DestroyInstance();
 }

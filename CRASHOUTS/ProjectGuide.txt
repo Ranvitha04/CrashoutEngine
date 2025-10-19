@@ -40,8 +40,10 @@ The project generation process is automated with a script.
     1.  Creates a `build` folder for all generated files.
     2.  Runs CMake to produce a Visual Studio 2022 solution.
     3.  Automatically opens the generated `CRASHOUTS.sln` file in Visual Studio. 
-    4.  Provides build for both 'Debug' and 'Release' mode.
-    5.  Open 'build\' 'Debug' or 'Release' to run the exe.
+    4.  Provides build for both 'Debug' and 'Release' mode. 
+    5.  Run "run.bat Release" to build 'Release' mode, builds 'Debug' by default.
+    6.  "run.bat clean" or "clean.bat" will clean the files.
+    7.  Open 'out\build\' 'Debug' or 'Release' to run the exe.
 ***
 
 ## Step 3: Build and Run in Visual Studio
