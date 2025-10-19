@@ -86,6 +86,7 @@ Temporary Items
 
 # Ignore other intermediate or output directories
 out/
+build/
 Debug/
 Release/
 dist/

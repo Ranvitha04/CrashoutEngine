@@ -83,8 +83,8 @@ namespace CollisionGizmos {
     */
     void DrawAllColliders(ECS& ecs, [[maybe_unused]] const std::vector<Collision::CollisionEvent>* events, float wireThickness) {
         auto& collArr = ecs.GetComponentArray<Component::ColliderComponent>();
-        const CEVec3 ok(0.2f, 1.0f, 0.6f);   // non-colliding tint
-        const CEVec3 hit(1.0f, 0.3f, 0.3f);  // colliding tint
+        const CEVec3 ok(0.15f, 0.8f, 0.55f);    // non-colliding tint
+        const CEVec3 hit(1.0f, 0.3f, 0.3f);     // colliding tint
 
         for (auto e : collArr.indexToEntity) {
             auto* pColliderComp = ecs.GetComponent<Component::ColliderComponent>(e);
