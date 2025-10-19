@@ -15,6 +15,7 @@
 #include <memory>
 #include <string>
 #include <utility>
+#include <ft2build.h>
 
 /*
 ----------------------------------------------------------------------------- */
@@ -160,15 +161,22 @@ namespace CrashoutsEngine {
 				return assetNames.count(name) > 0;
 			}
 
+			FT_Library GetFTLib() const{
+				return ftLibrary;
+			};
+
 		private:
 			// Private construct for singleton
-			AssetManager() = default;
-			~AssetManager() = default;
+			AssetManager();
+			~AssetManager();
 			AssetManager(const AssetManager&) = delete;
 			AssetManager& operator=(const AssetManager&) = delete;
 
 			std::unordered_map<unsigned int, std::unique_ptr<IAsset>> assets;
 			std::unordered_map<std::string, unsigned int> assetNames;
+
+			// The single FreeType library instance (Only needs 1)
+			FT_Library ftLibrary;
 
 			unsigned int nextAssetID = 0;
 		};		

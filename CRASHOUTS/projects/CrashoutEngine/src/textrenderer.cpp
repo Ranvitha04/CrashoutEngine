@@ -77,6 +77,8 @@ TextRenderer::~TextRenderer() {
     }
 }
 
+// MOVED TO FONTASSET_H
+#if FALSE 
 /*!
 @brief Load a font and create character textures
 @param fontPath Path to the font file
@@ -142,6 +144,7 @@ bool TextRenderer::LoadFont(const std::string& fontPath) {
 
     return true;
 }
+#endif
 
 /*!
 @brief Render text at a given position

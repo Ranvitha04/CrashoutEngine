@@ -21,7 +21,8 @@ Provides text rendering using FreeType and OpenGL
 
 #include FT_FREETYPE_H
 
-
+// MOVED TO (FONTASSET_H)
+#if FALSE 
 /*!
 @struct Character
 @brief Stores glyph information for rendering text
@@ -39,6 +40,7 @@ struct Character {
 	/// Horizontal offset to advance to the next glyph
 	GLuint Advance;
 };
+#endif
 
 /*!
 @class TextRenderer
@@ -48,8 +50,8 @@ Manages font loading character glyphs and rendering text in screen space
 */
 class TextRenderer {
 public:
-    /// Map of loaded characters accessible by ASCII code
-    std::map<GLchar, Character> Characters;
+    /// Map of loaded characters accessible by ASCII code 
+    // std::map<GLchar, Character> Characters; (MOVED TO FONTASSET_H)
 
     /// Vertex array object for text quads
     GLuint VAO;
@@ -98,7 +100,7 @@ private:
     @param fontPath Path to the font file
     @return True if loaded successfully false otherwise
     */
-    bool LoadFont(const std::string& fontPath);
+    //bool LoadFont(const std::string& fontPath); (MOVED TO FONTASSET_H)
 };
 /*!
 @brief Load and link a shader program from vertex and fragment shader files

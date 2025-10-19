@@ -22,6 +22,7 @@
 // Include Asset Types if required
 #include "textureasset.h"
 #include "sceneasset.h"
+#include "fontasset.h"
 
 /*
 ----------------------------------------------------------------------------- */
@@ -30,6 +31,18 @@ namespace CrashoutsEngine {
 	namespace Assets {
 
 		namespace fs = std::filesystem;
+
+		AssetManager::AssetManager() {
+			// Load FT_Library
+			if (FT_Init_FreeType(&ftLibrary)) {
+				std::cerr << "ERROR::FREETYPE: Could not init FreeType library" << std::endl;
+			}
+		}
+
+		AssetManager::~AssetManager() {
+			// Delete FT_Library
+			FT_Done_FreeType(ftLibrary);
+		}
 
 		// Function to load assets in a json
 		/*!
@@ -181,6 +194,40 @@ namespace CrashoutsEngine {
 					}
 					else {
 						std::cerr << "Warning: Scene asset entry missing 'name' or 'path' in manifest." << std::endl;
+					}
+				}
+			}
+		
+			// --- Loading FONTS ----
+			if (doc.HasMember("fonts") && doc["fonts"].IsArray()) {
+				std::cout << "Loading Fonts..." << std::endl;
+				
+				const rapidjson::Value& fontArray = doc["fonts"];
+
+				for (rapidjson::SizeType i = 0; i < fontArray.Size(); ++i) {
+					const rapidjson::Value& asset = fontArray[i];
+					if (asset.HasMember("name") && asset.HasMember("path")) {
+						std::string name = asset["name"].GetString();
+						std::string relativePath = asset["path"].GetString();
+
+						fs::path fullPath = fs::path(rootAssetPath) / "scenes" / relativePath;
+
+						// Create SceneAsset object from file data (JSON)
+						std::unique_ptr<SceneAsset> newFont = FontAsset::Create(fullPath.string());
+
+						// Validate 
+						if (newFont) {
+							// Load the FontAsset into AssetManager
+							AssetManager::GetInstance().Load(name, std::move(newFont));
+							std::cout << "AssetManager loaded font data: " << name << "(" << fullPath.string() << ")"
+								<< std::endl;
+						}
+						else {
+							std::cerr << "Failed to create FontAsset: " << name << std::endl;
+						}
+					}
+					else {
+						std::cerr << "Warning: Font asset entry missing 'name' or 'path' in manifest." << std::endl;
 					}
 				}
 			}
