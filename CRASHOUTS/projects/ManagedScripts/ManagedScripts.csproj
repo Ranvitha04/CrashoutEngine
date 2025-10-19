@@ -8,12 +8,14 @@
 
   <!-- Reference the built ScriptAPI.dll instead of a vcxproj -->
   <ItemGroup>
-    <Reference Include="ScriptAPI">
-      <HintPath>$(SolutionDir).bin\$(Configuration)-$(Platform)\ScriptAPI.dll</HintPath>
-    </Reference>
+	  <Reference Include="ScriptAPI">
+		  <HintPath>$(SolutionDir)\.bin\$(Configuration)-$(Platform)\ScriptAPI.dll</HintPath>
+		  <Private>false</Private>
+	  </Reference>
   </ItemGroup>
 
-  <!-- Output configuration -->
+
+	<!-- Output configuration -->
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutputPath>$(SolutionDir).bin\$(Configuration)-$(Platform)\</OutputPath>
     <PlatformTarget>x64</PlatformTarget>
