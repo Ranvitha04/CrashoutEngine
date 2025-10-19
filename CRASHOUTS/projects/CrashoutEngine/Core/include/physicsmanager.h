@@ -7,7 +7,8 @@
 //__________________________________________________________________________*/
 
 #pragma once
-
+#pragma warning(disable: 4251)
+#pragma warning(disable: 4275)
 #include "CEVec3.h"
 #include "entitymanager.h"
 #include "collisionmanager.h"
@@ -15,12 +16,13 @@
 #include "rigidbodycomponent.h"
 #include "log.h"
 #include <vector>
+#include "ImportExport.h"
 
 namespace Physics {
 
-	void applyImpulse(Collision::CollisionEvent const& event, CrashoutsEngine::ECS& globalECS);
+	DLL_API void applyImpulse(Collision::CollisionEvent const& event, CrashoutsEngine::ECS& globalECS);
 
-	class PhysicsHandler : public Messaging::Observer {
+	class DLL_API PhysicsHandler : public Messaging::Observer {
 		private:
 			std::vector<Collision::CollisionEvent> collisionEvents;
 			Collision::CollisionHandler collisionHandler;

@@ -11,9 +11,10 @@
 #include <map>
 #include <string>
 #include "messages.h"
+#include "ImportExport.h"
 
 namespace Messaging {
-	class Observer;
+	DLL_API class Observer;
 
 	using HANDLER = void (*)(Messages&, Observer&);
 
@@ -21,7 +22,7 @@ namespace Messaging {
 	@class Observer
 	@brief Base class that executes HANDLER when appropriate message is received from Observable
 	*/
-	class Observer {
+	DLL_API class Observer {
 		protected:
 			Observer() : mId{ "Default_id" }, delayed{ false } {}
 			Observer(const std::string& id, bool delayed = false) : mId{ id }, delayed{delayed} {}

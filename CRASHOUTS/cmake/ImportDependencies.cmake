@@ -5,7 +5,7 @@ function(disable_warnings_for target)
         get_target_property(existing_compile_options ${target} COMPILE_OPTIONS)
 
         if (existing_compile_options)
-            # Remove any /W0–/W4 already present
+            # Remove any /W0ï¿½/W4 already present
             string(REGEX REPLACE "/W[0-4]" "" existing_compile_options "${existing_compile_options}")
             
             # FIX: Use semicolon to separate the flags in the list
@@ -268,8 +268,8 @@ function(copy_fmod_banks target banks_dir)
   )
   endfunction()
 
-set(CA_INC "${CMAKE_SOURCE_DIR}/projects/CrashoutEngine/include")
-set(CA_SRC "${CMAKE_SOURCE_DIR}/projects/CrashoutEngine/src")
+set(CA_INC "${CMAKE_SOURCE_DIR}/projects/CrashoutEngine/Core/include")
+set(CA_SRC "${CMAKE_SOURCE_DIR}/projects/CrashoutEngine/Core/src")
 
 
 add_library(CrashoutsAudio STATIC

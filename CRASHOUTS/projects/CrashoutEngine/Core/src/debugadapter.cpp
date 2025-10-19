@@ -30,6 +30,7 @@ runtime-extensible and project-agnostic.
 #include "gamestatemanager.h"
 #include "shapes.h"
 #include "reflectimgui.h"
+#include "ImportExport.h"
 
 using namespace CrashoutsEngine;
 
@@ -461,7 +462,7 @@ namespace {
  @see     DebugReflection::PhysicsRegistry
  @see     DebugReflection::SetGameStateProvider
 */
-extern "C" void RegisterBuiltinComponentAdapters() {
+extern "C" void DLL_API RegisterBuiltinComponentAdapters() {
     using namespace DebugReflection;
     ComponentRegistry::instance().registerAdapter(&gNameAdapter);
     ComponentRegistry::instance().registerAdapter(&gTransformAdapter);

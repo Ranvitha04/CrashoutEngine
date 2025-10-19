@@ -7,10 +7,12 @@
 //__________________________________________________________________________*/
 
 #pragma once
+#pragma warning(disable: 4251)
 #include <CEVec3.h>
+#include "ImportExport.h"
 
 namespace Component {
-	class RigidBodyComponent {
+	class DLL_API RigidBodyComponent {
 		private:
 			CEVec3 mVelocity;
 			CEVec3 mMaximumVel;

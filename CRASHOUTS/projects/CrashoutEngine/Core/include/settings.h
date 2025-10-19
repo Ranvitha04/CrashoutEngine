@@ -8,31 +8,32 @@ Stores global configuration values like screen width and height
 */
 
 #pragma once
-
+#pragma warning(disable: 4251)
+#include "ImportExport.h"
 /*!
 @class Settings
 @brief Provides static methods for managing screen size and configuration
 */
-class Settings {
+DLL_API class Settings {
 public:
     /*!
     @brief Set the screen size
     @param width Screen width
     @param height Screen height
     */
-    static void SetScreenSize(unsigned int width, unsigned int height);
+    DLL_API static void SetScreenSize(unsigned int width, unsigned int height);
 
     /*!
     @brief Get the current screen width
     @return Screen width
     */
-    static unsigned int GetScreenWidth();
+    DLL_API static unsigned int GetScreenWidth();
 
     /*!
     @brief Get the current screen height
     @return Screen height
     */
-    static unsigned int GetScreenHeight();
+    DLL_API static unsigned int GetScreenHeight();
 
     /*!
     @brief Load settings from a file
