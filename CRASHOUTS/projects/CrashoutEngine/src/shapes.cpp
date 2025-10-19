@@ -25,7 +25,7 @@ scaling) to shape vertices for flexible rendering.
 
 #include "shapes.h"
 #include "rendering.h"
-#include "managers/entitymanager.h"
+#include "entitymanager.h"
 #include <array>
 #include <vector>
 #include <cmath>
@@ -34,7 +34,7 @@ scaling) to shape vertices for flexible rendering.
 #include <iostream>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include "resources/textures.h"
+#include "textureasset.h"
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
@@ -575,7 +575,7 @@ namespace Component {
         float uvWidthMax = uvSize.x;
         float uvHeightMax = uvSize.y;
 
-        // Texture coordinate data
+        // TextureAsset coordinate data
         std::array<CEVec2, 4> tex_vtx{
             CEVec2(0.0f, uvHeightMax),       // bottom left
             CEVec2(uvWidthMax, uvHeightMax), // bottom right
@@ -624,15 +624,15 @@ namespace Component {
         }
 
         // Enable Blending for Transparency
-        glEnable(GL_BLEND);
-        // Set the standard alpha blending function
-        // (Source Alpha * Source Color + (1 - Source Alpha) * Destination Color)
+        glDepthMask(GL_FALSE); // Stop writing new depth values to the depth buffer
+        glEnable(GL_BLEND);    // Ensure blending is enabled
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-        // Bind texture and draw
         glBindTextureUnit(0, textureHandle);
         renderer.Draw();
         glBindTextureUnit(0, 0);
+        //Reset Depth Mask for the next frame or subsequent opaque rendering
+        glDepthMask(GL_TRUE); // Re-enable writing
     }
 
     void Shapes::CreateTexturedRectangle(const std::string& texturePath, const CEVec3& position,
@@ -690,7 +690,7 @@ namespace Component {
         renderer.shdr_pgm.SetUniform("uView", glm::mat4(1.0f));
         renderer.shdr_pgm.SetUniform("uProjection", projection);
 
-        // Texture uniforms
+        // TextureAsset uniforms
         GLint useTexture_loc = glGetUniformLocation(renderer.shdr_pgm.GetHandle(), "u_useTexture");
         if (useTexture_loc != -1) glUniform1i(useTexture_loc, 1);
 
@@ -701,14 +701,15 @@ namespace Component {
         if (tint_loc != -1) glUniform3f(tint_loc, tint.x, tint.y, tint.z);
 
         // Enable Blending for Transparency
-        glEnable(GL_BLEND);
-        // Set the standard alpha blending function
-        // (Source Alpha * Source Color + (1 - Source Alpha) * Destination Color)
+        glDepthMask(GL_FALSE); // Stop writing new depth values to the depth buffer
+        glEnable(GL_BLEND);    // Ensure blending is enabled
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         glBindTextureUnit(0, textureHandle);
         renderer.Draw();
         glBindTextureUnit(0, 0);
+        //Reset Depth Mask for the next frame or subsequent opaque rendering
+        glDepthMask(GL_TRUE); // Re-enable writing
     }
 
     void Shapes::CreateTexturedTriangle(const std::string& texturePath, const CEVec3& p1, const CEVec3& p2,
@@ -780,14 +781,15 @@ namespace Component {
         if (tint_loc != -1) glUniform3f(tint_loc, tint.x, tint.y, tint.z);
 
         // Enable Blending for Transparency
-        glEnable(GL_BLEND);
-        // Set the standard alpha blending function
-        // (Source Alpha * Source Color + (1 - Source Alpha) * Destination Color)
+        glDepthMask(GL_FALSE); // Stop writing new depth values to the depth buffer
+        glEnable(GL_BLEND);    // Ensure blending is enabled
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         glBindTextureUnit(0, textureHandle);
         renderer.Draw();
         glBindTextureUnit(0, 0);
+        //Reset Depth Mask for the next frame or subsequent opaque rendering
+        glDepthMask(GL_TRUE); // Re-enable writing
     }
 }
 

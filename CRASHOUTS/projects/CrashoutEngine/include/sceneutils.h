@@ -7,7 +7,7 @@
 This file implements
 */
 
-#include "managers/entitymanager.h"
+#include "entitymanager.h"
 
 namespace Scene {
 	void RenderScene(CrashoutsEngine::ECS& gECS);

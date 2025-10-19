@@ -8,8 +8,8 @@ This file implements
 */
 
 #include "sceneutils.h"
-#include "resources/textures.h"
-#include "managers/assetmanager.h"
+#include "textureasset.h"
+#include "assetmanager.h"
 
 namespace Scene {
     void RenderScene(CrashoutsEngine::ECS& globalECS) {

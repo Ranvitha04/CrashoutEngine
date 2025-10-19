@@ -1,10 +1,7 @@
 #pragma once
 
-
-#include <cmath>       
-#include "math/CETypes.h"   
-#include "math/CEVec2.h"     
-#include "math/CEMtx33.h"   
+#include "CETypes.h"   
+#include "CEVec2.h"     
 
 namespace Patrol {
 
@@ -23,9 +20,9 @@ namespace Patrol {
         }
     };
 
-    CE::f32& Tx(CEMtx33* m);
-    CE::f32& Ty(CEMtx33* m);
+    //CE::f32& Tx(CEMtx33* m);
+    //CE::f32& Ty(CEMtx33* m);
 
-    void UpdateAB(CEMtx33* transform, ABPatrol* data, CE::f32 dt);
+    //void UpdateAB(CEMtx33* transform, ABPatrol* data, CE::f32 dt);
 
 } 

@@ -12,11 +12,8 @@
 
 /*                                                                   includes
 ----------------------------------------------------------------------------- */
-#include "managers/entitymanager.h"
-#include "managers/collisionmanager.h"
-#include "components/transformcomponent.h"
-#include "components/shapescomponent.h"
-#include "shapes.h"
+#include "entitymanager.h"
+#include "collisionmanager.h"
 
 namespace CollisionGizmos {
 

@@ -6,7 +6,7 @@
 
 //__________________________________________________________________________*/
 
-#include "messaging/observable.h"
+#include "observable.h"
 #include <utility>
 #include <algorithm>
 

@@ -15,18 +15,18 @@ runtime-extensible and project-agnostic.
 /*                                                                   includes
 ----------------------------------------------------------------------------- */
 #include "debugreflection.h"
-#include "managers/entitymanager.h"
+#include "entitymanager.h"
 #include <imgui.h>
 #include <algorithm>
 #include "debugdefaults.h"
 
 /*                                                         component includes
 ----------------------------------------------------------------------------- */
-#include "components/namecomponent.h"
-#include "components/transformcomponent.h"
-#include "components/shapescomponent.h"
-#include "managers/physicsmanager.h"
-#include "managers/collisionmanager.h"
+#include "namecomponent.h"
+#include "transformcomponent.h"
+#include "shapescomponent.h"
+#include "physicsmanager.h"
+#include "collisionmanager.h"
 #include "gamestatemanager.h"
 #include "shapes.h"
 #include "reflectimgui.h"
@@ -315,12 +315,12 @@ namespace {
             //draw_reflected(*sc, "Shape");
             
             // shared
-            ImGui::Checkbox("Use Texture", &sc->enableTexture);
+            ImGui::Checkbox("Use TextureAsset", &sc->enableTexture);
 
             char buf[256]{};
             if (sc->textureName.size() < sizeof(buf)) std::memcpy(buf, sc->textureName.data(), sc->textureName.size());
 
-            ImGui::InputText("Texture Name", buf, sizeof(buf));
+            ImGui::InputText("TextureAsset Name", buf, sizeof(buf));
             if (ImGui::IsItemEdited() || ImGui::IsItemDeactivatedAfterEdit()) {
                 sc->textureName = buf;
             }

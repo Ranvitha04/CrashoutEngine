@@ -29,17 +29,13 @@
 #endif
 #include <windows.h>
 #include <atomic>
-#include <new>
 #include <vector>
 #include <string>
 #include <unordered_map>
 #include <chrono> // time tracking lib
 #include <algorithm>
-#include <cmath>
-#include <cstdint>
 #include <array>
 #include <imgui.h>
-#include <thread>
 
 
 // ---- Windows process-memory helper (Working Set & Private Bytes in MB) ----
@@ -424,8 +420,8 @@ inline void DrawEngineMemoryPanel() {
     ImGui::Text("Private Bytes: %.2f MB", privateBytesMB);
     // Add more performance stats here if you want
 
-    ImGui::SeparatorText("Framerate");
-    ImGui::Text("FPS: %.1f", ImGui::GetIO().Framerate);
+    //ImGui::SeparatorText("Framerate");
+    //ImGui::Text("FPS: %.1f", ImGui::GetIO().Framerate);
 }
 
 

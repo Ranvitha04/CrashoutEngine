@@ -28,10 +28,10 @@ applications such as sprite animation, particle systems, and dynamic geometry.
 ----------------------------------------------------------------------------- */
 
 #include "rendering.h"
-#include "managers/entitymanager.h"
+#include "entitymanager.h"
 #include <string>
-#include "math/CEVec3.h"
-#include "math/CEVec2.h"
+#include "CEVec3.h"
+#include "CEVec2.h"
 #include <vector>
 #include <array>
 #include <iostream>

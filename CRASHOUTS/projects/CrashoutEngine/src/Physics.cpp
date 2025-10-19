@@ -6,11 +6,11 @@
 
 //__________________________________________________________________________*/
 
-#include "managers/physicsmanager.h"
+#include "physicsmanager.h"
 #include "log.h"
 #include <cstdio>
-#include "math/CEMath.h"
-#include "messaging/observer.h"
+#include "CEMath.h"
+#include "observer.h"
 
 
 namespace Component {

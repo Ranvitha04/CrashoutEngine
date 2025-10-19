@@ -1,19 +1,21 @@
 /*!
-@file registergamestate.cpp
-@brief Registers all available game states
+@file		registergamestate.cpp
+@author     m.biniswandi@digipen.edu
+@date       13/09/2025
+@brief		Registers all available game states
 
 Creates descriptors for each state and registers them with the game state manager
 */
 
 #include "registergamestate.h"
 
-#include "scenes/afiq.h"
-#include "scenes/amir.h"
-#include "scenes/mainmenu.h"
-#include "scenes/rain.h"
-#include "scenes/renfred.h"
-#include "scenes/tristan.h"
-#include "scenes/ran.h"
+#include "afiqscene.h"
+#include "amirscene.h"
+#include "mainmenuscene.h"
+#include "rainscene.h"
+#include "renfredscene.h"
+#include "tristanscene.h"
+#include "ranscene.h"
 
 /*!
 @brief Register all game states

@@ -26,7 +26,7 @@
 
         This module integrates with the engine�s rendering system and
         dependencies (`entitymanager`, `rendering`, and
-        `resources/textures`) to support a component-based entity system
+        `textures`) to support a component-based entity system
         with animated 2D graphics.
 __________________________________________________________________________*/
 
@@ -39,9 +39,9 @@ __________________________________________________________________________*/
 #include <unordered_map>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-#include "managers/entitymanager.h"
+#include "entitymanager.h"
 #include "rendering.h"
-#include "resources/textures.h"
+#include "textureasset.h"
 
 #ifndef SPRITE_H
 #define SPRITE_H
@@ -163,7 +163,7 @@ namespace Component {
         /*!
         @brief Configure duck-specific animations (predefined setup).
         */
-        void setupDuckAnimations();
+        //void setupDuckAnimations();
 
         static Sprite m_blinkSprite;
         static Sprite m_walkSprite;

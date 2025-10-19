@@ -1,0 +1,232 @@
+{
+    "audio": [
+        {
+            "name": "Master",
+            "path": "banks\\Master.bank"
+        },
+        {
+            "name": "Master.strings",
+            "path": "banks\\Master.strings.bank"
+        },
+        {
+            "name": "Music",
+            "path": "banks\\Music.bank"
+        },
+        {
+            "name": "sfx",
+            "path": "banks\\sfx.bank"
+        }
+    ],
+    "fonts": [
+        {
+            "name": "Exo2-Regular",
+            "path": "Exo2-Regular.ttf"
+        },
+        {
+            "name": "Silver",
+            "path": "Silver.ttf"
+        }
+    ],
+    "images": [
+        {
+            "name": "bg 1 base",
+            "path": "backgrounds\\bg 1 base.png"
+        },
+        {
+            "name": "bg 1 pillar 2",
+            "path": "backgrounds\\bg 1 pillar 2.png"
+        },
+        {
+            "name": "bg 1 pillar",
+            "path": "backgrounds\\bg 1 pillar.png"
+        },
+        {
+            "name": "bg 1 top",
+            "path": "backgrounds\\bg 1 top.png"
+        },
+        {
+            "name": "bg 2 p1",
+            "path": "backgrounds\\bg 2 p1.png"
+        },
+        {
+            "name": "bg colour",
+            "path": "backgrounds\\bg colour.png"
+        },
+        {
+            "name": "bg2 base",
+            "path": "backgrounds\\bg2 base.png"
+        },
+        {
+            "name": "bg2 p2",
+            "path": "backgrounds\\bg2 p2.png"
+        },
+        {
+            "name": "bg2 top",
+            "path": "backgrounds\\bg2 top.png"
+        },
+        {
+            "name": "bg3 base",
+            "path": "backgrounds\\bg3 base.png"
+        },
+        {
+            "name": "bg3 p1",
+            "path": "backgrounds\\bg3 p1.png"
+        },
+        {
+            "name": "bg3 p2",
+            "path": "backgrounds\\bg3 p2.png"
+        },
+        {
+            "name": "bg3 top",
+            "path": "backgrounds\\bg3 top.png"
+        },
+        {
+            "name": "crashouts",
+            "path": "backgrounds\\crashouts.png"
+        },
+        {
+            "name": "foreground base",
+            "path": "backgrounds\\foreground base.png"
+        },
+        {
+            "name": "foreground top",
+            "path": "backgrounds\\foreground top.png"
+        },
+        {
+            "name": "lava far",
+            "path": "backgrounds\\lava far.png"
+        },
+        {
+            "name": "lava near",
+            "path": "backgrounds\\lava near.png"
+        },
+        {
+            "name": "Concept",
+            "path": "Character\\Concept.png"
+        },
+        {
+            "name": "Chibi-1",
+            "path": "Character\\Light Mode\\Chibi-1.png"
+        },
+        {
+            "name": "Chibi-2",
+            "path": "Character\\Light Mode\\Chibi-2.png"
+        },
+        {
+            "name": "Chibi-3",
+            "path": "Character\\Light Mode\\Chibi-3.png"
+        },
+        {
+            "name": "Chibi-4",
+            "path": "Character\\Light Mode\\Chibi-4.png"
+        },
+        {
+            "name": "Falling ",
+            "path": "Character\\Light Mode\\Falling .png"
+        },
+        {
+            "name": "Jump",
+            "path": "Character\\Light Mode\\Jump.png"
+        },
+        {
+            "name": "Falling",
+            "path": "Character\\Light Mode\\Left\\Falling.png"
+        },
+        {
+            "name": "Jump",
+            "path": "Character\\Light Mode\\Left\\Jump.png"
+        },
+        {
+            "name": "Run 1",
+            "path": "Character\\Light Mode\\Left\\Run 1.png"
+        },
+        {
+            "name": "Run 2",
+            "path": "Character\\Light Mode\\Left\\Run 2.png"
+        },
+        {
+            "name": "Run 3",
+            "path": "Character\\Light Mode\\Left\\Run 3.png"
+        },
+        {
+            "name": "Run 4",
+            "path": "Character\\Light Mode\\Left\\Run 4.png"
+        },
+        {
+            "name": "Switch State Idle ",
+            "path": "Character\\Light Mode\\Left\\Switch State Idle .png"
+        },
+        {
+            "name": "Switch State",
+            "path": "Character\\Light Mode\\Switch State.png"
+        },
+        {
+            "name": "Chibi-1",
+            "path": "Character\\Normal Mode\\Chibi-1.png"
+        },
+        {
+            "name": "Chibi-2",
+            "path": "Character\\Normal Mode\\Chibi-2.png"
+        },
+        {
+            "name": "Chibi-3",
+            "path": "Character\\Normal Mode\\Chibi-3.png"
+        },
+        {
+            "name": "Chibi-4",
+            "path": "Character\\Normal Mode\\Chibi-4.png"
+        },
+        {
+            "name": "Chibi-5",
+            "path": "Character\\Normal Mode\\Chibi-5.png"
+        },
+        {
+            "name": "Chibi-6",
+            "path": "Character\\Normal Mode\\Chibi-6.png"
+        },
+        {
+            "name": "Chibi-7",
+            "path": "Character\\Normal Mode\\Chibi-7.png"
+        },
+        {
+            "name": "Run Light",
+            "path": "Character\\Run Light.gif"
+        },
+        {
+            "name": "Run",
+            "path": "Character\\Run.gif"
+        },
+        {
+            "name": "Slime Idle",
+            "path": "Monsters\\Slime Idle.png"
+        },
+        {
+            "name": "Menu",
+            "path": "UI\\Menu.png"
+        },
+        {
+            "name": "team logo",
+            "path": "UI\\team logo.png"
+        },
+        {
+            "name": "Title",
+            "path": "UI\\Title.png"
+        }
+    ],
+    "json": [
+        {
+            "name": "assetmanifest",
+            "path": "assetmanifest.json"
+        }
+    ],
+    "scenes": [
+        {
+            "name": "amir",
+            "path": "amir"
+        },
+        {
+            "name": "renfred",
+            "path": "renfred"
+        }
+    ]
+}

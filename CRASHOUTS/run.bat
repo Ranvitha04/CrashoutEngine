@@ -1,93 +1,69 @@
 @echo off
-REM ===============================================
-REM Windows Build and Run Script
-REM Usage: run.bat [release | debug]
-REM ===============================================
+setlocal
+pushd "%~dp0"
 
-REM --- Script Configuration ---
-set TARGET_EXE=CrashoutEngine.exe
-set BUILD_CONFIG=Release
+set "BUILD_DIR=build"
+set "EXE_NAME=Descent.exe"
 
-REM --- Argument Processing ---
-if /I "%1"=="debug" set BUILD_CONFIG=Debug
-if /I "%1"=="release" set BUILD_CONFIG=Release
-
-echo.
-echo ===============================================
-echo   CRASHOUTS Console Application - Windows
-echo ===============================================
-echo.
-
-REM Check if CMake is available
-cmake --version >nul 2>&1
-if %errorlevel% neq 0 (
-    echo ERROR: CMake is not installed or not in PATH
-    echo Please install CMake from https://cmake.org/download/
-    pause
-    exit /b 1
+REM --- Handle 'clean' command ---
+if /i "%~1"=="clean" (
+    echo Deleting build directory to force a clean reconfiguration and build...
+    if exist "%BUILD_DIR%" (
+        rmdir /s /q "%BUILD_DIR%"
+    )
+    echo Clean complete.
+    goto :EOF
 )
 
-REM Check if Visual Studio Build Tools are available
-where cl >nul 2>&1
-if %errorlevel% neq 0 (
-    echo WARNING: Visual Studio Build Tools not found in PATH
-    echo Make sure you have Visual Studio or Build Tools installed
-    echo.
+REM --- Configuration Selection for Building and Running ---
+set "CONFIG=%1"
+if not defined CONFIG (
+    set "CONFIG=Debug"
 )
+REM Normalize case
+if /i "%CONFIG%"=="debug" set "CONFIG=Debug"
+if /i "%CONFIG%"=="release" set "CONFIG=Release"
 
-REM Clean previous build
-echo [1/4] Cleaning previous build...
-if exist build (
-    rmdir /s /q build
-    echo    Previous build directory removed
+echo Target Configuration: %CONFIG%
+
+REM STEP 1: Configure (fast, incremental)
+echo [1/3] Configuring project with CMake...
+cmake -S . -B "%BUILD_DIR%"
+if ERRORLEVEL 1 goto :FAIL
+
+REM STEP 2: Build (only the selected configuration)
+echo [2/3] Building %CONFIG% configuration...
+cmake --build "%BUILD_DIR%" --config %CONFIG%
+if ERRORLEVEL 1 goto :FAIL
+
+REM STEP 3: Run the executable
+echo [3/3] Launching executable...
+set "EXE_PATH=%BUILD_DIR%\%CONFIG%\%EXE_NAME%"
+
+if exist "%EXE_PATH%" (
+    echo Found: %EXE_PATH%
+    
+    REM Get the directory where the .exe is located
+    for %%F in ("%EXE_PATH%") do set "EXE_DIR=%%~dpF"
+
+    REM Use /D to set the correct working directory BEFORE launching
+    REM This is the most reliable method.
+    start "" /D "%EXE_DIR%" "%EXE_PATH%"
 ) else (
-    echo    No previous build found
-)
-
-REM Create build directory
-echo [2/4] Creating build directory...
-mkdir build
-cd build
-
-REM Configure with CMake
-echo [3/4] Configuring project with CMake...
-cmake .. -G "Visual Studio 17 2022" -A x64
-if %errorlevel% neq 0 (
-    echo ERROR: CMake configuration failed
-    cd ..
-    pause
-    exit /b 1
-)
-
-REM Build the project
-echo [4/4] Building project...
-cmake --build . --config %BUILD_CONFIG%
-if %errorlevel% neq 0 (
-    echo ERROR: Build failed
-    cd ..
-    pause
-    exit /b 1
+    echo ERROR: Executable not found at %EXE_PATH%
+    goto :FAIL
 )
 
 echo.
-echo ===============================================
-echo   Build completed successfully!
-echo ===============================================
-echo.
+echo --- SUCCESS ---
+goto :END
 
-REM Run the application
-echo Running the application...
+:FAIL
 echo.
-cd Debug
-CrashoutEngine.exe
-if %errorlevel% neq 0 (
-    echo.
-    echo Application exited with error code: %errorlevel%
-) else (
-    echo.
-    echo Application completed successfully!
-)
+echo --- FAILED ---
+echo An error occurred. Please check the messages above.
 
-echo.
-echo Press any key to exit...
-pause >nul
+:END
+popd
+endlocal
+pause

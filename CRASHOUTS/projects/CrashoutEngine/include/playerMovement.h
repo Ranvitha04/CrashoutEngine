@@ -1,8 +1,8 @@
 #pragma once
 
-#include "managers/inputmanager.h"   
+#include "inputmanager.h"   
 #include "key.h"            
-#include "managers/physicsmanager.h"        
+#include "physicsmanager.h"        
 
 namespace Player {
 

@@ -10,7 +10,7 @@ Declare struct defaults used across Debug Menu adapters
 /*                                                                   includes
 ----------------------------------------------------------------------------- */
 #pragma once
-#include "math/CEVec3.h"
+#include "CEVec3.h"
 
 //__________________________________________________________________________*/
 

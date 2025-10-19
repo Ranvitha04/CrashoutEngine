@@ -18,11 +18,9 @@ integration.
 
 #include "glapp.h"
 #include "rendering.h"
-#include "managers/entitymanager.h"
+#include "entitymanager.h"
 #include "shapes.h"
-#include "resources/textures.h"
-#include "spriteAnimation.h"
-#include "scenes/ran.h"
+#include "textureasset.h"
 #include <glm/glm.hpp>
 #include <iostream>      
 #include <sstream>
@@ -49,8 +47,24 @@ GLint GLApp::height;
 GLdouble GLApp::fps;
 GLdouble GLApp::delta_time;
 std::string GLApp::title;
-GLFWwindow* GLApp::ptr_window;
+GLFWwindow* GLApp::ptr_window{ nullptr };
 
+Component::Rendering model;
+Component::Shapes shapes;
+//Component::TextureAsset texture;
+
+
+std::array<CEVec3, 4> clr_vtx{
+    CEVec3(1.f, 1.f, 1.f), // Center - white
+    CEVec3(1.f, 0.f, 0.f), // Bottom-right - red
+    CEVec3(0.f, 1.f, 0.f), // Top-right - green
+    CEVec3(0.f, 0.f, 1.f)  // Top-left - blue
+};
+
+std::array<CEVec3, 4> InitVtx = clr_vtx;
+
+std::vector<CEVec3> current_positions;
+std::vector<CEVec3> current_colors;
 std::vector<GLApp::GLViewport> GLApp::vps;
 
 
@@ -260,7 +274,7 @@ gracefully terminate.
 */
 void GLApp::cleanup() {
 
-    //Component::Texture::Cleanup();
+    //Component::TextureAsset::Cleanup();
 
     Component::Rendering::Cleanup();
 

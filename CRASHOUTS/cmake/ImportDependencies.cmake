@@ -7,10 +7,12 @@ function(disable_warnings_for target)
         if (existing_compile_options)
             # Remove any /W0–/W4 already present
             string(REGEX REPLACE "/W[0-4]" "" existing_compile_options "${existing_compile_options}")
-            set_target_properties(${target} PROPERTIES COMPILE_OPTIONS "${existing_compile_options};/W0")
+            
+            # FIX: Use semicolon to separate the flags in the list
+            set_target_properties(${target} PROPERTIES COMPILE_OPTIONS "${existing_compile_options};/W0;/analyze-")
         else()
-            # If no options yet, just add /W0
-            set_target_properties(${target} PROPERTIES COMPILE_OPTIONS "/W0")
+            # FIX: Use semicolon to separate the flags in the list
+            set_target_properties(${target} PROPERTIES COMPILE_OPTIONS "/W0;/analyze-")
         endif()
     else()
         target_compile_options(${target} PRIVATE -w)
@@ -77,6 +79,9 @@ macro(import_imgui)
         )
 
         add_library(imgui STATIC ${IMGUI_SOURCES})
+
+        disable_warnings_for(imgui)
+
         target_include_directories(imgui PUBLIC
             ${imgui_SOURCE_DIR}
             ${imgui_SOURCE_DIR}/backends
@@ -94,6 +99,10 @@ macro(import_stb)
             GIT_TAG master
         )
         FetchContent_Populate(stb)
+
+        if (TARGET stb)
+            disable_warnings_for(stb)
+        endif()
 
         add_library(stb INTERFACE)
         target_include_directories(stb INTERFACE ${stb_SOURCE_DIR})

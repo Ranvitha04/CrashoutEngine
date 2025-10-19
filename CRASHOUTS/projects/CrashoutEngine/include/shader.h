@@ -67,9 +67,9 @@ programming while maintaining compatibility with automated testing systems.
 ----------------------------------------------------------------------------- */
 
 
-#include "math/CEVec2.h"
-#include "math/CEVec3.h"
-#include "components/namecomponent.h"
+#include "CEVec2.h"
+#include "CEVec3.h"
+#include "namecomponent.h"
 #include <GL/glew.h>
 #include <glm/glm.hpp>
 #include <string>
@@ -600,8 +600,8 @@ namespace Component {
       #include "../shaders/my-shader.frag"
     };*/
 
-    const ::std::string Shader = "../../../projects/CrashoutEngine/shaders/CrashoutShader.frag";
-    const ::std::string Vertex = "../../../projects/CrashoutEngine/shaders/CrashoutShader.vert";
+    const ::std::string Shader = "assets/shaders/CrashoutShader.frag";
+    const ::std::string Vertex = "assets/shaders/CrashoutShader.vert";
 
 #define AUTOMATION_HOOK_SHADER(shdr_pgm, shdr_files) \
 shdr_files.clear(); \

@@ -11,9 +11,9 @@ This file provides the graphics for Crashout Engine's ImGUI.
 // Engine / app headers
 #include "glapp.h"
 #include "performanceViewer.h"
-#include "managers/entitymanager.h"
-#include "managers/collisionmanager.h"
-#include "managers/physicsmanager.h"
+#include "entitymanager.h"
+#include "collisionmanager.h"
+#include "physicsmanager.h"
 #include "gamestatemanager.h"
 #include "shapes.h"
 #include "log.h"
@@ -22,7 +22,10 @@ This file provides the graphics for Crashout Engine's ImGUI.
 #include "debugreflection.h"
 #include "debugcollision.h"
 #include "frameratecontroller.h"
-
+#include "audioSystem.h"
+#include <fmod_studio.hpp> 
+#include "prefab.h"
+using CrashoutsEngine::Audio::AudioSystem;
 // ImGui headers
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
@@ -31,7 +34,7 @@ This file provides the graphics for Crashout Engine's ImGUI.
 #include <vector>
 #include <string>
 #include <cstring>
-#include "math/CEVec3.h"
+#include "CEVec3.h"
 
 /*                                                                   
 ----------------------------------------------------------------------------- */
@@ -49,6 +52,39 @@ namespace { //------------------------------------------------------------------
     Entity gSelectedEntity = 0;                 //!< Currently selected entity
     std::vector<ProfilerSample> gPerfSnapshot;  //!< Performance profiler snapshot
     double gPerfSnapshotTotalMs = 0.0;          //!< Total frame time in ms
+    // --- File-local audio state used by the panel ---
+
+    static bool g_audioReady = false;
+    static bool g_banksLoaded = false;
+
+    // SFX
+    static const char* kSfx_Beep = "event:/sfexbeep"; // must exist in sfx.bank
+    // Music A (fixed path)
+    static const char* kEvent_MusicA = "event:/Steven Beddall - Hold My ";
+    static FMOD::Studio::EventInstance* s_musicA = nullptr;
+    static float s_musicAVol = 1.0f;
+
+    // Music B (editable path)
+    static FMOD::Studio::EventInstance* s_musicB = nullptr;
+    static float s_musicBVol = 1.0f;
+    static char  g_musicBPath[128] = "event:/Music/Alt"; // type another event path if needed
+
+    // Ensure audio is initialized and both banks are loaded
+    static bool ensureAudio() {
+        if (!g_audioReady) {
+            // keep your current API; do NOT change signature
+            g_audioReady = AudioSystem::instance().init();
+        }
+        if (g_audioReady && !g_banksLoaded) {
+            bool ok = true;
+            ok = ok && AudioSystem::instance().loadBank("sfx.bank");
+            ok = ok && AudioSystem::instance().loadBank("Music.bank");
+            g_banksLoaded = ok;
+        }
+        return g_audioReady && g_banksLoaded;
+    }
+
+
 
     // Small UI helpers
 
@@ -190,7 +226,37 @@ namespace UI { // --------------------------------------------------------------
                 ecs.AddComponent<TransformComponent>(e);
             }
         }
+        ImGui::SeparatorText("Prefab Creator");
+        static char nameBuf[128] = { 0 };
+        ImGui::InputTextWithHint("Prefab name", "e.g. Box, Platform, Player...", nameBuf, IM_ARRAYSIZE(nameBuf));
+        ImGui::SameLine();
+        if (ImGui::Button("Create##PrefabByName")) {
+            std::string n = nameBuf;
+            if (n.empty()) n = "Entity";
+            Prefab::Create(ecs, n);      // calls your prefab module (registered names or fallback)
+            nameBuf[0] = '\0';
+        }
 
+        // Optional: quick picker of registered prefab names
+        {
+            auto names = Prefab::Names();
+            if (!names.empty()) {
+                static int sel = 0;
+                if (sel >= (int)names.size()) sel = 0;
+                if (ImGui::BeginCombo("Choose prefab", names[sel].c_str())) {
+                    for (int i = 0; i < (int)names.size(); ++i) {
+                        bool isSel = (i == sel);
+                        if (ImGui::Selectable(names[i].c_str(), isSel)) sel = i;
+                        if (isSel) ImGui::SetItemDefaultFocus();
+                    }
+                    ImGui::EndCombo();
+                }
+                ImGui::SameLine();
+                if (ImGui::Button("Create Selected##Prefab")) {
+                    Prefab::Create(ecs, names[sel]);
+                }
+            }
+        }
         ImGui::Separator();
         ImGui::TextUnformatted("Entities");
         if (entities.empty()) {
@@ -527,14 +593,39 @@ namespace UI { // --------------------------------------------------------------
      @param ecs ECS reference.
      @param ui UI state toggles.
     */
-    void RenderAudioPanel([[maybe_unused]] FrameProfiler& profiler, [[maybe_unused]] ECS& ecs, UIState& ui) {
+    void UI::RenderAudioPanel([[maybe_unused]] FrameProfiler& profiler, [[maybe_unused]] CrashoutsEngine::ECS& ecs, UIState& ui) {
+
         if (!ui.showAudio) return;
         ScopedWindow w("Audio", LockFlags(ui.lockLayout));
 
-        // Testing Purposes
-        int vol = 10;
-        ImGui::SliderInt("Audio", &vol, 0, 100);
+        // shows that fmod is there
+        if (!ensureAudio()) {
+            ImGui::TextDisabled("FMOD not initialized or banks missing.");
+            if (ImGui::Button("Initialize Audio & Load Banks")) {
+                ensureAudio();
+            }
+            return;
+        }
+        //shows what is loaded
+        ImGui::TextDisabled("Banks loaded: Master.*, sfx.bank, Music.bank");
+        //button to play the first song
+        if (ImGui::Button("Play song")) {
+            AudioSystem::instance().playOneShot(kSfx_Beep); 
+        }
+        //button to play the second song
+        if (ImGui::Button("Play SFX )")) {
+          
+            AudioSystem::instance().playOneShot(kSfx_Beep);
+        }
+       
+        //Stop all music
+        if (ImGui::Button("Stop")) {
+            AudioSystem::instance().stopAll(true); 
+        }
+
+        AudioSystem::instance().update();
     }
+
 
     static void RenderTogglesWindow(UIState& ui)
     {
@@ -549,7 +640,7 @@ namespace UI { // --------------------------------------------------------------
             ImGui::Checkbox("Performance", &ui.showPerf);
             ImGui::Checkbox("Console", &ui.showConsole);
             ImGui::Checkbox("Game State", &ui.showGameState);
-
+            ImGui::Checkbox("Audio", &ui.showAudio);
             // Dynamically registered panels
             /*ImGui::Spacing();
             ImGui::TextDisabled("Panels");
@@ -585,9 +676,10 @@ namespace UI { // --------------------------------------------------------------
 
             // To be fixed later
             /*ImGui::Spacing();
-            if (ImGui::Button("Save Layout")) ImGui::SaveIniSettingsToDisk(nullptr);
+            if (ImGui::Button("Save Layout")) ImGui::SaveIniSettingsToDisk(nullptr);*/
+            ImGui::Spacing();
             ImGui::SameLine();
-            if (ImGui::Button("Reload Layout")) ImGui::LoadIniSettingsFromDisk(nullptr);*/
+            if (ImGui::Button("Simulate Crash")) ImGui::LoadIniSettingsFromDisk(nullptr);
         }
         ImGui::End();
     }
