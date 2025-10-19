@@ -39,7 +39,7 @@ namespace Scene {
 
                 if (useTexture) {
                     using namespace Assets;
-                    Texture* tex = Assets::AssetManager::GetInstance().Get<Texture>(sc->textureName);
+                    TextureAsset* tex = Assets::AssetManager::GetInstance().Get<TextureAsset>(sc->textureName);
                     if (tex) {
                         tex->SetTextureMode(
                             static_cast<TextureMode>(sc->wrapModeU),

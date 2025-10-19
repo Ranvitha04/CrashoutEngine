@@ -21,6 +21,7 @@ integration.
 #include "entitymanager.h"
 #include "shapes.h"
 #include "textureasset.h"
+#include "ranscene.h"
 #include <glm/glm.hpp>
 #include <iostream>      
 #include <sstream>

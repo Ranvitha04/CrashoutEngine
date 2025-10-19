@@ -28,7 +28,7 @@
 #include "rendering.h"
 #include "shapes.h"
 #include "spriteAnimation.h"
-#include "math/CEVec3.h"
+#include "CEVec3.h"
 #include <vector>
 #include <array>
 

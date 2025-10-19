@@ -46,3 +46,24 @@ void FreeRan()
 void UnloadRan()
 {
 }
+
+void HandleSpriteKeyInput(int key, int action)
+{
+    using Component::Sprite;
+
+    // Respond to presses and repeats; releases don’t need state changes here
+    if (action == GLFW_PRESS || action == GLFW_REPEAT) {
+        switch (key) {
+            case GLFW_KEY_LEFT:
+            case GLFW_KEY_A:
+                Sprite::m_sprite.setFlipHorizontal(true);
+                break;
+            case GLFW_KEY_RIGHT:
+            case GLFW_KEY_D:
+                Sprite::m_sprite.setFlipHorizontal(false);
+                break;
+            default:
+                break;
+        }
+    }
+}

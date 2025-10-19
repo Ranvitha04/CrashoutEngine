@@ -507,23 +507,17 @@ namespace CrashoutsEngine {
 
             std::cout << "DEBUG: Requesting texture asset: '" << assetName << "'" << std::endl;
 
-            // Use the AssetManager to retrieve the *already loaded* Texture object
-            Texture* texture = AssetManager::GetInstance().Get<Texture>(assetName);
-            // // Use the AssetManager to retrieve the *already loaded* TextureAsset object
-            // TextureAsset* texture = AssetManager::GetInstance().Get<TextureAsset>(assetName);
+            // Use the AssetManager to retrieve the already loaded TextureAsset object
+            TextureAsset* texture = AssetManager::GetInstance().Get<TextureAsset>(assetName);
 
             if (texture) {
-                //std::cout << "DEBUG: Texture '" << assetName << "' found in AssetManager" << std::endl;
-                // Return the OpenGL handle stored inside the asset object
                 if (texture->IsUploaded()) {
-                    //std::cout << "DEBUG: Texture '" << assetName << "' is uploaded to GPU with handle: " << texture->GetGLHandle() << std::endl;
                     return texture->GetGLHandle();
                 }
                 std::cerr << "Warning: TextureAsset '" << assetName << "' found but not uploaded to GPU." << std::endl;
                 return 0;
             }
 
-            // Asset not found, indicating problem in manifest or loading phase
             std::cerr << "Error: Texture asset not found in AssetManager: " << assetName << std::endl;
             std::cerr << "Available asset names should be: amazon-logo-transparent, duck-rgba-256, duck" << std::endl;
             return 0;

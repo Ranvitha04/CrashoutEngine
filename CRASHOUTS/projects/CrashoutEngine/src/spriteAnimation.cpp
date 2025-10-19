@@ -302,6 +302,7 @@ namespace Component {
         addAnimationState("walk_bounce", AnimationState(18, 6, 0.1f, true));
         
         // Set default animation
+        
         setAnimationState("idle_normal");
     }
 }

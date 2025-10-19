@@ -56,7 +56,7 @@ for all 2D graphics operations in the engine.
 #include <vector>
 #include <cstddef>
 #include "shader.h"	
-#include "managers/entitymanager.h"
+#include "entitymanager.h"
 
 namespace Component {
 
