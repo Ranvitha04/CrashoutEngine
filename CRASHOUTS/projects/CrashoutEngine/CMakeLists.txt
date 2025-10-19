@@ -106,11 +106,27 @@ link_fmod_to(${PROJECT_NAME})
 target_include_directories(${PROJECT_NAME} 
 PUBLIC
     ${project_dir}/include
+    ${CMAKE_SOURCE_DIR}/third_party/dotnet/include
 PRIVATE
     ${CMAKE_SOURCE_DIR}/lib/glm                 # Added GLM include
     ${_FMOD_INC}                                # Added FMOD include
 )
-        
+
+# Ensure exception handling is on
+if (MSVC)
+    target_compile_options(${PROJECT_NAME} PRIVATE /EHsc)
+endif()
+
+
+# Copy .NET runtime dependencies after build
+add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        "${CMAKE_SOURCE_DIR}/third_party/dotnet/bin"
+        "$<TARGET_FILE_DIR:${PROJECT_NAME}>"
+    COMMENT "Copying .NET Core runtime dependencies..."
+)
+
+
 set_property(TARGET ${PROJECT_NAME} PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "$<TARGET_FILE_DIR:${PROJECT_NAME}>")
 
 
