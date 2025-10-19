@@ -116,7 +116,8 @@ namespace CrashoutsEngine {
                 currentModeS = modeS;
             }
 
-            if (currentModeT != modeS) {
+            // Compare to modeT, not modeS, so T-wrap updates correctly
+            if (currentModeT != modeT) {
                 glTextureParameteri(glHandle, GL_TEXTURE_WRAP_T, GetTextureMode(modeT));
                 currentModeT = modeT;
             }

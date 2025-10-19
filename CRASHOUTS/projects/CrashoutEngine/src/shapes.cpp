@@ -87,12 +87,12 @@ namespace Component {
         float worldWidth, worldHeight;
 
         if (aspect >= 1.0f) {
-            // Wide/square screen: fix height, expand width
+            
             worldHeight = WorldSettings::BASE_SIZE;
             worldWidth = worldHeight * aspect;
         }
         else {
-            // Tall screen: fix width, expand height  
+            
             worldWidth = WorldSettings::BASE_SIZE;
             worldHeight = worldWidth / aspect;
         }
@@ -489,7 +489,7 @@ namespace Component {
 
         // Generate perimeter vertices
         for (int i = 0; i <= segments; ++i) {
-            float angle = 2.0f * M_PI * static_cast<float>(i) / static_cast<float>(segments);
+            float angle = 2.0f * static_cast<float>(M_PI) * static_cast<float>(i) / static_cast<float>(segments);
             float x = radius * cosf(angle);
             float y = radius * sinf(angle);
             pos_vtx.push_back(CEVec3(x, y, 0.0f));
@@ -577,10 +577,10 @@ namespace Component {
 
         // Texture coordinate data
         std::array<CEVec2, 4> tex_vtx{
-            CEVec2(0.0f, 1.0f), // bottom left 
-            CEVec2(1.0f, 1.0f), // bottom right 
-            CEVec2(1.0f, 0.0f), // top right 
-            CEVec2(0.0f, 0.0f)
+            CEVec2(0.0f, uvHeightMax),       // bottom left
+            CEVec2(uvWidthMax, uvHeightMax), // bottom right
+            CEVec2(uvWidthMax, 0.0f),        // top right
+            CEVec2(0.0f, 0.0f)               // top left
         };
 
         std::array<GLushort, 6> idx_vtx{ 0, 1, 2, 0, 2, 3 }; // Two triangles
@@ -660,9 +660,12 @@ namespace Component {
         float uvWidthMax = uvSize.x;
         float uvHeightMax = uvSize.y;
 
+    
         std::array<CEVec2, 4> tex_vtx{
-            CEVec2(0.0f, 1.0f), CEVec2(1.0f, 1.0f),
-            CEVec2(1.0f, 0.0f), CEVec2(0.0f, 0.0f)
+            CEVec2(0.0f, uvHeightMax),       // bottom left
+            CEVec2(uvWidthMax, uvHeightMax), // bottom right
+            CEVec2(uvWidthMax, 0.0f),        // top right
+            CEVec2(0.0f, 0.0f)               // top left
         };
 
         std::array<GLushort, 6> idx_vtx{ 0, 1, 2, 0, 2, 3 };
@@ -729,11 +732,18 @@ namespace Component {
         float uvWidthMax = uvSize.x;
         float uvHeightMax = uvSize.y;
 
-        // Triangle texture coordinates
+        
+        float minX = std::min(p1.x, std::min(p2.x, p3.x));
+        float maxX = std::max(p1.x, std::max(p2.x, p3.x));
+        float minY = std::min(p1.y, std::min(p2.y, p3.y));
+        float maxY = std::max(p1.y, std::max(p2.y, p3.y));
+        float width = std::max(0.0001f, maxX - minX);
+        float height = std::max(0.0001f, maxY - minY);
+
         std::array<CEVec2, 3> tex_vtx{
-            CEVec2(0.0f, uvHeightMax), // bottom left
-            CEVec2(uvWidthMax, uvHeightMax), // bottom right
-            CEVec2(uvWidthMax * 0.5f, 0.0f)  // top center
+            CEVec2((p1.x - minX) / width * uvWidthMax, (maxY - p1.y) / height * uvHeightMax),
+            CEVec2((p2.x - minX) / width * uvWidthMax, (maxY - p2.y) / height * uvHeightMax),
+            CEVec2((p3.x - minX) / width * uvWidthMax, (maxY - p3.y) / height * uvHeightMax)
         };
 
         std::array<GLushort, 3> idx_vtx{ 0, 1, 2 };
