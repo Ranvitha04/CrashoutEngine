@@ -112,12 +112,15 @@ PRIVATE
     ${_FMOD_INC}                                # Added FMOD include
 )
 
+# Tell the compiler to export symbols using DLL_API_EXPORT
+target_compile_definitions(${PROJECT_NAME} PRIVATE DLL_API_EXPORT)
+
 # Ensure exception handling is on
 if (MSVC)
     target_compile_options(${PROJECT_NAME} PRIVATE /EHsc)
 endif()
 
-
+#[[
 # Copy .NET runtime dependencies after build
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory
@@ -125,8 +128,16 @@ add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
         "$<TARGET_FILE_DIR:${PROJECT_NAME}>"
     COMMENT "Copying .NET Core runtime dependencies..."
 )
-
+]]
 
 set_property(TARGET ${PROJECT_NAME} PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "$<TARGET_FILE_DIR:${PROJECT_NAME}>")
 
+# .NET CoreCLR Hosting for C# scripting
 
+# Add Windows libraries for dynamic loading
+target_link_libraries(${PROJECT_NAME} PRIVATE shlwapi.lib)
+
+# Ensure your CoreCLR host headers are included
+target_include_directories(${PROJECT_NAME} PRIVATE
+    ${CMAKE_SOURCE_DIR}/third_party/dotnet/include
+)
