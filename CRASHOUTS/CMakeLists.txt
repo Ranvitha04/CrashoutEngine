@@ -1,19 +1,4 @@
-﻿if (MSVC)
-    message(STATUS "Disabling /WX (treat warnings as errors) globally...")
-
-    # Ensure /WX- always wins for all targets and dependencies
-    add_compile_options($<$<COMPILE_LANGUAGE:CXX>:/WX->)
-    add_compile_options($<$<COMPILE_LANGUAGE:C>:/WX->)
-
-    # Patch compiler flags globally so even nested FetchContent targets obey
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /WX-")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /WX-")
-
-    # This hook runs after all subprojects are created
-    set(CMAKE_POLICY_DEFAULT_CMP0092 NEW)
-endif()
-
-# ======================= Project Configuration =========================
+﻿# ======================= Project Configuration =========================
 cmake_minimum_required(VERSION 3.5)
 
 # Set the CMake policy version (this enables all policies up to CMake 3.5)
@@ -34,15 +19,6 @@ set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
 set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
-
-# Disable reflect internal builds
-set(REFLECT_BUILD_BENCHMARKS OFF CACHE BOOL "" FORCE)
-set(REFLECT_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
-set(REFLECT_BUILD_TESTS OFF CACHE BOOL "" FORCE)
-
-set(IMGUI_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
-set(IMGUI_BUILD_DEMO OFF CACHE BOOL "" FORCE)
-set(IMGUI_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 
 # Include project-wide utility and dependency modules
 include(ImportDependencies)
@@ -84,156 +60,16 @@ elseif (CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
     add_compile_options(-Wall -Wextra -Wpedantic -Werror)
 endif()
 
-# ======================= CORE / SCRIPTING SETUP =========================
-
-# ---------- Core Engine (DLL build) ----------
-file(GLOB_RECURSE CORE_SRC
-    "${CMAKE_CURRENT_SOURCE_DIR}/projects/CrashoutEngine/Core/*.cpp"
-)
-file(GLOB_RECURSE CORE_HEADERS
-    "${CMAKE_CURRENT_SOURCE_DIR}/projects/CrashoutEngine/Core/*.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/projects/CrashoutEngine/Core/*.hpp"
-)
-
-# Build as a shared library (DLL)
-add_library(CrashoutCore SHARED ${CORE_SRC} ${CORE_HEADERS})
-target_compile_definitions(CrashoutCore PRIVATE DLL_API_EXPORT)
-
-# ---------- FMOD Setup ----------
-set(_FMOD_INC "${CMAKE_CURRENT_SOURCE_DIR}/third_party/fmod/include")
-set(_FMOD_LIB "${CMAKE_CURRENT_SOURCE_DIR}/third_party/fmod/lib/x64")
-
-# Ensure FMOD libs are visible to the linker (Debug + Release)
-link_directories("${_FMOD_LIB}")
-
-message(STATUS "FMOD include path: ${_FMOD_INC}")
-message(STATUS "FMOD lib path: ${_FMOD_LIB}")
-file(GLOB FMOD_LIBS "${_FMOD_LIB}/*.lib")
-message(STATUS "FMOD libs found: ${FMOD_LIBS}")
-
-
-target_include_directories(CrashoutCore PUBLIC
-    ${CMAKE_CURRENT_SOURCE_DIR}/projects/CrashoutEngine/Core/include
-    ${CMAKE_CURRENT_SOURCE_DIR}/projects/CrashoutEngine/Core
-    ${CMAKE_CURRENT_LIST_DIR}/lib/glm
-    ${_FMOD_INC}
-)
-
-target_link_directories(CrashoutCore PUBLIC
-    ${_FMOD_LIB}
-)
-
-
-target_link_libraries(CrashoutCore PUBLIC
-    glfw
-    libglew_static
-    imgui
-    glm::glm
-    stb
-    freetype
-    reflect
-    rapidjson
-    $<$<CONFIG:Debug>:fmodL_vc.lib>
-    $<$<CONFIG:Debug>:fmodstudioL_vc.lib>
-    $<$<CONFIG:Release>:fmod_vc.lib>
-    $<$<CONFIG:Release>:fmodstudio_vc.lib>
-)
-
-if (MSVC)
-    # Disable "warnings as errors" globally and silence override spam
-    add_compile_options(/WX-)
-    string(APPEND CMAKE_CXX_FLAGS " /WX-")
-    string(APPEND CMAKE_C_FLAGS " /WX-")
-endif()
-
-
-
-# ---------- ScriptAPI (C++/CLI Layer) ----------
-if (MSVC)
-    file(GLOB_RECURSE SCRIPTAPI_SRC "${CMAKE_CURRENT_SOURCE_DIR}/projects/CrashoutEngine/ScriptAPI/*.cpp")
-    add_library(ScriptAPI SHARED ${SCRIPTAPI_SRC})
-    set_target_properties(ScriptAPI PROPERTIES COMMON_LANGUAGE_RUNTIME "" CXX_STANDARD 17)
-    target_link_libraries(ScriptAPI PRIVATE CrashoutCore)
-    target_include_directories(ScriptAPI PRIVATE
-        ${CMAKE_CURRENT_SOURCE_DIR}/projects/CrashoutEngine/Core/include
-        ${CMAKE_CURRENT_SOURCE_DIR}/projects/CrashoutEngine/Core
-        ${_FMOD_INC}
-    )
-endif()
-
-# ---------- ManagedScripts (C# Project) ----------
-set(CSHARP_PROJECT_PATH "${CMAKE_CURRENT_SOURCE_DIR}/managedscripts/ManagedScripts.csproj")
-if (EXISTS ${CSHARP_PROJECT_PATH})
-    add_custom_target(ManagedScripts ALL
-        COMMAND dotnet build ${CSHARP_PROJECT_PATH} -c $<CONFIG> -o "${CMAKE_BINARY_DIR}/bin/$<CONFIG>"
-        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/managedscripts
-        COMMENT "Building Managed C# Scripts...")
-endif()
-
-# ---------- Main Executable ----------
-file(GLOB_RECURSE MAIN_SRC "${CMAKE_CURRENT_SOURCE_DIR}/main.cpp")
-list(FILTER MAIN_SRC EXCLUDE REGEX ".*/_deps/.*")
-
-add_executable(CrashoutEngine ${MAIN_SRC})
-if (WIN32)
-    # Use Windows subsystem so it looks for WinMain instead of main
-    target_link_options(CrashoutEngine PRIVATE "/SUBSYSTEM:WINDOWS")
-endif()
-# Copy FMOD DLLs to the output directory after build
-add_custom_command(TARGET CrashoutEngine POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        "${CMAKE_SOURCE_DIR}/third_party/fmod/bin/x64/fmodL.dll"
-        "${CMAKE_SOURCE_DIR}/third_party/fmod/bin/x64/fmodstudioL.dll"
-        "$<TARGET_FILE_DIR:CrashoutEngine>"
-)
-
-# Define macro so headers know to import from the DLL
-target_compile_definitions(CrashoutEngine PRIVATE DLL_API_IMPORT)
-
-# Ensure the EXE builds *after* the DLL
-add_dependencies(CrashoutEngine CrashoutCore)
-
-# Link directly to the target (not the .lib file path)
-target_link_libraries(CrashoutEngine PRIVATE CrashoutCore)
-
-# Include directories for engine headers and FMOD
-target_include_directories(CrashoutEngine PRIVATE
-    ${CMAKE_CURRENT_SOURCE_DIR}/projects/CrashoutEngine/Core/include
-    ${CMAKE_CURRENT_SOURCE_DIR}/projects/CrashoutEngine/Core
-    ${_FMOD_INC}
-)
-
-# ---------- Output Directories ----------
-foreach(target CrashoutCore ScriptAPI CrashoutEngine)
-    if(TARGET ${target})
-        set_target_properties(${target} PROPERTIES
-            RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/$<CONFIG>"
-            LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/$<CONFIG>"
-            ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/$<CONFIG>"
-        )
-    endif()
-endforeach()
-
-
 # ======================= AUTO PROJECT DISCOVERY =========================
 # Get all subdirectories in the projects folder
-file(GLOB children RELATIVE "${CMAKE_CURRENT_LIST_DIR}/projects/CrashoutEngine/" "${CMAKE_CURRENT_LIST_DIR}/projects/CrashoutEngine/*")
+file(GLOB children RELATIVE "${CMAKE_CURRENT_LIST_DIR}/projects" "${CMAKE_CURRENT_LIST_DIR}/projects/*")
 
 foreach(child ${children})
-    # Skip engine-level folders that are not part of game projects
-    if(child STREQUAL "Core" OR child STREQUAL "ScriptAPI" OR child STREQUAL "managedscripts")
-        message(STATUS "Skipping engine subproject: ${child}")
-        continue()
-    endif()
-
-    if(IS_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/projects/CrashoutEngine/${child}")
+    if(IS_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/projects/${child}")
         message(STATUS "Configuring project: ${child}")
 
-        set(project_dir "${CMAKE_CURRENT_LIST_DIR}/projects/CrashoutEngine/${child}")
-        if(EXISTS "${project_dir}/Core")
-            set(project_dir "${project_dir}/Core")
-            message(STATUS "Detected nested Core folder in ${child}, using ${project_dir}")
-        endif()
+        set(project_dir "${CMAKE_CURRENT_LIST_DIR}/projects/${child}")
+
         # --- 1. GLOB your specific categories ---
         file(GLOB_RECURSE manager_src_files     "${project_dir}/src/*manager.*")
         file(GLOB_RECURSE manager_include_files "${project_dir}/include/*manager.*")
@@ -286,7 +122,7 @@ foreach(child ${children})
             ${other_src_files}
             ${other_include_files}
         )
-        set_target_properties(${child} PROPERTIES OUTPUT_NAME "CrashoutEngine")
+
         # --- 6. Assign ALL file groups to filters ✨ ---
         source_group("src\\Managers"   FILES ${manager_src_files})
         source_group("include\\Managers"   FILES ${manager_include_files})
@@ -337,19 +173,6 @@ foreach(child ${children})
         set_property(TARGET ${child} PROPERTY WIN32 TRUE)
     endif()
 endforeach()
-
-if (MSVC)
-    get_property(all_targets DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY BUILDSYSTEM_TARGETS)
-    foreach(tgt ${all_targets})
-        get_target_property(flags ${tgt} COMPILE_OPTIONS)
-        if (flags)
-            list(REMOVE_ITEM flags "/WX")
-            list(REMOVE_ITEM flags "/WX-")
-            list(APPEND flags "/WX-")  # force it off once
-            set_target_properties(${tgt} PROPERTIES COMPILE_OPTIONS "${flags}")
-        endif()
-    endforeach()
-endif()
 #[[
 # Doxygen: rebuild only when files change
 find_package(Doxygen REQUIRED)

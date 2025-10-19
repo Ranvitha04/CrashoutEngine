@@ -15,7 +15,7 @@
 #pragma once
 #include <GLFW/glfw3.h>
 #include <vector>
-#include "ImportExport.h"
+
 // -----------------------------------------------------------------------------
 // Forward declarations
 // -----------------------------------------------------------------------------
@@ -64,11 +64,11 @@ namespace UI {
     @brief Initializes ImGui with a GLFW window.
     @param window Pointer to the GLFW window handle.
     */
-    DLL_API void Init(GLFWwindow* window);
+    void Init(GLFWwindow* window);
     /*!
     @brief Shuts down ImGui and releases resources.
     */
-    DLL_API void Shutdown();
+    void Shutdown();
 
     // -- Rendering entry points ---------------------------------------
 
@@ -80,17 +80,17 @@ namespace UI {
     @param entities List of entities currently tracked.
     @param selected Currently selected entity.
     */
-    DLL_API void Render(FrameProfiler& profiler, Physics::PhysicsHandler& phys, CrashoutsEngine::Entity& selected);
+    void Render(FrameProfiler& profiler, Physics::PhysicsHandler& phys, CrashoutsEngine::Entity& selected);
 
     // -- Helper Functions ---------------------------------------------
     /*!
     @brief Starts a new ImGui frame. Must be called once per frame before rendering.
     */
-    DLL_API void BeginFrame();
+    void BeginFrame();
     /*!
     @brief Ends the current ImGui frame and submits draw data.
     */
-    DLL_API void EndFrame();
+    void EndFrame();
 
     // -- Panels (Easier to implement more Panel)-----------------------
     /*!

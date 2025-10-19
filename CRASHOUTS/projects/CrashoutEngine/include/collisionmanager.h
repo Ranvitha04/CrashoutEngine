@@ -8,7 +8,7 @@
 //__________________________________________________________________________*/
 
 #pragma once
-#pragma warning(disable: 4251)
+
 #include "CEVec3.h"
 #include "observable.h"
 #include "log.h"
@@ -17,7 +17,6 @@
 #include <array>
 #include <algorithm>
 #include <utility>
-#include "ImportExport.h"
 
 
 namespace Collision {
@@ -26,7 +25,7 @@ namespace Collision {
 	@enum	ColliderType
 	@brief	Different types of colliders
 	*/
-	enum DLL_API ColliderType {
+	enum ColliderType {
 		SPHERE,
 		AABB
 	};
@@ -35,7 +34,7 @@ namespace Collision {
 	@struct	CollisionManifold
 	@brief	Contains information regarding Collision events between Entities
 	*/
-	struct DLL_API CollisionManifold {
+	struct CollisionManifold {
 		CEVec3 normal;
 		std::array<CEVec3, 2> contactPoints; /*Max contact point of 2 for AABB, 1 for Circle*/
 		f32 depth;
@@ -46,7 +45,7 @@ namespace Collision {
 	@struct	CollisionEvent
 	@brief	Contains which pairs of entity has collided along with their Collision manifold
 	*/
-	struct DLL_API CollisionEvent {
+	struct CollisionEvent {
 		CollisionManifold colManifold;
 		CrashoutsEngine::Entity entity1;
 		CrashoutsEngine::Entity entity2;
@@ -56,7 +55,7 @@ namespace Collision {
 	@class	Collider
 	@brief	Base class for inheriting other colliders
 	*/
-	class DLL_API Collider {
+	class Collider {
 		public:
 			ColliderType type;
 			Collider(ColliderType type);
@@ -134,7 +133,7 @@ namespace Collision {
 	@class	CollisionHandler
 	@brief	Used to contain functions for checking collision and able to return a function pointer based on the type of collision passed in
 	*/
-	DLL_API class CollisionHandler : public Messaging::Observable {
+	class CollisionHandler : public Messaging::Observable {
 		private:
 
 			static constexpr int TYPES_OF_COLLISION{ 2 };
@@ -149,9 +148,9 @@ namespace Collision {
 
 		public:
 
-			DLL_API CollisionHandler();
+			CollisionHandler();
 
-			DLL_API void update(double deltaTime);
+			void update(double deltaTime);
 
 			/*!
 			@brief Return a function pointer to call the appropriate collision function

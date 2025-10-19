@@ -6,18 +6,15 @@
 
 */
 #pragma once
-#pragma warning(disable: 4251)
 #include <chrono>
 #include <thread>
 
-#include "ImportExport.h"
-
-DLL_API class FrameRateController
+class FrameRateController
 {
 	//refer to https://en.cppreference.com/w/cpp/chrono/steady_clock
 	using ClockTime = std::chrono::steady_clock;
-	public:
-		DLL_API static FrameRateController& GetInstance() {
+public:
+	static FrameRateController& GetInstance() {
 		static FrameRateController instance;
 		return instance;
 	}
@@ -29,13 +26,13 @@ DLL_API class FrameRateController
 	FrameRateController& operator=(const FrameRateController&) = delete;
 
 
-	DLL_API void SetTargetFPS(int FPSCap);
-	DLL_API void Reset();
-	DLL_API void FrameStart();
-	DLL_API void FrameEnd();
+	void SetTargetFPS(int FPSCap);
+	void Reset();
+	void FrameStart();
+	void FrameEnd();
 
 	/// seconds
-	DLL_API double DT() const;
+	double DT() const;
 	/// smooth fps
 	double FPS() const;
 	/// current cap

@@ -11,7 +11,6 @@
 //__________________________________________________________________________*/
 
 #pragma once
-#include "ImportExport.h"
 
 /*!
  @brief Installs the crash logger/handler for the current process.
@@ -20,4 +19,4 @@
         are spawned) to ensure full coverage of failures.
  @warning This function should be called once per process.
 */
-DLL_API void InstallCrashLogger(const char* name);
+void InstallCrashLogger(const char* name);

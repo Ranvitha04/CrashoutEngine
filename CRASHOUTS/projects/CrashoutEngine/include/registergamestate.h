@@ -8,11 +8,10 @@ Provides a single function to register all available game states with the game s
 */
 
 #pragma once
-#include "ImportExport.h"
 
 /*!
 @brief Register all game states
 
 Builds descriptors for each state and registers them in the game state manager
 */
-DLL_API void RegisterAllStates();
+void RegisterAllStates();

@@ -7,19 +7,18 @@
 Provides static functions to handle keyboard mouse and scroll wheel input using GLFW
 */
 #pragma once
-#pragma warning(disable: 4251)
+
 #include <GLFW/glfw3.h>
 #include <unordered_map>
 #include "key.h"
 #include "CEVec2.h"
-#include "ImportExport.h"
 /*!
 @class InputManager
 @brief Handles input state management for keys mouse buttons and scroll wheel
 
 InputManager is a fully static class that polls GLFW and tracks state per frame
 */
-class DLL_API InputManager {
+class InputManager {
 public:
     /*!
     @brief Initialize the input manager with a GLFW window

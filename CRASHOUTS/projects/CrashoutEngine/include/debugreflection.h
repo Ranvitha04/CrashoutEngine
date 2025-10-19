@@ -16,13 +16,10 @@ These APIs let the debug UI be data-driven without hardcoding per-project UI.
 ----------------------------------------------------------------------------- */
 
 #pragma once
-#pragma warning(disable: 4251)
 #include <functional>
 #include <string>
 #include <vector>
 #include <unordered_map>
-
-#include "ImportExport.h"
 
 //__________________________________________________________________________*/
 
@@ -89,10 +86,10 @@ namespace DebugReflection {
      by the debug UI to display component inspector panels, add/remove buttons,
      and more.
     */
-    DLL_API class ComponentRegistry {
+    class ComponentRegistry {
     public:
         /*! @brief Returns the singleton instance. */
-        DLL_API static ComponentRegistry& instance();
+        static ComponentRegistry& instance();
 
         /*!
          @brief Registers a new component adapter.
@@ -172,7 +169,7 @@ namespace DebugReflection {
      A panel consists of a display name, an optional toggle flag (for visibility),
      and a rendering callback.
     */
-    DLL_API struct Panel {
+    struct Panel {
         std::string name;     //!< Display name shown in the UI.
         bool* toggleFlag;     //!< Optional toggle state pointer for visibility.
         PanelFn render;       //!< Function used to render the panel's contents.
@@ -186,10 +183,10 @@ namespace DebugReflection {
      in the debug UI. If a toggle flag is provided, the panel will also
      appear in the toggles window.
     */
-    DLL_API class PanelRegistry {
+    class PanelRegistry {
     public:
         /*! @brief Returns the singleton instance. */
-        DLL_API static PanelRegistry& instance();
+        static PanelRegistry& instance();
 
         /*!
          @brief Registers a new custom panel.
@@ -239,10 +236,10 @@ namespace DebugReflection {
      Manages all registered `IPhysicsProvider` implementations and exposes
      them to the debug UI.
     */
-    DLL_API class PhysicsRegistry {
+    class PhysicsRegistry {
     public:
         /*! @brief Returns the singleton instance. */
-        DLL_API static PhysicsRegistry& instance();
+        static PhysicsRegistry& instance();
 
         /*!
          @brief Registers a new physics provider.

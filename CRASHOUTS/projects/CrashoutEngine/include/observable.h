@@ -7,11 +7,9 @@
 //__________________________________________________________________________*/
 
 #pragma once
-#pragma warning(disable: 4251)
+
 #include <map>
 #include <string>
-
-#include "ImportExport.h"
 #include "messages.h"
 #include "observer.h"
 
@@ -21,7 +19,7 @@ namespace Messaging {
 	@class Observable
 	@brief Base class for Observers to watch events from.
 	*/
-	DLL_API class Observable {
+	class Observable {
 		protected:
 			Observable();
 			Observable(const std::string& id);
@@ -38,7 +36,7 @@ namespace Messaging {
 			@param messageId
 			@param observer
 			*/
-			DLL_API void registerObserver(const std::string& messageId, Observer& observer);
+			void registerObserver(const std::string& messageId, Observer& observer);
 
 			/*!
 			@brief Call the callback function for the appropriate message passed in
