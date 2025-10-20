@@ -82,7 +82,7 @@ static void InitializeInstancedSquaresData(int count) {
 }
 
 // function RenderBackground()
-static void RenderBackground() {
+void RenderBackground() {
     float worldW, worldH;
     ComputeWorldDimensions(worldW, worldH);
     Component::Shapes::CreateTexturedRectangle(
