@@ -51,8 +51,7 @@ namespace CrashoutsEngine {
 		@param rootAssetPath The path to the main 'assets' folder.
 		@param outputManifestPath The full path where the 'assets.json' file will be saved.
 		*/
-		void GenerateAssetManifest(const std::string& rootAssetPath,
-			const std::string& outputManifestPath) {
+		void GenerateAssetManifest(const std::string& rootAssetPath, const std::string& outputManifestPath) {
 			rapidjson::Document doc;		
 			doc.SetObject();														// Init as JSON object
 			rapidjson::Document::AllocatorType& allocator = doc.GetAllocator();		// Allocator required for memory management
@@ -97,21 +96,31 @@ namespace CrashoutsEngine {
 			rapidjson::StringBuffer buffer;
 			rapidjson::PrettyWriter<rapidjson::StringBuffer> writer(buffer);
 			doc.Accept(writer);
-
-			std::ofstream ofs(outputManifestPath);
-			if (!ofs.is_open()) {
-				std::cerr << "Error: Could not open output file for writing: " << outputManifestPath << std::endl;
-				return;
+		
+			// NEW: ensure output directory exists (e.g., assets/json)
+			fs::path outPath(outputManifestPath);
+			fs::path outDir = outPath.parent_path();
+			if (!fs::exists(outDir)) {
+			    try {
+			        fs::create_directories(outDir);
+			    } catch (const std::exception& e) {
+			        std::cerr << "Error: Could not create manifest directory: " << outDir.string() << " - " << e.what() << std::endl;
+			        return;
+			    }
 			}
-
+		
+			std::ofstream ofs(outPath.string());
+			if (!ofs.is_open()) {
+			    std::cerr << "Error: Could not open output file for writing: " << outPath.string() << std::endl;
+			    return;
+			}
 			ofs << buffer.GetString();
 			ofs.close();
-
-			std::cout << "Successfully generated asset manifest at: " << outputManifestPath << std::endl;
+			std::cout << "Successfully generated asset manifest at: " << outPath.string() << std::endl;
 		}
 	
-		void AssetManager::LoadManifestAssets(const std::string& rootAssetPath,
-			const std::string& manifestPath) {
+		
+		void AssetManager::LoadManifestAssets(const std::string& rootAssetPath, const std::string& manifestPath) {
 			// Check manifest json file
 			std::ifstream ifs(manifestPath);
 			if (!ifs.is_open()) {
@@ -132,31 +141,38 @@ namespace CrashoutsEngine {
 			// --- Loading IMAGES ---
 			if (doc.HasMember("images") && doc["images"].IsArray()) {
 				std::cout << "Loading Textures..." << std::endl;
-				// Get reference to array of data under "images"
 				const rapidjson::Value& imageArray = doc["images"];
-
 				for (rapidjson::SizeType i = 0; i < imageArray.Size(); ++i) {
 					const rapidjson::Value& asset = imageArray[i];
 					if (asset.HasMember("name") && asset.HasMember("path")) {
 						std::string name = asset["name"].GetString();
 						std::string relativePath = asset["path"].GetString();
-
-						// Full path is asset root path + "images/" + relativepath
 						std::string fullPath = rootAssetPath + "images/" + relativePath;
-
-						// 1. Create the TextureAsset object from file data
 						std::unique_ptr<TextureAsset> newTexture = TextureAsset::Create(fullPath);
-
-						// Validate
 						if (newTexture) {
-							// 2. Upload to GPU
 							newTexture->UploadToGPU();
-
-							// 3. Load the TextureAsset asset into the AssetManager
 							AssetManager::GetInstance().Load(name, std::move(newTexture));
-
-							// Optional: Preload handle into TextureRenderer Cache (IDK HOW)
 							std::cout << "AssetManager loaded texture: " << name << "(" << fullPath << ")" << std::endl;
+						}
+					}
+				}
+			}
+			
+			// NEW: --- Loading SPRITE_SHEET ---
+			if (doc.HasMember("sprite_sheet") && doc["sprite_sheet"].IsArray()) {
+				std::cout << "Loading Sprite Sheet Textures..." << std::endl;
+				const rapidjson::Value& sheetArray = doc["sprite_sheet"];
+				for (rapidjson::SizeType i = 0; i < sheetArray.Size(); ++i) {
+					const rapidjson::Value& asset = sheetArray[i];
+					if (asset.HasMember("name") && asset.HasMember("path")) {
+						std::string name = asset["name"].GetString();
+						std::string relativePath = asset["path"].GetString();
+						std::string fullPath = rootAssetPath + "sprite_sheet/" + relativePath;
+						std::unique_ptr<TextureAsset> newTexture = TextureAsset::Create(fullPath);
+						if (newTexture) {
+							newTexture->UploadToGPU();
+							AssetManager::GetInstance().Load(name, std::move(newTexture));
+							std::cout << "AssetManager loaded sprite sheet: " << name << "(" << fullPath << ")" << std::endl;
 						}
 					}
 				}

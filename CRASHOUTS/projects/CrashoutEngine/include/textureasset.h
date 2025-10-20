@@ -110,9 +110,8 @@ namespace CrashoutsEngine {
 
         };
 
-        // Alias for backward compatibility
-        //using TextureAsset = TextureAsset;
-        using TextureAsset = TextureAsset;
+        // Backward-compatibility alias so old code using 'Texture' still compiles
+        using Texture = TextureAsset;
 
     }
 }

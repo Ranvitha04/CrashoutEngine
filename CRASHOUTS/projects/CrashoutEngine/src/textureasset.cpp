@@ -28,9 +28,18 @@ when shutting down the engine.
 */
 
 #define STB_IMAGE_IMPLEMENTATION
+// includes section
 #include "textureasset.h"
 #include "entitymanager.h"
 #include "glapp.h"
+#include <iostream>
+#include <fstream>
+#include <algorithm>
+#include <cctype>
+#include <vector>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <filesystem>  // Add this include
 //#include <stb_image.h>
 #include <iostream>
 #include <fstream>
@@ -116,7 +125,8 @@ namespace CrashoutsEngine {
                 currentModeS = modeS;
             }
 
-            if (currentModeT != modeS) {
+            // Compare to modeT, not modeS, so T-wrap updates correctly
+            if (currentModeT != modeT) {
                 glTextureParameteri(glHandle, GL_TEXTURE_WRAP_T, GetTextureMode(modeT));
                 currentModeT = modeT;
             }
@@ -201,9 +211,9 @@ namespace CrashoutsEngine {
             glTextureStorage2D(glHandle, 1, GL_RGBA8, width, height);
             glTextureSubImage2D(glHandle, 0, 0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, data);
 
-            // Set texture parameters
-            glTextureParameteri(glHandle, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-            glTextureParameteri(glHandle, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            // Set texture parameters for pixel-perfect sprite rendering
+            glTextureParameteri(glHandle, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+            glTextureParameteri(glHandle, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
             glTextureParameteri(glHandle, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
             glTextureParameteri(glHandle, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
@@ -501,23 +511,53 @@ namespace CrashoutsEngine {
         @param assetName The unique name of the asset (from the manifest).
         @return OpenGL texture handle, or 0 on failure.
         */
+        // method: TextureRenderer::GetTextureHandle
         GLuint TextureRenderer::GetTextureHandle(std::string const& assetName) {
             using namespace CrashoutsEngine::Assets;
-
-            // Use the AssetManager to retrieve the *already loaded* TextureAsset object
-            TextureAsset* texture = AssetManager::GetInstance().Get<TextureAsset>(assetName);
-
+        
+            std::cout << "DEBUG: Requesting texture asset: '" << assetName << "'" << std::endl;
+        
+            // Normalize name to manifest key if a path/ext was provided
+            std::string key = assetName;
+            if (key.find('/') != std::string::npos || key.find('\\') != std::string::npos) {
+                std::filesystem::path p(key);
+                key = p.stem().string();
+            } else {
+                size_t dot = key.find_last_of('.');
+                if (dot != std::string::npos) {
+                    key = key.substr(0, dot);
+                }
+            }
+        
+            // Try manifest lookup first
+            TextureAsset* texture = AssetManager::GetInstance().Get<TextureAsset>(key);
             if (texture) {
-                // Return the OpenGL handle stored inside the asset object
                 if (texture->IsUploaded()) {
                     return texture->GetGLHandle();
                 }
-                std::cerr << "Warning: TextureAsset '" << assetName << "' found but not uploaded to GPU." << std::endl;
+                std::cerr << "Warning: TextureAsset '" << key << "' found but not uploaded to GPU." << std::endl;
                 return 0;
             }
-
-            // Asset not found, indicating problem in manifest or loading phase
-            std::cerr << "Error: TextureAsset asset not found in AssetManager: " << assetName << std::endl;
+        
+            // Fallback: treat input as a file path and load directly if the file exists
+            std::filesystem::path maybePath(assetName);
+            if (std::filesystem::exists(maybePath)) {
+                auto newTexture = TextureAsset::Create(maybePath.string());
+                if (newTexture) {
+                    newTexture->UploadToGPU();
+                    AssetManager::GetInstance().Load(key, std::move(newTexture));
+                    TextureAsset* loaded = AssetManager::GetInstance().Get<TextureAsset>(key);
+                    if (loaded && loaded->IsUploaded()) {
+                        std::cout << "INFO: Loaded texture via path fallback as asset '" << key << "'" << std::endl;
+                        return loaded->GetGLHandle();
+                    }
+                }
+                std::cerr << "Error: Failed to load texture from path: " << maybePath.string() << std::endl;
+                return 0;
+            }
+        
+            std::cerr << "Error: Texture asset not found: " << key << std::endl;
+            std::cerr << "Tip: Place images in 'assets/images' and ensure manifest contains their names." << std::endl;
             return 0;
         }
 
@@ -687,28 +727,14 @@ namespace CrashoutsEngine {
                 -0.5f,  0.5f, 0.0f,  1.0f, 1.0f, 1.0f,  u1, v1  // top left
             };
 
-            // Create temporary VAO/VBO for this custom UV quad
-            GLuint tempVAO, tempVBO;
-            glGenVertexArrays(1, &tempVAO);
-            glBindVertexArray(tempVAO);
+            // Use shared VAO/VBO instead of creating temporary ones
+            glBindVertexArray(sharedVAO);
+            glBindBuffer(GL_ARRAY_BUFFER, sharedVBO);
+            
+            // Update the shared VBO with new vertex data
+            glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
 
-            glGenBuffers(1, &tempVBO);
-            glBindBuffer(GL_ARRAY_BUFFER, tempVBO);
-            glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_DYNAMIC_DRAW);
-
-            // Position attribute (location 0)
-            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
-            glEnableVertexAttribArray(0);
-
-            // Color attribute (location 1)
-            glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-            glEnableVertexAttribArray(1);
-
-            // TextureAsset coordinate attribute (location 2)
-            glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-            glEnableVertexAttribArray(2);
-
-            // Bind the shared EBO
+            // Bind the shared EBO (already bound with VAO)
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, sharedEBO);
 
             // Get the rendering instance and use shader
@@ -757,10 +783,8 @@ namespace CrashoutsEngine {
             // Render the quad
             glDrawElements(GL_TRIANGLES, INDICES_COUNT, GL_UNSIGNED_SHORT, 0);
 
-            // Cleanup temporary resources
+            // Unbind shared resources
             glBindVertexArray(0);
-            glDeleteBuffers(1, &tempVBO);
-            glDeleteVertexArrays(1, &tempVAO);
 
             // Unbind texture and shader
             glBindTextureUnit(6, 0);
@@ -782,11 +806,16 @@ namespace CrashoutsEngine {
             float frameWidth = 1.0f / static_cast<float>(totalCols);
             float frameHeight = 1.0f / static_cast<float>(totalRows);
             
-            // Calculate UV coordinates for this frame
-            u1 = frameX * frameWidth;
-            v1 = frameY * frameHeight;
-            u2 = u1 + frameWidth;
-            v2 = v1 + frameHeight;
+            // Add small inset to prevent bleeding from adjacent frames
+            // Use a conservative inset that works for most sprite sheet sizes
+            float uvInsetX = frameWidth * 0.01f;  // 1% inset of frame width
+            float uvInsetY = frameHeight * 0.01f; // 1% inset of frame height
+            
+            // Calculate UV coordinates for this frame with inset
+            u1 = frameX * frameWidth + uvInsetX;
+            v1 = frameY * frameHeight + uvInsetY;
+            u2 = (frameX + 1) * frameWidth - uvInsetX;
+            v2 = (frameY + 1) * frameHeight - uvInsetY;
             
             /*std::cout << "[DEBUG] UV Calculation - Frame(" << frameX << "," << frameY << ") in " << totalCols << "x" << totalRows << " grid" << std::endl;
             std::cout << "[DEBUG] UV Coords: (" << u1 << "," << v1 << ") to (" << u2 << "," << v2 << ")" << std::endl;*/
@@ -866,8 +895,8 @@ namespace CrashoutsEngine {
             glTextureSubImage2D(texobj_hdl, 0, 0, 0, width, height,
                 GL_RGBA, GL_UNSIGNED_BYTE, buffer.data());
 
-            glTextureParameteri(texobj_hdl, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-            glTextureParameteri(texobj_hdl, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+            glTextureParameteri(texobj_hdl, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTextureParameteri(texobj_hdl, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
             glTextureParameteri(texobj_hdl, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
             glTextureParameteri(texobj_hdl, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
@@ -979,5 +1008,4 @@ namespace CrashoutsEngine {
             std::cout << "TextureRenderer cleaned up." << std::endl;
         }
 
-    } // namespace Component
- // namespace CrashoutsEngine
+    } // namespace Component // namespace CrashoutsEngine

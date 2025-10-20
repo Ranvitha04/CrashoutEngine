@@ -1,3 +1,4 @@
+
 /*!
 @file        glapp.cpp
 @author      pghali@digipen.edu
@@ -20,8 +21,9 @@ integration.
 #include "entitymanager.h"
 #include "shapes.h"
 #include "textureasset.h"
+#include "ranscene.h"
 #include <glm/glm.hpp>
-#include <iostream>
+#include <iostream>      
 #include <sstream>
 #include <iomanip>
 #include <array>
@@ -66,9 +68,6 @@ std::vector<CEVec3> current_positions;
 std::vector<CEVec3> current_colors;
 std::vector<GLApp::GLViewport> GLApp::vps;
 
-static float TestRotation = 0.0f; // global rotation angle
-static float RightTest = 0.0f;
-static float TestScale = 0.0f;
 
 /* _________________________________________________________________________ */
 /*! init
@@ -172,20 +171,23 @@ bool GLApp::init(GLint w, GLint h, std::string t) {
     glfwGetFramebufferSize(ptr_window, &vp_width_height.x, &vp_width_height.y);
     GLApp::fbsize_cb(ptr_window, vp_width_height.x, vp_width_height.y);
 
+    // Enable transparency/blending for sprites
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    // Enable depth testing but allow transparent objects
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LEQUAL);
+
     model.Setup_VAO();
     model.Setup_Shdrpgm();
 
 
     Component::Rendering::Initialize();
 
-    //Component::TextureAsset::Initialize();
 
     Component::TextureRenderer::Initialize();
 
-    //texture.LoadTexture("../../../projects/CrashoutEngine/images/duck-rgba-256.tex");
-
-    //model.texobj = Component::TextureAsset::LoadTexture("../../../projects/CrashoutEngine/images/duck-rgba-256.tex");
-   
 
     return true;
 }
@@ -202,14 +204,14 @@ bool GLApp::init(GLint w, GLint h, std::string t) {
 For now, there is nothing to do except to write appropriate information
 to window title bar.
 */
+// method: void GLApp::update()
 void GLApp::update() {
     // write window title with current fps ...
     std::stringstream sstr;
     sstr << std::fixed << std::setprecision(2) << GLApp::title << " | " << FrameRateController::GetInstance().FPS();
     glfwSetWindowTitle(GLApp::ptr_window, sstr.str().c_str());
 
-    //GLsizei position_data_offset = 0;
-    GLsizei position_attribute_size = sizeof(glm::vec3); // Changed from vec2 to vec3 to match rendering.cpp
+    GLsizei position_attribute_size = sizeof(glm::vec3);
     GLsizei position_data_size = position_attribute_size * 4;
     GLsizei color_data_offset = position_data_size;
     GLsizei color_attribute_size = sizeof(glm::vec3);
@@ -220,7 +222,6 @@ void GLApp::update() {
 
     GLint w{ GLApp::width }, h{ GLApp::height };
     static GLint old_w{}, old_h{};
-    // update viewport settings in vps only if window's dimension change
     if (w != old_w || h != old_h) {
         GLint hs{ h / 3 }, ws{ hs };
         GLApp::vps[0] = { 0, 0, w - ws, h };
@@ -231,7 +232,10 @@ void GLApp::update() {
         old_h = h;
     }
 
+    // NEW: update scene per-frame (handles duck movement)
+    UpdateRan();
 
+    // Sprite animation update logic is now handled in ran.cpp
 }
 
 /* _________________________________________________________________________ */
@@ -246,48 +250,16 @@ as black.
 */
 void GLApp::draw() {
     // clear colorbuffer with RGBA value in glClearColor ...
-    //glClearColor(0, 0, 0, 0);
-    //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClearColor(0.2f, 0.2f, 0.2f, 1.0f);  // Dark gray background
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     //model.Draw();
 
-    // ---- choose which shape to draw by uncommenting ----
+
     //CEVec3 pos(RightTest, 0.0f, 0.0f);
     //float rotation = 85.0f;
     //float scale = 45.f;
-    //CEVec3 pos(0.0f, 0.0f, 0.0f);
-    //float rotation = 35.0f;
-    //float scale = 1.0f;
 
-    // Testing for drawing Square
-    //Component::Shapes::CreateSquare(pos, 0.5f, TestRotation, scale, CEVec3(.0f, 1.0f, 0.0f));
-
-    // Testing for drawing Line
-    //Component::Shapes::CreateLine(CEVec3(-0.5f, -0.5f, 0), CEVec3(0.5f, 0.5f, 0), 0.01f,TestRotation, scale, CEVec3(0, 1, 0));
-
-    // Testing for drawing Rectangle
-    //Component::Shapes::CreateRectangle(CEVec3(0.0f, 0.0f, 0.0f), 1.0f, 1.3f, TestRotation, 1.0f, CEVec3(1.0f, 0.0f, 0.0f));
-
-    // Testing for drawing Triangle
-    //Component::Shapes::CreateTriangle(pos, CEVec3(-0.4,-0.5,0), CEVec3(0.4,-0.5,0), TestRotation, scale, CEVec3(1,1,0));
-
-    // Draw current model
-    //model.Draw();
-
-    //Component::Shapes::CreateTexturedTriangle("../../../projects/CrashoutEngine/assets/images/duck-rgba-256.tex", pos, CEVec3(-0.4, -0.5, 0), CEVec3(0.4, -0.5, 0), TestRotation, TestScale, CEVec3(1, 1, 0));
-
-
-    //Component::TextureRenderer::CreateTexturedQuad(
-    //    "../../../projects/CrashoutEngine/images/duck.jpg",
-    //CEVec3(0.0f, 0.0f, 0.0f),  // position
-    //    CEVec2(1.0f, 1.0f),        // size
-    //    TestRotation,                       // rotation
-    //    scale,                       // scale
-    //    CEVec3(1.0f, 1.0f, 1.0f),  // tint
-    //    false;                      // modulate
-    //);
-
-    
-    
+    RenderRan();
 
 }
 
@@ -362,26 +334,8 @@ void GLApp::key_cb(GLFWwindow* pwin, int key, [[maybe_unused]] int scancode, int
 #endif
     }
 
-    if (GLFW_PRESS == action) {
-        if (key == GLFW_KEY_R) { // Rotate with 'R'
-            TestRotation += 10.0f;  // rotate 10 degrees each press
-            if (TestRotation >= 360.0f) TestRotation -= 360.0f;
-        }
-    }
-
-    if (GLFW_PRESS == action) {
-        if (key == GLFW_KEY_I) {
-            RightTest += 25.0f;
-            std::cout << RightTest << std::endl;
-        }
-    }
-
-    if (GLFW_PRESS == action) {
-        if (key == GLFW_KEY_S) { // Rotate with 'R'
-            TestScale += 10.0f;  // rotate 10 degrees each press
-            
-        }
-    }
+    // Delegate sprite animation key input handling to ran.cpp
+    HandleSpriteKeyInput(key, action);
 
     if (GLFW_KEY_ESCAPE == key && GLFW_PRESS == action) {
         glfwSetWindowShouldClose(pwin, GLFW_TRUE);
@@ -587,3 +541,4 @@ void GLApp::update_time(double fps_calc_interval) {
         count = 0.0;
     }
 }
+
