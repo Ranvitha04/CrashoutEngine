@@ -28,9 +28,18 @@ when shutting down the engine.
 */
 
 #define STB_IMAGE_IMPLEMENTATION
+// includes section
 #include "textureasset.h"
 #include "entitymanager.h"
 #include "glapp.h"
+#include <iostream>
+#include <fstream>
+#include <algorithm>
+#include <cctype>
+#include <vector>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <filesystem>  // Add this include
 //#include <stb_image.h>
 #include <iostream>
 #include <fstream>
@@ -502,24 +511,53 @@ namespace CrashoutsEngine {
         @param assetName The unique name of the asset (from the manifest).
         @return OpenGL texture handle, or 0 on failure.
         */
+        // method: TextureRenderer::GetTextureHandle
         GLuint TextureRenderer::GetTextureHandle(std::string const& assetName) {
             using namespace CrashoutsEngine::Assets;
-
+        
             std::cout << "DEBUG: Requesting texture asset: '" << assetName << "'" << std::endl;
-
-            // Use the AssetManager to retrieve the already loaded TextureAsset object
-            TextureAsset* texture = AssetManager::GetInstance().Get<TextureAsset>(assetName);
-
+        
+            // Normalize name to manifest key if a path/ext was provided
+            std::string key = assetName;
+            if (key.find('/') != std::string::npos || key.find('\\') != std::string::npos) {
+                std::filesystem::path p(key);
+                key = p.stem().string();
+            } else {
+                size_t dot = key.find_last_of('.');
+                if (dot != std::string::npos) {
+                    key = key.substr(0, dot);
+                }
+            }
+        
+            // Try manifest lookup first
+            TextureAsset* texture = AssetManager::GetInstance().Get<TextureAsset>(key);
             if (texture) {
                 if (texture->IsUploaded()) {
                     return texture->GetGLHandle();
                 }
-                std::cerr << "Warning: TextureAsset '" << assetName << "' found but not uploaded to GPU." << std::endl;
+                std::cerr << "Warning: TextureAsset '" << key << "' found but not uploaded to GPU." << std::endl;
                 return 0;
             }
-
-            std::cerr << "Error: Texture asset not found in AssetManager: " << assetName << std::endl;
-            std::cerr << "Available asset names should be: amazon-logo-transparent, duck-rgba-256, duck" << std::endl;
+        
+            // Fallback: treat input as a file path and load directly if the file exists
+            std::filesystem::path maybePath(assetName);
+            if (std::filesystem::exists(maybePath)) {
+                auto newTexture = TextureAsset::Create(maybePath.string());
+                if (newTexture) {
+                    newTexture->UploadToGPU();
+                    AssetManager::GetInstance().Load(key, std::move(newTexture));
+                    TextureAsset* loaded = AssetManager::GetInstance().Get<TextureAsset>(key);
+                    if (loaded && loaded->IsUploaded()) {
+                        std::cout << "INFO: Loaded texture via path fallback as asset '" << key << "'" << std::endl;
+                        return loaded->GetGLHandle();
+                    }
+                }
+                std::cerr << "Error: Failed to load texture from path: " << maybePath.string() << std::endl;
+                return 0;
+            }
+        
+            std::cerr << "Error: Texture asset not found: " << key << std::endl;
+            std::cerr << "Tip: Place images in 'assets/images' and ensure manifest contains their names." << std::endl;
             return 0;
         }
 
@@ -970,5 +1008,4 @@ namespace CrashoutsEngine {
             std::cout << "TextureRenderer cleaned up." << std::endl;
         }
 
-    } // namespace Component
- // namespace CrashoutsEngine
+    } // namespace Component // namespace CrashoutsEngine

@@ -204,14 +204,14 @@ bool GLApp::init(GLint w, GLint h, std::string t) {
 For now, there is nothing to do except to write appropriate information
 to window title bar.
 */
+// method: void GLApp::update()
 void GLApp::update() {
     // write window title with current fps ...
     std::stringstream sstr;
     sstr << std::fixed << std::setprecision(2) << GLApp::title << " | " << FrameRateController::GetInstance().FPS();
     glfwSetWindowTitle(GLApp::ptr_window, sstr.str().c_str());
 
-    //GLsizei position_data_offset = 0;
-    GLsizei position_attribute_size = sizeof(glm::vec3); // Changed from vec2 to vec3 to match rendering.cpp
+    GLsizei position_attribute_size = sizeof(glm::vec3);
     GLsizei position_data_size = position_attribute_size * 4;
     GLsizei color_data_offset = position_data_size;
     GLsizei color_attribute_size = sizeof(glm::vec3);
@@ -222,7 +222,6 @@ void GLApp::update() {
 
     GLint w{ GLApp::width }, h{ GLApp::height };
     static GLint old_w{}, old_h{};
-    // update viewport settings in vps only if window's dimension change
     if (w != old_w || h != old_h) {
         GLint hs{ h / 3 }, ws{ hs };
         GLApp::vps[0] = { 0, 0, w - ws, h };
@@ -233,8 +232,10 @@ void GLApp::update() {
         old_h = h;
     }
 
-    // Sprite animation update logic is now handled in ran.cpp
+    // NEW: update scene per-frame (handles duck movement)
+    UpdateRan();
 
+    // Sprite animation update logic is now handled in ran.cpp
 }
 
 /* _________________________________________________________________________ */
