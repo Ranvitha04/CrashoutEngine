@@ -118,9 +118,11 @@ void InitMainMenu()
 }
 
 void CreateRandBox() {
-	Component::ShapeComponent shape;
 	int entityId = globalECS->CreateEntity();
+	globalECS->AddComponent<Component::NameComponent>(entityId, Component::NameComponent{ std::to_string(entityId) });
+
 	Component::TransformComponent t;
+	Component::ShapeComponent shape;
 	// Set random pos rot scale
 	float width = 100.f;
 	float height = 50.f;
@@ -128,14 +130,22 @@ void CreateRandBox() {
 	t.rotation = random_min_max(0.f, 360.f);
 	t.size = CEVec2(1.f, 1.f);
 
-	shape.width = random_min_max(2.f, 3.f);
-	shape.height = random_min_max(2.f, 5.f);
+	shape.width = random_min_max(.5f, 3.f);
+	shape.height = random_min_max(.5f, 3.f);
+	shape.size = random_min_max(.5f, 3.f);
 	shape.color = CEVec3(random_min_max(0.f, 255.f), random_min_max(0.f, 255.f), random_min_max(0.f, 255.f));
-	shape.type = Component::ShapeType::Rectangle;
+	shape.type = Component::ShapeType::Square;
+
 
 	globalECS->AddComponent<Component::TransformComponent>(entityId, t);
 	globalECS->AddComponent<Component::ShapeComponent>(entityId, shape);
-
+	
+	if (rand() % 2) {
+		CEVec3 rb_init_velocity{ 0.f, 0.f, 0.f };
+		float rb_mass = .5f;
+		float rb_restitution = 0.f;
+		globalECS->AddComponent<Component::RigidBodyComponent>(entityId, rb_init_velocity, rb_mass, rb_restitution);
+	}
 }
 
 void UpdateMainMenu()
@@ -148,7 +158,7 @@ void UpdateMainMenu()
 
 	if (itemCount < 2500 && InputManager::IsKeyPressed(Key::Num1)) {
 		int newCount = 0;
-		while (newCount < 10) {
+		while (newCount < 1) {
 			CreateRandBox();
 			newCount++;
 			itemCount++;

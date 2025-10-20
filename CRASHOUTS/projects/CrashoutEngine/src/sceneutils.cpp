@@ -15,8 +15,22 @@ namespace Scene {
     void RenderScene(CrashoutsEngine::ECS& globalECS) {
         using namespace CrashoutsEngine;
 
+        // Collect all non-textured squares here
+        std::vector<CEVec3> instancedPos;
+        std::vector<CEVec3> instancedColor;
+        std::vector<float> instancedRot;
+        std::vector<float> instancedScales;
+
+        // Pre-allocate memory
         const ECS::ComponentArray<Component::ShapeComponent>& shapeArray = globalECS.GetComponentArray<Component::ShapeComponent>();
         //std::cout << shapeArray.dense.size() << std::endl;
+        // Reserve based on the total number of shapes as a rough estimate
+        size_t shapeSize{ shapeArray.dense.size() };
+        instancedPos.reserve(shapeSize);
+        instancedColor.reserve(shapeSize);
+        instancedRot.reserve(shapeSize);
+        instancedScales.reserve(shapeSize);
+        
         for (const Entity& id : shapeArray.indexToEntity) {
             // Get entity number
             //Component::TransformComponent* t = globalECS.GetComponent<Component::TransformComponent>(id);
@@ -58,11 +72,19 @@ namespace Scene {
                         );
                         break;
                     } else {
-                        Component::Shapes::CreateSquare(
-                            pos, sc->size, rot,
-                            (scale.x > scale.y) ? scale.x : scale.y,
-                            sc->color * (1 / 255.f)
-                        );
+
+                        // Add data to our vectors
+                        instancedPos.push_back(pos);
+                        instancedColor.push_back(sc->color * (1 / 255.f));
+                        instancedRot.push_back(rot);
+                        float uniformTransformScale = (finalScale.x > finalScale.y) ? finalScale.x : finalScale.y;
+                        instancedScales.push_back(uniformTransformScale);
+
+                        //Component::Shapes::CreateSquare(
+                        //    pos, sc->size, rot,
+                        //    (scale.x > scale.y) ? scale.x : scale.y,
+                        //    sc->color * (1 / 255.f)
+                        //);
                         break;
                     }
                 // ==========================================RECTANGLE===================================================
@@ -105,5 +127,19 @@ namespace Scene {
                 }
             }
         }
+    
+        // Test instancing squares
+        int instancedCount = static_cast<int>(instancedPos.size());
+        if (instancedCount > 0) {
+            Component::Shapes::CreateInstancedSquares(
+                instancedPos.data(),
+                instancedColor.data(),
+                instancedRot.data(),
+                instancedScales.data(),
+                instancedCount,
+                1.0f // This baseSize matches the 1.0f used in your initialization
+            );
+        }
+
     }
 }
