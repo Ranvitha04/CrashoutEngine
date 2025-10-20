@@ -3,7 +3,7 @@ setlocal
 pushd "%~dp0"
 
 set "BUILD_DIR=build"
-set "EXE_NAME=CrashoutEngine.exe"
+set "EXE_NAME=Descent.exe"
 
 REM --- Handle 'clean' command ---
 if /i "%~1"=="clean" (

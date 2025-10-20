@@ -5,8 +5,8 @@ pushd "%~dp0"
 echo Cleaning build artifacts...
 
 REM Delete the 'build' directory completely
-if exist out (
-  rmdir /s /q out
+if exist build (
+  rmdir /s /q build
   echo Removed build directory.
 ) else (
   echo No build directory found.
@@ -20,3 +20,4 @@ echo Cleanup complete.
 popd
 endlocal
 pause
+

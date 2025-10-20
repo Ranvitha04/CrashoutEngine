@@ -46,7 +46,7 @@ GLint GLApp::height;
 GLdouble GLApp::fps;
 GLdouble GLApp::delta_time;
 std::string GLApp::title;
-GLFWwindow* GLApp::ptr_window;
+GLFWwindow* GLApp::ptr_window{ nullptr };
 
 Component::Rendering model;
 Component::Shapes shapes;
