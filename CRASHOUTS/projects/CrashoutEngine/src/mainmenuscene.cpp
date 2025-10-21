@@ -63,7 +63,7 @@ void AddPhysicsEntity(CrashoutsEngine::Entity &entity, Component::RigidBodyCompo
 	globalECS->AddComponent<Component::TransformComponent>(entity, transform);
 	globalECS->AddComponent<Component::ShapeComponent>(entity, shape);
 	globalECS->AddComponent<Component::ColliderComponent>(entity, Component::ColliderComponent{
-		std::make_unique<Collision::AABBRect>(Collision::AABBRect{
+		std::make_unique<Collision::OBBRect>(Collision::OBBRect{
 			CEVec3{transform.position - extents },
 			CEVec3{transform.position + extents}
 		})
