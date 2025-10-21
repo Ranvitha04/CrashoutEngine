@@ -55,7 +55,7 @@ namespace UI {
 
         bool drawAllColliders = true;   // draw wireframes for every collider, not just colliding ones
         bool drawVelocities = false;  // draw velocity arrows if RigidBodyComponent exists
-        float overlayThickness = 2.0f;  // line thickness for wireframes
+        float overlayThickness = 0.15f;  // line thickness for wireframes
     };
 
     // -- Lifecycle ----------------------------------------------------

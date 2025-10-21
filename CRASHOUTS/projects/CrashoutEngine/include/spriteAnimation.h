@@ -24,7 +24,7 @@
         variables (`m_currentSprite`, `m_spriteMode`) are provided for
         quick access and sprite state switching.
 
-        This module integrates with the engine’s rendering system and
+        This module integrates with the engineï¿½s rendering system and
         dependencies (`entitymanager`, `rendering`, and
         `textures`) to support a component-based entity system
         with animated 2D graphics.
@@ -163,7 +163,7 @@ namespace Component {
         /*!
         @brief Configure duck-specific animations (predefined setup).
         */
-        //void setupDuckAnimations();
+        void setupDuckAnimations();
 
         static Sprite m_blinkSprite;
         static Sprite m_walkSprite;
