@@ -280,6 +280,60 @@ target_compile_features(CrashoutsAudio PUBLIC cxx_std_17)
 target_include_directories(CrashoutsAudio PUBLIC "${CA_INC}")
 target_link_libraries(CrashoutsAudio PUBLIC FMOD::Core FMOD::Studio)
 
+# -------------------- MONO --------------------
+set(_MONO "${CMAKE_SOURCE_DIR}/third_party/Mono")
+set(_MONO_INC "${_MONO}/include/mono-2.0")
+set(_MONO_LIBDIR "${_MONO}/lib")
+set(_MONO_BINDIR "${_MONO}/bin")
+set(_MONO_ETCDIR "${_MONO}/etc")
+
+# --- Verify required files ---
+foreach(_need
+    "${_MONO_INC}/mono/jit/jit.h"
+    "${_MONO_LIBDIR}/mono-2.0-sgen.lib"
+    "${_MONO_BINDIR}/mono-2.0-sgen.dll")
+    if(NOT EXISTS "${_need}")
+        message(FATAL_ERROR "[Mono] Missing: ${_need}")
+    endif()
+endforeach()
+
+# --- Create imported targets ---
+add_library(Mono::Core SHARED IMPORTED)
+set_target_properties(Mono::Core PROPERTIES
+    IMPORTED_IMPLIB               "${_MONO_LIBDIR}/mono-2.0-sgen.lib"
+    IMPORTED_LOCATION             "${_MONO_BINDIR}/mono-2.0-sgen.dll"
+    INTERFACE_INCLUDE_DIRECTORIES "${_MONO_INC}"
+)
+
+# --- Helper function to link Mono + copy runtime ---
+function(link_mono_to target)
+    message(STATUS "[Mono] Linking runtime to target: ${target}")
+
+    # Create imported Mono target if missing
+    if(NOT TARGET Mono::Core)
+        add_library(Mono::Core SHARED IMPORTED)
+        set_target_properties(Mono::Core PROPERTIES
+            IMPORTED_IMPLIB               "${_MONO_LIBDIR}/mono-2.0-sgen.lib"
+            IMPORTED_LOCATION             "${_MONO_BINDIR}/mono-2.0-sgen.dll"
+            INTERFACE_INCLUDE_DIRECTORIES "${_MONO_INC}"
+        )
+    endif()
+
+    # Link library + include path
+    target_link_libraries(${target} PRIVATE Mono::Core)
+    target_include_directories(${target} PRIVATE "${_MONO_INC}")
+
+    # Post-build copy (ensures runtime DLL + etc)
+    add_custom_command(TARGET ${target} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            "${_MONO_BINDIR}/mono-2.0-sgen.dll" "$<TARGET_FILE_DIR:${target}>"
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+            "${_MONO_ETCDIR}" "$<TARGET_FILE_DIR:${target}>/third_party/Mono/etc"
+    )
+
+    message(STATUS "[Mono] ? Linked ${target} with includes at: ${_MONO_INC}")
+endfunction()
+
 # (optional) log once so we know it ran
 message(STATUS "[CrashoutsAudio] src='${CA_SRC}/audioSystem.cpp'")
 # Macro to import all dependencies

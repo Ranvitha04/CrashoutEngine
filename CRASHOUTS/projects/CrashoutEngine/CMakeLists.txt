@@ -103,7 +103,8 @@ target_link_libraries(${PROJECT_NAME}
         CrashoutsAudio
 )
 link_fmod_to(${PROJECT_NAME})
-
+link_mono_to(${PROJECT_NAME})
+message(STATUS "Mono linked successfully to CrashoutEngine.")
 # Apply common include directories
 target_include_directories(${PROJECT_NAME} 
 PUBLIC
@@ -112,7 +113,6 @@ PRIVATE
     ${CMAKE_SOURCE_DIR}/lib/glm                 # Added GLM include
     ${_FMOD_INC}                                # Added FMOD include
 )
-        
+
+
 set_property(TARGET ${PROJECT_NAME} PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "$<TARGET_FILE_DIR:${PROJECT_NAME}>")
-
-
