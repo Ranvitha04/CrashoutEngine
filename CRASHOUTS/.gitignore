@@ -1,3 +1,7 @@
+# Force-include third_party folder and all its contents
+!/CRASHOUTS/third_party/
+!/CRASHOUTS/third_party/**
+
 # Ignore build directories
 build/
 Build/
@@ -93,7 +97,3 @@ dist/
 *.dSYM/
 .vs/
 docs/
-
-# Force-include third_party folder and all its contents
-!/CRASHOUTS/third_party/
-!/CRASHOUTS/third_party/**
