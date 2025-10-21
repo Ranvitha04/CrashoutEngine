@@ -9,8 +9,27 @@ add_library(${PROJECT_NAME} SHARED
     ${all_src_files}
     ${all_include_files})
 
+if (MSVC)
+    # Always compile as C++/CLI
+    target_compile_options(${PROJECT_NAME} PRIVATE /clr /EHa)
+
+    # Disable runtime checks added by VS in CLR-Debug configuration
+    set_target_properties(${PROJECT_NAME} PROPERTIES
+        MSVC_RUNTIME_CHECKS "OFF"
+    )
+
+    # Disable runtime checks in Debug-like builds when /clr is active
+    if (MSVC AND (CMAKE_BUILD_TYPE STREQUAL "Debug" OR CMAKE_BUILD_TYPE STREQUAL "CLR-Debug"))
+        target_compile_options(${PROJECT_NAME} PRIVATE /RTC1- /EHs-)
+    endif()
+endif()
+
+
 # Link to the native engine
-target_link_libraries(${PROJECT_NAME} PRIVATE CrashoutEngine)
+target_link_libraries(${PROJECT_NAME}
+    PRIVATE
+        CrashoutEngine       # links to your core engine
+)
 
 # Include directories
 target_include_directories(${PROJECT_NAME}
@@ -26,12 +45,3 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
     ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
     VS_DEBUGGER_WORKING_DIRECTORY "$<TARGET_FILE_DIR:${PROJECT_NAME}>"
 )
-
-# ---------------------------------------------------------------
-#  MSVC-specific C++/CLI setup
-# ---------------------------------------------------------------
-if (MSVC)
-    set_target_properties(${PROJECT_NAME} PROPERTIES
-        VS_USER_PROPS "${CMAKE_CURRENT_LIST_DIR}/scriptapi_clr.props"
-    )
-endif()

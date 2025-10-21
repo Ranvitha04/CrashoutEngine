@@ -70,12 +70,10 @@ add_subdirectory(projects/Descent)
 include(ExternalProject)
 
 ExternalProject_Add(ManagedScripts
-    SOURCE_DIR "${CMAKE_SOURCE_DIR}/projects/ManagedScripts"
+SOURCE_DIR "${CMAKE_SOURCE_DIR}/projects/ManagedScripts"
     CONFIGURE_COMMAND ""
-    BUILD_COMMAND dotnet build "${CMAKE_SOURCE_DIR}/projects/ManagedScripts/ManagedScripts.csproj" -c $<CONFIG> -p:Platform=x64
-    INSTALL_COMMAND "${CMAKE_COMMAND} -E echo 'Skipping install step for ManagedScripts'"
-    EXCLUDE_FROM_ALL TRUE
-    WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/projects/ManagedScripts"
+    BUILD_COMMAND dotnet build ManagedScripts.csproj -c $<CONFIG> -p:Platform=x64
+    INSTALL_COMMAND ""
 )
 
 # Make sure it builds after ScriptAPI
