@@ -190,13 +190,13 @@ void UpdateMainMenu()
 	/*ROTATE*/
 	if (InputManager::IsKeyPressed(Key::R)) {
 		transform->rotation += 3.f;
-		/*if (globalECS->HasComponent<Component::ColliderComponent>(entity1)) {
+		if (globalECS->HasComponent<Component::ColliderComponent>(entity1)) {
 			Component::ColliderComponent* collider1{ globalECS->GetComponent<Component::ColliderComponent>(entity1) };
 			if (collider1->collider->type == Collision::ColliderType::OBB) {
 				Collision::OBBRect & obbTemp2 = dynamic_cast<Collision::OBBRect &>(*(collider1->collider));
 				obbTemp2.updateRotation(transform->rotation);
 			}
-		}*/
+		}
 	}
 }
 
