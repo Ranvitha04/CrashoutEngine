@@ -39,11 +39,11 @@ __________________________________________________________________________*/
 
 namespace Component {
 
-    //Sprite Sprite::m_blinkSprite;
-    //Sprite Sprite::m_walkSprite;
-    //Sprite Sprite::m_sprite;
-    //Sprite* Sprite::m_currentSprite = nullptr;
-    //bool Sprite::m_spriteMode = false;
+    Sprite Sprite::m_blinkSprite;
+    Sprite Sprite::m_walkSprite;
+    Sprite Sprite::m_sprite;
+    Sprite* Sprite::m_currentSprite = nullptr;
+    bool Sprite::m_spriteMode = false;
 
    /*!
    @brief Default constructor for the Sprite class.
@@ -91,7 +91,6 @@ namespace Component {
         rotation = 0.0f;
 
         // Use the TextureRenderer system to load texture
-        //textureId = TextureRenderer::GetOrLoadTexture(spriteSheetPath);
         textureId = TextureRenderer::GetTextureHandle(spriteSheetPath);
         if (textureId == 0) {
             std::cerr << "[ERROR] Failed to load sprite sheet: " << spriteSheetPath << std::endl;
@@ -148,7 +147,7 @@ namespace Component {
     @brief Renders the current animation frame to the screen.
 
     @details
-    Computes the current frame’s position within the sprite sheet and draws it using
+    Computes the current frameï¿½s position within the sprite sheet and draws it using
     the texture renderer. Supports horizontal flipping, scaling, rotation, and tinting.
     */
 
@@ -166,24 +165,25 @@ namespace Component {
         CEVec3 tint(1.0f, 1.0f, 1.0f); // White tint (no color change)
 
         // Use the flipped version if horizontal flipping is enabled
+        // Use a more reasonable base size to prevent scaling artifacts
         TextureRenderer::CreateSpriteFrameFlipped(
             textureId,           
             position,            
-            CEVec2(6.0f, 6.0f),  
+            CEVec2(12.0f, 12.0f), // Larger base size to reduce scaling factor
             col,                 
             row,                 
             framesPerRow,        // Total columns
             framePerColumn,      // Total rows
             flipHorizontal,      // Horizontal flip flag
             rotation,            // Rotation
-            scale,               // Scale 
+            scale * 0.5f,        // Reduce scale factor to compensate for larger base size
             tint,                // Tint color
             true                 // Enable modulation for transparency
         );
     }
 
     /*!
-    @brief Cleans up the sprite’s internal state and resets all properties.
+    @brief Cleans up the spriteï¿½s internal state and resets all properties.
 
     @details
     Does not delete the texture (as it is managed by the texture renderer), but resets
@@ -236,7 +236,7 @@ namespace Component {
     }
 
    /*!
-   @brief Sets the sprite’s position on the screen.
+   @brief Sets the spriteï¿½s position on the screen.
    @param x X-coordinate.
    @param y Y-coordinate.
    */
@@ -282,26 +282,27 @@ namespace Component {
     mapping them to specific rows and frames in the sprite sheet.
     */
 
-    //void Sprite::setupDuckAnimations() {
-    //    
-    //    // Row 1: idle_normal (2 frames) = frames 0-1
-    //    // Row 2: walk_normal (6 frames) = frames 6-11  
-    //    // Row 3: idle_bounce (4 frames) = frames 12-15
-    //    // Row 4: walk_bounce (6 frames) = frames 18-23 
-    //    
-    //    // idle_normal: 2 frames (row 1, frames 0-1)
-    //    addAnimationState("idle_normal", AnimationState(0, 2, 0.6f, true));
-    //    
-    //    // walk_normal: 6 frames (row 2, frames 6-11)
-    //    addAnimationState("walk_normal", AnimationState(6, 6, 0.2f, true));
-    //    
-    //    // idle_bounce: 4 frames (row 3, frames 12-15)
-    //    addAnimationState("idle_bounce", AnimationState(12, 4, 0.4f, true));
-    //    
-    //    // walk_bounce: 2 frames only (row 4, frames 16-17)
-    //    addAnimationState("walk_bounce", AnimationState(16, 2, 0.25f, true));
-    //    
-    //    // Set default animation
-    //    setAnimationState("idle_normal");
-    //}
+    void Sprite::setupDuckAnimations() {
+        
+        // Row 1: idle_normal (2 frames) = frames 0-1
+        // Row 2: walk_normal (6 frames) = frames 6-11  
+        // Row 3: idle_bounce (4 frames) = frames 12-15
+        // Row 4: walk_bounce (6 frames) = frames 18-23 
+        
+        // idle_normal: 2 frames (row 1, frames 0-1) - Slower for breathing effect
+        addAnimationState("idle_normal", AnimationState(0, 2, 0.8f, true));
+        
+        // walk_normal: 6 frames (row 2, frames 6-11) - Faster for smooth walking
+        addAnimationState("walk_normal", AnimationState(6, 6, 0.12f, true));
+        
+        // idle_bounce: 4 frames (row 3, frames 12-15) - Medium speed for bounce effect
+        addAnimationState("idle_bounce", AnimationState(12, 4, 0.15f, true));
+        
+        // walk_bounce: Use all 6 frames (row 4, frames 18-23) - Smooth bouncy walk
+        addAnimationState("walk_bounce", AnimationState(18, 6, 0.1f, true));
+        
+        // Set default animation
+        
+        setAnimationState("idle_normal");
+    }
 }
