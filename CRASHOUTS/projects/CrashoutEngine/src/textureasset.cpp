@@ -515,7 +515,7 @@ namespace CrashoutsEngine {
         GLuint TextureRenderer::GetTextureHandle(std::string const& assetName) {
             using namespace CrashoutsEngine::Assets;
         
-            std::cout << "DEBUG: Requesting texture asset: '" << assetName << "'" << std::endl;
+            //std::cout << "DEBUG: Requesting texture asset: '" << assetName << "'" << std::endl;
         
             // Normalize name to manifest key if a path/ext was provided
             std::string key = assetName;

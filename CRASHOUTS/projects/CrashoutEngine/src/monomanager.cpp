@@ -1,5 +1,8 @@
 #include "monomanager.h"
+
+#include <filesystem>
 #include <iostream>
+#include <mono/metadata/mono-config.h>
 
 MonoDomain* MonoManager::s_Domain = nullptr;
 
@@ -7,6 +10,8 @@ void MonoManager::Init(const std::string& domainName)
 {
     // Set runtime and config directories
     mono_set_dirs("third_party/Mono/lib", "third_party/Mono/etc");
+
+    mono_config_parse(nullptr);
 
     s_Domain = mono_jit_init(domainName.c_str());
 
@@ -18,6 +23,12 @@ void MonoManager::Init(const std::string& domainName)
 
 void MonoManager::LoadAssembly(const std::string& assemblyPath)
 {
+    if (!std::filesystem::exists(assemblyPath))
+    {
+        std::cerr << "[Mono] Assembly not found at: " << assemblyPath << std::endl;
+        return;
+    }
+
     if (!s_Domain)
     {
         std::cerr << "[Mono] Domain not initialized!" << std::endl;
@@ -45,8 +56,17 @@ void MonoManager::LoadAssembly(const std::string& assemblyPath)
         std::cerr << "[Mono] Failed to find method." << std::endl;
         return;
     }
-
-    mono_runtime_invoke(method, nullptr, nullptr, nullptr);
+    MonoObject* exc = nullptr;
+    mono_runtime_invoke(method, nullptr, nullptr, &exc);
+    if (exc)
+    {
+	    std::cerr << "[Mono] Managed exception occurred:" << '\n';
+        mono_print_unhandled_exception(exc);
+    }
+    else
+    {
+	    std::cout << "[Mono] Method executed successfully." << '\n';
+    }
 }
 
 void MonoManager::Shutdown()

@@ -5,7 +5,7 @@ function(disable_warnings_for target)
         get_target_property(existing_compile_options ${target} COMPILE_OPTIONS)
 
         if (existing_compile_options)
-            # Remove any /W0–/W4 already present
+            # Remove any /W0ï¿½/W4 already present
             string(REGEX REPLACE "/W[0-4]" "" existing_compile_options "${existing_compile_options}")
             
             # FIX: Use semicolon to separate the flags in the list
@@ -329,6 +329,8 @@ function(link_mono_to target)
             "${_MONO_BINDIR}/mono-2.0-sgen.dll" "$<TARGET_FILE_DIR:${target}>"
         COMMAND ${CMAKE_COMMAND} -E copy_directory
             "${_MONO_ETCDIR}" "$<TARGET_FILE_DIR:${target}>/third_party/Mono/etc"
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+            "${_MONO_LIBDIR}" "$<TARGET_FILE_DIR:${target}>/third_party/Mono/lib"
     )
 
     message(STATUS "[Mono] ? Linked ${target} with includes at: ${_MONO_INC}")

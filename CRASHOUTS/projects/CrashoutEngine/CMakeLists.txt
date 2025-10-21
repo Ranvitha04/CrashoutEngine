@@ -109,6 +109,7 @@ message(STATUS "Mono linked successfully to CrashoutEngine.")
 target_include_directories(${PROJECT_NAME} 
 PUBLIC
     ${project_dir}/include
+    ${_MONO_INC}
 PRIVATE
     ${CMAKE_SOURCE_DIR}/lib/glm                 # Added GLM include
     ${_FMOD_INC}                                # Added FMOD include
