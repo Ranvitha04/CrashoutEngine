@@ -8,9 +8,6 @@ cmake_policy(VERSION 3.24)
 
 set(CMAKE_POLICY_VERSION_MINIMUM 3.5)
 
-# Normal configurations + a special one for C++/CLI debug builds
-set(CMAKE_CONFIGURATION_TYPES "Debug;Release;CLR-Debug" CACHE STRING "" FORCE)
-
 project(CrashoutEngine CXX)
 
 # Set a single, clean output directory for all binaries.
@@ -63,18 +60,4 @@ endif()
 # This section explicitly tells CMake to build the engine first, then the game.
 #
 add_subdirectory(projects/CrashoutEngine)
-add_subdirectory(projects/ScriptAPI)
 add_subdirectory(projects/Descent)
-
-# ========================= ManagedScripts (.NET 6) ======================
-include(ExternalProject)
-
-ExternalProject_Add(ManagedScripts
-SOURCE_DIR "${CMAKE_SOURCE_DIR}/projects/ManagedScripts"
-    CONFIGURE_COMMAND ""
-    BUILD_COMMAND dotnet build ManagedScripts.csproj -c $<CONFIG> -p:Platform=x64
-    INSTALL_COMMAND ""
-)
-
-# Make sure it builds after ScriptAPI
-add_dependencies(ManagedScripts ScriptAPI)
