@@ -120,12 +120,12 @@ static rapidjson::Value MakeVec3(rapidjson::Document::AllocatorType& A, const CE
 bool SaveBoxPrefabToJson_RJ(CrashoutsEngine::ECS& ecs,
     Entity e,
     const std::string& name,
-    const std::string& path /*= "assets/prefabs/prefab.json"*/)
+    const std::string& path 
 {
     using namespace rapidjson;
     using namespace Component;
 
-    // Require the components we know how to serialize
+
     auto* t = ecs.GetComponent<TransformComponent>(e);
     auto* sh = ecs.GetComponent<ShapeComponent>(e);
     auto* rb = ecs.GetComponent<RigidBodyComponent>(e);
@@ -138,7 +138,6 @@ bool SaveBoxPrefabToJson_RJ(CrashoutsEngine::ECS& ecs,
         return false;
     }
 
-    // --- Load existing doc or create a new one with prefabs[] ---
     Document doc;
     {
         std::ifstream ifs(path);
@@ -159,10 +158,8 @@ bool SaveBoxPrefabToJson_RJ(CrashoutsEngine::ECS& ecs,
     }
     Value& prefabs = doc["prefabs"];
 
-    // --- Build one prefab object (keys: type/name/transform/shape/rigidbody) ---
     Value obj(kObjectType);
 
-    // type + name
     obj.AddMember("type", "Box", A);
     {
         Value nm;
@@ -170,7 +167,6 @@ bool SaveBoxPrefabToJson_RJ(CrashoutsEngine::ECS& ecs,
         obj.AddMember("name", nm, A);
     }
 
-    // transform.position (only)
     {
         Value pos(kObjectType);
         pos.AddMember("x", t->position.x, A);
@@ -191,28 +187,25 @@ bool SaveBoxPrefabToJson_RJ(CrashoutsEngine::ECS& ecs,
         obj.AddMember("shape", shj, A);
     }
 
-    // rigidbody via reflection()
     {
-        auto r = rb->reflection();  // exposes mass/restitution in your adapters
+        auto r = rb->reflection();  /
         Value rbj(kObjectType);
         rbj.AddMember("mass", r.mass, A);
         rbj.AddMember("restitution", r.restitution, A);
         obj.AddMember("rigidbody", rbj, A);
     }
 
-    // --- Upsert (replace if name matches, else push) ---
     bool replaced = false;
     for (auto& p : prefabs.GetArray()) {
         if (p.IsObject() && p.HasMember("name") && p["name"].IsString()
             && name == std::string(p["name"].GetString())) {
-            p = obj;            // replace in-place (RapidJSON moves internally)
+            p = obj;          
             replaced = true;
             break;
         }
     }
     if (!replaced) prefabs.PushBack(obj, A);
 
-    // --- Write back (pretty) ---
     StringBuffer sb;
     PrettyWriter<StringBuffer> writer(sb);
     doc.Accept(writer);
@@ -223,8 +216,6 @@ bool SaveBoxPrefabToJson_RJ(CrashoutsEngine::ECS& ecs,
     return true;
 }
 
-
-// Call this during scene/level load (see LoadAfiq in afiqscene.cpp)
 void InitPrefabs()
 {
     // Fallback so unknown names don't crash
