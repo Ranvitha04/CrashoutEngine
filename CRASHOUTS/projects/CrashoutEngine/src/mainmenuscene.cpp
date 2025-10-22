@@ -76,11 +76,13 @@ void LoadMainMenu()
 	globalECS = CrashoutsEngine::ECS::getInstance();
 	globalECS->Reset();
 
-	GLuint shaderID = LoadShaderProgram("assets/shaders/textShader.vert", "assets/shaders/textShader.frag");
+	/*GLuint shaderID = LoadShaderProgram("assets/shaders/textShader.vert", "assets/shaders/textShader.frag");
+
 	if (shaderID == 0) {
 		std::cout << "Failed to load text shader.\n";
 		return;
-	}
+	}*/
+
 	gTextRenderer = new TextRenderer(Settings::GetScreenWidth(), Settings::GetScreenHeight());
 	gTextRendererA = new TextRenderer(Settings::GetScreenWidth(), Settings::GetScreenHeight()); 
 }
@@ -109,10 +111,6 @@ void InitMainMenu()
 	);
 
 	// Initialize MainMenu state
-
-	CrashoutsEngine::Assets::GenerateAssetManifest();
-
-	CrashoutsEngine::Assets::AssetManager::GetInstance().LoadManifestAssets();
 
 	LOGI(Core, "MainMenu Initialized");
 }

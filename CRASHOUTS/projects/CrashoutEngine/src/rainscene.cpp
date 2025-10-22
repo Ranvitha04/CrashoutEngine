@@ -8,6 +8,7 @@
 #include "sceneutils.h"
 #include "assetmanager.h"
 #include "sceneasset.h"
+#include "shaderasset.h"
 
 static CrashoutsEngine::ECS* globalECS;
 static const char* sceneName = "rain";
@@ -20,15 +21,14 @@ void LoadRain()
 	globalECS = CrashoutsEngine::ECS::getInstance();
 	globalECS->Reset();
 
-	CrashoutsEngine::Assets::GenerateAssetManifest();
+	using namespace CrashoutsEngine::Assets;
 
-	CrashoutsEngine::Assets::AssetManager::GetInstance().LoadManifestAssets();
+	GenerateAssetManifest();
 
-	GLuint shaderID = LoadShaderProgram("assets/shaders/textShader.vert", "assets/shaders/textShader.frag");
-	if (shaderID == 0) {
-		std::cout << "Failed to load text shader.\n";
-		return;
-	}
+	AssetManager::GetInstance().LoadManifestAssets();
+
+	AssetManager::GetInstance().Get<ShaderAsset>("textShader")->shaderObject.Use();
+
 	gTextRenderer = new TextRenderer(Settings::GetScreenWidth(), Settings::GetScreenHeight());
 }
 

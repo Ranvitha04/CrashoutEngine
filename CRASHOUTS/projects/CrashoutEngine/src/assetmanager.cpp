@@ -23,6 +23,7 @@
 #include "textureasset.h"
 #include "sceneasset.h"
 #include "fontasset.h"
+#include "shaderasset.h"
 
 /*
 ----------------------------------------------------------------------------- */
@@ -69,26 +70,55 @@ namespace CrashoutsEngine {
 					// JSON array created to hold all assets of this assetType
 					rapidjson::Value assetArray(rapidjson::kArrayType);		
 
-					// Iterate through all files in the asset type directory
-					for (const auto& file : fs::recursive_directory_iterator(entry.path())) {
-						if (file.is_regular_file()) {
-							rapidjson::Value assetObject(rapidjson::kObjectType);
+					// Special Handling for shaders
+					if (assetType == "shaders") {
+						// Iterate through all shader directories
+						for (const auto& shaderDir : fs::directory_iterator(entry.path())) {
+							if (shaderDir.is_directory()) {
+								rapidjson::Value assetObject(rapidjson::kObjectType);
 
-							// Asset name is the filename without extension
-							std::string assetName = file.path().stem().string();
+								// Asset name is the directory name
+								std::string shaderName = shaderDir.path().filename().string();
 
-							// Asset path is relative to the type directory (e.g. "images/player.png")
-							fs::path relativePath = fs::relative(file.path(), entry.path());
+								// Asset path is relative to the shaders directory
+								fs::path vertPath = shaderDir.path() / (shaderName + ".vert");
+								fs::path fragPath = shaderDir.path() / (shaderName + ".frag");
 
-							assetObject.AddMember("name", rapidjson::Value(assetName.c_str(), allocator).Move(), allocator);
-							assetObject.AddMember("path", rapidjson::Value(relativePath.string().c_str(), allocator).Move(), allocator);
+								if (fs::exists(vertPath) && fs::exists(fragPath)) {
+									assetObject.AddMember("name", rapidjson::Value(shaderName.c_str(), allocator).Move(), allocator);
+									// Path is just the directory name, matching LoadManifestAssets expectation
+									assetObject.AddMember("path", rapidjson::Value(shaderName.c_str(), allocator).Move(), allocator);
+									assetArray.PushBack(assetObject, allocator);
+								}
+								else {
+									std::cerr << "Warning: Shader directory '" << shaderName
+										<< "' is missing .vert or .frag file. Skipping." << std::endl;
+								}
+							}
+						}
+					}
+					else {
+						// Iterate through all files in the asset type directory
+						for (const auto& file : fs::recursive_directory_iterator(entry.path())) {
+							if (file.is_regular_file()) {
+								rapidjson::Value assetObject(rapidjson::kObjectType);
 
-							assetArray.PushBack(assetObject, allocator);
+								// Asset name is the filename without extension
+								std::string assetName = file.path().stem().string();
+
+								// Asset path is relative to the type directory (e.g. "images/player.png")
+								fs::path relativePath = fs::relative(file.path(), entry.path());
+
+								assetObject.AddMember("name", rapidjson::Value(assetName.c_str(), allocator).Move(), allocator);
+								assetObject.AddMember("path", rapidjson::Value(relativePath.string().c_str(), allocator).Move(), allocator);
+
+								assetArray.PushBack(assetObject, allocator);
+							}
 						}
 					}
 
 					// Add the array to the main JSON document with the asset type as the key
-					doc.AddMember(rapidjson::Value(assetType.c_str(), allocator).Move(), assetArray, allocator);
+					if(!assetArray.Empty()) doc.AddMember(rapidjson::Value(assetType.c_str(), allocator).Move(), assetArray, allocator);
 				}
 			}
 		
@@ -244,6 +274,42 @@ namespace CrashoutsEngine {
 					}
 					else {
 						std::cerr << "Warning: Font asset entry missing 'name' or 'path' in manifest." << std::endl;
+					}
+				}
+			}
+		
+			// --- Loading Shader ---
+			if (doc.HasMember("shaders") && doc["shaders"].IsArray()) {
+				std::cout << "Loading Shaders..." << std::endl;
+
+				const rapidjson::Value& shaderArray = doc["shaders"];
+
+				for (rapidjson::SizeType i = 0; i < shaderArray.Size(); ++i) {
+					const rapidjson::Value& asset = shaderArray[i];
+					if (asset.HasMember("name") && asset.HasMember("path")) {
+						std::string name = asset["name"].GetString();
+						std::string relativePath = asset["path"].GetString();
+
+						fs::path fullPath = fs::path(rootAssetPath) / "shaders" / relativePath;
+						fs::path vertPath = fullPath / (relativePath + ".vert");
+						fs::path fragPath = fullPath / (relativePath + ".frag");
+
+						// Create ShaderAsset object from file data (JSON)
+						std::unique_ptr<ShaderAsset> newShader = ShaderAsset::Create(vertPath.string(), fragPath.string());
+
+						// Validate 
+						if (newShader) {
+							// Load the FontAsset into AssetManager
+							AssetManager::GetInstance().Load(name, std::move(newShader));
+							std::cout << "AssetManager loaded shader data: " << name << "(" << fullPath.string() << ")"
+								<< std::endl;
+						}
+						else {
+							std::cerr << "Failed to create ShaderAsset: " << name << std::endl;
+						}
+					}
+					else {
+						std::cerr << "Warning: Shader asset entry missing 'name' or 'path' in manifest." << std::endl;
 					}
 				}
 			}

@@ -136,7 +136,7 @@ namespace Component {
         GLuint idx_elem_cnt{ 0 };
         GLuint tex_vbo_hdl{ 0 };
         GLuint texobj{ 0 };
-        GLSLShader shdr_pgm;
+        GLSLShader* shdr_pgm = nullptr;
         
         
         size_t current_vbo_size{ 0 };

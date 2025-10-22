@@ -16,6 +16,7 @@ Handles font loading character atlas creation and text rendering with FreeType a
 
 #include "settings.h"
 #include "assetmanager.h"
+#include "shaderasset.h"
 #include "FontAsset.h"
 
 /*!
@@ -24,11 +25,10 @@ Handles font loading character atlas creation and text rendering with FreeType a
 @param screenHeight Screen height used
 */
 TextRenderer::TextRenderer(GLuint screenWidth, GLuint screenHeight){
-    shaderID = LoadShaderProgram("assets/shaders/textShader.vert", "assets/shaders/textShader.frag");   // WILL REMOVE
-    if (shaderID == 0) {
-        std::cerr << "Failed to load text shader.\n";
-        return;
-    }
+    using namespace CrashoutsEngine::Assets;
+
+	AssetManager::GetInstance().Get<ShaderAsset>("TextShader")->shaderObject.Use();
+
     /// Configure VAO/VBO
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
