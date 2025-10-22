@@ -68,7 +68,7 @@ namespace CrashoutsEngine {
         /*!
         @brief Creates a new SceneAsset from a json file.
         @param filePath Path to the SceneAsset(JSON) file.
-        @return Unique pointer to a valid TextureAsset, or nullptr on failure.
+        @return Unique pointer to a valid SceneAsset, or nullptr on failure.
         */
         std::unique_ptr<SceneAsset> SceneAsset::Create(const std::string& filePath) {
 

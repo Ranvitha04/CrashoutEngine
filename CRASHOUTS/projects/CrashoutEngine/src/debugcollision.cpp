@@ -50,6 +50,19 @@ static void DrawAABBOutline(const CEVec3& minP, const CEVec3& maxP, float thickn
 }
 
 /*!
+ @brief Draws a 2D oriented bounding box as a wireframe rectangle.
+ @param vertices     A vertex array
+ @param thickness    Line thickness.
+ @param color        RGB-like color vector used by the line drawer.
+*/
+static void DrawOBBOutline(const Collision::OBBRect* vertices, float thickness, const CEVec3& color) {
+    Shapes::CreateLine(vertices->rotatedVertices[0], vertices->rotatedVertices[1], thickness, 0.0f, 1.0f, color);
+    Shapes::CreateLine(vertices->rotatedVertices[1], vertices->rotatedVertices[2], thickness, 0.0f, 1.0f, color);
+    Shapes::CreateLine(vertices->rotatedVertices[2], vertices->rotatedVertices[3], thickness, 0.0f, 1.0f, color);
+    Shapes::CreateLine(vertices->rotatedVertices[3], vertices->rotatedVertices[0], thickness, 0.0f, 1.0f, color);
+}
+
+/*!
  @brief Draws a 2D circle wireframe (used for sphere colliders projected to XY).
  @param c            Center position.
  @param r            Radius.
@@ -102,6 +115,11 @@ namespace CollisionGizmos {
                 auto const* pAabb = dynamic_cast<const Collision::AABBRect*>(pBase);
                 if (!pAabb) continue;
                 DrawAABBOutline(pAabb->min, pAabb->max, wireThickness, color);
+            }
+            else if (pBase->type == Collision::OBB) {
+                auto const* pAabb = dynamic_cast<const Collision::OBBRect*>(pBase);
+                if (!pAabb) continue;
+                DrawOBBOutline(pAabb, wireThickness, color);
             }
         }
     }

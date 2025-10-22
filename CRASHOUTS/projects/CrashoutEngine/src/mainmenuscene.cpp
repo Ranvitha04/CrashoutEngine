@@ -63,7 +63,7 @@ void AddPhysicsEntity(CrashoutsEngine::Entity &entity, Component::RigidBodyCompo
 	globalECS->AddComponent<Component::TransformComponent>(entity, transform);
 	globalECS->AddComponent<Component::ShapeComponent>(entity, shape);
 	globalECS->AddComponent<Component::ColliderComponent>(entity, Component::ColliderComponent{
-		std::make_unique<Collision::AABBRect>(Collision::AABBRect{
+		std::make_unique<Collision::OBBRect>(Collision::OBBRect{
 			CEVec3{transform.position - extents },
 			CEVec3{transform.position + extents}
 		})
@@ -81,8 +81,8 @@ void LoadMainMenu()
 		std::cout << "Failed to load text shader.\n";
 		return;
 	}
-	gTextRenderer = new TextRenderer("../../../projects/CrashoutEngine/assets/fonts/Silver.ttf", Settings::GetScreenWidth(), Settings::GetScreenHeight());
-	gTextRendererA = new TextRenderer("../../../projects/CrashoutEngine/assets/fonts/Exo2-Regular.ttf", Settings::GetScreenWidth(), Settings::GetScreenHeight()); 
+	gTextRenderer = new TextRenderer(Settings::GetScreenWidth(), Settings::GetScreenHeight());
+	gTextRendererA = new TextRenderer(Settings::GetScreenWidth(), Settings::GetScreenHeight()); 
 }
 
 void InitMainMenu()
@@ -190,6 +190,13 @@ void UpdateMainMenu()
 	/*ROTATE*/
 	if (InputManager::IsKeyPressed(Key::R)) {
 		transform->rotation += 3.f;
+		if (globalECS->HasComponent<Component::ColliderComponent>(entity1)) {
+			Component::ColliderComponent* collider1{ globalECS->GetComponent<Component::ColliderComponent>(entity1) };
+			if (collider1->collider->type == Collision::ColliderType::OBB) {
+				Collision::OBBRect & obbTemp2 = dynamic_cast<Collision::OBBRect &>(*(collider1->collider));
+				obbTemp2.updateRotation(transform->rotation);
+			}
+		}
 	}
 }
 
