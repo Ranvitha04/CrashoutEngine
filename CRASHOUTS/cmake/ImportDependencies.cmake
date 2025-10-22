@@ -333,7 +333,7 @@ function(link_mono_to target)
             "${_MONO_LIBDIR}" "$<TARGET_FILE_DIR:${target}>/third_party/Mono/lib"
     )
 
-    message(STATUS "[Mono] ? Linked ${target} with includes at: ${_MONO_INC}")
+    message(STATUS "[Mono] Linked ${target} with includes at: ${_MONO_INC}")
 endfunction()
 
 # (optional) log once so we know it ran

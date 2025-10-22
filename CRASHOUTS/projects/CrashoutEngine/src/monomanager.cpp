@@ -61,23 +61,26 @@ void MonoManager::LoadAssembly(const std::string& assemblyPath)
     std::cout << "[Mono] Got image successfully." << std::endl;
 
     MonoClass* klass = mono_class_from_name(image, "ExampleNamespace", "ExampleClass");
-    if (!klass)
-    {
-        std::cerr << "[Mono] Failed to find class ExampleNamespace.ExampleClass." << std::endl;
-        return;
-    }
-    std::cout << "[Mono] Found ExampleClass." << std::endl;
+    
 
-    MonoMethod* method = mono_class_get_method_from_name(klass, "Start", 0);
+    MonoMethod* startMethod = mono_class_get_method_from_name(klass, "Start", 0);
+	MonoMethod* runMethod = mono_class_get_method_from_name(klass, "Run", 0);
+
+    mono_runtime_invoke(startMethod, nullptr, nullptr, nullptr);
+
+	MonoObject* instance = mono_object_new(s_Domain, klass);
+    mono_runtime_object_init(instance);
+
+    /*MonoMethod* method = mono_class_get_method_from_name(klass, "Start", 0);
     if (!method)
     {
         std::cerr << "[Mono] Failed to find method Start()." << std::endl;
         return;
     }
-    std::cout << "[Mono] Found Start() method." << std::endl;
+	std::cout << "[Mono] Found Start() method." << std::endl;*/
 
     MonoObject* exc = nullptr;
-    mono_runtime_invoke(method, nullptr, nullptr, &exc);
+    mono_runtime_invoke(runMethod, nullptr, nullptr, &exc);
     if (exc)
     {
         std::cerr << "[Mono] Managed exception occurred:" << std::endl;
