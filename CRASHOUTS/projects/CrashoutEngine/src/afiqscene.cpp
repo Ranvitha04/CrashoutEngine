@@ -9,6 +9,7 @@
 #include <vector>
 #include <algorithm>
 #include <string>
+#include "prefab.h"
 
 // AUDIO
 #include "audioSystem.h"
@@ -20,66 +21,7 @@ using namespace Component;
 // ============================================================================
 // In-file, minimal Prefab registry (name -> factory) so we don't need new files
 // ============================================================================
-namespace {
-    using Factory = std::function<void(ECS&)>;
-    using Fallback = std::function<void(ECS&, const std::string&)>;
-
-    static std::unordered_map<std::string, Factory> gPrefabReg;
-    static Fallback gPrefabFallback;
-
-    inline bool PrefabRegister(const std::string& name, Factory f) {
-        return gPrefabReg.emplace(name, std::move(f)).second;
-    }
-    inline void PrefabSetFallback(Fallback fb) { gPrefabFallback = std::move(fb); }
-
-    inline bool PrefabCreate(ECS& ecs, const std::string& name) {
-        if (auto it = gPrefabReg.find(name); it != gPrefabReg.end()) { it->second(ecs); return true; }
-        if (gPrefabFallback) { gPrefabFallback(ecs, name); return true; }
-        return false;
-    }
-
-    // One-time registration guard
-    static bool gPrefabsInited = false;
-    static void InitPrefabsOnce() {
-        if (gPrefabsInited) return;
-        gPrefabsInited = true;
-
-        // Fallback: create a plain named entity with a Transform
-        PrefabSetFallback([](ECS& e, const std::string& name) {
-            auto ent = e.CreateEntity();
-            e.AddComponent<NameComponent>(ent, NameComponent{ name });
-            if (!e.HasComponent<TransformComponent>(ent)) {
-                e.AddComponent<TransformComponent>(ent, TransformComponent{});
-            }
-            });
-
-        // Example prefabs you can extend any time:
-
-        // Platform: wide rectangle
-        PrefabRegister("Platform", [](ECS& e) {
-            auto ent = e.CreateEntity();
-            e.AddComponent<NameComponent>(ent, NameComponent{ "Platform" });
-            e.AddComponent<TransformComponent>(ent, TransformComponent{});
-            e.AddComponent<ShapeComponent>(ent, ShapeComponent{
-                .type = ShapeType::Rectangle, .width = 100.f, .height = 10.f
-                });
-            // add collider/rigidbody/etc. here if desired
-            });
-
-        // Box: small rectangle
-        PrefabRegister("Box", [](ECS& e) {
-            auto ent = e.CreateEntity();
-            e.AddComponent<NameComponent>(ent, NameComponent{ "Box" });
-            e.AddComponent<TransformComponent>(ent, TransformComponent{});
-            e.AddComponent<ShapeComponent>(ent, ShapeComponent{
-                .type = ShapeType::Rectangle, .width = 20.f, .height = 20.f
-                });
-            });
-
-        // Add more:
-        // PrefabRegister("Ball", [](ECS& e){ /* components... */ });
-    }
-} // anon ns (prefab)
+  // anon ns (prefab)
 
 // ============================================================================
 // Afiq scene audio state
@@ -94,7 +36,9 @@ void LoadAfiq()
 {
     InitPrefabs();
     // One-time prefab registration
-    InitPrefabsOnce();
+    for (const auto& n : Prefab::Names()) {
+        LOGI(Core, std::string("Registered prefab: ") + n);   // or build a std::string first
+    }
 
     // Audio init + banks
     if (!s_audioReady) {
