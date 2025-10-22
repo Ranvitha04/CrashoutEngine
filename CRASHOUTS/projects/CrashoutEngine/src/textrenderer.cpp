@@ -15,15 +15,16 @@ Handles font loading character atlas creation and text rendering with FreeType a
 #include <iostream>
 
 #include "settings.h"
+#include "assetmanager.h"
+#include "FontAsset.h"
 
 /*!
 @brief Construct a new TextRenderer
-@param fontPath Path to the font file
 @param screenWidth Screen width used
 @param screenHeight Screen height used
 */
-TextRenderer::TextRenderer(const std::string& fontPath, GLuint screenWidth, GLuint screenHeight){
-    shaderID = LoadShaderProgram("assets/shaders/textShader.vert", "assets/shaders/textShader.frag");
+TextRenderer::TextRenderer(GLuint screenWidth, GLuint screenHeight){
+    shaderID = LoadShaderProgram("assets/shaders/textShader.vert", "assets/shaders/textShader.frag");   // WILL REMOVE
     if (shaderID == 0) {
         std::cerr << "Failed to load text shader.\n";
         return;
@@ -55,18 +56,11 @@ TextRenderer::TextRenderer(const std::string& fontPath, GLuint screenWidth, GLui
 
     glUniformMatrix4fv(glGetUniformLocation(shaderID, "projection"), 1, GL_FALSE, &projection[0][0]);
 
-    LoadFont(fontPath);
+    //LoadFont(fontPath);
 }
 
 /// Destructor that deletes the VAO and VBO
 TextRenderer::~TextRenderer() {
-    glDeleteVertexArrays(1, &VAO);
-    glDeleteBuffers(1, &VBO);
-    for (auto& kv : Characters) {
-        glDeleteTextures(1, &kv.second.TextureID);
-    }
-    Characters.clear();
-
     // Delete VAO/VBO
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
@@ -153,15 +147,28 @@ bool TextRenderer::LoadFont(const std::string& fontPath) {
 @param y Baseline Y position in screen space
 @param scale Scale factor for text size
 @param color RGB color of the text
+@param fontName The name of the font asset (in AssetManager) to use
 */
-void TextRenderer::RenderText(const std::string& text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color) {
+void TextRenderer::RenderText(const std::string& text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color, const std::string fontName) {
+    
+    using namespace CrashoutsEngine::Assets;
+	AssetManager& assetManager = AssetManager::GetInstance();
+	FontAsset* font = assetManager.Get<FontAsset>(fontName);
+
+    if (!font) {
+        std::cerr << "ERROR::TEXTRENDERER: Font not found: " << fontName << std::endl;
+        return;
+    }
+    // Get character map
+	const std::map<GLchar, Character>& characters = font->characters;
+    
     glUseProgram(shaderID);
     glUniform3f(glGetUniformLocation(shaderID, "textColor"), color.x, color.y, color.z);
     glActiveTexture(GL_TEXTURE0);
     glBindVertexArray(VAO);
 
     for (auto c : text) {
-        Character ch = Characters[c];
+        Character ch = characters.at(c);
 
         GLfloat xpos = x + ch.Bearing.x * scale;
         GLfloat ypos = y - ch.Bearing.y * scale;
@@ -206,17 +213,29 @@ void TextRenderer::RenderText(const std::string& text, GLfloat x, GLfloat y, GLf
 @param y Center Y position
 @param scale Scale factor for text size
 @param color RGB color of the text
+@param fontName The name of the font asset (in AssetManager) to use
 
 Measures text dimensions and adjusts position so that text is centered on the given coordinates
 */
-void TextRenderer::RenderCenteredText(const std::string& text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color) {
+void TextRenderer::RenderCenteredText(const std::string& text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color, const std::string fontName) {
+    using namespace CrashoutsEngine::Assets;
+    AssetManager& assetManager = AssetManager::GetInstance();
+    FontAsset* font = assetManager.Get<FontAsset>(fontName);
+
+    if (!font) {
+        std::cerr << "ERROR::TEXTRENDERER: Font not found: " << fontName << std::endl;
+        return;
+    }
+    // Get character map
+    const std::map<GLchar, Character>& characters = font->characters;
+    
     // Measure total width and max full height (including descent)
     GLfloat textWidth = 0.0f;
     GLfloat maxAscent = 0.0f;
     GLfloat maxDescent = 0.0f;
 
     for (char c : text) {
-        Character ch = Characters[c];
+        Character ch = characters.at(c);
         textWidth += (ch.Advance >> 6) * scale;
 
         GLfloat ascent = ch.Bearing.y * scale;

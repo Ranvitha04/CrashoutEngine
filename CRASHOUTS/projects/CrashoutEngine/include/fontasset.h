@@ -18,6 +18,10 @@
 #include <map>
 #include "assetmanager.h"
 
+// Include dependencies for OpenGL and GLM types
+#include <GL/glew.h>
+#include <glm/vec2.hpp>
+
 #include FT_FREETYPE_H
 
 // Forward declarations
@@ -46,7 +50,7 @@ namespace CrashoutsEngine {
         public:
 
             /// Map of loaded characters accessible by ASCII code
-            std::map<GLchar, Character> Characters;
+            std::map<GLchar, Character> characters;
 
             // Default Constructor
             FontAsset() = default;
@@ -62,7 +66,8 @@ namespace CrashoutsEngine {
 
             // Move constructor and assignment
             FontAsset(FontAsset&& other) noexcept :
-                fontName{std::move(other.fontName)}
+                fontName{std::move(other.fontName)},
+				characters{ std::move(other.characters) }
             {};
 
             FontAsset& operator=(FontAsset&& other) noexcept
@@ -70,11 +75,18 @@ namespace CrashoutsEngine {
                 if (this != &other) {
                     fontName = std::move(other.fontName);
 					other.fontName.clear();
+					characters = std::move(other.characters);
                 }
+                return *this;
             }
 
 			// Default Destructor
-            ~FontAsset() = default;
+            // Free the OpenGL textures when destroyed
+            ~FontAsset() override {
+                for (std::pair<const GLchar, Character>& pair : characters) {
+                    glDeleteTextures(1, &pair.second.TextureID);
+                }
+            }
 
             // Public member functions
             // GETTERS
@@ -90,10 +102,6 @@ namespace CrashoutsEngine {
         private:
 			std::string fontName;         // Name of the font
         };
-    }
-
-    namespace Serialization {
-        bool LoadFont(std::string const& fontName);
     }
 }
 
