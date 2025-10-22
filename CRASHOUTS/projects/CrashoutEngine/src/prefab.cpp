@@ -2,48 +2,37 @@
 @file        prefab.cpp
 @author      b.mohamadafiq@digipen.edu
 @date        28/9/2025
-@brief       Prefab system: global registry (name -> factory) + de-serialization
-             from a data file. This is the single source of truth for prefabs.
-*/
+@brief       Factory where we make prefab
 
+*/
 #include "prefab.h"
 #include <fstream>
 #include <sstream>
 #include <algorithm>
-#include <unordered_map>
-#include <vector>
-#include <string>
 
 namespace {
-    // Global registry of prefab factories (name -> factory)
     std::unordered_map<std::string, Prefab::Factory>& Reg() {
         static std::unordered_map<std::string, Prefab::Factory> R;
         return R;
     }
-    // Optional fallback creator (called when name is unknown)
     Prefab::Fallback& FallbackFn() {
-        static Prefab::Fallback FB;
+        static Prefab::Fallback FB; 
         return FB;
     }
 }
 
 namespace Prefab {
-
-    // Register a prefab factory by name (once).
+    //Name what we call the prefab and maybe the description
     bool Register(const std::string& name, Factory f) {
         auto& r = Reg();
-        if (r.find(name) != r.end()) return false;     // already exists
+        if (r.find(name) != r.end()) return false;
         r.emplace(name, std::move(f));
         return true;
     }
-
-    // Remove a prefab by name.
+    //Remove prefab
     bool Unregister(const std::string& name) { return Reg().erase(name) > 0; }
-
-    // Query for existence.
     bool Exists(const std::string& name) { return Reg().find(name) != Reg().end(); }
-
-    // Alphabetical list of prefab names (useful for UIs).
+    //Get a list sort them by names
     std::vector<std::string> Names() {
         std::vector<std::string> v;
         v.reserve(Reg().size());
@@ -51,8 +40,7 @@ namespace Prefab {
         std::sort(v.begin(), v.end());
         return v;
     }
-
-    // Create (clone) an instance from the master factory.
+    //Make gameobj
     bool Create(CrashoutsEngine::ECS& ecs, const std::string& name) {
         auto it = Reg().find(name);
         if (it != Reg().end()) { it->second(ecs); return true; }
@@ -61,11 +49,8 @@ namespace Prefab {
         return false;
     }
 
-    // Set an optional fallback (e.g., spawn a named empty entity).
     void SetFallback(Fallback fb) { FallbackFn() = std::move(fb); }
-
-    // Load/De-serialize prefab definitions from a data file.
-    // - 'translator' maps (type, tokens) -> Factory and returns true if it handled the line.
+    //Load prefab from file
     bool LoadFromFile(
         const std::string& path,
         const std::function<bool(
@@ -78,22 +63,17 @@ namespace Prefab {
 
         std::string line;
         while (std::getline(file, line)) {
-            // skip blanks & comments
             auto beg = line.find_first_not_of(" \t\r\n");
             if (beg == std::string::npos) continue;
             if (line[beg] == '#') continue;
 
-            // extract first word as "type"
             std::istringstream iss(line);
             std::string type; iss >> type;
             if (type.empty()) continue;
 
-            // gather remaining tokens
             std::vector<std::string> tokens;
             for (std::string tok; iss >> tok; ) tokens.push_back(tok);
-            if (tokens.empty()) continue;
-
-            // first token is prefab name conventionally
+            if (tokens.empty()) continue; 
             const std::string& name = tokens[0];
 
             Factory f;
@@ -104,4 +84,4 @@ namespace Prefab {
         return true;
     }
 
-} // namespace Prefab
+} 
