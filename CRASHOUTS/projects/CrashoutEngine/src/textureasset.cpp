@@ -515,7 +515,8 @@ namespace CrashoutsEngine {
         GLuint TextureRenderer::GetTextureHandle(std::string const& assetName) {
             using namespace CrashoutsEngine::Assets;
         
-            std::cout << "DEBUG: Requesting texture asset: '" << assetName << "'" << std::endl;
+            // QUESTION: Can this be checked so we don't keep searching for handle if already present?
+            // std::cout << "DEBUG: Requesting texture asset: '" << assetName << "'" << std::endl;
         
             // Normalize name to manifest key if a path/ext was provided
             std::string key = assetName;
