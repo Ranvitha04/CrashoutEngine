@@ -71,7 +71,7 @@ int WINAPI WinMain(
 #endif
 
     MonoManager::Init();
-    MonoManager::LoadAssembly("scripts/Example.dll");
+    MonoManager::LoadAssembly("scripts/ManagedScripts.dll");
 
     Init();
     double dt = FRC.DT();
