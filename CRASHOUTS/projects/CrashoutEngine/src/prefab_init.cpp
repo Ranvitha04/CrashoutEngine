@@ -35,17 +35,17 @@ MakeCenteredAABB3(const CEVec3& center, float w, float h)
 static bool LoadPrefabsFromJson_RJ(const std::string& path)
 {
     std::ifstream ifs(path);
-    if (!ifs) { LOGE(Core, "JSON open failed: %s", path); return false; }
+  
 
     rapidjson::IStreamWrapper isw(ifs);
     rapidjson::Document doc;
     doc.ParseStream(isw);
     if (doc.HasParseError() || !doc.IsObject()) {
-        LOGE(Core, "JSON parse error in %s", path);
+       
         return false;
     }
     if (!doc.HasMember("prefabs") || !doc["prefabs"].IsArray()) {
-        LOGE(Core, "JSON missing 'prefabs' array in %s", path);
+        
         return false;
     }
 
@@ -62,22 +62,22 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path)
 
         if (type == "Box") {
             // shape
-            if (!p.HasMember("shape") || !p["shape"].IsObject()) { LOGE(Core, "Box '%s' missing shape", name.c_str()); continue; }
+            if (!p.HasMember("shape") || !p["shape"].IsObject()) { LOGE(Core, std::string("Box '") + name + "' missing shape"); continue; }
             const auto& shj = p["shape"];
             float w = shj.HasMember("width") && shj["width"].IsNumber() ? (float)shj["width"].GetDouble() : 1.0f;
             float h = shj.HasMember("height") && shj["height"].IsNumber() ? (float)shj["height"].GetDouble() : 1.0f;
 
             // transform.position
-            if (!p.HasMember("transform") || !p["transform"].IsObject()) { LOGE(Core, "Box '%s' missing transform", name.c_str()); continue; }
+            if (!p.HasMember("transform") || !p["transform"].IsObject()) { LOGE(Core, std::string("Box '") + name + "' missing transform"); continue; }
             const auto& tj = p["transform"];
-            if (!tj.HasMember("position") || !tj["position"].IsObject()) { LOGE(Core, "Box '%s' missing position", name.c_str()); continue; }
+            if (!tj.HasMember("position") || !tj["position"].IsObject()) { LOGE(Core, std::string("Box '") + name + "' missing position"); continue; }
             const auto& pos = tj["position"];
             float px = pos.HasMember("x") && pos["x"].IsNumber() ? (float)pos["x"].GetDouble() : 0.f;
             float py = pos.HasMember("y") && pos["y"].IsNumber() ? (float)pos["y"].GetDouble() : 0.f;
             float pz = pos.HasMember("z") && pos["z"].IsNumber() ? (float)pos["z"].GetDouble() : 0.f;
 
             // rigidbody
-            if (!p.HasMember("rigidbody") || !p["rigidbody"].IsObject()) { LOGE(Core, "Box '%s' missing rigidbody", name.c_str()); continue; }
+            if (!p.HasMember("rigidbody") || !p["rigidbody"].IsObject()) { LOGE(Core, std::string("Box '") + name + "' missing rigidbody"); continue; }
             const auto& rbj = p["rigidbody"];
             float mass = rbj.HasMember("mass") && rbj["mass"].IsNumber() ? (float)rbj["mass"].GetDouble() : 0.f;
             float rest = rbj.HasMember("restitution") && rbj["restitution"].IsNumber() ? (float)rbj["restitution"].GetDouble() : 0.f;
@@ -109,112 +109,8 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path)
 
     return true;
 }
-static rapidjson::Value MakeVec3(rapidjson::Document::AllocatorType& A, const CEVec3& v) {
-    using namespace rapidjson;
-    Value obj(kObjectType);
-    obj.AddMember("x", v.x, A);
-    obj.AddMember("y", v.y, A);
-    obj.AddMember("z", v.z, A);
-    return obj;
-}
-bool SaveBoxPrefabToJson_RJ(CrashoutsEngine::ECS& ecs,
-    Entity e,
-    const std::string& name,
-    const std::string& path 
-{
-    using namespace rapidjson;
-    using namespace Component;
 
 
-    auto* t = ecs.GetComponent<TransformComponent>(e);
-    auto* sh = ecs.GetComponent<ShapeComponent>(e);
-    auto* rb = ecs.GetComponent<RigidBodyComponent>(e);
-    if (!t || !sh || !rb) {
-        LOGE(Core, "Save failed: entity missing Transform/Shape/RigidBody.");
-        return false;
-    }
-    if (sh->type != ShapeType::Rectangle) {
-        LOGE(Core, "Save failed: only Rectangle (Box) is supported.");
-        return false;
-    }
-
-    Document doc;
-    {
-        std::ifstream ifs(path);
-        if (ifs) {
-            IStreamWrapper isw(ifs);
-            doc.ParseStream(isw);
-        }
-        else {
-            doc.SetObject();
-        }
-    }
-    if (!doc.IsObject()) doc.SetObject();
-
-    auto& A = doc.GetAllocator();
-    if (!doc.HasMember("prefabs") || !doc["prefabs"].IsArray()) {
-        Value arr(kArrayType);
-        doc.AddMember("prefabs", arr, A);
-    }
-    Value& prefabs = doc["prefabs"];
-
-    Value obj(kObjectType);
-
-    obj.AddMember("type", "Box", A);
-    {
-        Value nm;
-        nm.SetString(name.c_str(), (SizeType)name.size(), A);
-        obj.AddMember("name", nm, A);
-    }
-
-    {
-        Value pos(kObjectType);
-        pos.AddMember("x", t->position.x, A);
-        pos.AddMember("y", t->position.y, A);
-        pos.AddMember("z", t->position.z, A);
-
-        Value tr(kObjectType);
-        tr.AddMember("position", pos, A);
-        obj.AddMember("transform", tr, A);
-    }
-
-    // shape (Rectangle: width/height)
-    {
-        Value shj(kObjectType);
-        shj.AddMember("kind", "Rectangle", A);
-        shj.AddMember("width", sh->width, A);
-        shj.AddMember("height", sh->height, A);
-        obj.AddMember("shape", shj, A);
-    }
-
-    {
-        auto r = rb->reflection();  /
-        Value rbj(kObjectType);
-        rbj.AddMember("mass", r.mass, A);
-        rbj.AddMember("restitution", r.restitution, A);
-        obj.AddMember("rigidbody", rbj, A);
-    }
-
-    bool replaced = false;
-    for (auto& p : prefabs.GetArray()) {
-        if (p.IsObject() && p.HasMember("name") && p["name"].IsString()
-            && name == std::string(p["name"].GetString())) {
-            p = obj;          
-            replaced = true;
-            break;
-        }
-    }
-    if (!replaced) prefabs.PushBack(obj, A);
-
-    StringBuffer sb;
-    PrettyWriter<StringBuffer> writer(sb);
-    doc.Accept(writer);
-
-    std::ofstream out(path, std::ios::binary);
-    if (!out) { LOGE(Core, "Cannot open %s for writing", path.c_str()); return false; }
-    out.write(sb.GetString(), static_cast<std::streamsize>(sb.GetSize()));
-    return true;
-}
 
 void InitPrefabs()
 {
@@ -228,7 +124,7 @@ void InitPrefabs()
 
     const char* JSON_PATH = "assets/prefabs/prefab.json";
     if (!LoadPrefabsFromJson_RJ(JSON_PATH)) {
-        LOGE(Core, "Failed to load %s", JSON_PATH);
+        LOGE(Core, std::string("Failed to load ") + JSON_PATH);
     }
 
     // Optional: list all names for your UI/debug
