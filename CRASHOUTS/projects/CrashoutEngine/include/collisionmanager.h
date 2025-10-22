@@ -1,5 +1,5 @@
 /*!
-@file       Collision.h
+@file       collisionmanager.h
 @author     miratristan.d@digipen.edu
 @date       08/09/2025
 @brief      Basic Collision Functions and Colliders(Plane, AABB and Circle)
@@ -10,13 +10,10 @@
 #pragma once
 
 #include "CEVec3.h"
-#include "transformcomponent.h"
 #include "observable.h"
 #include "log.h"
 #include "entitymanager.h"
 #include <memory>
-#include <iostream>
-#include <cmath>
 #include <array>
 #include <algorithm>
 #include <utility>
@@ -30,8 +27,7 @@ namespace Collision {
 	*/
 	enum ColliderType {
 		SPHERE,
-		AABB,
-		OBB
+		AABB
 	};
 
 	/*!
@@ -60,12 +56,12 @@ namespace Collision {
 	@brief	Base class for inheriting other colliders
 	*/
 	class Collider {
-	public:
-		ColliderType type;
-		Collider(ColliderType type);
-		virtual ~Collider() = default;
-		virtual std::unique_ptr<Collider> clone() const = 0;
-		virtual void updateCollider([[maybe_unused]] CEVec3 const& newPos) {};
+		public:
+			ColliderType type;
+			Collider(ColliderType type);
+			virtual ~Collider() = default;
+			virtual std::unique_ptr<Collider> clone() const = 0;
+			virtual void updateCollider([[maybe_unused]] CEVec3 const& newPos) {};
 	};
 
 	/*!
@@ -73,16 +69,16 @@ namespace Collision {
 	@brief	Basic Sphere collider with radius and position
 	*/
 	class Sphere : public Collider {
-	public:
-		f32 radius;
-		CEVec3 center;
-		Sphere(f32 radius, CEVec3 const& center);
-		~Sphere() = default;
-		virtual void updateCollider(CEVec3 const& newPos);
+		public:
+			f32 radius;
+			CEVec3 center;
+			Sphere(f32 radius, CEVec3 const& center);
+			~Sphere() = default;
+			virtual void updateCollider(CEVec3 const& newPos);
 
-		virtual std::unique_ptr<Collider> clone() const override {
-			return std::make_unique<Sphere>(*this);
-		}
+			virtual std::unique_ptr<Collider> clone() const override {
+				return std::make_unique<Sphere>(*this);
+			}
 	};
 
 	/*!
@@ -90,46 +86,17 @@ namespace Collision {
 	@brief	Basic aabb rectangle with CEVec3 min and CEVec3 max
 	*/
 	class AABBRect : public Collider {
-	public:
-		CEVec3 min;
-		CEVec3 max;
-		CEVec3 extents;
-		AABBRect(CEVec3 const& min, CEVec3 const& max);
-		~AABBRect() = default;
-		virtual void updateCollider(CEVec3 const& newPos);
+		public:
+			CEVec3 min;
+			CEVec3 max;
+			CEVec3 extents;
+			AABBRect(CEVec3 const& min, CEVec3 const& max);
+			~AABBRect() = default;
+			virtual void updateCollider(CEVec3 const& newPos);
 
-		virtual std::unique_ptr<Collider> clone() const override {
-			return std::make_unique<AABBRect>(*this);
-		}
-	};
-
-	/*!
-	@class OBBRect
-	@brief OBB rectangle with a collection of Vertices
-	*/
-	class OBBRect : public Collider {
-		/*NORMAL AND VERTEX FOR THE PAIR*/
-	public:
-		using Vertices = std::array<CEVec3, 4>;
-		using Normal = std::array<CEVec3, 4>;
-	public:
-		CEVec3 min;
-		CEVec3 max;
-		float rotation;
-		CEVec3 extents;
-		Vertices rotatedVertices;
-		Vertices originalVertices;
-		Normal normalEdges;
-		OBBRect(CEVec3 const& min, CEVec3 const& max, f32 rotation = 0.f);
-		void updateRotation(f32 newRotation);
-		~OBBRect() = default;
-		virtual void updateCollider(CEVec3 const&);
-
-		virtual std::unique_ptr<Collider> clone() const override {
-			return std::make_unique<OBBRect>(*this);
-		}
-	private:
-
+			virtual std::unique_ptr<Collider> clone() const override {
+				return std::make_unique<AABBRect>(*this);
+			}
 	};
 }
 
@@ -140,14 +107,14 @@ namespace Collision {
 	@brief	Used as the data to collision messages
 	*/
 	class CollisionMessage : public Messaging::Messages {
-	private:
-		CollisionManifold colManifold;
-		CrashoutsEngine::Entity entity1;
-		CrashoutsEngine::Entity entity2;
-	public:
-		CollisionMessage(const std::string& id, CollisionManifold const& colManifold, CrashoutsEngine::Entity entity1, CrashoutsEngine::Entity entity2);
-		std::pair<CrashoutsEngine::Entity, CrashoutsEngine::Entity> getCollisionPair();
-		CollisionManifold getCollisionManifold();
+		private:
+			CollisionManifold colManifold;
+			CrashoutsEngine::Entity entity1;
+			CrashoutsEngine::Entity entity2;
+		public:
+			CollisionMessage(const std::string& id, CollisionManifold const &colManifold, CrashoutsEngine::Entity entity1, CrashoutsEngine::Entity entity2);
+			std::pair<CrashoutsEngine::Entity, CrashoutsEngine::Entity> getCollisionPair();
+			CollisionManifold getCollisionManifold();
 	};
 
 	/*!
@@ -160,44 +127,38 @@ namespace Collision {
 		const CEVec3& position;
 	};
 
-	using FunctionDispatchType = CollisionManifold(*)(CollisionProps const& coll1, CollisionProps const& coll2);
+	using FunctionDispatchType = CollisionManifold(*)(CollisionProps const &coll1, CollisionProps const &coll2);
 
 	/*!
 	@class	CollisionHandler
 	@brief	Used to contain functions for checking collision and able to return a function pointer based on the type of collision passed in
 	*/
 	class CollisionHandler : public Messaging::Observable {
-	private:
+		private:
 
-		static constexpr int TYPES_OF_COLLISION{ 3 };
+			static constexpr int TYPES_OF_COLLISION{ 2 };
 
-		std::array<FunctionDispatchType, TYPES_OF_COLLISION* TYPES_OF_COLLISION> collideFuncts;
+			std::array<FunctionDispatchType, TYPES_OF_COLLISION * TYPES_OF_COLLISION> collideFuncts;
 
-		static CollisionManifold SphereToSphereCollision(CollisionProps const& coll1, CollisionProps const& coll2);
+			static CollisionManifold SphereToSphereCollision(CollisionProps const& coll1, CollisionProps const& coll2);
 
-		static CollisionManifold AABBToAABBCollision(CollisionProps const& coll1, CollisionProps const& coll2);
+			static CollisionManifold AABBToAABBCollision(CollisionProps const& coll1, CollisionProps const& coll2);
+			
+			static CollisionManifold SphereToAABBCollision(CollisionProps const& coll1, CollisionProps const& coll2);
 
-		static CollisionManifold SphereToAABBCollision(CollisionProps const& coll1, CollisionProps const& coll2);
+		public:
 
-		static CollisionManifold AABBToOBBCollision(CollisionProps const& coll1, CollisionProps const& coll2);
+			CollisionHandler();
 
-		static CollisionManifold SphereToOBBCollision(CollisionProps const& coll1, CollisionProps const& coll2);
+			void update(double deltaTime);
 
-		static CollisionManifold OBBToOBBCollision(CollisionProps const& coll1, CollisionProps const& coll2);
-
-	public:
-
-		CollisionHandler();
-
-		void update(double deltaTime);
-
-		/*!
-		@brief Return a function pointer to call the appropriate collision function
-		@param type1 The first collider type
-		@param type2 The second collider type
-		@return FunctionDispatchType which is a function pointer
-		*/
-		FunctionDispatchType callCollFunct(Collision::ColliderType type1, Collision::ColliderType type2);
+			/*!
+			@brief Return a function pointer to call the appropriate collision function
+			@param type1 The first collider type
+			@param type2 The second collider type
+			@return FunctionDispatchType which is a function pointer
+			*/
+			FunctionDispatchType callCollFunct(Collision::ColliderType type1, Collision::ColliderType type2);
 
 	};
 }
@@ -225,7 +186,7 @@ namespace Component {
 				collider = other.collider->clone();
 			}
 		}
-
+	
 		// Custom Copy Assignment Operator for Deep Copies
 		ColliderComponent& operator=(const ColliderComponent& other) {
 			// Check for self-assignment
