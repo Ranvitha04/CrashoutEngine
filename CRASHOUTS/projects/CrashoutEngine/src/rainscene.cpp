@@ -29,7 +29,7 @@ void LoadRain()
 		std::cout << "Failed to load text shader.\n";
 		return;
 	}
-	gTextRenderer = new TextRenderer(Settings::GetScreenWidth(), Settings::GetScreenHeight());
+	gTextRenderer = new TextRenderer("../../../projects/CrashoutEngine/assets/fonts/arial.ttf", Settings::GetScreenWidth(), Settings::GetScreenHeight());
 }
 
 void InitRain()

@@ -226,10 +226,10 @@ namespace CrashoutsEngine {
 						std::string name = asset["name"].GetString();
 						std::string relativePath = asset["path"].GetString();
 
-						fs::path fullPath = fs::path(rootAssetPath) / "fonts" / relativePath;
+						fs::path fullPath = fs::path(rootAssetPath) / "scenes" / relativePath;
 
-						// Create FontAsset object from file data (JSON)
-						std::unique_ptr<FontAsset> newFont = FontAsset::Create(fullPath.string());
+						// Create SceneAsset object from file data (JSON)
+						std::unique_ptr<SceneAsset> newFont = FontAsset::Create(fullPath.string());
 
 						// Validate 
 						if (newFont) {

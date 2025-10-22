@@ -22,18 +22,33 @@ namespace CrashoutsEngine {
 
         /*!
         @brief Creates a new FontAsset from a json file.
-        @param fontPath Path to the FontAsset(JSON) file.
+        @param filePath Path to the FontAsset(JSON) file.
         @return Unique pointer to a valid FontAsset, or nullptr on failure.
         */
-        std::unique_ptr<FontAsset> FontAsset::Create(const std::string& fontPath) {
+        std::unique_ptr<FontAsset> FontAsset::Create(const std::string& filePath) {
 
+			
+
+            return std::unique_ptr<FontAsset>(new FontAsset(filePath));
+        }
+        
+    }
+
+    namespace Serialization {
+
+        /*!
+        @brief 
+        @param 
+        @return
+        */
+        bool LoadFont(const std::string& fontPath) {
             Assets::AssetManager& assetManger = Assets::AssetManager::GetInstance();
             FT_Library ft = assetManger.GetFTLib();
 
             FT_Face face;
             if (FT_New_Face(ft, fontPath.c_str(), 0, &face)) {
                 std::cerr << "ERROR: Failed to load font at path: " << fontPath << "\n";
-                return nullptr;
+                return false;
             }
             std::cout << "Loaded font: " << fontPath << "\n";
 
@@ -41,7 +56,7 @@ namespace CrashoutsEngine {
             glPixelStorei(GL_UNPACK_ALIGNMENT, 1); // disable byte-alignment restriction
 
             // Create the FontAsset object to store the characters
-            std::unique_ptr<Assets::FontAsset> fontAsset = std::make_unique<Assets::FontAsset>(fontPath);
+            std::unique_ptr<Assets::FontAsset> fontAsset = std::make_unique<Assets::FontAsset>();
 
             // Load characters (ASCII 0 - 127)
             for (GLubyte c = 0; c < 128; c++) {
@@ -79,15 +94,14 @@ namespace CrashoutsEngine {
                     static_cast<GLuint>(face->glyph->advance.x)
                 };
 
-                fontAsset->characters.insert(std::pair<GLchar, Assets::Character>(c, character));
+                fontAsset->Characters.insert(std::pair<GLchar, Assets::Character>(c, character));
             }
 
             glBindTexture(GL_TEXTURE_2D, 0); // Unbind texture
             FT_Done_Face(face); // Clean up the face
 
-            std::cout << "Successfully loaded font asset: " << fontPath << "\n";
-
-            return fontAsset;
+            return true;
         }
+        
     }
 }

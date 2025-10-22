@@ -17,8 +17,6 @@
 #include <utility>
 #include <ft2build.h>
 
-#include FT_FREETYPE_H
-
 /*
 ----------------------------------------------------------------------------- */
 namespace CrashoutsEngine {
@@ -163,13 +161,9 @@ namespace CrashoutsEngine {
 				return assetNames.count(name) > 0;
 			}
 
-			/*!
-			@brief Getter for ftLibrary
-			@return Returns the FreeType library instance
-			*/
 			FT_Library GetFTLib() const{
 				return ftLibrary;
-			}
+			};
 
 		private:
 			// Private construct for singleton

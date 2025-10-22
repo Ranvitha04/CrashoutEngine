@@ -81,8 +81,8 @@ void LoadMainMenu()
 		std::cout << "Failed to load text shader.\n";
 		return;
 	}
-	gTextRenderer = new TextRenderer(Settings::GetScreenWidth(), Settings::GetScreenHeight());
-	gTextRendererA = new TextRenderer(Settings::GetScreenWidth(), Settings::GetScreenHeight()); 
+	gTextRenderer = new TextRenderer("../../../projects/CrashoutEngine/assets/fonts/Silver.ttf", Settings::GetScreenWidth(), Settings::GetScreenHeight());
+	gTextRendererA = new TextRenderer("../../../projects/CrashoutEngine/assets/fonts/Exo2-Regular.ttf", Settings::GetScreenWidth(), Settings::GetScreenHeight()); 
 }
 
 void InitMainMenu()
