@@ -183,23 +183,6 @@ struct CEMtx33
 	}
 
 	/*!
-	@brief Matrix multiplication with vector
-	@param rhs Right-hand side CEVec3
-	@return CEVec3
-	*/
-	CEVec3 operator*(const CEVec3& rhs) const
-	{
-
-		CEVec3 result{
-			this->m[0][0] * rhs.x + this->m[0][1] * rhs.y + this->m[0][2] * rhs.z,
-			this->m[1][0] * rhs.x + this->m[1][1] * rhs.y + this->m[1][2] * rhs.z,
-			this->m[2][0] * rhs.x + this->m[2][1] * rhs.y + this->m[2][2] * rhs.z
-		};
-
-		return result;
-	}
-
-	/*!
 	@brief matrix equal multiplication
 	@param rhs Right hand side matrix
 	@return Reference to *this after multiplication
