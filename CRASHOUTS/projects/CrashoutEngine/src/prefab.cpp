@@ -2,37 +2,46 @@
 @file        prefab.cpp
 @author      b.mohamadafiq@digipen.edu
 @date        28/9/2025
-@brief       Factory where we make prefab
-
+@brief       Prefab system: global registry (name -> factory) + de-serialization
+             from a data file. This is the single source of truth for prefabs.
 */
+
 #include "prefab.h"
 #include <fstream>
 #include <sstream>
 #include <algorithm>
+#include <unordered_map>
+#include <vector>
+#include <string>
 
 namespace {
+   
     std::unordered_map<std::string, Prefab::Factory>& Reg() {
         static std::unordered_map<std::string, Prefab::Factory> R;
         return R;
     }
+
     Prefab::Fallback& FallbackFn() {
-        static Prefab::Fallback FB; 
+        static Prefab::Fallback FB;
         return FB;
     }
 }
 
 namespace Prefab {
-    //Name what we call the prefab and maybe the description
+
+   
     bool Register(const std::string& name, Factory f) {
         auto& r = Reg();
-        if (r.find(name) != r.end()) return false;
+        if (r.find(name) != r.end()) return false;     
         r.emplace(name, std::move(f));
         return true;
     }
-    //Remove prefab
+
+    // Remove a prefab by name
     bool Unregister(const std::string& name) { return Reg().erase(name) > 0; }
+
+    // Query for existence.
     bool Exists(const std::string& name) { return Reg().find(name) != Reg().end(); }
-    //Get a list sort them by names
     std::vector<std::string> Names() {
         std::vector<std::string> v;
         v.reserve(Reg().size());
@@ -40,7 +49,8 @@ namespace Prefab {
         std::sort(v.begin(), v.end());
         return v;
     }
-    //Make gameobj
+
+
     bool Create(CrashoutsEngine::ECS& ecs, const std::string& name) {
         auto it = Reg().find(name);
         if (it != Reg().end()) { it->second(ecs); return true; }
@@ -50,7 +60,7 @@ namespace Prefab {
     }
 
     void SetFallback(Fallback fb) { FallbackFn() = std::move(fb); }
-    //Load prefab from file
+
     bool LoadFromFile(
         const std::string& path,
         const std::function<bool(
@@ -63,6 +73,7 @@ namespace Prefab {
 
         std::string line;
         while (std::getline(file, line)) {
+        
             auto beg = line.find_first_not_of(" \t\r\n");
             if (beg == std::string::npos) continue;
             if (line[beg] == '#') continue;
@@ -71,9 +82,12 @@ namespace Prefab {
             std::string type; iss >> type;
             if (type.empty()) continue;
 
+       
             std::vector<std::string> tokens;
             for (std::string tok; iss >> tok; ) tokens.push_back(tok);
-            if (tokens.empty()) continue; 
+            if (tokens.empty()) continue;
+
+       
             const std::string& name = tokens[0];
 
             Factory f;

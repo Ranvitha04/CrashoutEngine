@@ -9,7 +9,8 @@ This file
 
 /*                                                                   includes
 ----------------------------------------------------------------------------- */
-#pragma once
+#ifndef ENGINE_H
+#define ENGINE_H
 
 #include "glapp.h"
 #include "performanceViewer.h"
@@ -42,3 +43,5 @@ void Init();
 void Update(Component::RigidBodyComponent&, double const&);
 void Draw(CrashoutsEngine::Entity&);
 void CleanUp();
+
+#endif
