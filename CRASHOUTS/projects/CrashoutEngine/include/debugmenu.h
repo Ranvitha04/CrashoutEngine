@@ -45,6 +45,7 @@ namespace UI {
         bool lockLayout = false;
         bool showPerf = false;
         bool showConsole = false;
+        bool showInspector = false;
         bool showECS = false;
         bool showGameState = false;
         bool showPhysics = false;
@@ -102,6 +103,14 @@ namespace UI {
     */
     void RenderEcsPanel(FrameProfiler& profiler, CrashoutsEngine::ECS& ecs, std::vector<CrashoutsEngine::Entity>& entities, CrashoutsEngine::Entity& selected, UIState& ui);
     
+    /*!
+    @brief Renders the Inspector debug panel.
+    @param ecs ECS reference.
+    @param selected Currently selected entity.
+    @param ui UI state toggles.
+    */
+    void RenderInspectorPanel(CrashoutsEngine::ECS& ecs, CrashoutsEngine::Entity selected, UIState& ui);
+
     /*!
     @brief Renders the performance profiling panel.
     @param profiler Frame profiler reference.
