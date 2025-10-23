@@ -228,7 +228,7 @@ namespace Physics {
 
 		}
 
-		collisionEvents.clear();
+		/*collisionEvents.clear();*/
 
 	}
 
