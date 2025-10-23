@@ -1,4 +1,5 @@
 //Use this method to bring the light back to the maximum intensity over one second.
+using 
 /*
 //public IEnumerator TurnUp()
 {
@@ -25,4 +26,7 @@
     }
 }
 }*/
+namespace Keyframe{
+
+}
 
