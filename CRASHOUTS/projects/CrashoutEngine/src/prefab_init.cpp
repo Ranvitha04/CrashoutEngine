@@ -184,7 +184,7 @@ namespace CrashoutsEngine {   // <-- add this open brace
             obj.AddMember("shape", shj, A);
         }
 
-        // rigidbody (via reflection)
+        // rigidbody
         {
             auto r = rb->reflection();
             Value rbj(kObjectType);
@@ -206,7 +206,7 @@ namespace CrashoutsEngine {   // <-- add this open brace
         }
         if (!replaced) prefabs.PushBack(obj, A);
 
-        // Write pretty JSON (truncate)
+        // Write
         StringBuffer sb;
         PrettyWriter<StringBuffer> wr(sb);
         doc.Accept(wr);
@@ -224,7 +224,7 @@ namespace CrashoutsEngine {   // <-- add this open brace
 
     void InitPrefabs()
     {
-        // Fallback so unknown names don't crash
+        
         Prefab::SetFallback([](ECS& e, const std::string& name) {
             auto ent = e.CreateEntity();
             e.AddComponent<NameComponent>(ent, NameComponent{ name });
@@ -237,7 +237,7 @@ namespace CrashoutsEngine {   // <-- add this open brace
             LOGE(Core, std::string("Failed to load ") + JSON_PATH);
         }
 
-        // Optional: list all names for your UI/debug
+        
         for (const auto& n : Prefab::Names())
             LOGI(Core, std::string("Prefab available: ") + n);
     }
