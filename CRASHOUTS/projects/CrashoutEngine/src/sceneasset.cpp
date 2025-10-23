@@ -31,7 +31,7 @@
 namespace {
     /*!
     @brief Reads the entire content of a file into a single string.
-    @param filePath Path to the SceneAsset(JSON) file.  
+    @param filePath Path to the SceneAsset(JSON) file.
     @return empty string on failure.
     */
     std::string ReadFileToString(const std::string& filePath) {
@@ -73,7 +73,7 @@ namespace CrashoutsEngine {
         */
         std::unique_ptr<SceneAsset> SceneAsset::Create(const std::string& filePath) {
 
-			// Load the JSON file from filePath
+            // Load the JSON file from filePath
             std::string jsonContent = ReadFileToString(filePath);
             if (jsonContent.empty()) {
                 std::cout << "SceneAsset::Create - Failed to read file: " << filePath << std::endl;
@@ -89,7 +89,7 @@ namespace CrashoutsEngine {
                 std::cout << "ERROR: " << rapidjson::GetParseError_En(doc.GetParseError())
                     << " at offset " << doc.GetErrorOffset() << std::endl;
                 return nullptr;
-            } 
+            }
 
             if (!doc.IsObject()) {
                 std::cout << "SceneAsset::Create - JSON root is not an object in " << filePath << std::endl;
@@ -102,20 +102,21 @@ namespace CrashoutsEngine {
 
             return std::unique_ptr<SceneAsset>(new SceneAsset(sceneName));
         }
-        
+
     }
 
     namespace Serialization {
 
         // JSON Structure Keys definition (for clean and centralized key management)
         namespace Keys {
-            const char* const ENTITIES              = "entities";
-            const char* const ENTITY_ID             = "id";
-            const char* const NAME_COMPONENT        = "name";
-            const char* const TRANSFORM_COMPONENT   = "transform";
-            const char* const RIGIDBODY_COMPONENT   = "rigidbody";
-            const char* const COLLIDER_COMPONENT    = "collider";
-            const char* const SHAPE_COMPONENT       = "shape";
+            const char* const ENTITIES = "entities";
+            const char* const ENTITY_ID = "id";
+            const char* const NAME_COMPONENT = "name";
+            const char* const TRANSFORM_COMPONENT = "transform";
+            const char* const RIGIDBODY_COMPONENT = "rigidbody";
+            const char* const COLLIDER_COMPONENT = "collider";
+            const char* const SHAPE_COMPONENT = "shape";
+            const char* const TEXT_COMPONENT = "text";
         }
 
         /*!
@@ -206,12 +207,12 @@ namespace CrashoutsEngine {
                         if (sizeValue.HasMember("x")) size.x = sizeValue["x"].GetFloat();
                         if (sizeValue.HasMember("y")) size.y = sizeValue["y"].GetFloat();
                     }
-               
+
                     transComp.position = pos;
                     transComp.rotation = rotation;
                     transComp.size = size;
                 }
-            
+
                 // Check if Rigid-Body
                 if (entityValue.HasMember(Keys::RIGIDBODY_COMPONENT) && entityValue[Keys::RIGIDBODY_COMPONENT].IsBool()) {
                     if (entityValue[Keys::RIGIDBODY_COMPONENT].GetBool()) {
@@ -231,7 +232,7 @@ namespace CrashoutsEngine {
                         ColliderComponent& col = gECS.AddComponent<ColliderComponent>(newEntity);
 
                         switch (colliderType) {
-                        case 0:     
+                        case 0:
                             // Sphere collider (TENTATIVELY NOT ACTIVE)
                             //if (colliderValue.HasMember("sphere") && colliderValue["sphere"].IsObject()) {
                             //    const rapidjson::Value& sphereValue = colliderValue["sphere"];
@@ -261,7 +262,7 @@ namespace CrashoutsEngine {
                         };
                     }
                 }
-            
+
                 // Check if Shape
                 if (entityValue.HasMember(Keys::SHAPE_COMPONENT) && entityValue[Keys::SHAPE_COMPONENT].IsObject()) {
                     ShapeComponent& s = gECS.AddComponent<ShapeComponent>(newEntity);
@@ -316,7 +317,7 @@ namespace CrashoutsEngine {
                             break;
                         };
                     }
-                
+
                     // Color
                     if (shapeValues.HasMember("color") && shapeValues["color"].IsObject()) {
                         CEVec3 color{ 0.0f, 0.0f, 0.0f };
@@ -343,7 +344,7 @@ namespace CrashoutsEngine {
                     if (shapeValues.HasMember("height") && shapeValues["height"].IsFloat()) {
                         s.size = shapeValues["height"].GetFloat();
                     }
-                
+
                     // p1
                     if (shapeValues.HasMember("p1") && shapeValues["p1"].IsObject()) {
                         CEVec3 pos{ 0.0f, 0.0f, 0.0f };
@@ -405,10 +406,58 @@ namespace CrashoutsEngine {
 
                         s.t3 = pos;
                     }
-                
+
                     // Preview
                     if (shapeValues.HasMember("preview") && shapeValues["preview"].IsBool()) {
                         s.preview = shapeValues["preview"].GetBool();
+                    }
+                }
+
+                // Check if Text
+                if (entityValue.HasMember(Keys::TEXT_COMPONENT) && entityValue[Keys::TEXT_COMPONENT].IsObject()) {
+                    TextComponent& t = gECS.AddComponent<TextComponent>(newEntity);
+                    const rapidjson::Value& textValue = entityValue[Keys::TEXT_COMPONENT];
+
+                    // 1. Check Font
+                    if (textValue.HasMember("font") && textValue["font"].IsString()) {
+                        t.font = textValue["font"].GetString();
+                    }
+
+                    // 2. Check Text
+                    if (textValue.HasMember("text") && textValue["text"].IsString()) {
+                        t.text = textValue["text"].GetString();
+                    }
+
+                    // 3. Check Scale
+                    if (textValue.HasMember("scale") && textValue["scale"].IsFloat()) {
+                        t.scale = textValue["scale"].GetFloat();
+                    }
+
+                    // 4. Check Offset
+                    if (textValue.HasMember("offset") && textValue["offset"].IsObject()) {
+                        CEVec2 offset{ 0.0f, 0.0f };
+                        const rapidjson::Value& offsetValue = textValue["offset"];
+                        // Use HasMember check for safety
+                        if (offsetValue.HasMember("x")) offset.x = offsetValue["x"].GetFloat();
+                        if (offsetValue.HasMember("y")) offset.y = offsetValue["y"].GetFloat();
+                        t.offset = offset;
+                    }
+
+                    // 5. Check Color
+                    if (textValue.HasMember("color") && textValue["color"].IsObject()) {
+                        CEVec3 color{ 0.0f, 0.0f, 0.0f };
+                        const rapidjson::Value& colorValue = textValue["color"];
+                        // Use HasMember check for safety
+                        if (colorValue.HasMember("x")) color.x = colorValue["x"].GetFloat();
+                        if (colorValue.HasMember("y")) color.y = colorValue["y"].GetFloat();
+                        if (colorValue.HasMember("z")) color.z = colorValue["z"].GetFloat();
+
+                        t.color = color;
+                    }
+
+                    // 6. Check Centered
+                    if (textValue.HasMember("centered") && textValue["centered"].IsBool()) {
+                        t.centered = textValue["centered"].GetBool();
                     }
                 }
             }
@@ -445,7 +494,7 @@ namespace CrashoutsEngine {
 
             // Cycle through entities
             for (Entity const& id : gECS.GetComponentArray<Component::NameComponent>().indexToEntity) {
-                
+
                 // Save name component data into document
 
                 // Save transform component data into document if it exists
@@ -595,6 +644,43 @@ namespace CrashoutsEngine {
                     shapeValues.AddMember("t3", t3Value, allocator);
 
                     entityValue.AddMember(rapidjson::StringRef(Keys::SHAPE_COMPONENT), shapeValues, allocator);
+                }
+
+                // =========================================================
+                // F. TextComponent
+                // =========================================================
+                if (gECS.HasComponent<TextComponent>(id)) {
+                    const TextComponent& tComp = *gECS.GetComponent<TextComponent>(id);
+                    rapidjson::Value textValue(rapidjson::kObjectType);
+
+                    // 1. Font (string)
+                    rapidjson::Value fontValue(tComp.font.c_str(), allocator);
+                    textValue.AddMember("font", fontValue, allocator);
+
+                    // 2. Text (string)
+                    rapidjson::Value strValue(tComp.text.c_str(), allocator);
+                    textValue.AddMember("text", strValue, allocator);
+
+                    // 3. Scale (float)
+                    textValue.AddMember("scale", tComp.scale, allocator);
+
+                    // 4. Offset (CEVec2 -> JSON Object)
+                    rapidjson::Value offsetValue(rapidjson::kObjectType);
+                    offsetValue.AddMember("x", tComp.offset.x, allocator);
+                    offsetValue.AddMember("y", tComp.offset.y, allocator);
+                    textValue.AddMember("offset", offsetValue, allocator);
+
+                    // 5. Color (CEVec3 -> JSON Object)
+                    rapidjson::Value colorValue(rapidjson::kObjectType);
+                    colorValue.AddMember("x", tComp.color.x, allocator);
+                    colorValue.AddMember("y", tComp.color.y, allocator);
+                    colorValue.AddMember("z", tComp.color.z, allocator);
+                    textValue.AddMember("color", colorValue, allocator);
+
+                    // 6. Centered (bool)
+                    textValue.AddMember("centered", tComp.centered, allocator);
+
+                    entityValue.AddMember(rapidjson::StringRef(Keys::TEXT_COMPONENT), textValue, allocator);
                 }
 
                 // Add the finished entity JSON object to the array

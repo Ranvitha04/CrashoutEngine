@@ -24,6 +24,7 @@ rendering resources associated with these primitives.
 #include "CEVec3.h"
 #include "CEVec2.h"
 #include <iostream>
+#include <glm/gtc/matrix_transform.hpp>
                          
 namespace Component {
 
@@ -187,11 +188,10 @@ namespace Component {
                                          const float* rotations, const float* scales, 
                                          int count, float baseSize = 1.0f);
 
+
     };
-
     
-
-
+    glm::mat4 CreateCenteredWorldProjection();
 
 }
 

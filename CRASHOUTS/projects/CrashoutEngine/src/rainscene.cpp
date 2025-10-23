@@ -29,7 +29,7 @@ void LoadRain()
 
 	AssetManager::GetInstance().Get<ShaderAsset>("TextShader")->shaderObject.Use();
 
-	gTextRenderer = new TextRenderer(Settings::GetScreenWidth(), Settings::GetScreenHeight());
+	gTextRenderer = std::make_unique<TextRenderer>();
 }
 
 void InitRain()
@@ -51,7 +51,7 @@ void RenderRain()
 	glClearColor(0.1f, 0.2f, 0.4f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	if (gTextRenderer) {
-		gTextRenderer->RenderCenteredText("Hello", 0.0f, 0.0f, 1.0f, glm::vec3(1.0f));
+		gTextRenderer->RenderCenteredText("Hello", 0.0f, 0.0f, 1.0f, CEVec3{ 1.0f, 1.f, 1.f });
 	}
 
 	Scene::RenderScene(*globalECS);
@@ -61,9 +61,6 @@ void FreeRain()
 {
 	// Free resources specific to Rain state
 	CrashoutsEngine::Serialization::SaveScenes(sceneName);
-
-	delete gTextRenderer;
-	gTextRenderer = nullptr;
 }
 
 void UnloadRain()

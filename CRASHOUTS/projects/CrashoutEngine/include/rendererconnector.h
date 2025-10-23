@@ -6,7 +6,8 @@
 
 */
 #pragma once
+#include <memory>
 
 class TextRenderer;
-extern TextRenderer* gTextRenderer;
-extern TextRenderer* gTextRendererA;
+extern std::unique_ptr<TextRenderer> gTextRenderer;
+extern std::unique_ptr<TextRenderer> gTextRendererA;

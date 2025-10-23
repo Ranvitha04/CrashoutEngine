@@ -697,6 +697,11 @@ namespace UI { // --------------------------------------------------------------
     */
     void RenderAll(FrameProfiler& profiler, Physics::PhysicsHandler& phys, UIState& ui, ECS& ecs, std::vector<Entity>& entities, Entity& selected)
     {
+        if (ui.drawCollOverlay) {
+            auto& collisions = phys.collisions();
+            CollisionGizmos::DrawAllColliders(ecs, &collisions, ui.overlayThickness);
+            CollisionGizmos::DrawContactsAndNormals(collisions, 0.25f, ui.overlayThickness);
+        }
 
         BeginFrame();
         RenderTogglesWindow(ui);
@@ -720,11 +725,6 @@ namespace UI { // --------------------------------------------------------------
         }
         EndFrame();
 
-        if (ui.drawCollOverlay) {
-            auto& collisions = phys.collisions();
-            CollisionGizmos::DrawAllColliders(ecs, &collisions, ui.overlayThickness);
-            CollisionGizmos::DrawContactsAndNormals(collisions, 0.25f, ui.overlayThickness);
-        }
     }
 
     /*!

@@ -80,8 +80,8 @@ void LoadMainMenu()
 	using namespace CrashoutsEngine::Assets;
 	AssetManager::GetInstance().Get<ShaderAsset>("TextShader")->shaderObject.Use();
 
-	gTextRenderer = new TextRenderer(Settings::GetScreenWidth(), Settings::GetScreenHeight());
-	gTextRendererA = new TextRenderer(Settings::GetScreenWidth(), Settings::GetScreenHeight()); 
+	gTextRenderer = std::make_unique<TextRenderer>();
+	gTextRendererA = std::make_unique<TextRenderer>();
 }
 
 void InitMainMenu()
@@ -203,10 +203,10 @@ void RenderMainMenu()
 	Scene::RenderScene(*globalECS);
 	
 	if (gTextRenderer) {
-		gTextRenderer->RenderCenteredText("Hello", -900.0f, 0.0f, 1.0f, glm::vec3(0.0f));
+		gTextRenderer->RenderCenteredText("Hello", -900.0f, 0.0f, 1.0f, CEVec3());
 	}
 	if (gTextRendererA) {
-		gTextRendererA->RenderCenteredText(std::to_string(itemCount), -900.0f, 100.0f, 1.0f, glm::vec3(1.0f, 1.0f, 1.0f));
+		gTextRendererA->RenderCenteredText(std::to_string(itemCount), -900.0f, 100.0f, 1.0f, CEVec3{ 1.f, 1.f, 1.f });
 	}
 
 }
@@ -214,12 +214,6 @@ void RenderMainMenu()
 void FreeMainMenu()
 {
 	// Free resources specific to MainMenu state
-	delete gTextRenderer;
-	gTextRenderer = nullptr;
-
-	delete gTextRendererA;
-	gTextRendererA = nullptr;
-
 	globalECS->DestroyEntity(entity1);
 	globalECS->DestroyEntity(entity2);
 	globalECS->DestroyEntity(entity3);

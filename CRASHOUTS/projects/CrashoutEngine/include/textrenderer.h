@@ -19,6 +19,8 @@ Provides text rendering using FreeType and OpenGL
 #include "GL/glew.h"
 #include "glm/vec3.hpp"
 
+#include "CEVec3.h"
+
 #include "fontasset.h"
 
 // MOVED TO (FONTASSET_H)
@@ -64,13 +66,13 @@ public:
 
     /*!
     @brief Construct a new TextRenderer
-    @param screenWidth Screen width used for projection
-    @param screenHeight Screen height used for projection
     */
-    TextRenderer(GLuint screenWidth, GLuint screenHeight);
+    TextRenderer();
 
     /// Destructor that cleans up buffers
-    ~TextRenderer();
+    ~TextRenderer() {
+
+    }
 
     /*!
     @brief Render left aligned text
@@ -81,7 +83,7 @@ public:
     @param color RGB color of the text
     @param fontName The name of the font asset (in AssetManager) to use
     */
-    void RenderText(const std::string& text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color, const std::string fontName = "Exo2-Regular");
+    void RenderText(const std::string& text, GLfloat x, GLfloat y, GLfloat scale, CEVec3 color, const std::string fontName = "Exo2-Regular");
    
     /*!
     @brief Render centered text
@@ -92,7 +94,7 @@ public:
     @param color RGB color of the text
     @param fontName The name of the font asset (in AssetManager) to use
     */
-    void RenderCenteredText(const std::string& text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color, const std::string fontName = "Exo2-Regular");
+    void RenderCenteredText(const std::string& text, GLfloat x, GLfloat y, GLfloat scale, CEVec3 color, const std::string fontName = "Exo2-Regular");
 
 
 private:
