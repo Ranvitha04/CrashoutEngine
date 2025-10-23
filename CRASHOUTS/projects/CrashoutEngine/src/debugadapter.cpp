@@ -125,7 +125,7 @@ namespace {
 
                 ImGui::SeparatorText("Forces");
                 static float f[3]{ 0.f, 0.f, 0.f };
-                ImGui::InputFloat3("Force", f);
+                ImGui::InputFloat3("Force to apply", f);
                 ImGui::SameLine();
                 if (ImGui::Button("Apply Force##rb")) rb->addForce({ f[0], f[1], f[2] });
                 if (ImGui::Button("Clear Force Accumulator##rb")) rb->clearForceAccumulator();
@@ -321,14 +321,12 @@ namespace {
             char buf[256]{};
             if (sc->textureName.size() < sizeof(buf)) std::memcpy(buf, sc->textureName.data(), sc->textureName.size());
 
+            ImGui::Text("TextureAsset");
+            ImGui::SameLine();
             ImGui::SetNextItemWidth(ImGui::GetFontSize() * 18.0f);
             ImGui::InputText("##tex_name", buf, sizeof(buf), ImGuiInputTextFlags_ReadOnly);
-
             ImGui::SameLine();
-            ImGui::TextDisabled("TextureAsset");
-
-            ImGui::SameLine();
-            if (ImGui::SmallButton("Choose...")) {
+            if (ImGui::Button("Choose...")) {
                 ImGui::OpenPopup("Pick Texture");
             }
 
