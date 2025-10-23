@@ -109,12 +109,12 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path)
 
     return true;
 }
-namespace CrashoutsEngine {   // <-- add this open brace
+namespace CrashoutsEngine {   
     bool SaveBoxPrefabToJson_RJ(ECS& ecs,
         Entity e,
         const std::string& newName,
-        const std::string& path /*= "assets/prefabs/prefab.json"*/,
-        const std::string& matchName /*= ""*/)
+        const std::string& path ,
+        const std::string& matchName )
     {
         using namespace Component;
         using namespace rapidjson;

@@ -1,5 +1,5 @@
 //Use this method to bring the light back to the maximum intensity over one second.
-using 
+
 /*
 //public IEnumerator TurnUp()
 {
@@ -26,7 +26,8 @@ using
     }
 }
 }*/
-namespace Keyframe{
 
-}
+/*
+MItKeyframe::TangentType outTangentType(MStatus* ReturnStatus = NULL){
 
+}*/
