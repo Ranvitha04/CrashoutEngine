@@ -25,6 +25,7 @@ This file provides the graphics for Crashout Engine's ImGUI.
 #include "audioSystem.h"
 #include <fmod_studio.hpp> 
 #include "prefab.h"
+#include "prefab_init.h"
 using CrashoutsEngine::Audio::AudioSystem;
 // ImGui headers
 #include <imgui.h>
@@ -235,6 +236,22 @@ namespace UI { // --------------------------------------------------------------
             if (n.empty()) n = "Entity";
             Prefab::Create(ecs, n);      // calls your prefab module (registered names or fallback)
             nameBuf[0] = '\0';
+        }
+        // --- Add just below the existing "Prefab Creator" block in RenderEcsPanel ---
+        ImGui::SeparatorText("Save Selected as Prefab (JSON)");
+        static char newPrefabName[128] = "Box";
+        ImGui::InputTextWithHint("Name", "e.g. Box, Platform, Player...", newPrefabName, IM_ARRAYSIZE(newPrefabName));
+        ImGui::SameLine();
+        if (ImGui::Button("Save JSON##SavePrefab")) {
+            if (selected) {
+                // default path matches InitPrefabs loader
+                if (!SaveBoxPrefabToJson_RJ(ecs, selected, newPrefabName)) {
+                    LOGE(Core, std::string("Failed to save prefab: ") + newPrefabName);
+                }
+            }
+            else {
+                LOGW(Core, "No selected entity to save.");
+            }
         }
 
         // Optional: quick picker of registered prefab names
