@@ -95,9 +95,5 @@ dist/
 docs/
 
 # Force-include third_party folder and all its contents
-!/CRASHOUTS/third_party/
-!/CRASHOUTS/third_party/**
-!/CRASHOUTS/third_party/**/*.dll
-!/CRASHOUTS/third_party/**/*.lib
-!/CRASHOUTS/third_party/**/*.so
-!/CRASHOUTS/third_party/**/*.a
+!/third_party/
+!/third_party/**
