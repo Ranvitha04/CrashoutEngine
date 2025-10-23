@@ -341,22 +341,29 @@ namespace UI { // --------------------------------------------------------------
             if (!ad->has(ecs, selected)) continue;
 
             ImGui::PushID(ad);
-            if (ImGui::TreeNode("Component")) {
-                ad->drawInspector(ecs, selected);
 
-                if (ImGui::Button("Remove##btn")) {
-                    ad->remove(ecs, selected);
-                    ImGui::TreePop();
-                    ImGui::PopID();
-                    // components changed; bail to avoid stale iterator
-                    break;
-                }
-                ImGui::TreePop();
+            // Draw a nice header bar for each component
+            ImGui::Separator();
+            ImGui::TextUnformatted(ad->name());
+
+            // Right-align "Remove"
+            float remove_w = ImGui::CalcTextSize("Remove").x + ImGui::GetStyle().FramePadding.x * 2.0f;
+            float x = ImGui::GetCursorPosX() + ImGui::GetContentRegionAvail().x - remove_w;
+            ImGui::SameLine(x);
+            if (ImGui::SmallButton("Remove")) {
+                ad->remove(ecs, selected);
+                ImGui::PopID();
+                break; // components changed
             }
-            ImGui::SameLine();
-            ImGui::TextDisabled("%s", ad->name());
+
+            // Draw the component inspector directly (not inside a TreeNode)
+            ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(8, 6));
+            ad->drawInspector(ecs, selected);
+            ImGui::PopStyleVar();
+
             ImGui::PopID();
         }
+
     }
 
     /*!
