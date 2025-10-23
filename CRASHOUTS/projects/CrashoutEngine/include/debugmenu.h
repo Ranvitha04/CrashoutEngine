@@ -47,7 +47,6 @@ namespace UI {
         bool showConsole = false;
         bool showInspector = false;
         bool showECS = false;
-        bool showAssets = false;
         bool showGameState = false;
         bool showPhysics = false;
         bool showAudio = false;
@@ -103,15 +102,7 @@ namespace UI {
     @param selected Currently selected entity.
     */
     void RenderEcsPanel(FrameProfiler& profiler, CrashoutsEngine::ECS& ecs, std::vector<CrashoutsEngine::Entity>& entities, CrashoutsEngine::Entity& selected, UIState& ui);
-
-    /*!
-    @brief Renders the Asset Browser debug panel.
-    @param ui UI state toggles.
-    @param root
-    @param outSelectedAsset
-    */
-    void RenderAssetBrowserPanel(UIState& ui, const char* root, std::string& outSelectedAsset);
-
+    
     /*!
     @brief Renders the Inspector debug panel.
     @param ecs ECS reference.
