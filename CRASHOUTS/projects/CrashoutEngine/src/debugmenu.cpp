@@ -699,58 +699,6 @@ namespace UI { // --------------------------------------------------------------
     {
 
         BeginFrame();
-        // Dockspace
-        ImGuiViewport* viewport = ImGui::GetMainViewport();
-        ImGui::SetNextWindowPos(viewport->WorkPos);
-        ImGui::SetNextWindowSize(viewport->WorkSize);
-        ImGui::Begin("Dockspace", 0,
-            ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
-            ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBringToFrontOnFocus |
-            ImGuiWindowFlags_NoNavFocus | ImGuiWindowFlags_NoScrollbar |
-            ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBackground);
-
-        ImGuiID dockspace_id = ImGui::GetID("Dockspace");
-        int ds_flags_i = (int)ImGuiDockNodeFlags_None | (int)ImGuiDockNodeFlags_NoDockingInCentralNode | (int)ImGuiDockNodeFlags_PassthruCentralNode;
-        ImGuiDockNodeFlags ds_flags = (ImGuiDockNodeFlags)ds_flags_i;
-        ImGui::DockSpace(dockspace_id, { 0,0 }, ds_flags);
-        ImGui::End();
-
-        // it's all hardcoded? *pulls out glocko* always has been
-        if (!s_layoutBuilt) {
-            s_layoutBuilt = true;
-
-            // Rebuild docking layout
-            ImGui::DockBuilderRemoveNode(dockspace_id);
-            int builder_flags_i = (int)ImGuiDockNodeFlags_DockSpace | (int)ImGuiDockNodeFlags_NoDockingInCentralNode;
-            ImGuiDockNodeFlags builder_flags = (ImGuiDockNodeFlags)builder_flags_i;
-            ImGui::DockBuilderAddNode(dockspace_id, builder_flags);
-            ImGui::DockBuilderSetNodeSize(dockspace_id, viewport->WorkSize);
-
-            // Split into main zones
-            ImGuiID dock_main = dockspace_id;
-            ImGuiID dock_left, dock_right, dock_bottom;
-            ImGui::DockBuilderSplitNode(dock_main, ImGuiDir_Left, 0.18f, &dock_left, &dock_main);
-            ImGui::DockBuilderSplitNode(dock_main, ImGuiDir_Right, 0.26f, &dock_right, &dock_main);
-            ImGui::DockBuilderSplitNode(dock_main, ImGuiDir_Down, 0.28f, &dock_bottom, &dock_main);
-
-            // Further split right side
-            ImGuiID dock_right_bottom;
-            ImGui::DockBuilderSplitNode(dock_right, ImGuiDir_Down, 0.5f, &dock_right_bottom, &dock_right);
-
-            // Dock windows into regions (matching your actual window titles)
-            ImGui::DockBuilderDockWindow("Debug Controls", dock_left);
-            ImGui::DockBuilderDockWindow("ECS Demo", dock_right);
-            ImGui::DockBuilderDockWindow("Assets", dock_bottom);
-            ImGui::DockBuilderDockWindow("Inspector", dock_right_bottom);
-            ImGui::DockBuilderDockWindow("Physics / Collision", dock_bottom);
-            ImGui::DockBuilderDockWindow("Console", dock_bottom);
-            ImGui::DockBuilderDockWindow("Performance", dock_left);
-            ImGui::DockBuilderDockWindow("GameState", dock_bottom);
-            ImGui::DockBuilderDockWindow("Audio", dock_bottom);
-
-            ImGui::DockBuilderFinish(dockspace_id);
-        }
-
         RenderTogglesWindow(ui);
         if (ui.showECS) {
             RenderEcsPanel(profiler, ecs, entities, selected, ui); 
