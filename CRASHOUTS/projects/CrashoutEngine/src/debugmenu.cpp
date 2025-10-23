@@ -33,9 +33,8 @@ using CrashoutsEngine::Audio::AudioSystem;
 #include <imgui_internal.h>
 
 #include <vector>
-#include <string>
-#include <cstring>
 #include "CEVec3.h"
+#include <filesystem>
 
 /*                                                                   
 ----------------------------------------------------------------------------- */
@@ -53,6 +52,9 @@ namespace { //------------------------------------------------------------------
     Entity gSelectedEntity = 0;                 //!< Currently selected entity
     std::vector<ProfilerSample> gPerfSnapshot;  //!< Performance profiler snapshot
     double gPerfSnapshotTotalMs = 0.0;          //!< Total frame time in ms
+
+    namespace fs = std::filesystem;
+
     // --- File-local audio state used by the panel ---
 
     static bool g_audioReady = false;
@@ -298,6 +300,104 @@ namespace UI { // --------------------------------------------------------------
                 return;
             }
         }
+    }
+
+    void UI::RenderAssetBrowserPanel(UIState& ui, const char* root, std::string& outSelectedAsset)
+    {
+        ScopedWindow w("Assets", LockFlags(ui.lockLayout));
+
+        static char filter[128] = { 0 };
+        static fs::path current = root ? fs::path(root) : fs::path(".");
+        static std::vector<fs::directory_entry> entries;
+        static bool needScan = true;
+
+        // Top bar: current folder + up button + filter
+        if (ImGui::Button("Up") && current.has_parent_path()) {
+            current = current.parent_path();
+            needScan = true;
+        }
+        ImGui::SameLine();
+        ImGui::TextUnformatted(current.generic_string().c_str());
+        ImGui::SameLine();
+        ImGui::SetNextItemWidth(220);
+        ImGui::InputTextWithHint("##asset_filter", "Filter (name / ext)...", filter, IM_ARRAYSIZE(filter));
+
+        ImGui::Separator();
+
+        // Left: folder tree (optional mini tree just one level)
+        ImGui::BeginChild("asset_left", ImVec2(220, 0), true);
+        // Root jump button
+        if (ImGui::Selectable(root, current == fs::path(root))) {
+            current = fs::path(root);
+            needScan = true;
+        }
+        // One-level tree (subfolders under root)
+        try {
+            for (auto& de : fs::directory_iterator(root)) {
+                if (!de.is_directory()) continue;
+                bool isCur = (current == de.path());
+                if (ImGui::Selectable(de.path().filename().generic_string().c_str(), isCur)) {
+                    current = de.path();
+                    needScan = true;
+                }
+            }
+        }
+        catch (...) {}
+        ImGui::EndChild();
+
+        ImGui::SameLine();
+
+        // Right: list/grid view of current folder
+        ImGui::BeginChild("asset_right", ImVec2(0, 0), true);
+
+        if (needScan) {
+            entries.clear();
+            try {
+                for (auto& e : fs::directory_iterator(current))
+                    entries.push_back(e);
+                std::sort(entries.begin(), entries.end(),
+                    [](auto const& a, auto const& b) {
+                        if (a.is_directory() != b.is_directory()) return a.is_directory() && !b.is_directory();
+                        return a.path().filename().generic_string() < b.path().filename().generic_string();
+                    });
+            }
+            catch (...) {}
+            needScan = false;
+        }
+
+        // Simple list (folders first, then files); you can convert to thumbnails later
+        for (auto const& e : entries) {
+            std::string name = e.path().filename().generic_string();
+            if (filter[0] && name.find(filter) == std::string::npos) continue;
+
+            if (e.is_directory()) {
+                if (ImGui::Selectable((std::string("[Dir] ") + name).c_str(), false)) {
+                    current = e.path();
+                    needScan = true;
+                }
+            }
+            else {
+                bool selected = (outSelectedAsset == e.path().generic_string());
+                if (ImGui::Selectable(name.c_str(), selected)) {
+                    outSelectedAsset = e.path().generic_string();
+                }
+
+                // Drag&drop asset path
+                if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None)) {
+                    const std::string path = e.path().generic_string();
+                    ImGui::SetDragDropPayload("ASSET_PATH", path.c_str(), path.size() + 1);
+                    ImGui::TextUnformatted(path.c_str());
+                    ImGui::EndDragDropSource();
+                }
+
+                // Double-click = pick/confirm
+                if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(0)) {
+                    outSelectedAsset = e.path().generic_string();
+                }
+            }
+        }
+
+        ImGui::EndChild();
     }
 
     /*!
@@ -658,6 +758,7 @@ namespace UI { // --------------------------------------------------------------
 
             // Default / legacy toggles (kept so old projects still work)
             ImGui::Checkbox("ECS", &ui.showECS);
+            ImGui::Checkbox("Assets", &ui.showAssets);
             ImGui::Checkbox("Inspector", &ui.showInspector);
             ImGui::Checkbox("Physics", &ui.showPhysics);
             ImGui::Checkbox("Performance", &ui.showPerf);
@@ -757,6 +858,7 @@ namespace UI { // --------------------------------------------------------------
             // Dock windows into regions (matching your actual window titles)
             ImGui::DockBuilderDockWindow("Debug Controls", dock_left);
             ImGui::DockBuilderDockWindow("ECS Demo", dock_right);
+            ImGui::DockBuilderDockWindow("Assets", dock_bottom);
             ImGui::DockBuilderDockWindow("Inspector", dock_right_bottom);
             ImGui::DockBuilderDockWindow("Physics / Collision", dock_main);
             ImGui::DockBuilderDockWindow("Console", dock_bottom);
@@ -770,6 +872,10 @@ namespace UI { // --------------------------------------------------------------
         RenderTogglesWindow(ui);
         if (ui.showECS) {
             RenderEcsPanel(profiler, ecs, entities, selected, ui); 
+        }
+        if (ui.showAssets) {
+            static std::string gPickedAsset;
+            RenderAssetBrowserPanel(ui, "assets", gPickedAsset);
         }
         if (ui.showInspector) {
             RenderInspectorPanel(ecs, selected, ui);
