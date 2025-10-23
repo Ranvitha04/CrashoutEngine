@@ -27,7 +27,7 @@ void LoadRain()
 
 	AssetManager::GetInstance().LoadManifestAssets();
 
-	AssetManager::GetInstance().Get<ShaderAsset>("textShader")->shaderObject.Use();
+	AssetManager::GetInstance().Get<ShaderAsset>("TextShader")->shaderObject.Use();
 
 	gTextRenderer = new TextRenderer(Settings::GetScreenWidth(), Settings::GetScreenHeight());
 }

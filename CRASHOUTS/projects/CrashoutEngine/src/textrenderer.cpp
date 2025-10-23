@@ -27,7 +27,15 @@ Handles font loading character atlas creation and text rendering with FreeType a
 TextRenderer::TextRenderer(GLuint screenWidth, GLuint screenHeight){
     using namespace CrashoutsEngine::Assets;
 
-	AssetManager::GetInstance().Get<ShaderAsset>("TextShader")->shaderObject.Use();
+	ShaderAsset* textureShader = AssetManager::GetInstance().Get<ShaderAsset>("TextShader");
+
+	if (!textureShader) {
+		std::cerr << "ERROR::TEXTRENDERER: Could not find TextShader asset\n";
+		shaderID = 0;
+		return;
+	}
+
+    shaderID = textureShader->shaderObject.GetHandle();
 
     /// Configure VAO/VBO
     glGenVertexArrays(1, &VAO);
@@ -64,11 +72,6 @@ TextRenderer::~TextRenderer() {
     // Delete VAO/VBO
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
-
-    // Delete shader program
-    if (shaderID != 0) {
-        glDeleteProgram(shaderID);
-    }
 }
 
 // MOVED TO FONTASSET_H
