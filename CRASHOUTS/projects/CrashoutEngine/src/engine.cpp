@@ -12,6 +12,9 @@ context and implement a game loop.
 ----------------------------------------------------------------------------- */
 // Extension loader library's header must be included before GLFW's header!!!
 #include "engine.h"
+#include "assetmanager.h"
+#include "rendering.h"
+#include "textureasset.h"
 
 /*                                                   type declarations
 ----------------------------------------------------------------------------- */
@@ -85,6 +88,14 @@ void Init() {
         << "x"
         << Settings::GetScreenHeight()
         << std::endl;
+    
+    // Generate and Load Assets and Manifest
+    CrashoutsEngine::Assets::GenerateAssetManifest();
+    CrashoutsEngine::Assets::AssetManager::GetInstance().LoadManifestAssets();
+
+    Component::Rendering::Get().Setup_VAO(); // Setup default quad VAO
+    Component::Rendering::Initialize(); // Initializes the main shader
+    Component::TextureRenderer::Initialize(); // Initializes the texture/sprite shader
 
     /// register game states and start with main menu
     RegisterAllStates();

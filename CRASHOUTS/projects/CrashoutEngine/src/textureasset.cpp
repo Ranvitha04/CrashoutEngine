@@ -617,7 +617,7 @@ namespace CrashoutsEngine {
 
             // Get the rendering instance and use shader
             Rendering& renderer = Rendering::Get();
-            renderer.shdr_pgm.Use();
+            renderer.shdr_pgm->Use();
 
             // Setup transformation matrix
             glm::mat4 model = glm::mat4(1.0f);
@@ -647,41 +647,41 @@ namespace CrashoutsEngine {
             glm::mat4 view = glm::mat4(1.0f); // Identity view matrix
             
             // Pass matrices to shader
-            GLint projection_loc = glGetUniformLocation(renderer.shdr_pgm.GetHandle(), "uProjection");
+            GLint projection_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "uProjection");
             if (projection_loc != -1) {
                 glUniformMatrix4fv(projection_loc, 1, GL_FALSE, glm::value_ptr(projection));
             }
             
-            GLint view_loc = glGetUniformLocation(renderer.shdr_pgm.GetHandle(), "uView");
+            GLint view_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "uView");
             if (view_loc != -1) {
                 glUniformMatrix4fv(view_loc, 1, GL_FALSE, glm::value_ptr(view));
             }
             
-            GLint model_loc = glGetUniformLocation(renderer.shdr_pgm.GetHandle(), "uModel");
+            GLint model_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "uModel");
             if (model_loc != -1) {
                 glUniformMatrix4fv(model_loc, 1, GL_FALSE, glm::value_ptr(model));
             }
 
             // Enable texture usage in shader
-            GLint useTexture_loc = glGetUniformLocation(renderer.shdr_pgm.GetHandle(), "u_useTexture");
+            GLint useTexture_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "u_useTexture");
             if (useTexture_loc != -1) {
                 glUniform1i(useTexture_loc, 1); // Enable texture
             }
 
             // Set texture sampler
-            GLint tex_loc = glGetUniformLocation(renderer.shdr_pgm.GetHandle(), "uTex2d");
+            GLint tex_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "uTex2d");
             if (tex_loc != -1) {
                 glUniform1i(tex_loc, 6);
             }
 
             // Set modulation (whether to multiply by vertex color)
-            GLint modulate_loc = glGetUniformLocation(renderer.shdr_pgm.GetHandle(), "u_modulate");
+            GLint modulate_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "u_modulate");
             if (modulate_loc != -1) {
                 glUniform1i(modulate_loc, modulate ? 1 : 0);
             }
 
             // Set tint color
-            GLint tint_loc = glGetUniformLocation(renderer.shdr_pgm.GetHandle(), "u_tint");
+            GLint tint_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "u_tint");
             if (tint_loc != -1) {
                 glUniform3f(tint_loc, tint.x, tint.y, tint.z);
             }
@@ -696,7 +696,7 @@ namespace CrashoutsEngine {
 
             // Unbind texture and shader
             glBindTextureUnit(6, 0);
-            renderer.shdr_pgm.UnUse();
+            renderer.shdr_pgm->UnUse();
         }
 
         /*!
@@ -740,7 +740,7 @@ namespace CrashoutsEngine {
 
             // Get the rendering instance and use shader
             Rendering& renderer = Rendering::Get();
-            renderer.shdr_pgm.Use();
+            renderer.shdr_pgm->Use();
 
             // Setup transformation matrix
             glm::mat4 model = glm::mat4(1.0f);
@@ -749,31 +749,31 @@ namespace CrashoutsEngine {
             model = glm::scale(model, glm::vec3(size.x * scale, size.y * scale, 1.0f));
 
             // Pass transformation matrix to shader
-            GLint model_loc = glGetUniformLocation(renderer.shdr_pgm.GetHandle(), "uModel");
+            GLint model_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "uModel");
             if (model_loc != -1) {
                 glUniformMatrix4fv(model_loc, 1, GL_FALSE, glm::value_ptr(model));
             }
 
             // Enable texture usage in shader
-            GLint useTexture_loc = glGetUniformLocation(renderer.shdr_pgm.GetHandle(), "u_useTexture");
+            GLint useTexture_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "u_useTexture");
             if (useTexture_loc != -1) {
                 glUniform1i(useTexture_loc, 1); // Enable texture
             }
 
             // Set texture sampler
-            GLint tex_loc = glGetUniformLocation(renderer.shdr_pgm.GetHandle(), "uTex2d");
+            GLint tex_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "uTex2d");
             if (tex_loc != -1) {
                 glUniform1i(tex_loc, 6);
             }
 
             // Set modulation (whether to multiply by vertex color)
-            GLint modulate_loc = glGetUniformLocation(renderer.shdr_pgm.GetHandle(), "u_modulate");
+            GLint modulate_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "u_modulate");
             if (modulate_loc != -1) {
                 glUniform1i(modulate_loc, modulate ? 1 : 0);
             }
 
             // Set tint color
-            GLint tint_loc = glGetUniformLocation(renderer.shdr_pgm.GetHandle(), "u_tint");
+            GLint tint_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "u_tint");
             if (tint_loc != -1) {
                 glUniform3f(tint_loc, tint.x, tint.y, tint.z);
             }
@@ -789,7 +789,7 @@ namespace CrashoutsEngine {
 
             // Unbind texture and shader
             glBindTextureUnit(6, 0);
-            renderer.shdr_pgm.UnUse();
+            renderer.shdr_pgm->UnUse();
         }
 
         /*!

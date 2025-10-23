@@ -180,13 +180,13 @@ bool GLApp::init(GLint w, GLint h, std::string t) {
     glDepthFunc(GL_LEQUAL);
 
     model.Setup_VAO();
-    model.Setup_Shdrpgm();
+    //model.Setup_Shdrpgm();
 
 
-    Component::Rendering::Initialize();
+    //Component::Rendering::Initialize();
 
 
-    Component::TextureRenderer::Initialize();
+    //Component::TextureRenderer::Initialize();
 
 
     return true;
@@ -233,7 +233,7 @@ void GLApp::update() {
     }
 
     // NEW: update scene per-frame (handles duck movement)
-    UpdateRan();
+    //UpdateRan();
 
     // Sprite animation update logic is now handled in ran.cpp
 }

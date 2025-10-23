@@ -166,7 +166,7 @@ namespace Component {
             idx_vtx.data(), idx_vtx.size(),
             GL_TRIANGLE_FAN);
 
-        renderer.shdr_pgm.Use();
+        renderer.shdr_pgm->Use();
 
         // Create model matrix for world position
         glm::mat4 model = glm::mat4(1.0f);
@@ -177,14 +177,14 @@ namespace Component {
         // Use centered world coordinate projection
         glm::mat4 projection = CreateCenteredWorldProjection();
 
-        renderer.shdr_pgm.SetUniform("uModel", model);
-        renderer.shdr_pgm.SetUniform("uView", glm::mat4(1.0f));
-        renderer.shdr_pgm.SetUniform("uProjection", projection);
+        renderer.shdr_pgm->SetUniform("uModel", model);
+        renderer.shdr_pgm->SetUniform("uView", glm::mat4(1.0f));
+        renderer.shdr_pgm->SetUniform("uProjection", projection);
 
-        GLint useTexture_loc = glGetUniformLocation(renderer.shdr_pgm.GetHandle(), "u_useTexture");
+        GLint useTexture_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "u_useTexture");
         if (useTexture_loc != -1) glUniform1i(useTexture_loc, 0); // Use vertex colors, not texture
 
-        GLint tint_loc = glGetUniformLocation(renderer.shdr_pgm.GetHandle(), "u_tint");
+        GLint tint_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "u_tint");
         if (tint_loc != -1) glUniform3f(tint_loc, 1.0f, 1.0f, 1.0f); // No tint modification
 
         renderer.Draw();
@@ -307,17 +307,17 @@ namespace Component {
         glBufferData(GL_ARRAY_BUFFER, instanceData.size() * sizeof(float), instanceData.data(), GL_DYNAMIC_DRAW);
 
         // Render using instanced drawing
-        renderer.shdr_pgm.Use();
+        renderer.shdr_pgm->Use();
         
         glm::mat4 projection = CreateCenteredWorldProjection();
-        renderer.shdr_pgm.SetUniform("uModel", glm::mat4(1.0f));
-        renderer.shdr_pgm.SetUniform("uView", glm::mat4(1.0f));
-        renderer.shdr_pgm.SetUniform("uProjection", projection);
+        renderer.shdr_pgm->SetUniform("uModel", glm::mat4(1.0f));
+        renderer.shdr_pgm->SetUniform("uView", glm::mat4(1.0f));
+        renderer.shdr_pgm->SetUniform("uProjection", projection);
 
-        GLint useTexture_loc = glGetUniformLocation(renderer.shdr_pgm.GetHandle(), "u_useTexture");
+        GLint useTexture_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "u_useTexture");
         if (useTexture_loc != -1) glUniform1i(useTexture_loc, 0);
 
-        GLint tint_loc = glGetUniformLocation(renderer.shdr_pgm.GetHandle(), "u_tint");
+        GLint tint_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "u_tint");
         if (tint_loc != -1) glUniform3f(tint_loc, 1.0f, 1.0f, 1.0f);
 
         // Bind VAO and draw instances
@@ -353,7 +353,7 @@ namespace Component {
             idx_vtx.data(), idx_vtx.size(),
             GL_TRIANGLES);
 
-        renderer.shdr_pgm.Use();
+        renderer.shdr_pgm->Use();
 
         // Apply transformations (rotation and scale around center of line)
         CEVec3 center = (start + end) / 2.0f;
@@ -367,14 +367,14 @@ namespace Component {
 
         glm::mat4 projection = CreateCenteredWorldProjection();
 
-        renderer.shdr_pgm.SetUniform("uModel", model);
-        renderer.shdr_pgm.SetUniform("uView", glm::mat4(1.0f));
-        renderer.shdr_pgm.SetUniform("uProjection", projection);
+        renderer.shdr_pgm->SetUniform("uModel", model);
+        renderer.shdr_pgm->SetUniform("uView", glm::mat4(1.0f));
+        renderer.shdr_pgm->SetUniform("uProjection", projection);
 
-        GLint useTexture_loc = glGetUniformLocation(renderer.shdr_pgm.GetHandle(), "u_useTexture");
+        GLint useTexture_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "u_useTexture");
         if (useTexture_loc != -1) glUniform1i(useTexture_loc, 0); // Use vertex colors, not texture
 
-        GLint tint_loc = glGetUniformLocation(renderer.shdr_pgm.GetHandle(), "u_tint");
+        GLint tint_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "u_tint");
         if (tint_loc != -1) glUniform3f(tint_loc, 1.0f, 1.0f, 1.0f); // No tint modification
 
         renderer.Draw();
@@ -402,7 +402,7 @@ namespace Component {
             idx_vtx.data(), idx_vtx.size(),
             GL_TRIANGLE_FAN);
 
-        renderer.shdr_pgm.Use();
+        renderer.shdr_pgm->Use();
 
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(position.x, position.y, position.z));
@@ -411,16 +411,16 @@ namespace Component {
 
         glm::mat4 projection = CreateCenteredWorldProjection();
 
-        renderer.shdr_pgm.SetUniform("uModel", model);
-        renderer.shdr_pgm.SetUniform("u_useTexture", 0);
-        renderer.shdr_pgm.SetUniform("uView", glm::mat4(1.0f));
-        renderer.shdr_pgm.SetUniform("uProjection", projection);
-        renderer.shdr_pgm.SetUniform("u_tint", 1.0f, 1.0f, 1.0f);
+        renderer.shdr_pgm->SetUniform("uModel", model);
+        renderer.shdr_pgm->SetUniform("u_useTexture", 0);
+        renderer.shdr_pgm->SetUniform("uView", glm::mat4(1.0f));
+        renderer.shdr_pgm->SetUniform("uProjection", projection);
+        renderer.shdr_pgm->SetUniform("u_tint", 1.0f, 1.0f, 1.0f);
 
-        GLint useTexture_loc = glGetUniformLocation(renderer.shdr_pgm.GetHandle(), "u_useTexture");
+        GLint useTexture_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "u_useTexture");
         if (useTexture_loc != -1) glUniform1i(useTexture_loc, 0); // Use vertex colors, not texture
 
-        GLint tint_loc = glGetUniformLocation(renderer.shdr_pgm.GetHandle(), "u_tint");
+        GLint tint_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "u_tint");
         if (tint_loc != -1) glUniform3f(tint_loc, 1.0f, 1.0f, 1.0f); // No tint modification
 
         renderer.Draw();
@@ -445,7 +445,7 @@ namespace Component {
             idx_vtx.data(), idx_vtx.size(),
             GL_TRIANGLES);
 
-        renderer.shdr_pgm.Use();
+        renderer.shdr_pgm->Use();
 
         // Transform around centroid
         CEVec3 centroid = (p1 + p2 + p3) / 3.0f;
@@ -457,15 +457,15 @@ namespace Component {
 
         glm::mat4 projection = CreateCenteredWorldProjection();
 
-        renderer.shdr_pgm.SetUniform("uModel", model);
-        renderer.shdr_pgm.SetUniform("u_useTexture", 0);
-        renderer.shdr_pgm.SetUniform("uView", glm::mat4(1.0f));
-        renderer.shdr_pgm.SetUniform("uProjection", projection);
+        renderer.shdr_pgm->SetUniform("uModel", model);
+        renderer.shdr_pgm->SetUniform("u_useTexture", 0);
+        renderer.shdr_pgm->SetUniform("uView", glm::mat4(1.0f));
+        renderer.shdr_pgm->SetUniform("uProjection", projection);
 
-        GLint useTexture_loc = glGetUniformLocation(renderer.shdr_pgm.GetHandle(), "u_useTexture");
+        GLint useTexture_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "u_useTexture");
         if (useTexture_loc != -1) glUniform1i(useTexture_loc, 0); // Use vertex colors, not texture
 
-        GLint tint_loc = glGetUniformLocation(renderer.shdr_pgm.GetHandle(), "u_tint");
+        GLint tint_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "u_tint");
         if (tint_loc != -1) glUniform3f(tint_loc, 1.0f, 1.0f, 1.0f); // No tint modification
 
         renderer.Draw();
@@ -510,7 +510,7 @@ namespace Component {
             idx_vtx.data(), idx_vtx.size(),
             GL_TRIANGLES);
 
-        renderer.shdr_pgm.Use();
+        renderer.shdr_pgm->Use();
 
         // Create model matrix for world position
         glm::mat4 model = glm::mat4(1.0f);
@@ -520,9 +520,9 @@ namespace Component {
 
         glm::mat4 projection = CreateCenteredWorldProjection();
 
-        renderer.shdr_pgm.SetUniform("uModel", model);
-        renderer.shdr_pgm.SetUniform("uView", glm::mat4(1.0f));
-        renderer.shdr_pgm.SetUniform("uProjection", projection);
+        renderer.shdr_pgm->SetUniform("uModel", model);
+        renderer.shdr_pgm->SetUniform("uView", glm::mat4(1.0f));
+        renderer.shdr_pgm->SetUniform("uProjection", projection);
 
         renderer.Draw();
     }
@@ -592,7 +592,7 @@ namespace Component {
             idx_vtx.data(), idx_vtx.size(),
             GL_TRIANGLES);
 
-        renderer.shdr_pgm.Use();
+        renderer.shdr_pgm->Use();
 
         // Create model matrix
         glm::mat4 model = glm::mat4(1.0f);
@@ -603,22 +603,22 @@ namespace Component {
         glm::mat4 projection = CreateCenteredWorldProjection();
 
         // Set uniforms
-        renderer.shdr_pgm.SetUniform("uModel", model);
-        renderer.shdr_pgm.SetUniform("uView", glm::mat4(1.0f));
-        renderer.shdr_pgm.SetUniform("uProjection", projection);
+        renderer.shdr_pgm->SetUniform("uModel", model);
+        renderer.shdr_pgm->SetUniform("uView", glm::mat4(1.0f));
+        renderer.shdr_pgm->SetUniform("uProjection", projection);
 
         // Enable texture rendering
-        GLint useTexture_loc = glGetUniformLocation(renderer.shdr_pgm.GetHandle(), "u_useTexture");
+        GLint useTexture_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "u_useTexture");
         if (useTexture_loc != -1) {
             glUniform1i(useTexture_loc, 1);
         }
 
-        GLint tex_loc = glGetUniformLocation(renderer.shdr_pgm.GetHandle(), "uTex2d");
+        GLint tex_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "uTex2d");
         if (tex_loc != -1) {
             glUniform1i(tex_loc, 0);
         }
 
-        GLint tint_loc = glGetUniformLocation(renderer.shdr_pgm.GetHandle(), "u_tint");
+        GLint tint_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "u_tint");
         if (tint_loc != -1) {
             glUniform3f(tint_loc, tint.x, tint.y, tint.z);
         }
@@ -677,7 +677,7 @@ namespace Component {
             idx_vtx.data(), idx_vtx.size(),
             GL_TRIANGLES);
 
-        renderer.shdr_pgm.Use();
+        renderer.shdr_pgm->Use();
 
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(position.x, position.y, position.z));
@@ -686,18 +686,18 @@ namespace Component {
 
         glm::mat4 projection = CreateCenteredWorldProjection();
 
-        renderer.shdr_pgm.SetUniform("uModel", model);
-        renderer.shdr_pgm.SetUniform("uView", glm::mat4(1.0f));
-        renderer.shdr_pgm.SetUniform("uProjection", projection);
+        renderer.shdr_pgm->SetUniform("uModel", model);
+        renderer.shdr_pgm->SetUniform("uView", glm::mat4(1.0f));
+        renderer.shdr_pgm->SetUniform("uProjection", projection);
 
         // TextureAsset uniforms
-        GLint useTexture_loc = glGetUniformLocation(renderer.shdr_pgm.GetHandle(), "u_useTexture");
+        GLint useTexture_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "u_useTexture");
         if (useTexture_loc != -1) glUniform1i(useTexture_loc, 1);
 
-        GLint tex_loc = glGetUniformLocation(renderer.shdr_pgm.GetHandle(), "uTex2d");
+        GLint tex_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "uTex2d");
         if (tex_loc != -1) glUniform1i(tex_loc, 0);
 
-        GLint tint_loc = glGetUniformLocation(renderer.shdr_pgm.GetHandle(), "u_tint");
+        GLint tint_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "u_tint");
         if (tint_loc != -1) glUniform3f(tint_loc, tint.x, tint.y, tint.z);
 
         // Enable Blending for Transparency
@@ -756,7 +756,7 @@ namespace Component {
             idx_vtx.data(), idx_vtx.size(),
             GL_TRIANGLES);
 
-        renderer.shdr_pgm.Use();
+        renderer.shdr_pgm->Use();
 
         CEVec3 centroid = (p1 + p2 + p3) / 3.0f;
         glm::mat4 model = glm::mat4(1.0f);
@@ -767,17 +767,17 @@ namespace Component {
 
         glm::mat4 projection = CreateCenteredWorldProjection();
 
-        renderer.shdr_pgm.SetUniform("uModel", model);
-        renderer.shdr_pgm.SetUniform("uView", glm::mat4(1.0f));
-        renderer.shdr_pgm.SetUniform("uProjection", projection);
+        renderer.shdr_pgm->SetUniform("uModel", model);
+        renderer.shdr_pgm->SetUniform("uView", glm::mat4(1.0f));
+        renderer.shdr_pgm->SetUniform("uProjection", projection);
 
-        GLint useTexture_loc = glGetUniformLocation(renderer.shdr_pgm.GetHandle(), "u_useTexture");
+        GLint useTexture_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "u_useTexture");
         if (useTexture_loc != -1) glUniform1i(useTexture_loc, 1);
 
-        GLint tex_loc = glGetUniformLocation(renderer.shdr_pgm.GetHandle(), "uTex2d");
+        GLint tex_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "uTex2d");
         if (tex_loc != -1) glUniform1i(tex_loc, 0);
 
-        GLint tint_loc = glGetUniformLocation(renderer.shdr_pgm.GetHandle(), "u_tint");
+        GLint tint_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "u_tint");
         if (tint_loc != -1) glUniform3f(tint_loc, tint.x, tint.y, tint.z);
 
         // Enable Blending for Transparency

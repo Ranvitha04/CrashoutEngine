@@ -28,20 +28,21 @@
 
 
 // File I/O Util Functions
-namespace util {
+namespace {
     /*!
     @brief Reads the entire content of a file into a single string.
-    @param filePath Path to the SceneAsset(JSON) file.
+    @param filePath Path to the SceneAsset(JSON) file.  
     @return empty string on failure.
     */
     std::string ReadFileToString(const std::string& filePath) {
         std::ifstream file(filePath);
         if (!file.is_open()) {
-            std::cout << "ERROR: Could not open file: " << filePath << std::endl;
+            std::cout << "ERROR::SCENE::FILE_NOT_READABLE: " << filePath << std::endl;
             return "";
         }
         std::stringstream buffer;
         buffer << file.rdbuf();
+        file.close();
         return buffer.str();
     }
 
@@ -73,7 +74,7 @@ namespace CrashoutsEngine {
         std::unique_ptr<SceneAsset> SceneAsset::Create(const std::string& filePath) {
 
 			// Load the JSON file from filePath
-            std::string jsonContent = util::ReadFileToString(filePath);
+            std::string jsonContent = ReadFileToString(filePath);
             if (jsonContent.empty()) {
                 std::cout << "SceneAsset::Create - Failed to read file: " << filePath << std::endl;
                 return nullptr;
@@ -132,9 +133,9 @@ namespace CrashoutsEngine {
             }
 
             // Cycle through sceneAsset sceneData (JSON document) for testing
-            std::string fullPath = Assets::rootPath + "" + sceneName;
+            std::string fullPath = Assets::rootPath + "/scenes/" + sceneName;
 
-            std::string jsonContent = util::ReadFileToString(fullPath);
+            std::string jsonContent = ReadFileToString(fullPath);
             if (jsonContent.empty()) {
                 std::cout << "ERROR: Failed to read scene file: " << fullPath << std::endl;
                 return;
@@ -619,13 +620,13 @@ namespace CrashoutsEngine {
 
             // Get the resulting JSON string
             std::string content = buffer.GetString();
-            std::string fullPath = Assets::rootPath + "" + sceneName;
+            std::string fullPath = Assets::rootPath + "/scenes/" + sceneName;
 
             // =========================================================
             // 6. Write the string to the file directly
             // (REPLACING sceneAsset->SaveSceneData(fullPath);)
             // =========================================================
-            if (util::WriteTextToFile(fullPath, content)) {
+            if (WriteTextToFile(fullPath, content)) {
                 std::cout << "Successfully saved " << entityCount
                     << " entities to scene: " << fullPath << std::endl;
             }
