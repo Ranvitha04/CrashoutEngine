@@ -888,10 +888,10 @@ namespace UI { // --------------------------------------------------------------
             ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
             ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBringToFrontOnFocus |
             ImGuiWindowFlags_NoNavFocus | ImGuiWindowFlags_NoScrollbar |
-            ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoMove);
+            ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBackground);
 
         ImGuiID dockspace_id = ImGui::GetID("Dockspace");
-        int ds_flags_i = (int)ImGuiDockNodeFlags_None | (int)ImGuiDockNodeFlags_NoDockingInCentralNode;
+        int ds_flags_i = (int)ImGuiDockNodeFlags_None | (int)ImGuiDockNodeFlags_NoDockingInCentralNode | (int)ImGuiDockNodeFlags_PassthruCentralNode;
         ImGuiDockNodeFlags ds_flags = (ImGuiDockNodeFlags)ds_flags_i;
         ImGui::DockSpace(dockspace_id, { 0,0 }, ds_flags);
         ImGui::End();
