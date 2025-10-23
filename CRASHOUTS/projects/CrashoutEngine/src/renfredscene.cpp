@@ -26,6 +26,7 @@ static const char* sceneName = "renfred";
 
 void LoadRenfred()
 {
+	sceneName = "renfred";
 	// Load resources specific to Renfred state
 	globalECS = CrashoutsEngine::ECS::getInstance();
 	globalECS->Reset();

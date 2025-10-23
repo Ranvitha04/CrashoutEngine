@@ -133,7 +133,7 @@ namespace CrashoutsEngine {
             }
 
             // Cycle through sceneAsset sceneData (JSON document) for testing
-            std::string fullPath = Assets::rootPath + "" + sceneName;
+            std::string fullPath = Assets::rootPath + "/scenes/" + sceneName;
 
             std::string jsonContent = ReadFileToString(fullPath);
             if (jsonContent.empty()) {
@@ -620,7 +620,7 @@ namespace CrashoutsEngine {
 
             // Get the resulting JSON string
             std::string content = buffer.GetString();
-            std::string fullPath = Assets::rootPath + "" + sceneName;
+            std::string fullPath = Assets::rootPath + "/scenes/" + sceneName;
 
             // =========================================================
             // 6. Write the string to the file directly
