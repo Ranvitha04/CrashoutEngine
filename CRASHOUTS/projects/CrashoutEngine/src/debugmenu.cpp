@@ -297,65 +297,52 @@ namespace UI { // --------------------------------------------------------------
                 selected = 0;
                 return;
             }
-        }
-    }
 
-    /*!
-    @brief Renders the Inspector debug panel.
-    @param ecs ECS reference.
-    @param selected Currently selected entity.
-    @param ui UI state toggles.
-    */
-    void UI::RenderInspectorPanel(CrashoutsEngine::ECS& ecs, CrashoutsEngine::Entity selected, UIState& ui)
-    {
-        if (!ui.showInspector) return;
-        ScopedWindow w("Inspector", LockFlags(ui.lockLayout));
+            ImGui::Separator();
+            ImGui::TextUnformatted("Add Components");
 
-        if (!selected) {
-            ImGui::TextDisabled("No entity selected.");
-            return;
-        }
-
-        ImGui::Text("Selected Entity: %u", (unsigned)selected);
-        ImGui::SeparatorText("Add Components");
-
-        // List all registered component types with an "Add" button
-        for (auto* ad : DebugReflection::ComponentRegistry::instance().all()) {
-            ImGui::PushID(ad);
-            bool has = ad->has(ecs, selected);
-            ImGui::BeginDisabled(has);
-            if (ImGui::Button(ad->name())) {
-                ad->add(ecs, selected);
-            }
-            ImGui::EndDisabled();
-            ImGui::SameLine();
-            ImGui::TextUnformatted(ad->name());
-            ImGui::PopID();
-        }
-        ImGui::NewLine();
-
-        ImGui::SeparatorText("Components on Selected Entity");
-
-        // Draw inspectors for present components (uses your registered adapters)
-        for (auto* ad : DebugReflection::ComponentRegistry::instance().all()) {
-            if (!ad->has(ecs, selected)) continue;
-
-            ImGui::PushID(ad);
-            if (ImGui::TreeNode("Component")) {
-                ad->drawInspector(ecs, selected);
-
-                if (ImGui::Button("Remove##btn")) {
-                    ad->remove(ecs, selected);
-                    ImGui::TreePop();
-                    ImGui::PopID();
-                    // components changed; bail to avoid stale iterator
-                    break;
+            // List all registered component types with an "Add" button
+            for (auto* ad : DebugReflection::ComponentRegistry::instance().all()) {
+                ImGui::PushID(ad);
+                bool has = ad->has(ecs, selected);
+                ImGui::BeginDisabled(has);
+                if (ImGui::Button(ad->name())) {
+                    ad->add(ecs, selected);
                 }
-                ImGui::TreePop();
+                ImGui::EndDisabled();
+                ImGui::SameLine();
+                ImGui::TextUnformatted(ad->name());
+
+                ImGui::PopID();
             }
-            ImGui::SameLine();
-            ImGui::TextDisabled("%s", ad->name());
-            ImGui::PopID();
+            ImGui::NewLine();
+
+            // --- Inspect components present on selected entity ---
+            ImGui::Separator();
+            ImGui::TextUnformatted("Components on Selected Entity");
+
+            for (auto* ad : DebugReflection::ComponentRegistry::instance().all()) {
+                if (!ad->has(ecs, selected)) continue;
+
+                ImGui::PushID(ad); // unique scope for this component�s UI
+
+                // TreeNode label can be the display name now that ID is scoped
+                if (ImGui::TreeNode("Component")) {   // id = "Component" under PushID(ad)
+                    ad->drawInspector(ecs, selected);
+
+                    if (ImGui::Button("Remove##btn")) {  // id = "Remove##btn" under PushID(ad)
+                        ad->remove(ecs, selected);
+                        ImGui::TreePop();
+                        ImGui::PopID();
+                        break; // components changed; bail this frame
+                    }
+                    ImGui::TreePop();
+                }
+                ImGui::SameLine();
+                ImGui::TextDisabled("%s", ad->name()); // visible label next to the node
+
+                ImGui::PopID();
+            }
         }
     }
 
@@ -651,12 +638,23 @@ namespace UI { // --------------------------------------------------------------
 
             // Default / legacy toggles (kept so old projects still work)
             ImGui::Checkbox("ECS", &ui.showECS);
-            ImGui::Checkbox("Inspector", &ui.showInspector);
             ImGui::Checkbox("Physics", &ui.showPhysics);
             ImGui::Checkbox("Performance", &ui.showPerf);
             ImGui::Checkbox("Console", &ui.showConsole);
             ImGui::Checkbox("Game State", &ui.showGameState);
             ImGui::Checkbox("Audio", &ui.showAudio);
+            // Dynamically registered panels
+            /*ImGui::Spacing();
+            ImGui::TextDisabled("Panels");
+            ImGui::Separator();
+            for (auto const& p : DebugReflection::PanelRegistry::instance().panels()) {
+                if (p.toggleFlag) {
+                    ImGui::Checkbox(p.name.c_str(), p.toggleFlag);
+                }
+                else {
+                    ImGui::TextDisabled("%s (always on-demand)", p.name.c_str());
+                }
+            }*/
 
             ImGui::Spacing();
             ImGui::TextDisabled("Settings");
@@ -725,7 +723,6 @@ namespace UI { // --------------------------------------------------------------
         ImGui::DockSpace(dockspace_id, { 0,0 }, ds_flags);
         ImGui::End();
 
-        // it's all hardcoded? *pulls out glocko* always has been
         if (!s_layoutBuilt) {
             s_layoutBuilt = true;
 
@@ -749,13 +746,12 @@ namespace UI { // --------------------------------------------------------------
 
             // Dock windows into regions (matching your actual window titles)
             ImGui::DockBuilderDockWindow("Debug Controls", dock_left);
-            ImGui::DockBuilderDockWindow("ECS Demo", dock_right);
-            ImGui::DockBuilderDockWindow("Inspector", dock_right_bottom);
+            ImGui::DockBuilderDockWindow("ECS Demo", dock_main);
             ImGui::DockBuilderDockWindow("Physics / Collision", dock_main);
             ImGui::DockBuilderDockWindow("Console", dock_bottom);
-            ImGui::DockBuilderDockWindow("Performance", dock_main);
-            ImGui::DockBuilderDockWindow("GameState", dock_bottom);
-            ImGui::DockBuilderDockWindow("Audio", dock_bottom);
+            ImGui::DockBuilderDockWindow("Performance", dock_right);
+            ImGui::DockBuilderDockWindow("GameState", dock_right_bottom);
+            ImGui::DockBuilderDockWindow("Audio", dock_right_bottom);
 
             ImGui::DockBuilderFinish(dockspace_id);
         }
@@ -763,9 +759,6 @@ namespace UI { // --------------------------------------------------------------
         RenderTogglesWindow(ui);
         if (ui.showECS) {
             RenderEcsPanel(profiler, ecs, entities, selected, ui); 
-        }
-        if (ui.showInspector) {
-            RenderInspectorPanel(ecs, selected, ui);
         }
         if (ui.showPhysics) {
             RenderPhysicsPanel(profiler, ecs, phys, ui);
