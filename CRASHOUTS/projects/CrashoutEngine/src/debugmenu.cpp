@@ -25,16 +25,18 @@ This file provides the graphics for Crashout Engine's ImGUI.
 #include "audioSystem.h"
 #include <fmod_studio.hpp> 
 #include "prefab.h"
+
 using CrashoutsEngine::Audio::AudioSystem;
 // ImGui headers
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
+#include <imgui_internal.h>
 
 #include <vector>
-#include <string>
-#include <cstring>
 #include "CEVec3.h"
+#include <filesystem>
+#include "stb_image.h"
 
 /*                                                                   
 ----------------------------------------------------------------------------- */
@@ -52,10 +54,14 @@ namespace { //------------------------------------------------------------------
     Entity gSelectedEntity = 0;                 //!< Currently selected entity
     std::vector<ProfilerSample> gPerfSnapshot;  //!< Performance profiler snapshot
     double gPerfSnapshotTotalMs = 0.0;          //!< Total frame time in ms
+
+    namespace fs = std::filesystem;
+
     // --- File-local audio state used by the panel ---
 
     static bool g_audioReady = false;
     static bool g_banksLoaded = false;
+    static bool s_layoutBuilt = false;
 
     // SFX
     static const char* kSfx_Beep = "event:/sfexbeep"; // must exist in sfx.bank
@@ -295,52 +301,231 @@ namespace UI { // --------------------------------------------------------------
                 selected = 0;
                 return;
             }
+        }
+    }
 
-            ImGui::Separator();
-            ImGui::TextUnformatted("Add Components");
+    void UI::RenderAssetBrowserPanel(UIState& ui, const char* root, std::string& outSelectedAsset)
+    {
+        ScopedWindow win("Assets", LockFlags(ui.lockLayout));
 
-            // List all registered component types with an "Add" button
-            for (auto* ad : DebugReflection::ComponentRegistry::instance().all()) {
-                ImGui::PushID(ad);
-                bool has = ad->has(ecs, selected);
-                ImGui::BeginDisabled(has);
-                if (ImGui::Button(ad->name())) {
-                    ad->add(ecs, selected);
+        static char filter[128] = { 0 };
+        static fs::path current = root ? fs::path(root) : fs::path(".");
+        static std::vector<fs::directory_entry> entries;
+        static bool needScan = true;
+
+        // Top bar controls
+        if (ImGui::Button("Up") && current.has_parent_path()) {
+            current = current.parent_path();
+            needScan = true;
+        }
+        ImGui::SameLine();
+        ImGui::TextUnformatted(current.generic_string().c_str());
+        ImGui::SameLine();
+        ImGui::SetNextItemWidth(220);
+        ImGui::InputTextWithHint("##asset_filter", "Filter (name / ext)...", filter, IM_ARRAYSIZE(filter));
+
+        ImGui::Separator();
+
+        // ---------------- LEFT: Folder tree ----------------
+        ImGui::BeginChild("asset_left", ImVec2(220, 0), true);
+
+        if (ImGui::Selectable(root, current == fs::path(root))) {
+            current = fs::path(root);
+            needScan = true;
+        }
+
+        try {
+            for (auto& de : fs::directory_iterator(root)) {
+                if (!de.is_directory()) continue;
+                bool isCur = (current == de.path());
+                if (ImGui::Selectable(de.path().filename().generic_string().c_str(), isCur)) {
+                    current = de.path();
+                    needScan = true;
                 }
-                ImGui::EndDisabled();
-                ImGui::SameLine();
-                ImGui::TextUnformatted(ad->name());
-
-                ImGui::PopID();
             }
-            ImGui::NewLine();
+        }
+        catch (...) {}
 
-            // --- Inspect components present on selected entity ---
-            ImGui::Separator();
-            ImGui::TextUnformatted("Components on Selected Entity");
+        ImGui::EndChild();
 
-            for (auto* ad : DebugReflection::ComponentRegistry::instance().all()) {
-                if (!ad->has(ecs, selected)) continue;
+        // --- RIGHT: Files + Preview ----------------
+        ImGui::SameLine();
+        ImGui::BeginChild("asset_right", ImVec2(0, 0), true);
 
-                ImGui::PushID(ad); // unique scope for this component�s UI
+        const float kPreviewMaxHeight = 260.0f; // preview box height
+        ImVec2 availRight = ImGui::GetContentRegionAvail();
+        float listHeight = availRight.y - kPreviewMaxHeight - ImGui::GetStyle().ItemSpacing.y;
+        if (listHeight < 120.0f) listHeight = availRight.y * 0.6f;
 
-                // TreeNode label can be the display name now that ID is scoped
-                if (ImGui::TreeNode("Component")) {   // id = "Component" under PushID(ad)
-                    ad->drawInspector(ecs, selected);
+        // --- FILE LIST ----------
+        ImGui::BeginChild("asset_right_list", ImVec2(0, listHeight), true);
 
-                    if (ImGui::Button("Remove##btn")) {  // id = "Remove##btn" under PushID(ad)
-                        ad->remove(ecs, selected);
-                        ImGui::TreePop();
-                        ImGui::PopID();
-                        break; // components changed; bail this frame
+        if (needScan) {
+            entries.clear();
+            try {
+                for (auto& e : fs::directory_iterator(current))
+                    entries.push_back(e);
+
+                std::sort(entries.begin(), entries.end(), [](auto const& a, auto const& b) {
+                    if (a.is_directory() != b.is_directory()) return a.is_directory() && !b.is_directory();
+                    return a.path().filename().generic_string() < b.path().filename().generic_string();
+                    });
+            }
+            catch (...) {}
+            needScan = false;
+        }
+
+        for (auto const& e : entries) {
+            std::string name = e.path().filename().generic_string();
+            if (filter[0] && name.find(filter) == std::string::npos) continue;
+
+            if (e.is_directory()) {
+                if (ImGui::Selectable((std::string("[Dir] ") + name).c_str(), false)) {
+                    current = e.path();
+                    needScan = true;
+                }
+            }
+            else {
+                bool selected = (outSelectedAsset == e.path().generic_string());
+                if (ImGui::Selectable(name.c_str(), selected))
+                    outSelectedAsset = e.path().generic_string();
+
+                if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None)) {
+                    const std::string path = e.path().generic_string();
+                    ImGui::SetDragDropPayload("ASSET_PATH", path.c_str(), path.size() + 1);
+                    ImGui::TextUnformatted(path.c_str());
+                    ImGui::EndDragDropSource();
+                }
+
+                if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(0))
+                    outSelectedAsset = e.path().generic_string();
+            }
+        }
+
+        ImGui::EndChild(); // asset_right_list
+
+        // --- PREVIEW ----------
+        ImGui::Separator();
+        ImGui::BeginChild("asset_right_preview", ImVec2(0, 0), true);
+
+        if (!outSelectedAsset.empty()) {
+            std::string ext = fs::path(outSelectedAsset).extension().string();
+            std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+
+            if (ext == ".png" || ext == ".jpg" || ext == ".jpeg" || ext == ".bmp" || ext == ".tga") {
+                static GLuint previewTex = 0;
+                static std::string loadedPath;
+                static int imgW = 0, imgH = 0;
+
+                // Load texture when selection changes
+                if (loadedPath != outSelectedAsset) {
+                    if (previewTex) {
+                        glDeleteTextures(1, &previewTex);
+                        previewTex = 0;
                     }
-                    ImGui::TreePop();
-                }
-                ImGui::SameLine();
-                ImGui::TextDisabled("%s", ad->name()); // visible label next to the node
 
-                ImGui::PopID();
+                    int w, h, channels;
+                    unsigned char* data = stbi_load(outSelectedAsset.c_str(), &w, &h, &channels, 4);
+                    if (data) {
+                        glGenTextures(1, &previewTex);
+                        glBindTexture(GL_TEXTURE_2D, previewTex);
+                        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+                        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+                        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+                        stbi_image_free(data);
+                        loadedPath = outSelectedAsset;
+                        imgW = w; imgH = h;
+                    }
+                }
+
+                if (previewTex && imgW > 0 && imgH > 0) {
+                    ImGui::TextUnformatted("Preview:");
+
+                    ImVec2 area = ImGui::GetContentRegionAvail();
+                    area.y = std::min(area.y, kPreviewMaxHeight);
+
+                    // Keep aspect ratio
+                    float maxW = area.x;
+                    float maxH = area.y;
+                    float scale = std::min(maxW / float(imgW), maxH / float(imgH));
+                    if (scale <= 0.0f) scale = 1.0f;
+                    ImVec2 drawSize(float(imgW) * scale, float(imgH) * scale);
+
+                    // Center horizontally
+                    float xPad = (area.x - drawSize.x) * 0.5f;
+                    if (xPad > 0) ImGui::SetCursorPosX(ImGui::GetCursorPosX() + xPad);
+
+                    ImGui::Image((ImTextureID)(intptr_t)previewTex, drawSize);
+                }
             }
+        }
+
+        ImGui::EndChild(); // asset_right_preview
+        ImGui::EndChild(); // asset_right
+    }
+
+    /*!
+    @brief Renders the Inspector debug panel.
+    @param ecs ECS reference.
+    @param selected Currently selected entity.
+    @param ui UI state toggles.
+    */
+    void UI::RenderInspectorPanel(CrashoutsEngine::ECS& ecs, CrashoutsEngine::Entity selected, UIState& ui)
+    {
+        if (!ui.showInspector) return;
+        ScopedWindow w("Inspector", LockFlags(ui.lockLayout));
+
+        if (!selected) {
+            ImGui::TextDisabled("No entity selected.");
+            return;
+        }
+
+        ImGui::Text("Selected Entity: %u", (unsigned)selected);
+        ImGui::SeparatorText("Add Components");
+
+        // List all registered component types with an "Add" button
+        for (auto* ad : DebugReflection::ComponentRegistry::instance().all()) {
+            ImGui::PushID(ad);
+            bool has = ad->has(ecs, selected);
+            ImGui::BeginDisabled(has);
+            if (ImGui::Button(ad->name())) {
+                ad->add(ecs, selected);
+            }
+            ImGui::EndDisabled();
+            ImGui::SameLine();
+            ImGui::TextUnformatted(ad->name());
+            ImGui::PopID();
+        }
+        ImGui::NewLine();
+
+        ImGui::SeparatorText("Components on Selected Entity");
+
+        // Draw inspectors for present components (uses your registered adapters)
+        for (auto* ad : DebugReflection::ComponentRegistry::instance().all()) {
+            if (!ad->has(ecs, selected)) continue;
+
+            ImGui::PushID(ad);
+
+            // Draw a nice header bar for each component
+            ImGui::Separator();
+            ImGui::TextUnformatted(ad->name());
+
+            // Right-align "Remove"
+            float remove_w = ImGui::CalcTextSize("Remove").x + ImGui::GetStyle().FramePadding.x * 2.0f;
+            float x = ImGui::GetCursorPosX() + ImGui::GetContentRegionAvail().x - remove_w;
+            ImGui::SameLine(x);
+            if (ImGui::SmallButton("Remove")) {
+                ad->remove(ecs, selected);
+                ImGui::PopID();
+                break; // components changed
+            }
+
+            // Draw the component inspector directly (not inside a TreeNode)
+            ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(8, 6));
+            ad->drawInspector(ecs, selected);
+            ImGui::PopStyleVar();
+
+            ImGui::PopID();
         }
     }
 
@@ -636,23 +821,13 @@ namespace UI { // --------------------------------------------------------------
 
             // Default / legacy toggles (kept so old projects still work)
             ImGui::Checkbox("ECS", &ui.showECS);
+            ImGui::Checkbox("Assets", &ui.showAssets);
+            ImGui::Checkbox("Inspector", &ui.showInspector);
             ImGui::Checkbox("Physics", &ui.showPhysics);
             ImGui::Checkbox("Performance", &ui.showPerf);
             ImGui::Checkbox("Console", &ui.showConsole);
             ImGui::Checkbox("Game State", &ui.showGameState);
             ImGui::Checkbox("Audio", &ui.showAudio);
-            // Dynamically registered panels
-            /*ImGui::Spacing();
-            ImGui::TextDisabled("Panels");
-            ImGui::Separator();
-            for (auto const& p : DebugReflection::PanelRegistry::instance().panels()) {
-                if (p.toggleFlag) {
-                    ImGui::Checkbox(p.name.c_str(), p.toggleFlag);
-                }
-                else {
-                    ImGui::TextDisabled("%s (always on-demand)", p.name.c_str());
-                }
-            }*/
 
             ImGui::Spacing();
             ImGui::TextDisabled("Settings");
@@ -661,15 +836,21 @@ namespace UI { // --------------------------------------------------------------
             ImGui::Checkbox("Draw Colliders", &ui.drawCollOverlay);
 
             ImGui::Spacing();
+            if (ImGui::Button("Reset Dock Layout")) {
+                s_layoutBuilt = false; // This triggers the rebuild
+            }
+            ImGui::SameLine(); Help("Rebuilds the docking layout to default positions.");
+
+            ImGui::Spacing();
             if (ImGui::Button("Show All")) {
-                ui.showECS = ui.showPhysics = ui.showPerf = ui.showConsole = ui.showGameState = true;
+                ui.showECS = ui.showPhysics = ui.showPerf = ui.showConsole = ui.showGameState = ui.showInspector = ui.showAudio = ui.showAssets = true;
                 // Also turn on any registered, toggle-backed panels:
                 for (auto const& p : DebugReflection::PanelRegistry::instance().panels())
                     if (p.toggleFlag) *p.toggleFlag = true;
             }
             ImGui::SameLine();
             if (ImGui::Button("Hide All")) {
-                ui.showECS = ui.showPhysics = ui.showPerf = ui.showConsole = ui.showGameState = false;
+                ui.showECS = ui.showPhysics = ui.showPerf = ui.showConsole = ui.showGameState = ui.showInspector = ui.showAudio = ui.showAssets = false;
                 for (auto const& p : DebugReflection::PanelRegistry::instance().panels())
                     if (p.toggleFlag) *p.toggleFlag = false;
             }
@@ -704,9 +885,68 @@ namespace UI { // --------------------------------------------------------------
         }
 
         BeginFrame();
+        // Dockspace
+        ImGuiViewport* viewport = ImGui::GetMainViewport();
+        ImGui::SetNextWindowPos(viewport->WorkPos);
+        ImGui::SetNextWindowSize(viewport->WorkSize);
+        ImGui::Begin("Dockspace", 0,
+            ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
+            ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBringToFrontOnFocus |
+            ImGuiWindowFlags_NoNavFocus | ImGuiWindowFlags_NoScrollbar |
+            ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBackground);
+
+        ImGuiID dockspace_id = ImGui::GetID("Dockspace");
+        int ds_flags_i = (int)ImGuiDockNodeFlags_None | (int)ImGuiDockNodeFlags_NoDockingInCentralNode | (int)ImGuiDockNodeFlags_PassthruCentralNode;
+        ImGuiDockNodeFlags ds_flags = (ImGuiDockNodeFlags)ds_flags_i;
+        ImGui::DockSpace(dockspace_id, { 0,0 }, ds_flags);
+        ImGui::End();
+
+        // it's all hardcoded? *pulls out glocko* always has been
+        if (!s_layoutBuilt) {
+            s_layoutBuilt = true;
+
+            // Rebuild docking layout
+            ImGui::DockBuilderRemoveNode(dockspace_id);
+            int builder_flags_i = (int)ImGuiDockNodeFlags_DockSpace | (int)ImGuiDockNodeFlags_NoDockingInCentralNode;
+            ImGuiDockNodeFlags builder_flags = (ImGuiDockNodeFlags)builder_flags_i;
+            ImGui::DockBuilderAddNode(dockspace_id, builder_flags);
+            ImGui::DockBuilderSetNodeSize(dockspace_id, viewport->WorkSize);
+
+            // Split into main zones
+            ImGuiID dock_main = dockspace_id;
+            ImGuiID dock_left, dock_right, dock_bottom;
+            ImGui::DockBuilderSplitNode(dock_main, ImGuiDir_Left, 0.18f, &dock_left, &dock_main);
+            ImGui::DockBuilderSplitNode(dock_main, ImGuiDir_Right, 0.26f, &dock_right, &dock_main);
+            ImGui::DockBuilderSplitNode(dock_main, ImGuiDir_Down, 0.28f, &dock_bottom, &dock_main);
+
+            // Further split right side
+            ImGuiID dock_right_bottom;
+            ImGui::DockBuilderSplitNode(dock_right, ImGuiDir_Down, 0.5f, &dock_right_bottom, &dock_right);
+
+            // Dock windows into regions (matching your actual window titles)
+            ImGui::DockBuilderDockWindow("Debug Controls", dock_left);
+            ImGui::DockBuilderDockWindow("ECS Demo", dock_right);
+            ImGui::DockBuilderDockWindow("Assets", dock_bottom);
+            ImGui::DockBuilderDockWindow("Inspector", dock_right_bottom);
+            ImGui::DockBuilderDockWindow("Physics / Collision", dock_bottom);
+            ImGui::DockBuilderDockWindow("Console", dock_bottom);
+            ImGui::DockBuilderDockWindow("Performance", dock_left);
+            ImGui::DockBuilderDockWindow("GameState", dock_bottom);
+            ImGui::DockBuilderDockWindow("Audio", dock_bottom);
+
+            ImGui::DockBuilderFinish(dockspace_id);
+        }
+
         RenderTogglesWindow(ui);
         if (ui.showECS) {
             RenderEcsPanel(profiler, ecs, entities, selected, ui); 
+        }
+        if (ui.showAssets) {
+            static std::string gPickedAsset;
+            RenderAssetBrowserPanel(ui, "assets", gPickedAsset);
+        }
+        if (ui.showInspector) {
+            RenderInspectorPanel(ecs, selected, ui);
         }
         if (ui.showPhysics) {
             RenderPhysicsPanel(profiler, ecs, phys, ui);
