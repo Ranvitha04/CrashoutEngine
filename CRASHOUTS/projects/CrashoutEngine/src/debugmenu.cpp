@@ -25,6 +25,7 @@ This file provides the graphics for Crashout Engine's ImGUI.
 #include "audioSystem.h"
 #include <fmod_studio.hpp> 
 #include "prefab.h"
+
 using CrashoutsEngine::Audio::AudioSystem;
 // ImGui headers
 #include <imgui.h>
@@ -35,6 +36,7 @@ using CrashoutsEngine::Audio::AudioSystem;
 #include <vector>
 #include "CEVec3.h"
 #include <filesystem>
+#include "stb_image.h"
 
 /*                                                                   
 ----------------------------------------------------------------------------- */
@@ -304,14 +306,14 @@ namespace UI { // --------------------------------------------------------------
 
     void UI::RenderAssetBrowserPanel(UIState& ui, const char* root, std::string& outSelectedAsset)
     {
-        ScopedWindow w("Assets", LockFlags(ui.lockLayout));
+        ScopedWindow win("Assets", LockFlags(ui.lockLayout));
 
         static char filter[128] = { 0 };
         static fs::path current = root ? fs::path(root) : fs::path(".");
         static std::vector<fs::directory_entry> entries;
         static bool needScan = true;
 
-        // Top bar: current folder + up button + filter
+        // Top bar controls
         if (ImGui::Button("Up") && current.has_parent_path()) {
             current = current.parent_path();
             needScan = true;
@@ -324,14 +326,14 @@ namespace UI { // --------------------------------------------------------------
 
         ImGui::Separator();
 
-        // Left: folder tree (optional mini tree just one level)
+        // ---------------- LEFT: Folder tree ----------------
         ImGui::BeginChild("asset_left", ImVec2(220, 0), true);
-        // Root jump button
+
         if (ImGui::Selectable(root, current == fs::path(root))) {
             current = fs::path(root);
             needScan = true;
         }
-        // One-level tree (subfolders under root)
+
         try {
             for (auto& de : fs::directory_iterator(root)) {
                 if (!de.is_directory()) continue;
@@ -343,29 +345,36 @@ namespace UI { // --------------------------------------------------------------
             }
         }
         catch (...) {}
+
         ImGui::EndChild();
 
+        // --- RIGHT: Files + Preview ----------------
         ImGui::SameLine();
-
-        // Right: list/grid view of current folder
         ImGui::BeginChild("asset_right", ImVec2(0, 0), true);
+
+        const float kPreviewMaxHeight = 260.0f; // preview box height
+        ImVec2 availRight = ImGui::GetContentRegionAvail();
+        float listHeight = availRight.y - kPreviewMaxHeight - ImGui::GetStyle().ItemSpacing.y;
+        if (listHeight < 120.0f) listHeight = availRight.y * 0.6f;
+
+        // --- FILE LIST ----------
+        ImGui::BeginChild("asset_right_list", ImVec2(0, listHeight), true);
 
         if (needScan) {
             entries.clear();
             try {
                 for (auto& e : fs::directory_iterator(current))
                     entries.push_back(e);
-                std::sort(entries.begin(), entries.end(),
-                    [](auto const& a, auto const& b) {
-                        if (a.is_directory() != b.is_directory()) return a.is_directory() && !b.is_directory();
-                        return a.path().filename().generic_string() < b.path().filename().generic_string();
+
+                std::sort(entries.begin(), entries.end(), [](auto const& a, auto const& b) {
+                    if (a.is_directory() != b.is_directory()) return a.is_directory() && !b.is_directory();
+                    return a.path().filename().generic_string() < b.path().filename().generic_string();
                     });
             }
             catch (...) {}
             needScan = false;
         }
 
-        // Simple list (folders first, then files); you can convert to thumbnails later
         for (auto const& e : entries) {
             std::string name = e.path().filename().generic_string();
             if (filter[0] && name.find(filter) == std::string::npos) continue;
@@ -378,11 +387,9 @@ namespace UI { // --------------------------------------------------------------
             }
             else {
                 bool selected = (outSelectedAsset == e.path().generic_string());
-                if (ImGui::Selectable(name.c_str(), selected)) {
+                if (ImGui::Selectable(name.c_str(), selected))
                     outSelectedAsset = e.path().generic_string();
-                }
 
-                // Drag&drop asset path
                 if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None)) {
                     const std::string path = e.path().generic_string();
                     ImGui::SetDragDropPayload("ASSET_PATH", path.c_str(), path.size() + 1);
@@ -390,14 +397,71 @@ namespace UI { // --------------------------------------------------------------
                     ImGui::EndDragDropSource();
                 }
 
-                // Double-click = pick/confirm
-                if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(0)) {
+                if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(0))
                     outSelectedAsset = e.path().generic_string();
+            }
+        }
+
+        ImGui::EndChild(); // asset_right_list
+
+        // --- PREVIEW ----------
+        ImGui::Separator();
+        ImGui::BeginChild("asset_right_preview", ImVec2(0, 0), true);
+
+        if (!outSelectedAsset.empty()) {
+            std::string ext = fs::path(outSelectedAsset).extension().string();
+            std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+
+            if (ext == ".png" || ext == ".jpg" || ext == ".jpeg" || ext == ".bmp" || ext == ".tga") {
+                static GLuint previewTex = 0;
+                static std::string loadedPath;
+                static int imgW = 0, imgH = 0;
+
+                // Load texture when selection changes
+                if (loadedPath != outSelectedAsset) {
+                    if (previewTex) {
+                        glDeleteTextures(1, &previewTex);
+                        previewTex = 0;
+                    }
+
+                    int w, h, channels;
+                    unsigned char* data = stbi_load(outSelectedAsset.c_str(), &w, &h, &channels, 4);
+                    if (data) {
+                        glGenTextures(1, &previewTex);
+                        glBindTexture(GL_TEXTURE_2D, previewTex);
+                        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+                        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+                        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+                        stbi_image_free(data);
+                        loadedPath = outSelectedAsset;
+                        imgW = w; imgH = h;
+                    }
+                }
+
+                if (previewTex && imgW > 0 && imgH > 0) {
+                    ImGui::TextUnformatted("Preview:");
+
+                    ImVec2 area = ImGui::GetContentRegionAvail();
+                    area.y = std::min(area.y, kPreviewMaxHeight);
+
+                    // Keep aspect ratio
+                    float maxW = area.x;
+                    float maxH = area.y;
+                    float scale = std::min(maxW / float(imgW), maxH / float(imgH));
+                    if (scale <= 0.0f) scale = 1.0f;
+                    ImVec2 drawSize(float(imgW) * scale, float(imgH) * scale);
+
+                    // Center horizontally
+                    float xPad = (area.x - drawSize.x) * 0.5f;
+                    if (xPad > 0) ImGui::SetCursorPosX(ImGui::GetCursorPosX() + xPad);
+
+                    ImGui::Image((ImTextureID)(intptr_t)previewTex, drawSize);
                 }
             }
         }
 
-        ImGui::EndChild();
+        ImGui::EndChild(); // asset_right_preview
+        ImGui::EndChild(); // asset_right
     }
 
     /*!
@@ -463,7 +527,6 @@ namespace UI { // --------------------------------------------------------------
 
             ImGui::PopID();
         }
-
     }
 
     /*!
@@ -780,14 +843,14 @@ namespace UI { // --------------------------------------------------------------
 
             ImGui::Spacing();
             if (ImGui::Button("Show All")) {
-                ui.showECS = ui.showPhysics = ui.showPerf = ui.showConsole = ui.showGameState = true;
+                ui.showECS = ui.showPhysics = ui.showPerf = ui.showConsole = ui.showGameState = ui.showInspector = ui.showAudio = ui.showAssets = true;
                 // Also turn on any registered, toggle-backed panels:
                 for (auto const& p : DebugReflection::PanelRegistry::instance().panels())
                     if (p.toggleFlag) *p.toggleFlag = true;
             }
             ImGui::SameLine();
             if (ImGui::Button("Hide All")) {
-                ui.showECS = ui.showPhysics = ui.showPerf = ui.showConsole = ui.showGameState = false;
+                ui.showECS = ui.showPhysics = ui.showPerf = ui.showConsole = ui.showGameState = ui.showInspector = ui.showAudio = ui.showAssets = false;
                 for (auto const& p : DebugReflection::PanelRegistry::instance().panels())
                     if (p.toggleFlag) *p.toggleFlag = false;
             }
@@ -860,9 +923,9 @@ namespace UI { // --------------------------------------------------------------
             ImGui::DockBuilderDockWindow("ECS Demo", dock_right);
             ImGui::DockBuilderDockWindow("Assets", dock_bottom);
             ImGui::DockBuilderDockWindow("Inspector", dock_right_bottom);
-            ImGui::DockBuilderDockWindow("Physics / Collision", dock_main);
+            ImGui::DockBuilderDockWindow("Physics / Collision", dock_bottom);
             ImGui::DockBuilderDockWindow("Console", dock_bottom);
-            ImGui::DockBuilderDockWindow("Performance", dock_main);
+            ImGui::DockBuilderDockWindow("Performance", dock_left);
             ImGui::DockBuilderDockWindow("GameState", dock_bottom);
             ImGui::DockBuilderDockWindow("Audio", dock_bottom);
 
