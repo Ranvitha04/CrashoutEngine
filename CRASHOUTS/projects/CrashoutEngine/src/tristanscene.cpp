@@ -31,10 +31,6 @@ void LoadTristan() {
 	GenerateAssetManifest();
 
 
-
-
-
-
 	AssetManager::GetInstance().LoadManifestAssets();
 
 

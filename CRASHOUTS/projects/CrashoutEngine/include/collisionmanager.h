@@ -174,11 +174,11 @@ namespace Collision {
 						CEVec3{
 							std::stof(defaultedArg("minX", "0.f")),
 							std::stof(defaultedArg("minY", "0.f")),
-							std::stof(defaultedArg("minZ", "0.f"))
+							std::stof("0.0")
 						}, CEVec3{
 							std::stof(defaultedArg("maxX", "0.f")),
 							std::stof(defaultedArg("maxY", "0.f")),
-							std::stof(defaultedArg("maxZ", "0.f"))
+							std::stof("0.0")
 						},
 						std::stof(defaultedArg("rotation", "0.f"))
 					});
