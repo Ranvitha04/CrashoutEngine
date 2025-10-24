@@ -50,6 +50,7 @@ namespace Component {
 			void addForce(CEVec3 force);
 			void clearForceAccumulator();
 			void updatePhysics(double dt);
+			void setMaxVelocity(CEVec3 const& newVel);
 			CEVec3 getVelocity();
 			void setVelocity(CEVec3 const& newVel);
 			f32 getCoeff();

@@ -20,6 +20,8 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include <memory>
+#include <utility>
 
 #include <rapidjson/error/en.h>
 #include <rapidjson/stringbuffer.h>
@@ -214,10 +216,34 @@ namespace CrashoutsEngine {
                 }
 
                 // Check if Rigid-Body
-                if (entityValue.HasMember(Keys::RIGIDBODY_COMPONENT) && entityValue[Keys::RIGIDBODY_COMPONENT].IsBool()) {
-                    if (entityValue[Keys::RIGIDBODY_COMPONENT].GetBool()) {
-                        gECS.AddComponent<RigidBodyComponent>(newEntity);
+                if (entityValue.HasMember(Keys::RIGIDBODY_COMPONENT) && entityValue[Keys::RIGIDBODY_COMPONENT].IsObject()) {
+                    const rapidjson::Value& rigidBodyValues = entityValue[Keys::RIGIDBODY_COMPONENT];
+
+                    Component::RigidBodyComponent& rigidBodyComp{ gECS.AddComponent<RigidBodyComponent>(newEntity) };
+
+                    
+
+                    if (rigidBodyValues.HasMember("maximumVelocity") && rigidBodyValues["maximumVelocity"].IsObject()) {
+                        //const rapidjson::Value& maximumVelVal{ rigidBodyValues["maximumVelVal"] };
+
+                        CEVec3 maxVel{};
+
+                        if (maximumVelVal.HasMember("x")) maxVel.z = maximumVelVal["x"].GetFloat();
+                        if (maximumVelVal.HasMember("y")) maxVel.z = maximumVelVal["y"].GetFloat();
+                        if (maximumVelVal.HasMember("z")) maxVel.z = maximumVelVal["z"].GetFloat();
+
+                        
+                        rigidBodyComp.setMaxVelocity(maxVel);
                     }
+
+                    if (rigidBodyValues.HasMember("mass") && rigidBodyValues["mass"].IsFloat()) {
+
+                    }
+
+                    if (rigidBodyValues.HasMember("restitutionCoeff") && rigidBodyValues["restitutionCoeff"].IsFloat()) {
+
+                    }
+                    
                 }
 
                 // Check if Collider 
@@ -258,7 +284,7 @@ namespace CrashoutsEngine {
                             col.collider->type = Collision::AABB;
                             break;
                         default:
-                            col.collider->type = Collision::AABB;
+                            col.collider->type = Collision::OBB;
                         };
                     }
                 }

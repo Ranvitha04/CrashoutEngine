@@ -34,6 +34,10 @@ namespace Component {
 	void RigidBodyComponent::clearForceAccumulator() {
 		mNetForce = CEVec3{};
 	}
+
+	void RigidBodyComponent::setMaxVelocity(CEVec3 const& newVel) {
+		mMaximumVel = newVel;
+	}
 	
 	RigidBodyComponent::RigidBodyComponent(CEVec3 maximumVel, f32 mass, f32 restitutionCoeff) 
 		: mVelocity{ CEVec3{} }, mMaximumVel{ maximumVel }, mMass{ mass }, mNetForce{ CEVec3{} }, mRestitutionCoeff{restitutionCoeff} { /*EMPTY BY DESIGN*/ }
