@@ -607,7 +607,7 @@ namespace Component {
 shdr_files.clear(); \
 shdr_files.push_back(std::make_pair(GL_VERTEX_SHADER, tutorial_vs)); \
 shdr_files.push_back(std::make_pair(GL_FRAGMENT_SHADER, tutorial_fs)); \
-shdr_pgm.CompileLinkValidate(shdr_files, false); \
+shdr_pgm->CompileLinkValidate(shdr_files, false); \
 return;
 #else
 #define AUTOMATION_HOOK_SHADER(shdr_pgm, shdr_files) 

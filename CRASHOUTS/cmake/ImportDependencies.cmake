@@ -50,7 +50,7 @@ macro(import_glew)
         FetchContent_Declare(
             glew
             GIT_REPOSITORY https://github.com/omniavinco/glew-cmake.git
-            GIT_TAG master
+            GIT_TAG glew-cmake-2.2.0
         )
         set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
         FetchContent_MakeAvailable(glew)
@@ -238,7 +238,7 @@ endforeach()
 add_library(FMOD::Core SHARED IMPORTED)
 set_target_properties(FMOD::Core PROPERTIES
   IMPORTED_IMPLIB               "${_FMOD_LIBDIR}/fmod_vc.lib"
-  IMPORTED_LOCATION             "${_FMOD_BINDIR}/fmod.dll"target_compile_features(CrashoutsAudio PUBLIC cxx_std_17)
+  IMPORTED_LOCATION             "${_FMOD_BINDIR}/fmod.dll"#target_compile_features(CrashoutsAudio PUBLIC cxx_std_17)
   IMPORTED_LOCATION_DEBUG       "${_FMOD_BINDIR}/fmodL.dll"  
   INTERFACE_INCLUDE_DIRECTORIES "${_FMOD_INC}"
 )

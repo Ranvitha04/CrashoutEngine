@@ -18,6 +18,7 @@ runtime-extensible and project-agnostic.
 #include "entitymanager.h"
 #include <imgui.h>
 #include <algorithm>
+#include <filesystem>
 #include "debugdefaults.h"
 
 /*                                                         component includes
@@ -29,6 +30,7 @@ runtime-extensible and project-agnostic.
 #include "collisionmanager.h"
 #include "gamestatemanager.h"
 #include "shapes.h"
+#include "textcomponent.h"
 #include "reflectimgui.h"
 
 using namespace CrashoutsEngine;
@@ -124,7 +126,7 @@ namespace {
 
                 ImGui::SeparatorText("Forces");
                 static float f[3]{ 0.f, 0.f, 0.f };
-                ImGui::InputFloat3("Force to apply", f);
+                ImGui::InputFloat3("Force", f);
                 ImGui::SameLine();
                 if (ImGui::Button("Apply Force##rb")) rb->addForce({ f[0], f[1], f[2] });
                 if (ImGui::Button("Clear Force Accumulator##rb")) rb->clearForceAccumulator();
@@ -320,9 +322,60 @@ namespace {
             char buf[256]{};
             if (sc->textureName.size() < sizeof(buf)) std::memcpy(buf, sc->textureName.data(), sc->textureName.size());
 
-            ImGui::InputText("TextureAsset Name", buf, sizeof(buf));
-            if (ImGui::IsItemEdited() || ImGui::IsItemDeactivatedAfterEdit()) {
-                sc->textureName = buf;
+            ImGui::SetNextItemWidth(ImGui::GetFontSize() * 18.0f);
+            ImGui::InputText("##tex_name", buf, sizeof(buf), ImGuiInputTextFlags_ReadOnly);
+
+            ImGui::SameLine();
+            ImGui::TextDisabled("TextureAsset");
+
+            ImGui::SameLine();
+            if (ImGui::SmallButton("Choose...")) {
+                ImGui::OpenPopup("Pick Texture");
+            }
+
+            // Modal popup with a simple file browser
+            if (ImGui::BeginPopupModal("Pick Texture", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
+                namespace fs = std::filesystem;
+                static std::vector<std::string> s_assets;
+                static bool s_scanned = false;
+                if (!s_scanned) {
+                    s_scanned = true;
+                    s_assets.clear();
+
+                    const std::string assetRoot = "assets/images"; // base folder
+                    for (auto& p : fs::recursive_directory_iterator(assetRoot)) {
+                        if (!p.is_regular_file()) continue;
+
+                        const std::string ext = p.path().extension().string();
+                        std::string lower = ext;
+                        std::transform(lower.begin(), lower.end(), lower.begin(), ::tolower);
+                        if (lower == ".png" || lower == ".jpg" || lower == ".jpeg" ||
+                            lower == ".tga" || lower == ".bmp") {
+
+                            // Store relative path for cleaner display
+                            std::string rel = fs::relative(p.path(), assetRoot).string();
+                            s_assets.push_back(rel);
+                        }
+                    }
+
+                    std::sort(s_assets.begin(), s_assets.end());
+                }
+
+                // Left: list; Right: preview name
+                ImGui::BeginChild("asset_list", ImVec2(420, 300), true);
+                for (auto const& f : s_assets) {
+                    if (ImGui::Selectable(f.c_str())) {
+                        sc->textureName = f;
+                        std::strncpy(buf, f.c_str(), sizeof(buf) - 1);
+                        buf[sizeof(buf) - 1] = '\0';
+                        ImGui::CloseCurrentPopup();
+                        break;
+                    }
+                }
+                ImGui::EndChild();
+
+                if (ImGui::Button("Cancel")) ImGui::CloseCurrentPopup();
+                ImGui::EndPopup();
             }
 
             // If using texture, enable the texture options
@@ -386,6 +439,53 @@ namespace {
     };
 
     /*!
+    @brief Adapter for editing Component::TextComponent.
+    @details Edits type-specific parameters and supports a per-entity preview toggle.
+    */
+    struct TextAdapter : DebugReflection::IComponentAdapter {
+        const char* name() const override { return "TextComponent"; }
+        bool has(ECS& ecs, Entity e) const override {
+            return ecs.HasComponent<Component::TextComponent>(e);
+        }
+        void add(ECS& ecs, Entity e) override {
+            if (!has(ecs, e)) ecs.AddComponent<Component::TextComponent>(e);
+        }
+        void remove(ECS& ecs, Entity e) override {
+            if (has(ecs, e)) ecs.RemoveComponent<Component::TextComponent>(e);
+        }
+        void drawInspector(ECS& ecs, Entity e) override {
+            using namespace Component;
+            auto* fc = ecs.GetComponent<TextComponent>(e);
+            //auto& D = GetDebugDefaults();
+            if (!fc) return;
+
+            char buf[256]{};
+            if (fc->font.size() < sizeof(buf)) std::memcpy(buf, fc->font.data(), fc->font.size());
+
+            ImGui::InputText("Font Name", buf, sizeof(buf));
+            if (ImGui::IsItemEdited() || ImGui::IsItemDeactivatedAfterEdit()) {
+                fc->font = buf;
+            }
+			
+            char buf2[512]{};
+            if (fc->text.size() < sizeof(buf2)) std::memcpy(buf2, fc->text.data(), fc->text.size());
+            
+            ImGui::InputText("Display Text", buf2, sizeof(buf2));
+            if (ImGui::IsItemEdited() || ImGui::IsItemDeactivatedAfterEdit()) {
+                fc->text = buf2;
+            }
+
+            ImGui::Checkbox("Center Text", &fc->centered);
+
+			ImGui::DragFloat("Scale", &fc->scale);
+
+            ImGui::DragFloat2("offset", &fc->offset.x);
+
+            ImGui::DragFloat3("Color", &fc->color.x, 1.f, 0.f, 255.f);
+        }
+    };
+
+    /*!
     @brief Game-state provider installed at runtime (no hardcoded state list).
     @details Bridges GameStateManager to the Debug Menu; exposes current/previous/next and issues ChangeGameState() transitions from a reflected state list.
     */
@@ -445,6 +545,7 @@ namespace {
     static RigidBodyAdapter gRigidBodyAdapter;
     static ColliderAdapter gColliderAdapter;
     static ShapeAdapter gShapeAdapter;
+    static TextAdapter gTextAdapter;
     static GameStateProvider gProvider;
     static BuiltinPhysicsProvider gBuiltinPhys;
 
@@ -468,6 +569,7 @@ extern "C" void RegisterBuiltinComponentAdapters() {
     ComponentRegistry::instance().registerAdapter(&gRigidBodyAdapter);
     ComponentRegistry::instance().registerAdapter(&gColliderAdapter);
     ComponentRegistry::instance().registerAdapter(&gShapeAdapter);
+    ComponentRegistry::instance().registerAdapter(&gTextAdapter);
     DebugReflection::SetGameStateProvider(&gProvider);
     DebugReflection::PhysicsRegistry::instance().registerProvider(&gBuiltinPhys);
 

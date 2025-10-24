@@ -94,16 +94,16 @@ namespace CollisionGizmos {
      @note When @p events is provided, colliders for entities present in any event
            are tinted with a hit color to visually distinguish collisions.
     */
-    void DrawAllColliders(ECS& ecs, [[maybe_unused]] const std::vector<Collision::CollisionEvent>* events, float wireThickness) {
+    void DrawAllColliders(ECS& ecs, [[maybe_unused]] std::vector<Collision::CollisionEvent>* events, float wireThickness) {
         auto& collArr = ecs.GetComponentArray<Component::ColliderComponent>();
-        const CEVec3 ok(0.15f, 0.8f, 0.55f);    // non-colliding tint
-        const CEVec3 hit(1.0f, 0.3f, 0.3f);     // colliding tint
+        const CEVec3 ok(1.0f, 0.3f, 0.3f);    // non-colliding tint
+        const CEVec3 hit(0.15f, 0.8f, 0.55f);     // colliding tint
 
         for (auto e : collArr.indexToEntity) {
             auto* pColliderComp = ecs.GetComponent<Component::ColliderComponent>(e);
             if (!pColliderComp || !pColliderComp->collider) continue;
 
-            const CEVec3 color = /*IsColliding(e, events) ? hit : */  /*TEMP FOR NOW*/ ok;
+            const CEVec3 color = IsColliding(e, events) ? ok : hit;
             const Collision::Collider* pBase = pColliderComp->collider.get();
 
             if (pBase->type == Collision::SPHERE) {
@@ -122,6 +122,7 @@ namespace CollisionGizmos {
                 DrawOBBOutline(pAabb, wireThickness, color);
             }
         }
+
     }
 
     /*!

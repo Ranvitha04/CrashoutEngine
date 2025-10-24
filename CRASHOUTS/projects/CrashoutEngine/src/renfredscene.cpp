@@ -9,6 +9,8 @@ This file
 
 /*                                                   Includes
 ----------------------------------------------------------------------------- */
+#include "shaderasset.h"
+
 #include "renfredscene.h"
 
 #include "sceneutils.h"
@@ -17,7 +19,6 @@ This file
 #include "entitymanager.h"
 #include "assetmanager.h"
 #include "sceneasset.h"
-
 /*                                                   Global Variables
 ----------------------------------------------------------------------------- */
 
@@ -26,13 +27,17 @@ static const char* sceneName = "renfred";
 
 void LoadRenfred()
 {
+	using namespace CrashoutsEngine::Assets;
+	sceneName = "renfred";
 	// Load resources specific to Renfred state
 	globalECS = CrashoutsEngine::ECS::getInstance();
 	globalECS->Reset();
 
-	CrashoutsEngine::Assets::GenerateAssetManifest();
+	GenerateAssetManifest();
 
-	CrashoutsEngine::Assets::AssetManager::GetInstance().LoadManifestAssets();
+	AssetManager::GetInstance().LoadManifestAssets();
+
+	AssetManager::GetInstance().Get<ShaderAsset>("TextShader")->shaderObject.Use();
 }
 
 void InitRenfred()

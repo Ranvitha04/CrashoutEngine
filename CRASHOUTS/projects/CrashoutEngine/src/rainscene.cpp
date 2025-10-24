@@ -8,6 +8,7 @@
 #include "sceneutils.h"
 #include "assetmanager.h"
 #include "sceneasset.h"
+#include "shaderasset.h"
 
 static CrashoutsEngine::ECS* globalECS;
 static const char* sceneName = "rain";
@@ -20,16 +21,15 @@ void LoadRain()
 	globalECS = CrashoutsEngine::ECS::getInstance();
 	globalECS->Reset();
 
-	CrashoutsEngine::Assets::GenerateAssetManifest();
+	using namespace CrashoutsEngine::Assets;
 
-	CrashoutsEngine::Assets::AssetManager::GetInstance().LoadManifestAssets();
+	GenerateAssetManifest();
 
-	GLuint shaderID = LoadShaderProgram("assets/shaders/textShader.vert", "assets/shaders/textShader.frag");
-	if (shaderID == 0) {
-		std::cout << "Failed to load text shader.\n";
-		return;
-	}
-	gTextRenderer = new TextRenderer(Settings::GetScreenWidth(), Settings::GetScreenHeight());
+	AssetManager::GetInstance().LoadManifestAssets();
+
+	AssetManager::GetInstance().Get<ShaderAsset>("TextShader")->shaderObject.Use();
+
+	gTextRenderer = std::make_unique<TextRenderer>();
 }
 
 void InitRain()
@@ -51,7 +51,7 @@ void RenderRain()
 	glClearColor(0.1f, 0.2f, 0.4f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	if (gTextRenderer) {
-		gTextRenderer->RenderCenteredText("Hello", 0.0f, 0.0f, 1.0f, glm::vec3(1.0f));
+		gTextRenderer->RenderCenteredText("Hello", 0.0f, 0.0f, 1.0f, CEVec3{ 1.0f, 1.f, 1.f });
 	}
 
 	Scene::RenderScene(*globalECS);
@@ -61,9 +61,6 @@ void FreeRain()
 {
 	// Free resources specific to Rain state
 	CrashoutsEngine::Serialization::SaveScenes(sceneName);
-
-	delete gTextRenderer;
-	gTextRenderer = nullptr;
 }
 
 void UnloadRain()
