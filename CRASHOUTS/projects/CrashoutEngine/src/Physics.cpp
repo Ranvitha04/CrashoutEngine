@@ -24,10 +24,6 @@ namespace Component {
 		return mMass;
 	}
 
-	void RigidBodyComponent::setMass(f32 newMass) {
-		mMass = newMass;
-	}
-
 	void RigidBodyComponent::addForce(CEVec3 force) {
 		mNetForce += force;
 	}
@@ -38,7 +34,15 @@ namespace Component {
 	void RigidBodyComponent::setMaxVelocity(CEVec3 const& newVel) {
 		mMaximumVel = newVel;
 	}
-	
+
+	void RigidBodyComponent::setMass(f32 newMass) {
+		mMass = newMass;
+	}
+
+	void RigidBodyComponent::setRestitution(f32 restitution) {
+		mRestitutionCoeff = restitution;
+	}
+
 	RigidBodyComponent::RigidBodyComponent(CEVec3 maximumVel, f32 mass, f32 restitutionCoeff) 
 		: mVelocity{ CEVec3{} }, mMaximumVel{ maximumVel }, mMass{ mass }, mNetForce{ CEVec3{} }, mRestitutionCoeff{restitutionCoeff} { /*EMPTY BY DESIGN*/ }
 

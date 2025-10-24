@@ -52,6 +52,7 @@ namespace Component {
 			void updatePhysics(double dt);
 			void setMaxVelocity(CEVec3 const& newVel);
 			CEVec3 getVelocity();
+			void setRestitution(f32 restitution);
 			void setVelocity(CEVec3 const& newVel);
 			f32 getCoeff();
 	};

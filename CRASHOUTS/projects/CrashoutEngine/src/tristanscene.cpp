@@ -28,9 +28,6 @@ void LoadTristan() {
 	globalECS = CrashoutsEngine::ECS::getInstance();
 	globalECS->Reset();
 
-
-
-
 	GenerateAssetManifest();
 
 	AssetManager::GetInstance().LoadManifestAssets();
