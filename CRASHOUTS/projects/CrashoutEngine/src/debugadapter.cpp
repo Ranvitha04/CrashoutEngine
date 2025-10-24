@@ -456,7 +456,7 @@ namespace {
         void drawInspector(ECS& ecs, Entity e) override {
             using namespace Component;
             auto* fc = ecs.GetComponent<TextComponent>(e);
-            auto& D = GetDebugDefaults();
+            //auto& D = GetDebugDefaults();
             if (!fc) return;
 
             char buf[256]{};
