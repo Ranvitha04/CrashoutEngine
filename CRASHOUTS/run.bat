@@ -5,16 +5,6 @@ pushd "%~dp0"
 set "BUILD_DIR=build"
 set "EXE_NAME=Descent.exe"
 
-REM --- Handle 'clean' command ---
-if /i "%~1"=="clean" (
-    echo Deleting build directory to force a clean reconfiguration and build...
-    if exist "%BUILD_DIR%" (
-        rmdir /s /q "%BUILD_DIR%"
-    )
-    echo Clean complete.
-    goto :EOF
-)
-
 REM --- Configuration Selection for Building and Running ---
 set "CONFIG=%1"
 if not defined CONFIG (

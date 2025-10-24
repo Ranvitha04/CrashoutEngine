@@ -85,6 +85,10 @@
             "path": "backgrounds\\crashouts.png"
         },
         {
+            "name": "ducky",
+            "path": "backgrounds\\ducky.png"
+        },
+        {
             "name": "foreground base",
             "path": "backgrounds\\foreground base.png"
         },
@@ -197,6 +201,10 @@
             "path": "Character\\Run.gif"
         },
         {
+            "name": "ducky_2_spritesheet",
+            "path": "ducky_2_spritesheet.png"
+        },
+        {
             "name": "Slime Idle",
             "path": "Monsters\\Slime Idle.png"
         },
@@ -227,6 +235,16 @@
         {
             "name": "renfred",
             "path": "renfred"
+        }
+    ],
+    "shaders": [
+        {
+            "name": "CrashoutShader",
+            "path": "CrashoutShader"
+        },
+        {
+            "name": "TextShader",
+            "path": "TextShader"
         }
     ]
 }
