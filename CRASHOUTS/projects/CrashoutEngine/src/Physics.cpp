@@ -78,6 +78,10 @@ namespace Component {
 		return mRestitutionCoeff;
 	}
 
+	CEVec3 RigidBodyComponent::getMaxVelocity() {
+		return mMaximumVel;
+	}
+
 }
 
 /*TEMP*/
@@ -98,7 +102,7 @@ namespace {
 namespace Physics {
 
 	void PhysicsHandler::handleCollisionMessages(Collision::CollisionMessage& collEvent, PhysicsHandler &observer) {
-
+		if (observer.GetPaused()) return;
 		CrashoutsEngine::ECS& globalECS = *(CrashoutsEngine::ECS::getInstance());
 		std::pair<CrashoutsEngine::Entity, CrashoutsEngine::Entity> colPair{ collEvent.getCollisionPair() };
 		if (!globalECS.HasComponent<Component::RigidBodyComponent>(colPair.first) || !globalECS.HasComponent<Component::RigidBodyComponent>(colPair.second)) return;
@@ -201,7 +205,7 @@ namespace Physics {
 		/*UPDATE FORCES*/
 
 		if (sPaused) {
-			collisionEvents.clear();
+			collisionEvents = std::vector<Collision::CollisionEvent>{};
 			if (!sStepOnce) return;
 			// allow exactly one tick when paused+Step pressed
 		}

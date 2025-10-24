@@ -51,6 +51,7 @@ namespace Component {
 			void clearForceAccumulator();
 			void updatePhysics(double dt);
 			void setMaxVelocity(CEVec3 const& newVel);
+			CEVec3 getMaxVelocity();
 			CEVec3 getVelocity();
 			void setRestitution(f32 restitution);
 			void setVelocity(CEVec3 const& newVel);

@@ -30,6 +30,11 @@ void LoadTristan() {
 
 	GenerateAssetManifest();
 
+
+
+
+
+
 	AssetManager::GetInstance().LoadManifestAssets();
 
 
@@ -41,6 +46,7 @@ void InitTristan() {
 
 void UpdateTristan()
 {
+
 	
 
 }
@@ -53,10 +59,11 @@ void RenderTristan() {
 
 	Scene::RenderScene(*globalECS);
 
+
 }
 
 void FreeTristan() {
-
+	CrashoutsEngine::Serialization::SaveScenes("tristan");
 }
 
 void UnloadTristan()
