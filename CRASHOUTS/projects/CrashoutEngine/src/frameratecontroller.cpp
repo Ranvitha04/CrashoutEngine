@@ -11,6 +11,7 @@
 FrameRateController::FrameRateController()
 {
 	SetTargetFPS(144);
+	SetFixedDT(60.0);
 	Reset();
 }
 
@@ -22,35 +23,45 @@ void FrameRateController::SetTargetFPS(int FPSCap)
 	mTargetDT = (mTargetFPS > 0) ? 1.0 / static_cast<double>(mTargetFPS):0.0;
 }
 
+void FrameRateController::SetFixedDT(double step)
+{
+	// just in case someone wanna test with zero lol, i know it will happen somewhere - Rain
+	mFixedDT = (step > 0.0) ? step : (1.0 / 60.0);
+}
+
 void FrameRateController::Reset()
 {
 	mFrameStart = ClockTime::now();
-	//prevent division by zero
-	mDT = 1.0 / (mTargetFPS > 0 ? static_cast<double>(mTargetFPS) : defaultFallBack);
-	mFPS = defaultFallBack;
+	mDT = 0.0;
+	mFPS = 0.0;
+	mAccumulatedTime = 0.0;
+	mCurrentSteps = 0;
 }
 
 void FrameRateController::FrameStart()
 {
 	mFrameStart = ClockTime::now();
+	mCurrentSteps = 0;
 }
 
 void FrameRateController::FrameEnd()
 {
 	using namespace std::chrono;
 	double elapsed = duration<double>(ClockTime::now() - mFrameStart).count();
-	//only update dt and fps if capped
-	if (mTargetFPS > 0) {
-		while (elapsed < mTargetDT) {
-			elapsed = duration<double>(ClockTime::now() - mFrameStart).count();
-		}
-	}
+
 	//clamp dt between 0.1ms and 250ms so the game does not blow up - Rain
 	mDT = std::clamp(elapsed, 0.0001, 0.25);
+	mFPS = 1.0 / mDT;
 
-	//instant fps this frame
-	double inst = 1.0 / mDT;
-	mFPS = inst;
+	// accumulate time since last frame
+	mAccumulatedTime += mDT;
+	// count how many physics steps to run
+
+	while (mAccumulatedTime >= mFixedDT)
+	{
+		mAccumulatedTime -= mFixedDT;
+		mCurrentSteps++;
+	}
 }
 
 double FrameRateController::DT() const
@@ -66,4 +77,14 @@ double FrameRateController::FPS() const
 int FrameRateController::CAP() const
 {
 	return mTargetFPS;
+}
+
+double FrameRateController::FixedDT() const
+{
+	return mFixedDT;
+}
+
+int FrameRateController::StepCount() const
+{
+	return mCurrentSteps;
 }

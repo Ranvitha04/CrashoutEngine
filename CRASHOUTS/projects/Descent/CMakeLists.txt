@@ -43,6 +43,7 @@ target_link_libraries(${PROJECT_NAME}
     #CrashoutsAudio
 )
 #link_fmod_to(${PROJECT_NAME}) 
+link_mono_to(${PROJECT_NAME})
 
 # Apply common include directories
 target_include_directories(${PROJECT_NAME} PRIVATE

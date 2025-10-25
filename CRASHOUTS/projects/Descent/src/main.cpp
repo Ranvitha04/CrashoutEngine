@@ -15,6 +15,7 @@ context and implement a game loop.
 #pragma warning(disable: 4005)
 
 #include "engine.h"
+#include "monomanager.h"
 
 #pragma warning(pop)
 
@@ -69,6 +70,9 @@ int WINAPI WinMain(
 
 #endif
 
+    MonoManager::Init();
+    MonoManager::LoadAssembly("scripts/ManagedScripts.dll");
+
     Init();
     double dt = FRC.DT();
 
@@ -84,6 +88,7 @@ int WINAPI WinMain(
 
     // Cleanup
     CleanUp();
+    MonoManager::Shutdown();
 
     _CrtMemCheckpoint(&stateEnd);
     if (_CrtMemDifference(&stateDiff, &stateStart, &stateEnd)) {

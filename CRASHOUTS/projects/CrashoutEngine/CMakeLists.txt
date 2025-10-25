@@ -103,16 +103,33 @@ target_link_libraries(${PROJECT_NAME}
         CrashoutsAudio
 )
 link_fmod_to(${PROJECT_NAME})
-
+link_mono_to(${PROJECT_NAME})
+message(STATUS "Mono linked successfully to CrashoutEngine.")
 # Apply common include directories
 target_include_directories(${PROJECT_NAME} 
 PUBLIC
     ${project_dir}/include
+    ${_MONO_INC}
 PRIVATE
     ${CMAKE_SOURCE_DIR}/lib/glm                 # Added GLM include
     ${_FMOD_INC}                                # Added FMOD include
 )
-        
+
+# --- Build and copy ManagedScripts.dll automatically ---
+add_custom_target(ManagedScripts ALL
+    COMMAND ${CMAKE_COMMAND} -E echo "Building ManagedScripts..."
+    COMMAND dotnet build ${CMAKE_SOURCE_DIR}/projects/ManagedScripts/ManagedScripts.csproj /p:Configuration=${CMAKE_BUILD_TYPE}
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/projects/ManagedScripts
+)
+
+# Copy the built DLL into the runtime folder used by your executable
+add_custom_command(
+    TARGET ManagedScripts POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E make_directory
+            ${CMAKE_BINARY_DIR}/scripts
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            ${CMAKE_SOURCE_DIR}/projects/CrashoutEngine/scripts/ManagedScripts.dll
+            ${CMAKE_BINARY_DIR}/scripts/ManagedScripts.dll
+)
+
 set_property(TARGET ${PROJECT_NAME} PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "$<TARGET_FILE_DIR:${PROJECT_NAME}>")
-
-
