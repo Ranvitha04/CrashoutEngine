@@ -100,26 +100,23 @@ namespace CollisionGizmos {
         const CEVec3 hit(0.15f, 0.8f, 0.55f);     // colliding tint
 
         for (auto e : collArr.indexToEntity) {
-            auto* pColliderComp = ecs.GetComponent<Component::ColliderComponent>(e);
-            if (!pColliderComp || !pColliderComp->collider) continue;
+            Component::ColliderComponent const & pColliderComp = *ecs.GetComponent<Component::ColliderComponent>(e);
+
+            if (!pColliderComp.collider) continue;
 
             const CEVec3 color = IsColliding(e, events) ? ok : hit;
-            const Collision::Collider* pBase = pColliderComp->collider.get();
 
-            if (pBase->type == Collision::SPHERE) {
-                auto const* pSphere = dynamic_cast<const Collision::Sphere*>(pBase);
-                if (!pSphere) continue;
-                DrawCircleOutline(pSphere->center, pSphere->radius, 48, wireThickness, color);
+            if (pColliderComp.collider->type == Collision::SPHERE) {
+                Collision::Sphere const& sphereTemp = dynamic_cast<Collision::Sphere const&>(*pColliderComp.collider);
+                DrawCircleOutline(sphereTemp.center, sphereTemp.radius, 48, wireThickness, color);
             }
-            else if (pBase->type == Collision::AABB) {
-                auto const* pAabb = dynamic_cast<const Collision::AABBRect*>(pBase);
-                if (!pAabb) continue;
-                DrawAABBOutline(pAabb->min, pAabb->max, wireThickness, color);
+            else if (pColliderComp.collider->type == Collision::AABB) {
+                Collision::AABBRect const& aabbTemp = dynamic_cast<Collision::AABBRect const&>(*pColliderComp.collider);
+                DrawAABBOutline(aabbTemp.min, aabbTemp.max, wireThickness, color);
             }
-            else if (pBase->type == Collision::OBB) {
-                auto const* pAabb = dynamic_cast<const Collision::OBBRect*>(pBase);
-                if (!pAabb) continue;
-                DrawOBBOutline(pAabb, wireThickness, color);
+            else if (pColliderComp.collider->type == Collision::OBB) {
+                Collision::OBBRect const& obbTemp = dynamic_cast<Collision::OBBRect const&>(*pColliderComp.collider);
+                DrawOBBOutline(&obbTemp, wireThickness, color);
             }
         }
 

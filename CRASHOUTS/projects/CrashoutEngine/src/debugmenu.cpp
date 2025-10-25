@@ -878,12 +878,12 @@ namespace UI { // --------------------------------------------------------------
     */
     void RenderAll(FrameProfiler& profiler, Physics::PhysicsHandler& phys, UIState& ui, ECS& ecs, std::vector<Entity>& entities, Entity& selected)
     {
+        auto& collisions = phys.collisions();
         if (ui.drawCollOverlay) {
-            auto& collisions = phys.collisions();
             CollisionGizmos::DrawAllColliders(ecs, &collisions, ui.overlayThickness);
             //CollisionGizmos::DrawContactsAndNormals(collisions, 0.25f, ui.overlayThickness); Removed for now, will need to calculate the collision pair for normals properly
-            collisions.clear();
         }
+        collisions = std::vector<Collision::CollisionEvent>{};
 
         BeginFrame();
         // Dockspace
