@@ -811,58 +811,49 @@ namespace UI { // --------------------------------------------------------------
         AudioSystem::instance().update();
     }
 
+    static void RenderDebugMenuBar(UIState& ui) {
+        if (!ImGui::BeginMenuBar()) return;
 
-    static void RenderTogglesWindow(UIState& ui)
-    {
-        ImGui::SetNextWindowSize(ImVec2(260.f, 300.f), ImGuiCond_FirstUseEver);
-        if (ImGui::Begin("Debug Controls", nullptr, LockFlags(ui.lockLayout))) {
-            ImGui::TextDisabled("Visibility");
+        if (ImGui::BeginMenu("View")) {
+            struct Toggle { const char* label; bool* flag; };
+            const Toggle toggles[] = {
+                {"ECS", &ui.showECS},
+                {"Assets", &ui.showAssets},
+                {"Inspector", &ui.showInspector},
+                {"Physics", &ui.showPhysics},
+                {"Performance", &ui.showPerf},
+                {"Console", &ui.showConsole},
+                {"Game State", &ui.showGameState},
+                {"Audio", &ui.showAudio},
+            };
+            for (auto& t : toggles) ImGui::MenuItem(t.label, nullptr, t.flag);
+
             ImGui::Separator();
-
-            // Default / legacy toggles (kept so old projects still work)
-            ImGui::Checkbox("ECS", &ui.showECS);
-            ImGui::Checkbox("Assets", &ui.showAssets);
-            ImGui::Checkbox("Inspector", &ui.showInspector);
-            ImGui::Checkbox("Physics", &ui.showPhysics);
-            ImGui::Checkbox("Performance", &ui.showPerf);
-            ImGui::Checkbox("Console", &ui.showConsole);
-            ImGui::Checkbox("Game State", &ui.showGameState);
-            ImGui::Checkbox("Audio", &ui.showAudio);
-
-            ImGui::Spacing();
-            ImGui::TextDisabled("Settings");
-            ImGui::Separator();
-            ImGui::Checkbox("Lock Layout", &ui.lockLayout);
-            ImGui::Checkbox("Draw Colliders", &ui.drawCollOverlay);
-
-            ImGui::Spacing();
-            if (ImGui::Button("Reset Dock Layout")) {
-                s_layoutBuilt = false; // This triggers the rebuild
-            }
-            ImGui::SameLine(); Help("Rebuilds the docking layout to default positions.");
-
-            ImGui::Spacing();
-            if (ImGui::Button("Show All")) {
-                ui.showECS = ui.showPhysics = ui.showPerf = ui.showConsole = ui.showGameState = ui.showInspector = ui.showAudio = ui.showAssets = true;
-                // Also turn on any registered, toggle-backed panels:
+            if (ImGui::MenuItem("Show All")) {
+                ui.showECS = ui.showAssets = ui.showInspector = ui.showPhysics =
+                    ui.showPerf = ui.showConsole = ui.showGameState = ui.showAudio = true;
                 for (auto const& p : DebugReflection::PanelRegistry::instance().panels())
                     if (p.toggleFlag) *p.toggleFlag = true;
             }
-            ImGui::SameLine();
-            if (ImGui::Button("Hide All")) {
-                ui.showECS = ui.showPhysics = ui.showPerf = ui.showConsole = ui.showGameState = ui.showInspector = ui.showAudio = ui.showAssets = false;
+            if (ImGui::MenuItem("Hide All")) {
+                ui.showECS = ui.showAssets = ui.showInspector = ui.showPhysics =
+                    ui.showPerf = ui.showConsole = ui.showGameState = ui.showAudio = false;
                 for (auto const& p : DebugReflection::PanelRegistry::instance().panels())
                     if (p.toggleFlag) *p.toggleFlag = false;
             }
-
-            // To be fixed later
-            /*ImGui::Spacing();
-            if (ImGui::Button("Save Layout")) ImGui::SaveIniSettingsToDisk(nullptr);*/
-            ImGui::Spacing();
-            ImGui::SameLine();
-            if (ImGui::Button("Simulate Crash")) ImGui::LoadIniSettingsFromDisk(nullptr);
+            if (ImGui::MenuItem("Reset Dock Layout")) {
+                s_layoutBuilt = false;   // triggers rebuild next frame
+            }
+            ImGui::EndMenu();
         }
-        ImGui::End();
+
+        if (ImGui::BeginMenu("Options")) {
+            ImGui::MenuItem("Lock Layout", nullptr, &ui.lockLayout);
+            ImGui::MenuItem("Draw Colliders", nullptr, &ui.drawCollOverlay);
+            ImGui::EndMenu();
+        }
+
+        ImGui::EndMenuBar();
     }
 
     // -- Coordinator(s) --------------------------------------------------------
@@ -890,11 +881,20 @@ namespace UI { // --------------------------------------------------------------
         ImGuiViewport* viewport = ImGui::GetMainViewport();
         ImGui::SetNextWindowPos(viewport->WorkPos);
         ImGui::SetNextWindowSize(viewport->WorkSize);
+        ImGui::SetNextWindowViewport(viewport->ID);
+
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+
         ImGui::Begin("Dockspace", 0,
             ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
             ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBringToFrontOnFocus |
             ImGuiWindowFlags_NoNavFocus | ImGuiWindowFlags_NoScrollbar |
-            ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBackground);
+            ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_MenuBar);
+        ImGui::PopStyleVar(3);
+
+        RenderDebugMenuBar(ui);
 
         ImGuiID dockspace_id = ImGui::GetID("Dockspace");
         int ds_flags_i = (int)ImGuiDockNodeFlags_None | (int)ImGuiDockNodeFlags_NoDockingInCentralNode | (int)ImGuiDockNodeFlags_PassthruCentralNode;
@@ -938,7 +938,6 @@ namespace UI { // --------------------------------------------------------------
             ImGui::DockBuilderFinish(dockspace_id);
         }
 
-        RenderTogglesWindow(ui);
         if (ui.showECS) {
             RenderEcsPanel(profiler, ecs, entities, selected, ui); 
         }

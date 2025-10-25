@@ -157,7 +157,7 @@ namespace UI {
     */
     void RenderAudioPanel(FrameProfiler&, CrashoutsEngine::ECS& ecs, UIState& ui);
 
-    static void RenderTogglesWindow(UIState& ui);
+    static void RenderDebugMenuBar(UIState& ui);
 
     /*!
     @brief Renders all UI panels and overlays in sequence.
