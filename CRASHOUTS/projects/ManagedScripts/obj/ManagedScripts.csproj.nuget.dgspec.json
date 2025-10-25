@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\mdsha\\Documents\\csd2401f25_team_crashouts\\CRASHOUTS\\projects\\ManagedScripts\\ManagedScripts.csproj": {}
+    "E:\\GIT\\csd2401f25_team_crashouts\\CRASHOUTS\\projects\\ManagedScripts\\ManagedScripts.csproj": {}
   },
   "projects": {
-    "C:\\Users\\mdsha\\Documents\\csd2401f25_team_crashouts\\CRASHOUTS\\projects\\ManagedScripts\\ManagedScripts.csproj": {
+    "E:\\GIT\\csd2401f25_team_crashouts\\CRASHOUTS\\projects\\ManagedScripts\\ManagedScripts.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\mdsha\\Documents\\csd2401f25_team_crashouts\\CRASHOUTS\\projects\\ManagedScripts\\ManagedScripts.csproj",
+        "projectUniqueName": "E:\\GIT\\csd2401f25_team_crashouts\\CRASHOUTS\\projects\\ManagedScripts\\ManagedScripts.csproj",
         "projectName": "ManagedScripts",
-        "projectPath": "C:\\Users\\mdsha\\Documents\\csd2401f25_team_crashouts\\CRASHOUTS\\projects\\ManagedScripts\\ManagedScripts.csproj",
-        "packagesPath": "C:\\Users\\mdsha\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\mdsha\\Documents\\csd2401f25_team_crashouts\\CRASHOUTS\\projects\\ManagedScripts\\obj\\",
+        "projectPath": "E:\\GIT\\csd2401f25_team_crashouts\\CRASHOUTS\\projects\\ManagedScripts\\ManagedScripts.csproj",
+        "packagesPath": "C:\\Users\\pc\\.nuget\\packages\\",
+        "outputPath": "E:\\GIT\\csd2401f25_team_crashouts\\CRASHOUTS\\projects\\ManagedScripts\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\mdsha\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\pc\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -26,7 +26,6 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
