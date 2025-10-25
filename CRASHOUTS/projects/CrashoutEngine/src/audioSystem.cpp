@@ -16,6 +16,7 @@
 
 #include "audioSystem.h"
 #include <cstdio>
+#include <algorithm>
 
 using namespace CrashoutsEngine::Audio;
 //One audio system
@@ -34,11 +35,11 @@ bool AudioSystem::ok(FMOD_RESULT r, const char* where) {
 static std::string joinPath(const std::string& a, const std::string& b) {
 #ifdef _WIN32
     const char sep = '\\';
-
+#else
+    const char sep = '/';
 #endif
     if (a.empty()) return b;
-    if (!a.empty() && (a.back() == '\\' || a.back() == '/'))
-        return a + b;
+    if (!a.empty() && (a.back() == '\\' || a.back() == '/')) return a + b;
     return a + sep + b;
 }
 //Start fmod to play sounds
@@ -84,6 +85,7 @@ bool AudioSystem::loadBank(const std::string& bankFile) {
     }
 
     mBanks.insert(std::make_pair(bankFile, b));
+    if (mStudio) mStudio->flushCommands();
     return true;
 }
 //Stop all sound
@@ -153,4 +155,124 @@ FMOD::Studio::EventInstance* AudioSystem::createInstance(const std::string& even
     FMOD::Studio::EventInstance* inst = nullptr;
     if (!ok(d->createInstance(&inst), "createInstance")) return nullptr;
     return inst; 
+}
+
+bool AudioSystem::listAllEventPaths(std::vector<std::string>& out) {
+    out.clear();
+    if (!mStudio) return false;
+    mStudio->flushCommands();
+
+    std::vector<std::string> paths;
+    for (auto& kv : mBanks) {
+        FMOD::Studio::Bank* bank = kv.second;
+        if (!bank) continue;
+
+        int evCount = 0;
+        if (!ok(bank->getEventCount(&evCount), "Bank::getEventCount")) continue;
+        if (evCount <= 0) continue;
+
+        std::vector<FMOD::Studio::EventDescription*> evs(evCount, nullptr);
+        if (!ok(bank->getEventList(evs.data(), evCount, &evCount), "Bank::getEventList")) continue;
+
+        for (int i = 0; i < evCount; ++i) {
+            char path[512] = {};
+            int retrieved = 0;
+            if (evs[i] && evs[i]->getPath(path, sizeof(path), &retrieved) == FMOD_OK && retrieved > 0) {
+                paths.emplace_back(path);
+            }
+        }
+    }
+
+    std::sort(paths.begin(), paths.end());
+    paths.erase(std::unique(paths.begin(), paths.end()), paths.end());
+    out.swap(paths);
+    return true;
+}
+
+bool AudioSystem::listEventPathsFromBank(const std::string& bankFile, std::vector<std::string>& out) {
+    out.clear();
+    if (!mStudio) return false;
+
+    // Use already-loaded bank if present; else load temporarily.
+    FMOD::Studio::Bank* bank = nullptr;
+    auto it = mBanks.find(bankFile);
+    bool tempLoaded = false;
+
+    if (it != mBanks.end()) {
+        bank = it->second;
+    }
+    else {
+        std::string full = joinPath(mBanksDir, bankFile);
+        if (!ok(mStudio->loadBankFile(full.c_str(), FMOD_STUDIO_LOAD_BANK_NORMAL, &bank), "loadBankFile (inspect)")) {
+            return false;
+        }
+        tempLoaded = true;
+    }
+
+    int evCount = 0;
+    ok(bank->getEventCount(&evCount), "Bank::getEventCount");
+    if (evCount > 0) {
+        std::vector<FMOD::Studio::EventDescription*> evs(evCount, nullptr);
+        ok(bank->getEventList(evs.data(), evCount, &evCount), "Bank::getEventList");
+        for (int i = 0; i < evCount; ++i) {
+            char path[512] = {};
+            int retrieved = 0;
+            if (evs[i] && evs[i]->getPath(path, sizeof(path), &retrieved) == FMOD_OK && retrieved > 0) {
+                out.emplace_back(path);
+            }
+        }
+        std::sort(out.begin(), out.end());
+        out.erase(std::unique(out.begin(), out.end()), out.end());
+    }
+
+    if (tempLoaded && bank) bank->unload();
+    return true;
+}
+
+void AudioSystem::inspectBankToConsole(const std::string& bankFile) {
+    FMOD::Studio::Bank* bank = nullptr;
+    std::string full = joinPath(mBanksDir, bankFile);
+    if (!ok(mStudio->loadBankFile(full.c_str(), FMOD_STUDIO_LOAD_BANK_NORMAL, &bank), "loadBankFile (inspect console)"))
+        return;
+
+    int count = 0;
+    std::fprintf(stdout, "\n--- Inspecting bank: %s ---\n", bankFile.c_str());
+
+    // Events
+    ok(bank->getEventCount(&count), "getEventCount");
+    if (count > 0) {
+        std::vector<FMOD::Studio::EventDescription*> list(count);
+        ok(bank->getEventList(list.data(), count, &count), "getEventList");
+        std::fprintf(stdout, "Events (%d):\n", count);
+        for (auto* d : list) {
+            char p[512]; int n = 0;
+            if (d && d->getPath(p, sizeof(p), &n) == FMOD_OK) std::fprintf(stdout, "  %s\n", p);
+        }
+    }
+
+    // Buses
+    ok(bank->getBusCount(&count), "getBusCount");
+    if (count > 0) {
+        std::vector<FMOD::Studio::Bus*> list(count);
+        ok(bank->getBusList(list.data(), count, &count), "getBusList");
+        std::fprintf(stdout, "Buses (%d):\n", count);
+        for (auto* b : list) {
+            char p[512]; int n = 0;
+            if (b && b->getPath(p, sizeof(p), &n) == FMOD_OK) std::fprintf(stdout, "  %s\n", p);
+        }
+    }
+
+    // VCAs
+    ok(bank->getVCACount(&count), "getVCACount");
+    if (count > 0) {
+        std::vector<FMOD::Studio::VCA*> list(count);
+        ok(bank->getVCAList(list.data(), count, &count), "getVCAList");
+        std::fprintf(stdout, "VCAs (%d):\n", count);
+        for (auto* v : list) {
+            char p[512]; int n = 0;
+            if (v && v->getPath(p, sizeof(p), &n) == FMOD_OK) std::fprintf(stdout, "  %s\n", p);
+        }
+    }
+
+    bank->unload();
 }

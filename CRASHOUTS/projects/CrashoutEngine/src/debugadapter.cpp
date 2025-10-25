@@ -19,6 +19,7 @@ runtime-extensible and project-agnostic.
 #include <imgui.h>
 #include <algorithm>
 #include <filesystem>
+#include <numeric>
 #include "debugdefaults.h"
 
 /*                                                         component includes
@@ -32,6 +33,8 @@ runtime-extensible and project-agnostic.
 #include "shapes.h"
 #include "textcomponent.h"
 #include "reflectimgui.h"
+#include "audiocomponent.h"
+#include "audioSystem.h"
 
 using namespace CrashoutsEngine;
 
@@ -485,6 +488,185 @@ namespace {
         }
     };
 
+    struct AudioAdapter : DebugReflection::IComponentAdapter {
+        const char* name() const override { return "Audio"; }
+        bool has(ECS& ecs, Entity e) const override {
+            return ecs.HasComponent<Component::AudioEmitterComponent>(e);
+        }
+        void add(ECS& ecs, Entity e) override {
+            if (!has(ecs, e)) ecs.AddComponent<Component::AudioEmitterComponent>(e);
+        }
+        void remove(ECS& ecs, Entity e) override {
+            if (has(ecs, e)) {
+                if (auto* c = ecs.GetComponent<Component::AudioEmitterComponent>(e);
+                    c && c->inst) {
+                    c->inst->stop(FMOD_STUDIO_STOP_IMMEDIATE); c->inst->release(); c->inst = nullptr;
+                }
+                ecs.RemoveComponent<Component::AudioEmitterComponent>(e);
+            }
+        }
+        void drawInspector(ECS& ecs, Entity e) override {
+            using Component::AudioEmitterComponent;
+            auto* c = ecs.GetComponent<AudioEmitterComponent>(e);
+            if (!c) return;
+
+            // Event path text
+            ImGui::SeparatorText("Event");
+
+            char buf[256]{};
+            if (c->eventPath.size() < sizeof(buf)) std::memcpy(buf, c->eventPath.data(), c->eventPath.size());
+            ImGui::SetNextItemWidth(ImGui::GetFontSize() * 18.0f);
+            ImGui::InputTextWithHint("##event_path", "event:/…", buf, sizeof(buf));
+            if (ImGui::IsItemEdited() || ImGui::IsItemDeactivatedAfterEdit()) {
+                c->eventPath = buf;
+            }
+            ImGui::SameLine();
+            ImGui::TextDisabled("Event");
+
+            ImGui::SameLine();
+            if (ImGui::SmallButton("Choose...")) {
+                ImGui::OpenPopup("Pick Audio Event");
+            }
+
+            if (ImGui::BeginPopupModal("Pick Audio Event", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
+                namespace fs = std::filesystem;
+                static std::vector<std::string> s_audioDisplay;  // shown to user
+                static std::vector<std::string> s_audioEvent;    // actual event:/… we’ll write
+                static bool s_scanned = false;
+
+                // one-time (per session) scan
+                if (!s_scanned) {
+                    s_scanned = true;
+                    s_audioDisplay.clear();
+                    s_audioEvent.clear();
+
+                    const fs::path assetRoot = "assets/audio";
+                    auto to_event_like = [&](const fs::path& p) -> std::string {
+                        // turn assets/audio/SFX/Beep.wav -> event:/SFX/Beep
+                        fs::path rel = fs::relative(p, assetRoot);
+                        fs::path withoutExt = rel;
+                        if (withoutExt.has_extension()) withoutExt.replace_extension();
+                        std::string e = withoutExt.generic_string();
+
+                        // Capitalization/punctuation are preserved; prepend event:/ and normalize slashes.
+                        return "event:/" + e;
+                        };
+
+                    try {
+                        for (auto& entry : fs::recursive_directory_iterator(assetRoot)) {
+                            if (!entry.is_regular_file()) continue;
+                            std::string ext = entry.path().extension().string();
+                            std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+
+                            // Include common authoring/artifacts; refine as needed for your pipeline
+                            if (ext == ".wav" || ext == ".mp3" || ext == ".ogg" || ext == ".fsb" || ext == ".bank") {
+                                std::string disp = fs::relative(entry.path(), assetRoot).generic_string();
+                                std::string ev = to_event_like(entry.path());
+
+                                s_audioDisplay.push_back(disp);
+                                s_audioEvent.push_back(ev);
+                            }
+                        }
+
+                        // Sort by display name
+                        std::vector<size_t> idx(s_audioDisplay.size());
+                        std::iota(idx.begin(), idx.end(), 0);
+                        std::sort(idx.begin(), idx.end(), [&](size_t a, size_t b) {
+                            return s_audioDisplay[a] < s_audioDisplay[b];
+                           });
+
+                        std::vector<std::string> disp2, ev2;
+                        disp2.reserve(idx.size()); ev2.reserve(idx.size());
+                        for (size_t i : idx) { disp2.push_back(std::move(s_audioDisplay[i])); ev2.push_back(std::move(s_audioEvent[i])); }
+                        s_audioDisplay.swap(disp2); s_audioEvent.swap(ev2);
+                    }
+                    catch (...) {
+                        // swallow errors; empty list will be shown
+                    }
+                }
+
+                // Left: list
+                ImGui::BeginChild("audio_list", ImVec2(420, 300), true);
+                for (size_t i = 0; i < s_audioDisplay.size(); ++i) {
+                    if (ImGui::Selectable(s_audioDisplay[i].c_str())) {
+                        c->eventPath = s_audioEvent[i];
+
+                        // reflect selection back to the read-only text box
+                        std::strncpy(buf, c->eventPath.c_str(), sizeof(buf) - 1);
+                        buf[sizeof(buf) - 1] = '\0';
+
+                        ImGui::CloseCurrentPopup();
+                        break;
+                    }
+                }
+                ImGui::EndChild();
+
+                if (ImGui::Button("Rescan")) {
+                    // allow rescanning if you add new audio during runtime
+                    s_scanned = false;
+                }
+                ImGui::SameLine();
+                if (ImGui::Button("Cancel")) ImGui::CloseCurrentPopup();
+
+                ImGui::EndPopup();
+            }
+
+            ImGui::DragFloat("Volume", &c->volume, 0.01f, 0.f, 5.f);
+            ImGui::DragFloat("Pitch", &c->pitch, 0.01f, 0.25f, 4.f);
+            ImGui::Checkbox("3D Spatial", &c->spatial3D);
+
+            // Create/Play/Stop lifecycle
+            if (ImGui::Button(c->inst ? "Restart" : "Play")) {
+                if (!c->eventPath.empty()) {
+                    if (c->inst) { c->inst->stop(FMOD_STUDIO_STOP_IMMEDIATE); c->inst->release(); c->inst = nullptr; }
+                    FMOD::Studio::EventInstance* inst = Audio::AudioSystem::instance().createInstance(c->eventPath.c_str());
+                    if (inst) {
+                        inst->setVolume(c->volume);
+                        inst->setPitch(c->pitch);
+                        // Optional: attach 3D to Transform
+                        if (c->spatial3D) {
+                            if (auto* t = ecs.GetComponent<Component::TransformComponent>(e)) {
+                                FMOD_3D_ATTRIBUTES a{};
+                                a.position = { t->position.x, t->position.y, t->position.z };
+                                a.forward = { 0,0,1 }; a.up = { 0,1,0 }; a.velocity = { 0,0,0 };
+                                inst->set3DAttributes(&a);
+                            }
+                        }
+                        inst->start();
+                        c->inst = inst;
+                    }
+                }
+            }
+            ImGui::SameLine();
+            if (ImGui::Button("Stop") && c->inst) {
+                c->inst->stop(FMOD_STUDIO_STOP_ALLOWFADEOUT);
+            }
+
+            // Live controls for a running instance
+            if (c->inst) {
+                c->inst->setVolume(c->volume);
+                c->inst->setPitch(c->pitch);
+
+                // Expose event parameters dynamically
+                FMOD::Studio::EventDescription* desc = nullptr;
+                c->inst->getDescription(&desc);
+                if (desc) {
+                    int count = 0; desc->getParameterDescriptionCount(&count);
+                    for (int i = 0; i < count; ++i) {
+                        FMOD_STUDIO_PARAMETER_DESCRIPTION pd{};
+                        if (desc->getParameterDescriptionByIndex(i, &pd) == FMOD_OK) {
+                            float v = 0.f;
+                            c->inst->getParameterByID(pd.id, &v, nullptr);
+                            if (ImGui::DragFloat(pd.name, &v, 0.01f, pd.minimum, pd.maximum, "%.3f")) {
+                                c->inst->setParameterByID(pd.id, v);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    };
+
     /*!
     @brief Game-state provider installed at runtime (no hardcoded state list).
     @details Bridges GameStateManager to the Debug Menu; exposes current/previous/next and issues ChangeGameState() transitions from a reflected state list.
@@ -546,6 +728,7 @@ namespace {
     static ColliderAdapter gColliderAdapter;
     static ShapeAdapter gShapeAdapter;
     static TextAdapter gTextAdapter;
+    static AudioAdapter gAudioAdapter;
     static GameStateProvider gProvider;
     static BuiltinPhysicsProvider gBuiltinPhys;
 
@@ -570,6 +753,7 @@ extern "C" void RegisterBuiltinComponentAdapters() {
     ComponentRegistry::instance().registerAdapter(&gColliderAdapter);
     ComponentRegistry::instance().registerAdapter(&gShapeAdapter);
     ComponentRegistry::instance().registerAdapter(&gTextAdapter);
+    ComponentRegistry::instance().registerAdapter(&gAudioAdapter);
     DebugReflection::SetGameStateProvider(&gProvider);
     DebugReflection::PhysicsRegistry::instance().registerProvider(&gBuiltinPhys);
 

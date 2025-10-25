@@ -15,6 +15,7 @@ This file provides the graphics for Crashout Engine's ImGUI.
 #include "collisionmanager.h"
 #include "physicsmanager.h"
 #include "gamestatemanager.h"
+#include "assetmanager.h"
 #include "shapes.h"
 #include "log.h"
 #include "logdefs.h"
@@ -37,6 +38,7 @@ using CrashoutsEngine::Audio::AudioSystem;
 #include "CEVec3.h"
 #include <filesystem>
 #include "stb_image.h"
+#include <numeric>
 
 /*                                                                   
 ----------------------------------------------------------------------------- */
@@ -49,9 +51,6 @@ namespace { //------------------------------------------------------------------
     /*!
      @brief File-local helpers and state for ImGui panels.
     */
-    ECS* gECS{ nullptr };                       //!< Local ECS sandbox for demo purposes
-    std::vector<Entity> gEntities;              //!< Sandbox entities
-    Entity gSelectedEntity = 0;                 //!< Currently selected entity
     std::vector<ProfilerSample> gPerfSnapshot;  //!< Performance profiler snapshot
     double gPerfSnapshotTotalMs = 0.0;          //!< Total frame time in ms
 
@@ -62,35 +61,6 @@ namespace { //------------------------------------------------------------------
     static bool g_audioReady = false;
     static bool g_banksLoaded = false;
     static bool s_layoutBuilt = false;
-
-    // SFX
-    static const char* kSfx_Beep = "event:/sfexbeep"; // must exist in sfx.bank
-    // Music A (fixed path)
-    static const char* kEvent_MusicA = "event:/Steven Beddall - Hold My ";
-    static FMOD::Studio::EventInstance* s_musicA = nullptr;
-    static float s_musicAVol = 1.0f;
-
-    // Music B (editable path)
-    static FMOD::Studio::EventInstance* s_musicB = nullptr;
-    static float s_musicBVol = 1.0f;
-    static char  g_musicBPath[128] = "event:/Music/Alt"; // type another event path if needed
-
-    // Ensure audio is initialized and both banks are loaded
-    static bool ensureAudio() {
-        if (!g_audioReady) {
-            // keep your current API; do NOT change signature
-            g_audioReady = AudioSystem::instance().init();
-        }
-        if (g_audioReady && !g_banksLoaded) {
-            bool ok = true;
-            ok = ok && AudioSystem::instance().loadBank("sfx.bank");
-            ok = ok && AudioSystem::instance().loadBank("Music.bank");
-            g_banksLoaded = ok;
-        }
-        return g_audioReady && g_banksLoaded;
-    }
-
-
 
     // Small UI helpers
 
@@ -783,34 +753,83 @@ namespace UI { // --------------------------------------------------------------
         if (!ui.showAudio) return;
         ScopedWindow w("Audio", LockFlags(ui.lockLayout));
 
-        // shows that fmod is there
-        if (!ensureAudio()) {
-            ImGui::TextDisabled("FMOD not initialized or banks missing.");
-            if (ImGui::Button("Initialize Audio & Load Banks")) {
-                ensureAudio();
-            }
+        static bool audioInitOk = false;
+        if (!audioInitOk) audioInitOk = AudioSystem::instance().init();
+        if (!audioInitOk) {
+            ImGui::TextDisabled("FMOD not initialized.");
+            if (ImGui::Button("Initialize Audio")) audioInitOk = AudioSystem::instance().init();
             return;
         }
-        //shows what is loaded
-        ImGui::TextDisabled("Banks loaded: Master.*, sfx.bank, Music.bank");
-        //button to play the first song
-        if (ImGui::Button("Play song")) {
-            AudioSystem::instance().playOneShot(kSfx_Beep); 
+
+        // --- Load Banks ---
+        static bool needRefresh = true;
+        if (ImGui::Button("Load banks from Asset Manager")) {
+            CrashoutsEngine::Assets::AssetManager::GetInstance().LoadManifestAssets();
+            needRefresh = true; // trigger rebuild after loading
         }
-        //button to play the second song
-        if (ImGui::Button("Play SFX )")) {
-          
-            AudioSystem::instance().playOneShot(kSfx_Beep);
+        ImGui::SameLine();
+        if (ImGui::Button("Refresh events")) needRefresh = true;
+
+        // --- Build / Rebuild event list ---
+        static std::vector<std::string> allEvents;
+        if (needRefresh || allEvents.empty()) {
+            allEvents.clear();
+            AudioSystem::instance().listAllEventPaths(allEvents);
+            std::sort(allEvents.begin(), allEvents.end());
+            allEvents.erase(std::unique(allEvents.begin(), allEvents.end()), allEvents.end());
+            needRefresh = false;
         }
-       
-        //Stop all music
-        if (ImGui::Button("Stop")) {
-            AudioSystem::instance().stopAll(true); 
-        }
+        ImGui::SameLine();
+        ImGui::TextDisabled("%zu events", allEvents.size());
+
+        // --- Helper: event combo ---
+        auto EventCombo = [&](const char* label, std::string& sel, const char* prefix) {
+            if (ImGui::BeginCombo(label, sel.empty() ? "(select?)" : sel.c_str())) {
+                for (auto const& e : allEvents) {
+                    if (prefix && *prefix && e.rfind(prefix, 0) != 0) continue;
+                    bool chosen = (e == sel);
+                    if (ImGui::Selectable(e.c_str(), chosen)) sel = e;
+                    if (chosen) ImGui::SetItemDefaultFocus();
+                }
+                ImGui::EndCombo();
+            }
+            };
+
+        // --- Quick Test Section ---
+        ImGui::SeparatorText("Quick Test (1 BGM + 3 SFX)");
+        static std::string pickBGM, pickSFX1, pickSFX2, pickSFX3;
+
+        EventCombo("Background Music", pickBGM, "event:/Music/");
+        ImGui::SameLine();
+        if (ImGui::Button("Play##bgm") && !pickBGM.empty())
+            AudioSystem::instance().playOneShot(pickBGM);
+
+        EventCombo("SFX 1", pickSFX1, "event:/SFX/");
+        ImGui::SameLine();
+        if (ImGui::Button("Play##sfx1") && !pickSFX1.empty())
+            AudioSystem::instance().playOneShot(pickSFX1);
+
+        EventCombo("SFX 2", pickSFX2, "event:/SFX/");
+        ImGui::SameLine();
+        if (ImGui::Button("Play##sfx2") && !pickSFX2.empty())
+            AudioSystem::instance().playOneShot(pickSFX2);
+
+        EventCombo("SFX 3", pickSFX3, "event:/SFX/");
+        ImGui::SameLine();
+        if (ImGui::Button("Play##sfx3") && !pickSFX3.empty())
+            AudioSystem::instance().playOneShot(pickSFX3);
+
+        ImGui::Separator();
+        if (ImGui::Button("Stop All"))
+            AudioSystem::instance().stopAll(true);
 
         AudioSystem::instance().update();
     }
 
+    /*!
+     @brief Renders the menu bar ontop of screen.
+     @param ui UI state toggles.
+    */
     static void RenderDebugMenuBar(UIState& ui) {
         if (!ImGui::BeginMenuBar()) return;
 
@@ -920,7 +939,6 @@ namespace UI { // --------------------------------------------------------------
             ImGui::DockBuilderSplitNode(dock_main, ImGuiDir_Right, 0.26f, &dock_right, &dock_main);
             ImGui::DockBuilderSplitNode(dock_main, ImGuiDir_Down, 0.28f, &dock_bottom, &dock_main);
 
-            // Further split right side
             ImGuiID dock_right_bottom;
             ImGui::DockBuilderSplitNode(dock_right, ImGuiDir_Down, 0.5f, &dock_right_bottom, &dock_right);
 
@@ -933,7 +951,7 @@ namespace UI { // --------------------------------------------------------------
             ImGui::DockBuilderDockWindow("Console", dock_bottom);
             ImGui::DockBuilderDockWindow("Performance", dock_left);
             ImGui::DockBuilderDockWindow("GameState", dock_bottom);
-            ImGui::DockBuilderDockWindow("Audio", dock_bottom);
+            ImGui::DockBuilderDockWindow("Audio", dock_right_bottom);
 
             ImGui::DockBuilderFinish(dockspace_id);
         }
