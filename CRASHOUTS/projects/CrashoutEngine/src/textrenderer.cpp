@@ -1,6 +1,7 @@
 /*!
 @file       textrenderer.cpp
-@author     m.biniswandi@digipen.edu
+@author     m.biniswandi@digipen.edu    (80%)
+@co-author  lee.r@digipen.edu           (20%)
 @date       25/09/2025
 @brief      Implementation of the TextRenderer class
  
@@ -8,6 +9,9 @@ Handles font loading character atlas creation and text rendering with FreeType a
 */
 
 #include "TextRenderer.h"
+#include "shapes.h"
+#include "glapp.h"
+#include <CEVec3.h>
 #include <glm/gtc/matrix_transform.hpp>
 #include <iostream>
 #include <fstream>
@@ -16,19 +20,28 @@ Handles font loading character atlas creation and text rendering with FreeType a
 
 #include "settings.h"
 #include "assetmanager.h"
+#include "shaderasset.h"
 #include "FontAsset.h"
+
+#define FONT_SCALE 0.1f
+#define INV_FONT_SCALE 10.f
 
 /*!
 @brief Construct a new TextRenderer
-@param screenWidth Screen width used
-@param screenHeight Screen height used
 */
-TextRenderer::TextRenderer(GLuint screenWidth, GLuint screenHeight){
-    shaderID = LoadShaderProgram("assets/shaders/textShader.vert", "assets/shaders/textShader.frag");   // WILL REMOVE
-    if (shaderID == 0) {
-        std::cerr << "Failed to load text shader.\n";
-        return;
-    }
+TextRenderer::TextRenderer(){
+    using namespace CrashoutsEngine::Assets;
+
+	ShaderAsset* textureShader = AssetManager::GetInstance().Get<ShaderAsset>("TextShader");
+
+	if (!textureShader) {
+		std::cerr << "ERROR::TEXTRENDERER: Could not find TextShader asset\n";
+		shaderID = 0;
+		return;
+	}
+
+    shaderID = textureShader->shaderObject.GetHandle();
+
     /// Configure VAO/VBO
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
@@ -46,30 +59,20 @@ TextRenderer::TextRenderer(GLuint screenWidth, GLuint screenHeight){
 
     /// Set projection matrix
     glUseProgram(shaderID);
-    glm::mat4 projection = glm::ortho(
-		-static_cast<float>(screenWidth) / 2.0f, // left edge
-        static_cast<float>(screenWidth) / 2.0f,  // right edge
-        static_cast<float>(screenHeight) / 2.0f,// bottom edge
-        -static_cast<float>(screenHeight) / 2.0f  // top edge
-    );
 
+    glm::mat4 projection = Component::CreateCenteredWorldProjection();
 
     glUniformMatrix4fv(glGetUniformLocation(shaderID, "projection"), 1, GL_FALSE, &projection[0][0]);
 
     //LoadFont(fontPath);
 }
 
-/// Destructor that deletes the VAO and VBO
-TextRenderer::~TextRenderer() {
-    // Delete VAO/VBO
-    glDeleteVertexArrays(1, &VAO);
-    glDeleteBuffers(1, &VBO);
-
-    // Delete shader program
-    if (shaderID != 0) {
-        glDeleteProgram(shaderID);
-    }
-}
+///// Destructor that deletes the VAO and VBO
+//TextRenderer::~TextRenderer() {
+//    // Delete VAO/VBO
+//    glDeleteVertexArrays(1, &VAO);
+//    glDeleteBuffers(1, &VBO);
+//}
 
 // MOVED TO FONTASSET_H
 #if FALSE 
@@ -149,7 +152,9 @@ bool TextRenderer::LoadFont(const std::string& fontPath) {
 @param color RGB color of the text
 @param fontName The name of the font asset (in AssetManager) to use
 */
-void TextRenderer::RenderText(const std::string& text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color, const std::string fontName) {
+void TextRenderer::RenderText(const std::string& text, GLfloat x, GLfloat y, GLfloat scale, CEVec3 colorCEV, const std::string fontName) {
+	scale *= FONT_SCALE;
+    glm::vec3 color{ colorCEV.x / 255.f, colorCEV.y / 255.f, colorCEV.z / 255.f };
     
     using namespace CrashoutsEngine::Assets;
 	AssetManager& assetManager = AssetManager::GetInstance();
@@ -171,19 +176,19 @@ void TextRenderer::RenderText(const std::string& text, GLfloat x, GLfloat y, GLf
         Character ch = characters.at(c);
 
         GLfloat xpos = x + ch.Bearing.x * scale;
-        GLfloat ypos = y - ch.Bearing.y * scale;
+        GLfloat ypos = y + ch.Bearing.y * scale;
 
         GLfloat w = ch.Size.x * scale;
         GLfloat h = ch.Size.y * scale;
 
         GLfloat vertices[6][4] = {
-        { xpos,     ypos + h,   0.0f, 1.0f },
+        { xpos,     ypos - h,   0.0f, 1.0f },
         { xpos,     ypos,       0.0f, 0.0f },
         { xpos + w, ypos,       1.0f, 0.0f },
 
-        { xpos,     ypos + h,   0.0f, 1.0f },
+        { xpos,     ypos - h,   0.0f, 1.0f },
         { xpos + w, ypos,       1.0f, 0.0f },
-        { xpos + w, ypos + h,   1.0f, 1.0f }
+        { xpos + w, ypos - h,   1.0f, 1.0f }
         };
 
         // Enable blending
@@ -217,7 +222,8 @@ void TextRenderer::RenderText(const std::string& text, GLfloat x, GLfloat y, GLf
 
 Measures text dimensions and adjusts position so that text is centered on the given coordinates
 */
-void TextRenderer::RenderCenteredText(const std::string& text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color, const std::string fontName) {
+void TextRenderer::RenderCenteredText(const std::string& text, GLfloat x, GLfloat y, GLfloat scale, CEVec3 color, const std::string fontName) {
+	scale *= FONT_SCALE;
     using namespace CrashoutsEngine::Assets;
     AssetManager& assetManager = AssetManager::GetInstance();
     FontAsset* font = assetManager.Get<FontAsset>(fontName);
@@ -246,9 +252,9 @@ void TextRenderer::RenderCenteredText(const std::string& text, GLfloat x, GLfloa
     }
 
     GLfloat originX = x - textWidth / 2.0f;
-    GLfloat originY = y + (maxAscent - (maxAscent + maxDescent) / 2.0f);
+    GLfloat originY = y - (maxAscent - (maxAscent + maxDescent) / 2.0f);
 
-    RenderText(text, originX, originY, scale, color);
+    RenderText(text, originX, originY, scale * INV_FONT_SCALE, color, fontName);
 }
 
 /*!

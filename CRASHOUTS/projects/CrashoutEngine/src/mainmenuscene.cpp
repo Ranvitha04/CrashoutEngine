@@ -9,6 +9,7 @@
 #include "settings.h"
 #include "entitymanager.h"
 #include "assetmanager.h"
+#include "shaderasset.h"
 #include "inputmanager.h"
 #include "collisionmanager.h"
 #include "physicsmanager.h"
@@ -76,13 +77,11 @@ void LoadMainMenu()
 	globalECS = CrashoutsEngine::ECS::getInstance();
 	globalECS->Reset();
 
-	GLuint shaderID = LoadShaderProgram("assets/shaders/textShader.vert", "assets/shaders/textShader.frag");
-	if (shaderID == 0) {
-		std::cout << "Failed to load text shader.\n";
-		return;
-	}
-	gTextRenderer = new TextRenderer(Settings::GetScreenWidth(), Settings::GetScreenHeight());
-	gTextRendererA = new TextRenderer(Settings::GetScreenWidth(), Settings::GetScreenHeight()); 
+	using namespace CrashoutsEngine::Assets;
+	AssetManager::GetInstance().Get<ShaderAsset>("TextShader")->shaderObject.Use();
+
+	gTextRenderer = std::make_unique<TextRenderer>();
+	gTextRendererA = std::make_unique<TextRenderer>();
 }
 
 void InitMainMenu()
@@ -109,10 +108,6 @@ void InitMainMenu()
 	);
 
 	// Initialize MainMenu state
-
-	CrashoutsEngine::Assets::GenerateAssetManifest();
-
-	CrashoutsEngine::Assets::AssetManager::GetInstance().LoadManifestAssets();
 
 	LOGI(Core, "MainMenu Initialized");
 }
@@ -208,10 +203,10 @@ void RenderMainMenu()
 	Scene::RenderScene(*globalECS);
 	
 	if (gTextRenderer) {
-		gTextRenderer->RenderCenteredText("Hello", -900.0f, 0.0f, 1.0f, glm::vec3(0.0f));
+		gTextRenderer->RenderCenteredText("Hello", -900.0f, 0.0f, 1.0f, CEVec3());
 	}
 	if (gTextRendererA) {
-		gTextRendererA->RenderCenteredText(std::to_string(itemCount), -900.0f, 100.0f, 1.0f, glm::vec3(1.0f, 1.0f, 1.0f));
+		gTextRendererA->RenderCenteredText(std::to_string(itemCount), -900.0f, 100.0f, 1.0f, CEVec3{ 1.f, 1.f, 1.f });
 	}
 
 }
@@ -219,12 +214,6 @@ void RenderMainMenu()
 void FreeMainMenu()
 {
 	// Free resources specific to MainMenu state
-	delete gTextRenderer;
-	gTextRenderer = nullptr;
-
-	delete gTextRendererA;
-	gTextRendererA = nullptr;
-
 	globalECS->DestroyEntity(entity1);
 	globalECS->DestroyEntity(entity2);
 	globalECS->DestroyEntity(entity3);

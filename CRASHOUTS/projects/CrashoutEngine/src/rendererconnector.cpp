@@ -8,5 +8,6 @@
 #include "rendererconnector.h"
 #include "textrenderer.h"
 
-TextRenderer* gTextRenderer = nullptr;
-TextRenderer* gTextRendererA = nullptr;
+
+std::unique_ptr<TextRenderer> gTextRenderer  = nullptr;
+std::unique_ptr<TextRenderer> gTextRendererA = nullptr;

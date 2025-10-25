@@ -30,6 +30,7 @@ runtime-extensible and project-agnostic.
 #include "collisionmanager.h"
 #include "gamestatemanager.h"
 #include "shapes.h"
+#include "textcomponent.h"
 #include "reflectimgui.h"
 
 using namespace CrashoutsEngine;
@@ -438,6 +439,53 @@ namespace {
     };
 
     /*!
+    @brief Adapter for editing Component::TextComponent.
+    @details Edits type-specific parameters and supports a per-entity preview toggle.
+    */
+    struct TextAdapter : DebugReflection::IComponentAdapter {
+        const char* name() const override { return "TextComponent"; }
+        bool has(ECS& ecs, Entity e) const override {
+            return ecs.HasComponent<Component::TextComponent>(e);
+        }
+        void add(ECS& ecs, Entity e) override {
+            if (!has(ecs, e)) ecs.AddComponent<Component::TextComponent>(e);
+        }
+        void remove(ECS& ecs, Entity e) override {
+            if (has(ecs, e)) ecs.RemoveComponent<Component::TextComponent>(e);
+        }
+        void drawInspector(ECS& ecs, Entity e) override {
+            using namespace Component;
+            auto* fc = ecs.GetComponent<TextComponent>(e);
+            //auto& D = GetDebugDefaults();
+            if (!fc) return;
+
+            char buf[256]{};
+            if (fc->font.size() < sizeof(buf)) std::memcpy(buf, fc->font.data(), fc->font.size());
+
+            ImGui::InputText("Font Name", buf, sizeof(buf));
+            if (ImGui::IsItemEdited() || ImGui::IsItemDeactivatedAfterEdit()) {
+                fc->font = buf;
+            }
+			
+            char buf2[512]{};
+            if (fc->text.size() < sizeof(buf2)) std::memcpy(buf2, fc->text.data(), fc->text.size());
+            
+            ImGui::InputText("Display Text", buf2, sizeof(buf2));
+            if (ImGui::IsItemEdited() || ImGui::IsItemDeactivatedAfterEdit()) {
+                fc->text = buf2;
+            }
+
+            ImGui::Checkbox("Center Text", &fc->centered);
+
+			ImGui::DragFloat("Scale", &fc->scale);
+
+            ImGui::DragFloat2("offset", &fc->offset.x);
+
+            ImGui::DragFloat3("Color", &fc->color.x, 1.f, 0.f, 255.f);
+        }
+    };
+
+    /*!
     @brief Game-state provider installed at runtime (no hardcoded state list).
     @details Bridges GameStateManager to the Debug Menu; exposes current/previous/next and issues ChangeGameState() transitions from a reflected state list.
     */
@@ -497,6 +545,7 @@ namespace {
     static RigidBodyAdapter gRigidBodyAdapter;
     static ColliderAdapter gColliderAdapter;
     static ShapeAdapter gShapeAdapter;
+    static TextAdapter gTextAdapter;
     static GameStateProvider gProvider;
     static BuiltinPhysicsProvider gBuiltinPhys;
 
@@ -520,6 +569,7 @@ extern "C" void RegisterBuiltinComponentAdapters() {
     ComponentRegistry::instance().registerAdapter(&gRigidBodyAdapter);
     ComponentRegistry::instance().registerAdapter(&gColliderAdapter);
     ComponentRegistry::instance().registerAdapter(&gShapeAdapter);
+    ComponentRegistry::instance().registerAdapter(&gTextAdapter);
     DebugReflection::SetGameStateProvider(&gProvider);
     DebugReflection::PhysicsRegistry::instance().registerProvider(&gBuiltinPhys);
 

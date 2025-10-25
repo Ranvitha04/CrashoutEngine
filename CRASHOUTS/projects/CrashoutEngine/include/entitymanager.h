@@ -30,6 +30,7 @@
 #include "shapescomponent.h"
 #include "rigidbodycomponent.h"
 #include "shapes.h"
+#include "textcomponent.h"
 
 /*                                                                   
 ----------------------------------------------------------------------------- */

@@ -29,6 +29,8 @@ applications such as sprite animation, particle systems, and dynamic geometry.
 
 #include "rendering.h"
 #include "entitymanager.h"
+#include "assetmanager.h"
+#include "shaderasset.h"
 #include <string>
 #include "CEVec3.h"
 #include "CEVec2.h"
@@ -463,8 +465,17 @@ namespace Component {
     */
     void Rendering::Setup_Shdrpgm() {
 
-        const std::string Shader = "assets/shaders/CrashoutShader.frag";
-        const std::string Vertex = "assets/shaders/CrashoutShader.vert";
+        using CrashoutsEngine::Assets::AssetManager;
+        using CrashoutsEngine::Assets::ShaderAsset;
+
+        ShaderAsset* shaderAsset = AssetManager::GetInstance().Get<ShaderAsset>("CrashoutShader");
+
+        if (!shaderAsset) {
+            std::cout << "FATAL ERROR: Failed to get 'CrashoutShader' from AssetManager." << std::endl;
+            std::exit(EXIT_FAILURE);
+        }
+
+		shdr_pgm = &(shaderAsset->shaderObject);
 
         // Variable needed for automation hook
         std::vector<std::pair<GLenum, std::string>> shdr_files;
@@ -472,25 +483,15 @@ namespace Component {
         // Automation hook. [!WARNING!] Do not alter/remove this
         AUTOMATION_HOOK_SHADER(shdr_pgm, shdr_files);
 
-        if (!shdr_pgm.CompileShaderFromFile(GL_VERTEX_SHADER, Vertex)) {
-            std::cout << "Vertex Shader failed to compile: ";
-            std::cout << shdr_pgm.GetLog() << std::endl;
+        if (!shdr_pgm) {
+            std::cout << "FATAL ERROR: Shader pointer is null after assignment." << std::endl;
             std::exit(EXIT_FAILURE);
         }
 
-        if (!shdr_pgm.CompileShaderFromFile(GL_FRAGMENT_SHADER, Shader)) {
-            std::cout << "Fragment Shader failed to compile: ";
-            std::cout << shdr_pgm.GetLog() << std::endl;
-            std::exit(EXIT_FAILURE);
-        }
-
-        if (!shdr_pgm.Link()) {
-            std::cout << "Shader program failed to link!" << std::endl;
-            std::exit(EXIT_FAILURE);
-        }
-
-        if (!shdr_pgm.Validate()) {
-            std::cout << "Shader program failed to validate!" << std::endl;
+        // We can re-validate just to be sure it works in the current state
+        if (!shdr_pgm->Validate()) {
+            std::cout << "Shader program 'CrashoutShader' failed to validate in current state!" << std::endl;
+            std::cout << "GLSLShader Log: " << shdr_pgm->GetLog() << std::endl;
             std::exit(EXIT_FAILURE);
         }
     }
@@ -844,7 +845,11 @@ namespace Component {
 
     */
     void Rendering::Draw() {
-        shdr_pgm.Use();
+        if (!shdr_pgm) {
+            std::cerr << "Error: Rendering::Draw called with null shader pointer!" << std::endl;
+            return;
+        }
+        shdr_pgm->Use();
         glBindVertexArray(vaoid);
         glDrawElements(primitive_type, idx_elem_cnt, GL_UNSIGNED_SHORT, NULL);
 
@@ -860,7 +865,7 @@ namespace Component {
         glDeleteSync(fence);
 
         glBindVertexArray(0);
-        shdr_pgm.UnUse();
+        shdr_pgm->UnUse();
     }
 
 }

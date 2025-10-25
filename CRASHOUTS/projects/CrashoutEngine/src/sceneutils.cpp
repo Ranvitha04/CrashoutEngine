@@ -7,9 +7,12 @@
 This file implements
 */
 
-#include "sceneutils.h"
+#include "textrenderer.h"
 #include "textureasset.h"
 #include "assetmanager.h"
+#include "settings.h"
+#include "rendererconnector.h"
+#include "sceneutils.h"
 
 namespace Scene {
     void RenderScene(CrashoutsEngine::ECS& globalECS) {
@@ -141,5 +144,22 @@ namespace Scene {
             );
         }
 
+		// For Drawing Text Components
+		const ECS::ComponentArray<Component::TextComponent>& textArray = globalECS.GetComponentArray<Component::TextComponent>();
+        if (!gTextRenderer) {
+            gTextRenderer = std::make_unique<TextRenderer>();
+        }
+
+        for (const Entity& id : textArray.indexToEntity) {
+            Component::TextComponent* tc = globalECS.GetComponent<Component::TextComponent>(id);
+            if (globalECS.HasComponent<Component::TransformComponent>(id)) {
+                Component::TransformComponent* t = globalECS.GetComponent<Component::TransformComponent>(id);
+                CEVec2 newOffset = CEVec2{ t->position.x + tc->offset.x, t->position.y + tc->offset.y};
+                if(tc->centered)
+                    gTextRenderer->RenderCenteredText(tc->text, newOffset.x, newOffset.y, tc->scale, tc->color, tc->font);
+                else
+					gTextRenderer->RenderText(tc->text, newOffset.x, newOffset.y, tc->scale, tc->color, tc->font);
+            }
+        }
     }
 }

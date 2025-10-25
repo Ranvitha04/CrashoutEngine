@@ -262,7 +262,7 @@
                 "useTexture": false,
                 "wrapModeU": 0,
                 "wrapModeV": 0,
-                "size": 20.5,
+                "size": 32.0,
                 "width": 101.5,
                 "height": 32.0,
                 "thickness": 1.0,
@@ -791,6 +791,36 @@
                     "y": 16.0,
                     "z": 0.0
                 }
+            }
+        },
+        {
+            "name": "Entity 14",
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "text": {
+                "font": "Silver",
+                "text": "dawdwa",
+                "scale": 1.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 255.0,
+                    "y": 255.0,
+                    "z": 255.0
+                },
+                "centered": true
             }
         }
     ]

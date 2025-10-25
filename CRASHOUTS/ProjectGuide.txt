@@ -1,63 +1,79 @@
 ==================================================
-  PROJECT SETUP AND BUILD GUIDE
+PROJECT SETUP AND BUILD GUIDE
 ==================================================
 
 Welcome! This guide provides instructions on how to install the necessary tools, generate the project files, and build the application using Windows and Visual Studio 2022.
 
 ***
+==================================================
+PREREQUISITES
+==================================================
 
-## Prerequisites
-
-Before you begin, make sure you have **Visual Studio 2022** installed with the **"Desktop development with C++"** workload.
+Before you begin, make sure you have Visual Studio 2022 installed with the "Desktop development with C++" workload.
 * You can download it here: https://visualstudio.microsoft.com/downloads/
 
 ***
+==================================================
+STEP 1: INSTALL CMAKE
+==================================================
 
-## Step 1: Install CMake ⚙️
+This project uses CMake to generate the Visual Studio project files.
 
-This project uses CMake to generate the Visual Studio solution (`.sln`) file.
-
-1.  **Download CMake**:
+1.  Download CMake:
     * Go to the official download page: https://cmake.org/download/
-    * Under the "Binary distributions" section, download the latest "Windows x64 Installer" (`.msi` file).
+    * Under the "Binary distributions" section, download the latest "Windows x64 Installer" (.msi file).
 
-2.  **Run the Installer**:
+2.  Run the Installer:
     * During installation, you will reach an "Install Options" screen.
-    * **IMPORTANT**: You must choose either **"Add CMake to the system PATH for all users"** or **"Add CMake to the system PATH for the current user"**. This allows the scripts to find and run CMake from the command line.
+    * IMPORTANT: You must choose either "Add CMake to the system PATH for all users" or "Add CMake to the system PATH for the current user". This allows the scripts to find and run CMake from the command line.
 
-3.  **Verify Installation**:
-    * After installation, open a new Command Prompt and type `cmake --version`. If it prints a version number, you are all set!
-
-***
-
-## Step 2: Generate the Visual Studio Project 🚀
-
-The project generation process is automated with a script.
-
-* **How to run**: In the project's root folder, simply **double-click the `run.bat` file**.
-
-* **What it does**:
-    1.  Creates a `build` folder for all generated files.
-    2.  Runs CMake to produce a Visual Studio 2022 solution.
-    3.  Automatically opens the generated `CRASHOUTS.sln` file in Visual Studio. 
-    4.  Provides build for both 'Debug' and 'Release' mode. 
-    5.  Run "run.bat Release" to build 'Release' mode, builds 'Debug' by default.
-    6.  "run.bat clean" or "clean.bat" will clean the files.
-    7.  Open 'out\build\' 'Debug' or 'Release' to run the exe.
-***
-
-## Step 3: Build and Run in Visual Studio
-
-Once the solution is open in Visual Studio:
-
-1.  **Set Startup Project**: In the "Solution Explorer" panel, right-click on the executable project (e.g., `CrashoutEngine`) and select **"Set as StartUp Project"**.
-2.  **Select Configuration**: Use the dropdowns at the top to ensure the configuration is set to **Debug** and the platform is **x64**.
-3.  **Run**: Press **F5** or the green "Local Windows Debugger" button to compile and run the project.
+3.  Verify Installation:
+    * After installation, open a new Command Prompt and type "cmake --version". If it prints a version number, you are all set!
 
 ***
+==================================================
+STEP 2: BUILD & RUN THE PROJECT
+==================================================
 
-## Cleaning Up 🧹
+The entire build and run process is automated with a single script.
 
-If you need to delete all generated files and start over, a script is provided for that.
+* To run in 'Debug' mode (default):
+    * In the project's root folder, simply double-click the "run.bat" file.
 
-* **How to run**: Simply **double-click the `clean.bat` file**. This will safely and completely remove the `build` directory.
+* To run in 'Release' mode:
+    * Open a Command Prompt in the root folder.
+    * Type "run.bat Release" and press Enter.
+
+* What this script does:
+    1.  Creates a "build" folder (if it doesn't exist).
+    2.  Runs CMake to configure the project and generate Visual Studio files.
+    3.  Builds the project's C++ code (defaulting to 'Debug').
+    4.  Automatically launches the "Descent.exe" executable with the correct working directory so it can find its assets.
+
+***
+==================================================
+STEP 3: CLEANING UP (AND SAVING ASSETS)
+==================================================
+
+If you need to delete all generated files and start over, use the "clean.bat" script.
+
+* How to run: Simply double-click the "clean.bat" file.
+
+* What it does:
+    1.  IMPORTANT (Saves Assets): This script first checks your "build/Debug/assets" and "build/Release/assets" folders. Any files that are *newer* than your source files (e.g., modified levels, JSON configs) will be copied "back" to your main "projects/Descent/assets" folder. This saves your work!
+    2.  Cleans Project: After syncing your assets, it completely deletes the "build" directory.
+
+***
+==================================================
+HOW TO DEBUG IN VISUAL STUDIO
+==================================================
+
+If you want to use the Visual Studio debugger (e.g., to set breakpoints):
+
+1.  First, run "run.bat" at least once to generate the "build" folder.
+2.  Open the "build" folder and double-click the "CRASHOUTS.sln" (or equivalent) solution file.
+3.  Once the solution is open in Visual Studio:
+    * In the "Solution Explorer" panel, right-click on the "Descent" project.
+    * Select "Set as StartUp Project". (Do not set the "CrashoutEngine" library as the startup project).
+    * Use the dropdowns at the top to ensure the configuration is set to "Debug" and the platform is "x64".
+    * Press F5 or the green "Local Windows Debugger" button to compile and run with the debugger attached.

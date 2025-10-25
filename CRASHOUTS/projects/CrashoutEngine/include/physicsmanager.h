@@ -64,6 +64,7 @@ namespace Physics {
 
 			// --- Debug API ---
 			const std::vector<Collision::CollisionEvent>& collisions() const { return collisionEvents; }
+			std::vector<Collision::CollisionEvent>& collisions() { return collisionEvents; }
 			void clearCollisions() { collisionEvents.clear(); }
 
 			static void SetPaused(bool p) { sPaused = p; }
