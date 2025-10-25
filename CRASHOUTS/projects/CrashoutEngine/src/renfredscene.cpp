@@ -64,9 +64,8 @@ void RenderRenfred()
 
 void FreeRenfred()
 {
-	CrashoutsEngine::Serialization::SaveScenes(sceneName);
-
 	// Free resources specific to Renfred state
+	CrashoutsEngine::Serialization::SaveScenes(sceneName);
 }
 
 void UnloadRenfred()

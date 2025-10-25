@@ -1,4 +1,7 @@
+#include "shaderasset.h"
+
 #include "amirscene.h"
+
 #include "sceneutils.h"
 #include "log.h"
 #include "GLFW/glfw3.h"
@@ -11,13 +14,17 @@ static const char* sceneName = "amir";
 
 void LoadAmir()
 {
-	// Load resources specific to Renfred state
+	using namespace CrashoutsEngine::Assets;
+	sceneName = "amir";
+	// Load resources specific to amir state
 	globalECS = CrashoutsEngine::ECS::getInstance();
 	globalECS->Reset();
 
-	CrashoutsEngine::Assets::GenerateAssetManifest();
+	GenerateAssetManifest();
 
-	CrashoutsEngine::Assets::AssetManager::GetInstance().LoadManifestAssets();
+	AssetManager::GetInstance().LoadManifestAssets();
+
+	AssetManager::GetInstance().Get<ShaderAsset>("TextShader")->shaderObject.Use();
 }
 
 void InitAmir()
