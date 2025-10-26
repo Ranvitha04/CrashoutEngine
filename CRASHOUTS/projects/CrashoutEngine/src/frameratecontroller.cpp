@@ -11,7 +11,7 @@
 FrameRateController::FrameRateController()
 {
 	SetTargetFPS(144);
-	SetFixedDT(60.0);
+	SetFixedDT(1.0/60.0);
 	Reset();
 }
 
