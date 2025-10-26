@@ -42,6 +42,7 @@ namespace CrashoutsEngine {
             bool listAllEventPaths(std::vector<std::string>& out);
             bool listEventPathsFromBank(const std::string& bankFile, std::vector<std::string>& out);
             void inspectBankToConsole(const std::string& bankFile);
+            bool isInitialized() const { return mStudio != nullptr; }
 
 
         private:

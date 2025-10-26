@@ -57,8 +57,8 @@ bool AudioSystem::init(const std::string& banksDir) {
     if (!ok(mStudio->getCoreSystem(&rawCore), "getCoreSystem")) return false;
     mCore.reset(rawCore); 
     //Load main bank
-    loadBank("Master.strings.bank");
-    loadBank("Master.bank");
+    //loadBank("banks/Master.strings.bank");
+    //loadBank("banks/Master.bank");
     return true;
 }
 //Update fmod

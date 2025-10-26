@@ -753,15 +753,15 @@ namespace UI { // --------------------------------------------------------------
         if (!ui.showAudio) return;
         ScopedWindow w("Audio", LockFlags(ui.lockLayout));
 
-        static bool audioInitOk = false;
-        if (!audioInitOk) audioInitOk = AudioSystem::instance().init();
+        const bool audioInitOk = AudioSystem::instance().isInitialized();
         if (!audioInitOk) {
-            ImGui::TextDisabled("FMOD not initialized.");
-            if (ImGui::Button("Initialize Audio")) audioInitOk = AudioSystem::instance().init();
-            return;
+            ImGui::TextDisabled("FMOD not initialized (AssetManager will do this).");
+            if (ImGui::Button("Initialize Audio (assets/audio)")) {
+                CrashoutsEngine::Audio::AudioSystem::instance().init("assets/audio");
+            }
         }
 
-        // --- Load Banks ---
+        // Loading Bank
         static bool needRefresh = true;
         if (ImGui::Button("Load banks from Asset Manager")) {
             CrashoutsEngine::Assets::AssetManager::GetInstance().LoadManifestAssets();
@@ -770,7 +770,7 @@ namespace UI { // --------------------------------------------------------------
         ImGui::SameLine();
         if (ImGui::Button("Refresh events")) needRefresh = true;
 
-        // --- Build / Rebuild event list ---
+        // Build List
         static std::vector<std::string> allEvents;
         if (needRefresh || allEvents.empty()) {
             allEvents.clear();
@@ -782,42 +782,46 @@ namespace UI { // --------------------------------------------------------------
         ImGui::SameLine();
         ImGui::TextDisabled("%zu events", allEvents.size());
 
-        // --- Helper: event combo ---
-        auto EventCombo = [&](const char* label, std::string& sel, const char* prefix) {
+        // Event Combo
+        auto EventCombo = [&](const char* label, std::string& sel) {
             if (ImGui::BeginCombo(label, sel.empty() ? "(select?)" : sel.c_str())) {
+                static char filterBuf[128] = {};
+                ImGui::SetNextItemWidth(ImGui::GetFontSize() * 14.0f);
+                ImGui::InputTextWithHint("##filter", "type to filter...", filterBuf, sizeof(filterBuf));
+                ImGui::Separator();
+
+                const std::string needle = filterBuf;
                 for (auto const& e : allEvents) {
-                    if (prefix && *prefix && e.rfind(prefix, 0) != 0) continue;
-                    bool chosen = (e == sel);
+                    if (!needle.empty() && e.find(needle) == std::string::npos) continue;
+                    const bool chosen = (e == sel);
                     if (ImGui::Selectable(e.c_str(), chosen)) sel = e;
                     if (chosen) ImGui::SetItemDefaultFocus();
                 }
                 ImGui::EndCombo();
             }
-            };
+        };
 
-        // --- Quick Test Section ---
+        // Test Section
         ImGui::SeparatorText("Quick Test (1 BGM + 3 SFX)");
         static std::string pickBGM, pickSFX1, pickSFX2, pickSFX3;
 
-        EventCombo("Background Music", pickBGM, "event:/Music/");
-        ImGui::SameLine();
-        if (ImGui::Button("Play##bgm") && !pickBGM.empty())
-            AudioSystem::instance().playOneShot(pickBGM);
+        EventCombo("Background Music", pickBGM);
+        EventCombo("SFX 1", pickSFX1);
+        EventCombo("SFX 2", pickSFX2);
+        EventCombo("SFX 3", pickSFX3);
 
-        EventCombo("SFX 1", pickSFX1, "event:/SFX/");
-        ImGui::SameLine();
-        if (ImGui::Button("Play##sfx1") && !pickSFX1.empty())
-            AudioSystem::instance().playOneShot(pickSFX1);
-
-        EventCombo("SFX 2", pickSFX2, "event:/SFX/");
-        ImGui::SameLine();
-        if (ImGui::Button("Play##sfx2") && !pickSFX2.empty())
-            AudioSystem::instance().playOneShot(pickSFX2);
-
-        EventCombo("SFX 3", pickSFX3, "event:/SFX/");
-        ImGui::SameLine();
-        if (ImGui::Button("Play##sfx3") && !pickSFX3.empty())
-            AudioSystem::instance().playOneShot(pickSFX3);
+        if (ImGui::Button("Play")) {
+            CrashoutsEngine::Audio::AudioSystem::instance().playOneShot(pickBGM);
+        }
+        if (ImGui::Button("Play##sfx1")) {
+            CrashoutsEngine::Audio::AudioSystem::instance().playOneShot(pickSFX1);
+        }
+        if (ImGui::Button("Play##sfx2")) {
+            CrashoutsEngine::Audio::AudioSystem::instance().playOneShot(pickSFX2);
+        }
+        if (ImGui::Button("Play##sfx3")) {
+            CrashoutsEngine::Audio::AudioSystem::instance().playOneShot(pickSFX3);
+        }
 
         ImGui::Separator();
         if (ImGui::Button("Stop All"))

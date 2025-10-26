@@ -217,14 +217,34 @@ namespace CrashoutsEngine {
 				CrashoutsEngine::Audio::AudioSystem::instance().init(rootAssetPath + "audio");
 
 				const rapidjson::Value& audioArray = doc["audio"];
+
 				for (rapidjson::SizeType i = 0; i < audioArray.Size(); ++i) {
-					const rapidjson::Value& asset = audioArray[i];
-					if (!asset.HasMember("path")) continue;
+					if (!audioArray[i].HasMember("path")) continue;
+					std::string rel = audioArray[i]["path"].GetString();
+					if (std::filesystem::path(rel).extension() != ".bank") continue;
 
-					// Manifest path is already relative to assets/audio/ (e.g. "banks/SFX.bank" or "SFX.bank")
-					std::string rel = asset["path"].GetString();
+					if (rel.find("Master.strings.bank") != std::string::npos) {
+						CrashoutsEngine::Audio::AudioSystem::instance().loadBank(rel);
+						std::cout << "Loaded FMOD bank: " << rel << std::endl;
+					}
+				}
+				for (rapidjson::SizeType i = 0; i < audioArray.Size(); ++i) {
+					if (!audioArray[i].HasMember("path")) continue;
+					std::string rel = audioArray[i]["path"].GetString();
+					if (std::filesystem::path(rel).extension() != ".bank") continue;
 
-					if (std::filesystem::path(rel).extension() == ".bank") {
+					if (rel.find("Master.bank") != std::string::npos &&
+						rel.find("Master.strings.bank") == std::string::npos) {
+						CrashoutsEngine::Audio::AudioSystem::instance().loadBank(rel);
+						std::cout << "Loaded FMOD bank: " << rel << std::endl;
+					}
+				}
+				for (rapidjson::SizeType i = 0; i < audioArray.Size(); ++i) {
+					if (!audioArray[i].HasMember("path")) continue;
+					std::string rel = audioArray[i]["path"].GetString();
+					if (std::filesystem::path(rel).extension() != ".bank") continue;
+
+					if (rel.find("Master.bank") == std::string::npos) {
 						bool ok = CrashoutsEngine::Audio::AudioSystem::instance().loadBank(rel);
 						std::cout << (ok ? "Loaded FMOD bank: " : "FAILED to load FMOD bank: ") << rel << std::endl;
 					}
