@@ -1,9 +1,0 @@
-E:\GIT\csd2401f25_team_crashouts\CRASHOUTS\projects\CrashoutEngine\scripts\ManagedScripts.dll
-E:\GIT\csd2401f25_team_crashouts\CRASHOUTS\projects\CrashoutEngine\scripts\ManagedScripts.pdb
-E:\GIT\csd2401f25_team_crashouts\CRASHOUTS\projects\ManagedScripts\obj\ManagedScripts.csproj.AssemblyReference.cache
-E:\GIT\csd2401f25_team_crashouts\CRASHOUTS\projects\ManagedScripts\obj\ManagedScripts.GeneratedMSBuildEditorConfig.editorconfig
-E:\GIT\csd2401f25_team_crashouts\CRASHOUTS\projects\ManagedScripts\obj\ManagedScripts.AssemblyInfoInputs.cache
-E:\GIT\csd2401f25_team_crashouts\CRASHOUTS\projects\ManagedScripts\obj\ManagedScripts.AssemblyInfo.cs
-E:\GIT\csd2401f25_team_crashouts\CRASHOUTS\projects\ManagedScripts\obj\ManagedScripts.csproj.CoreCompileInputs.cache
-E:\GIT\csd2401f25_team_crashouts\CRASHOUTS\projects\ManagedScripts\obj\ManagedScripts.dll
-E:\GIT\csd2401f25_team_crashouts\CRASHOUTS\projects\ManagedScripts\obj\ManagedScripts.pdb
