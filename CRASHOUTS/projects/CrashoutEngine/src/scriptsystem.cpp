@@ -28,5 +28,6 @@ namespace CrashoutsEngine
 
             script.Update(dt);
         }
+
     }
 }
