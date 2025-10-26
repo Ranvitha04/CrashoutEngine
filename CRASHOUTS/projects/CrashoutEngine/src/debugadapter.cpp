@@ -35,6 +35,8 @@ runtime-extensible and project-agnostic.
 #include "reflectimgui.h"
 #include "audiocomponent.h"
 #include "audioSystem.h"
+#include "scriptcomponent.h"
+#include "monomanager.h"
 
 using namespace CrashoutsEngine;
 
@@ -488,6 +490,10 @@ namespace {
         }
     };
 
+    /*!
+    @brief Adapter for editing Component::AudioComponent.
+    @details Edits type-specific parameters and supports a per-entity preview toggle.
+    */
     struct AudioAdapter : DebugReflection::IComponentAdapter {
         const char* name() const override { return "Audio"; }
         bool has(ECS& ecs, Entity e) const override {
@@ -668,6 +674,65 @@ namespace {
     };
 
     /*!
+    @brief Adapter for editing Component::ScriptComponent.
+    @details Edits type-specific parameters and supports a per-entity preview toggle.
+    */
+    struct ScriptAdapter : DebugReflection::IComponentAdapter {
+        const char* name() const override { return "ScriptComponent"; }
+
+        bool has(ECS& ecs, Entity e) const override {
+            return ecs.HasComponent<CrashoutsEngine::ScriptComponent>(e);
+        }
+
+        void add(ECS& ecs, Entity e) override {
+            if (!has(ecs, e)) {
+                ecs.AddComponent<CrashoutsEngine::ScriptComponent>(e, "PlayerScript");
+            }
+        }
+
+        void remove(ECS& ecs, Entity e) override {
+            if (!has(ecs, e)) {
+                ecs.RemoveComponent<CrashoutsEngine::ScriptComponent>(e);
+            }
+        }
+
+        void drawInspector(ECS& ecs, Entity e) override {
+            auto* sc = ecs.GetComponent<ScriptComponent>(e);
+            if (!sc) return;
+
+            char buf[128]{};
+            std::snprintf(buf, sizeof(buf), "%s", sc->ClassName.c_str());
+            if (ImGui::InputText("Class Name", buf, sizeof(buf)))
+                sc->ClassName = buf;
+
+            bool monoReady = (MonoManager::GetDomain() != nullptr && MonoManager::GetAssembly() != nullptr);
+            ImGui::TextDisabled("Mono: %s", monoReady ? "Ready" : "Not Ready");
+
+            if (!monoReady) ImGui::BeginDisabled();
+
+            if (ImGui::Button(sc->Instance ? "Reinitialize" : "Initialize")) {
+                sc->Destroy();
+                sc->Initialize(MonoManager::GetDomain(), MonoManager::GetAssembly());
+            }
+
+            ImGui::SameLine();
+            if (ImGui::Button("Start")) sc->Start();
+
+            ImGui::SameLine();
+            static float dt = 1.0f / 60.0f; ImGui::SetNextItemWidth(80);
+            ImGui::DragFloat("dt", &dt, 0.001f, 0, 1, "%.3f");
+
+            ImGui::SameLine();
+            if (ImGui::Button("Update")) sc->Update(dt)
+                ;
+            ImGui::SameLine();
+            if (ImGui::Button("Destroy")) sc->Destroy();
+
+            if (!monoReady) ImGui::EndDisabled();
+        }
+    };
+
+    /*!
     @brief Game-state provider installed at runtime (no hardcoded state list).
     @details Bridges GameStateManager to the Debug Menu; exposes current/previous/next and issues ChangeGameState() transitions from a reflected state list.
     */
@@ -729,6 +794,7 @@ namespace {
     static ShapeAdapter gShapeAdapter;
     static TextAdapter gTextAdapter;
     static AudioAdapter gAudioAdapter;
+    static ScriptAdapter gScriptAdapter;
     static GameStateProvider gProvider;
     static BuiltinPhysicsProvider gBuiltinPhys;
 
@@ -754,6 +820,7 @@ extern "C" void RegisterBuiltinComponentAdapters() {
     ComponentRegistry::instance().registerAdapter(&gShapeAdapter);
     ComponentRegistry::instance().registerAdapter(&gTextAdapter);
     ComponentRegistry::instance().registerAdapter(&gAudioAdapter);
+    ComponentRegistry::instance().registerAdapter(&gScriptAdapter);
     DebugReflection::SetGameStateProvider(&gProvider);
     DebugReflection::PhysicsRegistry::instance().registerProvider(&gBuiltinPhys);
 
