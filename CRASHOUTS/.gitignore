@@ -93,6 +93,7 @@ dist/
 *.dSYM/
 .vs/
 docs/
+obj/
 
 # Force-include third_party folder and all its contents
 !/third_party/
