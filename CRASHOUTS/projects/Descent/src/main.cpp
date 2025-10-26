@@ -15,11 +15,15 @@ context and implement a game loop.
 #pragma warning(disable: 4005)
 
 #include "engine.h"
+#include "monomanager.h"
 
 #pragma warning(pop)
 
 #include <cstdio>
 #include <crtdbg.h>
+
+#include "scriptcomponent.h"
+#include "scriptsystem.h"
 
 /*                                                   type declarations
 ----------------------------------------------------------------------------- */
@@ -69,8 +73,24 @@ int WINAPI WinMain(
 
 #endif
 
+    MonoManager::Init();
+    MonoManager::LoadAssembly("scripts/ManagedScripts.dll");
+
+    // Create an ECS entity and attach a script
+    auto ecs = CrashoutsEngine::ECS::getInstance();
+
+    // create an entity
+    CrashoutsEngine::Entity player = ecs->CreateEntity();
+
+    // attach the ScriptComponent with C# class name
+    auto& playerScript = ecs->AddComponent<CrashoutsEngine::ScriptComponent>(player, "PlayerScript");
+
+    // initialize it with Mono's domain + loaded assembly
+    playerScript.Initialize(MonoManager::GetDomain(), MonoManager::GetAssembly());
+
+
     Init();
-    double dt = FRC.DT();
+    double dt = FRC.FixedDT();
 
     // window's close flag is set by clicking close widget or Alt+F4
     while (!glfwWindowShouldClose(GLApp::ptr_window)) {
@@ -78,12 +98,17 @@ int WINAPI WinMain(
         glfwPollEvents();
         dt = FRC.DT();
         Update(playerRigidBody, dt);
+
+        // Run all active C# scripts
+        CrashoutsEngine::ScriptSystem::UpdateAll(static_cast<float>(dt));
+
         Draw(globalSelectedEntity);
         FRC.FrameEnd();
     }
 
     // Cleanup
     CleanUp();
+    MonoManager::Shutdown();
 
     _CrtMemCheckpoint(&stateEnd);
     if (_CrtMemDifference(&stateDiff, &stateStart, &stateEnd)) {

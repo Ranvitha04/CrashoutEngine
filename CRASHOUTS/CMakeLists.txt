@@ -43,6 +43,7 @@ add_compile_definitions(
 # Include path for GLM (optional if not using FetchContent)
 include_directories(${CMAKE_CURRENT_LIST_DIR}/lib/glm)
 include_directories(${_FMOD_INC})
+include_directories(${_MONO_INC})
 
 # ======================= Global Warning Level =========================
 if (MSVC)

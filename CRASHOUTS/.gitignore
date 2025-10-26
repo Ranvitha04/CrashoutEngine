@@ -93,7 +93,8 @@ dist/
 *.dSYM/
 .vs/
 docs/
+obj/
 
 # Force-include third_party folder and all its contents
-!/CRASHOUTS/third_party/
-!/CRASHOUTS/third_party/**
+!/third_party/
+!/third_party/**
