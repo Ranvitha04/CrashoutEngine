@@ -1,89 +1,68 @@
 #include "ScriptComponent.h"
-#include <iostream>
+#include <mono/metadata/mono-config.h>
 
 namespace CrashoutsEngine
 {
-    static MonoClass* GetMonoClass(MonoAssembly* assembly, const std::string& className)
-    {
-        MonoImage* image = mono_assembly_get_image(assembly);
-        MonoClass* klass = mono_class_from_name(image, "ExampleNamespace", className.c_str());
-
-        if (!klass)
-        {
-            std::cerr << "[Mono] Could not find class: " << className << '\n';
-        }
-
-        return klass;
-    }
-
     bool ScriptComponent::Initialize(MonoDomain* domain, MonoAssembly* assembly)
     {
-        Class = GetMonoClass(assembly, ClassName);
+        MonoImage* image = mono_assembly_get_image(assembly);
+        if (!image)
+        {
+            std::cerr << "[Mono] Failed to get image from assembly.\n";
+            return false;
+        }
 
+        Class = mono_class_from_name(image, "ExampleNamespace", ClassName.c_str());
         if (!Class)
         {
+            std::cerr << "[Mono] Could not find class: " << ClassName << '\n';
             return false;
         }
 
+        // Create C# instance
         Instance = mono_object_new(domain, Class);
-
-        if (!Instance)
-        {
-            std::cerr << "[Mono] Failed to create instance of " << ClassName << '\n';
-            return false;
-        }
-
         mono_runtime_object_init(Instance);
 
+        // Cache methods
         MethodStart = mono_class_get_method_from_name(Class, "Start", 0);
         MethodUpdate = mono_class_get_method_from_name(Class, "Update", 1);
 
-        if (!MethodStart)
-        {
-            std::cerr << "[Mono] Warning: " << ClassName << " has no Start()\n";
-        }
+        if (MethodStart)
+            std::cout << "[Mono] Found Start() for " << ClassName << '\n';
+        else
+            std::cerr << "[Mono] Missing Start() in " << ClassName << '\n';
 
-        if (!MethodUpdate)
-        {
-            std::cerr << "[Mono] Warning: " << ClassName << " has no Update(float)\n";
-        }
+        if (MethodUpdate)
+            std::cout << "[Mono] Found Update(float) for " << ClassName << '\n';
+        else
+            std::cerr << "[Mono] Missing Update(float) in " << ClassName << '\n';
+
+
+        std::cout << "[Mono] ScriptComponent for class " << ClassName << " initialized successfully.\n";
+
 
         return true;
     }
 
     void ScriptComponent::Start()
     {
-        if (Started || !MethodStart)
-        {
-            return;
-        }
+        if (Started || !MethodStart) return;
 
-        MonoObject* exception = nullptr;
-        mono_runtime_invoke(MethodStart, Instance, nullptr, &exception);
-        if (exception)
-        {
-            MonoString* msg = mono_object_to_string(exception, nullptr);
-            std::cerr << "[Mono Exception] " << mono_string_to_utf8(msg) << std::endl;
-        }
+        MonoObject* exc = nullptr;
+        mono_runtime_invoke(MethodStart, Instance, nullptr, &exc);
+        if (exc) mono_print_unhandled_exception(exc);
 
         Started = true;
     }
 
-    void ScriptComponent::Update(float deltaTime)
+    void ScriptComponent::Update(float dt)
     {
         if (!MethodUpdate) return;
 
-        void* args[1];
-        args[0] = &deltaTime;
-
-        MonoObject* exception = nullptr;
-        mono_runtime_invoke(MethodUpdate, Instance, args, &exception);
-
-        if (exception)
-        {
-            MonoString* msg = mono_object_to_string(exception, nullptr);
-            std::cerr << "[Mono Exception] " << mono_string_to_utf8(msg) << std::endl;
-        }
+        void* args[1] = { &dt };
+        MonoObject* exc = nullptr;
+        mono_runtime_invoke(MethodUpdate, Instance, args, &exc);
+        if (exc) mono_print_unhandled_exception(exc);
     }
 
     void ScriptComponent::Destroy()
