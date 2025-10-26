@@ -4,7 +4,6 @@ namespace ExampleNamespace
 {
     public class PlayerScript
     {
-        private float timer = 0f;
 
         // Called once when the script instance is created
         public void Start()
@@ -13,10 +12,10 @@ namespace ExampleNamespace
         }
 
         // Called every frame by your engine
-        public void Update(double deltaTime)
+        public void Update(float deltaTime)
         {
             {
-                Console.WriteLine($"[C#] PlayerScript Update() - elapsed {deltaTime:F2}s");
+                //Console.WriteLine($"[C#] PlayerScript Update() - elapsed {deltaTime:0.0000}s");
             }
         }
     }
