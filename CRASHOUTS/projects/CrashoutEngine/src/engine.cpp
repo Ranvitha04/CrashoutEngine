@@ -29,6 +29,10 @@ static Collision::CollisionHandler collisionSystem;
 // ImGui in-game performance viewer
 static FrameProfiler gProfiler;
 
+EngineState engineState = EngineState::STOP;
+
+const float moveSpeed = 6.7f;
+
 extern "C" void RegisterBuiltinComponentAdapters();
 
 /*  _________________________________________________________________________ */
@@ -105,6 +109,7 @@ void Init() {
 
     InputManager::Init(GLApp::ptr_window);
     UI::Init(GLApp::ptr_window); // NEW
+    engineState = EngineState::STOP;
 }
 
 /*  _________________________________________________________________________ */
@@ -126,7 +131,6 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
 
     // Render ImGui UI on top of the scene
     UI::Render(gProfiler, physicsSystem, globalSelectedEntity);
-
 
     // end of frame profiling
     gProfiler.end_frame();
@@ -153,27 +157,28 @@ void Update(Component::RigidBodyComponent& playerRigidBody, double const& dt) {
     GLApp::update_time();
     UpdateGameStateManager();
 
-    collisionSystem.update(dt);
-    physicsSystem.update(dt);
-
-    // process events if any associated with input devices
-    //glfwPollEvents();
-
     // start frame profiling
     gProfiler.begin_frame();
 
-    // main loop computes fps and other time related stuff once for all apps ...
-    GLApp::update_time(1.0);
-
     FrameProfiler::Scoped s(gProfiler, "Game/Update");
     ScopedMemTag mem(MemTag::Update);
-    // 6 and 7
-    const float moveSpeed = 6.7f;
-    //Update 
-    Player::UpdateVelocity(playerRigidBody, moveSpeed);
 
-    // animate scene
-    GLApp::update();
+    if (engineState != EngineState::PAUSE) {
+        collisionSystem.update(dt);
+        physicsSystem.update(dt);
+
+        // process events if any associated with input devices
+        //glfwPollEvents();
+
+        // main loop computes fps and other time related stuff once for all apps ...
+        GLApp::update_time(1.0);
+
+        //Update 
+        Player::UpdateVelocity(playerRigidBody, moveSpeed);
+
+        // animate scene
+        GLApp::update();
+    }
 }
 
 /*  _________________________________________________________________________ */

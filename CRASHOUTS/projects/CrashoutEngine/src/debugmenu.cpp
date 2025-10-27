@@ -15,6 +15,7 @@ This file provides the graphics for Crashout Engine's ImGUI.
 #include "collisionmanager.h"
 #include "physicsmanager.h"
 #include "gamestatemanager.h"
+#include "assetmanager.h"
 #include "shapes.h"
 #include "log.h"
 #include "logdefs.h"
@@ -25,6 +26,7 @@ This file provides the graphics for Crashout Engine's ImGUI.
 #include "audioSystem.h"
 #include <fmod_studio.hpp> 
 #include "prefab.h"
+#include "engine.h"
 
 using CrashoutsEngine::Audio::AudioSystem;
 // ImGui headers
@@ -323,13 +325,20 @@ namespace UI { // --------------------------------------------------------------
         ImGui::SameLine();
         ImGui::SetNextItemWidth(220);
         ImGui::InputTextWithHint("##asset_filter", "Filter (name / ext)...", filter, IM_ARRAYSIZE(filter));
+        ImGui::SameLine();
+        // ImGUI button to reload assets
+        if (ImGui::Button("Reload Assets")) {
+            using namespace CrashoutsEngine::Assets;
+            GenerateAssetManifest();
+            AssetManager::GetInstance().LoadManifestAssets();
+        }
 
         ImGui::Separator();
 
         // ---------------- LEFT: Folder tree ----------------
         ImGui::BeginChild("asset_left", ImVec2(220, 0), true);
 
-        if (ImGui::Selectable(root, current == fs::path(root))) {
+        if (ImGui::Selectable("assets", current == fs::path(root))) {
             current = fs::path(root);
             needScan = true;
         }
@@ -858,10 +867,26 @@ namespace UI { // --------------------------------------------------------------
             // To be fixed later
             /*ImGui::Spacing();
             if (ImGui::Button("Save Layout")) ImGui::SaveIniSettingsToDisk(nullptr);*/
-            ImGui::Spacing();
             ImGui::SameLine();
             if (ImGui::Button("Simulate Crash")) ImGui::LoadIniSettingsFromDisk(nullptr);
         }
+        
+        // Play Stop Pause buttons
+        // Play
+        if (ImGui::Button("Play")) {
+            engineState = EngineState::PLAY;
+        }
+        ImGui::SameLine();
+        // Pause
+        if (ImGui::Button("Pause")) {
+            engineState = EngineState::PAUSE;
+        }
+        ImGui::SameLine();
+        // Stop
+        if (ImGui::Button("Stop")) {
+            engineState = EngineState::STOP;
+        }
+        
         ImGui::End();
     }
 
@@ -944,7 +969,7 @@ namespace UI { // --------------------------------------------------------------
         }
         if (ui.showAssets) {
             static std::string gPickedAsset;
-            RenderAssetBrowserPanel(ui, "assets", gPickedAsset);
+            RenderAssetBrowserPanel(ui, Assets::rootPath.c_str(), gPickedAsset);
         }
         if (ui.showInspector) {
             RenderInspectorPanel(ecs, selected, ui);

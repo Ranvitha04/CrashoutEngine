@@ -33,11 +33,7 @@ void LoadRenfred()
 	globalECS = CrashoutsEngine::ECS::getInstance();
 	globalECS->Reset();
 
-	GenerateAssetManifest();
-
-	AssetManager::GetInstance().LoadManifestAssets();
-
-	AssetManager::GetInstance().Get<ShaderAsset>("TextShader")->shaderObject.Use();
+	//AssetManager::GetInstance().Get<ShaderAsset>("TextShader")->shaderObject.Use();
 }
 
 void InitRenfred()

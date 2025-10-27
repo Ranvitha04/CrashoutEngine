@@ -29,6 +29,7 @@ runtime-extensible and project-agnostic.
 #include "physicsmanager.h"
 #include "collisionmanager.h"
 #include "gamestatemanager.h"
+#include "assetmanager.h"
 #include "shapes.h"
 #include "textcomponent.h"
 #include "reflectimgui.h"
@@ -338,11 +339,18 @@ namespace {
                 namespace fs = std::filesystem;
                 static std::vector<std::string> s_assets;
                 static bool s_scanned = false;
+
+                // Refresh List button
+                if (ImGui::Button("Refresh List")) {
+                    s_scanned = false;
+                }
+                ImGui::SameLine();
+
                 if (!s_scanned) {
                     s_scanned = true;
                     s_assets.clear();
 
-                    const std::string assetRoot = "assets/images"; // base folder
+                    const std::string assetRoot = CrashoutsEngine::Assets::rootPath + "images"; // base folder
                     for (auto& p : fs::recursive_directory_iterator(assetRoot)) {
                         if (!p.is_regular_file()) continue;
 
