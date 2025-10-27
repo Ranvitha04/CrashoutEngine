@@ -237,776 +237,778 @@ namespace CrashoutsEngine {
 
 }
 
-    namespace Component {
+namespace Component {
 
-        /*                                                    Static member definitions
-        ----------------------------------------------------------------------------- */
-        std::unordered_map<std::string, GLuint> TextureRenderer::textureCache;
-        GLuint TextureRenderer::sharedVAO = 0;
-        GLuint TextureRenderer::sharedVBO = 0;
-        GLuint TextureRenderer::sharedEBO = 0;
-        bool TextureRenderer::initialized = false;
+    /*                                                    Static member definitions
+    ----------------------------------------------------------------------------- */
+    std::unordered_map<std::string, GLuint> TextureRenderer::textureCache;
+    GLuint TextureRenderer::sharedVAO = 0;
+    GLuint TextureRenderer::sharedVBO = 0;
+    GLuint TextureRenderer::sharedEBO = 0;
+    bool TextureRenderer::initialized = false;
 
-        /*                                                    TextureRenderer implementation
-        ----------------------------------------------------------------------------- */
+    /*                                                    TextureRenderer implementation
+    ----------------------------------------------------------------------------- */
 
-        /*!
-        @brief Initializes the TextureRenderer shared quad and cache if not already done.
-        */
+    /*!
+    @brief Initializes the TextureRenderer shared quad and cache if not already done.
+    */
 
-        void TextureRenderer::Initialize() {
-            if (initialized) return;
+    void TextureRenderer::Initialize() {
+        if (initialized) return;
 
-            InitializeSharedQuad();
-            initialized = true;
+        InitializeSharedQuad();
+        initialized = true;
 
-            std::cout << "TextureRenderer initialized with shared resources." << std::endl;
-        }   
+        std::cout << "TextureRenderer initialized with shared resources." << std::endl;
+    }
 
-        /*!
-        @brief Creates shared VAO/VBO/EBO for rendering quads. Called internally by Initialize().
-        */
+    /*!
+    @brief Creates shared VAO/VBO/EBO for rendering quads. Called internally by Initialize().
+    */
 
-        void TextureRenderer::InitializeSharedQuad() {
-            // Generate and bind VAO (reused for all texture rendering)
-            glGenVertexArrays(1, &sharedVAO);
-            glBindVertexArray(sharedVAO);
+    void TextureRenderer::InitializeSharedQuad() {
+        // Generate and bind VAO (reused for all texture rendering)
+        glGenVertexArrays(1, &sharedVAO);
+        glBindVertexArray(sharedVAO);
 
-            // Generate and bind VBO
-            glGenBuffers(1, &sharedVBO);
-            glBindBuffer(GL_ARRAY_BUFFER, sharedVBO);
-            glBufferData(GL_ARRAY_BUFFER, sizeof(DEFAULT_VERTICES), DEFAULT_VERTICES.data(), GL_STATIC_DRAW);
+        // Generate and bind VBO
+        glGenBuffers(1, &sharedVBO);
+        glBindBuffer(GL_ARRAY_BUFFER, sharedVBO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(DEFAULT_VERTICES), DEFAULT_VERTICES.data(), GL_STATIC_DRAW);
 
-            // Generate and bind EBO
-            glGenBuffers(1, &sharedEBO);
-            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, sharedEBO);
-            glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(DEFAULT_INDICES), DEFAULT_INDICES.data(), GL_STATIC_DRAW);
+        // Generate and bind EBO
+        glGenBuffers(1, &sharedEBO);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, sharedEBO);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(DEFAULT_INDICES), DEFAULT_INDICES.data(), GL_STATIC_DRAW);
 
-            // Position attribute (location 0)
-            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, VERTEX_SIZE * sizeof(float), (void*)0);
-            glEnableVertexAttribArray(0);
+        // Position attribute (location 0)
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, VERTEX_SIZE * sizeof(float), (void*)0);
+        glEnableVertexAttribArray(0);
 
-            // Color attribute (location 1)
-            glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, VERTEX_SIZE * sizeof(float), (void*)(3 * sizeof(float)));
-            glEnableVertexAttribArray(1);
+        // Color attribute (location 1)
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, VERTEX_SIZE * sizeof(float), (void*)(3 * sizeof(float)));
+        glEnableVertexAttribArray(1);
 
-            // TextureAsset coordinate attribute (location 2)
-            glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, VERTEX_SIZE * sizeof(float), (void*)(6 * sizeof(float)));
-            glEnableVertexAttribArray(2);
+        // TextureAsset coordinate attribute (location 2)
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, VERTEX_SIZE * sizeof(float), (void*)(6 * sizeof(float)));
+        glEnableVertexAttribArray(2);
 
-            glBindVertexArray(0);
+        glBindVertexArray(0);
+    }
+
+    /*!
+    @brief Creates and renders a textured quad from a file path.
+    @param texturePath Path to the texture file.
+    @param position    3D position of the quad.
+    @param size        2D size of the quad.
+    @param rotation    Rotation in degrees (around Z axis).
+    @param scale       Scale factor applied to size.
+    @param tint        RGB tint applied to texture.
+    @param modulate    Whether to modulate with vertex color.
+    */
+
+    void TextureRenderer::CreateTexturedQuad(const std::string& texturePath,
+        const CEVec3& position,
+        const CEVec2& size,
+        float rotation,
+        float scale,
+        const CEVec3& tint,
+        bool modulate) {
+
+        // Auto-initialize if needed
+        if (!initialized) {
+            Initialize();
         }
 
-        /*!
-        @brief Creates and renders a textured quad from a file path.
-        @param texturePath Path to the texture file.
-        @param position    3D position of the quad.
-        @param size        2D size of the quad.
-        @param rotation    Rotation in degrees (around Z axis).
-        @param scale       Scale factor applied to size.
-        @param tint        RGB tint applied to texture.
-        @param modulate    Whether to modulate with vertex color.
-        */
-
-        void TextureRenderer::CreateTexturedQuad(const std::string& texturePath,
-            const CEVec3& position,
-            const CEVec2& size,
-            float rotation,
-            float scale,
-            const CEVec3& tint,
-            bool modulate) {
-
-            // Auto-initialize if needed
-            if (!initialized) {
-                Initialize();
-            }
-
-            // Get or load texture (uses cache)
-            //GLuint textureHandle = GetOrLoadTexture(texturePath);
-            GLuint textureHandle = GetTextureHandle(texturePath);
-            if (textureHandle == 0) {
-                std::cerr << "Failed to load texture: " << texturePath << std::endl;
-                return;
-            }
-
-            // Render using the cached texture
-            RenderQuad(textureHandle, position, size, rotation, scale, tint, modulate);
+        // Get or load texture (uses cache)
+        //GLuint textureHandle = GetOrLoadTexture(texturePath);
+        GLuint textureHandle = GetTextureHandle(texturePath);
+        if (textureHandle == 0) {
+            std::cerr << "Failed to load texture: " << texturePath << std::endl;
+            return;
         }
 
-        /*!
-        @brief Creates and renders a sprite sheet frame with horizontal flipping support.
-        @param textureHandle OpenGL texture ID.
-        @param position      3D position of the sprite.
-        @param size          2D size of the sprite.
-        @param frameX        Frame column (0-based).
-        @param frameY        Frame row (0-based).
-        @param totalCols     Total columns in sprite sheet.
-        @param totalRows     Total rows in sprite sheet.
-        @param flipHorizontal Whether to flip the sprite horizontally.
-        @param rotation      Rotation in degrees (around Z axis).
-        @param scale         Scale factor applied to size.
-        @param tint          RGB tint applied to texture.
-        @param modulate      Whether to modulate with vertex color.
-        */
-        void TextureRenderer::CreateSpriteFrameFlipped(GLuint textureHandle,
-            const CEVec3& position,
-            const CEVec2& size,
-            int frameX, int frameY,
-            int totalCols, int totalRows,
-            bool flipHorizontal,
-            float rotation,
-            float scale,
-            const CEVec3& tint,
-            bool modulate) {
+        // Render using the cached texture
+        RenderQuad(textureHandle, position, size, rotation, scale, tint, modulate);
+    }
 
-            // Auto-initialize if needed
-            if (!initialized) {
-                Initialize();
-            }
+    /*!
+    @brief Creates and renders a sprite sheet frame with horizontal flipping support.
+    @param textureHandle OpenGL texture ID.
+    @param position      3D position of the sprite.
+    @param size          2D size of the sprite.
+    @param frameX        Frame column (0-based).
+    @param frameY        Frame row (0-based).
+    @param totalCols     Total columns in sprite sheet.
+    @param totalRows     Total rows in sprite sheet.
+    @param flipHorizontal Whether to flip the sprite horizontally.
+    @param rotation      Rotation in degrees (around Z axis).
+    @param scale         Scale factor applied to size.
+    @param tint          RGB tint applied to texture.
+    @param modulate      Whether to modulate with vertex color.
+    */
+    void TextureRenderer::CreateSpriteFrameFlipped(GLuint textureHandle,
+        const CEVec3& position,
+        const CEVec2& size,
+        int frameX, int frameY,
+        int totalCols, int totalRows,
+        bool flipHorizontal,
+        float rotation,
+        float scale,
+        const CEVec3& tint,
+        bool modulate) {
 
-            if (textureHandle == 0) {
-                std::cerr << "Invalid texture handle!" << std::endl;
-                return;
-            }
-
-            // Calculate UV coordinates for the specified frame
-            float u1, v1, u2, v2;
-            CalculateFrameUV(frameX, frameY, totalCols, totalRows, u1, v1, u2, v2);
-
-            // Flip horizontally by swapping u1 and u2 if needed
-            if (flipHorizontal) {
-                float temp = u1;
-                u1 = u2;
-                u2 = temp;
-            }
-
-            // Render the quad with custom UV coordinates
-            RenderQuadWithUV(textureHandle, position, size, rotation, scale, tint, modulate, u1, v1, u2, v2);
+        // Auto-initialize if needed
+        if (!initialized) {
+            Initialize();
         }
 
-        /*!
-        @brief Creates and renders a sprite sheet frame from a file path.
-        @param texturePath   Path to the sprite sheet texture file.
-        @param position      3D position of the sprite.
-        @param size          2D size of the sprite.
-        @param frameX        Frame column (0-based).
-        @param frameY        Frame row (0-based).
-        @param totalCols     Total columns in sprite sheet.
-        @param totalRows     Total rows in sprite sheet.
-        @param rotation      Rotation in degrees (around Z axis).
-        @param scale         Scale factor applied to size.
-        @param tint          RGB tint applied to texture.
-        @param modulate      Whether to modulate with vertex color.
-        */
-        void TextureRenderer::CreateSpriteFrame(const std::string& texturePath,
-            const CEVec3& position,
-            const CEVec2& size,
-            int frameX, int frameY,
-            int totalCols, int totalRows,
-            float rotation,
-            float scale,
-            const CEVec3& tint,
-            bool modulate) {
-
-            //GLuint textureHandle = GetOrLoadTexture(texturePath);
-            GLuint textureHandle = GetTextureHandle(texturePath);
-            if (textureHandle == 0) {
-                std::cerr << "Failed to load texture: " << texturePath << std::endl;
-                return;
-            }
-
-            CreateSpriteFrame(textureHandle, position, size, frameX, frameY, totalCols, totalRows, rotation, scale, tint, modulate);
+        if (textureHandle == 0) {
+            std::cerr << "Invalid texture handle!" << std::endl;
+            return;
         }
 
-        /*!
-        @brief Creates and renders a sprite sheet frame using an existing OpenGL texture handle.
-        @param textureHandle OpenGL texture ID.
-        @param position      3D position of the sprite.
-        @param size          2D size of the sprite.
-        @param frameX        Frame column (0-based).
-        @param frameY        Frame row (0-based).
-        @param totalCols     Total columns in sprite sheet.
-        @param totalRows     Total rows in sprite sheet.
-        @param rotation      Rotation in degrees (around Z axis).
-        @param scale         Scale factor applied to size.
-        @param tint          RGB tint applied to texture.
-        @param modulate      Whether to modulate with vertex color.
-        */
-        void TextureRenderer::CreateSpriteFrame(GLuint textureHandle,
-            const CEVec3& position,
-            const CEVec2& size,
-            int frameX, int frameY,
-            int totalCols, int totalRows,
-            float rotation,
-            float scale,
-            const CEVec3& tint,
-            bool modulate) {
+        // Calculate UV coordinates for the specified frame
+        float u1, v1, u2, v2;
+        CalculateFrameUV(frameX, frameY, totalCols, totalRows, u1, v1, u2, v2);
 
-            // Auto-initialize if needed
-            if (!initialized) {
-                Initialize();
-            }
-
-            if (textureHandle == 0) {
-                std::cerr << "Invalid texture handle!" << std::endl;
-                return;
-            }
-
-            // Calculate UV coordinates for the specified frame
-            float u1, v1, u2, v2;
-            CalculateFrameUV(frameX, frameY, totalCols, totalRows, u1, v1, u2, v2);
-
-            // Render the quad with custom UV coordinates
-            RenderQuadWithUV(textureHandle, position, size, rotation, scale, tint, modulate, u1, v1, u2, v2);
+        // Flip horizontally by swapping u1 and u2 if needed
+        if (flipHorizontal) {
+            float temp = u1;
+            u1 = u2;
+            u2 = temp;
         }
 
-        /*!
-        @brief Creates and renders a textured quad using an existing OpenGL texture handle.
-        @param textureHandle OpenGL texture ID.
-        @param position      3D position of the quad.
-        @param size          2D size of the quad.
-        @param rotation      Rotation in degrees (around Z axis).
-        @param scale         Scale factor applied to size.
-        @param tint          RGB tint applied to texture.
-        @param modulate      Whether to modulate with vertex color.
-        */
+        // Render the quad with custom UV coordinates
+        RenderQuadWithUV(textureHandle, position, size, rotation, scale, tint, modulate, u1, v1, u2, v2);
+    }
 
-        void TextureRenderer::CreateTexturedQuad(GLuint textureHandle,
-            const CEVec3& position,
-            const CEVec2& size,
-            float rotation,
-            float scale,
-            const CEVec3& tint,
-            bool modulate) {
+    /*!
+    @brief Creates and renders a sprite sheet frame from a file path.
+    @param texturePath   Path to the sprite sheet texture file.
+    @param position      3D position of the sprite.
+    @param size          2D size of the sprite.
+    @param frameX        Frame column (0-based).
+    @param frameY        Frame row (0-based).
+    @param totalCols     Total columns in sprite sheet.
+    @param totalRows     Total rows in sprite sheet.
+    @param rotation      Rotation in degrees (around Z axis).
+    @param scale         Scale factor applied to size.
+    @param tint          RGB tint applied to texture.
+    @param modulate      Whether to modulate with vertex color.
+    */
+    void TextureRenderer::CreateSpriteFrame(const std::string& texturePath,
+        const CEVec3& position,
+        const CEVec2& size,
+        int frameX, int frameY,
+        int totalCols, int totalRows,
+        float rotation,
+        float scale,
+        const CEVec3& tint,
+        bool modulate) {
 
-            // Auto-initialize if needed
-            if (!initialized) {
-                Initialize();
-            }
-
-            if (textureHandle == 0) {
-                std::cerr << "Invalid texture handle!" << std::endl;
-                return;
-            }
-
-            RenderQuad(textureHandle, position, size, rotation, scale, tint, modulate);
+        //GLuint textureHandle = GetOrLoadTexture(texturePath);
+        GLuint textureHandle = GetTextureHandle(texturePath);
+        if (textureHandle == 0) {
+            std::cerr << "Failed to load texture: " << texturePath << std::endl;
+            return;
         }
 
-        /*!
-        @brief Retrieves a cached texture handle or loads it if not cached.
-        @param texturePath Path to the texture file.
-        @return OpenGL texture handle, or 0 on failure.
-        */
+        CreateSpriteFrame(textureHandle, position, size, frameX, frameY, totalCols, totalRows, rotation, scale, tint, modulate);
+    }
+
+    /*!
+    @brief Creates and renders a sprite sheet frame using an existing OpenGL texture handle.
+    @param textureHandle OpenGL texture ID.
+    @param position      3D position of the sprite.
+    @param size          2D size of the sprite.
+    @param frameX        Frame column (0-based).
+    @param frameY        Frame row (0-based).
+    @param totalCols     Total columns in sprite sheet.
+    @param totalRows     Total rows in sprite sheet.
+    @param rotation      Rotation in degrees (around Z axis).
+    @param scale         Scale factor applied to size.
+    @param tint          RGB tint applied to texture.
+    @param modulate      Whether to modulate with vertex color.
+    */
+    void TextureRenderer::CreateSpriteFrame(GLuint textureHandle,
+        const CEVec3& position,
+        const CEVec2& size,
+        int frameX, int frameY,
+        int totalCols, int totalRows,
+        float rotation,
+        float scale,
+        const CEVec3& tint,
+        bool modulate) {
+
+        // Auto-initialize if needed
+        if (!initialized) {
+            Initialize();
+        }
+
+        if (textureHandle == 0) {
+            std::cerr << "Invalid texture handle!" << std::endl;
+            return;
+        }
+
+        // Calculate UV coordinates for the specified frame
+        float u1, v1, u2, v2;
+        CalculateFrameUV(frameX, frameY, totalCols, totalRows, u1, v1, u2, v2);
+
+        // Render the quad with custom UV coordinates
+        RenderQuadWithUV(textureHandle, position, size, rotation, scale, tint, modulate, u1, v1, u2, v2);
+    }
+
+    /*!
+    @brief Creates and renders a textured quad using an existing OpenGL texture handle.
+    @param textureHandle OpenGL texture ID.
+    @param position      3D position of the quad.
+    @param size          2D size of the quad.
+    @param rotation      Rotation in degrees (around Z axis).
+    @param scale         Scale factor applied to size.
+    @param tint          RGB tint applied to texture.
+    @param modulate      Whether to modulate with vertex color.
+    */
+
+    void TextureRenderer::CreateTexturedQuad(GLuint textureHandle,
+        const CEVec3& position,
+        const CEVec2& size,
+        float rotation,
+        float scale,
+        const CEVec3& tint,
+        bool modulate) {
+
+        // Auto-initialize if needed
+        if (!initialized) {
+            Initialize();
+        }
+
+        if (textureHandle == 0) {
+            std::cerr << "Invalid texture handle!" << std::endl;
+            return;
+        }
+
+        RenderQuad(textureHandle, position, size, rotation, scale, tint, modulate);
+    }
+
+    /*!
+    @brief Retrieves a cached texture handle or loads it if not cached.
+    @param texturePath Path to the texture file.
+    @return OpenGL texture handle, or 0 on failure.
+    */
 
 
-        //GLuint TextureRenderer::GetOrLoadTexture(const std::string& texturePath) {
-        //    // Check cache first
-        //    auto it = textureCache.find(texturePath);
-        //    if (it != textureCache.end()) {
-        //        return it->second; // Return cached texture
-        //    }
+    //GLuint TextureRenderer::GetOrLoadTexture(const std::string& texturePath) {
+    //    // Check cache first
+    //    auto it = textureCache.find(texturePath);
+    //    if (it != textureCache.end()) {
+    //        return it->second; // Return cached texture
+    //    }
 
-        /*!
-        @brief Retrieves a cached texture handle using its asset name.
-        @param assetName The unique name of the asset (from the manifest).
-        @return OpenGL texture handle, or 0 on failure.
-        */
-        // method: TextureRenderer::GetTextureHandle
-        GLuint TextureRenderer::GetTextureHandle(std::string const& assetName) {
-            using namespace CrashoutsEngine::Assets;
-        
-            // QUESTION: Can this be checked so we don't keep searching for handle if already present?
-            // std::cout << "DEBUG: Requesting texture asset: '" << assetName << "'" << std::endl;
-        
-            // Normalize name to manifest key if a path/ext was provided
-            std::string key = assetName;
-            if (key.find('/') != std::string::npos || key.find('\\') != std::string::npos) {
-                std::filesystem::path p(key);
-                key = p.stem().string();
-            } else {
-                size_t dot = key.find_last_of('.');
-                if (dot != std::string::npos) {
-                    key = key.substr(0, dot);
-                }
+    /*!
+    @brief Retrieves a cached texture handle using its asset name.
+    @param assetName The unique name of the asset (from the manifest).
+    @return OpenGL texture handle, or 0 on failure.
+    */
+    // method: TextureRenderer::GetTextureHandle
+    GLuint TextureRenderer::GetTextureHandle(std::string const& assetName) {
+        using namespace CrashoutsEngine::Assets;
+
+        // QUESTION: Can this be checked so we don't keep searching for handle if already present?
+        // std::cout << "DEBUG: Requesting texture asset: '" << assetName << "'" << std::endl;
+
+        // Normalize name to manifest key if a path/ext was provided
+        std::string key = assetName;
+        if (key.find('/') != std::string::npos || key.find('\\') != std::string::npos) {
+            std::filesystem::path p(key);
+            key = p.stem().string();
+        }
+        else {
+            size_t dot = key.find_last_of('.');
+            if (dot != std::string::npos) {
+                key = key.substr(0, dot);
             }
-        
-            // Try manifest lookup first
-            TextureAsset* texture = AssetManager::GetInstance().Get<TextureAsset>(key);
-            if (texture) {
-                if (texture->IsUploaded()) {
-                    return texture->GetGLHandle();
-                }
-                std::cerr << "Warning: TextureAsset '" << key << "' found but not uploaded to GPU." << std::endl;
-                return 0;
+        }
+
+        // Try manifest lookup first
+        TextureAsset* texture = AssetManager::GetInstance().Get<TextureAsset>(key);
+        if (texture) {
+            if (texture->IsUploaded()) {
+                return texture->GetGLHandle();
             }
-        
-            // Fallback: treat input as a file path and load directly if the file exists
-            std::filesystem::path maybePath(assetName);
-            if (std::filesystem::exists(maybePath)) {
-                auto newTexture = TextureAsset::Create(maybePath.string());
-                if (newTexture) {
-                    newTexture->UploadToGPU();
-                    AssetManager::GetInstance().Load(key, std::move(newTexture));
-                    TextureAsset* loaded = AssetManager::GetInstance().Get<TextureAsset>(key);
-                    if (loaded && loaded->IsUploaded()) {
-                        std::cout << "INFO: Loaded texture via path fallback as asset '" << key << "'" << std::endl;
-                        return loaded->GetGLHandle();
-                    }
-                }
-                std::cerr << "Error: Failed to load texture from path: " << maybePath.string() << std::endl;
-                return 0;
-            }
-        
-            std::cerr << "Error: Texture asset not found: " << key << std::endl;
-            std::cerr << "Tip: Place images in 'assets/images' and ensure manifest contains their names." << std::endl;
+            std::cerr << "Warning: TextureAsset '" << key << "' found but not uploaded to GPU." << std::endl;
             return 0;
         }
 
-        //    // Load new texture
-        //    GLuint textureHandle = LoadTexture(texturePath);
-        //    if (textureHandle != 0) {
-        //        // Cache the texture
-        //        textureCache[texturePath] = textureHandle;
-        //        std::cout << "Cached texture: " << texturePath << std::endl;
-        //    }
-
-        //    return textureHandle;
-        //}
-
-        /*!
-        @brief Loads and caches a texture in advance.
-        @param texturePath Path to the texture file.
-        @return True if successfully loaded, false otherwise.
-        */
-
-        bool TextureRenderer::PreloadTexture(const std::string& assetName) {
-            // Check if already loaded
-            /*if (textureCache.find(texturePath) != textureCache.end()) {
-                return true;
+        // Fallback: treat input as a file path and load directly if the file exists
+        std::filesystem::path maybePath(assetName);
+        if (std::filesystem::exists(maybePath)) {
+            auto newTexture = TextureAsset::Create(maybePath.string());
+            if (newTexture) {
+                newTexture->UploadToGPU();
+                AssetManager::GetInstance().Load(key, std::move(newTexture));
+                TextureAsset* loaded = AssetManager::GetInstance().Get<TextureAsset>(key);
+                if (loaded && loaded->IsUploaded()) {
+                    std::cout << "INFO: Loaded texture via path fallback as asset '" << key << "'" << std::endl;
+                    return loaded->GetGLHandle();
+                }
             }
-
-            GLuint textureHandle = LoadTexture(texturePath);
-            if (textureHandle != 0) {
-                textureCache[texturePath] = textureHandle;
-                std::cout << "Preloaded texture: " << texturePath << std::endl;
-                return true;
-            }
-
-            return false;*/
-            return GetTextureHandle(assetName) != 0;
+            std::cerr << "Error: Failed to load texture from path: " << maybePath.string() << std::endl;
+            return 0;
         }
 
-        /*!
-        @brief Renders a quad with the given texture and transformation parameters.
-        @param textureHandle OpenGL texture ID.
-        @param position      3D position of the quad.
-        @param size          2D size of the quad.
-        @param rotation      Rotation in degrees (around Z axis).
-        @param scale         Scale factor applied to size.
-        @param tint          RGB tint applied to texture.
-        @param modulate      Whether to modulate with vertex color.
-        */
+        std::cerr << "Error: Texture asset not found: " << key << std::endl;
+        std::cerr << "Tip: Place images in 'assets/images' and ensure manifest contains their names." << std::endl;
+        return 0;
+    }
 
-        void TextureRenderer::RenderQuad(GLuint textureHandle,
-            const CEVec3& position,
-            const CEVec2& size,
-            float rotation,
-            float scale,
-            const CEVec3& tint,
-            bool modulate) {
+    //    // Load new texture
+    //    GLuint textureHandle = LoadTexture(texturePath);
+    //    if (textureHandle != 0) {
+    //        // Cache the texture
+    //        textureCache[texturePath] = textureHandle;
+    //        std::cout << "Cached texture: " << texturePath << std::endl;
+    //    }
 
-            // Get the rendering instance and use shader
-            Rendering& renderer = Rendering::Get();
-            renderer.shdr_pgm->Use();
+    //    return textureHandle;
+    //}
 
-            // Setup transformation matrix
-            glm::mat4 model = glm::mat4(1.0f);
-            model = glm::translate(model, glm::vec3(position.x, position.y, position.z));
-            model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 0.0f, 1.0f));
-            model = glm::scale(model, glm::vec3(size.x * scale, size.y * scale, 1.0f));
+    /*!
+    @brief Loads and caches a texture in advance.
+    @param texturePath Path to the texture file.
+    @return True if successfully loaded, false otherwise.
+    */
 
-            // Set up projection matrix (orthographic, centered world coordinates)
-            float aspect = static_cast<float>(GLApp::width) / GLApp::height;
-            float BASE_SIZE = 100.0f;
-            float worldWidth, worldHeight;
-            
-            if (aspect >= 1.0f) {
-                worldHeight = BASE_SIZE;
-                worldWidth = worldHeight * aspect;
-            } else {
-                worldWidth = BASE_SIZE;
-                worldHeight = worldWidth / aspect;
-            }
-            
-            glm::mat4 projection = glm::ortho(
-                -worldWidth / 2.0f, worldWidth / 2.0f,
-                -worldHeight / 2.0f, worldHeight / 2.0f,
-                -1.0f, 1.0f
-            );
-            
-            glm::mat4 view = glm::mat4(1.0f); // Identity view matrix
-            
-            // Pass matrices to shader
-            GLint projection_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "uProjection");
-            if (projection_loc != -1) {
-                glUniformMatrix4fv(projection_loc, 1, GL_FALSE, glm::value_ptr(projection));
-            }
-            
-            GLint view_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "uView");
-            if (view_loc != -1) {
-                glUniformMatrix4fv(view_loc, 1, GL_FALSE, glm::value_ptr(view));
-            }
-            
-            GLint model_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "uModel");
-            if (model_loc != -1) {
-                glUniformMatrix4fv(model_loc, 1, GL_FALSE, glm::value_ptr(model));
-            }
-
-            // Enable texture usage in shader
-            GLint useTexture_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "u_useTexture");
-            if (useTexture_loc != -1) {
-                glUniform1i(useTexture_loc, 1); // Enable texture
-            }
-
-            // Set texture sampler
-            GLint tex_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "uTex2d");
-            if (tex_loc != -1) {
-                glUniform1i(tex_loc, 6);
-            }
-
-            // Set modulation (whether to multiply by vertex color)
-            GLint modulate_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "u_modulate");
-            if (modulate_loc != -1) {
-                glUniform1i(modulate_loc, modulate ? 1 : 0);
-            }
-
-            // Set tint color
-            GLint tint_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "u_tint");
-            if (tint_loc != -1) {
-                glUniform3f(tint_loc, tint.x, tint.y, tint.z);
-            }
-
-            // Bind texture to texture unit 6
-            glBindTextureUnit(6, textureHandle);
-
-            // Use shared VAO for rendering (no buffer creation/deletion per call)
-            glBindVertexArray(sharedVAO);
-            glDrawElements(GL_TRIANGLES, INDICES_COUNT, GL_UNSIGNED_SHORT, 0);
-            glBindVertexArray(0);
-
-            // Unbind texture and shader
-            glBindTextureUnit(6, 0);
-            renderer.shdr_pgm->UnUse();
+    bool TextureRenderer::PreloadTexture(const std::string& assetName) {
+        // Check if already loaded
+        /*if (textureCache.find(texturePath) != textureCache.end()) {
+            return true;
         }
 
-        /*!
-        @brief Renders a quad with custom UV coordinates for sprite sheets.
-        @param textureHandle OpenGL texture ID.
-        @param position      3D position of the quad.
-        @param size          2D size of the quad.
-        @param rotation      Rotation in degrees (around Z axis).
-        @param scale         Scale factor applied to size.
-        @param tint          RGB tint applied to texture.
-        @param modulate      Whether to modulate with vertex color.
-        @param u1, v1, u2, v2 Custom UV coordinates.
-        */
-        void TextureRenderer::RenderQuadWithUV(GLuint textureHandle,
-            const CEVec3& position,
-            const CEVec2& size,
-            float rotation,
-            float scale,
-            const CEVec3& tint,
-            bool modulate,
-            float u1, float v1, float u2, float v2) {
-
-            // Create dynamic vertex data with custom UV coordinates
-            float vertices[] = {
-                // positions        // colors         // texture coords
-                -0.5f, -0.5f, 0.0f,  1.0f, 1.0f, 1.0f,  u1, v2, // bottom left
-                 0.5f, -0.5f, 0.0f,  1.0f, 1.0f, 1.0f,  u2, v2, // bottom right
-                 0.5f,  0.5f, 0.0f,  1.0f, 1.0f, 1.0f,  u2, v1, // top right
-                -0.5f,  0.5f, 0.0f,  1.0f, 1.0f, 1.0f,  u1, v1  // top left
-            };
-
-            // Use shared VAO/VBO instead of creating temporary ones
-            glBindVertexArray(sharedVAO);
-            glBindBuffer(GL_ARRAY_BUFFER, sharedVBO);
-            
-            // Update the shared VBO with new vertex data
-            glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
-
-            // Bind the shared EBO (already bound with VAO)
-            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, sharedEBO);
-
-            // Get the rendering instance and use shader
-            Rendering& renderer = Rendering::Get();
-            renderer.shdr_pgm->Use();
-
-            // Setup transformation matrix
-            glm::mat4 model = glm::mat4(1.0f);
-            model = glm::translate(model, glm::vec3(position.x, position.y, position.z));
-            model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 0.0f, 1.0f));
-            model = glm::scale(model, glm::vec3(size.x * scale, size.y * scale, 1.0f));
-
-            // Pass transformation matrix to shader
-            GLint model_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "uModel");
-            if (model_loc != -1) {
-                glUniformMatrix4fv(model_loc, 1, GL_FALSE, glm::value_ptr(model));
-            }
-
-            // Enable texture usage in shader
-            GLint useTexture_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "u_useTexture");
-            if (useTexture_loc != -1) {
-                glUniform1i(useTexture_loc, 1); // Enable texture
-            }
-
-            // Set texture sampler
-            GLint tex_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "uTex2d");
-            if (tex_loc != -1) {
-                glUniform1i(tex_loc, 6);
-            }
-
-            // Set modulation (whether to multiply by vertex color)
-            GLint modulate_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "u_modulate");
-            if (modulate_loc != -1) {
-                glUniform1i(modulate_loc, modulate ? 1 : 0);
-            }
-
-            // Set tint color
-            GLint tint_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "u_tint");
-            if (tint_loc != -1) {
-                glUniform3f(tint_loc, tint.x, tint.y, tint.z);
-            }
-
-            // Bind texture to texture unit 6
-            glBindTextureUnit(6, textureHandle);
-
-            // Render the quad
-            glDrawElements(GL_TRIANGLES, INDICES_COUNT, GL_UNSIGNED_SHORT, 0);
-
-            // Unbind shared resources
-            glBindVertexArray(0);
-
-            // Unbind texture and shader
-            glBindTextureUnit(6, 0);
-            renderer.shdr_pgm->UnUse();
+        GLuint textureHandle = LoadTexture(texturePath);
+        if (textureHandle != 0) {
+            textureCache[texturePath] = textureHandle;
+            std::cout << "Preloaded texture: " << texturePath << std::endl;
+            return true;
         }
 
-        /*!
-        @brief Calculate UV coordinates for a sprite sheet frame
-        @param frameX Frame column (0-based)
-        @param frameY Frame row (0-based)
-        @param totalCols Total columns in sprite sheet
-        @param totalRows Total rows in sprite sheet
-        @param u1, v1, u2, v2 Output UV coordinates
-        */
-        void TextureRenderer::CalculateFrameUV(int frameX, int frameY, int totalCols, int totalRows,
-            float& u1, float& v1, float& u2, float& v2) {
-            
-            // Calculate frame dimensions in UV space
-            float frameWidth = 1.0f / static_cast<float>(totalCols);
-            float frameHeight = 1.0f / static_cast<float>(totalRows);
-            
-            // Add small inset to prevent bleeding from adjacent frames
-            // Use a conservative inset that works for most sprite sheet sizes
-            float uvInsetX = frameWidth * 0.01f;  // 1% inset of frame width
-            float uvInsetY = frameHeight * 0.01f; // 1% inset of frame height
-            
-            // Calculate UV coordinates for this frame with inset
-            u1 = frameX * frameWidth + uvInsetX;
-            v1 = frameY * frameHeight + uvInsetY;
-            u2 = (frameX + 1) * frameWidth - uvInsetX;
-            v2 = (frameY + 1) * frameHeight - uvInsetY;
-            
-            /*std::cout << "[DEBUG] UV Calculation - Frame(" << frameX << "," << frameY << ") in " << totalCols << "x" << totalRows << " grid" << std::endl;
-            std::cout << "[DEBUG] UV Coords: (" << u1 << "," << v1 << ") to (" << u2 << "," << v2 << ")" << std::endl;*/
+        return false;*/
+        return GetTextureHandle(assetName) != 0;
+    }
+
+    /*!
+    @brief Renders a quad with the given texture and transformation parameters.
+    @param textureHandle OpenGL texture ID.
+    @param position      3D position of the quad.
+    @param size          2D size of the quad.
+    @param rotation      Rotation in degrees (around Z axis).
+    @param scale         Scale factor applied to size.
+    @param tint          RGB tint applied to texture.
+    @param modulate      Whether to modulate with vertex color.
+    */
+
+    void TextureRenderer::RenderQuad(GLuint textureHandle,
+        const CEVec3& position,
+        const CEVec2& size,
+        float rotation,
+        float scale,
+        const CEVec3& tint,
+        bool modulate) {
+
+        // Get the rendering instance and use shader
+        Rendering& renderer = Rendering::Get();
+        renderer.shdr_pgm->Use();
+
+        // Setup transformation matrix
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(position.x, position.y, position.z));
+        model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 0.0f, 1.0f));
+        model = glm::scale(model, glm::vec3(size.x * scale, size.y * scale, 1.0f));
+
+        // Set up projection matrix (orthographic, centered world coordinates)
+        float aspect = static_cast<float>(GLApp::width) / GLApp::height;
+        float BASE_SIZE = 100.0f;
+        float worldWidth, worldHeight;
+
+        if (aspect >= 1.0f) {
+            worldHeight = BASE_SIZE;
+            worldWidth = worldHeight * aspect;
         }
+        else {
+            worldWidth = BASE_SIZE;
+            worldHeight = worldWidth / aspect;
+        }
+
+        glm::mat4 projection = glm::ortho(
+            -worldWidth / 2.0f, worldWidth / 2.0f,
+            -worldHeight / 2.0f, worldHeight / 2.0f,
+            -1.0f, 1.0f
+        );
+
+        glm::mat4 view = glm::mat4(1.0f); // Identity view matrix
+
+        // Pass matrices to shader
+        GLint projection_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "uProjection");
+        if (projection_loc != -1) {
+            glUniformMatrix4fv(projection_loc, 1, GL_FALSE, glm::value_ptr(projection));
+        }
+
+        GLint view_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "uView");
+        if (view_loc != -1) {
+            glUniformMatrix4fv(view_loc, 1, GL_FALSE, glm::value_ptr(view));
+        }
+
+        GLint model_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "uModel");
+        if (model_loc != -1) {
+            glUniformMatrix4fv(model_loc, 1, GL_FALSE, glm::value_ptr(model));
+        }
+
+        // Enable texture usage in shader
+        GLint useTexture_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "u_useTexture");
+        if (useTexture_loc != -1) {
+            glUniform1i(useTexture_loc, 1); // Enable texture
+        }
+
+        // Set texture sampler
+        GLint tex_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "uTex2d");
+        if (tex_loc != -1) {
+            glUniform1i(tex_loc, 6);
+        }
+
+        // Set modulation (whether to multiply by vertex color)
+        GLint modulate_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "u_modulate");
+        if (modulate_loc != -1) {
+            glUniform1i(modulate_loc, modulate ? 1 : 0);
+        }
+
+        // Set tint color
+        GLint tint_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "u_tint");
+        if (tint_loc != -1) {
+            glUniform3f(tint_loc, tint.x, tint.y, tint.z);
+        }
+
+        // Bind texture to texture unit 6
+        glBindTextureUnit(6, textureHandle);
+
+        // Use shared VAO for rendering (no buffer creation/deletion per call)
+        glBindVertexArray(sharedVAO);
+        glDrawElements(GL_TRIANGLES, INDICES_COUNT, GL_UNSIGNED_SHORT, 0);
+        glBindVertexArray(0);
+
+        // Unbind texture and shader
+        glBindTextureUnit(6, 0);
+        renderer.shdr_pgm->UnUse();
+    }
+
+    /*!
+    @brief Renders a quad with custom UV coordinates for sprite sheets.
+    @param textureHandle OpenGL texture ID.
+    @param position      3D position of the quad.
+    @param size          2D size of the quad.
+    @param rotation      Rotation in degrees (around Z axis).
+    @param scale         Scale factor applied to size.
+    @param tint          RGB tint applied to texture.
+    @param modulate      Whether to modulate with vertex color.
+    @param u1, v1, u2, v2 Custom UV coordinates.
+    */
+    void TextureRenderer::RenderQuadWithUV(GLuint textureHandle,
+        const CEVec3& position,
+        const CEVec2& size,
+        float rotation,
+        float scale,
+        const CEVec3& tint,
+        bool modulate,
+        float u1, float v1, float u2, float v2) {
+
+        // Create dynamic vertex data with custom UV coordinates
+        float vertices[] = {
+            // positions        // colors         // texture coords
+            -0.5f, -0.5f, 0.0f,  1.0f, 1.0f, 1.0f,  u1, v2, // bottom left
+             0.5f, -0.5f, 0.0f,  1.0f, 1.0f, 1.0f,  u2, v2, // bottom right
+             0.5f,  0.5f, 0.0f,  1.0f, 1.0f, 1.0f,  u2, v1, // top right
+            -0.5f,  0.5f, 0.0f,  1.0f, 1.0f, 1.0f,  u1, v1  // top left
+        };
+
+        // Use shared VAO/VBO instead of creating temporary ones
+        glBindVertexArray(sharedVAO);
+        glBindBuffer(GL_ARRAY_BUFFER, sharedVBO);
+
+        // Update the shared VBO with new vertex data
+        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
+
+        // Bind the shared EBO (already bound with VAO)
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, sharedEBO);
+
+        // Get the rendering instance and use shader
+        Rendering& renderer = Rendering::Get();
+        renderer.shdr_pgm->Use();
+
+        // Setup transformation matrix
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(position.x, position.y, position.z));
+        model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 0.0f, 1.0f));
+        model = glm::scale(model, glm::vec3(size.x * scale, size.y * scale, 1.0f));
+
+        // Pass transformation matrix to shader
+        GLint model_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "uModel");
+        if (model_loc != -1) {
+            glUniformMatrix4fv(model_loc, 1, GL_FALSE, glm::value_ptr(model));
+        }
+
+        // Enable texture usage in shader
+        GLint useTexture_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "u_useTexture");
+        if (useTexture_loc != -1) {
+            glUniform1i(useTexture_loc, 1); // Enable texture
+        }
+
+        // Set texture sampler
+        GLint tex_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "uTex2d");
+        if (tex_loc != -1) {
+            glUniform1i(tex_loc, 6);
+        }
+
+        // Set modulation (whether to multiply by vertex color)
+        GLint modulate_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "u_modulate");
+        if (modulate_loc != -1) {
+            glUniform1i(modulate_loc, modulate ? 1 : 0);
+        }
+
+        // Set tint color
+        GLint tint_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "u_tint");
+        if (tint_loc != -1) {
+            glUniform3f(tint_loc, tint.x, tint.y, tint.z);
+        }
+
+        // Bind texture to texture unit 6
+        glBindTextureUnit(6, textureHandle);
+
+        // Render the quad
+        glDrawElements(GL_TRIANGLES, INDICES_COUNT, GL_UNSIGNED_SHORT, 0);
+
+        // Unbind shared resources
+        glBindVertexArray(0);
+
+        // Unbind texture and shader
+        glBindTextureUnit(6, 0);
+        renderer.shdr_pgm->UnUse();
+    }
+
+    /*!
+    @brief Calculate UV coordinates for a sprite sheet frame
+    @param frameX Frame column (0-based)
+    @param frameY Frame row (0-based)
+    @param totalCols Total columns in sprite sheet
+    @param totalRows Total rows in sprite sheet
+    @param u1, v1, u2, v2 Output UV coordinates
+    */
+    void TextureRenderer::CalculateFrameUV(int frameX, int frameY, int totalCols, int totalRows,
+        float& u1, float& v1, float& u2, float& v2) {
+
+        // Calculate frame dimensions in UV space
+        float frameWidth = 1.0f / static_cast<float>(totalCols);
+        float frameHeight = 1.0f / static_cast<float>(totalRows);
+
+        // Add small inset to prevent bleeding from adjacent frames
+        // Use a conservative inset that works for most sprite sheet sizes
+        float uvInsetX = frameWidth * 0.01f;  // 1% inset of frame width
+        float uvInsetY = frameHeight * 0.01f; // 1% inset of frame height
+
+        // Calculate UV coordinates for this frame with inset
+        u1 = frameX * frameWidth + uvInsetX;
+        v1 = frameY * frameHeight + uvInsetY;
+        u2 = (frameX + 1) * frameWidth - uvInsetX;
+        v2 = (frameY + 1) * frameHeight - uvInsetY;
+
+        /*std::cout << "[DEBUG] UV Calculation - Frame(" << frameX << "," << frameY << ") in " << totalCols << "x" << totalRows << " grid" << std::endl;
+        std::cout << "[DEBUG] UV Coords: (" << u1 << "," << v1 << ") to (" << u2 << "," << v2 << ")" << std::endl;*/
+    }
 
 
 #if 0
 
-        /*!
-        @brief Loads a texture from file depending on its extension.
-        @param pathname Path to the texture file (.png, .jpg, .tex, etc).
-        @return OpenGL texture handle, or 0 on failure.
-        */
+    /*!
+    @brief Loads a texture from file depending on its extension.
+    @param pathname Path to the texture file (.png, .jpg, .tex, etc).
+    @return OpenGL texture handle, or 0 on failure.
+    */
 
 
-        GLuint TextureRenderer::LoadTexture(const std::string& pathname) {
-            size_t dotPos = pathname.find_last_of('.');
-            if (dotPos == std::string::npos) {
-                std::cerr << "Error: No file extension found in: " << pathname << std::endl;
-                return 0;
-            }
-
-            std::string extension = pathname.substr(dotPos);
-            std::transform(extension.begin(), extension.end(), extension.begin(), ::tolower);
-
-            if (extension == ".tex") {
-                return LoadBinaryTexture(pathname);
-            }
-            else if (extension == ".png" || extension == ".jpg" || extension == ".jpeg" ||
-                extension == ".bmp" || extension == ".tga" || extension == ".gif") {
-                return LoadImageTexture(pathname);
-            }
-            else {
-                std::cerr << "Error: Unsupported texture format: " << extension << std::endl;
-                return 0;
-            }
+    GLuint TextureRenderer::LoadTexture(const std::string& pathname) {
+        size_t dotPos = pathname.find_last_of('.');
+        if (dotPos == std::string::npos) {
+            std::cerr << "Error: No file extension found in: " << pathname << std::endl;
+            return 0;
         }
 
-        /*!
-        @brief Loads a custom binary texture (.tex format).
-        @param pathname Path to binary texture file.
-        @return OpenGL texture handle, or 0 on failure.
-        */
+        std::string extension = pathname.substr(dotPos);
+        std::transform(extension.begin(), extension.end(), extension.begin(), ::tolower);
 
-        GLuint TextureRenderer::LoadBinaryTexture(const std::string& pathname) {
-            const GLuint width = 256, height = 256, bytes_per_texel = 4;
-            const std::streamsize expected_size = static_cast<std::streamsize>(width * height * bytes_per_texel);
-
-            std::ifstream file(pathname, std::ios::binary | std::ios::ate);
-            if (!file.is_open()) {
-                std::cerr << "Error: Could not open binary texture file: " << pathname << std::endl;
-                return 0;
-            }
-
-            std::streamsize size = file.tellg();
-            if (size != expected_size) {
-                std::cerr << "Error: Binary texture size mismatch for " << pathname
-                    << ". Expected: " << expected_size << ", Got: " << size << std::endl;
-                file.close();
-                return 0;
-            }
-
-            std::vector<char> buffer(size);
-            file.seekg(0);
-
-            if (!file.read(buffer.data(), size)) {
-                std::cerr << "Error: Failed to read binary texture data from: " << pathname << std::endl;
-                file.close();
-                return 0;
-            }
-
-            file.close();
-
-            GLuint texobj_hdl;
-            glCreateTextures(GL_TEXTURE_2D, 1, &texobj_hdl);
-            glTextureStorage2D(texobj_hdl, 1, GL_RGBA8, width, height);
-            glTextureSubImage2D(texobj_hdl, 0, 0, 0, width, height,
-                GL_RGBA, GL_UNSIGNED_BYTE, buffer.data());
-
-            glTextureParameteri(texobj_hdl, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-            glTextureParameteri(texobj_hdl, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-            glTextureParameteri(texobj_hdl, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-            glTextureParameteri(texobj_hdl, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-            std::cout << "Successfully loaded binary texture: " << pathname
-                << " (" << width << "x" << height << ")" << std::endl;
-
-            return texobj_hdl;
+        if (extension == ".tex") {
+            return LoadBinaryTexture(pathname);
         }
-
-        /*!
-        @brief Loads a standard image texture using stb_image.
-        @param pathname Path to image file (.png, .jpg, etc).
-        @return OpenGL texture handle, or 0 on failure.
-        */
-
-        GLuint TextureRenderer::LoadImageTexture(const std::string& pathname) {
-            int width, height, channels;
-
-            // Load with stb_image, force RGBA (4 channels)
-            unsigned char* data = stbi_load(pathname.c_str(), &width, &height, &channels, STBI_rgb_alpha);
-
-            if (!data) {
-                std::cerr << "Error: stb_image failed to load: " << pathname << std::endl;
-                std::cerr << "stb_image error: " << stbi_failure_reason() << std::endl;
-                return 0;
-            }
-
-            std::cout << "Successfully loaded image: " << pathname << " (" << width << "x" << height
-                << ", " << channels << " channels)" << std::endl;
-
-            GLuint texobj_hdl;
-            glCreateTextures(GL_TEXTURE_2D, 1, &texobj_hdl);
-            glTextureStorage2D(texobj_hdl, 1, GL_RGBA8, width, height);
-            glTextureSubImage2D(texobj_hdl, 0, 0, 0, width, height,
-                GL_RGBA, GL_UNSIGNED_BYTE, data);
-
-            glTextureParameteri(texobj_hdl, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-            glTextureParameteri(texobj_hdl, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-            glTextureParameteri(texobj_hdl, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-            glTextureParameteri(texobj_hdl, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-            stbi_image_free(data);
-            return texobj_hdl;
-        }
-
-        /*!
-        @brief Loads a texture using the asset system (alias of LoadImageTexture).
-        @param pathname Path to image file.
-        @return OpenGL texture handle, or 0 on failure.
-        */
-
-        GLuint TextureRenderer::LoadTextureFromAsset(const std::string& pathname) {
-            // This method is now an alias to LoadImageTexture for consistency
+        else if (extension == ".png" || extension == ".jpg" || extension == ".jpeg" ||
+            extension == ".bmp" || extension == ".tga" || extension == ".gif") {
             return LoadImageTexture(pathname);
         }
+        else {
+            std::cerr << "Error: Unsupported texture format: " << extension << std::endl;
+            return 0;
+        }
+    }
+
+    /*!
+    @brief Loads a custom binary texture (.tex format).
+    @param pathname Path to binary texture file.
+    @return OpenGL texture handle, or 0 on failure.
+    */
+
+    GLuint TextureRenderer::LoadBinaryTexture(const std::string& pathname) {
+        const GLuint width = 256, height = 256, bytes_per_texel = 4;
+        const std::streamsize expected_size = static_cast<std::streamsize>(width * height * bytes_per_texel);
+
+        std::ifstream file(pathname, std::ios::binary | std::ios::ate);
+        if (!file.is_open()) {
+            std::cerr << "Error: Could not open binary texture file: " << pathname << std::endl;
+            return 0;
+        }
+
+        std::streamsize size = file.tellg();
+        if (size != expected_size) {
+            std::cerr << "Error: Binary texture size mismatch for " << pathname
+                << ". Expected: " << expected_size << ", Got: " << size << std::endl;
+            file.close();
+            return 0;
+        }
+
+        std::vector<char> buffer(size);
+        file.seekg(0);
+
+        if (!file.read(buffer.data(), size)) {
+            std::cerr << "Error: Failed to read binary texture data from: " << pathname << std::endl;
+            file.close();
+            return 0;
+        }
+
+        file.close();
+
+        GLuint texobj_hdl;
+        glCreateTextures(GL_TEXTURE_2D, 1, &texobj_hdl);
+        glTextureStorage2D(texobj_hdl, 1, GL_RGBA8, width, height);
+        glTextureSubImage2D(texobj_hdl, 0, 0, 0, width, height,
+            GL_RGBA, GL_UNSIGNED_BYTE, buffer.data());
+
+        glTextureParameteri(texobj_hdl, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTextureParameteri(texobj_hdl, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTextureParameteri(texobj_hdl, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTextureParameteri(texobj_hdl, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+        std::cout << "Successfully loaded binary texture: " << pathname
+            << " (" << width << "x" << height << ")" << std::endl;
+
+        return texobj_hdl;
+    }
+
+    /*!
+    @brief Loads a standard image texture using stb_image.
+    @param pathname Path to image file (.png, .jpg, etc).
+    @return OpenGL texture handle, or 0 on failure.
+    */
+
+    GLuint TextureRenderer::LoadImageTexture(const std::string& pathname) {
+        int width, height, channels;
+
+        // Load with stb_image, force RGBA (4 channels)
+        unsigned char* data = stbi_load(pathname.c_str(), &width, &height, &channels, STBI_rgb_alpha);
+
+        if (!data) {
+            std::cerr << "Error: stb_image failed to load: " << pathname << std::endl;
+            std::cerr << "stb_image error: " << stbi_failure_reason() << std::endl;
+            return 0;
+        }
+
+        std::cout << "Successfully loaded image: " << pathname << " (" << width << "x" << height
+            << ", " << channels << " channels)" << std::endl;
+
+        GLuint texobj_hdl;
+        glCreateTextures(GL_TEXTURE_2D, 1, &texobj_hdl);
+        glTextureStorage2D(texobj_hdl, 1, GL_RGBA8, width, height);
+        glTextureSubImage2D(texobj_hdl, 0, 0, 0, width, height,
+            GL_RGBA, GL_UNSIGNED_BYTE, data);
+
+        glTextureParameteri(texobj_hdl, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTextureParameteri(texobj_hdl, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTextureParameteri(texobj_hdl, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTextureParameteri(texobj_hdl, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+        stbi_image_free(data);
+        return texobj_hdl;
+    }
+
+    /*!
+    @brief Loads a texture using the asset system (alias of LoadImageTexture).
+    @param pathname Path to image file.
+    @return OpenGL texture handle, or 0 on failure.
+    */
+
+    GLuint TextureRenderer::LoadTextureFromAsset(const std::string& pathname) {
+        // This method is now an alias to LoadImageTexture for consistency
+        return LoadImageTexture(pathname);
+    }
 
 #endif
 
-        /*!
-        @brief Unloads a single texture from the cache and deletes its GPU resource.
-        @param texturePath Path to the texture file to unload.
-        */
+    /*!
+    @brief Unloads a single texture from the cache and deletes its GPU resource.
+    @param texturePath Path to the texture file to unload.
+    */
 
-        void TextureRenderer::UnloadTexture(const std::string& texturePath) {
-            auto it = textureCache.find(texturePath);
-            if (it != textureCache.end()) {
-                glDeleteTextures(1, &it->second);
-                textureCache.erase(it);
-                std::cout << "Unloaded texture: " << texturePath << std::endl;
-            }
+    void TextureRenderer::UnloadTexture(const std::string& texturePath) {
+        auto it = textureCache.find(texturePath);
+        if (it != textureCache.end()) {
+            glDeleteTextures(1, &it->second);
+            textureCache.erase(it);
+            std::cout << "Unloaded texture: " << texturePath << std::endl;
+        }
+    }
+
+    /*!
+    @brief Clears all cached textures and frees GPU resources.
+    */
+
+    void TextureRenderer::ClearTextureCache() {
+        for (const auto& pair : textureCache) {
+            glDeleteTextures(1, &pair.second);
+        }
+        textureCache.clear();
+        std::cout << "Cleared texture cache." << std::endl;
+    }
+
+    /*!
+    @brief Releases all TextureRenderer resources (textures and shared quad).
+    Call this before shutting down the engine.
+    */
+
+    void TextureRenderer::Cleanup() {
+        // Clean up cached textures
+        ClearTextureCache();
+
+        // Clean up shared quad resources
+        if (sharedVAO != 0) {
+            glDeleteVertexArrays(1, &sharedVAO);
+            sharedVAO = 0;
+        }
+        if (sharedVBO != 0) {
+            glDeleteBuffers(1, &sharedVBO);
+            sharedVBO = 0;
+        }
+        if (sharedEBO != 0) {
+            glDeleteBuffers(1, &sharedEBO);
+            sharedEBO = 0;
         }
 
-        /*!
-        @brief Clears all cached textures and frees GPU resources.
-        */
+        initialized = false;
+        std::cout << "TextureRenderer cleaned up." << std::endl;
+    }
 
-        void TextureRenderer::ClearTextureCache() {
-            for (const auto& pair : textureCache) {
-                glDeleteTextures(1, &pair.second);
-            }
-            textureCache.clear();
-            std::cout << "Cleared texture cache." << std::endl;
-        }
-
-        /*!
-        @brief Releases all TextureRenderer resources (textures and shared quad).
-        Call this before shutting down the engine.
-        */
-
-        void TextureRenderer::Cleanup() {
-            // Clean up cached textures
-            ClearTextureCache();
-
-            // Clean up shared quad resources
-            if (sharedVAO != 0) {
-                glDeleteVertexArrays(1, &sharedVAO);
-                sharedVAO = 0;
-            }
-            if (sharedVBO != 0) {
-                glDeleteBuffers(1, &sharedVBO);
-                sharedVBO = 0;
-            }
-            if (sharedEBO != 0) {
-                glDeleteBuffers(1, &sharedEBO);
-                sharedEBO = 0;
-            }
-
-            initialized = false;
-            std::cout << "TextureRenderer cleaned up." << std::endl;
-        }
-
-    } // namespace Component // namespace CrashoutsEngine
+} // namespace Component // namespace CrashoutsEngine

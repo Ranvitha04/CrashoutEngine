@@ -137,6 +137,7 @@ namespace Component {
         GLuint tex_vbo_hdl{ 0 };
         GLuint texobj{ 0 };
         GLSLShader* shdr_pgm = nullptr;
+        GLSLShader shdr_pgm_instanced;
         
         
         size_t current_vbo_size{ 0 };
@@ -191,6 +192,7 @@ namespace Component {
         Exits the application with error messages if any step fails.
         */
         void Setup_Shdrpgm();
+        void Setup_ShdrpgmInstanced();
         
         /*!
         @brief Execute a draw call using the current VAO and shader state.
