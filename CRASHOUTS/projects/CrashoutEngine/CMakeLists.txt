@@ -126,10 +126,10 @@ add_custom_target(ManagedScripts ALL
 add_custom_command(
     TARGET ManagedScripts POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E make_directory
-            ${CMAKE_BINARY_DIR}/scripts
+            "$<TARGET_FILE_DIR:Descent>/scripts"
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
-            ${CMAKE_SOURCE_DIR}/projects/CrashoutEngine/scripts/ManagedScripts.dll
-            ${CMAKE_BINARY_DIR}/scripts/ManagedScripts.dll
+            "${CMAKE_SOURCE_DIR}/projects/CrashoutEngine/scripts/ManagedScripts.dll"
+            "$<TARGET_FILE_DIR:Descent>/scripts/ManagedScripts.dll"
 )
 
 set_property(TARGET ${PROJECT_NAME} PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "$<TARGET_FILE_DIR:${PROJECT_NAME}>")

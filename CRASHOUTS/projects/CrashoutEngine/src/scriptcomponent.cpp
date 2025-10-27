@@ -5,6 +5,11 @@ namespace CrashoutsEngine
 {
     bool ScriptComponent::Initialize(MonoDomain* domain, MonoAssembly* assembly)
     {
+        if (!assembly) {
+            std::cerr << "[Mono] Assembly pointer is null!\n";
+            return false;
+        }
+
         MonoImage* image = mono_assembly_get_image(assembly);
         if (!image)
         {
