@@ -2,8 +2,7 @@
 @file        prefab_init.cpp
 @author      b.mohamadafiq@digipen.edu
 @date        28/9/2025
-@brief       Sets up prefabs: fallback, a built-in example, and de-serializes
-             external prefabs from projects/Descent/assets/prefabs/prefabs.txt.
+@brief       
 */
 
 #include "prefab_init.h"
@@ -157,7 +156,7 @@ namespace CrashoutsEngine {
         Value obj(kObjectType);
         obj.AddMember("type", "Box", A);
 
-        {   // name (use newName)
+        {   
             Value nm;
             nm.SetString(newName.c_str(), (SizeType)newName.size(), A);
             obj.AddMember("name", nm, A);
@@ -193,13 +192,13 @@ namespace CrashoutsEngine {
             obj.AddMember("rigidbody", rbj, A);
         }
 
-        // Upsert by key (matchName if provided, else newName)
+        // Upsert by key
         const std::string& key = matchName.empty() ? newName : matchName;
         bool replaced = false;
         for (auto& p : prefabs.GetArray()) {
             if (p.IsObject() && p.HasMember("name") && p["name"].IsString()
                 && key == std::string(p["name"].GetString())) {
-                p.CopyFrom(obj, A);   // do NOT use operator=
+                p.CopyFrom(obj, A);  
                 replaced = true;
                 break;
             }
