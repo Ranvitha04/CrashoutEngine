@@ -13,7 +13,10 @@ context and implement a game loop.
 // Extension loader library's header must be included before GLFW's header!!!
 #include "engine.h"
 #include "assetmanager.h"
+#include "monomanager.h"
 #include "rendering.h"
+#include "scriptcomponent.h"
+#include "scriptsystem.h"
 #include "textureasset.h"
 
 /*                                                   type declarations
@@ -106,6 +109,11 @@ void Init() {
     InitGameStateManager(MAIN_MENU);
 
     RegisterBuiltinComponentAdapters();
+
+	MonoManager::Init("CrashoutDomain");
+    MonoManager::LoadAssembly("scripts/ManagedScripts.dll");
+
+    CrashoutsEngine::ScriptSystem::InitializeAll(MonoManager::GetDomain(), MonoManager::GetAssembly());
 
     InputManager::Init(GLApp::ptr_window);
     UI::Init(GLApp::ptr_window); // NEW
@@ -201,4 +209,6 @@ void CleanUp() {
     ShutdownGameStateManager();
 
     CrashoutsEngine::ECS::DestroyInstance();
+
+    MonoManager::Shutdown();
 }

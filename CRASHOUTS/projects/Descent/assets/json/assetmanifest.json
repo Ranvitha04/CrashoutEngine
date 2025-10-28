@@ -235,6 +235,10 @@
         {
             "name": "renfred",
             "path": "renfred"
+        },
+        {
+            "name": "tristan",
+            "path": "tristan"
         }
     ],
     "shaders": [

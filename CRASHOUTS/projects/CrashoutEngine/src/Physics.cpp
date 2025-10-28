@@ -24,17 +24,25 @@ namespace Component {
 		return mMass;
 	}
 
-	void RigidBodyComponent::setMass(f32 newMass) {
-		mMass = newMass;
-	}
-
 	void RigidBodyComponent::addForce(CEVec3 force) {
 		mNetForce += force;
 	}
 	void RigidBodyComponent::clearForceAccumulator() {
 		mNetForce = CEVec3{};
 	}
-	
+
+	void RigidBodyComponent::setMaxVelocity(CEVec3 const& newVel) {
+		mMaximumVel = newVel;
+	}
+
+	void RigidBodyComponent::setMass(f32 newMass) {
+		mMass = newMass;
+	}
+
+	void RigidBodyComponent::setRestitution(f32 restitution) {
+		mRestitutionCoeff = restitution;
+	}
+
 	RigidBodyComponent::RigidBodyComponent(CEVec3 maximumVel, f32 mass, f32 restitutionCoeff) 
 		: mVelocity{ CEVec3{} }, mMaximumVel{ maximumVel }, mMass{ mass }, mNetForce{ CEVec3{} }, mRestitutionCoeff{restitutionCoeff} { /*EMPTY BY DESIGN*/ }
 
@@ -70,6 +78,10 @@ namespace Component {
 		return mRestitutionCoeff;
 	}
 
+	CEVec3 RigidBodyComponent::getMaxVelocity() {
+		return mMaximumVel;
+	}
+
 }
 
 /*TEMP*/
@@ -90,7 +102,7 @@ namespace {
 namespace Physics {
 
 	void PhysicsHandler::handleCollisionMessages(Collision::CollisionMessage& collEvent, PhysicsHandler &observer) {
-
+		if (observer.GetPaused()) return;
 		CrashoutsEngine::ECS& globalECS = *(CrashoutsEngine::ECS::getInstance());
 		std::pair<CrashoutsEngine::Entity, CrashoutsEngine::Entity> colPair{ collEvent.getCollisionPair() };
 		if (!globalECS.HasComponent<Component::RigidBodyComponent>(colPair.first) || !globalECS.HasComponent<Component::RigidBodyComponent>(colPair.second)) return;
@@ -193,7 +205,7 @@ namespace Physics {
 		/*UPDATE FORCES*/
 
 		if (sPaused) {
-			collisionEvents.clear();
+			collisionEvents = std::vector<Collision::CollisionEvent>{};
 			if (!sStepOnce) return;
 			// allow exactly one tick when paused+Step pressed
 		}

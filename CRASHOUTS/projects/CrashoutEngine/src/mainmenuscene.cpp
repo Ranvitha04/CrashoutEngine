@@ -16,6 +16,8 @@
 #include <random>
 #include <string>
 #include <chrono> // Used to seed the random number generator
+
+#include "scriptcomponent.h"
 #include "glm/vec3.hpp"
 #include "GLFW/glfw3.h"
 
@@ -92,6 +94,7 @@ void InitMainMenu()
 		Component::TransformComponent{ .position = CEVec3{0.f, 20.f, 0.f} },
 		Component::ShapeComponent{.enableTexture=true, .textureName="Concept", .width = 10.f, .height = 10.f}
 	);
+	globalECS->AddComponent<CrashoutsEngine::ScriptComponent>(entity1, CrashoutsEngine::ScriptComponent("PlayerScript"));
 
 	AddPhysicsEntity(
 		entity2,
