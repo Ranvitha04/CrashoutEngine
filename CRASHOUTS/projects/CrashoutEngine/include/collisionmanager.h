@@ -184,6 +184,7 @@ namespace Collision {
 					});
 
 				}
+				return {};
 			}
 
 			void setArgs(ArgMap newArgs) {

@@ -227,6 +227,12 @@
             "path": "assetmanifest.json"
         }
     ],
+    "prefabs": [
+        {
+            "name": "prefab",
+            "path": "prefab.json"
+        }
+    ],
     "scenes": [
         {
             "name": "amir",

@@ -20,6 +20,8 @@ unsigned int Settings::screenWidth = 1280;
 /// Default screen height before loading from file
 unsigned int Settings::screenHeight = 720;
 
+const float Settings::TARGET_ASPECT_RATIO = 16.0f / 9.0f;
+
 struct SettingsLoader {
     SettingsLoader() {
         Settings::LoadFromFile("assets/settings.json");

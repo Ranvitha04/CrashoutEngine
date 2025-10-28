@@ -82,7 +82,7 @@ namespace UI {
     @param entities List of entities currently tracked.
     @param selected Currently selected entity.
     */
-    void Render(FrameProfiler& profiler, Physics::PhysicsHandler& phys, CrashoutsEngine::Entity& selected);
+    void Render(FrameProfiler& profiler, Physics::PhysicsHandler& phys, CrashoutsEngine::Entity& selected, UIState& ui);
 
     // -- Helper Functions ---------------------------------------------
     /*!
@@ -102,7 +102,7 @@ namespace UI {
     @param entities List of ECS entities.
     @param selected Currently selected entity.
     */
-    void RenderEcsPanel(FrameProfiler& profiler, CrashoutsEngine::ECS& ecs, std::vector<CrashoutsEngine::Entity>& entities, CrashoutsEngine::Entity& selected, UIState& ui);
+    static void RenderEcsPanel(FrameProfiler& profiler, CrashoutsEngine::ECS& ecs, std::vector<CrashoutsEngine::Entity>& entities, CrashoutsEngine::Entity& selected, UIState& ui);
 
     /*!
     @brief Renders the Asset Browser debug panel.
@@ -110,7 +110,7 @@ namespace UI {
     @param root
     @param outSelectedAsset
     */
-    void RenderAssetBrowserPanel(UIState& ui, const char* root, std::string& outSelectedAsset);
+    static void RenderAssetBrowserPanel(UIState& ui, const char* root, std::string& outSelectedAsset);
 
     /*!
     @brief Renders the Inspector debug panel.
@@ -118,27 +118,27 @@ namespace UI {
     @param selected Currently selected entity.
     @param ui UI state toggles.
     */
-    void RenderInspectorPanel(CrashoutsEngine::ECS& ecs, CrashoutsEngine::Entity selected, UIState& ui);
+    static void RenderInspectorPanel(CrashoutsEngine::ECS& ecs, CrashoutsEngine::Entity selected, UIState& ui);
 
     /*!
     @brief Renders the performance profiling panel.
     @param profiler Frame profiler reference.
     @param ui UI state toggles.
     */
-    void RenderPerformancePanel(FrameProfiler& profiler, UIState& ui);
+    static void RenderPerformancePanel(FrameProfiler& profiler, UIState& ui);
     
     /*!
     @brief Renders the console log panel.
     @param ui UI state toggles.
     */
-    void RenderConsolePanel(UIState& ui);
+    static void RenderConsolePanel(UIState& ui);
 
     /*!
      @brief Renders the gameState panel
      @param state gameState reference.
      @param ui UI state toggles.
     */
-    void RenderGameStatePanel(UIState& ui);
+    static void RenderGameStatePanel(UIState& ui);
     
     /*!
     @brief Renders the physics and collision panel.
@@ -147,7 +147,7 @@ namespace UI {
     @param phys Physics handler reference.
     @param ui UI state toggles.
     */
-    void RenderPhysicsPanel(FrameProfiler& profiler, CrashoutsEngine::ECS& ecs, Physics::PhysicsHandler& phys, UIState& ui);
+    static void RenderPhysicsPanel(FrameProfiler& profiler, CrashoutsEngine::ECS& ecs, Physics::PhysicsHandler& phys, UIState& ui);
     
     /*!
      @brief Renders the audio panel.
@@ -155,9 +155,14 @@ namespace UI {
      @param ecs ECS reference.
      @param ui UI state toggles.
     */
-    void RenderAudioPanel(FrameProfiler&, CrashoutsEngine::ECS& ecs, UIState& ui);
+    static void RenderAudioPanel(FrameProfiler&, CrashoutsEngine::ECS& ecs, UIState& ui);
 
-    static void RenderDebugMenuBar(UIState& ui);
+     void RenderDebugMenuBar(UIState& ui);
+
+    /*!
+     @brief Renders the Scene control bar on top of game viewport
+    */
+    static void RenderEngineStateBar();
 
     /*!
     @brief Renders all UI panels and overlays in sequence.

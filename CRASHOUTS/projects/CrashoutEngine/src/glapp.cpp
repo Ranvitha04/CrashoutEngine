@@ -43,6 +43,16 @@ constexpr int GL_MAJOR{ 4 };
 
 /* _________________________________________________________________________
 ----------------------------------------------------------------------------- */
+
+#ifdef USE_IMGUI_EDITOR
+GLuint gameFboID = 0;
+GLuint gameTextureColorBuffer = 0;
+GLuint gameRboDepthStencil = 0;
+int gameTextureWidth = 800;     // Will be resized
+int gameTextureHeight = 600;    // Will be resized
+#endif
+
+
 GLint GLApp::width;
 GLint GLApp::height;
 GLdouble GLApp::fps;
@@ -179,16 +189,33 @@ bool GLApp::init(GLint w, GLint h, std::string t) {
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LEQUAL);
 
+#ifdef USE_IMGUI_EDITOR
+
+    glGenFramebuffers(1, &gameFboID);
+    glBindFramebuffer(GL_FRAMEBUFFER, gameFboID);
+
+    // Color Texture
+    glGenTextures(1, &gameTextureColorBuffer);
+    glBindTexture(GL_TEXTURE_2D, gameTextureColorBuffer);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, gameTextureWidth, gameTextureHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, gameTextureColorBuffer, 0);
+
+    // Depth / Stencil Renderbuffer
+    glGenRenderbuffers(1, &gameRboDepthStencil);
+    glBindRenderbuffer(GL_RENDERER, gameRboDepthStencil);
+    glRenderbufferStorage(GL_RENDERER, GL_DEPTH24_STENCIL8, gameTextureWidth, gameTextureHeight);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, gameRboDepthStencil);
+
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+        LOGE(Core, "Framebuffer is not complete!");
+    }
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+#endif
     model.Setup_VAO();
-    //model.Setup_Shdrpgm();
-
-
-    //Component::Rendering::Initialize();
-
-
-    //Component::TextureRenderer::Initialize();
-
-
+    
     return true;
 }
 
@@ -210,15 +237,6 @@ void GLApp::update() {
     std::stringstream sstr;
     sstr << std::fixed << std::setprecision(2) << GLApp::title << " | " << FrameRateController::GetInstance().FPS();
     glfwSetWindowTitle(GLApp::ptr_window, sstr.str().c_str());
-
-    GLsizei position_attribute_size = sizeof(glm::vec3);
-    GLsizei position_data_size = position_attribute_size * 4;
-    GLsizei color_data_offset = position_data_size;
-    GLsizei color_attribute_size = sizeof(glm::vec3);
-    GLsizei color_data_size = color_attribute_size * static_cast<GLsizei>(clr_vtx.size());
-
-    glNamedBufferSubData(model.vbo_hdl, color_data_offset,
-        color_data_size, clr_vtx.data());
 
     GLint w{ GLApp::width }, h{ GLApp::height };
     static GLint old_w{}, old_h{};
@@ -249,18 +267,17 @@ For now, there is nothing to do except set the back buffer fill color
 as black.
 */
 void GLApp::draw() {
-    // clear colorbuffer with RGBA value in glClearColor ...
-    glClearColor(0.2f, 0.2f, 0.2f, 1.0f);  // Dark gray background
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    //model.Draw();
 
+    // Calculate offsets and sizes (can be done here or cached if static)
+    GLsizei position_attribute_size = sizeof(glm::vec3);
+    GLsizei position_data_size = position_attribute_size * 4;
+    GLsizei color_data_offset = position_data_size;
+    GLsizei color_attribute_size = sizeof(glm::vec3);
+    GLsizei color_data_size = color_attribute_size * static_cast<GLsizei>(clr_vtx.size());
 
-    //CEVec3 pos(RightTest, 0.0f, 0.0f);
-    //float rotation = 85.0f;
-    //float scale = 45.f;
-
-    RenderRan();
-
+    // Update the color data in the VBO right before drawing
+    glNamedBufferSubData(model.vbo_hdl, color_data_offset,
+        color_data_size, clr_vtx.data());
 }
 
 /* _________________________________________________________________________ */
@@ -281,6 +298,23 @@ void GLApp::cleanup() {
     Component::Rendering::Cleanup();
 
     Component::TextureRenderer::Cleanup();
+
+#ifdef USE_IMGUI_EDITOR
+
+    if (gameFboID != 0) {
+        glDeleteFramebuffers(1, &gameFboID);
+        gameFboID = 0;
+    }
+    if (gameTextureColorBuffer != 0) {
+        glDeleteTextures(1, &gameTextureColorBuffer);
+        gameTextureColorBuffer = 0;
+    }
+    if (gameRboDepthStencil != 0) {
+        glDeleteRenderbuffers(1, &gameRboDepthStencil);
+        gameRboDepthStencil = 0;
+    }
+
+#endif
 
     glfwTerminate();
 
@@ -492,11 +526,13 @@ of the window in pixels.
 */
 void GLApp::fbsize_cb([[maybe_unused]] GLFWwindow* ptr_win, int fbWidth, int fbHeight) {
     // use the entire framebuffer as drawing region
-    glViewport(0, 0, fbWidth, fbHeight);;
+    //glViewport(0, 0, fbWidth, fbHeight);;
     // later, if working in 3D, we'll have to set the projection matrix here ...
 
     GLApp::width = fbWidth;
     GLApp::height = fbHeight;
+
+    Component::Rendering::Get().UpdateMatrices(fbWidth, fbHeight);
 }
 
 

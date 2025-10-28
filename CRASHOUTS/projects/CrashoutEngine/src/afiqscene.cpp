@@ -131,7 +131,7 @@ void UpdateAfiq()
 
 void RenderAfiq()
 {
-    glClearColor(0.1f, 0.2f, 0.4f, 1.0f);
+    //glClearColor(0.1f, 0.2f, 0.4f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
     // NOTE: do NOT draw ImGui windows here.
