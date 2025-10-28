@@ -949,11 +949,11 @@ namespace UI { // --------------------------------------------------------------
 
             if (panelAspect > Settings::TARGET_ASPECT_RATIO) { // Viewport is wider than game (Letterbox)
                 targetWidth = panelHeight * Settings::TARGET_ASPECT_RATIO;
-                paddingX = (panelWidth - targetWidth) / 2.0f;
+                paddingX = (panelWidth - targetWidth) * 0.5f;
             }
             else if (panelAspect < Settings::TARGET_ASPECT_RATIO) { // Viewport is taller than game (Pillarbox)
                 targetHeight = panelWidth / Settings::TARGET_ASPECT_RATIO;
-                paddingY = (panelHeight - targetHeight) / 2.0f;
+                paddingY = (panelHeight - targetHeight) * 0.5f;
             }
 
             // Ensure dimensions are at least 1 pixel
@@ -988,6 +988,11 @@ namespace UI { // --------------------------------------------------------------
             }
             glBindTexture(GL_TEXTURE_2D, 0);
             glBindRenderbuffer(GL_RENDERBUFFER, 0);
+
+            // Set Cursor Position: Apply the calculated padding to center the image.
+            // GetCursorScreenPos() gives the top-left corner of the content area.
+            ImVec2 screenPos = ImGui::GetCursorScreenPos();
+            ImGui::SetCursorScreenPos(ImVec2(screenPos.x + paddingX, screenPos.y + paddingY));
             
             // Display the texture within the ImGui window
             // UV flip (0,1) to (1,0) since OpenGL textures are often upside-down
