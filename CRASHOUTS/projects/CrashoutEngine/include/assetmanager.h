@@ -25,9 +25,14 @@ namespace CrashoutsEngine {
 		
 	namespace Assets {
 
+#ifdef DEBUG
+		const std::string rootPath = "../../projects/Descent/assets/";
+#else	// RELEASE MODE
 		const std::string rootPath = "assets/";
+#endif
+
 		const std::string assetManifestPath = rootPath + "json/assetmanifest.json";
-		
+
 		// Function to load assets in a json
 		/*!
 		@brief Scans asset directories and generates a JSON manifest file.

@@ -227,10 +227,24 @@
             "path": "assetmanifest.json"
         }
     ],
+    "prefabs": [
+        {
+            "name": "prefab",
+            "path": "prefab.json"
+        }
+    ],
     "scenes": [
         {
             "name": "amir",
             "path": "amir"
+        },
+        {
+            "name": "rain",
+            "path": "rain"
+        },
+        {
+            "name": "ran",
+            "path": "ran"
         },
         {
             "name": "renfred",

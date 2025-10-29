@@ -138,7 +138,9 @@ namespace Component {
         GLuint texobj{ 0 };
         GLSLShader* shdr_pgm = nullptr;
         
-        
+        glm::mat4 viewMatrix;
+        glm::mat4 projectionMatrix;
+
         size_t current_vbo_size{ 0 };
         size_t current_ebo_size{ 0 };
         
@@ -160,6 +162,13 @@ namespace Component {
         static BufferPool buffer_pool;           ///< Static buffer pool instance shared across all rendering operations
 
     public:
+
+        /*!
+        @brief Updates the view and projection matrices based on target dimensions.
+        @param targetWidth Width of the render target (window or FBO texture).
+        @param targetHeight Height of the render target.
+        */
+        void UpdateMatrices(int targetWidth, int targetHeight);
 
         /*!
         @brief Set up a default Vertex Array Object with quad geometry.

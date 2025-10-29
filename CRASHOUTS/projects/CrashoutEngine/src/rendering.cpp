@@ -1,6 +1,7 @@
 /*!
 @file        rendering.cpp
-@author      ranvitha@digipen.edu
+@author      ranvitha@digipen.edu (65%)
+@co-author   lee.r@digipen.edu (35% - Mainly camera related)
 @date        09/12/2025
 @brief       Implementation of the Rendering class for high-performance OpenGL rendering.
 
@@ -42,8 +43,54 @@ applications such as sprite animation, particle systems, and dynamic geometry.
 #include <cstring>
 #include <cstdlib>
 #include <GL/glew.h>
+#include <glm/gtc/matrix_transform.hpp>
+#include "settings.h"
 
 namespace Component {
+
+    struct WorldSettings {
+        inline static float BASE_SIZE = 100.f;
+        inline static float MAX_NEAR_FAR = 50.f;
+    };
+
+    /*!
+    @brief Updates the view and projection matrices based on target dimensions.
+    @param targetWidth Width of the render target (window or FBO texture).
+    @param targetHeight Height of the render target.
+    */
+    void Rendering::UpdateMatrices(int targetWidth, int targetHeight) {
+        viewMatrix = glm::mat4(1.0f);
+
+        // Calculate orthographic projection based on target dimensions
+        if (targetWidth <= 0 || targetHeight <= 0) {
+            // Avoid division by zero
+            targetWidth = Settings::GetScreenWidth();
+            targetWidth = Settings::GetScreenWidth();
+            if (targetWidth <= 0) targetWidth = 1;      // Absolute Fallback
+            if (targetHeight <= 0) targetHeight = 1;      // Absolute Fallback
+        }
+
+        float aspect = static_cast<float>(targetWidth) / static_cast<float>(targetHeight);
+        float worldWidth, worldHeight;
+
+        if (aspect >= 1.0f) {
+            worldHeight = WorldSettings::BASE_SIZE;
+            worldWidth = worldHeight * aspect;
+        }
+        else {
+            worldWidth = WorldSettings::BASE_SIZE;
+            worldHeight = worldWidth / aspect;
+        }
+
+        float nearFar = WorldSettings::MAX_NEAR_FAR;
+
+        // Create orthographic projection matrix
+        projectionMatrix = glm::ortho(
+            -worldWidth / 2.f, worldWidth / 2.f,
+            -worldHeight / 2.f, worldHeight / 2.f,
+            -nearFar, nearFar   // Near / Far planes
+        );
+    }
 
     // Static member definitions
     Rendering::BufferPool Rendering::buffer_pool;
@@ -180,6 +227,7 @@ namespace Component {
     }
 
     void Rendering::Initialize() {
+        Get().UpdateMatrices(Settings::GetScreenWidth(), Settings::GetScreenHeight());
         Get().Setup_Shdrpgm();
     }
 
@@ -832,8 +880,6 @@ namespace Component {
 
         primitive_type = primitive;
     }
-
-
 
     /*!
     @brief Execute a complete draw call using the current VAO and shader state.

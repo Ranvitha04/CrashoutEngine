@@ -18,6 +18,9 @@ context and implement a game loop.
 #include "scriptcomponent.h"
 #include "scriptsystem.h"
 #include "textureasset.h"
+#include "debugmenu.h"
+#include "sceneutils.h"
+#include "entitymanager.h"
 
 /*                                                   type declarations
 ----------------------------------------------------------------------------- */
@@ -31,6 +34,10 @@ static Collision::CollisionHandler collisionSystem;
 
 // ImGui in-game performance viewer
 static FrameProfiler gProfiler;
+
+EngineState engineState = EngineState::STOP;
+
+const float moveSpeed = 6.7f;
 
 extern "C" void RegisterBuiltinComponentAdapters();
 
@@ -113,6 +120,7 @@ void Init() {
 
     InputManager::Init(GLApp::ptr_window);
     UI::Init(GLApp::ptr_window); // NEW
+    engineState = EngineState::STOP;
 }
 
 /*  _________________________________________________________________________ */
@@ -127,14 +135,82 @@ Uses GLHelper::GLFWWindow* to get handle to OpenGL context.
 */
 void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
 
+    static UI::UIState uiState;
+
+#ifdef USE_IMGUI_EDITOR
+    // 1. Start the Dear ImGui frame
+    UI::BeginFrame();
+
+    // 2. Setup Dockspace 
+    ImGuiViewport* viewport = ImGui::GetMainViewport();
+    ImGui::SetNextWindowPos(viewport->WorkPos);
+    ImGui::SetNextWindowSize(viewport->WorkSize);
+    ImGui::SetNextWindowViewport(viewport->ID);
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+    // Begin Dockspace window (needs ImGuiWindowFlags_MenuBar for the menu)
+    ImGui::Begin("Dockspace", nullptr,
+        ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoTitleBar |
+        ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
+        ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBringToFrontOnFocus |
+        ImGuiWindowFlags_NoNavFocus | ImGuiWindowFlags_NoBackground);
+    ImGui::PopStyleVar(3);
+
+    // Render the menu bar *inside* the Dockspace Begin/End
+    UI::RenderDebugMenuBar(uiState);
+
+    // Define the actual dockspace area
+    ImGuiID dockspace_id = ImGui::GetID("Dockspace");
+    ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_PassthruCentralNode;
+    ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
+
+#endif
+
+#ifdef USE_IMGUI_EDITOR
+
+    // Render to FBO
+    glBindFramebuffer(GL_FRAMEBUFFER, gameFboID);
+    glViewport(0, 0, gameTextureWidth, gameTextureHeight);
+
+    // clear colorbuffer with RGBA value in glClearColor ...
+    glClearColor(0.2f, 0.2f, 0.2f, 1.0f);  // Dark gray background
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glEnable(GL_DEPTH_TEST);
+    
+    GLApp::draw();
+    Scene::RenderScene(*CrashoutsEngine::ECS::getInstance());
+
+    // Render ImGui UI on top of the scene
+    UI::Render(gProfiler, physicsSystem, globalSelectedEntity, uiState);
+
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+    ImGui::End(); // End the Dockspace window begun earlier
+
+    // End the ImGui frame and render draw data
+    UI::EndFrame();
+#else
+
+    // Render directly to main window
+    int displayWidth, displayHeight;
+    glfwGetFramebufferSize(GLApp::ptr_window, &displayWidth, &displayHeight);
+    glViewport(0, 0, displayWidth, displayHeight); // Use main window size
+
+    // clear colorbuffer with RGBA value in glClearColor ...
+    glClearColor(0.2f, 0.2f, 0.2f, 1.0f);  // Dark gray background
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glEnable(GL_DEPTH_TEST);
+
+    GLApp::draw();
+    Scene::RenderScene(*CrashoutsEngine::ECS::getInstance());
+
+#endif
+
     FrameProfiler::Scoped s(gProfiler, "Graphics/Scene");
     ScopedMemTag mem(MemTag::Graphics);
     // render scene
     // GLApp::draw();
-
-    // Render ImGui UI on top of the scene
-    UI::Render(gProfiler, physicsSystem, globalSelectedEntity);
-
 
     // end of frame profiling
     gProfiler.end_frame();
@@ -161,29 +237,28 @@ void Update(Component::RigidBodyComponent& playerRigidBody, double const& dt) {
     GLApp::update_time();
     UpdateGameStateManager();
 
-    collisionSystem.update(dt);
-    physicsSystem.update(dt);
-
-    // process events if any associated with input devices
-    //glfwPollEvents();
-
     // start frame profiling
     gProfiler.begin_frame();
 
-    CrashoutsEngine::ScriptSystem::UpdateAll(static_cast<float>(FrameRateController::GetInstance().DT()));
-
-    // main loop computes fps and other time related stuff once for all apps ...
-    GLApp::update_time(1.0);
-
     FrameProfiler::Scoped s(gProfiler, "Game/Update");
     ScopedMemTag mem(MemTag::Update);
-    // 6 and 7
-    const float moveSpeed = 6.7f;
-    //Update 
-    Player::UpdateVelocity(playerRigidBody, moveSpeed);
 
-    // animate scene
-    GLApp::update();
+    if (engineState != EngineState::PAUSE) {
+        collisionSystem.update(dt);
+        physicsSystem.update(dt);
+
+        // process events if any associated with input devices
+        //glfwPollEvents();
+
+        // main loop computes fps and other time related stuff once for all apps ...
+        GLApp::update_time(1.0);
+
+        //Update 
+        Player::UpdateVelocity(playerRigidBody, moveSpeed);
+
+        // animate scene
+        GLApp::update();
+    }
 }
 
 /*  _________________________________________________________________________ */

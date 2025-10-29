@@ -155,10 +155,14 @@ namespace Scene {
             if (globalECS.HasComponent<Component::TransformComponent>(id)) {
                 Component::TransformComponent* t = globalECS.GetComponent<Component::TransformComponent>(id);
                 CEVec2 newOffset = CEVec2{ t->position.x + tc->offset.x, t->position.y + tc->offset.y};
+
+                std::string font = tc->font;
+                if (font == "") font = "Exo2-Regular";
+
                 if(tc->centered)
-                    gTextRenderer->RenderCenteredText(tc->text, newOffset.x, newOffset.y, tc->scale, tc->color, tc->font);
+                    gTextRenderer->RenderCenteredText(tc->text, newOffset.x, newOffset.y, tc->scale, tc->color, font);
                 else
-					gTextRenderer->RenderText(tc->text, newOffset.x, newOffset.y, tc->scale, tc->color, tc->font);
+					gTextRenderer->RenderText(tc->text, newOffset.x, newOffset.y, tc->scale, tc->color, font);
             }
         }
     }
