@@ -77,7 +77,7 @@ namespace Component {
     screen aspect ratios. The world dimensions are calculated as follows:
     - For wide/square screens: height = BASE_SIZE, width = height * aspect
     - For tall screens: width = BASE_SIZE, height = width / aspect
-    
+
     The resulting coordinate system has (0,0) at the center of the screen with
     positive X to the right and positive Y upward.
     */
@@ -87,12 +87,12 @@ namespace Component {
         float worldWidth, worldHeight;
 
         if (aspect >= 1.0f) {
-            
+
             worldHeight = WorldSettings::BASE_SIZE;
             worldWidth = worldHeight * aspect;
         }
         else {
-            
+
             worldWidth = WorldSettings::BASE_SIZE;
             worldHeight = worldWidth / aspect;
         }
@@ -106,7 +106,7 @@ namespace Component {
 
     void Shapes::Cleanup() {
         Component::Rendering::Cleanup();
-        
+
         // Clean up static instancing buffers
         if (s_instanceBuffersInitialized) {
             if (s_instanceVAO != 0) {
@@ -141,7 +141,7 @@ namespace Component {
     transformation support and optimized rendering pipeline integration.
     The square is generated with vertex colors and uses the centered world
     coordinate system for consistent positioning across different screen sizes.
-    
+
     @note Requires active OpenGL context and initialized Rendering system
     @warning Color values outside 0.0-1.0 range may produce unexpected results
     */
@@ -160,7 +160,7 @@ namespace Component {
         std::array<CEVec3, 4> clr_vtx{ color, color, color, color };
         std::array<GLushort, 4> idx_vtx{ 0, 1, 2, 3 };
 
-        
+
         renderer.SetupBuffersOptimized(pos_vtx.data(), sizeof(pos_vtx),
             clr_vtx.data(), sizeof(clr_vtx),
             idx_vtx.data(), idx_vtx.size(),
@@ -204,16 +204,16 @@ namespace Component {
     rotation, and scale while sharing the same base geometry. This function
     is ideal for particle systems, UI elements, or any scenario requiring
     many similar shapes with different properties.
-    
+
     @note Requires arrays of size 'count' for all parameter arrays
     @warning Array sizes must match count parameter to avoid memory access errors
     @note First call initializes static buffers; subsequent calls reuse them
     */
-    void Shapes::CreateInstancedSquares(const CEVec3* positions, const CEVec3* colors, 
-                                      const float* rotations, const float* scales, 
-                                      int count, float baseSize) {
+    void Shapes::CreateInstancedSquares(const CEVec3* positions, const CEVec3* colors,
+        const float* rotations, const float* scales,
+        int count, float baseSize) {
         if (count <= 0) return;
-        
+
         Component::Rendering& renderer = Component::Rendering::Get();
 
         // Initialize static buffers once
@@ -244,7 +244,7 @@ namespace Component {
             // Setup base geometry (vertices)
             glBindBuffer(GL_ARRAY_BUFFER, s_instanceVBO);
             glBufferData(GL_ARRAY_BUFFER, sizeof(base_vertices), base_vertices.data(), GL_STATIC_DRAW);
-            
+
             // Vertex positions (location 0)
             glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(CEVec3), (void*)0);
             glEnableVertexAttribArray(0);
@@ -255,22 +255,22 @@ namespace Component {
 
             //  instance data buffer 
             glBindBuffer(GL_ARRAY_BUFFER, s_instanceDataVBO);
-            
+
             // Instance position (location 3) 
             glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 8, (void*)0);
             glEnableVertexAttribArray(3);
-            glVertexAttribDivisor(3, 1);  
-            
+            glVertexAttribDivisor(3, 1);
+
             // Instance color (location 4) 
             glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 8, (void*)(sizeof(float) * 3));
             glEnableVertexAttribArray(4);
             glVertexAttribDivisor(4, 1);
-            
+
             // Instance rotation (location 5)
             glVertexAttribPointer(5, 1, GL_FLOAT, GL_FALSE, sizeof(float) * 8, (void*)(sizeof(float) * 6));
             glEnableVertexAttribArray(5);
             glVertexAttribDivisor(5, 1);
-            
+
             // Instance scale (location 6) 
             glVertexAttribPointer(6, 1, GL_FLOAT, GL_FALSE, sizeof(float) * 8, (void*)(sizeof(float) * 7));
             glEnableVertexAttribArray(6);
@@ -289,15 +289,15 @@ namespace Component {
             instanceData.push_back(positions[i].x);
             instanceData.push_back(positions[i].y);
             instanceData.push_back(positions[i].z);
-            
+
             // Color 
             instanceData.push_back(colors[i].x);
             instanceData.push_back(colors[i].y);
             instanceData.push_back(colors[i].z);
-            
+
             // Rotation
             instanceData.push_back(rotations[i]);
-            
+
             // Scale 
             instanceData.push_back(scales[i]);
         }
@@ -308,7 +308,7 @@ namespace Component {
 
         // Render using instanced drawing
         renderer.shdr_pgm->Use();
-        
+
         glm::mat4 projection = CreateCenteredWorldProjection();
         renderer.shdr_pgm->SetUniform("uModel", glm::mat4(1.0f));
         renderer.shdr_pgm->SetUniform("uView", glm::mat4(1.0f));
@@ -347,7 +347,7 @@ namespace Component {
         std::array<CEVec3, 4> clr_vtx{ color, color, color, color };
         std::array<GLushort, 6> idx_vtx{ 0, 1, 2, 0, 2, 3 };
 
-        
+
         renderer.SetupBuffersOptimized(pos_vtx.data(), sizeof(pos_vtx),
             clr_vtx.data(), sizeof(clr_vtx),
             idx_vtx.data(), idx_vtx.size(),
@@ -396,7 +396,7 @@ namespace Component {
         std::array<CEVec3, 4> clr_vtx{ color, color, color, color };
         std::array<GLushort, 4> idx_vtx{ 0, 1, 2, 3 };
 
-        
+
         renderer.SetupBuffersOptimized(pos_vtx.data(), sizeof(pos_vtx),
             clr_vtx.data(), sizeof(clr_vtx),
             idx_vtx.data(), idx_vtx.size(),
@@ -439,7 +439,7 @@ namespace Component {
         std::array<CEVec3, 3> clr_vtx{ color, color, color };
         std::array<GLushort, 3> idx_vtx{ 0, 1, 2 };
 
-        
+
         renderer.SetupBuffersOptimized(pos_vtx.data(), sizeof(pos_vtx),
             clr_vtx.data(), sizeof(clr_vtx),
             idx_vtx.data(), idx_vtx.size(),
@@ -504,7 +504,7 @@ namespace Component {
             idx_vtx.push_back(static_cast<GLushort>(i + 2));       // Next perimeter vertex
         }
 
-        
+
         renderer.SetupBuffersOptimized(pos_vtx.data(), pos_vtx.size() * sizeof(CEVec3),
             clr_vtx.data(), clr_vtx.size() * sizeof(CEVec3),
             idx_vtx.data(), idx_vtx.size(),
@@ -542,7 +542,7 @@ namespace Component {
     The function integrates with CrashoutEngine's texture management system
     for efficient texture loading and binding, while supporting alpha blending
     for transparent textures.
-    
+
     @note Requires valid texture file and active OpenGL context
     @warning Invalid texture paths will result in early function return
     @note Alpha blending is automatically enabled for transparency support
@@ -569,7 +569,7 @@ namespace Component {
             CEVec3(-halfSize, halfSize, 0.0f)   // top left
         };
 
-        
+
         std::array<CEVec3, 4> clr_vtx{ tint, tint, tint, tint };
 
         float uvWidthMax = uvSize.x;
@@ -660,7 +660,7 @@ namespace Component {
         float uvWidthMax = uvSize.x;
         float uvHeightMax = uvSize.y;
 
-    
+
         std::array<CEVec2, 4> tex_vtx{
             CEVec2(0.0f, uvHeightMax),       // bottom left
             CEVec2(uvWidthMax, uvHeightMax), // bottom right
@@ -733,7 +733,7 @@ namespace Component {
         float uvWidthMax = uvSize.x;
         float uvHeightMax = uvSize.y;
 
-        
+
         float minX = std::min(p1.x, std::min(p2.x, p3.x));
         float maxX = std::max(p1.x, std::max(p2.x, p3.x));
         float minY = std::min(p1.y, std::min(p2.y, p3.y));

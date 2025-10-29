@@ -44,7 +44,7 @@ namespace Component {
     using glGetUniformLocation. Provides flexible error handling for both
     optional and required uniforms with clear diagnostic output.
 
-    
+
     @note Uniform must be active (used) in shader to have valid location
     @warning Application terminates if exit_on_error is true and uniform not found
     */
@@ -67,37 +67,37 @@ namespace Component {
     Utility function that verifies file existence and accessibility using
     standard C++ file stream operations. Provides early error detection
     for shader file loading operations with minimal overhead.
-    
+
     **File Validation Process:**
     1. Attempt to open file with std::ifstream
     2. Check stream state using good() method
     3. Return boolean result based on accessibility
     4. File stream automatically closed by destructor
-    
+
     **Path Handling:**
     - Supports both relative and absolute file paths
     - Handles forward slashes (/) on all platforms
     - Processes backslashes (\) correctly on Windows
     - Resolves relative paths from current working directory
-    
+
     **Accessibility Checks:**
     - File exists in filesystem
     - File has read permissions for current user
     - File is not locked by another process
     - Path is valid and accessible
-    
+
     **Performance Characteristics:**
     - Minimal overhead using standard library operations
     - No file content reading, only accessibility check
     - Fast operation suitable for validation workflows
     - Cross-platform implementation with consistent behavior
-    
+
     **Error Prevention:**
     - Prevents file I/O exceptions during shader compilation
     - Enables better error messages for missing shader files
     - Allows graceful fallback to embedded or default shaders
     - Supports shader file validation in development workflows
-    
+
     **Usage Examples:**
     ```cpp
     if (FileExists("shaders/vertex.glsl")) {
@@ -107,7 +107,7 @@ namespace Component {
         CompileShaderFromString(GL_VERTEX_SHADER, defaultVertexShader);
     }
     ```
-    
+
     @note File accessibility can change between check and actual file operations
     @warning Does not guarantee file will remain accessible for subsequent reads
     */
@@ -134,7 +134,7 @@ namespace Component {
     linking them into a program object, validation of the complete program,
     and introspection of active attributes and uniforms for debugging.
 
-    
+
     @note Requires valid OpenGL context and properly formatted shader sources
     @warning All shader stages must be compatible for successful linking
     @note Introspection output is printed to console for debugging purposes
@@ -175,8 +175,8 @@ namespace Component {
     Loads and compiles a shader from a file source with robust error handling
     at each stage. Creates the shader program object if needed and delegates
     actual compilation to CompileShaderFromString after loading file content.
-    
-    
+
+
     @note Requires valid OpenGL context and accessible shader file
     @warning File path should use forward slashes or proper OS-specific separators
     */
@@ -214,7 +214,7 @@ namespace Component {
     Compiles a shader from provided source code string with robust error handling
     and automatic program object management. Creates the shader program object
     if needed and attaches successfully compiled shaders for subsequent linking.
-    
+
     **Compilation Process:**
     1. Create OpenGL program object if not already created
     2. Create shader object of specified type
@@ -223,14 +223,14 @@ namespace Component {
     5. Extract detailed error information on compilation failure
     6. Attach successfully compiled shader to program object
     7. Clean up temporary shader object handle
-    
+
     **Program Object Management:**
     - Creates OpenGL program object on first shader compilation
     - Reuses existing program object for subsequent shaders
     - Validates program creation success before proceeding
     - Maintains program handle for linking and validation
     - Enables multi-stage shader program construction
-    
+
     **Shader Object Lifecycle:**
     - Creates temporary shader object for compilation
     - Associates source code using glShaderSource
@@ -238,49 +238,49 @@ namespace Component {
     - Attaches to program object on successful compilation
     - Automatically deletes shader object after attachment
     - Prevents shader object handle leaks
-    
+
     **Error Handling and Diagnostics:**
     - Comprehensive compilation status checking
     - Detailed GLSL compiler error message extraction
     - Error log length validation for safe memory allocation
     - Complete error information stored in log_string
     - Graceful handling of OpenGL context issues
-    
+
     **GLSL Compilation Features:**
     - Support for all OpenGL shader types (vertex, fragment, geometry, etc.)
     - Full GLSL language feature support including modern versions
     - Automatic shader version detection and compatibility
     - Preprocessor directive support (#define, #include, etc.)
     - Cross-platform GLSL compilation consistency
-    
+
     **Memory Management:**
     - Safe dynamic allocation for error log messages
     - Proper cleanup of temporary allocations
     - No memory leaks from shader object creation
     - Efficient string handling for source code processing
     - Automatic resource cleanup on error conditions
-    
+
     **Performance Characteristics:**
     - Efficient compilation process with minimal overhead
     - Single-pass compilation for optimal performance
     - No redundant OpenGL state changes during compilation
     - Optimized error message extraction when needed
     - Minimal CPU overhead for successful compilation path
-    
+
     **Integration with Shader Pipeline:**
     - Seamless integration with Link() and Validate() functions
     - Compatible with multi-stage shader program construction
     - Supports incremental shader addition to program objects
     - Enables flexible shader loading from various sources
     - Maintains consistent compilation behavior across shader types
-    
+
     **Error Logging and Debugging:**
     - Detailed GLSL compiler error messages with line numbers
     - Syntax error reporting with context information
     - Semantic error detection for variable and function usage
     - Preprocessor error handling for directive issues
     - Complete error information available through GetLog()
-    
+
     **Usage Examples:**
     ```cpp
     // Compile vertex shader from string
@@ -291,12 +291,12 @@ namespace Component {
             gl_Position = vec4(aPos, 1.0);
         }
     )";
-    
+
     if (!shader.CompileShaderFromString(GL_VERTEX_SHADER, vertexSource)) {
         std::cout << "Vertex shader compilation failed: " << shader.GetLog() << std::endl;
         return false;
     }
-    
+
     // Compile fragment shader from string
     std::string fragmentSource = R"(
         #version 330 core
@@ -305,13 +305,13 @@ namespace Component {
             FragColor = vec4(1.0, 0.0, 0.0, 1.0);
         }
     )";
-    
+
     if (!shader.CompileShaderFromString(GL_FRAGMENT_SHADER, fragmentSource)) {
         std::cout << "Fragment shader compilation failed: " << shader.GetLog() << std::endl;
         return false;
     }
     ```
-    
+
     **Supported Shader Types:**
     - GL_VERTEX_SHADER: Vertex processing stage
     - GL_FRAGMENT_SHADER: Fragment/pixel processing stage
@@ -319,7 +319,7 @@ namespace Component {
     - GL_TESS_CONTROL_SHADER: Tessellation control stage
     - GL_TESS_EVALUATION_SHADER: Tessellation evaluation stage
     - GL_COMPUTE_SHADER: Compute processing stage
-    
+
     @note Requires valid OpenGL context and properly formatted GLSL source
     @warning Source code must be compatible with current OpenGL context version
     */
