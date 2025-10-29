@@ -1,44 +1,103 @@
 {
-  "version": 1,
   "prefabs": [
     {
       "type": "Box",
-      "name": "Box1",
+      "name": "CrateA",
       "transform": {
         "position": {
-          "x": -2.5,
-          "y": 60.0,
+          "x": 0.0,
+          "y": 20.0,
           "z": 0.0
+        },
+        "rotation": 15.0,
+        "size": {
+          "x": 1.0,
+          "y": 1.0
         }
       },
       "shape": {
         "kind": "Rectangle",
+        "type": 1,
         "width": 32.0,
-        "height": 32.0
+        "height": 32.0,
+        "size": 1.0,
+        "color": {
+          "r": 1.0,
+          "g": 0.78,
+          "b": 0.35
+        },
+        "enableTexture": false
       },
       "rigidbody": {
-        "mass": 1.0,
+        "mass": 5.0,
+        "restitution": 0.1
+      }
+    },
+    {
+      "type": "Box",
+      "name": "BlockerNoTex",
+      "transform": {
+        "position": {
+          "x": -50.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "rotation": 0.0,
+        "size": {
+          "x": 2.0,
+          "y": 1.0
+        }
+      },
+      "shape": {
+        "kind": "Rectangle",
+        "type": 1,
+        "width": 64.0,
+        "height": 32.0,
+        "size": 1.0,
+        "color": {
+          "r": 0.2,
+          "g": 0.7,
+          "b": 0.95
+        },
+        "enableTexture": false
+      },
+      "rigidbody": {
+        "mass": 0.0,
         "restitution": 0.0
       }
     },
     {
       "type": "Box",
-      "name": "BigBoxxy",
+      "name": "TexturedTile",
       "transform": {
         "position": {
-          "x": 0.0,
-          "y": 0.0,
+          "x": 10.0,
+          "y": -10.0,
           "z": 0.0
+        },
+        "rotation": 0.0,
+        "size": {
+          "x": 1.0,
+          "y": 1.0
         }
       },
       "shape": {
         "kind": "Rectangle",
-        "width": 128.0,
-        "height": 32.0
+        "type": 1,
+        "width": 64.0,
+        "height": 64.0,
+        "size": 1.0,
+        "color": {
+          "r": 1.0,
+          "g": 1.0,
+          "b": 1.0
+        },
+        "enableTexture": true,
+        "textureName": "UI\\Title.png"
       },
       "rigidbody": {
-        "mass": 0.0,
-        "restitution": 0.0
+        "mass": 1.0,
+        "restitution": 0.2
       }
     }
   ]
