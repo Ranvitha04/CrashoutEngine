@@ -974,8 +974,6 @@ namespace UI { // --------------------------------------------------------------
                     glBindRenderbuffer(GL_RENDERBUFFER, gameRboDepthStencil);
                     glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, gameTextureWidth, gameTextureHeight);
 
-                    Component::Rendering::Get().UpdateMatrices(gameTextureWidth, gameTextureHeight);
-
                     char logBuffer[256];
                     // Format the string into the buffer
                     std::snprintf(logBuffer, sizeof(logBuffer),

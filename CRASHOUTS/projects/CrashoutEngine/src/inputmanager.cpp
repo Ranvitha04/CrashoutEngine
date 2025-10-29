@@ -37,6 +37,7 @@ float InputManager::ScrollYFrame = 0.0f;
 */
 void InputManager::Init(GLFWwindow* ptr_window) {
     Window = ptr_window;
+    glfwSetScrollCallback(Window, ScrollCallback);
 }
 
 /*!
@@ -171,4 +172,16 @@ CEVec2 InputManager::GetMouseNDC() {
     return CEVec2(ndcX, ndcY);
 }
 
+/*!
+@brief GLFW callback function for mouse scroll events
 
+This function is called by GLFW asynchronously whenever the mouse wheel is moved
+It adds the vertical scroll delta to the accumulator
+*/
+void InputManager::ScrollCallback(GLFWwindow * window, double xoffset, double yoffset) {
+    (void)window;
+    (void)xoffset;
+    // We only care about the vertical scroll for now
+    // We accumulate the delta value. Update() will handle snapshotting it.
+    ScrollYAccum += static_cast<float>(yoffset);
+}
