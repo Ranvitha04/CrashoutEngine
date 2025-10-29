@@ -52,6 +52,7 @@ namespace UI {
         bool showPhysics = false;
         bool showAudio = false;
         bool drawCollOverlay = true;
+        bool showEngineControl = false;
 
         bool freezeOnCollision = false;
 
@@ -162,7 +163,7 @@ namespace UI {
     /*!
      @brief Renders the Scene control bar on top of game viewport
     */
-    static void RenderEngineStateBar();
+    static void RenderEngineStateBar(UIState& ui);
 
     /*!
     @brief Renders all UI panels and overlays in sequence.
