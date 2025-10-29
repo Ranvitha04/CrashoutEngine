@@ -39,6 +39,11 @@ namespace CrashoutsEngine {
             bool setVCAVolume(const std::string& vcaPath, float vol01);
             bool cutVCA(const std::string& vcaPath) { return setVCAVolume(vcaPath, 0.0f); }
 
+            bool listAllEventPaths(std::vector<std::string>& out);
+            bool listEventPathsFromBank(const std::string& bankFile, std::vector<std::string>& out);
+            void inspectBankToConsole(const std::string& bankFile);
+            bool isInitialized() const { return mStudio != nullptr; }
+
 
         private:
             AudioSystem() = default;

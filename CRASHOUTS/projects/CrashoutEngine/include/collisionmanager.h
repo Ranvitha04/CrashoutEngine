@@ -13,7 +13,10 @@
 #include "transformcomponent.h"
 #include "observable.h"
 #include "log.h"
+#include "colliders.h"
 #include "entitymanager.h"
+#include "collidercomponent.h"
+#include "quadtree.h"
 #include <memory>
 #include <iostream>
 #include <cmath>
@@ -21,185 +24,6 @@
 #include <algorithm>
 #include <utility>
 
-
-namespace Collision {
-
-	/*!
-	@enum	ColliderType
-	@brief	Different types of colliders
-	*/
-	enum ColliderType {
-		SPHERE,
-		AABB,
-		OBB
-	};
-
-	/*!
-	@struct	CollisionManifold
-	@brief	Contains information regarding Collision events between Entities
-	*/
-	struct CollisionManifold {
-		CEVec3 normal;
-		std::array<CEVec3, 2> contactPoints; /*Max contact point of 2 for AABB, 1 for Circle*/
-		f32 depth;
-		bool collisionOccured;
-	};
-
-	/*!
-	@struct	CollisionEvent
-	@brief	Contains which pairs of entity has collided along with their Collision manifold
-	*/
-	struct CollisionEvent {
-		CollisionManifold colManifold;
-		CrashoutsEngine::Entity entity1;
-		CrashoutsEngine::Entity entity2;
-	};
-
-	/*!
-	@class	Collider
-	@brief	Base class for inheriting other colliders
-	*/
-	class Collider {
-	public:
-		ColliderType type;
-		Collider(ColliderType type);
-		virtual ~Collider() = default;
-		virtual std::unique_ptr<Collider> clone() const = 0;
-		virtual void updateCollider([[maybe_unused]] CEVec3 const& newPos) {};
-	};
-
-	/*!
-	@class	Sphere
-	@brief	Basic Sphere collider with radius and position
-	*/
-	class Sphere : public Collider {
-	public:
-		f32 radius;
-		CEVec3 center;
-		Sphere(f32 radius, CEVec3 const& center);
-		~Sphere() = default;
-		virtual void updateCollider(CEVec3 const& newPos);
-
-		virtual std::unique_ptr<Collider> clone() const override {
-			return std::make_unique<Sphere>(*this);
-		}
-	};
-
-	/*!
-	@class	AABBRect
-	@brief	Basic aabb rectangle with CEVec3 min and CEVec3 max
-	*/
-	class AABBRect : public Collider {
-	public:
-		CEVec3 min;
-		CEVec3 max;
-		CEVec3 extents;
-		AABBRect(CEVec3 const& min, CEVec3 const& max);
-		~AABBRect() = default;
-		virtual void updateCollider(CEVec3 const& newPos);
-
-		virtual std::unique_ptr<Collider> clone() const override {
-			return std::make_unique<AABBRect>(*this);
-		}
-	};
-
-	/*!
-	@class OBBRect
-	@brief OBB rectangle with a collection of Vertices
-	*/
-	class OBBRect : public Collider {
-		/*NORMAL AND VERTEX FOR THE PAIR*/
-	public:
-		using Vertices = std::array<CEVec3, 4>;
-		using Normal = std::array<CEVec3, 4>;
-	public:
-		CEVec3 min;
-		CEVec3 max;
-		float rotation;
-		CEVec3 extents;
-		Vertices rotatedVertices;
-		Vertices originalVertices;
-		Normal normalEdges;
-		OBBRect(CEVec3 const& min, CEVec3 const& max, f32 rotation = 0.f);
-		void updateRotation(f32 newRotation);
-		~OBBRect() = default;
-		virtual void updateCollider(CEVec3 const&);
-
-		virtual std::unique_ptr<Collider> clone() const override {
-			return std::make_unique<OBBRect>(*this);
-		}
-	private:
-
-	};
-
-	class ColliderFactory 
-	{
-		
-		public:
-			using ArgMap = std::map<std::string, std::string>;
-
-			ColliderFactory(ArgMap const &args) : args{args} {}
-
-			ColliderFactory() = default;
-
-			std::unique_ptr<Collider> CreateCollider(ColliderType type) {
-				if (type == SPHERE) {
-
-					return std::make_unique<Sphere>(Sphere{
-						std::stof(defaultedArg("radius","0.f")), 
-						CEVec3{
-							std::stof(defaultedArg("centerX", "0.f")),
-							std::stof(defaultedArg("centerY","0.f")),
-							std::stof(defaultedArg("centerZ", "0.f"))
-						}
-					});
-
-				} if (type == AABB) {
-
-					return std::make_unique<AABBRect>(AABBRect{
-						CEVec3{
-							std::stof(defaultedArg("minX", "0.f")),
-							std::stof(defaultedArg("minY", "0.f")),
-							std::stof(defaultedArg("minZ", "0.f"))
-						}, CEVec3{
-							std::stof(defaultedArg("maxX", "0.f")),
-							std::stof(defaultedArg("maxY", "0.f")),
-							std::stof(defaultedArg("maxZ", "0.f"))
-						}
-					});
-
-				} if (type == OBB) {
-
-					return std::make_unique<OBBRect>(OBBRect{
-						CEVec3{
-							std::stof(defaultedArg("minX", "0.f")),
-							std::stof(defaultedArg("minY", "0.f")),
-							std::stof("0.0")
-						}, CEVec3{
-							std::stof(defaultedArg("maxX", "0.f")),
-							std::stof(defaultedArg("maxY", "0.f")),
-							std::stof("0.0")
-						},
-						std::stof(defaultedArg("rotation", "0.f"))
-					});
-
-				}
-			}
-
-			void setArgs(ArgMap newArgs) {
-				args = newArgs;
-			}
-		private:
-			ArgMap args;
-
-			std::string defaultedArg(std::string val, std::string defaultVal) {
-				if (args.find(val) == args.end())
-					return defaultVal;
-				else
-					return args[val];
-			}
-	};
-}
 
 namespace Collision {
 
@@ -237,6 +61,8 @@ namespace Collision {
 	class CollisionHandler : public Messaging::Observable {
 	private:
 
+		DataStructure::QuadTree quadTree;
+
 		static constexpr int TYPES_OF_COLLISION{ 3 };
 
 		std::array<FunctionDispatchType, TYPES_OF_COLLISION* TYPES_OF_COLLISION> collideFuncts;
@@ -267,49 +93,6 @@ namespace Collision {
 		*/
 		FunctionDispatchType callCollFunct(Collision::ColliderType type1, Collision::ColliderType type2);
 
-	};
-}
-
-namespace Component {
-	/*!
-	@struct	ColliderComponent
-	@brief	Collider component in order to put custom colliders on an entity
-	*/
-	struct ColliderComponent {
-		std::unique_ptr<Collision::Collider> collider;
-
-		// Default constructor for empty component
-		ColliderComponent() = default;
-
-		// Custom Copy Constructor to build from unique_ptr
-		// Explicitly handles calls like AddComponent(e, std::make_unique<...>)
-		explicit ColliderComponent(std::unique_ptr<Collision::Collider> col)
-			: collider(std::move(col)) {}
-
-		// Custom Copy Constructor
-		ColliderComponent(const ColliderComponent& other) {
-			if (other.collider) {
-				// Use the virtual clone method for a deep copy
-				collider = other.collider->clone();
-			}
-		}
-
-		// Custom Copy Assignment Operator for Deep Copies
-		ColliderComponent& operator=(const ColliderComponent& other) {
-			// Check for self-assignment
-			if (this == &other) return *this;
-
-			if (other.collider) {
-				collider = other.collider->clone();	// Deep Copy
-			}
-			else {
-				collider.reset();	// Clear if the other is empty
-			}
-			return *this;
-		}
-
-		ColliderComponent(ColliderComponent&&) noexcept = default;
-		ColliderComponent& operator=(ColliderComponent&&) noexcept = default;
 	};
 }
 

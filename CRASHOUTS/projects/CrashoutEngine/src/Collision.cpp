@@ -9,6 +9,7 @@
 
 #include "collisionmanager.h"
 #include "rigidbodycomponent.h"
+#include "collidercomponent.h"
 #include "CEMath.h"
 #include "CEMtx33.h"
 #include <cmath>
@@ -25,6 +26,47 @@ namespace Collision {
 
 	AABBRect::AABBRect(CEVec3 const& min, CEVec3 const& max) : Collider{ AABB }, min{ min }, max{ max } {
 		extents = (max - min) * 0.5f;
+	}
+
+	AABBRect::AABBRect() : Collider{ AABB } {}
+
+	AABBRect GetAABB(Collider const& collider, CEVec3 const& transform)
+	{
+
+
+		switch (collider.type) {
+
+		case SPHERE: {
+			Sphere const& sphere{ dynamic_cast<Sphere const&>(collider) };
+			CEVec3 extents{ sphere.radius, sphere.radius, 0.f };
+			return AABBRect{ transform - extents, transform + extents };
+		}
+				   break;
+		case AABB: {
+			return dynamic_cast<AABBRect const&>(collider);
+		}
+				 break;
+		case OBB: {
+			OBBRect const& obb{ dynamic_cast<OBBRect const&>(collider) };
+			CEVec3 minXY{ obb.rotatedVertices[0].x, obb.rotatedVertices[0].y, transform.z };
+			CEVec3 maxXY{ obb.rotatedVertices[0].x, obb.rotatedVertices[0].y, transform.z };
+
+			for (int i{}; i < 4; ++i) {
+				minXY.x = std::min(minXY.x, obb.rotatedVertices[i].x);
+				minXY.y = std::min(minXY.y, obb.rotatedVertices[i].y);
+
+				maxXY.x = std::max(maxXY.x, obb.rotatedVertices[i].x);
+				maxXY.y = std::max(maxXY.y, obb.rotatedVertices[i].y);
+			}
+
+			return AABBRect{ minXY, maxXY };
+		}
+				break;
+
+		}
+
+		return AABBRect{ CEVec3{}, CEVec3{} };
+
 	}
 
 	void AABBRect::updateCollider(CEVec3 const& newPos) {
@@ -179,7 +221,7 @@ namespace Collision {
 
 	/*----------------COLLISIONHANDLER CLASS DEFINITIONS--------------------------------------------------------*/
 
-	CollisionHandler::CollisionHandler() : Messaging::Observable{ "Collision" }, collideFuncts{
+	CollisionHandler::CollisionHandler() : Messaging::Observable{ "Collision" }, quadTree{ AABBRect{CEVec3{-90.f, -50.f, 0.f}, CEVec3{90.f, 50.f, 0.f}} }, collideFuncts{
 		std::array<Collision::FunctionDispatchType, TYPES_OF_COLLISION * TYPES_OF_COLLISION> {
 			nullptr, nullptr,
 			nullptr, nullptr
@@ -201,7 +243,15 @@ namespace Collision {
 	void CollisionHandler::update([[maybe_unused]] double deltaTime) {
 		CrashoutsEngine::ECS& globalECS = *(CrashoutsEngine::ECS::getInstance());
 
-		std::vector<CrashoutsEngine::Entity> globalEntities = globalECS.GetComponentArray<Component::NameComponent>().indexToEntity;
+		std::vector<CrashoutsEngine::Entity> globalEntities = globalECS.GetComponentArray<Component::ColliderComponent>().indexToEntity;
+
+		quadTree.Clear();
+
+		for (CrashoutsEngine::Entity& entity1 : globalEntities) {
+			quadTree.Insert(entity1);
+		}
+
+		//quadTree.Draw();
 
 		std::vector<std::pair<CrashoutsEngine::Entity, CrashoutsEngine::Entity>> alreadyColl{};
 		//std::vector<std::pair<CrashoutsEngine::Entity, CrashoutsEngine::Entity>> test{};
@@ -209,19 +259,21 @@ namespace Collision {
 		/*DETECT COLLISION AND UPDATE COLLISION EVENTS MEMBER*/
 		for (CrashoutsEngine::Entity& entity1 : globalEntities) {
 
-			if (!globalECS.HasComponent<Component::ColliderComponent>(entity1) || !globalECS.HasComponent<Component::TransformComponent>(entity1) || !globalECS.HasComponent<Component::RigidBodyComponent>(entity1)) continue;
-			for (CrashoutsEngine::Entity const& entity2 : globalEntities) {
-				if (entity1 == entity2) continue;
-				if (!globalECS.HasComponent<Component::ColliderComponent>(entity2) || !globalECS.HasComponent<Component::TransformComponent>(entity2) || !globalECS.HasComponent<Component::RigidBodyComponent>(entity2)) continue;
+			if (!globalECS.HasComponent<Component::TransformComponent>(entity1) || !globalECS.HasComponent<Component::RigidBodyComponent>(entity1)) continue;
 
+			std::vector<CrashoutsEngine::Entity> collidableObjects{};
+
+			Component::ColliderComponent* collider1{ globalECS.GetComponent<Component::ColliderComponent>(entity1) };
+			Component::TransformComponent* transform1{ globalECS.GetComponent<Component::TransformComponent>(entity1) };
+			Component::RigidBodyComponent* rigidBody1{ globalECS.GetComponent<Component::RigidBodyComponent>(entity1) };
+
+			AABBRect region{ GetAABB(*(collider1->collider), transform1->position) };
+			quadTree.Query(region, collidableObjects);
+
+			for (CrashoutsEngine::Entity const& entity2 : collidableObjects) {
+				if (entity1 == entity2) continue;
 				CrashoutsEngine::Entity const* entity1Ptr{ &entity1 };
 				CrashoutsEngine::Entity const* entity2Ptr{ &entity2 };
-
-
-
-				Component::ColliderComponent* collider1{ globalECS.GetComponent<Component::ColliderComponent>(entity1) };
-				Component::TransformComponent* transform1{ globalECS.GetComponent<Component::TransformComponent>(entity1) };
-				Component::RigidBodyComponent* rigidBody1{ globalECS.GetComponent<Component::RigidBodyComponent>(entity1) };
 
 				Component::ColliderComponent* collider2{ globalECS.GetComponent<Component::ColliderComponent>(entity2) };
 				Component::TransformComponent* transform2{ globalECS.GetComponent<Component::TransformComponent>(entity2) };
@@ -268,7 +320,6 @@ namespace Collision {
 					}
 
 				}
-
 			}
 		}
 
