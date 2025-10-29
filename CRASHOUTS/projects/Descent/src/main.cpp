@@ -70,7 +70,7 @@ int WINAPI WinMain(
 #endif
 
     Init();
-    double dt = FRC.DT();
+    double dt = FRC.FixedDT();
 
     // window's close flag is set by clicking close widget or Alt+F4
     while (!glfwWindowShouldClose(GLApp::ptr_window)) {

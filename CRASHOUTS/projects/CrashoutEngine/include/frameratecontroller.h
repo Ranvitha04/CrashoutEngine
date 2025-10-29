@@ -25,8 +25,9 @@ public:
 	//copy assignment operator is deleted
 	FrameRateController& operator=(const FrameRateController&) = delete;
 
-
+	
 	void SetTargetFPS(int FPSCap);
+	void SetFixedDT(double step);
 	void Reset();
 	void FrameStart();
 	void FrameEnd();
@@ -38,12 +39,18 @@ public:
 	/// current cap
 	int CAP() const;
 
+	double FixedDT() const;
+	int StepCount() const;
+
 private:
 	FrameRateController();
 	ClockTime::time_point mFrameStart{};
 	int mTargetFPS{};
 	double mTargetDT{};
+	double mFixedDT{1.0/60.0};
 	double mDT{};
+	double mAccumulatedTime{};
+	int mCurrentSteps{};
 	//Exponential moving average of FPS
 	///EMA calculate smoothed fps to avoid jumping fps values
 	double mFPS{};

@@ -99,6 +99,8 @@ namespace Collision {
 		CEVec3 currPos{ min + extents };
 		CEVec3 vecToNewPos{ newPos - currPos };
 
+		vecToNewPos.z = 0.f;
+
 		max = newPos + extents;
 		min = newPos - extents;
 
@@ -539,15 +541,15 @@ namespace Collision {
 		OBBRect const& obb2Temp = dynamic_cast<OBBRect const&>(*(obbPtr->collider));
 
 		std::array<CEVec3, 4> aabbVertex{
-			aabb1Temp.min,
-			{aabb1Temp.min.x, aabb1Temp.min.y + aabb1Temp.extents.y * 2.f, aabb1Temp.min.z},
-			aabb1Temp.max,
-			{aabb1Temp.min.x + aabb1Temp.extents.x * 2.f, aabb1Temp.min.y, aabb1Temp.min.z}
+			CEVec3{aabb1Temp.min.x, aabb1Temp.min.y, 0.0f },
+			{aabb1Temp.min.x, aabb1Temp.min.y + aabb1Temp.extents.y * 2.f, 0.0f },
+			CEVec3{aabb1Temp.max.x, aabb1Temp.max.y, 0.0f },
+			{aabb1Temp.min.x + aabb1Temp.extents.x * 2.f, aabb1Temp.min.y, 0.0f}
 		};
 
-		std::array<CEVec3, 4> aabbNormals{
-			CEVec3{-1.f, 0.f, aabb1Temp.min.z},
-			CEVec3{0.f, 1.f, aabb1Temp.min.z}
+		std::array<CEVec3, 2> aabbNormals{
+			CEVec3{-1.f, 0.f, 0.0f},
+			CEVec3{0.f, 1.f, 0.0f}
 		};
 
 

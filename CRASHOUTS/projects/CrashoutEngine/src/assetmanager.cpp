@@ -24,6 +24,7 @@
 #include "sceneasset.h"
 #include "fontasset.h"
 #include "shaderasset.h"
+#include "audioSystem.h"
 
 /*
 ----------------------------------------------------------------------------- */
@@ -209,6 +210,46 @@ namespace CrashoutsEngine {
 			}
 
 			// --- Loading AUDIO ----
+			if (doc.HasMember("audio") && doc["audio"].IsArray()) {
+				std::cout << "Loading Audio Banks..." << std::endl;
+
+				// Point FMOD to the *root audio folder* once (e.g. assets/audio)
+				CrashoutsEngine::Audio::AudioSystem::instance().init(rootAssetPath + "audio");
+
+				const rapidjson::Value& audioArray = doc["audio"];
+
+				for (rapidjson::SizeType i = 0; i < audioArray.Size(); ++i) {
+					if (!audioArray[i].HasMember("path")) continue;
+					std::string rel = audioArray[i]["path"].GetString();
+					if (std::filesystem::path(rel).extension() != ".bank") continue;
+
+					if (rel.find("Master.strings.bank") != std::string::npos) {
+						CrashoutsEngine::Audio::AudioSystem::instance().loadBank(rel);
+						std::cout << "Loaded FMOD bank: " << rel << std::endl;
+					}
+				}
+				for (rapidjson::SizeType i = 0; i < audioArray.Size(); ++i) {
+					if (!audioArray[i].HasMember("path")) continue;
+					std::string rel = audioArray[i]["path"].GetString();
+					if (std::filesystem::path(rel).extension() != ".bank") continue;
+
+					if (rel.find("Master.bank") != std::string::npos &&
+						rel.find("Master.strings.bank") == std::string::npos) {
+						CrashoutsEngine::Audio::AudioSystem::instance().loadBank(rel);
+						std::cout << "Loaded FMOD bank: " << rel << std::endl;
+					}
+				}
+				for (rapidjson::SizeType i = 0; i < audioArray.Size(); ++i) {
+					if (!audioArray[i].HasMember("path")) continue;
+					std::string rel = audioArray[i]["path"].GetString();
+					if (std::filesystem::path(rel).extension() != ".bank") continue;
+
+					if (rel.find("Master.bank") == std::string::npos) {
+						bool ok = CrashoutsEngine::Audio::AudioSystem::instance().loadBank(rel);
+						std::cout << (ok ? "Loaded FMOD bank: " : "FAILED to load FMOD bank: ") << rel << std::endl;
+					}
+				}
+			}
 
 			// --- Loading SCENES ---
 			if (doc.HasMember("scenes") && doc["scenes"].IsArray()) {

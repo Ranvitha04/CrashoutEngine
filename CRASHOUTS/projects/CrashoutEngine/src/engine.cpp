@@ -13,7 +13,10 @@ context and implement a game loop.
 // Extension loader library's header must be included before GLFW's header!!!
 #include "engine.h"
 #include "assetmanager.h"
+#include "monomanager.h"
 #include "rendering.h"
+#include "scriptcomponent.h"
+#include "scriptsystem.h"
 #include "textureasset.h"
 
 /*                                                   type declarations
@@ -103,6 +106,11 @@ void Init() {
 
     RegisterBuiltinComponentAdapters();
 
+	MonoManager::Init("CrashoutDomain");
+    MonoManager::LoadAssembly("scripts/ManagedScripts.dll");
+
+    CrashoutsEngine::ScriptSystem::InitializeAll(MonoManager::GetDomain(), MonoManager::GetAssembly());
+
     InputManager::Init(GLApp::ptr_window);
     UI::Init(GLApp::ptr_window); // NEW
 }
@@ -162,6 +170,8 @@ void Update(Component::RigidBodyComponent& playerRigidBody, double const& dt) {
     // start frame profiling
     gProfiler.begin_frame();
 
+    CrashoutsEngine::ScriptSystem::UpdateAll(static_cast<float>(FrameRateController::GetInstance().DT()));
+
     // main loop computes fps and other time related stuff once for all apps ...
     GLApp::update_time(1.0);
 
@@ -196,4 +206,6 @@ void CleanUp() {
     ShutdownGameStateManager();
 
     CrashoutsEngine::ECS::DestroyInstance();
+
+    MonoManager::Shutdown();
 }

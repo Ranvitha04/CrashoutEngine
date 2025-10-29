@@ -131,6 +131,74 @@ namespace Collision {
 	private:
 
 	};
+
+	class ColliderFactory 
+	{
+		
+		public:
+			using ArgMap = std::map<std::string, std::string>;
+
+			ColliderFactory(ArgMap const &args) : args{args} {}
+
+			ColliderFactory() = default;
+
+			std::unique_ptr<Collider> CreateCollider(ColliderType type) {
+				if (type == SPHERE) {
+
+					return std::make_unique<Sphere>(Sphere{
+						std::stof(defaultedArg("radius","0.f")), 
+						CEVec3{
+							std::stof(defaultedArg("centerX", "0.f")),
+							std::stof(defaultedArg("centerY","0.f")),
+							std::stof(defaultedArg("centerZ", "0.f"))
+						}
+					});
+
+				} if (type == AABB) {
+
+					return std::make_unique<AABBRect>(AABBRect{
+						CEVec3{
+							std::stof(defaultedArg("minX", "0.f")),
+							std::stof(defaultedArg("minY", "0.f")),
+							std::stof(defaultedArg("minZ", "0.f"))
+						}, CEVec3{
+							std::stof(defaultedArg("maxX", "0.f")),
+							std::stof(defaultedArg("maxY", "0.f")),
+							std::stof(defaultedArg("maxZ", "0.f"))
+						}
+					});
+
+				} if (type == OBB) {
+
+					return std::make_unique<OBBRect>(OBBRect{
+						CEVec3{
+							std::stof(defaultedArg("minX", "0.f")),
+							std::stof(defaultedArg("minY", "0.f")),
+							std::stof("0.0")
+						}, CEVec3{
+							std::stof(defaultedArg("maxX", "0.f")),
+							std::stof(defaultedArg("maxY", "0.f")),
+							std::stof("0.0")
+						},
+						std::stof(defaultedArg("rotation", "0.f"))
+					});
+
+				}
+			}
+
+			void setArgs(ArgMap newArgs) {
+				args = newArgs;
+			}
+		private:
+			ArgMap args;
+
+			std::string defaultedArg(std::string val, std::string defaultVal) {
+				if (args.find(val) == args.end())
+					return defaultVal;
+				else
+					return args[val];
+			}
+	};
 }
 
 namespace Collision {

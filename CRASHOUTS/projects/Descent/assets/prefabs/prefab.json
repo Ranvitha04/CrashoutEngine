@@ -1,0 +1,45 @@
+{
+  "version": 1,
+  "prefabs": [
+    {
+      "type": "Box",
+      "name": "Box1",
+      "transform": {
+        "position": {
+          "x": -2.5,
+          "y": 60.0,
+          "z": 0.0
+        }
+      },
+      "shape": {
+        "kind": "Rectangle",
+        "width": 32.0,
+        "height": 32.0
+      },
+      "rigidbody": {
+        "mass": 1.0,
+        "restitution": 0.0
+      }
+    },
+    {
+      "type": "Box",
+      "name": "BigBoxxy",
+      "transform": {
+        "position": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0
+        }
+      },
+      "shape": {
+        "kind": "Rectangle",
+        "width": 128.0,
+        "height": 32.0
+      },
+      "rigidbody": {
+        "mass": 0.0,
+        "restitution": 0.0
+      }
+    }
+  ]
+}

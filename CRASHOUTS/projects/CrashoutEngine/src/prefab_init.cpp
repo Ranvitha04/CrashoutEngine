@@ -2,8 +2,7 @@
 @file        prefab_init.cpp
 @author      b.mohamadafiq@digipen.edu
 @date        28/9/2025
-@brief       Sets up prefabs: fallback, a built-in example, and de-serializes
-             external prefabs from projects/Descent/assets/prefabs/prefabs.txt.
+@brief       
 */
 
 #include "prefab_init.h"
@@ -109,26 +108,137 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path)
 
     return true;
 }
+namespace CrashoutsEngine {   
+    bool SaveBoxPrefabToJson_RJ(ECS& ecs,
+        Entity e,
+        const std::string& newName,
+        const std::string& path ,
+        const std::string& matchName )
+    {
+        using namespace Component;
+        using namespace rapidjson;
 
+        // Validate components
+        auto* t = ecs.GetComponent<TransformComponent>(e);
+        auto* sh = ecs.GetComponent<ShapeComponent>(e);
+        auto* rb = ecs.GetComponent<RigidBodyComponent>(e);
+        if (!t || !sh || !rb) {
+            LOGE(Core, std::string("Save failed: entity missing Transform/Shape/RigidBody."));
+            return false;
+        }
+        if (sh->type != ShapeType::Rectangle) {
+            LOGE(Core, std::string("Save failed: only Rectangle (Box) is supported."));
+            return false;
+        }
 
+        // Load existing doc (or init)
+        Document doc;
+        {
+            std::ifstream in(path, std::ios::binary);
+            if (in) {
+                IStreamWrapper isw(in);
+                doc.ParseStream(isw);
+                if (doc.HasParseError() || !doc.IsObject()) doc.SetObject();
+            }
+            else {
+                doc.SetObject();
+            }
+        }
 
-void InitPrefabs()
-{
-    // Fallback so unknown names don't crash
-    Prefab::SetFallback([](ECS& e, const std::string& name) {
-        auto ent = e.CreateEntity();
-        e.AddComponent<NameComponent>(ent, NameComponent{ name });
-        if (!e.HasComponent<TransformComponent>(ent))
-            e.AddComponent<TransformComponent>(ent, TransformComponent{});
-        });
+        auto& A = doc.GetAllocator();
+        if (!doc.HasMember("prefabs") || !doc["prefabs"].IsArray()) {
+            Value arr(kArrayType);
+            doc.AddMember("prefabs", arr, A);
+        }
+        Value& prefabs = doc["prefabs"];
 
-    const char* JSON_PATH = "assets/prefabs/prefab.json";
-    if (!LoadPrefabsFromJson_RJ(JSON_PATH)) {
-        LOGE(Core, std::string("Failed to load ") + JSON_PATH);
+        // Build prefab object
+        Value obj(kObjectType);
+        obj.AddMember("type", "Box", A);
+
+        {   
+            Value nm;
+            nm.SetString(newName.c_str(), (SizeType)newName.size(), A);
+            obj.AddMember("name", nm, A);
+        }
+
+        // transform.position
+        {
+            Value pos(kObjectType);
+            pos.AddMember("x", t->position.x, A);
+            pos.AddMember("y", t->position.y, A);
+            pos.AddMember("z", t->position.z, A);
+
+            Value tr(kObjectType);
+            tr.AddMember("position", pos, A);
+            obj.AddMember("transform", tr, A);
+        }
+
+        // shape (Rectangle)
+        {
+            Value shj(kObjectType);
+            shj.AddMember("kind", "Rectangle", A);
+            shj.AddMember("width", sh->width, A);
+            shj.AddMember("height", sh->height, A);
+            obj.AddMember("shape", shj, A);
+        }
+
+        // rigidbody
+        {
+            auto r = rb->reflection();
+            Value rbj(kObjectType);
+            rbj.AddMember("mass", r.mass, A);
+            rbj.AddMember("restitution", r.restitution, A);
+            obj.AddMember("rigidbody", rbj, A);
+        }
+
+        // Upsert by key
+        const std::string& key = matchName.empty() ? newName : matchName;
+        bool replaced = false;
+        for (auto& p : prefabs.GetArray()) {
+            if (p.IsObject() && p.HasMember("name") && p["name"].IsString()
+                && key == std::string(p["name"].GetString())) {
+                p.CopyFrom(obj, A);  
+                replaced = true;
+                break;
+            }
+        }
+        if (!replaced) prefabs.PushBack(obj, A);
+
+        // Write
+        StringBuffer sb;
+        PrettyWriter<StringBuffer> wr(sb);
+        doc.Accept(wr);
+
+        std::ofstream out(path, std::ios::binary | std::ios::trunc);
+        if (!out) {
+            LOGE(Core, std::string("Cannot open for writing: ") + path);
+            return false;
+        }
+        out.write(sb.GetString(), static_cast<std::streamsize>(sb.GetSize()));
+        LOGI(Core, std::string(replaced ? "Updated prefab: " : "Saved new prefab: ") + newName);
+        return true;
     }
 
-    // Optional: list all names for your UI/debug
-    for (const auto& n : Prefab::Names())
-        LOGI(Core, std::string("Prefab available: ") + n);
-}
 
+    void InitPrefabs()
+    {
+        
+        Prefab::SetFallback([](ECS& e, const std::string& name) {
+            auto ent = e.CreateEntity();
+            e.AddComponent<NameComponent>(ent, NameComponent{ name });
+            if (!e.HasComponent<TransformComponent>(ent))
+                e.AddComponent<TransformComponent>(ent, TransformComponent{});
+            });
+
+        const char* JSON_PATH = "assets/prefabs/prefab.json";
+        if (!LoadPrefabsFromJson_RJ(JSON_PATH)) {
+            LOGE(Core, std::string("Failed to load ") + JSON_PATH);
+        }
+
+        
+        for (const auto& n : Prefab::Names())
+            LOGI(Core, std::string("Prefab available: ") + n);
+    }
+
+}
