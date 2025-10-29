@@ -17,7 +17,7 @@ namespace CrashoutsEngine
             return false;
         }
 
-        Class = mono_class_from_name(image, "ExampleNamespace", ClassName.c_str());
+        Class = mono_class_from_name(image, "CrashoutsEngine", ClassName.c_str());
         if (!Class)
         {
             std::cerr << "[Mono] Could not find class: " << ClassName << '\n';
@@ -27,6 +27,27 @@ namespace CrashoutsEngine
         // Create C# instance
         Instance = mono_object_new(domain, Class);
         mono_runtime_object_init(Instance);
+
+        // 2. Get the MonoClass* for your C# Entity
+        MonoClass* entityClass = mono_class_from_name(image, "CrashoutsEngine", "Entity");
+
+        // 3. Create a new managed Entity object
+        MonoObject* entityObj = mono_object_new(domain, entityClass);
+
+        // 4. Get the managed Entity(ulong id) constructor
+        MonoMethod* entityCtor = mono_class_get_method_from_name(entityClass, ".ctor", 1);
+
+        // 5. Prepare the ECS entity ID
+        uint64_t eid = ID;
+        void* args[1] = { &eid };
+
+        // 6. Call constructor to initialize the managed object
+        mono_runtime_invoke(entityCtor, entityObj, args, nullptr);
+
+        // 7. Assign this managed Entity to the script instance's .Entity field
+        MonoClassField* entityField = mono_class_get_field_from_name(Class, "Entity");
+        if (entityField)
+            mono_field_set_value(Instance, entityField, entityObj);
 
         // Cache methods
         MethodStart = mono_class_get_method_from_name(Class, "Start", 0);

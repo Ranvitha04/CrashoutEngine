@@ -1,26 +1,60 @@
 using System;
 using System.Numerics;
 
+using CrashoutsEngine;
 namespace CrashoutsEngine
 {
     public class PlayerController : ScriptBase
     {
-        private float speed = 5.0f;
-
         public override void Start()
         {
-            Console.WriteLine("[C#] PlayerController Start()");
+            // Initialization logic for the player
+            Console.WriteLine("[C#] PlayerController Start() called");
+            if (Entity == null)
+                Console.WriteLine("[C#] Entity IS NULL in Update!");
+            else
+                Console.WriteLine("[C#] Entity is present.");
+
         }
 
         public override void Update(float dt)
         {
-            if (!Entity.HasTransform)
+            // Access physics and transform components from your entity
+            var rb = Entity.RigidBody;
+            var tf = Entity.Transform;
+            if (rb == null) Console.WriteLine("[C#] rb is null");
+            if (tf == null) Console.WriteLine("[C#] tf is null");
+
+
+            if (Input.IsKeyPressed(Key.A))
             {
-                return;
+                rb.AddForce(new Vector3(-100f, 0f, 0f));
             }
-            var pos = Entity.Transform.Position;
-            pos.X += speed * dt;
-            Entity.Transform.Position = pos;
+
+            if (Input.IsKeyPressed(Key.D))
+            {
+                rb.AddForce(new Vector3(100f, 0f, 0f));
+            }
+
+            if (Input.IsKeyPressed(Key.W))
+            {
+                rb.AddForce(new Vector3(0f, 300f, 0f) * rb.GetMass());
+            }
+
+            if (Input.IsKeyPressed(Key.S))
+            {
+                tf.Size *= 0.9f;
+            }
+
+            if (Input.IsKeyPressed(Key.Q))
+            {
+                tf.Size *= 1.1f;
+            }
+
+            if (Input.IsKeyPressed(Key.R))
+            {
+                tf.Rotation += 3f;
+            }
         }
     }
 }

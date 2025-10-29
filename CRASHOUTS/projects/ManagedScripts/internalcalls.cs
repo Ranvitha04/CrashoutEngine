@@ -27,5 +27,8 @@ namespace CrashoutsEngine
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal static extern bool EntityHasTransform(ulong entityID);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        public static extern bool EntityHasRigidBody(ulong entityID);
     }
 }
