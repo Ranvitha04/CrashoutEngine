@@ -344,7 +344,14 @@ namespace Component {
         particularly beneficial. The returned VAO is in an unbound state and
         ready for configuration.
         */
+        GLuint AcquireVAO();
+        GLuint AcquireVBO();
+        GLuint AcquireEBO();
         GLuint GetPooledVAO();
+        //GLuint GetPooledEBO();
+        void ReturnVAO(GLuint vao);
+        void ReturnVBO(GLuint vbo);
+        void ReturnEBO(GLuint ebo);
         
         /*!
         @brief Retrieve an EBO from the buffer pool or create a new one.

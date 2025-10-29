@@ -899,5 +899,35 @@ namespace Component {
         glBindVertexArray(0);
         shdr_pgm->UnUse();
     }
+   
+    GLuint Rendering::AcquireVAO() { return GetPooledVAO(); }
+    GLuint Rendering::AcquireVBO() { return GetPooledVBO(); }
+    GLuint Rendering::AcquireEBO() { return GetPooledEBO(); }
 
+    void Rendering::ReturnVAO(GLuint vao) {
+        if (vao != 0 && buffer_pool.available_vaos.size() < buffer_pool.max_pool_size) {
+            buffer_pool.available_vaos.push_back(vao);
+        }
+        else if (vao != 0) {
+            glDeleteVertexArrays(1, &vao);
+        }
+    }
+
+    void Rendering::ReturnVBO(GLuint vbo) {
+        if (vbo != 0 && buffer_pool.available_vbos.size() < buffer_pool.max_pool_size) {
+            buffer_pool.available_vbos.push_back(vbo);
+        }
+        else if (vbo != 0) {
+            glDeleteBuffers(1, &vbo);
+        }
+    }
+
+    void Rendering::ReturnEBO(GLuint ebo) {
+        if (ebo != 0 && buffer_pool.available_ebos.size() < buffer_pool.max_pool_size) {
+            buffer_pool.available_ebos.push_back(ebo);
+        }
+        else if (ebo != 0) {
+            glDeleteBuffers(1, &ebo);
+        }
+    }
 }

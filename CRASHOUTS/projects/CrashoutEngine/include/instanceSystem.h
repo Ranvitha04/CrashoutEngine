@@ -52,7 +52,8 @@ namespace InstancingSystem {
         int count,
         int segments,
         const InstancedParams& params
-    );
+    );        
+
 
     //...................Rectangle.................................//
 
@@ -79,6 +80,14 @@ namespace InstancingSystem {
         int count,
         const InstancedParams& params
     );
+
+    void InitializeInstancedRectanglesData(int count);
+
+    void InitializeEcsRectanglesDataRandom(int count);
+
+    void RenderInstancedRectangles(const InstancedParams& params);
+
+    void ClearRectangleData();
     
 
     //................Triangle................//
@@ -107,7 +116,35 @@ namespace InstancingSystem {
         const InstancingSystem::InstancedParams& params
     );
 
+    void InitializeInstancedRectanglesData(int count);
+
+
+    void InitializeMode4RandomShapes(int perTypeCount);
+
     
 
-    //glm::mat4 CreateCenteredWorldProjection();
+    // Build Mode 5 ECS-driven rectangles + triangles; circles generated directly
+    void InitializeMode5EcsRandomShapes(
+        CrashoutsEngine::ECS* ecs,
+        int perTypeCount,
+        bool texturesEnabled, const std::string& textureName,
+        // Rectangles out
+        std::vector<CEVec3>& rectPos, std::vector<CEVec3>& rectColor,
+        std::vector<float>& rectRot, std::vector<float>& rectScale,
+        std::vector<float>& rectW, std::vector<float>& rectH,
+        // Triangles out
+        std::vector<CEVec3>& triPos, std::vector<CEVec3>& triColor,
+        std::vector<float>& triRot, std::vector<float>& triScale, std::vector<float>& triSide,
+        // Circles out (not ECS)
+        std::vector<CEVec3>& circPos, std::vector<CEVec3>& circColor,
+        std::vector<float>& circRot, std::vector<float>& circScale, std::vector<float>& circRadius,
+        int& circSegments
+    );
+
+    void InitializeMode4RandomShapes(int perTypeCount);
+    void RenderMode4Rectangles(const InstancedParams& params);
+    void RenderMode4Triangles(const InstancedParams& params);
+    void RenderMode4Circles(const InstancedParams& params);
+    
+    void RenderInstancedRectangles(const InstancedParams& params);
 }
