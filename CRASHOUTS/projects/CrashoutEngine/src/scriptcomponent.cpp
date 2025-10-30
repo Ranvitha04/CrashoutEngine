@@ -3,6 +3,7 @@
 
 namespace CrashoutsEngine
 {
+    CE::u32 GCHandle=0;
     bool ScriptComponent::Initialize(MonoDomain* domain, MonoAssembly* assembly)
     {
         if (!assembly) {
@@ -25,31 +26,30 @@ namespace CrashoutsEngine
         }
 
         // Create C# instance
-        Instance = mono_object_new(domain, Class);
-        mono_runtime_object_init(Instance);
+        //Instance = mono_object_new(domain, Class);
+        //mono_runtime_object_init(Instance);
 
         // Get the MonoClass* for your C# Entity
         MonoClass* entityClass = mono_class_from_name(image, "CrashoutsEngine", "Entity");
 
-        // Create a new managed Entity object
+        //GCHandle = 0;
+
+        // in Initialize, after creating Instance:
+        Instance = mono_object_new(domain, Class);
+        mono_runtime_object_init(Instance);
+
+        // create strong GC handle so Instance pointer won't become stale
+        GCHandle = mono_gchandle_new(Instance, /*isPinned*/ false);
+
+        // fix field set (pass address of MonoObject*)
         MonoObject* entityObj = mono_object_new(domain, entityClass);
-
-        // Get the managed Entity(ulong id) constructor
         MonoMethod* entityCtor = mono_class_get_method_from_name(entityClass, ".ctor", 1);
-
-        // Prepare the ECS entity ID
         uint64_t eid = EntityID;
-        void* args[1] = { &eid };
-
-        // Call constructor to initialize the managed object
-        mono_runtime_invoke(entityCtor, entityObj, args, nullptr);
-
-        // Assign this managed Entity to the script instance's .Entity field
+        void* ctorArgs[1] = { &eid };
+        mono_runtime_invoke(entityCtor, entityObj, ctorArgs, nullptr);
         MonoClassField* entityField = mono_class_get_field_from_name(Class, "Entity");
         if (entityField)
-        {
-            mono_field_set_value(Instance, entityField, entityObj);
-        }
+            mono_field_set_value(Instance, entityField, &entityObj);
 
         // Cache methods
         MethodStart = mono_class_get_method_from_name(Class, "Start", 0);
@@ -93,11 +93,13 @@ namespace CrashoutsEngine
     void ScriptComponent::Update(float dt)
     {
         if (!MethodUpdate) return;
-
+        MonoObject* target = mono_gchandle_get_target(GCHandle);
+        if (!target) { /* log and return */ }
         void* args[1] = { &dt };
         MonoObject* exc = nullptr;
-        mono_runtime_invoke(MethodUpdate, Instance, args, &exc);
+        mono_runtime_invoke(MethodUpdate, target, args, &exc);
         if (exc) mono_print_unhandled_exception(exc);
+
     }
 
     void ScriptComponent::Destroy()
@@ -107,5 +109,6 @@ namespace CrashoutsEngine
         MethodStart = nullptr;
         MethodUpdate = nullptr;
         Started = false;
+        if (GCHandle) { mono_gchandle_free(GCHandle); GCHandle = 0; }
     }
 }
