@@ -141,7 +141,8 @@ namespace CrashoutsEngine {
 
 			if(!middleMousePressed) lastMousePos = InputManager::GetMousePosition();
 
-			if (InputManager::IsMouseButtonPressed(GLFW_MOUSE_BUTTON_MIDDLE)) {
+			if (InputManager::IsMouseButtonPressed(GLFW_MOUSE_BUTTON_MIDDLE) || 
+				InputManager::IsMouseButtonPressed(GLFW_MOUSE_BUTTON_RIGHT)) {
 				middleMousePressed = true;
 				engineCamera.MouseWheelDrag(lastMousePos);
 			}

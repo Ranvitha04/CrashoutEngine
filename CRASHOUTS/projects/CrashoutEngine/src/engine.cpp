@@ -271,6 +271,7 @@ void Update(Component::RigidBodyComponent& playerRigidBody, double const& dt) {
         GLApp::update();
     }
     else if (engineState == EngineState::STOP) {
+        physicsSystem.update(0.f);
         // Process Editor Camera Input
         CrashoutsEngine::RenderCamera::EditorCameraInput();
 #ifdef USE_IMGUI_EDITOR
