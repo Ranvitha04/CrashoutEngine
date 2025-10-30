@@ -9,11 +9,7 @@ namespace CrashoutsEngine
         public override void Start()
         {
             // Initialization logic for the player
-            Console.WriteLine("[C#] PlayerController Start() called");
-            if (Entity == null)
-                Console.WriteLine("[C#] Entity IS NULL in Update!");
-            else
-                Console.WriteLine("[C#] Entity is present.");
+            Console.WriteLine("[C#] PlayerController Start() called, Entity is " + (Entity == null ? "NULL" : "OK!"));
 
         }
 

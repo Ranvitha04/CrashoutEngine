@@ -149,8 +149,8 @@ void CreateRandBox() {
 void UpdateMainMenu()
 {
 
-	Component::RigidBodyComponent* rigidBody{ globalECS->GetComponent<Component::RigidBodyComponent>(entity1) };
-	Component::TransformComponent* transform{ globalECS->GetComponent<Component::TransformComponent>(entity1) };
+	//Component::RigidBodyComponent* rigidBody{ globalECS->GetComponent<Component::RigidBodyComponent>(entity1) };
+	//Component::TransformComponent* transform{ globalECS->GetComponent<Component::TransformComponent>(entity1) };
 
 	Component::RigidBodyComponent* rigidBody2{ globalECS->GetComponent<Component::RigidBodyComponent>(entity3) };
 
