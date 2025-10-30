@@ -17,7 +17,7 @@
 #include <string>
 #include <fstream>
 
-// RapidJSON
+
 #include "rapidjson/document.h"
 #include "rapidjson/istreamwrapper.h"
 #include "rapidjson/ostreamwrapper.h"
@@ -27,9 +27,6 @@
 using namespace CrashoutsEngine;
 using namespace Component;
 
-// -----------------------------------------------------------------------------
-// Helpers
-// -----------------------------------------------------------------------------
 static std::unique_ptr<Collision::AABBRect>
 MakeCenteredAABB3(const CEVec3& center, float w, float h)
 {
@@ -39,14 +36,10 @@ MakeCenteredAABB3(const CEVec3& center, float w, float h)
     return std::make_unique<Collision::AABBRect>(mn, mx);
 }
 
-// -----------------------------------------------------------------------------
-// Forward decls
-// -----------------------------------------------------------------------------
+
 static bool LoadPrefabsFromJson_RJ(const std::string& path);
 
-// -----------------------------------------------------------------------------
-// JSON → Prefab Registry
-// -----------------------------------------------------------------------------
+
 static bool LoadPrefabsFromJson_RJ(const std::string& path)
 {
     std::ifstream ifs(path);
@@ -96,7 +89,7 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path)
                 color.y = (cj.HasMember("g") && cj["g"].IsNumber()) ? (float)cj["g"].GetDouble() : 0.f;
                 color.z = (cj.HasMember("b") && cj["b"].IsNumber()) ? (float)cj["b"].GetDouble() : 0.f;
             }
-            // Normalize 255-range inputs to 0..1
+         
             if (color.x > 1.f || color.y > 1.f || color.z > 1.f) {
                 color.x *= 1.f / 255.f; color.y *= 1.f / 255.f; color.z *= 1.f / 255.f;
             }
@@ -105,8 +98,6 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path)
             std::string textureName;
             if (enableTexture && shj.HasMember("textureName") && shj["textureName"].IsString())
                 textureName = shj["textureName"].GetString();
-
-            // ---- transform ----
             if (!p.HasMember("transform") || !p["transform"].IsObject()) { LOGE(Core, std::string("Box '") + name + "' missing transform"); continue; }
             const auto& tj = p["transform"];
             if (!tj.HasMember("position") || !tj["position"].IsObject()) { LOGE(Core, std::string("Box '") + name + "' missing position"); continue; }
@@ -129,7 +120,7 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path)
             float mass = (rbj.HasMember("mass") && rbj["mass"].IsNumber()) ? (float)rbj["mass"].GetDouble() : 0.f;
             float rest = (rbj.HasMember("restitution") && rbj["restitution"].IsNumber()) ? (float)rbj["restitution"].GetDouble() : 0.f;
 
-            // ---- collider flags (optional) ----
+        
             bool hasColliderFlags = false; bool isTrigger = false; unsigned category = 0; unsigned mask = 0;
             if (p.HasMember("collider") && p["collider"].IsObject()) {
                 const auto& cj = p["collider"];
@@ -139,9 +130,7 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path)
                 if (cj.HasMember("mask") && cj["mask"].IsUint())     mask = cj["mask"].GetUint();
             }
 
-            // ----------------------
-            // Register factory using captured, POD values
-            // ----------------------
+
             Prefab::Register(name, [=](ECS& e) {
                 const Entity ent = e.CreateEntity();
                 e.AddComponent<NameComponent>(ent, NameComponent{ name });
@@ -171,8 +160,7 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path)
                 {
                     auto aabb = MakeCenteredAABB3(t.position, width, height);
                     e.AddComponent<ColliderComponent>(ent, ColliderComponent{ std::move(aabb) });
-                    // Optional: apply collider flags if your component exposes them
-                    // if (hasColliderFlags) { /* set isTrigger/category/mask here */ }
+                
                 }
                 });
 
@@ -186,9 +174,6 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path)
     return true;
 }
 
-// -----------------------------------------------------------------------------
-// ECS → JSON (save one Box prefab)
-// -----------------------------------------------------------------------------
 namespace CrashoutsEngine {
 
     bool SaveBoxPrefabToJson_RJ(ECS& ecs,
@@ -262,7 +247,7 @@ namespace CrashoutsEngine {
             obj.AddMember("transform", tr, A);
         }
 
-        // shape (rich)
+        // shape
         {
             Value shj(kObjectType);
             shj.AddMember("kind", "Rectangle", A);        
@@ -325,9 +310,7 @@ namespace CrashoutsEngine {
         return true;
     }
 
-    // -----------------------------------------------------------------------------
-    // Prefab bootstrap
-    // -----------------------------------------------------------------------------
+   
     void InitPrefabs()
     {
         Prefab::SetFallback([](ECS& e, const std::string& name) {
@@ -346,4 +329,4 @@ namespace CrashoutsEngine {
             LOGI(Core, std::string("Prefab available: ") + n);
     }
 
-} // namespace CrashoutsEngine
+} 
