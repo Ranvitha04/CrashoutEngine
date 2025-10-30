@@ -15,6 +15,7 @@ namespace CrashoutsEngine
 
         public override void Update(float dt)
         {
+            Console.WriteLine("[C#] PlayerController Update() called with dt: " + dt);
             // Access physics and transform components from your entity
             var rb = Entity.RigidBody;
             var tf = Entity.Transform;
