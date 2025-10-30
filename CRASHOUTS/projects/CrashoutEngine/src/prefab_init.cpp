@@ -250,8 +250,8 @@ namespace CrashoutsEngine {
         // shape
         {
             Value shj(kObjectType);
-            shj.AddMember("kind", "Rectangle", A);        // legacy-friendly
-            shj.AddMember("type", (int)sh->type, A);       // engine enum value
+            shj.AddMember("kind", "Rectangle", A);      
+            shj.AddMember("type", (int)sh->type, A);       
             shj.AddMember("width", sh->width, A);
             shj.AddMember("height", sh->height, A);
             shj.AddMember("size", sh->size, A);
