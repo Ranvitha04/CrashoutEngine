@@ -43,7 +43,7 @@ namespace CrashoutsEngine {
 			void UpdateMatrices(int targetWidth, int targetHeight);
 
 			// --- Input Handling ---
-			void MouseWheelPan(CEVec2 mousePos);
+			void MouseWheelDrag(CEVec2& oldMousePos);
 			void MouseWheelScroll(float yOffset);
 
 		private:

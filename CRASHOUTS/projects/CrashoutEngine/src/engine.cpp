@@ -254,6 +254,7 @@ void Update(Component::RigidBodyComponent& playerRigidBody, double const& dt) {
     ScopedMemTag mem(MemTag::Update);
 
     if (engineState == EngineState::PLAY) {
+
         collisionSystem.update(dt);
         physicsSystem.update(dt);
 
@@ -273,11 +274,10 @@ void Update(Component::RigidBodyComponent& playerRigidBody, double const& dt) {
         // Process Editor Camera Input
         CrashoutsEngine::RenderCamera::EditorCameraInput();
 #ifdef USE_IMGUI_EDITOR
-        CrashoutsEngine::RenderCamera::engineCamera.UpdateMatrices(gameTextureWidth, gameTextureHeight);
+        CrashoutsEngine::RenderCamera::engineCamera.UpdateMatrices(Settings::GetScreenWidth(), Settings::GetScreenHeight());
 #else
         CrashoutsEngine::RenderCamera::engineCamera.UpdateMatrices(GLApp::width, GLApp::height);
 #endif
-
     }
 }
 

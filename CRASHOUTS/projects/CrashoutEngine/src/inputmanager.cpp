@@ -167,7 +167,7 @@ CEVec2 InputManager::GetMouseNDC() {
 
     float ndcX = static_cast<float>(x / Settings::GetScreenWidth()) * 2.0f - 1.0f;
 
-    float ndcY = static_cast<float>(y / Settings::GetScreenHeight()) * 2.0f - 1.0f;
+    float ndcY = 1.0f - (static_cast<float>(y) / Settings::GetScreenHeight()) * 2.0f;
 
     return CEVec2(ndcX, ndcY);
 }

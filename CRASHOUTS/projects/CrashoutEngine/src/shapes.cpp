@@ -136,10 +136,9 @@ namespace Component {
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(position.x, position.y, position.z));
         model = glm::rotate(model, glm::radians(rotation), glm::vec3(0, 0, 1));
-        model = glm::scale(model, glm::vec3(scale, scale, 1.0f));
+        model = glm::scale(model, glm::vec3(scale, scale, 1.0f));        
 
         renderer.shdr_pgm->SetUniform("uModel", model);
-        renderer.shdr_pgm->SetUniform("uView", glm::mat4(1.0f));
 
         GLint useTexture_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "u_useTexture");
         if (useTexture_loc != -1) glUniform1i(useTexture_loc, 0); // Use vertex colors, not texture
@@ -270,8 +269,7 @@ namespace Component {
         renderer.shdr_pgm->Use();
         
         renderer.shdr_pgm->SetUniform("uModel", glm::mat4(1.0f));
-        renderer.shdr_pgm->SetUniform("uView", glm::mat4(1.0f));
-
+        
         GLint useTexture_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "u_useTexture");
         if (useTexture_loc != -1) glUniform1i(useTexture_loc, 0);
 
@@ -324,7 +322,7 @@ namespace Component {
         model = glm::translate(model, glm::vec3(-center.x, -center.y, -center.z));
 
         renderer.shdr_pgm->SetUniform("uModel", model);
-        renderer.shdr_pgm->SetUniform("uView", glm::mat4(1.0f));
+        
 
         GLint useTexture_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "u_useTexture");
         if (useTexture_loc != -1) glUniform1i(useTexture_loc, 0); // Use vertex colors, not texture
@@ -366,7 +364,7 @@ namespace Component {
 
         renderer.shdr_pgm->SetUniform("uModel", model);
         renderer.shdr_pgm->SetUniform("u_useTexture", 0);
-        renderer.shdr_pgm->SetUniform("uView", glm::mat4(1.0f));
+        
         renderer.shdr_pgm->SetUniform("u_tint", 1.0f, 1.0f, 1.0f);
 
         GLint useTexture_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "u_useTexture");
@@ -409,7 +407,7 @@ namespace Component {
 
         renderer.shdr_pgm->SetUniform("uModel", model);
         renderer.shdr_pgm->SetUniform("u_useTexture", 0);
-        renderer.shdr_pgm->SetUniform("uView", glm::mat4(1.0f));
+        
 
         GLint useTexture_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "u_useTexture");
         if (useTexture_loc != -1) glUniform1i(useTexture_loc, 0); // Use vertex colors, not texture
@@ -469,7 +467,7 @@ namespace Component {
 
 
         renderer.shdr_pgm->SetUniform("uModel", model);
-        renderer.shdr_pgm->SetUniform("uView", glm::mat4(1.0f));
+        
 
         renderer.Draw();
     }
@@ -549,7 +547,7 @@ namespace Component {
 
         // Set uniforms
         renderer.shdr_pgm->SetUniform("uModel", model);
-        renderer.shdr_pgm->SetUniform("uView", glm::mat4(1.0f));
+        
 
         // Enable texture rendering
         GLint useTexture_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "u_useTexture");
@@ -629,7 +627,7 @@ namespace Component {
         model = glm::scale(model, glm::vec3(scale, scale, 1.0f));
 
         renderer.shdr_pgm->SetUniform("uModel", model);
-        renderer.shdr_pgm->SetUniform("uView", glm::mat4(1.0f));
+        
 
         // TextureAsset uniforms
         GLint useTexture_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "u_useTexture");
@@ -707,7 +705,7 @@ namespace Component {
         model = glm::translate(model, glm::vec3(-centroid.x, -centroid.y, -centroid.z));
 
         renderer.shdr_pgm->SetUniform("uModel", model);
-        renderer.shdr_pgm->SetUniform("uView", glm::mat4(1.0f));
+        
 
         GLint useTexture_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "u_useTexture");
         if (useTexture_loc != -1) glUniform1i(useTexture_loc, 1);

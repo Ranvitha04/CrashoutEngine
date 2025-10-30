@@ -164,13 +164,6 @@ namespace Component {
     public:
 
         /*!
-        @brief Updates the view and projection matrices based on target dimensions.
-        @param targetWidth Width of the render target (window or FBO texture).
-        @param targetHeight Height of the render target.
-        */
-        void UpdateMatrices(int targetWidth, int targetHeight);
-
-        /*!
         @brief Set up a default Vertex Array Object with quad geometry.
         @details
         Creates a default VAO with a unit quad geometry suitable for basic rendering.

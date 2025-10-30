@@ -10,6 +10,7 @@ This file
 ----------------------------------------------------------------------------- */
 
 #include "rendering.h"
+#include "frameratecontroller.h"
 #include "camera.h"
 #include "inputmanager.h"
 #include <glm/gtc//matrix_transform.hpp>
@@ -68,14 +69,17 @@ namespace CrashoutsEngine {
 		}
 
 		void Camera::RecalculateProjectionMtx(int targetWidth, int targetHeight) {
-			if (targetWidth <= 0 || targetHeight >= 0) {
+			if (targetWidth <= 0 || targetHeight <= 0) {
 				std::cerr << "ERRROR: TARGET WIDTH OR HEIGHT IS LESS THAN 0" << std::endl;
 				return;
 			}
 
+			// Calculate orthographic projection based on target dimensions
+
 			float currentAR = static_cast<float>(targetWidth) / static_cast<float>(targetHeight);
 			float worldWidth, worldHeight;
 
+#if USE_IMGUI_EDITOR
 			// Calculate world dimensions based on base size, zoom, and aspect ratio
 			// Maintains baseOrthoSize vertically 
 			if (currentAR >= 1.0f) {	// Height < Width
@@ -86,6 +90,7 @@ namespace CrashoutsEngine {
 				worldWidth = baseOrthoSize / zoom;
 				worldHeight = worldWidth / currentAR;
 			}
+#endif
 
 			projectionMtx = glm::ortho(
 				-worldWidth / 2.0f, worldWidth / 2.0f,
@@ -104,14 +109,19 @@ namespace CrashoutsEngine {
 		}
 
 		// Input functions
-		void Camera::MouseWheelPan(CEVec2 mousePos) {
+		void Camera::MouseWheelDrag(CEVec2& oldMousePos) {
 			// Scale panning speed by zoom so it feels consistent
-			float panSpeed = 10.1f * (1.f / zoom);
+			float panSpeed = 0.1f * (1.f / zoom);
+			CEVec2 mousePos = InputManager::GetMousePosition();
+			float xDiff = mousePos.x - oldMousePos.x;
+			float yDiff = mousePos.y - oldMousePos.y;
 
-			position.x -= mousePos.x * panSpeed;
-			position.y += mousePos.y * panSpeed;
-
-			std::cout << "Pos x :" << position.x << " Pos y: " << position.y << std::endl;
+			std::cout << "X diff is " << xDiff << " and yDiff is " << yDiff << std::endl;
+			
+			position.x -= xDiff * panSpeed;
+			position.y += yDiff * panSpeed;
+			oldMousePos = mousePos;
+			//std::cout << "Pos x :" << position.x << " Pos y: " << position.y << std::endl;
 
 		}
 
@@ -126,10 +136,18 @@ namespace CrashoutsEngine {
 		}
 
 		void EditorCameraInput() {
+			static CEVec2 lastMousePos = InputManager::GetMousePosition();
+			static bool middleMousePressed = false;
+
+			if(!middleMousePressed) lastMousePos = InputManager::GetMousePosition();
+
 			if (InputManager::IsMouseButtonPressed(GLFW_MOUSE_BUTTON_MIDDLE)) {
-				engineCamera.MouseWheelPan(InputManager::GetMousePosition());
+				middleMousePressed = true;
+				engineCamera.MouseWheelDrag(lastMousePos);
 			}
-			std::cout << "Scroll Wheel data: " << InputManager::GetMouseWheelDelta() << std::endl;
+			else middleMousePressed = false;
+
+			//std::cout << "Scroll Wheel data: " << InputManager::GetMouseWheelDelta() << std::endl;
 			if (InputManager::GetMouseWheelDelta() != 0) {
 				engineCamera.MouseWheelScroll(InputManager::GetMouseWheelDelta());
 			}
