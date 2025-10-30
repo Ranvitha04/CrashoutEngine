@@ -38,7 +38,7 @@ namespace CrashoutsEngine
         MonoMethod* entityCtor = mono_class_get_method_from_name(entityClass, ".ctor", 1);
 
         // 5. Prepare the ECS entity ID
-        uint64_t eid = ID;
+        uint64_t eid = EntityID;
         void* args[1] = { &eid };
 
         // 6. Call constructor to initialize the managed object
@@ -47,22 +47,31 @@ namespace CrashoutsEngine
         // 7. Assign this managed Entity to the script instance's .Entity field
         MonoClassField* entityField = mono_class_get_field_from_name(Class, "Entity");
         if (entityField)
+        {
             mono_field_set_value(Instance, entityField, entityObj);
+        }
 
         // Cache methods
         MethodStart = mono_class_get_method_from_name(Class, "Start", 0);
         MethodUpdate = mono_class_get_method_from_name(Class, "Update", 1);
 
         if (MethodStart)
+        {
             std::cout << "[Mono] Found Start() for " << ClassName << '\n';
+        }
         else
+        {
             std::cerr << "[Mono] Missing Start() in " << ClassName << '\n';
+        }
 
         if (MethodUpdate)
+        {
             std::cout << "[Mono] Found Update(float) for " << ClassName << '\n';
+        }
         else
+        {
             std::cerr << "[Mono] Missing Update(float) in " << ClassName << '\n';
-
+        }
 
         std::cout << "[Mono] ScriptComponent for class " << ClassName << " initialized successfully.\n";
 
