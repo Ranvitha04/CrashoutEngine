@@ -1,34 +1,23 @@
-#version 450 core
+#version 460 core
 
 in vec3 color;
 in vec2 texCoord;
-
 out vec4 fragColor;
 
 uniform sampler2D uTex2d;
-uniform int u_useTexture = 0;  
-uniform int u_modulate   = 1;   
-uniform vec3 u_tint      = vec3(1.0, 1.0, 1.0);
+uniform int   u_useTexture; // 0: color only, 1: sample texture
+uniform int   u_modulate;   // FIX: make boolean-like switch (set via glUniform1i)
+uniform vec3  u_tint;
 
 void main() {
-    vec4 baseColor;
-
     if (u_useTexture == 1) {
-        // Sample texture
-        vec4 texColor = texture(uTex2d, texCoord);
-
-        if (u_modulate == 1) {
-            baseColor = texColor * vec4(color, 1.0);
-        } else {
-            baseColor = texColor;
+        vec4 tex = texture(uTex2d, texCoord);
+        vec3 rgb = tex.rgb * u_tint;
+        if (u_modulate != 0) {
+            rgb *= color;    // multiply texture by vertex color when modulating
         }
-
-        // Apply tint
-        baseColor *= vec4(u_tint, 1.0);
+        fragColor = vec4(rgb, tex.a);
     } else {
-        // No texture ? use vertex color * tint
-        baseColor = vec4(color * u_tint, 1.0);
+        fragColor = vec4(color * u_tint, 1.0);
     }
-
-    fragColor = baseColor;
 }
