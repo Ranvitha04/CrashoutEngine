@@ -21,6 +21,7 @@ context and implement a game loop.
 #include "debugmenu.h"
 #include "sceneutils.h"
 #include "entitymanager.h"
+#include "camera.h"
 
 /*                                                   type declarations
 ----------------------------------------------------------------------------- */
@@ -177,6 +178,15 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
     glClearColor(0.2f, 0.2f, 0.2f, 1.0f);  // Dark gray background
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
+
+    using namespace CrashoutsEngine::RenderCamera;
+
+    // Camera Related Processes
+    //Camera& currentCamera = (engineState == EngineState::PLAY) ? gameCamera : engineCamera;
+    // TEST WITH ENGINE CAMERA
+    Camera& currentCamera = engineCamera;
+    glm::mat4 view = currentCamera.GetViewMatrix();
+    glm::mat4 proj = currentCamera.GetProjectionMatrix();
     
     GLApp::draw();
     Scene::RenderScene(*CrashoutsEngine::ECS::getInstance());
@@ -243,7 +253,8 @@ void Update(Component::RigidBodyComponent& playerRigidBody, double const& dt) {
     FrameProfiler::Scoped s(gProfiler, "Game/Update");
     ScopedMemTag mem(MemTag::Update);
 
-    if (engineState != EngineState::PAUSE) {
+    if (engineState == EngineState::PLAY) {
+
         collisionSystem.update(dt);
         physicsSystem.update(dt);
 
@@ -258,6 +269,15 @@ void Update(Component::RigidBodyComponent& playerRigidBody, double const& dt) {
 
         // animate scene
         GLApp::update();
+    }
+    else if (engineState == EngineState::STOP) {
+        // Process Editor Camera Input
+        CrashoutsEngine::RenderCamera::EditorCameraInput();
+#ifdef USE_IMGUI_EDITOR
+        CrashoutsEngine::RenderCamera::engineCamera.UpdateMatrices(Settings::GetScreenWidth(), Settings::GetScreenHeight());
+#else
+        CrashoutsEngine::RenderCamera::engineCamera.UpdateMatrices(GLApp::width, GLApp::height);
+#endif
     }
 }
 

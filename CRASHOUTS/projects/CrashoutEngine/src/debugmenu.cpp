@@ -12,6 +12,7 @@ This file provides the graphics for Crashout Engine's ImGUI.
 #include "glapp.h"
 #include "rendering.h"
 #include "performanceViewer.h"
+#include "camera.h"
 #include "entitymanager.h"
 #include "collisionmanager.h"
 #include "physicsmanager.h"
@@ -1003,6 +1004,10 @@ namespace UI { // --------------------------------------------------------------
             // Play
             if (ImGui::Button("PLAY")) {
                 engineState = EngineState::PLAY;
+                CrashoutsEngine::RenderCamera::engineCamera.SetPostiion(CEVec3{ 0.f, 0.f, 0.f });
+                CrashoutsEngine::RenderCamera::engineCamera.SetZoom(1.f);
+                CrashoutsEngine::RenderCamera::engineCamera.SetTargetAR(16.0f / 9.0f);
+                CrashoutsEngine::RenderCamera::engineCamera.UpdateMatrices(Settings::GetScreenWidth(), Settings::GetScreenHeight());
             }
             ImGui::SameLine();
             // Pause
@@ -1012,6 +1017,7 @@ namespace UI { // --------------------------------------------------------------
             ImGui::SameLine();
             // Stop
             if (ImGui::Button("STOP")) {
+                RestartGameState();
                 engineState = EngineState::STOP;
             }
         }
@@ -1067,8 +1073,6 @@ namespace UI { // --------------------------------------------------------------
                     // Resize RenderBuffer
                     glBindRenderbuffer(GL_RENDERBUFFER, gameRboDepthStencil);
                     glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, gameTextureWidth, gameTextureHeight);
-
-                    Component::Rendering::Get().UpdateMatrices(gameTextureWidth, gameTextureHeight);
 
                     char logBuffer[256];
                     // Format the string into the buffer
