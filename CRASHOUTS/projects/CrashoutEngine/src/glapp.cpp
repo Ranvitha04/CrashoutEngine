@@ -18,6 +18,7 @@ integration.
 
 #include "glapp.h"
 #include "rendering.h"
+#include "camera.h"
 #include "entitymanager.h"
 #include "shapes.h"
 #include "textureasset.h"
@@ -532,7 +533,8 @@ void GLApp::fbsize_cb([[maybe_unused]] GLFWwindow* ptr_win, int fbWidth, int fbH
     GLApp::width = fbWidth;
     GLApp::height = fbHeight;
 
-    Component::Rendering::Get().UpdateMatrices(fbWidth, fbHeight);
+    using namespace CrashoutsEngine::RenderCamera;
+    engineCamera.UpdateMatrices(fbWidth, fbHeight);
 }
 
 

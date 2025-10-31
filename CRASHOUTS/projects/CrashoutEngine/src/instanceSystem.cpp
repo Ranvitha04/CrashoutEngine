@@ -156,11 +156,8 @@ namespace InstancingSystem {
         renderer.shdr_pgm_instanced.Use();
 
         glm::mat4 model = glm::mat4(1.0f);
-        glm::mat4 projection = Component::CreateCenteredWorldProjection();
 
         renderer.shdr_pgm_instanced.SetUniform("uModel", model);
-        renderer.shdr_pgm_instanced.SetUniform("uView", glm::mat4(1.0f));
-        renderer.shdr_pgm_instanced.SetUniform("uProjection", projection);
 
         GLint useTexture_loc = glGetUniformLocation(renderer.shdr_pgm_instanced.GetHandle(), "u_useTexture");
         if (useTexture_loc != -1) glUniform1i(useTexture_loc, 0);
@@ -296,11 +293,8 @@ namespace InstancingSystem {
         renderer.shdr_pgm_instanced.Use();
 
         glm::mat4 model = glm::mat4(1.0f);
-        glm::mat4 projection = Component::CreateCenteredWorldProjection();
 
         renderer.shdr_pgm_instanced.SetUniform("uModel", model);
-        renderer.shdr_pgm_instanced.SetUniform("uView", glm::mat4(1.0f));
-        renderer.shdr_pgm_instanced.SetUniform("uProjection", projection);
 
         GLint useTexture_loc = glGetUniformLocation(renderer.shdr_pgm_instanced.GetHandle(), "u_useTexture");
         if (useTexture_loc != -1) glUniform1i(useTexture_loc, 1);
@@ -794,11 +788,8 @@ void InstancingSystem::InitializeInstancedRectanglesData(int count) {
         renderer.shdr_pgm_instanced.Use();
 
         glm::mat4 model = glm::mat4(1.0f);
-        glm::mat4 projection = Component::CreateCenteredWorldProjection();
 
         renderer.shdr_pgm_instanced.SetUniform("uModel", model);
-        renderer.shdr_pgm_instanced.SetUniform("uView", glm::mat4(1.0f));
-        renderer.shdr_pgm_instanced.SetUniform("uProjection", projection);
 
         // Disable texture usage for colored rectangles
         GLint useTexture_loc = glGetUniformLocation(renderer.shdr_pgm_instanced.GetHandle(), "u_useTexture");
@@ -917,11 +908,8 @@ void InstancingSystem::InitializeInstancedRectanglesData(int count) {
         renderer.shdr_pgm_instanced.Use();
 
         glm::mat4 model = glm::mat4(1.0f);
-        glm::mat4 projection = Component::CreateCenteredWorldProjection();
 
         renderer.shdr_pgm_instanced.SetUniform("uModel", model);
-        renderer.shdr_pgm_instanced.SetUniform("uView", glm::mat4(1.0f));
-        renderer.shdr_pgm_instanced.SetUniform("uProjection", projection);
 
         // Enable texture usage
         GLint useTexture_loc = glGetUniformLocation(renderer.shdr_pgm_instanced.GetHandle(), "u_useTexture");
@@ -1194,11 +1182,8 @@ void InstancingSystem::RenderMode4Circles(const InstancedParams& params) {
         renderer.shdr_pgm_instanced.Use();
 
         glm::mat4 model = glm::mat4(1.0f);
-        glm::mat4 projection = Component::CreateCenteredWorldProjection();
 
         renderer.shdr_pgm_instanced.SetUniform("uModel", model);
-        renderer.shdr_pgm_instanced.SetUniform("uView", glm::mat4(1.0f));
-        renderer.shdr_pgm_instanced.SetUniform("uProjection", projection);
 
         GLint useTexture_loc = glGetUniformLocation(renderer.shdr_pgm_instanced.GetHandle(), "u_useTexture");
         if (useTexture_loc != -1) glUniform1i(useTexture_loc, 0);
@@ -1308,11 +1293,8 @@ void InstancingSystem::RenderMode4Circles(const InstancedParams& params) {
         renderer.shdr_pgm_instanced.Use();
 
         glm::mat4 model = glm::mat4(1.0f);
-        glm::mat4 projection = Component::CreateCenteredWorldProjection();
 
         renderer.shdr_pgm_instanced.SetUniform("uModel", model);
-        renderer.shdr_pgm_instanced.SetUniform("uView", glm::mat4(1.0f));
-        renderer.shdr_pgm_instanced.SetUniform("uProjection", projection);
 
         GLint useTexture_loc = glGetUniformLocation(renderer.shdr_pgm_instanced.GetHandle(), "u_useTexture");
         if (useTexture_loc != -1) glUniform1i(useTexture_loc, 1);

@@ -15,6 +15,14 @@
         {
             "name": "sfx",
             "path": "banks\\sfx.bank"
+        },
+        {
+            "name": "Test Bank",
+            "path": "banks\\Test Bank.bank"
+        },
+        {
+            "name": "TestBank",
+            "path": "banks\\TestBank.bank"
         }
     ],
     "fonts": [

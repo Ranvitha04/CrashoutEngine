@@ -68,42 +68,6 @@ namespace Component {
     static GLuint s_instanceDataVBO = 0;  // Instance data (positions, colors, etc.)
     static bool s_instanceBuffersInitialized = false;
 
-    /*!
-    @brief Create an orthographic projection matrix for centered world coordinates.
-    @return Orthographic projection matrix for the current screen aspect ratio
-    @details
-    Creates an orthographic projection matrix that centers the world coordinate system
-    at (0,0) and scales the world to maintain consistent proportions across different
-    screen aspect ratios. The world dimensions are calculated as follows:
-    - For wide/square screens: height = BASE_SIZE, width = height * aspect
-    - For tall screens: width = BASE_SIZE, height = width / aspect
-
-    The resulting coordinate system has (0,0) at the center of the screen with
-    positive X to the right and positive Y upward.
-    */
-    glm::mat4 CreateCenteredWorldProjection() {
-        float aspect = static_cast<float>(GLApp::width) / GLApp::height;
-
-        float worldWidth, worldHeight;
-
-        if (aspect >= 1.0f) {
-
-            worldHeight = WorldSettings::BASE_SIZE;
-            worldWidth = worldHeight * aspect;
-        }
-        else {
-
-            worldWidth = WorldSettings::BASE_SIZE;
-            worldHeight = worldWidth / aspect;
-        }
-
-        return glm::ortho(
-            -worldWidth / 2.0f, worldWidth / 2.0f,
-            -worldHeight / 2.0f, worldHeight / 2.0f,
-            -1.0f, 1.0f
-        );
-    }
-
     void Shapes::Cleanup() {
         Component::Rendering::Cleanup();
 
@@ -172,14 +136,9 @@ namespace Component {
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(position.x, position.y, position.z));
         model = glm::rotate(model, glm::radians(rotation), glm::vec3(0, 0, 1));
-        model = glm::scale(model, glm::vec3(scale, scale, 1.0f));
-
-        // Use centered world coordinate projection
-        glm::mat4 projection = CreateCenteredWorldProjection();
+        model = glm::scale(model, glm::vec3(scale, scale, 1.0f));        
 
         renderer.shdr_pgm->SetUniform("uModel", model);
-        renderer.shdr_pgm->SetUniform("uView", glm::mat4(1.0f));
-        renderer.shdr_pgm->SetUniform("uProjection", projection);
 
         GLint useTexture_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "u_useTexture");
         if (useTexture_loc != -1) glUniform1i(useTexture_loc, 0); // Use vertex colors, not texture
@@ -308,12 +267,9 @@ namespace Component {
 
         // Render using instanced drawing
         renderer.shdr_pgm->Use();
-
-        glm::mat4 projection = CreateCenteredWorldProjection();
+        
         renderer.shdr_pgm->SetUniform("uModel", glm::mat4(1.0f));
-        renderer.shdr_pgm->SetUniform("uView", glm::mat4(1.0f));
-        renderer.shdr_pgm->SetUniform("uProjection", projection);
-
+        
         GLint useTexture_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "u_useTexture");
         if (useTexture_loc != -1) glUniform1i(useTexture_loc, 0);
 
@@ -365,11 +321,8 @@ namespace Component {
         model = glm::scale(model, glm::vec3(scale, scale, 1.0f));
         model = glm::translate(model, glm::vec3(-center.x, -center.y, -center.z));
 
-        glm::mat4 projection = CreateCenteredWorldProjection();
-
         renderer.shdr_pgm->SetUniform("uModel", model);
-        renderer.shdr_pgm->SetUniform("uView", glm::mat4(1.0f));
-        renderer.shdr_pgm->SetUniform("uProjection", projection);
+        
 
         GLint useTexture_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "u_useTexture");
         if (useTexture_loc != -1) glUniform1i(useTexture_loc, 0); // Use vertex colors, not texture
@@ -409,12 +362,9 @@ namespace Component {
         model = glm::rotate(model, glm::radians(rotation), glm::vec3(0, 0, 1));
         model = glm::scale(model, glm::vec3(scale, scale, 1.0f));
 
-        glm::mat4 projection = CreateCenteredWorldProjection();
-
         renderer.shdr_pgm->SetUniform("uModel", model);
         renderer.shdr_pgm->SetUniform("u_useTexture", 0);
-        renderer.shdr_pgm->SetUniform("uView", glm::mat4(1.0f));
-        renderer.shdr_pgm->SetUniform("uProjection", projection);
+        
         renderer.shdr_pgm->SetUniform("u_tint", 1.0f, 1.0f, 1.0f);
 
         GLint useTexture_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "u_useTexture");
@@ -455,12 +405,9 @@ namespace Component {
         model = glm::scale(model, glm::vec3(scale, scale, 1.0f));
         model = glm::translate(model, glm::vec3(-centroid.x, -centroid.y, -centroid.z));
 
-        glm::mat4 projection = CreateCenteredWorldProjection();
-
         renderer.shdr_pgm->SetUniform("uModel", model);
         renderer.shdr_pgm->SetUniform("u_useTexture", 0);
-        renderer.shdr_pgm->SetUniform("uView", glm::mat4(1.0f));
-        renderer.shdr_pgm->SetUniform("uProjection", projection);
+        
 
         GLint useTexture_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "u_useTexture");
         if (useTexture_loc != -1) glUniform1i(useTexture_loc, 0); // Use vertex colors, not texture
@@ -518,11 +465,9 @@ namespace Component {
         model = glm::rotate(model, glm::radians(rotation), glm::vec3(0, 0, 1));
         model = glm::scale(model, glm::vec3(scale, scale, 1.0f));
 
-        glm::mat4 projection = CreateCenteredWorldProjection();
 
         renderer.shdr_pgm->SetUniform("uModel", model);
-        renderer.shdr_pgm->SetUniform("uView", glm::mat4(1.0f));
-        renderer.shdr_pgm->SetUniform("uProjection", projection);
+        
 
         renderer.Draw();
     }
@@ -600,12 +545,9 @@ namespace Component {
         model = glm::rotate(model, glm::radians(rotation), glm::vec3(0, 0, 1));
         model = glm::scale(model, glm::vec3(scale, scale, 1.0f));
 
-        glm::mat4 projection = CreateCenteredWorldProjection();
-
         // Set uniforms
         renderer.shdr_pgm->SetUniform("uModel", model);
-        renderer.shdr_pgm->SetUniform("uView", glm::mat4(1.0f));
-        renderer.shdr_pgm->SetUniform("uProjection", projection);
+        
 
         // Enable texture rendering
         GLint useTexture_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "u_useTexture");
@@ -684,11 +626,8 @@ namespace Component {
         model = glm::rotate(model, glm::radians(rotation), glm::vec3(0, 0, 1));
         model = glm::scale(model, glm::vec3(scale, scale, 1.0f));
 
-        glm::mat4 projection = CreateCenteredWorldProjection();
-
         renderer.shdr_pgm->SetUniform("uModel", model);
-        renderer.shdr_pgm->SetUniform("uView", glm::mat4(1.0f));
-        renderer.shdr_pgm->SetUniform("uProjection", projection);
+        
 
         // TextureAsset uniforms
         GLint useTexture_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "u_useTexture");
@@ -765,11 +704,8 @@ namespace Component {
         model = glm::scale(model, glm::vec3(scale, scale, 1.0f));
         model = glm::translate(model, glm::vec3(-centroid.x, -centroid.y, -centroid.z));
 
-        glm::mat4 projection = CreateCenteredWorldProjection();
-
         renderer.shdr_pgm->SetUniform("uModel", model);
-        renderer.shdr_pgm->SetUniform("uView", glm::mat4(1.0f));
-        renderer.shdr_pgm->SetUniform("uProjection", projection);
+        
 
         GLint useTexture_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "u_useTexture");
         if (useTexture_loc != -1) glUniform1i(useTexture_loc, 1);

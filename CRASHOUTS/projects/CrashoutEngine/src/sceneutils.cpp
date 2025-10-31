@@ -7,6 +7,7 @@
 This file implements
 */
 
+#include "rendering.h"
 #include "textrenderer.h"
 #include "textureasset.h"
 #include "assetmanager.h"
@@ -17,6 +18,15 @@ This file implements
 namespace Scene {
     void RenderScene(CrashoutsEngine::ECS& globalECS) {
         using namespace CrashoutsEngine;
+        using Component::Rendering;
+
+        Rendering& renderer = Rendering::Get();
+        if (!renderer.shdr_pgm) return;
+
+        renderer.shdr_pgm->Use();
+
+        renderer.shdr_pgm->SetUniform("uView", renderer.viewMatrix);
+        renderer.shdr_pgm->SetUniform("uProjection", renderer.projectionMatrix);
 
         // Collect all non-textured squares here
         std::vector<CEVec3> instancedPos;

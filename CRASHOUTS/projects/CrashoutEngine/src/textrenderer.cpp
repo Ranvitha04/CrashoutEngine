@@ -8,6 +8,7 @@
 Handles font loading character atlas creation and text rendering with FreeType and OpenGL
 */
 
+#include "rendering.h"
 #include "TextRenderer.h"
 #include "shapes.h"
 #include "glapp.h"
@@ -60,7 +61,8 @@ TextRenderer::TextRenderer(){
     /// Set projection matrix
     glUseProgram(shaderID);
 
-    glm::mat4 projection = Component::CreateCenteredWorldProjection();
+    Component::Rendering& renderer = Component::Rendering::Get();
+    glm::mat4 projection = renderer.projectionMatrix;
 
     glUniformMatrix4fv(glGetUniformLocation(shaderID, "projection"), 1, GL_FALSE, &projection[0][0]);
 
