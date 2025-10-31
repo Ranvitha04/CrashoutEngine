@@ -839,6 +839,7 @@ namespace {
     static TextAdapter gTextAdapter;
     static AudioAdapter gAudioAdapter;
     //static ScriptAdapter gScriptAdapter;
+	static CameraAdapter gCameraAdapter;
     static GameStateProvider gProvider;
     static BuiltinPhysicsProvider gBuiltinPhys;
 

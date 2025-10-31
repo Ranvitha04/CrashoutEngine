@@ -5,9 +5,9 @@ namespace CrashoutsEngine
 {
     public class Entity
     {
-        public ulong ID { get; private set; }
+        public uint ID { get; private set; }
 
-        public Entity(ulong id)
+        public Entity(uint id)
         {
             ID = id;
         }
@@ -22,6 +22,15 @@ namespace CrashoutsEngine
         public bool HasRigidBody => InternalCalls.EntityHasRigidBody(ID);
 
         private RigidBody _rigidBody;
-        public RigidBody RigidBody => _rigidBody ??= new RigidBody { EntityID = (uint)ID };
+
+        public RigidBody RigidBody
+        {
+            get
+            {
+                if (_rigidBody == null)
+                    _rigidBody = new RigidBody { EntityID = ID };  // assign same ID
+                return _rigidBody;
+            }
+        }
     }
 }

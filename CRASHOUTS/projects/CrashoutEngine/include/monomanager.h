@@ -14,6 +14,8 @@ public:
 
     static MonoDomain* GetDomain() { return s_Domain; }
     static MonoAssembly* GetAssembly() { return s_Assembly; }
+    static MonoImage* GetImage();
+
 
 private:
     static MonoDomain* s_Domain;

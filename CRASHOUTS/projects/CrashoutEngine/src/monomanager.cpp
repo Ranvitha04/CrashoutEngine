@@ -58,3 +58,10 @@ void MonoManager::Shutdown()
 	s_Assembly = nullptr;
 	std::cout << "[Mono] Domain cleaned up.\n";
 }
+
+MonoImage* MonoManager::GetImage()
+{
+    if (!s_Assembly)
+        return nullptr;
+    return mono_assembly_get_image(s_Assembly);
+}

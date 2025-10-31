@@ -5,6 +5,7 @@
 #include "rigidbodybindings.h"
 #include "ScriptComponent.h"
 #include "TransformBindings.h"
+#include "entitybindings.h"
 
 namespace CrashoutsEngine
 {
@@ -13,6 +14,8 @@ namespace CrashoutsEngine
         Bindings::RegisterTransform();
         Bindings::RegisterInputBindings();
         Bindings::RegisterRigidBodyBindings();
+        Bindings::RegisterEntityBindings();
+
 
         auto& ecs = *ECS::getInstance();
         auto& scripts = ecs.GetComponentArray<ScriptComponent>();
