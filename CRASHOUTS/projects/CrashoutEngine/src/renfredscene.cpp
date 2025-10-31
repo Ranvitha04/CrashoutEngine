@@ -33,11 +33,7 @@ void LoadRenfred()
 	globalECS = CrashoutsEngine::ECS::getInstance();
 	globalECS->Reset();
 
-	GenerateAssetManifest();
-
-	AssetManager::GetInstance().LoadManifestAssets();
-
-	AssetManager::GetInstance().Get<ShaderAsset>("TextShader")->shaderObject.Use();
+	//AssetManager::GetInstance().Get<ShaderAsset>("TextShader")->shaderObject.Use();
 }
 
 void InitRenfred()
@@ -56,17 +52,12 @@ void UpdateRenfred()
 void RenderRenfred()
 {
 	// Render Renfred state
-	glClearColor(0.1f, 0.2f, 0.4f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	
-	Scene::RenderScene(*globalECS);
 }
 
 void FreeRenfred()
 {
-	CrashoutsEngine::Serialization::SaveScenes(sceneName);
-
 	// Free resources specific to Renfred state
+	CrashoutsEngine::Serialization::SaveScenes(sceneName);
 }
 
 void UnloadRenfred()

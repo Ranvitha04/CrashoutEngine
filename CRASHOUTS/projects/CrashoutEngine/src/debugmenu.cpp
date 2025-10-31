@@ -1,4 +1,4 @@
-/*!
+﻿/*!
 @file       debugmenu.cpp
 @author     mohamadamirakmal.b@digipen.edu
 @date       14/09/2025
@@ -10,12 +10,15 @@ This file provides the graphics for Crashout Engine's ImGUI.
 ----------------------------------------------------------------------------- */
 // Engine / app headers
 #include "glapp.h"
+#include "rendering.h"
 #include "performanceViewer.h"
+#include "camera.h"
 #include "entitymanager.h"
 #include "collisionmanager.h"
 #include "physicsmanager.h"
 #include "gamestatemanager.h"
 #include "assetmanager.h"
+#include "textureasset.h"
 #include "shapes.h"
 #include "log.h"
 #include "logdefs.h"
@@ -26,6 +29,8 @@ This file provides the graphics for Crashout Engine's ImGUI.
 #include "audioSystem.h"
 #include <fmod_studio.hpp> 
 #include "prefab.h"
+
+#include "engine.h"
 
 using CrashoutsEngine::Audio::AudioSystem;
 // ImGui headers
@@ -40,7 +45,7 @@ using CrashoutsEngine::Audio::AudioSystem;
 #include "stb_image.h"
 #include <numeric>
 
-/*                                                                   
+/*
 ----------------------------------------------------------------------------- */
 
 using namespace CrashoutsEngine;
@@ -98,10 +103,53 @@ namespace { //------------------------------------------------------------------
         }
     }
 
+    enum class AssetKind : uint8_t { Texture, SpriteSheet, Shader, Audio, Scene, Prefab, Unknown };
+
+    struct AssetDragPayload {
+        AssetKind kind{ AssetKind::Unknown };
+        char name[128]{};     // manifest/manager "name" (stem)
+        char relPath[256]{};  // relative path under assets/ (optional)
+    };
+
+    // Picking Helpers
+
+    static CrashoutsEngine::Entity s_vpPicked = 0;
+    static bool s_dragging = false;
+    static CEVec3 s_grabDelta = {};
+
+    // using things from renderer.cpp
+    static inline CEVec3 ViewUV_toWorld(float u, float v) {
+
+        const float ndcX = u * 2.f - 1.f;
+        const float ndcY = v * 2.f - 1.f;
+        const glm::mat4 VP = Component::Rendering::Get().projectionMatrix * Component::Rendering::Get().viewMatrix;
+        const glm::mat4 invVP = glm::inverse(VP);
+        glm::vec4 w = invVP * glm::vec4(ndcX, ndcY, 0.f, 1.f);
+        if (w.w != 0.f) w /= w.w;
+        return CEVec3{ (float)w.x, (float)w.y, (float)w.z };
+    }
+
+    static inline bool PointInAABB(const CEVec3& p, const Collision::AABBRect& a) {
+        return p.x >= a.min.x && p.x <= a.max.x && p.y >= a.min.y && p.y <= a.max.y;
+    }
+
+    static CrashoutsEngine::Entity PickEntityAt(CrashoutsEngine::ECS& ecs, const CEVec3& worldPt) {
+
+        auto list = ecs.GetComponentArray<Component::ColliderComponent>().indexToEntity;
+        for (auto e : list) {
+            if (!ecs.HasComponent<Component::TransformComponent>(e)) continue;
+            auto* c = ecs.GetComponent<Component::ColliderComponent>(e);
+            auto* t = ecs.GetComponent<Component::TransformComponent>(e);
+            if (!c || !t || !c->collider) continue;
+            Collision::AABBRect aabb = Collision::GetAABB(*c->collider, t->position);
+            if (PointInAABB(worldPt, aabb)) return e;
+        }
+        return 0;
+    }
+
 } // anonymous namespace
 
 namespace UI { // ----------------------------------------------------------------------------- public UI API
-
 
     // -- Lifecycle ------------------------------------------------------------
     /*!
@@ -182,7 +230,7 @@ namespace UI { // --------------------------------------------------------------
      @param entities List of ECS entities.
      @param selected Currently selected entity.
     */
-    void RenderEcsPanel(FrameProfiler& profiler, ECS& ecs, std::vector<Entity>& entities, Entity& selected, UIState& ui)
+    static void RenderEcsPanel(FrameProfiler& profiler, ECS& ecs, std::vector<Entity>& entities, Entity& selected, UIState& ui)
     {
         static std::vector<Entity> pinned;      // keep these inspectors visible
         static bool showAllInspectors = false;  // renders inspectors for every entity
@@ -257,7 +305,7 @@ namespace UI { // --------------------------------------------------------------
         ImGui::Text("Selected Entity: %u", (unsigned)selected);
 
         if (!selected) return;
-        
+
         if (entities.size() > 0) {
             if (ImGui::Button("Clone Selected")) {
                 selected = ecs.CloneEntity(selected);
@@ -274,7 +322,7 @@ namespace UI { // --------------------------------------------------------------
         }
     }
 
-    void UI::RenderAssetBrowserPanel(UIState& ui, const char* root, std::string& outSelectedAsset)
+    static void UI::RenderAssetBrowserPanel(UIState& ui, const char* root, std::string& outSelectedAsset)
     {
         ScopedWindow win("Assets", LockFlags(ui.lockLayout));
 
@@ -294,12 +342,20 @@ namespace UI { // --------------------------------------------------------------
         ImGui::SetNextItemWidth(220);
         ImGui::InputTextWithHint("##asset_filter", "Filter (name / ext)...", filter, IM_ARRAYSIZE(filter));
 
+        ImGui::SameLine();
+        // ImGUI button to reload assets
+        if (ImGui::Button("Reload Assets")) {
+            using namespace CrashoutsEngine::Assets;
+            GenerateAssetManifest();
+            AssetManager::GetInstance().LoadManifestAssets();
+        }
+
         ImGui::Separator();
 
         // ---------------- LEFT: Folder tree ----------------
         ImGui::BeginChild("asset_left", ImVec2(220, 0), true);
 
-        if (ImGui::Selectable(root, current == fs::path(root))) {
+        if (ImGui::Selectable("assets", current == fs::path(root))) {
             current = fs::path(root);
             needScan = true;
         }
@@ -318,7 +374,7 @@ namespace UI { // --------------------------------------------------------------
 
         ImGui::EndChild();
 
-        // --- RIGHT: Files + Preview ----------------
+        // RIGHT: Files + Preview
         ImGui::SameLine();
         ImGui::BeginChild("asset_right", ImVec2(0, 0), true);
 
@@ -327,7 +383,7 @@ namespace UI { // --------------------------------------------------------------
         float listHeight = availRight.y - kPreviewMaxHeight - ImGui::GetStyle().ItemSpacing.y;
         if (listHeight < 120.0f) listHeight = availRight.y * 0.6f;
 
-        // --- FILE LIST ----------
+        // FILE LIST
         ImGui::BeginChild("asset_right_list", ImVec2(0, listHeight), true);
 
         if (needScan) {
@@ -360,10 +416,42 @@ namespace UI { // --------------------------------------------------------------
                 if (ImGui::Selectable(name.c_str(), selected))
                     outSelectedAsset = e.path().generic_string();
 
-                if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None)) {
-                    const std::string path = e.path().generic_string();
-                    ImGui::SetDragDropPayload("ASSET_PATH", path.c_str(), path.size() + 1);
-                    ImGui::TextUnformatted(path.c_str());
+                if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID)) {
+                    AssetDragPayload p{};
+                    std::string rel = fs::relative(e.path(), fs::path(root)).generic_string();// e.g. "images/player.png"
+                    std::string stem = e.path().stem().generic_string(); // e.g. "player"
+                    std::string ext = e.path().extension().generic_string();
+                    std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+
+                    // Heuristics to pick kind by folder/extension
+                    if (rel.rfind("images/", 0) == 0 ||
+                        ext == ".png" || ext == ".jpg" || ext == ".jpeg" || ext == ".bmp" || ext == ".tga") {
+                        p.kind = AssetKind::Texture;
+                    }
+                    else if (rel.rfind("sprite_sheet/", 0) == 0) {
+                        p.kind = AssetKind::SpriteSheet;
+                    }
+                    else if (rel.rfind("scenes/", 0) == 0 || ext == ".scene" || ext == ".json") {
+                        p.kind = AssetKind::Scene;
+                    }
+                    else if (rel.rfind("audio/", 0) == 0 || ext == ".bank") {
+                        p.kind = AssetKind::Audio;
+                    }
+                    else if (rel.rfind("prefabs/", 0) == 0) {
+                        p.kind = AssetKind::Prefab;
+                    }
+                    else if (rel.rfind("shaders/", 0) == 0 || ext == ".vert" || ext == ".frag") {
+                        p.kind = AssetKind::Shader;
+                    }
+                    else {
+                        p.kind = AssetKind::Unknown;
+                    }
+
+                    std::strncpy(p.name, stem.c_str(), sizeof(p.name) - 1);
+                    std::strncpy(p.relPath, rel.c_str(), sizeof(p.relPath) - 1);
+
+                    ImGui::SetDragDropPayload("ASSET/PAYLOAD", &p, sizeof(p));
+                    ImGui::TextUnformatted(p.name);
                     ImGui::EndDragDropSource();
                 }
 
@@ -374,7 +462,7 @@ namespace UI { // --------------------------------------------------------------
 
         ImGui::EndChild(); // asset_right_list
 
-        // --- PREVIEW ----------
+        // PREVIEW
         ImGui::Separator();
         ImGui::BeginChild("asset_right_preview", ImVec2(0, 0), true);
 
@@ -440,7 +528,7 @@ namespace UI { // --------------------------------------------------------------
     @param selected Currently selected entity.
     @param ui UI state toggles.
     */
-    void UI::RenderInspectorPanel(CrashoutsEngine::ECS& ecs, CrashoutsEngine::Entity selected, UIState& ui)
+    static void UI::RenderInspectorPanel(CrashoutsEngine::ECS& ecs, CrashoutsEngine::Entity selected, UIState& ui)
     {
         if (!ui.showInspector) return;
         ScopedWindow w("Inspector", LockFlags(ui.lockLayout));
@@ -504,7 +592,7 @@ namespace UI { // --------------------------------------------------------------
      @param profiler Frame profiler reference.
      @param ui UI state toggles.
     */
-    void RenderPerformancePanel(FrameProfiler& profiler, UIState& ui) {
+    static void RenderPerformancePanel(FrameProfiler& profiler, UIState& ui) {
         if (!ui.showPerf) return;
 
         ScopedWindow w("Performance", LockFlags(ui.lockLayout));
@@ -548,7 +636,7 @@ namespace UI { // --------------------------------------------------------------
      @brief Renders the console log viewer panel.
      @param ui UI state toggles.
     */
-    void RenderConsolePanel(UIState& ui) {
+    static void RenderConsolePanel(UIState& ui) {
         if (!ui.showConsole) return;
 
         ScopedWindow w("Console", LockFlags(ui.lockLayout));
@@ -570,21 +658,21 @@ namespace UI { // --------------------------------------------------------------
         // Level row
         ImGui::TextDisabled("Levels:");
         int li = 0;
-        #define X(n) do { if (li > 0) ImGui::SameLine(); ImGui::Checkbox(#n, &levelOn[li++]); } while(0);
-            LOG_LEVELS(X)
-        #undef X
+#define X(n) do { if (li > 0) ImGui::SameLine(); ImGui::Checkbox(#n, &levelOn[li++]); } while(0);
+        LOG_LEVELS(X)
+#undef X
 
-        // Subsystems row (simple grid)
-        ImGui::Separator();
+            // Subsystems row (simple grid)
+            ImGui::Separator();
         ImGui::TextDisabled("Subsystems:");
         int si = 0;
         const int cols = 4;
-        #define X(n) do { if (si % cols != 0) ImGui::SameLine(); ImGui::Checkbox(#n, &systemOn[si++]); } while(0);
-            LOG_SYSTEMS(X)
-        #undef X
+#define X(n) do { if (si % cols != 0) ImGui::SameLine(); ImGui::Checkbox(#n, &systemOn[si++]); } while(0);
+        LOG_SYSTEMS(X)
+#undef X
 
-        // Search & options
-        ImGui::Separator();
+            // Search & options
+            ImGui::Separator();
         ImGui::InputTextWithHint("##search", "search text...", search, sizeof(search));
         ImGui::SameLine();
         ImGui::Checkbox("Auto-scroll", &autoscroll);
@@ -631,7 +719,7 @@ namespace UI { // --------------------------------------------------------------
      @param state gameState reference.
      @param ui UI state toggles.
     */
-    void RenderGameStatePanel(UIState& ui) {
+    static void RenderGameStatePanel(UIState& ui) {
         if (!ui.showGameState) return;
         ScopedWindow w("GameState", LockFlags(ui.lockLayout));
 
@@ -643,7 +731,7 @@ namespace UI { // --------------------------------------------------------------
                 if (kv.second == id) return kv.first;   // kv = {label, id}
             }
             return "(unknown)";
-        };
+            };
 
         const int cur = P->current() ? P->current() : -1;
         const int prev = P->previous() ? P->previous() : -1;
@@ -678,7 +766,7 @@ namespace UI { // --------------------------------------------------------------
      @param phys Physics handler reference.
      @param ui UI state toggles.
     */
-    void RenderPhysicsPanel([[maybe_unused]] FrameProfiler& profiler, ECS& ecs, Physics::PhysicsHandler& phys, UIState& ui)
+    static void RenderPhysicsPanel([[maybe_unused]] FrameProfiler& profiler, ECS& ecs, Physics::PhysicsHandler& phys, UIState& ui)
     {
         if (!ui.showPhysics) return;
         ScopedWindow w("Physics / Collision", LockFlags(ui.lockLayout));
@@ -694,7 +782,7 @@ namespace UI { // --------------------------------------------------------------
 
         ImGui::Checkbox("Freeze on collision", &ui.freezeOnCollision);
         ImGui::SameLine(); Help("Automatically pause when any collision is detected this frame.");
-       
+
         static bool overrideDt = false;
         static double dbgDt = 1.0 / 30.0;
         ImGui::Checkbox("Override dt", &overrideDt); ImGui::SameLine();
@@ -748,7 +836,7 @@ namespace UI { // --------------------------------------------------------------
      @param ecs ECS reference.
      @param ui UI state toggles.
     */
-    void UI::RenderAudioPanel([[maybe_unused]] FrameProfiler& profiler, [[maybe_unused]] CrashoutsEngine::ECS& ecs, UIState& ui) {
+    static void UI::RenderAudioPanel([[maybe_unused]] FrameProfiler& profiler, [[maybe_unused]] CrashoutsEngine::ECS& ecs, UIState& ui) {
 
         if (!ui.showAudio) return;
         ScopedWindow w("Audio", LockFlags(ui.lockLayout));
@@ -799,28 +887,43 @@ namespace UI { // --------------------------------------------------------------
                 }
                 ImGui::EndCombo();
             }
-        };
+            };
 
         // Test Section
         ImGui::SeparatorText("Quick Test (1 BGM + 3 SFX)");
         static std::string pickBGM, pickSFX1, pickSFX2, pickSFX3;
 
         EventCombo("Background Music", pickBGM);
-        EventCombo("SFX 1", pickSFX1);
-        EventCombo("SFX 2", pickSFX2);
-        EventCombo("SFX 3", pickSFX3);
-
         if (ImGui::Button("Play")) {
             CrashoutsEngine::Audio::AudioSystem::instance().playOneShot(pickBGM);
         }
+        EventCombo("SFX 1", pickSFX1);
         if (ImGui::Button("Play##sfx1")) {
             CrashoutsEngine::Audio::AudioSystem::instance().playOneShot(pickSFX1);
         }
+        EventCombo("SFX 2", pickSFX2);
         if (ImGui::Button("Play##sfx2")) {
             CrashoutsEngine::Audio::AudioSystem::instance().playOneShot(pickSFX2);
         }
+        EventCombo("SFX 3", pickSFX3);
         if (ImGui::Button("Play##sfx3")) {
             CrashoutsEngine::Audio::AudioSystem::instance().playOneShot(pickSFX3);
+        }
+
+        ImGui::SeparatorText("Master Volume");
+
+        // Cache slider state
+        static float sMasterVol = 1.0f;
+        if (ImGui::SliderFloat("Master", &sMasterVol, 0.0f, 1.0f, "%.2f"))
+            CrashoutsEngine::Audio::AudioSystem::instance().setBusVolume("bus:/", sMasterVol);
+
+        // Optional mute toggle (reuses same call)
+        static bool sMuted = false;
+        if (ImGui::Checkbox("Mute All", &sMuted)) {
+            if (sMuted)
+                CrashoutsEngine::Audio::AudioSystem::instance().setBusVolume("bus:/", 0.0f);
+            else
+                CrashoutsEngine::Audio::AudioSystem::instance().setBusVolume("bus:/", sMasterVol);
         }
 
         ImGui::Separator();
@@ -834,7 +937,7 @@ namespace UI { // --------------------------------------------------------------
      @brief Renders the menu bar ontop of screen.
      @param ui UI state toggles.
     */
-    static void RenderDebugMenuBar(UIState& ui) {
+    void RenderDebugMenuBar(UIState& ui) {
         if (!ImGui::BeginMenuBar()) return;
 
         if (ImGui::BeginMenu("View")) {
@@ -848,25 +951,27 @@ namespace UI { // --------------------------------------------------------------
                 {"Console", &ui.showConsole},
                 {"Game State", &ui.showGameState},
                 {"Audio", &ui.showAudio},
+                {"Engine", &ui.showEngineControl}
             };
             for (auto& t : toggles) ImGui::MenuItem(t.label, nullptr, t.flag);
 
             ImGui::Separator();
             if (ImGui::MenuItem("Show All")) {
                 ui.showECS = ui.showAssets = ui.showInspector = ui.showPhysics =
-                    ui.showPerf = ui.showConsole = ui.showGameState = ui.showAudio = true;
+                    ui.showPerf = ui.showConsole = ui.showGameState = ui.showAudio = ui.showEngineControl = true;
                 for (auto const& p : DebugReflection::PanelRegistry::instance().panels())
                     if (p.toggleFlag) *p.toggleFlag = true;
             }
             if (ImGui::MenuItem("Hide All")) {
                 ui.showECS = ui.showAssets = ui.showInspector = ui.showPhysics =
-                    ui.showPerf = ui.showConsole = ui.showGameState = ui.showAudio = false;
+                    ui.showPerf = ui.showConsole = ui.showGameState = ui.showAudio = ui.showEngineControl = false;
                 for (auto const& p : DebugReflection::PanelRegistry::instance().panels())
                     if (p.toggleFlag) *p.toggleFlag = false;
             }
             if (ImGui::MenuItem("Reset Dock Layout")) {
                 s_layoutBuilt = false;   // triggers rebuild next frame
             }
+
             ImGui::EndMenu();
         }
 
@@ -878,6 +983,196 @@ namespace UI { // --------------------------------------------------------------
 
         ImGui::EndMenuBar();
     }
+
+
+    /*!
+     @brief Renders the Scene control bar on top of game viewport
+    */
+    static void RenderEngineStateBar(UIState& ui) {
+        if (!ui.showEngineControl) return;
+
+        ImGuiWindowFlags window_flags = 
+            ImGuiWindowFlags_NoTitleBar |
+            ImGuiWindowFlags_NoScrollbar |
+            ImGuiWindowFlags_NoResize |
+            ImGuiWindowFlags_NoCollapse |
+            ImGuiWindowFlags_NoMove;
+
+        if (ImGui::Begin("Engine Controls"), nullptr, window_flags) {
+
+            // Play Stop Pause buttons
+            // Play
+            if (ImGui::Button("PLAY")) {
+                engineState = EngineState::PLAY;
+                CrashoutsEngine::RenderCamera::engineCamera.SetPostiion(CEVec3{ 0.f, 0.f, 0.f });
+                CrashoutsEngine::RenderCamera::engineCamera.SetZoom(1.f);
+                CrashoutsEngine::RenderCamera::engineCamera.SetTargetAR(16.0f / 9.0f);
+                CrashoutsEngine::RenderCamera::engineCamera.UpdateMatrices(Settings::GetScreenWidth(), Settings::GetScreenHeight());
+            }
+            ImGui::SameLine();
+            // Pause
+            if (ImGui::Button("PAUSE")) {
+                engineState = EngineState::PAUSE;
+            }
+            ImGui::SameLine();
+            // Stop
+            if (ImGui::Button("STOP")) {
+                RestartGameState();
+                engineState = EngineState::STOP;
+            }
+        }
+
+        ImGui::End();
+    }
+
+#ifdef USE_IMGUI_EDITOR
+    /*!
+     @brief Renders the game viewport
+    */
+    static void RenderGameViewport() {
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0)); // No padding
+        // Begin the ImGUI window, enable Docking
+        if (ImGui::Begin("Game Viewport", nullptr, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse)) {
+
+            // Get the size of ImGui window content region
+            ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
+
+            // --- Calculate Size Maintain Aspect Ratio ---
+            float panelWidth = viewportPanelSize.x;
+            float panelHeight = viewportPanelSize.y;
+            float panelAspect = panelWidth / panelHeight;
+
+            float targetWidth = panelWidth;
+            float targetHeight = panelHeight;
+            float paddingX = 0.0f;
+            float paddingY = 0.0f;
+
+            if (panelAspect > Settings::TARGET_ASPECT_RATIO) { // Viewport is wider than game (Letterbox)
+                targetWidth = panelHeight * Settings::TARGET_ASPECT_RATIO;
+                paddingX = (panelWidth - targetWidth) * 0.5f;
+            }
+            else if (panelAspect < Settings::TARGET_ASPECT_RATIO) { // Viewport is taller than game (Pillarbox)
+                targetHeight = panelWidth / Settings::TARGET_ASPECT_RATIO;
+                paddingY = (panelHeight - targetHeight) * 0.5f;
+            }
+
+            // Ensure dimensions are at least 1 pixel
+            int finalTextureWidth = std::max(1, (int)targetWidth);
+            int finalTextureHeight = std::max(1, (int)targetHeight);
+
+            // Check if panel size changed
+            if (gameTextureWidth != finalTextureWidth || gameTextureHeight != finalTextureHeight) {
+                if (finalTextureWidth > 0 && finalTextureHeight > 0) {
+                    gameTextureWidth = finalTextureWidth;
+                    gameTextureHeight = finalTextureHeight;
+
+                    // Resize Texture
+                    glBindTexture(GL_TEXTURE_2D, gameTextureColorBuffer);
+                    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, gameTextureWidth, gameTextureHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+
+                    // Resize RenderBuffer
+                    glBindRenderbuffer(GL_RENDERBUFFER, gameRboDepthStencil);
+                    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, gameTextureWidth, gameTextureHeight);
+
+                    char logBuffer[256];
+                    // Format the string into the buffer
+                    std::snprintf(logBuffer, sizeof(logBuffer),
+                        "Resized Game Viewport Texture to %d x %d",
+                        gameTextureWidth, gameTextureHeight);
+
+                    // Pass the formatted string to the macro
+                    LOGI(Core, logBuffer);
+                }
+            }
+            glBindTexture(GL_TEXTURE_2D, 0);
+            glBindRenderbuffer(GL_RENDERBUFFER, 0);
+
+            // Set Cursor Position: Apply the calculated padding to center the image.
+            // GetCursorScreenPos() gives the top-left corner of the content area.
+            ImVec2 screenPos = ImGui::GetCursorScreenPos();
+            ImGui::SetCursorScreenPos(ImVec2(screenPos.x + paddingX, screenPos.y + paddingY));
+            
+            // Display the texture within the ImGui window
+            // UV flip (0,1) to (1,0) since OpenGL textures are often upside-down
+            ImGui::Image((void*)(intptr_t)gameTextureColorBuffer,
+                ImVec2((float)finalTextureWidth, (float)finalTextureHeight),
+                ImVec2(0, 1), ImVec2(1, 0));
+
+            // In-world picking & dragging
+            ImVec2 imgMin = ImGui::GetItemRectMin();
+            ImVec2 imgMax = ImGui::GetItemRectMax();
+            ImVec2 mouse = ImGui::GetMousePos();
+
+            bool over = (mouse.x >= imgMin.x && mouse.x <= imgMax.x &&
+                mouse.y >= imgMin.y && mouse.y <= imgMax.y);
+
+            // Convert mouse position to UV inside the drawn framebuffer
+            float u = 0.f, v = 0.f;
+            if (over) {
+                u = (mouse.x - imgMin.x) / (imgMax.x - imgMin.x);
+                v = 1.f - (mouse.y - imgMin.y) / (imgMax.y - imgMin.y); // flip Y
+            }
+
+            auto& ecs = *CrashoutsEngine::ECS::getInstance();
+
+            // Click to pick
+            if (over && ImGui::IsMouseClicked(ImGuiMouseButton_Left)) {
+                CEVec3 worldPt = ViewUV_toWorld(u, v);
+                s_vpPicked = PickEntityAt(ecs, worldPt);
+                s_dragging = (s_vpPicked != 0);
+                if (s_dragging) {
+                    if (auto* t = ecs.GetComponent<Component::TransformComponent>(s_vpPicked))
+                        s_grabDelta = t->position - worldPt;
+                }
+            }
+
+            // Release to drop
+            if (s_dragging && ImGui::IsMouseReleased(ImGuiMouseButton_Left))
+                s_dragging = false;
+
+            // Drag move
+            if (s_dragging && over && ImGui::IsMouseDragging(ImGuiMouseButton_Left)) {
+                if (auto* t = ecs.GetComponent<Component::TransformComponent>(s_vpPicked)) {
+                    CEVec3 worldPt = ViewUV_toWorld(u, v);
+                    t->position = worldPt + s_grabDelta;
+                }
+            }
+
+            if (ImGui::BeginDragDropTarget()) {
+                if (const ImGuiPayload* pl = ImGui::AcceptDragDropPayload("ASSET/PAYLOAD")) {
+                    const auto* p = static_cast<const AssetDragPayload*>(pl->Data);
+                    auto& ecs = *CrashoutsEngine::ECS::getInstance();
+
+                    CEVec3 dropWorld = ViewUV_toWorld(u, v);
+
+                    using CrashoutsEngine::Assets::AssetManager;
+                    using CrashoutsEngine::Assets::TextureAsset;
+
+                    if (p && p->kind == AssetKind::Texture) {
+                        if (auto* tex = AssetManager::GetInstance().Get<TextureAsset>(p->name)) {
+                            Entity e = ecs.CreateEntity();
+                            ecs.AddComponent<NameComponent>(e, std::string("Tex_") + p->name);
+                            ecs.AddComponent<TransformComponent>(e);
+                            ecs.AddComponent<Component::ShapeComponent>(e);
+                            auto* sc = ecs.GetComponent<Component::ShapeComponent>(e);
+                            sc->enableTexture = true;
+                            sc->textureName = p->name;
+                            ecs.GetComponent<Component::TransformComponent>(e)->position = dropWorld; // spawn at cursor
+                        }
+                    }
+                    else if (p && p->kind == AssetKind::Prefab) {
+                        Entity e = Prefab::Create(ecs, std::string(p->name));
+                        if (e && ecs.HasComponent<Component::TransformComponent>(e))
+                            ecs.GetComponent<Component::TransformComponent>(e)->position = dropWorld;
+                    }
+                }
+                ImGui::EndDragDropTarget();
+            }
+        }
+        ImGui::End();
+        ImGui::PopStyleVar();
+    }
+#endif
 
     // -- Coordinator(s) --------------------------------------------------------
 
@@ -899,6 +1194,7 @@ namespace UI { // --------------------------------------------------------------
         }
         collisions = std::vector<Collision::CollisionEvent>{};
 
+#if 0
         BeginFrame();
         // Dockspace
         ImGuiViewport* viewport = ImGui::GetMainViewport();
@@ -919,12 +1215,15 @@ namespace UI { // --------------------------------------------------------------
 
         RenderDebugMenuBar(ui);
 
+
         ImGuiID dockspace_id = ImGui::GetID("Dockspace");
         int ds_flags_i = (int)ImGuiDockNodeFlags_None | (int)ImGuiDockNodeFlags_NoDockingInCentralNode | (int)ImGuiDockNodeFlags_PassthruCentralNode;
         ImGuiDockNodeFlags ds_flags = (ImGuiDockNodeFlags)ds_flags_i;
         ImGui::DockSpace(dockspace_id, { 0,0 }, ds_flags);
         ImGui::End();
-
+#endif
+        ImGuiID dockspace_id = ImGui::GetID("Dockspace"); // Get ID needed for DockBuilder
+        ImGuiViewport* viewport = ImGui::GetMainViewport(); // Needed for DockBuilder size
         // it's all hardcoded? *pulls out glocko* always has been
         if (!s_layoutBuilt) {
             s_layoutBuilt = true;
@@ -938,7 +1237,8 @@ namespace UI { // --------------------------------------------------------------
 
             // Split into main zones
             ImGuiID dock_main = dockspace_id;
-            ImGuiID dock_left, dock_right, dock_bottom;
+            ImGuiID dock_left, dock_right, dock_bottom, dock_top;
+            ImGui::DockBuilderSplitNode(dock_main, ImGuiDir_Up, 0.07f, &dock_top, &dock_main);
             ImGui::DockBuilderSplitNode(dock_main, ImGuiDir_Left, 0.18f, &dock_left, &dock_main);
             ImGui::DockBuilderSplitNode(dock_main, ImGuiDir_Right, 0.26f, &dock_right, &dock_main);
             ImGui::DockBuilderSplitNode(dock_main, ImGuiDir_Down, 0.28f, &dock_bottom, &dock_main);
@@ -956,16 +1256,26 @@ namespace UI { // --------------------------------------------------------------
             ImGui::DockBuilderDockWindow("Performance", dock_left);
             ImGui::DockBuilderDockWindow("GameState", dock_bottom);
             ImGui::DockBuilderDockWindow("Audio", dock_right_bottom);
+            ImGui::DockBuilderDockWindow("Engine Controls", dock_top);
+            ImGui::DockBuilderDockWindow("Game Viewport", dock_main);
 
             ImGui::DockBuilderFinish(dockspace_id);
         }
 
+        if (ui.showEngineControl) {
+            RenderEngineStateBar(ui);
+        }
+
+#ifdef USE_IMGUI_EDITOR
+        RenderGameViewport();
+#endif
+
         if (ui.showECS) {
-            RenderEcsPanel(profiler, ecs, entities, selected, ui); 
+            RenderEcsPanel(profiler, ecs, entities, selected, ui);
         }
         if (ui.showAssets) {
             static std::string gPickedAsset;
-            RenderAssetBrowserPanel(ui, "assets", gPickedAsset);
+            RenderAssetBrowserPanel(ui, Assets::rootPath.c_str(), gPickedAsset);
         }
         if (ui.showInspector) {
             RenderInspectorPanel(ecs, selected, ui);
@@ -985,7 +1295,7 @@ namespace UI { // --------------------------------------------------------------
         if (ui.showGameState) {
             RenderGameStatePanel(ui);
         }
-        EndFrame();
+        // EndFrame();
 
     }
 
@@ -997,7 +1307,7 @@ namespace UI { // --------------------------------------------------------------
      @param entities List of ECS entities.
      @param selected Currently selected entity.
     */
-    void Render(FrameProfiler& profiler, Physics::PhysicsHandler& phys, Entity& selected)
+    void Render(FrameProfiler& profiler, Physics::PhysicsHandler& phys, Entity& selected, UIState& ui)
     {
         ECS* ecs = ECS::getInstance();
 
@@ -1005,7 +1315,7 @@ namespace UI { // --------------------------------------------------------------
             ecs->GetComponentArray<Component::NameComponent>().indexToEntity;
         //std::cout << entities.size() << " ";
 
-        static UIState ui;
+        //static UIState ui;
         RenderAll(profiler, phys, ui, *ecs, entities, selected);
     }
 

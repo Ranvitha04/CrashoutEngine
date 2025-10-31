@@ -191,8 +191,6 @@ namespace Component {
 
     };
     
-    glm::mat4 CreateCenteredWorldProjection();
-
 }
 
 #endif // SHAPES_H

@@ -121,6 +121,14 @@ bool AudioSystem::setVCAVolume(const std::string& vcaPath, float vol01) {
     if (mStudio) mStudio->flushCommands();
     return r == FMOD_OK;
 }
+
+bool AudioSystem::setBusVolume(const std::string& busPath, float vol01)
+{
+    FMOD::Studio::Bus* bus = nullptr;
+    FMOD_RESULT result = mStudio->getBus(busPath.c_str(), &bus);
+    if (result != FMOD_OK || !bus) return false;
+    return bus->setVolume(vol01) == FMOD_OK;
+}
 //Unload
 void AudioSystem::unloadAllBanks() {
     for (std::unordered_map<std::string, FMOD::Studio::Bank*>::iterator it = mBanks.begin();

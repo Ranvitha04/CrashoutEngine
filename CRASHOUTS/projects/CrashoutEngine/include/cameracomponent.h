@@ -9,18 +9,29 @@
 
 /*                                                                   includes
 ----------------------------------------------------------------------------- */
+#include "CEVec2.h"
+#include "CEVec3.h"
+
+#include <glm/gtc/matrix_transform.hpp>
 
 /*
 ----------------------------------------------------------------------------- */
 namespace Component {
+
+	using Entity = uint32_t;
 
 	/*!
 	@struct	CameraComponent
 	@brief	A component that provides
 	*/
 	struct CameraComponent {
-		// set fov
-		// get eye tgt up then view mtx then proj mtx
+		bool enabled{ false };
+
+		CEVec3 position{ 0.f, 0.f, 0.f };
+		float zoom{ 1.f };
+		float targetAR{ 16.f / 9.f };
+
+		Entity targetEntity;
 	};
 
 }

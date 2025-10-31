@@ -15,6 +15,8 @@ Stores global configuration values like screen width and height
 */
 class Settings {
 public:
+    static const float TARGET_ASPECT_RATIO;
+
     /*!
     @brief Set the screen size
     @param width Screen width

@@ -1,4 +1,7 @@
+#include "shaderasset.h"
+
 #include "amirscene.h"
+
 #include "sceneutils.h"
 #include "log.h"
 #include "GLFW/glfw3.h"
@@ -11,13 +14,17 @@ static const char* sceneName = "amir";
 
 void LoadAmir()
 {
-	// Load resources specific to Renfred state
+	using namespace CrashoutsEngine::Assets;
+	sceneName = "amir";
+	// Load resources specific to amir state
 	globalECS = CrashoutsEngine::ECS::getInstance();
 	globalECS->Reset();
 
-	CrashoutsEngine::Assets::GenerateAssetManifest();
+	GenerateAssetManifest();
 
-	CrashoutsEngine::Assets::AssetManager::GetInstance().LoadManifestAssets();
+	AssetManager::GetInstance().LoadManifestAssets();
+
+	AssetManager::GetInstance().Get<ShaderAsset>("TextShader")->shaderObject.Use();
 }
 
 void InitAmir()
@@ -34,10 +41,7 @@ void UpdateAmir()
 
 void RenderAmir()
 {
-	glClearColor(0.1f, 0.2f, 0.4f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	Scene::RenderScene(*globalECS);
 }
 
 void FreeAmir()

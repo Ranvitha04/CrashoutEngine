@@ -70,14 +70,20 @@ int WINAPI WinMain(
 #endif
 
     Init();
-    double dt = FRC.FixedDT();
+    double fixedDT = FRC.FixedDT();
+    //double variableDT = 0.0;
 
     // window's close flag is set by clicking close widget or Alt+F4
     while (!glfwWindowShouldClose(GLApp::ptr_window)) {
         FRC.FrameStart();
         glfwPollEvents();
-        dt = FRC.DT();
-        Update(playerRigidBody, dt);
+        //variableDT = FRC.DT();
+        fixedDT = FRC.DT();
+
+        //int steps = FRC.StepCount();
+        //for (int i = 0; i < steps; ++i) FixedUpdate(playerRigidBody, fixedDT);
+
+        Update(playerRigidBody, fixedDT);
         Draw(globalSelectedEntity);
         FRC.FrameEnd();
     }

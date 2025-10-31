@@ -15,6 +15,14 @@
         {
             "name": "sfx",
             "path": "banks\\sfx.bank"
+        },
+        {
+            "name": "Test Bank",
+            "path": "banks\\Test Bank.bank"
+        },
+        {
+            "name": "TestBank",
+            "path": "banks\\TestBank.bank"
         }
     ],
     "fonts": [
@@ -227,10 +235,24 @@
             "path": "assetmanifest.json"
         }
     ],
+    "prefabs": [
+        {
+            "name": "prefab",
+            "path": "prefab.json"
+        }
+    ],
     "scenes": [
         {
             "name": "amir",
             "path": "amir"
+        },
+        {
+            "name": "rain",
+            "path": "rain"
+        },
+        {
+            "name": "ran",
+            "path": "ran"
         },
         {
             "name": "renfred",

@@ -44,4 +44,17 @@ void Update(Component::RigidBodyComponent&, double const&);
 void Draw(CrashoutsEngine::Entity&);
 void CleanUp();
 
+// Engine States
+enum class EngineState { STOP, PLAY, PAUSE };
+extern EngineState engineState;
+
+// For FBO globals
+#ifdef USE_IMGUI_EDITOR
+extern GLuint gameFboID;
+extern GLuint gameTextureColorBuffer;
+extern GLuint gameRboDepthStencil;
+extern int gameTextureWidth;     // Will be resized
+extern int gameTextureHeight;    // Will be resized
+#endif
+
 #endif

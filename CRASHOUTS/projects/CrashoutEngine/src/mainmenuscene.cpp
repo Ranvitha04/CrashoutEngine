@@ -204,15 +204,7 @@ void RenderMainMenu()
 	// Render MainMenu state
 	glClearColor(0.1f, 0.2f, 0.4f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	Scene::RenderScene(*globalECS);
-	
-	if (gTextRenderer) {
-		gTextRenderer->RenderCenteredText("Hello", -900.0f, 0.0f, 1.0f, CEVec3());
-	}
-	if (gTextRendererA) {
-		gTextRendererA->RenderCenteredText(std::to_string(itemCount), -900.0f, 100.0f, 1.0f, CEVec3{ 1.f, 1.f, 1.f });
-	}
-
+	//Scene::RenderScene(*globalECS);
 }
 
 void FreeMainMenu()

@@ -137,8 +137,11 @@ namespace Component {
         GLuint tex_vbo_hdl{ 0 };
         GLuint texobj{ 0 };
         GLSLShader* shdr_pgm = nullptr;
+        GLSLShader shdr_pgm_instanced;
         
-        
+        glm::mat4 viewMatrix;
+        glm::mat4 projectionMatrix;
+
         size_t current_vbo_size{ 0 };
         size_t current_ebo_size{ 0 };
         
@@ -191,6 +194,7 @@ namespace Component {
         Exits the application with error messages if any step fails.
         */
         void Setup_Shdrpgm();
+        void Setup_ShdrpgmInstanced();
         
         /*!
         @brief Execute a draw call using the current VAO and shader state.
@@ -342,7 +346,14 @@ namespace Component {
         particularly beneficial. The returned VAO is in an unbound state and
         ready for configuration.
         */
+        GLuint AcquireVAO();
+        GLuint AcquireVBO();
+        GLuint AcquireEBO();
         GLuint GetPooledVAO();
+        //GLuint GetPooledEBO();
+        void ReturnVAO(GLuint vao);
+        void ReturnVBO(GLuint vbo);
+        void ReturnEBO(GLuint ebo);
         
         /*!
         @brief Retrieve an EBO from the buffer pool or create a new one.

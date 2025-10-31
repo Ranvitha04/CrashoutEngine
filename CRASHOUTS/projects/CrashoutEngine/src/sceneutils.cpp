@@ -7,6 +7,7 @@
 This file implements
 */
 
+#include "rendering.h"
 #include "textrenderer.h"
 #include "textureasset.h"
 #include "assetmanager.h"
@@ -17,6 +18,15 @@ This file implements
 namespace Scene {
     void RenderScene(CrashoutsEngine::ECS& globalECS) {
         using namespace CrashoutsEngine;
+        using Component::Rendering;
+
+        Rendering& renderer = Rendering::Get();
+        if (!renderer.shdr_pgm) return;
+
+        renderer.shdr_pgm->Use();
+
+        renderer.shdr_pgm->SetUniform("uView", renderer.viewMatrix);
+        renderer.shdr_pgm->SetUniform("uProjection", renderer.projectionMatrix);
 
         // Collect all non-textured squares here
         std::vector<CEVec3> instancedPos;
@@ -155,10 +165,14 @@ namespace Scene {
             if (globalECS.HasComponent<Component::TransformComponent>(id)) {
                 Component::TransformComponent* t = globalECS.GetComponent<Component::TransformComponent>(id);
                 CEVec2 newOffset = CEVec2{ t->position.x + tc->offset.x, t->position.y + tc->offset.y};
+
+                std::string font = tc->font;
+                if (font == "") font = "Exo2-Regular";
+
                 if(tc->centered)
-                    gTextRenderer->RenderCenteredText(tc->text, newOffset.x, newOffset.y, tc->scale, tc->color, tc->font);
+                    gTextRenderer->RenderCenteredText(tc->text, newOffset.x, newOffset.y, tc->scale, tc->color, font);
                 else
-					gTextRenderer->RenderText(tc->text, newOffset.x, newOffset.y, tc->scale, tc->color, tc->font);
+					gTextRenderer->RenderText(tc->text, newOffset.x, newOffset.y, tc->scale, tc->color, font);
             }
         }
     }

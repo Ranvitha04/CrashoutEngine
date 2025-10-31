@@ -100,4 +100,11 @@ private:
 
     /// Scroll delta value for the current frame only
     static float ScrollYFrame;
+
+    /*!
+    @brief GLFW callback function for mouse scroll events
+    @param window The window that received the event
+    @param yoffset The vertical scroll offset
+    */
+    static void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset);
 };
