@@ -13,6 +13,8 @@ This file
 #include "frameratecontroller.h"
 #include "camera.h"
 #include "inputmanager.h"
+#include "entitymanager.h"
+#include "transformcomponent.h"
 #include <glm/gtc//matrix_transform.hpp>
 #include <algorithm>
 #include <iostream>
@@ -21,12 +23,21 @@ namespace CrashoutsEngine {
 
 	namespace RenderCamera {
 
+		// --- Define Static Camera Data ---
+		glm::mat4 Camera::viewMtx = glm::mat4(1.f);
+		glm::mat4 Camera::projectionMtx = glm::mat4(1.f);
+
+		// Orthographic projection settings
+		float Camera::baseOrthoSize = 100.f;
+		float Camera::nearPlane = -50.f;
+		float Camera::farPlane = 50.f;
+
 		// --- Define Global Camera ---
 		Camera engineCamera;
+		Camera gameCamera;
 		
 		Camera::Camera(CEVec3 inStartPos, float inZoom, float inTargetAspectRatio) :
-			position{ inStartPos }, zoom{ inZoom }, targetAR{ inTargetAspectRatio },
-			viewMtx(1.0f), projectionMtx(1.0f) {}
+			position{ inStartPos }, zoom{ inZoom }, targetAR{ inTargetAspectRatio }{}
 
 		void Camera::SetPostiion(const CEVec3& pos) {
 			position = pos;
@@ -153,6 +164,21 @@ namespace CrashoutsEngine {
 			}
 		}
 
+		void PlayerCameraInput(CameraComponent& cameraComponent) {
+			ECS& ecs = *ECS::getInstance();
+			Entity targetEntity = cameraComponent.targetEntity;
+			std::vector<Entity>& camList = ecs.GetComponentArray<CameraComponent>().indexToEntity;
+			auto it = std::find(camList.begin(), camList.end(), targetEntity);
+			if (it != camList.end()) {
+				TransformComponent& target = *ecs.GetComponent<TransformComponent>(targetEntity);
+				cameraComponent.position = target.position;
+				gameCamera.SetPostiion(cameraComponent.position);
+			}
+			if (gameCamera.GetZoom() != cameraComponent.zoom)
+				gameCamera.SetTargetAR(cameraComponent.targetAR);
+			if(gameCamera.GetZoom() != cameraComponent.zoom) 
+				gameCamera.SetZoom(cameraComponent.zoom);
+		}
 	}
 
 }

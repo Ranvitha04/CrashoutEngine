@@ -14,6 +14,7 @@ This file
 
 #include "CEVec2.h"
 #include "CEVec3.h"
+#include "cameracomponent.h"
 #include <glm/glm.hpp>
 
 namespace CrashoutsEngine {
@@ -50,14 +51,14 @@ namespace CrashoutsEngine {
 			CEVec3 position;
 			float zoom;
 			float targetAR;
-
-			glm::mat4 viewMtx;
-			glm::mat4 projectionMtx;
+			static glm::mat4 viewMtx;
+			static glm::mat4 projectionMtx;
 
 			// Orthographic projection settings
-			float baseOrthoSize = 100.f;
-			float nearPlane = -50.f;
-			float farPlane = 50.f;
+			static float baseOrthoSize;
+			static float nearPlane;
+			static float farPlane;
+
 
 			void RecalculateViewMtx();
 			void RecalculateProjectionMtx(int targetWidth, int targetHeight);
@@ -66,8 +67,10 @@ namespace CrashoutsEngine {
 
 		// --- Global Camera Instances ---
 		extern Camera engineCamera;
+		extern Camera gameCamera;
 
 		void EditorCameraInput();
+		void PlayerCameraInput(CameraComponent& cameraComponent);
 	}
 }
 

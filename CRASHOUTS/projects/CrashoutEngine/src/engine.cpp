@@ -12,15 +12,16 @@ context and implement a game loop.
 ----------------------------------------------------------------------------- */
 // Extension loader library's header must be included before GLFW's header!!!
 #include "engine.h"
+#include "rendering.h"
 #include "assetmanager.h"
 #include "monomanager.h"
-#include "rendering.h"
+#include "entitymanager.h"
 #include "scriptcomponent.h"
-#include "scriptsystem.h"
+#include "cameracomponent.h"
 #include "textureasset.h"
+#include "scriptsystem.h"
 #include "debugmenu.h"
 #include "sceneutils.h"
-#include "entitymanager.h"
 #include "camera.h"
 
 /*                                                   type declarations
@@ -184,7 +185,7 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
     // Camera Related Processes
     //Camera& currentCamera = (engineState == EngineState::PLAY) ? gameCamera : engineCamera;
     // TEST WITH ENGINE CAMERA
-    Camera& currentCamera = engineCamera;
+    Camera& currentCamera = (engineState == EngineState::STOP) ? engineCamera : gameCamera;
     glm::mat4 view = currentCamera.GetViewMatrix();
     glm::mat4 proj = currentCamera.GetProjectionMatrix();
     
@@ -277,6 +278,21 @@ void Update(Component::RigidBodyComponent& playerRigidBody, double const& dt) {
         CrashoutsEngine::RenderCamera::engineCamera.UpdateMatrices(Settings::GetScreenWidth(), Settings::GetScreenHeight());
 #else
         CrashoutsEngine::RenderCamera::engineCamera.UpdateMatrices(GLApp::width, GLApp::height);
+#endif
+    }
+
+    // Process Game Camera
+    if (engineState != EngineState::STOP) {
+        using namespace CrashoutsEngine;
+
+        ECS& ecs = *ECS::getInstance();
+        std::vector<CameraComponent> c = ecs.GetComponentArray<CameraComponent>().dense;
+        if(c.size() > 0) RenderCamera::PlayerCameraInput(*c.end());
+
+#ifdef USE_IMGUI_EDITOR
+        RenderCamera::gameCamera.UpdateMatrices(Settings::GetScreenWidth(), Settings::GetScreenHeight());
+#else
+        RenderCamera::gameCamera.UpdateMatrices(GLApp::width, GLApp::height);
 #endif
     }
 }
