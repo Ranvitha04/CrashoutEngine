@@ -10,11 +10,12 @@ using namespace Component;
 static void InternalAddForce(uint32_t entityID, float x, float y, float z)
 {
     auto& ecs = *ECS::getInstance();
-    if (ecs.HasComponent<Component::RigidBodyComponent>(entityID))
-    {
-        Component::RigidBodyComponent* rb = ecs.GetComponent<Component::RigidBodyComponent>(entityID);
-        rb->addForce({ x, y, z });
+    if (!ecs.HasComponent<Component::RigidBodyComponent>(entityID)) {
+        std::cout << "[Mono] AddForce: entity " << entityID << " has NO rigidbody\n";
+        return;
     }
+    std::cout << "[Mono] AddForce: entity " << entityID << " force=(" << x << "," << y << "," << z << ")\n";
+    ecs.GetComponent<Component::RigidBodyComponent>(entityID)->addForce({ x,y,z });
 }
 
 static bool EntityHasRigidBody(uint32_t entityID)

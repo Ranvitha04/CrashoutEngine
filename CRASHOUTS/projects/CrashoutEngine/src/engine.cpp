@@ -161,6 +161,8 @@ void Update(Component::RigidBodyComponent& playerRigidBody, double const& dt) {
     GLApp::update_time();
     UpdateGameStateManager();
 
+	CrashoutsEngine::ScriptSystem::UpdateAll(static_cast<float>(FrameRateController::GetInstance().DT()));
+
     collisionSystem.update(dt);
     physicsSystem.update(dt);
 
@@ -170,7 +172,7 @@ void Update(Component::RigidBodyComponent& playerRigidBody, double const& dt) {
     // start frame profiling
     gProfiler.begin_frame();
 
-    CrashoutsEngine::ScriptSystem::UpdateAll(static_cast<float>(FrameRateController::GetInstance().DT()));
+    
 
     // main loop computes fps and other time related stuff once for all apps ...
     GLApp::update_time(1.0);

@@ -50,9 +50,11 @@ void MonoManager::Shutdown()
 {
     if (s_Domain)
     {
-        mono_jit_cleanup(s_Domain);
-        s_Domain = nullptr;
-        s_Assembly = nullptr;
-        std::cout << "[Mono] Domain cleaned up.\n";
+        return;
     }
+
+	mono_jit_cleanup(s_Domain);
+	s_Domain = nullptr;
+	s_Assembly = nullptr;
+	std::cout << "[Mono] Domain cleaned up.\n";
 }

@@ -17,10 +17,10 @@ namespace CrashoutsEngine
         MonoMethod* MethodUpdate = nullptr;
         bool Started = false;
 
-		CE::u64 EntityID = 0;
+        uint32_t EntityID = 0;
 
         ScriptComponent() = default;
-        ScriptComponent(const std::string& name, CE::u64 ID) : ClassName(name), EntityID(ID) {}
+        ScriptComponent(const std::string& name, uint32_t ID) : ClassName(name), EntityID(ID) {}
 
         bool Initialize(MonoDomain* domain, MonoAssembly* assembly);
         void Start();

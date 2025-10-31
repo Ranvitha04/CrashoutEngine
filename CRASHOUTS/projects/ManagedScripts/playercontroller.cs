@@ -1,7 +1,5 @@
 using System;
 using System.Numerics;
-
-using CrashoutsEngine;
 namespace CrashoutsEngine
 {
     public class PlayerController : ScriptBase
@@ -15,7 +13,7 @@ namespace CrashoutsEngine
 
         public override void Update(float dt)
         {
-            Console.WriteLine("[C#] PlayerController Update() called with dt: " + dt);
+            //Console.WriteLine("[C#] PlayerController Update() called with dt: " + dt);
             // Access physics and transform components from your entity
             var rb = Entity.RigidBody;
             var tf = Entity.Transform;
@@ -25,6 +23,8 @@ namespace CrashoutsEngine
 
             if (Input.IsKeyPressed(Key.A))
             {
+                Console.WriteLine("A key is pressed");
+                Console.WriteLine("[C#] mass=" + rb.GetMass());
                 rb.AddForce(new Vector3(-100f, 0f, 0f));
             }
 

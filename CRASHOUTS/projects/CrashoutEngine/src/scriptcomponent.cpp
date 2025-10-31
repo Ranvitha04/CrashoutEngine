@@ -44,12 +44,12 @@ namespace CrashoutsEngine
         // fix field set (pass address of MonoObject*)
         MonoObject* entityObj = mono_object_new(domain, entityClass);
         MonoMethod* entityCtor = mono_class_get_method_from_name(entityClass, ".ctor", 1);
-        uint64_t eid = EntityID;
+        uint32_t eid = EntityID;
         void* ctorArgs[1] = { &eid };
         mono_runtime_invoke(entityCtor, entityObj, ctorArgs, nullptr);
         MonoClassField* entityField = mono_class_get_field_from_name(Class, "Entity");
         if (entityField)
-            mono_field_set_value(Instance, entityField, &entityObj);
+            mono_field_set_value(Instance, entityField, entityObj);
 
         // Cache methods
         MethodStart = mono_class_get_method_from_name(Class, "Start", 0);

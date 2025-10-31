@@ -22,6 +22,7 @@ namespace CrashoutsEngine
             if (!script.Instance)
                 script.Initialize(domain, assembly);
         }
+
     }
 
     void ScriptSystem::UpdateAll(float dt)
