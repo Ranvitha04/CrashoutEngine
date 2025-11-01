@@ -11,7 +11,7 @@ using namespace Component;
 static bool InternalIsKeyPressed(int key)
 {
     std::cout << "[Mono] Input binding registered OK\n";
-    return InputManager::IsKeyPressed(static_cast<Key>(key));
+    return InputManager::IsKeyPressed(key);
 }
 
 void CrashoutsEngine::Bindings::RegisterInputBindings()
