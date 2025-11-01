@@ -12,15 +12,16 @@ context and implement a game loop.
 ----------------------------------------------------------------------------- */
 // Extension loader library's header must be included before GLFW's header!!!
 #include "engine.h"
+#include "rendering.h"
 #include "assetmanager.h"
 #include "monomanager.h"
-#include "rendering.h"
+#include "entitymanager.h"
 #include "scriptcomponent.h"
-#include "scriptsystem.h"
+#include "cameracomponent.h"
 #include "textureasset.h"
+#include "scriptsystem.h"
 #include "debugmenu.h"
 #include "sceneutils.h"
-#include "entitymanager.h"
 #include "camera.h"
 
 /*                                                   type declarations
@@ -41,6 +42,10 @@ EngineState engineState = EngineState::STOP;
 const float moveSpeed = 6.7f;
 
 extern "C" void RegisterBuiltinComponentAdapters();
+
+#if USE_IMGUI_EDITOR
+bool gameWinHovered{ false };
+#endif
 
 /*  _________________________________________________________________________ */
 /*! SetupConsole
@@ -184,7 +189,7 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
     // Camera Related Processes
     //Camera& currentCamera = (engineState == EngineState::PLAY) ? gameCamera : engineCamera;
     // TEST WITH ENGINE CAMERA
-    Camera& currentCamera = engineCamera;
+    Camera& currentCamera = (engineState == EngineState::STOP) ? engineCamera : gameCamera;
     glm::mat4 view = currentCamera.GetViewMatrix();
     glm::mat4 proj = currentCamera.GetProjectionMatrix();
     
@@ -273,11 +278,29 @@ void Update(Component::RigidBodyComponent& playerRigidBody, double const& dt) {
     else if (engineState == EngineState::STOP) {
         physicsSystem.update(0.f);
         // Process Editor Camera Input
-        CrashoutsEngine::RenderCamera::EditorCameraInput();
+        if(gameWinHovered) CrashoutsEngine::RenderCamera::EditorCameraInput();
 #ifdef USE_IMGUI_EDITOR
         CrashoutsEngine::RenderCamera::engineCamera.UpdateMatrices(Settings::GetScreenWidth(), Settings::GetScreenHeight());
 #else
         CrashoutsEngine::RenderCamera::engineCamera.UpdateMatrices(GLApp::width, GLApp::height);
+#endif
+    }
+
+    // Process Game Camera
+    if (engineState != EngineState::STOP) {
+        using namespace CrashoutsEngine;
+
+        ECS& ecs = *ECS::getInstance();
+        std::vector<CameraComponent> c = ecs.GetComponentArray<CameraComponent>().dense;
+        if (c.size() > 0) {
+            Entity camEntity = ecs.GetComponentArray<CameraComponent>().indexToEntity.back();
+            RenderCamera::PlayerCameraInput(c.back(), camEntity);
+        }
+
+#ifdef USE_IMGUI_EDITOR
+        RenderCamera::gameCamera.UpdateMatrices(Settings::GetScreenWidth(), Settings::GetScreenHeight());
+#else
+        RenderCamera::gameCamera.UpdateMatrices(GLApp::width, GLApp::height);
 #endif
     }
 }

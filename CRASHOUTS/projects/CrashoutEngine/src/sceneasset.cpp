@@ -120,6 +120,9 @@ namespace CrashoutsEngine {
             const char* const COLLIDER_COMPONENT = "collider";
             const char* const SHAPE_COMPONENT = "shape";
             const char* const TEXT_COMPONENT = "text";
+            const char* const AUDIO_COMPONENT = "audio";
+            const char* const SCRIPT_COMPONENT = "script";
+            const char* const CAMERA_COMPONENT = "camera";
         }
 
         /*!
@@ -523,6 +526,47 @@ namespace CrashoutsEngine {
                         t.centered = textValue["centered"].GetBool();
                     }
                 }
+            
+                // Check if Audio
+                if (entityValue.HasMember(Keys::AUDIO_COMPONENT) && entityValue[Keys::AUDIO_COMPONENT].IsObject()) {
+
+                }
+
+                // Check if Script
+                if (entityValue.HasMember(Keys::SCRIPT_COMPONENT) && entityValue[Keys::SCRIPT_COMPONENT].IsObject()) {
+
+                }
+
+                // Check if Camera
+                if (entityValue.HasMember(Keys::CAMERA_COMPONENT) && entityValue[Keys::CAMERA_COMPONENT].IsObject()) {
+                    CameraComponent& c = gECS.AddComponent<CameraComponent>(newEntity);
+                    const rapidjson::Value& textValue = entityValue[Keys::TEXT_COMPONENT];
+
+                    // 1. Check Zoom
+                    if (textValue.HasMember("zoom") && textValue["zoom"].IsFloat()) {
+                        c.zoom = textValue["zoom"].GetFloat();
+                    }
+
+                    // 2. Check xBounds
+                    if (textValue.HasMember("xBounds") && textValue["xBounds"].IsObject()) {
+                        CEVec2 xBounds{ 0.0f, 0.0f };
+                        const rapidjson::Value& xBoundsValue = textValue["xBounds"];
+                        // Use HasMember check for safety
+                        if (xBoundsValue.HasMember("x")) xBounds.x = xBoundsValue["x"].GetFloat();
+                        if (xBoundsValue.HasMember("y")) xBounds.y = xBoundsValue["y"].GetFloat();
+                        c.xBounds = xBounds;
+                    }
+
+                    // 2. Check yBounds
+                    if (textValue.HasMember("yBounds") && textValue["yBounds"].IsObject()) {
+                        CEVec2 yBounds{ 0.0f, 0.0f };
+                        const rapidjson::Value& yBoundsValue = textValue["yBounds"];
+                        // Use HasMember check for safety
+                        if (yBoundsValue.HasMember("x")) yBounds.x = yBoundsValue["x"].GetFloat();
+                        if (yBoundsValue.HasMember("y")) yBounds.y = yBoundsValue["y"].GetFloat();
+                        c.yBounds = yBounds;
+                    }
+                }
             }
         }
 
@@ -806,6 +850,42 @@ namespace CrashoutsEngine {
                     textValue.AddMember("centered", tComp.centered, allocator);
 
                     entityValue.AddMember(rapidjson::StringRef(Keys::TEXT_COMPONENT), textValue, allocator);
+                }
+
+                // =========================================================
+                // G. AudioComponent
+                // =========================================================
+                if (gECS.HasComponent<AudioEmitterComponent>(id)) {
+
+                }
+
+                // =========================================================
+                // H. ScriptComponent
+                // =========================================================
+                if (gECS.HasComponent<ScriptComponent>(id)) {
+
+                }
+
+                // =========================================================
+                // I. CameraComponent
+                // =========================================================
+                if (gECS.HasComponent<CameraComponent>(id)) {
+                    const CameraComponent& cameraComp = *gECS.GetComponent<CameraComponent>(id);
+                    rapidjson::Value camValue(rapidjson::kObjectType);
+                    // 1. Zoom (float)
+                    camValue.AddMember("zoom", cameraComp.zoom, allocator);
+
+                    // 2. xBounds (CEVec2 -> JSON Object)
+                    rapidjson::Value xBoundsValue(rapidjson::kObjectType);
+                    xBoundsValue.AddMember("x", cameraComp.xBounds.x, allocator);
+                    xBoundsValue.AddMember("y", cameraComp.xBounds.y, allocator);
+                    camValue.AddMember("xBounds", xBoundsValue, allocator);
+
+                    // 2. yBounds (CEVec2 -> JSON Object)
+                    rapidjson::Value yBoundsValue(rapidjson::kObjectType);
+                    yBoundsValue.AddMember("x", cameraComp.yBounds.x, allocator);
+                    yBoundsValue.AddMember("y", cameraComp.yBounds.y, allocator);
+                    camValue.AddMember("yBounds", yBoundsValue, allocator);
                 }
 
                 // Add the finished entity JSON object to the array
