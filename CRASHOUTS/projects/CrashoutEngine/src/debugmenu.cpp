@@ -312,30 +312,32 @@ namespace UI { // --------------------------------------------------------------
         ImGui::InputTextWithHint("##save_prefab_name", "Prefab name...", prefabNameBuf, IM_ARRAYSIZE(prefabNameBuf));
         ImGui::SameLine();
         if (ImGui::Button("Save Prefab")) {
-            // build source path: projects/Descent/assets/prefabs/prefab.json
-            const fs::path srcJson = fs::path(Assets::rootPath) / "prefabs" / "prefab.json";
-            fs::create_directories(srcJson.parent_path()); // safe if it already exists
+            namespace fs = std::filesystem;
+
+            // 1) Always save to the SAME path we load from
+            const fs::path jsonPath = fs::path("assets") / "prefabs" / "prefab.json";
+            fs::create_directories(jsonPath.parent_path()); // safe if exists
+
+            // 2) Save the currently selected entity with the chosen name
+            const std::string newName = (prefabNameBuf[0] ? prefabNameBuf : "Entity");
 
             const bool ok = SaveBoxPrefabToJson_RJ(
                 ecs, selected,
-                prefabNameBuf,
-                srcJson.generic_string(),       // <-- CHANGED from "assets/prefabs/prefab.json"
-                /*matchName*/ prefabNameBuf);
+                newName,
+                jsonPath.generic_string(),    // <-- SAVE to assets/prefabs/prefab.json
+                /*matchName*/ newName         // upsert by name
+            );
 
             if (ok) {
-                // optional: also mirror to runtime assets so the game sees it immediately
-                try {
-                    const fs::path runJson = fs::path("assets") / "prefabs" / "prefab.json";
-                    fs::create_directories(runJson.parent_path());
-                    fs::copy_file(srcJson, runJson, fs::copy_options::overwrite_existing);
-                }
-                catch (...) {}
+                // 3) IMPORTANT: reload factories from disk so new spawns use the new values
+                CrashoutsEngine::ReloadPrefabsFromDisk(jsonPath.generic_string());
 
-                // refresh prefab list in UI
-                for (auto& n : Prefab::Names()) Prefab::Unregister(n);
-                InitPrefabs();
+                // Optional UX
+                LOGI(Core, std::string("Saved & reloaded prefab json: ") + jsonPath.generic_string());
+                prefabNameBuf[0] = '\0';
             }
         }
+
         ImGui::Separator();
 
 

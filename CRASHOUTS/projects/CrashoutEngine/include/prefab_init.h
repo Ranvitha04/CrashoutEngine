@@ -6,6 +6,7 @@
 
 */
 #include "entitymanager.h"
+#include <string>
 #pragma once
 namespace CrashoutsEngine {
     bool SaveBoxPrefabToJson_RJ(ECS& ecs,
@@ -14,4 +15,5 @@ namespace CrashoutsEngine {
         const std::string& path = "assets/prefabs/prefab.json",
         const std::string& matchName = "");
     void InitPrefabs();
+    void ReloadPrefabsFromDisk(const std::string& path);
 }

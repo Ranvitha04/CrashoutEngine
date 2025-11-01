@@ -23,12 +23,13 @@ namespace {
 
 namespace Prefab {
     //Name what we call the prefab and maybe the description
+ // prefab.cpp
     bool Register(const std::string& name, Factory f) {
-        auto& r = Reg();
-        if (r.find(name) != r.end()) return false;
-        r.emplace(name, std::move(f));
+        Reg()[name] = std::move(f);   // overwrite if key exists
         return true;
     }
+
+
     //Remove prefab
     bool Unregister(const std::string& name) { return Reg().erase(name) > 0; }
     bool Exists(const std::string& name) { return Reg().find(name) != Reg().end(); }

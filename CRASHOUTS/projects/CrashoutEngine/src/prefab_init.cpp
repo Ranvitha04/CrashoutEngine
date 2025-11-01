@@ -36,10 +36,6 @@ MakeCenteredAABB3(const CEVec3& center, float w, float h)
     return std::make_unique<Collision::AABBRect>(mn, mx);
 }
 
-
-static bool LoadPrefabsFromJson_RJ(const std::string& path);
-
-
 static bool LoadPrefabsFromJson_RJ(const std::string& path)
 {
     std::ifstream ifs(path);
@@ -90,9 +86,7 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path)
                 color.z = (cj.HasMember("b") && cj["b"].IsNumber()) ? (float)cj["b"].GetDouble() : 0.f;
             }
          
-            if (color.x > 1.f || color.y > 1.f || color.z > 1.f) {
-                color.x *= 1.f / 255.f; color.y *= 1.f / 255.f; color.z *= 1.f / 255.f;
-            }
+          
 
             const bool enableTexture = (shj.HasMember("enableTexture") && shj["enableTexture"].IsBool()) ? shj["enableTexture"].GetBool() : false;
             std::string textureName;
@@ -198,18 +192,24 @@ namespace CrashoutsEngine {
         }
 
         // Load / init doc
-        Document doc;
+    // Load / init doc
+        rapidjson::Document doc;
         {
             std::ifstream in(path, std::ios::binary);
             if (in) {
-                IStreamWrapper isw(in);
+                rapidjson::IStreamWrapper isw(in);
                 doc.ParseStream(isw);
-                if (doc.HasParseError() || !doc.IsObject()) doc.SetObject();
+                if (doc.HasParseError() || !doc.IsObject()) {
+                    LOGE(Core, (std::string("Save aborted: JSON parse error in ") + path).c_str());
+                    return false; // IMPORTANT: don't clobber the existing file
+                }
             }
             else {
+                
                 doc.SetObject();
             }
         }
+
 
         auto& A = doc.GetAllocator();
         if (!doc.HasMember("prefabs") || !doc["prefabs"].IsArray()) {
@@ -273,20 +273,37 @@ namespace CrashoutsEngine {
             obj.AddMember("shape", shj, A);
         }
 
-        // rigidbody (mass, restitution)
+       
+       // rigidbody (mass, restitution)
+   
         {
-            auto r = rb->reflection();
-            Value rbj(kObjectType);
-            rbj.AddMember("mass", r.mass, A);
-            rbj.AddMember("restitution", r.restitution, A);
+            rapidjson::Value rbj(rapidjson::kObjectType);
+            rbj.AddMember("mass", rb->getMass(), A);          // <-- use getters
+            rbj.AddMember("restitution", rb->getCoeff(), A);  // <-- use getters
             obj.AddMember("rigidbody", rbj, A);
         }
 
-        // Upsert by key (matchName overrides newName for replacement)
-        const std::string& key = matchName.empty() ? newName : matchName;
+
+        // ---- helpers for name matching (add these) ----
+        auto trim = [](std::string s) {
+            size_t a = s.find_first_not_of(" \t\r\n");
+            size_t b = s.find_last_not_of(" \t\r\n");
+            if (a == std::string::npos) return std::string{};
+            return s.substr(a, b - a + 1);
+            };
+        auto lower = [](std::string s) {
+            std::transform(s.begin(), s.end(), s.begin(), ::tolower);
+            return s;
+            };
+      // Upsert by key (matchName overrides newName for replacement)
+        const std::string keyRaw = matchName.empty() ? newName : matchName;
+        const std::string key = lower(trim(keyRaw));
+
         bool replaced = false;
         for (auto& p : prefabs.GetArray()) {
-            if (p.IsObject() && p.HasMember("name") && p["name"].IsString() && key == std::string(p["name"].GetString())) {
+            if (!p.IsObject() || !p.HasMember("name") || !p["name"].IsString()) continue;
+            const std::string pname = lower(trim(p["name"].GetString()));
+            if (pname == key) {
                 p.CopyFrom(obj, A);
                 replaced = true;
                 break;
@@ -294,9 +311,11 @@ namespace CrashoutsEngine {
         }
         if (!replaced) prefabs.PushBack(obj, A);
 
+
         // Write back
         rapidjson::StringBuffer sb;
         rapidjson::PrettyWriter<rapidjson::StringBuffer> wr(sb);
+        wr.SetMaxDecimalPlaces(6);
         doc.Accept(wr);
 
         std::ofstream out(path, std::ios::binary | std::ios::trunc);
@@ -309,24 +328,31 @@ namespace CrashoutsEngine {
         LOGI(Core, std::string(replaced ? "Updated prefab: " : "Saved new prefab: ") + newName);
         return true;
     }
-
-   
-    void InitPrefabs()
+    void ReloadPrefabsFromDisk(const std::string& path)
     {
-        Prefab::SetFallback([](ECS& e, const std::string& name) {
-            auto ent = e.CreateEntity();
-            e.AddComponent<NameComponent>(ent, NameComponent{ name });
-            if (!e.HasComponent<TransformComponent>(ent))
-                e.AddComponent<TransformComponent>(ent, TransformComponent{});
-            });
+        // Clear existing factories
+        for (const auto& n : Prefab::Names())
+            Prefab::Unregister(n);
 
-        const char* JSON_PATH = "assets/prefabs/prefab.json";
-        if (!LoadPrefabsFromJson_RJ(JSON_PATH)) {
-            LOGE(Core, std::string("Failed to load ") + JSON_PATH);
-        }
+        // Re-load from JSON
+        LoadPrefabsFromJson_RJ(path);
 
+        // (Optional) log what’s available now
         for (const auto& n : Prefab::Names())
             LOGI(Core, std::string("Prefab available: ") + n);
     }
+   
+ void InitPrefabs()
+{
+    Prefab::SetFallback([](ECS& e, const std::string& name) {
+        auto ent = e.CreateEntity();
+        e.AddComponent<NameComponent>(ent, NameComponent{ name });
+        if (!e.HasComponent<TransformComponent>(ent))
+            e.AddComponent<TransformComponent>(ent, TransformComponent{});
+    });
+
+    const char* JSON_PATH = "assets/prefabs/prefab.json"; // <-- this is the canonical path
+    LoadPrefabsFromJson_RJ(JSON_PATH);
+}
 
 } 
