@@ -27,6 +27,7 @@ This file provides the graphics for Crashout Engine's ImGUI.
 #include "debugcollision.h"
 #include "frameratecontroller.h"
 #include "audioSystem.h"
+#include "prefab_init.h"  
 #include <fmod_studio.hpp> 
 #include "prefab.h"
 
@@ -305,6 +306,38 @@ namespace UI { // --------------------------------------------------------------
         ImGui::Text("Selected Entity: %u", (unsigned)selected);
 
         if (!selected) return;
+        // --- Save Prefab ---
+        static char prefabNameBuf[64] = "MyBox";
+        ImGui::SetNextItemWidth(220);
+        ImGui::InputTextWithHint("##save_prefab_name", "Prefab name...", prefabNameBuf, IM_ARRAYSIZE(prefabNameBuf));
+        ImGui::SameLine();
+        if (ImGui::Button("Save Prefab")) {
+            // build source path: projects/Descent/assets/prefabs/prefab.json
+            const fs::path srcJson = fs::path(Assets::rootPath) / "prefabs" / "prefab.json";
+            fs::create_directories(srcJson.parent_path()); // safe if it already exists
+
+            const bool ok = SaveBoxPrefabToJson_RJ(
+                ecs, selected,
+                prefabNameBuf,
+                srcJson.generic_string(),       // <-- CHANGED from "assets/prefabs/prefab.json"
+                /*matchName*/ prefabNameBuf);
+
+            if (ok) {
+                // optional: also mirror to runtime assets so the game sees it immediately
+                try {
+                    const fs::path runJson = fs::path("assets") / "prefabs" / "prefab.json";
+                    fs::create_directories(runJson.parent_path());
+                    fs::copy_file(srcJson, runJson, fs::copy_options::overwrite_existing);
+                }
+                catch (...) {}
+
+                // refresh prefab list in UI
+                for (auto& n : Prefab::Names()) Prefab::Unregister(n);
+                InitPrefabs();
+            }
+        }
+        ImGui::Separator();
+
 
         if (entities.size() > 0) {
             if (ImGui::Button("Clone Selected")) {
