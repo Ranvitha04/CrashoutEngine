@@ -187,8 +187,6 @@ namespace CrashoutsEngine {
 			cameraComponent.position.y = y;
 
 			gameCamera.SetPostiion(cameraComponent.position);
-			if (gameCamera.GetZoom() != cameraComponent.zoom)
-				gameCamera.SetTargetAR(cameraComponent.targetAR);
 
 			if(gameCamera.GetZoom() != cameraComponent.zoom) 
 				gameCamera.SetZoom(cameraComponent.zoom);
