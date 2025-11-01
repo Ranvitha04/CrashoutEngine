@@ -940,6 +940,8 @@ namespace UI { // --------------------------------------------------------------
         // Begin the ImGUI window, enable Docking
         if (ImGui::Begin("Game Viewport", nullptr, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse)) {
 
+            gameWinHovered = ImGui::IsWindowHovered();
+
             // Get the size of ImGui window content region
             ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
 
@@ -1097,11 +1099,6 @@ namespace UI { // --------------------------------------------------------------
         }
 
         RenderEngineStateBar();
-
-#ifdef USE_IMGUI_EDITOR
-        RenderGameViewport();
-#endif
-
         if (ui.showECS) {
             RenderEcsPanel(profiler, ecs, entities, selected, ui);
         }
@@ -1128,6 +1125,11 @@ namespace UI { // --------------------------------------------------------------
             RenderGameStatePanel(ui);
         }
         // EndFrame();
+
+#ifdef USE_IMGUI_EDITOR
+        RenderGameViewport();
+#endif
+
 
     }
 

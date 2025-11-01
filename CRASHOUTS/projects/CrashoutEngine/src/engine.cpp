@@ -43,6 +43,10 @@ const float moveSpeed = 6.7f;
 
 extern "C" void RegisterBuiltinComponentAdapters();
 
+#if USE_IMGUI_EDITOR
+bool gameWinHovered{ false };
+#endif
+
 /*  _________________________________________________________________________ */
 /*! SetupConsole
 
@@ -273,7 +277,7 @@ void Update(Component::RigidBodyComponent& playerRigidBody, double const& dt) {
     }
     else if (engineState == EngineState::STOP) {
         // Process Editor Camera Input
-        CrashoutsEngine::RenderCamera::EditorCameraInput();
+        if(gameWinHovered) CrashoutsEngine::RenderCamera::EditorCameraInput();
 #ifdef USE_IMGUI_EDITOR
         CrashoutsEngine::RenderCamera::engineCamera.UpdateMatrices(Settings::GetScreenWidth(), Settings::GetScreenHeight());
 #else
@@ -287,7 +291,10 @@ void Update(Component::RigidBodyComponent& playerRigidBody, double const& dt) {
 
         ECS& ecs = *ECS::getInstance();
         std::vector<CameraComponent> c = ecs.GetComponentArray<CameraComponent>().dense;
-        if(c.size() > 0) RenderCamera::PlayerCameraInput(*c.end());
+        if (c.size() > 0) {
+            Entity camEntity = ecs.GetComponentArray<CameraComponent>().indexToEntity.back();
+            RenderCamera::PlayerCameraInput(c.back(), camEntity);
+        }
 
 #ifdef USE_IMGUI_EDITOR
         RenderCamera::gameCamera.UpdateMatrices(Settings::GetScreenWidth(), Settings::GetScreenHeight());

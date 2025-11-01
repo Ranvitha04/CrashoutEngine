@@ -43,14 +43,14 @@ namespace UI {
     */
     struct UIState {
         bool lockLayout = false;
-        bool showPerf = false;
-        bool showConsole = false;
-        bool showInspector = false;
-        bool showECS = false;
-        bool showAssets = false;
-        bool showGameState = false;
-        bool showPhysics = false;
-        bool showAudio = false;
+        bool showPerf = true;
+        bool showConsole = true;
+        bool showInspector = true;
+        bool showECS = true;
+        bool showAssets = true;
+        bool showGameState = true;
+        bool showPhysics = true;
+        bool showAudio = true;
         bool drawCollOverlay = true;
 
         bool freezeOnCollision = false;

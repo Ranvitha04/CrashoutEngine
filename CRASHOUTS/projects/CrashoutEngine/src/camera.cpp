@@ -164,18 +164,31 @@ namespace CrashoutsEngine {
 			}
 		}
 
-		void PlayerCameraInput(CameraComponent& cameraComponent) {
+		void PlayerCameraInput(CameraComponent& cameraComponent, Entity& entity) {
 			ECS& ecs = *ECS::getInstance();
-			Entity targetEntity = cameraComponent.targetEntity;
-			std::vector<Entity>& camList = ecs.GetComponentArray<CameraComponent>().indexToEntity;
-			auto it = std::find(camList.begin(), camList.end(), targetEntity);
-			if (it != camList.end()) {
-				TransformComponent& target = *ecs.GetComponent<TransformComponent>(targetEntity);
-				cameraComponent.position = target.position;
-				gameCamera.SetPostiion(cameraComponent.position);
+
+			TransformComponent& target = *ecs.GetComponent<TransformComponent>(entity);
+			float x = target.position.x;
+			float y = target.position.y;
+
+			// Maintain stated boundaries
+			if ((cameraComponent.xBounds.y - cameraComponent.xBounds.x) > 0.f) {
+				if (x > cameraComponent.xBounds.y) x = cameraComponent.xBounds.y;
+				if (x < cameraComponent.xBounds.x) x = cameraComponent.xBounds.x;
 			}
+
+			if ((cameraComponent.yBounds.y - cameraComponent.yBounds.x) != 0.f) {
+				if (y > cameraComponent.yBounds.y) y = cameraComponent.yBounds.y;
+				if (y < cameraComponent.yBounds.x) y = cameraComponent.yBounds.x;
+			}
+
+			cameraComponent.position.x = x;
+			cameraComponent.position.y = y;
+
+			gameCamera.SetPostiion(cameraComponent.position);
 			if (gameCamera.GetZoom() != cameraComponent.zoom)
 				gameCamera.SetTargetAR(cameraComponent.targetAR);
+
 			if(gameCamera.GetZoom() != cameraComponent.zoom) 
 				gameCamera.SetZoom(cameraComponent.zoom);
 		}

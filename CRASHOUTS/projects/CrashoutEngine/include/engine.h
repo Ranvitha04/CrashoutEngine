@@ -55,6 +55,8 @@ extern GLuint gameTextureColorBuffer;
 extern GLuint gameRboDepthStencil;
 extern int gameTextureWidth;     // Will be resized
 extern int gameTextureHeight;    // Will be resized
+
+extern bool gameWinHovered;
 #endif
 
 #endif
