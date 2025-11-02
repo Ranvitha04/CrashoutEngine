@@ -38,6 +38,8 @@ using CrashoutsEngine::Audio::AudioSystem;
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 #include <imgui_internal.h>
+#include <ImGuizmo.h>
+#include <glm/gtc/type_ptr.hpp>
 
 #include <vector>
 #include "CEVec3.h"
@@ -111,11 +113,12 @@ namespace { //------------------------------------------------------------------
         char relPath[256]{};  // relative path under assets/ (optional)
     };
 
-    // Picking Helpers
-
-    static CrashoutsEngine::Entity s_vpPicked = 0;
-    static bool s_dragging = false;
-    static CEVec3 s_grabDelta = {};
+    // Gizmo state
+    static ImGuizmo::OPERATION g_gizmoOp = ImGuizmo::TRANSLATE; // T/R/S
+    static ImGuizmo::MODE      g_gizmoMode = ImGuizmo::LOCAL;    // LOCAL or WORLD
+    static bool                g_snapOn = false;
+    static float               g_snapTrans[3] = { 1.0f, 1.0f, 1.0f }; // snap grid for move/scale
+    static float               g_snapAngle = 15.0f;
 
     // using things from renderer.cpp
     static inline CEVec3 ViewUV_toWorld(float u, float v) {
@@ -131,20 +134,6 @@ namespace { //------------------------------------------------------------------
 
     static inline bool PointInAABB(const CEVec3& p, const Collision::AABBRect& a) {
         return p.x >= a.min.x && p.x <= a.max.x && p.y >= a.min.y && p.y <= a.max.y;
-    }
-
-    static CrashoutsEngine::Entity PickEntityAt(CrashoutsEngine::ECS& ecs, const CEVec3& worldPt) {
-
-        auto list = ecs.GetComponentArray<Component::ColliderComponent>().indexToEntity;
-        for (auto e : list) {
-            if (!ecs.HasComponent<Component::TransformComponent>(e)) continue;
-            auto* c = ecs.GetComponent<Component::ColliderComponent>(e);
-            auto* t = ecs.GetComponent<Component::TransformComponent>(e);
-            if (!c || !t || !c->collider) continue;
-            Collision::AABBRect aabb = Collision::GetAABB(*c->collider, t->position);
-            if (PointInAABB(worldPt, aabb)) return e;
-        }
-        return 0;
     }
 
 } // anonymous namespace
@@ -1002,7 +991,7 @@ namespace UI { // --------------------------------------------------------------
 
             // Play Stop Pause buttons
             // Play
-            if (ImGui::Button("PLAY")) {
+            if (ImGui::Button("PLAY", ImVec2(70, 25))) {
                 engineState = EngineState::PLAY;
                 CrashoutsEngine::RenderCamera::engineCamera.SetPostiion(CEVec3{ 0.f, 0.f, 0.f });
                 CrashoutsEngine::RenderCamera::engineCamera.SetZoom(1.f);
@@ -1011,12 +1000,12 @@ namespace UI { // --------------------------------------------------------------
             }
             ImGui::SameLine();
             // Pause
-            if (ImGui::Button("PAUSE")) {
+            if (ImGui::Button("PAUSE", ImVec2(70, 25))) {
                 engineState = EngineState::PAUSE;
             }
             ImGui::SameLine();
             // Stop
-            if (ImGui::Button("STOP")) {
+            if (ImGui::Button("STOP", ImVec2(70, 25))) {
                 RestartGameState();
                 engineState = EngineState::STOP;
             }
@@ -1029,10 +1018,35 @@ namespace UI { // --------------------------------------------------------------
     /*!
      @brief Renders the game viewport
     */
-    static void RenderGameViewport() {
+    static void RenderGameViewport(ECS& ecs, Entity& selected) {
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0)); // No padding
         // Begin the ImGUI window, enable Docking
         if (ImGui::Begin("Game Viewport", nullptr, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse)) {
+
+            ImVec2 start = ImGui::GetCursorScreenPos();
+            ImGui::SetCursorScreenPos(ImVec2(start.x + 10, start.y + 10));
+            ImGui::BeginChild("ViewportToolbar", ImVec2(200, 32),
+                false, ImGuiWindowFlags_NoBackground);
+
+            // --- Toolbar Row ---
+            ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(6, 4));
+            if (ImGui::Button("Translate")) g_gizmoOp = ImGuizmo::TRANSLATE;
+            ImGui::SameLine();
+            if (ImGui::Button("Rotate")) g_gizmoOp = ImGuizmo::ROTATE;
+            ImGui::SameLine();
+            if (ImGui::Button("Scale")) g_gizmoOp = ImGuizmo::SCALE;
+            ImGui::SameLine();
+            ImGui::SeparatorEx(ImGuiSeparatorFlags_Vertical);
+            ImGui::SameLine();
+            bool isLocal = (g_gizmoMode == ImGuizmo::LOCAL);
+            if (ImGui::Checkbox("Local", &isLocal)) g_gizmoMode = isLocal ? ImGuizmo::LOCAL : ImGuizmo::WORLD;
+            ImGui::SameLine();
+            ImGui::Checkbox("Snap", &g_snapOn);
+            ImGui::PopStyleVar();
+
+            ImGui::Separator();
+            ImGui::EndChild();
+            ImGui::SetCursorScreenPos(start);
 
             // Get the size of ImGui window content region
             ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
@@ -1094,55 +1108,154 @@ namespace UI { // --------------------------------------------------------------
             
             // Display the texture within the ImGui window
             // UV flip (0,1) to (1,0) since OpenGL textures are often upside-down
-            ImGui::Image((void*)(intptr_t)gameTextureColorBuffer,
-                ImVec2((float)finalTextureWidth, (float)finalTextureHeight),
-                ImVec2(0, 1), ImVec2(1, 0));
+            ImGui::Image((void*)(intptr_t)gameTextureColorBuffer, ImVec2((float)finalTextureWidth, (float)finalTextureHeight), ImVec2(0, 1), ImVec2(1, 0));
 
-            // In-world picking & dragging
+            // Let the Gizmo recieve hover/drag over image
+            ImGui::SetItemAllowOverlap();
+
+            // Rectangle of that Image in screen space (used by gizmo & picking)
             ImVec2 imgMin = ImGui::GetItemRectMin();
             ImVec2 imgMax = ImGui::GetItemRectMax();
+            ImVec2 imgSize = ImGui::GetItemRectSize();
+
+            // ---------- ImGuizmo overlay ----------
+            ImGuizmo::BeginFrame();
+            ImGuizmo::Enable(true);
+
+            ImVec2 winPos = ImGui::GetWindowPos();
+            ImVec2 contentMin = ImGui::GetWindowContentRegionMin(); // in window-local space
+            ImVec2 contentMax = ImGui::GetWindowContentRegionMax();
+
+            ImVec2 gizmoMin = ImVec2(winPos.x + contentMin.x, winPos.y + contentMin.y);
+            ImVec2 gizmoSz = ImVec2(contentMax.x - contentMin.x, contentMax.y - contentMin.y);
+
+            ImGuizmo::SetDrawlist(ImGui::GetCurrentWindow()->DrawList);
+            ImGuizmo::SetRect(gizmoMin.x, gizmoMin.y, gizmoSz.x, gizmoSz.y);
+
+            // If you are 2D (orthographic), keep this true; flip to false for perspective cameras.
+            ImGuizmo::SetOrthographic(true);
+
+            if (selected && ecs.HasComponent<Component::TransformComponent>(selected)) {
+                auto* t = ecs.GetComponent<Component::TransformComponent>(selected);
+
+                // Map your 2D component → TRS that ImGuizmo expects
+                float tr[3] = { t->position.x, t->position.y, t->position.z };
+                float rt[3] = { 0.0f, 0.0f, t->rotation };
+                float sc[3] = { t->size.x, t->size.y, 1.0f }; // 2D scale
+
+                float m[16];
+                ImGuizmo::RecomposeMatrixFromComponents(tr, rt, sc, m);
+
+                const float* view = glm::value_ptr(Component::Rendering::Get().viewMatrix);
+                const float* proj = glm::value_ptr(Component::Rendering::Get().projectionMatrix);
+
+                const float* snapPtr = nullptr;
+                float snap[3];
+                if (g_snapOn) {
+                    if (g_gizmoOp == ImGuizmo::ROTATE) { snap[0] = g_snapAngle; snapPtr = snap; }
+                    else { snap[0] = g_snapTrans[0]; snap[1] = g_snapTrans[1]; snap[2] = g_snapTrans[2]; snapPtr = snap; }
+                }
+
+                ImGuizmo::Manipulate(view, proj, g_gizmoOp, g_gizmoMode, m, nullptr, snapPtr);
+
+                if (ImGuizmo::IsUsing()) {
+                    ImGuizmo::DecomposeMatrixToComponents(m, tr, rt, sc);
+                    t->position = { tr[0], tr[1], tr[2] };
+                    t->rotation = rt[2];
+                    t->size = { sc[0], sc[1] };
+                }
+            }
+
             ImVec2 mouse = ImGui::GetMousePos();
+            const bool over =
+                (mouse.x >= imgMin.x && mouse.x <= imgMax.x &&
+                    mouse.y >= imgMin.y && mouse.y <= imgMax.y);
 
-            bool over = (mouse.x >= imgMin.x && mouse.x <= imgMax.x &&
-                mouse.y >= imgMin.y && mouse.y <= imgMax.y);
-
-            // Convert mouse position to UV inside the drawn framebuffer
             float u = 0.f, v = 0.f;
             if (over) {
                 u = (mouse.x - imgMin.x) / (imgMax.x - imgMin.x);
-                v = 1.f - (mouse.y - imgMin.y) / (imgMax.y - imgMin.y); // flip Y
+                v = 1.f - (mouse.y - imgMin.y) / (imgMax.y - imgMin.y);
             }
 
-            auto& ecs = *CrashoutsEngine::ECS::getInstance();
-
-            // Click to pick
-            if (over && ImGui::IsMouseClicked(ImGuiMouseButton_Left)) {
+            // --- Click to select (AABB from ShapeComponent when needed) ---------
+            if (over && ImGui::IsMouseClicked(ImGuiMouseButton_Left) && !ImGuizmo::IsOver() && !ImGuizmo::IsUsing()) {
                 CEVec3 worldPt = ViewUV_toWorld(u, v);
-                s_vpPicked = PickEntityAt(ecs, worldPt);
-                s_dragging = (s_vpPicked != 0);
-                if (s_dragging) {
-                    if (auto* t = ecs.GetComponent<Component::TransformComponent>(s_vpPicked))
-                        s_grabDelta = t->position - worldPt;
+
+                // Iterate all entities that have a Transform (and optionally Shape)
+                Entity hit = 0;
+                auto& tArr = ecs.GetComponentArray<Component::TransformComponent>();
+
+                // Optional: pick the top-most by Z (larger Z wins)
+                float bestZ = -FLT_MAX;
+
+                for (Entity e : tArr.indexToEntity) {
+                    if (!ecs.HasComponent<Component::TransformComponent>(e)) continue;
+                    auto* t = ecs.GetComponent<Component::TransformComponent>(e);
+
+                    // --- Compute half-extents (hx, hy) from ShapeComponent if present ---
+                    float hx = 0.5f, hy = 0.5f; // tiny default to avoid zero-area
+                    if (auto* sc = ecs.GetComponent<Component::ShapeComponent>(e)) {
+                        using Component::ShapeType;
+                        switch (sc->type) {
+                        case ShapeType::Square: {
+                            hx = hy = 0.5f * sc->size;
+                        } break;
+                        case ShapeType::Rectangle: {
+                            hx = 0.5f * sc->width;
+                            hy = 0.5f * sc->height;
+                        } break;
+                        case ShapeType::Line: {
+                            // Treat as a box around p1..p2 (2D)
+                            float minx = std::min(sc->p1.x, sc->p2.x);
+                            float maxx = std::max(sc->p1.x, sc->p2.x);
+                            float miny = std::min(sc->p1.y, sc->p2.y);
+                            float maxy = std::max(sc->p1.y, sc->p2.y);
+                            hx = 0.5f * (maxx - minx);
+                            hy = 0.5f * (maxy - miny);
+                            if (hx < sc->thickness * 0.5f) hx = sc->thickness * 0.5f;
+                            if (hy < sc->thickness * 0.5f) hy = sc->thickness * 0.5f;
+                        } break;
+                        case ShapeType::Triangle: {
+                            // AABB around triangle in local space
+                            float minx = std::min({ sc->t1.x, sc->t2.x, sc->t3.x });
+                            float maxx = std::max({ sc->t1.x, sc->t2.x, sc->t3.x });
+                            float miny = std::min({ sc->t1.y, sc->t2.y, sc->t3.y });
+                            float maxy = std::max({ sc->t1.y, sc->t2.y, sc->t3.y });
+                            hx = 0.5f * (maxx - minx);
+                            hy = 0.5f * (maxy - miny);
+                        } break;
+                        }
+                    }
+                    else {
+                        // Fallback to Transform size (your Transform has size.x/size.y)
+                        hx = std::max(0.5f * t->size.x, 0.5f);
+                        hy = std::max(0.5f * t->size.y, 0.5f);
+                    }
+
+                    // Build AABB in world space (2D)
+                    const float minx = t->position.x - hx;
+                    const float maxx = t->position.x + hx;
+                    const float miny = t->position.y - hy;
+                    const float maxy = t->position.y + hy;
+
+                    if (worldPt.x >= minx && worldPt.x <= maxx &&
+                        worldPt.y >= miny && worldPt.y <= maxy)
+                    {
+                        // Prefer the one with greater Z so top-most gets picked
+                        if (t->position.z >= bestZ) {
+                            bestZ = t->position.z;
+                            hit = e;
+                        }
+                    }
                 }
+
+                selected = hit;
             }
 
-            // Release to drop
-            if (s_dragging && ImGui::IsMouseReleased(ImGuiMouseButton_Left))
-                s_dragging = false;
-
-            // Drag move
-            if (s_dragging && over && ImGui::IsMouseDragging(ImGuiMouseButton_Left)) {
-                if (auto* t = ecs.GetComponent<Component::TransformComponent>(s_vpPicked)) {
-                    CEVec3 worldPt = ViewUV_toWorld(u, v);
-                    t->position = worldPt + s_grabDelta;
-                }
-            }
-
+            // ---------- Drag & drop assets into the world ----------
             if (ImGui::BeginDragDropTarget()) {
                 if (const ImGuiPayload* pl = ImGui::AcceptDragDropPayload("ASSET/PAYLOAD")) {
                     const auto* p = static_cast<const AssetDragPayload*>(pl->Data);
-                    auto& ecs = *CrashoutsEngine::ECS::getInstance();
-
                     CEVec3 dropWorld = ViewUV_toWorld(u, v);
 
                     using CrashoutsEngine::Assets::AssetManager;
@@ -1157,7 +1270,7 @@ namespace UI { // --------------------------------------------------------------
                             auto* sc = ecs.GetComponent<Component::ShapeComponent>(e);
                             sc->enableTexture = true;
                             sc->textureName = p->name;
-                            ecs.GetComponent<Component::TransformComponent>(e)->position = dropWorld; // spawn at cursor
+                            ecs.GetComponent<Component::TransformComponent>(e)->position = dropWorld;
                         }
                     }
                     else if (p && p->kind == AssetKind::Prefab) {
@@ -1267,7 +1380,7 @@ namespace UI { // --------------------------------------------------------------
         }
 
 #ifdef USE_IMGUI_EDITOR
-        RenderGameViewport();
+        RenderGameViewport(ecs, selected);
 #endif
 
         if (ui.showECS) {

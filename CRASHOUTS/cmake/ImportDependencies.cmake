@@ -90,6 +90,30 @@ macro(import_imgui)
     endif()
 endmacro()
 
+# -------------------- ImGuizmo -----------------------------
+macro(import_imguizmo)
+    if(NOT TARGET imguizmo)
+        FetchContent_Declare(
+            imguizmo
+            GIT_REPOSITORY https://github.com/CedricGuillemet/ImGuizmo.git
+            GIT_TAG master
+        )
+        FetchContent_GetProperties(imguizmo)
+        if(NOT imguizmo_POPULATED)
+            FetchContent_Populate(imguizmo)
+        endif()
+
+        add_library(imguizmo STATIC ${imguizmo_SOURCE_DIR}/ImGuizmo.cpp)
+
+        disable_warnings_for(imguizmo)
+
+        target_include_directories(imguizmo PUBLIC ${imguizmo_SOURCE_DIR})
+
+        # ImGuizmo depends on Dear ImGui headers/symbols
+        target_link_libraries(imguizmo PUBLIC imgui)
+    endif()
+endmacro()
+
 # -------------------- stb (header-only) --------------------
 macro(import_stb)
     if(NOT TARGET stb)
@@ -353,6 +377,9 @@ macro(importDependencies)
 
     import_imgui()
     message(STATUS "ImGui imported successfully.")
+
+    import_imguizmo()
+    message(STATUS "ImGuizmo imported successfully.")
 
     import_stb()
     message(STATUS "stb imported successfully.")
