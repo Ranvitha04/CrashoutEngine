@@ -34,6 +34,11 @@
 #include "audiocomponent.h"
 #include "scriptcomponent.h"
 #include "cameracomponent.h"
+// UI COMPONENTS
+#include "buttoncomponent.h"
+#include "guicomponent.h"
+#include "textinputcomponent.h"
+#include "uilayoutcomponent.h"
 
 /*                                                                   
 ----------------------------------------------------------------------------- */

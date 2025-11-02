@@ -112,17 +112,22 @@ namespace CrashoutsEngine {
 
         // JSON Structure Keys definition (for clean and centralized key management)
         namespace Keys {
-            const char* const ENTITIES = "entities";
-            const char* const ENTITY_ID = "id";
-            const char* const NAME_COMPONENT = "name";
-            const char* const TRANSFORM_COMPONENT = "transform";
-            const char* const RIGIDBODY_COMPONENT = "rigidbody";
-            const char* const COLLIDER_COMPONENT = "collider";
-            const char* const SHAPE_COMPONENT = "shape";
-            const char* const TEXT_COMPONENT = "text";
-            const char* const AUDIO_COMPONENT = "audio";
-            const char* const SCRIPT_COMPONENT = "script";
-            const char* const CAMERA_COMPONENT = "camera";
+            const char* const ENTITIES                  = "entities";
+            const char* const ENTITY_ID                 = "id";
+            const char* const NAME_COMPONENT            = "name";
+            const char* const TRANSFORM_COMPONENT       = "transform";
+            const char* const RIGIDBODY_COMPONENT       = "rigidbody";
+            const char* const COLLIDER_COMPONENT        = "collider";
+            const char* const SHAPE_COMPONENT           = "shape";
+            const char* const TEXT_COMPONENT            = "text";    
+            const char* const AUDIO_COMPONENT           = "audio";  
+            const char* const SCRIPT_COMPONENT          = "script";
+            const char* const CAMERA_COMPONENT          = "camera";
+            // UI COMPONENT ITEMS
+            const char* const BUTTON_COMPONENT          = "button";
+            const char* const GUI_COMPONENT             = "gui";
+            const char* const TEXT_INPUT_COMPONENT      = "textinput";
+            const char* const UI_LAYOUT_COMPONENT       = "uilayout";
         }
 
         /*!
@@ -488,17 +493,17 @@ namespace CrashoutsEngine {
                 // Check if Camera
                 if (entityValue.HasMember(Keys::CAMERA_COMPONENT) && entityValue[Keys::CAMERA_COMPONENT].IsObject()) {
                     CameraComponent& c = gECS.AddComponent<CameraComponent>(newEntity);
-                    const rapidjson::Value& textValue = entityValue[Keys::TEXT_COMPONENT];
+                    const rapidjson::Value& camValue = entityValue[Keys::CAMERA_COMPONENT];
 
                     // 1. Check Zoom
-                    if (textValue.HasMember("zoom") && textValue["zoom"].IsFloat()) {
-                        c.zoom = textValue["zoom"].GetFloat();
+                    if (camValue.HasMember("zoom") && camValue["zoom"].IsFloat()) {
+                        c.zoom = camValue["zoom"].GetFloat();
                     }
 
                     // 2. Check xBounds
-                    if (textValue.HasMember("xBounds") && textValue["xBounds"].IsObject()) {
+                    if (camValue.HasMember("xBounds") && camValue["xBounds"].IsObject()) {
                         CEVec2 xBounds{ 0.0f, 0.0f };
-                        const rapidjson::Value& xBoundsValue = textValue["xBounds"];
+                        const rapidjson::Value& xBoundsValue = camValue["xBounds"];
                         // Use HasMember check for safety
                         if (xBoundsValue.HasMember("x")) xBounds.x = xBoundsValue["x"].GetFloat();
                         if (xBoundsValue.HasMember("y")) xBounds.y = xBoundsValue["y"].GetFloat();
@@ -506,15 +511,113 @@ namespace CrashoutsEngine {
                     }
 
                     // 2. Check yBounds
-                    if (textValue.HasMember("yBounds") && textValue["yBounds"].IsObject()) {
+                    if (camValue.HasMember("yBounds") && camValue["yBounds"].IsObject()) {
                         CEVec2 yBounds{ 0.0f, 0.0f };
-                        const rapidjson::Value& yBoundsValue = textValue["yBounds"];
+                        const rapidjson::Value& yBoundsValue = camValue["yBounds"];
                         // Use HasMember check for safety
                         if (yBoundsValue.HasMember("x")) yBounds.x = yBoundsValue["x"].GetFloat();
                         if (yBoundsValue.HasMember("y")) yBounds.y = yBoundsValue["y"].GetFloat();
                         c.yBounds = yBounds;
                     }
                 }
+            
+                // Check if Button
+                if (entityValue.HasMember(Keys::BUTTON_COMPONENT) && entityValue[Keys::BUTTON_COMPONENT].IsObject()) {
+                    UI::ButtonComponent& b = gECS.AddComponent<UI::ButtonComponent>(newEntity);
+                    const rapidjson::Value& buttonValue = entityValue[Keys::TEXT_COMPONENT];
+
+                    // 1. Check Button State
+                    if (buttonValue.HasMember("buttonState") && buttonValue["buttonValue"].IsUint()) {
+                        b.buttonState = static_cast<UI::ButtonState>(buttonValue["buttonState"].GetUint());
+                    }
+
+                    // ----------------------------------------------------------------------------------------------
+                    // 
+                    // 2. Check Shape Normal Color 
+                    if (buttonValue.HasMember("shapeNormalColor") && buttonValue["shapeNormalColor"].IsObject()) {
+                        CEVec3 color { 0.f, 0.f, 0.f };
+                        const rapidjson::Value& colorVal = buttonValue["shapeNormalColor"];
+                        // Use HasMember check for safety
+                        if (colorVal.HasMember("x")) color.x = colorVal["x"].GetFloat();
+                        if (colorVal.HasMember("y")) color.y = colorVal["y"].GetFloat();
+                        if (colorVal.HasMember("z")) color.z = colorVal["z"].GetFloat();
+                        b.shapeNormalColor = color;
+                    }
+
+                    // 3. Check Shape Hover Color 
+                    if (buttonValue.HasMember("shapeHoveredColor") && buttonValue["shapeHoveredColor"].IsObject()) {
+                        CEVec3 color{ 0.f, 0.f, 0.f };
+                        const rapidjson::Value& colorVal = buttonValue["shapeHoveredColor"];
+                        // Use HasMember check for safety
+                        if (colorVal.HasMember("x")) color.x = colorVal["x"].GetFloat();
+                        if (colorVal.HasMember("y")) color.y = colorVal["y"].GetFloat();
+                        if (colorVal.HasMember("z")) color.z = colorVal["z"].GetFloat();
+                        b.shapeHoveredColor = color;
+                    }
+                    
+                    // 4. Check Shape Pressed Color 
+                    if (buttonValue.HasMember("shapePressedColor") && buttonValue["shapePressedColor"].IsObject()) {
+                        CEVec3 color{ 0.f, 0.f, 0.f };
+                        const rapidjson::Value& colorVal = buttonValue["shapePressedColor"];
+                        // Use HasMember check for safety
+                        if (colorVal.HasMember("x")) color.x = colorVal["x"].GetFloat();
+                        if (colorVal.HasMember("y")) color.y = colorVal["y"].GetFloat();
+                        if (colorVal.HasMember("z")) color.z = colorVal["z"].GetFloat();
+                        b.shapePressedColor = color;
+                    }
+
+                    // ----------------------------------------------------------------------------------------------
+                    // 
+                    // 5. Check Text Normal Color 
+                    if (buttonValue.HasMember("textNormalColor") && buttonValue["textNormalColor"].IsObject()) {
+                        CEVec3 color { 0.f, 0.f, 0.f };
+                        const rapidjson::Value& colorVal = buttonValue["textNormalColor"];
+                        // Use HasMember check for safety
+                        if (colorVal.HasMember("x")) color.x = colorVal["x"].GetFloat();
+                        if (colorVal.HasMember("y")) color.y = colorVal["y"].GetFloat();
+                        if (colorVal.HasMember("z")) color.z = colorVal["z"].GetFloat();
+                        b.textNormalColor = color;
+                    }
+
+                    // 6. Check Text Hover Color 
+                    if (buttonValue.HasMember("textHoveredColor") && buttonValue["textHoveredColor"].IsObject()) {
+                        CEVec3 color{ 0.f, 0.f, 0.f };
+                        const rapidjson::Value& colorVal = buttonValue["textHoveredColor"];
+                        // Use HasMember check for safety
+                        if (colorVal.HasMember("x")) color.x = colorVal["x"].GetFloat();
+                        if (colorVal.HasMember("y")) color.y = colorVal["y"].GetFloat();
+                        if (colorVal.HasMember("z")) color.z = colorVal["z"].GetFloat();
+                        b.textHoveredColor = color;
+                    }
+                    
+                    // 7. Check Text Pressed Color 
+                    if (buttonValue.HasMember("textPressedColor") && buttonValue["textPressedColor"].IsObject()) {
+                        CEVec3 color{ 0.f, 0.f, 0.f };
+                        const rapidjson::Value& colorVal = buttonValue["textPressedColor"];
+                        // Use HasMember check for safety
+                        if (colorVal.HasMember("x")) color.x = colorVal["x"].GetFloat();
+                        if (colorVal.HasMember("y")) color.y = colorVal["y"].GetFloat();
+                        if (colorVal.HasMember("z")) color.z = colorVal["z"].GetFloat();
+                        b.textPressedColor = color;
+                    }
+
+                }
+
+                // Check if GUI
+                if (entityValue.HasMember(Keys::GUI_COMPONENT) && entityValue[Keys::GUI_COMPONENT].IsObject()) {
+
+                }
+
+                // Check if Text Input
+                if (entityValue.HasMember(Keys::TEXT_INPUT_COMPONENT) && entityValue[Keys::TEXT_INPUT_COMPONENT].IsObject()) {
+
+                }
+
+                // Check if UI Layout
+                if (entityValue.HasMember(Keys::UI_LAYOUT_COMPONENT) && entityValue[Keys::UI_LAYOUT_COMPONENT].IsObject()) {
+
+                }
+
             }
         }
 
@@ -810,6 +913,139 @@ namespace CrashoutsEngine {
                     yBoundsValue.AddMember("x", cameraComp.yBounds.x, allocator);
                     yBoundsValue.AddMember("y", cameraComp.yBounds.y, allocator);
                     camValue.AddMember("yBounds", yBoundsValue, allocator);
+
+                    entityValue.AddMember(rapidjson::StringRef(Keys::CAMERA_COMPONENT), camValue, allocator);
+                }
+
+                // =========================================================
+                // J. ButtonComponent
+                // =========================================================
+                if (gECS.HasComponent<UI::ButtonComponent>(id)) {
+                    const UI::ButtonComponent& buttonComp = *gECS.GetComponent<UI::ButtonComponent>(id);
+                    rapidjson::Value buttonVal(rapidjson::kObjectType);
+                    // 1.  buttonState (unsigned int)
+                    buttonVal.AddMember("buttonState", 
+                        static_cast<std::underlying_type_t<UI::ButtonState>>(buttonComp.buttonState), allocator);
+                    
+                    // -------------------------------------------------------------------------------
+                    // 
+                    // 2. shapeNormalColor (CEVec3 -> JSON Object)
+                    rapidjson::Value shapeNormalColorValue(rapidjson::kObjectType);
+                    shapeNormalColorValue.AddMember("x", buttonComp.shapeNormalColor.x, allocator);
+                    shapeNormalColorValue.AddMember("y", buttonComp.shapeNormalColor.y, allocator);
+                    shapeNormalColorValue.AddMember("z", buttonComp.shapeNormalColor.z, allocator);
+                    buttonVal.AddMember("shapeNormalColor", shapeNormalColorValue, allocator);
+
+                    // 3. shapeHoveredColor (CEVec2 -> JSON Object)
+                    rapidjson::Value shapeHoveredColorValue(rapidjson::kObjectType);
+                    shapeHoveredColorValue.AddMember("x", buttonComp.shapeHoveredColor.x, allocator);
+                    shapeHoveredColorValue.AddMember("y", buttonComp.shapeHoveredColor.y, allocator);
+                    shapeHoveredColorValue.AddMember("z", buttonComp.shapeHoveredColor.z, allocator);
+                    buttonVal.AddMember("shapeHoveredColor", shapeNormalColorValue, allocator);
+
+                    // 4. shapePressedColor (CEVec2 -> JSON Object)
+                    rapidjson::Value shapePressedColorValue(rapidjson::kObjectType);
+                    shapePressedColorValue.AddMember("x", buttonComp.shapePressedColor.x, allocator);
+                    shapePressedColorValue.AddMember("y", buttonComp.shapePressedColor.y, allocator);
+                    shapePressedColorValue.AddMember("z", buttonComp.shapePressedColor.z, allocator);
+                    buttonVal.AddMember("shapePressedColor", shapePressedColorValue, allocator);
+
+                    // -------------------------------------------------------------------------------
+                    //
+                    // 5. textNormalColor (CEVec3 -> JSON Object)
+                    rapidjson::Value textNormalColorValue(rapidjson::kObjectType);
+                    textNormalColorValue.AddMember("x", buttonComp.textNormalColor.x, allocator);
+                    textNormalColorValue.AddMember("y", buttonComp.textNormalColor.y, allocator);
+                    textNormalColorValue.AddMember("z", buttonComp.textNormalColor.z, allocator);
+                    buttonVal.AddMember("textNormalColor", textNormalColorValue, allocator);
+
+                    // 6. textHoveredColor (CEVec2 -> JSON Object)
+                    rapidjson::Value textHoveredColorValue(rapidjson::kObjectType);
+                    textHoveredColorValue.AddMember("x", buttonComp.textHoveredColor.x, allocator);
+                    textHoveredColorValue.AddMember("y", buttonComp.textHoveredColor.y, allocator);
+                    textHoveredColorValue.AddMember("z", buttonComp.textHoveredColor.z, allocator);
+                    buttonVal.AddMember("textHoveredColor", textNormalColorValue, allocator);
+
+                    // 7. textPressedColor (CEVec2 -> JSON Object)
+                    rapidjson::Value textPressedColorValue(rapidjson::kObjectType);
+                    textPressedColorValue.AddMember("x", buttonComp.textPressedColor.x, allocator);
+                    textPressedColorValue.AddMember("y", buttonComp.textPressedColor.y, allocator);
+                    textPressedColorValue.AddMember("z", buttonComp.textPressedColor.z, allocator);
+                    buttonVal.AddMember("textPressedColor", textPressedColorValue, allocator);
+
+                    entityValue.AddMember(rapidjson::StringRef(Keys::BUTTON_COMPONENT), buttonVal, allocator);
+                }
+
+                // =========================================================
+                // I. GuiComponent
+                // =========================================================
+                if (gECS.HasComponent<UI::GuiComponent>(id)) {
+                    const UI::GuiComponent& guiComp = *gECS.GetComponent<UI::GuiComponent>(id);
+                    rapidjson::Value camValue(rapidjson::kObjectType);
+                    // 1. Zoom (float)
+                    camValue.AddMember("zoom", cameraComp.zoom, allocator);
+
+                    // 2. xBounds (CEVec2 -> JSON Object)
+                    rapidjson::Value xBoundsValue(rapidjson::kObjectType);
+                    xBoundsValue.AddMember("x", cameraComp.xBounds.x, allocator);
+                    xBoundsValue.AddMember("y", cameraComp.xBounds.y, allocator);
+                    camValue.AddMember("xBounds", xBoundsValue, allocator);
+
+                    // 2. yBounds (CEVec2 -> JSON Object)
+                    rapidjson::Value yBoundsValue(rapidjson::kObjectType);
+                    yBoundsValue.AddMember("x", cameraComp.yBounds.x, allocator);
+                    yBoundsValue.AddMember("y", cameraComp.yBounds.y, allocator);
+                    camValue.AddMember("yBounds", yBoundsValue, allocator);
+
+                    entityValue.AddMember(rapidjson::StringRef(Keys::BUTTON_COMPONENT), buttonVal, allocator);
+                }
+
+                // =========================================================
+                // I. TextInputComponent
+                // =========================================================
+                if (gECS.HasComponent<UI::TextInputComponent>(id)) {
+                    const CameraComponent& cameraComp = *gECS.GetComponent<CameraComponent>(id);
+                    rapidjson::Value camValue(rapidjson::kObjectType);
+                    // 1. Zoom (float)
+                    camValue.AddMember("zoom", cameraComp.zoom, allocator);
+
+                    // 2. xBounds (CEVec2 -> JSON Object)
+                    rapidjson::Value xBoundsValue(rapidjson::kObjectType);
+                    xBoundsValue.AddMember("x", cameraComp.xBounds.x, allocator);
+                    xBoundsValue.AddMember("y", cameraComp.xBounds.y, allocator);
+                    camValue.AddMember("xBounds", xBoundsValue, allocator);
+
+                    // 2. yBounds (CEVec2 -> JSON Object)
+                    rapidjson::Value yBoundsValue(rapidjson::kObjectType);
+                    yBoundsValue.AddMember("x", cameraComp.yBounds.x, allocator);
+                    yBoundsValue.AddMember("y", cameraComp.yBounds.y, allocator);
+                    camValue.AddMember("yBounds", yBoundsValue, allocator);
+
+                    entityValue.AddMember(rapidjson::StringRef(Keys::BUTTON_COMPONENT), buttonVal, allocator);
+                }
+
+                // =========================================================
+                // I. UILayoutComponent
+                // =========================================================
+                if (gECS.HasComponent<UI::UILayoutComponent>(id)) {
+                    const CameraComponent& cameraComp = *gECS.GetComponent<CameraComponent>(id);
+                    rapidjson::Value camValue(rapidjson::kObjectType);
+                    // 1. Zoom (float)
+                    camValue.AddMember("zoom", cameraComp.zoom, allocator);
+
+                    // 2. xBounds (CEVec2 -> JSON Object)
+                    rapidjson::Value xBoundsValue(rapidjson::kObjectType);
+                    xBoundsValue.AddMember("x", cameraComp.xBounds.x, allocator);
+                    xBoundsValue.AddMember("y", cameraComp.xBounds.y, allocator);
+                    camValue.AddMember("xBounds", xBoundsValue, allocator);
+
+                    // 2. yBounds (CEVec2 -> JSON Object)
+                    rapidjson::Value yBoundsValue(rapidjson::kObjectType);
+                    yBoundsValue.AddMember("x", cameraComp.yBounds.x, allocator);
+                    yBoundsValue.AddMember("y", cameraComp.yBounds.y, allocator);
+                    camValue.AddMember("yBounds", yBoundsValue, allocator);
+
+                    entityValue.AddMember(rapidjson::StringRef(Keys::BUTTON_COMPONENT), buttonVal, allocator);
                 }
 
                 // Add the finished entity JSON object to the array
