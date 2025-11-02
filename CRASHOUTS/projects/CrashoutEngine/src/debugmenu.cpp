@@ -925,6 +925,7 @@ namespace UI { // --------------------------------------------------------------
                 {"Console", &ui.showConsole},
                 {"Game State", &ui.showGameState},
                 {"Audio", &ui.showAudio},
+                {"Engine Control", &ui.showEngineControl}
             };
             for (auto& t : toggles) ImGui::MenuItem(t.label, nullptr, t.flag);
 
