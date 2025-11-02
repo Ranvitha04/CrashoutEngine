@@ -31,6 +31,9 @@
 #include "rigidbodycomponent.h"
 #include "shapes.h"
 #include "textcomponent.h"
+#include "audiocomponent.h"
+#include "scriptcomponent.h"
+#include "cameracomponent.h"
 
 /*                                                                   
 ----------------------------------------------------------------------------- */

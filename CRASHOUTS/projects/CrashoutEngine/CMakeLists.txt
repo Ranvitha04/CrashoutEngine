@@ -101,6 +101,7 @@ target_link_libraries(${PROJECT_NAME}
         reflect
         rapidjson
         CrashoutsAudio
+        imguizmo
 )
 link_fmod_to(${PROJECT_NAME})
 link_mono_to(${PROJECT_NAME})
