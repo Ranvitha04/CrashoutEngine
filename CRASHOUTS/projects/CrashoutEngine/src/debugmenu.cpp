@@ -18,7 +18,6 @@ This file provides the graphics for Crashout Engine's ImGUI.
 #include "physicsmanager.h"
 #include "gamestatemanager.h"
 #include "assetmanager.h"
-#include "textureasset.h"
 #include "shapes.h"
 #include "log.h"
 #include "logdefs.h"
@@ -363,7 +362,7 @@ namespace UI { // --------------------------------------------------------------
 
         ImGui::EndChild();
 
-        // RIGHT: Files + Preview
+        // --- RIGHT: Files + Preview ----------------
         ImGui::SameLine();
         ImGui::BeginChild("asset_right", ImVec2(0, 0), true);
 
@@ -372,7 +371,7 @@ namespace UI { // --------------------------------------------------------------
         float listHeight = availRight.y - kPreviewMaxHeight - ImGui::GetStyle().ItemSpacing.y;
         if (listHeight < 120.0f) listHeight = availRight.y * 0.6f;
 
-        // FILE LIST
+        // --- FILE LIST ----------
         ImGui::BeginChild("asset_right_list", ImVec2(0, listHeight), true);
 
         if (needScan) {
@@ -405,42 +404,10 @@ namespace UI { // --------------------------------------------------------------
                 if (ImGui::Selectable(name.c_str(), selected))
                     outSelectedAsset = e.path().generic_string();
 
-                if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID)) {
-                    AssetDragPayload p{};
-                    std::string rel = fs::relative(e.path(), fs::path(root)).generic_string();// e.g. "images/player.png"
-                    std::string stem = e.path().stem().generic_string(); // e.g. "player"
-                    std::string ext = e.path().extension().generic_string();
-                    std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
-
-                    // Heuristics to pick kind by folder/extension
-                    if (rel.rfind("images/", 0) == 0 ||
-                        ext == ".png" || ext == ".jpg" || ext == ".jpeg" || ext == ".bmp" || ext == ".tga") {
-                        p.kind = AssetKind::Texture;
-                    }
-                    else if (rel.rfind("sprite_sheet/", 0) == 0) {
-                        p.kind = AssetKind::SpriteSheet;
-                    }
-                    else if (rel.rfind("scenes/", 0) == 0 || ext == ".scene" || ext == ".json") {
-                        p.kind = AssetKind::Scene;
-                    }
-                    else if (rel.rfind("audio/", 0) == 0 || ext == ".bank") {
-                        p.kind = AssetKind::Audio;
-                    }
-                    else if (rel.rfind("prefabs/", 0) == 0) {
-                        p.kind = AssetKind::Prefab;
-                    }
-                    else if (rel.rfind("shaders/", 0) == 0 || ext == ".vert" || ext == ".frag") {
-                        p.kind = AssetKind::Shader;
-                    }
-                    else {
-                        p.kind = AssetKind::Unknown;
-                    }
-
-                    std::strncpy(p.name, stem.c_str(), sizeof(p.name) - 1);
-                    std::strncpy(p.relPath, rel.c_str(), sizeof(p.relPath) - 1);
-
-                    ImGui::SetDragDropPayload("ASSET/PAYLOAD", &p, sizeof(p));
-                    ImGui::TextUnformatted(p.name);
+                if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None)) {
+                    const std::string path = e.path().generic_string();
+                    ImGui::SetDragDropPayload("ASSET_PATH", path.c_str(), path.size() + 1);
+                    ImGui::TextUnformatted(path.c_str());
                     ImGui::EndDragDropSource();
                 }
 
@@ -451,7 +418,7 @@ namespace UI { // --------------------------------------------------------------
 
         ImGui::EndChild(); // asset_right_list
 
-        // PREVIEW
+        // --- PREVIEW ----------
         ImGui::Separator();
         ImGui::BeginChild("asset_right_preview", ImVec2(0, 0), true);
 
@@ -883,36 +850,21 @@ namespace UI { // --------------------------------------------------------------
         static std::string pickBGM, pickSFX1, pickSFX2, pickSFX3;
 
         EventCombo("Background Music", pickBGM);
+        EventCombo("SFX 1", pickSFX1);
+        EventCombo("SFX 2", pickSFX2);
+        EventCombo("SFX 3", pickSFX3);
+
         if (ImGui::Button("Play")) {
             CrashoutsEngine::Audio::AudioSystem::instance().playOneShot(pickBGM);
         }
-        EventCombo("SFX 1", pickSFX1);
         if (ImGui::Button("Play##sfx1")) {
             CrashoutsEngine::Audio::AudioSystem::instance().playOneShot(pickSFX1);
         }
-        EventCombo("SFX 2", pickSFX2);
         if (ImGui::Button("Play##sfx2")) {
             CrashoutsEngine::Audio::AudioSystem::instance().playOneShot(pickSFX2);
         }
-        EventCombo("SFX 3", pickSFX3);
         if (ImGui::Button("Play##sfx3")) {
             CrashoutsEngine::Audio::AudioSystem::instance().playOneShot(pickSFX3);
-        }
-
-        ImGui::SeparatorText("Master Volume");
-
-        // Cache slider state
-        static float sMasterVol = 1.0f;
-        if (ImGui::SliderFloat("Master", &sMasterVol, 0.0f, 1.0f, "%.2f"))
-            CrashoutsEngine::Audio::AudioSystem::instance().setBusVolume("bus:/", sMasterVol);
-
-        // Optional mute toggle (reuses same call)
-        static bool sMuted = false;
-        if (ImGui::Checkbox("Mute All", &sMuted)) {
-            if (sMuted)
-                CrashoutsEngine::Audio::AudioSystem::instance().setBusVolume("bus:/", 0.0f);
-            else
-                CrashoutsEngine::Audio::AudioSystem::instance().setBusVolume("bus:/", sMasterVol);
         }
 
         ImGui::Separator();
@@ -940,20 +892,19 @@ namespace UI { // --------------------------------------------------------------
                 {"Console", &ui.showConsole},
                 {"Game State", &ui.showGameState},
                 {"Audio", &ui.showAudio},
-                {"Engine", &ui.showEngineControl}
             };
             for (auto& t : toggles) ImGui::MenuItem(t.label, nullptr, t.flag);
 
             ImGui::Separator();
             if (ImGui::MenuItem("Show All")) {
                 ui.showECS = ui.showAssets = ui.showInspector = ui.showPhysics =
-                    ui.showPerf = ui.showConsole = ui.showGameState = ui.showAudio = ui.showEngineControl = true;
+                    ui.showPerf = ui.showConsole = ui.showGameState = ui.showAudio = true;
                 for (auto const& p : DebugReflection::PanelRegistry::instance().panels())
                     if (p.toggleFlag) *p.toggleFlag = true;
             }
             if (ImGui::MenuItem("Hide All")) {
                 ui.showECS = ui.showAssets = ui.showInspector = ui.showPhysics =
-                    ui.showPerf = ui.showConsole = ui.showGameState = ui.showAudio = ui.showEngineControl = false;
+                    ui.showPerf = ui.showConsole = ui.showGameState = ui.showAudio = false;
                 for (auto const& p : DebugReflection::PanelRegistry::instance().panels())
                     if (p.toggleFlag) *p.toggleFlag = false;
             }
@@ -977,8 +928,7 @@ namespace UI { // --------------------------------------------------------------
     /*!
      @brief Renders the Scene control bar on top of game viewport
     */
-    static void RenderEngineStateBar(UIState& ui) {
-        if (!ui.showEngineControl) return;
+    static void RenderEngineStateBar() {
 
         ImGuiWindowFlags window_flags = 
             ImGuiWindowFlags_NoTitleBar |
@@ -1047,6 +997,7 @@ namespace UI { // --------------------------------------------------------------
             ImGui::Separator();
             ImGui::EndChild();
             ImGui::SetCursorScreenPos(start);
+            gameWinHovered = ImGui::IsWindowHovered();
 
             // Get the size of ImGui window content region
             ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
@@ -1109,7 +1060,7 @@ namespace UI { // --------------------------------------------------------------
             // Display the texture within the ImGui window
             // UV flip (0,1) to (1,0) since OpenGL textures are often upside-down
             ImGui::Image((void*)(intptr_t)gameTextureColorBuffer, ImVec2((float)finalTextureWidth, (float)finalTextureHeight), ImVec2(0, 1), ImVec2(1, 0));
-
+            
             // Let the Gizmo recieve hover/drag over image
             ImGui::SetItemAllowOverlap();
 
@@ -1283,7 +1234,7 @@ namespace UI { // --------------------------------------------------------------
             }
         }
         ImGui::End();
-        ImGui::PopStyleVar();
+        ImGui::PopStyleVar();   // Pop padding style
     }
 #endif
 
@@ -1370,18 +1321,17 @@ namespace UI { // --------------------------------------------------------------
             ImGui::DockBuilderDockWindow("GameState", dock_bottom);
             ImGui::DockBuilderDockWindow("Audio", dock_right_bottom);
             ImGui::DockBuilderDockWindow("Engine Controls", dock_top);
-            ImGui::DockBuilderDockWindow("Game Viewport", dock_main);
 
             ImGui::DockBuilderFinish(dockspace_id);
-        }
-
-        if (ui.showEngineControl) {
-            RenderEngineStateBar(ui);
         }
 
 #ifdef USE_IMGUI_EDITOR
         RenderGameViewport(ecs, selected);
 #endif
+
+        if (ui.showEngineControl) {
+            RenderEngineStateBar(ui);
+        }
 
         if (ui.showECS) {
             RenderEcsPanel(profiler, ecs, entities, selected, ui);
@@ -1409,6 +1359,11 @@ namespace UI { // --------------------------------------------------------------
             RenderGameStatePanel(ui);
         }
         // EndFrame();
+
+#ifdef USE_IMGUI_EDITOR
+        RenderGameViewport();
+#endif
+
 
     }
 

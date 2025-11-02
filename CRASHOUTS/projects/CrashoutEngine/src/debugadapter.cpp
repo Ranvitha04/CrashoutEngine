@@ -27,17 +27,17 @@ runtime-extensible and project-agnostic.
 #include "namecomponent.h"
 #include "transformcomponent.h"
 #include "shapescomponent.h"
-#include "cameracomponent.h"
-#include "scriptcomponent.h"
-#include "textcomponent.h"
 #include "audiocomponent.h"
+#include "textcomponent.h"
+#include "scriptcomponent.h"
+#include "cameracomponent.h"
 #include "physicsmanager.h"
 #include "collisionmanager.h"
 #include "gamestatemanager.h"
 #include "assetmanager.h"
 #include "monomanager.h"
-#include "reflectimgui.h"
 #include "audioSystem.h"
+#include "reflectimgui.h"
 #include "shapes.h"
 
 using namespace CrashoutsEngine;
@@ -683,41 +683,6 @@ namespace {
     };
 
     /*!
-    @brief Adapter for editing Component::CameraComponent.
-    @details Edits type-specific parameters and supports a per-entity preview toggle.
-    */
-    struct CameraAdapter : DebugReflection::IComponentAdapter {
-        const char* name() const override { return "CameraComponent"; }
-        bool has(ECS& ecs, Entity e) const override {
-            return ecs.HasComponent<Component::CameraComponent>(e);
-        }
-        void add(ECS& ecs, Entity e) override {
-            if (!has(ecs, e)) ecs.AddComponent<Component::CameraComponent>(e);
-        }
-        void remove(ECS& ecs, Entity e) override {
-            if (has(ecs, e)) ecs.RemoveComponent<Component::CameraComponent>(e);
-        }
-        void drawInspector(ECS& ecs, Entity e) override {
-            using namespace Component;
-            auto* cc = ecs.GetComponent<CameraComponent>(e);
-            //auto& D = GetDebugDefaults();
-            if (!cc) return;
-
-            ImGui::Checkbox("Enable Camera", &cc->enabled);
-
-            ImGui::DragFloat3("Position", &cc->position.x, 0.f, 0.f, 0.f);
-            
-            ImGui::DragFloat("Zoom", &cc->zoom);
-
-            ImGui::DragFloat("Target Aspect-Ratio", &cc->targetAR);
-
-            int targetEntityInt;
-            ImGui::DragInt("Target Entity", &targetEntityInt);
-            cc->targetEntity = static_cast<uint32_t>(targetEntityInt);
-        }
-    };
-
-    /*!
     @brief Adapter for editing Component::ScriptComponent.
     @details Edits type-specific parameters and supports a per-entity preview toggle.
     */
@@ -773,6 +738,37 @@ namespace {
             if (ImGui::Button("Destroy")) sc->Destroy();
 
             if (!monoReady) ImGui::EndDisabled();
+        }
+    };
+
+    /*!
+    @brief Adapter for editing Component::CameraComponent.
+    @details Uses ImGui drag controls and writes values back to the ECS each frame.
+    */
+    struct CameraAdapter : DebugReflection::IComponentAdapter {
+        const char* name() const override { return "CameraComponent"; }
+        bool has(ECS& ecs, Entity e) const override {
+            return ecs.HasComponent<Component::CameraComponent>(e);
+        }
+        void add(ECS& ecs, Entity e) override {
+            if (!has(ecs, e)) ecs.AddComponent<Component::CameraComponent>(e);
+        }
+        void remove(ECS& ecs, Entity e) override {
+            if (has(ecs, e)) ecs.RemoveComponent<Component::CameraComponent>(e);
+        }
+        void drawInspector(ECS& ecs, Entity e) override {
+            using namespace Component;
+            auto* cc = ecs.GetComponent<CameraComponent>(e);
+            //auto& D = GetDebugDefaults();
+            if (!cc) return;
+
+            // ImGui::Checkbox("Enable Camera", &cc->enabled);      // CURRENTLY NOT IMPLEMENTED
+            // ImGui::DragFloat3("Position", &cc->position.x, 1.f); // Locked access
+            ImGui::DragFloat("Zoom", &cc->zoom);
+            // ImGui::DragFloat("Target Aspect Ratio", &cc->targetAR);
+            ImGui::DragFloat2("X Boundaries (min/max)", &cc->xBounds.x, 1.f);
+            ImGui::DragFloat2("Y Boundaries (min/max)", &cc->yBounds.x, 1.f);
+
         }
     };
 
