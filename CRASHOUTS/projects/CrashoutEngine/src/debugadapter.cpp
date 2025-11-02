@@ -258,26 +258,23 @@ namespace {
 
                             switch (shape->type) {
                                 case ShapeType::Rectangle: {
-                                    extents.x = shape->width * 0.5f;
-                                    extents.y = shape->height * 0.5f;
-
+                                    extents.x = t->size.x * 0.5f;
+                                    extents.y = t->size.y * 0.5f;
+                                    break;
                                 }
-                                break;
-                                case ShapeType::Square: {
-                                    extents.x = shape->size * 0.5f;
-                                    extents.y = shape->size * 0.5f;
-                                }
-                                break;
                                 case ShapeType::Triangle: {
-                                    CEVec3 diffP1P2{ shape->t1 - shape->t2 };
-                                    CEVec3 diffP1P3{ shape->t1 - shape->t3 };
-                                    CEVec3 diffP2P3{ shape->t2 - shape->t3 };
+                                    CEVec3 t1 = {t->position.x - .5f, t->position.y - .5f, t->position.z};
+                                    CEVec3 t2 = {t->position.x + .5f, t->position.y - .5f, t->position.z};
+                                    CEVec3 t3 = {t->position.x, t->position.y + .5f, t->position.z};
 
+                                    CEVec3 diffP1P2{ t1 - t2 };
+                                    CEVec3 diffP1P3{ t1 - t3 };
+                                    CEVec3 diffP2P3{ t2 - t3 };
 
                                     extents.x = max(std::fabs(diffP1P2.x), std::fabsf(diffP1P3.x), std::fabsf(diffP2P3.x)) * 0.5f;
                                     extents.y = max(std::fabs(diffP1P2.y), std::fabsf(diffP1P3.y), std::fabsf(diffP2P3.y)) * 0.5f;
+                                    break;
                                 }
-                                break;
                             }
 
                             a->min = t->position - extents;
@@ -457,24 +454,10 @@ namespace {
             }
 
             // per-type
-            switch (sc->type) {
-            case ShapeType::Square:
-                ImGui::DragFloat("Size", &sc->size, 0.5f, 0.0f, 1e6f);
-                break;
-            case ShapeType::Rectangle:
-                ImGui::DragFloat("Width", &sc->width, 0.5f, 0.0f, 1e6f);
-                ImGui::DragFloat("Height", &sc->height, 0.5f, 0.0f, 1e6f);
-                break;
-            case ShapeType::Line:
+            if(sc->type == ShapeType::Line) {
                 ImGui::DragFloat3("P1", &sc->p1.x, 0.5f);
                 ImGui::DragFloat3("P2", &sc->p2.x, 0.5f);
                 ImGui::DragFloat("Thickness", &sc->thickness, 0.1f, 0.0f, 1e6f);
-                break;
-            case ShapeType::Triangle:
-                ImGui::DragFloat3("T1", &sc->t1.x, 0.5f);
-                ImGui::DragFloat3("T2", &sc->t2.x, 0.5f);
-                ImGui::DragFloat3("T3", &sc->t3.x, 0.5f);
-                break;
             }
 
             /*CEVec3 pos{ 0,0,0 };

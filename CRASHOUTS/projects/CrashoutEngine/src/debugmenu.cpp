@@ -1170,13 +1170,6 @@ namespace UI { // --------------------------------------------------------------
                     if (auto* sc = ecs.GetComponent<Component::ShapeComponent>(e)) {
                         using Component::ShapeType;
                         switch (sc->type) {
-                        case ShapeType::Square: {
-                            hx = hy = 0.5f * sc->size;
-                        } break;
-                        case ShapeType::Rectangle: {
-                            hx = 0.5f * sc->width;
-                            hy = 0.5f * sc->height;
-                        } break;
                         case ShapeType::Line: {
                             float minx = std::min(sc->p1.x, sc->p2.x);
                             float maxx = std::max(sc->p1.x, sc->p2.x);
@@ -1188,10 +1181,15 @@ namespace UI { // --------------------------------------------------------------
                             if (hy < sc->thickness * 0.5f) hy = sc->thickness * 0.5f;
                         } break;
                         case ShapeType::Triangle: {
-                            float minx = std::min({ sc->t1.x, sc->t2.x, sc->t3.x });
-                            float maxx = std::max({ sc->t1.x, sc->t2.x, sc->t3.x });
-                            float miny = std::min({ sc->t1.y, sc->t2.y, sc->t3.y });
-                            float maxy = std::max({ sc->t1.y, sc->t2.y, sc->t3.y });
+
+                            CEVec3 t1 = { t->position.x - .5f, t->position.y - .5f, t->position.z };
+                            CEVec3 t2 = { t->position.x + .5f, t->position.y - .5f, t->position.z };
+                            CEVec3 t3 = { t->position.x, t->position.y + .5f, t->position.z };
+
+                            float minx = std::min({ t1.x, t2.x, t3.x });
+                            float maxx = std::max({ t1.x, t2.x, t3.x });
+                            float miny = std::min({ t1.y, t2.y, t3.y });
+                            float maxy = std::max({ t1.y, t2.y, t3.y });
                             hx = 0.5f * (maxx - minx);
                             hy = 0.5f * (maxy - miny);
                         } break;

@@ -92,7 +92,6 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path)
 
                 ShapeComponent sc{};
                 sc.type = ShapeType::Rectangle;
-                sc.width = w; sc.height = h;
                 e.AddComponent<ShapeComponent>(ent, sc);
 
                 e.AddComponent<ColliderComponent>(ent, MakeCenteredAABB3(t.position, w, h));
@@ -178,8 +177,6 @@ namespace CrashoutsEngine {
         {
             Value shj(kObjectType);
             shj.AddMember("kind", "Rectangle", A);
-            shj.AddMember("width", sh->width, A);
-            shj.AddMember("height", sh->height, A);
             obj.AddMember("shape", shj, A);
         }
 

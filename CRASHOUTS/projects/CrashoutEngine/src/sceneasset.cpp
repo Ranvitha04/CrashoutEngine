@@ -367,15 +367,12 @@ namespace CrashoutsEngine {
                     if (shapeValues.HasMember("type") && shapeValues["type"].IsInt()) {
                         switch (shapeValues["type"].GetInt()) {
                         case 0:
-                            s.type = ShapeType::Square;
-                            break;
-                        case 1:
                             s.type = ShapeType::Rectangle;
                             break;
-                        case 2:
+                        case 1:
                             s.type = ShapeType::Line;
                             break;
-                        case 3:
+                        case 2:
                             s.type = ShapeType::Triangle;
                             break;
                         default:
@@ -394,21 +391,6 @@ namespace CrashoutsEngine {
                         if (colorValue.HasMember("z")) color.z = colorValue["z"].GetFloat();
 
                         s.color = color;
-                    }
-
-                    // Size
-                    if (shapeValues.HasMember("size") && shapeValues["size"].IsFloat()) {
-                        s.size = shapeValues["size"].GetFloat();
-                    }
-
-                    // Width n Height
-                    // Size - Width
-                    if (shapeValues.HasMember("width") && shapeValues["width"].IsFloat()) {
-                        s.width = shapeValues["width"].GetFloat();
-                    }
-                    // Size - height
-                    if (shapeValues.HasMember("height") && shapeValues["height"].IsFloat()) {
-                        s.size = shapeValues["height"].GetFloat();
                     }
 
                     // p1
@@ -437,40 +419,6 @@ namespace CrashoutsEngine {
                     // Thickness
                     if (shapeValues.HasMember("thickness") && shapeValues["thickness"].IsFloat()) {
                         s.thickness = shapeValues["thickness"].GetFloat();
-                    }
-
-                    // t1
-                    if (shapeValues.HasMember("t1") && shapeValues["t1"].IsObject()) {
-                        CEVec3 pos{ 0.0f, 0.0f, 0.0f };
-                        const rapidjson::Value& t1Value = shapeValues["t1"];
-                        // Use HasMember check for safety
-                        if (t1Value.HasMember("x")) pos.x = t1Value["x"].GetFloat();
-                        if (t1Value.HasMember("y")) pos.y = t1Value["y"].GetFloat();
-                        if (t1Value.HasMember("z")) pos.z = t1Value["z"].GetFloat();
-
-                        s.t1 = pos;
-                    }
-                    // t2
-                    if (shapeValues.HasMember("t2") && shapeValues["t2"].IsObject()) {
-                        CEVec3 pos{ 0.0f, 0.0f, 0.0f };
-                        const rapidjson::Value& t2Value = shapeValues["t2"];
-                        // Use HasMember check for safety
-                        if (t2Value.HasMember("x")) pos.x = t2Value["x"].GetFloat();
-                        if (t2Value.HasMember("y")) pos.y = t2Value["y"].GetFloat();
-                        if (t2Value.HasMember("z")) pos.z = t2Value["z"].GetFloat();
-
-                        s.t2 = pos;
-                    }
-                    // t3
-                    if (shapeValues.HasMember("t3") && shapeValues["t3"].IsObject()) {
-                        CEVec3 pos{ 0.0f, 0.0f, 0.0f };
-                        const rapidjson::Value& t3Value = shapeValues["t3"];
-                        // Use HasMember check for safety
-                        if (t3Value.HasMember("x")) pos.x = t3Value["x"].GetFloat();
-                        if (t3Value.HasMember("y")) pos.y = t3Value["y"].GetFloat();
-                        if (t3Value.HasMember("z")) pos.z = t3Value["z"].GetFloat();
-
-                        s.t3 = pos;
                     }
 
                     // Preview
@@ -747,9 +695,6 @@ namespace CrashoutsEngine {
                     shapeValues.AddMember("useTexture", sComp.enableTexture, allocator);
                     shapeValues.AddMember("wrapModeU", (int)sComp.wrapModeU, allocator);
                     shapeValues.AddMember("wrapModeV", (int)sComp.wrapModeV, allocator);
-                    shapeValues.AddMember("size", sComp.size, allocator);
-                    shapeValues.AddMember("width", sComp.width, allocator);
-                    shapeValues.AddMember("height", sComp.height, allocator);
                     shapeValues.AddMember("thickness", sComp.thickness, allocator);
                     shapeValues.AddMember("preview", sComp.preview, allocator);
 
@@ -790,27 +735,6 @@ namespace CrashoutsEngine {
                     p2Value.AddMember("y", sComp.p2.y, allocator);
                     p2Value.AddMember("z", sComp.p2.z, allocator);
                     shapeValues.AddMember("p2", p2Value, allocator);
-
-                    // t1
-                    rapidjson::Value t1Value(rapidjson::kObjectType);
-                    t1Value.AddMember("x", sComp.t1.x, allocator);
-                    t1Value.AddMember("y", sComp.t1.y, allocator);
-                    t1Value.AddMember("z", sComp.t1.z, allocator);
-                    shapeValues.AddMember("t1", t1Value, allocator);
-
-                    // t2
-                    rapidjson::Value t2Value(rapidjson::kObjectType);
-                    t2Value.AddMember("x", sComp.t2.x, allocator);
-                    t2Value.AddMember("y", sComp.t2.y, allocator);
-                    t2Value.AddMember("z", sComp.t2.z, allocator);
-                    shapeValues.AddMember("t2", t2Value, allocator);
-
-                    // t3
-                    rapidjson::Value t3Value(rapidjson::kObjectType);
-                    t3Value.AddMember("x", sComp.t3.x, allocator);
-                    t3Value.AddMember("y", sComp.t3.y, allocator);
-                    t3Value.AddMember("z", sComp.t3.z, allocator);
-                    shapeValues.AddMember("t3", t3Value, allocator);
 
                     entityValue.AddMember(rapidjson::StringRef(Keys::SHAPE_COMPONENT), shapeValues, allocator);
                 }
