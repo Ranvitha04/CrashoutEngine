@@ -184,7 +184,7 @@ static void InitializeMode5EcsRandomShapes(int perTypeCount) {
         auto e = globalECS->CreateEntity();
         CEVec3 pos{ posX(rng), posY(rng), 0.0f };
         float rotation = rotDeg(rng);
-        float s = triSide(rng);
+        // float s = triSide(rng);
         // Equilateral triangle points scaled by side length
         // Height = sqrt(3)/2 * s; center at origin
         // float h = 0.866025403784f * s;
