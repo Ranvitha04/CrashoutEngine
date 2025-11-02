@@ -883,19 +883,19 @@ namespace UI { // --------------------------------------------------------------
         static std::string pickBGM, pickSFX1, pickSFX2, pickSFX3;
 
         EventCombo("Background Music", pickBGM);
-        EventCombo("SFX 1", pickSFX1);
-        EventCombo("SFX 2", pickSFX2);
-        EventCombo("SFX 3", pickSFX3);
 
         if (ImGui::Button("Play")) {
             CrashoutsEngine::Audio::AudioSystem::instance().playOneShot(pickBGM);
         }
+        EventCombo("SFX 1", pickSFX1);
         if (ImGui::Button("Play##sfx1")) {
             CrashoutsEngine::Audio::AudioSystem::instance().playOneShot(pickSFX1);
         }
+        EventCombo("SFX 2", pickSFX2);
         if (ImGui::Button("Play##sfx2")) {
             CrashoutsEngine::Audio::AudioSystem::instance().playOneShot(pickSFX2);
         }
+        EventCombo("SFX 3", pickSFX3);
         if (ImGui::Button("Play##sfx3")) {
             CrashoutsEngine::Audio::AudioSystem::instance().playOneShot(pickSFX3);
         }
