@@ -29,6 +29,8 @@ This file provides the graphics for Crashout Engine's ImGUI.
 #include "prefab_init.h"  
 #include <fmod_studio.hpp> 
 #include "prefab.h"
+#include "hierarchy.h"
+#include "hierarchy_components.h"
 
 #include "engine.h"
 
@@ -192,6 +194,7 @@ namespace UI { // --------------------------------------------------------------
         static bool showAllInspectors = false;  // renders inspectors for every entity
         FrameProfiler::Scoped s(profiler, "ImGui");
         ScopedMemTag mem(MemTag::UI);
+        static std::vector<Entity> multiSel;   // persistent multi-selection in the panel
 
         ScopedWindow win("ECS Demo", LockFlags(ui.lockLayout));
 
@@ -243,19 +246,62 @@ namespace UI { // --------------------------------------------------------------
             ImGui::TextDisabled("No entities created yet.");
         }
         else {
+            // helper to toggle in multiSel
+            auto toggleMulti = [&](Entity x) {
+                auto it = std::find(multiSel.begin(), multiSel.end(), x);
+                if (it == multiSel.end()) multiSel.push_back(x);
+                else                      multiSel.erase(it);
+                };
+
             for (Entity e : entities) {
-                // build visible name
-                std::string visible = ecs.HasComponent<NameComponent>(e) ? ecs.GetComponent<NameComponent>(e)->name : ("Entity " + std::to_string(e));
+                // display name
+                std::string visible = ecs.HasComponent<NameComponent>(e)
+                    ? ecs.GetComponent<NameComponent>(e)->name
+                    : ("Entity " + std::to_string(e));
 
-                // make the ID unique via "##"
-                std::string id = visible + "##ent" + std::to_string((unsigned)e);
+                // unique ID per row
+                ImGui::PushID((int)e);
 
+                // multi-check
+                bool checked = std::find(multiSel.begin(), multiSel.end(), e) != multiSel.end();
+                if (ImGui::Checkbox("##chk", &checked)) {
+                    if (checked)  multiSel.push_back(e);
+                    else          multiSel.erase(std::remove(multiSel.begin(), multiSel.end(), e), multiSel.end());
+                }
+                ImGui::SameLine();
+
+                // single selection (preserve your behavior)
                 bool isSel = (e == selected);
-                if (ImGui::Selectable(id.c_str(), isSel)) {
+                if (ImGui::Selectable(visible.c_str(), isSel))
                     selected = e;
+
+                ImGui::PopID();
+            }
+
+            // Multi-select actions
+            ImGui::SeparatorText("Grouping");
+            if (ImGui::Button("Group (first selected becomes Parent)")) {
+                if (multiSel.size() >= 2) {
+                    Entity parent = multiSel.front();
+                    for (size_t i = 1; i < multiSel.size(); ++i) {
+                        CrashoutsEngine::AttachChild(ecs, parent, multiSel[i]);
+                    }
                 }
             }
+            ImGui::SameLine();
+            if (ImGui::Button("Ungroup (detach all selected)")) {
+                for (Entity e : multiSel)
+                    CrashoutsEngine::DetachChild(ecs, e);
+            }
+            ImGui::SameLine();
+            if (ImGui::Button("Clear Selection")) {
+                multiSel.clear();
+            }
+
+            // Optional: show selection info
+            ImGui::TextDisabled("Selected: %u | Multi: %d", (unsigned)selected, (int)multiSel.size());
         }
+
 
         ImGui::Separator();
         ImGui::Text("Selected Entity: %u", (unsigned)selected);

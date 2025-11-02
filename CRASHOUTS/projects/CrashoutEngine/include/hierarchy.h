@@ -1,10 +1,12 @@
+// hierarchy.h
 #pragma once
-#include <vector>
 #include "entitymanager.h"
 
 namespace CrashoutsEngine {
-	namespace Component {
-		struct ParentComponent { Entity parent = 0; };                
-		struct ChildrenComponent { std::vector<Entity> children = {}; }; 
-	}
-} // namespace
+    void AttachChild(ECS& ecs, Entity parent, Entity child);
+    void DetachChild(ECS& ecs, Entity child);
+    void Reparent(ECS& ecs, Entity child, Entity newParent);
+
+    // Call once per frame (before physics/render)
+    void UpdateHierarchy(ECS& ecs);
+}

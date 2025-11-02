@@ -23,7 +23,9 @@ context and implement a game loop.
 #include "debugmenu.h"
 #include "sceneutils.h"
 #include "camera.h"
-
+//Testing for grouping
+#include "hierarchy.h"   
+#include "hierarchy_components.h" 
 /*                                                   type declarations
 ----------------------------------------------------------------------------- */
 
@@ -257,6 +259,7 @@ void Update(Component::RigidBodyComponent& playerRigidBody, double const& dt) {
 
     FrameProfiler::Scoped s(gProfiler, "Game/Update");
     ScopedMemTag mem(MemTag::Update);
+    CrashoutsEngine::UpdateHierarchy(*CrashoutsEngine::ECS::getInstance());
 
     if (engineState == EngineState::PLAY) {
 

@@ -1,11 +1,15 @@
-#include "hierarchy.h"         
+// hierarchy.cpp
+#include <algorithm>                 // std::find, std::remove
+#include "hierarchy.h"
+#include "hierarchy_components.h"
 #include "entitymanager.h"
-#include "shapes.h"             
+#include "shapes.h"                  // for TransformComponent if you use it
+
 namespace CrashoutsEngine {
 
-    // ---------- Helpers to manage the relationship ----------
+    using namespace Component;
+
     static inline void AddChild(ECS& ecs, Entity parent, Entity child) {
-        using namespace Component;
         if (!ecs.HasComponent<ChildrenComponent>(parent))
             ecs.AddComponent<ChildrenComponent>(parent, ChildrenComponent{});
 
@@ -21,15 +25,15 @@ namespace CrashoutsEngine {
     }
 
     static inline void RemoveChildRef(ECS& ecs, Entity parent, Entity child) {
-        using namespace Component;
         if (!ecs.HasComponent<ChildrenComponent>(parent)) return;
         auto* kids = ecs.GetComponent<ChildrenComponent>(parent);
-        kids->children.erase(std::remove(kids->children.begin(), kids->children.end(), child),
-            kids->children.end());
+        kids->children.erase(
+            std::remove(kids->children.begin(), kids->children.end(), child),
+            kids->children.end()
+        );
     }
 
     void AttachChild(ECS& ecs, Entity parent, Entity child) {
-        using namespace Component;
         if (parent == 0 || child == 0 || parent == child) return;
 
         // if child already had a parent, detach first
@@ -41,7 +45,6 @@ namespace CrashoutsEngine {
     }
 
     void DetachChild(ECS& ecs, Entity child) {
-        using namespace Component;
         if (!ecs.HasComponent<ParentComponent>(child)) return;
 
         Entity parent = ecs.GetComponent<ParentComponent>(child)->parent;
@@ -54,9 +57,8 @@ namespace CrashoutsEngine {
         if (newParent) AttachChild(ecs, newParent, child);
     }
 
-    // ---------- Transform propagation (Unity-style) ----------
+    // Very simple propagation example
     static void PropagateFrom(ECS& ecs, Entity parent) {
-        using namespace Component;
         if (!ecs.HasComponent<TransformComponent>(parent)) return;
 
         auto* pt = ecs.GetComponent<TransformComponent>(parent);
@@ -68,22 +70,18 @@ namespace CrashoutsEngine {
             if (!ecs.HasComponent<TransformComponent>(c)) continue;
             auto* ct = ecs.GetComponent<TransformComponent>(c);
 
-            // very simple “local = already stored in ct, parent adds to it” model
             ct->position.x += pt->position.x;
             ct->position.y += pt->position.y;
             ct->position.z += pt->position.z;
-            ct->rotation += pt->rotation;               // simplistic; replace with your matrix math
+            ct->rotation += pt->rotation;
 
-            // recurse
             PropagateFrom(ecs, c);
         }
     }
 
-    // Call this once per frame (before physics/render)
     void UpdateHierarchy(ECS& ecs) {
-        using namespace Component;
-        // find roots = entities with ChildrenComponent but no ParentComponent
-        auto roots = ecs.GetComponentArray<ChildrenComponent>().indexToEntity;
+        // roots = entities that have ChildrenComponent but no (or zero) ParentComponent
+        const auto roots = ecs.GetComponentArray<ChildrenComponent>().indexToEntity;
         for (Entity e : roots) {
             if (!ecs.HasComponent<ParentComponent>(e) ||
                 ecs.GetComponent<ParentComponent>(e)->parent == 0) {
