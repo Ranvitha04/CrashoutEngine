@@ -18,6 +18,7 @@ This file provides the graphics for Crashout Engine's ImGUI.
 #include "physicsmanager.h"
 #include "gamestatemanager.h"
 #include "assetmanager.h"
+#include "textureasset.h"
 #include "shapes.h"
 #include "log.h"
 #include "logdefs.h"
@@ -404,10 +405,42 @@ namespace UI { // --------------------------------------------------------------
                 if (ImGui::Selectable(name.c_str(), selected))
                     outSelectedAsset = e.path().generic_string();
 
-                if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None)) {
-                    const std::string path = e.path().generic_string();
-                    ImGui::SetDragDropPayload("ASSET_PATH", path.c_str(), path.size() + 1);
-                    ImGui::TextUnformatted(path.c_str());
+                if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID)) {
+                    AssetDragPayload p{};
+                    std::string rel = fs::relative(e.path(), fs::path(root)).generic_string();// e.g. "images/player.png"
+                    std::string stem = e.path().stem().generic_string(); // e.g. "player"
+                    std::string ext = e.path().extension().generic_string();
+                    std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+
+                    // Heuristics to pick kind by folder/extension
+                    if (rel.rfind("images/", 0) == 0 ||
+                        ext == ".png" || ext == ".jpg" || ext == ".jpeg" || ext == ".bmp" || ext == ".tga") {
+                        p.kind = AssetKind::Texture;
+                    }
+                    else if (rel.rfind("sprite_sheet/", 0) == 0) {
+                        p.kind = AssetKind::SpriteSheet;
+                    }
+                    else if (rel.rfind("scenes/", 0) == 0 || ext == ".scene" || ext == ".json") {
+                        p.kind = AssetKind::Scene;
+                    }
+                    else if (rel.rfind("audio/", 0) == 0 || ext == ".bank") {
+                        p.kind = AssetKind::Audio;
+                    }
+                    else if (rel.rfind("prefabs/", 0) == 0) {
+                        p.kind = AssetKind::Prefab;
+                    }
+                    else if (rel.rfind("shaders/", 0) == 0 || ext == ".vert" || ext == ".frag") {
+                        p.kind = AssetKind::Shader;
+                    }
+                    else {
+                        p.kind = AssetKind::Unknown;
+                    }
+
+                    std::strncpy(p.name, stem.c_str(), sizeof(p.name) - 1);
+                    std::strncpy(p.relPath, rel.c_str(), sizeof(p.relPath) - 1);
+
+                    ImGui::SetDragDropPayload("ASSET/PAYLOAD", &p, sizeof(p));
+                    ImGui::TextUnformatted(p.name);
                     ImGui::EndDragDropSource();
                 }
 
@@ -898,13 +931,13 @@ namespace UI { // --------------------------------------------------------------
             ImGui::Separator();
             if (ImGui::MenuItem("Show All")) {
                 ui.showECS = ui.showAssets = ui.showInspector = ui.showPhysics =
-                    ui.showPerf = ui.showConsole = ui.showGameState = ui.showAudio = true;
+                    ui.showPerf = ui.showConsole = ui.showGameState = ui.showAudio = ui.showEngineControl = true;
                 for (auto const& p : DebugReflection::PanelRegistry::instance().panels())
                     if (p.toggleFlag) *p.toggleFlag = true;
             }
             if (ImGui::MenuItem("Hide All")) {
                 ui.showECS = ui.showAssets = ui.showInspector = ui.showPhysics =
-                    ui.showPerf = ui.showConsole = ui.showGameState = ui.showAudio = false;
+                    ui.showPerf = ui.showConsole = ui.showGameState = ui.showAudio = ui.showEngineControl = false;
                 for (auto const& p : DebugReflection::PanelRegistry::instance().panels())
                     if (p.toggleFlag) *p.toggleFlag = false;
             }
@@ -928,7 +961,8 @@ namespace UI { // --------------------------------------------------------------
     /*!
      @brief Renders the Scene control bar on top of game viewport
     */
-    static void RenderEngineStateBar() {
+    static void RenderEngineStateBar(UIState& ui) {
+        if (!ui.showEngineControl) return;
 
         ImGuiWindowFlags window_flags = 
             ImGuiWindowFlags_NoTitleBar |
@@ -1073,26 +1107,18 @@ namespace UI { // --------------------------------------------------------------
             ImGuizmo::BeginFrame();
             ImGuizmo::Enable(true);
 
-            ImVec2 winPos = ImGui::GetWindowPos();
-            ImVec2 contentMin = ImGui::GetWindowContentRegionMin(); // in window-local space
-            ImVec2 contentMax = ImGui::GetWindowContentRegionMax();
-
-            ImVec2 gizmoMin = ImVec2(winPos.x + contentMin.x, winPos.y + contentMin.y);
-            ImVec2 gizmoSz = ImVec2(contentMax.x - contentMin.x, contentMax.y - contentMin.y);
-
             ImGuizmo::SetDrawlist(ImGui::GetCurrentWindow()->DrawList);
-            ImGuizmo::SetRect(gizmoMin.x, gizmoMin.y, gizmoSz.x, gizmoSz.y);
+            ImGuizmo::SetRect(imgMin.x, imgMin.y, imgSize.x, imgSize.y);
 
-            // If you are 2D (orthographic), keep this true; flip to false for perspective cameras.
+            // TRUE - ORTOGRAPHIC, FALSE - PERSPECTIVE
             ImGuizmo::SetOrthographic(true);
 
             if (selected && ecs.HasComponent<Component::TransformComponent>(selected)) {
                 auto* t = ecs.GetComponent<Component::TransformComponent>(selected);
 
-                // Map your 2D component → TRS that ImGuizmo expects
                 float tr[3] = { t->position.x, t->position.y, t->position.z };
                 float rt[3] = { 0.0f, 0.0f, t->rotation };
-                float sc[3] = { t->size.x, t->size.y, 1.0f }; // 2D scale
+                float sc[3] = { t->size.x, t->size.y, 1.0f };
 
                 float m[16];
                 ImGuizmo::RecomposeMatrixFromComponents(tr, rt, sc, m);
@@ -1128,23 +1154,19 @@ namespace UI { // --------------------------------------------------------------
                 v = 1.f - (mouse.y - imgMin.y) / (imgMax.y - imgMin.y);
             }
 
-            // --- Click to select (AABB from ShapeComponent when needed) ---------
             if (over && ImGui::IsMouseClicked(ImGuiMouseButton_Left) && !ImGuizmo::IsOver() && !ImGuizmo::IsUsing()) {
                 CEVec3 worldPt = ViewUV_toWorld(u, v);
 
-                // Iterate all entities that have a Transform (and optionally Shape)
                 Entity hit = 0;
                 auto& tArr = ecs.GetComponentArray<Component::TransformComponent>();
 
-                // Optional: pick the top-most by Z (larger Z wins)
                 float bestZ = -FLT_MAX;
 
                 for (Entity e : tArr.indexToEntity) {
                     if (!ecs.HasComponent<Component::TransformComponent>(e)) continue;
                     auto* t = ecs.GetComponent<Component::TransformComponent>(e);
 
-                    // --- Compute half-extents (hx, hy) from ShapeComponent if present ---
-                    float hx = 0.5f, hy = 0.5f; // tiny default to avoid zero-area
+                    float hx = 0.5f, hy = 0.5f;
                     if (auto* sc = ecs.GetComponent<Component::ShapeComponent>(e)) {
                         using Component::ShapeType;
                         switch (sc->type) {
@@ -1156,7 +1178,6 @@ namespace UI { // --------------------------------------------------------------
                             hy = 0.5f * sc->height;
                         } break;
                         case ShapeType::Line: {
-                            // Treat as a box around p1..p2 (2D)
                             float minx = std::min(sc->p1.x, sc->p2.x);
                             float maxx = std::max(sc->p1.x, sc->p2.x);
                             float miny = std::min(sc->p1.y, sc->p2.y);
@@ -1167,7 +1188,6 @@ namespace UI { // --------------------------------------------------------------
                             if (hy < sc->thickness * 0.5f) hy = sc->thickness * 0.5f;
                         } break;
                         case ShapeType::Triangle: {
-                            // AABB around triangle in local space
                             float minx = std::min({ sc->t1.x, sc->t2.x, sc->t3.x });
                             float maxx = std::max({ sc->t1.x, sc->t2.x, sc->t3.x });
                             float miny = std::min({ sc->t1.y, sc->t2.y, sc->t3.y });
@@ -1178,7 +1198,7 @@ namespace UI { // --------------------------------------------------------------
                         }
                     }
                     else {
-                        // Fallback to Transform size (your Transform has size.x/size.y)
+                        // Fallback to Transform size
                         hx = std::max(0.5f * t->size.x, 0.5f);
                         hy = std::max(0.5f * t->size.y, 0.5f);
                     }
@@ -1234,7 +1254,7 @@ namespace UI { // --------------------------------------------------------------
             }
         }
         ImGui::End();
-        ImGui::PopStyleVar();   // Pop padding style
+        ImGui::PopStyleVar();
     }
 #endif
 
@@ -1321,13 +1341,10 @@ namespace UI { // --------------------------------------------------------------
             ImGui::DockBuilderDockWindow("GameState", dock_bottom);
             ImGui::DockBuilderDockWindow("Audio", dock_right_bottom);
             ImGui::DockBuilderDockWindow("Engine Controls", dock_top);
+            ImGui::DockBuilderDockWindow("Game Viewport", dock_main);
 
             ImGui::DockBuilderFinish(dockspace_id);
         }
-
-#ifdef USE_IMGUI_EDITOR
-        RenderGameViewport(ecs, selected);
-#endif
 
         if (ui.showEngineControl) {
             RenderEngineStateBar(ui);
@@ -1361,7 +1378,7 @@ namespace UI { // --------------------------------------------------------------
         // EndFrame();
 
 #ifdef USE_IMGUI_EDITOR
-        RenderGameViewport();
+        RenderGameViewport(ecs, selected);
 #endif
 
 
