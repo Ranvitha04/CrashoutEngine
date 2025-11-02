@@ -415,9 +415,46 @@ namespace {
 
             }
 
-            ImGui::DragFloat3("Color", &sc->color.x, D.drag_small, 0.f, 255.f);
+            //ImGui::DragFloat3("Color", &sc->color.x, D.drag_small, 0.f, 255.f);
             //ImGui::DragFloat("Rotation", &sc->rotation, D.drag_rotation);
             //ImGui::DragFloat("Scale", &sc->scale, D.drag_small, 0.01f, 100.f);
+            
+            // Colour Mixer a la carte
+            {
+                float col[4] = {
+                    sc->color.x * (1.0f / 255.0f),
+                    sc->color.y * (1.0f / 255.0f),
+                    sc->color.z * (1.0f / 255.0f),
+                    1.0f
+                };
+
+                ImGuiColorEditFlags flags =
+                    ImGuiColorEditFlags_DisplayHSV |
+                    ImGuiColorEditFlags_InputRGB |
+                    ImGuiColorEditFlags_PickerHueBar |
+                    ImGuiColorEditFlags_NoAlpha;
+
+                if (ImGui::ColorEdit3("Color", col, flags) || ImGui::IsItemDeactivatedAfterEdit())
+                {
+                    sc->color.x = col[0] * 255.0f;
+                    sc->color.y = col[1] * 255.0f;
+                    sc->color.z = col[2] * 255.0f;
+                }
+
+                if (ImGui::SmallButton("Open Color Picker"))
+                    ImGui::OpenPopup("##shape_color_picker");
+
+                if (ImGui::BeginPopup("##shape_color_picker"))
+                {
+                    if (ImGui::ColorPicker3("##picker", col, flags))
+                    {
+                        sc->color.x = col[0] * 255.0f;
+                        sc->color.y = col[1] * 255.0f;
+                        sc->color.z = col[2] * 255.0f;
+                    }
+                    ImGui::EndPopup();
+                }
+            }
 
             // per-type
             switch (sc->type) {
