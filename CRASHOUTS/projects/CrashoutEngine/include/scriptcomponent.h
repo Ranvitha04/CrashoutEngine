@@ -4,6 +4,7 @@
 #include <mono/metadata/debug-helpers.h>
 #include <string>
 #include <iostream>
+#include "CETypes.h"
 
 namespace CrashoutsEngine
 {
@@ -16,8 +17,11 @@ namespace CrashoutsEngine
         MonoMethod* MethodUpdate = nullptr;
         bool Started = false;
 
+        uint32_t EntityID = 0;
+        CE::u32 GCHandle=0;
+
         ScriptComponent() = default;
-        ScriptComponent(const std::string& name) : ClassName(name) {}
+        ScriptComponent(const std::string& name, uint32_t ID) : ClassName(name), EntityID(ID) {}
 
         bool Initialize(MonoDomain* domain, MonoAssembly* assembly);
         void Start();

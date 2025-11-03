@@ -22,7 +22,7 @@ void MonoManager::Init(const std::string& domainName)
 void MonoManager::LoadAssembly(const std::string& assemblyPath)
 {
     std::filesystem::path abs = std::filesystem::absolute(assemblyPath);
-    std::cout << "[Mono] >>> LoadAssembly called for " << abs << '\n';
+    std::cout << "[Mono] LoadAssembly called for " << abs << '\n';
 
     if (!std::filesystem::exists(abs))
     {
@@ -50,9 +50,18 @@ void MonoManager::Shutdown()
 {
     if (s_Domain)
     {
-        mono_jit_cleanup(s_Domain);
-        s_Domain = nullptr;
-        s_Assembly = nullptr;
-        std::cout << "[Mono] Domain cleaned up.\n";
+        return;
     }
+
+	mono_jit_cleanup(s_Domain);
+	s_Domain = nullptr;
+	s_Assembly = nullptr;
+	std::cout << "[Mono] Domain cleaned up.\n";
+}
+
+MonoImage* MonoManager::GetImage()
+{
+    if (!s_Assembly)
+        return nullptr;
+    return mono_assembly_get_image(s_Assembly);
 }

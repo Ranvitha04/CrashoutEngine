@@ -712,7 +712,7 @@ namespace {
     /*!
     @brief Adapter for editing Component::ScriptComponent.
     @details Edits type-specific parameters and supports a per-entity preview toggle.
-    */
+    
     struct ScriptAdapter : DebugReflection::IComponentAdapter {
         const char* name() const override { return "ScriptComponent"; }
 
@@ -766,7 +766,7 @@ namespace {
 
             if (!monoReady) ImGui::EndDisabled();
         }
-    };
+    };*/
 
     /*!
     @brief Adapter for editing Component::CameraComponent.
@@ -1130,7 +1130,7 @@ namespace {
     static ShapeAdapter gShapeAdapter;
     static TextAdapter gTextAdapter;
     static AudioAdapter gAudioAdapter;
-    static ScriptAdapter gScriptAdapter;
+    //static ScriptAdapter gScriptAdapter;
     static CameraAdapter gCameraAdapter;
     static GuiAdapter gGuiAdapter;
     static GameStateProvider gProvider;
@@ -1158,7 +1158,7 @@ extern "C" void RegisterBuiltinComponentAdapters() {
     ComponentRegistry::instance().registerAdapter(&gShapeAdapter);
     ComponentRegistry::instance().registerAdapter(&gTextAdapter);
     ComponentRegistry::instance().registerAdapter(&gAudioAdapter);
-    ComponentRegistry::instance().registerAdapter(&gScriptAdapter);
+    //ComponentRegistry::instance().registerAdapter(&gScriptAdapter);
     ComponentRegistry::instance().registerAdapter(&gCameraAdapter);
     ComponentRegistry::instance().registerAdapter(&gGuiAdapter);
     DebugReflection::SetGameStateProvider(&gProvider);

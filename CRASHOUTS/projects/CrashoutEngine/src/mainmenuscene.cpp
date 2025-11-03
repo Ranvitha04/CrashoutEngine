@@ -94,7 +94,7 @@ void InitMainMenu()
 		Component::TransformComponent{ .size = CEVec2{10.f, 10.f}, .position = CEVec3{0.f, 20.f, 0.f}},
 		Component::ShapeComponent{.enableTexture=true, .textureName="Concept"}
 	);
-	globalECS->AddComponent<CrashoutsEngine::ScriptComponent>(entity1, CrashoutsEngine::ScriptComponent("PlayerScript"));
+	globalECS->AddComponent<CrashoutsEngine::ScriptComponent>(entity1, CrashoutsEngine::ScriptComponent("PlayerController", entity1));
 
 	AddPhysicsEntity(
 		entity2,
@@ -102,6 +102,7 @@ void InitMainMenu()
 		Component::TransformComponent{ .size = CEVec2{80.f, 10.f}, .position = CEVec3{0.f, -10.f, 0.f} },
 		Component::ShapeComponent{ .type = Component::ShapeType::Rectangle }
 	);
+	
 
 	AddPhysicsEntity(
 		entity3,
@@ -109,7 +110,7 @@ void InitMainMenu()
 		Component::TransformComponent{ .size = CEVec2{10.f, 10.f}, .position = CEVec3{5.f, 20.f, 0.f} },
 		Component::ShapeComponent{ .type = Component::ShapeType::Rectangle }
 	);
-
+	globalECS->AddComponent<CrashoutsEngine::ScriptComponent>(entity3, CrashoutsEngine::ScriptComponent("EnemyController", entity3));
 	// Initialize MainMenu state
 
 	LOGI(Core, "MainMenu Initialized");
@@ -146,10 +147,10 @@ void CreateRandBox() {
 void UpdateMainMenu()
 {
 
-	Component::RigidBodyComponent* rigidBody{ globalECS->GetComponent<Component::RigidBodyComponent>(entity1) };
-	Component::TransformComponent* transform{ globalECS->GetComponent<Component::TransformComponent>(entity1) };
+	//Component::RigidBodyComponent* rigidBody{ globalECS->GetComponent<Component::RigidBodyComponent>(entity1) };
+	//Component::TransformComponent* transform{ globalECS->GetComponent<Component::TransformComponent>(entity1) };
 
-	Component::RigidBodyComponent* rigidBody2{ globalECS->GetComponent<Component::RigidBodyComponent>(entity3) };
+	//Component::RigidBodyComponent* rigidBody2{ globalECS->GetComponent<Component::RigidBodyComponent>(entity3) };
 
 	if (itemCount < 2500 && InputManager::IsKeyPressed(Key::Num1)) {
 		int newCount = 0;
@@ -159,30 +160,33 @@ void UpdateMainMenu()
 			itemCount++;
 		}
 	} 
-	
+
+	/*
 	if (rigidBody) {
 		if (InputManager::IsKeyPressed(Key::A)) rigidBody->addForce(CEVec3{ -100.f, 0.f, 0.f });
 		if (InputManager::IsKeyPressed(Key::D)) rigidBody->addForce(CEVec3{ 100.f, 0.f, 0.f });
 		if (InputManager::IsKeyPressed(Key::W)) rigidBody->addForce(CEVec3{ 0.f, 300.f, 0.f }*rigidBody->getMass());
 	}
-
+	*/
+	/*
 	if (rigidBody2) {
 		if (InputManager::IsKeyPressed(Key::Left)) rigidBody2->addForce(CEVec3{ -100.f, 0.f, 0.f });
 		if (InputManager::IsKeyPressed(Key::Right)) rigidBody2->addForce(CEVec3{ 100.f, 0.f, 0.f });
 		if (InputManager::IsKeyPressed(Key::Up)) rigidBody2->addForce(CEVec3{ 0.f, 300.f, 0.f }*rigidBody2->getMass());
 	}
-
-	/*SCALE UP*/
+	*/
+	/*
+	// SCALE UP
 	if (InputManager::IsKeyPressed(Key::S)) {
 		transform->size *= 0.9f;
 	}
 
-	/*SCALE DOWN*/
+	// SCALE DOWN 
 	if (InputManager::IsKeyPressed(Key::Q)) {
 		transform->size *= 1.1f;
 	}
-
-	/*ROTATE*/
+	
+	// ROTATE
 	if (InputManager::IsKeyPressed(Key::R)) {
 		transform->rotation += 3.f;
 		if (globalECS->HasComponent<Component::ColliderComponent>(entity1)) {
@@ -192,7 +196,7 @@ void UpdateMainMenu()
 				obbTemp2.updateRotation(transform->rotation);
 			}
 		}
-	}
+	}*/
 }
 
 void RenderMainMenu()
