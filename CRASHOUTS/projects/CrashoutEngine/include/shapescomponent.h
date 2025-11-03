@@ -22,8 +22,6 @@ namespace Component {
     * @enum ShapeType
     * @brief Enumerates the primitive shape represented by a ShapeComponent.
     *
-    * @var ShapeType::Square
-    *   A square centered or positioned according to the consuming system.
     * @var ShapeType::Rectangle
     *   An axis-aligned rectangle described by width/height.
     * @var ShapeType::Line
@@ -31,7 +29,7 @@ namespace Component {
     * @var ShapeType::Triangle
     *   A triangle described by three vertices.
     */
-    enum class ShapeType { Square, Rectangle, Line, Triangle };
+    enum class ShapeType { Rectangle, Line, Triangle, Circle };
 
     /**
      * @struct ShapeComponent
@@ -65,12 +63,12 @@ namespace Component {
 
         // -------------------- Square ------------------------------
 
-        float size{ 32.f }; ///< Edge length for @ref ShapeType::Square.
+        //float size{ 32.f }; ///< Edge length for @ref ShapeType::Square.
 
         // -------------------- Rectangle --------------------------
 
-        float width{ 32.f }, ///< Width for @ref ShapeType::Rectangle.
-              height{ 32.f };///< Height for @ref ShapeType::Rectangle.
+        //float width{ 32.f }, ///< Width for @ref ShapeType::Rectangle.
+        //      height{ 32.f };///< Height for @ref ShapeType::Rectangle.
 
         // -------------------- Line -------------------------------
 
@@ -80,9 +78,9 @@ namespace Component {
 
         // -------------------- Triangle ---------------------------
 
-        CEVec3 t1{ -16.f, -16.f, 0.f }; ///< Vertex 1 for @ref ShapeType::Triangle.
-        CEVec3 t2{ 16.f, -16.f, 0.f }; ///< Vertex 2 for @ref ShapeType::Triangle.
-        CEVec3 t3{ 0.f,  16.f, 0.f }; ///< Vertex 3 for @ref ShapeType::Triangle.
+        //CEVec3 t1{ -16.f, -16.f, 0.f }; ///< Vertex 1 for @ref ShapeType::Triangle.
+        //CEVec3 t2{ 16.f, -16.f, 0.f }; ///< Vertex 2 for @ref ShapeType::Triangle.
+        //CEVec3 t3{ 0.f,  16.f, 0.f }; ///< Vertex 3 for @ref ShapeType::Triangle.
 
         // -------------------- Debug / Preview --------------------
 

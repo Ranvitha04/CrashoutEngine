@@ -59,10 +59,8 @@ namespace {
         PrefabRegister("Platform", [](ECS& e) {
             auto ent = e.CreateEntity();
             e.AddComponent<NameComponent>(ent, NameComponent{ "Platform" });
-            e.AddComponent<TransformComponent>(ent, TransformComponent{});
-            e.AddComponent<ShapeComponent>(ent, ShapeComponent{
-                .type = ShapeType::Rectangle, .width = 100.f, .height = 10.f
-                });
+            e.AddComponent<TransformComponent>(ent, TransformComponent{ .size{100.f, 10.f} });
+            e.AddComponent<ShapeComponent>(ent, ShapeComponent{ .type = ShapeType::Rectangle });
             // add collider/rigidbody/etc. here if desired
             });
 
@@ -70,10 +68,8 @@ namespace {
         PrefabRegister("Box", [](ECS& e) {
             auto ent = e.CreateEntity();
             e.AddComponent<NameComponent>(ent, NameComponent{ "Box" });
-            e.AddComponent<TransformComponent>(ent, TransformComponent{});
-            e.AddComponent<ShapeComponent>(ent, ShapeComponent{
-                .type = ShapeType::Rectangle, .width = 20.f, .height = 20.f
-                });
+            e.AddComponent<TransformComponent>(ent, TransformComponent{ .size{20.f, 20.f} });
+            e.AddComponent<ShapeComponent>(ent, ShapeComponent{ .type = ShapeType::Rectangle });
             });
 
         // Add more:
@@ -131,7 +127,8 @@ void UpdateAfiq()
 
 void RenderAfiq()
 {
-
+    glClearColor(0.1f, 0.2f, 0.4f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 void FreeAfiq()

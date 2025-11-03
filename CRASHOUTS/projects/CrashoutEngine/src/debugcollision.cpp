@@ -43,10 +43,13 @@ static void DrawAABBOutline(const CEVec3& minP, const CEVec3& maxP, float thickn
     CEVec3 p1(maxP.x, minP.y, 0.0f);
     CEVec3 p2(maxP.x, maxP.y, 0.0f);
     CEVec3 p3(minP.x, maxP.y, 0.0f);
-    Shapes::CreateLine(p0, p1, thickness, 0.0f, 1.0f, color);
-    Shapes::CreateLine(p1, p2, thickness, 0.0f, 1.0f, color);
-    Shapes::CreateLine(p2, p3, thickness, 0.0f, 1.0f, color);
-    Shapes::CreateLine(p3, p0, thickness, 0.0f, 1.0f, color);
+
+    CEVec2 size = {thickness, thickness};
+
+    Shapes::CreateLine(size, p0, p1, thickness, 0.0f, color);
+    Shapes::CreateLine(size, p1, p2, thickness, 0.0f, color);
+    Shapes::CreateLine(size, p2, p3, thickness, 0.0f, color);
+    Shapes::CreateLine(size, p3, p0, thickness, 0.0f, color);
 }
 
 /*!
@@ -56,10 +59,12 @@ static void DrawAABBOutline(const CEVec3& minP, const CEVec3& maxP, float thickn
  @param color        RGB-like color vector used by the line drawer.
 */
 static void DrawOBBOutline(const Collision::OBBRect* vertices, float thickness, const CEVec3& color) {
-    Shapes::CreateLine(vertices->rotatedVertices[0], vertices->rotatedVertices[1], thickness, 0.0f, 1.0f, color);
-    Shapes::CreateLine(vertices->rotatedVertices[1], vertices->rotatedVertices[2], thickness, 0.0f, 1.0f, color);
-    Shapes::CreateLine(vertices->rotatedVertices[2], vertices->rotatedVertices[3], thickness, 0.0f, 1.0f, color);
-    Shapes::CreateLine(vertices->rotatedVertices[3], vertices->rotatedVertices[0], thickness, 0.0f, 1.0f, color);
+    CEVec2 size = { 1.f, 1.f };
+
+    Shapes::CreateLine(size, vertices->rotatedVertices[0], vertices->rotatedVertices[1], thickness, 0.0f, color);
+    Shapes::CreateLine(size, vertices->rotatedVertices[1], vertices->rotatedVertices[2], thickness, 0.0f, color);
+    Shapes::CreateLine(size, vertices->rotatedVertices[2], vertices->rotatedVertices[3], thickness, 0.0f, color);
+    Shapes::CreateLine(size, vertices->rotatedVertices[3], vertices->rotatedVertices[0], thickness, 0.0f, color);
 }
 
 /*!
@@ -77,7 +82,8 @@ static void DrawCircleOutline(const CEVec3& c, float r, int segments, float thic
     for (int i = 1; i <= segments; ++i) {
         float t = (twoPi * i) / segments;
         CEVec3 next(c.x + r * std::cos(t), c.y + r * std::sin(t), 0.0f);
-        Shapes::CreateLine(prev, next, thickness, 0.0f, 1.0f, color);
+        CEVec2 size = { 1.f, 1.f };
+        Shapes::CreateLine(size, prev, next, thickness, 0.0f, color);
         prev = next;
     }
 }
@@ -139,8 +145,9 @@ namespace CollisionGizmos {
             for (const auto& cp : ev.colManifold.contactPoints) {
                 CEVec3 p(cp.x, cp.y, 0.0f);
                 const float d = 0.02f;
-                Shapes::CreateLine(CEVec3(p.x - d, p.y, 0), CEVec3(p.x + d, p.y, 0), wireThickness, 0.0f, 1.0f, ptClr);
-                Shapes::CreateLine(CEVec3(p.x, p.y - d, 0), CEVec3(p.x, p.y + d, 0), wireThickness, 0.0f, 1.0f, ptClr);
+                CEVec2 size = { 1.f, 1.f };
+                Shapes::CreateLine(size, CEVec3(p.x - d, p.y, 0), CEVec3(p.x + d, p.y, 0), wireThickness, 0.0f, ptClr);
+                Shapes::CreateLine(size, CEVec3(p.x, p.y - d, 0), CEVec3(p.x, p.y + d, 0), wireThickness, 0.0f, ptClr);
             }
 
             if (!ev.colManifold.contactPoints.empty()) {
@@ -148,7 +155,8 @@ namespace CollisionGizmos {
                 CEVec3 p0(cp0.x, cp0.y, 0.0f);
                 CEVec3 p1(cp0.x + ev.colManifold.normal.x * normalLen,
                     cp0.y + ev.colManifold.normal.y * normalLen, 0.0f);
-                Shapes::CreateLine(p0, p1, wireThickness, 0.0f, 1.0f, nClr);
+                CEVec2 size = { 1.f, 1.f };
+                Shapes::CreateLine(size, p0, p1, wireThickness, 0.0f, nClr);
             }
         }
     }

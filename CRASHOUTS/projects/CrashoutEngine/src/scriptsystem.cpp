@@ -1,14 +1,22 @@
+#include "colliderbindings.h"
 #include "ScriptSystem.h"
 #include "entitymanager.h"
+#include "InputBindings.h"
 #include "monomanager.h"
+#include "rigidbodybindings.h"
 #include "ScriptComponent.h"
 #include "TransformBindings.h"
+#include "entitybindings.h"
 
 namespace CrashoutsEngine
 {
     void ScriptSystem::InitializeAll(MonoDomain* domain, MonoAssembly* assembly)
     {
-        Bindings::RegisterTransform();
+        Bindings::RegisterTransformBindings();
+        Bindings::RegisterInputBindings();
+        Bindings::RegisterRigidBodyBindings();
+        Bindings::RegisterEntityBindings();
+        Bindings::RegisterColliderBindings();
 
         auto& ecs = *ECS::getInstance();
         auto& scripts = ecs.GetComponentArray<ScriptComponent>();
@@ -18,6 +26,7 @@ namespace CrashoutsEngine
             if (!script.Instance)
                 script.Initialize(domain, assembly);
         }
+
     }
 
     void ScriptSystem::UpdateAll(float dt)

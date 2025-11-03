@@ -52,7 +52,7 @@ namespace UI {
         bool showPhysics = true;
         bool showAudio = true;
         bool drawCollOverlay = true;
-        bool showEngineControl = false;
+        bool showEngineControl = true;
 
         bool freezeOnCollision = false;
 

@@ -77,20 +77,20 @@ static bool EntityHasTransform(uint32_t entityID)
 }
 
 // Register Internal Calls
-void CrashoutsEngine::Bindings::RegisterTransform()
+void CrashoutsEngine::Bindings::RegisterTransformBindings()
 {
     // Position
-    mono_add_internal_call("CrashoutsEngine.InternalCalls::Transform_GetPosition", (const void*)TransformGetPosition);
-    mono_add_internal_call("CrashoutsEngine.InternalCalls::Transform_SetPosition", (const void*)TransformSetPosition);
+    mono_add_internal_call("CrashoutsEngine.InternalCalls::TransformGetPosition", (const void*)TransformGetPosition);
+    mono_add_internal_call("CrashoutsEngine.InternalCalls::TransformSetPosition", (const void*)TransformSetPosition);
 
     // Rotation
-    mono_add_internal_call("CrashoutsEngine.InternalCalls::Transform_GetRotation", (const void*)TransformGetRotation);
-    mono_add_internal_call("CrashoutsEngine.InternalCalls::Transform_SetRotation", (const void*)TransformSetRotation);
+    mono_add_internal_call("CrashoutsEngine.InternalCalls::TransformGetRotation", (const void*)TransformGetRotation);
+    mono_add_internal_call("CrashoutsEngine.InternalCalls::TransformSetRotation", (const void*)TransformSetRotation);
 
     // Size / Scale
-    mono_add_internal_call("CrashoutsEngine.InternalCalls::Transform_GetSize", (const void*)TransformGetSize);
-    mono_add_internal_call("CrashoutsEngine.InternalCalls::Transform_SetSize", (const void*)TransformSetSize);
+    mono_add_internal_call("CrashoutsEngine.InternalCalls::TransformGetSize", (const void*)TransformGetSize);
+    mono_add_internal_call("CrashoutsEngine.InternalCalls::TransformSetSize", (const void*)TransformSetSize);
 
     // Component check
-    mono_add_internal_call("CrashoutsEngine.InternalCalls::Entity_HasTransform", (const void*)EntityHasTransform);
+    mono_add_internal_call("CrashoutsEngine.InternalCalls::EntityHasTransform", (const void*)EntityHasTransform);
 }

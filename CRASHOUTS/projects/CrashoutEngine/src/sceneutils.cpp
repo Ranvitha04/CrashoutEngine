@@ -46,7 +46,7 @@ namespace Scene {
         
         for (const Entity& id : shapeArray.indexToEntity) {
             // Get entity number
-            //Component::TransformComponent* t = globalECS.GetComponent<Component::TransformComponent>(id);
+            Component::TransformComponent* tf = globalECS.GetComponent<Component::TransformComponent>(id);
             Component::ShapeComponent* sc = globalECS.GetComponent<Component::ShapeComponent>(id);
             // Can add more data to create rect like color etc
             if (globalECS.HasComponent<ShapeComponent>(id)) {
@@ -54,12 +54,11 @@ namespace Scene {
                 CEVec3 pos{ 0,0,0 };
                 CEVec2 scale{ 1.f, 1.f };
                 float rot{ 0.f };
-                if (auto* tf = globalECS.GetComponent<Component::TransformComponent>(id)) {
+                if (tf) {
                     pos = tf->position;
                     scale = tf->size;
                     rot = tf->rotation;
                 }
-                CEVec2 finalScale{ sc->width * scale.x, sc->height * scale.y };
 
                 // Strictly respect the ECS toggle
                 bool useTexture = sc->enableTexture;
@@ -76,82 +75,45 @@ namespace Scene {
                 }
 
                 switch (sc->type) {
-                case Component::ShapeType::Square:
-                    if (useTexture) {
-                        Component::Shapes::CreateTexturedSquare(
-                            sc->textureName, pos, sc->size, rot,
-                            (scale.x > scale.y) ? scale.x : scale.y,
-                            sc->color * (1 / 255.f), sc->uvSize
-                        );
-                        break;
-                    } else {
-
-                        // Add data to our vectors
-                        instancedPos.push_back(pos);
-                        instancedColor.push_back(sc->color * (1 / 255.f));
-                        instancedRot.push_back(rot);
-                        float uniformTransformScale = (finalScale.x > finalScale.y) ? finalScale.x : finalScale.y;
-                        instancedScales.push_back(uniformTransformScale);
-
-                        //Component::Shapes::CreateSquare(
-                        //    pos, sc->size, rot,
-                        //    (scale.x > scale.y) ? scale.x : scale.y,
-                        //    sc->color * (1 / 255.f)
-                        //);
-                        break;
-                    }
                 // ==========================================RECTANGLE===================================================
                 case Component::ShapeType::Rectangle:
                     if (useTexture) {
-                        Component::Shapes::CreateTexturedRectangle(
-                            sc->textureName, pos, sc->width * scale.x, sc->height * scale.y,
-                            rot, 1.0f, sc->color * (1 / 255.f), sc->uvSize
-                        );
+                        Component::Shapes::CreateTexturedRectangle(tf->size,
+                            sc->textureName, pos, rot, sc->color * (1 / 255.f), sc->uvSize);
                         break;
                     } else {
-                        Component::Shapes::CreateRectangle(
-                            pos, sc->width * scale.x, sc->height * scale.y,
-                            rot, 1.0f, sc->color * (1 / 255.f)
+                        Component::Shapes::CreateRectangle(tf->size,
+                            pos, rot, sc->color * (1 / 255.f)
                         );
                         break;
                     }
                 // ============================================LINE======================================================
                 case Component::ShapeType::Line:
-                    Component::Shapes::CreateLine(sc->p1 + pos, sc->p2 + pos, sc->thickness, rot, (scale.x > scale.y) ? scale.x : scale.y,
-                        sc->color * (1 / 255.f)); break;
+                    Component::Shapes::CreateLine(tf->size, sc->p1 + pos, sc->p2 + pos, sc->thickness, rot, sc->color * (1 / 255.f)); break;
                 // ==========================================TRIANGLE====================================================
                 case Component::ShapeType::Triangle:
                     if (useTexture) {
-                        Component::Shapes::CreateTexturedTriangle(
-                            sc->textureName,
-                            sc->t1 + pos, sc->t2 + pos, sc->t3 + pos,
-                            rot, (scale.x > scale.y) ? scale.x : scale.y,
-                            sc->color * (1 / 255.f), sc->uvSize
+                        Component::Shapes::CreateTexturedTriangle(tf->size, sc->textureName,
+                            pos, rot, sc->color * (1 / 255.f), sc->uvSize
                         );
                         break;
                     } else {
-                        Component::Shapes::CreateTriangle(
-                            sc->t1 + pos, sc->t2 + pos, sc->t3 + pos,
-                            rot, (scale.x > scale.y) ? scale.x : scale.y,
-                            sc->color * (1 / 255.f)
+                        Component::Shapes::CreateTriangle(tf->size, pos,
+                            rot, sc->color * (1 / 255.f)
                         );
                         break;
                     }
+                // ==========================================CIRCLE======================================================
+                case Component::ShapeType::Circle:
+                    Component::Shapes::CreateCircle(tf->size, tf->position, 32, tf->rotation, sc->color * (1 / 255.f)); break;
                 }
             }
         }
     
-        // Test instancing squares
+        // Perform instancing
         int instancedCount = static_cast<int>(instancedPos.size());
         if (instancedCount > 0) {
-            Component::Shapes::CreateInstancedSquares(
-                instancedPos.data(),
-                instancedColor.data(),
-                instancedRot.data(),
-                instancedScales.data(),
-                instancedCount,
-                1.0f // This baseSize matches the 1.0f used in your initialization
-            );
+           
         }
 
 		// For Drawing Text Components

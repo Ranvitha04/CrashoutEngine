@@ -489,8 +489,8 @@ namespace InstancingSystem {
         for (int i = 0; i < perTypeCount; ++i) {
             CEVec3 pos{ posX(rng), posY(rng), 0.0f };
             float rotation = rotDeg(rng);
-            float w = widthDist(rng);
-            float h = heightDist(rng);
+            // float w = widthDist(rng);
+            // float h = heightDist(rng);
 
             rectPos.emplace_back(pos);
             rectColor.emplace_back(
@@ -500,8 +500,8 @@ namespace InstancingSystem {
             );
             rectRot.emplace_back(rotation);
             rectScale.emplace_back(1.0f);
-            rectW.emplace_back(w);
-            rectH.emplace_back(h);
+            // rectW.emplace_back(w);
+            // rectH.emplace_back(h);
 
             if (ecs) {
                 auto e = ecs->CreateEntity();
@@ -512,8 +512,6 @@ namespace InstancingSystem {
 
                 Component::ShapeComponent shape{};
                 shape.type = Component::ShapeType::Rectangle;
-                shape.width = w;
-                shape.height = h;
                 shape.color = CEVec3{
                     static_cast<float>(colorDist(rng)),
                     static_cast<float>(colorDist(rng)),
@@ -552,8 +550,6 @@ namespace InstancingSystem {
 
                 Component::ShapeComponent shape{};
                 shape.type = Component::ShapeType::Triangle;
-                shape.width = side;
-                shape.height = side;
                 shape.color = CEVec3{
                     static_cast<float>(colorDist(rng)),
                     static_cast<float>(colorDist(rng)),
@@ -623,8 +619,8 @@ void InstancingSystem::InitializeEcsRectanglesDataRandom(int count) {
 
         CEVec3 pos{ posX(rng), posY(rng), 0.0f };
         float rotation = rotDeg(rng);
-        float w = widthDist(rng);
-        float h = heightDist(rng);
+        // float w = widthDist(rng);
+        // float h = heightDist(rng);
 
         // Name + Transform
         globalECS->AddComponent<Component::NameComponent>(e, Component::NameComponent{ "Rect_" + std::to_string(e) });
@@ -635,8 +631,6 @@ void InstancingSystem::InitializeEcsRectanglesDataRandom(int count) {
         // Shape
         Component::ShapeComponent shape{};
         shape.type = Component::ShapeType::Rectangle;
-        shape.width = w;
-        shape.height = h;
         shape.color = CEVec3{
             static_cast<float>(colorDist(rng)),
             static_cast<float>(colorDist(rng)),
