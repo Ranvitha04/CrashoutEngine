@@ -223,10 +223,8 @@ namespace UI { // --------------------------------------------------------------
     {
         static std::vector<Entity> pinned;      // keep these inspectors visible
         static bool showAllInspectors = false;  // renders inspectors for every entity
-        FrameProfiler::Scoped s(profiler, "ImGui");
-        ScopedMemTag mem(MemTag::UI);
 
-        ScopedWindow win("ECS Demo", LockFlags(ui.lockLayout));
+        ScopedWindow win("Heirarchy", LockFlags(ui.lockLayout));
 
         // Create entity in the REAL ECS
         if (ImGui::Button("Create Entity")) {
@@ -597,12 +595,6 @@ namespace UI { // --------------------------------------------------------------
         //const int cap = frc.CAP();
 
         ImGui::Text("Frame: %.3f ms (%.1f FPS)", frame_ms, fps);
-
-        ImGui::Separator();
-        DrawEngineMemoryPanel();
-        ImGui::Separator();
-        DrawProfilerPanel(profiler);
-        ImGui::Separator();
 
         if (ImGui::BeginTable("perf_table", 3, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
             ImGui::TableSetupColumn("System");

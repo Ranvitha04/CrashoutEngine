@@ -20,9 +20,12 @@ context and implement a game loop.
 #include "cameracomponent.h"
 #include "textureasset.h"
 #include "scriptsystem.h"
+#include "audioSystem.h"
 #include "debugmenu.h"
 #include "sceneutils.h"
 #include "camera.h"
+#include "performanceSystem.h"
+#include "performanceViewer.h"
 
 /*                                                   type declarations
 ----------------------------------------------------------------------------- */
@@ -126,6 +129,7 @@ void Init() {
 
     InputManager::Init(GLApp::ptr_window);
     UI::Init(GLApp::ptr_window); // NEW
+    PerformanceSystem::Get().Attach(gProfiler);
     engineState = EngineState::STOP;
 }
 
@@ -193,11 +197,20 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
     glm::mat4 view = currentCamera.GetViewMatrix();
     glm::mat4 proj = currentCamera.GetProjectionMatrix();
     
-    GLApp::draw();
-    Scene::RenderScene(*CrashoutsEngine::ECS::getInstance());
+    FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Graphics");
+    ScopedMemTag mem(MemTag::Graphics);
+    {
+        FrameProfiler::Scoped s2(PerformanceSystem::Get().GetProfiler(), "Scene");
+        GLApp::draw();
+        Scene::RenderScene(*CrashoutsEngine::ECS::getInstance());
+    }
 
     // Render ImGui UI on top of the scene
-    UI::Render(gProfiler, physicsSystem, globalSelectedEntity, uiState);
+    {
+        FrameProfiler::Scoped s2(PerformanceSystem::Get().GetProfiler(), "UI");
+        UI::Render(gProfiler, physicsSystem, globalSelectedEntity, uiState);
+    }
+    PerformanceSystem::Get().RenderUI();
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
@@ -222,13 +235,11 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
 
 #endif
 
-    FrameProfiler::Scoped s(gProfiler, "Graphics/Scene");
-    ScopedMemTag mem(MemTag::Graphics);
     // render scene
     // GLApp::draw();
 
     // end of frame profiling
-    gProfiler.end_frame();
+    PerformanceSystem::Get().EndFrame();
 
     // swap buffers: front <-> back
     // GLApp::ptr_window is handle to window that defines the OpenGL context
@@ -253,15 +264,25 @@ void Update(Component::RigidBodyComponent& playerRigidBody, double const& dt) {
     UpdateGameStateManager();
 
     // start frame profiling
-    gProfiler.begin_frame();
+    PerformanceSystem::Get().BeginFrame();
 
-    FrameProfiler::Scoped s(gProfiler, "Game/Update");
+    FrameProfiler::Scoped frameScope(PerformanceSystem::Get().GetProfiler(), "Game/Update");
     ScopedMemTag mem(MemTag::Update);
 
     if (engineState == EngineState::PLAY) {
 
-        collisionSystem.update(dt);
-        physicsSystem.update(dt);
+        {
+            FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Collision");
+            collisionSystem.update(dt);
+        }
+        {
+            FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Physics");
+            physicsSystem.update(dt);
+        }
+        {
+            FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Audio");
+            CrashoutsEngine::Audio::AudioSystem::instance().update();
+        }
 
         // process events if any associated with input devices
         //glfwPollEvents();
@@ -276,7 +297,10 @@ void Update(Component::RigidBodyComponent& playerRigidBody, double const& dt) {
         GLApp::update();
     }
     else if (engineState == EngineState::STOP) {
-        physicsSystem.update(0.f);
+        {
+            FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Physics");
+            physicsSystem.update(0.f);
+        }
         // Process Editor Camera Input
         if(gameWinHovered) CrashoutsEngine::RenderCamera::EditorCameraInput();
 #ifdef USE_IMGUI_EDITOR
