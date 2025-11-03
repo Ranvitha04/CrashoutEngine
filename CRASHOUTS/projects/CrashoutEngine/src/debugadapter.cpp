@@ -32,6 +32,13 @@ runtime-extensible and project-agnostic.
 #include "scriptcomponent.h"
 #include "cameracomponent.h"
 #include "physicsmanager.h"
+
+// FOR GAME GUI
+#include "buttoncomponent.h"
+#include "guicomponent.h"
+#include "textinputcomponent.h"
+#include "uilayoutcomponent.h"
+
 #include "collisionmanager.h"
 #include "gamestatemanager.h"
 #include "assetmanager.h"
@@ -258,26 +265,23 @@ namespace {
 
                             switch (shape->type) {
                                 case ShapeType::Rectangle: {
-                                    extents.x = shape->width * 0.5f;
-                                    extents.y = shape->height * 0.5f;
-
+                                    extents.x = t->size.x * 0.5f;
+                                    extents.y = t->size.y * 0.5f;
+                                    break;
                                 }
-                                break;
-                                case ShapeType::Square: {
-                                    extents.x = shape->size * 0.5f;
-                                    extents.y = shape->size * 0.5f;
-                                }
-                                break;
                                 case ShapeType::Triangle: {
-                                    CEVec3 diffP1P2{ shape->t1 - shape->t2 };
-                                    CEVec3 diffP1P3{ shape->t1 - shape->t3 };
-                                    CEVec3 diffP2P3{ shape->t2 - shape->t3 };
+                                    CEVec3 t1 = {t->position.x - .5f, t->position.y - .5f, t->position.z};
+                                    CEVec3 t2 = {t->position.x + .5f, t->position.y - .5f, t->position.z};
+                                    CEVec3 t3 = {t->position.x, t->position.y + .5f, t->position.z};
 
+                                    CEVec3 diffP1P2{ t1 - t2 };
+                                    CEVec3 diffP1P3{ t1 - t3 };
+                                    CEVec3 diffP2P3{ t2 - t3 };
 
                                     extents.x = max(std::fabs(diffP1P2.x), std::fabsf(diffP1P3.x), std::fabsf(diffP2P3.x)) * 0.5f;
                                     extents.y = max(std::fabs(diffP1P2.y), std::fabsf(diffP1P3.y), std::fabsf(diffP2P3.y)) * 0.5f;
+                                    break;
                                 }
-                                break;
                             }
 
                             a->min = t->position - extents;
@@ -316,7 +320,7 @@ namespace {
 
             // type
             int t = (int)sc->type;
-            const char* items[] = { "Square","Rectangle","Line","Triangle" };
+            const char* items[] = { "Rectangle","Line","Triangle","Circle"};
             if (ImGui::Combo("Type", &t, items, IM_ARRAYSIZE(items))) {
                 sc->type = (ShapeType)t;
             }
@@ -457,24 +461,10 @@ namespace {
             }
 
             // per-type
-            switch (sc->type) {
-            case ShapeType::Square:
-                ImGui::DragFloat("Size", &sc->size, 0.5f, 0.0f, 1e6f);
-                break;
-            case ShapeType::Rectangle:
-                ImGui::DragFloat("Width", &sc->width, 0.5f, 0.0f, 1e6f);
-                ImGui::DragFloat("Height", &sc->height, 0.5f, 0.0f, 1e6f);
-                break;
-            case ShapeType::Line:
+            if(sc->type == ShapeType::Line) {
                 ImGui::DragFloat3("P1", &sc->p1.x, 0.5f);
                 ImGui::DragFloat3("P2", &sc->p2.x, 0.5f);
                 ImGui::DragFloat("Thickness", &sc->thickness, 0.1f, 0.0f, 1e6f);
-                break;
-            case ShapeType::Triangle:
-                ImGui::DragFloat3("T1", &sc->t1.x, 0.5f);
-                ImGui::DragFloat3("T2", &sc->t2.x, 0.5f);
-                ImGui::DragFloat3("T3", &sc->t3.x, 0.5f);
-                break;
             }
 
             /*CEVec3 pos{ 0,0,0 };
@@ -810,6 +800,275 @@ namespace {
     };
 
     /*!
+    @brief Adapter for editing Component::ButtonComponent.
+    @details Uses ImGui drag controls and writes values back to the ECS each frame.
+    */
+    struct ButtonAdapter : DebugReflection::IComponentAdapter {
+        const char* name() const override { return "ButtonComponent"; }
+        bool has(ECS& ecs, Entity e) const override {
+            return ecs.HasComponent<Component::ButtonComponent>(e);
+        }
+        void add(ECS& ecs, Entity e) override {
+            if (!has(ecs, e)) ecs.AddComponent<Component::ButtonComponent>(e);
+        }
+        void remove(ECS& ecs, Entity e) override {
+            if (has(ecs, e)) ecs.RemoveComponent<Component::ButtonComponent>(e);
+        }
+        void drawInspector(ECS& ecs, Entity e) override {
+            using namespace Component;
+            auto* bc = ecs.GetComponent<ButtonComponent>(e);
+            if (!bc) return; // Corrected from 'cc' to 'bc'
+
+            // --- Read-Only State Display ---
+            ImGui::SeparatorText("Button State");
+            const char* stateStr = "NORMAL";
+            if (bc->buttonState == ButtonState::HOVERED) { stateStr = "HOVERED"; }
+            else if (bc->buttonState == ButtonState::PRESSED) { stateStr = "PRESSED"; }
+
+            ImGui::Text("Current State:");
+            ImGui::SameLine();
+            ImGui::TextDisabled("%s", stateStr); // Show current state for debugging
+
+            // --- Shape Colors ---
+            ImGui::SeparatorText("Shape Colors");
+
+            // Helper function to convert 0-255 CEVec3 to 0-1 float[3] for ImGui's picker
+            auto EditColor = [](const char* label, CEVec3& colorVec) {
+                float col[3] = { colorVec.x / 255.0f, colorVec.y / 255.0f, colorVec.z / 255.0f };
+                if (ImGui::ColorEdit3(label, col)) {
+                    colorVec.x = col[0] * 255.0f;
+                    colorVec.y = col[1] * 255.0f;
+                    colorVec.z = col[2] * 255.0f;
+                }
+                };
+
+            ImGui::PushID("shape_colors"); // Use PushID to avoid label conflicts
+            EditColor("Normal", bc->shapeNormalColor);
+            EditColor("Hovered", bc->shapeHoveredColor);
+            EditColor("Pressed", bc->shapePressedColor);
+            ImGui::PopID();
+
+            // --- Text Colors ---
+            ImGui::SeparatorText("Text Colors");
+            ImGui::PushID("text_colors");
+            EditColor("Normal", bc->textNormalColor);
+            EditColor("Hovered", bc->textHoveredColor);
+            EditColor("Pressed", bc->textPressedColor);
+            ImGui::PopID();
+        }
+    };
+
+    /*!
+    @brief Adapter for editing Component::UILayoutComponent.
+    @details Uses ImGui drag controls and writes values back to the ECS each frame.
+    */
+    struct UILayoutAdapater : DebugReflection::IComponentAdapter {
+        const char* name() const override { return "UILayoutComponent"; }
+        bool has(ECS& ecs, Entity e) const override {
+            return ecs.HasComponent<Component::UILayoutComponent>(e);
+        }
+        void add(ECS& ecs, Entity e) override {
+            if (!has(ecs, e)) ecs.AddComponent<Component::UILayoutComponent>(e);
+        }
+        void remove(ECS& ecs, Entity e) override {
+            if (has(ecs, e)) ecs.RemoveComponent<Component::UILayoutComponent>(e);
+        }
+        void drawInspector(ECS& ecs, Entity e) override {
+            using namespace Component;
+            auto* uc = ecs.GetComponent<UILayoutComponent>(e);
+            if (!uc) return;
+
+            ImGui::SeparatorText("UI Layout");
+
+            // --- 1. Edit paddingXY ---
+            // CEVec2 has .x and .y, so DragFloat2 works perfectly.
+            ImGui::DragFloat2("Padding (X, Y)", &uc->paddingXY.x, 0.5f, 0.0f, 1000.0f, "%.1f");
+
+            // --- 2. Edit uiLayout (the flags) ---
+            ImGui::SeparatorText("Alignment Flags");
+            ImGui::PushID("UILayoutFlags");
+
+            // ImGui::CheckboxFlags needs a raw unsigned int*
+            // We use a temporary variable and cast back.
+            unsigned int tempFlags = static_cast<unsigned int>(uc->uiLayout);
+            unsigned int flags_before = tempFlags;
+
+            // Checkboxes for each *togg-able* flag (all except TOP=0)
+            ImGui::CheckboxFlags("Down", &tempFlags, static_cast<unsigned int>(UILayout::DOWN));
+            ImGui::CheckboxFlags("Center", &tempFlags, static_cast<unsigned int>(UILayout::CENTER));
+            ImGui::CheckboxFlags("Left", &tempFlags, static_cast<unsigned int>(UILayout::LEFT));
+            ImGui::CheckboxFlags("Right", &tempFlags, static_cast<unsigned int>(UILayout::RIGHT));
+
+            // Since TOP is 0, we can show a read-only "default" state
+            // (Assuming TOP is mutually exclusive with DOWN/CENTER)
+            bool isTop = !((tempFlags & static_cast<unsigned int>(UILayout::DOWN)) || (tempFlags & static_cast<unsigned int>(UILayout::CENTER)));
+            ImGui::BeginDisabled();
+            ImGui::Checkbox("Top (Default)", &isTop);
+            ImGui::EndDisabled();
+
+            ImGui::PopID();
+
+            // 3. --- Write changes back to component ---
+            if (tempFlags != flags_before) {
+                uc->uiLayout = static_cast<UILayout>(tempFlags);
+            }
+        }
+    };
+
+    /*!
+    @brief Adapter for editing Component::TextInputComponent.
+    @details Uses ImGui drag controls and writes values back to the ECS each frame.
+    */
+    struct TextInputAdapter : DebugReflection::IComponentAdapter {
+        const char* name() const override { return "TextInputComponent"; }
+        bool has(ECS& ecs, Entity e) const override {
+            return ecs.HasComponent<Component::TextInputComponent>(e);
+        }
+        void add(ECS& ecs, Entity e) override {
+            if (!has(ecs, e)) ecs.AddComponent<Component::TextInputComponent>(e);
+        }
+        void remove(ECS& ecs, Entity e) override {
+            if (has(ecs, e)) ecs.RemoveComponent<Component::TextInputComponent>(e);
+        }
+        void drawInspector(ECS& ecs, Entity e) override {
+            using namespace Component;
+            // 1. Corrected this line to get the right component
+            auto* tc = ecs.GetComponent<TextInputComponent>(e);
+
+            if (!tc) return;
+
+            ImGui::SeparatorText("Text Input");
+
+            // 2. Added correct ImGui widgets for your component's members
+
+            // isFocused should be read-only, as it's set by the system
+            ImGui::Text("Is Focused:");
+            ImGui::SameLine();
+            ImGui::TextDisabled("%s", tc->isFocused ? "Yes" : "No");
+
+            // Use DragInt for size_t (cast to int for ImGui)
+            // Note: ImGui doesn't have a native DragU64 for size_t.
+            // We'll use an int and cast, which is fine for these values.
+            int maxChars = static_cast<int>(tc->maxCharacters);
+            if (ImGui::DragInt("Max Characters", &maxChars, 1.0f, 1, 1024)) {
+                if (maxChars < 1) maxChars = 1; // Enforce minimum
+                tc->maxCharacters = static_cast<size_t>(maxChars);
+            }
+
+            // Show cursor position as read-only
+            int cursorPos = static_cast<int>(tc->cursorPos);
+            ImGui::BeginDisabled(); // Make read-only
+            ImGui::DragInt("Cursor Position", &cursorPos);
+            ImGui::EndDisabled();
+        }
+    };
+
+
+    // -------------------------- HELPER ADAPTERS ---------------------------------
+    static ButtonAdapter gButtonAdapter_helper;
+    static TextInputAdapter gTextInputAdapter_helper;
+    static UILayoutAdapater gUILayoutAdapter_helper;
+
+    /*!
+    @brief Adapter for editing Component::GuiComponent.
+    @details Uses ImGui drag controls and writes values back to the ECS each frame.
+    */
+    struct GuiAdapter : DebugReflection::IComponentAdapter {
+        const char* name() const override { return "GuiComponent"; }
+        bool has(ECS& ecs, Entity e) const override {
+            return ecs.HasComponent<GuiComponent>(e);
+        }
+        void add(ECS& ecs, Entity e) override {
+            if (!has(ecs, e)) ecs.AddComponent<GuiComponent>(e);
+        }
+        void remove(ECS& ecs, Entity e) override {
+            if (has(ecs, e)) ecs.RemoveComponent<GuiComponent>(e);
+
+            // When the controller is removed, also clean up all UI components
+            // (This is optional but good practice)
+            if (ecs.HasComponent<ButtonComponent>(e)) ecs.RemoveComponent<ButtonComponent>(e);
+            if (ecs.HasComponent<TextInputComponent>(e)) ecs.RemoveComponent<TextInputComponent>(e);
+            if (ecs.HasComponent<UILayoutComponent>(e)) ecs.RemoveComponent<UILayoutComponent>(e);
+            // Note: We might leave ShapeComponent and TextComponent on purpose
+        }
+
+        void drawInspector(ECS& ecs, Entity e) override {
+            using namespace Component;
+
+            auto* gc = ecs.GetComponent<GuiComponent>(e);
+            if (!gc) return;
+
+            ImGui::SeparatorText("GUI Type Flags");
+            ImGui::PushID("GuiAdapter"); // Avoid ID conflicts
+
+            // 1. --- PREPARE A RAW UINT FOR IMGUI ---
+            // ImGui::CheckboxFlags needs an 'unsigned int*', not a 'UIType*'.
+            // We create a temporary uint, let ImGui modify it, then cast it back.
+            unsigned int tempFlags = static_cast<unsigned int>(gc->uiType);
+
+            // Store the state *before* ImGui modifies it so we can detect changes
+            unsigned int type_before = tempFlags;
+
+            // 2. --- DRAW THE CHECKBOXES ---
+            // We pass our temporary 'tempFlags' to ImGui.
+            // We also must cast the flag values themselves to unsigned int.
+            ImGui::CheckboxFlags("Image (Adds Shape)", &tempFlags, static_cast<unsigned int>(UIType::IMAGE));
+            ImGui::CheckboxFlags("Text (Adds Text)", &tempFlags, static_cast<unsigned int>(UIType::TEXT));
+            ImGui::CheckboxFlags("Button (Adds Button)", &tempFlags, static_cast<unsigned int>(UIType::BUTTON));
+            ImGui::CheckboxFlags("Input (Adds Input)", &tempFlags, static_cast<unsigned int>(UIType::INPUTTEXT));
+
+            ImGui::PopID();
+
+            // 3. --- Only run the Sync (creation/deletion) logic *on change* ---
+            if (tempFlags != type_before) {
+                // A change was made! Update the real component.
+                gc->uiType = static_cast<UIType>(tempFlags);
+
+                // Define our rules:
+                bool needsButton = (gc->uiType & UIType::BUTTON) != UIType::NONE;
+                bool needsInput = (gc->uiType & UIType::INPUTTEXT) != UIType::NONE;
+                bool needsText = needsInput || ((gc->uiType & UIType::TEXT) != UIType::NONE);
+                bool needsShape = needsText || ((gc->uiType & UIType::IMAGE) != UIType::NONE);
+                bool needsLayout = (gc->uiType != UIType::NONE); // adds UILayout if *any* flag is set
+
+                // Helper lambda to add/remove components
+                auto Sync = [&]<typename T>(bool shouldHave) {
+                    bool has = ecs.HasComponent<T>(e);
+                    if (shouldHave && !has) ecs.AddComponent<T>(e);
+                    else if (!shouldHave && has) ecs.RemoveComponent<T>(e);
+                };
+
+                // Run the sync! This creates/removes the components
+                Sync.operator() < ButtonComponent > (needsButton);
+                Sync.operator() < TextInputComponent > (needsInput);
+                Sync.operator() < TextComponent > (needsText);
+                Sync.operator() < ShapeComponent > (needsShape);
+                Sync.operator() < UILayoutComponent > (needsLayout);
+            }
+
+            // 4. --- MANUALLY DRAW CHILD INSPECTORS (EVERY FRAME) ---
+            // This part now runs every frame, so the inspectors stay visible
+            // as long as their corresponding flags are set.
+
+            // We re-calculate the 'needs' booleans here so they are
+            // correct even when no change was made this frame.
+            bool needsButton = (gc->uiType & UIType::BUTTON) != UIType::NONE;
+            bool needsInput = (gc->uiType & UIType::INPUTTEXT) != UIType::NONE;
+            bool needsLayout = (gc->uiType != UIType::NONE);
+
+            if (needsButton) {
+                gButtonAdapter_helper.drawInspector(ecs, e);
+            }
+            if (needsLayout) {
+                gUILayoutAdapter_helper.drawInspector(ecs, e);
+            }
+            if (needsInput) {
+                gTextInputAdapter_helper.drawInspector(ecs, e);
+            }
+        }
+    };
+
+    /*!
     @brief Game-state provider installed at runtime (no hardcoded state list).
     @details Bridges GameStateManager to the Debug Menu; exposes current/previous/next and issues ChangeGameState() transitions from a reflected state list.
     */
@@ -872,7 +1131,8 @@ namespace {
     static TextAdapter gTextAdapter;
     static AudioAdapter gAudioAdapter;
     //static ScriptAdapter gScriptAdapter;
-	static CameraAdapter gCameraAdapter;
+    static CameraAdapter gCameraAdapter;
+    static GuiAdapter gGuiAdapter;
     static GameStateProvider gProvider;
     static BuiltinPhysicsProvider gBuiltinPhys;
 
@@ -900,6 +1160,7 @@ extern "C" void RegisterBuiltinComponentAdapters() {
     ComponentRegistry::instance().registerAdapter(&gAudioAdapter);
     //ComponentRegistry::instance().registerAdapter(&gScriptAdapter);
     ComponentRegistry::instance().registerAdapter(&gCameraAdapter);
+    ComponentRegistry::instance().registerAdapter(&gGuiAdapter);
     DebugReflection::SetGameStateProvider(&gProvider);
     DebugReflection::PhysicsRegistry::instance().registerProvider(&gBuiltinPhys);
 

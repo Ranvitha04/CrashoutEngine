@@ -165,15 +165,12 @@ static void InitializeMode5EcsRandomShapes(int perTypeCount) {
         auto e = globalECS->CreateEntity();
         CEVec3 pos{ posX(rng), posY(rng), 0.0f };
         float rotation = rotDeg(rng);
-        float w = rectW(rng), h = rectH(rng);
 
         globalECS->AddComponent<Component::NameComponent>(e, Component::NameComponent{ "M5Rect_" + std::to_string(e) });
         globalECS->AddComponent<Component::TransformComponent>(e, Component::TransformComponent{ rotation, CEVec2{1.0f, 1.0f}, pos });
 
         Component::ShapeComponent sc{};
         sc.type = Component::ShapeType::Rectangle;
-        sc.width = w;
-        sc.height = h;
         sc.color = CEVec3{ static_cast<float>(color255(rng)), static_cast<float>(color255(rng)), static_cast<float>(color255(rng)) };
         sc.enableTexture = gMode5TexturesEnabled;
         sc.textureName = textureDucky;
@@ -187,15 +184,15 @@ static void InitializeMode5EcsRandomShapes(int perTypeCount) {
         auto e = globalECS->CreateEntity();
         CEVec3 pos{ posX(rng), posY(rng), 0.0f };
         float rotation = rotDeg(rng);
-        float s = triSide(rng);
+        // float s = triSide(rng);
         // Equilateral triangle points scaled by side length
         // Height = sqrt(3)/2 * s; center at origin
-        float h = 0.866025403784f * s;
+        // float h = 0.866025403784f * s;
         Component::ShapeComponent sc{};
         sc.type = Component::ShapeType::Triangle;
-        sc.t1 = CEVec3(0.0f, 2.0f / 3.0f * h, 0.0f);            // top
-        sc.t2 = CEVec3(-0.5f * s, -1.0f / 3.0f * h, 0.0f);      // bottom-left
-        sc.t3 = CEVec3(0.5f * s, -1.0f / 3.0f * h, 0.0f);      // bottom-right
+        //sc.t1 = CEVec3(0.0f, 2.0f / 3.0f * h, 0.0f);            // top
+        //sc.t2 = CEVec3(-0.5f * s, -1.0f / 3.0f * h, 0.0f);      // bottom-left
+        //sc.t3 = CEVec3(0.5f * s, -1.0f / 3.0f * h, 0.0f);      // bottom-right
         sc.color = CEVec3{ static_cast<float>(color255(rng)), static_cast<float>(color255(rng)), static_cast<float>(color255(rng)) };
         sc.enableTexture = gMode5TexturesEnabled;
         sc.textureName = textureDucky;
@@ -232,8 +229,6 @@ static void InitializeMode5EcsRandomShapes(int perTypeCount) {
             gM5RectColor.push_back(c01);
             gM5RectRot.push_back(rot);
             gM5RectScale.push_back(1.0f); // bake scale in width/height
-            gM5RectW.push_back(sc->width * tfScale.x);
-            gM5RectH.push_back(sc->height * tfScale.y);
         } break;
         case Component::ShapeType::Triangle: {
             gM5TriPos.push_back(pos);
@@ -242,10 +237,10 @@ static void InitializeMode5EcsRandomShapes(int perTypeCount) {
             gM5TriScale.push_back(1.0f);
 
             // Derive side length from t1..t3 (use edge t2-t3)
-            auto dx = sc->t3.x - sc->t2.x;
-            auto dy = sc->t3.y - sc->t2.y;
-            float side = std::sqrt(dx * dx + dy * dy);
-            gM5TriSide.push_back(side);
+            //auto dx = sc->t3.x - sc->t2.x;
+            //auto dy = sc->t3.y - sc->t2.y;
+            //float side = std::sqrt(dx * dx + dy * dy);
+            //gM5TriSide.push_back(side);
         } break;
         default: break;
         }
@@ -300,11 +295,12 @@ void InitRan()
 void RenderBackground() {
     float worldW, worldH;
     ComputeWorldDimensions(worldW, worldH);
+    CEVec2 size{ 1.f, 1.f };
     Component::Shapes::CreateTexturedRectangle(
+        size,
         "assets/images/bg 1 base.png",  // Use an existing texture file
         CEVec3(0.0f, 0.0f, 0.0f),
-        worldW, worldH,
-        0.0f, 1.0f,
+        0.0f,
         CEVec3(1.0f, 1.0f, 1.0f)
     );
 }

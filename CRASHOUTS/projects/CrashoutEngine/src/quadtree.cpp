@@ -9,10 +9,13 @@ namespace {
 		CEVec3 p1(maxP.x, minP.y, 0.0f);
 		CEVec3 p2(maxP.x, maxP.y, 0.0f);
 		CEVec3 p3(minP.x, maxP.y, 0.0f);
-		Component::Shapes::CreateLine(p0, p1, thickness, 0.0f, 1.0f, color);
-		Component::Shapes::CreateLine(p1, p2, thickness, 0.0f, 1.0f, color);
-		Component::Shapes::CreateLine(p2, p3, thickness, 0.0f, 1.0f, color);
-		Component::Shapes::CreateLine(p3, p0, thickness, 0.0f, 1.0f, color);
+
+		CEVec2 size{ 1.f, 1.f };
+
+		Component::Shapes::CreateLine(size, p0, p1, thickness, 0.0f, color);
+		Component::Shapes::CreateLine(size, p1, p2, thickness, 0.0f, color);
+		Component::Shapes::CreateLine(size, p2, p3, thickness, 0.0f, color);
+		Component::Shapes::CreateLine(size, p3, p0, thickness, 0.0f, color);
 	}
 }
 

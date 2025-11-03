@@ -59,7 +59,7 @@ void AddPhysicsEntity(CrashoutsEngine::Entity &entity, Component::RigidBodyCompo
 
 	entity = globalECS->CreateEntity();
 
-	CEVec3 extents{ shape.width * 0.5f, shape.height * 0.5f, 0.f };
+	CEVec3 extents{ transform.size.x * 0.5f, transform.size.y * 0.5f, 0.f };
 
 	globalECS->AddComponent<Component::NameComponent>(entity, Component::NameComponent{std::to_string(entity)});
 	globalECS->AddComponent<Component::RigidBodyComponent>(entity, rigidBody);
@@ -91,24 +91,24 @@ void InitMainMenu()
 	AddPhysicsEntity(
 		entity1,
 		Component::RigidBodyComponent{ CEVec3{}, 5.f, 0.f },
-		Component::TransformComponent{ .position = CEVec3{0.f, 20.f, 0.f} },
-		Component::ShapeComponent{.enableTexture=true, .textureName="Concept", .width = 10.f, .height = 10.f}
+		Component::TransformComponent{ .size = CEVec2{10.f, 10.f}, .position = CEVec3{0.f, 20.f, 0.f}},
+		Component::ShapeComponent{.enableTexture=true, .textureName="Concept"}
 	);
 	globalECS->AddComponent<CrashoutsEngine::ScriptComponent>(entity1, CrashoutsEngine::ScriptComponent("PlayerController", entity1));
 
 	AddPhysicsEntity(
 		entity2,
 		Component::RigidBodyComponent{ CEVec3{}, 0.f, 0.f },
-		Component::TransformComponent{ .position = CEVec3{0.f, -10.f, 0.f} },
-		Component::ShapeComponent{ .type = Component::ShapeType::Rectangle, .width = 80.f, .height = 10.f }
+		Component::TransformComponent{ .size = CEVec2{80.f, 10.f}, .position = CEVec3{0.f, -10.f, 0.f} },
+		Component::ShapeComponent{ .type = Component::ShapeType::Rectangle }
 	);
 	
 
 	AddPhysicsEntity(
 		entity3,
 		Component::RigidBodyComponent{ CEVec3{}, 5.f, 0.f },
-		Component::TransformComponent{ .position = CEVec3{5.f, 20.f, 0.f} },
-		Component::ShapeComponent{ .type = Component::ShapeType::Rectangle, .width = 10.f, .height = 10.f }
+		Component::TransformComponent{ .size = CEVec2{10.f, 10.f}, .position = CEVec3{5.f, 20.f, 0.f} },
+		Component::ShapeComponent{ .type = Component::ShapeType::Rectangle }
 	);
 	globalECS->AddComponent<CrashoutsEngine::ScriptComponent>(entity3, CrashoutsEngine::ScriptComponent("EnemyController", entity3));
 	// Initialize MainMenu state
@@ -127,13 +127,10 @@ void CreateRandBox() {
 	float height = 50.f;
 	t.position = CEVec3(random_min_max(-width, width), random_min_max(-height, height), 0.f);
 	t.rotation = random_min_max(0.f, 360.f);
-	t.size = CEVec2(1.f, 1.f);
+	t.size = CEVec2(random_min_max(.5f, 3.f), random_min_max(.5f, 3.f));
 
-	shape.width = random_min_max(.5f, 3.f);
-	shape.height = random_min_max(.5f, 3.f);
-	shape.size = random_min_max(.5f, 3.f);
 	shape.color = CEVec3(random_min_max(0.f, 255.f), random_min_max(0.f, 255.f), random_min_max(0.f, 255.f));
-	shape.type = Component::ShapeType::Square;
+	shape.type = Component::ShapeType::Rectangle;
 
 
 	globalECS->AddComponent<Component::TransformComponent>(entityId, t);
