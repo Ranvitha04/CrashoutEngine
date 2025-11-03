@@ -113,11 +113,7 @@ namespace CrashoutsEngine {
     }
 
   
-    void ClearParentButKeepChildren(ECS& ecs, Entity entity) {
-        if (ecs.HasComponent<ParentComponent>(entity)) {
-            ecs.RemoveComponent<ParentComponent>(entity);
-        }
-    }
+
 
 
     static void ValidateHierarchy(ECS& ecs) {
