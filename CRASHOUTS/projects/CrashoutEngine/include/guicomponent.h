@@ -15,37 +15,34 @@
 ----------------------------------------------------------------------------- */
 namespace Component {
 
-	namespace UI {
-		enum class UIType : unsigned int {
-			NONE		= 0,
-			IMAGE		= 1 << 0,
-			TEXT		= 1 << 1,
-			BUTTON		= 1 << 2,
-			INPUTTEXT	= 1 << 3
-		};
+	enum class UIType : unsigned int {
+		NONE = 0,
+		IMAGE = 1 << 0,
+		TEXT = 1 << 1,
+		BUTTON = 1 << 2,
+		INPUTTEXT = 1 << 3
+	};
 
-		// Overload operators to allow bitwise operations
-		inline UIType operator|(UIType a, UIType b) {
-			return static_cast<UIType>(
-				static_cast<std::underlying_type_t<UIType>>(a) |
-				static_cast<std::underlying_type_t<UIType>>(b)
+	// Overload operators to allow bitwise operations
+	inline UIType operator|(UIType a, UIType b) {
+		return static_cast<UIType>(
+			static_cast<std::underlying_type_t<UIType>>(a) |
+			static_cast<std::underlying_type_t<UIType>>(b)
 			);
-		}
-
-		inline UIType operator&(UIType a, UIType b) {
-			return static_cast<UIType>(
-				static_cast<std::underlying_type_t<UIType>>(a) &
-				static_cast<std::underlying_type_t<UIType>>(b)
-				);
-		}
-
-		/*!
-		@struct	GuiComponent
-		@brief	A component that provides access to data required by the GUI component
-		*/
-		struct GuiComponent {
-			UIType uiType{ UIType::NONE };
-		};
 	}
-}
 
+	inline UIType operator&(UIType a, UIType b) {
+		return static_cast<UIType>(
+			static_cast<std::underlying_type_t<UIType>>(a) &
+			static_cast<std::underlying_type_t<UIType>>(b)
+			);
+	}
+
+	/*!
+	@struct	GuiComponent
+	@brief	A component that provides access to data required by the GUI component
+	*/
+	struct GuiComponent {
+		UIType uiType{ UIType::NONE };
+	};
+}

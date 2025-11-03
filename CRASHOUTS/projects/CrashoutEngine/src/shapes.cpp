@@ -267,8 +267,9 @@ namespace Component {
         }
 
 
-        renderer.SetupBuffersOptimized(pos_vtx.data(), pos_vtx.size() * sizeof(CEVec3),
+        renderer.SetupBuffersOptimized(
             clr_vtx.data(), clr_vtx.size() * sizeof(CEVec3),
+            pos_vtx.data(), pos_vtx.size() * sizeof(CEVec3),
             idx_vtx.data(), idx_vtx.size(),
             GL_TRIANGLES);
 
@@ -283,6 +284,11 @@ namespace Component {
 
         renderer.shdr_pgm->SetUniform("uModel", model);
         
+        GLint useTexture_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "u_useTexture");
+        if (useTexture_loc != -1) glUniform1i(useTexture_loc, 0); // Use vertex colors, not texture
+
+        GLint tint_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "u_tint");
+        if (tint_loc != -1) glUniform3f(tint_loc, 1.0f, 1.0f, 1.0f); // No tint modification
 
         renderer.Draw();
     }

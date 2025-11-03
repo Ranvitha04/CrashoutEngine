@@ -103,6 +103,9 @@ namespace Scene {
                         );
                         break;
                     }
+                // ==========================================CIRCLE======================================================
+                case Component::ShapeType::Circle:
+                    Component::Shapes::CreateCircle(tf->size, tf->position, 32, tf->rotation, sc->color * (1 / 255.f)); break;
                 }
             }
         }

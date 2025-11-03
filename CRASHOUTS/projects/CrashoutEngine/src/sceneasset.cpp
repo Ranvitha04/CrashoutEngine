@@ -523,12 +523,12 @@ namespace CrashoutsEngine {
             
                 // Check if Button
                 if (entityValue.HasMember(Keys::BUTTON_COMPONENT) && entityValue[Keys::BUTTON_COMPONENT].IsObject()) {
-                    UI::ButtonComponent& b = gECS.AddComponent<UI::ButtonComponent>(newEntity);
+                    ButtonComponent& b = gECS.AddComponent<ButtonComponent>(newEntity);
                     const rapidjson::Value& buttonValue = entityValue[Keys::TEXT_COMPONENT];
 
                     // 1. Check Button State
                     if (buttonValue.HasMember("buttonState") && buttonValue["buttonValue"].IsUint()) {
-                        b.buttonState = static_cast<UI::ButtonState>(buttonValue["buttonState"].GetUint());
+                        b.buttonState = static_cast<ButtonState>(buttonValue["buttonState"].GetUint());
                     }
 
                     // ----------------------------------------------------------------------------------------------
@@ -605,17 +605,55 @@ namespace CrashoutsEngine {
 
                 // Check if GUI
                 if (entityValue.HasMember(Keys::GUI_COMPONENT) && entityValue[Keys::GUI_COMPONENT].IsObject()) {
+                    GuiComponent& g = gECS.AddComponent<GuiComponent>(newEntity);
+                    const rapidjson::Value& guiValue = entityValue[Keys::GUI_COMPONENT];
 
+                    // 1. Check uiType
+                    if (guiValue.HasMember("uiType") && guiValue["uiType"].IsUint()) {
+                        g.uiType = static_cast<UIType>(guiValue["uiType"].GetUint());
+                    }
                 }
 
                 // Check if Text Input
                 if (entityValue.HasMember(Keys::TEXT_INPUT_COMPONENT) && entityValue[Keys::TEXT_INPUT_COMPONENT].IsObject()) {
+                    TextInputComponent& t = gECS.AddComponent<TextInputComponent>(newEntity);
+                    const rapidjson::Value& textInputValue = entityValue[Keys::TEXT_INPUT_COMPONENT];
 
+                    // 1. Check isFocused
+                    if (textInputValue.HasMember("isFocused") && textInputValue["isFocused"].IsBool()) {
+                        t.isFocused = textInputValue["isFocused"].GetBool();
+                    }
+                    
+                    // 2. Check cursorPos
+                    if (textInputValue.HasMember("cursorPos") && textInputValue["cursorPos"].IsUint()) {
+                        t.cursorPos = textInputValue["cursorPos"].GetUint();
+                    }
+                    
+                    // 3. Check maxCharacters
+                    if (textInputValue.HasMember("maxCharacters") && textInputValue["maxCharacters"].IsUint()) {
+                        t.maxCharacters = textInputValue["maxCharacters"].GetUint();
+                    }
                 }
 
                 // Check if UI Layout
                 if (entityValue.HasMember(Keys::UI_LAYOUT_COMPONENT) && entityValue[Keys::UI_LAYOUT_COMPONENT].IsObject()) {
+                    UILayoutComponent& u = gECS.AddComponent<UILayoutComponent>(newEntity);
+                    const rapidjson::Value& uiLayoutValue = entityValue[Keys::UI_LAYOUT_COMPONENT];
 
+                    // 1. Check paddingXY
+                    if (uiLayoutValue.HasMember("paddingXY") && uiLayoutValue["paddingXY"].IsObject()) {
+                        CEVec2 paddingXY{ 0.0f, 0.0f };
+                        const rapidjson::Value& paddingXYValue = uiLayoutValue["paddingXY"];
+                        // Use HasMember check for safety
+                        if (paddingXYValue.HasMember("x")) paddingXY.x = paddingXYValue["x"].GetFloat();
+                        if (paddingXYValue.HasMember("y")) paddingXY.y = paddingXYValue["y"].GetFloat();
+                        u.paddingXY = paddingXY;
+                    }
+                    
+                    // 2. Check uiLayout
+                    if (uiLayoutValue.HasMember("uiLayout") && uiLayoutValue["uiLayout"].IsUint()) {
+                        u.uiLayout = static_cast<UILayout>(uiLayoutValue["uiLayout"].GetUint());
+                    }
                 }
 
             }
@@ -920,12 +958,12 @@ namespace CrashoutsEngine {
                 // =========================================================
                 // J. ButtonComponent
                 // =========================================================
-                if (gECS.HasComponent<UI::ButtonComponent>(id)) {
-                    const UI::ButtonComponent& buttonComp = *gECS.GetComponent<UI::ButtonComponent>(id);
+                if (gECS.HasComponent<ButtonComponent>(id)) {
+                    const ButtonComponent& buttonComp = *gECS.GetComponent<ButtonComponent>(id);
                     rapidjson::Value buttonVal(rapidjson::kObjectType);
                     // 1.  buttonState (unsigned int)
                     buttonVal.AddMember("buttonState", 
-                        static_cast<std::underlying_type_t<UI::ButtonState>>(buttonComp.buttonState), allocator);
+                        static_cast<std::underlying_type_t<ButtonState>>(buttonComp.buttonState), allocator);
                     
                     // -------------------------------------------------------------------------------
                     // 
@@ -979,73 +1017,53 @@ namespace CrashoutsEngine {
                 // =========================================================
                 // I. GuiComponent
                 // =========================================================
-                if (gECS.HasComponent<UI::GuiComponent>(id)) {
-                    const UI::GuiComponent& guiComp = *gECS.GetComponent<UI::GuiComponent>(id);
-                    rapidjson::Value camValue(rapidjson::kObjectType);
-                    // 1. Zoom (float)
-                    camValue.AddMember("zoom", cameraComp.zoom, allocator);
+                if (gECS.HasComponent<GuiComponent>(id)) {
+                    const GuiComponent& guiComp = *gECS.GetComponent<GuiComponent>(id);
+                    rapidjson::Value guiValue(rapidjson::kObjectType);
+                    // 1.  uiType (unsigned int)
+                    guiValue.AddMember("uiType",
+                        static_cast<std::underlying_type_t<UIType>>(guiComp.uiType), allocator);
 
-                    // 2. xBounds (CEVec2 -> JSON Object)
-                    rapidjson::Value xBoundsValue(rapidjson::kObjectType);
-                    xBoundsValue.AddMember("x", cameraComp.xBounds.x, allocator);
-                    xBoundsValue.AddMember("y", cameraComp.xBounds.y, allocator);
-                    camValue.AddMember("xBounds", xBoundsValue, allocator);
-
-                    // 2. yBounds (CEVec2 -> JSON Object)
-                    rapidjson::Value yBoundsValue(rapidjson::kObjectType);
-                    yBoundsValue.AddMember("x", cameraComp.yBounds.x, allocator);
-                    yBoundsValue.AddMember("y", cameraComp.yBounds.y, allocator);
-                    camValue.AddMember("yBounds", yBoundsValue, allocator);
-
-                    entityValue.AddMember(rapidjson::StringRef(Keys::BUTTON_COMPONENT), buttonVal, allocator);
+                    entityValue.AddMember(rapidjson::StringRef(Keys::GUI_COMPONENT), guiValue, allocator);
                 }
 
                 // =========================================================
                 // I. TextInputComponent
                 // =========================================================
-                if (gECS.HasComponent<UI::TextInputComponent>(id)) {
-                    const CameraComponent& cameraComp = *gECS.GetComponent<CameraComponent>(id);
-                    rapidjson::Value camValue(rapidjson::kObjectType);
-                    // 1. Zoom (float)
-                    camValue.AddMember("zoom", cameraComp.zoom, allocator);
+                if (gECS.HasComponent<TextInputComponent>(id)) {
+                    const TextInputComponent& textInputComp = 
+                        *gECS.GetComponent<TextInputComponent>(id);
+                    rapidjson::Value textInputValue(rapidjson::kObjectType);
 
-                    // 2. xBounds (CEVec2 -> JSON Object)
-                    rapidjson::Value xBoundsValue(rapidjson::kObjectType);
-                    xBoundsValue.AddMember("x", cameraComp.xBounds.x, allocator);
-                    xBoundsValue.AddMember("y", cameraComp.xBounds.y, allocator);
-                    camValue.AddMember("xBounds", xBoundsValue, allocator);
+                    // 1. isFocused (bool)
+                    textInputValue.AddMember("isFocused", textInputComp.isFocused, allocator);
+                    
+                    // 2. cursorPos (size_t)
+                    textInputValue.AddMember("cursorPos", textInputComp.cursorPos, allocator);
 
-                    // 2. yBounds (CEVec2 -> JSON Object)
-                    rapidjson::Value yBoundsValue(rapidjson::kObjectType);
-                    yBoundsValue.AddMember("x", cameraComp.yBounds.x, allocator);
-                    yBoundsValue.AddMember("y", cameraComp.yBounds.y, allocator);
-                    camValue.AddMember("yBounds", yBoundsValue, allocator);
+                    // 3. maxCharacters (size_t)
+                    textInputValue.AddMember("maxCharacters", textInputComp.maxCharacters, allocator);
 
-                    entityValue.AddMember(rapidjson::StringRef(Keys::BUTTON_COMPONENT), buttonVal, allocator);
+                    entityValue.AddMember(rapidjson::StringRef(Keys::TEXT_INPUT_COMPONENT), textInputValue, allocator);
                 }
 
                 // =========================================================
                 // I. UILayoutComponent
                 // =========================================================
-                if (gECS.HasComponent<UI::UILayoutComponent>(id)) {
-                    const CameraComponent& cameraComp = *gECS.GetComponent<CameraComponent>(id);
-                    rapidjson::Value camValue(rapidjson::kObjectType);
-                    // 1. Zoom (float)
-                    camValue.AddMember("zoom", cameraComp.zoom, allocator);
+                if (gECS.HasComponent<UILayoutComponent>(id)) {
+                    const UILayoutComponent& uiLayoutComp = *gECS.GetComponent<UILayoutComponent>(id);
+                    rapidjson::Value uiLayoutValue(rapidjson::kObjectType);
+                    // 2. paddingXY (CEVec2 -> JSON Object)
+                    rapidjson::Value paddingXYValue(rapidjson::kObjectType);
+                    paddingXYValue.AddMember("x", uiLayoutComp.paddingXY.x, allocator);
+                    paddingXYValue.AddMember("y", uiLayoutComp.paddingXY.y, allocator);
+                    uiLayoutValue.AddMember("paddingXY", paddingXYValue, allocator);
+                    
+                    // 2.  uiLayout (unsigned int)
+                    uiLayoutValue.AddMember("uiLayout",
+                        static_cast<std::underlying_type_t<UILayout>>(uiLayoutComp.uiLayout), allocator);
 
-                    // 2. xBounds (CEVec2 -> JSON Object)
-                    rapidjson::Value xBoundsValue(rapidjson::kObjectType);
-                    xBoundsValue.AddMember("x", cameraComp.xBounds.x, allocator);
-                    xBoundsValue.AddMember("y", cameraComp.xBounds.y, allocator);
-                    camValue.AddMember("xBounds", xBoundsValue, allocator);
-
-                    // 2. yBounds (CEVec2 -> JSON Object)
-                    rapidjson::Value yBoundsValue(rapidjson::kObjectType);
-                    yBoundsValue.AddMember("x", cameraComp.yBounds.x, allocator);
-                    yBoundsValue.AddMember("y", cameraComp.yBounds.y, allocator);
-                    camValue.AddMember("yBounds", yBoundsValue, allocator);
-
-                    entityValue.AddMember(rapidjson::StringRef(Keys::BUTTON_COMPONENT), buttonVal, allocator);
+                    entityValue.AddMember(rapidjson::StringRef(Keys::UI_LAYOUT_COMPONENT), uiLayoutValue, allocator);
                 }
 
                 // Add the finished entity JSON object to the array

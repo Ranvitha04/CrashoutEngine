@@ -14,16 +14,14 @@
 ----------------------------------------------------------------------------- */
 namespace Component {
 
-	namespace UI {
-		/*!
-		@struct	TextInputComponent
-		@brief	A component that provides access to data required by the text input component
-		*/
-		struct TextInputComponent {
-			bool isFocused{ false };
-			size_t cursorPos{ 0 };
-			size_t maxCharacters{ 255 };
-		};
-	}
+	/*!
+	@struct	TextInputComponent
+	@brief	A component that provides access to data required by the text input component
+	*/
+	struct TextInputComponent {
+		bool isFocused{ false };
+		size_t cursorPos{ 0 };
+		size_t maxCharacters{ 255 };
+	};
 }
 

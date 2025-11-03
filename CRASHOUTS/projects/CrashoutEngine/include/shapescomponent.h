@@ -29,7 +29,7 @@ namespace Component {
     * @var ShapeType::Triangle
     *   A triangle described by three vertices.
     */
-    enum class ShapeType { Rectangle, Line, Triangle };
+    enum class ShapeType { Rectangle, Line, Triangle, Circle };
 
     /**
      * @struct ShapeComponent
