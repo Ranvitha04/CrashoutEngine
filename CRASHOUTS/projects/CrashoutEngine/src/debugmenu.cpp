@@ -3,7 +3,18 @@
 @author     mohamadamirakmal.b@digipen.edu
 @date       14/09/2025
 
-This file provides the graphics for Crashout Engine's ImGUI.
+@brief      Renders the editor/debug ImGui for Crashout Engine.
+@details    This module draws every editor-facing window:
+            - engine controls (play / pause / stop)
+            - game viewport (with ImGuizmo)
+            - ECS / Inspector panels
+            - Asset browser / drag-and-drop
+            - Performance / profiler view
+            - Audio test panel
+
+            It also contains all the small, file-local editor state
+            (selected entity, drag payloads, gizmo mode, etc.)
+            so that the rest of the engine code stays clean.
 //__________________________________________________________________________*/
 
 /*                                                                   includes
@@ -58,21 +69,19 @@ using namespace Component;
 
 namespace { //----------------------------------------------------------------------------- file-local state & helpers
 
-    /*!
-     @brief File-local helpers and state for ImGui panels.
-    */
+    // ============================================================
+    //  Performance scratch (fed by PerformanceSystem in engine.cpp)
+    // ============================================================
     std::vector<ProfilerSample> gPerfSnapshot;  //!< Performance profiler snapshot
     double gPerfSnapshotTotalMs = 0.0;          //!< Total frame time in ms
 
     namespace fs = std::filesystem;
 
-    // --- File-local audio state used by the panel ---
-
-    static bool g_audioReady = false;
-    static bool g_banksLoaded = false;
+    // ============================================================
+    //  Audio panel scratch (editor-only)
+    // ============================================================
     static bool s_layoutBuilt = false;
 
-    // Small UI helpers
 
     /*!
      @brief RAII wrapper to automatically open and close ImGui windows.
@@ -108,15 +117,19 @@ namespace { //------------------------------------------------------------------
         }
     }
 
+    // ============================================================
+    //  Drag-and-drop payload description for asset browser
+    // ============================================================
     enum class AssetKind : uint8_t { Texture, SpriteSheet, Shader, Audio, Scene, Prefab, Unknown };
-
     struct AssetDragPayload {
         AssetKind kind{ AssetKind::Unknown };
         char name[128]{};     // manifest/manager "name" (stem)
         char relPath[256]{};  // relative path under assets/ (optional)
     };
 
-    // Gizmo state
+    // ============================================================
+    //  Viewport / gizmo shared state
+    // ============================================================
     static ImGuizmo::OPERATION g_gizmoOp = ImGuizmo::TRANSLATE; // T/R/S
     static ImGuizmo::MODE      g_gizmoMode = ImGuizmo::LOCAL;    // LOCAL or WORLD
     static bool                g_snapOn = false;
@@ -223,7 +236,7 @@ namespace UI { // --------------------------------------------------------------
      @param entities List of ECS entities.
      @param selected Currently selected entity.
     */
-    static void RenderEcsPanel(FrameProfiler& profiler, ECS& ecs, std::vector<Entity>& entities, Entity& selected, UIState& ui)
+    static void RenderEcsPanel(ECS& ecs, std::vector<Entity>& entities, Entity& selected, UIState& ui)
     {
         static std::vector<Entity> pinned;      // keep these inspectors visible
         static bool showAllInspectors = false;  // renders inspectors for every entity
@@ -1088,7 +1101,16 @@ namespace UI { // --------------------------------------------------------------
 
 #ifdef USE_IMGUI_EDITOR
     /*!
-     @brief Renders the game viewport
+     @brief  Draws the editor game viewport.
+     @details
+     Steps performed:
+     1. Draw tiny toolbar (Translate / Rotate / Scale / Snap)
+     2. Compute letterboxed size to respect target aspect ratio
+     3. Draw the framebuffer texture
+     4. Set up ImGuizmo to draw on top of the image
+     5. If an entity is selected, allow gizmo to edit its transform
+     6. Allow clicking in the image to pick an entity
+     7. Accept drag-and-drop payloads from the asset browser
     */
     static void RenderGameViewport(ECS& ecs, Entity& selected) {
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0)); // No padding
@@ -1100,7 +1122,7 @@ namespace UI { // --------------------------------------------------------------
             ImGui::BeginChild("ViewportToolbar", ImVec2(200, 32),
                 false, ImGuiWindowFlags_NoBackground);
 
-            // --- Toolbar Row ---
+            // ----- 1) toolbar (translate / rotate / scale) -----
             ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(6, 4));
             if (ImGui::Button("Translate")) g_gizmoOp = ImGuizmo::TRANSLATE;
             ImGui::SameLine();
@@ -1125,7 +1147,7 @@ namespace UI { // --------------------------------------------------------------
             // Get the size of ImGui window content region
             ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
 
-            // --- Calculate Size Maintain Aspect Ratio ---
+            // ----- 2) aspect-ratio / letterbox calculation -----
             float panelWidth = viewportPanelSize.x;
             float panelHeight = viewportPanelSize.y;
             float panelAspect = panelWidth / panelHeight;
@@ -1148,7 +1170,7 @@ namespace UI { // --------------------------------------------------------------
             int finalTextureWidth = std::max(1, (int)targetWidth);
             int finalTextureHeight = std::max(1, (int)targetHeight);
 
-            // Check if panel size changed
+            // ----- 3) draw the actual viewport texture -----
             if (gameTextureWidth != finalTextureWidth || gameTextureHeight != finalTextureHeight) {
                 if (finalTextureWidth > 0 && finalTextureHeight > 0) {
                     gameTextureWidth = finalTextureWidth;
@@ -1192,7 +1214,7 @@ namespace UI { // --------------------------------------------------------------
             ImVec2 imgMax = ImGui::GetItemRectMax();
             ImVec2 imgSize = ImGui::GetItemRectSize();
 
-            // ---------- ImGuizmo overlay ----------
+            // ----- 4) ImGuizmo overlay is configured to match the image rect -----
             ImGuizmo::BeginFrame();
             ImGuizmo::Enable(true);
 
@@ -1202,6 +1224,7 @@ namespace UI { // --------------------------------------------------------------
             // TRUE - ORTOGRAPHIC, FALSE - PERSPECTIVE
             ImGuizmo::SetOrthographic(true);
 
+            // ----- 5) if we have a selected entity, let gizmo edit its TRS -----
             if (selected && ecs.HasComponent<Component::TransformComponent>(selected)) {
                 auto* t = ecs.GetComponent<Component::TransformComponent>(selected);
 
@@ -1249,6 +1272,7 @@ namespace UI { // --------------------------------------------------------------
                 }
             }
 
+            // ----- 6) mouse picking: screen -> uv -> world -> pick ECS entity -----
             ImVec2 mouse = ImGui::GetMousePos();
             const bool over = (mouse.x >= imgMin.x && mouse.x <= imgMax.x && mouse.y >= imgMin.y && mouse.y <= imgMax.y);
 
@@ -1259,6 +1283,13 @@ namespace UI { // --------------------------------------------------------------
             }
 
             // Left click: select the top-most hit entity (do NOT clear if we hit nothing)
+            // ------------------------------------------------------------
+            //  Mouse picking
+            //  - only runs if mouse is over the viewport image
+            //  - converts mouse to UV, then to world
+            //  - walks ECS transforms and does a simple 2D AABB hit test
+            //  - picks the entity with the highest Z so clicking overlaps works
+            // ------------------------------------------------------------
             if (over && ImGui::IsMouseClicked(ImGuiMouseButton_Left) && !ImGuizmo::IsOver() && !ImGuizmo::IsUsing())
             {
                 CEVec3 worldPt = ViewUV_toWorld(u, v);
@@ -1319,7 +1350,7 @@ namespace UI { // --------------------------------------------------------------
                     }
                     else
                     {
-                        // No ShapeComponent → rectangle using transform size
+                        // No ShapeComponent -> rectangle using transform size
                         const float minx = t->position.x - hx, maxx = t->position.x + hx;
                         const float miny = t->position.y - hy, maxy = t->position.y + hy;
                         hit = (worldPt.x >= minx && worldPt.x <= maxx &&
@@ -1330,11 +1361,16 @@ namespace UI { // --------------------------------------------------------------
                 }
 
                 // Toggle selection with LEFT mouse
-                if (best)   selected = (selected == best) ? (Entity)0 : best;
-                else        selected = 0; // click empty → deselect
+                if (best) selected = (selected == best) ? (Entity)0 : best;
+                else selected = 0; // click empty -> deselect
             }
 
-            // ---------- Drag & drop assets into the world ----------
+            // ------ 7) drag and drop from asset browser into world ------
+            //  Drag-and-drop spawn
+            //  Payload is built in the Asset Browser panel.
+            //  Here we just read the payload and instantiate a texture/prefab
+            //  at the mouse drop location in world space.
+            // ------------------------------------------------------------
             if (ImGui::BeginDragDropTarget()) {
                 if (const ImGuiPayload* pl = ImGui::AcceptDragDropPayload("ASSET/PAYLOAD")) {
                     const auto* p = static_cast<const AssetDragPayload*>(pl->Data);
@@ -1365,7 +1401,7 @@ namespace UI { // --------------------------------------------------------------
             }
         }
         ImGui::End();
-        ImGui::PopStyleVar();   // Pop padding style
+        ImGui::PopStyleVar();
     }
 #endif
 
@@ -1458,7 +1494,7 @@ namespace UI { // --------------------------------------------------------------
         }
 
         if (ui.showECS) {
-            RenderEcsPanel(profiler, ecs, entities, selected, ui);
+            RenderEcsPanel(ecs, entities, selected, ui);
         }
         if (ui.showAssets) {
             static std::string gPickedAsset;
