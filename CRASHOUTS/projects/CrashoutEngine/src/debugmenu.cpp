@@ -1138,8 +1138,25 @@ namespace UI { // --------------------------------------------------------------
 
                 if (ImGuizmo::IsUsing()) {
                     ImGuizmo::DecomposeMatrixToComponents(m, tr, rt, sc);
+
+                    // 2D Constraints
+                    // Keep entity's current Z exactly (no Z move)
+                    tr[2] = t->position.z;
+
+                    // Only Z-rotation is meaningful in 2D
+                    rt[0] = 0.0f;
+                    rt[1] = 0.0f;
+
+                    // No Z scale in 2D
+                    sc[2] = 1.0f;
+
+                    // keep scale positive to avoid mirroring along an axis
+                    if (sc[0] < 0.0f) sc[0] = -sc[0];
+                    if (sc[1] < 0.0f) sc[1] = -sc[1];
+
+                    // Write back to your components
                     t->position = { tr[0], tr[1], tr[2] };
-                    t->rotation = rt[2];
+                    t->rotation = rt[2]; 
                     t->size = { sc[0], sc[1] };
                 }
             }
@@ -1152,8 +1169,6 @@ namespace UI { // --------------------------------------------------------------
                 u = (mouse.x - imgMin.x) / (imgMax.x - imgMin.x);
                 v = 1.f - (mouse.y - imgMin.y) / (imgMax.y - imgMin.y);
             }
-
-            const bool imgHovered = ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem);
 
             // Left click: select the top-most hit entity (do NOT clear if we hit nothing)
             if (over && ImGui::IsMouseClicked(ImGuiMouseButton_Left) && !ImGuizmo::IsOver() && !ImGuizmo::IsUsing())
