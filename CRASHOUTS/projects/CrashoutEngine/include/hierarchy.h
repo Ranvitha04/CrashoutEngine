@@ -1,4 +1,4 @@
-// hierarchy.h
+
 #pragma once
 #include "entitymanager.h"
 
@@ -7,6 +7,6 @@ namespace CrashoutsEngine {
     void DetachChild(ECS& ecs, Entity child);
     void Reparent(ECS& ecs, Entity child, Entity newParent);
 
-    // Call once per frame (before physics/render)
+    
     void UpdateHierarchy(ECS& ecs);
 }

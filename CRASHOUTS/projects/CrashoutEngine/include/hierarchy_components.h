@@ -1,4 +1,4 @@
-// hierarchy_components.h
+
 #pragma once
 #include <vector>
 #include "entitymanager.h"
@@ -20,4 +20,4 @@ namespace Component {
         std::vector<CrashoutsEngine::Entity> children;
     };
 
-} // namespace Component
+} 

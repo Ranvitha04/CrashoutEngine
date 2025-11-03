@@ -139,14 +139,13 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path)
                 // Shape
                 ShapeComponent sc{};
                 sc.type = (ShapeType)typeInt;
-                sc.width = width;
-                sc.height = height;
-                sc.size = shapeSize;
                 sc.color = color;
                 sc.enableTexture = enableTexture;
                 sc.textureName = textureName;
                 e.AddComponent<ShapeComponent>(ent, sc);
-
+                const float cw = (width > 0.f ? width : size.x);
+                const float ch = (height > 0.f ? height : size.y);
+                
                 // RigidBody (no velocity field on your component)
                 e.AddComponent<RigidBodyComponent>(ent, CEVec3{ 0,0,0 }, mass, rest);
 
@@ -252,9 +251,9 @@ namespace CrashoutsEngine {
             Value shj(kObjectType);
             shj.AddMember("kind", "Rectangle", A);      
             shj.AddMember("type", (int)sh->type, A);       
-            shj.AddMember("width", sh->width, A);
-            shj.AddMember("height", sh->height, A);
-            shj.AddMember("size", sh->size, A);
+            shj.AddMember("width", t->size.x, A);
+            shj.AddMember("height", t->size.y, A);
+            shj.AddMember("size", std::max(t->size.x, t->size.y), A);  
 
             // color
             Value col(kObjectType);
