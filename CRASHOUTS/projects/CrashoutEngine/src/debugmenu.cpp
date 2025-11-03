@@ -1156,84 +1156,79 @@ namespace UI { // --------------------------------------------------------------
             const bool imgHovered = ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem);
 
             // Left click: select the top-most hit entity (do NOT clear if we hit nothing)
-            if (imgHovered && ImGui::IsMouseClicked(ImGuiMouseButton_Left) && !ImGuizmo::IsOver() && !ImGuizmo::IsUsing()) {
+            if (over && ImGui::IsMouseClicked(ImGuiMouseButton_Left) && !ImGuizmo::IsOver() && !ImGuizmo::IsUsing())
+            {
                 CEVec3 worldPt = ViewUV_toWorld(u, v);
 
                 Entity best = 0;
                 float  bestZ = -FLT_MAX;
 
-                // Iterate transforms (same logic you already had)
+                // Iterate transforms (top-most by Z wins)
                 auto& tArr = ecs.GetComponentArray<Component::TransformComponent>();
-                for (Entity e : tArr.indexToEntity) {
+                for (Entity e : tArr.indexToEntity)
+                {
                     if (!ecs.HasComponent<Component::TransformComponent>(e)) continue;
                     auto* t = ecs.GetComponent<Component::TransformComponent>(e);
 
-                    float hx = 0.5f, hy = 0.5f;
-                    if (auto* sc = ecs.GetComponent<Component::ShapeComponent>(e)) {
+                    // Default half-extents from transform size (rectangle-like)
+                    float hx = std::max(0.5f * t->size.x, 0.5f);
+                    float hy = std::max(0.5f * t->size.y, 0.5f);
+                    bool  hit = false;
+
+                    if (auto* sc = ecs.GetComponent<Component::ShapeComponent>(e))
+                    {
                         using Component::ShapeType;
-                        switch (sc->type) {
-                        case ShapeType::Line: {
-                            float minx = std::min(sc->p1.x, sc->p2.x);
-                            float maxx = std::max(sc->p1.x, sc->p2.x);
-                            float miny = std::min(sc->p1.y, sc->p2.y);
-                            float maxy = std::max(sc->p1.y, sc->p2.y);
-                            hx = 0.5f * (maxx - minx);
-                            hy = 0.5f * (maxy - miny);
-                            hx = std::max(hx, sc->thickness * 0.5f);
-                            hy = std::max(hy, sc->thickness * 0.5f);
-                        } break;
-                        case ShapeType::Triangle: {
+                        switch (sc->type)
+                        {
+                        case ShapeType::Circle:
+                        {
+                            const float r = 0.5f * std::min(t->size.x, t->size.y);
+                            const float dx = worldPt.x - t->position.x;
+                            const float dy = worldPt.y - t->position.y;
+                            hit = (dx * dx + dy * dy) <= r * r;
+                        }
+                        break;
 
-                            CEVec3 t1 = { t->position.x - .5f, t->position.y - .5f, t->position.z };
-                            CEVec3 t2 = { t->position.x + .5f, t->position.y - .5f, t->position.z };
-                            CEVec3 t3 = { t->position.x, t->position.y + .5f, t->position.z };
+                        case ShapeType::Line:
+                        {
+                            // conservative AABB around line + thickness
+                            const float minx = std::min(sc->p1.x, sc->p2.x);
+                            const float maxx = std::max(sc->p1.x, sc->p2.x);
+                            const float miny = std::min(sc->p1.y, sc->p2.y);
+                            const float maxy = std::max(sc->p1.y, sc->p2.y);
+                            hx = std::max(hx, std::max(0.5f * (maxx - minx), sc->thickness * 0.5f));
+                            hy = std::max(hy, std::max(0.5f * (maxy - miny), sc->thickness * 0.5f));
+                            // fall through to AABB test below
+                        }
+                        [[fallthrough]];
 
-                            float minx = std::min({ t1.x, t2.x, t3.x });
-                            float maxx = std::max({ t1.x, t2.x, t3.x });
-                            float miny = std::min({ t1.y, t2.y, t3.y });
-                            float maxy = std::max({ t1.y, t2.y, t3.y });
-                            hx = 0.5f * (maxx - minx);
-                            hy = 0.5f * (maxy - miny);
-                        } break;
+                        case ShapeType::Rectangle:
+                        case ShapeType::Triangle:
+                        default:
+                        {
+                            const float minx = t->position.x - hx, maxx = t->position.x + hx;
+                            const float miny = t->position.y - hy, maxy = t->position.y + hy;
+                            hit = (worldPt.x >= minx && worldPt.x <= maxx &&
+                                worldPt.y >= miny && worldPt.y <= maxy);
+                        }
+                        break;
                         }
                     }
-                    else {
-                        hx = std::max(0.5f * t->size.x, 0.5f);
-                        hy = std::max(0.5f * t->size.y, 0.5f);
-                    }
-
-                    // Build AABB in world space (2D)
-                    const float minx = t->position.x - hx, maxx = t->position.x + hx;
-                    const float miny = t->position.y - hy, maxy = t->position.y + hy;
-
-                    if (worldPt.x >= minx && worldPt.x <= maxx &&
-                        worldPt.y >= miny && worldPt.y <= maxy)
+                    else
                     {
-                        if (t->position.z >= bestZ) { bestZ = t->position.z; best = e; }
+                        // No ShapeComponent → rectangle using transform size
+                        const float minx = t->position.x - hx, maxx = t->position.x + hx;
+                        const float miny = t->position.y - hy, maxy = t->position.y + hy;
+                        hit = (worldPt.x >= minx && worldPt.x <= maxx &&
+                            worldPt.y >= miny && worldPt.y <= maxy);
                     }
+
+                    if (hit && t->position.z >= bestZ) { bestZ = t->position.z; best = e; }
                 }
 
-                // Toggle Behaviour for LMB:
-                if (best) {
-                    if (selected == best) {
-                        selected = 0;
-                    }
-                    else {
-                        selected = best;
-                    }
-                }
-                else {
-                    // Clicked empty space -> Deselect
-                    selected = 0;
-                }
-            }
-
-            // Right click on empty space to explicitly clear selection
-            if (imgHovered && ImGui::IsMouseClicked(ImGuiMouseButton_Right) && !ImGuizmo::IsOver() && !ImGuizmo::IsUsing()) {
-                // Convert to world & check hit the same way
-                if (u >= 0.f && u <= 1.f && v >= 0.f && v <= 1.f) {
-                    selected = 0;
-                }
+                // Toggle selection with LEFT mouse
+                if (best)   selected = (selected == best) ? (Entity)0 : best;
+                else        selected = 0; // click empty → deselect
             }
 
             // ---------- Drag & drop assets into the world ----------
