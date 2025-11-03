@@ -22,7 +22,7 @@ void MonoManager::Init(const std::string& domainName)
 void MonoManager::LoadAssembly(const std::string& assemblyPath)
 {
     std::filesystem::path abs = std::filesystem::absolute(assemblyPath);
-    std::cout << "[Mono] >>> LoadAssembly called for " << abs << '\n';
+    std::cout << "[Mono] LoadAssembly called for " << abs << '\n';
 
     if (!std::filesystem::exists(abs))
     {

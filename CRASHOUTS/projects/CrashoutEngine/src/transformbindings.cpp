@@ -77,7 +77,7 @@ static bool EntityHasTransform(uint32_t entityID)
 }
 
 // Register Internal Calls
-void CrashoutsEngine::Bindings::RegisterTransform()
+void CrashoutsEngine::Bindings::RegisterTransformBindings()
 {
     // Position
     mono_add_internal_call("CrashoutsEngine.InternalCalls::TransformGetPosition", (const void*)TransformGetPosition);

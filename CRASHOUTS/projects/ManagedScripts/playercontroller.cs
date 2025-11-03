@@ -23,8 +23,8 @@ namespace CrashoutsEngine
 
             if (Input.IsKeyPressed(Key.A))
             {
-                Console.WriteLine("A key is pressed");
-                Console.WriteLine("[C#] mass=" + rb.GetMass());
+                //Console.WriteLine("A key is pressed");
+                //Console.WriteLine("[C#] mass=" + rb.GetMass());
                 rb.AddForce(new Vector3(-100f, 0f, 0f));
             }
 
@@ -51,6 +51,10 @@ namespace CrashoutsEngine
             if (Input.IsKeyPressed(Key.R))
             {
                 tf.Rotation += 3f;
+                if (Entity.HasCollider)
+                {
+                    Entity.Collider.UpdateRotation(tf.Rotation);
+                }
             }
         }
     }

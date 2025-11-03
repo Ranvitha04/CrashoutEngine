@@ -18,6 +18,7 @@ namespace CrashoutsEngine
         bool Started = false;
 
         uint32_t EntityID = 0;
+        CE::u32 GCHandle=0;
 
         ScriptComponent() = default;
         ScriptComponent(const std::string& name, uint32_t ID) : ClassName(name), EntityID(ID) {}

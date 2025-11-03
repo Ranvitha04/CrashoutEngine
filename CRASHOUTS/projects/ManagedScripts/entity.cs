@@ -22,7 +22,6 @@ namespace CrashoutsEngine
         public bool HasRigidBody => InternalCalls.EntityHasRigidBody(ID);
 
         private RigidBody _rigidBody;
-
         public RigidBody RigidBody
         {
             get
@@ -32,5 +31,17 @@ namespace CrashoutsEngine
                 return _rigidBody;
             }
         }
+        public bool HasCollider => InternalCalls.EntityHasCollider(ID);
+
+        private Collider _collider;
+        public Collider Collider
+        {
+            get
+            {
+                if (!HasCollider) return null;
+                return _collider ??= new Collider { EntityID = ID };
+            }
+        }
+
     }
 }

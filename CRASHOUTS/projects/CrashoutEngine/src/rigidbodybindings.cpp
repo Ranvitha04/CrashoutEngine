@@ -14,7 +14,6 @@ static void InternalAddForce(uint32_t entityID, float x, float y, float z)
         std::cout << "[Mono] AddForce: entity " << entityID << " has NO rigidbody\n";
         return;
     }
-    std::cout << "[Mono] AddForce: entity " << entityID << " force=(" << x << "," << y << "," << z << ")\n";
     ecs.GetComponent<Component::RigidBodyComponent>(entityID)->addForce({ x,y,z });
 }
 

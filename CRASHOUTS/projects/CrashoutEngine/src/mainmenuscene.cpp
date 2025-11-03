@@ -102,6 +102,7 @@ void InitMainMenu()
 		Component::TransformComponent{ .position = CEVec3{0.f, -10.f, 0.f} },
 		Component::ShapeComponent{ .type = Component::ShapeType::Rectangle, .width = 80.f, .height = 10.f }
 	);
+	
 
 	AddPhysicsEntity(
 		entity3,
@@ -109,7 +110,7 @@ void InitMainMenu()
 		Component::TransformComponent{ .position = CEVec3{5.f, 20.f, 0.f} },
 		Component::ShapeComponent{ .type = Component::ShapeType::Rectangle, .width = 10.f, .height = 10.f }
 	);
-
+	globalECS->AddComponent<CrashoutsEngine::ScriptComponent>(entity3, CrashoutsEngine::ScriptComponent("EnemyController", entity3));
 	// Initialize MainMenu state
 
 	LOGI(Core, "MainMenu Initialized");
@@ -152,7 +153,7 @@ void UpdateMainMenu()
 	//Component::RigidBodyComponent* rigidBody{ globalECS->GetComponent<Component::RigidBodyComponent>(entity1) };
 	//Component::TransformComponent* transform{ globalECS->GetComponent<Component::TransformComponent>(entity1) };
 
-	Component::RigidBodyComponent* rigidBody2{ globalECS->GetComponent<Component::RigidBodyComponent>(entity3) };
+	//Component::RigidBodyComponent* rigidBody2{ globalECS->GetComponent<Component::RigidBodyComponent>(entity3) };
 
 	if (itemCount < 2500 && InputManager::IsKeyPressed(Key::Num1)) {
 		int newCount = 0;
@@ -170,11 +171,13 @@ void UpdateMainMenu()
 		if (InputManager::IsKeyPressed(Key::W)) rigidBody->addForce(CEVec3{ 0.f, 300.f, 0.f }*rigidBody->getMass());
 	}
 	*/
+	/*
 	if (rigidBody2) {
 		if (InputManager::IsKeyPressed(Key::Left)) rigidBody2->addForce(CEVec3{ -100.f, 0.f, 0.f });
 		if (InputManager::IsKeyPressed(Key::Right)) rigidBody2->addForce(CEVec3{ 100.f, 0.f, 0.f });
 		if (InputManager::IsKeyPressed(Key::Up)) rigidBody2->addForce(CEVec3{ 0.f, 300.f, 0.f }*rigidBody2->getMass());
 	}
+	*/
 	/*
 	// SCALE UP
 	if (InputManager::IsKeyPressed(Key::S)) {

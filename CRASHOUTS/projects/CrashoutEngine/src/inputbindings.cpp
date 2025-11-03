@@ -10,12 +10,10 @@ using namespace Component;
 
 static bool InternalIsKeyPressed(int key)
 {
-    std::cout << "[Mono] Input binding registered OK\n";
     return InputManager::IsKeyPressed(key);
 }
 
 void CrashoutsEngine::Bindings::RegisterInputBindings()
 {
-    mono_add_internal_call("CrashoutsEngine.Input::IsKeyPressed", reinterpret_cast<const void*>(InternalIsKeyPressed));
-    std::cout << "[Mono] Registered: CrashoutsEngine.Input::IsKeyPressed" << std::endl;
+    mono_add_internal_call("CrashoutsEngine.Input::InternalIsKeyPressed", reinterpret_cast<const void*>(InternalIsKeyPressed));
 }

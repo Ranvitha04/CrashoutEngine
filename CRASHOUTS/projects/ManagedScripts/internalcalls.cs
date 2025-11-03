@@ -30,5 +30,11 @@ namespace CrashoutsEngine
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         public static extern bool EntityHasRigidBody(ulong entityID);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern bool InternalIsKeyPressed(Key key);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern bool EntityHasCollider(uint entityID);
     }
 }

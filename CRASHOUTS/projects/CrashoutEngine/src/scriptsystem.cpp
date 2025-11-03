@@ -1,3 +1,4 @@
+#include "colliderbindings.h"
 #include "ScriptSystem.h"
 #include "entitymanager.h"
 #include "InputBindings.h"
@@ -11,11 +12,11 @@ namespace CrashoutsEngine
 {
     void ScriptSystem::InitializeAll(MonoDomain* domain, MonoAssembly* assembly)
     {
-        Bindings::RegisterTransform();
+        Bindings::RegisterTransformBindings();
         Bindings::RegisterInputBindings();
         Bindings::RegisterRigidBodyBindings();
         Bindings::RegisterEntityBindings();
-
+        Bindings::RegisterColliderBindings();
 
         auto& ecs = *ECS::getInstance();
         auto& scripts = ecs.GetComponentArray<ScriptComponent>();

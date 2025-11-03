@@ -3,7 +3,6 @@
 
 namespace CrashoutsEngine
 {
-    CE::u32 GCHandle=0;
     bool ScriptComponent::Initialize(MonoDomain* domain, MonoAssembly* assembly)
     {
         if (!assembly) {
@@ -29,19 +28,16 @@ namespace CrashoutsEngine
         //Instance = mono_object_new(domain, Class);
         //mono_runtime_object_init(Instance);
 
-        // Get the MonoClass* for your C# Entity
+        // Get the MonoClass*
         MonoClass* entityClass = mono_class_from_name(image, "CrashoutsEngine", "Entity");
 
         //GCHandle = 0;
 
-        // in Initialize, after creating Instance:
         Instance = mono_object_new(domain, Class);
         mono_runtime_object_init(Instance);
 
-        // create strong GC handle so Instance pointer won't become stale
-        GCHandle = mono_gchandle_new(Instance, /*isPinned*/ false);
+        GCHandle = mono_gchandle_new(Instance,false);
 
-        // fix field set (pass address of MonoObject*)
         MonoObject* entityObj = mono_object_new(domain, entityClass);
         MonoMethod* entityCtor = mono_class_get_method_from_name(entityClass, ".ctor", 1);
         uint32_t eid = EntityID;
@@ -73,7 +69,7 @@ namespace CrashoutsEngine
             std::cerr << "[Mono] Missing Update(float) in " << ClassName << '\n';
         }
 
-        std::cout << "[Mono] ScriptComponent for class " << ClassName << " initialized successfully.\n";
+        std::cout << "[Mono] ScriptComponent for class " << ClassName << " initialized successfully\n";
 
 
         return true;
@@ -94,7 +90,6 @@ namespace CrashoutsEngine
     {
         if (!MethodUpdate) return;
         MonoObject* target = mono_gchandle_get_target(GCHandle);
-        if (!target) { /* log and return */ }
         void* args[1] = { &dt };
         MonoObject* exc = nullptr;
         mono_runtime_invoke(MethodUpdate, target, args, &exc);
