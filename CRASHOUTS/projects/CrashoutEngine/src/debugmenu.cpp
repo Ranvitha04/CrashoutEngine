@@ -18,7 +18,6 @@ This file provides the graphics for Crashout Engine's ImGUI.
 #include "physicsmanager.h"
 #include "gamestatemanager.h"
 #include "assetmanager.h"
-#include "textureasset.h"
 #include "shapes.h"
 #include "log.h"
 #include "logdefs.h"
@@ -27,8 +26,11 @@ This file provides the graphics for Crashout Engine's ImGUI.
 #include "debugcollision.h"
 #include "frameratecontroller.h"
 #include "audioSystem.h"
+#include "prefab_init.h"  
 #include <fmod_studio.hpp> 
 #include "prefab.h"
+#include "hierarchy.h"
+#include "hierarchy_components.h"
 
 #include "engine.h"
 
@@ -38,8 +40,6 @@ using CrashoutsEngine::Audio::AudioSystem;
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 #include <imgui_internal.h>
-#include <ImGuizmo.h>
-#include <glm/gtc/type_ptr.hpp>
 
 #include <vector>
 #include "CEVec3.h"
@@ -103,37 +103,6 @@ namespace { //------------------------------------------------------------------
             ImGui::PopTextWrapPos();
             ImGui::EndTooltip();
         }
-    }
-
-    enum class AssetKind : uint8_t { Texture, SpriteSheet, Shader, Audio, Scene, Prefab, Unknown };
-
-    struct AssetDragPayload {
-        AssetKind kind{ AssetKind::Unknown };
-        char name[128]{};     // manifest/manager "name" (stem)
-        char relPath[256]{};  // relative path under assets/ (optional)
-    };
-
-    // Gizmo state
-    static ImGuizmo::OPERATION g_gizmoOp = ImGuizmo::TRANSLATE; // T/R/S
-    static ImGuizmo::MODE      g_gizmoMode = ImGuizmo::LOCAL;    // LOCAL or WORLD
-    static bool                g_snapOn = false;
-    static float               g_snapTrans[3] = { 1.0f, 1.0f, 1.0f }; // snap grid for move/scale
-    static float               g_snapAngle = 15.0f;
-
-    // using things from renderer.cpp
-    static inline CEVec3 ViewUV_toWorld(float u, float v) {
-
-        const float ndcX = u * 2.f - 1.f;
-        const float ndcY = v * 2.f - 1.f;
-        const glm::mat4 VP = Component::Rendering::Get().projectionMatrix * Component::Rendering::Get().viewMatrix;
-        const glm::mat4 invVP = glm::inverse(VP);
-        glm::vec4 w = invVP * glm::vec4(ndcX, ndcY, 0.f, 1.f);
-        if (w.w != 0.f) w /= w.w;
-        return CEVec3{ (float)w.x, (float)w.y, (float)w.z };
-    }
-
-    static inline bool PointInAABB(const CEVec3& p, const Collision::AABBRect& a) {
-        return p.x >= a.min.x && p.x <= a.max.x && p.y >= a.min.y && p.y <= a.max.y;
     }
 
 } // anonymous namespace
@@ -223,6 +192,7 @@ namespace UI { // --------------------------------------------------------------
     {
         static std::vector<Entity> pinned;      // keep these inspectors visible
         static bool showAllInspectors = false;  // renders inspectors for every entity
+        static std::vector<Entity> multiSel;   // persistent multi-selection in the panel
 
         ScopedWindow win("Heirarchy", LockFlags(ui.lockLayout));
 
@@ -244,11 +214,10 @@ namespace UI { // --------------------------------------------------------------
         if (ImGui::Button("Create##PrefabByName")) {
             std::string n = nameBuf;
             if (n.empty()) n = "Entity";
-            Prefab::Create(ecs, n);      // calls your prefab module (registered names or fallback)
+            Prefab::Create(ecs, n);      
             nameBuf[0] = '\0';
         }
 
-        // Optional: quick picker of registered prefab names
         {
             auto names = Prefab::Names();
             if (!names.empty()) {
@@ -274,24 +243,99 @@ namespace UI { // --------------------------------------------------------------
             ImGui::TextDisabled("No entities created yet.");
         }
         else {
+            
+            auto toggleMulti = [&](Entity x) {
+                auto it = std::find(multiSel.begin(), multiSel.end(), x);
+                if (it == multiSel.end()) multiSel.push_back(x);
+                else                      multiSel.erase(it);
+                };
+
             for (Entity e : entities) {
-                // build visible name
-                std::string visible = ecs.HasComponent<NameComponent>(e) ? ecs.GetComponent<NameComponent>(e)->name : ("Entity " + std::to_string(e));
+                
+                std::string visible = ecs.HasComponent<NameComponent>(e)
+                    ? ecs.GetComponent<NameComponent>(e)->name
+                    : ("Entity " + std::to_string(e));
 
-                // make the ID unique via "##"
-                std::string id = visible + "##ent" + std::to_string((unsigned)e);
+                ImGui::PushID((int)e);
 
+                bool checked = std::find(multiSel.begin(), multiSel.end(), e) != multiSel.end();
+                if (ImGui::Checkbox("##chk", &checked)) {
+                    if (checked)  multiSel.push_back(e);
+                    else          multiSel.erase(std::remove(multiSel.begin(), multiSel.end(), e), multiSel.end());
+                }
+                ImGui::SameLine();
+
+                
                 bool isSel = (e == selected);
-                if (ImGui::Selectable(id.c_str(), isSel)) {
+                if (ImGui::Selectable(visible.c_str(), isSel))
                     selected = e;
+
+                ImGui::PopID();
+            }
+
+            
+            ImGui::SeparatorText("Grouping");
+            if (ImGui::Button("Group (first selected becomes Parent)")) {
+                if (multiSel.size() >= 2) {
+                    Entity parent = multiSel.front();
+                    for (size_t i = 1; i < multiSel.size(); ++i) {
+                        CrashoutsEngine::AttachChild(ecs, parent, multiSel[i]);
+                    }
                 }
             }
+            ImGui::SameLine();
+            if (ImGui::Button("Ungroup (detach all selected)")) {
+                for (Entity e : multiSel)
+                    CrashoutsEngine::DetachChild(ecs, e);
+            }
+            ImGui::SameLine();
+            if (ImGui::Button("Clear Selection")) {
+                multiSel.clear();
+            }
+
+           
+            ImGui::TextDisabled("Selected: %u | Multi: %d", (unsigned)selected, (int)multiSel.size());
         }
+
 
         ImGui::Separator();
         ImGui::Text("Selected Entity: %u", (unsigned)selected);
 
         if (!selected) return;
+       
+        static char prefabNameBuf[64] = "MyBox";
+        ImGui::SetNextItemWidth(220);
+        ImGui::InputTextWithHint("##save_prefab_name", "Prefab name...", prefabNameBuf, IM_ARRAYSIZE(prefabNameBuf));
+        ImGui::SameLine();
+        if (ImGui::Button("Save Prefab")) {
+            namespace fs = std::filesystem;
+
+            
+            const fs::path jsonPath = fs::path("assets") / "prefabs" / "prefab.json";
+            fs::create_directories(jsonPath.parent_path()); // safe if exists
+
+            
+            const std::string newName = (prefabNameBuf[0] ? prefabNameBuf : "Entity");
+
+            const bool ok = SaveBoxPrefabToJson_RJ(
+                ecs, selected,
+                newName,
+                jsonPath.generic_string(),    
+                /*matchName*/ newName        
+            );
+
+            if (ok) {
+               
+                CrashoutsEngine::ReloadPrefabsFromDisk(jsonPath.generic_string());
+
+                
+                LOGI(Core, std::string("Saved & reloaded prefab json: ") + jsonPath.generic_string());
+                prefabNameBuf[0] = '\0';
+            }
+        }
+
+        ImGui::Separator();
+
 
         if (entities.size() > 0) {
             if (ImGui::Button("Clone Selected")) {
@@ -403,42 +447,10 @@ namespace UI { // --------------------------------------------------------------
                 if (ImGui::Selectable(name.c_str(), selected))
                     outSelectedAsset = e.path().generic_string();
 
-                if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID)) {
-                    AssetDragPayload p{};
-                    std::string rel = fs::relative(e.path(), fs::path(root)).generic_string();// e.g. "images/player.png"
-                    std::string stem = e.path().stem().generic_string(); // e.g. "player"
-                    std::string ext = e.path().extension().generic_string();
-                    std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
-
-                    // Heuristics to pick kind by folder/extension
-                    if (rel.rfind("images/", 0) == 0 ||
-                        ext == ".png" || ext == ".jpg" || ext == ".jpeg" || ext == ".bmp" || ext == ".tga") {
-                        p.kind = AssetKind::Texture;
-                    }
-                    else if (rel.rfind("sprite_sheet/", 0) == 0) {
-                        p.kind = AssetKind::SpriteSheet;
-                    }
-                    else if (rel.rfind("scenes/", 0) == 0 || ext == ".scene" || ext == ".json") {
-                        p.kind = AssetKind::Scene;
-                    }
-                    else if (rel.rfind("audio/", 0) == 0 || ext == ".bank") {
-                        p.kind = AssetKind::Audio;
-                    }
-                    else if (rel.rfind("prefabs/", 0) == 0) {
-                        p.kind = AssetKind::Prefab;
-                    }
-                    else if (rel.rfind("shaders/", 0) == 0 || ext == ".vert" || ext == ".frag") {
-                        p.kind = AssetKind::Shader;
-                    }
-                    else {
-                        p.kind = AssetKind::Unknown;
-                    }
-
-                    std::strncpy(p.name, stem.c_str(), sizeof(p.name) - 1);
-                    std::strncpy(p.relPath, rel.c_str(), sizeof(p.relPath) - 1);
-
-                    ImGui::SetDragDropPayload("ASSET/PAYLOAD", &p, sizeof(p));
-                    ImGui::TextUnformatted(p.name);
+                if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None)) {
+                    const std::string path = e.path().generic_string();
+                    ImGui::SetDragDropPayload("ASSET_PATH", path.c_str(), path.size() + 1);
+                    ImGui::TextUnformatted(path.c_str());
                     ImGui::EndDragDropSource();
                 }
 
@@ -528,7 +540,7 @@ namespace UI { // --------------------------------------------------------------
         ImGui::Text("Selected Entity: %u", (unsigned)selected);
         ImGui::SeparatorText("Add Components");
 
-        // List all registered component types with an "Add" button
+     
         for (auto* ad : DebugReflection::ComponentRegistry::instance().all()) {
             ImGui::PushID(ad);
             bool has = ad->has(ecs, selected);
@@ -545,13 +557,12 @@ namespace UI { // --------------------------------------------------------------
 
         ImGui::SeparatorText("Components on Selected Entity");
 
-        // Draw inspectors for present components (uses your registered adapters)
+        
         for (auto* ad : DebugReflection::ComponentRegistry::instance().all()) {
             if (!ad->has(ecs, selected)) continue;
 
             ImGui::PushID(ad);
 
-            // Draw a nice header bar for each component
             ImGui::Separator();
             ImGui::TextUnformatted(ad->name());
 
@@ -562,10 +573,10 @@ namespace UI { // --------------------------------------------------------------
             if (ImGui::SmallButton("Remove")) {
                 ad->remove(ecs, selected);
                 ImGui::PopID();
-                break; // components changed
+                break; 
             }
 
-            // Draw the component inspector directly (not inside a TreeNode)
+            
             ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(8, 6));
             ad->drawInspector(ecs, selected);
             ImGui::PopStyleVar();
@@ -875,19 +886,19 @@ namespace UI { // --------------------------------------------------------------
         static std::string pickBGM, pickSFX1, pickSFX2, pickSFX3;
 
         EventCombo("Background Music", pickBGM);
+        EventCombo("SFX 1", pickSFX1);
+        EventCombo("SFX 2", pickSFX2);
+        EventCombo("SFX 3", pickSFX3);
 
         if (ImGui::Button("Play")) {
             CrashoutsEngine::Audio::AudioSystem::instance().playOneShot(pickBGM);
         }
-        EventCombo("SFX 1", pickSFX1);
         if (ImGui::Button("Play##sfx1")) {
             CrashoutsEngine::Audio::AudioSystem::instance().playOneShot(pickSFX1);
         }
-        EventCombo("SFX 2", pickSFX2);
         if (ImGui::Button("Play##sfx2")) {
             CrashoutsEngine::Audio::AudioSystem::instance().playOneShot(pickSFX2);
         }
-        EventCombo("SFX 3", pickSFX3);
         if (ImGui::Button("Play##sfx3")) {
             CrashoutsEngine::Audio::AudioSystem::instance().playOneShot(pickSFX3);
         }
@@ -917,20 +928,19 @@ namespace UI { // --------------------------------------------------------------
                 {"Console", &ui.showConsole},
                 {"Game State", &ui.showGameState},
                 {"Audio", &ui.showAudio},
-                {"Engine Control", &ui.showEngineControl}
             };
             for (auto& t : toggles) ImGui::MenuItem(t.label, nullptr, t.flag);
 
             ImGui::Separator();
             if (ImGui::MenuItem("Show All")) {
                 ui.showECS = ui.showAssets = ui.showInspector = ui.showPhysics =
-                    ui.showPerf = ui.showConsole = ui.showGameState = ui.showAudio = ui.showEngineControl = true;
+                    ui.showPerf = ui.showConsole = ui.showGameState = ui.showAudio = true;
                 for (auto const& p : DebugReflection::PanelRegistry::instance().panels())
                     if (p.toggleFlag) *p.toggleFlag = true;
             }
             if (ImGui::MenuItem("Hide All")) {
                 ui.showECS = ui.showAssets = ui.showInspector = ui.showPhysics =
-                    ui.showPerf = ui.showConsole = ui.showGameState = ui.showAudio = ui.showEngineControl = false;
+                    ui.showPerf = ui.showConsole = ui.showGameState = ui.showAudio = false;
                 for (auto const& p : DebugReflection::PanelRegistry::instance().panels())
                     if (p.toggleFlag) *p.toggleFlag = false;
             }
@@ -954,8 +964,7 @@ namespace UI { // --------------------------------------------------------------
     /*!
      @brief Renders the Scene control bar on top of game viewport
     */
-    static void RenderEngineStateBar(UIState& ui) {
-        if (!ui.showEngineControl) return;
+    static void RenderEngineStateBar() {
 
         ImGuiWindowFlags window_flags = 
             ImGuiWindowFlags_NoTitleBar |
@@ -968,7 +977,7 @@ namespace UI { // --------------------------------------------------------------
 
             // Play Stop Pause buttons
             // Play
-            if (ImGui::Button("PLAY", ImVec2(70, 25))) {
+            if (ImGui::Button("PLAY")) {
                 engineState = EngineState::PLAY;
                 CrashoutsEngine::RenderCamera::engineCamera.SetPostiion(CEVec3{ 0.f, 0.f, 0.f });
                 CrashoutsEngine::RenderCamera::engineCamera.SetZoom(1.f);
@@ -977,12 +986,12 @@ namespace UI { // --------------------------------------------------------------
             }
             ImGui::SameLine();
             // Pause
-            if (ImGui::Button("PAUSE", ImVec2(70, 25))) {
+            if (ImGui::Button("PAUSE")) {
                 engineState = EngineState::PAUSE;
             }
             ImGui::SameLine();
             // Stop
-            if (ImGui::Button("STOP", ImVec2(70, 25))) {
+            if (ImGui::Button("STOP")) {
                 RestartGameState();
                 engineState = EngineState::STOP;
             }
@@ -995,35 +1004,11 @@ namespace UI { // --------------------------------------------------------------
     /*!
      @brief Renders the game viewport
     */
-    static void RenderGameViewport(ECS& ecs, Entity& selected) {
+    static void RenderGameViewport() {
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0)); // No padding
         // Begin the ImGUI window, enable Docking
         if (ImGui::Begin("Game Viewport", nullptr, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse)) {
 
-            ImVec2 start = ImGui::GetCursorScreenPos();
-            ImGui::SetCursorScreenPos(ImVec2(start.x + 10, start.y + 10));
-            ImGui::BeginChild("ViewportToolbar", ImVec2(200, 32),
-                false, ImGuiWindowFlags_NoBackground);
-
-            // --- Toolbar Row ---
-            ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(6, 4));
-            if (ImGui::Button("Translate")) g_gizmoOp = ImGuizmo::TRANSLATE;
-            ImGui::SameLine();
-            if (ImGui::Button("Rotate")) g_gizmoOp = ImGuizmo::ROTATE;
-            ImGui::SameLine();
-            if (ImGui::Button("Scale")) g_gizmoOp = ImGuizmo::SCALE;
-            ImGui::SameLine();
-            ImGui::SeparatorEx(ImGuiSeparatorFlags_Vertical);
-            ImGui::SameLine();
-            bool isLocal = (g_gizmoMode == ImGuizmo::LOCAL);
-            if (ImGui::Checkbox("Local", &isLocal)) g_gizmoMode = isLocal ? ImGuizmo::LOCAL : ImGuizmo::WORLD;
-            ImGui::SameLine();
-            ImGui::Checkbox("Snap", &g_snapOn);
-            ImGui::PopStyleVar();
-
-            ImGui::Separator();
-            ImGui::EndChild();
-            ImGui::SetCursorScreenPos(start);
             gameWinHovered = ImGui::IsWindowHovered();
 
             // Get the size of ImGui window content region
@@ -1269,7 +1254,7 @@ namespace UI { // --------------------------------------------------------------
             }
         }
         ImGui::End();
-        ImGui::PopStyleVar();
+        ImGui::PopStyleVar();   // Pop padding style
     }
 #endif
 
@@ -1356,15 +1341,11 @@ namespace UI { // --------------------------------------------------------------
             ImGui::DockBuilderDockWindow("GameState", dock_bottom);
             ImGui::DockBuilderDockWindow("Audio", dock_right_bottom);
             ImGui::DockBuilderDockWindow("Engine Controls", dock_top);
-            ImGui::DockBuilderDockWindow("Game Viewport", dock_main);
 
             ImGui::DockBuilderFinish(dockspace_id);
         }
 
-        if (ui.showEngineControl) {
-            RenderEngineStateBar(ui);
-        }
-
+        RenderEngineStateBar();
         if (ui.showECS) {
             RenderEcsPanel(profiler, ecs, entities, selected, ui);
         }
@@ -1393,7 +1374,7 @@ namespace UI { // --------------------------------------------------------------
         // EndFrame();
 
 #ifdef USE_IMGUI_EDITOR
-        RenderGameViewport(ecs, selected);
+        RenderGameViewport();
 #endif
 
 

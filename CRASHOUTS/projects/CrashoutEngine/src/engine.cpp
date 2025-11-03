@@ -27,6 +27,9 @@ context and implement a game loop.
 #include "performanceSystem.h"
 #include "performanceViewer.h"
 
+//Testing for grouping
+#include "hierarchy.h"   
+#include "hierarchy_components.h" 
 /*                                                   type declarations
 ----------------------------------------------------------------------------- */
 
@@ -277,6 +280,7 @@ void Update(Component::RigidBodyComponent& playerRigidBody, double const& dt) {
     
     FrameProfiler::Scoped frameScope(PerformanceSystem::Get().GetProfiler(), "Game/Update");
     ScopedMemTag mem(MemTag::Update);
+    CrashoutsEngine::UpdateHierarchy(*CrashoutsEngine::ECS::getInstance());
 
     if (engineState == EngineState::PLAY) {
 
