@@ -561,6 +561,42 @@ namespace UI { // --------------------------------------------------------------
         ImGui::NewLine();
 
         ImGui::SeparatorText("Components on Selected Entity");
+        // --- Hierarchy (manual UI, independent of reflection) -----------------
+        ImGui::SeparatorText("Hierarchy");
+
+        using namespace Component;
+
+        // Parent info + detach button
+        if (ecs.HasComponent<ParentComponent>(selected)) {
+            auto* pc = ecs.GetComponent<ParentComponent>(selected);
+            ImGui::Text("Parent: %u", (unsigned)pc->parent);
+            ImGui::SameLine();
+            if (ImGui::Button("Detach from Parent")) {
+                CrashoutsEngine::DetachChild(ecs, selected);
+            }
+        }
+        else {
+            ImGui::TextDisabled("No parent");
+        }
+
+        // Children info + quick actions
+        if (ecs.HasComponent<ChildrenComponent>(selected)) {
+            auto* cc = ecs.GetComponent<ChildrenComponent>(selected);
+            ImGui::Text("Children: %zu", cc->children.size());
+            // List first few children
+            for (size_t i = 0; i < cc->children.size() && i < 8; ++i) {
+                ImGui::BulletText("Child %u", (unsigned)cc->children[i]);
+            }
+            if (cc->children.size() > 8) ImGui::Text("...");
+
+            if (ImGui::Button("Detach All Children")) {
+                // detach every child from this parent
+                for (auto c : cc->children) CrashoutsEngine::DetachChild(ecs, c);
+            }
+        }
+        else {
+            ImGui::TextDisabled("No children");
+        }
 
         // Draw inspectors for present components (uses your registered adapters)
         for (auto* ad : DebugReflection::ComponentRegistry::instance().all()) {
