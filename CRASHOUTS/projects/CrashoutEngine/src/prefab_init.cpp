@@ -189,9 +189,6 @@ namespace CrashoutsEngine {
             LOGE(Core, std::string("Save failed: only Rectangle (Box) is supported."));
             return false;
         }
-
-        // Load / init doc
-    // Load / init doc
         rapidjson::Document doc;
         {
             std::ifstream in(path, std::ios::binary);
@@ -200,7 +197,7 @@ namespace CrashoutsEngine {
                 doc.ParseStream(isw);
                 if (doc.HasParseError() || !doc.IsObject()) {
                     LOGE(Core, (std::string("Save aborted: JSON parse error in ") + path).c_str());
-                    return false; // IMPORTANT: don't clobber the existing file
+                    return false;
                 }
             }
             else {
@@ -277,8 +274,8 @@ namespace CrashoutsEngine {
    
         {
             rapidjson::Value rbj(rapidjson::kObjectType);
-            rbj.AddMember("mass", rb->getMass(), A);          // <-- use getters
-            rbj.AddMember("restitution", rb->getCoeff(), A);  // <-- use getters
+            rbj.AddMember("mass", rb->getMass(), A);         
+            rbj.AddMember("restitution", rb->getCoeff(), A);
             obj.AddMember("rigidbody", rbj, A);
         }
 
@@ -333,10 +330,9 @@ namespace CrashoutsEngine {
         for (const auto& n : Prefab::Names())
             Prefab::Unregister(n);
 
-        // Re-load from JSON
         LoadPrefabsFromJson_RJ(path);
 
-        // (Optional) log what’s available now
+      
         for (const auto& n : Prefab::Names())
             LOGI(Core, std::string("Prefab available: ") + n);
     }
@@ -350,7 +346,7 @@ namespace CrashoutsEngine {
             e.AddComponent<TransformComponent>(ent, TransformComponent{});
     });
 
-    const char* JSON_PATH = "assets/prefabs/prefab.json"; // <-- this is the canonical path
+    const char* JSON_PATH = "assets/prefabs/prefab.json"; 
     LoadPrefabsFromJson_RJ(JSON_PATH);
 }
 
