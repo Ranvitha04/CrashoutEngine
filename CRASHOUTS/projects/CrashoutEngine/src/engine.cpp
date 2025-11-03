@@ -302,6 +302,7 @@ void Update(Component::RigidBodyComponent& playerRigidBody, double const& dt) {
 #else
         RenderCamera::gameCamera.UpdateMatrices(GLApp::width, GLApp::height);
 #endif
+        Scene::UpdateScene(*CrashoutsEngine::ECS::getInstance());
     }
 }
 

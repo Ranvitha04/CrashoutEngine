@@ -11,4 +11,5 @@ This file implements
 
 namespace Scene {
 	void RenderScene(CrashoutsEngine::ECS& gECS);
+	void UpdateScene(CrashoutsEngine::ECS& gECS);
 }

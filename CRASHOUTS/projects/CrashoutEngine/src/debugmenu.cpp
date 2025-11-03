@@ -1000,6 +1000,7 @@ namespace UI { // --------------------------------------------------------------
     }
 
 #ifdef USE_IMGUI_EDITOR
+
     /*!
      @brief Renders the game viewport
     */
@@ -1224,7 +1225,7 @@ namespace UI { // --------------------------------------------------------------
                 }
                 else {
                     // Clicked empty space -> Deselect
-                    selected = 0;
+                    // selected = 0;
                 }
             }
 
@@ -1265,6 +1266,11 @@ namespace UI { // --------------------------------------------------------------
                 }
                 ImGui::EndDragDropTarget();
             }
+        
+            CEVec3 worldPt = ViewUV_toWorld(u, v);
+
+            InputManager::g_mouseWorldPos = CEVec2{ worldPt.x, worldPt.y };
+
         }
         ImGui::End();
         ImGui::PopStyleVar();

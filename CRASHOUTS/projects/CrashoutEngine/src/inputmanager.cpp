@@ -31,6 +31,12 @@ float InputManager::ScrollYAccum = 0.0f;
 /// Scroll wheel delta captured during the current frame
 float InputManager::ScrollYFrame = 0.0f;
 
+CEVec2 InputManager::g_mouseWorldPos{ 0.f, 0.f };
+
+CEVec2 InputManager::GetMouseWorldPos() {
+    return g_mouseWorldPos;
+}
+
 /*!
 @brief Initialize the input manager with a GLFW window
 @param w Pointer to the GLFW window

@@ -24,8 +24,8 @@ Handles font loading character atlas creation and text rendering with FreeType a
 #include "shaderasset.h"
 #include "FontAsset.h"
 
-#define FONT_SCALE 0.1f
-#define INV_FONT_SCALE 10.f
+#define FONT_SCALE 0.05f
+#define INV_FONT_SCALE 20.f
 
 /*!
 @brief Construct a new TextRenderer
@@ -59,12 +59,12 @@ TextRenderer::TextRenderer(){
     glBindVertexArray(0);
 
     /// Set projection matrix
-    glUseProgram(shaderID);
-
-    Component::Rendering& renderer = Component::Rendering::Get();
-    glm::mat4 projection = renderer.projectionMatrix;
-
-    glUniformMatrix4fv(glGetUniformLocation(shaderID, "projection"), 1, GL_FALSE, &projection[0][0]);
+    //glUseProgram(shaderID);
+    //
+    //Component::Rendering& renderer = Component::Rendering::Get();
+    //glm::mat4 projection = renderer.projectionMatrix;
+    //
+    //glUniformMatrix4fv(glGetUniformLocation(shaderID, "projection"), 1, GL_FALSE, &projection[0][0]);
 
     //LoadFont(fontPath);
 }
@@ -94,6 +94,16 @@ void TextRenderer::RenderText(const std::string& text, GLfloat x, GLfloat y, GLf
 	const std::map<GLchar, Character>& characters = font->characters;
     
     glUseProgram(shaderID);
+
+    // Get the *current* camera matrices every frame
+    Component::Rendering& renderer = Component::Rendering::Get();
+    glm::mat4 projection = renderer.projectionMatrix;
+    glm::mat4 view = renderer.viewMatrix;
+
+    // Send them to the text shader
+    glUniformMatrix4fv(glGetUniformLocation(shaderID, "projection"), 1, GL_FALSE, &projection[0][0]);
+    glUniformMatrix4fv(glGetUniformLocation(shaderID, "view"), 1, GL_FALSE, &view[0][0]);
+
     glUniform3f(glGetUniformLocation(shaderID, "textColor"), color.x, color.y, color.z);
     glActiveTexture(GL_TEXTURE0);
     glBindVertexArray(VAO);

@@ -85,6 +85,10 @@ public:
     */
     static CEVec2 GetMouseNDC();
 
+    static CEVec2 GetMouseWorldPos();
+
+    static CEVec2 g_mouseWorldPos;
+
 private:
     /// Pointer to the GLFW window
     static GLFWwindow* Window;
@@ -100,6 +104,7 @@ private:
 
     /// Scroll delta value for the current frame only
     static float ScrollYFrame;
+
 
     /*!
     @brief GLFW callback function for mouse scroll events
