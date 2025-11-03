@@ -972,6 +972,22 @@ namespace UI { // --------------------------------------------------------------
             CrashoutsEngine::Audio::AudioSystem::instance().playOneShot(pickSFX3);
         }
 
+        ImGui::SeparatorText("Master Volume");
+
+        // Cache slider state
+        static float sMasterVol = 1.0f;
+        if (ImGui::SliderFloat("Master", &sMasterVol, 0.0f, 1.0f, "%.2f"))
+            CrashoutsEngine::Audio::AudioSystem::instance().setBusVolume("bus:/", sMasterVol);
+
+        // Optional mute toggle (reuses same call)
+        static bool sMuted = false;
+        if (ImGui::Checkbox("Mute All", &sMuted)) {
+            if (sMuted)
+                CrashoutsEngine::Audio::AudioSystem::instance().setBusVolume("bus:/", 0.0f);
+            else
+                CrashoutsEngine::Audio::AudioSystem::instance().setBusVolume("bus:/", sMasterVol);
+        }
+
         ImGui::Separator();
         if (ImGui::Button("Stop All"))
             AudioSystem::instance().stopAll(true);
@@ -1033,7 +1049,7 @@ namespace UI { // --------------------------------------------------------------
     /*!
      @brief Renders the Scene control bar on top of game viewport
     */
-    static void RenderEngineStateBar() {
+    static void RenderEngineStateBar(UIState& ui) {
         if (!ui.showEngineControl) return;
 
         ImGuiWindowFlags window_flags = 
@@ -1074,7 +1090,7 @@ namespace UI { // --------------------------------------------------------------
     /*!
      @brief Renders the game viewport
     */
-    static void RenderGameViewport() {
+    static void RenderGameViewport(ECS& ecs, Entity& selected) {
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0)); // No padding
         // Begin the ImGUI window, enable Docking
         if (ImGui::Begin("Game Viewport", nullptr, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse)) {
