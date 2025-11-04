@@ -267,6 +267,8 @@ void Update(Component::RigidBodyComponent& playerRigidBody, double const& dt) {
     //GLApp::update_time();
     UpdateGameStateManager();
 
+    MonoManager::CheckHotReload();
+
 	CrashoutsEngine::ScriptSystem::UpdateAll(static_cast<float>(FrameRateController::GetInstance().DT()));
     aiSystem.Update();
 

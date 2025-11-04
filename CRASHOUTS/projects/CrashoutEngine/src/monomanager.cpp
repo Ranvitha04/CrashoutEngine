@@ -30,6 +30,12 @@ void MonoManager::Init(const std::string& domainName)
 
     // Track DLL timestamp for hot reload
     s_LastWriteTime = std::filesystem::last_write_time(s_AssemblyPath);
+
+    namespace fs = std::filesystem;
+    if (fs::exists(s_AssemblyPath))
+        s_LastWriteTime = fs::last_write_time(s_AssemblyPath);
+    else
+        s_LastWriteTime = fs::file_time_type::clock::now(); // placeholder
 }
 
 void MonoManager::LoadAssembly(const std::string& assemblyPath)
@@ -68,47 +74,85 @@ void MonoManager::ReloadScripts()
 {
     std::cout << "[Mono] Reloading scripts..." << std::endl;
 
-    //Clean up old script instances
     CrashoutsEngine::ScriptSystem::DestroyAll();
 
-    //Unload old assembly
-    if (s_Assembly)
+    // Remove the old assembly reference
+    s_Assembly = nullptr;
+
+    try
     {
-        mono_assembly_close(s_Assembly);
-        s_Assembly = nullptr;
+        namespace fs = std::filesystem;
+
+        // Prepare cache folder
+        fs::path src = "scripts/ManagedScripts.dll";
+        fs::path dstDir = "scripts/_cache";
+        fs::create_directories(dstDir);
+
+        // Create a unique filename to avoid file-lock errors
+        std::string uniqueName = "ManagedScripts_reload_" + std::to_string(std::time(nullptr)) + ".dll";
+        fs::path dst = dstDir / uniqueName;
+
+        // Copy source DLL to a unique cache DLL
+        fs::copy_file(src, dst, fs::copy_options::overwrite_existing);
+
+        // Load from this unique file
+        s_Assembly = mono_domain_assembly_open(s_Domain, dst.string().c_str());
+        if (!s_Assembly)
+        {
+            std::cerr << "[Mono] Reload failed to open assembly!\n";
+            return;
+        }
+    }
+    catch (const std::filesystem::filesystem_error& e)
+    {
+        std::cerr << "[Mono] File copy failed: " << e.what() << '\n';
+        return;
     }
 
-    //Reload new assembly into same domain
-    LoadAssembly(s_AssemblyPath);
+    if (!s_Assembly)
+    {
+        std::cerr << "[Mono] Reload failed to open assembly!\n";
+        return;
+    }
 
+    CrashoutsEngine::ScriptSystem::RegisterAllBindings();
     CrashoutsEngine::ScriptSystem::ReloadAll();
 
     std::cout << "[Mono] Hot reload completed\n";
 }
 
-
 void MonoManager::CheckHotReload()
 {
-    auto currentTime = std::filesystem::last_write_time(s_AssemblyPath);
-    if (currentTime != s_LastWriteTime)
+    namespace fs = std::filesystem;
+
+    try
     {
-        s_LastWriteTime = currentTime;
-        ReloadScripts();
+        if (!fs::exists(s_AssemblyPath))
+            return; // no DLL yet then just skip bruh
+
+        auto currentTime = fs::last_write_time(s_AssemblyPath);
+        if (currentTime != s_LastWriteTime)
+        {
+            s_LastWriteTime = currentTime;
+            std::this_thread::sleep_for(std::chrono::milliseconds(300)); // small FS settle delay
+            ReloadScripts();
+        }
+    }
+    catch (const fs::filesystem_error& e)
+    {
+        std::cerr << "[Mono] Hot reload check failed: " << e.what() << '\n';
     }
 }
 
 
 void MonoManager::Shutdown()
 {
-    if (!s_Domain)
+    if (s_Domain)
     {
-        return;
+        mono_jit_cleanup(s_Domain);
+        std::cout << "[Mono] Runtime cleaned up\n";
     }
 
-	mono_jit_cleanup(s_Domain);
-	s_Domain = nullptr;
-	s_Assembly = nullptr;
-	std::cout << "[Mono] Domain cleaned up\n";
 }
 
 MonoImage* MonoManager::GetImage()
