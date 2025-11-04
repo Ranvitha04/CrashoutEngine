@@ -98,12 +98,11 @@ namespace UI {
     // -- Panels (Easier to implement more Panel)-----------------------
     /*!
     @brief Renders the ECS debug panel.
-    @param profiler Frame profiler reference.
     @param ecs ECS reference.
     @param entities List of ECS entities.
     @param selected Currently selected entity.
     */
-    static void RenderEcsPanel(FrameProfiler& profiler, CrashoutsEngine::ECS& ecs, std::vector<CrashoutsEngine::Entity>& entities, CrashoutsEngine::Entity& selected, UIState& ui);
+    static void RenderEcsPanel(CrashoutsEngine::ECS& ecs, std::vector<CrashoutsEngine::Entity>& entities, CrashoutsEngine::Entity& selected, UIState& ui);
 
     /*!
     @brief Renders the Asset Browser debug panel.
@@ -158,7 +157,11 @@ namespace UI {
     */
     static void RenderAudioPanel(FrameProfiler&, CrashoutsEngine::ECS& ecs, UIState& ui);
 
-     void RenderDebugMenuBar(UIState& ui);
+    /*!
+     @brief Renders the debugmenu panel.
+     @param ui UI state toggles.
+    */
+    void RenderDebugMenuBar(UIState& ui);
 
     /*!
      @brief Renders the Scene control bar on top of game viewport
