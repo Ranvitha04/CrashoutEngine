@@ -722,7 +722,10 @@ namespace {
 
         void add(ECS& ecs, Entity e) override {
             if (!has(ecs, e)) {
-                ecs.AddComponent<CrashoutsEngine::ScriptComponent>(e, "PlayerScript", e);
+                static char className[64] = "PlayerController";
+                ImGui::InputText("Class Name to Add", className, sizeof(className));
+                CrashoutsEngine::ScriptComponent sc(className, e);
+                ecs.AddComponent<CrashoutsEngine::ScriptComponent>(e, sc);
             }
         }
 
