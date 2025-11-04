@@ -1,3 +1,12 @@
+/*!
+@file       quadtree.h
+@author     miratristan.d@digipen.edu
+@date       27/10/2025
+@brief      Class declaration for the quadtree data structure, used for partitioning the screen into sections to speed up some processes (Broad phase collision)
+
+
+//__________________________________________________________________________*/
+
 #pragma once
 
 #include "CEVec3.h"

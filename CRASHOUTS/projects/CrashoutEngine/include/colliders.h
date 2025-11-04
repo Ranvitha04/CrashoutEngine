@@ -1,3 +1,12 @@
+/*!
+@file       colliders.h
+@author     miratristan.d@digipen.edu
+@date       26/10/2025
+@brief      Type declarations for the different types of colliders
+
+
+//__________________________________________________________________________*/
+
 #pragma once
 
 #include "CEVec3.h"
