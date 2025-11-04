@@ -1094,8 +1094,10 @@ namespace UI { // --------------------------------------------------------------
             // Stop
             if (ImGui::Button("STOP", ImVec2(70, 25))) {
                 RestartGameState();
+                MonoManager::ReloadScripts();
                 engineState = EngineState::STOP;
             }
+            ImGui::SameLine();
             if (ImGui::Button("Reload Scripts"))
             {
                 MonoManager::ReloadScripts();
