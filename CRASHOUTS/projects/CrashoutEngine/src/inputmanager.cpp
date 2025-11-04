@@ -205,7 +205,7 @@ void InputManager::ScrollCallback(GLFWwindow * window, double xoffset, double yo
 /*!
 @brief GLFW callback for character (typing) events
 */
-void InputManager::CharCallback(GLFWwindow* window, unsigned int codepoint) {
+void InputManager::CharCallback([[maybe_unused]] GLFWwindow* window, unsigned int codepoint) {
     // This is called by GLFW automatically
     s_typedChars += static_cast<char>(codepoint);
 }
