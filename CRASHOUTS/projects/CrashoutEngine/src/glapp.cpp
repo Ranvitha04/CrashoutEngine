@@ -205,8 +205,8 @@ bool GLApp::init(GLint w, GLint h, std::string t) {
 
     // Depth / Stencil Renderbuffer
     glGenRenderbuffers(1, &gameRboDepthStencil);
-    glBindRenderbuffer(GL_RENDERER, gameRboDepthStencil);
-    glRenderbufferStorage(GL_RENDERER, GL_DEPTH24_STENCIL8, gameTextureWidth, gameTextureHeight);
+    glBindRenderbuffer(GL_RENDERBUFFER, gameRboDepthStencil);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, gameTextureWidth, gameTextureHeight);
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, gameRboDepthStencil);
 
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
@@ -215,7 +215,7 @@ bool GLApp::init(GLint w, GLint h, std::string t) {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 #endif
-    model.Setup_VAO();
+    //model.Setup_VAO();
     
     return true;
 }

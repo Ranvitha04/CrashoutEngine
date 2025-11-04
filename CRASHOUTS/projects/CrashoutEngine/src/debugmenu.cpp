@@ -1107,7 +1107,7 @@ namespace UI { // --------------------------------------------------------------
         ImGui::End();
     }
 
-#ifdef USE_IMGUI_EDITOR
+#if USE_IMGUI_EDITOR
 
     /*!
      @brief  Draws the editor game viewport.
@@ -1543,7 +1543,7 @@ namespace UI { // --------------------------------------------------------------
 
         // EndFrame();
 
-#ifdef USE_IMGUI_EDITOR
+#if USE_IMGUI_EDITOR
         RenderGameViewport(ecs, selected);
 #endif
 

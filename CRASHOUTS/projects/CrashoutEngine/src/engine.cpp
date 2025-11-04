@@ -116,7 +116,7 @@ void Init() {
     CrashoutsEngine::Assets::GenerateAssetManifest();
     CrashoutsEngine::Assets::AssetManager::GetInstance().LoadManifestAssets();
 
-    Component::Rendering::Get().Setup_VAO(); // Setup default quad VAO
+    //Component::Rendering::Get().Setup_VAO(); // Setup default quad VAO
     Component::Rendering::Initialize(); // Initializes the main shader
     Component::TextureRenderer::Initialize(); // Initializes the texture/sprite shader
 
@@ -135,6 +135,8 @@ void Init() {
     UI::Init(GLApp::ptr_window); // NEW
     PerformanceSystem::Get().Attach(gProfiler);
     engineState = EngineState::STOP;
+
+    glEnable(GL_DEPTH_TEST);
 }
 
 /*  _________________________________________________________________________ */
@@ -151,7 +153,7 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
 
     static UI::UIState uiState;
 
-#ifdef USE_IMGUI_EDITOR
+#if USE_IMGUI_EDITOR
     // 1. Start the Dear ImGui frame
     UI::BeginFrame();
 
@@ -181,7 +183,7 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
 
 #endif
 
-#ifdef USE_IMGUI_EDITOR
+#if USE_IMGUI_EDITOR
 
     // Render to FBO
     glBindFramebuffer(GL_FRAMEBUFFER, gameFboID);
@@ -189,8 +191,27 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
 
     // clear colorbuffer with RGBA value in glClearColor ...
     glClearColor(0.2f, 0.2f, 0.2f, 1.0f);  // Dark gray background
+    
+    // 1. Set the default depth value for clearing
+    glClearDepth(1.0f);
+
+    // 2. Clear both Color and Depth buffers
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    // 3. UNCOMMENT this line. This is the main fix.
     glEnable(GL_DEPTH_TEST);
+
+    // 4. Set the depth function (GL_LEQUAL is a robust default)
+    glDepthFunc(GL_LEQUAL);
+
+    // 5. CRITICAL: Reset the depth mask to TRUE.
+    //    Your transparent objects set this to FALSE, so we must
+    //    reset it to TRUE at the start of every frame.
+    glDepthMask(GL_TRUE);
+
+    // 6. Also, disable blending. Transparent objects will
+    //    re-enable it when they need it.
+    glDisable(GL_BLEND);
 
     using namespace CrashoutsEngine::RenderCamera;
 
@@ -205,7 +226,7 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
     ScopedMemTag mem(MemTag::Graphics);
     {
         FrameProfiler::Scoped s2(PerformanceSystem::Get().GetProfiler(), "Scene");
-        GLApp::draw();
+        //GLApp::draw();
         Scene::RenderScene(*CrashoutsEngine::ECS::getInstance());
     }
 
@@ -234,7 +255,7 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
 
-    GLApp::draw();
+    //GLApp::draw();
     Scene::RenderScene(*CrashoutsEngine::ECS::getInstance());
 
 #endif
@@ -316,8 +337,8 @@ void Update(Component::RigidBodyComponent& playerRigidBody, double const& dt) {
             physicsSystem.update(0.f);
         }
         // Process Editor Camera Input
+#if USE_IMGUI_EDITOR
         if(gameWinHovered) CrashoutsEngine::RenderCamera::EditorCameraInput();
-#ifdef USE_IMGUI_EDITOR
         CrashoutsEngine::RenderCamera::engineCamera.UpdateMatrices(Settings::GetScreenWidth(), Settings::GetScreenHeight());
 #else
         CrashoutsEngine::RenderCamera::engineCamera.UpdateMatrices(GLApp::width, GLApp::height);
