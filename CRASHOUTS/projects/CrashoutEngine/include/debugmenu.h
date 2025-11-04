@@ -53,6 +53,7 @@ namespace UI {
         bool showAudio = true;
         bool drawCollOverlay = true;
         bool showEngineControl = true;
+        bool drawQuadTree = false;
 
         bool freezeOnCollision = false;
 

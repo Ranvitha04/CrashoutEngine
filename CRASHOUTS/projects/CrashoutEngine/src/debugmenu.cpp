@@ -892,7 +892,8 @@ namespace UI { // --------------------------------------------------------------
         ImGui::Separator();
 
         ImGui::Checkbox("Draw overlay", &ui.drawCollOverlay);
-        ImGui::SameLine(); ImGui::Checkbox("All colliders", &ui.drawAllColliders);
+        ImGui::SameLine(); ImGui::Checkbox("All colliders", &ui.drawAllColliders); 
+        ImGui::SameLine(); ImGui::Checkbox("QuadTree", &ui.drawQuadTree);
 
         // When a way to implement the velocity line happens
         // ImGui::SameLine(); ImGui::Checkbox("Velocities", &ui.drawVelocities);
@@ -1426,6 +1427,9 @@ namespace UI { // --------------------------------------------------------------
         auto& collisions = phys.collisions();
         if (ui.drawCollOverlay) {
             CollisionGizmos::DrawAllColliders(ecs, &collisions, ui.overlayThickness);
+            if (ui.drawQuadTree) {
+                Collision::CollisionHandler::quadTree.Draw();
+            }
             //CollisionGizmos::DrawContactsAndNormals(collisions, 0.25f, ui.overlayThickness); Removed for now, will need to calculate the collision pair for normals properly
         }
         collisions = std::vector<Collision::CollisionEvent>{};

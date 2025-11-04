@@ -30,7 +30,11 @@ namespace DataStructure {
 
 	public:
 
-		QuadTree(Collision::AABBRect const& boundary, int const& depth = 0);
+		QuadTree(Collision::AABBRect const& boundary = Collision::AABBRect{ CEVec3{}, CEVec3{} }, int const& depth = 0);
+
+		QuadTree(QuadTree&&) = default;
+
+		~QuadTree();
 
 		void Insert(CrashoutsEngine::Entity const& entity);
 
