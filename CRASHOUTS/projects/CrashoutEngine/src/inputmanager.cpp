@@ -33,6 +33,10 @@ float InputManager::ScrollYFrame = 0.0f;
 
 CEVec2 InputManager::g_mouseWorldPos{ 0.f, 0.f };
 
+std::string InputManager::s_typedChars;
+
+std::unordered_map<int, bool> InputManager::s_lastKeys;
+
 CEVec2 InputManager::GetMouseWorldPos() {
     return g_mouseWorldPos;
 }
@@ -44,6 +48,8 @@ CEVec2 InputManager::GetMouseWorldPos() {
 void InputManager::Init(GLFWwindow* ptr_window) {
     Window = ptr_window;
     glfwSetScrollCallback(Window, ScrollCallback);
+    // Tell GLFW to call CharCallback when a key is typed
+    glfwSetCharCallback(Window, CharCallback);
 }
 
 /*!
@@ -52,6 +58,10 @@ void InputManager::Init(GLFWwindow* ptr_window) {
 Snapshots scroll delta resets accumulator and refreshes key and mouse button states
 */
 void InputManager::Update() {
+    // Clear typed chars and store last frame's key state
+    s_typedChars.clear();
+    s_lastKeys = Keys;
+
     // Snapshot scroll delta for this frame and reset accumulator
     ScrollYFrame = ScrollYAccum;
     ScrollYAccum = 0.0f;
@@ -190,4 +200,32 @@ void InputManager::ScrollCallback(GLFWwindow * window, double xoffset, double yo
     // We only care about the vertical scroll for now
     // We accumulate the delta value. Update() will handle snapshotting it.
     ScrollYAccum += static_cast<float>(yoffset);
+}
+
+/*!
+@brief GLFW callback for character (typing) events
+*/
+void InputManager::CharCallback(GLFWwindow* window, unsigned int codepoint) {
+    // This is called by GLFW automatically
+    s_typedChars += static_cast<char>(codepoint);
+}
+
+/*!
+@brief Get all characters typed since the last frame
+*/
+std::string InputManager::GetTypedCharacters() {
+    return s_typedChars;
+}
+
+/*!
+@brief Check if a key was pressed *this frame*
+@return True if pressed this frame, false if held or not pressed
+*/
+bool InputManager::IsKeyTriggered(int key) {
+    // Check if the key IS pressed now
+    bool pressedNow = Keys.count(key) ? Keys[key] : false;
+    // Check if it was NOT pressed last frame
+    bool pressedLast = s_lastKeys.count(key) ? s_lastKeys[key] : false;
+
+    return pressedNow && !pressedLast;
 }

@@ -13,16 +13,17 @@ Handles font loading character atlas creation and text rendering with FreeType a
 #include "shapes.h"
 #include "glapp.h"
 #include <CEVec3.h>
-#include <glm/gtc/matrix_transform.hpp>
 #include <iostream>
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include "engine.h"
 
 #include "settings.h"
 #include "assetmanager.h"
 #include "shaderasset.h"
 #include "FontAsset.h"
+#include "camera.h"
 
 #define FONT_SCALE 0.05f
 #define INV_FONT_SCALE 20.f
@@ -42,7 +43,7 @@ TextRenderer::TextRenderer(){
 	}
 
     shaderID = textureShader->shaderObject.GetHandle();
-
+    
     /// Configure VAO/VBO
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
@@ -78,7 +79,7 @@ TextRenderer::TextRenderer(){
 @param color RGB color of the text
 @param fontName The name of the font asset (in AssetManager) to use
 */
-void TextRenderer::RenderText(const std::string& text, GLfloat x, GLfloat y, GLfloat scale, CEVec3 colorCEV, const std::string fontName) {
+void TextRenderer::RenderText(const std::string& text, GLfloat x, GLfloat y, GLfloat scale, CEVec3 colorCEV, const std::string fontName, bool isWorldSpace) {
 	scale *= FONT_SCALE;
     glm::vec3 color{ colorCEV.x / 255.f, colorCEV.y / 255.f, colorCEV.z / 255.f };
     
@@ -96,9 +97,28 @@ void TextRenderer::RenderText(const std::string& text, GLfloat x, GLfloat y, GLf
     glUseProgram(shaderID);
 
     // Get the *current* camera matrices every frame
-    Component::Rendering& renderer = Component::Rendering::Get();
-    glm::mat4 projection = renderer.projectionMatrix;
-    glm::mat4 view = renderer.viewMatrix;
+    glm::mat4 projection;
+    glm::mat4 view;
+
+    if (isWorldSpace) {
+        // WORLD SPACE: Use the game's moving camera
+        
+        if (engineState == EngineState::STOP) {
+            projection = CrashoutsEngine::RenderCamera::engineCamera.GetProjectionMatrix();
+            view = CrashoutsEngine::RenderCamera::engineCamera.GetViewMatrix();
+        }
+        else {
+            projection = CrashoutsEngine::RenderCamera::gameCamera.GetProjectionMatrix();
+            view = CrashoutsEngine::RenderCamera::gameCamera.GetViewMatrix();
+        }
+
+    }
+    else {
+        // SCREEN SPACE: Use the static UI camera
+        Component::Rendering& renderer = Component::Rendering::Get();
+        projection = renderer.projectionMatrix;
+        view = glm::mat4(1.0f);
+    }
 
     // Send them to the text shader
     glUniformMatrix4fv(glGetUniformLocation(shaderID, "projection"), 1, GL_FALSE, &projection[0][0]);
@@ -158,7 +178,7 @@ void TextRenderer::RenderText(const std::string& text, GLfloat x, GLfloat y, GLf
 
 Measures text dimensions and adjusts position so that text is centered on the given coordinates
 */
-void TextRenderer::RenderCenteredText(const std::string& text, GLfloat x, GLfloat y, GLfloat scale, CEVec3 color, const std::string fontName) {
+void TextRenderer::RenderCenteredText(const std::string& text, GLfloat x, GLfloat y, GLfloat scale, CEVec3 color, const std::string fontName, bool isWorldSpace) {
 	scale *= FONT_SCALE;
     using namespace CrashoutsEngine::Assets;
     AssetManager& assetManager = AssetManager::GetInstance();
@@ -190,7 +210,7 @@ void TextRenderer::RenderCenteredText(const std::string& text, GLfloat x, GLfloa
     GLfloat originX = x - textWidth / 2.0f;
     GLfloat originY = y - (maxAscent - (maxAscent + maxDescent) / 2.0f);
 
-    RenderText(text, originX, originY, scale * INV_FONT_SCALE, color, fontName);
+    RenderText(text, originX, originY, scale * INV_FONT_SCALE, color, fontName, isWorldSpace);
 }
 
 /*!

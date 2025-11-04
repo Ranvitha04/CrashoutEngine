@@ -1011,11 +1011,13 @@ namespace UI { // --------------------------------------------------------------
 
             ImVec2 start = ImGui::GetCursorScreenPos();
             ImGui::SetCursorScreenPos(ImVec2(start.x + 10, start.y + 10));
-            ImGui::BeginChild("ViewportToolbar", ImVec2(200, 32),
+            ImGui::BeginChild("ViewportToolbar", ImVec2(1000, 32),
                 false, ImGuiWindowFlags_NoBackground);
 
             // --- Toolbar Row ---
             ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(6, 4));
+            if (ImGui::Button("None")) g_gizmoOp = (ImGuizmo::OPERATION)0;
+            ImGui::SameLine();
             if (ImGui::Button("Translate")) g_gizmoOp = ImGuizmo::TRANSLATE;
             ImGui::SameLine();
             if (ImGui::Button("Rotate")) g_gizmoOp = ImGuizmo::ROTATE;

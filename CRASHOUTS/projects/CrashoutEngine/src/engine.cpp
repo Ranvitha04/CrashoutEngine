@@ -248,7 +248,6 @@ Let application update state changes (such as animation).
 */
 void Update(Component::RigidBodyComponent& playerRigidBody, double const& dt) {
 
-    InputManager::Update();
     GLApp::update_time();
     UpdateGameStateManager();
 
@@ -304,6 +303,9 @@ void Update(Component::RigidBodyComponent& playerRigidBody, double const& dt) {
 #endif
         Scene::UpdateScene(*CrashoutsEngine::ECS::getInstance());
     }
+
+    InputManager::Update();
+
 }
 
 /*  _________________________________________________________________________ */
