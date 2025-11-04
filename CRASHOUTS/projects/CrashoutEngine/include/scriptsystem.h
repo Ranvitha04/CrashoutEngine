@@ -11,5 +11,9 @@ namespace CrashoutsEngine
     public:
         static void InitializeAll(MonoDomain* domain, MonoAssembly* assembly);
         static void UpdateAll(float dt);
+        static void RegisterAllBindings();
+
+        static void DestroyAll();
+        static void ReloadAll();
     };
 }

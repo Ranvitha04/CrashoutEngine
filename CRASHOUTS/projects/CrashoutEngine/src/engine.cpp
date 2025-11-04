@@ -39,6 +39,7 @@ std::mutex CrashoutsEngine::ECS::mtx;
 
 static Physics::PhysicsHandler physicsSystem;
 static Collision::CollisionHandler collisionSystem;
+static CrashoutsEngine::AIManager aiSystem;
 
 // ImGui in-game performance viewer
 static FrameProfiler gProfiler;
@@ -267,6 +268,7 @@ void Update(Component::RigidBodyComponent& playerRigidBody, double const& dt) {
     UpdateGameStateManager();
 
 	CrashoutsEngine::ScriptSystem::UpdateAll(static_cast<float>(FrameRateController::GetInstance().DT()));
+    aiSystem.Update();
 
 
     // process events if any associated with input devices
