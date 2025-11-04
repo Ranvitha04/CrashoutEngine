@@ -27,8 +27,11 @@ This file provides the graphics for Crashout Engine's ImGUI.
 #include "debugcollision.h"
 #include "frameratecontroller.h"
 #include "audioSystem.h"
+#include "prefab_init.h"  
 #include <fmod_studio.hpp> 
 #include "prefab.h"
+#include "hierarchy.h"
+#include "hierarchy_components.h"
 
 #include "engine.h"
 
@@ -136,6 +139,7 @@ namespace { //------------------------------------------------------------------
         return p.x >= a.min.x && p.x <= a.max.x && p.y >= a.min.y && p.y <= a.max.y;
     }
 
+
 } // anonymous namespace
 
 namespace UI { // ----------------------------------------------------------------------------- public UI API
@@ -223,10 +227,9 @@ namespace UI { // --------------------------------------------------------------
     {
         static std::vector<Entity> pinned;      // keep these inspectors visible
         static bool showAllInspectors = false;  // renders inspectors for every entity
-        FrameProfiler::Scoped s(profiler, "ImGui");
-        ScopedMemTag mem(MemTag::UI);
+        static std::vector<Entity> multiSel;   // persistent multi-selection in the panel
 
-        ScopedWindow win("ECS Demo", LockFlags(ui.lockLayout));
+        ScopedWindow win("Heirarchy", LockFlags(ui.lockLayout));
 
         // Create entity in the REAL ECS
         if (ImGui::Button("Create Entity")) {
@@ -246,11 +249,10 @@ namespace UI { // --------------------------------------------------------------
         if (ImGui::Button("Create##PrefabByName")) {
             std::string n = nameBuf;
             if (n.empty()) n = "Entity";
-            Prefab::Create(ecs, n);      // calls your prefab module (registered names or fallback)
+            Prefab::Create(ecs, n);      
             nameBuf[0] = '\0';
         }
 
-        // Optional: quick picker of registered prefab names
         {
             auto names = Prefab::Names();
             if (!names.empty()) {
@@ -276,24 +278,99 @@ namespace UI { // --------------------------------------------------------------
             ImGui::TextDisabled("No entities created yet.");
         }
         else {
+            
+            auto toggleMulti = [&](Entity x) {
+                auto it = std::find(multiSel.begin(), multiSel.end(), x);
+                if (it == multiSel.end()) multiSel.push_back(x);
+                else                      multiSel.erase(it);
+                };
+
             for (Entity e : entities) {
-                // build visible name
-                std::string visible = ecs.HasComponent<NameComponent>(e) ? ecs.GetComponent<NameComponent>(e)->name : ("Entity " + std::to_string(e));
+                
+                std::string visible = ecs.HasComponent<NameComponent>(e)
+                    ? ecs.GetComponent<NameComponent>(e)->name
+                    : ("Entity " + std::to_string(e));
 
-                // make the ID unique via "##"
-                std::string id = visible + "##ent" + std::to_string((unsigned)e);
+                ImGui::PushID((int)e);
 
+                bool checked = std::find(multiSel.begin(), multiSel.end(), e) != multiSel.end();
+                if (ImGui::Checkbox("##chk", &checked)) {
+                    if (checked)  multiSel.push_back(e);
+                    else          multiSel.erase(std::remove(multiSel.begin(), multiSel.end(), e), multiSel.end());
+                }
+                ImGui::SameLine();
+
+                
                 bool isSel = (e == selected);
-                if (ImGui::Selectable(id.c_str(), isSel)) {
+                if (ImGui::Selectable(visible.c_str(), isSel))
                     selected = e;
+
+                ImGui::PopID();
+            }
+
+            
+            ImGui::SeparatorText("Grouping");
+            if (ImGui::Button("Group (first selected becomes Parent)")) {
+                if (multiSel.size() >= 2) {
+                    Entity parent = multiSel.front();
+                    for (size_t i = 1; i < multiSel.size(); ++i) {
+                        CrashoutsEngine::AttachChild(ecs, parent, multiSel[i]);
+                    }
                 }
             }
+            ImGui::SameLine();
+            if (ImGui::Button("Ungroup (detach all selected)")) {
+                for (Entity e : multiSel)
+                    CrashoutsEngine::DetachChild(ecs, e);
+            }
+            ImGui::SameLine();
+            if (ImGui::Button("Clear Selection")) {
+                multiSel.clear();
+            }
+
+           
+            ImGui::TextDisabled("Selected: %u | Multi: %d", (unsigned)selected, (int)multiSel.size());
         }
+
 
         ImGui::Separator();
         ImGui::Text("Selected Entity: %u", (unsigned)selected);
 
         if (!selected) return;
+       
+        static char prefabNameBuf[64] = "MyBox";
+        ImGui::SetNextItemWidth(220);
+        ImGui::InputTextWithHint("##save_prefab_name", "Prefab name...", prefabNameBuf, IM_ARRAYSIZE(prefabNameBuf));
+        ImGui::SameLine();
+        if (ImGui::Button("Save Prefab")) {
+            namespace fs = std::filesystem;
+
+            
+            const fs::path jsonPath = fs::path("assets") / "prefabs" / "prefab.json";
+            fs::create_directories(jsonPath.parent_path()); // safe if exists
+
+            
+            const std::string newName = (prefabNameBuf[0] ? prefabNameBuf : "Entity");
+
+            const bool ok = SaveBoxPrefabToJson_RJ(
+                ecs, selected,
+                newName,
+                jsonPath.generic_string(),    
+                /*matchName*/ newName        
+            );
+
+            if (ok) {
+               
+                CrashoutsEngine::ReloadPrefabsFromDisk(jsonPath.generic_string());
+
+                
+                LOGI(Core, std::string("Saved & reloaded prefab json: ") + jsonPath.generic_string());
+                prefabNameBuf[0] = '\0';
+            }
+        }
+
+        ImGui::Separator();
+
 
         if (entities.size() > 0) {
             if (ImGui::Button("Clone Selected")) {
@@ -530,7 +607,7 @@ namespace UI { // --------------------------------------------------------------
         ImGui::Text("Selected Entity: %u", (unsigned)selected);
         ImGui::SeparatorText("Add Components");
 
-        // List all registered component types with an "Add" button
+     
         for (auto* ad : DebugReflection::ComponentRegistry::instance().all()) {
             ImGui::PushID(ad);
             bool has = ad->has(ecs, selected);
@@ -547,13 +624,12 @@ namespace UI { // --------------------------------------------------------------
 
         ImGui::SeparatorText("Components on Selected Entity");
 
-        // Draw inspectors for present components (uses your registered adapters)
+        
         for (auto* ad : DebugReflection::ComponentRegistry::instance().all()) {
             if (!ad->has(ecs, selected)) continue;
 
             ImGui::PushID(ad);
 
-            // Draw a nice header bar for each component
             ImGui::Separator();
             ImGui::TextUnformatted(ad->name());
 
@@ -564,10 +640,10 @@ namespace UI { // --------------------------------------------------------------
             if (ImGui::SmallButton("Remove")) {
                 ad->remove(ecs, selected);
                 ImGui::PopID();
-                break; // components changed
+                break; 
             }
 
-            // Draw the component inspector directly (not inside a TreeNode)
+            
             ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(8, 6));
             ad->drawInspector(ecs, selected);
             ImGui::PopStyleVar();
@@ -597,12 +673,6 @@ namespace UI { // --------------------------------------------------------------
         //const int cap = frc.CAP();
 
         ImGui::Text("Frame: %.3f ms (%.1f FPS)", frame_ms, fps);
-
-        ImGui::Separator();
-        DrawEngineMemoryPanel();
-        ImGui::Separator();
-        DrawProfilerPanel(profiler);
-        ImGui::Separator();
 
         if (ImGui::BeginTable("perf_table", 3, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
             ImGui::TableSetupColumn("System");
@@ -883,21 +953,39 @@ namespace UI { // --------------------------------------------------------------
         static std::string pickBGM, pickSFX1, pickSFX2, pickSFX3;
 
         EventCombo("Background Music", pickBGM);
-
         if (ImGui::Button("Play")) {
             CrashoutsEngine::Audio::AudioSystem::instance().playOneShot(pickBGM);
         }
+
         EventCombo("SFX 1", pickSFX1);
         if (ImGui::Button("Play##sfx1")) {
             CrashoutsEngine::Audio::AudioSystem::instance().playOneShot(pickSFX1);
         }
+
         EventCombo("SFX 2", pickSFX2);
         if (ImGui::Button("Play##sfx2")) {
             CrashoutsEngine::Audio::AudioSystem::instance().playOneShot(pickSFX2);
         }
+
         EventCombo("SFX 3", pickSFX3);
         if (ImGui::Button("Play##sfx3")) {
             CrashoutsEngine::Audio::AudioSystem::instance().playOneShot(pickSFX3);
+        }
+
+        ImGui::SeparatorText("Master Volume");
+
+        // Cache slider state
+        static float sMasterVol = 1.0f;
+        if (ImGui::SliderFloat("Master", &sMasterVol, 0.0f, 1.0f, "%.2f"))
+            CrashoutsEngine::Audio::AudioSystem::instance().setBusVolume("bus:/", sMasterVol);
+
+        // Optional mute toggle (reuses same call)
+        static bool sMuted = false;
+        if (ImGui::Checkbox("Mute All", &sMuted)) {
+            if (sMuted)
+                CrashoutsEngine::Audio::AudioSystem::instance().setBusVolume("bus:/", 0.0f);
+            else
+                CrashoutsEngine::Audio::AudioSystem::instance().setBusVolume("bus:/", sMasterVol);
         }
 
         ImGui::Separator();
@@ -925,7 +1013,6 @@ namespace UI { // --------------------------------------------------------------
                 {"Console", &ui.showConsole},
                 {"Game State", &ui.showGameState},
                 {"Audio", &ui.showAudio},
-                {"Engine Control", &ui.showEngineControl}
             };
             for (auto& t : toggles) ImGui::MenuItem(t.label, nullptr, t.flag);
 
@@ -1032,6 +1119,7 @@ namespace UI { // --------------------------------------------------------------
             ImGui::Separator();
             ImGui::EndChild();
             ImGui::SetCursorScreenPos(start);
+
             gameWinHovered = ImGui::IsWindowHovered();
 
             // Get the size of ImGui window content region
@@ -1138,8 +1226,25 @@ namespace UI { // --------------------------------------------------------------
 
                 if (ImGuizmo::IsUsing()) {
                     ImGuizmo::DecomposeMatrixToComponents(m, tr, rt, sc);
+
+                    // 2D Constraints
+                    // Keep entity's current Z exactly (no Z move)
+                    tr[2] = t->position.z;
+
+                    // Only Z-rotation is meaningful in 2D
+                    rt[0] = 0.0f;
+                    rt[1] = 0.0f;
+
+                    // No Z scale in 2D
+                    sc[2] = 1.0f;
+
+                    // keep scale positive to avoid mirroring along an axis
+                    if (sc[0] < 0.0f) sc[0] = -sc[0];
+                    if (sc[1] < 0.0f) sc[1] = -sc[1];
+
+                    // Write back to your components
                     t->position = { tr[0], tr[1], tr[2] };
-                    t->rotation = rt[2];
+                    t->rotation = rt[2]; 
                     t->size = { sc[0], sc[1] };
                 }
             }
@@ -1153,87 +1258,80 @@ namespace UI { // --------------------------------------------------------------
                 v = 1.f - (mouse.y - imgMin.y) / (imgMax.y - imgMin.y);
             }
 
-            const bool imgHovered = ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem);
-
             // Left click: select the top-most hit entity (do NOT clear if we hit nothing)
-            if (imgHovered && ImGui::IsMouseClicked(ImGuiMouseButton_Left) && !ImGuizmo::IsOver() && !ImGuizmo::IsUsing()) {
+            if (over && ImGui::IsMouseClicked(ImGuiMouseButton_Left) && !ImGuizmo::IsOver() && !ImGuizmo::IsUsing())
+            {
                 CEVec3 worldPt = ViewUV_toWorld(u, v);
 
                 Entity best = 0;
                 float  bestZ = -FLT_MAX;
 
-                // Iterate transforms (same logic you already had)
+                // Iterate transforms (top-most by Z wins)
                 auto& tArr = ecs.GetComponentArray<Component::TransformComponent>();
-                for (Entity e : tArr.indexToEntity) {
+                for (Entity e : tArr.indexToEntity)
+                {
                     if (!ecs.HasComponent<Component::TransformComponent>(e)) continue;
                     auto* t = ecs.GetComponent<Component::TransformComponent>(e);
 
-                    float hx = 0.5f, hy = 0.5f;
-                    if (auto* sc = ecs.GetComponent<Component::ShapeComponent>(e)) {
+                    // Default half-extents from transform size (rectangle-like)
+                    float hx = std::max(0.5f * t->size.x, 0.5f);
+                    float hy = std::max(0.5f * t->size.y, 0.5f);
+                    bool  hit = false;
+
+                    if (auto* sc = ecs.GetComponent<Component::ShapeComponent>(e))
+                    {
                         using Component::ShapeType;
-                        switch (sc->type) {
-                        case ShapeType::Line: {
-                            float minx = std::min(sc->p1.x, sc->p2.x);
-                            float maxx = std::max(sc->p1.x, sc->p2.x);
-                            float miny = std::min(sc->p1.y, sc->p2.y);
-                            float maxy = std::max(sc->p1.y, sc->p2.y);
-                            hx = 0.5f * (maxx - minx);
-                            hy = 0.5f * (maxy - miny);
-                            hx = std::max(hx, sc->thickness * 0.5f);
-                            hy = std::max(hy, sc->thickness * 0.5f);
-                        } break;
-                        case ShapeType::Triangle: {
+                        switch (sc->type)
+                        {
+                        case ShapeType::Circle:
+                        {
+                            const float r = 0.5f * std::min(t->size.x, t->size.y);
+                            const float dx = worldPt.x - t->position.x;
+                            const float dy = worldPt.y - t->position.y;
+                            hit = (dx * dx + dy * dy) <= r * r;
+                        }
+                        break;
 
-                            CEVec3 t1 = { t->position.x - .5f, t->position.y - .5f, t->position.z };
-                            CEVec3 t2 = { t->position.x + .5f, t->position.y - .5f, t->position.z };
-                            CEVec3 t3 = { t->position.x, t->position.y + .5f, t->position.z };
+                        case ShapeType::Line:
+                        {
+                            // conservative AABB around line + thickness
+                            const float minx = std::min(sc->p1.x, sc->p2.x);
+                            const float maxx = std::max(sc->p1.x, sc->p2.x);
+                            const float miny = std::min(sc->p1.y, sc->p2.y);
+                            const float maxy = std::max(sc->p1.y, sc->p2.y);
+                            hx = std::max(hx, std::max(0.5f * (maxx - minx), sc->thickness * 0.5f));
+                            hy = std::max(hy, std::max(0.5f * (maxy - miny), sc->thickness * 0.5f));
+                            // fall through to AABB test below
+                        }
+                        [[fallthrough]];
 
-                            float minx = std::min({ t1.x, t2.x, t3.x });
-                            float maxx = std::max({ t1.x, t2.x, t3.x });
-                            float miny = std::min({ t1.y, t2.y, t3.y });
-                            float maxy = std::max({ t1.y, t2.y, t3.y });
-                            hx = 0.5f * (maxx - minx);
-                            hy = 0.5f * (maxy - miny);
-                        } break;
+                        case ShapeType::Rectangle:
+                        case ShapeType::Triangle:
+                        default:
+                        {
+                            const float minx = t->position.x - hx, maxx = t->position.x + hx;
+                            const float miny = t->position.y - hy, maxy = t->position.y + hy;
+                            hit = (worldPt.x >= minx && worldPt.x <= maxx &&
+                                worldPt.y >= miny && worldPt.y <= maxy);
+                        }
+                        break;
                         }
                     }
-                    else {
-                        hx = std::max(0.5f * t->size.x, 0.5f);
-                        hy = std::max(0.5f * t->size.y, 0.5f);
-                    }
-
-                    // Build AABB in world space (2D)
-                    const float minx = t->position.x - hx, maxx = t->position.x + hx;
-                    const float miny = t->position.y - hy, maxy = t->position.y + hy;
-
-                    if (worldPt.x >= minx && worldPt.x <= maxx &&
-                        worldPt.y >= miny && worldPt.y <= maxy)
+                    else
                     {
-                        if (t->position.z >= bestZ) { bestZ = t->position.z; best = e; }
+                        // No ShapeComponent → rectangle using transform size
+                        const float minx = t->position.x - hx, maxx = t->position.x + hx;
+                        const float miny = t->position.y - hy, maxy = t->position.y + hy;
+                        hit = (worldPt.x >= minx && worldPt.x <= maxx &&
+                            worldPt.y >= miny && worldPt.y <= maxy);
                     }
+
+                    if (hit && t->position.z >= bestZ) { bestZ = t->position.z; best = e; }
                 }
 
-                // Toggle Behaviour for LMB:
-                if (best) {
-                    if (selected == best) {
-                        selected = 0;
-                    }
-                    else {
-                        selected = best;
-                    }
-                }
-                else {
-                    // Clicked empty space -> Deselect
-                    selected = 0;
-                }
-            }
-
-            // Right click on empty space to explicitly clear selection
-            if (imgHovered && ImGui::IsMouseClicked(ImGuiMouseButton_Right) && !ImGuizmo::IsOver() && !ImGuizmo::IsUsing()) {
-                // Convert to world & check hit the same way
-                if (u >= 0.f && u <= 1.f && v >= 0.f && v <= 1.f) {
-                    selected = 0;
-                }
+                // Toggle selection with LEFT mouse
+                if (best)   selected = (selected == best) ? (Entity)0 : best;
+                else        selected = 0; // click empty → deselect
             }
 
             // ---------- Drag & drop assets into the world ----------
@@ -1267,7 +1365,7 @@ namespace UI { // --------------------------------------------------------------
             }
         }
         ImGui::End();
-        ImGui::PopStyleVar();
+        ImGui::PopStyleVar();   // Pop padding style
     }
 #endif
 
@@ -1345,7 +1443,7 @@ namespace UI { // --------------------------------------------------------------
 
             // Dock windows into regions (matching your actual window titles)
             ImGui::DockBuilderDockWindow("Debug Controls", dock_left);
-            ImGui::DockBuilderDockWindow("ECS Demo", dock_right);
+            ImGui::DockBuilderDockWindow("Heirarchy", dock_right);
             ImGui::DockBuilderDockWindow("Assets", dock_bottom);
             ImGui::DockBuilderDockWindow("Inspector", dock_right_bottom);
             ImGui::DockBuilderDockWindow("Physics / Collision", dock_bottom);
@@ -1357,10 +1455,6 @@ namespace UI { // --------------------------------------------------------------
             ImGui::DockBuilderDockWindow("Game Viewport", dock_main);
 
             ImGui::DockBuilderFinish(dockspace_id);
-        }
-
-        if (ui.showEngineControl) {
-            RenderEngineStateBar(ui);
         }
 
         if (ui.showECS) {
@@ -1388,6 +1482,10 @@ namespace UI { // --------------------------------------------------------------
         if (ui.showGameState) {
             RenderGameStatePanel(ui);
         }
+        if (ui.showEngineControl) {
+            RenderEngineStateBar(ui);
+        }
+
         // EndFrame();
 
 #ifdef USE_IMGUI_EDITOR
