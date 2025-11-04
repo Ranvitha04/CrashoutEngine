@@ -43,6 +43,7 @@
 #include "prefab.h"
 #include "hierarchy.h"
 #include "hierarchy_components.h"
+#include "monomanager.h"
 
 #include "engine.h"
 
@@ -1093,6 +1094,10 @@ namespace UI { // --------------------------------------------------------------
             if (ImGui::Button("STOP", ImVec2(70, 25))) {
                 RestartGameState();
                 engineState = EngineState::STOP;
+            }
+            if (ImGui::Button("Reload Scripts"))
+            {
+                MonoManager::ReloadScripts();
             }
         }
 
