@@ -169,14 +169,14 @@ namespace Component {
         TextureRenderer::CreateSpriteFrameFlipped(
             textureId,           
             position,            
-            CEVec2(12.0f, 12.0f), // Larger base size to reduce scaling factor
+            CEVec2(25.0f, 25.0f), // Larger base size to reduce scaling factor
             col,                 
             row,                 
             framesPerRow,        // Total columns
             framePerColumn,      // Total rows
             flipHorizontal,      // Horizontal flip flag
             rotation,            // Rotation
-            scale * 0.5f,        // Reduce scale factor to compensate for larger base size
+            scale,        // Reduce scale factor to compensate for larger base size
             tint,                // Tint color
             true                 // Enable modulation for transparency
         );

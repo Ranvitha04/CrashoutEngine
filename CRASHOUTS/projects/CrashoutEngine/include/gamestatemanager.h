@@ -94,3 +94,5 @@ extern GameState NextGameState;
 
 /// The previous game state before the current one
 extern GameState PreviousGameState;
+
+extern GameStateDescriptor* CurrentDescriptor;

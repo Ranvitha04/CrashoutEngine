@@ -18,6 +18,7 @@ context and implement a game loop.
 #include "entitymanager.h"
 #include "scriptcomponent.h"
 #include "cameracomponent.h"
+#include "gamestatemanager.h"
 #include "textureasset.h"
 #include "scriptsystem.h"
 #include "audioSystem.h"
@@ -181,10 +182,6 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
     ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_PassthruCentralNode;
     ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
 
-#endif
-
-#if USE_IMGUI_EDITOR
-
     // Render to FBO
     glBindFramebuffer(GL_FRAMEBUFFER, gameFboID);
     glViewport(0, 0, gameTextureWidth, gameTextureHeight);
@@ -228,6 +225,11 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
         FrameProfiler::Scoped s2(PerformanceSystem::Get().GetProfiler(), "Scene");
         //GLApp::draw();
         Scene::RenderScene(*CrashoutsEngine::ECS::getInstance());
+
+        if (CurrentDescriptor) {
+            //if (CurrentDescriptor->Update) CurrentDescriptor->Update();
+            if (CurrentDescriptor->Render) CurrentDescriptor->Render();
+        }
     }
 
     // Render ImGui UI on top of the scene
@@ -256,6 +258,7 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
     glEnable(GL_DEPTH_TEST);
 
     //GLApp::draw();
+    if (CurrentDescriptor->Render) CurrentDescriptor->Render();
     Scene::RenderScene(*CrashoutsEngine::ECS::getInstance());
 
 #endif
@@ -290,6 +293,7 @@ void Update(Component::RigidBodyComponent& playerRigidBody, double const& dt) {
 	CrashoutsEngine::ScriptSystem::UpdateAll(static_cast<float>(FrameRateController::GetInstance().DT()));
     aiSystem.Update();
 
+    if (CurrentDescriptor->Update) CurrentDescriptor->Update();
 
     // process events if any associated with input devices
     //glfwPollEvents();

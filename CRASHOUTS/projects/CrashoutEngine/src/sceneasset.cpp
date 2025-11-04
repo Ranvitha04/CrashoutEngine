@@ -529,7 +529,7 @@ namespace CrashoutsEngine {
                 // Check if Button
                 if (entityValue.HasMember(Keys::BUTTON_COMPONENT) && entityValue[Keys::BUTTON_COMPONENT].IsObject()) {
                     ButtonComponent& b = gECS.AddComponent<ButtonComponent>(newEntity);
-                    const rapidjson::Value& buttonValue = entityValue[Keys::TEXT_COMPONENT];
+                    const rapidjson::Value& buttonValue = entityValue[Keys::BUTTON_COMPONENT];
 
                     // 1. Check Button State
                     if (buttonValue.HasMember("buttonState") && buttonValue["buttonValue"].IsUint()) {
@@ -987,7 +987,7 @@ namespace CrashoutsEngine {
                     shapeHoveredColorValue.AddMember("x", buttonComp.shapeHoveredColor.x, allocator);
                     shapeHoveredColorValue.AddMember("y", buttonComp.shapeHoveredColor.y, allocator);
                     shapeHoveredColorValue.AddMember("z", buttonComp.shapeHoveredColor.z, allocator);
-                    buttonVal.AddMember("shapeHoveredColor", shapeNormalColorValue, allocator);
+                    buttonVal.AddMember("shapeHoveredColor", shapeHoveredColorValue, allocator);
 
                     // 4. shapePressedColor (CEVec2 -> JSON Object)
                     rapidjson::Value shapePressedColorValue(rapidjson::kObjectType);
@@ -1010,7 +1010,7 @@ namespace CrashoutsEngine {
                     textHoveredColorValue.AddMember("x", buttonComp.textHoveredColor.x, allocator);
                     textHoveredColorValue.AddMember("y", buttonComp.textHoveredColor.y, allocator);
                     textHoveredColorValue.AddMember("z", buttonComp.textHoveredColor.z, allocator);
-                    buttonVal.AddMember("textHoveredColor", textNormalColorValue, allocator);
+                    buttonVal.AddMember("textHoveredColor", textHoveredColorValue, allocator);
 
                     // 7. textPressedColor (CEVec2 -> JSON Object)
                     rapidjson::Value textPressedColorValue(rapidjson::kObjectType);

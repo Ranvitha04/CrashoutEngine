@@ -626,42 +626,24 @@ namespace Component {
         model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 0.0f, 1.0f));
         model = glm::scale(model, glm::vec3(size.x * scale, size.y * scale, 1.0f));
 
-        // Set up projection matrix (orthographic, centered world coordinates)
-        float aspect = static_cast<float>(GLApp::width) / GLApp::height;
-        float BASE_SIZE = 100.0f;
-        float worldWidth, worldHeight;
+        // 1. Get the current camera matrices from the renderer
+        glm::mat4 view = renderer.viewMatrix;
+        glm::mat4 projection = renderer.projectionMatrix;
 
-        if (aspect >= 1.0f) {
-            worldHeight = BASE_SIZE;
-            worldWidth = worldHeight * aspect;
-        }
-        else {
-            worldWidth = BASE_SIZE;
-            worldHeight = worldWidth / aspect;
-        }
-
-        glm::mat4 projection = glm::ortho(
-            -worldWidth / 2.0f, worldWidth / 2.0f,
-            -worldHeight / 2.0f, worldHeight / 2.0f,
-            -1.0f, 1.0f
-        );
-
-        glm::mat4 view = glm::mat4(1.0f); // Identity view matrix
-
-        // Pass matrices to shader
-        GLint projection_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "uProjection");
-        if (projection_loc != -1) {
-            glUniformMatrix4fv(projection_loc, 1, GL_FALSE, glm::value_ptr(projection));
-        }
-
+        // 2. Get the uniform locations
+        GLint model_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "uModel");
         GLint view_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "uView");
+        GLint proj_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "uProjection");
+
+        // 3. Send all three matrices to the shader
+        if (model_loc != -1) {
+            glUniformMatrix4fv(model_loc, 1, GL_FALSE, glm::value_ptr(model));
+        }
         if (view_loc != -1) {
             glUniformMatrix4fv(view_loc, 1, GL_FALSE, glm::value_ptr(view));
         }
-
-        GLint model_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "uModel");
-        if (model_loc != -1) {
-            glUniformMatrix4fv(model_loc, 1, GL_FALSE, glm::value_ptr(model));
+        if (proj_loc != -1) {
+            glUniformMatrix4fv(proj_loc, 1, GL_FALSE, glm::value_ptr(projection));
         }
 
         // Enable texture usage in shader
@@ -750,10 +732,24 @@ namespace Component {
         model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 0.0f, 1.0f));
         model = glm::scale(model, glm::vec3(size.x * scale, size.y * scale, 1.0f));
 
-        // Pass transformation matrix to shader
+        // 1. Get the current camera matrices from the renderer
+        glm::mat4 view = renderer.viewMatrix;
+        glm::mat4 projection = renderer.projectionMatrix;
+
+        // 2. Get the uniform locations
         GLint model_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "uModel");
+        GLint view_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "uView");
+        GLint proj_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "uProjection");
+
+        // 3. Send all three matrices to the shader
         if (model_loc != -1) {
             glUniformMatrix4fv(model_loc, 1, GL_FALSE, glm::value_ptr(model));
+        }
+        if (view_loc != -1) {
+            glUniformMatrix4fv(view_loc, 1, GL_FALSE, glm::value_ptr(view));
+        }
+        if (proj_loc != -1) {
+            glUniformMatrix4fv(proj_loc, 1, GL_FALSE, glm::value_ptr(projection));
         }
 
         // Enable texture usage in shader
@@ -823,140 +819,6 @@ namespace Component {
         /*std::cout << "[DEBUG] UV Calculation - Frame(" << frameX << "," << frameY << ") in " << totalCols << "x" << totalRows << " grid" << std::endl;
         std::cout << "[DEBUG] UV Coords: (" << u1 << "," << v1 << ") to (" << u2 << "," << v2 << ")" << std::endl;*/
     }
-
-
-#if 0
-
-    /*!
-    @brief Loads a texture from file depending on its extension.
-    @param pathname Path to the texture file (.png, .jpg, .tex, etc).
-    @return OpenGL texture handle, or 0 on failure.
-    */
-
-
-    GLuint TextureRenderer::LoadTexture(const std::string& pathname) {
-        size_t dotPos = pathname.find_last_of('.');
-        if (dotPos == std::string::npos) {
-            std::cerr << "Error: No file extension found in: " << pathname << std::endl;
-            return 0;
-        }
-
-        std::string extension = pathname.substr(dotPos);
-        std::transform(extension.begin(), extension.end(), extension.begin(), ::tolower);
-
-        if (extension == ".tex") {
-            return LoadBinaryTexture(pathname);
-        }
-        else if (extension == ".png" || extension == ".jpg" || extension == ".jpeg" ||
-            extension == ".bmp" || extension == ".tga" || extension == ".gif") {
-            return LoadImageTexture(pathname);
-        }
-        else {
-            std::cerr << "Error: Unsupported texture format: " << extension << std::endl;
-            return 0;
-        }
-    }
-
-    /*!
-    @brief Loads a custom binary texture (.tex format).
-    @param pathname Path to binary texture file.
-    @return OpenGL texture handle, or 0 on failure.
-    */
-
-    GLuint TextureRenderer::LoadBinaryTexture(const std::string& pathname) {
-        const GLuint width = 256, height = 256, bytes_per_texel = 4;
-        const std::streamsize expected_size = static_cast<std::streamsize>(width * height * bytes_per_texel);
-
-        std::ifstream file(pathname, std::ios::binary | std::ios::ate);
-        if (!file.is_open()) {
-            std::cerr << "Error: Could not open binary texture file: " << pathname << std::endl;
-            return 0;
-        }
-
-        std::streamsize size = file.tellg();
-        if (size != expected_size) {
-            std::cerr << "Error: Binary texture size mismatch for " << pathname
-                << ". Expected: " << expected_size << ", Got: " << size << std::endl;
-            file.close();
-            return 0;
-        }
-
-        std::vector<char> buffer(size);
-        file.seekg(0);
-
-        if (!file.read(buffer.data(), size)) {
-            std::cerr << "Error: Failed to read binary texture data from: " << pathname << std::endl;
-            file.close();
-            return 0;
-        }
-
-        file.close();
-
-        GLuint texobj_hdl;
-        glCreateTextures(GL_TEXTURE_2D, 1, &texobj_hdl);
-        glTextureStorage2D(texobj_hdl, 1, GL_RGBA8, width, height);
-        glTextureSubImage2D(texobj_hdl, 0, 0, 0, width, height,
-            GL_RGBA, GL_UNSIGNED_BYTE, buffer.data());
-
-        glTextureParameteri(texobj_hdl, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTextureParameteri(texobj_hdl, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTextureParameteri(texobj_hdl, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTextureParameteri(texobj_hdl, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-        std::cout << "Successfully loaded binary texture: " << pathname
-            << " (" << width << "x" << height << ")" << std::endl;
-
-        return texobj_hdl;
-    }
-
-    /*!
-    @brief Loads a standard image texture using stb_image.
-    @param pathname Path to image file (.png, .jpg, etc).
-    @return OpenGL texture handle, or 0 on failure.
-    */
-
-    GLuint TextureRenderer::LoadImageTexture(const std::string& pathname) {
-        int width, height, channels;
-
-        // Load with stb_image, force RGBA (4 channels)
-        unsigned char* data = stbi_load(pathname.c_str(), &width, &height, &channels, STBI_rgb_alpha);
-
-        if (!data) {
-            std::cerr << "Error: stb_image failed to load: " << pathname << std::endl;
-            std::cerr << "stb_image error: " << stbi_failure_reason() << std::endl;
-            return 0;
-        }
-
-        std::cout << "Successfully loaded image: " << pathname << " (" << width << "x" << height
-            << ", " << channels << " channels)" << std::endl;
-
-        GLuint texobj_hdl;
-        glCreateTextures(GL_TEXTURE_2D, 1, &texobj_hdl);
-        glTextureStorage2D(texobj_hdl, 1, GL_RGBA8, width, height);
-        glTextureSubImage2D(texobj_hdl, 0, 0, 0, width, height,
-            GL_RGBA, GL_UNSIGNED_BYTE, data);
-
-        glTextureParameteri(texobj_hdl, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTextureParameteri(texobj_hdl, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        glTextureParameteri(texobj_hdl, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTextureParameteri(texobj_hdl, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-        stbi_image_free(data);
-        return texobj_hdl;
-    }
-
-    /*!
-    @brief Loads a texture using the asset system (alias of LoadImageTexture).
-    @param pathname Path to image file.
-    @return OpenGL texture handle, or 0 on failure.
-    */
-
-    GLuint TextureRenderer::LoadTextureFromAsset(const std::string& pathname) {
-        // This method is now an alias to LoadImageTexture for consistency
-        return LoadImageTexture(pathname);
-    }
-
-#endif
 
     /*!
     @brief Unloads a single texture from the cache and deletes its GPU resource.
