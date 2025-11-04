@@ -31,13 +31,17 @@ namespace CrashoutsEngine {
 		float Camera::baseOrthoSize = 100.f;
 		float Camera::nearPlane = -50.f;
 		float Camera::farPlane = 50.f;
+		
+		float Camera::g_zoom = 1.f;
 
 		// --- Define Global Camera ---
 		Camera engineCamera;
 		Camera gameCamera;
 		
 		Camera::Camera(CEVec3 inStartPos, float inZoom, float inTargetAspectRatio) :
-			position{ inStartPos }, zoom{ inZoom }, targetAR{ inTargetAspectRatio }{}
+			position{ inStartPos }, zoom{ inZoom }, targetAR{ inTargetAspectRatio }{
+			g_zoom = zoom;
+		}
 
 		void Camera::SetPostiion(const CEVec3& pos) {
 			position = pos;
@@ -46,6 +50,7 @@ namespace CrashoutsEngine {
 
 		void Camera::SetZoom(float zoomLevel) {
 			zoom = std::max(0.01f, zoomLevel);
+			g_zoom = zoom;
 		}
 
 		void Camera::SetTargetAR(float aspect) {

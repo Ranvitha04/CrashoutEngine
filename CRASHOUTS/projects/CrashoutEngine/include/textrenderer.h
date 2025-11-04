@@ -15,7 +15,7 @@ Provides text rendering using FreeType and OpenGL
 
 #include <ft2build.h>
 
-#include "glm/vec2.hpp"
+#include <glm/gtc/matrix_transform.hpp>
 #include "GL/glew.h"
 #include "glm/vec3.hpp"
 
@@ -83,7 +83,7 @@ public:
     @param color RGB color of the text
     @param fontName The name of the font asset (in AssetManager) to use
     */
-    void RenderText(const std::string& text, GLfloat x, GLfloat y, GLfloat scale, CEVec3 color, const std::string fontName = "Exo2-Regular");
+    void RenderText(const std::string& text, GLfloat x, GLfloat y, GLfloat scale, CEVec3 color, const std::string fontName = "Exo2-Regular", bool isWorldSpace = false);
    
     /*!
     @brief Render centered text
@@ -94,7 +94,7 @@ public:
     @param color RGB color of the text
     @param fontName The name of the font asset (in AssetManager) to use
     */
-    void RenderCenteredText(const std::string& text, GLfloat x, GLfloat y, GLfloat scale, CEVec3 color, const std::string fontName = "Exo2-Regular");
+    void RenderCenteredText(const std::string& text, GLfloat x, GLfloat y, GLfloat scale, CEVec3 color, const std::string fontName = "Exo2-Regular", bool isWorldSpace = false);
 
 
 private:

@@ -478,6 +478,11 @@ namespace CrashoutsEngine {
                     if (textValue.HasMember("centered") && textValue["centered"].IsBool()) {
                         t.centered = textValue["centered"].GetBool();
                     }
+
+                    // 7. Check World Space
+                    if (textValue.HasMember("isworldspace") && textValue["isworldspace"].IsBool()) {
+                        t.isWorldSpace = textValue["isworldspace"].GetBool();
+                    }
                 }
             
                 // Check if Audio
@@ -913,6 +918,9 @@ namespace CrashoutsEngine {
 
                     // 6. Centered (bool)
                     textValue.AddMember("centered", tComp.centered, allocator);
+
+                    // 7. IsWorldSpace (bool)
+                    textValue.AddMember("isworldspace", tComp.isWorldSpace, allocator);
 
                     entityValue.AddMember(rapidjson::StringRef(Keys::TEXT_COMPONENT), textValue, allocator);
                 }

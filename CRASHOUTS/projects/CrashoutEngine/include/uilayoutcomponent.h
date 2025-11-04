@@ -17,11 +17,12 @@
 namespace Component {
 
 	enum class UILayout : unsigned int {
-		TOP = 0,
-		DOWN = 1 << 0,
-		CENTER = 1 << 1,
-		LEFT = 1 << 2,
-		RIGHT = 1 << 3
+		NONE = 0,
+		TOP = 1 << 0,
+		DOWN = 1 << 1,
+		CENTER = 1 << 2,
+		LEFT = 1 << 3,
+		RIGHT = 1 << 4
 	};
 
 	// Overload operators to allow bitwise operations

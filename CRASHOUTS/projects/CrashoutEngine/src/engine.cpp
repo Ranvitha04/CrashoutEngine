@@ -263,8 +263,7 @@ Let application update state changes (such as animation).
 */
 void Update(Component::RigidBodyComponent& playerRigidBody, double const& dt) {
 
-    InputManager::Update();
-    //GLApp::update_time();
+    GLApp::update_time();
     UpdateGameStateManager();
 
 	CrashoutsEngine::ScriptSystem::UpdateAll(static_cast<float>(FrameRateController::GetInstance().DT()));
@@ -341,7 +340,11 @@ void Update(Component::RigidBodyComponent& playerRigidBody, double const& dt) {
 #else
         RenderCamera::gameCamera.UpdateMatrices(GLApp::width, GLApp::height);
 #endif
+        Scene::UpdateScene(*CrashoutsEngine::ECS::getInstance());
     }
+
+    InputManager::Update();
+
 }
 
 /*  _________________________________________________________________________ */

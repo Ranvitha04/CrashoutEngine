@@ -12,6 +12,7 @@ Provides static functions to handle keyboard mouse and scroll wheel input using 
 #include <unordered_map>
 #include "key.h"
 #include "CEVec2.h"
+#include <string>
 /*!
 @class InputManager
 @brief Handles input state management for keys mouse buttons and scroll wheel
@@ -85,6 +86,16 @@ public:
     */
     static CEVec2 GetMouseNDC();
 
+    static CEVec2 GetMouseWorldPos();
+
+    static CEVec2 g_mouseWorldPos;
+
+    // Gets all characters typed this frame (e.g., "abc")
+    static std::string GetTypedCharacters();
+
+    // Checks if a key was pressed *this frame* (not held)
+    static bool IsKeyTriggered(int key);
+
 private:
     /// Pointer to the GLFW window
     static GLFWwindow* Window;
@@ -100,6 +111,15 @@ private:
 
     /// Scroll delta value for the current frame only
     static float ScrollYFrame;
+
+    // Stores chars from the GLFW callback
+    static std::string s_typedChars;
+    
+    // Stores the key state from the *previous* frame
+    static std::unordered_map<int, bool> s_lastKeys;
+
+    // The GLFW callback for character input
+    static void CharCallback(GLFWwindow* window, unsigned int codepoint);
 
     /*!
     @brief GLFW callback function for mouse scroll events

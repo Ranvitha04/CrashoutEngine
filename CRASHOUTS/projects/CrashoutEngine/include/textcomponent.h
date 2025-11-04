@@ -33,7 +33,9 @@ namespace Component {
 		// color
 		CEVec3 color{ 255.f, 255.f, 255.f };
 		// centered bool
-		bool centered{ false };
+		bool centered{ true };
+		// is world space bool
+		bool isWorldSpace{ true };
 	};
 }
 
