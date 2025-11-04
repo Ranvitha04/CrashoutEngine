@@ -43,9 +43,9 @@ namespace Component {
 		//float textNormalColor[4] = { 255.f, 255.f, 255.f, 255.f };
 		//float textHoveredColor[4] = { 100.f, 100.f, 100.f, 255.f };
 		//float textPressedColor[4] = { 0.f, 0.f, 0.f, 255.f };
-		CEVec3 textNormalColor = { 255.f, 255.f, 255.f };
-		CEVec3 textHoveredColor = { 100.f, 100.f, 100.f };
-		CEVec3 textPressedColor = { 0.f, 0.f, 0.f };
+		CEVec3 textHoveredColor = { 255.f, 255.f, 255.f };
+		CEVec3 textPressedColor = { 100.f, 100.f, 100.f };
+		CEVec3 textNormalColor = { 0.f, 0.f, 0.f };
 	};
 }
 

@@ -47,6 +47,8 @@ namespace CrashoutsEngine {
 			void MouseWheelDrag(CEVec2& oldMousePos);
 			void MouseWheelScroll(float yOffset);
 
+			static float g_zoom;
+
 		private:
 			CEVec3 position;
 			float zoom;

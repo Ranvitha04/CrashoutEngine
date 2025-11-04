@@ -1094,8 +1094,10 @@ namespace UI { // --------------------------------------------------------------
             // Stop
             if (ImGui::Button("STOP", ImVec2(70, 25))) {
                 RestartGameState();
+                MonoManager::ReloadScripts();
                 engineState = EngineState::STOP;
             }
+            ImGui::SameLine();
             if (ImGui::Button("Reload Scripts"))
             {
                 MonoManager::ReloadScripts();
@@ -1106,6 +1108,7 @@ namespace UI { // --------------------------------------------------------------
     }
 
 #ifdef USE_IMGUI_EDITOR
+
     /*!
      @brief  Draws the editor game viewport.
      @details
@@ -1125,11 +1128,13 @@ namespace UI { // --------------------------------------------------------------
 
             ImVec2 start = ImGui::GetCursorScreenPos();
             ImGui::SetCursorScreenPos(ImVec2(start.x + 10, start.y + 10));
-            ImGui::BeginChild("ViewportToolbar", ImVec2(200, 32),
+            ImGui::BeginChild("ViewportToolbar", ImVec2(1000, 32),
                 false, ImGuiWindowFlags_NoBackground);
 
             // ----- 1) toolbar (translate / rotate / scale) -----
             ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(6, 4));
+            if (ImGui::Button("None")) g_gizmoOp = (ImGuizmo::OPERATION)0;
+            ImGui::SameLine();
             if (ImGui::Button("Translate")) g_gizmoOp = ImGuizmo::TRANSLATE;
             ImGui::SameLine();
             if (ImGui::Button("Rotate")) g_gizmoOp = ImGuizmo::ROTATE;
@@ -1368,7 +1373,7 @@ namespace UI { // --------------------------------------------------------------
 
                 // Toggle selection with LEFT mouse
                 if (best) selected = (selected == best) ? (Entity)0 : best;
-                else selected = 0; // click empty -> deselect
+                // else selected = 0; // click empty -> deselect
             }
 
             // ------ 7) drag and drop from asset browser into world ------
@@ -1405,6 +1410,11 @@ namespace UI { // --------------------------------------------------------------
                 }
                 ImGui::EndDragDropTarget();
             }
+        
+            CEVec3 worldPt = ViewUV_toWorld(u, v);
+
+            InputManager::g_mouseWorldPos = CEVec2{ worldPt.x, worldPt.y };
+
         }
         ImGui::End();
         ImGui::PopStyleVar();

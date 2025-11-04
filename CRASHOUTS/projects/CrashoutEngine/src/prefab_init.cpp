@@ -75,7 +75,7 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path)
             const auto& shj = p["shape"];
             float width = (shj.HasMember("width") && shj["width"].IsNumber()) ? (float)shj["width"].GetDouble() : 1.0f;
             float height = (shj.HasMember("height") && shj["height"].IsNumber()) ? (float)shj["height"].GetDouble() : 1.0f;
-            float shapeSize = (shj.HasMember("size") && shj["size"].IsNumber()) ? (float)shj["size"].GetDouble() : 1.0f;
+            //float shapeSize = (shj.HasMember("size") && shj["size"].IsNumber()) ? (float)shj["size"].GetDouble() : 1.0f;
             int   typeInt = (shj.HasMember("type") && shj["type"].IsInt()) ? shj["type"].GetInt() : (int)ShapeType::Rectangle;
 
             CEVec3 color{ 0,0,0 };
@@ -143,8 +143,8 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path)
                 sc.enableTexture = enableTexture;
                 sc.textureName = textureName;
                 e.AddComponent<ShapeComponent>(ent, sc);
-                const float cw = (width > 0.f ? width : size.x);
-                const float ch = (height > 0.f ? height : size.y);
+                //const float cw = (width > 0.f ? width : size.x);
+                //const float ch = (height > 0.f ? height : size.y);
                 
                 // RigidBody (no velocity field on your component)
                 e.AddComponent<RigidBodyComponent>(ent, CEVec3{ 0,0,0 }, mass, rest);
