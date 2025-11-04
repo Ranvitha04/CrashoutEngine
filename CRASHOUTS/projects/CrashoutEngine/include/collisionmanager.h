@@ -61,7 +61,6 @@ namespace Collision {
 	class CollisionHandler : public Messaging::Observable {
 	private:
 
-		DataStructure::QuadTree quadTree;
 
 		static constexpr int TYPES_OF_COLLISION{ 3 };
 
@@ -80,6 +79,8 @@ namespace Collision {
 		static CollisionManifold OBBToOBBCollision(CollisionProps const& coll1, CollisionProps const& coll2);
 
 	public:
+
+		static DataStructure::QuadTree quadTree;
 
 		CollisionHandler();
 

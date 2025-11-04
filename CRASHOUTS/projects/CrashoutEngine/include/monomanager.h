@@ -1,4 +1,5 @@
 #pragma once
+#include <filesystem>
 #include <string>
 #include <mono/jit/jit.h>
 #include <mono/metadata/assembly.h>
@@ -12,10 +13,21 @@ public:
     static void Shutdown();
     static void LoadAssembly(const std::string& assemblyPath);
 
+    // Check for changes to DLL and reload if necessary
+    static void CheckHotReload();
+
+    // Manually force script reload
+    static void ReloadScripts();
+
     static MonoDomain* GetDomain() { return s_Domain; }
     static MonoAssembly* GetAssembly() { return s_Assembly; }
+    static MonoImage* GetImage();
+    static std::string CopyAssemblyToTemp(const std::string& originalPath);
 
 private:
     static MonoDomain* s_Domain;
     static MonoAssembly* s_Assembly; // store last loaded assembly
+    // For hot reload tracking
+    static std::filesystem::file_time_type s_LastWriteTime;
+    static std::string s_AssemblyPath;
 };

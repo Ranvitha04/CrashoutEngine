@@ -20,10 +20,13 @@ namespace {
 }
 
 namespace DataStructure {
-	QuadTree::QuadTree(Collision::AABBRect const& boundary, int const& depth) : boundary{ boundary }, depth{ depth }
-	{
+	QuadTree::QuadTree(Collision::AABBRect const& boundary, int const& depth) : boundary{ boundary }, depth{ depth } {
 		Resize(boundary);
 		divided = false;
+	}
+
+	QuadTree::~QuadTree() {
+		Clear();
 	}
 
 	void QuadTree::Insert(CrashoutsEngine::Entity const& entity)
@@ -88,7 +91,7 @@ namespace DataStructure {
 
 	void QuadTree::Resize(Collision::AABBRect const& newBoundary) {
 		Clear();
-
+		boundary = newBoundary;
 		CEVec3 extents{ (newBoundary.max - newBoundary.min) * 0.5f };
 		childSizes = {
 			Collision::AABBRect{CEVec3{newBoundary.min + extents}, CEVec3{newBoundary.max}},

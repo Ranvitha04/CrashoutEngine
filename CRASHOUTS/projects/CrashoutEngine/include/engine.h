@@ -18,6 +18,7 @@ This file
 #include "log.h"
 #include "playerMovement.h"     // Player::UpdateADVelocity
 #include "physicsmanager.h"            // Component::RigidBodyComponent
+#include "aimanager.h"
 #include "inputmanager.h"
 #include "debugreflection.h"
 #include "debugmenu.h"

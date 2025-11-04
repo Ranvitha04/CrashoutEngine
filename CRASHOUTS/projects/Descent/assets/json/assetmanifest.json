@@ -243,6 +243,10 @@
     ],
     "scenes": [
         {
+            "name": "afiq",
+            "path": "afiq"
+        },
+        {
             "name": "amir",
             "path": "amir"
         },

@@ -9,11 +9,30 @@
 
 #include "collisionmanager.h"
 #include "rigidbodycomponent.h"
+#include "glapp.h"
 #include "collidercomponent.h"
 #include "CEMath.h"
 #include "CEMtx33.h"
 #include <cmath>
 #include <algorithm>
+
+namespace {
+	std::pair<f32, f32> ComputeWorldDimensions() {
+		f32 worldWidth{}, worldHeight{};
+		const float BASE_SIZE = 100.0f;
+		float aspect = static_cast<float>(GLApp::width) / static_cast<float>(GLApp::height);
+		if (aspect >= 1.0f) {
+			worldHeight = BASE_SIZE;
+			worldWidth = worldHeight * aspect;
+		}
+		else {
+			worldWidth = BASE_SIZE;
+			worldHeight = worldWidth / aspect;
+		}
+
+		return std::pair{ worldWidth, worldHeight };
+	}
+}
 
 namespace Collision {
 	Collider::Collider(ColliderType type) : type{ type } { /*EMPTY BY DESIGN*/ }
@@ -203,6 +222,9 @@ namespace Collision {
 
 namespace Collision {
 
+	/*STATIC VARIABLES*/
+	DataStructure::QuadTree CollisionHandler::quadTree;
+
 	/*--------------------------------------COLLISION MESSAGE DEFINITION---------------------------------------*/
 
 	CollisionMessage::CollisionMessage(const std::string& id, CollisionManifold const& colManifold, CrashoutsEngine::Entity entity1, CrashoutsEngine::Entity entity2)
@@ -221,7 +243,7 @@ namespace Collision {
 
 	/*----------------COLLISIONHANDLER CLASS DEFINITIONS--------------------------------------------------------*/
 
-	CollisionHandler::CollisionHandler() : Messaging::Observable{ "Collision" }, quadTree{ AABBRect{CEVec3{-90.f, -50.f, 0.f}, CEVec3{90.f, 50.f, 0.f}} }, collideFuncts{
+	CollisionHandler::CollisionHandler() : Messaging::Observable{ "Collision" }, collideFuncts{
 		std::array<Collision::FunctionDispatchType, TYPES_OF_COLLISION * TYPES_OF_COLLISION> {
 			nullptr, nullptr,
 			nullptr, nullptr
@@ -241,17 +263,23 @@ namespace Collision {
 	}
 
 	void CollisionHandler::update([[maybe_unused]] double deltaTime) {
+		
+
+
 		CrashoutsEngine::ECS& globalECS = *(CrashoutsEngine::ECS::getInstance());
 
 		std::vector<CrashoutsEngine::Entity> globalEntities = globalECS.GetComponentArray<Component::ColliderComponent>().indexToEntity;
 
-		quadTree.Clear();
+		std::pair<f32, f32> newDimen{ComputeWorldDimensions()};
+
+		CEVec2 newExtents{ newDimen.first * 0.5f, newDimen.second * 0.5f };
+
+		quadTree.Resize(Collision::AABBRect{ CEVec3{-newExtents.x, -newExtents.y, 0.f}, CEVec3{newExtents.x, newExtents.y, 0.f} });
 
 		for (CrashoutsEngine::Entity& entity1 : globalEntities) {
 			quadTree.Insert(entity1);
 		}
 
-		//quadTree.Draw();
 
 		std::vector<std::pair<CrashoutsEngine::Entity, CrashoutsEngine::Entity>> alreadyColl{};
 		//std::vector<std::pair<CrashoutsEngine::Entity, CrashoutsEngine::Entity>> test{};

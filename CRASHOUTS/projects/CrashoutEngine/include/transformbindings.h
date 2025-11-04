@@ -3,5 +3,5 @@
 
 namespace CrashoutsEngine::Bindings
 {
-    void RegisterTransform();
+    void RegisterTransformBindings();
 }
