@@ -89,18 +89,36 @@ void MonoManager::ReloadScripts()
         fs::create_directories(dstDir);
 
         // Create a unique filename to avoid file-lock errors
-        std::string uniqueName = "ManagedScripts_reload_" + std::to_string(std::time(nullptr)) + ".dll";
+        auto now = std::chrono::system_clock::now();
+        auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()).count();
+        std::string uniqueName = "ManagedScripts_reload_" + std::to_string(ms) + ".dll";
+
         fs::path dst = dstDir / uniqueName;
 
         // Copy source DLL to a unique cache DLL
         fs::copy_file(src, dst, fs::copy_options::overwrite_existing);
 
+		//temp debug output
+        std::cout << "[Mono][Debug] Attempting to load assembly from: " << dst.string() << std::endl;
+
         // Load from this unique file
         s_Assembly = mono_domain_assembly_open(s_Domain, dst.string().c_str());
-        if (!s_Assembly)
+        /*
+    	if (!s_Assembly)
         {
             std::cerr << "[Mono] Reload failed to open assembly!\n";
             return;
+        }*/
+        if (!s_Assembly)
+        {
+            std::cerr << "[Mono][Debug] Failed to load assembly: " << dst.string() << std::endl;
+            return;
+        }
+        else
+        {
+            MonoImage* image = mono_assembly_get_image(s_Assembly);
+            std::cout << "[Mono][Debug] Assembly loaded from: " << dst.string() << std::endl;
+            std::cout << "[Mono][Debug] MonoImage pointer: " << image << std::endl;
         }
     }
     catch (const std::filesystem::filesystem_error& e)
