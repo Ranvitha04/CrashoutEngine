@@ -518,11 +518,49 @@ namespace {
 
             ImGui::Checkbox("Center Text", &fc->centered);
 
+            ImGui::Checkbox("Use World Space", &fc->isWorldSpace);
+
 			ImGui::DragFloat("Scale", &fc->scale);
 
             ImGui::DragFloat2("offset", &fc->offset.x);
 
-            ImGui::DragFloat3("Color", &fc->color.x, 1.f, 0.f, 255.f);
+            //ImGui::DragFloat3("Color", &fc->color.x, 1.f, 0.f, 255.f);
+            
+            {
+                float col[4] = {
+                    fc->color.x * (1.0f / 255.0f),
+                    fc->color.y * (1.0f / 255.0f),
+                    fc->color.z * (1.0f / 255.0f),
+                    1.0f
+                };
+
+                ImGuiColorEditFlags flags =
+                    ImGuiColorEditFlags_DisplayHSV |
+                    ImGuiColorEditFlags_InputRGB |
+                    ImGuiColorEditFlags_PickerHueBar |
+                    ImGuiColorEditFlags_NoAlpha;
+
+                if (ImGui::ColorEdit3("Color", col, flags) || ImGui::IsItemDeactivatedAfterEdit())
+                {
+                    fc->color.x = col[0] * 255.0f;
+                    fc->color.y = col[1] * 255.0f;
+                    fc->color.z = col[2] * 255.0f;
+                }
+
+                if (ImGui::SmallButton("Open Color Picker"))
+                    ImGui::OpenPopup("##shape_color_picker");
+
+                if (ImGui::BeginPopup("##shape_color_picker"))
+                {
+                    if (ImGui::ColorPicker3("##picker", col, flags))
+                    {
+                        fc->color.x = col[0] * 255.0f;
+                        fc->color.y = col[1] * 255.0f;
+                        fc->color.z = col[2] * 255.0f;
+                    }
+                    ImGui::EndPopup();
+                }
+            }
         }
     };
 
@@ -712,7 +750,7 @@ namespace {
     /*!
     @brief Adapter for editing Component::ScriptComponent.
     @details Edits type-specific parameters and supports a per-entity preview toggle.
-    
+    */
     struct ScriptAdapter : DebugReflection::IComponentAdapter {
         const char* name() const override { return "ScriptComponent"; }
 
@@ -722,51 +760,69 @@ namespace {
 
         void add(ECS& ecs, Entity e) override {
             if (!has(ecs, e)) {
-                ecs.AddComponent<CrashoutsEngine::ScriptComponent>(e, "PlayerScript");
+                static char className[64] = "PlayerController";
+                ImGui::InputText("Class Name to Add", className, sizeof(className));
+                CrashoutsEngine::ScriptComponent sc(className, e);
+                ecs.AddComponent<CrashoutsEngine::ScriptComponent>(e, sc);
             }
         }
 
         void remove(ECS& ecs, Entity e) override {
-            if (!has(ecs, e)) {
+            if (has(ecs, e)) {
                 ecs.RemoveComponent<CrashoutsEngine::ScriptComponent>(e);
             }
         }
 
         void drawInspector(ECS& ecs, Entity e) override {
             auto* sc = ecs.GetComponent<ScriptComponent>(e);
-            if (!sc) return;
+            if (!sc)
+                return;
 
+            // editable class name
             char buf[128]{};
             std::snprintf(buf, sizeof(buf), "%s", sc->ClassName.c_str());
             if (ImGui::InputText("Class Name", buf, sizeof(buf)))
+            {
                 sc->ClassName = buf;
+                // optional: re-init right away when name changes
+                // sc->Destroy();
+                // sc->Initialize(MonoManager::GetDomain(), MonoManager::GetAssembly());
+            }
 
             bool monoReady = (MonoManager::GetDomain() != nullptr && MonoManager::GetAssembly() != nullptr);
             ImGui::TextDisabled("Mono: %s", monoReady ? "Ready" : "Not Ready");
 
             if (!monoReady) ImGui::BeginDisabled();
 
-            if (ImGui::Button(sc->Instance ? "Reinitialize" : "Initialize")) {
+            // init / reinit
+            if (ImGui::Button(sc->Instance ? "Reinitialize" : "Initialize"))
+            {
                 sc->Destroy();
                 sc->Initialize(MonoManager::GetDomain(), MonoManager::GetAssembly());
             }
 
             ImGui::SameLine();
-            if (ImGui::Button("Start")) sc->Start();
+            if (ImGui::Button("Start"))
+                sc->Start();
+
+            // small dt field
+            ImGui::SameLine();
+            static float dt = 1.0f / 60.0f;
+            ImGui::SetNextItemWidth(80.0f);
+            ImGui::DragFloat("dt", &dt, 0.001f, 0.0f, 1.0f, "%.3f");
 
             ImGui::SameLine();
-            static float dt = 1.0f / 60.0f; ImGui::SetNextItemWidth(80);
-            ImGui::DragFloat("dt", &dt, 0.001f, 0, 1, "%.3f");
+            if (ImGui::Button("Update"))
+                sc->Update(dt);
 
             ImGui::SameLine();
-            if (ImGui::Button("Update")) sc->Update(dt)
-                ;
-            ImGui::SameLine();
-            if (ImGui::Button("Destroy")) sc->Destroy();
+            if (ImGui::Button("Destroy"))
+                sc->Destroy();
 
-            if (!monoReady) ImGui::EndDisabled();
+            if (!monoReady)
+                ImGui::EndDisabled();
         }
-    };*/
+    };
 
     /*!
     @brief Adapter for editing Component::CameraComponent.
@@ -881,34 +937,65 @@ namespace {
             ImGui::SeparatorText("UI Layout");
 
             // --- 1. Edit paddingXY ---
-            // CEVec2 has .x and .y, so DragFloat2 works perfectly.
             ImGui::DragFloat2("Padding (X, Y)", &uc->paddingXY.x, 0.5f, 0.0f, 1000.0f, "%.1f");
 
             // --- 2. Edit uiLayout (the flags) ---
-            ImGui::SeparatorText("Alignment Flags");
             ImGui::PushID("UILayoutFlags");
 
-            // ImGui::CheckboxFlags needs a raw unsigned int*
-            // We use a temporary variable and cast back.
             unsigned int tempFlags = static_cast<unsigned int>(uc->uiLayout);
             unsigned int flags_before = tempFlags;
 
-            // Checkboxes for each *togg-able* flag (all except TOP=0)
-            ImGui::CheckboxFlags("Down", &tempFlags, static_cast<unsigned int>(UILayout::DOWN));
-            ImGui::CheckboxFlags("Center", &tempFlags, static_cast<unsigned int>(UILayout::CENTER));
-            ImGui::CheckboxFlags("Left", &tempFlags, static_cast<unsigned int>(UILayout::LEFT));
-            ImGui::CheckboxFlags("Right", &tempFlags, static_cast<unsigned int>(UILayout::RIGHT));
+            // --- Vertical Alignment (Mutually Exclusive) ---
+            ImGui::SeparatorText("Vertical Alignment");
 
-            // Since TOP is 0, we can show a read-only "default" state
-            // (Assuming TOP is mutually exclusive with DOWN/CENTER)
-            bool isTop = !((tempFlags & static_cast<unsigned int>(UILayout::DOWN)) || (tempFlags & static_cast<unsigned int>(UILayout::CENTER)));
-            ImGui::BeginDisabled();
-            ImGui::Checkbox("Top (Default)", &isTop);
-            ImGui::EndDisabled();
+            // Isolate the current vertical choice
+            unsigned int vertChoice = tempFlags & (static_cast<unsigned int>(UILayout::TOP) |
+                static_cast<unsigned int>(UILayout::DOWN) |
+                static_cast<unsigned int>(UILayout::CENTER));
+
+            // Default to CENTER if no vertical flag is set (i.e., it's NONE)
+            if (vertChoice == 0) {
+                vertChoice = static_cast<unsigned int>(UILayout::CENTER);
+            }
+
+            // Use RadioButtons for an "either/or" selection
+            if (ImGui::RadioButton("Top", vertChoice & static_cast<unsigned int>(UILayout::TOP))) { vertChoice = static_cast<unsigned int>(UILayout::TOP); }
+            ImGui::SameLine();
+            if (ImGui::RadioButton("Center##Vertical", vertChoice & static_cast<unsigned int>(UILayout::CENTER))) { vertChoice = static_cast<unsigned int>(UILayout::CENTER); }
+            ImGui::SameLine();
+            if (ImGui::RadioButton("Down", vertChoice & static_cast<unsigned int>(UILayout::DOWN))) { vertChoice = static_cast<unsigned int>(UILayout::DOWN); }
+
+            // --- Horizontal Alignment (Mutually Exclusive) ---
+            ImGui::SeparatorText("Horizontal Alignment");
+
+            // Isolate the current horizontal choice
+            unsigned int horizChoice = tempFlags & (static_cast<unsigned int>(UILayout::LEFT) |
+                static_cast<unsigned int>(UILayout::RIGHT));
+
+            // Note: 0 (UILayout::NONE) is our horizontal center.
+            bool isLeft = (horizChoice & static_cast<unsigned int>(UILayout::LEFT));
+            bool isRight = (horizChoice & static_cast<unsigned int>(UILayout::RIGHT));
+            bool isCenter = (horizChoice == 0);
+
+            // Use RadioButtons again
+            if (ImGui::RadioButton("Left", isLeft)) { horizChoice = static_cast<unsigned int>(UILayout::LEFT); }
+            ImGui::SameLine();
+            if (ImGui::RadioButton("Center##Horizontal", isCenter)) { horizChoice = 0; } // 0 (NONE) is our horizontal center
+            ImGui::SameLine();
+            if (ImGui::RadioButton("Right", isRight)) { horizChoice = static_cast<unsigned int>(UILayout::RIGHT); }
+
+            // --- 3. Recombine flags ---
+            // Clear all *old* alignment flags
+            tempFlags &= ~(static_cast<unsigned int>(UILayout::TOP) | static_cast<unsigned int>(UILayout::DOWN) | static_cast<unsigned int>(UILayout::CENTER) |
+                static_cast<unsigned int>(UILayout::LEFT) | static_cast<unsigned int>(UILayout::RIGHT));
+
+            // Add the new choices
+            tempFlags |= vertChoice;
+            tempFlags |= horizChoice;
 
             ImGui::PopID();
 
-            // 3. --- Write changes back to component ---
+            // --- 4. Write changes back to component ---
             if (tempFlags != flags_before) {
                 uc->uiLayout = static_cast<UILayout>(tempFlags);
             }
@@ -1054,7 +1141,7 @@ namespace {
             // correct even when no change was made this frame.
             bool needsButton = (gc->uiType & UIType::BUTTON) != UIType::NONE;
             bool needsInput = (gc->uiType & UIType::INPUTTEXT) != UIType::NONE;
-            bool needsLayout = (gc->uiType != UIType::NONE);
+            bool needsLayout = (gc->uiType & UIType::TEXT) != UIType::NONE;
 
             if (needsButton) {
                 gButtonAdapter_helper.drawInspector(ecs, e);
@@ -1130,7 +1217,7 @@ namespace {
     static ShapeAdapter gShapeAdapter;
     static TextAdapter gTextAdapter;
     static AudioAdapter gAudioAdapter;
-    //static ScriptAdapter gScriptAdapter;
+    static ScriptAdapter gScriptAdapter;
     static CameraAdapter gCameraAdapter;
     static GuiAdapter gGuiAdapter;
     static GameStateProvider gProvider;
@@ -1158,7 +1245,7 @@ extern "C" void RegisterBuiltinComponentAdapters() {
     ComponentRegistry::instance().registerAdapter(&gShapeAdapter);
     ComponentRegistry::instance().registerAdapter(&gTextAdapter);
     ComponentRegistry::instance().registerAdapter(&gAudioAdapter);
-    //ComponentRegistry::instance().registerAdapter(&gScriptAdapter);
+    ComponentRegistry::instance().registerAdapter(&gScriptAdapter);
     ComponentRegistry::instance().registerAdapter(&gCameraAdapter);
     ComponentRegistry::instance().registerAdapter(&gGuiAdapter);
     DebugReflection::SetGameStateProvider(&gProvider);

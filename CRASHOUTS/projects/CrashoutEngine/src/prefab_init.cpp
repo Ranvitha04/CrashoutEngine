@@ -16,6 +16,8 @@
 #include <memory>
 #include <string>
 #include <fstream>
+
+
 #include "rapidjson/document.h"
 #include "rapidjson/istreamwrapper.h"
 #include "rapidjson/ostreamwrapper.h"
@@ -56,29 +58,29 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path)
     }
 
     const auto& arr = doc["prefabs"].GetArray();
-    for (auto& prefab : arr) {
-        if (!prefab.IsObject()) continue;
-        if (!prefab.HasMember("type") || !prefab["type"].IsString()) continue;
-        if (!prefab.HasMember("name") || !prefab["name"].IsString()) continue;
+    for (auto& p : arr) {
+        if (!p.IsObject()) continue;
+        if (!p.HasMember("type") || !p["type"].IsString()) continue;
+        if (!p.HasMember("name") || !p["name"].IsString()) continue;
 
-        const std::string type = prefab["type"].GetString();
-        const std::string name = prefab["name"].GetString();
+        const std::string type = p["type"].GetString();
+        const std::string name = p["name"].GetString();
 
         // ----------------------
         // BOX PREFAB
         // ----------------------
         if (type == "Box") {
-            
-            if (!prefab.HasMember("shape") || !prefab["shape"].IsObject()) { LOGE(Core, std::string("Box '") + name + "' missing shape"); continue; }
-            const auto& shapeJson = prefab["shape"];
-            float width = (shapeJson.HasMember("width") && shapeJson["width"].IsNumber()) ? (float)shapeJson["width"].GetDouble() : 1.0f;
-            float height = (shapeJson.HasMember("height") && shapeJson["height"].IsNumber()) ? (float)shapeJson["height"].GetDouble() : 1.0f;
-            float shapeSize = (shapeJson.HasMember("size") && shapeJson["size"].IsNumber()) ? (float)shapeJson["size"].GetDouble() : 1.0f;
-            int   typeInt = (shapeJson.HasMember("type") && shapeJson["type"].IsInt()) ? shapeJson["type"].GetInt() : (int)ShapeType::Rectangle;
+            // ---- shape ----
+            if (!p.HasMember("shape") || !p["shape"].IsObject()) { LOGE(Core, std::string("Box '") + name + "' missing shape"); continue; }
+            const auto& shj = p["shape"];
+            float width = (shj.HasMember("width") && shj["width"].IsNumber()) ? (float)shj["width"].GetDouble() : 1.0f;
+            float height = (shj.HasMember("height") && shj["height"].IsNumber()) ? (float)shj["height"].GetDouble() : 1.0f;
+            //float shapeSize = (shj.HasMember("size") && shj["size"].IsNumber()) ? (float)shj["size"].GetDouble() : 1.0f;
+            int   typeInt = (shj.HasMember("type") && shj["type"].IsInt()) ? shj["type"].GetInt() : (int)ShapeType::Rectangle;
 
             CEVec3 color{ 0,0,0 };
-            if (shapeJson.HasMember("color") && shapeJson["color"].IsObject()) {
-                const auto& cj = shapeJson["color"];
+            if (shj.HasMember("color") && shj["color"].IsObject()) {
+                const auto& cj = shj["color"];
                 color.x = (cj.HasMember("r") && cj["r"].IsNumber()) ? (float)cj["r"].GetDouble() : 0.f;
                 color.y = (cj.HasMember("g") && cj["g"].IsNumber()) ? (float)cj["g"].GetDouble() : 0.f;
                 color.z = (cj.HasMember("b") && cj["b"].IsNumber()) ? (float)cj["b"].GetDouble() : 0.f;
@@ -86,12 +88,12 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path)
          
           
 
-            const bool enableTexture = (shapeJson.HasMember("enableTexture") && shapeJson["enableTexture"].IsBool()) ? shapeJson["enableTexture"].GetBool() : false;
+            const bool enableTexture = (shj.HasMember("enableTexture") && shj["enableTexture"].IsBool()) ? shj["enableTexture"].GetBool() : false;
             std::string textureName;
-            if (enableTexture && shapeJson.HasMember("textureName") && shapeJson["textureName"].IsString())
-                textureName = shapeJson["textureName"].GetString();
-            if (!prefab.HasMember("transform") || !prefab["transform"].IsObject()) { LOGE(Core, std::string("Box '") + name + "' missing transform"); continue; }
-            const auto& tj = prefab["transform"];
+            if (enableTexture && shj.HasMember("textureName") && shj["textureName"].IsString())
+                textureName = shj["textureName"].GetString();
+            if (!p.HasMember("transform") || !p["transform"].IsObject()) { LOGE(Core, std::string("Box '") + name + "' missing transform"); continue; }
+            const auto& tj = p["transform"];
             if (!tj.HasMember("position") || !tj["position"].IsObject()) { LOGE(Core, std::string("Box '") + name + "' missing position"); continue; }
             const auto& pos = tj["position"];
             float px = (pos.HasMember("x") && pos["x"].IsNumber()) ? (float)pos["x"].GetDouble() : 0.f;
@@ -107,15 +109,15 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path)
             }
 
             // ---- rigidbody ----
-            if (!prefab.HasMember("rigidbody") || !prefab["rigidbody"].IsObject()) { LOGE(Core, std::string("Box '") + name + "' missing rigidbody"); continue; }
-            const auto& rigidbodyJson = prefab["rigidbody"];
-            float mass = (rigidbodyJson.HasMember("mass") && rigidbodyJson["mass"].IsNumber()) ? (float)rigidbodyJson["mass"].GetDouble() : 0.f;
-            float rest = (rigidbodyJson.HasMember("restitution") && rigidbodyJson["restitution"].IsNumber()) ? (float)rigidbodyJson["restitution"].GetDouble() : 0.f;
+            if (!p.HasMember("rigidbody") || !p["rigidbody"].IsObject()) { LOGE(Core, std::string("Box '") + name + "' missing rigidbody"); continue; }
+            const auto& rbj = p["rigidbody"];
+            float mass = (rbj.HasMember("mass") && rbj["mass"].IsNumber()) ? (float)rbj["mass"].GetDouble() : 0.f;
+            float rest = (rbj.HasMember("restitution") && rbj["restitution"].IsNumber()) ? (float)rbj["restitution"].GetDouble() : 0.f;
 
         
             bool hasColliderFlags = false; bool isTrigger = false; unsigned category = 0; unsigned mask = 0;
-            if (prefab.HasMember("collider") && prefab["collider"].IsObject()) {
-                const auto& cj = prefab["collider"];
+            if (p.HasMember("collider") && p["collider"].IsObject()) {
+                const auto& cj = p["collider"];
                 hasColliderFlags = true;
                 if (cj.HasMember("isTrigger") && cj["isTrigger"].IsBool()) isTrigger = cj["isTrigger"].GetBool();
                 if (cj.HasMember("category") && cj["category"].IsUint()) category = cj["category"].GetUint();
@@ -124,33 +126,33 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path)
 
 
             Prefab::Register(name, [=](ECS& e) {
-                const Entity entitity = e.CreateEntity();
-                e.AddComponent<NameComponent>(entitity, NameComponent{ name });
+                const Entity ent = e.CreateEntity();
+                e.AddComponent<NameComponent>(ent, NameComponent{ name });
 
                 // Transform
-                TransformComponent transform{};
-                transform.position = CEVec3{ px, py, pz };
-                transform.rotation = rotation;
-                transform.size = size;
-                e.AddComponent<TransformComponent>(entitity, transform);
+                TransformComponent t{};
+                t.position = CEVec3{ px, py, pz };
+                t.rotation = rotation;
+                t.size = size;
+                e.AddComponent<TransformComponent>(ent, t);
 
                 // Shape
-                ShapeComponent shapecomponent{};
-                shapecomponent.type = (ShapeType)typeInt;
-                shapecomponent.color = color;
-                shapecomponent.enableTexture = enableTexture;
-                shapecomponent.textureName = textureName;
-                e.AddComponent<ShapeComponent>(entitity, shapecomponent);
-                const float cw = (width > 0.f ? width : size.x);
-                const float ch = (height > 0.f ? height : size.y);
+                ShapeComponent sc{};
+                sc.type = (ShapeType)typeInt;
+                sc.color = color;
+                sc.enableTexture = enableTexture;
+                sc.textureName = textureName;
+                e.AddComponent<ShapeComponent>(ent, sc);
+                //const float cw = (width > 0.f ? width : size.x);
+                //const float ch = (height > 0.f ? height : size.y);
                 
                 // RigidBody (no velocity field on your component)
-                e.AddComponent<RigidBodyComponent>(entitity, CEVec3{ 0,0,0 }, mass, rest);
+                e.AddComponent<RigidBodyComponent>(ent, CEVec3{ 0,0,0 }, mass, rest);
 
                 // Collider (AABB for robustness)
                 {
-                    auto aabb = MakeCenteredAABB3(transform.position, width, height);
-                    e.AddComponent<ColliderComponent>(entitity, ColliderComponent{ std::move(aabb) });
+                    auto aabb = MakeCenteredAABB3(t.position, width, height);
+                    e.AddComponent<ColliderComponent>(ent, ColliderComponent{ std::move(aabb) });
                 
                 }
                 });
@@ -177,16 +179,19 @@ namespace CrashoutsEngine {
 
         // Validate required components
         auto* t = ecs.GetComponent<TransformComponent>(e);
-        auto* shape = ecs.GetComponent<ShapeComponent>(e);
+        auto* sh = ecs.GetComponent<ShapeComponent>(e);
         auto* rb = ecs.GetComponent<RigidBodyComponent>(e);
-        if (!t || !shape || !rb) {
+        if (!t || !sh || !rb) {
             LOGE(Core, std::string("Save failed: entity missing Transform/Shape/RigidBody."));
             return false;
         }
-        if (shape->type != ShapeType::Rectangle) {
+        if (sh->type != ShapeType::Rectangle) {
             LOGE(Core, std::string("Save failed: only Rectangle (Box) is supported."));
             return false;
         }
+
+        // Load / init doc
+    // Load / init doc
         rapidjson::Document doc;
         {
             std::ifstream in(path, std::ios::binary);
@@ -195,7 +200,7 @@ namespace CrashoutsEngine {
                 doc.ParseStream(isw);
                 if (doc.HasParseError() || !doc.IsObject()) {
                     LOGE(Core, (std::string("Save aborted: JSON parse error in ") + path).c_str());
-                    return false;
+                    return false; // IMPORTANT: don't clobber the existing file
                 }
             }
             else {
@@ -213,68 +218,68 @@ namespace CrashoutsEngine {
         Value& prefabs = doc["prefabs"];
 
         // Build object
-        Value object(kObjectType);
-        object.AddMember("type", "Box", A);
+        Value obj(kObjectType);
+        obj.AddMember("type", "Box", A);
 
         // name
         {
             Value nm; nm.SetString(newName.c_str(), (SizeType)newName.size(), A);
-            object.AddMember("name", nm, A);
+            obj.AddMember("name", nm, A);
         }
 
         // transform (position + rotation + size)
         {
-            Value position(kObjectType);
-            position.AddMember("x", t->position.x, A);
-            position.AddMember("y", t->position.y, A);
-            position.AddMember("z", t->position.z, A);
+            Value pos(kObjectType);
+            pos.AddMember("x", t->position.x, A);
+            pos.AddMember("y", t->position.y, A);
+            pos.AddMember("z", t->position.z, A);
 
-            Value transform(kObjectType);
-            transform.AddMember("position", position, A);
-            transform.AddMember("rotation", t->rotation, A);
+            Value tr(kObjectType);
+            tr.AddMember("position", pos, A);
+            tr.AddMember("rotation", t->rotation, A);
 
             Value sizeJ(kObjectType);
             sizeJ.AddMember("x", t->size.x, A);
             sizeJ.AddMember("y", t->size.y, A);
-            transform.AddMember("size", sizeJ, A);
+            tr.AddMember("size", sizeJ, A);
 
-            object.AddMember("transform", transform, A);
+            obj.AddMember("transform", tr, A);
         }
 
         // shape
         {
-            Value shapeJson(kObjectType);
-            shapeJson.AddMember("kind", "Rectangle", A);      
-            shapeJson.AddMember("type", (int)shape->type, A);       
-            shapeJson.AddMember("width", t->size.x, A);
-            shapeJson.AddMember("height", t->size.y, A);
-            shapeJson.AddMember("size", std::max(t->size.x, t->size.y), A);  
+            Value shj(kObjectType);
+            shj.AddMember("kind", "Rectangle", A);      
+            shj.AddMember("type", (int)sh->type, A);       
+            shj.AddMember("width", t->size.x, A);
+            shj.AddMember("height", t->size.y, A);
+            shj.AddMember("size", std::max(t->size.x, t->size.y), A);  
 
             // color
-            Value color(kObjectType);
-            color.AddMember("r", shape->color.x, A);
-            color.AddMember("g", shape->color.y, A);
-            color.AddMember("b", shape->color.z, A);
-            shapeJson.AddMember("color", color, A);
+            Value col(kObjectType);
+            col.AddMember("r", sh->color.x, A);
+            col.AddMember("g", sh->color.y, A);
+            col.AddMember("b", sh->color.z, A);
+            shj.AddMember("color", col, A);
 
             // texture flags
-            shapeJson.AddMember("enableTexture", shape->enableTexture, A);
-            if (shape->enableTexture && !shape->textureName.empty()) {
-                Value tex; tex.SetString(shape->textureName.c_str(), (SizeType)shape->textureName.size(), A);
-                shapeJson.AddMember("textureName", tex, A);
+            shj.AddMember("enableTexture", sh->enableTexture, A);
+            if (sh->enableTexture && !sh->textureName.empty()) {
+                Value tex; tex.SetString(sh->textureName.c_str(), (SizeType)sh->textureName.size(), A);
+                shj.AddMember("textureName", tex, A);
             }
 
-            object.AddMember("shape", shapeJson, A);
+            obj.AddMember("shape", shj, A);
         }
 
        
        // rigidbody (mass, restitution)
    
         {
-            rapidjson::Value rigidbody(rapidjson::kObjectType);
-            rigidbody.AddMember("mass", rb->getMass(), A);         
-            rigidbody.AddMember("restitution", rb->getCoeff(), A);
-            object.AddMember("rigidbody", rigidbody, A);
+            rapidjson::Value rbj(rapidjson::kObjectType);
+            rbj.AddMember("mass", rb->getMass(), A);          // <-- use getters
+            rbj.AddMember("restitution", rb->getCoeff(), A);  // <-- use getters
+            obj.AddMember("rigidbody", rbj, A);
         }
 
 
@@ -298,12 +303,12 @@ namespace CrashoutsEngine {
             if (!p.IsObject() || !p.HasMember("name") || !p["name"].IsString()) continue;
             const std::string pname = lower(trim(p["name"].GetString()));
             if (pname == key) {
-                p.CopyFrom(object, A);
+                p.CopyFrom(obj, A);
                 replaced = true;
                 break;
             }
         }
-        if (!replaced) prefabs.PushBack(object, A);
+        if (!replaced) prefabs.PushBack(obj, A);
 
 
         // Write back
@@ -328,9 +333,10 @@ namespace CrashoutsEngine {
         for (const auto& n : Prefab::Names())
             Prefab::Unregister(n);
 
+        // Re-load from JSON
         LoadPrefabsFromJson_RJ(path);
 
-      
+        // (Optional) log what’s available now
         for (const auto& n : Prefab::Names())
             LOGI(Core, std::string("Prefab available: ") + n);
     }
@@ -344,7 +350,7 @@ namespace CrashoutsEngine {
             e.AddComponent<TransformComponent>(ent, TransformComponent{});
     });
 
-    const char* JSON_PATH = "assets/prefabs/prefab.json"; 
+    const char* JSON_PATH = "assets/prefabs/prefab.json"; // <-- this is the canonical path
     LoadPrefabsFromJson_RJ(JSON_PATH);
 }
 

@@ -5,6 +5,7 @@
 #include "entitymanager.h"
 #include "sceneutils.h"
 #include "assetmanager.h"
+#include "entitymanager.h"
 #include "sceneasset.h"
 #include "glapp.h"
 #include "rendering.h"
@@ -22,7 +23,7 @@ static CrashoutsEngine::ECS* globalECS;
 static const char* sceneName = "ran";
 
 // Display/control state
-static int gDisplayMode = 1;                // 0:bg, 1:duck, 2:instanced, 3:imgui-only
+static int gDisplayMode = 0;                // 0:bg, 1:duck, 2:instanced, 3:imgui-only
 static bool gPrevGPressed = false;
 static bool gPrevMPressed = false;          // toggle instancing type (texture/plain)
 static bool gSpriteInitializedInScene = false;
@@ -125,7 +126,7 @@ static void ComputeWorldDimensions(float& worldWidth, float& worldHeight) {
 
 static void EnsureDuckInitialized() {
     if (gSpriteInitializedInScene) return;
-    Component::Sprite::m_sprite.init("../Descent/assets/images/ducky_2_spritesheet.png", 4, 6, 0.3f);
+    Component::Sprite::m_sprite.init("assets/images/ducky_2_spritesheet.png", 4, 6, 0.3f);
     Component::Sprite::m_sprite.addAnimationState("idle_normal", Component::AnimationState(0, 2, 0.22f, true));
     Component::Sprite::m_sprite.addAnimationState("walk_normal", Component::AnimationState(6, 6, 0.09f, true));
     Component::Sprite::m_sprite.addAnimationState("idle_bounce", Component::AnimationState(12, 4, 0.20f, true));
@@ -284,7 +285,7 @@ void LoadRan()
 void InitRan()
 {
     LOGI(Core, "Ran Initialized");
-    gDisplayMode = 1;
+    gDisplayMode = 0;
     gPrevGPressed = false;
     gPrevMPressed = false;
 
@@ -314,6 +315,16 @@ void UpdateRan()
         int prevMode = gDisplayMode;
         int nextMode = (gDisplayMode + 1) % 6;
         gDisplayMode = nextMode;
+
+        if (gDisplayMode != 3) {
+            const CrashoutsEngine::ECS::ComponentArray<CrashoutsEngine::NameComponent>& nameArray = 
+                globalECS->GetComponentArray<CrashoutsEngine::NameComponent>();
+            if (nameArray.indexToEntity.size() > 0) {
+                for (auto id : nameArray.indexToEntity) {
+                    globalECS->DestroyEntity(id);
+                }
+            }
+        }
 
         if (gDisplayMode == 1) {
             EnsureDuckInitialized();
@@ -514,8 +525,11 @@ void UpdateRan()
 void RenderRan()
 {
     // framebuffer is cleared every frame
+#if USE_IMGUI_EDITOR
+#else
     glClearColor(0.1f, 0.2f, 0.4f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+#endif
 
     switch (gDisplayMode) {
     case 0: // Background image
@@ -552,7 +566,7 @@ void RenderRan()
         break;
     case 3:
         std::cout << "ec" << std::endl;
-        Scene::RenderScene(*globalECS);
+        //Scene::RenderScene(*globalECS);
         break;
     case 4: { // Non-ECS instanced random triangles, rectangles, circles with texture toggle
         std::cout << "rand shap" << std::endl;

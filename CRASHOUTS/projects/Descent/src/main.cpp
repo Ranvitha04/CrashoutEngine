@@ -78,7 +78,7 @@ int WINAPI WinMain(
         FRC.FrameStart();
         glfwPollEvents();
         //variableDT = FRC.DT();
-        fixedDT = FRC.DT();
+        fixedDT = FRC.FixedDT();
 
         //int steps = FRC.StepCount();
         //for (int i = 0; i < steps; ++i) FixedUpdate(playerRigidBody, fixedDT);
