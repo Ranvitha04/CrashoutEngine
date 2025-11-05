@@ -128,6 +128,8 @@ namespace CrashoutsEngine {
             const char* const GUI_COMPONENT             = "gui";
             const char* const TEXT_INPUT_COMPONENT      = "textinput";
             const char* const UI_LAYOUT_COMPONENT       = "uilayout";
+            // POST PROCESSING ITEMS
+            const char* const PP_COMPONENT       = "postprocessing";
         }
 
         /*!
@@ -532,7 +534,7 @@ namespace CrashoutsEngine {
                     const rapidjson::Value& buttonValue = entityValue[Keys::BUTTON_COMPONENT];
 
                     // 1. Check Button State
-                    if (buttonValue.HasMember("buttonState") && buttonValue["buttonValue"].IsUint()) {
+                    if (buttonValue.HasMember("buttonState") && buttonValue["buttonState"].IsUint()) {
                         b.buttonState = static_cast<ButtonState>(buttonValue["buttonState"].GetUint());
                     }
 
@@ -659,6 +661,33 @@ namespace CrashoutsEngine {
                     if (uiLayoutValue.HasMember("uiLayout") && uiLayoutValue["uiLayout"].IsUint()) {
                         u.uiLayout = static_cast<UILayout>(uiLayoutValue["uiLayout"].GetUint());
                     }
+                }
+
+                // Check if Post Processing
+                if (entityValue.HasMember(Keys::PP_COMPONENT) && entityValue[Keys::PP_COMPONENT].IsObject()) {
+                    PPComponent& p = gECS.AddComponent<PPComponent>(newEntity);
+                    const rapidjson::Value& ppValue = entityValue[Keys::PP_COMPONENT];
+
+                    // 1. Check Brightness
+                    if (ppValue.HasMember("brightness") && ppValue["brightness"].IsFloat()) {
+                        p.brightness = ppValue["brightness"].GetFloat();
+                    }
+
+                    // 2. Check Saturation
+                    if (ppValue.HasMember("saturation") && ppValue["saturation"].IsFloat()) {
+                        p.saturation = ppValue["saturation"].GetFloat();
+                    }
+
+                    // 3. Check Contrast
+                    if (ppValue.HasMember("contrast") && ppValue["contrast"].IsFloat()) {
+                        p.contrast = ppValue["contrast"].GetFloat();
+                    }
+
+                    // 4. Check Active
+                    if (ppValue.HasMember("active") && ppValue["active"].IsBool()) {
+                        p.active = ppValue["active"].GetBool();
+                    }
+
                 }
 
             }
@@ -1023,7 +1052,7 @@ namespace CrashoutsEngine {
                 }
 
                 // =========================================================
-                // I. GuiComponent
+                // K. GuiComponent
                 // =========================================================
                 if (gECS.HasComponent<GuiComponent>(id)) {
                     const GuiComponent& guiComp = *gECS.GetComponent<GuiComponent>(id);
@@ -1036,7 +1065,7 @@ namespace CrashoutsEngine {
                 }
 
                 // =========================================================
-                // I. TextInputComponent
+                // L. TextInputComponent
                 // =========================================================
                 if (gECS.HasComponent<TextInputComponent>(id)) {
                     const TextInputComponent& textInputComp = 
@@ -1056,7 +1085,7 @@ namespace CrashoutsEngine {
                 }
 
                 // =========================================================
-                // I. UILayoutComponent
+                // M. UILayoutComponent
                 // =========================================================
                 if (gECS.HasComponent<UILayoutComponent>(id)) {
                     const UILayoutComponent& uiLayoutComp = *gECS.GetComponent<UILayoutComponent>(id);
@@ -1072,6 +1101,25 @@ namespace CrashoutsEngine {
                         static_cast<std::underlying_type_t<UILayout>>(uiLayoutComp.uiLayout), allocator);
 
                     entityValue.AddMember(rapidjson::StringRef(Keys::UI_LAYOUT_COMPONENT), uiLayoutValue, allocator);
+                }
+
+                // =========================================================
+                // N. PPComponent
+                // =========================================================
+                if (gECS.HasComponent<PPComponent>(id)) {
+                    const PPComponent& ppComp = *gECS.GetComponent<PPComponent>(id);
+                    rapidjson::Value ppValue(rapidjson::kObjectType);
+                    
+                    // 1.  brightness (float)
+                    ppValue.AddMember("brightness", ppComp.brightness, allocator);
+                    // 2.  contrast (float)
+                    ppValue.AddMember("contrast", ppComp.contrast, allocator);
+                    // 3.  saturation (float)
+                    ppValue.AddMember("saturation", ppComp.saturation, allocator);
+                    // 4.  active (bool)
+                    ppValue.AddMember("active", ppComp.active, allocator);
+
+                    entityValue.AddMember(rapidjson::StringRef(Keys::PP_COMPONENT), ppValue, allocator);
                 }
 
                 // Add the finished entity JSON object to the array

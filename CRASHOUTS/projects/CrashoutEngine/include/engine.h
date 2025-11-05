@@ -50,13 +50,15 @@ enum class EngineState { STOP, PLAY, PAUSE };
 extern EngineState engineState;
 
 // For FBO globals
-#if USE_IMGUI_EDITOR
 extern GLuint gameFboID;
+//extern GLuint gameTextureID;
+extern GLuint gameDepthBufferID;
 extern GLuint gameTextureColorBuffer;
 extern GLuint gameRboDepthStencil;
 extern int gameTextureWidth;     // Will be resized
 extern int gameTextureHeight;    // Will be resized
 
+#if USE_IMGUI_EDITOR
 extern bool gameWinHovered;
 #endif
 

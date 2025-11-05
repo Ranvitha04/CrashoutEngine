@@ -32,6 +32,7 @@ runtime-extensible and project-agnostic.
 #include "scriptcomponent.h"
 #include "cameracomponent.h"
 #include "physicsmanager.h"
+#include "ppcomponent.h"
 
 // FOR GAME GUI
 #include "buttoncomponent.h"
@@ -1156,6 +1157,57 @@ namespace {
     };
 
     /*!
+     @brief Adapter for editing Component::PPComponent.
+     @details Uses ImGui controls and writes values back to the ECS each frame.
+     */
+    struct PPAdapter : DebugReflection::IComponentAdapter {
+        const char* name() const override { return "Post-Process Component"; }
+        bool has(ECS& ecs, Entity e) const override {
+            return ecs.HasComponent<Component::PPComponent>(e);
+        }
+        void add(ECS& ecs, Entity e) override {
+            if (!has(ecs, e)) ecs.AddComponent<Component::PPComponent>(e);
+        }
+        void remove(ECS& ecs, Entity e) override {
+            if (has(ecs, e)) ecs.RemoveComponent<Component::PPComponent>(e);
+        }
+        void drawInspector(ECS& ecs, Entity e) override {
+            using namespace Component;
+            // 1. Get the PPComponent
+            auto* ppc = ecs.GetComponent<PPComponent>(e);
+
+            if (!ppc) return;
+
+            ImGui::SeparatorText("Post-Processing");
+
+            // 2. Add ImGui widgets for each component member
+
+            // Checkbox for the 'active' bool
+            ImGui::Checkbox("Active", &ppc->active);
+
+            // DragFloats for the color grading values
+            // We use a small speed (0.01f) and a sensible range.
+            // These values are 0.0 by default, representing "no change".
+
+            // Brightness: -1.0 (black) to 1.0 (double bright)
+            ImGui::DragFloat("Brightness", &ppc->brightness, 0.01f, -1.0f, 1.0f);
+
+            // Contrast: -1.0 (all gray) to 1.0 (double contrast)
+            ImGui::DragFloat("Contrast", &ppc->contrast, 0.01f, -1.0f, 1.0f);
+
+            // Saturation: -1.0 (grayscale) to 1.0 (double saturation)
+            ImGui::DragFloat("Saturation", &ppc->saturation, 0.01f, -1.0f, 1.0f);
+
+            // A reset button is very useful for these settings
+            if (ImGui::Button("Reset Values")) {
+                ppc->brightness = 0.0f;
+                ppc->contrast = 0.0f;
+                ppc->saturation = 0.0f;
+            }
+        }
+    };
+
+    /*!
     @brief Game-state provider installed at runtime (no hardcoded state list).
     @details Bridges GameStateManager to the Debug Menu; exposes current/previous/next and issues ChangeGameState() transitions from a reflected state list.
     */
@@ -1220,6 +1272,7 @@ namespace {
     static ScriptAdapter gScriptAdapter;
     static CameraAdapter gCameraAdapter;
     static GuiAdapter gGuiAdapter;
+    static PPAdapter gPPAdapter;
     static GameStateProvider gProvider;
     static BuiltinPhysicsProvider gBuiltinPhys;
 
@@ -1248,6 +1301,7 @@ extern "C" void RegisterBuiltinComponentAdapters() {
     ComponentRegistry::instance().registerAdapter(&gScriptAdapter);
     ComponentRegistry::instance().registerAdapter(&gCameraAdapter);
     ComponentRegistry::instance().registerAdapter(&gGuiAdapter);
+    ComponentRegistry::instance().registerAdapter(&gPPAdapter);
     DebugReflection::SetGameStateProvider(&gProvider);
     DebugReflection::PhysicsRegistry::instance().registerProvider(&gBuiltinPhys);
 
