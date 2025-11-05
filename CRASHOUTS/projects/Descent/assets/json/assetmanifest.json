@@ -118,87 +118,31 @@
         },
         {
             "name": "Chibi-1",
-            "path": "Character\\Light Mode\\Chibi-1.png"
+            "path": "Character\\New Artstyle\\Chibi-1.png"
         },
         {
             "name": "Chibi-2",
-            "path": "Character\\Light Mode\\Chibi-2.png"
+            "path": "Character\\New Artstyle\\Chibi-2.png"
         },
         {
             "name": "Chibi-3",
-            "path": "Character\\Light Mode\\Chibi-3.png"
+            "path": "Character\\New Artstyle\\Chibi-3.png"
         },
         {
             "name": "Chibi-4",
-            "path": "Character\\Light Mode\\Chibi-4.png"
-        },
-        {
-            "name": "Falling ",
-            "path": "Character\\Light Mode\\Falling .png"
-        },
-        {
-            "name": "Jump",
-            "path": "Character\\Light Mode\\Jump.png"
-        },
-        {
-            "name": "Falling",
-            "path": "Character\\Light Mode\\Left\\Falling.png"
-        },
-        {
-            "name": "Jump",
-            "path": "Character\\Light Mode\\Left\\Jump.png"
-        },
-        {
-            "name": "Run 1",
-            "path": "Character\\Light Mode\\Left\\Run 1.png"
-        },
-        {
-            "name": "Run 2",
-            "path": "Character\\Light Mode\\Left\\Run 2.png"
-        },
-        {
-            "name": "Run 3",
-            "path": "Character\\Light Mode\\Left\\Run 3.png"
-        },
-        {
-            "name": "Run 4",
-            "path": "Character\\Light Mode\\Left\\Run 4.png"
-        },
-        {
-            "name": "Switch State Idle ",
-            "path": "Character\\Light Mode\\Left\\Switch State Idle .png"
-        },
-        {
-            "name": "Switch State",
-            "path": "Character\\Light Mode\\Switch State.png"
-        },
-        {
-            "name": "Chibi-1",
-            "path": "Character\\Normal Mode\\Chibi-1.png"
-        },
-        {
-            "name": "Chibi-2",
-            "path": "Character\\Normal Mode\\Chibi-2.png"
-        },
-        {
-            "name": "Chibi-3",
-            "path": "Character\\Normal Mode\\Chibi-3.png"
-        },
-        {
-            "name": "Chibi-4",
-            "path": "Character\\Normal Mode\\Chibi-4.png"
+            "path": "Character\\New Artstyle\\Chibi-4.png"
         },
         {
             "name": "Chibi-5",
-            "path": "Character\\Normal Mode\\Chibi-5.png"
+            "path": "Character\\New Artstyle\\Chibi-5.png"
         },
         {
             "name": "Chibi-6",
-            "path": "Character\\Normal Mode\\Chibi-6.png"
+            "path": "Character\\New Artstyle\\Chibi-6.png"
         },
         {
             "name": "Chibi-7",
-            "path": "Character\\Normal Mode\\Chibi-7.png"
+            "path": "Character\\New Artstyle\\Chibi-7.png"
         },
         {
             "name": "Run Light",
@@ -213,12 +157,120 @@
             "path": "ducky_2_spritesheet.png"
         },
         {
+            "name": "Monsters(1)",
+            "path": "Monsters\\Monsters(1).png"
+        },
+        {
+            "name": "Monsters(2)",
+            "path": "Monsters\\Monsters(2).png"
+        },
+        {
+            "name": "Monsters(3)",
+            "path": "Monsters\\Monsters(3).png"
+        },
+        {
+            "name": "Monsters(4)",
+            "path": "Monsters\\Monsters(4).png"
+        },
+        {
+            "name": "Monsters(5)",
+            "path": "Monsters\\Monsters(5).png"
+        },
+        {
+            "name": "Monsters(6)",
+            "path": "Monsters\\Monsters(6).png"
+        },
+        {
+            "name": "Monsters(7)",
+            "path": "Monsters\\Monsters(7).png"
+        },
+        {
+            "name": "Monsters(8)",
+            "path": "Monsters\\Monsters(8).png"
+        },
+        {
+            "name": "Monsters(9)",
+            "path": "Monsters\\Monsters(9).png"
+        },
+        {
+            "name": "Monsters",
+            "path": "Monsters\\Monsters.png"
+        },
+        {
             "name": "Slime Idle",
             "path": "Monsters\\Slime Idle.png"
         },
         {
+            "name": "Sus Face Left",
+            "path": "Monsters\\Sus Face Left.png"
+        },
+        {
+            "name": "Sus Face Right",
+            "path": "Monsters\\Sus Face Right.png"
+        },
+        {
+            "name": "Darker Platform",
+            "path": "Tileset\\Darker Platform.png"
+        },
+        {
+            "name": "lava platform",
+            "path": "Tileset\\lava platform.png"
+        },
+        {
+            "name": "Platform",
+            "path": "Tileset\\Platform.png"
+        },
+        {
+            "name": "Rock",
+            "path": "Tileset\\Rock.png"
+        },
+        {
+            "name": "Background ",
+            "path": "UI\\Background .png"
+        },
+        {
+            "name": "1",
+            "path": "UI\\Energy Ball\\1.png"
+        },
+        {
+            "name": "2",
+            "path": "UI\\Energy Ball\\2.png"
+        },
+        {
+            "name": "3",
+            "path": "UI\\Energy Ball\\3.png"
+        },
+        {
+            "name": "Emp 1",
+            "path": "UI\\Energy Ball\\Emp 1.png"
+        },
+        {
+            "name": "Emp 2",
+            "path": "UI\\Energy Ball\\Emp 2.png"
+        },
+        {
+            "name": "Emp 3",
+            "path": "UI\\Energy Ball\\Emp 3.png"
+        },
+        {
+            "name": "Emp 4",
+            "path": "UI\\Energy Ball\\Emp 4.png"
+        },
+        {
+            "name": "Emp 5",
+            "path": "UI\\Energy Ball\\Emp 5.png"
+        },
+        {
+            "name": "Fill Area",
+            "path": "UI\\Fill Area.png"
+        },
+        {
             "name": "Menu",
             "path": "UI\\Menu.png"
+        },
+        {
+            "name": "Pressure Plate",
+            "path": "UI\\Pressure Plate.png"
         },
         {
             "name": "team logo",
@@ -249,6 +301,14 @@
         {
             "name": "amir",
             "path": "amir"
+        },
+        {
+            "name": "descentgame",
+            "path": "descentgame"
+        },
+        {
+            "name": "descentmenu",
+            "path": "descentmenu"
         },
         {
             "name": "rain",

@@ -534,7 +534,7 @@ namespace CrashoutsEngine {
                     const rapidjson::Value& buttonValue = entityValue[Keys::BUTTON_COMPONENT];
 
                     // 1. Check Button State
-                    if (buttonValue.HasMember("buttonState") && buttonValue["buttonValue"].IsUint()) {
+                    if (buttonValue.HasMember("buttonState") && buttonValue["buttonState"].IsUint()) {
                         b.buttonState = static_cast<ButtonState>(buttonValue["buttonState"].GetUint());
                     }
 

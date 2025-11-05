@@ -795,6 +795,7 @@ namespace UI { // --------------------------------------------------------------
     */
     static void RenderGameStatePanel(UIState& ui) {
         if (!ui.showGameState) return;
+
         ScopedWindow w("GameState", LockFlags(ui.lockLayout));
 
         auto* P = DebugReflection::GetGameStateProvider();
@@ -818,7 +819,7 @@ namespace UI { // --------------------------------------------------------------
         int col = 0;
         for (auto const& [label, id] : P->states()) {
             if (ImGui::Button(label)) P->changeTo(id);
-            if (++col % 4 != 0) ImGui::SameLine();
+            if (++col % 10 != 0) ImGui::SameLine();
         }
 
         ImGui::Separator();

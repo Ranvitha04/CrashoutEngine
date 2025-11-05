@@ -12,10 +12,14 @@ This file implements
 #include "textureasset.h"
 #include "assetmanager.h"
 #include "inputmanager.h"
+#include "frameratecontroller.h"
 #include "camera.h"
 #include "settings.h"
 #include "rendererconnector.h"
 #include "sceneutils.h"
+#include "engine.h"
+
+#define FONT_SCALE 0.05f
 
 namespace Scene {
     void RenderScene(CrashoutsEngine::ECS& globalECS) {
@@ -163,6 +167,70 @@ namespace Scene {
                     gTextRenderer->RenderCenteredText(tc->text, newOffset.x, newOffset.y, compensatedScale, tc->color, font, tc->isWorldSpace);
                 else
 					gTextRenderer->RenderText(tc->text, newOffset.x, newOffset.y, compensatedScale, tc->color, font, tc->isWorldSpace);
+            
+                TextInputComponent* input = globalECS.GetComponent<TextInputComponent>(id);
+                // Check if this entity is a focused text input
+                if (input) {
+
+                    // Only draw cursor if this component is focused
+                    if (input->isFocused && engineState != EngineState::STOP) {
+
+                        // 3. (Optional) Make it blink
+                        static float blinkTimer = 0.0f;
+                        blinkTimer += (float)FrameRateController::GetInstance().DT(); // Your frame delta time
+                        bool showCursor = fmod(blinkTimer, 1.0f) < 0.5f; // On for 0.5s, off for 0.5s
+
+                        if (showCursor) {
+                            // 4. Get the components again (or just reuse them)
+                            auto* text = globalECS.GetComponent<TextComponent>(id);
+                            auto* transform = globalECS.GetComponent<TransformComponent>(id);
+                            GLfloat startX = transform->position.x - (transform->size.x * 0.5f);
+                            // 5. Calculate the cursor's baseline position
+                            CEVec2 cursorPos = gTextRenderer.get()->GetCursorPosition(
+                                text->text,
+                                input->cursorPos,
+                                startX,
+                                transform->position.y,
+                                1.f, // Assuming scale is in x
+                                font
+                            );
+
+                            // 6. Define cursor properties
+                            GLfloat cursorThickness = .25f; // How wide the cursor is
+                            GLfloat cursorHeight = gTextRenderer.get()->GetLineHeight(font, transform->size.x);
+                            CEVec3 cursorColor = { .0f, .0f, .0f }; // White
+
+                            Assets::FontAsset* fontAsset = Assets::AssetManager::GetInstance().Get<Assets::FontAsset>(font);
+                            float ascender = 0.0f;
+                            if (fontAsset && fontAsset->characters.count('H')) {
+                                // Get 'H's bearing (distance from baseline to top of glyph) and scale it
+                                ascender = (float)fontAsset->characters.at('H').Bearing.y * (transform->size.x * FONT_SCALE);
+                            }
+                            else {
+                                // Fallback: approximate ascender as 75% of total height
+                                ascender = cursorHeight * 0.75f;
+                            }
+
+                            // 7. Define the start and end of the vertical cursor line
+                            // 'cursorPos.y' is the baseline (top of the line).
+                            // We'll draw it from the baseline down by the line height.
+                            // (Assuming Z-coordinate is 0 for 2D text)
+                            CEVec3 startPoint = { cursorPos.x, cursorPos.y + ascender * FONT_SCALE * .5f, 0.0f };
+                            CEVec3 endPoint = { cursorPos.x, cursorPos.y - cursorHeight * FONT_SCALE * .5f, 0.0f };
+
+                            // 8. Draw the cursor using your Shapes::CreateLine function
+                            Shapes::CreateLine(
+                                CEVec2{ 1.0f, 1.0f },  // transformSize (no scaling)
+                                startPoint,           // start
+                                endPoint,             // end
+                                cursorThickness,      // thickness
+                                0.0f,                 // rotation
+                                cursorColor           // color
+                            );
+                        }
+                    }
+                }
+
             }
         }
 
@@ -268,15 +336,25 @@ namespace Scene {
                 // --- A. Handle Character Typing ---
                 std::string typed = InputManager::GetTypedCharacters();
                 if (!typed.empty()) {
-                    if (text->text.length() + typed.length() <= textInput->maxCharacters) {
-                        // Insert the typed chars at the cursor position
+                    // Calculate how much space is left
+                    size_t currentLength = text->text.length();
+                    if (currentLength < textInput->maxCharacters) {
+                        size_t remainingSpace = textInput->maxCharacters - currentLength;
+
+                        // If the typed string is too long, truncate it
+                        if (typed.length() > remainingSpace) {
+                            typed = typed.substr(0, remainingSpace);
+                        }
+
+                        // Now, insert the (potentially truncated) string
                         text->text.insert(textInput->cursorPos, typed);
                         textInput->cursorPos += typed.length();
                     }
+                    // If currentLength is already at max, do nothing.
                 }
 
                 // --- B. Handle Backspace ---
-                if (InputManager::IsKeyPressed(GLFW_KEY_BACKSPACE)) {
+                if (InputManager::IsKeyTriggered(GLFW_KEY_BACKSPACE)) {
                     if (textInput->cursorPos > 0 && !text->text.empty()) {
                         // Erase one character before the cursor
                         text->text.erase(textInput->cursorPos - 1, 1);
@@ -285,7 +363,7 @@ namespace Scene {
                 }
 
                 // --- C. Handle Delete Key ---
-                if (InputManager::IsKeyPressed(GLFW_KEY_DELETE)) {
+                if (InputManager::IsKeyTriggered(GLFW_KEY_DELETE)) {
                     if (textInput->cursorPos < text->text.length()) {
                         // Erase one character at the cursor
                         text->text.erase(textInput->cursorPos, 1);
@@ -293,17 +371,17 @@ namespace Scene {
                 }
 
                 // --- D. Handle Arrow Keys ---
-                if (InputManager::IsKeyPressed(GLFW_KEY_LEFT)) {
+                if (InputManager::IsKeyTriggered(GLFW_KEY_LEFT)) {
                     if (textInput->cursorPos > 0) textInput->cursorPos--;
                 }
-                if (InputManager::IsKeyPressed(GLFW_KEY_RIGHT)) {
+                if (InputManager::IsKeyTriggered(GLFW_KEY_RIGHT)) {
                     if (textInput->cursorPos < text->text.length()) textInput->cursorPos++;
                 }
 
                 // --- E. Handle Enter Key for next line ---
                 if (InputManager::IsKeyTriggered(GLFW_KEY_ENTER)) {
                     text->text.insert(textInput->cursorPos, "\n");
-                    textInput->cursorPos += typed.length();
+                    textInput->cursorPos += 1; 
                 }
             }
         }

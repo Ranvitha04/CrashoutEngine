@@ -73,6 +73,12 @@ namespace CrashoutsEngine {
 		float Camera::GetZoom() const {
 			return zoom;
 		}
+		float Camera::GetFar() const {
+			return farPlane;
+		}
+		float Camera::GetNear() const {
+			return nearPlane;
+		}
 
 		void Camera::RecalculateViewMtx() {
 			viewMtx = glm::lookAt(

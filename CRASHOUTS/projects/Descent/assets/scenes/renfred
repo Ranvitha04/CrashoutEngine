@@ -1,60 +1,48 @@
 {
     "entities": [
         {
-            "name": "Test",
+            "name": "Text_Input_Label",
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 23.100000381469728
+                    "x": -52.51216506958008,
+                    "y": 2.917344331741333,
+                    "z": 0.0
                 },
                 "size": {
-                    "x": 24.399999618530275,
-                    "y": 19.100000381469728
-                }
-            },
-            "shape": {
-                "useTexture": false,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "",
-                "uvSize": {
                     "x": 1.0,
                     "y": 1.0
+                }
+            },
+            "text": {
+                "font": "Exo2-Regular",
+                "text": "Text Input Above",
+                "scale": 1.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
                 },
                 "color": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
+                    "x": 255.0,
+                    "y": 255.0,
+                    "z": 255.0
                 },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
+                "centered": true,
+                "isworldspace": true
             }
         },
         {
-            "name": "Test_Clone2",
+            "name": "Text_Button",
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 13.787508010864258,
-                    "y": -12.803887367248536,
-                    "z": -2.700000047683716
+                    "x": 54.78119659423828,
+                    "y": 9.400327682495118,
+                    "z": 0.0
                 },
                 "size": {
-                    "x": 24.399999618530275,
-                    "y": 19.100000381469728
+                    "x": 20.700000762939454,
+                    "y": 6.699999809265137
                 }
             },
             "shape": {
@@ -84,6 +72,387 @@
                     "y": 0.0,
                     "z": 0.0
                 }
+            },
+            "text": {
+                "font": "Exo2-Regular",
+                "text": "THIS IS A BUTTON",
+                "scale": 1.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "centered": true,
+                "isworldspace": true
+            },
+            "button": {
+                "buttonState": 0,
+                "shapeNormalColor": {
+                    "x": 255.0,
+                    "y": 255.0,
+                    "z": 255.0
+                },
+                "shapeHoveredColor": {
+                    "x": 100.0,
+                    "y": 100.0,
+                    "z": 100.0
+                },
+                "shapePressedColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "textNormalColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "textHoveredColor": {
+                    "x": 255.0,
+                    "y": 255.0,
+                    "z": 255.0
+                },
+                "textPressedColor": {
+                    "x": 100.0,
+                    "y": 100.0,
+                    "z": 100.0
+                }
+            },
+            "gui": {
+                "uiType": 7
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "uiLayout": 4
+            }
+        },
+        {
+            "name": "Text_Box_Label",
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -14.100508689880371,
+                    "y": 2.917344331741333,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "text": {
+                "font": "Exo2-Regular",
+                "text": "Text Box Above",
+                "scale": 1.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 255.0,
+                    "y": 255.0,
+                    "z": 255.0
+                },
+                "centered": true,
+                "isworldspace": true
+            }
+        },
+        {
+            "name": "Text_Box",
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -14.012102127075196,
+                    "y": 10.269637107849121,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 37.599998474121097,
+                    "y": 8.800000190734864
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 255.0,
+                    "y": 255.0,
+                    "z": 255.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "text": {
+                "font": "Silver",
+                "text": "This is a text box with a different font!",
+                "scale": 1.25,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "centered": true,
+                "isworldspace": true
+            },
+            "gui": {
+                "uiType": 3
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "uiLayout": 4
+            }
+        },
+        {
+            "name": "Button_Label",
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 24.473228454589845,
+                    "y": 2.917344331741333,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "text": {
+                "font": "Exo2-Regular",
+                "text": "Button Above",
+                "scale": 1.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 255.0,
+                    "y": 255.0,
+                    "z": 255.0
+                },
+                "centered": true,
+                "isworldspace": true
+            }
+        },
+        {
+            "name": "Text_Button_Label",
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 55.10533905029297,
+                    "y": 2.917344331741333,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "text": {
+                "font": "Exo2-Regular",
+                "text": "Text Button Above",
+                "scale": 1.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 255.0,
+                    "y": 255.0,
+                    "z": 255.0
+                },
+                "centered": true,
+                "isworldspace": true
+            }
+        },
+        {
+            "name": "Button",
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 24.473228454589845,
+                    "y": 9.400327682495118,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 20.700000762939454,
+                    "y": 6.699999809265137
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 255.0,
+                    "y": 255.0,
+                    "z": 255.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "button": {
+                "buttonState": 0,
+                "shapeNormalColor": {
+                    "x": 255.0,
+                    "y": 255.0,
+                    "z": 255.0
+                },
+                "shapeHoveredColor": {
+                    "x": 100.0,
+                    "y": 100.0,
+                    "z": 100.0
+                },
+                "shapePressedColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "textNormalColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "textHoveredColor": {
+                    "x": 255.0,
+                    "y": 255.0,
+                    "z": 255.0
+                },
+                "textPressedColor": {
+                    "x": 100.0,
+                    "y": 100.0,
+                    "z": 100.0
+                }
+            },
+            "gui": {
+                "uiType": 5
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "uiLayout": 4
+            }
+        },
+        {
+            "name": "Text_Input_Box",
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -52.02322006225586,
+                    "y": 23.642292022705079,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 28.100000381469728,
+                    "y": 35.79999923706055
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 255.0,
+                    "y": 255.0,
+                    "z": 255.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "text": {
+                "font": "Exo2-Regular",
+                "text": "broken text input\nbox aaaa",
+                "scale": 1.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "centered": true,
+                "isworldspace": true
+            },
+            "gui": {
+                "uiType": 11
+            },
+            "textinput": {
+                "isFocused": false,
+                "cursorPos": 26,
+                "maxCharacters": 255
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 15.5,
+                    "y": 2.0
+                },
+                "uiLayout": 9
             }
         }
     ]
