@@ -1,6 +1,6 @@
 #include "keyframe.h"
 #include <cassert>
-/*
+
 // ---- Your engine headers (adjust include paths/names if different)
 #include "entitymanager.h"  // ECS, components access
 #include "shapes.h"         // TransformComponent, ShapeComponent
@@ -157,4 +157,3 @@ namespace KeyframeUnity {
 
 
 } // namespace KeyframeUnity
-*/
