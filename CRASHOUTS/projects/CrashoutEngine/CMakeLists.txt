@@ -128,22 +128,9 @@ add_custom_target(ManagedScripts ALL
 add_custom_command(
     TARGET ManagedScripts POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_BINARY_DIR}/scripts"
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-            "${CMAKE_BINARY_DIR}/scripts/ManagedScripts.dll"
-            "$<TARGET_FILE_DIR:Descent>/scripts/ManagedScripts.dll"
-    COMMENT "Copying ManagedScripts.dll to runtime folder"
+    COMMENT "ManagedScripts.dll already built directly into runtime scripts folder"
 )
 
-# Copy the built DLL into the runtime scripts folder
-add_custom_command(
-    TARGET ManagedScripts POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E make_directory
-            "${CMAKE_BINARY_DIR}/scripts"
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-            "${CMAKE_BINARY_DIR}/scripts/ManagedScripts.dll"
-            "$<TARGET_FILE_DIR:Descent>/scripts/ManagedScripts.dll"
-    COMMENT "Copying ManagedScripts.dll to runtime folder"
-)
 
 
 set_property(TARGET ${PROJECT_NAME} PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "$<TARGET_FILE_DIR:${PROJECT_NAME}>")

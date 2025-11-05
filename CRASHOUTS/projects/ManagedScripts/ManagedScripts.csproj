@@ -1,12 +1,22 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-	<LangVersion>latest</LangVersion>
-    <OutputType>Library</OutputType>
-    <TargetFramework>net472</TargetFramework>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	<PropertyGroup>
+		<LangVersion>latest</LangVersion>
+		<OutputType>Library</OutputType>
+		<TargetFramework>net472</TargetFramework>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<AssemblyName>ManagedScripts_$(Configuration)_$([System.DateTime]::UtcNow.ToString("yyyyMMddHHmmss"))</AssemblyName>
+		<!-- Disable the "net472" subfolder -->
+		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+		<!--<AssemblyName>ManagedScripts</AssemblyName>-->
+		<Deterministic>false</Deterministic>
+	</PropertyGroup>
 
-    <!-- Force output directly into CrashoutEngine/scripts with no subfolder -->
-    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <OutputPath>..\..\build\x64-Debug\scripts\</OutputPath>
-  </PropertyGroup>
+	<!-- Per-configuration output paths -->
+	<PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+		<OutputPath>..\..\build\x64-Debug\scripts\</OutputPath>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)' == 'Release'">
+		<OutputPath>..\..\build\x64-Release\scripts\</OutputPath>
+	</PropertyGroup>
 </Project>
