@@ -7,6 +7,6 @@
 
     <!-- Force output directly into CrashoutEngine/scripts with no subfolder -->
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <OutputPath>..\CrashoutEngine\scripts\</OutputPath>
+    <OutputPath>..\..\build\x64-Debug\scripts\</OutputPath>
   </PropertyGroup>
 </Project>

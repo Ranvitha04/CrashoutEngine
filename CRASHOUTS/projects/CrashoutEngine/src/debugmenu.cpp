@@ -47,6 +47,10 @@
 
 #include "engine.h"
 
+#include <thread>
+#include <filesystem>
+
+
 using CrashoutsEngine::Audio::AudioSystem;
 // ImGui headers
 #include <imgui.h>
@@ -1096,10 +1100,29 @@ namespace UI { // --------------------------------------------------------------
                 engineState = EngineState::STOP;
             }
             ImGui::SameLine();
+            static bool isBuilding = false;
+
+            static std::atomic<bool> reloadPending = false;
+
             if (ImGui::Button("Reload Scripts"))
             {
-                MonoManager::ReloadScripts();
+                if (!isBuilding)
+                {
+                    isBuilding = true;
+                    std::thread([]() {
+                        int result = system("dotnet build \"../../projects/ManagedScripts/ManagedScripts.csproj\" -c Debug > buildlog.txt 2>&1");
+                        if (result == 0)
+                            reloadPending = true;  // signal reload
+                        isBuilding = false;
+                        }).detach();
+                }
             }
+            if (reloadPending)
+            {
+                reloadPending = false;
+                MonoManager::ReloadScripts();   // called on main thread
+            }
+
         }
 
         ImGui::End();
