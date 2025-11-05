@@ -4,10 +4,11 @@
 		<OutputType>Library</OutputType>
 		<TargetFramework>net472</TargetFramework>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-
+		<AssemblyName>ManagedScripts_$(Configuration)_$([System.DateTime]::UtcNow.ToString("yyyyMMddHHmmss"))</AssemblyName>
 		<!-- Disable the "net472" subfolder -->
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-		<AssemblyName>ManagedScripts</AssemblyName>
+		<!--<AssemblyName>ManagedScripts</AssemblyName>-->
+		<Deterministic>false</Deterministic>
 	</PropertyGroup>
 
 	<!-- Per-configuration output paths -->

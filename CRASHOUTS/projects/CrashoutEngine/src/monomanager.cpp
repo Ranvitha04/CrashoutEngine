@@ -10,7 +10,8 @@
 MonoDomain* MonoManager::s_Domain = nullptr;
 MonoAssembly* MonoManager::s_Assembly = nullptr;
 std::filesystem::file_time_type MonoManager::s_LastWriteTime{};
-std::string MonoManager::s_AssemblyPath = "scripts/ManagedScripts.dll";
+std::string MonoManager::s_AssemblyPath = "";
+
 
 void MonoManager::Init(const std::string& domainName)
 {
@@ -28,19 +29,50 @@ void MonoManager::Init(const std::string& domainName)
         std::cout << "[Mono] JIT initialized successfully.\n";
     }
 
-    // Track DLL timestamp for hot reload
-    s_LastWriteTime = std::filesystem::last_write_time(s_AssemblyPath);
-
+    // Only try to read timestamp if the DLL path exists
     namespace fs = std::filesystem;
-    if (fs::exists(s_AssemblyPath))
+    if (!s_AssemblyPath.empty() && fs::exists(s_AssemblyPath))
+    {
         s_LastWriteTime = fs::last_write_time(s_AssemblyPath);
+    }
     else
+    {
+        std::cerr << "[Mono][Info] Skipping timestamp tracking assembly not loaded yet.\n";
         s_LastWriteTime = fs::file_time_type::clock::now(); // placeholder
+    }
 }
 
 void MonoManager::LoadAssembly(const std::string& assemblyPath)
 {
-    std::string TempDllPath = CopyAssemblyToTemp(assemblyPath);
+    namespace fs = std::filesystem;
+
+    // Find the newest DLL in scripts/
+    fs::path latestDll;
+    auto latestTime = fs::file_time_type::min();
+
+    for (const auto& file : fs::directory_iterator("scripts"))
+    {
+        if (file.path().extension() == ".dll")
+        {
+            auto t = fs::last_write_time(file.path());
+            if (t > latestTime)
+            {
+                latestTime = t;
+                latestDll = file.path();
+            }
+        }
+    }
+
+    if (latestDll.empty())
+    {
+        std::cerr << "[Mono] No ManagedScripts DLL found in scripts/!\n";
+        return;
+    }
+
+    s_AssemblyPath = latestDll.string();
+
+    std::cout << "[Mono][Debug] Initial DLL detected: " << s_AssemblyPath << "\n";
+    std::string TempDllPath = CopyAssemblyToTemp(s_AssemblyPath);
 
 
     if (!std::filesystem::exists(TempDllPath))
@@ -66,78 +98,89 @@ void MonoManager::LoadAssembly(const std::string& assemblyPath)
 
     CrashoutsEngine::ScriptSystem::RegisterAllBindings();
 
-    // Track last modified time for hot reload
-    s_LastWriteTime = std::filesystem::last_write_time(assemblyPath);
+    if (!s_AssemblyPath.empty() && fs::exists(s_AssemblyPath))
+    {
+        s_LastWriteTime = fs::last_write_time(s_AssemblyPath);
+    }
+    else
+    {
+        std::cerr << "[Mono][Warning] Cannot track last write time bcos invalid path: " << s_AssemblyPath << "\n";
+    }
 }
 
 void MonoManager::ReloadScripts()
 {
-    std::cout << "[Mono] Reloading scripts..." << std::endl;
+    std::cout << "[Mono] Reloading scripts...\n";
 
     CrashoutsEngine::ScriptSystem::DestroyAll();
 
-    // Remove the old assembly reference
     s_Assembly = nullptr;
+
+    namespace fs = std::filesystem;
 
     try
     {
-        namespace fs = std::filesystem;
+        // find newest DLL in scripts folder
+        fs::path latestDll;
+        auto latestTime = fs::file_time_type::min();
+        for (const auto& file : fs::directory_iterator("scripts"))
+        {
+            if (file.path().extension() == ".dll")
+            {
+                auto t = fs::last_write_time(file.path());
+                if (t > latestTime)
+                {
+                    latestTime = t;
+                    latestDll = file.path();
+                }
+            }
+        }
 
-        // Prepare cache folder
-        fs::path src = "scripts/ManagedScripts.dll";
+        if (latestDll.empty())
+        {
+            std::cerr << "[Mono] No ManagedScripts DLL found in scripts/!\n";
+            return;
+        }
+
+        std::cout << "[Mono][Debug] Latest DLL detected: " << latestDll << "\n";
+
+        // prepare cache folder
         fs::path dstDir = "scripts/_cache";
         fs::create_directories(dstDir);
 
-        // Create a unique filename to avoid file-lock errors
+        // generate a unique temp filename
         auto now = std::chrono::system_clock::now();
-        auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()).count();
-        std::string uniqueName = "ManagedScripts_reload_" + std::to_string(ms) + ".dll";
+        auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(
+            now.time_since_epoch()).count();
+        fs::path dst = dstDir / ("ManagedScripts_reload_" + std::to_string(ms) + ".dll");
 
-        fs::path dst = dstDir / uniqueName;
+        // copy newest DLL into cache
+        fs::copy_file(latestDll, dst, fs::copy_options::overwrite_existing);
 
-        // Copy source DLL to a unique cache DLL
-        fs::copy_file(src, dst, fs::copy_options::overwrite_existing);
-
-		//temp debug output
-        std::cout << "[Mono][Debug] Attempting to load assembly from: " << dst.string() << std::endl;
-
-        // Load from this unique file
+        // load that DLL
+        std::cout << "[Mono][Debug] Attempting to load assembly from: " << dst << "\n";
         s_Assembly = mono_domain_assembly_open(s_Domain, dst.string().c_str());
-        /*
-    	if (!s_Assembly)
+        if (!s_Assembly)
         {
             std::cerr << "[Mono] Reload failed to open assembly!\n";
             return;
-        }*/
-        if (!s_Assembly)
-        {
-            std::cerr << "[Mono][Debug] Failed to load assembly: " << dst.string() << std::endl;
-            return;
         }
-        else
-        {
-            MonoImage* image = mono_assembly_get_image(s_Assembly);
-            std::cout << "[Mono][Debug] Assembly loaded from: " << dst.string() << std::endl;
-            std::cout << "[Mono][Debug] MonoImage pointer: " << image << std::endl;
-        }
-    }
-    catch (const std::filesystem::filesystem_error& e)
-    {
-        std::cerr << "[Mono] File copy failed: " << e.what() << '\n';
-        return;
-    }
 
-    if (!s_Assembly)
+        MonoImage* image = mono_assembly_get_image(s_Assembly);
+        std::cout << "[Mono][Debug] Assembly loaded successfully. MonoImage: " << image << "\n";
+    }
+    catch (const fs::filesystem_error& e)
     {
-        std::cerr << "[Mono] Reload failed to open assembly!\n";
+        std::cerr << "[Mono] File operation failed: " << e.what() << "\n";
         return;
     }
 
     CrashoutsEngine::ScriptSystem::RegisterAllBindings();
     CrashoutsEngine::ScriptSystem::ReloadAll();
 
-    std::cout << "[Mono] Hot reload completed\n";
+    std::cout << "[Mono] Hot reload completed.\n";
 }
+
 
 void MonoManager::CheckHotReload()
 {
@@ -165,11 +208,13 @@ void MonoManager::CheckHotReload()
 
 void MonoManager::Shutdown()
 {
+    /*
     if (s_Domain)
     {
         mono_jit_cleanup(s_Domain);
         std::cout << "[Mono] Runtime cleaned up\n";
     }
+	*/
 
 }
 
