@@ -9,21 +9,20 @@
              and Collider (AABB by default).
 */
 
+#include <memory>
+#include <string>
+#include <fstream>
 #include "prefab_init.h"
 #include "prefab.h"
 #include "entitymanager.h"
 #include "collisionmanager.h"
-#include <memory>
-#include <string>
-#include <fstream>
-
-
 #include "rapidjson/document.h"
 #include "rapidjson/istreamwrapper.h"
 #include "rapidjson/ostreamwrapper.h"
 #include "rapidjson/prettywriter.h"
 #include "rapidjson/stringbuffer.h"
-
+#include "textcomponent.h"
+#include "textrenderer.h"  
 using namespace CrashoutsEngine;
 using namespace Component;
 
@@ -112,7 +111,7 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path)
             if (!prefabs.HasMember("rigidbody") || !prefabs["rigidbody"].IsObject()) { LOGE(Core, std::string("Box '") + name + "' missing rigidbody"); continue; }
             const auto& rigidbodyJson = prefabs["rigidbody"];
             float mass = (rigidbodyJson.HasMember("mass") && rigidbodyJson["mass"].IsNumber()) ? (float)rigidbodyJson["mass"].GetDouble() : 0.f;
-            float rest = (rigidbodyJson.HasMember("restitution") && rigidbodyJson["restitution"].IsNumber()) ? (float)rigidbodyJson["restitution"].GetDouble() : 0.f;
+            float restitution = (rigidbodyJson.HasMember("restitution") && rigidbodyJson["restitution"].IsNumber()) ? (float)rigidbodyJson["restitution"].GetDouble() : 0.f;
 
         
             bool hasColliderFlags = false; bool isTrigger = false; unsigned category = 0; unsigned mask = 0;
@@ -122,6 +121,54 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path)
                 if (coliderJson.HasMember("isTrigger") && coliderJson["isTrigger"].IsBool()) isTrigger = coliderJson["isTrigger"].GetBool();
                 if (coliderJson.HasMember("category") && coliderJson["category"].IsUint()) category = coliderJson["category"].GetUint();
                 if (coliderJson.HasMember("mask") && coliderJson["mask"].IsUint())     mask = coliderJson["mask"].GetUint();
+            }
+            // ---------- TextComponent values parsed from JSON (outside the lambda) ----------
+            bool hasTextComponent = false;
+
+            std::string jsonFont = "Exo2-Regular";
+            std::string jsonText = "TEST";
+            float jsonScale = 1.0f;
+            CEVec2 jsonOffset{ 0.0f, 0.0f };
+            CEVec3 jsonColor{ 255.0f, 255.0f, 255.0f };
+            bool jsonCentered = true;
+            bool jsonIsWorldSpace = true;
+
+            if (prefabs.HasMember("text") && prefabs["text"].IsObject()) {
+                const auto& textJson = prefabs["text"];
+                hasTextComponent = true;
+
+                if (textJson.HasMember("font") && textJson["font"].IsString())
+                    jsonFont = textJson["font"].GetString();
+
+                if (textJson.HasMember("text") && textJson["text"].IsString())
+                    jsonText = textJson["text"].GetString();
+
+                if (textJson.HasMember("scale") && textJson["scale"].IsNumber())
+                    jsonScale = static_cast<float>(textJson["scale"].GetDouble());
+
+                if (textJson.HasMember("offset") && textJson["offset"].IsObject()) {
+                    const auto& off = textJson["offset"];
+                    if (off.HasMember("x") && off["x"].IsNumber())
+                        jsonOffset.x = static_cast<float>(off["x"].GetDouble());
+                    if (off.HasMember("y") && off["y"].IsNumber())
+                        jsonOffset.y = static_cast<float>(off["y"].GetDouble());
+                }
+
+                if (textJson.HasMember("color") && textJson["color"].IsObject()) {
+                    const auto& col = textJson["color"];
+                    if (col.HasMember("r") && col["r"].IsNumber())
+                        jsonColor.x = static_cast<float>(col["r"].GetDouble());
+                    if (col.HasMember("g") && col["g"].IsNumber())
+                        jsonColor.y = static_cast<float>(col["g"].GetDouble());
+                    if (col.HasMember("b") && col["b"].IsNumber())
+                        jsonColor.z = static_cast<float>(col["b"].GetDouble());
+                }
+
+                if (textJson.HasMember("centered") && textJson["centered"].IsBool())
+                    jsonCentered = textJson["centered"].GetBool();
+
+                if (textJson.HasMember("isWorldSpace") && textJson["isWorldSpace"].IsBool())
+                    jsonIsWorldSpace = textJson["isWorldSpace"].GetBool();
             }
 
 
@@ -145,8 +192,8 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path)
                 e.AddComponent<ShapeComponent>(entitty, shapeComp);
              
                 
-                // RigidBody (no velocity field on your component)
-                e.AddComponent<RigidBodyComponent>(entitty, CEVec3{ 0,0,0 }, mass, rest);
+                // RigidBody 
+                e.AddComponent<RigidBodyComponent>(entitty, CEVec3{ 0,0,0 }, mass, restitution);
 
                 // Collider (AABB for robustness)
                 {
@@ -154,7 +201,56 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path)
                     e.AddComponent<ColliderComponent>(entitty, ColliderComponent{ std::move(aabb) });
                 
                 }
+                // TextComponent
+                if (hasTextComponent) {
+                    TextComponent textComponent{};
+                    textComponent.font = jsonFont;
+                    textComponent.text = jsonText;
+                    textComponent.scale = jsonScale;
+                    textComponent.offset = jsonOffset;
+                    textComponent.color = jsonColor;
+                    textComponent.centered = jsonCentered;
+                    textComponent.isWorldSpace = jsonIsWorldSpace;
+
+                    e.AddComponent<TextComponent>(entitty, textComponent);
+                }
                 });
+          
+        
+            // Keep placeholders that always compile. 
+            std::string textContentFromJson;
+            float textPointSizeFromJson = 16.0f;          
+            CEVec3 textColorFromJson{ 255.0f, 255.0f, 255.0f };
+            std::string textFontNameFromJson;
+            bool textIsWorldSpaceFromJson = false;
+
+            if (prefabs.HasMember("text") && prefabs["text"].IsObject()) {
+                const auto& textJson = prefabs["text"];
+                hasTextComponent = true;
+
+                if (textJson.HasMember("content") && textJson["content"].IsString())
+                    textContentFromJson = textJson["content"].GetString();
+
+                if (textJson.HasMember("pointSize") && textJson["pointSize"].IsNumber())
+                    textPointSizeFromJson = static_cast<float>(textJson["pointSize"].GetDouble());
+
+                if (textJson.HasMember("color") && textJson["color"].IsObject()) {
+                    const auto& colorJson = textJson["color"];
+                    if (colorJson.HasMember("r") && colorJson["r"].IsNumber())
+                        textColorFromJson.x = static_cast<float>(colorJson["r"].GetDouble());
+                    if (colorJson.HasMember("g") && colorJson["g"].IsNumber())
+                        textColorFromJson.y = static_cast<float>(colorJson["g"].GetDouble());
+                    if (colorJson.HasMember("b") && colorJson["b"].IsNumber())
+                        textColorFromJson.z = static_cast<float>(colorJson["b"].GetDouble());
+                }
+
+                if (textJson.HasMember("fontName") && textJson["fontName"].IsString())
+                    textFontNameFromJson = textJson["fontName"].GetString();
+
+                if (textJson.HasMember("isWorldSpace") && textJson["isWorldSpace"].IsBool())
+                    textIsWorldSpaceFromJson = textJson["isWorldSpace"].GetBool();
+            }
+
 
             LOGI(Core, std::string("Registered prefab: ") + name);
         }
@@ -294,6 +390,8 @@ namespace CrashoutsEngine {
             rigidJson.AddMember("restitution", rigidbody->getCoeff(), allocate);  
             obj.AddMember("rigidbody", rigidJson, allocate);
         }
+      
+
 
 
         // ---- helpers for name matching (add these) ----
