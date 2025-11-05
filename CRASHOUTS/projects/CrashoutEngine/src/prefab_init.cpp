@@ -38,13 +38,13 @@ MakeCenteredAABB3(const CEVec3& center, float width, float height)
 
 static bool LoadPrefabsFromJson_RJ(const std::string& path)
 {
-    std::ifstream ifs(path);
-    if (!ifs) {
+    std::ifstream inputFile(path);
+    if (!inputFile) {
         LOGE(Core, std::string("Cannot open ") + path);
         return false;
     }
 
-    rapidjson::IStreamWrapper isw(ifs);
+    rapidjson::IStreamWrapper isw(inputFile);
     rapidjson::Document doc;
     doc.ParseStream(isw);
 
@@ -72,40 +72,40 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path)
         if (type == "Box") {
             // ---- shape ----
             if (!prefabs.HasMember("shape") || !prefabs["shape"].IsObject()) { LOGE(Core, std::string("Box '") + name + "' missing shape"); continue; }
-            const auto& shj = prefabs["shape"];
-            float width = (shj.HasMember("width") && shj["width"].IsNumber()) ? (float)shj["width"].GetDouble() : 1.0f;
-            float height = (shj.HasMember("height") && shj["height"].IsNumber()) ? (float)shj["height"].GetDouble() : 1.0f;
+            const auto& shapeJson = prefabs["shape"];
+            float width = (shapeJson.HasMember("width") && shapeJson["width"].IsNumber()) ? (float)shapeJson["width"].GetDouble() : 1.0f;
+            float height = (shapeJson.HasMember("height") && shapeJson["height"].IsNumber()) ? (float)shapeJson["height"].GetDouble() : 1.0f;
 
-            int   typeInt = (shj.HasMember("type") && shj["type"].IsInt()) ? shj["type"].GetInt() : (int)ShapeType::Rectangle;
+            int   typeInt = (shapeJson.HasMember("type") && shapeJson["type"].IsInt()) ? shapeJson["type"].GetInt() : (int)ShapeType::Rectangle;
 
             CEVec3 color{ 0,0,0 };
-            if (shj.HasMember("color") && shj["color"].IsObject()) {
-                const auto& cj = shj["color"];
-                color.x = (cj.HasMember("r") && cj["r"].IsNumber()) ? (float)cj["r"].GetDouble() : 0.f;
-                color.y = (cj.HasMember("g") && cj["g"].IsNumber()) ? (float)cj["g"].GetDouble() : 0.f;
-                color.z = (cj.HasMember("b") && cj["b"].IsNumber()) ? (float)cj["b"].GetDouble() : 0.f;
+            if (shapeJson.HasMember("color") && shapeJson["color"].IsObject()) {
+                const auto& colorJson = shapeJson["color"];
+                color.x = (colorJson.HasMember("r") && colorJson["r"].IsNumber()) ? (float)colorJson["r"].GetDouble() : 0.f;
+                color.y = (colorJson.HasMember("g") && colorJson["g"].IsNumber()) ? (float)colorJson["g"].GetDouble() : 0.f;
+                color.z = (colorJson.HasMember("b") && colorJson["b"].IsNumber()) ? (float)colorJson["b"].GetDouble() : 0.f;
             }
          
           
 
-            const bool enableTexture = (shj.HasMember("enableTexture") && shj["enableTexture"].IsBool()) ? shj["enableTexture"].GetBool() : false;
+            const bool enableTexture = (shapeJson.HasMember("enableTexture") && shapeJson["enableTexture"].IsBool()) ? shapeJson["enableTexture"].GetBool() : false;
             std::string textureName;
-            if (enableTexture && shj.HasMember("textureName") && shj["textureName"].IsString())
-                textureName = shj["textureName"].GetString();
+            if (enableTexture && shapeJson.HasMember("textureName") && shapeJson["textureName"].IsString())
+                textureName = shapeJson["textureName"].GetString();
             if (!prefabs.HasMember("transform") || !prefabs["transform"].IsObject()) { LOGE(Core, std::string("Box '") + name + "' missing transform"); continue; }
             const auto& transformJson = prefabs["transform"];
             if (!transformJson.HasMember("position") || !transformJson["position"].IsObject()) { LOGE(Core, std::string("Box '") + name + "' missing position"); continue; }
-            const auto& pos = transformJson["position"];
-            float posX = (pos.HasMember("x") && pos["x"].IsNumber()) ? (float)pos["x"].GetDouble() : 0.f;
-            float posY = (pos.HasMember("y") && pos["y"].IsNumber()) ? (float)pos["y"].GetDouble() : 0.f;
-            float posZ = (pos.HasMember("z") && pos["z"].IsNumber()) ? (float)pos["z"].GetDouble() : 0.f;
+            const auto& posJ = transformJson["position"];
+            float posX = (posJ.HasMember("x") && posJ["x"].IsNumber()) ? (float)posJ["x"].GetDouble() : 0.f;
+            float posY = (posJ.HasMember("y") && posJ["y"].IsNumber()) ? (float)posJ["y"].GetDouble() : 0.f;
+            float posZ = (posJ.HasMember("z") && posJ["z"].IsNumber()) ? (float)posJ["z"].GetDouble() : 0.f;
 
             float rotation = (transformJson.HasMember("rotation") && transformJson["rotation"].IsNumber()) ? (float)transformJson["rotation"].GetDouble() : 0.f;
             CEVec2 size{ 1.f,1.f };
             if (transformJson.HasMember("size") && transformJson["size"].IsObject()) {
-                const auto& sj = transformJson["size"];
-                size.x = (sj.HasMember("x") && sj["x"].IsNumber()) ? (float)sj["x"].GetDouble() : 1.f;
-                size.y = (sj.HasMember("y") && sj["y"].IsNumber()) ? (float)sj["y"].GetDouble() : 1.f;
+                const auto& sizeJ = transformJson["size"];
+                size.x = (sizeJ.HasMember("x") && sizeJ["x"].IsNumber()) ? (float)sizeJ["x"].GetDouble() : 1.f;
+                size.y = (sizeJ.HasMember("y") && sizeJ["y"].IsNumber()) ? (float)sizeJ["y"].GetDouble() : 1.f;
             }
 
             // ---- rigidbody ----
@@ -196,7 +196,7 @@ namespace CrashoutsEngine {
                 doc.ParseStream(isw);
                 if (doc.HasParseError() || !doc.IsObject()) {
                     LOGE(Core, (std::string("Save aborted: JSON parse error in ") + path).c_str());
-                    return false; // IMPORTANT: don't clobber the existing file
+                    return false; 
                 }
             }
             else {
@@ -230,16 +230,16 @@ namespace CrashoutsEngine {
             pos.AddMember("y", entityTransform->position.y, allocate);
             pos.AddMember("z", entityTransform->position.z, allocate);
 
-            Value tr(kObjectType);
-            tr.AddMember("position", pos, allocate);
-            tr.AddMember("rotation", entityTransform->rotation, allocate);
+            Value transformObj(kObjectType);
+            transformObj.AddMember("position", pos, allocate);
+            transformObj.AddMember("rotation", entityTransform->rotation, allocate);
 
             Value sizeJ(kObjectType);
             sizeJ.AddMember("x", entityTransform->size.x, allocate);
             sizeJ.AddMember("y", entityTransform->size.y, allocate);
-            tr.AddMember("size", sizeJ, allocate);
+            transformObj.AddMember("size", sizeJ, allocate);
 
-            obj.AddMember("transform", tr, allocate);
+            obj.AddMember("transform", transformObj, allocate);
         }
 
         // shape
@@ -256,7 +256,6 @@ namespace CrashoutsEngine {
                 case ShapeType::Circle:    return "Circle";
                 case ShapeType::Triangle:  return "Triangle";
                 case ShapeType::Line:      return "Line";
-                    // add the rest of your enum values here
                 default:                   return "Unknown";
                 }
                 };
@@ -326,17 +325,17 @@ namespace CrashoutsEngine {
 
 
         // Write back
-        rapidjson::StringBuffer sb;
-        rapidjson::PrettyWriter<rapidjson::StringBuffer> wr(sb);
-        wr.SetMaxDecimalPlaces(6);
-        doc.Accept(wr);
+        rapidjson::StringBuffer stringBuffer;
+        rapidjson::PrettyWriter<rapidjson::StringBuffer> write(stringBuffer);
+        write.SetMaxDecimalPlaces(6);
+        doc.Accept(write);
 
         std::ofstream out(path, std::ios::binary | std::ios::trunc);
         if (!out) {
             LOGE(Core, std::string("Cannot open for writing: ") + path);
             return false;
         }
-        out.write(sb.GetString(), static_cast<std::streamsize>(sb.GetSize()));
+        out.write(stringBuffer.GetString(), static_cast<std::streamsize>(stringBuffer.GetSize()));
 
         LOGI(Core, std::string(replaced ? "Updated prefab: " : "Saved new prefab: ") + newName);
         return true;
