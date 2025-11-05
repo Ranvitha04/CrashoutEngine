@@ -44,6 +44,7 @@
 #include "hierarchy.h"
 #include "hierarchy_components.h"
 #include "monomanager.h"
+#include "ppmanager.h"
 
 #include "engine.h"
 
@@ -1060,7 +1061,6 @@ namespace UI { // --------------------------------------------------------------
         ImGui::EndMenuBar();
     }
 
-
     /*!
      @brief Renders the Scene control bar on top of game viewport
     */
@@ -1195,6 +1195,10 @@ namespace UI { // --------------------------------------------------------------
                     glBindRenderbuffer(GL_RENDERBUFFER, gameRboDepthStencil);
                     glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, gameTextureWidth, gameTextureHeight);
 
+                    // Resize Texture 2
+                    glBindTexture(GL_TEXTURE_2D, CrashoutsEngine::PostProcessing::ppTextureID);
+                    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, gameTextureWidth, gameTextureHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+
                     char logBuffer[256];
                     // Format the string into the buffer
                     std::snprintf(logBuffer, sizeof(logBuffer),
@@ -1212,10 +1216,11 @@ namespace UI { // --------------------------------------------------------------
             // GetCursorScreenPos() gives the top-left corner of the content area.
             ImVec2 screenPos = ImGui::GetCursorScreenPos();
             ImGui::SetCursorScreenPos(ImVec2(screenPos.x + paddingX, screenPos.y + paddingY));
-            
+             
             // Display the texture within the ImGui window
             // UV flip (0,1) to (1,0) since OpenGL textures are often upside-down
-            ImGui::Image((void*)(intptr_t)gameTextureColorBuffer, ImVec2((float)finalTextureWidth, (float)finalTextureHeight), ImVec2(0, 1), ImVec2(1, 0));
+            ImGui::Image((void*)(intptr_t)CrashoutsEngine::PostProcessing::ppTextureID, 
+                ImVec2((float)finalTextureWidth, (float)finalTextureHeight), ImVec2(0, 1), ImVec2(1, 0));
             
             // Let the Gizmo recieve hover/drag over image
             ImGui::SetItemAllowOverlap();

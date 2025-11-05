@@ -261,16 +261,16 @@ as black.
 */
 void GLApp::draw() {
 
-    // Calculate offsets and sizes (can be done here or cached if static)
-    GLsizei position_attribute_size = sizeof(glm::vec3);
-    GLsizei position_data_size = position_attribute_size * 4;
-    GLsizei color_data_offset = position_data_size;
-    GLsizei color_attribute_size = sizeof(glm::vec3);
-    GLsizei color_data_size = color_attribute_size * static_cast<GLsizei>(clr_vtx.size());
-
-    // Update the color data in the VBO right before drawing
-    glNamedBufferSubData(model.vbo_hdl, color_data_offset,
-        color_data_size, clr_vtx.data());
+    //// Calculate offsets and sizes (can be done here or cached if static)
+    //GLsizei position_attribute_size = sizeof(glm::vec3);
+    //GLsizei position_data_size = position_attribute_size * 4;
+    //GLsizei color_data_offset = position_data_size;
+    //GLsizei color_attribute_size = sizeof(glm::vec3);
+    //GLsizei color_data_size = color_attribute_size * static_cast<GLsizei>(clr_vtx.size());
+    //
+    //// Update the color data in the VBO right before drawing
+    //glNamedBufferSubData(model.vbo_hdl, color_data_offset,
+    //    color_data_size, clr_vtx.data());
 }
 
 /* _________________________________________________________________________ */

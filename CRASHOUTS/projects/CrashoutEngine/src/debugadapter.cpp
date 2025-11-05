@@ -1161,7 +1161,7 @@ namespace {
      @details Uses ImGui controls and writes values back to the ECS each frame.
      */
     struct PPAdapter : DebugReflection::IComponentAdapter {
-        const char* name() const override { return "PPComponent"; }
+        const char* name() const override { return "Post-Process Component"; }
         bool has(ECS& ecs, Entity e) const override {
             return ecs.HasComponent<Component::PPComponent>(e);
         }

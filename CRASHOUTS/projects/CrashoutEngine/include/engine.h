@@ -51,7 +51,7 @@ extern EngineState engineState;
 
 // For FBO globals
 extern GLuint gameFboID;
-extern GLuint gameTextureID;
+//extern GLuint gameTextureID;
 extern GLuint gameDepthBufferID;
 extern GLuint gameTextureColorBuffer;
 extern GLuint gameRboDepthStencil;

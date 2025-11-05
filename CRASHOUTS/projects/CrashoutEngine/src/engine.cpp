@@ -53,7 +53,7 @@ const float moveSpeed = 6.7f;
 extern "C" void RegisterBuiltinComponentAdapters();
 
 GLuint gameFboID = 0;
-GLuint gameTextureID = 0;
+//GLuint gameTextureID = 0;
 GLuint gameDepthBufferID = 0;
 GLuint gameTextureColorBuffer = 0;
 GLuint gameRboDepthStencil = 0;
@@ -148,6 +148,8 @@ void Init() {
     engineState = EngineState::STOP;
 
     glEnable(GL_DEPTH_TEST);
+
+    CrashoutsEngine::PostProcessing::InitPP();
 }
 
 /*  _________________________________________________________________________ */
@@ -204,17 +206,6 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 #if USE_IMGUI_EDITOR
-    // APPLY POST_PROCESSING TO FBO 
-
-    // Bind FBO to get post-processed image
-    glBindFramebuffer(GL_FRAMEBUFFER, CrashoutsEngine::PostProcessing::ppFboID);
-    glViewport(0, 0, gameTextureWidth, gameTextureHeight);
-    glClear(GL_COLOR_BUFFER_BIT);
-    glDisable(GL_DEPTH_TEST);
-
-    CrashoutsEngine::PostProcessing::RenderPP(gameTextureID);
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
     // 1. Start the Dear ImGui frame
     UI::BeginFrame();
 
@@ -243,13 +234,14 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
     ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
 
     // Render ImGui UI on top of the scene
+    glBindFramebuffer(GL_FRAMEBUFFER, gameFboID);
     {
         FrameProfiler::Scoped s2(PerformanceSystem::Get().GetProfiler(), "UI");
         UI::Render(gProfiler, physicsSystem, globalSelectedEntity, uiState);
     }
     PerformanceSystem::Get().RenderUI();
-
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    //glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     ImGui::End(); // End the Dockspace window begun earlier
 
@@ -266,9 +258,19 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
     glClear(GL_COLOR_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
 
-    CrashoutsEngine::PostProcessing::RenderPP(gameTextureID);
+    CrashoutsEngine::PostProcessing::RenderPP(gameTextureColorBuffer);
 
 #endif
+    // APPLY POST_PROCESSING TO FBO 
+
+    // Bind FBO to get post-processed image
+    glBindFramebuffer(GL_FRAMEBUFFER, CrashoutsEngine::PostProcessing::ppFboID);
+    glViewport(0, 0, gameTextureWidth, gameTextureHeight);
+    glClear(GL_COLOR_BUFFER_BIT);
+    glDisable(GL_DEPTH_TEST);
+
+    CrashoutsEngine::PostProcessing::RenderPP(gameTextureColorBuffer);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     // render scene
     // GLApp::draw();
@@ -350,7 +352,7 @@ void Update(Component::RigidBodyComponent& playerRigidBody, double const& dt) {
         // Process Editor Camera Input
 #if USE_IMGUI_EDITOR
         if(gameWinHovered) CrashoutsEngine::RenderCamera::EditorCameraInput();
-        CrashoutsEngine::RenderCamera::engineCamera.UpdateMatrices(Settings::GetScreenWidth(), Settings::GetScreenHeight());
+        CrashoutsEngine::RenderCamera::engineCamera.UpdateMatrices(gameTextureWidth, gameTextureHeight);
 #else
         CrashoutsEngine::RenderCamera::engineCamera.UpdateMatrices(GLApp::width, GLApp::height);
 #endif
@@ -391,6 +393,8 @@ void Update(Component::RigidBodyComponent& playerRigidBody, double const& dt) {
 Release resources
 */
 void CleanUp() {
+    CrashoutsEngine::PostProcessing::ShutdownPP();
+
     UI::Shutdown();
     DebugReflection::ComponentRegistry::instance().clear();
     DebugReflection::PanelRegistry::instance().clear();

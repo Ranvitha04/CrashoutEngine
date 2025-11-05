@@ -1,7 +1,7 @@
 #version 460 core
 
-layout (location = 0) in vec3 aPos;         // X, Y
-layout (location = 2) in vec2 aTexCoord;    // U, V
+layout (location = 0) in vec2 aPos;         // X, Y
+layout (location = 1) in vec2 aTexCoord;    // U, V
 
 out vec2 texCoord;                          // Pass to fragment shader
 
