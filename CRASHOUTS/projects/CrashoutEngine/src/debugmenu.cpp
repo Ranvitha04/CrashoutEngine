@@ -239,8 +239,6 @@ namespace UI { // --------------------------------------------------------------
     */
     static void RenderEcsPanel(ECS& ecs, std::vector<Entity>& entities, Entity& selected, UIState& ui)
     {
-        static std::vector<Entity> pinned;      // keep these inspectors visible
-        static bool showAllInspectors = false;  // renders inspectors for every entity
         static std::vector<Entity> multiSel;   // persistent multi-selection in the panel
 
         ScopedWindow win("Heirarchy", LockFlags(ui.lockLayout));
@@ -1374,6 +1372,12 @@ namespace UI { // --------------------------------------------------------------
                 // Toggle selection with LEFT mouse
                 if (best) selected = (selected == best) ? (Entity)0 : best;
                 // else selected = 0; // click empty -> deselect
+            }
+
+            if (over && ImGui::IsMouseClicked(ImGuiMouseButton_Right))
+            {
+                if (!ImGuizmo::IsOver() && !ImGuizmo::IsUsing())
+                    selected = 0;
             }
 
             // ------ 7) drag and drop from asset browser into world ------
