@@ -174,9 +174,11 @@ void UpdateTristan()
 }
 
 void RenderTristan() {
+#if USE_IMGUI_EDITOR
+#else
 	glClearColor(0.1f, 0.2f, 0.4f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+#endif
 	using namespace CrashoutsEngine;
 
 	Scene::RenderScene(*globalECS);

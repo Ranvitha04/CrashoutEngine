@@ -18,6 +18,7 @@ This file
 #include <glm/gtc//matrix_transform.hpp>
 #include <algorithm>
 #include <iostream>
+#include <glapp.h>
 
 namespace CrashoutsEngine {
 
@@ -29,8 +30,8 @@ namespace CrashoutsEngine {
 
 		// Orthographic projection settings
 		float Camera::baseOrthoSize = 100.f;
-		float Camera::nearPlane = -50.f;
-		float Camera::farPlane = 50.f;
+		float Camera::nearPlane = -100.f;
+		float Camera::farPlane = 100.f;
 		
 		float Camera::g_zoom = 1.f;
 
@@ -93,7 +94,7 @@ namespace CrashoutsEngine {
 			// Calculate orthographic projection based on target dimensions
 
 			float currentAR = static_cast<float>(targetWidth) / static_cast<float>(targetHeight);
-			float worldWidth, worldHeight;
+			float worldWidth{ (float)GLApp::width }, worldHeight{ (float)GLApp::height };
 
 #if USE_IMGUI_EDITOR
 			// Calculate world dimensions based on base size, zoom, and aspect ratio

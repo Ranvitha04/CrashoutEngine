@@ -8,6 +8,7 @@ Handles registration initialization updating and transitions between different g
 */
 
 #include "gamestatemanager.h"
+#include <GLFW/glfw3.h>
 
  /// Registry that maps game states to their descriptors
 static std::unordered_map<GameState, GameStateDescriptor> StateRegistry;
@@ -22,7 +23,7 @@ GameState NextGameState = MAIN_MENU;
 GameState PreviousGameState = MAIN_MENU;
 
 /// Pointer to the descriptor of the current active state
-static GameStateDescriptor* CurrentDescriptor = nullptr;
+GameStateDescriptor* CurrentDescriptor = nullptr;
 
 static bool RestartRequested = false;
 
@@ -121,8 +122,10 @@ void UpdateGameStateManager() {
 
     // per frame
     if (CurrentDescriptor) {
-        if (CurrentDescriptor->Update) CurrentDescriptor->Update();
-        if (CurrentDescriptor->Render) CurrentDescriptor->Render();
+        //if (CurrentDescriptor->Update) CurrentDescriptor->Update();
+        //if (CurrentDescriptor->Render) CurrentDescriptor->Render();
+        glClearColor(0.1f, 0.2f, 0.4f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 }
 

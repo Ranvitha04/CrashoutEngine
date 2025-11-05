@@ -12,6 +12,9 @@ uniform vec3  u_tint;
 void main() {
     if (u_useTexture == 1) {
         vec4 tex = texture(uTex2d, texCoord);
+
+        if(tex.a < 0.1) { discard; }
+
         vec3 rgb = tex.rgb * u_tint;
         if (u_modulate != 0) {
             rgb *= color;    // multiply texture by vertex color when modulating

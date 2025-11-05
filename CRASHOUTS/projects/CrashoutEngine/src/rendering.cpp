@@ -564,15 +564,18 @@ namespace Component {
 
         // Position attribute (location 0)
         glEnableVertexArrayAttrib(vaoid, 0);
+        // Binds buffer 'vbo_hdl' to VAO binding point 0
         glVertexArrayVertexBuffer(vaoid, 0, vbo_hdl, 0, sizeof(CEVec3));
         glVertexArrayAttribFormat(vaoid, 0, 3, GL_FLOAT, GL_FALSE, 0);
         glVertexArrayAttribBinding(vaoid, 0, 0);
 
         // Color attribute (location 1)
         glEnableVertexArrayAttrib(vaoid, 1);
+        // Binds buffer 'vbo_hdl' to VAO binding point 1, with the *correct* offset for this frame
         glVertexArrayVertexBuffer(vaoid, 1, vbo_hdl, vertex_size, sizeof(CEVec3));
         glVertexArrayAttribFormat(vaoid, 1, 3, GL_FLOAT, GL_FALSE, 0);
         glVertexArrayAttribBinding(vaoid, 1, 1);
+
 
         // Create EBO if indices provided
         if (indices && index_count > 0) {
@@ -655,25 +658,33 @@ namespace Component {
             idx_elem_cnt = static_cast<GLuint>(index_count);
         }
 
-        // Only create VAO 
+        // Only create VAO if it doesn't exist
         if (vaoid == 0) {
             glCreateVertexArrays(1, &vaoid);
+        }
 
-            // Position attribute (location 0)
-            glEnableVertexArrayAttrib(vaoid, 0);
-            glVertexArrayVertexBuffer(vaoid, 0, vbo_hdl, 0, sizeof(CEVec3));
-            glVertexArrayAttribFormat(vaoid, 0, 3, GL_FLOAT, GL_FALSE, 0);
-            glVertexArrayAttribBinding(vaoid, 0, 0);
+        // This setup MUST run every frame, as the offsets change
+        // and the attribute layout might be different from the last draw.
 
-            // Color attribute (location 1)
-            glEnableVertexArrayAttrib(vaoid, 1);
-            glVertexArrayVertexBuffer(vaoid, 1, vbo_hdl, vertex_size, sizeof(CEVec3));
-            glVertexArrayAttribFormat(vaoid, 1, 3, GL_FLOAT, GL_FALSE, 0);
-            glVertexArrayAttribBinding(vaoid, 1, 1);
+        // Position attribute (location 0)
+        glEnableVertexArrayAttrib(vaoid, 0);
+        glVertexArrayVertexBuffer(vaoid, 0, vbo_hdl, 0, sizeof(CEVec3));
+        glVertexArrayAttribFormat(vaoid, 0, 3, GL_FLOAT, GL_FALSE, 0);
+        glVertexArrayAttribBinding(vaoid, 0, 0);
 
-            if (ebo_hdl != 0) {
-                glVertexArrayElementBuffer(vaoid, ebo_hdl);
-            }
+        // Color attribute (location 1)
+        glEnableVertexArrayAttrib(vaoid, 1);
+        glVertexArrayVertexBuffer(vaoid, 1, vbo_hdl, vertex_size, sizeof(CEVec3)); // Correct offset
+        glVertexArrayAttribFormat(vaoid, 1, 3, GL_FLOAT, GL_FALSE, 0);
+        glVertexArrayAttribBinding(vaoid, 1, 1);
+
+        // Texture coordinate attribute (location 2)
+        // EXPLICITLY DISABLE IT for non-textured draws
+        glDisableVertexArrayAttrib(vaoid, 2);
+
+        // Update element buffer if needed
+        if (ebo_hdl != 0) {
+            glVertexArrayElementBuffer(vaoid, ebo_hdl);
         }
 
         primitive_type = primitive;
@@ -789,12 +800,14 @@ namespace Component {
 
         // Position attribute (location 0)
         glEnableVertexArrayAttrib(vaoid, 0);
+        // Binds buffer 'vbo_hdl' to VAO binding point 0
         glVertexArrayVertexBuffer(vaoid, 0, vbo_hdl, 0, sizeof(CEVec3));
         glVertexArrayAttribFormat(vaoid, 0, 3, GL_FLOAT, GL_FALSE, 0);
         glVertexArrayAttribBinding(vaoid, 0, 0);
 
         // Color attribute (location 1)
         glEnableVertexArrayAttrib(vaoid, 1);
+        // Binds buffer 'vbo_hdl' to VAO binding point 1, with the *correct* offset for this frame
         glVertexArrayVertexBuffer(vaoid, 1, vbo_hdl, vertex_size, sizeof(CEVec3));
         glVertexArrayAttribFormat(vaoid, 1, 3, GL_FLOAT, GL_FALSE, 0);
         glVertexArrayAttribBinding(vaoid, 1, 1);

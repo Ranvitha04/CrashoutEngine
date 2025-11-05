@@ -306,7 +306,7 @@ namespace InstancingSystem {
         GLint uvSize_loc = glGetUniformLocation(renderer.shdr_pgm_instanced.GetHandle(), "u_uvSize");
         if (uvSize_loc != -1) glUniform2f(uvSize_loc, uvSize.x, uvSize.y);
 
-        glDepthMask(GL_FALSE);
+        //glDepthMask(GL_FALSE);
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -316,7 +316,8 @@ namespace InstancingSystem {
         glBindTextureUnit(0, 0);
 
         glBindVertexArray(0);
-        glDepthMask(GL_TRUE);
+        //glDepthMask(GL_TRUE);
+        glDisable(GL_BLEND);
     }
 
     void InstancingSystem::RenderInstancedCirclesBatch(
@@ -930,7 +931,7 @@ void InstancingSystem::InitializeInstancedRectanglesData(int count) {
         if (modulate_loc != -1) glUniform1f(modulate_loc, 1.0f);
 
         // Enable blending for alpha textures
-        glDepthMask(GL_FALSE);
+        //glDepthMask(GL_FALSE);
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -939,7 +940,8 @@ void InstancingSystem::InitializeInstancedRectanglesData(int count) {
         glBindTextureUnit(0, 0);
 
         glBindVertexArray(0);
-        glDepthMask(GL_TRUE);
+        //glDepthMask(GL_TRUE);
+        glDisable(GL_BLEND);
 
     }
 
@@ -1300,7 +1302,7 @@ void InstancingSystem::RenderMode4Circles(const InstancedParams& params) {
         GLint uvSize_loc = glGetUniformLocation(renderer.shdr_pgm_instanced.GetHandle(), "u_uvSize");
         if (uvSize_loc != -1) glUniform2f(uvSize_loc, uvSize.x, uvSize.y);
 
-        glDepthMask(GL_FALSE);
+        //glDepthMask(GL_FALSE);
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -1309,7 +1311,9 @@ void InstancingSystem::RenderMode4Circles(const InstancedParams& params) {
         glBindTextureUnit(0, 0);
 
         glBindVertexArray(0);
-        glDepthMask(GL_TRUE);
+        //glDepthMask(GL_TRUE);
+        glDisable(GL_BLEND);
+
     }
 
     void InstancingSystem::RenderInstancedTrianglesBatch(

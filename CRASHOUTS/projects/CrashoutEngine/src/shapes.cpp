@@ -268,8 +268,8 @@ namespace Component {
 
 
         renderer.SetupBuffersOptimized(
-            clr_vtx.data(), clr_vtx.size() * sizeof(CEVec3),
             pos_vtx.data(), pos_vtx.size() * sizeof(CEVec3),
+            clr_vtx.data(), clr_vtx.size() * sizeof(CEVec3),
             idx_vtx.data(), idx_vtx.size(),
             GL_TRIANGLES);
 
@@ -356,7 +356,6 @@ namespace Component {
         if (tint_loc != -1) glUniform3f(tint_loc, tint.x, tint.y, tint.z);
 
         // Enable Blending for Transparency
-        glDepthMask(GL_FALSE); // Stop writing new depth values to the depth buffer
         glEnable(GL_BLEND);    // Ensure blending is enabled
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -364,7 +363,7 @@ namespace Component {
         renderer.Draw();
         glBindTextureUnit(0, 0);
         //Reset Depth Mask for the next frame or subsequent opaque rendering
-        glDepthMask(GL_TRUE); // Re-enable writing
+        glDisable(GL_BLEND);
     }
 
     void Shapes::CreateTexturedTriangle(const CEVec2& transformSize, const std::string& texturePath, const CEVec3& pos,
@@ -436,7 +435,6 @@ namespace Component {
         if (tint_loc != -1) glUniform3f(tint_loc, tint.x, tint.y, tint.z);
 
         // Enable Blending for Transparency
-        glDepthMask(GL_FALSE); // Stop writing new depth values to the depth buffer
         glEnable(GL_BLEND);    // Ensure blending is enabled
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -444,7 +442,7 @@ namespace Component {
         renderer.Draw();
         glBindTextureUnit(0, 0);
         //Reset Depth Mask for the next frame or subsequent opaque rendering
-        glDepthMask(GL_TRUE); // Re-enable writing
+        glDisable(GL_BLEND);
     }
 }
 
