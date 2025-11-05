@@ -39,6 +39,8 @@
 #include "guicomponent.h"
 #include "textinputcomponent.h"
 #include "uilayoutcomponent.h"
+// POSTPROCESSING COMPONENTS
+#include "ppcomponent.h"
 
 /*                                                                   
 ----------------------------------------------------------------------------- */

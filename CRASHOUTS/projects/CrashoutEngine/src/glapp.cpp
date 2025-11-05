@@ -20,6 +20,7 @@ integration.
 #include "rendering.h"
 #include "camera.h"
 #include "entitymanager.h"
+#include "engine.h"
 #include "shapes.h"
 #include "textureasset.h"
 #include "ranscene.h"
@@ -44,15 +45,6 @@ constexpr int GL_MAJOR{ 4 };
 
 /* _________________________________________________________________________
 ----------------------------------------------------------------------------- */
-
-#ifdef USE_IMGUI_EDITOR
-GLuint gameFboID = 0;
-GLuint gameTextureColorBuffer = 0;
-GLuint gameRboDepthStencil = 0;
-int gameTextureWidth = 800;     // Will be resized
-int gameTextureHeight = 600;    // Will be resized
-#endif
-
 
 GLint GLApp::width;
 GLint GLApp::height;

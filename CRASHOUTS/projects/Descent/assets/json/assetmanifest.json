@@ -273,6 +273,10 @@
             "path": "CrashoutShader"
         },
         {
+            "name": "PPShader",
+            "path": "PPShader"
+        },
+        {
             "name": "TextShader",
             "path": "TextShader"
         }

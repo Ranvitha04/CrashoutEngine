@@ -19,6 +19,7 @@ context and implement a game loop.
 #include "scriptcomponent.h"
 #include "cameracomponent.h"
 #include "gamestatemanager.h"
+#include "ppmanager.h"
 #include "textureasset.h"
 #include "scriptsystem.h"
 #include "audioSystem.h"
@@ -51,9 +52,18 @@ const float moveSpeed = 6.7f;
 
 extern "C" void RegisterBuiltinComponentAdapters();
 
+GLuint gameFboID = 0;
+GLuint gameTextureID = 0;
+GLuint gameDepthBufferID = 0;
+GLuint gameTextureColorBuffer = 0;
+GLuint gameRboDepthStencil = 0;
+int gameTextureWidth = 800;     // Will be resized
+int gameTextureHeight = 600;    // Will be resized
+
 #if USE_IMGUI_EDITOR
 bool gameWinHovered{ false };
 #endif
+
 
 /*  _________________________________________________________________________ */
 /*! SetupConsole
@@ -154,7 +164,57 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
 
     static UI::UIState uiState;
 
+    // --- 1: RENDER THE RAW GAME SCENE ---
+    // FOR USE_IMGUI_EDITOR AND NOT USING
+    // All game objects, sprites, text, etc., draw into 'gameFboID'.
+    glBindFramebuffer(GL_FRAMEBUFFER, gameFboID);
+    glViewport(0, 0, gameTextureWidth, gameTextureHeight);
+    glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LEQUAL);
+    glDepthMask(GL_TRUE);
+    glDisable(GL_BLEND);
+
+    // --- Camera Setup ---
+    using namespace CrashoutsEngine::RenderCamera;
 #if USE_IMGUI_EDITOR
+    Camera& currentCamera = (engineState == EngineState::STOP) ? engineCamera : gameCamera;
+#else
+    Camera& currentCamera = gameCamera;
+#endif
+    glm::mat4 view = currentCamera.GetViewMatrix();
+    glm::mat4 proj = currentCamera.GetProjectionMatrix();
+
+    // --- Profiling & Scene Rendering ---
+    FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Graphics");
+    ScopedMemTag mem(MemTag::Graphics);
+    {
+        FrameProfiler::Scoped s2(PerformanceSystem::Get().GetProfiler(), "Scene");
+        //GLApp::draw();
+        Scene::RenderScene(*CrashoutsEngine::ECS::getInstance());
+
+        if (CurrentDescriptor) {
+            //if (CurrentDescriptor->Update) CurrentDescriptor->Update();
+            if (CurrentDescriptor->Render) CurrentDescriptor->Render();
+        }
+    }
+    
+    // Unbind FBO
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+#if USE_IMGUI_EDITOR
+    // APPLY POST_PROCESSING TO FBO 
+
+    // Bind FBO to get post-processed image
+    glBindFramebuffer(GL_FRAMEBUFFER, CrashoutsEngine::PostProcessing::ppFboID);
+    glViewport(0, 0, gameTextureWidth, gameTextureHeight);
+    glClear(GL_COLOR_BUFFER_BIT);
+    glDisable(GL_DEPTH_TEST);
+
+    CrashoutsEngine::PostProcessing::RenderPP(gameTextureID);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
     // 1. Start the Dear ImGui frame
     UI::BeginFrame();
 
@@ -182,56 +242,6 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
     ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_PassthruCentralNode;
     ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
 
-    // Render to FBO
-    glBindFramebuffer(GL_FRAMEBUFFER, gameFboID);
-    glViewport(0, 0, gameTextureWidth, gameTextureHeight);
-
-    // clear colorbuffer with RGBA value in glClearColor ...
-    glClearColor(0.2f, 0.2f, 0.2f, 1.0f);  // Dark gray background
-    
-    // 1. Set the default depth value for clearing
-    glClearDepth(1.0f);
-
-    // 2. Clear both Color and Depth buffers
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    // 3. UNCOMMENT this line. This is the main fix.
-    glEnable(GL_DEPTH_TEST);
-
-    // 4. Set the depth function (GL_LEQUAL is a robust default)
-    glDepthFunc(GL_LEQUAL);
-
-    // 5. CRITICAL: Reset the depth mask to TRUE.
-    //    Your transparent objects set this to FALSE, so we must
-    //    reset it to TRUE at the start of every frame.
-    glDepthMask(GL_TRUE);
-
-    // 6. Also, disable blending. Transparent objects will
-    //    re-enable it when they need it.
-    glDisable(GL_BLEND);
-
-    using namespace CrashoutsEngine::RenderCamera;
-
-    // Camera Related Processes
-    //Camera& currentCamera = (engineState == EngineState::PLAY) ? gameCamera : engineCamera;
-    // TEST WITH ENGINE CAMERA
-    Camera& currentCamera = (engineState == EngineState::STOP) ? engineCamera : gameCamera;
-    glm::mat4 view = currentCamera.GetViewMatrix();
-    glm::mat4 proj = currentCamera.GetProjectionMatrix();
-    
-    FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Graphics");
-    ScopedMemTag mem(MemTag::Graphics);
-    {
-        FrameProfiler::Scoped s2(PerformanceSystem::Get().GetProfiler(), "Scene");
-        //GLApp::draw();
-        Scene::RenderScene(*CrashoutsEngine::ECS::getInstance());
-
-        if (CurrentDescriptor) {
-            //if (CurrentDescriptor->Update) CurrentDescriptor->Update();
-            if (CurrentDescriptor->Render) CurrentDescriptor->Render();
-        }
-    }
-
     // Render ImGui UI on top of the scene
     {
         FrameProfiler::Scoped s2(PerformanceSystem::Get().GetProfiler(), "UI");
@@ -245,21 +255,18 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
 
     // End the ImGui frame and render draw data
     UI::EndFrame();
+
 #else
 
-    // Render directly to main window
+    // Render directly to screen
     int displayWidth, displayHeight;
     glfwGetFramebufferSize(GLApp::ptr_window, &displayWidth, &displayHeight);
     glViewport(0, 0, displayWidth, displayHeight); // Use main window size
 
-    // clear colorbuffer with RGBA value in glClearColor ...
-    glClearColor(0.2f, 0.2f, 0.2f, 1.0f);  // Dark gray background
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
 
-    //GLApp::draw();
-    if (CurrentDescriptor->Render) CurrentDescriptor->Render();
-    Scene::RenderScene(*CrashoutsEngine::ECS::getInstance());
+    CrashoutsEngine::PostProcessing::RenderPP(gameTextureID);
 
 #endif
 
@@ -369,6 +376,8 @@ void Update(Component::RigidBodyComponent& playerRigidBody, double const& dt) {
     }
 
     InputManager::Update();
+    
+    CrashoutsEngine::PostProcessing::UpdatePP();
 
 }
 
