@@ -836,7 +836,6 @@ namespace {
 
                 ImGui::EndPopup();
             }
-            ImGui::SameLine();
             if (ImGui::SmallButton("Open in VS")) {
                 namespace fs = std::filesystem;
                 fs::path base = "../../projects/ManagedScripts";
@@ -866,14 +865,14 @@ namespace {
                 // write a basic template
                 std::ofstream out(file);
                 out << 
-    R"(using System;
+R"(using System;
                     
-        public class )" << file.stem().string() << R"(
-        {
-            public void Start() { }
-            public void Update(float dt) { }
-        }
-                )";
+    public class )" << file.stem().string() << R"(
+    {
+        public void Start() { }
+        public void Update() { }
+    }
+)";
                 out.close();
             }
 
