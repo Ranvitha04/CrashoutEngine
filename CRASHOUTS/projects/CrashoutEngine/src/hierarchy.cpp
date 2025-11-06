@@ -95,8 +95,6 @@ namespace CrashoutsEngine {
             if (old->parent != 0) RemoveChildLink(ecs, old->parent, child);
         }
 
-
-        using Component::TransformComponent;
         auto* ppc = GetOrAddParent(ecs, child);
         ppc->parent = parent;
 
@@ -191,11 +189,6 @@ namespace CrashoutsEngine {
     {
        
         ValidateHierarchy(ecs);
-
-        using Component::TransformComponent;
-        using Component::ParentComponent;
-        using Component::ChildrenComponent;
-
      
         auto applyWorldFrom = [&](Entity parent, Entity child) {
             auto* pt = ecs.GetComponent<TransformComponent>(parent);
