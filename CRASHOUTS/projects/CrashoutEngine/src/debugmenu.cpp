@@ -1324,7 +1324,7 @@ namespace UI { // --------------------------------------------------------------
                     const float* proj = glm::value_ptr(Component::Rendering::Get().projectionMatrix);
 
                     const float* snapPtr = nullptr;
-                    float snap[3];
+                    float snap[3]{};
                     if (g_snapOn) {
                         if (g_gizmoOp == ImGuizmo::ROTATE) {
                             snap[0] = g_snapAngle;

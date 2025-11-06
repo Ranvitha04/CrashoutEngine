@@ -312,11 +312,19 @@ void InitRan()
     gSpriteInitializedInScene = false;  // allow EnsureDuckInitialized() to run
 }
 
+void InitializeInstancing()
+{
+}
+
+void RenderShapes()
+{
+}
+
 /*!
 @brief Render and scale the background image to fit the world.
 @details Uses aspect-aware world dimensions to size the background quad.
 */
-static void RenderBackground()
+void RenderBackground()
 {
     float worldW, worldH;
     ComputeWorldDimensions(worldW, worldH);
@@ -328,6 +336,14 @@ static void RenderBackground()
         0.0f,
         CEVec3(1.0f, 1.0f, 1.0f)
     );
+}
+
+void RenderInstancing()
+{
+}
+
+void RenderSpriteAnimation()
+{
 }
 
 /*!
@@ -731,6 +747,14 @@ void FreeRan()
 }
 
 void UnloadRan()
+{
+}
+
+void CycleDisplayMode()
+{
+}
+
+void UpdateSpriteAnimation()
 {
 }
 
