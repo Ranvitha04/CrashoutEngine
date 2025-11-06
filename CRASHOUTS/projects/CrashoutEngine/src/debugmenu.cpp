@@ -1308,7 +1308,7 @@ namespace UI { // --------------------------------------------------------------
                 {
                     // gizmo starts exactly on the parent
                     float tr[3] = { rootT->position.x, rootT->position.y, rootT->position.z };
-                    float rt[3] = { 0.f, 0.f, glm::degrees(rootT->rotation) }; // radians -> degrees for ImGuizmo
+                    float rt[3] = { 0.f, 0.f, glm::degrees(rootT->rotation) }; 
 
                     float sc[3] = { rootT->size.x, rootT->size.y, 1.f };
 
@@ -1368,7 +1368,7 @@ namespace UI { // --------------------------------------------------------------
                             if (g_gizmoOp == ImGuizmo::ROTATE)
                             {
                                 // parent: degrees from gizmo; compute delta vs old parent rotation
-                                const float oldParentRad = rootT->rotation;                  // stored BEFORE we overwrite it
+                                const float oldParentRad = rootT->rotation;                  
                                 const float parentDeg = newRt[2];
                                 const float deltaDeg = parentDeg - glm::degrees(oldParentRad);
                                 const float deltaRad = glm::radians(deltaDeg);
@@ -1379,7 +1379,7 @@ namespace UI { // --------------------------------------------------------------
                                     if (!ecs.HasComponent<Component::ParentComponent>(e)) continue;
 
                                     auto* ppc = ecs.GetComponent<Component::ParentComponent>(e);
-                                    ppc->localRot += deltaRad;    // adjust the local rotation; hierarchy will recompute world
+                                    ppc->localRot += deltaRad;    
                                 }
                             }
                             else if (g_gizmoOp == ImGuizmo::SCALE)
