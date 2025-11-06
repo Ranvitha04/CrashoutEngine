@@ -3,27 +3,65 @@
 
 namespace Component {
     struct DuckMotionComponent {
+        /*!
+        @brief Current normalized movement direction (z unused for 2D).
+        @details Updated with mild noise and steering; multiplied by `speed` for velocity integration.
+        */
         CEVec3 velocity{ 0.0f, 0.0f, 0.0f };
+
+        /*!
+        @brief Movement speed in world units per second.
+        */
         float  speed{ 0.0f };
 
+        /*!
+        @brief Turn rate in degrees per second used by steering noise.
+        */
         float  turnRate{ 1.0f };
+
+        /*!
+        @brief Oscillation amount for steering; higher values cause more pronounced weaving.
+        */
         float  oscillation{ 8.0f };
+
+        /*!
+        @brief Time accumulator for noise-based steering.
+        */
         float  noiseTime{ 0.0f };
 
-        
+        /*!
+        @brief Minimum bounds (world space) for clamping.
+        */
         CEVec3 boundsMin{ -100.0f, -60.0f, -1.0f };
+
+        /*!
+        @brief Maximum bounds (world space) for clamping.
+        */
         CEVec3 boundsMax{  100.0f,  60.0f,  1.0f };
 
+        /*!
+        @brief Manual animation mode (0 = auto, 1 = idle_normal, 2 = walk_normal, 3 = idle_bounce, 4 = walk_bounce).
+        @details When non-zero, the updater uses this mode instead of auto-selecting based on speed.
+        */
         int   animationMode{ 1 };
 
-        // Set explicit bounds
+        /*!
+        @brief Set explicit world-space bounds for motion clamping.
+        @param minB Minimum bound
+        @param maxB Maximum bound
+        */
         void SetBounds(const CEVec3& minB, const CEVec3& maxB) {
             boundsMin = minB;
             boundsMax = maxB;
         }
 
-        // Set bounds using a centered world rectangle (worldWidth x worldHeight).
-        // zMin/zMax are optional and default to -1..1.
+        /*!
+        @brief Set bounds using a centered rectangle from world width/height.
+        @param worldWidth Total width of the world
+        @param worldHeight Total height of the world
+        @param zMin Optional min z bound (default -1)
+        @param zMax Optional max z bound (default 1)
+        */
         void SetBoundsFromWorld(float worldWidth, float worldHeight, float zMin = -1.0f, float zMax = 1.0f) {
             float halfW = worldWidth * 0.5f;
             float halfH = worldHeight * 0.5f;
@@ -31,7 +69,10 @@ namespace Component {
             boundsMax = CEVec3( halfW,  halfH, zMax);
         }
 
-        // Expand current bounds by a uniform margin (positive expands, negative contracts)
+        /*!
+        @brief Expand or contract current bounds by a uniform margin.
+        @param margin Positive expands; negative contracts
+        */
         void ExpandBounds(float margin) {
             boundsMin.x -= margin;
             boundsMin.y -= margin;
@@ -39,7 +80,11 @@ namespace Component {
             boundsMax.y += margin;
         }
 
-        // Clamp a position into the bounds and return whether clamping occurred
+        /*!
+        @brief Clamp a position to current bounds.
+        @param pos Position to clamp; modified in-place
+        @return True if any component was clamped
+        */
         bool ClampToBounds(CEVec3& pos) const {
             bool clamped = false;
             if (pos.x < boundsMin.x) { pos.x = boundsMin.x; clamped = true; }

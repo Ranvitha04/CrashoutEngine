@@ -107,6 +107,10 @@ namespace InstancingSystem {
         return s;
     }
 
+    /*!
+    @brief Compute world dimensions using window aspect.
+    @details Keeps a consistent base dimension and scales the other axis to match aspect ratio.
+    */
     static void ComputeWorldDimensions(float& worldWidth, float& worldHeight) {
         const float BASE_SIZE = 100.0f;
         float aspect = static_cast<float>(GLApp::width) / static_cast<float>(GLApp::height);
@@ -120,6 +124,11 @@ namespace InstancingSystem {
         }
     }
 
+    /*!
+    @brief Initialize randomized ECS duck entities and per-entity animation state.
+    @param count Number of ducks to spawn
+    @details Preloads spritesheet, seeds randomized motion values, sets world bounds, and creates animation entries.
+    */
     void InitializeEcsDuckSpritesRandom(int count) {
         EnsureGlobalECSInitialized();
         if (!globalECS) return;
@@ -170,20 +179,24 @@ namespace InstancingSystem {
             if (len < 1e-3f) v = CEVec3{1.0f, 0.0f, 0.0f}; else { v.x /= len; v.y /= len; }
             dm.velocity = v;
 
-            // Bounds = world bounds (slightly contracted)
+            // Bounds = world bounds 
             dm.SetBoundsFromWorld(worldW, worldH);
             dm.ExpandBounds(-2.0f);
 
             dm.animationMode = animMode(rng);
             globalECS->AddComponent<Component::DuckMotionComponent>(e, dm);
 
-            // Per-entity animation state (non-component)
+            // Per-entity animation state 
             gDuckAnim[e] = MakeAnimByMode(dm.animationMode);
         }
 
         s_duckSpritesInitialized = true;
     }
 
+    /*!
+    @brief Update duck motion, bounds, facing rotation, and per-entity animation timers.
+    @details Honors manual animationMode when non-zero, otherwise auto-chooses idle/walk based on speed.
+    */
     void UpdateEcsDuckSprites() {
         if (!globalECS) return;
         float dt = static_cast<float>(FrameRateController::GetInstance().DT());
@@ -245,6 +258,10 @@ namespace InstancingSystem {
         }
     }
 
+    /*!
+    @brief Render ECS ducks for the current frame using the duck spritesheet.
+    @details Computes spritesheet frame XY from per-entity animation state; applies rotation, scale, and optional flip.
+    */
     void RenderEcsDuckSprites() {
         if (!globalECS) return;
 
@@ -297,6 +314,10 @@ namespace InstancingSystem {
         }
     }
 
+    /*!
+    @brief Advance ducks' manual animation mode (1..4) and reset animation timers/indices.
+    @details Manual mode prevents auto-switching until set back to 0.
+    */
     void CycleEcsDuckAnimationState() {
         if (!globalECS) return;
         auto& arr = globalECS->GetComponentArray<Component::DuckMotionComponent>();
