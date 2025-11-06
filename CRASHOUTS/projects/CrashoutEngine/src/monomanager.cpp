@@ -44,6 +44,7 @@ void MonoManager::Init(const std::string& domainName)
 
 void MonoManager::LoadAssembly(const std::string& assemblyPath)
 {
+    (void)assemblyPath;
     namespace fs = std::filesystem;
 
     // Find the newest DLL in scripts/
