@@ -864,13 +864,13 @@ namespace {
                 // write a basic template
                 std::ofstream out(file);
                 out << 
-                R"(using System;
+    R"(using System;
                     
-                public class )" << file.stem().string() << R"(
-                {
-                    public void Start() { }
-                    public void Update(float dt) { }
-                }
+        public class )" << file.stem().string() << R"(
+        {
+            public void Start() { }
+            public void Update(float dt) { }
+        }
                 )";
                 out.close();
             }
