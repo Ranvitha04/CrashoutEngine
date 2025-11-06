@@ -796,7 +796,7 @@ namespace {
                 ImGui::OpenPopup("Pick Script Class");
             }
 
-            if (ImGui::BeginPopup("Pick Script Class")) {
+            if (ImGui::BeginPopupModal("Pick Script Class", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
                 namespace fs = std::filesystem;
                 static char filter[128] = {};
                 ImGui::InputTextWithHint("##script_filter", "filter...", filter, sizeof(filter));
@@ -811,14 +811,19 @@ namespace {
                 if (ImGui::BeginChild("script_list", ImVec2(320, 240), true)) {
                     try {
                         for (auto& entry : fs::recursive_directory_iterator(base)) {
+                            if (entry.is_directory()) {
+                                if (entry.path().filename() == "obj") {
+                                    continue;
+                                }
+                            }
+
                             if (!entry.is_regular_file()) continue;
+
                             auto ext = entry.path().extension().string();
                             std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
-                            if (ext != ".cs") continue;
+                            if (ext != ".cs") continue; // only C# scripts
 
-                            std::string stem = entry.path().stem().string(); // "PlayerController"
-
-                            // filter
+                            std::string stem = entry.path().stem().string();
                             if (filter[0] && stem.find(filter) == std::string::npos)
                                 continue;
 
@@ -832,6 +837,7 @@ namespace {
                         // ignore fs errors
                     }
                     ImGui::EndChild();
+                    if (ImGui::Button("Cancel")) ImGui::CloseCurrentPopup();
                 }
 
                 ImGui::EndPopup();
@@ -881,11 +887,31 @@ R"(using System;
 
             if (!monoReady) ImGui::BeginDisabled();
 
-            // init / reinit
-            if (ImGui::Button(sc->Instance ? "Reinitialize" : "Initialize"))
+            // Reload Script to basically reinitialize
+            static bool isBuilding = false;
+
+            static std::atomic<bool> reloadPending = false;
+
+            if (ImGui::Button("Reload Scripts"))
             {
-                sc->Destroy();
-                sc->Initialize(MonoManager::GetDomain(), MonoManager::GetAssembly());
+                if (!isBuilding)
+                {
+                    isBuilding = true;
+                    std::thread([]() {
+                        int result = system(
+                            "dotnet clean \"../../projects/ManagedScripts/ManagedScripts.csproj\" -c Debug > buildlog.txt 2>&1 && "
+                            "dotnet build \"../../projects/ManagedScripts/ManagedScripts.csproj\" -c Debug --no-incremental > buildlog.txt 2>&1"
+                        );
+                        if (result == 0)
+                            reloadPending = true; // signal reload
+                        isBuilding = false;
+                        }).detach();
+                }
+            }
+            if (reloadPending)
+            {
+                reloadPending = false;
+                MonoManager::ReloadScripts(); // called on main thread
             }
 
             ImGui::SameLine();
