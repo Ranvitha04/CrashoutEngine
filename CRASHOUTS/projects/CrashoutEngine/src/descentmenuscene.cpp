@@ -19,6 +19,7 @@ This file
 #include "entitymanager.h"
 #include "assetmanager.h"
 #include "sceneasset.h"
+#include "gamestatemanager.h"
 /*                                                   Global Variables
 ----------------------------------------------------------------------------- */
 
@@ -47,6 +48,16 @@ void InitDescentMenu()
 void UpdateDescentMenu()
 {
 	// Update logic for DescentMenu state
+
+	// Change Game State if button is pressed
+	using namespace CrashoutsEngine;
+	Entity startBtnEntity = globalECS->FindEntityByName("Start_Button");
+	ButtonComponent* startBtn = globalECS->GetComponent<ButtonComponent>(startBtnEntity);
+	if (startBtn) {
+		if (startBtn->buttonState == ButtonState::PRESSED) {
+			ChangeGameState(GameState::DESCENT_GAME);
+		}
+	}
 }
 
 void RenderDescentMenu()
