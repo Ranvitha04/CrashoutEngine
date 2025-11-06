@@ -1,3 +1,26 @@
+/*!
+@file        ranvitha.cpp
+@author      ranvitha@digipen.edu
+@date        18/09/2025
+@brief
+This source file implements the **Ran game state** logic for the CrashoutsEngine-based
+project. It contains functions responsible for initializing, updating, and rendering
+game elements within the “Ran” state, including ECS-driven random shape generation,
+background rendering, and state transitions.
+
+The file primarily handles:
+- **Mode 5 ECS shape initialization**: Randomized creation of rectangles, triangles,
+  and circles, including color, position, and rotation attributes.
+- **Resource management**: Loading textures, cleaning up sprites, and resetting ECS data.
+- **Rendering**: Drawing the background and instanced geometry based on the current mode.
+- **Input handling**: Responding to key presses (e.g., switching display modes with the G key).
+
+This module interacts closely with the `InstancingSystem` and the global ECS manager to
+maintain a flexible and data-driven rendering flow for the Ran state. It serves as the
+entry point for Ran’s lifecycle functions — including initialization (`InitRan`),
+rendering (`RenderBackground`), and updating (`UpdateRan`).
+*/
+
 
 #include "ranscene.h"
 #include "log.h"
@@ -23,7 +46,7 @@ static CrashoutsEngine::ECS* globalECS;
 static const char* sceneName = "ran";
 
 // Display/control state
-static int gDisplayMode = 0;                // 0:bg, 1:duck, 2:instanced, 3:imgui-only
+static int gDisplayMode = 0;                
 static bool gPrevGPressed = false;
 static bool gPrevMPressed = false;          // toggle instancing type (texture/plain)
 static bool gSpriteInitializedInScene = false;
@@ -63,27 +86,6 @@ static bool gEcsTexturesEnabled = false;
 static bool gMode4Initialized = false;
 static bool gMode4TexturesEnabled = false;
 
-// Rectangles (Mode 4)
-// static std::vector<CEVec3> gM4RectPos;
-// static std::vector<CEVec3> gM4RectColor;    // 0..1 colors
-// static std::vector<float>  gM4RectRot;
-// static std::vector<float>  gM4RectW;
-// static std::vector<float>  gM4RectH;
-
-// // Triangles (Mode 4)
-// static std::vector<CEVec3> gM4TriPos;
-// static std::vector<CEVec3> gM4TriColor;     // 0..1 colors
-// static std::vector<float>  gM4TriRot;
-// static std::vector<float>  gM4TriScale;     // use 1.0f
-// static std::vector<float>  gM4TriSide;      // equilateral side length
-
-// // Circles (Mode 4)
-// static std::vector<CEVec3> gM4CircPos;
-// static std::vector<CEVec3> gM4CircColor;    // 0..1 colors
-// static std::vector<float>  gM4CircRot;
-// static std::vector<float>  gM4CircScale;    // use 1.0f
-// static std::vector<float>  gM4CircRadius;
-// static int gM4CircSegments = 24;
 
 // ===== Mode 5 (ECS-driven) random shapes =====
 static bool gMode5Initialized = false;
@@ -110,6 +112,9 @@ static std::vector<float>  gM5CircScale;
 static std::vector<float>  gM5CircRadius;
 static int gM5CircSegments = 24;
 
+// Mode 6 (ECS ducks)
+static bool gMode6Initialized = false;
+static bool gPrevIPressed = false;
 
 static void ComputeWorldDimensions(float& worldWidth, float& worldHeight) {
     const float BASE_SIZE = 100.0f;
@@ -313,7 +318,7 @@ void UpdateRan()
     bool gPressed = (gState == GLFW_PRESS);
     if (gPressed && !gPrevGPressed) {
         int prevMode = gDisplayMode;
-        int nextMode = (gDisplayMode + 1) % 6;
+        int nextMode = (gDisplayMode + 1) % 7; // include mode 6
         gDisplayMode = nextMode;
 
         if (gDisplayMode != 3) {
@@ -408,10 +413,6 @@ void UpdateRan()
             gMode4Initialized = false;
         
         }
-
-
-
-
 
     }
 
@@ -518,6 +519,11 @@ void UpdateRan()
         }
     }
 
+    // ECS ducks update
+    if (gDisplayMode == 6 && gMode6Initialized) {
+        InstancingSystem::UpdateEcsDuckSprites();
+    }
+
     gPrevGPressed = gPressed;
     gPrevMPressed = mPressed;
 }
@@ -585,7 +591,7 @@ void RenderRan()
     } break;
 
     case 5: { // ECS-driven random shapes; circles separate
-        std::cout << "ecs rando " << std::endl;
+        //std::cout << "ecs rando " << std::endl;
         if (!gMode5Initialized) {
             InitializeMode5EcsRandomShapes(500);
         }
@@ -658,6 +664,13 @@ void RenderRan()
                 );
             }
         }
+    } break;
+    case 6: { // ECS ducks
+        if (!gMode6Initialized) {
+            InstancingSystem::InitializeEcsDuckSpritesRandom(1000);
+            gMode6Initialized = true;
+        }
+        InstancingSystem::RenderEcsDuckSprites();
     } break;
     }
 }
