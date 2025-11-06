@@ -258,7 +258,7 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path)
             // ---- script ----
             bool hasScriptComponent = false;
             std::string scriptClassName;
-            uint32_t scriptEntityID = 0; // stored if you ever need it; we will override with runtime ID
+            uint32_t scriptEntityID = 0; 
 
             if (prefabs.HasMember("script") && prefabs["script"].IsObject()) {
                 const auto& sJ = prefabs["script"];
@@ -268,7 +268,7 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path)
                     scriptEntityID = sJ["entityID"].GetUint();
                 hasScriptComponent = !scriptClassName.empty();
             }
-            // --- audio (optional) ---
+            // --- audio  ---
             bool hasAudioEmitter = false;
             std::string audioEventPath;
             float audioVolume = 1.0f;
@@ -291,7 +291,7 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path)
 
                 hasAudioEmitter = !audioEventPath.empty();
             }
-            // --- gui (optional) ---
+            // --- gui ---
             bool hasGuiComponent = false;
             unsigned guiTypeMask = 0;
 
@@ -308,10 +308,7 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path)
             if (prefabs.HasMember("gui") && prefabs["gui"].IsObject()) {
                 const auto& guiJ = prefabs["gui"];
 
-                // Support 3 encodings:
-                // 1) { "uiType": "TEXT" }
-                // 2) { "uiType": ["IMAGE","BUTTON"] }
-                // 3) { "uiType": 5 }  // bitmask (IMAGE|TEXT)
+               
                 if (guiJ.HasMember("uiType")) {
                     const auto& t = guiJ["uiType"];
                     if (t.IsString()) {
@@ -323,13 +320,13 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path)
                         }
                     }
                     else if (t.IsUint()) {
-                        guiTypeMask = t.GetUint(); // raw bitmask
+                        guiTypeMask = t.GetUint();
                     }
                 }
 
                 hasGuiComponent = (guiTypeMask != 0u);
             }
-            // --- post-processing (optional) ---
+            // --- post-processing ---
             bool hasPP = false;
             bool ppActive = true;
             float ppBrightness = 0.f;
@@ -347,7 +344,7 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path)
                 if (ppJ.HasMember("saturation") && ppJ["saturation"].IsNumber())
                     ppSaturation = static_cast<float>(ppJ["saturation"].GetDouble());
 
-                hasPP = true; // presence of block enables it
+                hasPP = true;
             }
 
 
@@ -426,9 +423,9 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path)
                 // Script
                 if (hasScriptComponent && !scriptClassName.empty()) {
                     ScriptComponent sc(scriptClassName,
-                        static_cast<uint32_t>(entitty)); // use runtime entity ID
+                        static_cast<uint32_t>(entitty)); 
                     e.AddComponent<ScriptComponent>(entitty, sc);
-                    // Initialize/Start is handled later by ScriptSystem when Mono domain is ready.
+                
                 }
                 // --- AudioEmitterComponent 
                 if (hasAudioEmitter && !audioEventPath.empty()) {
@@ -486,8 +483,6 @@ namespace CrashoutsEngine {
             LOGE(Core, std::string("Save failed: entity missing Transform/Shape/RigidBody."));
             return false;
         }
-       
-
         // Load / init doc
    
         rapidjson::Document doc;
@@ -719,25 +714,9 @@ namespace CrashoutsEngine {
         if (auto* gui = ecs.GetComponent<Component::GuiComponent>(e)) {
             rapidjson::Value guiJson(rapidjson::kObjectType);
 
-            // choose your preferred JSON encoding
-          
             unsigned mask = static_cast<unsigned>(gui->uiType);
             guiJson.AddMember("uiType", mask, allocate);
 
-           
-            /*
-            auto pushStr = [&](const char* s){
-                rapidjson::Value v;
-                v.SetString(s, static_cast<rapidjson::SizeType>(std::strlen(s)), allocate);
-                arr.PushBack(v, allocate);
-            };
-            rapidjson::Value arr(rapidjson::kArrayType);
-            if (mask & static_cast<unsigned>(Component::UIType::IMAGE))     pushStr("IMAGE");
-            if (mask & static_cast<unsigned>(Component::UIType::TEXT))      pushStr("TEXT");
-            if (mask & static_cast<unsigned>(Component::UIType::BUTTON))    pushStr("BUTTON");
-            if (mask & static_cast<unsigned>(Component::UIType::INPUTTEXT)) pushStr("INPUTTEXT");
-            guiJson.AddMember("uiType", arr, allocate);
-            */
 
             obj.AddMember("gui", guiJson, allocate);
         }
@@ -804,7 +783,7 @@ namespace CrashoutsEngine {
         // Re-load from JSON
         LoadPrefabsFromJson_RJ(path);
 
-        // (Optional) log what’s available now
+        //  log what’s available now
         for (const auto& n : Prefab::Names())
             LOGI(Core, std::string("Prefab available: ") + n);
     }
