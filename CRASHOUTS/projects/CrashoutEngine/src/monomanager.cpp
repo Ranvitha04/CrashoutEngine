@@ -1,3 +1,9 @@
+/*!
+@file		monomanager.cpp
+@author     m.biniswandi@digipen.edu
+@date       06/11/2025
+@brief		Definition of mono manager functions
+*/
 #include "monomanager.h"
 
 #include <cassert>
@@ -44,6 +50,7 @@ void MonoManager::Init(const std::string& domainName)
 
 void MonoManager::LoadAssembly(const std::string& assemblyPath)
 {
+    (void)assemblyPath;
     namespace fs = std::filesystem;
 
     // Find the newest DLL in scripts/

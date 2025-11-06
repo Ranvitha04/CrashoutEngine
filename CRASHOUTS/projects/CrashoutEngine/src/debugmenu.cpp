@@ -3,7 +3,9 @@
 @author     mohamadamirakmal.b@digipen.edu
 @date       14/09/2025
 
-@brief      Renders the editor/debug ImGui for Crashout Engine.
+@brief      Renders the editor/debug Im
+
+for Crashout Engine.
 @details    This module draws every editor-facing window:
             - engine controls (play / pause / stop)
             - game viewport (with ImGuizmo)
@@ -158,9 +160,79 @@ namespace { //------------------------------------------------------------------
     static inline bool PointInAABB(const CEVec3& p, const Collision::AABBRect& a) {
         return p.x >= a.min.x && p.x <= a.max.x && p.y >= a.min.y && p.y <= a.max.y;
     }
+    // >>> Paste the full definition here <<<
+    static void DrawHierarchyNode(ECS& ecs, Entity e, Entity& selected)
+    {
+        using namespace Component;
 
+        std::string label = ecs.HasComponent<NameComponent>(e)
+            ? ecs.GetComponent<NameComponent>(e)->name
+            : ("Entity " + std::to_string(e));
+
+        const bool hasKids = ecs.HasComponent<ChildrenComponent>(e)
+            && !ecs.GetComponent<ChildrenComponent>(e)->children.empty();
+
+        ImGuiTreeNodeFlags flags =
+            ImGuiTreeNodeFlags_OpenOnArrow |
+            ImGuiTreeNodeFlags_SpanFullWidth |
+            (selected == e ? ImGuiTreeNodeFlags_Selected : 0) |
+            (!hasKids ? ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen : 0);
+
+        ImGui::PushID((int)e);
+        const bool opened = ImGui::TreeNodeEx("##node", flags, "%s", label.c_str());
+
+        if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
+            selected = e;
+
+        if (ImGui::BeginDragDropSource()) {
+            ImGui::SetDragDropPayload("HIER_ENTITY", &e, sizeof(Entity));
+            ImGui::TextUnformatted(label.c_str());
+            ImGui::EndDragDropSource();
+        }
+
+        if (ImGui::BeginDragDropTarget()) {
+            if (const ImGuiPayload* pl = ImGui::AcceptDragDropPayload("HIER_ENTITY")) {
+                Entity dragged = *(const Entity*)pl->Data;
+                if (dragged && dragged != e) {
+                    bool ok = true;
+                    // prevent cycles: ensure 'e' is not in dragged's subtree
+                    std::vector<Entity> subtree; subtree.reserve(16);
+                    CrashoutsEngine::GatherDescendants(ecs, dragged, subtree);
+                    ok = (std::find(subtree.begin(), subtree.end(), e) == subtree.end());
+                    if (ok) CrashoutsEngine::Reparent(ecs, dragged, e);
+                }
+            }
+            ImGui::EndDragDropTarget();
+        }
+
+        if (ImGui::BeginPopupContextItem("node_ctx")) {
+            if (ImGui::MenuItem("Ungroup (detach)"))
+                CrashoutsEngine::DetachChild(ecs, e);
+            if (ImGui::MenuItem("Create Empty Child")) {
+                Entity child = ecs.CreateEntity();
+                if (!ecs.HasComponent<NameComponent>(child))
+                    ecs.AddComponent<NameComponent>(child, "New Child");
+                if (!ecs.HasComponent<TransformComponent>(child))
+                    ecs.AddComponent<TransformComponent>(child);
+                CrashoutsEngine::AttachChild(ecs, e, child);
+            }
+            ImGui::EndPopup();
+
+        }
+
+        if (hasKids && opened) {
+            auto* kids = ecs.GetComponent<ChildrenComponent>(e);
+            for (Entity c : kids->children)
+                DrawHierarchyNode(ecs, c, selected);
+            ImGui::TreePop();
+        }
+
+        ImGui::PopID();
+    }
 
 } // anonymous namespace
+
+
 
 namespace UI { // ----------------------------------------------------------------------------- public UI API
 
@@ -292,62 +364,20 @@ namespace UI { // --------------------------------------------------------------
         }
         ImGui::Separator();
         ImGui::TextUnformatted("Entities");
-        if (entities.empty()) {
-            ImGui::TextDisabled("No entities created yet.");
-        }
-        else {
-            
-            auto toggleMulti = [&](Entity x) {
-                auto it = std::find(multiSel.begin(), multiSel.end(), x);
-                if (it == multiSel.end()) multiSel.push_back(x);
-                else                      multiSel.erase(it);
-                };
-
-            for (Entity e : entities) {
-                
-                std::string visible = ecs.HasComponent<NameComponent>(e)
-                    ? ecs.GetComponent<NameComponent>(e)->name
-                    : ("Entity " + std::to_string(e));
-
-                ImGui::PushID((int)e);
-
-                bool checked = std::find(multiSel.begin(), multiSel.end(), e) != multiSel.end();
-                if (ImGui::Checkbox("##chk", &checked)) {
-                    if (checked)  multiSel.push_back(e);
-                    else          multiSel.erase(std::remove(multiSel.begin(), multiSel.end(), e), multiSel.end());
-                }
-                ImGui::SameLine();
-
-                
-                bool isSel = (e == selected);
-                if (ImGui::Selectable(visible.c_str(), isSel))
-                    selected = e;
-
-                ImGui::PopID();
-            }
-
-            
-            ImGui::SeparatorText("Grouping");
-            if (ImGui::Button("Group (first selected becomes Parent)")) {
-                if (multiSel.size() >= 2) {
-                    Entity parent = multiSel.front();
-                    for (size_t i = 1; i < multiSel.size(); ++i) {
-                        CrashoutsEngine::AttachChild(ecs, parent, multiSel[i]);
-                    }
+        // --- Unity-style tree: draw roots (entities with no ParentComponent) ---
+        {
+            auto& tArr = ecs.GetComponentArray<Component::TransformComponent>();
+            bool anyDrawn = false;
+            for (Entity e : tArr.indexToEntity)
+            {
+                if (!ecs.HasComponent<Component::TransformComponent>(e)) continue;
+                const bool hasParent = ecs.HasComponent<Component::ParentComponent>(e);
+                if (!hasParent) {
+                    DrawHierarchyNode(ecs, e, selected);
+                    anyDrawn = true;
                 }
             }
-            ImGui::SameLine();
-            if (ImGui::Button("Ungroup (detach all selected)")) {
-                for (Entity e : multiSel)
-                    CrashoutsEngine::DetachChild(ecs, e);
-            }
-            ImGui::SameLine();
-            if (ImGui::Button("Clear Selection")) {
-                multiSel.clear();
-            }
-
-           
-            ImGui::TextDisabled("Selected: %u | Multi: %d", (unsigned)selected, (int)multiSel.size());
+            if (!anyDrawn) ImGui::TextDisabled("No entities created yet.");
         }
 
 
@@ -364,7 +394,7 @@ namespace UI { // --------------------------------------------------------------
             namespace fs = std::filesystem;
 
             
-            const fs::path jsonPath = fs::path("assets") / "prefabs" / "prefab.json";
+            const fs::path jsonPath = fs::path(CrashoutsEngine::Assets::rootPath) / "prefabs" / "prefab.json";
             fs::create_directories(jsonPath.parent_path()); // safe if exists
 
             

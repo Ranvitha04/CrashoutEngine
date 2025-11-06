@@ -5,7 +5,7 @@
 #include <functional>
 #include <algorithm>
 #include <cmath>
-/*
+
 // ---- Forward minimal engine types (adjust if your names differ)
 namespace CrashoutsEngine {
     using Entity = unsigned int;
@@ -86,4 +86,3 @@ namespace KeyframeUnity {
     // Update all animators in ECS (assumes your ECS exposes GetComponentArray<T>())
     void UpdateAll(CrashoutsEngine::ECS& ecs, float dt);
 }
-*/
