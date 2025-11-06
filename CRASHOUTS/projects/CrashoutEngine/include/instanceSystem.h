@@ -1,5 +1,31 @@
 #pragma once
 
+/*!
+@file        ranvitha.h
+@author      ranvitha@digipen.edu
+@date        11/06/2025
+@brief
+
+@brief
+This source file contains the implementation of functions responsible for **instanced rendering**
+of geometric shapes (circles, rectangles, and triangles) in the CrashoutsEngine framework.
+
+The module leverages **OpenGL instancing** to efficiently render large batches of shapes,
+each with its own transformation, color, and texture properties. It supports both textured
+and non-textured variants, allowing flexible visual presentation and dynamic scene composition.
+
+Key functionalities include:
+- **Instanced shape creation**: Initializes GPU buffers for circles, rectangles, and triangles.
+- **Batch rendering**: Renders multiple instances in a single draw call using shared geometry data.
+- **ECS integration**: Initializes and populates entity data for ECS-based rendering workflows.
+- **Texture and tint support**: Applies textures with adjustable UV scaling and color tinting.
+- **Cleanup utilities**: Frees GPU buffers and resets instancing data when no longer needed.
+
+This file works in conjunction with the `InstancedParams` structure and provides a unified API
+for shape instancing that other systems (e.g., game states or rendering passes) can call to
+generate procedurally varied, GPU-efficient visuals.
+*/
+
 #include "CEVec3.h"
 #include "CEVec2.h"
 #include "entitymanager.h"
@@ -147,4 +173,11 @@ namespace InstancingSystem {
     void RenderMode4Circles(const InstancedParams& params);
     
     void RenderInstancedRectangles(const InstancedParams& params);
+    
+    
+    
+    void InitializeEcsDuckSpritesRandom(int count);
+    void UpdateEcsDuckSprites();
+    void RenderEcsDuckSprites();
+    void CycleEcsDuckAnimationState();
 }
