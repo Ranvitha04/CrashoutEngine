@@ -176,8 +176,42 @@ namespace InstancingSystem {
     
     
     
+    /*!
+    @brief Initialize ECS duck sprite entities with randomized motion and animation.
+    @param count Number of duck entities to spawn
+    @details
+    - Preloads the duck spritesheet and caches its texture handle.
+    - Creates `NameComponent`, `TransformComponent`, and `DuckMotionComponent` per entity.
+    - Seeds randomized position, velocity, speed, turn rate, and animation mode.
+    - Computes bounds from world dimensions so ducks bounce within the visible area.
+    */
     void InitializeEcsDuckSpritesRandom(int count);
+
+    /*!
+    @brief Update ECS duck motion, bounds clamping, facing, and animation timers.
+    @details
+    - Integrates position from velocity and speed.
+    - Clamps position to bounds and inverts velocity on boundary hits.
+    - Rotates duck to face movement direction.
+    - Advances animation frames and respects manual `animationMode` when non-zero.
+    */
     void UpdateEcsDuckSprites();
+
+    /*!
+    @brief Render all ECS ducks using the spritesheet, with optional horizontal flip.
+    @details
+    - Derives the current frame index from per-entity animation state.
+    - Uses cached texture handle when available; falls back to path-based rendering.
+    - Applies transform rotation and uniform scale from `TransformComponent`.
+    */
     void RenderEcsDuckSprites();
+
+    /*!
+    @brief Cycle all ducks’ manual animation mode through 1..4.
+    @details
+    - Modes: 1 idle_normal, 2 walk_normal, 3 idle_bounce, 4 walk_bounce.
+    - Resets animation timers and frame indices on change.
+    - When manual mode is set (non-zero), UpdateEcsDuckSprites will not auto-switch.
+    */
     void CycleEcsDuckAnimationState();
 }
