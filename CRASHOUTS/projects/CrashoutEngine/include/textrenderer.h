@@ -20,6 +20,7 @@ Provides text rendering using FreeType and OpenGL
 #include "glm/vec3.hpp"
 
 #include "CEVec3.h"
+#include "CEVec2.h"
 
 #include "fontasset.h"
 
@@ -96,6 +97,12 @@ public:
     */
     void RenderCenteredText(const std::string& text, GLfloat x, GLfloat y, GLfloat scale, CEVec3 color, const std::string fontName = "Exo2-Regular", bool isWorldSpace = false);
 
+    // Function to get the (x, y) baseline position of the cursor
+    CEVec2 GetCursorPosition(const std::string& text, size_t cursorPos,
+        GLfloat x, GLfloat y, GLfloat scale, const std::string fontName);
+
+    // Helper to get font height (we'll need this for drawing)
+    GLfloat GetLineHeight(const std::string fontName, GLfloat scale);
 
 private:
     /*!

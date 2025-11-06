@@ -11,6 +11,7 @@
 #include "debugcollision.h"
 #include <algorithm>
 #include <cmath>
+#include "camera.h"
 
 using namespace CrashoutsEngine;
 using namespace Component;
@@ -39,10 +40,11 @@ using namespace Component;
  @param color        RGB-like color vector used by the line drawer.
 */
 static void DrawAABBOutline(const CEVec3& minP, const CEVec3& maxP, float thickness, const CEVec3& color) {
-    CEVec3 p0(minP.x, minP.y, 0.0f);
-    CEVec3 p1(maxP.x, minP.y, 0.0f);
-    CEVec3 p2(maxP.x, maxP.y, 0.0f);
-    CEVec3 p3(minP.x, maxP.y, 0.0f);
+    float z = RenderCamera::engineCamera.GetFar();
+    CEVec3 p0(minP.x, minP.y, z);
+    CEVec3 p1(maxP.x, minP.y, z);
+    CEVec3 p2(maxP.x, maxP.y, z);
+    CEVec3 p3(minP.x, maxP.y, z);
 
     CEVec2 size = {thickness, thickness};
 
@@ -60,11 +62,18 @@ static void DrawAABBOutline(const CEVec3& minP, const CEVec3& maxP, float thickn
 */
 static void DrawOBBOutline(const Collision::OBBRect* vertices, float thickness, const CEVec3& color) {
     CEVec2 size = { 1.f, 1.f };
+    float z = RenderCamera::engineCamera.GetFar();
+    // Create new vertices with the modified Z value
+    CEVec3 v0 = { vertices->rotatedVertices[0].x, vertices->rotatedVertices[0].y, z };
+    CEVec3 v1 = { vertices->rotatedVertices[1].x, vertices->rotatedVertices[1].y, z };
+    CEVec3 v2 = { vertices->rotatedVertices[2].x, vertices->rotatedVertices[2].y, z };
+    CEVec3 v3 = { vertices->rotatedVertices[3].x, vertices->rotatedVertices[3].y, z };
 
-    Shapes::CreateLine(size, vertices->rotatedVertices[0], vertices->rotatedVertices[1], thickness, 0.0f, color);
-    Shapes::CreateLine(size, vertices->rotatedVertices[1], vertices->rotatedVertices[2], thickness, 0.0f, color);
-    Shapes::CreateLine(size, vertices->rotatedVertices[2], vertices->rotatedVertices[3], thickness, 0.0f, color);
-    Shapes::CreateLine(size, vertices->rotatedVertices[3], vertices->rotatedVertices[0], thickness, 0.0f, color);
+    // Draw the lines using the new, z-modified vertices
+    Shapes::CreateLine(size, v0, v1, thickness, 0.0f, color);
+    Shapes::CreateLine(size, v1, v2, thickness, 0.0f, color);
+    Shapes::CreateLine(size, v2, v3, thickness, 0.0f, color);
+    Shapes::CreateLine(size, v3, v0, thickness, 0.0f, color);
 }
 
 /*!
@@ -79,9 +88,11 @@ static void DrawCircleOutline(const CEVec3& c, float r, int segments, float thic
     if (segments < 8) segments = 8;
     const float twoPi = 6.28318530718f;
     CEVec3 prev(c.x + r, c.y, 0.0f);
+    float z = RenderCamera::engineCamera.GetFar();
+
     for (int i = 1; i <= segments; ++i) {
         float t = (twoPi * i) / segments;
-        CEVec3 next(c.x + r * std::cos(t), c.y + r * std::sin(t), 0.0f);
+        CEVec3 next(c.x + r * std::cos(t), c.y + r * std::sin(t), z);
         CEVec2 size = { 1.f, 1.f };
         Shapes::CreateLine(size, prev, next, thickness, 0.0f, color);
         prev = next;

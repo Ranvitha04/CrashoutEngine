@@ -128,7 +128,42 @@ void TextRenderer::RenderText(const std::string& text, GLfloat x, GLfloat y, GLf
     glActiveTexture(GL_TEXTURE0);
     glBindVertexArray(VAO);
 
+    // --- Store the original X position for line breaks ---
+    GLfloat original_x = x;
+
+    // --- Get a line height ---
+    // This value *should* come from your font loading.
+    // It's (face->size->metrics.height >> 6) in FreeType.
+    // You should store this in your FontAsset.
+    // For now, we'll try to get 'H's height as a good guess.
+    GLfloat baseLineHeight = 64.0f; // A default fallback
+    if (characters.count('H')) {
+        baseLineHeight = (float)characters.at('H').Size.y;
+    }
+    else if (!characters.empty()) {
+        baseLineHeight = (float)characters.begin()->second.Size.y; // Less reliable
+    }
+
+    // Your math (y + Bearing, y - h) implies Y is the baseline and positive-Y is UP.
+    // So, we must DECREASE Y to go to the next line.
+    // We'll use 1.2x the base height for spacing.
+    GLfloat lineHeight = (baseLineHeight * 1.2f) * scale;
+
     for (auto c : text) {
+
+        // Check for newline
+        if (c == '\n') {
+            y -= lineHeight;        // Move Y down
+            x = original_x;     // Reset X to the start
+            continue;           // Skip the rest of this loop
+        }
+
+        // Check if character is in the map (to prevent crash)
+        if (characters.find(c) == characters.end()) {
+            // If char not found, you could skip it or draw a '?'
+            continue;
+        }
+
         Character ch = characters.at(c);
 
         GLfloat xpos = x + ch.Bearing.x * scale;
@@ -293,4 +328,68 @@ GLuint LoadShaderProgram(const std::string& vertexPath, const std::string& fragm
     glDeleteShader(fragmentShader);
 
     return shaderProgram;
+}
+
+// This is the helper to get a line height
+GLfloat TextRenderer::GetLineHeight(const std::string fontName, GLfloat scale) {
+    scale *= FONT_SCALE;
+
+    using namespace CrashoutsEngine::Assets;
+    AssetManager& assetManager = AssetManager::GetInstance();
+    FontAsset* font = assetManager.Get<FontAsset>(fontName);
+    if (!font) return 20.0f; // Default fallback
+
+    const std::map<GLchar, Character>& characters = font->characters;
+
+    GLfloat baseLineHeight = 64.0f; // A default fallback
+    if (characters.count('H')) {
+        baseLineHeight = (float)characters.at('H').Size.y;
+    }
+    else if (!characters.empty()) {
+        baseLineHeight = (float)characters.begin()->second.Size.y;
+    }
+
+    return (baseLineHeight * 1.2f) * scale;
+}
+
+
+// This is the main calculation function
+CEVec2 TextRenderer::GetCursorPosition(const std::string& text, size_t cursorPos,
+    GLfloat x, GLfloat y, GLfloat scale,
+    const std::string fontName)
+{
+    scale *= FONT_SCALE;
+
+    using namespace CrashoutsEngine::Assets;
+    AssetManager& assetManager = AssetManager::GetInstance();
+    FontAsset* font = assetManager.Get<FontAsset>(fontName);
+
+    if (!font) {
+        return CEVec2{ x, y }; // Return default on error
+    }
+    const std::map<GLchar, Character>& characters = font->characters;
+
+    GLfloat original_x = x;
+    GLfloat lineHeight = GetLineHeight(fontName, scale * FONT_SCALE); // GetLineHeight handles scaling
+
+    // Loop only up to the cursor's position
+    for (size_t i = 0; i < cursorPos; ++i) {
+        char c = text[i];
+
+        if (c == '\n') {
+            y -= lineHeight * .5f;
+            x = original_x;
+            continue;
+        }
+
+        if (characters.find(c) == characters.end()) {
+            continue; // Skip unknown chars
+        }
+
+        Character ch = characters.at(c);
+        x += (ch.Advance >> 6) * scale * .5f; // Advance X
+    }
+
+    // Return the final (x, y) baseline position
+    return CEVec2{ x, y };
 }

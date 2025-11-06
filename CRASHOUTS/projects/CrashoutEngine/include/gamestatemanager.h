@@ -25,6 +25,8 @@ enum GameState{
 	AFIQ,
 	TRISTAN,
 	RAN,
+	DESCENT_MENU,
+	DESCENT_GAME,
 };
 
 /// Descriptor for a game state containing lifecycle function pointers
