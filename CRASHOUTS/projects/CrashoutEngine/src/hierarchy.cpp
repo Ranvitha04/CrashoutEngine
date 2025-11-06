@@ -1,14 +1,10 @@
-﻿// hierarchy.cpp
-// Parent–child relationships for entities.
-
-
-#include <algorithm>                 
+﻿#include <algorithm>                 
 #include <utility>                  
 #include "hierarchy.h"
 #include "hierarchy_components.h"
 #include "entitymanager.h"
 #include <cmath> 
-
+#include "shapes.h"              
 
 namespace CrashoutsEngine {
 
@@ -26,6 +22,48 @@ namespace CrashoutsEngine {
             return ecs.GetComponent<ParentComponent>(child);
         return &ecs.AddComponent<ParentComponent>(child, ParentComponent{});
     }
+    // ---- COLOR INHERITANCE HELPERS (add in hierarchy.cpp) ----------------------
+
+// climb up until we find an ancestor with a ShapeComponent; return its color
+    static CEVec3 GetAncestorColor(ECS& ecs, Entity e) {
+        using namespace Component;
+        // if this direct parent has ShapeComponent, use that; else climb further
+        while (ecs.HasComponent<ParentComponent>(e)) {
+            auto* pc = ecs.GetComponent<ParentComponent>(e);
+            const Entity p = pc->parent;
+            if (p == 0) break;
+
+            if (ecs.HasComponent<ShapeComponent>(p)) {
+                return ecs.GetComponent<ShapeComponent>(p)->color;
+            }
+            // keep climbing
+            e = p;
+        }
+        // no ancestor with a ShapeComponent -> default white
+        return CEVec3{ 1.f, 1.f, 1.f };
+    }
+
+    // Force a child to take its parent's (ancestor) color every update.
+    // Uses ParentComponent::colorMul as a per-link multiplier.
+    static void ForceInheritColorFromParent(ECS& ecs, Entity child) {
+        using namespace Component;
+
+        if (!ecs.HasComponent<ParentComponent>(child)) return;
+        if (!ecs.HasComponent<ShapeComponent>(child))  return;
+
+        auto* pc = ecs.GetComponent<ParentComponent>(child);
+        auto* sc = ecs.GetComponent<ShapeComponent>(child);
+
+        // Always inherit (you asked for "always take the parent")
+        const CEVec3 parentCol = GetAncestorColor(ecs, child);
+
+        
+        sc->color.x = parentCol.x * pc->colorMul.x;
+        sc->color.y = parentCol.y * pc->colorMul.y;
+        sc->color.z = parentCol.z * pc->colorMul.z;
+        
+    }
+
 
     static inline bool IsAlreadyChildOf(ECS& ecs, Entity parent, Entity child) {
         if (!ecs.HasComponent<ChildrenComponent>(parent)) return false;
@@ -50,7 +88,7 @@ namespace CrashoutsEngine {
     void AttachChild(ECS& ecs, Entity parent, Entity child) {
         if (parent == 0 || child == 0 || parent == child) return;
 
-        // If already parented, clean up first
+   
         if (ecs.HasComponent<Component::ParentComponent>(child)) {
             auto* old = ecs.GetComponent<Component::ParentComponent>(child);
             if (old->parent == parent) return;
@@ -112,10 +150,6 @@ namespace CrashoutsEngine {
         AttachChild(ecs, newParent, child);
     }
 
-  
-
-
-
     static void ValidateHierarchy(ECS& ecs) {
 
         auto& arr = ecs.GetComponentArray<ChildrenComponent>();
@@ -153,8 +187,6 @@ namespace CrashoutsEngine {
         }
     }
 
-
-
     void UpdateHierarchy(ECS& ecs)
     {
        
@@ -188,6 +220,7 @@ namespace CrashoutsEngine {
             const float wy = pt->position.y + (s * lx + c * ly);
             const float wz = pt->position.z + ppc->localPos.z;
             ct->position = { wx, wy, wz };
+            ForceInheritColorFromParent(ecs, child);
             };
 
         
