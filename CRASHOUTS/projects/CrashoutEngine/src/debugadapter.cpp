@@ -810,20 +810,24 @@ namespace {
                 // we can make it scrollable
                 if (ImGui::BeginChild("script_list", ImVec2(320, 240), true)) {
                     try {
-                        for (auto& entry : fs::recursive_directory_iterator(base)) {
-                            if (entry.is_directory()) {
-                                if (entry.path().filename() == "obj") {
+                        for (auto it = fs::recursive_directory_iterator(base, fs::directory_options::skip_permission_denied);
+                            it != fs::recursive_directory_iterator(); ++it){
+                            if (it->is_directory()) {
+                                auto folder = it->path().filename().string();
+                                std::transform(folder.begin(), folder.end(), folder.begin(), ::tolower);
+                                if (folder == "obj" || folder == "bin" || folder == ".vs") {
+                                    it.disable_recursion_pending();
                                     continue;
                                 }
                             }
 
-                            if (!entry.is_regular_file()) continue;
+                            if (!it->is_regular_file()) continue;
 
-                            auto ext = entry.path().extension().string();
+                            auto ext = it->path().extension().string();
                             std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
-                            if (ext != ".cs") continue; // only C# scripts
+                            if (ext != ".cs") continue;
 
-                            std::string stem = entry.path().stem().string();
+                            std::string stem = it->path().stem().string();
                             if (filter[0] && stem.find(filter) == std::string::npos)
                                 continue;
 
@@ -914,7 +918,6 @@ R"(using System;
                 MonoManager::ReloadScripts(); // called on main thread
             }
 
-            ImGui::SameLine();
             if (ImGui::Button("Start"))
                 sc->Start();
 
