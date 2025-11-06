@@ -10,13 +10,14 @@ namespace CrashoutsEngine {
 
     using namespace Component;
 
-
+    // Get or create a ChildrenComponent on a parent entity.
     static inline ChildrenComponent* GetOrAddChildren(ECS& ecs, Entity parent) {
         if (ecs.HasComponent<ChildrenComponent>(parent))
             return ecs.GetComponent<ChildrenComponent>(parent);
         return &ecs.AddComponent<ChildrenComponent>(parent, ChildrenComponent{});
     }
 
+    // Get or create a ParentComponent on a child entity.
     static inline ParentComponent* GetOrAddParent(ECS& ecs, Entity child) {
         if (ecs.HasComponent<ParentComponent>(child))
             return ecs.GetComponent<ParentComponent>(child);
@@ -24,7 +25,7 @@ namespace CrashoutsEngine {
     }
 
 
-    // color
+    // inheritance helpers
     static CEVec3 GetAncestorColor(ECS& ecs, Entity e) {
         using namespace Component;
         // if this direct parent has ShapeComponent, use that;

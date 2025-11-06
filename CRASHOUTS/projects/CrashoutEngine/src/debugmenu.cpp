@@ -1308,7 +1308,8 @@ namespace UI { // --------------------------------------------------------------
                 {
                     // gizmo starts exactly on the parent
                     float tr[3] = { rootT->position.x, rootT->position.y, rootT->position.z };
-                    float rt[3] = { 0.f, 0.f, rootT->rotation };
+                    float rt[3] = { 0.f, 0.f, glm::degrees(rootT->rotation) }; // radians -> degrees for ImGuizmo
+
                     float sc[3] = { rootT->size.x, rootT->size.y, 1.f };
 
                     float m[16];
@@ -1358,22 +1359,27 @@ namespace UI { // --------------------------------------------------------------
                         else
                         {
                             rootT->position = { newTr[0], newTr[1], newTr[2] };
-                            rootT->rotation = newRt[2];
+                            //rotation test
+                            rootT->rotation = glm::radians(newRt[2]); 
+
                             rootT->size.x = newSc[0];
                             rootT->size.y = newSc[1];
 
                             if (g_gizmoOp == ImGuizmo::ROTATE)
                             {
+                                // parent: degrees from gizmo; compute delta vs old parent rotation
+                                const float oldParentRad = rootT->rotation;                  // stored BEFORE we overwrite it
                                 const float parentDeg = newRt[2];
+                                const float deltaDeg = parentDeg - glm::degrees(oldParentRad);
+                                const float deltaRad = glm::radians(deltaDeg);
 
                                 for (Entity e : group)
                                 {
                                     if (e == root) continue;
-                                    if (!ecs.HasComponent<Component::TransformComponent>(e)) continue;
+                                    if (!ecs.HasComponent<Component::ParentComponent>(e)) continue;
 
-                                    auto* t = ecs.GetComponent<Component::TransformComponent>(e);
-
-                                    t->rotation = parentDeg;
+                                    auto* ppc = ecs.GetComponent<Component::ParentComponent>(e);
+                                    ppc->localRot += deltaRad;    // adjust the local rotation; hierarchy will recompute world
                                 }
                             }
                             else if (g_gizmoOp == ImGuizmo::SCALE)
