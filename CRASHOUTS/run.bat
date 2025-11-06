@@ -10,7 +10,7 @@ if not defined CONFIG set "CONFIG=Debug"
 if /i "%CONFIG%"=="debug" set "CONFIG=Debug"
 if /i "%CONFIG%"=="release" set "CONFIG=Release"
 
-set "BUILD_DIR=build/x64-%CONFIG%"
+set "BUILD_DIR=build"
 
 echo Target Configuration: %CONFIG%
 
@@ -26,7 +26,7 @@ if ERRORLEVEL 1 goto :FAIL
 
 REM STEP 3: Run
 echo [3/3] Launching executable...
-set "EXE_PATH=%BUILD_DIR%\%EXE_NAME%"
+set "EXE_PATH=%BUILD_DIR%\x64-%CONFIG%\%EXE_NAME%"
 
 if exist "%EXE_PATH%" (
     echo Found: %EXE_PATH%
