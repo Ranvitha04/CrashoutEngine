@@ -261,15 +261,6 @@ namespace UI { // --------------------------------------------------------------
         }
         ImGui::SeparatorText("Prefab Creator");
         static char nameBuf[128] = { 0 };
-        ImGui::InputTextWithHint("Prefab name", "e.g. Box, Platform, Player...", nameBuf, IM_ARRAYSIZE(nameBuf));
-        ImGui::SameLine();
-        if (ImGui::Button("Create##PrefabByName")) {
-            std::string n = nameBuf;
-            if (n.empty()) n = "Entity";
-            Prefab::Create(ecs, n);      
-            nameBuf[0] = '\0';
-        }
-
         {
             auto names = Prefab::Names();
             if (!names.empty()) {

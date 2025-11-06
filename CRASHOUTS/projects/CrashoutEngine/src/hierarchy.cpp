@@ -22,12 +22,12 @@ namespace CrashoutsEngine {
             return ecs.GetComponent<ParentComponent>(child);
         return &ecs.AddComponent<ParentComponent>(child, ParentComponent{});
     }
-    // ---- COLOR INHERITANCE HELPERS (add in hierarchy.cpp) ----------------------
 
-// climb up until we find an ancestor with a ShapeComponent; return its color
+
+    // color
     static CEVec3 GetAncestorColor(ECS& ecs, Entity e) {
         using namespace Component;
-        // if this direct parent has ShapeComponent, use that; else climb further
+        // if this direct parent has ShapeComponent, use that;
         while (ecs.HasComponent<ParentComponent>(e)) {
             auto* pc = ecs.GetComponent<ParentComponent>(e);
             const Entity p = pc->parent;
@@ -44,7 +44,7 @@ namespace CrashoutsEngine {
     }
 
     // Force a child to take its parent's (ancestor) color every update.
-    // Uses ParentComponent::colorMul as a per-link multiplier.
+ 
     static void ForceInheritColorFromParent(ECS& ecs, Entity child) {
         using namespace Component;
 
