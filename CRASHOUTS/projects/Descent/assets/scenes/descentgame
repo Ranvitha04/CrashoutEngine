@@ -5,13 +5,13 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -56.544471740722659,
-                    "y": 10.716939926147461,
+                    "x": -52.60515213012695,
+                    "y": 20.831327438354493,
                     "z": 3.9000000953674318
                 },
                 "size": {
-                    "x": 69.87100219726563,
-                    "y": 48.88999938964844
+                    "x": 57.90888595581055,
+                    "y": 40.519920349121097
                 }
             },
             "rigidbody": {
@@ -26,18 +26,19 @@
             "collider": {
                 "type": 1,
                 "min": {
-                    "x": -63.96958923339844,
-                    "y": -6.432588577270508,
+                    "x": -60.0302619934082,
+                    "y": 3.6817989349365236,
                     "z": 3.9000000953674318
                 },
                 "max": {
-                    "x": -49.119354248046878,
-                    "y": 27.86646842956543,
+                    "x": -45.1800422668457,
+                    "y": 37.980857849121097,
                     "z": 3.9000000953674318
                 }
             },
             "shape": {
                 "useTexture": true,
+                "isWorldSpace": true,
                 "wrapModeU": 1,
                 "wrapModeV": 0,
                 "thickness": 1.0,
@@ -67,12 +68,12 @@
             "camera": {
                 "zoom": 1.0,
                 "xBounds": {
-                    "x": 0.0,
-                    "y": 0.0
+                    "x": -65.0,
+                    "y": 575.0
                 },
                 "yBounds": {
-                    "x": 0.0,
-                    "y": 0.0
+                    "x": -57.0,
+                    "y": 81.0
                 }
             }
         },
@@ -112,7 +113,8 @@
                 }
             },
             "shape": {
-                "useTexture": false,
+                "useTexture": true,
+                "isWorldSpace": true,
                 "wrapModeU": 0,
                 "wrapModeV": 0,
                 "thickness": 1.0,
@@ -151,7 +153,7 @@
             }
         },
         {
-            "name": "Energy_Bar_Front",
+            "name": "Energy_Bar_Inner",
             "transform": {
                 "rotation": 0.0,
                 "position": {
@@ -165,7 +167,8 @@
                 }
             },
             "shape": {
-                "useTexture": false,
+                "useTexture": true,
+                "isWorldSpace": true,
                 "wrapModeU": 0,
                 "wrapModeV": 0,
                 "thickness": 1.0,
@@ -249,13 +252,14 @@
                 }
             },
             "shape": {
-                "useTexture": false,
+                "useTexture": true,
+                "isWorldSpace": true,
                 "wrapModeU": 0,
                 "wrapModeV": 0,
                 "thickness": 1.0,
                 "preview": false,
                 "type": 0,
-                "textureName": "",
+                "textureName": "backgrounds\\bg 1 top.png",
                 "uvSize": {
                     "x": 1.0,
                     "y": 1.0
@@ -293,6 +297,7 @@
             },
             "shape": {
                 "useTexture": true,
+                "isWorldSpace": true,
                 "wrapModeU": 2,
                 "wrapModeV": 2,
                 "thickness": 1.0,
@@ -325,8 +330,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 266.0492248535156,
-                    "y": 63.46136474609375,
+                    "x": 252.65594482421876,
+                    "y": 53.894805908203128,
                     "z": -3.5
                 },
                 "size": {
@@ -336,12 +341,13 @@
             },
             "shape": {
                 "useTexture": true,
+                "isWorldSpace": true,
                 "wrapModeU": 2,
                 "wrapModeV": 2,
                 "thickness": 1.0,
                 "preview": false,
                 "type": 0,
-                "textureName": "bg 1 top",
+                "textureName": "backgrounds\\bg 1 top.png",
                 "uvSize": {
                     "x": 6.050000190734863,
                     "y": 1.0
@@ -379,6 +385,7 @@
             },
             "shape": {
                 "useTexture": true,
+                "isWorldSpace": true,
                 "wrapModeU": 0,
                 "wrapModeV": 0,
                 "thickness": 1.0,
@@ -443,7 +450,8 @@
                 }
             },
             "shape": {
-                "useTexture": false,
+                "useTexture": true,
+                "isWorldSpace": true,
                 "wrapModeU": 0,
                 "wrapModeV": 0,
                 "thickness": 1.0,
@@ -487,6 +495,7 @@
             },
             "shape": {
                 "useTexture": true,
+                "isWorldSpace": true,
                 "wrapModeU": 0,
                 "wrapModeV": 0,
                 "thickness": 1.0,
@@ -530,6 +539,7 @@
             },
             "shape": {
                 "useTexture": true,
+                "isWorldSpace": true,
                 "wrapModeU": 1,
                 "wrapModeV": 0,
                 "thickness": 1.0,
@@ -562,7 +572,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 255.30892944335938,
+                    "x": 278.2686462402344,
                     "y": 2.9245758056640627,
                     "z": -5.0
                 },
@@ -573,12 +583,13 @@
             },
             "shape": {
                 "useTexture": true,
+                "isWorldSpace": true,
                 "wrapModeU": 0,
                 "wrapModeV": 0,
                 "thickness": 1.0,
                 "preview": false,
                 "type": 0,
-                "textureName": "bg2 p2",
+                "textureName": "backgrounds\\bg2 p2.png",
                 "uvSize": {
                     "x": 1.0,
                     "y": 1.0
@@ -616,6 +627,7 @@
             },
             "shape": {
                 "useTexture": true,
+                "isWorldSpace": true,
                 "wrapModeU": 1,
                 "wrapModeV": 0,
                 "thickness": 1.0,
@@ -648,8 +660,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 258.1731872558594,
-                    "y": -114.86674499511719,
+                    "x": 249.53353881835938,
+                    "y": -121.5610580444336,
                     "z": 0.0
                 },
                 "size": {
@@ -669,18 +681,19 @@
             "collider": {
                 "type": 1,
                 "min": {
-                    "x": -173.7874755859375,
-                    "y": -131.97723388671876,
+                    "x": -182.4271240234375,
+                    "y": -138.67153930664063,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 690.1338500976563,
-                    "y": -97.75625610351563,
+                    "x": 681.4942016601563,
+                    "y": -104.45057678222656,
                     "z": 0.0
                 }
             },
             "shape": {
-                "useTexture": false,
+                "useTexture": true,
+                "isWorldSpace": true,
                 "wrapModeU": 0,
                 "wrapModeV": 0,
                 "thickness": 1.0,
@@ -692,9 +705,9 @@
                     "y": 1.0
                 },
                 "color": {
-                    "x": 116.25001525878906,
-                    "y": 49.57720947265625,
-                    "z": 49.57720947265625
+                    "x": 116.00000762939453,
+                    "y": 50.000003814697269,
+                    "z": 50.000003814697269
                 },
                 "p1": {
                     "x": 0.0,
@@ -743,34 +756,6 @@
                     "y": 248.66558837890626,
                     "z": 0.0
                 }
-            },
-            "shape": {
-                "useTexture": false,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "color": {
-                    "x": 116.25001525878906,
-                    "y": 49.57720947265625,
-                    "z": 49.57720947265625
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
             }
         },
         {
@@ -792,47 +777,6 @@
                 "restitutionCoeff": 0.0,
                 "maximumVelocity": {
                     "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "collider": {
-                "type": 1,
-                "min": {
-                    "x": 663.2349853515625,
-                    "y": -159.2218017578125,
-                    "z": 0.0
-                },
-                "max": {
-                    "x": 684.7884521484375,
-                    "y": 248.66558837890626,
-                    "z": 0.0
-                }
-            },
-            "shape": {
-                "useTexture": false,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "color": {
-                    "x": 116.25001525878906,
-                    "y": 49.57720947265625,
-                    "z": 49.57720947265625
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
                     "y": 0.0,
                     "z": 0.0
                 }

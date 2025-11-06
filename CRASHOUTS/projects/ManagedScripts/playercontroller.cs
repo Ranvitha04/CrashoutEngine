@@ -25,18 +25,18 @@ namespace CrashoutsEngine
             {
                 //Console.WriteLine("A key is pressed");
                 //Console.WriteLine("[C#] mass=" + rb.GetMass());
-                rb.AddForce(new Vector3(-100f, 0f, 0f));
+                rb.AddForce(new Vector3(-500f, 0f, 0f));
             }
 
             if (Input.IsKeyPressed(Key.D))
             {
-                rb.AddForce(new Vector3(100f, 0f, 0f));
+                rb.AddForce(new Vector3(500f, 0f, 0f));
             }
 
             if (Input.IsKeyTriggered(Key.Space))
             {
-                rb.AddForce(new Vector3(0f, 300f, 0f) * rb.GetMass());
-                //Console.WriteLine("[C#] mass=" + rb.GetMass());
+                rb.AddForce(new Vector3(0f, 40000f, 0f)); //* rb.GetMass());
+                Console.WriteLine("[C#] mass=" + rb.GetMass());
             }
 
             if (Input.IsKeyPressed(Key.S))

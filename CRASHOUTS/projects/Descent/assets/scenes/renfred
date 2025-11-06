@@ -47,6 +47,7 @@
             },
             "shape": {
                 "useTexture": false,
+                "isWorldSpace": true,
                 "wrapModeU": 0,
                 "wrapModeV": 0,
                 "thickness": 1.0,
@@ -180,6 +181,7 @@
             },
             "shape": {
                 "useTexture": false,
+                "isWorldSpace": true,
                 "wrapModeU": 0,
                 "wrapModeV": 0,
                 "thickness": 1.0,
@@ -311,6 +313,7 @@
             },
             "shape": {
                 "useTexture": false,
+                "isWorldSpace": true,
                 "wrapModeU": 0,
                 "wrapModeV": 0,
                 "thickness": 1.0,
@@ -397,6 +400,7 @@
             },
             "shape": {
                 "useTexture": false,
+                "isWorldSpace": true,
                 "wrapModeU": 0,
                 "wrapModeV": 0,
                 "thickness": 1.0,

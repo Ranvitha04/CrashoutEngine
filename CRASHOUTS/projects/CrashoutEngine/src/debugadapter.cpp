@@ -330,6 +330,7 @@ namespace {
             
             // shared
             ImGui::Checkbox("Use TextureAsset", &sc->enableTexture);
+            ImGui::Checkbox("Use World Space", &sc->isWorldSpace);
 
             char buf[256]{};
             if (sc->textureName.size() < sizeof(buf)) std::memcpy(buf, sc->textureName.data(), sc->textureName.size());

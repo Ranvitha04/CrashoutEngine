@@ -20,6 +20,7 @@ This file
 #include "assetmanager.h"
 #include "sceneasset.h"
 #include "gamestatemanager.h"
+#include "inputmanager.h"
 /*                                                   Global Variables
 ----------------------------------------------------------------------------- */
 

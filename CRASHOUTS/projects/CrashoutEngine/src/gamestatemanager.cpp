@@ -87,9 +87,8 @@ void InitGameStateManager(GameState initialState){
 @param newState The state to transition to
 */
 void ChangeGameState(GameState newState, bool resetEngineState) {
-    (void)resetEngineState;
-    //if(resetEngineState) engineState = EngineState::STOP;
-    engineState = EngineState::STOP;
+    if(resetEngineState) engineState = EngineState::STOP;
+    //engineState = EngineState::STOP;
 	NextGameState = newState;
 }
 

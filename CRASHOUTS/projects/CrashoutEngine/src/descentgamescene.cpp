@@ -20,11 +20,20 @@ This file
 #include "assetmanager.h"
 #include "sceneasset.h"
 #include "monomanager.h"
+#include "engine.h"
 /*                                                   Global Variables
 ----------------------------------------------------------------------------- */
 
 static CrashoutsEngine::ECS* globalECS;
 static const char* sceneName = "descentgame";
+
+static bool isLight{ false };
+static float energyBar{ 100.f };
+static float energyBarLen;
+
+#define NORMAL_MASS		5.0f
+#define LIGHT_MASS		2.5f
+#define ENERGY_USAGE	10.f
 
 void LoadDescentGame()
 {
@@ -48,13 +57,56 @@ void InitDescentGame()
 		ScriptComponent* s = globalECS->GetComponent<ScriptComponent>(playerID);
 		s->Initialize(MonoManager::GetDomain(), MonoManager::GetAssembly());
 	}
+
+	Entity energyEntity = globalECS->FindEntityByName("Energy_Bar_Inner");
+	TransformComponent* energyTransform = globalECS->GetComponent<TransformComponent>(energyEntity);
+	if (energyTransform) {
+		energyBarLen = energyTransform->size.x;
+	}
+
 	LOGI(Core, "Descent Menu Initialized");
 }
 
 void UpdateDescentGame()
 {
+	using namespace CrashoutsEngine;
 	// Update logic for DescentGame state
+	// Player W,A,S,D, SPACE
+	Entity playerEntity = globalECS->FindEntityByName("Player");
+	TransformComponent* playerTransform = globalECS->GetComponent<TransformComponent>(playerEntity);
+	if (playerTransform && engineState == EngineState::PLAY) {
+		if (InputManager::IsKeyTriggered(Key::A)) {
+			if (playerTransform->size.x > 0) playerTransform->size.x *= -1.f;
+		}
+		if (InputManager::IsKeyTriggered(Key::D)) {
+			if (playerTransform->size.x < 0) playerTransform->size.x *= -1.f;
+		}
+		if (InputManager::IsKeyTriggered(Key::E)) {
+			if(energyBar > 0) energyBar -= ENERGY_USAGE;
+			// Update energy bar
+			Entity energyEntity = globalECS->FindEntityByName("Energy_Bar_Inner");
+			TransformComponent* energyTransform = globalECS->GetComponent<TransformComponent>(energyEntity);
+			if(energyTransform) energyTransform->size.x = energyBarLen * (energyBar * 0.01f);
 
+			if (energyBar > 0) {
+				isLight = !isLight;
+				ShapeComponent* s = globalECS->GetComponent<ShapeComponent>(playerEntity);
+				if (s) {
+					if (isLight) {
+						s->textureName = "Character/New Artstyle/Chibi-7.png";
+					}
+					else {
+						s->textureName = "Character/New Artstyle/Chibi-1.png";
+					}
+				}
+				RigidBodyComponent* r = globalECS->GetComponent<RigidBodyComponent>(playerEntity);
+				if (r) {
+					if (isLight)	r->setMass((CE::f32)LIGHT_MASS);
+					if (!isLight)	r->setMass((CE::f32)NORMAL_MASS);
+				}
+			}
+		}
+	}
 }
 
 void RenderDescentGame()
@@ -70,7 +122,7 @@ void RenderDescentGame()
 void FreeDescentGame()
 {
 	// Free resources specific to DescentGame state
-	CrashoutsEngine::Serialization::SaveScenes(sceneName);
+	if(CurrentGameState != NextGameState) CrashoutsEngine::Serialization::SaveScenes(sceneName);
 }
 
 void UnloadDescentGame()

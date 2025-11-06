@@ -45,6 +45,7 @@ namespace Component {
         // -------------------- TextureAsset Settings --------------------
 
         bool enableTexture{ false }; ///< Toggle to enable texturing for this shape.
+        bool isWorldSpace{ true }; ///< Toggle to enable world space / view space
 
         int  wrapModeU{ 0 }; ///< U wrap mode (renderer-defined enum/integer).
         int  wrapModeV{ 0 }; ///< V wrap mode (renderer-defined enum/integer).

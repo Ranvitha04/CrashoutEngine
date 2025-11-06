@@ -85,33 +85,33 @@ namespace Scene {
                 case ShapeType::Rectangle:
                     if (useTexture) {
                         Shapes::CreateTexturedRectangle(tf->size,
-                            sc->textureName, pos, rot, sc->color * (1 / 255.f), sc->uvSize);
+                            sc->textureName, pos, rot, sc->color * (1 / 255.f), sc->uvSize, sc->isWorldSpace);
                         break;
                     } else {
                         Shapes::CreateRectangle(tf->size,
-                            pos, rot, sc->color * (1 / 255.f)
+                            pos, rot, sc->color * (1 / 255.f), sc->isWorldSpace
                         );
                         break;
                     }
                 // ============================================LINE======================================================
                 case ShapeType::Line:
-                    Shapes::CreateLine(sc->p1 + pos, sc->p2 + pos, sc->thickness, sc->color * (1 / 255.f)); break;
+                    Shapes::CreateLine(sc->p1 + pos, sc->p2 + pos, sc->thickness, sc->color * (1 / 255.f), sc->isWorldSpace); break;
                 // ==========================================TRIANGLE====================================================
                 case ShapeType::Triangle:
                     if (useTexture) {
                         Shapes::CreateTexturedTriangle(tf->size, sc->textureName,
-                            pos, rot, sc->color * (1 / 255.f), sc->uvSize
+                            pos, rot, sc->color * (1 / 255.f), sc->uvSize, sc->isWorldSpace
                         );
                         break;
                     } else {
                         Shapes::CreateTriangle(tf->size, pos,
-                            rot, sc->color * (1 / 255.f)
+                            rot, sc->color * (1 / 255.f), sc->isWorldSpace
                         );
                         break;
                     }
                 // ==========================================CIRCLE======================================================
                 case ShapeType::Circle:
-                    Shapes::CreateCircle(tf->size, tf->position, 32, tf->rotation, sc->color * (1 / 255.f)); break;
+                    Shapes::CreateCircle(tf->size, tf->position, 32, tf->rotation, sc->color * (1 / 255.f), sc->isWorldSpace); break;
                 }
             }
         }
