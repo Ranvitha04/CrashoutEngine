@@ -781,12 +781,14 @@ namespace {
                 return;
 
             // editable class name
-            char buf[128]{};
-            std::snprintf(buf, sizeof(buf), "%s", sc->ClassName.c_str());
-            ImGui::SetNextItemWidth(ImGui::GetFontSize() * 12.0f);
-            if (ImGui::InputText("Class Name", buf, sizeof(buf)))
-            {
+            char buf[128];
+            strcpy_s(buf, sc->ClassName.c_str());
+            if (ImGui::InputText("Class Name", buf, sizeof(buf))) {
                 sc->ClassName = buf;
+                if (!sc->ClassName.empty() && MonoManager::GetAssembly()) {
+                    sc->Destroy();
+                    sc->Initialize(MonoManager::GetDomain(), MonoManager::GetAssembly());
+                }
             }
 
             ImGui::SameLine();
