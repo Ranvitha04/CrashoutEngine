@@ -1,3 +1,9 @@
+/*!
+@file		scriptsystem.h
+@author     m.biniswandi@digipen.edu
+@date       06/11/2025
+@brief		Declaration of script system class
+*/
 #pragma once
 #include "entitymanager.h"
 #include "scriptcomponent.h"

@@ -1,3 +1,9 @@
+/*!
+@file		scriptcomponent.cpp
+@author     m.biniswandi@digipen.edu
+@date       06/11/2025
+@brief		Definitions of script component functions
+*/
 #include "ScriptComponent.h"
 #include <mono/metadata/mono-config.h>
 

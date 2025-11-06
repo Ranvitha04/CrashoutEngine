@@ -20,6 +20,7 @@ runtime-extensible and project-agnostic.
 #include <algorithm>
 #include <filesystem>
 #include <numeric>
+#include <fstream>
 #include "debugdefaults.h"
 
 /*                                                         component includes
@@ -780,14 +781,105 @@ namespace {
                 return;
 
             // editable class name
-            char buf[128]{};
-            std::snprintf(buf, sizeof(buf), "%s", sc->ClassName.c_str());
-            if (ImGui::InputText("Class Name", buf, sizeof(buf)))
-            {
+            char buf[128];
+            strcpy_s(buf, sc->ClassName.c_str());
+            if (ImGui::InputText("Class Name", buf, sizeof(buf))) {
                 sc->ClassName = buf;
-                // optional: re-init right away when name changes
-                // sc->Destroy();
-                // sc->Initialize(MonoManager::GetDomain(), MonoManager::GetAssembly());
+                if (!sc->ClassName.empty() && MonoManager::GetAssembly()) {
+                    sc->Destroy();
+                    sc->Initialize(MonoManager::GetDomain(), MonoManager::GetAssembly());
+                }
+            }
+
+            ImGui::SameLine();
+            if (ImGui::SmallButton("...")) {
+                ImGui::OpenPopup("Pick Script Class");
+            }
+
+            if (ImGui::BeginPopupModal("Pick Script Class", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
+                namespace fs = std::filesystem;
+                static char filter[128] = {};
+                ImGui::InputTextWithHint("##script_filter", "filter...", filter, sizeof(filter));
+                ImGui::Separator();
+
+                // list scripts from your C# project
+                fs::path base = "../../projects/ManagedScripts";
+                // can adjust if you want subfolder
+                // fs::path scriptsDir = base;
+
+                // we can make it scrollable
+                if (ImGui::BeginChild("script_list", ImVec2(320, 240), true)) {
+                    try {
+                        for (auto& entry : fs::recursive_directory_iterator(base)) {
+                            if (entry.is_directory()) {
+                                if (entry.path().filename() == "obj") {
+                                    continue;
+                                }
+                            }
+
+                            if (!entry.is_regular_file()) continue;
+
+                            auto ext = entry.path().extension().string();
+                            std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+                            if (ext != ".cs") continue; // only C# scripts
+
+                            std::string stem = entry.path().stem().string();
+                            if (filter[0] && stem.find(filter) == std::string::npos)
+                                continue;
+
+                            if (ImGui::Selectable(stem.c_str())) {
+                                sc->ClassName = stem;
+                                ImGui::CloseCurrentPopup();
+                            }
+                        }
+                    }
+                    catch (...) {
+                        // ignore fs errors
+                    }
+                    ImGui::EndChild();
+                    if (ImGui::Button("Cancel")) ImGui::CloseCurrentPopup();
+                }
+
+                ImGui::EndPopup();
+            }
+            if (ImGui::SmallButton("Open in VS")) {
+                namespace fs = std::filesystem;
+                fs::path base = "../../projects/ManagedScripts";
+                fs::path file = base / (sc->ClassName + ".cs");
+
+                if (fs::exists(file)) {
+                    std::string cmd = "start \"\" \"" + file.string() + "\"";
+                    system(cmd.c_str());
+
+                }
+                else {
+                    std::cout << "Script not found: " << file << std::endl;
+                }
+            }
+
+            if (ImGui::SmallButton("New C# Script")) {
+                namespace fs = std::filesystem;
+                fs::path base = "../../projects/ManagedScripts";
+
+                std::string filename = "NewScript";
+                int counter = 1;
+                fs::path file = base / (filename + ".cs");
+                while (fs::exists(file)) {
+                    file = base / (filename + std::to_string(counter++) + ".cs");
+                }
+
+                // write a basic template
+                std::ofstream out(file);
+                out << 
+R"(using System;
+                    
+    public class )" << file.stem().string() << R"(
+    {
+        public void Start() { }
+        public void Update() { }
+    }
+)";
+                out.close();
             }
 
             bool monoReady = (MonoManager::GetDomain() != nullptr && MonoManager::GetAssembly() != nullptr);
@@ -795,11 +887,31 @@ namespace {
 
             if (!monoReady) ImGui::BeginDisabled();
 
-            // init / reinit
-            if (ImGui::Button(sc->Instance ? "Reinitialize" : "Initialize"))
+            // Reload Script to basically reinitialize
+            static bool isBuilding = false;
+
+            static std::atomic<bool> reloadPending = false;
+
+            if (ImGui::Button("Reload Scripts"))
             {
-                sc->Destroy();
-                sc->Initialize(MonoManager::GetDomain(), MonoManager::GetAssembly());
+                if (!isBuilding)
+                {
+                    isBuilding = true;
+                    std::thread([]() {
+                        int result = system(
+                            "dotnet clean \"../../projects/ManagedScripts/ManagedScripts.csproj\" -c Debug > buildlog.txt 2>&1 && "
+                            "dotnet build \"../../projects/ManagedScripts/ManagedScripts.csproj\" -c Debug --no-incremental > buildlog.txt 2>&1"
+                        );
+                        if (result == 0)
+                            reloadPending = true; // signal reload
+                        isBuilding = false;
+                        }).detach();
+                }
+            }
+            if (reloadPending)
+            {
+                reloadPending = false;
+                MonoManager::ReloadScripts(); // called on main thread
             }
 
             ImGui::SameLine();

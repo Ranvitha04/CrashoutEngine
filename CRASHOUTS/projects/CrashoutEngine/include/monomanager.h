@@ -1,3 +1,9 @@
+/*!
+@file		monomanager.h
+@author     m.biniswandi@digipen.edu
+@date       06/11/2025
+@brief		Declaration of Mono Manager class
+*/
 #pragma once
 #include <filesystem>
 #include <string>
