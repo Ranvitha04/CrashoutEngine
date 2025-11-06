@@ -7,10 +7,12 @@
 //__________________________________________________________________________*/
 
 #include "physicsmanager.h"
+#include "frameratecontroller.h"
 #include "log.h"
 #include <cstdio>
 #include "CEMath.h"
 #include "observer.h"
+#include "physicsmanager.h"
 
 
 namespace Component {
@@ -78,6 +80,10 @@ namespace Component {
 		return mRestitutionCoeff;
 	}
 
+	Physics::ForceManager& RigidBodyComponent::getForceManager() {
+		return fm;
+	}
+
 	CEVec3 RigidBodyComponent::getMaxVelocity() {
 		return mMaximumVel;
 	}
@@ -137,7 +143,6 @@ namespace Physics {
 		//	if (!sStepOnce) return;
 		//	// allow exactly one tick when paused+Step pressed
 		//}
-
 		// Integrate Physics
 		f32 newDelta{ static_cast<float>(dt) };
 		rigidBodyComp->updatePhysics(dt); /*UPDATE CURRENT VELOCITY AND RESET NET FORCE*/
@@ -216,12 +221,14 @@ namespace Physics {
 
 			/*APPLY ANY FORCE GENERATOR HERE, EVERY ENTITY IS AFFECTED*/
 
-			//LOOSE FRICTION IMPLEMENTATION
+			//FRICTION IMPLEMENTATION, TODO FIND A BETTER WAY TO CALCULATE DRAG FORCES
 			if (CEMath::LengthSq(rigidBody->getVelocity()) > 0.f) {
 				rigidBody->addForce(-(rigidBody->getVelocity() * 1.0f * rigidBody->getMass()));
 			}
 
-			rigidBody->addForce(CEVec3{ 0.f, -60.f, 0.f } *rigidBody->getMass()); /*GRAVITY*/
+			ForceManager& fm{ rigidBody->getForceManager() };
+			CEVec3 resultant{ fm.ResolveForces(static_cast<f32>(deltaTime), rigidBody->getMass()) };
+			rigidBody->addForce(resultant); /*GRAVITY*/
 
 		}
 
@@ -231,7 +238,10 @@ namespace Physics {
 			Component::TransformComponent* transform{ globalECS.GetComponent<Component::TransformComponent>(entity) };
 			Component::RigidBodyComponent* rigidBody{ globalECS.GetComponent<Component::RigidBodyComponent>(entity) };
 
-			updatePhysics(transform, rigidBody, deltaTime);
+			int step{ FrameRateController::GetInstance().StepCount() };
+			for (int i{}; i < step; ++i) {
+				updatePhysics(transform, rigidBody, deltaTime);
+			}
 
 			if (globalECS.HasComponent<Component::ColliderComponent>(entity)) {
 				Component::ColliderComponent* c { globalECS.GetComponent<Component::ColliderComponent>(entity) };

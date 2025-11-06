@@ -8,6 +8,7 @@
 
 #pragma once
 #include <CEVec3.h>
+#include "physicsutils.h"
 
 namespace Component {
 	class RigidBodyComponent {
@@ -17,6 +18,7 @@ namespace Component {
 			f32 mMass;
 			CEVec3 mNetForce;
 			f32 mRestitutionCoeff; /*Measure of elasticity*/
+			Physics::ForceManager fm;
 		public:
 
 			struct ReflectionType {
@@ -56,5 +58,6 @@ namespace Component {
 			void setRestitution(f32 restitution);
 			void setVelocity(CEVec3 const& newVel);
 			f32 getCoeff();
+			Physics::ForceManager& getForceManager();
 	};
 }

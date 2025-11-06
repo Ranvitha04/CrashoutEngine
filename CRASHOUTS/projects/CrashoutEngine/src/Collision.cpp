@@ -60,11 +60,11 @@ namespace Collision {
 			CEVec3 extents{ sphere.radius, sphere.radius, 0.f };
 			return AABBRect{ transform - extents, transform + extents };
 		}
-				   break;
+			break;
 		case AABB: {
 			return dynamic_cast<AABBRect const&>(collider);
-		}
-				 break;
+			}
+			break;
 		case OBB: {
 			OBBRect const& obb{ dynamic_cast<OBBRect const&>(collider) };
 			CEVec3 minXY{ obb.rotatedVertices[0].x, obb.rotatedVertices[0].y, transform.z };
@@ -79,8 +79,8 @@ namespace Collision {
 			}
 
 			return AABBRect{ minXY, maxXY };
-		}
-				break;
+			}
+			break;
 
 		}
 

@@ -41,7 +41,6 @@ void FrameRateController::Reset()
 void FrameRateController::FrameStart()
 {
 	mFrameStart = ClockTime::now();
-	mCurrentSteps = 0;
 }
 
 void FrameRateController::FrameEnd()
@@ -52,7 +51,7 @@ void FrameRateController::FrameEnd()
 	//clamp dt between 0.1ms and 250ms so the game does not blow up - Rain
 	mDT = std::clamp(elapsed, 0.0001, 0.25);
 	mFPS = 1.0 / mDT;
-
+	mCurrentSteps = 0;
 	// accumulate time since last frame
 	mAccumulatedTime += mDT;
 	// count how many physics steps to run

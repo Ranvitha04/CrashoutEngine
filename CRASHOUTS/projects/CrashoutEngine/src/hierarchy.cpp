@@ -208,5 +208,30 @@ namespace CrashoutsEngine {
         }
     }
 
+    Entity GetRoot(ECS& ecs, Entity e)
+    {
+        Entity cur = e;
+        while (cur && ecs.HasComponent<Component::ParentComponent>(cur))
+        {
+            auto* pc = ecs.GetComponent<Component::ParentComponent>(cur);
+            if (!pc->parent)
+                break;
+            cur = pc->parent;
+        }
+        return cur;
+    }
+
+    void GatherDescendants(ECS& ecs, Entity e, std::vector<Entity>& out)
+    {
+        out.push_back(e);
+
+        if (ecs.HasComponent<Component::ChildrenComponent>(e))
+        {
+            auto* cc = ecs.GetComponent<Component::ChildrenComponent>(e);
+            for (Entity c : cc->children)
+                GatherDescendants(ecs, c, out);
+        }
+    }
+
 
 } 

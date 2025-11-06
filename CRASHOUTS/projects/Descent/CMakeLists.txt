@@ -59,3 +59,9 @@ add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
     $<TARGET_FILE_DIR:${PROJECT_NAME}>/assets
 )
 
+# Ensure C# scripts (ManagedScripts) are built before Descent
+if (TARGET ManagedScripts)
+    add_dependencies(Descent ManagedScripts)
+endif()
+
+

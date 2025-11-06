@@ -299,8 +299,10 @@ void Update(Component::RigidBodyComponent& playerRigidBody, double const& dt) {
     GLApp::update_time();
     UpdateGameStateManager();
 
+    MonoManager::CheckHotReload();
+
 	CrashoutsEngine::ScriptSystem::UpdateAll(static_cast<float>(FrameRateController::GetInstance().DT()));
-    aiSystem.Update();
+
 
     if (CurrentDescriptor->Update) CurrentDescriptor->Update();
 
@@ -318,6 +320,8 @@ void Update(Component::RigidBodyComponent& playerRigidBody, double const& dt) {
     CrashoutsEngine::UpdateHierarchy(*CrashoutsEngine::ECS::getInstance());
 
     if (engineState == EngineState::PLAY) {
+
+        aiSystem.Update();
 
         {
             FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Collision");
