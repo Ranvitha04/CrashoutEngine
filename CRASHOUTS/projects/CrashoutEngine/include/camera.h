@@ -38,6 +38,8 @@ namespace CrashoutsEngine {
 			const glm::mat4& GetProjectionMatrix() const;
 			const CEVec3& GetPosition() const;
 			float GetZoom() const;
+			float GetFar() const;
+			float GetNear() const;
 
 			// --- Update ---
 			// Call this after changing position, zoom, or aspect ratio
