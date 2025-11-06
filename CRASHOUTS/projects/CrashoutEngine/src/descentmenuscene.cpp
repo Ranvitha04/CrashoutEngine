@@ -55,7 +55,8 @@ void UpdateDescentMenu()
 	ButtonComponent* startBtn = globalECS->GetComponent<ButtonComponent>(startBtnEntity);
 	if (startBtn) {
 		if (startBtn->buttonState == ButtonState::PRESSED) {
-			ChangeGameState(GameState::DESCENT_GAME);
+			startBtn->buttonState = ButtonState::NORMAL;
+			ChangeGameState(GameState::DESCENT_GAME, false);
 		}
 	}
 }

@@ -19,6 +19,7 @@ This file
 #include "entitymanager.h"
 #include "assetmanager.h"
 #include "sceneasset.h"
+#include "monomanager.h"
 /*                                                   Global Variables
 ----------------------------------------------------------------------------- */
 
@@ -38,15 +39,22 @@ void LoadDescentGame()
 
 void InitDescentGame()
 {
+	using namespace CrashoutsEngine;
 	// Initialize DescentGame state
 	CrashoutsEngine::Serialization::LoadScenes(sceneName);
-
+	Entity playerID = globalECS->FindEntityByName("Player");
+	if (playerID >= 0) {
+		globalECS->AddComponent<ScriptComponent>(playerID, ScriptComponent("PlayerController", playerID));
+		ScriptComponent* s = globalECS->GetComponent<ScriptComponent>(playerID);
+		s->Initialize(MonoManager::GetDomain(), MonoManager::GetAssembly());
+	}
 	LOGI(Core, "Descent Menu Initialized");
 }
 
 void UpdateDescentGame()
 {
 	// Update logic for DescentGame state
+
 }
 
 void RenderDescentGame()

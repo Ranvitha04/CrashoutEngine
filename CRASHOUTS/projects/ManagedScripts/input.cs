@@ -12,5 +12,13 @@ namespace CrashoutsEngine
         }
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern bool InternalIsKeyPressed(Key key);
+
+        public static bool IsKeyTriggered(Key key)
+        {
+            return InternalIsKeyTriggered(key);
+        }
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern bool InternalIsKeyTriggered(Key key);
+
     }
 }
