@@ -2,7 +2,7 @@
 @file		scriptsystem.cpp
 @author     m.biniswandi@digipen.edu
 @date       06/11/2025
-@brief		Declaration of script system functions
+@brief		Definition of script system functions
 */
 #include "colliderbindings.h"
 #include "ScriptSystem.h"

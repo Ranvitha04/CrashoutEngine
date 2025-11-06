@@ -1,48 +1,45 @@
 ﻿# MAIN TOP-LEVEL CMAKE FILE
 
 # ======================= Project Configuration =========================
-cmake_minimum_required(VERSION 3.5)
-
-# Set the CMake policy version (this enables all policies up to CMake 3.5)
-cmake_policy(VERSION 3.24)
-
-set(CMAKE_POLICY_VERSION_MINIMUM 3.5)
-
+cmake_minimum_required(VERSION 3.25)
 project(CrashoutEngine CXX)
 
-# Set a single, clean output directory for all binaries.
-# This puts all .exe, .dll, and .lib files in the same place.
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}")
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}")
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}")
+# Allow older dependencies (e.g. GLEW) to configure under modern CMake
+set(CMAKE_POLICY_VERSION_MINIMUM 3.5)
 
-# For multi-configuration generators (like Visual Studio), prevent nested Debug/Release folders.
+# ======================= Output Directory Setup =========================
+# Keep the .sln and CMake metadata in "build/", but output binaries into "build/x64-Debug/" etc.
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/x64-$<CONFIG>")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/x64-$<CONFIG>")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/x64-$<CONFIG>")
+
 foreach(OUTPUTCONFIG Debug Release RelWithDebInfo MinSizeRel)
     string(TOUPPER ${OUTPUTCONFIG} OUTPUTCONFIG_UPPER)
-    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_${OUTPUTCONFIG_UPPER} ${CMAKE_BINARY_DIR})
-    set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_${OUTPUTCONFIG_UPPER} ${CMAKE_BINARY_DIR})
-    set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${OUTPUTCONFIG_UPPER} ${CMAKE_BINARY_DIR})
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_${OUTPUTCONFIG_UPPER} ${CMAKE_BINARY_DIR}/x64-${OUTPUTCONFIG})
+    set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_${OUTPUTCONFIG_UPPER} ${CMAKE_BINARY_DIR}/x64-${OUTPUTCONFIG})
+    set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${OUTPUTCONFIG_UPPER} ${CMAKE_BINARY_DIR}/x64-${OUTPUTCONFIG})
 endforeach()
 
+# ======================= Compiler Settings =========================
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-# Set the directory where custom CMake modules are stored
+# ======================= Module and Dependency Setup ====================
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
 
-# Disable GLFW examples, tests and docs to avoid extra executables
+# Disable GLFW extras to avoid unnecessary builds
 set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
 
-# Include project-wide utility and dependency modules
+# Include project-wide dependency importer
 include(ImportDependencies)
 importDependencies()
 
-# Global compile flags and macros
+# ======================= Compile Definitions ============================
 add_definitions(-DGLEW_STATIC)
-add_definitions(-DUSE_CSD3151_AUTOMATION=0) # Used for instructor's automation
+add_definitions(-DUSE_CSD3151_AUTOMATION=0) # For instructor automation
 
 add_compile_definitions(
     $<$<CONFIG:Debug>:DEBUG=1>
@@ -54,19 +51,18 @@ include_directories(${CMAKE_CURRENT_LIST_DIR}/lib/glm)
 include_directories(${_FMOD_INC})
 include_directories(${_MONO_INC})
 
-# ======================= Global Warning Level =========================
+# ======================= Global Warning Level ===========================
 if (MSVC)
     add_compile_options(
-        /W4          # Level 4 warnings (Good)
-        /permissive- # Strict conformance
-        # /WX          # Warnings as Errors (commented out to allow compilation)
+        /W4          # Level 4 warnings
+        /permissive- # Strict standard conformance
+        # /WX         # Uncomment to treat warnings as errors
     )
 elseif (CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
     add_compile_options(-Wall -Wextra -Wpedantic -Werror)
 endif()
 
 # ========================= Build Sub-Projects ===========================
-# This section explicitly tells CMake to build the engine first, then the game.
-#
+# Build the engine first, then the game.
 add_subdirectory(projects/CrashoutEngine)
 add_subdirectory(projects/Descent)

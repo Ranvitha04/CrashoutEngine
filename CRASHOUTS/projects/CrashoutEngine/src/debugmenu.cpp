@@ -50,8 +50,6 @@ for Crashout Engine.
 #include "ppmanager.h"
 
 #include "engine.h"
-
-#include <thread>
 #include <filesystem>
 
 
@@ -66,7 +64,6 @@ using CrashoutsEngine::Audio::AudioSystem;
 
 #include <vector>
 #include "CEVec3.h"
-#include <filesystem>
 #include "stb_image.h"
 #include <numeric>
 
@@ -163,8 +160,6 @@ namespace { //------------------------------------------------------------------
 
     static void DrawHierarchyNode(ECS& ecs, Entity e, Entity& selected)
     {
-        using namespace Component;
-
         std::string label = ecs.HasComponent<NameComponent>(e)
             ? ecs.GetComponent<NameComponent>(e)->name
             : ("Entity " + std::to_string(e));
@@ -456,7 +451,7 @@ namespace UI { // --------------------------------------------------------------
 
         ImGui::Separator();
 
-        // ---------------- LEFT: Folder tree ----------------
+        // LEFT: Folder tree
         ImGui::BeginChild("asset_left", ImVec2(220, 0), true);
 
         if (ImGui::Selectable("assets", current == fs::path(root))) {
@@ -478,7 +473,7 @@ namespace UI { // --------------------------------------------------------------
 
         ImGui::EndChild();
 
-        // --- RIGHT: Files + Preview ----------------
+        // RIGHT: Files + Preview
         ImGui::SameLine();
         ImGui::BeginChild("asset_right", ImVec2(0, 0), true);
 
@@ -487,7 +482,7 @@ namespace UI { // --------------------------------------------------------------
         float listHeight = availRight.y - kPreviewMaxHeight - ImGui::GetStyle().ItemSpacing.y;
         if (listHeight < 120.0f) listHeight = availRight.y * 0.6f;
 
-        // --- FILE LIST ----------
+        // FILE LIST 
         ImGui::BeginChild("asset_right_list", ImVec2(0, listHeight), true);
 
         if (needScan) {
@@ -566,7 +561,7 @@ namespace UI { // --------------------------------------------------------------
 
         ImGui::EndChild(); // asset_right_list
 
-        // --- PREVIEW ----------
+        // PREVIEW 
         ImGui::Separator();
         ImGui::BeginChild("asset_right_preview", ImVec2(0, 0), true);
 
@@ -826,7 +821,7 @@ namespace UI { // --------------------------------------------------------------
 
         auto nameFor = [&](int id) -> const char* {
             for (auto const& kv : P->states()) {
-                if (kv.second == id) return kv.first;   // kv = {label, id}
+                if (kv.second == id) return kv.first;
             }
             return "(unknown)";
             };
@@ -1098,7 +1093,7 @@ namespace UI { // --------------------------------------------------------------
             ImGuiWindowFlags_NoCollapse |
             ImGuiWindowFlags_NoMove;
 
-        if (ImGui::Begin("Engine Controls"), nullptr, window_flags) {
+        if (ImGui::Begin("Engine Controls", nullptr, window_flags)) {
 
             // Play Stop Pause buttons
             // Play
@@ -1125,7 +1120,17 @@ namespace UI { // --------------------------------------------------------------
                 //MonoManager::ReloadScripts();
                 engineState = EngineState::STOP;
             }
+            
+            ImGui::SeparatorEx(ImGuiSeparatorFlags_Vertical);
+            ImGui::SameLine();
 
+            const char* stateText = "UNKNOWN";
+            switch (engineState) {
+            case EngineState::PLAY:  stateText = "PLAYING"; break;
+            case EngineState::PAUSE: stateText = "PAUSED";  break;
+            case EngineState::STOP:  stateText = "STOPPED"; break;
+            }
+            ImGui::TextDisabled("State: %s", stateText);
         }
 
         ImGui::End();
@@ -1155,7 +1160,7 @@ namespace UI { // --------------------------------------------------------------
             ImGui::BeginChild("ViewportToolbar", ImVec2(1000, 32),
                 false, ImGuiWindowFlags_NoBackground);
 
-            // ----- 1) toolbar (translate / rotate / scale) -----
+            // 1) toolbar (translate / rotate / scale)
             ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(6, 4));
             if (ImGui::Button("None")) g_gizmoOp = (ImGuizmo::OPERATION)0;
             ImGui::SameLine();
@@ -1182,7 +1187,7 @@ namespace UI { // --------------------------------------------------------------
             // Get the size of ImGui window content region
             ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
 
-            // ----- 2) aspect-ratio / letterbox calculation -----
+            // 2) aspect-ratio / letterbox calculation
             float panelWidth = viewportPanelSize.x;
             float panelHeight = viewportPanelSize.y;
             float panelAspect = panelWidth / panelHeight;
@@ -1205,7 +1210,7 @@ namespace UI { // --------------------------------------------------------------
             int finalTextureWidth = std::max(1, (int)targetWidth);
             int finalTextureHeight = std::max(1, (int)targetHeight);
 
-            // ----- 3) draw the actual viewport texture -----
+            // 3) draw the actual viewport texture
             if (gameTextureWidth != finalTextureWidth || gameTextureHeight != finalTextureHeight) {
                 if (finalTextureWidth > 0 && finalTextureHeight > 0) {
                     gameTextureWidth = finalTextureWidth;
@@ -1254,7 +1259,7 @@ namespace UI { // --------------------------------------------------------------
             ImVec2 imgMax = ImGui::GetItemRectMax();
             ImVec2 imgSize = ImGui::GetItemRectSize();
 
-            // ----- 4) ImGuizmo overlay is configured to match the image rect -----
+            // 4) ImGuizmo overlay is configured to match the image rect
             ImGuizmo::BeginFrame();
             ImGuizmo::Enable(true);
 
@@ -1264,7 +1269,7 @@ namespace UI { // --------------------------------------------------------------
             // TRUE - ORTOGRAPHIC, FALSE - PERSPECTIVE
             ImGuizmo::SetOrthographic(true);
 
-            // ----- 5) if we have a selected entity, let gizmo edit its TRS -----
+            // 5) if we have a selected entity, let gizmo edit its TRS
             if (selected && ecs.HasComponent<Component::TransformComponent>(selected))
             {
                 // find the topmost entity for whatever we clicked
@@ -1385,7 +1390,7 @@ namespace UI { // --------------------------------------------------------------
                 }
             }
 
-            // ----- 6) mouse picking: screen -> uv -> world -> pick ECS entity -----
+            // 6) mouse picking: screen -> uv -> world -> pick ECS entity
             ImVec2 mouse = ImGui::GetMousePos();
             const bool over = (mouse.x >= imgMin.x && mouse.x <= imgMax.x && mouse.y >= imgMin.y && mouse.y <= imgMax.y);
 
@@ -1484,7 +1489,7 @@ namespace UI { // --------------------------------------------------------------
                     selected = 0;
             }
 
-            // ------ 7) drag and drop from asset browser into world ------
+            //  7) drag and drop from asset browser into world
             //  Drag-and-drop spawn
             //  Payload is built in the Asset Browser panel.
             //  Here we just read the payload and instantiate a texture/prefab
@@ -1582,7 +1587,7 @@ namespace UI { // --------------------------------------------------------------
 #endif
         ImGuiID dockspace_id = ImGui::GetID("Dockspace"); // Get ID needed for DockBuilder
         ImGuiViewport* viewport = ImGui::GetMainViewport(); // Needed for DockBuilder size
-        // it's all hardcoded? *pulls out glocko* always has been
+
         if (!s_layoutBuilt) {
             s_layoutBuilt = true;
 

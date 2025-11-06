@@ -128,8 +128,14 @@ static void ComputeWorldDimensions(float& worldWidth, float& worldHeight) {
     }
 }
 
+/*!
+@brief Initialize the single duck sprite for display mode 1.
+@details
+- Loads the duck spritesheet and registers animation states.
+- Applies initial position, scale, and rotation.
+- Guards against double-initialization via `gSpriteInitializedInScene`.
+*/
 static void EnsureDuckInitialized() {
-    if (gSpriteInitializedInScene) return;
     Component::Sprite::m_sprite.init("assets/images/ducky_2_spritesheet.png", 4, 6, 0.3f);
     Component::Sprite::m_sprite.addAnimationState("idle_normal", Component::AnimationState(0, 2, 0.22f, true));
     Component::Sprite::m_sprite.addAnimationState("walk_normal", Component::AnimationState(6, 6, 0.09f, true));
@@ -270,15 +276,24 @@ static void InitializeMode5EcsRandomShapes(int perTypeCount) {
     gMode5Initialized = true;
 }
 
+/*!
+@brief Cleanup the single duck sprite state and GPU resources.
+@details Ensures sprite resources are released when leaving mode 1.
+*/
 static void EnsureDuckCleaned() {
     if (!gSpriteInitializedInScene) return;
     Component::Sprite::m_sprite.cleanup();
     gSpriteInitializedInScene = false;
 }
 
+/*!
+@brief Load Ran scene resources and reset ECS state.
+@details
+- Gets the global ECS instance and resets it.
+- Generates and loads the asset manifest so textures/shaders are available.
+*/
 void LoadRan()
 {
-    // Load resources specific to Renfred state
     globalECS = CrashoutsEngine::ECS::getInstance();
     globalECS->Reset();
 
@@ -297,7 +312,12 @@ void InitRan()
     gSpriteInitializedInScene = false;  // allow EnsureDuckInitialized() to run
 }
 
-void RenderBackground() {
+/*!
+@brief Render and scale the background image to fit the world.
+@details Uses aspect-aware world dimensions to size the background quad.
+*/
+static void RenderBackground()
+{
     float worldW, worldH;
     ComputeWorldDimensions(worldW, worldH);
     CEVec2 size{ 1.f, 1.f };
@@ -310,6 +330,14 @@ void RenderBackground() {
     );
 }
 
+/*!
+@brief Update loop for Ran scene handling input and per-mode logic.
+@details
+- Press `G` to cycle display modes (0..6) and reinitialize mode-specific data.
+- Press `M` to toggle textures in modes 2/3/5.
+- Mode 1: update duck movement, scale, and rotation.
+- Mode 6: update ECS duck motion and handle `I` key to cycle manual animation.
+*/
 void UpdateRan()
 {
     // Toggle display mode with G 

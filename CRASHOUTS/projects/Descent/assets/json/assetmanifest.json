@@ -1,6 +1,10 @@
 {
     "audio": [
         {
+            "name": "Ambience",
+            "path": "banks\\Ambience.bank"
+        },
+        {
             "name": "Master",
             "path": "banks\\Master.bank"
         },
@@ -15,14 +19,6 @@
         {
             "name": "sfx",
             "path": "banks\\sfx.bank"
-        },
-        {
-            "name": "Test Bank",
-            "path": "banks\\Test Bank.bank"
-        },
-        {
-            "name": "TestBank",
-            "path": "banks\\TestBank.bank"
         }
     ],
     "fonts": [

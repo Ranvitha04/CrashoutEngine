@@ -2,7 +2,7 @@
 @file		inputbindings.cpp
 @author     m.biniswandi@digipen.edu
 @date       06/11/2025
-@brief		Declaration of input bindings functions
+@brief		Definition of input bindings functions
 */
 #include "inputbindings.h"
 #include "inputmanager.h"

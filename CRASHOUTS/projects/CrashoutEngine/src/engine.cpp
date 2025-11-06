@@ -296,6 +296,7 @@ Let application update state changes (such as animation).
 void Update(Component::RigidBodyComponent& playerRigidBody, double const& dt) {
 
     GLApp::update_time();
+
     UpdateGameStateManager();
 
     MonoManager::CheckHotReload();
@@ -383,6 +384,7 @@ void Update(Component::RigidBodyComponent& playerRigidBody, double const& dt) {
     InputManager::Update();
     
     CrashoutsEngine::PostProcessing::UpdatePP();
+
 
 }
 

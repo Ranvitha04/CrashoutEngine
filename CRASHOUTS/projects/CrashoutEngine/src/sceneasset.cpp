@@ -346,6 +346,11 @@ namespace CrashoutsEngine {
                         s.enableTexture = shapeValues["useTexture"].GetBool();
                     }
 
+                    // enable isWorldSpace bool
+                    if (shapeValues.HasMember("isWorldSpace") && shapeValues["isWorldSpace"].IsBool()) {
+                        s.isWorldSpace = shapeValues["isWorldSpace"].GetBool();
+                    }
+
                     // Set wrap mode int
                     if (shapeValues.HasMember("wrapModeU") && shapeValues["wrapModeU"].IsInt()) {
                         s.wrapModeU = shapeValues["wrapModeU"].GetInt();
@@ -875,6 +880,7 @@ namespace CrashoutsEngine {
 
                     // Boolean, Integers, Floats
                     shapeValues.AddMember("useTexture", sComp.enableTexture, allocator);
+                    shapeValues.AddMember("isWorldSpace", sComp.isWorldSpace, allocator);
                     shapeValues.AddMember("wrapModeU", (int)sComp.wrapModeU, allocator);
                     shapeValues.AddMember("wrapModeV", (int)sComp.wrapModeV, allocator);
                     shapeValues.AddMember("thickness", sComp.thickness, allocator);

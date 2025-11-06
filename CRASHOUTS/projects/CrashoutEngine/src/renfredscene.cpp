@@ -19,6 +19,7 @@ This file
 #include "entitymanager.h"
 #include "assetmanager.h"
 #include "sceneasset.h"
+#include "gamestatemanager.h"
 /*                                                   Global Variables
 ----------------------------------------------------------------------------- */
 
@@ -62,7 +63,7 @@ void RenderRenfred()
 void FreeRenfred()
 {
 	// Free resources specific to Renfred state
-	CrashoutsEngine::Serialization::SaveScenes(sceneName);
+	if (CurrentGameState != NextGameState) CrashoutsEngine::Serialization::SaveScenes(sceneName);
 }
 
 void UnloadRenfred()
