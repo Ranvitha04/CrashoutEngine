@@ -6,6 +6,8 @@
              Transform {position, rotation, size},
              Shape {type, width, height, size, color, enableTexture, textureName},
              RigidBody {mass, restitution},
+             Collider (AABB from width/height)
+             Text, Camera, Script, AudioEmitter, Gui, PPComponent
              and Collider (AABB by default).
 */
 
@@ -30,7 +32,10 @@
 #include "camera.h"
 using namespace CrashoutsEngine;
 using namespace Component;
-
+/**
+ * @brief Create an AABB (min/max corners) from center and width/height.
+ */
+ // Compute-and-return AABB unique_ptr based on center+dimensions
 static std::unique_ptr<Collision::AABBRect>
 MakeCenteredAABB3(const CEVec3& center, float width, float height)
 {
@@ -39,7 +44,12 @@ MakeCenteredAABB3(const CEVec3& center, float width, float height)
     CEVec3 maxCorner{ center.x + halfwidth, center.y + halfheight, center.z };
     return std::make_unique<Collision::AABBRect>(minCorner, maxCorner);
 }
-
+/**
+ * @brief Parse JSON at 'path', loop over "prefabs" array, and register
+ *        a Prefab::Factory lambda for each known type (currently "Box").
+ * @return true on success, false on I/O or parse error
+ */
+ // Static linkage: local to this translation unit
 static bool LoadPrefabsFromJson_RJ(const std::string& path)
 {
     std::ifstream inputFile(path);
@@ -60,7 +70,7 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path)
         LOGE(Core, std::string("Missing 'prefabs' array in ") + path);
         return false;
     }
-
+    // Grab the array view and itterate each prefab JSON object
     const auto& arr = doc["prefabs"].GetArray();
     for (auto& prefabs : arr) {
         if (!prefabs.IsObject()) continue;
@@ -153,7 +163,7 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path)
                 (rigidbodyJson.HasMember("restitution") && rigidbodyJson["restitution"].IsNumber())
                 ? static_cast<float>(rigidbodyJson["restitution"].GetDouble()) : 0.f;
 
-            // ---- collider flags (currently unused, but parsed) ----
+            // ---- collider flags  ----
             bool hasColliderFlags = false;
             bool isTrigger = false;
             unsigned category = 0;
@@ -295,7 +305,7 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path)
             bool hasGuiComponent = false;
             unsigned guiTypeMask = 0;
 
-            // Helpers to read "uiType" from JSON either as a string, array of strings, or integer.
+            
             auto uiTypeFromString = [](const std::string& s) -> unsigned {
                 using Component::UIType;
                 if (s == "IMAGE")     return static_cast<unsigned>(UIType::IMAGE);
@@ -364,7 +374,7 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path)
                 hasCameraComponent, cameraPosition, cameraZoom, cameraXBounds, cameraYBounds,
                 // script
                 hasScriptComponent, scriptClassName,
-                //audip
+                //audio
                 hasAudioEmitter, audioEventPath, audioVolume, audioPitch, audioSpatial3D, audioLooping,
                 hasGuiComponent, guiTypeMask,
                 hasPP, ppActive, ppBrightness, ppContrast, ppSaturation
@@ -466,7 +476,12 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path)
 }
 
 namespace CrashoutsEngine {
-
+    /**
+ * @brief Save entity 'e' as a Box prefab into file 'path'.
+ *        If 'matchName' matches an existing prefab name, it replaces that entry,
+ *        otherwise it appends a new prefab with 'newName'.
+ * @return true on success
+ */
     bool SaveBoxPrefabToJson_RJ(ECS& ecs,
         Entity e,
         const std::string& newName,
@@ -720,7 +735,7 @@ namespace CrashoutsEngine {
 
             obj.AddMember("gui", guiJson, allocate);
         }
-        // postprocessing (optional - only if entity has PPComponent)
+        // postprocessing
         if (auto* pp = ecs.GetComponent<Component::PPComponent>(e)) {
             rapidjson::Value ppJson(rapidjson::kObjectType);
             ppJson.AddMember("active", pp->active, allocate);
@@ -730,7 +745,6 @@ namespace CrashoutsEngine {
             obj.AddMember("postprocessing", ppJson, allocate);
         }
 
-        // ---- helpers for name matching (add these) ----
         auto trim = [](std::string inputString) {
             size_t firstNonWhitespaceIndex = inputString.find_first_not_of(" \t\r\n");
             size_t lastNonWhitespaceIndex = inputString.find_last_not_of(" \t\r\n");
@@ -741,7 +755,7 @@ namespace CrashoutsEngine {
             std::transform(inputString.begin(), inputString.end(), inputString.begin(), ::tolower);
             return inputString;
             };
-      // Upsert by key (matchName overrides newName for replacement)
+      // Upsert by key 
         const std::string keyRaw = matchName.empty() ? newName : matchName;
         const std::string key = lower(trim(keyRaw));
 
@@ -774,6 +788,12 @@ namespace CrashoutsEngine {
         LOGI(Core, std::string(replaced ? "Updated prefab: " : "Saved new prefab: ") + newName);
         return true;
     }
+// ============================================================================
+// Utility: reload all prefabs from disk (clear registry then load)
+// ============================================================================
+/**
+ * @brief Unregister all factories, then re-read the JSON file and re-register.
+ */
     void ReloadPrefabsFromDisk(const std::string& path)
     {
         // Clear existing factories
@@ -787,7 +807,12 @@ namespace CrashoutsEngine {
         for (const auto& n : Prefab::Names())
             LOGI(Core, std::string("Prefab available: ") + n);
     }
-   
+// ============================================================================
+ // Bootstrap: set fallback factory and load initial prefab file
+ // ============================================================================
+ /**
+  * @brief Set a fallback (creates minimal entity) and load JSON at startup.
+  */
  void InitPrefabs()
 {
     Prefab::SetFallback([](ECS& e, const std::string& name) {

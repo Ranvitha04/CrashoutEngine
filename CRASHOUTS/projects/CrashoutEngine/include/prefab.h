@@ -1,8 +1,9 @@
 ﻿/*!
 @file        prefab.h
 @author      b.mohamadafiq@digipen.edu
-@date        28/9/2025
-@brief       Store simple prefab by name
+@date        7/11/2025
+@brief       declares a tiny prefab system
+
 
 */
 #pragma once

@@ -28,10 +28,9 @@ context and implement a game loop.
 #include "camera.h"
 #include "performanceSystem.h"
 #include "performanceViewer.h"
-
-//Testing for grouping
 #include "hierarchy.h"   
 #include "hierarchy_components.h" 
+#include "prefab_init.h"
 /*                                                   type declarations
 ----------------------------------------------------------------------------- */
 
@@ -136,7 +135,7 @@ void Init() {
     InitGameStateManager(MAIN_MENU);
 
     RegisterBuiltinComponentAdapters();
-
+    CrashoutsEngine::InitPrefabs();
 	MonoManager::Init("CrashoutDomain");
     MonoManager::LoadAssembly("scripts/ManagedScripts.dll");
 
