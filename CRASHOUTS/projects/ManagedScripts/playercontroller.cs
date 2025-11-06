@@ -48,7 +48,7 @@ namespace CrashoutsEngine
                 tf.Size *= 1.1f;
             }
 
-            if (Input.IsKeyPressed(Key.R))
+            if (Input.IsKeyPressed(Key.F))
             {
                 tf.Rotation += 3f;
                 if (Entity.HasCollider)
