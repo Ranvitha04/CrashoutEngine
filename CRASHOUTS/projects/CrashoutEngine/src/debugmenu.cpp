@@ -160,7 +160,7 @@ namespace { //------------------------------------------------------------------
     static inline bool PointInAABB(const CEVec3& p, const Collision::AABBRect& a) {
         return p.x >= a.min.x && p.x <= a.max.x && p.y >= a.min.y && p.y <= a.max.y;
     }
-    // >>> Paste the full definition here <<<
+
     static void DrawHierarchyNode(ECS& ecs, Entity e, Entity& selected)
     {
         using namespace Component;
@@ -195,7 +195,6 @@ namespace { //------------------------------------------------------------------
                 Entity dragged = *(const Entity*)pl->Data;
                 if (dragged && dragged != e) {
                     bool ok = true;
-                    // prevent cycles: ensure 'e' is not in dragged's subtree
                     std::vector<Entity> subtree; subtree.reserve(16);
                     CrashoutsEngine::GatherDescendants(ecs, dragged, subtree);
                     ok = (std::find(subtree.begin(), subtree.end(), e) == subtree.end());
