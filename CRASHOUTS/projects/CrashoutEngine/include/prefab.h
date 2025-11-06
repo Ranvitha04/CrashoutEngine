@@ -26,10 +26,9 @@ namespace Prefab {
 
     bool Create(CrashoutsEngine::ECS& ecs, const std::string& name);
 
-    // Optional: set a fallback used when name is unknown
+    
     void SetFallback(Fallback fb);
 
-    // Optional loader: parse a text file via translator
     bool LoadFromFile(const std::string& path, const std::function<bool(
     const std::string& ,const std::vector<std::string>&, Factory&)>& translator);
 

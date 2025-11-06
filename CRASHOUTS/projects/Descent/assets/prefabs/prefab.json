@@ -2,337 +2,487 @@
     "prefabs": [
         {
             "type": "Box",
-            "name": "CrateA",
+            "name": "Crate01",
+            "shape": {
+                "type": 0,
+                "width": 1.0,
+                "height": 1.0,
+                "color": {
+                    "r": 255,
+                    "g": 255,
+                    "b": 255
+                },
+                "enableTexture": false
+            },
             "transform": {
                 "position": {
-                    "x": 0.0,
-                    "y": 20.0,
-                    "z": 0.0
+                    "x": 0,
+                    "y": 0,
+                    "z": 0
                 },
-                "rotation": 15.0,
+                "rotation": 0.0,
                 "size": {
                     "x": 1.0,
                     "y": 1.0
                 }
             },
+            "rigidbody": {
+                "mass": 1.0,
+                "restitution": 0.0
+            }
+        },
+        {
+            "type": "Box",
+            "name": "BigBox",
+            "transform": {
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "rotation": 0.0,
+                "size": {
+                    "x": 10.0,
+                    "y": 10.0
+                }
+            },
             "shape": {
+                "type": 0,
                 "kind": "Rectangle",
-                "type": 1,
-                "width": 32.0,
-                "height": 32.0,
-                "size": 1.0,
+                "width": 10.0,
+                "height": 10.0,
+                "size": 10.0,
                 "color": {
-                    "r": 1.0,
-                    "g": 0.78,
-                    "b": 0.35
+                    "r": 255.0,
+                    "g": 255.0,
+                    "b": 255.0
+                },
+                "enableTexture": false
+            },
+            "rigidbody": {
+                "mass": 1.0,
+                "restitution": 0.0
+            }
+        },
+        {
+            "type": "Box",
+            "name": "Name",
+            "transform": {
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "rotation": 0.0,
+                "size": {
+                    "x": 10.0,
+                    "y": 10.0
+                }
+            },
+            "shape": {
+                "type": 0,
+                "kind": "Rectangle",
+                "width": 10.0,
+                "height": 10.0,
+                "size": 10.0,
+                "color": {
+                    "r": 255.0,
+                    "g": 255.0,
+                    "b": 255.0
                 },
                 "enableTexture": false
             },
             "rigidbody": {
                 "mass": 5.0,
-                "restitution": 0.1
-            }
-        },
-        {
-            "type": "Box",
-            "name": "BlockerNoTex",
-            "transform": {
-                "position": {
-                    "x": -50.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "rotation": 0.0,
-                "size": {
-                    "x": 2.0,
-                    "y": 1.0
-                }
-            },
-            "shape": {
-                "kind": "Rectangle",
-                "type": 1,
-                "width": 64.0,
-                "height": 32.0,
-                "size": 1.0,
-                "color": {
-                    "r": 3.2,
-                    "g": 2.7,
-                    "b": 1.95
-                },
-                "enableTexture": false
-            },
-            "rigidbody": {
-                "mass": 0.0,
                 "restitution": 0.0
             }
         },
         {
             "type": "Box",
-            "name": "TexturedTile",
+            "name": "Box",
             "transform": {
                 "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "rotation": 0.0,
+                "size": {
                     "x": 10.0,
-                    "y": -10.0,
-                    "z": 0.0
-                },
-                "rotation": 0.0,
-                "size": {
-                    "x": 1.0,
-                    "y": 1.0
+                    "y": 10.0
                 }
             },
             "shape": {
+                "type": 0,
                 "kind": "Rectangle",
-                "type": 1,
-                "width": 64.0,
-                "height": 64.0,
-                "size": 1.0,
+                "width": 10.0,
+                "height": 10.0,
+                "size": 10.0,
                 "color": {
-                    "r": 1.0,
-                    "g": 1.0,
-                    "b": 1.0
-                },
-                "enableTexture": true,
-                "textureName": "UI\\Title.png"
-            },
-            "rigidbody": {
-                "mass": 1.0,
-                "restitution": 0.2
-            }
-        },
-        {
-            "type": "Box",
-            "name": "Afiq",
-            "transform": {
-                "position": {
-                    "x": 92.18284606933594,
-                    "y": 29.633281707763673,
-                    "z": 0.0
-                },
-                "rotation": 0.0,
-                "size": {
-                    "x": 1.0,
-                    "y": 1.0
-                }
-            },
-            "shape": {
-                "kind": "Rectangle",
-                "type": 1,
-                "width": 64.0,
-                "height": 64.0,
-                "size": 1.0,
-                "color": {
-                    "r": 0.13607844710350038,
-                    "g": 0.04470588266849518,
-                    "b": 0.03666666895151138
-                },
-                "enableTexture": true,
-                "textureName": "Character\\Light Mode\\Left\\Run 4.png"
-            },
-            "rigidbody": {
-                "mass": 1.0,
-                "restitution": 0.20000000298023225
-            }
-        },
-        {
-            "type": "Box",
-            "name": "Brown",
-            "transform": {
-                "position": {
-                    "x": -50.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "rotation": 0.0,
-                "size": {
-                    "x": 2.0,
-                    "y": 1.0
-                }
-            },
-            "shape": {
-                "kind": "Rectangle",
-                "type": 1,
-                "width": 64.0,
-                "height": 32.0,
-                "size": 1.0,
-                "color": {
-                    "r": 30.0,
-                    "g": 20.0,
-                    "b": 0.007647059392184019
+                    "r": 255.0,
+                    "g": 255.0,
+                    "b": 255.0
                 },
                 "enableTexture": false
             },
             "rigidbody": {
-                "mass": 0.0,
+                "mass": 5.0,
                 "restitution": 0.0
             }
         },
         {
             "type": "Box",
-            "name": "Brown1",
+            "name": "Box up",
             "transform": {
                 "position": {
-                    "x": -50.0,
-                    "y": 0.0,
+                    "x": 1.0,
+                    "y": 12.3,
                     "z": 0.0
                 },
                 "rotation": 0.0,
                 "size": {
-                    "x": 2.0,
-                    "y": 1.0
+                    "x": 10.0,
+                    "y": 10.0
                 }
             },
             "shape": {
+                "type": 0,
                 "kind": "Rectangle",
-                "type": 1,
-                "width": 64.0,
-                "height": 32.0,
-                "size": 1.0,
+                "width": 10.0,
+                "height": 10.0,
+                "size": 10.0,
                 "color": {
-                    "r": 30.0,
-                    "g": 30.0,
-                    "b": 0.00002998847048729658
+                    "r": 255.0,
+                    "g": 255.0,
+                    "b": 255.0
                 },
                 "enableTexture": false
             },
             "rigidbody": {
-                "mass": 0.0,
+                "mass": 5.0,
                 "restitution": 0.0
             }
         },
         {
             "type": "Box",
-            "name": "Afi2",
+            "name": "Box with text",
             "transform": {
                 "position": {
-                    "x": -12.15833854675293,
-                    "y": -1.607151746749878,
-                    "z": 0.0
-                },
-                "rotation": 0.0,
-                "size": {
                     "x": 1.0,
-                    "y": 1.0
-                }
-            },
-            "shape": {
-                "kind": "Rectangle",
-                "type": 1,
-                "width": 64.0,
-                "height": 64.0,
-                "size": 1.0,
-                "color": {
-                    "r": 10.0,
-                    "g": 20.0,
-                    "b": 30.0
-                },
-                "enableTexture": true,
-                "textureName": "Character\\Light Mode\\Left\\Run 4.png"
-            },
-            "rigidbody": {
-                "mass": -7.900000095367432,
-                "restitution": 16.399999618530278
-            }
-        },
-        {
-            "type": "Box",
-            "name": "Afiq3",
-            "transform": {
-                "position": {
-                    "x": -12.15833854675293,
-                    "y": -1.607151746749878,
+                    "y": 12.3,
                     "z": 0.0
                 },
                 "rotation": 0.0,
                 "size": {
-                    "x": 1.0,
-                    "y": 1.0
+                    "x": 10.0,
+                    "y": 10.0
                 }
             },
             "shape": {
+                "type": 0,
                 "kind": "Rectangle",
-                "type": 1,
-                "width": 64.0,
-                "height": 64.0,
-                "size": 1.0,
+                "width": 10.0,
+                "height": 10.0,
+                "size": 10.0,
                 "color": {
-                    "r": 0.03921568766236305,
-                    "g": 0.0784313753247261,
-                    "b": 0.11764706671237946
-                },
-                "enableTexture": true,
-                "textureName": "Character\\Light Mode\\Left\\Run 4.png"
-            },
-            "rigidbody": {
-                "mass": -7.900000095367432,
-                "restitution": 16.399999618530278
-            }
-        },
-        {
-            "type": "Box",
-            "name": "MyBox",
-            "transform": {
-                "position": {
-                    "x": -50.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "rotation": 0.0,
-                "size": {
-                    "x": 2.0,
-                    "y": 1.0
-                }
-            },
-            "shape": {
-                "kind": "Rectangle",
-                "type": 1,
-                "width": 64.0,
-                "height": 32.0,
-                "size": 1.0,
-                "color": {
-                    "r": 0.0125490203499794,
-                    "g": 0.010588236153125765,
-                    "b": 0.007647059392184019
+                    "r": 255.0,
+                    "g": 255.0,
+                    "b": 255.0
                 },
                 "enableTexture": false
             },
             "rigidbody": {
-                "mass": 0.0,
+                "mass": 5.0,
                 "restitution": 0.0
+            },
+            "text": {
+                "font": "Exo2-Regular",
+                "text": "TEST",
+                "scale": 10.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "r": 0.0,
+                    "g": 0.0,
+                    "b": 0.0
+                },
+                "centered": true,
+                "isWorldSpace": true
             }
         },
         {
             "type": "Box",
-            "name": "Afi4",
+            "name": "Box with audio",
             "transform": {
                 "position": {
-                    "x": 51.94570541381836,
-                    "y": -2.2197089195251467,
+                    "x": 1.0,
+                    "y": 12.3,
                     "z": 0.0
                 },
-                "rotation": 29.200000762939454,
+                "rotation": 0.0,
                 "size": {
-                    "x": 1.0,
-                    "y": 1.0
+                    "x": 10.0,
+                    "y": 10.0
                 }
             },
             "shape": {
+                "type": 0,
                 "kind": "Rectangle",
-                "type": 1,
-                "width": 64.0,
-                "height": 64.0,
-                "size": 1.0,
+                "width": 10.0,
+                "height": 10.0,
+                "size": 10.0,
                 "color": {
-                    "r": 36.73899841308594,
-                    "g": 16.077999114990236,
-                    "b": 5.9679999351501469
+                    "r": 255.0,
+                    "g": 255.0,
+                    "b": 255.0
                 },
-                "enableTexture": true,
-                "textureName": "backgrounds\\bg 1 pillar 2.png"
+                "enableTexture": false
             },
             "rigidbody": {
-                "mass": -7.900000095367432,
-                "restitution": 16.399999618530275
+                "mass": 5.0,
+                "restitution": 0.0
+            },
+            "audio": {
+                "eventPath": "event:/banks/Music",
+                "volume": 5.0,
+                "pitch": 5.0,
+                "spatial3D": false,
+                "looping": false
+            }
+        },
+        {
+            "type": "Box",
+            "name": "Box with script",
+            "transform": {
+                "position": {
+                    "x": 1.0,
+                    "y": 12.3,
+                    "z": 0.0
+                },
+                "rotation": 0.0,
+                "size": {
+                    "x": 10.0,
+                    "y": 10.0
+                }
+            },
+            "shape": {
+                "type": 0,
+                "kind": "Rectangle",
+                "width": 10.0,
+                "height": 10.0,
+                "size": 10.0,
+                "color": {
+                    "r": 255.0,
+                    "g": 255.0,
+                    "b": 255.0
+                },
+                "enableTexture": false
+            },
+            "rigidbody": {
+                "mass": 5.0,
+                "restitution": 0.0
+            },
+            "script": {
+                "className": "input",
+                "entityID": 8
+            },
+            "audio": {
+                "eventPath": "event:/banks/Music",
+                "volume": 5.0,
+                "pitch": 5.0,
+                "spatial3D": false,
+                "looping": false
+            }
+        },
+        {
+            "type": "Box",
+            "name": "Box with camera",
+            "transform": {
+                "position": {
+                    "x": 1.0,
+                    "y": 12.3,
+                    "z": 0.0
+                },
+                "rotation": 0.0,
+                "size": {
+                    "x": 10.0,
+                    "y": 10.0
+                }
+            },
+            "shape": {
+                "type": 0,
+                "kind": "Rectangle",
+                "width": 10.0,
+                "height": 10.0,
+                "size": 10.0,
+                "color": {
+                    "r": 255.0,
+                    "g": 255.0,
+                    "b": 255.0
+                },
+                "enableTexture": false
+            },
+            "rigidbody": {
+                "mass": 5.0,
+                "restitution": 0.0
+            },
+            "camera": {
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "zoom": 297.0,
+                "xBounds": {
+                    "x": -45.0,
+                    "y": 29.0
+                },
+                "yBounds": {
+                    "x": 0.0,
+                    "y": 0.0
+                }
+            },
+            "script": {
+                "className": "input",
+                "entityID": 9
+            },
+            "audio": {
+                "eventPath": "event:/banks/Music",
+                "volume": 5.0,
+                "pitch": 5.0,
+                "spatial3D": false,
+                "looping": false
+            }
+        },
+        {
+            "type": "Box",
+            "name": "Box with Gui",
+            "transform": {
+                "position": {
+                    "x": 1.0,
+                    "y": 9.976842,
+                    "z": 0.0
+                },
+                "rotation": 0.0,
+                "size": {
+                    "x": 10.0,
+                    "y": 10.0
+                }
+            },
+            "shape": {
+                "type": 0,
+                "kind": "Rectangle",
+                "width": 10.0,
+                "height": 10.0,
+                "size": 10.0,
+                "color": {
+                    "r": 255.0,
+                    "g": 255.0,
+                    "b": 255.0
+                },
+                "enableTexture": false
+            },
+            "rigidbody": {
+                "mass": 5.0,
+                "restitution": 0.0
+            },
+            "text": {
+                "font": "Exo2-Regular",
+                "text": "TEST",
+                "scale": 1.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "r": 255.0,
+                    "g": 255.0,
+                    "b": 255.0
+                },
+                "centered": true,
+                "isWorldSpace": true
+            },
+            "script": {
+                "className": "input",
+                "entityID": 10
+            },
+            "audio": {
+                "eventPath": "event:/banks/Music",
+                "volume": 5.0,
+                "pitch": 5.0,
+                "spatial3D": false,
+                "looping": false
+            },
+            "gui": {
+                "uiType": 15
+            }
+        },
+        {
+            "type": "Box",
+            "name": "Box with PP",
+            "transform": {
+                "position": {
+                    "x": 1.0,
+                    "y": 9.976841,
+                    "z": 0.0
+                },
+                "rotation": 0.0,
+                "size": {
+                    "x": 10.0,
+                    "y": 10.0
+                }
+            },
+            "shape": {
+                "type": 0,
+                "kind": "Rectangle",
+                "width": 10.0,
+                "height": 10.0,
+                "size": 10.0,
+                "color": {
+                    "r": 255.0,
+                    "g": 255.0,
+                    "b": 255.0
+                },
+                "enableTexture": false
+            },
+            "rigidbody": {
+                "mass": 5.0,
+                "restitution": 0.0
+            },
+            "text": {
+                "font": "Exo2-Regular",
+                "text": "TEST",
+                "scale": 1.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "r": 255.0,
+                    "g": 255.0,
+                    "b": 255.0
+                },
+                "centered": true,
+                "isWorldSpace": true
+            },
+            "script": {
+                "className": "input",
+                "entityID": 14
+            },
+            "audio": {
+                "eventPath": "event:/banks/Music",
+                "volume": 5.0,
+                "pitch": 5.0,
+                "spatial3D": false,
+                "looping": false
+            },
+            "postprocessing": {
+                "active": true,
+                "brightness": -0.4,
+                "contrast": -0.639999,
+                "saturation": -1.0
             }
         }
     ]

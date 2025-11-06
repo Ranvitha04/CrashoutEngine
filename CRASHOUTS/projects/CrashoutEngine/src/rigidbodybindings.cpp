@@ -1,3 +1,9 @@
+/*!
+@file		rigidbodybindings.cpp
+@author     m.biniswandi@digipen.edu
+@date       06/11/2025
+@brief		Definition of rigid body bindings functions
+*/
 #include "rigidbodybindings.h"
 #include "mono/metadata/loader.h"
 #include "entitymanager.h"

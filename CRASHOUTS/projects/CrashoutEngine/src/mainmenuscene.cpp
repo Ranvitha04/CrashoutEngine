@@ -21,6 +21,8 @@
 #include "glm/vec3.hpp"
 #include "GLFW/glfw3.h"
 
+#include "monomanager.h"
+
 
 
 float random_min_max(float const& min, float const& max) {
@@ -54,6 +56,9 @@ static CrashoutsEngine::Entity entity1;
 static CrashoutsEngine::Entity entity2;
 static CrashoutsEngine::Entity entity3;
 
+static std::string s_entity1Script = "PlayerController";
+static std::string s_entity3Script = "EnemyController";
+
 void AddPhysicsEntity(CrashoutsEngine::Entity &entity, Component::RigidBodyComponent&& rigidBody, 
 	Component::TransformComponent&& transform, Component::ShapeComponent &&shape) {
 
@@ -77,6 +82,16 @@ void LoadMainMenu()
 {
 	// Load resources specific to MainMenu state
 	globalECS = CrashoutsEngine::ECS::getInstance();
+
+	if (entity1 && globalECS->HasComponent<CrashoutsEngine::ScriptComponent>(entity1)) {
+		auto* sc = globalECS->GetComponent<CrashoutsEngine::ScriptComponent>(entity1);
+		s_entity1Script = sc->ClassName;
+	}
+	if (entity3 && globalECS->HasComponent<CrashoutsEngine::ScriptComponent>(entity3)) {
+		auto* sc = globalECS->GetComponent<CrashoutsEngine::ScriptComponent>(entity3);
+		s_entity3Script = sc->ClassName;
+	}
+
 	globalECS->Reset();
 
 	using namespace CrashoutsEngine::Assets;
@@ -94,7 +109,18 @@ void InitMainMenu()
 		Component::TransformComponent{ .size = CEVec2{10.f, 10.f}, .position = CEVec3{0.f, 20.f, 0.f}},
 		Component::ShapeComponent{.enableTexture=true, .textureName="Concept"}
 	);
-	globalECS->AddComponent<CrashoutsEngine::ScriptComponent>(entity1, CrashoutsEngine::ScriptComponent("PlayerController", entity1));
+	if (!globalECS->HasComponent<CrashoutsEngine::ScriptComponent>(entity1)) {
+		globalECS->AddComponent<CrashoutsEngine::ScriptComponent>(
+			entity1,
+			CrashoutsEngine::ScriptComponent(s_entity1Script, entity1)
+		);
+	}
+	else {
+		auto* sc = globalECS->GetComponent<CrashoutsEngine::ScriptComponent>(entity1);
+		sc->ClassName = s_entity1Script;
+		sc->Destroy();
+		sc->Initialize(MonoManager::GetDomain(), MonoManager::GetAssembly());
+	}
 
 	AddPhysicsEntity(
 		entity2,
@@ -110,7 +136,18 @@ void InitMainMenu()
 		Component::TransformComponent{ .size = CEVec2{10.f, 10.f}, .position = CEVec3{5.f, 20.f, 0.f} },
 		Component::ShapeComponent{ .type = Component::ShapeType::Rectangle }
 	);
-	globalECS->AddComponent<CrashoutsEngine::ScriptComponent>(entity3, CrashoutsEngine::ScriptComponent("EnemyController", entity3));
+	if (!globalECS->HasComponent<CrashoutsEngine::ScriptComponent>(entity3)) {
+		globalECS->AddComponent<CrashoutsEngine::ScriptComponent>(
+			entity3,
+			CrashoutsEngine::ScriptComponent(s_entity3Script, entity3)
+		);
+	}
+	else {
+		auto* sc = globalECS->GetComponent<CrashoutsEngine::ScriptComponent>(entity3);
+		sc->ClassName = s_entity3Script;
+		sc->Destroy();
+		sc->Initialize(MonoManager::GetDomain(), MonoManager::GetAssembly());
+	}
 	// Initialize MainMenu state
 
 	LOGI(Core, "MainMenu Initialized");

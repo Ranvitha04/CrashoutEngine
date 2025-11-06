@@ -429,52 +429,45 @@ inline void DrawEngineMemoryPanel() {
  @brief Draws an ImGui profiler panel with per-frame CPU usage.
  @param P Reference to a `FrameProfiler` instance.
 */
-inline void DrawProfilerPanel(FrameProfiler& P) {
+inline void DrawProfilerPanel(FrameProfiler& P)
+{
     using namespace ImGui;
 
-    //const bool ready = P.present_ready();
+    ImGui::SeparatorText("CPU Frame (ms) - Stream");
+
     const auto& rows = P.results();
-    //const double frameMs = P.total_ms();
+    const size_t count = P.history_count();
+    constexpr size_t cap = FrameProfiler::history_capacity();
+    const size_t idx = P.history_index();
+    const int icount = static_cast<int>(count);
+    const int offset = static_cast<int>((idx + cap - count) % cap);
 
-    if (Begin("Profiler")) {
-        SeparatorText("CPU Frame (ms) - Stream");
-
-        // history pointers
-        const size_t count = P.history_count();
-        constexpr size_t cap = FrameProfiler::history_capacity();
-        const size_t idx = P.history_index();
-        const int    icount = static_cast<int>(count);
-        const int    offset = static_cast<int>((idx + cap - count) % cap);
-
-        if (count > 0) {
-            const auto& fh = P.frame_ms_history();
-            float maxFrame = 0.0f;
-            for (int i = 0; i < icount; ++i) {
-                int j = (offset + i) % (int)cap;
-                maxFrame = std::max(maxFrame, fh[j]);
-            }
-            float yMaxFrame = std::max(1.0f, maxFrame * 1.15f);
-
-            PlotLines("Frame ms", fh.data(), icount, offset, nullptr, 0.0f, yMaxFrame, ImVec2(-1, 60));
+    if (count > 0) {
+        const auto& fh = P.frame_ms_history();
+        float maxFrame = 0.0f;
+        for (int i = 0; i < icount; ++i) {
+            int j = (offset + i) % (int)cap;
+            maxFrame = std::max(maxFrame, fh[j]);
         }
-
-        SeparatorText("Systems (EMA ms) - Streams");
-        const auto& eh = P.ema_history();
-        for (auto const& r : rows) {
-            auto it = eh.find(r.name);
-            if (it == eh.end()) continue;
-
-            TextUnformatted(r.name.c_str());
-            float localMax = 0.0f;
-            for (int i = 0; i < icount; ++i) {
-                int j = (offset + i) % (int)cap;
-                localMax = std::max(localMax, it->second[j]);
-            }
-            float yMaxRow = std::max(0.5f, localMax * 1.25f);
-
-            std::string id = "##spark_" + r.name;
-            PlotLines(id.c_str(), it->second.data(), icount, offset, nullptr, 0.0f, yMaxRow, ImVec2(-1, 40));
-        }
+        float yMaxFrame = std::max(1.0f, maxFrame * 1.15f);
+        PlotLines("Frame ms", fh.data(), icount, offset, nullptr, 0.0f, yMaxFrame, ImVec2(-1, 60));
     }
-    End();
+
+    ImGui::SeparatorText("Systems (EMA ms) - Streams");
+    const auto& eh = P.ema_history();
+    for (auto const& r : rows) {
+        auto it = eh.find(r.name);
+        if (it == eh.end()) continue;
+
+        TextUnformatted(r.name.c_str());
+        float localMax = 0.0f;
+        for (int i = 0; i < icount; ++i) {
+            int j = (offset + i) % (int)cap;
+            localMax = std::max(localMax, it->second[j]);
+        }
+        float yMaxRow = std::max(0.5f, localMax * 1.25f);
+
+        std::string id = "##spark_" + r.name;
+        PlotLines(id.c_str(), it->second.data(), icount, offset, nullptr, 0.0f, yMaxRow, ImVec2(-1, 40));
+    }
 }

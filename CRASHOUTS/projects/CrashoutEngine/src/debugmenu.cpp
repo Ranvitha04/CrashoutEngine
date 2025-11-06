@@ -3,7 +3,9 @@
 @author     mohamadamirakmal.b@digipen.edu
 @date       14/09/2025
 
-@brief      Renders the editor/debug ImGui for Crashout Engine.
+@brief      Renders the editor/debug Im
+
+for Crashout Engine.
 @details    This module draws every editor-facing window:
             - engine controls (play / pause / stop)
             - game viewport (with ImGuizmo)
@@ -44,11 +46,10 @@
 #include "hierarchy.h"
 #include "hierarchy_components.h"
 #include "monomanager.h"
+#include "scriptsystem.h"
 #include "ppmanager.h"
 
 #include "engine.h"
-
-#include <thread>
 #include <filesystem>
 
 
@@ -63,7 +64,6 @@ using CrashoutsEngine::Audio::AudioSystem;
 
 #include <vector>
 #include "CEVec3.h"
-#include <filesystem>
 #include "stb_image.h"
 #include <numeric>
 
@@ -158,8 +158,75 @@ namespace { //------------------------------------------------------------------
         return p.x >= a.min.x && p.x <= a.max.x && p.y >= a.min.y && p.y <= a.max.y;
     }
 
+    static void DrawHierarchyNode(ECS& ecs, Entity e, Entity& selected)
+    {
+        std::string label = ecs.HasComponent<NameComponent>(e)
+            ? ecs.GetComponent<NameComponent>(e)->name
+            : ("Entity " + std::to_string(e));
+
+        const bool hasKids = ecs.HasComponent<ChildrenComponent>(e)
+            && !ecs.GetComponent<ChildrenComponent>(e)->children.empty();
+
+        ImGuiTreeNodeFlags flags =
+            ImGuiTreeNodeFlags_OpenOnArrow |
+            ImGuiTreeNodeFlags_SpanFullWidth |
+            (selected == e ? ImGuiTreeNodeFlags_Selected : 0) |
+            (!hasKids ? ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen : 0);
+
+        ImGui::PushID((int)e);
+        const bool opened = ImGui::TreeNodeEx("##node", flags, "%s", label.c_str());
+
+        if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
+            selected = e;
+
+        if (ImGui::BeginDragDropSource()) {
+            ImGui::SetDragDropPayload("HIER_ENTITY", &e, sizeof(Entity));
+            ImGui::TextUnformatted(label.c_str());
+            ImGui::EndDragDropSource();
+        }
+
+        if (ImGui::BeginDragDropTarget()) {
+            if (const ImGuiPayload* pl = ImGui::AcceptDragDropPayload("HIER_ENTITY")) {
+                Entity dragged = *(const Entity*)pl->Data;
+                if (dragged && dragged != e) {
+                    bool ok = true;
+                    std::vector<Entity> subtree; subtree.reserve(16);
+                    CrashoutsEngine::GatherDescendants(ecs, dragged, subtree);
+                    ok = (std::find(subtree.begin(), subtree.end(), e) == subtree.end());
+                    if (ok) CrashoutsEngine::Reparent(ecs, dragged, e);
+                }
+            }
+            ImGui::EndDragDropTarget();
+        }
+
+        if (ImGui::BeginPopupContextItem("node_ctx")) {
+            if (ImGui::MenuItem("Ungroup (detach)"))
+                CrashoutsEngine::DetachChild(ecs, e);
+            if (ImGui::MenuItem("Create Empty Child")) {
+                Entity child = ecs.CreateEntity();
+                if (!ecs.HasComponent<NameComponent>(child))
+                    ecs.AddComponent<NameComponent>(child, "New Child");
+                if (!ecs.HasComponent<TransformComponent>(child))
+                    ecs.AddComponent<TransformComponent>(child);
+                CrashoutsEngine::AttachChild(ecs, e, child);
+            }
+            ImGui::EndPopup();
+
+        }
+
+        if (hasKids && opened) {
+            auto* kids = ecs.GetComponent<ChildrenComponent>(e);
+            for (Entity c : kids->children)
+                DrawHierarchyNode(ecs, c, selected);
+            ImGui::TreePop();
+        }
+
+        ImGui::PopID();
+    }
 
 } // anonymous namespace
+
+
 
 namespace UI { // ----------------------------------------------------------------------------- public UI API
 
@@ -291,62 +358,20 @@ namespace UI { // --------------------------------------------------------------
         }
         ImGui::Separator();
         ImGui::TextUnformatted("Entities");
-        if (entities.empty()) {
-            ImGui::TextDisabled("No entities created yet.");
-        }
-        else {
-            
-            auto toggleMulti = [&](Entity x) {
-                auto it = std::find(multiSel.begin(), multiSel.end(), x);
-                if (it == multiSel.end()) multiSel.push_back(x);
-                else                      multiSel.erase(it);
-                };
-
-            for (Entity e : entities) {
-                
-                std::string visible = ecs.HasComponent<NameComponent>(e)
-                    ? ecs.GetComponent<NameComponent>(e)->name
-                    : ("Entity " + std::to_string(e));
-
-                ImGui::PushID((int)e);
-
-                bool checked = std::find(multiSel.begin(), multiSel.end(), e) != multiSel.end();
-                if (ImGui::Checkbox("##chk", &checked)) {
-                    if (checked)  multiSel.push_back(e);
-                    else          multiSel.erase(std::remove(multiSel.begin(), multiSel.end(), e), multiSel.end());
-                }
-                ImGui::SameLine();
-
-                
-                bool isSel = (e == selected);
-                if (ImGui::Selectable(visible.c_str(), isSel))
-                    selected = e;
-
-                ImGui::PopID();
-            }
-
-            
-            ImGui::SeparatorText("Grouping");
-            if (ImGui::Button("Group (first selected becomes Parent)")) {
-                if (multiSel.size() >= 2) {
-                    Entity parent = multiSel.front();
-                    for (size_t i = 1; i < multiSel.size(); ++i) {
-                        CrashoutsEngine::AttachChild(ecs, parent, multiSel[i]);
-                    }
+        // --- Unity-style tree: draw roots (entities with no ParentComponent) ---
+        {
+            auto& tArr = ecs.GetComponentArray<Component::TransformComponent>();
+            bool anyDrawn = false;
+            for (Entity e : tArr.indexToEntity)
+            {
+                if (!ecs.HasComponent<Component::TransformComponent>(e)) continue;
+                const bool hasParent = ecs.HasComponent<Component::ParentComponent>(e);
+                if (!hasParent) {
+                    DrawHierarchyNode(ecs, e, selected);
+                    anyDrawn = true;
                 }
             }
-            ImGui::SameLine();
-            if (ImGui::Button("Ungroup (detach all selected)")) {
-                for (Entity e : multiSel)
-                    CrashoutsEngine::DetachChild(ecs, e);
-            }
-            ImGui::SameLine();
-            if (ImGui::Button("Clear Selection")) {
-                multiSel.clear();
-            }
-
-           
-            ImGui::TextDisabled("Selected: %u | Multi: %d", (unsigned)selected, (int)multiSel.size());
+            if (!anyDrawn) ImGui::TextDisabled("No entities created yet.");
         }
 
 
@@ -363,7 +388,7 @@ namespace UI { // --------------------------------------------------------------
             namespace fs = std::filesystem;
 
             
-            const fs::path jsonPath = fs::path("assets") / "prefabs" / "prefab.json";
+            const fs::path jsonPath = fs::path(CrashoutsEngine::Assets::rootPath) / "prefabs" / "prefab.json";
             fs::create_directories(jsonPath.parent_path()); // safe if exists
 
             
@@ -435,7 +460,7 @@ namespace UI { // --------------------------------------------------------------
 
         ImGui::Separator();
 
-        // ---------------- LEFT: Folder tree ----------------
+        // LEFT: Folder tree
         ImGui::BeginChild("asset_left", ImVec2(220, 0), true);
 
         if (ImGui::Selectable("assets", current == fs::path(root))) {
@@ -457,7 +482,7 @@ namespace UI { // --------------------------------------------------------------
 
         ImGui::EndChild();
 
-        // --- RIGHT: Files + Preview ----------------
+        // RIGHT: Files + Preview
         ImGui::SameLine();
         ImGui::BeginChild("asset_right", ImVec2(0, 0), true);
 
@@ -466,7 +491,7 @@ namespace UI { // --------------------------------------------------------------
         float listHeight = availRight.y - kPreviewMaxHeight - ImGui::GetStyle().ItemSpacing.y;
         if (listHeight < 120.0f) listHeight = availRight.y * 0.6f;
 
-        // --- FILE LIST ----------
+        // FILE LIST 
         ImGui::BeginChild("asset_right_list", ImVec2(0, listHeight), true);
 
         if (needScan) {
@@ -545,7 +570,7 @@ namespace UI { // --------------------------------------------------------------
 
         ImGui::EndChild(); // asset_right_list
 
-        // --- PREVIEW ----------
+        // PREVIEW 
         ImGui::Separator();
         ImGui::BeginChild("asset_right_preview", ImVec2(0, 0), true);
 
@@ -805,7 +830,7 @@ namespace UI { // --------------------------------------------------------------
 
         auto nameFor = [&](int id) -> const char* {
             for (auto const& kv : P->states()) {
-                if (kv.second == id) return kv.first;   // kv = {label, id}
+                if (kv.second == id) return kv.first;
             }
             return "(unknown)";
             };
@@ -1077,7 +1102,7 @@ namespace UI { // --------------------------------------------------------------
             ImGuiWindowFlags_NoCollapse |
             ImGuiWindowFlags_NoMove;
 
-        if (ImGui::Begin("Engine Controls"), nullptr, window_flags) {
+        if (ImGui::Begin("Engine Controls", nullptr, window_flags)) {
 
             // Play Stop Pause buttons
             // Play
@@ -1087,6 +1112,10 @@ namespace UI { // --------------------------------------------------------------
                 CrashoutsEngine::RenderCamera::engineCamera.SetZoom(1.f);
                 CrashoutsEngine::RenderCamera::engineCamera.SetTargetAR(16.0f / 9.0f);
                 CrashoutsEngine::RenderCamera::engineCamera.UpdateMatrices(Settings::GetScreenWidth(), Settings::GetScreenHeight());
+
+                if (MonoManager::GetDomain() && MonoManager::GetAssembly()) {
+                    CrashoutsEngine::ScriptSystem::InitializeAll( MonoManager::GetDomain(), MonoManager::GetAssembly() );
+                }
             }
             ImGui::SameLine();
             // Pause
@@ -1097,9 +1126,10 @@ namespace UI { // --------------------------------------------------------------
             // Stop
             if (ImGui::Button("STOP", ImVec2(70, 25))) {
                 RestartGameState();
-                MonoManager::ReloadScripts();
+                //MonoManager::ReloadScripts();
                 engineState = EngineState::STOP;
             }
+            
             ImGui::SeparatorEx(ImGuiSeparatorFlags_Vertical);
             ImGui::SameLine();
 
@@ -1110,33 +1140,6 @@ namespace UI { // --------------------------------------------------------------
             case EngineState::STOP:  stateText = "STOPPED"; break;
             }
             ImGui::TextDisabled("State: %s", stateText);
-
-            static bool isBuilding = false;
-
-            static std::atomic<bool> reloadPending = false;
-
-            if (ImGui::Button("Reload Scripts"))
-            {
-                if (!isBuilding)
-                {
-                    isBuilding = true;
-                    std::thread([]() {
-                        int result = system(
-                            "dotnet clean \"../../projects/ManagedScripts/ManagedScripts.csproj\" -c Debug > buildlog.txt 2>&1 && "
-                            "dotnet build \"../../projects/ManagedScripts/ManagedScripts.csproj\" -c Debug --no-incremental > buildlog.txt 2>&1"
-                        );
-                        if (result == 0)
-                            reloadPending = true;  // signal reload
-                        isBuilding = false;
-                        }).detach();
-                }
-            }
-            if (reloadPending)
-            {
-                reloadPending = false;
-                MonoManager::ReloadScripts();   // called on main thread
-            }
-
         }
 
         ImGui::End();
@@ -1166,7 +1169,7 @@ namespace UI { // --------------------------------------------------------------
             ImGui::BeginChild("ViewportToolbar", ImVec2(1000, 32),
                 false, ImGuiWindowFlags_NoBackground);
 
-            // ----- 1) toolbar (translate / rotate / scale) -----
+            // 1) toolbar (translate / rotate / scale)
             ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(6, 4));
             if (ImGui::Button("None")) g_gizmoOp = (ImGuizmo::OPERATION)0;
             ImGui::SameLine();
@@ -1193,7 +1196,7 @@ namespace UI { // --------------------------------------------------------------
             // Get the size of ImGui window content region
             ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
 
-            // ----- 2) aspect-ratio / letterbox calculation -----
+            // 2) aspect-ratio / letterbox calculation
             float panelWidth = viewportPanelSize.x;
             float panelHeight = viewportPanelSize.y;
             float panelAspect = panelWidth / panelHeight;
@@ -1216,7 +1219,7 @@ namespace UI { // --------------------------------------------------------------
             int finalTextureWidth = std::max(1, (int)targetWidth);
             int finalTextureHeight = std::max(1, (int)targetHeight);
 
-            // ----- 3) draw the actual viewport texture -----
+            // 3) draw the actual viewport texture
             if (gameTextureWidth != finalTextureWidth || gameTextureHeight != finalTextureHeight) {
                 if (finalTextureWidth > 0 && finalTextureHeight > 0) {
                     gameTextureWidth = finalTextureWidth;
@@ -1252,20 +1255,20 @@ namespace UI { // --------------------------------------------------------------
             ImVec2 screenPos = ImGui::GetCursorScreenPos();
             ImGui::SetCursorScreenPos(ImVec2(screenPos.x + paddingX, screenPos.y + paddingY));
              
+            // Let the Gizmo recieve hover/drag over image
+            ImGui::SetNextItemAllowOverlap();
+
             // Display the texture within the ImGui window
             // UV flip (0,1) to (1,0) since OpenGL textures are often upside-down
             ImGui::Image((void*)(intptr_t)CrashoutsEngine::PostProcessing::ppTextureID, 
                 ImVec2((float)finalTextureWidth, (float)finalTextureHeight), ImVec2(0, 1), ImVec2(1, 0));
-            
-            // Let the Gizmo recieve hover/drag over image
-            ImGui::SetItemAllowOverlap();
 
             // Rectangle of that Image in screen space (used by gizmo & picking)
             ImVec2 imgMin = ImGui::GetItemRectMin();
             ImVec2 imgMax = ImGui::GetItemRectMax();
             ImVec2 imgSize = ImGui::GetItemRectSize();
 
-            // ----- 4) ImGuizmo overlay is configured to match the image rect -----
+            // 4) ImGuizmo overlay is configured to match the image rect
             ImGuizmo::BeginFrame();
             ImGuizmo::Enable(true);
 
@@ -1275,14 +1278,14 @@ namespace UI { // --------------------------------------------------------------
             // TRUE - ORTOGRAPHIC, FALSE - PERSPECTIVE
             ImGuizmo::SetOrthographic(true);
 
-            // ----- 5) if we have a selected entity, let gizmo edit its TRS -----
+            // 5) if we have a selected entity, let gizmo edit its TRS
             if (selected && ecs.HasComponent<Component::TransformComponent>(selected))
             {
                 // find the topmost entity for whatever we clicked
                 CrashoutsEngine::Entity root = CrashoutsEngine::GetRoot(ecs, selected);
 
                 // collect everyone under that root (root included)
-                std::vector<CrashoutsEngine::Entity> group;
+                std::vector<Entity> group;
                 group.reserve(16);
                 CrashoutsEngine::GatherDescendants(ecs, root, group);
 
@@ -1306,61 +1309,97 @@ namespace UI { // --------------------------------------------------------------
 
                 // use root's rot/scale just for displaying the gizmo nicely
                 auto* rootT = ecs.GetComponent<Component::TransformComponent>(root);
-                float tr[3] = { center.x, center.y, center.z };
-                float rt[3] = { 0.f, 0.f, rootT ? rootT->rotation : 0.f };
-                float sc[3] = { rootT ? rootT->size.x : 1.f,
-                                rootT ? rootT->size.y : 1.f,
-                                1.f };
-
-                float m[16];
-                ImGuizmo::RecomposeMatrixFromComponents(tr, rt, sc, m);
-
-                const float* view = glm::value_ptr(Component::Rendering::Get().viewMatrix);
-                const float* proj = glm::value_ptr(Component::Rendering::Get().projectionMatrix);
-
-                const float* snapPtr = nullptr;
-                float snap[3];
-                if (g_snapOn) {
-                    if (g_gizmoOp == ImGuizmo::ROTATE) {
-                        snap[0] = g_snapAngle;
-                        snapPtr = snap;
-                    }
-                    else {
-                        snap[0] = g_snapTrans[0];
-                        snap[1] = g_snapTrans[1];
-                        snap[2] = g_snapTrans[2];
-                        snapPtr = snap;
-                    }
-                }
-
-                // let user move the gizmo placed at the group center
-                ImGuizmo::Manipulate(view, proj, g_gizmoOp, g_gizmoMode, m, nullptr, snapPtr);
-
-                if (ImGuizmo::IsUsing())
+                if (rootT)
                 {
-                    // figure out how far the gizmo moved
-                    float newTr[3], newRt[3], newSc[3];
-                    ImGuizmo::DecomposeMatrixToComponents(m, newTr, newRt, newSc);
+                    // gizmo starts exactly on the parent
+                    float tr[3] = { rootT->position.x, rootT->position.y, rootT->position.z };
+                    float rt[3] = { 0.f, 0.f, glm::degrees(rootT->rotation) }; 
 
-                    CEVec3 offset{
-                        newTr[0] - center.x,
-                        newTr[1] - center.y,
-                        newTr[2] - center.z
-                    };
+                    float sc[3] = { rootT->size.x, rootT->size.y, 1.f };
 
-                    // apply the SAME offset to every entity in the group
-                    for (CrashoutsEngine::Entity e : group) {
-                        if (!ecs.HasComponent<Component::TransformComponent>(e))
-                            continue;
-                        auto* t = ecs.GetComponent<Component::TransformComponent>(e);
-                        t->position.x += offset.x;
-                        t->position.y += offset.y;
-                        t->position.z += offset.z;
+                    float m[16];
+                    ImGuizmo::RecomposeMatrixFromComponents(tr, rt, sc, m);
+
+                    const float* view = glm::value_ptr(Component::Rendering::Get().viewMatrix);
+                    const float* proj = glm::value_ptr(Component::Rendering::Get().projectionMatrix);
+
+                    const float* snapPtr = nullptr;
+                    float snap[3];
+                    if (g_snapOn) {
+                        if (g_gizmoOp == ImGuizmo::ROTATE) {
+                            snap[0] = g_snapAngle;
+                            snapPtr = snap;
+                        }
+                        else {
+                            snap[0] = g_snapTrans[0];
+                            snap[1] = g_snapTrans[1];
+                            snap[2] = g_snapTrans[2];
+                            snapPtr = snap;
+                        }
+                    }
+
+                    ImGuizmo::Manipulate(view, proj, g_gizmoOp, g_gizmoMode, m, nullptr, snapPtr);
+
+                    if (ImGuizmo::IsUsing())
+                    {
+                        float newTr[3], newRt[3], newSc[3];
+                        ImGuizmo::DecomposeMatrixToComponents(m, newTr, newRt, newSc);
+
+                        if (g_gizmoOp == ImGuizmo::TRANSLATE)
+                        {
+                            CEVec3 offset{
+                                newTr[0] - rootT->position.x,
+                                newTr[1] - rootT->position.y,
+                                newTr[2] - rootT->position.z
+                            };
+
+                            for (Entity e : group) {
+                                if (!ecs.HasComponent<Component::TransformComponent>(e)) continue;
+                                auto* t = ecs.GetComponent<Component::TransformComponent>(e);
+                                t->position.x += offset.x;
+                                t->position.y += offset.y;
+                                t->position.z += offset.z;
+                            }
+                        }
+                        else
+                        {
+                            rootT->position = { newTr[0], newTr[1], newTr[2] };
+                            //rotation test
+                            rootT->rotation = glm::radians(newRt[2]); 
+
+                            rootT->size.x = newSc[0];
+                            rootT->size.y = newSc[1];
+
+                            if (g_gizmoOp == ImGuizmo::ROTATE)
+                            {
+                                // parent: degrees from gizmo; compute delta vs old parent rotation
+                                const float oldParentRad = rootT->rotation;                  
+                                const float parentDeg = newRt[2];
+                                const float deltaDeg = parentDeg - glm::degrees(oldParentRad);
+                                const float deltaRad = glm::radians(deltaDeg);
+
+                                for (Entity e : group)
+                                {
+                                    if (e == root) continue;
+                                    if (!ecs.HasComponent<Component::ParentComponent>(e)) continue;
+
+                                    auto* ppc = ecs.GetComponent<Component::ParentComponent>(e);
+                                    ppc->localRot += deltaRad;    
+                                }
+                            }
+                            else if (g_gizmoOp == ImGuizmo::SCALE)
+                            {
+                                rootT->position = { newTr[0], newTr[1], newTr[2] };
+                                rootT->rotation = newRt[2];
+                                rootT->size.x = newSc[0];
+                                rootT->size.y = newSc[1];
+                            }
+                        }
                     }
                 }
             }
 
-            // ----- 6) mouse picking: screen -> uv -> world -> pick ECS entity -----
+            // 6) mouse picking: screen -> uv -> world -> pick ECS entity
             ImVec2 mouse = ImGui::GetMousePos();
             const bool over = (mouse.x >= imgMin.x && mouse.x <= imgMax.x && mouse.y >= imgMin.y && mouse.y <= imgMax.y);
 
@@ -1459,7 +1498,7 @@ namespace UI { // --------------------------------------------------------------
                     selected = 0;
             }
 
-            // ------ 7) drag and drop from asset browser into world ------
+            //  7) drag and drop from asset browser into world
             //  Drag-and-drop spawn
             //  Payload is built in the Asset Browser panel.
             //  Here we just read the payload and instantiate a texture/prefab
@@ -1557,7 +1596,7 @@ namespace UI { // --------------------------------------------------------------
 #endif
         ImGuiID dockspace_id = ImGui::GetID("Dockspace"); // Get ID needed for DockBuilder
         ImGuiViewport* viewport = ImGui::GetMainViewport(); // Needed for DockBuilder size
-        // it's all hardcoded? *pulls out glocko* always has been
+
         if (!s_layoutBuilt) {
             s_layoutBuilt = true;
 

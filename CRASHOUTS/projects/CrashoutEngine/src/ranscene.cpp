@@ -1,3 +1,26 @@
+/*!
+@file        ranvitha.cpp
+@author      ranvitha@digipen.edu
+@date        18/09/2025
+@brief
+This source file implements the **Ran game state** logic for the CrashoutsEngine-based
+project. It contains functions responsible for initializing, updating, and rendering
+game elements within the “Ran” state, including ECS-driven random shape generation,
+background rendering, and state transitions.
+
+The file primarily handles:
+- **Mode 5 ECS shape initialization**: Randomized creation of rectangles, triangles,
+  and circles, including color, position, and rotation attributes.
+- **Resource management**: Loading textures, cleaning up sprites, and resetting ECS data.
+- **Rendering**: Drawing the background and instanced geometry based on the current mode.
+- **Input handling**: Responding to key presses (e.g., switching display modes with the G key).
+
+This module interacts closely with the `InstancingSystem` and the global ECS manager to
+maintain a flexible and data-driven rendering flow for the Ran state. It serves as the
+entry point for Ran’s lifecycle functions — including initialization (`InitRan`),
+rendering (`RenderBackground`), and updating (`UpdateRan`).
+*/
+
 
 #include "ranscene.h"
 #include "log.h"
@@ -5,7 +28,6 @@
 #include "entitymanager.h"
 #include "sceneutils.h"
 #include "assetmanager.h"
-#include "entitymanager.h"
 #include "sceneasset.h"
 #include "glapp.h"
 #include "rendering.h"
@@ -23,7 +45,7 @@ static CrashoutsEngine::ECS* globalECS;
 static const char* sceneName = "ran";
 
 // Display/control state
-static int gDisplayMode = 0;                // 0:bg, 1:duck, 2:instanced, 3:imgui-only
+static int gDisplayMode = 0;                
 static bool gPrevGPressed = false;
 static bool gPrevMPressed = false;          // toggle instancing type (texture/plain)
 static bool gSpriteInitializedInScene = false;
@@ -63,27 +85,6 @@ static bool gEcsTexturesEnabled = false;
 static bool gMode4Initialized = false;
 static bool gMode4TexturesEnabled = false;
 
-// Rectangles (Mode 4)
-// static std::vector<CEVec3> gM4RectPos;
-// static std::vector<CEVec3> gM4RectColor;    // 0..1 colors
-// static std::vector<float>  gM4RectRot;
-// static std::vector<float>  gM4RectW;
-// static std::vector<float>  gM4RectH;
-
-// // Triangles (Mode 4)
-// static std::vector<CEVec3> gM4TriPos;
-// static std::vector<CEVec3> gM4TriColor;     // 0..1 colors
-// static std::vector<float>  gM4TriRot;
-// static std::vector<float>  gM4TriScale;     // use 1.0f
-// static std::vector<float>  gM4TriSide;      // equilateral side length
-
-// // Circles (Mode 4)
-// static std::vector<CEVec3> gM4CircPos;
-// static std::vector<CEVec3> gM4CircColor;    // 0..1 colors
-// static std::vector<float>  gM4CircRot;
-// static std::vector<float>  gM4CircScale;    // use 1.0f
-// static std::vector<float>  gM4CircRadius;
-// static int gM4CircSegments = 24;
 
 // ===== Mode 5 (ECS-driven) random shapes =====
 static bool gMode5Initialized = false;
@@ -110,6 +111,9 @@ static std::vector<float>  gM5CircScale;
 static std::vector<float>  gM5CircRadius;
 static int gM5CircSegments = 24;
 
+// Mode 6 (ECS ducks)
+static bool gMode6Initialized = false;
+static bool gPrevIPressed = false;
 
 static void ComputeWorldDimensions(float& worldWidth, float& worldHeight) {
     const float BASE_SIZE = 100.0f;
@@ -124,8 +128,14 @@ static void ComputeWorldDimensions(float& worldWidth, float& worldHeight) {
     }
 }
 
+/*!
+@brief Initialize the single duck sprite for display mode 1.
+@details
+- Loads the duck spritesheet and registers animation states.
+- Applies initial position, scale, and rotation.
+- Guards against double-initialization via `gSpriteInitializedInScene`.
+*/
 static void EnsureDuckInitialized() {
-    if (gSpriteInitializedInScene) return;
     Component::Sprite::m_sprite.init("assets/images/ducky_2_spritesheet.png", 4, 6, 0.3f);
     Component::Sprite::m_sprite.addAnimationState("idle_normal", Component::AnimationState(0, 2, 0.22f, true));
     Component::Sprite::m_sprite.addAnimationState("walk_normal", Component::AnimationState(6, 6, 0.09f, true));
@@ -266,15 +276,24 @@ static void InitializeMode5EcsRandomShapes(int perTypeCount) {
     gMode5Initialized = true;
 }
 
+/*!
+@brief Cleanup the single duck sprite state and GPU resources.
+@details Ensures sprite resources are released when leaving mode 1.
+*/
 static void EnsureDuckCleaned() {
     if (!gSpriteInitializedInScene) return;
     Component::Sprite::m_sprite.cleanup();
     gSpriteInitializedInScene = false;
 }
 
+/*!
+@brief Load Ran scene resources and reset ECS state.
+@details
+- Gets the global ECS instance and resets it.
+- Generates and loads the asset manifest so textures/shaders are available.
+*/
 void LoadRan()
 {
-    // Load resources specific to Renfred state
     globalECS = CrashoutsEngine::ECS::getInstance();
     globalECS->Reset();
 
@@ -293,7 +312,12 @@ void InitRan()
     gSpriteInitializedInScene = false;  // allow EnsureDuckInitialized() to run
 }
 
-void RenderBackground() {
+/*!
+@brief Render and scale the background image to fit the world.
+@details Uses aspect-aware world dimensions to size the background quad.
+*/
+static void RenderBackground()
+{
     float worldW, worldH;
     ComputeWorldDimensions(worldW, worldH);
     CEVec2 size{ 1.f, 1.f };
@@ -306,6 +330,14 @@ void RenderBackground() {
     );
 }
 
+/*!
+@brief Update loop for Ran scene handling input and per-mode logic.
+@details
+- Press `G` to cycle display modes (0..6) and reinitialize mode-specific data.
+- Press `M` to toggle textures in modes 2/3/5.
+- Mode 1: update duck movement, scale, and rotation.
+- Mode 6: update ECS duck motion and handle `I` key to cycle manual animation.
+*/
 void UpdateRan()
 {
     // Toggle display mode with G 
@@ -313,7 +345,7 @@ void UpdateRan()
     bool gPressed = (gState == GLFW_PRESS);
     if (gPressed && !gPrevGPressed) {
         int prevMode = gDisplayMode;
-        int nextMode = (gDisplayMode + 1) % 6;
+        int nextMode = (gDisplayMode + 1) % 7; // include mode 6
         gDisplayMode = nextMode;
 
         if (gDisplayMode != 3) {
@@ -408,10 +440,6 @@ void UpdateRan()
             gMode4Initialized = false;
         
         }
-
-
-
-
 
     }
 
@@ -518,6 +546,19 @@ void UpdateRan()
         }
     }
 
+    // ECS ducks update
+    if (gDisplayMode == 6 && gMode6Initialized) {
+        InstancingSystem::UpdateEcsDuckSprites();
+    }
+
+    // Handle "I" toggle for duck animation state in mode 6
+    int iState = glfwGetKey(GLApp::ptr_window, GLFW_KEY_I);
+    bool iPressed = (iState == GLFW_PRESS);
+    if (iPressed && !gPrevIPressed && gDisplayMode == 6 && gMode6Initialized) {
+        InstancingSystem::CycleEcsDuckAnimationState();
+    }
+    gPrevIPressed = iPressed;
+
     gPrevGPressed = gPressed;
     gPrevMPressed = mPressed;
 }
@@ -585,7 +626,7 @@ void RenderRan()
     } break;
 
     case 5: { // ECS-driven random shapes; circles separate
-        std::cout << "ecs rando " << std::endl;
+        //std::cout << "ecs rando " << std::endl;
         if (!gMode5Initialized) {
             InitializeMode5EcsRandomShapes(500);
         }
@@ -658,6 +699,13 @@ void RenderRan()
                 );
             }
         }
+    } break;
+    case 6: { // ECS ducks
+        if (!gMode6Initialized) {
+            InstancingSystem::InitializeEcsDuckSpritesRandom(1000);
+            gMode6Initialized = true;
+        }
+        InstancingSystem::RenderEcsDuckSprites();
     } break;
     }
 }
