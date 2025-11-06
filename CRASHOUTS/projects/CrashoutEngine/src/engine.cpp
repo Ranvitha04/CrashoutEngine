@@ -39,7 +39,7 @@ context and implement a game loop.
 CrashoutsEngine::ECS* CrashoutsEngine::ECS::instancePtr = nullptr;
 std::mutex CrashoutsEngine::ECS::mtx;
 
-static Physics::PhysicsHandler physicsSystem;
+auto& physicsSystem = Physics::PhysicsHandler::GetInstance();
 static Collision::CollisionHandler collisionSystem;
 static CrashoutsEngine::AIManager aiSystem;
 

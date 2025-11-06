@@ -62,7 +62,7 @@ void ShutdownGameStateManager();
  * @brief Change the game state
  * @param newState The new state to switch to
  */
-void ChangeGameState(GameState newState);
+void ChangeGameState(GameState newState, bool resetEngineState = true);
 
 /**
  * @brief Register a new game state and its descriptor

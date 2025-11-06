@@ -33,10 +33,21 @@ namespace Physics {
 
 			static inline CEVec3 sGravity{ 0.f, -2.f, 0.f };
 			static inline float  sLinDamp = 2.0f;
-		public:
-
 
 			PhysicsHandler();
+		public:
+
+			static PhysicsHandler& GetInstance() {
+				static PhysicsHandler instance; // Meyer's Singleton
+				return instance;
+			}
+
+			// --- Delete Copy/Move Operations ---
+			// Prevent copies and moves
+			PhysicsHandler(const PhysicsHandler&) = delete;
+			PhysicsHandler& operator=(const PhysicsHandler&) = delete;
+			PhysicsHandler(PhysicsHandler&&) = delete;
+			PhysicsHandler& operator=(PhysicsHandler&&) = delete;
 
 			~PhysicsHandler() = default;
 

@@ -2,20 +2,24 @@
 #include "colliders.h"
 #include "collidercomponent.h"
 #include "shapes.h"
+#include "camera.h"
 
 namespace {
 	static void DrawAABBOutline(const CEVec3& minP, const CEVec3& maxP, float thickness, const CEVec3& color) {
-		CEVec3 p0(minP.x, minP.y, 0.0f);
-		CEVec3 p1(maxP.x, minP.y, 0.0f);
-		CEVec3 p2(maxP.x, maxP.y, 0.0f);
-		CEVec3 p3(minP.x, maxP.y, 0.0f);
+		using namespace CrashoutsEngine;
 
-		CEVec2 size{ 1.f, 1.f };
+		float z = RenderCamera::engineCamera.GetFar();
+		CEVec3 p0(minP.x, minP.y, z);
+		CEVec3 p1(maxP.x, minP.y, z);
+		CEVec3 p2(maxP.x, maxP.y, z);
+		CEVec3 p3(minP.x, maxP.y, z);
 
-		Component::Shapes::CreateLine(size, p0, p1, thickness, 0.0f, color);
-		Component::Shapes::CreateLine(size, p1, p2, thickness, 0.0f, color);
-		Component::Shapes::CreateLine(size, p2, p3, thickness, 0.0f, color);
-		Component::Shapes::CreateLine(size, p3, p0, thickness, 0.0f, color);
+		CEVec2 size = { thickness, thickness };
+
+		Shapes::CreateLine(p0, p1, thickness, color);
+		Shapes::CreateLine(p1, p2, thickness, color);
+		Shapes::CreateLine(p2, p3, thickness, color);
+		Shapes::CreateLine(p3, p0, thickness, color);
 	}
 }
 

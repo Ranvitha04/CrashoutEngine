@@ -93,17 +93,20 @@ namespace Component {
         }
     }
 
-    void Shapes::CreateLine(const CEVec2& transformSize, const CEVec3& start, const CEVec3& end, float thickness, float rotation, const CEVec3& color) {
+    void Shapes::CreateLine(const CEVec3& start, const CEVec3& end, float thickness, const CEVec3& color) {
         Component::Rendering& renderer = Component::Rendering::Get();
 
-        // Calculate line in world coordinates
+        // 1. CALCULATE VERTICES IN FINAL WORLD-SPACE
         CEVec3 dir = end - start;
         glm::vec3 gdir(dir.x, dir.y, dir.z);
+
+        // Calculate perpendicular normal, scaled by half-thickness
         glm::vec3 normal(-gdir.y, gdir.x, 0.0f);
         if (glm::length(normal) > 0.0f) {
             normal = glm::normalize(normal) * (thickness / 2.0f);
         }
 
+        // Vertices are now in their final world positions
         std::array<CEVec3, 4> pos_vtx{
             CEVec3(start.x + normal.x, start.y + normal.y, start.z),
             CEVec3(start.x - normal.x, start.y - normal.y, start.z),
@@ -114,7 +117,7 @@ namespace Component {
         std::array<CEVec3, 4> clr_vtx{ color, color, color, color };
         std::array<GLushort, 6> idx_vtx{ 0, 1, 2, 0, 2, 3 };
 
-
+        // 2. SETUP BUFFERS (with final vertex data)
         renderer.SetupBuffersOptimized(pos_vtx.data(), sizeof(pos_vtx),
             clr_vtx.data(), sizeof(clr_vtx),
             idx_vtx.data(), idx_vtx.size(),
@@ -122,24 +125,18 @@ namespace Component {
 
         renderer.shdr_pgm->Use();
 
-        // Apply transformations (rotation and scale around center of line)
-        CEVec3 center = (start + end) / 2.0f;
+        // 3. SET MODEL MATRIX TO IDENTITY
+        // The vertices are already in world space, so no model transform is needed.
+        // (We assume the shader will multiply this by View * Projection)
         glm::mat4 model = glm::mat4(1.0f);
-
-        // Translate to center, apply transformations, translate back
-        model = glm::translate(model, glm::vec3(center.x, center.y, center.z));
-        model = glm::rotate(model, glm::radians(rotation), glm::vec3(0, 0, 1));
-        model = glm::scale(model, glm::vec3(transformSize.x, transformSize.y, 1.0f));
-        model = glm::translate(model, glm::vec3(-center.x, -center.y, -center.z));
-
         renderer.shdr_pgm->SetUniform("uModel", model);
-        
 
+        // 4. SET SHADER UNIFORMS & DRAW
         GLint useTexture_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "u_useTexture");
-        if (useTexture_loc != -1) glUniform1i(useTexture_loc, 0); // Use vertex colors, not texture
+        if (useTexture_loc != -1) glUniform1i(useTexture_loc, 0); // Use vertex colors
 
         GLint tint_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "u_tint");
-        if (tint_loc != -1) glUniform3f(tint_loc, 1.0f, 1.0f, 1.0f); // No tint modification
+        if (tint_loc != -1) glUniform3f(tint_loc, 1.0f, 1.0f, 1.0f); // No tint
 
         renderer.Draw();
     }

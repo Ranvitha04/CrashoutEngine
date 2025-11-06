@@ -535,7 +535,7 @@ namespace CrashoutsEngine {
 
                     // 1. Check Button State
                     if (buttonValue.HasMember("buttonState") && buttonValue["buttonState"].IsUint()) {
-                        b.buttonState = static_cast<ButtonState>(buttonValue["buttonState"].GetUint());
+                        b.buttonState = ButtonState::NORMAL; //static_cast<ButtonState>(buttonValue["buttonState"].GetUint());
                     }
 
                     // ----------------------------------------------------------------------------------------------
@@ -607,6 +607,13 @@ namespace CrashoutsEngine {
                         if (colorVal.HasMember("z")) color.z = colorVal["z"].GetFloat();
                         b.textPressedColor = color;
                     }
+
+                    // check shape component
+                    ShapeComponent* s = gECS.GetComponent<ShapeComponent>(newEntity);
+                    if (s) s->color = b.shapeNormalColor;
+                    // check text component
+                    TextComponent* t = gECS.GetComponent<TextComponent>(newEntity);
+                    if (t) t->color = b.textNormalColor;
 
                 }
 
