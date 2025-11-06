@@ -333,15 +333,6 @@ namespace UI { // --------------------------------------------------------------
         }
         ImGui::SeparatorText("Prefab Creator");
         static char nameBuf[128] = { 0 };
-        ImGui::InputTextWithHint("Prefab name", "e.g. Box, Platform, Player...", nameBuf, IM_ARRAYSIZE(nameBuf));
-        ImGui::SameLine();
-        if (ImGui::Button("Create##PrefabByName")) {
-            std::string n = nameBuf;
-            if (n.empty()) n = "Entity";
-            Prefab::Create(ecs, n);      
-            nameBuf[0] = '\0';
-        }
-
         {
             auto names = Prefab::Names();
             if (!names.empty()) {
@@ -491,7 +482,7 @@ namespace UI { // --------------------------------------------------------------
         ImGui::SameLine();
         ImGui::BeginChild("asset_right", ImVec2(0, 0), true);
 
-        const float kPreviewMaxHeight = 260.0f; // preview box height
+        const float kPreviewMaxHeight = 260.0f; 
         ImVec2 availRight = ImGui::GetContentRegionAvail();
         float listHeight = availRight.y - kPreviewMaxHeight - ImGui::GetStyle().ItemSpacing.y;
         if (listHeight < 120.0f) listHeight = availRight.y * 0.6f;

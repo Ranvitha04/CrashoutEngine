@@ -1,4 +1,10 @@
+/*!
+@file        hierarchy.h
+@author      b.mohamadafiq@digipen.edu
+@date        7/11/2025
+@brief
 
+*/
 #pragma once
 #include "entitymanager.h"
 
