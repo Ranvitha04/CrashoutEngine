@@ -11,7 +11,7 @@ namespace CrashoutsEngine
 
         }
 
-        public override void Update(float dt)
+        public override void Update()
         {
             //Console.WriteLine("[C#] PlayerController Update() called with dt: " + dt);
             // Access physics and transform components from your entity
@@ -48,7 +48,7 @@ namespace CrashoutsEngine
                 tf.Size *= 1.1f;
             }
 
-            if (Input.IsKeyPressed(Key.R))
+            if (Input.IsKeyPressed(Key.F))
             {
                 tf.Rotation += 3f;
                 if (Entity.HasCollider)

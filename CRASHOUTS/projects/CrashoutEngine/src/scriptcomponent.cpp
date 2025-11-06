@@ -45,11 +45,13 @@ namespace CrashoutsEngine
         mono_runtime_invoke(entityCtor, entityObj, ctorArgs, nullptr);
         MonoClassField* entityField = mono_class_get_field_from_name(Class, "Entity");
         if (entityField)
+        {
             mono_field_set_value(Instance, entityField, entityObj);
+        }
 
         // Cache methods
         MethodStart = mono_class_get_method_from_name(Class, "Start", 0);
-        MethodUpdate = mono_class_get_method_from_name(Class, "Update", 1);
+        MethodUpdate = mono_class_get_method_from_name(Class, "Update", 0);
 
         if (MethodStart)
         {
@@ -86,13 +88,13 @@ namespace CrashoutsEngine
         Started = true;
     }
 
-    void ScriptComponent::Update(float dt)
+    void ScriptComponent::Update()
     {
         if (!MethodUpdate) return;
         MonoObject* target = mono_gchandle_get_target(GCHandle);
-        void* args[1] = { &dt };
+        //void* args[1] = { &dt };
         MonoObject* exc = nullptr;
-        mono_runtime_invoke(MethodUpdate, target, args, &exc);
+        mono_runtime_invoke(MethodUpdate, target, nullptr, &exc);
         if (exc) mono_print_unhandled_exception(exc);
 
     }

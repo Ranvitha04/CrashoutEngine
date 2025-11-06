@@ -33,7 +33,7 @@ namespace CrashoutsEngine
 
     }
 
-    void ScriptSystem::UpdateAll(float dt)
+    void ScriptSystem::UpdateAll()
     {
         auto& ecs = *ECS::getInstance();
         auto& scripts = ecs.GetComponentArray<ScriptComponent>();
@@ -43,7 +43,7 @@ namespace CrashoutsEngine
             if (!script.Started)
                 script.Start();
 
-            script.Update(dt);
+            script.Update();
         }
 
     }
