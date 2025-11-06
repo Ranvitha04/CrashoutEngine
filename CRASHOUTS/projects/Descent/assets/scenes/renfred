@@ -429,7 +429,7 @@
             },
             "text": {
                 "font": "Exo2-Regular",
-                "text": "broken text input\nbox\nawdadawd",
+                "text": "Text input!",
                 "scale": 1.0,
                 "offset": {
                     "x": 0.0,
@@ -448,7 +448,7 @@
             },
             "textinput": {
                 "isFocused": false,
-                "cursorPos": 30,
+                "cursorPos": 10,
                 "maxCharacters": 255
             },
             "uilayout": {
@@ -456,7 +456,7 @@
                     "x": 15.5,
                     "y": 2.0
                 },
-                "uiLayout": 9
+                "uiLayout": 4
             }
         }
     ]

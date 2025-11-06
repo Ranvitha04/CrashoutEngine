@@ -5,17 +5,17 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -52.60515213012695,
-                    "y": 20.831327438354493,
+                    "x": -49.785980224609378,
+                    "y": 23.898601531982423,
                     "z": 3.9000000953674318
                 },
                 "size": {
-                    "x": 57.90888595581055,
-                    "y": 40.519920349121097
+                    "x": 70.05699920654297,
+                    "y": 45.308998107910159
                 }
             },
             "rigidbody": {
-                "mass": 5.0,
+                "mass": 3.5,
                 "restitutionCoeff": 0.0,
                 "maximumVelocity": {
                     "x": 0.0,
@@ -26,13 +26,13 @@
             "collider": {
                 "type": 1,
                 "min": {
-                    "x": -60.0302619934082,
-                    "y": 3.6817989349365236,
+                    "x": -56.565643310546878,
+                    "y": 7.313928604125977,
                     "z": 3.9000000953674318
                 },
                 "max": {
-                    "x": -45.1800422668457,
-                    "y": 37.980857849121097,
+                    "x": -43.006317138671878,
+                    "y": 40.4832763671875,
                     "z": 3.9000000953674318
                 }
             },
@@ -44,7 +44,7 @@
                 "thickness": 1.0,
                 "preview": false,
                 "type": 0,
-                "textureName": "Chibi-1",
+                "textureName": "Character\\New Artstyle\\Chibi-1.png",
                 "uvSize": {
                     "x": 1.0,
                     "y": 1.0
@@ -90,12 +90,6 @@
                     "x": 1.0,
                     "y": 1.0
                 }
-            },
-            "postprocessing": {
-                "brightness": 0.12999999523162843,
-                "contrast": 0.3199999928474426,
-                "saturation": 0.6000000238418579,
-                "active": true
             }
         },
         {
@@ -108,13 +102,13 @@
                     "z": 0.0
                 },
                 "size": {
-                    "x": 43.5,
-                    "y": 4.0
+                    "x": 45.0,
+                    "y": 5.800000190734863
                 }
             },
             "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
+                "useTexture": false,
+                "isWorldSpace": false,
                 "wrapModeU": 0,
                 "wrapModeV": 0,
                 "thickness": 1.0,
@@ -162,13 +156,13 @@
                     "z": 0.0
                 },
                 "size": {
-                    "x": 43.5,
+                    "x": 43.505001068115237,
                     "y": 4.0
                 }
             },
             "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
+                "useTexture": false,
+                "isWorldSpace": false,
                 "wrapModeU": 0,
                 "wrapModeV": 0,
                 "thickness": 1.0,
@@ -222,7 +216,7 @@
             },
             "text": {
                 "font": "Silver",
-                "text": "Activated: 0 / 2",
+                "text": "Activated: 2 / 2",
                 "scale": 2.0,
                 "offset": {
                     "x": 0.0,
@@ -252,7 +246,7 @@
                 }
             },
             "shape": {
-                "useTexture": true,
+                "useTexture": false,
                 "isWorldSpace": true,
                 "wrapModeU": 0,
                 "wrapModeV": 0,
@@ -326,36 +320,45 @@
             }
         },
         {
-            "name": "Tex_bg 1 top",
+            "name": "Exit",
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 252.65594482421876,
-                    "y": 53.894805908203128,
-                    "z": -3.5
+                    "x": 646.4287109375,
+                    "y": 7.496435165405273,
+                    "z": -0.8999999761581421
                 },
                 "size": {
-                    "x": 1020.4857177734375,
-                    "y": 158.65838623046876
+                    "x": 20.100000381469728,
+                    "y": 29.799999237060548
+                }
+            },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
                 }
             },
             "shape": {
-                "useTexture": true,
+                "useTexture": false,
                 "isWorldSpace": true,
-                "wrapModeU": 2,
-                "wrapModeV": 2,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
                 "thickness": 1.0,
                 "preview": false,
                 "type": 0,
-                "textureName": "backgrounds\\bg 1 top.png",
+                "textureName": "",
                 "uvSize": {
-                    "x": 6.050000190734863,
+                    "x": 1.0,
                     "y": 1.0
                 },
                 "color": {
-                    "x": 255.0,
-                    "y": 255.0,
-                    "z": 255.0
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
                 },
                 "p1": {
                     "x": 0.0,
@@ -419,7 +422,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": -54.751617431640628,
-                    "y": -17.621192932128908,
+                    "y": -3.538503646850586,
                     "z": 0.0
                 },
                 "size": {
@@ -440,17 +443,17 @@
                 "type": 1,
                 "min": {
                     "x": -85.25161743164063,
-                    "y": -22.52119255065918,
+                    "y": -8.43850326538086,
                     "z": 0.0
                 },
                 "max": {
                     "x": -24.251617431640626,
-                    "y": -12.721193313598633,
+                    "y": 1.3614959716796876,
                     "z": 0.0
                 }
             },
             "shape": {
-                "useTexture": true,
+                "useTexture": false,
                 "isWorldSpace": true,
                 "wrapModeU": 0,
                 "wrapModeV": 0,
@@ -635,7 +638,7 @@
                 "type": 0,
                 "textureName": "bg2 top",
                 "uvSize": {
-                    "x": -8.949999809265137,
+                    "x": -8.850000381469727,
                     "y": 1.0
                 },
                 "color": {
@@ -682,17 +685,17 @@
                 "type": 1,
                 "min": {
                     "x": -182.4271240234375,
-                    "y": -138.67153930664063,
+                    "y": -138.6715545654297,
                     "z": 0.0
                 },
                 "max": {
                     "x": 681.4942016601563,
-                    "y": -104.45057678222656,
+                    "y": -104.4505615234375,
                     "z": 0.0
                 }
             },
             "shape": {
-                "useTexture": true,
+                "useTexture": false,
                 "isWorldSpace": true,
                 "wrapModeU": 0,
                 "wrapModeV": 0,
@@ -763,8 +766,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 674.01171875,
-                    "y": 44.721885681152347,
+                    "x": 678.59765625,
+                    "y": 42.811065673828128,
                     "z": 0.0
                 },
                 "size": {
@@ -772,11 +775,882 @@
                     "y": 407.88739013671877
                 }
             },
+            "collider": {
+                "type": 1,
+                "min": {
+                    "x": 667.8209228515625,
+                    "y": -161.13262939453126,
+                    "z": 0.0
+                },
+                "max": {
+                    "x": 689.3743896484375,
+                    "y": 246.7547607421875,
+                    "z": 0.0
+                }
+            }
+        },
+        {
+            "name": "Platform_Clone18",
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 118.5914306640625,
+                    "y": -77.93807983398438,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 61.0,
+                    "y": 109.5
+                }
+            },
             "rigidbody": {
                 "mass": 0.0,
                 "restitutionCoeff": 0.0,
                 "maximumVelocity": {
                     "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "collider": {
+                "type": 1,
+                "min": {
+                    "x": 88.0914306640625,
+                    "y": -132.68807983398438,
+                    "z": 0.0
+                },
+                "max": {
+                    "x": 149.0914306640625,
+                    "y": -23.188079833984376,
+                    "z": 0.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 116.25001525878906,
+                    "y": 49.57720947265625,
+                    "z": 49.57720947265625
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            }
+        },
+        {
+            "name": "Platform_Clone18_Clone20",
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.4517230987548828,
+                    "y": -114.24359130859375,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 61.0,
+                    "y": 109.5
+                }
+            },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "collider": {
+                "type": 1,
+                "min": {
+                    "x": -30.048276901245118,
+                    "y": -168.99359130859376,
+                    "z": 0.0
+                },
+                "max": {
+                    "x": 30.951723098754884,
+                    "y": -59.49359130859375,
+                    "z": 0.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 116.25001525878906,
+                    "y": 49.57720947265625,
+                    "z": 49.57720947265625
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            }
+        },
+        {
+            "name": "Platform_Clone18_Clone20_Clone21",
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 312.69879150390627,
+                    "y": -49.618370056152347,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 187.1999969482422,
+                    "y": 109.5
+                }
+            },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "collider": {
+                "type": 1,
+                "min": {
+                    "x": 219.09878540039063,
+                    "y": -104.36837005615235,
+                    "z": 0.0
+                },
+                "max": {
+                    "x": 406.2987976074219,
+                    "y": 5.131629943847656,
+                    "z": 0.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "backgrounds\\bg 1 top.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 116.25001525878906,
+                    "y": 49.57720947265625,
+                    "z": 49.57720947265625
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            }
+        },
+        {
+            "name": "Platform_Clone22",
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -134.14830017089845,
+                    "y": 38.66667175292969,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 61.0,
+                    "y": 9.800000190734864
+                }
+            },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "collider": {
+                "type": 1,
+                "min": {
+                    "x": -164.64830017089845,
+                    "y": 33.76667404174805,
+                    "z": 0.0
+                },
+                "max": {
+                    "x": -103.64830017089844,
+                    "y": 43.56666946411133,
+                    "z": 0.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 116.25001525878906,
+                    "y": 49.57720947265625,
+                    "z": 49.57720947265625
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            }
+        },
+        {
+            "name": "Pressure_Plate_1",
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -129.12399291992188,
+                    "y": 44.98271942138672,
+                    "z": -0.10000000149011612
+                },
+                "size": {
+                    "x": 19.100000381469728,
+                    "y": 4.099999904632568
+                }
+            },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "collider": {
+                "type": 1,
+                "min": {
+                    "x": -138.6739959716797,
+                    "y": 42.93272018432617,
+                    "z": -0.10000000149011612
+                },
+                "max": {
+                    "x": -119.57398986816406,
+                    "y": 47.032718658447269,
+                    "z": -0.10000000149011612
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 255.0,
+                    "y": 255.0,
+                    "z": 255.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            }
+        },
+        {
+            "name": "Pressure_Plate_2",
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 361.00732421875,
+                    "y": 6.249808311462402,
+                    "z": -0.10000000149011612
+                },
+                "size": {
+                    "x": 19.100000381469728,
+                    "y": 4.099999904632568
+                }
+            },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "collider": {
+                "type": 1,
+                "min": {
+                    "x": 351.45733642578127,
+                    "y": 4.1998090744018559,
+                    "z": -0.10000000149011612
+                },
+                "max": {
+                    "x": 370.55731201171877,
+                    "y": 8.29980754852295,
+                    "z": -0.10000000149011612
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 255.0,
+                    "y": 255.0,
+                    "z": 255.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            }
+        },
+        {
+            "name": "Platform_Clone18_Clone20_Clone21_Clone25",
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 467.24237060546877,
+                    "y": -57.248260498046878,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 15.600000381469727,
+                    "y": 109.5
+                }
+            },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "collider": {
+                "type": 1,
+                "min": {
+                    "x": 459.4423828125,
+                    "y": -111.99826049804688,
+                    "z": 0.0
+                },
+                "max": {
+                    "x": 475.0423583984375,
+                    "y": -2.498260498046875,
+                    "z": 0.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 116.25001525878906,
+                    "y": 49.57720947265625,
+                    "z": 49.57720947265625
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            }
+        },
+        {
+            "name": "Platform_Clone18_Clone20_Clone21_Clone25_Clone26",
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 536.1276245117188,
+                    "y": -109.19770050048828,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 15.600000381469727,
+                    "y": 109.5
+                }
+            },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "collider": {
+                "type": 1,
+                "min": {
+                    "x": 528.32763671875,
+                    "y": -163.94769287109376,
+                    "z": 0.0
+                },
+                "max": {
+                    "x": 543.9276123046875,
+                    "y": -54.44770812988281,
+                    "z": 0.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 116.25001525878906,
+                    "y": 49.57720947265625,
+                    "z": 49.57720947265625
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            }
+        },
+        {
+            "name": "Platform_Clone18_Clone20_Clone21_Clone25_Clone26_Clone27",
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 646.4287109375,
+                    "y": -59.34397506713867,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 47.5,
+                    "y": 109.5
+                }
+            },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "collider": {
+                "type": 1,
+                "min": {
+                    "x": 622.6787109375,
+                    "y": -114.09397888183594,
+                    "z": 0.0
+                },
+                "max": {
+                    "x": 670.1787109375,
+                    "y": -4.593975067138672,
+                    "z": 0.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 116.25001525878906,
+                    "y": 49.57720947265625,
+                    "z": 49.57720947265625
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            }
+        },
+        {
+            "name": "Tex_bg 1 top",
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 243.95523071289063,
+                    "y": 72.73470306396485,
+                    "z": -4.900000095367432
+                },
+                "size": {
+                    "x": 1011.9000244140625,
+                    "y": 125.9000015258789
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 1,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "bg 1 top",
+                "uvSize": {
+                    "x": 4.650000095367432,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 255.0,
+                    "y": 255.0,
+                    "z": 255.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            }
+        },
+        {
+            "name": "Guide_Text",
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -68.82827758789063,
+                    "y": 28.905296325683595,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "text": {
+                "font": "Silver",
+                "text": "E - Get Light / Heavy",
+                "scale": 2.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "centered": true,
+                "isworldspace": false
+            }
+        },
+        {
+            "name": "Platform_Clone18_Clone20_Clone29",
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 159.09768676757813,
+                    "y": -125.11852264404297,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 61.0,
+                    "y": 109.5
+                }
+            },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "collider": {
+                "type": 1,
+                "min": {
+                    "x": 128.59768676757813,
+                    "y": -179.8685302734375,
+                    "z": 0.0
+                },
+                "max": {
+                    "x": 189.59768676757813,
+                    "y": -70.36851501464844,
+                    "z": 0.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 116.25001525878906,
+                    "y": 49.57720947265625,
+                    "z": 49.57720947265625
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            }
+        },
+        {
+            "name": "Platform_Clone18_Clone20_Clone30",
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -84.61749267578125,
+                    "y": -137.313232421875,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 61.0,
+                    "y": 109.5
+                }
+            },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "collider": {
+                "type": 1,
+                "min": {
+                    "x": -115.11749267578125,
+                    "y": -192.063232421875,
+                    "z": 0.0
+                },
+                "max": {
+                    "x": -54.11749267578125,
+                    "y": -82.563232421875,
+                    "z": 0.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 116.25001525878906,
+                    "y": 49.57720947265625,
+                    "z": 49.57720947265625
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            }
+        },
+        {
+            "name": "Platform_Clone18_Clone20_Clone21_Clone25_Clone26_Clone31",
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 585.1505126953125,
+                    "y": -87.56993103027344,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 15.600000381469727,
+                    "y": 109.5
+                }
+            },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "collider": {
+                "type": 1,
+                "min": {
+                    "x": 577.3505249023438,
+                    "y": -142.31991577148438,
+                    "z": 0.0
+                },
+                "max": {
+                    "x": 592.9505004882813,
+                    "y": -32.819942474365237,
+                    "z": 0.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 116.25001525878906,
+                    "y": 49.57720947265625,
+                    "z": 49.57720947265625
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
                     "y": 0.0,
                     "z": 0.0
                 }
