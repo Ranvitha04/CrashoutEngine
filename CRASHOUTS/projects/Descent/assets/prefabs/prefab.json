@@ -1,35 +1,68 @@
 {
-  "prefabs": [
-    {
-      "type": "Box",
-      "name": "Crate01",
-      "shape": {
-        "type": 0,
-        "width": 1.0,
-        "height": 1.0,
-        "color": {
-          "r": 255,
-          "g": 255,
-          "b": 255
+    "prefabs": [
+        {
+            "type": "Box",
+            "name": "Crate01",
+            "shape": {
+                "type": 0,
+                "width": 1.0,
+                "height": 1.0,
+                "color": {
+                    "r": 255,
+                    "g": 255,
+                    "b": 255
+                },
+                "enableTexture": false
+            },
+            "transform": {
+                "position": {
+                    "x": 0,
+                    "y": 0,
+                    "z": 0
+                },
+                "rotation": 0.0,
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "rigidbody": {
+                "mass": 1.0,
+                "restitution": 0.0
+            }
         },
-        "enableTexture": false
-      },
-      "transform": {
-        "position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "rotation": 0.0,
-        "size": {
-          "x": 1.0,
-          "y": 1.0
+        {
+            "type": "Box",
+            "name": "BigBox",
+            "transform": {
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "rotation": 0.0,
+                "size": {
+                    "x": 10.0,
+                    "y": 10.0
+                }
+            },
+            "shape": {
+                "type": 0,
+                "kind": "Rectangle",
+                "width": 10.0,
+                "height": 10.0,
+                "size": 10.0,
+                "color": {
+                    "r": 255.0,
+                    "g": 255.0,
+                    "b": 255.0
+                },
+                "enableTexture": false
+            },
+            "rigidbody": {
+                "mass": 1.0,
+                "restitution": 0.0
+            }
         }
-      },
-      "rigidbody": {
-        "mass": 1.0,
-        "restitution": 0.0
-      }
-    }
-  ]
+    ]
 }

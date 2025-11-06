@@ -366,7 +366,7 @@ namespace UI { // --------------------------------------------------------------
             namespace fs = std::filesystem;
 
             
-            const fs::path jsonPath = fs::path("assets") / "prefabs" / "prefab.json";
+            const fs::path jsonPath = fs::path(CrashoutsEngine::Assets::rootPath) / "prefabs" / "prefab.json";
             fs::create_directories(jsonPath.parent_path()); // safe if exists
 
             

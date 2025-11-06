@@ -818,7 +818,7 @@ namespace CrashoutsEngine {
             e.AddComponent<TransformComponent>(entity, TransformComponent{});
     });
 
-    const char* JSON_PATH = "assets/prefabs/prefab.json"; 
+    const std::string JSON_PATH = CrashoutsEngine::Assets::rootPath + "prefabs/prefab.json";
     LoadPrefabsFromJson_RJ(JSON_PATH);
 }
 
