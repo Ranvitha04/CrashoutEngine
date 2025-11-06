@@ -1250,13 +1250,13 @@ namespace UI { // --------------------------------------------------------------
             ImVec2 screenPos = ImGui::GetCursorScreenPos();
             ImGui::SetCursorScreenPos(ImVec2(screenPos.x + paddingX, screenPos.y + paddingY));
              
+            // Let the Gizmo recieve hover/drag over image
+            ImGui::SetNextItemAllowOverlap();
+
             // Display the texture within the ImGui window
             // UV flip (0,1) to (1,0) since OpenGL textures are often upside-down
             ImGui::Image((void*)(intptr_t)CrashoutsEngine::PostProcessing::ppTextureID, 
                 ImVec2((float)finalTextureWidth, (float)finalTextureHeight), ImVec2(0, 1), ImVec2(1, 0));
-            
-            // Let the Gizmo recieve hover/drag over image
-            ImGui::SetItemAllowOverlap();
 
             // Rectangle of that Image in screen space (used by gizmo & picking)
             ImVec2 imgMin = ImGui::GetItemRectMin();
@@ -1280,7 +1280,7 @@ namespace UI { // --------------------------------------------------------------
                 CrashoutsEngine::Entity root = CrashoutsEngine::GetRoot(ecs, selected);
 
                 // collect everyone under that root (root included)
-                std::vector<CrashoutsEngine::Entity> group;
+                std::vector<Entity> group;
                 group.reserve(16);
                 CrashoutsEngine::GatherDescendants(ecs, root, group);
 
@@ -1304,56 +1304,86 @@ namespace UI { // --------------------------------------------------------------
 
                 // use root's rot/scale just for displaying the gizmo nicely
                 auto* rootT = ecs.GetComponent<Component::TransformComponent>(root);
-                float tr[3] = { center.x, center.y, center.z };
-                float rt[3] = { 0.f, 0.f, rootT ? rootT->rotation : 0.f };
-                float sc[3] = { rootT ? rootT->size.x : 1.f,
-                                rootT ? rootT->size.y : 1.f,
-                                1.f };
-
-                float m[16];
-                ImGuizmo::RecomposeMatrixFromComponents(tr, rt, sc, m);
-
-                const float* view = glm::value_ptr(Component::Rendering::Get().viewMatrix);
-                const float* proj = glm::value_ptr(Component::Rendering::Get().projectionMatrix);
-
-                const float* snapPtr = nullptr;
-                float snap[3];
-                if (g_snapOn) {
-                    if (g_gizmoOp == ImGuizmo::ROTATE) {
-                        snap[0] = g_snapAngle;
-                        snapPtr = snap;
-                    }
-                    else {
-                        snap[0] = g_snapTrans[0];
-                        snap[1] = g_snapTrans[1];
-                        snap[2] = g_snapTrans[2];
-                        snapPtr = snap;
-                    }
-                }
-
-                // let user move the gizmo placed at the group center
-                ImGuizmo::Manipulate(view, proj, g_gizmoOp, g_gizmoMode, m, nullptr, snapPtr);
-
-                if (ImGuizmo::IsUsing())
+                if (rootT)
                 {
-                    // figure out how far the gizmo moved
-                    float newTr[3], newRt[3], newSc[3];
-                    ImGuizmo::DecomposeMatrixToComponents(m, newTr, newRt, newSc);
+                    // gizmo starts exactly on the parent
+                    float tr[3] = { rootT->position.x, rootT->position.y, rootT->position.z };
+                    float rt[3] = { 0.f, 0.f, rootT->rotation };
+                    float sc[3] = { rootT->size.x, rootT->size.y, 1.f };
 
-                    CEVec3 offset{
-                        newTr[0] - center.x,
-                        newTr[1] - center.y,
-                        newTr[2] - center.z
-                    };
+                    float m[16];
+                    ImGuizmo::RecomposeMatrixFromComponents(tr, rt, sc, m);
 
-                    // apply the SAME offset to every entity in the group
-                    for (CrashoutsEngine::Entity e : group) {
-                        if (!ecs.HasComponent<Component::TransformComponent>(e))
-                            continue;
-                        auto* t = ecs.GetComponent<Component::TransformComponent>(e);
-                        t->position.x += offset.x;
-                        t->position.y += offset.y;
-                        t->position.z += offset.z;
+                    const float* view = glm::value_ptr(Component::Rendering::Get().viewMatrix);
+                    const float* proj = glm::value_ptr(Component::Rendering::Get().projectionMatrix);
+
+                    const float* snapPtr = nullptr;
+                    float snap[3];
+                    if (g_snapOn) {
+                        if (g_gizmoOp == ImGuizmo::ROTATE) {
+                            snap[0] = g_snapAngle;
+                            snapPtr = snap;
+                        }
+                        else {
+                            snap[0] = g_snapTrans[0];
+                            snap[1] = g_snapTrans[1];
+                            snap[2] = g_snapTrans[2];
+                            snapPtr = snap;
+                        }
+                    }
+
+                    ImGuizmo::Manipulate(view, proj, g_gizmoOp, g_gizmoMode, m, nullptr, snapPtr);
+
+                    if (ImGuizmo::IsUsing())
+                    {
+                        float newTr[3], newRt[3], newSc[3];
+                        ImGuizmo::DecomposeMatrixToComponents(m, newTr, newRt, newSc);
+
+                        if (g_gizmoOp == ImGuizmo::TRANSLATE)
+                        {
+                            CEVec3 offset{
+                                newTr[0] - rootT->position.x,
+                                newTr[1] - rootT->position.y,
+                                newTr[2] - rootT->position.z
+                            };
+
+                            for (Entity e : group) {
+                                if (!ecs.HasComponent<Component::TransformComponent>(e)) continue;
+                                auto* t = ecs.GetComponent<Component::TransformComponent>(e);
+                                t->position.x += offset.x;
+                                t->position.y += offset.y;
+                                t->position.z += offset.z;
+                            }
+                        }
+                        else
+                        {
+                            rootT->position = { newTr[0], newTr[1], newTr[2] };
+                            rootT->rotation = newRt[2];
+                            rootT->size.x = newSc[0];
+                            rootT->size.y = newSc[1];
+
+                            if (g_gizmoOp == ImGuizmo::ROTATE)
+                            {
+                                const float parentDeg = newRt[2];
+
+                                for (Entity e : group)
+                                {
+                                    if (e == root) continue;
+                                    if (!ecs.HasComponent<Component::TransformComponent>(e)) continue;
+
+                                    auto* t = ecs.GetComponent<Component::TransformComponent>(e);
+
+                                    t->rotation = parentDeg;
+                                }
+                            }
+                            else if (g_gizmoOp == ImGuizmo::SCALE)
+                            {
+                                rootT->position = { newTr[0], newTr[1], newTr[2] };
+                                rootT->rotation = newRt[2];
+                                rootT->size.x = newSc[0];
+                                rootT->size.y = newSc[1];
+                            }
+                        }
                     }
                 }
             }
