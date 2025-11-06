@@ -28,7 +28,6 @@ rendering (`RenderBackground`), and updating (`UpdateRan`).
 #include "entitymanager.h"
 #include "sceneutils.h"
 #include "assetmanager.h"
-#include "entitymanager.h"
 #include "sceneasset.h"
 #include "glapp.h"
 #include "rendering.h"
