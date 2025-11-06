@@ -1,4 +1,10 @@
-#include "TransformBindings.h"
+/*!
+@file		transformbindings.cpp
+@author     m.biniswandi@digipen.edu
+@date       06/11/2025
+@brief		Definition of transform bindings functions
+*/
+#include "transformbindings.h"
 #include "entitymanager.h"
 #include "transformcomponent.h"
 #include <mono/metadata/object.h>
