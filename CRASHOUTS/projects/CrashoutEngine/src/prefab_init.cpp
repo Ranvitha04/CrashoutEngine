@@ -23,6 +23,11 @@
 #include "rapidjson/stringbuffer.h"
 #include "textcomponent.h"
 #include "textrenderer.h"  
+#include "scriptcomponent.h"
+#include "audiocomponent.h"   
+#include "guicomponent.h"
+#include "ppcomponent.h"
+#include "camera.h"
 using namespace CrashoutsEngine;
 using namespace Component;
 
@@ -70,61 +75,102 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path)
         // ----------------------
         if (type == "Box") {
             // ---- shape ----
-            if (!prefabs.HasMember("shape") || !prefabs["shape"].IsObject()) { LOGE(Core, std::string("Box '") + name + "' missing shape"); continue; }
+            if (!prefabs.HasMember("shape") || !prefabs["shape"].IsObject()) {
+                LOGE(Core, std::string("Box '") + name + "' missing shape");
+                continue;
+            }
             const auto& shapeJson = prefabs["shape"];
-            float width = (shapeJson.HasMember("width") && shapeJson["width"].IsNumber()) ? (float)shapeJson["width"].GetDouble() : 1.0f;
-            float height = (shapeJson.HasMember("height") && shapeJson["height"].IsNumber()) ? (float)shapeJson["height"].GetDouble() : 1.0f;
+            float width = (shapeJson.HasMember("width") && shapeJson["width"].IsNumber())
+                ? static_cast<float>(shapeJson["width"].GetDouble()) : 1.0f;
+            float height = (shapeJson.HasMember("height") && shapeJson["height"].IsNumber())
+                ? static_cast<float>(shapeJson["height"].GetDouble()) : 1.0f;
 
-            int   typeInt = (shapeJson.HasMember("type") && shapeJson["type"].IsInt()) ? shapeJson["type"].GetInt() : (int)ShapeType::Rectangle;
+            int typeInt = (shapeJson.HasMember("type") && shapeJson["type"].IsInt())
+                ? shapeJson["type"].GetInt() : static_cast<int>(ShapeType::Rectangle);
 
-            CEVec3 color{ 0,0,0 };
+            CEVec3 color{ 0, 0, 0 };
             if (shapeJson.HasMember("color") && shapeJson["color"].IsObject()) {
                 const auto& colorJson = shapeJson["color"];
-                color.x = (colorJson.HasMember("r") && colorJson["r"].IsNumber()) ? (float)colorJson["r"].GetDouble() : 0.f;
-                color.y = (colorJson.HasMember("g") && colorJson["g"].IsNumber()) ? (float)colorJson["g"].GetDouble() : 0.f;
-                color.z = (colorJson.HasMember("b") && colorJson["b"].IsNumber()) ? (float)colorJson["b"].GetDouble() : 0.f;
+                if (colorJson.HasMember("r") && colorJson["r"].IsNumber())
+                    color.x = static_cast<float>(colorJson["r"].GetDouble());
+                if (colorJson.HasMember("g") && colorJson["g"].IsNumber())
+                    color.y = static_cast<float>(colorJson["g"].GetDouble());
+                if (colorJson.HasMember("b") && colorJson["b"].IsNumber())
+                    color.z = static_cast<float>(colorJson["b"].GetDouble());
             }
-         
-          
 
-            const bool enableTexture = (shapeJson.HasMember("enableTexture") && shapeJson["enableTexture"].IsBool()) ? shapeJson["enableTexture"].GetBool() : false;
+            const bool enableTexture =
+                (shapeJson.HasMember("enableTexture") && shapeJson["enableTexture"].IsBool())
+                ? shapeJson["enableTexture"].GetBool() : false;
+
             std::string textureName;
-            if (enableTexture && shapeJson.HasMember("textureName") && shapeJson["textureName"].IsString())
+            if (enableTexture &&
+                shapeJson.HasMember("textureName") && shapeJson["textureName"].IsString()) {
                 textureName = shapeJson["textureName"].GetString();
-            if (!prefabs.HasMember("transform") || !prefabs["transform"].IsObject()) { LOGE(Core, std::string("Box '") + name + "' missing transform"); continue; }
-            const auto& transformJson = prefabs["transform"];
-            if (!transformJson.HasMember("position") || !transformJson["position"].IsObject()) { LOGE(Core, std::string("Box '") + name + "' missing position"); continue; }
-            const auto& posJ = transformJson["position"];
-            float posX = (posJ.HasMember("x") && posJ["x"].IsNumber()) ? (float)posJ["x"].GetDouble() : 0.f;
-            float posY = (posJ.HasMember("y") && posJ["y"].IsNumber()) ? (float)posJ["y"].GetDouble() : 0.f;
-            float posZ = (posJ.HasMember("z") && posJ["z"].IsNumber()) ? (float)posJ["z"].GetDouble() : 0.f;
+            }
 
-            float rotation = (transformJson.HasMember("rotation") && transformJson["rotation"].IsNumber()) ? (float)transformJson["rotation"].GetDouble() : 0.f;
-            CEVec2 size{ 1.f,1.f };
+            // ---- transform ----
+            if (!prefabs.HasMember("transform") || !prefabs["transform"].IsObject()) {
+                LOGE(Core, std::string("Box '") + name + "' missing transform");
+                continue;
+            }
+            const auto& transformJson = prefabs["transform"];
+            if (!transformJson.HasMember("position") || !transformJson["position"].IsObject()) {
+                LOGE(Core, std::string("Box '") + name + "' missing position");
+                continue;
+            }
+
+            const auto& posJ = transformJson["position"];
+            float posX = (posJ.HasMember("x") && posJ["x"].IsNumber())
+                ? static_cast<float>(posJ["x"].GetDouble()) : 0.f;
+            float posY = (posJ.HasMember("y") && posJ["y"].IsNumber())
+                ? static_cast<float>(posJ["y"].GetDouble()) : 0.f;
+            float posZ = (posJ.HasMember("z") && posJ["z"].IsNumber())
+                ? static_cast<float>(posJ["z"].GetDouble()) : 0.f;
+
+            float rotation =
+                (transformJson.HasMember("rotation") && transformJson["rotation"].IsNumber())
+                ? static_cast<float>(transformJson["rotation"].GetDouble()) : 0.f;
+
+            CEVec2 size{ 1.f, 1.f };
             if (transformJson.HasMember("size") && transformJson["size"].IsObject()) {
                 const auto& sizeJ = transformJson["size"];
-                size.x = (sizeJ.HasMember("x") && sizeJ["x"].IsNumber()) ? (float)sizeJ["x"].GetDouble() : 1.f;
-                size.y = (sizeJ.HasMember("y") && sizeJ["y"].IsNumber()) ? (float)sizeJ["y"].GetDouble() : 1.f;
+                if (sizeJ.HasMember("x") && sizeJ["x"].IsNumber())
+                    size.x = static_cast<float>(sizeJ["x"].GetDouble());
+                if (sizeJ.HasMember("y") && sizeJ["y"].IsNumber())
+                    size.y = static_cast<float>(sizeJ["y"].GetDouble());
             }
 
             // ---- rigidbody ----
-            if (!prefabs.HasMember("rigidbody") || !prefabs["rigidbody"].IsObject()) { LOGE(Core, std::string("Box '") + name + "' missing rigidbody"); continue; }
-            const auto& rigidbodyJson = prefabs["rigidbody"];
-            float mass = (rigidbodyJson.HasMember("mass") && rigidbodyJson["mass"].IsNumber()) ? (float)rigidbodyJson["mass"].GetDouble() : 0.f;
-            float restitution = (rigidbodyJson.HasMember("restitution") && rigidbodyJson["restitution"].IsNumber()) ? (float)rigidbodyJson["restitution"].GetDouble() : 0.f;
-
-        
-            bool hasColliderFlags = false; bool isTrigger = false; unsigned category = 0; unsigned mask = 0;
-            if (prefabs.HasMember("collider") && prefabs["collider"].IsObject()) {
-                const auto& coliderJson = prefabs["collider"];
-                hasColliderFlags = true;
-                if (coliderJson.HasMember("isTrigger") && coliderJson["isTrigger"].IsBool()) isTrigger = coliderJson["isTrigger"].GetBool();
-                if (coliderJson.HasMember("category") && coliderJson["category"].IsUint()) category = coliderJson["category"].GetUint();
-                if (coliderJson.HasMember("mask") && coliderJson["mask"].IsUint())     mask = coliderJson["mask"].GetUint();
+            if (!prefabs.HasMember("rigidbody") || !prefabs["rigidbody"].IsObject()) {
+                LOGE(Core, std::string("Box '") + name + "' missing rigidbody");
+                continue;
             }
-            // ---------- TextComponent values parsed from JSON (outside the lambda) ----------
-            bool hasTextComponent = false;
+            const auto& rigidbodyJson = prefabs["rigidbody"];
+            float mass = (rigidbodyJson.HasMember("mass") && rigidbodyJson["mass"].IsNumber())
+                ? static_cast<float>(rigidbodyJson["mass"].GetDouble()) : 0.f;
+            float restitution =
+                (rigidbodyJson.HasMember("restitution") && rigidbodyJson["restitution"].IsNumber())
+                ? static_cast<float>(rigidbodyJson["restitution"].GetDouble()) : 0.f;
 
+            // ---- collider flags (currently unused, but parsed) ----
+            bool hasColliderFlags = false;
+            bool isTrigger = false;
+            unsigned category = 0;
+            unsigned mask = 0;
+            if (prefabs.HasMember("collider") && prefabs["collider"].IsObject()) {
+                const auto& colliderJson = prefabs["collider"];
+                hasColliderFlags = true;
+                if (colliderJson.HasMember("isTrigger") && colliderJson["isTrigger"].IsBool())
+                    isTrigger = colliderJson["isTrigger"].GetBool();
+                if (colliderJson.HasMember("category") && colliderJson["category"].IsUint())
+                    category = colliderJson["category"].GetUint();
+                if (colliderJson.HasMember("mask") && colliderJson["mask"].IsUint())
+                    mask = colliderJson["mask"].GetUint();
+            }
+
+            // ---- text ----
+            bool hasTextComponent = false;
             std::string jsonFont = "Exo2-Regular";
             std::string jsonText = "TEST";
             float jsonScale = 1.0f;
@@ -139,10 +185,8 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path)
 
                 if (textJson.HasMember("font") && textJson["font"].IsString())
                     jsonFont = textJson["font"].GetString();
-
                 if (textJson.HasMember("text") && textJson["text"].IsString())
                     jsonText = textJson["text"].GetString();
-
                 if (textJson.HasMember("scale") && textJson["scale"].IsNumber())
                     jsonScale = static_cast<float>(textJson["scale"].GetDouble());
 
@@ -166,13 +210,169 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path)
 
                 if (textJson.HasMember("centered") && textJson["centered"].IsBool())
                     jsonCentered = textJson["centered"].GetBool();
-
                 if (textJson.HasMember("isWorldSpace") && textJson["isWorldSpace"].IsBool())
                     jsonIsWorldSpace = textJson["isWorldSpace"].GetBool();
             }
 
+            // ---- camera ----
+            bool hasCameraComponent = false;
+            CEVec3 cameraPosition{ 0.f, 0.f, 0.f };
+            float cameraZoom = 1.0f;
+            CEVec2 cameraXBounds{ 0.f, 0.f };
+            CEVec2 cameraYBounds{ 0.f, 0.f };
 
-            Prefab::Register(name, [=](ECS& e) {
+            if (prefabs.HasMember("camera") && prefabs["camera"].IsObject()) {
+                const auto& cameraJson = prefabs["camera"];
+                hasCameraComponent = true;
+
+                if (cameraJson.HasMember("position") && cameraJson["position"].IsObject()) {
+                    const auto& pos = cameraJson["position"];
+                    if (pos.HasMember("x") && pos["x"].IsNumber())
+                        cameraPosition.x = static_cast<float>(pos["x"].GetDouble());
+                    if (pos.HasMember("y") && pos["y"].IsNumber())
+                        cameraPosition.y = static_cast<float>(pos["y"].GetDouble());
+                    if (pos.HasMember("z") && pos["z"].IsNumber())
+                        cameraPosition.z = static_cast<float>(pos["z"].GetDouble());
+                }
+
+                if (cameraJson.HasMember("zoom") && cameraJson["zoom"].IsNumber())
+                    cameraZoom = static_cast<float>(cameraJson["zoom"].GetDouble());
+
+                if (cameraJson.HasMember("xBounds") && cameraJson["xBounds"].IsObject()) {
+                    const auto& xb = cameraJson["xBounds"];
+                    if (xb.HasMember("x") && xb["x"].IsNumber())
+                        cameraXBounds.x = static_cast<float>(xb["x"].GetDouble());
+                    if (xb.HasMember("y") && xb["y"].IsNumber())
+                        cameraXBounds.y = static_cast<float>(xb["y"].GetDouble());
+                }
+
+                if (cameraJson.HasMember("yBounds") && cameraJson["yBounds"].IsObject()) {
+                    const auto& yb = cameraJson["yBounds"];
+                    if (yb.HasMember("x") && yb["x"].IsNumber())
+                        cameraYBounds.x = static_cast<float>(yb["x"].GetDouble());
+                    if (yb.HasMember("y") && yb["y"].IsNumber())
+                        cameraYBounds.y = static_cast<float>(yb["y"].GetDouble());
+                }
+            }
+
+            // ---- script ----
+            bool hasScriptComponent = false;
+            std::string scriptClassName;
+            uint32_t scriptEntityID = 0; // stored if you ever need it; we will override with runtime ID
+
+            if (prefabs.HasMember("script") && prefabs["script"].IsObject()) {
+                const auto& sJ = prefabs["script"];
+                if (sJ.HasMember("className") && sJ["className"].IsString())
+                    scriptClassName = sJ["className"].GetString();
+                if (sJ.HasMember("entityID") && sJ["entityID"].IsUint())
+                    scriptEntityID = sJ["entityID"].GetUint();
+                hasScriptComponent = !scriptClassName.empty();
+            }
+            // --- audio (optional) ---
+            bool hasAudioEmitter = false;
+            std::string audioEventPath;
+            float audioVolume = 1.0f;
+            float audioPitch = 1.0f;
+            bool audioSpatial3D = false;
+            bool audioLooping = false;
+
+            if (prefabs.HasMember("audio") && prefabs["audio"].IsObject()) {
+                const auto& aJ = prefabs["audio"];
+                if (aJ.HasMember("eventPath") && aJ["eventPath"].IsString())
+                    audioEventPath = aJ["eventPath"].GetString();
+                if (aJ.HasMember("volume") && aJ["volume"].IsNumber())
+                    audioVolume = static_cast<float>(aJ["volume"].GetDouble());
+                if (aJ.HasMember("pitch") && aJ["pitch"].IsNumber())
+                    audioPitch = static_cast<float>(aJ["pitch"].GetDouble());
+                if (aJ.HasMember("spatial3D") && aJ["spatial3D"].IsBool())
+                    audioSpatial3D = aJ["spatial3D"].GetBool();
+                if (aJ.HasMember("looping") && aJ["looping"].IsBool())
+                    audioLooping = aJ["looping"].GetBool();
+
+                hasAudioEmitter = !audioEventPath.empty();
+            }
+            // --- gui (optional) ---
+            bool hasGuiComponent = false;
+            unsigned guiTypeMask = 0;
+
+            // Helpers to read "uiType" from JSON either as a string, array of strings, or integer.
+            auto uiTypeFromString = [](const std::string& s) -> unsigned {
+                using Component::UIType;
+                if (s == "IMAGE")     return static_cast<unsigned>(UIType::IMAGE);
+                if (s == "TEXT")      return static_cast<unsigned>(UIType::TEXT);
+                if (s == "BUTTON")    return static_cast<unsigned>(UIType::BUTTON);
+                if (s == "INPUTTEXT") return static_cast<unsigned>(UIType::INPUTTEXT);
+                return 0u;
+                };
+
+            if (prefabs.HasMember("gui") && prefabs["gui"].IsObject()) {
+                const auto& guiJ = prefabs["gui"];
+
+                // Support 3 encodings:
+                // 1) { "uiType": "TEXT" }
+                // 2) { "uiType": ["IMAGE","BUTTON"] }
+                // 3) { "uiType": 5 }  // bitmask (IMAGE|TEXT)
+                if (guiJ.HasMember("uiType")) {
+                    const auto& t = guiJ["uiType"];
+                    if (t.IsString()) {
+                        guiTypeMask |= uiTypeFromString(t.GetString());
+                    }
+                    else if (t.IsArray()) {
+                        for (auto& v : t.GetArray()) {
+                            if (v.IsString()) guiTypeMask |= uiTypeFromString(v.GetString());
+                        }
+                    }
+                    else if (t.IsUint()) {
+                        guiTypeMask = t.GetUint(); // raw bitmask
+                    }
+                }
+
+                hasGuiComponent = (guiTypeMask != 0u);
+            }
+            // --- post-processing (optional) ---
+            bool hasPP = false;
+            bool ppActive = true;
+            float ppBrightness = 0.f;
+            float ppContrast = 0.f;
+            float ppSaturation = 0.f;
+
+            if (prefabs.HasMember("postprocessing") && prefabs["postprocessing"].IsObject()) {
+                const auto& ppJ = prefabs["postprocessing"];
+                if (ppJ.HasMember("active") && ppJ["active"].IsBool())
+                    ppActive = ppJ["active"].GetBool();
+                if (ppJ.HasMember("brightness") && ppJ["brightness"].IsNumber())
+                    ppBrightness = static_cast<float>(ppJ["brightness"].GetDouble());
+                if (ppJ.HasMember("contrast") && ppJ["contrast"].IsNumber())
+                    ppContrast = static_cast<float>(ppJ["contrast"].GetDouble());
+                if (ppJ.HasMember("saturation") && ppJ["saturation"].IsNumber())
+                    ppSaturation = static_cast<float>(ppJ["saturation"].GetDouble());
+
+                hasPP = true; // presence of block enables it
+            }
+
+
+            // ---- register factory ----
+            Prefab::Register(
+                name,
+                [name,
+                // transform
+                posX, posY, posZ, rotation, size,
+                // shape
+                typeInt, color, enableTexture, textureName, width, height,
+                // rigidbody
+                mass, restitution,
+                // text
+                hasTextComponent, jsonFont, jsonText, jsonScale, jsonOffset, jsonColor, jsonCentered, jsonIsWorldSpace,
+                // camera
+                hasCameraComponent, cameraPosition, cameraZoom, cameraXBounds, cameraYBounds,
+                // script
+                hasScriptComponent, scriptClassName,
+                //audip
+                hasAudioEmitter, audioEventPath, audioVolume, audioPitch, audioSpatial3D, audioLooping,
+                hasGuiComponent, guiTypeMask,
+                hasPP, ppActive, ppBrightness, ppContrast, ppSaturation
+                ](ECS& e)
+            {
                 const Entity entitty = e.CreateEntity();
                 e.AddComponent<NameComponent>(entitty, NameComponent{ name });
 
@@ -185,75 +385,81 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path)
 
                 // Shape
                 ShapeComponent shapeComp{};
-                shapeComp.type = (ShapeType)typeInt;
+                shapeComp.type = static_cast<ShapeType>(typeInt);
                 shapeComp.color = color;
                 shapeComp.enableTexture = enableTexture;
                 shapeComp.textureName = textureName;
                 e.AddComponent<ShapeComponent>(entitty, shapeComp);
-             
-                
-                // RigidBody 
+
+                // RigidBody
                 e.AddComponent<RigidBodyComponent>(entitty, CEVec3{ 0,0,0 }, mass, restitution);
 
-                // Collider (AABB for robustness)
+                // Collider (AABB)
                 {
                     auto aabb = MakeCenteredAABB3(transform.position, width, height);
                     e.AddComponent<ColliderComponent>(entitty, ColliderComponent{ std::move(aabb) });
-                
                 }
-                // TextComponent
+
+                // Text
                 if (hasTextComponent) {
-                    TextComponent textComponent{};
-                    textComponent.font = jsonFont;
-                    textComponent.text = jsonText;
-                    textComponent.scale = jsonScale;
-                    textComponent.offset = jsonOffset;
-                    textComponent.color = jsonColor;
-                    textComponent.centered = jsonCentered;
-                    textComponent.isWorldSpace = jsonIsWorldSpace;
-
-                    e.AddComponent<TextComponent>(entitty, textComponent);
-                }
-                });
-          
-        
-            // Keep placeholders that always compile. 
-            std::string textContentFromJson;
-            float textPointSizeFromJson = 16.0f;          
-            CEVec3 textColorFromJson{ 255.0f, 255.0f, 255.0f };
-            std::string textFontNameFromJson;
-            bool textIsWorldSpaceFromJson = false;
-
-            if (prefabs.HasMember("text") && prefabs["text"].IsObject()) {
-                const auto& textJson = prefabs["text"];
-                hasTextComponent = true;
-
-                if (textJson.HasMember("content") && textJson["content"].IsString())
-                    textContentFromJson = textJson["content"].GetString();
-
-                if (textJson.HasMember("pointSize") && textJson["pointSize"].IsNumber())
-                    textPointSizeFromJson = static_cast<float>(textJson["pointSize"].GetDouble());
-
-                if (textJson.HasMember("color") && textJson["color"].IsObject()) {
-                    const auto& colorJson = textJson["color"];
-                    if (colorJson.HasMember("r") && colorJson["r"].IsNumber())
-                        textColorFromJson.x = static_cast<float>(colorJson["r"].GetDouble());
-                    if (colorJson.HasMember("g") && colorJson["g"].IsNumber())
-                        textColorFromJson.y = static_cast<float>(colorJson["g"].GetDouble());
-                    if (colorJson.HasMember("b") && colorJson["b"].IsNumber())
-                        textColorFromJson.z = static_cast<float>(colorJson["b"].GetDouble());
+                    TextComponent tc{};
+                    tc.font = jsonFont;
+                    tc.text = jsonText;
+                    tc.scale = jsonScale;
+                    tc.offset = jsonOffset;
+                    tc.color = jsonColor;
+                    tc.centered = jsonCentered;
+                    tc.isWorldSpace = jsonIsWorldSpace;
+                    e.AddComponent<TextComponent>(entitty, tc);
                 }
 
-                if (textJson.HasMember("fontName") && textJson["fontName"].IsString())
-                    textFontNameFromJson = textJson["fontName"].GetString();
+                // Camera
+                if (hasCameraComponent) {
+                    CameraComponent cc{};
+                    cc.position = cameraPosition;
+                    cc.zoom = cameraZoom;
+                    cc.xBounds = cameraXBounds;
+                    cc.yBounds = cameraYBounds;
+                    e.AddComponent<CameraComponent>(entitty, cc);
+                }
 
-                if (textJson.HasMember("isWorldSpace") && textJson["isWorldSpace"].IsBool())
-                    textIsWorldSpaceFromJson = textJson["isWorldSpace"].GetBool();
-            }
-
+                // Script
+                if (hasScriptComponent && !scriptClassName.empty()) {
+                    ScriptComponent sc(scriptClassName,
+                        static_cast<uint32_t>(entitty)); // use runtime entity ID
+                    e.AddComponent<ScriptComponent>(entitty, sc);
+                    // Initialize/Start is handled later by ScriptSystem when Mono domain is ready.
+                }
+                // --- AudioEmitterComponent (optional) ---
+                if (hasAudioEmitter && !audioEventPath.empty()) {
+                    Component::AudioEmitterComponent a{};
+                    a.eventPath = audioEventPath;
+                    a.volume = audioVolume;
+                    a.pitch = audioPitch;
+                    a.spatial3D = audioSpatial3D;
+                    a.looping = audioLooping;
+                    // a.inst stays nullptr here; created/started by AudioSystem at scene start
+                    e.AddComponent<Component::AudioEmitterComponent>(entitty, a);
+                }
+                // GUI
+                if (hasGuiComponent) {
+                    Component::GuiComponent gui{};
+                    gui.uiType = static_cast<Component::UIType>(guiTypeMask);
+                    e.AddComponent<Component::GuiComponent>(entitty, gui);
+                }
+                if (hasPP) {
+                    Component::PPComponent pp{};
+                    pp.active = ppActive;
+                    pp.brightness = ppBrightness;
+                    pp.contrast = ppContrast;
+                    pp.saturation = ppSaturation;
+                    e.AddComponent<Component::PPComponent>(entitty, pp);
+                }
+            });
 
             LOGI(Core, std::string("Registered prefab: ") + name);
         }
+
         else {
             LOGW(Core, std::string("Unknown prefab type: ") + type);
         }
@@ -390,9 +596,160 @@ namespace CrashoutsEngine {
             rigidJson.AddMember("restitution", rigidbody->getCoeff(), allocate);  
             obj.AddMember("rigidbody", rigidJson, allocate);
         }
-      
+        // camera (
+        auto* camera = ecs.GetComponent<CameraComponent>(e);
+        if (camera) {
+            rapidjson::Value cameraJson(rapidjson::kObjectType);
 
+            // Position
+            Value camPos(kObjectType);
+            camPos.AddMember("x", camera->position.x, allocate);
+            camPos.AddMember("y", camera->position.y, allocate);
+            camPos.AddMember("z", camera->position.z, allocate);
+            cameraJson.AddMember("position", camPos, allocate);
 
+            // Zoom
+            cameraJson.AddMember("zoom", camera->zoom, allocate);
+
+            // X Bounds
+            Value xBounds(kObjectType);
+            xBounds.AddMember("x", camera->xBounds.x, allocate);
+            xBounds.AddMember("y", camera->xBounds.y, allocate);
+            cameraJson.AddMember("xBounds", xBounds, allocate);
+
+            // Y Bounds
+            Value yBounds(kObjectType);
+            yBounds.AddMember("x", camera->yBounds.x, allocate);
+            yBounds.AddMember("y", camera->yBounds.y, allocate);
+            cameraJson.AddMember("yBounds", yBounds, allocate);
+
+            obj.AddMember("camera", cameraJson, allocate);
+        }
+        // text (optional - only if entity has TextComponent)
+        if (auto* txt = ecs.GetComponent<TextComponent>(e)) {
+            rapidjson::Value textJson(rapidjson::kObjectType);
+
+            // font
+            if (!txt->font.empty()) {
+                rapidjson::Value fontV;
+                fontV.SetString(txt->font.c_str(),
+                    static_cast<rapidjson::SizeType>(txt->font.size()),
+                    allocate);
+                textJson.AddMember("font", fontV, allocate);
+            }
+
+            // text string
+            {
+                rapidjson::Value textV;
+                textV.SetString(txt->text.c_str(),
+                    static_cast<rapidjson::SizeType>(txt->text.size()),
+                    allocate);
+                textJson.AddMember("text", textV, allocate);
+            }
+
+            // scale
+            textJson.AddMember("scale", static_cast<double>(txt->scale), allocate);
+
+            // offset
+            {
+                rapidjson::Value off(rapidjson::kObjectType);
+                off.AddMember("x", static_cast<double>(txt->offset.x), allocate);
+                off.AddMember("y", static_cast<double>(txt->offset.y), allocate);
+                textJson.AddMember("offset", off, allocate);
+            }
+
+            // color
+            {
+                rapidjson::Value col(rapidjson::kObjectType);
+                col.AddMember("r", static_cast<double>(txt->color.x), allocate);
+                col.AddMember("g", static_cast<double>(txt->color.y), allocate);
+                col.AddMember("b", static_cast<double>(txt->color.z), allocate);
+                textJson.AddMember("color", col, allocate);
+            }
+
+            // centered / isWorldSpace
+            textJson.AddMember("centered", txt->centered, allocate);
+            textJson.AddMember("isWorldSpace", txt->isWorldSpace, allocate);
+
+            obj.AddMember("text", textJson, allocate);
+        }
+
+        // script 
+        if (auto* script = ecs.GetComponent<ScriptComponent>(e)) {
+            rapidjson::Value scriptJson(rapidjson::kObjectType);
+
+            // className
+            rapidjson::Value className;
+            className.SetString(script->ClassName.c_str(),
+                static_cast<rapidjson::SizeType>(script->ClassName.size()),
+                allocate);
+            scriptJson.AddMember("className", className, allocate);
+
+            // entityID
+            scriptJson.AddMember("entityID", static_cast<uint32_t>(script->EntityID), allocate);
+
+            obj.AddMember("script", scriptJson, allocate);
+        }
+        // audio (optional - only if entity has AudioEmitterComponent)
+        if (auto* audio = ecs.GetComponent<Component::AudioEmitterComponent>(e)) {
+            rapidjson::Value audioJson(rapidjson::kObjectType);
+
+            // eventPath
+            if (!audio->eventPath.empty()) {
+                rapidjson::Value ev;
+                ev.SetString(audio->eventPath.c_str(),
+                    static_cast<rapidjson::SizeType>(audio->eventPath.size()),
+                    allocate);
+                audioJson.AddMember("eventPath", ev, allocate);
+            }
+
+            // numeric + bool fields
+            audioJson.AddMember("volume", static_cast<double>(audio->volume), allocate);
+            audioJson.AddMember("pitch", static_cast<double>(audio->pitch), allocate);
+            audioJson.AddMember("spatial3D", audio->spatial3D, allocate);
+            audioJson.AddMember("looping", audio->looping, allocate);
+
+            // Do NOT serialize runtime pointer:
+            // audio->inst is runtime-only; skip it.
+
+            obj.AddMember("audio", audioJson, allocate);
+        }
+        // 
+        // (optional - only if entity has GuiComponent)
+        if (auto* gui = ecs.GetComponent<Component::GuiComponent>(e)) {
+            rapidjson::Value guiJson(rapidjson::kObjectType);
+
+            // choose your preferred JSON encoding
+            // (A) bitmask number (simple & compact)
+            unsigned mask = static_cast<unsigned>(gui->uiType);
+            guiJson.AddMember("uiType", mask, allocate);
+
+            // (B) OR human-readable array (uncomment if you prefer)
+            /*
+            auto pushStr = [&](const char* s){
+                rapidjson::Value v;
+                v.SetString(s, static_cast<rapidjson::SizeType>(std::strlen(s)), allocate);
+                arr.PushBack(v, allocate);
+            };
+            rapidjson::Value arr(rapidjson::kArrayType);
+            if (mask & static_cast<unsigned>(Component::UIType::IMAGE))     pushStr("IMAGE");
+            if (mask & static_cast<unsigned>(Component::UIType::TEXT))      pushStr("TEXT");
+            if (mask & static_cast<unsigned>(Component::UIType::BUTTON))    pushStr("BUTTON");
+            if (mask & static_cast<unsigned>(Component::UIType::INPUTTEXT)) pushStr("INPUTTEXT");
+            guiJson.AddMember("uiType", arr, allocate);
+            */
+
+            obj.AddMember("gui", guiJson, allocate);
+        }
+        // postprocessing (optional - only if entity has PPComponent)
+        if (auto* pp = ecs.GetComponent<Component::PPComponent>(e)) {
+            rapidjson::Value ppJson(rapidjson::kObjectType);
+            ppJson.AddMember("active", pp->active, allocate);
+            ppJson.AddMember("brightness", static_cast<double>(pp->brightness), allocate);
+            ppJson.AddMember("contrast", static_cast<double>(pp->contrast), allocate);
+            ppJson.AddMember("saturation", static_cast<double>(pp->saturation), allocate);
+            obj.AddMember("postprocessing", ppJson, allocate);
+        }
 
         // ---- helpers for name matching (add these) ----
         auto trim = [](std::string inputString) {

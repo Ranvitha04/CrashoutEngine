@@ -3,7 +3,9 @@
 @author     mohamadamirakmal.b@digipen.edu
 @date       14/09/2025
 
-@brief      Renders the editor/debug ImGui for Crashout Engine.
+@brief      Renders the editor/debug Im
+
+for Crashout Engine.
 @details    This module draws every editor-facing window:
             - engine controls (play / pause / stop)
             - game viewport (with ImGuizmo)
@@ -261,6 +263,15 @@ namespace UI { // --------------------------------------------------------------
         }
         ImGui::SeparatorText("Prefab Creator");
         static char nameBuf[128] = { 0 };
+        ImGui::InputTextWithHint("Prefab name", "e.g. Box, Platform, Player...", nameBuf, IM_ARRAYSIZE(nameBuf));
+        ImGui::SameLine();
+        if (ImGui::Button("Create##PrefabByName")) {
+            std::string n = nameBuf;
+            if (n.empty()) n = "Entity";
+            Prefab::Create(ecs, n);      
+            nameBuf[0] = '\0';
+        }
+
         {
             auto names = Prefab::Names();
             if (!names.empty()) {
