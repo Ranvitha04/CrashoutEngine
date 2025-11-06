@@ -95,7 +95,7 @@ namespace Scene {
                     }
                 // ============================================LINE======================================================
                 case ShapeType::Line:
-                    Shapes::CreateLine(tf->size, sc->p1 + pos, sc->p2 + pos, sc->thickness, rot, sc->color * (1 / 255.f)); break;
+                    Shapes::CreateLine(sc->p1 + pos, sc->p2 + pos, sc->thickness, sc->color * (1 / 255.f)); break;
                 // ==========================================TRIANGLE====================================================
                 case ShapeType::Triangle:
                     if (useTexture) {
@@ -220,11 +220,9 @@ namespace Scene {
 
                             // 8. Draw the cursor using your Shapes::CreateLine function
                             Shapes::CreateLine(
-                                CEVec2{ 1.0f, 1.0f },  // transformSize (no scaling)
                                 startPoint,           // start
                                 endPoint,             // end
                                 cursorThickness,      // thickness
-                                0.0f,                 // rotation
                                 cursorColor           // color
                             );
                         }

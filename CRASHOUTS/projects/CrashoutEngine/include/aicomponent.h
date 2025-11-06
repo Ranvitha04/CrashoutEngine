@@ -14,4 +14,8 @@ namespace Component {
 	struct AIComponent {
 		State::FiniteStateMachine<State::StateType> fsm;
 	};
+
+	struct Tag {
+		std::string id;
+	};
 }

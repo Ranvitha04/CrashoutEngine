@@ -48,10 +48,10 @@ static void DrawAABBOutline(const CEVec3& minP, const CEVec3& maxP, float thickn
 
     CEVec2 size = {thickness, thickness};
 
-    Shapes::CreateLine(size, p0, p1, thickness, 0.0f, color);
-    Shapes::CreateLine(size, p1, p2, thickness, 0.0f, color);
-    Shapes::CreateLine(size, p2, p3, thickness, 0.0f, color);
-    Shapes::CreateLine(size, p3, p0, thickness, 0.0f, color);
+    Shapes::CreateLine(p0, p1, thickness, color);
+    Shapes::CreateLine(p1, p2, thickness, color);
+    Shapes::CreateLine(p2, p3, thickness, color);
+    Shapes::CreateLine(p3, p0, thickness, color);
 }
 
 /*!
@@ -61,7 +61,6 @@ static void DrawAABBOutline(const CEVec3& minP, const CEVec3& maxP, float thickn
  @param color        RGB-like color vector used by the line drawer.
 */
 static void DrawOBBOutline(const Collision::OBBRect* vertices, float thickness, const CEVec3& color) {
-    CEVec2 size = { 1.f, 1.f };
     float z = RenderCamera::engineCamera.GetFar();
     // Create new vertices with the modified Z value
     CEVec3 v0 = { vertices->rotatedVertices[0].x, vertices->rotatedVertices[0].y, z };
@@ -70,10 +69,10 @@ static void DrawOBBOutline(const Collision::OBBRect* vertices, float thickness, 
     CEVec3 v3 = { vertices->rotatedVertices[3].x, vertices->rotatedVertices[3].y, z };
 
     // Draw the lines using the new, z-modified vertices
-    Shapes::CreateLine(size, v0, v1, thickness, 0.0f, color);
-    Shapes::CreateLine(size, v1, v2, thickness, 0.0f, color);
-    Shapes::CreateLine(size, v2, v3, thickness, 0.0f, color);
-    Shapes::CreateLine(size, v3, v0, thickness, 0.0f, color);
+    Shapes::CreateLine(v0, v1, thickness, color);
+    Shapes::CreateLine(v1, v2, thickness, color);
+    Shapes::CreateLine(v2, v3, thickness, color);
+    Shapes::CreateLine(v3, v0, thickness, color);
 }
 
 /*!
@@ -93,8 +92,7 @@ static void DrawCircleOutline(const CEVec3& c, float r, int segments, float thic
     for (int i = 1; i <= segments; ++i) {
         float t = (twoPi * i) / segments;
         CEVec3 next(c.x + r * std::cos(t), c.y + r * std::sin(t), z);
-        CEVec2 size = { 1.f, 1.f };
-        Shapes::CreateLine(size, prev, next, thickness, 0.0f, color);
+        Shapes::CreateLine(prev, next, thickness, color);
         prev = next;
     }
 }
@@ -157,8 +155,8 @@ namespace CollisionGizmos {
                 CEVec3 p(cp.x, cp.y, 0.0f);
                 const float d = 0.02f;
                 CEVec2 size = { 1.f, 1.f };
-                Shapes::CreateLine(size, CEVec3(p.x - d, p.y, 0), CEVec3(p.x + d, p.y, 0), wireThickness, 0.0f, ptClr);
-                Shapes::CreateLine(size, CEVec3(p.x, p.y - d, 0), CEVec3(p.x, p.y + d, 0), wireThickness, 0.0f, ptClr);
+                Shapes::CreateLine(CEVec3(p.x - d, p.y, 0), CEVec3(p.x + d, p.y, 0), wireThickness, ptClr);
+                Shapes::CreateLine(CEVec3(p.x, p.y - d, 0), CEVec3(p.x, p.y + d, 0), wireThickness, ptClr);
             }
 
             if (!ev.colManifold.contactPoints.empty()) {
@@ -167,7 +165,7 @@ namespace CollisionGizmos {
                 CEVec3 p1(cp0.x + ev.colManifold.normal.x * normalLen,
                     cp0.y + ev.colManifold.normal.y * normalLen, 0.0f);
                 CEVec2 size = { 1.f, 1.f };
-                Shapes::CreateLine(size, p0, p1, wireThickness, 0.0f, nClr);
+                Shapes::CreateLine(p0, p1, wireThickness, nClr);
             }
         }
     }

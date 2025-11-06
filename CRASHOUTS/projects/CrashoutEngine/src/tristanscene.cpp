@@ -11,6 +11,7 @@
 #include "inputmanager.h"
 #include "collisionmanager.h"
 #include "aicomponent.h"
+#include "CEMath.h"
 #include "physicsmanager.h"
 #include "aimanager.h"
 #include <iostream>
@@ -28,7 +29,7 @@ static CrashoutsEngine::Entity entity2;
 static CrashoutsEngine::Entity entity3;
 
 static void AddPhysicsEntity(CrashoutsEngine::Entity& entity, Component::RigidBodyComponent&& rigidBody,
-	Component::TransformComponent&& transform, Component::ShapeComponent&& shape) {
+	Component::TransformComponent&& transform, Component::ShapeComponent&& shape, Component::Tag&& name) {
 
 	entity = globalECS->CreateEntity();
 
@@ -38,17 +39,41 @@ static void AddPhysicsEntity(CrashoutsEngine::Entity& entity, Component::RigidBo
 	globalECS->AddComponent<Component::RigidBodyComponent>(entity, rigidBody);
 	globalECS->AddComponent<Component::TransformComponent>(entity, transform);
 	globalECS->AddComponent<Component::ShapeComponent>(entity, shape);
+	globalECS->AddComponent<Component::Tag>(entity, name);
 	globalECS->AddComponent<Component::ColliderComponent>(entity, Component::ColliderComponent{
-		std::make_unique<Collision::OBBRect>(Collision::OBBRect{
+		std::make_unique<Collision::AABBRect>(Collision::AABBRect{
 			CEVec3{transform.position - extents },
 			CEVec3{transform.position + extents}
 		})
 		});
 }
 
+static void AddObstacleEntity(CEVec3&& transform, CEVec2&& dimen, std::string&& tag) {
+	CrashoutsEngine::Entity e;
+
+	AddPhysicsEntity(
+		e,
+		Component::RigidBodyComponent{ CEVec3{}, 0.f, 0.f },
+		Component::TransformComponent{ .size = dimen, .position = transform },
+		Component::ShapeComponent{ .type = Component::ShapeType::Rectangle },
+		Component::Tag{ tag }
+	);
+}
+
+static void AddPlatformEntity(CEVec3&& transform, CEVec2&& dimen) {
+	AddObstacleEntity(std::move(transform), std::move(dimen), "P");
+}
+
+static void AddWallEntity(CEVec3&& transform, CEVec2&& dimen) {
+	AddObstacleEntity(std::move(transform), std::move(dimen), "W");
+}
+
 enum AI_STATES {
 	PATROL_LEFT,
-	PATROL_RIGHT
+	PATROL_RIGHT,
+	STOP,
+	CHASE,
+	JUMP
 };
 
 class PatrolRight : public State::StateWrapper<State::StateType> {
@@ -60,14 +85,63 @@ public:
 		update = []() {
 			Component::RigidBodyComponent* comp{ globalECS->GetComponent<Component::RigidBodyComponent>(entity3) };
 			Component::AIComponent* fsm{ globalECS->GetComponent<Component::AIComponent>(entity3) };
-
-			if (!AIUtils::IsPlatformInFront(entity3, 1.f)) {
-				fsm->fsm.SetCurrentState(PATROL_LEFT);
+			CEVec3 origVel{ comp->getVelocity() };
+			if (!AIUtils::IsPlatformInFront(entity3, 1.f) || AIUtils::IsObstacleInFront(entity3, 1.f)) {
 				comp->clearForceAccumulator();
-				comp->setVelocity(CEVec3{ 0.f, 0.f, 0.f });
+				comp->setVelocity(CEVec3{ 0.f, origVel.y, 0.f });
+				fsm->fsm.SetCurrentState(PATROL_LEFT);
+				return;
+			} if (AIUtils::IsIntersecting(entity1, entity3)) {
+				comp->clearForceAccumulator();
+				comp->setVelocity(CEVec3{ 0.f, origVel.y, 0.f });
+				fsm->fsm.SetCurrentState(STOP);
 				return;
 			}
 			comp->addForce(CEVec3{ 100.f, 0.f, 0.f });
+			};
+
+		exit = []() {};
+
+	}
+};
+
+class Chase : public State::StateWrapper<State::StateType> {
+public:
+	Chase() : StateWrapper{ static_cast<State::StateType>(CHASE) } {
+
+		enter = []() {};
+
+		update = []() {
+			Component::RigidBodyComponent* comp{ globalECS->GetComponent<Component::RigidBodyComponent>(entity3) };
+			Component::AIComponent* fsm{ globalECS->GetComponent<Component::AIComponent>(entity3) };
+
+			Component::TransformComponent* t1{ globalECS->GetComponent<Component::TransformComponent>(entity3) };
+			Component::TransformComponent* t2{ globalECS->GetComponent<Component::TransformComponent>(entity1) };
+
+			CEVec3 origVel{ comp->getVelocity() };
+
+			if (AIUtils::IsIntersecting(entity1, entity3)) {
+				comp->clearForceAccumulator();
+				comp->setVelocity(CEVec3{ 0.f, origVel.y, 0.f });
+				fsm->fsm.SetCurrentState(STOP);
+				return;
+			}
+
+			if (!AIUtils::EntityInRange(entity1, entity3, 40.f)) {
+				comp->clearForceAccumulator();
+				comp->setVelocity(CEVec3{ 0.f, origVel.y, 0.f });
+				fsm->fsm.SetCurrentState(PATROL_RIGHT);
+				return;
+			}
+
+			CEVec3 diffVect{ t2->position - t1->position };
+			f32 dir{ CEMath::Dot(CEVec3{1.f, 0.f, 0.f}, diffVect) };
+			CEVec3 relVector{ AIUtils::sign(dir) * 100.f, 0.f, 0.f };
+
+			if (AIUtils::IsObstacleIntersecting(entity3)) {
+				relVector.y += 500.f;
+			}
+			comp->addForce(CEVec3{ relVector });
 			};
 
 		exit = []() {};
@@ -83,16 +157,47 @@ public:
 		update = []() {
 			Component::RigidBodyComponent* comp{ globalECS->GetComponent<Component::RigidBodyComponent>(entity3) };
 			Component::AIComponent* fsm{ globalECS->GetComponent<Component::AIComponent>(entity3) };
-			if (!AIUtils::IsPlatformInFront(entity3, -1.f)) {
-				fsm->fsm.SetCurrentState(PATROL_RIGHT);
+			CEVec3 origVel{ comp->getVelocity() };
+			if (AIUtils::EntityInRange(entity1, entity3, 40.f)) {
+				fsm->fsm.SetCurrentState(CHASE);
+				return;
+			}
+			if (!AIUtils::IsPlatformInFront(entity3, -1.f, std::string{ "P" }) || AIUtils::IsObstacleInFront(entity3, -1.f, std::string{ "W" })) {
 				comp->clearForceAccumulator();
-				comp->setVelocity(CEVec3{ 0.f, 0.f, 0.f });
+				comp->setVelocity(CEVec3{ 0.f, origVel.y, 0.f });
+				fsm->fsm.SetCurrentState(PATROL_RIGHT);
+				return;
+			}
+			if (AIUtils::IsIntersecting(entity1, entity3)) {
+				comp->clearForceAccumulator();
+				comp->setVelocity(CEVec3{ 0.f, origVel.y, 0.f });
+				fsm->fsm.SetCurrentState(STOP);
 				return;
 			}
 			comp->addForce(CEVec3{ -100.f, 0.f, 0.f });
 			};
 
 
+
+		exit = []() {};
+	}
+};
+
+class Stop : public State::StateWrapper<State::StateType> {
+public:
+	Stop() : StateWrapper{ static_cast<State::StateType>(STOP) } {
+		enter = []() {};
+
+		update = []() {
+			Component::AIComponent* fsm{ globalECS->GetComponent<Component::AIComponent>(entity3) };
+			if (AIUtils::EntityInRange(entity1, entity3, 40.f)) {
+				fsm->fsm.SetCurrentState(CHASE);
+				return;
+			}
+			else {
+				fsm->fsm.SetCurrentState(PATROL_RIGHT); //PLACEHOLDER
+			}
+			};
 
 		exit = []() {};
 	}
@@ -112,29 +217,31 @@ void InitTristan() {
 	AddPhysicsEntity(
 		entity1,
 		Component::RigidBodyComponent{ CEVec3{}, 5.f, 0.f },
-		Component::TransformComponent{ .size = CEVec2{10.f, 10.f}, .position = CEVec3{0.f, 20.f, 0.f} },
-		Component::ShapeComponent{ .enableTexture = true, .textureName = "Concept" }
+		Component::TransformComponent{ .size = CEVec2{5.f, 5.f}, .position = CEVec3{-20.f, 10.f, 0.f} },
+		Component::ShapeComponent{ .enableTexture = true, .textureName = "Concept" },
+		Component::Tag{ "A" }
 	);
 
-	AddPhysicsEntity(
-		entity2,
-		Component::RigidBodyComponent{ CEVec3{}, 0.f, 0.f },
-		Component::TransformComponent{ .size = CEVec2{80.f, 10.f}, .position = CEVec3{0.f, -10.f, 0.f} },
-		Component::ShapeComponent{ .type = Component::ShapeType::Rectangle }
-	);
+	AddPlatformEntity(CEVec3{}, CEVec2{ 200.f, 5.f });
+	AddWallEntity(CEVec3{ 20.f, 5.f, 0.0f }, CEVec2{ 10.f, 5.f });
+
+	AddWallEntity(CEVec3{ 40.f, 5.f, 0.0f }, CEVec2{ 10.f, 10.f });
 
 	AddPhysicsEntity(
 		entity3,
 		Component::RigidBodyComponent{ CEVec3{}, 5.f, 0.f },
-		Component::TransformComponent{ .size = CEVec2{10.f, 10.f}, .position = CEVec3{5.f, 20.f, 0.f} },
-		Component::ShapeComponent{ .type = Component::ShapeType::Rectangle }
+		Component::TransformComponent{ .size = CEVec2{5.f, 5.f}, .position = CEVec3{5.f, 20.f, 0.f} },
+		Component::ShapeComponent{ .type = Component::ShapeType::Rectangle },
+		Component::Tag{ "B" }
 	);
+
 
 	State::FiniteStateMachine<State::StateType> fsm{};
 
 	fsm.Add(PatrolRight{});
 	fsm.Add(PatrolLeft{});
-	//fsm.Add(PatrolLeft{});
+	fsm.Add(Stop{});
+	fsm.Add(Chase{});
 
 	fsm.SetCurrentState(PATROL_RIGHT);
 

@@ -46,6 +46,7 @@ for Crashout Engine.
 #include "hierarchy.h"
 #include "hierarchy_components.h"
 #include "monomanager.h"
+#include "scriptsystem.h"
 #include "ppmanager.h"
 
 #include "engine.h"
@@ -1089,6 +1090,10 @@ namespace UI { // --------------------------------------------------------------
                 CrashoutsEngine::RenderCamera::engineCamera.SetZoom(1.f);
                 CrashoutsEngine::RenderCamera::engineCamera.SetTargetAR(16.0f / 9.0f);
                 CrashoutsEngine::RenderCamera::engineCamera.UpdateMatrices(Settings::GetScreenWidth(), Settings::GetScreenHeight());
+
+                if (MonoManager::GetDomain() && MonoManager::GetAssembly()) {
+                    CrashoutsEngine::ScriptSystem::InitializeAll( MonoManager::GetDomain(), MonoManager::GetAssembly() );
+                }
             }
             ImGui::SameLine();
             // Pause
@@ -1099,7 +1104,7 @@ namespace UI { // --------------------------------------------------------------
             // Stop
             if (ImGui::Button("STOP", ImVec2(70, 25))) {
                 RestartGameState();
-                MonoManager::ReloadScripts();
+                //MonoManager::ReloadScripts();
                 engineState = EngineState::STOP;
             }
             ImGui::SameLine();
