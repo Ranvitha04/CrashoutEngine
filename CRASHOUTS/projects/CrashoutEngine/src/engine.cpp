@@ -301,7 +301,7 @@ void Update(Component::RigidBodyComponent& playerRigidBody, double const& dt) {
 
     MonoManager::CheckHotReload();
 
-	CrashoutsEngine::ScriptSystem::UpdateAll(static_cast<float>(FrameRateController::GetInstance().DT()));
+	CrashoutsEngine::ScriptSystem::UpdateAll();
 
 
     if (CurrentDescriptor->Update) CurrentDescriptor->Update();
