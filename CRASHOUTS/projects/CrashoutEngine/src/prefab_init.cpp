@@ -430,7 +430,7 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path)
                     e.AddComponent<ScriptComponent>(entitty, sc);
                     // Initialize/Start is handled later by ScriptSystem when Mono domain is ready.
                 }
-                // --- AudioEmitterComponent (optional) ---
+                // --- AudioEmitterComponent 
                 if (hasAudioEmitter && !audioEventPath.empty()) {
                     Component::AudioEmitterComponent a{};
                     a.eventPath = audioEventPath;
@@ -438,7 +438,7 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path)
                     a.pitch = audioPitch;
                     a.spatial3D = audioSpatial3D;
                     a.looping = audioLooping;
-                    // a.inst stays nullptr here; created/started by AudioSystem at scene start
+            
                     e.AddComponent<Component::AudioEmitterComponent>(entitty, a);
                 }
                 // GUI
@@ -720,11 +720,11 @@ namespace CrashoutsEngine {
             rapidjson::Value guiJson(rapidjson::kObjectType);
 
             // choose your preferred JSON encoding
-            // (A) bitmask number (simple & compact)
+          
             unsigned mask = static_cast<unsigned>(gui->uiType);
             guiJson.AddMember("uiType", mask, allocate);
 
-            // (B) OR human-readable array (uncomment if you prefer)
+           
             /*
             auto pushStr = [&](const char* s){
                 rapidjson::Value v;
