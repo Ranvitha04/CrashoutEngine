@@ -244,8 +244,6 @@ namespace UI { // --------------------------------------------------------------
     */
     static void RenderEcsPanel(ECS& ecs, std::vector<Entity>& entities, Entity& selected, UIState& ui)
     {
-        static std::vector<Entity> pinned;      // keep these inspectors visible
-        static bool showAllInspectors = false;  // renders inspectors for every entity
         static std::vector<Entity> multiSel;   // persistent multi-selection in the panel
 
         ScopedWindow win("Heirarchy", LockFlags(ui.lockLayout));
@@ -1268,12 +1266,41 @@ namespace UI { // --------------------------------------------------------------
             ImGuizmo::SetOrthographic(true);
 
             // ----- 5) if we have a selected entity, let gizmo edit its TRS -----
-            if (selected && ecs.HasComponent<Component::TransformComponent>(selected)) {
-                auto* t = ecs.GetComponent<Component::TransformComponent>(selected);
+            if (selected && ecs.HasComponent<Component::TransformComponent>(selected))
+            {
+                // find the topmost entity for whatever we clicked
+                CrashoutsEngine::Entity root = CrashoutsEngine::GetRoot(ecs, selected);
 
-                float tr[3] = { t->position.x, t->position.y, t->position.z };
-                float rt[3] = { 0.0f, 0.0f, t->rotation };
-                float sc[3] = { t->size.x, t->size.y, 1.0f };
+                // collect everyone under that root (root included)
+                std::vector<CrashoutsEngine::Entity> group;
+                group.reserve(16);
+                CrashoutsEngine::GatherDescendants(ecs, root, group);
+
+                // compute center of all transforms in this group
+                CEVec3 center{ 0.f, 0.f, 0.f };
+                int count = 0;
+                for (CrashoutsEngine::Entity e : group) {
+                    if (!ecs.HasComponent<Component::TransformComponent>(e))
+                        continue;
+                    auto* t = ecs.GetComponent<Component::TransformComponent>(e);
+                    center.x += t->position.x;
+                    center.y += t->position.y;
+                    center.z += t->position.z;
+                    ++count;
+                }
+                if (count > 0) {
+                    center.x /= count;
+                    center.y /= count;
+                    center.z /= count;
+                }
+
+                // use root's rot/scale just for displaying the gizmo nicely
+                auto* rootT = ecs.GetComponent<Component::TransformComponent>(root);
+                float tr[3] = { center.x, center.y, center.z };
+                float rt[3] = { 0.f, 0.f, rootT ? rootT->rotation : 0.f };
+                float sc[3] = { rootT ? rootT->size.x : 1.f,
+                                rootT ? rootT->size.y : 1.f,
+                                1.f };
 
                 float m[16];
                 ImGuizmo::RecomposeMatrixFromComponents(tr, rt, sc, m);
@@ -1284,34 +1311,42 @@ namespace UI { // --------------------------------------------------------------
                 const float* snapPtr = nullptr;
                 float snap[3];
                 if (g_snapOn) {
-                    if (g_gizmoOp == ImGuizmo::ROTATE) { snap[0] = g_snapAngle; snapPtr = snap; }
-                    else { snap[0] = g_snapTrans[0]; snap[1] = g_snapTrans[1]; snap[2] = g_snapTrans[2]; snapPtr = snap; }
+                    if (g_gizmoOp == ImGuizmo::ROTATE) {
+                        snap[0] = g_snapAngle;
+                        snapPtr = snap;
+                    }
+                    else {
+                        snap[0] = g_snapTrans[0];
+                        snap[1] = g_snapTrans[1];
+                        snap[2] = g_snapTrans[2];
+                        snapPtr = snap;
+                    }
                 }
 
+                // let user move the gizmo placed at the group center
                 ImGuizmo::Manipulate(view, proj, g_gizmoOp, g_gizmoMode, m, nullptr, snapPtr);
 
-                if (ImGuizmo::IsUsing()) {
-                    ImGuizmo::DecomposeMatrixToComponents(m, tr, rt, sc);
+                if (ImGuizmo::IsUsing())
+                {
+                    // figure out how far the gizmo moved
+                    float newTr[3], newRt[3], newSc[3];
+                    ImGuizmo::DecomposeMatrixToComponents(m, newTr, newRt, newSc);
 
-                    // 2D Constraints
-                    // Keep entity's current Z exactly (no Z move)
-                    tr[2] = t->position.z;
+                    CEVec3 offset{
+                        newTr[0] - center.x,
+                        newTr[1] - center.y,
+                        newTr[2] - center.z
+                    };
 
-                    // Only Z-rotation is meaningful in 2D
-                    rt[0] = 0.0f;
-                    rt[1] = 0.0f;
-
-                    // No Z scale in 2D
-                    sc[2] = 1.0f;
-
-                    // keep scale positive to avoid mirroring along an axis
-                    if (sc[0] < 0.0f) sc[0] = -sc[0];
-                    if (sc[1] < 0.0f) sc[1] = -sc[1];
-
-                    // Write back to your components
-                    t->position = { tr[0], tr[1], tr[2] };
-                    t->rotation = rt[2]; 
-                    t->size = { sc[0], sc[1] };
+                    // apply the SAME offset to every entity in the group
+                    for (CrashoutsEngine::Entity e : group) {
+                        if (!ecs.HasComponent<Component::TransformComponent>(e))
+                            continue;
+                        auto* t = ecs.GetComponent<Component::TransformComponent>(e);
+                        t->position.x += offset.x;
+                        t->position.y += offset.y;
+                        t->position.z += offset.z;
+                    }
                 }
             }
 
@@ -1406,6 +1441,12 @@ namespace UI { // --------------------------------------------------------------
                 // Toggle selection with LEFT mouse
                 if (best) selected = (selected == best) ? (Entity)0 : best;
                 // else selected = 0; // click empty -> deselect
+            }
+
+            if (over && ImGui::IsMouseClicked(ImGuiMouseButton_Right))
+            {
+                if (!ImGuizmo::IsOver() && !ImGuizmo::IsUsing())
+                    selected = 0;
             }
 
             // ------ 7) drag and drop from asset browser into world ------
