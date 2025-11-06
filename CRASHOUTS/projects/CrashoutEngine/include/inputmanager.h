@@ -96,6 +96,8 @@ public:
     // Checks if a key was pressed *this frame* (not held)
     static bool IsKeyTriggered(int key);
 
+    static bool IsKeyTriggered(Key key);
+
 private:
     /// Pointer to the GLFW window
     static GLFWwindow* Window;

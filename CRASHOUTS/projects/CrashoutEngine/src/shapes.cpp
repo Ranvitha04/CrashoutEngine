@@ -93,7 +93,7 @@ namespace Component {
         }
     }
 
-    void Shapes::CreateLine(const CEVec3& start, const CEVec3& end, float thickness, const CEVec3& color) {
+    void Shapes::CreateLine(const CEVec3& start, const CEVec3& end, float thickness, const CEVec3& color, const bool isWorldSpace) {
         Component::Rendering& renderer = Component::Rendering::Get();
 
         // 1. CALCULATE VERTICES IN FINAL WORLD-SPACE
@@ -128,8 +128,22 @@ namespace Component {
         // 3. SET MODEL MATRIX TO IDENTITY
         // The vertices are already in world space, so no model transform is needed.
         // (We assume the shader will multiply this by View * Projection)
+
         glm::mat4 model = glm::mat4(1.0f);
-        renderer.shdr_pgm->SetUniform("uModel", model);
+
+        glm::mat4 finalModelMatrix;
+        if (isWorldSpace)
+        {
+            finalModelMatrix = model;
+        }
+        else
+        {
+            glm::mat4 viewMatrix = renderer.viewMatrix;
+            glm::mat4 invViewMatrix = glm::inverse(viewMatrix);
+
+            finalModelMatrix = invViewMatrix * model;
+        }
+        renderer.shdr_pgm->SetUniform("uModel", finalModelMatrix);
 
         // 4. SET SHADER UNIFORMS & DRAW
         GLint useTexture_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "u_useTexture");
@@ -141,7 +155,7 @@ namespace Component {
         renderer.Draw();
     }
 
-    void Shapes::CreateRectangle(const CEVec2& transformSize, const CEVec3& position, float rotation, const CEVec3& color) {
+    void Shapes::CreateRectangle(const CEVec2& transformSize, const CEVec3& position, float rotation, const CEVec3& color, const bool isWorldSpace) {
         Component::Rendering& renderer = Component::Rendering::Get();
 
         // Rectangle vertices centered at origin
@@ -170,7 +184,20 @@ namespace Component {
         model = glm::rotate(model, glm::radians(rotation), glm::vec3(0, 0, 1));
         model = glm::scale(model, glm::vec3(transformSize.x, transformSize.y, 1.0f));
 
-        renderer.shdr_pgm->SetUniform("uModel", model);
+        glm::mat4 finalModelMatrix;
+        if (isWorldSpace)
+        {
+            finalModelMatrix = model;
+        }
+        else
+        {
+            glm::mat4 viewMatrix = renderer.viewMatrix;
+            glm::mat4 invViewMatrix = glm::inverse(viewMatrix);
+
+            finalModelMatrix = invViewMatrix * model;
+        }
+
+        renderer.shdr_pgm->SetUniform("uModel", finalModelMatrix);
         renderer.shdr_pgm->SetUniform("u_useTexture", 0);
         
         renderer.shdr_pgm->SetUniform("u_tint", 1.0f, 1.0f, 1.0f);
@@ -184,7 +211,7 @@ namespace Component {
         renderer.Draw();
     }
 
-    void Shapes::CreateTriangle(const CEVec2& transformSize, const CEVec3& pos, float rotation, const CEVec3& color) {
+    void Shapes::CreateTriangle(const CEVec2& transformSize, const CEVec3& pos, float rotation, const CEVec3& color, const bool isWorldSpace) {
         Component::Rendering& renderer = Component::Rendering::Get();
 
         CEVec3 p1 = pos + CEVec3{-.5f, -.5f, 0.f};
@@ -217,7 +244,20 @@ namespace Component {
         model = glm::scale(model, glm::vec3(transformSize.x, transformSize.y, 1.0f));
         model = glm::translate(model, glm::vec3(-centroid.x, -centroid.y, -centroid.z));
 
-        renderer.shdr_pgm->SetUniform("uModel", model);
+        glm::mat4 finalModelMatrix;
+        if (isWorldSpace)
+        {
+            finalModelMatrix = model;
+        }
+        else
+        {
+            glm::mat4 viewMatrix = renderer.viewMatrix;
+            glm::mat4 invViewMatrix = glm::inverse(viewMatrix);
+
+            finalModelMatrix = invViewMatrix * model;
+        }
+
+        renderer.shdr_pgm->SetUniform("uModel", finalModelMatrix);
         renderer.shdr_pgm->SetUniform("u_useTexture", 0);
         
 
@@ -230,7 +270,7 @@ namespace Component {
         renderer.Draw();
     }
 
-    void Shapes::CreateCircle(const CEVec2& transformSize, const CEVec3& position, int segments, float rotation, const CEVec3& color) {
+    void Shapes::CreateCircle(const CEVec2& transformSize, const CEVec3& position, int segments, float rotation, const CEVec3& color, const bool isWorldSpace) {
         Component::Rendering& renderer = Component::Rendering::Get();
 
         //minimum segments for circle
@@ -278,8 +318,20 @@ namespace Component {
         model = glm::rotate(model, glm::radians(rotation), glm::vec3(0, 0, 1));
         model = glm::scale(model, glm::vec3(transformSize.x, transformSize.y, 1.0f));
 
+        glm::mat4 finalModelMatrix;
+        if (isWorldSpace)
+        {
+            finalModelMatrix = model;
+        }
+        else
+        {
+            glm::mat4 viewMatrix = renderer.viewMatrix;
+            glm::mat4 invViewMatrix = glm::inverse(viewMatrix);
 
-        renderer.shdr_pgm->SetUniform("uModel", model);
+            finalModelMatrix = invViewMatrix * model;
+        }
+
+        renderer.shdr_pgm->SetUniform("uModel", finalModelMatrix);
         
         GLint useTexture_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "u_useTexture");
         if (useTexture_loc != -1) glUniform1i(useTexture_loc, 0); // Use vertex colors, not texture
@@ -291,7 +343,7 @@ namespace Component {
     }
 
     void Shapes::CreateTexturedRectangle(const CEVec2& transformSize, const std::string& texturePath, const CEVec3& position, float rotation,
-        const CEVec3& tint, CEVec2 const& uvSize) {
+        const CEVec3& tint, CEVec2 const& uvSize, const bool isWorldSpace) {
         Component::Rendering& renderer = Component::Rendering::Get();
 
         GLuint textureHandle = Component::TextureRenderer::GetTextureHandle(texturePath);
@@ -339,7 +391,20 @@ namespace Component {
         model = glm::rotate(model, glm::radians(rotation), glm::vec3(0, 0, 1));
         model = glm::scale(model, glm::vec3(transformSize.x, transformSize.y, 1.0f));
 
-        renderer.shdr_pgm->SetUniform("uModel", model);
+        glm::mat4 finalModelMatrix;
+        if (isWorldSpace)
+        {
+            finalModelMatrix = model;
+        }
+        else
+        {
+            glm::mat4 viewMatrix = renderer.viewMatrix;
+            glm::mat4 invViewMatrix = glm::inverse(viewMatrix);
+
+            finalModelMatrix = invViewMatrix * model;
+        }
+
+        renderer.shdr_pgm->SetUniform("uModel", finalModelMatrix);
         
 
         // TextureAsset uniforms
@@ -364,7 +429,7 @@ namespace Component {
     }
 
     void Shapes::CreateTexturedTriangle(const CEVec2& transformSize, const std::string& texturePath, const CEVec3& pos,
-        float rotation, const CEVec3& tint, const CEVec2& uvSize) {
+        float rotation, const CEVec3& tint, const CEVec2& uvSize, const bool isWorldSpace) {
         Component::Rendering& renderer = Component::Rendering::Get();
         CEVec3 p1 = pos + CEVec3{ -.5f, -.5f, 0.f };
         CEVec3 p2 = pos + CEVec3{ .5f, -.5f, 0.f };
@@ -419,7 +484,20 @@ namespace Component {
         model = glm::scale(model, glm::vec3(transformSize.x, transformSize.y, 1.0f));
         model = glm::translate(model, glm::vec3(-centroid.x, -centroid.y, -centroid.z));
 
-        renderer.shdr_pgm->SetUniform("uModel", model);
+        glm::mat4 finalModelMatrix;
+        if (isWorldSpace)
+        {
+            finalModelMatrix = model;
+        }
+        else
+        {
+            glm::mat4 viewMatrix = renderer.viewMatrix;
+            glm::mat4 invViewMatrix = glm::inverse(viewMatrix);
+
+            finalModelMatrix = invViewMatrix * model;
+        }
+
+        renderer.shdr_pgm->SetUniform("uModel", finalModelMatrix);
         
 
         GLint useTexture_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "u_useTexture");

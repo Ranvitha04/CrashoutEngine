@@ -1129,7 +1129,17 @@ namespace UI { // --------------------------------------------------------------
                 //MonoManager::ReloadScripts();
                 engineState = EngineState::STOP;
             }
+            
+            ImGui::SeparatorEx(ImGuiSeparatorFlags_Vertical);
+            ImGui::SameLine();
 
+            const char* stateText = "UNKNOWN";
+            switch (engineState) {
+            case EngineState::PLAY:  stateText = "PLAYING"; break;
+            case EngineState::PAUSE: stateText = "PAUSED";  break;
+            case EngineState::STOP:  stateText = "STOPPED"; break;
+            }
+            ImGui::TextDisabled("State: %s", stateText);
         }
 
         ImGui::End();

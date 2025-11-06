@@ -20,6 +20,7 @@ This file
 #include "assetmanager.h"
 #include "sceneasset.h"
 #include "gamestatemanager.h"
+#include "inputmanager.h"
 /*                                                   Global Variables
 ----------------------------------------------------------------------------- */
 
@@ -59,6 +60,15 @@ void UpdateDescentMenu()
 			ChangeGameState(GameState::DESCENT_GAME, false);
 		}
 	}
+	// QUIT
+	/*Entity quitBtnEntity = globalECS->FindEntityByName("Quit_Button");
+	ButtonComponent* quitBtn = globalECS->GetComponent<ButtonComponent>(quitBtnEntity);
+	if (quitBtn) {
+		if (quitBtn->buttonState == ButtonState::PRESSED) {
+			quitBtn->buttonState = ButtonState::NORMAL;
+			glfwSetWindowShouldClose(GLApp::ptr_window, GLFW_TRUE);
+		}
+	}*/
 }
 
 void RenderDescentMenu()
@@ -74,7 +84,7 @@ void RenderDescentMenu()
 void FreeDescentMenu()
 {
 	// Free resources specific to DescentMenu state
-	CrashoutsEngine::Serialization::SaveScenes(sceneName);
+	if (CurrentGameState != NextGameState) CrashoutsEngine::Serialization::SaveScenes(sceneName);
 }
 
 void UnloadDescentMenu()

@@ -39,10 +39,12 @@ The entire build and run process is automated with a single script.
 
 * To run in 'Debug' mode (default):
     * In the project's root folder, simply double-click the "run.bat" file.
+    * Solution is found in the x64-Debug folder
 
 * To run in 'Release' mode:
     * Open a Command Prompt in the root folder.
     * Type "run.bat Release" and press Enter.
+    * Solution is found in the x64-Release folder
 
 * What this script does:
     1.  Creates a "build" folder (if it doesn't exist).

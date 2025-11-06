@@ -16,6 +16,7 @@
             },
             "shape": {
                 "useTexture": true,
+                "isWorldSpace": true,
                 "wrapModeU": 0,
                 "wrapModeV": 0,
                 "thickness": 1.0,
@@ -59,6 +60,7 @@
             },
             "shape": {
                 "useTexture": false,
+                "isWorldSpace": true,
                 "wrapModeU": 0,
                 "wrapModeV": 0,
                 "thickness": 1.0,
@@ -84,6 +86,17 @@
                     "y": 0.0,
                     "z": 0.0
                 }
+            },
+            "camera": {
+                "zoom": 1.0,
+                "xBounds": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "yBounds": {
+                    "x": 0.0,
+                    "y": 0.0
+                }
             }
         },
         {
@@ -102,6 +115,7 @@
             },
             "shape": {
                 "useTexture": false,
+                "isWorldSpace": true,
                 "wrapModeU": 0,
                 "wrapModeV": 0,
                 "thickness": 1.0,
@@ -113,9 +127,9 @@
                     "y": 1.0
                 },
                 "color": {
-                    "x": 171.25,
-                    "y": 58.76225662231445,
-                    "z": 58.76225662231445
+                    "x": 245.0,
+                    "y": 237.0,
+                    "z": 237.0
                 },
                 "p1": {
                     "x": 0.0,
@@ -188,6 +202,7 @@
             },
             "shape": {
                 "useTexture": false,
+                "isWorldSpace": true,
                 "wrapModeU": 0,
                 "wrapModeV": 0,
                 "thickness": 1.0,
@@ -274,6 +289,7 @@
             },
             "shape": {
                 "useTexture": false,
+                "isWorldSpace": true,
                 "wrapModeU": 0,
                 "wrapModeV": 0,
                 "thickness": 1.0,

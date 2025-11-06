@@ -50,7 +50,8 @@ namespace Component {
         Creates a line segment between two points with configurable thickness.
         The line is rendered as a rectangle oriented along the start-end vector.
         */
-        static void CreateLine(const CEVec3& start, const CEVec3& end, float thickness = 1.0f, const CEVec3& color = CEVec3(255.0f, 255.0f, 255.0f));
+        static void CreateLine(const CEVec3& start, const CEVec3& end, float thickness = 1.0f, 
+            const CEVec3& color = CEVec3(255.0f, 255.0f, 255.0f), const bool isWorldSpace = true);
 
         /*!
         @brief Create and render a rectangle primitive.
@@ -61,7 +62,8 @@ namespace Component {
         Creates a rectangle centered at the specified position with configurable
         dimensions, rotation, and color. Uses triangle fan rendering.
         */
-        static void CreateRectangle(const CEVec2& transformSize, const CEVec3& position, float rotation = 0.0f, const CEVec3& color = CEVec3(255.0f, 255.0f, 255.0f));
+        static void CreateRectangle(const CEVec2& transformSize, const CEVec3& position, float rotation = 0.0f, 
+            const CEVec3& color = CEVec3(255.0f, 255.0f, 255.0f), const bool isWorldSpace = true);
 
         /*!
         @brief Create and render a triangle primitive.
@@ -76,7 +78,7 @@ namespace Component {
         rotation and color. The triangle is rendered using triangle primitive.
         */
         static void CreateTriangle(const CEVec2& transformSize, const CEVec3& pos,
-            float rotation = 0.0f, const CEVec3& color = CEVec3(255.0f, 255.0f, 255.0f));
+            float rotation = 0.0f, const CEVec3& color = CEVec3(255.0f, 255.0f, 255.0f), const bool isWorldSpace = true);
         
         /*!
         @brief Clean up all shape rendering resources.
@@ -98,7 +100,7 @@ namespace Component {
         configurable dimensions and optional color tinting.
         */
         static void CreateTexturedRectangle(const CEVec2& transformSize, const std::string& textureName, const CEVec3& position, float rotation = 0.0f,
-            const CEVec3& tint = CEVec3(255.0f, 255.0f, 255.0f), CEVec2 const& uvSize = CEVec2(1.f, 1.f));
+            const CEVec3& tint = CEVec3(255.0f, 255.0f, 255.0f), CEVec2 const& uvSize = CEVec2(1.f, 1.f), const bool isWorldSpace = true);
 
         /*!
         @brief Create and render a textured triangle primitive.
@@ -115,7 +117,7 @@ namespace Component {
         specified texture asset with optional color tinting.
         */
         static void CreateTexturedTriangle(const CEVec2& transformSize, const std::string& textureName, const CEVec3& pos, float rotation = 0.0f,
-            const CEVec3& tint = CEVec3(255.0f, 255.0f, 255.0f), CEVec2 const& uvSize = CEVec2(1.f, 1.f));
+            const CEVec3& tint = CEVec3(255.0f, 255.0f, 255.0f), CEVec2 const& uvSize = CEVec2(1.f, 1.f), const bool isWorldSpace = true);
 
         /*!
         @brief Create and render a circle primitive.
@@ -127,7 +129,8 @@ namespace Component {
         Creates a circle approximated using a triangle fan with the specified
         number of segments. Higher segment counts produce smoother circles.
         */
-        static void CreateCircle(const CEVec2& transformSize, const CEVec3& position, int segments = 32, float rotation = 0.0f, const CEVec3& color = CEVec3(1.0f, 1.0f, 1.0f));
+        static void CreateCircle(const CEVec2& transformSize, const CEVec3& position, int segments = 32, 
+            float rotation = 0.0f, const CEVec3& color = CEVec3(1.0f, 1.0f, 1.0f), const bool isWorldSpace = true);
 
     };
     

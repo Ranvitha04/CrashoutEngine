@@ -229,3 +229,7 @@ bool InputManager::IsKeyTriggered(int key) {
 
     return pressedNow && !pressedLast;
 }
+
+bool InputManager::IsKeyTriggered(Key key) {
+    return IsKeyTriggered(static_cast<int>(key));
+}
