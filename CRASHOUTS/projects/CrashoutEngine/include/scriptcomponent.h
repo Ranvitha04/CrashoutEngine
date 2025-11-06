@@ -25,7 +25,7 @@ namespace CrashoutsEngine
 
         bool Initialize(MonoDomain* domain, MonoAssembly* assembly);
         void Start();
-        void Update(float dt);
+        void Update();
         void Destroy();
     };
 }

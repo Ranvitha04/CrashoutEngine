@@ -12,7 +12,7 @@ namespace ExampleNamespace
         }
 
         // Called every frame by your engine
-        public void Update(float deltaTime)
+        public void Update()
         {
             {
                 //Console.WriteLine($"[C#] PlayerScript Update() - elapsed {deltaTime:0.0000}s");

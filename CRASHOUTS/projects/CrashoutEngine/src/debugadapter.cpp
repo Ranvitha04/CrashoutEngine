@@ -899,7 +899,7 @@ namespace {
 
             ImGui::SameLine();
             if (ImGui::Button("Update"))
-                sc->Update(dt);
+                sc->Update();
 
             ImGui::SameLine();
             if (ImGui::Button("Destroy"))

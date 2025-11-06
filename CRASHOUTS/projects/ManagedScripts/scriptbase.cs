@@ -10,7 +10,7 @@ namespace CrashoutsEngine
         // Called once when the script instance is created
         public virtual void Start() { }
 
-        // Called once per frame with deltaTime (in seconds)
-        public virtual void Update(float dt) { }
+        // Called once per frame
+        public virtual void Update() { }
     }
 }
