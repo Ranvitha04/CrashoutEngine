@@ -100,7 +100,7 @@ namespace InstancingSystem {
             case 3: // idle_bounce
                 s.startFrame = 12; s.frameCount = 4; s.frameTime = 0.15f; break;
             case 4: // walk_bounce
-                s.startFrame = 18; s.frameCount = 6; s.frameTime = 0.10f; break;
+                s.startFrame = 16; s.frameCount = 2; s.frameTime = 0.10f; break;
             default:
                 s.startFrame = 0;  s.frameCount = 2; s.frameTime = 0.8f; break;
         }
@@ -223,10 +223,13 @@ namespace InstancingSystem {
             if (it == gDuckAnim.end()) continue;
             DuckAnimState& anim = it->second;
 
-            // Auto-switch to walk when moving, idle when slow
+            // Use manual mode when set; fallback to auto only if animationMode == 0
             float speedMag = std::sqrt(dm->velocity.x * dm->velocity.x + dm->velocity.y * dm->velocity.y) * dm->speed;
             const float moveThresh = 1.5f;
-            int desiredMode = (speedMag > moveThresh) ? 2 : 3; // walk_normal or idle_bounce
+            int desiredMode = dm->animationMode; // 1..4 manual modes; 0 = auto
+            if (desiredMode <= 0) {
+                desiredMode = (speedMag > moveThresh) ? 2 : 3; // auto: walk_normal vs idle_bounce
+            }
             DuckAnimState desired = MakeAnimByMode(desiredMode);
             if (anim.startFrame != desired.startFrame || anim.frameCount != desired.frameCount || anim.frameTime != desired.frameTime) {
                 anim = desired; anim.timer = 0.0f; anim.frameIndex = 0;

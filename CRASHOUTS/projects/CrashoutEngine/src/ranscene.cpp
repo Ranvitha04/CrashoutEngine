@@ -523,6 +523,14 @@ void UpdateRan()
         InstancingSystem::UpdateEcsDuckSprites();
     }
 
+    // Handle "I" toggle for duck animation state in mode 6
+    int iState = glfwGetKey(GLApp::ptr_window, GLFW_KEY_I);
+    bool iPressed = (iState == GLFW_PRESS);
+    if (iPressed && !gPrevIPressed && gDisplayMode == 6 && gMode6Initialized) {
+        InstancingSystem::CycleEcsDuckAnimationState();
+    }
+    gPrevIPressed = iPressed;
+
     gPrevGPressed = gPressed;
     gPrevMPressed = mPressed;
 }
