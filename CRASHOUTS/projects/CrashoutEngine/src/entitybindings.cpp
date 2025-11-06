@@ -1,3 +1,9 @@
+/*!
+@file		entitybindings.cpp
+@author     m.biniswandi@digipen.edu
+@date       06/11/2025
+@brief		Definition of entity bindings functions
+*/
 #include "entitymanager.h"
 #include "transformcomponent.h"
 #include "rigidbodycomponent.h"

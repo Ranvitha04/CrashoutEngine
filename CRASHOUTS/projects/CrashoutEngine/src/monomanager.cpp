@@ -1,3 +1,9 @@
+/*!
+@file		monomanager.cpp
+@author     m.biniswandi@digipen.edu
+@date       06/11/2025
+@brief		Definition of mono manager functions
+*/
 #include "monomanager.h"
 
 #include <cassert>

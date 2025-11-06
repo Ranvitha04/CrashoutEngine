@@ -1,5 +1,11 @@
-#include "InputBindings.h"
-#include "InputManager.h"
+/*!
+@file		inputbindings.cpp
+@author     m.biniswandi@digipen.edu
+@date       06/11/2025
+@brief		Declaration of input bindings functions
+*/
+#include "inputbindings.h"
+#include "inputmanager.h"
 #include "Key.h"
 #include "mono/metadata/loader.h"
 #include "entitymanager.h"
