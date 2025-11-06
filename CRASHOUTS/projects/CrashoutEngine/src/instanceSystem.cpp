@@ -1,9 +1,36 @@
+/*!
+@file        instanceSystem.cpp
+@author      ranvitha@digipen.edu
+@date        6/11/2025
+@brief
+This header file declares the interfaces and data structures for the **Instancing System**,
+a subsystem responsible for efficiently rendering large numbers of geometric shapes (circles,
+rectangles, and triangles) using OpenGL instanced drawing.
+
+The Instancing System provides both textured and non-textured variants for each shape type,
+allowing for batch rendering of multiple instances with unique transformations, colors, and
+scales. It supports integration with the CrashoutsEngine ECS (Entity Component System) to
+enable entity-based rendering and data-driven initialization of instance buffers.
+
+Key functionality includes:
+- Instanced rendering setup for circles, rectangles, and triangles.
+- Textured instancing with tint and UV scaling support.
+- Randomized ECS entity initialization for procedural scenes.
+- Shared GPU buffer management for efficient rendering performance.
+
+This file contains only declarations; implementations are provided in the corresponding
+`instancing_system.cpp` file.
+*/
+
 #include <cmath>
 #include "instanceSystem.h"
 #include "shapes.h"
 #include "CEMath.h"
 #include <glm/gtc/type_ptr.hpp>
 #include <random>
+#include <unordered_map>
+#include "duckrandomcomponent.h"
+#include "frameratecontroller.h"
 
 // Global variables needed for ECS and texturing
 static CrashoutsEngine::ECS* globalECS = nullptr;
@@ -43,6 +70,247 @@ namespace InstancingSystem {
     static bool   s_triInstanceBuffersInitialized = false;
 
  
+
+    // ECS duck sprites state
+    static bool s_duckSpritesInitialized = false;
+    static GLuint s_duckSheetHandle = 0;
+    static const char* DUCK_SPRITESHEET_ASSET = "ducky_2_spritesheet";
+    static const char* DUCK_SPRITESHEET_PATH  = "assets/images/ducky_2_spritesheet.png";
+    static const int DUCK_ROWS = 4;
+    static const int DUCK_COLS = 6;
+    static const CEVec2 DUCK_SIZE = CEVec2(3.0f, 3.0f);
+
+    struct DuckAnimState {
+        int   startFrame{0};
+        int   frameCount{1};
+        float frameTime{0.1f};
+        float timer{0.0f};
+        int   frameIndex{0};
+        bool  flip{false};
+    };
+    static std::unordered_map<CrashoutsEngine::Entity, DuckAnimState> gDuckAnim;
+
+    static DuckAnimState MakeAnimByMode(int mode) {
+        DuckAnimState s{};
+        switch (mode) {
+            case 1: // idle_normal
+                s.startFrame = 0;  s.frameCount = 2; s.frameTime = 0.8f; break;
+            case 2: // walk_normal
+                s.startFrame = 6;  s.frameCount = 6; s.frameTime = 0.12f; break;
+            case 3: // idle_bounce
+                s.startFrame = 12; s.frameCount = 4; s.frameTime = 0.15f; break;
+            case 4: // walk_bounce
+                s.startFrame = 16; s.frameCount = 2; s.frameTime = 0.10f; break;
+            default:
+                s.startFrame = 0;  s.frameCount = 2; s.frameTime = 0.8f; break;
+        }
+        return s;
+    }
+
+    static void ComputeWorldDimensions(float& worldWidth, float& worldHeight) {
+        const float BASE_SIZE = 100.0f;
+        float aspect = static_cast<float>(GLApp::width) / static_cast<float>(GLApp::height);
+        if (aspect >= 1.0f) {
+            worldHeight = BASE_SIZE;
+            worldWidth = worldHeight * aspect;
+        }
+        else {
+            worldWidth = BASE_SIZE;
+            worldHeight = worldWidth / aspect;
+        }
+    }
+
+    void InitializeEcsDuckSpritesRandom(int count) {
+        EnsureGlobalECSInitialized();
+        if (!globalECS) return;
+
+        // Preload spritesheet and fetch handle for flipped rendering
+        Component::TextureRenderer::PreloadTexture(DUCK_SPRITESHEET_PATH);
+        s_duckSheetHandle = Component::TextureRenderer::GetTextureHandle(DUCK_SPRITESHEET_ASSET);
+
+        float worldW = 0.0f, worldH = 0.0f;
+        ComputeWorldDimensions(worldW, worldH);
+
+        std::random_device rd;
+        std::mt19937 rng(rd());
+        std::uniform_real_distribution<float> posX(-worldW * 0.5f, worldW * 0.5f);
+        std::uniform_real_distribution<float> posY(-worldH * 0.5f, worldH * 0.5f);
+        std::uniform_real_distribution<float> rotDeg(0.0f, 360.0f);
+        std::uniform_real_distribution<float> spd(6.0f, 12.0f);
+        std::uniform_real_distribution<float> trn(15.0f, 60.0f);
+        std::uniform_real_distribution<float> osc(3.0f, 10.0f);
+        std::uniform_int_distribution<int> animMode(1, 4);
+        std::uniform_real_distribution<float> dir(-1.0f, 1.0f);
+
+        // Clear previous
+        gDuckAnim.clear();
+
+        for (int i = 0; i < count; ++i) {
+            auto e = globalECS->CreateEntity();
+
+            CEVec3 pos{ posX(rng), posY(rng), 0.0f };
+            float rotation = rotDeg(rng);
+
+            // Name + Transform
+            globalECS->AddComponent<Component::NameComponent>(e, Component::NameComponent{ "Duck_" + std::to_string(e) });
+            globalECS->AddComponent<Component::TransformComponent>(e, Component::TransformComponent{
+                rotation, CEVec2{1.0f, 1.0f}, pos
+            });
+
+            // Motion component
+            Component::DuckMotionComponent dm{};
+            dm.speed = spd(rng);
+            dm.turnRate = trn(rng);
+            dm.oscillation = osc(rng);
+            dm.noiseTime = 0.0f;
+
+            // Random initial velocity (normalized)
+            CEVec3 v{ dir(rng), dir(rng), 0.0f };
+            float len = std::sqrt(v.x * v.x + v.y * v.y);
+            if (len < 1e-3f) v = CEVec3{1.0f, 0.0f, 0.0f}; else { v.x /= len; v.y /= len; }
+            dm.velocity = v;
+
+            // Bounds = world bounds (slightly contracted)
+            dm.SetBoundsFromWorld(worldW, worldH);
+            dm.ExpandBounds(-2.0f);
+
+            dm.animationMode = animMode(rng);
+            globalECS->AddComponent<Component::DuckMotionComponent>(e, dm);
+
+            // Per-entity animation state (non-component)
+            gDuckAnim[e] = MakeAnimByMode(dm.animationMode);
+        }
+
+        s_duckSpritesInitialized = true;
+    }
+
+    void UpdateEcsDuckSprites() {
+        if (!globalECS) return;
+        float dt = static_cast<float>(FrameRateController::GetInstance().DT());
+
+        auto& arr = globalECS->GetComponentArray<Component::DuckMotionComponent>();
+        for (size_t i = 0; i < arr.indexToEntity.size(); ++i) {
+            auto id = arr.indexToEntity[i];
+            auto* dm = globalECS->GetComponent<Component::DuckMotionComponent>(id);
+            auto* tf = globalECS->GetComponent<Component::TransformComponent>(id);
+            if (!dm || !tf) continue;
+
+            // Update noise and gently steer
+            dm->noiseTime += dt;
+            float steer = std::sin(dm->noiseTime * 1.7f) * (dm->turnRate * 0.0174533f) * dt; // turnRate deg/s -> rad/s
+            // Rotate velocity by small angle
+            float cs = std::cos(steer), sn = std::sin(steer);
+            CEVec3 v = dm->velocity;
+            dm->velocity = CEVec3{ v.x * cs - v.y * sn, v.x * sn + v.y * cs, 0.0f };
+
+            // Integrate position
+            tf->position.x += dm->velocity.x * dm->speed * dt;
+            tf->position.y += dm->velocity.y * dm->speed * dt;
+
+            // Bounce within bounds
+            bool clamped = dm->ClampToBounds(tf->position);
+            if (clamped) {
+                // Invert velocity when hitting bounds
+                if (tf->position.x <= dm->boundsMin.x || tf->position.x >= dm->boundsMax.x) dm->velocity.x *= -1.0f;
+                if (tf->position.y <= dm->boundsMin.y || tf->position.y >= dm->boundsMax.y) dm->velocity.y *= -1.0f;
+            }
+
+            // Face movement direction
+            tf->rotation = std::atan2(dm->velocity.y, dm->velocity.x) * 57.2957795f;
+
+            // Animation update
+            auto it = gDuckAnim.find(id);
+            if (it == gDuckAnim.end()) continue;
+            DuckAnimState& anim = it->second;
+
+            // Use manual mode when set; fallback to auto only if animationMode == 0
+            float speedMag = std::sqrt(dm->velocity.x * dm->velocity.x + dm->velocity.y * dm->velocity.y) * dm->speed;
+            const float moveThresh = 1.5f;
+            int desiredMode = dm->animationMode; // 1..4 manual modes; 0 = auto
+            if (desiredMode <= 0) {
+                desiredMode = (speedMag > moveThresh) ? 2 : 3; // auto: walk_normal vs idle_bounce
+            }
+            DuckAnimState desired = MakeAnimByMode(desiredMode);
+            if (anim.startFrame != desired.startFrame || anim.frameCount != desired.frameCount || anim.frameTime != desired.frameTime) {
+                anim = desired; anim.timer = 0.0f; anim.frameIndex = 0;
+            }
+
+            anim.flip = (dm->velocity.x < 0.0f);
+
+            anim.timer += dt;
+            if (anim.timer >= anim.frameTime) {
+                anim.timer -= anim.frameTime;
+                anim.frameIndex = (anim.frameIndex + 1) % anim.frameCount;
+            }
+        }
+    }
+
+    void RenderEcsDuckSprites() {
+        if (!globalECS) return;
+
+        // Fallback: if handle missing, try to fetch again
+        if (s_duckSheetHandle == 0) {
+            s_duckSheetHandle = Component::TextureRenderer::GetTextureHandle(DUCK_SPRITESHEET_ASSET);
+        }
+
+        auto& arr = globalECS->GetComponentArray<Component::DuckMotionComponent>();
+        for (size_t i = 0; i < arr.indexToEntity.size(); ++i) {
+            auto id = arr.indexToEntity[i];
+            auto* tf = globalECS->GetComponent<Component::TransformComponent>(id);
+            if (!tf) continue;
+
+            DuckAnimState anim{};
+            auto it = gDuckAnim.find(id);
+            if (it != gDuckAnim.end()) anim = it->second;
+
+            int globalFrame = anim.startFrame + anim.frameIndex;
+            int frameY = globalFrame / DUCK_COLS;
+            int frameX = globalFrame % DUCK_COLS;
+
+            // Use flipped API when we have a handle; fallback to non-flipped path if needed
+            if (s_duckSheetHandle != 0) {
+                Component::TextureRenderer::CreateSpriteFrameFlipped(
+                    s_duckSheetHandle,
+                    tf->position,
+                    DUCK_SIZE,
+                    frameX, frameY,
+                    DUCK_COLS, DUCK_ROWS,
+                    anim.flip,
+                    tf->rotation,
+                    tf->size.x,
+                    CEVec3(1.0f, 1.0f, 1.0f),
+                    false
+                );
+            } else {
+                Component::TextureRenderer::CreateSpriteFrame(
+                    DUCK_SPRITESHEET_PATH,
+                    tf->position,
+                    DUCK_SIZE,
+                    frameX, frameY,
+                    DUCK_COLS, DUCK_ROWS,
+                    tf->rotation,
+                    tf->size.x,
+                    CEVec3(1.0f, 1.0f, 1.0f),
+                    false
+                );
+            }
+        }
+    }
+
+    void CycleEcsDuckAnimationState() {
+        if (!globalECS) return;
+        auto& arr = globalECS->GetComponentArray<Component::DuckMotionComponent>();
+        for (size_t i = 0; i < arr.indexToEntity.size(); ++i) {
+            auto id = arr.indexToEntity[i];
+            auto* dm = globalECS->GetComponent<Component::DuckMotionComponent>(id);
+            if (!dm) continue;
+
+            dm->animationMode = (dm->animationMode % 4) + 1;
+            gDuckAnim[id] = MakeAnimByMode(dm->animationMode);
+            gDuckAnim[id].timer = 0.0f;
+            gDuckAnim[id].frameIndex = 0;
+        }
+    }
 
     //.....................CIRCLE..............................................//
     void InstancingSystem::CreateInstancedCircles(const CEVec3* positions, const CEVec3* colors,
@@ -344,18 +612,7 @@ namespace InstancingSystem {
         }
     }
 
-    static void ComputeWorldDimensions(float& worldWidth, float& worldHeight) {
-        const float BASE_SIZE = 100.0f;
-        float aspect = static_cast<float>(GLApp::width) / static_cast<float>(GLApp::height);
-        if (aspect >= 1.0f) {
-            worldHeight = BASE_SIZE;
-            worldWidth = worldHeight * aspect;
-        }
-        else {
-            worldWidth = BASE_SIZE;
-            worldHeight = worldWidth / aspect;
-        }
-    }
+
 
 // Rectangles (Mode 4)
     static std::vector<CEVec3> gM4RectPos;
@@ -983,7 +1240,7 @@ void InstancingSystem::InitializeInstancedRectanglesData(int count) {
 
     void InstancingSystem::RenderInstancedRectangles(const InstancedParams& params) {
         int count = static_cast<int>(gInstPositions.size());
-        std::cout << count << std::endl;
+        //std::cout << count << std::endl;
         if (count <= 0) return;
 
         const CEVec3* positions = gInstPositions.data();
