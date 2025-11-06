@@ -50,7 +50,7 @@ namespace Component {
         Creates a line segment between two points with configurable thickness.
         The line is rendered as a rectangle oriented along the start-end vector.
         */
-        static void CreateLine(const CEVec2& transformSize, const CEVec3& start, const CEVec3& end, float thickness = 1.0f, float rotation = 0.0f, const CEVec3& color = CEVec3(255.0f, 255.0f, 255.0f));
+        static void CreateLine(const CEVec3& start, const CEVec3& end, float thickness = 1.0f, const CEVec3& color = CEVec3(255.0f, 255.0f, 255.0f));
 
         /*!
         @brief Create and render a rectangle primitive.

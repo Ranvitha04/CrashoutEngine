@@ -8,6 +8,7 @@ Handles registration initialization updating and transitions between different g
 */
 
 #include "gamestatemanager.h"
+#include "engine.h"
 #include <GLFW/glfw3.h>
 
  /// Registry that maps game states to their descriptors
@@ -85,7 +86,10 @@ void InitGameStateManager(GameState initialState){
 @brief Make a transition to a new game state
 @param newState The state to transition to
 */
-void ChangeGameState(GameState newState) {
+void ChangeGameState(GameState newState, bool resetEngineState) {
+    (void)resetEngineState;
+    //if(resetEngineState) engineState = EngineState::STOP;
+    engineState = EngineState::STOP;
 	NextGameState = newState;
 }
 
