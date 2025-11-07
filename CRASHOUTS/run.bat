@@ -21,7 +21,7 @@ if ERRORLEVEL 1 goto :FAIL
 
 REM STEP 2: Build
 echo [2/3] Building %CONFIG% configuration...
-cmake --build "%BUILD_DIR%" --config %CONFIG%
+cmake --build "%BUILD_DIR%" --config %CONFIG% -- /m
 if ERRORLEVEL 1 goto :FAIL
 
 REM STEP 3: Run
