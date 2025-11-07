@@ -6,8 +6,8 @@ echo Saving modified assets...
 
 set "SOURCE_ASSETS=projects\Descent\assets"
 set "BUILD_DIR=build"
-set "DEBUG_ASSETS=%BUILD_DIR%\Debug\assets"
-set "RELEASE_ASSETS=%BUILD_DIR%\Release\assets"
+set "DEBUG_ASSETS=%BUILD_DIR%\x64-Debug\assets"
+set "RELEASE_ASSETS=%BUILD_DIR%\x64-Release\assets"
 
 REM Check for Debug assets and copy only newer files back to source
 if exist "%DEBUG_ASSETS%" (
