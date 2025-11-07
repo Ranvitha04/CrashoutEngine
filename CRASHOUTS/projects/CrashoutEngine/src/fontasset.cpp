@@ -1,12 +1,9 @@
 /*!
-@file   FontAsset.cpp
+@file   fontasset.cpp
 @author lee.r@digipen.edu
-=@date   16/09/2025
+@date   19/10/2025
 
-@brief	This file contains the definition of the Scene class, a rough implementation
-        of asset type that encapsulates a rapidjson value data. The class
-        is designed to be used with the AssetManager and provides a static factory
-        method for safe creation and resource management.
+@brief	This file contains the definition of the font asset class.
 //__________________________________________________________________________*/
 //#pragma once
 //

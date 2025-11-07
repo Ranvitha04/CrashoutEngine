@@ -15,7 +15,7 @@
                 }
             },
             "rigidbody": {
-                "mass": 3.5,
+                "mass": 7.0,
                 "restitutionCoeff": 0.0,
                 "maximumVelocity": {
                     "x": 0.0,
@@ -90,6 +90,12 @@
                     "x": 1.0,
                     "y": 1.0
                 }
+            },
+            "postprocessing": {
+                "brightness": 0.0,
+                "contrast": 0.0,
+                "saturation": 0.0,
+                "active": true
             }
         },
         {
@@ -1622,7 +1628,7 @@
                 },
                 "max": {
                     "x": 592.9505004882813,
-                    "y": -32.819942474365237,
+                    "y": -32.8199462890625,
                     "z": 0.0
                 }
             },

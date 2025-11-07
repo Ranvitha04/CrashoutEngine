@@ -92,7 +92,10 @@ namespace CrashoutsEngine {
 
 			if (ppArray.indexToEntity.size() > 0) {
 				PPComponent& p = ppArray.dense.back();
-				if (!p.active) return;
+				if (!p.active) {
+					if (active != p.active) active = p.active;
+					return;
+				}
 
 				// Update values if changed
 				if (g_brightness != p.brightness) g_brightness = p.brightness;
@@ -117,14 +120,13 @@ namespace CrashoutsEngine {
 
 			if (active) {
 				// Set uniforms
+				glUniform1i(glGetUniformLocation(ppShader.GetHandle(), "u_active"), true);
 				glUniform1f(glGetUniformLocation(ppShader.GetHandle(), "u_brightness"), g_brightness);
 				glUniform1f(glGetUniformLocation(ppShader.GetHandle(), "u_contrast"), g_contrast + 1.f);
 				glUniform1f(glGetUniformLocation(ppShader.GetHandle(), "u_saturation"), g_saturation + 1.f);
 			}
 			else {
-				glUniform1f(glGetUniformLocation(ppShader.GetHandle(), "u_brightness"), .0f);
-				glUniform1f(glGetUniformLocation(ppShader.GetHandle(), "u_contrast"), 1.f);
-				glUniform1f(glGetUniformLocation(ppShader.GetHandle(), "u_saturation"), 1.f);
+				glUniform1i(glGetUniformLocation(ppShader.GetHandle(), "u_active"), false);
 			}
 
 			// Tell shader to read from texture unit 0
