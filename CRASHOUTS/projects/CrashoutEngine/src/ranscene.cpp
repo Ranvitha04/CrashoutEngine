@@ -593,7 +593,7 @@ void RenderRan()
         RenderBackground();
         break;
     case 1: // Duck sprite animation
-        EnsureDuckInitialized();
+        //EnsureDuckInitialized();
         Component::Sprite::m_sprite.update(static_cast<float>(FrameRateController::GetInstance().DT()));
         Component::Sprite::m_sprite.render();
         break;
