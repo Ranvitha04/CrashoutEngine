@@ -17,6 +17,9 @@
 
 namespace Physics {
 
+	/*FLAGS*/
+	constexpr CE::u32 SIMULATE_DYNAMICS{ 1 };
+
 	enum COMMON_FORCES {
 		GRAVITY
 	};

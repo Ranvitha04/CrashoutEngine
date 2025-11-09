@@ -71,7 +71,7 @@ namespace CrashoutsEngine {
     }
 
     // Check if child is already in parent’s list
-    static inline bool IsAlreadyChildOf(ECS& ecs, Entity parent, Entity child) {
+    bool IsAlreadyChildOf(ECS& ecs, Entity parent, Entity child) {
         if (!ecs.HasComponent<ChildrenComponent>(parent)) return false;
         auto* kids = ecs.GetComponent<ChildrenComponent>(parent);
         return std::find(kids->children.begin(), kids->children.end(), child) != kids->children.end();

@@ -117,6 +117,9 @@ namespace {
     @details Displays editable velocity, read-only mass & restitution (with current API), and provides one-shot force utilities for quick testing.
     */
     struct RigidBodyAdapter : DebugReflection::IComponentAdapter {
+
+        bool simulateDynamics{ true };
+
         const char* name() const override { return "RigidBody"; }
 
         bool has(ECS& ecs, Entity e) const override {
@@ -138,6 +141,10 @@ namespace {
                 auto ref = rb->reflection();
                 if (draw_reflected(ref, "RigidBody (data)")) {
                     *rb = RigidBodyComponent(ref);
+                }
+                if (ImGui::Checkbox("Simulate Dynamics", &simulateDynamics)) {
+                    if (simulateDynamics) rb->getFlags().set(Physics::SIMULATE_DYNAMICS);
+                    else rb->getFlags().reset(Physics::SIMULATE_DYNAMICS);
                 }
 
                 ImGui::SeparatorText("Forces");

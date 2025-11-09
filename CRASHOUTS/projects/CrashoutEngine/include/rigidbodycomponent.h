@@ -8,6 +8,8 @@
 
 #pragma once
 #include <CEVec3.h>
+#include <CETypes.h>
+#include <bitset>
 #include "physicsutils.h"
 
 namespace Component {
@@ -19,6 +21,7 @@ namespace Component {
 			CEVec3 mNetForce;
 			f32 mRestitutionCoeff; /*Measure of elasticity*/
 			Physics::ForceManager fm;
+			std::bitset<8> flags{0b0000'0000};
 		public:
 
 			struct ReflectionType {
@@ -46,6 +49,7 @@ namespace Component {
 			RigidBodyComponent(CEVec3 maximumVel = CEVec3{}, f32 mass = 0.f, f32 restitutionCoeff = 0.f);
 
 			/*Member Functions*/
+			inline std::bitset<8>& getFlags() { return flags; }
 			f32 getInverseMass();
 			f32 getMass();
 			void setMass(f32 newMass);
