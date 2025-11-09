@@ -192,7 +192,7 @@ namespace Physics {
 
 		applySeparation(event, globalECS);
 		
-		int impulseSolveAmount{3};
+		int impulseSolveAmount{4};
 
 		for (int i{}; i < impulseSolveAmount; ++i) {
 
