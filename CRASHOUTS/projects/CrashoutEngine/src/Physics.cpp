@@ -12,7 +12,6 @@
 #include <cstdio>
 #include "CEMath.h"
 #include "observer.h"
-#include "physicsmanager.h"
 
 
 namespace Component {
@@ -46,7 +45,7 @@ namespace Component {
 	}
 
 	RigidBodyComponent::RigidBodyComponent(CEVec3 maximumVel, f32 mass, f32 restitutionCoeff) 
-		: mVelocity{ CEVec3{} }, mMaximumVel{ maximumVel }, mMass{ mass }, mNetForce{ CEVec3{} }, mRestitutionCoeff{restitutionCoeff} { /*EMPTY BY DESIGN*/ }
+		: mVelocity{ CEVec3{} }, mMaximumVel{ maximumVel }, mMass{ mass }, mNetForce{ CEVec3{} }, mRestitutionCoeff{restitutionCoeff} { flags.set(Physics::SIMULATE_DYNAMICS); }
 
 	void RigidBodyComponent::updatePhysics(double dt) {
 
@@ -113,7 +112,6 @@ namespace Physics {
 		std::pair<CrashoutsEngine::Entity, CrashoutsEngine::Entity> colPair{ collEvent.getCollisionPair() };
 		if (!globalECS.HasComponent<Component::RigidBodyComponent>(colPair.first) || !globalECS.HasComponent<Component::RigidBodyComponent>(colPair.second)) return;
 		Collision::CollisionEvent evnt{ collEvent.getCollisionManifold(), colPair.first, colPair.second };
-		applyImpulse(evnt, globalECS);
 		observer.setCollisionEvent(evnt); /*TEMP FOR NOW*/
 
 	}
@@ -139,11 +137,7 @@ namespace Physics {
 		
 		// Debug Stepping one
 		double dt = sOverrideDt ? sDebugDt : deltaTime;
-		//if (sPaused) {
-		//	if (!sStepOnce) return;
-		//	// allow exactly one tick when paused+Step pressed
-		//}
-		// Integrate Physics
+
 		f32 newDelta{ static_cast<float>(dt) };
 		rigidBodyComp->updatePhysics(dt); /*UPDATE CURRENT VELOCITY AND RESET NET FORCE*/
 		CEVec3 currentVel{ rigidBodyComp->getVelocity() };
@@ -153,12 +147,10 @@ namespace Physics {
 
 		// Debug stepping two
 		if (sPaused && sStepOnce) sStepOnce = false;
-
-		//collisionEvents.clear(); /*Commented out for now as bug with the collision events
-		// ... your broadphase/narrowphase that fills collisionEvents and resolves ...
 	}
 
-	void applyImpulse(Collision::CollisionEvent const& event, CrashoutsEngine::ECS& globalECS) {
+	void applySeparation(Collision::CollisionEvent const& event, CrashoutsEngine::ECS& globalECS) {
+
 		Component::TransformComponent* transform1{ globalECS.GetComponent<Component::TransformComponent>(event.entity1) };
 		Component::RigidBodyComponent* rigidBody1{ globalECS.GetComponent<Component::RigidBodyComponent>(event.entity1) };
 
@@ -174,40 +166,62 @@ namespace Physics {
 			return;
 		}
 
+		/*TOLERANCE VARIABLES (ATTEMPT TO PREVENT JITTER)*/
+		const float percent = 0.2f;
+		const float slop = 0.01f;
+
+		CEVec3 correction = event.colManifold.normal * std::max(event.colManifold.depth - slop, 0.0f) * (percent / sumInvMass);
+
 		/*MOVE OBJECT ALONG COLLISION NORMAL BEFORE CALCULATING IMPULSE TO CHANGE VELOCITY*/
-		transform1 -= event.colManifold.normal * event.colManifold.depth * (invMass1 / sumInvMass);
-		transform2 += event.colManifold.normal * event.colManifold.depth * (invMass2 / sumInvMass);
-		
+		transform1->position -= correction * invMass1;
+		transform2->position += correction * invMass2;
+	}
 
-		/*RELATIVE VELOCITY*/
-		CEVec3 relVel{ rigidBody2->getVelocity() - rigidBody1->getVelocity() };
+	void applyImpulse(Collision::CollisionEvent const& event, CrashoutsEngine::ECS& globalECS) {
+		Component::RigidBodyComponent* rigidBody1{ globalECS.GetComponent<Component::RigidBodyComponent>(event.entity1) };
+		Component::RigidBodyComponent* rigidBody2{ globalECS.GetComponent<Component::RigidBodyComponent>(event.entity2) };
 
-		//MOVING AWAY
-		if (CEMath::Dot(relVel, event.colManifold.normal) > 0.f) {
+		/*SOLVE FOR LINEAR VEL*/
+		f32 invMass1{ rigidBody1->getInverseMass() };
+		f32 invMass2{ rigidBody2->getInverseMass() };
+		f32 sumInvMass{ invMass1 + invMass2 };
+		//f32 totalMass{ rigidBody1->getMass() + rigidBody2->getMass()};
+		if (sumInvMass == 0.f) {
 			return;
 		}
 
-		float e{ std::min(rigidBody1->getCoeff(), rigidBody2->getCoeff())}; /*COEFFICIENT OF RESTITUTION*/
-		float numerator{ -(1.f + e) * CEMath::Dot(relVel, event.colManifold.normal) };
-
-		float j = numerator / sumInvMass;
-
-		CEVec3 impulse{ event.colManifold.normal * j };
+		applySeparation(event, globalECS);
 		
-		rigidBody1->setVelocity(rigidBody1->getVelocity() -= impulse * invMass1);
-		rigidBody2->setVelocity(rigidBody2->getVelocity() += impulse * invMass2);
+		int impulseSolveAmount{4};
 
+		for (int i{}; i < impulseSolveAmount; ++i) {
+
+			/*RELATIVE VELOCITY*/
+			CEVec3 relVel{ rigidBody2->getVelocity() - rigidBody1->getVelocity() };
+
+			//MOVING AWAY
+			if (CEMath::Dot(relVel, event.colManifold.normal) > 0.f) {
+				return;
+			}
+
+			float e{ std::min(rigidBody1->getCoeff(), rigidBody2->getCoeff()) }; /*COEFFICIENT OF RESTITUTION*/
+			float numerator{ -(1.f + e) * CEMath::Dot(relVel, event.colManifold.normal) };
+
+			float j = numerator / sumInvMass;
+
+			CEVec3 impulse{ event.colManifold.normal * j };
+
+			rigidBody1->setVelocity(rigidBody1->getVelocity() -= impulse * invMass1);
+			rigidBody2->setVelocity(rigidBody2->getVelocity() += impulse * invMass2);
+		}
 	}
 
 	/*Main Physics update*/
-	void PhysicsHandler::update(double deltaTime){
+	void PhysicsHandler::update(double deltaTime) {
 
 		CrashoutsEngine::ECS& globalECS = *(CrashoutsEngine::ECS::getInstance());
 
 		std::vector<CrashoutsEngine::Entity> globalEntities = globalECS.GetComponentArray<Component::NameComponent>().indexToEntity;
-
-		/*APPLY FORCES, FOR NOW PUT IN THE COLLISION HANDLER*/
-		/*UPDATE FORCES*/
 
 		if (sPaused) {
 			collisionEvents = std::vector<Collision::CollisionEvent>{};
@@ -218,18 +232,24 @@ namespace Physics {
 		for (CrashoutsEngine::Entity& entity : globalEntities) {
 			if (!globalECS.HasComponent<Component::RigidBodyComponent>(entity)) continue;
 			Component::RigidBodyComponent* rigidBody{ globalECS.GetComponent<Component::RigidBodyComponent>(entity) };
+			if (!rigidBody->getFlags().test(SIMULATE_DYNAMICS)) continue;
 
 			/*APPLY ANY FORCE GENERATOR HERE, EVERY ENTITY IS AFFECTED*/
-
-			//FRICTION IMPLEMENTATION, TODO FIND A BETTER WAY TO CALCULATE DRAG FORCES
-			if (CEMath::LengthSq(rigidBody->getVelocity()) > 0.f) {
-				rigidBody->addForce(-(rigidBody->getVelocity() * 1.0f * rigidBody->getMass()));
-			}
-
 			ForceManager& fm{ rigidBody->getForceManager() };
 			CEVec3 resultant{ fm.ResolveForces(static_cast<f32>(deltaTime), rigidBody->getMass()) };
 			rigidBody->addForce(resultant); /*GRAVITY*/
 
+		}
+
+		/*IMPULSE RESOLUTION*/
+		for (Collision::CollisionEvent const& evnt : collisionEvents) {
+
+			Component::RigidBodyComponent* rigidBody1{ globalECS.GetComponent<Component::RigidBodyComponent>(evnt.entity1) };
+			Component::RigidBodyComponent* rigidBody2{ globalECS.GetComponent<Component::RigidBodyComponent>(evnt.entity2) };
+
+			if (!rigidBody1->getFlags().test(SIMULATE_DYNAMICS) || !rigidBody2->getFlags().test(SIMULATE_DYNAMICS)) continue;
+
+			applyImpulse(evnt, globalECS);
 		}
 
 		/*PHYSICS SIM, UPDATE POSITION*/
@@ -238,11 +258,16 @@ namespace Physics {
 			Component::TransformComponent* transform{ globalECS.GetComponent<Component::TransformComponent>(entity) };
 			Component::RigidBodyComponent* rigidBody{ globalECS.GetComponent<Component::RigidBodyComponent>(entity) };
 
+			if (!rigidBody->getFlags().test(SIMULATE_DYNAMICS)) continue;
+
 			int step{ FrameRateController::GetInstance().StepCount() };
+
+			/*Fixed step, accumulator will reach the target fixed dt and then execute physics simulation*/
 			for (int i{}; i < step; ++i) {
 				updatePhysics(transform, rigidBody, deltaTime);
 			}
 
+			/*Honestly shouldnt be here*/
 			if (globalECS.HasComponent<Component::ColliderComponent>(entity)) {
 				Component::ColliderComponent* c { globalECS.GetComponent<Component::ColliderComponent>(entity) };
 				c->collider->updateCollider(transform->position);
@@ -250,7 +275,7 @@ namespace Physics {
 
 		}
 
-		/*collisionEvents.clear();*/
+		//collisionEvents.clear(); /*Fully consumed Collision Pairs*/
 
 	}
 

@@ -13,6 +13,7 @@
 #include "collidercomponent.h"
 #include "CEMath.h"
 #include "CEMtx33.h"
+#include "hierarchy.h"
 #include <cmath>
 #include <algorithm>
 
@@ -287,31 +288,30 @@ namespace Collision {
 		/*DETECT COLLISION AND UPDATE COLLISION EVENTS MEMBER*/
 		for (CrashoutsEngine::Entity& entity1 : globalEntities) {
 
-			if (!globalECS.HasComponent<Component::TransformComponent>(entity1) || !globalECS.HasComponent<Component::RigidBodyComponent>(entity1)) continue;
+			if (!globalECS.HasComponent<Component::TransformComponent>(entity1)) continue;
 
 			std::vector<CrashoutsEngine::Entity> collidableObjects{};
 
 			Component::ColliderComponent* collider1{ globalECS.GetComponent<Component::ColliderComponent>(entity1) };
 			Component::TransformComponent* transform1{ globalECS.GetComponent<Component::TransformComponent>(entity1) };
-			Component::RigidBodyComponent* rigidBody1{ globalECS.GetComponent<Component::RigidBodyComponent>(entity1) };
+
+			collider1->collider->updateCollider(transform1->position);
 
 			AABBRect region{ GetAABB(*(collider1->collider), transform1->position) };
 			quadTree.Query(region, collidableObjects);
 
 			for (CrashoutsEngine::Entity const& entity2 : collidableObjects) {
-				if (entity1 == entity2) continue;
+				if (entity1 == entity2 || CrashoutsEngine::IsAlreadyChildOf(globalECS, entity1, entity2) || CrashoutsEngine::IsAlreadyChildOf(globalECS, entity2, entity1)) continue;
 				CrashoutsEngine::Entity const* entity1Ptr{ &entity1 };
 				CrashoutsEngine::Entity const* entity2Ptr{ &entity2 };
 
 				Component::ColliderComponent* collider2{ globalECS.GetComponent<Component::ColliderComponent>(entity2) };
 				Component::TransformComponent* transform2{ globalECS.GetComponent<Component::TransformComponent>(entity2) };
-				//Component::RigidBodyComponent* rigidBody2{ globalECS.GetComponent<Component::RigidBodyComponent>(entity2) };
 
 				/*CHECK FOR COLLISION and call collision function*/
 				Collision::CollisionManifold collisionManifold{};
 
 				Component::TransformComponent newTransform1{ *transform1 };
-				Component::RigidBodyComponent newRigidBody1{ *rigidBody1 };
 
 
 				collisionManifold = callCollFunct(collider1->collider->type, collider2->collider->type)(
@@ -325,7 +325,7 @@ namespace Collision {
 						CEVec3{},
 						CEVec3{transform2->position}
 					}
-					);
+				);
 
 				if (collisionManifold.collisionOccured) {
 
@@ -411,7 +411,7 @@ namespace Collision {
 
 	CollisionManifold CollisionHandler::SphereToSphereCollision(CollisionProps const& coll1, CollisionProps const& coll2) {
 
-		CollisionManifold result;
+		CollisionManifold result{.collisionOccured = false};
 
 		Sphere const& sphere1Temp = dynamic_cast<Sphere const&>(*(coll1.collider));
 
@@ -441,7 +441,7 @@ namespace Collision {
 
 	CollisionManifold CollisionHandler::AABBToAABBCollision(CollisionProps const& coll1, CollisionProps const& coll2) {
 
-		CollisionManifold result;
+		CollisionManifold result{.collisionOccured=false};
 
 		AABBRect const& aabb1Temp = dynamic_cast<AABBRect const&>(*(coll1.collider));
 
@@ -474,7 +474,7 @@ namespace Collision {
 	}
 
 	CollisionManifold CollisionHandler::SphereToAABBCollision(CollisionProps const& coll1, CollisionProps const& coll2) {
-		CollisionManifold result{};
+		CollisionManifold result{.collisionOccured=false};
 
 		CollisionProps const* spherePtr{ &coll1 };
 		CollisionProps const* aabbPtr{ &coll2 };

@@ -156,7 +156,7 @@ void RenderSpriteAnimation();
 Sets up the single duck sprite, sprite sheet data, and animation states
 for mode 1. Configures idle, walk, and bounce sequences and initial transform.
 */
-void InitializeSpriteAnimation();
+//void InitializeSpriteAnimation();
 
 /*!
 @brief Update sprite animation logic.

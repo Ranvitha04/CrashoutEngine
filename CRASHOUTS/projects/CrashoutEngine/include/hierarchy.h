@@ -13,6 +13,8 @@ namespace CrashoutsEngine {
     void DetachChild(ECS& ecs, Entity child);
     void Reparent(ECS& ecs, Entity child, Entity newParent);
 
+    bool IsAlreadyChildOf(ECS& ecs, Entity parent, Entity child);
+
     void UpdateHierarchy(ECS& ecs);
 
     Entity GetRoot(ECS& ecs, Entity e);

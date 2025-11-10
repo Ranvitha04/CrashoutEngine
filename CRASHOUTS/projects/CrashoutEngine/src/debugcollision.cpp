@@ -111,15 +111,15 @@ namespace CollisionGizmos {
     */
     void DrawAllColliders(ECS& ecs, [[maybe_unused]] std::vector<Collision::CollisionEvent>* events, float wireThickness) {
         auto& collArr = ecs.GetComponentArray<Component::ColliderComponent>();
-        const CEVec3 ok(1.0f, 0.3f, 0.3f);    // non-colliding tint
-        const CEVec3 hit(0.15f, 0.8f, 0.55f);     // colliding tint
+        const CEVec3 ok(0.15f, 0.8f, 0.55f);    // non-colliding tint
+        const CEVec3 hit(1.0f, 0.3f, 0.3f);     // colliding tint
 
         for (auto e : collArr.indexToEntity) {
             Component::ColliderComponent const & pColliderComp = *ecs.GetComponent<Component::ColliderComponent>(e);
 
             if (!pColliderComp.collider) continue;
 
-            const CEVec3 color = IsColliding(e, events) ? ok : hit;
+            const CEVec3 color = IsColliding(e, events) ? hit : ok;
 
             if (pColliderComp.collider->type == Collision::SPHERE) {
                 Collision::Sphere const& sphereTemp = dynamic_cast<Collision::Sphere const&>(*pColliderComp.collider);
