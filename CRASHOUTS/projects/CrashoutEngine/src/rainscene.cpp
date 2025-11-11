@@ -20,9 +20,8 @@ void LoadRain()
 	globalECS = CrashoutsEngine::ECS::getInstance();
 	globalECS->Reset();
 
-	GenerateAssetManifest();
-
-	AssetManager::GetInstance().LoadManifestAssets();
+	//GenerateAssetManifest();
+	//AssetManager::GetInstance().LoadManifestAssets();
 
 	AssetManager::GetInstance().Get<ShaderAsset>("TextShader")->shaderObject.Use();
 }
