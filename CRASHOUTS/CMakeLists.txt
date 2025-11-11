@@ -4,6 +4,9 @@
 cmake_minimum_required(VERSION 3.25)
 project(CrashoutEngine CXX)
 
+# Allow older dependencies (e.g. GLEW) to configure under modern CMake
+set(CMAKE_POLICY_VERSION_MINIMUM 3.5) 
+
 # Force a consistent root binary directory (so subdirs don't nest)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set(CMAKE_BINARY_DIR "${CMAKE_SOURCE_DIR}/build")
