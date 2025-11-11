@@ -4,20 +4,18 @@
 cmake_minimum_required(VERSION 3.25)
 project(CrashoutEngine CXX)
 
-# Allow older dependencies (e.g. GLEW) to configure under modern CMake
-set(CMAKE_POLICY_VERSION_MINIMUM 3.5)
-
-# ======================= Output Directory Setup =========================
-# Keep the .sln and CMake metadata in "build/", but output binaries into "build/x64-Debug/" etc.
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/x64-$<CONFIG>")
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/x64-$<CONFIG>")
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/x64-$<CONFIG>")
+# Force a consistent root binary directory (so subdirs don't nest)
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+set(CMAKE_BINARY_DIR "${CMAKE_SOURCE_DIR}/build")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/build/x64-$<CONFIG>")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/build/x64-$<CONFIG>")
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/build/x64-$<CONFIG>")
 
 foreach(OUTPUTCONFIG Debug Release RelWithDebInfo MinSizeRel)
     string(TOUPPER ${OUTPUTCONFIG} OUTPUTCONFIG_UPPER)
-    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_${OUTPUTCONFIG_UPPER} ${CMAKE_BINARY_DIR}/x64-${OUTPUTCONFIG})
-    set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_${OUTPUTCONFIG_UPPER} ${CMAKE_BINARY_DIR}/x64-${OUTPUTCONFIG})
-    set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${OUTPUTCONFIG_UPPER} ${CMAKE_BINARY_DIR}/x64-${OUTPUTCONFIG})
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_${OUTPUTCONFIG_UPPER} "${CMAKE_SOURCE_DIR}/build/x64-${OUTPUTCONFIG}")
+    set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_${OUTPUTCONFIG_UPPER} "${CMAKE_SOURCE_DIR}/build/x64-${OUTPUTCONFIG}")
+    set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${OUTPUTCONFIG_UPPER} "${CMAKE_SOURCE_DIR}/build/x64-${OUTPUTCONFIG}")
 endforeach()
 
 # ======================= Compiler Settings =========================
