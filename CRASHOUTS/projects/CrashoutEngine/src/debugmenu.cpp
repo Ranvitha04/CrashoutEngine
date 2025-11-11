@@ -1283,146 +1283,180 @@ namespace UI { // --------------------------------------------------------------
             // 5) if we have a selected entity, let gizmo edit its TRS
             if (selected && ecs.HasComponent<Component::TransformComponent>(selected))
             {
-                CrashoutsEngine::Entity root = CrashoutsEngine::GetRoot(ecs, selected);
+                Entity root = CrashoutsEngine::GetRoot(ecs, selected);
 
+                // we still collect the whole root subtree once
                 std::vector<Entity> group;
                 group.reserve(16);
                 CrashoutsEngine::GatherDescendants(ecs, root, group);
 
+                // BUT: for rotation we will target the actually selected entity
+                Entity gizmoTarget = selected;
+
+                // save world positions for de-orbit, but only for the gizmoTarget's subtree
                 std::vector<SavedChild> saved;
                 saved.reserve(group.size());
-                for (Entity e : group)
                 {
-                    if (!ecs.HasComponent<Component::TransformComponent>(e))
-                        continue;
-                    auto* t = ecs.GetComponent<Component::TransformComponent>(e);
-                    SavedChild sc;
-                    sc.e = e;
-                    sc.worldPos = t->position;
-                    saved.push_back(sc);
+                    // gather only descendants of gizmoTarget, not root
+                    std::vector<Entity> rotGroup;
+                    rotGroup.reserve(16);
+                    CrashoutsEngine::GatherDescendants(ecs, gizmoTarget, rotGroup);
+
+                    for (Entity e : rotGroup)
+                    {
+                        if (!ecs.HasComponent<Component::TransformComponent>(e))
+                            continue;
+                        auto* t = ecs.GetComponent<Component::TransformComponent>(e);
+                        saved.push_back({ e, t->position });
+                    }
                 }
 
-                auto* rootT = ecs.GetComponent<Component::TransformComponent>(root);
-                if (rootT)
+                auto* targetT = ecs.GetComponent<Component::TransformComponent>(gizmoTarget);
+                if (!targetT) return;
+
+                // build matrix from the target (what you actually clicked)
+                float tr[3] = { targetT->position.x, targetT->position.y, targetT->position.z };
+                float rt[3] = { 0.f, 0.f, glm::degrees(targetT->rotation) };
+                float sc[3] = { targetT->size.x, targetT->size.y, 1.f };
+                float m[16];
+                ImGuizmo::RecomposeMatrixFromComponents(tr, rt, sc, m);
+
+                const float* view = glm::value_ptr(Component::Rendering::Get().viewMatrix);
+                const float* proj = glm::value_ptr(Component::Rendering::Get().projectionMatrix);
+
+                // snap stuff (same as you had)
+                const float* snapPtr = nullptr;
+                float snap[3]{};
+                if (g_snapOn) {
+                    if (g_gizmoOp == ImGuizmo::ROTATE) {
+                        snap[0] = g_snapAngle;
+                        snapPtr = snap;
+                    }
+                    else {
+                        snap[0] = g_snapTrans[0];
+                        snap[1] = g_snapTrans[1];
+                        snap[2] = g_snapTrans[2];
+                        snapPtr = snap;
+                    }
+                }
+
+                ImGuizmo::Manipulate(view, proj, g_gizmoOp, g_gizmoMode, m, nullptr, snapPtr);
+
+                static bool  s_rotating = false;
+                static float s_prevGizmoDeg = 0.0f;
+
+                if (ImGuizmo::IsUsing())
                 {
-                    // --- persistent tracker for continuous rotation ---
-                    static float lastGizmoAngleDeg = glm::degrees(rootT->rotation);
+                    float newTr[3], newRt[3], newSc[3];
+                    ImGuizmo::DecomposeMatrixToComponents(m, newTr, newRt, newSc);
 
-                    // Build TRS from entity each frame
-                    float tr[3] = { rootT->position.x, rootT->position.y, rootT->position.z };
-                    float rt[3] = { 0.f, 0.f, glm::degrees(rootT->rotation) };
-                    float sc[3] = { rootT->size.x, rootT->size.y, 1.f };
-                    float m[16];
-
-                    ImGuizmo::RecomposeMatrixFromComponents(tr, rt, sc, m);
-
-                    const float* view = glm::value_ptr(Component::Rendering::Get().viewMatrix);
-                    const float* proj = glm::value_ptr(Component::Rendering::Get().projectionMatrix);
-
-                    ImGuizmo::Manipulate(view, proj, g_gizmoOp, g_gizmoMode, m, nullptr, g_snapOn ? (g_gizmoOp == ImGuizmo::ROTATE ? &g_snapAngle : g_snapTrans) : nullptr);
-
-                    if (ImGuizmo::IsUsing())
+                    if (g_gizmoOp == ImGuizmo::TRANSLATE)
                     {
-                        float newTr[3], newRt[3], newSc[3];
-                        ImGuizmo::DecomposeMatrixToComponents(m, newTr, newRt, newSc);
-
-                        if (g_gizmoOp == ImGuizmo::TRANSLATE)
-                        {
-                            // move all descendants together
-                            CEVec3 offset{
-                                newTr[0] - rootT->position.x,
-                                newTr[1] - rootT->position.y,
-                                newTr[2] - rootT->position.z
-                            };
-
-                            for (Entity e : group) {
-                                if (!ecs.HasComponent<Component::TransformComponent>(e)) continue;
-                                auto* t = ecs.GetComponent<Component::TransformComponent>(e);
-                                t->position.x += offset.x;
-                                t->position.y += offset.y;
-                                t->position.z += offset.z;
-                            }
+                        // translate whole root group (your old behavior)
+                        CEVec3 offset{
+                            newTr[0] - targetT->position.x,
+                            newTr[1] - targetT->position.y,
+                            newTr[2] - targetT->position.z
+                        };
+                        for (Entity e : group) {
+                            if (!ecs.HasComponent<Component::TransformComponent>(e)) continue;
+                            auto* t = ecs.GetComponent<Component::TransformComponent>(e);
+                            t->position.x += offset.x;
+                            t->position.y += offset.y;
+                            t->position.z += offset.z;
                         }
-                        else if (g_gizmoOp == ImGuizmo::ROTATE)
+                    }
+                    else if (g_gizmoOp == ImGuizmo::ROTATE)
+                    {
+                        float gizmoDeg = newRt[2];
+
+                        if (!s_rotating)
                         {
-                            // static so we remember it across frames
-                            static bool  s_rotating = false;
-                            static float s_prevGizmoDeg = 0.0f;
+                            s_rotating = true;
+                            s_prevGizmoDeg = gizmoDeg;
+                        }
+                        else
+                        {
+                            float deltaDeg = gizmoDeg - s_prevGizmoDeg;
+                            if (deltaDeg > 180.f)  deltaDeg -= 360.f;
+                            if (deltaDeg < -180.f) deltaDeg += 360.f;
 
-                            float gizmoDeg = newRt[2]; // ImGuizmo gives us [-180, 180]
+                            targetT->position = { newTr[0], newTr[1], newTr[2] };
+                            float engineDeg = glm::degrees(targetT->rotation);
+                            engineDeg += deltaDeg;
+                            targetT->rotation = glm::radians(engineDeg);
 
-                            if (!s_rotating)
+                            if (ecs.HasComponent<Component::ParentComponent>(gizmoTarget))
                             {
-                                // first frame of this drag: just set the baseline
-                                s_rotating = true;
-                                s_prevGizmoDeg = gizmoDeg;
-                            }
-                            else
-                            {
-                                // delta from last frame
-                                float deltaDeg = gizmoDeg - s_prevGizmoDeg;
+                                auto* pc = ecs.GetComponent<Component::ParentComponent>(gizmoTarget);
+                                const Entity parentE = pc->parent;
 
-                                // unwrap so crossing 180 -> -180 doesn't give tiny or opposite deltas
-                                if (deltaDeg > 180.f)  deltaDeg -= 360.f;
-                                if (deltaDeg < -180.f) deltaDeg += 360.f;
+                                const float deltaRad = glm::radians(deltaDeg);
+                                pc->localRot += deltaRad;
 
-                                // apply to entity
-                                float engineDeg = glm::degrees(rootT->rotation);
-                                engineDeg += deltaDeg;
-                                rootT->rotation = glm::radians(engineDeg);
-
-                                // update for next frame
-                                s_prevGizmoDeg = gizmoDeg;
-
-                                // --- Child deorbit correction uses JUST THIS FRAME’s step ---
-                                if (std::abs(gizmoDeg) > 0.0001f)
+                                if (parentE && ecs.HasComponent<Component::TransformComponent>(parentE))
                                 {
-                                    const CEVec3 parentWorld = { newTr[0], newTr[1], newTr[2] };
-                                    const float parentRotRad = rootT->rotation;
-                                    const float deltaRad = glm::radians(gizmoDeg);
+                                    auto* parentT = ecs.GetComponent<Component::TransformComponent>(parentE);
+                                    const float parentRot = parentT->rotation;
+                                    const float dx = newTr[0] - parentT->position.x;
+                                    const float dy = newTr[1] - parentT->position.y;
 
-                                    for (const auto& saveChild : saved)
-                                    {
-                                        Entity child = saveChild.e;
-                                        if (child == root) continue;
-                                        if (!ecs.HasComponent<Component::ParentComponent>(child)) continue;
-                                        if (!ecs.HasComponent<Component::TransformComponent>(child)) continue;
+                                    const float s = std::sin(-parentRot);
+                                    const float c = std::cos(-parentRot);
 
-                                        auto* childT = ecs.GetComponent<Component::TransformComponent>(child);
-                                        auto* childPC = ecs.GetComponent<Component::ParentComponent>(child);
+                                    pc->localPos.x = c * dx - s * dy;
+                                    pc->localPos.y = s * dx + c * dy;
+                                    pc->localPos.z = newTr[2] - parentT->position.z;
+                                }
+                            }
 
-                                        // keep world pos
-                                        childT->position = saveChild.worldPos;
-                                        // rotate local by same amount (in radians)
-                                        childPC->localRot += deltaRad;
+                            s_prevGizmoDeg = gizmoDeg;
 
-                                        // recompute local pos in parent space
-                                        const float dx = saveChild.worldPos.x - parentWorld.x;
-                                        const float dy = saveChild.worldPos.y - parentWorld.y;
-                                        const float s = std::sin(-parentRotRad);
-                                        const float c = std::cos(-parentRotRad);
+                            // de-orbit ONLY the target's descendants
+                            if (std::abs(deltaDeg) > 0.0001f)
+                            {
+                                const CEVec3 parentWorld = { newTr[0], newTr[1], newTr[2] };
+                                const float  parentRotRad = targetT->rotation;
+                                const float  deltaRad = glm::radians(deltaDeg);
 
-                                        childPC->localPos.x = c * dx - s * dy;
-                                        childPC->localPos.y = s * dx + c * dy;
-                                        childPC->localPos.z = saveChild.worldPos.z - parentWorld.z;
-                                    }
+                                for (const auto& saveChild : saved)
+                                {
+                                    Entity child = saveChild.e;
+                                    if (child == gizmoTarget) continue;
+                                    if (!ecs.HasComponent<Component::ParentComponent>(child)) continue;
+                                    if (!ecs.HasComponent<Component::TransformComponent>(child)) continue;
+
+                                    auto* childT = ecs.GetComponent<Component::TransformComponent>(child);
+                                    auto* childPC = ecs.GetComponent<Component::ParentComponent>(child);
+
+                                    // keep world pos
+                                    childT->position = saveChild.worldPos;
+                                    // rotate local the same
+                                    childPC->localRot += deltaRad;
+
+                                    const float dx = saveChild.worldPos.x - parentWorld.x;
+                                    const float dy = saveChild.worldPos.y - parentWorld.y;
+                                    const float s = std::sin(-parentRotRad);
+                                    const float c = std::cos(-parentRotRad);
+
+                                    childPC->localPos.x = c * dx - s * dy;
+                                    childPC->localPos.y = s * dx + c * dy;
+                                    childPC->localPos.z = saveChild.worldPos.z - parentWorld.z;
                                 }
                             }
                         }
-                        else if (g_gizmoOp == ImGuizmo::SCALE)
-                        {
-                            rootT->position = { newTr[0], newTr[1], newTr[2] };
-                            rootT->rotation = glm::radians(newRt[2]);
-                            rootT->size.x = newSc[0];
-                            rootT->size.y = newSc[1];
-                        }
                     }
-                    else
+                    else if (g_gizmoOp == ImGuizmo::SCALE)
                     {
-                        s_gizmoRotating = false;
-                        // re-sync rotation for next grab
-                        lastGizmoAngleDeg = glm::degrees(rootT->rotation);
+                        targetT->position = { newTr[0], newTr[1], newTr[2] };
+                        targetT->rotation = glm::radians(newRt[2]);
+                        targetT->size.x = newSc[0];
+                        targetT->size.y = newSc[1];
                     }
+                }
+                else
+                {
+                    s_rotating = false;
                 }
             }
 
