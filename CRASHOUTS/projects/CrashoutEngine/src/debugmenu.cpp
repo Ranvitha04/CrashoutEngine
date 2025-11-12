@@ -1579,6 +1579,11 @@ namespace UI { // --------------------------------------------------------------
                 if (!ImGuizmo::IsOver() && !ImGuizmo::IsUsing())
                     selected = 0;
             }
+            if (selected && ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows) && !ImGuizmo::IsUsing() && ImGui::IsKeyPressed(ImGuiKey_Delete))
+            {
+                ecs.DestroyEntity(selected);
+                selected = 0;
+            }
 
             //  7) drag and drop from asset browser into world
             //  Drag-and-drop spawn
