@@ -2,6 +2,9 @@
     "entities": [
         {
             "name": "Tex_Menu",
+            "layer": {
+                "currentLayer": 0
+            },
             "transform": {
                 "rotation": 0.0,
                 "position": {
@@ -46,6 +49,9 @@
         },
         {
             "name": "BG",
+            "layer": {
+                "currentLayer": 0
+            },
             "transform": {
                 "rotation": 0.0,
                 "position": {
@@ -101,6 +107,9 @@
         },
         {
             "name": "Start_Button",
+            "layer": {
+                "currentLayer": 0
+            },
             "transform": {
                 "rotation": 0.0,
                 "position": {
@@ -188,6 +197,9 @@
         },
         {
             "name": "Settings_Button",
+            "layer": {
+                "currentLayer": 0
+            },
             "transform": {
                 "rotation": 0.0,
                 "position": {
@@ -275,6 +287,9 @@
         },
         {
             "name": "Quit_Button",
+            "layer": {
+                "currentLayer": 0
+            },
             "transform": {
                 "rotation": 0.0,
                 "position": {
@@ -360,5 +375,10 @@
                 "uiLayout": 4
             }
         }
-    ]
+    ],
+    "layers": {
+        "Default": 0,
+        "Ground": 2,
+        "Player": 1
+    }
 }
