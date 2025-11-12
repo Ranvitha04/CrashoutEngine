@@ -26,6 +26,7 @@
 
 // Include components here:
 #include "namecomponent.h"
+#include "layercomponent.h"
 #include "transformcomponent.h"
 #include "shapescomponent.h"
 #include "rigidbodycomponent.h"

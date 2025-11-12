@@ -106,7 +106,7 @@ namespace {
             return ecs.HasComponent<Component::LayerComponent>(e);
         }
         void add(ECS& ecs, Entity e) override {
-            auto& D = GetDebugDefaults();
+            //auto& D = GetDebugDefaults();
             if (!has(ecs, e)) ecs.AddComponent<Component::LayerComponent>(e);
         }
         void remove(ECS& ecs, Entity e) override {
@@ -144,14 +144,45 @@ namespace {
                 // --- 2. Draw the Multi-Select Dropdown ---
                 if (ImGui::BeginCombo("Layers", preview.c_str())) {
 
+                    std::string layerToRemove = "";
+
                     // --- 3. Draw Checkboxes for Each Layer (using currentLayer) ---
                     for (auto const& [name, bit] : layerMap) {
                         // Read from c->currentLayer
                         bool isSelected = (c->currentLayer & bit) != 0;
 
-                        if (ImGui::Selectable(name.c_str(), isSelected, ImGuiSelectableFlags_DontClosePopups)) {
+                        float buttonWidth = 25.f;
+                        float selectableWidth = ImGui::GetContentRegionAvail().x - buttonWidth - ImGui::GetStyle().ItemSpacing.x;
+
+                        if (ImGui::Selectable(name.c_str(), isSelected, ImGuiSelectableFlags_DontClosePopups,
+                            ImVec2(selectableWidth, 0))) {
                             // Write to c->currentLayer
                             c->currentLayer ^= bit;
+                        }
+
+                        if (name != "Default") {
+                            // Draw the Remove button next to the selectable
+                            ImGui::SameLine(); // Align to the right
+
+                            // Give the button a unique ID using the layer name
+                            if (ImGui::Button(("X##Remove" + name).c_str(), ImVec2(buttonWidth, 0))) {
+                                // Mark this layer for removal and break out of the loop
+                                layerToRemove = name;
+                                break;
+                            }
+                        }
+                    }
+
+                    // --- Removal Logic ---
+                    if (!layerToRemove.empty() && layerToRemove != "Default") {
+                        // Get bit to remove
+                        unsigned int bitToRemove = layerMap[layerToRemove];
+                        // Remove layer from static map
+                        layerMap.erase(layerToRemove);
+
+                        std::vector<LayerComponent>& layerComponents = ecs.GetComponentArray<LayerComponent>().dense;
+                        for (LayerComponent& layer : layerComponents) {
+                            layer.currentLayer &= ~bitToRemove;
                         }
                     }
 
