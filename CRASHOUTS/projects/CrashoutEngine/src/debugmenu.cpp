@@ -72,10 +72,7 @@ using CrashoutsEngine::Audio::AudioSystem;
 
 /*
 ----------------------------------------------------------------------------- */
-static bool dragging = false;
-static std::vector<CrashoutsEngine::Entity> movedEntities;
-static std::vector<CrashoutsEngine::TransformState> startStates;
-static bool undoTriggeredThisFrame = false;
+
 using namespace CrashoutsEngine;
 using namespace Component;
 
@@ -1336,11 +1333,10 @@ namespace UI { // --------------------------------------------------------------
 
                     ImGuizmo::Manipulate(view, proj, g_gizmoOp, g_gizmoMode, m, nullptr, snapPtr);
 
-                    /*static bool dragging = false;
+                    static bool dragging = false;
                     static std::vector<CrashoutsEngine::Entity> movedEntities;
                     static std::vector<CrashoutsEngine::TransformState> startStates;
                     static bool undoTriggeredThisFrame = false;
-                    */
 
                     if (ImGuizmo::IsUsing())
                     {
