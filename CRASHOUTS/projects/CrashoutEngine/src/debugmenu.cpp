@@ -505,6 +505,11 @@ namespace UI { // --------------------------------------------------------------
 
             gDroppedPaths.clear();
             needScan = true;
+
+            // Remind me to ask if I can implement something in assetManager, so I can do efficient loading
+            using namespace CrashoutsEngine::Assets;
+            GenerateAssetManifest();
+            AssetManager::GetInstance().LoadManifestAssets();
         }
 
         // LEFT: Folder tree
