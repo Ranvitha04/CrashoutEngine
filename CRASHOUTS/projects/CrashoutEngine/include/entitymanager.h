@@ -24,29 +24,9 @@
 #include <utility>
 #include <mutex>
 
-// Include components here:
-#include "namecomponent.h"
-#include "layercomponent.h"
-#include "transformcomponent.h"
-#include "shapescomponent.h"
-#include "rigidbodycomponent.h"
-#include "shapes.h"
-#include "textcomponent.h"
-#include "audiocomponent.h"
-#include "scriptcomponent.h"
-#include "cameracomponent.h"
-// UI COMPONENTS
-#include "buttoncomponent.h"
-#include "guicomponent.h"
-#include "textinputcomponent.h"
-#include "uilayoutcomponent.h"
-// POSTPROCESSING COMPONENTS
-#include "ppcomponent.h"
-
 /*                                                                   
 ----------------------------------------------------------------------------- */
 namespace CrashoutsEngine {
-	using namespace Component;
 
 	using Entity = uint32_t;
 

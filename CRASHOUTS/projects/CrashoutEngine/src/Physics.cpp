@@ -13,7 +13,8 @@
 #include "CEMath.h"
 #include "observer.h"
 #include "collidercomponent.h"
-
+#include "transformcomponent.h"
+#include "namecomponent.h"
 
 namespace Component {
 	
@@ -92,6 +93,7 @@ namespace Component {
 
 /*TEMP*/
 namespace {
+
 	void operator+=(Component::TransformComponent* component, CEVec3 const& trans) {
 		component->position.x += trans.x;
 		component->position.y += trans.y;

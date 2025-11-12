@@ -17,6 +17,9 @@
 #include <cmath>
 #include <algorithm>
 
+#include "transformcomponent.h"
+
+
 namespace {
 	std::pair<f32, f32> ComputeWorldDimensions() {
 		f32 worldWidth{}, worldHeight{};

@@ -11,8 +11,6 @@
 #include "entitymanager.h"
 
 using namespace CrashoutsEngine;
-using namespace Component;
-
 
 static bool InternalIsKeyPressed(int key)
 {

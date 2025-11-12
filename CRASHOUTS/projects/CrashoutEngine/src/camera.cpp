@@ -19,10 +19,13 @@ This file
 #include <algorithm>
 #include <iostream>
 #include <glapp.h>
+#include "cameracomponent.h"
 
 namespace CrashoutsEngine {
 
 	namespace RenderCamera {
+
+		using namespace Component;
 
 		// --- Define Static Camera Data ---
 		glm::mat4 Camera::viewMtx = glm::mat4(1.f);

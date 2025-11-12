@@ -23,13 +23,31 @@
 #include <iostream>
 #include <memory>
 #include <utility>
-#include "collidercomponent.h"
 
 //#define RAPIDJSON_HAS_STDSTRING 1
 #include <rapidjson/error/en.h>
 #include <rapidjson/stringbuffer.h>
 #include <rapidjson/writer.h>
 #include <rapidjson/prettywriter.h>
+
+// Components
+#include "namecomponent.h"
+#include "transformcomponent.h"
+#include "shapescomponent.h"
+#include "audiocomponent.h"
+#include "textcomponent.h"
+#include "scriptcomponent.h"
+#include "cameracomponent.h"
+#include "physicsmanager.h"
+#include "ppcomponent.h"
+#include "collidercomponent.h"
+#include "layercomponent.h"
+
+// FOR GAME GUI
+#include "buttoncomponent.h"
+#include "guicomponent.h"
+#include "textinputcomponent.h"
+#include "uilayoutcomponent.h"
 
 // File I/O Util Functions
 namespace {
@@ -110,6 +128,8 @@ namespace CrashoutsEngine {
     }
 
     namespace Serialization {
+
+        using namespace Component;
 
         // JSON Structure Keys definition (for clean and centralized key management)
         namespace Keys {

@@ -16,11 +16,18 @@ This file
 #include "sceneutils.h"
 #include "log.h"
 #include "GLFW/glfw3.h"
+#include "gamestatemanager.h"
 #include "entitymanager.h"
 #include "assetmanager.h"
-#include "sceneasset.h"
 #include "monomanager.h"
+#include "sceneasset.h"
 #include "engine.h"
+
+#include "transformcomponent.h"
+#include "shapescomponent.h"
+#include "scriptcomponent.h"
+#include "textcomponent.h"
+#include "inputmanager.h"
 /*                                                   Global Variables
 ----------------------------------------------------------------------------- */
 
@@ -41,6 +48,8 @@ static bool pp1Done, pp2Done;
 #define ENERGY_USAGE	10.f
 #define REQUIRED_GOALS	2
 #define Y_TOLERANCE		-8.f
+
+using namespace Component;
 
 void LoadDescentGame()
 {

@@ -21,6 +21,9 @@
 #include "glm/vec3.hpp"
 #include "GLFW/glfw3.h"
 #include "collidercomponent.h"
+#include "transformcomponent.h"
+#include "shapescomponent.h"
+#include "namecomponent.h"
 
 static CrashoutsEngine::ECS* globalECS;
 

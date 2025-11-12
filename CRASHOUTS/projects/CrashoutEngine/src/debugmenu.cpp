@@ -53,8 +53,17 @@ for Crashout Engine.
 #include <filesystem>
 
 #include "undomanager.h"
+#include "inputmanager.h"
 #include "transformentitycommand.h"
+#include "namecomponent.h"
+#include "shapescomponent.h"
 
+#include <vector>
+#include "CEVec3.h"
+#include "stb_image.h"
+#include <numeric>
+
+#include "settings.h"
 
 using CrashoutsEngine::Audio::AudioSystem;
 // ImGui headers
@@ -65,10 +74,6 @@ using CrashoutsEngine::Audio::AudioSystem;
 #include <ImGuizmo.h>
 #include <glm/gtc/type_ptr.hpp>
 
-#include <vector>
-#include "CEVec3.h"
-#include "stb_image.h"
-#include <numeric>
 
 /*
 ----------------------------------------------------------------------------- */

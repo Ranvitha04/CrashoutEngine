@@ -13,6 +13,9 @@
 #include <cmath> 
 #include "shapes.h"              
 #include <glm/gtc/matrix_transform.hpp>
+#include "transformcomponent.h"
+#include "shapescomponent.h"
+
 namespace CrashoutsEngine {
 
     using namespace Component;

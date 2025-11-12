@@ -8,6 +8,8 @@
 #include "CEVec3.h"
 #include "CEMath.h"
 
+#include "transformcomponent.h"
+
 namespace AIUtils {
 	bool AIUtils::IsPlatformInFront(CrashoutsEngine::Entity entity, float direction, std::string tag) {
 		CrashoutsEngine::ECS& globalECS{ *CrashoutsEngine::ECS::getInstance() };
@@ -134,7 +136,7 @@ namespace AIUtils {
 
 		return Collision::GetAABB(*c1.collider, t1.position).intersect(Collision::GetAABB(*c2.collider, t2.position));
 	}
-	bool EntityInRange(CrashoutsEngine::Entity entity1, CrashoutsEngine::Entity entity2, f32 tolerance) {
+	bool EntityInRange(CrashoutsEngine::Entity entity1, CrashoutsEngine::Entity entity2, float tolerance) {
 		CrashoutsEngine::ECS& globalECS{ *CrashoutsEngine::ECS::getInstance() };
 		Component::TransformComponent& t1{ *globalECS.GetComponent<Component::TransformComponent>(entity2) };
 		Component::TransformComponent& t2{ *globalECS.GetComponent<Component::TransformComponent>(entity1) };

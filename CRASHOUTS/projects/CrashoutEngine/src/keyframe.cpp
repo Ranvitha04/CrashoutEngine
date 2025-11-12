@@ -1,5 +1,7 @@
 #include "keyframe.h"
 #include <cassert>
+#include "transformcomponent.h"
+#include "shapescomponent.h"
 
 // ---- Your engine headers (adjust include paths/names if different)
 #include "entitymanager.h"  // ECS, components access
