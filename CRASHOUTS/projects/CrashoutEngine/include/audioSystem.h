@@ -43,6 +43,11 @@ namespace CrashoutsEngine {
             bool listEventPathsFromBank(const std::string& bankFile, std::vector<std::string>& out);
             void inspectBankToConsole(const std::string& bankFile);
             bool isInitialized() const { return mStudio != nullptr; }
+            // --- file-based playback (Core API)
+            bool playMusicFile(const std::string& path, bool loop = true);
+            bool playSFXFile(const std::string& path);
+            bool setMusicGroupVolume(float v01);
+            bool setSFXGroupVolume(float v01);
 
 
         private:
@@ -50,7 +55,8 @@ namespace CrashoutsEngine {
             ~AudioSystem() = default;
             AudioSystem(const AudioSystem&) = delete;
             AudioSystem& operator=(const AudioSystem&) = delete;
-
+            FMOD::ChannelGroup* mMusicGroup = nullptr;
+            FMOD::ChannelGroup* mSFXGroup = nullptr;
             struct StudioDeleter {
                 void operator()(FMOD::Studio::System* p) const {
                     if (p) { p->unloadAll(); p->release(); }
