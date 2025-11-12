@@ -381,6 +381,10 @@ void Update(double const& dt) {
         CrashoutsEngine::RenderCamera::engineCamera.UpdateMatrices(GLApp::width, GLApp::height);
 #endif
     }
+    else {
+        FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Physics");
+        physicsSystem.update(0.f);
+    }
 
     // Process Game Camera
     if (engineState != EngineState::STOP) {
