@@ -48,6 +48,7 @@ runtime-extensible and project-agnostic.
 #include "audioSystem.h"
 #include "reflectimgui.h"
 #include "shapes.h"
+#include "layercomponent.h"
 
 using namespace CrashoutsEngine;
 
@@ -86,6 +87,120 @@ namespace {
         void drawInspector(ECS& ecs, Entity e) override {
             if (auto* c = ecs.GetComponent<Component::NameComponent>(e)) {
                 draw_reflected(*c, "Name");
+            }
+        }
+    };
+
+    /*!
+    @brief Adapter for editing Component::LayerComponent.
+    @details Shows a drop down of layers to choose from and create
+    */
+    struct LayerAdapter : DebugReflection::IComponentAdapter {
+        const char* name() const override { return "LayerComponent"; }
+        bool has(ECS& ecs, Entity e) const override {
+            return ecs.HasComponent<Component::LayerComponent>(e);
+        }
+        void add(ECS& ecs, Entity e) override {
+            auto& D = GetDebugDefaults();
+            if (!has(ecs, e)) ecs.AddComponent<Component::LayerComponent>(e);
+        }
+        void remove(ECS& ecs, Entity e) override {
+            if (has(ecs, e)) ecs.RemoveComponent<Component::LayerComponent>(e);
+        }
+        void drawInspector(ECS& ecs, Entity e) override {
+            if (auto* c = ecs.GetComponent<Component::LayerComponent>(e)) {
+
+                // Get the static map
+                std::map<std::string, unsigned int>& layerMap = LayerComponent::layers;
+
+                // --- 1. Build the Preview String (using currentLayer) ---
+                std::string preview = "";
+                int selectedCount = 0;
+
+                // Use const& for iterating
+                for (auto const& [name, bit] : layerMap) {
+                    // Read from c->currentLayer
+                    if (c->currentLayer & bit) {
+                        if (selectedCount > 0) {
+                            preview += ", ";
+                        }
+                        preview += name;
+                        selectedCount++;
+                    }
+                }
+
+                if (selectedCount == 0) {
+                    preview = "Default";
+                }
+                else if (selectedCount > 2) {
+                    preview = "Mixed...";
+                }
+
+                // --- 2. Draw the Multi-Select Dropdown ---
+                if (ImGui::BeginCombo("Layers", preview.c_str())) {
+
+                    // --- 3. Draw Checkboxes for Each Layer (using currentLayer) ---
+                    for (auto const& [name, bit] : layerMap) {
+                        // Read from c->currentLayer
+                        bool isSelected = (c->currentLayer & bit) != 0;
+
+                        if (ImGui::Selectable(name.c_str(), isSelected, ImGuiSelectableFlags_DontClosePopups)) {
+                            // Write to c->currentLayer
+                            c->currentLayer ^= bit;
+                        }
+                    }
+
+                    // --- 4. Draw the "Add New Layer" UI ---
+                    ImGui::Separator();
+
+                    static char newLayerBuffer[64] = "";
+
+                    if (ImGui::InputText("##NewLayer", newLayerBuffer, 64, ImGuiInputTextFlags_EnterReturnsTrue)) {
+                        if (strlen(newLayerBuffer) > 0) {
+
+                            // Check if layer already exists
+                            if (layerMap.find(newLayerBuffer) == layerMap.end()) {
+
+                                // Calculate the next available bit
+                                unsigned int nextBit = 1; // Default if map is empty
+                                if (!layerMap.empty()) {
+                                    // Find the largest bit value
+                                    auto maxElement = std::max_element(layerMap.begin(), layerMap.end(),
+                                        [](const auto& a, const auto& b) {
+                                            return a.second < b.second;
+                                        });
+                                    // The new bit is the largest one, shifted left
+                                    nextBit = maxElement->second << 1;
+                                }
+
+                                // Emplace with the correct arguments (string, bit)
+                                layerMap.emplace(newLayerBuffer, nextBit);
+                            }
+                            newLayerBuffer[0] = '\0';
+                        }
+                    }
+
+                    // Also add with a button
+                    ImGui::SameLine();
+                    if (ImGui::Button("Add")) {
+                        if (strlen(newLayerBuffer) > 0) {
+                            if (layerMap.find(newLayerBuffer) == layerMap.end()) {
+                                unsigned int nextBit = 1;
+                                if (!layerMap.empty()) {
+                                    auto maxElement = std::max_element(layerMap.begin(), layerMap.end(),
+                                        [](const auto& a, const auto& b) {
+                                            return a.second < b.second;
+                                        });
+                                    nextBit = maxElement->second << 1;
+                                }
+                                layerMap.emplace(newLayerBuffer, nextBit);
+                            }
+                            newLayerBuffer[0] = '\0';
+                        }
+                    }
+
+                    ImGui::EndCombo();
+                }
             }
         }
     };
@@ -1386,6 +1501,7 @@ R"(using System;
              Adapters drive the ECS inspector; providers extend the Physics/Game State panels.
     */
     static NameAdapter gNameAdapter;
+    static LayerAdapter gLayerAdapter;
     static TransformAdapter gTransformAdapter;
     static RigidBodyAdapter gRigidBodyAdapter;
     static ColliderAdapter gColliderAdapter;
@@ -1415,6 +1531,7 @@ R"(using System;
 extern "C" void RegisterBuiltinComponentAdapters() {
     using namespace DebugReflection;
     ComponentRegistry::instance().registerAdapter(&gNameAdapter);
+    ComponentRegistry::instance().registerAdapter(&gLayerAdapter);
     ComponentRegistry::instance().registerAdapter(&gTransformAdapter);
     ComponentRegistry::instance().registerAdapter(&gRigidBodyAdapter);
     ComponentRegistry::instance().registerAdapter(&gColliderAdapter);
