@@ -24,7 +24,6 @@
 #include <memory>
 #include <utility>
 
-//#define RAPIDJSON_HAS_STDSTRING 1
 #include <rapidjson/error/en.h>
 #include <rapidjson/stringbuffer.h>
 #include <rapidjson/writer.h>

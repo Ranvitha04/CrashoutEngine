@@ -49,6 +49,7 @@ namespace UI {
         bool showECS = true;
         bool showAssets = true;
         bool showGameState = true;
+        bool showGameScene = true;
         bool showPhysics = true;
         bool showAudio = true;
         bool drawCollOverlay = true;
@@ -140,6 +141,12 @@ namespace UI {
      @param ui UI state toggles.
     */
     static void RenderGameStatePanel(UIState& ui);
+
+    /*!
+     @brief Renders the Scenes panel
+     @param ui UI state toggles.
+    */
+    static void RenderGameScenePanel(UIState& ui);
     
     /*!
     @brief Renders the physics and collision panel.

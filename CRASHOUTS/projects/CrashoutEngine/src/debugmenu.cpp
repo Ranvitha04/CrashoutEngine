@@ -48,6 +48,7 @@ for Crashout Engine.
 #include "monomanager.h"
 #include "scriptsystem.h"
 #include "ppmanager.h"
+#include "sceneasset.h"
 
 #include "engine.h"
 #include <filesystem>
@@ -860,6 +861,46 @@ namespace UI { // --------------------------------------------------------------
     }
 
     /*!
+     @brief Renders the scene panel
+     @param ui UI state toggles.
+    */
+    static void RenderGameScenePanel(UIState& ui) {
+        if (!ui.showGameScene) return;
+
+        ScopedWindow w("GameScene", LockFlags(ui.lockLayout));
+
+        ImGui::Separator();
+
+        // 1. Buffer to store the scene name from the text field
+        static char sceneNameBuffer[128] = "";
+
+        // 2. Draw the text input field. 
+        //    We use "##" to hide the label but keep a unique ID
+        ImGui::InputText("##SceneNameInput", sceneNameBuffer, IM_ARRAYSIZE(sceneNameBuffer));
+        //    Add a hint if the buffer is empty
+        if (sceneNameBuffer[0] == '\0') {
+            ImGui::SameLine();
+            ImGui::TextDisabled("Enter new scene name...");
+        }
+
+        // 3. Draw the "Create Scene" button
+        ImGui::SameLine();
+        if (ImGui::Button("Create Scene")) {
+            // Only create if the name field is not empty
+            if (std::strlen(sceneNameBuffer) > 0) {
+
+                // 4. Call your create function
+                Serialization::SaveScenes(sceneNameBuffer);
+                Assets::SceneAsset::Create(sceneNameBuffer);
+
+                // 5. Clear the buffer after creation for good UX
+                sceneNameBuffer[0] = '\0';
+            }
+        }
+        // --- End New UI ---
+    }
+
+    /*!
      @brief Renders the physics panel, including collision event listings and controls.
      @param profiler Frame profiler reference.
      @param ecs ECS reference.
@@ -1054,6 +1095,7 @@ namespace UI { // --------------------------------------------------------------
                 {"Performance", &ui.showPerf},
                 {"Console", &ui.showConsole},
                 {"Game State", &ui.showGameState},
+                {"Game Scene", &ui.showGameScene},
                 {"Audio", &ui.showAudio},
             };
             for (auto& t : toggles) ImGui::MenuItem(t.label, nullptr, t.flag);
@@ -1061,13 +1103,13 @@ namespace UI { // --------------------------------------------------------------
             ImGui::Separator();
             if (ImGui::MenuItem("Show All")) {
                 ui.showECS = ui.showAssets = ui.showInspector = ui.showPhysics =
-                    ui.showPerf = ui.showConsole = ui.showGameState = ui.showAudio = ui.showEngineControl = true;
+                    ui.showPerf = ui.showConsole = ui.showGameState = ui.showGameScene = ui.showAudio = ui.showEngineControl = true;
                 for (auto const& p : DebugReflection::PanelRegistry::instance().panels())
                     if (p.toggleFlag) *p.toggleFlag = true;
             }
             if (ImGui::MenuItem("Hide All")) {
                 ui.showECS = ui.showAssets = ui.showInspector = ui.showPhysics =
-                    ui.showPerf = ui.showConsole = ui.showGameState = ui.showAudio = ui.showEngineControl = false;
+                    ui.showPerf = ui.showConsole = ui.showGameState = ui.showGameScene = ui.showAudio = ui.showEngineControl = false;
                 for (auto const& p : DebugReflection::PanelRegistry::instance().panels())
                     if (p.toggleFlag) *p.toggleFlag = false;
             }
@@ -1743,6 +1785,9 @@ namespace UI { // --------------------------------------------------------------
         }
         if (ui.showGameState) {
             RenderGameStatePanel(ui);
+        }
+        if (ui.showGameScene) {
+            RenderGameScenePanel(ui);
         }
         if (ui.showEngineControl) {
             RenderEngineStateBar(ui);
