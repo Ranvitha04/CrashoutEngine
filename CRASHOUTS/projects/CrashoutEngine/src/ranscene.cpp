@@ -297,8 +297,8 @@ void LoadRan()
     globalECS = CrashoutsEngine::ECS::getInstance();
     globalECS->Reset();
 
-    CrashoutsEngine::Assets::GenerateAssetManifest();
-    CrashoutsEngine::Assets::AssetManager::GetInstance().LoadManifestAssets();
+    //CrashoutsEngine::Assets::GenerateAssetManifest();
+    //CrashoutsEngine::Assets::AssetManager::GetInstance().LoadManifestAssets();
 }
 
 void InitRan()

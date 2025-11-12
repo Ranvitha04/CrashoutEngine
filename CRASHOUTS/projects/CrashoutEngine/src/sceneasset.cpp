@@ -176,7 +176,7 @@ namespace CrashoutsEngine {
             ECS& gECS = *ECS::getInstance();
 
             for (rapidjson::SizeType i = 0; i < entitiesArray.Size(); ++i) {
-
+                std::cout << "hi\n";
                 /*Utility*/
                 struct ReadVectorFromJson {
                     CEVec3 operator()(const rapidjson::Value& val) {

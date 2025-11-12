@@ -51,6 +51,9 @@ public:
     */
     static bool IsKeyPressed(int glfwKey);
 
+    static bool IsKeyHeld(Key key);
+
+    static bool IsKeyHeld(int key);
     /*!
     @brief Check if a mouse button is pressed
     @param button GLFW mouse button code

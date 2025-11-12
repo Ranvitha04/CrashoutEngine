@@ -52,6 +52,9 @@ for Crashout Engine.
 #include "engine.h"
 #include <filesystem>
 
+#include "undomanager.h"
+#include "transformentitycommand.h"
+
 
 using CrashoutsEngine::Audio::AudioSystem;
 // ImGui headers
@@ -1370,6 +1373,37 @@ namespace UI { // --------------------------------------------------------------
                     {
                         float gizmoDeg = newRt[2];
 
+                    ImGuizmo::Manipulate(view, proj, g_gizmoOp, g_gizmoMode, m, nullptr, snapPtr);
+
+                    static bool dragging = false;
+                    static std::vector<CrashoutsEngine::Entity> movedEntities;
+                    static std::vector<CrashoutsEngine::TransformState> startStates;
+
+                    if (ImGuizmo::IsUsing())
+                    {
+                        // Begin drag — record all entities' starting positions
+                        if (!dragging)
+                        {
+                            dragging = true;
+                            movedEntities.clear();
+                            startStates.clear();
+
+                            for (Entity e : group)
+                            {
+                                if (!ecs.HasComponent<Component::TransformComponent>(e)) continue;
+                                auto* transform = ecs.GetComponent<Component::TransformComponent>(e);
+
+                                CrashoutsEngine::TransformState state;
+                                state.position = transform->position;
+                                state.rotation = transform->rotation;
+                                state.scale = transform->size;
+                                startStates.push_back(state);
+                                movedEntities.push_back(e);
+                            }
+                        }
+                        float newTr[3], newRt[3], newSc[3];
+                        ImGuizmo::DecomposeMatrixToComponents(m, newTr, newRt, newSc);
+
                         if (!s_rotating)
                         {
                             s_rotating = true;
@@ -1457,6 +1491,59 @@ namespace UI { // --------------------------------------------------------------
                 else
                 {
                     s_rotating = false;
+                    else if (dragging)
+                    {
+                        // End drag — record new positions and push ONE command
+                        dragging = false;
+
+                        std::vector<CrashoutsEngine::TransformState> endStates;
+                        endStates.reserve(movedEntities.size());
+
+                        for (auto e : movedEntities)
+                        {
+                            auto* t = ecs.GetComponent<Component::TransformComponent>(e);
+                            if (t)
+                            {
+                                CrashoutsEngine::TransformState s;
+                                s.position = t->position;
+                                s.rotation = t->rotation;
+                                s.scale = t->size;
+                                endStates.push_back(s);
+                            }
+                        }
+
+                        // Check for actual change
+                        bool changed = false;
+                        for (size_t i = 0; i < startStates.size(); ++i)
+                        {
+                            if (startStates[i].position != endStates[i].position ||
+                                startStates[i].rotation != endStates[i].rotation ||
+                                startStates[i].scale != endStates[i].scale)
+                            {
+                                changed = true;
+                                break;
+                            }
+                        }
+
+                        if (changed)
+                        {
+                            if (movedEntities.size() > 1)
+                            {
+                                UndoManager::GetInstance().Execute(
+                                    std::make_unique<CrashoutsEngine::TransformGroupCommand>(
+                                        movedEntities, startStates, endStates));
+                            }
+                            else
+                            {
+                                UndoManager::GetInstance().Execute(
+                                    std::make_unique<CrashoutsEngine::TransformEntityCommand>(
+                                        movedEntities.front(), startStates.front(), endStates.front()));
+                            }
+                        }
+
+                        movedEntities.clear();
+                        startStates.clear();
+                    }
                 }
             }
 
@@ -1693,6 +1780,16 @@ namespace UI { // --------------------------------------------------------------
             ImGui::DockBuilderDockWindow("Game Viewport", dock_main);
 
             ImGui::DockBuilderFinish(dockspace_id);
+        }
+        if (InputManager::IsKeyHeld(Key::LeftCtrl) && InputManager::IsKeyTriggered(Key::Z))
+        {
+			LOGI(Core, "Undo Triggered");
+            UndoManager::GetInstance().Undo();
+        }
+        if (InputManager::IsKeyHeld(Key::LeftCtrl) && InputManager::IsKeyTriggered(Key::Y))
+        {
+			LOGI(Core, "Redo Triggered");
+            UndoManager::GetInstance().Redo();
         }
 
         if (ui.showECS) {

@@ -10,6 +10,14 @@
 ----------------------------------------------------------------------------- */
 
 #include "entitymanager.h"
+#include "layercomponent.h"
+
+std::map<std::string, unsigned int> CrashoutsEngine::LayerComponent::layers = {
+	{"Default", 0},
+	{"Player",	1 << 0},
+	{"Ground",	1 << 1}
+};
+
 using Entity = uint32_t;
 /*!
 	@brief  Destroys a specific entity.
