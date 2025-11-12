@@ -147,6 +147,8 @@ namespace { //------------------------------------------------------------------
         char relPath[256]{};  // relative path under assets/ (optional)
     };
 
+    static std::vector<std::string> gDroppedPaths;
+
     // ============================================================
     //  Viewport / gizmo shared state
     // ============================================================
@@ -274,6 +276,12 @@ namespace UI { // --------------------------------------------------------------
         ScopedMemTag boot(MemTag::Resources);
         ImGui_ImplGlfw_InitForOpenGL(window, true);
         ImGui_ImplOpenGL3_Init("#version 330");
+
+        glfwSetDropCallback(window, [](GLFWwindow*, int count, const char** paths) {
+            for (int i = 0; i < count; ++i) {
+                if (paths[i]) gDroppedPaths.emplace_back(paths[i]);
+            }
+        });
 
         LOGS(Core, "Engine initialized successfully");
         LOGW(Core, "Debug mode is ON");
@@ -464,6 +472,40 @@ namespace UI { // --------------------------------------------------------------
         }
 
         ImGui::Separator();
+
+        if (!gDroppedPaths.empty()) {
+            namespace fs = std::filesystem;
+
+            for (const std::string& absPath : gDroppedPaths) {
+                std::error_code ec;
+                fs::path src(absPath);
+                if (!fs::is_regular_file(src, ec)) continue;
+
+                std::string ext = src.extension().string();
+                std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+                bool allowed =
+                    ext == ".png" || ext == ".jpg" || ext == ".jpeg" || ext == ".bmp" || ext == ".tga" ||
+                    ext == ".json" || ext == ".scene" || ext == ".bank" || ext == ".wav" || ext == ".ogg" ||
+                    ext == ".vert" || ext == ".frag";
+                if (!allowed) continue;
+
+                fs::path dst = current / src.filename();
+                if (fs::exists(dst, ec)) {
+                    for (int i = 1; i < 10000; ++i) {
+                        fs::path candidate =
+                            dst.parent_path() /
+                            (dst.stem().string() + " (" + std::to_string(i) + ")" + dst.extension().string());
+                        if (!fs::exists(candidate, ec)) { dst = candidate; break; }
+                    }
+                }
+
+                fs::create_directories(dst.parent_path(), ec);
+                fs::copy_file(src, dst, fs::copy_options::overwrite_existing, ec);
+            }
+
+            gDroppedPaths.clear();
+            needScan = true;
+        }
 
         // LEFT: Folder tree
         ImGui::BeginChild("asset_left", ImVec2(220, 0), true);
@@ -1615,6 +1657,35 @@ namespace UI { // --------------------------------------------------------------
                         Entity e = Prefab::Create(ecs, std::string(p->name));
                         if (e && ecs.HasComponent<Component::TransformComponent>(e))
                             ecs.GetComponent<Component::TransformComponent>(e)->position = dropWorld;
+                    }
+                    else if (p && p->kind == AssetKind::Audio) {
+                        std::string rel = p->relPath;
+                       
+                        const std::string prefix = "audio/";
+                        auto pos = rel.find(prefix);
+                        if (pos != std::string::npos) rel = rel.substr(pos + prefix.size());
+                        
+                        if (auto dot = rel.find_last_of('.'); dot != std::string::npos) rel.erase(dot);
+                        
+                        std::string eventLike = std::string("event:/") + rel; // "event:/SFX/Beep"
+
+                        Entity target = selected;
+                        if (!target) {
+                            target = ecs.CreateEntity();
+                            ecs.AddComponent<NameComponent>(target, std::string("Audio_") + p->name);
+                            ecs.AddComponent<TransformComponent>(target);
+                            ecs.GetComponent<TransformComponent>(target)->position = dropWorld;
+                        }
+
+                        if (!ecs.HasComponent<Component::AudioEmitterComponent>(target))
+                            ecs.AddComponent<Component::AudioEmitterComponent>(target);
+
+                        if (auto* ac = ecs.GetComponent<Component::AudioEmitterComponent>(target)) {
+                            ac->eventPath = eventLike;
+                            ac->volume = 1.0f;
+                            ac->pitch = 1.0f;
+                            ac->spatial3D = true;
+                        }
                     }
                 }
                 ImGui::EndDragDropTarget();
