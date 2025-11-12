@@ -22,6 +22,8 @@ runtime-extensible and project-agnostic.
 #include <numeric>
 #include <fstream>
 #include "debugdefaults.h"
+#include "changevaluecommand.h"
+#include "undomanager.h"
 
 /*                                                         component includes
 ----------------------------------------------------------------------------- */
@@ -46,9 +48,11 @@ runtime-extensible and project-agnostic.
 #include "assetmanager.h"
 #include "monomanager.h"
 #include "audioSystem.h"
+#include "imgui_internal.h"
 #include "reflectimgui.h"
 #include "shapes.h"
 #include "layercomponent.h"
+#include "transformentitycommand.h"
 
 using namespace CrashoutsEngine;
 
@@ -252,8 +256,61 @@ namespace {
             if (has(ecs, e)) ecs.RemoveComponent<Component::TransformComponent>(e);
         }
         void drawInspector(ECS& ecs, Entity e) override {
+            using CrashoutsEngine::TransformState;
             if (auto* t = ecs.GetComponent<Component::TransformComponent>(e)) {
+                // snapshot before drawing the fields
+                TransformState before{
+                    t->position,
+                    t->rotation,   // radians
+                    t->size        // CEVec2
+                };
+
+                // Track an edit session across all fields in this adapter
+                static bool   sEditing = false;
+                static Entity sEditingEntity = 0;
+                static TransformState sStart{};
+
+                //const bool wasAnyActive = ImGui::IsAnyItemActive();
                 draw_reflected(*t, "Transform");
+
+                const bool nowAnyActive = ImGui::IsAnyItemActive();
+
+                // detect edit begin
+                if (!sEditing && nowAnyActive)
+                {
+                    sEditing = true;
+                    sEditingEntity = e;
+                    sStart = before; // store the pre-edit state
+                }
+
+                // detect edit end and record one undo
+                if (sEditing && sEditingEntity == e && !nowAnyActive)
+                {
+                    sEditing = false;
+
+                    TransformState after{
+                        t->position,
+                        t->rotation, // radians
+                        t->size
+                    };
+
+                    const bool changed =
+                        (sStart.position.x != after.position.x) ||
+                        (sStart.position.y != after.position.y) ||
+                        (sStart.position.z != after.position.z) ||
+                        (sStart.rotation != after.rotation) ||
+                        (sStart.scale.x != after.scale.x) ||
+                        (sStart.scale.y != after.scale.y);
+
+                    if (changed)
+                    {
+                        UndoManager::GetInstance().Execute(
+                            std::make_unique<CrashoutsEngine::TransformEntityCommand>(
+                                e, sStart, after));
+                    }
+
+                    sEditingEntity = 0;
+                }
             }
         }
     };
@@ -281,18 +338,102 @@ namespace {
             if (has(ecs, e)) ecs.RemoveComponent<RigidBodyComponent>(e);
         }
 
+
+
         void drawInspector(ECS& ecs, Entity e) override {
             if (auto* rb = ecs.GetComponent<RigidBodyComponent>(e)) {
 
-                auto ref = rb->reflection();
-                if (draw_reflected(ref, "RigidBody (data)")) {
-                    *rb = RigidBodyComponent(ref);
-                }
-                if (ImGui::Checkbox("Simulate Dynamics", &simulateDynamics)) {
-                    if (simulateDynamics) rb->getFlags().set(Physics::SIMULATE_DYNAMICS);
-                    else rb->getFlags().reset(Physics::SIMULATE_DYNAMICS);
+                // Reflect current values to a temp
+                auto oldRef = rb->reflection();
+                auto ref = oldRef;
+
+                // edit session tracking
+                struct EditSession {
+                    bool active = false;
+                    ImGuiID beginActiveId = 0;
+                    Component::RigidBodyComponent::ReflectionType startRef{};
+                    Entity entity = 0;
+                };
+                // one static session
+                static EditSession sess;
+
+                ImGui::PushID((int)e);
+                ImGuiID activeBefore = ImGui::GetActiveID();
+
+                // Draw all fields
+                bool anyChangedThisFrame = draw_reflected(ref, "RigidBody (data)");
+
+                ImGuiID activeAfter = ImGui::GetActiveID();
+                ImGui::PopID();
+
+                // Start of an edit session
+                if (!sess.active && activeBefore == 0 && activeAfter != 0) {
+                    sess.active = true;
+                    sess.beginActiveId = activeAfter;
+                    sess.startRef = oldRef;
+                    sess.entity = e;
                 }
 
+                // Apply live
+                if (anyChangedThisFrame) {
+                    *rb = Component::RigidBodyComponent(ref);
+                }
+
+                // when no control is active anymore
+                if (sess.active && sess.entity == e && activeAfter == 0) {
+                    sess.active = false;
+
+                    auto endRef = rb->reflection();
+                    if (sess.startRef.velocity != endRef.velocity ||
+                        sess.startRef.max_velocity != endRef.max_velocity ||
+                        sess.startRef.mass != endRef.mass ||
+                        sess.startRef.restitution != endRef.restitution)
+                    {
+                        using RefT = Component::RigidBodyComponent::ReflectionType;
+                        UndoManager::GetInstance().Execute(
+                            std::make_unique<CrashoutsEngine::ChangeValueCommand<RefT>>(
+                                sess.startRef, endRef,
+                                [rb](const RefT& v) { *rb = Component::RigidBodyComponent(v); }
+                            )
+                        );
+                    }
+                    // reset session state
+                    sess = {};
+                }
+
+                // Simulate toggle
+                bool prevSim = rb->getFlags().test(Physics::SIMULATE_DYNAMICS);
+                bool simulate = prevSim;  // use a local variable for ImGui checkbox
+
+                if (ImGui::Checkbox("Simulate Dynamics", &simulate)) {
+                    // record undo for the flag change
+                    UndoManager::GetInstance().Execute(
+                        std::make_unique<CrashoutsEngine::ChangeValueCommand<bool>>(
+                            prevSim, simulate,
+                            [rb](bool v) {
+                                if (v)
+                                {
+                                    rb->getFlags().set(Physics::SIMULATE_DYNAMICS);
+                                }
+                                else
+                                {
+                                    rb->getFlags().reset(Physics::SIMULATE_DYNAMICS);
+                                }
+                            }
+                        )
+                    );
+                    // apply new value now
+                    if (simulate)
+                    {
+                        rb->getFlags().set(Physics::SIMULATE_DYNAMICS);
+                    }
+                    else
+                    {
+                        rb->getFlags().reset(Physics::SIMULATE_DYNAMICS);
+                    }
+                }
+
+                // Forces
                 ImGui::SeparatorText("Forces");
                 static float f[3]{ 0.f, 0.f, 0.f };
                 ImGui::InputFloat3("Force", f);
@@ -301,6 +442,7 @@ namespace {
                 if (ImGui::Button("Clear Force Accumulator##rb")) rb->clearForceAccumulator();
             }
         }
+
     };
 
     /*!
@@ -474,17 +616,40 @@ namespace {
             if (!sc) return;
 
             // type
-            int t = (int)sc->type;
+            int oldType = (int)sc->type;
+            int t = oldType;
             const char* items[] = { "Rectangle","Line","Triangle","Circle"};
             if (ImGui::Combo("Type", &t, items, IM_ARRAYSIZE(items))) {
+                UndoManager::GetInstance().Execute(
+                    std::make_unique<CrashoutsEngine::ChangeValueCommand<int>>(
+                        oldType, t,
+                        [sc](int v) { sc->type = (ShapeType)v; }
+                    )
+                );
                 sc->type = (ShapeType)t;
             }
 
             //draw_reflected(*sc, "Shape");
             
             // shared
-            ImGui::Checkbox("Use TextureAsset", &sc->enableTexture);
-            ImGui::Checkbox("Use World Space", &sc->isWorldSpace);
+            bool oldTex = sc->enableTexture;
+            if (ImGui::Checkbox("Use TextureAsset", &sc->enableTexture)) {
+                UndoManager::GetInstance().Execute(
+                    std::make_unique<CrashoutsEngine::ChangeValueCommand<bool>>(
+                        oldTex, sc->enableTexture,
+                        [sc](bool v) { sc->enableTexture = v; }
+                    )
+                );
+            }
+            bool oldWorld = sc->isWorldSpace;
+            if (ImGui::Checkbox("Use World Space", &sc->isWorldSpace)) {
+                UndoManager::GetInstance().Execute(
+                    std::make_unique<CrashoutsEngine::ChangeValueCommand<bool>>(
+                        oldWorld, sc->isWorldSpace,
+                        [sc](bool v) { sc->isWorldSpace = v; }
+                    )
+                );
+            }
 
             char buf[256]{};
             if (sc->textureName.size() < sizeof(buf)) std::memcpy(buf, sc->textureName.data(), sc->textureName.size());
@@ -539,9 +704,14 @@ namespace {
                 ImGui::BeginChild("asset_list", ImVec2(420, 300), true);
                 for (auto const& f : s_assets) {
                     if (ImGui::Selectable(f.c_str())) {
+                        std::string oldTexName = sc->textureName;
                         sc->textureName = f;
-                        std::strncpy(buf, f.c_str(), sizeof(buf) - 1);
-                        buf[sizeof(buf) - 1] = '\0';
+                        UndoManager::GetInstance().Execute(
+                            std::make_unique<CrashoutsEngine::ChangeValueCommand<std::string>>(
+                                oldTexName, sc->textureName,
+                                [sc](const std::string& v) { sc->textureName = v; }
+                            )
+                        );
                         ImGui::CloseCurrentPopup();
                         break;
                     }
@@ -559,18 +729,41 @@ namespace {
                 const int numWrapModes = IM_ARRAYSIZE(wrapModes);
 
                 // U (HORIZONTAL) WRAP MODE
+                int oldU = sc->wrapModeU;
                 if (ImGui::Combo("U Wrap Mode", &sc->wrapModeU, wrapModes, numWrapModes)) {
+                    UndoManager::GetInstance().Execute(
+                        std::make_unique<CrashoutsEngine::ChangeValueCommand<int>>(
+                            oldU, sc->wrapModeU,
+                            [sc](int v) { sc->wrapModeU = v; }
+                        )
+                    );
                 }
 
                 // V (HORIZONTAL) WRAP MODE
+                int oldV = sc->wrapModeV;
                 if (ImGui::Combo("V Wrap Mode", &sc->wrapModeV, wrapModes, numWrapModes)) {
+                    UndoManager::GetInstance().Execute(
+                        std::make_unique<CrashoutsEngine::ChangeValueCommand<int>>(
+                            oldV, sc->wrapModeV,
+                            [sc](int v) { sc->wrapModeV = v; }
+                        )
+                    );
                 }
 
                 // UV size
+                CEVec2 oldUV = sc->uvSize;
                 float size[2] = { sc->uvSize.x, sc->uvSize.y };
-                ImGui::DragFloat2("UV", size, D.drag_small);
-                if (ImGui::IsItemEdited() || ImGui::IsItemDeactivatedAfterEdit()) {
-                    sc->uvSize = { size[0], size[1] };
+                if (ImGui::DragFloat2("UV", size, D.drag_small)) {
+                    CEVec2 newUV = { size[0], size[1] };
+                    if (ImGui::IsItemDeactivatedAfterEdit() && newUV != oldUV) {
+                        UndoManager::GetInstance().Execute(
+                            std::make_unique<CrashoutsEngine::ChangeValueCommand<CEVec2>>(
+                                oldUV, newUV,
+                                [sc](const CEVec2& v) { sc->uvSize = v; }
+                            )
+                        );
+                    }
+                    sc->uvSize = newUV;
                 }
 
             }
@@ -581,6 +774,10 @@ namespace {
             
             // Colour Mixer a la carte
             {
+                static CEVec3 startColor;
+                static bool editingColor = false;
+
+                //CEVec3 oldColor = sc->color;
                 float col[4] = {
                     sc->color.x * (1.0f / 255.0f),
                     sc->color.y * (1.0f / 255.0f),
@@ -594,34 +791,93 @@ namespace {
                     ImGuiColorEditFlags_PickerHueBar |
                     ImGuiColorEditFlags_NoAlpha;
 
-                if (ImGui::ColorEdit3("Color", col, flags) || ImGui::IsItemDeactivatedAfterEdit())
-                {
-                    sc->color.x = col[0] * 255.0f;
-                    sc->color.y = col[1] * 255.0f;
-                    sc->color.z = col[2] * 255.0f;
+                // start editing when user opens popup
+                if (ImGui::ColorEdit3("Color", col, flags) && !editingColor) {
+                    editingColor = true;
+                    startColor = sc->color;
                 }
+                if (ImGui::IsItemDeactivated() && editingColor) {
+                    // item lost focus (enter pressed / tab / clicked away)
+                    CEVec3 newColor = { col[0] * 255.f, col[1] * 255.f, col[2] * 255.f };
+                    if (newColor != startColor) {
+                        UndoManager::GetInstance().Execute(
+                            std::make_unique<CrashoutsEngine::ChangeValueCommand<CEVec3>>(
+                                startColor, newColor,
+                                [sc](const CEVec3& v) { sc->color = v; }));
+                    }
+                    editingColor = false;
+                }
+
+                // apply live color
+                sc->color = { col[0] * 255.f, col[1] * 255.f, col[2] * 255.f };
 
                 if (ImGui::SmallButton("Open Color Picker"))
                     ImGui::OpenPopup("##shape_color_picker");
 
-                if (ImGui::BeginPopup("##shape_color_picker"))
-                {
-                    if (ImGui::ColorPicker3("##picker", col, flags))
-                    {
-                        sc->color.x = col[0] * 255.0f;
-                        sc->color.y = col[1] * 255.0f;
-                        sc->color.z = col[2] * 255.0f;
+                if (ImGui::BeginPopup("##shape_color_picker")) {
+                    static CEVec3 popupStart;
+                    static bool popupEditing = false;
+
+                    // snapshot when opened
+                    if (!popupEditing) { popupEditing = true; popupStart = sc->color; }
+
+                    float pick[3] = {
+                        sc->color.x / 255.f,
+                        sc->color.y / 255.f,
+                        sc->color.z / 255.f
+                    };
+                    if (ImGui::ColorPicker3("##picker", pick, flags)) {
+                        sc->color = { pick[0] * 255.f, pick[1] * 255.f, pick[2] * 255.f };
                     }
+
+                    // detect popup close
+                    if (!ImGui::IsWindowAppearing() && !ImGui::IsWindowFocused()) {
+                        CEVec3 newCol = sc->color;
+                        if (popupEditing && newCol != popupStart) {
+                            UndoManager::GetInstance().Execute(
+                                std::make_unique<CrashoutsEngine::ChangeValueCommand<CEVec3>>(
+                                    popupStart, newCol,
+                                    [sc](const CEVec3& v) { sc->color = v; }));
+                        }
+                        popupEditing = false;
+                        ImGui::CloseCurrentPopup();
+                    }
+
                     ImGui::EndPopup();
                 }
             }
 
             // per-type
-            if(sc->type == ShapeType::Line) {
+            if (sc->type == ShapeType::Line) {
+                CEVec3 oldP1 = sc->p1;
+                CEVec3 oldP2 = sc->p2;
+                float oldThick = sc->thickness;
+
                 ImGui::DragFloat3("P1", &sc->p1.x, 0.5f);
+                if (ImGui::IsItemDeactivatedAfterEdit() && sc->p1 != oldP1) {
+                    UndoManager::GetInstance().Execute(
+                        std::make_unique<CrashoutsEngine::ChangeValueCommand<CEVec3>>(
+                            oldP1, sc->p1,
+                            [sc](const CEVec3& v) { sc->p1 = v; }));
+                }
+
                 ImGui::DragFloat3("P2", &sc->p2.x, 0.5f);
+                if (ImGui::IsItemDeactivatedAfterEdit() && sc->p2 != oldP2) {
+                    UndoManager::GetInstance().Execute(
+                        std::make_unique<CrashoutsEngine::ChangeValueCommand<CEVec3>>(
+                            oldP2, sc->p2,
+                            [sc](const CEVec3& v) { sc->p2 = v; }));
+                }
+
                 ImGui::DragFloat("Thickness", &sc->thickness, 0.1f, 0.0f, 1e6f);
+                if (ImGui::IsItemDeactivatedAfterEdit() && sc->thickness != oldThick) {
+                    UndoManager::GetInstance().Execute(
+                        std::make_unique<CrashoutsEngine::ChangeValueCommand<float>>(
+                            oldThick, sc->thickness,
+                            [sc](float v) { sc->thickness = v; }));
+                }
             }
+
 
             /*CEVec3 pos{ 0,0,0 };
             if (auto* tf = ecs.GetComponent<Component::TransformComponent>(e)) pos = tf->position;
