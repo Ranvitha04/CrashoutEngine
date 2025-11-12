@@ -36,6 +36,7 @@ runtime-extensible and project-agnostic.
 #include "cameracomponent.h"
 #include "physicsmanager.h"
 #include "ppcomponent.h"
+#include "collidercomponent.h"
 
 // FOR GAME GUI
 #include "buttoncomponent.h"

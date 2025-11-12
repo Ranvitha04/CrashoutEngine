@@ -30,6 +30,7 @@
 #include "guicomponent.h"
 #include "ppcomponent.h"
 #include "camera.h"
+#include "collidercomponent.h"
 using namespace CrashoutsEngine;
 using namespace Component;
 /**

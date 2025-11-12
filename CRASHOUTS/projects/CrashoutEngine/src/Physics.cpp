@@ -12,6 +12,7 @@
 #include <cstdio>
 #include "CEMath.h"
 #include "observer.h"
+#include "collidercomponent.h"
 
 
 namespace Component {

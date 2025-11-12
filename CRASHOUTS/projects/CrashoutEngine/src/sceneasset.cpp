@@ -23,6 +23,7 @@
 #include <iostream>
 #include <memory>
 #include <utility>
+#include "collidercomponent.h"
 
 #include <rapidjson/error/en.h>
 #include <rapidjson/stringbuffer.h>

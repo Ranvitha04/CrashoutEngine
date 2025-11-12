@@ -49,24 +49,6 @@ const std::unordered_map<GameState, GameStateDescriptor>& GetStateRegistry() {
 }
 
 /*!
-@brief Initialize system components
-
-Placeholder for global system initialization
-*/
-void InitSystemComponents() {
-	// Initialize system components here
-}
-
-/*!
-@brief Initialize the frame rate controller
-
-Placeholder for frame rate control setup
-*/
-void InitFrameRateController() {
-	// Initialize frame rate controller here
-}
-
-/*!
 @brief Initialize the game state manager with an initial state
 @param initialState The state to start the game in
 */
@@ -151,40 +133,3 @@ void ShutdownGameStateManager() {
     CurrentGameState = NextGameState = PreviousGameState = MAIN_MENU;
     RestartRequested = false;
 }
-
-/*!
-@brief Reset the frame rate controller
-
-Placeholder for resetting frame timing
-*/
-void ResetFrameRateController() {
-	// Reset frame rate controller here
-}
-
-/*!
-@brief Reset the frame rate controller
-
-Placeholder for resetting frame timing
-*/
-void StartFrameRateController() {
-	// Start frame rate controller here
-}
-
-/*!
-@brief Update input status
-
-Placeholder for input polling and updates
-*/
-void UpdateInputStatus() {
-	// Update input status here
-}
-
-/*!
-@brief End the frame rate controller
-
-Placeholder for ending frame timing
-*/
-void EndFrameRateController() {
-	// End frame rate controller here
-}
-

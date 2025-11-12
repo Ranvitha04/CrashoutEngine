@@ -67,15 +67,11 @@ programming while maintaining compatibility with automated testing systems.
 ----------------------------------------------------------------------------- */
 
 
-#include "CEVec2.h"
-#include "CEVec3.h"
-#include "namecomponent.h"
 #include <GL/glew.h>
 #include <glm/glm.hpp>
 #include <string>
 #include <utility>
 #include <vector>
-#include <fstream>
 #include <sstream>
 
 

@@ -5,9 +5,9 @@
 @brief       Declares the InitPrefabs() function that registers all the prefab when it starts.
 
 */
+#pragma once
 #include "entitymanager.h"
 #include <string>
-#pragma once
 namespace CrashoutsEngine {
     bool SaveBoxPrefabToJson_RJ(ECS& ecs,
         Entity e,

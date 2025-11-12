@@ -31,6 +31,9 @@ This file contains only declarations; implementations are provided in the corres
 #include <unordered_map>
 #include "duckrandomcomponent.h"
 #include "frameratecontroller.h"
+#include "glapp.h"
+#include "textureasset.h"
+#include "rendering.h"
 
 // Global variables needed for ECS and texturing
 static CrashoutsEngine::ECS* globalECS = nullptr;

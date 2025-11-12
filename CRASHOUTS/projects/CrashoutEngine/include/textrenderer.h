@@ -10,10 +10,8 @@ Provides text rendering using FreeType and OpenGL
 #pragma once
 
 
-#include <map>
 #include <string>
 
-#include <ft2build.h>
 
 #include <glm/gtc/matrix_transform.hpp>
 #include "GL/glew.h"

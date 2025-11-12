@@ -180,4 +180,6 @@ namespace UI {
     */
     void RenderAll(FrameProfiler& profiler, Physics::PhysicsHandler& phys, UIState& ui, CrashoutsEngine::ECS& ecs, std::vector<CrashoutsEngine::Entity>& entities, CrashoutsEngine::Entity& selected);
 
+    void SetDarkGrayTheme();
+
 } // namespace UI

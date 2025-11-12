@@ -48,6 +48,8 @@ when shutting down the engine.
 #include <vector>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include "rendering.h"
+#include "stb_image.h"
 
 namespace CrashoutsEngine {
     namespace Assets {

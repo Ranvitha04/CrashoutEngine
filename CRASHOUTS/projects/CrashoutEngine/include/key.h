@@ -99,6 +99,7 @@ inline std::string KeyToString(Key key) {
     case Key::Period: return ".";
     case Key::Minus: return "-";
     case Key::Equal: return "=";
+	case Key::LeftCtrl: return "Left Control";
 
     case Key::Up: return "Arrow Up";
     case Key::Down: return "Arrow Down";

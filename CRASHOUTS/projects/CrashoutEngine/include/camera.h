@@ -15,7 +15,7 @@ This file
 #include "CEVec2.h"
 #include "CEVec3.h"
 #include "cameracomponent.h"
-#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 namespace CrashoutsEngine {
 

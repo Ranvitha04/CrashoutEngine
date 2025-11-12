@@ -40,12 +40,6 @@ struct GameStateDescriptor {
 	FP Unload;
 };
 
-/// Initialize core system components
-extern void InitSystemComponents();
-
-/// Initialize the frame rate controller
-extern void InitFrameRateController();
-
 /**
  * @brief Initialize the game state manager
  * @param state The initial state to start with
@@ -75,18 +69,6 @@ void RegisterGameState(GameState state, GameStateDescriptor descriptor);
 @brief Exposes a view over the registry so that ImGui can read IDs - Amir was here
 */
 const std::unordered_map<GameState, GameStateDescriptor>& GetStateRegistry();
-
-/// Reset the frame rate controller
-extern void ResetFrameRateController();
-
-/// Start the frame rate controller
-extern void StartFrameRateController();
-
-/// Update the input status
-extern void UpdateInputStatus();
-
-/// End the frame rate controller
-extern void EndFrameRateController();
 
 /// The current active game state
 extern GameState CurrentGameState;
