@@ -1287,6 +1287,8 @@ namespace UI { // --------------------------------------------------------------
             static bool dragging = false;
             static std::vector<Entity> movedEntities;
             static std::vector<CrashoutsEngine::TransformState> startStates;
+            static bool  s_rotating = false;
+            static float s_prevGizmoDeg = 0.0f;
 
             if (selected && ecs.HasComponent<Component::TransformComponent>(selected))
             {
@@ -1368,64 +1370,72 @@ namespace UI { // --------------------------------------------------------------
                     }
                     else if (g_gizmoOp == ImGuizmo::ROTATE)
                     {
+                        float gizmoDeg;
+
                         // Rotate only the selected; keep descendants' world positions
                         const float prevDeg = glm::degrees(t->rotation);
                         const float newDeg = nRt[2];
 
-                        // Compute minimal delta
-                        float deltaDeg = newDeg - prevDeg;
-                        if (deltaDeg > 180.f)  deltaDeg -= 360.f;
-                        if (deltaDeg < -180.f) deltaDeg += 360.f;
+                        gizmoDeg = nRt[2];
 
-                        // Update selected TRS from gizmo
-                        t->position = { nTr[0], nTr[1], nTr[2] };
-                        t->rotation = glm::radians(prevDeg + deltaDeg);
+                        if (!s_rotating) {
+                            s_rotating = true;
+                            s_prevGizmoDeg = gizmoDeg;
+                        }
+                        else {
+                            // Compute minimal delta
+                            float deltaDeg = newDeg - prevDeg;
+                            if (deltaDeg > 180.f)  deltaDeg -= 360.f;
+                            if (deltaDeg < -180.f) deltaDeg += 360.f;
 
-                        // Recompute selected's local if it has a parent (maintain world)
-                        if (ecs.HasComponent<Component::ParentComponent>(selected)) {
-                            auto* pc = ecs.GetComponent<Component::ParentComponent>(selected);
-                            const Entity parentE = pc->parent;
-                            if (parentE && ecs.HasComponent<Component::TransformComponent>(parentE)) {
-                                auto* pt = ecs.GetComponent<Component::TransformComponent>(parentE);
-                                const float pr = pt->rotation;
-                                const float dx = nTr[0] - pt->position.x;
-                                const float dy = nTr[1] - pt->position.y;
-                                const float s = std::sin(-pr), c = std::cos(-pr);
-                                pc->localPos.x = c * dx - s * dy;
-                                pc->localPos.y = s * dx + c * dy;
-                                pc->localPos.z = nTr[2] - pt->position.z;
-                                pc->localRot += glm::radians(deltaDeg);
+                            // Update selected TRS from gizmo
+                            t->position = { nTr[0], nTr[1], nTr[2] };
+                            float engineDeg = glm::degrees(t->rotation);
+                            engineDeg += deltaDeg;
+                            t->rotation = glm::radians(engineDeg);
+
+                            // Recompute selected's local if it has a parent (maintain world)
+                            if (ecs.HasComponent<Component::ParentComponent>(selected)) {
+                                auto* pc = ecs.GetComponent<Component::ParentComponent>(selected);
+                                const Entity parentE = pc->parent;
+                                if (parentE && ecs.HasComponent<Component::TransformComponent>(parentE)) {
+                                    auto* pt = ecs.GetComponent<Component::TransformComponent>(parentE);
+                                    const float pr = pt->rotation; // radians
+                                    const float dx = nTr[0] - pt->position.x;
+                                    const float dy = nTr[1] - pt->position.y;
+                                    const float s = std::sin(-pr), c = std::cos(-pr);
+                                    pc->localPos.x = c * dx - s * dy;
+                                    pc->localPos.y = s * dx + c * dy;
+                                    pc->localPos.z = nTr[2] - pt->position.z;
+                                    pc->localRot += glm::radians(deltaDeg);
+                                }
+                            }
+
+                            // De-orbit descendants of the selected so their world stays
+                            if (std::abs(deltaDeg) > 0.0001f) {
+                                const CEVec3 parentWorld{ nTr[0], nTr[1], nTr[2] };
+                                const float  parentRotRad = t->rotation;
+                                const float  deltaRad = glm::radians(deltaDeg);
+                                for (const auto& sv : savedChildren) {
+                                    Entity child = sv.e;
+                                    if (child == selected) continue;
+                                    if (!ecs.HasComponent<Component::TransformComponent>(child) ||
+                                        !ecs.HasComponent<Component::ParentComponent>(child)) continue;
+                                    auto* ct = ecs.GetComponent<Component::TransformComponent>(child);
+                                    auto* cp = ecs.GetComponent<Component::ParentComponent>(child);
+                                    ct->position = sv.worldPos;         // keep world
+                                    cp->localRot += deltaRad;           // rotate local
+                                    const float dx = sv.worldPos.x - parentWorld.x;
+                                    const float dy = sv.worldPos.y - parentWorld.y;
+                                    const float s = std::sin(-parentRotRad), c = std::cos(-parentRotRad);
+                                    cp->localPos.x = c * dx - s * dy;
+                                    cp->localPos.y = s * dx + c * dy;
+                                    cp->localPos.z = sv.worldPos.z - parentWorld.z;
+                                }
                             }
                         }
 
-                        // De-orbit descendants of the selected so their world stays
-                        if (std::abs(deltaDeg) > 0.0001f) {
-                            const CEVec3 parentWorld{ nTr[0], nTr[1], nTr[2] };
-                            const float  parentRot = t->rotation;
-                            const float  deltaRad = glm::radians(deltaDeg);
-
-                            for (const auto& sv : savedChildren) {
-                                Entity child = sv.e;
-                                if (child == selected) continue;
-                                if (!ecs.HasComponent<Component::TransformComponent>(child) ||
-                                    !ecs.HasComponent<Component::ParentComponent>(child)) continue;
-
-                                auto* ct = ecs.GetComponent<Component::TransformComponent>(child);
-                                auto* cp = ecs.GetComponent<Component::ParentComponent>(child);
-
-                                // Keep world pos
-                                ct->position = sv.worldPos;
-
-                                // Update child's local so it still resolves to the same world
-                                cp->localRot += deltaRad;
-                                const float dx = sv.worldPos.x - parentWorld.x;
-                                const float dy = sv.worldPos.y - parentWorld.y;
-                                const float s = std::sin(-parentRot), c = std::cos(-parentRot);
-                                cp->localPos.x = c * dx - s * dy;
-                                cp->localPos.y = s * dx + c * dy;
-                                cp->localPos.z = sv.worldPos.z - parentWorld.z;
-                            }
-                        }
+                        s_prevGizmoDeg = gizmoDeg;
                     }
                     else if (g_gizmoOp == ImGuizmo::SCALE)
                     {
