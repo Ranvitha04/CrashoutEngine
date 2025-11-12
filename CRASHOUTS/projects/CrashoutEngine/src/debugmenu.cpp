@@ -72,7 +72,10 @@ using CrashoutsEngine::Audio::AudioSystem;
 
 /*
 ----------------------------------------------------------------------------- */
-
+static bool dragging = false;
+static std::vector<CrashoutsEngine::Entity> movedEntities;
+static std::vector<CrashoutsEngine::TransformState> startStates;
+static bool undoTriggeredThisFrame = false;
 using namespace CrashoutsEngine;
 using namespace Component;
 
@@ -1333,9 +1336,11 @@ namespace UI { // --------------------------------------------------------------
 
                     ImGuizmo::Manipulate(view, proj, g_gizmoOp, g_gizmoMode, m, nullptr, snapPtr);
 
-                    static bool dragging = false;
+                    /*static bool dragging = false;
                     static std::vector<CrashoutsEngine::Entity> movedEntities;
                     static std::vector<CrashoutsEngine::TransformState> startStates;
+                    static bool undoTriggeredThisFrame = false;
+                    */
 
                     if (ImGuizmo::IsUsing())
                     {
@@ -1343,6 +1348,7 @@ namespace UI { // --------------------------------------------------------------
                         if (!dragging)
                         {
                             dragging = true;
+                            undoTriggeredThisFrame = false;
                             movedEntities.clear();
                             startStates.clear();
 
@@ -1413,11 +1419,11 @@ namespace UI { // --------------------------------------------------------------
                             }
                         }
                     }
-                    else if (dragging)
+                    else if (dragging && !undoTriggeredThisFrame)
                     {
                         // End drag — record new positions and push ONE command
                         dragging = false;
-
+                        undoTriggeredThisFrame = true;
                         std::vector<CrashoutsEngine::TransformState> endStates;
                         endStates.reserve(movedEntities.size());
 
@@ -1466,6 +1472,8 @@ namespace UI { // --------------------------------------------------------------
                         movedEntities.clear();
                         startStates.clear();
                     }
+                    if (!ImGuizmo::IsUsing())
+                        undoTriggeredThisFrame = false;
                 }
             }
 
