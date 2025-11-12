@@ -18,6 +18,8 @@ Creates descriptors for each state and registers them with the game state manage
 #include "ranscene.h"
 #include "descentmenuscene.h"
 #include "descentgamescene.h"
+#include "gamestatemanager.h"
+
 
 /*!
 @brief Register all game states

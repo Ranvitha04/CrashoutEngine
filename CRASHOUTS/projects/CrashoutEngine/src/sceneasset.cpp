@@ -23,12 +23,13 @@
 #include <iostream>
 #include <memory>
 #include <utility>
+#include "collidercomponent.h"
 
+//#define RAPIDJSON_HAS_STDSTRING 1
 #include <rapidjson/error/en.h>
 #include <rapidjson/stringbuffer.h>
 #include <rapidjson/writer.h>
 #include <rapidjson/prettywriter.h>
-
 
 // File I/O Util Functions
 namespace {
@@ -115,6 +116,7 @@ namespace CrashoutsEngine {
             const char* const ENTITIES                  = "entities";
             const char* const ENTITY_ID                 = "id";
             const char* const NAME_COMPONENT            = "name";
+            const char* const LAYER_COMPONENT           = "layer";
             const char* const TRANSFORM_COMPONENT       = "transform";
             const char* const RIGIDBODY_COMPONENT       = "rigidbody";
             const char* const COLLIDER_COMPONENT        = "collider";
@@ -171,6 +173,25 @@ namespace CrashoutsEngine {
                 return;
             }
 
+
+            if (doc.HasMember("layers")) {
+                LayerComponent::layers.clear();
+                const rapidjson::Value& layerNames = doc["layers"];
+                if (layerNames.IsObject()) {
+                    // iterate over all members (key-value pairs) in json object
+                    for (rapidjson::Value::ConstMemberIterator itr = layerNames.MemberBegin();
+                        itr != layerNames.MemberEnd(); ++itr) {
+                        // Get the key
+                        std::string layerName = itr->name.GetString();
+                        // Get value
+                        unsigned int layerVal = 0;
+                        if (itr->value.IsUint()) layerVal = itr->value.GetUint();
+                        // Insert the pair
+                        LayerComponent::layers[layerName] = layerVal;
+                    }
+                }
+            }
+
             const rapidjson::Value& entitiesArray = doc[Keys::ENTITIES];
 
             ECS& gECS = *ECS::getInstance();
@@ -192,6 +213,7 @@ namespace CrashoutsEngine {
                 Entity newEntity = gECS.CreateEntity();
                 // Add default components
                 NameComponent& nameComp = gECS.AddComponent<NameComponent>(newEntity, ("Entity" + std::to_string(i)));
+                LayerComponent& layerComp = gECS.AddComponent<LayerComponent>(newEntity);
                 TransformComponent& transComp = gECS.AddComponent<TransformComponent>(newEntity);
 
                 const rapidjson::Value& entityValue = entitiesArray[i];
@@ -201,6 +223,11 @@ namespace CrashoutsEngine {
                 // Set Entity Name
                 if (entityValue.HasMember(Keys::NAME_COMPONENT) && entityValue[Keys::NAME_COMPONENT].IsString()) {
                     nameComp.name = entityValue[Keys::NAME_COMPONENT].GetString();
+                }
+
+                // Set Entity Layer
+                if (entityValue.HasMember(Keys::LAYER_COMPONENT) && entityValue[Keys::LAYER_COMPONENT].IsUint()) {
+                    layerComp.currentLayer = entityValue[Keys::LAYER_COMPONENT].GetUint();
                 }
 
                 // Set Entity Transform
@@ -756,6 +783,20 @@ namespace CrashoutsEngine {
                 }
 
                 // =========================================================
+                // B. LayerComponent
+                // =========================================================
+                if (gECS.HasComponent<LayerComponent>(id)) {
+                    const LayerComponent& layerComp = *gECS.GetComponent<LayerComponent>(id);
+                    rapidjson::Value layerValue(rapidjson::kObjectType);
+
+                    // 1. Current Layer
+                    layerValue.AddMember("currentLayer", layerComp.currentLayer, allocator);
+
+                    entityValue.AddMember(rapidjson::StringRef(Keys::LAYER_COMPONENT),
+                        std::move(layerValue), allocator);
+                }
+
+                // =========================================================
                 // B. TransformComponent
                 // =========================================================
                 if (gECS.HasComponent<TransformComponent>(id)) {
@@ -1143,6 +1184,14 @@ namespace CrashoutsEngine {
 
             // 4. Add the ENTITIES array to the main document
             doc.AddMember(rapidjson::StringRef(Keys::ENTITIES), std::move(entitiesArray), allocator);
+
+            rapidjson::Value layerNames(rapidjson::kObjectType);
+            for (auto& layer : LayerComponent::layers) {
+                layerNames.AddMember(rapidjson::Value(layer.first.c_str(), allocator).Move()
+                    , layer.second, allocator);
+            }
+
+            doc.AddMember("layers", std::move(layerNames), allocator);
 
             // =========================================================
             // 5. Serialize the Document directly to a JSON string

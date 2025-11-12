@@ -5,7 +5,6 @@
 @brief		Declaration of colliderbindings
 */
 #pragma once
-#include <mono/jit/jit.h>
 namespace CrashoutsEngine::Bindings
 {
     void RegisterColliderBindings();

@@ -10,8 +10,9 @@
 #include <filesystem>
 #include <iostream>
 #include <mono/metadata/mono-config.h>
-
+#include "entitymanager.h"
 #include "ScriptSystem.h"
+#include <thread>
 
 MonoDomain* MonoManager::s_Domain = nullptr;
 MonoAssembly* MonoManager::s_Assembly = nullptr;

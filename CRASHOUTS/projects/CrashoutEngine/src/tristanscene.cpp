@@ -20,7 +20,7 @@
 #include <chrono> // Used to seed the random number generator
 #include "glm/vec3.hpp"
 #include "GLFW/glfw3.h"
-
+#include "collidercomponent.h"
 
 static CrashoutsEngine::ECS* globalECS;
 

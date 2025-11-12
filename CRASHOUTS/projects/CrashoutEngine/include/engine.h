@@ -16,7 +16,6 @@ This file
 #include "performanceViewer.h"
 #include "entitymanager.h"
 #include "log.h"
-#include "playerMovement.h"     // Player::UpdateADVelocity
 #include "physicsmanager.h"            // Component::RigidBodyComponent
 #include "aimanager.h"
 #include "inputmanager.h"

@@ -343,7 +343,7 @@ void Update(Component::RigidBodyComponent& playerRigidBody, double const& dt) {
         GLApp::update_time(1.0);
 
         //Update 
-        Player::UpdateVelocity(playerRigidBody, moveSpeed);
+        //Player::UpdateVelocity(playerRigidBody, moveSpeed);
 
         // animate scene
         GLApp::update();

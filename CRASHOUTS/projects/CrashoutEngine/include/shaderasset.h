@@ -15,7 +15,6 @@
 
 // LIBRARIES INCLUDES
 #include <string>
-#include <glm/glm.hpp>
 
 #include "assetmanager.h"
 #include "shader.h"

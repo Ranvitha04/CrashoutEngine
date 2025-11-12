@@ -12,6 +12,7 @@
 #include <algorithm>
 #include <cmath>
 #include "camera.h"
+#include "collidercomponent.h"
 
 using namespace CrashoutsEngine;
 using namespace Component;

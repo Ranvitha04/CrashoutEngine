@@ -54,7 +54,6 @@ for all 2D graphics operations in the engine.
 #include <GL/glew.h>
 #include <glm/glm.hpp>
 #include <vector>
-#include <cstddef>
 #include "shader.h"	
 #include "entitymanager.h"
 

@@ -29,20 +29,9 @@ generate procedurally varied, GPU-efficient visuals.
 #include "CEVec3.h"
 #include "CEVec2.h"
 #include "entitymanager.h"
-#include "sceneutils.h"
 #include "assetmanager.h"
-#include "shapes.h"
-#include "rendering.h"
 #include <string>
-#include <array>
 #include <vector>
-#include <cmath>
-#include <GL/glew.h>
-#include "glapp.h"
-#include <iostream>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-#include "textureasset.h"
 
 
 namespace InstancingSystem {

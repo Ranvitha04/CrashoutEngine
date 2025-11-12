@@ -13,7 +13,6 @@
 #include "collisionmanager.h"
 #include "observer.h"
 #include "rigidbodycomponent.h"
-#include "log.h"
 #include <vector>
 
 namespace Physics {

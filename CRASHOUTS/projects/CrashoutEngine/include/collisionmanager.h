@@ -10,18 +10,13 @@
 #pragma once
 
 #include "CEVec3.h"
-#include "transformcomponent.h"
 #include "observable.h"
 #include "log.h"
 #include "colliders.h"
 #include "entitymanager.h"
-#include "collidercomponent.h"
 #include "quadtree.h"
 #include <memory>
-#include <iostream>
-#include <cmath>
 #include <array>
-#include <algorithm>
 #include <utility>
 
 

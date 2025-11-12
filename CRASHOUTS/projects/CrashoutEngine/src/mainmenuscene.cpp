@@ -22,6 +22,7 @@
 #include "GLFW/glfw3.h"
 
 #include "monomanager.h"
+#include "collidercomponent.h"
 
 
 

@@ -5,8 +5,6 @@
 @brief		Declaration of script system class
 */
 #pragma once
-#include "entitymanager.h"
-#include "scriptcomponent.h"
 #include <mono/jit/jit.h>
 #include <mono/metadata/assembly.h>
 

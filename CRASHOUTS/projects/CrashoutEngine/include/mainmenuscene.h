@@ -1,6 +1,5 @@
 #pragma once
 
-#include "gamestatemanager.h"
 
 void LoadMainMenu();
 void InitMainMenu();

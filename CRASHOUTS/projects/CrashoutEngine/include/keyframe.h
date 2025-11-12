@@ -4,7 +4,6 @@
 #include <unordered_map>
 #include <functional>
 #include <algorithm>
-#include <cmath>
 
 // ---- Forward minimal engine types (adjust if your names differ)
 namespace CrashoutsEngine {

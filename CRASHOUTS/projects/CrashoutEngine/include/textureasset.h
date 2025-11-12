@@ -24,18 +24,9 @@
 #include <array>
 #include "assetmanager.h"
 #include "entitymanager.h"
-#include "rendering.h"
 #include "CEVec2.h"
 #include "CEVec3.h"
 
-#include <stb_image.h>
-#include <iostream>
-#include <fstream>
-#include <algorithm>
-#include <cctype>
-#include <vector>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
 
 // Forward declarations
 namespace CrashoutsEngine {

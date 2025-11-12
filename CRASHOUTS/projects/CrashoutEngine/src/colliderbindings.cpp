@@ -7,6 +7,8 @@
 #include "colliderbindings.h"
 #include "collidercomponent.h"
 #include "colliders.h"
+#include "transformcomponent.h"
+#include "entitymanager.h"
 
 static void InternalUpdateRotation(uint32_t entityID, float rot)
 {
