@@ -233,3 +233,13 @@ bool InputManager::IsKeyTriggered(int key) {
 bool InputManager::IsKeyTriggered(Key key) {
     return IsKeyTriggered(static_cast<int>(key));
 }
+
+bool InputManager::IsKeyHeld(int key)
+{
+    return Keys.count(key) ? Keys.at(key) : false;
+}
+
+bool InputManager::IsKeyHeld(Key key)
+{
+    return IsKeyHeld(static_cast<int>(key));
+}

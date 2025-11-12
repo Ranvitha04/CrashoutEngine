@@ -52,6 +52,9 @@ for Crashout Engine.
 #include "engine.h"
 #include <filesystem>
 
+#include "undomanager.h"
+#include "moveentitycommand.h"
+
 
 using CrashoutsEngine::Audio::AudioSystem;
 // ImGui headers
@@ -1331,8 +1334,26 @@ namespace UI { // --------------------------------------------------------------
 
                     ImGuizmo::Manipulate(view, proj, g_gizmoOp, g_gizmoMode, m, nullptr, snapPtr);
 
+                    static bool dragging = false;
+                    static std::vector<CrashoutsEngine::Entity> movedEntities;
+                    static std::vector<CEVec3> startPositions;
+
                     if (ImGuizmo::IsUsing())
                     {
+                        // Begin drag — record all entities' starting positions
+                        if (!dragging)
+                        {
+                            dragging = true;
+                            movedEntities.clear();
+                            startPositions.clear();
+
+                            for (Entity e : group)
+                            {
+                                if (!ecs.HasComponent<Component::TransformComponent>(e)) continue;
+                                movedEntities.push_back(e);
+                                startPositions.push_back(ecs.GetComponent<Component::TransformComponent>(e)->position);
+                            }
+                        }
                         float newTr[3], newRt[3], newSc[3];
                         ImGuizmo::DecomposeMatrixToComponents(m, newTr, newRt, newSc);
 
@@ -1386,6 +1407,55 @@ namespace UI { // --------------------------------------------------------------
                                 rootT->size.y = newSc[1];
                             }
                         }
+                    }
+                    else if (dragging)
+                    {
+                        // End drag — record new positions and push ONE command
+                        dragging = false;
+
+                        std::vector<CEVec3> endPositions;
+                        endPositions.reserve(movedEntities.size());
+
+                        for (auto e : movedEntities)
+                        {
+                            auto* t = ecs.GetComponent<Component::TransformComponent>(e);
+                            endPositions.push_back(t ? t->position : CEVec3{});
+                        }
+
+                        // Check if anything actually moved
+                        bool moved = false;
+                        for (size_t i = 0; i < startPositions.size(); ++i)
+                        {
+                            if (startPositions[i] != endPositions[i])
+                            {
+                                moved = true;
+                                break;
+                            }
+                        }
+
+                        if (moved)
+                        {
+                            if (movedEntities.size() > 1)
+                            {
+                                // Record one group command for multiple entities
+                                UndoManager::GetInstance().Execute(
+                                    std::make_unique<MoveGroupCommand>(
+                                        movedEntities, startPositions, endPositions));
+                            }
+                            else
+                            {
+                                // Record a single-entity move command
+                                UndoManager::GetInstance().Execute(
+                                    std::make_unique<MoveEntityCommand>(
+                                        movedEntities.front(),
+                                        startPositions.front(),
+                                        endPositions.front()));
+                            }
+                        }
+
+                        // Clear buffers for next drag
+                        movedEntities.clear();
+                        startPositions.clear();
                     }
                 }
             }
@@ -1623,6 +1693,16 @@ namespace UI { // --------------------------------------------------------------
             ImGui::DockBuilderDockWindow("Game Viewport", dock_main);
 
             ImGui::DockBuilderFinish(dockspace_id);
+        }
+        if (InputManager::IsKeyHeld(Key::LeftCtrl) && InputManager::IsKeyTriggered(Key::Z))
+        {
+			LOGI(Core, "Undo Triggered");
+            UndoManager::GetInstance().Undo();
+        }
+        if (InputManager::IsKeyHeld(Key::LeftCtrl) && InputManager::IsKeyTriggered(Key::Y))
+        {
+			LOGI(Core, "Redo Triggered");
+            UndoManager::GetInstance().Redo();
         }
 
         if (ui.showECS) {

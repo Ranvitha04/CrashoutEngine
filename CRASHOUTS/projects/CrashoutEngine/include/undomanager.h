@@ -1,51 +1,51 @@
+/*!
+@file        UndoManager.h
+@author      m.biniswandi@digipen.edu
+@brief       Singleton manager for undo/redo command history (deque version)
+@date        08/11/2025
+*/
+
 #pragma once
-#include <stack>
+#include <deque>
 #include <memory>
 
-
-class ICommand
+/*!
+@brief Base interface for all editor commands (actions that can be undone/redone)
+*/
+class EditorCommand
 {
 public:
-    virtual ~ICommand() = default;
-
-    /// Execute the command (redo or first run)
-    virtual void Execute() = 0;
-
-    /// Undo the command (revert the state)
-    virtual void Undo() = 0;
+    virtual ~EditorCommand() = default;
+    virtual void Execute() = 0;  //!< Applies the command
+    virtual void Undo() = 0;     //!< Reverts the command
 };
 
+/*!
+@brief Singleton Undo/Redo manager using std::deque for efficient trimming
+*/
 class UndoManager
 {
 public:
     static UndoManager& GetInstance();
 
-    /// Execute a new command and push it onto the undo stack
-    void Execute(std::unique_ptr<ICommand> command);
+    void Execute(std::unique_ptr<EditorCommand> command); //!< Runs and records command
+    void Undo();  //!< Ctrl+Z
+    void Redo();  //!< Ctrl+Y
+    void Clear(); //!< Clear both stacks
 
-    /// Undo the last command (Ctrl+Z)
-    void Undo();
-
-    /// Redo the last undone command (Ctrl+Y)
-    void Redo();
-
-    /// Clear all history (e.g. when loading a new scene)
-    void Clear();
-
-    /// Returns true if undo is available
     bool CanUndo() const { return !mUndoStack.empty(); }
-
-    /// Returns true if redo is available
     bool CanRedo() const { return !mRedoStack.empty(); }
+
+    void SetMaxHistory(size_t max) { mMaxHistory = max; }
 
 private:
     UndoManager() = default;
     ~UndoManager() = default;
-
     UndoManager(const UndoManager&) = delete;
     UndoManager& operator=(const UndoManager&) = delete;
 
 private:
-    std::stack<std::unique_ptr<ICommand>> mUndoStack;
-    std::stack<std::unique_ptr<ICommand>> mRedoStack;
+    std::deque<std::unique_ptr<EditorCommand>> mUndoStack;
+    std::deque<std::unique_ptr<EditorCommand>> mRedoStack;
+    size_t mMaxHistory = 20; //!< default limit
 };

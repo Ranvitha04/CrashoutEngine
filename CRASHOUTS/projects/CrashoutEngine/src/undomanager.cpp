@@ -1,3 +1,9 @@
+/*!
+@file        UndoManager.cpp
+@brief       Implementation of UndoManager using std::deque
+@date        08/11/2025
+*/
+
 #include "UndoManager.h"
 
 UndoManager& UndoManager::GetInstance()
@@ -6,17 +12,18 @@ UndoManager& UndoManager::GetInstance()
     return instance;
 }
 
-void UndoManager::Execute(std::unique_ptr<ICommand> command)
+void UndoManager::Execute(std::unique_ptr<EditorCommand> command)
 {
     if (!command)
         return;
 
     command->Execute();
-    mUndoStack.push(std::move(command));
+    mUndoStack.push_back(std::move(command));
+    mRedoStack.clear(); // new command invalidates redo history
 
-    // Clear redo history since a new command invalidates future redos
-    while (!mRedoStack.empty())
-        mRedoStack.pop();
+    // trim oldest undo if we exceed max history
+    if (mUndoStack.size() > mMaxHistory)
+        mUndoStack.pop_front();
 }
 
 void UndoManager::Undo()
@@ -24,11 +31,15 @@ void UndoManager::Undo()
     if (mUndoStack.empty())
         return;
 
-    auto cmd = std::move(mUndoStack.top());
-    mUndoStack.pop();
+    auto cmd = std::move(mUndoStack.back());
+    mUndoStack.pop_back();
 
     cmd->Undo();
-    mRedoStack.push(std::move(cmd));
+    mRedoStack.push_back(std::move(cmd));
+
+    // trim oldest redo if we exceed max history
+    if (mRedoStack.size() > mMaxHistory)
+        mRedoStack.pop_front();
 }
 
 void UndoManager::Redo()
@@ -36,17 +47,19 @@ void UndoManager::Redo()
     if (mRedoStack.empty())
         return;
 
-    auto cmd = std::move(mRedoStack.top());
-    mRedoStack.pop();
+    auto cmd = std::move(mRedoStack.back());
+    mRedoStack.pop_back();
 
     cmd->Execute();
-    mUndoStack.push(std::move(cmd));
+    mUndoStack.push_back(std::move(cmd));
+
+    // trim oldest undo if we exceed max history
+    if (mUndoStack.size() > mMaxHistory)
+        mUndoStack.pop_front();
 }
 
 void UndoManager::Clear()
 {
-    while (!mUndoStack.empty())
-        mUndoStack.pop();
-    while (!mRedoStack.empty())
-        mRedoStack.pop();
+    mUndoStack.clear();
+    mRedoStack.clear();
 }
