@@ -1284,207 +1284,200 @@ namespace UI { // --------------------------------------------------------------
             ImGuizmo::SetOrthographic(true);
 
             // 5) if we have a selected entity, let gizmo edit its TRS
-            static bool dragging = false;
-            static std::vector<Entity> movedEntities;
-            static std::vector<CrashoutsEngine::TransformState> startStates;
-            static bool  s_rotating = false;
-            static float s_prevGizmoDeg = 0.0f;
-
             if (selected && ecs.HasComponent<Component::TransformComponent>(selected))
             {
-                // Build target matrix from selected entity
-                auto* t = ecs.GetComponent<Component::TransformComponent>(selected);
-                float tr[3] = { t->position.x, t->position.y, t->position.z };
-                float rt[3] = { 0.f, 0.f, glm::degrees(t->rotation) };
-                float sc[3] = { t->size.x, t->size.y, 1.f };
-                float m[16]; ImGuizmo::RecomposeMatrixFromComponents(tr, rt, sc, m);
-
-                const float* view = glm::value_ptr(Component::Rendering::Get().viewMatrix);
-                const float* proj = glm::value_ptr(Component::Rendering::Get().projectionMatrix);
-
-                float snap[3] = {};
-                const float* snapPtr = nullptr;
-                if (g_snapOn) {
-                    if (g_gizmoOp == ImGuizmo::ROTATE) { snap[0] = g_snapAngle; snapPtr = snap; }
-                    else { snap[0] = g_snapTrans[0]; snap[1] = g_snapTrans[1]; snap[2] = g_snapTrans[2]; snapPtr = snap; }
-                }
-
-                // Build transform group for Translate group moves (root subtree)
+                // find the topmost entity for whatever we clicked
                 Entity root = CrashoutsEngine::GetRoot(ecs, selected);
-                std::vector<Entity> group; group.reserve(16);
+
+                // collect everyone under that root (root included)
+                std::vector<Entity> group;
+                group.reserve(16);
                 CrashoutsEngine::GatherDescendants(ecs, root, group);
 
-                // Prepare saved world positions for de-orbiting children on Rotate
-                std::vector<SavedChild> savedChildren;
-                if (g_gizmoOp == ImGuizmo::ROTATE) {
-                    std::vector<Entity> rotGroup; rotGroup.reserve(16);
-                    CrashoutsEngine::GatherDescendants(ecs, selected, rotGroup);
-                    for (Entity e : rotGroup) {
-                        if (!ecs.HasComponent<Component::TransformComponent>(e)) continue;
-                        auto* tt = ecs.GetComponent<Component::TransformComponent>(e);
-                        savedChildren.push_back({ e, tt->position });
-                    }
+                // compute center of all transforms in this group
+                CEVec3 center{ 0.f, 0.f, 0.f };
+                int count = 0;
+                for (CrashoutsEngine::Entity e : group) {
+                    if (!ecs.HasComponent<Component::TransformComponent>(e))
+                        continue;
+                    auto* t = ecs.GetComponent<Component::TransformComponent>(e);
+                    center.x += t->position.x;
+                    center.y += t->position.y;
+                    center.z += t->position.z;
+                    ++count;
+                }
+                if (count > 0) {
+                    center.x /= count;
+                    center.y /= count;
+                    center.z /= count;
                 }
 
-                // Run the gizmo
-                ImGuizmo::Manipulate(view, proj, g_gizmoOp, g_gizmoMode, m, nullptr, snapPtr);
-
-                if (ImGuizmo::IsUsing())
+                // use root's rot/scale just for displaying the gizmo nicely
+                auto* rootT = ecs.GetComponent<Component::TransformComponent>(root);
+                if (rootT)
                 {
-                    // Drag start: snapshot originals
-                    if (!dragging) {
-                        dragging = true;
+                    // gizmo starts exactly on the parent
+                    float tr[3] = { rootT->position.x, rootT->position.y, rootT->position.z };
+                    float rt[3] = { 0.f, 0.f, glm::degrees(rootT->rotation) };
+
+                    float sc[3] = { rootT->size.x, rootT->size.y, 1.f };
+
+                    float m[16];
+                    ImGuizmo::RecomposeMatrixFromComponents(tr, rt, sc, m);
+
+                    const float* view = glm::value_ptr(Component::Rendering::Get().viewMatrix);
+                    const float* proj = glm::value_ptr(Component::Rendering::Get().projectionMatrix);
+
+                    const float* snapPtr = nullptr;
+                    float snap[3]{};
+                    if (g_snapOn) {
+                        if (g_gizmoOp == ImGuizmo::ROTATE) {
+                            snap[0] = g_snapAngle;
+                            snapPtr = snap;
+                        }
+                        else {
+                            snap[0] = g_snapTrans[0];
+                            snap[1] = g_snapTrans[1];
+                            snap[2] = g_snapTrans[2];
+                            snapPtr = snap;
+                        }
+                    }
+
+                    ImGuizmo::Manipulate(view, proj, g_gizmoOp, g_gizmoMode, m, nullptr, snapPtr);
+
+                    static bool dragging = false;
+                    static std::vector<CrashoutsEngine::Entity> movedEntities;
+                    static std::vector<CrashoutsEngine::TransformState> startStates;
+
+                    if (ImGuizmo::IsUsing())
+                    {
+                        // Begin drag — record all entities' starting positions
+                        if (!dragging)
+                        {
+                            dragging = true;
+                            movedEntities.clear();
+                            startStates.clear();
+
+                            for (Entity e : group)
+                            {
+                                if (!ecs.HasComponent<Component::TransformComponent>(e)) continue;
+                                auto* transform = ecs.GetComponent<Component::TransformComponent>(e);
+
+                                CrashoutsEngine::TransformState state;
+                                state.position = transform->position;
+                                state.rotation = transform->rotation;
+                                state.scale = transform->size;
+                                startStates.push_back(state);
+                                movedEntities.push_back(e);
+                            }
+                        }
+                        float newTr[3], newRt[3], newSc[3];
+                        ImGuizmo::DecomposeMatrixToComponents(m, newTr, newRt, newSc);
+
+                        if (g_gizmoOp == ImGuizmo::TRANSLATE)
+                        {
+                            CEVec3 offset{
+                                newTr[0] - rootT->position.x,
+                                newTr[1] - rootT->position.y,
+                                newTr[2] - rootT->position.z
+                            };
+
+                            for (Entity e : group) {
+                                if (!ecs.HasComponent<Component::TransformComponent>(e)) continue;
+                                auto* t = ecs.GetComponent<Component::TransformComponent>(e);
+                                t->position.x += offset.x;
+                                t->position.y += offset.y;
+                                t->position.z += offset.z;
+                            }
+                        }
+                        else
+                        {
+                            rootT->position = { newTr[0], newTr[1], newTr[2] };
+                            //rotation test
+                            rootT->rotation = glm::radians(newRt[2]);
+
+                            rootT->size.x = newSc[0];
+                            rootT->size.y = newSc[1];
+
+                            if (g_gizmoOp == ImGuizmo::ROTATE)
+                            {
+                                // parent: degrees from gizmo; compute delta vs old parent rotation
+                                const float oldParentRad = rootT->rotation;
+                                const float parentDeg = newRt[2];
+                                const float deltaDeg = parentDeg - glm::degrees(oldParentRad);
+                                const float deltaRad = glm::radians(deltaDeg);
+
+                                for (Entity e : group)
+                                {
+                                    if (e == root) continue;
+                                    if (!ecs.HasComponent<Component::ParentComponent>(e)) continue;
+
+                                    auto* ppc = ecs.GetComponent<Component::ParentComponent>(e);
+                                    ppc->localRot += deltaRad;
+                                }
+                            }
+                            else if (g_gizmoOp == ImGuizmo::SCALE)
+                            {
+                                rootT->position = { newTr[0], newTr[1], newTr[2] };
+                                rootT->rotation = newRt[2];
+                                rootT->size.x = newSc[0];
+                                rootT->size.y = newSc[1];
+                            }
+                        }
+                    }
+                    else if (dragging)
+                    {
+                        // End drag — record new positions and push ONE command
+                        dragging = false;
+
+                        std::vector<CrashoutsEngine::TransformState> endStates;
+                        endStates.reserve(movedEntities.size());
+
+                        for (auto e : movedEntities)
+                        {
+                            auto* t = ecs.GetComponent<Component::TransformComponent>(e);
+                            if (t)
+                            {
+                                CrashoutsEngine::TransformState s;
+                                s.position = t->position;
+                                s.rotation = t->rotation;
+                                s.scale = t->size;
+                                endStates.push_back(s);
+                            }
+                        }
+
+                        // Check for actual change
+                        bool changed = false;
+                        for (size_t i = 0; i < startStates.size(); ++i)
+                        {
+                            if (startStates[i].position != endStates[i].position ||
+                                startStates[i].rotation != endStates[i].rotation ||
+                                startStates[i].scale != endStates[i].scale)
+                            {
+                                changed = true;
+                                break;
+                            }
+                        }
+
+                        if (changed)
+                        {
+                            if (movedEntities.size() > 1)
+                            {
+                                UndoManager::GetInstance().Execute(
+                                    std::make_unique<CrashoutsEngine::TransformGroupCommand>(
+                                        movedEntities, startStates, endStates));
+                            }
+                            else
+                            {
+                                UndoManager::GetInstance().Execute(
+                                    std::make_unique<CrashoutsEngine::TransformEntityCommand>(
+                                        movedEntities.front(), startStates.front(), endStates.front()));
+                            }
+                        }
+
                         movedEntities.clear();
                         startStates.clear();
-
-                        // What participates in undo depends on op:
-                        const auto& participants = (g_gizmoOp == ImGuizmo::TRANSLATE) ? group
-                            : std::vector<Entity>{ selected };
-
-                        for (Entity e : participants) {
-                            if (!ecs.HasComponent<Component::TransformComponent>(e)) continue;
-                            auto* tt = ecs.GetComponent<Component::TransformComponent>(e);
-                            CrashoutsEngine::TransformState s;
-                            s.position = tt->position;
-                            s.rotation = tt->rotation;
-                            s.scale = tt->size;
-                            startStates.push_back(s);
-                            movedEntities.push_back(e);
-                        }
                     }
-
-                    // Apply changes live
-                    float nTr[3], nRt[3], nSc[3];
-                    ImGuizmo::DecomposeMatrixToComponents(m, nTr, nRt, nSc);
-
-                    if (g_gizmoOp == ImGuizmo::TRANSLATE)
-                    {
-                        CEVec3 delta{ nTr[0] - t->position.x, nTr[1] - t->position.y, nTr[2] - t->position.z };
-                        for (Entity e : group) {
-                            if (!ecs.HasComponent<Component::TransformComponent>(e)) continue;
-                            auto* tt = ecs.GetComponent<Component::TransformComponent>(e);
-                            tt->position.x += delta.x;
-                            tt->position.y += delta.y;
-                            tt->position.z += delta.z;
-                        }
-                    }
-                    else if (g_gizmoOp == ImGuizmo::ROTATE)
-                    {
-                        float gizmoDeg;
-
-                        // Rotate only the selected; keep descendants' world positions
-                        const float prevDeg = glm::degrees(t->rotation);
-                        const float newDeg = nRt[2];
-
-                        gizmoDeg = nRt[2];
-
-                        if (!s_rotating) {
-                            s_rotating = true;
-                            s_prevGizmoDeg = gizmoDeg;
-                        }
-                        else {
-                            // Compute minimal delta
-                            float deltaDeg = newDeg - prevDeg;
-                            if (deltaDeg > 180.f)  deltaDeg -= 360.f;
-                            if (deltaDeg < -180.f) deltaDeg += 360.f;
-
-                            // Update selected TRS from gizmo
-                            t->position = { nTr[0], nTr[1], nTr[2] };
-                            float engineDeg = glm::degrees(t->rotation);
-                            engineDeg += deltaDeg;
-                            t->rotation = glm::radians(engineDeg);
-
-                            // Recompute selected's local if it has a parent (maintain world)
-                            if (ecs.HasComponent<Component::ParentComponent>(selected)) {
-                                auto* pc = ecs.GetComponent<Component::ParentComponent>(selected);
-                                const Entity parentE = pc->parent;
-                                if (parentE && ecs.HasComponent<Component::TransformComponent>(parentE)) {
-                                    auto* pt = ecs.GetComponent<Component::TransformComponent>(parentE);
-                                    const float pr = pt->rotation; // radians
-                                    const float dx = nTr[0] - pt->position.x;
-                                    const float dy = nTr[1] - pt->position.y;
-                                    const float s = std::sin(-pr), c = std::cos(-pr);
-                                    pc->localPos.x = c * dx - s * dy;
-                                    pc->localPos.y = s * dx + c * dy;
-                                    pc->localPos.z = nTr[2] - pt->position.z;
-                                    pc->localRot += glm::radians(deltaDeg);
-                                }
-                            }
-
-                            // De-orbit descendants of the selected so their world stays
-                            if (std::abs(deltaDeg) > 0.0001f) {
-                                const CEVec3 parentWorld{ nTr[0], nTr[1], nTr[2] };
-                                const float  parentRotRad = t->rotation;
-                                const float  deltaRad = glm::radians(deltaDeg);
-                                for (const auto& sv : savedChildren) {
-                                    Entity child = sv.e;
-                                    if (child == selected) continue;
-                                    if (!ecs.HasComponent<Component::TransformComponent>(child) ||
-                                        !ecs.HasComponent<Component::ParentComponent>(child)) continue;
-                                    auto* ct = ecs.GetComponent<Component::TransformComponent>(child);
-                                    auto* cp = ecs.GetComponent<Component::ParentComponent>(child);
-                                    ct->position = sv.worldPos;         // keep world
-                                    cp->localRot += deltaRad;           // rotate local
-                                    const float dx = sv.worldPos.x - parentWorld.x;
-                                    const float dy = sv.worldPos.y - parentWorld.y;
-                                    const float s = std::sin(-parentRotRad), c = std::cos(-parentRotRad);
-                                    cp->localPos.x = c * dx - s * dy;
-                                    cp->localPos.y = s * dx + c * dy;
-                                    cp->localPos.z = sv.worldPos.z - parentWorld.z;
-                                }
-                            }
-                        }
-
-                        s_prevGizmoDeg = gizmoDeg;
-                    }
-                    else if (g_gizmoOp == ImGuizmo::SCALE)
-                    {
-                        t->position = { nTr[0], nTr[1], nTr[2] };
-                        t->rotation = glm::radians(nRt[2]);
-                        t->size.x = nSc[0];
-                        t->size.y = nSc[1];
-                    }
-                }
-                else if (dragging)
-                {
-                    // Drag end -> push single undo command
-                    dragging = false;
-
-                    std::vector<CrashoutsEngine::TransformState> endStates;
-                    endStates.reserve(movedEntities.size());
-                    for (Entity e : movedEntities) {
-                        auto* tt = ecs.GetComponent<Component::TransformComponent>(e);
-                        CrashoutsEngine::TransformState s;
-                        s.position = tt->position;
-                        s.rotation = tt->rotation;
-                        s.scale = tt->size;
-                        endStates.push_back(s);
-                    }
-
-                    bool changed = false;
-                    for (size_t i = 0; i < startStates.size(); ++i) {
-                        if (startStates[i].position != endStates[i].position ||
-                            startStates[i].rotation != endStates[i].rotation ||
-                            startStates[i].scale != endStates[i].scale) {
-                            changed = true; break;
-                        }
-                    }
-
-                    if (changed) {
-                        if (movedEntities.size() > 1) {
-                            UndoManager::GetInstance().Execute(
-                                std::make_unique<CrashoutsEngine::TransformGroupCommand>(movedEntities, startStates, endStates));
-                        }
-                        else {
-                            UndoManager::GetInstance().Execute(
-                                std::make_unique<CrashoutsEngine::TransformEntityCommand>(movedEntities.front(),
-                                    startStates.front(),
-                                    endStates.front()));
-                        }
-                    }
-
-                    movedEntities.clear();
-                    startStates.clear();
                 }
             }
 
