@@ -57,6 +57,7 @@ for Crashout Engine.
 #include "transformentitycommand.h"
 #include "namecomponent.h"
 #include "shapescomponent.h"
+#include "audiocomponent.h"
 
 #include <vector>
 #include "CEVec3.h"
@@ -65,7 +66,6 @@ for Crashout Engine.
 
 #include "settings.h"
 
-using CrashoutsEngine::Audio::AudioSystem;
 // ImGui headers
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
@@ -80,6 +80,7 @@ using CrashoutsEngine::Audio::AudioSystem;
 
 using namespace CrashoutsEngine;
 using namespace Component;
+using CrashoutsEngine::Audio::AudioSystem;
 
 namespace { //----------------------------------------------------------------------------- file-local state & helpers
 
@@ -565,62 +566,76 @@ namespace UI { // --------------------------------------------------------------
             needScan = false;
         }
 
-        for (auto const& e : entries) {
+        // Build filtered list of indices
+        static std::vector<int> vis;
+        vis.clear();
+        vis.reserve(entries.size());
+        for (int i = 0; i < (int)entries.size(); ++i) {
+            const auto& e = entries[i];
             std::string name = e.path().filename().generic_string();
             if (filter[0] && name.find(filter) == std::string::npos) continue;
+            vis.push_back(i);
+        }
 
-            if (e.is_directory()) {
-                if (ImGui::Selectable((std::string("[Dir] ") + name).c_str(), false)) {
-                    current = e.path();
-                    needScan = true;
+        ImGuiListClipper clip;
+        clip.Begin((int)vis.size());
+        while (clip.Step()) {
+            for (int row = clip.DisplayStart; row < clip.DisplayEnd; ++row) {
+                const auto& e = entries[vis[row]];
+                std::string name = e.path().filename().generic_string();
+
+                if (e.is_directory()) {
+                    if (ImGui::Selectable((std::string("[Dir] ") + name).c_str(), false)) {
+                        current = e.path(); needScan = true;
+                    }
                 }
-            }
-            else {
-                bool selected = (outSelectedAsset == e.path().generic_string());
-                if (ImGui::Selectable(name.c_str(), selected))
-                    outSelectedAsset = e.path().generic_string();
+                else {
+                    bool sel = (outSelectedAsset == e.path().generic_string());
+                    if (ImGui::Selectable(name.c_str(), sel))
+                        outSelectedAsset = e.path().generic_string();
 
-                if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID)) {
-                    AssetDragPayload p{};
-                    std::string rel = fs::relative(e.path(), fs::path(root)).generic_string();// e.g. "images/player.png"
-                    std::string stem = e.path().stem().generic_string(); // e.g. "player"
-                    std::string ext = e.path().extension().generic_string();
-                    std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+                    if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID)) {
+                        AssetDragPayload p{};
+                        std::string rel = fs::relative(e.path(), fs::path(root)).generic_string();
+                        std::string stem = e.path().stem().generic_string();
+                        std::string ext = e.path().extension().generic_string();
+                        std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
 
-                    // Heuristics to pick kind by folder/extension
-                    if (rel.rfind("images/", 0) == 0 ||
-                        ext == ".png" || ext == ".jpg" || ext == ".jpeg" || ext == ".bmp" || ext == ".tga") {
-                        p.kind = AssetKind::Texture;
-                    }
-                    else if (rel.rfind("sprite_sheet/", 0) == 0) {
-                        p.kind = AssetKind::SpriteSheet;
-                    }
-                    else if (rel.rfind("scenes/", 0) == 0 || ext == ".scene" || ext == ".json") {
-                        p.kind = AssetKind::Scene;
-                    }
-                    else if (rel.rfind("audio/", 0) == 0 || ext == ".bank") {
-                        p.kind = AssetKind::Audio;
-                    }
-                    else if (rel.rfind("prefabs/", 0) == 0) {
-                        p.kind = AssetKind::Prefab;
-                    }
-                    else if (rel.rfind("shaders/", 0) == 0 || ext == ".vert" || ext == ".frag") {
-                        p.kind = AssetKind::Shader;
-                    }
-                    else {
-                        p.kind = AssetKind::Unknown;
+                        // Heuristics to pick kind by folder/extension
+                        if (rel.rfind("images/", 0) == 0 ||
+                            ext == ".png" || ext == ".jpg" || ext == ".jpeg" || ext == ".bmp" || ext == ".tga") {
+                            p.kind = AssetKind::Texture;
+                        }
+                        else if (rel.rfind("sprite_sheet/", 0) == 0) {
+                            p.kind = AssetKind::SpriteSheet;
+                        }
+                        else if (rel.rfind("scenes/", 0) == 0 || ext == ".scene" || ext == ".json") {
+                            p.kind = AssetKind::Scene;
+                        }
+                        else if (rel.rfind("audio/", 0) == 0 || ext == ".bank" || ext == ".ogg" || ext == ".wav" || ext == ".mp3") {
+                            p.kind = AssetKind::Audio;
+                        }
+                        else if (rel.rfind("prefabs/", 0) == 0) {
+                            p.kind = AssetKind::Prefab;
+                        }
+                        else if (rel.rfind("shaders/", 0) == 0 || ext == ".vert" || ext == ".frag") {
+                            p.kind = AssetKind::Shader;
+                        }
+                        else {
+                            p.kind = AssetKind::Unknown;
+                        }
+
+                        std::strncpy(p.name, stem.c_str(), sizeof(p.name) - 1);
+                        std::strncpy(p.relPath, rel.c_str(), sizeof(p.relPath) - 1);
+
+                        ImGui::SetDragDropPayload("ASSET/PAYLOAD", &p, sizeof(p));
+                        ImGui::TextUnformatted(p.name);
+                        ImGui::EndDragDropSource();
                     }
 
-                    std::strncpy(p.name, stem.c_str(), sizeof(p.name) - 1);
-                    std::strncpy(p.relPath, rel.c_str(), sizeof(p.relPath) - 1);
-
-                    ImGui::SetDragDropPayload("ASSET/PAYLOAD", &p, sizeof(p));
-                    ImGui::TextUnformatted(p.name);
-                    ImGui::EndDragDropSource();
+                    if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(0))
+                        outSelectedAsset = e.path().generic_string();
                 }
-
-                if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(0))
-                    outSelectedAsset = e.path().generic_string();
             }
         }
 
@@ -828,38 +843,47 @@ namespace UI { // --------------------------------------------------------------
         LOG_SYSTEMS(X)
 #undef X
 
-            // Search & options
-            ImGui::Separator();
+        // Search & options
+        ImGui::Separator();
         ImGui::InputTextWithHint("##search", "search text...", search, sizeof(search));
         ImGui::SameLine();
         ImGui::Checkbox("Auto-scroll", &autoscroll);
 
         ImGui::Separator();
 
-        // Log list
+        // Log list (virtualized)
         const auto& logs = Logger::Instance().Get();
-        for (const auto& log : logs)
-        {
-            // Filters
-            if (!levelOn[static_cast<int>(log.level)])  continue;
-            if (!systemOn[static_cast<int>(log.system)]) continue;
+
+        // Build filtered view (indices so we can clip)
+        static std::vector<int> filtered;
+        filtered.clear();
+        filtered.reserve(logs.size());
+        for (int i = 0; i < (int)logs.size(); ++i) {
+            const auto& log = logs[i];
+            if (!levelOn[(int)log.level])  continue;
+            if (!systemOn[(int)log.system]) continue;
             if (search[0] && std::string(log.text).find(search) == std::string::npos) continue;
+            filtered.push_back(i);
+        }
 
-            // Color by level
-            ImVec4 color =
-                (log.level == LogMessage::Level::Error) ? ImVec4(1.0f, 0.3f, 0.3f, 1.0f) :
-                (log.level == LogMessage::Level::Warning) ? ImVec4(1.0f, 0.9f, 0.4f, 1.0f) :
-                (log.level == LogMessage::Level::Success) ? ImVec4(0.4f, 1.0f, 0.4f, 1.0f) :
-                ImVec4(0.4f, 0.8f, 1.0f, 1.0f);
-            ImGui::PushStyleColor(ImGuiCol_Text, color);
+        ImGuiListClipper clipper;
+        clipper.Begin((int)filtered.size());
+        while (clipper.Step()) {
+            for (int row = clipper.DisplayStart; row < clipper.DisplayEnd; ++row) {
+                const auto& log = logs[filtered[row]];
+                // Color by level
+                const ImVec4 color =
+                    (log.level == LogMessage::Level::Error) ? ImVec4(1.0f, 0.3f, 0.3f, 1.0f) :
+                    (log.level == LogMessage::Level::Warning) ? ImVec4(1.0f, 0.9f, 0.4f, 1.0f) :
+                    (log.level == LogMessage::Level::Success) ? ImVec4(0.4f, 1.0f, 0.4f, 1.0f) :
+                    ImVec4(0.4f, 0.8f, 1.0f, 1.0f);
+                ImGui::PushStyleColor(ImGuiCol_Text, color);
 
-            // Prefix with level/system for readability
-            ImGui::Text("[%s][%s] %s",
-                ToString(log.level),
-                ToString(log.system),
-                log.text.c_str());
+                // Prefix + message (avoid fmt when not needed)
+                ImGui::Text("[%s][%s] %s", ToString(log.level), ToString(log.system), log.text.c_str());
 
-            ImGui::PopStyleColor();
+                ImGui::PopStyleColor();
+            }
         }
 
         // Controls
