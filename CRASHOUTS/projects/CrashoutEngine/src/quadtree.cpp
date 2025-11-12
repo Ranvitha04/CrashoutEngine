@@ -1,6 +1,7 @@
 #include "quadtree.h"
 #include "colliders.h"
 #include "collidercomponent.h"
+#include "transformcomponent.h"
 #include "shapes.h"
 #include "camera.h"
 
@@ -15,6 +16,8 @@ namespace {
 		CEVec3 p3(minP.x, maxP.y, z);
 
 		CEVec2 size = { thickness, thickness };
+		
+		using namespace Component;
 
 		Shapes::CreateLine(p0, p1, thickness, color);
 		Shapes::CreateLine(p1, p2, thickness, color);

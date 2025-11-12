@@ -31,6 +31,26 @@ context and implement a game loop.
 #include "hierarchy.h"   
 #include "hierarchy_components.h" 
 #include "prefab_init.h"
+
+#include "glapp.h"
+#include "log.h"
+#include "physicsmanager.h"            // Component::RigidBodyComponent
+#include "aimanager.h"
+#include "inputmanager.h"
+#include "debugreflection.h"
+#include "crashlogger.h"
+
+// ImGui headers for callbacks
+#include <imgui.h>
+#include <imgui_impl_glfw.h>
+#include <imgui_impl_opengl3.h>
+
+#include <iostream>
+
+#include "frameratecontroller.h"
+#include "registergamestate.h"
+#include "settings.h"
+#include <filesystem>
 /*                                                   type declarations
 ----------------------------------------------------------------------------- */
 
@@ -293,7 +313,7 @@ Make sure callbacks are invoked when state changes in input devices occur.
 Ensure time per frame and FPS are recorded.
 Let application update state changes (such as animation).
 */
-void Update(Component::RigidBodyComponent& playerRigidBody, double const& dt) {
+void Update(double const& dt) {
 
     GLApp::update_time();
 
@@ -365,6 +385,7 @@ void Update(Component::RigidBodyComponent& playerRigidBody, double const& dt) {
     // Process Game Camera
     if (engineState != EngineState::STOP) {
         using namespace CrashoutsEngine;
+        using namespace Component;
 
         ECS& ecs = *ECS::getInstance();
         std::vector<CameraComponent> c = ecs.GetComponentArray<CameraComponent>().dense;

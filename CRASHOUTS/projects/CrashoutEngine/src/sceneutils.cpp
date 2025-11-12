@@ -19,9 +19,21 @@ This file implements
 #include "sceneutils.h"
 #include "engine.h"
 
+#include "shapescomponent.h"
+#include "transformcomponent.h"
+#include "namecomponent.h"
+#include "textcomponent.h"
+#include "shapes.h"
+#include "uilayoutcomponent.h"
+#include "textinputcomponent.h"
+#include "buttoncomponent.h"
+
 #define FONT_SCALE 0.05f
 
 namespace Scene {
+
+    using namespace Component;
+
     void RenderScene(CrashoutsEngine::ECS& globalECS) {
         using namespace CrashoutsEngine;
         using Component::Rendering;

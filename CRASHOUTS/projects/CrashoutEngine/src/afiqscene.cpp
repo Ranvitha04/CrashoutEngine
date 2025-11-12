@@ -10,6 +10,10 @@
 #include <algorithm>
 #include <string>
 
+#include "transformcomponent.h"
+#include "namecomponent.h"
+#include "shapescomponent.h"
+
 // AUDIO
 #include "audioSystem.h"
 using CrashoutsEngine::Audio::AudioSystem;

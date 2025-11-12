@@ -13,6 +13,7 @@
 #include <cmath>
 #include "camera.h"
 #include "collidercomponent.h"
+#include "shapes.h"
 
 using namespace CrashoutsEngine;
 using namespace Component;
