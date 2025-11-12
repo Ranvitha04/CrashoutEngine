@@ -53,7 +53,7 @@ for Crashout Engine.
 #include <filesystem>
 
 #include "undomanager.h"
-#include "moveentitycommand.h"
+#include "transformentitycommand.h"
 
 
 using CrashoutsEngine::Audio::AudioSystem;
@@ -1336,7 +1336,7 @@ namespace UI { // --------------------------------------------------------------
 
                     static bool dragging = false;
                     static std::vector<CrashoutsEngine::Entity> movedEntities;
-                    static std::vector<CEVec3> startPositions;
+                    static std::vector<CrashoutsEngine::TransformState> startStates;
 
                     if (ImGuizmo::IsUsing())
                     {
@@ -1345,13 +1345,19 @@ namespace UI { // --------------------------------------------------------------
                         {
                             dragging = true;
                             movedEntities.clear();
-                            startPositions.clear();
+                            startStates.clear();
 
                             for (Entity e : group)
                             {
                                 if (!ecs.HasComponent<Component::TransformComponent>(e)) continue;
+                                auto* transform = ecs.GetComponent<Component::TransformComponent>(e);
+
+                                CrashoutsEngine::TransformState state;
+                                state.position = transform->position;
+                                state.rotation = transform->rotation;
+                                state.scale = transform->size;
+                                startStates.push_back(state);
                                 movedEntities.push_back(e);
-                                startPositions.push_back(ecs.GetComponent<Component::TransformComponent>(e)->position);
                             }
                         }
                         float newTr[3], newRt[3], newSc[3];
@@ -1413,49 +1419,53 @@ namespace UI { // --------------------------------------------------------------
                         // End drag — record new positions and push ONE command
                         dragging = false;
 
-                        std::vector<CEVec3> endPositions;
-                        endPositions.reserve(movedEntities.size());
+                        std::vector<CrashoutsEngine::TransformState> endStates;
+                        endStates.reserve(movedEntities.size());
 
                         for (auto e : movedEntities)
                         {
                             auto* t = ecs.GetComponent<Component::TransformComponent>(e);
-                            endPositions.push_back(t ? t->position : CEVec3{});
+                            if (t)
+                            {
+                                CrashoutsEngine::TransformState s;
+                                s.position = t->position;
+                                s.rotation = t->rotation;
+                                s.scale = t->size;
+                                endStates.push_back(s);
+                            }
                         }
 
-                        // Check if anything actually moved
-                        bool moved = false;
-                        for (size_t i = 0; i < startPositions.size(); ++i)
+                        // Check for actual change
+                        bool changed = false;
+                        for (size_t i = 0; i < startStates.size(); ++i)
                         {
-                            if (startPositions[i] != endPositions[i])
+                            if (startStates[i].position != endStates[i].position ||
+                                startStates[i].rotation != endStates[i].rotation ||
+                                startStates[i].scale != endStates[i].scale)
                             {
-                                moved = true;
+                                changed = true;
                                 break;
                             }
                         }
 
-                        if (moved)
+                        if (changed)
                         {
                             if (movedEntities.size() > 1)
                             {
-                                // Record one group command for multiple entities
                                 UndoManager::GetInstance().Execute(
-                                    std::make_unique<MoveGroupCommand>(
-                                        movedEntities, startPositions, endPositions));
+                                    std::make_unique<CrashoutsEngine::TransformGroupCommand>(
+                                        movedEntities, startStates, endStates));
                             }
                             else
                             {
-                                // Record a single-entity move command
                                 UndoManager::GetInstance().Execute(
-                                    std::make_unique<MoveEntityCommand>(
-                                        movedEntities.front(),
-                                        startPositions.front(),
-                                        endPositions.front()));
+                                    std::make_unique<CrashoutsEngine::TransformEntityCommand>(
+                                        movedEntities.front(), startStates.front(), endStates.front()));
                             }
                         }
 
-                        // Clear buffers for next drag
                         movedEntities.clear();
-                        startPositions.clear();
+                        startStates.clear();
                     }
                 }
             }
