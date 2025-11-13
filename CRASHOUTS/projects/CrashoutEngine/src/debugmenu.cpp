@@ -60,7 +60,6 @@ for Crashout Engine.
 #include "transformentitycommand.h"
 #include "namecomponent.h"
 #include "shapescomponent.h"
-#include "sceneasset.h"
 
 #include <vector>
 #include "CEVec3.h"
@@ -1230,7 +1229,10 @@ namespace UI { // --------------------------------------------------------------
             // Stop
             if (ImGui::Button("STOP", ImVec2(70, 25))) {
                 if(currSceneName.empty()) RestartGameState();
-                //if (!currSceneName.empty()) Serialization::LoadScenes(currSceneName);
+                else {
+                    ECS::getInstance()->Reset();
+                    Serialization::LoadScenes(currSceneName);
+                }
                 //MonoManager::ReloadScripts();
                 engineState = EngineState::STOP;
             }
