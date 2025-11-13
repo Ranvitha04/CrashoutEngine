@@ -1448,6 +1448,7 @@ namespace UI { // --------------------------------------------------------------
                     static bool dragging = false;
                     static std::vector<CrashoutsEngine::Entity> movedEntities;
                     static std::vector<CrashoutsEngine::TransformState> startStates;
+                    static bool undoTriggeredThisFrame = false;
 
                     if (ImGuizmo::IsUsing())
                     {
@@ -1455,6 +1456,7 @@ namespace UI { // --------------------------------------------------------------
                         if (!dragging)
                         {
                             dragging = true;
+                            undoTriggeredThisFrame = false;
                             movedEntities.clear();
                             startStates.clear();
 
@@ -1525,11 +1527,11 @@ namespace UI { // --------------------------------------------------------------
                             }
                         }
                     }
-                    else if (dragging)
+                    else if (dragging && !undoTriggeredThisFrame)
                     {
                         // End drag — record new positions and push ONE command
                         dragging = false;
-
+                        undoTriggeredThisFrame = true;
                         std::vector<CrashoutsEngine::TransformState> endStates;
                         endStates.reserve(movedEntities.size());
 
@@ -1567,17 +1569,19 @@ namespace UI { // --------------------------------------------------------------
                                     std::make_unique<CrashoutsEngine::TransformGroupCommand>(
                                         movedEntities, startStates, endStates));
                             }
-                            else
+                            /*else
                             {
                                 UndoManager::GetInstance().Execute(
                                     std::make_unique<CrashoutsEngine::TransformEntityCommand>(
                                         movedEntities.front(), startStates.front(), endStates.front()));
-                            }
+                            }*/
                         }
 
                         movedEntities.clear();
                         startStates.clear();
                     }
+                    if (!ImGuizmo::IsUsing())
+                        undoTriggeredThisFrame = false;
                 }
             }
 
