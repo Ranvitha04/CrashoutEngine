@@ -14,18 +14,30 @@
 #include "observable.h"
 #include "log.h"
 #include "colliders.h"
+#include "collisionutils.h"
 #include "entitymanager.h"
 #include "collidercomponent.h"
 #include "quadtree.h"
+#include "messages.h"
 #include <memory>
 #include <iostream>
 #include <cmath>
 #include <array>
 #include <algorithm>
 #include <utility>
-
+#include <unordered_set>
 
 namespace Collision {
+
+
+	enum class EngineState { STOP, PLAY, PAUSE };
+
+	/*Custom Types*/
+	enum TypeOfCollision {
+		ON_ENTER,
+		ON_STAY,
+		ON_EXIT
+	};
 
 	/*!
 	@class	CollisionMessage
@@ -41,6 +53,7 @@ namespace Collision {
 		std::pair<CrashoutsEngine::Entity, CrashoutsEngine::Entity> getCollisionPair();
 		CollisionManifold getCollisionManifold();
 	};
+
 
 	/*!
 	@struct	CollisionProps
@@ -61,7 +74,6 @@ namespace Collision {
 	class CollisionHandler : public Messaging::Observable {
 	private:
 
-
 		static constexpr int TYPES_OF_COLLISION{ 3 };
 
 		std::array<FunctionDispatchType, TYPES_OF_COLLISION* TYPES_OF_COLLISION> collideFuncts;
@@ -78,13 +90,16 @@ namespace Collision {
 
 		static CollisionManifold OBBToOBBCollision(CollisionProps const& coll1, CollisionProps const& coll2);
 
+		ContactCollection currentFrameCollision;
+		ContactCollection lastFrameCollision;
+
 	public:
 
 		static DataStructure::QuadTree quadTree;
 
 		CollisionHandler();
 
-		void update(double deltaTime);
+		void update(double deltaTime, EngineState engineState);
 
 		/*!
 		@brief Return a function pointer to call the appropriate collision function

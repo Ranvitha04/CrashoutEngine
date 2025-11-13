@@ -5,7 +5,6 @@
 @brief		Declaration of transformbindings
 */
 #pragma once
-#include <mono/jit/jit.h>
 
 namespace CrashoutsEngine::Bindings
 {

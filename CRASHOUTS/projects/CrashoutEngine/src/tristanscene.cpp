@@ -12,6 +12,9 @@
 #include "collisionmanager.h"
 #include "aicomponent.h"
 #include "CEMath.h"
+#include "collidereventmanager.h"
+#include "shapescomponent.h"
+#include "namecomponent.h"
 #include "physicsmanager.h"
 #include "aimanager.h"
 #include <iostream>
@@ -27,6 +30,7 @@ static CrashoutsEngine::ECS* globalECS;
 static CrashoutsEngine::Entity entity1;
 static CrashoutsEngine::Entity entity2;
 static CrashoutsEngine::Entity entity3;
+static CrashoutsEngine::Entity entity4;
 
 static void AddPhysicsEntity(CrashoutsEngine::Entity& entity, Component::RigidBodyComponent&& rigidBody,
 	Component::TransformComponent&& transform, Component::ShapeComponent&& shape, Component::Tag&& name) {
@@ -203,6 +207,62 @@ public:
 	}
 };
 
+void Enter([[maybe_unused]] CrashoutsEngine::Entity collidedEntity) {
+
+	Component::Tag* test{ globalECS->GetComponent<Component::Tag>(collidedEntity) };
+	Component::ShapeComponent* test2{ globalECS->GetComponent<Component::ShapeComponent>(collidedEntity) };
+
+	if (test->id == std::string{ "W" }) test2->color = CEVec3{ 255.f, 255.f, 0.f };
+}
+
+void Stay([[maybe_unused]] CrashoutsEngine::Entity collidedEntity) {
+	Component::ShapeComponent* test{ globalECS->GetComponent<Component::ShapeComponent>(entity1) };
+
+	test->color = CEVec3{ 255.f, 0.f, 0.f };
+}
+
+void Exit([[maybe_unused]] CrashoutsEngine::Entity collidedEntity) {
+	Component::ShapeComponent* test{ globalECS->GetComponent<Component::ShapeComponent>(entity1) };
+
+	test->color = CEVec3{ 0.f, 0.f, 255.f };
+}
+
+
+void Enter2([[maybe_unused]] CrashoutsEngine::Entity collidedEntity) {
+	Component::ShapeComponent* test{ globalECS->GetComponent<Component::ShapeComponent>(entity1) };
+
+	test->color = CEVec3{ 0.f, 255.f, 0.f };
+}
+
+void Stay2([[maybe_unused]] CrashoutsEngine::Entity collidedEntity) {
+	Component::ShapeComponent* test{ globalECS->GetComponent<Component::ShapeComponent>(entity3) };
+
+	test->color = CEVec3{ 255.f, 0.f, 0.f };
+}
+
+void Exit2([[maybe_unused]] CrashoutsEngine::Entity collidedEntity) {
+	Component::ShapeComponent* test{ globalECS->GetComponent<Component::ShapeComponent>(entity3) };
+
+	test->color = CEVec3{ 0.f, 0.f, 255.f };
+}
+
+void Enter3([[maybe_unused]] CrashoutsEngine::Entity collidedEntity) {
+	Component::ShapeComponent* test{ globalECS->GetComponent<Component::ShapeComponent>(entity4) };
+
+	test->color = CEVec3{ 255.f, 255.f, 0.f };
+}
+
+void Stay3([[maybe_unused]] CrashoutsEngine::Entity collidedEntity) {
+	Component::ShapeComponent* test{ globalECS->GetComponent<Component::ShapeComponent>(entity4) };
+
+	test->color = CEVec3{ 255.f, 0.f, 0.f };
+}
+
+void Exit3([[maybe_unused]] CrashoutsEngine::Entity collidedEntity) {
+	Component::ShapeComponent* test{ globalECS->GetComponent<Component::ShapeComponent>(entity4) };
+
+	test->color = CEVec3{ 0.f, 0.f, 255.f };
+}
 
 void LoadTristan() {
 	LOGI(Core, "Tristan Initialized");
@@ -213,12 +273,15 @@ void LoadTristan() {
 
 }
 
+
 void InitTristan() {
+	std::cout << "INIT";
+
 	AddPhysicsEntity(
 		entity1,
 		Component::RigidBodyComponent{ CEVec3{}, 5.f, 0.f },
 		Component::TransformComponent{ .size = CEVec2{5.f, 5.f}, .position = CEVec3{-20.f, 10.f, 0.f} },
-		Component::ShapeComponent{ .enableTexture = true, .textureName = "Concept" },
+		Component::ShapeComponent{ .type = Component::ShapeType::Rectangle },
 		Component::Tag{ "A" }
 	);
 
@@ -235,8 +298,16 @@ void InitTristan() {
 		Component::Tag{ "B" }
 	);
 
+	AddPhysicsEntity(
+		entity4,
+		Component::RigidBodyComponent{ CEVec3{}, 0.f, 0.f },
+		Component::TransformComponent{ .size = CEVec2{5.f, 5.f}, .position = CEVec3{5.f, 20.f, 0.f} },
+		Component::ShapeComponent{ .type = Component::ShapeType::Rectangle },
+		Component::Tag{ "B" }
+	);
 
-	State::FiniteStateMachine<State::StateType> fsm{};
+
+	/*State::FiniteStateMachine<State::StateType> fsm{};
 
 	fsm.Add(PatrolRight{});
 	fsm.Add(PatrolLeft{});
@@ -247,7 +318,23 @@ void InitTristan() {
 
 	globalECS->AddComponent<Component::AIComponent>(entity3, Component::AIComponent{
 		fsm
-		});
+	});*/
+
+	CrashoutsEngine::CollisionEventManager& colEvent{ CrashoutsEngine::CollisionEventManager::GetInstance() };
+
+	colEvent.registerCollideStay(entity3, Stay2);
+	colEvent.registerCollideExit(entity3, Exit2);
+	colEvent.registerCollideEnter(entity3, Enter2);
+
+	colEvent.registerCollideStay(entity1, Stay);
+	colEvent.registerCollideExit(entity1, Exit);
+	colEvent.registerCollideEnter(entity1, Enter);
+
+	colEvent.registerTriggerStay(entity4, Stay3);
+	colEvent.registerTriggerExit(entity4, Exit3);
+	colEvent.registerTriggerEnter(entity4, Enter3);
+
+
 
 }
 
@@ -295,6 +382,9 @@ void RenderTristan() {
 
 void FreeTristan() {
 	globalECS->Reset();
+	CrashoutsEngine::CollisionEventManager& currentEvents{ CrashoutsEngine::CollisionEventManager::GetInstance() };
+
+	currentEvents.getCollisionEvents().clear();
 }
 
 void UnloadTristan()

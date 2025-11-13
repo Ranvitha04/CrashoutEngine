@@ -6,6 +6,7 @@
 
 This file implements
 */
+#pragma once
 
 #include "entitymanager.h"
 

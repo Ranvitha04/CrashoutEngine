@@ -19,7 +19,7 @@ namespace AIUtils {
 	bool IsObstacleInFront(CrashoutsEngine::Entity entity, float direction, std::string tag = "W");
 	bool IsObstacleIntersecting(CrashoutsEngine::Entity entity, std::string tag = "W");
 	bool IsIntersecting(CrashoutsEngine::Entity entity1, CrashoutsEngine::Entity entity2);
-	bool EntityInRange(CrashoutsEngine::Entity entity1, CrashoutsEngine::Entity entity2, f32 tolerance);
+	bool EntityInRange(CrashoutsEngine::Entity entity1, CrashoutsEngine::Entity entity2, float tolerance);
 }
 
 

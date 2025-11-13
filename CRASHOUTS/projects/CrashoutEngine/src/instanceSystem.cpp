@@ -32,6 +32,13 @@ This file contains only declarations; implementations are provided in the corres
 #include "spritecomponent.h"
 #include "frameratecontroller.h"
 #include "spritecomponent.h"
+#include "glapp.h"
+#include "textureasset.h"
+#include "rendering.h"
+
+#include "transformcomponent.h"
+#include "namecomponent.h"
+#include "shapescomponent.h"
 
 // Global variables needed for ECS and texturing
 static CrashoutsEngine::ECS* globalECS = nullptr;

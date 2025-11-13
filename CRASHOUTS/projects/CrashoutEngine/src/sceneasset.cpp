@@ -23,12 +23,33 @@
 #include <iostream>
 #include <memory>
 #include <utility>
+#include <filesystem>
 
+// RapidJSON
 #include <rapidjson/error/en.h>
 #include <rapidjson/stringbuffer.h>
 #include <rapidjson/writer.h>
 #include <rapidjson/prettywriter.h>
+#include <rapidjson/istreamwrapper.h>
 
+// Components
+#include "namecomponent.h"
+#include "transformcomponent.h"
+#include "shapescomponent.h"
+#include "audiocomponent.h"
+#include "textcomponent.h"
+#include "scriptcomponent.h"
+#include "cameracomponent.h"
+#include "physicsmanager.h"
+#include "ppcomponent.h"
+#include "collidercomponent.h"
+#include "layercomponent.h"
+
+// FOR GAME GUI
+#include "buttoncomponent.h"
+#include "guicomponent.h"
+#include "textinputcomponent.h"
+#include "uilayoutcomponent.h"
 
 // File I/O Util Functions
 namespace {
@@ -79,8 +100,20 @@ namespace CrashoutsEngine {
             // Load the JSON file from filePath
             std::string jsonContent = ReadFileToString(filePath);
             if (jsonContent.empty()) {
-                std::cout << "SceneAsset::Create - Failed to read file: " << filePath << std::endl;
-                return nullptr;
+                std::cout << "SceneAsset::Create - File not found or empty: " << filePath << std::endl;
+                std::cout << "Creating a new empty scene file..." << std::endl;
+
+                // Define empty scene content.
+                const std::string emptySceneContent = "{\n  \"entities\": [],\n  \"layers\": {}\n}";
+
+                if (!WriteTextToFile(filePath, emptySceneContent)) {
+                    // If we can't even write the new file, then we must fail
+                    std::cout << "ERROR: Failed to write new scene file: " << filePath << std::endl;
+                    return nullptr;
+                }
+
+                // Set the jsonContent to our new default string so the rest of the function can parse it.
+                jsonContent = emptySceneContent;
             }
 
             // Parse JSON string into RapidJSON document
@@ -110,11 +143,14 @@ namespace CrashoutsEngine {
 
     namespace Serialization {
 
+        using namespace Component;
+
         // JSON Structure Keys definition (for clean and centralized key management)
         namespace Keys {
             const char* const ENTITIES                  = "entities";
             const char* const ENTITY_ID                 = "id";
             const char* const NAME_COMPONENT            = "name";
+            const char* const LAYER_COMPONENT           = "layer";
             const char* const TRANSFORM_COMPONENT       = "transform";
             const char* const RIGIDBODY_COMPONENT       = "rigidbody";
             const char* const COLLIDER_COMPONENT        = "collider";
@@ -171,12 +207,30 @@ namespace CrashoutsEngine {
                 return;
             }
 
+
+            if (doc.HasMember("layers")) {
+                LayerComponent::layers.clear();
+                const rapidjson::Value& layerNames = doc["layers"];
+                if (layerNames.IsObject()) {
+                    // iterate over all members (key-value pairs) in json object
+                    for (rapidjson::Value::ConstMemberIterator itr = layerNames.MemberBegin();
+                        itr != layerNames.MemberEnd(); ++itr) {
+                        // Get the key
+                        std::string layerName = itr->name.GetString();
+                        // Get value
+                        unsigned int layerVal = 0;
+                        if (itr->value.IsUint()) layerVal = itr->value.GetUint();
+                        // Insert the pair
+                        LayerComponent::layers[layerName] = layerVal;
+                    }
+                }
+            }
+
             const rapidjson::Value& entitiesArray = doc[Keys::ENTITIES];
 
             ECS& gECS = *ECS::getInstance();
 
             for (rapidjson::SizeType i = 0; i < entitiesArray.Size(); ++i) {
-
                 /*Utility*/
                 struct ReadVectorFromJson {
                     CEVec3 operator()(const rapidjson::Value& val) {
@@ -192,6 +246,7 @@ namespace CrashoutsEngine {
                 Entity newEntity = gECS.CreateEntity();
                 // Add default components
                 NameComponent& nameComp = gECS.AddComponent<NameComponent>(newEntity, ("Entity" + std::to_string(i)));
+                LayerComponent& layerComp = gECS.AddComponent<LayerComponent>(newEntity);
                 TransformComponent& transComp = gECS.AddComponent<TransformComponent>(newEntity);
 
                 const rapidjson::Value& entityValue = entitiesArray[i];
@@ -201,6 +256,11 @@ namespace CrashoutsEngine {
                 // Set Entity Name
                 if (entityValue.HasMember(Keys::NAME_COMPONENT) && entityValue[Keys::NAME_COMPONENT].IsString()) {
                     nameComp.name = entityValue[Keys::NAME_COMPONENT].GetString();
+                }
+
+                // Set Entity Layer
+                if (entityValue.HasMember(Keys::LAYER_COMPONENT) && entityValue[Keys::LAYER_COMPONENT].IsUint()) {
+                    layerComp.currentLayer = entityValue[Keys::LAYER_COMPONENT].GetUint();
                 }
 
                 // Set Entity Transform
@@ -716,8 +776,76 @@ namespace CrashoutsEngine {
             // 1. Get or create the SceneAsset to store the data
             Assets::SceneAsset* sceneAsset = assetManager.Get<Assets::SceneAsset>(sceneName);
             if (!sceneAsset) {
+                std::filesystem::path fullPath = std::filesystem::path(Assets::rootPath) / "scenes" / sceneName;
+
                 // Handle case where the scene asset doesn't exist (e.g., create a new one)
-                Assets::SceneAsset::Create(sceneName);
+                Assets::SceneAsset::Create(fullPath.string());
+
+                // Create SceneAsset object from file data (JSON)
+                std::unique_ptr<Assets::SceneAsset> newScene = Assets::SceneAsset::Create(fullPath.string());
+
+                // Validate 
+                if (newScene) {
+                    // Load the SceneAsset into AssetManager
+                    Assets::AssetManager::GetInstance().Load(sceneName, std::move(newScene));
+                    std::cout << "AssetManager loaded scene data: " << sceneName << "(" << fullPath.string() << ")"
+                        << std::endl;
+                }
+                else {
+                    std::cerr << "Failed to create SceneAsset: " << sceneName << std::endl;
+                }
+
+                rapidjson::Document manifestDoc;
+                std::filesystem::path manifestPath = std::filesystem::path(Assets::rootPath) / "json" / "assetmanifest.json";
+
+                // Load the existing manifest
+                std::ifstream ifs(manifestPath);
+                if (!ifs.is_open()) {
+                    std::cerr << "CRITICAL: Could not open manifest file to add new scene: " << manifestPath << std::endl;
+                }
+                else {
+                    rapidjson::IStreamWrapper isw(ifs);
+                    manifestDoc.ParseStream(isw);
+                    ifs.close(); // Close before re-opening for write
+                }
+
+                if (manifestDoc.HasParseError()) {
+                    std::cerr << "WARNING: Could not parse manifest file. Creating new one: " << manifestPath << std::endl;
+                    manifestDoc.SetObject(); // Start fresh if parse failed
+                }
+
+                // Get "scenes" array, or create it if it doesn't exist
+                if (!manifestDoc.HasMember("scenes")) {
+                    manifestDoc.AddMember("scenes", rapidjson::Value(rapidjson::kArrayType), manifestDoc.GetAllocator());
+                }
+                rapidjson::Value& scenesArray = manifestDoc["scenes"];
+
+                // Create the new entry for the manifest
+                rapidjson::Value newEntry(rapidjson::kObjectType);
+                newEntry.AddMember("name", rapidjson::Value(sceneName.c_str(), manifestDoc.GetAllocator()), manifestDoc.GetAllocator());
+                newEntry.AddMember("path", rapidjson::Value(sceneName.c_str(), manifestDoc.GetAllocator()), manifestDoc.GetAllocator());
+
+                // Add new entry to the array
+                scenesArray.PushBack(newEntry, manifestDoc.GetAllocator());
+
+                // --- 4. (NEW) Write the updated manifest back to disk ---
+                std::ofstream ofs(manifestPath);
+                if (!ofs.is_open()) {
+                    std::cerr << "CRITICAL: Could not write updated manifest: " << manifestPath << std::endl;
+                }
+                else {
+                    rapidjson::StringBuffer buffer;
+                    rapidjson::PrettyWriter<rapidjson::StringBuffer> writer(buffer);
+                    manifestDoc.Accept(writer);
+                    ofs << buffer.GetString();
+                    ofs.close();
+                    std::cout << "Successfully added '" << sceneName << "' to asset manifest." << std::endl;
+                }
+
+                // --- 5. Load the new asset into the manager ---
+                Assets::AssetManager::GetInstance().Load(sceneName, std::move(newScene));
+                std::cout << "AssetManager loaded scene data: " << sceneName << "(" << fullPath.string() << ")" << std::endl;
+
                 sceneAsset = assetManager.Get<Assets::SceneAsset>(sceneName);
             }
 
@@ -753,6 +881,20 @@ namespace CrashoutsEngine {
                         rapidjson::Value(nameComp.name.c_str(), allocator), // Creates an rvalue for the value
                         allocator
                     );
+                }
+
+                // =========================================================
+                // B. LayerComponent
+                // =========================================================
+                if (gECS.HasComponent<LayerComponent>(id)) {
+                    const LayerComponent& layerComp = *gECS.GetComponent<LayerComponent>(id);
+                    rapidjson::Value layerValue(rapidjson::kObjectType);
+
+                    // 1. Current Layer
+                    layerValue.AddMember("currentLayer", layerComp.currentLayer, allocator);
+
+                    entityValue.AddMember(rapidjson::StringRef(Keys::LAYER_COMPONENT),
+                        std::move(layerValue), allocator);
                 }
 
                 // =========================================================
@@ -1143,6 +1285,14 @@ namespace CrashoutsEngine {
 
             // 4. Add the ENTITIES array to the main document
             doc.AddMember(rapidjson::StringRef(Keys::ENTITIES), std::move(entitiesArray), allocator);
+
+            rapidjson::Value layerNames(rapidjson::kObjectType);
+            for (auto& layer : LayerComponent::layers) {
+                layerNames.AddMember(rapidjson::Value(layer.first.c_str(), allocator).Move()
+                    , layer.second, allocator);
+            }
+
+            doc.AddMember("layers", std::move(layerNames), allocator);
 
             // =========================================================
             // 5. Serialize the Document directly to a JSON string

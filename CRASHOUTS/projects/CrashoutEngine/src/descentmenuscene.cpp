@@ -21,6 +21,8 @@ This file
 #include "sceneasset.h"
 #include "gamestatemanager.h"
 #include "inputmanager.h"
+
+#include "buttoncomponent.h"
 /*                                                   Global Variables
 ----------------------------------------------------------------------------- */
 
@@ -52,6 +54,7 @@ void UpdateDescentMenu()
 
 	// Change Game State if button is pressed
 	using namespace CrashoutsEngine;
+	using namespace Component;
 	Entity startBtnEntity = globalECS->FindEntityByName("Start_Button");
 	ButtonComponent* startBtn = globalECS->GetComponent<ButtonComponent>(startBtnEntity);
 	if (startBtn) {

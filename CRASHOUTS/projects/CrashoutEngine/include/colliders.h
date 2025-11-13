@@ -10,13 +10,11 @@
 #pragma once
 
 #include "CEVec3.h"
-#include "transformcomponent.h"
-#include "entitymanager.h"
 #include <memory>
 #include <map>
-#include <cmath>
 #include <array>
-#include <utility>
+#include <string>
+#include "entitymanager.h"
 
 namespace Collision {
 

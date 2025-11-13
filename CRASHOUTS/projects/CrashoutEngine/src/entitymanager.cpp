@@ -10,6 +10,34 @@
 ----------------------------------------------------------------------------- */
 
 #include "entitymanager.h"
+
+// Include components here:
+#include "namecomponent.h"
+#include "layercomponent.h"
+#include "transformcomponent.h"
+#include "shapescomponent.h"
+#include "rigidbodycomponent.h"
+#include "shapes.h"
+#include "textcomponent.h"
+#include "audiocomponent.h"
+#include "scriptcomponent.h"
+#include "cameracomponent.h"
+// UI COMPONENTS
+#include "buttoncomponent.h"
+#include "guicomponent.h"
+#include "textinputcomponent.h"
+#include "uilayoutcomponent.h"
+// POSTPROCESSING COMPONENTS
+#include "ppcomponent.h"
+
+using namespace Component;
+
+std::map<std::string, unsigned int> LayerComponent::layers = {
+	{"Default", 0},
+	{"Player",	1 << 0},
+	{"Ground",	1 << 1}
+};
+
 using Entity = uint32_t;
 /*!
 	@brief  Destroys a specific entity.

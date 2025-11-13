@@ -1,7 +1,7 @@
 #pragma once
 
 /*!
-@file   sprite.h
+@file   spriteAnimation.h
 @author ranvitha@digipen.edu
 @date   30/09/2025
 
@@ -38,10 +38,7 @@ __________________________________________________________________________*/
 #include <string>
 #include <unordered_map>
 #include <GL/glew.h>
-#include <GLFW/glfw3.h>
 #include "entitymanager.h"
-#include "rendering.h"
-#include "textureasset.h"
 
 #ifndef SPRITE_H
 #define SPRITE_H

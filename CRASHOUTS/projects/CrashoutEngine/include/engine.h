@@ -12,36 +12,15 @@ This file
 #ifndef ENGINE_H
 #define ENGINE_H
 
-#include "glapp.h"
-#include "performanceViewer.h"
+#include "GL/glew.h"
 #include "entitymanager.h"
-#include "log.h"
-#include "playerMovement.h"     // Player::UpdateADVelocity
-#include "physicsmanager.h"            // Component::RigidBodyComponent
-#include "aimanager.h"
-#include "inputmanager.h"
-#include "debugreflection.h"
-#include "debugmenu.h"
-#include "crashlogger.h"
-
-// ImGui headers for callbacks
-#include <imgui.h>
-#include <imgui_impl_glfw.h>
-#include <imgui_impl_opengl3.h>
-
-#include <iostream>
-
-#include "frameratecontroller.h"
-#include "gamestatemanager.h"
-#include "registergamestate.h"
-#include "settings.h"
-#include <filesystem>
+#include "rigidbodycomponent.h"
 
 /*                                                      function declarations
 ----------------------------------------------------------------------------- */
 void SetupConsole();
 void Init();
-void Update(Component::RigidBodyComponent&, double const&);
+void Update(double const&);
 void Draw(CrashoutsEngine::Entity&);
 void CleanUp();
 

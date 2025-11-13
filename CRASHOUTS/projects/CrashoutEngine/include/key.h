@@ -45,6 +45,7 @@ enum class Key {
     Period = GLFW_KEY_PERIOD,
     Minus = GLFW_KEY_MINUS,
     Equal = GLFW_KEY_EQUAL,
+	LeftCtrl = GLFW_KEY_LEFT_CONTROL,
 
     /// arrows
     Up = GLFW_KEY_UP,
@@ -98,6 +99,7 @@ inline std::string KeyToString(Key key) {
     case Key::Period: return ".";
     case Key::Minus: return "-";
     case Key::Equal: return "=";
+	case Key::LeftCtrl: return "Left Control";
 
     case Key::Up: return "Arrow Up";
     case Key::Down: return "Arrow Down";

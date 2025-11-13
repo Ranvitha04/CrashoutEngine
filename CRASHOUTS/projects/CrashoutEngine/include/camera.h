@@ -15,7 +15,7 @@ This file
 #include "CEVec2.h"
 #include "CEVec3.h"
 #include "cameracomponent.h"
-#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 namespace CrashoutsEngine {
 
@@ -74,7 +74,8 @@ namespace CrashoutsEngine {
 		extern Camera gameCamera;
 
 		void EditorCameraInput();
-		void PlayerCameraInput(CameraComponent& cameraComponent, Entity& entity);
+
+		void PlayerCameraInput(Component::CameraComponent& cameraComponent, Entity& entity);
 	}
 }
 

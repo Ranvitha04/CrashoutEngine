@@ -2,6 +2,9 @@
     "entities": [
         {
             "name": "Text_Input_Label",
+            "layer": {
+                "currentLayer": 0
+            },
             "transform": {
                 "rotation": 0.0,
                 "position": {
@@ -33,6 +36,9 @@
         },
         {
             "name": "Text_Button",
+            "layer": {
+                "currentLayer": 0
+            },
             "transform": {
                 "rotation": 0.0,
                 "position": {
@@ -136,6 +142,9 @@
         },
         {
             "name": "Text_Box_Label",
+            "layer": {
+                "currentLayer": 0
+            },
             "transform": {
                 "rotation": 0.0,
                 "position": {
@@ -167,6 +176,9 @@
         },
         {
             "name": "Text_Box",
+            "layer": {
+                "currentLayer": 0
+            },
             "transform": {
                 "rotation": 0.0,
                 "position": {
@@ -237,6 +249,9 @@
         },
         {
             "name": "Button_Label",
+            "layer": {
+                "currentLayer": 0
+            },
             "transform": {
                 "rotation": 0.0,
                 "position": {
@@ -268,6 +283,9 @@
         },
         {
             "name": "Text_Button_Label",
+            "layer": {
+                "currentLayer": 0
+            },
             "transform": {
                 "rotation": 0.0,
                 "position": {
@@ -299,6 +317,9 @@
         },
         {
             "name": "Button",
+            "layer": {
+                "currentLayer": 0
+            },
             "transform": {
                 "rotation": 0.0,
                 "position": {
@@ -386,6 +407,9 @@
         },
         {
             "name": "Text_Input_Box",
+            "layer": {
+                "currentLayer": 0
+            },
             "transform": {
                 "rotation": 0.0,
                 "position": {
@@ -459,5 +483,11 @@
                 "uiLayout": 4
             }
         }
-    ]
+    ],
+    "layers": {
+        "Default": 0,
+        "Ground": 2,
+        "Player": 1,
+        "UI": 4
+    }
 }
