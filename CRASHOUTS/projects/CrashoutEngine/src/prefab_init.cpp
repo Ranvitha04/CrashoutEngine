@@ -26,11 +26,16 @@
 #include "textcomponent.h"
 #include "textrenderer.h"  
 #include "scriptcomponent.h"
+#include "shapescomponent.h"
 #include "audiocomponent.h"   
+#include "transformcomponent.h"   
+#include "namecomponent.h"   
+#include "rigidbodycomponent.h"   
 #include "guicomponent.h"
 #include "ppcomponent.h"
 #include "camera.h"
 #include "collidercomponent.h"
+
 using namespace CrashoutsEngine;
 using namespace Component;
 /**

@@ -23,13 +23,33 @@
 #include <iostream>
 #include <memory>
 #include <utility>
-#include "collidercomponent.h"
+#include <filesystem>
 
-//#define RAPIDJSON_HAS_STDSTRING 1
+// RapidJSON
 #include <rapidjson/error/en.h>
 #include <rapidjson/stringbuffer.h>
 #include <rapidjson/writer.h>
 #include <rapidjson/prettywriter.h>
+#include <rapidjson/istreamwrapper.h>
+
+// Components
+#include "namecomponent.h"
+#include "transformcomponent.h"
+#include "shapescomponent.h"
+#include "audiocomponent.h"
+#include "textcomponent.h"
+#include "scriptcomponent.h"
+#include "cameracomponent.h"
+#include "physicsmanager.h"
+#include "ppcomponent.h"
+#include "collidercomponent.h"
+#include "layercomponent.h"
+
+// FOR GAME GUI
+#include "buttoncomponent.h"
+#include "guicomponent.h"
+#include "textinputcomponent.h"
+#include "uilayoutcomponent.h"
 
 // File I/O Util Functions
 namespace {
@@ -80,8 +100,20 @@ namespace CrashoutsEngine {
             // Load the JSON file from filePath
             std::string jsonContent = ReadFileToString(filePath);
             if (jsonContent.empty()) {
-                std::cout << "SceneAsset::Create - Failed to read file: " << filePath << std::endl;
-                return nullptr;
+                std::cout << "SceneAsset::Create - File not found or empty: " << filePath << std::endl;
+                std::cout << "Creating a new empty scene file..." << std::endl;
+
+                // Define empty scene content.
+                const std::string emptySceneContent = "{\n  \"entities\": [],\n  \"layers\": {}\n}";
+
+                if (!WriteTextToFile(filePath, emptySceneContent)) {
+                    // If we can't even write the new file, then we must fail
+                    std::cout << "ERROR: Failed to write new scene file: " << filePath << std::endl;
+                    return nullptr;
+                }
+
+                // Set the jsonContent to our new default string so the rest of the function can parse it.
+                jsonContent = emptySceneContent;
             }
 
             // Parse JSON string into RapidJSON document
@@ -110,6 +142,8 @@ namespace CrashoutsEngine {
     }
 
     namespace Serialization {
+
+        using namespace Component;
 
         // JSON Structure Keys definition (for clean and centralized key management)
         namespace Keys {
@@ -197,7 +231,6 @@ namespace CrashoutsEngine {
             ECS& gECS = *ECS::getInstance();
 
             for (rapidjson::SizeType i = 0; i < entitiesArray.Size(); ++i) {
-                std::cout << "hi\n";
                 /*Utility*/
                 struct ReadVectorFromJson {
                     CEVec3 operator()(const rapidjson::Value& val) {
@@ -743,8 +776,76 @@ namespace CrashoutsEngine {
             // 1. Get or create the SceneAsset to store the data
             Assets::SceneAsset* sceneAsset = assetManager.Get<Assets::SceneAsset>(sceneName);
             if (!sceneAsset) {
+                std::filesystem::path fullPath = std::filesystem::path(Assets::rootPath) / "scenes" / sceneName;
+
                 // Handle case where the scene asset doesn't exist (e.g., create a new one)
-                Assets::SceneAsset::Create(sceneName);
+                Assets::SceneAsset::Create(fullPath.string());
+
+                // Create SceneAsset object from file data (JSON)
+                std::unique_ptr<Assets::SceneAsset> newScene = Assets::SceneAsset::Create(fullPath.string());
+
+                // Validate 
+                if (newScene) {
+                    // Load the SceneAsset into AssetManager
+                    Assets::AssetManager::GetInstance().Load(sceneName, std::move(newScene));
+                    std::cout << "AssetManager loaded scene data: " << sceneName << "(" << fullPath.string() << ")"
+                        << std::endl;
+                }
+                else {
+                    std::cerr << "Failed to create SceneAsset: " << sceneName << std::endl;
+                }
+
+                rapidjson::Document manifestDoc;
+                std::filesystem::path manifestPath = std::filesystem::path(Assets::rootPath) / "json" / "assetmanifest.json";
+
+                // Load the existing manifest
+                std::ifstream ifs(manifestPath);
+                if (!ifs.is_open()) {
+                    std::cerr << "CRITICAL: Could not open manifest file to add new scene: " << manifestPath << std::endl;
+                }
+                else {
+                    rapidjson::IStreamWrapper isw(ifs);
+                    manifestDoc.ParseStream(isw);
+                    ifs.close(); // Close before re-opening for write
+                }
+
+                if (manifestDoc.HasParseError()) {
+                    std::cerr << "WARNING: Could not parse manifest file. Creating new one: " << manifestPath << std::endl;
+                    manifestDoc.SetObject(); // Start fresh if parse failed
+                }
+
+                // Get "scenes" array, or create it if it doesn't exist
+                if (!manifestDoc.HasMember("scenes")) {
+                    manifestDoc.AddMember("scenes", rapidjson::Value(rapidjson::kArrayType), manifestDoc.GetAllocator());
+                }
+                rapidjson::Value& scenesArray = manifestDoc["scenes"];
+
+                // Create the new entry for the manifest
+                rapidjson::Value newEntry(rapidjson::kObjectType);
+                newEntry.AddMember("name", rapidjson::Value(sceneName.c_str(), manifestDoc.GetAllocator()), manifestDoc.GetAllocator());
+                newEntry.AddMember("path", rapidjson::Value(sceneName.c_str(), manifestDoc.GetAllocator()), manifestDoc.GetAllocator());
+
+                // Add new entry to the array
+                scenesArray.PushBack(newEntry, manifestDoc.GetAllocator());
+
+                // --- 4. (NEW) Write the updated manifest back to disk ---
+                std::ofstream ofs(manifestPath);
+                if (!ofs.is_open()) {
+                    std::cerr << "CRITICAL: Could not write updated manifest: " << manifestPath << std::endl;
+                }
+                else {
+                    rapidjson::StringBuffer buffer;
+                    rapidjson::PrettyWriter<rapidjson::StringBuffer> writer(buffer);
+                    manifestDoc.Accept(writer);
+                    ofs << buffer.GetString();
+                    ofs.close();
+                    std::cout << "Successfully added '" << sceneName << "' to asset manifest." << std::endl;
+                }
+
+                // --- 5. Load the new asset into the manager ---
+                Assets::AssetManager::GetInstance().Load(sceneName, std::move(newScene));
+                std::cout << "AssetManager loaded scene data: " << sceneName << "(" << fullPath.string() << ")" << std::endl;
+
                 sceneAsset = assetManager.Get<Assets::SceneAsset>(sceneName);
             }
 

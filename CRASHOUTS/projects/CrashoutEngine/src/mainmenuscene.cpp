@@ -23,7 +23,9 @@
 
 #include "monomanager.h"
 #include "collidercomponent.h"
-
+#include "namecomponent.h"
+#include "transformcomponent.h"
+#include "shapescomponent.h"
 
 
 float random_min_max(float const& min, float const& max) {

@@ -9,16 +9,20 @@
 /*                                                                   includes
 ----------------------------------------------------------------------------- */
 #include "entitymanager.h"
+#include "ppcomponent.h"
 #include "assetmanager.h"
 #include "shaderasset.h"
 #include "ppmanager.h"
 #include "engine.h"
+#include <iostream>
 
 /*                                                                   
 ----------------------------------------------------------------------------- */
 namespace CrashoutsEngine {
 
 	namespace PostProcessing {
+
+		using namespace Component;
 
 		float g_brightness = 0.f;
 		float g_contrast = 0.f;

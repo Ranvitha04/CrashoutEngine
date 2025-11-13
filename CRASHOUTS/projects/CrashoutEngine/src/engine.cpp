@@ -31,6 +31,27 @@ context and implement a game loop.
 #include "hierarchy.h"   
 #include "hierarchy_components.h" 
 #include "prefab_init.h"
+
+#include "glapp.h"
+#include "log.h"
+#include "physicsmanager.h"            // Component::RigidBodyComponent
+#include "collidereventmanager.h"
+#include "aimanager.h"
+#include "inputmanager.h"
+#include "debugreflection.h"
+#include "crashlogger.h"
+
+// ImGui headers for callbacks
+#include <imgui.h>
+#include <imgui_impl_glfw.h>
+#include <imgui_impl_opengl3.h>
+
+#include <iostream>
+
+#include "frameratecontroller.h"
+#include "registergamestate.h"
+#include "settings.h"
+#include <filesystem>
 /*                                                   type declarations
 ----------------------------------------------------------------------------- */
 
@@ -40,6 +61,7 @@ std::mutex CrashoutsEngine::ECS::mtx;
 
 auto& physicsSystem = Physics::PhysicsHandler::GetInstance();
 static Collision::CollisionHandler collisionSystem;
+CrashoutsEngine::CollisionEventManager &collisionEvent = CrashoutsEngine::CollisionEventManager::GetInstance();
 static CrashoutsEngine::AIManager aiSystem;
 
 // ImGui in-game performance viewer
@@ -112,6 +134,9 @@ void Init() {
     InstallCrashLogger("CrashoutsEngine");
     glfwSwapInterval(0); // disable vsync
     collisionSystem.registerObserver(Messaging::getCollisionMsgID(), physicsSystem); /*Listen to messages(collisions)*/
+    collisionSystem.registerObserver(Messaging::getExitMsgID(), collisionEvent); /*Listen to messages(collisions)*/
+    collisionSystem.registerObserver(Messaging::getStayMsgID(), collisionEvent); /*Listen to messages(collisions)*/
+    collisionSystem.registerObserver(Messaging::getEnterMsgID(), collisionEvent); /*Listen to messages(collisions)*/
 
     // start with a 16:9 aspect ratio
     if (!GLApp::init(Settings::GetScreenWidth(), Settings::GetScreenHeight(), "CRASHOUTS")) {
@@ -293,7 +318,7 @@ Make sure callbacks are invoked when state changes in input devices occur.
 Ensure time per frame and FPS are recorded.
 Let application update state changes (such as animation).
 */
-void Update(Component::RigidBodyComponent& playerRigidBody, double const& dt) {
+void Update(double const& dt) {
 
     GLApp::update_time();
 
@@ -325,7 +350,7 @@ void Update(Component::RigidBodyComponent& playerRigidBody, double const& dt) {
 
         {
             FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Collision");
-            collisionSystem.update(dt);
+            collisionSystem.update(dt, (Collision::EngineState)engineState);
         }
         {
             FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Physics");
@@ -350,6 +375,10 @@ void Update(Component::RigidBodyComponent& playerRigidBody, double const& dt) {
     }
     else if (engineState == EngineState::STOP) {
         {
+            FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Collision");
+            collisionSystem.update(dt, (Collision::EngineState)engineState);
+        }
+        {
             FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Physics");
             physicsSystem.update(0.f);
         }
@@ -361,10 +390,15 @@ void Update(Component::RigidBodyComponent& playerRigidBody, double const& dt) {
         CrashoutsEngine::RenderCamera::engineCamera.UpdateMatrices(GLApp::width, GLApp::height);
 #endif
     }
+    else {
+        FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Physics");
+        physicsSystem.update(0.f);
+    }
 
     // Process Game Camera
     if (engineState != EngineState::STOP) {
         using namespace CrashoutsEngine;
+        using namespace Component;
 
         ECS& ecs = *ECS::getInstance();
         std::vector<CameraComponent> c = ecs.GetComponentArray<CameraComponent>().dense;

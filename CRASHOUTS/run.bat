@@ -39,7 +39,7 @@ if exist "!SLN_PATH!" (
 
 REM STEP 2: Build (runs while VS opens)
 echo [2/3] Building %CONFIG% configuration...
-cmake --build "%BUILD_DIR%" --config %CONFIG% --parallel
+cmake --build "%BUILD_DIR%" --config %CONFIG% --parallel -j 8
 if ERRORLEVEL 1 goto :FAIL
 
 REM STEP 3: Run executable

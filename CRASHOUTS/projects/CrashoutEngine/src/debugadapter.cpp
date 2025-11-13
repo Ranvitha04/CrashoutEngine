@@ -54,8 +54,10 @@ runtime-extensible and project-agnostic.
 #include "shapes.h"
 #include "layercomponent.h"
 #include "transformentitycommand.h"
+#include <memory>
 
 using namespace CrashoutsEngine;
+using namespace Component;
 
 //----------------------------------------------------------------------------- file-local state & helpers
 
@@ -114,7 +116,6 @@ namespace {
         }
         void drawInspector(ECS& ecs, Entity e) override {
             if (auto* c = ecs.GetComponent<Component::LayerComponent>(e)) {
-
                 // Get the static map
                 std::map<std::string, unsigned int>& layerMap = LayerComponent::layers;
 
@@ -1333,10 +1334,10 @@ R"(using System;
                 sc->Start();
 
             // small dt field
-            ImGui::SameLine();
-            static float dt = 1.0f / 60.0f;
-            ImGui::SetNextItemWidth(80.0f);
-            ImGui::DragFloat("dt", &dt, 0.001f, 0.0f, 1.0f, "%.3f");
+            //ImGui::SameLine();
+            //static float dt = 1.0f / 60.0f;
+            //ImGui::SetNextItemWidth(80.0f);
+            //ImGui::DragFloat("dt", &dt, 0.001f, 0.0f, 1.0f, "%.3f");
 
             ImGui::SameLine();
             if (ImGui::Button("Update"))

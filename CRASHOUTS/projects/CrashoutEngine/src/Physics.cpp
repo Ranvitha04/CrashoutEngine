@@ -8,15 +8,15 @@
 
 #include "physicsmanager.h"
 #include "frameratecontroller.h"
+#include "namecomponent.h"
 #include "log.h"
 #include <cstdio>
 #include "CEMath.h"
 #include "observer.h"
-#include "collidercomponent.h"
 
 
 namespace Component {
-	
+
 	f32 RigidBodyComponent::getInverseMass() {
 		if (!mMass) return 0.f; /*Prevent division by 0*/
 		return 1.f / mMass;
@@ -45,8 +45,10 @@ namespace Component {
 		mRestitutionCoeff = restitution;
 	}
 
-	RigidBodyComponent::RigidBodyComponent(CEVec3 maximumVel, f32 mass, f32 restitutionCoeff) 
-		: mVelocity{ CEVec3{} }, mMaximumVel{ maximumVel }, mMass{ mass }, mNetForce{ CEVec3{} }, mRestitutionCoeff{restitutionCoeff} { flags.set(Physics::SIMULATE_DYNAMICS); }
+	RigidBodyComponent::RigidBodyComponent(CEVec3 maximumVel, f32 mass, f32 restitutionCoeff)
+		: mVelocity{ CEVec3{} }, mMaximumVel{ maximumVel }, mMass{ mass }, mNetForce{ CEVec3{} }, mRestitutionCoeff{ restitutionCoeff } {
+		flags.set(Physics::SIMULATE_DYNAMICS);
+	}
 
 	void RigidBodyComponent::updatePhysics(double dt) {
 
@@ -55,9 +57,9 @@ namespace Component {
 			return;
 		}
 
-		/*	
-			F(Resultant Force) = ma; 
-			FIND a = F(Resultant Force) / m 
+		/*
+			F(Resultant Force) = ma;
+			FIND a = F(Resultant Force) / m
 		*/
 		CEVec3 acceleration = mNetForce * getInverseMass();
 
@@ -72,7 +74,7 @@ namespace Component {
 		return mVelocity;
 	}
 
-	void RigidBodyComponent::setVelocity(CEVec3 const &newVel) {
+	void RigidBodyComponent::setVelocity(CEVec3 const& newVel) {
 		this->mVelocity = newVel;
 	}
 
@@ -107,7 +109,7 @@ namespace {
 
 namespace Physics {
 
-	void PhysicsHandler::handleCollisionMessages(Collision::CollisionMessage& collEvent, PhysicsHandler &observer) {
+	void PhysicsHandler::handleCollisionMessages(Collision::CollisionMessage& collEvent, PhysicsHandler& observer) {
 		if (observer.GetPaused()) return;
 		CrashoutsEngine::ECS& globalECS = *(CrashoutsEngine::ECS::getInstance());
 		std::pair<CrashoutsEngine::Entity, CrashoutsEngine::Entity> colPair{ collEvent.getCollisionPair() };
@@ -126,7 +128,7 @@ namespace Physics {
 		attachHandler(Messaging::getCollisionMsgID(), (Messaging::HANDLER)PhysicsHandler::handleCollisionMessages);
 	}
 
-	
+
 	// Setters and Getters
 	void PhysicsHandler::SetGravity(const CEVec3& g) { sGravity = g; }
 	CEVec3 PhysicsHandler::GetGravity() { return sGravity; }
@@ -134,8 +136,8 @@ namespace Physics {
 	float PhysicsHandler::GetLinearDamping() { return sLinDamp; }
 
 	/*UPDATE BOTH THE RIGIDBODY AND TRANSFORM COMPONENT*/
-	void PhysicsHandler::updatePhysics(Component::TransformComponent *transformComp, Component::RigidBodyComponent *rigidBodyComp, double deltaTime) {
-		
+	void PhysicsHandler::updatePhysics(Component::TransformComponent* transformComp, Component::RigidBodyComponent* rigidBodyComp, double deltaTime) {
+
 		// Debug Stepping one
 		double dt = sOverrideDt ? sDebugDt : deltaTime;
 
@@ -167,15 +169,14 @@ namespace Physics {
 			return;
 		}
 
-		/*TOLERANCE VARIABLES (ATTEMPT TO PREVENT JITTER)*/
-		const float percent = 0.2f;
-		const float slop = 0.01f;
+		/*TOLERANCE VARIABLE (ATTEMPT TO PREVENT JITTER)*/
+		const float slop = 0.015f;
 
-		CEVec3 correction = event.colManifold.normal * std::max(event.colManifold.depth - slop, 0.0f) * (percent / sumInvMass);
+		CEVec3 correction = event.colManifold.normal * (event.colManifold.depth - slop);
 
 		/*MOVE OBJECT ALONG COLLISION NORMAL BEFORE CALCULATING IMPULSE TO CHANGE VELOCITY*/
-		transform1->position -= correction * invMass1;
-		transform2->position += correction * invMass2;
+		transform1->position -= correction * (invMass1 / sumInvMass);
+		transform2->position += correction * (invMass2 / sumInvMass);
 	}
 
 	void applyImpulse(Collision::CollisionEvent const& event, CrashoutsEngine::ECS& globalECS) {
@@ -192,8 +193,8 @@ namespace Physics {
 		}
 
 		applySeparation(event, globalECS);
-		
-		int impulseSolveAmount{4};
+
+		int impulseSolveAmount{ 5 };
 
 		for (int i{}; i < impulseSolveAmount; ++i) {
 
@@ -237,8 +238,13 @@ namespace Physics {
 
 			/*APPLY ANY FORCE GENERATOR HERE, EVERY ENTITY IS AFFECTED*/
 			ForceManager& fm{ rigidBody->getForceManager() };
-			CEVec3 resultant{ fm.ResolveForces(static_cast<f32>(deltaTime), rigidBody->getMass()) };
-			rigidBody->addForce(resultant); /*GRAVITY*/
+			int step{ FrameRateController::GetInstance().StepCount() };
+
+			/*Fixed step, accumulator will reach the target fixed dt and then execute physics simulation*/
+			for (int i{}; i < step; ++i) {
+				CEVec3 resultant{ fm.ResolveForces(static_cast<f32>(deltaTime), rigidBody->getMass()) };
+				rigidBody->addForce(resultant); /*GRAVITY*/
+			}
 
 		}
 
@@ -268,15 +274,14 @@ namespace Physics {
 				updatePhysics(transform, rigidBody, deltaTime);
 			}
 
-			/*Honestly shouldnt be here*/
 			if (globalECS.HasComponent<Component::ColliderComponent>(entity)) {
-				Component::ColliderComponent* c { globalECS.GetComponent<Component::ColliderComponent>(entity) };
+				Component::ColliderComponent* c{ globalECS.GetComponent<Component::ColliderComponent>(entity) };
 				c->collider->updateCollider(transform->position);
 			}
 
 		}
 
-		//collisionEvents.clear(); /*Fully consumed Collision Pairs*/
+		collisionEvents.clear(); /*Fully consumed Collision Pairs*/
 
 	}
 

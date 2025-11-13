@@ -9,6 +9,7 @@
 #include "colliders.h"
 #include "transformcomponent.h"
 #include "entitymanager.h"
+#include "monomanager.h"
 
 static void InternalUpdateRotation(uint32_t entityID, float rot)
 {

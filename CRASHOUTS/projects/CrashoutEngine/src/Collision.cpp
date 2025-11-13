@@ -18,6 +18,7 @@
 #include <algorithm>
 
 namespace {
+
 	std::pair<f32, f32> ComputeWorldDimensions() {
 		f32 worldWidth{}, worldHeight{};
 		const float BASE_SIZE = 100.0f;
@@ -61,11 +62,11 @@ namespace Collision {
 			CEVec3 extents{ sphere.radius, sphere.radius, 0.f };
 			return AABBRect{ transform - extents, transform + extents };
 		}
-			break;
+				   break;
 		case AABB: {
 			return dynamic_cast<AABBRect const&>(collider);
-			}
-			break;
+		}
+				 break;
 		case OBB: {
 			OBBRect const& obb{ dynamic_cast<OBBRect const&>(collider) };
 			CEVec3 minXY{ obb.rotatedVertices[0].x, obb.rotatedVertices[0].y, transform.z };
@@ -80,8 +81,8 @@ namespace Collision {
 			}
 
 			return AABBRect{ minXY, maxXY };
-			}
-			break;
+		}
+				break;
 
 		}
 
@@ -263,27 +264,34 @@ namespace Collision {
 		collideFuncts[OBBIdx * TYPES_OF_COLLISION + OBBIdx] = OBBToOBBCollision;
 	}
 
-	void CollisionHandler::update([[maybe_unused]] double deltaTime) {
-		
-
+	void CollisionHandler::update([[maybe_unused]] double deltaTime, EngineState state) {
 
 		CrashoutsEngine::ECS& globalECS = *(CrashoutsEngine::ECS::getInstance());
 
 		std::vector<CrashoutsEngine::Entity> globalEntities = globalECS.GetComponentArray<Component::ColliderComponent>().indexToEntity;
 
-		std::pair<f32, f32> newDimen{ComputeWorldDimensions()};
+		switch (state) {
+		case EngineState::PAUSE:
+			return;
+		case EngineState::STOP:
+			lastFrameCollision.clear();
+			return;
+		default:
+			break;
+		}
+
+		if (!globalEntities.size()) lastFrameCollision.clear(); //RESET IF CURRENTLY NO ENTITIES
+
+		std::pair<f32, f32> newDimen{ ComputeWorldDimensions() };
 
 		CEVec2 newExtents{ newDimen.first * 0.5f, newDimen.second * 0.5f };
 
 		quadTree.Resize(Collision::AABBRect{ CEVec3{-newExtents.x, -newExtents.y, 0.f}, CEVec3{newExtents.x, newExtents.y, 0.f} });
 
+		/*BROADPHASE*/
 		for (CrashoutsEngine::Entity& entity1 : globalEntities) {
 			quadTree.Insert(entity1);
 		}
-
-
-		std::vector<std::pair<CrashoutsEngine::Entity, CrashoutsEngine::Entity>> alreadyColl{};
-		//std::vector<std::pair<CrashoutsEngine::Entity, CrashoutsEngine::Entity>> test{};
 
 		/*DETECT COLLISION AND UPDATE COLLISION EVENTS MEMBER*/
 		for (CrashoutsEngine::Entity& entity1 : globalEntities) {
@@ -294,8 +302,6 @@ namespace Collision {
 
 			Component::ColliderComponent* collider1{ globalECS.GetComponent<Component::ColliderComponent>(entity1) };
 			Component::TransformComponent* transform1{ globalECS.GetComponent<Component::TransformComponent>(entity1) };
-
-			collider1->collider->updateCollider(transform1->position);
 
 			AABBRect region{ GetAABB(*(collider1->collider), transform1->position) };
 			quadTree.Query(region, collidableObjects);
@@ -325,7 +331,7 @@ namespace Collision {
 						CEVec3{},
 						CEVec3{transform2->position}
 					}
-				);
+					);
 
 				if (collisionManifold.collisionOccured) {
 
@@ -338,18 +344,46 @@ namespace Collision {
 
 					if (*entity1Ptr > *entity2Ptr) std::swap(entity1Ptr, entity2Ptr);
 
-					for (std::pair<CrashoutsEngine::Entity, CrashoutsEngine::Entity> test : alreadyColl) {
-						if (test.first == *entity1Ptr && test.second == *entity2Ptr) isIn = true;
+					for (ContactInformation const& test : currentFrameCollision) {
+						if (test.contacts.first == *entity1Ptr && test.contacts.second == *entity2Ptr) isIn = true;
 					}
 
+					/*UNIQUE PAIR*/
 					if (!isIn) {
-						alreadyColl.push_back({ *entity1Ptr, *entity2Ptr });
+						ContactPair pair{ *entity1Ptr, *entity2Ptr };
+
+						CollisionMessage stayMessage{ Messaging::getStayMsgID(), collisionManifold, *entity1Ptr, *entity2Ptr };
+						CollisionMessage enterMessage{ Messaging::getEnterMsgID(), collisionManifold, *entity1Ptr, *entity2Ptr };
+
+						if (isPairInCollection(pair, lastFrameCollision)) {
+							sendMessage(stayMessage);
+						}
+						else {
+							sendMessage(enterMessage);
+						}
+
+						currentFrameCollision.push_back(std::move(ContactInformation{ pair, collisionManifold }));
 						sendMessage(colMessage);
 					}
 
 				}
 			}
 		}
+
+		/*EVENT MANAGER STUFF*/
+
+		for (ContactInformation const& contactInfo : lastFrameCollision) {
+
+			CollisionMessage exitMessage{ Messaging::getExitMsgID(), contactInfo.colManifold, contactInfo.contacts.first, contactInfo.contacts.second };
+			if (!isPairInCollection(contactInfo.contacts, currentFrameCollision)) {
+				sendMessage(exitMessage);
+			}
+		}
+
+		/*-------------------*/
+
+		lastFrameCollision = currentFrameCollision;
+		currentFrameCollision.clear();
 
 	}
 
@@ -411,7 +445,7 @@ namespace Collision {
 
 	CollisionManifold CollisionHandler::SphereToSphereCollision(CollisionProps const& coll1, CollisionProps const& coll2) {
 
-		CollisionManifold result{.collisionOccured = false};
+		CollisionManifold result{ .collisionOccured = false };
 
 		Sphere const& sphere1Temp = dynamic_cast<Sphere const&>(*(coll1.collider));
 
@@ -441,7 +475,7 @@ namespace Collision {
 
 	CollisionManifold CollisionHandler::AABBToAABBCollision(CollisionProps const& coll1, CollisionProps const& coll2) {
 
-		CollisionManifold result{.collisionOccured=false};
+		CollisionManifold result{ .collisionOccured = false };
 
 		AABBRect const& aabb1Temp = dynamic_cast<AABBRect const&>(*(coll1.collider));
 
@@ -474,7 +508,7 @@ namespace Collision {
 	}
 
 	CollisionManifold CollisionHandler::SphereToAABBCollision(CollisionProps const& coll1, CollisionProps const& coll2) {
-		CollisionManifold result{.collisionOccured=false};
+		CollisionManifold result{ .collisionOccured = false };
 
 		CollisionProps const* spherePtr{ &coll1 };
 		CollisionProps const* aabbPtr{ &coll2 };

@@ -74,7 +74,8 @@ namespace CrashoutsEngine {
 		extern Camera gameCamera;
 
 		void EditorCameraInput();
-		void PlayerCameraInput(CameraComponent& cameraComponent, Entity& entity);
+
+		void PlayerCameraInput(Component::CameraComponent& cameraComponent, Entity& entity);
 	}
 }
 
