@@ -6,6 +6,8 @@
 
 #include "undomanager.h"
 
+#include "log.h"
+
 UndoManager& UndoManager::GetInstance()
 {
     static UndoManager instance;
@@ -19,11 +21,14 @@ void UndoManager::Execute(std::unique_ptr<EditorCommand> command)
 
     command->Execute();
     mUndoStack.push_back(std::move(command));
+
     mRedoStack.clear(); // new command invalidates redo history
 
     // trim oldest undo if we exceed max history
     if (mUndoStack.size() > mMaxHistory)
         mUndoStack.pop_front();
+
+    LOGI(Core, ("Undo stack size: " + std::to_string(mUndoStack.size())).c_str());
 }
 
 void UndoManager::Undo()
