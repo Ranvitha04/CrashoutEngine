@@ -1229,7 +1229,7 @@ namespace UI { // --------------------------------------------------------------
             ImGui::SameLine();
             // Stop
             if (ImGui::Button("STOP", ImVec2(70, 25))) {
-                RestartGameState();
+                if(currSceneName.empty()) RestartGameState();
                 //if (!currSceneName.empty()) Serialization::LoadScenes(currSceneName);
                 //MonoManager::ReloadScripts();
                 engineState = EngineState::STOP;
