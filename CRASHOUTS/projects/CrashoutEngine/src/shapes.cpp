@@ -28,7 +28,7 @@ scaling) to shape vertices for flexible rendering.
 #include "entitymanager.h"
 #include <array>
 #include <vector>
-#include <cmath>
+#include <CEMath.h>
 #include <GL/glew.h>
 #include "glapp.h"
 #include <iostream>
@@ -36,9 +36,7 @@ scaling) to shape vertices for flexible rendering.
 #include <glm/gtc/type_ptr.hpp>
 #include "textureasset.h"
 
-#ifndef M_PI
-#define M_PI 3.14159265358979323846
-#endif
+
 
 
 namespace Component {
@@ -288,7 +286,7 @@ namespace Component {
 
         // Generate perimeter vertices
         for (int i = 0; i <= segments; ++i) {
-            float angle = 2.0f * static_cast<float>(M_PI) * static_cast<float>(i) / static_cast<float>(segments);
+            float angle = 2.0f * static_cast<float>(CEMath::PI) * static_cast<float>(i) / static_cast<float>(segments);
             float x = cosf(angle);
             float y = sinf(angle);
             pos_vtx.push_back(CEVec3(x, y, 0.0f));

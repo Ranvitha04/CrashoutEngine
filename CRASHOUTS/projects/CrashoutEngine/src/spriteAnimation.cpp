@@ -29,10 +29,14 @@ __________________________________________________________________________*/
 #include "rendering.h"
 #include "textureasset.h"
 #include "entitymanager.h"
+#include "spritecomponent.h"
+#include "transformcomponent.h"
+#include "frameratecontroller.h"
 #include "CEVec2.h"
 #include "CEVec3.h"
 #include <GL/glew.h>
 #include <iostream>
+#include <algorithm>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -304,5 +308,89 @@ namespace Component {
         // Set default animation
         
         setAnimationState("idle_normal");
+    }
+}
+
+namespace Component {
+
+    void SetSpriteSheet(CrashoutsEngine::Entity e, const std::string& assetName, int cols, int rows, CEVec2 worldSize) {
+        auto* ecs = CrashoutsEngine::ECS::getInstance();
+        if (!ecs) return;
+        auto* sheet = ecs->GetComponent<SpriteSheetComponent>(e);
+        if (!sheet) {
+            SpriteSheetComponent s{};
+            s.textureAsset = assetName;
+            s.cols = cols;
+            s.rows = rows;
+            s.worldSize = worldSize;
+            ecs->AddComponent<SpriteSheetComponent>(e, s);
+        } else {
+            sheet->textureAsset = assetName;
+            sheet->cols = cols;
+            sheet->rows = rows;
+            sheet->worldSize = worldSize;
+        }
+    }
+
+    void UpdateSpriteAnimationsECS() {
+        auto* ecs = CrashoutsEngine::ECS::getInstance();
+        if (!ecs) return;
+        float dt = static_cast<float>(FrameRateController::GetInstance().DT());
+        auto& arr = ecs->GetComponentArray<SpriteAnimComponent>();
+        for (size_t i = 0; i < arr.indexToEntity.size(); ++i) {
+            auto id = arr.indexToEntity[i];
+            auto* anim = ecs->GetComponent<SpriteAnimComponent>(id);
+            if (!anim) continue;
+            anim->timer += dt;
+            if (anim->timer >= anim->frameTime) {
+                anim->timer -= anim->frameTime;
+                anim->frameIndex = (anim->frameIndex + 1) % std::max(anim->frameCount, 1);
+            }
+        }
+    }
+
+    void RenderSpriteAnimationsECS() {
+        auto* ecs = CrashoutsEngine::ECS::getInstance();
+        if (!ecs) return;
+        auto& arr = ecs->GetComponentArray<SpriteAnimComponent>();
+        for (size_t i = 0; i < arr.indexToEntity.size(); ++i) {
+            auto id = arr.indexToEntity[i];
+            auto* tf    = ecs->GetComponent<TransformComponent>(id);
+            auto* anim  = ecs->GetComponent<SpriteAnimComponent>(id);
+            auto* sheet = ecs->GetComponent<SpriteSheetComponent>(id);
+            if (!tf || !anim || !sheet) continue;
+
+            int globalFrame = anim->startFrame + anim->frameIndex;
+            int frameY = sheet->cols > 0 ? globalFrame / sheet->cols : 0;
+            int frameX = sheet->cols > 0 ? globalFrame % sheet->cols : 0;
+
+            GLuint handle = TextureRenderer::GetTextureHandle(sheet->textureAsset);
+            if (handle != 0) {
+                TextureRenderer::CreateSpriteFrameFlipped(
+                    handle,
+                    tf->position,
+                    sheet->worldSize,
+                    frameX, frameY,
+                    sheet->cols, sheet->rows,
+                    anim->flip,
+                    tf->rotation,
+                    tf->size.x,
+                    CEVec3(1.0f, 1.0f, 1.0f),
+                    false
+                );
+            } else {
+                TextureRenderer::CreateSpriteFrame(
+                    sheet->textureAsset,
+                    tf->position,
+                    sheet->worldSize,
+                    frameX, frameY,
+                    sheet->cols, sheet->rows,
+                    tf->rotation,
+                    tf->size.x,
+                    CEVec3(1.0f, 1.0f, 1.0f),
+                    false
+                );
+            }
+        }
     }
 }

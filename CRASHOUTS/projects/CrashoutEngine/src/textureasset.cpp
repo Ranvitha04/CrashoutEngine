@@ -95,6 +95,13 @@ namespace CrashoutsEngine {
                 return nullptr;
             }
 
+            const int MAX_DIM = 4096;
+            if (w > MAX_DIM || h > MAX_DIM) {
+                std::cerr << "Error: Texture exceeds 4k limit (" << w << "x" << h << ") -> " << filePath << std::endl;
+                stbi_image_free(loadedData);
+                return nullptr;
+            }
+
             return std::unique_ptr<TextureAsset>(new TextureAsset(w, h, loadedData));
         }
 
@@ -200,6 +207,12 @@ namespace CrashoutsEngine {
         bool TextureAsset::UploadToGPU() {
             if (uploaded || !data) {
                 return uploaded; // Already uploaded or no data
+            }
+
+            const int MAX_DIM = 4096;
+            if (width > MAX_DIM || height > MAX_DIM) {
+                std::cerr << "Error: Texture exceeds 4k limit (" << width << "x" << height << ")" << std::endl;
+                return false;
             }
 
             glCreateTextures(GL_TEXTURE_2D, 1, &glHandle);
