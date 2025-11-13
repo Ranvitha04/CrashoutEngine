@@ -52,12 +52,15 @@ for Crashout Engine.
 
 #include "engine.h"
 #include <filesystem>
+#include <iostream>
+#include <fstream>
 
 #include "undomanager.h"
 #include "inputmanager.h"
 #include "transformentitycommand.h"
 #include "namecomponent.h"
 #include "shapescomponent.h"
+#include "sceneasset.h"
 
 #include <vector>
 #include "CEVec3.h"
@@ -66,7 +69,14 @@ for Crashout Engine.
 
 #include "settings.h"
 
+#include "rapidjson/rapidjson.h"
+#include "rapidjson/document.h"
+#include "rapidjson/prettywriter.h"
+#include "rapidjson/stringbuffer.h"
+#include "rapidjson/istreamwrapper.h"
+
 using CrashoutsEngine::Audio::AudioSystem;
+
 // ImGui headers
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
@@ -278,6 +288,9 @@ namespace UI { // --------------------------------------------------------------
      @brief Shuts down ImGui and cleans up resources.
     */
     void Shutdown() {
+
+        if (!currSceneName.empty()) Serialization::SaveScenes(currSceneName);
+
         ImGui_ImplOpenGL3_Shutdown();
         ImGui_ImplGlfw_Shutdown();
         ImGui::DestroyContext();
@@ -841,6 +854,8 @@ namespace UI { // --------------------------------------------------------------
         ImGui::Text("Current:  %s", nameFor(cur));
         ImGui::Text("Previous: %s", nameFor(prev));
 
+        if (cur != GameState::SCENE && !currSceneName.empty()) currSceneName.clear();
+
         ImGui::Separator();
         int col = 0;
         for (auto const& [label, id] : P->states()) {
@@ -865,6 +880,7 @@ namespace UI { // --------------------------------------------------------------
      @param ui UI state toggles.
     */
     static void RenderGameScenePanel(UIState& ui) {
+
         if (!ui.showGameScene) return;
 
         ScopedWindow w("GameScene", LockFlags(ui.lockLayout));
@@ -883,6 +899,7 @@ namespace UI { // --------------------------------------------------------------
             ImGui::TextDisabled("Enter new scene name...");
         }
 
+
         // 3. Draw the "Create Scene" button
         ImGui::SameLine();
         if (ImGui::Button("Create Scene")) {
@@ -891,13 +908,60 @@ namespace UI { // --------------------------------------------------------------
 
                 // 4. Call your create function
                 Serialization::SaveScenes(sceneNameBuffer);
-                Assets::SceneAsset::Create(sceneNameBuffer);
 
                 // 5. Clear the buffer after creation for good UX
                 sceneNameBuffer[0] = '\0';
             }
         }
         // --- End New UI ---
+
+        ImGui::Separator();
+        
+        // Draw all scene buttons
+        // Check manifest json file
+        std::ifstream ifs(Assets::assetManifestPath);
+        if (!ifs.is_open()) {
+            std::cerr << "Error: Could not open manifest file: " << Assets::assetManifestPath << std::endl;
+            return;
+        }
+
+        // Convert file to rapidJSON stream interface
+        rapidjson::IStreamWrapper isw(ifs);
+        rapidjson::Document doc;
+        doc.ParseStream(isw);
+
+        if (doc.HasParseError()) {
+            std::cerr << "Error parsing manifest JSON." << std::endl;
+            return;
+        }
+
+        if (doc.HasMember("scenes") && doc["scenes"].IsArray()) {
+            //std::cout << "Loading Scenes..." << std::endl;
+
+            const rapidjson::Value& sceneArray = doc["scenes"];
+
+            for (rapidjson::SizeType i = 0; i < sceneArray.Size(); ++i) {
+                const rapidjson::Value& asset = sceneArray[i];
+                if (asset.HasMember("name") && asset.HasMember("path")) {
+                    std::string name = asset["name"].GetString();
+                    std::string relativePath = asset["path"].GetString();
+
+                    if (ImGui::Button(name.c_str())) {
+                        if (!currSceneName.empty()) {
+                            if(engineState == EngineState::STOP) Serialization::SaveScenes(currSceneName);
+                        }
+                        ECS::getInstance()->Reset();
+                        currSceneName = name;
+                        Serialization::LoadScenes(name);
+                    }
+
+                    ImGui::SameLine();
+                }
+                else {
+                    std::cerr << "Warning: Scene asset entry missing 'name' or 'path' in manifest." << std::endl;
+                }
+            }
+        }
     }
 
     /*!
@@ -1166,6 +1230,7 @@ namespace UI { // --------------------------------------------------------------
             // Stop
             if (ImGui::Button("STOP", ImVec2(70, 25))) {
                 RestartGameState();
+                //if (!currSceneName.empty()) Serialization::LoadScenes(currSceneName);
                 //MonoManager::ReloadScripts();
                 engineState = EngineState::STOP;
             }
@@ -1744,6 +1809,7 @@ namespace UI { // --------------------------------------------------------------
             ImGui::DockBuilderDockWindow("Console", dock_bottom);
             ImGui::DockBuilderDockWindow("Performance", dock_left);
             ImGui::DockBuilderDockWindow("GameState", dock_bottom);
+            ImGui::DockBuilderDockWindow("GameScene", dock_bottom);
             ImGui::DockBuilderDockWindow("Audio", dock_right_bottom);
             ImGui::DockBuilderDockWindow("Engine Controls", dock_top);
             ImGui::DockBuilderDockWindow("Game Viewport", dock_main);

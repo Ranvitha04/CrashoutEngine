@@ -65,6 +65,8 @@ namespace UI {
 
     // -- Lifecycle ----------------------------------------------------
 
+    static std::string currSceneName = "";
+
     /*!
     @brief Initializes ImGui with a GLFW window.
     @param window Pointer to the GLFW window handle.

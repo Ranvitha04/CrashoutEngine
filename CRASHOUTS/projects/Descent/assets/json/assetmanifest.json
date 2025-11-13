@@ -319,6 +319,18 @@
             "path": "renfred"
         },
         {
+            "name": "test",
+            "path": "test"
+        },
+        {
+            "name": "test2",
+            "path": "test2"
+        },
+        {
+            "name": "test3",
+            "path": "test3"
+        },
+        {
             "name": "tristan",
             "path": "tristan"
         }
