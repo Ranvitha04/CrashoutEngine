@@ -323,6 +323,10 @@
             "path": "renfred"
         },
         {
+            "name": "test",
+            "path": "test"
+        },
+        {
             "name": "tristan",
             "path": "tristan"
         }
