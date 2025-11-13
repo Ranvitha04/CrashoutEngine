@@ -62,6 +62,11 @@ add_library(${PROJECT_NAME} STATIC
     ${other_include_files}
 )
 
+target_precompile_headers(${PROJECT_NAME}
+    PRIVATE
+        "${project_dir}/include/engine_pch.h"
+)
+
 # --- 6. Assign ALL file groups to filters ✨ ---
 source_group("src\\Managers"   FILES ${manager_src_files})
 source_group("include\\Managers"   FILES ${manager_include_files})
@@ -114,6 +119,7 @@ PUBLIC
 PRIVATE
     ${CMAKE_SOURCE_DIR}/lib/glm                 # Added GLM include
     ${_FMOD_INC}                                # Added FMOD include
+    ${_FREETYPE_INC}
 )
 
 # Build ManagedScripts.csproj automatically 

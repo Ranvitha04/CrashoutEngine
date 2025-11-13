@@ -145,10 +145,16 @@ macro(import_freetype)
         if (TARGET freetype)
             disable_warnings_for(freetype)
         endif()
+
+        # --- THIS IS THE CORRECT WAY ---
+        # Get the include directory property FROM the target
+        get_target_property(FREETYPE_INCLUDE_DIRS freetype INTERFACE_INCLUDE_DIRECTORIES)
+        
+        # Set your variable from this (but use a better name)
+        set(_FREETYPE_INC ${FREETYPE_INCLUDE_DIRS})
+        
     endif()
 endmacro()
-
-
 
 # -------------------- reflect.cpp --------------------
 macro(import_reflect)

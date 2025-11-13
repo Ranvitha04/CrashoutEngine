@@ -5,7 +5,7 @@
 
 @brief	This file defines the TileMapComponent, which stores reference to a 
 		tile-map asset, tile-map grid size, bool to create collider or no? 
-//__________________________________________________________________________*/
+__________________________________________________________________________*/
 #pragma once
 
 /*                                                                   includes

@@ -1,104 +1,34 @@
 ///*!
-//@file   sceneasset.cpp
+//@file   tilemapasset.cpp
 //@author lee.r@digipen.edu
-//=@date   16/09/2025
+//@date   16/09/2025
 //
 //@brief	This file contains the definition of the Scene class, a rough implementation
 //        of asset type that encapsulates a rapidjson value data. The class
 //        is designed to be used with the AssetManager and provides a static factory
 //        method for safe creation and resource management.
-////__________________________________________________________________________*/
-////#pragma once
-////
-/////*                                                                   includes
-////----------------------------------------------------------------------------- */
+//__________________________________________________________________________*/
+//#pragma once
 //
-//#include "entitymanager.h"
+///*                                                                   includes
+//----------------------------------------------------------------------------- */
+//
 //#include "assetmanager.h"
-//#include "collisionmanager.h"
-//#include "sceneasset.h"
-//#include "CEVec3.h"
+//#include "tilemapasset.h"
 //#include <fstream>
-//#include <sstream>
-//#include <iostream>
-//#include <memory>
-//#include <utility>
-//#include <filesystem>
-//
-//// RapidJSON
-//#include <rapidjson/error/en.h>
-//#include <rapidjson/stringbuffer.h>
-//#include <rapidjson/writer.h>
-//#include <rapidjson/prettywriter.h>
-//#include <rapidjson/istreamwrapper.h>
-//
-//// Components
-//#include "namecomponent.h"
-//#include "transformcomponent.h"
-//#include "shapescomponent.h"
-//#include "audiocomponent.h"
-//#include "textcomponent.h"
-//#include "scriptcomponent.h"
-//#include "cameracomponent.h"
-//#include "physicsmanager.h"
-//#include "ppcomponent.h"
-//#include "collidercomponent.h"
-//#include "layercomponent.h"
-//
-//// FOR GAME GUI
-//#include "buttoncomponent.h"
-//#include "guicomponent.h"
-//#include "textinputcomponent.h"
-//#include "uilayoutcomponent.h"
-//
-//// File I/O Util Functions
-//namespace {
-//    /*!
-//    @brief Reads the entire content of a file into a single string.
-//    @param filePath Path to the SceneAsset(JSON) file.
-//    @return empty string on failure.
-//    */
-//    std::string ReadFileToString(const std::string& filePath) {
-//        std::ifstream file(filePath);
-//        if (!file.is_open()) {
-//            std::cout << "ERROR::SCENE::FILE_NOT_READABLE: " << filePath << std::endl;
-//            return "";
-//        }
-//        std::stringstream buffer;
-//        buffer << file.rdbuf();
-//        file.close();
-//        return buffer.str();
-//    }
-//
-//    /*!
-//    @brief Writes content string to a file
-//    @param filePath Path to the SceneAsset(JSON) file.
-//    @param string containing data to send
-//    @return bool to determine if successful
-//    */
-//    bool WriteTextToFile(const std::string& filePath, const std::string& content) {
-//        std::ofstream file(filePath);
-//        if (!file.is_open()) {
-//            std::cout << "ERROR: Could not open file for writing: " << filePath << std::endl;
-//            return false;
-//        }
-//        file << content;
-//        return true;
-//    }
-//}
 //
 //namespace CrashoutsEngine {
 //    namespace Assets {
 //
 //        /*!
-//        @brief Creates a new SceneAsset from a json file.
-//        @param filePath Path to the SceneAsset(JSON) file.
-//        @return Unique pointer to a valid SceneAsset, or nullptr on failure.
+//        @brief Creates a new TileMapAsset from a txt file.
+//        @param filePath Path to the TileMapAsset(TXT) file.
+//        @return Unique pointer to a valid TileMapAsset, or nullptr on failure.
 //        */
-//        std::unique_ptr<SceneAsset> SceneAsset::Create(const std::string& filePath) {
+//        std::unique_ptr<TileMapAsset> TileMapAsset::Create(const std::string& filePath) {
 //
-//            // Load the JSON file from filePath
-//            std::string jsonContent = ReadFileToString(filePath);
+//            // Load the Text file from filePath
+//            std::string txtContent = ReadFileToString(filePath);
 //            if (jsonContent.empty()) {
 //                std::cout << "SceneAsset::Create - File not found or empty: " << filePath << std::endl;
 //                std::cout << "Creating a new empty scene file..." << std::endl;
