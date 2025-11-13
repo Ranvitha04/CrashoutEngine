@@ -48,7 +48,6 @@ for Crashout Engine.
 #include "monomanager.h"
 #include "scriptsystem.h"
 #include "ppmanager.h"
-#include "sceneasset.h"
 
 #include "engine.h"
 #include <filesystem>
@@ -60,6 +59,7 @@ for Crashout Engine.
 #include "transformentitycommand.h"
 #include "namecomponent.h"
 #include "shapescomponent.h"
+#include "audiocomponent.h"
 #include "sceneasset.h"
 
 #include <vector>
@@ -91,6 +91,7 @@ using CrashoutsEngine::Audio::AudioSystem;
 
 using namespace CrashoutsEngine;
 using namespace Component;
+using CrashoutsEngine::Audio::AudioSystem;
 
 namespace { //----------------------------------------------------------------------------- file-local state & helpers
 
@@ -101,6 +102,17 @@ namespace { //------------------------------------------------------------------
     double gPerfSnapshotTotalMs = 0.0;          //!< Total frame time in ms
 
     namespace fs = std::filesystem;
+
+    // ============================================================
+    //  Saving world Pos (editor-only)
+    // ============================================================
+    struct SavedChild {
+        Entity e;
+        CEVec3 worldPos;
+    };
+
+    static bool  s_gizmoRotating = false;
+    static float s_gizmoStartDeg = 0.0f;
 
     // ============================================================
     //  Audio panel scratch (editor-only)
@@ -151,6 +163,8 @@ namespace { //------------------------------------------------------------------
         char name[128]{};     // manifest/manager "name" (stem)
         char relPath[256]{};  // relative path under assets/ (optional)
     };
+
+    static std::vector<std::string> gDroppedPaths;
 
     // ============================================================
     //  Viewport / gizmo shared state
@@ -278,6 +292,12 @@ namespace UI { // --------------------------------------------------------------
         ScopedMemTag boot(MemTag::Resources);
         ImGui_ImplGlfw_InitForOpenGL(window, true);
         ImGui_ImplOpenGL3_Init("#version 330");
+
+        glfwSetDropCallback(window, [](GLFWwindow*, int count, const char** paths) {
+            for (int i = 0; i < count; ++i) {
+                if (paths[i]) gDroppedPaths.emplace_back(paths[i]);
+            }
+        });
 
         LOGS(Core, "Engine initialized successfully");
         LOGW(Core, "Debug mode is ON");
@@ -472,6 +492,45 @@ namespace UI { // --------------------------------------------------------------
 
         ImGui::Separator();
 
+        if (!gDroppedPaths.empty()) {
+            namespace fs = std::filesystem;
+
+            for (const std::string& absPath : gDroppedPaths) {
+                std::error_code ec;
+                fs::path src(absPath);
+                if (!fs::is_regular_file(src, ec)) continue;
+
+                std::string ext = src.extension().string();
+                std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+                bool allowed =
+                    ext == ".png" || ext == ".jpg" || ext == ".jpeg" || ext == ".bmp" || ext == ".tga" ||
+                    ext == ".json" || ext == ".scene" || ext == ".bank" || ext == ".wav" || ext == ".ogg" ||
+                    ext == ".vert" || ext == ".frag";
+                if (!allowed) continue;
+
+                fs::path dst = current / src.filename();
+                if (fs::exists(dst, ec)) {
+                    for (int i = 1; i < 10000; ++i) {
+                        fs::path candidate =
+                            dst.parent_path() /
+                            (dst.stem().string() + " (" + std::to_string(i) + ")" + dst.extension().string());
+                        if (!fs::exists(candidate, ec)) { dst = candidate; break; }
+                    }
+                }
+
+                fs::create_directories(dst.parent_path(), ec);
+                fs::copy_file(src, dst, fs::copy_options::overwrite_existing, ec);
+            }
+
+            gDroppedPaths.clear();
+            needScan = true;
+
+            // Remind me to ask if I can implement something in assetManager, so I can do efficient loading
+            using namespace CrashoutsEngine::Assets;
+            GenerateAssetManifest();
+            AssetManager::GetInstance().LoadManifestAssets();
+        }
+
         // LEFT: Folder tree
         ImGui::BeginChild("asset_left", ImVec2(220, 0), true);
 
@@ -521,62 +580,76 @@ namespace UI { // --------------------------------------------------------------
             needScan = false;
         }
 
-        for (auto const& e : entries) {
+        // Build filtered list of indices
+        static std::vector<int> vis;
+        vis.clear();
+        vis.reserve(entries.size());
+        for (int i = 0; i < (int)entries.size(); ++i) {
+            const auto& e = entries[i];
             std::string name = e.path().filename().generic_string();
             if (filter[0] && name.find(filter) == std::string::npos) continue;
+            vis.push_back(i);
+        }
 
-            if (e.is_directory()) {
-                if (ImGui::Selectable((std::string("[Dir] ") + name).c_str(), false)) {
-                    current = e.path();
-                    needScan = true;
+        ImGuiListClipper clip;
+        clip.Begin((int)vis.size());
+        while (clip.Step()) {
+            for (int row = clip.DisplayStart; row < clip.DisplayEnd; ++row) {
+                const auto& e = entries[vis[row]];
+                std::string name = e.path().filename().generic_string();
+
+                if (e.is_directory()) {
+                    if (ImGui::Selectable((std::string("[Dir] ") + name).c_str(), false)) {
+                        current = e.path(); needScan = true;
+                    }
                 }
-            }
-            else {
-                bool selected = (outSelectedAsset == e.path().generic_string());
-                if (ImGui::Selectable(name.c_str(), selected))
-                    outSelectedAsset = e.path().generic_string();
+                else {
+                    bool sel = (outSelectedAsset == e.path().generic_string());
+                    if (ImGui::Selectable(name.c_str(), sel))
+                        outSelectedAsset = e.path().generic_string();
 
-                if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID)) {
-                    AssetDragPayload p{};
-                    std::string rel = fs::relative(e.path(), fs::path(root)).generic_string();// e.g. "images/player.png"
-                    std::string stem = e.path().stem().generic_string(); // e.g. "player"
-                    std::string ext = e.path().extension().generic_string();
-                    std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+                    if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID)) {
+                        AssetDragPayload p{};
+                        std::string rel = fs::relative(e.path(), fs::path(root)).generic_string();
+                        std::string stem = e.path().stem().generic_string();
+                        std::string ext = e.path().extension().generic_string();
+                        std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
 
-                    // Heuristics to pick kind by folder/extension
-                    if (rel.rfind("images/", 0) == 0 ||
-                        ext == ".png" || ext == ".jpg" || ext == ".jpeg" || ext == ".bmp" || ext == ".tga") {
-                        p.kind = AssetKind::Texture;
-                    }
-                    else if (rel.rfind("sprite_sheet/", 0) == 0) {
-                        p.kind = AssetKind::SpriteSheet;
-                    }
-                    else if (rel.rfind("scenes/", 0) == 0 || ext == ".scene" || ext == ".json") {
-                        p.kind = AssetKind::Scene;
-                    }
-                    else if (rel.rfind("audio/", 0) == 0 || ext == ".bank") {
-                        p.kind = AssetKind::Audio;
-                    }
-                    else if (rel.rfind("prefabs/", 0) == 0) {
-                        p.kind = AssetKind::Prefab;
-                    }
-                    else if (rel.rfind("shaders/", 0) == 0 || ext == ".vert" || ext == ".frag") {
-                        p.kind = AssetKind::Shader;
-                    }
-                    else {
-                        p.kind = AssetKind::Unknown;
+                        // Heuristics to pick kind by folder/extension
+                        if (rel.rfind("images/", 0) == 0 ||
+                            ext == ".png" || ext == ".jpg" || ext == ".jpeg" || ext == ".bmp" || ext == ".tga") {
+                            p.kind = AssetKind::Texture;
+                        }
+                        else if (rel.rfind("sprite_sheet/", 0) == 0) {
+                            p.kind = AssetKind::SpriteSheet;
+                        }
+                        else if (rel.rfind("scenes/", 0) == 0 || ext == ".scene" || ext == ".json") {
+                            p.kind = AssetKind::Scene;
+                        }
+                        else if (rel.rfind("audio/", 0) == 0 || ext == ".bank" || ext == ".ogg" || ext == ".wav" || ext == ".mp3") {
+                            p.kind = AssetKind::Audio;
+                        }
+                        else if (rel.rfind("prefabs/", 0) == 0) {
+                            p.kind = AssetKind::Prefab;
+                        }
+                        else if (rel.rfind("shaders/", 0) == 0 || ext == ".vert" || ext == ".frag") {
+                            p.kind = AssetKind::Shader;
+                        }
+                        else {
+                            p.kind = AssetKind::Unknown;
+                        }
+
+                        std::strncpy(p.name, stem.c_str(), sizeof(p.name) - 1);
+                        std::strncpy(p.relPath, rel.c_str(), sizeof(p.relPath) - 1);
+
+                        ImGui::SetDragDropPayload("ASSET/PAYLOAD", &p, sizeof(p));
+                        ImGui::TextUnformatted(p.name);
+                        ImGui::EndDragDropSource();
                     }
 
-                    std::strncpy(p.name, stem.c_str(), sizeof(p.name) - 1);
-                    std::strncpy(p.relPath, rel.c_str(), sizeof(p.relPath) - 1);
-
-                    ImGui::SetDragDropPayload("ASSET/PAYLOAD", &p, sizeof(p));
-                    ImGui::TextUnformatted(p.name);
-                    ImGui::EndDragDropSource();
+                    if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(0))
+                        outSelectedAsset = e.path().generic_string();
                 }
-
-                if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(0))
-                    outSelectedAsset = e.path().generic_string();
             }
         }
 
@@ -784,38 +857,47 @@ namespace UI { // --------------------------------------------------------------
         LOG_SYSTEMS(X)
 #undef X
 
-            // Search & options
-            ImGui::Separator();
+        // Search & options
+        ImGui::Separator();
         ImGui::InputTextWithHint("##search", "search text...", search, sizeof(search));
         ImGui::SameLine();
         ImGui::Checkbox("Auto-scroll", &autoscroll);
 
         ImGui::Separator();
 
-        // Log list
+        // Log list (virtualized)
         const auto& logs = Logger::Instance().Get();
-        for (const auto& log : logs)
-        {
-            // Filters
-            if (!levelOn[static_cast<int>(log.level)])  continue;
-            if (!systemOn[static_cast<int>(log.system)]) continue;
+
+        // Build filtered view (indices so we can clip)
+        static std::vector<int> filtered;
+        filtered.clear();
+        filtered.reserve(logs.size());
+        for (int i = 0; i < (int)logs.size(); ++i) {
+            const auto& log = logs[i];
+            if (!levelOn[(int)log.level])  continue;
+            if (!systemOn[(int)log.system]) continue;
             if (search[0] && std::string(log.text).find(search) == std::string::npos) continue;
+            filtered.push_back(i);
+        }
 
-            // Color by level
-            ImVec4 color =
-                (log.level == LogMessage::Level::Error) ? ImVec4(1.0f, 0.3f, 0.3f, 1.0f) :
-                (log.level == LogMessage::Level::Warning) ? ImVec4(1.0f, 0.9f, 0.4f, 1.0f) :
-                (log.level == LogMessage::Level::Success) ? ImVec4(0.4f, 1.0f, 0.4f, 1.0f) :
-                ImVec4(0.4f, 0.8f, 1.0f, 1.0f);
-            ImGui::PushStyleColor(ImGuiCol_Text, color);
+        ImGuiListClipper clipper;
+        clipper.Begin((int)filtered.size());
+        while (clipper.Step()) {
+            for (int row = clipper.DisplayStart; row < clipper.DisplayEnd; ++row) {
+                const auto& log = logs[filtered[row]];
+                // Color by level
+                const ImVec4 color =
+                    (log.level == LogMessage::Level::Error) ? ImVec4(1.0f, 0.3f, 0.3f, 1.0f) :
+                    (log.level == LogMessage::Level::Warning) ? ImVec4(1.0f, 0.9f, 0.4f, 1.0f) :
+                    (log.level == LogMessage::Level::Success) ? ImVec4(0.4f, 1.0f, 0.4f, 1.0f) :
+                    ImVec4(0.4f, 0.8f, 1.0f, 1.0f);
+                ImGui::PushStyleColor(ImGuiCol_Text, color);
 
-            // Prefix with level/system for readability
-            ImGui::Text("[%s][%s] %s",
-                ToString(log.level),
-                ToString(log.system),
-                log.text.c_str());
+                // Prefix + message (avoid fmt when not needed)
+                ImGui::Text("[%s][%s] %s", ToString(log.level), ToString(log.system), log.text.c_str());
 
-            ImGui::PopStyleColor();
+                ImGui::PopStyleColor();
+            }
         }
 
         // Controls
@@ -1229,8 +1311,11 @@ namespace UI { // --------------------------------------------------------------
             ImGui::SameLine();
             // Stop
             if (ImGui::Button("STOP", ImVec2(70, 25))) {
-                RestartGameState();
-                //if (!currSceneName.empty()) Serialization::LoadScenes(currSceneName);
+                if(currSceneName.empty()) RestartGameState();
+                else {
+                    ECS::getInstance()->Reset();
+                    Serialization::LoadScenes(currSceneName);
+                }
                 //MonoManager::ReloadScripts();
                 engineState = EngineState::STOP;
             }
@@ -1386,18 +1471,16 @@ namespace UI { // --------------------------------------------------------------
             // 5) if we have a selected entity, let gizmo edit its TRS
             if (selected && ecs.HasComponent<Component::TransformComponent>(selected))
             {
-                // find the topmost entity for whatever we clicked
-                CrashoutsEngine::Entity root = CrashoutsEngine::GetRoot(ecs, selected);
+                Entity root = CrashoutsEngine::GetRoot(ecs, selected);
 
-                // collect everyone under that root (root included)
                 std::vector<Entity> group;
                 group.reserve(16);
                 CrashoutsEngine::GatherDescendants(ecs, root, group);
 
-                // compute center of all transforms in this group
                 CEVec3 center{ 0.f, 0.f, 0.f };
                 int count = 0;
-                for (CrashoutsEngine::Entity e : group) {
+                for (CrashoutsEngine::Entity e : group)
+                {
                     if (!ecs.HasComponent<Component::TransformComponent>(e))
                         continue;
                     auto* t = ecs.GetComponent<Component::TransformComponent>(e);
@@ -1406,20 +1489,18 @@ namespace UI { // --------------------------------------------------------------
                     center.z += t->position.z;
                     ++count;
                 }
-                if (count > 0) {
+                if (count > 0)
+                {
                     center.x /= count;
                     center.y /= count;
                     center.z /= count;
                 }
 
-                // use root's rot/scale just for displaying the gizmo nicely
                 auto* rootT = ecs.GetComponent<Component::TransformComponent>(root);
                 if (rootT)
                 {
-                    // gizmo starts exactly on the parent
                     float tr[3] = { rootT->position.x, rootT->position.y, rootT->position.z };
-                    float rt[3] = { 0.f, 0.f, glm::degrees(rootT->rotation) }; 
-
+                    float rt[3] = { 0.f, 0.f, glm::degrees(rootT->rotation) }; // radians -> degrees
                     float sc[3] = { rootT->size.x, rootT->size.y, 1.f };
 
                     float m[16];
@@ -1430,12 +1511,15 @@ namespace UI { // --------------------------------------------------------------
 
                     const float* snapPtr = nullptr;
                     float snap[3]{};
-                    if (g_snapOn) {
-                        if (g_gizmoOp == ImGuizmo::ROTATE) {
+                    if (g_snapOn)
+                    {
+                        if (g_gizmoOp == ImGuizmo::ROTATE)
+                        {
                             snap[0] = g_snapAngle;
                             snapPtr = snap;
                         }
-                        else {
+                        else
+                        {
                             snap[0] = g_snapTrans[0];
                             snap[1] = g_snapTrans[1];
                             snap[2] = g_snapTrans[2];
@@ -1445,13 +1529,22 @@ namespace UI { // --------------------------------------------------------------
 
                     ImGuizmo::Manipulate(view, proj, g_gizmoOp, g_gizmoMode, m, nullptr, snapPtr);
 
+                    // ---- state for undo + rotation accumulation ----
                     static bool dragging = false;
                     static std::vector<CrashoutsEngine::Entity> movedEntities;
                     static std::vector<CrashoutsEngine::TransformState> startStates;
-                    static bool undoTriggeredThisFrame = false;
+                    static bool  undoTriggeredThisFrame = false;
+
+                    // full accumulated parent rotation (radians)
+                    static float s_parentAccumRot = 0.0f;
+                    // last frame's ImGuizmo angle (degrees, wrapped [-180, 180])
+                    static float s_prevGizmoDeg = 0.0f;
 
                     if (ImGuizmo::IsUsing())
                     {
+                        float newTr[3], newRt[3], newSc[3];
+                        ImGuizmo::DecomposeMatrixToComponents(m, newTr, newRt, newSc);
+
                         // Begin drag — record all entities' starting positions
                         if (!dragging)
                         {
@@ -1472,9 +1565,11 @@ namespace UI { // --------------------------------------------------------------
                                 startStates.push_back(state);
                                 movedEntities.push_back(e);
                             }
+
+                            // cache parent's current rotation (full radians) and gizmo angle
+                            s_parentAccumRot = rootT->rotation;
+                            s_prevGizmoDeg = newRt[2];
                         }
-                        float newTr[3], newRt[3], newSc[3];
-                        ImGuizmo::DecomposeMatrixToComponents(m, newTr, newRt, newSc);
 
                         if (g_gizmoOp == ImGuizmo::TRANSLATE)
                         {
@@ -1484,7 +1579,8 @@ namespace UI { // --------------------------------------------------------------
                                 newTr[2] - rootT->position.z
                             };
 
-                            for (Entity e : group) {
+                            for (Entity e : group)
+                            {
                                 if (!ecs.HasComponent<Component::TransformComponent>(e)) continue;
                                 auto* t = ecs.GetComponent<Component::TransformComponent>(e);
                                 t->position.x += offset.x;
@@ -1495,19 +1591,24 @@ namespace UI { // --------------------------------------------------------------
                         else
                         {
                             rootT->position = { newTr[0], newTr[1], newTr[2] };
-                            //rotation test
-                            rootT->rotation = glm::radians(newRt[2]); 
-
                             rootT->size.x = newSc[0];
                             rootT->size.y = newSc[1];
 
                             if (g_gizmoOp == ImGuizmo::ROTATE)
                             {
-                                // parent: degrees from gizmo; compute delta vs old parent rotation
-                                const float oldParentRad = rootT->rotation;                  
-                                const float parentDeg = newRt[2];
-                                const float deltaDeg = parentDeg - glm::degrees(oldParentRad);
-                                const float deltaRad = glm::radians(deltaDeg);
+                                
+                                float gizmoDeg = newRt[2];
+                                float stepDeg = gizmoDeg - s_prevGizmoDeg;
+
+                                if (stepDeg > 180.0f) stepDeg -= 360.0f;
+                                if (stepDeg < -180.0f) stepDeg += 360.0f;
+
+                                float stepRad = glm::radians(stepDeg);
+
+                                s_parentAccumRot += stepRad;
+                                rootT->rotation = s_parentAccumRot;
+
+                                s_prevGizmoDeg = gizmoDeg;
 
                                 for (Entity e : group)
                                 {
@@ -1515,13 +1616,15 @@ namespace UI { // --------------------------------------------------------------
                                     if (!ecs.HasComponent<Component::ParentComponent>(e)) continue;
 
                                     auto* ppc = ecs.GetComponent<Component::ParentComponent>(e);
-                                    ppc->localRot += deltaRad;    
+                                    ppc->localRot += stepRad;
                                 }
                             }
                             else if (g_gizmoOp == ImGuizmo::SCALE)
                             {
+                                // scale should NOT write degrees into a radians field
                                 rootT->position = { newTr[0], newTr[1], newTr[2] };
-                                rootT->rotation = newRt[2];
+                                // keep existing rotation:
+                                // rootT->rotation stays as-is
                                 rootT->size.x = newSc[0];
                                 rootT->size.y = newSc[1];
                             }
@@ -1529,9 +1632,9 @@ namespace UI { // --------------------------------------------------------------
                     }
                     else if (dragging && !undoTriggeredThisFrame)
                     {
-                        // End drag — record new positions and push ONE command
                         dragging = false;
                         undoTriggeredThisFrame = true;
+
                         std::vector<CrashoutsEngine::TransformState> endStates;
                         endStates.reserve(movedEntities.size());
 
@@ -1548,7 +1651,6 @@ namespace UI { // --------------------------------------------------------------
                             }
                         }
 
-                        // Check for actual change
                         bool changed = false;
                         for (size_t i = 0; i < startStates.size(); ++i)
                         {
@@ -1569,19 +1671,23 @@ namespace UI { // --------------------------------------------------------------
                                     std::make_unique<CrashoutsEngine::TransformGroupCommand>(
                                         movedEntities, startStates, endStates));
                             }
-                            /*else
-                            {
+                            /* else {
                                 UndoManager::GetInstance().Execute(
                                     std::make_unique<CrashoutsEngine::TransformEntityCommand>(
                                         movedEntities.front(), startStates.front(), endStates.front()));
-                            }*/
+                            } */
                         }
 
                         movedEntities.clear();
                         startStates.clear();
                     }
+
                     if (!ImGuizmo::IsUsing())
+                    {
+                        // we let the next drag re-init the state;
+                        // no need to reset s_parentAccumRot/s_prevGizmoDeg here
                         undoTriggeredThisFrame = false;
+                    }
                 }
             }
 
@@ -1683,6 +1789,11 @@ namespace UI { // --------------------------------------------------------------
                 if (!ImGuizmo::IsOver() && !ImGuizmo::IsUsing())
                     selected = 0;
             }
+            if (selected && ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows) && !ImGuizmo::IsUsing() && ImGui::IsKeyPressed(ImGuiKey_Delete))
+            {
+                ecs.DestroyEntity(selected);
+                selected = 0;
+            }
 
             //  7) drag and drop from asset browser into world
             //  Drag-and-drop spawn
@@ -1714,6 +1825,35 @@ namespace UI { // --------------------------------------------------------------
                         Entity e = Prefab::Create(ecs, std::string(p->name));
                         if (e && ecs.HasComponent<Component::TransformComponent>(e))
                             ecs.GetComponent<Component::TransformComponent>(e)->position = dropWorld;
+                    }
+                    else if (p && p->kind == AssetKind::Audio) {
+                        std::string rel = p->relPath;
+                       
+                        const std::string prefix = "audio/";
+                        auto pos = rel.find(prefix);
+                        if (pos != std::string::npos) rel = rel.substr(pos + prefix.size());
+                        
+                        if (auto dot = rel.find_last_of('.'); dot != std::string::npos) rel.erase(dot);
+                        
+                        std::string eventLike = std::string("event:/") + rel; // "event:/SFX/Beep"
+
+                        Entity target = selected;
+                        if (!target) {
+                            target = ecs.CreateEntity();
+                            ecs.AddComponent<NameComponent>(target, std::string("Audio_") + p->name);
+                            ecs.AddComponent<TransformComponent>(target);
+                            ecs.GetComponent<TransformComponent>(target)->position = dropWorld;
+                        }
+
+                        if (!ecs.HasComponent<Component::AudioEmitterComponent>(target))
+                            ecs.AddComponent<Component::AudioEmitterComponent>(target);
+
+                        if (auto* ac = ecs.GetComponent<Component::AudioEmitterComponent>(target)) {
+                            ac->eventPath = eventLike;
+                            ac->volume = 1.0f;
+                            ac->pitch = 1.0f;
+                            ac->spatial3D = true;
+                        }
                     }
                 }
                 ImGui::EndDragDropTarget();
