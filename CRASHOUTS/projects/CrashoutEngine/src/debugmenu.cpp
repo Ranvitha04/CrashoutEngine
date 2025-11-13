@@ -1457,12 +1457,12 @@ namespace UI { // --------------------------------------------------------------
                                     std::make_unique<CrashoutsEngine::TransformGroupCommand>(
                                         movedEntities, startStates, endStates));
                             }
-                            else
+                            /*else
                             {
                                 UndoManager::GetInstance().Execute(
                                     std::make_unique<CrashoutsEngine::TransformEntityCommand>(
                                         movedEntities.front(), startStates.front(), endStates.front()));
-                            }
+                            }*/
                         }
 
                         movedEntities.clear();

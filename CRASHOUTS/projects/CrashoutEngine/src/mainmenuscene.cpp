@@ -242,7 +242,7 @@ void RenderMainMenu()
 	// Render MainMenu state
 #if USE_IMGUI_EDITOR
 #else
-	glClearColor(0.1f, 0.2f, 0.4f, 1.0f);
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 #endif
 	//Scene::RenderScene(*globalECS);
