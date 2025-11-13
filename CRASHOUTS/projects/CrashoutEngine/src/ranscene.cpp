@@ -40,6 +40,10 @@ rendering (`RenderBackground`), and updating (`UpdateRan`).
 #include <string>
 #include <cmath>
 
+#include "namecomponent.h"
+#include "transformcomponent.h"
+#include "shapescomponent.h"
+
 
 static CrashoutsEngine::ECS* globalECS;
 static const char* sceneName = "ran";
@@ -363,10 +367,9 @@ void UpdateRan()
         int prevMode = gDisplayMode;
         int nextMode = (gDisplayMode + 1) % 7; // include mode 6
         gDisplayMode = nextMode;
-
         if (gDisplayMode != 3) {
-            const CrashoutsEngine::ECS::ComponentArray<CrashoutsEngine::NameComponent>& nameArray = 
-                globalECS->GetComponentArray<CrashoutsEngine::NameComponent>();
+            const CrashoutsEngine::ECS::ComponentArray<Component::NameComponent>& nameArray = 
+                globalECS->GetComponentArray<Component::NameComponent>();
             if (nameArray.indexToEntity.size() > 0) {
                 for (auto id : nameArray.indexToEntity) {
                     globalECS->DestroyEntity(id);

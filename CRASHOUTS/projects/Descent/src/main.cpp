@@ -21,13 +21,18 @@ context and implement a game loop.
 #include <cstdio>
 #include <crtdbg.h>
 
+#include "transformcomponent.h"
+#include "performanceViewer.h"
+
+#include "glapp.h"
+
+#include "frameratecontroller.h"
+
 /*                                                   type declarations
 ----------------------------------------------------------------------------- */
 
 //static CrashoutsEngine::ECS* globalECS = nullptr;
 static CrashoutsEngine::Entity globalSelectedEntity = 0;
-static Component::RigidBodyComponent  playerRigidBody{};
-static Component::TransformComponent  playerTransform{};    
 
 // frame rate controller
 auto& FRC = FrameRateController::GetInstance();
@@ -83,7 +88,7 @@ int WINAPI WinMain(
         //int steps = FRC.StepCount();
         //for (int i = 0; i < steps; ++i) FixedUpdate(playerRigidBody, fixedDT);
 
-        Update(playerRigidBody, fixedDT);
+        Update(fixedDT);
         Draw(globalSelectedEntity);
         FRC.FrameEnd();
     }
