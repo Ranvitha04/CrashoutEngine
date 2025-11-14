@@ -212,14 +212,14 @@ namespace CrashoutsEngine {
             childTransform->rotation = rot;
 
             // position = parentPos + R(parentRot) * localPos
-            const float s = std::sin(parentTransform->rotation);
+            /*const float s = std::sin(parentTransform->rotation);
             const float c = std::cos(parentTransform->rotation);
             const float lx = pointerParentComp->localPos.x;
             const float ly = pointerParentComp->localPos.y;
             const float wx = parentTransform->position.x + (c * lx - s * ly);
             const float wy = parentTransform->position.y + (s * lx + c * ly);
             const float wz = parentTransform->position.z + pointerParentComp->localPos.z;
-            childTransform->position = { wx, wy, wz };
+            childTransform->position = { wx, wy, wz };*/
             ForceInheritColorFromParent(ecs, child);
             };
 

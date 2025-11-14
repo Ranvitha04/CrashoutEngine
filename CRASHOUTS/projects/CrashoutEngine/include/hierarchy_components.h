@@ -17,6 +17,7 @@ namespace Component {
         
         bool   inheritColor{ false };
         CEVec3 colorMul{ 1.f, 1.f, 1.f };   
+
     };
 
     struct ChildrenComponent {
