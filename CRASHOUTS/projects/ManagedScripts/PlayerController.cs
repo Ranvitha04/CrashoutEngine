@@ -4,11 +4,30 @@ namespace CrashoutsEngine
 {
     public class PlayerController : ScriptBase
     {
+        /*SAMPLE TRIGGERS*/
+        public void OnTriggerEnter(uint otherEntity) {
+            Console.WriteLine("Entered Inside Me BOUNCE");
+            var rb = Entity.RigidBody;
+            rb.AddForce(new Vector3(0f, 40000f, 0f)); //* rb.GetMass());
+        }
+
+        public void OnTriggerExit(uint otherEntity)
+        {
+            Console.WriteLine("Exited Me");
+        }
+
+        public void OnTriggerStay(uint otherEntity)
+        {
+            Console.WriteLine(otherEntity);
+        }
+
         public override void Start()
         {
             // Initialization logic for the player
             Console.WriteLine("[C#] PlayerController Start() called, Entity is " + (Entity == null ? "NULL" : "OK!"));
-
+            CollisionEvents.RegisterTriggerEnter(Entity.ID, this.OnTriggerEnter);
+            // CollisionEvents.RegisterTriggerExit(Entity.ID, OnTriggerExit);
+            // CollisionEvents.RegisterTriggerStay(Entity.ID, OnTriggerStay);
         }
 
         public override void Update()
