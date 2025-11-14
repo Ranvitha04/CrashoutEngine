@@ -4,11 +4,29 @@ namespace CrashoutsEngine
 {
     public class EnemyController : ScriptBase
     {
+
+        public static void OnCollideEnter(uint otherEntity) {
+            Console.WriteLine("Entered Inside Me");
+        }
+
+        public static void OnCollideExit(uint otherEntity)
+        {
+            Console.WriteLine("Exited Me");
+        }
+
+        public static void OnCollideStay(uint otherEntity)
+        {
+            //Console.WriteLine("Staying in Me");
+        }
+
         public override void Start()
         {
             // Initialization logic for the enemy
             Console.WriteLine("[C#] EnemyController Start() called, Entity is " + (Entity == null ? "NULL" : "OK!"));
-
+            
+            CollisionEvents.RegisterCollideEnter(Entity.ID, OnCollideEnter);
+            CollisionEvents.RegisterCollideExit(Entity.ID, OnCollideExit);
+            CollisionEvents.RegisterCollideStay(Entity.ID, OnCollideStay);
         }
 
         public override void Update()
