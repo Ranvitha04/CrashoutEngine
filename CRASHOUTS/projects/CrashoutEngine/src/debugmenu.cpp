@@ -1500,7 +1500,9 @@ namespace UI { // --------------------------------------------------------------
                 if (rootT)
                 {
                     float tr[3] = { rootT->position.x, rootT->position.y, rootT->position.z };
-                    float rt[3] = { 0.f, 0.f, glm::degrees(rootT->rotation) }; // radians -> degrees
+
+                    float rt[3] = { 0.f, 0.f, rootT->rotation };
+
                     float sc[3] = { rootT->size.x, rootT->size.y, 1.f };
 
                     float m[16];
@@ -1535,8 +1537,8 @@ namespace UI { // --------------------------------------------------------------
                     static std::vector<CrashoutsEngine::TransformState> startStates;
                     static bool  undoTriggeredThisFrame = false;
 
-                    // full accumulated parent rotation (radians)
-                    static float s_parentAccumRot = 0.0f;
+                    // full accumulated parent rotation (DEGREES)
+                    static float s_parentAccumRotDeg = 0.0f;
                     // last frame's ImGuizmo angle (degrees, wrapped [-180, 180])
                     static float s_prevGizmoDeg = 0.0f;
 
@@ -1566,8 +1568,8 @@ namespace UI { // --------------------------------------------------------------
                                 movedEntities.push_back(e);
                             }
 
-                            // cache parent's current rotation (full radians) and gizmo angle
-                            s_parentAccumRot = rootT->rotation;
+                            // cache parent's current rotation (full degree) and gizmo angle
+                            s_parentAccumRotDeg = rootT->rotation;
                             s_prevGizmoDeg = newRt[2];
                         }
 
@@ -1603,10 +1605,8 @@ namespace UI { // --------------------------------------------------------------
                                 if (stepDeg > 180.0f) stepDeg -= 360.0f;
                                 if (stepDeg < -180.0f) stepDeg += 360.0f;
 
-                                float stepRad = glm::radians(stepDeg);
-
-                                s_parentAccumRot += stepRad;
-                                rootT->rotation = s_parentAccumRot;
+                                s_parentAccumRotDeg += stepDeg;
+                                rootT->rotation = s_parentAccumRotDeg;
 
                                 s_prevGizmoDeg = gizmoDeg;
 
@@ -1616,7 +1616,7 @@ namespace UI { // --------------------------------------------------------------
                                     if (!ecs.HasComponent<Component::ParentComponent>(e)) continue;
 
                                     auto* ppc = ecs.GetComponent<Component::ParentComponent>(e);
-                                    ppc->localRot += stepRad;
+                                    ppc->localRot += stepDeg;
                                 }
                             }
                             else if (g_gizmoOp == ImGuizmo::SCALE)
