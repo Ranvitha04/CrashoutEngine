@@ -14,20 +14,19 @@ context and implement a game loop.
 #pragma warning(push)
 #pragma warning(disable: 4005)
 
-//#include "engine.h"
-#include "pch.h"
+#include "engine.h"
 
 #pragma warning(pop)
 
-//#include <cstdio>
-//#include <crtdbg.h>
-//
-//#include "transformcomponent.h"
-//#include "performanceViewer.h"
-//
-//#include "glapp.h"
-//
-//#include "frameratecontroller.h"
+#include <cstdio>
+#include <crtdbg.h>
+
+#include "transformcomponent.h"
+#include "performanceViewer.h"
+
+#include "glapp.h"
+
+#include "frameratecontroller.h"
 
 /*                                                   type declarations
 ----------------------------------------------------------------------------- */

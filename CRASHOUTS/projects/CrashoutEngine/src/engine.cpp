@@ -11,7 +11,6 @@ context and implement a game loop.
 /*                                                                   includes
 ----------------------------------------------------------------------------- */
 // Extension loader library's header must be included before GLFW's header!!!
-#include "engine_pch.h"
 #include "engine.h"
 #include "rendering.h"
 #include "assetmanager.h"

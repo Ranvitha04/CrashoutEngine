@@ -108,7 +108,7 @@ target_link_libraries(${PROJECT_NAME}
         CrashoutsAudio
         imguizmo
 )
-#link_fmod_to(${PROJECT_NAME})
+link_fmod_to(${PROJECT_NAME})
 link_mono_to(${PROJECT_NAME})
 message(STATUS "Mono linked successfully to CrashoutEngine.")
 # Apply common include directories
@@ -123,31 +123,20 @@ PRIVATE
 )
 
 # Build ManagedScripts.csproj automatically 
-set(SCRIPT_CSPROJ "${CMAKE_SOURCE_DIR}/projects/ManagedScripts/ManagedScripts.csproj")
-set(SCRIPT_OUTPUT_DIR "${CMAKE_BINARY_DIR}/scripts")
-set(SCRIPT_OUTPUT_DLL "${SCRIPT_OUTPUT_DIR}/ManagedScripts.dll")
+add_custom_target(ManagedScripts ALL
+    COMMAND ${CMAKE_COMMAND} -E echo "Building ManagedScripts..."
+    COMMAND dotnet build ${CMAKE_SOURCE_DIR}/projects/ManagedScripts/ManagedScripts.csproj
+            -c $<CONFIG> --no-incremental
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/projects/ManagedScripts
+    COMMENT "Building C# scripts"
+)
 
-# Find all .cs files to make the dependency check accurate
-file(GLOB_RECURSE CS_FILES "${CMAKE_SOURCE_DIR}/projects/ManagedScripts/*.cs")
-
-# 1. This command builds the C# project.
-#    It only runs if the .csproj or any .cs file is newer than the output .dll
 add_custom_command(
-    OUTPUT ${SCRIPT_OUTPUT_DLL}
-    
-    # Use -o to build directly into our binary 'scripts' folder
-    # We REMOVED --no-incremental to allow fast, cached builds
-    COMMAND dotnet build ${SCRIPT_CSPROJ} -c $<CONFIG> -o "${SCRIPT_OUTPUT_DIR}"
-    
-    # This command depends on the project file AND all C# source files
-    DEPENDS ${SCRIPT_CSPROJ} ${CS_FILES}
-    COMMENT "Building C# scripts (incremental)..."
+    TARGET ManagedScripts POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_BINARY_DIR}/scripts"
+    COMMENT "ManagedScripts.dll already built directly into runtime scripts folder"
 )
 
-# 2. This target *triggers* the command above.
-#    The 'Descent' executable will depend on this target.
-add_custom_target(ManagedScripts
-    DEPENDS ${SCRIPT_OUTPUT_DLL}
-)
+
 
 set_property(TARGET ${PROJECT_NAME} PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "$<TARGET_FILE_DIR:${PROJECT_NAME}>")
