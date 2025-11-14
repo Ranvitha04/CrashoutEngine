@@ -294,7 +294,7 @@ endfunction()
 function(copy_fmod_banks target banks_dir)
   add_custom_command(TARGET ${target} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E make_directory "$<TARGET_FILE_DIR:${target}>/assets/audio/banks"
-    COMMAND ${CMAKE_COMMAND} -E copy_directory "${banks_dir}" "$<TARGET_FILE_DIR:${target}>/assets/audio/banks"
+    COMMAND ${CMAKE_COMMAND} -E copy_directory_if_different "${banks_dir}" "$<TARGET_FILE_DIR:${target}>/assets/audio/banks"
   )
   endfunction()
 
@@ -357,9 +357,9 @@ function(link_mono_to target)
     add_custom_command(TARGET ${target} POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
             "${_MONO_BINDIR}/mono-2.0-sgen.dll" "$<TARGET_FILE_DIR:${target}>"
-        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        COMMAND ${CMAKE_COMMAND} -E copy_directory_if_different
             "${_MONO_ETCDIR}" "$<TARGET_FILE_DIR:${target}>/third_party/Mono/etc"
-        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        COMMAND ${CMAKE_COMMAND} -E copy_directory_if_different
             "${_MONO_LIBDIR}" "$<TARGET_FILE_DIR:${target}>/third_party/Mono/lib"
     )
 

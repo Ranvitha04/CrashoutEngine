@@ -1316,7 +1316,7 @@ R"(using System;
                     std::thread([]() {
                         int result = system(
                             "dotnet clean \"../../projects/ManagedScripts/ManagedScripts.csproj\" -c Debug > buildlog.txt 2>&1 && "
-                            "dotnet build \"../../projects/ManagedScripts/ManagedScripts.csproj\" -c Debug --no-incremental > buildlog.txt 2>&1"
+                            "dotnet build \"../../projects/ManagedScripts/ManagedScripts.csproj\" -c Debug > buildlog.txt 2>&1"
                         );
                         if (result == 0)
                             reloadPending = true; // signal reload
