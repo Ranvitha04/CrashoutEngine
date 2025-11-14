@@ -39,24 +39,24 @@ namespace CrashoutsEngine
                 Console.WriteLine("[C#] mass=" + rb.GetMass());
             }
 
-            //if (Input.IsKeyPressed(Key.S))
-            //{
-            //    tf.Size *= 0.9f;
-            //}
-            //
-            //if (Input.IsKeyPressed(Key.Q))
-            //{
-            //    tf.Size *= 1.1f;
-            //}
-            //
-            //if (Input.IsKeyPressed(Key.F))
-            //{
-            //    tf.Rotation += 3f;
-            //    if (Entity.HasCollider)
-            //    {
-            //        Entity.Collider.UpdateRotation(tf.Rotation);
-            //    }
-            //}
+            if (Input.IsKeyPressed(Key.S))
+            {
+                tf.Size *= 0.9f;
+            }
+            
+            if (Input.IsKeyPressed(Key.Q))
+            {
+                tf.Size *= 1.1f;
+            }
+            
+            if (Input.IsKeyPressed(Key.F))
+            {
+                tf.Rotation += 3f;
+                if (Entity.HasCollider)
+                {
+                    Entity.Collider.UpdateRotation(tf.Rotation);
+                }
+            }
         }
     }
 }

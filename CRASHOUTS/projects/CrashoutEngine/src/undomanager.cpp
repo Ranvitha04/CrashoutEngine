@@ -14,12 +14,11 @@ UndoManager& UndoManager::GetInstance()
     return instance;
 }
 
-void UndoManager::Execute(std::unique_ptr<EditorCommand> command)
+void UndoManager::AddCommand(std::unique_ptr<EditorCommand>&& command)
 {
     if (!command)
         return;
 
-    command->Execute();
     mUndoStack.push_back(std::move(command));
 
     mRedoStack.clear(); // new command invalidates redo history

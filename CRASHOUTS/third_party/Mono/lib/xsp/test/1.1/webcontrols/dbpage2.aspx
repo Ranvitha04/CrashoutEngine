@@ -129,7 +129,7 @@
 
 		selectCommand.CommandText = selectCmd;
 		try {
-			IDataReader reader = selectCommand.ExecuteReader ();
+			IDataReader reader = selectCommand.AddCommandReader ();
 			table.Rows.Clear ();
 			while (reader.Read ()) {
 				TableRow row = new TableRow ();
@@ -160,7 +160,7 @@
 		insertCommand.CommandText = insertCmd;
 		int i;
 		try {
-			i = insertCommand.ExecuteNonQuery ();
+			i = insertCommand.AddCommandNonQuery ();
 			statusLine.InnerHtml = String.Format ("{0} rows(s) inserted", i);
 			dbID.Text = "";
 			dbName.Text = "";
@@ -232,7 +232,7 @@
 		deleteCommand.CommandText = deleteCmd;
 		int i;
 		try {
-			i = deleteCommand.ExecuteNonQuery ();
+			i = deleteCommand.AddCommandNonQuery ();
 			statusLine.InnerHtml = String.Format ("{0} row(s) deleted", i);
 		} catch (Exception e) {
 			errorLine.InnerHtml = "<b>Error deleting row: " + e.Message + "</b>";
@@ -273,7 +273,7 @@
 		
 		IDbCommand selectCommand = cnc.CreateCommand();
 		selectCommand.CommandText = selectCmd;
-		IDataReader reader = selectCommand.ExecuteReader ();
+		IDataReader reader = selectCommand.AddCommandReader ();
 		if (!reader.Read ()) {
 			errorLine.InnerHtml = "<b>No such ID: " + dbid + "</b>";
 			updateName.Text = "";
@@ -297,7 +297,7 @@
 		updateCommand.CommandText = updateCmd;
 		int i;
 		try {
-			i = updateCommand.ExecuteNonQuery ();
+			i = updateCommand.AddCommandNonQuery ();
 			statusLine.InnerHtml = String.Format ("{0} rows(s) updated", i);
 			updateID.Text = "";
 			updateName.Text = "";
