@@ -1,0 +1,78 @@
+#pragma once
+
+#include "entitymanager.h"
+#include "collisionmanager.h"
+#include "collisionutils.h"
+#include "observer.h"
+#include <unordered_map>
+#include <functional>
+
+namespace CrashoutsEngine {
+
+	class CollisionEventManager : public Messaging::Observer {
+	public:
+		enum Type { Trigger, Collidable };
+
+		using CallbackFnCollide = std::function<void(Entity)>;
+		using CallbackTriggerFn = std::function<void(Entity)>;
+
+
+		class Callable {
+		protected:
+			Callable(Type type) : type{ type } {}
+		public:
+			Type type;
+			virtual ~Callable() = default;
+		};
+
+		class ColliderFnCollection : public Callable {
+		public:
+			ColliderFnCollection(CallbackFnCollide enter, CallbackFnCollide stay, CallbackFnCollide exit) : Callable{ Collidable }, enter{ enter }, stay{ stay }, exit{ exit } {}
+
+			CallbackFnCollide enter;
+			CallbackFnCollide stay;
+			CallbackFnCollide exit;
+		};
+
+		class TriggerFnCollection : public Callable {
+		public:
+			TriggerFnCollection(CallbackTriggerFn enter, CallbackTriggerFn stay, CallbackTriggerFn exit) : Callable{ Trigger }, enter{ enter }, stay{ stay }, exit{ exit } {}
+
+			CallbackTriggerFn enter;
+			CallbackTriggerFn stay;
+			CallbackTriggerFn exit;
+		};
+
+
+		using CollisionEventMap = std::unordered_map<CrashoutsEngine::Entity, std::unique_ptr<Callable>>;
+
+	public:
+
+		CollisionEventManager();
+
+		static CollisionEventManager& GetInstance() {
+			static CollisionEventManager instance; // Meyer's Singleton
+			return instance;
+		}
+
+		void initEvent(CrashoutsEngine::Entity entity, Type type);
+
+		void registerCollideEnter(CrashoutsEngine::Entity entity, CallbackFnCollide fn);
+		void registerCollideStay(CrashoutsEngine::Entity entity, CallbackFnCollide fn);
+		void registerCollideExit(CrashoutsEngine::Entity entity, CallbackFnCollide fn);
+
+		void registerTriggerEnter(CrashoutsEngine::Entity entity, CallbackTriggerFn fn);
+		void registerTriggerStay(CrashoutsEngine::Entity entity, CallbackTriggerFn fn);
+		void registerTriggerExit(CrashoutsEngine::Entity entity, CallbackTriggerFn fn);
+
+		inline CollisionEventMap& getCollisionEvents() {
+			return collisionEvents;
+		}
+
+		~CollisionEventManager() = default;
+
+	private:
+		CollisionEventMap collisionEvents;
+
+	};
+}

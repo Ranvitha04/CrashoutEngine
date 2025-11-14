@@ -48,13 +48,13 @@ for Crashout Engine.
 #include "monomanager.h"
 #include "scriptsystem.h"
 #include "ppmanager.h"
-#include "sceneasset.h"
 
 #include "engine.h"
 #include <filesystem>
 #include <iostream>
 #include <fstream>
 
+#include "changevaluecommand.h"
 #include "undomanager.h"
 #include "inputmanager.h"
 #include "transformentitycommand.h"
@@ -1312,8 +1312,11 @@ namespace UI { // --------------------------------------------------------------
             ImGui::SameLine();
             // Stop
             if (ImGui::Button("STOP", ImVec2(70, 25))) {
-                RestartGameState();
-                //if (!currSceneName.empty()) Serialization::LoadScenes(currSceneName);
+                if(currSceneName.empty()) RestartGameState();
+                else {
+                    ECS::getInstance()->Reset();
+                    Serialization::LoadScenes(currSceneName);
+                }
                 //MonoManager::ReloadScripts();
                 engineState = EngineState::STOP;
             }
@@ -1665,12 +1668,14 @@ namespace UI { // --------------------------------------------------------------
                         {
                             if (movedEntities.size() > 1)
                             {
-                                UndoManager::GetInstance().Execute(
+
+                                UndoManager::GetInstance().AddCommand(
                                     std::make_unique<CrashoutsEngine::TransformGroupCommand>(
                                         movedEntities, startStates, endStates));
                             }
-                            /* else {
-                                UndoManager::GetInstance().Execute(
+                            /*else
+                            {
+                                UndoManager::GetInstance().AddCommand(
                                     std::make_unique<CrashoutsEngine::TransformEntityCommand>(
                                         movedEntities.front(), startStates.front(), endStates.front()));
                             } */
@@ -1944,7 +1949,7 @@ namespace UI { // --------------------------------------------------------------
 
             // Dock windows into regions (matching your actual window titles)
             ImGui::DockBuilderDockWindow("Debug Controls", dock_left);
-            ImGui::DockBuilderDockWindow("Heirarchy", dock_right);
+            ImGui::DockBuilderDockWindow("Hierarchy", dock_right);
             ImGui::DockBuilderDockWindow("Assets", dock_bottom);
             ImGui::DockBuilderDockWindow("Inspector", dock_right_bottom);
             ImGui::DockBuilderDockWindow("Physics / Collision", dock_bottom);
@@ -1958,6 +1963,17 @@ namespace UI { // --------------------------------------------------------------
 
             ImGui::DockBuilderFinish(dockspace_id);
         }
+
+        auto& io = ImGui::GetIO();
+
+        //if (io.KeyCtrl)
+        //{
+	       // if (ImGui::IsKeyPressed(ImGuiKey_Z))
+	       // {
+        //        UndoManager::GetInstance().Undo();
+	       // }
+        //}
+
         if (InputManager::IsKeyHeld(Key::LeftCtrl) && InputManager::IsKeyTriggered(Key::Z))
         {
 			LOGI(Core, "Undo Triggered");

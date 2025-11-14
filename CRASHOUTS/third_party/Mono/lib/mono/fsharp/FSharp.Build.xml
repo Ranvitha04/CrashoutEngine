@@ -99,12 +99,12 @@
  Return a list of the arguments (with no quoting for the cmd.exe shell)
 </summary>
 </member>
-<member name="M:FSharp.Build.Fsc.ExecuteTool(System.String,System.String,System.String)">
+<member name="M:FSharp.Build.Fsc.AddCommandTool(System.String,System.String,System.String)">
 <summary>
  Intercept the call to ExecuteTool to handle the host compile case.
 </summary>
 </member>
-<member name="M:FSharp.Build.Fsi.ExecuteTool(System.String,System.String,System.String)">
+<member name="M:FSharp.Build.Fsi.AddCommandTool(System.String,System.String,System.String)">
 <summary>
  Intercept the call to ExecuteTool to handle the host compile case.
 </summary>

@@ -35,6 +35,7 @@ context and implement a game loop.
 #include "glapp.h"
 #include "log.h"
 #include "physicsmanager.h"            // Component::RigidBodyComponent
+#include "collidereventmanager.h"
 #include "aimanager.h"
 #include "inputmanager.h"
 #include "debugreflection.h"
@@ -60,6 +61,7 @@ std::mutex CrashoutsEngine::ECS::mtx;
 
 auto& physicsSystem = Physics::PhysicsHandler::GetInstance();
 static Collision::CollisionHandler collisionSystem;
+CrashoutsEngine::CollisionEventManager &collisionEvent = CrashoutsEngine::CollisionEventManager::GetInstance();
 static CrashoutsEngine::AIManager aiSystem;
 
 // ImGui in-game performance viewer
@@ -132,6 +134,9 @@ void Init() {
     InstallCrashLogger("CrashoutsEngine");
     glfwSwapInterval(0); // disable vsync
     collisionSystem.registerObserver(Messaging::getCollisionMsgID(), physicsSystem); /*Listen to messages(collisions)*/
+    collisionSystem.registerObserver(Messaging::getExitMsgID(), collisionEvent); /*Listen to messages(collisions)*/
+    collisionSystem.registerObserver(Messaging::getStayMsgID(), collisionEvent); /*Listen to messages(collisions)*/
+    collisionSystem.registerObserver(Messaging::getEnterMsgID(), collisionEvent); /*Listen to messages(collisions)*/
 
     // start with a 16:9 aspect ratio
     if (!GLApp::init(Settings::GetScreenWidth(), Settings::GetScreenHeight(), "CRASHOUTS")) {
@@ -345,7 +350,7 @@ void Update(double const& dt) {
 
         {
             FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Collision");
-            collisionSystem.update(dt);
+            collisionSystem.update(dt, (Collision::EngineState)engineState);
         }
         {
             FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Physics");
@@ -369,6 +374,10 @@ void Update(double const& dt) {
         GLApp::update();
     }
     else if (engineState == EngineState::STOP) {
+        {
+            FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Collision");
+            collisionSystem.update(dt, (Collision::EngineState)engineState);
+        }
         {
             FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Physics");
             physicsSystem.update(0.f);
