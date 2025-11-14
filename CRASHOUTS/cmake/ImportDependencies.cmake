@@ -294,7 +294,7 @@ endfunction()
 function(copy_fmod_banks target banks_dir)
   add_custom_command(TARGET ${target} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E make_directory "$<TARGET_FILE_DIR:${target}>/assets/audio/banks"
-    COMMAND ${CMAKE_COMMAND} -E copy_directory "${banks_dir}" "$<TARGET_FILE_DIR:${target}>/assets/audio/banks"
+    COMMAND ${CMAKE_COMMAND} -E copy_directory_if_different "${banks_dir}" "$<TARGET_FILE_DIR:${target}>/assets/audio/banks"
   )
   endfunction()
 
@@ -336,34 +336,27 @@ set_target_properties(Mono::Core PROPERTIES
 )
 
 # --- Helper function to link Mono + copy runtime ---
+# --- Helper function to link Mono ---
 function(link_mono_to target)
-    message(STATUS "[Mono] Linking runtime to target: ${target}")
-
-    # Create imported Mono target if missing
-    if(NOT TARGET Mono::Core)
-        add_library(Mono::Core SHARED IMPORTED)
-        set_target_properties(Mono::Core PROPERTIES
-            IMPORTED_IMPLIB               "${_MONO_LIBDIR}/mono-2.0-sgen.lib"
-            IMPORTED_LOCATION             "${_MONO_BINDIR}/mono-2.0-sgen.dll"
-            INTERFACE_INCLUDE_DIRECTORIES "${_MONO_INC}"
-        )
-    endif()
+    message(STATUS "[Mono] Linking library to target: ${target}")
 
     # Link library + include path
     target_link_libraries(${target} PRIVATE Mono::Core)
     target_include_directories(${target} PRIVATE "${_MONO_INC}")
+endfunction()
 
+# --- Helper function to copy Mono runtime ---
+function(copy_mono_runtime target)
+    message(STATUS "[Mono] Adding post-build runtime copy to target: ${target}")
     # Post-build copy (ensures runtime DLL + etc)
     add_custom_command(TARGET ${target} POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
             "${_MONO_BINDIR}/mono-2.0-sgen.dll" "$<TARGET_FILE_DIR:${target}>"
-        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        COMMAND ${CMAKE_COMMAND} -E copy_directory_if_different
             "${_MONO_ETCDIR}" "$<TARGET_FILE_DIR:${target}>/third_party/Mono/etc"
-        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        COMMAND ${CMAKE_COMMAND} -E copy_directory_if_different
             "${_MONO_LIBDIR}" "$<TARGET_FILE_DIR:${target}>/third_party/Mono/lib"
     )
-
-    message(STATUS "[Mono] Linked ${target} with includes at: ${_MONO_INC}")
 endfunction()
 
 # (optional) log once so we know it ran

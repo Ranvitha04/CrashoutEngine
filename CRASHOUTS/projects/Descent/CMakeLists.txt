@@ -48,8 +48,18 @@ target_link_libraries(${PROJECT_NAME}
     CrashoutEngine
     #CrashoutsAudio
 )
-#link_fmod_to(${PROJECT_NAME}) 
 link_mono_to(${PROJECT_NAME})
+copy_mono_runtime(${PROJECT_NAME})
+
+link_fmod_to(${PROJECT_NAME}) 
+
+# Copy FMOD sound banks
+set(FMOD_BANKS_DIR "${CMAKE_SOURCE_DIR}/projects/Descent/assets/audio/banks") #<-- GUESSED PATH, PLEASE CHECK
+if(EXISTS ${FMOD_BANKS_DIR})
+    copy_fmod_banks(${PROJECT_NAME} ${FMOD_BANKS_DIR})
+else()
+    message(WARNING "FMOD banks directory not found at ${FMOD_BANKS_DIR}. Skipping bank copy.")
+endif()
 
 # Apply common include directories
 target_include_directories(${PROJECT_NAME} PRIVATE
