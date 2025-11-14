@@ -5,6 +5,7 @@
 #include "collisionutils.h"
 #include "observer.h"
 #include <unordered_map>
+#include <functional>
 
 namespace CrashoutsEngine {
 
@@ -12,8 +13,9 @@ namespace CrashoutsEngine {
 	public:
 		enum Type { Trigger, Collidable };
 
-		using CallbackFnCollide = void (*)(Entity);
-		using CallbackTriggerFn = void (*)(Entity);
+		using CallbackFnCollide = std::function<void(Entity)>;
+		using CallbackTriggerFn = std::function<void(Entity)>;
+
 
 		class Callable {
 		protected:

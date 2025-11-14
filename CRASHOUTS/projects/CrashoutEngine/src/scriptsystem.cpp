@@ -24,7 +24,7 @@ namespace CrashoutsEngine
         Bindings::RegisterRigidBodyBindings();
         Bindings::RegisterEntityBindings();
         Bindings::RegisterColliderBindings();
-        //Bindings::RegisterCollisionEventBindings();
+        Bindings::RegisterCollisionEventBindings();
 	}
 
     void ScriptSystem::InitializeAll(MonoDomain* domain, MonoAssembly* assembly)
