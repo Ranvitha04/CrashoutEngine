@@ -35,13 +35,13 @@ namespace CrashoutsEngine {
 			switch (firstIter->second->type) {
 				case CollisionEventManager::Collidable: {
 					CollisionEventManager::ColliderFnCollection& event{ dynamic_cast<CollisionEventManager::ColliderFnCollection&>(*firstIter->second) };
-					event.exit(pair.second);
+					if (event.exit) event.exit(pair.second);
 					}
 					break;
 
 				case CollisionEventManager::Trigger:
 					CollisionEventManager::TriggerFnCollection& event{ dynamic_cast<CollisionEventManager::TriggerFnCollection&>(*firstIter->second) };
-					event.exit(pair.second);
+					if (event.exit) event.exit(pair.second);
 					break;
 			}
 		}
@@ -50,13 +50,13 @@ namespace CrashoutsEngine {
 			switch (secondIter->second->type) {
 				case CollisionEventManager::Collidable: {
 					CollisionEventManager::ColliderFnCollection& event{ dynamic_cast<CollisionEventManager::ColliderFnCollection&>(*secondIter->second) };
-					event.exit(pair.first);
+					if (event.exit) event.exit(pair.first);
 				}
 					break;
 
 				case CollisionEventManager::Trigger:
 					CollisionEventManager::TriggerFnCollection& event{ dynamic_cast<CollisionEventManager::TriggerFnCollection&>(*secondIter->second) };
-					event.exit(pair.first);
+					if (event.exit) event.exit(pair.first);
 					break;
 			}
 		}
@@ -73,19 +73,17 @@ namespace CrashoutsEngine {
 
 		CollisionEventManager::CollisionEventMap::iterator secondIter{ currentEvents.find(pair.second) };
 
-		std::cout << "HEY\n";
-
 		if (firstIter != currentEvents.end()) {
 			switch (firstIter->second->type) {
 			case CollisionEventManager::Collidable: {
 				CollisionEventManager::ColliderFnCollection& event{ dynamic_cast<CollisionEventManager::ColliderFnCollection&>(*firstIter->second) };
-				event.stay(pair.second);
+				if (event.stay) event.stay(pair.second);
 			}
 				break;
 
 			case CollisionEventManager::Trigger:
 				CollisionEventManager::TriggerFnCollection& event{ dynamic_cast<CollisionEventManager::TriggerFnCollection&>(*firstIter->second) };
-				event.stay(pair.second);
+				if (event.stay) event.stay(pair.second);
 				break;
 			}
 		}
@@ -94,13 +92,13 @@ namespace CrashoutsEngine {
 			switch (secondIter->second->type) {
 			case CollisionEventManager::Collidable: {
 				CollisionEventManager::ColliderFnCollection& event{ dynamic_cast<CollisionEventManager::ColliderFnCollection&>(*secondIter->second) };
-				event.stay(pair.first);
+				if (event.stay) event.stay(pair.first);
 			}
 				break;
 
 			case CollisionEventManager::Trigger:
 				CollisionEventManager::TriggerFnCollection& event{ dynamic_cast<CollisionEventManager::TriggerFnCollection&>(*secondIter->second) };
-				event.stay(pair.first);
+				if (event.stay) event.stay(pair.first);
 				break;
 			}
 		}
@@ -119,13 +117,13 @@ namespace CrashoutsEngine {
 			switch (firstIter->second->type) {
 			case CollisionEventManager::Collidable: {
 				CollisionEventManager::ColliderFnCollection& event{ dynamic_cast<CollisionEventManager::ColliderFnCollection&>(*firstIter->second) };
-				event.enter(pair.second);
+				if (event.enter) event.enter(pair.second);
 			}
 				break;
 
 			case CollisionEventManager::Trigger:
 				CollisionEventManager::TriggerFnCollection& event{ dynamic_cast<CollisionEventManager::TriggerFnCollection&>(*firstIter->second) };
-				event.enter(pair.second);
+				if (event.enter) event.enter(pair.second);
 				break;
 			}
 		}
@@ -134,13 +132,13 @@ namespace CrashoutsEngine {
 			switch (secondIter->second->type) {
 			case CollisionEventManager::Collidable: {
 				CollisionEventManager::ColliderFnCollection& event{ dynamic_cast<CollisionEventManager::ColliderFnCollection&>(*secondIter->second) };
-				event.enter(pair.first);
+				if (event.enter) event.enter(pair.first);
 			}
 				break;
 
 			case CollisionEventManager::Trigger:
 				CollisionEventManager::TriggerFnCollection& event{ dynamic_cast<CollisionEventManager::TriggerFnCollection&>(*secondIter->second) };
-				event.enter(pair.first);
+				if (event.enter) event.enter(pair.first);
 				break;
 			}
 		}
