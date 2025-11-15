@@ -922,38 +922,81 @@ namespace UI { // --------------------------------------------------------------
                 // 1) Add the component
                 auto& anim = AddAnimator(ecs, selected);
 
-                // 2) Create a simple debug clip that rotates on Z
-                AnimationClip clip{};
-                clip.name = "DebugRotate";
-                clip.wrap = KFWrap::Loop;
+                // =========================================================
+                // WALK CLIP  (loops 4 frames on a spritesheet)
+                // =========================================================
+                AnimationClip walk{};
+                walk.name = "Walk";
+                walk.wrap = KFWrap::Loop;      // keep looping
 
-                KFBinding b{};
-                b.property = KFProperty::RotZ;
+                KFBinding walkSprite{};
+                walkSprite.property = KFProperty::SpriteIndex;
 
-                // NOTE: if your TransformComponent::rotation is in *degrees*,
-                // use -90 and +90. If it’s in *radians*, use -1.5708f and +1.5708f.
-                KFKey k0{};
-                k0.time = 0.f;
-                k0.value = -90.f;              // start angle
-                k0.inTan = 0.f;
-                k0.outTan = 0.f;
-                k0.interp = KFInterp::Linear;
+                // 4 frames: 0,1,2,3 over 0.4s (0.1s each)
+                {
+                    KFKey k{};
+                    k.interp = KFInterp::Constant;   // sprites: no interpolation
 
-                KFKey k1{};
-                k1.time = 1.f;
-                k1.value = 90.f;              // end angle
-                k1.inTan = 0.f;
-                k1.outTan = 0.f;
-                k1.interp = KFInterp::Linear;
+                    k.time = 0.0f; k.value = 0.f;
+                    walkSprite.curve.Add(k);
 
-                b.curve.Add(k0);
-                b.curve.Add(k1);
+                    k.time = 0.1f; k.value = 1.f;
+                    walkSprite.curve.Add(k);
 
-                clip.bindings.push_back(b);
+                    k.time = 0.2f; k.value = 2.f;
+                    walkSprite.curve.Add(k);
 
-                // 3) Put clip into the animator and start playing
-                anim.clips[clip.name] = clip;
-                anim.current = clip.name;
+                    k.time = 0.3f; k.value = 3.f;
+                    walkSprite.curve.Add(k);
+
+                    // Close loop back to frame 0 at 0.4s
+                    k.time = 0.4f; k.value = 0.f;
+                    walkSprite.curve.Add(k);
+                }
+
+                walk.bindings.push_back(walkSprite);
+
+                // =========================================================
+                // JUMP CLIP  (uses different frames 4–7)
+                // =========================================================
+                AnimationClip jump{};
+                jump.name = "Jump";
+                jump.wrap = KFWrap::Clamp;     // play once then hold last frame
+
+                KFBinding jumpSprite{};
+                jumpSprite.property = KFProperty::SpriteIndex;
+
+                {
+                    KFKey k{};
+                    k.interp = KFInterp::Constant;
+
+                    // start stand frame
+                    k.time = 0.0f; k.value = 4.f;   // e.g. idle-before-jump
+                    jumpSprite.curve.Add(k);
+
+                    // in-air frame
+                    k.time = 0.15f; k.value = 5.f;
+                    jumpSprite.curve.Add(k);
+
+                    // peak
+                    k.time = 0.30f; k.value = 6.f;
+                    jumpSprite.curve.Add(k);
+
+                    // landing frame
+                    k.time = 0.45f; k.value = 7.f;
+                    jumpSprite.curve.Add(k);
+                }
+
+                jump.bindings.push_back(jumpSprite);
+
+                // =========================================================
+                // Register both clips on this animator
+                // =========================================================
+                anim.clips[walk.name] = walk;
+                anim.clips[jump.name] = jump;
+
+                // Start in WALK
+                anim.current = walk.name;
                 anim.t = 0.f;
                 anim.playing = true;
             }
