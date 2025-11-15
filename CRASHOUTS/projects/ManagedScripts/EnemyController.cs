@@ -19,14 +19,33 @@ namespace CrashoutsEngine
             //Console.WriteLine("Staying in Me");
         }
 
+        /*SAMPLE TRIGGERS*/
+        public static void OnTriggerEnter(uint otherEntity) {
+            Console.WriteLine("Entered Inside Me");
+        }
+
+        public static void OnTriggerExit(uint otherEntity)
+        {
+            Console.WriteLine("Exited Me");
+        }
+
+        public static void OnTriggerStay(uint otherEntity)
+        {
+            // Console.WriteLine(otherEntity);
+        }
+
         public override void Start()
         {
             // Initialization logic for the enemy
             Console.WriteLine("[C#] EnemyController Start() called, Entity is " + (Entity == null ? "NULL" : "OK!"));
             
-            CollisionEvents.RegisterCollideEnter(Entity.ID, OnCollideEnter);
-            CollisionEvents.RegisterCollideExit(Entity.ID, OnCollideExit);
-            CollisionEvents.RegisterCollideStay(Entity.ID, OnCollideStay);
+            // CollisionEvents.RegisterCollideEnter(Entity.ID, OnCollideEnter);
+            // CollisionEvents.RegisterCollideExit(Entity.ID, OnCollideExit);
+            // CollisionEvents.RegisterCollideStay(Entity.ID, OnCollideStay);
+
+            // CollisionEvents.RegisterTriggerEnter(Entity.ID, OnTriggerEnter);
+            // CollisionEvents.RegisterTriggerExit(Entity.ID, OnTriggerExit);
+            // CollisionEvents.RegisterTriggerStay(Entity.ID, OnTriggerStay);
         }
 
         public override void Update()
