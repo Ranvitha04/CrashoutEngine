@@ -75,31 +75,57 @@ namespace CrashoutsEngine {
 
 		if (firstIter != currentEvents.end()) {
 			switch (firstIter->second->type) {
-			case CollisionEventManager::Collidable: {
-				CollisionEventManager::ColliderFnCollection& event{ dynamic_cast<CollisionEventManager::ColliderFnCollection&>(*firstIter->second) };
-				if (event.stay) event.stay(pair.second);
-			}
+				case CollisionEventManager::Collidable:
+				{
+					auto& event = dynamic_cast<CollisionEventManager::ColliderFnCollection&>(*firstIter->second);
+					if (event.stay) event.stay(pair.second);
+
+					observer.SetLastContact(pair.first, {
+						collEvent.getCollisionManifold(),
+						pair.second
+						});
+				}
 				break;
 
-			case CollisionEventManager::Trigger:
-				CollisionEventManager::TriggerFnCollection& event{ dynamic_cast<CollisionEventManager::TriggerFnCollection&>(*firstIter->second) };
-				if (event.stay) event.stay(pair.second);
+				case CollisionEventManager::Trigger:
+				{
+					auto& event = dynamic_cast<CollisionEventManager::TriggerFnCollection&>(*firstIter->second);
+					if (event.stay) event.stay(pair.second);
+
+					observer.SetLastContact(pair.first, {
+						collEvent.getCollisionManifold(),
+						pair.second
+						});
+				}
 				break;
 			}
 		}
 
 		if (secondIter != currentEvents.end()) {
 			switch (secondIter->second->type) {
-			case CollisionEventManager::Collidable: {
-				CollisionEventManager::ColliderFnCollection& event{ dynamic_cast<CollisionEventManager::ColliderFnCollection&>(*secondIter->second) };
+			case CollisionEventManager::Collidable:
+			{
+				auto& event = dynamic_cast<CollisionEventManager::ColliderFnCollection&>(*secondIter->second);
 				if (event.stay) event.stay(pair.first);
+
+				observer.SetLastContact(pair.second, {
+					collEvent.getCollisionManifold(),
+					pair.first
+					});
 			}
-				break;
+			break;
 
 			case CollisionEventManager::Trigger:
-				CollisionEventManager::TriggerFnCollection& event{ dynamic_cast<CollisionEventManager::TriggerFnCollection&>(*secondIter->second) };
+			{
+				auto& event = dynamic_cast<CollisionEventManager::TriggerFnCollection&>(*secondIter->second);
 				if (event.stay) event.stay(pair.first);
-				break;
+
+				observer.SetLastContact(pair.second, {
+					collEvent.getCollisionManifold(),
+					pair.first
+					});
+			}
+			break;
 			}
 		}
 	}

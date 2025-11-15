@@ -1,5 +1,4 @@
 using System;
-using System.Numerics;
 using System.Runtime.CompilerServices;
 
 namespace CrashoutsEngine
@@ -8,10 +7,10 @@ namespace CrashoutsEngine
     {
         // Transform bindings
         [MethodImpl(MethodImplOptions.InternalCall)]
-        internal static extern void TransformGetPosition(ulong entityID, out Vector3 position);
+        internal static extern void TransformGetPosition(ulong entityID, out CEVec3 position);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        internal static extern void TransformSetPosition(ulong entityID, ref Vector3 position);
+        internal static extern void TransformSetPosition(ulong entityID, ref CEVec3 position);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal static extern void TransformGetRotation(ulong entityID, out float rotation);
@@ -20,10 +19,10 @@ namespace CrashoutsEngine
         internal static extern void TransformSetRotation(ulong entityID, ref float rotation);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        internal static extern void TransformGetSize(ulong entityID, out Vector2 size);
+        internal static extern void TransformGetSize(ulong entityID, out CEVec2 size);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        internal static extern void TransformSetSize(ulong entityID, ref Vector2 size);
+        internal static extern void TransformSetSize(ulong entityID, ref CEVec2 size);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal static extern bool EntityHasTransform(ulong entityID);

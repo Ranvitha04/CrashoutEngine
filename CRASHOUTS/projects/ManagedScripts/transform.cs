@@ -1,5 +1,3 @@
-using System;
-using System.Numerics;
 using System.Runtime.CompilerServices;
 
 namespace CrashoutsEngine
@@ -14,12 +12,13 @@ namespace CrashoutsEngine
         }
 
         // Position
-        public Vector3 Position
+        public CEVec3 Position
         {
             get
             {
-                InternalCalls.TransformGetPosition(_entityID, out Vector3 position);
-                return position;
+                CEVec3 pos;
+                InternalCalls.TransformGetPosition(_entityID, out pos);
+                return pos;
             }
             set
             {
@@ -27,13 +26,14 @@ namespace CrashoutsEngine
             }
         }
 
-        // Rotation in degrees
+        // Rotation (degrees)
         public float Rotation
         {
             get
             {
-                InternalCalls.TransformGetRotation(_entityID, out float rotation);
-                return rotation;
+                float rot;
+                InternalCalls.TransformGetRotation(_entityID, out rot);
+                return rot;
             }
             set
             {
@@ -42,11 +42,12 @@ namespace CrashoutsEngine
         }
 
         // Size
-        public Vector2 Size
+        public CEVec2 Size
         {
             get
             {
-                InternalCalls.TransformGetSize(_entityID, out Vector2 size);
+                CEVec2 size;
+                InternalCalls.TransformGetSize(_entityID, out size);
                 return size;
             }
             set

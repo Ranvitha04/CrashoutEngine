@@ -1,4 +1,3 @@
-using System.Numerics;
 using System.Runtime.CompilerServices;
 
 namespace CrashoutsEngine
@@ -7,9 +6,9 @@ namespace CrashoutsEngine
     {
         internal uint EntityID { get; set; }
 
-        public void AddForce(Vector3 force)
+        public void AddForce(CEVec3 force)
         {
-            InternalAddForce(EntityID, force.X, force.Y, force.Z);
+            InternalAddForce(EntityID, force.x, force.y, force.z);
         }
 
         public float GetMass()

@@ -8,7 +8,7 @@ namespace CrashoutsEngine
         public void OnTriggerEnter(uint otherEntity) {
             Console.WriteLine("Entered Inside Me BOUNCE");
             var rb = Entity.RigidBody;
-            rb.AddForce(new Vector3(0f, 20000f, 0f)); //* rb.GetMass());
+            rb.AddForce(new CEVec3(0f, 20000f, 0f)); //* rb.GetMass());
         }
 
         public void OnTriggerExit(uint otherEntity)
@@ -44,17 +44,17 @@ namespace CrashoutsEngine
             {
                 //Console.WriteLine("A key is pressed");
                 //Console.WriteLine("[C#] mass=" + rb.GetMass());
-                rb.AddForce(new Vector3(-500f, 0f, 0f));
+                rb.AddForce(new CEVec3(-500f, 0f, 0f));
             }
 
             if (Input.IsKeyPressed(Key.D))
             {
-                rb.AddForce(new Vector3(500f, 0f, 0f));
+                rb.AddForce(new CEVec3(500f, 0f, 0f));
             }
 
             if (Input.IsKeyTriggered(Key.Space))
             {
-                rb.AddForce(new Vector3(0f, 40000f, 0f)); //* rb.GetMass());
+                rb.AddForce(new CEVec3(0f, 40000f, 0f)); //* rb.GetMass());
                 Console.WriteLine("[C#] mass=" + rb.GetMass());
             }
 

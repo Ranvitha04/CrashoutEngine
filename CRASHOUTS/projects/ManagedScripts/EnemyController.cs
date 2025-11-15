@@ -62,17 +62,17 @@ namespace CrashoutsEngine
             {
                 //Console.WriteLine("A key is pressed");
                 //Console.WriteLine("[C#] mass=" + rb.GetMass());
-                rb.AddForce(new Vector3(-100f, 0f, 0f));
+                rb.AddForce(new CEVec3(-100f, 0f, 0f));
             }
 
             if (Input.IsKeyPressed(Key.Right))
             {
-                rb.AddForce(new Vector3(100f, 0f, 0f));
+                rb.AddForce(new CEVec3(100f, 0f, 0f));
             }
 
             if (Input.IsKeyPressed(Key.Up))
             {
-                rb.AddForce(new Vector3(0f, 300f, 0f) * rb.GetMass());
+                rb.AddForce(new CEVec3(0f, 300f, 0f) * rb.GetMass());
             }
         }
     }

@@ -74,10 +74,24 @@ namespace CrashoutsEngine {
 			return collisionEvents;
 		}
 
+		bool TryGetLastContact(Entity entity, ContactInfo& outInfo) const {
+			auto it = lastContacts.find(entity);
+			if (it == lastContacts.end())
+				return false;
+			outInfo = it->second;
+			return true;
+		}
+
+		void SetLastContact(Entity entity, ContactInfo const& info) {
+			lastContacts[entity] = info;
+		}
+
+
 		~CollisionEventManager() = default;
 
 	private:
 		CollisionEventMap collisionEvents;
+		std::unordered_map<Entity, ContactInfo> lastContacts;
 
 	};
 }
