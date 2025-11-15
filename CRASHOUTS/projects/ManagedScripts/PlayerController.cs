@@ -8,7 +8,7 @@ namespace CrashoutsEngine
         public void OnTriggerEnter(uint otherEntity) {
             Console.WriteLine("Entered Inside Me BOUNCE");
             var rb = Entity.RigidBody;
-            rb.AddForce(new Vector3(0f, 40000f, 0f)); //* rb.GetMass());
+            rb.AddForce(new Vector3(0f, 20000f, 0f)); //* rb.GetMass());
         }
 
         public void OnTriggerExit(uint otherEntity)

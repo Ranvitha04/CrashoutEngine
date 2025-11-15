@@ -49,7 +49,7 @@ void FrameRateController::FrameEnd()
 	double elapsed = duration<double>(ClockTime::now() - mFrameStart).count();
 
 	//clamp dt between 0.1ms and 250ms so the game does not blow up - Rain
-	mDT = std::clamp(elapsed, 0.0001, 0.25);
+	mDT = std::clamp(elapsed, 0.0001, 0.15);
 	mFPS = 1.0 / mDT;
 	mCurrentSteps = 0;
 	// accumulate time since last frame

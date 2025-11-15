@@ -9,6 +9,11 @@
 
 namespace CrashoutsEngine {
 
+	struct ContactInfo {
+		Collision::CollisionManifold info;
+		Entity collidedEntity;
+	};
+
 	class CollisionEventManager : public Messaging::Observer {
 	public:
 		enum Type { Trigger, Collidable };
