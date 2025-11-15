@@ -2248,7 +2248,7 @@ namespace UI { // --------------------------------------------------------------
             ImGui::DockBuilderFinish(dockspace_id);
         }
 
-        auto& io = ImGui::GetIO();
+        //auto& io = ImGui::GetIO();
 
         //if (io.KeyCtrl)
         //{
