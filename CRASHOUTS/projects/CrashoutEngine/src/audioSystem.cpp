@@ -56,6 +56,15 @@ bool AudioSystem::init(const std::string& banksDir) {
     FMOD::System* rawCore = nullptr;
     if (!ok(mStudio->getCoreSystem(&rawCore), "getCoreSystem")) return false;
     mCore.reset(rawCore); 
+    FMOD::ChannelGroup* master = nullptr;
+    ok(mCore->getMasterChannelGroup(&master), "getMasterChannelGroup");
+
+    ok(mCore->createChannelGroup("Music", &mMusicGroup), "createChannelGroup Music");
+    ok(mCore->createChannelGroup("SFX", &mSFXGroup), "createChannelGroup SFX");
+
+    ok(master->addGroup(mMusicGroup), "master.addGroup(Music)");
+    ok(master->addGroup(mSFXGroup), "master.addGroup(SFX)");
+
     //Load main bank
     //loadBank("banks/Master.strings.bank");
     //loadBank("banks/Master.bank");
@@ -281,6 +290,53 @@ void AudioSystem::inspectBankToConsole(const std::string& bankFile) {
             if (v && v->getPath(p, sizeof(p), &n) == FMOD_OK) std::fprintf(stdout, "  %s\n", p);
         }
     }
-
     bank->unload();
+
 }
+    static FMOD_MODE MusicMode(bool loop) {
+        FMOD_MODE m = FMOD_DEFAULT | FMOD_CREATESTREAM | FMOD_2D;
+        if (loop) m |= FMOD_LOOP_NORMAL;
+        return m;
+    }
+
+    bool AudioSystem::playMusicFile(const std::string & path, bool loop) {
+        if (!mCore || !mMusicGroup) return false;
+
+        FMOD::Sound* snd = nullptr;
+        if (!ok(mCore->createSound(path.c_str(), MusicMode(loop), nullptr, &snd), "createSound(music)"))
+            return false;
+
+        FMOD::Channel* ch = nullptr;
+        if (!ok(mCore->playSound(snd, mMusicGroup, false, &ch), "playSound(music)")) {
+            snd->release();
+            return false;
+        }
+        if (ch) ch->setMode(FMOD_2D);
+      
+        return true;
+    }
+
+    bool AudioSystem::playSFXFile(const std::string & path) {
+        if (!mCore || !mSFXGroup) return false;
+
+        FMOD::Sound* snd = nullptr;
+        if (!ok(mCore->createSound(path.c_str(), FMOD_DEFAULT | FMOD_2D, nullptr, &snd), "createSound(sfx)"))
+            return false;
+
+        FMOD::Channel* ch = nullptr;
+        if (!ok(mCore->playSound(snd, mSFXGroup, false, &ch), "playSound(sfx)")) {
+            snd->release();
+            return false;
+        }
+        if (ch) ch->setMode(FMOD_2D);
+        snd->release(); 
+        return true;
+    }
+
+    bool AudioSystem::setMusicGroupVolume(float v01) {
+        return mMusicGroup && (mMusicGroup->setVolume(v01) == FMOD_OK);
+    }
+    bool AudioSystem::setSFXGroupVolume(float v01) {
+        return mSFXGroup && (mSFXGroup->setVolume(v01) == FMOD_OK);
+    }
+    

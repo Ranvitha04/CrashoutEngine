@@ -18,4 +18,17 @@ namespace CrashoutsEngine
         void Undo() override { mSetter(mOldValue); }
     };
 
+    template <typename T>
+    class ValueCommand : public EditorCommand
+    {
+	    T& mRef, mOldValue, mNewValue;
+    public:
+        ValueCommand(T& ref, const T& oldVal, const T& newVal)
+            : mRef(ref), mOldValue(oldVal), mNewValue(newVal) {
+        }
+
+        void Execute() override { mRef = mNewValue; }
+        void Undo() override { mRef = mOldValue; }
+    };
+
 }

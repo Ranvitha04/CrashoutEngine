@@ -121,7 +121,7 @@
 		selectCommand.CommandText = selectCmd;
                 int rowCount = 0;
 		try {
-			reader = selectCommand.ExecuteReader ();
+			reader = selectCommand.AddCommandReader ();
 			while (reader.Read ()) {
 				TableRow row = new TableRow ();
 				for (int i = 0; i < reader.FieldCount; i++) {

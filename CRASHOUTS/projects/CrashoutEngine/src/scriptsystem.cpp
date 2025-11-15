@@ -5,6 +5,7 @@
 @brief		Definition of script system functions
 */
 #include "colliderbindings.h"
+#include "collidereventbindings.h"
 #include "ScriptSystem.h"
 #include "entitymanager.h"
 #include "InputBindings.h"
@@ -23,6 +24,7 @@ namespace CrashoutsEngine
         Bindings::RegisterRigidBodyBindings();
         Bindings::RegisterEntityBindings();
         Bindings::RegisterColliderBindings();
+        Bindings::RegisterCollisionEventBindings();
 	}
 
     void ScriptSystem::InitializeAll(MonoDomain* domain, MonoAssembly* assembly)

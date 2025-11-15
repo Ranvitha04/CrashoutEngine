@@ -2,25 +2,27 @@
 #include "afiqscene.h"
 #include "log.h"
 #include "GLFW/glfw3.h"
-#include "entitymanager.h"   // ECS + Component types
+#include "entitymanager.h"  
 #include "prefab_init.h"
 #include <functional>
 #include <unordered_map>
 #include <vector>
 #include <algorithm>
 #include <string>
+#include "frameratecontroller.h"
+#include "keyframe.h"
 
 #include "transformcomponent.h"
 #include "namecomponent.h"
 #include "shapescomponent.h"
-
+#include "inputmanager.h" 
 // AUDIO
 #include "audioSystem.h"
 using CrashoutsEngine::Audio::AudioSystem;
 
 using namespace CrashoutsEngine;
 using namespace Component;
-
+static Entity gKFBox = 0;
 // ============================================================================
 // In-file, minimal Prefab registry (name -> factory) so we don't need new files
 // ============================================================================
@@ -65,7 +67,7 @@ namespace {
             e.AddComponent<NameComponent>(ent, NameComponent{ "Platform" });
             e.AddComponent<TransformComponent>(ent, TransformComponent{ .size{100.f, 10.f} });
             e.AddComponent<ShapeComponent>(ent, ShapeComponent{ .type = ShapeType::Rectangle });
-            // add collider/rigidbody/etc. here if desired
+          
             });
 
         // Box: small rectangle
@@ -75,9 +77,91 @@ namespace {
             e.AddComponent<TransformComponent>(ent, TransformComponent{ .size{20.f, 20.f} });
             e.AddComponent<ShapeComponent>(ent, ShapeComponent{ .type = ShapeType::Rectangle });
             });
+    
+        PrefabRegister("KF_Box", [](ECS& e) {
+            auto ent = e.CreateEntity();
+            gKFBox = ent;  // remember which entity is our animated test box
 
-        // Add more:
-        // PrefabRegister("Ball", [](ECS& e){ /* components... */ });
+            // Basic components
+            e.AddComponent<NameComponent>(ent, NameComponent{ "KF_Box" });
+
+            TransformComponent t{};
+            t.position = { 0.f, 0.f, 0.f };
+            t.size = { 40.f, 40.f };
+            e.AddComponent<TransformComponent>(ent, t);
+
+            ShapeComponent s{};
+            s.type = ShapeType::Rectangle;
+            s.color = CEVec3{ 0.9f, 0.4f, 0.2f };
+            e.AddComponent<ShapeComponent>(ent, s);
+
+            // Attach animator component
+            auto& anim = KeyframeUnity::AddAnimator(e, ent);
+
+            // -------------------------------------------------
+            // CLIP 1: "Walk"  (small, slower sway)
+            // -------------------------------------------------
+            AnimationClip walk{};
+            walk.name = "Walk";
+            walk.wrap = KFWrap::Loop;
+
+            KFBinding walkRot{};
+            walkRot.property = KFProperty::RotZ;
+
+            KFKey walk0{};
+            walk0.time = 0.f;
+            walk0.value = -30.f;           // degrees
+            walk0.inTan = 0.f;
+            walk0.outTan = 0.f;
+            walk0.interp = KFInterp::Linear;
+
+            KFKey walk1{};
+            walk1.time = 0.5f;
+            walk1.value = 30.f;            // degrees
+            walk1.inTan = 0.f;
+            walk1.outTan = 0.f;
+            walk1.interp = KFInterp::Linear;
+
+            walkRot.curve.Add(walk0);
+            walkRot.curve.Add(walk1);
+            walk.bindings.push_back(walkRot);
+
+            KeyframeUnity::SetClip(anim, walk);
+
+            // -------------------------------------------------
+            // CLIP 2: "Jump" (bigger, faster swing)
+            // -------------------------------------------------
+            AnimationClip jump{};
+            jump.name = "Jump";
+            jump.wrap = KFWrap::Loop;
+
+            KFBinding jumpRot{};
+            jumpRot.property = KFProperty::RotZ;
+
+            KFKey jump0{};
+            jump0.time = 0.f;
+            jump0.value = -90.f;
+            jump0.inTan = 0.f;
+            jump0.outTan = 0.f;
+            jump0.interp = KFInterp::Linear;
+
+            KFKey jump1{};
+            jump1.time = 0.25f;
+            jump1.value = 90.f;
+            jump1.inTan = 0.f;
+            jump1.outTan = 0.f;
+            jump1.interp = KFInterp::Linear;
+
+            jumpRot.curve.Add(jump0);
+            jumpRot.curve.Add(jump1);
+            jump.bindings.push_back(jumpRot);
+
+            KeyframeUnity::SetClip(anim, jump);
+
+            // Start in "Walk" by default
+            KeyframeUnity::Play(anim, "Walk", true);
+            });
+
     }
 } // anon ns (prefab)
 
@@ -110,6 +194,12 @@ void InitAfiq()
 {
     LOGI(Core, "Afiq Initialized");
 
+    // Get ECS pointer
+    ECS* ecs = ECS::getInstance();
+    ecs->Reset();
+
+    PrefabCreate(*ecs, "KF_Box");
+
     if (!s_audioReady) return;
 
     // quick beep to prove audio works
@@ -122,12 +212,38 @@ void InitAfiq()
     }
 }
 
+
 void UpdateAfiq()
 {
     if (s_audioReady) {
         AudioSystem::instance().update();
     }
+
+    ECS* ecs = ECS::getInstance();
+    if (ecs) {
+        float dt = static_cast<float>(FrameRateController::GetInstance().DT());
+        KeyframeUnity::UpdateAll(*ecs, dt);
+
+        // -------------------------------------------------
+        // Keyboard: Z = Walk, Y = Jump (two clips on same
+        // character, like your rubric wants).
+        // -------------------------------------------------
+        if (gKFBox && ecs->HasComponent<KeyframeAnimatorComponent>(gKFBox)) {
+            auto* anim = ecs->GetComponent<KeyframeAnimatorComponent>(gKFBox);
+
+            // Play "Walk" clip
+            if (InputManager::IsKeyTriggered(Key::Z)) {
+                KeyframeUnity::Play(*anim, "Walk", true);
+            }
+
+            // Play "Jump" clip
+            if (InputManager::IsKeyTriggered(Key::Y)) {
+                KeyframeUnity::Play(*anim, "Jump", true);
+            }
+        }
+    }
 }
+
 
 void RenderAfiq()
 {

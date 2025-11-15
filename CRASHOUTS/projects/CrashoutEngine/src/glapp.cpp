@@ -34,7 +34,9 @@ integration.
 #include <imgui.h>
 #include <backends/imgui_impl_glfw.h>
 #include <backends/imgui_impl_opengl3.h>
-
+#include <filesystem>
+#include <algorithm>
+#include "assetmanager.h" 
 #include "frameratecontroller.h"
 #include "key.h"
 
@@ -130,6 +132,53 @@ bool GLApp::init(GLint w, GLint h, std::string t) {
 
     // make the previously created OpenGL context current ...
     glfwMakeContextCurrent(GLApp::ptr_window);
+    glfwSetDropCallback(ptr_window, [](GLFWwindow*, int count, const char** paths) {
+        namespace fs = std::filesystem;
+
+        const fs::path assetsRoot = CrashoutsEngine::Assets::rootPath;
+
+        auto route = [&](const fs::path& p)->fs::path {
+            std::string ext = p.extension().string();
+            std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+
+            fs::path sub = assetsRoot;
+            if (ext == ".png" || ext == ".jpg" || ext == ".jpeg" || ext == ".bmp" || ext == ".tga") sub /= "images";
+            else if (ext == ".vert" || ext == ".frag" || ext == ".glsl")                               sub /= "shaders";
+            else if (ext == ".json" || ext == ".scene" || ext == ".prefab")                            sub /= "scenes";
+            else if (ext == ".bank" || ext == ".mp3" || ext == ".ogg" || ext == ".wav" || ext == ".flac") sub /= "audio";
+            else sub /= "misc";
+            return sub;
+            };
+
+        auto copy_entry = [&](const fs::path& src) {
+            if (!fs::exists(src) || !fs::is_regular_file(src)) return;
+            std::error_code ec;
+            fs::path dstDir = route(src);
+            fs::create_directories(dstDir, ec);
+            fs::copy_file(src, dstDir / src.filename(), fs::copy_options::overwrite_existing, ec);
+            };
+
+        for (int i = 0; i < count; ++i) {
+            fs::path dropped(paths[i]);
+            if (!fs::exists(dropped)) continue;
+
+            if (fs::is_directory(dropped)) {
+                for (auto& e : fs::recursive_directory_iterator(dropped))
+                    if (e.is_regular_file()) copy_entry(e.path());
+            }
+            else {
+                copy_entry(dropped);
+            }
+        }
+        CrashoutsEngine::Assets::GenerateAssetManifest(
+            CrashoutsEngine::Assets::rootPath,
+            CrashoutsEngine::Assets::assetManifestPath
+        );
+        CrashoutsEngine::Assets::AssetManager::GetInstance().LoadManifestAssets(
+            CrashoutsEngine::Assets::rootPath,
+            CrashoutsEngine::Assets::assetManifestPath
+        );
+        });
 
     // set callback for events associated with window size changes; keyboard;
     // mouse buttons, cursor position, and scroller

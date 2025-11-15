@@ -48,12 +48,14 @@ for Crashout Engine.
 #include "monomanager.h"
 #include "scriptsystem.h"
 #include "ppmanager.h"
+#include "keyframe.h"
 
 #include "engine.h"
 #include <filesystem>
 #include <iostream>
 #include <fstream>
 
+#include "changevaluecommand.h"
 #include "undomanager.h"
 #include "inputmanager.h"
 #include "transformentitycommand.h"
@@ -61,7 +63,6 @@ for Crashout Engine.
 #include "shapescomponent.h"
 #include "audiocomponent.h"
 #include "sceneasset.h"
-
 #include <vector>
 #include "CEVec3.h"
 #include "stb_image.h"
@@ -92,6 +93,7 @@ using CrashoutsEngine::Audio::AudioSystem;
 using namespace CrashoutsEngine;
 using namespace Component;
 using CrashoutsEngine::Audio::AudioSystem;
+using namespace KeyframeUnity;
 
 namespace { //----------------------------------------------------------------------------- file-local state & helpers
 
@@ -341,6 +343,30 @@ namespace UI { // --------------------------------------------------------------
             glfwMakeContextCurrent(backup);
         }
     }
+    // ----------------- Keyframe editor helpers -----------------
+    namespace KeyframeUnityEditor
+    {
+        struct Selection {
+            CrashoutsEngine::Entity entity{};
+            int bindingIndex = -1;
+            int keyIndex = -1;
+        };
+
+        static Selection gSel;
+
+        static const char* KFPropertyName(KFProperty p)
+        {
+            switch (p) {
+            case KFProperty::PosX:        return "Position X";
+            case KFProperty::PosY:        return "Position Y";
+            case KFProperty::RotZ:        return "Rotation Z";
+            case KFProperty::ScaleX:      return "Scale X";
+            case KFProperty::ScaleY:      return "Scale Y";
+            case KFProperty::SpriteIndex: return "Sprite Index";
+            default:                      return "Unknown";
+            }
+        }
+    }
 
     // -- Panels ---------------------------------------------------------------
     /*!
@@ -459,6 +485,148 @@ namespace UI { // --------------------------------------------------------------
                 selected = 0;
                 return;
             }
+        }
+    }
+    // Draw a Unity-like keyframe timeline for the selected entity
+    static void RenderAnimationPanel(CrashoutsEngine::ECS& ecs,
+        CrashoutsEngine::Entity selected,
+        UIState& ui)
+    {
+        using namespace KeyframeUnity;
+        using namespace KeyframeUnityEditor;
+        using CrashoutsEngine::Entity;
+
+        if (!ui.showAnimation) return;   
+
+        ScopedWindow w("Animation", LockFlags(ui.lockLayout));
+
+        if (!selected) {
+            ImGui::TextDisabled("No entity selected.");
+            return;
+        }
+
+        auto* anim = ecs.GetComponent<KeyframeAnimatorComponent>(selected);
+        if (!anim) {
+            ImGui::TextDisabled("Entity has no KeyframeAnimatorComponent.");
+            ImGui::Text("Add it in Inspector first.");
+            return;
+        }
+
+       
+        AnimationClip* clip = nullptr;
+        if (!anim->current.empty()) {
+            auto it = anim->clips.find(anim->current);
+            if (it != anim->clips.end())
+                clip = &it->second;
+        }
+
+        if (!clip) {
+            ImGui::TextDisabled("Animator has no active clip.");
+            ImGui::Text("Use your code to SetClip() and Play().");
+            return;
+        }
+
+        const float length = clip->Length();
+        ImGui::Text("Clip: %s (%.2fs)", clip->name.c_str(), length);
+        ImGui::Separator();
+
+        // --- Timeline layout ---
+        ImDrawList* draw = ImGui::GetWindowDrawList();
+        ImVec2 origin = ImGui::GetCursorScreenPos();
+        const float labelW = 140.0f;
+        const float rowH = 20.0f;
+        const float totalW = ImGui::GetContentRegionAvail().x;
+        const float timeW = totalW - labelW;
+        const int   rows = (int)clip->bindings.size();
+
+        for (int bi = 0; bi < rows; ++bi) {
+            KFBinding& b = clip->bindings[bi];
+            float rowTop = origin.y + bi * rowH;
+            float rowMid = rowTop + rowH * 0.5f;
+
+            // Property label
+            ImGui::SetCursorScreenPos(ImVec2(origin.x, rowTop));
+            ImGui::TextUnformatted(KFPropertyName(b.property));
+
+            // Row background
+            ImU32 rowCol = IM_COL32(40, 40, 40, 255);
+            draw->AddRectFilled(
+                ImVec2(origin.x + labelW, rowTop),
+                ImVec2(origin.x + labelW + timeW, rowTop + rowH),
+                rowCol);
+
+            // Keyframes 
+            int keyCount = (int)b.curve.keys.size();
+            for (int ki = 0; ki < keyCount; ++ki) {
+                KFKey& k = b.curve.keys[ki];
+
+                float t01 = (length > 0.f) ? (k.time / length) : 0.f;
+                t01 = std::clamp(t01, 0.0f, 1.0f);
+                float x = origin.x + labelW + t01 * timeW;
+                ImVec2 p(x, rowMid);
+
+                float size = 4.0f;
+                ImVec2 diamond[4] = {
+                    ImVec2(p.x,        p.y - size),
+                    ImVec2(p.x + size, p.y),
+                    ImVec2(p.x,        p.y + size),
+                    ImVec2(p.x - size, p.y)
+                };
+
+                bool selectedKey =
+                    (gSel.entity == selected &&
+                        gSel.bindingIndex == bi &&
+                        gSel.keyIndex == ki);
+
+                ImU32 col = selectedKey
+                    ? IM_COL32(255, 200, 0, 255)   
+                    : IM_COL32(200, 200, 200, 255);
+
+                draw->AddConvexPolyFilled(diamond, 4, col);
+
+                // Clickable area
+                ImGui::SetCursorScreenPos(ImVec2(p.x - size - 3.f, p.y - size - 3.f));
+                ImGui::InvisibleButton(
+                    (std::string("kf_") + std::to_string(bi) + "_" + std::to_string(ki)).c_str(),
+                    ImVec2((size + 3.f) * 2.f, (size + 3.f) * 2.f));
+
+                if (ImGui::IsItemClicked()) {
+                    gSel.entity = selected;
+                    gSel.bindingIndex = bi;
+                    gSel.keyIndex = ki;
+                }
+            }
+        }
+
+        ImGui::Dummy(ImVec2(0.f, rows * rowH + 4.f));
+        ImGui::Separator();
+
+        // --- Keyframe inspector ---
+        if (gSel.entity == selected &&
+            gSel.bindingIndex >= 0 &&
+            gSel.bindingIndex < (int)clip->bindings.size())
+        {
+            KFBinding& b = clip->bindings[gSel.bindingIndex];
+            if (gSel.keyIndex >= 0 &&
+                gSel.keyIndex < (int)b.curve.keys.size())
+            {
+                KFKey& k = b.curve.keys[gSel.keyIndex];
+
+                ImGui::Text("Keyframe: %s", KFPropertyName(b.property));
+                ImGui::DragFloat("Time", &k.time, 0.01f, 0.0f, length);
+                ImGui::DragFloat("Value", &k.value, 0.1f);
+                ImGui::DragFloat("In Tan", &k.inTan, 0.1f);
+                ImGui::DragFloat("Out Tan", &k.outTan, 0.1f);
+
+                int interp = (int)k.interp;
+                const char* names[] = { "Constant", "Linear", "Cubic" };
+                if (ImGui::Combo("Interpolation", &interp, names, 3)) {
+                    k.interp = (KFInterp)interp;
+                }
+            }
+        }
+        else {
+            ImGui::TextDisabled("Click a keyframe diamond to edit it.");
         }
     }
 
@@ -747,9 +915,124 @@ namespace UI { // --------------------------------------------------------------
             ImGui::TextUnformatted(ad->name());
             ImGui::PopID();
         }
+        if (!ecs.HasComponent<KeyframeAnimatorComponent>(selected)) {
+            if (ImGui::Button("Add Animation (KeyframeAnimator)")) {
+
+                // 1) Add the component
+                auto& anim = AddAnimator(ecs, selected);
+
+                // =========================================================
+                // WALK CLIP  (loops 4 frames on a spritesheet)
+                // =========================================================
+                AnimationClip walk{};
+                walk.name = "Walk";
+                walk.wrap = KFWrap::Loop;      // keep looping
+
+                KFBinding walkSprite{};
+                walkSprite.property = KFProperty::SpriteIndex;
+
+                // 4 frames: 0,1,2,3 over 0.4s (0.1s each)
+                {
+                    KFKey k{};
+                    k.interp = KFInterp::Constant;   // sprites: no interpolation
+
+                    k.time = 0.0f; k.value = 0.f;
+                    walkSprite.curve.Add(k);
+
+                    k.time = 0.1f; k.value = 1.f;
+                    walkSprite.curve.Add(k);
+
+                    k.time = 0.2f; k.value = 2.f;
+                    walkSprite.curve.Add(k);
+
+                    k.time = 0.3f; k.value = 3.f;
+                    walkSprite.curve.Add(k);
+
+                    // Close loop back to frame 0 at 0.4s
+                    k.time = 0.4f; k.value = 0.f;
+                    walkSprite.curve.Add(k);
+                }
+
+                walk.bindings.push_back(walkSprite);
+
+                // =========================================================
+                // JUMP CLIP  (uses different frames 4–7)
+                // =========================================================
+                AnimationClip jump{};
+                jump.name = "Jump";
+                jump.wrap = KFWrap::Clamp;     // play once then hold last frame
+
+                KFBinding jumpSprite{};
+                jumpSprite.property = KFProperty::SpriteIndex;
+
+                {
+                    KFKey k{};
+                    k.interp = KFInterp::Constant;
+
+                    // start stand frame
+                    k.time = 0.0f; k.value = 4.f;   // e.g. idle-before-jump
+                    jumpSprite.curve.Add(k);
+
+                    // in-air frame
+                    k.time = 0.15f; k.value = 5.f;
+                    jumpSprite.curve.Add(k);
+
+                    // peak
+                    k.time = 0.30f; k.value = 6.f;
+                    jumpSprite.curve.Add(k);
+
+                    // landing frame
+                    k.time = 0.45f; k.value = 7.f;
+                    jumpSprite.curve.Add(k);
+                }
+
+                jump.bindings.push_back(jumpSprite);
+
+                // =========================================================
+                // Register both clips on this animator
+                // =========================================================
+                anim.clips[walk.name] = walk;
+                anim.clips[jump.name] = jump;
+
+                // Start in WALK
+                anim.current = walk.name;
+                anim.t = 0.f;
+                anim.playing = true;
+            }
+        }
         ImGui::NewLine();
 
         ImGui::SeparatorText("Components on Selected Entity");
+        // ---- Manual inspector for KeyframeAnimatorComponent ----
+        if (ecs.HasComponent<KeyframeAnimatorComponent>(selected)) {
+            auto* anim = ecs.GetComponent<KeyframeAnimatorComponent>(selected);
+
+            ImGui::SeparatorText("Animation");
+
+            if (anim->current.empty()) {
+                ImGui::TextDisabled("No clip set. Use the Add Animation button or create clips in code.");
+            }
+            else {
+                ImGui::Text("Current clip: %s", anim->current.c_str());
+            }
+
+            ImGui::DragFloat("Time", &anim->t, 0.01f, 0.0f);
+
+            // Play / Pause / Stop controls
+            if (ImGui::Button(anim->playing ? "Pause" : "Play")) {
+                anim->playing = !anim->playing;
+            }
+            ImGui::SameLine();
+            if (ImGui::Button("Stop")) {
+                anim->playing = false;
+                anim->t = 0.f;
+            }
+            ImGui::SameLine();
+            if (ImGui::Button("Restart")) {
+                anim->t = 0.f;
+                anim->playing = true;
+            }
+        }
 
         
         for (auto* ad : DebugReflection::ComponentRegistry::instance().all()) {
@@ -1243,6 +1526,8 @@ namespace UI { // --------------------------------------------------------------
                 {"Game State", &ui.showGameState},
                 {"Game Scene", &ui.showGameScene},
                 {"Audio", &ui.showAudio},
+                {"Animation", &ui.showAnimation},
+
             };
             for (auto& t : toggles) ImGui::MenuItem(t.label, nullptr, t.flag);
 
@@ -1500,7 +1785,9 @@ namespace UI { // --------------------------------------------------------------
                 if (rootT)
                 {
                     float tr[3] = { rootT->position.x, rootT->position.y, rootT->position.z };
-                    float rt[3] = { 0.f, 0.f, glm::degrees(rootT->rotation) }; // radians -> degrees
+
+                    float rt[3] = { 0.f, 0.f, rootT->rotation };
+
                     float sc[3] = { rootT->size.x, rootT->size.y, 1.f };
 
                     float m[16];
@@ -1535,8 +1822,8 @@ namespace UI { // --------------------------------------------------------------
                     static std::vector<CrashoutsEngine::TransformState> startStates;
                     static bool  undoTriggeredThisFrame = false;
 
-                    // full accumulated parent rotation (radians)
-                    static float s_parentAccumRot = 0.0f;
+                    // full accumulated parent rotation (DEGREES)
+                    static float s_parentAccumRotDeg = 0.0f;
                     // last frame's ImGuizmo angle (degrees, wrapped [-180, 180])
                     static float s_prevGizmoDeg = 0.0f;
 
@@ -1566,8 +1853,8 @@ namespace UI { // --------------------------------------------------------------
                                 movedEntities.push_back(e);
                             }
 
-                            // cache parent's current rotation (full radians) and gizmo angle
-                            s_parentAccumRot = rootT->rotation;
+                            // cache parent's current rotation (full degree) and gizmo angle
+                            s_parentAccumRotDeg = rootT->rotation;
                             s_prevGizmoDeg = newRt[2];
                         }
 
@@ -1603,10 +1890,8 @@ namespace UI { // --------------------------------------------------------------
                                 if (stepDeg > 180.0f) stepDeg -= 360.0f;
                                 if (stepDeg < -180.0f) stepDeg += 360.0f;
 
-                                float stepRad = glm::radians(stepDeg);
-
-                                s_parentAccumRot += stepRad;
-                                rootT->rotation = s_parentAccumRot;
+                                s_parentAccumRotDeg += stepDeg;
+                                rootT->rotation = s_parentAccumRotDeg;
 
                                 s_prevGizmoDeg = gizmoDeg;
 
@@ -1616,7 +1901,7 @@ namespace UI { // --------------------------------------------------------------
                                     if (!ecs.HasComponent<Component::ParentComponent>(e)) continue;
 
                                     auto* ppc = ecs.GetComponent<Component::ParentComponent>(e);
-                                    ppc->localRot += stepRad;
+                                    ppc->localRot += stepDeg;
                                 }
                             }
                             else if (g_gizmoOp == ImGuizmo::SCALE)
@@ -1667,12 +1952,14 @@ namespace UI { // --------------------------------------------------------------
                         {
                             if (movedEntities.size() > 1)
                             {
-                                UndoManager::GetInstance().Execute(
+
+                                UndoManager::GetInstance().AddCommand(
                                     std::make_unique<CrashoutsEngine::TransformGroupCommand>(
                                         movedEntities, startStates, endStates));
                             }
-                            /* else {
-                                UndoManager::GetInstance().Execute(
+                            /*else
+                            {
+                                UndoManager::GetInstance().AddCommand(
                                     std::make_unique<CrashoutsEngine::TransformEntityCommand>(
                                         movedEntities.front(), startStates.front(), endStates.front()));
                             } */
@@ -1946,7 +2233,7 @@ namespace UI { // --------------------------------------------------------------
 
             // Dock windows into regions (matching your actual window titles)
             ImGui::DockBuilderDockWindow("Debug Controls", dock_left);
-            ImGui::DockBuilderDockWindow("Heirarchy", dock_right);
+            ImGui::DockBuilderDockWindow("Hierarchy", dock_right);
             ImGui::DockBuilderDockWindow("Assets", dock_bottom);
             ImGui::DockBuilderDockWindow("Inspector", dock_right_bottom);
             ImGui::DockBuilderDockWindow("Physics / Collision", dock_bottom);
@@ -1960,6 +2247,17 @@ namespace UI { // --------------------------------------------------------------
 
             ImGui::DockBuilderFinish(dockspace_id);
         }
+
+        auto& io = ImGui::GetIO();
+
+        //if (io.KeyCtrl)
+        //{
+	       // if (ImGui::IsKeyPressed(ImGuiKey_Z))
+	       // {
+        //        UndoManager::GetInstance().Undo();
+	       // }
+        //}
+
         if (InputManager::IsKeyHeld(Key::LeftCtrl) && InputManager::IsKeyTriggered(Key::Z))
         {
 			LOGI(Core, "Undo Triggered");
@@ -2002,6 +2300,10 @@ namespace UI { // --------------------------------------------------------------
         if (ui.showEngineControl) {
             RenderEngineStateBar(ui);
         }
+        if (ui.showAnimation) {
+            RenderAnimationPanel(ecs, selected, ui);
+        }
+
 
         // EndFrame();
 

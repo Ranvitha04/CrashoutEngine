@@ -37,6 +37,7 @@ namespace Collision {
 		std::array<CEVec3, 2> contactPoints; /*Max contact point of 2 for AABB, 1 for Circle*/
 		f32 depth;
 		bool collisionOccured;
+		int numOfContacts;
 	};
 
 	/*!
