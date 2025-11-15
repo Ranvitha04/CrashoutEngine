@@ -2,7 +2,7 @@
 #include "afiqscene.h"
 #include "log.h"
 #include "GLFW/glfw3.h"
-#include "entitymanager.h"   // ECS + Component types
+#include "entitymanager.h"  
 #include "prefab_init.h"
 #include <functional>
 #include <unordered_map>
@@ -67,7 +67,7 @@ namespace {
             e.AddComponent<NameComponent>(ent, NameComponent{ "Platform" });
             e.AddComponent<TransformComponent>(ent, TransformComponent{ .size{100.f, 10.f} });
             e.AddComponent<ShapeComponent>(ent, ShapeComponent{ .type = ShapeType::Rectangle });
-            // add collider/rigidbody/etc. here if desired
+          
             });
 
         // Box: small rectangle
@@ -77,7 +77,7 @@ namespace {
             e.AddComponent<TransformComponent>(ent, TransformComponent{ .size{20.f, 20.f} });
             e.AddComponent<ShapeComponent>(ent, ShapeComponent{ .type = ShapeType::Rectangle });
             });
-        // Keyframed box that rotates back and forth (test object)
+    
         PrefabRegister("KF_Box", [](ECS& e) {
             auto ent = e.CreateEntity();
             e.AddComponent<NameComponent>(ent, NameComponent{ "KF_Box" });
@@ -102,15 +102,14 @@ namespace {
             KFBinding rotBinding{};
             rotBinding.property = KFProperty::RotZ;
 
-            // Roughly "like Unity": rotate from -90 to +90 over 2 seconds
             KFKey k0{};
             k0.time = 0.f;
-            k0.value = -90.f;            // start angle
+            k0.value = -90.f;            
             k0.interp = KFInterp::Linear;
 
             KFKey k1{};
             k1.time = 1.f;
-            k1.value = 90.f;             // end angle
+            k1.value = 90.f;             
             k1.interp = KFInterp::Linear;
 
             rotBinding.curve.Add(k0);
@@ -122,8 +121,6 @@ namespace {
             KeyframeUnity::Play(anim, "RotateZ", true);
             });
 
-        // Add more:
-        // PrefabRegister("Ball", [](ECS& e){ /* components... */ });
     }
 } // anon ns (prefab)
 

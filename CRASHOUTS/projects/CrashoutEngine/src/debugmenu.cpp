@@ -497,7 +497,7 @@ namespace UI { // --------------------------------------------------------------
         using namespace KeyframeUnityEditor;
         using CrashoutsEngine::Entity;
 
-        if (!ui.showAnimation) return;   // we'll add this flag to UIState below
+        if (!ui.showAnimation) return;   
 
         ScopedWindow w("Animation", LockFlags(ui.lockLayout));
 
@@ -513,7 +513,7 @@ namespace UI { // --------------------------------------------------------------
             return;
         }
 
-        // Find current clip
+       
         AnimationClip* clip = nullptr;
         if (!anim->current.empty()) {
             auto it = anim->clips.find(anim->current);
@@ -556,7 +556,7 @@ namespace UI { // --------------------------------------------------------------
                 ImVec2(origin.x + labelW + timeW, rowTop + rowH),
                 rowCol);
 
-            // Keyframes as diamonds
+            // Keyframes 
             int keyCount = (int)b.curve.keys.size();
             for (int ki = 0; ki < keyCount; ++ki) {
                 KFKey& k = b.curve.keys[ki];
@@ -580,7 +580,7 @@ namespace UI { // --------------------------------------------------------------
                         gSel.keyIndex == ki);
 
                 ImU32 col = selectedKey
-                    ? IM_COL32(255, 200, 0, 255)   // selected = yellow
+                    ? IM_COL32(255, 200, 0, 255)   
                     : IM_COL32(200, 200, 200, 255);
 
                 draw->AddConvexPolyFilled(diamond, 4, col);
@@ -602,7 +602,7 @@ namespace UI { // --------------------------------------------------------------
         ImGui::Dummy(ImVec2(0.f, rows * rowH + 4.f));
         ImGui::Separator();
 
-        // --- Keyframe inspector (like Unity’s right panel) ---
+        // --- Keyframe inspector ---
         if (gSel.entity == selected &&
             gSel.bindingIndex >= 0 &&
             gSel.bindingIndex < (int)clip->bindings.size())
