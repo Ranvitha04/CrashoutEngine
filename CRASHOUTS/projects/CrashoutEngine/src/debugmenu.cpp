@@ -63,7 +63,6 @@ for Crashout Engine.
 #include "shapescomponent.h"
 #include "audiocomponent.h"
 #include "sceneasset.h"
-#include "keyframe.h"  
 #include <vector>
 #include "CEVec3.h"
 #include "stb_image.h"
@@ -545,7 +544,7 @@ namespace UI { // --------------------------------------------------------------
             float rowTop = origin.y + bi * rowH;
             float rowMid = rowTop + rowH * 0.5f;
 
-            // Property label (like Unity left column)
+            // Property label
             ImGui::SetCursorScreenPos(ImVec2(origin.x, rowTop));
             ImGui::TextUnformatted(KFPropertyName(b.property));
 
