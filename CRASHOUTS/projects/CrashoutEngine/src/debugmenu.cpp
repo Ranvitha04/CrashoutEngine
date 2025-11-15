@@ -48,6 +48,7 @@ for Crashout Engine.
 #include "monomanager.h"
 #include "scriptsystem.h"
 #include "ppmanager.h"
+#include "keyframe.h"
 
 #include "engine.h"
 #include <filesystem>
@@ -62,7 +63,7 @@ for Crashout Engine.
 #include "shapescomponent.h"
 #include "audiocomponent.h"
 #include "sceneasset.h"
-
+#include "keyframe.h"  
 #include <vector>
 #include "CEVec3.h"
 #include "stb_image.h"
@@ -93,6 +94,7 @@ using CrashoutsEngine::Audio::AudioSystem;
 using namespace CrashoutsEngine;
 using namespace Component;
 using CrashoutsEngine::Audio::AudioSystem;
+using namespace KeyframeUnity;
 
 namespace { //----------------------------------------------------------------------------- file-local state & helpers
 
@@ -342,6 +344,30 @@ namespace UI { // --------------------------------------------------------------
             glfwMakeContextCurrent(backup);
         }
     }
+    // ----------------- Keyframe editor helpers -----------------
+    namespace KeyframeUnityEditor
+    {
+        struct Selection {
+            CrashoutsEngine::Entity entity{};
+            int bindingIndex = -1;
+            int keyIndex = -1;
+        };
+
+        static Selection gSel;
+
+        static const char* KFPropertyName(KFProperty p)
+        {
+            switch (p) {
+            case KFProperty::PosX:        return "Position X";
+            case KFProperty::PosY:        return "Position Y";
+            case KFProperty::RotZ:        return "Rotation Z";
+            case KFProperty::ScaleX:      return "Scale X";
+            case KFProperty::ScaleY:      return "Scale Y";
+            case KFProperty::SpriteIndex: return "Sprite Index";
+            default:                      return "Unknown";
+            }
+        }
+    }
 
     // -- Panels ---------------------------------------------------------------
     /*!
@@ -460,6 +486,148 @@ namespace UI { // --------------------------------------------------------------
                 selected = 0;
                 return;
             }
+        }
+    }
+    // Draw a Unity-like keyframe timeline for the selected entity
+    static void RenderAnimationPanel(CrashoutsEngine::ECS& ecs,
+        CrashoutsEngine::Entity selected,
+        UIState& ui)
+    {
+        using namespace KeyframeUnity;
+        using namespace KeyframeUnityEditor;
+        using CrashoutsEngine::Entity;
+
+        if (!ui.showAnimation) return;   // we'll add this flag to UIState below
+
+        ScopedWindow w("Animation", LockFlags(ui.lockLayout));
+
+        if (!selected) {
+            ImGui::TextDisabled("No entity selected.");
+            return;
+        }
+
+        auto* anim = ecs.GetComponent<KeyframeAnimatorComponent>(selected);
+        if (!anim) {
+            ImGui::TextDisabled("Entity has no KeyframeAnimatorComponent.");
+            ImGui::Text("Add it in Inspector first.");
+            return;
+        }
+
+        // Find current clip
+        AnimationClip* clip = nullptr;
+        if (!anim->current.empty()) {
+            auto it = anim->clips.find(anim->current);
+            if (it != anim->clips.end())
+                clip = &it->second;
+        }
+
+        if (!clip) {
+            ImGui::TextDisabled("Animator has no active clip.");
+            ImGui::Text("Use your code to SetClip() and Play().");
+            return;
+        }
+
+        const float length = clip->Length();
+        ImGui::Text("Clip: %s (%.2fs)", clip->name.c_str(), length);
+        ImGui::Separator();
+
+        // --- Timeline layout ---
+        ImDrawList* draw = ImGui::GetWindowDrawList();
+        ImVec2 origin = ImGui::GetCursorScreenPos();
+        const float labelW = 140.0f;
+        const float rowH = 20.0f;
+        const float totalW = ImGui::GetContentRegionAvail().x;
+        const float timeW = totalW - labelW;
+        const int   rows = (int)clip->bindings.size();
+
+        for (int bi = 0; bi < rows; ++bi) {
+            KFBinding& b = clip->bindings[bi];
+            float rowTop = origin.y + bi * rowH;
+            float rowMid = rowTop + rowH * 0.5f;
+
+            // Property label (like Unity left column)
+            ImGui::SetCursorScreenPos(ImVec2(origin.x, rowTop));
+            ImGui::TextUnformatted(KFPropertyName(b.property));
+
+            // Row background
+            ImU32 rowCol = IM_COL32(40, 40, 40, 255);
+            draw->AddRectFilled(
+                ImVec2(origin.x + labelW, rowTop),
+                ImVec2(origin.x + labelW + timeW, rowTop + rowH),
+                rowCol);
+
+            // Keyframes as diamonds
+            int keyCount = (int)b.curve.keys.size();
+            for (int ki = 0; ki < keyCount; ++ki) {
+                KFKey& k = b.curve.keys[ki];
+
+                float t01 = (length > 0.f) ? (k.time / length) : 0.f;
+                t01 = std::clamp(t01, 0.0f, 1.0f);
+                float x = origin.x + labelW + t01 * timeW;
+                ImVec2 p(x, rowMid);
+
+                float size = 4.0f;
+                ImVec2 diamond[4] = {
+                    ImVec2(p.x,        p.y - size),
+                    ImVec2(p.x + size, p.y),
+                    ImVec2(p.x,        p.y + size),
+                    ImVec2(p.x - size, p.y)
+                };
+
+                bool selectedKey =
+                    (gSel.entity == selected &&
+                        gSel.bindingIndex == bi &&
+                        gSel.keyIndex == ki);
+
+                ImU32 col = selectedKey
+                    ? IM_COL32(255, 200, 0, 255)   // selected = yellow
+                    : IM_COL32(200, 200, 200, 255);
+
+                draw->AddConvexPolyFilled(diamond, 4, col);
+
+                // Clickable area
+                ImGui::SetCursorScreenPos(ImVec2(p.x - size - 3.f, p.y - size - 3.f));
+                ImGui::InvisibleButton(
+                    (std::string("kf_") + std::to_string(bi) + "_" + std::to_string(ki)).c_str(),
+                    ImVec2((size + 3.f) * 2.f, (size + 3.f) * 2.f));
+
+                if (ImGui::IsItemClicked()) {
+                    gSel.entity = selected;
+                    gSel.bindingIndex = bi;
+                    gSel.keyIndex = ki;
+                }
+            }
+        }
+
+        ImGui::Dummy(ImVec2(0.f, rows * rowH + 4.f));
+        ImGui::Separator();
+
+        // --- Keyframe inspector (like Unity’s right panel) ---
+        if (gSel.entity == selected &&
+            gSel.bindingIndex >= 0 &&
+            gSel.bindingIndex < (int)clip->bindings.size())
+        {
+            KFBinding& b = clip->bindings[gSel.bindingIndex];
+            if (gSel.keyIndex >= 0 &&
+                gSel.keyIndex < (int)b.curve.keys.size())
+            {
+                KFKey& k = b.curve.keys[gSel.keyIndex];
+
+                ImGui::Text("Keyframe: %s", KFPropertyName(b.property));
+                ImGui::DragFloat("Time", &k.time, 0.01f, 0.0f, length);
+                ImGui::DragFloat("Value", &k.value, 0.1f);
+                ImGui::DragFloat("In Tan", &k.inTan, 0.1f);
+                ImGui::DragFloat("Out Tan", &k.outTan, 0.1f);
+
+                int interp = (int)k.interp;
+                const char* names[] = { "Constant", "Linear", "Cubic" };
+                if (ImGui::Combo("Interpolation", &interp, names, 3)) {
+                    k.interp = (KFInterp)interp;
+                }
+            }
+        }
+        else {
+            ImGui::TextDisabled("Click a keyframe diamond to edit it.");
         }
     }
 
@@ -748,9 +916,81 @@ namespace UI { // --------------------------------------------------------------
             ImGui::TextUnformatted(ad->name());
             ImGui::PopID();
         }
+        if (!ecs.HasComponent<KeyframeAnimatorComponent>(selected)) {
+            if (ImGui::Button("Add Animation (KeyframeAnimator)")) {
+
+                // 1) Add the component
+                auto& anim = AddAnimator(ecs, selected);
+
+                // 2) Create a simple debug clip that rotates on Z
+                AnimationClip clip{};
+                clip.name = "DebugRotate";
+                clip.wrap = KFWrap::Loop;
+
+                KFBinding b{};
+                b.property = KFProperty::RotZ;
+
+                // NOTE: if your TransformComponent::rotation is in *degrees*,
+                // use -90 and +90. If it’s in *radians*, use -1.5708f and +1.5708f.
+                KFKey k0{};
+                k0.time = 0.f;
+                k0.value = -90.f;              // start angle
+                k0.inTan = 0.f;
+                k0.outTan = 0.f;
+                k0.interp = KFInterp::Linear;
+
+                KFKey k1{};
+                k1.time = 1.f;
+                k1.value = 90.f;              // end angle
+                k1.inTan = 0.f;
+                k1.outTan = 0.f;
+                k1.interp = KFInterp::Linear;
+
+                b.curve.Add(k0);
+                b.curve.Add(k1);
+
+                clip.bindings.push_back(b);
+
+                // 3) Put clip into the animator and start playing
+                anim.clips[clip.name] = clip;
+                anim.current = clip.name;
+                anim.t = 0.f;
+                anim.playing = true;
+            }
+        }
         ImGui::NewLine();
 
         ImGui::SeparatorText("Components on Selected Entity");
+        // ---- Manual inspector for KeyframeAnimatorComponent ----
+        if (ecs.HasComponent<KeyframeAnimatorComponent>(selected)) {
+            auto* anim = ecs.GetComponent<KeyframeAnimatorComponent>(selected);
+
+            ImGui::SeparatorText("Animation");
+
+            if (anim->current.empty()) {
+                ImGui::TextDisabled("No clip set. Use the Add Animation button or create clips in code.");
+            }
+            else {
+                ImGui::Text("Current clip: %s", anim->current.c_str());
+            }
+
+            ImGui::DragFloat("Time", &anim->t, 0.01f, 0.0f);
+
+            // Play / Pause / Stop controls
+            if (ImGui::Button(anim->playing ? "Pause" : "Play")) {
+                anim->playing = !anim->playing;
+            }
+            ImGui::SameLine();
+            if (ImGui::Button("Stop")) {
+                anim->playing = false;
+                anim->t = 0.f;
+            }
+            ImGui::SameLine();
+            if (ImGui::Button("Restart")) {
+                anim->t = 0.f;
+                anim->playing = true;
+            }
+        }
 
         
         for (auto* ad : DebugReflection::ComponentRegistry::instance().all()) {
@@ -1244,6 +1484,8 @@ namespace UI { // --------------------------------------------------------------
                 {"Game State", &ui.showGameState},
                 {"Game Scene", &ui.showGameScene},
                 {"Audio", &ui.showAudio},
+                {"Animation", &ui.showAnimation},
+
             };
             for (auto& t : toggles) ImGui::MenuItem(t.label, nullptr, t.flag);
 
@@ -2016,6 +2258,10 @@ namespace UI { // --------------------------------------------------------------
         if (ui.showEngineControl) {
             RenderEngineStateBar(ui);
         }
+        if (ui.showAnimation) {
+            RenderAnimationPanel(ecs, selected, ui);
+        }
+
 
         // EndFrame();
 

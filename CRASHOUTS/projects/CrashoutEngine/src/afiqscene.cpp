@@ -9,6 +9,8 @@
 #include <vector>
 #include <algorithm>
 #include <string>
+#include "frameratecontroller.h"
+#include "keyframe.h"
 
 #include "transformcomponent.h"
 #include "namecomponent.h"
@@ -75,6 +77,50 @@ namespace {
             e.AddComponent<TransformComponent>(ent, TransformComponent{ .size{20.f, 20.f} });
             e.AddComponent<ShapeComponent>(ent, ShapeComponent{ .type = ShapeType::Rectangle });
             });
+        // Keyframed box that rotates back and forth (test object)
+        PrefabRegister("KF_Box", [](ECS& e) {
+            auto ent = e.CreateEntity();
+            e.AddComponent<NameComponent>(ent, NameComponent{ "KF_Box" });
+
+            TransformComponent t{};
+            t.position = { 0.f, 0.f, 0.f };
+            t.size = { 40.f, 40.f };
+            e.AddComponent<TransformComponent>(ent, t);
+
+            ShapeComponent s{};
+            s.type = ShapeType::Rectangle;
+            s.color = CEVec3{ 0.9f, 0.4f, 0.2f };
+            e.AddComponent<ShapeComponent>(ent, s);
+
+            // --- Keyframe animation ---
+            auto& anim = KeyframeUnity::AddAnimator(e, ent);
+
+            AnimationClip clip{};
+            clip.name = "RotateZ";
+            clip.wrap = KFWrap::Loop;
+
+            KFBinding rotBinding{};
+            rotBinding.property = KFProperty::RotZ;
+
+            // Roughly "like Unity": rotate from -90 to +90 over 2 seconds
+            KFKey k0{};
+            k0.time = 0.f;
+            k0.value = -90.f;            // start angle
+            k0.interp = KFInterp::Linear;
+
+            KFKey k1{};
+            k1.time = 1.f;
+            k1.value = 90.f;             // end angle
+            k1.interp = KFInterp::Linear;
+
+            rotBinding.curve.Add(k0);
+            rotBinding.curve.Add(k1);
+
+            clip.bindings.push_back(rotBinding);
+
+            KeyframeUnity::SetClip(anim, clip);
+            KeyframeUnity::Play(anim, "RotateZ", true);
+            });
 
         // Add more:
         // PrefabRegister("Ball", [](ECS& e){ /* components... */ });
@@ -110,6 +156,12 @@ void InitAfiq()
 {
     LOGI(Core, "Afiq Initialized");
 
+    // Get ECS pointer
+    ECS* ecs = ECS::getInstance();
+    ecs->Reset();
+
+    
+
     if (!s_audioReady) return;
 
     // quick beep to prove audio works
@@ -122,10 +174,17 @@ void InitAfiq()
     }
 }
 
+
 void UpdateAfiq()
 {
     if (s_audioReady) {
         AudioSystem::instance().update();
+    }
+
+    ECS* ecs = ECS::getInstance();             
+    if (ecs) {
+        float dt = static_cast<float>(FrameRateController::GetInstance().DT());
+        KeyframeUnity::UpdateAll(*ecs, dt);    
     }
 }
 
