@@ -35,5 +35,17 @@ namespace CrashoutsEngine
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal static extern bool EntityHasCollider(uint entityID);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern double TimeGetDT();
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern double TimeGetFixedDT();
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern double TimeGetFPS();
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern int TimeGetSteps();
     }
 }

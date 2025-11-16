@@ -14,54 +14,65 @@
 
 namespace Component {
 	class RigidBodyComponent {
-		private:
-			CEVec3 mVelocity;
-			CEVec3 mMaximumVel;
-			f32 mMass;
-			CEVec3 mNetForce;
-			f32 mRestitutionCoeff; /*Measure of elasticity*/
-			Physics::ForceManager fm;
-			std::bitset<8> flags{0b0000'0000};
-		public:
+	private:
+		CEVec3 mVelocity;
+		CEVec3 mMaximumVel;
+		f32 mMass;
+		CEVec3 mNetForce;
+		f32 mRestitutionCoeff; /*Measure of elasticity*/
+		Physics::ForceManager fm;
+		std::bitset<8> flags{ 0b0000'0000 };
+		f32 staticFriction{ 0.5f };
+		f32 dynamicFriction{ 0.5f };
+	public:
 
-			struct ReflectionType {
-				CEVec3 velocity{};
-				CEVec3 max_velocity{};
-				f32 mass{ 0.f };
-				f32 restitution{ 0.f };
+		struct ReflectionType {
+			CEVec3 velocity{};
+			CEVec3 max_velocity{};
+			f32 mass{ 0.f };
+			f32 restitution{ 0.f };
+		};
+
+		RigidBodyComponent(const ReflectionType& r)
+			: RigidBodyComponent(r.max_velocity, r.mass, r.restitution) {
+			setVelocity(r.velocity);
+		}
+
+		ReflectionType reflection() const {
+			return ReflectionType{
+				.velocity = mVelocity,
+				.max_velocity = mMaximumVel,
+				.mass = mMass,
+				.restitution = mRestitutionCoeff
 			};
+		}
 
-			RigidBodyComponent(const ReflectionType& r)
-				: RigidBodyComponent(r.max_velocity, r.mass, r.restitution) {
-				setVelocity(r.velocity);
-			}
+		/*Constructor*/
+		RigidBodyComponent(CEVec3 maximumVel = CEVec3{}, f32 mass = 0.f, f32 restitutionCoeff = 0.f);
 
-			ReflectionType reflection() const {
-				return ReflectionType{
-					.velocity = mVelocity,
-					.max_velocity = mMaximumVel,
-					.mass = mMass,
-					.restitution = mRestitutionCoeff
-				};
-			}
+		/*Inline functions*/
+		inline f32 getStaticFriction() {
+			return staticFriction;
+		}
 
-			/*Constructor*/
-			RigidBodyComponent(CEVec3 maximumVel = CEVec3{}, f32 mass = 0.f, f32 restitutionCoeff = 0.f);
+		inline f32 getDynamicFriction() {
+			return dynamicFriction;
+		}
 
-			/*Member Functions*/
-			inline std::bitset<8>& getFlags() { return flags; }
-			f32 getInverseMass();
-			f32 getMass();
-			void setMass(f32 newMass);
-			void addForce(CEVec3 force);
-			void clearForceAccumulator();
-			void updatePhysics(double dt);
-			void setMaxVelocity(CEVec3 const& newVel);
-			CEVec3 getMaxVelocity();
-			CEVec3 getVelocity();
-			void setRestitution(f32 restitution);
-			void setVelocity(CEVec3 const& newVel);
-			f32 getCoeff();
-			Physics::ForceManager& getForceManager();
+		/*Member Functions*/
+		inline std::bitset<8>& getFlags() { return flags; }
+		f32 getInverseMass();
+		f32 getMass();
+		void setMass(f32 newMass);
+		void addForce(CEVec3 force);
+		void clearForceAccumulator();
+		void updatePhysics(double dt);
+		void setMaxVelocity(CEVec3 const& newVel);
+		CEVec3 getMaxVelocity();
+		CEVec3 getVelocity();
+		void setRestitution(f32 restitution);
+		void setVelocity(CEVec3 const& newVel);
+		f32 getCoeff();
+		Physics::ForceManager& getForceManager();
 	};
 }
