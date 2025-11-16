@@ -1032,6 +1032,19 @@ namespace UI { // --------------------------------------------------------------
                 anim->t = 0.f;
                 anim->playing = true;
             }
+            ImGui::SeparatorText("Clips");
+
+            for (auto& kv : anim->clips) {
+                const std::string& clipName = kv.first;
+                bool isCurrent = (anim->current == clipName);
+
+               
+                if (ImGui::Selectable(clipName.c_str(), isCurrent)) {
+                
+                    Play(*anim, clipName,  true);
+                }
+            }
+
         }
 
         
