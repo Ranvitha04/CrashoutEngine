@@ -1281,6 +1281,20 @@ namespace {
                     ImGui::EndPopup();
                 }
 
+                if (ImGui::SmallButton("Open")) {
+                    namespace fs = std::filesystem;
+                    fs::path base = "../../projects/ManagedScripts";
+                    fs::path file = base / (inst.ClassName + ".cs");
+
+                    if (fs::exists(file)) {
+                        std::string cmd = "start \"\" \"" + file.string() + "\"";
+                        system(cmd.c_str());
+                    }
+                    else {
+                        std::cout << "Script not found: " << file << std::endl;
+                    }
+                }
+
                 // Remove this script instance
                 ImGui::SameLine();
                 if (ImGui::SmallButton("Remove")) {
@@ -1294,25 +1308,6 @@ namespace {
 
             ImGui::Separator();
 
-            ScriptInstance* primary = sc->Scripts.empty() ? nullptr : &sc->Scripts[0];
-
-            if (ImGui::SmallButton("Open in VS")) {
-                if (primary) {
-                    namespace fs = std::filesystem;
-                    fs::path base = "../../projects/ManagedScripts";
-                    fs::path file = base / (primary->ClassName + ".cs");
-
-                    if (fs::exists(file)) {
-                        std::string cmd = "start \"\" \"" + file.string() + "\"";
-                        system(cmd.c_str());
-                    }
-                    else {
-                        std::cout << "Script not found: " << file << std::endl;
-                    }
-                }
-            }
-
-            ImGui::SameLine();
             if (ImGui::SmallButton("New C# Script")) {
                 namespace fs = std::filesystem;
                 fs::path base = "../../projects/ManagedScripts";
