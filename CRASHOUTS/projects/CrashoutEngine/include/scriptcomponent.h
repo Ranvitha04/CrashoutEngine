@@ -36,7 +36,6 @@ namespace CrashoutsEngine
 
         ScriptComponent() = default;
 
-        // Convenience: construct with a single script
         ScriptComponent(const std::string& name, uint32_t ID) : EntityID(ID)
         {
             Scripts.emplace_back(name);
