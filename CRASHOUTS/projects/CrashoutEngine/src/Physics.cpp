@@ -152,7 +152,7 @@ namespace Physics {
 		if (sPaused && sStepOnce) sStepOnce = false;
 	}
 
-	void applySeparation(Collision::CollisionEvent const& event, CrashoutsEngine::ECS& globalECS) {
+	void PositionCorrection(Collision::CollisionEvent const& event, CrashoutsEngine::ECS& globalECS) {
 
 		Component::TransformComponent* transform1{ globalECS.GetComponent<Component::TransformComponent>(event.entity1) };
 		Component::RigidBodyComponent* rigidBody1{ globalECS.GetComponent<Component::RigidBodyComponent>(event.entity1) };
@@ -170,9 +170,10 @@ namespace Physics {
 		}
 
 		/*TOLERANCE VARIABLE (ATTEMPT TO PREVENT JITTER)*/
-		const float slop = 0.015f;
+		const float slop{ 0.01f };
+		const float percent{ 0.2f };
 
-		CEVec3 correction = event.colManifold.normal * (event.colManifold.depth - slop);
+		CEVec3 correction = (std::max(event.colManifold.depth - slop, 0.f) / (invMass1 + invMass2) * percent) * event.colManifold.normal;
 
 		/*MOVE OBJECT ALONG COLLISION NORMAL BEFORE CALCULATING IMPULSE TO CHANGE VELOCITY*/
 		transform1->position -= correction * (invMass1 / sumInvMass);
@@ -192,30 +193,53 @@ namespace Physics {
 			return;
 		}
 
-		applySeparation(event, globalECS);
+		/*int impulseSolveAmount{ 5 };
 
-		int impulseSolveAmount{ 5 };
+		for (int i{}; i < impulseSolveAmount; ++i) {*/
 
-		for (int i{}; i < impulseSolveAmount; ++i) {
+		/*RELATIVE VELOCITY*/
+		CEVec3 relVel{ rigidBody2->getVelocity() - rigidBody1->getVelocity() };
 
-			/*RELATIVE VELOCITY*/
-			CEVec3 relVel{ rigidBody2->getVelocity() - rigidBody1->getVelocity() };
+		f32 velAlongNormal{ CEMath::Dot(relVel, event.colManifold.normal) };
 
-			//MOVING AWAY
-			if (CEMath::Dot(relVel, event.colManifold.normal) > 0.f) {
-				return;
-			}
-
-			float e{ std::min(rigidBody1->getCoeff(), rigidBody2->getCoeff()) }; /*COEFFICIENT OF RESTITUTION*/
-			float numerator{ -(1.f + e) * CEMath::Dot(relVel, event.colManifold.normal) };
-
-			float j = numerator / sumInvMass;
-
-			CEVec3 impulse{ event.colManifold.normal * j };
-
-			rigidBody1->setVelocity(rigidBody1->getVelocity() -= impulse * invMass1);
-			rigidBody2->setVelocity(rigidBody2->getVelocity() += impulse * invMass2);
+		//MOVING AWAY
+		if (velAlongNormal > 0.f) {
+			return;
 		}
+
+		float e{ std::min(rigidBody1->getCoeff(), rigidBody2->getCoeff()) }; /*COEFFICIENT OF RESTITUTION*/
+		float numerator{ -(1.f + e) * velAlongNormal };
+
+		float j = numerator / sumInvMass;
+
+		CEVec3 impulse{ event.colManifold.normal * j };
+
+		rigidBody1->setVelocity(rigidBody1->getVelocity() -= impulse * invMass1);
+		rigidBody2->setVelocity(rigidBody2->getVelocity() += impulse * invMass2);
+
+
+		/*FRICTION CALCULATIONS*/
+		relVel = rigidBody2->getVelocity() - rigidBody1->getVelocity();
+
+		CEVec3 tangent{ relVel - CEMath::Dot(relVel, event.colManifold.normal) * event.colManifold.normal };
+		tangent = CEMath::Normalize(tangent);
+
+		f32 jt{ -CEMath::Dot(relVel, tangent) };
+		jt /= (invMass1 + invMass2);
+
+		/*----------------Coulomb's Law,( clamp our friction based on solved j)----------------*/
+		f32 mu = std::sqrtf(std::powf(rigidBody1->getStaticFriction(),2.f));
+		CEVec3 frictionImpulse{};
+		if (std::abs(jt) < j * mu) {
+			frictionImpulse = jt * tangent;
+		}
+		else {
+			f32 dynamicFric{ std::sqrtf(std::powf(rigidBody1->getDynamicFriction(), 2.f)) };
+			frictionImpulse = -j * tangent * dynamicFric;
+		}
+		rigidBody1->setVelocity(rigidBody1->getVelocity() - frictionImpulse * invMass1);
+		rigidBody2->setVelocity(rigidBody2->getVelocity() + frictionImpulse * invMass2);
+
 	}
 
 	/*Main Physics update*/
@@ -231,54 +255,54 @@ namespace Physics {
 			// allow exactly one tick when paused+Step pressed
 		}
 
-		for (CrashoutsEngine::Entity& entity : globalEntities) {
-			if (!globalECS.HasComponent<Component::RigidBodyComponent>(entity)) continue;
-			Component::RigidBodyComponent* rigidBody{ globalECS.GetComponent<Component::RigidBodyComponent>(entity) };
-			if (!rigidBody->getFlags().test(SIMULATE_DYNAMICS)) continue;
+		int step{ FrameRateController::GetInstance().StepCount() };
 
-			/*APPLY ANY FORCE GENERATOR HERE, EVERY ENTITY IS AFFECTED*/
-			ForceManager& fm{ rigidBody->getForceManager() };
-			int step{ FrameRateController::GetInstance().StepCount() };
+		/*Fixed step, accumulator will reach the target fixed dt and then execute physics simulation*/
+		for (int i{}; i < step; ++i) {
 
-			/*Fixed step, accumulator will reach the target fixed dt and then execute physics simulation*/
-			for (int i{}; i < step; ++i) {
+			for (CrashoutsEngine::Entity& entity : globalEntities) {
+				if (!globalECS.HasComponent<Component::RigidBodyComponent>(entity)) continue;
+				Component::RigidBodyComponent* rigidBody{ globalECS.GetComponent<Component::RigidBodyComponent>(entity) };
+				if (!rigidBody->getFlags().test(SIMULATE_DYNAMICS)) continue;
+
+				/*APPLY ANY FORCE GENERATOR HERE, EVERY ENTITY IS AFFECTED*/
+				ForceManager& fm{ rigidBody->getForceManager() };
+
 				CEVec3 resultant{ fm.ResolveForces(static_cast<f32>(deltaTime), rigidBody->getMass()) };
 				rigidBody->addForce(resultant); /*GRAVITY*/
+
+
 			}
 
-		}
+			/*IMPULSE RESOLUTION*/
+			for (Collision::CollisionEvent const& evnt : collisionEvents) {
 
-		/*IMPULSE RESOLUTION*/
-		for (Collision::CollisionEvent const& evnt : collisionEvents) {
+				Component::RigidBodyComponent* rigidBody1{ globalECS.GetComponent<Component::RigidBodyComponent>(evnt.entity1) };
+				Component::RigidBodyComponent* rigidBody2{ globalECS.GetComponent<Component::RigidBodyComponent>(evnt.entity2) };
 
-			Component::RigidBodyComponent* rigidBody1{ globalECS.GetComponent<Component::RigidBodyComponent>(evnt.entity1) };
-			Component::RigidBodyComponent* rigidBody2{ globalECS.GetComponent<Component::RigidBodyComponent>(evnt.entity2) };
+				if (!rigidBody1->getFlags().test(SIMULATE_DYNAMICS) || !rigidBody2->getFlags().test(SIMULATE_DYNAMICS)) continue;
+				PositionCorrection(evnt, globalECS);
+				applyImpulse(evnt, globalECS);
+			}
 
-			if (!rigidBody1->getFlags().test(SIMULATE_DYNAMICS) || !rigidBody2->getFlags().test(SIMULATE_DYNAMICS)) continue;
+			/*PHYSICS SIM, UPDATE POSITION*/
+			for (CrashoutsEngine::Entity& entity : globalEntities) {
+				if (!globalECS.HasComponent<Component::RigidBodyComponent>(entity) || !globalECS.HasComponent<Component::TransformComponent>(entity)) continue;
+				Component::TransformComponent* transform{ globalECS.GetComponent<Component::TransformComponent>(entity) };
+				Component::RigidBodyComponent* rigidBody{ globalECS.GetComponent<Component::RigidBodyComponent>(entity) };
 
-			applyImpulse(evnt, globalECS);
-		}
+				if (!rigidBody->getFlags().test(SIMULATE_DYNAMICS)) continue;
 
-		/*PHYSICS SIM, UPDATE POSITION*/
-		for (CrashoutsEngine::Entity& entity : globalEntities) {
-			if (!globalECS.HasComponent<Component::RigidBodyComponent>(entity) || !globalECS.HasComponent<Component::TransformComponent>(entity)) continue;
-			Component::TransformComponent* transform{ globalECS.GetComponent<Component::TransformComponent>(entity) };
-			Component::RigidBodyComponent* rigidBody{ globalECS.GetComponent<Component::RigidBodyComponent>(entity) };
 
-			if (!rigidBody->getFlags().test(SIMULATE_DYNAMICS)) continue;
-
-			int step{ FrameRateController::GetInstance().StepCount() };
-
-			/*Fixed step, accumulator will reach the target fixed dt and then execute physics simulation*/
-			for (int i{}; i < step; ++i) {
 				updatePhysics(transform, rigidBody, deltaTime);
-			}
 
-			if (globalECS.HasComponent<Component::ColliderComponent>(entity)) {
-				Component::ColliderComponent* c{ globalECS.GetComponent<Component::ColliderComponent>(entity) };
-				c->collider->updateCollider(transform->position);
-			}
 
+				if (globalECS.HasComponent<Component::ColliderComponent>(entity)) {
+					Component::ColliderComponent* c{ globalECS.GetComponent<Component::ColliderComponent>(entity) };
+					c->collider->updateCollider(transform->position);
+				}
+
+			}
 		}
 
 		collisionEvents.clear(); /*Fully consumed Collision Pairs*/

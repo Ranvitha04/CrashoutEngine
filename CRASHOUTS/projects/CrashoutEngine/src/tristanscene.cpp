@@ -12,6 +12,7 @@
 #include "collisionmanager.h"
 #include "aicomponent.h"
 #include "CEMath.h"
+#include "frameratecontroller.h"
 #include "collidereventmanager.h"
 #include "shapescomponent.h"
 #include "namecomponent.h"
@@ -345,11 +346,11 @@ void UpdateTristan()
 
 	//Component::RigidBodyComponent* rigidBody2{ globalECS->GetComponent<Component::RigidBodyComponent>(entity3) };
 
-
+	f32 dt{ f32(FrameRateController::GetInstance().DT()) };
 	if (rigidBody) {
-		if (InputManager::IsKeyPressed(Key::A)) rigidBody->addForce(CEVec3{ -100.f, 0.f, 0.f });
-		if (InputManager::IsKeyPressed(Key::D)) rigidBody->addForce(CEVec3{ 100.f, 0.f, 0.f });
-		if (InputManager::IsKeyPressed(Key::W)) rigidBody->addForce(CEVec3{ 0.f, 300.f, 0.f }*rigidBody->getMass());
+		if (InputManager::IsKeyPressed(Key::A)) rigidBody->addForce(CEVec3{ -500.f, 0.f, 0.f }*40.f *dt );
+		if (InputManager::IsKeyPressed(Key::D)) rigidBody->addForce(CEVec3{ 500.f, 0.f, 0.f }*40.f *dt );
+		if (InputManager::IsKeyPressed(Key::Space)) rigidBody->addForce(CEVec3{ 0.f, 4000.f, 0.f }*40.f *dt );
 	}
 
 	/*ROTATE*/
