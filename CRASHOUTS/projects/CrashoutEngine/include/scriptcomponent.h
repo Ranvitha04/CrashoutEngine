@@ -10,24 +10,41 @@
 #include <mono/metadata/debug-helpers.h>
 #include <string>
 #include <iostream>
+#include <vector>
 #include "CETypes.h"
 
 namespace CrashoutsEngine
 {
-    struct ScriptComponent
+    struct ScriptInstance
     {
-		std::string ClassName; // e.g. "PlayerScript" which does basically nothing important right now
+        std::string ClassName; // e.g. "PlayerScript" that does something for once.
         MonoObject* Instance = nullptr;
         MonoClass* Class = nullptr;
         MonoMethod* MethodStart = nullptr;
         MonoMethod* MethodUpdate = nullptr;
         bool Started = false;
+        CE::u32 GCHandle = 0;
 
+        ScriptInstance() = default;
+        ScriptInstance(const std::string& name) : ClassName(name) {}
+    };
+
+    struct ScriptComponent
+    {
         uint32_t EntityID = 0;
-        CE::u32 GCHandle=0;
+        std::vector<ScriptInstance> Scripts;
 
         ScriptComponent() = default;
-        ScriptComponent(const std::string& name, uint32_t ID) : ClassName(name), EntityID(ID) {}
+
+        // Convenience: construct with a single script
+        ScriptComponent(const std::string& name, uint32_t ID) : EntityID(ID)
+        {
+            Scripts.emplace_back(name);
+        }
+
+        // Manage scripts
+        ScriptInstance& AddScript(const std::string& className);
+        void RemoveScript(size_t index);
 
         bool Initialize(MonoDomain* domain, MonoAssembly* assembly);
         void Start();

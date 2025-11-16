@@ -88,11 +88,13 @@ void LoadMainMenu()
 
 	if (entity1 && globalECS->HasComponent<CrashoutsEngine::ScriptComponent>(entity1)) {
 		auto* sc = globalECS->GetComponent<CrashoutsEngine::ScriptComponent>(entity1);
-		s_entity1Script = sc->ClassName;
+		if (!sc->Scripts.empty())
+			s_entity1Script = sc->Scripts[0].ClassName;
 	}
 	if (entity3 && globalECS->HasComponent<CrashoutsEngine::ScriptComponent>(entity3)) {
 		auto* sc = globalECS->GetComponent<CrashoutsEngine::ScriptComponent>(entity3);
-		s_entity3Script = sc->ClassName;
+		if (!sc->Scripts.empty())
+			s_entity3Script = sc->Scripts[0].ClassName;
 	}
 
 	globalECS->Reset();
@@ -120,7 +122,12 @@ void InitMainMenu()
 	}
 	else {
 		auto* sc = globalECS->GetComponent<CrashoutsEngine::ScriptComponent>(entity1);
-		sc->ClassName = s_entity1Script;
+
+		if (sc->Scripts.empty())
+			sc->AddScript(s_entity1Script);
+		else
+			sc->Scripts[0].ClassName = s_entity1Script;
+
 		sc->Destroy();
 		sc->Initialize(MonoManager::GetDomain(), MonoManager::GetAssembly());
 	}
@@ -147,7 +154,12 @@ void InitMainMenu()
 	}
 	else {
 		auto* sc = globalECS->GetComponent<CrashoutsEngine::ScriptComponent>(entity3);
-		sc->ClassName = s_entity3Script;
+
+		if (sc->Scripts.empty())
+			sc->AddScript(s_entity3Script);
+		else
+			sc->Scripts[0].ClassName = s_entity3Script;
+
 		sc->Destroy();
 		sc->Initialize(MonoManager::GetDomain(), MonoManager::GetAssembly());
 	}

@@ -692,19 +692,21 @@ namespace CrashoutsEngine {
 
         // script 
         if (auto* script = ecs.GetComponent<ScriptComponent>(e)) {
-            rapidjson::Value scriptJson(rapidjson::kObjectType);
+            if (!script->Scripts.empty()) {
+                const auto& inst = script->Scripts[0];
 
-            // className
-            rapidjson::Value className;
-            className.SetString(script->ClassName.c_str(),
-                static_cast<rapidjson::SizeType>(script->ClassName.size()),
-                allocate);
-            scriptJson.AddMember("className", className, allocate);
+                rapidjson::Value scriptJson(rapidjson::kObjectType);
 
-            // entityID
-            scriptJson.AddMember("entityID", static_cast<uint32_t>(script->EntityID), allocate);
+                rapidjson::Value className;
+                className.SetString(inst.ClassName.c_str(), static_cast<rapidjson::SizeType>(inst.ClassName.size()), allocate);
 
-            obj.AddMember("script", scriptJson, allocate);
+                // class name
+                scriptJson.AddMember("className", className, allocate);
+                // id
+                scriptJson.AddMember("entityID", static_cast<uint32_t>(script->EntityID), allocate);
+                // script
+                obj.AddMember("script", scriptJson, allocate);
+            }
         }
         // audio (optional - only if entity has AudioEmitterComponent)
         if (auto* audio = ecs.GetComponent<Component::AudioEmitterComponent>(e)) {
