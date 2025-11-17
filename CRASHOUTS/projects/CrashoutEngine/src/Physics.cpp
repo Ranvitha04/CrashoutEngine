@@ -242,6 +242,80 @@ namespace Physics {
 
 	}
 
+	void applyRotationalImpulse(Collision::CollisionEvent const& event, CrashoutsEngine::ECS& globalECS) {
+		Component::RigidBodyComponent* rigidBody1{ globalECS.GetComponent<Component::RigidBodyComponent>(event.entity1) };
+		Component::TransformComponent* transform1{ globalECS.GetComponent<Component::TransformComponent>(event.entity1) };
+
+		Component::TransformComponent* transform2{ globalECS.GetComponent<Component::TransformComponent>(event.entity2) };
+		Component::RigidBodyComponent* rigidBody2{ globalECS.GetComponent<Component::RigidBodyComponent>(event.entity2) };
+
+		//for (int i{}; i < event.colManifold.numOfContacts; ++i) {
+		//	// Calculate radii from COM to contact
+		//	CEVec3 ra = event.colManifold.contactPoints[i] - transform1->position;
+		//	CEVec3 rb = event.colManifold.contactPoints[i] - transform2->position;
+
+		//	/*SOLVE FOR LINEAR VEL*/
+		//	f32 invMass1{ rigidBody1->getInverseMass() };
+		//	f32 invMass2{ rigidBody2->getInverseMass() };
+		//	f32 sumInvMass{ invMass1 + invMass2 };
+		//	//f32 totalMass{ rigidBody1->getMass() + rigidBody2->getMass()};
+		//	if (sumInvMass == 0.f) {
+		//		return;
+		//	}
+
+		//	/*int impulseSolveAmount{ 5 };
+
+		//	for (int i{}; i < impulseSolveAmount; ++i) {*/
+
+		//	/*RELATIVE VELOCITY*/
+		//	CEVec3 relVel{ rigidBody2->getVelocity() + CEMath::Cross(rigidBody2->getAngularVel(), rb) - rigidBody1->getVelocity() - CEMath::Cross(rigidBody1->getAngularVel(), ra) };
+
+		//	f32 velAlongNormal{ CEMath::Dot(relVel, event.colManifold.normal) };
+
+		//	//MOVING AWAY
+		//	if (velAlongNormal > 0.f) {
+		//		return;
+		//	}
+
+		//	f32 raCrossN{ CEMath::Cross(CEVec2{ra.x, ra.y}, CEVec2{event.colManifold.normal.x, event.colManifold.normal.y}) };
+		//	f32 rbCrossN{ CEMath::Cross(CEVec2{rb.x, rb.y}, CEVec2{event.colManifold.normal.x, event.colManifold.normal.y}) };
+
+
+		//	float e{ std::min(rigidBody1->getCoeff(), rigidBody2->getCoeff()) }; /*COEFFICIENT OF RESTITUTION*/
+		//	float numerator{ -(1.f + e) * velAlongNormal };
+
+		//	float j = numerator / sumInvMass;
+
+		//	CEVec3 impulse{ event.colManifold.normal * j };
+
+		//	rigidBody1->setVelocity(rigidBody1->getVelocity() -= impulse * invMass1);
+		//	rigidBody2->setVelocity(rigidBody2->getVelocity() += impulse * invMass2);
+
+
+		//	/*FRICTION CALCULATIONS*/
+		//	relVel = rigidBody2->getVelocity() - rigidBody1->getVelocity();
+
+		//	CEVec3 tangent{ relVel - CEMath::Dot(relVel, event.colManifold.normal) * event.colManifold.normal };
+		//	tangent = CEMath::Normalize(tangent);
+
+		//	f32 jt{ -CEMath::Dot(relVel, tangent) };
+		//	jt /= (invMass1 + invMass2);
+
+		//	/*----------------Coulomb's Law,( clamp our friction based on solved j)----------------*/
+		//	f32 mu = std::sqrtf(std::powf(rigidBody1->getStaticFriction(), 2.f));
+		//	CEVec3 frictionImpulse{};
+		//	if (std::abs(jt) < j * mu) {
+		//		frictionImpulse = jt * tangent;
+		//	}
+		//	else {
+		//		f32 dynamicFric{ std::sqrtf(std::powf(rigidBody1->getDynamicFriction(), 2.f)) };
+		//		frictionImpulse = -j * tangent * dynamicFric;
+		//	}
+		//	rigidBody1->setVelocity(rigidBody1->getVelocity() - frictionImpulse * invMass1);
+		//	rigidBody2->setVelocity(rigidBody2->getVelocity() + frictionImpulse * invMass2);
+		//}
+	}
+
 	/*Main Physics update*/
 	void PhysicsHandler::update(double deltaTime) {
 

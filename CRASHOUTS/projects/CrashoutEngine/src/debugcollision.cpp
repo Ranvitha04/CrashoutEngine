@@ -78,6 +78,23 @@ static void DrawOBBOutline(const Collision::OBBRect* vertices, float thickness, 
 }
 
 /*!
+ @brief Draws a Polygon.
+ @param vertices     A vertex array
+ @param thickness    Line thickness.
+ @param color        RGB-like color vector used by the line drawer.
+*/
+static void DrawPolygon(const Collision::Polygon* vertices, float thickness, const CEVec3& color) {
+    float z = RenderCamera::engineCamera.GetFar();
+
+    for (int i{}; i < vertices->vertexCount; ++i) {
+        int nextIdx{ (i + 1) % vertices->vertexCount };
+        // Draw the lines using the new, z-modified vertices
+        //Shapes::CreateLine({ vertices->rotatedVertices[i].x, vertices->rotatedVertices[i].y, z }, CEVec3{ vertices->rotatedVertices[i].x + vertices->normalEdges[i].x * 10.f, vertices->rotatedVertices[i].y + vertices->normalEdges[i].y * 10.f, z}, thickness, color);
+        Shapes::CreateLine(CEVec3{ vertices->rotatedVertices[i].x, vertices->rotatedVertices[i].y, z } + vertices->offset, CEVec3{ vertices->rotatedVertices[nextIdx].x, vertices->rotatedVertices[nextIdx].y, z } + vertices->offset, thickness, color);
+    }
+}
+
+/*!
  @brief Draws a 2D circle wireframe (used for sphere colliders projected to XY).
  @param c            Center position.
  @param r            Radius.
@@ -134,6 +151,10 @@ namespace CollisionGizmos {
             else if (pColliderComp.collider->type == Collision::OBB) {
                 Collision::OBBRect const& obbTemp = dynamic_cast<Collision::OBBRect const&>(*pColliderComp.collider);
                 DrawOBBOutline(&obbTemp, wireThickness, color);
+            }
+            else if (pColliderComp.collider->type == Collision::POLYGON) {
+                Collision::Polygon const& polygonTemp = dynamic_cast<Collision::Polygon const&>(*pColliderComp.collider);
+                DrawPolygon(&polygonTemp, wireThickness, color);
             }
         }
 

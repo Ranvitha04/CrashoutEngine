@@ -96,6 +96,47 @@ namespace CEMath
 	}
 
 	/*!
+	@brief Calculate the cross product of two 2D vectors
+	@param leftVector  The first vector
+	@param rightVector The second vector
+	@return A scalar value
+	*/
+	inline f32 Cross(const CEVec2& leftVector, const CEVec2& rightVector)
+	{ 
+		return leftVector.x * rightVector.y - leftVector.y * rightVector.x;
+	}
+
+	/*!
+	@brief Calculate the cross product of a	Vector and a scalar value
+	@param vec The first vector
+	@param f32 scalar value
+	@return A new vector
+	*/
+	inline CEVec3 Cross(const CEVec3& vec, f32 s)
+	{
+		return CEVec3(
+			s * vec.y,
+			-s * vec.x,
+			0.f
+		);
+	}
+
+	/*!
+	@brief Calculate the cross product of a	Vector and a scalar value
+	@param f32 scalar value
+	@param vec The second vector
+	@return A new vector
+	*/
+	inline CEVec3 Cross(f32 s, const CEVec3& vec)
+	{
+		return CEVec3(
+			-s * vec.y,
+			s * vec.x,
+			0.f
+		);
+	}
+
+	/*!
 	@brief Calculate the squared length of a 3D vector
 	@param vector The input vector
 	@return The squared length of the vector

@@ -46,11 +46,8 @@ static void AddPhysicsEntity(CrashoutsEngine::Entity& entity, Component::RigidBo
 	globalECS->AddComponent<Component::ShapeComponent>(entity, shape);
 	globalECS->AddComponent<Component::Tag>(entity, name);
 	globalECS->AddComponent<Component::ColliderComponent>(entity, Component::ColliderComponent{
-		std::make_unique<Collision::AABBRect>(Collision::AABBRect{
-			CEVec3{transform.position - extents },
-			CEVec3{transform.position + extents}
-		})
-		});
+		std::make_unique<Collision::Polygon>(Collision::Polygon::createOBB(transform.position + extents, transform.position - extents, 0.f, CEVec3{0.f, 0.f, 0.f}))
+	});
 }
 
 static void AddObstacleEntity(CEVec3&& transform, CEVec2&& dimen, std::string&& tag) {
@@ -358,8 +355,8 @@ void UpdateTristan()
 		transform->rotation += 3.f;
 		if (globalECS->HasComponent<Component::ColliderComponent>(entity1)) {
 			Component::ColliderComponent* collider1{ globalECS->GetComponent<Component::ColliderComponent>(entity1) };
-			if (collider1->collider->type == Collision::ColliderType::OBB) {
-				Collision::OBBRect& obbTemp2 = dynamic_cast<Collision::OBBRect&>(*(collider1->collider));
+			if (collider1->collider->type == Collision::ColliderType::POLYGON) {
+				Collision::Polygon& obbTemp2 = dynamic_cast<Collision::Polygon&>(*(collider1->collider));
 				obbTemp2.updateRotation(transform->rotation);
 			}
 		}

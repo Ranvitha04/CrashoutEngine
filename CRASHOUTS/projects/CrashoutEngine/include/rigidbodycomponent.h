@@ -17,13 +17,19 @@ namespace Component {
 	private:
 		CEVec3 mVelocity;
 		CEVec3 mMaximumVel;
-		f32 mMass;
+		f32 mMass{};
 		CEVec3 mNetForce;
-		f32 mRestitutionCoeff; /*Measure of elasticity*/
+		f32 mRestitutionCoeff{}; /*Measure of elasticity*/
 		Physics::ForceManager fm;
 		std::bitset<8> flags{ 0b0000'0000 };
 		f32 staticFriction{ 0.5f };
 		f32 dynamicFriction{ 0.5f };
+
+		/*Rotational Properties*/
+		f32 angularVelocity{};
+		f32 rotation{};
+		f32 torque{};
+
 	public:
 
 		struct ReflectionType {
@@ -57,6 +63,22 @@ namespace Component {
 
 		inline f32 getDynamicFriction() {
 			return dynamicFriction;
+		}
+
+		inline void setRotation(f32 newRotation) {
+			rotation = newRotation;
+		}
+
+		inline f32 getRotation() {
+			return rotation;
+		}
+
+		inline void setAngularVel(f32 newAngVel) {
+			angularVelocity = newAngVel;
+		}
+
+		inline f32 getAngularVel() {
+			return angularVelocity;
 		}
 
 		/*Member Functions*/
