@@ -50,6 +50,22 @@ static void AddPhysicsEntity(CrashoutsEngine::Entity& entity, Component::RigidBo
 	});
 }
 
+static void AddPhysicsEntity2(CrashoutsEngine::Entity& entity, Component::RigidBodyComponent&& rigidBody,
+	Component::TransformComponent&& transform, Component::ShapeComponent&& shape, Component::Tag&& name) {
+
+	entity = globalECS->CreateEntity();
+
+	CEVec3 extents{ transform.size.x * 0.5f, transform.size.y * 0.5f, 0.f };
+
+	globalECS->AddComponent<Component::NameComponent>(entity, Component::NameComponent{ std::to_string(entity) });
+	globalECS->AddComponent<Component::RigidBodyComponent>(entity, rigidBody);
+	globalECS->AddComponent<Component::TransformComponent>(entity, transform);
+	globalECS->AddComponent<Component::ShapeComponent>(entity, shape);
+	globalECS->AddComponent<Component::Tag>(entity, name);
+	globalECS->AddComponent<Component::ColliderComponent>(entity, Component::ColliderComponent{
+		std::make_unique<Collision::Sphere>(Collision::Sphere{10.f, {transform.position.x, transform.position.y, 0.f}}) });
+}
+
 static void AddObstacleEntity(CEVec3&& transform, CEVec2&& dimen, std::string&& tag) {
 	CrashoutsEngine::Entity e;
 
@@ -288,7 +304,7 @@ void InitTristan() {
 
 	AddWallEntity(CEVec3{ 40.f, 5.f, 0.0f }, CEVec2{ 10.f, 10.f });
 
-	AddPhysicsEntity(
+	AddPhysicsEntity2(
 		entity3,
 		Component::RigidBodyComponent{ CEVec3{}, 5.f, 0.f },
 		Component::TransformComponent{ .size = CEVec2{5.f, 5.f}, .position = CEVec3{5.f, 20.f, 0.f} },

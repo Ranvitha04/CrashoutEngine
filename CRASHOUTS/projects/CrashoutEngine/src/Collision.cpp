@@ -126,7 +126,7 @@ namespace Collision {
 
 	}
 
-	CollisionHandler::Contact circleVsPolygonEdges(const Sphere& a, const Polygon& b) {
+	CollisionHandler::Contact sphereVsPolyEdges(const Sphere& a, const Polygon& b) {
 
 		CEVec3 sphereCenter{a.position + a.offset};
 
@@ -134,13 +134,54 @@ namespace Collision {
 		std::optional<CEVec3> nearestEdgeVertex{ std::nullopt };
 
 		for (int i{}; i < b.vertexCount; ++i) {
+			int idx{ (i + 1) % b.vertexCount };
 			CEVec3 vertex{b.rotatedVertices[i] + b.offset};
+			CEVec3 nextVertex{ b.rotatedVertices[idx] + b.offset };
 
+			CEVec3 vertToCirc{ sphereCenter - vertex };
+			CEVec3 dirToNext{ nextVertex - vertex };
+			f32 dirToNextLength{ CEMath::Length(dirToNext) };
+			dirToNext = CEMath::Normalize(dirToNext);
+
+			f32 dirToNextProjection{ CEMath::Dot(vertToCirc, dirToNext) };
+			f32 dirToNormalProjection{ CEMath::Dot(vertToCirc, b.normalEdges[i]) };
+			if (dirToNormalProjection>=0.f && dirToNextProjection > 0.f && dirToNextProjection < dirToNextLength) {
+				nearestEdgeNormal = std::make_optional<CEVec3>(b.normalEdges[i]);
+				nearestEdgeVertex = std::make_optional<CEVec3>(vertex);
+			}
 		}
 
+		if (!nearestEdgeNormal || !nearestEdgeVertex) return std::nullopt;
+
+		CEVec3 vertexToCircle{sphereCenter - *nearestEdgeVertex};
+		f32 projToEdgeNormal{ CEMath::Dot(*nearestEdgeNormal, vertexToCircle) };
+		if (projToEdgeNormal - a.radius < 0.f) {
+			f32 depth{projToEdgeNormal - a.radius};
+			CEVec3 penetrationPt{sphereCenter + (*nearestEdgeNormal * (a.radius*-1.f))};
+			return std::make_optional(CollisionManifold{ *nearestEdgeNormal * -1.f, {penetrationPt}, depth * -1.f, true, 1 }); /*COME BACK TO THIS PLS*/
+		}
 
 		return std::nullopt;
 
+	}
+
+	CollisionHandler::Contact sphereVsPolyCorner(const Sphere& a, const Polygon& b) {
+
+		CEVec3 sphereCenter{ a.position + a.offset };
+
+		for (int i{}; i < b.vertexCount; ++i) {
+			CEVec3 vertex{ b.rotatedVertices[i] + b.offset };
+			CEVec3 dirToSphereCenter{ vertex - sphereCenter };
+			if (CEMath::LengthSq(dirToSphereCenter) < a.radius * a.radius) {
+				f32 depth{ a.radius - CEMath::Length(dirToSphereCenter) };
+				dirToSphereCenter = CEMath::Normalize(dirToSphereCenter);
+				return std::make_optional(CollisionManifold{ dirToSphereCenter, {vertex}, depth, true, 1 }); /*COME BACK TO THIS LATER TOO*/
+
+			}
+
+		}
+
+		return std::nullopt;
 	}
 }
 
@@ -303,6 +344,13 @@ namespace Collision {
 		Sphere const& sphere = dynamic_cast<Sphere const&>(*(spherePtr->collider));
 
 		Polygon const& polygon = dynamic_cast<Polygon const&>(*(polygonPtr->collider));
+
+		std::optional<CollisionManifold> contact{ sphereVsPolyEdges(sphere, polygon) };
+		if (contact) return *contact;
+		else {
+			std::optional<CollisionManifold> contact2{ sphereVsPolyCorner(sphere, polygon) };
+			if (contact2) return *contact2;
+		}
 
 		
 		return result;
@@ -555,6 +603,7 @@ namespace Collision {
 		collideFuncts[AABBIdx * TYPES_OF_COLLISION + OBBIdx] = AABBToOBBCollision;
 		collideFuncts[sphereIdx * TYPES_OF_COLLISION + OBBIdx] = SphereToOBBCollision;
 		collideFuncts[OBBIdx * TYPES_OF_COLLISION + OBBIdx] = OBBToOBBCollision;
+		collideFuncts[sphereIdx * TYPES_OF_COLLISION + PolygonIdx] = SphereToPolygonCollision;
 		collideFuncts[PolygonIdx * TYPES_OF_COLLISION + PolygonIdx] = PolygonToPolygonCollision;
 	}
 
