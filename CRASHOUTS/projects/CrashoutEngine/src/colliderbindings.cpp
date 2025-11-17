@@ -36,6 +36,6 @@ static bool InternalHasCollider(uint32_t entityID)
 
 void CrashoutsEngine::Bindings::RegisterColliderBindings()
 {
-    mono_add_internal_call("CrashoutsEngine.Collider::InternalUpdateRotation",reinterpret_cast<const void*>(InternalUpdateRotation));
+    mono_add_internal_call("CrashoutsEngine.ColliderComponent::InternalUpdateRotation",reinterpret_cast<const void*>(InternalUpdateRotation));
     mono_add_internal_call("CrashoutsEngine.InternalCalls::EntityHasCollider",reinterpret_cast<const void*>(InternalHasCollider));
 }

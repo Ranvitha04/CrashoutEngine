@@ -1,11 +1,11 @@
-using System.Numerics;
 using System.Runtime.CompilerServices;
 
 namespace CrashoutsEngine
 {
-    public class Collider
+    [NativeComponent("AddCollider", "RemoveCollider", "EntityHasCollider")]
+    public class ColliderComponent
     {
-        internal uint EntityID { get; set; }
+        public uint EntityID;
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern void InternalUpdateRotation(uint entityID, float rot);

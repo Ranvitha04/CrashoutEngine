@@ -2,9 +2,10 @@ using System;
 
 namespace CrashoutsEngine
 {
+    [NativeComponent("AddName", "RemoveName", "EntityHasName")]
     public class NameComponent
     {
-        public uint EntityID { get; internal set; }
+        public uint EntityID;
 
         internal NameComponent() { }
 

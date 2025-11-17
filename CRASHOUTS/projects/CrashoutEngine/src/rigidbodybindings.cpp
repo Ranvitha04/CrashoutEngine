@@ -42,8 +42,8 @@ static float InternalGetMass(uint32_t entityID)
 
 void CrashoutsEngine::Bindings::RegisterRigidBodyBindings()
 {
-    mono_add_internal_call("CrashoutsEngine.RigidBody::InternalAddForce", reinterpret_cast<const void*>(InternalAddForce));
+    mono_add_internal_call("CrashoutsEngine.RigidBodyComponent::InternalAddForce", reinterpret_cast<const void*>(InternalAddForce));
     mono_add_internal_call("CrashoutsEngine.InternalCalls::EntityHasRigidBody", reinterpret_cast<const void*>(EntityHasRigidBody));
-    mono_add_internal_call("CrashoutsEngine.RigidBody::InternalGetMass", reinterpret_cast<const void*>(InternalGetMass));
-    std::cout << "[Mono] Registered: CrashoutsEngine.RigidBody::InternalAddForce" << std::endl;
+    mono_add_internal_call("CrashoutsEngine.RigidBodyComponent::InternalGetMass", reinterpret_cast<const void*>(InternalGetMass));
+    std::cout << "[Mono] Registered: CrashoutsEngine.RigidBodyComponent::InternalAddForce" << std::endl;
 }
