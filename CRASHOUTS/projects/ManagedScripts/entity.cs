@@ -43,5 +43,31 @@ namespace CrashoutsEngine
             }
         }
 
+        public void Add<T>() where T : class
+        {
+            if (typeof(T) == typeof(Transform))
+                InternalCalls.AddTransform(ID);
+            else if (typeof(T) == typeof(RigidBody))
+                InternalCalls.AddRigidBody(ID);
+            else if (typeof(T) == typeof(Collider))
+                InternalCalls.AddCollider(ID);
+            else
+                //gotta keep make sure yk
+                throw new Exception($"Add<{typeof(T).Name}> not supported!");
+        }
+
+        public void Remove<T>() where T : class
+        {
+            if (typeof(T) == typeof(Transform))
+                InternalCalls.RemoveTransform(ID);
+            else if (typeof(T) == typeof(RigidBody))
+                InternalCalls.RemoveRigidBody(ID);
+            else if (typeof(T) == typeof(Collider))
+                InternalCalls.RemoveCollider(ID);
+            else
+                throw new Exception($"Remove<{typeof(T).Name}> not supported!");
+        }
+
+
     }
 }

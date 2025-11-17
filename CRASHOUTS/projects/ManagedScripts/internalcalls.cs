@@ -47,5 +47,26 @@ namespace CrashoutsEngine
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal static extern int TimeGetSteps();
+
+        //plz help
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        public extern static void AddTransform(uint id);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        public extern static void AddRigidBody(uint id);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        public extern static void AddCollider(uint id);
+
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        public extern static void RemoveTransform(uint id);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        public extern static void RemoveRigidBody(uint id);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        public extern static void RemoveCollider(uint id);
+
     }
 }
