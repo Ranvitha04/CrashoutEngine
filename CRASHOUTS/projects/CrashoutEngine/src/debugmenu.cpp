@@ -380,7 +380,7 @@ namespace UI { // --------------------------------------------------------------
     {
         static std::vector<Entity> multiSel;   // persistent multi-selection in the panel
 
-        ScopedWindow win("Heirarchy", LockFlags(ui.lockLayout));
+        ScopedWindow win("Hierarchy", LockFlags(ui.lockLayout));
 
         // Create entity in the REAL ECS
         if (ImGui::Button("Create Entity")) {
@@ -2254,6 +2254,7 @@ namespace UI { // --------------------------------------------------------------
             ImGui::DockBuilderDockWindow("Performance", dock_left);
             ImGui::DockBuilderDockWindow("GameState", dock_bottom);
             ImGui::DockBuilderDockWindow("GameScene", dock_bottom);
+            ImGui::DockBuilderDockWindow("Animation", dock_bottom);
             ImGui::DockBuilderDockWindow("Audio", dock_right_bottom);
             ImGui::DockBuilderDockWindow("Engine Controls", dock_top);
             ImGui::DockBuilderDockWindow("Game Viewport", dock_main);
