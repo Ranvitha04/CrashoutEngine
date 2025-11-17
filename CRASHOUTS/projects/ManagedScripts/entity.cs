@@ -74,7 +74,7 @@ namespace CrashoutsEngine
         }
 
         //name component
-        public bool HasName => InternalCalls.EntityHasName(ID)
+        public bool HasName => InternalCalls.EntityHasName(ID);
 
         private NameComponent _nameComponent;
         public NameComponent NameComponent => _nameComponent ??= new NameComponent { EntityID = ID };
