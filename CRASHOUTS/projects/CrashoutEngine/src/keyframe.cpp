@@ -2,10 +2,8 @@
 #include <cassert>
 #include "transformcomponent.h"
 #include "shapescomponent.h"
-
-// ---- Your engine headers (adjust include paths/names if different)
-#include "entitymanager.h"  // ECS, components access
-#include "shapes.h"         // TransformComponent, ShapeComponent
+#include "entitymanager.h"  
+#include "shapes.h"         
 
 using namespace CrashoutsEngine;
 using Component::TransformComponent;
@@ -47,7 +45,7 @@ float AnimationCurve::Evaluate(float t) const {
     const float u = dt > 0.f ? (t - A.time) / dt : 1.f;
 
     switch (A.interp) {
-    case KFInterp::Constant: return A.value; // step
+    case KFInterp::Constant: return A.value; 
     case KFInterp::Linear:   return lerp(A.value, B.value, u);
     case KFInterp::Cubic:
     default:                 return hermite(A.value, A.outTan, B.value, B.inTan, std::clamp(u, 0.f, 1.f), dt);
@@ -158,4 +156,4 @@ namespace KeyframeUnity {
 
 
 
-} // namespace KeyframeUnity
+} 

@@ -5,15 +5,22 @@
 #include "collisionutils.h"
 #include "observer.h"
 #include <unordered_map>
+#include <functional>
 
 namespace CrashoutsEngine {
+
+	struct ContactInfo {
+		Collision::CollisionManifold info;
+		Entity collidedEntity;
+	};
 
 	class CollisionEventManager : public Messaging::Observer {
 	public:
 		enum Type { Trigger, Collidable };
 
-		using CallbackFnCollide = void (*)(Entity);
-		using CallbackTriggerFn = void (*)(Entity);
+		using CallbackFnCollide = std::function<void(Entity)>;
+		using CallbackTriggerFn = std::function<void(Entity)>;
+
 
 		class Callable {
 		protected:
@@ -67,10 +74,24 @@ namespace CrashoutsEngine {
 			return collisionEvents;
 		}
 
+		bool TryGetLastContact(Entity entity, ContactInfo& outInfo) const {
+			auto it = lastContacts.find(entity);
+			if (it == lastContacts.end())
+				return false;
+			outInfo = it->second;
+			return true;
+		}
+
+		void SetLastContact(Entity entity, ContactInfo const& info) {
+			lastContacts[entity] = info;
+		}
+
+
 		~CollisionEventManager() = default;
 
 	private:
 		CollisionEventMap collisionEvents;
+		std::unordered_map<Entity, ContactInfo> lastContacts;
 
 	};
 }

@@ -306,7 +306,7 @@ namespace {
 
                     if (changed)
                     {
-                        UndoManager::GetInstance().Execute(
+                        UndoManager::GetInstance().AddCommand(
                             std::make_unique<CrashoutsEngine::TransformEntityCommand>(
                                 e, sStart, after));
                     }
@@ -392,7 +392,7 @@ namespace {
                         sess.startRef.restitution != endRef.restitution)
                     {
                         using RefT = Component::RigidBodyComponent::ReflectionType;
-                        UndoManager::GetInstance().Execute(
+                        UndoManager::GetInstance().AddCommand(
                             std::make_unique<CrashoutsEngine::ChangeValueCommand<RefT>>(
                                 sess.startRef, endRef,
                                 [rb](const RefT& v) { *rb = Component::RigidBodyComponent(v); }
@@ -409,7 +409,7 @@ namespace {
 
                 if (ImGui::Checkbox("Simulate Dynamics", &simulate)) {
                     // record undo for the flag change
-                    UndoManager::GetInstance().Execute(
+                    UndoManager::GetInstance().AddCommand(
                         std::make_unique<CrashoutsEngine::ChangeValueCommand<bool>>(
                             prevSim, simulate,
                             [rb](bool v) {
@@ -622,7 +622,7 @@ namespace {
             int t = oldType;
             const char* items[] = { "Rectangle","Line","Triangle","Circle"};
             if (ImGui::Combo("Type", &t, items, IM_ARRAYSIZE(items))) {
-                UndoManager::GetInstance().Execute(
+                UndoManager::GetInstance().AddCommand(
                     std::make_unique<CrashoutsEngine::ChangeValueCommand<int>>(
                         oldType, t,
                         [sc](int v) { sc->type = (ShapeType)v; }
@@ -636,7 +636,7 @@ namespace {
             // shared
             bool oldTex = sc->enableTexture;
             if (ImGui::Checkbox("Use TextureAsset", &sc->enableTexture)) {
-                UndoManager::GetInstance().Execute(
+                UndoManager::GetInstance().AddCommand(
                     std::make_unique<CrashoutsEngine::ChangeValueCommand<bool>>(
                         oldTex, sc->enableTexture,
                         [sc](bool v) { sc->enableTexture = v; }
@@ -645,7 +645,7 @@ namespace {
             }
             bool oldWorld = sc->isWorldSpace;
             if (ImGui::Checkbox("Use World Space", &sc->isWorldSpace)) {
-                UndoManager::GetInstance().Execute(
+                UndoManager::GetInstance().AddCommand(
                     std::make_unique<CrashoutsEngine::ChangeValueCommand<bool>>(
                         oldWorld, sc->isWorldSpace,
                         [sc](bool v) { sc->isWorldSpace = v; }
@@ -708,7 +708,7 @@ namespace {
                     if (ImGui::Selectable(f.c_str())) {
                         std::string oldTexName = sc->textureName;
                         sc->textureName = f;
-                        UndoManager::GetInstance().Execute(
+                        UndoManager::GetInstance().AddCommand(
                             std::make_unique<CrashoutsEngine::ChangeValueCommand<std::string>>(
                                 oldTexName, sc->textureName,
                                 [sc](const std::string& v) { sc->textureName = v; }
@@ -733,7 +733,7 @@ namespace {
                 // U (HORIZONTAL) WRAP MODE
                 int oldU = sc->wrapModeU;
                 if (ImGui::Combo("U Wrap Mode", &sc->wrapModeU, wrapModes, numWrapModes)) {
-                    UndoManager::GetInstance().Execute(
+                    UndoManager::GetInstance().AddCommand(
                         std::make_unique<CrashoutsEngine::ChangeValueCommand<int>>(
                             oldU, sc->wrapModeU,
                             [sc](int v) { sc->wrapModeU = v; }
@@ -744,7 +744,7 @@ namespace {
                 // V (HORIZONTAL) WRAP MODE
                 int oldV = sc->wrapModeV;
                 if (ImGui::Combo("V Wrap Mode", &sc->wrapModeV, wrapModes, numWrapModes)) {
-                    UndoManager::GetInstance().Execute(
+                    UndoManager::GetInstance().AddCommand(
                         std::make_unique<CrashoutsEngine::ChangeValueCommand<int>>(
                             oldV, sc->wrapModeV,
                             [sc](int v) { sc->wrapModeV = v; }
@@ -758,7 +758,7 @@ namespace {
                 if (ImGui::DragFloat2("UV", size, D.drag_small)) {
                     CEVec2 newUV = { size[0], size[1] };
                     if (ImGui::IsItemDeactivatedAfterEdit() && newUV != oldUV) {
-                        UndoManager::GetInstance().Execute(
+                        UndoManager::GetInstance().AddCommand(
                             std::make_unique<CrashoutsEngine::ChangeValueCommand<CEVec2>>(
                                 oldUV, newUV,
                                 [sc](const CEVec2& v) { sc->uvSize = v; }
@@ -802,7 +802,7 @@ namespace {
                     // item lost focus (enter pressed / tab / clicked away)
                     CEVec3 newColor = { col[0] * 255.f, col[1] * 255.f, col[2] * 255.f };
                     if (newColor != startColor) {
-                        UndoManager::GetInstance().Execute(
+                        UndoManager::GetInstance().AddCommand(
                             std::make_unique<CrashoutsEngine::ChangeValueCommand<CEVec3>>(
                                 startColor, newColor,
                                 [sc](const CEVec3& v) { sc->color = v; }));
@@ -836,7 +836,7 @@ namespace {
                     if (!ImGui::IsWindowAppearing() && !ImGui::IsWindowFocused()) {
                         CEVec3 newCol = sc->color;
                         if (popupEditing && newCol != popupStart) {
-                            UndoManager::GetInstance().Execute(
+                            UndoManager::GetInstance().AddCommand(
                                 std::make_unique<CrashoutsEngine::ChangeValueCommand<CEVec3>>(
                                     popupStart, newCol,
                                     [sc](const CEVec3& v) { sc->color = v; }));
@@ -857,7 +857,7 @@ namespace {
 
                 ImGui::DragFloat3("P1", &sc->p1.x, 0.5f);
                 if (ImGui::IsItemDeactivatedAfterEdit() && sc->p1 != oldP1) {
-                    UndoManager::GetInstance().Execute(
+                    UndoManager::GetInstance().AddCommand(
                         std::make_unique<CrashoutsEngine::ChangeValueCommand<CEVec3>>(
                             oldP1, sc->p1,
                             [sc](const CEVec3& v) { sc->p1 = v; }));
@@ -865,7 +865,7 @@ namespace {
 
                 ImGui::DragFloat3("P2", &sc->p2.x, 0.5f);
                 if (ImGui::IsItemDeactivatedAfterEdit() && sc->p2 != oldP2) {
-                    UndoManager::GetInstance().Execute(
+                    UndoManager::GetInstance().AddCommand(
                         std::make_unique<CrashoutsEngine::ChangeValueCommand<CEVec3>>(
                             oldP2, sc->p2,
                             [sc](const CEVec3& v) { sc->p2 = v; }));
@@ -873,7 +873,7 @@ namespace {
 
                 ImGui::DragFloat("Thickness", &sc->thickness, 0.1f, 0.0f, 1e6f);
                 if (ImGui::IsItemDeactivatedAfterEdit() && sc->thickness != oldThick) {
-                    UndoManager::GetInstance().Execute(
+                    UndoManager::GetInstance().AddCommand(
                         std::make_unique<CrashoutsEngine::ChangeValueCommand<float>>(
                             oldThick, sc->thickness,
                             [sc](float v) { sc->thickness = v; }));
@@ -1316,7 +1316,7 @@ R"(using System;
                     std::thread([]() {
                         int result = system(
                             "dotnet clean \"../../projects/ManagedScripts/ManagedScripts.csproj\" -c Debug > buildlog.txt 2>&1 && "
-                            "dotnet build \"../../projects/ManagedScripts/ManagedScripts.csproj\" -c Debug --no-incremental > buildlog.txt 2>&1"
+                            "dotnet build \"../../projects/ManagedScripts/ManagedScripts.csproj\" -c Debug > buildlog.txt 2>&1"
                         );
                         if (result == 0)
                             reloadPending = true; // signal reload

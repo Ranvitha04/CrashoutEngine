@@ -33,7 +33,7 @@ namespace Physics {
 		bool isActive{ false };
 	};
 
-	constexpr f32 DEFAULT_GRAVITY_VALUE{ 100.f };
+	constexpr f32 DEFAULT_GRAVITY_VALUE{ 70.f };
 
 	class ForceManager {
 	public:

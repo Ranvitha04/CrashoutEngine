@@ -60,11 +60,12 @@ add_library(${PROJECT_NAME} STATIC
     ${categorized_include_files}
     ${other_src_files}
     ${other_include_files}
+    "${project_dir}/include/engine_pch.h"
 )
 
 target_precompile_headers(${PROJECT_NAME}
     PRIVATE
-        "${project_dir}/include/engine_pch.h"
+        "include/engine_pch.h"
 )
 
 # --- 6. Assign ALL file groups to filters ✨ ---
@@ -126,7 +127,7 @@ PRIVATE
 add_custom_target(ManagedScripts ALL
     COMMAND ${CMAKE_COMMAND} -E echo "Building ManagedScripts..."
     COMMAND dotnet build ${CMAKE_SOURCE_DIR}/projects/ManagedScripts/ManagedScripts.csproj
-            -c $<CONFIG> --no-incremental
+            -c $<CONFIG> #--no-incremental
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/projects/ManagedScripts
     COMMENT "Building C# scripts"
 )

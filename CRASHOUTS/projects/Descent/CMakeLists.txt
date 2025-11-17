@@ -30,12 +30,13 @@ set(other_include_files ${all_include_files})
 add_executable(${PROJECT_NAME} WIN32
     ${other_src_files}
     ${other_include_files}
+    "${project_dir}/include/pch.h"
 )
 
 # Tell CMake to use pch.h as the precompiled header
 target_precompile_headers(${PROJECT_NAME}
     PRIVATE
-        "${project_dir}/include/pch.h"
+        "include/pch.h"
 )
 
 # --- 6. Assign ALL file groups to filters ✨ ---

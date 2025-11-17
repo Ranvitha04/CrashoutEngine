@@ -57,6 +57,7 @@ namespace UI {
         bool drawQuadTree = false;
 
         bool freezeOnCollision = false;
+        bool showAnimation = false; // animation
 
         bool drawAllColliders = true;   // draw wireframes for every collider, not just colliding ones
         bool drawVelocities = false;    // draw velocity arrows if RigidBodyComponent exists

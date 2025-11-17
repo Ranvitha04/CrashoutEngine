@@ -28,7 +28,7 @@ class UndoManager
 public:
     static UndoManager& GetInstance();
 
-    void Execute(std::unique_ptr<EditorCommand> command); //!< Runs and records command
+    void AddCommand(std::unique_ptr<EditorCommand>&& command); //!< Runs and records command
     void Undo();  //!< Ctrl+Z
     void Redo();  //!< Ctrl+Y
     void Clear(); //!< Clear both stacks
