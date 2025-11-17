@@ -14,6 +14,7 @@
 #include "ScriptComponent.h"
 #include "TransformBindings.h"
 #include "entitybindings.h"
+#include "namebindings.h"
 
 namespace CrashoutsEngine
 {
@@ -25,6 +26,7 @@ namespace CrashoutsEngine
         Bindings::RegisterEntityBindings();
         Bindings::RegisterColliderBindings();
         Bindings::RegisterCollisionEventBindings();
+        Bindings::RegisterNameBindings();
 	}
 
     void ScriptSystem::InitializeAll(MonoDomain* domain, MonoAssembly* assembly)

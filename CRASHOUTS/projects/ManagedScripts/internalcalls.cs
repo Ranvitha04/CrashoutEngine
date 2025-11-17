@@ -36,6 +36,7 @@ namespace CrashoutsEngine
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal static extern bool EntityHasCollider(uint entityID);
 
+        //time
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal static extern double TimeGetDT();
 
@@ -67,6 +68,23 @@ namespace CrashoutsEngine
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         public extern static void RemoveCollider(uint id);
+
+        // name component
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern bool EntityHasName(uint id);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern void AddName(uint id);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern void RemoveName(uint id);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern string GetName(uint id);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern void SetName(uint id, string name);
+
 
     }
 }

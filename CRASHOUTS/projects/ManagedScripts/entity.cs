@@ -42,7 +42,8 @@ namespace CrashoutsEngine
                 return _collider ??= new Collider { EntityID = ID };
             }
         }
-
+        //some of these are placeholders/temp func
+        // add component
         public void Add<T>() where T : class
         {
             if (typeof(T) == typeof(Transform))
@@ -51,11 +52,13 @@ namespace CrashoutsEngine
                 InternalCalls.AddRigidBody(ID);
             else if (typeof(T) == typeof(Collider))
                 InternalCalls.AddCollider(ID);
+            else if (typeof(T) == typeof(NameComponent))
+                InternalCalls.AddName(ID);
             else
                 //gotta keep make sure yk
                 throw new Exception($"Add<{typeof(T).Name}> not supported!");
         }
-
+        //remove component
         public void Remove<T>() where T : class
         {
             if (typeof(T) == typeof(Transform))
@@ -64,10 +67,17 @@ namespace CrashoutsEngine
                 InternalCalls.RemoveRigidBody(ID);
             else if (typeof(T) == typeof(Collider))
                 InternalCalls.RemoveCollider(ID);
+            else if (typeof(T) == typeof(NameComponent))
+                InternalCalls.RemoveName(ID);
             else
                 throw new Exception($"Remove<{typeof(T).Name}> not supported!");
         }
 
+        //name component
+        public bool HasName => InternalCalls.EntityHasName(ID)
+
+        private NameComponent _nameComponent;
+        public NameComponent NameComponent => _nameComponent ??= new NameComponent { EntityID = ID };
 
     }
 }
