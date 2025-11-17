@@ -1640,5 +1640,30 @@ void InstancingSystem::RenderMode4Rectangles(const InstancedParams& params) {
     }
 }
 
+void InstancingSystem::ShutdownInstancing() {
+    if (s_rectInstanceVAO) { glDeleteVertexArrays(1, &s_rectInstanceVAO); s_rectInstanceVAO = 0; }
+    if (s_rectInstanceVBO) { glDeleteBuffers(1, &s_rectInstanceVBO); s_rectInstanceVBO = 0; }
+    if (s_rectInstanceEBO) { glDeleteBuffers(1, &s_rectInstanceEBO); s_rectInstanceEBO = 0; }
+    if (s_rectInstanceDataVBO) { glDeleteBuffers(1, &s_rectInstanceDataVBO); s_rectInstanceDataVBO = 0; }
+    s_rectInstanceBuffersInitialized = false;
+
+    if (s_circInstanceVAO) { glDeleteVertexArrays(1, &s_circInstanceVAO); s_circInstanceVAO = 0; }
+    if (s_circInstanceVBO) { glDeleteBuffers(1, &s_circInstanceVBO); s_circInstanceVBO = 0; }
+    if (s_circInstanceEBO) { glDeleteBuffers(1, &s_circInstanceEBO); s_circInstanceEBO = 0; }
+    if (s_circInstanceDataVBO) { glDeleteBuffers(1, &s_circInstanceDataVBO); s_circInstanceDataVBO = 0; }
+    s_circInstanceBuffersInitialized = false;
+    s_circSegmentsCurrent = 0;
+
+    if (s_triInstanceVAO) { glDeleteVertexArrays(1, &s_triInstanceVAO); s_triInstanceVAO = 0; }
+    if (s_triInstanceVBO) { glDeleteBuffers(1, &s_triInstanceVBO); s_triInstanceVBO = 0; }
+    if (s_triInstanceEBO) { glDeleteBuffers(1, &s_triInstanceEBO); s_triInstanceEBO = 0; }
+    if (s_triInstanceDataVBO) { glDeleteBuffers(1, &s_triInstanceDataVBO); s_triInstanceDataVBO = 0; }
+    s_triInstanceBuffersInitialized = false;
+
+    gM4RectPos.clear(); gM4RectColor.clear(); gM4RectRot.clear(); gM4RectW.clear(); gM4RectH.clear();
+    gM4TriPos.clear(); gM4TriColor.clear(); gM4TriRot.clear(); gM4TriScale.clear(); gM4TriSide.clear();
+    gM4CircPos.clear(); gM4CircColor.clear(); gM4CircRot.clear(); gM4CircScale.clear(); gM4CircRadius.clear();
+}
+
 
 

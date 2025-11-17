@@ -218,4 +218,6 @@ namespace InstancingSystem {
     @brief Get the entity id of the single ECS duck used in mode 1.
     */
     CrashoutsEngine::Entity GetSingleDuckEntity();
+
+    void ShutdownInstancing();
 }

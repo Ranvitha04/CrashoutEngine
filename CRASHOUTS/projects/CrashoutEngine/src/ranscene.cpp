@@ -338,8 +338,8 @@ void RenderBackground()
     CEVec2 size{ 1.f, 1.f };
     Component::Shapes::CreateTexturedRectangle(
         size,
-        "assets/images/bg 1 base.png",  // Use an existing texture file
-        //"assests/images/backgrounds/8k.png",
+        //"assets/images/bg 1 base.png",  // Use an existing texture file
+        "assests/images/backgrounds/8k.png",
         CEVec3(0.0f, 0.0f, 0.0f),
         0.0f,
         CEVec3(1.0f, 1.0f, 1.0f)

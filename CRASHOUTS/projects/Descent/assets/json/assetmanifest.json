@@ -38,6 +38,10 @@
     "images": [
         {
             "name": "8k",
+            "path": "8k.png"
+        },
+        {
+            "name": "8k",
             "path": "backgrounds\\8k.png"
         },
         {

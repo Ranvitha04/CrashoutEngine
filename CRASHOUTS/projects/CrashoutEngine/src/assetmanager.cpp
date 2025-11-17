@@ -46,6 +46,18 @@ namespace CrashoutsEngine {
 			FT_Done_FreeType(ftLibrary);
 		}
 
+		void AssetManager::Shutdown() {
+			for (auto& kv : assets) {
+				kv.second.reset();
+			}
+			assets.clear();
+			assets.rehash(0);
+			assetNames.clear();
+			assetNames.rehash(0);
+			nextAssetID = 0;
+			FT_Done_FreeType(ftLibrary);
+		}
+
 		// Function to load assets in a json
 		/*!
 		@brief Scans asset directories and generates a JSON manifest file.
