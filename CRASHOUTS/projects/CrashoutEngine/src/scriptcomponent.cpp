@@ -9,109 +9,173 @@
 
 namespace CrashoutsEngine
 {
+    namespace
+    {
+        bool InitializeOne(MonoDomain* domain, MonoAssembly* assembly, uint32_t entityID, ScriptInstance& script)
+        {
+            if (!assembly) {
+                std::cerr << "[Mono] Assembly pointer is null!\n";
+                return false;
+            }
+
+            MonoImage* image = mono_assembly_get_image(assembly);
+            if (!image)
+            {
+                std::cerr << "[Mono] Failed to get image from assembly.\n";
+                return false;
+            }
+
+            script.Class = mono_class_from_name(image, "CrashoutsEngine", script.ClassName.c_str());
+            if (!script.Class)
+            {
+                std::cerr << "[Mono] Could not find class: " << script.ClassName << '\n';
+                return false;
+            }
+
+            // Get the MonoClass* for Entity
+            MonoClass* entityClass = mono_class_from_name(image, "CrashoutsEngine", "Entity");
+            if (!entityClass)
+            {
+                std::cerr << "[Mono] Could not find class: CrashoutsEngine.Entity\n";
+                return false;
+            }
+
+            // Create script instance
+            script.Instance = mono_object_new(domain, script.Class);
+            mono_runtime_object_init(script.Instance);
+
+            // Create GC handle
+            script.GCHandle = mono_gchandle_new(script.Instance, false);
+
+            // Construct C# Entity wrapper
+            MonoObject* entityObj = mono_object_new(domain, entityClass);
+            MonoMethod* entityCtor = mono_class_get_method_from_name(entityClass, ".ctor", 1);
+            if (!entityCtor)
+            {
+                std::cerr << "[Mono] Could not find Entity constructor\n";
+                return false;
+            }
+
+            uint32_t eid = entityID;
+            void* ctorArgs[1] = { &eid };
+            mono_runtime_invoke(entityCtor, entityObj, ctorArgs, nullptr);
+
+            // Assign Entity field on script
+            MonoClassField* entityField = mono_class_get_field_from_name(script.Class, "Entity");
+            if (entityField)
+            {
+                mono_field_set_value(script.Instance, entityField, entityObj);
+            }
+
+            // Cache methods
+            script.MethodStart = mono_class_get_method_from_name(script.Class, "Start", 0);
+            script.MethodUpdate = mono_class_get_method_from_name(script.Class, "Update", 0);
+
+            if (script.MethodStart)
+            {
+                std::cout << "[Mono] Found Start() for " << script.ClassName << '\n';
+            }
+            else
+            {
+                std::cerr << "[Mono] Missing Start() in " << script.ClassName << '\n';
+            }
+
+            if (script.MethodUpdate)
+            {
+                std::cout << "[Mono] Found Update() for " << script.ClassName << '\n';
+            }
+            else
+            {
+                std::cerr << "[Mono] Missing Update() in " << script.ClassName << '\n';
+            }
+
+            std::cout << "[Mono] ScriptInstance for class " << script.ClassName
+                << " initialized successfully\n";
+
+            script.Started = false;
+            return true;
+        }
+
+        void DestroyOne(ScriptInstance& script)
+        {
+            if (script.GCHandle)
+            {
+                mono_gchandle_free(script.GCHandle);
+                script.GCHandle = 0;
+            }
+
+            script.Instance = nullptr;
+            script.Class = nullptr;
+            script.MethodStart = nullptr;
+            script.MethodUpdate = nullptr;
+            script.Started = false;
+        }
+    }
+
+    ScriptInstance& ScriptComponent::AddScript(const std::string& className)
+    {
+        Scripts.emplace_back(className);
+        return Scripts.back();
+    }
+
+    void ScriptComponent::RemoveScript(size_t index)
+    {
+        if (index >= Scripts.size())
+            return;
+
+        DestroyOne(Scripts[index]);
+        Scripts.erase(Scripts.begin() + static_cast<std::ptrdiff_t>(index));
+    }
+
     bool ScriptComponent::Initialize(MonoDomain* domain, MonoAssembly* assembly)
     {
-        if (!assembly) {
-            std::cerr << "[Mono] Assembly pointer is null!\n";
-            return false;
-        }
-
-        MonoImage* image = mono_assembly_get_image(assembly);
-        if (!image)
+        bool ok = true;
+        for (auto& script : Scripts)
         {
-            std::cerr << "[Mono] Failed to get image from assembly.\n";
-            return false;
+            // Re-initialize each script
+            DestroyOne(script);
+            if (!script.ClassName.empty())
+            {
+                ok &= InitializeOne(domain, assembly, EntityID, script);
+            }
         }
-
-        Class = mono_class_from_name(image, "CrashoutsEngine", ClassName.c_str());
-        if (!Class)
-        {
-            std::cerr << "[Mono] Could not find class: " << ClassName << '\n';
-            return false;
-        }
-
-        // Create C# instance
-        //Instance = mono_object_new(domain, Class);
-        //mono_runtime_object_init(Instance);
-
-        // Get the MonoClass*
-        MonoClass* entityClass = mono_class_from_name(image, "CrashoutsEngine", "Entity");
-
-        //GCHandle = 0;
-
-        Instance = mono_object_new(domain, Class);
-        mono_runtime_object_init(Instance);
-
-        GCHandle = mono_gchandle_new(Instance,false);
-
-        MonoObject* entityObj = mono_object_new(domain, entityClass);
-        MonoMethod* entityCtor = mono_class_get_method_from_name(entityClass, ".ctor", 1);
-        uint32_t eid = EntityID;
-        void* ctorArgs[1] = { &eid };
-        mono_runtime_invoke(entityCtor, entityObj, ctorArgs, nullptr);
-        MonoClassField* entityField = mono_class_get_field_from_name(Class, "Entity");
-        if (entityField)
-        {
-            mono_field_set_value(Instance, entityField, entityObj);
-        }
-
-        // Cache methods
-        MethodStart = mono_class_get_method_from_name(Class, "Start", 0);
-        MethodUpdate = mono_class_get_method_from_name(Class, "Update", 0);
-
-        if (MethodStart)
-        {
-            std::cout << "[Mono] Found Start() for " << ClassName << '\n';
-        }
-        else
-        {
-            std::cerr << "[Mono] Missing Start() in " << ClassName << '\n';
-        }
-
-        if (MethodUpdate)
-        {
-            std::cout << "[Mono] Found Update(float) for " << ClassName << '\n';
-        }
-        else
-        {
-            std::cerr << "[Mono] Missing Update(float) in " << ClassName << '\n';
-        }
-
-        std::cout << "[Mono] ScriptComponent for class " << ClassName << " initialized successfully\n";
-
-
-        return true;
+        return ok;
     }
 
     void ScriptComponent::Start()
     {
-        if (Started || !MethodStart) return;
+        for (auto& script : Scripts)
+        {
+            if (script.Started || !script.MethodStart || !script.Instance)
+                continue;
 
-        MonoObject* exc = nullptr;
-        mono_runtime_invoke(MethodStart, Instance, nullptr, &exc);
-        if (exc) mono_print_unhandled_exception(exc);
+            MonoObject* exc = nullptr;
+            mono_runtime_invoke(script.MethodStart, script.Instance, nullptr, &exc);
+            if (exc) mono_print_unhandled_exception(exc);
 
-        Started = true;
+            script.Started = true;
+        }
     }
 
     void ScriptComponent::Update()
     {
-        if (!MethodUpdate) return;
-        MonoObject* target = mono_gchandle_get_target(GCHandle);
-        //void* args[1] = { &dt };
-        MonoObject* exc = nullptr;
-        mono_runtime_invoke(MethodUpdate, target, nullptr, &exc);
-        if (exc) mono_print_unhandled_exception(exc);
+        for (auto& script : Scripts)
+        {
+            if (!script.MethodUpdate || !script.GCHandle)
+                continue;
 
+            MonoObject* target = mono_gchandle_get_target(script.GCHandle);
+            MonoObject* exc = nullptr;
+            mono_runtime_invoke(script.MethodUpdate, target, nullptr, &exc);
+            if (exc) mono_print_unhandled_exception(exc);
+        }
     }
 
     void ScriptComponent::Destroy()
     {
-        Instance = nullptr;
-        Class = nullptr;
-        MethodStart = nullptr;
-        MethodUpdate = nullptr;
-        Started = false;
-        if (GCHandle) { mono_gchandle_free(GCHandle); GCHandle = 0; }
+        for (auto& script : Scripts)
+        {
+            DestroyOne(script);
+        }
     }
 }

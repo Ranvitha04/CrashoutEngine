@@ -1192,86 +1192,121 @@ namespace {
             if (!sc)
                 return;
 
-            // editable class name
-            char buf[128];
-            strcpy_s(buf, sc->ClassName.c_str());
-            if (ImGui::InputText("Class Name", buf, sizeof(buf))) {
-                sc->ClassName = buf;
-                if (!sc->ClassName.empty() && MonoManager::GetAssembly()) {
-                    sc->Destroy();
-                    sc->Initialize(MonoManager::GetDomain(), MonoManager::GetAssembly());
-                }
+            bool monoReady = (MonoManager::GetDomain() != nullptr &&
+                MonoManager::GetAssembly() != nullptr);
+            ImGui::TextDisabled("Mono: %s", monoReady ? "Ready" : "Not Ready");
+
+            ImGui::SeparatorText("Scripts");
+
+            // Button to add another script slot
+            if (ImGui::Button("+ Add Script")) {
+                sc->AddScript("NewScript");
             }
 
-            ImGui::SameLine();
-            if (ImGui::SmallButton("...")) {
-                ImGui::OpenPopup("Pick Script Class");
-            }
+            // Draw each ScriptInstance
+            for (size_t i = 0; i < sc->Scripts.size(); ++i) {
+                auto& inst = sc->Scripts[i];
+                ImGui::PushID(static_cast<int>(i));
 
-            if (ImGui::BeginPopupModal("Pick Script Class", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
-                namespace fs = std::filesystem;
-                static char filter[128] = {};
-                ImGui::InputTextWithHint("##script_filter", "filter...", filter, sizeof(filter));
                 ImGui::Separator();
+                ImGui::Text("Script %zu", i);
 
-                // list scripts from your C# project
-                fs::path base = "../../projects/ManagedScripts";
-                // can adjust if you want subfolder
-                // fs::path scriptsDir = base;
+                // Editable class name per script
+                char buf[128]{};
+                if (inst.ClassName.size() < sizeof(buf))
+                    std::memcpy(buf, inst.ClassName.data(), inst.ClassName.size());
 
-                // we can make it scrollable
-                if (ImGui::BeginChild("script_list", ImVec2(320, 240), true)) {
-                    try {
-                        for (auto it = fs::recursive_directory_iterator(base, fs::directory_options::skip_permission_denied);
-                            it != fs::recursive_directory_iterator(); ++it){
-                            if (it->is_directory()) {
-                                auto folder = it->path().filename().string();
-                                std::transform(folder.begin(), folder.end(), folder.begin(), ::tolower);
-                                if (folder == "obj" || folder == "bin" || folder == ".vs") {
-                                    it.disable_recursion_pending();
+                if (ImGui::InputText("Class Name", buf, sizeof(buf))) {
+                    inst.ClassName = buf;
+                    if (!inst.ClassName.empty() && monoReady) {
+                        sc->Destroy();
+                        sc->Initialize(MonoManager::GetDomain(), MonoManager::GetAssembly());
+                    }
+                }
+
+                ImGui::SameLine();
+                if (ImGui::SmallButton("...")) {
+                    ImGui::OpenPopup("Pick Script Class");
+                }
+
+                if (ImGui::BeginPopupModal("Pick Script Class", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
+                    namespace fs = std::filesystem;
+                    static char filter[128] = {};
+                    ImGui::InputTextWithHint("##script_filter", "filter...", filter, sizeof(filter));
+                    ImGui::Separator();
+
+                    fs::path base = "../../projects/ManagedScripts";
+
+                    if (ImGui::BeginChild("script_list", ImVec2(320, 240), true)) {
+                        try {
+                            for (auto it = fs::recursive_directory_iterator(base, fs::directory_options::skip_permission_denied);
+                                it != fs::recursive_directory_iterator(); ++it) {
+                                if (it->is_directory()) {
+                                    auto folder = it->path().filename().string();
+                                    std::transform(folder.begin(), folder.end(), folder.begin(), ::tolower);
+                                    if (folder == "obj" || folder == "bin" || folder == ".vs") {
+                                        it.disable_recursion_pending();
+                                        continue;
+                                    }
+                                }
+
+                                if (!it->is_regular_file()) continue;
+
+                                auto ext = it->path().extension().string();
+                                std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+                                if (ext != ".cs") continue;
+
+                                std::string stem = it->path().stem().string();
+                                if (filter[0] && stem.find(filter) == std::string::npos)
                                     continue;
+
+                                if (ImGui::Selectable(stem.c_str())) {
+                                    inst.ClassName = stem;
+                                    if (!inst.ClassName.empty() && monoReady) {
+                                        sc->Destroy();
+                                        sc->Initialize(MonoManager::GetDomain(), MonoManager::GetAssembly());
+                                    }
+                                    ImGui::CloseCurrentPopup();
                                 }
                             }
-
-                            if (!it->is_regular_file()) continue;
-
-                            auto ext = it->path().extension().string();
-                            std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
-                            if (ext != ".cs") continue;
-
-                            std::string stem = it->path().stem().string();
-                            if (filter[0] && stem.find(filter) == std::string::npos)
-                                continue;
-
-                            if (ImGui::Selectable(stem.c_str())) {
-                                sc->ClassName = stem;
-                                ImGui::CloseCurrentPopup();
-                            }
                         }
+                        catch (...) {
+
+                        }
+                        ImGui::EndChild();
+
+                        if (ImGui::Button("Cancel")) ImGui::CloseCurrentPopup();
                     }
-                    catch (...) {
-                        // ignore fs errors
+
+                    ImGui::EndPopup();
+                }
+
+                if (ImGui::SmallButton("Open")) {
+                    namespace fs = std::filesystem;
+                    fs::path base = "../../projects/ManagedScripts";
+                    fs::path file = base / (inst.ClassName + ".cs");
+
+                    if (fs::exists(file)) {
+                        std::string cmd = "start \"\" \"" + file.string() + "\"";
+                        system(cmd.c_str());
                     }
-                    ImGui::EndChild();
-                    if (ImGui::Button("Cancel")) ImGui::CloseCurrentPopup();
+                    else {
+                        std::cout << "Script not found: " << file << std::endl;
+                    }
                 }
 
-                ImGui::EndPopup();
+                // Remove this script instance
+                ImGui::SameLine();
+                if (ImGui::SmallButton("Remove")) {
+                    sc->RemoveScript(i);
+                    ImGui::PopID();
+                    break; // list changed
+                }
+
+                ImGui::PopID();
             }
-            if (ImGui::SmallButton("Open in VS")) {
-                namespace fs = std::filesystem;
-                fs::path base = "../../projects/ManagedScripts";
-                fs::path file = base / (sc->ClassName + ".cs");
 
-                if (fs::exists(file)) {
-                    std::string cmd = "start \"\" \"" + file.string() + "\"";
-                    system(cmd.c_str());
-
-                }
-                else {
-                    std::cout << "Script not found: " << file << std::endl;
-                }
-            }
+            ImGui::Separator();
 
             if (ImGui::SmallButton("New C# Script")) {
                 namespace fs = std::filesystem;
@@ -1286,26 +1321,25 @@ namespace {
 
                 // write a basic template
                 std::ofstream out(file);
-                out << 
-R"(using System;
-                    
-    public class )" << file.stem().string() << R"(
-    {
-        public void Start() { }
-        public void Update() { }
-    }
+                out <<
+                    R"(using System;
+
+public class )" << file.stem().string() << R"(
+{
+    public void Start() { }
+    public void Update() { }
+}
 )";
                 out.close();
+
+                // Optionally automatically add this new script
+                sc->AddScript(file.stem().string());
             }
 
-            bool monoReady = (MonoManager::GetDomain() != nullptr && MonoManager::GetAssembly() != nullptr);
-            ImGui::TextDisabled("Mono: %s", monoReady ? "Ready" : "Not Ready");
-
+            // --- Mono reload / manual Start/Update/Destroy ---
             if (!monoReady) ImGui::BeginDisabled();
 
-            // Reload Script to basically reinitialize
             static bool isBuilding = false;
-
             static std::atomic<bool> reloadPending = false;
 
             if (ImGui::Button("Reload Scripts"))
@@ -1330,21 +1364,15 @@ R"(using System;
                 MonoManager::ReloadScripts(); // called on main thread
             }
 
-            if (ImGui::Button("Start"))
+            if (ImGui::Button("Start All"))
                 sc->Start();
 
-            // small dt field
-            //ImGui::SameLine();
-            //static float dt = 1.0f / 60.0f;
-            //ImGui::SetNextItemWidth(80.0f);
-            //ImGui::DragFloat("dt", &dt, 0.001f, 0.0f, 1.0f, "%.3f");
-
             ImGui::SameLine();
-            if (ImGui::Button("Update"))
+            if (ImGui::Button("Update All"))
                 sc->Update();
 
             ImGui::SameLine();
-            if (ImGui::Button("Destroy"))
+            if (ImGui::Button("Destroy All"))
                 sc->Destroy();
 
             if (!monoReady)

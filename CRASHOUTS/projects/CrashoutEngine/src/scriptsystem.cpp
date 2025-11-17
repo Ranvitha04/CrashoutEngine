@@ -29,16 +29,13 @@ namespace CrashoutsEngine
 
     void ScriptSystem::InitializeAll(MonoDomain* domain, MonoAssembly* assembly)
     {
-        //RegisterAllBindings();
         auto& ecs = *ECS::getInstance();
         auto& scripts = ecs.GetComponentArray<ScriptComponent>();
 
-        for (auto& script : scripts.dense)
+        for (auto& scriptComp : scripts.dense)
         {
-            if (!script.Instance)
-                script.Initialize(domain, assembly);
+            scriptComp.Initialize(domain, assembly);
         }
-
     }
 
     void ScriptSystem::UpdateAll()
@@ -46,33 +43,22 @@ namespace CrashoutsEngine
         auto& ecs = *ECS::getInstance();
         auto& scripts = ecs.GetComponentArray<ScriptComponent>();
 
-        for (auto& script : scripts.dense)
+        for (auto& scriptComp : scripts.dense)
         {
-            if (!script.Started)
-                script.Start();
-
-            script.Update();
+            scriptComp.Start();
+            scriptComp.Update();
         }
-
     }
+
     void ScriptSystem::DestroyAll()
     {
         auto& ecs = *ECS::getInstance();
         auto& scripts = ecs.GetComponentArray<ScriptComponent>();
 
-        for (auto& script : scripts.dense)
+        for (auto& scriptComp : scripts.dense)
         {
-            if (script.Instance)
-            {
-                script.Destroy();
-                script.Instance = nullptr;
-                script.MethodStart = nullptr;
-                script.MethodUpdate = nullptr;
-                script.Class = nullptr;
-            }
-            script.Started = false;
+            scriptComp.Destroy();
         }
-
         std::cout << "[Mono] All script instances destroyed.\n";
     }
 
@@ -81,11 +67,10 @@ namespace CrashoutsEngine
         auto& ecs = *ECS::getInstance();
         auto& scripts = ecs.GetComponentArray<ScriptComponent>();
 
-        for (auto& script : scripts.dense)
+        for (auto& scriptComp : scripts.dense)
         {
-            script.Initialize(MonoManager::GetDomain(), MonoManager::GetAssembly());
+            scriptComp.Initialize(MonoManager::GetDomain(), MonoManager::GetAssembly());
         }
-
         std::cout << "[Mono] All scripts reinitialized after reload.\n";
     }
 
