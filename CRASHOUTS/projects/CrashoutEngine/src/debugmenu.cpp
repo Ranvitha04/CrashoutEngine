@@ -445,29 +445,36 @@ namespace UI { // --------------------------------------------------------------
         if (ImGui::Button("Save Prefab")) {
             namespace fs = std::filesystem;
 
-            
-            const fs::path jsonPath = fs::path(CrashoutsEngine::Assets::rootPath) / "prefabs" / "prefab.json";
-            fs::create_directories(jsonPath.parent_path()); // safe if exists
-
-            
+            //  Use the text box as the prefab name
             const std::string newName = (prefabNameBuf[0] ? prefabNameBuf : "Entity");
 
+            // Save into its OWN file: prefabs/<name>.json
+            fs::path jsonPath = fs::path(CrashoutsEngine::Assets::rootPath)
+                / "prefabs"
+                / (newName + ".json");
+
+            fs::create_directories(jsonPath.parent_path()); // safe if exists
+
+            // Save this entity as a Box prefab into that file
             const bool ok = SaveBoxPrefabToJson_RJ(
                 ecs, selected,
                 newName,
-                jsonPath.generic_string(),    
-                /*matchName*/ newName        
+                jsonPath.generic_string(),     
+                /*matchName*/ newName          
             );
 
             if (ok) {
-               
-                CrashoutsEngine::ReloadPrefabsFromDisk(jsonPath.generic_string());
-
                 
+                const std::string dirPath =
+                    (fs::path(CrashoutsEngine::Assets::rootPath) / "prefabs").generic_string();
+
+                CrashoutsEngine::ReloadPrefabsFromDisk(dirPath);
+
                 LOGI(Core, std::string("Saved & reloaded prefab json: ") + jsonPath.generic_string());
                 prefabNameBuf[0] = '\0';
             }
         }
+
 
         ImGui::Separator();
 

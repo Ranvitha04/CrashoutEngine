@@ -35,7 +35,7 @@
 #include "ppcomponent.h"
 #include "camera.h"
 #include "collidercomponent.h"
-
+#include <filesystem>
 using namespace CrashoutsEngine;
 using namespace Component;
 /**
@@ -804,17 +804,33 @@ namespace CrashoutsEngine {
  */
     void ReloadPrefabsFromDisk(const std::string& path)
     {
-        // Clear existing factories
+        namespace fs = std::filesystem;
+
+        
         for (const auto& n : Prefab::Names())
             Prefab::Unregister(n);
 
-        // Re-load from JSON
-        LoadPrefabsFromJson_RJ(path);
+        fs::path p(path);
 
-        //  log what’s available now
+       
+        if (fs::exists(p) && fs::is_directory(p)) {
+            for (auto& entry : fs::directory_iterator(p)) {
+                if (!entry.is_regular_file()) continue;
+                if (entry.path().extension() == ".json") {
+                    LoadPrefabsFromJson_RJ(entry.path().generic_string());
+                }
+            }
+        }
+       
+        else if (fs::exists(p) && fs::is_regular_file(p)) {
+            LoadPrefabsFromJson_RJ(p.generic_string());
+        }
+
+       
         for (const auto& n : Prefab::Names())
             LOGI(Core, std::string("Prefab available: ") + n);
     }
+
 // ============================================================================
  // Bootstrap: set fallback factory and load initial prefab file
  // ============================================================================
@@ -830,8 +846,18 @@ namespace CrashoutsEngine {
             e.AddComponent<TransformComponent>(entity, TransformComponent{});
     });
 
-    const std::string JSON_PATH = CrashoutsEngine::Assets::rootPath + "prefabs/prefab.json";
-    LoadPrefabsFromJson_RJ(JSON_PATH);
+    namespace fs = std::filesystem;
+    const fs::path dir = fs::path(CrashoutsEngine::Assets::rootPath) / "prefabs";
+
+    if (fs::exists(dir) && fs::is_directory(dir)) {
+        for (auto& entry : fs::directory_iterator(dir)) {
+            if (!entry.is_regular_file()) continue;
+            if (entry.path().extension() == ".json") {
+                LoadPrefabsFromJson_RJ(entry.path().generic_string());
+            }
+        }
+    }
+
 }
 
 } 
