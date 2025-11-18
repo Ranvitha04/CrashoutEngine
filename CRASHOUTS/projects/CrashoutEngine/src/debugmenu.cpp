@@ -1,4 +1,4 @@
-﻿/*!
+/*!
 @file       debugmenu.cpp
 @author     mohamadamirakmal.b@digipen.edu
 @date       14/09/2025
@@ -852,6 +852,14 @@ namespace UI { // --------------------------------------------------------------
 
                     int w, h, channels;
                     unsigned char* data = stbi_load(outSelectedAsset.c_str(), &w, &h, &channels, 4);
+                    if (data) {
+                        const int MAX_DIM = 4096;
+                        if (w > MAX_DIM || h > MAX_DIM) {
+                            std::cout << "FAILED: oversize preview (" << w << "x" << h << ") -> " << outSelectedAsset << std::endl;
+                            stbi_image_free(data);
+                            data = nullptr;
+                        }
+                    }
                     if (data) {
                         glGenTextures(1, &previewTex);
                         glBindTexture(GL_TEXTURE_2D, previewTex);

@@ -80,7 +80,14 @@ namespace CrashoutsEngine {
             texdata data = stbi_load(filePath.c_str(), &width, &height, &channels, STBI_rgb_alpha);
             if (!data) {
                 std::cerr << "Error loading image: " << filePath << " - " << stbi_failure_reason() << std::endl;
+                return nullptr;
             }
+
+            const int MAX_DIM = 4096;
+            if (width > MAX_DIM || height > MAX_DIM) {
+                std::cout << "FAILED: oversize image load (" << width << "x" << height << ") -> " << filePath << std::endl;
+            }
+
             return data;
         }
 
@@ -94,6 +101,14 @@ namespace CrashoutsEngine {
             int w, h;
             texdata loadedData = LoadImageData(filePath, w, h);
             if (!loadedData) {
+                return nullptr;
+            }
+
+            const int MAX_DIM = 4096;
+            if (w > MAX_DIM || h > MAX_DIM) {
+                std::cerr << "Error: Texture exceeds 4k limit (" << w << "x" << h << ") -> " << filePath << std::endl;
+                std::cout << "FAILED: oversize texture (" << w << "x" << h << ") -> " << filePath << std::endl;
+                stbi_image_free(loadedData);
                 return nullptr;
             }
 
@@ -202,6 +217,13 @@ namespace CrashoutsEngine {
         bool TextureAsset::UploadToGPU() {
             if (uploaded || !data) {
                 return uploaded; // Already uploaded or no data
+            }
+
+            const int MAX_DIM = 4096;
+            if (width > MAX_DIM || height > MAX_DIM) {
+                std::cerr << "Error: Texture exceeds 4k limit (" << width << "x" << height << ")" << std::endl;
+                std::cout << "FAILED: oversize texture upload (" << width << "x" << height << ")" << std::endl;
+                return false;
             }
 
             glCreateTextures(GL_TEXTURE_2D, 1, &glHandle);

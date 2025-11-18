@@ -175,6 +175,7 @@ namespace InstancingSystem {
     - Computes bounds from world dimensions so ducks bounce within the visible area.
     */
     void InitializeEcsDuckSpritesRandom(int count);
+    void InitializeEcsDuckSpritesRandom(int count, const std::string& assetName, int cols, int rows, CEVec2 worldSize);
 
     /*!
     @brief Update ECS duck motion, bounds clamping, facing, and animation timers.
@@ -203,4 +204,20 @@ namespace InstancingSystem {
     - When manual mode is set (non-zero), UpdateEcsDuckSprites will not auto-switch.
     */
     void CycleEcsDuckAnimationState();
+
+    /*!
+    @brief Initialize a single ECS duck entity for display mode 1.
+    @details Creates Transform/DuckMotion/SpriteSheet/SpriteAnim components.
+    */
+    void InitializeSingleEcsDuck(float x, float y, float rotationDeg, float uniformScale);
+    void InitializeSingleEcsDuck(float x, float y, float rotationDeg, float uniformScale, const std::string& assetName, int cols, int rows, CEVec2 worldSize);
+
+    void SetEntitySpriteSheet(CrashoutsEngine::Entity e, const std::string& assetName, int cols, int rows, CEVec2 worldSize);
+
+    /*!
+    @brief Get the entity id of the single ECS duck used in mode 1.
+    */
+    CrashoutsEngine::Entity GetSingleDuckEntity();
+
+    void ShutdownInstancing();
 }

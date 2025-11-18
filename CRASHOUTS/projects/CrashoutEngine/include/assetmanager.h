@@ -79,8 +79,8 @@ namespace CrashoutsEngine {
 		AssetManager instance. It stores assets using a two-map system for fast
 		retrieval by name.
 		*/
-		class AssetManager {
-		public:
+        class AssetManager {
+        public:
 			/*!
 			@brief Gets the singleton instance of the AssetManager.
 
@@ -88,10 +88,10 @@ namespace CrashoutsEngine {
 
 			@return A reference to the single AssetManager instance.
 			*/
-			static AssetManager& GetInstance(){
-				static AssetManager instance;
-				return instance;
-			}
+            static AssetManager& GetInstance(){
+                static AssetManager instance;
+                return instance;
+            }
 
 			void LoadManifestAssets(const std::string& rootAssetPath = rootPath,
 				const std::string& manifestPath = assetManifestPath);
@@ -172,16 +172,18 @@ namespace CrashoutsEngine {
 			@brief Getter for ftLibrary
 			@return Returns the FreeType library instance
 			*/
-			FT_Library GetFTLib() const{
-				return ftLibrary;
-			}
+            FT_Library GetFTLib() const{
+                return ftLibrary;
+            }
 
-		private:
-			// Private construct for singleton
-			AssetManager();
-			~AssetManager();
-			AssetManager(const AssetManager&) = delete;
-			AssetManager& operator=(const AssetManager&) = delete;
+            void Shutdown();
+
+        private:
+            // Private construct for singleton
+            AssetManager();
+            ~AssetManager();
+            AssetManager(const AssetManager&) = delete;
+            AssetManager& operator=(const AssetManager&) = delete;
 
 			std::unordered_map<unsigned int, std::unique_ptr<IAsset>> assets;
 			std::unordered_map<std::string, unsigned int> assetNames;
