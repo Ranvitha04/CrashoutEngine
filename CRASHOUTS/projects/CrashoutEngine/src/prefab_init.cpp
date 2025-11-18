@@ -36,6 +36,7 @@
 #include "camera.h"
 #include "collidercomponent.h"
 #include <filesystem>
+#include <crtdbg.h>
 using namespace CrashoutsEngine;
 using namespace Component;
 /**
