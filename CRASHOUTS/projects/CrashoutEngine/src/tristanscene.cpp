@@ -46,8 +46,11 @@ static void AddPhysicsEntity(CrashoutsEngine::Entity& entity, Component::RigidBo
 	globalECS->AddComponent<Component::ShapeComponent>(entity, shape);
 	globalECS->AddComponent<Component::Tag>(entity, name);
 	globalECS->AddComponent<Component::ColliderComponent>(entity, Component::ColliderComponent{
-		std::make_unique<Collision::Polygon>(Collision::Polygon::createOBB(transform.position + extents, transform.position - extents, 0.f, CEVec3{0.f, 0.f, 0.f}))
+		std::make_unique<Collision::Polygon>(Collision::Polygon::createOBB(transform.position + extents, transform.position - extents, 50.f, CEVec3{0.f, 0.f, 0.f}))
 	});
+
+	globalECS->GetComponent<Component::RigidBodyComponent>(entity)->setInertia(globalECS->GetComponent<Component::ColliderComponent>(entity)->collider->calculateInertia(globalECS->GetComponent<Component::RigidBodyComponent>(entity)->getMass()));
+
 }
 
 static void AddPhysicsEntity2(CrashoutsEngine::Entity& entity, Component::RigidBodyComponent&& rigidBody,
@@ -64,6 +67,9 @@ static void AddPhysicsEntity2(CrashoutsEngine::Entity& entity, Component::RigidB
 	globalECS->AddComponent<Component::Tag>(entity, name);
 	globalECS->AddComponent<Component::ColliderComponent>(entity, Component::ColliderComponent{
 		std::make_unique<Collision::Sphere>(Collision::Sphere{10.f, {transform.position.x, transform.position.y, 0.f}}) });
+
+	globalECS->GetComponent<Component::RigidBodyComponent>(entity)->setInertia(globalECS->GetComponent<Component::ColliderComponent>(entity)->collider->calculateInertia(globalECS->GetComponent<Component::RigidBodyComponent>(entity)->getMass()));
+	
 }
 
 static void AddObstacleEntity(CEVec3&& transform, CEVec2&& dimen, std::string&& tag) {
@@ -304,7 +310,7 @@ void InitTristan() {
 
 	AddWallEntity(CEVec3{ 40.f, 5.f, 0.0f }, CEVec2{ 10.f, 10.f });
 
-	AddPhysicsEntity2(
+	AddPhysicsEntity(
 		entity3,
 		Component::RigidBodyComponent{ CEVec3{}, 5.f, 0.f },
 		Component::TransformComponent{ .size = CEVec2{5.f, 5.f}, .position = CEVec3{5.f, 20.f, 0.f} },
@@ -361,8 +367,12 @@ void UpdateTristan()
 
 	f32 dt{ f32(FrameRateController::GetInstance().DT()) };
 	if (rigidBody) {
-		if (InputManager::IsKeyPressed(Key::A)) rigidBody->addForce(CEVec3{ -500.f, 0.f, 0.f }*40.f *dt );
-		if (InputManager::IsKeyPressed(Key::D)) rigidBody->addForce(CEVec3{ 500.f, 0.f, 0.f }*40.f *dt );
+		if (InputManager::IsKeyPressed(Key::A)) rigidBody->setVelocity(CEVec3{-15.f, rigidBody->getVelocity().y, 0.f});
+		else if (InputManager::IsKeyPressed(Key::D)) rigidBody->setVelocity(CEVec3{15.f, rigidBody->getVelocity().y, 0.f });
+		else {
+			rigidBody->setVelocity(CEVec3{ 0.f, rigidBody->getVelocity().y, 0.f });
+		}
+
 		if (InputManager::IsKeyPressed(Key::Space)) rigidBody->addForce(CEVec3{ 0.f, 4000.f, 0.f }*40.f *dt );
 	}
 

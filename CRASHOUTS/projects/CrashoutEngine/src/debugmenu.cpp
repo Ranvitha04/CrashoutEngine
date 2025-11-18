@@ -2175,7 +2175,7 @@ namespace UI { // --------------------------------------------------------------
             if (ui.drawQuadTree) {
                 Collision::CollisionHandler::quadTree.Draw();
             }
-            //CollisionGizmos::DrawContactsAndNormals(collisions, 0.25f, ui.overlayThickness); Removed for now, will need to calculate the collision pair for normals properly
+            CollisionGizmos::DrawContactsAndNormals(collisions, 0.25f, ui.overlayThickness); //Removed for now, will need to calculate the collision pair for normals properly
         }
         collisions = std::vector<Collision::CollisionEvent>{};
 

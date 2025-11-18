@@ -98,10 +98,17 @@ namespace Collision {
 
 			static CollisionManifold OBBToOBBCollision(CollisionProps const& coll1, CollisionProps const& coll2);
 
+			
+		public:
+
 			ContactCollection currentFrameCollision;
 			ContactCollection lastFrameCollision;
 
-		public:
+
+			static CollisionHandler& GetInstance() {
+				static CollisionHandler singleton;
+				return singleton;
+			}
 
 			static DataStructure::QuadTree quadTree;
 

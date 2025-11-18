@@ -117,7 +117,7 @@ namespace Collision {
 			if (!supportPoint) return std::nullopt;
 			if (supportPoint->second < minimumPenetration) {
 				minimumPenetration = supportPoint->second;
-				contact = std::make_optional(CollisionManifold{ normalOnEdge, {}, minimumPenetration, true, 1 });
+				contact = std::make_optional(CollisionManifold{ normalOnEdge, {supportPoint->first}, minimumPenetration, true, 1 });
 			}
 
 		}
@@ -651,6 +651,18 @@ namespace Collision {
 
 			for (CrashoutsEngine::Entity const& entity2 : collidableObjects) {
 				if (entity1 == entity2 || CrashoutsEngine::IsAlreadyChildOf(globalECS, entity1, entity2) || CrashoutsEngine::IsAlreadyChildOf(globalECS, entity2, entity1)) continue;
+				
+				
+				/**/
+				if (globalECS.HasComponent<Component::RigidBodyComponent>(entity1) && globalECS.HasComponent<Component::RigidBodyComponent>(entity2)) {
+					Component::RigidBodyComponent* rigidBody1{ globalECS.GetComponent<Component::RigidBodyComponent>(entity1) };
+					Component::RigidBodyComponent* rigidBody2{ globalECS.GetComponent<Component::RigidBodyComponent>(entity2) };
+
+					if (rigidBody1->getMass() == 0.f && rigidBody2->getMass() == 0.f) continue;
+
+				}
+				
+				
 				CrashoutsEngine::Entity const* entity1Ptr{ &entity1 };
 				CrashoutsEngine::Entity const* entity2Ptr{ &entity2 };
 

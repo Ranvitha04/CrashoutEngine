@@ -22,10 +22,6 @@ namespace Component {
 		return 1.f / mMass;
 	}
 
-	f32 RigidBodyComponent::getMass() {
-		return mMass;
-	}
-
 	void RigidBodyComponent::addForce(CEVec3 force) {
 		mNetForce += force;
 	}
@@ -50,6 +46,7 @@ namespace Component {
 		flags.set(Physics::SIMULATE_DYNAMICS);
 	}
 
+	/*Euler*/
 	void RigidBodyComponent::updatePhysics(double dt) {
 
 		/*Prevent further calculation (Treat 0 mass objects as static (Wont be affected by external forces but still have colliders/collision resolution))*/
@@ -65,6 +62,28 @@ namespace Component {
 
 		/*TODO PREVENT VELOCITY FROM GOING FURTHER FROM MAX velocity*/
 		mVelocity += static_cast<f32>(dt) * acceleration;
+
+		clearForceAccumulator(); /*Reset forces acting upon object in an iteration*/
+
+	}
+
+	void RigidBodyComponent::updatePhysicsWithRotation(double dt) {
+
+		/*Prevent further calculation (Treat 0 mass objects as static (Wont be affected by external forces but still have colliders/collision resolution))*/
+		if (mMass == 0.f) {
+			return;
+		}
+
+		/*
+			F(Resultant Force) = ma;
+			FIND a = F(Resultant Force) / m
+		*/
+		CEVec3 acceleration = mNetForce * getInverseMass();
+
+		/*TODO PREVENT VELOCITY FROM GOING FURTHER FROM MAX velocity*/
+		mVelocity += static_cast<f32>(dt) * acceleration;
+
+		orientation += angularVelocity * (180.f / CEMath::PI) * dt;
 
 		clearForceAccumulator(); /*Reset forces acting upon object in an iteration*/
 
@@ -105,6 +124,10 @@ namespace {
 		component->position.y -= trans.y;
 		component->position.z -= trans.z;
 	}
+
+	f32 Cross(CEVec3 const&a, CEVec3 const&b) {
+		return a.x * b.y - a.y * b.x;
+	}
 }
 
 namespace Physics {
@@ -139,14 +162,12 @@ namespace Physics {
 	void PhysicsHandler::updatePhysics(Component::TransformComponent* transformComp, Component::RigidBodyComponent* rigidBodyComp, double deltaTime) {
 
 		// Debug Stepping one
-		double dt = sOverrideDt ? sDebugDt : deltaTime;
+		//double dt = sOverrideDt ? sDebugDt : deltaTime;
 
-		f32 newDelta{ static_cast<float>(dt) };
-		rigidBodyComp->updatePhysics(dt); /*UPDATE CURRENT VELOCITY AND RESET NET FORCE*/
+		f32 newDelta{ static_cast<float>(deltaTime) };
+		rigidBodyComp->updatePhysicsWithRotation(deltaTime); /*UPDATE CURRENT VELOCITY AND RESET NET FORCE*/
 		CEVec3 currentVel{ rigidBodyComp->getVelocity() };
-		transformComp->position.x += currentVel.x * newDelta;
-		transformComp->position.y += currentVel.y * newDelta;
-		transformComp->position.z += currentVel.z * newDelta;
+		transformComp->position += currentVel * newDelta;
 
 		// Debug stepping two
 		if (sPaused && sStepOnce) sStepOnce = false;
@@ -170,14 +191,15 @@ namespace Physics {
 		}
 
 		/*TOLERANCE VARIABLE (ATTEMPT TO PREVENT JITTER)*/
-		const float slop{ 0.01f };
-		const float percent{ 0.2f };
+		const float percent{ 0.7f };
 
-		CEVec3 correction = (std::max(event.colManifold.depth - slop, 0.f) / (invMass1 + invMass2) * percent) * event.colManifold.normal;
+		f32 correction = event.colManifold.depth / (rigidBody1->getInverseMass() + rigidBody2->getInverseMass()) * percent;
+
+		CEVec3 vec{ correction * event.colManifold.normal };
 
 		/*MOVE OBJECT ALONG COLLISION NORMAL BEFORE CALCULATING IMPULSE TO CHANGE VELOCITY*/
-		transform1->position -= correction * (invMass1 / sumInvMass);
-		transform2->position += correction * (invMass2 / sumInvMass);
+		if (rigidBody1->getMass()) transform1->position -= vec * rigidBody1->getInverseMass();
+		if (rigidBody2->getMass()) transform2->position += vec * rigidBody2->getInverseMass();
 	}
 
 	void applyImpulse(Collision::CollisionEvent const& event, CrashoutsEngine::ECS& globalECS) {
@@ -244,76 +266,61 @@ namespace Physics {
 
 	void applyRotationalImpulse(Collision::CollisionEvent const& event, CrashoutsEngine::ECS& globalECS) {
 		Component::RigidBodyComponent* rigidBody1{ globalECS.GetComponent<Component::RigidBodyComponent>(event.entity1) };
-		Component::TransformComponent* transform1{ globalECS.GetComponent<Component::TransformComponent>(event.entity1) };
+		Component::ColliderComponent* collider1{ globalECS.GetComponent<Component::ColliderComponent>(event.entity1) };
 
-		Component::TransformComponent* transform2{ globalECS.GetComponent<Component::TransformComponent>(event.entity2) };
 		Component::RigidBodyComponent* rigidBody2{ globalECS.GetComponent<Component::RigidBodyComponent>(event.entity2) };
+		Component::ColliderComponent* collider2{ globalECS.GetComponent<Component::ColliderComponent>(event.entity2) };
 
-		//for (int i{}; i < event.colManifold.numOfContacts; ++i) {
-		//	// Calculate radii from COM to contact
-		//	CEVec3 ra = event.colManifold.contactPoints[i] - transform1->position;
-		//	CEVec3 rb = event.colManifold.contactPoints[i] - transform2->position;
+		CEVec3 penetrationTo1{event.colManifold.contactPoints[0] - (collider1->collider->position + collider1->collider->offset)};
+		CEVec3 penetrationTo2{ event.colManifold.contactPoints[0] - (collider2->collider->position + collider2->collider->offset) };
 
-		//	/*SOLVE FOR LINEAR VEL*/
-		//	f32 invMass1{ rigidBody1->getInverseMass() };
-		//	f32 invMass2{ rigidBody2->getInverseMass() };
-		//	f32 sumInvMass{ invMass1 + invMass2 };
-		//	//f32 totalMass{ rigidBody1->getMass() + rigidBody2->getMass()};
-		//	if (sumInvMass == 0.f) {
-		//		return;
-		//	}
+		CEVec3 angularVelPenetration1{ CEVec3{-1.f * rigidBody1->angularVelocity * penetrationTo1.y, rigidBody1->angularVelocity * penetrationTo1.x, 0.f} };
+		CEVec3 angularVelPenetration2{ CEVec3{-1.f * rigidBody2->angularVelocity * penetrationTo2.y, rigidBody2->angularVelocity * penetrationTo2.x, 0.f} };
 
-		//	/*int impulseSolveAmount{ 5 };
+		CEVec3 relativeVelocity1{ rigidBody1->getVelocity() + angularVelPenetration1 };
+		CEVec3 relativeVelocity2{ rigidBody2->getVelocity() + angularVelPenetration2 };
 
-		//	for (int i{}; i < impulseSolveAmount; ++i) {*/
+		/*SOLVE FOR LINEAR VEL*/
+		f32 invMass1{ rigidBody1->getInverseMass() };
+		f32 invMass2{ rigidBody2->getInverseMass() };
+		f32 sumInvMass{ invMass1 + invMass2 };
+		//f32 totalMass{ rigidBody1->getMass() + rigidBody2->getMass()};
+		if (sumInvMass == 0.f) {
+			return;
+		}
 
-		//	/*RELATIVE VELOCITY*/
-		//	CEVec3 relVel{ rigidBody2->getVelocity() + CEMath::Cross(rigidBody2->getAngularVel(), rb) - rigidBody1->getVelocity() - CEMath::Cross(rigidBody1->getAngularVel(), ra) };
+		/*int impulseSolveAmount{ 5 };
 
-		//	f32 velAlongNormal{ CEMath::Dot(relVel, event.colManifold.normal) };
+		for (int i{}; i < impulseSolveAmount; ++i) {*/
 
-		//	//MOVING AWAY
-		//	if (velAlongNormal > 0.f) {
-		//		return;
-		//	}
+		/*RELATIVE VELOCITY*/
+		CEVec3 relVel{ relativeVelocity2 - relativeVelocity1 };
 
-		//	f32 raCrossN{ CEMath::Cross(CEVec2{ra.x, ra.y}, CEVec2{event.colManifold.normal.x, event.colManifold.normal.y}) };
-		//	f32 rbCrossN{ CEMath::Cross(CEVec2{rb.x, rb.y}, CEVec2{event.colManifold.normal.x, event.colManifold.normal.y}) };
+		f32 velAlongNormal{ CEMath::Dot(relVel, event.colManifold.normal) };
 
+		//MOVING AWAY
+		if (velAlongNormal > 0.f) {
+			return;
+		}
 
-		//	float e{ std::min(rigidBody1->getCoeff(), rigidBody2->getCoeff()) }; /*COEFFICIENT OF RESTITUTION*/
-		//	float numerator{ -(1.f + e) * velAlongNormal };
-
-		//	float j = numerator / sumInvMass;
-
-		//	CEVec3 impulse{ event.colManifold.normal * j };
-
-		//	rigidBody1->setVelocity(rigidBody1->getVelocity() -= impulse * invMass1);
-		//	rigidBody2->setVelocity(rigidBody2->getVelocity() += impulse * invMass2);
+		float e{ std::min(rigidBody1->getCoeff(), rigidBody2->getCoeff()) }; /*COEFFICIENT OF RESTITUTION*/
+		f32 pToPosCrossNormal1{ Cross(penetrationTo1, event.colManifold.normal) };
+		f32 pToPosCrossNormal2{ Cross(penetrationTo2, event.colManifold.normal) };
 
 
-		//	/*FRICTION CALCULATIONS*/
-		//	relVel = rigidBody2->getVelocity() - rigidBody1->getVelocity();
+		float numerator{ -(1.f + e) * velAlongNormal };
 
-		//	CEVec3 tangent{ relVel - CEMath::Dot(relVel, event.colManifold.normal) * event.colManifold.normal };
-		//	tangent = CEMath::Normalize(tangent);
+		f32 crossSum{ pToPosCrossNormal1 * pToPosCrossNormal1 * rigidBody1->invInertia + pToPosCrossNormal2 * pToPosCrossNormal2 * rigidBody2->invInertia };
 
-		//	f32 jt{ -CEMath::Dot(relVel, tangent) };
-		//	jt /= (invMass1 + invMass2);
+		float j = numerator / (sumInvMass + crossSum);
 
-		//	/*----------------Coulomb's Law,( clamp our friction based on solved j)----------------*/
-		//	f32 mu = std::sqrtf(std::powf(rigidBody1->getStaticFriction(), 2.f));
-		//	CEVec3 frictionImpulse{};
-		//	if (std::abs(jt) < j * mu) {
-		//		frictionImpulse = jt * tangent;
-		//	}
-		//	else {
-		//		f32 dynamicFric{ std::sqrtf(std::powf(rigidBody1->getDynamicFriction(), 2.f)) };
-		//		frictionImpulse = -j * tangent * dynamicFric;
-		//	}
-		//	rigidBody1->setVelocity(rigidBody1->getVelocity() - frictionImpulse * invMass1);
-		//	rigidBody2->setVelocity(rigidBody2->getVelocity() + frictionImpulse * invMass2);
-		//}
+		CEVec3 impulse{ event.colManifold.normal * j };
+
+		rigidBody1->setVelocity(rigidBody1->getVelocity() - impulse * invMass1);
+		rigidBody2->setVelocity(rigidBody2->getVelocity() + impulse * invMass2);
+
+		rigidBody1->angularVelocity += -pToPosCrossNormal1 * j * rigidBody1->invInertia;
+		rigidBody2->angularVelocity += pToPosCrossNormal2 * j * rigidBody2->invInertia;
 	}
 
 	/*Main Physics update*/
@@ -356,7 +363,7 @@ namespace Physics {
 
 				if (!rigidBody1->getFlags().test(SIMULATE_DYNAMICS) || !rigidBody2->getFlags().test(SIMULATE_DYNAMICS)) continue;
 				PositionCorrection(evnt, globalECS);
-				applyImpulse(evnt, globalECS);
+				applyRotationalImpulse(evnt, globalECS);
 			}
 
 			/*PHYSICS SIM, UPDATE POSITION*/
@@ -367,13 +374,20 @@ namespace Physics {
 
 				if (!rigidBody->getFlags().test(SIMULATE_DYNAMICS)) continue;
 
-
 				updatePhysics(transform, rigidBody, deltaTime);
 
+				rigidBody->setVelocity(rigidBody->getVelocity()*0.999f);
+				rigidBody->angularVelocity *= 0.999f;
 
 				if (globalECS.HasComponent<Component::ColliderComponent>(entity)) {
 					Component::ColliderComponent* c{ globalECS.GetComponent<Component::ColliderComponent>(entity) };
+
+					if (rigidBody->getMass()) {
+						c->collider->updateRotation(rigidBody->orientation);
+					}
+					transform->rotation = rigidBody->orientation;
 					c->collider->updateCollider(transform->position);
+					
 				}
 
 			}

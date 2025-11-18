@@ -99,7 +99,7 @@ namespace Collision {
 
 		int idx{};
 		for (CEVec3 const& vert : newVertices) {
-			vertices[idx] = vert;
+			vertices[idx] = CEVec3{ vert.x, vert.y, 0.f };
 			++idx;
 		}
 
@@ -125,6 +125,20 @@ namespace Collision {
 
 	CEVec3 Polygon::calcNormal(CEVec3 const &edge) {
 		return CEVec3 { -edge.y, edge.x, edge.z };
+	}
+
+	f32 Polygon::calculateInertia(f32 mass) {
+		f32 inertia{};
+		f32 massPerTri{ mass / vertexCount };
+		for (int i{}; i < vertexCount; ++i) {
+			int nextIdx{ (i + 1) % vertexCount };
+			CEVec3 centerToVertice0{ vertices[i] - (position + offset) };
+			CEVec3 centerToVertice1{ vertices[nextIdx] - (position + offset) };
+			f32 inertiaTri{ massPerTri * (CEMath::LengthSq(centerToVertice0) + CEMath::LengthSq(centerToVertice1) + CEMath::Dot(centerToVertice0,centerToVertice1)) / 6.f };
+			inertia += inertiaTri;
+		}
+		
+		return inertia;
 	}
 
 	Polygon Polygon::createOBB(CEVec3 const &min, CEVec3 const &max, f32 rotation, CEVec3 offset) {

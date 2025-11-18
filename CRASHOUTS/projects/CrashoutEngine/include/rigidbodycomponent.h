@@ -25,12 +25,16 @@ namespace Component {
 		f32 staticFriction{ 0.5f };
 		f32 dynamicFriction{ 0.5f };
 
-		/*Rotational Properties*/
-		f32 angularVelocity{};
-		f32 rotation{};
-		f32 torque{};
 
 	public:
+
+		f32 inertia{ };
+		f32 invInertia{ };
+		/*Rotational Properties*/
+		f32 angularVelocity{};
+		f32 orientation{};
+		f32 torque{};
+
 
 		struct ReflectionType {
 			CEVec3 velocity{};
@@ -53,6 +57,8 @@ namespace Component {
 			};
 		}
 
+		void updatePhysicsWithRotation(double dt);
+
 		/*Constructor*/
 		RigidBodyComponent(CEVec3 maximumVel = CEVec3{}, f32 mass = 0.f, f32 restitutionCoeff = 0.f);
 
@@ -66,11 +72,11 @@ namespace Component {
 		}
 
 		inline void setRotation(f32 newRotation) {
-			rotation = newRotation;
+			orientation = newRotation;
 		}
 
 		inline f32 getRotation() {
-			return rotation;
+			return orientation;
 		}
 
 		inline void setAngularVel(f32 newAngVel) {
@@ -81,10 +87,23 @@ namespace Component {
 			return angularVelocity;
 		}
 
-		/*Member Functions*/
+		inline void setInertia(f32 newInertia) {
+			inertia = newInertia;
+			if (inertia) {
+				invInertia = 1.f / inertia;
+			} else {
+				invInertia = 0.f;
+			}
+		}
+
+		inline f32 getMass() {
+			return mMass;
+		}
+
 		inline std::bitset<8>& getFlags() { return flags; }
+
+		/*Member Functions*/
 		f32 getInverseMass();
-		f32 getMass();
 		void setMass(f32 newMass);
 		void addForce(CEVec3 force);
 		void clearForceAccumulator();

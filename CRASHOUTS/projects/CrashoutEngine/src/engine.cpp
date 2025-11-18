@@ -60,7 +60,7 @@ CrashoutsEngine::ECS* CrashoutsEngine::ECS::instancePtr = nullptr;
 std::mutex CrashoutsEngine::ECS::mtx;
 
 auto& physicsSystem = Physics::PhysicsHandler::GetInstance();
-static Collision::CollisionHandler collisionSystem;
+Collision::CollisionHandler& collisionSystem{Collision::CollisionHandler::GetInstance()};
 CrashoutsEngine::CollisionEventManager &collisionEvent = CrashoutsEngine::CollisionEventManager::GetInstance();
 static CrashoutsEngine::AIManager aiSystem;
 

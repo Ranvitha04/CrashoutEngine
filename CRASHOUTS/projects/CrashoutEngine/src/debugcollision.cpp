@@ -134,7 +134,7 @@ namespace CollisionGizmos {
         const CEVec3 hit(1.0f, 0.3f, 0.3f);     // colliding tint
 
         for (auto e : collArr.indexToEntity) {
-            Component::ColliderComponent const & pColliderComp = *ecs.GetComponent<Component::ColliderComponent>(e);
+            Component::ColliderComponent const& pColliderComp = *ecs.GetComponent<Component::ColliderComponent>(e);
 
             if (!pColliderComp.collider) continue;
 
@@ -173,7 +173,14 @@ namespace CollisionGizmos {
         const CEVec3 ptClr(1.0f, 0.78f, 0.0f); // contact point color
         const CEVec3 nClr(1.0f, 1.0f, 0.0f);  // normal color
 
-        for (const auto& ev : events) {
+        Collision::CollisionHandler& col{ Collision::CollisionHandler::GetInstance() };
+
+        for (int i{}; i < col.lastFrameCollision.size(); ++i) {
+            DrawCircleOutline(col.lastFrameCollision[i].colManifold.contactPoints[0], 1.f, 20, wireThickness, CEVec3{ 255.f, 0.f, 0.f });
+            Shapes::CreateLine(col.lastFrameCollision[i].colManifold.contactPoints[0], col.lastFrameCollision[i].colManifold.contactPoints[0] + (col.lastFrameCollision[i].colManifold.normal * 10.f), 1.f);
+        }
+       
+        /*for (const auto& ev : events) {
             for (const auto& cp : ev.colManifold.contactPoints) {
                 CEVec3 p(cp.x, cp.y, 0.0f);
                 const float d = 0.02f;
@@ -190,7 +197,7 @@ namespace CollisionGizmos {
                 CEVec2 size = { 1.f, 1.f };
                 Shapes::CreateLine(p0, p1, wireThickness, nClr);
             }
-        }
+        }*/
     }
 
 } // namespace CollisionGizmos
