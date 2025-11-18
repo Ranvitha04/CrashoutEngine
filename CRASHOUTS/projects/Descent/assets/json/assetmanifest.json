@@ -301,32 +301,12 @@
     ],
     "prefabs": [
         {
-            "name": "dick",
-            "path": "dick.json"
-        },
-        {
-            "name": "Monster",
-            "path": "Monster.json"
-        },
-        {
-            "name": "Music",
-            "path": "Music.json"
-        },
-        {
             "name": "Number1",
             "path": "Number1.json"
         },
         {
-            "name": "PlayerWIthRigidbody",
-            "path": "PlayerWIthRigidbody.json"
-        },
-        {
             "name": "prefab",
             "path": "prefab.json"
-        },
-        {
-            "name": "prefabs with 3 scripts",
-            "path": "prefabs with 3 scripts.json"
         },
         {
             "name": "shitasswork",
