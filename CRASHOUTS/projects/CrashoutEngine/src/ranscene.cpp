@@ -35,6 +35,7 @@ rendering (`RenderBackground`), and updating (`UpdateRan`).
 #include "spriteAnimation.h"
 #include "frameratecontroller.h"  
 #include "instanceSystem.h"
+#include "spritecomponent.h"
 #include <random>
 #include <vector>
 #include <string>
@@ -49,7 +50,7 @@ static CrashoutsEngine::ECS* globalECS;
 static const char* sceneName = "ran";
 
 // Display/control state
-static int gDisplayMode = 0;                
+static int gDisplayMode = 0;
 static bool gPrevGPressed = false;
 static bool gPrevMPressed = false;          // toggle instancing type (texture/plain)
 static bool gSpriteInitializedInScene = false;
@@ -140,7 +141,7 @@ static void ComputeWorldDimensions(float& worldWidth, float& worldHeight) {
 - Guards against double-initialization via `gSpriteInitializedInScene`.
 */
 static void EnsureDuckInitialized() {
-    Component::Sprite::m_sprite.init("assets/images/ducky_2_spritesheet.png", 4, 6, 0.3f);
+    Component::Sprite::m_sprite.init("assests/images/backgrounds/8k.png", 4, 6, 0.3f);
     Component::Sprite::m_sprite.addAnimationState("idle_normal", Component::AnimationState(0, 2, 0.22f, true));
     Component::Sprite::m_sprite.addAnimationState("walk_normal", Component::AnimationState(6, 6, 0.09f, true));
     Component::Sprite::m_sprite.addAnimationState("idle_bounce", Component::AnimationState(12, 4, 0.20f, true));
@@ -149,6 +150,8 @@ static void EnsureDuckInitialized() {
     Component::Sprite::m_sprite.setPosition(gDuckX, gDuckY);
     Component::Sprite::m_sprite.setScale(gDuckScale);
     Component::Sprite::m_sprite.setRotation(gDuckRotationDeg);
+
+    InstancingSystem::InitializeSingleEcsDuck(gDuckX, gDuckY, gDuckRotationDeg, gDuckScale);
     gSpriteInitializedInScene = true;
 }
 
@@ -335,7 +338,8 @@ void RenderBackground()
     CEVec2 size{ 1.f, 1.f };
     Component::Shapes::CreateTexturedRectangle(
         size,
-        "assets/images/bg 1 base.png",  // Use an existing texture file
+        //"assets/images/bg 1 base.png",  // Use an existing texture file
+        "assests/images/backgrounds/8k.png",
         CEVec3(0.0f, 0.0f, 0.0f),
         0.0f,
         CEVec3(1.0f, 1.0f, 1.0f)
@@ -367,8 +371,11 @@ void UpdateRan()
         int prevMode = gDisplayMode;
         int nextMode = (gDisplayMode + 1) % 7; // include mode 6
         gDisplayMode = nextMode;
+        if (prevMode == 6) {
+            gMode6Initialized = false;
+        }
         if (gDisplayMode != 3) {
-            const CrashoutsEngine::ECS::ComponentArray<Component::NameComponent>& nameArray = 
+            const CrashoutsEngine::ECS::ComponentArray<Component::NameComponent>& nameArray =
                 globalECS->GetComponentArray<Component::NameComponent>();
             if (nameArray.indexToEntity.size() > 0) {
                 for (auto id : nameArray.indexToEntity) {
@@ -454,10 +461,10 @@ void UpdateRan()
             gEcsRectsInitialized = false;
         }
 
-        if (prevMode == 4 && nextMode != 4){
-        
+        if (prevMode == 4 && nextMode != 4) {
+
             gMode4Initialized = false;
-        
+
         }
 
     }
@@ -532,15 +539,27 @@ void UpdateRan()
         if (move != 0.0f) {
             gDuckX += dirX * move;
             gDuckY += dirY * move;
-            Component::Sprite::m_sprite.setPosition(gDuckX, gDuckY);
-            Component::Sprite::m_sprite.setFlipHorizontal((move * dirX) < 0.0f);
-            Component::Sprite::m_sprite.setAnimationState("walk_normal");
+            bool flip = ((move * dirX) < 0.0f);
+
+            // Write to ECS
+            auto e = InstancingSystem::GetSingleDuckEntity();
+            if (auto* T = globalECS->GetComponent<Component::TransformComponent>(e)) {
+                T->position.x = gDuckX; T->position.y = gDuckY;
+            }
+            if (auto* DM = globalECS->GetComponent<Component::DuckMotionComponent>(e)) {
+                DM->animationMode = 2; // walk_normal
+            }
+            if (auto* A = globalECS->GetComponent<Component::SpriteAnimComponent>(e)) {
+                A->flip = flip;
+            }
         }
         else {
-            Component::Sprite::m_sprite.setAnimationState("idle_bounce");
+            auto e = InstancingSystem::GetSingleDuckEntity();
+            if (auto* DM = globalECS->GetComponent<Component::DuckMotionComponent>(e)) {
+                DM->animationMode = 3; // idle_bounce
+            }
         }
 
-        // Scale controls (S/Q)
         int sState = glfwGetKey(GLApp::ptr_window, GLFW_KEY_S);
         int qState = glfwGetKey(GLApp::ptr_window, GLFW_KEY_Q);
         bool scaleUp = (sState == GLFW_PRESS) || (sState == GLFW_REPEAT);
@@ -548,10 +567,12 @@ void UpdateRan()
         if (scaleUp || scaleDown) {
             float delta = DUCK_SCALE_SPEED * dt * (scaleUp ? 1.0f : -1.0f);
             gDuckScale = std::max(0.1f, gDuckScale + delta);
-            Component::Sprite::m_sprite.setScale(gDuckScale);
+            auto e = InstancingSystem::GetSingleDuckEntity();
+            if (auto* T = globalECS->GetComponent<Component::TransformComponent>(e)) {
+                T->size.x = gDuckScale; T->size.y = gDuckScale;
+            }
         }
 
-        // Rotation controls (R/T)
         int rState = glfwGetKey(GLApp::ptr_window, GLFW_KEY_R);
         int tState = glfwGetKey(GLApp::ptr_window, GLFW_KEY_T);
         bool rotLeft = (rState == GLFW_PRESS) || (rState == GLFW_REPEAT);
@@ -561,11 +582,18 @@ void UpdateRan()
             gDuckRotationDeg += deltaDeg;
             if (gDuckRotationDeg > 360.0f) gDuckRotationDeg -= 360.0f;
             if (gDuckRotationDeg < -360.0f) gDuckRotationDeg += 360.0f;
-            Component::Sprite::m_sprite.setRotation(gDuckRotationDeg);
+
+            auto e = InstancingSystem::GetSingleDuckEntity();
+            if (auto* T = globalECS->GetComponent<Component::TransformComponent>(e)) {
+                T->rotation = gDuckRotationDeg;
+            }
         }
+
+        // Advance animation timers for ECS duck
+        InstancingSystem::UpdateEcsDuckSprites();
     }
 
-    // ECS ducks update
+    // ECS ducks update for mode 6
     if (gDisplayMode == 6 && gMode6Initialized) {
         InstancingSystem::UpdateEcsDuckSprites();
     }
@@ -595,10 +623,8 @@ void RenderRan()
     case 0: // Background image
         RenderBackground();
         break;
-    case 1: // Duck sprite animation
-        //EnsureDuckInitialized();
-        Component::Sprite::m_sprite.update(static_cast<float>(FrameRateController::GetInstance().DT()));
-        Component::Sprite::m_sprite.render();
+    case 1: // Duck sprite animation via ECS
+        InstancingSystem::RenderEcsDuckSprites();
         break;
     case 2: //Mode M toggles texture
         //if (!gSquaresInitialized) {
@@ -615,7 +641,8 @@ void RenderRan()
             InstancingSystem::InstancedParams params{};
             if (gInstancingType == 0) {
                 params.textured = false;
-            } else {
+            }
+            else {
                 params.textured = true;
                 params.textureName = textureDucky;
                 params.tint = CEVec3(1.f, 1.f, 1.f);
@@ -665,7 +692,8 @@ void RenderRan()
                     static_cast<int>(gM5CircPos.size()),
                     gM5CircSegments
                 );
-            } else {
+            }
+            else {
                 InstancingSystem::CreateInstancedCirclesTextured(
                     params.textureName,
                     gM5CircPos.data(), gM5CircColor.data(),
@@ -688,7 +716,8 @@ void RenderRan()
                     gM5RectW.data(), gM5RectH.data(),
                     static_cast<int>(gM5RectPos.size())
                 );
-            } else {
+            }
+            else {
                 InstancingSystem::CreateInstancedRectanglesTextured(
                     params.textureName,
                     gM5RectPos.data(), gM5RectColor.data(),
@@ -707,7 +736,8 @@ void RenderRan()
                     gM5TriSide.data(),
                     static_cast<int>(gM5TriPos.size())
                 );
-            } else {
+            }
+            else {
                 InstancingSystem::CreateInstancedTrianglesTextured(
                     params.textureName,
                     gM5TriPos.data(), gM5TriColor.data(),
