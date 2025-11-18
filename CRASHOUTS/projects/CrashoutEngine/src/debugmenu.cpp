@@ -2123,21 +2123,37 @@ namespace UI { // --------------------------------------------------------------
                     }
                     else if (p && p->kind == AssetKind::Audio) {
                         std::string rel = p->relPath;
-                       
+
                         const std::string prefix = "audio/";
                         auto pos = rel.find(prefix);
-                        if (pos != std::string::npos) rel = rel.substr(pos + prefix.size());
-                        
-                        if (auto dot = rel.find_last_of('.'); dot != std::string::npos) rel.erase(dot);
-                        
-                        std::string eventLike = std::string("event:/") + rel; // "event:/SFX/Beep"
+                        if (pos != std::string::npos)
+                            rel = rel.substr(pos + prefix.size());
+
+                        if (auto dot = rel.find_last_of('.'); dot != std::string::npos)
+                            rel.erase(dot);
+
+                        std::string eventLike = std::string("event:/") + rel;
 
                         Entity target = selected;
                         if (!target) {
                             target = ecs.CreateEntity();
                             ecs.AddComponent<NameComponent>(target, std::string("Audio_") + p->name);
                             ecs.AddComponent<TransformComponent>(target);
-                            ecs.GetComponent<TransformComponent>(target)->position = dropWorld;
+                            if (auto* t = ecs.GetComponent<TransformComponent>(target)) {
+                                t->position = dropWorld;
+                                t->size = { 1.0f, 1.0f };
+                            }
+
+                            // give it a visual
+                            ecs.AddComponent<Component::ShapeComponent>(target);
+                            if (auto* sc = ecs.GetComponent<Component::ShapeComponent>(target)) {
+                                sc->enableTexture = true;
+                                sc->textureName = "audio_icon";
+                            }
+                        }
+                        else {
+                            if (!ecs.HasComponent<Component::ShapeComponent>(target))
+                                ecs.AddComponent<Component::ShapeComponent>(target);
                         }
 
                         if (!ecs.HasComponent<Component::AudioEmitterComponent>(target))
