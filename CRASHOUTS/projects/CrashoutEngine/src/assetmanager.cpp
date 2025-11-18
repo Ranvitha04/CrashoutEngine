@@ -43,7 +43,7 @@ namespace CrashoutsEngine {
 
 		AssetManager::~AssetManager() {
 			// Delete FT_Library
-			//FT_Done_FreeType(ftLibrary);
+			FT_Done_FreeType(ftLibrary);
 		}
 
 		// Function to load assets in a json
