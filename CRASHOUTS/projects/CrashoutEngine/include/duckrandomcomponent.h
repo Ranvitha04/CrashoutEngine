@@ -96,28 +96,4 @@ namespace Component {
             return clamped;
         }
     };
-
-    // Per-entity sprite sheet configuration
-    struct SpriteSheetComponent {
-        // Asset identifier or path; when using a cached handle, you may leave this as empty.
-        std::string textureAsset;
-        int cols{ 1 };
-        int rows{ 1 };
-        CEVec2 worldSize{ 1.0f, 1.0f };
-    };
-
-    // Per-entity animation runtime state
-    struct SpriteAnimComponent {
-        int   startFrame{ 0 };
-        int   frameCount{ 1 };
-        float frameTime{ 0.1f };
-        float timer{ 0.0f };
-        int   frameIndex{ 0 };
-        bool  flip{ false };
-    };
-
-    void SetSpriteSheet(CrashoutsEngine::Entity e, const std::string& assetName, int cols, int rows, CEVec2 worldSize);
-    void UpdateSpriteAnimationsECS();
-    void RenderSpriteAnimationsECS();
-
 }

@@ -31,7 +31,6 @@ context and implement a game loop.
 #include "hierarchy.h"   
 #include "hierarchy_components.h" 
 #include "prefab_init.h"
-#include "instanceSystem.h"
 
 #include "glapp.h"
 #include "log.h"
@@ -447,9 +446,4 @@ void CleanUp() {
     CrashoutsEngine::ECS::DestroyInstance();
 
     MonoManager::Shutdown();
-
-    InstancingSystem::ShutdownInstancing();
-    Component::Rendering::Cleanup();
-    CrashoutsEngine::Audio::AudioSystem::instance().shutdown();
-    CrashoutsEngine::Assets::AssetManager::GetInstance().Shutdown();
 }

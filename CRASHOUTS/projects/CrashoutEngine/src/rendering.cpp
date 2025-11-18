@@ -518,48 +518,22 @@ namespace Component {
         using CrashoutsEngine::Assets::AssetManager;
         using CrashoutsEngine::Assets::ShaderAsset;
 
-        ShaderAsset* shaderAsset = AssetManager::GetInstance().Get<ShaderAsset>("CrashoutShader_Instancing");
+        ShaderAsset* shaderAsset = AssetManager::GetInstance().Get<ShaderAsset>("CrashoutShader");
         if (!shaderAsset) {
-            std::cout << "[Rendering] Instancing asset missing from manifest; attempting direct load..." << std::endl;
-
-            // Attempt direct creation from expected paths (returns unique_ptr)
-            //const std::string vert = "assets/shaders/CrashoutShader_Instancing/CrashoutShader_Instancing.vert";
-            //const std::string frag = "assets/shaders/CrashoutShader_Instancing/CrashoutShader_Instancing.frag";
-            //auto direct = ShaderAsset::Create(vert, frag);  // unique_ptr<ShaderAsset>
-
-            //if (direct && direct->shaderObject.Validate()) {
-            //    // Assign program from the directly created asset and return
-            //    shdr_pgm_instanced = direct->shaderObject;
-            //    std::cout << "[Rendering] Directly loaded CrashoutShader_Instancing for instanced draws." << std::endl;
-            //    return;
-            //}
-
-            std::cout << "[Rendering] Direct load failed; falling back to CrashoutShader." << std::endl;
-            shaderAsset = AssetManager::GetInstance().Get<ShaderAsset>("CrashoutShader");
-        }
-
-        if (!shaderAsset) {
-            std::cout << "FATAL ERROR: No shader available for instanced rendering." << std::endl;
+            std::cout << "FATAL ERROR: Failed to get 'CrashoutShader' from AssetManager (instanced)." << std::endl;
             std::exit(EXIT_FAILURE);
         }
 
-        // Assign and validate
+        
         shdr_pgm_instanced = shaderAsset->shaderObject;
 
+    
+
+        // Validate the program in the current GL state
         if (!shdr_pgm_instanced.Validate()) {
-            std::cout << "[Rendering] Instanced shader validation failed: " << shdr_pgm_instanced.GetLog() << std::endl;
-            ShaderAsset* fallbackAsset = AssetManager::GetInstance().Get<ShaderAsset>("CrashoutShader");
-            if (fallbackAsset && fallbackAsset->shaderObject.Validate()) {
-                shdr_pgm_instanced = fallbackAsset->shaderObject;
-                std::cout << "[Rendering] Using fallback CrashoutShader." << std::endl;
-            }
-            else {
-                std::cout << "FATAL ERROR: Fallback shader also invalid." << std::endl;
-                std::exit(EXIT_FAILURE);
-            }
-        }
-        else {
-            std::cout << "[Rendering] Using CrashoutShader_Instancing for instanced draws." << std::endl;
+            std::cout << "Instanced shader (default) failed to validate!" << std::endl;
+            std::cout << "GLSLShader Log: " << shdr_pgm_instanced.GetLog() << std::endl;
+            std::exit(EXIT_FAILURE);
         }
 
     }

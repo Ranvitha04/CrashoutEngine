@@ -62,7 +62,17 @@ int WINAPI WinMain(
     _CrtMemState stateStart, stateEnd, stateDiff;
     _CrtMemCheckpoint(&stateStart);
 
+#ifdef DEBUG
+
     SetupConsole();
+
+#else
+
+    (void)stateStart;
+    (void)stateEnd;
+    (void)stateDiff;
+
+#endif
 
     Init();
     double fixedDT = FRC.FixedDT();
