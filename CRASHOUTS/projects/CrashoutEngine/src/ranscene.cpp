@@ -50,7 +50,7 @@ static CrashoutsEngine::ECS* globalECS;
 static const char* sceneName = "ran";
 
 // Display/control state
-static int gDisplayMode = 0;                
+static int gDisplayMode = 0;
 static bool gPrevGPressed = false;
 static bool gPrevMPressed = false;          // toggle instancing type (texture/plain)
 static bool gSpriteInitializedInScene = false;
@@ -371,8 +371,11 @@ void UpdateRan()
         int prevMode = gDisplayMode;
         int nextMode = (gDisplayMode + 1) % 7; // include mode 6
         gDisplayMode = nextMode;
+        if (prevMode == 6) {
+            gMode6Initialized = false;
+        }
         if (gDisplayMode != 3) {
-            const CrashoutsEngine::ECS::ComponentArray<Component::NameComponent>& nameArray = 
+            const CrashoutsEngine::ECS::ComponentArray<Component::NameComponent>& nameArray =
                 globalECS->GetComponentArray<Component::NameComponent>();
             if (nameArray.indexToEntity.size() > 0) {
                 for (auto id : nameArray.indexToEntity) {
@@ -458,10 +461,10 @@ void UpdateRan()
             gEcsRectsInitialized = false;
         }
 
-        if (prevMode == 4 && nextMode != 4){
-        
+        if (prevMode == 4 && nextMode != 4) {
+
             gMode4Initialized = false;
-        
+
         }
 
     }
@@ -549,7 +552,8 @@ void UpdateRan()
             if (auto* A = globalECS->GetComponent<Component::SpriteAnimComponent>(e)) {
                 A->flip = flip;
             }
-        } else {
+        }
+        else {
             auto e = InstancingSystem::GetSingleDuckEntity();
             if (auto* DM = globalECS->GetComponent<Component::DuckMotionComponent>(e)) {
                 DM->animationMode = 3; // idle_bounce
@@ -637,7 +641,8 @@ void RenderRan()
             InstancingSystem::InstancedParams params{};
             if (gInstancingType == 0) {
                 params.textured = false;
-            } else {
+            }
+            else {
                 params.textured = true;
                 params.textureName = textureDucky;
                 params.tint = CEVec3(1.f, 1.f, 1.f);
@@ -687,7 +692,8 @@ void RenderRan()
                     static_cast<int>(gM5CircPos.size()),
                     gM5CircSegments
                 );
-            } else {
+            }
+            else {
                 InstancingSystem::CreateInstancedCirclesTextured(
                     params.textureName,
                     gM5CircPos.data(), gM5CircColor.data(),
@@ -710,7 +716,8 @@ void RenderRan()
                     gM5RectW.data(), gM5RectH.data(),
                     static_cast<int>(gM5RectPos.size())
                 );
-            } else {
+            }
+            else {
                 InstancingSystem::CreateInstancedRectanglesTextured(
                     params.textureName,
                     gM5RectPos.data(), gM5RectColor.data(),
@@ -729,7 +736,8 @@ void RenderRan()
                     gM5TriSide.data(),
                     static_cast<int>(gM5TriPos.size())
                 );
-            } else {
+            }
+            else {
                 InstancingSystem::CreateInstancedTrianglesTextured(
                     params.textureName,
                     gM5TriPos.data(), gM5TriColor.data(),
