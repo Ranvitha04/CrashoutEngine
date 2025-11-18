@@ -37,6 +37,14 @@
     ],
     "images": [
         {
+            "name": "8k",
+            "path": "8k.png"
+        },
+        {
+            "name": "8k",
+            "path": "backgrounds\\8k.png"
+        },
+        {
             "name": "bg 1 base",
             "path": "backgrounds\\bg 1 base.png"
         },

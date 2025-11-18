@@ -40,8 +40,7 @@ __________________________________________________________________________*/
 #include <GL/glew.h>
 #include "entitymanager.h"
 
-#ifndef SPRITE_H
-#define SPRITE_H
+
 
 namespace Component {
     
@@ -181,5 +180,3 @@ namespace Component {
         int animationFrame;  // Current frame within the animation (0 to frameCount-1)
     };
 }
-
-#endif // !SPRITE_H

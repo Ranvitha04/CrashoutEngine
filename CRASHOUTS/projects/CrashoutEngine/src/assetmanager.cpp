@@ -46,6 +46,18 @@ namespace CrashoutsEngine {
 			FT_Done_FreeType(ftLibrary);
 		}
 
+		void AssetManager::Shutdown() {
+			for (auto& kv : assets) {
+				kv.second.reset();
+			}
+			assets.clear();
+			assets.rehash(0);
+			assetNames.clear();
+			assetNames.rehash(0);
+			nextAssetID = 0;
+			FT_Done_FreeType(ftLibrary);
+		}
+
 		// Function to load assets in a json
 		/*!
 		@brief Scans asset directories and generates a JSON manifest file.
@@ -179,12 +191,18 @@ namespace CrashoutsEngine {
 						std::string name = asset["name"].GetString();
 						std::string relativePath = asset["path"].GetString();
 						std::string fullPath = rootAssetPath + "images/" + relativePath;
-						std::unique_ptr<TextureAsset> newTexture = TextureAsset::Create(fullPath);
-						if (newTexture) {
-							newTexture->UploadToGPU();
-							AssetManager::GetInstance().Load(name, std::move(newTexture));
-							std::cout << "AssetManager loaded texture: " << name << "(" << fullPath << ")" << std::endl;
-						}
+                        std::unique_ptr<TextureAsset> newTexture = TextureAsset::Create(fullPath);
+                        if (newTexture) {
+                            if (newTexture->UploadToGPU()) {
+                                std::cout << "AssetManager loaded texture: " << name << "(" << fullPath << ") ["
+                                          << newTexture->GetWidth() << "x" << newTexture->GetHeight() << "]" << std::endl;
+                                AssetManager::GetInstance().Load(name, std::move(newTexture));
+                            } else {
+                                std::cerr << "FAILED to upload texture: " << name << " (" << fullPath << ")" << std::endl;
+                            }
+                        } else {
+                            std::cerr << "FAILED to load texture: " << name << " (" << fullPath << ") — possibly exceeds 4096x4096 or unsupported format." << std::endl;
+                        }
 					}
 				}
 			}
@@ -199,12 +217,18 @@ namespace CrashoutsEngine {
 						std::string name = asset["name"].GetString();
 						std::string relativePath = asset["path"].GetString();
 						std::string fullPath = rootAssetPath + "sprite_sheet/" + relativePath;
-						std::unique_ptr<TextureAsset> newTexture = TextureAsset::Create(fullPath);
-						if (newTexture) {
-							newTexture->UploadToGPU();
-							AssetManager::GetInstance().Load(name, std::move(newTexture));
-							std::cout << "AssetManager loaded sprite sheet: " << name << "(" << fullPath << ")" << std::endl;
-						}
+                        std::unique_ptr<TextureAsset> newTexture = TextureAsset::Create(fullPath);
+                        if (newTexture) {
+                            if (newTexture->UploadToGPU()) {
+                                std::cout << "AssetManager loaded sprite sheet: " << name << "(" << fullPath << ") ["
+                                          << newTexture->GetWidth() << "x" << newTexture->GetHeight() << "]" << std::endl;
+                                AssetManager::GetInstance().Load(name, std::move(newTexture));
+                            } else {
+                                std::cerr << "FAILED to upload sprite sheet: " << name << " (" << fullPath << ")" << std::endl;
+                            }
+                        } else {
+                            std::cerr << "FAILED to load sprite sheet: " << name << " (" << fullPath << ") — possibly exceeds 4096x4096 or unsupported format." << std::endl;
+                        }
 					}
 				}
 			}

@@ -35,6 +35,7 @@ rendering (`RenderBackground`), and updating (`UpdateRan`).
 #include "spriteAnimation.h"
 #include "frameratecontroller.h"  
 #include "instanceSystem.h"
+#include "spritecomponent.h"
 #include <random>
 #include <vector>
 #include <string>
@@ -140,7 +141,7 @@ static void ComputeWorldDimensions(float& worldWidth, float& worldHeight) {
 - Guards against double-initialization via `gSpriteInitializedInScene`.
 */
 static void EnsureDuckInitialized() {
-    Component::Sprite::m_sprite.init("assets/images/ducky_2_spritesheet.png", 4, 6, 0.3f);
+    Component::Sprite::m_sprite.init("assests/images/backgrounds/8k.png", 4, 6, 0.3f);
     Component::Sprite::m_sprite.addAnimationState("idle_normal", Component::AnimationState(0, 2, 0.22f, true));
     Component::Sprite::m_sprite.addAnimationState("walk_normal", Component::AnimationState(6, 6, 0.09f, true));
     Component::Sprite::m_sprite.addAnimationState("idle_bounce", Component::AnimationState(12, 4, 0.20f, true));
@@ -149,6 +150,8 @@ static void EnsureDuckInitialized() {
     Component::Sprite::m_sprite.setPosition(gDuckX, gDuckY);
     Component::Sprite::m_sprite.setScale(gDuckScale);
     Component::Sprite::m_sprite.setRotation(gDuckRotationDeg);
+
+    InstancingSystem::InitializeSingleEcsDuck(gDuckX, gDuckY, gDuckRotationDeg, gDuckScale);
     gSpriteInitializedInScene = true;
 }
 
@@ -335,7 +338,8 @@ void RenderBackground()
     CEVec2 size{ 1.f, 1.f };
     Component::Shapes::CreateTexturedRectangle(
         size,
-        "assets/images/bg 1 base.png",  // Use an existing texture file
+        //"assets/images/bg 1 base.png",  // Use an existing texture file
+        "assests/images/backgrounds/8k.png",
         CEVec3(0.0f, 0.0f, 0.0f),
         0.0f,
         CEVec3(1.0f, 1.0f, 1.0f)
@@ -532,15 +536,26 @@ void UpdateRan()
         if (move != 0.0f) {
             gDuckX += dirX * move;
             gDuckY += dirY * move;
-            Component::Sprite::m_sprite.setPosition(gDuckX, gDuckY);
-            Component::Sprite::m_sprite.setFlipHorizontal((move * dirX) < 0.0f);
-            Component::Sprite::m_sprite.setAnimationState("walk_normal");
-        }
-        else {
-            Component::Sprite::m_sprite.setAnimationState("idle_bounce");
+            bool flip = ((move * dirX) < 0.0f);
+
+            // Write to ECS
+            auto e = InstancingSystem::GetSingleDuckEntity();
+            if (auto* T = globalECS->GetComponent<Component::TransformComponent>(e)) {
+                T->position.x = gDuckX; T->position.y = gDuckY;
+            }
+            if (auto* DM = globalECS->GetComponent<Component::DuckMotionComponent>(e)) {
+                DM->animationMode = 2; // walk_normal
+            }
+            if (auto* A = globalECS->GetComponent<Component::SpriteAnimComponent>(e)) {
+                A->flip = flip;
+            }
+        } else {
+            auto e = InstancingSystem::GetSingleDuckEntity();
+            if (auto* DM = globalECS->GetComponent<Component::DuckMotionComponent>(e)) {
+                DM->animationMode = 3; // idle_bounce
+            }
         }
 
-        // Scale controls (S/Q)
         int sState = glfwGetKey(GLApp::ptr_window, GLFW_KEY_S);
         int qState = glfwGetKey(GLApp::ptr_window, GLFW_KEY_Q);
         bool scaleUp = (sState == GLFW_PRESS) || (sState == GLFW_REPEAT);
@@ -548,10 +563,12 @@ void UpdateRan()
         if (scaleUp || scaleDown) {
             float delta = DUCK_SCALE_SPEED * dt * (scaleUp ? 1.0f : -1.0f);
             gDuckScale = std::max(0.1f, gDuckScale + delta);
-            Component::Sprite::m_sprite.setScale(gDuckScale);
+            auto e = InstancingSystem::GetSingleDuckEntity();
+            if (auto* T = globalECS->GetComponent<Component::TransformComponent>(e)) {
+                T->size.x = gDuckScale; T->size.y = gDuckScale;
+            }
         }
 
-        // Rotation controls (R/T)
         int rState = glfwGetKey(GLApp::ptr_window, GLFW_KEY_R);
         int tState = glfwGetKey(GLApp::ptr_window, GLFW_KEY_T);
         bool rotLeft = (rState == GLFW_PRESS) || (rState == GLFW_REPEAT);
@@ -561,11 +578,18 @@ void UpdateRan()
             gDuckRotationDeg += deltaDeg;
             if (gDuckRotationDeg > 360.0f) gDuckRotationDeg -= 360.0f;
             if (gDuckRotationDeg < -360.0f) gDuckRotationDeg += 360.0f;
-            Component::Sprite::m_sprite.setRotation(gDuckRotationDeg);
+
+            auto e = InstancingSystem::GetSingleDuckEntity();
+            if (auto* T = globalECS->GetComponent<Component::TransformComponent>(e)) {
+                T->rotation = gDuckRotationDeg;
+            }
         }
+
+        // Advance animation timers for ECS duck
+        InstancingSystem::UpdateEcsDuckSprites();
     }
 
-    // ECS ducks update
+    // ECS ducks update for mode 6
     if (gDisplayMode == 6 && gMode6Initialized) {
         InstancingSystem::UpdateEcsDuckSprites();
     }
@@ -595,10 +619,8 @@ void RenderRan()
     case 0: // Background image
         RenderBackground();
         break;
-    case 1: // Duck sprite animation
-        //EnsureDuckInitialized();
-        Component::Sprite::m_sprite.update(static_cast<float>(FrameRateController::GetInstance().DT()));
-        Component::Sprite::m_sprite.render();
+    case 1: // Duck sprite animation via ECS
+        InstancingSystem::RenderEcsDuckSprites();
         break;
     case 2: //Mode M toggles texture
         //if (!gSquaresInitialized) {
