@@ -52,8 +52,8 @@ namespace CrashoutsEngine
         {
             //Console.WriteLine("[C#] PlayerController Update() called with dt: " + dt);
             // Access physics and transform components from your entity
-            var rb = Entity.RigidBody;
-            var tf = Entity.Transform;
+            var rb = Entity.GetComponent<RigidBodyComponent>();
+            var tf = Entity.GetComponent<TransformComponent>();
             if (rb == null) Console.WriteLine("[C#] rb is null");
             if (tf == null) Console.WriteLine("[C#] tf is null");
 

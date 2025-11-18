@@ -2,9 +2,10 @@ using System.Runtime.CompilerServices;
 
 namespace CrashoutsEngine
 {
-    public class RigidBody
+    [NativeComponent("AddRigidBody", "RemoveRigidBody", "EntityHasRigidBody")]
+    public class RigidBodyComponent
     {
-        internal uint EntityID { get; set; }
+        public uint EntityID;
 
         public void AddForce(CEVec3 force)
         {
@@ -22,5 +23,4 @@ namespace CrashoutsEngine
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern float InternalGetMass(uint entityID);
     }
-
 }

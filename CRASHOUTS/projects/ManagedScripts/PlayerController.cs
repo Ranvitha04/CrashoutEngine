@@ -7,7 +7,7 @@ namespace CrashoutsEngine
         /*SAMPLE TRIGGERS*/
         public void OnTriggerEnter(uint otherEntity) {
             Console.WriteLine("Entered Inside Me BOUNCE");
-            var rb = Entity.RigidBody;
+            var rb = Entity.GetComponent<RigidBodyComponent>();
             // rb.AddForce(new CEVec3(0f, 20000f, 0f)); //* rb.GetMass());
         }
 
@@ -26,22 +26,27 @@ namespace CrashoutsEngine
             // Initialization logic for the player
             Console.WriteLine("[C#] PlayerController Start() called, Entity is " + (Entity == null ? "NULL" : "OK!"));
             CollisionEvents.RegisterTriggerEnter(Entity.ID, this.OnTriggerEnter);
+            //Entity.Add<RigidBodyComponent>();
+            //Entity.Add<TransformComponent>();
             // CollisionEvents.RegisterTriggerExit(Entity.ID, OnTriggerExit);
             // CollisionEvents.RegisterTriggerStay(Entity.ID, OnTriggerStay);
         }
 
         public override void Update()
         {
+            //Console.WriteLine("Has RB? " + Entity.Has<RigidBodyComponent>());
+
             //Console.WriteLine("[C#] PlayerController Update() called with dt: " + dt);
             // Access physics and transform components from your entity
-            var rb = Entity.RigidBody;
-            var tf = Entity.Transform;
+            var rb = Entity.GetComponent<RigidBodyComponent>();
+            var tf = Entity.GetComponent<TransformComponent>();
             if (rb == null) Console.WriteLine("[C#] rb is null");
             if (tf == null) Console.WriteLine("[C#] tf is null");
 
 
             if (Input.IsKeyPressed(Key.A))
             {
+                //Console.WriteLine($"[DEBUG] A pressed, rb ID = {rb.EntityID}, mass = {rb.GetMass()}");
                 //Console.WriteLine("A key is pressed");
                 //Console.WriteLine("[C#] mass=" + rb.GetMass());
                 rb.AddForce(new CEVec3(-500f, 0f, 0f));
@@ -67,13 +72,14 @@ namespace CrashoutsEngine
             {
                 tf.Size *= 1.1f;
             }
-            
+
             if (Input.IsKeyPressed(Key.F))
             {
                 tf.Rotation += 3f;
-                if (Entity.HasCollider)
+
+                if (Entity.Has<ColliderComponent>())
                 {
-                    Entity.Collider.UpdateRotation(tf.Rotation);
+                    Entity.GetComponent<ColliderComponent>().UpdateRotation(tf.Rotation);
                 }
             }
         }
