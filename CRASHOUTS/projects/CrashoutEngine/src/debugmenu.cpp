@@ -464,15 +464,20 @@ namespace UI { // --------------------------------------------------------------
             );
 
             if (ok) {
-                
+
                 const std::string dirPath =
                     (fs::path(CrashoutsEngine::Assets::rootPath) / "prefabs").generic_string();
 
+                
                 CrashoutsEngine::ReloadPrefabsFromDisk(dirPath);
+
+                
+                CrashoutsEngine::RecreateInstancesForPrefab(ecs, newName);
 
                 LOGI(Core, std::string("Saved & reloaded prefab json: ") + jsonPath.generic_string());
                 prefabNameBuf[0] = '\0';
             }
+
         }
 
 

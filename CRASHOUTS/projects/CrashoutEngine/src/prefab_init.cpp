@@ -37,6 +37,8 @@
 #include "collidercomponent.h"
 #include <filesystem>
 #include <crtdbg.h>
+#include <vector>  
+#include "prefabcomponent.h"
 using namespace CrashoutsEngine;
 using namespace Component;
 /**
@@ -389,7 +391,8 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path)
             {
                 const Entity entitty = e.CreateEntity();
                 e.AddComponent<NameComponent>(entitty, NameComponent{ name });
-
+                //ID
+                e.AddComponent<PrefabInstanceComponent>(entitty, PrefabInstanceComponent{ name });
                 // Transform
                 TransformComponent transform{};
                 transform.position = CEVec3{ posX, posY, posZ };
@@ -830,6 +833,34 @@ namespace CrashoutsEngine {
        
         for (const auto& n : Prefab::Names())
             LOGI(Core, std::string("Prefab available: ") + n);
+    }
+
+    void RecreateInstancesForPrefab(ECS& ecs, const std::string& prefabName)
+    {
+        
+        auto& tArr = ecs.GetComponentArray<TransformComponent>();
+
+        std::vector<Entity> toRecreate;
+        toRecreate.reserve(tArr.indexToEntity.size());
+
+        for (Entity e : tArr.indexToEntity)
+        {
+           
+            if (!ecs.HasComponent<PrefabInstanceComponent>(e))
+                continue;
+
+            auto* inst = ecs.GetComponent<PrefabInstanceComponent>(e);
+            if (!inst || inst->prefabName != prefabName)
+                continue;
+
+            toRecreate.push_back(e);
+        }
+
+        for (Entity e : toRecreate)
+        {
+            ecs.DestroyEntity(e);
+            Prefab::Create(ecs, prefabName);   
+        }
     }
 
 // ============================================================================
