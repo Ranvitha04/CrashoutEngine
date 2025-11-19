@@ -11,7 +11,11 @@ __________________________________________________________________________*/
 ----------------------------------------------------------------------------- */
 #include "engine_pch.h"
 #include "rendering.h"
+#include "shapes.h"
 #include "tilemapcomponent.h"
+#include "collidercomponent.h"
+#include "transformcomponent.h"
+#include "namecomponent.h"
 #include "assetmanager.h"
 #include "tilemapasset.h"
 #include "textureasset.h"
@@ -76,14 +80,14 @@ namespace CrashoutsEngine::TileMapUtils {
            Up-Left:    1000'0000
         */
         enum {
-            Up          = 0b0000'0001,
-            UpRight     = 0b0000'0010,
-            Right       = 0b0000'0100,
-            DownRight   = 0b0000'1000,
-            Down        = 0b0001'0000,
-            DownLeft    = 0b0010'0000,
-            Left        = 0b0100'0000,
-            UpLeft      = 0b1000'0000
+            Up = 0b0000'0001,
+            UpRight = 0b0000'0010,
+            Right = 0b0000'0100,
+            DownRight = 0b0000'1000,
+            Down = 0b0001'0000,
+            DownLeft = 0b0010'0000,
+            Left = 0b0100'0000,
+            UpLeft = 0b1000'0000
         };
 
         // Check UP
@@ -125,46 +129,93 @@ namespace CrashoutsEngine::TileMapUtils {
     void RebuildCache(Component::TileMapComponent& map) {
         if (!map.isCacheDirty) return;
 
+        // 1. Clear Visual Cache
         map.renderCache.clear();
 
-        // Iterate over every painted tile in the sparse grid
+        // 2. Clear/Destroy Old Physics Entities
+        // We destroy all old tile colliders and rebuild them. 
+        auto* ecs = ECS::getInstance();
+        for (auto const& [pos, entityID] : map.colliderCache) {
+            if (ecs->HasComponent<Component::ColliderComponent>(entityID)) {
+                ecs->DestroyEntity(entityID);
+            }
+        }
+        map.colliderCache.clear();
+
+        // Iterate over every painted tile
         for (auto const& [pos, tileAssetName] : map.gridData) {
 
-            // 1. Get the Asset fopr this file
+            // A. Get the Asset
             TileMapAsset* asset = AssetManager::GetInstance().Get<TileMapAsset>(tileAssetName);
-            if (!asset) continue;   // Asset not found?
+            if (!asset) continue;
 
-            // 2. Calculate the environment bitmask (Look at neighbours)
+            // B. Calculate Bitmask & Find Rule
             unsigned int currentMask = CalculateBitMask(map, pos.first, pos.second, tileAssetName);
 
-            // 3. Find the mathcign texture in the Asset's Rule List
-            std::string texToUse{ "" };
-        
-            // Find first tile that matches the mask
+            const RuleTile* matchedRule = nullptr;
+
+            // Find match
             for (const RuleTile& rule : asset->GetTiles()) {
                 if (rule.ruleBitMap == currentMask) {
-                    texToUse = rule.texAssetName;
-                    break;  // Found! Break early.
+                    matchedRule = &rule;
+                    break;
                 }
             }
 
-            // FALLBACK: No rules found
-            if (texToUse.empty() && !asset->GetTiles().empty()) {
-                texToUse = asset->GetTiles()[0].texAssetName;
+            // Fallback
+            if (!matchedRule && !asset->GetTiles().empty()) {
+                matchedRule = &asset->GetTiles()[0];
             }
 
-            // 4. Get the GPU Handle and store in Render Cache
-            if (!texToUse.empty()) {
-                GLuint handle = Component::TextureRenderer::GetTextureHandle(texToUse);
-                if (handle != 0) map.renderCache[pos] = handle;
-            }
+            if (!matchedRule) continue;
 
-            std::cout << "TileMapComponent: Sparse Grid Cache Rebuilt.\n";
-            map.isCacheDirty = false;
+            // --- C. HANDLE VISUALS ---
+            GLuint handle = Component::TextureRenderer::GetTextureHandle(matchedRule->texAssetName);
+            if (handle != 0) map.renderCache[pos] = handle;
+
+            // --- D. HANDLE PHYSICS (The Entity part) ---
+
+            Entity colEnt = ecs->CreateEntity();
+
+            // 1. Name it for debugging
+            std::string name = "TileCol_" + std::to_string(pos.first) + "_" + std::to_string(pos.second);
+            ecs->AddComponent<Component::NameComponent>(colEnt, name);
+
+            // 2. Transform (Place it in world space)
+            Component::TransformComponent& t = ecs->AddComponent<Component::TransformComponent>(colEnt);
+            t.position.x = (float)pos.first * map.tileSize;
+            t.position.y = (float)pos.second * map.tileSize;
+            t.position.z = 0.1f; // Slight Z offset
+            t.size = CEVec2((float)map.tileSize, (float)map.tileSize);
+
+            // 3. Collider
+            Component::ColliderComponent& c = ecs->AddComponent<Component::ColliderComponent>(colEnt);
+            Collision::ColliderFactory factory;
+            Collision::ColliderFactory::ArgMap args;
+
+            // AABB Logic
+            if (matchedRule->colliderType == Collision::ColliderType::AABB) {
+                // Box needs min/max relative to center or corner. 
+                // If your physics engine uses Min/Max relative to position:
+                args["minX"] = std::to_string(0);
+                args["minY"] = std::to_string(0);
+                args["maxX"] = std::to_string(map.tileSize);
+                args["maxY"] = std::to_string(map.tileSize);
+
+                // Or if your physics engine assumes Center Position + HalfExtents, adjust accordingly.
+            }
+            // Add OBB/Sphere logic if needed...
+
+            c.collider = factory.CreateCollider(matchedRule->colliderType);
+
+            // 4. Store in Cache so we can delete it later
+            map.colliderCache[pos] = colEnt;
+
+            // 5. Parent it (Optional, if your hierarchy system supports it)
+            // CrashoutsEngine::AttachChild(ecs, parentEntity, colEnt);
         }
 
-        std::cout << "TileMapComponent: Cache Rebuilt.\n";
-
+        std::cout << "TileMapComponent: Cache Rebuilt. Colliders: " << map.colliderCache.size() << "\n";
         map.isCacheDirty = false;
     }
 }
@@ -225,3 +276,51 @@ namespace CrashoutsEngine::Editor {
     }
 
 };
+
+namespace CrashoutsEngine::Rendering {
+
+    void RenderTileMaps(ECS& ecs) {
+        // Get all TileMapComponents
+        auto& tmArray = ecs.GetComponentArray<Component::TileMapComponent>();
+
+        for (Component::TileMapComponent& tm : tmArray.dense) {
+
+            // 1. Update Cache if needed (Handles Logic/Physics entities)
+            if (tm.isCacheDirty) {
+                TileMapUtils::RebuildCache(tm);
+            }
+
+            // 2. Setup shared drawing variables
+            CEVec2 tileSize = { (float)tm.tileSize, (float)tm.tileSize };
+            CEVec3 tint = { 1.0f, 1.0f, 1.0f }; // White (no tint)
+            CEVec2 uvSize = { 1.0f, 1.0f };     // Full texture
+            float rotation = 0.0f;
+
+            // 3. Iterate the Visual Cache and Draw
+            for (auto const& [pos, textureID] : tm.renderCache) {
+
+                // Calculate World Position based on Grid Coordinate
+                // Assuming Grid (0,0) is at World (0,0)
+                float x = (float)pos.first * tm.tileSize + (tm.tileSize * 0.5f);
+                float y = (float)pos.second * tm.tileSize + (tm.tileSize * 0.5f);
+
+                // Z-Index: You might want a variable for this in the component
+                float z = 0.0f;
+
+                CEVec3 worldPos = { x, y, z };
+
+                // 4. Call the OVERLOADED draw function
+                Component::Shapes::CreateTexturedRectangle(
+                    tileSize,       // Size
+                    textureID,      // GLuint Handle (Fast!)
+                    worldPos,       // Position
+                    rotation,       // Rotation
+                    tint,           // Color
+                    uvSize,         // UVs
+                    true            // isWorldSpace (Yes, tiles exist in the world)
+                );
+            }
+        }
+    }
+
+}

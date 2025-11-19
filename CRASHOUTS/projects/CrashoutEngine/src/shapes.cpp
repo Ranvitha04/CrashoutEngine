@@ -426,6 +426,87 @@ namespace Component {
         glDisable(GL_BLEND);
     }
 
+    void Shapes::CreateTexturedRectangle(const CEVec2& transformSize, GLuint textureHandle, const CEVec3& position, float rotation,
+        const CEVec3& tint, CEVec2 const& uvSize, const bool isWorldSpace)
+    {
+        // 1. Validation
+        if (textureHandle == 0) return;
+
+        Component::Rendering& renderer = Component::Rendering::Get();
+
+        // 2. Define Vertices (Same as before)
+        float halfWidth = .5f;
+        float halfHeight = .5f;
+
+        std::array<CEVec3, 4> pos_vtx{
+            CEVec3(-halfWidth, -halfHeight, 0.0f),
+            CEVec3(halfWidth, -halfHeight, 0.0f),
+            CEVec3(halfWidth, halfHeight, 0.0f),
+            CEVec3(-halfWidth, halfHeight, 0.0f)
+        };
+
+        std::array<CEVec3, 4> clr_vtx{ tint, tint, tint, tint };
+
+        float uvWidthMax = uvSize.x;
+        float uvHeightMax = uvSize.y;
+
+        std::array<CEVec2, 4> tex_vtx{
+            CEVec2(0.0f, uvHeightMax),       // bottom left
+            CEVec2(uvWidthMax, uvHeightMax), // bottom right
+            CEVec2(uvWidthMax, 0.0f),        // top right
+            CEVec2(0.0f, 0.0f)               // top left
+        };
+
+        std::array<GLushort, 6> idx_vtx{ 0, 1, 2, 0, 2, 3 };
+
+        // 3. Setup Buffers
+        renderer.SetupTexturedBuffersOptimized(pos_vtx.data(), sizeof(pos_vtx),
+            clr_vtx.data(), sizeof(clr_vtx),
+            tex_vtx.data(), sizeof(tex_vtx),
+            idx_vtx.data(), idx_vtx.size(),
+            GL_TRIANGLES);
+
+        renderer.shdr_pgm->Use();
+
+        // 4. Matrix Math
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(position.x, position.y, position.z));
+        model = glm::rotate(model, glm::radians(rotation), glm::vec3(0, 0, 1));
+        model = glm::scale(model, glm::vec3(transformSize.x, transformSize.y, 1.0f));
+
+        glm::mat4 finalModelMatrix;
+        if (isWorldSpace) {
+            finalModelMatrix = model;
+        }
+        else {
+            glm::mat4 viewMatrix = renderer.viewMatrix;
+            glm::mat4 invViewMatrix = glm::inverse(viewMatrix);
+            finalModelMatrix = invViewMatrix * model;
+        }
+
+        renderer.shdr_pgm->SetUniform("uModel", finalModelMatrix);
+
+        // 5. Uniforms
+        GLint useTexture_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "u_useTexture");
+        if (useTexture_loc != -1) glUniform1i(useTexture_loc, 1);
+
+        GLint tex_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "uTex2d");
+        if (tex_loc != -1) glUniform1i(tex_loc, 0);
+
+        GLint tint_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "u_tint");
+        if (tint_loc != -1) glUniform3f(tint_loc, tint.x, tint.y, tint.z);
+
+        // 6. Draw
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+        glBindTextureUnit(0, textureHandle); // Use the handle passed in
+        renderer.Draw();
+        glBindTextureUnit(0, 0);
+
+        glDisable(GL_BLEND);
+    }
+
     void Shapes::CreateTexturedTriangle(const CEVec2& transformSize, const std::string& texturePath, const CEVec3& pos,
         float rotation, const CEVec3& tint, const CEVec2& uvSize, const bool isWorldSpace) {
         Component::Rendering& renderer = Component::Rendering::Get();

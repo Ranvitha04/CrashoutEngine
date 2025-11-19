@@ -101,6 +101,11 @@ namespace Component {
         static void CreateTexturedRectangle(const CEVec2& transformSize, const std::string& textureName, const CEVec3& position, float rotation = 0.0f,
             const CEVec3& tint = CEVec3(255.0f, 255.0f, 255.0f), CEVec2 const& uvSize = CEVec2(1.f, 1.f), const bool isWorldSpace = true);
 
+        // Overload with texture handle
+        using GLuint = unsigned int;
+        static void CreateTexturedRectangle(const CEVec2& transformSize, GLuint textureHandle, const CEVec3& position, float rotation,
+            const CEVec3& tint, CEVec2 const& uvSize, const bool isWorldSpace);
+
         /*!
         @brief Create and render a textured triangle primitive.
         @param textureName Name of the texture asset to apply

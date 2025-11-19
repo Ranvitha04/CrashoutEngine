@@ -36,13 +36,17 @@ namespace Component {
 		// Value: The Tile data (Which tile map asset is painted here using rules)
 		std::map<std::pair<int, int>, std::string> gridData;
 
+		// This maps (GridX, GridY) -> TextureID to render
+		std::map<std::pair<int, int>, GLuint> renderCache;
+
+		// Stores Entity IDs for Colliders. 
+		// We need this so if we erase a tile, we know which Entity to Destroy.
+		std::map < std::pair<int, int>, uint32_t> colliderCache;
+
 		// --- RUNTIME CACHE ---
 		// To avoid recalculating rules every frame, we mark this dirty when painting happens.
 		bool isCacheDirty = true;
 
-		// You might store the finalized render data here (e.g., specific texture IDs to draw)
-		// This maps (GridX, GridY) -> TextureID to render
-		std::map<std::pair<int, int>, GLuint> renderCache;
 	};
 }
 
@@ -94,6 +98,15 @@ namespace CrashoutsEngine {
 		*/
 		void DrawTileMapEditor(Component::TileMapComponent* tmComp, bool* pOpen);
 
+	};
+
+	namespace Rendering {
+
+		/*!
+		@brief	Renders all the tilemaps.
+		@param  ecs EntityComponentSystem to reference.
+		*/
+		void RenderTileMaps(ECS& ecs);
 	};
 
 };
