@@ -276,17 +276,33 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path)
 
             // ---- script ----
             bool hasScriptComponent = false;
-            std::string scriptClassName;
-            uint32_t scriptEntityID = 0; 
+            std::vector<std::string> scriptClassNames;  
+            uint32_t scriptEntityID = 0;
 
             if (prefabs.HasMember("script") && prefabs["script"].IsObject()) {
                 const auto& sJ = prefabs["script"];
-                if (sJ.HasMember("className") && sJ["className"].IsString())
-                    scriptClassName = sJ["className"].GetString();
+
+             
+                if (sJ.HasMember("className") && sJ["className"].IsString()) {
+                    scriptClassNames.emplace_back(sJ["className"].GetString());
+                }
+
+             
+                if (sJ.HasMember("scripts") && sJ["scripts"].IsArray()) {
+                    for (auto& sVal : sJ["scripts"].GetArray()) {
+                        if (!sVal.IsObject()) continue;
+                        if (sVal.HasMember("className") && sVal["className"].IsString()) {
+                            scriptClassNames.emplace_back(sVal["className"].GetString());
+                        }
+                    }
+                }
+
                 if (sJ.HasMember("entityID") && sJ["entityID"].IsUint())
                     scriptEntityID = sJ["entityID"].GetUint();
-                hasScriptComponent = !scriptClassName.empty();
+
+                hasScriptComponent = !scriptClassNames.empty();
             }
+
             // --- audio  ---
             bool hasAudioEmitter = false;
             std::string audioEventPath;
@@ -382,7 +398,7 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path)
                 // camera
                 hasCameraComponent, cameraPosition, cameraZoom, cameraXBounds, cameraYBounds,
                 // script
-                hasScriptComponent, scriptClassName,
+                hasScriptComponent, scriptClassNames,
                 //audio
                 hasAudioEmitter, audioEventPath, audioVolume, audioPitch, audioSpatial3D, audioLooping,
                 hasGuiComponent, guiTypeMask,
@@ -441,12 +457,19 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path)
                 }
 
                 // Script
-                if (hasScriptComponent && !scriptClassName.empty()) {
-                    ScriptComponent sc(scriptClassName,
-                        static_cast<uint32_t>(entitty)); 
+             
+                if (hasScriptComponent && !scriptClassNames.empty()) {
+                    ScriptComponent sc;
+                    sc.EntityID = static_cast<uint32_t>(entitty);
+
+                    for (const auto& cn : scriptClassNames) {
+                        if (!cn.empty())
+                            sc.AddScript(cn);
+                    }
+
                     e.AddComponent<ScriptComponent>(entitty, sc);
-                
                 }
+
                 // --- AudioEmitterComponent 
                 if (hasAudioEmitter && !audioEventPath.empty()) {
                     Component::AudioEmitterComponent a{};
@@ -695,24 +718,56 @@ namespace CrashoutsEngine {
         }
 
         // script 
+  
         if (auto* script = ecs.GetComponent<ScriptComponent>(e)) {
             if (!script->Scripts.empty()) {
-                const auto& inst = script->Scripts[0];
-
                 rapidjson::Value scriptJson(rapidjson::kObjectType);
 
-                rapidjson::Value className;
-                className.SetString(inst.ClassName.c_str(), static_cast<rapidjson::SizeType>(inst.ClassName.size()), allocate);
+                // keep entityID (mainly for debugging)
+                scriptJson.AddMember("entityID",
+                    static_cast<uint32_t>(script->EntityID), allocate);
 
-                // class name
-                scriptJson.AddMember("className", className, allocate);
-                // id
-                scriptJson.AddMember("entityID", static_cast<uint32_t>(script->EntityID), allocate);
-                // script
-                obj.AddMember("script", scriptJson, allocate);
+                
+                rapidjson::Value scriptsArr(rapidjson::kArrayType);
+                scriptsArr.Reserve(
+                    static_cast<rapidjson::SizeType>(script->Scripts.size()),
+                    allocate);
+
+                for (const auto& inst : script->Scripts) {
+                    if (inst.ClassName.empty())
+                        continue;
+
+                    rapidjson::Value oneScript(rapidjson::kObjectType);
+
+                    rapidjson::Value className;
+                    className.SetString(
+                        inst.ClassName.c_str(),
+                        static_cast<rapidjson::SizeType>(inst.ClassName.size()),
+                        allocate);
+
+                    oneScript.AddMember("className", className, allocate);
+                    scriptsArr.PushBack(oneScript, allocate);
+                }
+
+                if (!scriptsArr.Empty()) {
+                
+                    const auto& first = script->Scripts.front();
+                    if (!first.ClassName.empty()) {
+                        rapidjson::Value firstName;
+                        firstName.SetString(
+                            first.ClassName.c_str(),
+                            static_cast<rapidjson::SizeType>(first.ClassName.size()),
+                            allocate);
+                        scriptJson.AddMember("className", firstName, allocate);
+                    }
+
+                    scriptJson.AddMember("scripts", scriptsArr, allocate);
+                    obj.AddMember("script", scriptJson, allocate);
+                }
             }
         }
-        // audio (optional - only if entity has AudioEmitterComponent)
+
+        // audio 
         if (auto* audio = ecs.GetComponent<Component::AudioEmitterComponent>(e)) {
             rapidjson::Value audioJson(rapidjson::kObjectType);
 
@@ -731,13 +786,10 @@ namespace CrashoutsEngine {
             audioJson.AddMember("spatial3D", audio->spatial3D, allocate);
             audioJson.AddMember("looping", audio->looping, allocate);
 
-            // Do NOT serialize runtime pointer:
-            // audio->inst is runtime-only; skip it.
-
             obj.AddMember("audio", audioJson, allocate);
         }
         // 
-        // (optional - only if entity has GuiComponent)
+    
         if (auto* gui = ecs.GetComponent<Component::GuiComponent>(e)) {
             rapidjson::Value guiJson(rapidjson::kObjectType);
 
