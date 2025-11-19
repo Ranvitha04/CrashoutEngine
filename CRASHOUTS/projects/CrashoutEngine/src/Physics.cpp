@@ -80,8 +80,10 @@ namespace Component {
 		*/
 		CEVec3 acceleration = mNetForce * getInverseMass();
 
+		f32 newDt{ static_cast<f32>(dt) };
+
 		/*TODO PREVENT VELOCITY FROM GOING FURTHER FROM MAX velocity*/
-		mVelocity += static_cast<f32>(dt) * acceleration;
+		mVelocity += newDt * acceleration;
 
 		constexpr float kStiffness = 20.0f;
 		constexpr float kDamping = 4.0f;
@@ -93,9 +95,9 @@ namespace Component {
 
 		float angularAccel = (angleDiff * kStiffness) - (angularVelocity * kDamping);
 
-		angularVelocity += angularAccel * static_cast<f32>(dt);
+		angularVelocity += angularAccel * newDt;
 
-		orientation += angularVelocity * (180.f / CEMath::PI) * dt;
+		orientation += angularVelocity * (180.f / CEMath::PI) * newDt;
 
 		clearForceAccumulator(); /*Reset forces acting upon object in an iteration*/
 

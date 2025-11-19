@@ -306,6 +306,8 @@ namespace Collision {
 		}
 		return result;
 	}
+	
+	/*------------------------POLYGON COLLISIONS-----------------------------------*/
 
 	CollisionManifold CollisionHandler::PolygonToPolygonCollision(CollisionProps const& coll1, CollisionProps const& coll2) {
 		CollisionManifold result{ .collisionOccured = false };
@@ -355,6 +357,39 @@ namespace Collision {
 		
 		return result;
 	}
+
+	CollisionManifold CollisionHandler::AABBToPolygonCollision(CollisionProps const& coll1, CollisionProps const& coll2) {
+		CollisionManifold result{ .collisionOccured = false };
+
+		CollisionProps const* polygonPtr1{ &coll1 };
+		CollisionProps const* polygonPtr2{ &coll2 };
+
+		if (polygonPtr1->collider->type > polygonPtr2->collider->type) {
+			std::swap(polygonPtr1, polygonPtr2);
+		}
+
+		AABBRect const& aabb = dynamic_cast<AABBRect const&>(*(polygonPtr1->collider));
+
+		Polygon const& polygon1{ Polygon::createAABB(aabb.min, aabb.max, aabb.offset) };
+
+		Polygon const& polygon2 = dynamic_cast<Polygon const&>(*(polygonPtr2->collider));
+
+		Contact contactA{ getContactPoint(polygon1, polygon2) };
+		if (!contactA) return result;
+
+		Contact contactB{ getContactPoint(polygon2, polygon1) };
+		if (!contactB) return result;
+
+		if (contactA->depth < contactB->depth) {
+			return *contactA;
+		}
+		else {
+			return CollisionManifold{ -1.f * contactB->normal, contactB->contactPoints ,contactB->depth, true, contactB->numOfContacts };
+		}
+
+	}
+
+	/*----------------------------AABB COLLISIONS--------------------------------------------------------------*/
 
 	CollisionManifold CollisionHandler::SphereToAABBCollision(CollisionProps const& coll1, CollisionProps const& coll2) {
 		CollisionManifold result{ .collisionOccured = false };

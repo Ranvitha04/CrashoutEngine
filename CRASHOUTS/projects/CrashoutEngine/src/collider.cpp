@@ -5,13 +5,10 @@
 namespace Collision {
 	Collider::Collider(ColliderType type) : type{ type } { /*EMPTY BY DESIGN*/ }
 
-	Sphere::Sphere(f32 radius, CEVec3 const& center) : Collider{ SPHERE }, radius{ radius }, center{ center } { /*EMPTY BY DESIGN*/ }
+	Sphere::Sphere(f32 radius, CEVec3 const& center, CEVec3 const& newOffset) : Collider{ SPHERE }, radius{ radius } { position = center; offset = newOffset; }
 
 	void Sphere::updateCollider(CEVec3 const& newPos) {
-		center = newPos; /*REMOVE LATER*/
-
 		position = newPos;
-
 	}
 
 	AABBRect::AABBRect(CEVec3 const& min, CEVec3 const& max) : Collider{ AABB }, min{ min }, max{ max } {
@@ -20,9 +17,7 @@ namespace Collision {
 
 	AABBRect::AABBRect() : Collider{ AABB } {}
 
-	AABBRect GetAABB(Collider const& collider, CEVec3 const& transform)
-	{
-
+	AABBRect GetAABB(Collider const& collider, CEVec3 const& transform) {
 
 		switch (collider.type) {
 
@@ -92,6 +87,8 @@ namespace Collision {
 
 	}
 
+	Polygon::Polygon() : Collider{POLYGON} {}
+
 	Polygon::Polygon(std::initializer_list<CEVec3> newVertices, f32 newRotation, CEVec3 const &newPosition, CEVec3 const &newOffset) 
 		: Collider{ POLYGON }, vertexCount{ std::min((int)newVertices.size(), MAX_VERTEX) }, rotation{ 0.f } {
 		offset = newOffset;
@@ -150,7 +147,33 @@ namespace Collision {
 		return poly;
 	}
 
+	Polygon Polygon::createAABB(CEVec3 const& min, CEVec3 const& max, CEVec3 offset) {
+		CEVec3 extents{ 0.5f * (max - min) };
+		CEVec3 center{ max - extents };
+
+		Polygon poly{};
+
+		poly.offset = offset;
+
+		poly.rotatedVertices[0] = min;
+		poly.rotatedVertices[1] = CEVec3{ min.x, min.y + extents.y * 2.f, 0.f };
+		poly.rotatedVertices[2] = max;
+		poly.rotatedVertices[3] = CEVec3{ min.x + extents.x * 2.f, min.y, center.z };
+
+		poly.normalEdges[0] = CEVec3{ -1.f, 0.f, 0.f };
+		poly.normalEdges[1] = CEVec3{ 0.f, 1.f, 0.f };
+		poly.normalEdges[2] = CEVec3{ 1.f, 0.f, 0.f };
+		poly.normalEdges[3] = CEVec3{ 0.f, -1.f, 0.f };
+
+		poly.vertexCount = 4;
+
+		return poly;
+	}
+
 	void Polygon::updateRotation(f32 newRotation) {
+
+		/*Check if rotation didnt change from last time to avoid expensive calculation*/
+		/*same thing differernt day*/
 		if (rotation == newRotation) return;
 
 		rotation = newRotation;

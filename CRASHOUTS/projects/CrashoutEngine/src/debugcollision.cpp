@@ -169,7 +169,7 @@ namespace CollisionGizmos {
            If any contact exists, the manifold�s normal is drawn starting at
            the first contact point with length @p normalLen.
     */
-    void DrawContactsAndNormals(const std::vector<Collision::CollisionEvent>& events, float normalLen, float wireThickness) {
+    void DrawContactsAndNormals([[maybe_unused]]const std::vector<Collision::CollisionEvent>& events, [[maybe_unused]] float normalLen, [[maybe_unused]] float wireThickness) {
         const CEVec3 ptClr(1.0f, 0.78f, 0.0f); // contact point color
         const CEVec3 nClr(1.0f, 1.0f, 0.0f);  // normal color
 
@@ -179,25 +179,7 @@ namespace CollisionGizmos {
             DrawCircleOutline(col.lastFrameCollision[i].colManifold.contactPoints[0], 1.f, 8, wireThickness, CEVec3{ 255.f, 0.f, 0.f });
             Shapes::CreateLine(col.lastFrameCollision[i].colManifold.contactPoints[0], col.lastFrameCollision[i].colManifold.contactPoints[0] + (col.lastFrameCollision[i].colManifold.normal * 10.f), wireThickness);
         }
-       
-        /*for (const auto& ev : events) {
-            for (const auto& cp : ev.colManifold.contactPoints) {
-                CEVec3 p(cp.x, cp.y, 0.0f);
-                const float d = 0.02f;
-                CEVec2 size = { 1.f, 1.f };
-                Shapes::CreateLine(CEVec3(p.x - d, p.y, 0), CEVec3(p.x + d, p.y, 0), wireThickness, ptClr);
-                Shapes::CreateLine(CEVec3(p.x, p.y - d, 0), CEVec3(p.x, p.y + d, 0), wireThickness, ptClr);
-            }
-
-            if (!ev.colManifold.contactPoints.empty()) {
-                const auto& cp0 = ev.colManifold.contactPoints[0];
-                CEVec3 p0(cp0.x, cp0.y, 0.0f);
-                CEVec3 p1(cp0.x + ev.colManifold.normal.x * normalLen,
-                    cp0.y + ev.colManifold.normal.y * normalLen, 0.0f);
-                CEVec2 size = { 1.f, 1.f };
-                Shapes::CreateLine(p0, p1, wireThickness, nClr);
-            }
-        }*/
+     
     }
 
 } // namespace CollisionGizmos

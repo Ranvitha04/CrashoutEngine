@@ -83,20 +83,27 @@ namespace Collision {
 
 			static CollisionManifold SphereToSphereCollision(CollisionProps const& coll1, CollisionProps const& coll2);
 
+			static CollisionManifold SphereToAABBCollision(CollisionProps const& coll1, CollisionProps const& coll2);
+
 			static CollisionManifold AABBToAABBCollision(CollisionProps const& coll1, CollisionProps const& coll2);
+
+			/*POLYGON FUNCTIONS*/
 
 			static CollisionManifold PolygonToPolygonCollision(CollisionProps const& coll1, CollisionProps const& coll2);
 
 			static CollisionManifold SphereToPolygonCollision(CollisionProps const& coll1, CollisionProps const& coll2);
 
-			static CollisionManifold SphereToAABBCollision(CollisionProps const& coll1, CollisionProps const& coll2);
+			static CollisionManifold AABBToPolygonCollision(CollisionProps const& coll1, CollisionProps const& coll2);
+
+			/*OBB SOON TO BE DEPRECATED*/
 
 			static CollisionManifold AABBToOBBCollision(CollisionProps const& coll1, CollisionProps const& coll2);
 
+			static CollisionManifold OBBToOBBCollision(CollisionProps const& coll1, CollisionProps const& coll2);
+
 			static CollisionManifold SphereToOBBCollision(CollisionProps const& coll1, CollisionProps const& coll2);
 
-
-			static CollisionManifold OBBToOBBCollision(CollisionProps const& coll1, CollisionProps const& coll2);
+			
 
 			
 		public:

@@ -27,8 +27,8 @@ namespace Collision {
 	enum ColliderType {
 		SPHERE,
 		AABB,
+		POLYGON,
 		OBB,
-		POLYGON
 	};
 
 	/*!
@@ -78,7 +78,7 @@ namespace Collision {
 	public:
 		f32 radius;
 		CEVec3 center;
-		Sphere(f32 radius, CEVec3 const& center);
+		Sphere(f32 radius, CEVec3 const& position, CEVec3 const& offset = CEVec3{});
 		~Sphere() = default;
 		virtual void updateCollider(CEVec3 const& newPos);
 
@@ -155,11 +155,13 @@ namespace Collision {
 		using Vertices = std::array<CEVec3, MAX_VERTEX>;
 		using Normal = std::array<CEVec3, MAX_VERTEX>;
 
-		float rotation;
-		int vertexCount;
+		float rotation{};
+		int vertexCount{};
 		Vertices vertices;
 		Vertices rotatedVertices;
 		Normal normalEdges;
+
+		Polygon();
 		Polygon(std::initializer_list<CEVec3> vertices, f32 rotation = 0.f, CEVec3 const& position = {}, CEVec3 const& offset = {});
 		virtual void updateRotation(f32 newRotation);
 		~Polygon() = default;
@@ -171,6 +173,7 @@ namespace Collision {
 		virtual f32 calculateInertia(f32 mass) override;
 
 		static Polygon createOBB(CEVec3 const& min, CEVec3 const& max, f32 rotation, CEVec3 offset);
+		static Polygon createAABB(CEVec3 const& min, CEVec3 const& max, CEVec3 offset);
 
 		virtual std::unique_ptr<Collider> clone() const override {
 			return std::make_unique<Polygon>(*this);
