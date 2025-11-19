@@ -14,7 +14,10 @@
 */
 
 #include "audioSystem.h"
-
+#include "log.h"
+#ifdef _WIN32
+#include <windows.h>
+#endif
 #include <cstdio>
 #include <algorithm>
 
@@ -52,6 +55,44 @@ namespace CrashoutsEngine::Audio
         else
             m |= FMOD_LOOP_OFF;
         return m;
+    }
+
+    static void ShowAudioErrorPopup(const std::string& msg)
+    {
+#ifdef _WIN32
+        MessageBoxA(
+            nullptr,
+            msg.c_str(),
+            "Audio Error",
+            MB_OK | MB_ICONERROR | MB_TOPMOST
+        );
+#endif
+
+        // Also log to console/log window
+        LOGE(Audio, msg);
+    }
+
+    static bool IsSupportedAudioFile(const std::string& path)
+    {
+        static const std::vector<std::string> allowed = {
+            ".mp3",
+            ".ogg",
+            ".wav"
+        };
+
+        auto dot = path.find_last_of('.');
+        if (dot == std::string::npos)
+            return false;
+
+        std::string ext = path.substr(dot);
+        std::transform(ext.begin(), ext.end(), ext.begin(),
+            [](unsigned char c) { return (char)std::tolower(c); });
+
+        for (const auto& a : allowed)
+            if (ext == a)
+                return true;
+
+        return false;
     }
 
     // -------------------------------------------------------------------------
@@ -608,6 +649,15 @@ namespace CrashoutsEngine::Audio
         if (!mCore || !mMusicGroup)
             return false;
 
+        if (!IsSupportedAudioFile(path))
+        {
+            std::string msg =
+                "Unsupported audio format for music file:\n\n" + path +
+                "\n\nSupported formats: .mp3, .ogg, .wav";
+            ShowAudioErrorPopup(msg);
+            return false;
+        }
+
         FMOD::Sound* snd = nullptr;
         if (!ok(mCore->createSound(path.c_str(),
             MusicMode(loop),
@@ -615,6 +665,7 @@ namespace CrashoutsEngine::Audio
             &snd),
             "createSound(music)"))
         {
+            ShowAudioErrorPopup("Failed to load music file:\n\n" + path);
             return false;
         }
 
@@ -623,14 +674,13 @@ namespace CrashoutsEngine::Audio
             "playSound(music)"))
         {
             snd->release();
+            ShowAudioErrorPopup("Failed to play music file:\n\n" + path);
             return false;
         }
 
         if (ch)
             ch->setMode(FMOD_2D);
 
-        // Note: matching your original behavior, we don't release snd here so
-        // FMOD can keep streaming. If you want fire-and-forget, call release().
         return true;
     }
 
@@ -642,6 +692,15 @@ namespace CrashoutsEngine::Audio
         if (!mCore || !mSFXGroup)
             return false;
 
+        if (!IsSupportedAudioFile(path))
+        {
+            std::string msg =
+                "Unsupported audio format for SFX file:\n\n" + path +
+                "\n\nSupported formats: .mp3, .ogg, .wav";
+            ShowAudioErrorPopup(msg);
+            return false;
+        }
+
         FMOD::Sound* snd = nullptr;
         if (!ok(mCore->createSound(path.c_str(),
             FMOD_DEFAULT | FMOD_2D,
@@ -649,6 +708,7 @@ namespace CrashoutsEngine::Audio
             &snd),
             "createSound(sfx)"))
         {
+            ShowAudioErrorPopup("Failed to load SFX file:\n\n" + path);
             return false;
         }
 
@@ -657,13 +717,13 @@ namespace CrashoutsEngine::Audio
             "playSound(sfx)"))
         {
             snd->release();
+            ShowAudioErrorPopup("Failed to play SFX file:\n\n" + path);
             return false;
         }
 
         if (ch)
             ch->setMode(FMOD_2D);
 
-        // One-shot SFX: safe to release right after starting.
         snd->release();
         return true;
     }
@@ -672,6 +732,15 @@ namespace CrashoutsEngine::Audio
     {
         if (!mCore || !mSFXGroup)
             return nullptr;
+
+        if (!IsSupportedAudioFile(path))
+        {
+            std::string msg =
+                "Unsupported audio format for SFX file:\n\n" + path +
+                "\n\nSupported formats: .mp3, .ogg, .wav";
+            ShowAudioErrorPopup(msg);
+            return false;
+        }
 
         FMOD::Sound* snd = nullptr;
         if (!ok(mCore->createSound(path.c_str(),
