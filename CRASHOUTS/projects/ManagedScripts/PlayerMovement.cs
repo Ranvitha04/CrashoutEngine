@@ -1,5 +1,4 @@
 using System;
-using System.Numerics;
 namespace CrashoutsEngine
 {
     public class PlayerMovement : ScriptBase
@@ -10,10 +9,10 @@ namespace CrashoutsEngine
         public float jumpPower = 20000f;
         public static bool isJumping = false;
         public static bool isFalling = false;
-        private float lastY;
-        public float FallingThreshold = -0.01f;
+        //private float lastY;
+        //public float FallingThreshold = -0.01f;
         private int onPlatform = 0;
-        CEVec2 startPos;
+        //CEVec2 startPos;
         //SpriteRenderer spriteRenderer;
 
         //[SerializeField] private SwitchCharacter switchcharacter;
@@ -35,7 +34,7 @@ namespace CrashoutsEngine
         //}
 
         // Start is called before the first frame update
-        void Start()
+        public override void Start()
         {
             //rb = GetComponent<Rigidbody2D>();
             //lastY = transform.position.y;
@@ -52,7 +51,7 @@ namespace CrashoutsEngine
         }
 
         // Update is called once per frame
-        void Update()
+        public override void Update()
         {
 
             var rb = Entity.GetComponent<RigidBodyComponent>();

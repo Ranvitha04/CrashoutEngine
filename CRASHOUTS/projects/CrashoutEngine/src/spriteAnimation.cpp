@@ -43,11 +43,11 @@ __________________________________________________________________________*/
 
 namespace Component {
 
-    Sprite Sprite::m_blinkSprite;
-    Sprite Sprite::m_walkSprite;
-    Sprite Sprite::m_sprite;
-    Sprite* Sprite::m_currentSprite = nullptr;
-    bool Sprite::m_spriteMode = false;
+    Animator Animator::m_blinkSprite;
+    Animator Animator::m_walkSprite;
+    Animator Animator::m_sprite;
+    Animator* Animator::m_currentSprite = nullptr;
+    bool Animator::m_spriteMode = false;
 
    /*!
    @brief Default constructor for the Sprite class.
@@ -55,12 +55,12 @@ namespace Component {
    starts in an uninitialized state.
    */
 
-    Sprite::Sprite()
+    Animator::Animator()
         : textureId(0),
         numFrames(1), currentFrame(0), framesPerRow(1), framePerColumn(1),
         frameTime(0.5f), elapsedTime(0.0f),
         scale(1.0f), rotation(0.0f), posX(0.0f), posY(0.0f),
-        initialized(false), flipHorizontal(false), currentState(nullptr), animationFrame(0) {
+        initialized(false), flipHorizontal(false), stateRef(nullptr), animationFrame(0) {
     }
 
     /*!
@@ -68,7 +68,47 @@ namespace Component {
     Automatically calls `cleanup()` to release any allocated resources and reset the state.
     */
 
-    Sprite::~Sprite() { cleanup(); }
+    Animator::~Animator() { cleanup(); }
+
+    void Animator::Play(const std::string& stateName) {
+        auto it = states.find(stateName);
+        if (it == states.end()) return;
+
+        currentState = stateName;
+        stateRef = &it->second;
+        animationFrame = 0;
+        elapsedTime = 0.0f;
+    }
+
+    void Animator::SetBool(const std::string& key, bool value) {
+        boolParams[key] = value;
+    }
+
+    void Animator::SetFloat(const std::string& key, float value) {
+        floatParams[key] = value;
+    }
+
+    void Animator::SetTrigger(const std::string& key) {
+        triggerParams[key] = true;
+    }
+
+    void Animator::AddState(const std::string& name, const AnimationState& state)
+    {
+        states[name] = state;
+
+        // If no state is currently active, set this as default
+        if (currentState.empty()) {
+            currentState = name;
+            stateRef = &states[name];
+            animationFrame = 0;
+            elapsedTime = 0.0f;
+        }
+    }
+
+
+    void Animator::SetFlip(bool flip) {
+        flipHorizontal = flip;
+    }
 
    /*!
    @brief Initializes the sprite with a sprite sheet texture and animation properties.
@@ -84,7 +124,7 @@ namespace Component {
    the previous state before reinitializing.
    */
 
-    void Sprite::init(const std::string& spriteSheetPath, int rows, int cols, float frameTimeSeconds) {
+    void Animator::init(const std::string& spriteSheetPath, int rows, int cols, float frameTimeSeconds) {
         if (initialized) {
             cleanup();
         }
@@ -123,26 +163,26 @@ namespace Component {
    updates the `currentFrame` index accordingly.
    */
 
-    void Sprite::update(float deltaTime) {
+    void Animator::update(float deltaTime) {
         if (!initialized) {
             return;
         }
-        if (!currentState) {
+        if (!stateRef) {
             return;
         }
 
         elapsedTime += deltaTime;
         if (elapsedTime >= frameTime) {
-            if (currentState->loop) {
-                animationFrame = (animationFrame + 1) % currentState->frameCount;
+            if (stateRef->loop) {
+                animationFrame = (animationFrame + 1) % stateRef->frameCount;
             } else {
-                if (animationFrame < currentState->frameCount - 1) {
+                if (animationFrame < stateRef->frameCount - 1) {
                     animationFrame++;
                 }
             }
             
             // Calculate the actual frame index in the sprite sheet
-            currentFrame = currentState->startFrame + animationFrame;
+            currentFrame = stateRef->startFrame + animationFrame;
             elapsedTime = 0.0f;
         }
     }
@@ -155,7 +195,7 @@ namespace Component {
     the texture renderer. Supports horizontal flipping, scaling, rotation, and tinting.
     */
 
-    void Sprite::render() {
+    void Animator::render() {
         if (!initialized) {
             return;
         }
@@ -194,7 +234,7 @@ namespace Component {
     internal variables to prepare the sprite for reinitialization or destruction.
     */
 
-    void Sprite::cleanup() {
+    void Animator::cleanup() {
         if (!initialized) return;
 
         // TextureAsset is managed by TextureRenderer
@@ -214,8 +254,8 @@ namespace Component {
     Animation states define how frames are played for a given action (e.g., walk, idle, attack).
     */
 
-    void Sprite::addAnimationState(const std::string& stateName, const AnimationState& state) {
-        animationStates[stateName] = state;
+    void Animator::addAnimationState(const std::string& stateName, const AnimationState& state) {
+        states[stateName] = state;
     }
 
     /*!
@@ -228,14 +268,14 @@ namespace Component {
    the function does nothing.
    */
 
-    void Sprite::setAnimationState(const std::string& stateName) {
-        auto it = animationStates.find(stateName);
-        if (it != animationStates.end() && currentAnimationState != stateName) {
+    void Animator::setAnimationState(const std::string& stateName) {
+        auto it = states.find(stateName);
+        if (it != states.end() && currentAnimationState != stateName) {
             currentAnimationState = stateName;
-            currentState = &it->second;
+            stateRef = &it->second;
             animationFrame = 0;
             elapsedTime = 0.0f;
-            frameTime = currentState->frameTime;
+            frameTime = stateRef->frameTime;
         }
     }
 
@@ -245,7 +285,7 @@ namespace Component {
    @param y Y-coordinate.
    */
 
-    void Sprite::setPosition(float x, float y) {
+    void Animator::setPosition(float x, float y) {
         posX = x;
         posY = y;
     }
@@ -255,7 +295,7 @@ namespace Component {
    @param newScale New scale multiplier.
    */
 
-    void Sprite::setScale(float newScale) {
+    void Animator::setScale(float newScale) {
         scale = newScale;
     }
 
@@ -264,7 +304,7 @@ namespace Component {
     @param newRotation New rotation in radians or degrees (depending on renderer implementation).
     */
 
-    void Sprite::setRotation(float newRotation) {
+    void Animator::setRotation(float newRotation) {
         rotation = newRotation;
     }
 
@@ -274,7 +314,7 @@ namespace Component {
    @param flip True to flip horizontally, false for normal orientation.
    */
 
-    void Sprite::setFlipHorizontal(bool flip) {
+    void Animator::setFlipHorizontal(bool flip) {
         flipHorizontal = flip;
     }
 
@@ -286,7 +326,7 @@ namespace Component {
     mapping them to specific rows and frames in the sprite sheet.
     */
 
-    void Sprite::setupDuckAnimations() {
+    void Animator::setupDuckAnimations() {
         
         // Row 1: idle_normal (2 frames) = frames 0-1
         // Row 2: walk_normal (6 frames) = frames 6-11  
