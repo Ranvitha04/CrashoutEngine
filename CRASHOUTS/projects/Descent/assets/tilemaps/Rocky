@@ -1,0 +1,9 @@
+{
+    "tilemap": [
+        {
+            "texAssetName": "Monsters\\Monsters(1).png",
+            "colliderType": "AABB",
+            "ruleBitMap": 0
+        }
+    ]
+}

@@ -1669,8 +1669,8 @@ namespace UI { // --------------------------------------------------------------
 
             ImVec2 start = ImGui::GetCursorScreenPos();
             ImGui::SetCursorScreenPos(ImVec2(start.x + 10, start.y + 10));
-            ImGui::BeginChild("ViewportToolbar", ImVec2(1000, 1000),
-                false, ImGuiWindowFlags_NoBackground);
+            ImGui::BeginChild("ViewportToolbar", ImVec2(0, 32),
+                false, ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoScrollbar);
 
             // 1) toolbar (translate / rotate / scale)
             ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(6, 4));
@@ -1883,7 +1883,7 @@ namespace UI { // --------------------------------------------------------------
                 float worldMinY = (centerGy - gridRadius) * tileSize;
                 float worldMaxY = (centerGy + gridRadius) * tileSize;
 
-                // 4. Draw Vertical Lines
+                // Draw Vertical Lines
                 for (int i = -gridRadius; i <= gridRadius; ++i) {
                     float currentX = (centerGx + i) * tileSize;
 
@@ -1896,7 +1896,7 @@ namespace UI { // --------------------------------------------------------------
                     }
                 }
 
-                // 5. Draw Horizontal Lines
+                // Draw Horizontal Lines
                 for (int j = -gridRadius; j <= gridRadius; ++j) {
                     float currentY = (centerGy + j) * tileSize;
 
@@ -1944,7 +1944,6 @@ namespace UI { // --------------------------------------------------------------
                     }
                 }
             }
-
             // END OF TILEMAP
 
             // 5) if we have a selected entity, let gizmo edit its TRS

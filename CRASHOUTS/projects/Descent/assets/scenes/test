@@ -18,10 +18,783 @@
                 }
             },
             "tilemap": {
-                "tileSize": 32,
-                "activeAsset": "none",
-                "tileAssetNames": [],
-                "gridData": []
+                "tileSize": 5,
+                "activeAsset": "Rocky",
+                "tileAssetNames": [
+                    "Rocky"
+                ],
+                "gridData": [
+                    {
+                        "x": -12,
+                        "y": -2,
+                        "asset": ""
+                    },
+                    {
+                        "x": -12,
+                        "y": 0,
+                        "asset": ""
+                    },
+                    {
+                        "x": -11,
+                        "y": -4,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": -11,
+                        "y": -3,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": -11,
+                        "y": -2,
+                        "asset": ""
+                    },
+                    {
+                        "x": -11,
+                        "y": -1,
+                        "asset": ""
+                    },
+                    {
+                        "x": -11,
+                        "y": 0,
+                        "asset": ""
+                    },
+                    {
+                        "x": -11,
+                        "y": 4,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": -11,
+                        "y": 5,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": -10,
+                        "y": -4,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": -10,
+                        "y": -3,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": -10,
+                        "y": -2,
+                        "asset": ""
+                    },
+                    {
+                        "x": -10,
+                        "y": -1,
+                        "asset": ""
+                    },
+                    {
+                        "x": -10,
+                        "y": 0,
+                        "asset": ""
+                    },
+                    {
+                        "x": -10,
+                        "y": 2,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": -10,
+                        "y": 4,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": -10,
+                        "y": 5,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": -9,
+                        "y": -5,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": -9,
+                        "y": -4,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": -9,
+                        "y": -3,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": -9,
+                        "y": -2,
+                        "asset": ""
+                    },
+                    {
+                        "x": -9,
+                        "y": -1,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": -9,
+                        "y": 0,
+                        "asset": ""
+                    },
+                    {
+                        "x": -9,
+                        "y": 1,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": -9,
+                        "y": 2,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": -9,
+                        "y": 4,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": -8,
+                        "y": -5,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": -8,
+                        "y": -4,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": -8,
+                        "y": -3,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": -8,
+                        "y": -2,
+                        "asset": ""
+                    },
+                    {
+                        "x": -8,
+                        "y": -1,
+                        "asset": ""
+                    },
+                    {
+                        "x": -8,
+                        "y": 0,
+                        "asset": ""
+                    },
+                    {
+                        "x": -8,
+                        "y": 1,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": -8,
+                        "y": 2,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": -8,
+                        "y": 4,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": -7,
+                        "y": -6,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": -7,
+                        "y": -5,
+                        "asset": ""
+                    },
+                    {
+                        "x": -7,
+                        "y": -4,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": -7,
+                        "y": -3,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": -7,
+                        "y": 0,
+                        "asset": ""
+                    },
+                    {
+                        "x": -7,
+                        "y": 1,
+                        "asset": ""
+                    },
+                    {
+                        "x": -7,
+                        "y": 2,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": -7,
+                        "y": 3,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": -7,
+                        "y": 4,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": -6,
+                        "y": -6,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": -6,
+                        "y": -5,
+                        "asset": ""
+                    },
+                    {
+                        "x": -6,
+                        "y": -4,
+                        "asset": ""
+                    },
+                    {
+                        "x": -6,
+                        "y": -3,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": -6,
+                        "y": -2,
+                        "asset": ""
+                    },
+                    {
+                        "x": -6,
+                        "y": 1,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": -6,
+                        "y": 2,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": -6,
+                        "y": 3,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": -5,
+                        "y": -7,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": -5,
+                        "y": -4,
+                        "asset": ""
+                    },
+                    {
+                        "x": -5,
+                        "y": -2,
+                        "asset": ""
+                    },
+                    {
+                        "x": -5,
+                        "y": -1,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": -5,
+                        "y": 0,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": -5,
+                        "y": 1,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": -5,
+                        "y": 2,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": -5,
+                        "y": 4,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": -4,
+                        "y": -7,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": -4,
+                        "y": -5,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": -4,
+                        "y": -4,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": -4,
+                        "y": -3,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": -4,
+                        "y": -2,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": -4,
+                        "y": -1,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": -4,
+                        "y": 0,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": -4,
+                        "y": 1,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": -4,
+                        "y": 2,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": -4,
+                        "y": 4,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": -3,
+                        "y": -8,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": -3,
+                        "y": -4,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": -3,
+                        "y": -3,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": -3,
+                        "y": -2,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": -3,
+                        "y": -1,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": -3,
+                        "y": 0,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": -3,
+                        "y": 1,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": -3,
+                        "y": 2,
+                        "asset": ""
+                    },
+                    {
+                        "x": -3,
+                        "y": 3,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": -2,
+                        "y": -8,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": -2,
+                        "y": -3,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": -2,
+                        "y": -2,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": -2,
+                        "y": -1,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": -2,
+                        "y": 0,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": -2,
+                        "y": 1,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": -2,
+                        "y": 2,
+                        "asset": ""
+                    },
+                    {
+                        "x": -2,
+                        "y": 3,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": -1,
+                        "y": -8,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": -1,
+                        "y": -5,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": -1,
+                        "y": -4,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": -1,
+                        "y": -3,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": -1,
+                        "y": -2,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": -1,
+                        "y": -1,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": -1,
+                        "y": 0,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": -1,
+                        "y": 1,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": -1,
+                        "y": 2,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": -1,
+                        "y": 3,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": 0,
+                        "y": -9,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": 0,
+                        "y": -5,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": 0,
+                        "y": -3,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": 0,
+                        "y": -2,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": 0,
+                        "y": -1,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": 0,
+                        "y": 0,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": 0,
+                        "y": 1,
+                        "asset": ""
+                    },
+                    {
+                        "x": 0,
+                        "y": 2,
+                        "asset": ""
+                    },
+                    {
+                        "x": 0,
+                        "y": 3,
+                        "asset": ""
+                    },
+                    {
+                        "x": 1,
+                        "y": -9,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": 1,
+                        "y": -8,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": 1,
+                        "y": -5,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": 1,
+                        "y": -3,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": 1,
+                        "y": -2,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": 1,
+                        "y": -1,
+                        "asset": ""
+                    },
+                    {
+                        "x": 1,
+                        "y": 0,
+                        "asset": ""
+                    },
+                    {
+                        "x": 1,
+                        "y": 1,
+                        "asset": ""
+                    },
+                    {
+                        "x": 1,
+                        "y": 2,
+                        "asset": ""
+                    },
+                    {
+                        "x": 1,
+                        "y": 3,
+                        "asset": ""
+                    },
+                    {
+                        "x": 2,
+                        "y": -5,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": 2,
+                        "y": -2,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": 2,
+                        "y": -1,
+                        "asset": ""
+                    },
+                    {
+                        "x": 2,
+                        "y": 0,
+                        "asset": ""
+                    },
+                    {
+                        "x": 2,
+                        "y": 1,
+                        "asset": ""
+                    },
+                    {
+                        "x": 2,
+                        "y": 2,
+                        "asset": ""
+                    },
+                    {
+                        "x": 2,
+                        "y": 3,
+                        "asset": ""
+                    },
+                    {
+                        "x": 3,
+                        "y": -6,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": 3,
+                        "y": -5,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": 3,
+                        "y": -3,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": 3,
+                        "y": -2,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": 3,
+                        "y": 0,
+                        "asset": ""
+                    },
+                    {
+                        "x": 3,
+                        "y": 2,
+                        "asset": ""
+                    },
+                    {
+                        "x": 4,
+                        "y": -4,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": 4,
+                        "y": -3,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": 4,
+                        "y": -2,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": 8,
+                        "y": 1,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": 9,
+                        "y": 0,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": 9,
+                        "y": 1,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": 10,
+                        "y": 0,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": 10,
+                        "y": 1,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": 11,
+                        "y": 0,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": 11,
+                        "y": 1,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": 12,
+                        "y": 0,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": 12,
+                        "y": 1,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": 13,
+                        "y": 0,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": 13,
+                        "y": 1,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": 13,
+                        "y": 5,
+                        "asset": ""
+                    },
+                    {
+                        "x": 14,
+                        "y": 0,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": 14,
+                        "y": 1,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": 15,
+                        "y": 0,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": 15,
+                        "y": 1,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": 16,
+                        "y": 0,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": 16,
+                        "y": 1,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": 17,
+                        "y": -8,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": 17,
+                        "y": -7,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": 17,
+                        "y": 0,
+                        "asset": "Rocky"
+                    },
+                    {
+                        "x": 17,
+                        "y": 1,
+                        "asset": "Rocky"
+                    }
+                ]
             }
         }
     ],

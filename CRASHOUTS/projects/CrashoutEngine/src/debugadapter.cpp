@@ -1766,6 +1766,46 @@ public class )" << file.stem().string() << R"(
         }
     };
 
+    static void DrawBitmaskSelector(unsigned int& mask) {
+        // Bit order based on your enum:
+        // Up=0, UpRight=1, Right=2, DownRight=3, Down=4, DownLeft=5, Left=6, UpLeft=7
+
+        // Visual layout 3x3:
+        // [7] [0] [1]
+        // [6] [ ] [2]
+        // [5] [4] [3]
+
+        int bits[3][3] = {
+            { 7, 0, 1 },
+            { 6, -1, 2 }, // -1 is the center (no bit)
+            { 5, 4, 3 }
+        };
+
+        ImGui::BeginGroup();
+        for (int r = 0; r < 3; ++r) {
+            for (int c = 0; c < 3; ++c) {
+                int bitIndex = bits[r][c];
+
+                if (c > 0) ImGui::SameLine();
+
+                if (bitIndex == -1) {
+                    // Center placeholder
+                    ImGui::Dummy(ImVec2(20, 20));
+                }
+                else {
+                    // Checkbox logic
+                    bool val = (mask & (1 << bitIndex)) != 0;
+                    std::string id = "##bit" + std::to_string(bitIndex);
+                    if (ImGui::Checkbox(id.c_str(), &val)) {
+                        if (val) mask |= (1 << bitIndex); // Set bit
+                        else     mask &= ~(1 << bitIndex); // Clear bit
+                    }
+                }
+            }
+        }
+        ImGui::EndGroup();
+    }
+
     /*!
         @brief Adapter for editing Component::TileMapComponent.
         @details Uses ImGui controls to manage Tile Map assets and editor state.
@@ -1793,6 +1833,7 @@ public class )" << file.stem().string() << R"(
         // 5. The Main Inspector UI
         void drawInspector(ECS& ecs, Entity e) override {
             using namespace Component;
+            using namespace CrashoutsEngine::Assets;
             namespace fs = std::filesystem;
 
             // Get the specific component
@@ -1825,12 +1866,25 @@ public class )" << file.stem().string() << R"(
 
             // List existing assets
             int indexToRemove = -1;
+            static std::string assetToEdit = "";
+            bool openRulesPopup = false;
+
             for (int i = 0; i < tm->tileAssetNames.size(); ++i) {
                 ImGui::PushID(i);
 
                 // Display Name
                 ImGui::Bullet();
                 ImGui::Text("%s", tm->tileAssetNames[i].c_str());
+
+                ImGui::SameLine();
+
+                // Edit Button
+                if (ImGui::SmallButton("Edit Rules")) {
+                    assetToEdit = tm->tileAssetNames[i];
+                    openRulesPopup = true;
+                }
+
+                ImGui::SameLine();
 
                 // Remove Button
                 ImGui::SameLine();
@@ -1840,6 +1894,7 @@ public class )" << file.stem().string() << R"(
 
                 ImGui::PopID();
             }
+            if(openRulesPopup) ImGui::OpenPopup("RuleSetEditorPopup");
 
             // Handle Removal
             if (indexToRemove != -1) {
@@ -1851,34 +1906,220 @@ public class )" << file.stem().string() << R"(
                 tm->isCacheDirty = true; // Rebuild cache just in case
             }
 
+            ImGui::SetNextWindowSize(ImVec2(500, 400), ImGuiCond_FirstUseEver);
+            if (ImGui::BeginPopupModal("RuleSetEditorPopup", nullptr, ImGuiWindowFlags_MenuBar)) {
+                static int ruleIndexToEdit = -1;
+                bool openAssetPopup = false;
+                // 1. Get the actual asset from memory
+                TileMapAsset* asset = AssetManager::GetInstance().Get<TileMapAsset>(assetToEdit);
+
+                if (!asset) {
+                    ImGui::TextColored(ImVec4(1, 0, 0, 1), "Error: Asset not loaded!");
+                    if (ImGui::Button("Close")) ImGui::CloseCurrentPopup();
+                }
+                else {
+                    if (ImGui::BeginMenuBar()) {
+                        if (ImGui::MenuItem("Save & Close")) {
+                            asset->SaveTileMaps(); // Save to disk
+                            tm->isCacheDirty = true; // Rebuild render cache
+                            ImGui::CloseCurrentPopup();
+                        }
+                        ImGui::EndMenuBar();
+                    }
+
+                    ImGui::Text("Editing: %s", assetToEdit.c_str());
+                    ImGui::Separator();
+
+                    // Button to add a new empty rule
+                    if (ImGui::Button("+ Add New Rule")) {
+                        RuleTile newTile;
+                        newTile.texAssetName = "default.png"; // Placeholder
+                        asset->GetTilesMutable().push_back(newTile);
+                    }
+
+                    ImGui::Separator();
+
+                    // Scrollable list of rules
+                    ImGui::BeginChild("RulesList", ImVec2(0, 0), true);
+
+                    auto& rules = asset->GetTilesMutable();
+                    int ruleToDelete = -1;
+
+                    for (int i = 0; i < rules.size(); ++i) {
+                        RuleTile& rule = rules[i];
+                        ImGui::PushID(i);
+
+                        if (ImGui::CollapsingHeader(("Rule " + std::to_string(i)).c_str(), ImGuiTreeNodeFlags_DefaultOpen)) {
+
+                            // A. Texture Name
+                            ImGui::Text("Texture: %s", rule.texAssetName.c_str());
+                            ImGui::SameLine();
+
+                            // Unique ID for this button so it doesn't conflict
+                            std::string btnId = "Choose...##" + std::to_string(i);
+                            if (ImGui::SmallButton(btnId.c_str())) {
+                                // Open the SHARED popup
+                                openAssetPopup = true;
+
+                                ruleIndexToEdit = i;
+                            }
+
+                            // B. Collider Type
+                            const char* colliderNames[] = { "Sphere", "AABB", "OBB" };
+                            int currentItem = (int)rule.colliderType;
+                            if (ImGui::Combo("Collider", &currentItem, colliderNames, 3)) {
+                                rule.colliderType = (Collision::ColliderType)currentItem;
+                            }
+
+                            // C. Bitmask (The Grid)
+                            ImGui::Text("Neighbors:");
+                            DrawBitmaskSelector(rule.ruleBitMap);
+
+                            // D. Hex Preview
+                            ImGui::SameLine();
+                            ImGui::BeginGroup();
+                            ImGui::TextDisabled("Hex: 0x%X", rule.ruleBitMap);
+                            if (ImGui::Button("Delete Rule")) ruleToDelete = i;
+                            ImGui::EndGroup();
+                        }
+                        ImGui::PopID();
+                    }
+
+                    if (ruleToDelete != -1) {
+                        asset->RemoveTileDefinition(ruleToDelete);
+                    }
+
+                    ImGui::EndChild();
+                    if(openAssetPopup) ImGui::OpenPopup("PickRuleTexturePopup");
+
+                    // SHARED TEXTURE PICKER POPUP
+                    if (ImGui::BeginPopupModal("PickRuleTexturePopup", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
+                        namespace fs = std::filesystem;
+                        static std::vector<std::string> s_assets;
+                        static bool s_scanned = false;
+
+                        // Refresh List button
+                        if (ImGui::Button("Refresh List")) {
+                            s_scanned = false;
+                        }
+
+                        if (!s_scanned) {
+                            s_scanned = true;
+                            s_assets.clear();
+
+                            const std::string assetRoot = CrashoutsEngine::Assets::rootPath + "images";
+                            if (fs::exists(assetRoot)) {
+                                for (auto& p : fs::recursive_directory_iterator(assetRoot)) {
+                                    if (!p.is_regular_file()) continue;
+
+                                    const std::string ext = p.path().extension().string();
+                                    std::string lower = ext;
+                                    std::transform(lower.begin(), lower.end(), lower.begin(), ::tolower);
+                                    if (lower == ".png" || lower == ".jpg" || lower == ".jpeg" ||
+                                        lower == ".tga" || lower == ".bmp") {
+
+                                        std::string rel = fs::relative(p.path(), assetRoot).string();
+                                        s_assets.push_back(rel);
+                                    }
+                                }
+                                std::sort(s_assets.begin(), s_assets.end());
+                            }
+                        }
+
+                        ImGui::Separator();
+
+                        // Asset List
+                        ImGui::BeginChild("asset_list", ImVec2(420, 300), true);
+                        for (const auto& f : s_assets) {
+                            if (ImGui::Selectable(f.c_str())) {
+                                // Apply selection using the static index
+                                if (ruleIndexToEdit >= 0 && ruleIndexToEdit < rules.size()) {
+                                    rules[ruleIndexToEdit].texAssetName = f;
+                                }
+                                ImGui::CloseCurrentPopup();
+                            }
+                        }
+                        ImGui::EndChild();
+
+                        if (ImGui::Button("Cancel")) ImGui::CloseCurrentPopup();
+                        ImGui::EndPopup();
+                    }
+                }
+                ImGui::EndPopup();
+            }
+
             // ---------------------------------------------------------
             // SECTION 3: Add New Asset
             // ---------------------------------------------------------
 
-            if (ImGui::Button("Add Rule Set (.json)...")) {
+            if (ImGui::Button("Add Rule Set...")) {
                 ImGui::OpenPopup("AddRuleAssetPopup");
             }
 
             if (ImGui::BeginPopup("AddRuleAssetPopup")) {
-                std::string path = CrashoutsEngine::Assets::rootPath + "tilemaps/";
+                namespace fs = std::filesystem;
+                std::string dirPath = CrashoutsEngine::Assets::rootPath + "tilemaps/";
 
-                if (fs::exists(path)) {
-                    for (const auto& entry : fs::directory_iterator(path)) {
-                        if (entry.path().extension() == ".json") {
-                            std::string filename = entry.path().filename().string();
+                // --- SECTION 1: CREATE NEW ASSET ---
+                static char newAssetName[64] = "";
+                ImGui::InputTextWithHint("##NewAsset", "New Asset Name", newAssetName, IM_ARRAYSIZE(newAssetName));
+                ImGui::SameLine();
 
-                            // Check if already added to avoid duplicates
-                            bool alreadyHas = false;
-                            for (const auto& s : tm->tileAssetNames) if (s == filename) alreadyHas = true;
+                // Logic to Create if it doesn't exist
+                if (ImGui::Button("Create")) {
+                    std::string rawName = newAssetName;
+                    if (!rawName.empty()) {
+                        // 2. Check if it already exists in the component list
+                        bool alreadyHas = false;
+                        for (const auto& s : tm->tileAssetNames) if (s == rawName) alreadyHas = true;
 
-                            if (!alreadyHas) {
-                                if (ImGui::Selectable(filename.c_str())) {
-                                    tm->tileAssetNames.push_back(filename);
-                                    // Ensure it's loaded in memory
-                                    //Assets::AssetManager::GetInstance().Load(filename, )
-                                    //Assets::AssetManager::GetInstance().Load<Assets::TileMapAsset>(filename);
-                                    tm->isCacheDirty = true;
+                        if (!alreadyHas) {
+                            // 3. Create the physical file and Asset Object
+                            // (Your TileMapAsset::Create function handles file creation if missing)
+                            auto newAsset = Assets::TileMapAsset::Create(rawName);
+
+                            if (newAsset) {
+                                // 4. Register to AssetManager
+                                Assets::AssetManager::GetInstance().Load(rawName, std::move(newAsset));
+
+                                // 5. Add to Component
+                                tm->tileAssetNames.push_back(rawName);
+                                tm->isCacheDirty = true;
+
+                                // Clear input
+                                newAssetName[0] = '\0';
+                                ImGui::CloseCurrentPopup();
+                            }
+                        }
+                    }
+                }
+
+                ImGui::Separator();
+                ImGui::TextDisabled("Select Existing:");
+
+                // --- SECTION 2: SELECT EXISTING ---
+                if (fs::exists(dirPath)) {
+                    for (const auto& entry : fs::directory_iterator(dirPath)) {
+                        if (!entry.is_regular_file()) continue;
+
+                        std::string filename = entry.path().filename().string();
+
+                        // Check if already added to avoid duplicates in the list
+                        bool alreadyHas = false;
+                        for (const auto& s : tm->tileAssetNames) if (s == filename) alreadyHas = true;
+
+                        if (!alreadyHas) {
+                            if (ImGui::Selectable(filename.c_str())) {
+                                tm->tileAssetNames.push_back(filename);
+
+                                // Ensure it's loaded in memory
+                                // FIX: Use the Factory method, don't move an empty unique_ptr
+                                auto loadedAsset = Assets::TileMapAsset::Create(filename);
+                                if (loadedAsset) {
+                                    Assets::AssetManager::GetInstance().Load(filename, std::move(loadedAsset));
                                 }
+
+                                tm->isCacheDirty = true;
                             }
                         }
                     }

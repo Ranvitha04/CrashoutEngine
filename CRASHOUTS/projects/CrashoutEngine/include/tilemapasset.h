@@ -83,6 +83,7 @@ namespace CrashoutsEngine {
             // GETTERS
 			const std::string& GetTileMapName() const { return tileMapName; }
             const std::vector<RuleTile>& GetTiles() const { return tiles; }
+            std::vector<RuleTile>& GetTilesMutable() { return tiles; }
 
             // SETTERS
             /*!
