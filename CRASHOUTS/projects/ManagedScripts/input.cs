@@ -20,5 +20,11 @@ namespace CrashoutsEngine
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern bool InternalIsKeyTriggered(Key key);
 
+        public static bool IsKeyHeld(Key key)
+        {
+            return InternalIsKeyHeld(key);
+        }
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern bool InternalIsKeyHeld(Key key);
     }
 }

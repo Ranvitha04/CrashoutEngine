@@ -22,8 +22,14 @@ static bool InternalIsKeyTriggered(int key)
     return InputManager::IsKeyTriggered(key);
 }
 
+static bool InternalIsKeyHeld(int key)
+{
+    return InputManager::IsKeyHeld(key);
+}
+
 void CrashoutsEngine::Bindings::RegisterInputBindings()
 {
     mono_add_internal_call("CrashoutsEngine.Input::InternalIsKeyPressed", reinterpret_cast<const void*>(InternalIsKeyPressed));
     mono_add_internal_call("CrashoutsEngine.Input::InternalIsKeyTriggered", reinterpret_cast<const void*>(InternalIsKeyTriggered));
+	mono_add_internal_call("CrashoutsEngine.Input::InternalIsKeyHeld", reinterpret_cast<const void*>(InternalIsKeyHeld));
 }
