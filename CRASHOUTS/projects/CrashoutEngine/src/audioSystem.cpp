@@ -112,7 +112,19 @@ bool AudioSystem::stopAllOnBus(const std::string& busPath, bool fadeOut) {
     mStudio->flushCommands();          
     return r == FMOD_OK;
 }
+void AudioSystem::stopAllRaw() {
+    if (mMusicGroup) mMusicGroup->stop();
+    if (mSFXGroup)  mSFXGroup->stop();
+}
+bool AudioSystem::stopMusicGroup() {
+    if (!mMusicGroup) return false;
+    return mMusicGroup->stop() == FMOD_OK;
+}
 
+bool AudioSystem::stopSFXGroup() {
+    if (!mSFXGroup) return false;
+    return mSFXGroup->stop() == FMOD_OK;
+}
 
 bool AudioSystem::stopAll(bool fadeOut) {
     // Master bus stops *everything* (music + sfx)

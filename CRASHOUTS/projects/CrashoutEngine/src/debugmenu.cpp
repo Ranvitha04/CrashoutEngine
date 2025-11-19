@@ -1420,6 +1420,56 @@ namespace UI { // --------------------------------------------------------------
         if (!ui.showAudio) return;
         ScopedWindow w("Audio", LockFlags(ui.lockLayout));
 
+        auto& audio = AudioSystem::instance();
+
+        auto PlayAny = [&](const std::string& id, bool bgm = false) -> void* {
+            if (id.empty()) return nullptr;
+
+            if (id.rfind("event:/", 0) == 0) {
+                // FMOD Studio event
+                auto* inst = audio.createInstance(id);
+                if (inst) {
+                    inst->start();
+                    return inst;
+                }
+                return nullptr;
+            }
+
+            // Raw file (wav/ogg/mp3)
+            std::string path = id;
+            if (path.rfind("assets/", 0) != 0)
+                path = "assets/audio/" + path;
+
+            if (bgm)
+                audio.playMusicFile(path, /*loop=*/true);
+            else
+                audio.playSFXFile(path);
+
+            return nullptr; // raw channels not tracked
+         };
+
+        auto StopAny = [&](void* handle) {
+            if (!handle) return;
+
+            // Try as Studio event instance
+            if (auto* inst = static_cast<FMOD::Studio::EventInstance*>(handle)) {
+                FMOD_STUDIO_PLAYBACK_STATE state;
+                if (inst->getPlaybackState(&state) == FMOD_OK) {
+                    inst->stop(FMOD_STUDIO_STOP_IMMEDIATE);
+                    inst->release();
+                    return;
+                }
+            }
+
+            // Try as raw Core channel
+            if (auto* ch = static_cast<FMOD::Channel*>(handle)) {
+                bool playing = false;
+                if (ch->isPlaying(&playing) == FMOD_OK && playing) {
+                    ch->stop();
+                }
+            }
+        };
+
         const bool audioInitOk = AudioSystem::instance().isInitialized();
         if (!audioInitOk) {
             ImGui::TextDisabled("FMOD not initialized (AssetManager will do this).");
@@ -1442,9 +1492,35 @@ namespace UI { // --------------------------------------------------------------
         if (needRefresh || allEvents.empty()) {
             allEvents.clear();
             AudioSystem::instance().listAllEventPaths(allEvents);
-            std::sort(allEvents.begin(), allEvents.end());
-            allEvents.erase(std::unique(allEvents.begin(), allEvents.end()), allEvents.end());
-            needRefresh = false;
+            if (needRefresh || allEvents.empty()) {
+                allEvents.clear();
+                AudioSystem::instance().listAllEventPaths(allEvents);
+
+                // --- also add raw files from assets/audio ---
+                namespace fs = std::filesystem;
+                const fs::path assetRoot = "assets/audio";
+
+                try {
+                    for (auto& entry : fs::recursive_directory_iterator(assetRoot)) {
+                        if (!entry.is_regular_file()) continue;
+
+                        std::string ext = entry.path().extension().string();
+                        std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+
+                        if (ext == ".wav" || ext == ".ogg" || ext == ".mp3") {
+                            std::string rel = fs::relative(entry.path(), assetRoot).generic_string();
+                            allEvents.push_back(rel);  // e.g. "Music/Menu.wav"
+                        }
+                    }
+                }
+                catch (...) {
+                    // ignore errors, just means fewer items
+                }
+
+                std::sort(allEvents.begin(), allEvents.end());
+                allEvents.erase(std::unique(allEvents.begin(), allEvents.end()), allEvents.end());
+                needRefresh = false;
+            }
         }
         ImGui::SameLine();
         ImGui::TextDisabled("%zu events", allEvents.size());
@@ -1466,7 +1542,39 @@ namespace UI { // --------------------------------------------------------------
                 }
                 ImGui::EndCombo();
             }
-            };
+
+            if (ImGui::BeginDragDropTarget()) {
+                if (const ImGuiPayload* pl = ImGui::AcceptDragDropPayload("ASSET/PAYLOAD")) {
+                    const auto* p = static_cast<const AssetDragPayload*>(pl->Data);
+                    if (p && p->kind == AssetKind::Audio) {
+                        std::filesystem::path relPath = p->relPath; // "audio/Music/Menu.wav"
+                        std::string ext = relPath.extension().string();
+                        std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+
+                        std::string rel = relPath.generic_string();
+                        const std::string prefix = "audio/";
+                        auto pos = rel.find(prefix);
+                        if (pos == 0)
+                            rel = rel.substr(prefix.size());
+
+                        if (ext == ".wav" || ext == ".ogg" || ext == ".mp3") {
+                            sel = rel;
+                        }
+                        else {
+                            if (auto dot = rel.find_last_of('.'); dot != std::string::npos)
+                                rel.erase(dot);
+                            sel = std::string("event:/") + rel; // Studio event mode
+                        }
+                    }
+                }
+                ImGui::EndDragDropTarget();
+            }
+        };
+
+        static void* hBGM = nullptr;
+        static void* hSFX1 = nullptr;
+        static void* hSFX2 = nullptr;
+        static void* hSFX3 = nullptr;
 
         // Test Section
         ImGui::SeparatorText("Quick Test (1 BGM + 3 SFX)");
@@ -1474,43 +1582,78 @@ namespace UI { // --------------------------------------------------------------
 
         EventCombo("Background Music", pickBGM);
         if (ImGui::Button("Play")) {
-            CrashoutsEngine::Audio::AudioSystem::instance().playOneShot(pickBGM);
+            hBGM = PlayAny(pickBGM, true);
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("Stop")) {
+            StopAny(hBGM);
+            hBGM = nullptr;
+            audio.stopMusicGroup();
         }
 
         EventCombo("SFX 1", pickSFX1);
         if (ImGui::Button("Play##sfx1")) {
-            CrashoutsEngine::Audio::AudioSystem::instance().playOneShot(pickSFX1);
+            hSFX1 = PlayAny(pickSFX1);
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("Stop##sfx1")) {
+            StopAny(hSFX1);
+            hSFX1 = nullptr;
+            audio.stopSFXGroup();
         }
 
         EventCombo("SFX 2", pickSFX2);
         if (ImGui::Button("Play##sfx2")) {
-            CrashoutsEngine::Audio::AudioSystem::instance().playOneShot(pickSFX2);
+            hSFX2 = PlayAny(pickSFX2);
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("Stop##sfx2")) {
+            StopAny(hSFX2);
+            hSFX2 = nullptr;
+            audio.stopSFXGroup();
         }
 
         EventCombo("SFX 3", pickSFX3);
         if (ImGui::Button("Play##sfx3")) {
-            CrashoutsEngine::Audio::AudioSystem::instance().playOneShot(pickSFX3);
+            hSFX3 = PlayAny(pickSFX3);
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("Stop##sfx3")) {
+            StopAny(hSFX3);
+            hSFX3 = nullptr;
+            audio.stopSFXGroup();
         }
 
         ImGui::SeparatorText("Master Volume");
 
         // Cache slider state
         static float sMasterVol = 1.0f;
-        if (ImGui::SliderFloat("Master", &sMasterVol, 0.0f, 1.0f, "%.2f"))
-            CrashoutsEngine::Audio::AudioSystem::instance().setBusVolume("bus:/", sMasterVol);
+        if (ImGui::SliderFloat("Master", &sMasterVol, 0.0f, 1.0f, "%.2f")) {
+            audio.setBusVolume("bus:/", sMasterVol); // FMOD Studio
+            audio.setMusicGroupVolume(sMasterVol); // Raw BGM
+            audio.setSFXGroupVolume(sMasterVol); // Raw SFX
+        }
 
-        // Optional mute toggle (reuses same call)
+        // Mute Toggle
         static bool sMuted = false;
         if (ImGui::Checkbox("Mute All", &sMuted)) {
-            if (sMuted)
-                CrashoutsEngine::Audio::AudioSystem::instance().setBusVolume("bus:/", 0.0f);
-            else
-                CrashoutsEngine::Audio::AudioSystem::instance().setBusVolume("bus:/", sMasterVol);
+            if (sMuted) {
+                audio.setBusVolume("bus:/", 0.0f); // FMOD Studio
+                audio.setMusicGroupVolume(0.0f); // Raw music
+                audio.setSFXGroupVolume(0.0f); // Raw SFX
+            }
+            else {
+                audio.setBusVolume("bus:/", sMasterVol);
+                audio.setMusicGroupVolume(sMasterVol);
+                audio.setSFXGroupVolume(sMasterVol);
+            }
         }
 
         ImGui::Separator();
-        if (ImGui::Button("Stop All"))
-            AudioSystem::instance().stopAll(true);
+        if (ImGui::Button("Stop All")) {
+            audio.stopAll(true); // Stop FMOD Studio
+            audio.stopAllRaw(); // Stop raw wav/ogg/mp3
+        }
 
         AudioSystem::instance().update();
     }
@@ -2160,7 +2303,25 @@ namespace UI { // --------------------------------------------------------------
                             ecs.AddComponent<Component::AudioEmitterComponent>(target);
 
                         if (auto* ac = ecs.GetComponent<Component::AudioEmitterComponent>(target)) {
-                            ac->eventPath = eventLike;
+                            std::filesystem::path relPath = p->relPath; // e.g. "audio/Music/Menu.wav"
+                            std::string ext = relPath.extension().string();
+                            std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+
+                            std::string rel = relPath.generic_string();
+
+                            const std::string prefix = "audio/";
+                            auto pos = rel.find(prefix);
+                            if (pos == 0)
+                                rel = rel.substr(prefix.size());       // "Music/Menu.wav"
+
+                            if (ext == ".wav" || ext == ".ogg" || ext == ".mp3") {
+                                ac->eventPath = rel;
+                            }
+                            else {
+                                if (auto dot = rel.find_last_of('.'); dot != std::string::npos) rel.erase(dot);
+                                ac->eventPath = std::string("event:/") + rel;
+                            }
+
                             ac->volume = 1.0f;
                             ac->pitch = 1.0f;
                             ac->spatial3D = true;
