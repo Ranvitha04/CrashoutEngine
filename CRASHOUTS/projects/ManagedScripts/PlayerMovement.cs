@@ -5,13 +5,13 @@ namespace CrashoutsEngine
     {
         //float horizontalInput;
         //float moveSpeed = 6f;
-        bool isFacingRight = true;
+        //bool isFacingRight = true;
         public float jumpPower = 20000f;
         public static bool isJumping = false;
         public static bool isFalling = false;
         //private float lastY;
         //public float FallingThreshold = -0.01f;
-        private int onPlatform = 0;
+        //private int onPlatform = 0;
         //CEVec2 startPos;
         //SpriteRenderer spriteRenderer;
 
