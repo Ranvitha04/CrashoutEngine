@@ -22,8 +22,7 @@ namespace {
 }
 
 namespace Prefab {
-    //Name what we call the prefab and maybe the description
- // prefab.cpp
+
     bool Register(const std::string& name, Factory f) {
         Reg()[name] = std::move(f);   
         return true;

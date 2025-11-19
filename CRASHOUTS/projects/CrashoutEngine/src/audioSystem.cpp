@@ -312,6 +312,7 @@ void AudioSystem::inspectBankToConsole(const std::string& bankFile) {
             return false;
         }
         if (ch) ch->setMode(FMOD_2D);
+        snd->release();
       
         return true;
     }

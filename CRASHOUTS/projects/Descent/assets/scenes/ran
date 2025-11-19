@@ -1,5 +1,21 @@
 {
-    "entities": [],
+    "entities": [
+        {
+            "name": "Duck_Single",
+            "transform": {
+                "rotation": -4.9636454582214359,
+                "position": {
+                    "x": -33.989593505859378,
+                    "y": 0.0,
+                    "z": -1.0
+                },
+                "size": {
+                    "x": 4.642882823944092,
+                    "y": 20.699974060058595
+                }
+            }
+        }
+    ],
     "layers": {
         "Default": 0,
         "Ground": 2,
