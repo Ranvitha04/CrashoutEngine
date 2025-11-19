@@ -37,6 +37,7 @@ runtime-extensible and project-agnostic.
 #include "physicsmanager.h"
 #include "ppcomponent.h"
 #include "collidercomponent.h"
+#include "tilemapcomponent.h"
 
 // FOR GAME GUI
 #include "buttoncomponent.h"
@@ -49,12 +50,14 @@ runtime-extensible and project-agnostic.
 #include "assetmanager.h"
 #include "monomanager.h"
 #include "audioSystem.h"
+#include "tilemapasset.h"
 #include "imgui_internal.h"
 #include "reflectimgui.h"
 #include "shapes.h"
 #include "layercomponent.h"
 #include "transformentitycommand.h"
 #include <memory>
+
 
 using namespace CrashoutsEngine;
 using namespace Component;
@@ -1450,6 +1453,7 @@ public class )" << file.stem().string() << R"(
                 if (ImGui::ColorEdit3(label, col)) {
                     colorVec.x = col[0] * 255.0f;
                     colorVec.y = col[1] * 255.0f;
+                    colorVec.y = col[1] * 255.0f;
                     colorVec.z = col[2] * 255.0f;
                 }
                 };
@@ -1763,6 +1767,128 @@ public class )" << file.stem().string() << R"(
     };
 
     /*!
+    @brief Adapter for editing Component::TileMapComponent.
+    @details Uses ImGui controls to manage Tile Map dimensions, assets, and editor state.
+    */
+    struct TileMapAdapter : DebugReflection::IComponentAdapter {
+
+        // 1. Update Name
+        const char* name() const override { return "Tile Map Component"; }
+
+        // 2. Update 'Has' Check
+        bool has(ECS& ecs, Entity e) const override {
+            return ecs.HasComponent<Component::TileMapComponent>(e);
+        }
+
+        // 3. Update 'Add' Logic
+        void add(ECS& ecs, Entity e) override {
+            if (!has(ecs, e)) ecs.AddComponent<Component::TileMapComponent>(e);
+        }
+
+        // 4. Update 'Remove' Logic
+        void remove(ECS& ecs, Entity e) override {
+            if (has(ecs, e)) ecs.RemoveComponent<Component::TileMapComponent>(e);
+        }
+
+        // 5. The Main Inspector UI
+        void drawInspector(ECS& ecs, Entity e) override {
+            using namespace Component;
+
+            // Get the specific component
+            TileMapComponent* tm = ecs.GetComponent<TileMapComponent>(e);
+            if (!tm) return;
+
+            ImGui::SeparatorText("Tile Map Settings");
+
+            // ---------------------------------------------------------
+            // ROW 1: Asset Name + Create Button
+            // ---------------------------------------------------------
+
+            // Calculate width to leave room for the button on the right
+            float availWidth = ImGui::GetContentRegionAvail().x;
+            float buttonWidth = 60.0f;
+            float padding = 5.0f;
+
+            // Set width for the InputText
+            ImGui::SetNextItemWidth(availWidth - buttonWidth - padding);
+
+            std::string entityName = ECS::getInstance()->GetComponent<NameComponent>(e)->name;
+
+            if (tm->tmName.empty()) {
+                // Find the Entity's actual name to restore the field
+                tm->tmName = entityName;
+                // NOTE: You may want to show an error message here instead of instant reversion
+            }
+
+            ImGui::SameLine(); // <--- Puts the next item on the same horizontal line
+
+            // The Create Button
+            if (ImGui::Button("Create", ImVec2(buttonWidth, 0))) {
+                // LOGIC: Create the tilemap asset using the Entity's name
+
+                // 1. Get Entity Name (Assuming ECS has a name helper, or we format the ID)
+                // std::string entityName = ecs.GetEntityName(e); 
+                // For now, we will simulate it using the Entity ID if no name system exists:
+
+                // 2. Set the tmName to match
+                tm->tmName = entityName;
+
+                // 3. Trigger Asset Manager creation logic here
+                if (!tm->tmName.empty()) {
+                    Assets::AssetManager::GetInstance().Load(tm->tmName, Assets::TileMapAsset::Create(tm->tmName));
+                }
+
+                // Visual feedback
+                tm->isCacheDirty = true;
+            }
+
+            // Add a tooltip to explain what the button does
+            if (ImGui::IsItemHovered()) {
+                ImGui::SetTooltip("Create a new TileMap Asset using this Entity's name.");
+            }
+
+            // ---------------------------------------------------------
+            // ROW 2: Dimensions
+            // ---------------------------------------------------------
+            ImGui::Text("Grid Dimensions");
+
+            // Check if dimensions changed to mark cache as dirty
+            bool dimChanged = false;
+            dimChanged |= ImGui::InputInt("Width (Tiles)", &tm->width);
+            dimChanged |= ImGui::InputInt("Height (Tiles)", &tm->height);
+            dimChanged |= ImGui::InputInt("Tile Size (Px)", &tm->tileSize);
+
+            if (dimChanged) {
+                // Ensure they don't go negative
+                if (tm->width < 1) tm->width = 1;
+                if (tm->height < 1) tm->height = 1;
+                if (tm->tileSize < 1) tm->tileSize = 1;
+
+                // Flag that we need to rebuild textures/buffers
+                tm->isCacheDirty = true;
+            }
+
+            // ---------------------------------------------------------
+            // ROW 3: Vector Data (CEVec2)
+            // ---------------------------------------------------------
+            // Assuming CEVec2 has .x and .y members. 
+            // If CEVec2 is a custom struct, you might need &tm->row.x, etc.
+            ImGui::Separator();
+            ImGui::Text("Coordinate Offsets");
+            ImGui::DragFloat2("Row Data", &tm->row.x, 0.1f);
+            ImGui::DragFloat2("Col Data", &tm->col.x, 0.1f);
+
+            // ---------------------------------------------------------
+            // ROW 4: Editor Toggle
+            // ---------------------------------------------------------
+            ImGui::Separator();
+            // This toggle controls the window drawn in your main Render loop
+            if (ImGui::Checkbox("Open Tile Editor", &tm->pOpen)) {
+            }
+        }
+    };
+
+    /*!
     @brief Game-state provider installed at runtime (no hardcoded state list).
     @details Bridges GameStateManager to the Debug Menu; exposes current/previous/next and issues ChangeGameState() transitions from a reflected state list.
     */
@@ -1829,6 +1955,7 @@ public class )" << file.stem().string() << R"(
     static CameraAdapter gCameraAdapter;
     static GuiAdapter gGuiAdapter;
     static PPAdapter gPPAdapter;
+    static TileMapAdapter gTileMapAdapter;
     static GameStateProvider gProvider;
     static BuiltinPhysicsProvider gBuiltinPhys;
 
@@ -1859,6 +1986,7 @@ extern "C" void RegisterBuiltinComponentAdapters() {
     ComponentRegistry::instance().registerAdapter(&gCameraAdapter);
     ComponentRegistry::instance().registerAdapter(&gGuiAdapter);
     ComponentRegistry::instance().registerAdapter(&gPPAdapter);
+    ComponentRegistry::instance().registerAdapter(&gTileMapAdapter);
     DebugReflection::SetGameStateProvider(&gProvider);
     DebugReflection::PhysicsRegistry::instance().registerProvider(&gBuiltinPhys);
 

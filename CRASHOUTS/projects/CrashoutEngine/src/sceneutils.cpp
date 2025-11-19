@@ -27,6 +27,7 @@ This file implements
 #include "uilayoutcomponent.h"
 #include "textinputcomponent.h"
 #include "buttoncomponent.h"
+#include "tilemapcomponent.h"
 
 #define FONT_SCALE 0.05f
 
@@ -243,7 +244,6 @@ namespace Scene {
 
             }
         }
-
     }
 
     void UpdateScene(CrashoutsEngine::ECS& globalECS) {

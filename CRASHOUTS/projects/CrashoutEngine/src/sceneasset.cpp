@@ -12,6 +12,7 @@
 //
 ///*                                                                   includes
 //----------------------------------------------------------------------------- */
+#include "engine_pch.h"
 
 #include "entitymanager.h"
 #include "assetmanager.h"
@@ -25,13 +26,6 @@
 #include <utility>
 #include <filesystem>
 
-// RapidJSON
-#include <rapidjson/error/en.h>
-#include <rapidjson/stringbuffer.h>
-#include <rapidjson/writer.h>
-#include <rapidjson/prettywriter.h>
-#include <rapidjson/istreamwrapper.h>
-
 // Components
 #include "namecomponent.h"
 #include "transformcomponent.h"
@@ -44,6 +38,7 @@
 #include "ppcomponent.h"
 #include "collidercomponent.h"
 #include "layercomponent.h"
+#include "tilemapcomponent.h"
 
 // FOR GAME GUI
 #include "buttoncomponent.h"
@@ -58,7 +53,7 @@ namespace {
     @param filePath Path to the SceneAsset(JSON) file.
     @return empty string on failure.
     */
-    std::string ReadFileToString(const std::string& filePath) {
+    inline std::string ReadFileToString(const std::string& filePath) {
         std::ifstream file(filePath);
         if (!file.is_open()) {
             std::cout << "ERROR::SCENE::FILE_NOT_READABLE: " << filePath << std::endl;
@@ -76,7 +71,7 @@ namespace {
     @param string containing data to send
     @return bool to determine if successful
     */
-    bool WriteTextToFile(const std::string& filePath, const std::string& content) {
+    inline bool WriteTextToFile(const std::string& filePath, const std::string& content) {
         std::ofstream file(filePath);
         if (!file.is_open()) {
             std::cout << "ERROR: Could not open file for writing: " << filePath << std::endl;
@@ -159,6 +154,7 @@ namespace CrashoutsEngine {
             const char* const AUDIO_COMPONENT           = "audio";  
             const char* const SCRIPT_COMPONENT          = "script";
             const char* const CAMERA_COMPONENT          = "camera";
+            const char* const TILEMAP_COMPONENT          = "tilemap";
             // UI COMPONENT ITEMS
             const char* const BUTTON_COMPONENT          = "button";
             const char* const GUI_COMPONENT             = "gui";
@@ -762,6 +758,54 @@ namespace CrashoutsEngine {
 
                 }
 
+                // Check if TileMapComponent
+                if (entityValue.HasMember(Keys::TILEMAP_COMPONENT) && entityValue[Keys::TILEMAP_COMPONENT].IsObject()) {
+                    TileMapComponent& tm = gECS.AddComponent<TileMapComponent>(newEntity);
+                    const rapidjson::Value& tmValue = entityValue[Keys::TILEMAP_COMPONENT];
+
+                    // 1. tmName (string)
+                    if (tmValue.HasMember("tmName") && tmValue["tmName"].IsString()) {
+                        tm.tmName = tmValue["tmName"].GetString();
+                    }
+
+                    // 2. Dimensions (int)
+                    if (tmValue.HasMember("width") && tmValue["width"].IsInt()) {
+                        tm.width = tmValue["width"].GetInt();
+                    }
+                    if (tmValue.HasMember("height") && tmValue["height"].IsInt()) {
+                        tm.height = tmValue["height"].GetInt();
+                    }
+                    if (tmValue.HasMember("tileSize") && tmValue["tileSize"].IsInt()) {
+                        tm.tileSize = tmValue["tileSize"].GetInt();
+                    }
+
+                    // 3. row (CEVec2)
+                    if (tmValue.HasMember("row") && tmValue["row"].IsObject()) {
+                        const rapidjson::Value& rowValue = tmValue["row"];
+                        if (rowValue.HasMember("x")) tm.row.x = rowValue["x"].GetFloat();
+                        if (rowValue.HasMember("y")) tm.row.y = rowValue["y"].GetFloat();
+                    }
+
+                    // 4. col (CEVec2)
+                    if (tmValue.HasMember("col") && tmValue["col"].IsObject()) {
+                        const rapidjson::Value& colValue = tmValue["col"];
+                        if (colValue.HasMember("x")) tm.col.x = colValue["x"].GetFloat();
+                        if (colValue.HasMember("y")) tm.col.y = colValue["y"].GetFloat();
+                    }
+
+                    // 5. tileIds (std::vector<unsigned int>)
+                    if (tmValue.HasMember("tileIds") && tmValue["tileIds"].IsArray()) {
+                        const rapidjson::Value& tileIdsArray = tmValue["tileIds"];
+                        tm.tileIds.reserve(tileIdsArray.Size());
+
+                        for (rapidjson::SizeType j = 0; j < tileIdsArray.Size(); ++j) {
+                            if (tileIdsArray[j].IsUint()) {
+                                tm.tileIds.push_back(tileIdsArray[j].GetUint());
+                            }
+                        }
+                    }
+                }
+
             }
         }
 
@@ -1275,6 +1319,44 @@ namespace CrashoutsEngine {
                     ppValue.AddMember("active", ppComp.active, allocator);
 
                     entityValue.AddMember(rapidjson::StringRef(Keys::PP_COMPONENT), ppValue, allocator);
+                }
+
+                // =========================================================
+            // O. TileMapComponent
+            // =========================================================
+                if (gECS.HasComponent<TileMapComponent>(id)) {
+                    const TileMapComponent& tmComp = *gECS.GetComponent<TileMapComponent>(id);
+                    rapidjson::Value tmValue(rapidjson::kObjectType);
+
+                    // 1. tmName (string)
+                    tmValue.AddMember("tmName", rapidjson::Value(tmComp.tmName.c_str(), allocator).Move(), allocator);
+
+                    // 2. width, height, tileSize (int)
+                    tmValue.AddMember("width", tmComp.width, allocator);
+                    tmValue.AddMember("height", tmComp.height, allocator);
+                    tmValue.AddMember("tileSize", tmComp.tileSize, allocator);
+
+                    // 3. row (CEVec2 -> JSON Object)
+                    rapidjson::Value rowValue(rapidjson::kObjectType);
+                    rowValue.AddMember("x", tmComp.row.x, allocator);
+                    rowValue.AddMember("y", tmComp.row.y, allocator);
+                    tmValue.AddMember("row", rowValue, allocator);
+
+                    // 4. col (CEVec2 -> JSON Object)
+                    rapidjson::Value colValue(rapidjson::kObjectType);
+                    colValue.AddMember("x", tmComp.col.x, allocator);
+                    colValue.AddMember("y", tmComp.col.y, allocator);
+                    tmValue.AddMember("col", colValue, allocator);
+
+                    // 5. tileIds (std::vector<unsigned int> -> JSON Array)
+                    rapidjson::Value tileIdsArray(rapidjson::kArrayType);
+                    for (unsigned int id : tmComp.tileIds) {
+                        tileIdsArray.PushBack(id, allocator);
+                    }
+                    tmValue.AddMember("tileIds", std::move(tileIdsArray), allocator);
+
+                    // Add the TileMapComponent object to the entity's component list
+                    entityValue.AddMember(rapidjson::StringRef(Keys::TILEMAP_COMPONENT), tmValue, allocator);
                 }
 
                 // Add the finished entity JSON object to the array

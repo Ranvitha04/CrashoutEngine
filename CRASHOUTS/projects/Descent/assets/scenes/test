@@ -1,204 +1,36 @@
 {
     "entities": [
         {
-            "name": "1",
+            "name": "Entity 1",
+            "layer": {
+                "currentLayer": 0
+            },
             "transform": {
                 "rotation": 0.0,
                 "position": {
                     "x": 0.0,
-                    "y": 20.0,
+                    "y": 0.0,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 10.0,
-                    "y": 10.0
-                }
-            },
-            "rigidbody": {
-                "mass": 5.0,
-                "restitutionCoeff": 0.0,
-                "maximumVelocity": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "collider": {
-                "type": 2,
-                "min": {
-                    "x": -5.0,
-                    "y": 15.0,
-                    "z": 0.0
-                },
-                "max": {
-                    "x": 5.0,
-                    "y": 25.0,
-                    "z": 0.0
-                },
-                "rotation": 0.0
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "Concept",
-                "uvSize": {
                     "x": 1.0,
                     "y": 1.0
-                },
-                "color": {
-                    "x": 255.0,
-                    "y": 255.0,
-                    "z": 255.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            }
-        },
-        {
-            "name": "2",
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 0.0,
-                    "y": -10.0,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 80.0,
-                    "y": 10.0
                 }
             },
-            "rigidbody": {
-                "mass": 0.0,
-                "restitutionCoeff": 0.0,
-                "maximumVelocity": {
+            "tilemap": {
+                "tmName": "Entity 1",
+                "width": 0,
+                "height": 0,
+                "tileSize": 32,
+                "row": {
                     "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "collider": {
-                "type": 2,
-                "min": {
-                    "x": -40.0,
-                    "y": -15.0,
-                    "z": 0.0
+                    "y": 0.0
                 },
-                "max": {
-                    "x": 40.0,
-                    "y": -5.0,
-                    "z": 0.0
-                },
-                "rotation": 0.0
-            },
-            "shape": {
-                "useTexture": false,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "color": {
-                    "x": 255.0,
-                    "y": 255.0,
-                    "z": 255.0
-                },
-                "p1": {
+                "col": {
                     "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
+                    "y": 0.0
                 },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            }
-        },
-        {
-            "name": "3",
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 5.0,
-                    "y": 20.0,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 10.0,
-                    "y": 10.0
-                }
-            },
-            "rigidbody": {
-                "mass": 5.0,
-                "restitutionCoeff": 0.0,
-                "maximumVelocity": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "collider": {
-                "type": 2,
-                "min": {
-                    "x": 0.0,
-                    "y": 15.0,
-                    "z": 0.0
-                },
-                "max": {
-                    "x": 10.0,
-                    "y": 25.0,
-                    "z": 0.0
-                },
-                "rotation": 0.0
-            },
-            "shape": {
-                "useTexture": false,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "color": {
-                    "x": 255.0,
-                    "y": 255.0,
-                    "z": 255.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
+                "tileIds": []
             }
         }
     ],

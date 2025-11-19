@@ -10,6 +10,8 @@ context and implement a game loop.
 
 /*                                                                   includes
 ----------------------------------------------------------------------------- */
+#include "engine_pch.h"
+
 // Extension loader library's header must be included before GLFW's header!!!
 #include "engine.h"
 #include "rendering.h"
@@ -19,6 +21,7 @@ context and implement a game loop.
 #include "scriptcomponent.h"
 #include "cameracomponent.h"
 #include "gamestatemanager.h"
+#include "tilemapcomponent.h"
 #include "ppmanager.h"
 #include "textureasset.h"
 #include "scriptsystem.h"
@@ -267,6 +270,14 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
     PerformanceSystem::Get().RenderUI();
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     //glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+    // Cycle and draw Tile Map Editor if needed
+    CrashoutsEngine::ECS::ComponentArray<Component::TileMapComponent>& tmArray = 
+        CrashoutsEngine::ECS::getInstance()->GetComponentArray<Component::TileMapComponent>();
+
+    for (Component::TileMapComponent & tm : tmArray.dense) {
+        CrashoutsEngine::Editor::DrawTileMapEditor(&tm, &tm.pOpen);
+    }
 
     ImGui::End(); // End the Dockspace window begun earlier
 

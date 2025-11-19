@@ -13,7 +13,15 @@
 
 // Vendor Libraries
 //#include <GLFW/glfw3.h>
+
+// RapidJSON
 #include <rapidjson/document.h>
+#include <rapidjson/error/en.h>
+#include <rapidjson/stringbuffer.h>
+#include <rapidjson/writer.h>
+#include <rapidjson/prettywriter.h>
+#include <rapidjson/istreamwrapper.h>
+
 #include <imgui.h>
 #include <fmod.hpp>
 #include <ft2build.h>

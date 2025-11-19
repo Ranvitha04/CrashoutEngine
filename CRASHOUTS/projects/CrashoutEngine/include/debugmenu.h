@@ -15,6 +15,7 @@
 #pragma once
 #include <GLFW/glfw3.h>
 #include <vector>
+#include <string>
 
 // -----------------------------------------------------------------------------
 // Forward declarations
@@ -57,11 +58,12 @@ namespace UI {
         bool drawQuadTree = false;
 
         bool freezeOnCollision = false;
-        bool showAnimation = false; // animation
+        bool showAnimation = false;         // animation
 
         bool drawAllColliders = true;   // draw wireframes for every collider, not just colliding ones
         bool drawVelocities = false;    // draw velocity arrows if RigidBodyComponent exists
-        float overlayThickness = .35f;   // line thickness for wireframes
+        float overlayThickness = .35f;  // line thickness for wireframes
+        float fontScale = 1.0f;         // Set the font scale
     };
 
     // -- Lifecycle ----------------------------------------------------

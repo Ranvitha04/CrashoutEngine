@@ -1565,6 +1565,21 @@ namespace UI { // --------------------------------------------------------------
             ImGui::EndMenu();
         }
 
+        ImGui::SameLine(); 
+        ImGui::SetNextItemWidth(120.0f); // Slightly wider for better dragging feel
+        if (ImGui::DragFloat("##FontScale", &ui.fontScale,
+            0.01f,      // The sensitivity/speed: 0.01f changes the value by 1% per mouse unit
+            0.8f,       // New Minimum: Allows scaling down slightly
+            2.5f,       // New Maximum: Allows larger scaling up
+            "Scale: %.2f")) // New Format: Shows two decimal places for precision
+        {
+            // Ensure the scale doesn't go below the intended minimum if dragged too fast
+            if (ui.fontScale < 0.8f) ui.fontScale = 0.8f;
+
+            // Apply the new scale globally
+            ImGui::GetIO().FontGlobalScale = ui.fontScale;
+        }
+
         ImGui::EndMenuBar();
     }
 
@@ -1586,6 +1601,7 @@ namespace UI { // --------------------------------------------------------------
             // Play Stop Pause buttons
             // Play
             if (ImGui::Button("PLAY", ImVec2(70, 25))) {
+                if (engineState == EngineState::STOP && !currSceneName.empty()) Serialization::SaveScenes(currSceneName);
                 engineState = EngineState::PLAY;
                 CrashoutsEngine::RenderCamera::engineCamera.SetPostiion(CEVec3{ 0.f, 0.f, 0.f });
                 CrashoutsEngine::RenderCamera::engineCamera.SetZoom(1.f);
@@ -1599,12 +1615,15 @@ namespace UI { // --------------------------------------------------------------
             ImGui::SameLine();
             // Pause
             if (ImGui::Button("PAUSE", ImVec2(70, 25))) {
+                if (engineState == EngineState::STOP && !currSceneName.empty()) Serialization::SaveScenes(currSceneName);
                 engineState = EngineState::PAUSE;
             }
             ImGui::SameLine();
             // Stop
             if (ImGui::Button("STOP", ImVec2(70, 25))) {
-                if(currSceneName.empty()) RestartGameState();
+                if (engineState == EngineState::STOP && !currSceneName.empty()) Serialization::SaveScenes(currSceneName);
+
+                if(currSceneName.empty()) RestartGameState();       // Legacy scene system
                 else {
                     ECS::getInstance()->Reset();
                     Serialization::LoadScenes(currSceneName);
