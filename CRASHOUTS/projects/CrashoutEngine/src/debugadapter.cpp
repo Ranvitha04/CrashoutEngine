@@ -992,9 +992,18 @@ namespace {
         }
         void remove(ECS& ecs, Entity e) override {
             if (has(ecs, e)) {
-                if (auto* c = ecs.GetComponent<Component::AudioEmitterComponent>(e);
-                    c && c->inst) {
-                    c->inst->stop(FMOD_STUDIO_STOP_IMMEDIATE); c->inst->release(); c->inst = nullptr;
+                if (auto* c = ecs.GetComponent<Component::AudioEmitterComponent>(e)) {
+
+                    if (c->inst) {
+                        c->inst->stop(FMOD_STUDIO_STOP_IMMEDIATE);
+                        c->inst->release();
+                        c->inst = nullptr;
+                    }
+
+                    if (c->channel) {
+                        c->channel->stop();
+                        c->channel = nullptr;
+                    }
                 }
                 ecs.RemoveComponent<Component::AudioEmitterComponent>(e);
             }
@@ -1119,15 +1128,20 @@ namespace {
             ImGui::Checkbox("3D Spatial", &c->spatial3D);
 
             auto& audio = Audio::AudioSystem::instance();
-
+            bool hasRunning = (c->inst != nullptr) || (c->channel != nullptr);
             // Create/Play/Stop lifecycle
-            if (ImGui::Button(c->inst ? "Restart" : "Play")) {
+            if (ImGui::Button(hasRunning ? "Restart" : "Play")) {
                 if (!c->eventPath.empty()) {
                     // stop old instance if any
                     if (c->inst) {
                         c->inst->stop(FMOD_STUDIO_STOP_IMMEDIATE);
                         c->inst->release();
                         c->inst = nullptr;
+                    }
+
+                    if (c->channel) {
+                        c->channel->stop();
+                        c->channel = nullptr;
                     }
 
                     // --- FMOD Studio event path ---
@@ -1149,22 +1163,49 @@ namespace {
                     // --- raw file path under assets/audio (wav/ogg/mp3) ---
                     else {
                         std::string path = c->eventPath;
-
-                        // if it doesn't already start with assets/, assume relative to assets/audio
                         if (path.rfind("assets/", 0) != 0)
                             path = "assets/audio/" + path;
 
-                        // you can choose which one you call; SFX is fine for now:
-                        audio.playSFXFile(path);
-                        // or: audio.playMusicFile(path, /*loop=*/true);
+                        // stop previous raw channel
+                        if (c->channel) {
+                            c->channel->stop();
+                            c->channel = nullptr;
+                        }
+
+                        // play new raw file and store channel
+                        c->channel = audio.playSFXFileEx(path);
+
+                        if (c->channel)
+                        {
+                            c->channel->setVolume(c->volume);
+                            c->channel->setPitch(c->pitch);
+                        }
                     }
                 }
             }
-
+            
             ImGui::SameLine();
-            if (ImGui::Button("Stop") && c->inst) {
-                c->inst->stop(FMOD_STUDIO_STOP_ALLOWFADEOUT);
+            if (ImGui::Button("Stop"))
+            {
+                if (c->inst) {
+                    c->inst->stop(FMOD_STUDIO_STOP_ALLOWFADEOUT);
+                    c->inst = nullptr;
+                }
+                if (c->channel) {
+                    c->channel->stop();
+                    c->channel = nullptr;
+                }
             }
+
+            if (c->channel) {
+                bool isPlaying = false;
+                c->channel->isPlaying(&isPlaying);
+                ImGui::Text("Channel valid: %s", isPlaying ? "PLAYING" : "NOT PLAYING");
+            }
+            else {
+                ImGui::Text("Channel is NULL!");
+            }
+
 
             // Live controls for a running instance
             if (c->inst) {

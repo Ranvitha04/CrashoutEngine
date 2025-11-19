@@ -13,342 +13,846 @@
 
 */
 
-
 #include "audioSystem.h"
+
 #include <cstdio>
 #include <algorithm>
 
-using namespace CrashoutsEngine::Audio;
-//One audio system
-AudioSystem& AudioSystem::instance() {
-    static AudioSystem s;
-    return s;
-}
-
-bool AudioSystem::ok(FMOD_RESULT r, const char* where) {
-    if (r != FMOD_OK) {
-        std::fprintf(stderr, "[FMOD] %s -> %d (%s)\n", where, r, FMOD_ErrorString(r));
-        return false;
-    }
-    return true;
-}
-static std::string joinPath(const std::string& a, const std::string& b) {
-#ifdef _WIN32
-    const char sep = '\\';
-#else
-    const char sep = '/';
-#endif
-    if (a.empty()) return b;
-    if (!a.empty() && (a.back() == '\\' || a.back() == '/')) return a + b;
-    return a + sep + b;
-}
-//Start fmod to play sounds
-bool AudioSystem::init(const std::string& banksDir) {
-    mBanksDir = banksDir;
-    // Create the main FMOD Studio system 
-    FMOD::Studio::System* rawStudio = nullptr;
-    if (!ok(FMOD::Studio::System::create(&rawStudio), "System::create")) return false;
-    mStudio.reset(rawStudio);
-    //Turn on the system with some settings
-    if (!ok(mStudio->initialize(1024, FMOD_STUDIO_INIT_NORMAL, FMOD_INIT_NORMAL, nullptr),
-        "System::initialize")) return false;
-
-    FMOD::System* rawCore = nullptr;
-    if (!ok(mStudio->getCoreSystem(&rawCore), "getCoreSystem")) return false;
-    mCore.reset(rawCore); 
-    FMOD::ChannelGroup* master = nullptr;
-    ok(mCore->getMasterChannelGroup(&master), "getMasterChannelGroup");
-
-    ok(mCore->createChannelGroup("Music", &mMusicGroup), "createChannelGroup Music");
-    ok(mCore->createChannelGroup("SFX", &mSFXGroup), "createChannelGroup SFX");
-
-    ok(master->addGroup(mMusicGroup), "master.addGroup(Music)");
-    ok(master->addGroup(mSFXGroup), "master.addGroup(SFX)");
-
-    //Load main bank
-    //loadBank("banks/Master.strings.bank");
-    //loadBank("banks/Master.bank");
-    return true;
-}
-//Update fmod
-void AudioSystem::update() {
-    if (mStudio) mStudio->update();
-}
-//Close everything
-void AudioSystem::shutdown() {
-    unloadAllBanks();
-    mStudio.reset();
-    mCore.reset();
-}
-//load bank from file
-bool AudioSystem::loadBank(const std::string& bankFile) {
-    if (!mStudio) return false;
-    if (mBanks.count(bankFile)) return true;
-
-    std::string full = joinPath(mBanksDir, bankFile);  
-    FMOD::Studio::Bank* b = 0;
-    if (!ok(mStudio->loadBankFile(full.c_str(),
-        FMOD_STUDIO_LOAD_BANK_NORMAL, &b),
-        ("loadBankFile " + bankFile).c_str())) {
-        return false;
-    }
-
-    mBanks.insert(std::make_pair(bankFile, b));
-    if (mStudio) mStudio->flushCommands();
-    return true;
-}
-//Stop all sound
-bool AudioSystem::stopAllOnBus(const std::string& busPath, bool fadeOut) {
-    if (!mStudio) return false;
-
-    FMOD::Studio::Bus* bus = nullptr;
-    FMOD_RESULT r = mStudio->getBus(busPath.c_str(), &bus);
-    ok(r, "getBus");                 
-    if (r != FMOD_OK || !bus) return false;
-
-    r = bus->stopAllEvents(fadeOut ? FMOD_STUDIO_STOP_ALLOWFADEOUT
-        : FMOD_STUDIO_STOP_IMMEDIATE);
-    ok(r, "stopAllEvents");            
-    mStudio->flushCommands();          
-    return r == FMOD_OK;
-}
-void AudioSystem::stopAllRaw() {
-    if (mMusicGroup) mMusicGroup->stop();
-    if (mSFXGroup)  mSFXGroup->stop();
-}
-bool AudioSystem::stopMusicGroup() {
-    if (!mMusicGroup) return false;
-    return mMusicGroup->stop() == FMOD_OK;
-}
-
-bool AudioSystem::stopSFXGroup() {
-    if (!mSFXGroup) return false;
-    return mSFXGroup->stop() == FMOD_OK;
-}
-
-bool AudioSystem::stopAll(bool fadeOut) {
-    // Master bus stops *everything* (music + sfx)
-    return stopAllOnBus("bus:/", fadeOut);
-}
-//Testing volume
-bool AudioSystem::setVCAVolume(const std::string& vcaPath, float vol01) {
-    if (!mStudio) return false;
-    FMOD::Studio::VCA* vca = nullptr;
-    FMOD_RESULT r = mStudio->getVCA(vcaPath.c_str(), &vca);
-    ok(r, "getVCA");
-    if (r != FMOD_OK || !vca) return false;
-
-    r = vca->setVolume(vol01);
-    if (mStudio) mStudio->flushCommands();
-    return r == FMOD_OK;
-}
-
-bool AudioSystem::setBusVolume(const std::string& busPath, float vol01)
+namespace CrashoutsEngine::Audio
 {
-    FMOD::Studio::Bus* bus = nullptr;
-    FMOD_RESULT result = mStudio->getBus(busPath.c_str(), &bus);
-    if (result != FMOD_OK || !bus) return false;
-    return bus->setVolume(vol01) == FMOD_OK;
-}
-//Unload
-void AudioSystem::unloadAllBanks() {
-    for (std::unordered_map<std::string, FMOD::Studio::Bank*>::iterator it = mBanks.begin();
-        it != mBanks.end(); ++it) {
-        FMOD::Studio::Bank* bank = it->second;
-        if (bank) bank->unload();
-    }
-    mBanks.clear();
-}
+    // -------------------------------------------------------------------------
+    // Small helpers
+    // -------------------------------------------------------------------------
 
-
-FMOD::Studio::EventDescription* AudioSystem::getEventDesc(const std::string& path) {
-    if (!mStudio) return nullptr;
-    FMOD::Studio::EventDescription* d = nullptr;
-    if (!ok(mStudio->getEvent(path.c_str(), &d), "getEvent")) return nullptr;
-    return d;
-}
-//Play one song
-bool AudioSystem::playOneShot(const std::string& eventPath) {
-    auto* d = getEventDesc(eventPath);
-    if (!d) return false;
-    FMOD::Studio::EventInstance* inst = nullptr;
-    if (!ok(d->createInstance(&inst), "createInstance")) return false;
-    ok(inst->start(), "start");
-    ok(inst->release(), "release");
-    return true;
-}
-
-FMOD::Studio::EventInstance* AudioSystem::createInstance(const std::string& eventPath) {
-    auto* d = getEventDesc(eventPath);
-    if (!d) return nullptr;
-    FMOD::Studio::EventInstance* inst = nullptr;
-    if (!ok(d->createInstance(&inst), "createInstance")) return nullptr;
-    return inst; 
-}
-
-bool AudioSystem::listAllEventPaths(std::vector<std::string>& out) {
-    out.clear();
-    if (!mStudio) return false;
-    mStudio->flushCommands();
-
-    std::vector<std::string> paths;
-    for (auto& kv : mBanks) {
-        FMOD::Studio::Bank* bank = kv.second;
-        if (!bank) continue;
-
-        int evCount = 0;
-        if (!ok(bank->getEventCount(&evCount), "Bank::getEventCount")) continue;
-        if (evCount <= 0) continue;
-
-        std::vector<FMOD::Studio::EventDescription*> evs(evCount, nullptr);
-        if (!ok(bank->getEventList(evs.data(), evCount, &evCount), "Bank::getEventList")) continue;
-
-        for (int i = 0; i < evCount; ++i) {
-            char path[512] = {};
-            int retrieved = 0;
-            if (evs[i] && evs[i]->getPath(path, sizeof(path), &retrieved) == FMOD_OK && retrieved > 0) {
-                paths.emplace_back(path);
-            }
-        }
+    /*!
+    @brief Joins two path segments using the correct platform-specific separator.
+    */
+    static std::string joinPath(const std::string& a, const std::string& b)
+    {
+#ifdef _WIN32
+        const char sep = '\\';
+#else
+        const char sep = '/';
+#endif
+        if (a.empty())
+            return b;
+        if (!a.empty() && (a.back() == '\\' || a.back() == '/'))
+            return a + b;
+        return a + sep + b;
     }
 
-    std::sort(paths.begin(), paths.end());
-    paths.erase(std::unique(paths.begin(), paths.end()), paths.end());
-    out.swap(paths);
-    return true;
-}
-
-bool AudioSystem::listEventPathsFromBank(const std::string& bankFile, std::vector<std::string>& out) {
-    out.clear();
-    if (!mStudio) return false;
-
-    // Use already-loaded bank if present; else load temporarily.
-    FMOD::Studio::Bank* bank = nullptr;
-    auto it = mBanks.find(bankFile);
-    bool tempLoaded = false;
-
-    if (it != mBanks.end()) {
-        bank = it->second;
-    }
-    else {
-        std::string full = joinPath(mBanksDir, bankFile);
-        if (!ok(mStudio->loadBankFile(full.c_str(), FMOD_STUDIO_LOAD_BANK_NORMAL, &bank), "loadBankFile (inspect)")) {
-            return false;
-        }
-        tempLoaded = true;
-    }
-
-    int evCount = 0;
-    ok(bank->getEventCount(&evCount), "Bank::getEventCount");
-    if (evCount > 0) {
-        std::vector<FMOD::Studio::EventDescription*> evs(evCount, nullptr);
-        ok(bank->getEventList(evs.data(), evCount, &evCount), "Bank::getEventList");
-        for (int i = 0; i < evCount; ++i) {
-            char path[512] = {};
-            int retrieved = 0;
-            if (evs[i] && evs[i]->getPath(path, sizeof(path), &retrieved) == FMOD_OK && retrieved > 0) {
-                out.emplace_back(path);
-            }
-        }
-        std::sort(out.begin(), out.end());
-        out.erase(std::unique(out.begin(), out.end()), out.end());
-    }
-
-    if (tempLoaded && bank) bank->unload();
-    return true;
-}
-
-void AudioSystem::inspectBankToConsole(const std::string& bankFile) {
-    FMOD::Studio::Bank* bank = nullptr;
-    std::string full = joinPath(mBanksDir, bankFile);
-    if (!ok(mStudio->loadBankFile(full.c_str(), FMOD_STUDIO_LOAD_BANK_NORMAL, &bank), "loadBankFile (inspect console)"))
-        return;
-
-    int count = 0;
-    std::fprintf(stdout, "\n--- Inspecting bank: %s ---\n", bankFile.c_str());
-
-    // Events
-    ok(bank->getEventCount(&count), "getEventCount");
-    if (count > 0) {
-        std::vector<FMOD::Studio::EventDescription*> list(count);
-        ok(bank->getEventList(list.data(), count, &count), "getEventList");
-        std::fprintf(stdout, "Events (%d):\n", count);
-        for (auto* d : list) {
-            char p[512]; int n = 0;
-            if (d && d->getPath(p, sizeof(p), &n) == FMOD_OK) std::fprintf(stdout, "  %s\n", p);
-        }
-    }
-
-    // Buses
-    ok(bank->getBusCount(&count), "getBusCount");
-    if (count > 0) {
-        std::vector<FMOD::Studio::Bus*> list(count);
-        ok(bank->getBusList(list.data(), count, &count), "getBusList");
-        std::fprintf(stdout, "Buses (%d):\n", count);
-        for (auto* b : list) {
-            char p[512]; int n = 0;
-            if (b && b->getPath(p, sizeof(p), &n) == FMOD_OK) std::fprintf(stdout, "  %s\n", p);
-        }
-    }
-
-    // VCAs
-    ok(bank->getVCACount(&count), "getVCACount");
-    if (count > 0) {
-        std::vector<FMOD::Studio::VCA*> list(count);
-        ok(bank->getVCAList(list.data(), count, &count), "getVCAList");
-        std::fprintf(stdout, "VCAs (%d):\n", count);
-        for (auto* v : list) {
-            char p[512]; int n = 0;
-            if (v && v->getPath(p, sizeof(p), &n) == FMOD_OK) std::fprintf(stdout, "  %s\n", p);
-        }
-    }
-    bank->unload();
-
-}
-    static FMOD_MODE MusicMode(bool loop) {
+    /*!
+    @brief Returns the FMOD_MODE flags used for music sounds based on loop state.
+    */
+    static FMOD_MODE MusicMode(bool loop)
+    {
         FMOD_MODE m = FMOD_DEFAULT | FMOD_CREATESTREAM | FMOD_2D;
-        if (loop) m |= FMOD_LOOP_NORMAL;
+        if (loop)
+            m |= FMOD_LOOP_NORMAL;
+        else
+            m |= FMOD_LOOP_OFF;
         return m;
     }
 
-    bool AudioSystem::playMusicFile(const std::string & path, bool loop) {
-        if (!mCore || !mMusicGroup) return false;
+    // -------------------------------------------------------------------------
+    // Singleton & error helper
+    // -------------------------------------------------------------------------
 
-        FMOD::Sound* snd = nullptr;
-        if (!ok(mCore->createSound(path.c_str(), MusicMode(loop), nullptr, &snd), "createSound(music)"))
-            return false;
+    /*!
+    @brief Returns the global AudioSystem singleton instance.
+    */
+    AudioSystem& AudioSystem::instance()
+    {
+        static AudioSystem s;
+        return s;
+    }
 
-        FMOD::Channel* ch = nullptr;
-        if (!ok(mCore->playSound(snd, mMusicGroup, false, &ch), "playSound(music)")) {
-            snd->release();
+    /*!
+    @brief Logs an FMOD error message and returns false if the result is not FMOD_OK.
+    */
+    bool AudioSystem::ok(FMOD_RESULT r, const char* where)
+    {
+        if (r != FMOD_OK)
+        {
+            std::fprintf(stderr, "[FMOD] %s -> %d (%s)\n",
+                where, r, FMOD_ErrorString(r));
             return false;
         }
-        if (ch) ch->setMode(FMOD_2D);
-      
         return true;
     }
 
-    bool AudioSystem::playSFXFile(const std::string & path) {
-        if (!mCore || !mSFXGroup) return false;
+    // -------------------------------------------------------------------------
+    // Lifetime
+    // -------------------------------------------------------------------------
 
-        FMOD::Sound* snd = nullptr;
-        if (!ok(mCore->createSound(path.c_str(), FMOD_DEFAULT | FMOD_2D, nullptr, &snd), "createSound(sfx)"))
+    /*!
+    @brief Initializes the FMOD Studio and Core systems and sets up channel groups for music and SFX.
+    */
+    bool AudioSystem::init(const std::string& banksDir)
+    {
+        mBanksDir = banksDir;
+
+        // Create Studio system
+        FMOD::Studio::System* rawStudio = nullptr;
+        if (!ok(FMOD::Studio::System::create(&rawStudio), "System::create"))
+            return false;
+        mStudio.reset(rawStudio);
+
+        // Initialize Studio system
+        if (!ok(mStudio->initialize(1024,
+            FMOD_STUDIO_INIT_NORMAL,
+            FMOD_INIT_NORMAL,
+            nullptr),
+            "System::initialize"))
             return false;
 
-        FMOD::Channel* ch = nullptr;
-        if (!ok(mCore->playSound(snd, mSFXGroup, false, &ch), "playSound(sfx)")) {
-            snd->release();
+        // Get Core system
+        FMOD::System* rawCore = nullptr;
+        if (!ok(mStudio->getCoreSystem(&rawCore), "getCoreSystem"))
             return false;
+        mCore.reset(rawCore);
+
+        // Create channel groups for raw-file playback
+        FMOD::ChannelGroup* master = nullptr;
+        ok(mCore->getMasterChannelGroup(&master), "getMasterChannelGroup");
+
+        ok(mCore->createChannelGroup("Music", &mMusicGroup),
+            "createChannelGroup Music");
+        ok(mCore->createChannelGroup("SFX", &mSFXGroup),
+            "createChannelGroup SFX");
+
+        if (master)
+        {
+            ok(master->addGroup(mMusicGroup), "master.addGroup(Music)");
+            ok(master->addGroup(mSFXGroup), "master.addGroup(SFX)");
         }
-        if (ch) ch->setMode(FMOD_2D);
-        snd->release(); 
+
+        // Banks are loaded on demand via loadBank()
         return true;
     }
 
-    bool AudioSystem::setMusicGroupVolume(float v01) {
+    /*!
+    @brief Updates the FMOD Studio system; must be called once per frame.
+    */
+    void AudioSystem::update()
+    {
+        if (mStudio)
+            mStudio->update();
+    }
+
+    /*!
+    @brief Shuts down the audio system, unloading banks and releasing FMOD resources.
+    */
+    void AudioSystem::shutdown()
+    {
+        // Stop any tagged channels we tracked
+        mTaggedChannels.clear();
+
+        unloadAllBanks();
+        mStudio.reset();
+        mCore.reset();
+
+        mMusicGroup = nullptr;
+        mSFXGroup = nullptr;
+    }
+
+    // -------------------------------------------------------------------------
+    // Bank management
+    // -------------------------------------------------------------------------
+
+    /*!
+    @brief Loads a FMOD Studio bank file from the configured banks directory.
+    */
+    bool AudioSystem::loadBank(const std::string& bankFile)
+    {
+        if (!mStudio)
+            return false;
+
+        // Already loaded
+        if (mBanks.count(bankFile))
+            return true;
+
+        std::string full = joinPath(mBanksDir, bankFile);
+        FMOD::Studio::Bank* b = nullptr;
+
+        if (!ok(mStudio->loadBankFile(full.c_str(),
+            FMOD_STUDIO_LOAD_BANK_NORMAL,
+            &b),
+            ("loadBankFile " + bankFile).c_str()))
+        {
+            return false;
+        }
+
+        mBanks.insert(std::make_pair(bankFile, b));
+
+        if (mStudio)
+            mStudio->flushCommands();
+
+        return true;
+    }
+
+    /*!
+    @brief Unloads all currently loaded FMOD Studio banks.
+    */
+    void AudioSystem::unloadAllBanks()
+    {
+        for (auto& kv : mBanks)
+        {
+            FMOD::Studio::Bank* bank = kv.second;
+            if (bank)
+                bank->unload();
+        }
+        mBanks.clear();
+    }
+
+    // -------------------------------------------------------------------------
+    // Bus / group controls
+    // -------------------------------------------------------------------------
+
+    /*!
+    @brief Stops all events playing on the specified FMOD Studio bus.
+    */
+    bool AudioSystem::stopAllOnBus(const std::string& busPath, bool fadeOut)
+    {
+        if (!mStudio)
+            return false;
+
+        FMOD::Studio::Bus* bus = nullptr;
+        FMOD_RESULT r = mStudio->getBus(busPath.c_str(), &bus);
+        ok(r, "getBus");
+        if (r != FMOD_OK || !bus)
+            return false;
+
+        r = bus->stopAllEvents(fadeOut
+            ? FMOD_STUDIO_STOP_ALLOWFADEOUT
+            : FMOD_STUDIO_STOP_IMMEDIATE);
+        ok(r, "stopAllEvents");
+
+        if (mStudio)
+            mStudio->flushCommands();
+
+        return r == FMOD_OK;
+    }
+
+    /*!
+    @brief Stops all sounds playing on the raw music and SFX channel groups.
+    */
+    void AudioSystem::stopAllRaw()
+    {
+        if (mMusicGroup)
+            mMusicGroup->stop();
+        if (mSFXGroup)
+            mSFXGroup->stop();
+
+        // Tagged channels are no longer valid.
+        mTaggedChannels.clear();
+    }
+
+    /*!
+    @brief Stops all events on the master bus, including music and SFX.
+    */
+    bool AudioSystem::stopAll(bool fadeOut)
+    {
+        // Master bus stops *everything* (music + sfx)
+        return stopAllOnBus("bus:/", fadeOut);
+    }
+
+    /*!
+    @brief Stops all sounds currently playing on the music channel group.
+    */
+    bool AudioSystem::stopMusicGroup()
+    {
+        if (!mMusicGroup)
+            return false;
+        return mMusicGroup->stop() == FMOD_OK;
+    }
+
+    /*!
+    @brief Stops all sounds currently playing on the SFX channel group.
+    */
+    bool AudioSystem::stopSFXGroup()
+    {
+        if (!mSFXGroup)
+            return false;
+        return mSFXGroup->stop() == FMOD_OK;
+    }
+
+    /*!
+    @brief Sets the volume of a FMOD Studio bus identified by its path.
+    */
+    bool AudioSystem::setBusVolume(const std::string& busPath, float vol01)
+    {
+        if (!mStudio)
+            return false;
+
+        FMOD::Studio::Bus* bus = nullptr;
+        FMOD_RESULT result = mStudio->getBus(busPath.c_str(), &bus);
+        ok(result, "getBus");
+        if (result != FMOD_OK || !bus)
+            return false;
+
+        result = bus->setVolume(vol01);
+        ok(result, "Bus::setVolume");
+
+        if (mStudio)
+            mStudio->flushCommands();
+
+        return result == FMOD_OK;
+    }
+
+    /*!
+    @brief Sets the volume of a VCA identified by its FMOD path.
+    */
+    bool AudioSystem::setVCAVolume(const std::string& vcaPath, float vol01)
+    {
+        if (!mStudio)
+            return false;
+
+        FMOD::Studio::VCA* vca = nullptr;
+        FMOD_RESULT r = mStudio->getVCA(vcaPath.c_str(), &vca);
+        ok(r, "getVCA");
+        if (r != FMOD_OK || !vca)
+            return false;
+
+        r = vca->setVolume(vol01);
+        ok(r, "VCA::setVolume");
+
+        if (mStudio)
+            mStudio->flushCommands();
+
+        return r == FMOD_OK;
+    }
+
+    /*!
+    @brief Mutes or unmutes a FMOD Studio bus.
+    */
+    bool AudioSystem::setBusMute(const std::string& busPath, bool muted)
+    {
+        if (!mStudio)
+            return false;
+
+        FMOD::Studio::Bus* bus = nullptr;
+        FMOD_RESULT result = mStudio->getBus(busPath.c_str(), &bus);
+        ok(result, "getBus");
+        if (result != FMOD_OK || !bus)
+            return false;
+
+        result = bus->setMute(muted);
+        ok(result, "Bus::setMute");
+
+        if (mStudio)
+            mStudio->flushCommands();
+
+        return result == FMOD_OK;
+    }
+
+    /*!
+    @brief Stops all events on a bus and then mutes it.
+    */
+    bool AudioSystem::stopAndMuteBus(const std::string& busPath, bool fadeOut)
+    {
+        // Convenience: stop all events on the bus, then mute it.
+        if (!stopAllOnBus(busPath, fadeOut))
+            return false;
+        return setBusMute(busPath, true);
+    }
+
+    // -------------------------------------------------------------------------
+    // Event-based (Studio) playback
+    // -------------------------------------------------------------------------
+
+    /*!
+    @brief Retrieves the FMOD event description for a given event path.
+    */
+    FMOD::Studio::EventDescription* AudioSystem::getEventDesc(const std::string& path)
+    {
+        if (!mStudio)
+            return nullptr;
+
+        FMOD::Studio::EventDescription* d = nullptr;
+        if (!ok(mStudio->getEvent(path.c_str(), &d), "getEvent"))
+            return nullptr;
+        return d;
+    }
+
+    /*!
+    @brief Plays a one-shot FMOD Studio event and immediately releases the instance.
+    */
+    bool AudioSystem::playOneShot(const std::string& eventPath)
+    {
+        auto* d = getEventDesc(eventPath);
+        if (!d)
+            return false;
+
+        FMOD::Studio::EventInstance* inst = nullptr;
+        if (!ok(d->createInstance(&inst), "createInstance"))
+            return false;
+
+        ok(inst->start(), "EventInstance::start");
+        ok(inst->release(), "EventInstance::release");
+        return true;
+    }
+
+    /*!
+    @brief Creates a FMOD Studio event instance for long-lived playback or manual control.
+    */
+    FMOD::Studio::EventInstance* AudioSystem::createInstance(const std::string& eventPath)
+    {
+        auto* d = getEventDesc(eventPath);
+        if (!d)
+            return nullptr;
+
+        FMOD::Studio::EventInstance* inst = nullptr;
+        if (!ok(d->createInstance(&inst), "createInstance"))
+            return nullptr;
+        return inst;
+    }
+
+    // -------------------------------------------------------------------------
+    // Introspection / debug helpers
+    // -------------------------------------------------------------------------
+
+    /*!
+    @brief Collects the paths of all events from all loaded banks.
+    */
+    bool AudioSystem::listAllEventPaths(std::vector<std::string>& out)
+    {
+        out.clear();
+        if (!mStudio)
+            return false;
+
+        mStudio->flushCommands();
+
+        std::vector<std::string> paths;
+
+        for (auto& kv : mBanks)
+        {
+            FMOD::Studio::Bank* bank = kv.second;
+            if (!bank)
+                continue;
+
+            int evCount = 0;
+            if (!ok(bank->getEventCount(&evCount), "Bank::getEventCount"))
+                continue;
+            if (evCount <= 0)
+                continue;
+
+            std::vector<FMOD::Studio::EventDescription*> evs(evCount, nullptr);
+            if (!ok(bank->getEventList(evs.data(), evCount, &evCount),
+                "Bank::getEventList"))
+                continue;
+
+            for (int i = 0; i < evCount; ++i)
+            {
+                char path[512] = {};
+                int  retrieved = 0;
+                if (evs[i] &&
+                    evs[i]->getPath(path, sizeof(path), &retrieved) == FMOD_OK &&
+                    retrieved > 0)
+                {
+                    paths.emplace_back(path);
+                }
+            }
+        }
+
+        std::sort(paths.begin(), paths.end());
+        paths.erase(std::unique(paths.begin(), paths.end()), paths.end());
+        out.swap(paths);
+        return true;
+    }
+
+    /*!
+    @brief Collects the paths of all events from a specific bank file.
+    */
+    bool AudioSystem::listEventPathsFromBank(const std::string& bankFile,
+        std::vector<std::string>& out)
+    {
+        out.clear();
+        if (!mStudio)
+            return false;
+
+        // Use already-loaded bank if present; else load temporarily.
+        FMOD::Studio::Bank* bank = nullptr;
+        bool                tempLoaded = false;
+
+        auto it = mBanks.find(bankFile);
+        if (it != mBanks.end())
+        {
+            bank = it->second;
+        }
+        else
+        {
+            std::string full = joinPath(mBanksDir, bankFile);
+            if (!ok(mStudio->loadBankFile(full.c_str(),
+                FMOD_STUDIO_LOAD_BANK_NORMAL,
+                &bank),
+                "loadBankFile (inspect)"))
+            {
+                return false;
+            }
+            tempLoaded = true;
+        }
+
+        int evCount = 0;
+        ok(bank->getEventCount(&evCount), "Bank::getEventCount");
+        if (evCount > 0)
+        {
+            std::vector<FMOD::Studio::EventDescription*> evs(evCount, nullptr);
+            ok(bank->getEventList(evs.data(), evCount, &evCount),
+                "Bank::getEventList");
+
+            for (int i = 0; i < evCount; ++i)
+            {
+                char path[512] = {};
+                int  retrieved = 0;
+                if (evs[i] &&
+                    evs[i]->getPath(path, sizeof(path), &retrieved) == FMOD_OK &&
+                    retrieved > 0)
+                {
+                    out.emplace_back(path);
+                }
+            }
+
+            std::sort(out.begin(), out.end());
+            out.erase(std::unique(out.begin(), out.end()), out.end());
+        }
+
+        if (tempLoaded && bank)
+            bank->unload();
+
+        return true;
+    }
+
+    /*!
+    @brief Prints information about events, buses, and VCAs in a bank to the console.
+    */
+    void AudioSystem::inspectBankToConsole(const std::string& bankFile)
+    {
+        if (!mStudio)
+            return;
+
+        FMOD::Studio::Bank* bank = nullptr;
+        std::string         full = joinPath(mBanksDir, bankFile);
+
+        if (!ok(mStudio->loadBankFile(full.c_str(),
+            FMOD_STUDIO_LOAD_BANK_NORMAL,
+            &bank),
+            "loadBankFile (inspect console)"))
+        {
+            return;
+        }
+
+        int count = 0;
+        std::fprintf(stdout, "\n--- Inspecting bank: %s ---\n", bankFile.c_str());
+
+        // Events
+        ok(bank->getEventCount(&count), "getEventCount");
+        if (count > 0)
+        {
+            std::vector<FMOD::Studio::EventDescription*> list(count);
+            ok(bank->getEventList(list.data(), count, &count), "getEventList");
+            std::fprintf(stdout, "Events (%d):\n", count);
+            for (auto* d : list)
+            {
+                char p[512];
+                int  n = 0;
+                if (d && d->getPath(p, sizeof(p), &n) == FMOD_OK)
+                    std::fprintf(stdout, "  %s\n", p);
+            }
+        }
+
+        // Buses
+        ok(bank->getBusCount(&count), "getBusCount");
+        if (count > 0)
+        {
+            std::vector<FMOD::Studio::Bus*> list(count);
+            ok(bank->getBusList(list.data(), count, &count), "getBusList");
+            std::fprintf(stdout, "Buses (%d):\n", count);
+            for (auto* b : list)
+            {
+                char p[512];
+                int  n = 0;
+                if (b && b->getPath(p, sizeof(p), &n) == FMOD_OK)
+                    std::fprintf(stdout, "  %s\n", p);
+            }
+        }
+
+        // VCAs
+        ok(bank->getVCACount(&count), "getVCACount");
+        if (count > 0)
+        {
+            std::vector<FMOD::Studio::VCA*> list(count);
+            ok(bank->getVCAList(list.data(), count, &count), "getVCAList");
+            std::fprintf(stdout, "VCAs (%d):\n", count);
+            for (auto* v : list)
+            {
+                char p[512];
+                int  n = 0;
+                if (v && v->getPath(p, sizeof(p), &n) == FMOD_OK)
+                    std::fprintf(stdout, "  %s\n", p);
+            }
+        }
+
+        bank->unload();
+    }
+
+    // -------------------------------------------------------------------------
+    // File-based playback (Core API)
+    // -------------------------------------------------------------------------
+
+    /*!
+    @brief Plays a music file through the music channel group, optionally looping it.
+    */
+    bool AudioSystem::playMusicFile(const std::string& path, bool loop)
+    {
+        if (!mCore || !mMusicGroup)
+            return false;
+
+        FMOD::Sound* snd = nullptr;
+        if (!ok(mCore->createSound(path.c_str(),
+            MusicMode(loop),
+            nullptr,
+            &snd),
+            "createSound(music)"))
+        {
+            return false;
+        }
+
+        FMOD::Channel* ch = nullptr;
+        if (!ok(mCore->playSound(snd, mMusicGroup, false, &ch),
+            "playSound(music)"))
+        {
+            snd->release();
+            return false;
+        }
+
+        if (ch)
+            ch->setMode(FMOD_2D);
+
+        // Note: matching your original behavior, we don't release snd here so
+        // FMOD can keep streaming. If you want fire-and-forget, call release().
+        return true;
+    }
+
+    /*!
+    @brief Plays a one-shot SFX file through the SFX channel group.
+    */
+    bool AudioSystem::playSFXFile(const std::string& path)
+    {
+        if (!mCore || !mSFXGroup)
+            return false;
+
+        FMOD::Sound* snd = nullptr;
+        if (!ok(mCore->createSound(path.c_str(),
+            FMOD_DEFAULT | FMOD_2D,
+            nullptr,
+            &snd),
+            "createSound(sfx)"))
+        {
+            return false;
+        }
+
+        FMOD::Channel* ch = nullptr;
+        if (!ok(mCore->playSound(snd, mSFXGroup, false, &ch),
+            "playSound(sfx)"))
+        {
+            snd->release();
+            return false;
+        }
+
+        if (ch)
+            ch->setMode(FMOD_2D);
+
+        // One-shot SFX: safe to release right after starting.
+        snd->release();
+        return true;
+    }
+
+    FMOD::Channel* AudioSystem::playSFXFileEx(const std::string& path)
+    {
+        if (!mCore || !mSFXGroup)
+            return nullptr;
+
+        FMOD::Sound* snd = nullptr;
+        if (!ok(mCore->createSound(path.c_str(),
+            FMOD_DEFAULT | FMOD_2D,
+            nullptr,
+            &snd),
+            "createSound(sfx)"))
+        {
+            return nullptr;
+        }
+
+        FMOD::Channel* ch = nullptr;
+        if (!ok(mCore->playSound(snd, mSFXGroup, false, &ch),
+            "playSound(sfx)"))
+        {
+            snd->release();
+            return nullptr;
+        }
+
+        if (ch) {
+            ch->setMode(FMOD_2D);
+
+            // Set a callback to release the sound when the channel stops
+            ch->setCallback([](FMOD_CHANNELCONTROL* channelcontrol,
+                FMOD_CHANNELCONTROL_TYPE /*controltype*/,
+                FMOD_CHANNELCONTROL_CALLBACK_TYPE callbacktype,
+                void* /*commanddata1*/,
+                void* /*commanddata2*/) -> FMOD_RESULT {
+                    if (callbacktype == FMOD_CHANNELCONTROL_CALLBACK_END) {
+                        FMOD::Channel* ch = (FMOD::Channel*)channelcontrol;
+                        FMOD::Sound* snd = nullptr;
+                        if (ch->getCurrentSound(&snd) == FMOD_OK && snd) {
+                            snd->release();
+                        }
+                    }
+                    return FMOD_OK;
+                });
+        }
+
+        // Don't release here - let the callback handle it
+        return ch;
+    }
+
+    /*!
+    @brief Sets the volume of the music channel group.
+    */
+    bool AudioSystem::setMusicGroupVolume(float v01)
+    {
         return mMusicGroup && (mMusicGroup->setVolume(v01) == FMOD_OK);
     }
-    bool AudioSystem::setSFXGroupVolume(float v01) {
+
+    /*!
+    @brief Sets the volume of the SFX channel group.
+    */
+    bool AudioSystem::setSFXGroupVolume(float v01)
+    {
         return mSFXGroup && (mSFXGroup->setVolume(v01) == FMOD_OK);
     }
-    
+
+    /*!
+    @brief Sets the master volume on the FMOD Core master channel group.
+    */
+    bool AudioSystem::setMasterVolume(float v01)
+    {
+        if (!mCore)
+            return false;
+
+        FMOD::ChannelGroup* master = nullptr;
+        if (!ok(mCore->getMasterChannelGroup(&master), "getMasterChannelGroup"))
+            return false;
+
+        if (!master)
+            return false;
+
+        return master->setVolume(v01) == FMOD_OK;
+    }
+
+    // -------------------------------------------------------------------------
+    // NEW: Tagged playback for Unity-like Play/Stop("Name")
+    // -------------------------------------------------------------------------
+
+    /*!
+    @brief Plays a music file and tags its FMOD channel so it can be stopped by key.
+    */
+    bool AudioSystem::playMusicFileTagged(const std::string& key,
+        const std::string& path,
+        bool loop)
+    {
+        if (!mCore || !mMusicGroup)
+            return false;
+
+        FMOD::Sound* snd = nullptr;
+        if (!ok(mCore->createSound(path.c_str(),
+            MusicMode(loop),
+            nullptr,
+            &snd),
+            "createSound(musicTagged)"))
+        {
+            return false;
+        }
+
+        FMOD::Channel* ch = nullptr;
+        if (!ok(mCore->playSound(snd, mMusicGroup, false, &ch),
+            "playSound(musicTagged)"))
+        {
+            snd->release();
+            return false;
+        }
+
+        if (ch)
+        {
+            ch->setMode(FMOD_2D);
+            mTaggedChannels[key] = ch;
+        }
+
+        // Same reasoning as playMusicFile(): we keep snd alive for streaming
+        // and do not call release() here.
+        return true;
+    }
+
+    /*!
+    @brief Plays a SFX file and tags its FMOD channel so it can be stopped by key.
+    */
+    bool AudioSystem::playSFXFileTagged(const std::string& key,
+        const std::string& path)
+    {
+        if (!mCore || !mSFXGroup) {
+            std::fprintf(stderr, "[Audio] playSFXFile called before init: %s\n", path.c_str());
+            return false;
+        }
+
+        FMOD::Sound* snd = nullptr;
+        if (!ok(mCore->createSound(path.c_str(),
+            FMOD_DEFAULT | FMOD_2D,
+            nullptr,
+            &snd),
+            "createSound(sfxTagged)"))
+        {
+            return false;
+        }
+
+        FMOD::Channel* ch = nullptr;
+        if (!ok(mCore->playSound(snd, mSFXGroup, false, &ch),
+            "playSound(sfxTagged)"))
+        {
+            snd->release();
+            return false;
+        }
+
+        if (ch)
+        {
+            ch->setMode(FMOD_2D);
+            mTaggedChannels[key] = ch;
+        }
+
+        // SFX are still fire-and-forget for the sound handle itself.
+        snd->release();
+        return true;
+    }
+
+    /*!
+    @brief Stops a previously tagged channel by its string key.
+    */
+    bool AudioSystem::stopTagged(const std::string& key)
+    {
+        auto it = mTaggedChannels.find(key);
+        if (it == mTaggedChannels.end())
+            return false;
+
+        FMOD::Channel* ch = it->second;
+        if (ch)
+        {
+            bool playing = false;
+            if (ch->isPlaying(&playing) == FMOD_OK && playing)
+            {
+                ch->stop();
+            }
+        }
+
+        mTaggedChannels.erase(it);
+        return true;
+    }
+
+} // namespace CrashoutsEngine::Audio

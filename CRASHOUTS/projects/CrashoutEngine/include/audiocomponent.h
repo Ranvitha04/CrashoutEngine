@@ -26,7 +26,7 @@ namespace Component {
         bool spatial3D = false;
         bool looping = false;
 
-        // Runtime
         FMOD::Studio::EventInstance* inst = nullptr;
+        FMOD::Channel* channel = nullptr;
     };
 }

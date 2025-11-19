@@ -15,6 +15,7 @@
 #include "TransformBindings.h"
 #include "entitybindings.h"
 #include "namebindings.h"
+#include "audiobindings.h"
 
 namespace CrashoutsEngine
 {
@@ -27,6 +28,7 @@ namespace CrashoutsEngine
         Bindings::RegisterColliderBindings();
         Bindings::RegisterCollisionEventBindings();
         Bindings::RegisterNameBindings();
+        Bindings::RegisterAudioBindings();
 	}
 
     void ScriptSystem::InitializeAll(MonoDomain* domain, MonoAssembly* assembly)
