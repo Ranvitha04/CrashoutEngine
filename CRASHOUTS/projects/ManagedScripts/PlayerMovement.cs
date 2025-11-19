@@ -4,12 +4,12 @@ namespace CrashoutsEngine
 {
     public class PlayerMovement : ScriptBase
     {
-        float horizontalInput;
-        float moveSpeed = 6f;
+        //float horizontalInput;
+        //float moveSpeed = 6f;
         bool isFacingRight = true;
-        public float jumpPower = 7f;
+        public float jumpPower = 20000f;
         public static bool isJumping = false;
-        //public static bool isFalling = false;
+        public static bool isFalling = false;
         private float lastY;
         public float FallingThreshold = -0.01f;
         private int onPlatform = 0;
@@ -26,7 +26,6 @@ namespace CrashoutsEngine
         //PressurePlate pressureplate;
 
         //Rigidbody2D rb;
-
         //public GameObject GObackground;
 
 
@@ -55,7 +54,24 @@ namespace CrashoutsEngine
         // Update is called once per frame
         void Update()
         {
+
+            var rb = Entity.GetComponent<RigidBodyComponent>();
+            var tf = Entity.GetComponent<TransformComponent>();
             //horizontalInput = Input.GetAxis("Horizontal");
+            if (Input.IsKeyHeld(Key.A))
+            {
+                rb.AddForce(new CEVec3(-500f, 0f, 0f));
+            }
+
+            if (Input.IsKeyHeld(Key.D))
+            {
+                rb.AddForce(new CEVec3(500f, 0f, 0f));
+            }
+
+
+
+
+            //isnt it divide by delta time to get per second? XD - rain
             //float distancePerSecondSinceLastFrame = (transform.position.y - lastY) * Time.deltaTime;
             //lastY = transform.position.y;
 
@@ -70,6 +86,13 @@ namespace CrashoutsEngine
 
             //    switchcharacter?.SwitchAvatar();
             //}
+
+            if (Input.IsKeyTriggered(Key.Space) && !isJumping)
+            {
+                rb.AddForce(new CEVec3(0f, jumpPower, 0f));
+                isJumping = true;
+                //animator.SetBool("IsJumping", true);
+            }
             //if (animator.GetBool("IsJumping") && rb.linearVelocity.y < 0 && IsOnPlatform == false)
             //{
             //    // isFalling = true;
@@ -88,27 +111,6 @@ namespace CrashoutsEngine
 
         }
 
-        //private void FixedUpdate()
-        //{
-        //    rb.linearVelocity = new Vector2(horizontalInput * moveSpeed, rb.linearVelocity.y);
-        //    if (horizontalInput != 0)
-        //    {
-        //        animator.SetBool("IsRunning", true);
-        //    }
-        //    else if(!animator.GetBool("IsJumping") && !animator.GetBool("IsFalling") && !animator.GetBool("PressQ"))
-        //    {
-        //        animator.SetBool("IsRunning", false);
-        //        if (animator.GetBool("IsLight"))
-        //        {
-        //            animator.Play("Idle Light");               
-        //        }
-        //        else
-        //        {
-        //            // Debug.Log("Play Idle");
-        //            animator.Play("Idle");                
-        //        }
-        //    }
-        //}
         //private void FixedUpdate()
         //{
         //    if (IsOnPlatform)
@@ -188,14 +190,6 @@ namespace CrashoutsEngine
         //    }
         //}
 
-        //private void OnTriggerEnter2D(Collider2D collision)
-        //{
-        //    if (collision.CompareTag("Enemy"))
-        //    {
-        //        Die();
-        //    }
-        //}
-
         //void Die()
         //{
         //    GObackground.SetActive(true);
@@ -214,19 +208,6 @@ namespace CrashoutsEngine
         //    //Debug.Log("respawn idle here"); //gets to this line but still plays falling animation? does it need yo be in collisionExit
         //    GObackground.SetActive(false);
 
-        //}
-
-        //IEnumerator Respawn (float duration)
-        //{
-        //    rb.linearVelocity = new Vector2(0, 0);
-        //    spriteRenderer.enabled = false; //disappears when collide with enemy
-        //    yield return new WaitForSeconds(duration);
-
-        //    animator.Play("Idle");
-        //    Debug.Log("respawn idle here"); //gets to this line but still plays falling animation? does it need yo be in collisionExit
-
-        //    transform.position = startPos;
-        //    spriteRenderer.enabled = true; //appears again after cooldown
         //}
     }
 }
