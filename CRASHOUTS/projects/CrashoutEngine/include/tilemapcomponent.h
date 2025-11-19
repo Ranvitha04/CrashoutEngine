@@ -27,7 +27,7 @@ namespace Component {
 	*/
 	struct TileMapComponent {
 		std::string tmName;					// Name of tile map asset 
-		CEVec2 row, col;					// Number of rows and columns for tile
+		int row{ 15 }, col{ 15 };			// Number of rows and columns for tile
 		std::vector<unsigned int> tileIds;	// Represents the '2D' grid 
 
 		// RUNTIME CACHE
@@ -38,8 +38,6 @@ namespace Component {
 		bool isCacheDirty = true;
 	
 		// Dimensions
-		int width = 0;
-		int height = 0;
 		int tileSize = 32;
 
 		bool pOpen = false;					// Decide if the editor window is opened
@@ -72,6 +70,14 @@ namespace CrashoutsEngine {
 		@param  map TileMapComponent to reference.
 		*/
 		void RebuildCache(Component::TileMapComponent& map);
+
+		/*!
+		@brief	Resizes the TileID 2D Arrow "MAP" based on new count of rows and cols
+		@param  map		TileMapComponent to reference.
+		@param  newRows Number of rows.
+		@param  newCols	Number of cols.
+		*/
+		void ResizeMap(Component::TileMapComponent& map, int newRows, int newCols);
 
 	};
 

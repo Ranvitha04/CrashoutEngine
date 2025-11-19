@@ -769,28 +769,14 @@ namespace CrashoutsEngine {
                     }
 
                     // 2. Dimensions (int)
-                    if (tmValue.HasMember("width") && tmValue["width"].IsInt()) {
-                        tm.width = tmValue["width"].GetInt();
+                    if (tmValue.HasMember("col") && tmValue["col"].IsInt()) {
+                        tm.col = tmValue["col"].GetInt();
                     }
-                    if (tmValue.HasMember("height") && tmValue["height"].IsInt()) {
-                        tm.height = tmValue["height"].GetInt();
+                    if (tmValue.HasMember("row") && tmValue["row"].IsInt()) {
+                        tm.row = tmValue["row"].GetInt();
                     }
                     if (tmValue.HasMember("tileSize") && tmValue["tileSize"].IsInt()) {
                         tm.tileSize = tmValue["tileSize"].GetInt();
-                    }
-
-                    // 3. row (CEVec2)
-                    if (tmValue.HasMember("row") && tmValue["row"].IsObject()) {
-                        const rapidjson::Value& rowValue = tmValue["row"];
-                        if (rowValue.HasMember("x")) tm.row.x = rowValue["x"].GetFloat();
-                        if (rowValue.HasMember("y")) tm.row.y = rowValue["y"].GetFloat();
-                    }
-
-                    // 4. col (CEVec2)
-                    if (tmValue.HasMember("col") && tmValue["col"].IsObject()) {
-                        const rapidjson::Value& colValue = tmValue["col"];
-                        if (colValue.HasMember("x")) tm.col.x = colValue["x"].GetFloat();
-                        if (colValue.HasMember("y")) tm.col.y = colValue["y"].GetFloat();
                     }
 
                     // 5. tileIds (std::vector<unsigned int>)
@@ -798,9 +784,15 @@ namespace CrashoutsEngine {
                         const rapidjson::Value& tileIdsArray = tmValue["tileIds"];
                         tm.tileIds.reserve(tileIdsArray.Size());
 
-                        for (rapidjson::SizeType j = 0; j < tileIdsArray.Size(); ++j) {
-                            if (tileIdsArray[j].IsUint()) {
-                                tm.tileIds.push_back(tileIdsArray[j].GetUint());
+                        if(tileIdsArray.Size() <= 0) {
+                            size_t total = (size_t)(tm.row * tm.col);
+                            tm.tileIds.assign(total, 0);
+                        }
+                        else {
+                            for (rapidjson::SizeType j = 0; j < tileIdsArray.Size(); ++j) {
+                                if (tileIdsArray[j].IsUint()) {
+                                    tm.tileIds.push_back(tileIdsArray[j].GetUint());
+                                }
                             }
                         }
                     }
@@ -1322,8 +1314,8 @@ namespace CrashoutsEngine {
                 }
 
                 // =========================================================
-            // O. TileMapComponent
-            // =========================================================
+                // O. TileMapComponent
+                // =========================================================
                 if (gECS.HasComponent<TileMapComponent>(id)) {
                     const TileMapComponent& tmComp = *gECS.GetComponent<TileMapComponent>(id);
                     rapidjson::Value tmValue(rapidjson::kObjectType);
@@ -1331,27 +1323,15 @@ namespace CrashoutsEngine {
                     // 1. tmName (string)
                     tmValue.AddMember("tmName", rapidjson::Value(tmComp.tmName.c_str(), allocator).Move(), allocator);
 
-                    // 2. width, height, tileSize (int)
-                    tmValue.AddMember("width", tmComp.width, allocator);
-                    tmValue.AddMember("height", tmComp.height, allocator);
+                    // 2. col, row, tileSize (int)
+                    tmValue.AddMember("col", tmComp.col, allocator);
+                    tmValue.AddMember("row", tmComp.row, allocator);
                     tmValue.AddMember("tileSize", tmComp.tileSize, allocator);
 
-                    // 3. row (CEVec2 -> JSON Object)
-                    rapidjson::Value rowValue(rapidjson::kObjectType);
-                    rowValue.AddMember("x", tmComp.row.x, allocator);
-                    rowValue.AddMember("y", tmComp.row.y, allocator);
-                    tmValue.AddMember("row", rowValue, allocator);
-
-                    // 4. col (CEVec2 -> JSON Object)
-                    rapidjson::Value colValue(rapidjson::kObjectType);
-                    colValue.AddMember("x", tmComp.col.x, allocator);
-                    colValue.AddMember("y", tmComp.col.y, allocator);
-                    tmValue.AddMember("col", colValue, allocator);
-
-                    // 5. tileIds (std::vector<unsigned int> -> JSON Array)
+                    // 3. tileIds (std::vector<unsigned int> -> JSON Array)
                     rapidjson::Value tileIdsArray(rapidjson::kArrayType);
-                    for (unsigned int id : tmComp.tileIds) {
-                        tileIdsArray.PushBack(id, allocator);
+                    for (unsigned int tileId : tmComp.tileIds) {
+                        tileIdsArray.PushBack(tileId, allocator);
                     }
                     tmValue.AddMember("tileIds", std::move(tileIdsArray), allocator);
 

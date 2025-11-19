@@ -1668,7 +1668,7 @@ namespace UI { // --------------------------------------------------------------
 
             ImVec2 start = ImGui::GetCursorScreenPos();
             ImGui::SetCursorScreenPos(ImVec2(start.x + 10, start.y + 10));
-            ImGui::BeginChild("ViewportToolbar", ImVec2(1000, 32),
+            ImGui::BeginChild("ViewportToolbar", ImVec2(1000, 1000),
                 false, ImGuiWindowFlags_NoBackground);
 
             // 1) toolbar (translate / rotate / scale)

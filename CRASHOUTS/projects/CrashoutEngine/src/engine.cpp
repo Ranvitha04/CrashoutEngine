@@ -431,6 +431,15 @@ void Update(double const& dt) {
     
     CrashoutsEngine::PostProcessing::UpdatePP();
 
+#if USE_IMGUI_EDITOR
+    // Cycle and draw Tile Map Editor if needed
+    CrashoutsEngine::ECS::ComponentArray<Component::TileMapComponent>& tmArray =
+        CrashoutsEngine::ECS::getInstance()->GetComponentArray<Component::TileMapComponent>();
+
+    for (Component::TileMapComponent& tm : tmArray.dense) {
+        if (tm.isCacheDirty) CrashoutsEngine::TileMapUtils::RebuildCache(tm);
+    }
+#endif
 
 }
 

@@ -395,7 +395,7 @@ namespace CrashoutsEngine {
 						fs::path fullPath = fs::path(rootAssetPath) / "tilemaps" / relativePath;
 
 						// Create TileMapAsset object from file data (JSON)
-						std::unique_ptr<TileMapAsset> newTileMap = TileMapAsset::Create(fullPath.string());
+						std::unique_ptr<TileMapAsset> newTileMap = TileMapAsset::Create(relativePath);
 
 						// Validate 
 						if (newTileMap) {

@@ -1,3 +1,16 @@
 {
-  "tilemap": [],
+    "tilemap": [
+        {
+            "id": 1,
+            "texture name": "Character\\New Artstyle\\Chibi-6.png"
+        },
+        {
+            "id": 2,
+            "texture name": "Character\\New Artstyle\\Chibi-6.png"
+        },
+        {
+            "id": 3,
+            "texture name": "Monsters\\Monsters(4).png"
+        }
+    ]
 }

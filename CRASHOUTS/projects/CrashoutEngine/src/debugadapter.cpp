@@ -1854,29 +1854,19 @@ public class )" << file.stem().string() << R"(
 
             // Check if dimensions changed to mark cache as dirty
             bool dimChanged = false;
-            dimChanged |= ImGui::InputInt("Width (Tiles)", &tm->width);
-            dimChanged |= ImGui::InputInt("Height (Tiles)", &tm->height);
+            dimChanged |= ImGui::InputInt("Columns (Tiles)", &tm->col);
+            dimChanged |= ImGui::InputInt("Rows (Tiles)", &tm->row);
             dimChanged |= ImGui::InputInt("Tile Size (Px)", &tm->tileSize);
 
             if (dimChanged) {
                 // Ensure they don't go negative
-                if (tm->width < 1) tm->width = 1;
-                if (tm->height < 1) tm->height = 1;
+                if (tm->col < 1) tm->col = 1;
+                if (tm->row < 1) tm->row = 1;
                 if (tm->tileSize < 1) tm->tileSize = 1;
 
                 // Flag that we need to rebuild textures/buffers
-                tm->isCacheDirty = true;
+                TileMapUtils::ResizeMap(*tm, tm->row, tm->col);
             }
-
-            // ---------------------------------------------------------
-            // ROW 3: Vector Data (CEVec2)
-            // ---------------------------------------------------------
-            // Assuming CEVec2 has .x and .y members. 
-            // If CEVec2 is a custom struct, you might need &tm->row.x, etc.
-            ImGui::Separator();
-            ImGui::Text("Coordinate Offsets");
-            ImGui::DragFloat2("Row Data", &tm->row.x, 0.1f);
-            ImGui::DragFloat2("Col Data", &tm->col.x, 0.1f);
 
             // ---------------------------------------------------------
             // ROW 4: Editor Toggle

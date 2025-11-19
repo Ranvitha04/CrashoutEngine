@@ -79,6 +79,8 @@ namespace CrashoutsEngine {
                 }
 
                 tiles[newId] = textureName;
+                SaveTileMaps();
+
                 return newId; // Return it so the Editor/UI knows what ID was just created
             }
 
@@ -88,6 +90,7 @@ namespace CrashoutsEngine {
             */
             void RemoveTileDefinition(unsigned int id) {
                 tiles.erase(id);
+                SaveTileMaps();
             }
 
             /*!
@@ -96,6 +99,11 @@ namespace CrashoutsEngine {
             @return unique_ptr to TileMapAsset object or nullptr on failure
             */
             static std::unique_ptr<TileMapAsset> Create(const std::string& filePath);
+
+            /*!
+            @brief Saves the tile map tiles data
+            */
+            void SaveTileMaps();
             
         private:
 			std::string tileMapName;                    // Name of the tilemap
