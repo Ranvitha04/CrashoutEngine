@@ -738,8 +738,11 @@ namespace CrashoutsEngine::Audio
             std::string msg =
                 "Unsupported audio format for SFX file:\n\n" + path +
                 "\n\nSupported formats: .mp3, .ogg, .wav";
+
             ShowAudioErrorPopup(msg);
-            return false;
+            LOGE(Audio, msg);
+
+            return nullptr;
         }
 
         FMOD::Sound* snd = nullptr;
