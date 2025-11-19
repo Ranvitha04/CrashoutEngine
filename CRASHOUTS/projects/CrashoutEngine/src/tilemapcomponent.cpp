@@ -9,16 +9,14 @@ __________________________________________________________________________*/
 
 /*                                                                   includes
 ----------------------------------------------------------------------------- */
-#include "rendering.h"
-
 #include "engine_pch.h"
-
+#include "rendering.h"
 #include "tilemapcomponent.h"
 #include "assetmanager.h"
 #include "tilemapasset.h"
 #include "textureasset.h"
-#include "undomanager.h"
 #include <filesystem>
+#include <cmath> // For std::floor
 
 /*
 ----------------------------------------------------------------------------- */
@@ -26,83 +24,148 @@ namespace CrashoutsEngine::TileMapUtils {
 
     using namespace CrashoutsEngine::Assets;
 
-    void AddTileDefinitionToAsset(Component::TileMapComponent& map, const std::string& textureName) {
-        // 1. Get the Asset
-        TileMapAsset* asset = AssetManager::GetInstance().Get<TileMapAsset>(map.tmName);
+    std::pair<int, int> WorldToGrid(const Component::TileMapComponent& map, float worldX, float worldY) {
+        // Use std::floor to handle negative coordinates.
+        int gridX = static_cast<int>(std::floor(worldX / map.tileSize));
+        int gridY = static_cast<int>(std::floor(worldY / map.tileSize));
+        return { gridX, gridY };
+    }
 
-        if (asset) {
-            // 2. Modify the Asset (The Palette)
-            unsigned int newId = asset->AddTileDefinition(textureName);
+    void PaintTile(Component::TileMapComponent& map, int gridX, int gridY, const std::string& assetName) {
+        std::pair<int, int> key = { gridX, gridY };
 
-            std::cout << "TileMapComponent: Added definition '" << textureName
-                << "' as ID " << newId << " to asset '" << map.tmName << "'\n";
+        // Check if this tile is already the right value
+        if (map.gridData.count(key) && map.gridData[key] == assetName) return;
 
-            // 3. Mark Cache Dirty
-            // This ensures that on the next frame, RebuildCache() will run,
-            // finding the new texture name and fetching its GL handle.
+        // Update / Insert the tile
+        map.gridData[key] = assetName;
+
+        // Mark dirty to tell program to recalculate rules etc
+        map.isCacheDirty = true;
+    }
+
+    void EraseTile(Component::TileMapComponent& map, int gridX, int gridY) {
+        std::pair<int, int> key{ gridX, gridY };
+
+        if (!map.gridData[key].empty()) {
+            map.gridData.erase(key);
             map.isCacheDirty = true;
         }
     }
 
-    void RemoveTileDefinitionFromAsset(Component::TileMapComponent& map, unsigned int tileId) {
-        TileMapAsset* asset = AssetManager::GetInstance().Get<TileMapAsset>(map.tmName);
+    /*!
+    @brief  Get the bitmask for a specific tile based on its neighbours
+    @param  map TileMapComponent to reference.
+    @param  x	    The grid key x value.
+    @param  y	    The grid key y value.
+    @param  asset   The current tile map asset that is used.
+    */
+    unsigned int CalculateBitMask(Component::TileMapComponent& map, int x, int y, const std::string& asset) {
+        unsigned int mask = 0;
 
-        if (asset) {
-            // 1. Remove from Asset
-            asset->RemoveTileDefinition(tileId);
+        /*  Rule Bit Map:
 
-            // 2. Mark Dirty so the cache clears this ID's GL handle
-            map.isCacheDirty = true;
+           Up:         0000'0001
+           Up-Right:   0000'0010
+           Right:      0000'0100
+           Down-Right: 0000'1000
+
+           Down:       0001'0000
+           Down-Left:  0010'0000
+           Left:       0100'0000
+           Up-Left:    1000'0000
+        */
+        enum {
+            Up          = 0b0000'0001,
+            UpRight     = 0b0000'0010,
+            Right       = 0b0000'0100,
+            DownRight   = 0b0000'1000,
+            Down        = 0b0001'0000,
+            DownLeft    = 0b0010'0000,
+            Left        = 0b0100'0000,
+            UpLeft      = 0b1000'0000
+        };
+
+        // Check UP
+        if (map.gridData.count({ x, y + 1 }) && map.gridData.at({ x, y + 1 }) == asset) {
+            mask |= Up;
         }
+        // Check UPRIGHT
+        if (map.gridData.count({ x + 1, y + 1 }) && map.gridData.at({ x + 1, y + 1 }) == asset) {
+            mask |= UpRight;
+        }
+        // Check RIGHT
+        if (map.gridData.count({ x + 1, y }) && map.gridData.at({ x + 1, y }) == asset) {
+            mask |= Right;
+        }
+        // Check DOWNRIGHT
+        if (map.gridData.count({ x + 1, y - 1 }) && map.gridData.at({ x + 1, y - 1 }) == asset) {
+            mask |= DownRight;
+        }
+        // Check DOWN
+        if (map.gridData.count({ x, y - 1 }) && map.gridData.at({ x, y - 1 }) == asset) {
+            mask |= Down;
+        }
+        // Check DOWNLEFT
+        if (map.gridData.count({ x - 1, y - 1 }) && map.gridData.at({ x - 1, y - 1 }) == asset) {
+            mask |= DownLeft;
+        }
+        // Check LEFT
+        if (map.gridData.count({ x - 1, y }) && map.gridData.at({ x - 1, y }) == asset) {
+            mask |= Left;
+        }
+        // Check UPLEFT
+        if (map.gridData.count({ x - 1, y + 1 }) && map.gridData.at({ x - 1, y + 1 }) == asset) {
+            mask |= UpLeft;
+        }
+
+        return mask;
     }
 
     void RebuildCache(Component::TileMapComponent& map) {
-        TileMapAsset* asset = AssetManager::GetInstance().Get<TileMapAsset>(map.tmName);
+        if (!map.isCacheDirty) return;
 
-        if (!asset) return;
+        map.renderCache.clear();
 
-        map.runtimeTextureCache.clear();
+        // Iterate over every painted tile in the sparse grid
+        for (auto const& [pos, tileAssetName] : map.gridData) {
 
-        // Iterate over asset definitions and fetch GPU handles
-        for (auto const& [id, texName] : asset->GetTiles()) {
-            // Use TextureRenderer::GetTextureHandle to return a GLuint
-            GLuint handle = Component::TextureRenderer::GetTextureHandle(texName);
+            // 1. Get the Asset fopr this file
+            TileMapAsset* asset = AssetManager::GetInstance().Get<TileMapAsset>(tileAssetName);
+            if (!asset) continue;   // Asset not found?
 
-            if (handle != 0) {
-                map.runtimeTextureCache[id] = handle;
+            // 2. Calculate the environment bitmask (Look at neighbours)
+            unsigned int currentMask = CalculateBitMask(map, pos.first, pos.second, tileAssetName);
+
+            // 3. Find the mathcign texture in the Asset's Rule List
+            std::string texToUse{ "" };
+        
+            // Find first tile that matches the mask
+            for (const RuleTile& rule : asset->GetTiles()) {
+                if (rule.ruleBitMap == currentMask) {
+                    texToUse = rule.texAssetName;
+                    break;  // Found! Break early.
+                }
             }
+
+            // FALLBACK: No rules found
+            if (texToUse.empty() && !asset->GetTiles().empty()) {
+                texToUse = asset->GetTiles()[0].texAssetName;
+            }
+
+            // 4. Get the GPU Handle and store in Render Cache
+            if (!texToUse.empty()) {
+                GLuint handle = Component::TextureRenderer::GetTextureHandle(texToUse);
+                if (handle != 0) map.renderCache[pos] = handle;
+            }
+
+            std::cout << "TileMapComponent: Sparse Grid Cache Rebuilt.\n";
+            map.isCacheDirty = false;
         }
 
         std::cout << "TileMapComponent: Cache Rebuilt.\n";
 
         map.isCacheDirty = false;
-    }
-
-    void ResizeMap(Component::TileMapComponent& map, int newRows, int newCols) {
-        // 1. Create a new vector of the correct size, filled with 0
-        std::vector<unsigned int> newTileIds(newRows * newCols, 0);
-
-        // 2. Copy old data to new vector (preserving 2D structure)
-        int rowsToCopy = std::min(map.row, newRows);
-        int colsToCopy = std::min(map.col, newCols);
-
-        for (int r = 0; r < rowsToCopy; ++r) {
-            for (int c = 0; c < colsToCopy; ++c) {
-                int oldIndex = r * map.col + c;
-                int newIndex = r * newCols + c;
-
-                // Copy the tile ID
-                if (oldIndex < map.tileIds.size()) {
-                    newTileIds[newIndex] = map.tileIds[oldIndex];
-                }
-            }
-        }
-
-        // 3. Update Component
-        map.tileIds = std::move(newTileIds);
-        map.row = newRows;
-        map.col = newCols;
-        map.isCacheDirty = true; // Force render update
     }
 }
 
@@ -117,226 +180,44 @@ namespace CrashoutsEngine::Editor {
         }
 
         // Create the IMGUI window
-        if (ImGui::Begin("TileMap Editor", pOpen)) {
+        if (ImGui::Begin("TileMap Palette", pOpen)) {
 
-            // --- Toolbar (Palette Selection) ---
-            static unsigned int selectedBrushID = 0;
-            ImGui::Text("Current Brush ID: %d", selectedBrushID);
-            //ImGui::SameLine();
+            ImGui::Text("Active Tile Map: %s", tmComp->activeAsset.empty() ? "None" : tmComp->activeAsset.c_str());
+            ImGui::Separator();
 
-            std::map<unsigned int, GLuint> const& texCache = tmComp->runtimeTextureCache;
-
-            // Iterate through tmComp->runtimeTextureCache to draw selectable
-            // For now, just a simple slider to pick ID
-            int tmpID = (int)selectedBrushID;
-            int limit = (int)texCache.size();
-            if (ImGui::SliderInt("Brush", &tmpID, 0, (limit < 0) ? 0 : limit)) selectedBrushID = tmpID;
-
-            // Determine if the current mode is painting in world (TRUE) or tile map editor (FALSE)
-            static bool isPaintingWorld{ false };
-
-            if (ImGui::Checkbox("Paint in World", &isPaintingWorld)) {}
-
-            //ImGui::SameLine();
-            if (ImGui::SmallButton("Add Texture...")) {
-                ImGui::OpenPopup("Pick Texture");
+            // --- 1. Asset Selector ---
+            // List all avaialble .json files in the tilemaps folder
+            if (ImGui::Button("Load/ Select Asset...")) {
+                ImGui::OpenPopup("SelectRuleAsset");
             }
 
-            // Modal popup with a simple file browser
-            if (ImGui::BeginPopupModal("Pick Texture", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
+            if (ImGui::BeginPopup("SelectRuleAsset")) {
                 namespace fs = std::filesystem;
-                static std::vector<std::string> s_assets;
-                static bool s_scanned = false;
+                std::string path = CrashoutsEngine::Assets::rootPath + "tilemaps/";
 
-                // Refresh List button
-                if (ImGui::Button("Refresh List")) {
-                    s_scanned = false;
-                }
-
-                ImGui::SameLine();
-
-                if (!s_scanned) {
-                    s_scanned = true;
-                    s_assets.clear();
-
-                    const std::string assetRoot = CrashoutsEngine::Assets::rootPath + "images"; // base folder
-                    for (auto& p : fs::recursive_directory_iterator(assetRoot)) {
-                        if (!p.is_regular_file()) continue;
-
-                        const std::string ext = p.path().extension().string();
-                        std::string lower = ext;
-                        std::transform(lower.begin(), lower.end(), lower.begin(), ::tolower);
-                        if (lower == ".png" || lower == ".jpg" || lower == ".jpeg" ||
-                            lower == ".tga" || lower == ".bmp") {
-
-                            // Store relative path for cleaner display
-                            std::string rel = fs::relative(p.path(), assetRoot).string();
-                            s_assets.push_back(rel);
+                if (fs::exists(path)) {
+                    for (const auto& entry : fs::directory_iterator(path)) {
+                        std::string filename = entry.path().filename().string();
+                        if (ImGui::Selectable(filename.c_str())) {
+                            tmComp->activeAsset = filename;
                         }
                     }
-
-                    std::sort(s_assets.begin(), s_assets.end());
                 }
-
-                // Left: list; Right: preview name
-                ImGui::BeginChild("asset_list", ImVec2(420, 300), true);
-                for (auto const& f : s_assets) {
-                    if (ImGui::Selectable(f.c_str())) {
-                        TileMapUtils::AddTileDefinitionToAsset(*tmComp, f);
-                        /*
-                        UndoManager::GetInstance().AddCommand(
-                            std::make_unique<CrashoutsEngine::ChangeValueCommand<std::string>>(
-                                oldTexName, sc->textureName,
-                                [sc](const std::string& v) { sc->textureName = v; }
-                            )
-                        );
-                        */
-                        ImGui::CloseCurrentPopup();
-                        break;
-                    }
-                }
-                ImGui::EndChild();
-
-                if (ImGui::Button("Cancel")) ImGui::CloseCurrentPopup();
                 ImGui::EndPopup();
             }
 
-            // Clear tile map
-            if (ImGui::Button("Clear Tile Map")) {
-                if (tmComp->tileIds.size() > 0) {
-                    tmComp->tileIds.assign(tmComp->tileIds.size(), 0);
-                }
-            }
+            ImGui::Separator();
 
-            // --- Setup Canvas ---
-            // Calculate Map Aspect Ratio (Width / Height)
-            // Guard against zero division
-            float rows = (float)tmComp->row;
-            float cols = (float)tmComp->col;
-            if (rows == 0 || cols == 0) { ImGui::End(); return; }
+            // --- 2. Painting Mode Info ---
+            ImGui::TextColored(ImVec4(.5f, 1.f, .5f, 1.f), "Painting Mode Active");
+            ImGui::Text("LMB: Paint Tile");
+            ImGui::Text("RMB: Erase Tile");
 
-            float mapAR = cols / rows;
+            ImGui::SliderInt("Tile Size", &tmComp->tileSize, 8, 128);
 
-            // Get available space in the window
-            ImVec2 available = ImGui::GetContentRegionAvail();
-
-            // Calculate Canvas Size (Fit within available space while keeping AR)
-            ImVec2 canvasSize = available;
-            float availAR = available.x / available.y;
-            if (availAR > mapAR) {
-                // Window is wider than map -> Constrain by Height
-                canvasSize.y = available.y;
-                canvasSize.x = available.y * mapAR;
-            }
-            else {
-                // Window is taller than map -> Constrain by Width
-                canvasSize.x = available.x;
-                canvasSize.y = available.x / mapAR;
-            }
-
-            // Center the canvas in the window 
-            float offsetX = (available.x - canvasSize.x) * 0.5f;
-            float offsetY = (available.y - canvasSize.y) * 0.5f;
-
-            offsetX = std::max(offsetX, 0.0f);
-            offsetY = std::max(offsetY, 0.0f);
-
-            // Move cursor to centered origin
-            ImVec2 canvasStart = ImGui::GetCursorScreenPos();
-            canvasStart.x += offsetX;
-            canvasStart.y += offsetY;
-
-            // Reserve canvas space
-            ImGui::Dummy(canvasSize);
-
-            // Compute canvas end
-            ImVec2 canvasEnd = { canvasStart.x + canvasSize.x, canvasStart.y + canvasSize.y };
-
-            // ImGui Draw List allows us to draw primitives (rects, lines, images)
-            ImDrawList* drawList = ImGui::GetWindowDrawList();
-
-            // --- Draw Background ---
-            ImU32 bgCol = IM_COL32(20, 20, 20, 255);
-            ImU32 borderCol = IM_COL32(200, 200, 200, 255);
-            drawList->AddRectFilled(canvasStart, canvasEnd, bgCol);         // Draw Background
-            drawList->AddRect(canvasStart, canvasEnd, borderCol);     // Draw Border
-
-            // --- Draw the tiles ---
-            // Calculate the pixel size of a single tile in this view
-            float tileW = canvasSize.x / cols;
-            float tileH = canvasSize.y / rows;
-
-            for (int r = 0; r < tmComp->row; ++r) {
-                for (int c = 0; c < tmComp->col; ++c) {
-                    int index = r * tmComp->col + c;
-                    if (index >= tmComp->tileIds.size()) break;
-
-                    unsigned int tileId = tmComp->tileIds[index];
-                    if (tileId == 0) continue; 
-
-                    ImVec2 pMin = { canvasStart.x + c * tileW, canvasStart.y + r * tileH };
-                    ImVec2 pMax = { pMin.x + tileW, pMin.y + tileH };
-
-                    if (texCache.count(tileId)) {
-                        drawList->AddImage((void*)(intptr_t)texCache.at(tileId), pMin, pMax);
-                    } else {
-                        drawList->AddRectFilled(pMin, pMax, IM_COL32(255, 0, 255, 255));        // Error Square (Pink)
-                    }
-                }
-            }
-
-            // --- Draw Grid ---
-            ImU32 gridCol = IM_COL32(255, 255, 255, 40);
-            // Vertical lines
-            for (int i = 0; i <= tmComp->col; ++i) {
-                float x = canvasStart.x + (i * tileW); // FIX: Use canvasStart.x
-                drawList->AddLine({ x, canvasStart.y }, { x, canvasEnd.y }, gridCol);
-            }
-            // Horizontal lines
-            for (int i = 0; i <= tmComp->row; ++i) {
-                float y = canvasStart.y + (i * tileH); // FIX: Use canvasStart.y
-                drawList->AddLine({ canvasStart.x, y }, { canvasEnd.x, y }, gridCol);
-            }
-
-            // Enable Painting
-            if (texCache.size() > 0) {
-
-                // --- Handle Input (Painting) ---
-                ImGui::SetCursorScreenPos(canvasStart);
-
-                // Using InvisibleButton to detect clicks within stated area.
-                if (ImGui::InvisibleButton("##MapCanvas", canvasSize)) {
-                    // Just clicked (single frame)
-                }
-
-                // Check if hovered and mouse is down (allows dragging / painting)
-                if (ImGui::IsItemHovered() && ImGui::IsMouseDown(ImGuiMouseButton_Left)) {
-                    ImVec2 mousePos = ImGui::GetMousePos();
-
-                    // Convert Screen Space Mouse -> Grid Coords
-                    int col = (int)((mousePos.x - canvasStart.x) / tileW);
-                    int row = (int)((mousePos.y - canvasStart.y) / tileH);
-
-                    // Boundary Check
-                    if (col >= 0 && col < tmComp->col && row >= 0 && row < tmComp->row) {
-                        int index = row * tmComp->col + col;
-
-                        // Only update if different to avoid spamming flags
-
-                        // If not painting in world, painting on tile map editor overrides the current item
-                        if (!isPaintingWorld) {
-                            if (tmComp->tileIds[index] != selectedBrushID) {
-                                tmComp->tileIds[index] = selectedBrushID;
-                                tmComp->isCacheDirty = true;
-                            }
-                        }
-                        // If painting in world, selecting from tile map editor changes the current brush ID
-                        else {
-                            selectedBrushID = tmComp->tileIds[index];
-                            std::cout << "Current Brush is " << selectedBrushID << std::endl;
-                        }
-                    }
-                }
+            // --- 3. Force Refresh Button (Debug) ---
+            if (ImGui::Button("Force Rebuild Cache")) {
+                tmComp->isCacheDirty = true;
             }
 
             ImGui::End();

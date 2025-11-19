@@ -62,6 +62,7 @@ for Crashout Engine.
 #include "namecomponent.h"
 #include "shapescomponent.h"
 #include "audiocomponent.h"
+#include "tilemapcomponent.h"
 #include "sceneasset.h"
 #include <vector>
 #include "CEVec3.h"
@@ -1779,6 +1780,172 @@ namespace UI { // --------------------------------------------------------------
 
             // TRUE - ORTOGRAPHIC, FALSE - PERSPECTIVE
             ImGuizmo::SetOrthographic(true);
+
+            // TILEMAP EDITOR INTEGRATION!!!
+
+            // Attempt to find an active TileMapComponent
+            Component::TileMapComponent* activeTM = nullptr;
+
+            // Check if selected entity has a tilemap
+            if (selected != 0 && ecs.HasComponent<Component::TileMapComponent>(selected)) {
+                activeTM = ecs.GetComponent<Component::TileMapComponent>(selected);
+            }
+            // If nothing selected, find the first enabled TileMap in the scene
+            else {
+                for (Entity e : ecs.GetComponentArray<Component::TileMapComponent>().indexToEntity) {
+                    Component::TileMapComponent* tm = ecs.GetComponent<Component::TileMapComponent>(e);
+                    // Only auto-pick if the editor window is actually open
+                    if (tm && tm->pOpen) {
+                        activeTM = tm;
+                        break;
+                    }
+                }
+            }
+
+            bool isPaintingMode = (activeTM && activeTM->pOpen);
+
+            // Draw Grid & Handle Input
+            if (isPaintingMode) {
+                ImDrawList* drawList = ImGui::GetWindowDrawList();
+
+                // Helper Lambda: World Space -> ImGui Screen Space
+                // Uses the Egnine's View / Proj matrices to project points accurately
+                auto WorldToScreen = [&](CEVec3 worldPos) -> ImVec2 {
+                    glm::vec3 v(worldPos.x, worldPos.y, worldPos.z);
+                    glm::vec4 clipSpace = Component::Rendering::Get().projectionMatrix *
+                        Component::Rendering::Get().viewMatrix * glm::vec4(v, 1.f);
+
+                    if (clipSpace.w == 0.f) return ImVec2(-1, -1);  // Safety
+
+                    glm::vec3 ndc = glm::vec3(clipSpace) / clipSpace.w;
+
+                    // Map NDC (-1 to 1) to Image UV (0 to 1)
+                    float imgu = (ndc.x + 1.f) * .5f;
+                    float imgv = (ndc.y + 1.f) * .5f;
+
+                    return ImVec2(
+                        imgMin.x + imgu * imgSize.x,
+                        imgMin.y + (1.0f - imgv) * imgSize.y
+                    );
+                    };
+
+                // Draw Infinite Grid Lines (Only draw lines inside viewport)
+                float tileSize = (float)activeTM->tileSize;
+
+                // Get Center of world to base grid 
+                CEVec3 camPos{ 0,0,0 };
+                if (engineState == EngineState::STOP) {
+                    camPos = RenderCamera::engineCamera.GetPosition();
+                }
+                else camPos = RenderCamera::gameCamera.GetPosition();
+
+                ImU32 gridColor = IM_COL32(255, 255, 255, 40);
+
+                // Grid Drawing
+                // Determine the Grid coordinates of the Camera Center
+                int centerGx = (int)std::floor(camPos.x / tileSize);
+                int centerGy = (int)std::floor(camPos.y / tileSize);
+
+                // Calculate "Pixels Per Tile", tells us exactly how big a tile is on screen
+                ImVec2 centerScreen = WorldToScreen(camPos);
+                ImVec2 rightScreen = WorldToScreen({ camPos.x + tileSize, camPos.y, camPos.z });
+
+                // Calculate horizontal distance in pixels
+                float pxPerTile = std::abs(rightScreen.x - centerScreen.x);
+
+                // Fade Out Logic (VISUAL POLISH)
+                // If tiles are small, the grid lines overlaps so we fade when it gets small to 6px
+                if (pxPerTile < 6.f) {
+                    float t = (pxPerTile - 3.f) / 3.f;      // Normalize 0.f to 1.f range
+                    t = std::max(0.f, std::min(t, 1.f));    // Clamp
+
+                    int alpha = (int)(40 * t);              // 40 is original alpha value
+                    gridColor = IM_COL32(255, 255, 255, alpha);
+                }
+
+                // Determine Range (Radius)
+                // Calculate how many tiles fit in teh current viewport dimensions
+                float visibleTilesX = imgSize.x / pxPerTile;
+                float visibleTilesY = imgSize.y / pxPerTile;
+
+                // Take the larger dimension and halve it (since radius is from center), + buffer
+                int gridRadius = (int)(std::max(visibleTilesX, visibleTilesY) * .5f) + 5;
+
+                // Optimization: If alpha is 0 (invisible), set radius to 0 to skip the loop completely
+                if ((gridColor >> 24) == 0) gridRadius = 0;
+
+                // Cap the radius to prevent extreme performance hits if zoomed to infinity
+                if (gridRadius > 200) gridRadius = 200;
+
+                // Calculate World Limits for the lines
+                float worldMinX = (centerGx - gridRadius) * tileSize;
+                float worldMaxX = (centerGx + gridRadius) * tileSize;
+                float worldMinY = (centerGy - gridRadius) * tileSize;
+                float worldMaxY = (centerGy + gridRadius) * tileSize;
+
+                // 4. Draw Vertical Lines
+                for (int i = -gridRadius; i <= gridRadius; ++i) {
+                    float currentX = (centerGx + i) * tileSize;
+
+                    ImVec2 pStart = WorldToScreen({ currentX, worldMinY, 0.0f });
+                    ImVec2 pEnd = WorldToScreen({ currentX, worldMaxY, 0.0f });
+
+                    // Optimization: Only draw if points are valid (not behind camera)
+                    if (pStart.x != -1 && pEnd.x != -1) {
+                        drawList->AddLine(pStart, pEnd, gridColor, 1.0f);
+                    }
+                }
+
+                // 5. Draw Horizontal Lines
+                for (int j = -gridRadius; j <= gridRadius; ++j) {
+                    float currentY = (centerGy + j) * tileSize;
+
+                    ImVec2 pStart = WorldToScreen({ worldMinX, currentY, 0.0f });
+                    ImVec2 pEnd = WorldToScreen({ worldMaxX, currentY, 0.0f });
+
+                    if (pStart.x != -1 && pEnd.x != -1) {
+                        drawList->AddLine(pStart, pEnd, gridColor, 1.0f);
+                    }
+                }
+
+                // Draw Mouse Hover Highlight
+                ImVec2 mouse = ImGui::GetMousePos();
+                bool overImage = (mouse.x >= imgMin.x && mouse.x <= imgMax.x && mouse.y >= imgMin.y && mouse.y <= imgMax.y);
+
+                if (overImage) {
+                    float imgu = (mouse.x - imgMin.x) / (imgMax.x - imgMin.x);
+                    float imgv = 1.f - (mouse.y - imgMin.y) / (imgMax.y - imgMin.y);
+
+                    CEVec3 worldMouse = ViewUV_toWorld(imgu, imgv);
+
+                    // Snap to Grid
+                    std::pair<int, int> gridPos = CrashoutsEngine::TileMapUtils::WorldToGrid(*activeTM, worldMouse.x, worldMouse.y);
+                    float snappedX = (float)gridPos.first * tileSize;
+                    float snappedY = (float)gridPos.second * tileSize;
+
+                    // Get Screen Coords of the 4 corners of this tile
+                    ImVec2 p1 = WorldToScreen({ snappedX, snappedY, 0.0f });
+                    ImVec2 p2 = WorldToScreen({ snappedX + tileSize, snappedY, 0.0f });
+                    ImVec2 p3 = WorldToScreen({ snappedX + tileSize, snappedY + tileSize, 0.0f });
+                    ImVec2 p4 = WorldToScreen({ snappedX, snappedY + tileSize, 0.0f });
+
+                    // Draw the Square Highlight
+                    drawList->AddQuad(p1, p2, p3, p4, IM_COL32(191, 0, 255, 200), 2.f);   // Purple outline
+
+                    // Handle Input (PAINTING)
+                    // Login: If holding mouse and over image
+                    if (ImGui::IsMouseDown(ImGuiMouseButton_Left)) {
+                        if (!activeTM->activeAsset.empty() && activeTM->activeAsset != "none") {
+                            CrashoutsEngine::TileMapUtils::PaintTile(*activeTM, gridPos.first, gridPos.second, activeTM->activeAsset);
+                        }
+                    }
+                    else if (ImGui::IsMouseDown(ImGuiMouseButton_Right)) {
+                        CrashoutsEngine::TileMapUtils::EraseTile(*activeTM, gridPos.first, gridPos.second);
+                    }
+                }
+            }
+
+            // END OF TILEMAP
 
             // 5) if we have a selected entity, let gizmo edit its TRS
             if (selected && ecs.HasComponent<Component::TransformComponent>(selected))

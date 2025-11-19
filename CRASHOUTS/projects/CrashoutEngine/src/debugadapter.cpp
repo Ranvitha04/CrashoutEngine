@@ -1767,9 +1767,9 @@ public class )" << file.stem().string() << R"(
     };
 
     /*!
-    @brief Adapter for editing Component::TileMapComponent.
-    @details Uses ImGui controls to manage Tile Map dimensions, assets, and editor state.
-    */
+        @brief Adapter for editing Component::TileMapComponent.
+        @details Uses ImGui controls to manage Tile Map assets and editor state.
+        */
     struct TileMapAdapter : DebugReflection::IComponentAdapter {
 
         // 1. Update Name
@@ -1793,6 +1793,7 @@ public class )" << file.stem().string() << R"(
         // 5. The Main Inspector UI
         void drawInspector(ECS& ecs, Entity e) override {
             using namespace Component;
+            namespace fs = std::filesystem;
 
             // Get the specific component
             TileMapComponent* tm = ecs.GetComponent<TileMapComponent>(e);
@@ -1801,79 +1802,108 @@ public class )" << file.stem().string() << R"(
             ImGui::SeparatorText("Tile Map Settings");
 
             // ---------------------------------------------------------
-            // ROW 1: Asset Name + Create Button
+            // SECTION 1: General Settings
             // ---------------------------------------------------------
 
-            // Calculate width to leave room for the button on the right
-            float availWidth = ImGui::GetContentRegionAvail().x;
-            float buttonWidth = 60.0f;
-            float padding = 5.0f;
-
-            // Set width for the InputText
-            ImGui::SetNextItemWidth(availWidth - buttonWidth - padding);
-
-            std::string entityName = ECS::getInstance()->GetComponent<NameComponent>(e)->name;
-
-            if (tm->tmName.empty()) {
-                // Find the Entity's actual name to restore the field
-                tm->tmName = entityName;
-                // NOTE: You may want to show an error message here instead of instant reversion
+            // Tile Size
+            if (ImGui::InputInt("Tile Size (Px)", &tm->tileSize)) {
+                if (tm->tileSize < 1) tm->tileSize = 1;
+                tm->isCacheDirty = true; // Redraw grid lines if size changes
             }
 
-            ImGui::SameLine(); // <--- Puts the next item on the same horizontal line
+            // Open Editor Toggle
+            if (ImGui::Checkbox("Open Tile Palette", &tm->pOpen)) {
+                // Logic if needed when opening/closing
+            }
 
-            // The Create Button
-            if (ImGui::Button("Create", ImVec2(buttonWidth, 0))) {
-                // LOGIC: Create the tilemap asset using the Entity's name
+            ImGui::Separator();
+            ImGui::Text("Loaded Rule Sets:");
 
-                // 1. Get Entity Name (Assuming ECS has a name helper, or we format the ID)
-                // std::string entityName = ecs.GetEntityName(e); 
-                // For now, we will simulate it using the Entity ID if no name system exists:
+            // ---------------------------------------------------------
+            // SECTION 2: Asset Management (List of loaded Rule Files)
+            // ---------------------------------------------------------
 
-                // 2. Set the tmName to match
-                tm->tmName = entityName;
+            // List existing assets
+            int indexToRemove = -1;
+            for (int i = 0; i < tm->tileAssetNames.size(); ++i) {
+                ImGui::PushID(i);
 
-                // 3. Trigger Asset Manager creation logic here
-                if (!tm->tmName.empty()) {
-                    Assets::AssetManager::GetInstance().Load(tm->tmName, Assets::TileMapAsset::Create(tm->tmName));
+                // Display Name
+                ImGui::Bullet();
+                ImGui::Text("%s", tm->tileAssetNames[i].c_str());
+
+                // Remove Button
+                ImGui::SameLine();
+                if (ImGui::SmallButton("Remove")) {
+                    indexToRemove = i;
                 }
 
-                // Visual feedback
+                ImGui::PopID();
+            }
+
+            // Handle Removal
+            if (indexToRemove != -1) {
+                // Check if the active asset is the one being removed
+                if (tm->activeAsset == tm->tileAssetNames[indexToRemove]) {
+                    tm->activeAsset = "none";
+                }
+                tm->tileAssetNames.erase(tm->tileAssetNames.begin() + indexToRemove);
+                tm->isCacheDirty = true; // Rebuild cache just in case
+            }
+
+            // ---------------------------------------------------------
+            // SECTION 3: Add New Asset
+            // ---------------------------------------------------------
+
+            if (ImGui::Button("Add Rule Set (.json)...")) {
+                ImGui::OpenPopup("AddRuleAssetPopup");
+            }
+
+            if (ImGui::BeginPopup("AddRuleAssetPopup")) {
+                std::string path = CrashoutsEngine::Assets::rootPath + "tilemaps/";
+
+                if (fs::exists(path)) {
+                    for (const auto& entry : fs::directory_iterator(path)) {
+                        if (entry.path().extension() == ".json") {
+                            std::string filename = entry.path().filename().string();
+
+                            // Check if already added to avoid duplicates
+                            bool alreadyHas = false;
+                            for (const auto& s : tm->tileAssetNames) if (s == filename) alreadyHas = true;
+
+                            if (!alreadyHas) {
+                                if (ImGui::Selectable(filename.c_str())) {
+                                    tm->tileAssetNames.push_back(filename);
+                                    // Ensure it's loaded in memory
+                                    //Assets::AssetManager::GetInstance().Load(filename, )
+                                    //Assets::AssetManager::GetInstance().Load<Assets::TileMapAsset>(filename);
+                                    tm->isCacheDirty = true;
+                                }
+                            }
+                        }
+                    }
+                }
+                else {
+                    ImGui::Text("No tilemaps folder found!");
+                }
+                ImGui::EndPopup();
+            }
+
+            // ---------------------------------------------------------
+            // SECTION 4: Debug Stats
+            // ---------------------------------------------------------
+            ImGui::Separator();
+            ImGui::TextDisabled("Stats:");
+            ImGui::TextDisabled("Tiles Painted: %zu", tm->gridData.size());
+            ImGui::TextDisabled("Active Brush: %s", tm->activeAsset.c_str());
+
+            if (ImGui::Button("Force Rebuild Cache")) {
                 tm->isCacheDirty = true;
             }
 
-            // Add a tooltip to explain what the button does
-            if (ImGui::IsItemHovered()) {
-                ImGui::SetTooltip("Create a new TileMap Asset using this Entity's name.");
-            }
-
-            // ---------------------------------------------------------
-            // ROW 2: Dimensions
-            // ---------------------------------------------------------
-            ImGui::Text("Grid Dimensions");
-
-            // Check if dimensions changed to mark cache as dirty
-            bool dimChanged = false;
-            dimChanged |= ImGui::InputInt("Columns (Tiles)", &tm->col);
-            dimChanged |= ImGui::InputInt("Rows (Tiles)", &tm->row);
-            dimChanged |= ImGui::InputInt("Tile Size (Px)", &tm->tileSize);
-
-            if (dimChanged) {
-                // Ensure they don't go negative
-                if (tm->col < 1) tm->col = 1;
-                if (tm->row < 1) tm->row = 1;
-                if (tm->tileSize < 1) tm->tileSize = 1;
-
-                // Flag that we need to rebuild textures/buffers
-                TileMapUtils::ResizeMap(*tm, tm->row, tm->col);
-            }
-
-            // ---------------------------------------------------------
-            // ROW 4: Editor Toggle
-            // ---------------------------------------------------------
-            ImGui::Separator();
-            // This toggle controls the window drawn in your main Render loop
-            if (ImGui::Checkbox("Open Tile Editor", &tm->pOpen)) {
+            if (ImGui::Button("Clear All Tiles")) {
+                tm->gridData.clear();
+                tm->isCacheDirty = true;
             }
         }
     };

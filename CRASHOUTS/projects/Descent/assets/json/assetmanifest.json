@@ -356,11 +356,5 @@
             "name": "TextShader",
             "path": "TextShader"
         }
-    ],
-    "tilemaps": [
-        {
-            "name": "Entity 1",
-            "path": "Entity 1"
-        }
     ]
 }

@@ -26,22 +26,23 @@ namespace Component {
 		    the scene.
 	*/
 	struct TileMapComponent {
-		std::string tmName;					// Name of tile map asset 
-		int row{ 15 }, col{ 15 };			// Number of rows and columns for tile
-		std::vector<unsigned int> tileIds;	// Represents the '2D' grid 
+		std::vector<std::string> tileAssetNames;				// Vector of names of the Tile Assets to be used
+		std::string activeAsset;								// The currently active / selected Tile Asset
+		int tileSize = 32;										// Size of one tile in world units
+		bool pOpen = false;										// Toggle editor window
 
-		// RUNTIME CACHE
-		// Maps Tile ID -> OpenGL Texture Handle
-		std::map<unsigned int, GLuint> runtimeTextureCache;
+		// --- DATA (THE SPARSE GRID) ---
+		// Key:   Pair of (GridX, GridY)
+		// Value: The Tile data (Which tile map asset is painted here using rules)
+		std::map<std::pair<int, int>, std::string> gridData;
 
-		// Helper to check if cache is generated
+		// --- RUNTIME CACHE ---
+		// To avoid recalculating rules every frame, we mark this dirty when painting happens.
 		bool isCacheDirty = true;
-	
-		// Dimensions
-		int tileSize = 32;
 
-		bool pOpen = false;					// Decide if the editor window is opened
-
+		// You might store the finalized render data here (e.g., specific texture IDs to draw)
+		// This maps (GridX, GridY) -> TextureID to render
+		std::map<std::pair<int, int>, GLuint> renderCache;
 	};
 }
 
@@ -50,41 +51,44 @@ namespace CrashoutsEngine {
 	namespace TileMapUtils {
 
 		/*!
-		@brief	Adds a new texture definition to the underlying ASSET, and marks
-				this component's cache as dirty.
+		@brief  Converts World Mouse Coordinates to Grid Coordinates.
 		@param  map TileMapComponent to reference.
-		@param  textureName Add a new texture to the tile map asset.
+		@param  worldX	The provided worldX position.
+		@param  worldY	The provided worldY position.
 		*/
-		void AddTileDefinitionToAsset(Component::TileMapComponent& map, const std::string& textureName);
+		std::pair<int, int> WorldToGrid(const Component::TileMapComponent& map, float worldX, float worldY);
 
 		/*!
-		@brief	Removes a definition from the underlying ASSET
-				and marks this component's cache as dirty.
+		@brief  Paints a tile at the specific grid location.
+				Automatically handles overwriting or new insertions.
 		@param  map TileMapComponent to reference.
-		@param  tileId The ID of texture asset to remove from tile map asset
+		@param  gridX		The provided gridX position.
+		@param  gridY		The provided gridY position.
+		@param	assetName	Texture Asset Name at location.
 		*/
-		void RemoveTileDefinitionFromAsset(Component::TileMapComponent& map, unsigned int tileId);
+		void PaintTile(Component::TileMapComponent& map, int gridX, int gridY, const std::string& assetName);
 
 		/*!
-		@brief	Rebuilds the GLuint cache (called in Update if dirty)
+		@brief  Removes a tile at the specific grid location (Right Click).
+		@param  map TileMapComponent to reference.
+		@param  gridX		The provided gridX position.
+		@param  gridY		The provided gridY position.
+		*/
+		void EraseTile(Component::TileMapComponent& map, int gridX, int gridY);
+
+		/*!
+		@brief  Iterates through the gridData and recalculates the Rule Bitmasks
+				for every tile to update the 'renderCache'.
 		@param  map TileMapComponent to reference.
 		*/
 		void RebuildCache(Component::TileMapComponent& map);
-
-		/*!
-		@brief	Resizes the TileID 2D Arrow "MAP" based on new count of rows and cols
-		@param  map		TileMapComponent to reference.
-		@param  newRows Number of rows.
-		@param  newCols	Number of cols.
-		*/
-		void ResizeMap(Component::TileMapComponent& map, int newRows, int newCols);
 
 	};
 
 	namespace Editor {
 
 		/*!
-		@brief	Draws the tile map editor window.
+		@brief	Draws the tile map asset selector.
 		@param  tmComp	TileMapComponent to reference.
 		@param  pOpen	Bool to decide if window is created or not.
 		*/

@@ -21,10 +21,29 @@
 #include <string>
 
 #include "assetmanager.h"
+#include "colliders.h"
 
 // Forward declarations
 namespace CrashoutsEngine {
     namespace Assets {
+
+        /*  Rule Bit Map:
+
+            Up:         0000'0001
+            Up-Right:   0000'0010
+            Right:      0000'0100
+            Down-Right: 0000'1000
+
+            Down:       0001'0000
+            Down-Left:  0010'0000
+            Left:       0100'0000
+            Up-Left:    1000'0000
+        */
+        struct RuleTile {
+            std::string texAssetName;
+            Collision::ColliderType colliderType{ Collision::ColliderType::AABB };
+            unsigned int ruleBitMap{ 0b0000'0000 };
+        };
 
         class TileMapAsset : public IAsset {
         public:
@@ -53,6 +72,8 @@ namespace CrashoutsEngine {
 					other.tileMapName.clear();
                     other.tiles.clear();
                 }
+
+                return *this;
             }
 
 			// Default Destructor
@@ -61,35 +82,28 @@ namespace CrashoutsEngine {
             // Public member functions
             // GETTERS
 			const std::string& GetTileMapName() const { return tileMapName; }
-            const std::map<unsigned int, std::string>& GetTiles() const { return tiles; }
+            const std::vector<RuleTile>& GetTiles() const { return tiles; }
 
             // SETTERS
             /*!
-            @brief Adds a new tile definition. Auto-generates an ID based on the highest existing ID.
-            @param textureName The name of the texture.
-            @return The ID assigned to this new tile.
+            @brief Adds a new rule tile. 
+            @param ruleTile RuleTile to reference and add
             */
-            unsigned int AddTileDefinition(const std::string& textureName) {
-                unsigned int newId = 1; // Start at 1 (assuming 0 is reserved for empty)
-
-                if (!tiles.empty()) {
-                    // std::map is sorted. rbegin() points to the last element (highest key).
-                    // We take that highest ID and add 1.
-                    newId = tiles.rbegin()->first + 1;
-                }
-
-                tiles[newId] = textureName;
+            void AddRuleTile(const RuleTile& ruleTile) {
+                tiles.push_back(ruleTile);
                 SaveTileMaps();
-
-                return newId; // Return it so the Editor/UI knows what ID was just created
             }
 
             /*!
-            @brief Removes tile definition at id provided.
+            @brief Removes rule tile
             @param id The ID of the tile which user wants removed.
             */
             void RemoveTileDefinition(unsigned int id) {
-                tiles.erase(id);
+                if (id >= tiles.size()) return;
+
+                std::swap(tiles[id], tiles.back());
+                tiles.pop_back();
+
                 SaveTileMaps();
             }
 
@@ -106,8 +120,8 @@ namespace CrashoutsEngine {
             void SaveTileMaps();
             
         private:
-			std::string tileMapName;                    // Name of the tilemap
-            std::map<unsigned int, std::string> tiles;  // Map of id to texture name from texture asset
+			std::string tileMapName;        // Name of the tilemap
+            std::vector<RuleTile> tiles;    // Vector of RuleTile s            
         };
     }
 }

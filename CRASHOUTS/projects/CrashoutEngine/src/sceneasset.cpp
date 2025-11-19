@@ -763,36 +763,49 @@ namespace CrashoutsEngine {
                     TileMapComponent& tm = gECS.AddComponent<TileMapComponent>(newEntity);
                     const rapidjson::Value& tmValue = entityValue[Keys::TILEMAP_COMPONENT];
 
-                    // 1. tmName (string)
-                    if (tmValue.HasMember("tmName") && tmValue["tmName"].IsString()) {
-                        tm.tmName = tmValue["tmName"].GetString();
-                    }
+                    // --- Set Defaults as requested ---
+                    tm.activeAsset = "none";
+                    tm.pOpen = false;
+                    tm.isCacheDirty = true;
 
-                    // 2. Dimensions (int)
-                    if (tmValue.HasMember("col") && tmValue["col"].IsInt()) {
-                        tm.col = tmValue["col"].GetInt();
-                    }
-                    if (tmValue.HasMember("row") && tmValue["row"].IsInt()) {
-                        tm.row = tmValue["row"].GetInt();
-                    }
+                    // 1. Tile Size (int)
                     if (tmValue.HasMember("tileSize") && tmValue["tileSize"].IsInt()) {
                         tm.tileSize = tmValue["tileSize"].GetInt();
                     }
 
-                    // 5. tileIds (std::vector<unsigned int>)
-                    if (tmValue.HasMember("tileIds") && tmValue["tileIds"].IsArray()) {
-                        const rapidjson::Value& tileIdsArray = tmValue["tileIds"];
-                        tm.tileIds.reserve(tileIdsArray.Size());
+                    // 2. Active Asset (string) - optional override if saved
+                    if (tmValue.HasMember("activeAsset") && tmValue["activeAsset"].IsString()) {
+                        tm.activeAsset = tmValue["activeAsset"].GetString();
+                    }
 
-                        if(tileIdsArray.Size() <= 0) {
-                            size_t total = (size_t)(tm.row * tm.col);
-                            tm.tileIds.assign(total, 0);
+                    // 3. Tile Asset Names (std::vector<std::string>)
+                    if (tmValue.HasMember("tileAssetNames") && tmValue["tileAssetNames"].IsArray()) {
+                        const rapidjson::Value& assetsArr = tmValue["tileAssetNames"];
+                        for (rapidjson::SizeType k = 0; k < assetsArr.Size(); ++k) {
+                            if (assetsArr[k].IsString()) {
+                                tm.tileAssetNames.push_back(assetsArr[k].GetString());
+                            }
                         }
-                        else {
-                            for (rapidjson::SizeType j = 0; j < tileIdsArray.Size(); ++j) {
-                                if (tileIdsArray[j].IsUint()) {
-                                    tm.tileIds.push_back(tileIdsArray[j].GetUint());
-                                }
+                    }
+
+                    // 4. Grid Data (std::map<std::pair<int, int>, std::string>)
+                    // JSON Structure: [ { "x": 1, "y": 2, "asset": "grass.json" }, ... ]
+                    if (tmValue.HasMember("gridData") && tmValue["gridData"].IsArray()) {
+                        const rapidjson::Value& gridArr = tmValue["gridData"];
+                        for (rapidjson::SizeType k = 0; k < gridArr.Size(); ++k) {
+                            const rapidjson::Value& tileObj = gridArr[k];
+
+                            if (tileObj.IsObject() &&
+                                tileObj.HasMember("x") && tileObj["x"].IsInt() &&
+                                tileObj.HasMember("y") && tileObj["y"].IsInt() &&
+                                tileObj.HasMember("asset") && tileObj["asset"].IsString()) {
+
+                                int x = tileObj["x"].GetInt();
+                                int y = tileObj["y"].GetInt();
+                                std::string asset = tileObj["asset"].GetString();
+
+                                // Insert into sparse map
+                                tm.gridData[{x, y}] = asset;
                             }
                         }
                     }
@@ -1314,28 +1327,52 @@ namespace CrashoutsEngine {
                 }
 
                 // =========================================================
-                // O. TileMapComponent
+                // O. TileMapComponent (Refactored for Sparse Grid)
                 // =========================================================
                 if (gECS.HasComponent<TileMapComponent>(id)) {
                     const TileMapComponent& tmComp = *gECS.GetComponent<TileMapComponent>(id);
                     rapidjson::Value tmValue(rapidjson::kObjectType);
 
-                    // 1. tmName (string)
-                    tmValue.AddMember("tmName", rapidjson::Value(tmComp.tmName.c_str(), allocator).Move(), allocator);
-
-                    // 2. col, row, tileSize (int)
-                    tmValue.AddMember("col", tmComp.col, allocator);
-                    tmValue.AddMember("row", tmComp.row, allocator);
+                    // 1. tileSize (int)
                     tmValue.AddMember("tileSize", tmComp.tileSize, allocator);
 
-                    // 3. tileIds (std::vector<unsigned int> -> JSON Array)
-                    rapidjson::Value tileIdsArray(rapidjson::kArrayType);
-                    for (unsigned int tileId : tmComp.tileIds) {
-                        tileIdsArray.PushBack(tileId, allocator);
-                    }
-                    tmValue.AddMember("tileIds", std::move(tileIdsArray), allocator);
+                    // 2. activeAsset (string)
+                    // We save this so the editor remembers what brush was selected, 
+                    // though defaults reset it to "none" on load per your request, 
+                    // saving it allows you to remove that override later if you want persistence.
+                    rapidjson::Value activeAssetVal;
+                    activeAssetVal.SetString(tmComp.activeAsset.c_str(), allocator);
+                    tmValue.AddMember("activeAsset", activeAssetVal, allocator);
 
-                    // Add the TileMapComponent object to the entity's component list
+                    // 3. tileAssetNames (vector<string>)
+                    rapidjson::Value assetsArray(rapidjson::kArrayType);
+                    for (const std::string& assetName : tmComp.tileAssetNames) {
+                        rapidjson::Value strVal;
+                        strVal.SetString(assetName.c_str(), allocator);
+                        assetsArray.PushBack(strVal, allocator);
+                    }
+                    tmValue.AddMember("tileAssetNames", assetsArray, allocator);
+
+                    // 4. gridData (map<pair<int,int>, string>)
+                    // Convert the map into an Array of Objects for JSON: [ {x:0, y:0, asset:"name"}, ... ]
+                    rapidjson::Value gridDataArray(rapidjson::kArrayType);
+
+                    for (const auto& [pos, assetName] : tmComp.gridData) {
+                        rapidjson::Value tileObj(rapidjson::kObjectType);
+
+                        tileObj.AddMember("x", pos.first, allocator);
+                        tileObj.AddMember("y", pos.second, allocator);
+
+                        rapidjson::Value assetVal;
+                        assetVal.SetString(assetName.c_str(), allocator);
+                        tileObj.AddMember("asset", assetVal, allocator);
+
+                        gridDataArray.PushBack(tileObj, allocator);
+                    }
+                    tmValue.AddMember("gridData", gridDataArray, allocator);
+
+                    // Note: We do NOT save pOpen, isCacheDirty, or renderCache as these are runtime/editor only.
+
                     entityValue.AddMember(rapidjson::StringRef(Keys::TILEMAP_COMPONENT), tmValue, allocator);
                 }
 

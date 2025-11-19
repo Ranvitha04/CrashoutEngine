@@ -10,13 +10,13 @@ __________________________________________________________________________*/
 
 /*                                                                   includes
 ----------------------------------------------------------------------------- */
-
 #include "engine_pch.h"
+
+#include "rendering.h"
+#include "textureasset.h"
 
 #include "assetmanager.h"
 #include "tilemapasset.h"
-#include "textureasset.h"
-#include "rendering.h"
 
 // File I/O Util Functions
 namespace {
@@ -110,15 +110,28 @@ namespace CrashoutsEngine {
                 const auto& arr = doc["tilemap"];
                 for (rapidjson::SizeType i = 0; i < arr.Size(); ++i) {
                     const auto& obj = arr[i];
-                    if (obj.HasMember("id") && obj["id"].IsUint() &&
-                        obj.HasMember("texture name") && obj["texture name"].IsString()) {
+                    if (!obj.IsObject()) continue;
 
-                        unsigned int id = obj["id"].GetUint();
-                        std::string tex = obj["texture name"].GetString();
+                    RuleTile ruleTile;
 
-                        // Store in the map
-                        newAsset->tiles[id] = tex;
+                    if (obj.HasMember("texAssetName") && obj["texAssetName"].IsString()) {
+                        ruleTile.texAssetName = obj["texAssetName"].GetString();
                     }
+
+                    if (obj.HasMember("colliderType") && obj["colliderType"].IsString()) {
+                        std::string colliderType = obj["colliderType"].GetString();
+
+                        if (colliderType == "AABB") ruleTile.colliderType = Collision::ColliderType::AABB;
+                        else if (colliderType == "SPHERE") ruleTile.colliderType = Collision::ColliderType::SPHERE;
+                        else if (colliderType == "OBB") ruleTile.colliderType = Collision::ColliderType::OBB;
+                    }
+
+                    if (obj.HasMember("ruleBitMap") && obj["ruleBitMap"].IsUint()) {
+                        ruleTile.ruleBitMap = obj["ruleBitMap"].GetUint();
+                    }
+
+                    // Store in the map
+                    newAsset->tiles.push_back(std::move(ruleTile));
                 }
             }
 
@@ -143,16 +156,29 @@ namespace CrashoutsEngine {
             rapidjson::Value tileArray(rapidjson::kArrayType);
 
             // 3. Iterate over the map and create objects
-            for (const auto& [id, texName] : tiles) {
+            for (const RuleTile& ruleTile : tiles) {
                 rapidjson::Value tileObj(rapidjson::kObjectType);
 
-                // Add "id"
-                tileObj.AddMember("id", id, allocator);
-
-                // Add "texture name"
+                // Add "texAssetName name"
                 rapidjson::Value nameVal;
-                nameVal.SetString(texName.c_str(), static_cast<rapidjson::SizeType>(texName.length()), allocator);
-                tileObj.AddMember("texture name", nameVal, allocator);
+                nameVal.SetString(ruleTile.texAssetName.c_str(), static_cast<rapidjson::SizeType>(ruleTile.texAssetName.length()), allocator);
+                tileObj.AddMember("texAssetName", nameVal, allocator);
+
+                // Add "ColliderType"
+                std::string colliderString{ "AABB" };
+                if (ruleTile.colliderType == Collision::ColliderType::SPHERE) {
+                    colliderString = "SPHERE";
+                }
+                else if (ruleTile.colliderType == Collision::ColliderType::OBB) {
+                    colliderString = "OBB";
+                }
+
+                rapidjson::Value colVal;
+                colVal.SetString(colliderString.c_str(), static_cast<rapidjson::SizeType>(colliderString.length()), allocator);
+                tileObj.AddMember("colliderType", colVal, allocator);
+
+                // Add "Rule BITMAP"
+                tileObj.AddMember("ruleBitMap", ruleTile.ruleBitMap, allocator);
 
                 tileArray.PushBack(tileObj, allocator);
             }
