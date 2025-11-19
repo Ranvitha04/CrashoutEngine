@@ -49,6 +49,7 @@ for Crashout Engine.
 #include "scriptsystem.h"
 #include "ppmanager.h"
 #include "keyframe.h"
+#include "spritesheet.h"
 
 #include "engine.h"
 #include <filesystem>
@@ -1560,7 +1561,7 @@ namespace UI { // --------------------------------------------------------------
                 {"Game Scene", &ui.showGameScene},
                 {"Audio", &ui.showAudio},
                 {"Animation", &ui.showAnimation},
-
+                {"Sprite Sheet", &ui.showSpriteSheet },
             };
             for (auto& t : toggles) ImGui::MenuItem(t.label, nullptr, t.flag);
 
@@ -2309,6 +2310,9 @@ namespace UI { // --------------------------------------------------------------
         if (ui.showAssets) {
             static std::string gPickedAsset;
             RenderAssetBrowserPanel(ui, Assets::rootPath.c_str(), gPickedAsset);
+        }
+        if (ui.showSpriteSheet) {
+            RenderSpriteSheetPanel();  
         }
         if (ui.showInspector) {
             RenderInspectorPanel(ecs, selected, ui);

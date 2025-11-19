@@ -61,7 +61,7 @@ add_library(${PROJECT_NAME} STATIC
     ${other_src_files}
     ${other_include_files}
     "${project_dir}/include/engine_pch.h"
- "include/prefabcomponent.h")
+ "include/prefabcomponent.h" "include/spritesheet.h" "src/spritesheet.cpp")
 
 target_precompile_headers(${PROJECT_NAME}
     PRIVATE

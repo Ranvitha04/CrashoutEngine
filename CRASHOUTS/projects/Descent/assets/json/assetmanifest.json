@@ -301,12 +301,20 @@
     ],
     "prefabs": [
         {
+            "name": "BlueBox",
+            "path": "BlueBox.json"
+        },
+        {
             "name": "Number1",
             "path": "Number1.json"
         },
         {
             "name": "prefab",
             "path": "prefab.json"
+        },
+        {
+            "name": "RedBox",
+            "path": "RedBox.json"
         },
         {
             "name": "shitasswork",
