@@ -1,4 +1,4 @@
-﻿/*!
+/*!
 @file       debugmenu.cpp
 @author     mohamadamirakmal.b@digipen.edu
 @date       14/09/2025
@@ -380,7 +380,7 @@ namespace UI { // --------------------------------------------------------------
     {
         static std::vector<Entity> multiSel;   // persistent multi-selection in the panel
 
-        ScopedWindow win("Heirarchy", LockFlags(ui.lockLayout));
+        ScopedWindow win("Hierarchy", LockFlags(ui.lockLayout));
 
         // Create entity in the REAL ECS
         if (ImGui::Button("Create Entity")) {
@@ -845,6 +845,14 @@ namespace UI { // --------------------------------------------------------------
 
                     int w, h, channels;
                     unsigned char* data = stbi_load(outSelectedAsset.c_str(), &w, &h, &channels, 4);
+                    if (data) {
+                        const int MAX_DIM = 4096;
+                        if (w > MAX_DIM || h > MAX_DIM) {
+                            std::cout << "FAILED: oversize preview (" << w << "x" << h << ") -> " << outSelectedAsset << std::endl;
+                            stbi_image_free(data);
+                            data = nullptr;
+                        }
+                    }
                     if (data) {
                         glGenTextures(1, &previewTex);
                         glBindTexture(GL_TEXTURE_2D, previewTex);
@@ -2241,6 +2249,7 @@ namespace UI { // --------------------------------------------------------------
             ImGui::DockBuilderDockWindow("Performance", dock_left);
             ImGui::DockBuilderDockWindow("GameState", dock_bottom);
             ImGui::DockBuilderDockWindow("GameScene", dock_bottom);
+            ImGui::DockBuilderDockWindow("Animation", dock_bottom);
             ImGui::DockBuilderDockWindow("Audio", dock_right_bottom);
             ImGui::DockBuilderDockWindow("Engine Controls", dock_top);
             ImGui::DockBuilderDockWindow("Game Viewport", dock_main);
