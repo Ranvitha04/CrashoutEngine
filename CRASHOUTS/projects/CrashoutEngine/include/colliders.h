@@ -31,6 +31,14 @@ namespace Collision {
 		OBB,
 	};
 
+	enum HelperType {
+		SPHERE_T,
+		AABB_T,
+		OBB_T,
+		TRIANGLE_T,
+		POLYGON_T
+	};
+
 	/*!
 	@struct	CollisionManifold
 	@brief	Contains information regarding Collision events between Entities
@@ -68,6 +76,7 @@ namespace Collision {
 		virtual f32 calculateInertia([[maybe_unused]] f32 mass) { return 0.f; };
 		CEVec3 offset{};
 		CEVec3 position{};
+		HelperType helperType;
 	};
 
 	/*!

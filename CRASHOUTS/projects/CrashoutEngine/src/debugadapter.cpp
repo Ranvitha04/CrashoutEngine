@@ -403,6 +403,14 @@ namespace {
                     sess = {};
                 }
 
+                /*INERTIA CALCULATIONS*/
+                f32& inertia{ rb->inertia };
+                ImGui::DragFloat("Inertia", &inertia);
+                if (ecs.HasComponent<Component::ColliderComponent>(e)) {
+                    Component::ColliderComponent* collider{ ecs.GetComponent<Component::ColliderComponent>(e) };
+                    if (ImGui::Button("Calculate Inertia##rb")) rb->setInertia(collider->collider->calculateInertia(rb->getMass())); /*For rotational stuff*/
+                }
+
                 // Simulate toggle
                 bool prevSim = rb->getFlags().test(Physics::SIMULATE_DYNAMICS);
                 bool simulate = prevSim;  // use a local variable for ImGui checkbox
@@ -434,6 +442,7 @@ namespace {
                         rb->getFlags().reset(Physics::SIMULATE_DYNAMICS);
                     }
                 }
+
 
                 // Forces
                 ImGui::SeparatorText("Forces");
@@ -490,30 +499,34 @@ namespace {
             }
 
             // Type selector
-            int type = static_cast<int>(cc->collider->type);
-            const char* items[] = { "Sphere","AABB" };
+            int type = static_cast<int>(cc->collider->helperType);
+            const char* items[] = { "Sphere","AABB", "OBB", "Triangle"};
             ImGui::Combo("Type", &type, items, IM_ARRAYSIZE(items));
 
             // If type changed, rebuild collider (keep a sane default size)
             if (type != static_cast<int>(cc->collider->type)) {
-                if (type == Collision::SPHERE) {
+                if (type == Collision::SPHERE_T) {
                     CEVec3 center{ 0.f,0.f,0.f };
                     if (auto* t = ecs.GetComponent<TransformComponent>(e)) center = t->position;
                     cc->collider = std::make_unique<Collision::Sphere>(D.sphere_radius, center);
-                }
-                else {
-                    // AABB centered on transform with �0.5 extents
+                } else if (type == Collision::AABB_T) {
+                    // AABB centered on transform with 0.5 extents
                     CEVec3 c{ 0.f,0.f,0.f };
                     if (auto* t = ecs.GetComponent<TransformComponent>(e)) c = t->position;
                     cc->collider = std::make_unique<Collision::AABBRect>(
-                        CEVec3{ c.x - D.aabb_half, c.y - D.aabb_half, c.z - D.aabb_half },
-                        CEVec3{ c.x + D.aabb_half, c.y + D.aabb_half, c.z + D.aabb_half }
+                        CEVec3{ c.x - D.aabb_half, c.y - D.aabb_half, 0.f },
+                        CEVec3{ c.x + D.aabb_half, c.y + D.aabb_half, 0.f }
                     );
+                } else if (type == Collision::HelperType::OBB_T) {
+
+
+                } else if (type == Collision::HelperType::TRIANGLE_T) {
+
                 }
             }
 
             // Draw fields per type
-            if (cc->collider->type == Collision::SPHERE) {
+            if (cc->collider->helperType == Collision::SPHERE) {
                 // Sphere
                 auto* s = static_cast<Collision::Sphere*>(cc->collider.get());
 
@@ -534,7 +547,7 @@ namespace {
                     s->center = { c[0], c[1], c[2] };
                 }
             }
-            else {
+            else if (cc->collider->helperType == Collision::AABB_T) {
                 // AABB
                 auto* a = static_cast<Collision::AABBRect*>(cc->collider.get());
 
@@ -592,6 +605,10 @@ namespace {
                         
                     }
                 }
+            } else if (cc->collider->helperType == Collision::OBB_T) {
+
+            } else if (cc->collider->helperType == Collision::TRIANGLE_T) {
+
             }
         }
     };

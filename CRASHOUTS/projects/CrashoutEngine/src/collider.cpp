@@ -5,7 +5,7 @@
 namespace Collision {
 	Collider::Collider(ColliderType type) : type{ type } { /*EMPTY BY DESIGN*/ }
 
-	Sphere::Sphere(f32 radius, CEVec3 const& center, CEVec3 const& newOffset) : Collider{ SPHERE }, radius{ radius } { position = center; offset = newOffset; }
+	Sphere::Sphere(f32 radius, CEVec3 const& center, CEVec3 const& newOffset) : Collider{ SPHERE }, radius{ radius } { position = center; offset = newOffset; helperType = SPHERE_T; }
 
 	void Sphere::updateCollider(CEVec3 const& newPos) {
 		position = newPos;
@@ -13,9 +13,10 @@ namespace Collision {
 
 	AABBRect::AABBRect(CEVec3 const& min, CEVec3 const& max) : Collider{ AABB }, min{ min }, max{ max } {
 		extents = (max - min) * 0.5f;
+		helperType = AABB_T;
 	}
 
-	AABBRect::AABBRect() : Collider{ AABB } {}
+	AABBRect::AABBRect() : Collider{ AABB } { helperType = AABB_T;  }
 
 	AABBRect GetAABB(Collider const& collider, CEVec3 const& transform) {
 
@@ -91,6 +92,8 @@ namespace Collision {
 
 	Polygon::Polygon(std::initializer_list<CEVec3> newVertices, f32 newRotation, CEVec3 const &newPosition, CEVec3 const &newOffset) 
 		: Collider{ POLYGON }, vertexCount{ std::min((int)newVertices.size(), MAX_VERTEX) }, rotation{ 0.f } {
+		
+		helperType = POLYGON_T;
 		offset = newOffset;
 		position = newPosition;
 
@@ -143,6 +146,7 @@ namespace Collision {
 		CEVec3 center{ max - extents };
 		
 		Polygon poly{ {min, CEVec3{min.x, min.y + extents.y * 2.f, 0.f}, max, CEVec3{min.x + extents.x * 2.f, min.y, center.z}}, rotation, center, offset };
+		poly.helperType = OBB_T;
 
 		return poly;
 	}

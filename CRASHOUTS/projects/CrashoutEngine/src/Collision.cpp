@@ -38,6 +38,7 @@ namespace {
 
 }
 
+/*UTILS RIGHT HERE*/
 namespace Collision {
 	std::pair<f32, f32> projOBBOnAxis(std::array<CEVec3, 4> const& vertices, CEVec3 const& axis) {
 		f32 min{ CEMath::Dot(vertices[0], axis) };
