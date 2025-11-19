@@ -83,6 +83,18 @@ namespace Component {
 		/*TODO PREVENT VELOCITY FROM GOING FURTHER FROM MAX velocity*/
 		mVelocity += static_cast<f32>(dt) * acceleration;
 
+		constexpr float kStiffness = 20.0f;
+		constexpr float kDamping = 4.0f;
+
+		float currentAngleRad = orientation * (CEMath::PI / 180.f);
+		float targetAngleRad = 0.0f;
+		float angleDiff = targetAngleRad - currentAngleRad;
+
+
+		float angularAccel = (angleDiff * kStiffness) - (angularVelocity * kDamping);
+
+		angularVelocity += angularAccel * static_cast<f32>(dt);
+
 		orientation += angularVelocity * (180.f / CEMath::PI) * dt;
 
 		clearForceAccumulator(); /*Reset forces acting upon object in an iteration*/

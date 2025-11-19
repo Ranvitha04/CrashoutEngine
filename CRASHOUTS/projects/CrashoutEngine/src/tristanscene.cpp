@@ -49,7 +49,7 @@ static void AddPhysicsEntity(CrashoutsEngine::Entity& entity, Component::RigidBo
 		std::make_unique<Collision::Polygon>(Collision::Polygon::createOBB(transform.position + extents, transform.position - extents, 50.f, CEVec3{0.f, 0.f, 0.f}))
 	});
 
-	globalECS->GetComponent<Component::RigidBodyComponent>(entity)->setInertia(globalECS->GetComponent<Component::ColliderComponent>(entity)->collider->calculateInertia(globalECS->GetComponent<Component::RigidBodyComponent>(entity)->getMass()));
+	globalECS->GetComponent<Component::RigidBodyComponent>(entity)->setInertia(200.f);
 
 }
 

@@ -176,8 +176,8 @@ namespace CollisionGizmos {
         Collision::CollisionHandler& col{ Collision::CollisionHandler::GetInstance() };
 
         for (int i{}; i < col.lastFrameCollision.size(); ++i) {
-            DrawCircleOutline(col.lastFrameCollision[i].colManifold.contactPoints[0], 1.f, 20, wireThickness, CEVec3{ 255.f, 0.f, 0.f });
-            Shapes::CreateLine(col.lastFrameCollision[i].colManifold.contactPoints[0], col.lastFrameCollision[i].colManifold.contactPoints[0] + (col.lastFrameCollision[i].colManifold.normal * 10.f), 1.f);
+            DrawCircleOutline(col.lastFrameCollision[i].colManifold.contactPoints[0], 1.f, 8, wireThickness, CEVec3{ 255.f, 0.f, 0.f });
+            Shapes::CreateLine(col.lastFrameCollision[i].colManifold.contactPoints[0], col.lastFrameCollision[i].colManifold.contactPoints[0] + (col.lastFrameCollision[i].colManifold.normal * 10.f), wireThickness);
         }
        
         /*for (const auto& ev : events) {
