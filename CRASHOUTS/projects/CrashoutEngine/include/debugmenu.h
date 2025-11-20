@@ -43,7 +43,7 @@ namespace UI {
     */
     struct UIState {
         bool lockLayout = false;
-        bool showPerf = true;
+        bool showPerf = false;
         bool showConsole = true;
         bool showInspector = true;
         bool showECS = true;

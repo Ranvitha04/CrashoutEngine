@@ -409,7 +409,7 @@ namespace UI { // --------------------------------------------------------------
                     }
                     ImGui::EndCombo();
                 }
-                ImGui::SameLine();
+
                 if (ImGui::Button("Create Selected##Prefab")) {
                     Prefab::Create(ecs, names[sel]);
                 }
@@ -1129,6 +1129,8 @@ namespace UI { // --------------------------------------------------------------
             }
             ImGui::EndTable();
         }
+        DrawEngineMemoryPanel();      // memory view
+        DrawProfilerPanel(profiler);
     }
 
     /*!
@@ -2334,7 +2336,7 @@ namespace UI { // --------------------------------------------------------------
                             const std::string prefix = "audio/";
                             auto pos = rel.find(prefix);
                             if (pos == 0)
-                                rel = rel.substr(prefix.size());       // "Music/Menu.wav"
+                                rel = rel.substr(prefix.size()); // "Music/Menu.wav"
 
                             if (ext == ".wav" || ext == ".ogg" || ext == ".mp3") {
                                 ac->eventPath = rel;
@@ -2429,23 +2431,22 @@ namespace UI { // --------------------------------------------------------------
 
             // Split into main zones
             ImGuiID dock_main = dockspace_id;
-            ImGuiID dock_left, dock_right, dock_bottom, dock_top;
+            ImGuiID dock_left, dock_right, dock_bottom, dock_top, dock_left_bottom, dock_right_bottom;
             ImGui::DockBuilderSplitNode(dock_main, ImGuiDir_Up, 0.07f, &dock_top, &dock_main);
             ImGui::DockBuilderSplitNode(dock_main, ImGuiDir_Left, 0.18f, &dock_left, &dock_main);
             ImGui::DockBuilderSplitNode(dock_main, ImGuiDir_Right, 0.26f, &dock_right, &dock_main);
             ImGui::DockBuilderSplitNode(dock_main, ImGuiDir_Down, 0.28f, &dock_bottom, &dock_main);
-
-            ImGuiID dock_right_bottom;
+            ImGui::DockBuilderSplitNode(dock_main, ImGuiDir_Down, 0.25f, &dock_left_bottom, &dock_main);
             ImGui::DockBuilderSplitNode(dock_right, ImGuiDir_Down, 0.5f, &dock_right_bottom, &dock_right);
 
             // Dock windows into regions (matching your actual window titles)
             ImGui::DockBuilderDockWindow("Debug Controls", dock_left);
-            ImGui::DockBuilderDockWindow("Hierarchy", dock_right);
+            ImGui::DockBuilderDockWindow("Hierarchy", dock_left);
             ImGui::DockBuilderDockWindow("Assets", dock_bottom);
             ImGui::DockBuilderDockWindow("Inspector", dock_right_bottom);
             ImGui::DockBuilderDockWindow("Physics / Collision", dock_bottom);
             ImGui::DockBuilderDockWindow("Console", dock_bottom);
-            ImGui::DockBuilderDockWindow("Performance", dock_left);
+            ImGui::DockBuilderDockWindow("Performance", dock_left_bottom);
             ImGui::DockBuilderDockWindow("GameState", dock_bottom);
             ImGui::DockBuilderDockWindow("GameScene", dock_bottom);
             ImGui::DockBuilderDockWindow("Animation", dock_bottom);
