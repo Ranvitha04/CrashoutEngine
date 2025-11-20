@@ -77,7 +77,7 @@ namespace Collision {
 
 		private:
 
-			static constexpr int TYPES_OF_COLLISION{ 4 };
+			static constexpr int TYPES_OF_COLLISION{ 3 };
 
 			std::array<FunctionDispatchType, TYPES_OF_COLLISION* TYPES_OF_COLLISION> collideFuncts;
 

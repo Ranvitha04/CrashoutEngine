@@ -282,7 +282,7 @@ namespace Collision {
 
 		AABBRect const& aabb2Temp = dynamic_cast<AABBRect const&>(*(coll2.collider));
 
-		CEVec3 posDelta{ coll2.position - coll1.position }; /*Vector showing distance + the direction*/
+		CEVec3 posDelta{ (coll2.position + coll2.collider->offset) - (coll1.position + coll1.collider->offset) }; /*Vector showing distance + the direction*/
 
 		f32 xDiff{ aabb1Temp.extents.x + aabb2Temp.extents.x - std::abs(posDelta.x) };
 
@@ -405,11 +405,11 @@ namespace Collision {
 
 		AABBRect const& aabb2Temp = dynamic_cast<AABBRect const&>(*(aabbPtr->collider));
 
-		CEVec3 minAABB{ aabbPtr->position.x - aabb2Temp.extents.x, aabbPtr->position.y - aabb2Temp.extents.y, 0.f };
-		CEVec3 maxAABB{ aabbPtr->position.x + aabb2Temp.extents.x, aabbPtr->position.y + aabb2Temp.extents.y, 0.f };
+		CEVec3 minAABB{ (aabbPtr->position.x + aabbPtr->collider->offset.x) - aabb2Temp.extents.x, (aabbPtr->position.y + aabbPtr->collider->offset.y) - aabb2Temp.extents.y, 0.f };
+		CEVec3 maxAABB{ (aabbPtr->position.x + aabbPtr->collider->offset.x) + aabb2Temp.extents.x, (aabbPtr->position.y + aabbPtr->collider->offset.y) + aabb2Temp.extents.y, 0.f };
 
 
-		CEVec3 pos{ spherePtr->position };
+		CEVec3 pos{ spherePtr->position + spherePtr->collider->offset };
 
 		CEVec3 closestPt{ pos }; /*CLOSEST POINT OF THE CENTER OF THE CIRCLE TO THE EDGES OF THE AABB*/
 
@@ -629,16 +629,19 @@ namespace Collision {
 	} {
 		int sphereIdx{ static_cast<int>(SPHERE) };
 		int AABBIdx{ static_cast<int>(AABB) };
-		int OBBIdx{ static_cast<int>(OBB) };
 		int PolygonIdx{ static_cast<int>(POLYGON) };
+
+		/*SOON TO BE DEPRECATED*/
+		//int OBBIdx{ static_cast<int>(OBB) };
 
 		/*Fill in the table of collisions, e.g collideFuncts[0] will be SPHERE TO SPHERE collision (2 total collider types will have 2^2 permutations(different types of collisions possible) ) */
 		collideFuncts[sphereIdx] = SphereToSphereCollision;
 		collideFuncts[AABBIdx * TYPES_OF_COLLISION + AABBIdx] = AABBToAABBCollision;
 		collideFuncts[sphereIdx * TYPES_OF_COLLISION + AABBIdx] = SphereToAABBCollision;
-		collideFuncts[AABBIdx * TYPES_OF_COLLISION + OBBIdx] = AABBToOBBCollision;
+		/*collideFuncts[AABBIdx * TYPES_OF_COLLISION + OBBIdx] = AABBToOBBCollision;
 		collideFuncts[sphereIdx * TYPES_OF_COLLISION + OBBIdx] = SphereToOBBCollision;
-		collideFuncts[OBBIdx * TYPES_OF_COLLISION + OBBIdx] = OBBToOBBCollision;
+		collideFuncts[OBBIdx * TYPES_OF_COLLISION + OBBIdx] = OBBToOBBCollision;*/
+		collideFuncts[AABBIdx * TYPES_OF_COLLISION + PolygonIdx] = AABBToPolygonCollision;
 		collideFuncts[sphereIdx * TYPES_OF_COLLISION + PolygonIdx] = SphereToPolygonCollision;
 		collideFuncts[PolygonIdx * TYPES_OF_COLLISION + PolygonIdx] = PolygonToPolygonCollision;
 	}

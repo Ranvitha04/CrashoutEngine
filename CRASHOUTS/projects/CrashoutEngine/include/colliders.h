@@ -76,7 +76,7 @@ namespace Collision {
 		virtual f32 calculateInertia([[maybe_unused]] f32 mass) { return 0.f; };
 		CEVec3 offset{};
 		CEVec3 position{};
-		HelperType helperType;
+		HelperType helperType; /*HELPER FOR UI DROPDOWN*/
 	};
 
 	/*!
@@ -166,6 +166,8 @@ namespace Collision {
 
 		float rotation{};
 		int vertexCount{};
+
+
 		Vertices vertices;
 		Vertices rotatedVertices;
 		Normal normalEdges;
@@ -181,7 +183,14 @@ namespace Collision {
 
 		virtual f32 calculateInertia(f32 mass) override;
 
+		void forceUpdateRotation(f32 newRotation);
+
+		/*OBB HELPER FUNCTIONS*/
 		static Polygon createOBB(CEVec3 const& min, CEVec3 const& max, f32 rotation, CEVec3 offset);
+		static void updateOBB(CEVec3 const& min, CEVec3 const& max, Polygon& polygon);
+		static CEVec3 calculateOBBExtents(Polygon const& polygon);
+		
+		/*AABB HELPER FUNCTIONS*/
 		static Polygon createAABB(CEVec3 const& min, CEVec3 const& max, CEVec3 offset);
 
 		virtual std::unique_ptr<Collider> clone() const override {

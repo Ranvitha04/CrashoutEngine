@@ -151,6 +151,24 @@ namespace Collision {
 		return poly;
 	}
 
+	void Polygon::updateOBB(CEVec3 const& min, CEVec3 const& max, Polygon& polygon) {
+
+		CEVec3 extents{ max - min };
+		polygon.vertices[0] = min;
+		polygon.vertices[1] = CEVec3{min.x, min.y + extents.y * 2.f, 0.f};
+		polygon.vertices[2] = max;
+		polygon.vertices[3] = CEVec3{ min.x + extents.x * 2.f, min.y , 0.f };
+
+		polygon.forceUpdateRotation(0.f);
+	}
+
+	CEVec3 Polygon::calculateOBBExtents(Polygon const& polygon) {
+		CEVec3 position{ polygon.position.x + polygon.offset.x, polygon.position.y + polygon.offset.y, 0.f };
+		CEVec3 extents{ std::abs(position.x - polygon.vertices[0].x), std::abs(position.y - polygon.vertices[0].y), 0.f };
+
+		return extents;
+	}
+
 	Polygon Polygon::createAABB(CEVec3 const& min, CEVec3 const& max, CEVec3 offset) {
 		CEVec3 extents{ 0.5f * (max - min) };
 		CEVec3 center{ max - extents };
@@ -179,6 +197,24 @@ namespace Collision {
 		/*Check if rotation didnt change from last time to avoid expensive calculation*/
 		/*same thing differernt day*/
 		if (rotation == newRotation) return;
+
+		rotation = newRotation;
+		CEMtx33 rotationMtx{};
+		rotationMtx = rotationMtx.RotationDegrees(rotation);
+
+		for (int i{}; i < vertexCount; ++i) {
+			rotatedVertices[i] = vertices[i] - position;
+			rotatedVertices[i] = { rotationMtx * rotatedVertices[i] };
+			rotatedVertices[i] += position;
+		}
+
+		calcNormals();
+	}
+
+	void Polygon::forceUpdateRotation(f32 newRotation) {
+
+		/*Check if rotation didnt change from last time to avoid expensive calculation*/
+		/*same thing differernt day*/
 
 		rotation = newRotation;
 		CEMtx33 rotationMtx{};

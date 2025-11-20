@@ -142,11 +142,11 @@ namespace CollisionGizmos {
 
             if (pColliderComp.collider->type == Collision::SPHERE) {
                 Collision::Sphere const& sphereTemp = dynamic_cast<Collision::Sphere const&>(*pColliderComp.collider);
-                DrawCircleOutline(sphereTemp.center, sphereTemp.radius, 48, wireThickness, color);
+                DrawCircleOutline(sphereTemp.position + sphereTemp.offset, sphereTemp.radius, 48, wireThickness, color);
             }
             else if (pColliderComp.collider->type == Collision::AABB) {
                 Collision::AABBRect const& aabbTemp = dynamic_cast<Collision::AABBRect const&>(*pColliderComp.collider);
-                DrawAABBOutline(aabbTemp.min, aabbTemp.max, wireThickness, color);
+                DrawAABBOutline(aabbTemp.min + aabbTemp.offset, aabbTemp.max + aabbTemp.offset, wireThickness, color);
             }
             else if (pColliderComp.collider->type == Collision::OBB) {
                 Collision::OBBRect const& obbTemp = dynamic_cast<Collision::OBBRect const&>(*pColliderComp.collider);
