@@ -245,7 +245,7 @@ namespace Scene {
             }
         }
     
-        CrashoutsEngine::Rendering::RenderTileMaps(globalECS);
+        //CrashoutsEngine::Rendering::RenderTileMaps(globalECS);
     }
 
     void UpdateScene(CrashoutsEngine::ECS& globalECS) {

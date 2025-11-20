@@ -85,7 +85,7 @@ namespace CrashoutsEngine {
 				for every tile to update the 'renderCache'.
 		@param  map TileMapComponent to reference.
 		*/
-		void RebuildCache(Component::TileMapComponent& map);
+		void RebuildCache(Component::TileMapComponent& map, const Entity& parentEnt);
 
 	};
 
@@ -106,7 +106,7 @@ namespace CrashoutsEngine {
 		@brief	Renders all the tilemaps.
 		@param  ecs EntityComponentSystem to reference.
 		*/
-		void RenderTileMaps(ECS& ecs);
+		//void RenderTileMaps(ECS& ecs);
 	};
 
 };

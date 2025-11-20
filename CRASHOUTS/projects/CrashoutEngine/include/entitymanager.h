@@ -28,7 +28,7 @@
 ----------------------------------------------------------------------------- */
 namespace CrashoutsEngine {
 
-	using Entity = uint32_t;
+	typedef uint32_t Entity;
 
 	class IComponentArray;
 

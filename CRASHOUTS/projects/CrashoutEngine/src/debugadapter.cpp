@@ -889,7 +889,8 @@ namespace {
             switch (sc->type) {
             case Component::ShapeType::Square:    Component::Shapes::CreateSquare(pos, sc->size, sc->rotation, sc->scale, sc->color); break;
             case Component::ShapeType::Rectangle: Component::Shapes::CreateRectangle(pos, sc->width, sc->height, sc->rotation, sc->scale, sc->color); break;
-            case Component::ShapeType::Line:      Component::Shapes::CreateLine(sc->p1, sc->p2, sc->thickness, sc->rotation, sc->scale, sc->color); break;
+            case Component::ShapeType::Line:      Component::Shapes::
+            (sc->p1, sc->p2, sc->thickness, sc->rotation, sc->scale, sc->color); break;
             case Component::ShapeType::Triangle:  Component::Shapes::CreateTriangle(sc->t1, sc->t2, sc->t3, sc->rotation, sc->scale, sc->color); break;
             }*/
             // reminder to ask how/where is the rendering of the shapes done in general, i don't wanna hunt for functions
@@ -1766,40 +1767,49 @@ public class )" << file.stem().string() << R"(
         }
     };
 
+    /*!
+    @brief Function used to draw the imgui bitmask selector.
+    @param mask The bit mask to modify.
+    */
     static void DrawBitmaskSelector(unsigned int& mask) {
-        // Bit order based on your enum:
-        // Up=0, UpRight=1, Right=2, DownRight=3, Down=4, DownLeft=5, Left=6, UpLeft=7
+        // Map the visual 3x3 grid to your specific Enum Bits
+        // -1 means "No Checkbox" (Corners/Center)
 
-        // Visual layout 3x3:
-        // [7] [0] [1]
-        // [6] [ ] [2]
-        // [5] [4] [3]
-
+        // Enum: Up=0, Right=1, Down=2, Left=3
         int bits[3][3] = {
-            { 7, 0, 1 },
-            { 6, -1, 2 }, // -1 is the center (no bit)
-            { 5, 4, 3 }
+            { -1,  0, -1 }, // Top Row:   Empty, UP(Bit 0), Empty
+            {  3, -1,  1 }, // Mid Row:   LEFT(Bit 3), Center, RIGHT(Bit 1)
+            { -1,  2, -1 }  // Bot Row:   Empty, DOWN(Bit 2), Empty
         };
 
         ImGui::BeginGroup();
+
+        float cellSize = 25.0f;
+        float startX = ImGui::GetCursorPosX();
+
         for (int r = 0; r < 3; ++r) {
             for (int c = 0; c < 3; ++c) {
                 int bitIndex = bits[r][c];
 
                 if (c > 0) ImGui::SameLine();
+                ImGui::SetCursorPosX(startX + (c * cellSize));
 
                 if (bitIndex == -1) {
-                    // Center placeholder
+                    // Placeholder for corners/center
+                    ImGui::PushStyleVar(ImGuiStyleVar_Alpha, 0.1f);
                     ImGui::Dummy(ImVec2(20, 20));
+                    ImGui::PopStyleVar();
                 }
                 else {
-                    // Checkbox logic
                     bool val = (mask & (1 << bitIndex)) != 0;
                     std::string id = "##bit" + std::to_string(bitIndex);
+
+                    ImGui::PushID(bitIndex);
                     if (ImGui::Checkbox(id.c_str(), &val)) {
-                        if (val) mask |= (1 << bitIndex); // Set bit
-                        else     mask &= ~(1 << bitIndex); // Clear bit
+                        if (val) mask |= (1 << bitIndex);
+                        else     mask &= ~(1 << bitIndex);
                     }
+                    ImGui::PopID();
                 }
             }
         }
@@ -1807,9 +1817,9 @@ public class )" << file.stem().string() << R"(
     }
 
     /*!
-        @brief Adapter for editing Component::TileMapComponent.
-        @details Uses ImGui controls to manage Tile Map assets and editor state.
-        */
+    @brief Adapter for editing Component::TileMapComponent.
+    @details Uses ImGui controls to manage Tile Map assets and editor state.
+    */
     struct TileMapAdapter : DebugReflection::IComponentAdapter {
 
         // 1. Update Name
@@ -1972,13 +1982,13 @@ public class )" << file.stem().string() << R"(
                             }
 
                             // C. Bitmask (The Grid)
-                            ImGui::Text("Neighbors:");
+                            ImGui::Text("Neighbours:");
                             DrawBitmaskSelector(rule.ruleBitMap);
 
                             // D. Hex Preview
                             ImGui::SameLine();
                             ImGui::BeginGroup();
-                            ImGui::TextDisabled("Hex: 0x%X", rule.ruleBitMap);
+                            ImGui::TextDisabled("Hex: 0x%02X", rule.ruleBitMap);
                             if (ImGui::Button("Delete Rule")) ruleToDelete = i;
                             ImGui::EndGroup();
                         }

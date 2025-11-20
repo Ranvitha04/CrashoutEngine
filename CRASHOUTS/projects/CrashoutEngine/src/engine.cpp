@@ -436,8 +436,13 @@ void Update(double const& dt) {
     CrashoutsEngine::ECS::ComponentArray<Component::TileMapComponent>& tmArray =
         CrashoutsEngine::ECS::getInstance()->GetComponentArray<Component::TileMapComponent>();
 
-    for (Component::TileMapComponent& tm : tmArray.dense) {
-        if (tm.isCacheDirty) CrashoutsEngine::TileMapUtils::RebuildCache(tm);
+    for (size_t i = 0; i < tmArray.dense.size(); ++i) {
+        // 1. Get the Component
+        Component::TileMapComponent& tm = tmArray.dense[i];
+
+        // 2. Get the Entity ID associated with this index
+        CrashoutsEngine::Entity entityID = tmArray.indexToEntity[i];
+        if (tm.isCacheDirty) CrashoutsEngine::TileMapUtils::RebuildCache(tm, entityID);
     }
 #endif
 

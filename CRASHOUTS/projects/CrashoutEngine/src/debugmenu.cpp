@@ -1632,6 +1632,19 @@ namespace UI { // --------------------------------------------------------------
                 //MonoManager::ReloadScripts();
                 engineState = EngineState::STOP;
             }
+            ImGui::SameLine();
+            // SAVE
+            if (ImGui::Button("SAVE", ImVec2(70, 25))) {
+                if (!currSceneName.empty()) Serialization::SaveScenes(currSceneName);
+
+                if (currSceneName.empty()) RestartGameState();       // Legacy scene system
+                else {
+                    ECS::getInstance()->Reset();
+                    Serialization::LoadScenes(currSceneName);
+                }
+
+            }
+
             
             ImGui::SeparatorEx(ImGuiSeparatorFlags_Vertical);
             ImGui::SameLine();
@@ -1695,6 +1708,7 @@ namespace UI { // --------------------------------------------------------------
             ImGui::SetCursorScreenPos(start);
 
             gameWinHovered = ImGui::IsWindowHovered();
+            bool gameWinFocused = ImGui::IsWindowFocused();
 
             // Get the size of ImGui window content region
             ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
@@ -1803,6 +1817,7 @@ namespace UI { // --------------------------------------------------------------
             }
 
             bool isPaintingMode = (activeTM && activeTM->pOpen);
+            bool isImGuiCapturingInput = ImGui::GetIO().WantCaptureMouse;
 
             // Draw Grid & Handle Input
             if (isPaintingMode) {
@@ -1912,7 +1927,7 @@ namespace UI { // --------------------------------------------------------------
                 ImVec2 mouse = ImGui::GetMousePos();
                 bool overImage = (mouse.x >= imgMin.x && mouse.x <= imgMax.x && mouse.y >= imgMin.y && mouse.y <= imgMax.y);
 
-                if (overImage) {
+                if (gameWinFocused && overImage) {
                     float imgu = (mouse.x - imgMin.x) / (imgMax.x - imgMin.x);
                     float imgv = 1.f - (mouse.y - imgMin.y) / (imgMax.y - imgMin.y);
 
@@ -2181,164 +2196,103 @@ namespace UI { // --------------------------------------------------------------
                 v = 1.f - (mouse.y - imgMin.y) / (imgMax.y - imgMin.y);
             }
 
-            // Left click: select the top-most hit entity (do NOT clear if we hit nothing)
-            // ------------------------------------------------------------
-            //  Mouse picking
-            //  - only runs if mouse is over the viewport image
-            //  - converts mouse to UV, then to world
-            //  - walks ECS transforms and does a simple 2D AABB hit test
-            //  - picks the entity with the highest Z so clicking overlaps works
-            // ------------------------------------------------------------
-            if (over && ImGui::IsMouseClicked(ImGuiMouseButton_Left) && !ImGuizmo::IsOver() && !ImGuizmo::IsUsing())
-            {
-                CEVec3 worldPt = ViewUV_toWorld(u, v);
 
-                Entity best = 0;
-                float  bestZ = -FLT_MAX;
-
-                // Iterate transforms (top-most by Z wins)
-                auto& tArr = ecs.GetComponentArray<Component::TransformComponent>();
-                for (Entity e : tArr.indexToEntity)
+            if (gameWinFocused && !isImGuiCapturingInput) {
+                // Left click: select the top-most hit entity (do NOT clear if we hit nothing)
+                // ------------------------------------------------------------
+                //  Mouse picking
+                //  - only runs if mouse is over the viewport image
+                //  - converts mouse to UV, then to world
+                //  - walks ECS transforms and does a simple 2D AABB hit test
+                //  - picks the entity with the highest Z so clicking overlaps works
+                // ------------------------------------------------------------
+                if (over && ImGui::IsMouseClicked(ImGuiMouseButton_Left) && !ImGuizmo::IsOver() && !ImGuizmo::IsUsing())
                 {
-                    if (!ecs.HasComponent<Component::TransformComponent>(e)) continue;
-                    auto* t = ecs.GetComponent<Component::TransformComponent>(e);
+                    CEVec3 worldPt = ViewUV_toWorld(u, v);
 
-                    // Default half-extents from transform size (rectangle-like)
-                    float hx = std::max(0.5f * t->size.x, 0.5f);
-                    float hy = std::max(0.5f * t->size.y, 0.5f);
-                    bool  hit = false;
+                    Entity best = 0;
+                    float  bestZ = -FLT_MAX;
 
-                    if (auto* sc = ecs.GetComponent<Component::ShapeComponent>(e))
+                    // Iterate transforms (top-most by Z wins)
+                    auto& tArr = ecs.GetComponentArray<Component::TransformComponent>();
+                    for (Entity e : tArr.indexToEntity)
                     {
-                        using Component::ShapeType;
-                        switch (sc->type)
-                        {
-                        case ShapeType::Circle:
-                        {
-                            const float r = 0.5f * std::min(t->size.x, t->size.y);
-                            const float dx = worldPt.x - t->position.x;
-                            const float dy = worldPt.y - t->position.y;
-                            hit = (dx * dx + dy * dy) <= r * r;
-                        }
-                        break;
+                        if (!ecs.HasComponent<Component::TransformComponent>(e)) continue;
+                        auto* t = ecs.GetComponent<Component::TransformComponent>(e);
 
-                        case ShapeType::Line:
-                        {
-                            // conservative AABB around line + thickness
-                            const float minx = std::min(sc->p1.x, sc->p2.x);
-                            const float maxx = std::max(sc->p1.x, sc->p2.x);
-                            const float miny = std::min(sc->p1.y, sc->p2.y);
-                            const float maxy = std::max(sc->p1.y, sc->p2.y);
-                            hx = std::max(hx, std::max(0.5f * (maxx - minx), sc->thickness * 0.5f));
-                            hy = std::max(hy, std::max(0.5f * (maxy - miny), sc->thickness * 0.5f));
-                            // fall through to AABB test below
-                        }
-                        [[fallthrough]];
+                        // Default half-extents from transform size (rectangle-like)
+                        float hx = std::max(0.5f * t->size.x, 0.5f);
+                        float hy = std::max(0.5f * t->size.y, 0.5f);
+                        bool  hit = false;
 
-                        case ShapeType::Rectangle:
-                        case ShapeType::Triangle:
-                        default:
+                        if (auto* sc = ecs.GetComponent<Component::ShapeComponent>(e))
                         {
+                            using Component::ShapeType;
+                            switch (sc->type)
+                            {
+                            case ShapeType::Circle:
+                            {
+                                const float r = 0.5f * std::min(t->size.x, t->size.y);
+                                const float dx = worldPt.x - t->position.x;
+                                const float dy = worldPt.y - t->position.y;
+                                hit = (dx * dx + dy * dy) <= r * r;
+                            }
+                            break;
+
+                            case ShapeType::Line:
+                            {
+                                // conservative AABB around line + thickness
+                                const float minx = std::min(sc->p1.x, sc->p2.x);
+                                const float maxx = std::max(sc->p1.x, sc->p2.x);
+                                const float miny = std::min(sc->p1.y, sc->p2.y);
+                                const float maxy = std::max(sc->p1.y, sc->p2.y);
+                                hx = std::max(hx, std::max(0.5f * (maxx - minx), sc->thickness * 0.5f));
+                                hy = std::max(hy, std::max(0.5f * (maxy - miny), sc->thickness * 0.5f));
+                                // fall through to AABB test below
+                            }
+                            [[fallthrough]];
+
+                            case ShapeType::Rectangle:
+                            case ShapeType::Triangle:
+                            default:
+                            {
+                                const float minx = t->position.x - hx, maxx = t->position.x + hx;
+                                const float miny = t->position.y - hy, maxy = t->position.y + hy;
+                                hit = (worldPt.x >= minx && worldPt.x <= maxx &&
+                                    worldPt.y >= miny && worldPt.y <= maxy);
+                            }
+                            break;
+                            }
+                        }
+                        else
+                        {
+                            // No ShapeComponent -> rectangle using transform size
                             const float minx = t->position.x - hx, maxx = t->position.x + hx;
                             const float miny = t->position.y - hy, maxy = t->position.y + hy;
                             hit = (worldPt.x >= minx && worldPt.x <= maxx &&
                                 worldPt.y >= miny && worldPt.y <= maxy);
                         }
-                        break;
-                        }
-                    }
-                    else
-                    {
-                        // No ShapeComponent -> rectangle using transform size
-                        const float minx = t->position.x - hx, maxx = t->position.x + hx;
-                        const float miny = t->position.y - hy, maxy = t->position.y + hy;
-                        hit = (worldPt.x >= minx && worldPt.x <= maxx &&
-                            worldPt.y >= miny && worldPt.y <= maxy);
+
+                        if (hit && t->position.z >= bestZ) { bestZ = t->position.z; best = e; }
                     }
 
-                    if (hit && t->position.z >= bestZ) { bestZ = t->position.z; best = e; }
+                    // Toggle selection with LEFT mouse
+                    if (best) selected = (selected == best) ? (Entity)0 : best;
+                    // else selected = 0; // click empty -> deselect
                 }
 
-                // Toggle selection with LEFT mouse
-                if (best) selected = (selected == best) ? (Entity)0 : best;
-                // else selected = 0; // click empty -> deselect
-            }
-
-            if (over && ImGui::IsMouseClicked(ImGuiMouseButton_Right))
-            {
-                if (!ImGuizmo::IsOver() && !ImGuizmo::IsUsing())
+                if (over && ImGui::IsMouseClicked(ImGuiMouseButton_Right))
+                {
+                    if (!ImGuizmo::IsOver() && !ImGuizmo::IsUsing())
+                        selected = 0;
+                }
+                if (selected && ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows) && !ImGuizmo::IsUsing() && ImGui::IsKeyPressed(ImGuiKey_Delete))
+                {
+                    ecs.DestroyEntity(selected);
                     selected = 0;
-            }
-            if (selected && ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows) && !ImGuizmo::IsUsing() && ImGui::IsKeyPressed(ImGuiKey_Delete))
-            {
-                ecs.DestroyEntity(selected);
-                selected = 0;
-            }
-
-            //  7) drag and drop from asset browser into world
-            //  Drag-and-drop spawn
-            //  Payload is built in the Asset Browser panel.
-            //  Here we just read the payload and instantiate a texture/prefab
-            //  at the mouse drop location in world space.
-            // ------------------------------------------------------------
-            if (ImGui::BeginDragDropTarget()) {
-                if (const ImGuiPayload* pl = ImGui::AcceptDragDropPayload("ASSET/PAYLOAD")) {
-                    const auto* p = static_cast<const AssetDragPayload*>(pl->Data);
-                    CEVec3 dropWorld = ViewUV_toWorld(u, v);
-
-                    using CrashoutsEngine::Assets::AssetManager;
-                    using CrashoutsEngine::Assets::TextureAsset;
-
-                    if (p && p->kind == AssetKind::Texture) {
-                        if (auto* tex = AssetManager::GetInstance().Get<TextureAsset>(p->name)) {
-                            Entity e = ecs.CreateEntity();
-                            ecs.AddComponent<NameComponent>(e, std::string("Tex_") + p->name);
-                            ecs.AddComponent<TransformComponent>(e);
-                            ecs.AddComponent<Component::ShapeComponent>(e);
-                            auto* sc = ecs.GetComponent<Component::ShapeComponent>(e);
-                            sc->enableTexture = true;
-                            sc->textureName = p->name;
-                            ecs.GetComponent<Component::TransformComponent>(e)->position = dropWorld;
-                        }
-                    }
-                    else if (p && p->kind == AssetKind::Prefab) {
-                        Entity e = Prefab::Create(ecs, std::string(p->name));
-                        if (e && ecs.HasComponent<Component::TransformComponent>(e))
-                            ecs.GetComponent<Component::TransformComponent>(e)->position = dropWorld;
-                    }
-                    else if (p && p->kind == AssetKind::Audio) {
-                        std::string rel = p->relPath;
-                       
-                        const std::string prefix = "audio/";
-                        auto pos = rel.find(prefix);
-                        if (pos != std::string::npos) rel = rel.substr(pos + prefix.size());
-                        
-                        if (auto dot = rel.find_last_of('.'); dot != std::string::npos) rel.erase(dot);
-                        
-                        std::string eventLike = std::string("event:/") + rel; // "event:/SFX/Beep"
-
-                        Entity target = selected;
-                        if (!target) {
-                            target = ecs.CreateEntity();
-                            ecs.AddComponent<NameComponent>(target, std::string("Audio_") + p->name);
-                            ecs.AddComponent<TransformComponent>(target);
-                            ecs.GetComponent<TransformComponent>(target)->position = dropWorld;
-                        }
-
-                        if (!ecs.HasComponent<Component::AudioEmitterComponent>(target))
-                            ecs.AddComponent<Component::AudioEmitterComponent>(target);
-
-                        if (auto* ac = ecs.GetComponent<Component::AudioEmitterComponent>(target)) {
-                            ac->eventPath = eventLike;
-                            ac->volume = 1.0f;
-                            ac->pitch = 1.0f;
-                            ac->spatial3D = true;
-                        }
-                    }
                 }
-                ImGui::EndDragDropTarget();
             }
-        
+
             CEVec3 worldPt = ViewUV_toWorld(u, v);
 
             InputManager::g_mouseWorldPos = CEVec2{ worldPt.x, worldPt.y };
@@ -2372,34 +2326,6 @@ namespace UI { // --------------------------------------------------------------
         }
         collisions = std::vector<Collision::CollisionEvent>{};
 
-#if 0
-        BeginFrame();
-        // Dockspace
-        ImGuiViewport* viewport = ImGui::GetMainViewport();
-        ImGui::SetNextWindowPos(viewport->WorkPos);
-        ImGui::SetNextWindowSize(viewport->WorkSize);
-        ImGui::SetNextWindowViewport(viewport->ID);
-
-        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-        ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
-        ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
-
-        ImGui::Begin("Dockspace", 0,
-            ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
-            ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBringToFrontOnFocus |
-            ImGuiWindowFlags_NoNavFocus | ImGuiWindowFlags_NoScrollbar |
-            ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_MenuBar);
-        ImGui::PopStyleVar(3);
-
-        RenderDebugMenuBar(ui);
-
-
-        ImGuiID dockspace_id = ImGui::GetID("Dockspace");
-        int ds_flags_i = (int)ImGuiDockNodeFlags_None | (int)ImGuiDockNodeFlags_NoDockingInCentralNode | (int)ImGuiDockNodeFlags_PassthruCentralNode;
-        ImGuiDockNodeFlags ds_flags = (ImGuiDockNodeFlags)ds_flags_i;
-        ImGui::DockSpace(dockspace_id, { 0,0 }, ds_flags);
-        ImGui::End();
-#endif
         ImGuiID dockspace_id = ImGui::GetID("Dockspace"); // Get ID needed for DockBuilder
         ImGuiViewport* viewport = ImGui::GetMainViewport(); // Needed for DockBuilder size
 
