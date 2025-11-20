@@ -404,8 +404,10 @@ namespace {
                 }
 
                 /*INERTIA CALCULATIONS*/
-                f32& inertia{ rb->inertia };
-                ImGui::DragFloat("Inertia", &inertia);
+                f32 inertia{ rb->inertia };
+                if (ImGui::DragFloat("Inertia", &inertia)) {
+                    rb->setInertia(inertia);
+                }
                 if (ecs.HasComponent<Component::ColliderComponent>(e)) {
                     Component::ColliderComponent* collider{ ecs.GetComponent<Component::ColliderComponent>(e) };
                     if (ImGui::Button("Calculate Inertia##rb")) rb->setInertia(collider->collider->calculateInertia(rb->getMass())); /*For rotational stuff*/
@@ -500,7 +502,7 @@ namespace {
 
             // Type selector
             int type = static_cast<int>(cc->collider->helperType);
-            const char* items[] = { "Sphere","AABB", "OBB", "Triangle"};
+            const char* items[] = { "Sphere","AABB", "OBB", "Polygon"};
             ImGui::Combo("Type", &type, items, IM_ARRAYSIZE(items));
 
             // LOOK FOR A CHANGE IN DROPDOWN, CHANGE COLLIDER IF SO
@@ -522,7 +524,7 @@ namespace {
                     CEVec3 c{ 0.f,0.f,0.f };
                     if (auto* t = ecs.GetComponent<TransformComponent>(e)) c = t->position;
                     cc->collider = std::make_unique<Collision::Polygon>(Collision::Polygon::createOBB(CEVec3{ c.x - D.aabb_half, c.y - D.aabb_half, 0.f }, CEVec3{ c.x + D.aabb_half, c.y + D.aabb_half, 0.f }, 0.f, CEVec3{}));
-                } else if (type == Collision::HelperType::TRIANGLE_T) {
+                } else if (type == Collision::HelperType::POLYGON_T) {
 
                 }
             }
@@ -624,11 +626,9 @@ namespace {
 
                 CEVec3 newExtents{ Collision::Polygon::calculateOBBExtents(a) };
 
-                CEVec3 transform{};
+                CEVec3 transform{ cc->collider->position };
 
-                if (ecs.GetComponent<Component::TransformComponent>(e)) {
-                    transform = ecs.GetComponent<Component::TransformComponent>(e)->position;
-                }
+         
 
                 bool edited = false;
                 ImGui::DragFloat("Width", &newExtents.x, 0.05f);  edited |= ImGui::IsItemEdited() || ImGui::IsItemDeactivatedAfterEdit();
@@ -637,16 +637,15 @@ namespace {
                 if (edited) {
 
                     Collision::Polygon::updateOBB(transform - newExtents, transform + newExtents, a);
-                    /*CEVec3 newMin{ transform - newExtents };
-                    CEVec3 newMax{ transform + newExtents };
 
-                    a->min = CEVec3{ newMin.x, newMin.y, 0.f };
-                    a->max = CEVec3{ newMax.x, newMax.y, 0.f };*/
                 }
 
+                f32 arr[2] { a.offset.x, a.offset.y };
+                if (ImGui::DragFloat2("Offset", arr, 0.05f)) {
+                    a.offset = CEVec3{ arr[0], arr[1], 0.f };
+                }
 
-
-            } else if (cc->collider->helperType == Collision::TRIANGLE_T) {
+            } else if (cc->collider->helperType == Collision::POLYGON_T) {
 
             }
         }

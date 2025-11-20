@@ -117,7 +117,7 @@ namespace Collision {
 				return singleton;
 			}
 
-			static DataStructure::QuadTree quadTree;
+			DataStructure::QuadTree quadTree;
 
 			CollisionHandler();
 

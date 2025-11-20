@@ -600,9 +600,6 @@ namespace Collision {
 /*MAIN UPDATE STUFF!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
 namespace Collision {
 
-	/*STATIC VARIABLES*/
-	DataStructure::QuadTree CollisionHandler::quadTree;
-
 	/*--------------------------------------COLLISION MESSAGE DEFINITION---------------------------------------*/
 
 	CollisionMessage::CollisionMessage(const std::string& id, CollisionManifold const& colManifold, CrashoutsEngine::Entity entity1, CrashoutsEngine::Entity entity2)
@@ -630,6 +627,11 @@ namespace Collision {
 		int sphereIdx{ static_cast<int>(SPHERE) };
 		int AABBIdx{ static_cast<int>(AABB) };
 		int PolygonIdx{ static_cast<int>(POLYGON) };
+
+		quadTree.Resize(AABBRect{ CEVec3{-2000.f, -2000.f, 0.f}, CEVec3{2000.f, 2000.f, 0.f} });
+
+		/*currentFrameCollision.reserve(100);
+		lastFrameCollision.reserve(100);*/
 
 		/*SOON TO BE DEPRECATED*/
 		//int OBBIdx{ static_cast<int>(OBB) };
@@ -668,7 +670,7 @@ namespace Collision {
 
 		CEVec2 newExtents{ newDimen.first * 0.5f, newDimen.second * 0.5f };
 
-		quadTree.Resize(Collision::AABBRect{ CEVec3{-newExtents.x, -newExtents.y, 0.f}, CEVec3{newExtents.x, newExtents.y, 0.f} });
+		quadTree.Clear();
 
 		/*BROADPHASE*/
 		for (CrashoutsEngine::Entity& entity1 : globalEntities) {
@@ -775,9 +777,9 @@ namespace Collision {
 		}
 
 		/*-------------------*/
-
-		lastFrameCollision = currentFrameCollision;
 		currentFrameCollision.clear();
+		std::swap(currentFrameCollision, lastFrameCollision);
+		
 
 	}
 

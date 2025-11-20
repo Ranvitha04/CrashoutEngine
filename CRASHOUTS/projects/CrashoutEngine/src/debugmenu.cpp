@@ -2382,7 +2382,7 @@ namespace UI { // --------------------------------------------------------------
         if (ui.drawCollOverlay) {
             CollisionGizmos::DrawAllColliders(ecs, &collisions, ui.overlayThickness);
             if (ui.drawQuadTree) {
-                Collision::CollisionHandler::quadTree.Draw();
+                Collision::CollisionHandler::GetInstance().quadTree.Draw();
             }
             //CollisionGizmos::DrawContactsAndNormals(collisions, 0.25f, ui.overlayThickness); //Removed for now, will need to calculate the collision pair for normals properly
         }

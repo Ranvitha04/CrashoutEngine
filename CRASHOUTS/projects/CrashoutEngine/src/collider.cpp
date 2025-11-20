@@ -153,7 +153,7 @@ namespace Collision {
 
 	void Polygon::updateOBB(CEVec3 const& min, CEVec3 const& max, Polygon& polygon) {
 
-		CEVec3 extents{ max - min };
+		CEVec3 extents{ (max - min) * 0.5f };
 		polygon.vertices[0] = min;
 		polygon.vertices[1] = CEVec3{min.x, min.y + extents.y * 2.f, 0.f};
 		polygon.vertices[2] = max;
@@ -164,7 +164,8 @@ namespace Collision {
 
 	CEVec3 Polygon::calculateOBBExtents(Polygon const& polygon) {
 		CEVec3 position{ polygon.position.x + polygon.offset.x, polygon.position.y + polygon.offset.y, 0.f };
-		CEVec3 extents{ std::abs(position.x - polygon.vertices[0].x), std::abs(position.y - polygon.vertices[0].y), 0.f };
+		CEVec3 extents{ position.x - (polygon.vertices[0].x + polygon.offset.x), position.y - (polygon.vertices[0].y + polygon.offset.y), 0.f };
+
 
 		return extents;
 	}

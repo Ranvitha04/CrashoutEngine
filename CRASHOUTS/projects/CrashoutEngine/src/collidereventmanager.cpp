@@ -80,10 +80,6 @@ namespace CrashoutsEngine {
 					auto& event = dynamic_cast<CollisionEventManager::ColliderFnCollection&>(*firstIter->second);
 					if (event.stay) event.stay(pair.second);
 
-					observer.SetLastContact(pair.first, {
-						collEvent.getCollisionManifold(),
-						pair.second
-						});
 				}
 				break;
 
@@ -92,10 +88,6 @@ namespace CrashoutsEngine {
 					auto& event = dynamic_cast<CollisionEventManager::TriggerFnCollection&>(*firstIter->second);
 					if (event.stay) event.stay(pair.second);
 
-					observer.SetLastContact(pair.first, {
-						collEvent.getCollisionManifold(),
-						pair.second
-						});
 				}
 				break;
 			}
@@ -107,11 +99,6 @@ namespace CrashoutsEngine {
 			{
 				auto& event = dynamic_cast<CollisionEventManager::ColliderFnCollection&>(*secondIter->second);
 				if (event.stay) event.stay(pair.first);
-
-				observer.SetLastContact(pair.second, {
-					collEvent.getCollisionManifold(),
-					pair.first
-					});
 			}
 			break;
 
@@ -120,10 +107,6 @@ namespace CrashoutsEngine {
 				auto& event = dynamic_cast<CollisionEventManager::TriggerFnCollection&>(*secondIter->second);
 				if (event.stay) event.stay(pair.first);
 
-				observer.SetLastContact(pair.second, {
-					collEvent.getCollisionManifold(),
-					pair.first
-					});
 			}
 			break;
 			}
