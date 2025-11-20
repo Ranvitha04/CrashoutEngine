@@ -70,6 +70,9 @@ namespace CrashoutsEngine
             // Cache methods
             script.MethodStart = mono_class_get_method_from_name(script.Class, "Start", 0);
             script.MethodUpdate = mono_class_get_method_from_name(script.Class, "Update", 0);
+            // Cache FixedUpdate()
+            script.MethodFixedUpdate = mono_class_get_method_from_name(script.Class, "FixedUpdate", 0);
+
 
             if (script.MethodStart)
             {
@@ -87,6 +90,15 @@ namespace CrashoutsEngine
             else
             {
                 std::cerr << "[Mono] Missing Update() in " << script.ClassName << '\n';
+            }
+
+            if (script.MethodFixedUpdate)
+            {
+                std::cout << "[Mono] Found FixedUpdate() for " << script.ClassName << '\n';
+            }
+            else
+            {
+                std::cout << "[Mono] No FixedUpdate() in " << script.ClassName << '\n';
             }
 
             std::cout << "[Mono] ScriptInstance for class " << script.ClassName
@@ -170,6 +182,22 @@ namespace CrashoutsEngine
             if (exc) mono_print_unhandled_exception(exc);
         }
     }
+
+    void ScriptComponent::FixedUpdate()
+    {
+        for (auto& script : Scripts)
+        {
+            if (!script.MethodFixedUpdate || !script.GCHandle)
+                continue;
+
+            MonoObject* target = mono_gchandle_get_target(script.GCHandle);
+            MonoObject* exc = nullptr;
+            mono_runtime_invoke(script.MethodFixedUpdate, target, nullptr, &exc);
+
+            if (exc) mono_print_unhandled_exception(exc);
+        }
+    }
+
 
     void ScriptComponent::Destroy()
     {

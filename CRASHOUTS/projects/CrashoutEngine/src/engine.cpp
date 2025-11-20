@@ -352,6 +352,11 @@ void Update(double const& dt) {
             FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Collision");
             collisionSystem.update(dt, (Collision::EngineState)engineState);
         }
+        //fixed update please work
+        {
+            FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "ScriptFixedUpdate");
+            CrashoutsEngine::ScriptSystem::FixedUpdateAll();
+        }
         {
             FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Physics");
             physicsSystem.update(dt);
