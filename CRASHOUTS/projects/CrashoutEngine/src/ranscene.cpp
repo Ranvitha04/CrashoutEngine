@@ -141,15 +141,15 @@ static void ComputeWorldDimensions(float& worldWidth, float& worldHeight) {
 - Guards against double-initialization via `gSpriteInitializedInScene`.
 */
 static void EnsureDuckInitialized() {
-    Component::Sprite::m_sprite.init("assests/images/backgrounds/8k.png", 4, 6, 0.3f);
-    Component::Sprite::m_sprite.addAnimationState("idle_normal", Component::AnimationState(0, 2, 0.22f, true));
-    Component::Sprite::m_sprite.addAnimationState("walk_normal", Component::AnimationState(6, 6, 0.09f, true));
-    Component::Sprite::m_sprite.addAnimationState("idle_bounce", Component::AnimationState(12, 4, 0.20f, true));
-    Component::Sprite::m_sprite.addAnimationState("walk_bounce", Component::AnimationState(16, 2, 0.10f, true));
-    Component::Sprite::m_sprite.setAnimationState("walk_normal");
-    Component::Sprite::m_sprite.setPosition(gDuckX, gDuckY);
-    Component::Sprite::m_sprite.setScale(gDuckScale);
-    Component::Sprite::m_sprite.setRotation(gDuckRotationDeg);
+    Component::Animator::m_sprite.init("assests/images/backgrounds/8k.png", 4, 6, 0.3f);
+    Component::Animator::m_sprite.addAnimationState("idle_normal", Component::AnimationState(0, 2, 0.22f, true));
+    Component::Animator::m_sprite.addAnimationState("walk_normal", Component::AnimationState(6, 6, 0.09f, true));
+    Component::Animator::m_sprite.addAnimationState("idle_bounce", Component::AnimationState(12, 4, 0.20f, true));
+    Component::Animator::m_sprite.addAnimationState("walk_bounce", Component::AnimationState(16, 2, 0.10f, true));
+    Component::Animator::m_sprite.setAnimationState("walk_normal");
+    Component::Animator::m_sprite.setPosition(gDuckX, gDuckY);
+    Component::Animator::m_sprite.setScale(gDuckScale);
+    Component::Animator::m_sprite.setRotation(gDuckRotationDeg);
 
     InstancingSystem::InitializeSingleEcsDuck(gDuckX, gDuckY, gDuckRotationDeg, gDuckScale);
     gSpriteInitializedInScene = true;
@@ -289,7 +289,7 @@ static void InitializeMode5EcsRandomShapes(int perTypeCount) {
 */
 static void EnsureDuckCleaned() {
     if (!gSpriteInitializedInScene) return;
-    Component::Sprite::m_sprite.cleanup();
+    Component::Animator::m_sprite.cleanup();
     gSpriteInitializedInScene = false;
 }
 
@@ -793,17 +793,17 @@ void UpdateSpriteAnimation()
 
 void HandleSpriteKeyInput(int key, int action)
 {
-    using Component::Sprite;
+    using Component::Animator;
 
     if (action == GLFW_PRESS || action == GLFW_REPEAT) {
         switch (key) {
         case GLFW_KEY_LEFT:
         case GLFW_KEY_A:
-            Sprite::m_sprite.setFlipHorizontal(true);
+            Animator::m_sprite.setFlipHorizontal(true);
             break;
         case GLFW_KEY_RIGHT:
         case GLFW_KEY_D:
-            Sprite::m_sprite.setFlipHorizontal(false);
+            Animator::m_sprite.setFlipHorizontal(false);
             break;
         default:
             break;

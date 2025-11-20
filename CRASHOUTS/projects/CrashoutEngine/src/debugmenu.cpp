@@ -49,6 +49,7 @@ for Crashout Engine.
 #include "scriptsystem.h"
 #include "ppmanager.h"
 #include "keyframe.h"
+#include "spritesheet.h"
 
 #include "engine.h"
 #include <filesystem>
@@ -408,7 +409,7 @@ namespace UI { // --------------------------------------------------------------
                     }
                     ImGui::EndCombo();
                 }
-                ImGui::SameLine();
+
                 if (ImGui::Button("Create Selected##Prefab")) {
                     Prefab::Create(ecs, names[sel]);
                 }
@@ -445,29 +446,41 @@ namespace UI { // --------------------------------------------------------------
         if (ImGui::Button("Save Prefab")) {
             namespace fs = std::filesystem;
 
-            
-            const fs::path jsonPath = fs::path(CrashoutsEngine::Assets::rootPath) / "prefabs" / "prefab.json";
-            fs::create_directories(jsonPath.parent_path()); // safe if exists
-
-            
+            //  Use the text box as the prefab name
             const std::string newName = (prefabNameBuf[0] ? prefabNameBuf : "Entity");
 
+            // Save into its OWN file: prefabs/<name>.json
+            fs::path jsonPath = fs::path(CrashoutsEngine::Assets::rootPath)
+                / "prefabs"
+                / (newName + ".json");
+
+            fs::create_directories(jsonPath.parent_path()); // safe if exists
+
+            // Save this entity as a Box prefab into that file
             const bool ok = SaveBoxPrefabToJson_RJ(
                 ecs, selected,
                 newName,
-                jsonPath.generic_string(),    
-                /*matchName*/ newName        
+                jsonPath.generic_string(),     
+                /*matchName*/ newName          
             );
 
             if (ok) {
-               
-                CrashoutsEngine::ReloadPrefabsFromDisk(jsonPath.generic_string());
+
+                const std::string dirPath =
+                    (fs::path(CrashoutsEngine::Assets::rootPath) / "prefabs").generic_string();
 
                 
+                CrashoutsEngine::ReloadPrefabsFromDisk(dirPath);
+
+                
+                CrashoutsEngine::RecreateInstancesForPrefab(ecs, newName);
+
                 LOGI(Core, std::string("Saved & reloaded prefab json: ") + jsonPath.generic_string());
                 prefabNameBuf[0] = '\0';
             }
+
         }
+
 
         ImGui::Separator();
 
@@ -688,15 +701,11 @@ namespace UI { // --------------------------------------------------------------
 
                 fs::create_directories(dst.parent_path(), ec);
                 fs::copy_file(src, dst, fs::copy_options::overwrite_existing, ec);
+                CrashoutsEngine::Assets::AssetManager::GetInstance().LoadSingleAsset(dst.generic_string());
             }
 
             gDroppedPaths.clear();
             needScan = true;
-
-            // Remind me to ask if I can implement something in assetManager, so I can do efficient loading
-            using namespace CrashoutsEngine::Assets;
-            GenerateAssetManifest();
-            AssetManager::GetInstance().LoadManifestAssets();
         }
 
         // LEFT: Folder tree
@@ -1040,6 +1049,19 @@ namespace UI { // --------------------------------------------------------------
                 anim->t = 0.f;
                 anim->playing = true;
             }
+            ImGui::SeparatorText("Clips");
+
+            for (auto& kv : anim->clips) {
+                const std::string& clipName = kv.first;
+                bool isCurrent = (anim->current == clipName);
+
+               
+                if (ImGui::Selectable(clipName.c_str(), isCurrent)) {
+                
+                    Play(*anim, clipName,  true);
+                }
+            }
+
         }
 
         
@@ -1107,6 +1129,8 @@ namespace UI { // --------------------------------------------------------------
             }
             ImGui::EndTable();
         }
+        DrawEngineMemoryPanel();      // memory view
+        DrawProfilerPanel(profiler);
     }
 
     /*!
@@ -1420,6 +1444,56 @@ namespace UI { // --------------------------------------------------------------
         if (!ui.showAudio) return;
         ScopedWindow w("Audio", LockFlags(ui.lockLayout));
 
+        auto& audio = AudioSystem::instance();
+
+        auto PlayAny = [&](const std::string& id, bool bgm = false) -> void* {
+            if (id.empty()) return nullptr;
+
+            if (id.rfind("event:/", 0) == 0) {
+                // FMOD Studio event
+                auto* inst = audio.createInstance(id);
+                if (inst) {
+                    inst->start();
+                    return inst;
+                }
+                return nullptr;
+            }
+
+            // Raw file (wav/ogg/mp3)
+            std::string path = id;
+            if (path.rfind("assets/", 0) != 0)
+                path = "assets/audio/" + path;
+
+            if (bgm)
+                audio.playMusicFile(path, /*loop=*/true);
+            else
+                audio.playSFXFile(path);
+
+            return nullptr; // raw channels not tracked
+         };
+
+        auto StopAny = [&](void* handle) {
+            if (!handle) return;
+
+            // Try as Studio event instance
+            if (auto* inst = static_cast<FMOD::Studio::EventInstance*>(handle)) {
+                FMOD_STUDIO_PLAYBACK_STATE state;
+                if (inst->getPlaybackState(&state) == FMOD_OK) {
+                    inst->stop(FMOD_STUDIO_STOP_IMMEDIATE);
+                    inst->release();
+                    return;
+                }
+            }
+
+            // Try as raw Core channel
+            if (auto* ch = static_cast<FMOD::Channel*>(handle)) {
+                bool playing = false;
+                if (ch->isPlaying(&playing) == FMOD_OK && playing) {
+                    ch->stop();
+                }
+            }
+        };
+
         const bool audioInitOk = AudioSystem::instance().isInitialized();
         if (!audioInitOk) {
             ImGui::TextDisabled("FMOD not initialized (AssetManager will do this).");
@@ -1442,9 +1516,35 @@ namespace UI { // --------------------------------------------------------------
         if (needRefresh || allEvents.empty()) {
             allEvents.clear();
             AudioSystem::instance().listAllEventPaths(allEvents);
-            std::sort(allEvents.begin(), allEvents.end());
-            allEvents.erase(std::unique(allEvents.begin(), allEvents.end()), allEvents.end());
-            needRefresh = false;
+            if (needRefresh || allEvents.empty()) {
+                allEvents.clear();
+                AudioSystem::instance().listAllEventPaths(allEvents);
+
+                // --- also add raw files from assets/audio ---
+                namespace fs = std::filesystem;
+                const fs::path assetRoot = "assets/audio";
+
+                try {
+                    for (auto& entry : fs::recursive_directory_iterator(assetRoot)) {
+                        if (!entry.is_regular_file()) continue;
+
+                        std::string ext = entry.path().extension().string();
+                        std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+
+                        if (ext == ".wav" || ext == ".ogg" || ext == ".mp3") {
+                            std::string rel = fs::relative(entry.path(), assetRoot).generic_string();
+                            allEvents.push_back(rel);  // e.g. "Music/Menu.wav"
+                        }
+                    }
+                }
+                catch (...) {
+                    // ignore errors, just means fewer items
+                }
+
+                std::sort(allEvents.begin(), allEvents.end());
+                allEvents.erase(std::unique(allEvents.begin(), allEvents.end()), allEvents.end());
+                needRefresh = false;
+            }
         }
         ImGui::SameLine();
         ImGui::TextDisabled("%zu events", allEvents.size());
@@ -1466,7 +1566,39 @@ namespace UI { // --------------------------------------------------------------
                 }
                 ImGui::EndCombo();
             }
-            };
+
+            if (ImGui::BeginDragDropTarget()) {
+                if (const ImGuiPayload* pl = ImGui::AcceptDragDropPayload("ASSET/PAYLOAD")) {
+                    const auto* p = static_cast<const AssetDragPayload*>(pl->Data);
+                    if (p && p->kind == AssetKind::Audio) {
+                        std::filesystem::path relPath = p->relPath; // "audio/Music/Menu.wav"
+                        std::string ext = relPath.extension().string();
+                        std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+
+                        std::string rel = relPath.generic_string();
+                        const std::string prefix = "audio/";
+                        auto pos = rel.find(prefix);
+                        if (pos == 0)
+                            rel = rel.substr(prefix.size());
+
+                        if (ext == ".wav" || ext == ".ogg" || ext == ".mp3") {
+                            sel = rel;
+                        }
+                        else {
+                            if (auto dot = rel.find_last_of('.'); dot != std::string::npos)
+                                rel.erase(dot);
+                            sel = std::string("event:/") + rel; // Studio event mode
+                        }
+                    }
+                }
+                ImGui::EndDragDropTarget();
+            }
+        };
+
+        static void* hBGM = nullptr;
+        static void* hSFX1 = nullptr;
+        static void* hSFX2 = nullptr;
+        static void* hSFX3 = nullptr;
 
         // Test Section
         ImGui::SeparatorText("Quick Test (1 BGM + 3 SFX)");
@@ -1474,43 +1606,78 @@ namespace UI { // --------------------------------------------------------------
 
         EventCombo("Background Music", pickBGM);
         if (ImGui::Button("Play")) {
-            CrashoutsEngine::Audio::AudioSystem::instance().playOneShot(pickBGM);
+            hBGM = PlayAny(pickBGM, true);
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("Stop")) {
+            StopAny(hBGM);
+            hBGM = nullptr;
+            audio.stopMusicGroup();
         }
 
         EventCombo("SFX 1", pickSFX1);
         if (ImGui::Button("Play##sfx1")) {
-            CrashoutsEngine::Audio::AudioSystem::instance().playOneShot(pickSFX1);
+            hSFX1 = PlayAny(pickSFX1);
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("Stop##sfx1")) {
+            StopAny(hSFX1);
+            hSFX1 = nullptr;
+            audio.stopSFXGroup();
         }
 
         EventCombo("SFX 2", pickSFX2);
         if (ImGui::Button("Play##sfx2")) {
-            CrashoutsEngine::Audio::AudioSystem::instance().playOneShot(pickSFX2);
+            hSFX2 = PlayAny(pickSFX2);
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("Stop##sfx2")) {
+            StopAny(hSFX2);
+            hSFX2 = nullptr;
+            audio.stopSFXGroup();
         }
 
         EventCombo("SFX 3", pickSFX3);
         if (ImGui::Button("Play##sfx3")) {
-            CrashoutsEngine::Audio::AudioSystem::instance().playOneShot(pickSFX3);
+            hSFX3 = PlayAny(pickSFX3);
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("Stop##sfx3")) {
+            StopAny(hSFX3);
+            hSFX3 = nullptr;
+            audio.stopSFXGroup();
         }
 
         ImGui::SeparatorText("Master Volume");
 
         // Cache slider state
         static float sMasterVol = 1.0f;
-        if (ImGui::SliderFloat("Master", &sMasterVol, 0.0f, 1.0f, "%.2f"))
-            CrashoutsEngine::Audio::AudioSystem::instance().setBusVolume("bus:/", sMasterVol);
+        if (ImGui::SliderFloat("Master", &sMasterVol, 0.0f, 1.0f, "%.2f")) {
+            audio.setBusVolume("bus:/", sMasterVol); // FMOD Studio
+            audio.setMusicGroupVolume(sMasterVol); // Raw BGM
+            audio.setSFXGroupVolume(sMasterVol); // Raw SFX
+        }
 
-        // Optional mute toggle (reuses same call)
+        // Mute Toggle
         static bool sMuted = false;
         if (ImGui::Checkbox("Mute All", &sMuted)) {
-            if (sMuted)
-                CrashoutsEngine::Audio::AudioSystem::instance().setBusVolume("bus:/", 0.0f);
-            else
-                CrashoutsEngine::Audio::AudioSystem::instance().setBusVolume("bus:/", sMasterVol);
+            if (sMuted) {
+                audio.setBusVolume("bus:/", 0.0f); // FMOD Studio
+                audio.setMusicGroupVolume(0.0f); // Raw music
+                audio.setSFXGroupVolume(0.0f); // Raw SFX
+            }
+            else {
+                audio.setBusVolume("bus:/", sMasterVol);
+                audio.setMusicGroupVolume(sMasterVol);
+                audio.setSFXGroupVolume(sMasterVol);
+            }
         }
 
         ImGui::Separator();
-        if (ImGui::Button("Stop All"))
-            AudioSystem::instance().stopAll(true);
+        if (ImGui::Button("Stop All")) {
+            audio.stopAll(true); // Stop FMOD Studio
+            audio.stopAllRaw(); // Stop raw wav/ogg/mp3
+        }
 
         AudioSystem::instance().update();
     }
@@ -1535,7 +1702,7 @@ namespace UI { // --------------------------------------------------------------
                 {"Game Scene", &ui.showGameScene},
                 {"Audio", &ui.showAudio},
                 {"Animation", &ui.showAnimation},
-
+                {"Sprite Sheet", &ui.showSpriteSheet },
             };
             for (auto& t : toggles) ImGui::MenuItem(t.label, nullptr, t.flag);
 
@@ -2123,28 +2290,62 @@ namespace UI { // --------------------------------------------------------------
                     }
                     else if (p && p->kind == AssetKind::Audio) {
                         std::string rel = p->relPath;
-                       
+
                         const std::string prefix = "audio/";
                         auto pos = rel.find(prefix);
-                        if (pos != std::string::npos) rel = rel.substr(pos + prefix.size());
-                        
-                        if (auto dot = rel.find_last_of('.'); dot != std::string::npos) rel.erase(dot);
-                        
-                        std::string eventLike = std::string("event:/") + rel; // "event:/SFX/Beep"
+                        if (pos != std::string::npos)
+                            rel = rel.substr(pos + prefix.size());
+
+                        if (auto dot = rel.find_last_of('.'); dot != std::string::npos)
+                            rel.erase(dot);
+
+                        std::string eventLike = std::string("event:/") + rel;
 
                         Entity target = selected;
                         if (!target) {
                             target = ecs.CreateEntity();
                             ecs.AddComponent<NameComponent>(target, std::string("Audio_") + p->name);
                             ecs.AddComponent<TransformComponent>(target);
-                            ecs.GetComponent<TransformComponent>(target)->position = dropWorld;
+                            if (auto* t = ecs.GetComponent<TransformComponent>(target)) {
+                                t->position = dropWorld;
+                                t->size = { 1.0f, 1.0f };
+                            }
+
+                            // give it a visual
+                            ecs.AddComponent<Component::ShapeComponent>(target);
+                            if (auto* sc = ecs.GetComponent<Component::ShapeComponent>(target)) {
+                                sc->enableTexture = true;
+                                sc->textureName = "audio_icon";
+                            }
+                        }
+                        else {
+                            if (!ecs.HasComponent<Component::ShapeComponent>(target))
+                                ecs.AddComponent<Component::ShapeComponent>(target);
                         }
 
                         if (!ecs.HasComponent<Component::AudioEmitterComponent>(target))
                             ecs.AddComponent<Component::AudioEmitterComponent>(target);
 
                         if (auto* ac = ecs.GetComponent<Component::AudioEmitterComponent>(target)) {
-                            ac->eventPath = eventLike;
+                            std::filesystem::path relPath = p->relPath; // e.g. "audio/Music/Menu.wav"
+                            std::string ext = relPath.extension().string();
+                            std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+
+                            std::string rel = relPath.generic_string();
+
+                            const std::string prefix = "audio/";
+                            auto pos = rel.find(prefix);
+                            if (pos == 0)
+                                rel = rel.substr(prefix.size()); // "Music/Menu.wav"
+
+                            if (ext == ".wav" || ext == ".ogg" || ext == ".mp3") {
+                                ac->eventPath = rel;
+                            }
+                            else {
+                                if (auto dot = rel.find_last_of('.'); dot != std::string::npos) rel.erase(dot);
+                                ac->eventPath = std::string("event:/") + rel;
+                            }
+
                             ac->volume = 1.0f;
                             ac->pitch = 1.0f;
                             ac->spatial3D = true;
@@ -2230,23 +2431,22 @@ namespace UI { // --------------------------------------------------------------
 
             // Split into main zones
             ImGuiID dock_main = dockspace_id;
-            ImGuiID dock_left, dock_right, dock_bottom, dock_top;
+            ImGuiID dock_left, dock_right, dock_bottom, dock_top, dock_left_bottom, dock_right_bottom;
             ImGui::DockBuilderSplitNode(dock_main, ImGuiDir_Up, 0.07f, &dock_top, &dock_main);
             ImGui::DockBuilderSplitNode(dock_main, ImGuiDir_Left, 0.18f, &dock_left, &dock_main);
             ImGui::DockBuilderSplitNode(dock_main, ImGuiDir_Right, 0.26f, &dock_right, &dock_main);
             ImGui::DockBuilderSplitNode(dock_main, ImGuiDir_Down, 0.28f, &dock_bottom, &dock_main);
-
-            ImGuiID dock_right_bottom;
+            ImGui::DockBuilderSplitNode(dock_main, ImGuiDir_Down, 0.25f, &dock_left_bottom, &dock_main);
             ImGui::DockBuilderSplitNode(dock_right, ImGuiDir_Down, 0.5f, &dock_right_bottom, &dock_right);
 
             // Dock windows into regions (matching your actual window titles)
             ImGui::DockBuilderDockWindow("Debug Controls", dock_left);
-            ImGui::DockBuilderDockWindow("Hierarchy", dock_right);
+            ImGui::DockBuilderDockWindow("Hierarchy", dock_left);
             ImGui::DockBuilderDockWindow("Assets", dock_bottom);
             ImGui::DockBuilderDockWindow("Inspector", dock_right_bottom);
             ImGui::DockBuilderDockWindow("Physics / Collision", dock_bottom);
             ImGui::DockBuilderDockWindow("Console", dock_bottom);
-            ImGui::DockBuilderDockWindow("Performance", dock_left);
+            ImGui::DockBuilderDockWindow("Performance", dock_left_bottom);
             ImGui::DockBuilderDockWindow("GameState", dock_bottom);
             ImGui::DockBuilderDockWindow("GameScene", dock_bottom);
             ImGui::DockBuilderDockWindow("Animation", dock_bottom);
@@ -2284,6 +2484,9 @@ namespace UI { // --------------------------------------------------------------
         if (ui.showAssets) {
             static std::string gPickedAsset;
             RenderAssetBrowserPanel(ui, Assets::rootPath.c_str(), gPickedAsset);
+        }
+        if (ui.showSpriteSheet) {
+            RenderSpriteSheetPanel();  
         }
         if (ui.showInspector) {
             RenderInspectorPanel(ecs, selected, ui);

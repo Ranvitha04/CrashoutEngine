@@ -1048,9 +1048,18 @@ namespace {
         }
         void remove(ECS& ecs, Entity e) override {
             if (has(ecs, e)) {
-                if (auto* c = ecs.GetComponent<Component::AudioEmitterComponent>(e);
-                    c && c->inst) {
-                    c->inst->stop(FMOD_STUDIO_STOP_IMMEDIATE); c->inst->release(); c->inst = nullptr;
+                if (auto* c = ecs.GetComponent<Component::AudioEmitterComponent>(e)) {
+
+                    if (c->inst) {
+                        c->inst->stop(FMOD_STUDIO_STOP_IMMEDIATE);
+                        c->inst->release();
+                        c->inst = nullptr;
+                    }
+
+                    if (c->channel) {
+                        c->channel->stop();
+                        c->channel = nullptr;
+                    }
                 }
                 ecs.RemoveComponent<Component::AudioEmitterComponent>(e);
             }
@@ -1105,16 +1114,25 @@ namespace {
                     try {
                         for (auto& entry : fs::recursive_directory_iterator(assetRoot)) {
                             if (!entry.is_regular_file()) continue;
+
                             std::string ext = entry.path().extension().string();
                             std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
 
-                            // Include common authoring/artifacts; refine as needed for your pipeline
-                            if (ext == ".wav" || ext == ".mp3" || ext == ".ogg" || ext == ".fsb" || ext == ".bank") {
-                                std::string disp = fs::relative(entry.path(), assetRoot).generic_string();
-                                std::string ev = to_event_like(entry.path());
+                            std::string disp = fs::relative(entry.path(), assetRoot).generic_string();
 
+                            if (ext == ".wav" || ext == ".mp3" || ext == ".ogg")
+                            {
+                                // raw audio file → store relative path
                                 s_audioDisplay.push_back(disp);
-                                s_audioEvent.push_back(ev);
+                                s_audioEvent.push_back(disp);   // <-- no "event:/"
+                            }
+
+                            // Include common authoring/artifacts; refine as needed for your pipeline
+                            else if ( ext == ".bank") {
+                                std::string rel = fs::relative(entry.path(), assetRoot).generic_string(); // e.g. "SFX/explosion.wav"
+
+                                s_audioDisplay.push_back(rel);
+                                s_audioEvent.push_back(rel);   // this will become c->eventPath
                             }
                         }
 
@@ -1165,32 +1183,85 @@ namespace {
             ImGui::DragFloat("Pitch", &c->pitch, 0.01f, 0.25f, 4.f);
             ImGui::Checkbox("3D Spatial", &c->spatial3D);
 
+            auto& audio = Audio::AudioSystem::instance();
+            bool hasRunning = (c->inst != nullptr) || (c->channel != nullptr);
             // Create/Play/Stop lifecycle
-            if (ImGui::Button(c->inst ? "Restart" : "Play")) {
+            if (ImGui::Button(hasRunning ? "Restart" : "Play")) {
                 if (!c->eventPath.empty()) {
-                    if (c->inst) { c->inst->stop(FMOD_STUDIO_STOP_IMMEDIATE); c->inst->release(); c->inst = nullptr; }
-                    FMOD::Studio::EventInstance* inst = Audio::AudioSystem::instance().createInstance(c->eventPath.c_str());
-                    if (inst) {
-                        inst->setVolume(c->volume);
-                        inst->setPitch(c->pitch);
-                        // Optional: attach 3D to Transform
-                        if (c->spatial3D) {
-                            if (auto* t = ecs.GetComponent<Component::TransformComponent>(e)) {
-                                FMOD_3D_ATTRIBUTES a{};
-                                a.position = { t->position.x, t->position.y, t->position.z };
-                                a.forward = { 0,0,1 }; a.up = { 0,1,0 }; a.velocity = { 0,0,0 };
-                                inst->set3DAttributes(&a);
+                    // stop old instance if any
+                    if (c->inst) {
+                        c->inst->stop(FMOD_STUDIO_STOP_IMMEDIATE);
+                        c->inst->release();
+                        c->inst = nullptr;
+                    }
+
+                    if (c->channel) {
+                        c->channel->stop();
+                        c->channel = nullptr;
+                    }
+
+                    // --- FMOD Studio event path ---
+                    if (c->eventPath.rfind("event:/", 0) == 0) {
+                        if (FMOD::Studio::EventInstance* inst = audio.createInstance(c->eventPath)) {
+                            inst->setVolume(c->volume);
+                            inst->setPitch(c->pitch);
+
+                            if (c->spatial3D) {
+                                if (auto* t = ecs.GetComponent<Component::TransformComponent>(e)) {
+                                    // your existing 3D attach code here
+                                }
                             }
+
+                            inst->start();
+                            c->inst = inst;
                         }
-                        inst->start();
-                        c->inst = inst;
+                    }
+                    // --- raw file path under assets/audio (wav/ogg/mp3) ---
+                    else {
+                        std::string path = c->eventPath;
+                        if (path.rfind("assets/", 0) != 0)
+                            path = "assets/audio/" + path;
+
+                        // stop previous raw channel
+                        if (c->channel) {
+                            c->channel->stop();
+                            c->channel = nullptr;
+                        }
+
+                        // play new raw file and store channel
+                        c->channel = audio.playSFXFileEx(path);
+
+                        if (c->channel)
+                        {
+                            c->channel->setVolume(c->volume);
+                            c->channel->setPitch(c->pitch);
+                        }
                     }
                 }
             }
+            
             ImGui::SameLine();
-            if (ImGui::Button("Stop") && c->inst) {
-                c->inst->stop(FMOD_STUDIO_STOP_ALLOWFADEOUT);
+            if (ImGui::Button("Stop"))
+            {
+                if (c->inst) {
+                    c->inst->stop(FMOD_STUDIO_STOP_ALLOWFADEOUT);
+                    c->inst = nullptr;
+                }
+                if (c->channel) {
+                    c->channel->stop();
+                    c->channel = nullptr;
+                }
             }
+
+            if (c->channel) {
+                bool isPlaying = false;
+                c->channel->isPlaying(&isPlaying);
+                ImGui::Text("Channel valid: %s", isPlaying ? "PLAYING" : "NOT PLAYING");
+            }
+            else {
+                ImGui::Text("Channel is NULL!");
+            }
+
 
             // Live controls for a running instance
             if (c->inst) {

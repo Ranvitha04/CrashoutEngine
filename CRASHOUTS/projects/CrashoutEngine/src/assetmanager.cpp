@@ -379,5 +379,132 @@ namespace CrashoutsEngine {
 				}
 			}
 		}
+
+		void AssetManager::LoadSingleAsset(const std::string& fullPath)
+		{
+			namespace fs = std::filesystem;
+
+			fs::path p(fullPath);
+			if (!fs::exists(p)) return;
+
+			std::string name = p.stem().string();
+			std::string ext = p.extension().string();
+			std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+
+			fs::path root(rootPath);
+			fs::path rel;
+
+			try {
+				rel = fs::relative(p, root);
+			}
+			catch (...) {
+				std::cerr << "SingleAsset: Path not under asset root: " << fullPath << "\n";
+				return;
+			}
+
+			if (rel.empty() || rel.begin() == rel.end()) {
+				std::cerr << "SingleAsset: Invalid relative path\n";
+				return;
+			}
+
+			std::string folder = rel.begin()->string();
+
+			// TEXTURES  (images/)
+			if (folder == "images")
+			{
+				if (ext == ".png" || ext == ".jpg" || ext == ".jpeg" || ext == ".bmp" || ext == ".tga")
+				{
+					std::unique_ptr<TextureAsset> tex = TextureAsset::Create(fullPath);
+					if (tex && tex->UploadToGPU()) {
+						Load(name, std::move(tex));
+						std::cout << "[SingleAsset] Loaded image: " << name << std::endl;
+					}
+				}
+				return;
+			}
+
+			// SPRITE SHEET  (sprite_sheet/)
+			if (folder == "sprite_sheet")
+			{
+				if (ext == ".png" || ext == ".jpg" || ext == ".jpeg")
+				{
+					std::unique_ptr<TextureAsset> tex = TextureAsset::Create(fullPath);
+					if (tex && tex->UploadToGPU()) {
+						Load(name, std::move(tex));
+						std::cout << "[SingleAsset] Loaded sprite sheet: " << name << std::endl;
+					}
+				}
+				return;
+			}
+
+			// SCENES  (scenes/)
+			if (folder == "scenes")
+			{
+				if (ext == ".json" || ext == ".scene")
+				{
+					std::unique_ptr<SceneAsset> scene = SceneAsset::Create(fullPath);
+					if (scene) {
+						Load(name, std::move(scene));
+						std::cout << "[SingleAsset] Loaded scene: " << name << std::endl;
+					}
+				}
+				return;
+			}
+
+			// FONTS  (fonts/)
+			if (folder == "fonts")
+			{
+				std::unique_ptr<FontAsset> font = FontAsset::Create(fullPath);
+				if (font) {
+					Load(name, std::move(font));
+					std::cout << "[SingleAsset] Loaded font: " << name << std::endl;
+				}
+				return;
+			}
+
+			// AUDIO (audio/)
+			if (folder == "audio")
+			{
+				if (ext == ".bank" || ext == ".ogg" || ext == ".wav" || ext == ".mp3")
+				{
+					std::string relPath = rel.string(); // FMOD expects relative path
+					bool ok = CrashoutsEngine::Audio::AudioSystem::instance().loadBank(relPath);
+					std::cout << (ok ? "[SingleAsset] Loaded FMOD bank: "
+						: "[SingleAsset] FAILED FMOD bank: ")
+						<< relPath << "\n";
+				}
+				return;
+			}
+
+			// SHADERS  (shaders/<name>/<name>.vert & .frag)
+			if (folder == "shaders")
+			{
+				// Only load if either .vert or .frag was dropped
+				if (ext == ".vert" || ext == ".frag")
+				{
+					fs::path shaderDir = p.parent_path();
+					std::string shaderName = shaderDir.filename().string();
+
+					fs::path vert = shaderDir / (shaderName + ".vert");
+					fs::path frag = shaderDir / (shaderName + ".frag");
+
+					if (fs::exists(vert) && fs::exists(frag))
+					{
+						std::unique_ptr<ShaderAsset> shader =
+							ShaderAsset::Create(vert.string(), frag.string());
+
+						if (shader)
+						{
+							Load(shaderName, std::move(shader));
+							std::cout << "[SingleAsset] Loaded shader: " << shaderName << "\n";
+						}
+					}
+				}
+				return;
+			}
+
+			std::cout << "[SingleAsset] No loader for: " << fullPath
+				<< " (folder=" << folder << ", ext=" << ext << ")\n";
+		}
 	}
 }

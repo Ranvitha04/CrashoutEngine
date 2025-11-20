@@ -264,7 +264,6 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
         FrameProfiler::Scoped s2(PerformanceSystem::Get().GetProfiler(), "UI");
         UI::Render(gProfiler, physicsSystem, globalSelectedEntity, uiState);
     }
-    PerformanceSystem::Get().RenderUI();
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     //glBindFramebuffer(GL_FRAMEBUFFER, 0);
 

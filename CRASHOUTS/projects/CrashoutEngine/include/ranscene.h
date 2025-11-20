@@ -180,7 +180,7 @@ void HandleSpriteKeyInput(int key, int action);
 // Extern declarations for global variables 
 extern Component::Rendering model;
 extern Component::Shapes shapes;
-extern Component::Sprite m_sprite;
+extern Component::Animator m_sprite;
 
 extern std::array<CEVec3, 4> clr_vtx;
 extern std::array<CEVec3, 4> InitVtx;

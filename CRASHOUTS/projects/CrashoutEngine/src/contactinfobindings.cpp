@@ -17,7 +17,7 @@ using namespace CrashoutsEngine;
 
 namespace
 {
-    // Helper: Create CEVec3 managed object
+    // Create CEVec3 managed object
     static MonoObject* CreateManagedCEVec3(const CEVec3& v)
     {
         MonoImage* image = MonoManager::GetImage();

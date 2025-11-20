@@ -67,15 +67,6 @@ public:
      */
     FrameProfiler& GetProfiler() { return *profiler; }
 
-    /*!
-     @brief  Render the Performance window (CPU + memory) to ImGui.
-     @details Calls the helpers defined in performanceViewer.h:
-              - DrawEngineMemoryPanel()
-              - DrawProfilerPanel()
-              The window title is "Performance" to match the rest of the editor. :contentReference[oaicite:3]{index=3}
-     */
-    void RenderUI();
-
 private:
     PerformanceSystem() = default;
 

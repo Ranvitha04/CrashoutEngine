@@ -182,7 +182,7 @@ void LoadAfiq()
 
     // Audio init + banks
     if (!s_audioReady) {
-        s_audioReady = AudioSystem::instance().init("assets"); // looks in <exe>/assets
+        s_audioReady = AudioSystem::instance().init("assets"); 
         if (s_audioReady) {
             AudioSystem::instance().loadBank("sfx.bank");
             AudioSystem::instance().loadBank("Music.bank");
