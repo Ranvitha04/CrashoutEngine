@@ -79,6 +79,16 @@ namespace
         return mono_string_new(mono_domain_get(), anim->GetCurrentState().c_str());
     }
 
+    static bool InternalGetBool(uint32_t id, MonoString* key)
+    {
+        Animator* anim = GetAnimatorFromEntity(id);
+        if (!anim) return false;
+
+        std::string k = mono_string_to_utf8(key);
+        return anim->GetBool(k);
+    }
+
+
 }
 
 void CrashoutsEngine::Bindings::RegisterAnimatorBindings()
@@ -89,5 +99,7 @@ void CrashoutsEngine::Bindings::RegisterAnimatorBindings()
     mono_add_internal_call("CrashoutsEngine.Animator::InternalSetTrigger", (const void*)InternalSetTrigger);
     mono_add_internal_call("CrashoutsEngine.Animator::InternalSetFlip", (const void*)InternalSetFlip);
     mono_add_internal_call("CrashoutsEngine.Animator::InternalGetCurrentState", (const void*)InternalGetCurrentState);
+    mono_add_internal_call("CrashoutsEngine.Animator::InternalGetBool", (const void*)InternalGetBool);
+
 
 }
