@@ -16,5 +16,6 @@ namespace CrashoutsEngine {
         const std::string& matchName = "");
     void InitPrefabs();
     void ReloadPrefabsFromDisk(const std::string& path);
+    void RecreateInstancesForPrefab(ECS& ecs, const std::string& prefabName);
     void InitPrefabs();
 }

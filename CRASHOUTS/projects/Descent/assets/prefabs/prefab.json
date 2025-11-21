@@ -521,6 +521,60 @@
                 "className": "EnemyController",
                 "entityID": 3
             }
+        },
+        {
+            "type": "Box",
+            "name": "Text",
+            "transform": {
+                "position": {
+                    "x": -17.917306,
+                    "y": 20.459423,
+                    "z": 0.0
+                },
+                "rotation": 0.0,
+                "size": {
+                    "x": 10.0,
+                    "y": 10.0
+                }
+            },
+            "shape": {
+                "type": 0,
+                "kind": "Rectangle",
+                "width": 10.0,
+                "height": 10.0,
+                "size": 10.0,
+                "color": {
+                    "r": 255.0,
+                    "g": 255.0,
+                    "b": 255.0
+                },
+                "enableTexture": true,
+                "textureName": "Concept"
+            },
+            "rigidbody": {
+                "mass": 5.0,
+                "restitution": 0.0
+            },
+            "text": {
+                "font": "Exo2-Regular",
+                "text": "TEST",
+                "scale": 8.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "r": 255.0,
+                    "g": 255.0,
+                    "b": 255.0
+                },
+                "centered": true,
+                "isWorldSpace": true
+            },
+            "script": {
+                "className": "PlayerController",
+                "entityID": 1
+            }
         }
     ]
 }

@@ -267,7 +267,6 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
         FrameProfiler::Scoped s2(PerformanceSystem::Get().GetProfiler(), "UI");
         UI::Render(gProfiler, physicsSystem, globalSelectedEntity, uiState);
     }
-    PerformanceSystem::Get().RenderUI();
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     //glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
@@ -363,6 +362,11 @@ void Update(double const& dt) {
         {
             FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Collision");
             collisionSystem.update(dt, (Collision::EngineState)engineState);
+        }
+        //fixed update please work
+        {
+            FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "ScriptFixedUpdate");
+            CrashoutsEngine::ScriptSystem::FixedUpdateAll();
         }
         {
             FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Physics");

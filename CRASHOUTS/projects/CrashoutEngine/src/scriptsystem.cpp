@@ -4,6 +4,7 @@
 @date       06/11/2025
 @brief		Definition of script system functions
 */
+#include "animatorbindings.h"
 #include "colliderbindings.h"
 #include "collidereventbindings.h"
 #include "ScriptSystem.h"
@@ -15,6 +16,7 @@
 #include "TransformBindings.h"
 #include "entitybindings.h"
 #include "namebindings.h"
+#include "audiobindings.h"
 
 namespace CrashoutsEngine
 {
@@ -27,6 +29,8 @@ namespace CrashoutsEngine
         Bindings::RegisterColliderBindings();
         Bindings::RegisterCollisionEventBindings();
         Bindings::RegisterNameBindings();
+        Bindings::RegisterAudioBindings();
+        Bindings::RegisterAnimatorBindings();
 	}
 
     void ScriptSystem::InitializeAll(MonoDomain* domain, MonoAssembly* assembly)
@@ -51,6 +55,18 @@ namespace CrashoutsEngine
             scriptComp.Update();
         }
     }
+
+    void ScriptSystem::FixedUpdateAll()
+    {
+        auto& ecs = *ECS::getInstance();
+        auto& scripts = ecs.GetComponentArray<ScriptComponent>();
+
+        for (auto& scriptComp : scripts.dense)
+        {
+            scriptComp.FixedUpdate();
+        }
+    }
+
 
     void ScriptSystem::DestroyAll()
     {

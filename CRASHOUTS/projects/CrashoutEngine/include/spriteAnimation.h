@@ -5,7 +5,7 @@
 @author ranvitha@digipen.edu
 @date   30/09/2025
 
-@brief  This file contains the declaration of the `Sprite` class and the
+@brief  This file contains the declaration of the `Animator` class and the
         `AnimationState` structure within the `Component` namespace. These
         provide the interface for handling 2D sprite animations and rendering
         in a game engine.
@@ -70,7 +70,7 @@ namespace Component {
     };
 
     /*!
-    @class Sprite
+    @class Animator
     @brief Handles 2D sprite sheet animations and rendering.
 
     Provides methods for initializing sprite sheets, managing multiple
@@ -79,18 +79,28 @@ namespace Component {
     flipping.
     */
 
-    class Sprite {
+    class Animator {
     public:
 
         /*!
         @brief Construct a new Sprite instance.
         */
-        Sprite();
+        Animator();
 
         /*!
         @brief Destructor that cleans up sprite resources.
         */
-         ~Sprite();
+    	~Animator();
+
+        void Play(const std::string& stateName);
+        void SetBool(const std::string& key, bool value);
+        void SetTrigger(const std::string& key);
+        void SetFloat(const std::string& key, float value);
+
+        void AddState(const std::string& name, const AnimationState& state);
+        const std::string& GetCurrentState() const { return currentState; }
+
+        void SetFlip(bool flip);
 
         /*!
         @brief Initialize a sprite with a sprite sheet.
@@ -161,22 +171,37 @@ namespace Component {
         */
         void setupDuckAnimations();
 
-        static Sprite m_blinkSprite;
-        static Sprite m_walkSprite;
-        static Sprite m_sprite;
-        static Sprite* m_currentSprite;
+        static Animator m_blinkSprite;
+        static Animator m_walkSprite;
+        static Animator m_sprite;
+        static Animator* m_currentSprite;
         static bool m_spriteMode;
 
     private:
         GLuint textureId;
-        int numFrames, currentFrame, framesPerRow, framePerColumn;
-        float frameTime, elapsedTime, scale, rotation, posX, posY;
-        bool initialized, flipHorizontal;
+
+        int framesPerRow, framePerColumn;
+        int animationFrame;
+        int currentFrame;
+        float elapsedTime;
+        float scale, rotation;
+        bool initialised;
+        bool flipHorizontal;
+
+
+        int numFrames;
+        float frameTime, posX, posY;
+        bool initialized;
         
         // Animation state system
-        std::unordered_map<std::string, AnimationState> animationStates;
+        std::unordered_map<std::string, AnimationState> states;
         std::string currentAnimationState;
-        AnimationState* currentState;
-        int animationFrame;  // Current frame within the animation (0 to frameCount-1)
+        std::string currentState;
+        AnimationState* stateRef = nullptr;
+        //int animationFrame;  // Current frame within the animation (0 to frameCount-1)
+
+        std::unordered_map<std::string, bool> boolParams;
+        std::unordered_map<std::string, float> floatParams;
+        std::unordered_map<std::string, bool> triggerParams;
     };
 }

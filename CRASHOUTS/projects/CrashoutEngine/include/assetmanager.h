@@ -96,6 +96,8 @@ namespace CrashoutsEngine {
 			void LoadManifestAssets(const std::string& rootAssetPath = rootPath,
 				const std::string& manifestPath = assetManifestPath);
 
+			void LoadSingleAsset(const std::string& fullPath);
+
 			/*!
 			@brief Loads and stores a new asset.
 

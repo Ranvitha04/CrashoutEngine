@@ -85,6 +85,26 @@ namespace CrashoutsEngine
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal static extern void SetName(uint id, string name);
 
+        // audio component
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern void Audio_PlayMusicFileTagged(string key, string path, bool loop);
 
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern void Audio_PlaySFXFileTagged(string key, string path);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern void Audio_StopTagged(string key);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern void Audio_StopMusic();
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern void Audio_SetMusicVolume(float volume);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern void Audio_SetSFXVolume(float volume);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern void Audio_SetMasterVolume(float volume);
     }
 }
