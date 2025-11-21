@@ -1,5 +1,5 @@
 /*!
-@file   sprite.cpp
+@file   spriteAnimation.cpp
 @author ranvitha@digipen.edu
 @date   30/09/2025
 
@@ -83,6 +83,15 @@ namespace Component {
     void Animator::SetBool(const std::string& key, bool value) {
         boolParams[key] = value;
     }
+
+    bool Animator::GetBool(const std::string& key) const
+    {
+        auto it = boolParams.find(key);
+        if (it != boolParams.end())
+            return it->second;
+        return false;
+    }
+
 
     void Animator::SetFloat(const std::string& key, float value) {
         floatParams[key] = value;

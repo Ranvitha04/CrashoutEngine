@@ -789,6 +789,27 @@ namespace UI { // --------------------------------------------------------------
                     bool sel = (outSelectedAsset == e.path().generic_string());
                     if (ImGui::Selectable(name.c_str(), sel))
                         outSelectedAsset = e.path().generic_string();
+                   
+                    if (ImGui::IsItemHovered() &&
+                        ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
+                    {
+                        outSelectedAsset = e.path().generic_string();
+
+                        std::string ext = e.path().extension().string();
+                        std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+
+                        
+                        if (ext == ".png" || ext == ".jpg" || ext == ".jpeg" ||
+                            ext == ".bmp" || ext == ".tga")
+                        {
+                            
+                            std::string rel = fs::relative(e.path(), fs::path(root)).generic_string();
+                            std::string full = std::string("assets/") + rel;   
+
+                            SpriteSheet_SetTexturePath(full.c_str());        
+                            ui.showSpriteSheet = true;                        
+                        }
+                    }
 
                     if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID)) {
                         AssetDragPayload p{};

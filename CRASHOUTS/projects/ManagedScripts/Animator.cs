@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.CompilerServices;
 
 namespace CrashoutsEngine
 {
@@ -39,22 +40,31 @@ namespace CrashoutsEngine
             get => InternalGetCurrentState(EntityID);
         }
 
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)]
+        public bool GetBool(string key)
+        {
+            return InternalGetBool(EntityID, key);
+        }
+
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
         private extern static void InternalPlay(uint entityID, string state);
 
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)]
+        [MethodImpl(MethodImplOptions.InternalCall)]
         private extern static void InternalSetBool(uint entityID, string key, bool value);
 
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)]
+        [MethodImpl(MethodImplOptions.InternalCall)]
         private extern static void InternalSetFloat(uint entityID, string key, float value);
 
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)]
+        [MethodImpl(MethodImplOptions.InternalCall)]
         private extern static void InternalSetTrigger(uint entityID, string key);
 
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)]
+        [MethodImpl(MethodImplOptions.InternalCall)]
         private extern static void InternalSetFlip(uint entityID, bool flip);
 
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)]
+        [MethodImpl(MethodImplOptions.InternalCall)]
         private extern static string InternalGetCurrentState(uint entityID);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private extern static bool InternalGetBool(uint entityID, string key);
     }
 }
