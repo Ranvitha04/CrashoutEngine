@@ -221,6 +221,22 @@
             "path": "Monsters\\Sus Face Right.png"
         },
         {
+            "name": "Left",
+            "path": "Test\\Left.png"
+        },
+        {
+            "name": "Middle",
+            "path": "Test\\Middle.png"
+        },
+        {
+            "name": "Right",
+            "path": "Test\\Right.png"
+        },
+        {
+            "name": "Top",
+            "path": "Test\\Top.png"
+        },
+        {
             "name": "Darker Platform",
             "path": "Tileset\\Darker Platform.png"
         },
@@ -371,6 +387,12 @@
         {
             "name": "TextShader",
             "path": "TextShader"
+        }
+    ],
+    "tilemaps": [
+        {
+            "name": "Rocky",
+            "path": "Rocky"
         }
     ]
 }

@@ -2,6 +2,9 @@
     "entities": [
         {
             "name": "Backdrop",
+            "layer": {
+                "currentLayer": 0
+            },
             "transform": {
                 "rotation": 0.0,
                 "position": {
@@ -16,6 +19,7 @@
             },
             "shape": {
                 "useTexture": false,
+                "isWorldSpace": true,
                 "wrapModeU": 0,
                 "wrapModeV": 0,
                 "thickness": 1.0,
@@ -45,6 +49,9 @@
         },
         {
             "name": "sampleShape",
+            "layer": {
+                "currentLayer": 0
+            },
             "transform": {
                 "rotation": 0.0,
                 "position": {
@@ -77,6 +84,7 @@
             },
             "shape": {
                 "useTexture": false,
+                "isWorldSpace": true,
                 "wrapModeU": 0,
                 "wrapModeV": 0,
                 "thickness": 1.0,
@@ -106,6 +114,9 @@
         },
         {
             "name": "sampleShape",
+            "layer": {
+                "currentLayer": 0
+            },
             "transform": {
                 "rotation": 0.0,
                 "position": {
@@ -142,6 +153,7 @@
             },
             "shape": {
                 "useTexture": false,
+                "isWorldSpace": true,
                 "wrapModeU": 0,
                 "wrapModeV": 0,
                 "thickness": 1.0,
@@ -171,6 +183,9 @@
         },
         {
             "name": "sampleShape",
+            "layer": {
+                "currentLayer": 0
+            },
             "transform": {
                 "rotation": 0.0,
                 "position": {
@@ -208,6 +223,7 @@
             },
             "shape": {
                 "useTexture": false,
+                "isWorldSpace": true,
                 "wrapModeU": 0,
                 "wrapModeV": 0,
                 "thickness": 1.0,
@@ -235,5 +251,10 @@
                 }
             }
         }
-    ]
+    ],
+    "layers": {
+        "Default": 0,
+        "Ground": 2,
+        "Player": 1
+    }
 }

@@ -24,6 +24,7 @@
 #include "sceneasset.h"
 #include "fontasset.h"
 #include "shaderasset.h"
+#include "tilemapasset.h"
 #include "audioSystem.h"
 
 /*
@@ -162,7 +163,6 @@ namespace CrashoutsEngine {
 			std::cout << "Successfully generated asset manifest at: " << outPath.string() << std::endl;
 		}
 	
-		
 		void AssetManager::LoadManifestAssets(const std::string& rootAssetPath, const std::string& manifestPath) {
 			// Check manifest json file
 			std::ifstream ifs(manifestPath);
@@ -375,6 +375,41 @@ namespace CrashoutsEngine {
 					}
 					else {
 						std::cerr << "Warning: Shader asset entry missing 'name' or 'path' in manifest." << std::endl;
+					}
+				}
+			}
+		
+			// --- Loading TileMaps ---
+			if (doc.HasMember("tilemaps") && doc["tilemaps"].IsArray()) {
+				std::cout << "Loading TileMap Assets..." << std::endl;
+
+				const rapidjson::Value& tilemapArray = doc["tilemaps"];
+
+				for (rapidjson::SizeType i = 0; i < tilemapArray.Size(); ++i) {
+					const rapidjson::Value& asset = tilemapArray[i];
+					if (asset.HasMember("name") && asset.HasMember("path")) {
+						std::string name = asset["name"].GetString();
+						std::string relativePath = asset["path"].GetString();
+
+						// Construct full path relative to the root asset directory
+						fs::path fullPath = fs::path(rootAssetPath) / "tilemaps" / relativePath;
+
+						// Create TileMapAsset object from file data (JSON)
+						std::unique_ptr<TileMapAsset> newTileMap = TileMapAsset::Create(relativePath);
+
+						// Validate 
+						if (newTileMap) {
+							// Load the TileMapAsset into AssetManager
+							AssetManager::GetInstance().Load(name, std::move(newTileMap));
+							std::cout << "AssetManager loaded tilemap data: " << name << "(" << fullPath.string() << ")"
+								<< std::endl;
+						}
+						else {
+							std::cerr << "Failed to create TileMapAsset: " << name << " at " << fullPath.string() << std::endl;
+						}
+					}
+					else {
+						std::cerr << "Warning: TileMap asset entry missing 'name' or 'path' in manifest." << std::endl;
 					}
 				}
 			}

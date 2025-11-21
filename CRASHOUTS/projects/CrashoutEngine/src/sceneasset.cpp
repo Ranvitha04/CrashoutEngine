@@ -12,6 +12,7 @@
 //
 ///*                                                                   includes
 //----------------------------------------------------------------------------- */
+#include "engine_pch.h"
 
 #include "entitymanager.h"
 #include "assetmanager.h"
@@ -25,13 +26,6 @@
 #include <utility>
 #include <filesystem>
 
-// RapidJSON
-#include <rapidjson/error/en.h>
-#include <rapidjson/stringbuffer.h>
-#include <rapidjson/writer.h>
-#include <rapidjson/prettywriter.h>
-#include <rapidjson/istreamwrapper.h>
-
 // Components
 #include "namecomponent.h"
 #include "transformcomponent.h"
@@ -44,6 +38,7 @@
 #include "ppcomponent.h"
 #include "collidercomponent.h"
 #include "layercomponent.h"
+#include "tilemapcomponent.h"
 
 // FOR GAME GUI
 #include "buttoncomponent.h"
@@ -58,7 +53,7 @@ namespace {
     @param filePath Path to the SceneAsset(JSON) file.
     @return empty string on failure.
     */
-    std::string ReadFileToString(const std::string& filePath) {
+    inline std::string ReadFileToString(const std::string& filePath) {
         std::ifstream file(filePath);
         if (!file.is_open()) {
             std::cout << "ERROR::SCENE::FILE_NOT_READABLE: " << filePath << std::endl;
@@ -76,7 +71,7 @@ namespace {
     @param string containing data to send
     @return bool to determine if successful
     */
-    bool WriteTextToFile(const std::string& filePath, const std::string& content) {
+    inline bool WriteTextToFile(const std::string& filePath, const std::string& content) {
         std::ofstream file(filePath);
         if (!file.is_open()) {
             std::cout << "ERROR: Could not open file for writing: " << filePath << std::endl;
@@ -159,6 +154,7 @@ namespace CrashoutsEngine {
             const char* const AUDIO_COMPONENT           = "audio";  
             const char* const SCRIPT_COMPONENT          = "script";
             const char* const CAMERA_COMPONENT          = "camera";
+            const char* const TILEMAP_COMPONENT          = "tilemap";
             // UI COMPONENT ITEMS
             const char* const BUTTON_COMPONENT          = "button";
             const char* const GUI_COMPONENT             = "gui";
@@ -762,6 +758,59 @@ namespace CrashoutsEngine {
 
                 }
 
+                // Check if TileMapComponent
+                if (entityValue.HasMember(Keys::TILEMAP_COMPONENT) && entityValue[Keys::TILEMAP_COMPONENT].IsObject()) {
+                    TileMapComponent& tm = gECS.AddComponent<TileMapComponent>(newEntity);
+                    const rapidjson::Value& tmValue = entityValue[Keys::TILEMAP_COMPONENT];
+
+                    // --- Set Defaults as requested ---
+                    tm.activeAsset = "none";
+                    tm.pOpen = false;
+                    tm.isCacheDirty = true;
+
+                    // 1. Tile Size (int)
+                    if (tmValue.HasMember("tileSize") && tmValue["tileSize"].IsInt()) {
+                        tm.tileSize = tmValue["tileSize"].GetInt();
+                    }
+
+                    // 2. Active Asset (string) - optional override if saved
+                    if (tmValue.HasMember("activeAsset") && tmValue["activeAsset"].IsString()) {
+                        tm.activeAsset = tmValue["activeAsset"].GetString();
+                    }
+
+                    // 3. Tile Asset Names (std::vector<std::string>)
+                    if (tmValue.HasMember("tileAssetNames") && tmValue["tileAssetNames"].IsArray()) {
+                        const rapidjson::Value& assetsArr = tmValue["tileAssetNames"];
+                        for (rapidjson::SizeType k = 0; k < assetsArr.Size(); ++k) {
+                            if (assetsArr[k].IsString()) {
+                                tm.tileAssetNames.push_back(assetsArr[k].GetString());
+                            }
+                        }
+                    }
+
+                    // 4. Grid Data (std::map<std::pair<int, int>, std::string>)
+                    // JSON Structure: [ { "x": 1, "y": 2, "asset": "grass.json" }, ... ]
+                    if (tmValue.HasMember("gridData") && tmValue["gridData"].IsArray()) {
+                        const rapidjson::Value& gridArr = tmValue["gridData"];
+                        for (rapidjson::SizeType k = 0; k < gridArr.Size(); ++k) {
+                            const rapidjson::Value& tileObj = gridArr[k];
+
+                            if (tileObj.IsObject() &&
+                                tileObj.HasMember("x") && tileObj["x"].IsInt() &&
+                                tileObj.HasMember("y") && tileObj["y"].IsInt() &&
+                                tileObj.HasMember("asset") && tileObj["asset"].IsString()) {
+
+                                int x = tileObj["x"].GetInt();
+                                int y = tileObj["y"].GetInt();
+                                std::string asset = tileObj["asset"].GetString();
+
+                                // Insert into sparse map
+                                tm.gridData[{x, y}] = asset;
+                            }
+                        }
+                    }
+                }
+
             }
         }
 
@@ -1275,6 +1324,56 @@ namespace CrashoutsEngine {
                     ppValue.AddMember("active", ppComp.active, allocator);
 
                     entityValue.AddMember(rapidjson::StringRef(Keys::PP_COMPONENT), ppValue, allocator);
+                }
+
+                // =========================================================
+                // O. TileMapComponent (Refactored for Sparse Grid)
+                // =========================================================
+                if (gECS.HasComponent<TileMapComponent>(id)) {
+                    const TileMapComponent& tmComp = *gECS.GetComponent<TileMapComponent>(id);
+                    rapidjson::Value tmValue(rapidjson::kObjectType);
+
+                    // 1. tileSize (int)
+                    tmValue.AddMember("tileSize", tmComp.tileSize, allocator);
+
+                    // 2. activeAsset (string)
+                    // We save this so the editor remembers what brush was selected, 
+                    // though defaults reset it to "none" on load per your request, 
+                    // saving it allows you to remove that override later if you want persistence.
+                    rapidjson::Value activeAssetVal;
+                    activeAssetVal.SetString(tmComp.activeAsset.c_str(), allocator);
+                    tmValue.AddMember("activeAsset", activeAssetVal, allocator);
+
+                    // 3. tileAssetNames (vector<string>)
+                    rapidjson::Value assetsArray(rapidjson::kArrayType);
+                    for (const std::string& assetName : tmComp.tileAssetNames) {
+                        rapidjson::Value strVal;
+                        strVal.SetString(assetName.c_str(), allocator);
+                        assetsArray.PushBack(strVal, allocator);
+                    }
+                    tmValue.AddMember("tileAssetNames", assetsArray, allocator);
+
+                    // 4. gridData (map<pair<int,int>, string>)
+                    // Convert the map into an Array of Objects for JSON: [ {x:0, y:0, asset:"name"}, ... ]
+                    rapidjson::Value gridDataArray(rapidjson::kArrayType);
+
+                    for (const auto& [pos, assetName] : tmComp.gridData) {
+                        rapidjson::Value tileObj(rapidjson::kObjectType);
+
+                        tileObj.AddMember("x", pos.first, allocator);
+                        tileObj.AddMember("y", pos.second, allocator);
+
+                        rapidjson::Value assetVal;
+                        assetVal.SetString(assetName.c_str(), allocator);
+                        tileObj.AddMember("asset", assetVal, allocator);
+
+                        gridDataArray.PushBack(tileObj, allocator);
+                    }
+                    tmValue.AddMember("gridData", gridDataArray, allocator);
+
+                    // Note: We do NOT save pOpen, isCacheDirty, or renderCache as these are runtime/editor only.
+
+                    entityValue.AddMember(rapidjson::StringRef(Keys::TILEMAP_COMPONENT), tmValue, allocator);
                 }
 
                 // Add the finished entity JSON object to the array

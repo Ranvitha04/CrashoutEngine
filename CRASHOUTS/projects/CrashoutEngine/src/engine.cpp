@@ -10,6 +10,8 @@ context and implement a game loop.
 
 /*                                                                   includes
 ----------------------------------------------------------------------------- */
+#include "engine_pch.h"
+
 // Extension loader library's header must be included before GLFW's header!!!
 #include "engine.h"
 #include "rendering.h"
@@ -19,6 +21,7 @@ context and implement a game loop.
 #include "scriptcomponent.h"
 #include "cameracomponent.h"
 #include "gamestatemanager.h"
+#include "tilemapcomponent.h"
 #include "ppmanager.h"
 #include "textureasset.h"
 #include "scriptsystem.h"
@@ -267,6 +270,14 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     //glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
+    // Cycle and draw Tile Map Editor if needed
+    CrashoutsEngine::ECS::ComponentArray<Component::TileMapComponent>& tmArray = 
+        CrashoutsEngine::ECS::getInstance()->GetComponentArray<Component::TileMapComponent>();
+
+    for (Component::TileMapComponent & tm : tmArray.dense) {
+        CrashoutsEngine::Editor::DrawTileMapEditor(&tm, &tm.pOpen);
+    }
+
     ImGui::End(); // End the Dockspace window begun earlier
 
     // End the ImGui frame and render draw data
@@ -352,6 +363,11 @@ void Update(double const& dt) {
             FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Collision");
             collisionSystem.update(dt, (Collision::EngineState)engineState);
         }
+        //fixed update please work
+        {
+            FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "ScriptFixedUpdate");
+            CrashoutsEngine::ScriptSystem::FixedUpdateAll();
+        }
         {
             FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Physics");
             physicsSystem.update(dt);
@@ -419,6 +435,20 @@ void Update(double const& dt) {
     
     CrashoutsEngine::PostProcessing::UpdatePP();
 
+#if USE_IMGUI_EDITOR
+    // Cycle and draw Tile Map Editor if needed
+    CrashoutsEngine::ECS::ComponentArray<Component::TileMapComponent>& tmArray =
+        CrashoutsEngine::ECS::getInstance()->GetComponentArray<Component::TileMapComponent>();
+
+    for (size_t i = 0; i < tmArray.dense.size(); ++i) {
+        // 1. Get the Component
+        Component::TileMapComponent& tm = tmArray.dense[i];
+
+        // 2. Get the Entity ID associated with this index
+        CrashoutsEngine::Entity entityID = tmArray.indexToEntity[i];
+        if (tm.isCacheDirty) CrashoutsEngine::TileMapUtils::RebuildCache(tm, entityID);
+    }
+#endif
 
 }
 
