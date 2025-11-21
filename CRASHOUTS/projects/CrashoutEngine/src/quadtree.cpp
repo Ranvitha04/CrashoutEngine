@@ -80,7 +80,7 @@ namespace DataStructure {
 		}
 
 		for (int i{}; i < objects.size(); ++i) {
-			collection.push_back(objects[i].first);
+			if(objects[i].second.intersect(region)) collection.push_back(objects[i].first);
 		}
 
 	}

@@ -338,7 +338,7 @@ namespace Physics {
 
 		CrashoutsEngine::ECS& globalECS = *(CrashoutsEngine::ECS::getInstance());
 
-		std::vector<CrashoutsEngine::Entity> globalEntities = globalECS.GetComponentArray<Component::NameComponent>().indexToEntity;
+		std::vector<CrashoutsEngine::Entity> globalEntities = globalECS.GetComponentArray<Component::RigidBodyComponent>().indexToEntity;
 
 		if (sPaused) {
 			collisionEvents = std::vector<Collision::CollisionEvent>{};
@@ -352,9 +352,8 @@ namespace Physics {
 		for (int i{}; i < step; ++i) {
 
 			for (CrashoutsEngine::Entity& entity : globalEntities) {
-				if (!globalECS.HasComponent<Component::RigidBodyComponent>(entity)) continue;
 				Component::RigidBodyComponent* rigidBody{ globalECS.GetComponent<Component::RigidBodyComponent>(entity) };
-				if (!rigidBody->getFlags().test(SIMULATE_DYNAMICS)) continue;
+				if (!rigidBody->getFlags().test(SIMULATE_DYNAMICS) || !rigidBody->getMass()) continue;
 
 				/*APPLY ANY FORCE GENERATOR HERE, EVERY ENTITY IS AFFECTED*/
 				ForceManager& fm{ rigidBody->getForceManager() };
@@ -378,7 +377,7 @@ namespace Physics {
 
 			/*PHYSICS SIM, UPDATE POSITION*/
 			for (CrashoutsEngine::Entity& entity : globalEntities) {
-				if (!globalECS.HasComponent<Component::RigidBodyComponent>(entity) || !globalECS.HasComponent<Component::TransformComponent>(entity)) continue;
+				if (!globalECS.HasComponent<Component::TransformComponent>(entity)) continue;
 				Component::TransformComponent* transform{ globalECS.GetComponent<Component::TransformComponent>(entity) };
 				Component::RigidBodyComponent* rigidBody{ globalECS.GetComponent<Component::RigidBodyComponent>(entity) };
 
@@ -395,7 +394,7 @@ namespace Physics {
 					if (rigidBody->getMass()) {
 						c->collider->updateRotation(rigidBody->orientation);
 					}
-					transform->rotation = rigidBody->orientation;
+
 					c->collider->updateCollider(transform->position);
 					
 				}
