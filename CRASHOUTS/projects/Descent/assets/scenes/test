@@ -1,5 +1,58 @@
 {
-    "entities": [],
+    "entities": [
+        {
+            "name": "Entity 1",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "tilemap": {
+                "tileSize": 32,
+                "activeAsset": "Rocky",
+                "tileAssetNames": [
+                    "Rocky"
+                ],
+                "gridData": [
+                    {
+                        "x": -7,
+                        "y": 1,
+                        "asset": ""
+                    },
+                    {
+                        "x": -6,
+                        "y": 1,
+                        "asset": ""
+                    },
+                    {
+                        "x": -5,
+                        "y": 1,
+                        "asset": ""
+                    },
+                    {
+                        "x": -4,
+                        "y": 1,
+                        "asset": ""
+                    },
+                    {
+                        "x": -3,
+                        "y": 1,
+                        "asset": ""
+                    }
+                ]
+            }
+        }
+    ],
     "layers": {
         "Default": 0,
         "Ground": 2,

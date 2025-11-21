@@ -29,6 +29,7 @@ namespace Collision {
 		AABB,
 		POLYGON,
 		OBB,
+		NONE
 	};
 
 	enum HelperType {
