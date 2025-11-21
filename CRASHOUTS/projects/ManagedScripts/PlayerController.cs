@@ -9,7 +9,7 @@ namespace CrashoutsEngine
         bool jump;
         /*SAMPLE TRIGGERS*/
         public void OnTriggerEnter(uint otherEntity) {
-            Console.WriteLine("Entered Inside Me BOUNCE");
+            //Console.WriteLine("Entered Inside Me BOUNCE");
             var rb = Entity.GetComponent<RigidBodyComponent>();
             // rb.AddForce(new CEVec3(0f, 20000f, 0f)); //* rb.GetMass());
         }
