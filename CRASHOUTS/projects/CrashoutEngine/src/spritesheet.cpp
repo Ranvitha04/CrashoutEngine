@@ -76,9 +76,8 @@ namespace UI
         gClips.push_back(walk);
     }
 
-
-    void RenderSpriteSheetPanel(CrashoutsEngine::ECS& ecs,
-        CrashoutsEngine::Entity selected)
+ 
+    void RenderSpriteSheetPanel(CrashoutsEngine::ECS& ecs, CrashoutsEngine::Entity selected)
     {
         EnsureDefaultClips();
 

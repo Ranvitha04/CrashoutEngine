@@ -2635,6 +2635,7 @@ namespace UI { // --------------------------------------------------------------
             // Dock windows into regions (matching your actual window titles)
             ImGui::DockBuilderDockWindow("Debug Controls", dock_left);
             ImGui::DockBuilderDockWindow("Hierarchy", dock_left);
+            ImGui::DockBuilderDockWindow("Sprite Sheet", dock_right);
             ImGui::DockBuilderDockWindow("Assets", dock_bottom);
             ImGui::DockBuilderDockWindow("Inspector", dock_right_bottom);
             ImGui::DockBuilderDockWindow("Physics / Collision", dock_bottom);
