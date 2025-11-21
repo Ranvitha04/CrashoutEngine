@@ -10,6 +10,7 @@
 #include "spriteAnimation.h"
 #include "rendering.h"
 #include "textureasset.h"
+
 #include "entitymanager.h"
 #include "spritecomponent.h"
 #include "transformcomponent.h"
@@ -18,7 +19,7 @@
 #include "CEVec3.h"
 
 #include <imgui.h>
-#include <GL/glew.h>
+
 #include <vector>
 #include <cstring>
 #include <algorithm>
@@ -76,7 +77,8 @@ namespace UI
     }
 
 
-    void RenderSpriteSheetPanel()
+    void RenderSpriteSheetPanel(CrashoutsEngine::ECS& ecs,
+        CrashoutsEngine::Entity selected)
     {
         EnsureDefaultClips();
 
@@ -160,6 +162,24 @@ namespace UI
 
         ImGui::Text("Selected frame: %d  (row %d, col %d)",
             gSelectedFrame, selRow, selCol);
+        
+        if (selRow >= 0 && selRow < gRows && selCol >= 0 && selCol < gCols)
+        {
+          
+            float u0 = (float)selCol / (float)gCols;
+            float u1 = (float)(selCol + 1) / (float)gCols;
+            float v0 = (float)selRow / (float)gRows;
+            float v1 = (float)(selRow + 1) / (float)gRows;
+
+            ImGui::Separator();
+            ImGui::Text("Selected frame preview:");
+
+            ImVec2 previewTileSize(cellW * 2.0f, cellH * 2.0f);
+            ImGui::Image((ImTextureID)(uintptr_t)tex,
+                previewTileSize,
+                ImVec2(u0, v0),   
+                ImVec2(u1, v1));  
+        }
 
         ImGui::SeparatorText("Clips (like Unity)");
 
@@ -193,6 +213,48 @@ namespace UI
             ImGui::Separator();
             ImGui::PopID();
         }
+    
+       
+        if (selected) {
+            bool hasSheet = ecs.HasComponent<SpriteSheetComponent>(selected);
+            bool hasAnim = ecs.HasComponent<SpriteAnimComponent>(selected);
+
+            ImGui::Separator();
+            ImGui::Text("Selected entity: %u", (unsigned)selected);
+            ImGui::Text("Has SpriteSheetComponent: %s", hasSheet ? "YES" : "NO");
+            ImGui::Text("Has SpriteAnimComponent:  %s", hasAnim ? "YES" : "NO");
+        }
+
+        if (ImGui::Button("Apply selected frame to entity"))
+        {
+
+            CEVec2 worldSize{ 25.0f, 25.0f }; 
+            Component::SetSpriteSheet(selected, gSpritePath, gCols, gRows, worldSize);
+
+          
+            auto* anim = ecs.GetComponent<Component::SpriteAnimComponent>(selected);
+            if (!anim)
+            {
+                Component::SpriteAnimComponent newAnim{};
+                newAnim.startFrame = gSelectedFrame;
+                newAnim.frameCount = 1;
+                newAnim.frameTime = 0.1f;
+                newAnim.frameIndex = 0;
+                newAnim.timer = 0.0f;
+                newAnim.flip = false;
+                ecs.AddComponent<Component::SpriteAnimComponent>(selected, newAnim);
+            }
+            else
+            {
+                anim->startFrame = gSelectedFrame;
+                anim->frameCount = 1;
+                anim->frameTime = 0.1f;
+                anim->frameIndex = 0;
+                anim->timer = 0.0f;
+            }
+        }
+
+
 
         if (ImGui::Button("Add new clip"))
         {
