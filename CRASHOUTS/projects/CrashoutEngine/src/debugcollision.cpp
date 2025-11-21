@@ -78,6 +78,23 @@ static void DrawOBBOutline(const Collision::OBBRect* vertices, float thickness, 
 }
 
 /*!
+ @brief Draws a Polygon.
+ @param vertices     A vertex array
+ @param thickness    Line thickness.
+ @param color        RGB-like color vector used by the line drawer.
+*/
+static void DrawPolygon(const Collision::Polygon* vertices, float thickness, const CEVec3& color) {
+    float z = RenderCamera::engineCamera.GetFar();
+
+    for (int i{}; i < vertices->vertexCount; ++i) {
+        int nextIdx{ (i + 1) % vertices->vertexCount };
+        // Draw the lines using the new, z-modified vertices
+        //Shapes::CreateLine({ vertices->rotatedVertices[i].x, vertices->rotatedVertices[i].y, z }, CEVec3{ vertices->rotatedVertices[i].x + vertices->normalEdges[i].x * 10.f, vertices->rotatedVertices[i].y + vertices->normalEdges[i].y * 10.f, z}, thickness, color);
+        Shapes::CreateLine(CEVec3{ vertices->rotatedVertices[i].x, vertices->rotatedVertices[i].y, z } + vertices->offset, CEVec3{ vertices->rotatedVertices[nextIdx].x, vertices->rotatedVertices[nextIdx].y, z } + vertices->offset, thickness, color);
+    }
+}
+
+/*!
  @brief Draws a 2D circle wireframe (used for sphere colliders projected to XY).
  @param c            Center position.
  @param r            Radius.
@@ -117,7 +134,7 @@ namespace CollisionGizmos {
         const CEVec3 hit(1.0f, 0.3f, 0.3f);     // colliding tint
 
         for (auto e : collArr.indexToEntity) {
-            Component::ColliderComponent const & pColliderComp = *ecs.GetComponent<Component::ColliderComponent>(e);
+            Component::ColliderComponent const& pColliderComp = *ecs.GetComponent<Component::ColliderComponent>(e);
 
             if (!pColliderComp.collider) continue;
 
@@ -125,15 +142,19 @@ namespace CollisionGizmos {
 
             if (pColliderComp.collider->type == Collision::SPHERE) {
                 Collision::Sphere const& sphereTemp = dynamic_cast<Collision::Sphere const&>(*pColliderComp.collider);
-                DrawCircleOutline(sphereTemp.center, sphereTemp.radius, 48, wireThickness, color);
+                DrawCircleOutline(sphereTemp.position + sphereTemp.offset, sphereTemp.radius, 48, wireThickness, color);
             }
             else if (pColliderComp.collider->type == Collision::AABB) {
                 Collision::AABBRect const& aabbTemp = dynamic_cast<Collision::AABBRect const&>(*pColliderComp.collider);
-                DrawAABBOutline(aabbTemp.min, aabbTemp.max, wireThickness, color);
+                DrawAABBOutline(aabbTemp.min + aabbTemp.offset, aabbTemp.max + aabbTemp.offset, wireThickness, color);
             }
             else if (pColliderComp.collider->type == Collision::OBB) {
                 Collision::OBBRect const& obbTemp = dynamic_cast<Collision::OBBRect const&>(*pColliderComp.collider);
                 DrawOBBOutline(&obbTemp, wireThickness, color);
+            }
+            else if (pColliderComp.collider->type == Collision::POLYGON) {
+                Collision::Polygon const& polygonTemp = dynamic_cast<Collision::Polygon const&>(*pColliderComp.collider);
+                DrawPolygon(&polygonTemp, wireThickness, color);
             }
         }
 
@@ -148,28 +169,17 @@ namespace CollisionGizmos {
            If any contact exists, the manifold�s normal is drawn starting at
            the first contact point with length @p normalLen.
     */
-    void DrawContactsAndNormals(const std::vector<Collision::CollisionEvent>& events, float normalLen, float wireThickness) {
+    void DrawContactsAndNormals([[maybe_unused]]const std::vector<Collision::CollisionEvent>& events, [[maybe_unused]] float normalLen, [[maybe_unused]] float wireThickness) {
         const CEVec3 ptClr(1.0f, 0.78f, 0.0f); // contact point color
         const CEVec3 nClr(1.0f, 1.0f, 0.0f);  // normal color
 
-        for (const auto& ev : events) {
-            for (const auto& cp : ev.colManifold.contactPoints) {
-                CEVec3 p(cp.x, cp.y, 0.0f);
-                const float d = 0.02f;
-                CEVec2 size = { 1.f, 1.f };
-                Shapes::CreateLine(CEVec3(p.x - d, p.y, 0), CEVec3(p.x + d, p.y, 0), wireThickness, ptClr);
-                Shapes::CreateLine(CEVec3(p.x, p.y - d, 0), CEVec3(p.x, p.y + d, 0), wireThickness, ptClr);
-            }
+        Collision::CollisionHandler& col{ Collision::CollisionHandler::GetInstance() };
 
-            if (!ev.colManifold.contactPoints.empty()) {
-                const auto& cp0 = ev.colManifold.contactPoints[0];
-                CEVec3 p0(cp0.x, cp0.y, 0.0f);
-                CEVec3 p1(cp0.x + ev.colManifold.normal.x * normalLen,
-                    cp0.y + ev.colManifold.normal.y * normalLen, 0.0f);
-                CEVec2 size = { 1.f, 1.f };
-                Shapes::CreateLine(p0, p1, wireThickness, nClr);
-            }
+        for (int i{}; i < col.lastFrameCollision.size(); ++i) {
+            DrawCircleOutline(col.lastFrameCollision[i].colManifold.contactPoints[0], 1.f, 8, wireThickness, CEVec3{ 255.f, 0.f, 0.f });
+            Shapes::CreateLine(col.lastFrameCollision[i].colManifold.contactPoints[0], col.lastFrameCollision[i].colManifold.contactPoints[0] + (col.lastFrameCollision[i].colManifold.normal * 10.f), wireThickness);
         }
+     
     }
 
 } // namespace CollisionGizmos

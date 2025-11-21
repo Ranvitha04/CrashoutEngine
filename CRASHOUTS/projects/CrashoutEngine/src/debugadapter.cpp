@@ -406,6 +406,16 @@ namespace {
                     sess = {};
                 }
 
+                /*INERTIA CALCULATIONS*/
+                f32 inertia{ rb->inertia };
+                if (ImGui::DragFloat("Inertia", &inertia)) {
+                    rb->setInertia(inertia);
+                }
+                if (ecs.HasComponent<Component::ColliderComponent>(e)) {
+                    Component::ColliderComponent* collider{ ecs.GetComponent<Component::ColliderComponent>(e) };
+                    if (ImGui::Button("Calculate Inertia##rb")) rb->setInertia(collider->collider->calculateInertia(rb->getMass())); /*For rotational stuff*/
+                }
+
                 // Simulate toggle
                 bool prevSim = rb->getFlags().test(Physics::SIMULATE_DYNAMICS);
                 bool simulate = prevSim;  // use a local variable for ImGui checkbox
@@ -437,6 +447,7 @@ namespace {
                         rb->getFlags().reset(Physics::SIMULATE_DYNAMICS);
                     }
                 }
+
 
                 // Forces
                 ImGui::SeparatorText("Forces");
@@ -493,30 +504,36 @@ namespace {
             }
 
             // Type selector
-            int type = static_cast<int>(cc->collider->type);
-            const char* items[] = { "Sphere","AABB" };
+            int type = static_cast<int>(cc->collider->helperType);
+            const char* items[] = { "Sphere","AABB", "OBB", "Polygon"};
             ImGui::Combo("Type", &type, items, IM_ARRAYSIZE(items));
 
-            // If type changed, rebuild collider (keep a sane default size)
-            if (type != static_cast<int>(cc->collider->type)) {
-                if (type == Collision::SPHERE) {
+            // LOOK FOR A CHANGE IN DROPDOWN, CHANGE COLLIDER IF SO
+            /*TODO CALC COLLIDER BASED ON TEXTURE*/
+            if (type != static_cast<int>(cc->collider->helperType)) {
+                if (type == Collision::SPHERE_T) {
                     CEVec3 center{ 0.f,0.f,0.f };
                     if (auto* t = ecs.GetComponent<TransformComponent>(e)) center = t->position;
                     cc->collider = std::make_unique<Collision::Sphere>(D.sphere_radius, center);
-                }
-                else {
-                    // AABB centered on transform with �0.5 extents
+                } else if (type == Collision::AABB_T) {
+                    // AABB centered on transform with 0.5 extents
                     CEVec3 c{ 0.f,0.f,0.f };
                     if (auto* t = ecs.GetComponent<TransformComponent>(e)) c = t->position;
                     cc->collider = std::make_unique<Collision::AABBRect>(
-                        CEVec3{ c.x - D.aabb_half, c.y - D.aabb_half, c.z - D.aabb_half },
-                        CEVec3{ c.x + D.aabb_half, c.y + D.aabb_half, c.z + D.aabb_half }
+                        CEVec3{ c.x - D.aabb_half, c.y - D.aabb_half, 0.f },
+                        CEVec3{ c.x + D.aabb_half, c.y + D.aabb_half, 0.f }
                     );
+                } else if (type == Collision::HelperType::OBB_T) {
+                    CEVec3 c{ 0.f,0.f,0.f };
+                    if (auto* t = ecs.GetComponent<TransformComponent>(e)) c = t->position;
+                    cc->collider = std::make_unique<Collision::Polygon>(Collision::Polygon::createOBB(CEVec3{ c.x - D.aabb_half, c.y - D.aabb_half, 0.f }, CEVec3{ c.x + D.aabb_half, c.y + D.aabb_half, 0.f }, 0.f, CEVec3{}));
+                } else if (type == Collision::HelperType::POLYGON_T) {
+
                 }
             }
 
             // Draw fields per type
-            if (cc->collider->type == Collision::SPHERE) {
+            if (cc->collider->helperType == Collision::SPHERE_T) {
                 // Sphere
                 auto* s = static_cast<Collision::Sphere*>(cc->collider.get());
 
@@ -530,31 +547,43 @@ namespace {
                     s->radius = r;
                 }
 
-                // Center
-                float c[3]{ s->center.x, s->center.y, s->center.z };
-                ImGui::DragFloat3("Center", c, 0.1f);
+                // Offset
+                float c[2]{ s->offset.x, s->offset.y };
+                ImGui::DragFloat2("Offset", c, 0.1f);
                 if (ImGui::IsItemEdited() || ImGui::IsItemDeactivatedAfterEdit()) {
-                    s->center = { c[0], c[1], c[2] };
+                    s->offset = CEVec3{ c[0], c[1], 0.f };
                 }
             }
-            else {
+            else if (cc->collider->helperType == Collision::AABB_T) {
                 // AABB
                 auto* a = static_cast<Collision::AABBRect*>(cc->collider.get());
 
                 ImGui::SeparatorText("AABB");
 
-                float mn[3]{ a->min.x, a->min.y, a->min.z };
-                float mx[3]{ a->max.x, a->max.y, a->max.z };
+                CEVec3 &newExtents{ a->extents };
+
+                CEVec3 transform{};
+
+                if (ecs.GetComponent<Component::TransformComponent>(e)) {
+                    transform = ecs.GetComponent<Component::TransformComponent>(e)->position;
+                }
 
                 bool edited = false;
-                ImGui::DragFloat3("Min", mn, 0.05f);  edited |= ImGui::IsItemEdited() || ImGui::IsItemDeactivatedAfterEdit();
-                ImGui::DragFloat3("Max", mx, 0.05f);  edited |= ImGui::IsItemEdited() || ImGui::IsItemDeactivatedAfterEdit();
+                ImGui::DragFloat("Width", &newExtents.x, 0.05f);  edited |= ImGui::IsItemEdited() || ImGui::IsItemDeactivatedAfterEdit();
+                ImGui::DragFloat("Height", &newExtents.y, 0.05f);  edited |= ImGui::IsItemEdited() || ImGui::IsItemDeactivatedAfterEdit();
 
                 if (edited) {
-                    for (int i = 0; i < 3; ++i) if (mn[i] > mx[i]) std::swap(mn[i], mx[i]); // clamp
-                    a->min = { mn[0], mn[1], mn[2] };
-                    a->max = { mx[0], mx[1], mx[2] };
-                    a->extents = (a->max - a->min) * 0.5f;
+                    CEVec3 newMin{ transform - newExtents };
+                    CEVec3 newMax{ transform + newExtents };
+
+                    a->min = CEVec3{ newMin.x, newMin.y, 0.f };
+                    a->max = CEVec3{ newMax.x, newMax.y, 0.f };
+                }
+
+                float c[2]{ a->offset.x, a->offset.y };
+                ImGui::DragFloat2("Offset", c, 0.1f);
+                if (ImGui::IsItemEdited() || ImGui::IsItemDeactivatedAfterEdit()) {
+                    a->offset = CEVec3{ c[0], c[1], 0.f };
                 }
 
                 // optional: snap AABB around Transform
@@ -590,11 +619,37 @@ namespace {
                             a->max = t->position + extents;
                             a->extents = (a->max - a->min) * 0.5f;
                         }
-                       
-
-                        
+           
                     }
                 }
+            } else if (cc->collider->helperType == Collision::OBB_T) {
+                Collision::Polygon& a = dynamic_cast<Collision::Polygon&>(*cc->collider);
+
+                ImGui::SeparatorText("OBB");
+
+                CEVec3 newExtents{ Collision::Polygon::calculateOBBExtents(a) };
+
+                CEVec3 transform{ cc->collider->position };
+
+         
+
+                bool edited = false;
+                ImGui::DragFloat("Width", &newExtents.x, 0.05f);  edited |= ImGui::IsItemEdited() || ImGui::IsItemDeactivatedAfterEdit();
+                ImGui::DragFloat("Height", &newExtents.y, 0.05f);  edited |= ImGui::IsItemEdited() || ImGui::IsItemDeactivatedAfterEdit();
+
+                if (edited) {
+
+                    Collision::Polygon::updateOBB(transform - newExtents, transform + newExtents, a);
+
+                }
+
+                f32 arr[2] { a.offset.x, a.offset.y };
+                if (ImGui::DragFloat2("Offset", arr, 0.05f)) {
+                    a.offset = CEVec3{ arr[0], arr[1], 0.f };
+                }
+
+            } else if (cc->collider->helperType == Collision::POLYGON_T) {
+
             }
         }
     };

@@ -1985,7 +1985,6 @@ namespace UI { // --------------------------------------------------------------
             }
 
             bool isPaintingMode = (activeTM && activeTM->pOpen);
-            bool isImGuiCapturingInput = ImGui::GetIO().WantCaptureMouse;
 
             // Draw Grid & Handle Input
             if (isPaintingMode) {
@@ -2128,7 +2127,7 @@ namespace UI { // --------------------------------------------------------------
                 }
             }
             // END OF TILEMAP
-
+            
             // 5) if we have a selected entity, let gizmo edit its TRS
             if (selected && ecs.HasComponent<Component::TransformComponent>(selected))
             {
@@ -2365,7 +2364,7 @@ namespace UI { // --------------------------------------------------------------
             }
 
 
-            if (gameWinFocused && !isImGuiCapturingInput) {
+            if (gameWinFocused) {
                 // Left click: select the top-most hit entity (do NOT clear if we hit nothing)
                 // ------------------------------------------------------------
                 //  Mouse picking
@@ -2589,9 +2588,9 @@ namespace UI { // --------------------------------------------------------------
         if (ui.drawCollOverlay) {
             CollisionGizmos::DrawAllColliders(ecs, &collisions, ui.overlayThickness);
             if (ui.drawQuadTree) {
-                Collision::CollisionHandler::quadTree.Draw();
+                Collision::CollisionHandler::GetInstance().quadTree.Draw();
             }
-            //CollisionGizmos::DrawContactsAndNormals(collisions, 0.25f, ui.overlayThickness); Removed for now, will need to calculate the collision pair for normals properly
+            //CollisionGizmos::DrawContactsAndNormals(collisions, 0.25f, ui.overlayThickness); //Removed for now, will need to calculate the collision pair for normals properly
         }
         collisions = std::vector<Collision::CollisionEvent>{};
 

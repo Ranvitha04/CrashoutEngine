@@ -46,11 +46,30 @@ static void AddPhysicsEntity(CrashoutsEngine::Entity& entity, Component::RigidBo
 	globalECS->AddComponent<Component::ShapeComponent>(entity, shape);
 	globalECS->AddComponent<Component::Tag>(entity, name);
 	globalECS->AddComponent<Component::ColliderComponent>(entity, Component::ColliderComponent{
-		std::make_unique<Collision::AABBRect>(Collision::AABBRect{
-			CEVec3{transform.position - extents },
-			CEVec3{transform.position + extents}
-		})
-		});
+		std::make_unique<Collision::Polygon>(Collision::Polygon::createOBB(transform.position + extents, transform.position - extents, 50.f, CEVec3{0.f, 0.f, 0.f}))
+	});
+
+	globalECS->GetComponent<Component::RigidBodyComponent>(entity)->setInertia(globalECS->GetComponent<Component::ColliderComponent>(entity)->collider->calculateInertia(globalECS->GetComponent<Component::RigidBodyComponent>(entity)->getMass()));
+
+}
+
+static void AddPhysicsEntity2(CrashoutsEngine::Entity& entity, Component::RigidBodyComponent&& rigidBody,
+	Component::TransformComponent&& transform, Component::ShapeComponent&& shape, Component::Tag&& name) {
+
+	entity = globalECS->CreateEntity();
+
+	CEVec3 extents{ transform.size.x * 0.5f, transform.size.y * 0.5f, 0.f };
+
+	globalECS->AddComponent<Component::NameComponent>(entity, Component::NameComponent{ std::to_string(entity) });
+	globalECS->AddComponent<Component::RigidBodyComponent>(entity, rigidBody);
+	globalECS->AddComponent<Component::TransformComponent>(entity, transform);
+	globalECS->AddComponent<Component::ShapeComponent>(entity, shape);
+	globalECS->AddComponent<Component::Tag>(entity, name);
+	globalECS->AddComponent<Component::ColliderComponent>(entity, Component::ColliderComponent{
+		std::make_unique<Collision::Sphere>(Collision::Sphere{10.f, {transform.position.x, transform.position.y, 0.f}}) });
+
+	globalECS->GetComponent<Component::RigidBodyComponent>(entity)->setInertia(globalECS->GetComponent<Component::ColliderComponent>(entity)->collider->calculateInertia(globalECS->GetComponent<Component::RigidBodyComponent>(entity)->getMass()));
+	
 }
 
 static void AddObstacleEntity(CEVec3&& transform, CEVec2&& dimen, std::string&& tag) {
@@ -348,8 +367,12 @@ void UpdateTristan()
 
 	f32 dt{ f32(FrameRateController::GetInstance().DT()) };
 	if (rigidBody) {
-		if (InputManager::IsKeyPressed(Key::A)) rigidBody->addForce(CEVec3{ -500.f, 0.f, 0.f }*40.f *dt );
-		if (InputManager::IsKeyPressed(Key::D)) rigidBody->addForce(CEVec3{ 500.f, 0.f, 0.f }*40.f *dt );
+		if (InputManager::IsKeyPressed(Key::A)) rigidBody->setVelocity(CEVec3{-15.f, rigidBody->getVelocity().y, 0.f});
+		else if (InputManager::IsKeyPressed(Key::D)) rigidBody->setVelocity(CEVec3{15.f, rigidBody->getVelocity().y, 0.f });
+		else {
+			rigidBody->setVelocity(CEVec3{ 0.f, rigidBody->getVelocity().y, 0.f });
+		}
+
 		if (InputManager::IsKeyPressed(Key::Space)) rigidBody->addForce(CEVec3{ 0.f, 4000.f, 0.f }*40.f *dt );
 	}
 
@@ -358,8 +381,8 @@ void UpdateTristan()
 		transform->rotation += 3.f;
 		if (globalECS->HasComponent<Component::ColliderComponent>(entity1)) {
 			Component::ColliderComponent* collider1{ globalECS->GetComponent<Component::ColliderComponent>(entity1) };
-			if (collider1->collider->type == Collision::ColliderType::OBB) {
-				Collision::OBBRect& obbTemp2 = dynamic_cast<Collision::OBBRect&>(*(collider1->collider));
+			if (collider1->collider->type == Collision::ColliderType::POLYGON) {
+				Collision::Polygon& obbTemp2 = dynamic_cast<Collision::Polygon&>(*(collider1->collider));
 				obbTemp2.updateRotation(transform->rotation);
 			}
 		}
