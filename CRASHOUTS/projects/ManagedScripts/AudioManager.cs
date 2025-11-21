@@ -8,6 +8,11 @@ public class AudioManager
 
     private AudioManager() { }
 
+    public static AudioManager GetInstance()
+    {
+        return Instance;
+    }
+
     // Converted version of your "Sound[]" array
     private Dictionary<string, SoundData> sounds = new Dictionary<string, SoundData>();
 
