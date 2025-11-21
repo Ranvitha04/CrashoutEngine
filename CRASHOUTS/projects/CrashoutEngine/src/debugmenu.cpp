@@ -2665,7 +2665,7 @@ namespace UI { // --------------------------------------------------------------
             RenderAssetBrowserPanel(ui, Assets::rootPath.c_str(), gPickedAsset);
         }
         if (ui.showSpriteSheet) {
-            RenderSpriteSheetPanel();  
+            RenderSpriteSheetPanel(ecs, selected);
         }
         if (ui.showInspector) {
             RenderInspectorPanel(ecs, selected, ui);

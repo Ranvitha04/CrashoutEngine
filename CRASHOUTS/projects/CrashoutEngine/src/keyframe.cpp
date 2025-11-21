@@ -4,7 +4,7 @@
 #include "shapescomponent.h"
 #include "entitymanager.h"  
 #include "shapes.h"         
-
+#include "spritecomponent.h" 
 using namespace CrashoutsEngine;
 using Component::TransformComponent;
 using Component::ShapeComponent;
@@ -76,14 +76,35 @@ static void applyProperty(ECS& ecs, Entity e, KFProperty p, float v,
     }
     case KFProperty::SpriteIndex:
     {
+     
+        if (auto* anim = ecs.GetComponent<Component::SpriteAnimComponent>(e))
+        {
+            int idx = (int)std::lround(v);
+            if (idx < 0) idx = 0;
+
+         
+            anim->startFrame = idx;   
+            anim->frameCount = 1;     
+            anim->frameIndex = 0;
+            anim->timer = 0.0f;
+
+            break; 
+        }
+
+
         if (!spriteResolver) return;
         auto* S = ecs.GetComponent<ShapeComponent>(e);
         if (!S) return;
+
         const int idx = (int)std::lround(v);
         const std::string tex = spriteResolver(idx);
-        if (!tex.empty()) { S->enableTexture = true; S->textureName = tex; }
+        if (!tex.empty()) {
+            S->enableTexture = true;
+            S->textureName = tex;
+        }
         break;
     }
+
     }
 }
 
