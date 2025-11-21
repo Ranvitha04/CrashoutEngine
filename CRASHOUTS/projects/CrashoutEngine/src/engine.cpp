@@ -246,37 +246,44 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
     ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
     ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
     // Begin Dockspace window (needs ImGuiWindowFlags_MenuBar for the menu)
-    ImGui::Begin("Dockspace", nullptr,
+    bool dockspaceVisible = ImGui::Begin("Dockspace", nullptr,
         ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoTitleBar |
         ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
         ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBringToFrontOnFocus |
         ImGuiWindowFlags_NoNavFocus | ImGuiWindowFlags_NoBackground);
-    ImGui::PopStyleVar(3);
 
-    // Render the menu bar *inside* the Dockspace Begin/End
-    UI::RenderDebugMenuBar(uiState);
+    if (dockspaceVisible == true) {
+        ImGui::PopStyleVar(3);
 
-    // Define the actual dockspace area
-    ImGuiID dockspace_id = ImGui::GetID("Dockspace");
-    ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_PassthruCentralNode;
-    ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
+        // Render the menu bar *inside* the Dockspace Begin/End
+        UI::RenderDebugMenuBar(uiState);
 
-    // Render ImGui UI on top of the scene
-    glBindFramebuffer(GL_FRAMEBUFFER, gameFboID);
-    {
-        FrameProfiler::Scoped s2(PerformanceSystem::Get().GetProfiler(), "UI");
-        UI::Render(gProfiler, physicsSystem, globalSelectedEntity, uiState);
+        // Define the actual dockspace area
+        ImGuiID dockspace_id = ImGui::GetID("Dockspace");
+        ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_PassthruCentralNode;
+        ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
+
+        // Render ImGui UI on top of the scene
+        glBindFramebuffer(GL_FRAMEBUFFER, gameFboID);
+        {
+            FrameProfiler::Scoped s2(PerformanceSystem::Get().GetProfiler(), "UI");
+            UI::Render(gProfiler, physicsSystem, globalSelectedEntity, uiState);
+        }
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        //glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+        // Cycle and draw Tile Map Editor if needed
+        CrashoutsEngine::ECS::ComponentArray<Component::TileMapComponent>& tmArray =
+            CrashoutsEngine::ECS::getInstance()->GetComponentArray<Component::TileMapComponent>();
+
+        for (Component::TileMapComponent& tm : tmArray.dense) {
+            CrashoutsEngine::Editor::DrawTileMapEditor(&tm, &tm.pOpen);
+        }
     }
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    //glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-    // Cycle and draw Tile Map Editor if needed
-    CrashoutsEngine::ECS::ComponentArray<Component::TileMapComponent>& tmArray = 
-        CrashoutsEngine::ECS::getInstance()->GetComponentArray<Component::TileMapComponent>();
-
-    for (Component::TileMapComponent & tm : tmArray.dense) {
-        CrashoutsEngine::Editor::DrawTileMapEditor(&tm, &tm.pOpen);
+    else {
+        ImGui::PopStyleVar(3);
     }
+    
 
     ImGui::End(); // End the Dockspace window begun earlier
 

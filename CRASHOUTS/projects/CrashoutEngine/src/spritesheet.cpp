@@ -17,17 +17,13 @@
 #include "frameratecontroller.h"
 #include "CEVec2.h"
 #include "CEVec3.h"
-#include "stb_image.h"          
-#define STB_IMAGE_WRITE_IMPLEMENTATION   
-#include "stb_image_write.h"   
 
 #include <imgui.h>
 
 #include <vector>
 #include <cstring>
 #include <algorithm>
-#include <string>              
-#include <cstdio>   
+
 using namespace CrashoutsEngine;   
 using namespace Component;         
 
@@ -80,117 +76,8 @@ namespace UI
         gClips.push_back(walk);
     }
 
-    static void ExportCurrentSpritesheetToPNGs()
-    {
-
-        int width = 0, height = 0, channels = 0;
-        const int desiredChannels = 4; 
-
-        unsigned char* pixels = stbi_load(
-            gSpritePath, &width, &height, &channels, desiredChannels
-        );
-        if (!pixels) {
-            std::printf("SpriteSheet export failed: cannot load '%s'\n", gSpritePath);
-            return;
-        }
-
-        if (gRows <= 0 || gCols <= 0) {
-            std::printf("SpriteSheet export failed: rows/cols must be > 0\n");
-            stbi_image_free(pixels);
-            return;
-        }
-
-        
-        const int tileW = width / gCols;
-        const int tileH = height / gRows;
-        if (tileW <= 0 || tileH <= 0) {
-            std::printf("SpriteSheet export failed: invalid tile size (%d x %d)\n", tileW, tileH);
-            stbi_image_free(pixels);
-            return;
-        }
-
-      
-        std::string path(gSpritePath);
-        std::string dir, base, stem;
-
-       
-        std::size_t slash = path.find_last_of("/\\");
-        if (slash == std::string::npos) {
-            dir = "";
-            base = path;
-        }
-        else {
-            dir = path.substr(0, slash + 1); 
-            base = path.substr(slash + 1);
-        }
-
-        std::size_t dot = base.find_last_of('.');
-        if (dot == std::string::npos)
-            stem = base;
-        else
-            stem = base.substr(0, dot);
-
-
-        std::string outDir = "../../projects/Descent/assets/images/";
-        std::string prefix = outDir + stem + "_";   
-
-
-        
-        const int tileStride = tileW * desiredChannels;
-        const std::size_t tileSize = (std::size_t)tileW * tileH * desiredChannels;
-        std::vector<unsigned char> tile(tileSize);
-
-        int index = 0;
-        for (int r = 0; r < gRows; ++r) {
-            for (int c = 0; c < gCols; ++c) {
-
-                const int x0 = c * tileW;
-                const int y0 = r * tileH;
-
-            
-                for (int y = 0; y < tileH; ++y) {
-                    const unsigned char* srcRow =
-                        pixels + ((y0 + y) * width + x0) * desiredChannels;
-                    unsigned char* dstRow =
-                        tile.data() + (y * tileW) * desiredChannels;
-
-                    std::memcpy(dstRow, srcRow, (std::size_t)tileStride);
-                }
-
-                char outName[512];
-                std::snprintf(outName, sizeof(outName), "%s%02d.png",
-                    prefix.c_str(), index);
-
-                if (!stbi_write_png(outName, tileW, tileH, desiredChannels,
-                    tile.data(), tileStride)) {
-                    std::printf("Failed to write tile %d to '%s'\n", index, outName);
-                }
-                else {
-                    std::printf("Wrote tile %d -> '%s'\n", index, outName);
-                }
-
-                ++index;
-            }
-        }
-
-        stbi_image_free(pixels);
-        std::printf("SpriteSheet export done: %d tiles.\n", index);
-    }
-
-    void SpriteSheet_SetTexturePath(const char* path)
-    {
-        if (!path) return;
-
-        std::strncpy(gSpritePath, path, sizeof(gSpritePath));
-        gSpritePath[sizeof(gSpritePath) - 1] = '\0';
-
-      
-        gRows = 4;
-        gCols = 6;
-        gSelectedFrame = 0;
-    }
-    void RenderSpriteSheetPanel(CrashoutsEngine::ECS& ecs,
-        CrashoutsEngine::Entity selected)
+ 
+    void RenderSpriteSheetPanel(CrashoutsEngine::ECS& ecs, CrashoutsEngine::Entity selected)
     {
         EnsureDefaultClips();
 
@@ -206,9 +93,6 @@ namespace UI
         ImGui::InputInt("Cols", &gCols);
         gRows = std::max(gRows, 1);
         gCols = std::max(gCols, 1);
-        if (ImGui::Button("Export tiles to PNGs")) {
-            ExportCurrentSpritesheetToPNGs();
-        }
 
         ImGui::SliderFloat("Zoom", &gZoom, 0.5f, 6.0f);
 
