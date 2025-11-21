@@ -27,7 +27,7 @@ namespace CrashoutsEngine
         public override void Start()
         {
             // Initialization logic for the player
-            Console.WriteLine("[C#] PlayerController Start() called, Entity is " + (Entity == null ? "NULL" : "OK!"));
+            Console.WriteLine("[C#] PlayerController Start() called, Entity is " + (Entity == null ? "NULL" : "OK!!"));
             CollisionEvents.RegisterTriggerEnter(Entity.ID, this.OnTriggerEnter);
             //Entity.Add<RigidBodyComponent>();
             //Entity.Add<TransformComponent>();

@@ -41,20 +41,25 @@
   </ItemGroup>
 
   <!-- AFTER the timestamped DLL is built -->
-  <Target Name="CopyTimestampToStable" AfterTargets="Build">
-    <!-- Path to the output timestamped DLL -->
-    <PropertyGroup>
-      <TimestampedDll>$(OutputPath)$(AssemblyName).dll</TimestampedDll>
-      <StableDll>$(OutputPath)ManagedScripts.dll</StableDll>
-    </PropertyGroup>
-    <!-- Copy timestamped DLL to stable name for IntelliSense -->
-    <Copy
-       
+<Target Name="CopyTimestampToStable" AfterTargets="Build">
+
+  <!-- Timestamped DLL in build folder -->
+  <PropertyGroup>
+    <TimestampedDll>$(OutputPath)$(AssemblyName).dll</TimestampedDll>
+
+    <!-- Stable DLL inside CrashoutEngine/scripts -->
+    <StableDll>..\CrashoutEngine\scripts\ManagedScripts.dll</StableDll>
+  </PropertyGroup>
+
+  <!-- Create the destination folder if it doesn't exist -->
+  <MakeDir Directories="..\CrashoutEngine\scripts" />
+
+  <!-- Copy timestamped DLL → stable DLL in CrashoutEngine/scripts -->
+  <Copy
       SourceFiles="$(TimestampedDll)"
-        
       DestinationFiles="$(StableDll)"
       OverwriteReadOnlyFiles="true" />
-  </Target>
-	
+</Target>
+
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
