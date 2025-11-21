@@ -501,6 +501,7 @@ namespace UI { // --------------------------------------------------------------
             }
         }
     }
+    
     // Draw a Unity-like keyframe timeline for the selected entity
     static void RenderAnimationPanel(CrashoutsEngine::ECS& ecs,
         CrashoutsEngine::Entity selected,
@@ -1938,13 +1939,13 @@ namespace UI { // --------------------------------------------------------------
             // GetCursorScreenPos() gives the top-left corner of the content area.
             ImVec2 screenPos = ImGui::GetCursorScreenPos();
             ImGui::SetCursorScreenPos(ImVec2(screenPos.x + paddingX, screenPos.y + paddingY));
-             
+
             // Let the Gizmo recieve hover/drag over image
             ImGui::SetNextItemAllowOverlap();
 
             // Display the texture within the ImGui window
             // UV flip (0,1) to (1,0) since OpenGL textures are often upside-down
-            ImGui::Image((void*)(intptr_t)CrashoutsEngine::PostProcessing::ppTextureID, 
+            ImGui::Image((void*)(intptr_t)CrashoutsEngine::PostProcessing::ppTextureID,
                 ImVec2((float)finalTextureWidth, (float)finalTextureHeight), ImVec2(0, 1), ImVec2(1, 0));
 
             // Rectangle of that Image in screen space (used by gizmo & picking)
@@ -2258,7 +2259,7 @@ namespace UI { // --------------------------------------------------------------
 
                             if (g_gizmoOp == ImGuizmo::ROTATE)
                             {
-                                
+
                                 float gizmoDeg = newRt[2];
                                 float stepDeg = gizmoDeg - s_prevGizmoDeg;
 
@@ -2457,117 +2458,117 @@ namespace UI { // --------------------------------------------------------------
                 {
                     ecs.DestroyEntity(selected);
                     selected = 0;
-            }
-            if (selected && ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows) && !ImGuizmo::IsUsing() && ImGui::IsKeyPressed(ImGuiKey_Delete))
-            {
-                ecs.DestroyEntity(selected);
-                selected = 0;
-            }
+                }
+                if (selected && ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows) && !ImGuizmo::IsUsing() && ImGui::IsKeyPressed(ImGuiKey_Delete))
+                {
+                    ecs.DestroyEntity(selected);
+                    selected = 0;
+                }
 
-            //  7) drag and drop from asset browser into world
-            //  Drag-and-drop spawn
-            //  Payload is built in the Asset Browser panel.
-            //  Here we just read the payload and instantiate a texture/prefab
-            //  at the mouse drop location in world space.
-            // ------------------------------------------------------------
-            if (ImGui::BeginDragDropTarget()) {
-                if (const ImGuiPayload* pl = ImGui::AcceptDragDropPayload("ASSET/PAYLOAD")) {
-                    const auto* p = static_cast<const AssetDragPayload*>(pl->Data);
-                    CEVec3 dropWorld = ViewUV_toWorld(u, v);
+                //  7) drag and drop from asset browser into world
+                //  Drag-and-drop spawn
+                //  Payload is built in the Asset Browser panel.
+                //  Here we just read the payload and instantiate a texture/prefab
+                //  at the mouse drop location in world space.
+                // ------------------------------------------------------------
+                if (ImGui::BeginDragDropTarget()) {
+                    if (const ImGuiPayload* pl = ImGui::AcceptDragDropPayload("ASSET/PAYLOAD")) {
+                        const auto* p = static_cast<const AssetDragPayload*>(pl->Data);
+                        CEVec3 dropWorld = ViewUV_toWorld(u, v);
 
-                    using CrashoutsEngine::Assets::AssetManager;
-                    using CrashoutsEngine::Assets::TextureAsset;
+                        using CrashoutsEngine::Assets::AssetManager;
+                        using CrashoutsEngine::Assets::TextureAsset;
 
-                    if (p && p->kind == AssetKind::Texture) {
-                        if (auto* tex = AssetManager::GetInstance().Get<TextureAsset>(p->name)) {
-                            Entity e = ecs.CreateEntity();
-                            ecs.AddComponent<NameComponent>(e, std::string("Tex_") + p->name);
-                            ecs.AddComponent<TransformComponent>(e);
-                            ecs.AddComponent<Component::ShapeComponent>(e);
-                            auto* sc = ecs.GetComponent<Component::ShapeComponent>(e);
-                            sc->enableTexture = true;
-                            sc->textureName = p->name;
-                            ecs.GetComponent<Component::TransformComponent>(e)->position = dropWorld;
-                        }
-                    }
-                    else if (p && p->kind == AssetKind::Prefab) {
-                        Entity e = Prefab::Create(ecs, std::string(p->name));
-                        if (e && ecs.HasComponent<Component::TransformComponent>(e))
-                            ecs.GetComponent<Component::TransformComponent>(e)->position = dropWorld;
-                    }
-                    else if (p && p->kind == AssetKind::Audio) {
-                        std::string rel = p->relPath;
-
-                        const std::string prefix = "audio/";
-                        auto pos = rel.find(prefix);
-                        if (pos != std::string::npos)
-                            rel = rel.substr(pos + prefix.size());
-
-                        if (auto dot = rel.find_last_of('.'); dot != std::string::npos)
-                            rel.erase(dot);
-
-                        std::string eventLike = std::string("event:/") + rel;
-
-                        Entity target = selected;
-                        if (!target) {
-                            target = ecs.CreateEntity();
-                            ecs.AddComponent<NameComponent>(target, std::string("Audio_") + p->name);
-                            ecs.AddComponent<TransformComponent>(target);
-                            if (auto* t = ecs.GetComponent<TransformComponent>(target)) {
-                                t->position = dropWorld;
-                                t->size = { 1.0f, 1.0f };
-                            }
-
-                            // give it a visual
-                            ecs.AddComponent<Component::ShapeComponent>(target);
-                            if (auto* sc = ecs.GetComponent<Component::ShapeComponent>(target)) {
+                        if (p && p->kind == AssetKind::Texture) {
+                            if (auto* tex = AssetManager::GetInstance().Get<TextureAsset>(p->name)) {
+                                Entity e = ecs.CreateEntity();
+                                ecs.AddComponent<NameComponent>(e, std::string("Tex_") + p->name);
+                                ecs.AddComponent<TransformComponent>(e);
+                                ecs.AddComponent<Component::ShapeComponent>(e);
+                                auto* sc = ecs.GetComponent<Component::ShapeComponent>(e);
                                 sc->enableTexture = true;
-                                sc->textureName = "audio_icon";
+                                sc->textureName = p->name;
+                                ecs.GetComponent<Component::TransformComponent>(e)->position = dropWorld;
                             }
                         }
-                        else {
-                            if (!ecs.HasComponent<Component::ShapeComponent>(target))
-                                ecs.AddComponent<Component::ShapeComponent>(target);
+                        else if (p && p->kind == AssetKind::Prefab) {
+                            Entity e = Prefab::Create(ecs, std::string(p->name));
+                            if (e && ecs.HasComponent<Component::TransformComponent>(e))
+                                ecs.GetComponent<Component::TransformComponent>(e)->position = dropWorld;
                         }
-
-                        if (!ecs.HasComponent<Component::AudioEmitterComponent>(target))
-                            ecs.AddComponent<Component::AudioEmitterComponent>(target);
-
-                        if (auto* ac = ecs.GetComponent<Component::AudioEmitterComponent>(target)) {
-                            std::filesystem::path relPath = p->relPath; // e.g. "audio/Music/Menu.wav"
-                            std::string ext = relPath.extension().string();
-                            std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
-
-                            std::string rel = relPath.generic_string();
+                        else if (p && p->kind == AssetKind::Audio) {
+                            std::string rel = p->relPath;
 
                             const std::string prefix = "audio/";
                             auto pos = rel.find(prefix);
-                            if (pos == 0)
-                                rel = rel.substr(prefix.size()); // "Music/Menu.wav"
+                            if (pos != std::string::npos)
+                                rel = rel.substr(pos + prefix.size());
 
-                            if (ext == ".wav" || ext == ".ogg" || ext == ".mp3") {
-                                ac->eventPath = rel;
+                            if (auto dot = rel.find_last_of('.'); dot != std::string::npos)
+                                rel.erase(dot);
+
+                            std::string eventLike = std::string("event:/") + rel;
+
+                            Entity target = selected;
+                            if (!target) {
+                                target = ecs.CreateEntity();
+                                ecs.AddComponent<NameComponent>(target, std::string("Audio_") + p->name);
+                                ecs.AddComponent<TransformComponent>(target);
+                                if (auto* t = ecs.GetComponent<TransformComponent>(target)) {
+                                    t->position = dropWorld;
+                                    t->size = { 1.0f, 1.0f };
+                                }
+
+                                // give it a visual
+                                ecs.AddComponent<Component::ShapeComponent>(target);
+                                if (auto* sc = ecs.GetComponent<Component::ShapeComponent>(target)) {
+                                    sc->enableTexture = true;
+                                    sc->textureName = "audio_icon";
+                                }
                             }
                             else {
-                                if (auto dot = rel.find_last_of('.'); dot != std::string::npos) rel.erase(dot);
-                                ac->eventPath = std::string("event:/") + rel;
+                                if (!ecs.HasComponent<Component::ShapeComponent>(target))
+                                    ecs.AddComponent<Component::ShapeComponent>(target);
                             }
 
-                            ac->volume = 1.0f;
-                            ac->pitch = 1.0f;
-                            ac->spatial3D = true;
+                            if (!ecs.HasComponent<Component::AudioEmitterComponent>(target))
+                                ecs.AddComponent<Component::AudioEmitterComponent>(target);
+
+                            if (auto* ac = ecs.GetComponent<Component::AudioEmitterComponent>(target)) {
+                                std::filesystem::path relPath = p->relPath; // e.g. "audio/Music/Menu.wav"
+                                std::string ext = relPath.extension().string();
+                                std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+
+                                rel = relPath.generic_string();
+
+                                pos = rel.find(prefix);
+                                if (pos == 0)
+                                    rel = rel.substr(prefix.size()); // "Music/Menu.wav"
+
+                                if (ext == ".wav" || ext == ".ogg" || ext == ".mp3") {
+                                    ac->eventPath = rel;
+                                }
+                                else {
+                                    if (auto dot = rel.find_last_of('.'); dot != std::string::npos) rel.erase(dot);
+                                    ac->eventPath = std::string("event:/") + rel;
+                                }
+
+                                ac->volume = 1.0f;
+                                ac->pitch = 1.0f;
+                                ac->spatial3D = true;
+                            }
                         }
                     }
                 }
+
+                CEVec3 worldPt = ViewUV_toWorld(u, v);
+
+                InputManager::g_mouseWorldPos = CEVec2{ worldPt.x, worldPt.y };
+
             }
-
-            CEVec3 worldPt = ViewUV_toWorld(u, v);
-
-            InputManager::g_mouseWorldPos = CEVec2{ worldPt.x, worldPt.y };
-
+            ImGui::End();
+            ImGui::PopStyleVar();
         }
-        ImGui::End();
-        ImGui::PopStyleVar();
     }
 #endif
 
