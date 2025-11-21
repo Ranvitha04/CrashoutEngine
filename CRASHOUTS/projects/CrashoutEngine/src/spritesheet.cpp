@@ -214,7 +214,7 @@ namespace UI
             ImGui::PopID();
         }
     
-        // --- Debug: does the selected entity have our sprite components? ---
+       
         if (selected) {
             bool hasSheet = ecs.HasComponent<SpriteSheetComponent>(selected);
             bool hasAnim = ecs.HasComponent<SpriteAnimComponent>(selected);
@@ -231,7 +231,7 @@ namespace UI
             CEVec2 worldSize{ 25.0f, 25.0f }; 
             Component::SetSpriteSheet(selected, gSpritePath, gCols, gRows, worldSize);
 
-            // 2) Ensure it has a SpriteAnimComponent
+          
             auto* anim = ecs.GetComponent<Component::SpriteAnimComponent>(selected);
             if (!anim)
             {
