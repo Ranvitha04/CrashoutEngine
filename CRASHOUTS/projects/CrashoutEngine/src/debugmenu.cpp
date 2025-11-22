@@ -123,7 +123,6 @@ namespace { //------------------------------------------------------------------
     // ============================================================
     static bool s_layoutBuilt = false;
 
-
     /*!
      @brief RAII wrapper to automatically open and close ImGui windows.
     */
@@ -655,7 +654,7 @@ namespace UI { // --------------------------------------------------------------
         ScopedWindow win("Assets", LockFlags(ui.lockLayout));
 
         static char filter[128] = { 0 };
-        static fs::path current = root ? fs::path(root) : fs::path(".");
+        static fs::path current = fs::path(CrashoutsEngine::Assets::rootPath);
         static std::vector<fs::directory_entry> entries;
         static bool needScan = true;
 
@@ -692,7 +691,7 @@ namespace UI { // --------------------------------------------------------------
                 std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
                 bool allowed =
                     ext == ".png" || ext == ".jpg" || ext == ".jpeg" || ext == ".bmp" || ext == ".tga" ||
-                    ext == ".json" || ext == ".scene" || ext == ".bank" || ext == ".wav" || ext == ".ogg" ||
+                    ext == ".json" || ext == ".scene" || ext == ".bank" || ext == ".wav" || ext == ".ogg" || ext == ".mp3" ||
                     ext == ".vert" || ext == ".frag";
                 if (!allowed) continue;
 
@@ -718,13 +717,13 @@ namespace UI { // --------------------------------------------------------------
         // LEFT: Folder tree
         ImGui::BeginChild("asset_left", ImVec2(220, 0), true);
 
-        if (ImGui::Selectable("assets", current == fs::path(root))) {
-            current = fs::path(root);
+        if (ImGui::Selectable("assets", current == fs::path(CrashoutsEngine::Assets::rootPath))) {
+            current = fs::path(CrashoutsEngine::Assets::rootPath);
             needScan = true;
         }
 
         try {
-            for (auto& de : fs::directory_iterator(root)) {
+            for (auto& de : fs::directory_iterator(CrashoutsEngine::Assets::rootPath)) {
                 if (!de.is_directory()) continue;
                 bool isCur = (current == de.path());
                 if (ImGui::Selectable(de.path().filename().generic_string().c_str(), isCur)) {
@@ -920,6 +919,38 @@ namespace UI { // --------------------------------------------------------------
                     if (xPad > 0) ImGui::SetCursorPosX(ImGui::GetCursorPosX() + xPad);
 
                     ImGui::Image((ImTextureID)(intptr_t)previewTex, drawSize);
+                }
+            }
+
+            if (ext == ".wav" || ext == ".ogg" || ext == ".mp3")
+            {
+                ImGui::TextUnformatted("Audio File:");
+                ImGui::Text("%s", fs::path(outSelectedAsset).filename().string().c_str());
+
+                static std::string lastPreview = "";
+                static bool previewPlaying = false;
+
+                if (ImGui::Button(previewPlaying ? "Stop" : "Play"))
+                {
+                    if (!previewPlaying)
+                    {
+                        CrashoutsEngine::Audio::AudioSystem::instance().playSFXFile(outSelectedAsset);
+
+                        previewPlaying = true;
+                        lastPreview = outSelectedAsset;
+                    }
+                    else
+                    {
+                        CrashoutsEngine::Audio::AudioSystem::instance().stopSFXGroup();
+                        previewPlaying = false;
+                    }
+                }
+
+                // Auto-stop if the user selects a new asset
+                if (lastPreview != outSelectedAsset && previewPlaying)
+                {
+                    CrashoutsEngine::Audio::AudioSystem::instance().stopSFXGroup();
+                    previewPlaying = false;
                 }
             }
         }
@@ -1467,247 +1498,267 @@ namespace UI { // --------------------------------------------------------------
      @param ecs ECS reference.
      @param ui UI state toggles.
     */
-    static void UI::RenderAudioPanel([[maybe_unused]] FrameProfiler& profiler, [[maybe_unused]] CrashoutsEngine::ECS& ecs, UIState& ui) {
-
+    static void UI::RenderAudioPanel([[maybe_unused]] FrameProfiler& profiler, [[maybe_unused]] CrashoutsEngine::ECS& ecs, UIState& ui)
+    {
         if (!ui.showAudio) return;
         ScopedWindow w("Audio", LockFlags(ui.lockLayout));
 
         auto& audio = AudioSystem::instance();
 
-        auto PlayAny = [&](const std::string& id, bool bgm = false) -> void* {
-            if (id.empty()) return nullptr;
+        //-----------------------------------------------------------
+        // PLAY ANY (EVENT or RAW)
+        //-----------------------------------------------------------
+        auto PlayAny = [&](const std::string& id, bool bgm = false) -> void*
+            {
+                if (id.empty()) return nullptr;
 
-            if (id.rfind("event:/", 0) == 0) {
-                // FMOD Studio event
-                auto* inst = audio.createInstance(id);
-                if (inst) {
-                    inst->start();
-                    return inst;
+                // FMOD Studio Event
+                if (id.rfind("event:/", 0) == 0)
+                {
+                    auto* inst = audio.createInstance(id);
+                    if (inst)
+                    {
+                        inst->start();
+                        return inst;
+                    }
+                    return nullptr;
                 }
-                return nullptr;
-            }
 
-            // Raw file (wav/ogg/mp3)
-            std::string path = id;
-            if (path.rfind("assets/", 0) != 0)
-                path = "assets/audio/" + path;
+                // RAW (prefix: [RAW] )
+                if (id.rfind("[RAW] ", 0) == 0)
+                {
+                    std::string rel = id.substr(6);
+                    std::string path = "assets/audio/" + rel;
 
-            if (bgm)
-                audio.playMusicFile(path, /*loop=*/true);
-            else
-                audio.playSFXFile(path);
+                    if (bgm)
+                        return audio.playMusicFile(path, true);
+                    else
+                        return audio.playSFXFile(path);
+                }
 
-            return nullptr; // raw channels not tracked
-         };
+                // Fallback (treat as raw)
+                std::string path = id;
+                if (path.rfind("assets/", 0) != 0)
+                    path = "assets/audio/" + path;
 
-        auto StopAny = [&](void* handle) {
-            if (!handle) return;
+                if (bgm)
+                    return audio.playMusicFile(path, true);
+                else
+                    return audio.playSFXFile(path);
+            };
 
-            // Try as Studio event instance
-            if (auto* inst = static_cast<FMOD::Studio::EventInstance*>(handle)) {
-                FMOD_STUDIO_PLAYBACK_STATE state;
-                if (inst->getPlaybackState(&state) == FMOD_OK) {
-                    inst->stop(FMOD_STUDIO_STOP_IMMEDIATE);
-                    inst->release();
+        //-----------------------------------------------------------
+        // STOP ANY (EVENT or RAW CHANNEL)
+        //-----------------------------------------------------------
+        auto StopAny = [&](void* handle)
+            {
+                if (!handle) return;
+
+                // FMOD Studio Instance
+                if (auto* inst = static_cast<FMOD::Studio::EventInstance*>(handle))
+                {
+                    FMOD_STUDIO_PLAYBACK_STATE st;
+                    if (inst->getPlaybackState(&st) == FMOD_OK)
+                    {
+                        inst->stop(FMOD_STUDIO_STOP_IMMEDIATE);
+                        inst->release();
+                    }
                     return;
                 }
-            }
 
-            // Try as raw Core channel
-            if (auto* ch = static_cast<FMOD::Channel*>(handle)) {
-                bool playing = false;
-                if (ch->isPlaying(&playing) == FMOD_OK && playing) {
-                    ch->stop();
+                // RAW FMOD::Channel
+                if (auto* ch = static_cast<FMOD::Channel*>(handle))
+                {
+                    bool playing = false;
+                    if (ch->isPlaying(&playing) == FMOD_OK && playing)
+                        ch->stop();
                 }
-            }
-        };
+            };
 
-        const bool audioInitOk = AudioSystem::instance().isInitialized();
-        if (!audioInitOk) {
-            ImGui::TextDisabled("FMOD not initialized (AssetManager will do this).");
-            if (ImGui::Button("Initialize Audio (assets/audio)")) {
-                CrashoutsEngine::Audio::AudioSystem::instance().init("assets/audio");
-            }
+        //-----------------------------------------------------------
+        // INIT STATUS
+        //-----------------------------------------------------------
+        if (!audio.isInitialized())
+        {
+            ImGui::TextDisabled("FMOD not initialized.");
+            if (ImGui::Button("Initialize Audio (assets/audio)"))
+                audio.init("assets/audio");
         }
 
-        // Loading Bank
+        //-----------------------------------------------------------
+        // LOAD FROM MANIFEST (BANKS + RAW)
+        //-----------------------------------------------------------
         static bool needRefresh = true;
-        if (ImGui::Button("Load banks from Asset Manager")) {
+
+        if (ImGui::Button("Load banks + raw (manifest)"))
+        {
+            audio.stopAll(true);
+            audio.stopAllRaw();
+            audio.unloadAllBanks();
+            audio.unloadAllRawSounds();
+
             CrashoutsEngine::Assets::AssetManager::GetInstance().LoadManifestAssets();
-            needRefresh = true; // trigger rebuild after loading
+            needRefresh = true;
         }
-        ImGui::SameLine();
-        if (ImGui::Button("Refresh events")) needRefresh = true;
 
-        // Build List
+        ImGui::SameLine();
+        if (ImGui::Button("Refresh list"))
+            needRefresh = true;
+
+        //-----------------------------------------------------------
+        // BUILD AUDIO LIST (FMOD EVENTS + RAW)
+        //-----------------------------------------------------------
         static std::vector<std::string> allEvents;
-        if (needRefresh || allEvents.empty()) {
+
+        if (needRefresh || allEvents.empty())
+        {
             allEvents.clear();
-            AudioSystem::instance().listAllEventPaths(allEvents);
-            if (needRefresh || allEvents.empty()) {
-                allEvents.clear();
-                AudioSystem::instance().listAllEventPaths(allEvents);
 
-                // --- also add raw files from assets/audio ---
-                namespace fs = std::filesystem;
-                const fs::path assetRoot = "assets/audio";
+            // FMOD Studio events
+            audio.listAllEventPaths(allEvents);
 
-                try {
-                    for (auto& entry : fs::recursive_directory_iterator(assetRoot)) {
-                        if (!entry.is_regular_file()) continue;
+            // RAW files from manifest
+            for (auto& rel : audio.getRegisteredRawAudio())
+                allEvents.push_back("[RAW] " + rel);
 
-                        std::string ext = entry.path().extension().string();
-                        std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+            std::sort(allEvents.begin(), allEvents.end());
+            allEvents.erase(std::unique(allEvents.begin(), allEvents.end()), allEvents.end());
 
-                        if (ext == ".wav" || ext == ".ogg" || ext == ".mp3") {
-                            std::string rel = fs::relative(entry.path(), assetRoot).generic_string();
-                            allEvents.push_back(rel);  // e.g. "Music/Menu.wav"
-                        }
-                    }
-                }
-                catch (...) {
-                    // ignore errors, just means fewer items
-                }
-
-                std::sort(allEvents.begin(), allEvents.end());
-                allEvents.erase(std::unique(allEvents.begin(), allEvents.end()), allEvents.end());
-                needRefresh = false;
-            }
+            needRefresh = false;
         }
+
         ImGui::SameLine();
-        ImGui::TextDisabled("%zu events", allEvents.size());
+        ImGui::TextDisabled("%zu items", allEvents.size());
 
-        // Event Combo
-        auto EventCombo = [&](const char* label, std::string& sel) {
-            if (ImGui::BeginCombo(label, sel.empty() ? "(select?)" : sel.c_str())) {
-                static char filterBuf[128] = {};
-                ImGui::SetNextItemWidth(ImGui::GetFontSize() * 14.0f);
-                ImGui::InputTextWithHint("##filter", "type to filter...", filterBuf, sizeof(filterBuf));
-                ImGui::Separator();
+        //-----------------------------------------------------------
+        // COMBO SELECTOR
+        //-----------------------------------------------------------
+        auto EventCombo = [&](const char* label, std::string& sel)
+            {
+                if (ImGui::BeginCombo(label, sel.empty() ? "(select)" : sel.c_str()))
+                {
+                    static char filter[128] = {};
+                    ImGui::SetNextItemWidth(ImGui::GetFontSize() * 14);
+                    ImGui::InputTextWithHint("##filt", "filter...", filter, sizeof(filter));
+                    ImGui::Separator();
 
-                const std::string needle = filterBuf;
-                for (auto const& e : allEvents) {
-                    if (!needle.empty() && e.find(needle) == std::string::npos) continue;
-                    const bool chosen = (e == sel);
-                    if (ImGui::Selectable(e.c_str(), chosen)) sel = e;
-                    if (chosen) ImGui::SetItemDefaultFocus();
+                    std::string needle = filter;
+                    for (auto& e : allEvents)
+                    {
+                        if (!needle.empty() && e.find(needle) == std::string::npos)
+                            continue;
+
+                        bool chosen = (sel == e);
+                        if (ImGui::Selectable(e.c_str(), chosen))
+                            sel = e;
+                        if (chosen)
+                            ImGui::SetItemDefaultFocus();
+                    }
+
+                    ImGui::EndCombo();
                 }
-                ImGui::EndCombo();
-            }
 
-            if (ImGui::BeginDragDropTarget()) {
-                if (const ImGuiPayload* pl = ImGui::AcceptDragDropPayload("ASSET/PAYLOAD")) {
-                    const auto* p = static_cast<const AssetDragPayload*>(pl->Data);
-                    if (p && p->kind == AssetKind::Audio) {
-                        std::filesystem::path relPath = p->relPath; // "audio/Music/Menu.wav"
-                        std::string ext = relPath.extension().string();
-                        std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+                // Drag & Drop audio asset
+                if (ImGui::BeginDragDropTarget())
+                {
+                    if (const ImGuiPayload* p = ImGui::AcceptDragDropPayload("ASSET/PAYLOAD"))
+                    {
+                        auto* d = static_cast<const AssetDragPayload*>(p->Data);
+                        if (d && d->kind == AssetKind::Audio)
+                        {
+                            std::filesystem::path rp = d->relPath;
+                            std::string ext = rp.extension().string();
+                            std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
 
-                        std::string rel = relPath.generic_string();
-                        const std::string prefix = "audio/";
-                        auto pos = rel.find(prefix);
-                        if (pos == 0)
-                            rel = rel.substr(prefix.size());
+                            std::string rel = rp.generic_string();
 
-                        if (ext == ".wav" || ext == ".ogg" || ext == ".mp3") {
-                            sel = rel;
-                        }
-                        else {
-                            if (auto dot = rel.find_last_of('.'); dot != std::string::npos)
-                                rel.erase(dot);
-                            sel = std::string("event:/") + rel; // Studio event mode
+                            const std::string prefix = "audio/";
+                            if (rel.find(prefix) == 0)
+                                rel = rel.substr(prefix.size());
+
+                            if (ext == ".wav" || ext == ".ogg" || ext == ".mp3")
+                                sel = "[RAW] " + rel;
+                            else
+                            {
+                                if (auto dot = rel.find_last_of('.'); dot != std::string::npos)
+                                    rel.erase(dot);
+                                sel = "event:/" + rel;
+                            }
                         }
                     }
+                    ImGui::EndDragDropTarget();
                 }
-                ImGui::EndDragDropTarget();
-            }
-        };
+            };
+
+        //-----------------------------------------------------------
+        // QUICK TEST SECTION
+        //-----------------------------------------------------------
+        ImGui::SeparatorText("Quick Test (1 BGM + 3 SFX)");
 
         static void* hBGM = nullptr;
         static void* hSFX1 = nullptr;
         static void* hSFX2 = nullptr;
         static void* hSFX3 = nullptr;
 
-        // Test Section
-        ImGui::SeparatorText("Quick Test (1 BGM + 3 SFX)");
         static std::string pickBGM, pickSFX1, pickSFX2, pickSFX3;
 
+        // BGM
         EventCombo("Background Music", pickBGM);
-        if (ImGui::Button("Play")) {
-            hBGM = PlayAny(pickBGM, true);
-        }
+        if (ImGui::Button("Play##bgm"))      hBGM = PlayAny(pickBGM, true);
         ImGui::SameLine();
-        if (ImGui::Button("Stop")) {
-            StopAny(hBGM);
-            hBGM = nullptr;
-            audio.stopMusicGroup();
-        }
+        if (ImGui::Button("Stop##bgm")) { StopAny(hBGM); hBGM = nullptr; audio.stopMusicGroup(); }
 
+        // SFX 1
         EventCombo("SFX 1", pickSFX1);
-        if (ImGui::Button("Play##sfx1")) {
-            hSFX1 = PlayAny(pickSFX1);
-        }
+        if (ImGui::Button("Play##sfx1"))    hSFX1 = PlayAny(pickSFX1);
         ImGui::SameLine();
-        if (ImGui::Button("Stop##sfx1")) {
-            StopAny(hSFX1);
-            hSFX1 = nullptr;
-            audio.stopSFXGroup();
-        }
+        if (ImGui::Button("Stop##sfx1")) { StopAny(hSFX1); hSFX1 = nullptr; }
 
+        // SFX 2
         EventCombo("SFX 2", pickSFX2);
-        if (ImGui::Button("Play##sfx2")) {
-            hSFX2 = PlayAny(pickSFX2);
-        }
+        if (ImGui::Button("Play##sfx2"))    hSFX2 = PlayAny(pickSFX2);
         ImGui::SameLine();
-        if (ImGui::Button("Stop##sfx2")) {
-            StopAny(hSFX2);
-            hSFX2 = nullptr;
-            audio.stopSFXGroup();
-        }
+        if (ImGui::Button("Stop##sfx2")) { StopAny(hSFX2); hSFX2 = nullptr; }
 
+        // SFX 3
         EventCombo("SFX 3", pickSFX3);
-        if (ImGui::Button("Play##sfx3")) {
-            hSFX3 = PlayAny(pickSFX3);
-        }
+        if (ImGui::Button("Play##sfx3"))    hSFX3 = PlayAny(pickSFX3);
         ImGui::SameLine();
-        if (ImGui::Button("Stop##sfx3")) {
-            StopAny(hSFX3);
-            hSFX3 = nullptr;
-            audio.stopSFXGroup();
-        }
+        if (ImGui::Button("Stop##sfx3")) { StopAny(hSFX3); hSFX3 = nullptr; }
 
+        //-----------------------------------------------------------
+        // MASTER VOLUME
+        //-----------------------------------------------------------
         ImGui::SeparatorText("Master Volume");
 
-        // Cache slider state
-        static float sMasterVol = 1.0f;
-        if (ImGui::SliderFloat("Master", &sMasterVol, 0.0f, 1.0f, "%.2f")) {
-            audio.setBusVolume("bus:/", sMasterVol); // FMOD Studio
-            audio.setMusicGroupVolume(sMasterVol); // Raw BGM
-            audio.setSFXGroupVolume(sMasterVol); // Raw SFX
+        static float master = 1.0f;
+        if (ImGui::SliderFloat("Master", &master, 0.0f, 1.0f, "%.2f"))
+        {
+            audio.setBusVolume("bus:/", master);
+            audio.setMusicGroupVolume(master);
+            audio.setSFXGroupVolume(master);
         }
 
-        // Mute Toggle
-        static bool sMuted = false;
-        if (ImGui::Checkbox("Mute All", &sMuted)) {
-            if (sMuted) {
-                audio.setBusVolume("bus:/", 0.0f); // FMOD Studio
-                audio.setMusicGroupVolume(0.0f); // Raw music
-                audio.setSFXGroupVolume(0.0f); // Raw SFX
-            }
-            else {
-                audio.setBusVolume("bus:/", sMasterVol);
-                audio.setMusicGroupVolume(sMasterVol);
-                audio.setSFXGroupVolume(sMasterVol);
-            }
+        static bool mute = false;
+        if (ImGui::Checkbox("Mute All", &mute))
+        {
+            float v = mute ? 0.0f : master;
+            audio.setBusVolume("bus:/", v);
+            audio.setMusicGroupVolume(v);
+            audio.setSFXGroupVolume(v);
         }
 
+        //-----------------------------------------------------------
+        // STOP ALL
+        //-----------------------------------------------------------
         ImGui::Separator();
-        if (ImGui::Button("Stop All")) {
-            audio.stopAll(true); // Stop FMOD Studio
-            audio.stopAllRaw(); // Stop raw wav/ogg/mp3
+        if (ImGui::Button("Stop All"))
+        {
+            audio.stopAll(true);
+            audio.stopAllRaw();
         }
 
-        AudioSystem::instance().update();
+        audio.update();
     }
 
     /*!

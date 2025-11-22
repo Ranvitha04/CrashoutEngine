@@ -49,7 +49,7 @@ namespace CrashoutsEngine
 
             //GObackground.SetActive(false);
 
-            AudioManager.GetInstance().Play("ambient");
+            //AudioManager.GetInstance().Play("ambient");
 
         }
 
