@@ -6,6 +6,10 @@ namespace CrashoutsEngine
         float horizontalInput;
         //float moveSpeed = 6f;
         bool isFacingRight = true;
+        bool moveLeft;
+        bool moveRight;
+        bool isMoving;
+        bool wasMoving;
         public float jumpPower = 20000f;
         public static bool isJumping = false;
         public static bool isFalling = false;
@@ -59,16 +63,28 @@ namespace CrashoutsEngine
             var tf = Entity.GetComponent<TransformComponent>();
             //horizontalInput = Input.GetAxis("Horizontal");
             horizontalInput = 0f;
-            if (Input.IsKeyHeld(Key.A))
+            moveLeft = Input.IsKeyPressed(Key.A);
+            moveRight = Input.IsKeyPressed(Key.D);
+            if (moveLeft)
             {
                 horizontalInput = -1f;
             }
-            else if (Input.IsKeyHeld(Key.D))
+            else if (moveRight)
             {
                 horizontalInput = 1f;
             }
             //lastY = transform.position.y;
-
+            isMoving = moveLeft || moveRight;
+            if (isMoving && !wasMoving)
+            {
+                //Console.WriteLine("[C#] Player started moving -> Play footsteps");
+                AudioManager.GetInstance().Play("footsteps");
+            }
+            else if (!isMoving && wasMoving)
+            {
+                //Console.WriteLine("[C#] Player stopped moving -> Stop footsteps_loop");
+                AudioManager.GetInstance().Stop("footsteps");
+            }
 
             FlipSprite(horizontalInput);
 

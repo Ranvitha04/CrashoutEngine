@@ -2555,108 +2555,108 @@ namespace UI { // --------------------------------------------------------------
                     selected = 0;
                 }
 
-                //  7) drag and drop from asset browser into world
-                //  Drag-and-drop spawn
-                //  Payload is built in the Asset Browser panel.
-                //  Here we just read the payload and instantiate a texture/prefab
-                //  at the mouse drop location in world space.
-                // ------------------------------------------------------------
-                if (ImGui::BeginDragDropTarget()) {
-                    if (const ImGuiPayload* pl = ImGui::AcceptDragDropPayload("ASSET/PAYLOAD")) {
-                        const auto* p = static_cast<const AssetDragPayload*>(pl->Data);
-                        CEVec3 dropWorld = ViewUV_toWorld(u, v);
-
-                        using CrashoutsEngine::Assets::AssetManager;
-                        using CrashoutsEngine::Assets::TextureAsset;
-
-                        if (p && p->kind == AssetKind::Texture) {
-                            if (auto* tex = AssetManager::GetInstance().Get<TextureAsset>(p->name)) {
-                                Entity e = ecs.CreateEntity();
-                                ecs.AddComponent<NameComponent>(e, std::string("Tex_") + p->name);
-                                ecs.AddComponent<TransformComponent>(e);
-                                ecs.AddComponent<Component::ShapeComponent>(e);
-                                auto* sc = ecs.GetComponent<Component::ShapeComponent>(e);
-                                sc->enableTexture = true;
-                                sc->textureName = p->name;
-                                ecs.GetComponent<Component::TransformComponent>(e)->position = dropWorld;
-                            }
-                        }
-                        else if (p && p->kind == AssetKind::Prefab) {
-                            Entity e = Prefab::Create(ecs, std::string(p->name));
-                            if (e && ecs.HasComponent<Component::TransformComponent>(e))
-                                ecs.GetComponent<Component::TransformComponent>(e)->position = dropWorld;
-                        }
-                        else if (p && p->kind == AssetKind::Audio) {
-                            std::string rel = p->relPath;
-
-                            const std::string prefix = "audio/";
-                            auto pos = rel.find(prefix);
-                            if (pos != std::string::npos)
-                                rel = rel.substr(pos + prefix.size());
-
-                            if (auto dot = rel.find_last_of('.'); dot != std::string::npos)
-                                rel.erase(dot);
-
-                            std::string eventLike = std::string("event:/") + rel;
-
-                            Entity target = selected;
-                            if (!target) {
-                                target = ecs.CreateEntity();
-                                ecs.AddComponent<NameComponent>(target, std::string("Audio_") + p->name);
-                                ecs.AddComponent<TransformComponent>(target);
-                                if (auto* t = ecs.GetComponent<TransformComponent>(target)) {
-                                    t->position = dropWorld;
-                                    t->size = { 1.0f, 1.0f };
-                                }
-
-                                // give it a visual
-                                ecs.AddComponent<Component::ShapeComponent>(target);
-                                if (auto* sc = ecs.GetComponent<Component::ShapeComponent>(target)) {
-                                    sc->enableTexture = true;
-                                    sc->textureName = "audio_icon";
-                                }
-                            }
-                            else {
-                                if (!ecs.HasComponent<Component::ShapeComponent>(target))
-                                    ecs.AddComponent<Component::ShapeComponent>(target);
-                            }
-
-                            if (!ecs.HasComponent<Component::AudioEmitterComponent>(target))
-                                ecs.AddComponent<Component::AudioEmitterComponent>(target);
-
-                            if (auto* ac = ecs.GetComponent<Component::AudioEmitterComponent>(target)) {
-                                std::filesystem::path relPath = p->relPath; // e.g. "audio/Music/Menu.wav"
-                                std::string ext = relPath.extension().string();
-                                std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
-
-                                rel = relPath.generic_string();
-
-                                pos = rel.find(prefix);
-                                if (pos == 0)
-                                    rel = rel.substr(prefix.size()); // "Music/Menu.wav"
-
-                                if (ext == ".wav" || ext == ".ogg" || ext == ".mp3") {
-                                    ac->eventPath = rel;
-                                }
-                                else {
-                                    if (auto dot = rel.find_last_of('.'); dot != std::string::npos) rel.erase(dot);
-                                    ac->eventPath = std::string("event:/") + rel;
-                                }
-
-                                ac->volume = 1.0f;
-                                ac->pitch = 1.0f;
-                                ac->spatial3D = true;
-                            }
-                        }
-                    }
-                }
-
                 CEVec3 worldPt = ViewUV_toWorld(u, v);
 
                 InputManager::g_mouseWorldPos = CEVec2{ worldPt.x, worldPt.y };
 
             }
             
+            //  7) drag and drop from asset browser into world
+                //  Drag-and-drop spawn
+                //  Payload is built in the Asset Browser panel.
+                //  Here we just read the payload and instantiate a texture/prefab
+                //  at the mouse drop location in world space.
+                // ------------------------------------------------------------
+            if (ImGui::BeginDragDropTarget()) {
+                if (const ImGuiPayload* pl = ImGui::AcceptDragDropPayload("ASSET/PAYLOAD")) {
+                    const auto* p = static_cast<const AssetDragPayload*>(pl->Data);
+                    CEVec3 dropWorld = ViewUV_toWorld(u, v);
+
+                    using CrashoutsEngine::Assets::AssetManager;
+                    using CrashoutsEngine::Assets::TextureAsset;
+
+                    if (p && p->kind == AssetKind::Texture) {
+                        if (auto* tex = AssetManager::GetInstance().Get<TextureAsset>(p->name)) {
+                            Entity e = ecs.CreateEntity();
+                            ecs.AddComponent<NameComponent>(e, std::string("Tex_") + p->name);
+                            ecs.AddComponent<TransformComponent>(e);
+                            ecs.AddComponent<Component::ShapeComponent>(e);
+                            auto* sc = ecs.GetComponent<Component::ShapeComponent>(e);
+                            sc->enableTexture = true;
+                            sc->textureName = p->name;
+                            ecs.GetComponent<Component::TransformComponent>(e)->position = dropWorld;
+                        }
+                    }
+                    else if (p && p->kind == AssetKind::Prefab) {
+                        Entity e = Prefab::Create(ecs, std::string(p->name));
+                        if (e && ecs.HasComponent<Component::TransformComponent>(e))
+                            ecs.GetComponent<Component::TransformComponent>(e)->position = dropWorld;
+                    }
+                    else if (p && p->kind == AssetKind::Audio) {
+                        std::string rel = p->relPath;
+
+                        const std::string prefix = "audio/";
+                        auto pos = rel.find(prefix);
+                        if (pos != std::string::npos)
+                            rel = rel.substr(pos + prefix.size());
+
+                        if (auto dot = rel.find_last_of('.'); dot != std::string::npos)
+                            rel.erase(dot);
+
+                        std::string eventLike = std::string("event:/") + rel;
+
+                        Entity target = selected;
+                        if (!target) {
+                            target = ecs.CreateEntity();
+                            ecs.AddComponent<NameComponent>(target, std::string("Audio_") + p->name);
+                            ecs.AddComponent<TransformComponent>(target);
+                            if (auto* t = ecs.GetComponent<TransformComponent>(target)) {
+                                t->position = dropWorld;
+                                t->size = { 10.0f, 10.0f };
+                            }
+
+                            // give it a visual
+                            ecs.AddComponent<Component::ShapeComponent>(target);
+                            if (auto* sc = ecs.GetComponent<Component::ShapeComponent>(target)) {
+								sc->enableTexture = false; // gonna be a square till I get a nice audio icon
+                                sc->textureName = "audio_icon";
+                            }
+                        }
+                        else {
+                            if (!ecs.HasComponent<Component::ShapeComponent>(target))
+                                ecs.AddComponent<Component::ShapeComponent>(target);
+                        }
+
+                        if (!ecs.HasComponent<Component::AudioEmitterComponent>(target))
+                            ecs.AddComponent<Component::AudioEmitterComponent>(target);
+
+                        if (auto* ac = ecs.GetComponent<Component::AudioEmitterComponent>(target)) {
+                            std::filesystem::path relPath = p->relPath; // e.g. "audio/Music/Menu.wav"
+                            std::string ext = relPath.extension().string();
+                            std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+
+                            rel = relPath.generic_string();
+
+                            pos = rel.find(prefix);
+                            if (pos == 0)
+                                rel = rel.substr(prefix.size()); // "Music/Menu.wav"
+
+                            if (ext == ".wav" || ext == ".ogg" || ext == ".mp3") {
+                                ac->eventPath = rel;
+                            }
+                            else {
+                                if (auto dot = rel.find_last_of('.'); dot != std::string::npos) rel.erase(dot);
+                                ac->eventPath = std::string("event:/") + rel;
+                            }
+
+                            ac->volume = 1.0f;
+                            ac->pitch = 1.0f;
+                            ac->spatial3D = true;
+                        }
+                    }
+                }
+            }
+
         }
 
         ImGui::End();
