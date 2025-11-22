@@ -99,7 +99,6 @@ namespace CrashoutsEngine::TileMapUtils {
     }
 
     void RebuildCache(Component::TileMapComponent& map, const Entity& parentEnt) {
-        (void)parentEnt;
         if (!map.isCacheDirty) return;
 
         // 1. Clear Visual Cache
@@ -107,10 +106,10 @@ namespace CrashoutsEngine::TileMapUtils {
 
         // 2. Clear/Destroy Old Physics Entities
         // We destroy all old tile colliders and rebuild them. 
-        auto* ecs = ECS::getInstance();
+        ECS* ecs = ECS::getInstance();
 
-        for (auto const& [pos, entityID] : map.colliderCache) {
-            ecs->DestroyEntity(entityID);
+        for (std::map < std::pair<int, int>, Entity>::const_iterator c = map.colliderCache.begin(); c != map.colliderCache.end(); ++c) {
+            ecs->DestroyEntity(c->second);
         }
         map.colliderCache.clear();
 
@@ -171,10 +170,6 @@ namespace CrashoutsEngine::TileMapUtils {
             s.textureName = matchedRule->texAssetName;
             s.type = Component::ShapeType::Rectangle;
             ecs->AddComponent<Component::ShapeComponent>(ent, std::move(s));
-            
-            // Add child component
-            CrashoutsEngine::AttachChild(*ecs, parentEnt, ent);
-            //AttachChild(*ecs, parentEnt, ent);
 
             // 2. Transform (Place it in world space)
             Component::TransformComponent& t = ecs->AddComponent<Component::TransformComponent>(ent);
@@ -214,10 +209,8 @@ namespace CrashoutsEngine::TileMapUtils {
             map.colliderCache[pos] = ent;
 
             // 7. Parent it (Optional, if your hierarchy system supports it)
-            // CrashoutsEngine::AttachChild(ecs, parentEntity, ent);
-            // Add child component
-            //ecs->AddComponent<Component::ParentComponent>(ent);
-            //AttachChild(*ecs, parentEnt, ent);
+            CrashoutsEngine::AttachChild(*ecs, parentEnt, ent);
+
         }
 
         std::cout << "TileMapComponent: Cache Rebuilt. Colliders: " << map.colliderCache.size() << "\n";
