@@ -20,7 +20,7 @@ public class AudioManager
                 "assets/audio/Footsteps2_Gravel-Dirt_far-small_1.wav",
                 1.0f, // base volume
                 true, // loop?
-                SoundType.SFX // it's music, not SFX SFX DOESNT WORK LMAO
+                SoundType.Music // it's music, not SFX SFX DOESNT WORK LMAO
             );
 
         /*RegisterSound(

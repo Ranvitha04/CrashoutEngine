@@ -1505,58 +1505,70 @@ namespace UI { // --------------------------------------------------------------
 
         auto& audio = AudioSystem::instance();
 
-        //-----------------------------------------------------------
-        // PLAY ANY (EVENT or RAW)
-        //-----------------------------------------------------------
+        // SAFE PLAY FUNCTION (EVENT / RAW SFX / RAW MUSIC)
         auto PlayAny = [&](const std::string& id, bool bgm = false) -> void*
             {
                 if (id.empty()) return nullptr;
 
-                // FMOD Studio Event
+                // 1) FMOD STUDIO EVENT
                 if (id.rfind("event:/", 0) == 0)
                 {
                     auto* inst = audio.createInstance(id);
                     if (inst)
                     {
                         inst->start();
-                        return inst;
+                        return inst; // event instance returned
                     }
                     return nullptr;
                 }
 
-                // RAW (prefix: [RAW] )
+                // 2) RAW AUDIO
                 if (id.rfind("[RAW] ", 0) == 0)
                 {
                     std::string rel = id.substr(6);
-                    std::string path = "assets/audio/" + rel;
+                    std::string full = "assets/audio/" + rel;
 
                     if (bgm)
-                        return audio.playMusicFile(path, true);
+                    {
+                        // PLAY MUSIC by TAG ("BGM")
+                        audio.playMusicFileTagged("BGM", full, true);
+                        return (void*)0xBEEF;
+                    }
                     else
-                        return audio.playSFXFile(path);
+                    {
+                        // PLAY RAW SFX (returns FMOD::Channel*)
+                        FMOD::Channel* ch = audio.playSFXFileEx(full);
+                        return ch;
+                    }
                 }
 
-                // Fallback (treat as raw)
-                std::string path = id;
-                if (path.rfind("assets/", 0) != 0)
-                    path = "assets/audio/" + path;
+                // 3) FALLBACK -> treat as RAW
+                std::string full = id;
+                if (full.rfind("assets/", 0) != 0)
+                    full = "assets/audio/" + full;
 
                 if (bgm)
-                    return audio.playMusicFile(path, true);
+                {
+                    audio.playMusicFileTagged("BGM", full, true);
+                    return (void*)0xBEEF;
+                }
                 else
-                    return audio.playSFXFile(path);
+                {
+                    FMOD::Channel* ch = audio.playSFXFileEx(full);
+                    return ch;
+                }
             };
 
-        //-----------------------------------------------------------
-        // STOP ANY (EVENT or RAW CHANNEL)
-        //-----------------------------------------------------------
+        // SAFE STOP FUNCTION (EVENT / RAW SFX / RAW MUSIC)
         auto StopAny = [&](void* handle)
             {
                 if (!handle) return;
 
-                // FMOD Studio Instance
-                if (auto* inst = static_cast<FMOD::Studio::EventInstance*>(handle))
+                // 1) FMOD EVENT INSTANCE
+                if ((uintptr_t)handle > 0x1000 && (uintptr_t)handle < 0xFFFFFFFF)
                 {
+                    auto* inst = static_cast<FMOD::Studio::EventInstance*>(handle);
+
                     FMOD_STUDIO_PLAYBACK_STATE st;
                     if (inst->getPlaybackState(&st) == FMOD_OK)
                     {
@@ -1566,8 +1578,16 @@ namespace UI { // --------------------------------------------------------------
                     return;
                 }
 
-                // RAW FMOD::Channel
-                if (auto* ch = static_cast<FMOD::Channel*>(handle))
+                // 2) RAW MUSIC TAG (dummy handle 0xBEEF)
+                if (handle == (void*)0xBEEF)
+                {
+                    audio.stopTagged("BGM");
+                    return;
+                }
+
+                // 3) RAW SFX CHANNEL
+                auto* ch = static_cast<FMOD::Channel*>(handle);
+                if (ch)
                 {
                     bool playing = false;
                     if (ch->isPlaying(&playing) == FMOD_OK && playing)
@@ -1575,9 +1595,7 @@ namespace UI { // --------------------------------------------------------------
                 }
             };
 
-        //-----------------------------------------------------------
-        // INIT STATUS
-        //-----------------------------------------------------------
+        // INITIALIZATION
         if (!audio.isInitialized())
         {
             ImGui::TextDisabled("FMOD not initialized.");
@@ -1585,9 +1603,7 @@ namespace UI { // --------------------------------------------------------------
                 audio.init("assets/audio");
         }
 
-        //-----------------------------------------------------------
-        // LOAD FROM MANIFEST (BANKS + RAW)
-        //-----------------------------------------------------------
+        // LOAD FROM MANIFEST
         static bool needRefresh = true;
 
         if (ImGui::Button("Load banks + raw (manifest)"))
@@ -1605,19 +1621,17 @@ namespace UI { // --------------------------------------------------------------
         if (ImGui::Button("Refresh list"))
             needRefresh = true;
 
-        //-----------------------------------------------------------
-        // BUILD AUDIO LIST (FMOD EVENTS + RAW)
-        //-----------------------------------------------------------
+        // BUILD EVENT LIST (EVENTS + RAW)
         static std::vector<std::string> allEvents;
 
         if (needRefresh || allEvents.empty())
         {
             allEvents.clear();
 
-            // FMOD Studio events
+            // 1) FMOD events
             audio.listAllEventPaths(allEvents);
 
-            // RAW files from manifest
+            // 2) RAW audio from manifest
             for (auto& rel : audio.getRegisteredRawAudio())
                 allEvents.push_back("[RAW] " + rel);
 
@@ -1630,22 +1644,18 @@ namespace UI { // --------------------------------------------------------------
         ImGui::SameLine();
         ImGui::TextDisabled("%zu items", allEvents.size());
 
-        //-----------------------------------------------------------
         // COMBO SELECTOR
-        //-----------------------------------------------------------
         auto EventCombo = [&](const char* label, std::string& sel)
             {
                 if (ImGui::BeginCombo(label, sel.empty() ? "(select)" : sel.c_str()))
                 {
                     static char filter[128] = {};
-                    ImGui::SetNextItemWidth(ImGui::GetFontSize() * 14);
-                    ImGui::InputTextWithHint("##filt", "filter...", filter, sizeof(filter));
+                    ImGui::InputTextWithHint("##filter", "type to filter...", filter, sizeof(filter));
                     ImGui::Separator();
 
-                    std::string needle = filter;
                     for (auto& e : allEvents)
                     {
-                        if (!needle.empty() && e.find(needle) == std::string::npos)
+                        if (strlen(filter) > 0 && e.find(filter) == std::string::npos)
                             continue;
 
                         bool chosen = (sel == e);
@@ -1654,16 +1664,16 @@ namespace UI { // --------------------------------------------------------------
                         if (chosen)
                             ImGui::SetItemDefaultFocus();
                     }
-
                     ImGui::EndCombo();
                 }
 
-                // Drag & Drop audio asset
+                // Drag & Drop
                 if (ImGui::BeginDragDropTarget())
                 {
                     if (const ImGuiPayload* p = ImGui::AcceptDragDropPayload("ASSET/PAYLOAD"))
                     {
                         auto* d = static_cast<const AssetDragPayload*>(p->Data);
+
                         if (d && d->kind == AssetKind::Audio)
                         {
                             std::filesystem::path rp = d->relPath;
@@ -1671,10 +1681,8 @@ namespace UI { // --------------------------------------------------------------
                             std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
 
                             std::string rel = rp.generic_string();
-
-                            const std::string prefix = "audio/";
-                            if (rel.find(prefix) == 0)
-                                rel = rel.substr(prefix.size());
+                            if (rel.rfind("audio/", 0) == 0)
+                                rel = rel.substr(6);
 
                             if (ext == ".wav" || ext == ".ogg" || ext == ".mp3")
                                 sel = "[RAW] " + rel;
@@ -1690,9 +1698,7 @@ namespace UI { // --------------------------------------------------------------
                 }
             };
 
-        //-----------------------------------------------------------
-        // QUICK TEST SECTION
-        //-----------------------------------------------------------
+        // QUICK TEST UI
         ImGui::SeparatorText("Quick Test (1 BGM + 3 SFX)");
 
         static void* hBGM = nullptr;
@@ -1706,29 +1712,27 @@ namespace UI { // --------------------------------------------------------------
         EventCombo("Background Music", pickBGM);
         if (ImGui::Button("Play##bgm"))      hBGM = PlayAny(pickBGM, true);
         ImGui::SameLine();
-        if (ImGui::Button("Stop##bgm")) { StopAny(hBGM); hBGM = nullptr; audio.stopMusicGroup(); }
+        if (ImGui::Button("Stop##bgm")) { StopAny(hBGM); hBGM = nullptr; }
 
-        // SFX 1
+        // SFX1
         EventCombo("SFX 1", pickSFX1);
         if (ImGui::Button("Play##sfx1"))    hSFX1 = PlayAny(pickSFX1);
         ImGui::SameLine();
         if (ImGui::Button("Stop##sfx1")) { StopAny(hSFX1); hSFX1 = nullptr; }
 
-        // SFX 2
+        // SFX2
         EventCombo("SFX 2", pickSFX2);
         if (ImGui::Button("Play##sfx2"))    hSFX2 = PlayAny(pickSFX2);
         ImGui::SameLine();
         if (ImGui::Button("Stop##sfx2")) { StopAny(hSFX2); hSFX2 = nullptr; }
 
-        // SFX 3
+        // SFX3
         EventCombo("SFX 3", pickSFX3);
         if (ImGui::Button("Play##sfx3"))    hSFX3 = PlayAny(pickSFX3);
         ImGui::SameLine();
         if (ImGui::Button("Stop##sfx3")) { StopAny(hSFX3); hSFX3 = nullptr; }
 
-        //-----------------------------------------------------------
         // MASTER VOLUME
-        //-----------------------------------------------------------
         ImGui::SeparatorText("Master Volume");
 
         static float master = 1.0f;
@@ -1748,9 +1752,7 @@ namespace UI { // --------------------------------------------------------------
             audio.setSFXGroupVolume(v);
         }
 
-        //-----------------------------------------------------------
         // STOP ALL
-        //-----------------------------------------------------------
         ImGui::Separator();
         if (ImGui::Button("Stop All"))
         {

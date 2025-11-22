@@ -529,19 +529,29 @@ namespace CrashoutsEngine {
 			// AUDIO (audio/)
 			if (folder == "audio")
 			{
-				if (ext == ".bank")
+				// rel is something like "audio/Music/Menu.wav"
+				std::string relStr = rel.generic_string();
+
+				std::string extLow = ext;
+				std::transform(extLow.begin(), extLow.end(), extLow.begin(), ::tolower);
+
+				// BANKS -> load FMOD Studio bank
+				if (extLow == ".bank")
 				{
-					// Load real FMOD Studio bank
-					std::string relPath = rel.string();
-					bool ok = CrashoutsEngine::Audio::AudioSystem::instance().loadBank(relPath);
-					std::cout << (ok ? "[SingleAsset] Loaded FMOD bank: " : "[SingleAsset] FAILED FMOD bank: ")
-						<< relPath << "\n";
+					bool ok = CrashoutsEngine::Audio::AudioSystem::instance().loadBank(relStr);
+					std::cout << (ok ? "[SingleAsset] Loaded FMOD bank: ": "[SingleAsset] FAILED FMOD bank: ") << relStr << "\n";
 				}
-				else if (ext == ".wav" || ext == ".ogg" || ext == ".mp3")
+				// RAW AUDIO -> register only (no loadBank)
+				else if (extLow == ".wav" || extLow == ".ogg" || extLow == ".mp3")
 				{
-					// RAW AUDIO — DO NOT LOAD AS BANK
-					std::cout << "[SingleAsset] Raw audio file detected: " << rel.string() << "\n";
-					// No loadBank() call here.
+					// Strip "audio/" so your panel & C# use "Music/Menu.wav" style
+					std::string relAudio = relStr;
+					const std::string prefix = "audio/";
+					if (relAudio.rfind(prefix, 0) == 0)
+						relAudio = relAudio.substr(prefix.size());
+
+					CrashoutsEngine::Audio::AudioSystem::instance().registerRawAudio(relAudio);
+					std::cout << "[SingleAsset] Registered RAW audio: " << relAudio << "\n";
 				}
 
 				return;
