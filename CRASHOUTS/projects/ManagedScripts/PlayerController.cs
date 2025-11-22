@@ -9,7 +9,7 @@ namespace CrashoutsEngine
         bool jump;
         /*SAMPLE TRIGGERS*/
         public void OnTriggerEnter(uint otherEntity) {
-            Console.WriteLine("Entered Inside Me BOUNCE");
+            //Console.WriteLine("Entered Inside Me BOUNCE");
             var rb = Entity.GetComponent<RigidBodyComponent>();
             // rb.AddForce(new CEVec3(0f, 20000f, 0f)); //* rb.GetMass());
         }
@@ -27,7 +27,7 @@ namespace CrashoutsEngine
         public override void Start()
         {
             // Initialization logic for the player
-            Console.WriteLine("[C#] PlayerController Start() called, Entity is " + (Entity == null ? "NULL" : "OK!"));
+            Console.WriteLine("[C#] PlayerController Start() called, Entity is " + (Entity == null ? "NULL" : "OK!!"));
             CollisionEvents.RegisterTriggerEnter(Entity.ID, this.OnTriggerEnter);
             //Entity.Add<RigidBodyComponent>();
             //Entity.Add<TransformComponent>();

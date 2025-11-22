@@ -94,6 +94,7 @@ namespace Component {
 
         void Play(const std::string& stateName);
         void SetBool(const std::string& key, bool value);
+        bool GetBool(const std::string& key) const;
         void SetTrigger(const std::string& key);
         void SetFloat(const std::string& key, float value);
 

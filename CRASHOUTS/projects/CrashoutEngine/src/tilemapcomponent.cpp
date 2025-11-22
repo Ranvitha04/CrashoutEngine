@@ -171,6 +171,10 @@ namespace CrashoutsEngine::TileMapUtils {
             s.textureName = matchedRule->texAssetName;
             s.type = Component::ShapeType::Rectangle;
             ecs->AddComponent<Component::ShapeComponent>(ent, std::move(s));
+            
+            // Add child component
+            CrashoutsEngine::AttachChild(*ecs, parentEnt, ent);
+            //AttachChild(*ecs, parentEnt, ent);
 
             // 2. Transform (Place it in world space)
             Component::TransformComponent& t = ecs->AddComponent<Component::TransformComponent>(ent);

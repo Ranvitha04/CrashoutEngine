@@ -336,9 +336,12 @@ namespace UI { // --------------------------------------------------------------
     */
     void EndFrame() {
         ImGui::Render();
-        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
         ImGuiIO& io = ImGui::GetIO();
+        if (io.DisplaySize.x > 0.0f && io.DisplaySize.y > 0.0f)
+        {
+            ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+        }
+
         if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable) {
             GLFWwindow* backup = glfwGetCurrentContext();
             ImGui::UpdatePlatformWindows();
@@ -788,6 +791,27 @@ namespace UI { // --------------------------------------------------------------
                     bool sel = (outSelectedAsset == e.path().generic_string());
                     if (ImGui::Selectable(name.c_str(), sel))
                         outSelectedAsset = e.path().generic_string();
+                   
+                    if (ImGui::IsItemHovered() &&
+                        ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
+                    {
+                        outSelectedAsset = e.path().generic_string();
+
+                        std::string ext = e.path().extension().string();
+                        std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+
+                        
+                        if (ext == ".png" || ext == ".jpg" || ext == ".jpeg" ||
+                            ext == ".bmp" || ext == ".tga")
+                        {
+                            
+                            std::string rel = fs::relative(e.path(), fs::path(root)).generic_string();
+                            std::string full = std::string("assets/") + rel;   
+
+                            SpriteSheet_SetTexturePath(full.c_str());        
+                            ui.showSpriteSheet = true;                        
+                        }
+                    }
 
                     if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID)) {
                         AssetDragPayload p{};
@@ -1848,7 +1872,9 @@ namespace UI { // --------------------------------------------------------------
     static void RenderGameViewport(ECS& ecs, Entity& selected) {
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0)); // No padding
         // Begin the ImGUI window, enable Docking
-        if (ImGui::Begin("Game Viewport", nullptr, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse)) {
+        bool open = ImGui::Begin( "Game Viewport", nullptr, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse );
+
+        if (open) {
 
             ImVec2 start = ImGui::GetCursorScreenPos();
             ImGui::SetCursorScreenPos(ImVec2(start.x + 10, start.y + 10));
@@ -1882,6 +1908,14 @@ namespace UI { // --------------------------------------------------------------
 
             // Get the size of ImGui window content region
             ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
+
+            // Guard to not render when we minimize
+            if (viewportPanelSize.x <= 0.0f || viewportPanelSize.y <= 0.0f)
+            {
+                ImGui::End();
+                ImGui::PopStyleVar();
+                return;
+            }
 
             // 2) aspect-ratio / letterbox calculation
             float panelWidth = viewportPanelSize.x;
@@ -2567,9 +2601,11 @@ namespace UI { // --------------------------------------------------------------
                 InputManager::g_mouseWorldPos = CEVec2{ worldPt.x, worldPt.y };
 
             }
-            ImGui::End();
-            ImGui::PopStyleVar();
+            
         }
+
+        ImGui::End();
+        ImGui::PopStyleVar();
     }
 #endif
 
@@ -2622,6 +2658,7 @@ namespace UI { // --------------------------------------------------------------
             // Dock windows into regions (matching your actual window titles)
             ImGui::DockBuilderDockWindow("Debug Controls", dock_left);
             ImGui::DockBuilderDockWindow("Hierarchy", dock_left);
+            ImGui::DockBuilderDockWindow("Sprite Sheet", dock_right);
             ImGui::DockBuilderDockWindow("Assets", dock_bottom);
             ImGui::DockBuilderDockWindow("Inspector", dock_right_bottom);
             ImGui::DockBuilderDockWindow("Physics / Collision", dock_bottom);
