@@ -10,7 +10,7 @@
 #include "spriteAnimation.h"
 #include "rendering.h"
 #include "textureasset.h"
-
+#include "assetmanager.h"
 #include "entitymanager.h"
 #include "spritecomponent.h"
 #include "transformcomponent.h"
@@ -206,6 +206,11 @@ namespace UI
         gCols = std::max(gCols, 1);
         if (ImGui::Button("Export tiles to PNGs")) {
             ExportCurrentSpritesheetToPNGs();
+            {
+                using namespace CrashoutsEngine::Assets;
+                GenerateAssetManifest();                          
+                AssetManager::GetInstance().LoadManifestAssets(); 
+            }
         }
         ImGui::SliderFloat("Zoom", &gZoom, 0.5f, 6.0f);
 
