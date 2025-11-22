@@ -498,6 +498,12 @@ namespace UI { // --------------------------------------------------------------
             }
 
             if (ImGui::Button("Destroy Selected")) {
+                if (selected) {
+
+                    if (ecs.HasComponent<Component::ParentComponent>(selected)) {
+                        CrashoutsEngine::DetachChild(ecs, selected);
+                    }
+                }
                 ecs.DestroyEntity(selected);
                 if (auto it = std::find(entities.begin(), entities.end(), selected);
                     it != entities.end()) entities.erase(it);
