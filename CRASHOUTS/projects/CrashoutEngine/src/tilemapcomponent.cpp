@@ -174,7 +174,7 @@ namespace CrashoutsEngine::TileMapUtils {
             ecs->AddComponent<Component::ShapeComponent>(ent, std::move(s));
             
             // Add child component
-            ecs->AddComponent<Component::ParentComponent>(ent);
+            CrashoutsEngine::AttachChild(*ecs, parentEnt, ent);
             //AttachChild(*ecs, parentEnt, ent);
 
             // 2. Transform (Place it in world space)
