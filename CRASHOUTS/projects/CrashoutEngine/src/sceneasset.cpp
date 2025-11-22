@@ -325,7 +325,7 @@ namespace CrashoutsEngine {
                     // 1. Check Type Int
                     //int colliderType = 0;
                     if (colliderValue.HasMember("type") && colliderValue["type"].IsInt()) {
-                        // 0 - Sphere Collider, 1 - AABB, 2 - OBB?
+                        // 0 - Sphere Collider, 1 - AABB, 2 - Polygon, 3 - OBB, 4 - None?
                         int colliderType = colliderValue["type"].GetInt();
                         ColliderComponent& col = gECS.AddComponent<ColliderComponent>(newEntity);
                         Collision::ColliderFactory colFactory{};
@@ -386,8 +386,9 @@ namespace CrashoutsEngine {
                                 col.collider = colFactory.CreateCollider(static_cast<Collision::ColliderType>(colliderType));
                                 }
                                 break;
+                            case Collision::NONE: break;
                             default:
-                                col.collider = colFactory.CreateCollider(Collision::SPHERE);
+                                col.collider = colFactory.CreateCollider(Collision::AABB);
                         };
                     }
                 }
@@ -1055,7 +1056,12 @@ namespace CrashoutsEngine {
                             colliderValue.AddMember("max", max, allocator);
 
                             colliderValue.AddMember("rotation", obbTemp.rotation, allocator);
+                            break;
                         }
+                        case Collision::NONE: {
+                            break;
+                        }
+                        default:
                         break;
                     }
 

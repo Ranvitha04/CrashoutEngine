@@ -124,6 +124,7 @@ namespace CrashoutsEngine {
                         if (colliderType == "AABB") ruleTile.colliderType = Collision::ColliderType::AABB;
                         else if (colliderType == "SPHERE") ruleTile.colliderType = Collision::ColliderType::SPHERE;
                         else if (colliderType == "OBB") ruleTile.colliderType = Collision::ColliderType::OBB;
+                        else if (colliderType == "NONE") ruleTile.colliderType = Collision::ColliderType::NONE;
                     }
 
                     if (obj.HasMember("ruleBitMap") && obj["ruleBitMap"].IsUint()) {
@@ -171,6 +172,9 @@ namespace CrashoutsEngine {
                 }
                 else if (ruleTile.colliderType == Collision::ColliderType::OBB) {
                     colliderString = "OBB";
+                }
+                else if (ruleTile.colliderType == Collision::ColliderType::NONE) {
+                    colliderString = "NONE";
                 }
 
                 rapidjson::Value colVal;

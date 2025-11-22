@@ -1533,7 +1533,7 @@ public class )" << file.stem().string() << R"(
 
             // ImGui::Checkbox("Enable Camera", &cc->enabled);      // CURRENTLY NOT IMPLEMENTED
             // ImGui::DragFloat3("Position", &cc->position.x, 1.f); // Locked access
-            ImGui::DragFloat("Zoom", &cc->zoom);
+            ImGui::DragFloat("Zoom", &cc->zoom, 0.05f, 0.05f);
             // ImGui::DragFloat("Target Aspect Ratio", &cc->targetAR);
             ImGui::DragFloat2("X Boundaries (min/max)", &cc->xBounds.x, 1.f);
             ImGui::DragFloat2("Y Boundaries (min/max)", &cc->yBounds.x, 1.f);

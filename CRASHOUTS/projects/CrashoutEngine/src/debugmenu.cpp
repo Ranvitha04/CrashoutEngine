@@ -213,8 +213,9 @@ namespace { //------------------------------------------------------------------
         ImGui::PushID((int)e);
         const bool opened = ImGui::TreeNodeEx("##node", flags, "%s", label.c_str());
 
-        if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
+        if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen()) {
             selected = e;
+        }
 
         if (ImGui::BeginDragDropSource()) {
             ImGui::SetDragDropPayload("HIER_ENTITY", &e, sizeof(Entity));
@@ -399,6 +400,7 @@ namespace UI { // --------------------------------------------------------------
             }
         }
         ImGui::SeparatorText("Prefab Creator");
+        ImGui::Text("Entity Counter %d", ecs.GetComponentArray<NameComponent>().dense.size());
         static char nameBuf[128] = { 0 };
         {
             auto names = Prefab::Names();
@@ -439,7 +441,7 @@ namespace UI { // --------------------------------------------------------------
 
 
         ImGui::Separator();
-        ImGui::Text("Selected Entity: %u", (unsigned)selected);
+        ImGui::Text("Selected Entity: %d", selected);
 
         if (!selected) return;
        

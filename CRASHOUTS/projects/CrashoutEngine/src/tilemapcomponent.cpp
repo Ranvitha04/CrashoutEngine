@@ -16,6 +16,7 @@ __________________________________________________________________________*/
 #include "collidercomponent.h"
 #include "transformcomponent.h"
 #include "shapescomponent.h"
+#include "rigidbodycomponent.h"
 #include "namecomponent.h"
 #include "assetmanager.h"
 #include "tilemapasset.h"
@@ -98,7 +99,7 @@ namespace CrashoutsEngine::TileMapUtils {
     }
 
     void RebuildCache(Component::TileMapComponent& map, const Entity& parentEnt) {
-
+        (void)parentEnt;
         if (!map.isCacheDirty) return;
 
         // 1. Clear Visual Cache
@@ -108,13 +109,8 @@ namespace CrashoutsEngine::TileMapUtils {
         // We destroy all old tile colliders and rebuild them. 
         auto* ecs = ECS::getInstance();
 
-        // Check if entity with tilemapcomponent has hierachy component
-        if (!ecs->HasComponent<Component::ChildrenComponent>(parentEnt)) ecs->AddComponent<Component::ChildrenComponent>(parentEnt);
-
         for (auto const& [pos, entityID] : map.colliderCache) {
-            if (ecs->HasComponent<Component::ColliderComponent>(entityID)) {
-                ecs->DestroyEntity(entityID);
-            }
+            ecs->DestroyEntity(entityID);
         }
         map.colliderCache.clear();
 
@@ -163,9 +159,12 @@ namespace CrashoutsEngine::TileMapUtils {
             Entity ent = ecs->CreateEntity();
 
             // 1. Name it for debugging
-            std::string name = "Tile_" + std::to_string(pos.first) + "_" + std::to_string(pos.second);
+            std::string name = "Tile (x:" + std::to_string(pos.first) + ",y:" + std::to_string(pos.second) + ")";
             ecs->AddComponent<Component::NameComponent>(ent, name);
             
+            // Check if entity with tilemapcomponent has hierachy component
+            // if (!ecs->HasComponent<Component::ChildrenComponent>(parentEnt)) ecs->AddComponent<Component::ChildrenComponent>(parentEnt);
+
             // Add Sprite Component?
             Component::ShapeComponent s;
             s.enableTexture = true;
@@ -174,7 +173,7 @@ namespace CrashoutsEngine::TileMapUtils {
             ecs->AddComponent<Component::ShapeComponent>(ent, std::move(s));
             
             // Add child component
-            ecs->AddComponent<Component::ParentComponent>(ent);
+            CrashoutsEngine::AttachChild(*ecs, parentEnt, ent);
             //AttachChild(*ecs, parentEnt, ent);
 
             // 2. Transform (Place it in world space)
@@ -185,26 +184,40 @@ namespace CrashoutsEngine::TileMapUtils {
             t.size = CEVec2((float)map.tileSize, (float)map.tileSize);
 
             // 3. Collider
+            // Calculate extents based on the Transform we just set
+            CEVec3 extents;
+            extents.x = t.size.x * 0.5f;
+            extents.y = t.size.y * 0.5f;
+            extents.z = 0.0f;
+
+            CEVec3 min = t.position - extents;
+            CEVec3 max = t.position + extents;
+
+            // Create the AABBRect instance explicitly
+            auto aabbCollider = std::make_unique<Collision::AABBRect>(min, max);
+
+            // IMPORTANT: Set the type so your Inspector (Snippet 1) can read it correctly later
+            aabbCollider->helperType = Collision::AABB_T;
+
+            // Add the component and move the collider into it
             Component::ColliderComponent& c = ecs->AddComponent<Component::ColliderComponent>(ent);
-            Collision::ColliderFactory factory;
-            Collision::ColliderFactory::ArgMap args;
+            c.collider = std::move(aabbCollider);
 
-            //auto* a = static_cast<Collision::AABBRect*>(c.collider.get());
-            //
-            //CEVec3 extents;
-            //extents.x = t.size.x * 0.5f;
-            //extents.y = t.size.y * 0.5f;
-            //extents.z = 0.f;
-            //
-            //a->min = t.position - extents;
-            //a->max = t.position + extents;
-            //a->extents = (a->max - a->min) * 0.5f;
+            // 5. RigidBody (CRITICAL FOR COLLISION)
+            // We add a Static Rigidbody (Mass = 0) so the physics engine knows this is a wall
+            // and not a ghost object.
+            if (!ecs->HasComponent<Component::RigidBodyComponent>(ent)) {
+                ecs->AddComponent<Component::RigidBodyComponent>(ent, CEVec3{ 0.f,0.f,0.f }, 0.0f, 0.5f);
+            }
 
-            // 4. Store in Cache so we can delete it later
+            // 6. Cache
             map.colliderCache[pos] = ent;
 
-            // 5. Parent it (Optional, if your hierarchy system supports it)
+            // 7. Parent it (Optional, if your hierarchy system supports it)
             // CrashoutsEngine::AttachChild(ecs, parentEntity, ent);
+            // Add child component
+            //ecs->AddComponent<Component::ParentComponent>(ent);
+            //AttachChild(*ecs, parentEnt, ent);
         }
 
         std::cout << "TileMapComponent: Cache Rebuilt. Colliders: " << map.colliderCache.size() << "\n";
@@ -337,57 +350,3 @@ namespace CrashoutsEngine::Editor {
     }
 
 };
-
-//namespace CrashoutsEngine::Rendering {
-//
-//    void RenderTileMaps(ECS& ecs) {
-//        // Get all TileMapComponents
-//        auto& tmArray = ecs.GetComponentArray<Component::TileMapComponent>();
-//
-//        for (size_t i = 0; i < tmArray.dense.size(); ++i) {
-//
-//            // 1. Get the Component
-//            Component::TileMapComponent& tm = tmArray.dense[i];
-//
-//            // 2. Get the Entity ID associated with this index
-//            Entity entityID = tmArray.indexToEntity[i];
-//
-//            // 1. Update Cache if needed (Handles Logic/Physics entities)
-//            if (tm.isCacheDirty) {
-//                TileMapUtils::RebuildCache(tm, entityID);
-//            }
-//
-//            // 2. Setup shared drawing variables
-//            CEVec2 tileSize = { (float)tm.tileSize, (float)tm.tileSize };
-//            CEVec3 tint = { 1.0f, 1.0f, 1.0f }; // White (no tint)
-//            CEVec2 uvSize = { 1.0f, 1.0f };     // Full texture
-//            float rotation = 0.0f;
-//
-//            // 3. Iterate the Visual Cache and Draw
-//            for (auto const& [pos, textureID] : tm.renderCache) {
-//
-//                // Calculate World Position based on Grid Coordinate
-//                // Assuming Grid (0,0) is at World (0,0)
-//                float x = (float)pos.first * tm.tileSize +(tm.tileSize * 0.5f);
-//                float y = (float)pos.second * tm.tileSize +(tm.tileSize * 0.5f);
-//
-//                // Z-Index: You might want a variable for this in the component
-//                float z = 0.0f;
-//
-//                CEVec3 worldPos = { x, y, z };
-//
-//                // 4. Call the OVERLOADED draw function
-//                Component::Shapes::CreateTexturedRectangle(
-//                    tileSize,       // Size
-//                    textureID,      // GLuint Handle (Fast!)
-//                    worldPos,       // Position
-//                    rotation,       // Rotation
-//                    tint,           // Color
-//                    uvSize,         // UVs
-//                    true            // isWorldSpace (Yes, tiles exist in the world)
-//                );
-//            }
-//        }
-//    }
-//
-//}
