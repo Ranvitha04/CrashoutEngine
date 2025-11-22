@@ -20,6 +20,7 @@
 #endif
 #include <cstdio>
 #include <algorithm>
+#include <filesystem>
 
 namespace CrashoutsEngine::Audio
 {
@@ -189,6 +190,7 @@ namespace CrashoutsEngine::Audio
         // Stop any tagged channels we tracked
         mTaggedChannels.clear();
 
+        unloadAllRawSounds();
         unloadAllBanks();
         mStudio.reset();
         mCore.reset();
@@ -244,6 +246,55 @@ namespace CrashoutsEngine::Audio
                 bank->unload();
         }
         mBanks.clear();
+    }
+
+    // -------------------------------------------------------------------------
+    // Raw management
+    // -------------------------------------------------------------------------
+    void AudioSystem::registerRawAudio(const std::string& relPath)
+    {
+        auto it = std::find(mRawAudioFiles.begin(), mRawAudioFiles.end(), relPath);
+        if (it == mRawAudioFiles.end())
+            mRawAudioFiles.push_back(relPath);
+    }
+
+    const std::vector<std::string>& AudioSystem::getRegisteredRawAudio() const
+    {
+        return mRawAudioFiles;
+    }
+
+    void AudioSystem::unregisterRawAudio(const std::string& relPath)
+    {
+        mRawAudioFiles.erase(
+            std::remove(mRawAudioFiles.begin(), mRawAudioFiles.end(), relPath),
+            mRawAudioFiles.end()
+        );
+    }
+
+    void AudioSystem::unloadRawSound(const std::string& path)
+    {
+        auto it = mRawSoundCache.find(path);
+        if (it != mRawSoundCache.end())
+        {
+            if (it->second)
+                it->second->release();
+
+            mRawSoundCache.erase(it);
+
+            std::cout << "[Audio] Unloaded raw sound: " << path << "\n";
+        }
+    }
+
+    void AudioSystem::unloadAllRawSounds()
+    {
+        for (auto& kv : mRawSoundCache)
+        {
+            if (kv.second)
+                kv.second->release();
+        }
+
+        mRawSoundCache.clear();
+        std::cout << "[Audio] Unloaded ALL raw sounds\n";
     }
 
     // -------------------------------------------------------------------------
@@ -565,6 +616,34 @@ namespace CrashoutsEngine::Audio
     }
 
     /*!
+    @brief Collects the paths of all raw audio files.
+    */
+    void AudioSystem::listRawAudioFiles(std::vector<std::string>& out)
+    {
+        out.clear();
+
+        namespace fs = std::filesystem;
+        fs::path audioRoot = "assets/audio";
+
+        if (!fs::exists(audioRoot))
+            return;
+
+        for (auto& e : fs::directory_iterator(audioRoot))
+        {
+            if (e.is_regular_file())
+            {
+                std::string ext = e.path().extension().string();
+                std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+
+                if (ext == ".wav" || ext == ".ogg" || ext == ".mp3")
+                {
+                    out.push_back(e.path().generic_string());
+                }
+            }
+        }
+    }
+
+    /*!
     @brief Prints information about events, buses, and VCAs in a bank to the console.
     */
     void AudioSystem::inspectBankToConsole(const std::string& bankFile)
@@ -644,88 +723,44 @@ namespace CrashoutsEngine::Audio
     /*!
     @brief Plays a music file through the music channel group, optionally looping it.
     */
-    bool AudioSystem::playMusicFile(const std::string& path, bool loop)
+    FMOD::Channel* AudioSystem::playMusicFile(const std::string& path, bool loop)
     {
-        if (!mCore || !mMusicGroup)
-            return false;
-
-        if (!IsSupportedAudioFile(path))
-        {
-            std::string msg =
-                "Unsupported audio format for music file:\n\n" + path +
-                "\n\nSupported formats: .mp3, .ogg, .wav";
-            ShowAudioErrorPopup(msg);
-            return false;
-        }
+        if (!mCore || !mMusicGroup) return nullptr;
 
         FMOD::Sound* snd = nullptr;
         if (!ok(mCore->createSound(path.c_str(),
-            MusicMode(loop),
+            FMOD_CREATESTREAM | (loop ? FMOD_LOOP_NORMAL : FMOD_LOOP_OFF),
             nullptr,
             &snd),
-            "createSound(music)"))
-        {
-            ShowAudioErrorPopup("Failed to load music file:\n\n" + path);
-            return false;
-        }
+            "playMusic createSound"))
+            return nullptr;
 
         FMOD::Channel* ch = nullptr;
         if (!ok(mCore->playSound(snd, mMusicGroup, false, &ch),
-            "playSound(music)"))
-        {
-            snd->release();
-            ShowAudioErrorPopup("Failed to play music file:\n\n" + path);
-            return false;
-        }
+            "playMusic playSound"))
+            return nullptr;
 
-        if (ch)
-            ch->setMode(FMOD_2D);
-
-        return true;
+        return ch;
     }
 
     /*!
     @brief Plays a one-shot SFX file through the SFX channel group.
     */
-    bool AudioSystem::playSFXFile(const std::string& path)
+    FMOD::Channel* AudioSystem::playSFXFile(const std::string& path)
     {
-        if (!mCore || !mSFXGroup)
-            return false;
-
-        if (!IsSupportedAudioFile(path))
-        {
-            std::string msg =
-                "Unsupported audio format for SFX file:\n\n" + path +
-                "\n\nSupported formats: .mp3, .ogg, .wav";
-            ShowAudioErrorPopup(msg);
-            return false;
-        }
+        if (!mCore || !mSFXGroup) return nullptr;
 
         FMOD::Sound* snd = nullptr;
-        if (!ok(mCore->createSound(path.c_str(),
-            FMOD_DEFAULT | FMOD_2D,
-            nullptr,
-            &snd),
-            "createSound(sfx)"))
-        {
-            ShowAudioErrorPopup("Failed to load SFX file:\n\n" + path);
-            return false;
-        }
+        if (!ok(mCore->createSound(path.c_str(), FMOD_DEFAULT | FMOD_2D, nullptr, &snd),
+            "playSFX createSound"))
+            return nullptr;
 
         FMOD::Channel* ch = nullptr;
         if (!ok(mCore->playSound(snd, mSFXGroup, false, &ch),
-            "playSound(sfx)"))
-        {
-            snd->release();
-            ShowAudioErrorPopup("Failed to play SFX file:\n\n" + path);
-            return false;
-        }
+            "playSFX playSound"))
+            return nullptr;
 
-        if (ch)
-            ch->setMode(FMOD_2D);
-
-        snd->release();
-        return true;
+        return ch;
     }
 
     FMOD::Channel* AudioSystem::playSFXFileEx(const std::string& path)
