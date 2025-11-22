@@ -41,13 +41,6 @@ when shutting down the engine.
 #include <glm/gtc/type_ptr.hpp>
 #include <filesystem>  // Add this include
 //#include <stb_image.h>
-#include <iostream>
-#include <fstream>
-#include <algorithm>
-#include <cctype>
-#include <vector>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
 #include "rendering.h"
 #include "stb_image.h"
 
@@ -75,6 +68,7 @@ namespace CrashoutsEngine {
 
 
         TextureAsset::texdata TextureAsset::LoadImageData(const std::string& filePath, int& width, int& height) {
+
             int channels;
 
             texdata data = stbi_load(filePath.c_str(), &width, &height, &channels, STBI_rgb_alpha);

@@ -10,6 +10,7 @@
 #include "hierarchy.h"
 #include "hierarchy_components.h"
 #include "entitymanager.h"
+#include "namecomponent.h"
 #include <cmath> 
 #include "shapes.h"              
 #include <glm/gtc/matrix_transform.hpp>
@@ -65,7 +66,6 @@ namespace CrashoutsEngine {
 
         // Always inherit 
         const CEVec3 parentCol = GetAncestorColor(ecs, child);
-
         
         shapeComp->color.x = parentCol.x * parentComp->colorMul.x;
         shapeComp->color.y = parentCol.y * parentComp->colorMul.y;
@@ -96,7 +96,6 @@ namespace CrashoutsEngine {
     // Create a parent→child relationship
     void AttachChild(ECS& ecs, Entity parent, Entity child) {
         if (parent == 0 || child == 0 || parent == child) return;
-
    
         if (ecs.HasComponent<Component::ParentComponent>(child)) {
             auto* old = ecs.GetComponent<Component::ParentComponent>(child);
@@ -106,6 +105,7 @@ namespace CrashoutsEngine {
 
         auto* pointerParentComp = GetOrAddParent(ecs, child);
         pointerParentComp->parent = parent;
+        pointerParentComp->colorMul = { 1.f, 1.f, 1.f };
 
         if (ecs.HasComponent<TransformComponent>(parent) &&
             ecs.HasComponent<TransformComponent>(child)) {
@@ -171,10 +171,19 @@ namespace CrashoutsEngine {
             }
             kids->children.swap(unique);
 
-         
-            for (Entity c : kids->children) {
+            // Use a loop that allows erasure
+            for (auto it = kids->children.begin(); it != kids->children.end(); ) {
+                Entity c = *it;
+
+                if (!ecs.HasComponent<NameComponent>(c)) {
+                    it = kids->children.erase(it); // Remove dead ID and update iterator
+                    continue;
+                }
+
                 auto* pointerParentComp = GetOrAddParent(ecs, c);
                 pointerParentComp->parent = parent;
+
+                ++it; // Only increment if we didn't erase
             }
         }
 
@@ -220,7 +229,7 @@ namespace CrashoutsEngine {
             const float wy = parentTransform->position.y + (s * lx + c * ly);
             const float wz = parentTransform->position.z + pointerParentComp->localPos.z;
             childTransform->position = { wx, wy, wz };*/
-            ForceInheritColorFromParent(ecs, child);
+            if(ecs.HasComponent<ShapeComponent>(parent)) ForceInheritColorFromParent(ecs, child);
             };
 
         

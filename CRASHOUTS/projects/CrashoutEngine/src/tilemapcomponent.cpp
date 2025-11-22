@@ -109,7 +109,10 @@ namespace CrashoutsEngine::TileMapUtils {
         ECS* ecs = ECS::getInstance();
 
         for (std::map < std::pair<int, int>, Entity>::const_iterator c = map.colliderCache.begin(); c != map.colliderCache.end(); ++c) {
-            ecs->DestroyEntity(c->second);
+            Entity entityToDestroy = c->second;
+            // Remove the entity from its parent's list BEFORE destroying it
+            CrashoutsEngine::DetachChild(*ecs, entityToDestroy);
+            ecs->DestroyEntity(entityToDestroy);
         }
         map.colliderCache.clear();
 

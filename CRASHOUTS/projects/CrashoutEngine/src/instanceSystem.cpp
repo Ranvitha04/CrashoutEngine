@@ -1137,10 +1137,10 @@ void InstancingSystem::CreateInstancedRectangles(const CEVec3* positions, const 
         // Base vertices with positions and texture coordinates
         float base_vertices[] = {
             // positions        // texture coords
-            -0.5f, -0.5f, 0.0f,  0.0f, 1.0f, // bottom left
-             0.5f, -0.5f, 0.0f,  1.0f, 1.0f, // bottom right
-             0.5f,  0.5f, 0.0f,  1.0f, 0.0f, // top right
-            -0.5f,  0.5f, 0.0f,  0.0f, 0.0f  // top left
+            -0.5f, -0.5f, 0.0f,  0.0f, 0.0f, // bottom left  (UV 0,0)
+             0.5f, -0.5f, 0.0f,  1.0f, 0.0f, // bottom right (UV 1,0)
+             0.5f,  0.5f, 0.0f,  1.0f, 1.0f, // top right    (UV 1,1)
+            -0.5f,  0.5f, 0.0f,  0.0f, 1.0f  // top left     (UV 0,1)
         };
         std::array<GLushort, 6> base_indices{ 0, 1, 2, 0, 2, 3 };
 
@@ -1363,9 +1363,10 @@ void InstancingSystem::CreateInstancedTriangles(
 
     if (!s_triInstanceBuffersInitialized) {
         float base_vertices[] = {
-            -0.5f, -0.5f, 0.0f,  0.0f, 1.0f,
-             0.5f, -0.5f, 0.0f,  1.0f, 1.0f,
-             0.0f,  0.5f, 0.0f,  0.5f, 0.0f
+            // positions        // texture coords
+            -0.5f, -0.5f, 0.0f,  0.0f, 0.0f, // bottom left  (was 0, 1)
+             0.5f, -0.5f, 0.0f,  1.0f, 0.0f, // bottom right (was 1, 1)
+             0.0f,  0.5f, 0.0f,  0.5f, 1.0f  // top center   (was 0.5, 0)
         };
         std::array<GLushort, 3> base_indices{ 0, 1, 2 };
 
