@@ -1823,6 +1823,8 @@ namespace UI { // --------------------------------------------------------------
                 }
                 //MonoManager::ReloadScripts();
                 engineState = EngineState::STOP;
+
+				CrashoutsEngine::Audio::AudioSystem::instance().stopAll(true); // Stop FMOD Studio
             }
             ImGui::SameLine();
             // SAVE

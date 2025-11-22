@@ -6,7 +6,10 @@ namespace CrashoutsEngine
     {
         bool moveLeft;
         bool moveRight;
+        bool isMoving;
+        bool wasMoving;
         bool jump;
+
         /*SAMPLE TRIGGERS*/
         public void OnTriggerEnter(uint otherEntity) {
             //Console.WriteLine("Entered Inside Me BOUNCE");
@@ -33,6 +36,8 @@ namespace CrashoutsEngine
             //Entity.Add<TransformComponent>();
             // CollisionEvents.RegisterTriggerExit(Entity.ID, OnTriggerExit);
             // CollisionEvents.RegisterTriggerStay(Entity.ID, OnTriggerStay);
+
+            //AudioManager.GetInstance().Play("ambient");
         }
 
         public override void Update()
@@ -45,8 +50,17 @@ namespace CrashoutsEngine
             var tf = Entity.GetComponent<TransformComponent>();
             //if (rb == null) Console.WriteLine("[C#] rb is null");
             if (tf == null) Console.WriteLine("[C#] tf is null");
-
-
+            isMoving = moveLeft || moveRight;
+            if (isMoving && !wasMoving)
+            {
+                //Console.WriteLine("[C#] Player started moving -> Play footsteps");
+                AudioManager.GetInstance().Play("footsteps");
+            }
+            else if (!isMoving && wasMoving)
+            {
+                //Console.WriteLine("[C#] Player stopped moving -> Stop footsteps_loop");
+                AudioManager.GetInstance().Stop("footsteps");
+            }
             //if (Input.IsKeyPressed(Key.A))
             //{
             //    //Console.WriteLine($"[DEBUG] A pressed, rb ID = {rb.EntityID}, mass = {rb.GetMass()}");
@@ -87,7 +101,10 @@ namespace CrashoutsEngine
             }
             moveLeft = Input.IsKeyPressed(Key.A);
             moveRight = Input.IsKeyPressed(Key.D);
+
+            wasMoving = isMoving;
             jump = Input.IsKeyTriggered(Key.Space);
+
         }
 
         public override void FixedUpdate()

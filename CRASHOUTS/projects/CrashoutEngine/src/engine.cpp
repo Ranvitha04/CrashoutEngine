@@ -405,6 +405,7 @@ void Update(double const& dt) {
             FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Physics");
             physicsSystem.update(0.f);
         }
+
         // Process Editor Camera Input
 #if USE_IMGUI_EDITOR
         if(gameWinHovered) CrashoutsEngine::RenderCamera::EditorCameraInput();
