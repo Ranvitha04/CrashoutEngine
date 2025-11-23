@@ -18,6 +18,7 @@ __________________________________________________________________________*/
 #include "shapescomponent.h"
 #include "rigidbodycomponent.h"
 #include "transientcomponent.h"
+#include "layercomponent.h"
 #include "namecomponent.h"
 #include "assetmanager.h"
 #include "tilemapasset.h"
@@ -168,6 +169,8 @@ namespace CrashoutsEngine::TileMapUtils {
 			std::string name = "Tile (x:" + std::to_string(pos.first) + ",y:" + std::to_string(pos.second) + ")";
 			ecs->AddComponent<Component::NameComponent>(ent, name);
 
+			ecs->AddComponent<Component::LayerComponent>(ent, asset->GetLayerMask());
+
 			// Check if entity with tilemapcomponent has hierachy component
 			// if (!ecs->HasComponent<Component::ChildrenComponent>(parentEnt)) ecs->AddComponent<Component::ChildrenComponent>(parentEnt);
 
@@ -191,7 +194,7 @@ namespace CrashoutsEngine::TileMapUtils {
 				// Prepare common variables
 				float halfW = t.size.x * 0.5f;
 				float halfH = t.size.y * 0.5f;
-				CEVec3 pos = t.position;
+				CEVec3 tPos = t.position;
 				float rot = t.rotation;
 
 				std::unique_ptr<Collision::Collider> newCollider = nullptr;
@@ -204,7 +207,7 @@ namespace CrashoutsEngine::TileMapUtils {
 					case Collision::ColliderType::SPHERE: {
 						// Radius is usually half the width (or average of width/height)
 						float radius = std::min(halfW, halfH);
-						newCollider = std::make_unique<Collision::Sphere>(radius, pos);
+						newCollider = std::make_unique<Collision::Sphere>(radius, tPos);
 						helperT = Collision::SPHERE_T;
 						break;
 					}
@@ -212,8 +215,8 @@ namespace CrashoutsEngine::TileMapUtils {
 					// AABB (Axis Aligned Bounding Box)
 					// --------------------------------------------------------
 					case Collision::ColliderType::AABB: {
-						CEVec3 min{ pos.x - halfW, pos.y - halfH, 0.0f };
-						CEVec3 max{ pos.x + halfW, pos.y + halfH, 0.0f };
+						CEVec3 min{ tPos.x - halfW, tPos.y - halfH, 0.0f };
+						CEVec3 max{ tPos.x + halfW, tPos.y + halfH, 0.0f };
 						newCollider = std::make_unique<Collision::AABBRect>(min, max);
 						helperT = Collision::AABB_T;
 						break;
@@ -223,8 +226,8 @@ namespace CrashoutsEngine::TileMapUtils {
 					// --------------------------------------------------------
 					case Collision::ColliderType::OBB: {
 						// OBB needs min/max (usually unrotated or local) + rotation
-						CEVec3 min{ pos.x - halfW, pos.y - halfH, 0.0f };
-						CEVec3 max{ pos.x + halfW, pos.y + halfH, 0.0f };
+						CEVec3 min{ tPos.x - halfW, tPos.y - halfH, 0.0f };
+						CEVec3 max{ tPos.x + halfW, tPos.y + halfH, 0.0f };
 						newCollider = std::make_unique<Collision::OBBRect>(min, max, rot);
 						helperT = Collision::OBB_T;
 						break;
@@ -244,7 +247,7 @@ namespace CrashoutsEngine::TileMapUtils {
 						newCollider = std::make_unique<Collision::Polygon>(
 							std::initializer_list<CEVec3>{v1, v2, v3, v4},
 							rot,
-							pos
+							tPos
 						);
 						helperT = Collision::POLYGON_T;
 						break;

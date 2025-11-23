@@ -53,6 +53,7 @@ static void AddPhysicsEntity(CrashoutsEngine::Entity& entity, Component::RigidBo
 
 }
 
+#if 0
 static void AddPhysicsEntity2(CrashoutsEngine::Entity& entity, Component::RigidBodyComponent&& rigidBody,
 	Component::TransformComponent&& transform, Component::ShapeComponent&& shape, Component::Tag&& name) {
 
@@ -71,6 +72,7 @@ static void AddPhysicsEntity2(CrashoutsEngine::Entity& entity, Component::RigidB
 	globalECS->GetComponent<Component::RigidBodyComponent>(entity)->setInertia(globalECS->GetComponent<Component::ColliderComponent>(entity)->collider->calculateInertia(globalECS->GetComponent<Component::RigidBodyComponent>(entity)->getMass()));
 	
 }
+#endif
 
 static void AddObstacleEntity(CEVec3&& transform, CEVec2&& dimen, std::string&& tag) {
 	CrashoutsEngine::Entity e;

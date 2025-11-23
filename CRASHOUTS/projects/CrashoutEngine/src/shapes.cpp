@@ -112,7 +112,8 @@ namespace Component {
         };
 
         // CEColor Copy Constructor handles this
-        std::array<CEColor, 4> clr_vtx{ color, color, color, color };
+        CEVec3 rgbColor(color.x(), color.y(), color.z());
+        std::array<CEVec3, 4> clr_vtx{ rgbColor, rgbColor, rgbColor, rgbColor };
         std::array<GLushort, 6> idx_vtx{ 0, 1, 2, 0, 2, 3 };
 
         // 2. SETUP BUFFERS (with final vertex data)

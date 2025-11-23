@@ -394,7 +394,7 @@ namespace UI { // --------------------------------------------------------------
             }
         }
         ImGui::SeparatorText("Prefab Creator");
-        ImGui::Text("Entity Counter %d", ecs.GetComponentArray<NameComponent>().dense.size());
+        ImGui::Text("Entity Counter: %d", ecs.GetComponentArray<NameComponent>().dense.size());
         static char nameBuf[128] = { 0 };
         {
             auto names = Prefab::Names();

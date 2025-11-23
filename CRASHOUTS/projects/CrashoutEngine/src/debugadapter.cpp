@@ -103,6 +103,107 @@ namespace {
     };
 
     /*!
+    @brief Shared helper to draw a multi-select layer dropdown.
+    @param ecs Reference to ECS (needed to clean up components if a layer is deleted).
+    @param mask Reference to the bitmask integer to edit.
+    */
+    static void DrawLayerMultiSelect(ECS& ecs, unsigned int& mask) {
+        // Get the static map from LayerComponent
+        std::map<std::string, unsigned int>& layerMap = Component::LayerComponent::layers;
+
+        // --- 1. Build the Preview String ---
+        std::string preview = "";
+        int selectedCount = 0;
+
+        for (auto const& [name, bit] : layerMap) {
+            if (mask & bit) {
+                if (selectedCount > 0) preview += ", ";
+                preview += name;
+                selectedCount++;
+            }
+        }
+
+        if (selectedCount == 0) preview = "None";
+        else if (selectedCount > 2) preview = "Mixed...";
+
+        // --- 2. Draw the Multi-Select Dropdown ---
+        if (ImGui::BeginCombo("Layer Mask", preview.c_str())) {
+
+            std::string layerToRemove = "";
+
+            // --- 3. Draw Checkboxes ---
+            for (auto const& [name, bit] : layerMap) {
+                bool isSelected = (mask & bit) != 0;
+
+                float buttonWidth = 25.f;
+                float selectableWidth = ImGui::GetContentRegionAvail().x - buttonWidth - ImGui::GetStyle().ItemSpacing.x;
+
+                // Use DontClosePopups so we can click multiple items
+                if (ImGui::Selectable(name.c_str(), isSelected, ImGuiSelectableFlags_DontClosePopups, ImVec2(selectableWidth, 0))) {
+                    mask ^= bit; // Toggle bit
+                }
+
+                // Delete Button (Don't allow deleting Default)
+                if (name != "Default") {
+                    ImGui::SameLine();
+                    if (ImGui::Button(("X##Remove" + name).c_str(), ImVec2(buttonWidth, 0))) {
+                        layerToRemove = name;
+                    }
+                }
+            }
+
+            // --- 4. Removal Logic (Global removal) ---
+            if (!layerToRemove.empty()) {
+                unsigned int bitToRemove = layerMap[layerToRemove];
+                layerMap.erase(layerToRemove);
+
+                // Clear this bit from ALL entities in the world
+                // (This is why we need the ECS reference)
+                std::vector<LayerComponent>& layerComponents = ecs.GetComponentArray<LayerComponent>().dense;
+                for (LayerComponent& layer : layerComponents) {
+                    layer.currentLayer &= ~bitToRemove;
+                }
+
+                // Also clear it from the current mask being edited immediately
+                mask &= ~bitToRemove;
+            }
+
+            // --- 5. Add New Layer Logic ---
+            ImGui::Separator();
+            static char newLayerBuffer[64] = "";
+            if (ImGui::InputText("##NewLayer", newLayerBuffer, 64, ImGuiInputTextFlags_EnterReturnsTrue)) {
+                if (strlen(newLayerBuffer) > 0) {
+                    if (layerMap.find(newLayerBuffer) == layerMap.end()) {
+                        unsigned int nextBit = 1;
+                        if (!layerMap.empty()) {
+                            auto maxElement = std::max_element(layerMap.begin(), layerMap.end(),
+                                [](const auto& a, const auto& b) { return a.second < b.second; });
+                            nextBit = maxElement->second << 1;
+                        }
+                        layerMap.emplace(newLayerBuffer, nextBit);
+                    }
+                    newLayerBuffer[0] = '\0';
+                }
+            }
+            ImGui::SameLine();
+            if (ImGui::Button("Add")) {
+                if (strlen(newLayerBuffer) > 0 && layerMap.find(newLayerBuffer) == layerMap.end()) {
+                    unsigned int nextBit = 1;
+                    if (!layerMap.empty()) {
+                        auto maxElement = std::max_element(layerMap.begin(), layerMap.end(),
+                            [](const auto& a, const auto& b) { return a.second < b.second; });
+                        nextBit = maxElement->second << 1;
+                    }
+                    layerMap.emplace(newLayerBuffer, nextBit);
+                    newLayerBuffer[0] = '\0';
+                }
+            }
+
+            ImGui::EndCombo();
+        }
+    }
+
+    /*!
     @brief Adapter for editing Component::LayerComponent.
     @details Shows a drop down of layers to choose from and create
     */
@@ -120,128 +221,8 @@ namespace {
         }
         void drawInspector(ECS& ecs, Entity e) override {
             if (auto* c = ecs.GetComponent<Component::LayerComponent>(e)) {
-                // Get the static map
-                std::map<std::string, unsigned int>& layerMap = LayerComponent::layers;
-
-                // --- 1. Build the Preview String (using currentLayer) ---
-                std::string preview = "";
-                int selectedCount = 0;
-
-                // Use const& for iterating
-                for (auto const& [name, bit] : layerMap) {
-                    // Read from c->currentLayer
-                    if (c->currentLayer & bit) {
-                        if (selectedCount > 0) {
-                            preview += ", ";
-                        }
-                        preview += name;
-                        selectedCount++;
-                    }
-                }
-
-                if (selectedCount == 0) {
-                    preview = "Default";
-                }
-                else if (selectedCount > 2) {
-                    preview = "Mixed...";
-                }
-
-                // --- 2. Draw the Multi-Select Dropdown ---
-                if (ImGui::BeginCombo("Layers", preview.c_str())) {
-
-                    std::string layerToRemove = "";
-
-                    // --- 3. Draw Checkboxes for Each Layer (using currentLayer) ---
-                    for (auto const& [name, bit] : layerMap) {
-                        // Read from c->currentLayer
-                        bool isSelected = (c->currentLayer & bit) != 0;
-
-                        float buttonWidth = 25.f;
-                        float selectableWidth = ImGui::GetContentRegionAvail().x - buttonWidth - ImGui::GetStyle().ItemSpacing.x;
-
-                        if (ImGui::Selectable(name.c_str(), isSelected, ImGuiSelectableFlags_DontClosePopups,
-                            ImVec2(selectableWidth, 0))) {
-                            // Write to c->currentLayer
-                            c->currentLayer ^= bit;
-                        }
-
-                        if (name != "Default") {
-                            // Draw the Remove button next to the selectable
-                            ImGui::SameLine(); // Align to the right
-
-                            // Give the button a unique ID using the layer name
-                            if (ImGui::Button(("X##Remove" + name).c_str(), ImVec2(buttonWidth, 0))) {
-                                // Mark this layer for removal and break out of the loop
-                                layerToRemove = name;
-                                break;
-                            }
-                        }
-                    }
-
-                    // --- Removal Logic ---
-                    if (!layerToRemove.empty() && layerToRemove != "Default") {
-                        // Get bit to remove
-                        unsigned int bitToRemove = layerMap[layerToRemove];
-                        // Remove layer from static map
-                        layerMap.erase(layerToRemove);
-
-                        std::vector<LayerComponent>& layerComponents = ecs.GetComponentArray<LayerComponent>().dense;
-                        for (LayerComponent& layer : layerComponents) {
-                            layer.currentLayer &= ~bitToRemove;
-                        }
-                    }
-
-                    // --- 4. Draw the "Add New Layer" UI ---
-                    ImGui::Separator();
-
-                    static char newLayerBuffer[64] = "";
-
-                    if (ImGui::InputText("##NewLayer", newLayerBuffer, 64, ImGuiInputTextFlags_EnterReturnsTrue)) {
-                        if (strlen(newLayerBuffer) > 0) {
-
-                            // Check if layer already exists
-                            if (layerMap.find(newLayerBuffer) == layerMap.end()) {
-
-                                // Calculate the next available bit
-                                unsigned int nextBit = 1; // Default if map is empty
-                                if (!layerMap.empty()) {
-                                    // Find the largest bit value
-                                    auto maxElement = std::max_element(layerMap.begin(), layerMap.end(),
-                                        [](const auto& a, const auto& b) {
-                                            return a.second < b.second;
-                                        });
-                                    // The new bit is the largest one, shifted left
-                                    nextBit = maxElement->second << 1;
-                                }
-
-                                // Emplace with the correct arguments (string, bit)
-                                layerMap.emplace(newLayerBuffer, nextBit);
-                            }
-                            newLayerBuffer[0] = '\0';
-                        }
-                    }
-
-                    // Also add with a button
-                    ImGui::SameLine();
-                    if (ImGui::Button("Add")) {
-                        if (strlen(newLayerBuffer) > 0) {
-                            if (layerMap.find(newLayerBuffer) == layerMap.end()) {
-                                unsigned int nextBit = 1;
-                                if (!layerMap.empty()) {
-                                    auto maxElement = std::max_element(layerMap.begin(), layerMap.end(),
-                                        [](const auto& a, const auto& b) {
-                                            return a.second < b.second;
-                                        });
-                                    nextBit = maxElement->second << 1;
-                                }
-                                layerMap.emplace(newLayerBuffer, nextBit);
-                            }
-                            newLayerBuffer[0] = '\0';
-                        }
-                    }
-
-                    ImGui::EndCombo();
-                }
+                // Use the helper function!
+                DrawLayerMultiSelect(ecs, c->currentLayer);
             }
         }
     };
@@ -2187,6 +2168,10 @@ public class )" << file.stem().string() << R"(
 
                     // Scrollable list of rules
                     ImGui::BeginChild("RulesList", ImVec2(0, 0), true);
+
+                    // Layer option
+                    ImGui::Text("Layer Filter:");
+                    DrawLayerMultiSelect(ecs, asset->GetLayerMaskMutable());
 
                     auto& rules = asset->GetTilesMutable();
                     int ruleToDelete = -1;

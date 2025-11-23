@@ -1,4 +1,5 @@
 {
+    "layerMask": 2,
     "tilemap": [
         {
             "texAssetName": "Test\\Middle.png",
