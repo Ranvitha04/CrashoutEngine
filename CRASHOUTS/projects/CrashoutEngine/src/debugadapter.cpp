@@ -22,6 +22,7 @@ runtime-extensible and project-agnostic.
 #include <numeric>
 #include <fstream>
 #include "debugdefaults.h"
+#include "debugAssetLoader.h"
 #include "changevaluecommand.h"
 #include "undomanager.h"
 
@@ -64,29 +65,6 @@ using namespace CrashoutsEngine;
 using namespace Component;
 
 //----------------------------------------------------------------------------- file-local state & helpers
-
-namespace {
-    f32 max(f32 x1, f32 y2, f32 z3) {
-        return std::max(std::max(x1, y2), z3);
-    }
-
-    // Note to self: REFACTOR EVERYTHING LATER
-    enum class AssetKind : unsigned char {
-        Texture,
-        SpriteSheet,
-        Shader,
-        Audio,
-        Scene,
-        Prefab,
-        Unknown
-    };
-
-    struct AssetDragPayload {
-        AssetKind kind;
-        char      name[128];
-        char      relPath[256];
-    };
-}
 
 /*!
  @brief File-local adapters/providers and registration.

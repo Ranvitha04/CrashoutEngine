@@ -38,6 +38,7 @@ for Crashout Engine.
 #include "debugmenu.h"
 #include "debugreflection.h"
 #include "debugcollision.h"
+#include "debugAssetLoader.h"
 #include "frameratecontroller.h"
 #include "audioSystem.h"
 #include "prefab_init.h"  
@@ -160,12 +161,6 @@ namespace { //------------------------------------------------------------------
     // ============================================================
     //  Drag-and-drop payload description for asset browser
     // ============================================================
-    enum class AssetKind : uint8_t { Texture, SpriteSheet, Shader, Audio, Scene, Prefab, Unknown };
-    struct AssetDragPayload {
-        AssetKind kind{ AssetKind::Unknown };
-        char name[128]{};     // manifest/manager "name" (stem)
-        char relPath[256]{};  // relative path under assets/ (optional)
-    };
 
     static std::vector<std::string> gDroppedPaths;
 
