@@ -806,9 +806,8 @@ namespace UI { // --------------------------------------------------------------
                         {
                             
                             std::string rel = fs::relative(e.path(), fs::path(root)).generic_string();
-                            std::string full = std::string("assets/") + rel;   
 
-                            SpriteSheet_SetTexturePath(full.c_str());        
+                            SpriteSheet_SetTexturePath(rel.c_str());
                             ui.showSpriteSheet = true;                        
                         }
                     }
