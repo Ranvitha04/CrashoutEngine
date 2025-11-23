@@ -4,6 +4,7 @@
 @date        29/09/2025
 @brief       Implements function calls that run every frame for the scenes
 
+This file implements
 */
 
 #include "rendering.h"
@@ -17,7 +18,6 @@
 #include "rendererconnector.h"
 #include "sceneutils.h"
 #include "engine.h"
-#include "instanceSystem.h"
 
 #include "shapescomponent.h"
 #include "transformcomponent.h"
@@ -31,25 +31,114 @@
 
 #define FONT_SCALE 0.05f
 
-namespace UI {
+namespace Scene {
+
     using namespace Component;
-    using namespace CrashoutsEngine;
 
-    /*!
-    @brief      Renders all text components and handles the blinking cursor for focused inputs.
-    @param      globalECS Reference to the ECS system to retrieve components.
-    */
-    void RenderTextAndCursor(ECS& globalECS) {
-        Component::Rendering& renderer = Component::Rendering::Get();
+    void RenderScene(CrashoutsEngine::ECS& globalECS) {
+        using namespace CrashoutsEngine;
+        using Component::Rendering;
 
-        renderer.shdr_pgm->Use(); // Switch back to standard shader for text/UI
+        Rendering& renderer = Rendering::Get();
+        if (!renderer.shdr_pgm) return;
+
+        renderer.shdr_pgm->Use();
+
         renderer.shdr_pgm->SetUniform("uView", renderer.viewMatrix);
         renderer.shdr_pgm->SetUniform("uProjection", renderer.projectionMatrix);
 
+        // Collect all non-textured squares here
+        std::vector<CEVec3> instancedPos;
+        std::vector<CEVec3> instancedColor;
+        std::vector<float> instancedRot;
+        std::vector<float> instancedScales;
+
+        // Pre-allocate memory
+        const ECS::ComponentArray<ShapeComponent>& shapeArray = globalECS.GetComponentArray<ShapeComponent>();
+        //std::cout << shapeArray.dense.size() << std::endl;
+        // Reserve based on the total number of shapes as a rough estimate
+        size_t shapeSize{ shapeArray.dense.size() };
+        instancedPos.reserve(shapeSize);
+        instancedColor.reserve(shapeSize);
+        instancedRot.reserve(shapeSize);
+        instancedScales.reserve(shapeSize);
+
+        for (const Entity& id : shapeArray.indexToEntity) {
+            // Get entity number
+            TransformComponent* tf = globalECS.GetComponent<TransformComponent>(id);
+            ShapeComponent* sc = globalECS.GetComponent<ShapeComponent>(id);
+            // Can add more data to create rect like color etc
+            if (globalECS.HasComponent<ShapeComponent>(id)) {
+
+                CEVec3 pos{ 0,0,0 };
+                CEVec2 scale{ 1.f, 1.f };
+                float rot{ 0.f };
+                if (tf) {
+                    pos = tf->position;
+                    scale = tf->size;
+                    rot = tf->rotation;
+                }
+
+                // Strictly respect the ECS toggle
+                bool useTexture = sc->enableTexture;
+
+                if (useTexture) {
+                    using namespace Assets;
+                    TextureAsset* tex = Assets::AssetManager::GetInstance().Get<TextureAsset>(sc->textureName);
+                    if (tex) {
+                        tex->SetTextureMode(
+                            static_cast<TextureMode>(sc->wrapModeU),
+                            static_cast<TextureMode>(sc->wrapModeV)
+                        );
+                    }
+                }
+
+                switch (sc->type) {
+                    // ==========================================RECTANGLE===================================================
+                case ShapeType::Rectangle:
+                    if (useTexture) {
+                        Shapes::CreateTexturedRectangle(tf->size,
+                            sc->textureName, pos, rot, sc->color * (1 / 255.f), sc->uvSize, sc->isWorldSpace);
+                        break;
+                    }
+                    else {
+                        Shapes::CreateRectangle(tf->size,
+                            pos, rot, sc->color * (1 / 255.f), sc->isWorldSpace
+                        );
+                        break;
+                    }
+                    // ============================================LINE======================================================
+                case ShapeType::Line:
+                    Shapes::CreateLine(sc->p1 + pos, sc->p2 + pos, sc->thickness, sc->color * (1 / 255.f), sc->isWorldSpace); break;
+                    // ==========================================TRIANGLE====================================================
+                case ShapeType::Triangle:
+                    if (useTexture) {
+                        Shapes::CreateTexturedTriangle(tf->size, sc->textureName,
+                            pos, rot, sc->color * (1 / 255.f), sc->uvSize, sc->isWorldSpace
+                        );
+                        break;
+                    }
+                    else {
+                        Shapes::CreateTriangle(tf->size, pos,
+                            rot, sc->color * (1 / 255.f), sc->isWorldSpace
+                        );
+                        break;
+                    }
+                    // ==========================================CIRCLE======================================================
+                case ShapeType::Circle:
+                    Shapes::CreateCircle(tf->size, tf->position, 32, tf->rotation, sc->color * (1 / 255.f), sc->isWorldSpace); break;
+                }
+            }
+        }
+
+        // Perform instancing
+        int instancedCount = static_cast<int>(instancedPos.size());
+        if (instancedCount > 0) {
+
+        }
+
         // For Drawing Text Components
         const ECS::ComponentArray<TextComponent>& textArray = globalECS.GetComponentArray<TextComponent>();
-
-        // Ensure renderer exists
         if (!gTextRenderer) {
             gTextRenderer = std::make_unique<TextRenderer>();
         }
@@ -60,7 +149,6 @@ namespace UI {
                 TransformComponent* t = globalECS.GetComponent<TransformComponent>(id);
 
                 CEVec2 newOffset = CEVec2{ t->position.x + tc->offset.x, t->position.y + tc->offset.y };
-
                 // Modify Offset if UILayout Present
                 UILayoutComponent* u = globalECS.GetComponent<UILayoutComponent>(id);
                 if (u) {
@@ -112,7 +200,6 @@ namespace UI {
                             auto* text = globalECS.GetComponent<TextComponent>(id);
                             auto* transform = globalECS.GetComponent<TransformComponent>(id);
                             GLfloat startX = transform->position.x - (transform->size.x * 0.5f);
-
                             // 5. Calculate the cursor's baseline position
                             CEVec2 cursorPos = gTextRenderer.get()->GetCursorPosition(
                                 text->text,
@@ -156,15 +243,16 @@ namespace UI {
                         }
                     }
                 }
+
             }
         }
+
+        //CrashoutsEngine::Rendering::RenderTileMaps(globalECS);
     }
 
-    /*!
-    @brief      Updates button states (Hover, Pressed, Normal) and visual feedback.
-    @param      globalECS Reference to the ECS system.
-    */
-    void UpdateButtons(ECS& globalECS) {
+    void UpdateScene(CrashoutsEngine::ECS& globalECS) {
+        using namespace CrashoutsEngine;
+
         // Call UI items
         // Button objects
         const ECS::ComponentArray<ButtonComponent>& buttonArray = globalECS.GetComponentArray<ButtonComponent>();
@@ -181,10 +269,13 @@ namespace UI {
             CEVec2 aa{ t->position.x - halfW, t->position.y - halfH };
             CEVec2 bb{ t->position.x + halfW, t->position.y + halfH };
 
+            // std::cout << "aa is " << aa.x << ", " << aa.y << " bb is " << bb.x << ", " << bb.y << " mouse is " << mouseWorld.x << ", " << mouseWorld.y << std::endl;
+
             // Check if mouse pos within
             if (mouseWorld.x >= aa.x && mouseWorld.x <= bb.x && mouseWorld.y >= aa.y && mouseWorld.y <= bb.y) {
                 if (InputManager::IsMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT)) {
                     b->buttonState = ButtonState::PRESSED;
+                    // std::cout << globalECS.GetComponent<NameComponent>(id)->name << " button is pressed " << std::endl;
                     ShapeComponent* s = globalECS.GetComponent<ShapeComponent>(id);
                     TextComponent* text = globalECS.GetComponent<TextComponent>(id);
                     if (s) s->color = b->shapePressedColor;
@@ -212,22 +303,14 @@ namespace UI {
                 continue;
             }
         }
-    }
 
-    /*!
-    @brief      Updates text input focus logic and handles keyboard events for typing.
-    @param      globalECS Reference to the ECS system.
-    */
-    void UpdateInputs(ECS& globalECS) {
         // Text Input objects
         static Entity selectedTextInput = (Entity)-1;
         const ECS::ComponentArray<TextInputComponent>& textInputArray = globalECS.GetComponentArray<TextInputComponent>();
 
-        CEVec2 mouseWorld = InputManager::GetMouseWorldPos();
         bool clickedThisFrame = InputManager::IsMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT);
         Entity newSelection = (Entity)-1;
 
-        // 1. Detect clicks on input fields
         for (const Entity& id : textInputArray.indexToEntity) {
             TransformComponent* t = globalECS.GetComponent<TransformComponent>(id);
 
@@ -244,7 +327,7 @@ namespace UI {
             }
         }
 
-        // 2. Update the focus state
+        // Now, update the focus state
         if (clickedThisFrame) {
             if (selectedTextInput != -1 && selectedTextInput != newSelection) {
                 // Unfocus the *old* one
@@ -259,7 +342,6 @@ namespace UI {
             selectedTextInput = newSelection;
         }
 
-        // 3. Process Input for the selected field
         if (selectedTextInput != -1) {
             TextInputComponent* textInput = globalECS.GetComponent<TextInputComponent>(selectedTextInput);
             TextComponent* text = globalECS.GetComponent<TextComponent>(selectedTextInput);
@@ -317,194 +399,6 @@ namespace UI {
                 }
             }
         }
-    }
-}
-
-namespace Scene {
-
-    using namespace Component;
-
-    struct RenderBatch {
-        std::vector<CEVec3> positions;
-        std::vector<CEVec3> colors;
-        std::vector<float> rotations;
-        std::vector<float> scales;
-        // Specifics per shape
-        std::vector<float> dim1; // Width (Rect) or Side (Tri) or Radius (Circ)
-        std::vector<float> dim2; // Height (Rect) - unused for Tri/Circ
-
-        void Clear() {
-            positions.clear(); colors.clear(); rotations.clear();
-            scales.clear(); dim1.clear(); dim2.clear();
-        }
-
-        void Add(const CEVec3& pos, const CEVec3& col, float rot, float scale, float d1, float d2) {
-            positions.push_back(pos);
-            colors.push_back(col);
-            rotations.push_back(rot);
-            scales.push_back(scale);
-            dim1.push_back(d1);
-            dim2.push_back(d2);
-        }
-    };
-
-    // Maps TextureName -> Batch Data
-    std::unordered_map<std::string, RenderBatch> rectBatches;
-    std::unordered_map<std::string, RenderBatch> triBatches;
-    std::unordered_map<std::string, RenderBatch> circBatches;
-
-    void RenderScene(CrashoutsEngine::ECS& globalECS) {
-        using namespace CrashoutsEngine;
-        using Component::Rendering;
-
-        Rendering& renderer = Rendering::Get();
-        if (!renderer.shdr_pgm) return;
-
-        // 1. Setup Shader Global Uniforms
-        renderer.shdr_pgm_instanced.Use(); // Make sure to use the instanced shader!
-        renderer.shdr_pgm_instanced.SetUniform("uView", renderer.viewMatrix);
-        renderer.shdr_pgm_instanced.SetUniform("uProjection", renderer.projectionMatrix);
-
-        // 2. Clear previous frame batches
-        for (auto& kv : rectBatches) kv.second.Clear();
-        for (auto& kv : triBatches)  kv.second.Clear();
-        for (auto& kv : circBatches) kv.second.Clear();
-
-        // 3. Iterate ECS and Fill Batches
-        const ECS::ComponentArray<ShapeComponent>& shapeArray = globalECS.GetComponentArray<ShapeComponent>();
-
-        for (const Entity& id : shapeArray.indexToEntity) {
-            if (!globalECS.HasComponent<TransformComponent>(id)) continue;
-
-            TransformComponent* tf = globalECS.GetComponent<TransformComponent>(id);
-            ShapeComponent* sc = globalECS.GetComponent<ShapeComponent>(id);
-
-            // Determine Batch Key (Texture Name). Empty string "" means untextured.
-            std::string batchKey = sc->enableTexture ? sc->textureName : "";
-
-            // Prepare data
-            CEVec3 colorNorm = sc->color * (1.0f / 255.0f);
-
-            switch (sc->type) {
-            case ShapeType::Rectangle:
-                // If the key doesn't exist, map creates it automatically
-                rectBatches[batchKey].Add(
-                    tf->position, colorNorm, tf->rotation,
-                    1.0f, // Pass 1.0 scale, we send Size into W/H
-                    tf->size.x, tf->size.y // W, H
-                );
-                break;
-
-            case ShapeType::Triangle:
-                triBatches[batchKey].Add(
-                    tf->position, colorNorm, tf->rotation,
-                    1.0f,
-                    tf->size.x, // Side length (assuming equilateral based on size.x)
-                    0.0f
-                );
-                break;
-
-            case ShapeType::Circle:
-                circBatches[batchKey].Add(
-                    tf->position, colorNorm, tf->rotation,
-                    1.0f,
-                    tf->size.x * 0.5f, // Radius (half of width)
-                    0.0f
-                );
-                break;
-
-            case ShapeType::Line:
-                // Instancing lines is complex and not in your instanceSystem.
-                // Fallback to immediate mode for lines.
-                renderer.shdr_pgm->Use(); // Switch back to standard shader for lines
-                renderer.shdr_pgm->SetUniform("uView", renderer.viewMatrix);
-                renderer.shdr_pgm->SetUniform("uProjection", renderer.projectionMatrix);
-                Shapes::CreateLine(sc->p1 + tf->position, sc->p2 + tf->position, sc->thickness, colorNorm, sc->isWorldSpace);
-                renderer.shdr_pgm_instanced.Use(); // Switch back
-                break;
-            }
-        }
-
-        // 4. Render Batches
-
-        // --- Rectangles ---
-        for (auto& kv : rectBatches) {
-            if (kv.second.positions.empty()) continue;
-
-            InstancingSystem::InstancedParams params;
-            params.textured = !kv.first.empty();
-            params.textureName = kv.first;
-            params.tint = { 1,1,1 }; // Default tint
-            params.uvSize = { 1,1 };
-
-            InstancingSystem::RenderInstancedRectanglesBatch(
-                kv.second.positions.data(),
-                kv.second.colors.data(),
-                kv.second.rotations.data(),
-                kv.second.scales.data(),
-                kv.second.dim1.data(), // Widths
-                kv.second.dim2.data(), // Heights
-                static_cast<int>(kv.second.positions.size()),
-                params
-            );
-        }
-
-        // --- Triangles ---
-        for (auto& kv : triBatches) {
-            if (kv.second.positions.empty()) continue;
-
-            InstancingSystem::InstancedParams params;
-            params.textured = !kv.first.empty();
-            params.textureName = kv.first;
-            params.tint = { 1,1,1 };
-            params.uvSize = { 1,1 };
-
-            InstancingSystem::RenderInstancedTrianglesBatch(
-                kv.second.positions.data(),
-                kv.second.colors.data(),
-                kv.second.rotations.data(),
-                kv.second.scales.data(),
-                kv.second.dim1.data(), // Side lengths
-                static_cast<int>(kv.second.positions.size()),
-                params
-            );
-        }
-
-        // --- Circles ---
-        for (auto& kv : circBatches) {
-            if (kv.second.positions.empty()) continue;
-
-            InstancingSystem::InstancedParams params;
-            params.textured = !kv.first.empty();
-            params.textureName = kv.first;
-            params.tint = { 1,1,1 };
-            params.uvSize = { 1,1 };
-
-            InstancingSystem::RenderInstancedCirclesBatch(
-                kv.second.positions.data(),
-                kv.second.colors.data(),
-                kv.second.rotations.data(),
-                kv.second.scales.data(),
-                kv.second.dim1.data(), // Radii
-                static_cast<int>(kv.second.positions.size()),
-                32, // Segments
-                params
-            );
-        }
-
-        // 5. Draw Text / UI 
-        // Logic delegated to UI namespace for organization
-        UI::RenderTextAndCursor(globalECS);
-    }
-
-    void UpdateScene(CrashoutsEngine::ECS& globalECS) {
-        using namespace CrashoutsEngine;
-
-        // Delegate Button Logic
-        UI::UpdateButtons(globalECS);
-
-        // Delegate Input Field Logic
-        UI::UpdateInputs(globalECS);
     }
 
 }
