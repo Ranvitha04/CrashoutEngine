@@ -235,43 +235,72 @@ namespace CrashoutsEngine {
 
 			// --- Loading AUDIO ----
 			if (doc.HasMember("audio") && doc["audio"].IsArray()) {
-				std::cout << "Loading Audio Banks..." << std::endl;
+				using CrashoutsEngine::Audio::AudioSystem;
+				namespace fs = std::filesystem;
 
-				// Point FMOD to the *root audio folder* once (e.g. assets/audio)
-				CrashoutsEngine::Audio::AudioSystem::instance().init(rootAssetPath + "audio");
+				std::cout << "Loading audio (banks + raw)..." << std::endl;
 
-				const rapidjson::Value& audioArray = doc["audio"];
+				auto& audioSys = AudioSystem::instance();
+
+				// Point FMOD to assets/audio once
+				audioSys.init(rootAssetPath + "audio");
+
+				const auto& audioArray = doc["audio"];
+
+				// Collect paths
+				std::vector<std::string> bankPaths;
+				std::vector<std::string> rawPaths;
 
 				for (rapidjson::SizeType i = 0; i < audioArray.Size(); ++i) {
-					if (!audioArray[i].HasMember("path")) continue;
-					std::string rel = audioArray[i]["path"].GetString();
-					if (std::filesystem::path(rel).extension() != ".bank") continue;
+					if (!audioArray[i].HasMember("path"))
+						continue;
 
-					if (rel.find("Master.strings.bank") != std::string::npos) {
-						CrashoutsEngine::Audio::AudioSystem::instance().loadBank(rel);
-						std::cout << "Loaded FMOD bank: " << rel << std::endl;
+					std::string rel = audioArray[i]["path"].GetString();
+					fs::path p(rel);
+					std::string ext = p.extension().string();
+					std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+
+					if (ext == ".bank") {
+						bankPaths.push_back(rel);
+					}
+					else if (ext == ".wav" || ext == ".ogg" || ext == ".mp3") {
+						rawPaths.push_back(rel);
 					}
 				}
-				for (rapidjson::SizeType i = 0; i < audioArray.Size(); ++i) {
-					if (!audioArray[i].HasMember("path")) continue;
-					std::string rel = audioArray[i]["path"].GetString();
-					if (std::filesystem::path(rel).extension() != ".bank") continue;
 
+				// --- Load banks in proper order ---
+
+				// 1) Master.strings.bank
+				for (const auto& rel : bankPaths) {
+					if (rel.find("Master.strings.bank") != std::string::npos) {
+						bool ok = audioSys.loadBank(rel);
+						std::cout << (ok ? "Loaded FMOD bank: " : "FAILED to load FMOD bank: ") << rel << '\n';
+					}
+				}
+
+				// 2) Master.bank (but not strings)
+				for (const auto& rel : bankPaths) {
 					if (rel.find("Master.bank") != std::string::npos &&
 						rel.find("Master.strings.bank") == std::string::npos) {
-						CrashoutsEngine::Audio::AudioSystem::instance().loadBank(rel);
-						std::cout << "Loaded FMOD bank: " << rel << std::endl;
+						bool ok = audioSys.loadBank(rel);
+						std::cout << (ok ? "Loaded FMOD bank: " : "FAILED to load FMOD bank: ") << rel << '\n';
 					}
 				}
-				for (rapidjson::SizeType i = 0; i < audioArray.Size(); ++i) {
-					if (!audioArray[i].HasMember("path")) continue;
-					std::string rel = audioArray[i]["path"].GetString();
-					if (std::filesystem::path(rel).extension() != ".bank") continue;
 
-					if (rel.find("Master.bank") == std::string::npos) {
-						bool ok = CrashoutsEngine::Audio::AudioSystem::instance().loadBank(rel);
-						std::cout << (ok ? "Loaded FMOD bank: " : "FAILED to load FMOD bank: ") << rel << std::endl;
+				// 3) All other banks
+				for (const auto& rel : bankPaths) {
+					if (rel.find("Master.bank") == std::string::npos &&
+						rel.find("Master.strings.bank") == std::string::npos) {
+						bool ok = audioSys.loadBank(rel);
+						std::cout << (ok ? "Loaded FMOD bank: " : "FAILED to load FMOD bank: ") << rel << '\n';
 					}
+				}
+
+				// --- Register RAW audio files ---
+
+				for (const auto& rel : rawPaths) {
+					audioSys.registerRawAudio(rel); // rel is path relative to assets/audio
+					std::cout << "[Manifest] Registered RAW audio: " << rel << '\n';
 				}
 			}
 
@@ -500,14 +529,31 @@ namespace CrashoutsEngine {
 			// AUDIO (audio/)
 			if (folder == "audio")
 			{
-				if (ext == ".bank" || ext == ".ogg" || ext == ".wav" || ext == ".mp3")
+				// rel is something like "audio/Music/Menu.wav"
+				std::string relStr = rel.generic_string();
+
+				std::string extLow = ext;
+				std::transform(extLow.begin(), extLow.end(), extLow.begin(), ::tolower);
+
+				// BANKS -> load FMOD Studio bank
+				if (extLow == ".bank")
 				{
-					std::string relPath = rel.string(); // FMOD expects relative path
-					bool ok = CrashoutsEngine::Audio::AudioSystem::instance().loadBank(relPath);
-					std::cout << (ok ? "[SingleAsset] Loaded FMOD bank: "
-						: "[SingleAsset] FAILED FMOD bank: ")
-						<< relPath << "\n";
+					bool ok = CrashoutsEngine::Audio::AudioSystem::instance().loadBank(relStr);
+					std::cout << (ok ? "[SingleAsset] Loaded FMOD bank: ": "[SingleAsset] FAILED FMOD bank: ") << relStr << "\n";
 				}
+				// RAW AUDIO -> register only (no loadBank)
+				else if (extLow == ".wav" || extLow == ".ogg" || extLow == ".mp3")
+				{
+					// Strip "audio/" so your panel & C# use "Music/Menu.wav" style
+					std::string relAudio = relStr;
+					const std::string prefix = "audio/";
+					if (relAudio.rfind(prefix, 0) == 0)
+						relAudio = relAudio.substr(prefix.size());
+
+					CrashoutsEngine::Audio::AudioSystem::instance().registerRawAudio(relAudio);
+					std::cout << "[SingleAsset] Registered RAW audio: " << relAudio << "\n";
+				}
+
 				return;
 			}
 

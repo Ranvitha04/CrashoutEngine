@@ -6,7 +6,31 @@ public class AudioManager
 {
     public static AudioManager Instance { get; } = new AudioManager();
 
-    private AudioManager() { }
+    private AudioManager() {
+        RegisterSound(
+                "ambient", // key you use in Play("ambient")
+                "assets/audio/Nightshift BGM_Loop_70bpm.wav",
+                1.0f, // base volume
+                true, // loop? (ambient usually yes)
+                SoundType.Music // it's music, not SFX
+            );
+
+        RegisterSound(
+                "footsteps",
+                "assets/audio/Footsteps2_Gravel-Dirt_far-small_1.wav",
+                1.0f, // base volume
+                true, // loop?
+                SoundType.Music // it's music, not SFX SFX DOESNT WORK LMAO
+            );
+
+        /*RegisterSound(
+                "ambient",
+                "assets/audio/Nightshift BGM_Loop_70bpm.wav",
+                1.0f,
+                true,
+                SoundType.Music
+            );*/
+    }
 
     public static AudioManager GetInstance()
     {

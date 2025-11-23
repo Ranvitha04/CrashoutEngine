@@ -23,6 +23,10 @@
         {
             "name": "Squishy-Movement_1 (1)",
             "path": "banks\\Squishy-Movement_1 (1).wav"
+        },
+        {
+            "name": "Footsteps2_Gravel-Dirt_far-small_1",
+            "path": "Footsteps2_Gravel-Dirt_far-small_1.wav"
         }
     ],
     "fonts": [
