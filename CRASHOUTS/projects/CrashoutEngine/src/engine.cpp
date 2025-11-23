@@ -236,11 +236,115 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
 #if USE_IMGUI_EDITOR
     // 1. Start the Dear ImGui frame
     UI::BeginFrame();
+    const float titleBarHeight = 36.0f;
+    {
+        ImGuiViewport* viewport = ImGui::GetMainViewport();
+
+        ImGui::SetNextWindowPos(viewport->Pos);
+        ImGui::SetNextWindowSize(ImVec2(viewport->Size.x, titleBarHeight));
+        ImGui::SetNextWindowViewport(viewport->ID);
+
+        ImGuiWindowFlags flags =
+            ImGuiWindowFlags_NoDecoration |
+            ImGuiWindowFlags_NoDocking |
+            ImGuiWindowFlags_NoMove |
+            ImGuiWindowFlags_NoSavedSettings |
+            ImGuiWindowFlags_NoScrollbar |
+            ImGuiWindowFlags_NoScrollWithMouse;
+
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(8, 8));
+        ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(6, 4));
+        ImGui::PushStyleColor(ImGuiCol_WindowBg, IM_COL32(25, 25, 25, 255));
+
+        ImGui::Begin("##TitleBarOverlay", nullptr, flags);
+
+        // Title text
+        ImGui::SetCursorPosY((titleBarHeight - ImGui::GetTextLineHeight()) * 0.5f);
+        ImGui::Text("CRASHOUTS ENGINE");
+
+        // Right-aligned buttons
+        ImGui::SameLine(ImGui::GetWindowWidth() - 3 * 28 - 12);
+
+        if (ImGui::Button("_", ImVec2(28, 24)))
+            glfwIconifyWindow(GLApp::ptr_window);
+
+        ImGui::SameLine();
+
+        static bool fullscreen = true;
+        if (ImGui::Button(fullscreen ? "[ ]" : "[]", ImVec2(28, 24)))
+        {
+            GLFWmonitor* mon = glfwGetPrimaryMonitor();
+            const GLFWvidmode* mode = glfwGetVideoMode(mon);
+
+            int mx, my;
+            glfwGetMonitorPos(mon, &mx, &my);
+
+            if (!fullscreen) {
+                glfwSetWindowAttrib(GLApp::ptr_window, GLFW_DECORATED, GLFW_FALSE);
+                glfwSetWindowMonitor(GLApp::ptr_window, NULL, mx, my, mode->width, mode->height, 0);
+            }
+            else {
+                glfwSetWindowAttrib(GLApp::ptr_window, GLFW_DECORATED, GLFW_FALSE);
+                glfwSetWindowMonitor(GLApp::ptr_window, NULL, 100, 100, 1600, 900, 0);
+            }
+            fullscreen = !fullscreen;
+        }
+
+        ImGui::SameLine();
+
+        if (ImGui::Button("X", ImVec2(28, 24)))
+            glfwSetWindowShouldClose(GLApp::ptr_window, true);
+
+		// dragging is stupidly bugged but whatever - Rain
+        static bool draggingWindow = false;
+        static ImVec2 dragStartMouse;
+        static ImVec2 dragStartPos;
+
+        float buttonsWidth = 3 * 28 + 12;
+        ImVec2 titlebarMin = ImGui::GetWindowPos();
+        ImVec2 titlebarMax = ImVec2(
+            titlebarMin.x + ImGui::GetWindowWidth() - buttonsWidth,
+            titlebarMin.y + titleBarHeight
+        );
+
+        bool mouseInTitleBar = ImGui::IsMouseHoveringRect(titlebarMin, titlebarMax);
+        bool leftDown = ImGui::IsMouseDown(ImGuiMouseButton_Left);
+
+        if (mouseInTitleBar && leftDown && !draggingWindow && !ImGui::IsAnyItemHovered())
+        {
+            draggingWindow = true;
+            dragStartMouse = ImGui::GetMousePos();
+
+            int x, y;
+            glfwGetWindowPos(GLApp::ptr_window, &x, &y);
+            dragStartPos = ImVec2((float)x, (float)y);
+        }
+
+        if (draggingWindow)
+        {
+            ImVec2 diff = ImVec2(ImGui::GetMousePos().x - dragStartMouse.x,ImGui::GetMousePos().y - dragStartMouse.y);
+
+            glfwSetWindowPos(GLApp::ptr_window,(int)(dragStartPos.x + diff.x),(int)(dragStartPos.y + diff.y));
+
+            if (!leftDown)
+            {
+                draggingWindow = false;
+            }
+        }
+
+        ImGui::End();
+        ImGui::PopStyleColor();
+        ImGui::PopStyleVar(2);
+    }
 
     // 2. Setup Dockspace 
     ImGuiViewport* viewport = ImGui::GetMainViewport();
-    ImGui::SetNextWindowPos(viewport->WorkPos);
-    ImGui::SetNextWindowSize(viewport->WorkSize);
+    ImVec2 dockPos = ImVec2(viewport->Pos.x, viewport->Pos.y + titleBarHeight);
+    ImVec2 dockSize = ImVec2(viewport->Size.x, viewport->Size.y - titleBarHeight);
+    /*ImGui::SetNextWindowPos(viewport->WorkPos);
+    ImGui::SetNextWindowSize(viewport->WorkSize);*/
+	ImGui::SetNextWindowPos(dockPos);
+	ImGui::SetNextWindowSize(dockSize);
     ImGui::SetNextWindowViewport(viewport->ID);
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
     ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
