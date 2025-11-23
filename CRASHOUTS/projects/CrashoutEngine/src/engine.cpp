@@ -56,6 +56,8 @@ context and implement a game loop.
 #include "registergamestate.h"
 #include "settings.h"
 #include <filesystem>
+
+#include "imgui_internal.h"
 /*                                                   type declarations
 ----------------------------------------------------------------------------- */
 
@@ -232,11 +234,39 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
     
     // Unbind FBO
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    auto DrawTitleButton = [&](const char* label)
+        {
+            ImFont* mono = ImGui::GetIO().Fonts->Fonts[0]; // first baked font is monospace
+            ImGui::PushFont(mono);
+
+            float btnW = 32.0f;
+            float btnH = 28.0f;
+
+            ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
+            ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 0.0f);
+            ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));
+            ImGui::PushStyleColor(ImGuiCol_Button, IM_COL32(40, 40, 40, 255));
+            ImGui::PushStyleColor(ImGuiCol_ButtonHovered, IM_COL32(60, 60, 60, 255));
+            ImGui::PushStyleColor(ImGuiCol_ButtonActive, IM_COL32(80, 80, 80, 255));
+            ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(220, 220, 220, 255));
+
+            ImGui::Button(label, ImVec2(btnW, btnH));
+
+            bool clicked = ImGui::IsItemClicked();
+
+            ImGui::PopStyleColor(4);
+            ImGui::PopStyleVar(3);
+            ImGui::PopFont();
+
+
+            return clicked;
+        };
 
 #if USE_IMGUI_EDITOR
     // 1. Start the Dear ImGui frame
     UI::BeginFrame();
-    const float titleBarHeight = 36.0f;
+    //goddamn lobotomy
+    const float titleBarHeight = 30.0f;
     {
         ImGuiViewport* viewport = ImGui::GetMainViewport();
 
@@ -262,16 +292,20 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
         ImGui::SetCursorPosY((titleBarHeight - ImGui::GetTextLineHeight()) * 0.5f);
         ImGui::Text("CRASHOUTS ENGINE");
 
-        // Right-aligned buttons
-        ImGui::SameLine(ImGui::GetWindowWidth() - 3 * 28 - 12);
+        // Right aligned buttons
+        float buttonRightOffset = 10.0f;
+        float buttonArea = 3 * 32;    // three 32px buttons
+        ImGui::SameLine(ImGui::GetWindowWidth() - buttonArea - buttonRightOffset);
 
-        if (ImGui::Button("_", ImVec2(28, 24)))
+		// minimize
+        if (DrawTitleButton("-"))
             glfwIconifyWindow(GLApp::ptr_window);
 
-        ImGui::SameLine();
+        ImGui::SameLine(0.0f, 0.0f);
 
+        // fullscreen
         static bool fullscreen = true;
-        if (ImGui::Button(fullscreen ? "[ ]" : "[]", ImVec2(28, 24)))
+        if (DrawTitleButton(fullscreen ? "[ ]" : "[]"))
         {
             GLFWmonitor* mon = glfwGetPrimaryMonitor();
             const GLFWvidmode* mode = glfwGetVideoMode(mon);
@@ -290,12 +324,15 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
             fullscreen = !fullscreen;
         }
 
-        ImGui::SameLine();
 
-        if (ImGui::Button("X", ImVec2(28, 24)))
+        ImGui::SameLine(0.0f, 0.0f);
+
+        //close
+        if (DrawTitleButton("X"))
             glfwSetWindowShouldClose(GLApp::ptr_window, true);
 
 		// dragging is stupidly bugged but whatever - Rain
+		// YEAHHHHH ITS FIXED
         // Disable dragging in fullscreen
         if (!fullscreen)
         {
@@ -403,6 +440,7 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
 
     // End the ImGui frame and render draw data
     UI::EndFrame();
+
 
 #else
 
