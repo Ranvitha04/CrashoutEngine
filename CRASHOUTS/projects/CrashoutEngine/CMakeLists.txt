@@ -37,6 +37,7 @@ file(GLOB_RECURSE math_include_files
 "${project_dir}/include/CEMath.h"
 "${project_dir}/include/CEMtx33.h"
 "${project_dir}/include/CETypes.h"
+"${project_dir}/include/CEColor.h"
 "${project_dir}/include/CEVec2.h"
 "${project_dir}/include/CEVec3.h")
 
@@ -86,6 +87,9 @@ source_group("include\\Resources"     FILES ${resource_include_files})
 
 source_group("src\\Debug"     FILES ${debug_src_files})
 source_group("include\\Debug"     FILES ${debug_include_files})
+
+source_group("src\\Bindings"     FILES ${binding_src_files})
+source_group("include\\Bindings"     FILES ${binding_include_files})
 
 source_group("include\\Messaging"     FILES ${message_include_files})
         
