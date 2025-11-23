@@ -113,7 +113,7 @@ void UpdateGameStateManager() {
     if (CurrentDescriptor) {
         //if (CurrentDescriptor->Update) CurrentDescriptor->Update();
         //if (CurrentDescriptor->Render) CurrentDescriptor->Render();
-        glClearColor(0.1f, 0.2f, 0.4f, 1.0f);
+        glClearColor(0.10f, 0.10f, 0.10f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 }

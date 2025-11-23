@@ -296,39 +296,49 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
             glfwSetWindowShouldClose(GLApp::ptr_window, true);
 
 		// dragging is stupidly bugged but whatever - Rain
-        static bool draggingWindow = false;
-        static ImVec2 dragStartMouse;
-        static ImVec2 dragStartPos;
-
-        float buttonsWidth = 3 * 28 + 12;
-        ImVec2 titlebarMin = ImGui::GetWindowPos();
-        ImVec2 titlebarMax = ImVec2(
-            titlebarMin.x + ImGui::GetWindowWidth() - buttonsWidth,
-            titlebarMin.y + titleBarHeight
-        );
-
-        bool mouseInTitleBar = ImGui::IsMouseHoveringRect(titlebarMin, titlebarMax);
-        bool leftDown = ImGui::IsMouseDown(ImGuiMouseButton_Left);
-
-        if (mouseInTitleBar && leftDown && !draggingWindow && !ImGui::IsAnyItemHovered())
+        // Disable dragging in fullscreen
+        if (!fullscreen)
         {
-            draggingWindow = true;
-            dragStartMouse = ImGui::GetMousePos();
+            static bool draggingWindow = false;
+            static POINT cursorStart;
+            static int winStartX, winStartY;
 
-            int x, y;
-            glfwGetWindowPos(GLApp::ptr_window, &x, &y);
-            dragStartPos = ImVec2((float)x, (float)y);
-        }
+            float buttonsWidth = 3 * 28 + 12;
+            ImVec2 titlebarMin = ImGui::GetWindowPos();
+            ImVec2 titlebarMax = ImVec2(
+                titlebarMin.x + ImGui::GetWindowWidth() - buttonsWidth,
+                titlebarMin.y + titleBarHeight
+            );
 
-        if (draggingWindow)
-        {
-            ImVec2 diff = ImVec2(ImGui::GetMousePos().x - dragStartMouse.x,ImGui::GetMousePos().y - dragStartMouse.y);
+            bool mouseInTitleBar = ImGui::IsMouseHoveringRect(titlebarMin, titlebarMax);
+            bool leftDown = ImGui::IsMouseDown(ImGuiMouseButton_Left);
 
-            glfwSetWindowPos(GLApp::ptr_window,(int)(dragStartPos.x + diff.x),(int)(dragStartPos.y + diff.y));
-
-            if (!leftDown)
+            // Start drag
+            if (mouseInTitleBar && leftDown && !draggingWindow && !ImGui::IsAnyItemHovered())
             {
-                draggingWindow = false;
+                draggingWindow = true;
+
+                // Get initial cursor position (WIN32 absolute)
+                GetCursorPos(&cursorStart);
+
+                glfwGetWindowPos(GLApp::ptr_window, &winStartX, &winStartY);
+            }
+
+            // Dragging
+            if (draggingWindow)
+            {
+                POINT cursorNow;
+                GetCursorPos(&cursorNow);
+
+                int dx = cursorNow.x - cursorStart.x;
+                int dy = cursorNow.y - cursorStart.y;
+
+                glfwSetWindowPos(GLApp::ptr_window,
+                    winStartX + dx,
+                    winStartY + dy);
+
+                if (!leftDown)
+                    draggingWindow = false;
             }
         }
 
