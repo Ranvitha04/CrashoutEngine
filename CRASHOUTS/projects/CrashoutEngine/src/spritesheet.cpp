@@ -160,9 +160,9 @@ namespace UI
             stem = base.substr(0, dot);
 
 
-        fs::path outDir = "././projects/Descent/assets/spritesheet/";
-        fs::create_directories(outDir);           
-        std::string prefix = (outDir / stem).generic_string() + "_";
+        std::string outDir = "../../../projects/Descent/assets/spritesheet/";
+        std::string prefix = outDir + stem + "_";
+
 
 
 
@@ -231,10 +231,26 @@ namespace UI
 
        
         ImGui::InputText("Texture path", gSpritePath, IM_ARRAYSIZE(gSpritePath));
-        ImGui::InputInt("Rows", &gRows);
-        ImGui::InputInt("Cols", &gCols);
-        gRows = std::max(gRows, 1);
-        gCols = std::max(gCols, 1);
+
+        ImGui::InputInt("Tile width (px)", &gTileW);
+        ImGui::InputInt("Tile height (px)", &gTileH);
+        gTileW = std::max(gTileW, 1);
+        gTileH = std::max(gTileH, 1);
+
+        
+        int sheetW = 0, sheetH = 0, channels = 0;
+        if (stbi_info(gSpritePath, &sheetW, &sheetH, &channels)) {
+            gCols = std::max(1, sheetW / gTileW);
+            gRows = std::max(1, sheetH / gTileH);
+
+            ImGui::Text("Sheet %d x %d -> %d cols x %d rows",
+                sheetW, sheetH, gCols, gRows);
+        }
+        else {
+            ImGui::TextColored(ImVec4(1, 0.3f, 0.3f, 1),
+                "Could not read image info.");
+        }
+
         if (ImGui::Button("Export tiles to PNGs")) {
             ExportCurrentSpritesheetToPNGs();
             {
