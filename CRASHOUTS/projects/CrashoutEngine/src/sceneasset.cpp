@@ -39,6 +39,8 @@
 #include "collidercomponent.h"
 #include "layercomponent.h"
 #include "tilemapcomponent.h"
+#include "hierarchy_components.h"
+#include "transientcomponent.h"
 
 // FOR GAME GUI
 #include "buttoncomponent.h"
@@ -161,7 +163,9 @@ namespace CrashoutsEngine {
             const char* const TEXT_INPUT_COMPONENT      = "textinput";
             const char* const UI_LAYOUT_COMPONENT       = "uilayout";
             // POST PROCESSING ITEMS
-            const char* const PP_COMPONENT       = "postprocessing";
+            const char* const PP_COMPONENT              = "postprocessing";
+            // HIERACHY ITEMS
+            const char* const PARENT_COMPONENT          = "parent";
         }
 
         /*!
@@ -225,6 +229,13 @@ namespace CrashoutsEngine {
             const rapidjson::Value& entitiesArray = doc[Keys::ENTITIES];
 
             ECS& gECS = *ECS::getInstance();
+
+            // Helper struct to link parents after all entities are created
+            struct ParentLinkRequest {
+                Entity childEntity;
+                std::string parentName;
+            };
+            std::vector<ParentLinkRequest> parentLinksToProcess;
 
             for (rapidjson::SizeType i = 0; i < entitiesArray.Size(); ++i) {
                 /*Utility*/
@@ -649,8 +660,8 @@ namespace CrashoutsEngine {
                         // Use HasMember check for safety
                         if (colorVal.HasMember("x")) color.x() = colorVal["x"].GetFloat();
                         if (colorVal.HasMember("y")) color.y() = colorVal["y"].GetFloat();
-                        if (colorVal.HasMember("z")) color.w() = colorVal["w"].GetFloat();
-                        if (colorVal.HasMember("w")) color.z() = colorVal["z"].GetFloat();
+                        if (colorVal.HasMember("z")) color.z() = colorVal["z"].GetFloat();
+                        if (colorVal.HasMember("w")) color.w() = colorVal["w"].GetFloat();
                         b.textNormalColor = color;
                     }
 
@@ -772,7 +783,7 @@ namespace CrashoutsEngine {
                     TileMapComponent& tm = gECS.AddComponent<TileMapComponent>(newEntity);
                     const rapidjson::Value& tmValue = entityValue[Keys::TILEMAP_COMPONENT];
 
-                    // --- Set Defaults as requested ---
+                    // --- Set Defaults ---
                     tm.activeAsset = "none";
                     tm.pOpen = false;
                     tm.isCacheDirty = true;
@@ -820,6 +831,85 @@ namespace CrashoutsEngine {
                     }
                 }
 
+                // Check if ParentComponent
+                if (entityValue.HasMember(Keys::PARENT_COMPONENT) && entityValue[Keys::PARENT_COMPONENT].IsObject()) {
+                    const rapidjson::Value& pVal = entityValue[Keys::PARENT_COMPONENT];
+
+                    // Create the component on the child
+                    Component::ParentComponent& pc = gECS.AddComponent<Component::ParentComponent>(newEntity);
+
+                    // 1. Queue the link request
+                    if (pVal.HasMember("parentName") && pVal["parentName"].IsString()) {
+                        ParentLinkRequest req;
+                        req.childEntity = newEntity;
+                        req.parentName = pVal["parentName"].GetString();
+                        parentLinksToProcess.push_back(req);
+                    }
+
+                    // 2. Load Local Data
+                    if (pVal.HasMember("localPos") && pVal["localPos"].IsObject()) {
+                        pc.localPos.x = pVal["localPos"]["x"].GetFloat();
+                        pc.localPos.y = pVal["localPos"]["y"].GetFloat();
+                        pc.localPos.z = pVal["localPos"]["z"].GetFloat();
+                    }
+                    if (pVal.HasMember("localRot") && pVal["localRot"].IsFloat()) {
+                        pc.localRot = pVal["localRot"].GetFloat();
+                    }
+                    if (pVal.HasMember("localScale") && pVal["localScale"].IsObject()) {
+                        pc.localScale.x = pVal["localScale"]["x"].GetFloat();
+                        pc.localScale.y = pVal["localScale"]["y"].GetFloat();
+                    }
+                    if (pVal.HasMember("inheritColor") && pVal["inheritColor"].IsBool()) {
+                        pc.inheritColor = pVal["inheritColor"].GetBool();
+                    }
+                    if (pVal.HasMember("colorMul") && pVal["colorMul"].IsObject()) {
+                        pc.colorMul.x() = pVal["colorMul"]["x"].GetFloat();
+                        pc.colorMul.y() = pVal["colorMul"]["y"].GetFloat();
+                        pc.colorMul.z() = pVal["colorMul"]["z"].GetFloat();
+                        pc.colorMul.w() = pVal["colorMul"]["w"].GetFloat();
+                    }
+                }
+            }
+        
+            // =========================================================
+            // POST-LOAD: Reconstruct Hierarchy Links
+            // =========================================================
+            // We need to find the entity ID for every parentName we saved.
+            // Since NameComponent isn't usually a map, we iterate (or you can build a temporary map for speed).
+
+            // Optimization: Build a map of Name -> EntityID for the loaded scene
+            std::unordered_map<std::string, Entity> nameToEntityMap;
+            const auto& nameArr = gECS.GetComponentArray<NameComponent>();
+            for (Entity e : nameArr.indexToEntity) {
+                if (gECS.HasComponent<NameComponent>(e)) {
+                    nameToEntityMap[gECS.GetComponent<NameComponent>(e)->name] = e;
+                }
+            }
+
+            for (const auto& req : parentLinksToProcess) {
+                auto it = nameToEntityMap.find(req.parentName);
+                if (it != nameToEntityMap.end()) {
+                    Entity parentEntity = it->second;
+
+                    // 1. Set the ID in the child's ParentComponent
+                    if (gECS.HasComponent<Component::ParentComponent>(req.childEntity)) {
+                        gECS.GetComponent<Component::ParentComponent>(req.childEntity)->parent = parentEntity;
+                    }
+
+                    // 2. Add to parent's ChildrenComponent
+                    // We manually do this instead of calling AttachChild to avoid re-calculating 
+                    // the local transforms (since we just loaded the correct local values from file).
+                    if (!gECS.HasComponent<Component::ChildrenComponent>(parentEntity)) {
+                        gECS.AddComponent<Component::ChildrenComponent>(parentEntity);
+                    }
+
+                    auto* childComp = gECS.GetComponent<Component::ChildrenComponent>(parentEntity);
+                    childComp->children.push_back(req.childEntity);
+                }
+                else {
+                    std::cout << "WARNING: Could not find parent '" << req.parentName
+                        << "' for child Entity " << req.childEntity << std::endl;
+                }
             }
         }
 
@@ -923,9 +1013,8 @@ namespace CrashoutsEngine {
             // Cycle through entities
             for (Entity const& id : gECS.GetComponentArray<Component::NameComponent>().indexToEntity) {
 
-                // Save name component data into document
+                if (gECS.HasComponent<TransientComponent>(id)) continue;
 
-                // Save transform component data into document if it exists
                 rapidjson::Value entityValue(rapidjson::kObjectType);
 
                 // =========================================================
@@ -1396,6 +1485,55 @@ namespace CrashoutsEngine {
                     // Note: We do NOT save pOpen, isCacheDirty, or renderCache as these are runtime/editor only.
 
                     entityValue.AddMember(rapidjson::StringRef(Keys::TILEMAP_COMPONENT), tmValue, allocator);
+                }
+
+                // =========================================================
+                // P. ParentComponent
+                // =========================================================
+                if (gECS.HasComponent<Component::ParentComponent>(id)) {
+                    const Component::ParentComponent& parentComp = *gECS.GetComponent<Component::ParentComponent>(id);
+
+                    // Only save if there is a valid parent
+                    if (parentComp.parent != 0) {
+                        rapidjson::Value parentValue(rapidjson::kObjectType);
+
+                        // 1. Save Parent Name (Critical for linking back up)
+                        // We assume the parent MUST have a NameComponent
+                        if (gECS.HasComponent<NameComponent>(parentComp.parent)) {
+                            std::string pName = gECS.GetComponent<NameComponent>(parentComp.parent)->name;
+                            rapidjson::Value pNameVal(pName.c_str(), allocator);
+                            parentValue.AddMember("parentName", pNameVal, allocator);
+                        }
+
+                        // 2. Local Position
+                        rapidjson::Value localPosVal(rapidjson::kObjectType);
+                        localPosVal.AddMember("x", parentComp.localPos.x, allocator);
+                        localPosVal.AddMember("y", parentComp.localPos.y, allocator);
+                        localPosVal.AddMember("z", parentComp.localPos.z, allocator);
+                        parentValue.AddMember("localPos", localPosVal, allocator);
+
+                        // 3. Local Rotation
+                        parentValue.AddMember("localRot", parentComp.localRot, allocator);
+
+                        // 4. Local Scale
+                        rapidjson::Value localScaleVal(rapidjson::kObjectType);
+                        localScaleVal.AddMember("x", parentComp.localScale.x, allocator);
+                        localScaleVal.AddMember("y", parentComp.localScale.y, allocator);
+                        parentValue.AddMember("localScale", localScaleVal, allocator);
+
+                        // 5. Color Inheritance
+                        parentValue.AddMember("inheritColor", parentComp.inheritColor, allocator);
+
+                        // 6. Color Multiplier
+                        rapidjson::Value colVal(rapidjson::kObjectType);
+                        colVal.AddMember("x", parentComp.colorMul.x(), allocator);
+                        colVal.AddMember("y", parentComp.colorMul.y(), allocator);
+                        colVal.AddMember("z", parentComp.colorMul.z(), allocator);
+                        colVal.AddMember("w", parentComp.colorMul.w(), allocator);
+                        parentValue.AddMember("colorMul", colVal, allocator);
+
+                        entityValue.AddMember(rapidjson::StringRef(Keys::PARENT_COMPONENT), parentValue, allocator);
+                    }
                 }
 
                 // Add the finished entity JSON object to the array

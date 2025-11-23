@@ -2104,9 +2104,9 @@ public class )" << file.stem().string() << R"(
                             }
 
                             // B. Collider Type
-                            const char* colliderNames[] = { "Sphere", "AABB", "OBB" };
+                            const char* colliderNames[] = { "Sphere", "AABB", "Polygon", "OBB", "None"};
                             int currentItem = (int)rule.colliderType;
-                            if (ImGui::Combo("Collider", &currentItem, colliderNames, 3)) {
+                            if (ImGui::Combo("Collider", &currentItem, colliderNames, 5)) {
                                 rule.colliderType = (Collision::ColliderType)currentItem;
                             }
 

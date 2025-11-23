@@ -41,7 +41,7 @@ namespace Component {
 
 		// Stores Entity IDs for Colliders. 
 		// We need this so if we erase a tile, we know which Entity to Destroy.
-		std::map < std::pair<int, int>, uint32_t> colliderCache;
+		std::map < std::pair<int, int>, uint32_t> tileCache;
 
 		// --- RUNTIME CACHE ---
 		// To avoid recalculating rules every frame, we mark this dirty when painting happens.

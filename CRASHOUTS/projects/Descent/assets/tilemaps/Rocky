@@ -2,7 +2,7 @@
     "tilemap": [
         {
             "texAssetName": "Test\\Middle.png",
-            "colliderType": "AABB",
+            "colliderType": "NONE",
             "ruleBitMap": 11
         },
         {
