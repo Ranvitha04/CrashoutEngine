@@ -273,6 +273,42 @@
             "path": "ducky_2_spritesheet.png"
         },
         {
+            "name": "Monsters(1)",
+            "path": "Monsters\\Monsters(1).png"
+        },
+        {
+            "name": "Monsters(2)",
+            "path": "Monsters\\Monsters(2).png"
+        },
+        {
+            "name": "Monsters(3)",
+            "path": "Monsters\\Monsters(3).png"
+        },
+        {
+            "name": "Monsters(4)",
+            "path": "Monsters\\Monsters(4).png"
+        },
+        {
+            "name": "Monsters(5)",
+            "path": "Monsters\\Monsters(5).png"
+        },
+        {
+            "name": "Monsters(6)",
+            "path": "Monsters\\Monsters(6).png"
+        },
+        {
+            "name": "Monsters(7)",
+            "path": "Monsters\\Monsters(7).png"
+        },
+        {
+            "name": "Monsters(8)",
+            "path": "Monsters\\Monsters(8).png"
+        },
+        {
+            "name": "Monsters(9)",
+            "path": "Monsters\\Monsters(9).png"
+        },
+        {
             "name": "Monsters",
             "path": "Monsters\\Monsters.png"
         },

@@ -834,70 +834,71 @@ namespace {
             
             // Colour Mixer a la carte
             {
-                static CEVec3 startColor;
+                static CEColor startColor;
                 static bool editingColor = false;
 
                 //CEVec3 oldColor = sc->color;
                 float col[4] = {
-                    sc->color.x * (1.0f / 255.0f),
-                    sc->color.y * (1.0f / 255.0f),
-                    sc->color.z * (1.0f / 255.0f),
-                    1.0f
+                    sc->color.x(),
+                    sc->color.y(),
+                    sc->color.z(),
+                    sc->color.w()
                 };
 
                 ImGuiColorEditFlags flags =
                     ImGuiColorEditFlags_DisplayHSV |
                     ImGuiColorEditFlags_InputRGB |
                     ImGuiColorEditFlags_PickerHueBar |
-                    ImGuiColorEditFlags_NoAlpha;
+                    ImGuiColorEditFlags_AlphaBar;
 
                 // start editing when user opens popup
-                if (ImGui::ColorEdit3("Color", col, flags) && !editingColor) {
+                if (ImGui::ColorEdit4("Color", col, flags) && !editingColor) {
                     editingColor = true;
                     startColor = sc->color;
                 }
                 if (ImGui::IsItemDeactivated() && editingColor) {
                     // item lost focus (enter pressed / tab / clicked away)
-                    CEVec3 newColor = { col[0] * 255.f, col[1] * 255.f, col[2] * 255.f };
+                    CEColor newColor = { col[0], col[1], col[2], col[3] };
                     if (newColor != startColor) {
                         UndoManager::GetInstance().AddCommand(
-                            std::make_unique<CrashoutsEngine::ChangeValueCommand<CEVec3>>(
+                            std::make_unique<CrashoutsEngine::ChangeValueCommand<CEColor>>(
                                 startColor, newColor,
-                                [sc](const CEVec3& v) { sc->color = v; }));
+                                [sc](const CEColor& v) { sc->color = v; }));
                     }
                     editingColor = false;
                 }
 
                 // apply live color
-                sc->color = { col[0] * 255.f, col[1] * 255.f, col[2] * 255.f };
+                sc->color = { col[0], col[1], col[2], col[3]};
 
                 if (ImGui::SmallButton("Open Color Picker"))
                     ImGui::OpenPopup("##shape_color_picker");
 
                 if (ImGui::BeginPopup("##shape_color_picker")) {
-                    static CEVec3 popupStart;
+                    static CEColor popupStart;
                     static bool popupEditing = false;
 
                     // snapshot when opened
                     if (!popupEditing) { popupEditing = true; popupStart = sc->color; }
 
-                    float pick[3] = {
-                        sc->color.x / 255.f,
-                        sc->color.y / 255.f,
-                        sc->color.z / 255.f
+                    float pick[4] = {
+                        sc->color.x() ,
+                        sc->color.y() ,
+                        sc->color.z() ,
+                        sc->color.w()
                     };
-                    if (ImGui::ColorPicker3("##picker", pick, flags)) {
-                        sc->color = { pick[0] * 255.f, pick[1] * 255.f, pick[2] * 255.f };
+                    if (ImGui::ColorPicker4("##picker", pick, flags)) {
+                        sc->color = { pick[0], pick[1], pick[2], pick[3]};
                     }
 
                     // detect popup close
                     if (!ImGui::IsWindowAppearing() && !ImGui::IsWindowFocused()) {
-                        CEVec3 newCol = sc->color;
+                        CEColor newCol = sc->color;
                         if (popupEditing && newCol != popupStart) {
                             UndoManager::GetInstance().AddCommand(
-                                std::make_unique<CrashoutsEngine::ChangeValueCommand<CEVec3>>(
+                                std::make_unique<CrashoutsEngine::ChangeValueCommand<CEColor>>(
                                     popupStart, newCol,
-                                    [sc](const CEVec3& v) { sc->color = v; }));
+                                    [sc](const CEColor& v) { sc->color = v; }));
                         }
                         popupEditing = false;
                         ImGui::CloseCurrentPopup();
@@ -1001,10 +1002,10 @@ namespace {
             
             {
                 float col[4] = {
-                    fc->color.x * (1.0f / 255.0f),
-                    fc->color.y * (1.0f / 255.0f),
-                    fc->color.z * (1.0f / 255.0f),
-                    1.0f
+                    fc->color.x(),
+                    fc->color.y(),
+                    fc->color.z(),
+                    fc->color.w()
                 };
 
                 ImGuiColorEditFlags flags =
@@ -1013,11 +1014,12 @@ namespace {
                     ImGuiColorEditFlags_PickerHueBar |
                     ImGuiColorEditFlags_NoAlpha;
 
-                if (ImGui::ColorEdit3("Color", col, flags) || ImGui::IsItemDeactivatedAfterEdit())
+                if (ImGui::ColorEdit4("Color", col, flags) || ImGui::IsItemDeactivatedAfterEdit())
                 {
-                    fc->color.x = col[0] * 255.0f;
-                    fc->color.y = col[1] * 255.0f;
-                    fc->color.z = col[2] * 255.0f;
+                    fc->color.x() = col[0];
+                    fc->color.y() = col[1];
+                    fc->color.z() = col[2];
+                    fc->color.w() = col[3];
                 }
 
                 if (ImGui::SmallButton("Open Color Picker"))
@@ -1025,11 +1027,12 @@ namespace {
 
                 if (ImGui::BeginPopup("##shape_color_picker"))
                 {
-                    if (ImGui::ColorPicker3("##picker", col, flags))
+                    if (ImGui::ColorPicker4("##picker", col, flags))
                     {
-                        fc->color.x = col[0] * 255.0f;
-                        fc->color.y = col[1] * 255.0f;
-                        fc->color.z = col[2] * 255.0f;
+                        fc->color.x() = col[0];
+                        fc->color.y() = col[1];
+                        fc->color.z() = col[2];
+                        fc->color.w() = col[3];
                     }
                     ImGui::EndPopup();
                 }
@@ -1575,13 +1578,13 @@ public class )" << file.stem().string() << R"(
             ImGui::SeparatorText("Shape Colors");
 
             // Helper function to convert 0-255 CEVec3 to 0-1 float[3] for ImGui's picker
-            auto EditColor = [](const char* label, CEVec3& colorVec) {
-                float col[3] = { colorVec.x / 255.0f, colorVec.y / 255.0f, colorVec.z / 255.0f };
-                if (ImGui::ColorEdit3(label, col)) {
-                    colorVec.x = col[0] * 255.0f;
-                    colorVec.y = col[1] * 255.0f;
-                    colorVec.y = col[1] * 255.0f;
-                    colorVec.z = col[2] * 255.0f;
+            auto EditColor = [](const char* label, CEColor& colorVec) {
+                float col[4] = { colorVec.x(), colorVec.y(), colorVec.z(), colorVec.w()};
+                if (ImGui::ColorEdit4(label, col)) {
+                    colorVec.x() = col[0];
+                    colorVec.y() = col[1];
+                    colorVec.z() = col[2];
+                    colorVec.w() = col[3];
                 }
                 };
 

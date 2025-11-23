@@ -178,7 +178,7 @@ void CreateRandBox() {
 	t.rotation = random_min_max(0.f, 360.f);
 	t.size = CEVec2(random_min_max(.5f, 3.f), random_min_max(.5f, 3.f));
 
-	shape.color = CEVec3(random_min_max(0.f, 255.f), random_min_max(0.f, 255.f), random_min_max(0.f, 255.f));
+	shape.color = CEColor(random_min_max(0.f, 255.f), random_min_max(0.f, 255.f), random_min_max(0.f, 255.f));
 	shape.type = Component::ShapeType::Rectangle;
 
 

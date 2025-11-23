@@ -2561,16 +2561,26 @@ namespace UI { // --------------------------------------------------------------
 
             }
             
-            //  7) drag and drop from asset browser into world
-                //  Drag-and-drop spawn
-                //  Payload is built in the Asset Browser panel.
-                //  Here we just read the payload and instantiate a texture/prefab
-                //  at the mouse drop location in world space.
-                // ------------------------------------------------------------
+            //  7)  drag and drop from asset browser into world
+            //      Drag-and-drop spawn
+            //      Payload is built in the Asset Browser panel.
+            //      Here we just read the payload and instantiate a texture/prefab
+            //      at the mouse drop location in world space.
+            // ------------------------------------------------------------
             if (ImGui::BeginDragDropTarget()) {
                 if (const ImGuiPayload* pl = ImGui::AcceptDragDropPayload("ASSET/PAYLOAD")) {
                     const auto* p = static_cast<const AssetDragPayload*>(pl->Data);
-                    CEVec3 dropWorld = ViewUV_toWorld(u, v);
+
+                    // Recalculate UVs specifically for the drop location
+                    ImVec2 dropMouse = ImGui::GetMousePos();
+                    float dropU = (dropMouse.x - imgMin.x) / (imgMax.x - imgMin.x);
+                    float dropV = 1.f - (dropMouse.y - imgMin.y) / (imgMax.y - imgMin.y);
+
+                    // Clamp to ensure we don't spawn objects miles away if dropped on the border
+                    dropU = std::clamp(dropU, 0.0f, 1.0f);
+                    dropV = std::clamp(dropV, 0.0f, 1.0f);
+
+                    CEVec3 dropWorld = ViewUV_toWorld(dropU, dropV);
 
                     using CrashoutsEngine::Assets::AssetManager;
                     using CrashoutsEngine::Assets::TextureAsset;

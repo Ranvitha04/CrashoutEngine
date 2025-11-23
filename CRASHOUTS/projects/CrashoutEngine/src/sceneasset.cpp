@@ -452,12 +452,13 @@ namespace CrashoutsEngine {
 
                     // Color
                     if (shapeValues.HasMember("color") && shapeValues["color"].IsObject()) {
-                        CEVec3 color{ 0.0f, 0.0f, 0.0f };
+                        CEColor color{ 0.0f, 0.0f, 0.0f };
                         const rapidjson::Value& colorValue = shapeValues["color"];
                         // Use HasMember check for safety
-                        if (colorValue.HasMember("x")) color.x = colorValue["x"].GetFloat();
-                        if (colorValue.HasMember("y")) color.y = colorValue["y"].GetFloat();
-                        if (colorValue.HasMember("z")) color.z = colorValue["z"].GetFloat();
+                        if (colorValue.HasMember("x")) color.x() = colorValue["x"].GetFloat();
+                        if (colorValue.HasMember("y")) color.y() = colorValue["y"].GetFloat();
+                        if (colorValue.HasMember("z")) color.z() = colorValue["z"].GetFloat();
+                        if (colorValue.HasMember("w")) color.w() = colorValue["w"].GetFloat();
 
                         s.color = color;
                     }
@@ -528,12 +529,13 @@ namespace CrashoutsEngine {
 
                     // 5. Check Color
                     if (textValue.HasMember("color") && textValue["color"].IsObject()) {
-                        CEVec3 color{ 0.0f, 0.0f, 0.0f };
+                        CEColor color{ 0.0f, 0.0f, 0.0f };
                         const rapidjson::Value& colorValue = textValue["color"];
                         // Use HasMember check for safety
-                        if (colorValue.HasMember("x")) color.x = colorValue["x"].GetFloat();
-                        if (colorValue.HasMember("y")) color.y = colorValue["y"].GetFloat();
-                        if (colorValue.HasMember("z")) color.z = colorValue["z"].GetFloat();
+                        if (colorValue.HasMember("x")) color.x() = colorValue["x"].GetFloat();
+                        if (colorValue.HasMember("y")) color.y() = colorValue["y"].GetFloat();
+                        if (colorValue.HasMember("z")) color.z() = colorValue["z"].GetFloat();
+                        if (colorValue.HasMember("w")) color.w() = colorValue["w"].GetFloat();
 
                         t.color = color;
                     }
@@ -604,34 +606,37 @@ namespace CrashoutsEngine {
                     // 
                     // 2. Check Shape Normal Color 
                     if (buttonValue.HasMember("shapeNormalColor") && buttonValue["shapeNormalColor"].IsObject()) {
-                        CEVec3 color { 0.f, 0.f, 0.f };
+                        CEColor color { 0.f, 0.f, 0.f };
                         const rapidjson::Value& colorVal = buttonValue["shapeNormalColor"];
                         // Use HasMember check for safety
-                        if (colorVal.HasMember("x")) color.x = colorVal["x"].GetFloat();
-                        if (colorVal.HasMember("y")) color.y = colorVal["y"].GetFloat();
-                        if (colorVal.HasMember("z")) color.z = colorVal["z"].GetFloat();
+                        if (colorVal.HasMember("x")) color.x() = colorVal["x"].GetFloat();
+                        if (colorVal.HasMember("y")) color.y() = colorVal["y"].GetFloat();
+                        if (colorVal.HasMember("z")) color.z() = colorVal["z"].GetFloat();
+                        if (colorVal.HasMember("w")) color.w() = colorVal["w"].GetFloat();
                         b.shapeNormalColor = color;
                     }
 
                     // 3. Check Shape Hover Color 
                     if (buttonValue.HasMember("shapeHoveredColor") && buttonValue["shapeHoveredColor"].IsObject()) {
-                        CEVec3 color{ 0.f, 0.f, 0.f };
+                        CEColor color{ 0.f, 0.f, 0.f };
                         const rapidjson::Value& colorVal = buttonValue["shapeHoveredColor"];
-                        // Use HasMember check for safety
-                        if (colorVal.HasMember("x")) color.x = colorVal["x"].GetFloat();
-                        if (colorVal.HasMember("y")) color.y = colorVal["y"].GetFloat();
-                        if (colorVal.HasMember("z")) color.z = colorVal["z"].GetFloat();
+                        // Use HasMember check for safety   
+                        if (colorVal.HasMember("x")) color.x() = colorVal["x"].GetFloat();
+                        if (colorVal.HasMember("y")) color.y() = colorVal["y"].GetFloat();
+                        if (colorVal.HasMember("z")) color.z() = colorVal["z"].GetFloat();
+                        if (colorVal.HasMember("w")) color.w() = colorVal["w"].GetFloat();
                         b.shapeHoveredColor = color;
                     }
                     
                     // 4. Check Shape Pressed Color 
                     if (buttonValue.HasMember("shapePressedColor") && buttonValue["shapePressedColor"].IsObject()) {
-                        CEVec3 color{ 0.f, 0.f, 0.f };
+                        CEColor color{ 0.f, 0.f, 0.f };
                         const rapidjson::Value& colorVal = buttonValue["shapePressedColor"];
                         // Use HasMember check for safety
-                        if (colorVal.HasMember("x")) color.x = colorVal["x"].GetFloat();
-                        if (colorVal.HasMember("y")) color.y = colorVal["y"].GetFloat();
-                        if (colorVal.HasMember("z")) color.z = colorVal["z"].GetFloat();
+                        if (colorVal.HasMember("x")) color.x() = colorVal["x"].GetFloat();
+                        if (colorVal.HasMember("y")) color.y() = colorVal["y"].GetFloat();
+                        if (colorVal.HasMember("z")) color.z() = colorVal["z"].GetFloat();
+                        if (colorVal.HasMember("w")) color.w() = colorVal["w"].GetFloat();
                         b.shapePressedColor = color;
                     }
 
@@ -639,34 +644,37 @@ namespace CrashoutsEngine {
                     // 
                     // 5. Check Text Normal Color 
                     if (buttonValue.HasMember("textNormalColor") && buttonValue["textNormalColor"].IsObject()) {
-                        CEVec3 color { 0.f, 0.f, 0.f };
+                        CEColor color { 0.f, 0.f, 0.f };
                         const rapidjson::Value& colorVal = buttonValue["textNormalColor"];
                         // Use HasMember check for safety
-                        if (colorVal.HasMember("x")) color.x = colorVal["x"].GetFloat();
-                        if (colorVal.HasMember("y")) color.y = colorVal["y"].GetFloat();
-                        if (colorVal.HasMember("z")) color.z = colorVal["z"].GetFloat();
+                        if (colorVal.HasMember("x")) color.x() = colorVal["x"].GetFloat();
+                        if (colorVal.HasMember("y")) color.y() = colorVal["y"].GetFloat();
+                        if (colorVal.HasMember("z")) color.w() = colorVal["w"].GetFloat();
+                        if (colorVal.HasMember("w")) color.z() = colorVal["z"].GetFloat();
                         b.textNormalColor = color;
                     }
 
                     // 6. Check Text Hover Color 
                     if (buttonValue.HasMember("textHoveredColor") && buttonValue["textHoveredColor"].IsObject()) {
-                        CEVec3 color{ 0.f, 0.f, 0.f };
+                        CEColor color{ 0.f, 0.f, 0.f };
                         const rapidjson::Value& colorVal = buttonValue["textHoveredColor"];
-                        // Use HasMember check for safety
-                        if (colorVal.HasMember("x")) color.x = colorVal["x"].GetFloat();
-                        if (colorVal.HasMember("y")) color.y = colorVal["y"].GetFloat();
-                        if (colorVal.HasMember("z")) color.z = colorVal["z"].GetFloat();
+                        // Use HasMember check for safety   
+                        if (colorVal.HasMember("x")) color.x() = colorVal["x"].GetFloat();
+                        if (colorVal.HasMember("y")) color.y() = colorVal["y"].GetFloat();
+                        if (colorVal.HasMember("z")) color.z() = colorVal["z"].GetFloat();
+                        if (colorVal.HasMember("w")) color.w() = colorVal["w"].GetFloat();
                         b.textHoveredColor = color;
                     }
                     
                     // 7. Check Text Pressed Color 
                     if (buttonValue.HasMember("textPressedColor") && buttonValue["textPressedColor"].IsObject()) {
-                        CEVec3 color{ 0.f, 0.f, 0.f };
+                        CEColor color{ 0.f, 0.f, 0.f };
                         const rapidjson::Value& colorVal = buttonValue["textPressedColor"];
-                        // Use HasMember check for safety
-                        if (colorVal.HasMember("x")) color.x = colorVal["x"].GetFloat();
-                        if (colorVal.HasMember("y")) color.y = colorVal["y"].GetFloat();
-                        if (colorVal.HasMember("z")) color.z = colorVal["z"].GetFloat();
+                        // Use HasMember check for safety   
+                        if (colorVal.HasMember("x")) color.x() = colorVal["x"].GetFloat();
+                        if (colorVal.HasMember("y")) color.y() = colorVal["y"].GetFloat();
+                        if (colorVal.HasMember("z")) color.z() = colorVal["z"].GetFloat();
+                        if (colorVal.HasMember("w")) color.w() = colorVal["w"].GetFloat();
                         b.textPressedColor = color;
                     }
 
@@ -1098,9 +1106,10 @@ namespace CrashoutsEngine {
 
                     // CEVec3 Color
                     rapidjson::Value colorValue(rapidjson::kObjectType);
-                    colorValue.AddMember("x", sComp.color.x, allocator);
-                    colorValue.AddMember("y", sComp.color.y, allocator);
-                    colorValue.AddMember("z", sComp.color.z, allocator);
+                    colorValue.AddMember("x", sComp.color.x(), allocator);
+                    colorValue.AddMember("y", sComp.color.y(), allocator);
+                    colorValue.AddMember("z", sComp.color.z(), allocator);
+                    colorValue.AddMember("w", sComp.color.w(), allocator);
                     shapeValues.AddMember("color", colorValue, allocator);
 
                     // Line/Triangle points (p1, p2, t1, t2, t3)
@@ -1150,9 +1159,10 @@ namespace CrashoutsEngine {
 
                     // 5. Color (CEVec3 -> JSON Object)
                     rapidjson::Value colorValue(rapidjson::kObjectType);
-                    colorValue.AddMember("x", tComp.color.x, allocator);
-                    colorValue.AddMember("y", tComp.color.y, allocator);
-                    colorValue.AddMember("z", tComp.color.z, allocator);
+                    colorValue.AddMember("x", tComp.color.x(), allocator);
+                    colorValue.AddMember("y", tComp.color.y(), allocator);
+                    colorValue.AddMember("z", tComp.color.z(), allocator);
+                    colorValue.AddMember("w", tComp.color.w(), allocator);
                     textValue.AddMember("color", colorValue, allocator);
 
                     // 6. Centered (bool)
@@ -1216,46 +1226,52 @@ namespace CrashoutsEngine {
                     // 
                     // 2. shapeNormalColor (CEVec3 -> JSON Object)
                     rapidjson::Value shapeNormalColorValue(rapidjson::kObjectType);
-                    shapeNormalColorValue.AddMember("x", buttonComp.shapeNormalColor.x, allocator);
-                    shapeNormalColorValue.AddMember("y", buttonComp.shapeNormalColor.y, allocator);
-                    shapeNormalColorValue.AddMember("z", buttonComp.shapeNormalColor.z, allocator);
+                    shapeNormalColorValue.AddMember("x", buttonComp.shapeNormalColor.x(), allocator);
+                    shapeNormalColorValue.AddMember("y", buttonComp.shapeNormalColor.y(), allocator);
+                    shapeNormalColorValue.AddMember("z", buttonComp.shapeNormalColor.z(), allocator);
+                    shapeNormalColorValue.AddMember("w", buttonComp.shapeNormalColor.w(), allocator);
                     buttonVal.AddMember("shapeNormalColor", shapeNormalColorValue, allocator);
 
                     // 3. shapeHoveredColor (CEVec2 -> JSON Object)
                     rapidjson::Value shapeHoveredColorValue(rapidjson::kObjectType);
-                    shapeHoveredColorValue.AddMember("x", buttonComp.shapeHoveredColor.x, allocator);
-                    shapeHoveredColorValue.AddMember("y", buttonComp.shapeHoveredColor.y, allocator);
-                    shapeHoveredColorValue.AddMember("z", buttonComp.shapeHoveredColor.z, allocator);
+                    shapeHoveredColorValue.AddMember("x", buttonComp.shapeHoveredColor.x(), allocator);
+                    shapeHoveredColorValue.AddMember("y", buttonComp.shapeHoveredColor.y(), allocator);
+                    shapeHoveredColorValue.AddMember("z", buttonComp.shapeHoveredColor.z(), allocator);
+                    shapeHoveredColorValue.AddMember("w", buttonComp.shapeHoveredColor.w(), allocator);
                     buttonVal.AddMember("shapeHoveredColor", shapeHoveredColorValue, allocator);
 
                     // 4. shapePressedColor (CEVec2 -> JSON Object)
                     rapidjson::Value shapePressedColorValue(rapidjson::kObjectType);
-                    shapePressedColorValue.AddMember("x", buttonComp.shapePressedColor.x, allocator);
-                    shapePressedColorValue.AddMember("y", buttonComp.shapePressedColor.y, allocator);
-                    shapePressedColorValue.AddMember("z", buttonComp.shapePressedColor.z, allocator);
+                    shapePressedColorValue.AddMember("x", buttonComp.shapePressedColor.x(), allocator);
+                    shapePressedColorValue.AddMember("y", buttonComp.shapePressedColor.y(), allocator);
+                    shapePressedColorValue.AddMember("z", buttonComp.shapePressedColor.z(), allocator);
+                    shapePressedColorValue.AddMember("w", buttonComp.shapePressedColor.w(), allocator);
                     buttonVal.AddMember("shapePressedColor", shapePressedColorValue, allocator);
 
                     // -------------------------------------------------------------------------------
                     //
                     // 5. textNormalColor (CEVec3 -> JSON Object)
                     rapidjson::Value textNormalColorValue(rapidjson::kObjectType);
-                    textNormalColorValue.AddMember("x", buttonComp.textNormalColor.x, allocator);
-                    textNormalColorValue.AddMember("y", buttonComp.textNormalColor.y, allocator);
-                    textNormalColorValue.AddMember("z", buttonComp.textNormalColor.z, allocator);
+                    textNormalColorValue.AddMember("x", buttonComp.textNormalColor.x(), allocator);
+                    textNormalColorValue.AddMember("y", buttonComp.textNormalColor.y(), allocator);
+                    textNormalColorValue.AddMember("z", buttonComp.textNormalColor.z(), allocator);
+                    textNormalColorValue.AddMember("w", buttonComp.textNormalColor.w(), allocator);
                     buttonVal.AddMember("textNormalColor", textNormalColorValue, allocator);
 
                     // 6. textHoveredColor (CEVec2 -> JSON Object)
                     rapidjson::Value textHoveredColorValue(rapidjson::kObjectType);
-                    textHoveredColorValue.AddMember("x", buttonComp.textHoveredColor.x, allocator);
-                    textHoveredColorValue.AddMember("y", buttonComp.textHoveredColor.y, allocator);
-                    textHoveredColorValue.AddMember("z", buttonComp.textHoveredColor.z, allocator);
+                    textHoveredColorValue.AddMember("x", buttonComp.textHoveredColor.x(), allocator);
+                    textHoveredColorValue.AddMember("y", buttonComp.textHoveredColor.y(), allocator);
+                    textHoveredColorValue.AddMember("z", buttonComp.textHoveredColor.z(), allocator);
+                    textHoveredColorValue.AddMember("w", buttonComp.textHoveredColor.w(), allocator);
                     buttonVal.AddMember("textHoveredColor", textHoveredColorValue, allocator);
 
                     // 7. textPressedColor (CEVec2 -> JSON Object)
                     rapidjson::Value textPressedColorValue(rapidjson::kObjectType);
-                    textPressedColorValue.AddMember("x", buttonComp.textPressedColor.x, allocator);
-                    textPressedColorValue.AddMember("y", buttonComp.textPressedColor.y, allocator);
-                    textPressedColorValue.AddMember("z", buttonComp.textPressedColor.z, allocator);
+                    textPressedColorValue.AddMember("x", buttonComp.textPressedColor.x(), allocator);
+                    textPressedColorValue.AddMember("y", buttonComp.textPressedColor.y(), allocator);
+                    textPressedColorValue.AddMember("z", buttonComp.textPressedColor.z(), allocator);
+                    textPressedColorValue.AddMember("w", buttonComp.textPressedColor.w(), allocator);
                     buttonVal.AddMember("textPressedColor", textPressedColorValue, allocator);
 
                     entityValue.AddMember(rapidjson::StringRef(Keys::BUTTON_COMPONENT), buttonVal, allocator);

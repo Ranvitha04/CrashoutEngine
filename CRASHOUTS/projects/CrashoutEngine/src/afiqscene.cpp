@@ -94,7 +94,7 @@ namespace {
 
             ShapeComponent s{};
             s.type = ShapeType::Rectangle;
-            s.color = CEVec3{ 0.9f, 0.4f, 0.2f };
+            s.color = CEColor{ 0.9f, 0.4f, 0.2f, 1.f };
             e.AddComponent<ShapeComponent>(ent, s);
 
             // Attach animator component

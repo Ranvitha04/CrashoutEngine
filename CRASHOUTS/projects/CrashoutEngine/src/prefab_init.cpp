@@ -107,15 +107,17 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path)
             int typeInt = (shapeJson.HasMember("type") && shapeJson["type"].IsInt())
                 ? shapeJson["type"].GetInt() : static_cast<int>(ShapeType::Rectangle);
 
-            CEVec3 color{ 0, 0, 0 };
+            CEColor color{ 0, 0, 0 };
             if (shapeJson.HasMember("color") && shapeJson["color"].IsObject()) {
                 const auto& colorJson = shapeJson["color"];
                 if (colorJson.HasMember("r") && colorJson["r"].IsNumber())
-                    color.x = static_cast<float>(colorJson["r"].GetDouble());
+                    color.r = static_cast<float>(colorJson["r"].GetDouble());
                 if (colorJson.HasMember("g") && colorJson["g"].IsNumber())
-                    color.y = static_cast<float>(colorJson["g"].GetDouble());
+                    color.g = static_cast<float>(colorJson["g"].GetDouble());
                 if (colorJson.HasMember("b") && colorJson["b"].IsNumber())
-                    color.z = static_cast<float>(colorJson["b"].GetDouble());
+                    color.b = static_cast<float>(colorJson["b"].GetDouble());
+                if (colorJson.HasMember("a") && colorJson["a"].IsNumber())
+                    color.a = static_cast<float>(colorJson["a"].GetDouble());
             }
 
             const bool enableTexture =
@@ -194,7 +196,7 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path)
             std::string jsonText = "TEST";
             float jsonScale = 1.0f;
             CEVec2 jsonOffset{ 0.0f, 0.0f };
-            CEVec3 jsonColor{ 255.0f, 255.0f, 255.0f };
+            CEColor jsonColor{ 1.f, 1.f, 1.f };
             bool jsonCentered = true;
             bool jsonIsWorldSpace = true;
 
@@ -220,11 +222,13 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path)
                 if (textJson.HasMember("color") && textJson["color"].IsObject()) {
                     const auto& col = textJson["color"];
                     if (col.HasMember("r") && col["r"].IsNumber())
-                        jsonColor.x = static_cast<float>(col["r"].GetDouble());
+                        jsonColor.r = static_cast<float>(col["r"].GetDouble());
                     if (col.HasMember("g") && col["g"].IsNumber())
-                        jsonColor.y = static_cast<float>(col["g"].GetDouble());
+                        jsonColor.g = static_cast<float>(col["g"].GetDouble());
                     if (col.HasMember("b") && col["b"].IsNumber())
-                        jsonColor.z = static_cast<float>(col["b"].GetDouble());
+                        jsonColor.b = static_cast<float>(col["b"].GetDouble());
+                    if (col.HasMember("a") && col["a"].IsNumber())
+                        jsonColor.a = static_cast<float>(col["a"].GetDouble());
                 }
 
                 if (textJson.HasMember("centered") && textJson["centered"].IsBool())
@@ -615,9 +619,10 @@ namespace CrashoutsEngine {
             }
             // color
             Value color(kObjectType);
-            color.AddMember("r", shape->color.x, allocate);
-            color.AddMember("g", shape->color.y, allocate);
-            color.AddMember("b", shape->color.z, allocate);
+            color.AddMember("r", shape->color.r, allocate);
+            color.AddMember("g", shape->color.g, allocate);
+            color.AddMember("b", shape->color.b, allocate);
+            color.AddMember("a", shape->color.a, allocate);
             shapeJson.AddMember("color", color, allocate);
 
             // texture flags
@@ -704,9 +709,10 @@ namespace CrashoutsEngine {
             // color
             {
                 rapidjson::Value col(rapidjson::kObjectType);
-                col.AddMember("r", static_cast<double>(txt->color.x), allocate);
-                col.AddMember("g", static_cast<double>(txt->color.y), allocate);
-                col.AddMember("b", static_cast<double>(txt->color.z), allocate);
+                col.AddMember("r", static_cast<double>(txt->color.r), allocate);
+                col.AddMember("g", static_cast<double>(txt->color.g), allocate);
+                col.AddMember("b", static_cast<double>(txt->color.b), allocate);
+                col.AddMember("a", static_cast<double>(txt->color.a), allocate);
                 textJson.AddMember("color", col, allocate);
             }
 
