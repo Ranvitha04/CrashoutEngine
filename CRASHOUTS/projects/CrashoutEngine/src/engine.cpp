@@ -300,8 +300,8 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
         if (!fullscreen)
         {
             static bool draggingWindow = false;
-            static ImVec2 dragStartMouse;
-            static ImVec2 dragStartPos;
+            static POINT cursorStart;
+            static int winStartX, winStartY;
 
             float buttonsWidth = 3 * 28 + 12;
             ImVec2 titlebarMin = ImGui::GetWindowPos();
@@ -317,24 +317,28 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
             if (mouseInTitleBar && leftDown && !draggingWindow && !ImGui::IsAnyItemHovered())
             {
                 draggingWindow = true;
-                dragStartMouse = ImGui::GetMousePos();
 
-                int x, y;
-                glfwGetWindowPos(GLApp::ptr_window, &x, &y);
-                dragStartPos = ImVec2((float)x, (float)y);
+                // Get initial cursor position (WIN32 absolute)
+                GetCursorPos(&cursorStart);
+
+                glfwGetWindowPos(GLApp::ptr_window, &winStartX, &winStartY);
             }
 
-            // Perform drag
+            // Dragging
             if (draggingWindow)
             {
-                ImVec2 diff = ImVec2(ImGui::GetMousePos().x - dragStartMouse.x,ImGui::GetMousePos().y - dragStartMouse.y);
+                POINT cursorNow;
+                GetCursorPos(&cursorNow);
 
-                glfwSetWindowPos(GLApp::ptr_window,(int)(dragStartPos.x + diff.x),(int)(dragStartPos.y + diff.y));
+                int dx = cursorNow.x - cursorStart.x;
+                int dy = cursorNow.y - cursorStart.y;
+
+                glfwSetWindowPos(GLApp::ptr_window,
+                    winStartX + dx,
+                    winStartY + dy);
 
                 if (!leftDown)
-                {
                     draggingWindow = false;
-                }
             }
         }
 
