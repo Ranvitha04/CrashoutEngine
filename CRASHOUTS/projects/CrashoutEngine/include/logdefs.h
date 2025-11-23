@@ -31,4 +31,4 @@
  Expands the provided macro @p X for each subsystem.
  This list is used to generate subsystem enums, string names, and filters.
 */
-#define LOG_SYSTEMS(X) X(Core) X(Physics) X(Collision) X(Input) X(AI) X(ECS) X(Renderer) X(UI) X(Audio)
+#define LOG_SYSTEMS(X) X(Core) X(Physics) X(Collision) X(Input) X(AI) X(ECS) X(Renderer) X(UI) X(Audio) X(Debug)

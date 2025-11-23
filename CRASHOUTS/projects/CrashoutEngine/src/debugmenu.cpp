@@ -38,6 +38,7 @@ for Crashout Engine.
 #include "debugmenu.h"
 #include "debugreflection.h"
 #include "debugcollision.h"
+#include "debugAssetLoader.h"
 #include "frameratecontroller.h"
 #include "audioSystem.h"
 #include "prefab_init.h"  
@@ -160,12 +161,6 @@ namespace { //------------------------------------------------------------------
     // ============================================================
     //  Drag-and-drop payload description for asset browser
     // ============================================================
-    enum class AssetKind : uint8_t { Texture, SpriteSheet, Shader, Audio, Scene, Prefab, Unknown };
-    struct AssetDragPayload {
-        AssetKind kind{ AssetKind::Unknown };
-        char name[128]{};     // manifest/manager "name" (stem)
-        char relPath[256]{};  // relative path under assets/ (optional)
-    };
 
     static std::vector<std::string> gDroppedPaths;
 
@@ -978,151 +973,56 @@ namespace UI { // --------------------------------------------------------------
         ImGui::Text("Selected Entity: %u", (unsigned)selected);
         ImGui::SeparatorText("Add Components");
 
-     
-        for (auto* ad : DebugReflection::ComponentRegistry::instance().all()) {
-            ImGui::PushID(ad);
-            bool has = ad->has(ecs, selected);
-            ImGui::BeginDisabled(has);
-            if (ImGui::Button(ad->name())) {
-                ad->add(ecs, selected);
+        // Unity-style button
+        if (ImGui::Button("Add Component..."))
+            ImGui::OpenPopup("add_component_popup");
+
+        // Popup with search + list
+        if (ImGui::BeginPopup("add_component_popup"))
+        {
+            auto& reg = DebugReflection::ComponentRegistry::instance().all();
+
+            // Search bar
+            static ImGuiTextFilter filter;
+            filter.Draw("Search", ImGui::GetFontSize() * 16.0f);
+
+            ImGui::Separator();
+
+            // Build a sorted list of components that the entity DOESN'T yet have
+            std::vector<DebugReflection::IComponentAdapter*> candidates;
+            candidates.reserve(reg.size());
+            for (auto* ad : reg)
+            {
+                if (!ad->has(ecs, selected)) // hide ones already on this entity
+                    candidates.push_back(ad);
             }
-            ImGui::EndDisabled();
-            ImGui::SameLine();
-            ImGui::TextUnformatted(ad->name());
-            ImGui::PopID();
-        }
-        if (!ecs.HasComponent<KeyframeAnimatorComponent>(selected)) {
-            if (ImGui::Button("Add Animation (KeyframeAnimator)")) {
 
-                // 1) Add the component
-                auto& anim = AddAnimator(ecs, selected);
+            std::sort(candidates.begin(), candidates.end(),
+                [](auto* a, auto* b) { return std::strcmp(a->name(), b->name()) < 0; });
 
-                // =========================================================
-                // WALK CLIP  (loops 4 frames on a spritesheet)
-                // =========================================================
-                AnimationClip walk{};
-                walk.name = "Walk";
-                walk.wrap = KFWrap::Loop;      // keep looping
+            // Scrollable list so popup doesn’t get huge
+            ImGui::BeginChild("add_comp_list", ImVec2(0, 260), true);
+            for (auto* ad : candidates)
+            {
+                const char* label = ad->name();
+                if (!filter.PassFilter(label)) // filter by text
+                    continue;
 
-                KFBinding walkSprite{};
-                walkSprite.property = KFProperty::SpriteIndex;
-
-                // 4 frames: 0,1,2,3 over 0.4s (0.1s each)
+                if (ImGui::Selectable(label))
                 {
-                    KFKey k{};
-                    k.interp = KFInterp::Constant;   // sprites: no interpolation
-
-                    k.time = 0.0f; k.value = 0.f;
-                    walkSprite.curve.Add(k);
-
-                    k.time = 0.1f; k.value = 1.f;
-                    walkSprite.curve.Add(k);
-
-                    k.time = 0.2f; k.value = 2.f;
-                    walkSprite.curve.Add(k);
-
-                    k.time = 0.3f; k.value = 3.f;
-                    walkSprite.curve.Add(k);
-
-                    // Close loop back to frame 0 at 0.4s
-                    k.time = 0.4f; k.value = 0.f;
-                    walkSprite.curve.Add(k);
+                    ad->add(ecs, selected);
+                    ImGui::CloseCurrentPopup(); // close after choosing one
+                    break;
                 }
-
-                walk.bindings.push_back(walkSprite);
-
-                // =========================================================
-                // JUMP CLIP  (uses different frames 4–7)
-                // =========================================================
-                AnimationClip jump{};
-                jump.name = "Jump";
-                jump.wrap = KFWrap::Clamp;     // play once then hold last frame
-
-                KFBinding jumpSprite{};
-                jumpSprite.property = KFProperty::SpriteIndex;
-
-                {
-                    KFKey k{};
-                    k.interp = KFInterp::Constant;
-
-                    // start stand frame
-                    k.time = 0.0f; k.value = 4.f;   // e.g. idle-before-jump
-                    jumpSprite.curve.Add(k);
-
-                    // in-air frame
-                    k.time = 0.15f; k.value = 5.f;
-                    jumpSprite.curve.Add(k);
-
-                    // peak
-                    k.time = 0.30f; k.value = 6.f;
-                    jumpSprite.curve.Add(k);
-
-                    // landing frame
-                    k.time = 0.45f; k.value = 7.f;
-                    jumpSprite.curve.Add(k);
-                }
-
-                jump.bindings.push_back(jumpSprite);
-
-                // =========================================================
-                // Register both clips on this animator
-                // =========================================================
-                anim.clips[walk.name] = walk;
-                anim.clips[jump.name] = jump;
-
-                // Start in WALK
-                anim.current = walk.name;
-                anim.t = 0.f;
-                anim.playing = true;
             }
+            ImGui::EndChild();
+
+            ImGui::EndPopup();
         }
+
         ImGui::NewLine();
-
+       
         ImGui::SeparatorText("Components on Selected Entity");
-        // ---- Manual inspector for KeyframeAnimatorComponent ----
-        if (ecs.HasComponent<KeyframeAnimatorComponent>(selected)) {
-            auto* anim = ecs.GetComponent<KeyframeAnimatorComponent>(selected);
-
-            ImGui::SeparatorText("Animation");
-
-            if (anim->current.empty()) {
-                ImGui::TextDisabled("No clip set. Use the Add Animation button or create clips in code.");
-            }
-            else {
-                ImGui::Text("Current clip: %s", anim->current.c_str());
-            }
-
-            ImGui::DragFloat("Time", &anim->t, 0.01f, 0.0f);
-
-            // Play / Pause / Stop controls
-            if (ImGui::Button(anim->playing ? "Pause" : "Play")) {
-                anim->playing = !anim->playing;
-            }
-            ImGui::SameLine();
-            if (ImGui::Button("Stop")) {
-                anim->playing = false;
-                anim->t = 0.f;
-            }
-            ImGui::SameLine();
-            if (ImGui::Button("Restart")) {
-                anim->t = 0.f;
-                anim->playing = true;
-            }
-            ImGui::SeparatorText("Clips");
-
-            for (auto& kv : anim->clips) {
-                const std::string& clipName = kv.first;
-                bool isCurrent = (anim->current == clipName);
-
-               
-                if (ImGui::Selectable(clipName.c_str(), isCurrent)) {
-                
-                    Play(*anim, clipName,  true);
-                }
-            }
-
-        }
-
         
         for (auto* ad : DebugReflection::ComponentRegistry::instance().all()) {
             if (!ad->has(ecs, selected)) continue;
@@ -1670,27 +1570,40 @@ namespace UI { // --------------------------------------------------------------
                 // Drag & Drop
                 if (ImGui::BeginDragDropTarget())
                 {
-                    if (const ImGuiPayload* p = ImGui::AcceptDragDropPayload("ASSET/PAYLOAD"))
+                    if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSET/PAYLOAD"))
                     {
-                        auto* d = static_cast<const AssetDragPayload*>(p->Data);
-
-                        if (d && d->kind == AssetKind::Audio)
+                        // Hard guard: wrong payload type/size → ignore safely
+                        if (!payload->Data || payload->DataSize != sizeof(AssetDragPayload))
                         {
-                            std::filesystem::path rp = d->relPath;
-                            std::string ext = rp.extension().string();
-                            std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+                            LOGW(Debug, "Dropped payload of wrong size onto EventCombo");
+                        }
+                        else
+                        {
+                            const auto* d = static_cast<const AssetDragPayload*>(payload->Data);
 
-                            std::string rel = rp.generic_string();
-                            if (rel.rfind("audio/", 0) == 0)
-                                rel = rel.substr(6);
-
-                            if (ext == ".wav" || ext == ".ogg" || ext == ".mp3")
-                                sel = "[RAW] " + rel;
-                            else
+                            // Soft guard: only accept audio assets here
+                            if (d->kind == AssetKind::Audio)
                             {
-                                if (auto dot = rel.find_last_of('.'); dot != std::string::npos)
-                                    rel.erase(dot);
-                                sel = "event:/" + rel;
+                                std::filesystem::path rp = d->relPath;
+                                std::string ext = rp.extension().string();
+                                std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+
+                                std::string rel = rp.generic_string();
+                                if (rel.rfind("audio/", 0) == 0)
+                                    rel = rel.substr(6);
+
+                                if (ext == ".wav" || ext == ".ogg" || ext == ".mp3")
+                                {
+                                    // raw sound
+                                    sel = "[RAW] " + rel;
+                                }
+                                else
+                                {
+                                    // event-like path: strip extension and prepend event:/
+                                    if (auto dot = rel.find_last_of('.'); dot != std::string::npos)
+                                        rel.erase(dot);
+                                    sel = "event:/" + rel;
+                                }
                             }
                         }
                     }
@@ -2568,101 +2481,82 @@ namespace UI { // --------------------------------------------------------------
             //      at the mouse drop location in world space.
             // ------------------------------------------------------------
             if (ImGui::BeginDragDropTarget()) {
-                if (const ImGuiPayload* pl = ImGui::AcceptDragDropPayload("ASSET/PAYLOAD")) {
-                    const auto* p = static_cast<const AssetDragPayload*>(pl->Data);
-
-                    // Recalculate UVs specifically for the drop location
-                    ImVec2 dropMouse = ImGui::GetMousePos();
-                    float dropU = (dropMouse.x - imgMin.x) / (imgMax.x - imgMin.x);
-                    float dropV = 1.f - (dropMouse.y - imgMin.y) / (imgMax.y - imgMin.y);
-
-                    // Clamp to ensure we don't spawn objects miles away if dropped on the border
-                    dropU = std::clamp(dropU, 0.0f, 1.0f);
-                    dropV = std::clamp(dropV, 0.0f, 1.0f);
-
-                    CEVec3 dropWorld = ViewUV_toWorld(dropU, dropV);
-
-                    using CrashoutsEngine::Assets::AssetManager;
-                    using CrashoutsEngine::Assets::TextureAsset;
-
-                    if (p && p->kind == AssetKind::Texture) {
-                        if (auto* tex = AssetManager::GetInstance().Get<TextureAsset>(p->name)) {
-                            Entity e = ecs.CreateEntity();
-                            ecs.AddComponent<NameComponent>(e, std::string("Tex_") + p->name);
-                            ecs.AddComponent<TransformComponent>(e);
-                            ecs.AddComponent<Component::ShapeComponent>(e);
-                            auto* sc = ecs.GetComponent<Component::ShapeComponent>(e);
-                            sc->enableTexture = true;
-                            sc->textureName = p->name;
-                            ecs.GetComponent<Component::TransformComponent>(e)->position = dropWorld;
-                        }
+                if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSET/PAYLOAD")) {
+                    // Hard guard: ignore if wrong payload struct
+                    if (!payload->Data || payload->DataSize != sizeof(AssetDragPayload)) {
+                        LOGW(Debug, "Dropped payload of wrong size onto viewport");
                     }
-                    else if (p && p->kind == AssetKind::Prefab) {
-                        Entity e = Prefab::Create(ecs, std::string(p->name));
-                        if (e && ecs.HasComponent<Component::TransformComponent>(e))
-                            ecs.GetComponent<Component::TransformComponent>(e)->position = dropWorld;
-                    }
-                    else if (p && p->kind == AssetKind::Audio) {
-                        std::string rel = p->relPath;
+                    else {
+                        const auto* p = static_cast<const AssetDragPayload*>(payload->Data);
+                        CEVec3 dropWorld = ViewUV_toWorld(u, v);
 
-                        const std::string prefix = "audio/";
-                        auto pos = rel.find(prefix);
-                        if (pos != std::string::npos)
-                            rel = rel.substr(pos + prefix.size());
+                        using CrashoutsEngine::Assets::AssetManager;
+                        using CrashoutsEngine::Assets::TextureAsset;
 
-                        if (auto dot = rel.find_last_of('.'); dot != std::string::npos)
-                            rel.erase(dot);
-
-                        std::string eventLike = std::string("event:/") + rel;
-
-                        Entity target = selected;
-                        if (!target) {
-                            target = ecs.CreateEntity();
-                            ecs.AddComponent<NameComponent>(target, std::string("Audio_") + p->name);
-                            ecs.AddComponent<TransformComponent>(target);
-                            if (auto* t = ecs.GetComponent<TransformComponent>(target)) {
-                                t->position = dropWorld;
-                                t->size = { 10.0f, 10.0f };
-                            }
-
-                            // give it a visual
-                            ecs.AddComponent<Component::ShapeComponent>(target);
-                            if (auto* sc = ecs.GetComponent<Component::ShapeComponent>(target)) {
-								sc->enableTexture = false; // gonna be a square till I get a nice audio icon
-                                sc->textureName = "audio_icon";
+                        // 1) Texture → spawn textured Shape entity
+                        if (p->kind == AssetKind::Texture) {
+                            if (auto* tex = AssetManager::GetInstance().Get<TextureAsset>(p->name)) {
+                                Entity e = ecs.CreateEntity();
+                                ecs.AddComponent<NameComponent>(e, std::string("Tex_") + p->name);
+                                ecs.AddComponent<TransformComponent>(e);
+                                ecs.AddComponent<Component::ShapeComponent>(e);
+                                auto* sc = ecs.GetComponent<Component::ShapeComponent>(e);
+                                sc->enableTexture = true;
+                                sc->textureName = p->name;
+                                ecs.GetComponent<Component::TransformComponent>(e)->position = dropWorld;
                             }
                         }
-                        else {
-                            if (!ecs.HasComponent<Component::ShapeComponent>(target))
+                        // 2) Prefab -> instantiate and move to drop
+                        else if (p->kind == AssetKind::Prefab) {
+                            Entity e = Prefab::Create(ecs, std::string(p->name));
+                            if (e && ecs.HasComponent<Component::TransformComponent>(e))
+                                ecs.GetComponent<Component::TransformComponent>(e)->position = dropWorld;
+                        }
+                        // 3) Audio -> create / retarget Audio entity
+                        else if (p->kind == AssetKind::Audio) {
+                            std::string rel = p->relPath;
+
+                            const std::string prefix = "audio/";
+                            auto pos = rel.find(prefix);
+                            if (pos != std::string::npos)
+                                rel = rel.substr(pos + prefix.size());
+
+                            if (auto dot = rel.find_last_of('.'); dot != std::string::npos)
+                                rel.erase(dot);
+
+                            std::string eventLike = std::string("event:/") + rel;
+
+                            Entity target = selected;
+                            if (!target) {
+                                target = ecs.CreateEntity();
+                                ecs.AddComponent<NameComponent>(target, std::string("Audio_") + p->name);
+                                ecs.AddComponent<TransformComponent>(target);
+                                if (auto* t = ecs.GetComponent<TransformComponent>(target)) {
+                                    t->position = dropWorld;
+                                    t->size = { 10.0f, 10.0f };
+                                }
+
+                                // give it a visual
                                 ecs.AddComponent<Component::ShapeComponent>(target);
-                        }
-
-                        if (!ecs.HasComponent<Component::AudioEmitterComponent>(target))
-                            ecs.AddComponent<Component::AudioEmitterComponent>(target);
-
-                        if (auto* ac = ecs.GetComponent<Component::AudioEmitterComponent>(target)) {
-                            std::filesystem::path relPath = p->relPath; // e.g. "audio/Music/Menu.wav"
-                            std::string ext = relPath.extension().string();
-                            std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
-
-                            rel = relPath.generic_string();
-
-                            pos = rel.find(prefix);
-                            if (pos == 0)
-                                rel = rel.substr(prefix.size()); // "Music/Menu.wav"
-
-                            if (ext == ".wav" || ext == ".ogg" || ext == ".mp3") {
-                                ac->eventPath = rel;
+                                if (auto* sc = ecs.GetComponent<Component::ShapeComponent>(target)) {
+                                    sc->enableTexture = false; // simple square placeholder
+                                    sc->textureName = "audio_icon";
+                                }
                             }
                             else {
-                                if (auto dot = rel.find_last_of('.'); dot != std::string::npos) rel.erase(dot);
-                                ac->eventPath = std::string("event:/") + rel;
+                                if (auto* t = ecs.GetComponent<TransformComponent>(target)) {
+                                    t->position = dropWorld;
+                                }
                             }
 
-                            ac->volume = 1.0f;
-                            ac->pitch = 1.0f;
-                            ac->spatial3D = true;
+                            if (!ecs.HasComponent<AudioEmitterComponent>(target)) {
+                                ecs.AddComponent<AudioEmitterComponent>(target);
+                            }
+                            if (auto* ac = ecs.GetComponent<AudioEmitterComponent>(target)) {
+                                ac->eventPath = eventLike;
+                            }
                         }
+                        // Other AssetKind values are just ignored
                     }
                 }
                 ImGui::EndDragDropTarget();
