@@ -65,6 +65,11 @@ using namespace CrashoutsEngine;
 using namespace Component;
 
 //----------------------------------------------------------------------------- file-local state & helpers
+namespace {
+    f32 max(f32 x1, f32 y2, f32 z3) {
+        return std::max(std::max(x1, y2), z3);
+    }
+}
 
 /*!
  @brief File-local adapters/providers and registration.
