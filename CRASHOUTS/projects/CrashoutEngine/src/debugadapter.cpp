@@ -720,32 +720,40 @@ namespace {
 
             if (ImGui::BeginDragDropTarget()) {
                 if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSET/PAYLOAD")) {
-                    auto* d = static_cast<const AssetDragPayload*>(payload->Data);
-                    if (d && d->kind == AssetKind::Texture) {
-                        std::string oldTexName = sc->textureName;
+                    // Hard guard: verify this is actually an AssetDragPayload
+                    if (!payload->Data || payload->DataSize != sizeof(AssetDragPayload)) {
+                        LOGW(Debug, "Dropped non-asset payload on Shape texture field");
+                    }
+                    else {
+                        const auto* d = static_cast<const AssetDragPayload*>(payload->Data);
 
-                        // d->relPath is something like "images/ui/button.png"
-                        std::string rel = d->relPath;
-                        const std::string prefix = "images/";
-                        auto pos = rel.find(prefix);
-                        if (pos == 0) {
-                            // Store path relative to the images root, matching the picker
-                            rel = rel.substr(prefix.size());   // e.g. "ui/button.png"
+                        // Only accept textures here
+                        if (d->kind == AssetKind::Texture) {
+                            std::string oldTexName = sc->textureName;
+
+                            // d->relPath is something like "images/ui/button.png"
+                            std::string rel = d->relPath;
+                            const std::string prefix = "images/";
+                            auto pos = rel.find(prefix);
+                            if (pos == 0) {
+                                // Store path relative to the images root, matching the picker
+                                rel = rel.substr(prefix.size());   // e.g. "ui/button.png"
+                            }
+
+                            // Fallback to the asset name if something is weird
+                            sc->textureName = rel.empty() ? std::string(d->name) : rel;
+
+                            // Using a texture now
+                            sc->enableTexture = true;
+
+                            // Undo support
+                            UndoManager::GetInstance().AddCommand(
+                                std::make_unique<CrashoutsEngine::ChangeValueCommand<std::string>>(
+                                    oldTexName, sc->textureName,
+                                    [sc](const std::string& v) { sc->textureName = v; }
+                                )
+                            );
                         }
-
-                        // Fallback to the asset name if something is weird
-                        sc->textureName = rel.empty() ? std::string(d->name) : rel;
-
-                        // Using a texture now
-                        sc->enableTexture = true;
-
-                        // Undo support
-                        UndoManager::GetInstance().AddCommand(
-                            std::make_unique<CrashoutsEngine::ChangeValueCommand<std::string>>(
-                                oldTexName, sc->textureName,
-                                [sc](const std::string& v) { sc->textureName = v; }
-                            )
-                        );
                     }
                 }
                 ImGui::EndDragDropTarget();
@@ -1118,28 +1126,38 @@ namespace {
             }
 
             if (ImGui::BeginDragDropTarget()) {
-                if (const ImGuiPayload* p = ImGui::AcceptDragDropPayload("ASSET/PAYLOAD")) {
-                    auto* d = static_cast<const AssetDragPayload*>(p->Data);
-                    if (d && d->kind == AssetKind::Audio) {
-                        std::filesystem::path relPath = d->relPath;
-                        std::string ext = relPath.extension().string();
-                        std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+                if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSET/PAYLOAD")) {
+                    // Hard guard: ignore wrong payload types
+                    if (!payload->Data || payload->DataSize != sizeof(AssetDragPayload)) {
+                        LOGW(Debug, "Dropped non-audio payload on AudioComponent eventPath");
+                    }
+                    else {
+                        const auto* d = static_cast<const AssetDragPayload*>(payload->Data);
 
-                        std::string rel = relPath.generic_string();
-                        const std::string prefix = "audio/";
-                        auto pos = rel.find(prefix);
-                        if (pos == 0) {
-                            rel = rel.substr(prefix.size());
-                        }
-                        if (ext == ".wav" || ext == ".ogg" || ext == ".mp3") {
-                            c->eventPath = rel;
-                        }
-                        else {
-                            // Strip extension and prepend event:/
-                            if (auto dot = rel.find_last_of('.'); dot != std::string::npos) {
-                                rel.erase(dot);
+                        // Only accept Audio assets here
+                        if (d->kind == AssetKind::Audio) {
+                            std::filesystem::path relPath = d->relPath;
+                            std::string ext = relPath.extension().string();
+                            std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+
+                            std::string rel = relPath.generic_string();
+                            const std::string prefix = "audio/";
+                            auto pos = rel.find(prefix);
+                            if (pos == 0) {
+                                rel = rel.substr(prefix.size());
                             }
-                            c->eventPath = std::string("event:/") + rel;
+
+                            if (ext == ".wav" || ext == ".ogg" || ext == ".mp3") {
+                                // raw clip → just store relative path
+                                c->eventPath = rel;
+                            }
+                            else {
+                                // bank event → strip extension and prepend event:/
+                                if (auto dot = rel.find_last_of('.'); dot != std::string::npos) {
+                                    rel.erase(dot);
+                                }
+                                c->eventPath = std::string("event:/") + rel;
+                            }
                         }
                     }
                 }
