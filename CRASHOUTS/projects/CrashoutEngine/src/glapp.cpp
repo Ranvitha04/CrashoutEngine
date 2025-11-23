@@ -122,7 +122,14 @@ bool GLApp::init(GLint w, GLint h, std::string t) {
     glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
 
     // size of viewport: width x height
-    GLApp::ptr_window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
+    /*GLApp::ptr_window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);*/
+    GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+    const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+    // update engine width/height to match fullscreen resolution
+    GLApp::width = mode->width;
+    GLApp::height = mode->height;
+
+    GLApp::ptr_window = glfwCreateWindow(mode->width,mode->height,title.c_str(),monitor,NULL);
     if (!GLApp::ptr_window) {
         std::cerr << "GLFW unable to create OpenGL context - abort program\n";
         LOGE(Core, "GLFW unable to create OpenGL context - abort program!!!");
