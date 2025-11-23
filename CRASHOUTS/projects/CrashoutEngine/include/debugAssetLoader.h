@@ -1,3 +1,11 @@
+/*!
+@file       debugAssetLoader.h
+@author     mohamadamirakmal.b@digipen.edu
+@date       23/11/2025
+@brief      Helpers for asset drag-and-drop payloads in Crashout Engine's debug tools.
+
+//__________________________________________________________________________*/
+
 #pragma once
 #include <cstdint>
 
@@ -16,3 +24,15 @@ struct AssetDragPayload {
     char name[128]{};     // manifest/manager "name" (stem)
     char relPath[256]{};  // relative path under assets/ (optional)
 };
+
+inline const char* ExpectedAssetKindName(AssetKind k) {
+    switch (k) {
+    case AssetKind::Texture:     return "Texture";
+    case AssetKind::SpriteSheet: return "Sprite Sheet";
+    case AssetKind::Audio:       return "Audio";
+    case AssetKind::Shader:      return "Shader";
+    case AssetKind::Scene:       return "Scene";
+    case AssetKind::Prefab:      return "Prefab";
+    default:                     return "Unknown";
+    }
+}

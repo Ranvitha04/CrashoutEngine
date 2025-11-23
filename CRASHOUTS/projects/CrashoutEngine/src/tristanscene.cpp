@@ -53,6 +53,7 @@ static void AddPhysicsEntity(CrashoutsEngine::Entity& entity, Component::RigidBo
 
 }
 
+#if 0
 static void AddPhysicsEntity2(CrashoutsEngine::Entity& entity, Component::RigidBodyComponent&& rigidBody,
 	Component::TransformComponent&& transform, Component::ShapeComponent&& shape, Component::Tag&& name) {
 
@@ -71,6 +72,7 @@ static void AddPhysicsEntity2(CrashoutsEngine::Entity& entity, Component::RigidB
 	globalECS->GetComponent<Component::RigidBodyComponent>(entity)->setInertia(globalECS->GetComponent<Component::ColliderComponent>(entity)->collider->calculateInertia(globalECS->GetComponent<Component::RigidBodyComponent>(entity)->getMass()));
 	
 }
+#endif
 
 static void AddObstacleEntity(CEVec3&& transform, CEVec2&& dimen, std::string&& tag) {
 	CrashoutsEngine::Entity e;
@@ -232,56 +234,56 @@ void Enter([[maybe_unused]] CrashoutsEngine::Entity collidedEntity) {
 	Component::Tag* test{ globalECS->GetComponent<Component::Tag>(collidedEntity) };
 	Component::ShapeComponent* test2{ globalECS->GetComponent<Component::ShapeComponent>(collidedEntity) };
 
-	if (test->id == std::string{ "W" }) test2->color = CEVec3{ 255.f, 255.f, 0.f };
+	if (test->id == std::string{ "W" }) test2->color = CEColor{ 255.f, 255.f, 0.f };
 }
 
 void Stay([[maybe_unused]] CrashoutsEngine::Entity collidedEntity) {
 	Component::ShapeComponent* test{ globalECS->GetComponent<Component::ShapeComponent>(entity1) };
 
-	test->color = CEVec3{ 255.f, 0.f, 0.f };
+	test->color = CEColor{ 255.f, 0.f, 0.f };
 }
 
 void Exit([[maybe_unused]] CrashoutsEngine::Entity collidedEntity) {
 	Component::ShapeComponent* test{ globalECS->GetComponent<Component::ShapeComponent>(entity1) };
 
-	test->color = CEVec3{ 0.f, 0.f, 255.f };
+	test->color = CEColor{ 0.f, 0.f, 255.f };
 }
 
 
 void Enter2([[maybe_unused]] CrashoutsEngine::Entity collidedEntity) {
 	Component::ShapeComponent* test{ globalECS->GetComponent<Component::ShapeComponent>(entity1) };
 
-	test->color = CEVec3{ 0.f, 255.f, 0.f };
+	test->color = CEColor{ 0.f, 255.f, 0.f };
 }
 
 void Stay2([[maybe_unused]] CrashoutsEngine::Entity collidedEntity) {
 	Component::ShapeComponent* test{ globalECS->GetComponent<Component::ShapeComponent>(entity3) };
 
-	test->color = CEVec3{ 255.f, 0.f, 0.f };
+	test->color = CEColor{ 255.f, 0.f, 0.f };
 }
 
 void Exit2([[maybe_unused]] CrashoutsEngine::Entity collidedEntity) {
 	Component::ShapeComponent* test{ globalECS->GetComponent<Component::ShapeComponent>(entity3) };
 
-	test->color = CEVec3{ 0.f, 0.f, 255.f };
+	test->color = CEColor{ 0.f, 0.f, 255.f };
 }
 
 void Enter3([[maybe_unused]] CrashoutsEngine::Entity collidedEntity) {
 	Component::ShapeComponent* test{ globalECS->GetComponent<Component::ShapeComponent>(entity4) };
 
-	test->color = CEVec3{ 255.f, 255.f, 0.f };
+	test->color = CEColor{ 255.f, 255.f, 0.f };
 }
 
 void Stay3([[maybe_unused]] CrashoutsEngine::Entity collidedEntity) {
 	Component::ShapeComponent* test{ globalECS->GetComponent<Component::ShapeComponent>(entity4) };
 
-	test->color = CEVec3{ 255.f, 0.f, 0.f };
+	test->color = CEColor{ 255.f, 0.f, 0.f };
 }
 
 void Exit3([[maybe_unused]] CrashoutsEngine::Entity collidedEntity) {
 	Component::ShapeComponent* test{ globalECS->GetComponent<Component::ShapeComponent>(entity4) };
 
-	test->color = CEVec3{ 0.f, 0.f, 255.f };
+	test->color = CEColor{ 0.f, 0.f, 255.f };
 }
 
 void LoadTristan() {

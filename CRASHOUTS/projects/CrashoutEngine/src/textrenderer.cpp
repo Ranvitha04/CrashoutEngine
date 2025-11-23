@@ -12,11 +12,10 @@ Handles font loading character atlas creation and text rendering with FreeType a
 #include "TextRenderer.h"
 #include "shapes.h"
 #include "glapp.h"
-#include <CEVec3.h>
 #include <iostream>
 #include <fstream>
 #include <sstream>
-#include <iostream>
+//#include <iostream>
 #include "engine.h"
 
 #include "settings.h"
@@ -79,9 +78,9 @@ TextRenderer::TextRenderer(){
 @param color RGB color of the text
 @param fontName The name of the font asset (in AssetManager) to use
 */
-void TextRenderer::RenderText(const std::string& text, GLfloat x, GLfloat y, GLfloat scale, CEVec3 colorCEV, const std::string fontName, bool isWorldSpace) {
+void TextRenderer::RenderText(const std::string& text, GLfloat x, GLfloat y, GLfloat scale, CEColor colorCEV, const std::string fontName, bool isWorldSpace) {
 	scale *= FONT_SCALE;
-    glm::vec3 color{ colorCEV.x / 255.f, colorCEV.y / 255.f, colorCEV.z / 255.f };
+    glm::vec3 color{ colorCEV.r, colorCEV.g, colorCEV.b };
     
     using namespace CrashoutsEngine::Assets;
 	AssetManager& assetManager = AssetManager::GetInstance();
@@ -213,7 +212,7 @@ void TextRenderer::RenderText(const std::string& text, GLfloat x, GLfloat y, GLf
 
 Measures text dimensions and adjusts position so that text is centered on the given coordinates
 */
-void TextRenderer::RenderCenteredText(const std::string& text, GLfloat x, GLfloat y, GLfloat scale, CEVec3 color, const std::string fontName, bool isWorldSpace) {
+void TextRenderer::RenderCenteredText(const std::string& text, GLfloat x, GLfloat y, GLfloat scale, CEColor color, const std::string fontName, bool isWorldSpace) {
 	scale *= FONT_SCALE;
     using namespace CrashoutsEngine::Assets;
     AssetManager& assetManager = AssetManager::GetInstance();

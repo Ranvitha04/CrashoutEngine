@@ -105,6 +105,10 @@ namespace CrashoutsEngine {
             // Use 'filePath' (the name) for the asset name, store 'fullpath' for saving later
             std::unique_ptr<TileMapAsset> newAsset(new TileMapAsset(filePath));
 
+            if (doc.HasMember("layerMask") && doc["layerMask"].IsUint()) {
+                newAsset->GetLayerMaskMutable() = doc["layerMask"].GetUint();
+            }
+
             // 4. Populate Data 
             if (doc.HasMember("tilemap") && doc["tilemap"].IsArray()) {
                 const auto& arr = doc["tilemap"];
@@ -152,6 +156,7 @@ namespace CrashoutsEngine {
             rapidjson::Document doc;
             doc.SetObject();
             rapidjson::Document::AllocatorType& allocator = doc.GetAllocator();
+            doc.AddMember("layerMask", layerMask, allocator);
 
             // 2. Create the "tilemap" array
             rapidjson::Value tileArray(rapidjson::kArrayType);

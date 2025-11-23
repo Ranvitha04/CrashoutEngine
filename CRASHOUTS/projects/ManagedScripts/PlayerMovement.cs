@@ -8,8 +8,8 @@ namespace CrashoutsEngine
         bool isFacingRight = true;
         bool moveLeft;
         bool moveRight;
-        bool isMoving;
-        bool wasMoving;
+        bool isMoving = false;
+        bool wasMoving = false;
         public float jumpPower = 20000f;
         public static bool isJumping = false;
         public static bool isFalling = false;

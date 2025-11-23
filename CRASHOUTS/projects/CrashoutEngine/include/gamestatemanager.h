@@ -25,8 +25,8 @@ enum GameState{
 	AFIQ,
 	TRISTAN,
 	RAN,
-	DESCENT_MENU,
-	DESCENT_GAME,
+	//DESCENT_MENU,
+	//DESCENT_GAME,
 	SCENE
 };
 

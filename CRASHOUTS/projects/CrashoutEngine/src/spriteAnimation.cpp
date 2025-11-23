@@ -215,7 +215,7 @@ namespace Component {
 
         // Use the new dynamic TextureRenderer to render the sprite frame
         CEVec3 position(posX, posY, 0.0f);
-        CEVec3 tint(1.0f, 1.0f, 1.0f); // White tint (no color change)
+        CEColor tint(1.0f, 1.0f, 1.0f); // White tint (no color change)
 
         // Use the flipped version if horizontal flipping is enabled
         // Use a more reasonable base size to prevent scaling artifacts
@@ -424,7 +424,7 @@ namespace Component {
                     anim->flip,
                     tf->rotation,
                     tf->size.x,
-                    CEVec3(1.0f, 1.0f, 1.0f),
+                    CEColor(1.0f, 1.0f, 1.0f),
                     false
                 );
             } else {
@@ -436,7 +436,7 @@ namespace Component {
                     sheet->cols, sheet->rows,
                     tf->rotation,
                     tf->size.x,
-                    CEVec3(1.0f, 1.0f, 1.0f),
+                    CEColor(1.0f, 1.0f, 1.0f),
                     false
                 );
             }

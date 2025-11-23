@@ -6,7 +6,7 @@
 #include "camera.h"
 
 namespace {
-	static void DrawAABBOutline(const CEVec3& minP, const CEVec3& maxP, float thickness, const CEVec3& color) {
+	static void DrawAABBOutline(const CEVec3& minP, const CEVec3& maxP, float thickness, const CEColor& color) {
 		using namespace CrashoutsEngine;
 
 		float z = RenderCamera::engineCamera.GetFar();
@@ -110,7 +110,7 @@ namespace DataStructure {
 	}
 
 	void QuadTree::Draw() {
-		DrawAABBOutline(boundary.min, boundary.max, 0.8f, CEVec3{ 1.f, 0.f, 0.f });
+		DrawAABBOutline(boundary.min, boundary.max, 0.8f, CEColor{ 1.f, 0.f, 0.f });
 
 		for (int i{}; i < 4; ++i) {
 			if (!divided) return;

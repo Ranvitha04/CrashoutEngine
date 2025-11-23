@@ -103,6 +103,107 @@ namespace {
     };
 
     /*!
+    @brief Shared helper to draw a multi-select layer dropdown.
+    @param ecs Reference to ECS (needed to clean up components if a layer is deleted).
+    @param mask Reference to the bitmask integer to edit.
+    */
+    static void DrawLayerMultiSelect(ECS& ecs, unsigned int& mask) {
+        // Get the static map from LayerComponent
+        std::map<std::string, unsigned int>& layerMap = Component::LayerComponent::layers;
+
+        // --- 1. Build the Preview String ---
+        std::string preview = "";
+        int selectedCount = 0;
+
+        for (auto const& [name, bit] : layerMap) {
+            if (mask & bit) {
+                if (selectedCount > 0) preview += ", ";
+                preview += name;
+                selectedCount++;
+            }
+        }
+
+        if (selectedCount == 0) preview = "None";
+        else if (selectedCount > 2) preview = "Mixed...";
+
+        // --- 2. Draw the Multi-Select Dropdown ---
+        if (ImGui::BeginCombo("Layer Mask", preview.c_str())) {
+
+            std::string layerToRemove = "";
+
+            // --- 3. Draw Checkboxes ---
+            for (auto const& [name, bit] : layerMap) {
+                bool isSelected = (mask & bit) != 0;
+
+                float buttonWidth = 25.f;
+                float selectableWidth = ImGui::GetContentRegionAvail().x - buttonWidth - ImGui::GetStyle().ItemSpacing.x;
+
+                // Use DontClosePopups so we can click multiple items
+                if (ImGui::Selectable(name.c_str(), isSelected, ImGuiSelectableFlags_DontClosePopups, ImVec2(selectableWidth, 0))) {
+                    mask ^= bit; // Toggle bit
+                }
+
+                // Delete Button (Don't allow deleting Default)
+                if (name != "Default") {
+                    ImGui::SameLine();
+                    if (ImGui::Button(("X##Remove" + name).c_str(), ImVec2(buttonWidth, 0))) {
+                        layerToRemove = name;
+                    }
+                }
+            }
+
+            // --- 4. Removal Logic (Global removal) ---
+            if (!layerToRemove.empty()) {
+                unsigned int bitToRemove = layerMap[layerToRemove];
+                layerMap.erase(layerToRemove);
+
+                // Clear this bit from ALL entities in the world
+                // (This is why we need the ECS reference)
+                std::vector<LayerComponent>& layerComponents = ecs.GetComponentArray<LayerComponent>().dense;
+                for (LayerComponent& layer : layerComponents) {
+                    layer.currentLayer &= ~bitToRemove;
+                }
+
+                // Also clear it from the current mask being edited immediately
+                mask &= ~bitToRemove;
+            }
+
+            // --- 5. Add New Layer Logic ---
+            ImGui::Separator();
+            static char newLayerBuffer[64] = "";
+            if (ImGui::InputText("##NewLayer", newLayerBuffer, 64, ImGuiInputTextFlags_EnterReturnsTrue)) {
+                if (strlen(newLayerBuffer) > 0) {
+                    if (layerMap.find(newLayerBuffer) == layerMap.end()) {
+                        unsigned int nextBit = 1;
+                        if (!layerMap.empty()) {
+                            auto maxElement = std::max_element(layerMap.begin(), layerMap.end(),
+                                [](const auto& a, const auto& b) { return a.second < b.second; });
+                            nextBit = maxElement->second << 1;
+                        }
+                        layerMap.emplace(newLayerBuffer, nextBit);
+                    }
+                    newLayerBuffer[0] = '\0';
+                }
+            }
+            ImGui::SameLine();
+            if (ImGui::Button("Add")) {
+                if (strlen(newLayerBuffer) > 0 && layerMap.find(newLayerBuffer) == layerMap.end()) {
+                    unsigned int nextBit = 1;
+                    if (!layerMap.empty()) {
+                        auto maxElement = std::max_element(layerMap.begin(), layerMap.end(),
+                            [](const auto& a, const auto& b) { return a.second < b.second; });
+                        nextBit = maxElement->second << 1;
+                    }
+                    layerMap.emplace(newLayerBuffer, nextBit);
+                    newLayerBuffer[0] = '\0';
+                }
+            }
+
+            ImGui::EndCombo();
+        }
+    }
+
+    /*!
     @brief Adapter for editing Component::LayerComponent.
     @details Shows a drop down of layers to choose from and create
     */
@@ -120,128 +221,8 @@ namespace {
         }
         void drawInspector(ECS& ecs, Entity e) override {
             if (auto* c = ecs.GetComponent<Component::LayerComponent>(e)) {
-                // Get the static map
-                std::map<std::string, unsigned int>& layerMap = LayerComponent::layers;
-
-                // --- 1. Build the Preview String (using currentLayer) ---
-                std::string preview = "";
-                int selectedCount = 0;
-
-                // Use const& for iterating
-                for (auto const& [name, bit] : layerMap) {
-                    // Read from c->currentLayer
-                    if (c->currentLayer & bit) {
-                        if (selectedCount > 0) {
-                            preview += ", ";
-                        }
-                        preview += name;
-                        selectedCount++;
-                    }
-                }
-
-                if (selectedCount == 0) {
-                    preview = "Default";
-                }
-                else if (selectedCount > 2) {
-                    preview = "Mixed...";
-                }
-
-                // --- 2. Draw the Multi-Select Dropdown ---
-                if (ImGui::BeginCombo("Layers", preview.c_str())) {
-
-                    std::string layerToRemove = "";
-
-                    // --- 3. Draw Checkboxes for Each Layer (using currentLayer) ---
-                    for (auto const& [name, bit] : layerMap) {
-                        // Read from c->currentLayer
-                        bool isSelected = (c->currentLayer & bit) != 0;
-
-                        float buttonWidth = 25.f;
-                        float selectableWidth = ImGui::GetContentRegionAvail().x - buttonWidth - ImGui::GetStyle().ItemSpacing.x;
-
-                        if (ImGui::Selectable(name.c_str(), isSelected, ImGuiSelectableFlags_DontClosePopups,
-                            ImVec2(selectableWidth, 0))) {
-                            // Write to c->currentLayer
-                            c->currentLayer ^= bit;
-                        }
-
-                        if (name != "Default") {
-                            // Draw the Remove button next to the selectable
-                            ImGui::SameLine(); // Align to the right
-
-                            // Give the button a unique ID using the layer name
-                            if (ImGui::Button(("X##Remove" + name).c_str(), ImVec2(buttonWidth, 0))) {
-                                // Mark this layer for removal and break out of the loop
-                                layerToRemove = name;
-                                break;
-                            }
-                        }
-                    }
-
-                    // --- Removal Logic ---
-                    if (!layerToRemove.empty() && layerToRemove != "Default") {
-                        // Get bit to remove
-                        unsigned int bitToRemove = layerMap[layerToRemove];
-                        // Remove layer from static map
-                        layerMap.erase(layerToRemove);
-
-                        std::vector<LayerComponent>& layerComponents = ecs.GetComponentArray<LayerComponent>().dense;
-                        for (LayerComponent& layer : layerComponents) {
-                            layer.currentLayer &= ~bitToRemove;
-                        }
-                    }
-
-                    // --- 4. Draw the "Add New Layer" UI ---
-                    ImGui::Separator();
-
-                    static char newLayerBuffer[64] = "";
-
-                    if (ImGui::InputText("##NewLayer", newLayerBuffer, 64, ImGuiInputTextFlags_EnterReturnsTrue)) {
-                        if (strlen(newLayerBuffer) > 0) {
-
-                            // Check if layer already exists
-                            if (layerMap.find(newLayerBuffer) == layerMap.end()) {
-
-                                // Calculate the next available bit
-                                unsigned int nextBit = 1; // Default if map is empty
-                                if (!layerMap.empty()) {
-                                    // Find the largest bit value
-                                    auto maxElement = std::max_element(layerMap.begin(), layerMap.end(),
-                                        [](const auto& a, const auto& b) {
-                                            return a.second < b.second;
-                                        });
-                                    // The new bit is the largest one, shifted left
-                                    nextBit = maxElement->second << 1;
-                                }
-
-                                // Emplace with the correct arguments (string, bit)
-                                layerMap.emplace(newLayerBuffer, nextBit);
-                            }
-                            newLayerBuffer[0] = '\0';
-                        }
-                    }
-
-                    // Also add with a button
-                    ImGui::SameLine();
-                    if (ImGui::Button("Add")) {
-                        if (strlen(newLayerBuffer) > 0) {
-                            if (layerMap.find(newLayerBuffer) == layerMap.end()) {
-                                unsigned int nextBit = 1;
-                                if (!layerMap.empty()) {
-                                    auto maxElement = std::max_element(layerMap.begin(), layerMap.end(),
-                                        [](const auto& a, const auto& b) {
-                                            return a.second < b.second;
-                                        });
-                                    nextBit = maxElement->second << 1;
-                                }
-                                layerMap.emplace(newLayerBuffer, nextBit);
-                            }
-                            newLayerBuffer[0] = '\0';
-                        }
-                    }
-
-                    ImGui::EndCombo();
-                }
+                // Use the helper function!
+                DrawLayerMultiSelect(ecs, c->currentLayer);
             }
         }
     };
@@ -720,32 +701,40 @@ namespace {
 
             if (ImGui::BeginDragDropTarget()) {
                 if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSET/PAYLOAD")) {
-                    auto* d = static_cast<const AssetDragPayload*>(payload->Data);
-                    if (d && d->kind == AssetKind::Texture) {
-                        std::string oldTexName = sc->textureName;
+                    // Hard guard: verify this is actually an AssetDragPayload
+                    if (!payload->Data || payload->DataSize != sizeof(AssetDragPayload)) {
+                        LOGW(Debug, "Dropped non-asset payload on Shape texture field");
+                    }
+                    else {
+                        const auto* d = static_cast<const AssetDragPayload*>(payload->Data);
 
-                        // d->relPath is something like "images/ui/button.png"
-                        std::string rel = d->relPath;
-                        const std::string prefix = "images/";
-                        auto pos = rel.find(prefix);
-                        if (pos == 0) {
-                            // Store path relative to the images root, matching the picker
-                            rel = rel.substr(prefix.size());   // e.g. "ui/button.png"
+                        // Only accept textures here
+                        if (d->kind == AssetKind::Texture) {
+                            std::string oldTexName = sc->textureName;
+
+                            // d->relPath is something like "images/ui/button.png"
+                            std::string rel = d->relPath;
+                            const std::string prefix = "images/";
+                            auto pos = rel.find(prefix);
+                            if (pos == 0) {
+                                // Store path relative to the images root, matching the picker
+                                rel = rel.substr(prefix.size());   // e.g. "ui/button.png"
+                            }
+
+                            // Fallback to the asset name if something is weird
+                            sc->textureName = rel.empty() ? std::string(d->name) : rel;
+
+                            // Using a texture now
+                            sc->enableTexture = true;
+
+                            // Undo support
+                            UndoManager::GetInstance().AddCommand(
+                                std::make_unique<CrashoutsEngine::ChangeValueCommand<std::string>>(
+                                    oldTexName, sc->textureName,
+                                    [sc](const std::string& v) { sc->textureName = v; }
+                                )
+                            );
                         }
-
-                        // Fallback to the asset name if something is weird
-                        sc->textureName = rel.empty() ? std::string(d->name) : rel;
-
-                        // Using a texture now
-                        sc->enableTexture = true;
-
-                        // Undo support
-                        UndoManager::GetInstance().AddCommand(
-                            std::make_unique<CrashoutsEngine::ChangeValueCommand<std::string>>(
-                                oldTexName, sc->textureName,
-                                [sc](const std::string& v) { sc->textureName = v; }
-                            )
-                        );
                     }
                 }
                 ImGui::EndDragDropTarget();
@@ -868,70 +857,71 @@ namespace {
             
             // Colour Mixer a la carte
             {
-                static CEVec3 startColor;
+                static CEColor startColor;
                 static bool editingColor = false;
 
                 //CEVec3 oldColor = sc->color;
                 float col[4] = {
-                    sc->color.x * (1.0f / 255.0f),
-                    sc->color.y * (1.0f / 255.0f),
-                    sc->color.z * (1.0f / 255.0f),
-                    1.0f
+                    sc->color.x(),
+                    sc->color.y(),
+                    sc->color.z(),
+                    sc->color.w()
                 };
 
                 ImGuiColorEditFlags flags =
                     ImGuiColorEditFlags_DisplayHSV |
                     ImGuiColorEditFlags_InputRGB |
                     ImGuiColorEditFlags_PickerHueBar |
-                    ImGuiColorEditFlags_NoAlpha;
+                    ImGuiColorEditFlags_AlphaBar;
 
                 // start editing when user opens popup
-                if (ImGui::ColorEdit3("Color", col, flags) && !editingColor) {
+                if (ImGui::ColorEdit4("Color", col, flags) && !editingColor) {
                     editingColor = true;
                     startColor = sc->color;
                 }
                 if (ImGui::IsItemDeactivated() && editingColor) {
                     // item lost focus (enter pressed / tab / clicked away)
-                    CEVec3 newColor = { col[0] * 255.f, col[1] * 255.f, col[2] * 255.f };
+                    CEColor newColor = { col[0], col[1], col[2], col[3] };
                     if (newColor != startColor) {
                         UndoManager::GetInstance().AddCommand(
-                            std::make_unique<CrashoutsEngine::ChangeValueCommand<CEVec3>>(
+                            std::make_unique<CrashoutsEngine::ChangeValueCommand<CEColor>>(
                                 startColor, newColor,
-                                [sc](const CEVec3& v) { sc->color = v; }));
+                                [sc](const CEColor& v) { sc->color = v; }));
                     }
                     editingColor = false;
                 }
 
                 // apply live color
-                sc->color = { col[0] * 255.f, col[1] * 255.f, col[2] * 255.f };
+                sc->color = { col[0], col[1], col[2], col[3]};
 
                 if (ImGui::SmallButton("Open Color Picker"))
                     ImGui::OpenPopup("##shape_color_picker");
 
                 if (ImGui::BeginPopup("##shape_color_picker")) {
-                    static CEVec3 popupStart;
+                    static CEColor popupStart;
                     static bool popupEditing = false;
 
                     // snapshot when opened
                     if (!popupEditing) { popupEditing = true; popupStart = sc->color; }
 
-                    float pick[3] = {
-                        sc->color.x / 255.f,
-                        sc->color.y / 255.f,
-                        sc->color.z / 255.f
+                    float pick[4] = {
+                        sc->color.x() ,
+                        sc->color.y() ,
+                        sc->color.z() ,
+                        sc->color.w()
                     };
-                    if (ImGui::ColorPicker3("##picker", pick, flags)) {
-                        sc->color = { pick[0] * 255.f, pick[1] * 255.f, pick[2] * 255.f };
+                    if (ImGui::ColorPicker4("##picker", pick, flags)) {
+                        sc->color = { pick[0], pick[1], pick[2], pick[3]};
                     }
 
                     // detect popup close
                     if (!ImGui::IsWindowAppearing() && !ImGui::IsWindowFocused()) {
-                        CEVec3 newCol = sc->color;
+                        CEColor newCol = sc->color;
                         if (popupEditing && newCol != popupStart) {
                             UndoManager::GetInstance().AddCommand(
-                                std::make_unique<CrashoutsEngine::ChangeValueCommand<CEVec3>>(
+                                std::make_unique<CrashoutsEngine::ChangeValueCommand<CEColor>>(
                                     popupStart, newCol,
-                                    [sc](const CEVec3& v) { sc->color = v; }));
+                                    [sc](const CEColor& v) { sc->color = v; }));
                         }
                         popupEditing = false;
                         ImGui::CloseCurrentPopup();
@@ -1035,10 +1025,10 @@ namespace {
             
             {
                 float col[4] = {
-                    fc->color.x * (1.0f / 255.0f),
-                    fc->color.y * (1.0f / 255.0f),
-                    fc->color.z * (1.0f / 255.0f),
-                    1.0f
+                    fc->color.x(),
+                    fc->color.y(),
+                    fc->color.z(),
+                    fc->color.w()
                 };
 
                 ImGuiColorEditFlags flags =
@@ -1047,11 +1037,12 @@ namespace {
                     ImGuiColorEditFlags_PickerHueBar |
                     ImGuiColorEditFlags_NoAlpha;
 
-                if (ImGui::ColorEdit3("Color", col, flags) || ImGui::IsItemDeactivatedAfterEdit())
+                if (ImGui::ColorEdit4("Color", col, flags) || ImGui::IsItemDeactivatedAfterEdit())
                 {
-                    fc->color.x = col[0] * 255.0f;
-                    fc->color.y = col[1] * 255.0f;
-                    fc->color.z = col[2] * 255.0f;
+                    fc->color.x() = col[0];
+                    fc->color.y() = col[1];
+                    fc->color.z() = col[2];
+                    fc->color.w() = col[3];
                 }
 
                 if (ImGui::SmallButton("Open Color Picker"))
@@ -1059,11 +1050,12 @@ namespace {
 
                 if (ImGui::BeginPopup("##shape_color_picker"))
                 {
-                    if (ImGui::ColorPicker3("##picker", col, flags))
+                    if (ImGui::ColorPicker4("##picker", col, flags))
                     {
-                        fc->color.x = col[0] * 255.0f;
-                        fc->color.y = col[1] * 255.0f;
-                        fc->color.z = col[2] * 255.0f;
+                        fc->color.x() = col[0];
+                        fc->color.y() = col[1];
+                        fc->color.z() = col[2];
+                        fc->color.w() = col[3];
                     }
                     ImGui::EndPopup();
                 }
@@ -1118,28 +1110,38 @@ namespace {
             }
 
             if (ImGui::BeginDragDropTarget()) {
-                if (const ImGuiPayload* p = ImGui::AcceptDragDropPayload("ASSET/PAYLOAD")) {
-                    auto* d = static_cast<const AssetDragPayload*>(p->Data);
-                    if (d && d->kind == AssetKind::Audio) {
-                        std::filesystem::path relPath = d->relPath;
-                        std::string ext = relPath.extension().string();
-                        std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+                if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSET/PAYLOAD")) {
+                    // Hard guard: ignore wrong payload types
+                    if (!payload->Data || payload->DataSize != sizeof(AssetDragPayload)) {
+                        LOGW(Debug, "Dropped non-audio payload on AudioComponent eventPath");
+                    }
+                    else {
+                        const auto* d = static_cast<const AssetDragPayload*>(payload->Data);
 
-                        std::string rel = relPath.generic_string();
-                        const std::string prefix = "audio/";
-                        auto pos = rel.find(prefix);
-                        if (pos == 0) {
-                            rel = rel.substr(prefix.size());
-                        }
-                        if (ext == ".wav" || ext == ".ogg" || ext == ".mp3") {
-                            c->eventPath = rel;
-                        }
-                        else {
-                            // Strip extension and prepend event:/
-                            if (auto dot = rel.find_last_of('.'); dot != std::string::npos) {
-                                rel.erase(dot);
+                        // Only accept Audio assets here
+                        if (d->kind == AssetKind::Audio) {
+                            std::filesystem::path relPath = d->relPath;
+                            std::string ext = relPath.extension().string();
+                            std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+
+                            std::string rel = relPath.generic_string();
+                            const std::string prefix = "audio/";
+                            auto pos = rel.find(prefix);
+                            if (pos == 0) {
+                                rel = rel.substr(prefix.size());
                             }
-                            c->eventPath = std::string("event:/") + rel;
+
+                            if (ext == ".wav" || ext == ".ogg" || ext == ".mp3") {
+                                // raw clip → just store relative path
+                                c->eventPath = rel;
+                            }
+                            else {
+                                // bank event → strip extension and prepend event:/
+                                if (auto dot = rel.find_last_of('.'); dot != std::string::npos) {
+                                    rel.erase(dot);
+                                }
+                                c->eventPath = std::string("event:/") + rel;
+                            }
                         }
                     }
                 }
@@ -1664,13 +1666,13 @@ public class )" << file.stem().string() << R"(
             ImGui::SeparatorText("Shape Colors");
 
             // Helper function to convert 0-255 CEVec3 to 0-1 float[3] for ImGui's picker
-            auto EditColor = [](const char* label, CEVec3& colorVec) {
-                float col[3] = { colorVec.x / 255.0f, colorVec.y / 255.0f, colorVec.z / 255.0f };
-                if (ImGui::ColorEdit3(label, col)) {
-                    colorVec.x = col[0] * 255.0f;
-                    colorVec.y = col[1] * 255.0f;
-                    colorVec.y = col[1] * 255.0f;
-                    colorVec.z = col[2] * 255.0f;
+            auto EditColor = [](const char* label, CEColor& colorVec) {
+                float col[4] = { colorVec.x(), colorVec.y(), colorVec.z(), colorVec.w()};
+                if (ImGui::ColorEdit4(label, col)) {
+                    colorVec.x() = col[0];
+                    colorVec.y() = col[1];
+                    colorVec.z() = col[2];
+                    colorVec.w() = col[3];
                 }
                 };
 
@@ -2167,6 +2169,10 @@ public class )" << file.stem().string() << R"(
                     // Scrollable list of rules
                     ImGui::BeginChild("RulesList", ImVec2(0, 0), true);
 
+                    // Layer option
+                    ImGui::Text("Layer Filter:");
+                    DrawLayerMultiSelect(ecs, asset->GetLayerMaskMutable());
+
                     auto& rules = asset->GetTilesMutable();
                     int ruleToDelete = -1;
 
@@ -2190,9 +2196,9 @@ public class )" << file.stem().string() << R"(
                             }
 
                             // B. Collider Type
-                            const char* colliderNames[] = { "Sphere", "AABB", "OBB" };
+                            const char* colliderNames[] = { "Sphere", "AABB", "Polygon", "OBB", "None"};
                             int currentItem = (int)rule.colliderType;
-                            if (ImGui::Combo("Collider", &currentItem, colliderNames, 3)) {
+                            if (ImGui::Combo("Collider", &currentItem, colliderNames, 5)) {
                                 rule.colliderType = (Collision::ColliderType)currentItem;
                             }
 

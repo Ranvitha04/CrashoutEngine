@@ -41,13 +41,6 @@ when shutting down the engine.
 #include <glm/gtc/type_ptr.hpp>
 #include <filesystem>  // Add this include
 //#include <stb_image.h>
-#include <iostream>
-#include <fstream>
-#include <algorithm>
-#include <cctype>
-#include <vector>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
 #include "rendering.h"
 #include "stb_image.h"
 
@@ -75,6 +68,7 @@ namespace CrashoutsEngine {
 
 
         TextureAsset::texdata TextureAsset::LoadImageData(const std::string& filePath, int& width, int& height) {
+
             int channels;
 
             texdata data = stbi_load(filePath.c_str(), &width, &height, &channels, STBI_rgb_alpha);
@@ -337,7 +331,7 @@ namespace Component {
         const CEVec2& size,
         float rotation,
         float scale,
-        const CEVec3& tint,
+        const CEColor& tint,
         bool modulate) {
 
         // Auto-initialize if needed
@@ -380,7 +374,7 @@ namespace Component {
         bool flipHorizontal,
         float rotation,
         float scale,
-        const CEVec3& tint,
+        const CEColor& tint,
         bool modulate) {
 
         // Auto-initialize if needed
@@ -429,7 +423,7 @@ namespace Component {
         int totalCols, int totalRows,
         float rotation,
         float scale,
-        const CEVec3& tint,
+        const CEColor& tint,
         bool modulate) {
 
         //GLuint textureHandle = GetOrLoadTexture(texturePath);
@@ -463,7 +457,7 @@ namespace Component {
         int totalCols, int totalRows,
         float rotation,
         float scale,
-        const CEVec3& tint,
+        const CEColor& tint,
         bool modulate) {
 
         // Auto-initialize if needed
@@ -500,7 +494,7 @@ namespace Component {
         const CEVec2& size,
         float rotation,
         float scale,
-        const CEVec3& tint,
+        const CEColor& tint,
         bool modulate) {
 
         // Auto-initialize if needed
@@ -637,7 +631,7 @@ namespace Component {
         const CEVec2& size,
         float rotation,
         float scale,
-        const CEVec3& tint,
+        const CEColor& tint,
         bool modulate) {
 
         // Get the rendering instance and use shader
@@ -691,7 +685,7 @@ namespace Component {
         // Set tint color
         GLint tint_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "u_tint");
         if (tint_loc != -1) {
-            glUniform3f(tint_loc, tint.x, tint.y, tint.z);
+            glUniform4f(tint_loc, tint.r, tint.g, tint.b, tint.a);
         }
 
         // Bind texture to texture unit 6
@@ -723,7 +717,7 @@ namespace Component {
         const CEVec2& size,
         float rotation,
         float scale,
-        const CEVec3& tint,
+        const CEColor& tint,
         bool modulate,
         float u1, float v1, float u2, float v2) {
 
@@ -797,7 +791,7 @@ namespace Component {
         // Set tint color
         GLint tint_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "u_tint");
         if (tint_loc != -1) {
-            glUniform3f(tint_loc, tint.x, tint.y, tint.z);
+            glUniform4f(tint_loc, tint.r, tint.g, tint.b, tint.a);
         }
 
         // Bind texture to texture unit 6

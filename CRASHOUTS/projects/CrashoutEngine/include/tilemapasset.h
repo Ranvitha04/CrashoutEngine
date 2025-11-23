@@ -84,6 +84,8 @@ namespace CrashoutsEngine {
 			const std::string& GetTileMapName() const { return tileMapName; }
             const std::vector<RuleTile>& GetTiles() const { return tiles; }
             std::vector<RuleTile>& GetTilesMutable() { return tiles; }
+            const unsigned int& GetLayerMask() { return layerMask; }
+            unsigned int& GetLayerMaskMutable() { return layerMask; }
 
             // SETTERS
             /*!
@@ -122,6 +124,7 @@ namespace CrashoutsEngine {
             
         private:
 			std::string tileMapName;        // Name of the tilemap
+            unsigned int layerMask = 0;
             std::vector<RuleTile> tiles;    // Vector of RuleTile s            
         };
     }

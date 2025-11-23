@@ -1,4 +1,3 @@
-
 /*!
 @file        shapes.cpp
 @author      ranvitha@digipen.edu
@@ -20,7 +19,7 @@ scaling) to shape vertices for flexible rendering.
 /* _________________________________________________________________________
 ----------------------------------------------------------------------------- */
 
-/*                                                                   includes
+/* includes
 ----------------------------------------------------------------------------- */
 
 #include "shapes.h"
@@ -36,8 +35,8 @@ scaling) to shape vertices for flexible rendering.
 #include <glm/gtc/type_ptr.hpp>
 #include "textureasset.h"
 
-
-
+// Ensure we are using the new Color definition
+#include "CEColor.h"
 
 namespace Component {
 
@@ -91,7 +90,7 @@ namespace Component {
         }
     }
 
-    void Shapes::CreateLine(const CEVec3& start, const CEVec3& end, float thickness, const CEVec3& color, const bool isWorldSpace) {
+    void Shapes::CreateLine(const CEVec3& start, const CEVec3& end, float thickness, const CEColor& color, const bool isWorldSpace) {
         Component::Rendering& renderer = Component::Rendering::Get();
 
         // 1. CALCULATE VERTICES IN FINAL WORLD-SPACE
@@ -112,10 +111,13 @@ namespace Component {
             CEVec3(end.x + normal.x, end.y + normal.y, end.z)
         };
 
-        std::array<CEVec3, 4> clr_vtx{ color, color, color, color };
+        // CEColor Copy Constructor handles this
+        CEVec3 rgbColor(color.x(), color.y(), color.z());
+        std::array<CEVec3, 4> clr_vtx{ rgbColor, rgbColor, rgbColor, rgbColor };
         std::array<GLushort, 6> idx_vtx{ 0, 1, 2, 0, 2, 3 };
 
         // 2. SETUP BUFFERS (with final vertex data)
+        // Note: CEColor is contiguous floats (rgba), so passing .data() works for OpenGL
         renderer.SetupBuffersOptimized(pos_vtx.data(), sizeof(pos_vtx),
             clr_vtx.data(), sizeof(clr_vtx),
             idx_vtx.data(), idx_vtx.size(),
@@ -148,12 +150,12 @@ namespace Component {
         if (useTexture_loc != -1) glUniform1i(useTexture_loc, 0); // Use vertex colors
 
         GLint tint_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "u_tint");
-        if (tint_loc != -1) glUniform3f(tint_loc, 1.0f, 1.0f, 1.0f); // No tint
+        if (tint_loc != -1) glUniform4f(tint_loc, 1.0f, 1.0f, 1.0f, 1.f); // No tint
 
         renderer.Draw();
     }
 
-    void Shapes::CreateRectangle(const CEVec2& transformSize, const CEVec3& position, float rotation, const CEVec3& color, const bool isWorldSpace) {
+    void Shapes::CreateRectangle(const CEVec2& transformSize, const CEVec3& position, float rotation, const CEColor& color, const bool isWorldSpace) {
         Component::Rendering& renderer = Component::Rendering::Get();
 
         // Rectangle vertices centered at origin
@@ -166,7 +168,7 @@ namespace Component {
             CEVec3(-halfWidth, halfHeight, 0.0f)
         };
 
-        std::array<CEVec3, 4> clr_vtx{ color, color, color, color };
+        std::array<CEColor, 4> clr_vtx{ color, color, color, color };
         std::array<GLushort, 4> idx_vtx{ 0, 1, 2, 3 };
 
 
@@ -197,24 +199,24 @@ namespace Component {
 
         renderer.shdr_pgm->SetUniform("uModel", finalModelMatrix);
         renderer.shdr_pgm->SetUniform("u_useTexture", 0);
-        
-        renderer.shdr_pgm->SetUniform("u_tint", 1.0f, 1.0f, 1.0f);
+
+        renderer.shdr_pgm->SetUniform("u_tint", 1.0f, 1.0f, 1.0f, 1.f);
 
         GLint useTexture_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "u_useTexture");
         if (useTexture_loc != -1) glUniform1i(useTexture_loc, 0); // Use vertex colors, not texture
 
         GLint tint_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "u_tint");
-        if (tint_loc != -1) glUniform3f(tint_loc, 1.0f, 1.0f, 1.0f); // No tint modification
+        if (tint_loc != -1) glUniform4f(tint_loc, 1.0f, 1.0f, 1.0f, 1.f); // No tint modification
 
         renderer.Draw();
     }
 
-    void Shapes::CreateTriangle(const CEVec2& transformSize, const CEVec3& pos, float rotation, const CEVec3& color, const bool isWorldSpace) {
+    void Shapes::CreateTriangle(const CEVec2& transformSize, const CEVec3& pos, float rotation, const CEColor& color, const bool isWorldSpace) {
         Component::Rendering& renderer = Component::Rendering::Get();
 
-        CEVec3 p1 = pos + CEVec3{-.5f, -.5f, 0.f};
-        CEVec3 p2 = pos + CEVec3{.5f, -.5f, 0.f};
-        CEVec3 p3 = pos + CEVec3{0.f, .5f, 0.f};
+        CEVec3 p1 = pos + CEVec3{ -.5f, -.5f, 0.f };
+        CEVec3 p2 = pos + CEVec3{ .5f, -.5f, 0.f };
+        CEVec3 p3 = pos + CEVec3{ 0.f, .5f, 0.f };
 
         // Triangle vertices in world coordinates
         std::array<CEVec3, 3> pos_vtx{
@@ -223,7 +225,7 @@ namespace Component {
             CEVec3(p3.x, p3.y, p3.z)
         };
 
-        std::array<CEVec3, 3> clr_vtx{ color, color, color };
+        std::array<CEColor, 3> clr_vtx{ color, color, color };
         std::array<GLushort, 3> idx_vtx{ 0, 1, 2 };
 
 
@@ -257,18 +259,18 @@ namespace Component {
 
         renderer.shdr_pgm->SetUniform("uModel", finalModelMatrix);
         renderer.shdr_pgm->SetUniform("u_useTexture", 0);
-        
+
 
         GLint useTexture_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "u_useTexture");
         if (useTexture_loc != -1) glUniform1i(useTexture_loc, 0); // Use vertex colors, not texture
 
         GLint tint_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "u_tint");
-        if (tint_loc != -1) glUniform3f(tint_loc, 1.0f, 1.0f, 1.0f); // No tint modification
+        if (tint_loc != -1) glUniform4f(tint_loc, 1.0f, 1.0f, 1.0f, 1.f); // No tint modification
 
         renderer.Draw();
     }
 
-    void Shapes::CreateCircle(const CEVec2& transformSize, const CEVec3& position, int segments, float rotation, const CEVec3& color, const bool isWorldSpace) {
+    void Shapes::CreateCircle(const CEVec2& transformSize, const CEVec3& position, int segments, float rotation, const CEColor& color, const bool isWorldSpace) {
         Component::Rendering& renderer = Component::Rendering::Get();
 
         //minimum segments for circle
@@ -277,7 +279,7 @@ namespace Component {
 
 
         std::vector<CEVec3> pos_vtx;
-        std::vector<CEVec3> clr_vtx;
+        std::vector<CEColor> clr_vtx;
         std::vector<GLushort> idx_vtx;
 
         // Center vertex at origin (will be transformed to position)
@@ -296,7 +298,7 @@ namespace Component {
         // Generate indices for triangle fan
         for (int i = 0; i < segments; ++i) {
             // Ensure indices fit within GLushort range (0-65535)
-            idx_vtx.push_back(0);                                  // Center vertex
+            idx_vtx.push_back(0);                              // Center vertex
             idx_vtx.push_back(static_cast<GLushort>(i + 1));       // Current perimeter vertex
             idx_vtx.push_back(static_cast<GLushort>(i + 2));       // Next perimeter vertex
         }
@@ -304,7 +306,7 @@ namespace Component {
 
         renderer.SetupBuffersOptimized(
             pos_vtx.data(), pos_vtx.size() * sizeof(CEVec3),
-            clr_vtx.data(), clr_vtx.size() * sizeof(CEVec3),
+            clr_vtx.data(), clr_vtx.size() * sizeof(CEColor), // Updated to use sizeof(CEColor)
             idx_vtx.data(), idx_vtx.size(),
             GL_TRIANGLES);
 
@@ -330,18 +332,18 @@ namespace Component {
         }
 
         renderer.shdr_pgm->SetUniform("uModel", finalModelMatrix);
-        
+
         GLint useTexture_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "u_useTexture");
         if (useTexture_loc != -1) glUniform1i(useTexture_loc, 0); // Use vertex colors, not texture
 
         GLint tint_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "u_tint");
-        if (tint_loc != -1) glUniform3f(tint_loc, 1.0f, 1.0f, 1.0f); // No tint modification
+        if (tint_loc != -1) glUniform4f(tint_loc, 1.0f, 1.0f, 1.0f, 1.f); // No tint modification
 
         renderer.Draw();
     }
 
     void Shapes::CreateTexturedRectangle(const CEVec2& transformSize, const std::string& texturePath, const CEVec3& position, float rotation,
-        const CEVec3& tint, CEVec2 const& uvSize, const bool isWorldSpace) {
+        const CEColor& tint, CEVec2 const& uvSize, const bool isWorldSpace) {
         Component::Rendering& renderer = Component::Rendering::Get();
 
         GLuint textureHandle = Component::TextureRenderer::GetTextureHandle(texturePath);
@@ -360,17 +362,17 @@ namespace Component {
             CEVec3(-halfWidth, halfHeight, 0.0f)
         };
 
-        std::array<CEVec3, 4> clr_vtx{ tint, tint, tint, tint };
+        std::array<CEColor, 4> clr_vtx{ tint, tint, tint, tint };
 
         float uvWidthMax = uvSize.x;
         float uvHeightMax = uvSize.y;
 
 
         std::array<CEVec2, 4> tex_vtx{
-            CEVec2(0.0f, uvHeightMax),       // bottom left
+            CEVec2(0.0f, uvHeightMax),        // bottom left
             CEVec2(uvWidthMax, uvHeightMax), // bottom right
-            CEVec2(uvWidthMax, 0.0f),        // top right
-            CEVec2(0.0f, 0.0f)               // top left
+            CEVec2(uvWidthMax, 0.0f),         // top right
+            CEVec2(0.0f, 0.0f)                // top left
         };
 
         std::array<GLushort, 6> idx_vtx{ 0, 1, 2, 0, 2, 3 };
@@ -403,7 +405,7 @@ namespace Component {
         }
 
         renderer.shdr_pgm->SetUniform("uModel", finalModelMatrix);
-        
+
 
         // TextureAsset uniforms
         GLint useTexture_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "u_useTexture");
@@ -412,8 +414,9 @@ namespace Component {
         GLint tex_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "uTex2d");
         if (tex_loc != -1) glUniform1i(tex_loc, 0);
 
+        // Updated tint usage: Accessed via .r, .g, .b (members) instead of .x, .y, .z
         GLint tint_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "u_tint");
-        if (tint_loc != -1) glUniform3f(tint_loc, tint.x, tint.y, tint.z);
+        if (tint_loc != -1) glUniform4f(tint_loc, tint.r, tint.g, tint.b, tint.a);
 
         // Enable Blending for Transparency
         glEnable(GL_BLEND);    // Ensure blending is enabled
@@ -427,7 +430,7 @@ namespace Component {
     }
 
     void Shapes::CreateTexturedTriangle(const CEVec2& transformSize, const std::string& texturePath, const CEVec3& pos,
-        float rotation, const CEVec3& tint, const CEVec2& uvSize, const bool isWorldSpace) {
+        float rotation, const CEColor& tint, const CEVec2& uvSize, const bool isWorldSpace) {
         Component::Rendering& renderer = Component::Rendering::Get();
         CEVec3 p1 = pos + CEVec3{ -.5f, -.5f, 0.f };
         CEVec3 p2 = pos + CEVec3{ .5f, -.5f, 0.f };
@@ -445,7 +448,8 @@ namespace Component {
             CEVec3(p3.x, p3.y, p3.z)
         };
 
-        std::array<CEVec3, 3> clr_vtx{ tint, tint, tint };
+        // FIXED: Changed CEVec3 to CEColor to match the type of 'tint' and prevent data slicing
+        std::array<CEColor, 3> clr_vtx{ tint, tint, tint };
 
         float uvWidthMax = uvSize.x;
         float uvHeightMax = uvSize.y;
@@ -496,7 +500,7 @@ namespace Component {
         }
 
         renderer.shdr_pgm->SetUniform("uModel", finalModelMatrix);
-        
+
 
         GLint useTexture_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "u_useTexture");
         if (useTexture_loc != -1) glUniform1i(useTexture_loc, 1);
@@ -504,8 +508,9 @@ namespace Component {
         GLint tex_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "uTex2d");
         if (tex_loc != -1) glUniform1i(tex_loc, 0);
 
+        // Updated tint usage: Accessed via .r, .g, .b (members) instead of .x, .y, .z
         GLint tint_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "u_tint");
-        if (tint_loc != -1) glUniform3f(tint_loc, tint.x, tint.y, tint.z);
+        if (tint_loc != -1) glUniform4f(tint_loc, tint.r, tint.g, tint.b, tint.a);
 
         // Enable Blending for Transparency
         glEnable(GL_BLEND);    // Ensure blending is enabled
@@ -518,4 +523,3 @@ namespace Component {
         glDisable(GL_BLEND);
     }
 }
-

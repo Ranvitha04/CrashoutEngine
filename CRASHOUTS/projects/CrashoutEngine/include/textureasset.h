@@ -26,6 +26,7 @@
 #include "entitymanager.h"
 #include "CEVec2.h"
 #include "CEVec3.h"
+#include "CEColor.h"
 
 
 // Forward declarations
@@ -175,13 +176,13 @@ namespace Component {
         @brief Core rendering function for textured quads
         */
         static void RenderQuad(GLuint textureHandle, const CEVec3& position, const CEVec2& size,
-            float rotation, float scale, const CEVec3& tint, bool modulate);
+            float rotation, float scale, const CEColor& tint, bool modulate);
 
         /*!
         @brief Core rendering function for textured quads with custom UV coordinates
         */
         static void RenderQuadWithUV(GLuint textureHandle, const CEVec3& position, const CEVec2& size,
-            float rotation, float scale, const CEVec3& tint, bool modulate,
+            float rotation, float scale, const CEColor& tint, bool modulate,
             float u1, float v1, float u2, float v2);
 
         /*!
@@ -220,14 +221,14 @@ namespace Component {
         */
         static void CreateTexturedQuad(const std::string& textureName, const CEVec3& position,
             const CEVec2& size, float rotation = 0.0f, float scale = 1.0f,
-            const CEVec3& tint = CEVec3(1.0f, 1.0f, 1.0f), bool modulate = false);
+            const CEColor& tint = CEColor(1.0f, 1.0f, 1.0f), bool modulate = false);
 
         /*!
         @brief Create and render a textured quad from existing texture handle
         */
         static void CreateTexturedQuad(GLuint textureHandle, const CEVec3& position,
             const CEVec2& size, float rotation = 0.0f, float scale = 1.0f,
-            const CEVec3& tint = CEVec3(1.0f, 1.0f, 1.0f), bool modulate = false);
+            const CEColor& tint = CEColor(1.0f, 1.0f, 1.0f), bool modulate = false);
 
         /*!
         @brief Create and render a sprite sheet frame from file path
@@ -235,7 +236,7 @@ namespace Component {
         static void CreateSpriteFrame(const std::string& texturePath, const CEVec3& position,
             const CEVec2& size, int frameX, int frameY, int totalCols, int totalRows,
             float rotation = 0.0f, float scale = 1.0f,
-            const CEVec3& tint = CEVec3(1.0f, 1.0f, 1.0f), bool modulate = false);
+            const CEColor& tint = CEColor(1.0f, 1.0f, 1.0f), bool modulate = false);
 
         /*!
         @brief Create and render a sprite sheet frame using existing texture handle
@@ -243,7 +244,7 @@ namespace Component {
         static void CreateSpriteFrame(GLuint textureHandle, const CEVec3& position,
             const CEVec2& size, int frameX, int frameY, int totalCols, int totalRows,
             float rotation = 0.0f, float scale = 1.0f,
-            const CEVec3& tint = CEVec3(1.0f, 1.0f, 1.0f), bool modulate = false);
+            const CEColor& tint = CEColor(1.0f, 1.0f, 1.0f), bool modulate = false);
 
         /*!
         @brief Create and render a sprite sheet frame with horizontal flipping support
@@ -251,7 +252,7 @@ namespace Component {
         static void CreateSpriteFrameFlipped(GLuint textureHandle, const CEVec3& position,
             const CEVec2& size, int frameX, int frameY, int totalCols, int totalRows,
             bool flipHorizontal, float rotation = 0.0f, float scale = 1.0f,
-            const CEVec3& tint = CEVec3(1.0f, 1.0f, 1.0f), bool modulate = false);
+            const CEColor& tint = CEColor(1.0f, 1.0f, 1.0f), bool modulate = false);
 
         /*!
         @brief Preload a texture into cache

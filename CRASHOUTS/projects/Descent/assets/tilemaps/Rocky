@@ -1,8 +1,9 @@
 {
+    "layerMask": 2,
     "tilemap": [
         {
             "texAssetName": "Test\\Middle.png",
-            "colliderType": "AABB",
+            "colliderType": "NONE",
             "ruleBitMap": 11
         },
         {
