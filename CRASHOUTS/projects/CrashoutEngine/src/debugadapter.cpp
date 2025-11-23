@@ -22,6 +22,7 @@ runtime-extensible and project-agnostic.
 #include <numeric>
 #include <fstream>
 #include "debugdefaults.h"
+#include "debugAssetLoader.h"
 #include "changevaluecommand.h"
 #include "undomanager.h"
 
@@ -38,6 +39,7 @@ runtime-extensible and project-agnostic.
 #include "ppcomponent.h"
 #include "collidercomponent.h"
 #include "tilemapcomponent.h"
+#include "keyframe.h" // For AnimationComponent
 
 // FOR GAME GUI
 #include "buttoncomponent.h"
@@ -63,7 +65,6 @@ using namespace CrashoutsEngine;
 using namespace Component;
 
 //----------------------------------------------------------------------------- file-local state & helpers
-
 namespace {
     f32 max(f32 x1, f32 y2, f32 z3) {
         return std::max(std::max(x1, y2), z3);
@@ -717,6 +718,39 @@ namespace {
             ImGui::SetNextItemWidth(ImGui::GetFontSize() * 18.0f);
             ImGui::InputText("##tex_name", buf, sizeof(buf), ImGuiInputTextFlags_ReadOnly);
 
+            if (ImGui::BeginDragDropTarget()) {
+                if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSET/PAYLOAD")) {
+                    auto* d = static_cast<const AssetDragPayload*>(payload->Data);
+                    if (d && d->kind == AssetKind::Texture) {
+                        std::string oldTexName = sc->textureName;
+
+                        // d->relPath is something like "images/ui/button.png"
+                        std::string rel = d->relPath;
+                        const std::string prefix = "images/";
+                        auto pos = rel.find(prefix);
+                        if (pos == 0) {
+                            // Store path relative to the images root, matching the picker
+                            rel = rel.substr(prefix.size());   // e.g. "ui/button.png"
+                        }
+
+                        // Fallback to the asset name if something is weird
+                        sc->textureName = rel.empty() ? std::string(d->name) : rel;
+
+                        // Using a texture now
+                        sc->enableTexture = true;
+
+                        // Undo support
+                        UndoManager::GetInstance().AddCommand(
+                            std::make_unique<CrashoutsEngine::ChangeValueCommand<std::string>>(
+                                oldTexName, sc->textureName,
+                                [sc](const std::string& v) { sc->textureName = v; }
+                            )
+                        );
+                    }
+                }
+                ImGui::EndDragDropTarget();
+            }
+
             ImGui::SameLine();
             ImGui::TextDisabled("TextureAsset");
 
@@ -1082,6 +1116,36 @@ namespace {
             if (ImGui::IsItemEdited() || ImGui::IsItemDeactivatedAfterEdit()) {
                 c->eventPath = buf;
             }
+
+            if (ImGui::BeginDragDropTarget()) {
+                if (const ImGuiPayload* p = ImGui::AcceptDragDropPayload("ASSET/PAYLOAD")) {
+                    auto* d = static_cast<const AssetDragPayload*>(p->Data);
+                    if (d && d->kind == AssetKind::Audio) {
+                        std::filesystem::path relPath = d->relPath;
+                        std::string ext = relPath.extension().string();
+                        std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+
+                        std::string rel = relPath.generic_string();
+                        const std::string prefix = "audio/";
+                        auto pos = rel.find(prefix);
+                        if (pos == 0) {
+                            rel = rel.substr(prefix.size());
+                        }
+                        if (ext == ".wav" || ext == ".ogg" || ext == ".mp3") {
+                            c->eventPath = rel;
+                        }
+                        else {
+                            // Strip extension and prepend event:/
+                            if (auto dot = rel.find_last_of('.'); dot != std::string::npos) {
+                                rel.erase(dot);
+                            }
+                            c->eventPath = std::string("event:/") + rel;
+                        }
+                    }
+                }
+                ImGui::EndDragDropTarget();
+            }
+
             ImGui::SameLine();
             ImGui::TextDisabled("Event");
 
@@ -1346,12 +1410,28 @@ namespace {
                 if (inst.ClassName.size() < sizeof(buf))
                     std::memcpy(buf, inst.ClassName.data(), inst.ClassName.size());
 
+                // Plain typing still works
                 if (ImGui::InputText("Class Name", buf, sizeof(buf))) {
                     inst.ClassName = buf;
                     if (!inst.ClassName.empty() && monoReady) {
                         sc->Destroy();
                         sc->Initialize(MonoManager::GetDomain(), MonoManager::GetAssembly());
                     }
+                }
+
+                // Also accept drag-dropped script class names
+                if (ImGui::BeginDragDropTarget()) {
+                    if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("SCRIPT/CLASS")) {
+                        const char* dropped = static_cast<const char*>(payload->Data);
+                        if (dropped && dropped[0] != '\0') {
+                            inst.ClassName = dropped;
+                            if (!inst.ClassName.empty() && monoReady) {
+                                sc->Destroy();
+                                sc->Initialize(MonoManager::GetDomain(), MonoManager::GetAssembly());
+                            }
+                        }
+                    }
+                    ImGui::EndDragDropTarget();
                 }
 
                 ImGui::SameLine();
@@ -1390,13 +1470,22 @@ namespace {
                                 if (filter[0] && stem.find(filter) == std::string::npos)
                                     continue;
 
-                                if (ImGui::Selectable(stem.c_str())) {
+                                bool isCurrent = (inst.ClassName == stem);
+
+                                if (ImGui::Selectable(stem.c_str(), isCurrent)) {
                                     inst.ClassName = stem;
                                     if (!inst.ClassName.empty() && monoReady) {
                                         sc->Destroy();
                                         sc->Initialize(MonoManager::GetDomain(), MonoManager::GetAssembly());
                                     }
-                                    ImGui::CloseCurrentPopup();
+                                }
+
+                                if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID)) {
+                                    ImGui::SetDragDropPayload("SCRIPT/CLASS",
+                                        stem.c_str(),
+                                        static_cast<size_t>(stem.size() + 1));
+                                    ImGui::TextUnformatted(stem.c_str());
+                                    ImGui::EndDragDropSource();
                                 }
                             }
                         }
@@ -2286,6 +2375,129 @@ public class )" << file.stem().string() << R"(
     };
 
     /*!
+	@brief Adapter for editing Component::KeyframeAnimatorComponent.
+	@details Uses ImGui controls to manage keyframe animations.
+    */
+    struct KeyframeAnimatorAdapter : DebugReflection::IComponentAdapter {
+        const char* name() const override { return "Animation (KeyframeAnimator)"; }
+
+        bool has(ECS& ecs, Entity e) const override {
+            return ecs.HasComponent<KeyframeAnimatorComponent>(e);
+        }
+
+        void add(ECS& ecs, Entity e) override {
+            using namespace KeyframeUnity;
+
+            // Ensure component exists
+            auto& anim = AddAnimator(ecs, e);
+
+            // -------- sample WALK clip (frames 0–3 loop) --------
+            AnimationClip walk{};
+            walk.name = "Walk";
+            walk.wrap = KFWrap::Loop;
+
+            KFBinding walkSprite{};
+            walkSprite.property = KFProperty::SpriteIndex;
+
+            {
+                KFKey k{};
+                k.interp = KFInterp::Constant;
+
+                k.time = 0.0f; k.value = 0.f; walkSprite.curve.Add(k);
+                k.time = 0.1f; k.value = 1.f; walkSprite.curve.Add(k);
+                k.time = 0.2f; k.value = 2.f; walkSprite.curve.Add(k);
+                k.time = 0.3f; k.value = 3.f; walkSprite.curve.Add(k);
+                k.time = 0.4f; k.value = 0.f; walkSprite.curve.Add(k); // close loop
+            }
+
+            walk.bindings.push_back(walkSprite);
+
+            // -------- sample JUMP clip (frames 4–7, clamp) --------
+            AnimationClip jump{};
+            jump.name = "Jump";
+            jump.wrap = KFWrap::Clamp;
+
+            KFBinding jumpSprite{};
+            jumpSprite.property = KFProperty::SpriteIndex;
+
+            {
+                KFKey keyFrame{};
+                keyFrame.interp = KFInterp::Constant;
+
+                // start stand frame
+                keyFrame.time = 0.0f;  keyFrame.value = 4.f; jumpSprite.curve.Add(keyFrame);
+                // in-air
+                keyFrame.time = 0.15f; keyFrame.value = 5.f; jumpSprite.curve.Add(keyFrame);
+                // peak
+                keyFrame.time = 0.30f; keyFrame.value = 6.f; jumpSprite.curve.Add(keyFrame);
+                // landing
+                keyFrame.time = 0.45f; keyFrame.value = 7.f; jumpSprite.curve.Add(keyFrame);
+            }
+
+            jump.bindings.push_back(jumpSprite);
+
+            // Register both clips
+            anim.clips[walk.name] = walk;
+            anim.clips[jump.name] = jump;
+
+            // Start in WALK
+            anim.current = walk.name;
+            anim.t = 0.f;
+            anim.playing = true;
+        }
+
+        void remove(ECS& ecs, Entity e) override {
+            if (has(ecs, e))
+                ecs.RemoveComponent<KeyframeAnimatorComponent>(e);
+        }
+
+        void drawInspector(ECS& ecs, Entity e) override {
+            using namespace KeyframeUnity;
+
+            auto* anim = ecs.GetComponent<KeyframeAnimatorComponent>(e);
+            if (!anim) return;
+
+            ImGui::SeparatorText("Animation");
+
+            if (anim->current.empty()) {
+                ImGui::TextDisabled("No clip set. Use your code to SetClip() and Play().");
+            }
+            else {
+                ImGui::Text("Current clip: %s", anim->current.c_str());
+            }
+
+            ImGui::DragFloat("Time", &anim->t, 0.01f, 0.0f);
+
+            // Play / Pause / Stop / Restart
+            if (ImGui::Button(anim->playing ? "Pause" : "Play")) {
+                anim->playing = !anim->playing;
+            }
+            ImGui::SameLine();
+            if (ImGui::Button("Stop")) {
+                anim->playing = false;
+                anim->t = 0.f;
+            }
+            ImGui::SameLine();
+            if (ImGui::Button("Restart")) {
+                anim->t = 0.f;
+                anim->playing = true;
+            }
+
+            ImGui::SeparatorText("Clips");
+            for (auto& kv : anim->clips) {
+                const std::string& clipName = kv.first;
+                bool isCurrent = (anim->current == clipName);
+
+                if (ImGui::Selectable(clipName.c_str(), isCurrent)) {
+                    Play(*anim, clipName, true);
+                }
+            }
+        }
+    };
+
+
+
+    /*!
     @brief Game-state provider installed at runtime (no hardcoded state list).
     @details Bridges GameStateManager to the Debug Menu; exposes current/previous/next and issues ChangeGameState() transitions from a reflected state list.
     */
@@ -2355,6 +2567,7 @@ public class )" << file.stem().string() << R"(
     static TileMapAdapter gTileMapAdapter;
     static GameStateProvider gProvider;
     static BuiltinPhysicsProvider gBuiltinPhys;
+	static KeyframeAnimatorAdapter gKeyframeAdapter;
 
 }
 
@@ -2384,6 +2597,7 @@ extern "C" void RegisterBuiltinComponentAdapters() {
     ComponentRegistry::instance().registerAdapter(&gGuiAdapter);
     ComponentRegistry::instance().registerAdapter(&gPPAdapter);
     ComponentRegistry::instance().registerAdapter(&gTileMapAdapter);
+	ComponentRegistry::instance().registerAdapter(&gKeyframeAdapter);
     DebugReflection::SetGameStateProvider(&gProvider);
     DebugReflection::PhysicsRegistry::instance().registerProvider(&gBuiltinPhys);
 
