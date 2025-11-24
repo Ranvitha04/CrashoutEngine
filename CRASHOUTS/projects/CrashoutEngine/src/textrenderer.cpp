@@ -80,7 +80,6 @@ TextRenderer::TextRenderer(){
 */
 void TextRenderer::RenderText(const std::string& text, GLfloat x, GLfloat y, GLfloat scale, CEColor colorCEV, const std::string fontName, bool isWorldSpace) {
 	scale *= FONT_SCALE;
-    glm::vec3 color{ colorCEV.r, colorCEV.g, colorCEV.b };
     
     using namespace CrashoutsEngine::Assets;
 	AssetManager& assetManager = AssetManager::GetInstance();
@@ -123,7 +122,7 @@ void TextRenderer::RenderText(const std::string& text, GLfloat x, GLfloat y, GLf
     glUniformMatrix4fv(glGetUniformLocation(shaderID, "projection"), 1, GL_FALSE, &projection[0][0]);
     glUniformMatrix4fv(glGetUniformLocation(shaderID, "view"), 1, GL_FALSE, &view[0][0]);
 
-    glUniform3f(glGetUniformLocation(shaderID, "textColor"), color.x, color.y, color.z);
+    glUniform4f(glGetUniformLocation(shaderID, "textColor"), colorCEV.r, colorCEV.g, colorCEV.b, colorCEV.a);
     glActiveTexture(GL_TEXTURE0);
     glBindVertexArray(VAO);
 

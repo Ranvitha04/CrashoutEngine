@@ -142,6 +142,8 @@ namespace CrashoutsEngine {
 
         using namespace Component;
 
+        std::string currSceneName = "";
+
         // JSON Structure Keys definition (for clean and centralized key management)
         namespace Keys {
             const char* const ENTITIES                  = "entities";

@@ -9,5 +9,5 @@
 
 namespace CrashoutsEngine::Bindings
 {
-    void RegisterAnimatorBindings();
+    void RegisterSceneBindings();
 }

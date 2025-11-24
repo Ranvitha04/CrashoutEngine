@@ -1035,7 +1035,7 @@ namespace {
                     ImGuiColorEditFlags_DisplayHSV |
                     ImGuiColorEditFlags_InputRGB |
                     ImGuiColorEditFlags_PickerHueBar |
-                    ImGuiColorEditFlags_NoAlpha;
+                    ImGuiColorEditFlags_AlphaBar;
 
                 if (ImGui::ColorEdit4("Color", col, flags) || ImGui::IsItemDeactivatedAfterEdit())
                 {
