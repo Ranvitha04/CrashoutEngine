@@ -98,7 +98,7 @@ namespace
         return (btn->buttonState == ButtonState::PRESSED);
     }
 
-    static bool InternalIsHovered(uint32_t id, MonoString* key)
+    static bool InternalIsHovered(uint32_t id)
     {
         ButtonComponent* btn = GetButtonFromEntity(id);
         if (!btn) return false;

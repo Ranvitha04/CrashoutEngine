@@ -544,13 +544,13 @@ namespace Component {
         }
 
         // Assign and validate
-        shdr_pgm_instanced = shaderAsset->shaderObject;
+        shdr_pgm_instanced = &(shaderAsset->shaderObject);
 
-        if (!shdr_pgm_instanced.Validate()) {
-            std::cout << "[Rendering] Instanced shader validation failed: " << shdr_pgm_instanced.GetLog() << std::endl;
+        if (!shdr_pgm_instanced->Validate()) {
+            std::cout << "[Rendering] Instanced shader validation failed: " << shdr_pgm_instanced->GetLog() << std::endl;
             ShaderAsset* fallbackAsset = AssetManager::GetInstance().Get<ShaderAsset>("CrashoutShader");
             if (fallbackAsset && fallbackAsset->shaderObject.Validate()) {
-                shdr_pgm_instanced = fallbackAsset->shaderObject;
+                shdr_pgm_instanced = &fallbackAsset->shaderObject;
                 std::cout << "[Rendering] Using fallback CrashoutShader." << std::endl;
             }
             else {
