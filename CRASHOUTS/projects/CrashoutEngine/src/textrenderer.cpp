@@ -81,7 +81,7 @@ TextRenderer::TextRenderer() {
 */
 void TextRenderer::RenderText(const std::string& text, GLfloat x, GLfloat y, GLfloat scale, CEColor colorCEV, const std::string fontName, bool isWorldSpace) {
     scale *= FONT_SCALE;
-    glm::vec3 color{ colorCEV.x() / 255.f, colorCEV.y() / 255.f, colorCEV.z() / 255.f };
+    glm::vec3 color{ colorCEV.x(), colorCEV.y(), colorCEV.z() };
 
     using namespace CrashoutsEngine::Assets;
     AssetManager& assetManager = AssetManager::GetInstance();
@@ -126,6 +126,8 @@ void TextRenderer::RenderText(const std::string& text, GLfloat x, GLfloat y, GLf
 
     glUniform3f(glGetUniformLocation(shaderID, "textColor"), color.x, color.y, color.z);
     glActiveTexture(GL_TEXTURE0);
+    glUniform1i(glGetUniformLocation(shaderID, "text"), 0);
+
     glBindVertexArray(VAO);
 
     // --- Store the original X position for line breaks ---
@@ -370,7 +372,7 @@ CEVec2 TextRenderer::GetCursorPosition(const std::string& text, size_t cursorPos
     const std::map<GLchar, Character>& characters = font->characters;
 
     GLfloat original_x = x;
-    GLfloat lineHeight = GetLineHeight(fontName, scale * FONT_SCALE); // GetLineHeight handles scaling
+    GLfloat lineHeight = GetLineHeight(fontName, scale); // GetLineHeight handles scaling
 
     // Loop only up to the cursor's position
     for (size_t i = 0; i < cursorPos; ++i) {
