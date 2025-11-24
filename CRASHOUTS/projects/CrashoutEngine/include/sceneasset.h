@@ -75,7 +75,8 @@ namespace CrashoutsEngine {
     }
 
     namespace Serialization {
-        
+        extern std::string currSceneName;
+
         void LoadScenes(std::string const& sceneName);
         void SaveScenes(std::string const& sceneName);
     }

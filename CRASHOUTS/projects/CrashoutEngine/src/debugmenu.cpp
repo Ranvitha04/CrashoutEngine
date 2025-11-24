@@ -262,6 +262,8 @@ namespace { //------------------------------------------------------------------
 
 namespace UI { // ----------------------------------------------------------------------------- public UI API
 
+    std::string& currSceneName = CrashoutsEngine::Serialization::currSceneName;
+
     // -- Lifecycle ------------------------------------------------------------
     /*!
      @brief Initializes ImGui context, allocators, and platform bindings.
@@ -1362,6 +1364,7 @@ namespace UI { // --------------------------------------------------------------
                         if (!currSceneName.empty()) {
                             if(engineState == EngineState::STOP) Serialization::SaveScenes(currSceneName);
                         }
+                        // Load Scene flow
                         ECS::getInstance()->Reset();
                         currSceneName = name;
                         Serialization::LoadScenes(name);

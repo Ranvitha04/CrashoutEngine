@@ -17,6 +17,8 @@
 #include "entitybindings.h"
 #include "namebindings.h"
 #include "audiobindings.h"
+#include "scenebindings.h"
+#include "uibindings.h"
 
 namespace CrashoutsEngine
 {
@@ -31,6 +33,8 @@ namespace CrashoutsEngine
         Bindings::RegisterNameBindings();
         Bindings::RegisterAudioBindings();
         Bindings::RegisterAnimatorBindings();
+        Bindings::RegisterSceneBindings();
+        Bindings::RegisterUIBindings();
 	}
 
     void ScriptSystem::InitializeAll(MonoDomain* domain, MonoAssembly* assembly)
