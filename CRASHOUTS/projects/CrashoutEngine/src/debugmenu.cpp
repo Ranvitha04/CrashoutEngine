@@ -549,7 +549,13 @@ namespace UI { // --------------------------------------------------------------
         const float length = clip->Length();
         ImGui::Text("Clip: %s (%.2fs)", clip->name.c_str(), length);
         ImGui::Separator();
-
+        static float s_newKeyTime = 0.0f;
+        if (length > 0.0f)
+        {
+            if (s_newKeyTime < 0.0f)      s_newKeyTime = 0.0f;
+            if (s_newKeyTime > length)    s_newKeyTime = length;
+            ImGui::SliderFloat("New key time", &s_newKeyTime, 0.0f, length);
+        }
         // --- Timeline layout ---
         ImDrawList* draw = ImGui::GetWindowDrawList();
         ImVec2 origin = ImGui::GetCursorScreenPos();
@@ -627,6 +633,8 @@ namespace UI { // --------------------------------------------------------------
             gSel.bindingIndex < (int)clip->bindings.size())
         {
             KFBinding& b = clip->bindings[gSel.bindingIndex];
+
+           
             if (gSel.keyIndex >= 0 &&
                 gSel.keyIndex < (int)b.curve.keys.size())
             {
@@ -644,10 +652,53 @@ namespace UI { // --------------------------------------------------------------
                     k.interp = (KFInterp)interp;
                 }
             }
+            else
+            {
+                ImGui::TextDisabled("No key selected on this track.");
+            }
+
+            ImGui::Separator();
+
+           
+            if (ImGui::Button("Add key at time"))
+            {
+                KFKey newKey{};
+                newKey.time = s_newKeyTime;        
+                newKey.value = (b.curve.keys.empty() ? 0.0f : b.curve.keys.back().value);
+                newKey.inTan = 0.0f;
+                newKey.outTan = 0.0f;
+                newKey.interp = KFInterp::Linear;
+
+                
+                b.curve.Add(newKey);
+
+               
+                gSel.keyIndex = (int)b.curve.keys.size() - 1;
+            }
+
+            ImGui::SameLine();
+
+            bool canDelete =
+                (gSel.keyIndex >= 0 &&
+                    gSel.keyIndex < (int)b.curve.keys.size());
+
+            if (!canDelete) ImGui::BeginDisabled();
+            if (ImGui::Button("Delete selected key") && canDelete)
+            {
+                b.curve.keys.erase(b.curve.keys.begin() + gSel.keyIndex);
+
+               
+                if (gSel.keyIndex >= (int)b.curve.keys.size())
+                    gSel.keyIndex = (int)b.curve.keys.size() - 1;
+                if (b.curve.keys.empty())
+                    gSel.keyIndex = -1;
+            }
+            if (!canDelete) ImGui::EndDisabled();
         }
         else {
             ImGui::TextDisabled("Click a keyframe diamond to edit it.");
         }
+
     }
 
     static void UI::RenderAssetBrowserPanel(UIState& ui, const char* root, std::string& outSelectedAsset)

@@ -51,6 +51,24 @@ float AnimationCurve::Evaluate(float t) const {
     default:                 return hermite(A.value, A.outTan, B.value, B.inTan, std::clamp(u, 0.f, 1.f), dt);
     }
 }
+void AnimationCurve::RemoveAt(size_t index)
+{
+    if (index >= keys.size())
+        return;
+    keys.erase(keys.begin() + static_cast<long long>(index));
+}
+
+void AnimationCurve::RemoveNear(float time, float eps)
+{
+    auto it = std::find_if(keys.begin(), keys.end(),
+        [time, eps](const KFKey& k)
+        {
+            return std::fabs(k.time - k.time) <= eps;
+        });
+
+    if (it != keys.end())
+        keys.erase(it);
+}
 
 // ---------------- Property application ----------------
 static void applyProperty(ECS& ecs, Entity e, KFProperty p, float v,
