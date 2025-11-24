@@ -92,6 +92,9 @@ namespace Scene {
                     }
                 }
 
+                if (sc->preview) {
+                    continue;
+                }
                 switch (sc->type) {
                 // ==========================================RECTANGLE===================================================
                 case ShapeType::Rectangle:

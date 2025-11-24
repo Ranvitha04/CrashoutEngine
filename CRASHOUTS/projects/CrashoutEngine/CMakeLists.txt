@@ -1,4 +1,4 @@
-﻿#projects/CrashoutEngine/CMakeLists.txt
+#projects/CrashoutEngine/CMakeLists.txt
 
 # Project name for the DLL file.
 project(CrashoutEngine)
@@ -61,6 +61,8 @@ add_library(${PROJECT_NAME} STATIC
     ${other_src_files}
     ${other_include_files}
     "${project_dir}/include/engine_pch.h"
+    "${project_dir}/src/particleSystem.cpp"
+    "${project_dir}/include/particleSystem.h"
 )
 
 target_precompile_headers(${PROJECT_NAME}

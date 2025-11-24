@@ -9,6 +9,8 @@ namespace CrashoutsEngine
         public float jumpPower = 20000f;
         public static bool isJumping = false;
         public static bool isFalling = false;
+        private Animator animator;
+        private bool isFacingRight = true;
         //private float lastY;
         //public float FallingThreshold = -0.01f;
         //private int onPlatform = 0;
@@ -36,78 +38,82 @@ namespace CrashoutsEngine
         // Start is called before the first frame update
         public override void Start()
         {
-            //rb = GetComponent<Rigidbody2D>();
-            //lastY = transform.position.y;
-            //animator.SetBool("IsRunning", false);
-            //animator.SetBool("IsFalling", false);
-            //animator.SetBool("IsJumping", false);
-            //animator.SetBool("PressQ", false);
-            //startPos = transform.position;
+            animator = Entity.GetComponent<Animator>();
+            if (animator == null)
+            {
+                Entity.Add<Animator>();
+                animator = Entity.GetComponent<Animator>();
+            }
+            if (animator != null)
+            {
+                animator.SetBool("IsRunning", false);
+                animator.SetBool("IsFalling", false);
+                animator.SetBool("IsJumping", false);
+            }
 
-            //GObackground.SetActive(false);
-
-            //AudioManager.GetInstance().Play("ambient");
-
+            CollisionEvents.RegisterCollideEnter(Entity.ID, OnCollideEnter);
+            CollisionEvents.RegisterCollideExit(Entity.ID, OnCollideExit);
         }
 
         // Update is called once per frame
         public override void Update()
         {
-
             var rb = Entity.GetComponent<RigidBodyComponent>();
             var tf = Entity.GetComponent<TransformComponent>();
-            //horizontalInput = Input.GetAxis("Horizontal");
-            if (Input.IsKeyHeld(Key.A))
+
+            var movingLeft = Input.IsKeyHeld(Key.A);
+            var movingRight = Input.IsKeyHeld(Key.D);
+            var moving = movingLeft || movingRight;
+
+            if (movingLeft)
             {
                 rb.AddForce(new CEVec3(-500f, 0f, 0f));
+                isFacingRight = false;
+                animator?.SetFlip(true);
             }
 
-            if (Input.IsKeyHeld(Key.D))
+            if (movingRight)
             {
                 rb.AddForce(new CEVec3(500f, 0f, 0f));
+                isFacingRight = true;
+                animator?.SetFlip(false);
             }
 
-
-
-
-            //isnt it divide by delta time to get per second? XD - rain
-            //float distancePerSecondSinceLastFrame = (transform.position.y - lastY) * Time.deltaTime;
-            //lastY = transform.position.y;
-
-
-            //FlipSprite();
-
-            //if (Input.GetButtonDown("Jump") && !isJumping)
-            //{
-            //    rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpPower);
-            //    isJumping = true;
-            //    animator.SetBool("IsJumping", true);
-
-            //    switchcharacter?.SwitchAvatar();
-            //}
+            if (animator != null)
+            {
+                animator.SetBool("IsRunning", moving);
+            }
 
             if (Input.IsKeyTriggered(Key.Space) && !isJumping)
             {
                 rb.AddForce(new CEVec3(0f, jumpPower, 0f));
                 isJumping = true;
-                //animator.SetBool("IsJumping", true);
+                isFalling = false;
+                animator?.SetBool("IsJumping", true);
+                animator?.SetBool("IsFalling", false);
             }
-            //if (animator.GetBool("IsJumping") && rb.linearVelocity.y < 0 && IsOnPlatform == false)
-            //{
-            //    // isFalling = true;
-            //    animator.SetBool("IsFalling", true);
-            //    animator.SetBool("IsJumping", false);
-            //    isJumping = false;
-            //    switchcharacter?.SwitchAvatar();
-            //}
-            /*  else if (rb.linearVelocity.y < 0)
-              {
-                  Debug.Log("Keepsfalling");
-                  animator.SetBool("IsFalling", true);
-                  switchcharacter?.SwitchAvatar();
-              } */
 
+            if (!moving && animator != null && !isJumping && !isFalling)
+            {
+                animator.SetBool("IsRunning", false);
+            }
+        }
 
+        private void OnCollideEnter(uint other)
+        {
+            isJumping = false;
+            isFalling = false;
+            animator?.SetBool("IsJumping", false);
+            animator?.SetBool("IsFalling", false);
+        }
+
+        private void OnCollideExit(uint other)
+        {
+            if (!isJumping)
+            {
+                isFalling = true;
+                animator?.SetBool("IsFalling", true);
+            }
         }
 
         //private void FixedUpdate()

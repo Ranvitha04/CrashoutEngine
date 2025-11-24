@@ -1352,6 +1352,125 @@ void InstancingSystem::RenderInstancedRectangles(const InstancedParams& params) 
     );
 }
 
+void InstancingSystem::PopulateRectanglesFromECS(bool previewOnly) {
+    EnsureGlobalECSInitialized();
+    if (!globalECS) return;
+    InstancingSystem::ClearRectangleData();
+
+    auto& shapeArray = globalECS->GetComponentArray<Component::ShapeComponent>();
+    for (const auto& id : shapeArray.indexToEntity) {
+        auto* sc = globalECS->GetComponent<Component::ShapeComponent>(id);
+        auto* tf = globalECS->GetComponent<Component::TransformComponent>(id);
+        if (!sc || !tf) continue;
+        if (sc->type != Component::ShapeType::Rectangle) continue;
+        if (previewOnly && !sc->preview) continue;
+        gInstPositions.emplace_back(tf->position);
+        gInstColors.emplace_back(CEVec3{ sc->color.x * (1.f/255.f), sc->color.y * (1.f/255.f), sc->color.z * (1.f/255.f) });
+        gInstRotations.emplace_back(tf->rotation);
+        gInstScales.emplace_back(1.f);
+        gInstWidths.emplace_back(tf->size.x);
+        gInstHeights.emplace_back(tf->size.y);
+    }
+}
+
+void InstancingSystem::PopulateRectanglesFromEntities(const std::vector<CrashoutsEngine::Entity>& ids, bool previewOnly) {
+    EnsureGlobalECSInitialized();
+    if (!globalECS) return;
+    InstancingSystem::ClearRectangleData();
+    gInstPositions.reserve(ids.size());
+    gInstColors.reserve(ids.size());
+    gInstRotations.reserve(ids.size());
+    gInstScales.reserve(ids.size());
+    gInstWidths.reserve(ids.size());
+    gInstHeights.reserve(ids.size());
+    for (auto id : ids) {
+        auto* sc = globalECS->GetComponent<Component::ShapeComponent>(id);
+        auto* tf = globalECS->GetComponent<Component::TransformComponent>(id);
+        if (!sc || !tf) continue;
+        if (sc->type != Component::ShapeType::Rectangle) continue;
+        if (previewOnly && !sc->preview) continue;
+        if (tf->size.x <= 0.f || tf->size.y <= 0.f) continue;
+        gInstPositions.emplace_back(tf->position);
+        gInstColors.emplace_back(CEVec3{ sc->color.x * (1.f/255.f), sc->color.y * (1.f/255.f), sc->color.z * (1.f/255.f) });
+        gInstRotations.emplace_back(tf->rotation);
+        gInstScales.emplace_back(1.f);
+        gInstWidths.emplace_back(tf->size.x);
+        gInstHeights.emplace_back(tf->size.y);
+    }
+}
+
+void InstancingSystem::RenderInstancedCirclesFromECS(bool previewOnly, int segments, const InstancedParams& params) {
+    EnsureGlobalECSInitialized();
+    if (!globalECS) return;
+    std::vector<CEVec3> pos;
+    std::vector<CEVec3> col;
+    std::vector<float> rot;
+    std::vector<float> sca;
+    std::vector<float> rad;
+    auto& shapeArray = globalECS->GetComponentArray<Component::ShapeComponent>();
+    for (const auto& id : shapeArray.indexToEntity) {
+        auto* sc = globalECS->GetComponent<Component::ShapeComponent>(id);
+        auto* tf = globalECS->GetComponent<Component::TransformComponent>(id);
+        if (!sc || !tf) continue;
+        if (sc->type != Component::ShapeType::Circle) continue;
+        if (previewOnly && !sc->preview) continue;
+        pos.emplace_back(tf->position);
+        col.emplace_back(CEVec3{ sc->color.x * (1.f/255.f), sc->color.y * (1.f/255.f), sc->color.z * (1.f/255.f) });
+        rot.emplace_back(tf->rotation);
+        sca.emplace_back(1.f);
+        rad.emplace_back(tf->size.x);
+    }
+    if (pos.empty()) return;
+    InstancingSystem::RenderInstancedCirclesBatch(
+        pos.data(),
+        col.data(),
+        rot.data(),
+        sca.data(),
+        rad.data(),
+        static_cast<int>(pos.size()),
+        segments <= 0 ? 24 : segments,
+        params
+    );
+}
+
+void InstancingSystem::RenderInstancedCirclesFromEntities(const std::vector<CrashoutsEngine::Entity>& ids, bool previewOnly, int segments, const InstancedParams& params) {
+    EnsureGlobalECSInitialized();
+    if (!globalECS) return;
+    std::vector<CEVec3> pos;
+    std::vector<CEVec3> col;
+    std::vector<float> rot;
+    std::vector<float> sca;
+    std::vector<float> rad;
+    pos.reserve(ids.size());
+    col.reserve(ids.size());
+    rot.reserve(ids.size());
+    sca.reserve(ids.size());
+    rad.reserve(ids.size());
+    for (auto id : ids) {
+        auto* sc = globalECS->GetComponent<Component::ShapeComponent>(id);
+        auto* tf = globalECS->GetComponent<Component::TransformComponent>(id);
+        if (!sc || !tf) continue;
+        if (sc->type != Component::ShapeType::Circle) continue;
+        if (previewOnly && !sc->preview) continue;
+        pos.emplace_back(tf->position);
+        col.emplace_back(CEVec3{ sc->color.x * (1.f/255.f), sc->color.y * (1.f/255.f), sc->color.z * (1.f/255.f) });
+        rot.emplace_back(tf->rotation);
+        sca.emplace_back(1.f);
+        rad.emplace_back(tf->size.x);
+    }
+    if (pos.empty()) return;
+    InstancingSystem::RenderInstancedCirclesBatch(
+        pos.data(),
+        col.data(),
+        rot.data(),
+        sca.data(),
+        rad.data(),
+        static_cast<int>(pos.size()),
+        segments <= 0 ? 24 : segments,
+        params
+    );
+}
+
 void InstancingSystem::CreateInstancedTriangles(
     const CEVec3* positions, const CEVec3* colors,
     const float* rotations, const float* scales,

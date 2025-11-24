@@ -36,6 +36,7 @@ rendering (`RenderBackground`), and updating (`UpdateRan`).
 #include "frameratecontroller.h"  
 #include "instanceSystem.h"
 #include "spritecomponent.h"
+#include "particleSystem.h"
 #include <random>
 #include <vector>
 #include <string>
@@ -54,6 +55,9 @@ static int gDisplayMode = 0;
 static bool gPrevGPressed = false;
 static bool gPrevMPressed = false;          // toggle instancing type (texture/plain)
 static bool gSpriteInitializedInScene = false;
+static Component::ParticleEmitter* gParticleEmitter = nullptr;
+static Component::FireEmitter* gFireEmitter = nullptr;
+static Component::FireballEmitter* gFireballEmitter = nullptr;
 
 // Duck controls/state
 static float gDuckX = 0.0f;
@@ -369,7 +373,7 @@ void UpdateRan()
     bool gPressed = (gState == GLFW_PRESS);
     if (gPressed && !gPrevGPressed) {
         int prevMode = gDisplayMode;
-        int nextMode = (gDisplayMode + 1) % 7; // include mode 6
+        int nextMode = (gDisplayMode + 1) % 10;
         gDisplayMode = nextMode;
         if (prevMode == 6) {
             gMode6Initialized = false;
@@ -393,9 +397,57 @@ void UpdateRan()
 
         // Prepare data when entering instanced mode
         if (gDisplayMode == 2) {
-
             gRectsInitialized = false;
         }
+
+        // Initialize particle system when entering mode 7
+        if (gDisplayMode == 7) {
+            if (!gParticleEmitter) {
+                gParticleEmitter = new Component::ParticleEmitter(5000);
+                float worldW, worldH; ComputeWorldDimensions(worldW, worldH);
+                gParticleEmitter->Initialize(CEVec3(0.f, 0.f, 0.f));
+                gParticleEmitter->SetEmissionRate(1500.f);
+                gParticleEmitter->SetLifeRange(0.6f, 1.2f);
+                gParticleEmitter->SetSpeedRange(12.f, 22.f);
+                gParticleEmitter->SetGravity(CEVec3(0.f, -30.f, 0.f));
+                gParticleEmitter->SetSizeRange(0.35f, 0.0f);
+                gParticleEmitter->SetColorRange(CEVec3(1.f, 0.8f, 0.2f), CEVec3(0.1f, 0.1f, 0.1f));
+            }
+        }
+
+        // Initialize fire system when entering mode 8
+        if (gDisplayMode == 8) {
+            if (!gFireEmitter) {
+                gFireEmitter = new Component::FireEmitter(4000);
+                gFireEmitter->Initialize(CEVec3(0.f, -20.f, 0.f));
+                gFireEmitter->SetEmissionRate(2000.f);
+                gFireEmitter->SetLifeRange(0.4f, 0.9f);
+                gFireEmitter->SetSpeedRange(6.f, 14.f);
+                gFireEmitter->SetGravity(CEVec3(0.f, 20.f, 0.f));
+                gFireEmitter->SetSizeRange(0.6f, 0.0f);
+                gFireEmitter->SetColorRange(CEVec3(1.f,0.9f,0.4f), CEVec3(0.3f,0.05f,0.0f));
+                gFireEmitter->SetSpread(0.6f);
+            }
+        }
+
+        // Initialize fireball system when entering mode 9
+        if (gDisplayMode == 9) {
+            if (!gFireballEmitter) {
+                float worldW, worldH; ComputeWorldDimensions(worldW, worldH);
+                gFireballEmitter = new Component::FireballEmitter(5000);
+                gFireballEmitter->Initialize(CEVec3(0.f, -worldH * 0.45f, 0.f));
+                gFireballEmitter->SetBounds(worldW, worldH);
+                gFireballEmitter->SetVelocity(CEVec3(0.f, 0.f, 0.f));
+                gFireballEmitter->SetRadius(4.f);
+                gFireballEmitter->SetEmissionRate(1600.f);
+                gFireballEmitter->SetLifeRange(0.35f, 0.85f);
+                gFireballEmitter->SetSpeedRange(8.f, 18.f);
+                gFireballEmitter->SetGravity(CEVec3(0.f, 0.f, 0.f));
+                gFireballEmitter->SetColorRange(CEVec3(1.f,0.8f,0.3f), CEVec3(0.4f,0.05f,0.0f));
+                gFireballEmitter->SetSpread(0.5f);
+            }
+        }
+
 
         // Initialize randomized ECS rectangles when entering ECS mode (3)
         if (gDisplayMode == 3 && !gEcsRectsInitialized) {
@@ -466,6 +518,20 @@ void UpdateRan()
             gMode4Initialized = false;
 
         }
+
+        // Cleanup particle system when leaving mode 7
+        if (prevMode == 7 && nextMode != 7) {
+            if (gParticleEmitter) { gParticleEmitter->Cleanup(); delete gParticleEmitter; gParticleEmitter = nullptr; }
+        }
+        // Cleanup fire system when leaving mode 8
+        if (prevMode == 8 && nextMode != 8) {
+            if (gFireEmitter) { gFireEmitter->Cleanup(); delete gFireEmitter; gFireEmitter = nullptr; }
+        }
+        // Cleanup fireball system when leaving mode 9
+        if (prevMode == 9 && nextMode != 9) {
+            if (gFireballEmitter) { gFireballEmitter->Cleanup(); delete gFireballEmitter; gFireballEmitter = nullptr; }
+        }
+
 
     }
 
@@ -597,6 +663,20 @@ void UpdateRan()
     if (gDisplayMode == 6 && gMode6Initialized) {
         InstancingSystem::UpdateEcsDuckSprites();
     }
+
+    if (gDisplayMode == 7 && gParticleEmitter) {
+        float dt = static_cast<float>(FrameRateController::GetInstance().DT());
+        gParticleEmitter->Update(dt);
+    }
+    if (gDisplayMode == 8 && gFireEmitter) {
+        float dt = static_cast<float>(FrameRateController::GetInstance().DT());
+        gFireEmitter->Update(dt);
+    }
+    if (gDisplayMode == 9 && gFireballEmitter) {
+        float dt = static_cast<float>(FrameRateController::GetInstance().DT());
+        gFireballEmitter->Update(dt);
+    }
+    
 
     // Handle "I" toggle for duck animation state in mode 6
     int iState = glfwGetKey(GLApp::ptr_window, GLFW_KEY_I);
@@ -756,6 +836,22 @@ void RenderRan()
         }
         InstancingSystem::RenderEcsDuckSprites();
     } break;
+    case 7: { // Particle system
+        if (gParticleEmitter) {
+            gParticleEmitter->Render(false);
+        }
+    } break;
+    case 8: { // Fire system
+        if (gFireEmitter) {
+            gFireEmitter->Render(false);
+        }
+    } break;
+    case 9: { // Fireball system
+        if (gFireballEmitter) {
+            gFireballEmitter->Render(false);
+        }
+    } break;
+    
     }
 }
 
@@ -777,6 +873,10 @@ void FreeRan()
     gRndRectRot.clear();
     gRndRectW.clear();
     gRndRectH.clear();
+
+    if (gParticleEmitter) { gParticleEmitter->Cleanup(); delete gParticleEmitter; gParticleEmitter = nullptr; }
+    if (gFireEmitter) { gFireEmitter->Cleanup(); delete gFireEmitter; gFireEmitter = nullptr; }
+    if (gFireballEmitter) { gFireballEmitter->Cleanup(); delete gFireballEmitter; gFireballEmitter = nullptr; }
 }
 
 void UnloadRan()
@@ -809,4 +909,6 @@ void HandleSpriteKeyInput(int key, int action)
             break;
         }
     }
+
+    
 }
