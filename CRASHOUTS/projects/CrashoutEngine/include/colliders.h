@@ -72,7 +72,7 @@ namespace Collision {
 		Collider(ColliderType type);
 		virtual ~Collider() = default;
 		virtual std::unique_ptr<Collider> clone() const = 0;
-		virtual void updateCollider([[maybe_unused]] CEVec3 const& newPos) {};
+		virtual void updateCollider([[maybe_unused]] CEVec3 const& newPos) = 0;
 		virtual void updateRotation([[maybe_unused]] f32 newRotation) {};
 		virtual f32 calculateInertia([[maybe_unused]] f32 mass) { return 0.f; };
 		CEVec3 offset{};
@@ -87,7 +87,6 @@ namespace Collision {
 	class Sphere : public Collider {
 	public:
 		f32 radius;
-		CEVec3 center;
 		Sphere(f32 radius, CEVec3 const& position, CEVec3 const& offset = CEVec3{});
 		~Sphere() = default;
 		virtual void updateCollider(CEVec3 const& newPos);

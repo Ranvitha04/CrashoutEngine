@@ -487,7 +487,7 @@ namespace {
 
             // Type selector
             int type = static_cast<int>(cc->collider->helperType);
-            const char* items[] = { "Sphere","AABB", "OBB", "Polygon"};
+            const char* items[] = { "Sphere","AABB", "OBB" };
             ImGui::Combo("Type", &type, items, IM_ARRAYSIZE(items));
 
             // LOOK FOR A CHANGE IN DROPDOWN, CHANGE COLLIDER IF SO
@@ -535,6 +535,8 @@ namespace {
                 if (ImGui::IsItemEdited() || ImGui::IsItemDeactivatedAfterEdit()) {
                     s->offset = CEVec3{ c[0], c[1], 0.f };
                 }
+
+
             }
             else if (cc->collider->helperType == Collision::AABB_T) {
                 // AABB
@@ -544,11 +546,7 @@ namespace {
 
                 CEVec3 &newExtents{ a->extents };
 
-                CEVec3 transform{};
-
-                if (ecs.GetComponent<Component::TransformComponent>(e)) {
-                    transform = ecs.GetComponent<Component::TransformComponent>(e)->position;
-                }
+                CEVec3 transform{a->position};
 
                 bool edited = false;
                 ImGui::DragFloat("Width", &newExtents.x, 0.05f);  edited |= ImGui::IsItemEdited() || ImGui::IsItemDeactivatedAfterEdit();
@@ -630,9 +628,12 @@ namespace {
                     a.offset = CEVec3{ arr[0], arr[1], 0.f };
                 }
 
-            } else if (cc->collider->helperType == Collision::POLYGON_T) {
+                f32 rotation{ a.rotation };
+                if (ImGui::DragFloat("Rotation", &rotation, 0.05f)) {
+                    a.updateRotation(rotation);
+                }
 
-            }
+            } 
         }
     };
 
@@ -1035,7 +1036,7 @@ namespace {
                     ImGuiColorEditFlags_DisplayHSV |
                     ImGuiColorEditFlags_InputRGB |
                     ImGuiColorEditFlags_PickerHueBar |
-                    ImGuiColorEditFlags_NoAlpha;
+                    ImGuiColorEditFlags_AlphaBar;
 
                 if (ImGui::ColorEdit4("Color", col, flags) || ImGui::IsItemDeactivatedAfterEdit())
                 {

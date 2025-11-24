@@ -167,11 +167,11 @@ namespace UI
             stem = base;
         else
             stem = base.substr(0, dot);
-        namespace Assets = CrashoutsEngine::Assets;
+        namespace Assets = CrashoutsEngine::Assets; 
 
     
-        fs::path outDir = fs::path(Assets::rootPath) / "images" / "spritesheet";
-        std::error_code ec;
+        fs::path outDir = fs::path(Assets::rootPath) / "images" / "spritesheet" / stem;
+        std::error_code ec; 
         fs::create_directories(outDir, ec); 
 
         std::string prefix = (outDir / stem).generic_string() + "_";
@@ -233,23 +233,83 @@ namespace UI
     {
         EnsureDefaultClips();
 
-        if (!ImGui::Begin("Sprite Sheet"))
+        if (!ImGui::Begin("Sprite Sheet", 0, ImGuiWindowFlags_HorizontalScrollbar))
         {
             ImGui::End();
             return;
         }
 
-       
-        ImGui::InputText("Texture path", gSpritePath, IM_ARRAYSIZE(gSpritePath));
+        ImGui::Text(gSpritePath);
+        //ImGui::InputText("", gSpritePath, IM_ARRAYSIZE(gSpritePath));
+
+        ImGui::SameLine();
+        if (ImGui::SmallButton("Choose...")) {
+            ImGui::OpenPopup("Pick Texture");
+        }
+
+        // Modal popup with a simple file browser
+        if (ImGui::BeginPopupModal("Pick Texture", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
+            namespace fs = std::filesystem;
+            static std::vector<std::string> s_assets;
+            static bool s_scanned = false;
+
+            // Refresh List button
+            if (ImGui::Button("Refresh List")) {
+                s_scanned = false;
+            }
+            ImGui::SameLine();
+
+            if (!s_scanned) {
+                s_scanned = true;
+                s_assets.clear();
+
+                const std::string assetRoot = CrashoutsEngine::Assets::rootPath + "images"; // base folder
+                for (auto& p : fs::recursive_directory_iterator(assetRoot)) {
+                    if (!p.is_regular_file()) continue;
+
+                    const std::string ext = p.path().extension().string();
+                    std::string lower = ext;
+                    std::transform(lower.begin(), lower.end(), lower.begin(), ::tolower);
+                    if (lower == ".png" || lower == ".jpg" || lower == ".jpeg" ||
+                        lower == ".tga" || lower == ".bmp") {
+
+                        // Store relative path for cleaner display
+                        std::string rel = fs::relative(p.path(), assetRoot).string();
+                        s_assets.push_back(rel);
+                    }
+                }
+
+                std::sort(s_assets.begin(), s_assets.end());
+            }
+
+            // Left: list; Right: preview name
+            ImGui::BeginChild("asset_list", ImVec2(420, 300), true);
+            for (auto const& f : s_assets) {
+                if (ImGui::Selectable(f.c_str())) {
+
+                    std::string fullRelPath = "images/" + f;
+
+                    std::strncpy(gSpritePath, fullRelPath.c_str(), sizeof(gSpritePath));
+                    gSpritePath[sizeof(gSpritePath) - 1] = '\0'; // Ensure null termination
+
+                    // Reset other UI states since texture changed
+                    gSelectedFrame = 0;
+
+                    ImGui::CloseCurrentPopup();
+                }
+            }
+            ImGui::EndChild();
+
+            if (ImGui::Button("Cancel")) ImGui::CloseCurrentPopup();
+            ImGui::EndPopup();
+        }
 
         ImGui::InputInt("Tile width (px)", &gTileW);
         ImGui::InputInt("Tile height (px)", &gTileH);
         gTileW = std::max(gTileW, 1);
         gTileH = std::max(gTileH, 1);
-
         
         int sheetW = 0, sheetH = 0, channels = 0;
-
       
         std::string sheetPath;
         {
@@ -273,7 +333,6 @@ namespace UI
                 "Could not read image info.");
         }
 
-
         if (ImGui::Button("Export tiles to PNGs")) {
             ExportCurrentSpritesheetToPNGs();
             {
@@ -295,10 +354,18 @@ namespace UI
             return;
         }
 
-       
-        ImVec2 previewSize(192.0f * gZoom, 128.0f * gZoom);
         ImVec2 topLeft = ImGui::GetCursorScreenPos();
+       
+        // 1. Define a base width for the UI (e.g., 300 pixels wide)
+        float baseWidth = 300.0f;
 
+        // 2. Calculate height based on aspect ratio
+        float aspectRatio = (float)sheetH / (float)sheetW;
+
+        // 3. Create the size dynamic to the texture
+        ImVec2 previewSize(baseWidth * gZoom, (baseWidth * aspectRatio) * gZoom);
+
+        // Now the image draws with correct proportions
         ImGui::Image((ImTextureID)(uintptr_t)tex, previewSize);
 
         ImDrawList* drawList = ImGui::GetWindowDrawList();

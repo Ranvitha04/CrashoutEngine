@@ -142,6 +142,8 @@ namespace CrashoutsEngine {
 
         using namespace Component;
 
+        std::string currSceneName = "";
+
         // JSON Structure Keys definition (for clean and centralized key management)
         namespace Keys {
             const char* const ENTITIES                  = "entities";
@@ -326,7 +328,27 @@ namespace CrashoutsEngine {
                     if (rigidBodyValues.HasMember("restitutionCoeff") && rigidBodyValues["restitutionCoeff"].IsFloat()) {
                         rigidBodyComp.setRestitution(rigidBodyValues["restitutionCoeff"].GetFloat());
                     }
-                    
+
+                    if (rigidBodyValues.HasMember("staticFriction") && rigidBodyValues["staticFriction"].IsFloat()) {
+                        rigidBodyComp.staticFriction = rigidBodyValues["staticFriction"].GetFloat();
+                    }
+
+                    if (rigidBodyValues.HasMember("dynamicFriction") && rigidBodyValues["dynamicFriction"].IsFloat()) {
+                        rigidBodyComp.dynamicFriction = rigidBodyValues["dynamicFriction"].GetFloat();
+                    }
+
+                    if (rigidBodyValues.HasMember("inertia") && rigidBodyValues["inertia"].IsFloat()) {
+                        rigidBodyComp.inertia = rigidBodyValues["inertia"].GetFloat();
+                    }
+
+                    if (rigidBodyValues.HasMember("invInertia") && rigidBodyValues["invInertia"].IsFloat()) {
+                        rigidBodyComp.invInertia = rigidBodyValues["invInertia"].GetFloat();
+                    }
+
+                    if (rigidBodyValues.HasMember("isTrigger") && rigidBodyValues["isTrigger"].IsBool()) {
+                        bool isTrigger{ rigidBodyValues["isTrigger"].GetBool() };
+                        if (isTrigger) rigidBodyComp.getFlags().flip(Physics::SIMULATE_DYNAMICS);
+                    }
                 }
 
                 // Check if Collider 
@@ -1092,6 +1114,15 @@ namespace CrashoutsEngine {
 
                     rigidBodyValue.AddMember("maximumVelocity", std::move(maxVelVal), allocator);
 
+                    rigidBodyValue.AddMember("staticFriction", rigidBodyComp.staticFriction, allocator);
+                    rigidBodyValue.AddMember("dynamicFriction", rigidBodyComp.dynamicFriction, allocator);
+
+                    rigidBodyValue.AddMember("inertia", rigidBodyComp.inertia, allocator);
+                    rigidBodyValue.AddMember("invInertia", rigidBodyComp.invInertia, allocator);
+
+                    bool isTrigger{ rigidBodyComp.getFlags().test(Physics::SIMULATE_DYNAMICS) };
+                    rigidBodyValue.AddMember("isTrigger", isTrigger, allocator);
+
                     entityValue.AddMember(rapidjson::StringRef(Keys::RIGIDBODY_COMPONENT), std::move(rigidBodyValue) , allocator);
                 }
 
@@ -1116,9 +1147,9 @@ namespace CrashoutsEngine {
                             Collision::Sphere const& sphereTemp = dynamic_cast<Collision::Sphere const&>(*(colComp.collider));
                             colliderValue.AddMember("radius", sphereTemp.radius, allocator);
                             rapidjson::Value centerVal{ rapidjson::kObjectType };
-                            centerVal.AddMember("x", sphereTemp.center.x, allocator);
-                            centerVal.AddMember("y", sphereTemp.center.y, allocator);
-                            centerVal.AddMember("z", sphereTemp.center.z, allocator);
+                            centerVal.AddMember("x", sphereTemp.position.x, allocator);
+                            centerVal.AddMember("y", sphereTemp.position.y, allocator);
+                            centerVal.AddMember("z", sphereTemp.position.z, allocator);
                             colliderValue.AddMember("center", centerVal, allocator);
 
                         }
