@@ -39,6 +39,7 @@
 #include <crtdbg.h>
 #include <vector>  
 #include "prefabcomponent.h"
+#include "tilemapcomponent.h"
 using namespace CrashoutsEngine;
 using namespace Component;
 /**
@@ -385,6 +386,34 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path)
 
                 hasPP = true;
             }
+            // --- tilemap ---
+            bool hasTileMap = false;
+            Component::TileMapComponent tileMapData;  
+
+            if (prefabs.HasMember("tilemap") && prefabs["tilemap"].IsObject()) {
+                const auto& tmJ = prefabs["tilemap"];
+
+                if (tmJ.HasMember("tileSize") && tmJ["tileSize"].IsInt())
+                    tileMapData.tileSize = tmJ["tileSize"].GetInt();
+
+                if (tmJ.HasMember("activeAsset") && tmJ["activeAsset"].IsString())
+                    tileMapData.activeAsset = tmJ["activeAsset"].GetString();
+
+                if (tmJ.HasMember("tiles") && tmJ["tiles"].IsArray()) {
+                    for (auto& t : tmJ["tiles"].GetArray()) {
+                        if (!t.IsObject()) continue;
+                        if (!t.HasMember("x") || !t.HasMember("y") || !t.HasMember("asset")) continue;
+
+                        int gx = t["x"].GetInt();
+                        int gy = t["y"].GetInt();
+                        std::string assetName = t["asset"].GetString();
+
+                        tileMapData.gridData[{ gx, gy }] = assetName;
+                    }
+                }
+
+                hasTileMap = true;
+            }
 
 
             // ---- register factory ----
@@ -406,7 +435,7 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path)
                 //audio
                 hasAudioEmitter, audioEventPath, audioVolume, audioPitch, audioSpatial3D, audioLooping,
                 hasGuiComponent, guiTypeMask,
-                hasPP, ppActive, ppBrightness, ppContrast, ppSaturation
+                hasPP, ppActive, ppBrightness, ppContrast, ppSaturation, hasTileMap, tileMapData
                 ](ECS& e)
             {
                 const Entity entitty = e.CreateEntity();
@@ -477,7 +506,7 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path)
                 // --- AudioEmitterComponent 
                 if (hasAudioEmitter && !audioEventPath.empty()) {
                     Component::AudioEmitterComponent a{};
-                    a.eventPath = audioEventPath;
+                    a.eventPath = audioEventPath;ppSaturation;
                     a.volume = audioVolume;
                     a.pitch = audioPitch;
                     a.spatial3D = audioSpatial3D;
@@ -498,6 +527,14 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path)
                     pp.contrast = ppContrast;
                     pp.saturation = ppSaturation;
                     e.AddComponent<Component::PPComponent>(entitty, pp);
+                }
+                // inside the lambda, near the bottom:
+                if (hasTileMap) {
+                    auto& tm = e.AddComponent<Component::TileMapComponent>(entitty);
+                    tm.tileSize = tileMapData.tileSize;
+                    tm.activeAsset = tileMapData.activeAsset;
+                    tm.gridData = tileMapData.gridData;  
+                    tm.isCacheDirty = true;                
                 }
             });
 
@@ -813,6 +850,38 @@ namespace CrashoutsEngine {
             ppJson.AddMember("contrast", static_cast<double>(pp->contrast), allocate);
             ppJson.AddMember("saturation", static_cast<double>(pp->saturation), allocate);
             obj.AddMember("postprocessing", ppJson, allocate);
+        }
+        //tiles
+        if (auto* tm = ecs.GetComponent<Component::TileMapComponent>(e)) {
+            rapidjson::Value tmJ(rapidjson::kObjectType);
+
+          
+            tmJ.AddMember("tileSize", tm->tileSize, allocate);
+
+            rapidjson::Value active;
+            active.SetString(tm->activeAsset.c_str(),
+                static_cast<rapidjson::SizeType>(tm->activeAsset.size()),
+                allocate);
+            tmJ.AddMember("activeAsset", active, allocate);
+
+        
+            rapidjson::Value tiles(rapidjson::kArrayType);
+            for (const auto& [pos, assetName] : tm->gridData) {
+                rapidjson::Value t(rapidjson::kObjectType);
+                t.AddMember("x", pos.first, allocate);
+                t.AddMember("y", pos.second, allocate);
+
+                rapidjson::Value asset;
+                asset.SetString(assetName.c_str(),
+                    static_cast<rapidjson::SizeType>(assetName.size()),
+                    allocate);
+                t.AddMember("asset", asset, allocate);
+
+                tiles.PushBack(t, allocate);
+            }
+            tmJ.AddMember("tiles", tiles, allocate);
+
+            obj.AddMember("tilemap", tmJ, allocate);
         }
 
         auto trim = [](std::string inputString) {

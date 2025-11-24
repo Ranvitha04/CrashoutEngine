@@ -492,6 +492,12 @@ namespace UI { // --------------------------------------------------------------
             }
 
             if (ImGui::Button("Destroy Selected")) {
+                if (selected) {
+
+                    if (ecs.HasComponent<Component::ParentComponent>(selected)) {
+                        CrashoutsEngine::DetachChild(ecs, selected);
+                    }
+                }
                 ecs.DestroyEntity(selected);
                 if (auto it = std::find(entities.begin(), entities.end(), selected);
                     it != entities.end()) entities.erase(it);
@@ -800,9 +806,8 @@ namespace UI { // --------------------------------------------------------------
                         {
                             
                             std::string rel = fs::relative(e.path(), fs::path(root)).generic_string();
-                            std::string full = std::string("assets/") + rel;   
 
-                            SpriteSheet_SetTexturePath(full.c_str());        
+                            SpriteSheet_SetTexturePath(rel.c_str());
                             ui.showSpriteSheet = true;                        
                         }
                     }

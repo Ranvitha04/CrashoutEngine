@@ -17,6 +17,7 @@
 #include "frameratecontroller.h"
 #include "CEVec2.h"
 #include "CEVec3.h"
+#include <filesystem>
 
 #include <imgui.h>
 #include "stb_image.h"          
@@ -28,7 +29,7 @@
 
 using namespace CrashoutsEngine;   
 using namespace Component;         
-
+namespace fs = std::filesystem;
 namespace UI
 {
     
@@ -42,13 +43,18 @@ namespace UI
     };
 
  
-    static char  gSpritePath[256] = "assets/images/ducky_2_spritesheet.png";
+    static char  gSpritePath[256] = "images/spritesheet/ducky_2_spritesheet.png";
+    static int   gTileW = 32;   
+    static int   gTileH = 32;  
+
+
     static int   gRows = 4;
     static int   gCols = 6;
-    static int   gSelectedFrame = 0;
-    static float gZoom = 2.0f;   
 
-    static bool                  gClipsInit = false;
+    static int   gSelectedFrame = 0;
+    static float gZoom = 2.0f;
+
+    static bool  gClipsInit = false;
     static std::vector<SpriteClipUI> gClips;
 
   
@@ -84,23 +90,57 @@ namespace UI
         int width = 0, height = 0, channels = 0;
         const int desiredChannels = 4;
 
-        unsigned char* pixels = stbi_load(
-            gSpritePath, &width, &height, &channels, desiredChannels
-        );
+        std::string sheetPath;
+        {
+            namespace fs = std::filesystem;
+            using namespace CrashoutsEngine::Assets;
+
+            fs::path base = fs::path(rootPath);
+            fs::path rel = fs::path(gSpritePath);
+            sheetPath = (base / rel).generic_string();
+        }
+
+        unsigned char* pixels = stbi_load( sheetPath.c_str(), &width, &height, &channels, desiredChannels);
+     
         if (!pixels) {
             std::printf("SpriteSheet export failed: cannot load '%s'\n", gSpritePath);
             return;
         }
 
-        if (gRows <= 0 || gCols <= 0) {
-            std::printf("SpriteSheet export failed: rows/cols must be > 0\n");
+        if (gTileW <= 0 || gTileH <= 0) {
+            std::printf("SpriteSheet export failed: tile W/H must be > 0\n");
             stbi_image_free(pixels);
             return;
         }
 
+        const int tileW = gTileW;
+        const int tileH = gTileH;
 
-        const int tileW = width / gCols;
-        const int tileH = height / gRows;
+        if (width < tileW || height < tileH) {
+            std::printf("SpriteSheet export failed: image smaller than tile (%d x %d vs %d x %d)\n",
+                width, height, tileW, tileH);
+            stbi_image_free(pixels);
+            return;
+        }
+
+        
+        int cols = width / tileW;
+        int rows = height / tileH;
+
+        if (cols <= 0 || rows <= 0) {
+            std::printf("SpriteSheet export failed: invalid rows/cols from tile size\n");
+            stbi_image_free(pixels);
+            return;
+        }
+
+  
+        if (width % tileW != 0 || height % tileH != 0) {
+            std::printf("Warning: sheet not evenly divisible by tile size; extra pixels ignored.\n");
+        }
+
+       
+        gCols = cols;
+        gRows = rows;
         if (tileW <= 0 || tileH <= 0) {
             std::printf("SpriteSheet export failed: invalid tile size (%d x %d)\n", tileW, tileH);
             stbi_image_free(pixels);
@@ -127,11 +167,14 @@ namespace UI
             stem = base;
         else
             stem = base.substr(0, dot);
+        namespace Assets = CrashoutsEngine::Assets;
 
+    
+        fs::path outDir = fs::path(Assets::rootPath) / "images" / "spritesheet";
+        std::error_code ec;
+        fs::create_directories(outDir, ec); 
 
-        std::string outDir = "../../projects/Descent/assets/images/";
-        std::string prefix = outDir + stem + "_";
-
+        std::string prefix = (outDir / stem).generic_string() + "_";
 
 
         const int tileStride = tileW * desiredChannels;
@@ -139,13 +182,11 @@ namespace UI
         std::vector<unsigned char> tile(tileSize);
 
         int index = 0;
-        for (int r = 0; r < gRows; ++r) {
-            for (int c = 0; c < gCols; ++c) {
-
+        for (int r = 0; r < rows; ++r) {
+            for (int c = 0; c < cols; ++c) {
                 const int x0 = c * tileW;
                 const int y0 = r * tileH;
-
-
+           
                 for (int y = 0; y < tileH; ++y) {
                     const unsigned char* srcRow =
                         pixels + ((y0 + y) * width + x0) * desiredChannels;
@@ -200,10 +241,39 @@ namespace UI
 
        
         ImGui::InputText("Texture path", gSpritePath, IM_ARRAYSIZE(gSpritePath));
-        ImGui::InputInt("Rows", &gRows);
-        ImGui::InputInt("Cols", &gCols);
-        gRows = std::max(gRows, 1);
-        gCols = std::max(gCols, 1);
+
+        ImGui::InputInt("Tile width (px)", &gTileW);
+        ImGui::InputInt("Tile height (px)", &gTileH);
+        gTileW = std::max(gTileW, 1);
+        gTileH = std::max(gTileH, 1);
+
+        
+        int sheetW = 0, sheetH = 0, channels = 0;
+
+      
+        std::string sheetPath;
+        {
+            namespace fs = std::filesystem;
+            using namespace CrashoutsEngine::Assets;
+
+            fs::path base = fs::path(rootPath);    
+            fs::path rel = fs::path(gSpritePath); 
+            sheetPath = (base / rel).generic_string();
+        }
+
+        if (stbi_info(sheetPath.c_str(), &sheetW, &sheetH, &channels)) {
+            gCols = std::max(1, sheetW / gTileW);
+            gRows = std::max(1, sheetH / gTileH);
+
+            ImGui::Text("Sheet %d x %d -> %d cols x %d rows",
+                sheetW, sheetH, gCols, gRows);
+        }
+        else {
+            ImGui::TextColored(ImVec4(1, 0.3f, 0.3f, 1),
+                "Could not read image info.");
+        }
+
+
         if (ImGui::Button("Export tiles to PNGs")) {
             ExportCurrentSpritesheetToPNGs();
             {

@@ -208,7 +208,7 @@ namespace CrashoutsEngine {
 			}
 			
 			// NEW: --- Loading SPRITE_SHEET ---
-			if (doc.HasMember("sprite_sheet") && doc["sprite_sheet"].IsArray()) {
+			if (doc.HasMember("spritesheet") && doc["spritesheet"].IsArray()) {
 				std::cout << "Loading Sprite Sheet Textures..." << std::endl;
 				const rapidjson::Value& sheetArray = doc["sprite_sheet"];
 				for (rapidjson::SizeType i = 0; i < sheetArray.Size(); ++i) {
@@ -216,7 +216,7 @@ namespace CrashoutsEngine {
 					if (asset.HasMember("name") && asset.HasMember("path")) {
 						std::string name = asset["name"].GetString();
 						std::string relativePath = asset["path"].GetString();
-						std::string fullPath = rootAssetPath + "sprite_sheet/" + relativePath;
+						std::string fullPath = rootAssetPath + "spritesheet/" + relativePath;
                         std::unique_ptr<TextureAsset> newTexture = TextureAsset::Create(fullPath);
                         if (newTexture) {
                             if (newTexture->UploadToGPU()) {
@@ -488,7 +488,7 @@ namespace CrashoutsEngine {
 			}
 
 			// SPRITE SHEET  (sprite_sheet/)
-			if (folder == "sprite_sheet")
+			if (folder == "spritesheet")
 			{
 				if (ext == ".png" || ext == ".jpg" || ext == ".jpeg")
 				{
