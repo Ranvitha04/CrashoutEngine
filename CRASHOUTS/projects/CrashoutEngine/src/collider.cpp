@@ -8,7 +8,7 @@ namespace Collision {
 	Sphere::Sphere(f32 radius, CEVec3 const& center, CEVec3 const& newOffset) : Collider{ SPHERE }, radius{ radius } { position = center; offset = newOffset; helperType = SPHERE_T; }
 
 	void Sphere::updateCollider(CEVec3 const& newPos) {
-		position = newPos;
+		position = newPos + offset;
 	}
 
 	AABBRect::AABBRect(CEVec3 const& min, CEVec3 const& max) : Collider{ AABB }, min{ min }, max{ max } {
@@ -25,7 +25,7 @@ namespace Collision {
 			case SPHERE: {
 				Sphere const& sphere{ dynamic_cast<Sphere const&>(collider) };
 				CEVec3 extents{ sphere.radius, sphere.radius, 0.f };
-				return AABBRect{ transform - extents, transform + extents };
+				return AABBRect{ sphere.position - extents, sphere.position + extents };
 				}
 				break;
 			case AABB: {
@@ -56,7 +56,7 @@ namespace Collision {
 	}
 
 	void AABBRect::updateCollider(CEVec3 const& newPos) {
-		position = newPos;
+		position = newPos + offset;
 		max = position + extents;
 		min = position - extents;
 	}
@@ -132,8 +132,8 @@ namespace Collision {
 		f32 massPerTri{ mass / vertexCount };
 		for (int i{}; i < vertexCount; ++i) {
 			int nextIdx{ (i + 1) % vertexCount };
-			CEVec3 centerToVertice0{ vertices[i] - (position + offset) };
-			CEVec3 centerToVertice1{ vertices[nextIdx] - (position + offset) };
+			CEVec3 centerToVertice0{ vertices[i] - position };
+			CEVec3 centerToVertice1{ vertices[nextIdx] - position };
 			f32 inertiaTri{ massPerTri * (CEMath::LengthSq(centerToVertice0) + CEMath::LengthSq(centerToVertice1) + CEMath::Dot(centerToVertice0,centerToVertice1)) / 6.f };
 			inertia += inertiaTri;
 		}
@@ -163,8 +163,8 @@ namespace Collision {
 	}
 
 	CEVec3 Polygon::calculateOBBExtents(Polygon const& polygon) {
-		CEVec3 position{ polygon.position.x + polygon.offset.x, polygon.position.y + polygon.offset.y, 0.f };
-		CEVec3 extents{ position.x - (polygon.vertices[0].x + polygon.offset.x), position.y - (polygon.vertices[0].y + polygon.offset.y), 0.f };
+		CEVec3 position{ polygon.position.x, polygon.position.y, 0.f };
+		CEVec3 extents{ position.x - polygon.vertices[0].x, position.y - polygon.vertices[0].y, 0.f };
 
 
 		return extents;
@@ -232,8 +232,8 @@ namespace Collision {
 
 	void Polygon::updatePosition(CEVec3 const& newPos) {
 
-		CEVec3 vecToNewPos{ newPos - position };
-		position = newPos;
+		CEVec3 vecToNewPos{ (newPos + offset) - position };
+		position = newPos + offset;
 
 		for (int i{}; i < vertexCount; ++i) {
 			rotatedVertices[i] += vecToNewPos;
