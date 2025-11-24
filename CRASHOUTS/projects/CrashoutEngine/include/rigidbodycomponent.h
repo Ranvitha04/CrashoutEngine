@@ -22,12 +22,10 @@ namespace Component {
 		f32 mRestitutionCoeff{}; /*Measure of elasticity*/
 		Physics::ForceManager fm;
 		std::bitset<8> flags{ 0b0000'0000 };
-		f32 staticFriction{ 0.5f };
-		f32 dynamicFriction{ 0.5f };
-
 
 	public:
-
+		f32 staticFriction{ 0.5f };
+		f32 dynamicFriction{ 0.5f };
 		f32 inertia{ };
 		f32 invInertia{ };
 		/*Rotational Properties*/

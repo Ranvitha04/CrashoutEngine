@@ -326,7 +326,27 @@ namespace CrashoutsEngine {
                     if (rigidBodyValues.HasMember("restitutionCoeff") && rigidBodyValues["restitutionCoeff"].IsFloat()) {
                         rigidBodyComp.setRestitution(rigidBodyValues["restitutionCoeff"].GetFloat());
                     }
-                    
+
+                    if (rigidBodyValues.HasMember("staticFriction") && rigidBodyValues["staticFriction"].IsFloat()) {
+                        rigidBodyComp.staticFriction = rigidBodyValues["staticFriction"].GetFloat();
+                    }
+
+                    if (rigidBodyValues.HasMember("dynamicFriction") && rigidBodyValues["dynamicFriction"].IsFloat()) {
+                        rigidBodyComp.dynamicFriction = rigidBodyValues["dynamicFriction"].GetFloat();
+                    }
+
+                    if (rigidBodyValues.HasMember("inertia") && rigidBodyValues["inertia"].IsFloat()) {
+                        rigidBodyComp.inertia = rigidBodyValues["inertia"].GetFloat();
+                    }
+
+                    if (rigidBodyValues.HasMember("invInertia") && rigidBodyValues["invInertia"].IsFloat()) {
+                        rigidBodyComp.invInertia = rigidBodyValues["invInertia"].GetFloat();
+                    }
+
+                    if (rigidBodyValues.HasMember("isTrigger") && rigidBodyValues["isTrigger"].IsBool()) {
+                        bool isTrigger{ rigidBodyValues["isTrigger"].GetBool() };
+                        if (isTrigger) rigidBodyComp.getFlags().flip(Physics::SIMULATE_DYNAMICS);
+                    }
                 }
 
                 // Check if Collider 
@@ -1091,6 +1111,15 @@ namespace CrashoutsEngine {
                     maxVelVal.AddMember("z", maxVel.z, allocator);
 
                     rigidBodyValue.AddMember("maximumVelocity", std::move(maxVelVal), allocator);
+
+                    rigidBodyValue.AddMember("staticFriction", rigidBodyComp.staticFriction, allocator);
+                    rigidBodyValue.AddMember("dynamicFriction", rigidBodyComp.dynamicFriction, allocator);
+
+                    rigidBodyValue.AddMember("inertia", rigidBodyComp.inertia, allocator);
+                    rigidBodyValue.AddMember("invInertia", rigidBodyComp.invInertia, allocator);
+
+                    bool isTrigger{ rigidBodyComp.getFlags().test(Physics::SIMULATE_DYNAMICS) };
+                    rigidBodyValue.AddMember("isTrigger", isTrigger, allocator);
 
                     entityValue.AddMember(rapidjson::StringRef(Keys::RIGIDBODY_COMPONENT), std::move(rigidBodyValue) , allocator);
                 }

@@ -16,6 +16,7 @@
 #include "hierarchy.h"
 #include <cmath>
 #include <algorithm>
+#include "camera.h"
 #include "colliders.h"
 
 namespace {
@@ -655,20 +656,27 @@ namespace Collision {
 		std::vector<CrashoutsEngine::Entity> globalEntities = globalECS.GetComponentArray<Component::ColliderComponent>().indexToEntity;
 
 		switch (state) {
-		case EngineState::PAUSE:
-			return;
-		case EngineState::STOP:
-			lastFrameCollision.clear();
-			return;
-		default:
-			break;
+			case EngineState::PAUSE:
+				return;
+			case EngineState::STOP:
+				lastFrameCollision.clear();
+				return;
+			default:
+				break;
 		}
 
-		if (!globalEntities.size()) lastFrameCollision.clear(); //RESET IF CURRENTLY NO ENTITIES
+		
 
 		std::pair<f32, f32> newDimen{ ComputeWorldDimensions() };
 
-		CEVec2 newExtents{ newDimen.first * 0.5f, newDimen.second * 0.5f };
+		newDimen.first *= 1.2f;
+		newDimen.second *= 1.2f;
+
+		CEVec3 newExtents{ newDimen.first * 0.5f, newDimen.second * 0.5f, 0.f };
+
+		CEVec3 pos{ CrashoutsEngine::RenderCamera::gameCamera.GetPosition() };
+
+		AABBRect bounds{pos - newExtents, pos + newExtents};
 
 		quadTree.Clear();
 
@@ -682,12 +690,20 @@ namespace Collision {
 
 			if (!globalECS.HasComponent<Component::TransformComponent>(entity1)) continue;
 
+			
+
 			std::vector<CrashoutsEngine::Entity> collidableObjects{};
 
 			Component::ColliderComponent* collider1{ globalECS.GetComponent<Component::ColliderComponent>(entity1) };
 			Component::TransformComponent* transform1{ globalECS.GetComponent<Component::TransformComponent>(entity1) };
-
 			AABBRect region{ GetAABB(*(collider1->collider), transform1->position) };
+
+			if (!bounds.contains(region)) continue;
+
+			
+
+			
+
 			quadTree.Query(region, collidableObjects);
 
 			for (CrashoutsEngine::Entity const& entity2 : collidableObjects) {
