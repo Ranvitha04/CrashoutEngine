@@ -1,0 +1,70 @@
+{
+    "layerMask": 2,
+    "tilemap": [
+        {
+            "texAssetName": "Test\\Middle.png",
+            "colliderType": "NONE",
+            "ruleBitMap": 11
+        },
+        {
+            "texAssetName": "Test\\Left.png",
+            "colliderType": "AABB",
+            "ruleBitMap": 3
+        },
+        {
+            "texAssetName": "Test\\Right.png",
+            "colliderType": "AABB",
+            "ruleBitMap": 9
+        },
+        {
+            "texAssetName": "Test\\Top.png",
+            "colliderType": "AABB",
+            "ruleBitMap": 4
+        },
+        {
+            "texAssetName": "Test\\Top.png",
+            "colliderType": "AABB",
+            "ruleBitMap": 0
+        },
+        {
+            "texAssetName": "Test\\Top.png",
+            "colliderType": "AABB",
+            "ruleBitMap": 8
+        },
+        {
+            "texAssetName": "Test\\Top.png",
+            "colliderType": "AABB",
+            "ruleBitMap": 2
+        },
+        {
+            "texAssetName": "Test\\Top.png",
+            "colliderType": "AABB",
+            "ruleBitMap": 10
+        },
+        {
+            "texAssetName": "Test\\Top.png",
+            "colliderType": "AABB",
+            "ruleBitMap": 14
+        },
+        {
+            "texAssetName": "Test\\Top.png",
+            "colliderType": "AABB",
+            "ruleBitMap": 12
+        },
+        {
+            "texAssetName": "Test\\Top.png",
+            "colliderType": "AABB",
+            "ruleBitMap": 6
+        },
+        {
+            "texAssetName": "Test\\Right.png",
+            "colliderType": "AABB",
+            "ruleBitMap": 13
+        },
+        {
+            "texAssetName": "Test\\Left.png",
+            "colliderType": "AABB",
+            "ruleBitMap": 7
+        }
+    ]
+}

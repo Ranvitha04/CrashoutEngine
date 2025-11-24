@@ -39,6 +39,7 @@
 #include <crtdbg.h>
 #include <vector>  
 #include "prefabcomponent.h"
+#include "tilemapcomponent.h"
 using namespace CrashoutsEngine;
 using namespace Component;
 /**
@@ -107,15 +108,17 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path)
             int typeInt = (shapeJson.HasMember("type") && shapeJson["type"].IsInt())
                 ? shapeJson["type"].GetInt() : static_cast<int>(ShapeType::Rectangle);
 
-            CEVec3 color{ 0, 0, 0 };
+            CEColor color{ 0, 0, 0 };
             if (shapeJson.HasMember("color") && shapeJson["color"].IsObject()) {
                 const auto& colorJson = shapeJson["color"];
                 if (colorJson.HasMember("r") && colorJson["r"].IsNumber())
-                    color.x = static_cast<float>(colorJson["r"].GetDouble());
+                    color.r = static_cast<float>(colorJson["r"].GetDouble());
                 if (colorJson.HasMember("g") && colorJson["g"].IsNumber())
-                    color.y = static_cast<float>(colorJson["g"].GetDouble());
+                    color.g = static_cast<float>(colorJson["g"].GetDouble());
                 if (colorJson.HasMember("b") && colorJson["b"].IsNumber())
-                    color.z = static_cast<float>(colorJson["b"].GetDouble());
+                    color.b = static_cast<float>(colorJson["b"].GetDouble());
+                if (colorJson.HasMember("a") && colorJson["a"].IsNumber())
+                    color.a = static_cast<float>(colorJson["a"].GetDouble());
             }
 
             const bool enableTexture =
@@ -194,7 +197,7 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path)
             std::string jsonText = "TEST";
             float jsonScale = 1.0f;
             CEVec2 jsonOffset{ 0.0f, 0.0f };
-            CEVec3 jsonColor{ 255.0f, 255.0f, 255.0f };
+            CEColor jsonColor{ 1.f, 1.f, 1.f };
             bool jsonCentered = true;
             bool jsonIsWorldSpace = true;
 
@@ -220,11 +223,13 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path)
                 if (textJson.HasMember("color") && textJson["color"].IsObject()) {
                     const auto& col = textJson["color"];
                     if (col.HasMember("r") && col["r"].IsNumber())
-                        jsonColor.x = static_cast<float>(col["r"].GetDouble());
+                        jsonColor.r = static_cast<float>(col["r"].GetDouble());
                     if (col.HasMember("g") && col["g"].IsNumber())
-                        jsonColor.y = static_cast<float>(col["g"].GetDouble());
+                        jsonColor.g = static_cast<float>(col["g"].GetDouble());
                     if (col.HasMember("b") && col["b"].IsNumber())
-                        jsonColor.z = static_cast<float>(col["b"].GetDouble());
+                        jsonColor.b = static_cast<float>(col["b"].GetDouble());
+                    if (col.HasMember("a") && col["a"].IsNumber())
+                        jsonColor.a = static_cast<float>(col["a"].GetDouble());
                 }
 
                 if (textJson.HasMember("centered") && textJson["centered"].IsBool())
@@ -381,6 +386,34 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path)
 
                 hasPP = true;
             }
+            // --- tilemap ---
+            bool hasTileMap = false;
+            Component::TileMapComponent tileMapData;  
+
+            if (prefabs.HasMember("tilemap") && prefabs["tilemap"].IsObject()) {
+                const auto& tmJ = prefabs["tilemap"];
+
+                if (tmJ.HasMember("tileSize") && tmJ["tileSize"].IsInt())
+                    tileMapData.tileSize = tmJ["tileSize"].GetInt();
+
+                if (tmJ.HasMember("activeAsset") && tmJ["activeAsset"].IsString())
+                    tileMapData.activeAsset = tmJ["activeAsset"].GetString();
+
+                if (tmJ.HasMember("tiles") && tmJ["tiles"].IsArray()) {
+                    for (auto& t : tmJ["tiles"].GetArray()) {
+                        if (!t.IsObject()) continue;
+                        if (!t.HasMember("x") || !t.HasMember("y") || !t.HasMember("asset")) continue;
+
+                        int gx = t["x"].GetInt();
+                        int gy = t["y"].GetInt();
+                        std::string assetName = t["asset"].GetString();
+
+                        tileMapData.gridData[{ gx, gy }] = assetName;
+                    }
+                }
+
+                hasTileMap = true;
+            }
 
 
             // ---- register factory ----
@@ -402,7 +435,7 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path)
                 //audio
                 hasAudioEmitter, audioEventPath, audioVolume, audioPitch, audioSpatial3D, audioLooping,
                 hasGuiComponent, guiTypeMask,
-                hasPP, ppActive, ppBrightness, ppContrast, ppSaturation
+                hasPP, ppActive, ppBrightness, ppContrast, ppSaturation, hasTileMap, tileMapData
                 ](ECS& e)
             {
                 const Entity entitty = e.CreateEntity();
@@ -473,7 +506,7 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path)
                 // --- AudioEmitterComponent 
                 if (hasAudioEmitter && !audioEventPath.empty()) {
                     Component::AudioEmitterComponent a{};
-                    a.eventPath = audioEventPath;
+                    a.eventPath = audioEventPath;ppSaturation;
                     a.volume = audioVolume;
                     a.pitch = audioPitch;
                     a.spatial3D = audioSpatial3D;
@@ -494,6 +527,14 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path)
                     pp.contrast = ppContrast;
                     pp.saturation = ppSaturation;
                     e.AddComponent<Component::PPComponent>(entitty, pp);
+                }
+                // inside the lambda, near the bottom:
+                if (hasTileMap) {
+                    auto& tm = e.AddComponent<Component::TileMapComponent>(entitty);
+                    tm.tileSize = tileMapData.tileSize;
+                    tm.activeAsset = tileMapData.activeAsset;
+                    tm.gridData = tileMapData.gridData;  
+                    tm.isCacheDirty = true;                
                 }
             });
 
@@ -615,9 +656,10 @@ namespace CrashoutsEngine {
             }
             // color
             Value color(kObjectType);
-            color.AddMember("r", shape->color.x, allocate);
-            color.AddMember("g", shape->color.y, allocate);
-            color.AddMember("b", shape->color.z, allocate);
+            color.AddMember("r", shape->color.r, allocate);
+            color.AddMember("g", shape->color.g, allocate);
+            color.AddMember("b", shape->color.b, allocate);
+            color.AddMember("a", shape->color.a, allocate);
             shapeJson.AddMember("color", color, allocate);
 
             // texture flags
@@ -704,9 +746,10 @@ namespace CrashoutsEngine {
             // color
             {
                 rapidjson::Value col(rapidjson::kObjectType);
-                col.AddMember("r", static_cast<double>(txt->color.x), allocate);
-                col.AddMember("g", static_cast<double>(txt->color.y), allocate);
-                col.AddMember("b", static_cast<double>(txt->color.z), allocate);
+                col.AddMember("r", static_cast<double>(txt->color.r), allocate);
+                col.AddMember("g", static_cast<double>(txt->color.g), allocate);
+                col.AddMember("b", static_cast<double>(txt->color.b), allocate);
+                col.AddMember("a", static_cast<double>(txt->color.a), allocate);
                 textJson.AddMember("color", col, allocate);
             }
 
@@ -807,6 +850,38 @@ namespace CrashoutsEngine {
             ppJson.AddMember("contrast", static_cast<double>(pp->contrast), allocate);
             ppJson.AddMember("saturation", static_cast<double>(pp->saturation), allocate);
             obj.AddMember("postprocessing", ppJson, allocate);
+        }
+        //tiles
+        if (auto* tm = ecs.GetComponent<Component::TileMapComponent>(e)) {
+            rapidjson::Value tmJ(rapidjson::kObjectType);
+
+          
+            tmJ.AddMember("tileSize", tm->tileSize, allocate);
+
+            rapidjson::Value active;
+            active.SetString(tm->activeAsset.c_str(),
+                static_cast<rapidjson::SizeType>(tm->activeAsset.size()),
+                allocate);
+            tmJ.AddMember("activeAsset", active, allocate);
+
+        
+            rapidjson::Value tiles(rapidjson::kArrayType);
+            for (const auto& [pos, assetName] : tm->gridData) {
+                rapidjson::Value t(rapidjson::kObjectType);
+                t.AddMember("x", pos.first, allocate);
+                t.AddMember("y", pos.second, allocate);
+
+                rapidjson::Value asset;
+                asset.SetString(assetName.c_str(),
+                    static_cast<rapidjson::SizeType>(assetName.size()),
+                    allocate);
+                t.AddMember("asset", asset, allocate);
+
+                tiles.PushBack(t, allocate);
+            }
+            tmJ.AddMember("tiles", tiles, allocate);
+
+            obj.AddMember("tilemap", tmJ, allocate);
         }
 
         auto trim = [](std::string inputString) {

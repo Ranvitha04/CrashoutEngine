@@ -23,6 +23,10 @@
         {
             "name": "Squishy-Movement_1 (1)",
             "path": "banks\\Squishy-Movement_1 (1).wav"
+        },
+        {
+            "name": "Footsteps2_Gravel-Dirt_far-small_1",
+            "path": "Footsteps2_Gravel-Dirt_far-small_1.wav"
         }
     ],
     "fonts": [
@@ -118,6 +122,62 @@
         },
         {
             "name": "Chibi-1",
+            "path": "Character\\Light Mode\\Chibi-1.png"
+        },
+        {
+            "name": "Chibi-2",
+            "path": "Character\\Light Mode\\Chibi-2.png"
+        },
+        {
+            "name": "Chibi-3",
+            "path": "Character\\Light Mode\\Chibi-3.png"
+        },
+        {
+            "name": "Chibi-4",
+            "path": "Character\\Light Mode\\Chibi-4.png"
+        },
+        {
+            "name": "Chibi-5",
+            "path": "Character\\Light Mode\\Chibi-5.png"
+        },
+        {
+            "name": "Chibi-6",
+            "path": "Character\\Light Mode\\Chibi-6.png"
+        },
+        {
+            "name": "Chibi-Light-Actions-SpriteSheet",
+            "path": "Character\\Light Mode\\Chibi-Light-Actions-SpriteSheet.png"
+        },
+        {
+            "name": "Falling",
+            "path": "Character\\Light Mode\\Left\\Falling.png"
+        },
+        {
+            "name": "Jump",
+            "path": "Character\\Light Mode\\Left\\Jump.png"
+        },
+        {
+            "name": "Run 1",
+            "path": "Character\\Light Mode\\Left\\Run 1.png"
+        },
+        {
+            "name": "Run 2",
+            "path": "Character\\Light Mode\\Left\\Run 2.png"
+        },
+        {
+            "name": "Run 3",
+            "path": "Character\\Light Mode\\Left\\Run 3.png"
+        },
+        {
+            "name": "Run 4",
+            "path": "Character\\Light Mode\\Left\\Run 4.png"
+        },
+        {
+            "name": "Switch State Idle ",
+            "path": "Character\\Light Mode\\Left\\Switch State Idle .png"
+        },
+        {
+            "name": "Chibi-1",
             "path": "Character\\New Artstyle\\Chibi-1.png"
         },
         {
@@ -145,8 +205,44 @@
             "path": "Character\\New Artstyle\\Chibi-7.png"
         },
         {
-            "name": "Normal spritesheet",
-            "path": "Character\\Normal spritesheet.png"
+            "name": "Switch State spritesheet",
+            "path": "Character\\New Artstyle\\Switch State spritesheet.png"
+        },
+        {
+            "name": "Switch-State-SpriteSheet",
+            "path": "Character\\New Artstyle\\Switch-State-SpriteSheet.png"
+        },
+        {
+            "name": "Chibi-1",
+            "path": "Character\\Normal Mode\\Chibi-1.png"
+        },
+        {
+            "name": "Chibi-2",
+            "path": "Character\\Normal Mode\\Chibi-2.png"
+        },
+        {
+            "name": "Chibi-3",
+            "path": "Character\\Normal Mode\\Chibi-3.png"
+        },
+        {
+            "name": "Chibi-4",
+            "path": "Character\\Normal Mode\\Chibi-4.png"
+        },
+        {
+            "name": "Chibi-5",
+            "path": "Character\\Normal Mode\\Chibi-5.png"
+        },
+        {
+            "name": "Chibi-6",
+            "path": "Character\\Normal Mode\\Chibi-6.png"
+        },
+        {
+            "name": "Chibi-7",
+            "path": "Character\\Normal Mode\\Chibi-7.png"
+        },
+        {
+            "name": "Chibi-Actions-SpriteSheet",
+            "path": "Character\\Normal Mode\\Chibi-Actions-SpriteSheet.png"
         },
         {
             "name": "Run Light",
@@ -155,6 +251,10 @@
         {
             "name": "Run",
             "path": "Character\\Run.gif"
+        },
+        {
+            "name": "Cutscene_",
+            "path": "Cutscenes\\Cutscene_.png"
         },
         {
             "name": "ducky_2_spritesheet",
@@ -201,8 +301,48 @@
             "path": "Monsters\\Monsters.png"
         },
         {
+            "name": "Monsters_1",
+            "path": "Monsters\\Monsters_1.png"
+        },
+        {
+            "name": "Monsters_2",
+            "path": "Monsters\\Monsters_2.png"
+        },
+        {
+            "name": "Monsters_3",
+            "path": "Monsters\\Monsters_3.png"
+        },
+        {
+            "name": "Monsters_4",
+            "path": "Monsters\\Monsters_4.png"
+        },
+        {
+            "name": "Monsters_5",
+            "path": "Monsters\\Monsters_5.png"
+        },
+        {
+            "name": "Monsters_6",
+            "path": "Monsters\\Monsters_6.png"
+        },
+        {
+            "name": "Monsters_7",
+            "path": "Monsters\\Monsters_7.png"
+        },
+        {
+            "name": "Monsters_8",
+            "path": "Monsters\\Monsters_8.png"
+        },
+        {
+            "name": "Monsters_9",
+            "path": "Monsters\\Monsters_9.png"
+        },
+        {
             "name": "Slime Idle",
             "path": "Monsters\\Slime Idle.png"
+        },
+        {
+            "name": "Slime spritesheet",
+            "path": "Monsters\\Slime spritesheet.png"
         },
         {
             "name": "Sus Face Left",
@@ -213,8 +353,20 @@
             "path": "Monsters\\Sus Face Right.png"
         },
         {
-            "name": "Normal spritesheet",
-            "path": "Normal spritesheet.png"
+            "name": "Left",
+            "path": "Test\\Left.png"
+        },
+        {
+            "name": "Middle",
+            "path": "Test\\Middle.png"
+        },
+        {
+            "name": "Right",
+            "path": "Test\\Right.png"
+        },
+        {
+            "name": "Top",
+            "path": "Test\\Top.png"
         },
         {
             "name": "Darker Platform",
@@ -269,12 +421,32 @@
             "path": "UI\\Energy Ball\\Emp 5.png"
         },
         {
+            "name": "Energy Ball spritesheet",
+            "path": "UI\\Energy Ball\\Energy Ball spritesheet.png"
+        },
+        {
             "name": "Fill Area",
             "path": "UI\\Fill Area.png"
         },
         {
+            "name": "Handle",
+            "path": "UI\\Handle.png"
+        },
+        {
+            "name": "Icon",
+            "path": "UI\\Icon.png"
+        },
+        {
             "name": "Menu",
             "path": "UI\\Menu.png"
+        },
+        {
+            "name": "Pause Menu Closed",
+            "path": "UI\\Pause Menu Closed.png"
+        },
+        {
+            "name": "Pause Menu Open",
+            "path": "UI\\Pause Menu Open.png"
         },
         {
             "name": "Pressure Plate",
@@ -367,6 +539,12 @@
         {
             "name": "TextShader",
             "path": "TextShader"
+        }
+    ],
+    "tilemaps": [
+        {
+            "name": "Rocky",
+            "path": "Rocky"
         }
     ]
 }

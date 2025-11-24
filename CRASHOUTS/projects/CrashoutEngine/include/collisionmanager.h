@@ -72,42 +72,64 @@ namespace Collision {
 	@brief	Used to contain functions for checking collision and able to return a function pointer based on the type of collision passed in
 	*/
 	class CollisionHandler : public Messaging::Observable {
-	private:
+		public:
+			using Contact = std::optional<CollisionManifold>;
 
-		static constexpr int TYPES_OF_COLLISION{ 3 };
+		private:
 
-		std::array<FunctionDispatchType, TYPES_OF_COLLISION* TYPES_OF_COLLISION> collideFuncts;
+			static constexpr int TYPES_OF_COLLISION{ 3 };
 
-		static CollisionManifold SphereToSphereCollision(CollisionProps const& coll1, CollisionProps const& coll2);
+			std::array<FunctionDispatchType, TYPES_OF_COLLISION* TYPES_OF_COLLISION> collideFuncts;
 
-		static CollisionManifold AABBToAABBCollision(CollisionProps const& coll1, CollisionProps const& coll2);
+			static CollisionManifold SphereToSphereCollision(CollisionProps const& coll1, CollisionProps const& coll2);
 
-		static CollisionManifold SphereToAABBCollision(CollisionProps const& coll1, CollisionProps const& coll2);
+			static CollisionManifold SphereToAABBCollision(CollisionProps const& coll1, CollisionProps const& coll2);
 
-		static CollisionManifold AABBToOBBCollision(CollisionProps const& coll1, CollisionProps const& coll2);
+			static CollisionManifold AABBToAABBCollision(CollisionProps const& coll1, CollisionProps const& coll2);
 
-		static CollisionManifold SphereToOBBCollision(CollisionProps const& coll1, CollisionProps const& coll2);
+			/*POLYGON FUNCTIONS*/
 
-		static CollisionManifold OBBToOBBCollision(CollisionProps const& coll1, CollisionProps const& coll2);
+			static CollisionManifold PolygonToPolygonCollision(CollisionProps const& coll1, CollisionProps const& coll2);
 
-		ContactCollection currentFrameCollision;
-		ContactCollection lastFrameCollision;
+			static CollisionManifold SphereToPolygonCollision(CollisionProps const& coll1, CollisionProps const& coll2);
 
-	public:
+			static CollisionManifold AABBToPolygonCollision(CollisionProps const& coll1, CollisionProps const& coll2);
 
-		static DataStructure::QuadTree quadTree;
+			/*OBB SOON TO BE DEPRECATED*/
 
-		CollisionHandler();
+			static CollisionManifold AABBToOBBCollision(CollisionProps const& coll1, CollisionProps const& coll2);
 
-		void update(double deltaTime, EngineState engineState);
+			static CollisionManifold OBBToOBBCollision(CollisionProps const& coll1, CollisionProps const& coll2);
 
-		/*!
-		@brief Return a function pointer to call the appropriate collision function
-		@param type1 The first collider type
-		@param type2 The second collider type
-		@return FunctionDispatchType which is a function pointer
-		*/
-		FunctionDispatchType callCollFunct(Collision::ColliderType type1, Collision::ColliderType type2);
+			static CollisionManifold SphereToOBBCollision(CollisionProps const& coll1, CollisionProps const& coll2);
+
+			
+
+			
+		public:
+
+			ContactCollection currentFrameCollision;
+			ContactCollection lastFrameCollision;
+
+
+			static CollisionHandler& GetInstance() {
+				static CollisionHandler singleton;
+				return singleton;
+			}
+
+			DataStructure::QuadTree quadTree;
+
+			CollisionHandler();
+
+			void update(double deltaTime, EngineState engineState);
+
+			/*!
+			@brief Return a function pointer to call the appropriate collision function
+			@param type1 The first collider type
+			@param type2 The second collider type
+			@return FunctionDispatchType which is a function pointer
+			*/
+			FunctionDispatchType callCollFunct(Collision::ColliderType type1, Collision::ColliderType type2);
 
 	};
 }

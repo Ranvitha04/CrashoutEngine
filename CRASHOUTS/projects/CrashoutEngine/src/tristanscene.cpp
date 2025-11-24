@@ -46,12 +46,33 @@ static void AddPhysicsEntity(CrashoutsEngine::Entity& entity, Component::RigidBo
 	globalECS->AddComponent<Component::ShapeComponent>(entity, shape);
 	globalECS->AddComponent<Component::Tag>(entity, name);
 	globalECS->AddComponent<Component::ColliderComponent>(entity, Component::ColliderComponent{
-		std::make_unique<Collision::AABBRect>(Collision::AABBRect{
-			CEVec3{transform.position - extents },
-			CEVec3{transform.position + extents}
-		})
-		});
+		std::make_unique<Collision::Polygon>(Collision::Polygon::createOBB(transform.position + extents, transform.position - extents, 50.f, CEVec3{0.f, 0.f, 0.f}))
+	});
+
+	globalECS->GetComponent<Component::RigidBodyComponent>(entity)->setInertia(globalECS->GetComponent<Component::ColliderComponent>(entity)->collider->calculateInertia(globalECS->GetComponent<Component::RigidBodyComponent>(entity)->getMass()));
+
 }
+
+#if 0
+static void AddPhysicsEntity2(CrashoutsEngine::Entity& entity, Component::RigidBodyComponent&& rigidBody,
+	Component::TransformComponent&& transform, Component::ShapeComponent&& shape, Component::Tag&& name) {
+
+	entity = globalECS->CreateEntity();
+
+	CEVec3 extents{ transform.size.x * 0.5f, transform.size.y * 0.5f, 0.f };
+
+	globalECS->AddComponent<Component::NameComponent>(entity, Component::NameComponent{ std::to_string(entity) });
+	globalECS->AddComponent<Component::RigidBodyComponent>(entity, rigidBody);
+	globalECS->AddComponent<Component::TransformComponent>(entity, transform);
+	globalECS->AddComponent<Component::ShapeComponent>(entity, shape);
+	globalECS->AddComponent<Component::Tag>(entity, name);
+	globalECS->AddComponent<Component::ColliderComponent>(entity, Component::ColliderComponent{
+		std::make_unique<Collision::Sphere>(Collision::Sphere{10.f, {transform.position.x, transform.position.y, 0.f}}) });
+
+	globalECS->GetComponent<Component::RigidBodyComponent>(entity)->setInertia(globalECS->GetComponent<Component::ColliderComponent>(entity)->collider->calculateInertia(globalECS->GetComponent<Component::RigidBodyComponent>(entity)->getMass()));
+	
+}
+#endif
 
 static void AddObstacleEntity(CEVec3&& transform, CEVec2&& dimen, std::string&& tag) {
 	CrashoutsEngine::Entity e;
@@ -213,56 +234,56 @@ void Enter([[maybe_unused]] CrashoutsEngine::Entity collidedEntity) {
 	Component::Tag* test{ globalECS->GetComponent<Component::Tag>(collidedEntity) };
 	Component::ShapeComponent* test2{ globalECS->GetComponent<Component::ShapeComponent>(collidedEntity) };
 
-	if (test->id == std::string{ "W" }) test2->color = CEVec3{ 255.f, 255.f, 0.f };
+	if (test->id == std::string{ "W" }) test2->color = CEColor{ 255.f, 255.f, 0.f };
 }
 
 void Stay([[maybe_unused]] CrashoutsEngine::Entity collidedEntity) {
 	Component::ShapeComponent* test{ globalECS->GetComponent<Component::ShapeComponent>(entity1) };
 
-	test->color = CEVec3{ 255.f, 0.f, 0.f };
+	test->color = CEColor{ 255.f, 0.f, 0.f };
 }
 
 void Exit([[maybe_unused]] CrashoutsEngine::Entity collidedEntity) {
 	Component::ShapeComponent* test{ globalECS->GetComponent<Component::ShapeComponent>(entity1) };
 
-	test->color = CEVec3{ 0.f, 0.f, 255.f };
+	test->color = CEColor{ 0.f, 0.f, 255.f };
 }
 
 
 void Enter2([[maybe_unused]] CrashoutsEngine::Entity collidedEntity) {
 	Component::ShapeComponent* test{ globalECS->GetComponent<Component::ShapeComponent>(entity1) };
 
-	test->color = CEVec3{ 0.f, 255.f, 0.f };
+	test->color = CEColor{ 0.f, 255.f, 0.f };
 }
 
 void Stay2([[maybe_unused]] CrashoutsEngine::Entity collidedEntity) {
 	Component::ShapeComponent* test{ globalECS->GetComponent<Component::ShapeComponent>(entity3) };
 
-	test->color = CEVec3{ 255.f, 0.f, 0.f };
+	test->color = CEColor{ 255.f, 0.f, 0.f };
 }
 
 void Exit2([[maybe_unused]] CrashoutsEngine::Entity collidedEntity) {
 	Component::ShapeComponent* test{ globalECS->GetComponent<Component::ShapeComponent>(entity3) };
 
-	test->color = CEVec3{ 0.f, 0.f, 255.f };
+	test->color = CEColor{ 0.f, 0.f, 255.f };
 }
 
 void Enter3([[maybe_unused]] CrashoutsEngine::Entity collidedEntity) {
 	Component::ShapeComponent* test{ globalECS->GetComponent<Component::ShapeComponent>(entity4) };
 
-	test->color = CEVec3{ 255.f, 255.f, 0.f };
+	test->color = CEColor{ 255.f, 255.f, 0.f };
 }
 
 void Stay3([[maybe_unused]] CrashoutsEngine::Entity collidedEntity) {
 	Component::ShapeComponent* test{ globalECS->GetComponent<Component::ShapeComponent>(entity4) };
 
-	test->color = CEVec3{ 255.f, 0.f, 0.f };
+	test->color = CEColor{ 255.f, 0.f, 0.f };
 }
 
 void Exit3([[maybe_unused]] CrashoutsEngine::Entity collidedEntity) {
 	Component::ShapeComponent* test{ globalECS->GetComponent<Component::ShapeComponent>(entity4) };
 
-	test->color = CEVec3{ 0.f, 0.f, 255.f };
+	test->color = CEColor{ 0.f, 0.f, 255.f };
 }
 
 void LoadTristan() {
@@ -348,8 +369,12 @@ void UpdateTristan()
 
 	f32 dt{ f32(FrameRateController::GetInstance().DT()) };
 	if (rigidBody) {
-		if (InputManager::IsKeyPressed(Key::A)) rigidBody->addForce(CEVec3{ -500.f, 0.f, 0.f }*40.f *dt );
-		if (InputManager::IsKeyPressed(Key::D)) rigidBody->addForce(CEVec3{ 500.f, 0.f, 0.f }*40.f *dt );
+		if (InputManager::IsKeyPressed(Key::A)) rigidBody->setVelocity(CEVec3{-15.f, rigidBody->getVelocity().y, 0.f});
+		else if (InputManager::IsKeyPressed(Key::D)) rigidBody->setVelocity(CEVec3{15.f, rigidBody->getVelocity().y, 0.f });
+		else {
+			rigidBody->setVelocity(CEVec3{ 0.f, rigidBody->getVelocity().y, 0.f });
+		}
+
 		if (InputManager::IsKeyPressed(Key::Space)) rigidBody->addForce(CEVec3{ 0.f, 4000.f, 0.f }*40.f *dt );
 	}
 
@@ -358,8 +383,8 @@ void UpdateTristan()
 		transform->rotation += 3.f;
 		if (globalECS->HasComponent<Component::ColliderComponent>(entity1)) {
 			Component::ColliderComponent* collider1{ globalECS->GetComponent<Component::ColliderComponent>(entity1) };
-			if (collider1->collider->type == Collision::ColliderType::OBB) {
-				Collision::OBBRect& obbTemp2 = dynamic_cast<Collision::OBBRect&>(*(collider1->collider));
+			if (collider1->collider->type == Collision::ColliderType::POLYGON) {
+				Collision::Polygon& obbTemp2 = dynamic_cast<Collision::Polygon&>(*(collider1->collider));
 				obbTemp2.updateRotation(transform->rotation);
 			}
 		}

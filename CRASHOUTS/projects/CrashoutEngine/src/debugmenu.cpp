@@ -38,6 +38,7 @@ for Crashout Engine.
 #include "debugmenu.h"
 #include "debugreflection.h"
 #include "debugcollision.h"
+#include "debugAssetLoader.h"
 #include "frameratecontroller.h"
 #include "audioSystem.h"
 #include "prefab_init.h"  
@@ -63,6 +64,7 @@ for Crashout Engine.
 #include "namecomponent.h"
 #include "shapescomponent.h"
 #include "audiocomponent.h"
+#include "tilemapcomponent.h"
 #include "sceneasset.h"
 #include <vector>
 #include "CEVec3.h"
@@ -122,7 +124,6 @@ namespace { //------------------------------------------------------------------
     // ============================================================
     static bool s_layoutBuilt = false;
 
-
     /*!
      @brief RAII wrapper to automatically open and close ImGui windows.
     */
@@ -160,12 +161,6 @@ namespace { //------------------------------------------------------------------
     // ============================================================
     //  Drag-and-drop payload description for asset browser
     // ============================================================
-    enum class AssetKind : uint8_t { Texture, SpriteSheet, Shader, Audio, Scene, Prefab, Unknown };
-    struct AssetDragPayload {
-        AssetKind kind{ AssetKind::Unknown };
-        char name[128]{};     // manifest/manager "name" (stem)
-        char relPath[256]{};  // relative path under assets/ (optional)
-    };
 
     static std::vector<std::string> gDroppedPaths;
 
@@ -212,8 +207,9 @@ namespace { //------------------------------------------------------------------
         ImGui::PushID((int)e);
         const bool opened = ImGui::TreeNodeEx("##node", flags, "%s", label.c_str());
 
-        if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
+        if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen()) {
             selected = e;
+        }
 
         if (ImGui::BeginDragDropSource()) {
             ImGui::SetDragDropPayload("HIER_ENTITY", &e, sizeof(Entity));
@@ -334,9 +330,12 @@ namespace UI { // --------------------------------------------------------------
     */
     void EndFrame() {
         ImGui::Render();
-        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
         ImGuiIO& io = ImGui::GetIO();
+        if (io.DisplaySize.x > 0.0f && io.DisplaySize.y > 0.0f)
+        {
+            ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+        }
+
         if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable) {
             GLFWwindow* backup = glfwGetCurrentContext();
             ImGui::UpdatePlatformWindows();
@@ -395,6 +394,7 @@ namespace UI { // --------------------------------------------------------------
             }
         }
         ImGui::SeparatorText("Prefab Creator");
+        ImGui::Text("Entity Counter: %d", ecs.GetComponentArray<NameComponent>().dense.size());
         static char nameBuf[128] = { 0 };
         {
             auto names = Prefab::Names();
@@ -409,7 +409,7 @@ namespace UI { // --------------------------------------------------------------
                     }
                     ImGui::EndCombo();
                 }
-                ImGui::SameLine();
+
                 if (ImGui::Button("Create Selected##Prefab")) {
                     Prefab::Create(ecs, names[sel]);
                 }
@@ -435,7 +435,7 @@ namespace UI { // --------------------------------------------------------------
 
 
         ImGui::Separator();
-        ImGui::Text("Selected Entity: %u", (unsigned)selected);
+        ImGui::Text("Selected Entity: %d", selected);
 
         if (!selected) return;
        
@@ -492,6 +492,12 @@ namespace UI { // --------------------------------------------------------------
             }
 
             if (ImGui::Button("Destroy Selected")) {
+                if (selected) {
+
+                    if (ecs.HasComponent<Component::ParentComponent>(selected)) {
+                        CrashoutsEngine::DetachChild(ecs, selected);
+                    }
+                }
                 ecs.DestroyEntity(selected);
                 if (auto it = std::find(entities.begin(), entities.end(), selected);
                     it != entities.end()) entities.erase(it);
@@ -500,6 +506,7 @@ namespace UI { // --------------------------------------------------------------
             }
         }
     }
+    
     // Draw a Unity-like keyframe timeline for the selected entity
     static void RenderAnimationPanel(CrashoutsEngine::ECS& ecs,
         CrashoutsEngine::Entity selected,
@@ -648,7 +655,7 @@ namespace UI { // --------------------------------------------------------------
         ScopedWindow win("Assets", LockFlags(ui.lockLayout));
 
         static char filter[128] = { 0 };
-        static fs::path current = root ? fs::path(root) : fs::path(".");
+        static fs::path current = fs::path(CrashoutsEngine::Assets::rootPath);
         static std::vector<fs::directory_entry> entries;
         static bool needScan = true;
 
@@ -685,7 +692,7 @@ namespace UI { // --------------------------------------------------------------
                 std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
                 bool allowed =
                     ext == ".png" || ext == ".jpg" || ext == ".jpeg" || ext == ".bmp" || ext == ".tga" ||
-                    ext == ".json" || ext == ".scene" || ext == ".bank" || ext == ".wav" || ext == ".ogg" ||
+                    ext == ".json" || ext == ".scene" || ext == ".bank" || ext == ".wav" || ext == ".ogg" || ext == ".mp3" ||
                     ext == ".vert" || ext == ".frag";
                 if (!allowed) continue;
 
@@ -701,27 +708,23 @@ namespace UI { // --------------------------------------------------------------
 
                 fs::create_directories(dst.parent_path(), ec);
                 fs::copy_file(src, dst, fs::copy_options::overwrite_existing, ec);
+                CrashoutsEngine::Assets::AssetManager::GetInstance().LoadSingleAsset(dst.generic_string());
             }
 
             gDroppedPaths.clear();
             needScan = true;
-
-            // Remind me to ask if I can implement something in assetManager, so I can do efficient loading
-            using namespace CrashoutsEngine::Assets;
-            GenerateAssetManifest();
-            AssetManager::GetInstance().LoadManifestAssets();
         }
 
         // LEFT: Folder tree
         ImGui::BeginChild("asset_left", ImVec2(220, 0), true);
 
-        if (ImGui::Selectable("assets", current == fs::path(root))) {
-            current = fs::path(root);
+        if (ImGui::Selectable("assets", current == fs::path(CrashoutsEngine::Assets::rootPath))) {
+            current = fs::path(CrashoutsEngine::Assets::rootPath);
             needScan = true;
         }
 
         try {
-            for (auto& de : fs::directory_iterator(root)) {
+            for (auto& de : fs::directory_iterator(CrashoutsEngine::Assets::rootPath)) {
                 if (!de.is_directory()) continue;
                 bool isCur = (current == de.path());
                 if (ImGui::Selectable(de.path().filename().generic_string().c_str(), isCur)) {
@@ -788,6 +791,26 @@ namespace UI { // --------------------------------------------------------------
                     bool sel = (outSelectedAsset == e.path().generic_string());
                     if (ImGui::Selectable(name.c_str(), sel))
                         outSelectedAsset = e.path().generic_string();
+                   
+                    if (ImGui::IsItemHovered() &&
+                        ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
+                    {
+                        outSelectedAsset = e.path().generic_string();
+
+                        std::string ext = e.path().extension().string();
+                        std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+
+                        
+                        if (ext == ".png" || ext == ".jpg" || ext == ".jpeg" ||
+                            ext == ".bmp" || ext == ".tga")
+                        {
+                            
+                            std::string rel = fs::relative(e.path(), fs::path(root)).generic_string();
+
+                            SpriteSheet_SetTexturePath(rel.c_str());
+                            ui.showSpriteSheet = true;                        
+                        }
+                    }
 
                     if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID)) {
                         AssetDragPayload p{};
@@ -898,6 +921,38 @@ namespace UI { // --------------------------------------------------------------
                     ImGui::Image((ImTextureID)(intptr_t)previewTex, drawSize);
                 }
             }
+
+            if (ext == ".wav" || ext == ".ogg" || ext == ".mp3")
+            {
+                ImGui::TextUnformatted("Audio File:");
+                ImGui::Text("%s", fs::path(outSelectedAsset).filename().string().c_str());
+
+                static std::string lastPreview = "";
+                static bool previewPlaying = false;
+
+                if (ImGui::Button(previewPlaying ? "Stop" : "Play"))
+                {
+                    if (!previewPlaying)
+                    {
+                        CrashoutsEngine::Audio::AudioSystem::instance().playSFXFile(outSelectedAsset);
+
+                        previewPlaying = true;
+                        lastPreview = outSelectedAsset;
+                    }
+                    else
+                    {
+                        CrashoutsEngine::Audio::AudioSystem::instance().stopSFXGroup();
+                        previewPlaying = false;
+                    }
+                }
+
+                // Auto-stop if the user selects a new asset
+                if (lastPreview != outSelectedAsset && previewPlaying)
+                {
+                    CrashoutsEngine::Audio::AudioSystem::instance().stopSFXGroup();
+                    previewPlaying = false;
+                }
+            }
         }
 
         ImGui::EndChild(); // asset_right_preview
@@ -923,151 +978,56 @@ namespace UI { // --------------------------------------------------------------
         ImGui::Text("Selected Entity: %u", (unsigned)selected);
         ImGui::SeparatorText("Add Components");
 
-     
-        for (auto* ad : DebugReflection::ComponentRegistry::instance().all()) {
-            ImGui::PushID(ad);
-            bool has = ad->has(ecs, selected);
-            ImGui::BeginDisabled(has);
-            if (ImGui::Button(ad->name())) {
-                ad->add(ecs, selected);
+        // Unity-style button
+        if (ImGui::Button("Add Component..."))
+            ImGui::OpenPopup("add_component_popup");
+
+        // Popup with search + list
+        if (ImGui::BeginPopup("add_component_popup"))
+        {
+            auto& reg = DebugReflection::ComponentRegistry::instance().all();
+
+            // Search bar
+            static ImGuiTextFilter filter;
+            filter.Draw("Search", ImGui::GetFontSize() * 16.0f);
+
+            ImGui::Separator();
+
+            // Build a sorted list of components that the entity DOESN'T yet have
+            std::vector<DebugReflection::IComponentAdapter*> candidates;
+            candidates.reserve(reg.size());
+            for (auto* ad : reg)
+            {
+                if (!ad->has(ecs, selected)) // hide ones already on this entity
+                    candidates.push_back(ad);
             }
-            ImGui::EndDisabled();
-            ImGui::SameLine();
-            ImGui::TextUnformatted(ad->name());
-            ImGui::PopID();
-        }
-        if (!ecs.HasComponent<KeyframeAnimatorComponent>(selected)) {
-            if (ImGui::Button("Add Animation (KeyframeAnimator)")) {
 
-                // 1) Add the component
-                auto& anim = AddAnimator(ecs, selected);
+            std::sort(candidates.begin(), candidates.end(),
+                [](auto* a, auto* b) { return std::strcmp(a->name(), b->name()) < 0; });
 
-                // =========================================================
-                // WALK CLIP  (loops 4 frames on a spritesheet)
-                // =========================================================
-                AnimationClip walk{};
-                walk.name = "Walk";
-                walk.wrap = KFWrap::Loop;      // keep looping
+            // Scrollable list so popup doesn’t get huge
+            ImGui::BeginChild("add_comp_list", ImVec2(0, 260), true);
+            for (auto* ad : candidates)
+            {
+                const char* label = ad->name();
+                if (!filter.PassFilter(label)) // filter by text
+                    continue;
 
-                KFBinding walkSprite{};
-                walkSprite.property = KFProperty::SpriteIndex;
-
-                // 4 frames: 0,1,2,3 over 0.4s (0.1s each)
+                if (ImGui::Selectable(label))
                 {
-                    KFKey k{};
-                    k.interp = KFInterp::Constant;   // sprites: no interpolation
-
-                    k.time = 0.0f; k.value = 0.f;
-                    walkSprite.curve.Add(k);
-
-                    k.time = 0.1f; k.value = 1.f;
-                    walkSprite.curve.Add(k);
-
-                    k.time = 0.2f; k.value = 2.f;
-                    walkSprite.curve.Add(k);
-
-                    k.time = 0.3f; k.value = 3.f;
-                    walkSprite.curve.Add(k);
-
-                    // Close loop back to frame 0 at 0.4s
-                    k.time = 0.4f; k.value = 0.f;
-                    walkSprite.curve.Add(k);
+                    ad->add(ecs, selected);
+                    ImGui::CloseCurrentPopup(); // close after choosing one
+                    break;
                 }
-
-                walk.bindings.push_back(walkSprite);
-
-                // =========================================================
-                // JUMP CLIP  (uses different frames 4–7)
-                // =========================================================
-                AnimationClip jump{};
-                jump.name = "Jump";
-                jump.wrap = KFWrap::Clamp;     // play once then hold last frame
-
-                KFBinding jumpSprite{};
-                jumpSprite.property = KFProperty::SpriteIndex;
-
-                {
-                    KFKey k{};
-                    k.interp = KFInterp::Constant;
-
-                    // start stand frame
-                    k.time = 0.0f; k.value = 4.f;   // e.g. idle-before-jump
-                    jumpSprite.curve.Add(k);
-
-                    // in-air frame
-                    k.time = 0.15f; k.value = 5.f;
-                    jumpSprite.curve.Add(k);
-
-                    // peak
-                    k.time = 0.30f; k.value = 6.f;
-                    jumpSprite.curve.Add(k);
-
-                    // landing frame
-                    k.time = 0.45f; k.value = 7.f;
-                    jumpSprite.curve.Add(k);
-                }
-
-                jump.bindings.push_back(jumpSprite);
-
-                // =========================================================
-                // Register both clips on this animator
-                // =========================================================
-                anim.clips[walk.name] = walk;
-                anim.clips[jump.name] = jump;
-
-                // Start in WALK
-                anim.current = walk.name;
-                anim.t = 0.f;
-                anim.playing = true;
             }
+            ImGui::EndChild();
+
+            ImGui::EndPopup();
         }
+
         ImGui::NewLine();
-
+       
         ImGui::SeparatorText("Components on Selected Entity");
-        // ---- Manual inspector for KeyframeAnimatorComponent ----
-        if (ecs.HasComponent<KeyframeAnimatorComponent>(selected)) {
-            auto* anim = ecs.GetComponent<KeyframeAnimatorComponent>(selected);
-
-            ImGui::SeparatorText("Animation");
-
-            if (anim->current.empty()) {
-                ImGui::TextDisabled("No clip set. Use the Add Animation button or create clips in code.");
-            }
-            else {
-                ImGui::Text("Current clip: %s", anim->current.c_str());
-            }
-
-            ImGui::DragFloat("Time", &anim->t, 0.01f, 0.0f);
-
-            // Play / Pause / Stop controls
-            if (ImGui::Button(anim->playing ? "Pause" : "Play")) {
-                anim->playing = !anim->playing;
-            }
-            ImGui::SameLine();
-            if (ImGui::Button("Stop")) {
-                anim->playing = false;
-                anim->t = 0.f;
-            }
-            ImGui::SameLine();
-            if (ImGui::Button("Restart")) {
-                anim->t = 0.f;
-                anim->playing = true;
-            }
-            ImGui::SeparatorText("Clips");
-
-            for (auto& kv : anim->clips) {
-                const std::string& clipName = kv.first;
-                bool isCurrent = (anim->current == clipName);
-
-               
-                if (ImGui::Selectable(clipName.c_str(), isCurrent)) {
-                
-                    Play(*anim, clipName,  true);
-                }
-            }
-
-        }
-
         
         for (auto* ad : DebugReflection::ComponentRegistry::instance().all()) {
             if (!ad->has(ecs, selected)) continue;
@@ -1133,6 +1093,8 @@ namespace UI { // --------------------------------------------------------------
             }
             ImGui::EndTable();
         }
+        DrawEngineMemoryPanel();      // memory view
+        DrawProfilerPanel(profiler);
     }
 
     /*!
@@ -1441,247 +1403,282 @@ namespace UI { // --------------------------------------------------------------
      @param ecs ECS reference.
      @param ui UI state toggles.
     */
-    static void UI::RenderAudioPanel([[maybe_unused]] FrameProfiler& profiler, [[maybe_unused]] CrashoutsEngine::ECS& ecs, UIState& ui) {
-
+    static void UI::RenderAudioPanel([[maybe_unused]] FrameProfiler& profiler, [[maybe_unused]] CrashoutsEngine::ECS& ecs, UIState& ui)
+    {
         if (!ui.showAudio) return;
         ScopedWindow w("Audio", LockFlags(ui.lockLayout));
 
         auto& audio = AudioSystem::instance();
 
-        auto PlayAny = [&](const std::string& id, bool bgm = false) -> void* {
-            if (id.empty()) return nullptr;
+        // SAFE PLAY FUNCTION (EVENT / RAW SFX / RAW MUSIC)
+        auto PlayAny = [&](const std::string& id, bool bgm = false) -> void*
+            {
+                if (id.empty()) return nullptr;
 
-            if (id.rfind("event:/", 0) == 0) {
-                // FMOD Studio event
-                auto* inst = audio.createInstance(id);
-                if (inst) {
-                    inst->start();
-                    return inst;
+                // 1) FMOD STUDIO EVENT
+                if (id.rfind("event:/", 0) == 0)
+                {
+                    auto* inst = audio.createInstance(id);
+                    if (inst)
+                    {
+                        inst->start();
+                        return inst; // event instance returned
+                    }
+                    return nullptr;
                 }
-                return nullptr;
-            }
 
-            // Raw file (wav/ogg/mp3)
-            std::string path = id;
-            if (path.rfind("assets/", 0) != 0)
-                path = "assets/audio/" + path;
+                // 2) RAW AUDIO
+                if (id.rfind("[RAW] ", 0) == 0)
+                {
+                    std::string rel = id.substr(6);
+                    std::string full = "assets/audio/" + rel;
 
-            if (bgm)
-                audio.playMusicFile(path, /*loop=*/true);
-            else
-                audio.playSFXFile(path);
+                    if (bgm)
+                    {
+                        // PLAY MUSIC by TAG ("BGM")
+                        audio.playMusicFileTagged("BGM", full, true);
+                        return (void*)0xBEEF;
+                    }
+                    else
+                    {
+                        // PLAY RAW SFX (returns FMOD::Channel*)
+                        FMOD::Channel* ch = audio.playSFXFileEx(full);
+                        return ch;
+                    }
+                }
 
-            return nullptr; // raw channels not tracked
-         };
+                // 3) FALLBACK -> treat as RAW
+                std::string full = id;
+                if (full.rfind("assets/", 0) != 0)
+                    full = "assets/audio/" + full;
 
-        auto StopAny = [&](void* handle) {
-            if (!handle) return;
+                if (bgm)
+                {
+                    audio.playMusicFileTagged("BGM", full, true);
+                    return (void*)0xBEEF;
+                }
+                else
+                {
+                    FMOD::Channel* ch = audio.playSFXFileEx(full);
+                    return ch;
+                }
+            };
 
-            // Try as Studio event instance
-            if (auto* inst = static_cast<FMOD::Studio::EventInstance*>(handle)) {
-                FMOD_STUDIO_PLAYBACK_STATE state;
-                if (inst->getPlaybackState(&state) == FMOD_OK) {
-                    inst->stop(FMOD_STUDIO_STOP_IMMEDIATE);
-                    inst->release();
+        // SAFE STOP FUNCTION (EVENT / RAW SFX / RAW MUSIC)
+        auto StopAny = [&](void* handle)
+            {
+                if (!handle) return;
+
+                // 1) FMOD EVENT INSTANCE
+                if ((uintptr_t)handle > 0x1000 && (uintptr_t)handle < 0xFFFFFFFF)
+                {
+                    auto* inst = static_cast<FMOD::Studio::EventInstance*>(handle);
+
+                    FMOD_STUDIO_PLAYBACK_STATE st;
+                    if (inst->getPlaybackState(&st) == FMOD_OK)
+                    {
+                        inst->stop(FMOD_STUDIO_STOP_IMMEDIATE);
+                        inst->release();
+                    }
                     return;
                 }
-            }
 
-            // Try as raw Core channel
-            if (auto* ch = static_cast<FMOD::Channel*>(handle)) {
-                bool playing = false;
-                if (ch->isPlaying(&playing) == FMOD_OK && playing) {
-                    ch->stop();
+                // 2) RAW MUSIC TAG (dummy handle 0xBEEF)
+                if (handle == (void*)0xBEEF)
+                {
+                    audio.stopTagged("BGM");
+                    return;
                 }
-            }
-        };
 
-        const bool audioInitOk = AudioSystem::instance().isInitialized();
-        if (!audioInitOk) {
-            ImGui::TextDisabled("FMOD not initialized (AssetManager will do this).");
-            if (ImGui::Button("Initialize Audio (assets/audio)")) {
-                CrashoutsEngine::Audio::AudioSystem::instance().init("assets/audio");
-            }
+                // 3) RAW SFX CHANNEL
+                auto* ch = static_cast<FMOD::Channel*>(handle);
+                if (ch)
+                {
+                    bool playing = false;
+                    if (ch->isPlaying(&playing) == FMOD_OK && playing)
+                        ch->stop();
+                }
+            };
+
+        // INITIALIZATION
+        if (!audio.isInitialized())
+        {
+            ImGui::TextDisabled("FMOD not initialized.");
+            if (ImGui::Button("Initialize Audio (assets/audio)"))
+                audio.init("assets/audio");
         }
 
-        // Loading Bank
+        // LOAD FROM MANIFEST
         static bool needRefresh = true;
-        if (ImGui::Button("Load banks from Asset Manager")) {
+
+        if (ImGui::Button("Load banks + raw (manifest)"))
+        {
+            audio.stopAll(true);
+            audio.stopAllRaw();
+            audio.unloadAllBanks();
+            audio.unloadAllRawSounds();
+
             CrashoutsEngine::Assets::AssetManager::GetInstance().LoadManifestAssets();
-            needRefresh = true; // trigger rebuild after loading
+            needRefresh = true;
         }
-        ImGui::SameLine();
-        if (ImGui::Button("Refresh events")) needRefresh = true;
 
-        // Build List
+        ImGui::SameLine();
+        if (ImGui::Button("Refresh list"))
+            needRefresh = true;
+
+        // BUILD EVENT LIST (EVENTS + RAW)
         static std::vector<std::string> allEvents;
-        if (needRefresh || allEvents.empty()) {
+
+        if (needRefresh || allEvents.empty())
+        {
             allEvents.clear();
-            AudioSystem::instance().listAllEventPaths(allEvents);
-            if (needRefresh || allEvents.empty()) {
-                allEvents.clear();
-                AudioSystem::instance().listAllEventPaths(allEvents);
 
-                // --- also add raw files from assets/audio ---
-                namespace fs = std::filesystem;
-                const fs::path assetRoot = "assets/audio";
+            // 1) FMOD events
+            audio.listAllEventPaths(allEvents);
 
-                try {
-                    for (auto& entry : fs::recursive_directory_iterator(assetRoot)) {
-                        if (!entry.is_regular_file()) continue;
+            // 2) RAW audio from manifest
+            for (auto& rel : audio.getRegisteredRawAudio())
+                allEvents.push_back("[RAW] " + rel);
 
-                        std::string ext = entry.path().extension().string();
-                        std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+            std::sort(allEvents.begin(), allEvents.end());
+            allEvents.erase(std::unique(allEvents.begin(), allEvents.end()), allEvents.end());
 
-                        if (ext == ".wav" || ext == ".ogg" || ext == ".mp3") {
-                            std::string rel = fs::relative(entry.path(), assetRoot).generic_string();
-                            allEvents.push_back(rel);  // e.g. "Music/Menu.wav"
-                        }
-                    }
-                }
-                catch (...) {
-                    // ignore errors, just means fewer items
-                }
-
-                std::sort(allEvents.begin(), allEvents.end());
-                allEvents.erase(std::unique(allEvents.begin(), allEvents.end()), allEvents.end());
-                needRefresh = false;
-            }
+            needRefresh = false;
         }
+
         ImGui::SameLine();
-        ImGui::TextDisabled("%zu events", allEvents.size());
+        ImGui::TextDisabled("%zu items", allEvents.size());
 
-        // Event Combo
-        auto EventCombo = [&](const char* label, std::string& sel) {
-            if (ImGui::BeginCombo(label, sel.empty() ? "(select?)" : sel.c_str())) {
-                static char filterBuf[128] = {};
-                ImGui::SetNextItemWidth(ImGui::GetFontSize() * 14.0f);
-                ImGui::InputTextWithHint("##filter", "type to filter...", filterBuf, sizeof(filterBuf));
-                ImGui::Separator();
+        // COMBO SELECTOR
+        auto EventCombo = [&](const char* label, std::string& sel)
+            {
+                if (ImGui::BeginCombo(label, sel.empty() ? "(select)" : sel.c_str()))
+                {
+                    static char filter[128] = {};
+                    ImGui::InputTextWithHint("##filter", "type to filter...", filter, sizeof(filter));
+                    ImGui::Separator();
 
-                const std::string needle = filterBuf;
-                for (auto const& e : allEvents) {
-                    if (!needle.empty() && e.find(needle) == std::string::npos) continue;
-                    const bool chosen = (e == sel);
-                    if (ImGui::Selectable(e.c_str(), chosen)) sel = e;
-                    if (chosen) ImGui::SetItemDefaultFocus();
+                    for (auto& e : allEvents)
+                    {
+                        if (strlen(filter) > 0 && e.find(filter) == std::string::npos)
+                            continue;
+
+                        bool chosen = (sel == e);
+                        if (ImGui::Selectable(e.c_str(), chosen))
+                            sel = e;
+                        if (chosen)
+                            ImGui::SetItemDefaultFocus();
+                    }
+                    ImGui::EndCombo();
                 }
-                ImGui::EndCombo();
-            }
 
-            if (ImGui::BeginDragDropTarget()) {
-                if (const ImGuiPayload* pl = ImGui::AcceptDragDropPayload("ASSET/PAYLOAD")) {
-                    const auto* p = static_cast<const AssetDragPayload*>(pl->Data);
-                    if (p && p->kind == AssetKind::Audio) {
-                        std::filesystem::path relPath = p->relPath; // "audio/Music/Menu.wav"
-                        std::string ext = relPath.extension().string();
-                        std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
-
-                        std::string rel = relPath.generic_string();
-                        const std::string prefix = "audio/";
-                        auto pos = rel.find(prefix);
-                        if (pos == 0)
-                            rel = rel.substr(prefix.size());
-
-                        if (ext == ".wav" || ext == ".ogg" || ext == ".mp3") {
-                            sel = rel;
+                // Drag & Drop
+                if (ImGui::BeginDragDropTarget())
+                {
+                    if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSET/PAYLOAD"))
+                    {
+                        // Hard guard: wrong payload type/size → ignore safely
+                        if (!payload->Data || payload->DataSize != sizeof(AssetDragPayload))
+                        {
+                            LOGW(Debug, "Dropped payload of wrong size onto EventCombo");
                         }
-                        else {
-                            if (auto dot = rel.find_last_of('.'); dot != std::string::npos)
-                                rel.erase(dot);
-                            sel = std::string("event:/") + rel; // Studio event mode
+                        else
+                        {
+                            const auto* d = static_cast<const AssetDragPayload*>(payload->Data);
+
+                            // Soft guard: only accept audio assets here
+                            if (d->kind == AssetKind::Audio)
+                            {
+                                std::filesystem::path rp = d->relPath;
+                                std::string ext = rp.extension().string();
+                                std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+
+                                std::string rel = rp.generic_string();
+                                if (rel.rfind("audio/", 0) == 0)
+                                    rel = rel.substr(6);
+
+                                if (ext == ".wav" || ext == ".ogg" || ext == ".mp3")
+                                {
+                                    // raw sound
+                                    sel = "[RAW] " + rel;
+                                }
+                                else
+                                {
+                                    // event-like path: strip extension and prepend event:/
+                                    if (auto dot = rel.find_last_of('.'); dot != std::string::npos)
+                                        rel.erase(dot);
+                                    sel = "event:/" + rel;
+                                }
+                            }
                         }
                     }
+                    ImGui::EndDragDropTarget();
                 }
-                ImGui::EndDragDropTarget();
-            }
-        };
+            };
+
+        // QUICK TEST UI
+        ImGui::SeparatorText("Quick Test (1 BGM + 3 SFX)");
 
         static void* hBGM = nullptr;
         static void* hSFX1 = nullptr;
         static void* hSFX2 = nullptr;
         static void* hSFX3 = nullptr;
 
-        // Test Section
-        ImGui::SeparatorText("Quick Test (1 BGM + 3 SFX)");
         static std::string pickBGM, pickSFX1, pickSFX2, pickSFX3;
 
+        // BGM
         EventCombo("Background Music", pickBGM);
-        if (ImGui::Button("Play")) {
-            hBGM = PlayAny(pickBGM, true);
-        }
+        if (ImGui::Button("Play##bgm"))      hBGM = PlayAny(pickBGM, true);
         ImGui::SameLine();
-        if (ImGui::Button("Stop")) {
-            StopAny(hBGM);
-            hBGM = nullptr;
-            audio.stopMusicGroup();
-        }
+        if (ImGui::Button("Stop##bgm")) { StopAny(hBGM); hBGM = nullptr; }
 
+        // SFX1
         EventCombo("SFX 1", pickSFX1);
-        if (ImGui::Button("Play##sfx1")) {
-            hSFX1 = PlayAny(pickSFX1);
-        }
+        if (ImGui::Button("Play##sfx1"))    hSFX1 = PlayAny(pickSFX1);
         ImGui::SameLine();
-        if (ImGui::Button("Stop##sfx1")) {
-            StopAny(hSFX1);
-            hSFX1 = nullptr;
-            audio.stopSFXGroup();
-        }
+        if (ImGui::Button("Stop##sfx1")) { StopAny(hSFX1); hSFX1 = nullptr; }
 
+        // SFX2
         EventCombo("SFX 2", pickSFX2);
-        if (ImGui::Button("Play##sfx2")) {
-            hSFX2 = PlayAny(pickSFX2);
-        }
+        if (ImGui::Button("Play##sfx2"))    hSFX2 = PlayAny(pickSFX2);
         ImGui::SameLine();
-        if (ImGui::Button("Stop##sfx2")) {
-            StopAny(hSFX2);
-            hSFX2 = nullptr;
-            audio.stopSFXGroup();
-        }
+        if (ImGui::Button("Stop##sfx2")) { StopAny(hSFX2); hSFX2 = nullptr; }
 
+        // SFX3
         EventCombo("SFX 3", pickSFX3);
-        if (ImGui::Button("Play##sfx3")) {
-            hSFX3 = PlayAny(pickSFX3);
-        }
+        if (ImGui::Button("Play##sfx3"))    hSFX3 = PlayAny(pickSFX3);
         ImGui::SameLine();
-        if (ImGui::Button("Stop##sfx3")) {
-            StopAny(hSFX3);
-            hSFX3 = nullptr;
-            audio.stopSFXGroup();
-        }
+        if (ImGui::Button("Stop##sfx3")) { StopAny(hSFX3); hSFX3 = nullptr; }
 
+        // MASTER VOLUME
         ImGui::SeparatorText("Master Volume");
 
-        // Cache slider state
-        static float sMasterVol = 1.0f;
-        if (ImGui::SliderFloat("Master", &sMasterVol, 0.0f, 1.0f, "%.2f")) {
-            audio.setBusVolume("bus:/", sMasterVol); // FMOD Studio
-            audio.setMusicGroupVolume(sMasterVol); // Raw BGM
-            audio.setSFXGroupVolume(sMasterVol); // Raw SFX
+        static float master = 1.0f;
+        if (ImGui::SliderFloat("Master", &master, 0.0f, 1.0f, "%.2f"))
+        {
+            audio.setBusVolume("bus:/", master);
+            audio.setMusicGroupVolume(master);
+            audio.setSFXGroupVolume(master);
         }
 
-        // Mute Toggle
-        static bool sMuted = false;
-        if (ImGui::Checkbox("Mute All", &sMuted)) {
-            if (sMuted) {
-                audio.setBusVolume("bus:/", 0.0f); // FMOD Studio
-                audio.setMusicGroupVolume(0.0f); // Raw music
-                audio.setSFXGroupVolume(0.0f); // Raw SFX
-            }
-            else {
-                audio.setBusVolume("bus:/", sMasterVol);
-                audio.setMusicGroupVolume(sMasterVol);
-                audio.setSFXGroupVolume(sMasterVol);
-            }
+        static bool mute = false;
+        if (ImGui::Checkbox("Mute All", &mute))
+        {
+            float v = mute ? 0.0f : master;
+            audio.setBusVolume("bus:/", v);
+            audio.setMusicGroupVolume(v);
+            audio.setSFXGroupVolume(v);
         }
 
+        // STOP ALL
         ImGui::Separator();
-        if (ImGui::Button("Stop All")) {
-            audio.stopAll(true); // Stop FMOD Studio
-            audio.stopAllRaw(); // Stop raw wav/ogg/mp3
+        if (ImGui::Button("Stop All"))
+        {
+            audio.stopAll(true);
+            audio.stopAllRaw();
         }
 
-        AudioSystem::instance().update();
+        audio.update();
     }
 
     /*!
@@ -1734,6 +1731,21 @@ namespace UI { // --------------------------------------------------------------
             ImGui::EndMenu();
         }
 
+        ImGui::SameLine(); 
+        ImGui::SetNextItemWidth(120.0f); // Slightly wider for better dragging feel
+        if (ImGui::DragFloat("##FontScale", &ui.fontScale,
+            0.01f,      // The sensitivity/speed: 0.01f changes the value by 1% per mouse unit
+            0.8f,       // New Minimum: Allows scaling down slightly
+            2.5f,       // New Maximum: Allows larger scaling up
+            "Scale: %.2f")) // New Format: Shows two decimal places for precision
+        {
+            // Ensure the scale doesn't go below the intended minimum if dragged too fast
+            if (ui.fontScale < 0.8f) ui.fontScale = 0.8f;
+
+            // Apply the new scale globally
+            ImGui::GetIO().FontGlobalScale = ui.fontScale;
+        }
+
         ImGui::EndMenuBar();
     }
 
@@ -1755,6 +1767,7 @@ namespace UI { // --------------------------------------------------------------
             // Play Stop Pause buttons
             // Play
             if (ImGui::Button("PLAY", ImVec2(70, 25))) {
+                if (engineState == EngineState::STOP && !currSceneName.empty()) Serialization::SaveScenes(currSceneName);
                 engineState = EngineState::PLAY;
                 CrashoutsEngine::RenderCamera::engineCamera.SetPostiion(CEVec3{ 0.f, 0.f, 0.f });
                 CrashoutsEngine::RenderCamera::engineCamera.SetZoom(1.f);
@@ -1768,19 +1781,37 @@ namespace UI { // --------------------------------------------------------------
             ImGui::SameLine();
             // Pause
             if (ImGui::Button("PAUSE", ImVec2(70, 25))) {
+                if (engineState == EngineState::STOP && !currSceneName.empty()) Serialization::SaveScenes(currSceneName);
                 engineState = EngineState::PAUSE;
             }
             ImGui::SameLine();
             // Stop
             if (ImGui::Button("STOP", ImVec2(70, 25))) {
-                if(currSceneName.empty()) RestartGameState();
+                if (engineState == EngineState::STOP && !currSceneName.empty()) Serialization::SaveScenes(currSceneName);
+
+                if(currSceneName.empty()) RestartGameState();       // Legacy scene system
                 else {
                     ECS::getInstance()->Reset();
                     Serialization::LoadScenes(currSceneName);
                 }
                 //MonoManager::ReloadScripts();
                 engineState = EngineState::STOP;
+
+				CrashoutsEngine::Audio::AudioSystem::instance().stopAll(true); // Stop FMOD Studio
             }
+            ImGui::SameLine();
+            // SAVE
+            if (ImGui::Button("SAVE", ImVec2(70, 25))) {
+                if (!currSceneName.empty()) Serialization::SaveScenes(currSceneName);
+
+                if (currSceneName.empty()) RestartGameState();       // Legacy scene system
+                else {
+                    ECS::getInstance()->Reset();
+                    Serialization::LoadScenes(currSceneName);
+                }
+
+            }
+
             
             ImGui::SeparatorEx(ImGuiSeparatorFlags_Vertical);
             ImGui::SameLine();
@@ -1814,12 +1845,14 @@ namespace UI { // --------------------------------------------------------------
     static void RenderGameViewport(ECS& ecs, Entity& selected) {
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0)); // No padding
         // Begin the ImGUI window, enable Docking
-        if (ImGui::Begin("Game Viewport", nullptr, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse)) {
+        bool open = ImGui::Begin( "Game Viewport", nullptr, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse );
+
+        if (open) {
 
             ImVec2 start = ImGui::GetCursorScreenPos();
             ImGui::SetCursorScreenPos(ImVec2(start.x + 10, start.y + 10));
-            ImGui::BeginChild("ViewportToolbar", ImVec2(1000, 32),
-                false, ImGuiWindowFlags_NoBackground);
+            ImGui::BeginChild("ViewportToolbar", ImVec2(0, 32),
+                false, ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoScrollbar);
 
             // 1) toolbar (translate / rotate / scale)
             ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(6, 4));
@@ -1844,9 +1877,18 @@ namespace UI { // --------------------------------------------------------------
             ImGui::SetCursorScreenPos(start);
 
             gameWinHovered = ImGui::IsWindowHovered();
+            bool gameWinFocused = ImGui::IsWindowFocused();
 
             // Get the size of ImGui window content region
             ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
+
+            // Guard to not render when we minimize
+            if (viewportPanelSize.x <= 0.0f || viewportPanelSize.y <= 0.0f)
+            {
+                ImGui::End();
+                ImGui::PopStyleVar();
+                return;
+            }
 
             // 2) aspect-ratio / letterbox calculation
             float panelWidth = viewportPanelSize.x;
@@ -1906,13 +1948,13 @@ namespace UI { // --------------------------------------------------------------
             // GetCursorScreenPos() gives the top-left corner of the content area.
             ImVec2 screenPos = ImGui::GetCursorScreenPos();
             ImGui::SetCursorScreenPos(ImVec2(screenPos.x + paddingX, screenPos.y + paddingY));
-             
+
             // Let the Gizmo recieve hover/drag over image
             ImGui::SetNextItemAllowOverlap();
 
             // Display the texture within the ImGui window
             // UV flip (0,1) to (1,0) since OpenGL textures are often upside-down
-            ImGui::Image((void*)(intptr_t)CrashoutsEngine::PostProcessing::ppTextureID, 
+            ImGui::Image((void*)(intptr_t)CrashoutsEngine::PostProcessing::ppTextureID,
                 ImVec2((float)finalTextureWidth, (float)finalTextureHeight), ImVec2(0, 1), ImVec2(1, 0));
 
             // Rectangle of that Image in screen space (used by gizmo & picking)
@@ -1930,6 +1972,171 @@ namespace UI { // --------------------------------------------------------------
             // TRUE - ORTOGRAPHIC, FALSE - PERSPECTIVE
             ImGuizmo::SetOrthographic(true);
 
+            // TILEMAP EDITOR INTEGRATION!!!
+
+            // Attempt to find an active TileMapComponent
+            Component::TileMapComponent* activeTM = nullptr;
+
+            // Check if selected entity has a tilemap
+            if (selected != 0 && ecs.HasComponent<Component::TileMapComponent>(selected)) {
+                activeTM = ecs.GetComponent<Component::TileMapComponent>(selected);
+            }
+            // If nothing selected, find the first enabled TileMap in the scene
+            else {
+                for (Entity e : ecs.GetComponentArray<Component::TileMapComponent>().indexToEntity) {
+                    Component::TileMapComponent* tm = ecs.GetComponent<Component::TileMapComponent>(e);
+                    // Only auto-pick if the editor window is actually open
+                    if (tm && tm->pOpen) {
+                        activeTM = tm;
+                        break;
+                    }
+                }
+            }
+
+            bool isPaintingMode = (activeTM && activeTM->pOpen);
+
+            // Draw Grid & Handle Input
+            if (isPaintingMode) {
+                ImDrawList* drawList = ImGui::GetWindowDrawList();
+
+                // Helper Lambda: World Space -> ImGui Screen Space
+                // Uses the Egnine's View / Proj matrices to project points accurately
+                auto WorldToScreen = [&](CEVec3 worldPos) -> ImVec2 {
+                    glm::vec3 v(worldPos.x, worldPos.y, worldPos.z);
+                    glm::vec4 clipSpace = Component::Rendering::Get().projectionMatrix *
+                        Component::Rendering::Get().viewMatrix * glm::vec4(v, 1.f);
+
+                    if (clipSpace.w == 0.f) return ImVec2(-1, -1);  // Safety
+
+                    glm::vec3 ndc = glm::vec3(clipSpace) / clipSpace.w;
+
+                    // Map NDC (-1 to 1) to Image UV (0 to 1)
+                    float imgu = (ndc.x + 1.f) * .5f;
+                    float imgv = (ndc.y + 1.f) * .5f;
+
+                    return ImVec2(
+                        imgMin.x + imgu * imgSize.x,
+                        imgMin.y + (1.0f - imgv) * imgSize.y
+                    );
+                    };
+
+                // Draw Infinite Grid Lines (Only draw lines inside viewport)
+                float tileSize = (float)activeTM->tileSize;
+
+                // Get Center of world to base grid 
+                CEVec3 camPos{ 0,0,0 };
+                if (engineState == EngineState::STOP) {
+                    camPos = RenderCamera::engineCamera.GetPosition();
+                }
+                else camPos = RenderCamera::gameCamera.GetPosition();
+
+                ImU32 gridColor = IM_COL32(255, 255, 255, 40);
+
+                // Grid Drawing
+                // Determine the Grid coordinates of the Camera Center
+                int centerGx = (int)std::floor(camPos.x / tileSize);
+                int centerGy = (int)std::floor(camPos.y / tileSize);
+
+                // Calculate "Pixels Per Tile", tells us exactly how big a tile is on screen
+                ImVec2 centerScreen = WorldToScreen(camPos);
+                ImVec2 rightScreen = WorldToScreen({ camPos.x + tileSize, camPos.y, camPos.z });
+
+                // Calculate horizontal distance in pixels
+                float pxPerTile = std::abs(rightScreen.x - centerScreen.x);
+
+                // Fade Out Logic (VISUAL POLISH)
+                // If tiles are small, the grid lines overlaps so we fade when it gets small to 6px
+                if (pxPerTile < 6.f) {
+                    float t = (pxPerTile - 3.f) / 3.f;      // Normalize 0.f to 1.f range
+                    t = std::max(0.f, std::min(t, 1.f));    // Clamp
+
+                    int alpha = (int)(40 * t);              // 40 is original alpha value
+                    gridColor = IM_COL32(255, 255, 255, alpha);
+                }
+
+                // Determine Range (Radius)
+                // Calculate how many tiles fit in teh current viewport dimensions
+                float visibleTilesX = imgSize.x / pxPerTile;
+                float visibleTilesY = imgSize.y / pxPerTile;
+
+                // Take the larger dimension and halve it (since radius is from center), + buffer
+                int gridRadius = (int)(std::max(visibleTilesX, visibleTilesY) * .5f) + 5;
+
+                // Optimization: If alpha is 0 (invisible), set radius to 0 to skip the loop completely
+                if ((gridColor >> 24) == 0) gridRadius = 0;
+
+                // Cap the radius to prevent extreme performance hits if zoomed to infinity
+                if (gridRadius > 200) gridRadius = 200;
+
+                // Calculate World Limits for the lines
+                float worldMinX = (centerGx - gridRadius) * tileSize;
+                float worldMaxX = (centerGx + gridRadius) * tileSize;
+                float worldMinY = (centerGy - gridRadius) * tileSize;
+                float worldMaxY = (centerGy + gridRadius) * tileSize;
+
+                // Draw Vertical Lines
+                for (int i = -gridRadius; i <= gridRadius; ++i) {
+                    float currentX = (centerGx + i) * tileSize;
+
+                    ImVec2 pStart = WorldToScreen({ currentX, worldMinY, 0.0f });
+                    ImVec2 pEnd = WorldToScreen({ currentX, worldMaxY, 0.0f });
+
+                    // Optimization: Only draw if points are valid (not behind camera)
+                    if (pStart.x != -1 && pEnd.x != -1) {
+                        drawList->AddLine(pStart, pEnd, gridColor, 1.0f);
+                    }
+                }
+
+                // Draw Horizontal Lines
+                for (int j = -gridRadius; j <= gridRadius; ++j) {
+                    float currentY = (centerGy + j) * tileSize;
+
+                    ImVec2 pStart = WorldToScreen({ worldMinX, currentY, 0.0f });
+                    ImVec2 pEnd = WorldToScreen({ worldMaxX, currentY, 0.0f });
+
+                    if (pStart.x != -1 && pEnd.x != -1) {
+                        drawList->AddLine(pStart, pEnd, gridColor, 1.0f);
+                    }
+                }
+
+                // Draw Mouse Hover Highlight
+                ImVec2 mouse = ImGui::GetMousePos();
+                bool overImage = (mouse.x >= imgMin.x && mouse.x <= imgMax.x && mouse.y >= imgMin.y && mouse.y <= imgMax.y);
+
+                if (gameWinFocused && overImage) {
+                    float imgu = (mouse.x - imgMin.x) / (imgMax.x - imgMin.x);
+                    float imgv = 1.f - (mouse.y - imgMin.y) / (imgMax.y - imgMin.y);
+
+                    CEVec3 worldMouse = ViewUV_toWorld(imgu, imgv);
+
+                    // Snap to Grid
+                    std::pair<int, int> gridPos = CrashoutsEngine::TileMapUtils::WorldToGrid(*activeTM, worldMouse.x, worldMouse.y);
+                    float snappedX = (float)gridPos.first * tileSize;
+                    float snappedY = (float)gridPos.second * tileSize;
+
+                    // Get Screen Coords of the 4 corners of this tile
+                    ImVec2 p1 = WorldToScreen({ snappedX, snappedY, 0.0f });
+                    ImVec2 p2 = WorldToScreen({ snappedX + tileSize, snappedY, 0.0f });
+                    ImVec2 p3 = WorldToScreen({ snappedX + tileSize, snappedY + tileSize, 0.0f });
+                    ImVec2 p4 = WorldToScreen({ snappedX, snappedY + tileSize, 0.0f });
+
+                    // Draw the Square Highlight
+                    drawList->AddQuad(p1, p2, p3, p4, IM_COL32(191, 0, 255, 200), 2.f);   // Purple outline
+
+                    // Handle Input (PAINTING)
+                    // Login: If holding mouse and over image
+                    if (ImGui::IsMouseDown(ImGuiMouseButton_Left)) {
+                        if (!activeTM->activeAsset.empty() && activeTM->activeAsset != "none") {
+                            CrashoutsEngine::TileMapUtils::PaintTile(*activeTM, gridPos.first, gridPos.second, activeTM->activeAsset);
+                        }
+                    }
+                    else if (ImGui::IsMouseDown(ImGuiMouseButton_Right)) {
+                        CrashoutsEngine::TileMapUtils::EraseTile(*activeTM, gridPos.first, gridPos.second);
+                    }
+                }
+            }
+            // END OF TILEMAP
+            
             // 5) if we have a selected entity, let gizmo edit its TRS
             if (selected && ecs.HasComponent<Component::TransformComponent>(selected))
             {
@@ -2060,7 +2267,7 @@ namespace UI { // --------------------------------------------------------------
 
                             if (g_gizmoOp == ImGuizmo::ROTATE)
                             {
-                                
+
                                 float gizmoDeg = newRt[2];
                                 float stepDeg = gizmoDeg - s_prevGizmoDeg;
 
@@ -2165,203 +2372,203 @@ namespace UI { // --------------------------------------------------------------
                 v = 1.f - (mouse.y - imgMin.y) / (imgMax.y - imgMin.y);
             }
 
-            // Left click: select the top-most hit entity (do NOT clear if we hit nothing)
-            // ------------------------------------------------------------
-            //  Mouse picking
-            //  - only runs if mouse is over the viewport image
-            //  - converts mouse to UV, then to world
-            //  - walks ECS transforms and does a simple 2D AABB hit test
-            //  - picks the entity with the highest Z so clicking overlaps works
-            // ------------------------------------------------------------
-            if (over && ImGui::IsMouseClicked(ImGuiMouseButton_Left) && !ImGuizmo::IsOver() && !ImGuizmo::IsUsing())
-            {
-                CEVec3 worldPt = ViewUV_toWorld(u, v);
 
-                Entity best = 0;
-                float  bestZ = -FLT_MAX;
-
-                // Iterate transforms (top-most by Z wins)
-                auto& tArr = ecs.GetComponentArray<Component::TransformComponent>();
-                for (Entity e : tArr.indexToEntity)
+            if (gameWinFocused) {
+                // Left click: select the top-most hit entity (do NOT clear if we hit nothing)
+                // ------------------------------------------------------------
+                //  Mouse picking
+                //  - only runs if mouse is over the viewport image
+                //  - converts mouse to UV, then to world
+                //  - walks ECS transforms and does a simple 2D AABB hit test
+                //  - picks the entity with the highest Z so clicking overlaps works
+                // ------------------------------------------------------------
+                if (over && ImGui::IsMouseClicked(ImGuiMouseButton_Left) && !ImGuizmo::IsOver() && !ImGuizmo::IsUsing())
                 {
-                    if (!ecs.HasComponent<Component::TransformComponent>(e)) continue;
-                    auto* t = ecs.GetComponent<Component::TransformComponent>(e);
+                    CEVec3 worldPt = ViewUV_toWorld(u, v);
 
-                    // Default half-extents from transform size (rectangle-like)
-                    float hx = std::max(0.5f * t->size.x, 0.5f);
-                    float hy = std::max(0.5f * t->size.y, 0.5f);
-                    bool  hit = false;
+                    Entity best = 0;
+                    float  bestZ = -FLT_MAX;
 
-                    if (auto* sc = ecs.GetComponent<Component::ShapeComponent>(e))
+                    // Iterate transforms (top-most by Z wins)
+                    auto& tArr = ecs.GetComponentArray<Component::TransformComponent>();
+                    for (Entity e : tArr.indexToEntity)
                     {
-                        using Component::ShapeType;
-                        switch (sc->type)
-                        {
-                        case ShapeType::Circle:
-                        {
-                            const float r = 0.5f * std::min(t->size.x, t->size.y);
-                            const float dx = worldPt.x - t->position.x;
-                            const float dy = worldPt.y - t->position.y;
-                            hit = (dx * dx + dy * dy) <= r * r;
-                        }
-                        break;
+                        if (!ecs.HasComponent<Component::TransformComponent>(e)) continue;
+                        auto* t = ecs.GetComponent<Component::TransformComponent>(e);
 
-                        case ShapeType::Line:
-                        {
-                            // conservative AABB around line + thickness
-                            const float minx = std::min(sc->p1.x, sc->p2.x);
-                            const float maxx = std::max(sc->p1.x, sc->p2.x);
-                            const float miny = std::min(sc->p1.y, sc->p2.y);
-                            const float maxy = std::max(sc->p1.y, sc->p2.y);
-                            hx = std::max(hx, std::max(0.5f * (maxx - minx), sc->thickness * 0.5f));
-                            hy = std::max(hy, std::max(0.5f * (maxy - miny), sc->thickness * 0.5f));
-                            // fall through to AABB test below
-                        }
-                        [[fallthrough]];
+                        // Default half-extents from transform size (rectangle-like)
+                        float hx = std::max(0.5f * t->size.x, 0.5f);
+                        float hy = std::max(0.5f * t->size.y, 0.5f);
+                        bool  hit = false;
 
-                        case ShapeType::Rectangle:
-                        case ShapeType::Triangle:
-                        default:
+                        if (auto* sc = ecs.GetComponent<Component::ShapeComponent>(e))
                         {
+                            using Component::ShapeType;
+                            switch (sc->type)
+                            {
+                            case ShapeType::Circle:
+                            {
+                                const float r = 0.5f * std::min(t->size.x, t->size.y);
+                                const float dx = worldPt.x - t->position.x;
+                                const float dy = worldPt.y - t->position.y;
+                                hit = (dx * dx + dy * dy) <= r * r;
+                            }
+                            break;
+
+                            case ShapeType::Line:
+                            {
+                                // conservative AABB around line + thickness
+                                const float minx = std::min(sc->p1.x, sc->p2.x);
+                                const float maxx = std::max(sc->p1.x, sc->p2.x);
+                                const float miny = std::min(sc->p1.y, sc->p2.y);
+                                const float maxy = std::max(sc->p1.y, sc->p2.y);
+                                hx = std::max(hx, std::max(0.5f * (maxx - minx), sc->thickness * 0.5f));
+                                hy = std::max(hy, std::max(0.5f * (maxy - miny), sc->thickness * 0.5f));
+                                // fall through to AABB test below
+                            }
+                            [[fallthrough]];
+
+                            case ShapeType::Rectangle:
+                            case ShapeType::Triangle:
+                            default:
+                            {
+                                const float minx = t->position.x - hx, maxx = t->position.x + hx;
+                                const float miny = t->position.y - hy, maxy = t->position.y + hy;
+                                hit = (worldPt.x >= minx && worldPt.x <= maxx &&
+                                    worldPt.y >= miny && worldPt.y <= maxy);
+                            }
+                            break;
+                            }
+                        }
+                        else
+                        {
+                            // No ShapeComponent -> rectangle using transform size
                             const float minx = t->position.x - hx, maxx = t->position.x + hx;
                             const float miny = t->position.y - hy, maxy = t->position.y + hy;
                             hit = (worldPt.x >= minx && worldPt.x <= maxx &&
                                 worldPt.y >= miny && worldPt.y <= maxy);
                         }
-                        break;
-                        }
-                    }
-                    else
-                    {
-                        // No ShapeComponent -> rectangle using transform size
-                        const float minx = t->position.x - hx, maxx = t->position.x + hx;
-                        const float miny = t->position.y - hy, maxy = t->position.y + hy;
-                        hit = (worldPt.x >= minx && worldPt.x <= maxx &&
-                            worldPt.y >= miny && worldPt.y <= maxy);
+
+                        if (hit && t->position.z >= bestZ) { bestZ = t->position.z; best = e; }
                     }
 
-                    if (hit && t->position.z >= bestZ) { bestZ = t->position.z; best = e; }
+                    // Toggle selection with LEFT mouse
+                    if (best) selected = (selected == best) ? (Entity)0 : best;
+                    // else selected = 0; // click empty -> deselect
                 }
 
-                // Toggle selection with LEFT mouse
-                if (best) selected = (selected == best) ? (Entity)0 : best;
-                // else selected = 0; // click empty -> deselect
-            }
-
-            if (over && ImGui::IsMouseClicked(ImGuiMouseButton_Right))
-            {
-                if (!ImGuizmo::IsOver() && !ImGuizmo::IsUsing())
+                if (over && ImGui::IsMouseClicked(ImGuiMouseButton_Right))
+                {
+                    if (!ImGuizmo::IsOver() && !ImGuizmo::IsUsing())
+                        selected = 0;
+                }
+                if (selected && ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows) && !ImGuizmo::IsUsing() && ImGui::IsKeyPressed(ImGuiKey_Delete))
+                {
+                    ecs.DestroyEntity(selected);
                     selected = 0;
-            }
-            if (selected && ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows) && !ImGuizmo::IsUsing() && ImGui::IsKeyPressed(ImGuiKey_Delete))
-            {
-                ecs.DestroyEntity(selected);
-                selected = 0;
-            }
+                }
+                if (selected && ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows) && !ImGuizmo::IsUsing() && ImGui::IsKeyPressed(ImGuiKey_Delete))
+                {
+                    ecs.DestroyEntity(selected);
+                    selected = 0;
+                }
 
-            //  7) drag and drop from asset browser into world
-            //  Drag-and-drop spawn
-            //  Payload is built in the Asset Browser panel.
-            //  Here we just read the payload and instantiate a texture/prefab
-            //  at the mouse drop location in world space.
+                CEVec3 worldPt = ViewUV_toWorld(u, v);
+
+                InputManager::g_mouseWorldPos = CEVec2{ worldPt.x, worldPt.y };
+
+            }
+            
+            //  7)  drag and drop from asset browser into world
+            //      Drag-and-drop spawn
+            //      Payload is built in the Asset Browser panel.
+            //      Here we just read the payload and instantiate a texture/prefab
+            //      at the mouse drop location in world space.
             // ------------------------------------------------------------
             if (ImGui::BeginDragDropTarget()) {
-                if (const ImGuiPayload* pl = ImGui::AcceptDragDropPayload("ASSET/PAYLOAD")) {
-                    const auto* p = static_cast<const AssetDragPayload*>(pl->Data);
-                    CEVec3 dropWorld = ViewUV_toWorld(u, v);
-
-                    using CrashoutsEngine::Assets::AssetManager;
-                    using CrashoutsEngine::Assets::TextureAsset;
-
-                    if (p && p->kind == AssetKind::Texture) {
-                        if (auto* tex = AssetManager::GetInstance().Get<TextureAsset>(p->name)) {
-                            Entity e = ecs.CreateEntity();
-                            ecs.AddComponent<NameComponent>(e, std::string("Tex_") + p->name);
-                            ecs.AddComponent<TransformComponent>(e);
-                            ecs.AddComponent<Component::ShapeComponent>(e);
-                            auto* sc = ecs.GetComponent<Component::ShapeComponent>(e);
-                            sc->enableTexture = true;
-                            sc->textureName = p->name;
-                            ecs.GetComponent<Component::TransformComponent>(e)->position = dropWorld;
-                        }
+                if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSET/PAYLOAD")) {
+                    // Hard guard: ignore if wrong payload struct
+                    if (!payload->Data || payload->DataSize != sizeof(AssetDragPayload)) {
+                        LOGW(Debug, "Dropped payload of wrong size onto viewport");
                     }
-                    else if (p && p->kind == AssetKind::Prefab) {
-                        Entity e = Prefab::Create(ecs, std::string(p->name));
-                        if (e && ecs.HasComponent<Component::TransformComponent>(e))
-                            ecs.GetComponent<Component::TransformComponent>(e)->position = dropWorld;
-                    }
-                    else if (p && p->kind == AssetKind::Audio) {
-                        std::string rel = p->relPath;
+                    else {
+                        const auto* p = static_cast<const AssetDragPayload*>(payload->Data);
+                        CEVec3 dropWorld = ViewUV_toWorld(u, v);
 
-                        const std::string prefix = "audio/";
-                        auto pos = rel.find(prefix);
-                        if (pos != std::string::npos)
-                            rel = rel.substr(pos + prefix.size());
+                        using CrashoutsEngine::Assets::AssetManager;
+                        using CrashoutsEngine::Assets::TextureAsset;
 
-                        if (auto dot = rel.find_last_of('.'); dot != std::string::npos)
-                            rel.erase(dot);
-
-                        std::string eventLike = std::string("event:/") + rel;
-
-                        Entity target = selected;
-                        if (!target) {
-                            target = ecs.CreateEntity();
-                            ecs.AddComponent<NameComponent>(target, std::string("Audio_") + p->name);
-                            ecs.AddComponent<TransformComponent>(target);
-                            if (auto* t = ecs.GetComponent<TransformComponent>(target)) {
-                                t->position = dropWorld;
-                                t->size = { 1.0f, 1.0f };
-                            }
-
-                            // give it a visual
-                            ecs.AddComponent<Component::ShapeComponent>(target);
-                            if (auto* sc = ecs.GetComponent<Component::ShapeComponent>(target)) {
+                        // 1) Texture → spawn textured Shape entity
+                        if (p->kind == AssetKind::Texture) {
+                            if (auto* tex = AssetManager::GetInstance().Get<TextureAsset>(p->name)) {
+                                Entity e = ecs.CreateEntity();
+                                ecs.AddComponent<NameComponent>(e, std::string("Tex_") + p->name);
+                                ecs.AddComponent<TransformComponent>(e);
+                                ecs.AddComponent<Component::ShapeComponent>(e);
+                                auto* sc = ecs.GetComponent<Component::ShapeComponent>(e);
                                 sc->enableTexture = true;
-                                sc->textureName = "audio_icon";
+                                sc->textureName = p->name;
+                                ecs.GetComponent<Component::TransformComponent>(e)->position = dropWorld;
                             }
                         }
-                        else {
-                            if (!ecs.HasComponent<Component::ShapeComponent>(target))
-                                ecs.AddComponent<Component::ShapeComponent>(target);
+                        // 2) Prefab -> instantiate and move to drop
+                        else if (p->kind == AssetKind::Prefab) {
+                            Entity e = Prefab::Create(ecs, std::string(p->name));
+                            if (e && ecs.HasComponent<Component::TransformComponent>(e))
+                                ecs.GetComponent<Component::TransformComponent>(e)->position = dropWorld;
                         }
-
-                        if (!ecs.HasComponent<Component::AudioEmitterComponent>(target))
-                            ecs.AddComponent<Component::AudioEmitterComponent>(target);
-
-                        if (auto* ac = ecs.GetComponent<Component::AudioEmitterComponent>(target)) {
-                            std::filesystem::path relPath = p->relPath; // e.g. "audio/Music/Menu.wav"
-                            std::string ext = relPath.extension().string();
-                            std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
-
-                            std::string rel = relPath.generic_string();
+                        // 3) Audio -> create / retarget Audio entity
+                        else if (p->kind == AssetKind::Audio) {
+                            std::string rel = p->relPath;
 
                             const std::string prefix = "audio/";
                             auto pos = rel.find(prefix);
-                            if (pos == 0)
-                                rel = rel.substr(prefix.size());       // "Music/Menu.wav"
+                            if (pos != std::string::npos)
+                                rel = rel.substr(pos + prefix.size());
 
-                            if (ext == ".wav" || ext == ".ogg" || ext == ".mp3") {
-                                ac->eventPath = rel;
+                            if (auto dot = rel.find_last_of('.'); dot != std::string::npos)
+                                rel.erase(dot);
+
+                            std::string eventLike = std::string("event:/") + rel;
+
+                            Entity target = selected;
+                            if (!target) {
+                                target = ecs.CreateEntity();
+                                ecs.AddComponent<NameComponent>(target, std::string("Audio_") + p->name);
+                                ecs.AddComponent<TransformComponent>(target);
+                                if (auto* t = ecs.GetComponent<TransformComponent>(target)) {
+                                    t->position = dropWorld;
+                                    t->size = { 10.0f, 10.0f };
+                                }
+
+                                // give it a visual
+                                ecs.AddComponent<Component::ShapeComponent>(target);
+                                if (auto* sc = ecs.GetComponent<Component::ShapeComponent>(target)) {
+                                    sc->enableTexture = false; // simple square placeholder
+                                    sc->textureName = "audio_icon";
+                                }
                             }
                             else {
-                                if (auto dot = rel.find_last_of('.'); dot != std::string::npos) rel.erase(dot);
-                                ac->eventPath = std::string("event:/") + rel;
+                                if (auto* t = ecs.GetComponent<TransformComponent>(target)) {
+                                    t->position = dropWorld;
+                                }
                             }
 
-                            ac->volume = 1.0f;
-                            ac->pitch = 1.0f;
-                            ac->spatial3D = true;
+                            if (!ecs.HasComponent<AudioEmitterComponent>(target)) {
+                                ecs.AddComponent<AudioEmitterComponent>(target);
+                            }
+                            if (auto* ac = ecs.GetComponent<AudioEmitterComponent>(target)) {
+                                ac->eventPath = eventLike;
+                            }
                         }
+                        // Other AssetKind values are just ignored
                     }
                 }
                 ImGui::EndDragDropTarget();
             }
-        
-            CEVec3 worldPt = ViewUV_toWorld(u, v);
-
-            InputManager::g_mouseWorldPos = CEVec2{ worldPt.x, worldPt.y };
 
         }
+
         ImGui::End();
         ImGui::PopStyleVar();
     }
@@ -2384,40 +2591,12 @@ namespace UI { // --------------------------------------------------------------
         if (ui.drawCollOverlay) {
             CollisionGizmos::DrawAllColliders(ecs, &collisions, ui.overlayThickness);
             if (ui.drawQuadTree) {
-                Collision::CollisionHandler::quadTree.Draw();
+                Collision::CollisionHandler::GetInstance().quadTree.Draw();
             }
-            //CollisionGizmos::DrawContactsAndNormals(collisions, 0.25f, ui.overlayThickness); Removed for now, will need to calculate the collision pair for normals properly
+            //CollisionGizmos::DrawContactsAndNormals(collisions, 0.25f, ui.overlayThickness); //Removed for now, will need to calculate the collision pair for normals properly
         }
         collisions = std::vector<Collision::CollisionEvent>{};
 
-#if 0
-        BeginFrame();
-        // Dockspace
-        ImGuiViewport* viewport = ImGui::GetMainViewport();
-        ImGui::SetNextWindowPos(viewport->WorkPos);
-        ImGui::SetNextWindowSize(viewport->WorkSize);
-        ImGui::SetNextWindowViewport(viewport->ID);
-
-        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-        ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
-        ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
-
-        ImGui::Begin("Dockspace", 0,
-            ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
-            ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBringToFrontOnFocus |
-            ImGuiWindowFlags_NoNavFocus | ImGuiWindowFlags_NoScrollbar |
-            ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_MenuBar);
-        ImGui::PopStyleVar(3);
-
-        RenderDebugMenuBar(ui);
-
-
-        ImGuiID dockspace_id = ImGui::GetID("Dockspace");
-        int ds_flags_i = (int)ImGuiDockNodeFlags_None | (int)ImGuiDockNodeFlags_NoDockingInCentralNode | (int)ImGuiDockNodeFlags_PassthruCentralNode;
-        ImGuiDockNodeFlags ds_flags = (ImGuiDockNodeFlags)ds_flags_i;
-        ImGui::DockSpace(dockspace_id, { 0,0 }, ds_flags);
-        ImGui::End();
-#endif
         ImGuiID dockspace_id = ImGui::GetID("Dockspace"); // Get ID needed for DockBuilder
         ImGuiViewport* viewport = ImGui::GetMainViewport(); // Needed for DockBuilder size
 
@@ -2433,23 +2612,23 @@ namespace UI { // --------------------------------------------------------------
 
             // Split into main zones
             ImGuiID dock_main = dockspace_id;
-            ImGuiID dock_left, dock_right, dock_bottom, dock_top;
+            ImGuiID dock_left, dock_right, dock_bottom, dock_top, dock_left_bottom, dock_right_bottom;
             ImGui::DockBuilderSplitNode(dock_main, ImGuiDir_Up, 0.07f, &dock_top, &dock_main);
             ImGui::DockBuilderSplitNode(dock_main, ImGuiDir_Left, 0.18f, &dock_left, &dock_main);
             ImGui::DockBuilderSplitNode(dock_main, ImGuiDir_Right, 0.26f, &dock_right, &dock_main);
             ImGui::DockBuilderSplitNode(dock_main, ImGuiDir_Down, 0.28f, &dock_bottom, &dock_main);
-
-            ImGuiID dock_right_bottom;
+            ImGui::DockBuilderSplitNode(dock_main, ImGuiDir_Down, 0.25f, &dock_left_bottom, &dock_main);
             ImGui::DockBuilderSplitNode(dock_right, ImGuiDir_Down, 0.5f, &dock_right_bottom, &dock_right);
 
             // Dock windows into regions (matching your actual window titles)
             ImGui::DockBuilderDockWindow("Debug Controls", dock_left);
-            ImGui::DockBuilderDockWindow("Hierarchy", dock_right);
+            ImGui::DockBuilderDockWindow("Hierarchy", dock_left);
+            ImGui::DockBuilderDockWindow("Sprite Sheet", dock_right);
             ImGui::DockBuilderDockWindow("Assets", dock_bottom);
             ImGui::DockBuilderDockWindow("Inspector", dock_right_bottom);
             ImGui::DockBuilderDockWindow("Physics / Collision", dock_bottom);
             ImGui::DockBuilderDockWindow("Console", dock_bottom);
-            ImGui::DockBuilderDockWindow("Performance", dock_left);
+            ImGui::DockBuilderDockWindow("Performance", dock_left_bottom);
             ImGui::DockBuilderDockWindow("GameState", dock_bottom);
             ImGui::DockBuilderDockWindow("GameScene", dock_bottom);
             ImGui::DockBuilderDockWindow("Animation", dock_bottom);
@@ -2489,7 +2668,7 @@ namespace UI { // --------------------------------------------------------------
             RenderAssetBrowserPanel(ui, Assets::rootPath.c_str(), gPickedAsset);
         }
         if (ui.showSpriteSheet) {
-            RenderSpriteSheetPanel();  
+            RenderSpriteSheetPanel(ecs, selected);
         }
         if (ui.showInspector) {
             RenderInspectorPanel(ecs, selected, ui);

@@ -2,6 +2,9 @@
     "entities": [
         {
             "name": "Backdrop",
+            "layer": {
+                "currentLayer": 0
+            },
             "transform": {
                 "rotation": 0.0,
                 "position": {
@@ -16,6 +19,7 @@
             },
             "shape": {
                 "useTexture": false,
+                "isWorldSpace": true,
                 "wrapModeU": 0,
                 "wrapModeV": 0,
                 "thickness": 1.0,
@@ -27,9 +31,10 @@
                     "y": 1.0
                 },
                 "color": {
-                    "x": 59.75,
+                    "x": 59.750240325927737,
                     "y": 24.299999237060548,
-                    "z": 17.350000381469728
+                    "z": 17.350120544433595,
+                    "w": 1.0
                 },
                 "p1": {
                     "x": 0.0,
@@ -45,6 +50,9 @@
         },
         {
             "name": "sampleShape",
+            "layer": {
+                "currentLayer": 0
+            },
             "transform": {
                 "rotation": 0.0,
                 "position": {
@@ -71,12 +79,13 @@
                 "radius": 10.0,
                 "center": {
                     "x": 0.0,
-                    "y": -780.4058227539063,
+                    "y": 0.0,
                     "z": 0.0
                 }
             },
             "shape": {
                 "useTexture": false,
+                "isWorldSpace": true,
                 "wrapModeU": 0,
                 "wrapModeV": 0,
                 "thickness": 1.0,
@@ -90,7 +99,8 @@
                 "color": {
                     "x": 40.75,
                     "y": 0.2999992370605469,
-                    "z": 0.30000001192092898
+                    "z": 0.30000001192092898,
+                    "w": 1.0
                 },
                 "p1": {
                     "x": 0.0,
@@ -106,6 +116,9 @@
         },
         {
             "name": "sampleShape",
+            "layer": {
+                "currentLayer": 0
+            },
             "transform": {
                 "rotation": 0.0,
                 "position": {
@@ -142,6 +155,7 @@
             },
             "shape": {
                 "useTexture": false,
+                "isWorldSpace": true,
                 "wrapModeU": 0,
                 "wrapModeV": 0,
                 "thickness": 1.0,
@@ -155,7 +169,8 @@
                 "color": {
                     "x": 40.75,
                     "y": 0.2999992370605469,
-                    "z": 0.30000001192092898
+                    "z": 0.30000001192092898,
+                    "w": 1.0
                 },
                 "p1": {
                     "x": 0.0,
@@ -171,6 +186,9 @@
         },
         {
             "name": "sampleShape",
+            "layer": {
+                "currentLayer": 0
+            },
             "transform": {
                 "rotation": 0.0,
                 "position": {
@@ -193,21 +211,21 @@
                 }
             },
             "collider": {
-                "type": 2,
+                "type": 1,
                 "min": {
-                    "x": -15.299288749694825,
-                    "y": -479.4051513671875,
+                    "x": -10.299288749694825,
+                    "y": -474.4051513671875,
                     "z": 0.0
                 },
                 "max": {
-                    "x": -5.299288749694824,
-                    "y": -469.4051513671875,
+                    "x": -10.299288749694825,
+                    "y": -474.4051513671875,
                     "z": 0.0
-                },
-                "rotation": 0.0
+                }
             },
             "shape": {
                 "useTexture": false,
+                "isWorldSpace": true,
                 "wrapModeU": 0,
                 "wrapModeV": 0,
                 "thickness": 1.0,
@@ -221,7 +239,8 @@
                 "color": {
                     "x": 40.75,
                     "y": 0.2999992370605469,
-                    "z": 0.0
+                    "z": 0.0,
+                    "w": 1.0
                 },
                 "p1": {
                     "x": 0.0,
@@ -235,5 +254,10 @@
                 }
             }
         }
-    ]
+    ],
+    "layers": {
+        "Default": 0,
+        "Ground": 2,
+        "Player": 1
+    }
 }

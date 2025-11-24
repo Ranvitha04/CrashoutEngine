@@ -10,6 +10,8 @@ context and implement a game loop.
 
 /*                                                                   includes
 ----------------------------------------------------------------------------- */
+#include "engine_pch.h"
+
 // Extension loader library's header must be included before GLFW's header!!!
 #include "engine.h"
 #include "rendering.h"
@@ -19,6 +21,7 @@ context and implement a game loop.
 #include "scriptcomponent.h"
 #include "cameracomponent.h"
 #include "gamestatemanager.h"
+#include "tilemapcomponent.h"
 #include "ppmanager.h"
 #include "textureasset.h"
 #include "scriptsystem.h"
@@ -53,6 +56,8 @@ context and implement a game loop.
 #include "registergamestate.h"
 #include "settings.h"
 #include <filesystem>
+
+#include "imgui_internal.h"
 /*                                                   type declarations
 ----------------------------------------------------------------------------- */
 
@@ -61,7 +66,7 @@ CrashoutsEngine::ECS* CrashoutsEngine::ECS::instancePtr = nullptr;
 std::mutex CrashoutsEngine::ECS::mtx;
 
 auto& physicsSystem = Physics::PhysicsHandler::GetInstance();
-static Collision::CollisionHandler collisionSystem;
+Collision::CollisionHandler& collisionSystem{Collision::CollisionHandler::GetInstance()};
 CrashoutsEngine::CollisionEventManager &collisionEvent = CrashoutsEngine::CollisionEventManager::GetInstance();
 static CrashoutsEngine::AIManager aiSystem;
 
@@ -229,49 +234,213 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
     
     // Unbind FBO
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    auto DrawTitleButton = [&](const char* label)
+        {
+            ImFont* mono = ImGui::GetIO().Fonts->Fonts[0]; // first baked font is monospace
+            ImGui::PushFont(mono);
+
+            float btnW = 32.0f;
+            float btnH = 28.0f;
+
+            ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
+            ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 0.0f);
+            ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));
+            ImGui::PushStyleColor(ImGuiCol_Button, IM_COL32(40, 40, 40, 255));
+            ImGui::PushStyleColor(ImGuiCol_ButtonHovered, IM_COL32(60, 60, 60, 255));
+            ImGui::PushStyleColor(ImGuiCol_ButtonActive, IM_COL32(80, 80, 80, 255));
+            ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(220, 220, 220, 255));
+
+            ImGui::Button(label, ImVec2(btnW, btnH));
+
+            bool clicked = ImGui::IsItemClicked();
+
+            ImGui::PopStyleColor(4);
+            ImGui::PopStyleVar(3);
+            ImGui::PopFont();
+
+
+            return clicked;
+        };
 
 #if USE_IMGUI_EDITOR
     // 1. Start the Dear ImGui frame
     UI::BeginFrame();
+    //goddamn lobotomy
+    const float titleBarHeight = 30.0f;
+    {
+        ImGuiViewport* viewport = ImGui::GetMainViewport();
+
+        ImGui::SetNextWindowPos(viewport->Pos);
+        ImGui::SetNextWindowSize(ImVec2(viewport->Size.x, titleBarHeight));
+        ImGui::SetNextWindowViewport(viewport->ID);
+
+        ImGuiWindowFlags flags =
+            ImGuiWindowFlags_NoDecoration |
+            ImGuiWindowFlags_NoDocking |
+            ImGuiWindowFlags_NoMove |
+            ImGuiWindowFlags_NoSavedSettings |
+            ImGuiWindowFlags_NoScrollbar |
+            ImGuiWindowFlags_NoScrollWithMouse;
+
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(8, 8));
+        ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(6, 4));
+        ImGui::PushStyleColor(ImGuiCol_WindowBg, IM_COL32(25, 25, 25, 255));
+
+        ImGui::Begin("##TitleBarOverlay", nullptr, flags);
+
+        // Title text
+        ImGui::SetCursorPosY((titleBarHeight - ImGui::GetTextLineHeight()) * 0.5f);
+        ImGui::Text("CRASHOUTS ENGINE");
+
+        // Right aligned buttons
+        float buttonRightOffset = 10.0f;
+        float buttonArea = 3 * 32;    // three 32px buttons
+        ImGui::SameLine(ImGui::GetWindowWidth() - buttonArea - buttonRightOffset);
+
+		// minimize
+        if (DrawTitleButton("-"))
+            glfwIconifyWindow(GLApp::ptr_window);
+
+        ImGui::SameLine(0.0f, 0.0f);
+
+        // fullscreen
+        static bool fullscreen = true;
+        if (DrawTitleButton(fullscreen ? "[ ]" : "[]"))
+        {
+            GLFWmonitor* mon = glfwGetPrimaryMonitor();
+            const GLFWvidmode* mode = glfwGetVideoMode(mon);
+
+            int mx, my;
+            glfwGetMonitorPos(mon, &mx, &my);
+
+            if (!fullscreen) {
+                glfwSetWindowAttrib(GLApp::ptr_window, GLFW_DECORATED, GLFW_FALSE);
+                glfwSetWindowMonitor(GLApp::ptr_window, NULL, mx, my, mode->width, mode->height, 0);
+            }
+            else {
+                glfwSetWindowAttrib(GLApp::ptr_window, GLFW_DECORATED, GLFW_FALSE);
+                glfwSetWindowMonitor(GLApp::ptr_window, NULL, 100, 100, 1600, 900, 0);
+            }
+            fullscreen = !fullscreen;
+        }
+
+
+        ImGui::SameLine(0.0f, 0.0f);
+
+        //close
+        if (DrawTitleButton("X"))
+            glfwSetWindowShouldClose(GLApp::ptr_window, true);
+
+		// dragging is stupidly bugged but whatever - Rain
+		// YEAHHHHH ITS FIXED
+        // Disable dragging in fullscreen
+        if (!fullscreen)
+        {
+            static bool draggingWindow = false;
+            static POINT cursorStart;
+            static int winStartX, winStartY;
+
+            float buttonsWidth = 3 * 28 + 12;
+            ImVec2 titlebarMin = ImGui::GetWindowPos();
+            ImVec2 titlebarMax = ImVec2(
+                titlebarMin.x + ImGui::GetWindowWidth() - buttonsWidth,
+                titlebarMin.y + titleBarHeight
+            );
+
+            bool mouseInTitleBar = ImGui::IsMouseHoveringRect(titlebarMin, titlebarMax);
+            bool leftDown = ImGui::IsMouseDown(ImGuiMouseButton_Left);
+
+            // Start drag
+            if (mouseInTitleBar && leftDown && !draggingWindow && !ImGui::IsAnyItemHovered())
+            {
+                draggingWindow = true;
+
+                // Get initial cursor position (WIN32 absolute)
+                GetCursorPos(&cursorStart);
+
+                glfwGetWindowPos(GLApp::ptr_window, &winStartX, &winStartY);
+            }
+
+            // Dragging
+            if (draggingWindow)
+            {
+                POINT cursorNow;
+                GetCursorPos(&cursorNow);
+
+                int dx = cursorNow.x - cursorStart.x;
+                int dy = cursorNow.y - cursorStart.y;
+
+                glfwSetWindowPos(GLApp::ptr_window,
+                    winStartX + dx,
+                    winStartY + dy);
+
+                if (!leftDown)
+                    draggingWindow = false;
+            }
+        }
+
+        ImGui::End();
+        ImGui::PopStyleColor();
+        ImGui::PopStyleVar(2);
+    }
 
     // 2. Setup Dockspace 
     ImGuiViewport* viewport = ImGui::GetMainViewport();
-    ImGui::SetNextWindowPos(viewport->WorkPos);
-    ImGui::SetNextWindowSize(viewport->WorkSize);
+    ImVec2 dockPos = ImVec2(viewport->Pos.x, viewport->Pos.y + titleBarHeight);
+    ImVec2 dockSize = ImVec2(viewport->Size.x, viewport->Size.y - titleBarHeight);
+    /*ImGui::SetNextWindowPos(viewport->WorkPos);
+    ImGui::SetNextWindowSize(viewport->WorkSize);*/
+	ImGui::SetNextWindowPos(dockPos);
+	ImGui::SetNextWindowSize(dockSize);
     ImGui::SetNextWindowViewport(viewport->ID);
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
     ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
     ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
     // Begin Dockspace window (needs ImGuiWindowFlags_MenuBar for the menu)
-    ImGui::Begin("Dockspace", nullptr,
+    bool dockspaceVisible = ImGui::Begin("Dockspace", nullptr,
         ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoTitleBar |
         ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
         ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBringToFrontOnFocus |
         ImGuiWindowFlags_NoNavFocus | ImGuiWindowFlags_NoBackground);
-    ImGui::PopStyleVar(3);
 
-    // Render the menu bar *inside* the Dockspace Begin/End
-    UI::RenderDebugMenuBar(uiState);
+    if (dockspaceVisible == true) {
+        ImGui::PopStyleVar(3);
 
-    // Define the actual dockspace area
-    ImGuiID dockspace_id = ImGui::GetID("Dockspace");
-    ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_PassthruCentralNode;
-    ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
+        // Render the menu bar *inside* the Dockspace Begin/End
+        UI::RenderDebugMenuBar(uiState);
 
-    // Render ImGui UI on top of the scene
-    glBindFramebuffer(GL_FRAMEBUFFER, gameFboID);
-    {
-        FrameProfiler::Scoped s2(PerformanceSystem::Get().GetProfiler(), "UI");
-        UI::Render(gProfiler, physicsSystem, globalSelectedEntity, uiState);
+        // Define the actual dockspace area
+        ImGuiID dockspace_id = ImGui::GetID("Dockspace");
+        ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_PassthruCentralNode;
+        ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
+
+        // Render ImGui UI on top of the scene
+        glBindFramebuffer(GL_FRAMEBUFFER, gameFboID);
+        {
+            FrameProfiler::Scoped s2(PerformanceSystem::Get().GetProfiler(), "UI");
+            UI::Render(gProfiler, physicsSystem, globalSelectedEntity, uiState);
+        }
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        //glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+        // Cycle and draw Tile Map Editor if needed
+        CrashoutsEngine::ECS::ComponentArray<Component::TileMapComponent>& tmArray =
+            CrashoutsEngine::ECS::getInstance()->GetComponentArray<Component::TileMapComponent>();
+
+        for (Component::TileMapComponent& tm : tmArray.dense) {
+            CrashoutsEngine::Editor::DrawTileMapEditor(&tm, &tm.pOpen);
+        }
     }
-    PerformanceSystem::Get().RenderUI();
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    //glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    else {
+        ImGui::PopStyleVar(3);
+    }
+    
 
     ImGui::End(); // End the Dockspace window begun earlier
 
     // End the ImGui frame and render draw data
     UI::EndFrame();
+
 
 #else
 
@@ -353,6 +522,11 @@ void Update(double const& dt) {
             FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Collision");
             collisionSystem.update(dt, (Collision::EngineState)engineState);
         }
+        //fixed update please work
+        {
+            FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "ScriptFixedUpdate");
+            CrashoutsEngine::ScriptSystem::FixedUpdateAll();
+        }
         {
             FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Physics");
             physicsSystem.update(dt);
@@ -383,6 +557,7 @@ void Update(double const& dt) {
             FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Physics");
             physicsSystem.update(0.f);
         }
+
         // Process Editor Camera Input
 #if USE_IMGUI_EDITOR
         if(gameWinHovered) CrashoutsEngine::RenderCamera::EditorCameraInput();
@@ -420,6 +595,20 @@ void Update(double const& dt) {
     
     CrashoutsEngine::PostProcessing::UpdatePP();
 
+#if USE_IMGUI_EDITOR
+    // Cycle and draw Tile Map Editor if needed
+    CrashoutsEngine::ECS::ComponentArray<Component::TileMapComponent>& tmArray =
+        CrashoutsEngine::ECS::getInstance()->GetComponentArray<Component::TileMapComponent>();
+
+    for (size_t i = 0; i < tmArray.dense.size(); ++i) {
+        // 1. Get the Component
+        Component::TileMapComponent& tm = tmArray.dense[i];
+
+        // 2. Get the Entity ID associated with this index
+        CrashoutsEngine::Entity entityID = tmArray.indexToEntity[i];
+        if (tm.isCacheDirty) CrashoutsEngine::TileMapUtils::RebuildCache(tm, entityID);
+    }
+#endif
 
 }
 

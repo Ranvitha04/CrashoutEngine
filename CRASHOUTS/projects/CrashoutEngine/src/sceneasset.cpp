@@ -12,6 +12,7 @@
 //
 ///*                                                                   includes
 //----------------------------------------------------------------------------- */
+#include "engine_pch.h"
 
 #include "entitymanager.h"
 #include "assetmanager.h"
@@ -25,13 +26,6 @@
 #include <utility>
 #include <filesystem>
 
-// RapidJSON
-#include <rapidjson/error/en.h>
-#include <rapidjson/stringbuffer.h>
-#include <rapidjson/writer.h>
-#include <rapidjson/prettywriter.h>
-#include <rapidjson/istreamwrapper.h>
-
 // Components
 #include "namecomponent.h"
 #include "transformcomponent.h"
@@ -44,6 +38,9 @@
 #include "ppcomponent.h"
 #include "collidercomponent.h"
 #include "layercomponent.h"
+#include "tilemapcomponent.h"
+#include "hierarchy_components.h"
+#include "transientcomponent.h"
 
 // FOR GAME GUI
 #include "buttoncomponent.h"
@@ -58,7 +55,7 @@ namespace {
     @param filePath Path to the SceneAsset(JSON) file.
     @return empty string on failure.
     */
-    std::string ReadFileToString(const std::string& filePath) {
+    inline std::string ReadFileToString(const std::string& filePath) {
         std::ifstream file(filePath);
         if (!file.is_open()) {
             std::cout << "ERROR::SCENE::FILE_NOT_READABLE: " << filePath << std::endl;
@@ -76,7 +73,7 @@ namespace {
     @param string containing data to send
     @return bool to determine if successful
     */
-    bool WriteTextToFile(const std::string& filePath, const std::string& content) {
+    inline bool WriteTextToFile(const std::string& filePath, const std::string& content) {
         std::ofstream file(filePath);
         if (!file.is_open()) {
             std::cout << "ERROR: Could not open file for writing: " << filePath << std::endl;
@@ -159,13 +156,16 @@ namespace CrashoutsEngine {
             const char* const AUDIO_COMPONENT           = "audio";  
             const char* const SCRIPT_COMPONENT          = "script";
             const char* const CAMERA_COMPONENT          = "camera";
+            const char* const TILEMAP_COMPONENT          = "tilemap";
             // UI COMPONENT ITEMS
             const char* const BUTTON_COMPONENT          = "button";
             const char* const GUI_COMPONENT             = "gui";
             const char* const TEXT_INPUT_COMPONENT      = "textinput";
             const char* const UI_LAYOUT_COMPONENT       = "uilayout";
             // POST PROCESSING ITEMS
-            const char* const PP_COMPONENT       = "postprocessing";
+            const char* const PP_COMPONENT              = "postprocessing";
+            // HIERACHY ITEMS
+            const char* const PARENT_COMPONENT          = "parent";
         }
 
         /*!
@@ -229,6 +229,13 @@ namespace CrashoutsEngine {
             const rapidjson::Value& entitiesArray = doc[Keys::ENTITIES];
 
             ECS& gECS = *ECS::getInstance();
+
+            // Helper struct to link parents after all entities are created
+            struct ParentLinkRequest {
+                Entity childEntity;
+                std::string parentName;
+            };
+            std::vector<ParentLinkRequest> parentLinksToProcess;
 
             for (rapidjson::SizeType i = 0; i < entitiesArray.Size(); ++i) {
                 /*Utility*/
@@ -319,7 +326,27 @@ namespace CrashoutsEngine {
                     if (rigidBodyValues.HasMember("restitutionCoeff") && rigidBodyValues["restitutionCoeff"].IsFloat()) {
                         rigidBodyComp.setRestitution(rigidBodyValues["restitutionCoeff"].GetFloat());
                     }
-                    
+
+                    if (rigidBodyValues.HasMember("staticFriction") && rigidBodyValues["staticFriction"].IsFloat()) {
+                        rigidBodyComp.staticFriction = rigidBodyValues["staticFriction"].GetFloat();
+                    }
+
+                    if (rigidBodyValues.HasMember("dynamicFriction") && rigidBodyValues["dynamicFriction"].IsFloat()) {
+                        rigidBodyComp.dynamicFriction = rigidBodyValues["dynamicFriction"].GetFloat();
+                    }
+
+                    if (rigidBodyValues.HasMember("inertia") && rigidBodyValues["inertia"].IsFloat()) {
+                        rigidBodyComp.inertia = rigidBodyValues["inertia"].GetFloat();
+                    }
+
+                    if (rigidBodyValues.HasMember("invInertia") && rigidBodyValues["invInertia"].IsFloat()) {
+                        rigidBodyComp.invInertia = rigidBodyValues["invInertia"].GetFloat();
+                    }
+
+                    if (rigidBodyValues.HasMember("isTrigger") && rigidBodyValues["isTrigger"].IsBool()) {
+                        bool isTrigger{ rigidBodyValues["isTrigger"].GetBool() };
+                        if (isTrigger) rigidBodyComp.getFlags().flip(Physics::SIMULATE_DYNAMICS);
+                    }
                 }
 
                 // Check if Collider 
@@ -329,7 +356,7 @@ namespace CrashoutsEngine {
                     // 1. Check Type Int
                     //int colliderType = 0;
                     if (colliderValue.HasMember("type") && colliderValue["type"].IsInt()) {
-                        // 0 - Sphere Collider, 1 - AABB, 2 - OBB?
+                        // 0 - Sphere Collider, 1 - AABB, 2 - Polygon, 3 - OBB, 4 - None?
                         int colliderType = colliderValue["type"].GetInt();
                         ColliderComponent& col = gECS.AddComponent<ColliderComponent>(newEntity);
                         Collision::ColliderFactory colFactory{};
@@ -390,8 +417,9 @@ namespace CrashoutsEngine {
                                 col.collider = colFactory.CreateCollider(static_cast<Collision::ColliderType>(colliderType));
                                 }
                                 break;
+                            case Collision::NONE: break;
                             default:
-                                col.collider = colFactory.CreateCollider(Collision::SPHERE);
+                                col.collider = colFactory.CreateCollider(Collision::AABB);
                         };
                     }
                 }
@@ -455,12 +483,13 @@ namespace CrashoutsEngine {
 
                     // Color
                     if (shapeValues.HasMember("color") && shapeValues["color"].IsObject()) {
-                        CEVec3 color{ 0.0f, 0.0f, 0.0f };
+                        CEColor color{ 0.0f, 0.0f, 0.0f };
                         const rapidjson::Value& colorValue = shapeValues["color"];
                         // Use HasMember check for safety
-                        if (colorValue.HasMember("x")) color.x = colorValue["x"].GetFloat();
-                        if (colorValue.HasMember("y")) color.y = colorValue["y"].GetFloat();
-                        if (colorValue.HasMember("z")) color.z = colorValue["z"].GetFloat();
+                        if (colorValue.HasMember("x")) color.x() = colorValue["x"].GetFloat();
+                        if (colorValue.HasMember("y")) color.y() = colorValue["y"].GetFloat();
+                        if (colorValue.HasMember("z")) color.z() = colorValue["z"].GetFloat();
+                        if (colorValue.HasMember("w")) color.w() = colorValue["w"].GetFloat();
 
                         s.color = color;
                     }
@@ -531,12 +560,13 @@ namespace CrashoutsEngine {
 
                     // 5. Check Color
                     if (textValue.HasMember("color") && textValue["color"].IsObject()) {
-                        CEVec3 color{ 0.0f, 0.0f, 0.0f };
+                        CEColor color{ 0.0f, 0.0f, 0.0f };
                         const rapidjson::Value& colorValue = textValue["color"];
                         // Use HasMember check for safety
-                        if (colorValue.HasMember("x")) color.x = colorValue["x"].GetFloat();
-                        if (colorValue.HasMember("y")) color.y = colorValue["y"].GetFloat();
-                        if (colorValue.HasMember("z")) color.z = colorValue["z"].GetFloat();
+                        if (colorValue.HasMember("x")) color.x() = colorValue["x"].GetFloat();
+                        if (colorValue.HasMember("y")) color.y() = colorValue["y"].GetFloat();
+                        if (colorValue.HasMember("z")) color.z() = colorValue["z"].GetFloat();
+                        if (colorValue.HasMember("w")) color.w() = colorValue["w"].GetFloat();
 
                         t.color = color;
                     }
@@ -607,34 +637,37 @@ namespace CrashoutsEngine {
                     // 
                     // 2. Check Shape Normal Color 
                     if (buttonValue.HasMember("shapeNormalColor") && buttonValue["shapeNormalColor"].IsObject()) {
-                        CEVec3 color { 0.f, 0.f, 0.f };
+                        CEColor color { 0.f, 0.f, 0.f };
                         const rapidjson::Value& colorVal = buttonValue["shapeNormalColor"];
                         // Use HasMember check for safety
-                        if (colorVal.HasMember("x")) color.x = colorVal["x"].GetFloat();
-                        if (colorVal.HasMember("y")) color.y = colorVal["y"].GetFloat();
-                        if (colorVal.HasMember("z")) color.z = colorVal["z"].GetFloat();
+                        if (colorVal.HasMember("x")) color.x() = colorVal["x"].GetFloat();
+                        if (colorVal.HasMember("y")) color.y() = colorVal["y"].GetFloat();
+                        if (colorVal.HasMember("z")) color.z() = colorVal["z"].GetFloat();
+                        if (colorVal.HasMember("w")) color.w() = colorVal["w"].GetFloat();
                         b.shapeNormalColor = color;
                     }
 
                     // 3. Check Shape Hover Color 
                     if (buttonValue.HasMember("shapeHoveredColor") && buttonValue["shapeHoveredColor"].IsObject()) {
-                        CEVec3 color{ 0.f, 0.f, 0.f };
+                        CEColor color{ 0.f, 0.f, 0.f };
                         const rapidjson::Value& colorVal = buttonValue["shapeHoveredColor"];
-                        // Use HasMember check for safety
-                        if (colorVal.HasMember("x")) color.x = colorVal["x"].GetFloat();
-                        if (colorVal.HasMember("y")) color.y = colorVal["y"].GetFloat();
-                        if (colorVal.HasMember("z")) color.z = colorVal["z"].GetFloat();
+                        // Use HasMember check for safety   
+                        if (colorVal.HasMember("x")) color.x() = colorVal["x"].GetFloat();
+                        if (colorVal.HasMember("y")) color.y() = colorVal["y"].GetFloat();
+                        if (colorVal.HasMember("z")) color.z() = colorVal["z"].GetFloat();
+                        if (colorVal.HasMember("w")) color.w() = colorVal["w"].GetFloat();
                         b.shapeHoveredColor = color;
                     }
                     
                     // 4. Check Shape Pressed Color 
                     if (buttonValue.HasMember("shapePressedColor") && buttonValue["shapePressedColor"].IsObject()) {
-                        CEVec3 color{ 0.f, 0.f, 0.f };
+                        CEColor color{ 0.f, 0.f, 0.f };
                         const rapidjson::Value& colorVal = buttonValue["shapePressedColor"];
                         // Use HasMember check for safety
-                        if (colorVal.HasMember("x")) color.x = colorVal["x"].GetFloat();
-                        if (colorVal.HasMember("y")) color.y = colorVal["y"].GetFloat();
-                        if (colorVal.HasMember("z")) color.z = colorVal["z"].GetFloat();
+                        if (colorVal.HasMember("x")) color.x() = colorVal["x"].GetFloat();
+                        if (colorVal.HasMember("y")) color.y() = colorVal["y"].GetFloat();
+                        if (colorVal.HasMember("z")) color.z() = colorVal["z"].GetFloat();
+                        if (colorVal.HasMember("w")) color.w() = colorVal["w"].GetFloat();
                         b.shapePressedColor = color;
                     }
 
@@ -642,34 +675,37 @@ namespace CrashoutsEngine {
                     // 
                     // 5. Check Text Normal Color 
                     if (buttonValue.HasMember("textNormalColor") && buttonValue["textNormalColor"].IsObject()) {
-                        CEVec3 color { 0.f, 0.f, 0.f };
+                        CEColor color { 0.f, 0.f, 0.f };
                         const rapidjson::Value& colorVal = buttonValue["textNormalColor"];
                         // Use HasMember check for safety
-                        if (colorVal.HasMember("x")) color.x = colorVal["x"].GetFloat();
-                        if (colorVal.HasMember("y")) color.y = colorVal["y"].GetFloat();
-                        if (colorVal.HasMember("z")) color.z = colorVal["z"].GetFloat();
+                        if (colorVal.HasMember("x")) color.x() = colorVal["x"].GetFloat();
+                        if (colorVal.HasMember("y")) color.y() = colorVal["y"].GetFloat();
+                        if (colorVal.HasMember("z")) color.z() = colorVal["z"].GetFloat();
+                        if (colorVal.HasMember("w")) color.w() = colorVal["w"].GetFloat();
                         b.textNormalColor = color;
                     }
 
                     // 6. Check Text Hover Color 
                     if (buttonValue.HasMember("textHoveredColor") && buttonValue["textHoveredColor"].IsObject()) {
-                        CEVec3 color{ 0.f, 0.f, 0.f };
+                        CEColor color{ 0.f, 0.f, 0.f };
                         const rapidjson::Value& colorVal = buttonValue["textHoveredColor"];
-                        // Use HasMember check for safety
-                        if (colorVal.HasMember("x")) color.x = colorVal["x"].GetFloat();
-                        if (colorVal.HasMember("y")) color.y = colorVal["y"].GetFloat();
-                        if (colorVal.HasMember("z")) color.z = colorVal["z"].GetFloat();
+                        // Use HasMember check for safety   
+                        if (colorVal.HasMember("x")) color.x() = colorVal["x"].GetFloat();
+                        if (colorVal.HasMember("y")) color.y() = colorVal["y"].GetFloat();
+                        if (colorVal.HasMember("z")) color.z() = colorVal["z"].GetFloat();
+                        if (colorVal.HasMember("w")) color.w() = colorVal["w"].GetFloat();
                         b.textHoveredColor = color;
                     }
                     
                     // 7. Check Text Pressed Color 
                     if (buttonValue.HasMember("textPressedColor") && buttonValue["textPressedColor"].IsObject()) {
-                        CEVec3 color{ 0.f, 0.f, 0.f };
+                        CEColor color{ 0.f, 0.f, 0.f };
                         const rapidjson::Value& colorVal = buttonValue["textPressedColor"];
-                        // Use HasMember check for safety
-                        if (colorVal.HasMember("x")) color.x = colorVal["x"].GetFloat();
-                        if (colorVal.HasMember("y")) color.y = colorVal["y"].GetFloat();
-                        if (colorVal.HasMember("z")) color.z = colorVal["z"].GetFloat();
+                        // Use HasMember check for safety   
+                        if (colorVal.HasMember("x")) color.x() = colorVal["x"].GetFloat();
+                        if (colorVal.HasMember("y")) color.y() = colorVal["y"].GetFloat();
+                        if (colorVal.HasMember("z")) color.z() = colorVal["z"].GetFloat();
+                        if (colorVal.HasMember("w")) color.w() = colorVal["w"].GetFloat();
                         b.textPressedColor = color;
                     }
 
@@ -762,6 +798,138 @@ namespace CrashoutsEngine {
 
                 }
 
+                // Check if TileMapComponent
+                if (entityValue.HasMember(Keys::TILEMAP_COMPONENT) && entityValue[Keys::TILEMAP_COMPONENT].IsObject()) {
+                    TileMapComponent& tm = gECS.AddComponent<TileMapComponent>(newEntity);
+                    const rapidjson::Value& tmValue = entityValue[Keys::TILEMAP_COMPONENT];
+
+                    // --- Set Defaults ---
+                    tm.activeAsset = "none";
+                    tm.pOpen = false;
+                    tm.isCacheDirty = true;
+
+                    // 1. Tile Size (int)
+                    if (tmValue.HasMember("tileSize") && tmValue["tileSize"].IsInt()) {
+                        tm.tileSize = tmValue["tileSize"].GetInt();
+                    }
+
+                    // 2. Active Asset (string) - optional override if saved
+                    if (tmValue.HasMember("activeAsset") && tmValue["activeAsset"].IsString()) {
+                        tm.activeAsset = tmValue["activeAsset"].GetString();
+                    }
+
+                    // 3. Tile Asset Names (std::vector<std::string>)
+                    if (tmValue.HasMember("tileAssetNames") && tmValue["tileAssetNames"].IsArray()) {
+                        const rapidjson::Value& assetsArr = tmValue["tileAssetNames"];
+                        for (rapidjson::SizeType k = 0; k < assetsArr.Size(); ++k) {
+                            if (assetsArr[k].IsString()) {
+                                tm.tileAssetNames.push_back(assetsArr[k].GetString());
+                            }
+                        }
+                    }
+
+                    // 4. Grid Data (std::map<std::pair<int, int>, std::string>)
+                    // JSON Structure: [ { "x": 1, "y": 2, "asset": "grass.json" }, ... ]
+                    if (tmValue.HasMember("gridData") && tmValue["gridData"].IsArray()) {
+                        const rapidjson::Value& gridArr = tmValue["gridData"];
+                        for (rapidjson::SizeType k = 0; k < gridArr.Size(); ++k) {
+                            const rapidjson::Value& tileObj = gridArr[k];
+
+                            if (tileObj.IsObject() &&
+                                tileObj.HasMember("x") && tileObj["x"].IsInt() &&
+                                tileObj.HasMember("y") && tileObj["y"].IsInt() &&
+                                tileObj.HasMember("asset") && tileObj["asset"].IsString()) {
+
+                                int x = tileObj["x"].GetInt();
+                                int y = tileObj["y"].GetInt();
+                                std::string asset = tileObj["asset"].GetString();
+
+                                // Insert into sparse map
+                                tm.gridData[{x, y}] = asset;
+                            }
+                        }
+                    }
+                }
+
+                // Check if ParentComponent
+                if (entityValue.HasMember(Keys::PARENT_COMPONENT) && entityValue[Keys::PARENT_COMPONENT].IsObject()) {
+                    const rapidjson::Value& pVal = entityValue[Keys::PARENT_COMPONENT];
+
+                    // Create the component on the child
+                    Component::ParentComponent& pc = gECS.AddComponent<Component::ParentComponent>(newEntity);
+
+                    // 1. Queue the link request
+                    if (pVal.HasMember("parentName") && pVal["parentName"].IsString()) {
+                        ParentLinkRequest req;
+                        req.childEntity = newEntity;
+                        req.parentName = pVal["parentName"].GetString();
+                        parentLinksToProcess.push_back(req);
+                    }
+
+                    // 2. Load Local Data
+                    if (pVal.HasMember("localPos") && pVal["localPos"].IsObject()) {
+                        pc.localPos.x = pVal["localPos"]["x"].GetFloat();
+                        pc.localPos.y = pVal["localPos"]["y"].GetFloat();
+                        pc.localPos.z = pVal["localPos"]["z"].GetFloat();
+                    }
+                    if (pVal.HasMember("localRot") && pVal["localRot"].IsFloat()) {
+                        pc.localRot = pVal["localRot"].GetFloat();
+                    }
+                    if (pVal.HasMember("localScale") && pVal["localScale"].IsObject()) {
+                        pc.localScale.x = pVal["localScale"]["x"].GetFloat();
+                        pc.localScale.y = pVal["localScale"]["y"].GetFloat();
+                    }
+                    if (pVal.HasMember("inheritColor") && pVal["inheritColor"].IsBool()) {
+                        pc.inheritColor = pVal["inheritColor"].GetBool();
+                    }
+                    if (pVal.HasMember("colorMul") && pVal["colorMul"].IsObject()) {
+                        pc.colorMul.x() = pVal["colorMul"]["x"].GetFloat();
+                        pc.colorMul.y() = pVal["colorMul"]["y"].GetFloat();
+                        pc.colorMul.z() = pVal["colorMul"]["z"].GetFloat();
+                        pc.colorMul.w() = pVal["colorMul"]["w"].GetFloat();
+                    }
+                }
+            }
+        
+            // =========================================================
+            // POST-LOAD: Reconstruct Hierarchy Links
+            // =========================================================
+            // We need to find the entity ID for every parentName we saved.
+            // Since NameComponent isn't usually a map, we iterate (or you can build a temporary map for speed).
+
+            // Optimization: Build a map of Name -> EntityID for the loaded scene
+            std::unordered_map<std::string, Entity> nameToEntityMap;
+            const auto& nameArr = gECS.GetComponentArray<NameComponent>();
+            for (Entity e : nameArr.indexToEntity) {
+                if (gECS.HasComponent<NameComponent>(e)) {
+                    nameToEntityMap[gECS.GetComponent<NameComponent>(e)->name] = e;
+                }
+            }
+
+            for (const auto& req : parentLinksToProcess) {
+                auto it = nameToEntityMap.find(req.parentName);
+                if (it != nameToEntityMap.end()) {
+                    Entity parentEntity = it->second;
+
+                    // 1. Set the ID in the child's ParentComponent
+                    if (gECS.HasComponent<Component::ParentComponent>(req.childEntity)) {
+                        gECS.GetComponent<Component::ParentComponent>(req.childEntity)->parent = parentEntity;
+                    }
+
+                    // 2. Add to parent's ChildrenComponent
+                    // We manually do this instead of calling AttachChild to avoid re-calculating 
+                    // the local transforms (since we just loaded the correct local values from file).
+                    if (!gECS.HasComponent<Component::ChildrenComponent>(parentEntity)) {
+                        gECS.AddComponent<Component::ChildrenComponent>(parentEntity);
+                    }
+
+                    auto* childComp = gECS.GetComponent<Component::ChildrenComponent>(parentEntity);
+                    childComp->children.push_back(req.childEntity);
+                }
+                else {
+                    std::cout << "WARNING: Could not find parent '" << req.parentName
+                        << "' for child Entity " << req.childEntity << std::endl;
+                }
             }
         }
 
@@ -865,9 +1033,8 @@ namespace CrashoutsEngine {
             // Cycle through entities
             for (Entity const& id : gECS.GetComponentArray<Component::NameComponent>().indexToEntity) {
 
-                // Save name component data into document
+                if (gECS.HasComponent<TransientComponent>(id)) continue;
 
-                // Save transform component data into document if it exists
                 rapidjson::Value entityValue(rapidjson::kObjectType);
 
                 // =========================================================
@@ -945,6 +1112,15 @@ namespace CrashoutsEngine {
 
                     rigidBodyValue.AddMember("maximumVelocity", std::move(maxVelVal), allocator);
 
+                    rigidBodyValue.AddMember("staticFriction", rigidBodyComp.staticFriction, allocator);
+                    rigidBodyValue.AddMember("dynamicFriction", rigidBodyComp.dynamicFriction, allocator);
+
+                    rigidBodyValue.AddMember("inertia", rigidBodyComp.inertia, allocator);
+                    rigidBodyValue.AddMember("invInertia", rigidBodyComp.invInertia, allocator);
+
+                    bool isTrigger{ rigidBodyComp.getFlags().test(Physics::SIMULATE_DYNAMICS) };
+                    rigidBodyValue.AddMember("isTrigger", isTrigger, allocator);
+
                     entityValue.AddMember(rapidjson::StringRef(Keys::RIGIDBODY_COMPONENT), std::move(rigidBodyValue) , allocator);
                 }
 
@@ -969,9 +1145,9 @@ namespace CrashoutsEngine {
                             Collision::Sphere const& sphereTemp = dynamic_cast<Collision::Sphere const&>(*(colComp.collider));
                             colliderValue.AddMember("radius", sphereTemp.radius, allocator);
                             rapidjson::Value centerVal{ rapidjson::kObjectType };
-                            centerVal.AddMember("x", sphereTemp.center.x, allocator);
-                            centerVal.AddMember("y", sphereTemp.center.y, allocator);
-                            centerVal.AddMember("z", sphereTemp.center.z, allocator);
+                            centerVal.AddMember("x", sphereTemp.position.x, allocator);
+                            centerVal.AddMember("y", sphereTemp.position.y, allocator);
+                            centerVal.AddMember("z", sphereTemp.position.z, allocator);
                             colliderValue.AddMember("center", centerVal, allocator);
 
                         }
@@ -1006,7 +1182,12 @@ namespace CrashoutsEngine {
                             colliderValue.AddMember("max", max, allocator);
 
                             colliderValue.AddMember("rotation", obbTemp.rotation, allocator);
+                            break;
                         }
+                        case Collision::NONE: {
+                            break;
+                        }
+                        default:
                         break;
                     }
 
@@ -1043,9 +1224,10 @@ namespace CrashoutsEngine {
 
                     // CEVec3 Color
                     rapidjson::Value colorValue(rapidjson::kObjectType);
-                    colorValue.AddMember("x", sComp.color.x, allocator);
-                    colorValue.AddMember("y", sComp.color.y, allocator);
-                    colorValue.AddMember("z", sComp.color.z, allocator);
+                    colorValue.AddMember("x", sComp.color.x(), allocator);
+                    colorValue.AddMember("y", sComp.color.y(), allocator);
+                    colorValue.AddMember("z", sComp.color.z(), allocator);
+                    colorValue.AddMember("w", sComp.color.w(), allocator);
                     shapeValues.AddMember("color", colorValue, allocator);
 
                     // Line/Triangle points (p1, p2, t1, t2, t3)
@@ -1095,9 +1277,10 @@ namespace CrashoutsEngine {
 
                     // 5. Color (CEVec3 -> JSON Object)
                     rapidjson::Value colorValue(rapidjson::kObjectType);
-                    colorValue.AddMember("x", tComp.color.x, allocator);
-                    colorValue.AddMember("y", tComp.color.y, allocator);
-                    colorValue.AddMember("z", tComp.color.z, allocator);
+                    colorValue.AddMember("x", tComp.color.x(), allocator);
+                    colorValue.AddMember("y", tComp.color.y(), allocator);
+                    colorValue.AddMember("z", tComp.color.z(), allocator);
+                    colorValue.AddMember("w", tComp.color.w(), allocator);
                     textValue.AddMember("color", colorValue, allocator);
 
                     // 6. Centered (bool)
@@ -1161,46 +1344,52 @@ namespace CrashoutsEngine {
                     // 
                     // 2. shapeNormalColor (CEVec3 -> JSON Object)
                     rapidjson::Value shapeNormalColorValue(rapidjson::kObjectType);
-                    shapeNormalColorValue.AddMember("x", buttonComp.shapeNormalColor.x, allocator);
-                    shapeNormalColorValue.AddMember("y", buttonComp.shapeNormalColor.y, allocator);
-                    shapeNormalColorValue.AddMember("z", buttonComp.shapeNormalColor.z, allocator);
+                    shapeNormalColorValue.AddMember("x", buttonComp.shapeNormalColor.x(), allocator);
+                    shapeNormalColorValue.AddMember("y", buttonComp.shapeNormalColor.y(), allocator);
+                    shapeNormalColorValue.AddMember("z", buttonComp.shapeNormalColor.z(), allocator);
+                    shapeNormalColorValue.AddMember("w", buttonComp.shapeNormalColor.w(), allocator);
                     buttonVal.AddMember("shapeNormalColor", shapeNormalColorValue, allocator);
 
                     // 3. shapeHoveredColor (CEVec2 -> JSON Object)
                     rapidjson::Value shapeHoveredColorValue(rapidjson::kObjectType);
-                    shapeHoveredColorValue.AddMember("x", buttonComp.shapeHoveredColor.x, allocator);
-                    shapeHoveredColorValue.AddMember("y", buttonComp.shapeHoveredColor.y, allocator);
-                    shapeHoveredColorValue.AddMember("z", buttonComp.shapeHoveredColor.z, allocator);
+                    shapeHoveredColorValue.AddMember("x", buttonComp.shapeHoveredColor.x(), allocator);
+                    shapeHoveredColorValue.AddMember("y", buttonComp.shapeHoveredColor.y(), allocator);
+                    shapeHoveredColorValue.AddMember("z", buttonComp.shapeHoveredColor.z(), allocator);
+                    shapeHoveredColorValue.AddMember("w", buttonComp.shapeHoveredColor.w(), allocator);
                     buttonVal.AddMember("shapeHoveredColor", shapeHoveredColorValue, allocator);
 
                     // 4. shapePressedColor (CEVec2 -> JSON Object)
                     rapidjson::Value shapePressedColorValue(rapidjson::kObjectType);
-                    shapePressedColorValue.AddMember("x", buttonComp.shapePressedColor.x, allocator);
-                    shapePressedColorValue.AddMember("y", buttonComp.shapePressedColor.y, allocator);
-                    shapePressedColorValue.AddMember("z", buttonComp.shapePressedColor.z, allocator);
+                    shapePressedColorValue.AddMember("x", buttonComp.shapePressedColor.x(), allocator);
+                    shapePressedColorValue.AddMember("y", buttonComp.shapePressedColor.y(), allocator);
+                    shapePressedColorValue.AddMember("z", buttonComp.shapePressedColor.z(), allocator);
+                    shapePressedColorValue.AddMember("w", buttonComp.shapePressedColor.w(), allocator);
                     buttonVal.AddMember("shapePressedColor", shapePressedColorValue, allocator);
 
                     // -------------------------------------------------------------------------------
                     //
                     // 5. textNormalColor (CEVec3 -> JSON Object)
                     rapidjson::Value textNormalColorValue(rapidjson::kObjectType);
-                    textNormalColorValue.AddMember("x", buttonComp.textNormalColor.x, allocator);
-                    textNormalColorValue.AddMember("y", buttonComp.textNormalColor.y, allocator);
-                    textNormalColorValue.AddMember("z", buttonComp.textNormalColor.z, allocator);
+                    textNormalColorValue.AddMember("x", buttonComp.textNormalColor.x(), allocator);
+                    textNormalColorValue.AddMember("y", buttonComp.textNormalColor.y(), allocator);
+                    textNormalColorValue.AddMember("z", buttonComp.textNormalColor.z(), allocator);
+                    textNormalColorValue.AddMember("w", buttonComp.textNormalColor.w(), allocator);
                     buttonVal.AddMember("textNormalColor", textNormalColorValue, allocator);
 
                     // 6. textHoveredColor (CEVec2 -> JSON Object)
                     rapidjson::Value textHoveredColorValue(rapidjson::kObjectType);
-                    textHoveredColorValue.AddMember("x", buttonComp.textHoveredColor.x, allocator);
-                    textHoveredColorValue.AddMember("y", buttonComp.textHoveredColor.y, allocator);
-                    textHoveredColorValue.AddMember("z", buttonComp.textHoveredColor.z, allocator);
+                    textHoveredColorValue.AddMember("x", buttonComp.textHoveredColor.x(), allocator);
+                    textHoveredColorValue.AddMember("y", buttonComp.textHoveredColor.y(), allocator);
+                    textHoveredColorValue.AddMember("z", buttonComp.textHoveredColor.z(), allocator);
+                    textHoveredColorValue.AddMember("w", buttonComp.textHoveredColor.w(), allocator);
                     buttonVal.AddMember("textHoveredColor", textHoveredColorValue, allocator);
 
                     // 7. textPressedColor (CEVec2 -> JSON Object)
                     rapidjson::Value textPressedColorValue(rapidjson::kObjectType);
-                    textPressedColorValue.AddMember("x", buttonComp.textPressedColor.x, allocator);
-                    textPressedColorValue.AddMember("y", buttonComp.textPressedColor.y, allocator);
-                    textPressedColorValue.AddMember("z", buttonComp.textPressedColor.z, allocator);
+                    textPressedColorValue.AddMember("x", buttonComp.textPressedColor.x(), allocator);
+                    textPressedColorValue.AddMember("y", buttonComp.textPressedColor.y(), allocator);
+                    textPressedColorValue.AddMember("z", buttonComp.textPressedColor.z(), allocator);
+                    textPressedColorValue.AddMember("w", buttonComp.textPressedColor.w(), allocator);
                     buttonVal.AddMember("textPressedColor", textPressedColorValue, allocator);
 
                     entityValue.AddMember(rapidjson::StringRef(Keys::BUTTON_COMPONENT), buttonVal, allocator);
@@ -1275,6 +1464,105 @@ namespace CrashoutsEngine {
                     ppValue.AddMember("active", ppComp.active, allocator);
 
                     entityValue.AddMember(rapidjson::StringRef(Keys::PP_COMPONENT), ppValue, allocator);
+                }
+
+                // =========================================================
+                // O. TileMapComponent (Refactored for Sparse Grid)
+                // =========================================================
+                if (gECS.HasComponent<TileMapComponent>(id)) {
+                    const TileMapComponent& tmComp = *gECS.GetComponent<TileMapComponent>(id);
+                    rapidjson::Value tmValue(rapidjson::kObjectType);
+
+                    // 1. tileSize (int)
+                    tmValue.AddMember("tileSize", tmComp.tileSize, allocator);
+
+                    // 2. activeAsset (string)
+                    // We save this so the editor remembers what brush was selected, 
+                    // though defaults reset it to "none" on load per your request, 
+                    // saving it allows you to remove that override later if you want persistence.
+                    rapidjson::Value activeAssetVal;
+                    activeAssetVal.SetString(tmComp.activeAsset.c_str(), allocator);
+                    tmValue.AddMember("activeAsset", activeAssetVal, allocator);
+
+                    // 3. tileAssetNames (vector<string>)
+                    rapidjson::Value assetsArray(rapidjson::kArrayType);
+                    for (const std::string& assetName : tmComp.tileAssetNames) {
+                        rapidjson::Value strVal;
+                        strVal.SetString(assetName.c_str(), allocator);
+                        assetsArray.PushBack(strVal, allocator);
+                    }
+                    tmValue.AddMember("tileAssetNames", assetsArray, allocator);
+
+                    // 4. gridData (map<pair<int,int>, string>)
+                    // Convert the map into an Array of Objects for JSON: [ {x:0, y:0, asset:"name"}, ... ]
+                    rapidjson::Value gridDataArray(rapidjson::kArrayType);
+
+                    for (const auto& [pos, assetName] : tmComp.gridData) {
+                        rapidjson::Value tileObj(rapidjson::kObjectType);
+
+                        tileObj.AddMember("x", pos.first, allocator);
+                        tileObj.AddMember("y", pos.second, allocator);
+
+                        rapidjson::Value assetVal;
+                        assetVal.SetString(assetName.c_str(), allocator);
+                        tileObj.AddMember("asset", assetVal, allocator);
+
+                        gridDataArray.PushBack(tileObj, allocator);
+                    }
+                    tmValue.AddMember("gridData", gridDataArray, allocator);
+
+                    // Note: We do NOT save pOpen, isCacheDirty, or renderCache as these are runtime/editor only.
+
+                    entityValue.AddMember(rapidjson::StringRef(Keys::TILEMAP_COMPONENT), tmValue, allocator);
+                }
+
+                // =========================================================
+                // P. ParentComponent
+                // =========================================================
+                if (gECS.HasComponent<Component::ParentComponent>(id)) {
+                    const Component::ParentComponent& parentComp = *gECS.GetComponent<Component::ParentComponent>(id);
+
+                    // Only save if there is a valid parent
+                    if (parentComp.parent != 0) {
+                        rapidjson::Value parentValue(rapidjson::kObjectType);
+
+                        // 1. Save Parent Name (Critical for linking back up)
+                        // We assume the parent MUST have a NameComponent
+                        if (gECS.HasComponent<NameComponent>(parentComp.parent)) {
+                            std::string pName = gECS.GetComponent<NameComponent>(parentComp.parent)->name;
+                            rapidjson::Value pNameVal(pName.c_str(), allocator);
+                            parentValue.AddMember("parentName", pNameVal, allocator);
+                        }
+
+                        // 2. Local Position
+                        rapidjson::Value localPosVal(rapidjson::kObjectType);
+                        localPosVal.AddMember("x", parentComp.localPos.x, allocator);
+                        localPosVal.AddMember("y", parentComp.localPos.y, allocator);
+                        localPosVal.AddMember("z", parentComp.localPos.z, allocator);
+                        parentValue.AddMember("localPos", localPosVal, allocator);
+
+                        // 3. Local Rotation
+                        parentValue.AddMember("localRot", parentComp.localRot, allocator);
+
+                        // 4. Local Scale
+                        rapidjson::Value localScaleVal(rapidjson::kObjectType);
+                        localScaleVal.AddMember("x", parentComp.localScale.x, allocator);
+                        localScaleVal.AddMember("y", parentComp.localScale.y, allocator);
+                        parentValue.AddMember("localScale", localScaleVal, allocator);
+
+                        // 5. Color Inheritance
+                        parentValue.AddMember("inheritColor", parentComp.inheritColor, allocator);
+
+                        // 6. Color Multiplier
+                        rapidjson::Value colVal(rapidjson::kObjectType);
+                        colVal.AddMember("x", parentComp.colorMul.x(), allocator);
+                        colVal.AddMember("y", parentComp.colorMul.y(), allocator);
+                        colVal.AddMember("z", parentComp.colorMul.z(), allocator);
+                        colVal.AddMember("w", parentComp.colorMul.w(), allocator);
+                        parentValue.AddMember("colorMul", colVal, allocator);
+
+                        entityValue.AddMember(rapidjson::StringRef(Keys::PARENT_COMPONENT), parentValue, allocator);
+                    }
                 }
 
                 // Add the finished entity JSON object to the array

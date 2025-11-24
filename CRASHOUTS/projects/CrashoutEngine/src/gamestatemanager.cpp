@@ -10,6 +10,7 @@ Handles registration initialization updating and transitions between different g
 #include "gamestatemanager.h"
 #include "engine.h"
 #include <GLFW/glfw3.h>
+#include <audioSystem.h>
 
  /// Registry that maps game states to their descriptors
 static std::unordered_map<GameState, GameStateDescriptor> StateRegistry;
@@ -69,7 +70,10 @@ void InitGameStateManager(GameState initialState){
 @param newState The state to transition to
 */
 void ChangeGameState(GameState newState, bool resetEngineState) {
-    if(resetEngineState) engineState = EngineState::STOP;
+    if (resetEngineState) {
+        CrashoutsEngine::Audio::AudioSystem::instance().stopAll(true);
+        engineState = EngineState::STOP;
+    }
     //engineState = EngineState::STOP;
 	NextGameState = newState;
 }
@@ -109,7 +113,7 @@ void UpdateGameStateManager() {
     if (CurrentDescriptor) {
         //if (CurrentDescriptor->Update) CurrentDescriptor->Update();
         //if (CurrentDescriptor->Render) CurrentDescriptor->Render();
-        glClearColor(0.1f, 0.2f, 0.4f, 1.0f);
+        glClearColor(0.10f, 0.10f, 0.10f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 }

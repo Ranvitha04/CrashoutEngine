@@ -1,7 +1,7 @@
 // afiq.cpp — scene bootstrap + audio + in-file prefab registry (no ImGui here)
 #include "afiqscene.h"
 #include "log.h"
-#include "GLFW/glfw3.h"
+
 #include "entitymanager.h"  
 #include "prefab_init.h"
 #include <functional>
@@ -11,6 +11,8 @@
 #include <string>
 #include "frameratecontroller.h"
 #include "keyframe.h"
+#include "spritecomponent.h"
+#include "spriteAnimation.h"
 
 #include "transformcomponent.h"
 #include "namecomponent.h"
@@ -92,7 +94,7 @@ namespace {
 
             ShapeComponent s{};
             s.type = ShapeType::Rectangle;
-            s.color = CEVec3{ 0.9f, 0.4f, 0.2f };
+            s.color = CEColor{ 0.9f, 0.4f, 0.2f, 1.f };
             e.AddComponent<ShapeComponent>(ent, s);
 
             // Attach animator component
@@ -223,6 +225,7 @@ void UpdateAfiq()
     if (ecs) {
         float dt = static_cast<float>(FrameRateController::GetInstance().DT());
         KeyframeUnity::UpdateAll(*ecs, dt);
+        Component::UpdateSpriteAnimationsECS();
 
         // -------------------------------------------------
         // Keyboard: Z = Walk, Y = Jump (two clips on same
@@ -247,11 +250,14 @@ void UpdateAfiq()
 
 void RenderAfiq()
 {
-#if USE_IMGUI_EDITOR
-#else
+#if !USE_IMGUI_EDITOR
+    // Non-editor build: clear screen, then draw
     glClearColor(0.1f, 0.2f, 0.4f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 #endif
+
+    // Draw all entities that have SpriteSheetComponent + SpriteAnimComponent
+    Component::RenderSpriteAnimationsECS();
 }
 
 void FreeAfiq()

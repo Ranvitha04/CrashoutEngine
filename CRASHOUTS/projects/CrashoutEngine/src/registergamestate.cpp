@@ -16,8 +16,8 @@ Creates descriptors for each state and registers them with the game state manage
 #include "renfredscene.h"
 #include "tristanscene.h"
 #include "ranscene.h"
-#include "descentmenuscene.h"
-#include "descentgamescene.h"
+//#include "descentmenuscene.h"
+//#include "descentgamescene.h"
 #include "gamestatemanager.h"
 #include "scene.h"
 
@@ -98,6 +98,7 @@ void RegisterAllStates(){
 		UnloadRan
 	};
 
+	/*
 	GameStateDescriptor DescentMenu = {
 		"Descent Menu",
 		LoadDescentMenu,
@@ -117,6 +118,7 @@ void RegisterAllStates(){
 		FreeDescentGame,
 		UnloadDescentGame
 	};
+	*/
 
 	GameStateDescriptor Scene = {
 		"Scene",
@@ -136,7 +138,7 @@ void RegisterAllStates(){
 	RegisterGameState(AFIQ, Afiq);
 	RegisterGameState(TRISTAN, Tristan);
 	RegisterGameState(RAN, Ran);
-	RegisterGameState(DESCENT_MENU, DescentMenu);
-	RegisterGameState(DESCENT_GAME, DescentGame);
+	//RegisterGameState(DESCENT_MENU, DescentMenu);
+	//RegisterGameState(DESCENT_GAME, DescentGame);
 	RegisterGameState(SCENE, Scene);
 }

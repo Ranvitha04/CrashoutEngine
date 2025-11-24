@@ -1,5 +1,5 @@
 /*!
-@file   sprite.cpp
+@file   spriteAnimation.cpp
 @author ranvitha@digipen.edu
 @date   30/09/2025
 
@@ -83,6 +83,15 @@ namespace Component {
     void Animator::SetBool(const std::string& key, bool value) {
         boolParams[key] = value;
     }
+
+    bool Animator::GetBool(const std::string& key) const
+    {
+        auto it = boolParams.find(key);
+        if (it != boolParams.end())
+            return it->second;
+        return false;
+    }
+
 
     void Animator::SetFloat(const std::string& key, float value) {
         floatParams[key] = value;
@@ -206,7 +215,7 @@ namespace Component {
 
         // Use the new dynamic TextureRenderer to render the sprite frame
         CEVec3 position(posX, posY, 0.0f);
-        CEVec3 tint(1.0f, 1.0f, 1.0f); // White tint (no color change)
+        CEColor tint(1.0f, 1.0f, 1.0f); // White tint (no color change)
 
         // Use the flipped version if horizontal flipping is enabled
         // Use a more reasonable base size to prevent scaling artifacts
@@ -415,7 +424,7 @@ namespace Component {
                     anim->flip,
                     tf->rotation,
                     tf->size.x,
-                    CEVec3(1.0f, 1.0f, 1.0f),
+                    CEColor(1.0f, 1.0f, 1.0f),
                     false
                 );
             } else {
@@ -427,7 +436,7 @@ namespace Component {
                     sheet->cols, sheet->rows,
                     tf->rotation,
                     tf->size.x,
-                    CEVec3(1.0f, 1.0f, 1.0f),
+                    CEColor(1.0f, 1.0f, 1.0f),
                     false
                 );
             }

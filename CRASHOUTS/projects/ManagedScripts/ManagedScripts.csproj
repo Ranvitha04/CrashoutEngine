@@ -1,22 +1,65 @@
-<Project Sdk="Microsoft.NET.Sdk">
-	<PropertyGroup>
-		<LangVersion>latest</LangVersion>
-		<OutputType>Library</OutputType>
-		<TargetFramework>net472</TargetFramework>
-		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-		<AssemblyName>ManagedScripts_$(Configuration)_$([System.DateTime]::UtcNow.ToString("yyyyMMddHHmmss"))</AssemblyName>
-		<!-- Disable the "net472" subfolder -->
-		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-		<!--<AssemblyName>ManagedScripts</AssemblyName>-->
-		<Deterministic>false</Deterministic>
-	</PropertyGroup>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-	<!-- Per-configuration output paths -->
-	<PropertyGroup Condition="'$(Configuration)' == 'Debug'">
-		<OutputPath>..\..\build\x64-Debug\scripts\</OutputPath>
-	</PropertyGroup>
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{A1234567-ABCD-4321-9999-123456789ABC}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>CrashoutsEngine</RootNamespace>
+    <AssemblyName>ManagedScripts_$(Configuration)_$([System.DateTime]::UtcNow.ToString("yyyyMMddHHmmss"))</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <LangVersion>latest</LangVersion>
 
-	<PropertyGroup Condition="'$(Configuration)' == 'Release'">
-		<OutputPath>..\..\build\x64-Release\scripts\</OutputPath>
-	</PropertyGroup>
+    <DisableFastUpToDateCheck>true</DisableFastUpToDateCheck>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <Deterministic>false</Deterministic>
+    <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
+    <OutputPath>..\..\build\x64-Debug\scripts\</OutputPath>
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+    <OutputPath>..\..\build\x64-Release\scripts\</OutputPath>
+    <Optimize>true</Optimize>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Xml" />
+    <Reference Include="mscorlib" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="**\*.cs" Exclude="obj\**;bin\**" />
+  </ItemGroup>
+
+  <!-- AFTER the timestamped DLL is built -->
+<Target Name="CopyTimestampToStable" AfterTargets="Build">
+
+  <!-- Timestamped DLL in build folder -->
+  <PropertyGroup>
+    <TimestampedDll>$(OutputPath)$(AssemblyName).dll</TimestampedDll>
+
+    <!-- Stable DLL inside CrashoutEngine/scripts -->
+    <StableDll>..\CrashoutEngine\scripts\ManagedScripts.dll</StableDll>
+  </PropertyGroup>
+
+  <!-- Create the destination folder if it doesn't exist -->
+  <MakeDir Directories="..\CrashoutEngine\scripts" />
+
+  <!-- Copy timestamped DLL → stable DLL in CrashoutEngine/scripts -->
+  <Copy
+      SourceFiles="$(TimestampedDll)"
+      DestinationFiles="$(StableDll)"
+      OverwriteReadOnlyFiles="true" />
+</Target>
+
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

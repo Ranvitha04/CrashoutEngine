@@ -1,5 +1,9 @@
 #pragma once
+#include "CEVec2.h"      
 #include "CEVec3.h"
+#include <string>       
+#include "entitymanager.h" 
+
 
 namespace Component {
     struct DuckMotionComponent {

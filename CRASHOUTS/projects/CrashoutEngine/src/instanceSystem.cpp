@@ -31,7 +31,6 @@ This file contains only declarations; implementations are provided in the corres
 #include <unordered_map>
 #include "spritecomponent.h"
 #include "frameratecontroller.h"
-#include "spritecomponent.h"
 #include "glapp.h"
 #include "textureasset.h"
 #include "rendering.h"
@@ -306,7 +305,7 @@ namespace InstancingSystem {
                     anim->flip,
                     tf->rotation,
                     tf->size.x,
-                    CEVec3(1.0f, 1.0f, 1.0f),
+                    CEColor(1.0f, 1.0f, 1.0f),
                     false
                 );
             } else {
@@ -318,7 +317,7 @@ namespace InstancingSystem {
                     sheet->cols, sheet->rows,
                     tf->rotation,
                     tf->size.x,
-                    CEVec3(1.0f, 1.0f, 1.0f),
+                    CEColor(1.0f, 1.0f, 1.0f),
                     false
                 );
             }
@@ -487,7 +486,7 @@ void InstancingSystem::SetEntitySpriteSheet(CrashoutsEngine::Entity e, const std
 }
 
     //.....................CIRCLE..............................................//
-    void InstancingSystem::CreateInstancedCircles(const CEVec3* positions, const CEVec3* colors,
+    void InstancingSystem::CreateInstancedCircles(const CEVec3* positions, const CEColor* colors,
         const float* rotations, const float* scales,
         const float* radii,
         int count, int segments) {
@@ -497,7 +496,12 @@ void InstancingSystem::SetEntitySpriteSheet(CrashoutsEngine::Entity e, const std
 
         Component::Rendering& renderer = Component::Rendering::Get();
 
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         
+        //glDepthMask(GL_FALSE);
+        glDisable(GL_CULL_FACE);
+
         if (!s_circInstanceBuffersInitialized || s_circSegmentsCurrent != segments) {
             if (s_circInstanceBuffersInitialized) {
                 glDeleteVertexArrays(1, &s_circInstanceVAO);
@@ -508,12 +512,16 @@ void InstancingSystem::SetEntitySpriteSheet(CrashoutsEngine::Entity e, const std
             }
 
             // Generate unit circle triangle fan vertices (center + perimeter)
-            std::vector<CEVec3> base_vertices;
+            std::vector<MeshVertex> base_vertices;
             base_vertices.reserve(static_cast<size_t>(segments) + 1);
-            base_vertices.emplace_back(0.0f, 0.0f, 0.0f);
+            base_vertices.push_back({ 0.0f, 0.0f, 0.0f, 0.5f, 0.5f }); // Center with UV center
+            
             for (int i = 0; i <= segments; ++i) {
                 float angle = 2.0f * static_cast<float>(CEMath::PI) * static_cast<float>(i) / static_cast<float>(segments);
-                base_vertices.emplace_back(std::cos(angle), std::sin(angle), 0.0f);
+                float x = std::cos(angle);
+                float y = std::sin(angle);
+                // Simple planar UV mapping
+                base_vertices.push_back({ x, y, 0.0f, (x + 1.0f) * 0.5f, (y + 1.0f) * 0.5f });
             }
 
             // Triangle indices
@@ -526,136 +534,6 @@ void InstancingSystem::SetEntitySpriteSheet(CrashoutsEngine::Entity e, const std
             }
 
             // Acquire pooled buffers (or create new) via renderer
-            s_circInstanceVAO = Component::Rendering::Get().GetPooledVAO();
-            s_circInstanceVBO = Component::Rendering::Get().GetPooledVBO();
-            s_circInstanceEBO = Component::Rendering::Get().GetPooledEBO();
-            s_circInstanceDataVBO = Component::Rendering::Get().GetPooledVBO();
-
-            glBindVertexArray(s_circInstanceVAO);
-
-            glBindBuffer(GL_ARRAY_BUFFER, s_circInstanceVBO);
-            glBufferData(GL_ARRAY_BUFFER, base_vertices.size() * sizeof(CEVec3), base_vertices.data(), GL_STATIC_DRAW);
-            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(CEVec3), (void*)0);
-            glEnableVertexAttribArray(0);
-
-            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, s_circInstanceEBO);
-            glBufferData(GL_ELEMENT_ARRAY_BUFFER, base_indices.size() * sizeof(GLushort), base_indices.data(), GL_STATIC_DRAW);
-
-            // Instance attributes: pos(3), color(3), rotation(1), scale(1), width(1), height(1)
-            glBindBuffer(GL_ARRAY_BUFFER, s_circInstanceDataVBO);
-
-            glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 10, (void*)0);
-            glEnableVertexAttribArray(3);
-            glVertexAttribDivisor(3, 1);
-
-            glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 10, (void*)(sizeof(float) * 3));
-            glEnableVertexAttribArray(4);
-            glVertexAttribDivisor(4, 1);
-
-            glVertexAttribPointer(5, 1, GL_FLOAT, GL_FALSE, sizeof(float) * 10, (void*)(sizeof(float) * 6));
-            glEnableVertexAttribArray(5);
-            glVertexAttribDivisor(5, 1);
-
-            glVertexAttribPointer(6, 1, GL_FLOAT, GL_FALSE, sizeof(float) * 10, (void*)(sizeof(float) * 7));
-            glEnableVertexAttribArray(6);
-            glVertexAttribDivisor(6, 1);
-
-            glVertexAttribPointer(7, 1, GL_FLOAT, GL_FALSE, sizeof(float) * 10, (void*)(sizeof(float) * 8));
-            glEnableVertexAttribArray(7);
-            glVertexAttribDivisor(7, 1);
-
-            glVertexAttribPointer(8, 1, GL_FLOAT, GL_FALSE, sizeof(float) * 10, (void*)(sizeof(float) * 9));
-            glEnableVertexAttribArray(8);
-            glVertexAttribDivisor(8, 1);
-
-            s_circSegmentsCurrent = segments;
-            s_circInstanceBuffersInitialized = true;
-            glBindVertexArray(0);
-        }
-
-        // Pack per-instance data; use radius for both width/height
-        std::vector<float> instanceData;
-        instanceData.reserve(count * 10);
-        for (int i = 0; i < count; ++i) {
-            instanceData.push_back(positions[i].x);
-            instanceData.push_back(positions[i].y);
-            instanceData.push_back(positions[i].z);
-
-            instanceData.push_back(colors[i].x);
-            instanceData.push_back(colors[i].y);
-            instanceData.push_back(colors[i].z);
-
-            instanceData.push_back(rotations[i]);
-            instanceData.push_back(scales[i]);
-            instanceData.push_back(radii[i]); // width
-            instanceData.push_back(radii[i]); // height
-        }
-
-        glBindVertexArray(s_circInstanceVAO);
-        glBindBuffer(GL_ARRAY_BUFFER, s_circInstanceDataVBO);
-        glBufferData(GL_ARRAY_BUFFER, instanceData.size() * sizeof(float), instanceData.data(), GL_DYNAMIC_DRAW);
-
-        renderer.shdr_pgm_instanced.Use();
-
-        glm::mat4 model = glm::mat4(1.0f);
-
-        renderer.shdr_pgm_instanced.SetUniform("uModel", model);
-
-        GLint useTexture_loc = glGetUniformLocation(renderer.shdr_pgm_instanced.GetHandle(), "u_useTexture");
-        if (useTexture_loc != -1) glUniform1i(useTexture_loc, 0);
-        GLint tint_loc = glGetUniformLocation(renderer.shdr_pgm_instanced.GetHandle(), "u_tint");
-        if (tint_loc != -1) glUniform3f(tint_loc, 1.0f, 1.0f, 1.0f);
-
-        // Draw all circle triangles
-        int elements = segments * 3;
-        glDrawElementsInstanced(GL_TRIANGLES, elements, GL_UNSIGNED_SHORT, 0, count);
-
-        glBindVertexArray(0);
-
-    }
-
-    void InstancingSystem::CreateInstancedCirclesTextured(const std::string& textureName,
-        const CEVec3* positions, const CEVec3* colors,
-        const float* rotations, const float* scales,
-        const float* radii,
-        int count, int segments,
-        const CEVec3& tint,
-        const CEVec2& uvSize) {
-        if (count <= 0) return;
-        if (segments < 3) segments = 3;
-
-        Component::Rendering& renderer = Component::Rendering::Get();
-
-        // Initialize/rebuild base geometry when segments change
-        if (!s_circInstanceBuffersInitialized || s_circSegmentsCurrent != segments) {
-            if (s_circInstanceBuffersInitialized) {
-                glDeleteVertexArrays(1, &s_circInstanceVAO);
-                glDeleteBuffers(1, &s_circInstanceVBO);
-                glDeleteBuffers(1, &s_circInstanceEBO);
-                glDeleteBuffers(1, &s_circInstanceDataVBO);
-                s_circInstanceBuffersInitialized = false;
-            }
-
-            std::vector<CEVec3> base_vertices;
-            base_vertices.reserve(static_cast<size_t>(segments) + 1);
-            base_vertices.emplace_back(0.0f, 0.0f, 0.0f); // center
-            const float step = 2.0f * static_cast<float>(CEMath::PI) / static_cast<float>(segments);
-            for (int i = 0; i < segments; ++i) {
-                float ang = i * step;
-                base_vertices.emplace_back(std::cos(ang), std::sin(ang), 0.0f);
-            }
-
-            std::vector<GLushort> base_indices;
-            base_indices.reserve(static_cast<size_t>(segments) * 3);
-            for (int i = 0; i < segments; ++i) {
-                GLushort i0 = 0;
-                GLushort i1 = static_cast<GLushort>(1 + i);
-                GLushort i2 = static_cast<GLushort>(1 + ((i + 1) % segments));
-                base_indices.push_back(i0);
-                base_indices.push_back(i1);
-                base_indices.push_back(i2);
-            }
-
             s_circInstanceVAO = renderer.GetPooledVAO();
             s_circInstanceVBO = renderer.GetPooledVBO();
             s_circInstanceEBO = renderer.GetPooledEBO();
@@ -663,37 +541,52 @@ void InstancingSystem::SetEntitySpriteSheet(CrashoutsEngine::Entity e, const std
 
             glBindVertexArray(s_circInstanceVAO);
 
+            // 1. Base Geometry (MeshVertex)
             glBindBuffer(GL_ARRAY_BUFFER, s_circInstanceVBO);
-            glBufferData(GL_ARRAY_BUFFER, base_vertices.size() * sizeof(CEVec3), base_vertices.data(), GL_STATIC_DRAW);
-            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(CEVec3), (void*)0);
+            glBufferData(GL_ARRAY_BUFFER, base_vertices.size() * sizeof(MeshVertex), base_vertices.data(), GL_STATIC_DRAW);
+
+            // Loc 0: Pos
+            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(MeshVertex), (void*)offsetof(MeshVertex, x));
             glEnableVertexAttribArray(0);
+            // Loc 2: UV
+            glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(MeshVertex), (void*)offsetof(MeshVertex, u));
+            glEnableVertexAttribArray(2);
 
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, s_circInstanceEBO);
             glBufferData(GL_ELEMENT_ARRAY_BUFFER, base_indices.size() * sizeof(GLushort), base_indices.data(), GL_STATIC_DRAW);
 
-            // Instance attributes: pos(3), color(3), rotation(1), scale(1), width(1), height(1)
+            // 2. Instance Attributes (CircleInstanceData)
             glBindBuffer(GL_ARRAY_BUFFER, s_circInstanceDataVBO);
-            glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 10, (void*)0);
+
+            GLsizei stride = sizeof(CircleInstanceData);
+
+            // Loc 3: Position (Vec3)
+            glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, stride, (void*)offsetof(CircleInstanceData, position));
             glEnableVertexAttribArray(3);
             glVertexAttribDivisor(3, 1);
 
-            glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 10, (void*)(sizeof(float) * 3));
+            // Loc 4: Color (Vec4/CEColor) -- CHANGED TO 4 FLOATS
+            glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, stride, (void*)offsetof(CircleInstanceData, color));
             glEnableVertexAttribArray(4);
             glVertexAttribDivisor(4, 1);
 
-            glVertexAttribPointer(5, 1, GL_FLOAT, GL_FALSE, sizeof(float) * 10, (void*)(sizeof(float) * 6));
+            // Loc 5: Rotation
+            glVertexAttribPointer(5, 1, GL_FLOAT, GL_FALSE, stride, (void*)offsetof(CircleInstanceData, rotation));
             glEnableVertexAttribArray(5);
             glVertexAttribDivisor(5, 1);
 
-            glVertexAttribPointer(6, 1, GL_FLOAT, GL_FALSE, sizeof(float) * 10, (void*)(sizeof(float) * 7));
+            // Loc 6: Scale
+            glVertexAttribPointer(6, 1, GL_FLOAT, GL_FALSE, stride, (void*)offsetof(CircleInstanceData, scale));
             glEnableVertexAttribArray(6);
             glVertexAttribDivisor(6, 1);
 
-            glVertexAttribPointer(7, 1, GL_FLOAT, GL_FALSE, sizeof(float) * 10, (void*)(sizeof(float) * 8));
+            // Loc 7: Radius (Width)
+            glVertexAttribPointer(7, 1, GL_FLOAT, GL_FALSE, stride, (void*)offsetof(CircleInstanceData, radius));
             glEnableVertexAttribArray(7);
             glVertexAttribDivisor(7, 1);
 
-            glVertexAttribPointer(8, 1, GL_FLOAT, GL_FALSE, sizeof(float) * 10, (void*)(sizeof(float) * 9));
+            // Loc 8: Padding/Height
+            glVertexAttribPointer(8, 1, GL_FLOAT, GL_FALSE, stride, (void*)offsetof(CircleInstanceData, padding));
             glEnableVertexAttribArray(8);
             glVertexAttribDivisor(8, 1);
 
@@ -702,69 +595,117 @@ void InstancingSystem::SetEntitySpriteSheet(CrashoutsEngine::Entity e, const std
             glBindVertexArray(0);
         }
 
-        // Pack per-instance data; use radius for width/height
-        std::vector<float> instanceData;
-        instanceData.reserve(count * 10);
+        // --- Update Instance Data using Struct ---
+        std::vector<CircleInstanceData> instanceData(count);
         for (int i = 0; i < count; ++i) {
-            instanceData.push_back(positions[i].x);
-            instanceData.push_back(positions[i].y);
-            instanceData.push_back(positions[i].z);
-
-            instanceData.push_back(colors[i].x);
-            instanceData.push_back(colors[i].y);
-            instanceData.push_back(colors[i].z);
-
-            instanceData.push_back(rotations[i]);
-            instanceData.push_back(scales[i]);
-            instanceData.push_back(radii[i]); // width
-            instanceData.push_back(radii[i]); // height
+            instanceData[i].position = positions[i];
+            instanceData[i].color = colors[i];
+            instanceData[i].rotation = rotations[i];
+            instanceData[i].scale = scales[i];
+            instanceData[i].radius = radii[i];
+            instanceData[i].padding = radii[i]; // Reuse radius for height/padding
         }
 
         glBindVertexArray(s_circInstanceVAO);
         glBindBuffer(GL_ARRAY_BUFFER, s_circInstanceDataVBO);
-        glBufferData(GL_ARRAY_BUFFER, instanceData.size() * sizeof(float), instanceData.data(), GL_DYNAMIC_DRAW);
-
-        // Bind texture and set shader uniforms
-        GLuint textureHandle = Component::TextureRenderer::GetTextureHandle(textureName);
-        if (textureHandle == 0) {
-            std::cerr << "Failed to load texture: " << textureName << std::endl;
-            glBindVertexArray(0);
-            return;
-        }
+        glBufferData(GL_ARRAY_BUFFER, instanceData.size() * sizeof(CircleInstanceData), instanceData.data(), GL_DYNAMIC_DRAW);
 
         renderer.shdr_pgm_instanced.Use();
-
         glm::mat4 model = glm::mat4(1.0f);
-
         renderer.shdr_pgm_instanced.SetUniform("uModel", model);
 
+        // Setup Uniforms for non-textured circle
+        GLint useTexture_loc = glGetUniformLocation(renderer.shdr_pgm_instanced.GetHandle(), "u_useTexture");
+        if (useTexture_loc != -1) glUniform1i(useTexture_loc, 0);
+        GLint tint_loc = glGetUniformLocation(renderer.shdr_pgm_instanced.GetHandle(), "u_tint");
+        if (tint_loc != -1) glUniform4f(tint_loc, 1.0f, 1.0f, 1.0f, 1.0f);
+
+        int elements = segments * 3;
+        glDrawElementsInstanced(GL_TRIANGLES, elements, GL_UNSIGNED_SHORT, 0, count);
+
+        glBindVertexArray(0);
+
+        //glDepthMask(GL_TRUE); // Re-enable depth writing for next objects
+        glDisable(GL_BLEND);  // Disable blending
+        glEnable(GL_CULL_FACE);
+    }
+
+    void InstancingSystem::CreateInstancedCirclesTextured(const std::string& textureName,
+        const CEVec3* positions, const CEColor* colors,
+        const float* rotations, const float* scales,
+        const float* radii,
+        int count, int segments,
+        const CEColor& tint,
+        const CEVec2& uvSize) {
+        if (count <= 0) return;
+        if (segments < 3) segments = 3;
+
+        if (count <= 0) return;
+
+        glDisable(GL_CULL_FACE);
+
+        // Reuse the exact same buffer init logic if uninitialized
+        if (!s_circInstanceBuffersInitialized || s_circSegmentsCurrent != segments) {
+            // Trick: call the non-textured init with dummy data 
+            // (Or copy-paste the init block here. Calling the other function with 0 count handles init if refactored slightly, 
+            // but safest to just rely on shared state or copy logic. For this response, assuming state is shared.)
+            CEVec3 p; CEColor c; float f = 0;
+            CreateInstancedCircles(&p, &c, &f, &f, &f, 0, segments); // Triggers init
+        }
+
+        // --- Update Instance Data using Struct ---
+        std::vector<CircleInstanceData> instanceData(count);
+        for (int i = 0; i < count; ++i) {
+            instanceData[i].position = positions[i];
+            instanceData[i].color = colors[i];
+            instanceData[i].rotation = rotations[i];
+            instanceData[i].scale = scales[i];
+            instanceData[i].radius = radii[i];
+            instanceData[i].padding = radii[i];
+        }
+
+        glBindVertexArray(s_circInstanceVAO);
+        glBindBuffer(GL_ARRAY_BUFFER, s_circInstanceDataVBO);
+        glBufferData(GL_ARRAY_BUFFER, instanceData.size() * sizeof(CircleInstanceData), instanceData.data(), GL_DYNAMIC_DRAW);
+
+        Component::Rendering& renderer = Component::Rendering::Get();
+        GLuint textureHandle = Component::TextureRenderer::GetTextureHandle(textureName);
+
+        renderer.shdr_pgm_instanced.Use();
+        renderer.shdr_pgm_instanced.SetUniform("uModel", glm::mat4(1.0f));
+
+        // Uniforms
         GLint useTexture_loc = glGetUniformLocation(renderer.shdr_pgm_instanced.GetHandle(), "u_useTexture");
         if (useTexture_loc != -1) glUniform1i(useTexture_loc, 1);
-        GLint tex_loc = glGetUniformLocation(renderer.shdr_pgm_instanced.GetHandle(), "uTex2d");
-        if (tex_loc != -1) glUniform1i(tex_loc, 0);
 
         GLint tint_loc = glGetUniformLocation(renderer.shdr_pgm_instanced.GetHandle(), "u_tint");
-        if (tint_loc != -1) glUniform3f(tint_loc, tint.x, tint.y, tint.z);
+        if (tint_loc != -1) glUniform4f(tint_loc, tint.r, tint.g, tint.b, tint.a);
+
         GLint uvSize_loc = glGetUniformLocation(renderer.shdr_pgm_instanced.GetHandle(), "u_uvSize");
         if (uvSize_loc != -1) glUniform2f(uvSize_loc, uvSize.x, uvSize.y);
 
-        //glDepthMask(GL_FALSE);
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-        glBindTextureUnit(0, textureHandle);
+        //glDepthMask(GL_FALSE);
+
+        // Bind Texture
+        glBindTextureUnit(0, textureHandle); // DSA or standard
         int elements = segments * 3;
         glDrawElementsInstanced(GL_TRIANGLES, elements, GL_UNSIGNED_SHORT, 0, count);
         glBindTextureUnit(0, 0);
 
         glBindVertexArray(0);
-        //glDepthMask(GL_TRUE);
+
+        // 3. Reset State
+        //glDepthMask(GL_TRUE); // Important!
         glDisable(GL_BLEND);
+        glEnable(GL_CULL_FACE);
     }
 
     void InstancingSystem::RenderInstancedCirclesBatch(
     const CEVec3* positions,
-    const CEVec3* colors,
+    const CEColor* colors,
     const float* rotations,
     const float* scales,
     const float* radii,
@@ -772,39 +713,34 @@ void InstancingSystem::SetEntitySpriteSheet(CrashoutsEngine::Entity e, const std
     int segments,
     const InstancedParams& params
     ) {
-        if (count <= 0 || !positions || !colors || !rotations || !scales || !radii) return;
-
+        if (count <= 0) return;
         if (!params.textured) {
-            InstancingSystem::CreateInstancedCircles(
-                positions, colors, rotations, scales, radii, count, segments
-            );
-        } else {
-            InstancingSystem::CreateInstancedCirclesTextured(
-                params.textureName, positions, colors, rotations, scales, radii, count, segments,
-                params.tint, params.uvSize
-            );
+            CreateInstancedCircles(positions, colors, rotations, scales, radii, count, segments);
+        }
+        else {
+            CreateInstancedCirclesTextured(params.textureName, positions, colors, rotations, scales, radii, count, segments, params.tint, params.uvSize);
         }
     }
 
 
 
-// Rectangles (Mode 4)
+    // Rectangles (Mode 4)
     static std::vector<CEVec3> gM4RectPos;
-    static std::vector<CEVec3> gM4RectColor;    
+    static std::vector<CEColor> gM4RectColor;    
     static std::vector<float>  gM4RectRot;
     static std::vector<float>  gM4RectW;
     static std::vector<float>  gM4RectH;
 
     // Triangles (Mode 4)
     static std::vector<CEVec3> gM4TriPos;
-    static std::vector<CEVec3> gM4TriColor;     
+    static std::vector<CEColor> gM4TriColor;
     static std::vector<float>  gM4TriRot;
     static std::vector<float>  gM4TriScale;     
     static std::vector<float>  gM4TriSide;     
 
     // Circles (Mode 4)
     static std::vector<CEVec3> gM4CircPos;
-    static std::vector<CEVec3> gM4CircColor;    
+    static std::vector<CEColor> gM4CircColor;
     static std::vector<float>  gM4CircRot;
     static std::vector<float>  gM4CircScale;    
     static std::vector<float>  gM4CircRadius;
@@ -846,7 +782,7 @@ void InstancingSystem::SetEntitySpriteSheet(CrashoutsEngine::Entity e, const std
         // Rectangles
         for (int i = 0; i < perTypeCount; ++i) {
             gM4RectPos.emplace_back(posX(rng), posY(rng), 0.0f);
-            gM4RectColor.emplace_back(col01(rng), col01(rng), col01(rng));
+            gM4RectColor.emplace_back(col01(rng), col01(rng), col01(rng), col01(rng));
             gM4RectRot.emplace_back(rotDeg(rng));
             gM4RectW.emplace_back(rectW(rng));
             gM4RectH.emplace_back(rectH(rng));
@@ -864,7 +800,7 @@ void InstancingSystem::SetEntitySpriteSheet(CrashoutsEngine::Entity e, const std
         // Circles
         for (int i = 0; i < perTypeCount; ++i) {
             gM4CircPos.emplace_back(posX(rng), posY(rng), 0.0f);
-            gM4CircColor.emplace_back(col01(rng), col01(rng), col01(rng));
+            gM4CircColor.emplace_back(col01(rng), col01(rng), col01(rng), col01(rng));
             gM4CircRot.emplace_back(rotDeg(rng));
             gM4CircScale.emplace_back(1.0f);
             gM4CircRadius.emplace_back(circRadius(rng));
@@ -879,14 +815,14 @@ void InstancingSystem::SetEntitySpriteSheet(CrashoutsEngine::Entity e, const std
         int perTypeCount,
         bool texturesEnabled, const std::string& textureName,
         // Rectangles out
-        std::vector<CEVec3>& rectPos, std::vector<CEVec3>& rectColor,
+        std::vector<CEVec3>& rectPos, std::vector<CEColor>& rectColor,
         std::vector<float>& rectRot, std::vector<float>& rectScale,
         std::vector<float>& rectW, std::vector<float>& rectH,
         // Triangles out
-        std::vector<CEVec3>& triPos, std::vector<CEVec3>& triColor,
+        std::vector<CEVec3>& triPos, std::vector<CEColor>& triColor,
         std::vector<float>& triRot, std::vector<float>& triScale, std::vector<float>& triSide,
         // Circles out (not ECS)
-        std::vector<CEVec3>& circPos, std::vector<CEVec3>& circColor,
+        std::vector<CEVec3>& circPos, std::vector<CEColor>& circColor,
         std::vector<float>& circRot, std::vector<float>& circScale, std::vector<float>& circRadius,
         int& circSegments
     ) {
@@ -944,7 +880,8 @@ void InstancingSystem::SetEntitySpriteSheet(CrashoutsEngine::Entity e, const std
 
                 Component::ShapeComponent shape{};
                 shape.type = Component::ShapeType::Rectangle;
-                shape.color = CEVec3{
+                shape.color = CEColor{
+                    static_cast<float>(colorDist(rng)),
                     static_cast<float>(colorDist(rng)),
                     static_cast<float>(colorDist(rng)),
                     static_cast<float>(colorDist(rng))
@@ -982,7 +919,8 @@ void InstancingSystem::SetEntitySpriteSheet(CrashoutsEngine::Entity e, const std
 
                 Component::ShapeComponent shape{};
                 shape.type = Component::ShapeType::Triangle;
-                shape.color = CEVec3{
+                shape.color = CEColor{
+                    static_cast<float>(colorDist(rng)),
                     static_cast<float>(colorDist(rng)),
                     static_cast<float>(colorDist(rng)),
                     static_cast<float>(colorDist(rng))
@@ -1019,7 +957,7 @@ void InstancingSystem::SetEntitySpriteSheet(CrashoutsEngine::Entity e, const std
 //............................Rectangles..........................//
 
 static std::vector<CEVec3> gInstPositions;
-static std::vector<CEVec3> gInstColors;
+static std::vector<CEColor> gInstColors;
 static std::vector<float> gInstRotations;
 static std::vector<float> gInstScales;
 static std::vector<float> gInstWidths;
@@ -1072,7 +1010,8 @@ void InstancingSystem::InitializeEcsRectanglesDataRandom(int count) {
         // Shape
         Component::ShapeComponent shape{};
         shape.type = Component::ShapeType::Rectangle;
-        shape.color = CEVec3{
+        shape.color = CEColor{
+            static_cast<float>(colorDist(rng)),
             static_cast<float>(colorDist(rng)),
             static_cast<float>(colorDist(rng)),
             static_cast<float>(colorDist(rng))
@@ -1123,7 +1062,7 @@ void InstancingSystem::InitializeInstancedRectanglesData(int count) {
     //gRectanglesInitialized = true;
 }
 
-void InstancingSystem::CreateInstancedRectangles(const CEVec3* positions, const CEVec3* colors,
+void InstancingSystem::CreateInstancedRectangles(const CEVec3* positions, const CEColor* colors,
     const float* rotations, const float* scales,
     const float* widths, const float* heights,
     int count) {
@@ -1132,64 +1071,75 @@ void InstancingSystem::CreateInstancedRectangles(const CEVec3* positions, const 
 
     Component::Rendering& renderer = Component::Rendering::Get();
 
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    //glDepthMask(GL_FALSE);
+    glDisable(GL_CULL_FACE);
+
     // Initialize rectangle instancing buffers once
     if (!s_rectInstanceBuffersInitialized) {
         // Base vertices with positions and texture coordinates
-        float base_vertices[] = {
-            // positions        // texture coords
-            -0.5f, -0.5f, 0.0f,  0.0f, 1.0f, // bottom left
-             0.5f, -0.5f, 0.0f,  1.0f, 1.0f, // bottom right
-             0.5f,  0.5f, 0.0f,  1.0f, 0.0f, // top right
-            -0.5f,  0.5f, 0.0f,  0.0f, 0.0f  // top left
+        MeshVertex base_vertices[] = {
+                { -0.5f, -0.5f, 0.0f,  0.0f, 1.0f }, // BL (UV 0,1)
+                {  0.5f, -0.5f, 0.0f,  1.0f, 1.0f }, // BR (UV 1,1)
+                {  0.5f,  0.5f, 0.0f,  1.0f, 0.0f }, // TR (UV 1,0)
+                { -0.5f,  0.5f, 0.0f,  0.0f, 0.0f }  // TL (UV 0,0)
         };
         std::array<GLushort, 6> base_indices{ 0, 1, 2, 0, 2, 3 };
 
-        s_rectInstanceVAO = Component::Rendering::Get().GetPooledVAO();
-        s_rectInstanceVBO = Component::Rendering::Get().GetPooledVBO();
-        s_rectInstanceEBO = Component::Rendering::Get().GetPooledEBO();
-        s_rectInstanceDataVBO = Component::Rendering::Get().GetPooledVBO();
+        s_rectInstanceVAO = renderer.GetPooledVAO();
+        s_rectInstanceVBO = renderer.GetPooledVBO();
+        s_rectInstanceEBO = renderer.GetPooledEBO();
+        s_rectInstanceDataVBO = renderer.GetPooledVBO();
 
         glBindVertexArray(s_rectInstanceVAO);
 
-        // Base geometry
+        // 1. Base Geometry
         glBindBuffer(GL_ARRAY_BUFFER, s_rectInstanceVBO);
         glBufferData(GL_ARRAY_BUFFER, sizeof(base_vertices), base_vertices, GL_STATIC_DRAW);
 
-        // Position attribute (location 0)
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+        // Loc 0: Pos
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(MeshVertex), (void*)offsetof(MeshVertex, x));
         glEnableVertexAttribArray(0);
-
-        // Texture coordinate attribute (location 2)
-        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+        // Loc 2: UV
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(MeshVertex), (void*)offsetof(MeshVertex, u));
         glEnableVertexAttribArray(2);
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, s_rectInstanceEBO);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(base_indices), base_indices.data(), GL_STATIC_DRAW);
 
-        // Instance attributes: pos(3), color(3), rotation(1), scale(1), width(1), height(1)
+        // 2. Instance Attributes (RectInstanceData)
         glBindBuffer(GL_ARRAY_BUFFER, s_rectInstanceDataVBO);
+        GLsizei stride = sizeof(RectInstanceData);
 
-        glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 10, (void*)0);
+        // Loc 3: Position
+        glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, stride, (void*)offsetof(RectInstanceData, position));
         glEnableVertexAttribArray(3);
         glVertexAttribDivisor(3, 1);
 
-        glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 10, (void*)(sizeof(float) * 3));
+        // Loc 4: Color (4 floats)
+        glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, stride, (void*)offsetof(RectInstanceData, color));
         glEnableVertexAttribArray(4);
         glVertexAttribDivisor(4, 1);
 
-        glVertexAttribPointer(5, 1, GL_FLOAT, GL_FALSE, sizeof(float) * 10, (void*)(sizeof(float) * 6));
+        // Loc 5: Rotation
+        glVertexAttribPointer(5, 1, GL_FLOAT, GL_FALSE, stride, (void*)offsetof(RectInstanceData, rotation));
         glEnableVertexAttribArray(5);
         glVertexAttribDivisor(5, 1);
 
-        glVertexAttribPointer(6, 1, GL_FLOAT, GL_FALSE, sizeof(float) * 10, (void*)(sizeof(float) * 7));
+        // Loc 6: Scale
+        glVertexAttribPointer(6, 1, GL_FLOAT, GL_FALSE, stride, (void*)offsetof(RectInstanceData, scale));
         glEnableVertexAttribArray(6);
         glVertexAttribDivisor(6, 1);
 
-        glVertexAttribPointer(7, 1, GL_FLOAT, GL_FALSE, sizeof(float) * 10, (void*)(sizeof(float) * 8));
+        // Loc 7: Width
+        glVertexAttribPointer(7, 1, GL_FLOAT, GL_FALSE, stride, (void*)offsetof(RectInstanceData, width));
         glEnableVertexAttribArray(7);
         glVertexAttribDivisor(7, 1);
 
-        glVertexAttribPointer(8, 1, GL_FLOAT, GL_FALSE, sizeof(float) * 10, (void*)(sizeof(float) * 9));
+        // Loc 8: Height
+        glVertexAttribPointer(8, 1, GL_FLOAT, GL_FALSE, stride, (void*)offsetof(RectInstanceData, height));
         glEnableVertexAttribArray(8);
         glVertexAttribDivisor(8, 1);
 
@@ -1197,123 +1147,109 @@ void InstancingSystem::CreateInstancedRectangles(const CEVec3* positions, const 
         glBindVertexArray(0);
     }
 
-    // Pack per-instance data
-    std::vector<float> instanceData;
-    instanceData.reserve(count * 10);
+    // --- Update Instance Data using Struct ---
+    std::vector<RectInstanceData> instanceData(count);
     for (int i = 0; i < count; ++i) {
-        instanceData.push_back(positions[i].x);
-        instanceData.push_back(positions[i].y);
-        instanceData.push_back(positions[i].z);
-
-        instanceData.push_back(colors[i].x);
-        instanceData.push_back(colors[i].y);
-        instanceData.push_back(colors[i].z);
-
-        instanceData.push_back(rotations[i]);
-        instanceData.push_back(scales[i]);
-        instanceData.push_back(widths[i]);
-        instanceData.push_back(heights[i]);
+        instanceData[i].position = positions[i];
+        instanceData[i].color = colors[i];
+        instanceData[i].rotation = rotations[i];
+        instanceData[i].scale = scales[i];
+        instanceData[i].width = widths[i];
+        instanceData[i].height = heights[i];
     }
 
     glBindVertexArray(s_rectInstanceVAO);
     glBindBuffer(GL_ARRAY_BUFFER, s_rectInstanceDataVBO);
-    glBufferData(GL_ARRAY_BUFFER, instanceData.size() * sizeof(float), instanceData.data(), GL_DYNAMIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, instanceData.size() * sizeof(RectInstanceData), instanceData.data(), GL_DYNAMIC_DRAW);
 
     renderer.shdr_pgm_instanced.Use();
-
-    glm::mat4 model = glm::mat4(1.0f);
-    renderer.shdr_pgm_instanced.SetUniform("uModel", model);
+    renderer.shdr_pgm_instanced.SetUniform("uModel", glm::mat4(1.0f));
 
     GLint useTexture_loc = glGetUniformLocation(renderer.shdr_pgm_instanced.GetHandle(), "u_useTexture");
     if (useTexture_loc != -1) glUniform1i(useTexture_loc, 0);
 
+    GLint tint_loc = glGetUniformLocation(renderer.shdr_pgm_instanced.GetHandle(), "u_tint");
+    if (tint_loc != -1) glUniform4f(tint_loc, 1.0f, 1.0f, 1.0f, 1.0f);
+
     glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, 0, count);
 
     glBindVertexArray(0);
+
+    // --- Cleanup ---
+    //glDepthMask(GL_TRUE); // Re-enable depth writing for next objects
+    glDisable(GL_BLEND);  // Disable blending
+    glEnable(GL_CULL_FACE);
 }
 
 void InstancingSystem::CreateInstancedRectanglesTextured(
     const std::string& textureName,
-    const CEVec3* positions, const CEVec3* colors,
+    const CEVec3* positions, const CEColor* colors,
     const float* rotations, const float* scales,
     const float* widths, const float* heights,
     int count,
-    const CEVec3& tint,
-    const CEVec2& uvSize
-) {
+    const CEColor& tint,
+    const CEVec2& uvSize)
+{
     if (count <= 0) return;
+    glDisable(GL_CULL_FACE);
 
-    Component::Rendering& renderer = Component::Rendering::Get();
-
-    // Ensure base buffers/instance attributes exist
+    // Init buffers if needed using base function logic
     if (!s_rectInstanceBuffersInitialized) {
-        // Reuse non-textured setup to init VAO/VBO/EBO and instance attribs
-        float dummyW = 1.0f, dummyH = 1.0f;
-        CEVec3 dummyPos{0,0,0}, dummyCol{1,1,1};
-        float dummyRot = 0.0f, dummyScale = 1.0f;
-        CreateInstancedRectangles(&dummyPos, &dummyCol, &dummyRot, &dummyScale, &dummyW, &dummyH, 1);
+        CEVec3 p; CEColor c; float f = 0;
+        CreateInstancedRectangles(&p, &c, &f, &f, &f, &f, 0);
     }
 
-    // Pack per-instance data
-    std::vector<float> instanceData;
-    instanceData.reserve(count * 10);
+    std::vector<RectInstanceData> instanceData(count);
     for (int i = 0; i < count; ++i) {
-        instanceData.push_back(positions[i].x);
-        instanceData.push_back(positions[i].y);
-        instanceData.push_back(positions[i].z);
-
-        instanceData.push_back(colors[i].x);
-        instanceData.push_back(colors[i].y);
-        instanceData.push_back(colors[i].z);
-
-        instanceData.push_back(rotations[i]);
-        instanceData.push_back(scales[i]);
-        instanceData.push_back(widths[i]);
-        instanceData.push_back(heights[i]);
+        instanceData[i].position = positions[i];
+        instanceData[i].color = colors[i];
+        instanceData[i].rotation = rotations[i];
+        instanceData[i].scale = scales[i];
+        instanceData[i].width = widths[i];
+        instanceData[i].height = heights[i];
     }
 
     glBindVertexArray(s_rectInstanceVAO);
     glBindBuffer(GL_ARRAY_BUFFER, s_rectInstanceDataVBO);
-    glBufferData(GL_ARRAY_BUFFER, instanceData.size() * sizeof(float), instanceData.data(), GL_DYNAMIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, instanceData.size() * sizeof(RectInstanceData), instanceData.data(), GL_DYNAMIC_DRAW);
 
-    // Bind texture and set shader uniforms
+    Component::Rendering& renderer = Component::Rendering::Get();
     GLuint textureHandle = Component::TextureRenderer::GetTextureHandle(textureName);
-    if (textureHandle == 0) {
-        std::cerr << "Failed to load texture: " << textureName << std::endl;
-        glBindVertexArray(0);
-        return;
-    }
 
     renderer.shdr_pgm_instanced.Use();
-    glm::mat4 model = glm::mat4(1.0f);
-    renderer.shdr_pgm_instanced.SetUniform("uModel", model);
+    renderer.shdr_pgm_instanced.SetUniform("uModel", glm::mat4(1.0f));
 
     GLint useTexture_loc = glGetUniformLocation(renderer.shdr_pgm_instanced.GetHandle(), "u_useTexture");
     if (useTexture_loc != -1) glUniform1i(useTexture_loc, 1);
 
-    GLint tex_loc = glGetUniformLocation(renderer.shdr_pgm_instanced.GetHandle(), "uTex2d");
-    if (tex_loc != -1) glUniform1i(tex_loc, 0);
-
     GLint tint_loc = glGetUniformLocation(renderer.shdr_pgm_instanced.GetHandle(), "u_tint");
-    if (tint_loc != -1) glUniform3f(tint_loc, tint.x, tint.y, tint.z);
+    if (tint_loc != -1) glUniform4f(tint_loc, tint.r, tint.g, tint.b, tint.a);
 
     GLint uvSize_loc = glGetUniformLocation(renderer.shdr_pgm_instanced.GetHandle(), "u_uvSize");
     if (uvSize_loc != -1) glUniform2f(uvSize_loc, uvSize.x, uvSize.y);
 
+    // 1. Handle Transparency
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    // 2. Disable Depth Write so transparent textures don't occlusion-cull things behind them
+    //glDepthMask(GL_FALSE);
 
     glBindTextureUnit(0, textureHandle);
     glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, 0, count);
     glBindTextureUnit(0, 0);
 
     glBindVertexArray(0);
-glDisable(GL_BLEND);
+
+    // 3. Reset State
+    //glDepthMask(GL_TRUE); // Important!
+    glDisable(GL_BLEND);
+    glEnable(GL_CULL_FACE);
 }
 
 void InstancingSystem::RenderInstancedRectanglesBatch(
     const CEVec3* positions,
-    const CEVec3* colors,
+    const CEColor* colors,
     const float* rotations,
     const float* scales,
     const float* widths,
@@ -1321,18 +1257,11 @@ void InstancingSystem::RenderInstancedRectanglesBatch(
     int count,
     const InstancedParams& params
 ) {
-    if (count <= 0 || !positions || !colors || !rotations || !scales || !widths || !heights) return;
-
+    if (count <= 0) return;
     if (!params.textured) {
-        InstancingSystem::CreateInstancedRectangles(
-            positions, colors, rotations, scales, widths, heights, count
-        );
+        CreateInstancedRectangles(positions, colors, rotations, scales, widths, heights, count);
     } else {
-        InstancingSystem::CreateInstancedRectanglesTextured(
-            params.textureName,
-            positions, colors, rotations, scales, widths, heights, count,
-            params.tint, params.uvSize
-        );
+        CreateInstancedRectanglesTextured(params.textureName, positions, colors, rotations, scales, widths, heights, count, params.tint, params.uvSize);
     }
 }
 
@@ -1472,7 +1401,7 @@ void InstancingSystem::RenderInstancedCirclesFromEntities(const std::vector<Cras
 }
 
 void InstancingSystem::CreateInstancedTriangles(
-    const CEVec3* positions, const CEVec3* colors,
+    const CEVec3* positions, const CEColor* colors,
     const float* rotations, const float* scales,
     const float* sideLengths,
     int count
@@ -1480,11 +1409,17 @@ void InstancingSystem::CreateInstancedTriangles(
     if (count <= 0) return;
     Component::Rendering& renderer = Component::Rendering::Get();
 
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    //glDepthMask(GL_FALSE);
+    glDisable(GL_CULL_FACE);
+
     if (!s_triInstanceBuffersInitialized) {
-        float base_vertices[] = {
-            -0.5f, -0.5f, 0.0f,  0.0f, 1.0f,
-             0.5f, -0.5f, 0.0f,  1.0f, 1.0f,
-             0.0f,  0.5f, 0.0f,  0.5f, 0.0f
+        MeshVertex base_vertices[] = {
+                { -0.5f, -0.5f, 0.0f,  0.0f, 1.0f }, // BL
+                {  0.5f, -0.5f, 0.0f,  1.0f, 1.0f }, // BR
+                {  0.0f,  0.5f, 0.0f,  0.5f, 0.0f }  // Top
         };
         std::array<GLushort, 3> base_indices{ 0, 1, 2 };
 
@@ -1497,206 +1432,153 @@ void InstancingSystem::CreateInstancedTriangles(
 
         glBindBuffer(GL_ARRAY_BUFFER, s_triInstanceVBO);
         glBufferData(GL_ARRAY_BUFFER, sizeof(base_vertices), base_vertices, GL_STATIC_DRAW);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(MeshVertex), (void*)offsetof(MeshVertex, x));
         glEnableVertexAttribArray(0);
-        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(MeshVertex), (void*)offsetof(MeshVertex, u));
         glEnableVertexAttribArray(2);
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, s_triInstanceEBO);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(base_indices), base_indices.data(), GL_STATIC_DRAW);
 
         glBindBuffer(GL_ARRAY_BUFFER, s_triInstanceDataVBO);
-        glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 10, (void*)0);
+        GLsizei stride = sizeof(TriInstanceData);
+
+        // Loc 3: Position
+        glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, stride, (void*)offsetof(TriInstanceData, position));
         glEnableVertexAttribArray(3);
         glVertexAttribDivisor(3, 1);
 
-        glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 10, (void*)(sizeof(float) * 3));
+        // Loc 4: Color
+        glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, stride, (void*)offsetof(TriInstanceData, color));
         glEnableVertexAttribArray(4);
         glVertexAttribDivisor(4, 1);
 
-        glVertexAttribPointer(5, 1, GL_FLOAT, GL_FALSE, sizeof(float) * 10, (void*)(sizeof(float) * 6));
+        // Loc 5: Rotation
+        glVertexAttribPointer(5, 1, GL_FLOAT, GL_FALSE, stride, (void*)offsetof(TriInstanceData, rotation));
         glEnableVertexAttribArray(5);
         glVertexAttribDivisor(5, 1);
 
-        glVertexAttribPointer(6, 1, GL_FLOAT, GL_FALSE, sizeof(float) * 10, (void*)(sizeof(float) * 7));
+        // Loc 6: Scale
+        glVertexAttribPointer(6, 1, GL_FLOAT, GL_FALSE, stride, (void*)offsetof(TriInstanceData, scale));
         glEnableVertexAttribArray(6);
         glVertexAttribDivisor(6, 1);
 
-        glVertexAttribPointer(7, 1, GL_FLOAT, GL_FALSE, sizeof(float) * 10, (void*)(sizeof(float) * 8));
+        // Loc 7: Side Length
+        glVertexAttribPointer(7, 1, GL_FLOAT, GL_FALSE, stride, (void*)offsetof(TriInstanceData, sideLength));
         glEnableVertexAttribArray(7);
         glVertexAttribDivisor(7, 1);
-
-        glVertexAttribPointer(8, 1, GL_FLOAT, GL_FALSE, sizeof(float) * 10, (void*)(sizeof(float) * 9));
-        glEnableVertexAttribArray(8);
-        glVertexAttribDivisor(8, 1);
 
         s_triInstanceBuffersInitialized = true;
         glBindVertexArray(0);
     }
 
-    std::vector<float> instanceData;
-    instanceData.reserve(count * 10);
+    std::vector<TriInstanceData> instanceData(count);
     for (int i = 0; i < count; ++i) {
-        float side = sideLengths[i];
-        float triH = side * 0.866025403784f;
-        instanceData.push_back(positions[i].x);
-        instanceData.push_back(positions[i].y);
-        instanceData.push_back(positions[i].z);
-        instanceData.push_back(colors[i].x);
-        instanceData.push_back(colors[i].y);
-        instanceData.push_back(colors[i].z);
-        instanceData.push_back(rotations[i]);
-        instanceData.push_back(scales[i]);
-        instanceData.push_back(side);
-        instanceData.push_back(triH);
+        instanceData[i].position = positions[i];
+        instanceData[i].color = colors[i];
+        instanceData[i].rotation = rotations[i];
+        instanceData[i].scale = scales[i];
+        instanceData[i].sideLength = sideLengths[i];
     }
 
     glBindVertexArray(s_triInstanceVAO);
     glBindBuffer(GL_ARRAY_BUFFER, s_triInstanceDataVBO);
-    glBufferData(GL_ARRAY_BUFFER, instanceData.size() * sizeof(float), instanceData.data(), GL_DYNAMIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, instanceData.size() * sizeof(TriInstanceData), instanceData.data(), GL_DYNAMIC_DRAW);
 
     renderer.shdr_pgm_instanced.Use();
-    glm::mat4 model = glm::mat4(1.0f);
-    renderer.shdr_pgm_instanced.SetUniform("uModel", model);
+    renderer.shdr_pgm_instanced.SetUniform("uModel", glm::mat4(1.0f));
+
     GLint useTexture_loc = glGetUniformLocation(renderer.shdr_pgm_instanced.GetHandle(), "u_useTexture");
     if (useTexture_loc != -1) glUniform1i(useTexture_loc, 0);
 
+    GLint tint_loc = glGetUniformLocation(renderer.shdr_pgm_instanced.GetHandle(), "u_tint");
+    if (tint_loc != -1) glUniform4f(tint_loc, 1.0f, 1.0f, 1.0f, 1.0f);
+
     glDrawElementsInstanced(GL_TRIANGLES, 3, GL_UNSIGNED_SHORT, 0, count);
     glBindVertexArray(0);
+
+    //glDepthMask(GL_TRUE); // Re-enable depth writing for next objects
+    glDisable(GL_BLEND);  // Disable blending
+    glEnable(GL_CULL_FACE);
 }
 
 void InstancingSystem::CreateInstancedTrianglesTextured(
     const std::string& textureName,
-    const CEVec3* positions, const CEVec3* colors,
+    const CEVec3* positions, const CEColor* colors,
     const float* rotations, const float* scales,
     const float* sideLengths,
     int count,
-    const CEVec3& tint,
+    const CEColor& tint,
     const CEVec2& uvSize
 ) {
     if (count <= 0) return;
-    Component::Rendering& renderer = Component::Rendering::Get();
+    glDisable(GL_CULL_FACE);
 
     if (!s_triInstanceBuffersInitialized) {
-        float base_vertices[] = {
-            -0.5f, -0.5f, 0.0f,  0.0f, 1.0f,
-             0.5f, -0.5f, 0.0f,  1.0f, 1.0f,
-             0.0f,  0.5f, 0.0f,  0.5f, 0.0f
-        };
-        std::array<GLushort, 3> base_indices{ 0, 1, 2 };
-
-        s_triInstanceVAO = renderer.GetPooledVAO();
-        s_triInstanceVBO = renderer.GetPooledVBO();
-        s_triInstanceEBO = renderer.GetPooledEBO();
-        s_triInstanceDataVBO = renderer.GetPooledVBO();
-
-        glBindVertexArray(s_triInstanceVAO);
-
-        glBindBuffer(GL_ARRAY_BUFFER, s_triInstanceVBO);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(base_vertices), base_vertices, GL_STATIC_DRAW);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-        glEnableVertexAttribArray(2);
-
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, s_triInstanceEBO);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(base_indices), base_indices.data(), GL_STATIC_DRAW);
-
-        glBindBuffer(GL_ARRAY_BUFFER, s_triInstanceDataVBO);
-        glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 10, (void*)0);
-        glEnableVertexAttribArray(3);
-        glVertexAttribDivisor(3, 1);
-
-        glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 10, (void*)(sizeof(float) * 3));
-        glEnableVertexAttribArray(4);
-        glVertexAttribDivisor(4, 1);
-
-        glVertexAttribPointer(5, 1, GL_FLOAT, GL_FALSE, sizeof(float) * 10, (void*)(sizeof(float) * 6));
-        glEnableVertexAttribArray(5);
-        glVertexAttribDivisor(5, 1);
-
-        glVertexAttribPointer(6, 1, GL_FLOAT, GL_FALSE, sizeof(float) * 10, (void*)(sizeof(float) * 7));
-        glEnableVertexAttribArray(6);
-        glVertexAttribDivisor(6, 1);
-
-        glVertexAttribPointer(7, 1, GL_FLOAT, GL_FALSE, sizeof(float) * 10, (void*)(sizeof(float) * 8));
-        glEnableVertexAttribArray(7);
-        glVertexAttribDivisor(7, 1);
-
-        glVertexAttribPointer(8, 1, GL_FLOAT, GL_FALSE, sizeof(float) * 10, (void*)(sizeof(float) * 9));
-        glEnableVertexAttribArray(8);
-        glVertexAttribDivisor(8, 1);
-
-        s_triInstanceBuffersInitialized = true;
-        glBindVertexArray(0);
+        CEVec3 p; CEColor c; float f = 0;
+        CreateInstancedTriangles(&p, &c, &f, &f, &f, 0);
     }
 
-    std::vector<float> instanceData;
-    instanceData.reserve(count * 10);
+    std::vector<TriInstanceData> instanceData(count);
     for (int i = 0; i < count; ++i) {
-        float side = sideLengths[i];
-        float triH = side * 0.866025403784f;
-        instanceData.push_back(positions[i].x);
-        instanceData.push_back(positions[i].y);
-        instanceData.push_back(positions[i].z);
-        instanceData.push_back(colors[i].x);
-        instanceData.push_back(colors[i].y);
-        instanceData.push_back(colors[i].z);
-        instanceData.push_back(rotations[i]);
-        instanceData.push_back(scales[i]);
-        instanceData.push_back(side);
-        instanceData.push_back(triH);
+        instanceData[i].position = positions[i];
+        instanceData[i].color = colors[i];
+        instanceData[i].rotation = rotations[i];
+        instanceData[i].scale = scales[i];
+        instanceData[i].sideLength = sideLengths[i];
     }
 
     glBindVertexArray(s_triInstanceVAO);
     glBindBuffer(GL_ARRAY_BUFFER, s_triInstanceDataVBO);
-    glBufferData(GL_ARRAY_BUFFER, instanceData.size() * sizeof(float), instanceData.data(), GL_DYNAMIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, instanceData.size() * sizeof(TriInstanceData), instanceData.data(), GL_DYNAMIC_DRAW);
 
+    Component::Rendering& renderer = Component::Rendering::Get();
     GLuint textureHandle = Component::TextureRenderer::GetTextureHandle(textureName);
-    if (textureHandle == 0) {
-        glBindVertexArray(0);
-        return;
-    }
 
     renderer.shdr_pgm_instanced.Use();
-    glm::mat4 model = glm::mat4(1.0f);
-    renderer.shdr_pgm_instanced.SetUniform("uModel", model);
+    renderer.shdr_pgm_instanced.SetUniform("uModel", glm::mat4(1.0f));
+
     GLint useTexture_loc = glGetUniformLocation(renderer.shdr_pgm_instanced.GetHandle(), "u_useTexture");
     if (useTexture_loc != -1) glUniform1i(useTexture_loc, 1);
-    GLint tex_loc = glGetUniformLocation(renderer.shdr_pgm_instanced.GetHandle(), "uTex2d");
-    if (tex_loc != -1) glUniform1i(tex_loc, 0);
+
     GLint tint_loc = glGetUniformLocation(renderer.shdr_pgm_instanced.GetHandle(), "u_tint");
-    if (tint_loc != -1) glUniform3f(tint_loc, tint.x, tint.y, tint.z);
+    if (tint_loc != -1) glUniform4f(tint_loc, tint.r, tint.g, tint.b, tint.a);
+
     GLint uvSize_loc = glGetUniformLocation(renderer.shdr_pgm_instanced.GetHandle(), "u_uvSize");
     if (uvSize_loc != -1) glUniform2f(uvSize_loc, uvSize.x, uvSize.y);
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    //glDepthMask(GL_FALSE);
+
     glBindTextureUnit(0, textureHandle);
     glDrawElementsInstanced(GL_TRIANGLES, 3, GL_UNSIGNED_SHORT, 0, count);
     glBindTextureUnit(0, 0);
+
     glBindVertexArray(0);
+
+    //glDepthMask(GL_TRUE); 
     glDisable(GL_BLEND);
+    glEnable(GL_CULL_FACE);
 }
 
 void InstancingSystem::RenderInstancedTrianglesBatch(
     const CEVec3* positions,
-    const CEVec3* colors,
+    const CEColor* colors,
     const float* rotations,
     const float* scales,
     const float* sideLengths,
     int count,
     const InstancingSystem::InstancedParams& params
 ) {
-    if (count <= 0 || !positions || !colors || !rotations || !scales || !sideLengths) return;
+    if (count <= 0) return;
     if (!params.textured) {
-        InstancingSystem::CreateInstancedTriangles(positions, colors, rotations, scales, sideLengths, count);
-    } else {
-        InstancingSystem::CreateInstancedTrianglesTextured(
-            params.textureName,
-            positions, colors, rotations, scales, sideLengths, count,
-            params.tint, params.uvSize
-        );
+        CreateInstancedTriangles(positions, colors, rotations, scales, sideLengths, count);
+    }
+    else {
+        CreateInstancedTrianglesTextured(params.textureName, positions, colors, rotations, scales, sideLengths, count, params.tint, params.uvSize);
     }
 }
 

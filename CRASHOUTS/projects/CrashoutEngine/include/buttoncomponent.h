@@ -9,7 +9,7 @@
 
 /*                                                                   includes
 ----------------------------------------------------------------------------- */
-#include <CEVec3.h>
+#include <CEColor.h>
 
 /*
 ----------------------------------------------------------------------------- */
@@ -31,20 +31,14 @@ namespace Component {
 		// Stick to CEVec3 for now since the rest doesn't take into account alpha
 
 		// State Colours for Shape Component
-		//float shapeNormalColor[4] = { 255.f, 255.f, 255.f, 255.f };
-		//float shapeHoveredColor[4] = { 100.f, 100.f, 100.f, 255.f };
-		//float shapePressedColor[4] = { 0.f, 0.f, 0.f, 255.f };
-		CEVec3 shapeNormalColor = { 255.f, 255.f, 255.f };
-		CEVec3 shapeHoveredColor = { 100.f, 100.f, 100.f };
-		CEVec3 shapePressedColor = { 0.f, 0.f, 0.f };
+		CEColor shapeNormalColor = { 1.f, 1.f, 1.f, 1.f };
+		CEColor shapeHoveredColor = { 1.f, 1.f, 1.f, 0.5f };
+		CEColor shapePressedColor = { 0.7f, 0.7f, 0.7f, 0.7f };
 
-		// State Colours for Text Component
-		//float textNormalColor[4] = { 255.f, 255.f, 255.f, 255.f };
-		//float textHoveredColor[4] = { 100.f, 100.f, 100.f, 255.f };
-		//float textPressedColor[4] = { 0.f, 0.f, 0.f, 255.f };
-		CEVec3 textHoveredColor = { 255.f, 255.f, 255.f };
-		CEVec3 textPressedColor = { 100.f, 100.f, 100.f };
-		CEVec3 textNormalColor = { 0.f, 0.f, 0.f };
+		// State Colours for Text Component;
+		CEColor textHoveredColor = { 0.f, 0.f, 0.f, 0.f };
+		CEColor textPressedColor = { 0.f, 0.f, 0.f, 0.5f };
+		CEColor textNormalColor = { 0.3f, 0.3f, 0.3f, 0.7f };
 	};
 }
 

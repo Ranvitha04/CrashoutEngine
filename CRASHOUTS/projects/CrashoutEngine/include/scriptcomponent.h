@@ -22,6 +22,7 @@ namespace CrashoutsEngine
         MonoClass* Class = nullptr;
         MonoMethod* MethodStart = nullptr;
         MonoMethod* MethodUpdate = nullptr;
+        MonoMethod* MethodFixedUpdate = nullptr;
         bool Started = false;
         CE::u32 GCHandle = 0;
 
@@ -48,6 +49,7 @@ namespace CrashoutsEngine
         bool Initialize(MonoDomain* domain, MonoAssembly* assembly);
         void Start();
         void Update();
+        void FixedUpdate();
         void Destroy();
     };
 }

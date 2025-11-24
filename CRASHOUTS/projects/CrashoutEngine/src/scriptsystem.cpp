@@ -56,6 +56,18 @@ namespace CrashoutsEngine
         }
     }
 
+    void ScriptSystem::FixedUpdateAll()
+    {
+        auto& ecs = *ECS::getInstance();
+        auto& scripts = ecs.GetComponentArray<ScriptComponent>();
+
+        for (auto& scriptComp : scripts.dense)
+        {
+            scriptComp.FixedUpdate();
+        }
+    }
+
+
     void ScriptSystem::DestroyAll()
     {
         auto& ecs = *ECS::getInstance();

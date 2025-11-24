@@ -15,6 +15,7 @@
 #pragma once
 #include <GLFW/glfw3.h>
 #include <vector>
+#include <string>
 
 // -----------------------------------------------------------------------------
 // Forward declarations
@@ -43,7 +44,7 @@ namespace UI {
     */
     struct UIState {
         bool lockLayout = false;
-        bool showPerf = true;
+        bool showPerf = false;
         bool showConsole = true;
         bool showInspector = true;
         bool showECS = true;
@@ -58,11 +59,12 @@ namespace UI {
 
         bool freezeOnCollision = false;
         bool showAnimation = true; 
-        bool showSpriteSheet = false;
+        bool showSpriteSheet = true;
 
         bool drawAllColliders = true;   // draw wireframes for every collider, not just colliding ones
         bool drawVelocities = false;    // draw velocity arrows if RigidBodyComponent exists
-        float overlayThickness = .35f;   // line thickness for wireframes
+        float overlayThickness = .35f;  // line thickness for wireframes
+        float fontScale = 1.0f;         // Set the font scale
     };
 
     // -- Lifecycle ----------------------------------------------------

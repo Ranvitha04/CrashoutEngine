@@ -39,11 +39,39 @@ static float InternalGetMass(uint32_t entityID)
     return 0.f;
 }
 
+static void InternalGetVelocity(uint32_t entityID, CEVec3* outVelocity)
+{
+    auto& ecs = *ECS::getInstance();
+
+    if (EntityHasRigidBody(entityID))
+    {
+        auto* rb = ecs.GetComponent<Component::RigidBodyComponent>(entityID);
+        *outVelocity = rb->getVelocity();
+        return;
+    }
+
+    // If no rigidbody, return zero
+    *outVelocity = CEVec3(0.f, 0.f, 0.f);
+}
+
+static void InternalSetVelocity(uint32_t entityID, const CEVec3* newVelocity)
+{
+    auto& ecs = *ECS::getInstance();
+    if (EntityHasRigidBody(entityID))
+    {
+        auto* rb = ecs.GetComponent<Component::RigidBodyComponent>(entityID);
+        rb->setVelocity(*newVelocity);
+    }
+}
+
 
 void CrashoutsEngine::Bindings::RegisterRigidBodyBindings()
 {
     mono_add_internal_call("CrashoutsEngine.RigidBodyComponent::InternalAddForce", reinterpret_cast<const void*>(InternalAddForce));
     mono_add_internal_call("CrashoutsEngine.InternalCalls::EntityHasRigidBody", reinterpret_cast<const void*>(EntityHasRigidBody));
     mono_add_internal_call("CrashoutsEngine.RigidBodyComponent::InternalGetMass", reinterpret_cast<const void*>(InternalGetMass));
+    mono_add_internal_call("CrashoutsEngine.RigidBodyComponent::InternalGetVelocity", reinterpret_cast<const void*>(InternalGetVelocity));
+    mono_add_internal_call("CrashoutsEngine.RigidBodyComponent::InternalSetVelocity", reinterpret_cast<const void*>(InternalSetVelocity));
+
     std::cout << "[Mono] Registered: CrashoutsEngine.RigidBodyComponent::InternalAddForce" << std::endl;
 }

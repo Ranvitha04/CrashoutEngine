@@ -22,6 +22,7 @@ runtime-extensible and project-agnostic.
 #include <numeric>
 #include <fstream>
 #include "debugdefaults.h"
+#include "debugAssetLoader.h"
 #include "changevaluecommand.h"
 #include "undomanager.h"
 
@@ -37,6 +38,8 @@ runtime-extensible and project-agnostic.
 #include "physicsmanager.h"
 #include "ppcomponent.h"
 #include "collidercomponent.h"
+#include "tilemapcomponent.h"
+#include "keyframe.h" // For AnimationComponent
 
 // FOR GAME GUI
 #include "buttoncomponent.h"
@@ -49,6 +52,7 @@ runtime-extensible and project-agnostic.
 #include "assetmanager.h"
 #include "monomanager.h"
 #include "audioSystem.h"
+#include "tilemapasset.h"
 #include "imgui_internal.h"
 #include "reflectimgui.h"
 #include "shapes.h"
@@ -56,11 +60,11 @@ runtime-extensible and project-agnostic.
 #include "transformentitycommand.h"
 #include <memory>
 
+
 using namespace CrashoutsEngine;
 using namespace Component;
 
 //----------------------------------------------------------------------------- file-local state & helpers
-
 namespace {
     f32 max(f32 x1, f32 y2, f32 z3) {
         return std::max(std::max(x1, y2), z3);
@@ -99,6 +103,107 @@ namespace {
     };
 
     /*!
+    @brief Shared helper to draw a multi-select layer dropdown.
+    @param ecs Reference to ECS (needed to clean up components if a layer is deleted).
+    @param mask Reference to the bitmask integer to edit.
+    */
+    static void DrawLayerMultiSelect(ECS& ecs, unsigned int& mask) {
+        // Get the static map from LayerComponent
+        std::map<std::string, unsigned int>& layerMap = Component::LayerComponent::layers;
+
+        // --- 1. Build the Preview String ---
+        std::string preview = "";
+        int selectedCount = 0;
+
+        for (auto const& [name, bit] : layerMap) {
+            if (mask & bit) {
+                if (selectedCount > 0) preview += ", ";
+                preview += name;
+                selectedCount++;
+            }
+        }
+
+        if (selectedCount == 0) preview = "None";
+        else if (selectedCount > 2) preview = "Mixed...";
+
+        // --- 2. Draw the Multi-Select Dropdown ---
+        if (ImGui::BeginCombo("Layer Mask", preview.c_str())) {
+
+            std::string layerToRemove = "";
+
+            // --- 3. Draw Checkboxes ---
+            for (auto const& [name, bit] : layerMap) {
+                bool isSelected = (mask & bit) != 0;
+
+                float buttonWidth = 25.f;
+                float selectableWidth = ImGui::GetContentRegionAvail().x - buttonWidth - ImGui::GetStyle().ItemSpacing.x;
+
+                // Use DontClosePopups so we can click multiple items
+                if (ImGui::Selectable(name.c_str(), isSelected, ImGuiSelectableFlags_DontClosePopups, ImVec2(selectableWidth, 0))) {
+                    mask ^= bit; // Toggle bit
+                }
+
+                // Delete Button (Don't allow deleting Default)
+                if (name != "Default") {
+                    ImGui::SameLine();
+                    if (ImGui::Button(("X##Remove" + name).c_str(), ImVec2(buttonWidth, 0))) {
+                        layerToRemove = name;
+                    }
+                }
+            }
+
+            // --- 4. Removal Logic (Global removal) ---
+            if (!layerToRemove.empty()) {
+                unsigned int bitToRemove = layerMap[layerToRemove];
+                layerMap.erase(layerToRemove);
+
+                // Clear this bit from ALL entities in the world
+                // (This is why we need the ECS reference)
+                std::vector<LayerComponent>& layerComponents = ecs.GetComponentArray<LayerComponent>().dense;
+                for (LayerComponent& layer : layerComponents) {
+                    layer.currentLayer &= ~bitToRemove;
+                }
+
+                // Also clear it from the current mask being edited immediately
+                mask &= ~bitToRemove;
+            }
+
+            // --- 5. Add New Layer Logic ---
+            ImGui::Separator();
+            static char newLayerBuffer[64] = "";
+            if (ImGui::InputText("##NewLayer", newLayerBuffer, 64, ImGuiInputTextFlags_EnterReturnsTrue)) {
+                if (strlen(newLayerBuffer) > 0) {
+                    if (layerMap.find(newLayerBuffer) == layerMap.end()) {
+                        unsigned int nextBit = 1;
+                        if (!layerMap.empty()) {
+                            auto maxElement = std::max_element(layerMap.begin(), layerMap.end(),
+                                [](const auto& a, const auto& b) { return a.second < b.second; });
+                            nextBit = maxElement->second << 1;
+                        }
+                        layerMap.emplace(newLayerBuffer, nextBit);
+                    }
+                    newLayerBuffer[0] = '\0';
+                }
+            }
+            ImGui::SameLine();
+            if (ImGui::Button("Add")) {
+                if (strlen(newLayerBuffer) > 0 && layerMap.find(newLayerBuffer) == layerMap.end()) {
+                    unsigned int nextBit = 1;
+                    if (!layerMap.empty()) {
+                        auto maxElement = std::max_element(layerMap.begin(), layerMap.end(),
+                            [](const auto& a, const auto& b) { return a.second < b.second; });
+                        nextBit = maxElement->second << 1;
+                    }
+                    layerMap.emplace(newLayerBuffer, nextBit);
+                    newLayerBuffer[0] = '\0';
+                }
+            }
+
+            ImGui::EndCombo();
+        }
+    }
+
+    /*!
     @brief Adapter for editing Component::LayerComponent.
     @details Shows a drop down of layers to choose from and create
     */
@@ -116,128 +221,8 @@ namespace {
         }
         void drawInspector(ECS& ecs, Entity e) override {
             if (auto* c = ecs.GetComponent<Component::LayerComponent>(e)) {
-                // Get the static map
-                std::map<std::string, unsigned int>& layerMap = LayerComponent::layers;
-
-                // --- 1. Build the Preview String (using currentLayer) ---
-                std::string preview = "";
-                int selectedCount = 0;
-
-                // Use const& for iterating
-                for (auto const& [name, bit] : layerMap) {
-                    // Read from c->currentLayer
-                    if (c->currentLayer & bit) {
-                        if (selectedCount > 0) {
-                            preview += ", ";
-                        }
-                        preview += name;
-                        selectedCount++;
-                    }
-                }
-
-                if (selectedCount == 0) {
-                    preview = "Default";
-                }
-                else if (selectedCount > 2) {
-                    preview = "Mixed...";
-                }
-
-                // --- 2. Draw the Multi-Select Dropdown ---
-                if (ImGui::BeginCombo("Layers", preview.c_str())) {
-
-                    std::string layerToRemove = "";
-
-                    // --- 3. Draw Checkboxes for Each Layer (using currentLayer) ---
-                    for (auto const& [name, bit] : layerMap) {
-                        // Read from c->currentLayer
-                        bool isSelected = (c->currentLayer & bit) != 0;
-
-                        float buttonWidth = 25.f;
-                        float selectableWidth = ImGui::GetContentRegionAvail().x - buttonWidth - ImGui::GetStyle().ItemSpacing.x;
-
-                        if (ImGui::Selectable(name.c_str(), isSelected, ImGuiSelectableFlags_DontClosePopups,
-                            ImVec2(selectableWidth, 0))) {
-                            // Write to c->currentLayer
-                            c->currentLayer ^= bit;
-                        }
-
-                        if (name != "Default") {
-                            // Draw the Remove button next to the selectable
-                            ImGui::SameLine(); // Align to the right
-
-                            // Give the button a unique ID using the layer name
-                            if (ImGui::Button(("X##Remove" + name).c_str(), ImVec2(buttonWidth, 0))) {
-                                // Mark this layer for removal and break out of the loop
-                                layerToRemove = name;
-                                break;
-                            }
-                        }
-                    }
-
-                    // --- Removal Logic ---
-                    if (!layerToRemove.empty() && layerToRemove != "Default") {
-                        // Get bit to remove
-                        unsigned int bitToRemove = layerMap[layerToRemove];
-                        // Remove layer from static map
-                        layerMap.erase(layerToRemove);
-
-                        std::vector<LayerComponent>& layerComponents = ecs.GetComponentArray<LayerComponent>().dense;
-                        for (LayerComponent& layer : layerComponents) {
-                            layer.currentLayer &= ~bitToRemove;
-                        }
-                    }
-
-                    // --- 4. Draw the "Add New Layer" UI ---
-                    ImGui::Separator();
-
-                    static char newLayerBuffer[64] = "";
-
-                    if (ImGui::InputText("##NewLayer", newLayerBuffer, 64, ImGuiInputTextFlags_EnterReturnsTrue)) {
-                        if (strlen(newLayerBuffer) > 0) {
-
-                            // Check if layer already exists
-                            if (layerMap.find(newLayerBuffer) == layerMap.end()) {
-
-                                // Calculate the next available bit
-                                unsigned int nextBit = 1; // Default if map is empty
-                                if (!layerMap.empty()) {
-                                    // Find the largest bit value
-                                    auto maxElement = std::max_element(layerMap.begin(), layerMap.end(),
-                                        [](const auto& a, const auto& b) {
-                                            return a.second < b.second;
-                                        });
-                                    // The new bit is the largest one, shifted left
-                                    nextBit = maxElement->second << 1;
-                                }
-
-                                // Emplace with the correct arguments (string, bit)
-                                layerMap.emplace(newLayerBuffer, nextBit);
-                            }
-                            newLayerBuffer[0] = '\0';
-                        }
-                    }
-
-                    // Also add with a button
-                    ImGui::SameLine();
-                    if (ImGui::Button("Add")) {
-                        if (strlen(newLayerBuffer) > 0) {
-                            if (layerMap.find(newLayerBuffer) == layerMap.end()) {
-                                unsigned int nextBit = 1;
-                                if (!layerMap.empty()) {
-                                    auto maxElement = std::max_element(layerMap.begin(), layerMap.end(),
-                                        [](const auto& a, const auto& b) {
-                                            return a.second < b.second;
-                                        });
-                                    nextBit = maxElement->second << 1;
-                                }
-                                layerMap.emplace(newLayerBuffer, nextBit);
-                            }
-                            newLayerBuffer[0] = '\0';
-                        }
-                    }
-
-                    ImGui::EndCombo();
-                }
+                // Use the helper function!
+                DrawLayerMultiSelect(ecs, c->currentLayer);
             }
         }
     };
@@ -403,6 +388,16 @@ namespace {
                     sess = {};
                 }
 
+                /*INERTIA CALCULATIONS*/
+                f32 inertia{ rb->inertia };
+                if (ImGui::DragFloat("Inertia", &inertia)) {
+                    rb->setInertia(inertia);
+                }
+                if (ecs.HasComponent<Component::ColliderComponent>(e)) {
+                    Component::ColliderComponent* collider{ ecs.GetComponent<Component::ColliderComponent>(e) };
+                    if (ImGui::Button("Calculate Inertia##rb")) rb->setInertia(collider->collider->calculateInertia(rb->getMass())); /*For rotational stuff*/
+                }
+
                 // Simulate toggle
                 bool prevSim = rb->getFlags().test(Physics::SIMULATE_DYNAMICS);
                 bool simulate = prevSim;  // use a local variable for ImGui checkbox
@@ -434,6 +429,7 @@ namespace {
                         rb->getFlags().reset(Physics::SIMULATE_DYNAMICS);
                     }
                 }
+
 
                 // Forces
                 ImGui::SeparatorText("Forces");
@@ -490,30 +486,36 @@ namespace {
             }
 
             // Type selector
-            int type = static_cast<int>(cc->collider->type);
-            const char* items[] = { "Sphere","AABB" };
+            int type = static_cast<int>(cc->collider->helperType);
+            const char* items[] = { "Sphere","AABB", "OBB" };
             ImGui::Combo("Type", &type, items, IM_ARRAYSIZE(items));
 
-            // If type changed, rebuild collider (keep a sane default size)
-            if (type != static_cast<int>(cc->collider->type)) {
-                if (type == Collision::SPHERE) {
+            // LOOK FOR A CHANGE IN DROPDOWN, CHANGE COLLIDER IF SO
+            /*TODO CALC COLLIDER BASED ON TEXTURE*/
+            if (type != static_cast<int>(cc->collider->helperType)) {
+                if (type == Collision::SPHERE_T) {
                     CEVec3 center{ 0.f,0.f,0.f };
                     if (auto* t = ecs.GetComponent<TransformComponent>(e)) center = t->position;
                     cc->collider = std::make_unique<Collision::Sphere>(D.sphere_radius, center);
-                }
-                else {
-                    // AABB centered on transform with �0.5 extents
+                } else if (type == Collision::AABB_T) {
+                    // AABB centered on transform with 0.5 extents
                     CEVec3 c{ 0.f,0.f,0.f };
                     if (auto* t = ecs.GetComponent<TransformComponent>(e)) c = t->position;
                     cc->collider = std::make_unique<Collision::AABBRect>(
-                        CEVec3{ c.x - D.aabb_half, c.y - D.aabb_half, c.z - D.aabb_half },
-                        CEVec3{ c.x + D.aabb_half, c.y + D.aabb_half, c.z + D.aabb_half }
+                        CEVec3{ c.x - D.aabb_half, c.y - D.aabb_half, 0.f },
+                        CEVec3{ c.x + D.aabb_half, c.y + D.aabb_half, 0.f }
                     );
+                } else if (type == Collision::HelperType::OBB_T) {
+                    CEVec3 c{ 0.f,0.f,0.f };
+                    if (auto* t = ecs.GetComponent<TransformComponent>(e)) c = t->position;
+                    cc->collider = std::make_unique<Collision::Polygon>(Collision::Polygon::createOBB(CEVec3{ c.x - D.aabb_half, c.y - D.aabb_half, 0.f }, CEVec3{ c.x + D.aabb_half, c.y + D.aabb_half, 0.f }, 0.f, CEVec3{}));
+                } else if (type == Collision::HelperType::POLYGON_T) {
+
                 }
             }
 
             // Draw fields per type
-            if (cc->collider->type == Collision::SPHERE) {
+            if (cc->collider->helperType == Collision::SPHERE_T) {
                 // Sphere
                 auto* s = static_cast<Collision::Sphere*>(cc->collider.get());
 
@@ -527,31 +529,41 @@ namespace {
                     s->radius = r;
                 }
 
-                // Center
-                float c[3]{ s->center.x, s->center.y, s->center.z };
-                ImGui::DragFloat3("Center", c, 0.1f);
+                // Offset
+                float c[2]{ s->offset.x, s->offset.y };
+                ImGui::DragFloat2("Offset", c, 0.1f);
                 if (ImGui::IsItemEdited() || ImGui::IsItemDeactivatedAfterEdit()) {
-                    s->center = { c[0], c[1], c[2] };
+                    s->offset = CEVec3{ c[0], c[1], 0.f };
                 }
+
+
             }
-            else {
+            else if (cc->collider->helperType == Collision::AABB_T) {
                 // AABB
                 auto* a = static_cast<Collision::AABBRect*>(cc->collider.get());
 
                 ImGui::SeparatorText("AABB");
 
-                float mn[3]{ a->min.x, a->min.y, a->min.z };
-                float mx[3]{ a->max.x, a->max.y, a->max.z };
+                CEVec3 &newExtents{ a->extents };
+
+                CEVec3 transform{a->position};
 
                 bool edited = false;
-                ImGui::DragFloat3("Min", mn, 0.05f);  edited |= ImGui::IsItemEdited() || ImGui::IsItemDeactivatedAfterEdit();
-                ImGui::DragFloat3("Max", mx, 0.05f);  edited |= ImGui::IsItemEdited() || ImGui::IsItemDeactivatedAfterEdit();
+                ImGui::DragFloat("Width", &newExtents.x, 0.05f);  edited |= ImGui::IsItemEdited() || ImGui::IsItemDeactivatedAfterEdit();
+                ImGui::DragFloat("Height", &newExtents.y, 0.05f);  edited |= ImGui::IsItemEdited() || ImGui::IsItemDeactivatedAfterEdit();
 
                 if (edited) {
-                    for (int i = 0; i < 3; ++i) if (mn[i] > mx[i]) std::swap(mn[i], mx[i]); // clamp
-                    a->min = { mn[0], mn[1], mn[2] };
-                    a->max = { mx[0], mx[1], mx[2] };
-                    a->extents = (a->max - a->min) * 0.5f;
+                    CEVec3 newMin{ transform - newExtents };
+                    CEVec3 newMax{ transform + newExtents };
+
+                    a->min = CEVec3{ newMin.x, newMin.y, 0.f };
+                    a->max = CEVec3{ newMax.x, newMax.y, 0.f };
+                }
+
+                float c[2]{ a->offset.x, a->offset.y };
+                ImGui::DragFloat2("Offset", c, 0.1f);
+                if (ImGui::IsItemEdited() || ImGui::IsItemDeactivatedAfterEdit()) {
+                    a->offset = CEVec3{ c[0], c[1], 0.f };
                 }
 
                 // optional: snap AABB around Transform
@@ -587,12 +599,41 @@ namespace {
                             a->max = t->position + extents;
                             a->extents = (a->max - a->min) * 0.5f;
                         }
-                       
-
-                        
+           
                     }
                 }
-            }
+            } else if (cc->collider->helperType == Collision::OBB_T) {
+                Collision::Polygon& a = dynamic_cast<Collision::Polygon&>(*cc->collider);
+
+                ImGui::SeparatorText("OBB");
+
+                CEVec3 newExtents{ Collision::Polygon::calculateOBBExtents(a) };
+
+                CEVec3 transform{ cc->collider->position };
+
+         
+
+                bool edited = false;
+                ImGui::DragFloat("Width", &newExtents.x, 0.05f);  edited |= ImGui::IsItemEdited() || ImGui::IsItemDeactivatedAfterEdit();
+                ImGui::DragFloat("Height", &newExtents.y, 0.05f);  edited |= ImGui::IsItemEdited() || ImGui::IsItemDeactivatedAfterEdit();
+
+                if (edited) {
+
+                    Collision::Polygon::updateOBB(transform - newExtents, transform + newExtents, a);
+
+                }
+
+                f32 arr[2] { a.offset.x, a.offset.y };
+                if (ImGui::DragFloat2("Offset", arr, 0.05f)) {
+                    a.offset = CEVec3{ arr[0], arr[1], 0.f };
+                }
+
+                f32 rotation{ a.rotation };
+                if (ImGui::DragFloat("Rotation", &rotation, 0.05f)) {
+                    a.updateRotation(rotation);
+                }
+
+            } 
         }
     };
 
@@ -658,6 +699,47 @@ namespace {
 
             ImGui::SetNextItemWidth(ImGui::GetFontSize() * 18.0f);
             ImGui::InputText("##tex_name", buf, sizeof(buf), ImGuiInputTextFlags_ReadOnly);
+
+            if (ImGui::BeginDragDropTarget()) {
+                if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSET/PAYLOAD")) {
+                    // Hard guard: verify this is actually an AssetDragPayload
+                    if (!payload->Data || payload->DataSize != sizeof(AssetDragPayload)) {
+                        LOGW(Debug, "Dropped non-asset payload on Shape texture field");
+                    }
+                    else {
+                        const auto* d = static_cast<const AssetDragPayload*>(payload->Data);
+
+                        // Only accept textures here
+                        if (d->kind == AssetKind::Texture) {
+                            std::string oldTexName = sc->textureName;
+
+                            // d->relPath is something like "images/ui/button.png"
+                            std::string rel = d->relPath;
+                            const std::string prefix = "images/";
+                            auto pos = rel.find(prefix);
+                            if (pos == 0) {
+                                // Store path relative to the images root, matching the picker
+                                rel = rel.substr(prefix.size());   // e.g. "ui/button.png"
+                            }
+
+                            // Fallback to the asset name if something is weird
+                            sc->textureName = rel.empty() ? std::string(d->name) : rel;
+
+                            // Using a texture now
+                            sc->enableTexture = true;
+
+                            // Undo support
+                            UndoManager::GetInstance().AddCommand(
+                                std::make_unique<CrashoutsEngine::ChangeValueCommand<std::string>>(
+                                    oldTexName, sc->textureName,
+                                    [sc](const std::string& v) { sc->textureName = v; }
+                                )
+                            );
+                        }
+                    }
+                }
+                ImGui::EndDragDropTarget();
+            }
 
             ImGui::SameLine();
             ImGui::TextDisabled("TextureAsset");
@@ -776,70 +858,71 @@ namespace {
             
             // Colour Mixer a la carte
             {
-                static CEVec3 startColor;
+                static CEColor startColor;
                 static bool editingColor = false;
 
                 //CEVec3 oldColor = sc->color;
                 float col[4] = {
-                    sc->color.x * (1.0f / 255.0f),
-                    sc->color.y * (1.0f / 255.0f),
-                    sc->color.z * (1.0f / 255.0f),
-                    1.0f
+                    sc->color.x(),
+                    sc->color.y(),
+                    sc->color.z(),
+                    sc->color.w()
                 };
 
                 ImGuiColorEditFlags flags =
                     ImGuiColorEditFlags_DisplayHSV |
                     ImGuiColorEditFlags_InputRGB |
                     ImGuiColorEditFlags_PickerHueBar |
-                    ImGuiColorEditFlags_NoAlpha;
+                    ImGuiColorEditFlags_AlphaBar;
 
                 // start editing when user opens popup
-                if (ImGui::ColorEdit3("Color", col, flags) && !editingColor) {
+                if (ImGui::ColorEdit4("Color", col, flags) && !editingColor) {
                     editingColor = true;
                     startColor = sc->color;
                 }
                 if (ImGui::IsItemDeactivated() && editingColor) {
                     // item lost focus (enter pressed / tab / clicked away)
-                    CEVec3 newColor = { col[0] * 255.f, col[1] * 255.f, col[2] * 255.f };
+                    CEColor newColor = { col[0], col[1], col[2], col[3] };
                     if (newColor != startColor) {
                         UndoManager::GetInstance().AddCommand(
-                            std::make_unique<CrashoutsEngine::ChangeValueCommand<CEVec3>>(
+                            std::make_unique<CrashoutsEngine::ChangeValueCommand<CEColor>>(
                                 startColor, newColor,
-                                [sc](const CEVec3& v) { sc->color = v; }));
+                                [sc](const CEColor& v) { sc->color = v; }));
                     }
                     editingColor = false;
                 }
 
                 // apply live color
-                sc->color = { col[0] * 255.f, col[1] * 255.f, col[2] * 255.f };
+                sc->color = { col[0], col[1], col[2], col[3]};
 
                 if (ImGui::SmallButton("Open Color Picker"))
                     ImGui::OpenPopup("##shape_color_picker");
 
                 if (ImGui::BeginPopup("##shape_color_picker")) {
-                    static CEVec3 popupStart;
+                    static CEColor popupStart;
                     static bool popupEditing = false;
 
                     // snapshot when opened
                     if (!popupEditing) { popupEditing = true; popupStart = sc->color; }
 
-                    float pick[3] = {
-                        sc->color.x / 255.f,
-                        sc->color.y / 255.f,
-                        sc->color.z / 255.f
+                    float pick[4] = {
+                        sc->color.x() ,
+                        sc->color.y() ,
+                        sc->color.z() ,
+                        sc->color.w()
                     };
-                    if (ImGui::ColorPicker3("##picker", pick, flags)) {
-                        sc->color = { pick[0] * 255.f, pick[1] * 255.f, pick[2] * 255.f };
+                    if (ImGui::ColorPicker4("##picker", pick, flags)) {
+                        sc->color = { pick[0], pick[1], pick[2], pick[3]};
                     }
 
                     // detect popup close
                     if (!ImGui::IsWindowAppearing() && !ImGui::IsWindowFocused()) {
-                        CEVec3 newCol = sc->color;
+                        CEColor newCol = sc->color;
                         if (popupEditing && newCol != popupStart) {
                             UndoManager::GetInstance().AddCommand(
-                                std::make_unique<CrashoutsEngine::ChangeValueCommand<CEVec3>>(
+                                std::make_unique<CrashoutsEngine::ChangeValueCommand<CEColor>>(
                                     popupStart, newCol,
-                                    [sc](const CEVec3& v) { sc->color = v; }));
+                                    [sc](const CEColor& v) { sc->color = v; }));
                         }
                         popupEditing = false;
                         ImGui::CloseCurrentPopup();
@@ -886,7 +969,8 @@ namespace {
             switch (sc->type) {
             case Component::ShapeType::Square:    Component::Shapes::CreateSquare(pos, sc->size, sc->rotation, sc->scale, sc->color); break;
             case Component::ShapeType::Rectangle: Component::Shapes::CreateRectangle(pos, sc->width, sc->height, sc->rotation, sc->scale, sc->color); break;
-            case Component::ShapeType::Line:      Component::Shapes::CreateLine(sc->p1, sc->p2, sc->thickness, sc->rotation, sc->scale, sc->color); break;
+            case Component::ShapeType::Line:      Component::Shapes::
+            (sc->p1, sc->p2, sc->thickness, sc->rotation, sc->scale, sc->color); break;
             case Component::ShapeType::Triangle:  Component::Shapes::CreateTriangle(sc->t1, sc->t2, sc->t3, sc->rotation, sc->scale, sc->color); break;
             }*/
             // reminder to ask how/where is the rendering of the shapes done in general, i don't wanna hunt for functions
@@ -942,10 +1026,10 @@ namespace {
             
             {
                 float col[4] = {
-                    fc->color.x * (1.0f / 255.0f),
-                    fc->color.y * (1.0f / 255.0f),
-                    fc->color.z * (1.0f / 255.0f),
-                    1.0f
+                    fc->color.x(),
+                    fc->color.y(),
+                    fc->color.z(),
+                    fc->color.w()
                 };
 
                 ImGuiColorEditFlags flags =
@@ -954,11 +1038,12 @@ namespace {
                     ImGuiColorEditFlags_PickerHueBar |
                     ImGuiColorEditFlags_NoAlpha;
 
-                if (ImGui::ColorEdit3("Color", col, flags) || ImGui::IsItemDeactivatedAfterEdit())
+                if (ImGui::ColorEdit4("Color", col, flags) || ImGui::IsItemDeactivatedAfterEdit())
                 {
-                    fc->color.x = col[0] * 255.0f;
-                    fc->color.y = col[1] * 255.0f;
-                    fc->color.z = col[2] * 255.0f;
+                    fc->color.x() = col[0];
+                    fc->color.y() = col[1];
+                    fc->color.z() = col[2];
+                    fc->color.w() = col[3];
                 }
 
                 if (ImGui::SmallButton("Open Color Picker"))
@@ -966,11 +1051,12 @@ namespace {
 
                 if (ImGui::BeginPopup("##shape_color_picker"))
                 {
-                    if (ImGui::ColorPicker3("##picker", col, flags))
+                    if (ImGui::ColorPicker4("##picker", col, flags))
                     {
-                        fc->color.x = col[0] * 255.0f;
-                        fc->color.y = col[1] * 255.0f;
-                        fc->color.z = col[2] * 255.0f;
+                        fc->color.x() = col[0];
+                        fc->color.y() = col[1];
+                        fc->color.z() = col[2];
+                        fc->color.w() = col[3];
                     }
                     ImGui::EndPopup();
                 }
@@ -1023,6 +1109,46 @@ namespace {
             if (ImGui::IsItemEdited() || ImGui::IsItemDeactivatedAfterEdit()) {
                 c->eventPath = buf;
             }
+
+            if (ImGui::BeginDragDropTarget()) {
+                if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSET/PAYLOAD")) {
+                    // Hard guard: ignore wrong payload types
+                    if (!payload->Data || payload->DataSize != sizeof(AssetDragPayload)) {
+                        LOGW(Debug, "Dropped non-audio payload on AudioComponent eventPath");
+                    }
+                    else {
+                        const auto* d = static_cast<const AssetDragPayload*>(payload->Data);
+
+                        // Only accept Audio assets here
+                        if (d->kind == AssetKind::Audio) {
+                            std::filesystem::path relPath = d->relPath;
+                            std::string ext = relPath.extension().string();
+                            std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+
+                            std::string rel = relPath.generic_string();
+                            const std::string prefix = "audio/";
+                            auto pos = rel.find(prefix);
+                            if (pos == 0) {
+                                rel = rel.substr(prefix.size());
+                            }
+
+                            if (ext == ".wav" || ext == ".ogg" || ext == ".mp3") {
+                                // raw clip → just store relative path
+                                c->eventPath = rel;
+                            }
+                            else {
+                                // bank event → strip extension and prepend event:/
+                                if (auto dot = rel.find_last_of('.'); dot != std::string::npos) {
+                                    rel.erase(dot);
+                                }
+                                c->eventPath = std::string("event:/") + rel;
+                            }
+                        }
+                    }
+                }
+                ImGui::EndDragDropTarget();
+            }
+
             ImGui::SameLine();
             ImGui::TextDisabled("Event");
 
@@ -1287,12 +1413,28 @@ namespace {
                 if (inst.ClassName.size() < sizeof(buf))
                     std::memcpy(buf, inst.ClassName.data(), inst.ClassName.size());
 
+                // Plain typing still works
                 if (ImGui::InputText("Class Name", buf, sizeof(buf))) {
                     inst.ClassName = buf;
                     if (!inst.ClassName.empty() && monoReady) {
                         sc->Destroy();
                         sc->Initialize(MonoManager::GetDomain(), MonoManager::GetAssembly());
                     }
+                }
+
+                // Also accept drag-dropped script class names
+                if (ImGui::BeginDragDropTarget()) {
+                    if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("SCRIPT/CLASS")) {
+                        const char* dropped = static_cast<const char*>(payload->Data);
+                        if (dropped && dropped[0] != '\0') {
+                            inst.ClassName = dropped;
+                            if (!inst.ClassName.empty() && monoReady) {
+                                sc->Destroy();
+                                sc->Initialize(MonoManager::GetDomain(), MonoManager::GetAssembly());
+                            }
+                        }
+                    }
+                    ImGui::EndDragDropTarget();
                 }
 
                 ImGui::SameLine();
@@ -1331,13 +1473,22 @@ namespace {
                                 if (filter[0] && stem.find(filter) == std::string::npos)
                                     continue;
 
-                                if (ImGui::Selectable(stem.c_str())) {
+                                bool isCurrent = (inst.ClassName == stem);
+
+                                if (ImGui::Selectable(stem.c_str(), isCurrent)) {
                                     inst.ClassName = stem;
                                     if (!inst.ClassName.empty() && monoReady) {
                                         sc->Destroy();
                                         sc->Initialize(MonoManager::GetDomain(), MonoManager::GetAssembly());
                                     }
-                                    ImGui::CloseCurrentPopup();
+                                }
+
+                                if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID)) {
+                                    ImGui::SetDragDropPayload("SCRIPT/CLASS",
+                                        stem.c_str(),
+                                        static_cast<size_t>(stem.size() + 1));
+                                    ImGui::TextUnformatted(stem.c_str());
+                                    ImGui::EndDragDropSource();
                                 }
                             }
                         }
@@ -1474,7 +1625,7 @@ public class )" << file.stem().string() << R"(
 
             // ImGui::Checkbox("Enable Camera", &cc->enabled);      // CURRENTLY NOT IMPLEMENTED
             // ImGui::DragFloat3("Position", &cc->position.x, 1.f); // Locked access
-            ImGui::DragFloat("Zoom", &cc->zoom);
+            ImGui::DragFloat("Zoom", &cc->zoom, 0.05f, 0.05f);
             // ImGui::DragFloat("Target Aspect Ratio", &cc->targetAR);
             ImGui::DragFloat2("X Boundaries (min/max)", &cc->xBounds.x, 1.f);
             ImGui::DragFloat2("Y Boundaries (min/max)", &cc->yBounds.x, 1.f);
@@ -1516,12 +1667,13 @@ public class )" << file.stem().string() << R"(
             ImGui::SeparatorText("Shape Colors");
 
             // Helper function to convert 0-255 CEVec3 to 0-1 float[3] for ImGui's picker
-            auto EditColor = [](const char* label, CEVec3& colorVec) {
-                float col[3] = { colorVec.x / 255.0f, colorVec.y / 255.0f, colorVec.z / 255.0f };
-                if (ImGui::ColorEdit3(label, col)) {
-                    colorVec.x = col[0] * 255.0f;
-                    colorVec.y = col[1] * 255.0f;
-                    colorVec.z = col[2] * 255.0f;
+            auto EditColor = [](const char* label, CEColor& colorVec) {
+                float col[4] = { colorVec.x(), colorVec.y(), colorVec.z(), colorVec.w()};
+                if (ImGui::ColorEdit4(label, col)) {
+                    colorVec.x() = col[0];
+                    colorVec.y() = col[1];
+                    colorVec.z() = col[2];
+                    colorVec.w() = col[3];
                 }
                 };
 
@@ -1834,6 +1986,525 @@ public class )" << file.stem().string() << R"(
     };
 
     /*!
+    @brief Function used to draw the imgui bitmask selector.
+    @param mask The bit mask to modify.
+    */
+    static void DrawBitmaskSelector(unsigned int& mask) {
+        // Map the visual 3x3 grid to your specific Enum Bits
+        // -1 means "No Checkbox" (Corners/Center)
+
+        // Enum: Up=0, Right=1, Down=2, Left=3
+        int bits[3][3] = {
+            { -1,  0, -1 }, // Top Row:   Empty, UP(Bit 0), Empty
+            {  3, -1,  1 }, // Mid Row:   LEFT(Bit 3), Center, RIGHT(Bit 1)
+            { -1,  2, -1 }  // Bot Row:   Empty, DOWN(Bit 2), Empty
+        };
+
+        ImGui::BeginGroup();
+
+        float cellSize = 25.0f;
+        float startX = ImGui::GetCursorPosX();
+
+        for (int r = 0; r < 3; ++r) {
+            for (int c = 0; c < 3; ++c) {
+                int bitIndex = bits[r][c];
+
+                if (c > 0) ImGui::SameLine();
+                ImGui::SetCursorPosX(startX + (c * cellSize));
+
+                if (bitIndex == -1) {
+                    // Placeholder for corners/center
+                    ImGui::PushStyleVar(ImGuiStyleVar_Alpha, 0.1f);
+                    ImGui::Dummy(ImVec2(20, 20));
+                    ImGui::PopStyleVar();
+                }
+                else {
+                    bool val = (mask & (1 << bitIndex)) != 0;
+                    std::string id = "##bit" + std::to_string(bitIndex);
+
+                    ImGui::PushID(bitIndex);
+                    if (ImGui::Checkbox(id.c_str(), &val)) {
+                        if (val) mask |= (1 << bitIndex);
+                        else     mask &= ~(1 << bitIndex);
+                    }
+                    ImGui::PopID();
+                }
+            }
+        }
+        ImGui::EndGroup();
+    }
+
+    /*!
+    @brief Adapter for editing Component::TileMapComponent.
+    @details Uses ImGui controls to manage Tile Map assets and editor state.
+    */
+    struct TileMapAdapter : DebugReflection::IComponentAdapter {
+
+        // 1. Update Name
+        const char* name() const override { return "Tile Map Component"; }
+
+        // 2. Update 'Has' Check
+        bool has(ECS& ecs, Entity e) const override {
+            return ecs.HasComponent<Component::TileMapComponent>(e);
+        }
+
+        // 3. Update 'Add' Logic
+        void add(ECS& ecs, Entity e) override {
+            if (!has(ecs, e)) ecs.AddComponent<Component::TileMapComponent>(e);
+        }
+
+        // 4. Update 'Remove' Logic
+        void remove(ECS& ecs, Entity e) override {
+            if (has(ecs, e)) ecs.RemoveComponent<Component::TileMapComponent>(e);
+        }
+
+        // 5. The Main Inspector UI
+        void drawInspector(ECS& ecs, Entity e) override {
+            using namespace Component;
+            using namespace CrashoutsEngine::Assets;
+            namespace fs = std::filesystem;
+
+            // Get the specific component
+            TileMapComponent* tm = ecs.GetComponent<TileMapComponent>(e);
+            if (!tm) return;
+
+            ImGui::SeparatorText("Tile Map Settings");
+
+            // ---------------------------------------------------------
+            // SECTION 1: General Settings
+            // ---------------------------------------------------------
+
+            // Tile Size
+            if (ImGui::InputInt("Tile Size (Px)", &tm->tileSize)) {
+                if (tm->tileSize < 1) tm->tileSize = 1;
+                tm->isCacheDirty = true; // Redraw grid lines if size changes
+            }
+
+            // Open Editor Toggle
+            if (ImGui::Checkbox("Open Tile Palette", &tm->pOpen)) {
+                // Logic if needed when opening/closing
+            }
+
+            ImGui::Separator();
+            ImGui::Text("Loaded Rule Sets:");
+
+            // ---------------------------------------------------------
+            // SECTION 2: Asset Management (List of loaded Rule Files)
+            // ---------------------------------------------------------
+
+            // List existing assets
+            int indexToRemove = -1;
+            static std::string assetToEdit = "";
+            bool openRulesPopup = false;
+
+            for (int i = 0; i < tm->tileAssetNames.size(); ++i) {
+                ImGui::PushID(i);
+
+                // Display Name
+                ImGui::Bullet();
+                ImGui::Text("%s", tm->tileAssetNames[i].c_str());
+
+                ImGui::SameLine();
+
+                // Edit Button
+                if (ImGui::SmallButton("Edit Rules")) {
+                    assetToEdit = tm->tileAssetNames[i];
+                    openRulesPopup = true;
+                }
+
+                ImGui::SameLine();
+
+                // Remove Button
+                ImGui::SameLine();
+                if (ImGui::SmallButton("Remove")) {
+                    indexToRemove = i;
+                }
+
+                ImGui::PopID();
+            }
+            if(openRulesPopup) ImGui::OpenPopup("RuleSetEditorPopup");
+
+            // Handle Removal
+            if (indexToRemove != -1) {
+                // Check if the active asset is the one being removed
+                if (tm->activeAsset == tm->tileAssetNames[indexToRemove]) {
+                    tm->activeAsset = "none";
+                }
+                tm->tileAssetNames.erase(tm->tileAssetNames.begin() + indexToRemove);
+                tm->isCacheDirty = true; // Rebuild cache just in case
+            }
+
+            ImGui::SetNextWindowSize(ImVec2(500, 400), ImGuiCond_FirstUseEver);
+            if (ImGui::BeginPopupModal("RuleSetEditorPopup", nullptr, ImGuiWindowFlags_MenuBar)) {
+                static int ruleIndexToEdit = -1;
+                bool openAssetPopup = false;
+                // 1. Get the actual asset from memory
+                TileMapAsset* asset = AssetManager::GetInstance().Get<TileMapAsset>(assetToEdit);
+
+                if (!asset) {
+                    ImGui::TextColored(ImVec4(1, 0, 0, 1), "Error: Asset not loaded!");
+                    if (ImGui::Button("Close")) ImGui::CloseCurrentPopup();
+                }
+                else {
+                    if (ImGui::BeginMenuBar()) {
+                        if (ImGui::MenuItem("Save & Close")) {
+                            asset->SaveTileMaps(); // Save to disk
+                            tm->isCacheDirty = true; // Rebuild render cache
+                            ImGui::CloseCurrentPopup();
+                        }
+                        ImGui::EndMenuBar();
+                    }
+
+                    ImGui::Text("Editing: %s", assetToEdit.c_str());
+                    ImGui::Separator();
+
+                    // Button to add a new empty rule
+                    if (ImGui::Button("+ Add New Rule")) {
+                        RuleTile newTile;
+                        newTile.texAssetName = "default.png"; // Placeholder
+                        asset->GetTilesMutable().push_back(newTile);
+                    }
+
+                    ImGui::Separator();
+
+                    // Scrollable list of rules
+                    ImGui::BeginChild("RulesList", ImVec2(0, 0), true);
+
+                    // Layer option
+                    ImGui::Text("Layer Filter:");
+                    DrawLayerMultiSelect(ecs, asset->GetLayerMaskMutable());
+
+                    auto& rules = asset->GetTilesMutable();
+                    int ruleToDelete = -1;
+
+                    for (int i = 0; i < rules.size(); ++i) {
+                        RuleTile& rule = rules[i];
+                        ImGui::PushID(i);
+
+                        if (ImGui::CollapsingHeader(("Rule " + std::to_string(i)).c_str(), ImGuiTreeNodeFlags_DefaultOpen)) {
+
+                            // A. Texture Name
+                            ImGui::Text("Texture: %s", rule.texAssetName.c_str());
+                            ImGui::SameLine();
+
+                            // Unique ID for this button so it doesn't conflict
+                            std::string btnId = "Choose...##" + std::to_string(i);
+                            if (ImGui::SmallButton(btnId.c_str())) {
+                                // Open the SHARED popup
+                                openAssetPopup = true;
+
+                                ruleIndexToEdit = i;
+                            }
+
+                            // B. Collider Type
+                            const char* colliderNames[] = { "Sphere", "AABB", "Polygon", "OBB", "None"};
+                            int currentItem = (int)rule.colliderType;
+                            if (ImGui::Combo("Collider", &currentItem, colliderNames, 5)) {
+                                rule.colliderType = (Collision::ColliderType)currentItem;
+                            }
+
+                            // C. Bitmask (The Grid)
+                            ImGui::Text("Neighbours:");
+                            DrawBitmaskSelector(rule.ruleBitMap);
+
+                            // D. Hex Preview
+                            ImGui::SameLine();
+                            ImGui::BeginGroup();
+                            ImGui::TextDisabled("Hex: 0x%02X", rule.ruleBitMap);
+                            if (ImGui::Button("Delete Rule")) ruleToDelete = i;
+                            ImGui::EndGroup();
+                        }
+                        ImGui::PopID();
+                    }
+
+                    if (ruleToDelete != -1) {
+                        asset->RemoveTileDefinition(ruleToDelete);
+                    }
+
+                    ImGui::EndChild();
+                    if(openAssetPopup) ImGui::OpenPopup("PickRuleTexturePopup");
+
+                    // SHARED TEXTURE PICKER POPUP
+                    if (ImGui::BeginPopupModal("PickRuleTexturePopup", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
+                        namespace fs = std::filesystem;
+                        static std::vector<std::string> s_assets;
+                        static bool s_scanned = false;
+
+                        // Refresh List button
+                        if (ImGui::Button("Refresh List")) {
+                            s_scanned = false;
+                        }
+
+                        if (!s_scanned) {
+                            s_scanned = true;
+                            s_assets.clear();
+
+                            const std::string assetRoot = CrashoutsEngine::Assets::rootPath + "images";
+                            if (fs::exists(assetRoot)) {
+                                for (auto& p : fs::recursive_directory_iterator(assetRoot)) {
+                                    if (!p.is_regular_file()) continue;
+
+                                    const std::string ext = p.path().extension().string();
+                                    std::string lower = ext;
+                                    std::transform(lower.begin(), lower.end(), lower.begin(), ::tolower);
+                                    if (lower == ".png" || lower == ".jpg" || lower == ".jpeg" ||
+                                        lower == ".tga" || lower == ".bmp") {
+
+                                        std::string rel = fs::relative(p.path(), assetRoot).string();
+                                        s_assets.push_back(rel);
+                                    }
+                                }
+                                std::sort(s_assets.begin(), s_assets.end());
+                            }
+                        }
+
+                        ImGui::Separator();
+
+                        // Asset List
+                        ImGui::BeginChild("asset_list", ImVec2(420, 300), true);
+                        for (const auto& f : s_assets) {
+                            if (ImGui::Selectable(f.c_str())) {
+                                // Apply selection using the static index
+                                if (ruleIndexToEdit >= 0 && ruleIndexToEdit < rules.size()) {
+                                    rules[ruleIndexToEdit].texAssetName = f;
+                                }
+                                ImGui::CloseCurrentPopup();
+                            }
+                        }
+                        ImGui::EndChild();
+
+                        if (ImGui::Button("Cancel")) ImGui::CloseCurrentPopup();
+                        ImGui::EndPopup();
+                    }
+                }
+                ImGui::EndPopup();
+            }
+
+            // ---------------------------------------------------------
+            // SECTION 3: Add New Asset
+            // ---------------------------------------------------------
+
+            if (ImGui::Button("Add Rule Set...")) {
+                ImGui::OpenPopup("AddRuleAssetPopup");
+            }
+
+            if (ImGui::BeginPopup("AddRuleAssetPopup")) {
+                namespace fs = std::filesystem;
+                std::string dirPath = CrashoutsEngine::Assets::rootPath + "tilemaps/";
+
+                // --- SECTION 1: CREATE NEW ASSET ---
+                static char newAssetName[64] = "";
+                ImGui::InputTextWithHint("##NewAsset", "New Asset Name", newAssetName, IM_ARRAYSIZE(newAssetName));
+                ImGui::SameLine();
+
+                // Logic to Create if it doesn't exist
+                if (ImGui::Button("Create")) {
+                    std::string rawName = newAssetName;
+                    if (!rawName.empty()) {
+                        // 2. Check if it already exists in the component list
+                        bool alreadyHas = false;
+                        for (const auto& s : tm->tileAssetNames) if (s == rawName) alreadyHas = true;
+
+                        if (!alreadyHas) {
+                            // 3. Create the physical file and Asset Object
+                            // (Your TileMapAsset::Create function handles file creation if missing)
+                            auto newAsset = Assets::TileMapAsset::Create(rawName);
+
+                            if (newAsset) {
+                                // 4. Register to AssetManager
+                                Assets::AssetManager::GetInstance().Load(rawName, std::move(newAsset));
+
+                                // 5. Add to Component
+                                tm->tileAssetNames.push_back(rawName);
+                                tm->isCacheDirty = true;
+
+                                // Clear input
+                                newAssetName[0] = '\0';
+                                ImGui::CloseCurrentPopup();
+                            }
+                        }
+                    }
+                }
+
+                ImGui::Separator();
+                ImGui::TextDisabled("Select Existing:");
+
+                // --- SECTION 2: SELECT EXISTING ---
+                if (fs::exists(dirPath)) {
+                    for (const auto& entry : fs::directory_iterator(dirPath)) {
+                        if (!entry.is_regular_file()) continue;
+
+                        std::string filename = entry.path().filename().string();
+
+                        // Check if already added to avoid duplicates in the list
+                        bool alreadyHas = false;
+                        for (const auto& s : tm->tileAssetNames) if (s == filename) alreadyHas = true;
+
+                        if (!alreadyHas) {
+                            if (ImGui::Selectable(filename.c_str())) {
+                                tm->tileAssetNames.push_back(filename);
+
+                                // Ensure it's loaded in memory
+                                // FIX: Use the Factory method, don't move an empty unique_ptr
+                                auto loadedAsset = Assets::TileMapAsset::Create(filename);
+                                if (loadedAsset) {
+                                    Assets::AssetManager::GetInstance().Load(filename, std::move(loadedAsset));
+                                }
+
+                                tm->isCacheDirty = true;
+                            }
+                        }
+                    }
+                }
+                else {
+                    ImGui::Text("No tilemaps folder found!");
+                }
+                ImGui::EndPopup();
+            }
+
+            // ---------------------------------------------------------
+            // SECTION 4: Debug Stats
+            // ---------------------------------------------------------
+            ImGui::Separator();
+            ImGui::TextDisabled("Stats:");
+            ImGui::TextDisabled("Tiles Painted: %zu", tm->gridData.size());
+            ImGui::TextDisabled("Active Brush: %s", tm->activeAsset.c_str());
+
+            if (ImGui::Button("Force Rebuild Cache")) {
+                tm->isCacheDirty = true;
+            }
+
+            if (ImGui::Button("Clear All Tiles")) {
+                tm->gridData.clear();
+                tm->isCacheDirty = true;
+            }
+        }
+    };
+
+    /*!
+	@brief Adapter for editing Component::KeyframeAnimatorComponent.
+	@details Uses ImGui controls to manage keyframe animations.
+    */
+    struct KeyframeAnimatorAdapter : DebugReflection::IComponentAdapter {
+        const char* name() const override { return "Animation (KeyframeAnimator)"; }
+
+        bool has(ECS& ecs, Entity e) const override {
+            return ecs.HasComponent<KeyframeAnimatorComponent>(e);
+        }
+
+        void add(ECS& ecs, Entity e) override {
+            using namespace KeyframeUnity;
+
+            // Ensure component exists
+            auto& anim = AddAnimator(ecs, e);
+
+            // -------- sample WALK clip (frames 0–3 loop) --------
+            AnimationClip walk{};
+            walk.name = "Walk";
+            walk.wrap = KFWrap::Loop;
+
+            KFBinding walkSprite{};
+            walkSprite.property = KFProperty::SpriteIndex;
+
+            {
+                KFKey k{};
+                k.interp = KFInterp::Constant;
+
+                k.time = 0.0f; k.value = 0.f; walkSprite.curve.Add(k);
+                k.time = 0.1f; k.value = 1.f; walkSprite.curve.Add(k);
+                k.time = 0.2f; k.value = 2.f; walkSprite.curve.Add(k);
+                k.time = 0.3f; k.value = 3.f; walkSprite.curve.Add(k);
+                k.time = 0.4f; k.value = 0.f; walkSprite.curve.Add(k); // close loop
+            }
+
+            walk.bindings.push_back(walkSprite);
+
+            // -------- sample JUMP clip (frames 4–7, clamp) --------
+            AnimationClip jump{};
+            jump.name = "Jump";
+            jump.wrap = KFWrap::Clamp;
+
+            KFBinding jumpSprite{};
+            jumpSprite.property = KFProperty::SpriteIndex;
+
+            {
+                KFKey keyFrame{};
+                keyFrame.interp = KFInterp::Constant;
+
+                // start stand frame
+                keyFrame.time = 0.0f;  keyFrame.value = 4.f; jumpSprite.curve.Add(keyFrame);
+                // in-air
+                keyFrame.time = 0.15f; keyFrame.value = 5.f; jumpSprite.curve.Add(keyFrame);
+                // peak
+                keyFrame.time = 0.30f; keyFrame.value = 6.f; jumpSprite.curve.Add(keyFrame);
+                // landing
+                keyFrame.time = 0.45f; keyFrame.value = 7.f; jumpSprite.curve.Add(keyFrame);
+            }
+
+            jump.bindings.push_back(jumpSprite);
+
+            // Register both clips
+            anim.clips[walk.name] = walk;
+            anim.clips[jump.name] = jump;
+
+            // Start in WALK
+            anim.current = walk.name;
+            anim.t = 0.f;
+            anim.playing = true;
+        }
+
+        void remove(ECS& ecs, Entity e) override {
+            if (has(ecs, e))
+                ecs.RemoveComponent<KeyframeAnimatorComponent>(e);
+        }
+
+        void drawInspector(ECS& ecs, Entity e) override {
+            using namespace KeyframeUnity;
+
+            auto* anim = ecs.GetComponent<KeyframeAnimatorComponent>(e);
+            if (!anim) return;
+
+            ImGui::SeparatorText("Animation");
+
+            if (anim->current.empty()) {
+                ImGui::TextDisabled("No clip set. Use your code to SetClip() and Play().");
+            }
+            else {
+                ImGui::Text("Current clip: %s", anim->current.c_str());
+            }
+
+            ImGui::DragFloat("Time", &anim->t, 0.01f, 0.0f);
+
+            // Play / Pause / Stop / Restart
+            if (ImGui::Button(anim->playing ? "Pause" : "Play")) {
+                anim->playing = !anim->playing;
+            }
+            ImGui::SameLine();
+            if (ImGui::Button("Stop")) {
+                anim->playing = false;
+                anim->t = 0.f;
+            }
+            ImGui::SameLine();
+            if (ImGui::Button("Restart")) {
+                anim->t = 0.f;
+                anim->playing = true;
+            }
+
+            ImGui::SeparatorText("Clips");
+            for (auto& kv : anim->clips) {
+                const std::string& clipName = kv.first;
+                bool isCurrent = (anim->current == clipName);
+
+                if (ImGui::Selectable(clipName.c_str(), isCurrent)) {
+                    Play(*anim, clipName, true);
+                }
+            }
+        }
+    };
+
+
+
+    /*!
     @brief Game-state provider installed at runtime (no hardcoded state list).
     @details Bridges GameStateManager to the Debug Menu; exposes current/previous/next and issues ChangeGameState() transitions from a reflected state list.
     */
@@ -1900,8 +2571,10 @@ public class )" << file.stem().string() << R"(
     static CameraAdapter gCameraAdapter;
     static GuiAdapter gGuiAdapter;
     static PPAdapter gPPAdapter;
+    static TileMapAdapter gTileMapAdapter;
     static GameStateProvider gProvider;
     static BuiltinPhysicsProvider gBuiltinPhys;
+	static KeyframeAnimatorAdapter gKeyframeAdapter;
 
 }
 
@@ -1930,6 +2603,8 @@ extern "C" void RegisterBuiltinComponentAdapters() {
     ComponentRegistry::instance().registerAdapter(&gCameraAdapter);
     ComponentRegistry::instance().registerAdapter(&gGuiAdapter);
     ComponentRegistry::instance().registerAdapter(&gPPAdapter);
+    ComponentRegistry::instance().registerAdapter(&gTileMapAdapter);
+	ComponentRegistry::instance().registerAdapter(&gKeyframeAdapter);
     DebugReflection::SetGameStateProvider(&gProvider);
     DebugReflection::PhysicsRegistry::instance().registerProvider(&gBuiltinPhys);
 

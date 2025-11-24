@@ -74,10 +74,7 @@ void AddPhysicsEntity(CrashoutsEngine::Entity &entity, Component::RigidBodyCompo
 	globalECS->AddComponent<Component::TransformComponent>(entity, transform);
 	globalECS->AddComponent<Component::ShapeComponent>(entity, shape);
 	globalECS->AddComponent<Component::ColliderComponent>(entity, Component::ColliderComponent{
-		std::make_unique<Collision::OBBRect>(Collision::OBBRect{
-			CEVec3{transform.position - extents },
-			CEVec3{transform.position + extents}
-		})
+		std::make_unique<Collision::Polygon>(Collision::Polygon::createOBB(transform.position - extents, transform.position + extents, 0.f, CEVec3{}))
 	});
 }
 
@@ -181,7 +178,7 @@ void CreateRandBox() {
 	t.rotation = random_min_max(0.f, 360.f);
 	t.size = CEVec2(random_min_max(.5f, 3.f), random_min_max(.5f, 3.f));
 
-	shape.color = CEVec3(random_min_max(0.f, 255.f), random_min_max(0.f, 255.f), random_min_max(0.f, 255.f));
+	shape.color = CEColor(random_min_max(0.f, 255.f), random_min_max(0.f, 255.f), random_min_max(0.f, 255.f));
 	shape.type = Component::ShapeType::Rectangle;
 
 

@@ -14,6 +14,8 @@
 #include <map>
 #include <array>
 #include <string>
+#include <optional>
+#include <initializer_list>
 #include "entitymanager.h"
 
 namespace Collision {
@@ -25,7 +27,17 @@ namespace Collision {
 	enum ColliderType {
 		SPHERE,
 		AABB,
-		OBB
+		POLYGON,
+		OBB,
+		NONE
+	};
+
+	enum HelperType {
+		SPHERE_T,
+		AABB_T,
+		OBB_T,
+		TRIANGLE_T,
+		POLYGON_T
 	};
 
 	/*!
@@ -60,7 +72,12 @@ namespace Collision {
 		Collider(ColliderType type);
 		virtual ~Collider() = default;
 		virtual std::unique_ptr<Collider> clone() const = 0;
-		virtual void updateCollider([[maybe_unused]] CEVec3 const& newPos) {};
+		virtual void updateCollider([[maybe_unused]] CEVec3 const& newPos) = 0;
+		virtual void updateRotation([[maybe_unused]] f32 newRotation) {};
+		virtual f32 calculateInertia([[maybe_unused]] f32 mass) { return 0.f; };
+		CEVec3 offset{};
+		CEVec3 position{};
+		HelperType helperType; /*HELPER FOR UI DROPDOWN*/
 	};
 
 	/*!
@@ -70,8 +87,7 @@ namespace Collision {
 	class Sphere : public Collider {
 	public:
 		f32 radius;
-		CEVec3 center;
-		Sphere(f32 radius, CEVec3 const& center);
+		Sphere(f32 radius, CEVec3 const& position, CEVec3 const& offset = CEVec3{});
 		~Sphere() = default;
 		virtual void updateCollider(CEVec3 const& newPos);
 
@@ -123,7 +139,7 @@ namespace Collision {
 		Vertices originalVertices;
 		Normal normalEdges;
 		OBBRect(CEVec3 const& min, CEVec3 const& max, f32 rotation = 0.f);
-		void updateRotation(f32 newRotation);
+		virtual void updateRotation(f32 newRotation);
 		~OBBRect() = default;
 		virtual void updateCollider(CEVec3 const&);
 
@@ -131,6 +147,55 @@ namespace Collision {
 			return std::make_unique<OBBRect>(*this);
 		}
 	private:
+
+	};
+
+	/*!
+	@class Polygon
+	@brief Polygon shape with a collection of Vertices
+	*/
+	class Polygon : public Collider {
+		/*NORMAL AND VERTEX FOR THE PAIR*/
+	public:
+		constexpr static int MAX_VERTEX{ 10 };
+
+		using SupportPoint = std::optional<std::pair<CEVec3, f32>>; //Point and Vertex;
+
+		using Vertices = std::array<CEVec3, MAX_VERTEX>;
+		using Normal = std::array<CEVec3, MAX_VERTEX>;
+
+		float rotation{};
+		int vertexCount{};
+
+
+		Vertices vertices;
+		Vertices rotatedVertices;
+		Normal normalEdges;
+
+		Polygon();
+		Polygon(std::initializer_list<CEVec3> vertices, f32 rotation = 0.f, CEVec3 const& position = {}, CEVec3 const& offset = {});
+		virtual void updateRotation(f32 newRotation);
+		~Polygon() = default;
+		virtual void updateCollider(CEVec3 const&);
+		void updatePosition(CEVec3 const& newPos);
+		void calcNormals();
+		CEVec3 calcNormal(CEVec3 const& edge);
+
+		virtual f32 calculateInertia(f32 mass) override;
+
+		void forceUpdateRotation(f32 newRotation);
+
+		/*OBB HELPER FUNCTIONS*/
+		static Polygon createOBB(CEVec3 const& min, CEVec3 const& max, f32 rotation, CEVec3 offset);
+		static void updateOBB(CEVec3 const& min, CEVec3 const& max, Polygon& polygon);
+		static CEVec3 calculateOBBExtents(Polygon const& polygon);
+		
+		/*AABB HELPER FUNCTIONS*/
+		static Polygon createAABB(CEVec3 const& min, CEVec3 const& max, CEVec3 offset);
+
+		virtual std::unique_ptr<Collider> clone() const override {
+			return std::make_unique<Polygon>(*this);
+		}
 
 	};
 

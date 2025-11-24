@@ -122,13 +122,27 @@ bool GLApp::init(GLint w, GLint h, std::string t) {
     glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
 
     // size of viewport: width x height
-    GLApp::ptr_window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
-    if (!GLApp::ptr_window) {
-        std::cerr << "GLFW unable to create OpenGL context - abort program\n";
-        LOGE(Core, "GLFW unable to create OpenGL context - abort program!!!");
-        glfwTerminate();
-        return false;
-    }
+    /*GLApp::ptr_window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);*/
+    GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+    const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+
+    // Set window to be borderless
+    glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
+    glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+    //glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE); // ensure maximize
+
+    //glfwWindowHint(GLFW_FLOATING, GLFW_FALSE);
+
+    GLApp::ptr_window = glfwCreateWindow(mode->width,mode->height,title.c_str(),NULL,NULL);
+
+    // Borderless fullscreen (windowed)
+    glfwSetWindowMonitor(GLApp::ptr_window,NULL,0, 0,mode->width,mode->height,0);
+    // Move window to exact fullscreen position (0,0)
+    //glfwSetWindowPos(GLApp::ptr_window, 0, 0);
+
+    // Override engine width/height
+    GLApp::width = mode->width;
+    GLApp::height = mode->height;
 
     // make the previously created OpenGL context current ...
     glfwMakeContextCurrent(GLApp::ptr_window);

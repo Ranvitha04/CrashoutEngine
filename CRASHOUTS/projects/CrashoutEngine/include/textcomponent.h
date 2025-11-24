@@ -10,7 +10,7 @@
 /*                                                                   includes
 ----------------------------------------------------------------------------- */
 #include <CEVec2.h>
-#include <CEVec3.h>
+#include <CEColor.h>
 #include <string>
 
 /*                                                                   
@@ -31,7 +31,7 @@ namespace Component {
 		// offset position
 		CEVec2 offset{ 0.f, 0.f };
 		// color
-		CEVec3 color{ 255.f, 255.f, 255.f };
+		CEColor color{ 1.f, 1.f, 1.f, 1.f };
 		// centered bool
 		bool centered{ true };
 		// is world space bool

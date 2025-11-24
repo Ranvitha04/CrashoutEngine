@@ -24,6 +24,7 @@
 #include "sceneasset.h"
 #include "fontasset.h"
 #include "shaderasset.h"
+#include "tilemapasset.h"
 #include "audioSystem.h"
 
 /*
@@ -162,7 +163,6 @@ namespace CrashoutsEngine {
 			std::cout << "Successfully generated asset manifest at: " << outPath.string() << std::endl;
 		}
 	
-		
 		void AssetManager::LoadManifestAssets(const std::string& rootAssetPath, const std::string& manifestPath) {
 			// Check manifest json file
 			std::ifstream ifs(manifestPath);
@@ -208,7 +208,7 @@ namespace CrashoutsEngine {
 			}
 			
 			// NEW: --- Loading SPRITE_SHEET ---
-			if (doc.HasMember("sprite_sheet") && doc["sprite_sheet"].IsArray()) {
+			if (doc.HasMember("spritesheet") && doc["spritesheet"].IsArray()) {
 				std::cout << "Loading Sprite Sheet Textures..." << std::endl;
 				const rapidjson::Value& sheetArray = doc["sprite_sheet"];
 				for (rapidjson::SizeType i = 0; i < sheetArray.Size(); ++i) {
@@ -216,7 +216,7 @@ namespace CrashoutsEngine {
 					if (asset.HasMember("name") && asset.HasMember("path")) {
 						std::string name = asset["name"].GetString();
 						std::string relativePath = asset["path"].GetString();
-						std::string fullPath = rootAssetPath + "sprite_sheet/" + relativePath;
+						std::string fullPath = rootAssetPath + "spritesheet/" + relativePath;
                         std::unique_ptr<TextureAsset> newTexture = TextureAsset::Create(fullPath);
                         if (newTexture) {
                             if (newTexture->UploadToGPU()) {
@@ -235,43 +235,72 @@ namespace CrashoutsEngine {
 
 			// --- Loading AUDIO ----
 			if (doc.HasMember("audio") && doc["audio"].IsArray()) {
-				std::cout << "Loading Audio Banks..." << std::endl;
+				using CrashoutsEngine::Audio::AudioSystem;
+				namespace fs = std::filesystem;
 
-				// Point FMOD to the *root audio folder* once (e.g. assets/audio)
-				CrashoutsEngine::Audio::AudioSystem::instance().init(rootAssetPath + "audio");
+				std::cout << "Loading audio (banks + raw)..." << std::endl;
 
-				const rapidjson::Value& audioArray = doc["audio"];
+				auto& audioSys = AudioSystem::instance();
+
+				// Point FMOD to assets/audio once
+				audioSys.init(rootAssetPath + "audio");
+
+				const auto& audioArray = doc["audio"];
+
+				// Collect paths
+				std::vector<std::string> bankPaths;
+				std::vector<std::string> rawPaths;
 
 				for (rapidjson::SizeType i = 0; i < audioArray.Size(); ++i) {
-					if (!audioArray[i].HasMember("path")) continue;
-					std::string rel = audioArray[i]["path"].GetString();
-					if (std::filesystem::path(rel).extension() != ".bank") continue;
+					if (!audioArray[i].HasMember("path"))
+						continue;
 
-					if (rel.find("Master.strings.bank") != std::string::npos) {
-						CrashoutsEngine::Audio::AudioSystem::instance().loadBank(rel);
-						std::cout << "Loaded FMOD bank: " << rel << std::endl;
+					std::string rel = audioArray[i]["path"].GetString();
+					fs::path p(rel);
+					std::string ext = p.extension().string();
+					std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+
+					if (ext == ".bank") {
+						bankPaths.push_back(rel);
+					}
+					else if (ext == ".wav" || ext == ".ogg" || ext == ".mp3") {
+						rawPaths.push_back(rel);
 					}
 				}
-				for (rapidjson::SizeType i = 0; i < audioArray.Size(); ++i) {
-					if (!audioArray[i].HasMember("path")) continue;
-					std::string rel = audioArray[i]["path"].GetString();
-					if (std::filesystem::path(rel).extension() != ".bank") continue;
 
+				// --- Load banks in proper order ---
+
+				// 1) Master.strings.bank
+				for (const auto& rel : bankPaths) {
+					if (rel.find("Master.strings.bank") != std::string::npos) {
+						bool ok = audioSys.loadBank(rel);
+						std::cout << (ok ? "Loaded FMOD bank: " : "FAILED to load FMOD bank: ") << rel << '\n';
+					}
+				}
+
+				// 2) Master.bank (but not strings)
+				for (const auto& rel : bankPaths) {
 					if (rel.find("Master.bank") != std::string::npos &&
 						rel.find("Master.strings.bank") == std::string::npos) {
-						CrashoutsEngine::Audio::AudioSystem::instance().loadBank(rel);
-						std::cout << "Loaded FMOD bank: " << rel << std::endl;
+						bool ok = audioSys.loadBank(rel);
+						std::cout << (ok ? "Loaded FMOD bank: " : "FAILED to load FMOD bank: ") << rel << '\n';
 					}
 				}
-				for (rapidjson::SizeType i = 0; i < audioArray.Size(); ++i) {
-					if (!audioArray[i].HasMember("path")) continue;
-					std::string rel = audioArray[i]["path"].GetString();
-					if (std::filesystem::path(rel).extension() != ".bank") continue;
 
-					if (rel.find("Master.bank") == std::string::npos) {
-						bool ok = CrashoutsEngine::Audio::AudioSystem::instance().loadBank(rel);
-						std::cout << (ok ? "Loaded FMOD bank: " : "FAILED to load FMOD bank: ") << rel << std::endl;
+				// 3) All other banks
+				for (const auto& rel : bankPaths) {
+					if (rel.find("Master.bank") == std::string::npos &&
+						rel.find("Master.strings.bank") == std::string::npos) {
+						bool ok = audioSys.loadBank(rel);
+						std::cout << (ok ? "Loaded FMOD bank: " : "FAILED to load FMOD bank: ") << rel << '\n';
 					}
+				}
+
+				// --- Register RAW audio files ---
+
+				for (const auto& rel : rawPaths) {
+					audioSys.registerRawAudio(rel); // rel is path relative to assets/audio
+					std::cout << "[Manifest] Registered RAW audio: " << rel << '\n';
 				}
 			}
 
@@ -378,6 +407,185 @@ namespace CrashoutsEngine {
 					}
 				}
 			}
+		
+			// --- Loading TileMaps ---
+			if (doc.HasMember("tilemaps") && doc["tilemaps"].IsArray()) {
+				std::cout << "Loading TileMap Assets..." << std::endl;
+
+				const rapidjson::Value& tilemapArray = doc["tilemaps"];
+
+				for (rapidjson::SizeType i = 0; i < tilemapArray.Size(); ++i) {
+					const rapidjson::Value& asset = tilemapArray[i];
+					if (asset.HasMember("name") && asset.HasMember("path")) {
+						std::string name = asset["name"].GetString();
+						std::string relativePath = asset["path"].GetString();
+
+						// Construct full path relative to the root asset directory
+						fs::path fullPath = fs::path(rootAssetPath) / "tilemaps" / relativePath;
+
+						// Create TileMapAsset object from file data (JSON)
+						std::unique_ptr<TileMapAsset> newTileMap = TileMapAsset::Create(relativePath);
+
+						// Validate 
+						if (newTileMap) {
+							// Load the TileMapAsset into AssetManager
+							AssetManager::GetInstance().Load(name, std::move(newTileMap));
+							std::cout << "AssetManager loaded tilemap data: " << name << "(" << fullPath.string() << ")"
+								<< std::endl;
+						}
+						else {
+							std::cerr << "Failed to create TileMapAsset: " << name << " at " << fullPath.string() << std::endl;
+						}
+					}
+					else {
+						std::cerr << "Warning: TileMap asset entry missing 'name' or 'path' in manifest." << std::endl;
+					}
+				}
+			}
+		}
+
+		void AssetManager::LoadSingleAsset(const std::string& fullPath)
+		{
+			namespace fs = std::filesystem;
+
+			fs::path p(fullPath);
+			if (!fs::exists(p)) return;
+
+			std::string name = p.stem().string();
+			std::string ext = p.extension().string();
+			std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+
+			fs::path root(rootPath);
+			fs::path rel;
+
+			try {
+				rel = fs::relative(p, root);
+			}
+			catch (...) {
+				std::cerr << "SingleAsset: Path not under asset root: " << fullPath << "\n";
+				return;
+			}
+
+			if (rel.empty() || rel.begin() == rel.end()) {
+				std::cerr << "SingleAsset: Invalid relative path\n";
+				return;
+			}
+
+			std::string folder = rel.begin()->string();
+
+			// TEXTURES  (images/)
+			if (folder == "images")
+			{
+				if (ext == ".png" || ext == ".jpg" || ext == ".jpeg" || ext == ".bmp" || ext == ".tga")
+				{
+					std::unique_ptr<TextureAsset> tex = TextureAsset::Create(fullPath);
+					if (tex && tex->UploadToGPU()) {
+						Load(name, std::move(tex));
+						std::cout << "[SingleAsset] Loaded image: " << name << std::endl;
+					}
+				}
+				return;
+			}
+
+			// SPRITE SHEET  (sprite_sheet/)
+			if (folder == "spritesheet")
+			{
+				if (ext == ".png" || ext == ".jpg" || ext == ".jpeg")
+				{
+					std::unique_ptr<TextureAsset> tex = TextureAsset::Create(fullPath);
+					if (tex && tex->UploadToGPU()) {
+						Load(name, std::move(tex));
+						std::cout << "[SingleAsset] Loaded sprite sheet: " << name << std::endl;
+					}
+				}
+				return;
+			}
+
+			// SCENES  (scenes/)
+			if (folder == "scenes")
+			{
+				if (ext == ".json" || ext == ".scene")
+				{
+					std::unique_ptr<SceneAsset> scene = SceneAsset::Create(fullPath);
+					if (scene) {
+						Load(name, std::move(scene));
+						std::cout << "[SingleAsset] Loaded scene: " << name << std::endl;
+					}
+				}
+				return;
+			}
+
+			// FONTS  (fonts/)
+			if (folder == "fonts")
+			{
+				std::unique_ptr<FontAsset> font = FontAsset::Create(fullPath);
+				if (font) {
+					Load(name, std::move(font));
+					std::cout << "[SingleAsset] Loaded font: " << name << std::endl;
+				}
+				return;
+			}
+
+			// AUDIO (audio/)
+			if (folder == "audio")
+			{
+				// rel is something like "audio/Music/Menu.wav"
+				std::string relStr = rel.generic_string();
+
+				std::string extLow = ext;
+				std::transform(extLow.begin(), extLow.end(), extLow.begin(), ::tolower);
+
+				// BANKS -> load FMOD Studio bank
+				if (extLow == ".bank")
+				{
+					bool ok = CrashoutsEngine::Audio::AudioSystem::instance().loadBank(relStr);
+					std::cout << (ok ? "[SingleAsset] Loaded FMOD bank: ": "[SingleAsset] FAILED FMOD bank: ") << relStr << "\n";
+				}
+				// RAW AUDIO -> register only (no loadBank)
+				else if (extLow == ".wav" || extLow == ".ogg" || extLow == ".mp3")
+				{
+					// Strip "audio/" so your panel & C# use "Music/Menu.wav" style
+					std::string relAudio = relStr;
+					const std::string prefix = "audio/";
+					if (relAudio.rfind(prefix, 0) == 0)
+						relAudio = relAudio.substr(prefix.size());
+
+					CrashoutsEngine::Audio::AudioSystem::instance().registerRawAudio(relAudio);
+					std::cout << "[SingleAsset] Registered RAW audio: " << relAudio << "\n";
+				}
+
+				return;
+			}
+
+			// SHADERS  (shaders/<name>/<name>.vert & .frag)
+			if (folder == "shaders")
+			{
+				// Only load if either .vert or .frag was dropped
+				if (ext == ".vert" || ext == ".frag")
+				{
+					fs::path shaderDir = p.parent_path();
+					std::string shaderName = shaderDir.filename().string();
+
+					fs::path vert = shaderDir / (shaderName + ".vert");
+					fs::path frag = shaderDir / (shaderName + ".frag");
+
+					if (fs::exists(vert) && fs::exists(frag))
+					{
+						std::unique_ptr<ShaderAsset> shader =
+							ShaderAsset::Create(vert.string(), frag.string());
+
+						if (shader)
+						{
+							Load(shaderName, std::move(shader));
+							std::cout << "[SingleAsset] Loaded shader: " << shaderName << "\n";
+						}
+					}
+				}
+				return;
+			}
+
+			std::cout << "[SingleAsset] No loader for: " << fullPath
+				<< " (folder=" << folder << ", ext=" << ext << ")\n";
 		}
 	}
 }

@@ -101,20 +101,20 @@ static bool gMode5TexturesEnabled = false;
 
 // Derived instancing arrays from ECS (rectangles + triangles)
 static std::vector<CEVec3> gM5RectPos;
-static std::vector<CEVec3> gM5RectColor;    // 0..1 colors
+static std::vector<CEColor> gM5RectColor;    // 0..1 colors
 static std::vector<float>  gM5RectRot;
 static std::vector<float>  gM5RectScale;    // keep 1.0f and bake into width/height
 static std::vector<float>  gM5RectW;
 static std::vector<float>  gM5RectH;
 
 static std::vector<CEVec3> gM5TriPos;
-static std::vector<CEVec3> gM5TriColor;     // 0..1 colors
+static std::vector<CEColor> gM5TriColor;     // 0..1 colors
 static std::vector<float>  gM5TriRot;
 static std::vector<float>  gM5TriScale;     // use 1.0f
 static std::vector<float>  gM5TriSide;      // derived from t1..t3
 
 static std::vector<CEVec3> gM5CircPos;
-static std::vector<CEVec3> gM5CircColor;
+static std::vector<CEColor> gM5CircColor;
 static std::vector<float>  gM5CircRot;
 static std::vector<float>  gM5CircScale;
 static std::vector<float>  gM5CircRadius;
@@ -193,7 +193,7 @@ static void InitializeMode5EcsRandomShapes(int perTypeCount) {
 
         Component::ShapeComponent sc{};
         sc.type = Component::ShapeType::Rectangle;
-        sc.color = CEVec3{ static_cast<float>(color255(rng)), static_cast<float>(color255(rng)), static_cast<float>(color255(rng)) };
+        sc.color = CEColor{ static_cast<float>(color255(rng)), static_cast<float>(color255(rng)), static_cast<float>(color255(rng)) };
         sc.enableTexture = gMode5TexturesEnabled;
         sc.textureName = textureDucky;
         sc.uvSize = CEVec2{ 1.0f, 1.0f };
@@ -215,7 +215,7 @@ static void InitializeMode5EcsRandomShapes(int perTypeCount) {
         //sc.t1 = CEVec3(0.0f, 2.0f / 3.0f * h, 0.0f);            // top
         //sc.t2 = CEVec3(-0.5f * s, -1.0f / 3.0f * h, 0.0f);      // bottom-left
         //sc.t3 = CEVec3(0.5f * s, -1.0f / 3.0f * h, 0.0f);      // bottom-right
-        sc.color = CEVec3{ static_cast<float>(color255(rng)), static_cast<float>(color255(rng)), static_cast<float>(color255(rng)) };
+        sc.color = CEColor{ static_cast<float>(color255(rng)), static_cast<float>(color255(rng)), static_cast<float>(color255(rng)) };
         sc.enableTexture = gMode5TexturesEnabled;
         sc.textureName = textureDucky;
         sc.uvSize = CEVec2{ 1.0f, 1.0f };
@@ -243,7 +243,7 @@ static void InitializeMode5EcsRandomShapes(int perTypeCount) {
         }
 
         // Normalize color
-        CEVec3 c01{ sc->color.x * (1.f / 255.f), sc->color.y * (1.f / 255.f), sc->color.z * (1.f / 255.f) };
+        CEColor c01{ sc->color.r * (1.f / 255.f), sc->color.g * (1.f / 255.f), sc->color.b * (1.f / 255.f) };
 
         switch (sc->type) {
         case Component::ShapeType::Rectangle: {
@@ -346,7 +346,7 @@ void RenderBackground()
         "assests/images/backgrounds/8k.png",
         CEVec3(0.0f, 0.0f, 0.0f),
         0.0f,
-        CEVec3(1.0f, 1.0f, 1.0f)
+        CEColor(1.0f, 1.0f, 1.0f)
     );
 }
 
@@ -725,7 +725,7 @@ void RenderRan()
             else {
                 params.textured = true;
                 params.textureName = textureDucky;
-                params.tint = CEVec3(1.f, 1.f, 1.f);
+                params.tint = CEColor(1.f, 1.f, 1.f);
                 params.uvSize = CEVec2(1.f, 1.f);
             }
             InstancingSystem::RenderInstancedRectangles(params);
@@ -742,7 +742,7 @@ void RenderRan()
         InstancingSystem::InstancedParams params{};
         params.textured = gMode4TexturesEnabled;
         params.textureName = textureDucky;
-        params.tint = CEVec3(1.f, 1.f, 1.f);
+        params.tint = CEColor(1.f, 1.f, 1.f);
         params.uvSize = CEVec2(1.f, 1.f);
 
         // Draw order: circles -> triangles -> rectangles
@@ -759,7 +759,7 @@ void RenderRan()
         InstancingSystem::InstancedParams params{};
         params.textured = gMode5TexturesEnabled;
         params.textureName = textureDucky;
-        params.tint = CEVec3(1.f, 1.f, 1.f);
+        params.tint = CEColor(1.f, 1.f, 1.f);
         params.uvSize = CEVec2(1.f, 1.f);
 
         // Circles FIRST to avoid covering ECS rectangles/triangles

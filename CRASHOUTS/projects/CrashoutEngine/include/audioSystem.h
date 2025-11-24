@@ -36,6 +36,13 @@ namespace CrashoutsEngine
             bool loadBank(const std::string& bankFile);
             void unloadAllBanks();
 
+			// Raw Management
+            void registerRawAudio(const std::string& relPath);
+            const std::vector<std::string>& getRegisteredRawAudio() const;
+			void unregisterRawAudio(const std::string& relPath);
+            void unloadRawSound(const std::string& path);
+            void unloadAllRawSounds();
+
             // Event-based (Studio) playback
             bool playOneShot(const std::string& eventPath);
             FMOD::Studio::EventInstance* createInstance(const std::string& eventPath);
@@ -63,12 +70,13 @@ namespace CrashoutsEngine
             bool listAllEventPaths(std::vector<std::string>& out);
             bool listEventPathsFromBank(const std::string& bankFile, std::vector<std::string>& out);
             void inspectBankToConsole(const std::string& bankFile);
+			void listRawAudioFiles(std::vector<std::string>& out);
 
             bool isInitialized() const { return mStudio != nullptr; }
 
             // File-based playback (Core API)
-            bool playMusicFile(const std::string& path, bool loop = true);
-            bool playSFXFile(const std::string& path);
+            FMOD::Channel* playMusicFile(const std::string& path, bool loop = true);
+            FMOD::Channel* playSFXFile(const std::string& path);
             FMOD::Channel* playSFXFileEx(const std::string& path);
 
             bool setMusicGroupVolume(float v01);
@@ -117,8 +125,11 @@ namespace CrashoutsEngine
             std::string mBanksDir;
             std::unordered_map<std::string, FMOD::Studio::Bank*> mBanks;
 
+            std::vector<std::string> mRawAudioFiles;
+            std::unordered_map<std::string, FMOD::Sound*> mRawSoundCache;
+
             //For tagged playback (Unity-style Stop("Name"))
-            std::unordered_map<std::string, FMOD::Channel*>      mTaggedChannels;
+            std::unordered_map<std::string, FMOD::Channel*> mTaggedChannels;
 
             // Helpers
             FMOD::Studio::EventDescription* getEventDesc(const std::string& eventPath);

@@ -28,6 +28,7 @@ generate procedurally varied, GPU-efficient visuals.
 
 #include "CEVec3.h"
 #include "CEVec2.h"
+#include "CEColor.h"
 #include "entitymanager.h"
 #include "assetmanager.h"
 #include <string>
@@ -35,32 +36,109 @@ generate procedurally varied, GPU-efficient visuals.
 
 
 namespace InstancingSystem {
+    
+    // -------------------------------------------------------
+    // Buffer Data Structures
+    // -------------------------------------------------------
+
+    /*!
+    @brief Represents a single vertex of the base mesh (Quad, Triangle, etc.)
+    @details Loaded into Locations 0 (Pos) and 2 (UV).
+    */
+    struct MeshVertex {
+        float x, y, z;    // Position
+        float u, v;       // UV Coordinates
+    };
+
+    /*!
+    @brief Data layout for a single Rectangle Instance in the GPU Buffer.
+    @details Total Size: 11 floats.
+    Matches Attribute Locations:
+    3: Position (Vec3)
+    4: Color    (Vec4/Color)
+    5: Rotation (Float)
+    6: Scale    (Float)
+    7: Width    (Float)
+    8: Height   (Float)
+    */
+    struct RectInstanceData {
+        CEVec3 position;  // 3 Floats
+        CEColor color;    // 4 Floats
+        float rotation;   // 1 Float
+        float scale;      // 1 Float
+        float width;      // 1 Float
+        float height;     // 1 Float
+    };
+
+    /*!
+    @brief Data layout for a single Circle Instance in the GPU Buffer.
+    @details Total Size: 11 floats (Using radius for both dimensions to keep alignment consistent or 10 if optimized).
+    Matches Attribute Locations:
+    3: Position (Vec3)
+    4: Color    (Vec4/Color)
+    5: Rotation (Float)
+    6: Scale    (Float)
+    7: Radius   (Float) - Used for Width
+    8: Radius   (Float) - Used for Height (Padding/Consistency)
+    */
+    struct CircleInstanceData {
+        CEVec3 position;
+        CEColor color;
+        float rotation;
+        float scale;
+        float radius;
+        float padding; // Keeps struct align comparable to Rect if needed, or use as radius
+    };
+
+    /*!
+    @brief Data layout for a single Triangle Instance in the GPU Buffer.
+    @details Total Size: 10 floats.
+    Matches Attribute Locations:
+    3: Position (Vec3)
+    4: Color    (Vec4/Color)
+    5: Rotation (Float)
+    6: Scale    (Float)
+    7: SideLen  (Float)
+    */
+    struct TriInstanceData {
+        CEVec3 position;
+        CEColor color;
+        float rotation;
+        float scale;
+        float sideLength;
+        // Triangle height is usually calculated in shader or CPU, 
+        // but can be passed as padding here if needed.
+    };
+
+    // -------------------------------------------------------
+    // Parameters
+    // -------------------------------------------------------
 
     struct InstancedParams {
         bool textured{ false };
         std::string textureName{};
-        CEVec3 tint{ 1.f, 1.f, 1.f };
+        CEColor tint{ 1.f, 1.f, 1.f };
         CEVec2 uvSize{ 1.f, 1.f };
     };
 
-    //....................Cirle................//
+    //....................Circle................//
 
-    void CreateInstancedCircles(const CEVec3* positions, const CEVec3* colors,
+    void CreateInstancedCircles(const CEVec3* positions, const CEColor* colors,
         const float* rotations, const float* scales,
         const float* radii,
         int count, int segments);
 
     void CreateInstancedCirclesTextured(const std::string& textureName,
-        const CEVec3* positions, const CEVec3* colors,
+        const CEVec3* positions, const CEColor* colors,
         const float* rotations, const float* scales,
         const float* radii,
         int count, int segments,
-        const CEVec3& tint = CEVec3(1.0f, 1.0f, 1.0f),
+        const CEColor& tint = CEColor(1.0f, 1.0f, 1.0f),
         const CEVec2& uvSize = CEVec2(1.0f, 1.0f));
 
     void RenderInstancedCirclesBatch(
         const CEVec3* positions,
-        const CEVec3* colors,
+        const CEColor* colors,
         const float* rotations,
         const float* scales,
         const float* radii,
@@ -74,22 +152,22 @@ namespace InstancingSystem {
 
     //...................Rectangle.................................//
 
-    void CreateInstancedRectangles(const CEVec3* positions, const CEVec3* colors,
+    void CreateInstancedRectangles(const CEVec3* positions, const CEColor* colors,
         const float* rotations, const float* scales,
         const float* widths, const float* heights,
         int count);
 
     void CreateInstancedRectanglesTextured(const std::string& textureName,
-        const CEVec3* positions, const CEVec3* colors,
+        const CEVec3* positions, const CEColor* colors,
         const float* rotations, const float* scales,
         const float* widths, const float* heights,
         int count,
-        const CEVec3& tint = CEVec3(1.0f, 1.0f, 1.0f),
+        const CEColor& tint = CEColor(1.0f, 1.0f, 1.0f),
         const CEVec2& uvSize = CEVec2(1.0f, 1.0f));
 
     void RenderInstancedRectanglesBatch(
         const CEVec3* positions,
-        const CEVec3* colors,
+        const CEColor* colors,
         const float* rotations,
         const float* scales,
         const float* widths,
@@ -111,23 +189,23 @@ namespace InstancingSystem {
 
     //................Triangle................//
 
-    void CreateInstancedTriangles(const CEVec3* positions, const CEVec3* colors,
+    void CreateInstancedTriangles(const CEVec3* positions, const CEColor* colors,
         const float* rotations, const float* scales,
         const float* sideLengths,
         int count);
 
     void CreateInstancedTrianglesTextured(const std::string& textureName,
-        const CEVec3* positions, const CEVec3* colors,
+        const CEVec3* positions, const CEColor* colors,
         const float* rotations, const float* scales,
         const float* sideLengths,
         int count,
-        const CEVec3& tint = CEVec3(1.0f, 1.0f, 1.0f),
+        const CEColor& tint = CEColor(1.0f, 1.0f, 1.0f),
         const CEVec2& uvSize = CEVec2(1.0f, 1.0f));
         
 
     void RenderInstancedTrianglesBatch(
         const CEVec3* positions,
-        const CEVec3* colors,
+        const CEColor* colors,
         const float* rotations,
         const float* scales,
         const float* sideLengths,
@@ -148,14 +226,14 @@ namespace InstancingSystem {
         int perTypeCount,
         bool texturesEnabled, const std::string& textureName,
         // Rectangles out
-        std::vector<CEVec3>& rectPos, std::vector<CEVec3>& rectColor,
+        std::vector<CEVec3>& rectPos, std::vector<CEColor>& rectColor,
         std::vector<float>& rectRot, std::vector<float>& rectScale,
         std::vector<float>& rectW, std::vector<float>& rectH,
         // Triangles out
-        std::vector<CEVec3>& triPos, std::vector<CEVec3>& triColor,
+        std::vector<CEVec3>& triPos, std::vector<CEColor>& triColor,
         std::vector<float>& triRot, std::vector<float>& triScale, std::vector<float>& triSide,
         // Circles out (not ECS)
-        std::vector<CEVec3>& circPos, std::vector<CEVec3>& circColor,
+        std::vector<CEVec3>& circPos, std::vector<CEColor>& circColor,
         std::vector<float>& circRot, std::vector<float>& circScale, std::vector<float>& circRadius,
         int& circSegments
     );
