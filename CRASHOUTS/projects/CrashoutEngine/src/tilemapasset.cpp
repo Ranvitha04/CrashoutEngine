@@ -64,7 +64,18 @@ namespace CrashoutsEngine {
         */
         std::unique_ptr<TileMapAsset> TileMapAsset::Create(const std::string& filePath) {
 
-            std::string fullpath = CrashoutsEngine::Assets::rootPath + "tilemaps/" + filePath;
+            std::string normalizedRelativePath;
+
+            // Check if the input already starts with "tilemaps" (handles both / and \)
+            if (filePath.find("tilemaps/") == 0 || filePath.find("tilemaps\\") == 0) {
+                normalizedRelativePath = filePath; // Input was already "tilemaps/level1.json"
+            }
+            else {
+                normalizedRelativePath = "tilemaps/" + filePath; // Input was just "level1.json"
+            }
+
+            // Construct full OS path
+            std::string fullpath = CrashoutsEngine::Assets::rootPath + normalizedRelativePath;
 
             // Load the JSON file from filePath
             std::string jsonContent = ReadFileToString(fullpath);
@@ -101,9 +112,8 @@ namespace CrashoutsEngine {
                 return nullptr;
             }
 
-            // 3. Create the Asset Object
-            // Use 'filePath' (the name) for the asset name, store 'fullpath' for saving later
-            std::unique_ptr<TileMapAsset> newAsset(new TileMapAsset(filePath));
+            // 3. Create the Asset Object using the NORMALIZED relative path
+            std::unique_ptr<TileMapAsset> newAsset(new TileMapAsset(normalizedRelativePath));
 
             if (doc.HasMember("layerMask") && doc["layerMask"].IsUint()) {
                 newAsset->GetLayerMaskMutable() = doc["layerMask"].GetUint();
@@ -145,7 +155,7 @@ namespace CrashoutsEngine {
         }
     
         void TileMapAsset::SaveTileMaps() {
-            std::string fullpath = CrashoutsEngine::Assets::rootPath + "tilemaps/" + tileMapName;
+            std::string fullpath = CrashoutsEngine::Assets::rootPath + tileMapName;
 
             if (tileMapName.empty()) {
                 std::cout << "ERROR: Cannot save TileMapAsset. No name found." << std::endl;

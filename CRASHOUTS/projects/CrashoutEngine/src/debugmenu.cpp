@@ -2592,7 +2592,14 @@ namespace UI { // --------------------------------------------------------------
     {
         auto& collisions = phys.collisions();
         if (ui.drawCollOverlay) {
-            CollisionGizmos::DrawAllColliders(ecs, &collisions, ui.overlayThickness);
+
+            // Get ratio based off zoom
+
+            float thicknessRatio = 1.f;
+            if(engineState == EngineState::STOP) thicknessRatio = CrashoutsEngine::RenderCamera::engineCamera.GetZoom();
+            else thicknessRatio = CrashoutsEngine::RenderCamera::gameCamera.GetZoom();
+
+            CollisionGizmos::DrawAllColliders(ecs, &collisions, ui.overlayThickness / thicknessRatio);
             if (ui.drawQuadTree) {
                 Collision::CollisionHandler::GetInstance().quadTree.Draw();
             }

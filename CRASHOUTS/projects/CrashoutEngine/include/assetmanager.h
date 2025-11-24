@@ -109,7 +109,11 @@ namespace CrashoutsEngine {
 			@param asset The unique_ptr to the asset object to be stored.
 			*/
 			void Load(const std::string& name, std::unique_ptr<IAsset> asset) {
-				if (Exists(name)) return;
+				if (Exists(name)) {
+					std::cout << "[AssetManager] ERROR: Duplicate asset name detected: " << name
+						<< ". Asset was rejected." << std::endl;
+					return;
+				}
 
 				// Use a static counter to generate a unique ID
 				// static unsigned int nextId = 0;

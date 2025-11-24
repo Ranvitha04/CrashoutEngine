@@ -189,38 +189,6 @@
             "path": "Character\\Light Mode\\Left\\Switch State Idle .png"
         },
         {
-            "name": "Chibi-1",
-            "path": "Character\\New Artstyle\\Chibi-1.png"
-        },
-        {
-            "name": "Chibi-2",
-            "path": "Character\\New Artstyle\\Chibi-2.png"
-        },
-        {
-            "name": "Chibi-3",
-            "path": "Character\\New Artstyle\\Chibi-3.png"
-        },
-        {
-            "name": "Chibi-4",
-            "path": "Character\\New Artstyle\\Chibi-4.png"
-        },
-        {
-            "name": "Chibi-5",
-            "path": "Character\\New Artstyle\\Chibi-5.png"
-        },
-        {
-            "name": "Chibi-6",
-            "path": "Character\\New Artstyle\\Chibi-6.png"
-        },
-        {
-            "name": "Chibi-7",
-            "path": "Character\\New Artstyle\\Chibi-7.png"
-        },
-        {
-            "name": "Switch State spritesheet",
-            "path": "Character\\New Artstyle\\Switch State spritesheet.png"
-        },
-        {
             "name": "Switch-State-SpriteSheet",
             "path": "Character\\New Artstyle\\Switch-State-SpriteSheet.png"
         },
@@ -539,6 +507,58 @@
         {
             "name": "Rock_43",
             "path": "spritesheet\\Rock\\Rock_43.png"
+        },
+        {
+            "name": "Switch-State-SpriteSheet_00",
+            "path": "spritesheet\\Switch-State-SpriteSheet\\Switch-State-SpriteSheet_00.png"
+        },
+        {
+            "name": "Switch-State-SpriteSheet_01",
+            "path": "spritesheet\\Switch-State-SpriteSheet\\Switch-State-SpriteSheet_01.png"
+        },
+        {
+            "name": "Switch-State-SpriteSheet_02",
+            "path": "spritesheet\\Switch-State-SpriteSheet\\Switch-State-SpriteSheet_02.png"
+        },
+        {
+            "name": "Switch-State-SpriteSheet_03",
+            "path": "spritesheet\\Switch-State-SpriteSheet\\Switch-State-SpriteSheet_03.png"
+        },
+        {
+            "name": "Switch-State-SpriteSheet_04",
+            "path": "spritesheet\\Switch-State-SpriteSheet\\Switch-State-SpriteSheet_04.png"
+        },
+        {
+            "name": "Switch-State-SpriteSheet_05",
+            "path": "spritesheet\\Switch-State-SpriteSheet\\Switch-State-SpriteSheet_05.png"
+        },
+        {
+            "name": "Switch-State-SpriteSheet_06",
+            "path": "spritesheet\\Switch-State-SpriteSheet\\Switch-State-SpriteSheet_06.png"
+        },
+        {
+            "name": "Switch-State-SpriteSheet_07",
+            "path": "spritesheet\\Switch-State-SpriteSheet\\Switch-State-SpriteSheet_07.png"
+        },
+        {
+            "name": "Switch-State-SpriteSheet_08",
+            "path": "spritesheet\\Switch-State-SpriteSheet\\Switch-State-SpriteSheet_08.png"
+        },
+        {
+            "name": "Left",
+            "path": "Test\\Left.png"
+        },
+        {
+            "name": "Middle",
+            "path": "Test\\Middle.png"
+        },
+        {
+            "name": "Right",
+            "path": "Test\\Right.png"
+        },
+        {
+            "name": "Top",
+            "path": "Test\\Top.png"
         },
         {
             "name": "Darker Platform",

@@ -120,9 +120,14 @@ namespace CrashoutsEngine::TileMapUtils {
 
 		// Iterate over every painted tile
 		for (auto const& [pos, tileAssetName] : map.gridData) {
-
 			// A. Get the Asset
 			TileMapAsset* asset = AssetManager::GetInstance().Get<TileMapAsset>(tileAssetName);
+
+			if (!asset) {
+				std::string fixedPath = "tilemaps/" + tileAssetName;
+				asset = AssetManager::GetInstance().Get<TileMapAsset>(fixedPath);
+			}
+
 			if (!asset) continue;
 
 			// B. Calculate Bitmask & Find Rule
@@ -314,7 +319,7 @@ namespace CrashoutsEngine::Editor {
 					for (const auto& entry : fs::directory_iterator(path)) {
 						std::string filename = entry.path().filename().string();
 						if (ImGui::Selectable(filename.c_str())) {
-							tmComp->activeAsset = filename;
+							tmComp->activeAsset = "tilemaps/" + filename;
 						}
 					}
 				}

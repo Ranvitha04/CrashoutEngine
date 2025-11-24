@@ -1625,7 +1625,7 @@ public class )" << file.stem().string() << R"(
 
             // ImGui::Checkbox("Enable Camera", &cc->enabled);      // CURRENTLY NOT IMPLEMENTED
             // ImGui::DragFloat3("Position", &cc->position.x, 1.f); // Locked access
-            ImGui::DragFloat("Zoom", &cc->zoom, 0.05f, 0.05f);
+            ImGui::DragFloat("Zoom", &cc->zoom, 0.005f, 0.05f);
             // ImGui::DragFloat("Target Aspect Ratio", &cc->targetAR);
             ImGui::DragFloat2("X Boundaries (min/max)", &cc->xBounds.x, 1.f);
             ImGui::DragFloat2("Y Boundaries (min/max)", &cc->yBounds.x, 1.f);
@@ -2101,8 +2101,9 @@ public class )" << file.stem().string() << R"(
                 ImGui::PushID(i);
 
                 // Display Name
+                std::string displayName = std::filesystem::path(tm->tileAssetNames[i]).filename().string();
                 ImGui::Bullet();
-                ImGui::Text("%s", tm->tileAssetNames[i].c_str());
+                ImGui::Text("%s", displayName.c_str());
 
                 ImGui::SameLine();
 
@@ -2128,10 +2129,10 @@ public class )" << file.stem().string() << R"(
             if (indexToRemove != -1) {
                 // Check if the active asset is the one being removed
                 if (tm->activeAsset == tm->tileAssetNames[indexToRemove]) {
-                    tm->activeAsset = "none";
+                    tm->activeAsset = ""; // Empty string is safer than "none"
                 }
                 tm->tileAssetNames.erase(tm->tileAssetNames.begin() + indexToRemove);
-                tm->isCacheDirty = true; // Rebuild cache just in case
+                tm->isCacheDirty = true;
             }
 
             ImGui::SetNextWindowSize(ImVec2(500, 400), ImGuiCond_FirstUseEver);
@@ -2139,7 +2140,9 @@ public class )" << file.stem().string() << R"(
                 static int ruleIndexToEdit = -1;
                 bool openAssetPopup = false;
                 // 1. Get the actual asset from memory
-                TileMapAsset* asset = AssetManager::GetInstance().Get<TileMapAsset>(assetToEdit);
+
+                std::string loadName = "tilemaps/" + assetToEdit;
+                TileMapAsset* asset = AssetManager::GetInstance().Get<TileMapAsset>(loadName);
 
                 if (!asset) {
                     ImGui::TextColored(ImVec4(1, 0, 0, 1), "Error: Asset not loaded!");
@@ -2312,7 +2315,8 @@ public class )" << file.stem().string() << R"(
 
                             if (newAsset) {
                                 // 4. Register to AssetManager
-                                Assets::AssetManager::GetInstance().Load(rawName, std::move(newAsset));
+                                std::string loadName = "tilemaps/" + rawName;
+                                Assets::AssetManager::GetInstance().Load(loadName, std::move(newAsset));
 
                                 // 5. Add to Component
                                 tm->tileAssetNames.push_back(rawName);
@@ -2342,13 +2346,15 @@ public class )" << file.stem().string() << R"(
 
                         if (!alreadyHas) {
                             if (ImGui::Selectable(filename.c_str())) {
-                                tm->tileAssetNames.push_back(filename);
 
                                 // Ensure it's loaded in memory
                                 // FIX: Use the Factory method, don't move an empty unique_ptr
                                 auto loadedAsset = Assets::TileMapAsset::Create(filename);
                                 if (loadedAsset) {
-                                    Assets::AssetManager::GetInstance().Load(filename, std::move(loadedAsset));
+                                    std::string loadName = "tilemaps/" + filename;
+                                    
+                                    Assets::AssetManager::GetInstance().Load(loadName, std::move(loadedAsset));
+                                    tm->tileAssetNames.push_back(filename);
                                 }
 
                                 tm->isCacheDirty = true;
