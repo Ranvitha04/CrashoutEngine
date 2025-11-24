@@ -285,8 +285,8 @@ namespace Physics {
 		Component::RigidBodyComponent* rigidBody2{ globalECS.GetComponent<Component::RigidBodyComponent>(event.entity2) };
 		Component::ColliderComponent* collider2{ globalECS.GetComponent<Component::ColliderComponent>(event.entity2) };
 
-		CEVec3 penetrationTo1{event.colManifold.contactPoints[0] - (collider1->collider->position + collider1->collider->offset)};
-		CEVec3 penetrationTo2{ event.colManifold.contactPoints[0] - (collider2->collider->position + collider2->collider->offset) };
+		CEVec3 penetrationTo1{event.colManifold.contactPoints[0] - collider1->collider->position};
+		CEVec3 penetrationTo2{ event.colManifold.contactPoints[0] - collider2->collider->position };
 
 		CEVec3 angularVelPenetration1{ CEVec3{-1.f * rigidBody1->angularVelocity * penetrationTo1.y, rigidBody1->angularVelocity * penetrationTo1.x, 0.f} };
 		CEVec3 angularVelPenetration2{ CEVec3{-1.f * rigidBody2->angularVelocity * penetrationTo2.y, rigidBody2->angularVelocity * penetrationTo2.x, 0.f} };
@@ -391,7 +391,7 @@ namespace Physics {
 				if (globalECS.HasComponent<Component::ColliderComponent>(entity)) {
 					Component::ColliderComponent* c{ globalECS.GetComponent<Component::ColliderComponent>(entity) };
 
-					if (rigidBody->getMass()) {
+					if (rigidBody->getMass() && rigidBody->inertia) {
 						c->collider->updateRotation(rigidBody->orientation);
 					}
 

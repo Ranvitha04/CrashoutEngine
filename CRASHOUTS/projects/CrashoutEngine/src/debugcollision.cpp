@@ -90,7 +90,7 @@ static void DrawPolygon(const Collision::Polygon* vertices, float thickness, con
         int nextIdx{ (i + 1) % vertices->vertexCount };
         // Draw the lines using the new, z-modified vertices
         //Shapes::CreateLine({ vertices->rotatedVertices[i].x, vertices->rotatedVertices[i].y, z }, CEVec3{ vertices->rotatedVertices[i].x + vertices->normalEdges[i].x * 10.f, vertices->rotatedVertices[i].y + vertices->normalEdges[i].y * 10.f, z}, thickness, color);
-        Shapes::CreateLine(CEVec3{ vertices->rotatedVertices[i].x, vertices->rotatedVertices[i].y, z } + vertices->offset, CEVec3{ vertices->rotatedVertices[nextIdx].x, vertices->rotatedVertices[nextIdx].y, z } + vertices->offset, thickness, color);
+        Shapes::CreateLine(CEVec3{ vertices->rotatedVertices[i].x, vertices->rotatedVertices[i].y, z }, CEVec3{ vertices->rotatedVertices[nextIdx].x, vertices->rotatedVertices[nextIdx].y, z }, thickness, color);
     }
 }
 
@@ -142,11 +142,11 @@ namespace CollisionGizmos {
 
             if (pColliderComp.collider->type == Collision::SPHERE) {
                 Collision::Sphere const& sphereTemp = dynamic_cast<Collision::Sphere const&>(*pColliderComp.collider);
-                DrawCircleOutline(sphereTemp.position + sphereTemp.offset, sphereTemp.radius, 48, wireThickness, color);
+                DrawCircleOutline(sphereTemp.position, sphereTemp.radius, 48, wireThickness, color);
             }
             else if (pColliderComp.collider->type == Collision::AABB) {
                 Collision::AABBRect const& aabbTemp = dynamic_cast<Collision::AABBRect const&>(*pColliderComp.collider);
-                DrawAABBOutline(aabbTemp.min + aabbTemp.offset, aabbTemp.max + aabbTemp.offset, wireThickness, color);
+                DrawAABBOutline(aabbTemp.min , aabbTemp.max, wireThickness, color);
             }
             else if (pColliderComp.collider->type == Collision::OBB) {
                 Collision::OBBRect const& obbTemp = dynamic_cast<Collision::OBBRect const&>(*pColliderComp.collider);

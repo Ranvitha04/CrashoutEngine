@@ -93,13 +93,13 @@ namespace Collision {
 		Polygon::SupportPoint supportPoint{ std::nullopt };
 
 		for (int i{}; i < otherPolygon.vertexCount; ++i) {
-			CEVec3 vertice{ otherPolygon.rotatedVertices[i] + otherPolygon.offset };
+			CEVec3 vertice{ otherPolygon.rotatedVertices[i] };
 			CEVec3 verticeToPointEdge{ vertice - pointOnEdge};
 			f32 penetrationDepth{CEMath::Dot(verticeToPointEdge, -1.f * edgeNormal)};
 
 			if (penetrationDepth > currentDeepestPenetration) {
 				currentDeepestPenetration = penetrationDepth;
-				supportPoint = std::make_optional<std::pair<CEVec3, f32>>({ vertice + otherPolygon.offset, currentDeepestPenetration});
+				supportPoint = std::make_optional<std::pair<CEVec3, f32>>({ vertice, currentDeepestPenetration});
 			}
 		}
 
@@ -111,7 +111,7 @@ namespace Collision {
 		f32 minimumPenetration{std::numeric_limits<f32>::max()};
 
 		for (int i{}; i < a.vertexCount; ++i) {
-			CEVec3 pointOnEdge{ a.rotatedVertices[i] + a.offset };
+			CEVec3 pointOnEdge{ a.rotatedVertices[i]  };
 			CEVec3 normalOnEdge{ a.normalEdges[i] };
 
 			Polygon::SupportPoint supportPoint{ findSupportPoint(normalOnEdge, pointOnEdge, b) };
@@ -129,15 +129,15 @@ namespace Collision {
 
 	CollisionHandler::Contact sphereVsPolyEdges(const Sphere& a, const Polygon& b) {
 
-		CEVec3 sphereCenter{a.position + a.offset};
+		CEVec3 sphereCenter{a.position};
 
 		std::optional<CEVec3> nearestEdgeNormal{ std::nullopt };
 		std::optional<CEVec3> nearestEdgeVertex{ std::nullopt };
 
 		for (int i{}; i < b.vertexCount; ++i) {
 			int idx{ (i + 1) % b.vertexCount };
-			CEVec3 vertex{b.rotatedVertices[i] + b.offset};
-			CEVec3 nextVertex{ b.rotatedVertices[idx] + b.offset };
+			CEVec3 vertex{ b.rotatedVertices[i] };
+			CEVec3 nextVertex{ b.rotatedVertices[idx]  };
 
 			CEVec3 vertToCirc{ sphereCenter - vertex };
 			CEVec3 dirToNext{ nextVertex - vertex };
@@ -168,10 +168,10 @@ namespace Collision {
 
 	CollisionHandler::Contact sphereVsPolyCorner(const Sphere& a, const Polygon& b) {
 
-		CEVec3 sphereCenter{ a.position + a.offset };
+		CEVec3 sphereCenter{ a.position };
 
 		for (int i{}; i < b.vertexCount; ++i) {
-			CEVec3 vertex{ b.rotatedVertices[i] + b.offset };
+			CEVec3 vertex{ b.rotatedVertices[i] };
 			CEVec3 dirToSphereCenter{ vertex - sphereCenter };
 			if (CEMath::LengthSq(dirToSphereCenter) < a.radius * a.radius) {
 				f32 depth{ a.radius - CEMath::Length(dirToSphereCenter) };
@@ -282,7 +282,7 @@ namespace Collision {
 
 		AABBRect const& aabb2Temp = dynamic_cast<AABBRect const&>(*(coll2.collider));
 
-		CEVec3 posDelta{ (coll2.position + coll2.collider->offset) - (coll1.position + coll1.collider->offset) }; /*Vector showing distance + the direction*/
+		CEVec3 posDelta{ (coll2.position) - (coll1.position) }; /*Vector showing distance + the direction*/
 
 		f32 xDiff{ aabb1Temp.extents.x + aabb2Temp.extents.x - std::abs(posDelta.x) };
 
@@ -405,11 +405,11 @@ namespace Collision {
 
 		AABBRect const& aabb2Temp = dynamic_cast<AABBRect const&>(*(aabbPtr->collider));
 
-		CEVec3 minAABB{ (aabbPtr->position.x + aabbPtr->collider->offset.x) - aabb2Temp.extents.x, (aabbPtr->position.y + aabbPtr->collider->offset.y) - aabb2Temp.extents.y, 0.f };
-		CEVec3 maxAABB{ (aabbPtr->position.x + aabbPtr->collider->offset.x) + aabb2Temp.extents.x, (aabbPtr->position.y + aabbPtr->collider->offset.y) + aabb2Temp.extents.y, 0.f };
+		CEVec3 minAABB{ (aabbPtr->position.x ) - aabb2Temp.extents.x, (aabbPtr->position.y) - aabb2Temp.extents.y, 0.f };
+		CEVec3 maxAABB{ (aabbPtr->position.x) + aabb2Temp.extents.x, (aabbPtr->position.y) + aabb2Temp.extents.y, 0.f };
 
 
-		CEVec3 pos{ spherePtr->position + spherePtr->collider->offset };
+		CEVec3 pos{ spherePtr->position  };
 
 		CEVec3 closestPt{ pos }; /*CLOSEST POINT OF THE CENTER OF THE CIRCLE TO THE EDGES OF THE AABB*/
 
@@ -439,12 +439,12 @@ namespace Collision {
 
 				if (depthX < depthY) {
 					result.depth = depthX;
-					result.normal = vecFromAABBToCirc.x < 0.f ? CEVec3{ -1.f, 0.f, 0.f } : CEVec3{ 1.f, 0.f, 0.f };
+					result.normal = vecFromAABBToCirc.x < 0.f ? CEVec3{ 1.f, 0.f, 0.f } : CEVec3{ -1.f, 0.f, 0.f };
 
 				}
 				else {
 					result.depth = depthY;
-					result.normal = vecFromAABBToCirc.y < 0.f ? CEVec3{ 0.f, -1.f, 0.f } : CEVec3{ 0.f, 1.f, 0.f };
+					result.normal = vecFromAABBToCirc.y < 0.f ? CEVec3{ 0.f, 1.f, 0.f } : CEVec3{ 0.f, -1.f, 0.f };
 				}
 
 
@@ -708,7 +708,7 @@ namespace Collision {
 				CrashoutsEngine::Entity const* entity2Ptr{ &entity2 };
 
 				Component::ColliderComponent* collider2{ globalECS.GetComponent<Component::ColliderComponent>(entity2) };
-				Component::TransformComponent* transform2{ globalECS.GetComponent<Component::TransformComponent>(entity2) };
+				//Component::TransformComponent* transform2{ globalECS.GetComponent<Component::TransformComponent>(entity2) };
 
 				/*CHECK FOR COLLISION and call collision function*/
 				Collision::CollisionManifold collisionManifold{};
@@ -720,12 +720,12 @@ namespace Collision {
 					Collision::CollisionProps{
 						collider1->collider,
 						CEVec3{},
-						CEVec3{transform1->position}
+						collider1->collider->position
 					},
 					Collision::CollisionProps{
 						collider2->collider,
 						CEVec3{},
-						CEVec3{transform2->position}
+						collider2->collider->position
 					}
 					);
 

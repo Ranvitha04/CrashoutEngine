@@ -1116,9 +1116,9 @@ namespace CrashoutsEngine {
                             Collision::Sphere const& sphereTemp = dynamic_cast<Collision::Sphere const&>(*(colComp.collider));
                             colliderValue.AddMember("radius", sphereTemp.radius, allocator);
                             rapidjson::Value centerVal{ rapidjson::kObjectType };
-                            centerVal.AddMember("x", sphereTemp.center.x, allocator);
-                            centerVal.AddMember("y", sphereTemp.center.y, allocator);
-                            centerVal.AddMember("z", sphereTemp.center.z, allocator);
+                            centerVal.AddMember("x", sphereTemp.position.x, allocator);
+                            centerVal.AddMember("y", sphereTemp.position.y, allocator);
+                            centerVal.AddMember("z", sphereTemp.position.z, allocator);
                             colliderValue.AddMember("center", centerVal, allocator);
 
                         }
