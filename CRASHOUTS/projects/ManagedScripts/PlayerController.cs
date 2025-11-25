@@ -61,6 +61,7 @@ namespace CrashoutsEngine
                 //Console.WriteLine("[C#] Player stopped moving -> Stop footsteps_loop");
                 AudioManager.GetInstance().Stop("footsteps");
             }
+            /*
             //if (Input.IsKeyPressed(Key.A))
             //{
             //    //Console.WriteLine($"[DEBUG] A pressed, rb ID = {rb.EntityID}, mass = {rb.GetMass()}");
@@ -80,7 +81,6 @@ namespace CrashoutsEngine
             //    Console.WriteLine("[C#] mass=" + rb.GetMass());
             //}
 
-            /*
             if (Input.IsKeyPressed(Key.S))
             {
                 tf.Size *= 0.9f;
@@ -115,6 +115,9 @@ namespace CrashoutsEngine
             var rb = Entity.GetComponent<RigidBodyComponent>();
             if (rb == null) return;
 
+            // Retrieve current horizontal speed
+            //double xSpeed = rb.getVelocity().x; 
+            //Console.WriteLine("[C#] speedx=" + xSpeed);
             // Apply physics here (fixed 60hz)
             if (moveLeft)
             {

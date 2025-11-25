@@ -820,7 +820,7 @@ namespace Collision {
 
 		int idx1{ static_cast<int>(type1) };
 		int idx2{ static_cast<int>(type2) };
-		std::cout << " size of collidefuncts is " << collideFuncts.size() << std::endl;
+		//std::cout << " size of collidefuncts is " << collideFuncts.size() << std::endl;
 		return collideFuncts[idx1 * SHAPE_COUNT + idx2];
 	}
 

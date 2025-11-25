@@ -26,18 +26,438 @@
                 "gridData": [
                     {
                         "x": -7,
+                        "y": -58,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -7,
+                        "y": -57,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -7,
+                        "y": -56,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -7,
+                        "y": -55,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -7,
+                        "y": -54,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -7,
+                        "y": -53,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -7,
+                        "y": -52,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -7,
+                        "y": -51,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -7,
+                        "y": -50,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -7,
+                        "y": -49,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -7,
+                        "y": -48,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -7,
+                        "y": -47,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -7,
+                        "y": -46,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -7,
+                        "y": -45,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -7,
+                        "y": -44,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -7,
+                        "y": -43,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -7,
+                        "y": -42,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -7,
+                        "y": -41,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -7,
+                        "y": -40,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -7,
+                        "y": -39,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -7,
+                        "y": -38,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -7,
+                        "y": -37,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -7,
+                        "y": -36,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -7,
+                        "y": -35,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -7,
                         "y": -34,
-                        "asset": ""
+                        "asset": "tilemaps/Rock"
                     },
                     {
                         "x": -7,
                         "y": -33,
-                        "asset": ""
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -7,
+                        "y": -32,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -7,
+                        "y": -31,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -7,
+                        "y": -30,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -7,
+                        "y": -29,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -7,
+                        "y": -28,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -7,
+                        "y": -27,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -7,
+                        "y": -26,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -7,
+                        "y": -25,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -7,
+                        "y": -24,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -7,
+                        "y": -23,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -7,
+                        "y": -22,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -7,
+                        "y": -21,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -7,
+                        "y": -20,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -7,
+                        "y": -19,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -7,
+                        "y": -18,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -7,
+                        "y": -17,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -7,
+                        "y": -16,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -7,
+                        "y": -15,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -7,
+                        "y": -14,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -7,
+                        "y": -13,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -7,
+                        "y": -12,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -7,
+                        "y": -11,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -7,
+                        "y": -10,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -7,
+                        "y": -9,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -7,
+                        "y": -8,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -7,
+                        "y": -7,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -7,
+                        "y": -6,
+                        "asset": "tilemaps/Rock"
                     },
                     {
                         "x": -7,
                         "y": -5,
-                        "asset": ""
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -7,
+                        "y": -4,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -7,
+                        "y": -3,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -7,
+                        "y": -2,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -7,
+                        "y": -1,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -7,
+                        "y": 0,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -7,
+                        "y": 1,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -7,
+                        "y": 2,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -7,
+                        "y": 3,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -7,
+                        "y": 4,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -7,
+                        "y": 5,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -7,
+                        "y": 6,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -6,
+                        "y": -58,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -6,
+                        "y": -57,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -6,
+                        "y": -56,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -6,
+                        "y": -55,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -6,
+                        "y": -54,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -6,
+                        "y": -53,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -6,
+                        "y": -52,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -6,
+                        "y": -51,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -6,
+                        "y": -50,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -6,
+                        "y": -49,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -6,
+                        "y": -48,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -6,
+                        "y": -47,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -6,
+                        "y": -46,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -6,
+                        "y": -45,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -6,
+                        "y": -44,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -6,
+                        "y": -43,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -6,
+                        "y": -42,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -6,
+                        "y": -41,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -6,
+                        "y": -40,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -6,
+                        "y": -39,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -6,
+                        "y": -38,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -6,
+                        "y": -37,
+                        "asset": "tilemaps/Rock"
                     },
                     {
                         "x": -6,
@@ -256,6 +676,116 @@
                     },
                     {
                         "x": -5,
+                        "y": -58,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -5,
+                        "y": -57,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -5,
+                        "y": -56,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -5,
+                        "y": -55,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -5,
+                        "y": -54,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -5,
+                        "y": -53,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -5,
+                        "y": -52,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -5,
+                        "y": -51,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -5,
+                        "y": -50,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -5,
+                        "y": -49,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -5,
+                        "y": -48,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -5,
+                        "y": -47,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -5,
+                        "y": -46,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -5,
+                        "y": -45,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -5,
+                        "y": -44,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -5,
+                        "y": -43,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -5,
+                        "y": -42,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -5,
+                        "y": -41,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -5,
+                        "y": -40,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -5,
+                        "y": -39,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -5,
+                        "y": -38,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -5,
+                        "y": -37,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -5,
                         "y": -36,
                         "asset": "tilemaps/Rock"
                     },
@@ -471,6 +1001,116 @@
                     },
                     {
                         "x": -4,
+                        "y": -58,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -4,
+                        "y": -57,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -4,
+                        "y": -56,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -4,
+                        "y": -55,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -4,
+                        "y": -54,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -4,
+                        "y": -53,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -4,
+                        "y": -52,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -4,
+                        "y": -51,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -4,
+                        "y": -50,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -4,
+                        "y": -49,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -4,
+                        "y": -48,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -4,
+                        "y": -47,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -4,
+                        "y": -46,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -4,
+                        "y": -45,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -4,
+                        "y": -44,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -4,
+                        "y": -43,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -4,
+                        "y": -42,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -4,
+                        "y": -41,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -4,
+                        "y": -40,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -4,
+                        "y": -39,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -4,
+                        "y": -38,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -4,
+                        "y": -37,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -4,
                         "y": -36,
                         "asset": "tilemaps/Rock"
                     },
@@ -686,6 +1326,41 @@
                     },
                     {
                         "x": -3,
+                        "y": -58,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -3,
+                        "y": -57,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -3,
+                        "y": -56,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -3,
+                        "y": -55,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -3,
+                        "y": -39,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -3,
+                        "y": -38,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -3,
+                        "y": -37,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -3,
                         "y": -36,
                         "asset": "tilemaps/Rock"
                     },
@@ -876,6 +1551,41 @@
                     },
                     {
                         "x": -2,
+                        "y": -58,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -2,
+                        "y": -57,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -2,
+                        "y": -56,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -2,
+                        "y": -55,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -2,
+                        "y": -39,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -2,
+                        "y": -38,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -2,
+                        "y": -37,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -2,
                         "y": -36,
                         "asset": "tilemaps/Rock"
                     },
@@ -1076,6 +1786,41 @@
                     },
                     {
                         "x": -1,
+                        "y": -58,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -1,
+                        "y": -57,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -1,
+                        "y": -56,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -1,
+                        "y": -55,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -1,
+                        "y": -39,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -1,
+                        "y": -38,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -1,
+                        "y": -37,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -1,
                         "y": -36,
                         "asset": "tilemaps/Rock"
                     },
@@ -1271,6 +2016,41 @@
                     },
                     {
                         "x": 0,
+                        "y": -58,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 0,
+                        "y": -57,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 0,
+                        "y": -56,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 0,
+                        "y": -55,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 0,
+                        "y": -39,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 0,
+                        "y": -38,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 0,
+                        "y": -37,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 0,
                         "y": -36,
                         "asset": "tilemaps/Rock"
                     },
@@ -1461,6 +2241,41 @@
                     },
                     {
                         "x": 1,
+                        "y": -58,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 1,
+                        "y": -57,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 1,
+                        "y": -56,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 1,
+                        "y": -55,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 1,
+                        "y": -39,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 1,
+                        "y": -38,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 1,
+                        "y": -37,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 1,
                         "y": -36,
                         "asset": "tilemaps/Rock"
                     },
@@ -1646,6 +2461,41 @@
                     },
                     {
                         "x": 2,
+                        "y": -58,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 2,
+                        "y": -57,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 2,
+                        "y": -56,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 2,
+                        "y": -55,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 2,
+                        "y": -39,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 2,
+                        "y": -38,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 2,
+                        "y": -37,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 2,
                         "y": -36,
                         "asset": "tilemaps/Rock"
                     },
@@ -1812,6 +2662,41 @@
                     {
                         "x": 2,
                         "y": 6,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 3,
+                        "y": -58,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 3,
+                        "y": -57,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 3,
+                        "y": -56,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 3,
+                        "y": -55,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 3,
+                        "y": -39,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 3,
+                        "y": -38,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 3,
+                        "y": -37,
                         "asset": "tilemaps/Rock"
                     },
                     {
@@ -1976,6 +2861,41 @@
                     },
                     {
                         "x": 4,
+                        "y": -58,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 4,
+                        "y": -57,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 4,
+                        "y": -56,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 4,
+                        "y": -55,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 4,
+                        "y": -39,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 4,
+                        "y": -38,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 4,
+                        "y": -37,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 4,
                         "y": -36,
                         "asset": "tilemaps/Rock"
                     },
@@ -2121,6 +3041,41 @@
                     },
                     {
                         "x": 5,
+                        "y": -58,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 5,
+                        "y": -57,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 5,
+                        "y": -56,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 5,
+                        "y": -55,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 5,
+                        "y": -39,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 5,
+                        "y": -38,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 5,
+                        "y": -37,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 5,
                         "y": -36,
                         "asset": "tilemaps/Rock"
                     },
@@ -2286,6 +3241,41 @@
                     },
                     {
                         "x": 6,
+                        "y": -58,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 6,
+                        "y": -57,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 6,
+                        "y": -56,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 6,
+                        "y": -55,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 6,
+                        "y": -39,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 6,
+                        "y": -38,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 6,
+                        "y": -37,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 6,
                         "y": -36,
                         "asset": "tilemaps/Rock"
                     },
@@ -2431,6 +3421,41 @@
                     },
                     {
                         "x": 7,
+                        "y": -58,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 7,
+                        "y": -57,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 7,
+                        "y": -56,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 7,
+                        "y": -55,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 7,
+                        "y": -39,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 7,
+                        "y": -38,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 7,
+                        "y": -37,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 7,
                         "y": -36,
                         "asset": "tilemaps/Rock"
                     },
@@ -2611,6 +3636,41 @@
                     },
                     {
                         "x": 8,
+                        "y": -58,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 8,
+                        "y": -57,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 8,
+                        "y": -56,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 8,
+                        "y": -55,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 8,
+                        "y": -39,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 8,
+                        "y": -38,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 8,
+                        "y": -37,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 8,
                         "y": -36,
                         "asset": "tilemaps/Rock"
                     },
@@ -2721,6 +3781,41 @@
                     },
                     {
                         "x": 9,
+                        "y": -58,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 9,
+                        "y": -57,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 9,
+                        "y": -56,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 9,
+                        "y": -55,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 9,
+                        "y": -39,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 9,
+                        "y": -38,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 9,
+                        "y": -37,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 9,
                         "y": -36,
                         "asset": "tilemaps/Rock"
                     },
@@ -2826,6 +3921,41 @@
                     },
                     {
                         "x": 10,
+                        "y": -58,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 10,
+                        "y": -57,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 10,
+                        "y": -56,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 10,
+                        "y": -55,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 10,
+                        "y": -39,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 10,
+                        "y": -38,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 10,
+                        "y": -37,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 10,
                         "y": -36,
                         "asset": "tilemaps/Rock"
                     },
@@ -2922,6 +4052,41 @@
                     {
                         "x": 10,
                         "y": 6,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 11,
+                        "y": -58,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 11,
+                        "y": -57,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 11,
+                        "y": -56,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 11,
+                        "y": -55,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 11,
+                        "y": -39,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 11,
+                        "y": -38,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 11,
+                        "y": -37,
                         "asset": "tilemaps/Rock"
                     },
                     {
@@ -3046,6 +4211,41 @@
                     },
                     {
                         "x": 12,
+                        "y": -58,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 12,
+                        "y": -57,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 12,
+                        "y": -56,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 12,
+                        "y": -55,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 12,
+                        "y": -39,
+                        "asset": ""
+                    },
+                    {
+                        "x": 12,
+                        "y": -38,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 12,
+                        "y": -37,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 12,
                         "y": -36,
                         "asset": "tilemaps/Rock"
                     },
@@ -3077,6 +4277,41 @@
                     {
                         "x": 12,
                         "y": -11,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 13,
+                        "y": -58,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 13,
+                        "y": -57,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 13,
+                        "y": -56,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 13,
+                        "y": -55,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 13,
+                        "y": -39,
+                        "asset": ""
+                    },
+                    {
+                        "x": 13,
+                        "y": -38,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 13,
+                        "y": -37,
                         "asset": "tilemaps/Rock"
                     },
                     {
@@ -3152,6 +4387,41 @@
                     {
                         "x": 13,
                         "y": -11,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 14,
+                        "y": -58,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 14,
+                        "y": -57,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 14,
+                        "y": -56,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 14,
+                        "y": -55,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 14,
+                        "y": -39,
+                        "asset": ""
+                    },
+                    {
+                        "x": 14,
+                        "y": -38,
+                        "asset": ""
+                    },
+                    {
+                        "x": 14,
+                        "y": -37,
                         "asset": "tilemaps/Rock"
                     },
                     {
@@ -3251,6 +4521,66 @@
                     },
                     {
                         "x": 15,
+                        "y": -58,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 15,
+                        "y": -57,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 15,
+                        "y": -56,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 15,
+                        "y": -55,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 15,
+                        "y": -38,
+                        "asset": ""
+                    },
+                    {
+                        "x": 15,
+                        "y": -37,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 15,
+                        "y": -36,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 15,
+                        "y": -35,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 15,
+                        "y": -34,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 15,
+                        "y": -33,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 15,
+                        "y": -32,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 15,
+                        "y": -31,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 15,
                         "y": -30,
                         "asset": "tilemaps/Rock"
                     },
@@ -3307,6 +4637,26 @@
                     {
                         "x": 15,
                         "y": -13,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 16,
+                        "y": -58,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 16,
+                        "y": -57,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 16,
+                        "y": -56,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 16,
+                        "y": -55,
                         "asset": "tilemaps/Rock"
                     },
                     {
@@ -3367,6 +4717,26 @@
                     {
                         "x": 16,
                         "y": -14,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 17,
+                        "y": -58,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 17,
+                        "y": -57,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 17,
+                        "y": -56,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 17,
+                        "y": -55,
                         "asset": "tilemaps/Rock"
                     },
                     {
@@ -3396,6 +4766,46 @@
                     },
                     {
                         "x": 18,
+                        "y": -58,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 18,
+                        "y": -57,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 18,
+                        "y": -56,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 18,
+                        "y": -55,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 18,
+                        "y": -44,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 18,
+                        "y": -43,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 18,
+                        "y": -42,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 18,
+                        "y": -41,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 18,
                         "y": -16,
                         "asset": "tilemaps/Rock"
                     },
@@ -3406,6 +4816,31 @@
                     },
                     {
                         "x": 19,
+                        "y": -58,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 19,
+                        "y": -57,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 19,
+                        "y": -56,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 19,
+                        "y": -55,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 19,
+                        "y": -41,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 19,
                         "y": -16,
                         "asset": "tilemaps/Rock"
                     },
@@ -3416,6 +4851,31 @@
                     },
                     {
                         "x": 20,
+                        "y": -58,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 20,
+                        "y": -57,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 20,
+                        "y": -56,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 20,
+                        "y": -55,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 20,
+                        "y": -41,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 20,
                         "y": -16,
                         "asset": "tilemaps/Rock"
                     },
@@ -3423,6 +4883,46 @@
                         "x": 20,
                         "y": -15,
                         "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 21,
+                        "y": -58,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 21,
+                        "y": -57,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 21,
+                        "y": -56,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 21,
+                        "y": -55,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 21,
+                        "y": -41,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 21,
+                        "y": -37,
+                        "asset": ""
+                    },
+                    {
+                        "x": 21,
+                        "y": -36,
+                        "asset": ""
+                    },
+                    {
+                        "x": 21,
+                        "y": -35,
+                        "asset": ""
                     },
                     {
                         "x": 21,
@@ -3438,6 +4938,41 @@
                         "x": 21,
                         "y": -15,
                         "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 22,
+                        "y": -58,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 22,
+                        "y": -57,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 22,
+                        "y": -56,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 22,
+                        "y": -55,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 22,
+                        "y": -41,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 22,
+                        "y": -36,
+                        "asset": ""
+                    },
+                    {
+                        "x": 22,
+                        "y": -35,
+                        "asset": ""
                     },
                     {
                         "x": 22,
@@ -3496,13 +5031,83 @@
                     },
                     {
                         "x": 23,
+                        "y": -58,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 23,
+                        "y": -57,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 23,
+                        "y": -56,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 23,
+                        "y": -55,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 23,
+                        "y": -41,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 23,
+                        "y": -40,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 23,
+                        "y": -39,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 23,
+                        "y": -38,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 23,
+                        "y": -37,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 23,
+                        "y": -36,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 23,
+                        "y": -35,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 23,
+                        "y": -34,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 23,
                         "y": -33,
-                        "asset": ""
+                        "asset": "tilemaps/Rock"
                     },
                     {
                         "x": 23,
                         "y": -32,
-                        "asset": ""
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 23,
+                        "y": -31,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 23,
+                        "y": -30,
+                        "asset": "tilemaps/Rock"
                     },
                     {
                         "x": 23,
@@ -3586,6 +5191,86 @@
                     },
                     {
                         "x": 24,
+                        "y": -58,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 24,
+                        "y": -57,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 24,
+                        "y": -56,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 24,
+                        "y": -55,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 24,
+                        "y": -41,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 24,
+                        "y": -40,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 24,
+                        "y": -39,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 24,
+                        "y": -38,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 24,
+                        "y": -37,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 24,
+                        "y": -36,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 24,
+                        "y": -35,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 24,
+                        "y": -34,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 24,
+                        "y": -33,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 24,
+                        "y": -32,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 24,
+                        "y": -31,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 24,
+                        "y": -30,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 24,
                         "y": -29,
                         "asset": "tilemaps/Rock"
                     },
@@ -3666,6 +5351,36 @@
                     },
                     {
                         "x": 25,
+                        "y": -58,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 25,
+                        "y": -57,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 25,
+                        "y": -56,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 25,
+                        "y": -55,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 25,
+                        "y": -34,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 25,
+                        "y": -33,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 25,
                         "y": -29,
                         "asset": "tilemaps/Rock"
                     },
@@ -3737,6 +5452,1186 @@
                     {
                         "x": 25,
                         "y": -15,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 26,
+                        "y": -58,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 26,
+                        "y": -57,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 26,
+                        "y": -56,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 26,
+                        "y": -55,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 26,
+                        "y": -34,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 26,
+                        "y": -33,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 26,
+                        "y": -32,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 26,
+                        "y": -31,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 26,
+                        "y": -29,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 26,
+                        "y": -28,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 26,
+                        "y": -27,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 26,
+                        "y": -26,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 26,
+                        "y": -25,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 26,
+                        "y": -24,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 26,
+                        "y": -23,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 26,
+                        "y": -22,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 26,
+                        "y": -21,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 26,
+                        "y": -20,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 26,
+                        "y": -19,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 26,
+                        "y": -18,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 26,
+                        "y": -17,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 26,
+                        "y": -16,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 26,
+                        "y": -15,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 27,
+                        "y": -58,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 27,
+                        "y": -57,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 27,
+                        "y": -56,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 27,
+                        "y": -55,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 27,
+                        "y": -34,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 27,
+                        "y": -33,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 27,
+                        "y": -32,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 27,
+                        "y": -31,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 28,
+                        "y": -58,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 28,
+                        "y": -57,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 28,
+                        "y": -56,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 28,
+                        "y": -55,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 28,
+                        "y": -32,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 28,
+                        "y": -31,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 29,
+                        "y": -58,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 29,
+                        "y": -57,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 29,
+                        "y": -56,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 29,
+                        "y": -55,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 29,
+                        "y": -32,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 29,
+                        "y": -31,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 30,
+                        "y": -58,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 30,
+                        "y": -57,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 30,
+                        "y": -56,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 30,
+                        "y": -55,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 30,
+                        "y": -32,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 30,
+                        "y": -31,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 31,
+                        "y": -58,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 31,
+                        "y": -57,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 31,
+                        "y": -56,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 31,
+                        "y": -55,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 31,
+                        "y": -32,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 31,
+                        "y": -31,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 32,
+                        "y": -58,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 32,
+                        "y": -57,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 32,
+                        "y": -56,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 32,
+                        "y": -55,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 32,
+                        "y": -32,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 32,
+                        "y": -31,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 33,
+                        "y": -58,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 33,
+                        "y": -57,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 33,
+                        "y": -56,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 33,
+                        "y": -55,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 33,
+                        "y": -32,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 33,
+                        "y": -31,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 34,
+                        "y": -58,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 34,
+                        "y": -57,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 34,
+                        "y": -56,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 34,
+                        "y": -55,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 34,
+                        "y": -32,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 34,
+                        "y": -31,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 35,
+                        "y": -58,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 35,
+                        "y": -57,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 35,
+                        "y": -56,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 35,
+                        "y": -55,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 35,
+                        "y": -32,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 35,
+                        "y": -31,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 36,
+                        "y": -58,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 36,
+                        "y": -57,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 36,
+                        "y": -56,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 36,
+                        "y": -55,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 36,
+                        "y": -32,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 36,
+                        "y": -31,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 37,
+                        "y": -58,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 37,
+                        "y": -57,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 37,
+                        "y": -56,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 37,
+                        "y": -55,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 37,
+                        "y": -32,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 37,
+                        "y": -31,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 38,
+                        "y": -58,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 38,
+                        "y": -57,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 38,
+                        "y": -56,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 38,
+                        "y": -55,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 38,
+                        "y": -32,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 38,
+                        "y": -31,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 39,
+                        "y": -58,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 39,
+                        "y": -57,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 39,
+                        "y": -56,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 39,
+                        "y": -55,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 39,
+                        "y": -32,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 39,
+                        "y": -31,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 40,
+                        "y": -58,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 40,
+                        "y": -57,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 40,
+                        "y": -56,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 40,
+                        "y": -55,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 40,
+                        "y": -32,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 40,
+                        "y": -31,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 41,
+                        "y": -58,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 41,
+                        "y": -57,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 41,
+                        "y": -56,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 41,
+                        "y": -55,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 42,
+                        "y": -58,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 42,
+                        "y": -57,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 42,
+                        "y": -56,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 42,
+                        "y": -55,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 43,
+                        "y": -58,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 43,
+                        "y": -57,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 43,
+                        "y": -56,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 43,
+                        "y": -55,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 44,
+                        "y": -58,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 44,
+                        "y": -57,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 44,
+                        "y": -56,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 44,
+                        "y": -55,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 45,
+                        "y": -58,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 45,
+                        "y": -57,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 45,
+                        "y": -56,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 45,
+                        "y": -55,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 46,
+                        "y": -58,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 46,
+                        "y": -57,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 46,
+                        "y": -56,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 46,
+                        "y": -55,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 47,
+                        "y": -58,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 47,
+                        "y": -57,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 47,
+                        "y": -56,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 47,
+                        "y": -55,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 48,
+                        "y": -58,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 48,
+                        "y": -57,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 48,
+                        "y": -56,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 48,
+                        "y": -55,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 49,
+                        "y": -58,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 49,
+                        "y": -57,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 49,
+                        "y": -56,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 49,
+                        "y": -55,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 50,
+                        "y": -58,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 50,
+                        "y": -57,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 50,
+                        "y": -56,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 50,
+                        "y": -55,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 51,
+                        "y": -58,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 51,
+                        "y": -57,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 51,
+                        "y": -56,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 51,
+                        "y": -55,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 52,
+                        "y": -58,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 52,
+                        "y": -57,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 52,
+                        "y": -56,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 52,
+                        "y": -55,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 53,
+                        "y": -58,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 53,
+                        "y": -57,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 53,
+                        "y": -56,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 53,
+                        "y": -55,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 54,
+                        "y": -58,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 54,
+                        "y": -57,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 54,
+                        "y": -56,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 54,
+                        "y": -55,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 55,
+                        "y": -58,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 55,
+                        "y": -57,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 55,
+                        "y": -56,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 55,
+                        "y": -55,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 56,
+                        "y": -58,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 56,
+                        "y": -57,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 56,
+                        "y": -56,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 56,
+                        "y": -55,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 57,
+                        "y": -59,
+                        "asset": ""
+                    },
+                    {
+                        "x": 57,
+                        "y": -58,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 57,
+                        "y": -57,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 57,
+                        "y": -56,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 57,
+                        "y": -55,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 58,
+                        "y": -59,
+                        "asset": ""
+                    },
+                    {
+                        "x": 58,
+                        "y": -58,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 58,
+                        "y": -57,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 58,
+                        "y": -56,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 58,
+                        "y": -55,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 59,
+                        "y": -58,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 59,
+                        "y": -57,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 59,
+                        "y": -56,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 59,
+                        "y": -55,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 60,
+                        "y": -58,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 60,
+                        "y": -57,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 60,
+                        "y": -56,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 60,
+                        "y": -55,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 61,
+                        "y": -58,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 61,
+                        "y": -57,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 61,
+                        "y": -56,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 61,
+                        "y": -55,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 62,
+                        "y": -58,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 62,
+                        "y": -57,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 62,
+                        "y": -56,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 62,
+                        "y": -55,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 62,
+                        "y": -54,
+                        "asset": ""
+                    },
+                    {
+                        "x": 63,
+                        "y": -58,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 63,
+                        "y": -57,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 63,
+                        "y": -56,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 63,
+                        "y": -55,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 63,
+                        "y": -54,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 63,
+                        "y": -53,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 63,
+                        "y": -52,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 63,
+                        "y": -51,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 63,
+                        "y": -50,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 64,
+                        "y": -58,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 64,
+                        "y": -57,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 64,
+                        "y": -56,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 64,
+                        "y": -55,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 64,
+                        "y": -54,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 64,
+                        "y": -53,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 64,
+                        "y": -52,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 64,
+                        "y": -51,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 64,
+                        "y": -50,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 65,
+                        "y": -58,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 65,
+                        "y": -57,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 65,
+                        "y": -56,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 65,
+                        "y": -55,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 65,
+                        "y": -54,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 65,
+                        "y": -53,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 65,
+                        "y": -52,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 65,
+                        "y": -51,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 65,
+                        "y": -50,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 66,
+                        "y": -58,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 66,
+                        "y": -57,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 66,
+                        "y": -56,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 66,
+                        "y": -55,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 66,
+                        "y": -54,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 66,
+                        "y": -53,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 66,
+                        "y": -52,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 66,
+                        "y": -51,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 66,
+                        "y": -50,
                         "asset": "tilemaps/Rock"
                     }
                 ]
@@ -3750,8 +6645,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 0.0,
-                    "y": 34.07373809814453,
+                    "x": -0.5541689991950989,
+                    "y": 12.705183029174805,
                     "z": 1.0
                 },
                 "size": {
@@ -3776,24 +6671,24 @@
             "collider": {
                 "helperType": 2,
                 "position": {
-                    "x": 0.0,
-                    "y": 33.72373962402344,
-                    "z": 0.0
+                    "x": -0.5541689991950989,
+                    "y": 13.705183029174805,
+                    "z": 1.0
                 },
                 "offset": {
                     "x": 0.0,
-                    "y": -0.3499999940395355,
+                    "y": 1.0,
                     "z": 0.0
                 },
                 "min": {
-                    "x": -10.850000381469727,
-                    "y": 3.2236595153808595,
-                    "z": 0.0
+                    "x": -11.404170036315918,
+                    "y": -16.794897079467775,
+                    "z": 1.0
                 },
                 "max": {
-                    "x": 10.850000381469727,
-                    "y": 64.22381591796875,
-                    "z": 0.0
+                    "x": 10.295832633972168,
+                    "y": 44.20526123046875,
+                    "z": 1.0
                 },
                 "rotation": 0.0
             },
@@ -3835,11 +6730,11 @@
             "camera": {
                 "zoom": 0.30000001192092898,
                 "xBounds": {
-                    "x": 0.0,
+                    "x": 12.0,
                     "y": 0.0
                 },
                 "yBounds": {
-                    "x": 0.0,
+                    "x": 44.0,
                     "y": 0.0
                 }
             }
