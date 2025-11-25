@@ -848,7 +848,7 @@ namespace {
 							auto pos = rel.find(prefix);
 							if (pos == 0) {
 								// Store path relative to the images root, matching the picker
-								rel = rel.substr(prefix.size());   // e.g. "ui/button.png"
+								rel = rel.substr(prefix.size());
 							}
 
 							// Fallback to the asset name if something is weird
