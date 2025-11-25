@@ -1564,6 +1564,7 @@ namespace {
 										sc->Destroy();
 										sc->Initialize(MonoManager::GetDomain(), MonoManager::GetAssembly());
 									}
+									ImGui::CloseCurrentPopup();
 								}
 
 								if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID)) {
