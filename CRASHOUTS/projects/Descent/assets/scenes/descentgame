@@ -19,7 +19,7 @@
             },
             "tilemap": {
                 "tileSize": 32,
-                "activeAsset": "tilemaps/Platform",
+                "activeAsset": "tilemaps/Rock",
                 "tileAssetNames": [
                     "Rock",
                     "Lava_Platform",
@@ -3178,6 +3178,11 @@
                     },
                     {
                         "x": 4,
+                        "y": -4,
+                        "asset": ""
+                    },
+                    {
+                        "x": 4,
                         "y": -2,
                         "asset": ""
                     },
@@ -3360,6 +3365,11 @@
                         "x": 5,
                         "y": -14,
                         "asset": ""
+                    },
+                    {
+                        "x": 5,
+                        "y": -4,
+                        "asset": "tilemaps/Rock"
                     },
                     {
                         "x": 5,
@@ -3585,6 +3595,11 @@
                         "x": 6,
                         "y": -6,
                         "asset": ""
+                    },
+                    {
+                        "x": 6,
+                        "y": -4,
+                        "asset": "tilemaps/Rock"
                     },
                     {
                         "x": 6,
@@ -14315,7 +14330,9 @@
                 }
             },
             "script": {
-                "scripts": []
+                "scripts": [
+                    "PlayerMovement"
+                ]
             },
             "camera": {
                 "zoom": 0.30000001192092898,

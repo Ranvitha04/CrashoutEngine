@@ -1799,7 +1799,7 @@ namespace CrashoutsEngine
 			// Helper function to convert 0-255 CEVec3 to 0-1 float[3] for ImGui's picker
 			auto EditColor = [](const char* label, CEColor& colorVec) {
 				float col[4] = { colorVec.x(), colorVec.y(), colorVec.z(), colorVec.w() };
-				if (ImGui::ColorEdit4(label, col)) {
+				if (ImGui::ColorEdit4(label, col, ImGuiColorEditFlags_AlphaBar)) {
 					colorVec.x() = col[0];
 					colorVec.y() = col[1];
 					colorVec.z() = col[2];

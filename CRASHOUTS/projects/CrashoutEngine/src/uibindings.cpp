@@ -26,70 +26,6 @@ namespace
         return ecs->GetComponent<ButtonComponent>(entityID);
     }
 
-	// internal calls
-    /*
-    static void InternalPlay(uint32_t id, MonoString* stateName)
-    {
-        Animator* anim = GetAnimatorFromEntity(id);
-        if (!anim) return;
-
-        std::string state = mono_string_to_utf8(stateName);
-        anim->Play(state);
-    }
-
-    static void InternalSetBool(uint32_t id, MonoString* key, bool value)
-    {
-        Animator* anim = GetAnimatorFromEntity(id);
-        if (!anim) return;
-
-        std::string k = mono_string_to_utf8(key);
-        anim->SetBool(k, value);
-    }
-
-    static void InternalSetFloat(uint32_t id, MonoString* key, float value)
-    {
-        Animator* anim = GetAnimatorFromEntity(id);
-        if (!anim) return;
-
-        std::string k = mono_string_to_utf8(key);
-        anim->SetFloat(k, value);
-    }
-
-    static void InternalSetTrigger(uint32_t id, MonoString* key)
-    {
-        Animator* anim = GetAnimatorFromEntity(id);
-        if (!anim) return;
-
-        std::string k = mono_string_to_utf8(key);
-        anim->SetTrigger(k);
-    }
-
-    static void InternalSetFlip(uint32_t id, bool flip)
-    {
-        Animator* anim = GetAnimatorFromEntity(id);
-        if (!anim) return;
-
-        anim->SetFlip(flip);
-    }
-
-    static MonoString* InternalGetCurrentState(uint32_t id)
-    {
-        Animator* anim = GetAnimatorFromEntity(id);
-        if (!anim) return nullptr;
-
-        return mono_string_new(mono_domain_get(), anim->GetCurrentState().c_str());
-    }
-
-    static bool InternalGetBool(uint32_t id, MonoString* key)
-    {
-        Animator* anim = GetAnimatorFromEntity(id);
-        if (!anim) return false;
-
-        std::string k = mono_string_to_utf8(key);
-        return anim->GetBool(k);
-    }
-    */
-
     static bool InternalIsClicked(uint32_t id)
     {
         ButtonComponent* btn = GetButtonFromEntity(id);
@@ -118,7 +54,7 @@ void CrashoutsEngine::Bindings::RegisterUIBindings()
     mono_add_internal_call("CrashoutsEngine.Animator::InternalGetCurrentState", (const void*)InternalGetCurrentState);
     */
 
-    mono_add_internal_call("CrashoutsEngine.Button::InternalIsClicked", (const void*)InternalIsClicked);
-    mono_add_internal_call("CrashoutsEngine.Button::InternalIsHovered", (const void*)InternalIsHovered);
+    mono_add_internal_call("CrashoutsEngine.InternalCall::InternalIsClicked", (const void*)InternalIsClicked);
+    mono_add_internal_call("CrashoutsEngine.InternalCall::InternalIsHovered", (const void*)InternalIsHovered);
 
 }

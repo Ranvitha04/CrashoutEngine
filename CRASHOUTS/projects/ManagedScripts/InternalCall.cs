@@ -106,5 +106,12 @@ namespace CrashoutsEngine
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal static extern void Audio_SetMasterVolume(float volume);
+
+        // UI Bindings
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern bool ButtonIsClicked(uint entityID);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern bool ButtonIsHovered(uint entityID);
     }
 }
