@@ -213,24 +213,42 @@ namespace CrashoutsEngine {
             auto* pointerParentComp = ecs.GetComponent<ParentComponent>(child);
             if (!parentTransform || !childTransform || !pointerParentComp) return;
 
-            // scale
+            // 1. Scale Inheritance
             childTransform->size.x = parentTransform->size.x * pointerParentComp->localScale.x;
             childTransform->size.y = parentTransform->size.y * pointerParentComp->localScale.y;
 
-            // rotation
+            // 2. Rotation Inheritance (Radians)
             const float rot = parentTransform->rotation + pointerParentComp->localRot;
             childTransform->rotation = rot;
 
-            // position = parentPos + R(parentRot) * localPos
-            /*const float s = std::sin(parentTransform->rotation);
+            // 3. Position Inheritance (2D Rotation + Z Offset)
+            // Calculate rotation matrix components from Parent's rotation
+            // NOTE: Ensure rotation is in Radians for std::sin/cos
+            const float s = std::sin(parentTransform->rotation);
             const float c = std::cos(parentTransform->rotation);
+
+            // Local Position from Parent Component
             const float lx = pointerParentComp->localPos.x;
             const float ly = pointerParentComp->localPos.y;
-            const float wx = parentTransform->position.x + (c * lx - s * ly);
-            const float wy = parentTransform->position.y + (s * lx + c * ly);
+
+            // Rotate Local Position by Parent's Rotation
+            // (Standard 2D Rotation Matrix: [c -s], [s c])
+            // Note: Check if your engine uses CW or CCW rotation. 
+            // If CCW (Standard Math): x' = x*c - y*s, y' = x*s + y*c
+            const float rotatedX = (c * lx - s * ly);
+            const float rotatedY = (s * lx + c * ly);
+
+            // Final World Position = Parent World Pos + Rotated Local Pos
+            const float wx = parentTransform->position.x + rotatedX;
+            const float wy = parentTransform->position.y + rotatedY;
+
+            // Z IS HERE: Simple addition (no rotation usually applied to Z in 2D)
             const float wz = parentTransform->position.z + pointerParentComp->localPos.z;
-            childTransform->position = { wx, wy, wz };*/
-            if(ecs.HasComponent<ShapeComponent>(parent)) ForceInheritColorFromParent(ecs, child);
+
+            childTransform->position = { wx, wy, wz };
+
+            // 4. Color Inheritance
+            if (ecs.HasComponent<ShapeComponent>(parent)) ForceInheritColorFromParent(ecs, child);
             };
 
         

@@ -51,10 +51,11 @@ Note that the C++ compiler will insert a return 0 statement if one is missing.
 
 int WINAPI WinMain(
     [[maybe_unused]] _In_     HINSTANCE hInstance,
-    _In_opt_ HINSTANCE hPrevInstance,
-    _In_     LPSTR     lpCmdLine,
+    [[maybe_unused]] _In_opt_ HINSTANCE hPrevInstance,
+    [[maybe_unused]] _In_     LPSTR     lpCmdLine,
     [[maybe_unused]] _In_     int       nCmdShow
 ) {
+#if DEBUG
     _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
     //_CrtSetBreakAlloc(638935);
     UNREFERENCED_PARAMETER(hPrevInstance);
@@ -63,6 +64,7 @@ int WINAPI WinMain(
     _CrtMemCheckpoint(&stateStart);
 
     SetupConsole();
+#endif
 
     Init();
     double fixedDT = FRC.FixedDT();
@@ -86,10 +88,12 @@ int WINAPI WinMain(
     // Cleanup
     CleanUp();
 
+#if DEBUG
     _CrtMemCheckpoint(&stateEnd);
     if (_CrtMemDifference(&stateDiff, &stateStart, &stateEnd)) {
         OutputDebugString("Memory leaks detected!\n");
         _CrtMemDumpStatistics(&stateDiff);
     }
+#endif
     return EXIT_SUCCESS;
 }
