@@ -135,10 +135,10 @@ namespace CrashoutsEngine {
                     if (obj.HasMember("colliderType") && obj["colliderType"].IsString()) {
                         std::string colliderType = obj["colliderType"].GetString();
 
-                        if (colliderType == "AABB") ruleTile.colliderType = Collision::ColliderType::AABB;
-                        else if (colliderType == "SPHERE") ruleTile.colliderType = Collision::ColliderType::SPHERE;
-                        else if (colliderType == "OBB") ruleTile.colliderType = Collision::ColliderType::OBB;
-                        else if (colliderType == "NONE") ruleTile.colliderType = Collision::ColliderType::NONE;
+                        if (colliderType == "ColliderType::AABB") ruleTile.colliderType = Collision::ColliderType::AABB;
+                        else if (colliderType == "ColliderType::SPHERE") ruleTile.colliderType = Collision::ColliderType::SPHERE;
+                        else if (colliderType == "ColliderType::OBB") ruleTile.colliderType = Collision::ColliderType::OBB;
+                        else if (colliderType == "ColliderType::NONE") ruleTile.colliderType = Collision::ColliderType::NONE;
                     }
 
                     if (obj.HasMember("ruleBitMap") && obj["ruleBitMap"].IsUint()) {
@@ -181,15 +181,15 @@ namespace CrashoutsEngine {
                 tileObj.AddMember("texAssetName", nameVal, allocator);
 
                 // Add "ColliderType"
-                std::string colliderString{ "AABB" };
+                std::string colliderString{ "ColliderType::AABB" };
                 if (ruleTile.colliderType == Collision::ColliderType::SPHERE) {
-                    colliderString = "SPHERE";
+                    colliderString = "ColliderType::SPHERE";
                 }
                 else if (ruleTile.colliderType == Collision::ColliderType::OBB) {
-                    colliderString = "OBB";
+                    colliderString = "ColliderType::OBB";
                 }
                 else if (ruleTile.colliderType == Collision::ColliderType::NONE) {
-                    colliderString = "NONE";
+                    colliderString = "ColliderType::NONE";
                 }
 
                 rapidjson::Value colVal;

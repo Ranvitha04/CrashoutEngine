@@ -2382,7 +2382,7 @@ namespace UI { // --------------------------------------------------------------
                 //  Mouse picking
                 //  - only runs if mouse is over the viewport image
                 //  - converts mouse to UV, then to world
-                //  - walks ECS transforms and does a simple 2D AABB hit test
+                //  - walks ECS transforms and does a simple 2D ColliderType::AABB hit test
                 //  - picks the entity with the highest Z so clicking overlaps works
                 // ------------------------------------------------------------
                 if (over && ImGui::IsMouseClicked(ImGuiMouseButton_Left) && !ImGuizmo::IsOver() && !ImGuizmo::IsUsing())
@@ -2420,14 +2420,14 @@ namespace UI { // --------------------------------------------------------------
 
                             case ShapeType::Line:
                             {
-                                // conservative AABB around line + thickness
+                                // conservative ColliderType::AABB around line + thickness
                                 const float minx = std::min(sc->p1.x, sc->p2.x);
                                 const float maxx = std::max(sc->p1.x, sc->p2.x);
                                 const float miny = std::min(sc->p1.y, sc->p2.y);
                                 const float maxy = std::max(sc->p1.y, sc->p2.y);
                                 hx = std::max(hx, std::max(0.5f * (maxx - minx), sc->thickness * 0.5f));
                                 hy = std::max(hy, std::max(0.5f * (maxy - miny), sc->thickness * 0.5f));
-                                // fall through to AABB test below
+                                // fall through to ColliderType::AABB test below
                             }
                             [[fallthrough]];
 

@@ -203,42 +203,42 @@ namespace CrashoutsEngine::TileMapUtils {
 				float rot = t.rotation;
 
 				std::unique_ptr<Collision::Collider> newCollider = nullptr;
-				Collision::HelperType helperT = Collision::AABB_T; // Default
+				Collision::HelperType helperT = Collision::HelperType::AABB_T; // Default
 
 				switch (matchedRule->colliderType) {
 					// --------------------------------------------------------
-					// SPHERE
+					// ColliderType::SPHERE
 					// --------------------------------------------------------
 					case Collision::ColliderType::SPHERE: {
 						// Radius is usually half the width (or average of width/height)
 						float radius = std::min(halfW, halfH);
 						newCollider = std::make_unique<Collision::Sphere>(radius, tPos);
-						helperT = Collision::SPHERE_T;
+						helperT = Collision::HelperType::SPHERE_T;
 						break;
 					}
 					// --------------------------------------------------------
-					// AABB (Axis Aligned Bounding Box)
+					// ColliderType::AABB (Axis Aligned Bounding Box)
 					// --------------------------------------------------------
 					case Collision::ColliderType::AABB: {
 						CEVec3 min{ tPos.x - halfW, tPos.y - halfH, 0.0f };
 						CEVec3 max{ tPos.x + halfW, tPos.y + halfH, 0.0f };
 						newCollider = std::make_unique<Collision::AABBRect>(min, max);
-						helperT = Collision::AABB_T;
+						helperT = Collision::HelperType::AABB_T;
 						break;
 					}
 					// --------------------------------------------------------
-					// OBB (Oriented Bounding Box)
+					// ColliderType::OBB (Oriented Bounding Box)
 					// --------------------------------------------------------
 					case Collision::ColliderType::OBB: {
-						// OBB needs min/max (usually unrotated or local) + rotation
+						// ColliderType::OBB needs min/max (usually unrotated or local) + rotation
 						CEVec3 min{ tPos.x - halfW, tPos.y - halfH, 0.0f };
 						CEVec3 max{ tPos.x + halfW, tPos.y + halfH, 0.0f };
 						newCollider = std::make_unique<Collision::OBBRect>(min, max, rot);
-						helperT = Collision::OBB_T;
+						helperT = Collision::HelperType::OBB_T;
 						break;
 					}
 					// --------------------------------------------------------
-					// POLYGON (Box Shape)
+					// ColliderType::POLYGON (Box Shape)
 					// --------------------------------------------------------
 					case Collision::ColliderType::POLYGON: {
 						// Create a box polygon relative to the center
@@ -254,7 +254,7 @@ namespace CrashoutsEngine::TileMapUtils {
 							rot,
 							tPos
 						);
-						helperT = Collision::POLYGON_T;
+						helperT = Collision::HelperType::POLYGON_T;
 						break;
 					}
 				}

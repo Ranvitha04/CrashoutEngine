@@ -189,7 +189,7 @@ namespace Scene {
                 ButtonComponent* b = globalECS.GetComponent<ButtonComponent>(id);
                 TransformComponent* t = globalECS.GetComponent<TransformComponent>(id);
 
-                // AABB the button
+                // ColliderType::AABB the button
                 float halfW = t->size.x * 0.5f;
                 float halfH = t->size.y * 0.5f;
                 CEVec2 aa{ t->position.x - halfW, t->position.y - halfH };
@@ -245,7 +245,7 @@ namespace Scene {
             for (const Entity& id : textInputArray.indexToEntity) {
                 TransformComponent* t = globalECS.GetComponent<TransformComponent>(id);
 
-                // AABB check
+                // ColliderType::AABB check
                 float halfW = t->size.x * 0.5f;
                 float halfH = t->size.y * 0.5f;
                 CEVec2 aa{ t->position.x - halfW, t->position.y - halfH };
@@ -407,21 +407,21 @@ namespace Scene {
                 UILayoutComponent* u = globalECS.GetComponent<UILayoutComponent>(id);
                 if (u) {
                     // --- 1. Handle Vertical Alignment & Padding ---
-                    if ((u->uiLayout & UILayout::TOP) != UILayout::NONE) {
+                    if ((u->uiLayout & UILayout::TOP) != UILayout::ColliderType::NONE) {
                         newOffset.y += t->size.y * 0.5f;
                         newOffset.y -= u->paddingXY.y; // Padding pushes *down* from the top
                     }
-                    else if ((u->uiLayout & UILayout::DOWN) != UILayout::NONE) {
+                    else if ((u->uiLayout & UILayout::DOWN) != UILayout::ColliderType::NONE) {
                         newOffset.y -= t->size.y * 0.5f;
                         newOffset.y += u->paddingXY.y; // Padding pushes *up* from the bottom
                     }
 
                     // --- 2. Handle Horizontal Alignment & Padding ---
-                    if ((u->uiLayout & UILayout::LEFT) != UILayout::NONE) {
+                    if ((u->uiLayout & UILayout::LEFT) != UILayout::ColliderType::NONE) {
                         newOffset.x -= t->size.x * 0.5f;
                         newOffset.x += u->paddingXY.x; // Padding pushes *right* from the left
                     }
-                    else if ((u->uiLayout & UILayout::RIGHT) != UILayout::NONE) {
+                    else if ((u->uiLayout & UILayout::RIGHT) != UILayout::ColliderType::NONE) {
                         newOffset.x += t->size.x * 0.5f;
                         newOffset.x -= u->paddingXY.x; // Padding pushes *left* from the right
                     }

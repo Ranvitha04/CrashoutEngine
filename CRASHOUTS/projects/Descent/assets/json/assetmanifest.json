@@ -189,6 +189,38 @@
             "path": "Character\\Light Mode\\Left\\Switch State Idle .png"
         },
         {
+            "name": "Chibi-1",
+            "path": "Character\\New Artstyle\\Chibi-1.png"
+        },
+        {
+            "name": "Chibi-2",
+            "path": "Character\\New Artstyle\\Chibi-2.png"
+        },
+        {
+            "name": "Chibi-3",
+            "path": "Character\\New Artstyle\\Chibi-3.png"
+        },
+        {
+            "name": "Chibi-4",
+            "path": "Character\\New Artstyle\\Chibi-4.png"
+        },
+        {
+            "name": "Chibi-5",
+            "path": "Character\\New Artstyle\\Chibi-5.png"
+        },
+        {
+            "name": "Chibi-6",
+            "path": "Character\\New Artstyle\\Chibi-6.png"
+        },
+        {
+            "name": "Chibi-7",
+            "path": "Character\\New Artstyle\\Chibi-7.png"
+        },
+        {
+            "name": "Switch State spritesheet",
+            "path": "Character\\New Artstyle\\Switch State spritesheet.png"
+        },
+        {
             "name": "Switch-State-SpriteSheet",
             "path": "Character\\New Artstyle\\Switch-State-SpriteSheet.png"
         },
@@ -735,8 +767,36 @@
     ],
     "tilemaps": [
         {
+            "name": "a",
+            "path": "a"
+        },
+        {
+            "name": "adadw",
+            "path": "adadw"
+        },
+        {
+            "name": "awdwad",
+            "path": "awdwad"
+        },
+        {
+            "name": "Darker_Platform",
+            "path": "Darker_Platform"
+        },
+        {
             "name": "Rock",
             "path": "Rock"
+        },
+        {
+            "name": "Rocky",
+            "path": "Rocky"
+        },
+        {
+            "name": "settings",
+            "path": "settings.json"
+        },
+        {
+            "name": "test",
+            "path": "test"
         }
     ]
 }

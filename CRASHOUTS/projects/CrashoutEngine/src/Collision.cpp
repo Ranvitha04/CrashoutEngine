@@ -2,7 +2,7 @@
 @file       Collision.cpp
 @author     miratristan.d@digipen.edu
 @date       08/09/2025
-@brief      Function definitions for Basic Collision Functions and Colliders(Plane, AABB and Circle)
+@brief      Function definitions for Basic Collision Functions and Colliders(Plane, ColliderType::AABB and Circle)
 
 
 //__________________________________________________________________________*/
@@ -192,7 +192,6 @@ namespace Collision {
 	CollisionManifold CollisionHandler::OBBToOBBCollision([[maybe_unused]] CollisionProps const& coll1, [[maybe_unused]] CollisionProps const& coll2) {
 		CollisionManifold result{ .depth = std::numeric_limits<f32>::max(), .collisionOccured = true };
 
-
 		CollisionProps const* obbPtr1{ &coll1 };
 		CollisionProps const* obbPtr2{ &coll2 };
 
@@ -309,7 +308,7 @@ namespace Collision {
 		return result;
 	}
 	
-	/*------------------------POLYGON COLLISIONS-----------------------------------*/
+	/*------------------------ColliderType::POLYGON COLLISIONS-----------------------------------*/
 
 	CollisionManifold CollisionHandler::PolygonToPolygonCollision(CollisionProps const& coll1, CollisionProps const& coll2) {
 		CollisionManifold result{ .collisionOccured = false };
@@ -391,7 +390,7 @@ namespace Collision {
 
 	}
 
-	/*----------------------------AABB COLLISIONS--------------------------------------------------------------*/
+	/*----------------------------ColliderType::AABB COLLISIONS--------------------------------------------------------------*/
 
 	CollisionManifold CollisionHandler::SphereToAABBCollision(CollisionProps const& coll1, CollisionProps const& coll2) {
 		CollisionManifold result{ .collisionOccured = false };
@@ -412,9 +411,9 @@ namespace Collision {
 
 		CEVec3 pos{ spherePtr->position  };
 
-		CEVec3 closestPt{ pos }; /*CLOSEST POINT OF THE CENTER OF THE CIRCLE TO THE EDGES OF THE AABB*/
+		CEVec3 closestPt{ pos }; /*CLOSEST POINT OF THE CENTER OF THE CIRCLE TO THE EDGES OF THE ColliderType::AABB*/
 
-		/*CLAMP THE POINT OF THE CENTER OF THE CIRCLE TO THE POINT ON THE SIDE OF AABB*/
+		/*CLAMP THE POINT OF THE CENTER OF THE CIRCLE TO THE POINT ON THE SIDE OF ColliderType::AABB*/
 		if (pos.x < minAABB.x) { closestPt.x = minAABB.x; }
 		if (pos.x > maxAABB.x) { closestPt.x = maxAABB.x; }
 
@@ -430,7 +429,7 @@ namespace Collision {
 
 			result.collisionOccured = true;
 
-			/*Center of Circle is already inside AABB*/
+			/*Center of Circle is already inside ColliderType::AABB*/
 			if (closestPtSquared == 0.f) {
 				CEVec3 vecFromAABBToCirc{ spherePtr->position - aabbPtr->position };
 
@@ -619,15 +618,12 @@ namespace Collision {
 
 	/*----------------COLLISIONHANDLER CLASS DEFINITIONS--------------------------------------------------------*/
 
-	CollisionHandler::CollisionHandler() : Messaging::Observable{ "Collision" }, collideFuncts{
-		std::array<Collision::FunctionDispatchType, TYPES_OF_COLLISION * TYPES_OF_COLLISION> {
-			nullptr, nullptr,
-			nullptr, nullptr
-		}
-	} {
-		int sphereIdx{ static_cast<int>(SPHERE) };
-		int AABBIdx{ static_cast<int>(AABB) };
-		int PolygonIdx{ static_cast<int>(POLYGON) };
+	CollisionHandler::CollisionHandler() : Messaging::Observable{ "Collision" }, collideFuncts{}
+	{
+		int sphere = static_cast<int>(ColliderType::SPHERE);   // 0
+		int aabb = static_cast<int>(ColliderType::AABB);     // 1
+		//int obb = static_cast<int>(ColliderType::OBB);      // 2
+		int poly = static_cast<int>(ColliderType::POLYGON);  // 4
 
 		quadTree.Resize(AABBRect{ CEVec3{-2000.f, -2000.f, 0.f}, CEVec3{2000.f, 2000.f, 0.f} });
 
@@ -635,18 +631,30 @@ namespace Collision {
 		lastFrameCollision.reserve(100);*/
 
 		/*SOON TO BE DEPRECATED*/
-		//int OBBIdx{ static_cast<int>(OBB) };
+		//int OBBIdx{ static_cast<int>(ColliderType::OBB) };
 
-		/*Fill in the table of collisions, e.g collideFuncts[0] will be SPHERE TO SPHERE collision (2 total collider types will have 2^2 permutations(different types of collisions possible) ) */
-		collideFuncts[sphereIdx] = SphereToSphereCollision;
-		collideFuncts[AABBIdx * TYPES_OF_COLLISION + AABBIdx] = AABBToAABBCollision;
-		collideFuncts[sphereIdx * TYPES_OF_COLLISION + AABBIdx] = SphereToAABBCollision;
+		/*Fill in the table of collisions, e.g collideFuncts[0] will be ColliderType::SPHERE TO ColliderType::SPHERE collision (2 total collider types will have 2^2 permutations(different types of collisions possible) ) */
+		
+		// Sphere vs Sphere
+		collideFuncts[sphere * SHAPE_COUNT + sphere] = SphereToSphereCollision;
+
+		// AABB vs AABB
+		collideFuncts[aabb * SHAPE_COUNT + aabb] = AABBToAABBCollision;
+
+		// Sphere vs AABB (Sphere is 0, AABB is 1. 0 < 1, so index is 0 * N + 1)
+		collideFuncts[sphere * SHAPE_COUNT + aabb] = SphereToAABBCollision;
+
+		// AABB vs Polygon (AABB is 1, Poly is 4. 1 < 4)
+		collideFuncts[aabb * SHAPE_COUNT + poly] = AABBToPolygonCollision;
+
+		// Sphere vs Polygon (Sphere is 0, Poly is 4. 0 < 4)
+		collideFuncts[sphere * SHAPE_COUNT + poly] = SphereToPolygonCollision;
+
+		// Polygon vs Polygon
+		collideFuncts[poly * SHAPE_COUNT + poly] = PolygonToPolygonCollision;
 		/*collideFuncts[AABBIdx * TYPES_OF_COLLISION + OBBIdx] = AABBToOBBCollision;
 		collideFuncts[sphereIdx * TYPES_OF_COLLISION + OBBIdx] = SphereToOBBCollision;
 		collideFuncts[OBBIdx * TYPES_OF_COLLISION + OBBIdx] = OBBToOBBCollision;*/
-		collideFuncts[AABBIdx * TYPES_OF_COLLISION + PolygonIdx] = AABBToPolygonCollision;
-		collideFuncts[sphereIdx * TYPES_OF_COLLISION + PolygonIdx] = SphereToPolygonCollision;
-		collideFuncts[PolygonIdx * TYPES_OF_COLLISION + PolygonIdx] = PolygonToPolygonCollision;
 	}
 
 	void CollisionHandler::update([[maybe_unused]] double deltaTime, EngineState state) {
@@ -812,8 +820,8 @@ namespace Collision {
 
 		int idx1{ static_cast<int>(type1) };
 		int idx2{ static_cast<int>(type2) };
-
-		return collideFuncts[idx1 * TYPES_OF_COLLISION + idx2];
+		std::cout << " size of collidefuncts is " << collideFuncts.size() << std::endl;
+		return collideFuncts[idx1 * SHAPE_COUNT + idx2];
 	}
 
 	/*----------------------------------------------------------------------------------------------------------*/

@@ -358,14 +358,14 @@ namespace CrashoutsEngine {
                     // 1. Check Type Int
                     //int colliderType = 0;
                     if (colliderValue.HasMember("type") && colliderValue["type"].IsInt()) {
-                        // 0 - Sphere Collider, 1 - AABB, 2 - Polygon, 3 - OBB, 4 - None?
-                        int colliderType = colliderValue["type"].GetInt();
+                        // 0 - Sphere Collider, 1 - ColliderType::AABB, 2 - Polygon, 3 - ColliderType::OBB, 4 - None?
+                        Collision::ColliderType colliderType = static_cast<Collision::ColliderType>(colliderValue["type"].GetInt());
                         ColliderComponent& col = gECS.AddComponent<ColliderComponent>(newEntity);
                         Collision::ColliderFactory colFactory{};
                         Collision::ColliderFactory::ArgMap args;
 
                         switch (colliderType) {
-                            case Collision::SPHERE: {               
+                            case Collision::ColliderType::SPHERE: {               
                                     if (colliderValue.HasMember("radius") && colliderValue["radius"].IsFloat()) {
                                         args["radius"] = std::to_string(colliderValue["radius"].GetFloat());
                                     }
@@ -381,7 +381,7 @@ namespace CrashoutsEngine {
                                 
                                 }          
                                 break;
-                            case Collision::AABB: {    // AABB
+                            case Collision::ColliderType::AABB: {    // ColliderType::AABB
                                 if (colliderValue.HasMember("min") && colliderValue["min"].IsObject()) {
                                     const rapidjson::Value& minVal{ colliderValue["min"] };
                                     CEVec3 newVal{ ReadVectorFromJson{}(minVal) };
@@ -399,7 +399,7 @@ namespace CrashoutsEngine {
                                     col.collider = colFactory.CreateCollider(static_cast<Collision::ColliderType>(colliderType));
                                 }
                                 break;
-                            case Collision::OBB: {    // OBB
+                            case Collision::ColliderType::OBB: {    // ColliderType::OBB
                                 if (colliderValue.HasMember("min") && colliderValue["min"].IsObject()) {
                                     const rapidjson::Value& minVal{ colliderValue["min"] };
                                     CEVec3 newVal{ ReadVectorFromJson{}(minVal) };
@@ -419,9 +419,9 @@ namespace CrashoutsEngine {
                                 col.collider = colFactory.CreateCollider(static_cast<Collision::ColliderType>(colliderType));
                                 }
                                 break;
-                            case Collision::NONE: break;
+                            case Collision::ColliderType::NONE: break;
                             default:
-                                col.collider = colFactory.CreateCollider(Collision::AABB);
+                                col.collider = colFactory.CreateCollider(Collision::ColliderType::AABB);
                         };
                     }
                 }
@@ -1134,7 +1134,7 @@ namespace CrashoutsEngine {
                     rapidjson::Value colliderValue(rapidjson::kObjectType);
 
                     // 1. Type (integer)
-                    // Assuming Collision::SPHERE = 0, Collision::AABB = 1
+                    // Assuming Collision::ColliderType::SPHERE = 0, Collision::ColliderType::AABB = 1
                     colliderValue.AddMember("type", (int)colComp.collider->type, allocator);
 
                     // NOTE: You can skip adding the 'sphere' or 'aabb' objects 
@@ -1142,7 +1142,7 @@ namespace CrashoutsEngine {
                     // as your LoadScenes only reads the 'type' for now.
                     // If you later save extents/radius, they would go here.
                     switch (colComp.collider->type) {
-                        case Collision::SPHERE: {
+                        case Collision::ColliderType::SPHERE: {
                             
                             Collision::Sphere const& sphereTemp = dynamic_cast<Collision::Sphere const&>(*(colComp.collider));
                             colliderValue.AddMember("radius", sphereTemp.radius, allocator);
@@ -1154,7 +1154,7 @@ namespace CrashoutsEngine {
 
                         }
                         break;
-                        case Collision::AABB: {
+                        case Collision::ColliderType::AABB: {
                             Collision::AABBRect const& aabbTemp = dynamic_cast<Collision::AABBRect const&>(*(colComp.collider));
                             rapidjson::Value min{ rapidjson::kObjectType };
                             min.AddMember("x", aabbTemp.min.x, allocator);
@@ -1169,7 +1169,7 @@ namespace CrashoutsEngine {
                             colliderValue.AddMember("max", max, allocator);
                         }
                         break;
-                        case Collision::OBB: {
+                        case Collision::ColliderType::OBB: {
                             Collision::OBBRect const& obbTemp = dynamic_cast<Collision::OBBRect const&>(*(colComp.collider));
                             rapidjson::Value min{ rapidjson::kObjectType };
                             min.AddMember("x", obbTemp.min.x, allocator);
@@ -1186,7 +1186,7 @@ namespace CrashoutsEngine {
                             colliderValue.AddMember("rotation", obbTemp.rotation, allocator);
                             break;
                         }
-                        case Collision::NONE: {
+                        case Collision::ColliderType::NONE: {
                             break;
                         }
                         default:
