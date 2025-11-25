@@ -365,6 +365,534 @@
             "path": "Monsters\\Sus Face Right.png"
         },
         {
+            "name": "Darker Platform_00",
+            "path": "spritesheet\\Darker Platform\\Darker Platform_00.png"
+        },
+        {
+            "name": "Darker Platform_01",
+            "path": "spritesheet\\Darker Platform\\Darker Platform_01.png"
+        },
+        {
+            "name": "Darker Platform_02",
+            "path": "spritesheet\\Darker Platform\\Darker Platform_02.png"
+        },
+        {
+            "name": "Darker Platform_03",
+            "path": "spritesheet\\Darker Platform\\Darker Platform_03.png"
+        },
+        {
+            "name": "Darker Platform_04",
+            "path": "spritesheet\\Darker Platform\\Darker Platform_04.png"
+        },
+        {
+            "name": "Darker Platform_05",
+            "path": "spritesheet\\Darker Platform\\Darker Platform_05.png"
+        },
+        {
+            "name": "Darker Platform_06",
+            "path": "spritesheet\\Darker Platform\\Darker Platform_06.png"
+        },
+        {
+            "name": "Darker Platform_07",
+            "path": "spritesheet\\Darker Platform\\Darker Platform_07.png"
+        },
+        {
+            "name": "Darker Platform_08",
+            "path": "spritesheet\\Darker Platform\\Darker Platform_08.png"
+        },
+        {
+            "name": "Darker Platform_09",
+            "path": "spritesheet\\Darker Platform\\Darker Platform_09.png"
+        },
+        {
+            "name": "Darker Platform_10",
+            "path": "spritesheet\\Darker Platform\\Darker Platform_10.png"
+        },
+        {
+            "name": "Darker Platform_11",
+            "path": "spritesheet\\Darker Platform\\Darker Platform_11.png"
+        },
+        {
+            "name": "Darker Platform_12",
+            "path": "spritesheet\\Darker Platform\\Darker Platform_12.png"
+        },
+        {
+            "name": "Darker Platform_13",
+            "path": "spritesheet\\Darker Platform\\Darker Platform_13.png"
+        },
+        {
+            "name": "Darker Platform_14",
+            "path": "spritesheet\\Darker Platform\\Darker Platform_14.png"
+        },
+        {
+            "name": "Darker Platform_15",
+            "path": "spritesheet\\Darker Platform\\Darker Platform_15.png"
+        },
+        {
+            "name": "Darker Platform_16",
+            "path": "spritesheet\\Darker Platform\\Darker Platform_16.png"
+        },
+        {
+            "name": "Darker Platform_17",
+            "path": "spritesheet\\Darker Platform\\Darker Platform_17.png"
+        },
+        {
+            "name": "Darker Platform_18",
+            "path": "spritesheet\\Darker Platform\\Darker Platform_18.png"
+        },
+        {
+            "name": "Darker Platform_19",
+            "path": "spritesheet\\Darker Platform\\Darker Platform_19.png"
+        },
+        {
+            "name": "Darker Platform_20",
+            "path": "spritesheet\\Darker Platform\\Darker Platform_20.png"
+        },
+        {
+            "name": "Darker Platform_21",
+            "path": "spritesheet\\Darker Platform\\Darker Platform_21.png"
+        },
+        {
+            "name": "Darker Platform_22",
+            "path": "spritesheet\\Darker Platform\\Darker Platform_22.png"
+        },
+        {
+            "name": "Darker Platform_23",
+            "path": "spritesheet\\Darker Platform\\Darker Platform_23.png"
+        },
+        {
+            "name": "Darker Platform_24",
+            "path": "spritesheet\\Darker Platform\\Darker Platform_24.png"
+        },
+        {
+            "name": "Darker Platform_25",
+            "path": "spritesheet\\Darker Platform\\Darker Platform_25.png"
+        },
+        {
+            "name": "Darker Platform_26",
+            "path": "spritesheet\\Darker Platform\\Darker Platform_26.png"
+        },
+        {
+            "name": "Darker Platform_27",
+            "path": "spritesheet\\Darker Platform\\Darker Platform_27.png"
+        },
+        {
+            "name": "Darker Platform_28",
+            "path": "spritesheet\\Darker Platform\\Darker Platform_28.png"
+        },
+        {
+            "name": "Darker Platform_29",
+            "path": "spritesheet\\Darker Platform\\Darker Platform_29.png"
+        },
+        {
+            "name": "Darker Platform_30",
+            "path": "spritesheet\\Darker Platform\\Darker Platform_30.png"
+        },
+        {
+            "name": "Darker Platform_31",
+            "path": "spritesheet\\Darker Platform\\Darker Platform_31.png"
+        },
+        {
+            "name": "Darker Platform_32",
+            "path": "spritesheet\\Darker Platform\\Darker Platform_32.png"
+        },
+        {
+            "name": "Darker Platform_33",
+            "path": "spritesheet\\Darker Platform\\Darker Platform_33.png"
+        },
+        {
+            "name": "Darker Platform_34",
+            "path": "spritesheet\\Darker Platform\\Darker Platform_34.png"
+        },
+        {
+            "name": "Darker Platform_35",
+            "path": "spritesheet\\Darker Platform\\Darker Platform_35.png"
+        },
+        {
+            "name": "Darker Platform_36",
+            "path": "spritesheet\\Darker Platform\\Darker Platform_36.png"
+        },
+        {
+            "name": "Darker Platform_37",
+            "path": "spritesheet\\Darker Platform\\Darker Platform_37.png"
+        },
+        {
+            "name": "Darker Platform_38",
+            "path": "spritesheet\\Darker Platform\\Darker Platform_38.png"
+        },
+        {
+            "name": "Darker Platform_39",
+            "path": "spritesheet\\Darker Platform\\Darker Platform_39.png"
+        },
+        {
+            "name": "Darker Platform_40",
+            "path": "spritesheet\\Darker Platform\\Darker Platform_40.png"
+        },
+        {
+            "name": "Darker Platform_41",
+            "path": "spritesheet\\Darker Platform\\Darker Platform_41.png"
+        },
+        {
+            "name": "Darker Platform_42",
+            "path": "spritesheet\\Darker Platform\\Darker Platform_42.png"
+        },
+        {
+            "name": "Darker Platform_43",
+            "path": "spritesheet\\Darker Platform\\Darker Platform_43.png"
+        },
+        {
+            "name": "lava platform_00",
+            "path": "spritesheet\\lava platform\\lava platform_00.png"
+        },
+        {
+            "name": "lava platform_01",
+            "path": "spritesheet\\lava platform\\lava platform_01.png"
+        },
+        {
+            "name": "lava platform_02",
+            "path": "spritesheet\\lava platform\\lava platform_02.png"
+        },
+        {
+            "name": "lava platform_03",
+            "path": "spritesheet\\lava platform\\lava platform_03.png"
+        },
+        {
+            "name": "lava platform_04",
+            "path": "spritesheet\\lava platform\\lava platform_04.png"
+        },
+        {
+            "name": "lava platform_05",
+            "path": "spritesheet\\lava platform\\lava platform_05.png"
+        },
+        {
+            "name": "lava platform_06",
+            "path": "spritesheet\\lava platform\\lava platform_06.png"
+        },
+        {
+            "name": "lava platform_07",
+            "path": "spritesheet\\lava platform\\lava platform_07.png"
+        },
+        {
+            "name": "lava platform_08",
+            "path": "spritesheet\\lava platform\\lava platform_08.png"
+        },
+        {
+            "name": "lava platform_09",
+            "path": "spritesheet\\lava platform\\lava platform_09.png"
+        },
+        {
+            "name": "lava platform_10",
+            "path": "spritesheet\\lava platform\\lava platform_10.png"
+        },
+        {
+            "name": "lava platform_11",
+            "path": "spritesheet\\lava platform\\lava platform_11.png"
+        },
+        {
+            "name": "lava platform_12",
+            "path": "spritesheet\\lava platform\\lava platform_12.png"
+        },
+        {
+            "name": "lava platform_13",
+            "path": "spritesheet\\lava platform\\lava platform_13.png"
+        },
+        {
+            "name": "lava platform_14",
+            "path": "spritesheet\\lava platform\\lava platform_14.png"
+        },
+        {
+            "name": "lava platform_15",
+            "path": "spritesheet\\lava platform\\lava platform_15.png"
+        },
+        {
+            "name": "lava platform_16",
+            "path": "spritesheet\\lava platform\\lava platform_16.png"
+        },
+        {
+            "name": "lava platform_17",
+            "path": "spritesheet\\lava platform\\lava platform_17.png"
+        },
+        {
+            "name": "lava platform_18",
+            "path": "spritesheet\\lava platform\\lava platform_18.png"
+        },
+        {
+            "name": "lava platform_19",
+            "path": "spritesheet\\lava platform\\lava platform_19.png"
+        },
+        {
+            "name": "lava platform_20",
+            "path": "spritesheet\\lava platform\\lava platform_20.png"
+        },
+        {
+            "name": "lava platform_21",
+            "path": "spritesheet\\lava platform\\lava platform_21.png"
+        },
+        {
+            "name": "lava platform_22",
+            "path": "spritesheet\\lava platform\\lava platform_22.png"
+        },
+        {
+            "name": "lava platform_23",
+            "path": "spritesheet\\lava platform\\lava platform_23.png"
+        },
+        {
+            "name": "lava platform_24",
+            "path": "spritesheet\\lava platform\\lava platform_24.png"
+        },
+        {
+            "name": "lava platform_25",
+            "path": "spritesheet\\lava platform\\lava platform_25.png"
+        },
+        {
+            "name": "lava platform_26",
+            "path": "spritesheet\\lava platform\\lava platform_26.png"
+        },
+        {
+            "name": "lava platform_27",
+            "path": "spritesheet\\lava platform\\lava platform_27.png"
+        },
+        {
+            "name": "lava platform_28",
+            "path": "spritesheet\\lava platform\\lava platform_28.png"
+        },
+        {
+            "name": "lava platform_29",
+            "path": "spritesheet\\lava platform\\lava platform_29.png"
+        },
+        {
+            "name": "lava platform_30",
+            "path": "spritesheet\\lava platform\\lava platform_30.png"
+        },
+        {
+            "name": "lava platform_31",
+            "path": "spritesheet\\lava platform\\lava platform_31.png"
+        },
+        {
+            "name": "lava platform_32",
+            "path": "spritesheet\\lava platform\\lava platform_32.png"
+        },
+        {
+            "name": "lava platform_33",
+            "path": "spritesheet\\lava platform\\lava platform_33.png"
+        },
+        {
+            "name": "lava platform_34",
+            "path": "spritesheet\\lava platform\\lava platform_34.png"
+        },
+        {
+            "name": "lava platform_35",
+            "path": "spritesheet\\lava platform\\lava platform_35.png"
+        },
+        {
+            "name": "lava platform_36",
+            "path": "spritesheet\\lava platform\\lava platform_36.png"
+        },
+        {
+            "name": "lava platform_37",
+            "path": "spritesheet\\lava platform\\lava platform_37.png"
+        },
+        {
+            "name": "lava platform_38",
+            "path": "spritesheet\\lava platform\\lava platform_38.png"
+        },
+        {
+            "name": "lava platform_39",
+            "path": "spritesheet\\lava platform\\lava platform_39.png"
+        },
+        {
+            "name": "lava platform_40",
+            "path": "spritesheet\\lava platform\\lava platform_40.png"
+        },
+        {
+            "name": "lava platform_41",
+            "path": "spritesheet\\lava platform\\lava platform_41.png"
+        },
+        {
+            "name": "lava platform_42",
+            "path": "spritesheet\\lava platform\\lava platform_42.png"
+        },
+        {
+            "name": "lava platform_43",
+            "path": "spritesheet\\lava platform\\lava platform_43.png"
+        },
+        {
+            "name": "Platform_00",
+            "path": "spritesheet\\Platform\\Platform_00.png"
+        },
+        {
+            "name": "Platform_01",
+            "path": "spritesheet\\Platform\\Platform_01.png"
+        },
+        {
+            "name": "Platform_02",
+            "path": "spritesheet\\Platform\\Platform_02.png"
+        },
+        {
+            "name": "Platform_03",
+            "path": "spritesheet\\Platform\\Platform_03.png"
+        },
+        {
+            "name": "Platform_04",
+            "path": "spritesheet\\Platform\\Platform_04.png"
+        },
+        {
+            "name": "Platform_05",
+            "path": "spritesheet\\Platform\\Platform_05.png"
+        },
+        {
+            "name": "Platform_06",
+            "path": "spritesheet\\Platform\\Platform_06.png"
+        },
+        {
+            "name": "Platform_07",
+            "path": "spritesheet\\Platform\\Platform_07.png"
+        },
+        {
+            "name": "Platform_08",
+            "path": "spritesheet\\Platform\\Platform_08.png"
+        },
+        {
+            "name": "Platform_09",
+            "path": "spritesheet\\Platform\\Platform_09.png"
+        },
+        {
+            "name": "Platform_10",
+            "path": "spritesheet\\Platform\\Platform_10.png"
+        },
+        {
+            "name": "Platform_11",
+            "path": "spritesheet\\Platform\\Platform_11.png"
+        },
+        {
+            "name": "Platform_12",
+            "path": "spritesheet\\Platform\\Platform_12.png"
+        },
+        {
+            "name": "Platform_13",
+            "path": "spritesheet\\Platform\\Platform_13.png"
+        },
+        {
+            "name": "Platform_14",
+            "path": "spritesheet\\Platform\\Platform_14.png"
+        },
+        {
+            "name": "Platform_15",
+            "path": "spritesheet\\Platform\\Platform_15.png"
+        },
+        {
+            "name": "Platform_16",
+            "path": "spritesheet\\Platform\\Platform_16.png"
+        },
+        {
+            "name": "Platform_17",
+            "path": "spritesheet\\Platform\\Platform_17.png"
+        },
+        {
+            "name": "Platform_18",
+            "path": "spritesheet\\Platform\\Platform_18.png"
+        },
+        {
+            "name": "Platform_19",
+            "path": "spritesheet\\Platform\\Platform_19.png"
+        },
+        {
+            "name": "Platform_20",
+            "path": "spritesheet\\Platform\\Platform_20.png"
+        },
+        {
+            "name": "Platform_21",
+            "path": "spritesheet\\Platform\\Platform_21.png"
+        },
+        {
+            "name": "Platform_22",
+            "path": "spritesheet\\Platform\\Platform_22.png"
+        },
+        {
+            "name": "Platform_23",
+            "path": "spritesheet\\Platform\\Platform_23.png"
+        },
+        {
+            "name": "Platform_24",
+            "path": "spritesheet\\Platform\\Platform_24.png"
+        },
+        {
+            "name": "Platform_25",
+            "path": "spritesheet\\Platform\\Platform_25.png"
+        },
+        {
+            "name": "Platform_26",
+            "path": "spritesheet\\Platform\\Platform_26.png"
+        },
+        {
+            "name": "Platform_27",
+            "path": "spritesheet\\Platform\\Platform_27.png"
+        },
+        {
+            "name": "Platform_28",
+            "path": "spritesheet\\Platform\\Platform_28.png"
+        },
+        {
+            "name": "Platform_29",
+            "path": "spritesheet\\Platform\\Platform_29.png"
+        },
+        {
+            "name": "Platform_30",
+            "path": "spritesheet\\Platform\\Platform_30.png"
+        },
+        {
+            "name": "Platform_31",
+            "path": "spritesheet\\Platform\\Platform_31.png"
+        },
+        {
+            "name": "Platform_32",
+            "path": "spritesheet\\Platform\\Platform_32.png"
+        },
+        {
+            "name": "Platform_33",
+            "path": "spritesheet\\Platform\\Platform_33.png"
+        },
+        {
+            "name": "Platform_34",
+            "path": "spritesheet\\Platform\\Platform_34.png"
+        },
+        {
+            "name": "Platform_35",
+            "path": "spritesheet\\Platform\\Platform_35.png"
+        },
+        {
+            "name": "Platform_36",
+            "path": "spritesheet\\Platform\\Platform_36.png"
+        },
+        {
+            "name": "Platform_37",
+            "path": "spritesheet\\Platform\\Platform_37.png"
+        },
+        {
+            "name": "Platform_38",
+            "path": "spritesheet\\Platform\\Platform_38.png"
+        },
+        {
+            "name": "Platform_39",
+            "path": "spritesheet\\Platform\\Platform_39.png"
+        },
+        {
+            "name": "Platform_40",
+            "path": "spritesheet\\Platform\\Platform_40.png"
+        },
+        {
+            "name": "Platform_41",
+            "path": "spritesheet\\Platform\\Platform_41.png"
+        },
+        {
+            "name": "Platform_42",
+            "path": "spritesheet\\Platform\\Platform_42.png"
+        },
+        {
+            "name": "Platform_43",
+            "path": "spritesheet\\Platform\\Platform_43.png"
+        },
+        {
             "name": "Rock_00",
             "path": "spritesheet\\Rock\\Rock_00.png"
         },
@@ -577,22 +1105,6 @@
             "path": "spritesheet\\Switch-State-SpriteSheet\\Switch-State-SpriteSheet_08.png"
         },
         {
-            "name": "Left",
-            "path": "Test\\Left.png"
-        },
-        {
-            "name": "Middle",
-            "path": "Test\\Middle.png"
-        },
-        {
-            "name": "Right",
-            "path": "Test\\Right.png"
-        },
-        {
-            "name": "Top",
-            "path": "Test\\Top.png"
-        },
-        {
             "name": "Darker Platform",
             "path": "Tileset\\Darker Platform.png"
         },
@@ -766,6 +1278,18 @@
         }
     ],
     "tilemaps": [
+        {
+            "name": "Darker_Platform",
+            "path": "Darker_Platform"
+        },
+        {
+            "name": "Lava_Platform",
+            "path": "Lava_Platform"
+        },
+        {
+            "name": "Platform",
+            "path": "Platform"
+        },
         {
             "name": "Rock",
             "path": "Rock"

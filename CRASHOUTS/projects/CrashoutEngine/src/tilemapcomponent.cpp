@@ -190,7 +190,7 @@ namespace CrashoutsEngine::TileMapUtils {
 			Component::TransformComponent& t = ecs->AddComponent<Component::TransformComponent>(ent);
 			t.position.x = (float)pos.first * map.tileSize + map.tileSize * .5f;
 			t.position.y = (float)pos.second * map.tileSize + map.tileSize * .5f;
-			t.position.z = 0.1f; // Slight Z offset
+			t.position.z = ecs->GetComponent<Component::TransformComponent>(parentEnt)->position.z;
 			t.size = CEVec2((float)map.tileSize, (float)map.tileSize);
 
 			// 3. Collider
@@ -279,7 +279,6 @@ namespace CrashoutsEngine::TileMapUtils {
 
 			// 7. Parent it (Optional, if your hierarchy system supports it)
 			CrashoutsEngine::AttachChild(*ecs, parentEnt, ent);
-
 		}
 
 		std::cout << "TileMapComponent: Cache Rebuilt. Tiles: " << map.tileCache.size() << "\n";

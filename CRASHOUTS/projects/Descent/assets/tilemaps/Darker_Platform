@@ -1,0 +1,10 @@
+{
+    "layerMask": 0,
+    "tilemap": [
+        {
+            "texAssetName": "spritesheet\\Darker Platform\\Darker Platform_14.png",
+            "colliderType": "ColliderType::NONE",
+            "ruleBitMap": 15
+        }
+    ]
+}
