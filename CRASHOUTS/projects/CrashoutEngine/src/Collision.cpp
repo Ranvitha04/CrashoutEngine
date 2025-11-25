@@ -682,9 +682,9 @@ namespace Collision {
 
 		CEVec3 newExtents{ newDimen.first * 0.5f, newDimen.second * 0.5f, 0.f };
 
-		CEVec3 pos{ CrashoutsEngine::RenderCamera::gameCamera.GetPosition() };
+		/*CEVec3 pos{ CrashoutsEngine::RenderCamera::gameCamera.GetPosition() };
 
-		AABBRect bounds{pos - newExtents, pos + newExtents};
+		AABBRect bounds{pos - newExtents, pos + newExtents};*/
 
 		quadTree.Clear();
 
@@ -706,7 +706,7 @@ namespace Collision {
 			Component::TransformComponent* transform1{ globalECS.GetComponent<Component::TransformComponent>(entity1) };
 			AABBRect region{ GetAABB(*(collider1->collider), transform1->position) };
 
-			if (!bounds.contains(region)) continue;
+			//if (!bounds.contains(region)) continue;
 
 			
 

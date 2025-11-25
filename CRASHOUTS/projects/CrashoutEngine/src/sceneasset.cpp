@@ -348,7 +348,7 @@ namespace CrashoutsEngine {
 
                     if (rigidBodyValues.HasMember("isTrigger") && rigidBodyValues["isTrigger"].IsBool()) {
                         bool isTrigger{ rigidBodyValues["isTrigger"].GetBool() };
-                        if (isTrigger) rigidBodyComp.getFlags().set(Physics::SIMULATE_DYNAMICS);
+                        if (!isTrigger) rigidBodyComp.getFlags().flip(Physics::SIMULATE_DYNAMICS);
                     }
                 }
 
@@ -380,6 +380,11 @@ namespace CrashoutsEngine {
                         // Offset logic if you save it separately
                         if (colliderValue.HasMember("offset")) newCol->offset = ReadVectorFromJson{}(colliderValue["offset"]);
 
+                        if (colliderValue.HasMember("position") && colliderValue["position"].IsObject()) {
+                            CEVec3 pos{ ReadVectorFromJson{}(colliderValue["position"]) };
+                            newCol->position = pos;
+                        }
+
                         newCol->helperType = Collision::HelperType::SPHERE_T;
                         col.collider = std::move(newCol);
                         break;
@@ -392,6 +397,11 @@ namespace CrashoutsEngine {
 
                         auto newCol = std::make_unique<Collision::AABBRect>(min, max);
                         if (colliderValue.HasMember("offset")) newCol->offset = ReadVectorFromJson{}(colliderValue["offset"]);
+
+                        if (colliderValue.HasMember("position") && colliderValue["position"].IsObject()) {
+                            CEVec3 pos{ ReadVectorFromJson{}(colliderValue["position"]) };
+                            newCol->position = pos;
+                        }
 
                         newCol->helperType = Collision::HelperType::AABB_T;
                         col.collider = std::move(newCol);
