@@ -491,6 +491,14 @@ namespace {
 			const char* items[] = { "Sphere", "AABB", "OBB", "Triangle", "Polygon", "None" };
 			if (type < 0 || type >= IM_ARRAYSIZE(items)) type = 0;
 
+			Collision::AABBRect shapeDefault{ {-D.aabb_half, -D.aabb_half, 0.f}, {D.aabb_half, D.aabb_half, 0.f} };
+			if(ecs.HasComponent<Component::TransformComponent>(e)) {
+				Component::TransformComponent *transform{ ecs.GetComponent<Component::TransformComponent>(e) };
+				CEVec3 extents{transform->size.x * 0.5f, transform->size.y * 0.5f, 0.f};
+				shapeDefault.min = transform->position - extents;
+				shapeDefault.max = transform->position + extents;
+			}
+
 			// LOOK FOR A CHANGE IN DROPDOWN, CHANGE COLLIDER IF SO
 			/*TODO CALC COLLIDER BASED ON TEXTURE*/
 			if (ImGui::Combo("Type", &type, items, IM_ARRAYSIZE(items))) {
@@ -504,42 +512,40 @@ namespace {
 				// SWITCH on the HelperType (UI choice), not the ColliderType
 				switch (targetType) {
 				case Collision::HelperType::SPHERE_T: {
-					newCol = std::make_unique<Collision::Sphere>(D.sphere_radius, c);
+					newCol = std::make_unique<Collision::Sphere>((shapeDefault.max - shapeDefault.min).x * 0.5f, c);
 					break;
 				}
 				case Collision::HelperType::AABB_T: {
 					newCol = std::make_unique<Collision::AABBRect>(
-						CEVec3{ c.x - D.aabb_half, c.y - D.aabb_half, 0.f },
-						CEVec3{ c.x + D.aabb_half, c.y + D.aabb_half, 0.f }
+						shapeDefault.min,
+						shapeDefault.max
 					);
 					break;
 				}
 				case Collision::HelperType::OBB_T: {
 					newCol = std::make_unique<Collision::Polygon>(Collision::Polygon::createOBB(
-						CEVec3{ c.x - D.aabb_half, c.y - D.aabb_half, 0.f }, 
-						CEVec3{ c.x + D.aabb_half, c.y + D.aabb_half, 0.f }, 
+						shapeDefault.min, 
+						shapeDefault.max, 
 						0.f, CEVec3{}));
 					newCol->helperType = Collision::HelperType::OBB_T;
 					break;
 				}
 				case Collision::HelperType::POLYGON_T: {
-					newCol = std::make_unique<Collision::Polygon>(
-						std::initializer_list<CEVec3>{
-						CEVec3{ -D.aabb_half, -D.aabb_half, 0.f },
-							CEVec3{ D.aabb_half, -D.aabb_half, 0.f },
-							CEVec3{ D.aabb_half,  D.aabb_half, 0.f },
-							CEVec3{ -D.aabb_half,  D.aabb_half, 0.f }
-					},
-						0.f, c
-					);
+					newCol = std::make_unique<Collision::Polygon>(Collision::Polygon::createOBB(
+						shapeDefault.min,
+						shapeDefault.max,
+						0.f, CEVec3{}));
+					newCol->helperType = Collision::HelperType::POLYGON_T;
 					break;
 				}
 				case Collision::HelperType::TRIANGLE_T: {
+					/*o*/
 					newCol = std::make_unique<Collision::Polygon>(
 						std::initializer_list<CEVec3>{
-						CEVec3{ -D.aabb_half, -D.aabb_half, 0.f },
-							CEVec3{ D.aabb_half, -D.aabb_half, 0.f },
-							CEVec3{ 0.0f,         D.aabb_half, 0.f }
+							shapeDefault.min,
+							CEVec3{ (shapeDefault.min.x + shapeDefault.max.x) * 0.5f, shapeDefault.max.y, 0.f },
+							{ shapeDefault.min.x + (shapeDefault.max.x-shapeDefault.min.x) , shapeDefault.min.y, 0.f },
+							
 					},
 						0.f, c
 					);
@@ -1537,13 +1543,14 @@ namespace {
 						try {
 							for (auto it = fs::recursive_directory_iterator(base, fs::directory_options::skip_permission_denied);
 								it != fs::recursive_directory_iterator(); ++it) {
+
 								if (it->is_directory()) {
 									auto folder = it->path().filename().string();
 									std::transform(folder.begin(), folder.end(), folder.begin(), ::tolower);
 									if (folder == "obj" || folder == "bin" || folder == ".vs") {
 										it.disable_recursion_pending();
-										continue;
 									}
+									continue;
 								}
 
 								if (!it->is_regular_file()) continue;
@@ -1551,6 +1558,25 @@ namespace {
 								auto ext = it->path().extension().string();
 								std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
 								if (ext != ".cs") continue;
+
+								// THIS ENTIRE BLOCK ENSURES ONLY SCRIPTS WITH [ScriptBehaviour] ARE SHOWN
+								// SO HOPEFULLY PEOPLE DON'T TRY TO ADD NON-SCRIPT CLASSES
+								// IF NOT I'LL MENGGONNA DO SOMETHING LATER
+								{
+									std::ifstream in(it->path());
+									if (in) {
+										std::string line;
+										bool hasAttribute = false;
+										while (std::getline(in, line)) {
+											if (line.find("[ScriptBehaviour]") != std::string::npos) {
+												hasAttribute = true;
+												break;
+											}
+										}
+										if (!hasAttribute)
+											continue;
+									}
+								}
 
 								std::string stem = it->path().stem().string();
 								if (filter[0] && stem.find(filter) == std::string::npos)
@@ -1577,8 +1603,9 @@ namespace {
 							}
 						}
 						catch (...) {
-
+							// swallow
 						}
+
 						ImGui::EndChild();
 
 						if (ImGui::Button("Cancel")) ImGui::CloseCurrentPopup();
@@ -1628,12 +1655,31 @@ namespace {
 				// write a basic template
 				std::ofstream out(file);
 				out <<
-					R"(using System;
+					R"(using CrashoutsEngine;
 
-public class )" << file.stem().string() << R"(
+namespace CrashoutsEngine
 {
-    public void Start() { }
-    public void Update() { }
+    // Attach this script to an Entity through the ScriptComponent UI.
+    // Scripts with [ScriptBehaviour] will appear in the editor's script list.
+    [ScriptBehaviour]
+    public class )" << file.stem().string() << R"(
+    {
+        // Reference to the entity this script instance is attached to.
+        // Automatically assigned by the engine before Start() runs.
+        public Entity Entity;
+
+        // Called once when the script is first created.
+        // Initialize references or setup values here.
+        public void Start() { }
+
+        // Called every frame.
+        // Main game logic, movement, inputs, and updates go here.
+        public void Update() { }
+
+        // Called at a fixed timestep (ideal for physics logic).
+        // Runs independently from the frame rate.
+        public void FixedUpdate() { }
+    }
 }
 )";
 				out.close();
