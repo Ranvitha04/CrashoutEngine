@@ -581,35 +581,63 @@ namespace {
 				auto* a = static_cast<Collision::AABBRect*>(cc->collider.get());
 				ImGui::TextColored(ImVec4(0.6f, 1.f, 0.6f, 1.f), "ColliderType::AABB Collider");
 
-				CEVec3 halfSize = a->extents;
+				CEVec3& newExtents{ a->extents };
+
+				CEVec3 transform{ a->position };
 
 				bool edited = false;
-				if (ImGui::DragFloat("Half Width", &halfSize.x, 0.05f, 0.1f)) edited = true;
-				if (ImGui::DragFloat("Half Height", &halfSize.y, 0.05f, 0.1f)) edited = true;
+				ImGui::DragFloat("Width", &newExtents.x, 0.05f);  edited |= ImGui::IsItemEdited() || ImGui::IsItemDeactivatedAfterEdit();
+				ImGui::DragFloat("Height", &newExtents.y, 0.05f);  edited |= ImGui::IsItemEdited() || ImGui::IsItemDeactivatedAfterEdit();
+
+				if (edited) {
+					CEVec3 newMin{ transform - newExtents };
+					CEVec3 newMax{ transform + newExtents };
+
+					a->min = CEVec3{ newMin.x, newMin.y, 0.f };
+					a->max = CEVec3{ newMax.x, newMax.y, 0.f };
+				}
 
 				float c[2]{ a->offset.x, a->offset.y };
-				if (ImGui::DragFloat2("Offset", c, 0.1f)) {
+				ImGui::DragFloat2("Offset", c, 0.1f);
+				if (ImGui::IsItemEdited() || ImGui::IsItemDeactivatedAfterEdit()) {
 					a->offset = CEVec3{ c[0], c[1], 0.f };
-					edited = true;
 				}
 
+				// optional: snap AABB around Transform
 				if (auto* t = ecs.GetComponent<TransformComponent>(e)) {
-					if (ImGui::Button("Fit to Transform")) {
-						halfSize = CEVec3{ t->size.x * 0.5f, t->size.y * 0.5f, 0.0f };
-						edited = true;
+					if (ImGui::Button("Fit around Transform##aabb")) {
+						if (ecs.HasComponent<Component::ShapeComponent>(e)) {
+							auto* shape{ ecs.GetComponent<Component::ShapeComponent>(e) };
+							CEVec3 extents{};
+
+
+							switch (shape->type) {
+							case ShapeType::Rectangle: {
+								extents.x = t->size.x * 0.5f;
+								extents.y = t->size.y * 0.5f;
+								break;
+							}
+							case ShapeType::Triangle: {
+								CEVec3 t1 = { t->position.x - .5f, t->position.y - .5f, t->position.z };
+								CEVec3 t2 = { t->position.x + .5f, t->position.y - .5f, t->position.z };
+								CEVec3 t3 = { t->position.x, t->position.y + .5f, t->position.z };
+
+								CEVec3 diffP1P2{ t1 - t2 };
+								CEVec3 diffP1P3{ t1 - t3 };
+								CEVec3 diffP2P3{ t2 - t3 };
+
+								extents.x = max(std::fabs(diffP1P2.x), std::fabsf(diffP1P3.x), std::fabsf(diffP2P3.x)) * 0.5f;
+								extents.y = max(std::fabs(diffP1P2.y), std::fabsf(diffP1P3.y), std::fabsf(diffP2P3.y)) * 0.5f;
+								break;
+							}
+							}
+
+							a->min = t->position - extents;
+							a->max = t->position + extents;
+							a->extents = (a->max - a->min) * 0.5f;
+						}
+
 					}
-				}
-
-				if(edited) {
-					// Recalculate EVERYTHING based on current Transform + new Offset + new Size
-					CEVec3 newCenter = transformPos + a->offset;
-
-					a->extents = halfSize;
-					a->min = newCenter - halfSize;
-					a->max = newCenter + halfSize;
-
-					// Update cache position
-					a->position = newCenter;
 				}
 			}
 			// --- OBB ---
@@ -645,6 +673,8 @@ namespace {
 
 				if (edited) {
 					// 4. Get LIVE Transform to prevent drift
+					float targetRotation = p.rotation;
+
 					CEVec3 currentTransformPos{ 0.f, 0.f, 0.f };
 					if (auto* t = ecs.GetComponent<TransformComponent>(e)) {
 						currentTransformPos = t->position;
@@ -652,6 +682,7 @@ namespace {
 
 					// 5. Calculate the True Center
 					CEVec3 center = currentTransformPos + p.offset;
+					p.position = center;
 
 					// 6. Reconstruct Bounds around the Center
 					CEVec3 min = center - extents;
@@ -663,10 +694,7 @@ namespace {
 					// 8. Re-apply Rotation
 					// updateOBB sets vertices axis-aligned. We must re-rotate them 
 					// around the center to match the p.rotation we just edited.
-					p.forceUpdateRotation(p.rotation);
-
-					// 9. Update Position Cache
-					p.position = center;
+					p.forceUpdateRotation(targetRotation);
 				}
 			}
 			// --- POLYGON / TRIANGLE ---

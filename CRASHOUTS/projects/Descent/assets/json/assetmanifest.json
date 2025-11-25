@@ -767,36 +767,8 @@
     ],
     "tilemaps": [
         {
-            "name": "a",
-            "path": "a"
-        },
-        {
-            "name": "adadw",
-            "path": "adadw"
-        },
-        {
-            "name": "awdwad",
-            "path": "awdwad"
-        },
-        {
-            "name": "Darker_Platform",
-            "path": "Darker_Platform"
-        },
-        {
             "name": "Rock",
             "path": "Rock"
-        },
-        {
-            "name": "Rocky",
-            "path": "Rocky"
-        },
-        {
-            "name": "settings",
-            "path": "settings.json"
-        },
-        {
-            "name": "test",
-            "path": "test"
         }
     ]
 }
