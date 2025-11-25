@@ -13,9 +13,7 @@ void main() {
 
     if (u_useTexture == 1) {
         vec4 tex = texture(uTex2d, texCoord);
-
-        // Multiply texture color by vertex color if modulate is on
-        // We multiply both RGB and Alpha to allow fading sprites
+        
         vec4 shaded = tex * color;
         
         // Apply global tint (RGB and Alpha)
@@ -24,10 +22,10 @@ void main() {
         // No texture: just vertex color * tint
         result = color * u_tint;
     }
-    result.rgb *= result.a;
     if (result.a < 0.1) {
         discard;
     }
+    //result.rgb *= result.a;
 
     fragColor = result;
 }

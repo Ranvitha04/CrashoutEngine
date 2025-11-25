@@ -31,14 +31,14 @@ void main() {
     // --- 2. Alpha Discard (Optional) ---
     // Even with pre-multiplied alpha, discarding very low alpha 
     // saves the GPU from processing pixels that are effectively invisible.
-    if (result.a < 0.01) {
+    if (result.a < 0.1) {
         discard;
     }
 
     // --- 3. THE FIX: Pre-Multiply Alpha ---
     // We do this at the very end to ensure 'result.rgb' includes 
     // the influence of the Texture, Vertex Color, AND the Tint.
-    result.rgb *= result.a;
+    //result.rgb *= result.a;
 
     FragColor = result;
 }

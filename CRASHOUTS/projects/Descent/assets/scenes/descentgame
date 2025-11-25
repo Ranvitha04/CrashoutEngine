@@ -14242,8 +14242,8 @@
                     "z": 1.0
                 },
                 "size": {
-                    "x": 127.49515533447266,
-                    "y": 73.43721771240235
+                    "x": 124.75499725341797,
+                    "y": 72.50599670410156
                 }
             },
             "rigidbody": {
@@ -14315,9 +14315,7 @@
                 }
             },
             "script": {
-                "scripts": [
-                    "PlayerController"
-                ]
+                "scripts": []
             },
             "camera": {
                 "zoom": 0.30000001192092898,
@@ -14349,10 +14347,10 @@
                 }
             },
             "postprocessing": {
-                "brightness": -0.07999999821186066,
-                "contrast": 0.05000000074505806,
-                "saturation": -0.029999999329447748,
-                "active": false
+                "brightness": -0.009999999776482582,
+                "contrast": 0.009999999776482582,
+                "saturation": 0.05000000074505806,
+                "active": true
             }
         },
         {
@@ -15268,54 +15266,6 @@
             }
         },
         {
-            "name": "Tex_bg colour",
-            "layer": {
-                "currentLayer": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 954.126708984375,
-                    "y": -768.9880981445313,
-                    "z": -100.0
-                },
-                "size": {
-                    "x": 2700.2998046875,
-                    "y": 2301.343505859375
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "bg colour",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            }
-        },
-        {
             "name": "Tex_foreground base",
             "layer": {
                 "currentLayer": 0
@@ -15363,7 +15313,7 @@
                 }
             },
             "parent": {
-                "parentName": "Tex_foreground",
+                "parentName": "foreground",
                 "localPos": {
                     "x": -21.80474853515625,
                     "y": -837.61083984375,
@@ -15431,7 +15381,7 @@
                 }
             },
             "parent": {
-                "parentName": "Tex_foreground",
+                "parentName": "foreground",
                 "localPos": {
                     "x": -624.5918579101563,
                     "y": 817.01806640625,
@@ -15520,7 +15470,7 @@
             }
         },
         {
-            "name": "Tex_foreground",
+            "name": "foreground",
             "layer": {
                 "currentLayer": 0
             },
@@ -15534,6 +15484,1264 @@
                 "size": {
                     "x": 1.0,
                     "y": 1.0
+                }
+            }
+        },
+        {
+            "name": "background 1",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": -15.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            }
+        },
+        {
+            "name": "Tex_bg 1 base",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -1147.4273681640626,
+                    "y": -1448.7742919921876,
+                    "z": -15.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "bg 1 base",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentName": "background 1",
+                "localPos": {
+                    "x": -1147.4273681640626,
+                    "y": -1448.7742919921876,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            }
+        },
+        {
+            "name": "Tex_lava near",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 1148.6851806640626,
+                    "y": -755.0381469726563,
+                    "z": -15.0
+                },
+                "size": {
+                    "x": 2521.00146484375,
+                    "y": 1769.84423828125
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "lava near",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentName": "background 1",
+                "localPos": {
+                    "x": 1148.6851806640626,
+                    "y": -755.0381469726563,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 2521.00146484375,
+                    "y": 1769.84423828125
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            }
+        },
+        {
+            "name": "Tex_bg 1 top",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 330.8436279296875,
+                    "y": -48.1083984375,
+                    "z": -15.0
+                },
+                "size": {
+                    "x": 1407.2115478515626,
+                    "y": 460.206787109375
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "bg 1 top",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentName": "background 1",
+                "localPos": {
+                    "x": 330.8436279296875,
+                    "y": -48.1083984375,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1407.2115478515626,
+                    "y": 460.206787109375
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            }
+        },
+        {
+            "name": "Tex_bg 1 top (2)",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 1666.6375732421876,
+                    "y": -62.3568115234375,
+                    "z": -20.0
+                },
+                "size": {
+                    "x": -1407.2120361328126,
+                    "y": 460.2070007324219
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "bg 1 top",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentName": "background 1",
+                "localPos": {
+                    "x": 1666.6375732421876,
+                    "y": -62.3568115234375,
+                    "z": -5.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": -1407.2120361328126,
+                    "y": 460.2070007324219
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            }
+        },
+        {
+            "name": "Tex_bg 1 pillar",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 1482.1695556640626,
+                    "y": -751.7570190429688,
+                    "z": -15.0
+                },
+                "size": {
+                    "x": 1140.5035400390626,
+                    "y": 2000.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "bg 1 pillar",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentName": "background 1",
+                "localPos": {
+                    "x": 1482.1695556640626,
+                    "y": -751.7570190429688,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1140.5035400390626,
+                    "y": 2000.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            }
+        },
+        {
+            "name": "Tex_bg 1 pillar 2",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 288.6571044921875,
+                    "y": -829.7508544921875,
+                    "z": -15.0
+                },
+                "size": {
+                    "x": 996.1389770507813,
+                    "y": 2111.896484375
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "bg 1 pillar 2",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentName": "background 1",
+                "localPos": {
+                    "x": 288.6571044921875,
+                    "y": -829.7508544921875,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 996.1389770507813,
+                    "y": 2111.896484375
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            }
+        },
+        {
+            "name": "background 2",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": -50.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            }
+        },
+        {
+            "name": "Tex_bg2 top",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 393.91705322265627,
+                    "y": -90.40654754638672,
+                    "z": -50.0
+                },
+                "size": {
+                    "x": -1440.2430419921876,
+                    "y": 511.9720153808594
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "bg2 top",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentName": "background 2",
+                "localPos": {
+                    "x": 393.91705322265627,
+                    "y": -90.40654754638672,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": -1440.2430419921876,
+                    "y": 511.9720153808594
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            }
+        },
+        {
+            "name": "Tex_bg2 top_Clone(2)",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 1563.456298828125,
+                    "y": -85.053955078125,
+                    "z": -50.0
+                },
+                "size": {
+                    "x": 1440.2430419921876,
+                    "y": 511.9720153808594
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "bg2 top",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentName": "background 2",
+                "localPos": {
+                    "x": 1563.456298828125,
+                    "y": -85.053955078125,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1440.2430419921876,
+                    "y": 511.9720153808594
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            }
+        },
+        {
+            "name": "Tex_bg2 base",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 935.244384765625,
+                    "y": -1576.248779296875,
+                    "z": -50.0
+                },
+                "size": {
+                    "x": -2614.9130859375,
+                    "y": 381.4522705078125
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "bg2 base",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentName": "background 2",
+                "localPos": {
+                    "x": 935.244384765625,
+                    "y": -1576.248779296875,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": -2614.9130859375,
+                    "y": 381.4522705078125
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            }
+        },
+        {
+            "name": "Tex_bg 2 p1",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 180.8000030517578,
+                "position": {
+                    "x": 2011.5789794921876,
+                    "y": -756.2031860351563,
+                    "z": -50.0
+                },
+                "size": {
+                    "x": 1221.8836669921876,
+                    "y": 1774.721435546875
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "bg 2 p1",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentName": "background 2",
+                "localPos": {
+                    "x": 2011.5789794921876,
+                    "y": -756.2031860351563,
+                    "z": 0.0
+                },
+                "localRot": 180.8000030517578,
+                "localScale": {
+                    "x": 1221.8836669921876,
+                    "y": 1774.721435546875
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            }
+        },
+        {
+            "name": "Tex_bg2 p2",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 611.6541748046875,
+                    "y": -904.4901733398438,
+                    "z": -50.0
+                },
+                "size": {
+                    "x": 1121.7550048828126,
+                    "y": 1949.0860595703126
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "bg2 p2",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentName": "background 2",
+                "localPos": {
+                    "x": 611.6541748046875,
+                    "y": -904.4901733398438,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1121.7550048828126,
+                    "y": 1949.0860595703126
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            }
+        },
+        {
+            "name": "Tex_bg 2 p1_Clone (2)",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 182.3000030517578,
+                "position": {
+                    "x": 1358.1160888671876,
+                    "y": -609.2086791992188,
+                    "z": -50.0
+                },
+                "size": {
+                    "x": 1407.06201171875,
+                    "y": 2079.025146484375
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "bg 2 p1",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentName": "background 2",
+                "localPos": {
+                    "x": 1358.1160888671876,
+                    "y": -609.2086791992188,
+                    "z": 0.0
+                },
+                "localRot": 182.3000030517578,
+                "localScale": {
+                    "x": 1407.06201171875,
+                    "y": 2079.025146484375
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            }
+        },
+        {
+            "name": "background 3",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": -70.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            }
+        },
+        {
+            "name": "Tex_bg3 base",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 996.9154663085938,
+                    "y": -1348.0799560546876,
+                    "z": -70.0
+                },
+                "size": {
+                    "x": 2853.560546875,
+                    "y": 749.7183227539063
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 2,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "bg3 base",
+                "uvSize": {
+                    "x": 2.5999999046325685,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentName": "background 3",
+                "localPos": {
+                    "x": 996.9154663085938,
+                    "y": -1348.0799560546876,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 2853.560546875,
+                    "y": 749.7183227539063
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            }
+        },
+        {
+            "name": "Tex_bg3 top",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 892.3238525390625,
+                    "y": -294.3450622558594,
+                    "z": -70.0
+                },
+                "size": {
+                    "x": 2479.00537109375,
+                    "y": 1000.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 1,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "bg3 top",
+                "uvSize": {
+                    "x": 1.7000000476837159,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentName": "background 3",
+                "localPos": {
+                    "x": 892.3238525390625,
+                    "y": -294.3450622558594,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 2479.00537109375,
+                    "y": 1000.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            }
+        },
+        {
+            "name": "Tex_bg3 p2",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 1505.1168212890626,
+                    "y": -836.4364013671875,
+                    "z": -70.0
+                },
+                "size": {
+                    "x": 1653.240478515625,
+                    "y": 2076.8857421875
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "bg3 p2",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentName": "background 3",
+                "localPos": {
+                    "x": 1505.1168212890626,
+                    "y": -836.4364013671875,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1653.240478515625,
+                    "y": 2076.8857421875
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            }
+        },
+        {
+            "name": "Tex_bg3 p2(2)",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 2576.612060546875,
+                    "y": -627.8228759765625,
+                    "z": -70.0
+                },
+                "size": {
+                    "x": 1653.240478515625,
+                    "y": -2076.885986328125
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "bg3 p2",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentName": "background 3",
+                "localPos": {
+                    "x": 2576.612060546875,
+                    "y": -627.8228759765625,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1653.240478515625,
+                    "y": -2076.885986328125
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            }
+        },
+        {
+            "name": "Tex_lava far",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 803.420166015625,
+                    "y": -864.8651123046875,
+                    "z": -60.0
+                },
+                "size": {
+                    "x": 2931.76123046875,
+                    "y": 2235.576416015625
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "lava far",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentName": "background 3",
+                "localPos": {
+                    "x": 803.420166015625,
+                    "y": -864.8651123046875,
+                    "z": 10.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 2931.76123046875,
+                    "y": 2235.576416015625
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            }
+        },
+        {
+            "name": "Tex_bg colour",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 927.5883178710938,
+                    "y": -608.0872192382813,
+                    "z": -100.0
+                },
+                "size": {
+                    "x": 3000.0,
+                    "y": 3000.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "bg colour",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
                 }
             }
         }

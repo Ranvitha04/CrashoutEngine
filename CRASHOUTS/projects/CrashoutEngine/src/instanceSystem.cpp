@@ -497,7 +497,7 @@ void InstancingSystem::SetEntitySpriteSheet(CrashoutsEngine::Entity e, const std
         Component::Rendering& renderer = Component::Rendering::Get();
 
         glEnable(GL_BLEND);
-        glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         
         //glDepthMask(GL_FALSE);
         glDisable(GL_CULL_FACE);
@@ -684,10 +684,12 @@ void InstancingSystem::SetEntitySpriteSheet(CrashoutsEngine::Entity e, const std
         GLint uvSize_loc = glGetUniformLocation(renderer.shdr_pgm_instanced->GetHandle(), "u_uvSize");
         if (uvSize_loc != -1) glUniform2f(uvSize_loc, uvSize.x, uvSize.y);
 
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+        //glEnable(GL_BLEND);
+        //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         //glDepthMask(GL_FALSE);
+        glDisable(GL_BLEND);    // No blending
+        glDepthMask(GL_TRUE);   // Write depth normally
 
         // Bind Texture
         glBindTextureUnit(0, textureHandle); // DSA or standard
@@ -699,7 +701,7 @@ void InstancingSystem::SetEntitySpriteSheet(CrashoutsEngine::Entity e, const std
 
         // 3. Reset State
         //glDepthMask(GL_TRUE); // Important!
-        glDisable(GL_BLEND);
+        //glDisable(GL_BLEND);
         glEnable(GL_CULL_FACE);
     }
 
@@ -1072,7 +1074,7 @@ void InstancingSystem::CreateInstancedRectangles(const CEVec3* positions, const 
     Component::Rendering& renderer = Component::Rendering::Get();
 
     glEnable(GL_BLEND);
-    glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     //glDepthMask(GL_FALSE);
     glDisable(GL_CULL_FACE);
@@ -1228,12 +1230,15 @@ void InstancingSystem::CreateInstancedRectanglesTextured(
     GLint uvSize_loc = glGetUniformLocation(renderer.shdr_pgm_instanced->GetHandle(), "u_uvSize");
     if (uvSize_loc != -1) glUniform2f(uvSize_loc, uvSize.x, uvSize.y);
 
-    // 1. Handle Transparency
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-
-    // 2. Disable Depth Write so transparent textures don't occlusion-cull things behind them
+    //// 1. Handle Transparency
+    //glEnable(GL_BLEND);
+    //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    //
+    //// 2. Disable Depth Write so transparent textures don't occlusion-cull things behind them
     //glDepthMask(GL_FALSE);
+
+    //glDisable(GL_BLEND);    // No blending
+    glDepthMask(GL_TRUE);   // Write depth normally
 
     glBindTextureUnit(0, textureHandle);
     glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, 0, count);
@@ -1243,7 +1248,7 @@ void InstancingSystem::CreateInstancedRectanglesTextured(
 
     // 3. Reset State
     //glDepthMask(GL_TRUE); // Important!
-    glDisable(GL_BLEND);
+    //glDisable(GL_BLEND);
     glEnable(GL_CULL_FACE);
 }
 
@@ -1291,7 +1296,7 @@ void InstancingSystem::CreateInstancedTriangles(
     Component::Rendering& renderer = Component::Rendering::Get();
 
     glEnable(GL_BLEND);
-    glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     //glDepthMask(GL_FALSE);
     glDisable(GL_CULL_FACE);
@@ -1429,10 +1434,13 @@ void InstancingSystem::CreateInstancedTrianglesTextured(
     GLint uvSize_loc = glGetUniformLocation(renderer.shdr_pgm_instanced->GetHandle(), "u_uvSize");
     if (uvSize_loc != -1) glUniform2f(uvSize_loc, uvSize.x, uvSize.y);
 
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+    //glEnable(GL_BLEND);
+    //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     //glDepthMask(GL_FALSE);
+
+    glDisable(GL_BLEND);    // No blending
+    glDepthMask(GL_TRUE);   // Write depth normally
 
     glBindTextureUnit(0, textureHandle);
     glDrawElementsInstanced(GL_TRIANGLES, 3, GL_UNSIGNED_SHORT, 0, count);
@@ -1441,7 +1449,7 @@ void InstancingSystem::CreateInstancedTrianglesTextured(
     glBindVertexArray(0);
 
     //glDepthMask(GL_TRUE); 
-    glDisable(GL_BLEND);
+    //glDisable(GL_BLEND);
     glEnable(GL_CULL_FACE);
 }
 
