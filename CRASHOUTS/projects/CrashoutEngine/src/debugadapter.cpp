@@ -491,6 +491,14 @@ namespace {
 			const char* items[] = { "Sphere", "AABB", "OBB", "Triangle", "Polygon", "None" };
 			if (type < 0 || type >= IM_ARRAYSIZE(items)) type = 0;
 
+			Collision::AABBRect shapeDefault{ {-D.aabb_half, -D.aabb_half, 0.f}, {D.aabb_half, D.aabb_half, 0.f} };
+			if(ecs.HasComponent<Component::TransformComponent>(e)) {
+				Component::TransformComponent *transform{ ecs.GetComponent<Component::TransformComponent>(e) };
+				CEVec3 extents{transform->size.x * 0.5f, transform->size.y * 0.5f, 0.f};
+				shapeDefault.min = transform->position - extents;
+				shapeDefault.max = transform->position + extents;
+			}
+
 			// LOOK FOR A CHANGE IN DROPDOWN, CHANGE COLLIDER IF SO
 			/*TODO CALC COLLIDER BASED ON TEXTURE*/
 			if (ImGui::Combo("Type", &type, items, IM_ARRAYSIZE(items))) {
@@ -504,42 +512,40 @@ namespace {
 				// SWITCH on the HelperType (UI choice), not the ColliderType
 				switch (targetType) {
 				case Collision::HelperType::SPHERE_T: {
-					newCol = std::make_unique<Collision::Sphere>(D.sphere_radius, c);
+					newCol = std::make_unique<Collision::Sphere>((shapeDefault.max - shapeDefault.min).x * 0.5f, c);
 					break;
 				}
 				case Collision::HelperType::AABB_T: {
 					newCol = std::make_unique<Collision::AABBRect>(
-						CEVec3{ c.x - D.aabb_half, c.y - D.aabb_half, 0.f },
-						CEVec3{ c.x + D.aabb_half, c.y + D.aabb_half, 0.f }
+						shapeDefault.min,
+						shapeDefault.max
 					);
 					break;
 				}
 				case Collision::HelperType::OBB_T: {
 					newCol = std::make_unique<Collision::Polygon>(Collision::Polygon::createOBB(
-						CEVec3{ c.x - D.aabb_half, c.y - D.aabb_half, 0.f }, 
-						CEVec3{ c.x + D.aabb_half, c.y + D.aabb_half, 0.f }, 
+						shapeDefault.min, 
+						shapeDefault.max, 
 						0.f, CEVec3{}));
 					newCol->helperType = Collision::HelperType::OBB_T;
 					break;
 				}
 				case Collision::HelperType::POLYGON_T: {
-					newCol = std::make_unique<Collision::Polygon>(
-						std::initializer_list<CEVec3>{
-						CEVec3{ -D.aabb_half, -D.aabb_half, 0.f },
-							CEVec3{ D.aabb_half, -D.aabb_half, 0.f },
-							CEVec3{ D.aabb_half,  D.aabb_half, 0.f },
-							CEVec3{ -D.aabb_half,  D.aabb_half, 0.f }
-					},
-						0.f, c
-					);
+					newCol = std::make_unique<Collision::Polygon>(Collision::Polygon::createOBB(
+						shapeDefault.min,
+						shapeDefault.max,
+						0.f, CEVec3{}));
+					newCol->helperType = Collision::HelperType::POLYGON_T;
 					break;
 				}
 				case Collision::HelperType::TRIANGLE_T: {
+					/*o*/
 					newCol = std::make_unique<Collision::Polygon>(
 						std::initializer_list<CEVec3>{
-						CEVec3{ -D.aabb_half, -D.aabb_half, 0.f },
-							CEVec3{ D.aabb_half, -D.aabb_half, 0.f },
-							CEVec3{ 0.0f,         D.aabb_half, 0.f }
+							shapeDefault.min,
+							CEVec3{ (shapeDefault.min.x + shapeDefault.max.x) * 0.5f, shapeDefault.max.y, 0.f },
+							{ shapeDefault.min.x + (shapeDefault.max.x-shapeDefault.min.x) , shapeDefault.min.y, 0.f },
+							
 					},
 						0.f, c
 					);
