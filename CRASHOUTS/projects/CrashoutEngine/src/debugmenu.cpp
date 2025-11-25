@@ -509,10 +509,13 @@ namespace UI { // --------------------------------------------------------------
         }
     }
     
-    // Draw a Unity-like keyframe timeline for the selected entity
-    static void RenderAnimationPanel(CrashoutsEngine::ECS& ecs,
-        CrashoutsEngine::Entity selected,
-        UIState& ui)
+    /*!
+     @brief Draw a Unity-like keyframe timeline for the selected entity
+     @param ecs ECS reference.
+	 @param ui UI state reference.
+     @param selected Currently selected entity.
+    */
+    static void RenderAnimationPanel(CrashoutsEngine::ECS& ecs, CrashoutsEngine::Entity selected, UIState& ui)
     {
         using namespace KeyframeUnity;
         using namespace KeyframeUnityEditor;
@@ -652,14 +655,40 @@ namespace UI { // --------------------------------------------------------------
         }
     }
 
+    /*!
+	 @brief Draw an asset browser panel with folder navigation, filtering, drag-and-drop, and asset reloading.
+     @param ui UI state reference.
+	 @param root Root path for assets.
+	 @param outSelectedAsset Output parameter for the selected asset path.
+    */
     static void UI::RenderAssetBrowserPanel(UIState& ui, const char* root, std::string& outSelectedAsset)
     {
         ScopedWindow win("Assets", LockFlags(ui.lockLayout));
 
+        namespace fs = std::filesystem;
+
         static char filter[128] = { 0 };
-        static fs::path current = fs::path(CrashoutsEngine::Assets::rootPath);
+
+        // panel mode – 0 = normal assets, 1 = C# scripts
+        static int s_location = 0;
+        ImGui::Combo("Location", &s_location, "Assets\0Scripts\0");
+
+        fs::path rootPath;
+        if (s_location == 0)
+            rootPath = fs::path(CrashoutsEngine::Assets::rootPath);
+        else
+            rootPath = fs::path("../../projects/ManagedScripts");
+
+        static fs::path current;
+        static fs::path lastRoot;
         static std::vector<fs::directory_entry> entries;
         static bool needScan = true;
+
+        if (current.empty() || lastRoot != rootPath) {
+            current = rootPath;
+            lastRoot = rootPath;
+            needScan = true;
+        }
 
         // Top bar controls
         if (ImGui::Button("Up") && current.has_parent_path()) {
@@ -695,7 +724,7 @@ namespace UI { // --------------------------------------------------------------
                 bool allowed =
                     ext == ".png" || ext == ".jpg" || ext == ".jpeg" || ext == ".bmp" || ext == ".tga" ||
                     ext == ".json" || ext == ".scene" || ext == ".bank" || ext == ".wav" || ext == ".ogg" || ext == ".mp3" ||
-                    ext == ".vert" || ext == ".frag";
+                    ext == ".vert" || ext == ".frag" || ext == ".cs";
                 if (!allowed) continue;
 
                 fs::path dst = current / src.filename();
@@ -953,6 +982,19 @@ namespace UI { // --------------------------------------------------------------
                 {
                     CrashoutsEngine::Audio::AudioSystem::instance().stopSFXGroup();
                     previewPlaying = false;
+                }
+            }
+
+            if (ext == ".cs")
+            {
+                ImGui::Separator();
+                ImGui::TextUnformatted("C# Script:");
+                ImGui::Text("%s", fs::path(outSelectedAsset).filename().string().c_str());
+
+                if (ImGui::Button("Open in C# editor"))
+                {
+                    std::string cmd = "start \"\" \"" + outSelectedAsset + "\"";
+                    system(cmd.c_str());
                 }
             }
         }
