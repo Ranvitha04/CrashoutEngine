@@ -14381,6 +14381,11 @@
                 "gridData": [
                     {
                         "x": 1,
+                        "y": -55,
+                        "asset": "tilemaps/Darker_Platform"
+                    },
+                    {
+                        "x": 1,
                         "y": -54,
                         "asset": "tilemaps/Darker_Platform"
                     },
@@ -14562,7 +14567,7 @@
                     {
                         "x": 11,
                         "y": -35,
-                        "asset": ""
+                        "asset": "tilemaps/Darker_Platform"
                     },
                     {
                         "x": 11,
@@ -14592,6 +14597,11 @@
                     {
                         "x": 11,
                         "y": -27,
+                        "asset": "tilemaps/Darker_Platform"
+                    },
+                    {
+                        "x": 12,
+                        "y": -35,
                         "asset": "tilemaps/Darker_Platform"
                     },
                     {
@@ -14632,6 +14642,11 @@
                     {
                         "x": 12,
                         "y": -27,
+                        "asset": "tilemaps/Darker_Platform"
+                    },
+                    {
+                        "x": 13,
+                        "y": -55,
                         "asset": "tilemaps/Darker_Platform"
                     },
                     {
@@ -14936,6 +14951,11 @@
                     },
                     {
                         "x": 31,
+                        "y": -54,
+                        "asset": "tilemaps/Darker_Platform"
+                    },
+                    {
+                        "x": 31,
                         "y": -53,
                         "asset": "tilemaps/Darker_Platform"
                     },
@@ -15056,6 +15076,11 @@
                     },
                     {
                         "x": 40,
+                        "y": -31,
+                        "asset": "tilemaps/Darker_Platform"
+                    },
+                    {
+                        "x": 40,
                         "y": -30,
                         "asset": "tilemaps/Darker_Platform"
                     },
@@ -15157,6 +15182,11 @@
                     {
                         "x": 46,
                         "y": -26,
+                        "asset": "tilemaps/Darker_Platform"
+                    },
+                    {
+                        "x": 47,
+                        "y": -32,
                         "asset": "tilemaps/Darker_Platform"
                     },
                     {
@@ -15330,6 +15360,180 @@
                     "x": 32.0,
                     "y": 0.0,
                     "z": 0.0
+                }
+            },
+            "parent": {
+                "parentName": "Tex_foreground",
+                "localPos": {
+                    "x": -21.80474853515625,
+                    "y": -837.61083984375,
+                    "z": 50.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 2765.85205078125,
+                    "y": 811.2470092773438
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            }
+        },
+        {
+            "name": "Tex_foreground top",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 323.65264892578127,
+                    "y": 60.77685546875,
+                    "z": 100.0
+                },
+                "size": {
+                    "x": 1200.0,
+                    "y": 250.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 2,
+                "wrapModeV": 1,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "foreground top",
+                "uvSize": {
+                    "x": 2.049999952316284,
+                    "y": 0.5
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentName": "Tex_foreground",
+                "localPos": {
+                    "x": -624.5918579101563,
+                    "y": 817.01806640625,
+                    "z": 100.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1200.0,
+                    "y": 250.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            }
+        },
+        {
+            "name": "Tex_foreground top(2)",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 1498.547119140625,
+                    "y": 63.45323944091797,
+                    "z": 100.0
+                },
+                "size": {
+                    "x": 1301.6995849609376,
+                    "y": 250.00006103515626
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 2,
+                "wrapModeV": 1,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "foreground top",
+                "uvSize": {
+                    "x": 2.049999952316284,
+                    "y": 0.5
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentName": "Tex_foreground top",
+                "localPos": {
+                    "x": 1174.89453125,
+                    "y": 2.6763839721679689,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1.084749698638916,
+                    "y": 1.000000238418579
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            }
+        },
+        {
+            "name": "Tex_foreground",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 948.2445068359375,
+                    "y": -756.2412109375,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
                 }
             }
         }

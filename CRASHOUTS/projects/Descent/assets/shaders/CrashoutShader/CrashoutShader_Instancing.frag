@@ -11,22 +11,34 @@ uniform vec4 u_tint;      // CHANGED: vec3 -> vec4 (to allow fading via uniform)
 out vec4 FragColor;
 
 void main() {
-    // 1. Base Color (Vertex Color)
-    // We use the alpha passed from the vertex shader
-    vec4 baseColor = color; 
+    vec4 result;
 
+    // --- 1. Calculate Straight Color (RGB + A separate) ---
     if (u_useTexture == 1) {
         vec4 texColor = texture(uTex2d, texCoord);
 
-        // 2. Texture & Modulation
-        // Multiply RGBA together. This allows texture alpha to stack with vertex alpha.
-        vec4 shaded = (u_modulate == 1) ? (texColor * baseColor) : texColor;
+        // Modulate Texture with Vertex Color
+        vec4 shaded = (u_modulate == 1) ? (texColor * color) : texColor;
 
-        // 3. Global Tint
-        // Multiply the final result by the global tint (including tint Alpha)
-        FragColor = shaded * u_tint;
+        // Apply Global Tint here (combine all alpha/color sources)
+        result = shaded * u_tint;
+
     } else {
-        // No texture: use vertex color * global tint
-        FragColor = baseColor * u_tint;
+        // No texture: Vertex Color * Global Tint
+        result = color * u_tint;
     }
+
+    // --- 2. Alpha Discard (Optional) ---
+    // Even with pre-multiplied alpha, discarding very low alpha 
+    // saves the GPU from processing pixels that are effectively invisible.
+    if (result.a < 0.01) {
+        discard;
+    }
+
+    // --- 3. THE FIX: Pre-Multiply Alpha ---
+    // We do this at the very end to ensure 'result.rgb' includes 
+    // the influence of the Texture, Vertex Color, AND the Tint.
+    result.rgb *= result.a;
+
+    FragColor = result;
 }

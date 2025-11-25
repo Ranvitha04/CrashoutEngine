@@ -24,7 +24,7 @@ void main() {
         // No texture: just vertex color * tint
         result = color * u_tint;
     }
-
+    result.rgb *= result.a;
     if (result.a < 0.1) {
         discard;
     }

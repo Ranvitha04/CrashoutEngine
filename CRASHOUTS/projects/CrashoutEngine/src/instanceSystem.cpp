@@ -497,7 +497,7 @@ void InstancingSystem::SetEntitySpriteSheet(CrashoutsEngine::Entity e, const std
         Component::Rendering& renderer = Component::Rendering::Get();
 
         glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
         
         //glDepthMask(GL_FALSE);
         glDisable(GL_CULL_FACE);
@@ -685,7 +685,7 @@ void InstancingSystem::SetEntitySpriteSheet(CrashoutsEngine::Entity e, const std
         if (uvSize_loc != -1) glUniform2f(uvSize_loc, uvSize.x, uvSize.y);
 
         glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 
         //glDepthMask(GL_FALSE);
 
@@ -1072,7 +1072,7 @@ void InstancingSystem::CreateInstancedRectangles(const CEVec3* positions, const 
     Component::Rendering& renderer = Component::Rendering::Get();
 
     glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 
     //glDepthMask(GL_FALSE);
     glDisable(GL_CULL_FACE);
@@ -1230,7 +1230,7 @@ void InstancingSystem::CreateInstancedRectanglesTextured(
 
     // 1. Handle Transparency
     glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 
     // 2. Disable Depth Write so transparent textures don't occlusion-cull things behind them
     //glDepthMask(GL_FALSE);
@@ -1291,7 +1291,7 @@ void InstancingSystem::CreateInstancedTriangles(
     Component::Rendering& renderer = Component::Rendering::Get();
 
     glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 
     //glDepthMask(GL_FALSE);
     glDisable(GL_CULL_FACE);
@@ -1430,7 +1430,7 @@ void InstancingSystem::CreateInstancedTrianglesTextured(
     if (uvSize_loc != -1) glUniform2f(uvSize_loc, uvSize.x, uvSize.y);
 
     glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 
     //glDepthMask(GL_FALSE);
 
