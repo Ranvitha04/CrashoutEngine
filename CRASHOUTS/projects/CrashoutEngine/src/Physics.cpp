@@ -368,7 +368,7 @@ namespace Physics {
 			// allow exactly one tick when paused+Step pressed
 		}
 
-		std::pair<f32, f32> newDimen{ ComputeWorldDimensions() };
+		/*std::pair<f32, f32> newDimen{ ComputeWorldDimensions() };
 
 		newDimen.first *= 1.2f;
 		newDimen.second *= 1.2f;
@@ -377,7 +377,7 @@ namespace Physics {
 
 		CEVec3 pos{ CrashoutsEngine::RenderCamera::gameCamera.GetPosition() };
 
-		Collision::AABBRect bounds{ pos - newExtents, pos + newExtents };
+		Collision::AABBRect bounds{ pos - newExtents, pos + newExtents };*/
 
 		int step{ FrameRateController::GetInstance().StepCount() };
 
@@ -391,7 +391,7 @@ namespace Physics {
 				Component::ColliderComponent* collider1{ globalECS.GetComponent<Component::ColliderComponent>(entity) };
 				Collision::AABBRect region{ Collision::GetAABB(*(collider1->collider), collider1->collider->position) };
 
-				if (!bounds.contains(region)) continue;
+				//if (!bounds.contains(region)) continue;
 
 
 				/*APPLY ANY FORCE GENERATOR HERE, EVERY ENTITY IS AFFECTED*/
@@ -412,10 +412,10 @@ namespace Physics {
 				Component::ColliderComponent* collider1{ globalECS.GetComponent<Component::ColliderComponent>(evnt.entity1) };
 				Component::ColliderComponent* collider2{ globalECS.GetComponent<Component::ColliderComponent>(evnt.entity2) };
 
-				Collision::AABBRect region1{ Collision::GetAABB(*(collider1->collider), collider1->collider->position) };
-				Collision::AABBRect region2{ Collision::GetAABB(*(collider2->collider), collider2->collider->position) };
+				/*Collision::AABBRect region1{ Collision::GetAABB(*(collider1->collider), collider1->collider->position) };
+				Collision::AABBRect region2{ Collision::GetAABB(*(collider2->collider), collider2->collider->position) };*/
 
-				if (!bounds.contains(region1) && !bounds.contains(region2)) continue;
+				//if (!bounds.contains(region1) && !bounds.contains(region2)) continue;
 
 				if (!rigidBody1->getFlags().test(SIMULATE_DYNAMICS) || !rigidBody2->getFlags().test(SIMULATE_DYNAMICS)) continue;
 				PositionCorrection(evnt, globalECS);
@@ -428,13 +428,13 @@ namespace Physics {
 				Component::TransformComponent* transform{ globalECS.GetComponent<Component::TransformComponent>(entity) };
 				Component::RigidBodyComponent* rigidBody{ globalECS.GetComponent<Component::RigidBodyComponent>(entity) };
 
-				Component::ColliderComponent* collider1{ globalECS.GetComponent<Component::ColliderComponent>(entity) };
+				//Component::ColliderComponent* collider1{ globalECS.GetComponent<Component::ColliderComponent>(entity) };
 
 				if (!rigidBody->getFlags().test(SIMULATE_DYNAMICS)) continue;
 
-				Collision::AABBRect region{ Collision::GetAABB(*(collider1->collider), collider1->collider->position) };
+				//Collision::AABBRect region{ Collision::GetAABB(*(collider1->collider), collider1->collider->position) };
 
-				if (!bounds.contains(region)) continue;
+				////if (!bounds.contains(region)) continue;
 
 				updatePhysics(transform, rigidBody, deltaTime);
 

@@ -17,6 +17,7 @@
 #include "entitymanager.h"
 #include "assetmanager.h"
 #include "collisionmanager.h"
+#include "monomanager.h"
 #include "sceneasset.h"
 #include "CEVec3.h"
 #include <fstream>
@@ -347,7 +348,7 @@ namespace CrashoutsEngine {
 
                     if (rigidBodyValues.HasMember("isTrigger") && rigidBodyValues["isTrigger"].IsBool()) {
                         bool isTrigger{ rigidBodyValues["isTrigger"].GetBool() };
-                        if (isTrigger) rigidBodyComp.getFlags().flip(Physics::SIMULATE_DYNAMICS);
+                        if (!isTrigger) rigidBodyComp.getFlags().set(Physics::SIMULATE_DYNAMICS);
                     }
                 }
 
@@ -355,74 +356,120 @@ namespace CrashoutsEngine {
                 if (entityValue.HasMember(Keys::COLLIDER_COMPONENT) && entityValue[Keys::COLLIDER_COMPONENT].IsObject()) {
                     const rapidjson::Value& colliderValue = entityValue[Keys::COLLIDER_COMPONENT];
 
-                    // 1. Check Type Int
-                    //int colliderType = 0;
-                    if (colliderValue.HasMember("type") && colliderValue["type"].IsInt()) {
-                        // 0 - Sphere Collider, 1 - AABB, 2 - Polygon, 3 - OBB, 4 - None?
-                        int colliderType = colliderValue["type"].GetInt();
-                        ColliderComponent& col = gECS.AddComponent<ColliderComponent>(newEntity);
-                        Collision::ColliderFactory colFactory{};
-                        Collision::ColliderFactory::ArgMap args;
+                    // Check for HelperType (The UI/Logical Type)
+                    // Fallback to SPHERE if missing
+                    Collision::HelperType helperT = Collision::HelperType::SPHERE_T;
+                    if (colliderValue.HasMember("helperType") && colliderValue["helperType"].IsInt()) {
+                        helperT = static_cast<Collision::HelperType>(colliderValue["helperType"].GetInt());
+                    }
 
-                        switch (colliderType) {
-                            case Collision::SPHERE: {               
-                                    if (colliderValue.HasMember("radius") && colliderValue["radius"].IsFloat()) {
-                                        args["radius"] = std::to_string(colliderValue["radius"].GetFloat());
-                                    }
-                                    if (colliderValue.HasMember("center") && colliderValue["center"].IsObject()) {
-                                        const rapidjson::Value& centerVal{ colliderValue["center"] };
-                                        CEVec3 newVal{ ReadVectorFromJson{}(centerVal) };
-                                        args["centerX"] = std::to_string(newVal.x);
-                                        args["centerY"] = std::to_string(newVal.y);
-                                        args["centerZ"] = std::to_string(newVal.z);
-                                    }
-                                    colFactory.setArgs(args);
-                                    col.collider = colFactory.CreateCollider(static_cast<Collision::ColliderType>(colliderType));
-                                
-                                }          
-                                break;
-                            case Collision::AABB: {    // AABB
-                                if (colliderValue.HasMember("min") && colliderValue["min"].IsObject()) {
-                                    const rapidjson::Value& minVal{ colliderValue["min"] };
-                                    CEVec3 newVal{ ReadVectorFromJson{}(minVal) };
-                                    args["minX"] = std::to_string(newVal.x);
-                                    args["minY"] = std::to_string(newVal.y);
-                                    args["minZ"] = std::to_string(newVal.z);
-                                } if (colliderValue.HasMember("max") && colliderValue["max"].IsObject()) {
-                                    const rapidjson::Value& maxVal{ colliderValue["max"] };
-                                    CEVec3 newVal{ ReadVectorFromJson{}(maxVal) };
-                                    args["maxX"] = std::to_string(newVal.x);
-                                    args["maxY"] = std::to_string(newVal.y);
-                                    args["maxZ"] = std::to_string(newVal.z);
-                                }
-                                    colFactory.setArgs(args);
-                                    col.collider = colFactory.CreateCollider(static_cast<Collision::ColliderType>(colliderType));
-                                }
-                                break;
-                            case Collision::OBB: {    // OBB
-                                if (colliderValue.HasMember("min") && colliderValue["min"].IsObject()) {
-                                    const rapidjson::Value& minVal{ colliderValue["min"] };
-                                    CEVec3 newVal{ ReadVectorFromJson{}(minVal) };
-                                    args["minX"] = std::to_string(newVal.x);
-                                    args["minY"] = std::to_string(newVal.y);
-                                    args["minZ"] = std::to_string(newVal.z);
-                                } if (colliderValue.HasMember("max") && colliderValue["max"].IsObject()) {
-                                    const rapidjson::Value& maxVal{ colliderValue["max"] };
-                                    CEVec3 newVal{ ReadVectorFromJson{}(maxVal) };
-                                    args["maxX"] = std::to_string(newVal.x);
-                                    args["maxY"] = std::to_string(newVal.y);
-                                    args["maxZ"] = std::to_string(newVal.z);
-                                } if (colliderValue.HasMember("rotation") && colliderValue["rotation"].IsFloat()) {
-                                    args["rotation"] = std::to_string(colliderValue["rotation"].GetFloat());
-                                }
-                                colFactory.setArgs(args);
-                                col.collider = colFactory.CreateCollider(static_cast<Collision::ColliderType>(colliderType));
-                                }
-                                break;
-                            case Collision::NONE: break;
-                            default:
-                                col.collider = colFactory.CreateCollider(Collision::AABB);
-                        };
+                    ColliderComponent& col = gECS.AddComponent<ColliderComponent>(newEntity);
+
+                    // Construct manually based on type, similar to the Inspector logic
+                    switch (helperT) {
+                    case Collision::HelperType::SPHERE_T: {
+                        float radius = 1.0f;
+                        if (colliderValue.HasMember("radius") && colliderValue["radius"].IsFloat())
+                            radius = colliderValue["radius"].GetFloat();
+
+                        CEVec3 center{ 0,0,0 };
+                        if (colliderValue.HasMember("center"))
+                            center = ReadVectorFromJson{}(colliderValue["center"]);
+
+                        auto newCol = std::make_unique<Collision::Sphere>(radius, center);
+                        // Offset logic if you save it separately
+                        if (colliderValue.HasMember("offset")) newCol->offset = ReadVectorFromJson{}(colliderValue["offset"]);
+
+                        if (colliderValue.HasMember("position") && colliderValue["position"].IsObject()) {
+                            CEVec3 pos{ ReadVectorFromJson{}(colliderValue["position"]) };
+                            newCol->position = pos;
+                        }
+
+                        newCol->helperType = Collision::HelperType::SPHERE_T;
+                        col.collider = std::move(newCol);
+                        break;
+                    }
+
+                    case Collision::HelperType::AABB_T: {
+                        CEVec3 min{ 0,0,0 }, max{ 0,0,0 };
+                        if (colliderValue.HasMember("min")) min = ReadVectorFromJson{}(colliderValue["min"]);
+                        if (colliderValue.HasMember("max")) max = ReadVectorFromJson{}(colliderValue["max"]);
+
+                        auto newCol = std::make_unique<Collision::AABBRect>(min, max);
+                        if (colliderValue.HasMember("offset")) newCol->offset = ReadVectorFromJson{}(colliderValue["offset"]);
+
+                        if (colliderValue.HasMember("position") && colliderValue["position"].IsObject()) {
+                            CEVec3 pos{ ReadVectorFromJson{}(colliderValue["position"]) };
+                            newCol->position = pos;
+                        }
+
+                        newCol->helperType = Collision::HelperType::AABB_T;
+                        col.collider = std::move(newCol);
+                        break;
+                    }
+
+                    case Collision::HelperType::OBB_T: {
+                        CEVec3 min{ 0,0,0 }, max{ 0,0,0 };
+                        float rot = 0.0f;
+
+                        if (colliderValue.HasMember("min")) min = ReadVectorFromJson{}(colliderValue["min"]);
+                        if (colliderValue.HasMember("max")) max = ReadVectorFromJson{}(colliderValue["max"]);
+                        if (colliderValue.HasMember("rotation") && colliderValue["rotation"].IsFloat())
+                            rot = colliderValue["rotation"].GetFloat();
+
+                        // Create via Factory/Helper to ensure vertices are built
+                        auto newCol = std::make_unique<Collision::Polygon>(
+                            Collision::Polygon::createOBB(min, max, rot, CEVec3{})
+                        );
+
+                        if (colliderValue.HasMember("offset")) newCol->offset = ReadVectorFromJson{}(colliderValue["offset"]);
+                        newCol->position = ReadVectorFromJson{}(colliderValue["position"]); // Important for OBB drift!
+
+                        newCol->helperType = Collision::HelperType::OBB_T;
+                        col.collider = std::move(newCol);
+                        break;
+                    }
+
+                    case Collision::HelperType::POLYGON_T:
+                    case Collision::HelperType::TRIANGLE_T: {
+
+                        std::vector<CEVec3> verts;
+                        if (colliderValue.HasMember("vertices") && colliderValue["vertices"].IsArray()) {
+                            const auto& vArr = colliderValue["vertices"];
+                            for (rapidjson::SizeType k = 0; k < vArr.Size(); ++k) {
+                                verts.push_back(ReadVectorFromJson{}(vArr[k]));
+                            }
+                        }
+
+                        // Default fallback if missing
+                        if (verts.empty()) {
+                            verts = { {-0.5f,-0.5f,0}, {0.5f,-0.5f,0}, {0.5f,0.5f,0} };
+                        }
+
+                        // Convert vector to initializer_list workaround or just use loop logic in Polygon constructor
+
+                        float rot = 0.0f;
+                        if (colliderValue.HasMember("rotation")) rot = colliderValue["rotation"].GetFloat();
+                        CEVec3 pos = ReadVectorFromJson{}(colliderValue["position"]);
+                        CEVec3 off = ReadVectorFromJson{}(colliderValue["offset"]);
+
+                        // Manual construction to support vector
+                        auto newCol = std::make_unique<Collision::Polygon>();
+                        newCol->vertexCount = std::min((int)verts.size(), Collision::Polygon::MAX_VERTEX);
+                        for (int k = 0; k < newCol->vertexCount; ++k) newCol->vertices[k] = verts[k];
+
+                        newCol->rotation = rot;
+                        newCol->position = pos;
+                        newCol->offset = off;
+
+                        // Force update
+                        newCol->forceUpdateRotation(rot);
+
+                        newCol->helperType = helperT; // Set to POLYGON_T or TRIANGLE_T
+                        col.collider = std::move(newCol);
+                        break;
+                    }
+                    default: break;
                     }
                 }
 
@@ -586,12 +633,61 @@ namespace CrashoutsEngine {
             
                 // Check if Audio
                 if (entityValue.HasMember(Keys::AUDIO_COMPONENT) && entityValue[Keys::AUDIO_COMPONENT].IsObject()) {
+                    const rapidjson::Value& audioValue = entityValue[Keys::AUDIO_COMPONENT];
 
+                    AudioEmitterComponent& ac = gECS.AddComponent<AudioEmitterComponent>(newEntity);
+
+                    // 1. Event Path (string)
+                    if (audioValue.HasMember("eventPath") && audioValue["eventPath"].IsString()) {
+                        ac.eventPath = audioValue["eventPath"].GetString();
+                    }
+
+                    // 2. Volume (float)
+                    if (audioValue.HasMember("volume") && audioValue["volume"].IsFloat()) {
+                        ac.volume = audioValue["volume"].GetFloat();
+                    }
+
+                    // 3. Pitch (float)
+                    if (audioValue.HasMember("pitch") && audioValue["pitch"].IsFloat()) {
+                        ac.pitch = audioValue["pitch"].GetFloat();
+                    }
+
+                    // 4. Spatial 3D (bool)
+                    if (audioValue.HasMember("spatial3D") && audioValue["spatial3D"].IsBool()) {
+                        ac.spatial3D = audioValue["spatial3D"].GetBool();
+                    }
+
+                    // 5. Looping (bool)
+                    if (audioValue.HasMember("looping") && audioValue["looping"].IsBool()) {
+                        ac.looping = audioValue["looping"].GetBool();
+                    }
+
+                    // Runtime pointers (inst, channel) remain nullptr until Play() is called
                 }
 
                 // Check if Script
                 if (entityValue.HasMember(Keys::SCRIPT_COMPONENT) && entityValue[Keys::SCRIPT_COMPONENT].IsObject()) {
+                    const rapidjson::Value& scriptValue = entityValue[Keys::SCRIPT_COMPONENT];
 
+                    // Create the component: default to empty constructor first
+                    ScriptComponent& sc = gECS.AddComponent<ScriptComponent>(newEntity);
+                    sc.EntityID = static_cast<uint32_t>(newEntity);
+
+                    // Load scripts array
+                    if (scriptValue.HasMember("scripts") && scriptValue["scripts"].IsArray()) {
+                        const rapidjson::Value& scriptsArr = scriptValue["scripts"];
+                        for (rapidjson::SizeType k = 0; k < scriptsArr.Size(); ++k) {
+                            if (scriptsArr[k].IsString()) {
+                                std::string className = scriptsArr[k].GetString();
+                                sc.AddScript(className);
+                            }
+                        }
+                    }
+
+                    // Initialize scripts immediately if Mono is ready
+                    if (MonoManager::GetDomain() && MonoManager::GetAssembly()) {
+                        sc.Initialize(MonoManager::GetDomain(), MonoManager::GetAssembly());
+                    }
                 }
 
                 // Check if Camera
@@ -1133,64 +1229,92 @@ namespace CrashoutsEngine {
                     const ColliderComponent& colComp = *gECS.GetComponent<ColliderComponent>(id);
                     rapidjson::Value colliderValue(rapidjson::kObjectType);
 
-                    // 1. Type (integer)
-                    // Assuming Collision::SPHERE = 0, Collision::AABB = 1
-                    colliderValue.AddMember("type", (int)colComp.collider->type, allocator);
+                    // 1. Helper Type (The Source of Truth)
+                    colliderValue.AddMember("helperType", (int)colComp.collider->helperType, allocator);
 
-                    // NOTE: You can skip adding the 'sphere' or 'aabb' objects 
-                    // if you don't save their properties (like radius or extents), 
-                    // as your LoadScenes only reads the 'type' for now.
-                    // If you later save extents/radius, they would go here.
-                    switch (colComp.collider->type) {
-                        case Collision::SPHERE: {
-                            
-                            Collision::Sphere const& sphereTemp = dynamic_cast<Collision::Sphere const&>(*(colComp.collider));
-                            colliderValue.AddMember("radius", sphereTemp.radius, allocator);
-                            rapidjson::Value centerVal{ rapidjson::kObjectType };
-                            centerVal.AddMember("x", sphereTemp.position.x, allocator);
-                            centerVal.AddMember("y", sphereTemp.position.y, allocator);
-                            centerVal.AddMember("z", sphereTemp.position.z, allocator);
-                            colliderValue.AddMember("center", centerVal, allocator);
+                    // Common fields
+                    rapidjson::Value posVal(rapidjson::kObjectType);
+                    posVal.AddMember("x", colComp.collider->position.x, allocator);
+                    posVal.AddMember("y", colComp.collider->position.y, allocator);
+                    posVal.AddMember("z", colComp.collider->position.z, allocator);
+                    colliderValue.AddMember("position", posVal, allocator);
 
-                        }
+                    rapidjson::Value offVal(rapidjson::kObjectType);
+                    offVal.AddMember("x", colComp.collider->offset.x, allocator);
+                    offVal.AddMember("y", colComp.collider->offset.y, allocator);
+                    offVal.AddMember("z", colComp.collider->offset.z, allocator);
+                    colliderValue.AddMember("offset", offVal, allocator);
+
+                    switch (colComp.collider->helperType) {
+                    case Collision::HelperType::SPHERE_T: {
+                        auto* s = static_cast<Collision::Sphere*>(colComp.collider.get());
+                        colliderValue.AddMember("radius", s->radius, allocator);
+
+                        // Save Center specifically if needed, though position covers it
+                        rapidjson::Value cVal(rapidjson::kObjectType);
+                        cVal.AddMember("x", s->position.x, allocator);
+                        cVal.AddMember("y", s->position.y, allocator);
+                        cVal.AddMember("z", s->position.z, allocator);
+                        colliderValue.AddMember("center", cVal, allocator);
                         break;
-                        case Collision::AABB: {
-                            Collision::AABBRect const& aabbTemp = dynamic_cast<Collision::AABBRect const&>(*(colComp.collider));
-                            rapidjson::Value min{ rapidjson::kObjectType };
-                            min.AddMember("x", aabbTemp.min.x, allocator);
-                            min.AddMember("y", aabbTemp.min.y, allocator);
-                            min.AddMember("z", aabbTemp.min.z, allocator);
-                            colliderValue.AddMember("min", min, allocator);
+                    }
+                    case Collision::HelperType::AABB_T: {
+                        auto* a = static_cast<Collision::AABBRect*>(colComp.collider.get());
 
-                            rapidjson::Value max{ rapidjson::kObjectType };
-                            max.AddMember("x", aabbTemp.max.x, allocator);
-                            max.AddMember("y", aabbTemp.max.y, allocator);
-                            max.AddMember("z", aabbTemp.max.z, allocator);
-                            colliderValue.AddMember("max", max, allocator);
-                        }
+                        rapidjson::Value min(rapidjson::kObjectType);
+                        min.AddMember("x", a->min.x, allocator);
+                        min.AddMember("y", a->min.y, allocator);
+                        min.AddMember("z", a->min.z, allocator);
+                        colliderValue.AddMember("min", min, allocator);
+
+                        rapidjson::Value max(rapidjson::kObjectType);
+                        max.AddMember("x", a->max.x, allocator);
+                        max.AddMember("y", a->max.y, allocator);
+                        max.AddMember("z", a->max.z, allocator);
+                        colliderValue.AddMember("max", max, allocator);
                         break;
-                        case Collision::OBB: {
-                            Collision::OBBRect const& obbTemp = dynamic_cast<Collision::OBBRect const&>(*(colComp.collider));
-                            rapidjson::Value min{ rapidjson::kObjectType };
-                            min.AddMember("x", obbTemp.min.x, allocator);
-                            min.AddMember("y", obbTemp.min.y, allocator);
-                            min.AddMember("z", obbTemp.min.z, allocator);
-                            colliderValue.AddMember("min", min, allocator);
+                    }
+                    case Collision::HelperType::OBB_T: {
+                        // Cast to Polygon (since OBB is now a Polygon backend)
+                        auto* p = static_cast<Collision::Polygon*>(colComp.collider.get());
 
-                            rapidjson::Value max{ rapidjson::kObjectType };
-                            max.AddMember("x", obbTemp.max.x, allocator);
-                            max.AddMember("y", obbTemp.max.y, allocator);
-                            max.AddMember("z", obbTemp.max.z, allocator);
-                            colliderValue.AddMember("max", max, allocator);
+                        // Save Min/Max/Rotation so createOBB can reconstruct it
+                        CEVec3 extents = Collision::Polygon::calculateOBBExtents(*p);
 
-                            colliderValue.AddMember("rotation", obbTemp.rotation, allocator);
-                            break;
-                        }
-                        case Collision::NONE: {
-                            break;
-                        }
-                        default:
+                        // Reconstruct Min/Max for saving
+                        CEVec3 center = p->position;
+                        CEVec3 min = center - extents;
+                        CEVec3 max = center + extents;
+
+                        rapidjson::Value minV(rapidjson::kObjectType);
+                        minV.AddMember("x", min.x, allocator); minV.AddMember("y", min.y, allocator); minV.AddMember("z", min.z, allocator);
+                        colliderValue.AddMember("min", minV, allocator);
+
+                        rapidjson::Value maxV(rapidjson::kObjectType);
+                        maxV.AddMember("x", max.x, allocator); maxV.AddMember("y", max.y, allocator); maxV.AddMember("z", max.z, allocator);
+                        colliderValue.AddMember("max", maxV, allocator);
+
+                        colliderValue.AddMember("rotation", p->rotation, allocator);
                         break;
+                    }
+                    case Collision::HelperType::POLYGON_T:
+                    case Collision::HelperType::TRIANGLE_T: {
+                        auto* p = static_cast<Collision::Polygon*>(colComp.collider.get());
+                        colliderValue.AddMember("rotation", p->rotation, allocator);
+
+                        // Save Vertices Array
+                        rapidjson::Value verts(rapidjson::kArrayType);
+                        for (int k = 0; k < p->vertexCount; ++k) {
+                            rapidjson::Value v(rapidjson::kObjectType);
+                            v.AddMember("x", p->vertices[k].x, allocator);
+                            v.AddMember("y", p->vertices[k].y, allocator);
+                            v.AddMember("z", p->vertices[k].z, allocator);
+                            verts.PushBack(v, allocator);
+                        }
+                        colliderValue.AddMember("vertices", verts, allocator);
+                        break;
+                    }
+                    default: break;
                     }
 
                     entityValue.AddMember(rapidjson::StringRef(Keys::COLLIDER_COMPONENT), std::move(colliderValue), allocator);
@@ -1298,14 +1422,45 @@ namespace CrashoutsEngine {
                 // G. AudioComponent
                 // =========================================================
                 if (gECS.HasComponent<AudioEmitterComponent>(id)) {
+                    const AudioEmitterComponent& audioComp = *gECS.GetComponent<AudioEmitterComponent>(id);
+                    rapidjson::Value audioValue(rapidjson::kObjectType);
 
+                    // 1. Event Path
+                    rapidjson::Value pathVal;
+                    pathVal.SetString(audioComp.eventPath.c_str(), allocator);
+                    audioValue.AddMember("eventPath", pathVal, allocator);
+
+                    // 2. Properties
+                    audioValue.AddMember("volume", audioComp.volume, allocator);
+                    audioValue.AddMember("pitch", audioComp.pitch, allocator);
+                    audioValue.AddMember("spatial3D", audioComp.spatial3D, allocator);
+                    audioValue.AddMember("looping", audioComp.looping, allocator);
+
+                    entityValue.AddMember(rapidjson::StringRef(Keys::AUDIO_COMPONENT), audioValue, allocator);
                 }
 
                 // =========================================================
                 // H. ScriptComponent
                 // =========================================================
                 if (gECS.HasComponent<ScriptComponent>(id)) {
+                    const ScriptComponent& scriptComp = *gECS.GetComponent<ScriptComponent>(id);
+                    rapidjson::Value scriptValue(rapidjson::kObjectType);
 
+                    // Create array for script names
+                    rapidjson::Value scriptsArray(rapidjson::kArrayType);
+
+                    for (const auto& scriptInstance : scriptComp.Scripts) {
+                        // Save the class name. State inside C# scripts is NOT saved here 
+                        if (!scriptInstance.ClassName.empty()) {
+                            rapidjson::Value strVal;
+                            strVal.SetString(scriptInstance.ClassName.c_str(), allocator);
+                            scriptsArray.PushBack(strVal, allocator);
+                        }
+                    }
+
+                    scriptValue.AddMember("scripts", scriptsArray, allocator);
+
+                    entityValue.AddMember(rapidjson::StringRef(Keys::SCRIPT_COMPONENT), scriptValue, allocator);
                 }
 
                 // =========================================================

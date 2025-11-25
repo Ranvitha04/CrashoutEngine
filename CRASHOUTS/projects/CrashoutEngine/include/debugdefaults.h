@@ -45,7 +45,7 @@ struct DebugDefaults {
     /*! @brief Default radius for sphere colliders. */
     float sphere_radius = 1.f;
 
-    /*! @brief Default half-extent for AABB colliders (centered on transform). */
+    /*! @brief Default half-extent for ColliderType::AABB colliders (centered on transform). */
     float aabb_half = 0.5f;
 
     /*! @brief Whether colliders should follow their transform automatically. */

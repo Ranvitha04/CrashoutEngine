@@ -1,0 +1,60 @@
+{
+    "layerMask": 0,
+    "tilemap": [
+        {
+            "texAssetName": "spritesheet\\Darker Platform\\Darker Platform_14.png",
+            "colliderType": "ColliderType::NONE",
+            "ruleBitMap": 5
+        },
+        {
+            "texAssetName": "spritesheet\\Darker Platform\\Darker Platform_12.png",
+            "colliderType": "ColliderType::NONE",
+            "ruleBitMap": 15
+        },
+        {
+            "texAssetName": "spritesheet\\Darker Platform\\Darker Platform_11.png",
+            "colliderType": "ColliderType::NONE",
+            "ruleBitMap": 7
+        },
+        {
+            "texAssetName": "spritesheet\\Darker Platform\\Darker Platform_13.png",
+            "colliderType": "ColliderType::NONE",
+            "ruleBitMap": 13
+        },
+        {
+            "texAssetName": "spritesheet\\Darker Platform\\Darker Platform_22.png",
+            "colliderType": "ColliderType::AABB",
+            "ruleBitMap": 3
+        },
+        {
+            "texAssetName": "spritesheet\\Darker Platform\\Darker Platform_24.png",
+            "colliderType": "ColliderType::AABB",
+            "ruleBitMap": 9
+        },
+        {
+            "texAssetName": "spritesheet\\Darker Platform\\Darker Platform_23.png",
+            "colliderType": "ColliderType::AABB",
+            "ruleBitMap": 11
+        },
+        {
+            "texAssetName": "spritesheet\\Darker Platform\\Darker Platform_03.png",
+            "colliderType": "ColliderType::AABB",
+            "ruleBitMap": 4
+        },
+        {
+            "texAssetName": "spritesheet\\Darker Platform\\Darker Platform_00.png",
+            "colliderType": "ColliderType::AABB",
+            "ruleBitMap": 6
+        },
+        {
+            "texAssetName": "spritesheet\\Darker Platform\\Darker Platform_02.png",
+            "colliderType": "ColliderType::AABB",
+            "ruleBitMap": 12
+        },
+        {
+            "texAssetName": "spritesheet\\Darker Platform\\Darker Platform_01.png",
+            "colliderType": "ColliderType::AABB",
+            "ruleBitMap": 14
+        }
+    ]
+}

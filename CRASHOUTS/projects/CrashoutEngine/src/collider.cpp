@@ -5,34 +5,34 @@
 namespace Collision {
 	Collider::Collider(ColliderType type) : type{ type } { /*EMPTY BY DESIGN*/ }
 
-	Sphere::Sphere(f32 radius, CEVec3 const& center, CEVec3 const& newOffset) : Collider{ SPHERE }, radius{ radius } { position = center; offset = newOffset; helperType = SPHERE_T; }
+	Sphere::Sphere(f32 radius, CEVec3 const& center, CEVec3 const& newOffset) : Collider{ ColliderType::SPHERE }, radius{ radius } { position = center; offset = newOffset; helperType = HelperType::SPHERE_T; }
 
 	void Sphere::updateCollider(CEVec3 const& newPos) {
 		position = newPos + offset;
 	}
 
-	AABBRect::AABBRect(CEVec3 const& min, CEVec3 const& max) : Collider{ AABB }, min{ min }, max{ max } {
+	AABBRect::AABBRect(CEVec3 const& min, CEVec3 const& max) : Collider{ ColliderType::AABB }, min{ min }, max{ max } {
 		extents = (max - min) * 0.5f;
-		helperType = AABB_T;
+		helperType = HelperType::AABB_T;
 	}
 
-	AABBRect::AABBRect() : Collider{ AABB } { helperType = AABB_T;  }
+	AABBRect::AABBRect() : Collider{ ColliderType::AABB } { helperType = HelperType::AABB_T;  }
 
 	AABBRect GetAABB(Collider const& collider, CEVec3 const& transform) {
 
 		switch (collider.type) {
 
-			case SPHERE: {
+			case ColliderType::SPHERE: {
 				Sphere const& sphere{ dynamic_cast<Sphere const&>(collider) };
 				CEVec3 extents{ sphere.radius, sphere.radius, 0.f };
 				return AABBRect{ sphere.position - extents, sphere.position + extents };
 				}
 				break;
-			case AABB: {
+			case ColliderType::AABB: {
 				return dynamic_cast<AABBRect const&>(collider);
 				}
 				break;
-			case POLYGON: {
+			case ColliderType::POLYGON: {
 				Polygon const& polygon{ dynamic_cast<Polygon const&>(collider) };
 				CEVec3 minXY{ polygon.rotatedVertices[0].x, polygon.rotatedVertices[0].y, transform.z };
 				CEVec3 maxXY{ polygon.rotatedVertices[0].x, polygon.rotatedVertices[0].y, transform.z };
@@ -60,7 +60,8 @@ namespace Collision {
 		max = position + extents;
 		min = position - extents;
 	}
-	OBBRect::OBBRect(CEVec3 const& min, CEVec3 const& max, f32 newRotation) : Collider{ OBB }, min{ min }, max{ max }, rotation{ 0.f } {
+	OBBRect::OBBRect(CEVec3 const& min, CEVec3 const& max, f32 newRotation) : Collider{ ColliderType::OBB }, min{ min }, max{ max }, rotation{ 0.f } {
+		
 		extents = (max - min) * 0.5f;
 
 		originalVertices[0] = min;
@@ -88,12 +89,12 @@ namespace Collision {
 
 	}
 
-	Polygon::Polygon() : Collider{POLYGON} {}
+	Polygon::Polygon() : Collider{ColliderType::POLYGON} {}
 
 	Polygon::Polygon(std::initializer_list<CEVec3> newVertices, f32 newRotation, CEVec3 const &newPosition, CEVec3 const &newOffset) 
-		: Collider{ POLYGON }, vertexCount{ std::min((int)newVertices.size(), MAX_VERTEX) }, rotation{ 0.f } {
+		: Collider{ ColliderType::POLYGON }, vertexCount{ std::min((int)newVertices.size(), MAX_VERTEX) }, rotation{ 0.f } {
 		
-		helperType = POLYGON_T;
+		helperType = HelperType::POLYGON_T;
 		offset = newOffset;
 		position = newPosition;
 
@@ -146,7 +147,7 @@ namespace Collision {
 		CEVec3 center{ max - extents };
 		
 		Polygon poly{ {min, CEVec3{min.x, min.y + extents.y * 2.f, 0.f}, max, CEVec3{min.x + extents.x * 2.f, min.y, center.z}}, rotation, center, offset };
-		poly.helperType = OBB_T;
+		poly.helperType = HelperType::OBB_T;
 
 		return poly;
 	}

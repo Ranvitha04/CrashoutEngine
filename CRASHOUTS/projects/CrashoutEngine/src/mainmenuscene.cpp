@@ -201,14 +201,14 @@ void UpdateMainMenu()
 
 	//Component::RigidBodyComponent* rigidBody2{ globalECS->GetComponent<Component::RigidBodyComponent>(entity3) };
 
-	if (itemCount < 2500 && InputManager::IsKeyPressed(Key::Num1)) {
+	/*if (itemCount < 2500 && InputManager::IsKeyPressed(Key::Num1)) {
 		int newCount = 0;
 		while (newCount < 1) {
 			CreateRandBox();
 			newCount++;
 			itemCount++;
 		}
-	} 
+	}*/
 
 	/*
 	if (rigidBody) {
@@ -240,7 +240,7 @@ void UpdateMainMenu()
 		transform->rotation += 3.f;
 		if (globalECS->HasComponent<Component::ColliderComponent>(entity1)) {
 			Component::ColliderComponent* collider1{ globalECS->GetComponent<Component::ColliderComponent>(entity1) };
-			if (collider1->collider->type == Collision::ColliderType::OBB) {
+			if (collider1->collider->type == Collision::ColliderType::ColliderType::OBB) {
 				Collision::OBBRect & obbTemp2 = dynamic_cast<Collision::OBBRect &>(*(collider1->collider));
 				obbTemp2.updateRotation(transform->rotation);
 			}

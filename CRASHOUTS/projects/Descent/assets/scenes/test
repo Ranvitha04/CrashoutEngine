@@ -604,6 +604,9 @@
         },
         {
             "name": "Entity 2",
+            "layer": {
+                "currentLayer": 0
+            },
             "transform": {
                 "rotation": 0.0,
                 "position": {

@@ -2,7 +2,7 @@
 @file       Collision.h
 @author     miratristan.d@digipen.edu
 @date       08/09/2025
-@brief      Basic Collision Functions and Colliders(Plane, AABB and Circle)
+@brief      Basic Collision Functions and Colliders(Plane, ColliderType::AABB and Circle)
 
 
 //__________________________________________________________________________*/
@@ -36,7 +36,8 @@ namespace Collision {
 	enum TypeOfCollision {
 		ON_ENTER,
 		ON_STAY,
-		ON_EXIT
+		ON_EXIT,
+		COUNT
 	};
 
 	/*!
@@ -77,9 +78,11 @@ namespace Collision {
 
 		private:
 
-			static constexpr int TYPES_OF_COLLISION{ 3 };
+			//static constexpr int TYPES_OF_COLLISION = static_cast<int>(TypeOfCollision::COUNT);
 
-			std::array<FunctionDispatchType, TYPES_OF_COLLISION* TYPES_OF_COLLISION> collideFuncts;
+			static constexpr int SHAPE_COUNT = static_cast<int>(Collision::ColliderType::NONE);
+
+			std::array<FunctionDispatchType, SHAPE_COUNT* SHAPE_COUNT> collideFuncts;
 
 			static CollisionManifold SphereToSphereCollision(CollisionProps const& coll1, CollisionProps const& coll2);
 
@@ -87,7 +90,7 @@ namespace Collision {
 
 			static CollisionManifold AABBToAABBCollision(CollisionProps const& coll1, CollisionProps const& coll2);
 
-			/*POLYGON FUNCTIONS*/
+			/*ColliderType::POLYGON FUNCTIONS*/
 
 			static CollisionManifold PolygonToPolygonCollision(CollisionProps const& coll1, CollisionProps const& coll2);
 
@@ -95,7 +98,7 @@ namespace Collision {
 
 			static CollisionManifold AABBToPolygonCollision(CollisionProps const& coll1, CollisionProps const& coll2);
 
-			/*OBB SOON TO BE DEPRECATED*/
+			/*ColliderType::OBB SOON TO BE DEPRECATED*/
 
 			static CollisionManifold AABBToOBBCollision(CollisionProps const& coll1, CollisionProps const& coll2);
 

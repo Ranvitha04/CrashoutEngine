@@ -509,10 +509,13 @@ namespace UI { // --------------------------------------------------------------
         }
     }
     
-    // Draw a Unity-like keyframe timeline for the selected entity
-    static void RenderAnimationPanel(CrashoutsEngine::ECS& ecs,
-        CrashoutsEngine::Entity selected,
-        UIState& ui)
+    /*!
+     @brief Draw a Unity-like keyframe timeline for the selected entity
+     @param ecs ECS reference.
+	 @param ui UI state reference.
+     @param selected Currently selected entity.
+    */
+    static void RenderAnimationPanel(CrashoutsEngine::ECS& ecs, CrashoutsEngine::Entity selected, UIState& ui)
     {
         using namespace KeyframeUnity;
         using namespace KeyframeUnityEditor;
@@ -703,14 +706,48 @@ namespace UI { // --------------------------------------------------------------
 
     }
 
+    /*!
+	 @brief Draw an asset browser panel with folder navigation, filtering, drag-and-drop, and asset reloading.
+     @param ui UI state reference.
+	 @param root Root path for assets.
+	 @param outSelectedAsset Output parameter for the selected asset path.
+    */
     static void UI::RenderAssetBrowserPanel(UIState& ui, const char* root, std::string& outSelectedAsset)
     {
         ScopedWindow win("Assets", LockFlags(ui.lockLayout));
 
+        namespace fs = std::filesystem;
+
         static char filter[128] = { 0 };
-        static fs::path current = fs::path(CrashoutsEngine::Assets::rootPath);
+
+        // panel mode – 0 = normal assets, 1 = C# scripts
+        static int s_location = 0;
+        ImGui::Combo("Location", &s_location, "Assets\0Scripts\0");
+
+        fs::path rootPath;
+        if (s_location == 0)
+            rootPath = fs::path(CrashoutsEngine::Assets::rootPath);
+        else
+            rootPath = fs::path("../../projects/ManagedScripts");
+
+        static fs::path current;
+        static fs::path lastRoot;
         static std::vector<fs::directory_entry> entries;
         static bool needScan = true;
+
+        if (current.empty() || lastRoot != rootPath) {
+            current = rootPath;
+            lastRoot = rootPath;
+            needScan = true;
+        }
+
+        {
+            std::string fname = current.filename().string();
+            if (fname == "obj" || fname == "bin" || fname == ".vs" || fname == ".idea") {
+                current = rootPath;
+                needScan = true;
+            }
+        }
 
         // Top bar controls
         if (ImGui::Button("Up") && current.has_parent_path()) {
@@ -746,7 +783,7 @@ namespace UI { // --------------------------------------------------------------
                 bool allowed =
                     ext == ".png" || ext == ".jpg" || ext == ".jpeg" || ext == ".bmp" || ext == ".tga" ||
                     ext == ".json" || ext == ".scene" || ext == ".bank" || ext == ".wav" || ext == ".ogg" || ext == ".mp3" ||
-                    ext == ".vert" || ext == ".frag";
+                    ext == ".vert" || ext == ".frag" || ext == ".cs";
                 if (!allowed) continue;
 
                 fs::path dst = current / src.filename();
@@ -769,16 +806,15 @@ namespace UI { // --------------------------------------------------------------
         }
 
         // LEFT: Folder tree
-        ImGui::BeginChild("asset_left", ImVec2(220, 0), true);
-
-        if (ImGui::Selectable("assets", current == fs::path(CrashoutsEngine::Assets::rootPath))) {
-            current = fs::path(CrashoutsEngine::Assets::rootPath);
-            needScan = true;
-        }
+        ImGui::BeginChild("asset_left", ImVec2(100, 0), true);
 
         try {
-            for (auto& de : fs::directory_iterator(CrashoutsEngine::Assets::rootPath)) {
+            for (auto& de : fs::directory_iterator(rootPath)) {
                 if (!de.is_directory()) continue;
+
+                std::string fname = de.path().filename().string();
+                if (fname == "obj" || fname == "bin" || fname == ".vs" || fname == ".idea") continue;
+
                 bool isCur = (current == de.path());
                 if (ImGui::Selectable(de.path().filename().generic_string().c_str(), isCur)) {
                     current = de.path();
@@ -788,19 +824,23 @@ namespace UI { // --------------------------------------------------------------
         }
         catch (...) {}
 
+        fs::path scriptsRoot = fs::path("../../projects/ManagedScripts");
+        bool isScripts = (current == scriptsRoot);
+        if (ImGui::Selectable("scripts", isScripts)) {
+            current = scriptsRoot;
+            needScan = true;
+        }
+
         ImGui::EndChild();
 
         // RIGHT: Files + Preview
         ImGui::SameLine();
-        ImGui::BeginChild("asset_right", ImVec2(0, 0), true);
+        ImVec2 rightArea = ImGui::GetContentRegionAvail();
 
-        const float kPreviewMaxHeight = 260.0f; 
-        ImVec2 availRight = ImGui::GetContentRegionAvail();
-        float listHeight = availRight.y - kPreviewMaxHeight - ImGui::GetStyle().ItemSpacing.y;
-        if (listHeight < 120.0f) listHeight = availRight.y * 0.6f;
+        float listWidth = 200.0f;
 
         // FILE LIST 
-        ImGui::BeginChild("asset_right_list", ImVec2(0, listHeight), true);
+        ImGui::BeginChild("asset_right_list", ImVec2(listWidth, 0), true);
 
         if (needScan) {
             entries.clear();
@@ -821,10 +861,17 @@ namespace UI { // --------------------------------------------------------------
         static std::vector<int> vis;
         vis.clear();
         vis.reserve(entries.size());
+
         for (int i = 0; i < (int)entries.size(); ++i) {
             const auto& e = entries[i];
             std::string name = e.path().filename().generic_string();
-            if (filter[0] && name.find(filter) == std::string::npos) continue;
+
+            if (name == "obj" || name == "bin" || name == ".vs" || name == ".idea")
+                continue;
+
+            if (filter[0] && name.find(filter) == std::string::npos)
+                continue;
+
             vis.push_back(i);
         }
 
@@ -854,14 +901,19 @@ namespace UI { // --------------------------------------------------------------
                         std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
 
                         
-                        if (ext == ".png" || ext == ".jpg" || ext == ".jpeg" ||
-                            ext == ".bmp" || ext == ".tga")
+                        if (ext == ".png" || ext == ".jpg" || ext == ".jpeg" || ext == ".bmp" || ext == ".tga")
                         {
                             
                             std::string rel = fs::relative(e.path(), fs::path(root)).generic_string();
 
                             SpriteSheet_SetTexturePath(rel.c_str());
                             ui.showSpriteSheet = true;                        
+                        }
+
+                        else if (ext == ".cs")
+                        {
+                            std::string cmd = "start \"\" \"" + e.path().string() + "\"";
+                            system(cmd.c_str());
                         }
                     }
 
@@ -913,7 +965,7 @@ namespace UI { // --------------------------------------------------------------
         ImGui::EndChild(); // asset_right_list
 
         // PREVIEW 
-        ImGui::Separator();
+        ImGui::SameLine();
         ImGui::BeginChild("asset_right_preview", ImVec2(0, 0), true);
 
         if (!outSelectedAsset.empty()) {
@@ -957,17 +1009,16 @@ namespace UI { // --------------------------------------------------------------
                 if (previewTex && imgW > 0 && imgH > 0) {
                     ImGui::TextUnformatted("Preview:");
 
+                    const float kPreviewMaxHeight = 260.0f;
                     ImVec2 area = ImGui::GetContentRegionAvail();
                     area.y = std::min(area.y, kPreviewMaxHeight);
 
-                    // Keep aspect ratio
                     float maxW = area.x;
                     float maxH = area.y;
                     float scale = std::min(maxW / float(imgW), maxH / float(imgH));
                     if (scale <= 0.0f) scale = 1.0f;
                     ImVec2 drawSize(float(imgW) * scale, float(imgH) * scale);
 
-                    // Center horizontally
                     float xPad = (area.x - drawSize.x) * 0.5f;
                     if (xPad > 0) ImGui::SetCursorPosX(ImGui::GetCursorPosX() + xPad);
 
@@ -1006,10 +1057,22 @@ namespace UI { // --------------------------------------------------------------
                     previewPlaying = false;
                 }
             }
+
+            if (ext == ".cs")
+            {
+                ImGui::Separator();
+                ImGui::TextUnformatted("C# Script:");
+                ImGui::Text("%s", fs::path(outSelectedAsset).filename().string().c_str());
+
+                if (ImGui::Button("Open in C# editor"))
+                {
+                    std::string cmd = "start \"\" \"" + outSelectedAsset + "\"";
+                    system(cmd.c_str());
+                }
+            }
         }
 
         ImGui::EndChild(); // asset_right_preview
-        ImGui::EndChild(); // asset_right
     }
 
     /*!
@@ -2433,7 +2496,7 @@ namespace UI { // --------------------------------------------------------------
                 //  Mouse picking
                 //  - only runs if mouse is over the viewport image
                 //  - converts mouse to UV, then to world
-                //  - walks ECS transforms and does a simple 2D AABB hit test
+                //  - walks ECS transforms and does a simple 2D ColliderType::AABB hit test
                 //  - picks the entity with the highest Z so clicking overlaps works
                 // ------------------------------------------------------------
                 if (over && ImGui::IsMouseClicked(ImGuiMouseButton_Left) && !ImGuizmo::IsOver() && !ImGuizmo::IsUsing())
@@ -2471,14 +2534,14 @@ namespace UI { // --------------------------------------------------------------
 
                             case ShapeType::Line:
                             {
-                                // conservative AABB around line + thickness
+                                // conservative ColliderType::AABB around line + thickness
                                 const float minx = std::min(sc->p1.x, sc->p2.x);
                                 const float maxx = std::max(sc->p1.x, sc->p2.x);
                                 const float miny = std::min(sc->p1.y, sc->p2.y);
                                 const float maxy = std::max(sc->p1.y, sc->p2.y);
                                 hx = std::max(hx, std::max(0.5f * (maxx - minx), sc->thickness * 0.5f));
                                 hy = std::max(hy, std::max(0.5f * (maxy - miny), sc->thickness * 0.5f));
-                                // fall through to AABB test below
+                                // fall through to ColliderType::AABB test below
                             }
                             [[fallthrough]];
 
@@ -2559,10 +2622,15 @@ namespace UI { // --------------------------------------------------------------
                                 ecs.AddComponent<NameComponent>(e, std::string("Tex_") + p->name);
                                 ecs.AddComponent<TransformComponent>(e);
                                 ecs.AddComponent<Component::ShapeComponent>(e);
+
                                 auto* sc = ecs.GetComponent<Component::ShapeComponent>(e);
                                 sc->enableTexture = true;
                                 sc->textureName = p->name;
-                                ecs.GetComponent<Component::TransformComponent>(e)->position = dropWorld;
+
+                                if (auto* t = ecs.GetComponent<TransformComponent>(e)) {
+                                    t->position = dropWorld;
+                                    t->size = { 50.0f, 50.0f };
+                                }
                             }
                         }
                         // 2) Prefab -> instantiate and move to drop
@@ -2643,7 +2711,14 @@ namespace UI { // --------------------------------------------------------------
     {
         auto& collisions = phys.collisions();
         if (ui.drawCollOverlay) {
-            CollisionGizmos::DrawAllColliders(ecs, &collisions, ui.overlayThickness);
+
+            // Get ratio based off zoom
+
+            float thicknessRatio = 1.f;
+            if(engineState == EngineState::STOP) thicknessRatio = CrashoutsEngine::RenderCamera::engineCamera.GetZoom();
+            else thicknessRatio = CrashoutsEngine::RenderCamera::gameCamera.GetZoom();
+
+            CollisionGizmos::DrawAllColliders(ecs, &collisions, ui.overlayThickness / thicknessRatio);
             if (ui.drawQuadTree) {
                 Collision::CollisionHandler::GetInstance().quadTree.Draw();
             }

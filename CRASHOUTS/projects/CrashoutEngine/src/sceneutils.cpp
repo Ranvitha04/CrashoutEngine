@@ -189,7 +189,7 @@ namespace Scene {
                 ButtonComponent* b = globalECS.GetComponent<ButtonComponent>(id);
                 TransformComponent* t = globalECS.GetComponent<TransformComponent>(id);
 
-                // AABB the button
+                // ColliderType::AABB the button
                 float halfW = t->size.x * 0.5f;
                 float halfH = t->size.y * 0.5f;
                 CEVec2 aa{ t->position.x - halfW, t->position.y - halfH };
@@ -245,7 +245,7 @@ namespace Scene {
             for (const Entity& id : textInputArray.indexToEntity) {
                 TransformComponent* t = globalECS.GetComponent<TransformComponent>(id);
 
-                // AABB check
+                // ColliderType::AABB check
                 float halfW = t->size.x * 0.5f;
                 float halfH = t->size.y * 0.5f;
                 CEVec2 aa{ t->position.x - halfW, t->position.y - halfH };
@@ -387,120 +387,6 @@ namespace Scene {
     std::unordered_map<std::string, RenderBatch> circBatches;
 
     void RenderScene(CrashoutsEngine::ECS& globalECS) {
-        /*
-        using namespace CrashoutsEngine;
-        using Component::Rendering;
-
-        // For Drawing Text Components
-        const ECS::ComponentArray<TextComponent>& textArray = globalECS.GetComponentArray<TextComponent>();
-        if (!gTextRenderer) {
-            gTextRenderer = std::make_unique<TextRenderer>();
-        }
-
-        for (const Entity& id : textArray.indexToEntity) {
-            TextComponent* tc = globalECS.GetComponent<TextComponent>(id);
-            if (globalECS.HasComponent<TransformComponent>(id)) {
-                TransformComponent* t = globalECS.GetComponent<TransformComponent>(id);
-
-                CEVec2 newOffset = CEVec2{ t->position.x + tc->offset.x, t->position.y + tc->offset.y };
-                // Modify Offset if UILayout Present
-                UILayoutComponent* u = globalECS.GetComponent<UILayoutComponent>(id);
-                if (u) {
-                    // --- 1. Handle Vertical Alignment & Padding ---
-                    if ((u->uiLayout & UILayout::TOP) != UILayout::NONE) {
-                        newOffset.y += t->size.y * 0.5f;
-                        newOffset.y -= u->paddingXY.y; // Padding pushes *down* from the top
-                    }
-                    else if ((u->uiLayout & UILayout::DOWN) != UILayout::NONE) {
-                        newOffset.y -= t->size.y * 0.5f;
-                        newOffset.y += u->paddingXY.y; // Padding pushes *up* from the bottom
-                    }
-
-                    // --- 2. Handle Horizontal Alignment & Padding ---
-                    if ((u->uiLayout & UILayout::LEFT) != UILayout::NONE) {
-                        newOffset.x -= t->size.x * 0.5f;
-                        newOffset.x += u->paddingXY.x; // Padding pushes *right* from the left
-                    }
-                    else if ((u->uiLayout & UILayout::RIGHT) != UILayout::NONE) {
-                        newOffset.x += t->size.x * 0.5f;
-                        newOffset.x -= u->paddingXY.x; // Padding pushes *left* from the right
-                    }
-                }
-
-                float compensatedScale = tc->scale / RenderCamera::Camera::g_zoom;
-
-                std::string font = tc->font;
-                if (font == "") font = "Exo2-Regular";
-
-                if (tc->centered)
-                    gTextRenderer->RenderCenteredText(tc->text, newOffset.x, newOffset.y, compensatedScale, tc->color, font, tc->isWorldSpace);
-                else
-                    gTextRenderer->RenderText(tc->text, newOffset.x, newOffset.y, compensatedScale, tc->color, font, tc->isWorldSpace);
-
-                TextInputComponent* input = globalECS.GetComponent<TextInputComponent>(id);
-                // Check if this entity is a focused text input
-                if (input) {
-
-                    // Only draw cursor if this component is focused
-                    if (input->isFocused && engineState != EngineState::STOP) {
-
-                        // 3. (Optional) Make it blink
-                        static float blinkTimer = 0.0f;
-                        blinkTimer += (float)FrameRateController::GetInstance().DT(); // Your frame delta time
-                        bool showCursor = fmod(blinkTimer, 1.0f) < 0.5f; // On for 0.5s, off for 0.5s
-
-                        if (showCursor) {
-                            // 4. Get the components again (or just reuse them)
-                            auto* text = globalECS.GetComponent<TextComponent>(id);
-                            auto* transform = globalECS.GetComponent<TransformComponent>(id);
-                            GLfloat startX = transform->position.x - (transform->size.x * 0.5f);
-                            // 5. Calculate the cursor's baseline position
-                            CEVec2 cursorPos = gTextRenderer.get()->GetCursorPosition(
-                                text->text,
-                                input->cursorPos,
-                                startX,
-                                transform->position.y,
-                                1.f, // Assuming scale is in x
-                                font
-                            );
-
-                            // 6. Define cursor properties
-                            GLfloat cursorThickness = .25f; // How wide the cursor is
-                            GLfloat cursorHeight = gTextRenderer.get()->GetLineHeight(font, transform->size.x);
-                            CEColor cursorColor = { .0f, .0f, .0f }; // White
-
-                            Assets::FontAsset* fontAsset = Assets::AssetManager::GetInstance().Get<Assets::FontAsset>(font);
-                            float ascender = 0.0f;
-                            if (fontAsset && fontAsset->characters.count('H')) {
-                                // Get 'H's bearing (distance from baseline to top of glyph) and scale it
-                                ascender = (float)fontAsset->characters.at('H').Bearing.y * (transform->size.x * FONT_SCALE);
-                            }
-                            else {
-                                // Fallback: approximate ascender as 75% of total height
-                                ascender = cursorHeight * 0.75f;
-                            }
-
-                            // 7. Define the start and end of the vertical cursor line
-                            // 'cursorPos.y' is the baseline (top of the line).
-                            // We'll draw it from the baseline down by the line height.
-                            // (Assuming Z-coordinate is 0 for 2D text)
-                            CEVec3 startPoint = { cursorPos.x, cursorPos.y + ascender * FONT_SCALE * .5f, 0.0f };
-                            CEVec3 endPoint = { cursorPos.x, cursorPos.y - cursorHeight * FONT_SCALE * .5f, 0.0f };
-
-                            // 8. Draw the cursor using your Shapes::CreateLine function
-                            Shapes::CreateLine(
-                                startPoint,           // start
-                                endPoint,             // end
-                                cursorThickness,      // thickness
-                                cursorColor           // color
-                            );
-                        }
-                    }
-                }
-
-            }
-        }
-        */
 
         using namespace CrashoutsEngine;
         using Component::Rendering;
