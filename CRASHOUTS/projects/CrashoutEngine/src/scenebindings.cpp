@@ -8,6 +8,8 @@
 #include "scenebindings.h"
 #include "sceneasset.h"
 #include "entitymanager.h"
+#include "assetmanager.h"
+#include "glapp.h"
 
 // Mono headers
 #include "mono/metadata/loader.h"
@@ -25,6 +27,10 @@ namespace
 
         std::string nameString{ utf8 };
         if (nameString.empty()) return;
+        if (nameString == Serialization::currSceneName) return;
+
+        Assets::AssetManager& assetManager = Assets::AssetManager::GetInstance();
+        if (!assetManager.Exists(nameString)) return;
 
         ECS::getInstance()->Reset();
         Serialization::currSceneName = nameString;
@@ -33,9 +39,13 @@ namespace
         mono_free(utf8);
     }
 
+    static void InternalQuitGame() {
+        glfwSetWindowShouldClose(GLApp::ptr_window, GLFW_TRUE);
+    }
 }
 
 void CrashoutsEngine::Bindings::RegisterSceneBindings()
 {
     mono_add_internal_call("CrashoutsEngine.SceneManager::LoadScene", (const void*)InternalLoadScene);
+    mono_add_internal_call("CrashoutsEngine.SceneManager::QuitGame", (const void*)InternalQuitGame);
 }

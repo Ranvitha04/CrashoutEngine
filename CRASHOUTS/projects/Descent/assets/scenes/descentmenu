@@ -120,13 +120,13 @@
                     "z": 0.0
                 },
                 "size": {
-                    "x": 163.1999969482422,
+                    "x": 187.60000610351563,
                     "y": 45.79999923706055
                 }
             },
             "shape": {
                 "useTexture": false,
-                "isWorldSpace": false,
+                "isWorldSpace": true,
                 "wrapModeU": 0,
                 "wrapModeV": 0,
                 "thickness": 1.0,
@@ -169,7 +169,7 @@
                     "w": 1.0
                 },
                 "centered": true,
-                "isworldspace": false
+                "isworldspace": true
             },
             "script": {
                 "scripts": [
@@ -178,6 +178,244 @@
             },
             "button": {
                 "buttonState": 0,
+                "shapeNormalColor": {
+                    "x": 0.33701658248901369,
+                    "y": 0.04841122403740883,
+                    "z": 0.04841122403740883,
+                    "w": 1.0
+                },
+                "shapeHoveredColor": {
+                    "x": 0.9613259434700012,
+                    "y": 0.1699582040309906,
+                    "z": 0.1699582040309906,
+                    "w": 0.4475138187408447
+                },
+                "shapePressedColor": {
+                    "x": 0.5966850519180298,
+                    "y": 0.09889807552099228,
+                    "z": 0.09889807552099228,
+                    "w": 0.18784528970718385
+                },
+                "textNormalColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "textHoveredColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.49171268939971926
+                },
+                "textPressedColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.8066298365592957
+                }
+            },
+            "gui": {
+                "uiType": 7
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "uiLayout": 4
+            }
+        },
+        {
+            "name": "SettingsBtn",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": -89.93900299072266,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 187.60000610351563,
+                    "y": 45.79999923706055
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 0.33701658248901369,
+                    "y": 0.04841122403740883,
+                    "z": 0.04841122403740883,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "text": {
+                "font": "Exo2-Regular",
+                "text": "SETTINGS",
+                "scale": 12.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": true
+            },
+            "script": {
+                "scripts": [
+                    "MenuButtons"
+                ]
+            },
+            "button": {
+                "buttonState": 0,
+                "shapeNormalColor": {
+                    "x": 0.33701658248901369,
+                    "y": 0.04841122403740883,
+                    "z": 0.04841122403740883,
+                    "w": 1.0
+                },
+                "shapeHoveredColor": {
+                    "x": 0.9613259434700012,
+                    "y": 0.1699582040309906,
+                    "z": 0.1699582040309906,
+                    "w": 0.4475138187408447
+                },
+                "shapePressedColor": {
+                    "x": 0.5966850519180298,
+                    "y": 0.09889807552099228,
+                    "z": 0.09889807552099228,
+                    "w": 0.18784528970718385
+                },
+                "textNormalColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "textHoveredColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.49171268939971926
+                },
+                "textPressedColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.8066298365592957
+                }
+            },
+            "gui": {
+                "uiType": 7
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "uiLayout": 4
+            }
+        },
+        {
+            "name": "QuitBtn",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": -159.93899536132813,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 187.60000610351563,
+                    "y": 45.79999923706055
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 0.5966850519180298,
+                    "y": 0.09889807552099228,
+                    "z": 0.09889807552099228,
+                    "w": 0.18784528970718385
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "text": {
+                "font": "Exo2-Regular",
+                "text": "QUIT",
+                "scale": 12.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.8066298365592957
+                },
+                "centered": true,
+                "isworldspace": true
+            },
+            "script": {
+                "scripts": [
+                    "MenuButtons"
+                ]
+            },
+            "button": {
+                "buttonState": 2,
                 "shapeNormalColor": {
                     "x": 0.33701658248901369,
                     "y": 0.04841122403740883,

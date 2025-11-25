@@ -1243,6 +1243,10 @@
             "path": "descentmenu"
         },
         {
+            "name": "descentsettings",
+            "path": "descentsettings"
+        },
+        {
             "name": "rain",
             "path": "rain"
         },

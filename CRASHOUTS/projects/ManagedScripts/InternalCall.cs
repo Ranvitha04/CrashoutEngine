@@ -107,11 +107,14 @@ namespace CrashoutsEngine
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal static extern void Audio_SetMasterVolume(float volume);
 
-        // UI Bindings
+        // --- BUTTON COMPONENT LIFECYCLE ---
         [MethodImpl(MethodImplOptions.InternalCall)]
-        internal static extern bool ButtonIsClicked(uint entityID);
+        internal static extern void AddButton(uint entityID);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        internal static extern bool ButtonIsHovered(uint entityID);
+        internal static extern void RemoveButton(uint entityID);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern bool EntityHasButton(uint entityID);
     }
 }
