@@ -690,6 +690,14 @@ namespace UI { // --------------------------------------------------------------
             needScan = true;
         }
 
+        {
+            std::string fname = current.filename().string();
+            if (fname == "obj" || fname == "bin" || fname == ".vs" || fname == ".idea") {
+                current = rootPath;
+                needScan = true;
+            }
+        }
+
         // Top bar controls
         if (ImGui::Button("Up") && current.has_parent_path()) {
             current = current.parent_path();
@@ -747,16 +755,15 @@ namespace UI { // --------------------------------------------------------------
         }
 
         // LEFT: Folder tree
-        ImGui::BeginChild("asset_left", ImVec2(220, 0), true);
-
-        if (ImGui::Selectable("assets", current == fs::path(CrashoutsEngine::Assets::rootPath))) {
-            current = fs::path(CrashoutsEngine::Assets::rootPath);
-            needScan = true;
-        }
+        ImGui::BeginChild("asset_left", ImVec2(100, 0), true);
 
         try {
-            for (auto& de : fs::directory_iterator(CrashoutsEngine::Assets::rootPath)) {
+            for (auto& de : fs::directory_iterator(rootPath)) {
                 if (!de.is_directory()) continue;
+
+                std::string fname = de.path().filename().string();
+                if (fname == "obj" || fname == "bin" || fname == ".vs" || fname == ".idea") continue;
+
                 bool isCur = (current == de.path());
                 if (ImGui::Selectable(de.path().filename().generic_string().c_str(), isCur)) {
                     current = de.path();
@@ -766,19 +773,23 @@ namespace UI { // --------------------------------------------------------------
         }
         catch (...) {}
 
+        fs::path scriptsRoot = fs::path("../../projects/ManagedScripts");
+        bool isScripts = (current == scriptsRoot);
+        if (ImGui::Selectable("scripts", isScripts)) {
+            current = scriptsRoot;
+            needScan = true;
+        }
+
         ImGui::EndChild();
 
         // RIGHT: Files + Preview
         ImGui::SameLine();
-        ImGui::BeginChild("asset_right", ImVec2(0, 0), true);
+        ImVec2 rightArea = ImGui::GetContentRegionAvail();
 
-        const float kPreviewMaxHeight = 260.0f; 
-        ImVec2 availRight = ImGui::GetContentRegionAvail();
-        float listHeight = availRight.y - kPreviewMaxHeight - ImGui::GetStyle().ItemSpacing.y;
-        if (listHeight < 120.0f) listHeight = availRight.y * 0.6f;
+        float listWidth = 200.0f;
 
         // FILE LIST 
-        ImGui::BeginChild("asset_right_list", ImVec2(0, listHeight), true);
+        ImGui::BeginChild("asset_right_list", ImVec2(listWidth, 0), true);
 
         if (needScan) {
             entries.clear();
@@ -799,10 +810,17 @@ namespace UI { // --------------------------------------------------------------
         static std::vector<int> vis;
         vis.clear();
         vis.reserve(entries.size());
+
         for (int i = 0; i < (int)entries.size(); ++i) {
             const auto& e = entries[i];
             std::string name = e.path().filename().generic_string();
-            if (filter[0] && name.find(filter) == std::string::npos) continue;
+
+            if (name == "obj" || name == "bin" || name == ".vs" || name == ".idea")
+                continue;
+
+            if (filter[0] && name.find(filter) == std::string::npos)
+                continue;
+
             vis.push_back(i);
         }
 
@@ -832,14 +850,19 @@ namespace UI { // --------------------------------------------------------------
                         std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
 
                         
-                        if (ext == ".png" || ext == ".jpg" || ext == ".jpeg" ||
-                            ext == ".bmp" || ext == ".tga")
+                        if (ext == ".png" || ext == ".jpg" || ext == ".jpeg" || ext == ".bmp" || ext == ".tga")
                         {
                             
                             std::string rel = fs::relative(e.path(), fs::path(root)).generic_string();
 
                             SpriteSheet_SetTexturePath(rel.c_str());
                             ui.showSpriteSheet = true;                        
+                        }
+
+                        else if (ext == ".cs")
+                        {
+                            std::string cmd = "start \"\" \"" + e.path().string() + "\"";
+                            system(cmd.c_str());
                         }
                     }
 
@@ -891,7 +914,7 @@ namespace UI { // --------------------------------------------------------------
         ImGui::EndChild(); // asset_right_list
 
         // PREVIEW 
-        ImGui::Separator();
+        ImGui::SameLine();
         ImGui::BeginChild("asset_right_preview", ImVec2(0, 0), true);
 
         if (!outSelectedAsset.empty()) {
@@ -935,17 +958,16 @@ namespace UI { // --------------------------------------------------------------
                 if (previewTex && imgW > 0 && imgH > 0) {
                     ImGui::TextUnformatted("Preview:");
 
+                    const float kPreviewMaxHeight = 260.0f;
                     ImVec2 area = ImGui::GetContentRegionAvail();
                     area.y = std::min(area.y, kPreviewMaxHeight);
 
-                    // Keep aspect ratio
                     float maxW = area.x;
                     float maxH = area.y;
                     float scale = std::min(maxW / float(imgW), maxH / float(imgH));
                     if (scale <= 0.0f) scale = 1.0f;
                     ImVec2 drawSize(float(imgW) * scale, float(imgH) * scale);
 
-                    // Center horizontally
                     float xPad = (area.x - drawSize.x) * 0.5f;
                     if (xPad > 0) ImGui::SetCursorPosX(ImGui::GetCursorPosX() + xPad);
 
@@ -1000,7 +1022,6 @@ namespace UI { // --------------------------------------------------------------
         }
 
         ImGui::EndChild(); // asset_right_preview
-        ImGui::EndChild(); // asset_right
     }
 
     /*!
@@ -2550,10 +2571,15 @@ namespace UI { // --------------------------------------------------------------
                                 ecs.AddComponent<NameComponent>(e, std::string("Tex_") + p->name);
                                 ecs.AddComponent<TransformComponent>(e);
                                 ecs.AddComponent<Component::ShapeComponent>(e);
+
                                 auto* sc = ecs.GetComponent<Component::ShapeComponent>(e);
                                 sc->enableTexture = true;
                                 sc->textureName = p->name;
-                                ecs.GetComponent<Component::TransformComponent>(e)->position = dropWorld;
+
+                                if (auto* t = ecs.GetComponent<TransformComponent>(e)) {
+                                    t->position = dropWorld;
+                                    t->size = { 50.0f, 50.0f };
+                                }
                             }
                         }
                         // 2) Prefab -> instantiate and move to drop

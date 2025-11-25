@@ -201,14 +201,14 @@ void UpdateMainMenu()
 
 	//Component::RigidBodyComponent* rigidBody2{ globalECS->GetComponent<Component::RigidBodyComponent>(entity3) };
 
-	if (itemCount < 2500 && InputManager::IsKeyPressed(Key::Num1)) {
+	/*if (itemCount < 2500 && InputManager::IsKeyPressed(Key::Num1)) {
 		int newCount = 0;
 		while (newCount < 1) {
 			CreateRandBox();
 			newCount++;
 			itemCount++;
 		}
-	} 
+	}*/
 
 	/*
 	if (rigidBody) {
