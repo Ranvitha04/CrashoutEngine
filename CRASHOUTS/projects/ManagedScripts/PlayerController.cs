@@ -2,6 +2,7 @@ using System;
 using System.Numerics;
 namespace CrashoutsEngine
 {
+    [ScriptBehaviour]
     public class PlayerController : ScriptBase
     {
         bool moveLeft;
