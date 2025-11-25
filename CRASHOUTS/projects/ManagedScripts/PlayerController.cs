@@ -61,7 +61,6 @@ namespace CrashoutsEngine
                 //Console.WriteLine("[C#] Player stopped moving -> Stop footsteps_loop");
                 AudioManager.GetInstance().Stop("footsteps");
             }
-            /*
             //if (Input.IsKeyPressed(Key.A))
             //{
             //    //Console.WriteLine($"[DEBUG] A pressed, rb ID = {rb.EntityID}, mass = {rb.GetMass()}");
@@ -100,6 +99,7 @@ namespace CrashoutsEngine
                     Entity.GetComponent<ColliderComponent>().UpdateRotation(tf.Rotation);
                 }
             }
+            /*
             */
             moveLeft = Input.IsKeyPressed(Key.A);
             moveRight = Input.IsKeyPressed(Key.D);
@@ -135,5 +135,5 @@ namespace CrashoutsEngine
                 Console.WriteLine("[C#] mass=" + rb.GetMass());
             }
             }
-        }
+    }
 }
