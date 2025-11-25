@@ -1543,13 +1543,14 @@ namespace {
 						try {
 							for (auto it = fs::recursive_directory_iterator(base, fs::directory_options::skip_permission_denied);
 								it != fs::recursive_directory_iterator(); ++it) {
+
 								if (it->is_directory()) {
 									auto folder = it->path().filename().string();
 									std::transform(folder.begin(), folder.end(), folder.begin(), ::tolower);
 									if (folder == "obj" || folder == "bin" || folder == ".vs") {
 										it.disable_recursion_pending();
-										continue;
 									}
+									continue;
 								}
 
 								if (!it->is_regular_file()) continue;
@@ -1557,6 +1558,25 @@ namespace {
 								auto ext = it->path().extension().string();
 								std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
 								if (ext != ".cs") continue;
+
+								// THIS ENTIRE BLOCK ENSURES ONLY SCRIPTS WITH [ScriptBehaviour] ARE SHOWN
+								// SO HOPEFULLY PEOPLE DON'T TRY TO ADD NON-SCRIPT CLASSES
+								// IF NOT I'LL MENGGONNA DO SOMETHING LATER
+								{
+									std::ifstream in(it->path());
+									if (in) {
+										std::string line;
+										bool hasAttribute = false;
+										while (std::getline(in, line)) {
+											if (line.find("[ScriptBehaviour]") != std::string::npos) {
+												hasAttribute = true;
+												break;
+											}
+										}
+										if (!hasAttribute)
+											continue;
+									}
+								}
 
 								std::string stem = it->path().stem().string();
 								if (filter[0] && stem.find(filter) == std::string::npos)
@@ -1583,8 +1603,9 @@ namespace {
 							}
 						}
 						catch (...) {
-
+							// swallow
 						}
+
 						ImGui::EndChild();
 
 						if (ImGui::Button("Cancel")) ImGui::CloseCurrentPopup();
@@ -1634,12 +1655,31 @@ namespace {
 				// write a basic template
 				std::ofstream out(file);
 				out <<
-					R"(using System;
+					R"(using CrashoutsEngine;
 
-public class )" << file.stem().string() << R"(
+namespace CrashoutsEngine
 {
-    public void Start() { }
-    public void Update() { }
+    // Attach this script to an Entity through the ScriptComponent UI.
+    // Scripts with [ScriptBehaviour] will appear in the editor's script list.
+    [ScriptBehaviour]
+    public class )" << file.stem().string() << R"(
+    {
+        // Reference to the entity this script instance is attached to.
+        // Automatically assigned by the engine before Start() runs.
+        public Entity Entity;
+
+        // Called once when the script is first created.
+        // Initialize references or setup values here.
+        public void Start() { }
+
+        // Called every frame.
+        // Main game logic, movement, inputs, and updates go here.
+        public void Update() { }
+
+        // Called at a fixed timestep (ideal for physics logic).
+        // Runs independently from the frame rate.
+        public void FixedUpdate() { }
+    }
 }
 )";
 				out.close();

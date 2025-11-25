@@ -1,6 +1,7 @@
 using System;
 namespace CrashoutsEngine
 {
+    [ScriptBehaviour]
     public class PlayerMovement : ScriptBase
     {
         float horizontalInput;
@@ -22,7 +23,7 @@ namespace CrashoutsEngine
         //[SerializeField] private SwitchCharacter switchcharacter;
         //[SerializeField] private BoxCollider2D playerCollider;
 
-        private Animator animator;
+        //private Animator animator;
         public bool IsOnPlatform;
         //public Rigidbody2D platformRb;
 
@@ -42,13 +43,13 @@ namespace CrashoutsEngine
         // Start is called before the first frame update
         public override void Start()
         {
-            animator = Entity.GetComponent<Animator>();
+            //animator = Entity.GetComponent<Animator>();
             rb = Entity.GetComponent<RigidBodyComponent>();
             //lastY = transform.position.y;
-            animator.SetBool("IsRunning", false);
-            animator.SetBool("IsFalling", false);
-            animator.SetBool("IsJumping", false);
-            animator.SetBool("PressQ", false);
+            //animator.SetBool("IsRunning", false);
+           // animator.SetBool("IsFalling", false);
+            //animator.SetBool("IsJumping", false);
+            //animator.SetBool("PressQ", false);
             //startPos = transform.position;
 
             //GObackground.SetActive(false);
@@ -86,7 +87,7 @@ namespace CrashoutsEngine
                 AudioManager.GetInstance().Stop("footsteps");
             }
 
-            FlipSprite(horizontalInput);
+            //FlipSprite(horizontalInput);
 
             //if (Input.GetButtonDown("Jump") && !isJumping)
             //{
@@ -101,7 +102,7 @@ namespace CrashoutsEngine
             {
                 rb.AddForce(new CEVec3(0f, jumpPower, 0f));
                 isJumping = true;
-                animator.SetBool("IsJumping", true);
+                //animator.SetBool("IsJumping", true);
             }
             //if (animator.GetBool("IsJumping") && rb.linearVelocity.y < 0 && IsOnPlatform == false)
             //{
@@ -118,7 +119,7 @@ namespace CrashoutsEngine
                   switchcharacter?.SwitchAvatar();
               } */
             var vel = rb.LinearVelocity;
-
+            /*
             // Jump started and peak reached then beginning to fall
             if (animator.GetBool("IsJumping") && vel.y < 0f && !IsOnPlatform)
             {
@@ -144,7 +145,7 @@ namespace CrashoutsEngine
 
                 isJumping = false;
                 isFalling = false;
-            }
+            }*/
         }
 
         //private void FixedUpdate()
@@ -187,7 +188,7 @@ namespace CrashoutsEngine
                 rb.AddForce(new CEVec3(force, 0f, 0f));
             }
 
-            // animation
+            /*// animation
             if (horizontalInput != 0f)
             {
                 animator.SetBool("IsRunning", true);
@@ -204,7 +205,7 @@ namespace CrashoutsEngine
                 {
                     animator.Play("Idle");
                 }
-            }
+            }*/
         }
 
         //void FlipSprite()
@@ -217,7 +218,7 @@ namespace CrashoutsEngine
         //        transform.localScale = ls;
         //    }
         //}
-
+        /*
         void FlipSprite(float horizontalInput)
         {
             if (horizontalInput == 0f)
@@ -232,7 +233,7 @@ namespace CrashoutsEngine
                 animator.SetFlip(!isFacingRight);
             }
         }
-
+        */
 
         //private void OnCollisionEnter2D(Collision2D collision)
         //{
