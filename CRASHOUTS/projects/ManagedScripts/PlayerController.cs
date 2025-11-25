@@ -80,6 +80,7 @@ namespace CrashoutsEngine
             //    Console.WriteLine("[C#] mass=" + rb.GetMass());
             //}
 
+            /*
             if (Input.IsKeyPressed(Key.S))
             {
                 tf.Size *= 0.9f;
@@ -99,6 +100,7 @@ namespace CrashoutsEngine
                     Entity.GetComponent<ColliderComponent>().UpdateRotation(tf.Rotation);
                 }
             }
+            */
             moveLeft = Input.IsKeyPressed(Key.A);
             moveRight = Input.IsKeyPressed(Key.D);
 

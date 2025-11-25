@@ -25,9 +25,604 @@
                 ],
                 "gridData": [
                     {
+                        "x": -7,
+                        "y": -34,
+                        "asset": ""
+                    },
+                    {
+                        "x": -7,
+                        "y": -33,
+                        "asset": ""
+                    },
+                    {
+                        "x": -7,
+                        "y": -5,
+                        "asset": ""
+                    },
+                    {
+                        "x": -6,
+                        "y": -36,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -6,
+                        "y": -35,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -6,
+                        "y": -34,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -6,
+                        "y": -33,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -6,
+                        "y": -32,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -6,
+                        "y": -31,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -6,
+                        "y": -30,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -6,
+                        "y": -29,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -6,
+                        "y": -28,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -6,
+                        "y": -27,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -6,
+                        "y": -26,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -6,
+                        "y": -25,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -6,
+                        "y": -24,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -6,
+                        "y": -23,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -6,
+                        "y": -22,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -6,
+                        "y": -21,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -6,
+                        "y": -20,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -6,
+                        "y": -19,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -6,
+                        "y": -18,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -6,
+                        "y": -17,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -6,
+                        "y": -16,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -6,
+                        "y": -15,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -6,
+                        "y": -14,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -6,
+                        "y": -13,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -6,
+                        "y": -12,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -6,
+                        "y": -11,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -6,
+                        "y": -10,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -6,
+                        "y": -9,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -6,
+                        "y": -8,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -6,
+                        "y": -7,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -6,
+                        "y": -6,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -6,
+                        "y": -5,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -6,
+                        "y": -4,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -6,
+                        "y": -3,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -6,
+                        "y": -2,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -6,
+                        "y": -1,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -6,
+                        "y": 0,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -6,
+                        "y": 1,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -6,
+                        "y": 2,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -6,
+                        "y": 3,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -6,
+                        "y": 4,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -6,
+                        "y": 5,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -6,
+                        "y": 6,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -5,
+                        "y": -36,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -5,
+                        "y": -35,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -5,
+                        "y": -34,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -5,
+                        "y": -33,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -5,
+                        "y": -32,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -5,
+                        "y": -31,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -5,
+                        "y": -30,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -5,
+                        "y": -29,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -5,
+                        "y": -28,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -5,
+                        "y": -27,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -5,
+                        "y": -26,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -5,
+                        "y": -25,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -5,
+                        "y": -24,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -5,
+                        "y": -23,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -5,
+                        "y": -22,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -5,
+                        "y": -21,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -5,
+                        "y": -20,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -5,
+                        "y": -19,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -5,
+                        "y": -18,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -5,
+                        "y": -17,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -5,
+                        "y": -16,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -5,
+                        "y": -15,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -5,
+                        "y": -14,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -5,
+                        "y": -13,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -5,
+                        "y": -12,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -5,
+                        "y": -11,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -5,
+                        "y": -10,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -5,
+                        "y": -9,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -5,
+                        "y": -8,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -5,
+                        "y": -7,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -5,
+                        "y": -6,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -5,
+                        "y": -5,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -5,
+                        "y": -4,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -5,
+                        "y": -3,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -5,
+                        "y": -2,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
                         "x": -5,
                         "y": -1,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -5,
+                        "y": 0,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -5,
+                        "y": 1,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -5,
+                        "y": 2,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -5,
+                        "y": 3,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -5,
+                        "y": 4,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -5,
+                        "y": 5,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -5,
+                        "y": 6,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -4,
+                        "y": -36,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -4,
+                        "y": -35,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -4,
+                        "y": -34,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -4,
+                        "y": -33,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -4,
+                        "y": -32,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -4,
+                        "y": -31,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -4,
+                        "y": -30,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -4,
+                        "y": -29,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -4,
+                        "y": -28,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -4,
+                        "y": -27,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -4,
+                        "y": -26,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -4,
+                        "y": -25,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -4,
+                        "y": -24,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -4,
+                        "y": -23,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -4,
+                        "y": -22,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -4,
+                        "y": -21,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -4,
+                        "y": -20,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -4,
+                        "y": -19,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -4,
+                        "y": -18,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -4,
+                        "y": -17,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -4,
+                        "y": -16,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -4,
+                        "y": -15,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -4,
+                        "y": -14,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -4,
+                        "y": -13,
                         "asset": ""
+                    },
+                    {
+                        "x": -4,
+                        "y": -12,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -4,
+                        "y": -11,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -4,
+                        "y": -10,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -4,
+                        "y": -9,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -4,
+                        "y": -8,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -4,
+                        "y": -7,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -4,
+                        "y": -6,
+                        "asset": "tilemaps/Rock"
                     },
                     {
                         "x": -4,
@@ -52,7 +647,182 @@
                     {
                         "x": -4,
                         "y": -1,
-                        "asset": ""
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -4,
+                        "y": 0,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -4,
+                        "y": 1,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -4,
+                        "y": 2,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -4,
+                        "y": 3,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -4,
+                        "y": 4,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -4,
+                        "y": 5,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -4,
+                        "y": 6,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -3,
+                        "y": -36,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -3,
+                        "y": -35,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -3,
+                        "y": -34,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -3,
+                        "y": -33,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -3,
+                        "y": -32,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -3,
+                        "y": -31,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -3,
+                        "y": -30,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -3,
+                        "y": -29,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -3,
+                        "y": -28,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -3,
+                        "y": -27,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -3,
+                        "y": -26,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -3,
+                        "y": -25,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -3,
+                        "y": -24,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -3,
+                        "y": -23,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -3,
+                        "y": -22,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -3,
+                        "y": -21,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -3,
+                        "y": -20,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -3,
+                        "y": -19,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -3,
+                        "y": -18,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -3,
+                        "y": -17,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -3,
+                        "y": -16,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -3,
+                        "y": -12,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -3,
+                        "y": -11,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -3,
+                        "y": -10,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -3,
+                        "y": -9,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -3,
+                        "y": -8,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -3,
+                        "y": -7,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -3,
+                        "y": -6,
+                        "asset": "tilemaps/Rock"
                     },
                     {
                         "x": -3,
@@ -80,6 +850,181 @@
                         "asset": ""
                     },
                     {
+                        "x": -3,
+                        "y": 2,
+                        "asset": ""
+                    },
+                    {
+                        "x": -3,
+                        "y": 3,
+                        "asset": ""
+                    },
+                    {
+                        "x": -3,
+                        "y": 4,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -3,
+                        "y": 5,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -3,
+                        "y": 6,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -2,
+                        "y": -36,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -2,
+                        "y": -35,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -2,
+                        "y": -34,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -2,
+                        "y": -33,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -2,
+                        "y": -32,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -2,
+                        "y": -31,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -2,
+                        "y": -30,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -2,
+                        "y": -29,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -2,
+                        "y": -28,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -2,
+                        "y": -27,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -2,
+                        "y": -26,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -2,
+                        "y": -25,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -2,
+                        "y": -24,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -2,
+                        "y": -23,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -2,
+                        "y": -22,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -2,
+                        "y": -21,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -2,
+                        "y": -20,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -2,
+                        "y": -19,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -2,
+                        "y": -18,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -2,
+                        "y": -17,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -2,
+                        "y": -16,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -2,
+                        "y": -15,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -2,
+                        "y": -14,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -2,
+                        "y": -12,
+                        "asset": ""
+                    },
+                    {
+                        "x": -2,
+                        "y": -11,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -2,
+                        "y": -10,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -2,
+                        "y": -9,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -2,
+                        "y": -8,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -2,
+                        "y": -7,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -2,
+                        "y": -6,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
                         "x": -2,
                         "y": -5,
                         "asset": "tilemaps/Rock"
@@ -105,14 +1050,184 @@
                         "asset": ""
                     },
                     {
-                        "x": -1,
-                        "y": -5,
+                        "x": -2,
+                        "y": 2,
+                        "asset": ""
+                    },
+                    {
+                        "x": -2,
+                        "y": 3,
+                        "asset": ""
+                    },
+                    {
+                        "x": -2,
+                        "y": 4,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -2,
+                        "y": 5,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -2,
+                        "y": 6,
                         "asset": "tilemaps/Rock"
                     },
                     {
                         "x": -1,
-                        "y": -4,
+                        "y": -36,
                         "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -1,
+                        "y": -35,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -1,
+                        "y": -34,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -1,
+                        "y": -33,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -1,
+                        "y": -32,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -1,
+                        "y": -31,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -1,
+                        "y": -30,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -1,
+                        "y": -29,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -1,
+                        "y": -28,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -1,
+                        "y": -27,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -1,
+                        "y": -26,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -1,
+                        "y": -25,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -1,
+                        "y": -24,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -1,
+                        "y": -23,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -1,
+                        "y": -22,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -1,
+                        "y": -21,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -1,
+                        "y": -20,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -1,
+                        "y": -19,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -1,
+                        "y": -18,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -1,
+                        "y": -17,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -1,
+                        "y": -16,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -1,
+                        "y": -15,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -1,
+                        "y": -14,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -1,
+                        "y": -11,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -1,
+                        "y": -10,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -1,
+                        "y": -9,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -1,
+                        "y": -8,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -1,
+                        "y": -7,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -1,
+                        "y": -6,
+                        "asset": ""
+                    },
+                    {
+                        "x": -1,
+                        "y": -5,
+                        "asset": ""
+                    },
+                    {
+                        "x": -1,
+                        "y": -4,
+                        "asset": ""
                     },
                     {
                         "x": -1,
@@ -130,14 +1245,179 @@
                         "asset": ""
                     },
                     {
-                        "x": 0,
-                        "y": -5,
+                        "x": -1,
+                        "y": 2,
+                        "asset": ""
+                    },
+                    {
+                        "x": -1,
+                        "y": 3,
+                        "asset": ""
+                    },
+                    {
+                        "x": -1,
+                        "y": 4,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -1,
+                        "y": 5,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -1,
+                        "y": 6,
                         "asset": "tilemaps/Rock"
                     },
                     {
                         "x": 0,
-                        "y": -4,
+                        "y": -36,
                         "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 0,
+                        "y": -35,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 0,
+                        "y": -34,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 0,
+                        "y": -33,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 0,
+                        "y": -32,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 0,
+                        "y": -31,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 0,
+                        "y": -30,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 0,
+                        "y": -29,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 0,
+                        "y": -28,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 0,
+                        "y": -27,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 0,
+                        "y": -26,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 0,
+                        "y": -25,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 0,
+                        "y": -24,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 0,
+                        "y": -23,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 0,
+                        "y": -22,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 0,
+                        "y": -21,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 0,
+                        "y": -20,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 0,
+                        "y": -19,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 0,
+                        "y": -18,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 0,
+                        "y": -17,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 0,
+                        "y": -16,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 0,
+                        "y": -15,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 0,
+                        "y": -14,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 0,
+                        "y": -11,
+                        "asset": ""
+                    },
+                    {
+                        "x": 0,
+                        "y": -10,
+                        "asset": ""
+                    },
+                    {
+                        "x": 0,
+                        "y": -9,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 0,
+                        "y": -8,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 0,
+                        "y": -7,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 0,
+                        "y": -5,
+                        "asset": ""
+                    },
+                    {
+                        "x": 0,
+                        "y": -4,
+                        "asset": ""
                     },
                     {
                         "x": 0,
@@ -155,24 +1435,184 @@
                         "asset": ""
                     },
                     {
+                        "x": 0,
+                        "y": 2,
+                        "asset": ""
+                    },
+                    {
+                        "x": 0,
+                        "y": 3,
+                        "asset": ""
+                    },
+                    {
+                        "x": 0,
+                        "y": 4,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 0,
+                        "y": 5,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 0,
+                        "y": 6,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 1,
+                        "y": -36,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 1,
+                        "y": -35,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 1,
+                        "y": -34,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 1,
+                        "y": -33,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 1,
+                        "y": -32,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 1,
+                        "y": -31,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 1,
+                        "y": -30,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 1,
+                        "y": -29,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 1,
+                        "y": -28,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 1,
+                        "y": -27,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 1,
+                        "y": -26,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 1,
+                        "y": -25,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 1,
+                        "y": -24,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 1,
+                        "y": -23,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 1,
+                        "y": -22,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 1,
+                        "y": -21,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 1,
+                        "y": -20,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 1,
+                        "y": -19,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 1,
+                        "y": -18,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 1,
+                        "y": -17,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 1,
+                        "y": -16,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 1,
+                        "y": -15,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 1,
+                        "y": -14,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 1,
+                        "y": -10,
+                        "asset": ""
+                    },
+                    {
+                        "x": 1,
+                        "y": -9,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 1,
+                        "y": -8,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 1,
+                        "y": -7,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
                         "x": 1,
                         "y": -5,
-                        "asset": "tilemaps/Rock"
+                        "asset": ""
                     },
                     {
                         "x": 1,
                         "y": -4,
-                        "asset": "tilemaps/Rock"
+                        "asset": ""
                     },
                     {
                         "x": 1,
                         "y": -3,
-                        "asset": "tilemaps/Rock"
+                        "asset": ""
                     },
                     {
                         "x": 1,
                         "y": -2,
-                        "asset": "tilemaps/Rock"
+                        "asset": ""
                     },
                     {
                         "x": 1,
@@ -180,48 +1620,2123 @@
                         "asset": ""
                     },
                     {
+                        "x": 1,
+                        "y": 2,
+                        "asset": ""
+                    },
+                    {
+                        "x": 1,
+                        "y": 3,
+                        "asset": ""
+                    },
+                    {
+                        "x": 1,
+                        "y": 4,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 1,
+                        "y": 5,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 1,
+                        "y": 6,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 2,
+                        "y": -36,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 2,
+                        "y": -35,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 2,
+                        "y": -34,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 2,
+                        "y": -33,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 2,
+                        "y": -32,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 2,
+                        "y": -31,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 2,
+                        "y": -30,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 2,
+                        "y": -29,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 2,
+                        "y": -28,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 2,
+                        "y": -27,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 2,
+                        "y": -26,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 2,
+                        "y": -25,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 2,
+                        "y": -24,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 2,
+                        "y": -23,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 2,
+                        "y": -22,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 2,
+                        "y": -21,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 2,
+                        "y": -20,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 2,
+                        "y": -19,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 2,
+                        "y": -18,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 2,
+                        "y": -17,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 2,
+                        "y": -16,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 2,
+                        "y": -15,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 2,
+                        "y": -14,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 2,
+                        "y": -9,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 2,
+                        "y": -8,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 2,
+                        "y": -7,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
                         "x": 2,
                         "y": -5,
-                        "asset": "tilemaps/Rock"
+                        "asset": ""
                     },
                     {
                         "x": 2,
                         "y": -4,
-                        "asset": "tilemaps/Rock"
+                        "asset": ""
                     },
                     {
                         "x": 2,
                         "y": -3,
-                        "asset": "tilemaps/Rock"
+                        "asset": ""
                     },
                     {
                         "x": 2,
                         "y": -2,
-                        "asset": "tilemaps/Rock"
+                        "asset": ""
                     },
                     {
                         "x": 2,
                         "y": -1,
+                        "asset": ""
+                    },
+                    {
+                        "x": 2,
+                        "y": 4,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 2,
+                        "y": 5,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 2,
+                        "y": 6,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 3,
+                        "y": -36,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 3,
+                        "y": -35,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 3,
+                        "y": -34,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 3,
+                        "y": -33,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 3,
+                        "y": -32,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 3,
+                        "y": -31,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 3,
+                        "y": -30,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 3,
+                        "y": -29,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 3,
+                        "y": -28,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 3,
+                        "y": -27,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 3,
+                        "y": -26,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 3,
+                        "y": -25,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 3,
+                        "y": -24,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 3,
+                        "y": -23,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 3,
+                        "y": -22,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 3,
+                        "y": -21,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 3,
+                        "y": -20,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 3,
+                        "y": -19,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 3,
+                        "y": -18,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 3,
+                        "y": -17,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 3,
+                        "y": -16,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 3,
+                        "y": -15,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 3,
+                        "y": -14,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 3,
+                        "y": -11,
+                        "asset": ""
+                    },
+                    {
+                        "x": 3,
+                        "y": -10,
                         "asset": ""
                     },
                     {
                         "x": 3,
                         "y": -5,
-                        "asset": "tilemaps/Rock"
+                        "asset": ""
                     },
                     {
                         "x": 3,
                         "y": -4,
-                        "asset": "tilemaps/Rock"
+                        "asset": ""
                     },
                     {
                         "x": 3,
                         "y": -3,
-                        "asset": "tilemaps/Rock"
+                        "asset": ""
                     },
                     {
                         "x": 3,
                         "y": -2,
+                        "asset": ""
+                    },
+                    {
+                        "x": 3,
+                        "y": 4,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 3,
+                        "y": 5,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 3,
+                        "y": 6,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 4,
+                        "y": -36,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 4,
+                        "y": -35,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 4,
+                        "y": -34,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 4,
+                        "y": -33,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 4,
+                        "y": -32,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 4,
+                        "y": -31,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 4,
+                        "y": -30,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 4,
+                        "y": -29,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 4,
+                        "y": -28,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 4,
+                        "y": -27,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 4,
+                        "y": -26,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 4,
+                        "y": -25,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 4,
+                        "y": -24,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 4,
+                        "y": -23,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 4,
+                        "y": -22,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 4,
+                        "y": -21,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 4,
+                        "y": -20,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 4,
+                        "y": -19,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 4,
+                        "y": -18,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 4,
+                        "y": -17,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 4,
+                        "y": -16,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 4,
+                        "y": -15,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 4,
+                        "y": -14,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 4,
+                        "y": -5,
+                        "asset": ""
+                    },
+                    {
+                        "x": 4,
+                        "y": -2,
+                        "asset": ""
+                    },
+                    {
+                        "x": 4,
+                        "y": -1,
+                        "asset": ""
+                    },
+                    {
+                        "x": 4,
+                        "y": 4,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 4,
+                        "y": 5,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 4,
+                        "y": 6,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 5,
+                        "y": -36,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 5,
+                        "y": -35,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 5,
+                        "y": -34,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 5,
+                        "y": -33,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 5,
+                        "y": -32,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 5,
+                        "y": -31,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 5,
+                        "y": -30,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 5,
+                        "y": -29,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 5,
+                        "y": -28,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 5,
+                        "y": -27,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 5,
+                        "y": -26,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 5,
+                        "y": -25,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 5,
+                        "y": -24,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 5,
+                        "y": -23,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 5,
+                        "y": -22,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 5,
+                        "y": -21,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 5,
+                        "y": -20,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 5,
+                        "y": -19,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 5,
+                        "y": -18,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 5,
+                        "y": -17,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 5,
+                        "y": -16,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 5,
+                        "y": -15,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 5,
+                        "y": -14,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 5,
+                        "y": -3,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 5,
+                        "y": -2,
+                        "asset": ""
+                    },
+                    {
+                        "x": 5,
+                        "y": -1,
+                        "asset": ""
+                    },
+                    {
+                        "x": 5,
+                        "y": 0,
+                        "asset": ""
+                    },
+                    {
+                        "x": 5,
+                        "y": 1,
+                        "asset": ""
+                    },
+                    {
+                        "x": 5,
+                        "y": 2,
+                        "asset": ""
+                    },
+                    {
+                        "x": 5,
+                        "y": 3,
+                        "asset": ""
+                    },
+                    {
+                        "x": 5,
+                        "y": 4,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 5,
+                        "y": 5,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 5,
+                        "y": 6,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 6,
+                        "y": -36,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 6,
+                        "y": -35,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 6,
+                        "y": -34,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 6,
+                        "y": -33,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 6,
+                        "y": -32,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 6,
+                        "y": -31,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 6,
+                        "y": -30,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 6,
+                        "y": -29,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 6,
+                        "y": -28,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 6,
+                        "y": -27,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 6,
+                        "y": -26,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 6,
+                        "y": -25,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 6,
+                        "y": -24,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 6,
+                        "y": -23,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 6,
+                        "y": -22,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 6,
+                        "y": -21,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 6,
+                        "y": -20,
+                        "asset": ""
+                    },
+                    {
+                        "x": 6,
+                        "y": -19,
+                        "asset": ""
+                    },
+                    {
+                        "x": 6,
+                        "y": -18,
+                        "asset": ""
+                    },
+                    {
+                        "x": 6,
+                        "y": -17,
+                        "asset": ""
+                    },
+                    {
+                        "x": 6,
+                        "y": -16,
+                        "asset": ""
+                    },
+                    {
+                        "x": 6,
+                        "y": -15,
+                        "asset": ""
+                    },
+                    {
+                        "x": 6,
+                        "y": -14,
+                        "asset": ""
+                    },
+                    {
+                        "x": 6,
+                        "y": -7,
+                        "asset": ""
+                    },
+                    {
+                        "x": 6,
+                        "y": -6,
+                        "asset": ""
+                    },
+                    {
+                        "x": 6,
+                        "y": -3,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 6,
+                        "y": 4,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 6,
+                        "y": 5,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 6,
+                        "y": 6,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 7,
+                        "y": -36,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 7,
+                        "y": -35,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 7,
+                        "y": -34,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 7,
+                        "y": -33,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 7,
+                        "y": -32,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 7,
+                        "y": -31,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 7,
+                        "y": -30,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 7,
+                        "y": -29,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 7,
+                        "y": -28,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 7,
+                        "y": -27,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 7,
+                        "y": -26,
+                        "asset": ""
+                    },
+                    {
+                        "x": 7,
+                        "y": -25,
+                        "asset": ""
+                    },
+                    {
+                        "x": 7,
+                        "y": -24,
+                        "asset": ""
+                    },
+                    {
+                        "x": 7,
+                        "y": -23,
+                        "asset": ""
+                    },
+                    {
+                        "x": 7,
+                        "y": -22,
+                        "asset": ""
+                    },
+                    {
+                        "x": 7,
+                        "y": -21,
+                        "asset": ""
+                    },
+                    {
+                        "x": 7,
+                        "y": -20,
+                        "asset": ""
+                    },
+                    {
+                        "x": 7,
+                        "y": -16,
+                        "asset": ""
+                    },
+                    {
+                        "x": 7,
+                        "y": -15,
+                        "asset": ""
+                    },
+                    {
+                        "x": 7,
+                        "y": -14,
+                        "asset": ""
+                    },
+                    {
+                        "x": 7,
+                        "y": -9,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 7,
+                        "y": -8,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 7,
+                        "y": -7,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 7,
+                        "y": -6,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 7,
+                        "y": -5,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 7,
+                        "y": -4,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 7,
+                        "y": -3,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 7,
+                        "y": -2,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 7,
+                        "y": -1,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 7,
+                        "y": 0,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 7,
+                        "y": 1,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 7,
+                        "y": 2,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 7,
+                        "y": 3,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 7,
+                        "y": 4,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 7,
+                        "y": 5,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 7,
+                        "y": 6,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 8,
+                        "y": -36,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 8,
+                        "y": -35,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 8,
+                        "y": -34,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 8,
+                        "y": -33,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 8,
+                        "y": -32,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 8,
+                        "y": -31,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 8,
+                        "y": -9,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 8,
+                        "y": -8,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 8,
+                        "y": -7,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 8,
+                        "y": -6,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 8,
+                        "y": -5,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 8,
+                        "y": -4,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 8,
+                        "y": -3,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 8,
+                        "y": -2,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 8,
+                        "y": -1,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 8,
+                        "y": 0,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 8,
+                        "y": 1,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 8,
+                        "y": 2,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 8,
+                        "y": 3,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 8,
+                        "y": 4,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 8,
+                        "y": 5,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 8,
+                        "y": 6,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 9,
+                        "y": -36,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 9,
+                        "y": -35,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 9,
+                        "y": -34,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 9,
+                        "y": -33,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 9,
+                        "y": -17,
+                        "asset": ""
+                    },
+                    {
+                        "x": 9,
+                        "y": -9,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 9,
+                        "y": -8,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 9,
+                        "y": -7,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 9,
+                        "y": -6,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 9,
+                        "y": -5,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 9,
+                        "y": -4,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 9,
+                        "y": -3,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 9,
+                        "y": -2,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 9,
+                        "y": -1,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 9,
+                        "y": 0,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 9,
+                        "y": 1,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 9,
+                        "y": 2,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 9,
+                        "y": 3,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 9,
+                        "y": 4,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 9,
+                        "y": 5,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 9,
+                        "y": 6,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 10,
+                        "y": -36,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 10,
+                        "y": -35,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 10,
+                        "y": -34,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 10,
+                        "y": -33,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 10,
+                        "y": -9,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 10,
+                        "y": -8,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 10,
+                        "y": -7,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 10,
+                        "y": -6,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 10,
+                        "y": -5,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 10,
+                        "y": -4,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 10,
+                        "y": -3,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 10,
+                        "y": -2,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 10,
+                        "y": -1,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 10,
+                        "y": 0,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 10,
+                        "y": 1,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 10,
+                        "y": 2,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 10,
+                        "y": 3,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 10,
+                        "y": 4,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 10,
+                        "y": 5,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 10,
+                        "y": 6,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 11,
+                        "y": -36,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 11,
+                        "y": -35,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 11,
+                        "y": -15,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 11,
+                        "y": -14,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 11,
+                        "y": -13,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 11,
+                        "y": -12,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 11,
+                        "y": -11,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 11,
+                        "y": -10,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 11,
+                        "y": -9,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 11,
+                        "y": -8,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 11,
+                        "y": -7,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 11,
+                        "y": -6,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 11,
+                        "y": -5,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 11,
+                        "y": -4,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 11,
+                        "y": -3,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 11,
+                        "y": -2,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 11,
+                        "y": -1,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 11,
+                        "y": 0,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 11,
+                        "y": 1,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 11,
+                        "y": 2,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 11,
+                        "y": 3,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 11,
+                        "y": 4,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 11,
+                        "y": 5,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 11,
+                        "y": 6,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 12,
+                        "y": -36,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 12,
+                        "y": -35,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 12,
+                        "y": -15,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 12,
+                        "y": -14,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 12,
+                        "y": -13,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 12,
+                        "y": -12,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 12,
+                        "y": -11,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 13,
+                        "y": -36,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 13,
+                        "y": -35,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 13,
+                        "y": -34,
+                        "asset": ""
+                    },
+                    {
+                        "x": 13,
+                        "y": -33,
+                        "asset": ""
+                    },
+                    {
+                        "x": 13,
+                        "y": -32,
+                        "asset": ""
+                    },
+                    {
+                        "x": 13,
+                        "y": -31,
+                        "asset": ""
+                    },
+                    {
+                        "x": 13,
+                        "y": -27,
+                        "asset": ""
+                    },
+                    {
+                        "x": 13,
+                        "y": -26,
+                        "asset": ""
+                    },
+                    {
+                        "x": 13,
+                        "y": -25,
+                        "asset": ""
+                    },
+                    {
+                        "x": 13,
+                        "y": -24,
+                        "asset": ""
+                    },
+                    {
+                        "x": 13,
+                        "y": -15,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 13,
+                        "y": -14,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 13,
+                        "y": -13,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 13,
+                        "y": -12,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 13,
+                        "y": -11,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 14,
+                        "y": -36,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 14,
+                        "y": -35,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 14,
+                        "y": -34,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 14,
+                        "y": -33,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 14,
+                        "y": -32,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 14,
+                        "y": -31,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 14,
+                        "y": -30,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 14,
+                        "y": -29,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 14,
+                        "y": -28,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 14,
+                        "y": -27,
+                        "asset": ""
+                    },
+                    {
+                        "x": 14,
+                        "y": -26,
+                        "asset": ""
+                    },
+                    {
+                        "x": 14,
+                        "y": -25,
+                        "asset": ""
+                    },
+                    {
+                        "x": 14,
+                        "y": -23,
+                        "asset": ""
+                    },
+                    {
+                        "x": 14,
+                        "y": -22,
+                        "asset": ""
+                    },
+                    {
+                        "x": 14,
+                        "y": -15,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 14,
+                        "y": -14,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 14,
+                        "y": -13,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 14,
+                        "y": -12,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 14,
+                        "y": -11,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 15,
+                        "y": -30,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 15,
+                        "y": -29,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 15,
+                        "y": -28,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 15,
+                        "y": -27,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 15,
+                        "y": -26,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 15,
+                        "y": -25,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 15,
+                        "y": -24,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 15,
+                        "y": -23,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 15,
+                        "y": -22,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 15,
+                        "y": -15,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 15,
+                        "y": -14,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 15,
+                        "y": -13,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 16,
+                        "y": -30,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 16,
+                        "y": -29,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 16,
+                        "y": -28,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 16,
+                        "y": -27,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 16,
+                        "y": -26,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 16,
+                        "y": -25,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 16,
+                        "y": -24,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 16,
+                        "y": -23,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 16,
+                        "y": -22,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 16,
+                        "y": -16,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 16,
+                        "y": -15,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 16,
+                        "y": -14,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 17,
+                        "y": -27,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 17,
+                        "y": -26,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 17,
+                        "y": -25,
+                        "asset": ""
+                    },
+                    {
+                        "x": 17,
+                        "y": -16,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 17,
+                        "y": -15,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 18,
+                        "y": -16,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 18,
+                        "y": -15,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 19,
+                        "y": -16,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 19,
+                        "y": -15,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 20,
+                        "y": -16,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 20,
+                        "y": -15,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 21,
+                        "y": -17,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 21,
+                        "y": -16,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 21,
+                        "y": -15,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 22,
+                        "y": -32,
+                        "asset": ""
+                    },
+                    {
+                        "x": 22,
+                        "y": -31,
+                        "asset": ""
+                    },
+                    {
+                        "x": 22,
+                        "y": -30,
+                        "asset": ""
+                    },
+                    {
+                        "x": 22,
+                        "y": -26,
+                        "asset": ""
+                    },
+                    {
+                        "x": 22,
+                        "y": -22,
+                        "asset": ""
+                    },
+                    {
+                        "x": 22,
+                        "y": -21,
+                        "asset": ""
+                    },
+                    {
+                        "x": 22,
+                        "y": -20,
+                        "asset": ""
+                    },
+                    {
+                        "x": 22,
+                        "y": -17,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 22,
+                        "y": -16,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 22,
+                        "y": -15,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 22,
+                        "y": -14,
+                        "asset": ""
+                    },
+                    {
+                        "x": 23,
+                        "y": -33,
+                        "asset": ""
+                    },
+                    {
+                        "x": 23,
+                        "y": -32,
+                        "asset": ""
+                    },
+                    {
+                        "x": 23,
+                        "y": -29,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 23,
+                        "y": -28,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 23,
+                        "y": -27,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 23,
+                        "y": -26,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 23,
+                        "y": -25,
+                        "asset": ""
+                    },
+                    {
+                        "x": 23,
+                        "y": -24,
+                        "asset": ""
+                    },
+                    {
+                        "x": 23,
+                        "y": -23,
+                        "asset": ""
+                    },
+                    {
+                        "x": 23,
+                        "y": -22,
+                        "asset": ""
+                    },
+                    {
+                        "x": 23,
+                        "y": -21,
+                        "asset": ""
+                    },
+                    {
+                        "x": 23,
+                        "y": -20,
+                        "asset": ""
+                    },
+                    {
+                        "x": 23,
+                        "y": -19,
+                        "asset": ""
+                    },
+                    {
+                        "x": 23,
+                        "y": -18,
+                        "asset": ""
+                    },
+                    {
+                        "x": 23,
+                        "y": -17,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 23,
+                        "y": -16,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 23,
+                        "y": -15,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 23,
+                        "y": -14,
+                        "asset": ""
+                    },
+                    {
+                        "x": 24,
+                        "y": -29,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 24,
+                        "y": -28,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 24,
+                        "y": -27,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 24,
+                        "y": -26,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 24,
+                        "y": -25,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 24,
+                        "y": -24,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 24,
+                        "y": -23,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 24,
+                        "y": -22,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 24,
+                        "y": -21,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 24,
+                        "y": -20,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 24,
+                        "y": -19,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 24,
+                        "y": -18,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 24,
+                        "y": -17,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 24,
+                        "y": -16,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 24,
+                        "y": -15,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 24,
+                        "y": -14,
+                        "asset": ""
+                    },
+                    {
+                        "x": 25,
+                        "y": -29,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 25,
+                        "y": -28,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 25,
+                        "y": -27,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 25,
+                        "y": -26,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 25,
+                        "y": -25,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 25,
+                        "y": -24,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 25,
+                        "y": -23,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 25,
+                        "y": -22,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 25,
+                        "y": -21,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 25,
+                        "y": -20,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 25,
+                        "y": -19,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 25,
+                        "y": -18,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 25,
+                        "y": -17,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 25,
+                        "y": -16,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 25,
+                        "y": -15,
                         "asset": "tilemaps/Rock"
                     }
                 ]
@@ -236,12 +3751,12 @@
                 "rotation": 0.0,
                 "position": {
                     "x": 0.0,
-                    "y": -1.1638097763061524,
-                    "z": 0.0
+                    "y": 34.07373809814453,
+                    "z": 1.0
                 },
                 "size": {
-                    "x": 125.0,
-                    "y": 72.0
+                    "x": 127.49515533447266,
+                    "y": 73.43721771240235
                 }
             },
             "rigidbody": {
@@ -262,7 +3777,7 @@
                 "helperType": 2,
                 "position": {
                     "x": 0.0,
-                    "y": -1.5138098001480103,
+                    "y": 33.72373962402344,
                     "z": 0.0
                 },
                 "offset": {
@@ -271,13 +3786,13 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": -15.399999618530274,
-                    "y": -32.01388931274414,
+                    "x": -10.850000381469727,
+                    "y": 3.2236595153808595,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 15.399999618530274,
-                    "y": 28.986270904541017,
+                    "x": 10.850000381469727,
+                    "y": 64.22381591796875,
                     "z": 0.0
                 },
                 "rotation": 0.0

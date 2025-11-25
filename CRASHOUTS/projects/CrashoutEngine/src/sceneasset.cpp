@@ -348,7 +348,7 @@ namespace CrashoutsEngine {
 
                     if (rigidBodyValues.HasMember("isTrigger") && rigidBodyValues["isTrigger"].IsBool()) {
                         bool isTrigger{ rigidBodyValues["isTrigger"].GetBool() };
-                        if (isTrigger) rigidBodyComp.getFlags().flip(Physics::SIMULATE_DYNAMICS);
+                        if (isTrigger) rigidBodyComp.getFlags().set(Physics::SIMULATE_DYNAMICS);
                     }
                 }
 

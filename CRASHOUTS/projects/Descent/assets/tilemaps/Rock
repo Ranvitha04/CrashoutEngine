@@ -22,12 +22,12 @@
             "ruleBitMap": 8
         },
         {
-            "texAssetName": "spritesheet\\Rock\\Rock_11.png",
+            "texAssetName": "spritesheet\\Rock\\Rock_23.png",
             "colliderType": "ColliderType::AABB",
-            "ruleBitMap": 3
+            "ruleBitMap": 11
         },
         {
-            "texAssetName": "spritesheet\\Rock\\Rock_13.png",
+            "texAssetName": "spritesheet\\Rock\\Rock_24.png",
             "colliderType": "ColliderType::AABB",
             "ruleBitMap": 9
         },
@@ -55,6 +55,11 @@
             "texAssetName": "spritesheet\\Rock\\Rock_13.png",
             "colliderType": "ColliderType::AABB",
             "ruleBitMap": 13
+        },
+        {
+            "texAssetName": "spritesheet\\Rock\\Rock_22.png",
+            "colliderType": "ColliderType::AABB",
+            "ruleBitMap": 3
         }
     ]
 }
