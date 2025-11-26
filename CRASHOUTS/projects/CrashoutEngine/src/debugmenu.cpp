@@ -51,7 +51,7 @@ for Crashout Engine.
 #include "ppmanager.h"
 #include "keyframe.h"
 #include "spritesheet.h"
-
+#include "spritecomponent.h"
 #include "engine.h"
 #include <filesystem>
 #include <iostream>
@@ -355,6 +355,109 @@ namespace UI { // --------------------------------------------------------------
         };
 
         static Selection gSel;
+        
+        static bool gRecordMode = false;
+
+        
+        static float GetCurrentPropValue(CrashoutsEngine::ECS& ecs,
+            CrashoutsEngine::Entity e,
+            KFProperty p)
+        {
+            using namespace CrashoutsEngine;
+
+            if (p == KFProperty::SpriteIndex)
+            {
+                if (auto* anim = ecs.GetComponent<Component::SpriteAnimComponent>(e))
+                    return static_cast<float>(anim->frameIndex);
+                return 0.0f;
+            }
+
+           
+            auto* t = ecs.GetComponent<Component::TransformComponent>(e);
+            if (!t) return 0.0f;
+
+            switch (p)
+            {
+            case KFProperty::PosX:   return t->position.x;
+            case KFProperty::PosY:   return t->position.y;
+            case KFProperty::PosZ:   return t->position.z;
+            case KFProperty::RotZ:   return t->rotation;
+            case KFProperty::ScaleX: return t->size.x;
+            case KFProperty::ScaleY: return t->size.y;
+            default:                 return 0.0f;
+            }
+        }
+
+       
+        static void AutoKeyTransform(CrashoutsEngine::ECS& ecs,
+            CrashoutsEngine::Entity e)
+        {
+            using namespace CrashoutsEngine;
+
+            if (!gRecordMode) return;  
+
+            auto* anim = ecs.GetComponent<KeyframeAnimatorComponent>(e);
+            if (!anim) return;
+            if (anim->current.empty()) return;
+
+            auto it = anim->clips.find(anim->current);
+            if (it == anim->clips.end()) return;
+
+            AnimationClip& clip = it->second;
+
+            float t = anim->t;
+            float len = clip.Length();
+            if (len <= 0.0f) return;
+            if (t < 0.0f) t = 0.0f;
+            if (t > len)  t = len;
+
+            const float eps = 1e-3f;
+
+            for (KFBinding& b : clip.bindings)
+            {
+               
+                bool supported =
+                    b.property == KFProperty::PosX ||
+                    b.property == KFProperty::PosY ||
+                    b.property == KFProperty::PosZ ||
+                    b.property == KFProperty::RotZ ||
+                    b.property == KFProperty::ScaleX ||
+                    b.property == KFProperty::ScaleY ||
+                    b.property == KFProperty::SpriteIndex;
+
+                if (!supported) continue;
+
+                float v = GetCurrentPropValue(ecs, e, b.property);
+
+                
+                int existing = -1;
+                for (int i = 0; i < (int)b.curve.keys.size(); ++i)
+                {
+                    if (std::fabs(b.curve.keys[i].time - t) <= eps)
+                    {
+                        existing = i;
+                        break;
+                    }
+                }
+
+                if (existing >= 0)
+                {
+                   
+                    b.curve.keys[existing].value = v;
+                }
+                else
+                {
+                   
+                    KFKey k{};
+                    k.time = t;
+                    k.value = v;
+                    k.inTan = 0.0f;
+                    k.outTan = 0.0f;
+                    k.interp = KFInterp::Linear;
+                    b.curve.Add(k);   
+                }
+            }
+        }
 
         static const char* KFPropertyName(KFProperty p)
         {
@@ -630,6 +733,15 @@ namespace UI { // --------------------------------------------------------------
         }
 
         ImGui::Dummy(ImVec2(0.f, rows * rowH + 4.f));
+        ImGui::Separator();
+        // Unity-style Record toggle
+        ImGui::Checkbox("Record", &KeyframeUnityEditor::gRecordMode);
+        ImGui::SameLine();
+        ImGui::TextDisabled(
+            KeyframeUnityEditor::gRecordMode
+            ? "Recording: moving with gizmo will auto-key Transform."
+            : "Manual mode: move object then edit keys in the list."
+        );
         ImGui::Separator();
 
         // --- Keyframe inspector ---
@@ -2448,6 +2560,7 @@ namespace UI { // --------------------------------------------------------------
                                 s.rotation = t->rotation;
                                 s.scale = t->size;
                                 endStates.push_back(s);
+                                KeyframeUnityEditor::AutoKeyTransform(ecs, e);
                             }
                         }
 

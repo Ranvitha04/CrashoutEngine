@@ -10,7 +10,8 @@ namespace CrashoutsEngine
         bool isMoving;
         bool wasMoving;
         bool jump;
-
+        private Animator animator;
+        private string currentAnimState = "";
         /*SAMPLE TRIGGERS*/
         public void OnTriggerEnter(uint otherEntity) {
             //Console.WriteLine("Entered Inside Me BOUNCE");
@@ -37,7 +38,11 @@ namespace CrashoutsEngine
             //Entity.Add<TransformComponent>();
             // CollisionEvents.RegisterTriggerExit(Entity.ID, OnTriggerExit);
             // CollisionEvents.RegisterTriggerStay(Entity.ID, OnTriggerStay);
-
+            animator = Entity.GetComponent<Animator>();
+            if (animator == null)
+            {
+                Console.WriteLine("[C#] PlayerController: Animator component MISSING on this entity!");
+            }
             //AudioManager.GetInstance().Play("ambient");
         }
 
@@ -62,6 +67,30 @@ namespace CrashoutsEngine
                 //Console.WriteLine("[C#] Player stopped moving -> Stop footsteps_loop");
                 AudioManager.GetInstance().Stop("footsteps");
             }
+            // ---- ANIMATION SYNC ----
+            if (animator != null)
+            {
+                // Flip sprite based on direction
+                if (moveLeft && !moveRight)
+                    animator.SetFlip(true);
+                else if (moveRight && !moveLeft)
+                    animator.SetFlip(false);
+
+                // These names come from spriteAnimation.cpp:
+                // "idle_normal" and "walk_normal"
+                string desiredState = isMoving ? "walk_normal" : "idle_normal";
+
+                if (desiredState != currentAnimState)
+                {
+                    animator.Play(desiredState);
+                    currentAnimState = desiredState;
+                    Console.WriteLine("[C#] PlayerController animation -> " + desiredState);
+                }
+            }
+            // store last movement flag for next frame
+            wasMoving = isMoving;
+        
+
             //if (Input.IsKeyPressed(Key.A))
             //{
             //    //Console.WriteLine($"[DEBUG] A pressed, rb ID = {rb.EntityID}, mass = {rb.GetMass()}");

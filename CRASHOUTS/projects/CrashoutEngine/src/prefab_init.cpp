@@ -288,7 +288,8 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path)
                 const auto& sJ = prefabs["script"];
 
              
-                if (sJ.HasMember("className") && sJ["className"].IsString()) {
+                if (sJ.HasMember("className") && sJ["className"].IsString() &&
+                    !(sJ.HasMember("scripts") && sJ["scripts"].IsArray())) {
                     scriptClassNames.emplace_back(sJ["className"].GetString());
                 }
 
@@ -464,6 +465,7 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path)
                 {
                     auto aabb = MakeCenteredAABB3(transform.position, width, height);
                     e.AddComponent<ColliderComponent>(entitty, ColliderComponent{ std::move(aabb) });
+
                 }
 
                 // Text

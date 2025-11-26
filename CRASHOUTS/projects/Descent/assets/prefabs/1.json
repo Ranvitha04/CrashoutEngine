@@ -1,0 +1,104 @@
+{
+    "prefabs": [
+        {
+            "type": "Box",
+            "name": "1",
+            "transform": {
+                "position": {
+                    "x": 47.626255,
+                    "y": 21.514732,
+                    "z": 0.0
+                },
+                "rotation": -180.699996,
+                "size": {
+                    "x": -52.099998,
+                    "y": 10.0
+                }
+            },
+            "shape": {
+                "type": 1,
+                "kind": "Line",
+                "color": {
+                    "r": 0.254141,
+                    "g": 0.108116,
+                    "b": 0.108116,
+                    "a": 1.0
+                },
+                "enableTexture": true,
+                "textureName": "Concept"
+            },
+            "rigidbody": {
+                "mass": 50.0,
+                "restitution": 50.0
+            },
+            "text": {
+                "font": "Exo2-Regular",
+                "text": "TEST",
+                "scale": 23.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "centered": true,
+                "isWorldSpace": true
+            },
+            "script": {
+                "entityID": 37,
+                "className": "PressurePlate",
+                "scripts": [
+                    {
+                        "className": "PressurePlate"
+                    },
+                    {
+                        "className": "PressurePlate"
+                    },
+                    {
+                        "className": "PressurePlate"
+                    },
+                    {
+                        "className": "PressurePlate"
+                    },
+                    {
+                        "className": "PressurePlate"
+                    },
+                    {
+                        "className": "PressurePlate"
+                    },
+                    {
+                        "className": "PressurePlate"
+                    },
+                    {
+                        "className": "PressurePlate"
+                    },
+                    {
+                        "className": "PressurePlate"
+                    }
+                ]
+            },
+            "audio": {
+                "eventPath": "footsteps 1.wav",
+                "volume": 10.0,
+                "pitch": 10.0,
+                "spatial3D": false,
+                "looping": false
+            },
+            "postprocessing": {
+                "active": true,
+                "brightness": 0.439999,
+                "contrast": 0.54,
+                "saturation": 0.0
+            },
+            "tilemap": {
+                "tileSize": 37,
+                "activeAsset": "",
+                "tiles": []
+            }
+        }
+    ]
+}
