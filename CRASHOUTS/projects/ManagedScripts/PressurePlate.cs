@@ -11,6 +11,14 @@ namespace CrashoutsEngine
         const float decrease = 5.0f;
         TransformComponent transform;
 
+        void MoveWallsOnSuccess()
+        {
+            // Find the wall (SORRY THIS IS HARDCODED, ALL WALLS MUST BE NAMED "wall_{pressure plate name}"
+            // Example, this pressure plate is named "plate_1", the respective wall is named "wall_plate_1"
+            string wallName = "wall_" + Entity.GetComponent<NameComponent>().ToString();
+            Entity wall = Entity.Find(wallName);
+        }
+
         public void OnTriggerEnter(uint otherEntityID)
         {
             Entity other = new Entity(otherEntityID);
@@ -23,6 +31,8 @@ namespace CrashoutsEngine
                 AudioManager.GetInstance().Play("pressureplate");
                 Debug.Log("Played Sound");
                 stepOn = true;
+
+                MoveWallsOnSuccess();
             }
         }
 
