@@ -26,10 +26,11 @@ using namespace Component;
  @param events       Optional pointer to a collision event list. If null, returns false.
  @return             True if the entity is part of at least one event; false otherwise.
 */
-[[maybe_unused]] static bool IsColliding(Entity e, const std::vector<Collision::CollisionEvent>* events) {
-    if (!events) return false;
-    for (const auto& ev : *events) {
-        if (ev.entity1 == e || ev.entity2 == e) return true;
+[[maybe_unused]] static bool IsColliding(Entity e, const Collision::ContactCollection& events) {
+
+    if (!events.size()) return false;
+    for (Collision::ContactInformation const& ev : events) {
+        if (ev.contacts.first == e || ev.contacts.second == e) return true;
     }
     return false;
 }
@@ -133,12 +134,15 @@ namespace CollisionGizmos {
         const CEColor ok(0.15f, 0.8f, 0.55f);    // non-colliding tint
         const CEColor hit(1.0f, 0.3f, 0.3f);     // colliding tint
 
+        Collision::CollisionHandler& colHandler{ Collision::CollisionHandler::GetInstance() };
+
         for (auto e : collArr.indexToEntity) {
             Component::ColliderComponent const& pColliderComp = *ecs.GetComponent<Component::ColliderComponent>(e);
 
+
             if (!pColliderComp.collider) continue;
 
-            const CEColor color = IsColliding(e, events) ? hit : ok;
+            const CEColor color = IsColliding(e, colHandler.lastFrameCollision) ? hit : ok;
 
             if (pColliderComp.collider->type == Collision::ColliderType::SPHERE) {
                 Collision::Sphere const& sphereTemp = dynamic_cast<Collision::Sphere const&>(*pColliderComp.collider);

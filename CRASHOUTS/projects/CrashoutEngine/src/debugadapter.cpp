@@ -434,6 +434,19 @@ namespace {
 				if (ImGui::DragFloat("Inertia", &inertia)) {
 					rb->setInertia(inertia);
 				}
+
+				/*Static Friction*/
+				f32 staticFric{ rb->staticFriction };
+				if (ImGui::DragFloat("Static Friction", &staticFric)) {
+					rb->staticFriction = staticFric;
+				}
+
+				/*Dynamic Friction*/
+				f32 dynamicFric{ rb->dynamicFriction };
+				if (ImGui::DragFloat("Dynamic Friction", &dynamicFric)) {
+					rb->dynamicFriction = dynamicFric;
+				}
+
 				if (ecs.HasComponent<Component::ColliderComponent>(e)) {
 					Component::ColliderComponent* collider{ ecs.GetComponent<Component::ColliderComponent>(e) };
 					if (ImGui::Button("Calculate Inertia##rb")) rb->setInertia(collider->collider->calculateInertia(rb->getMass())); /*For rotational stuff*/

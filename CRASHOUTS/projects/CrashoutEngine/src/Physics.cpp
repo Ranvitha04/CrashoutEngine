@@ -248,7 +248,7 @@ namespace Physics {
 		//double dt = sOverrideDt ? sDebugDt : deltaTime;
 
 		f32 newDelta{ static_cast<float>(deltaTime) };
-		rigidBodyComp->updatePhysicsWithRotation(deltaTime); /*UPDATE CURRENT VELOCITY AND RESET NET FORCE*/
+		rigidBodyComp->updatePhysics(deltaTime); /*UPDATE CURRENT VELOCITY AND RESET NET FORCE*/
 		CEVec3 currentVel{ rigidBodyComp->getVelocity() };
 		transformComp->position += currentVel * newDelta;
 
@@ -478,7 +478,7 @@ namespace Physics {
 
 				if (!rigidBody1->getFlags().test(SIMULATE_DYNAMICS) || !rigidBody2->getFlags().test(SIMULATE_DYNAMICS)) continue;
 				PositionCorrection(evnt, globalECS);
-				applyRotationalImpulse(evnt, globalECS);
+				applyImpulse(evnt, globalECS);
 			}
 
 			/*PHYSICS SIM, UPDATE POSITION*/
@@ -500,9 +500,9 @@ namespace Physics {
 					if (globalECS.HasComponent<Component::ColliderComponent>(entity)) {
 						Component::ColliderComponent* c{ globalECS.GetComponent<Component::ColliderComponent>(entity) };
 
-						if (rigidBody->getMass() && rigidBody->inertia) {
+						/*if (rigidBody->getMass() && rigidBody->inertia) {
 							c->collider->updateRotation(rigidBody->orientation);
-						}
+						}*/
 						c->collider->updateCollider(transform->position);
 					}
 

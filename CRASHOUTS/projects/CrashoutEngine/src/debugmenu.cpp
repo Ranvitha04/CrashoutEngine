@@ -2708,10 +2708,9 @@ namespace UI { // --------------------------------------------------------------
             if(engineState == EngineState::STOP) thicknessRatio = CrashoutsEngine::RenderCamera::engineCamera.GetZoom();
             else thicknessRatio = CrashoutsEngine::RenderCamera::gameCamera.GetZoom();
 
-            CollisionGizmos::DrawAllColliders(ecs, &collisions, ui.overlayThickness / thicknessRatio);
-            if (ui.drawQuadTree) {
-                Collision::CollisionHandler::GetInstance().quadTree.Draw();
-            }
+            if(ui.drawAllColliders) CollisionGizmos::DrawAllColliders(ecs, &collisions, ui.overlayThickness / thicknessRatio);
+            if (ui.drawQuadTree) Collision::CollisionHandler::GetInstance().quadTree.Draw();
+            
             //CollisionGizmos::DrawContactsAndNormals(collisions, 0.25f, ui.overlayThickness); //Removed for now, will need to calculate the collision pair for normals properly
         }
         collisions = std::vector<Collision::CollisionEvent>{};
