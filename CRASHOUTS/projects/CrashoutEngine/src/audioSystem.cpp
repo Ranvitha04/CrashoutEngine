@@ -962,4 +962,18 @@ namespace CrashoutsEngine::Audio
         return true;
     }
 
+    void AudioSystem::setPaused(bool paused)
+    {
+        if (!mCore)
+            return;
+
+        FMOD::ChannelGroup* master = nullptr;
+        if (mCore->getMasterChannelGroup(&master) != FMOD_OK || !master)
+            return;
+
+        // Pause or resume all audio
+        master->setPaused(paused);
+    }
+
+
 } // namespace CrashoutsEngine::Audio

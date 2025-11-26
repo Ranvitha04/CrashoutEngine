@@ -686,15 +686,20 @@ namespace Collision {
 
 		AABBRect bounds{pos - newExtents, pos + newExtents};*/
 
-		quadTree.Clear();
-
 		/*BROADPHASE*/
-		for (CrashoutsEngine::Entity& entity1 : globalEntities) {
+		// 1. Get ALL entities with Colliders (not just RigidBodies)
+		std::vector<CrashoutsEngine::Entity> colliderEntities =
+			globalECS.GetComponentArray<Component::ColliderComponent>().indexToEntity;
+
+		// 2. Insert into QuadTree
+		quadTree.Clear();
+		for (CrashoutsEngine::Entity& entity1 : colliderEntities) { // Changed from globalEntities
+			if (!globalECS.HasComponent<Component::TransformComponent>(entity1)) continue;
 			quadTree.Insert(entity1);
 		}
 
 		/*DETECT COLLISION AND UPDATE COLLISION EVENTS MEMBER*/
-		for (CrashoutsEngine::Entity& entity1 : globalEntities) {
+		for (CrashoutsEngine::Entity& entity1 : colliderEntities) {
 
 			if (!globalECS.HasComponent<Component::TransformComponent>(entity1)) continue;
 

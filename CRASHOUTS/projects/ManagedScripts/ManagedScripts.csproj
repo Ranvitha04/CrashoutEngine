@@ -32,8 +32,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="**\*.cs" Exclude="obj\**;bin\**" />
-    <Compile Include="Debug.cs" />
-    <Compile Include="LayerComponent.cs" />
   </ItemGroup>
   <!-- AFTER the timestamped DLL is built -->
   <Target Name="CopyTimestampToStable" AfterTargets="Build">
