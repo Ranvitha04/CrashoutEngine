@@ -11,12 +11,26 @@ namespace CrashoutsEngine
         const float decrease = 5.0f;
         TransformComponent transform;
 
-        void MoveWallsOnSuccess()
+        public string wallName = "wall";
+        private MovingWall _targetScript;
+
+        void GetWall()
         {
             // Find the wall (SORRY THIS IS HARDCODED, ALL WALLS MUST BE NAMED "wall_{pressure plate name}"
             // Example, this pressure plate is named "plate_1", the respective wall is named "wall_plate_1"
-            string wallName = "wall_" + Entity.GetComponent<NameComponent>().ToString();
-            Entity wall = Entity.Find(wallName);
+            //wallName = "wall_" + Entity.GetComponent<NameComponent>().ToString();
+            Entity wallEnt = Entity.Find(wallName);
+
+            //// Failsafe doesn't seem to work, WILL CRASH IF NAMED WRONGLY!!
+            if (wallEnt != null)
+            {
+                // 2. Get the C# Script instance from it (The magic!)
+                _targetScript = wallEnt.GetScript<MovingWall>();
+            }
+            else
+            {
+                Console.WriteLine($"[Error] Plate could not find entity named: {wallName}");
+            }
         }
 
         public void OnTriggerEnter(uint otherEntityID)
@@ -32,7 +46,7 @@ namespace CrashoutsEngine
                 Debug.Log("Played Sound");
                 stepOn = true;
 
-                MoveWallsOnSuccess();
+                if(Entity.Find(wallName) != null) _targetScript.PlatesActive++;
             }
         }
 
@@ -48,6 +62,8 @@ namespace CrashoutsEngine
 
         public override void Start()
         {
+            GetWall();
+
             CollisionEvents.RegisterTriggerEnter(Entity.ID, OnTriggerEnter);
             CollisionEvents.RegisterTriggerExit(Entity.ID, OnTriggerExit);
 

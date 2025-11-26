@@ -1850,15 +1850,15 @@ namespace UI { // --------------------------------------------------------------
                 CrashoutsEngine::RenderCamera::engineCamera.SetTargetAR(16.0f / 9.0f);
                 CrashoutsEngine::RenderCamera::engineCamera.UpdateMatrices(Settings::GetScreenWidth(), Settings::GetScreenHeight());
 
-                if (MonoManager::GetDomain() && MonoManager::GetAssembly()) {
-                    CrashoutsEngine::ScriptSystem::InitializeAll( MonoManager::GetDomain(), MonoManager::GetAssembly() );
-                }
             }
             ImGui::SameLine();
             // Pause
             if (ImGui::Button("PAUSE", ImVec2(70, 25))) {
                 if (engineState == EngineState::STOP && !currSceneName.empty()) Serialization::SaveScenes(currSceneName);
                 engineState = EngineState::PAUSE;
+
+                CrashoutsEngine::Audio::AudioSystem::instance().stopMusicGroup(); // Stop FMOD Studio
+                CrashoutsEngine::Audio::AudioSystem::instance().stopSFXGroup(); 
             }
             ImGui::SameLine();
             // Stop
@@ -1873,11 +1873,9 @@ namespace UI { // --------------------------------------------------------------
                 //MonoManager::ReloadScripts();
                 engineState = EngineState::STOP;
                 
-				CrashoutsEngine::Audio::AudioSystem::instance().stopAll(true); // Stop FMOD Studio
+                CrashoutsEngine::Audio::AudioSystem::instance().stopMusicGroup(); // Stop FMOD Studio
+                CrashoutsEngine::Audio::AudioSystem::instance().stopSFXGroup();
 
-                if (MonoManager::GetDomain() && MonoManager::GetAssembly()) {
-                    CrashoutsEngine::ScriptSystem::DestroyAll();
-                }
             }
             ImGui::SameLine();
             // SAVE

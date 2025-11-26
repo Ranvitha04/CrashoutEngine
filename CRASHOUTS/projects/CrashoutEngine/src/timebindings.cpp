@@ -8,7 +8,7 @@ auto& gFrameRateController = FrameRateController::GetInstance();
 
 static double TimeGetDT()
 {
-    return gFrameRateController.DT();
+    return FrameRateController::GetInstance().DT();
 }
 
 static double TimeGetFixedDT()

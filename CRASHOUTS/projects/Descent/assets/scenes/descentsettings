@@ -173,7 +173,10 @@
             },
             "script": {
                 "scripts": [
-                    "MenuButtons"
+                    {
+                        "className": "MenuButtons",
+                        "fields": {}
+                    }
                 ]
             },
             "button": {

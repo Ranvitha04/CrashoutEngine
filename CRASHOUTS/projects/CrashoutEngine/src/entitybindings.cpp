@@ -61,7 +61,7 @@ namespace CrashoutsEngine::Bindings
             }
         }
 
-        return 0; // Not found (0 is usually invalid or null entity)
+        return std::numeric_limits<uint32_t>::max(); // Not found
     }
 
 	// add component functions
