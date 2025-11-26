@@ -108,6 +108,8 @@ Call to ensure safe load based off run order
 void PerformPendingSceneLoad() {
     if (g_IsSceneLoadPending) {
 
+        CrashoutsEngine::Audio::AudioSystem::instance().stopAll(false);
+
         // Before nuking, destroy scripts
         CrashoutsEngine::ScriptSystem::DestroyAll();
 
@@ -541,9 +543,6 @@ void Update(double const& dt) {
 
     MonoManager::CheckHotReload();
 
-	CrashoutsEngine::ScriptSystem::UpdateAll();
-
-
     if (CurrentDescriptor->Update) CurrentDescriptor->Update();
 
     // process events if any associated with input devices
@@ -560,6 +559,8 @@ void Update(double const& dt) {
     CrashoutsEngine::UpdateHierarchy(*CrashoutsEngine::ECS::getInstance());
 
     if (engineState == EngineState::PLAY) {
+
+        CrashoutsEngine::ScriptSystem::UpdateAll();
 
         aiSystem.Update();
 

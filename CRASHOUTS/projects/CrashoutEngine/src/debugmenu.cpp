@@ -1845,6 +1845,9 @@ namespace UI { // --------------------------------------------------------------
             if (ImGui::Button("PLAY", ImVec2(70, 25))) {
                 if (engineState == EngineState::STOP && !currSceneName.empty()) Serialization::SaveScenes(currSceneName);
                 engineState = EngineState::PLAY;
+
+                CrashoutsEngine::Audio::AudioSystem::instance().setPaused(false);
+
                 CrashoutsEngine::RenderCamera::engineCamera.SetPostiion(CEVec3{ 0.f, 0.f, 0.f });
                 CrashoutsEngine::RenderCamera::engineCamera.SetZoom(1.f);
                 CrashoutsEngine::RenderCamera::engineCamera.SetTargetAR(16.0f / 9.0f);
@@ -1859,6 +1862,8 @@ namespace UI { // --------------------------------------------------------------
             if (ImGui::Button("PAUSE", ImVec2(70, 25))) {
                 if (engineState == EngineState::STOP && !currSceneName.empty()) Serialization::SaveScenes(currSceneName);
                 engineState = EngineState::PAUSE;
+
+                CrashoutsEngine::Audio::AudioSystem::instance().setPaused(true);
             }
             ImGui::SameLine();
             // Stop
@@ -1874,6 +1879,7 @@ namespace UI { // --------------------------------------------------------------
                 engineState = EngineState::STOP;
                 
 				CrashoutsEngine::Audio::AudioSystem::instance().stopAll(true); // Stop FMOD Studio
+                CrashoutsEngine::Audio::AudioSystem::instance().setPaused(false);
 
                 if (MonoManager::GetDomain() && MonoManager::GetAssembly()) {
                     CrashoutsEngine::ScriptSystem::DestroyAll();
