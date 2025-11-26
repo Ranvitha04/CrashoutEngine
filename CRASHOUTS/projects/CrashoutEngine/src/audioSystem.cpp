@@ -801,7 +801,6 @@ namespace CrashoutsEngine::Audio
         if (ch) {
             ch->setMode(FMOD_2D);
 
-            // Set a callback to release the sound when the channel stops
             ch->setCallback([](FMOD_CHANNELCONTROL* channelcontrol,
                 FMOD_CHANNELCONTROL_TYPE /*controltype*/,
                 FMOD_CHANNELCONTROL_CALLBACK_TYPE callbacktype,
@@ -818,7 +817,6 @@ namespace CrashoutsEngine::Audio
                 });
         }
 
-        // Don't release here - let the callback handle it
         return ch;
     }
 
@@ -934,8 +932,6 @@ namespace CrashoutsEngine::Audio
             mTaggedChannels[key] = ch;
         }
 
-        // SFX are still fire-and-forget for the sound handle itself.
-        snd->release();
         return true;
     }
 
