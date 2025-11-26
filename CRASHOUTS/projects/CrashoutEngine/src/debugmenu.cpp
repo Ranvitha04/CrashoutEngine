@@ -1927,6 +1927,8 @@ namespace UI { // --------------------------------------------------------------
         // Begin the ImGUI window, enable Docking
         bool open = ImGui::Begin( "Game Viewport", nullptr, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse );
 
+        static bool allowGizmoInPlay = false;
+
         if (open) {
 
             ImVec2 start = ImGui::GetCursorScreenPos();
@@ -1950,6 +1952,12 @@ namespace UI { // --------------------------------------------------------------
             if (ImGui::Checkbox("Local", &isLocal)) g_gizmoMode = isLocal ? ImGuizmo::LOCAL : ImGuizmo::WORLD;
             ImGui::SameLine();
             ImGui::Checkbox("Snap", &g_snapOn);
+
+            ImGui::SameLine();
+            ImGui::SeparatorEx(ImGuiSeparatorFlags_Vertical);
+            ImGui::SameLine();
+            ImGui::Checkbox("Allow in Play", &allowGizmoInPlay);
+
             ImGui::PopStyleVar();
 
             ImGui::Separator();
@@ -2218,7 +2226,9 @@ namespace UI { // --------------------------------------------------------------
             // END OF TILEMAP
             
             // 5) if we have a selected entity, let gizmo edit its TRS
-            if (selected && ecs.HasComponent<Component::TransformComponent>(selected))
+
+            bool isPlaying = (engineState == EngineState::PLAY || engineState == EngineState::PAUSE);
+            if ((!isPlaying || allowGizmoInPlay) && selected && ecs.HasComponent<Component::TransformComponent>(selected))
             {
                 Entity root = CrashoutsEngine::GetRoot(ecs, selected);
 
