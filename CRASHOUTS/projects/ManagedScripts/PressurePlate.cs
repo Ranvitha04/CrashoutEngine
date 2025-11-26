@@ -6,14 +6,23 @@ namespace CrashoutsEngine
     public class PressurePlate : ScriptBase
     {
 
+        bool stepOn = false;
+        float oldY, newY;
+        const float decrease = 5.0f;
+        TransformComponent transform;
+
         public void OnTriggerEnter(uint otherEntityID)
         {
             Entity other = new Entity(otherEntityID);
             var layer = other.GetComponent<LayerComponent>();
 
-            if (layer != null && layer.HasLayer("Player"))
+            if (layer != null && layer.HasLayer("Player") && !stepOn)
             {
-                Debug.Log("Hi");
+                transform.Position = new CEVec3(transform.Position.x, newY, transform.Position.z);
+                Debug.Log("Stepped on Pressure Plate!");
+                AudioManager.GetInstance().Play("pressureplate");
+                Debug.Log("Played Sound");
+                stepOn = true;
             }
         }
 
@@ -31,6 +40,11 @@ namespace CrashoutsEngine
         {
             CollisionEvents.RegisterTriggerEnter(Entity.ID, OnTriggerEnter);
             CollisionEvents.RegisterTriggerExit(Entity.ID, OnTriggerExit);
+
+            transform = Entity.GetComponent<TransformComponent>();
+            oldY = transform.Position.y;
+            newY = oldY - decrease;
+            stepOn = false;
         }
 
         public override void Update()

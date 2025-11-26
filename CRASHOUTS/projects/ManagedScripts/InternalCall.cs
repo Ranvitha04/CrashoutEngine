@@ -36,6 +36,10 @@ namespace CrashoutsEngine
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal static extern bool EntityHasCollider(uint entityID);
 
+        // Find Entity
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern uint FindEntityByName(string name);
+
         //time
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal static extern double TimeGetDT();

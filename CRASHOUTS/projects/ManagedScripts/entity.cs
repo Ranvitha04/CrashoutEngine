@@ -115,6 +115,15 @@ namespace CrashoutsEngine
             return instance;
         }
 
+        // Static helper to find an entity globally
+        public static Entity Find(string name)
+        {
+            uint id = InternalCalls.FindEntityByName(name);
+            if (id == 0) return null; // Or throw exception depending on preference
+
+            return new Entity(id);
+        }
+
         ////name component
         //public bool HasName => InternalCalls.EntityHasName(ID);
 

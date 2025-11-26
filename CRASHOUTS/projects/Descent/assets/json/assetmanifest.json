@@ -1,10 +1,6 @@
 {
     "audio": [
         {
-            "name": "23.Lava-Volcano-Wind-Environment_LOOP",
-            "path": "23.Lava-Volcano-Wind-Environment_LOOP.wav"
-        },
-        {
             "name": "Ambience",
             "path": "banks\\Ambience.bank"
         },
@@ -55,6 +51,10 @@
         {
             "name": "Footsteps2_Gravel-Dirt_far-small_1",
             "path": "Footsteps2_Gravel-Dirt_far-small_1.wav"
+        },
+        {
+            "name": "Lava-Volcano-Wind-Environment_LOOP",
+            "path": "Lava-Volcano-Wind-Environment_LOOP.wav"
         },
         {
             "name": "Squishy-Movement_1",

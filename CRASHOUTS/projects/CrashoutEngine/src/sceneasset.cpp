@@ -277,8 +277,19 @@ namespace CrashoutsEngine {
                 }
 
                 // Set Entity Layer
-                if (entityValue.HasMember(Keys::LAYER_COMPONENT) && entityValue[Keys::LAYER_COMPONENT].IsUint()) {
-                    layerComp.currentLayer = entityValue[Keys::LAYER_COMPONENT].GetUint();
+                if (entityValue.HasMember(Keys::LAYER_COMPONENT)) {
+                    const rapidjson::Value& layerVal = entityValue[Keys::LAYER_COMPONENT];
+
+                    // Case 1: Old Format (Raw Int) - Backward compatibility
+                    if (layerVal.IsUint()) {
+                        layerComp.currentLayer = layerVal.GetUint();
+                    }
+                    // Case 2: New Format (Object)
+                    else if (layerVal.IsObject()) {
+                        if (layerVal.HasMember("currentLayer") && layerVal["currentLayer"].IsUint()) {
+                            layerComp.currentLayer = layerVal["currentLayer"].GetUint();
+                        }
+                    }
                 }
 
                 // Set Entity Transform

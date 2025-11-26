@@ -144,7 +144,7 @@ namespace CrashoutsEngine
         // Update is called once per frame
         public override void Update()
         {
-            AudioManager.GetInstance().Stop("footsteps");
+            //AudioManager.GetInstance().Stop("footsteps");
             //Debug.Log("Updaet");
             var tf = Entity.GetComponent<TransformComponent>();
             //horizontalInput = Input.GetAxis("Horizontal");
