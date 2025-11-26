@@ -6,7 +6,6 @@ namespace CrashoutsEngine
     public class VolumeSlider : ScriptBase
     {
         private float _sensitivity = 0.002f;
-        private float _minVisualSize = 0.01f;
 
         private bool _isDragging = false;
         private bool _isMusic = true;
@@ -15,26 +14,29 @@ namespace CrashoutsEngine
 
         private ButtonComponent _button;
         private TransformComponent _tf;
-        private NameComponent _nameComp;
 
-        private float _maxWidth;
-        private float _startCenterX;
+        private float _fullWidth;
+        private float _leftEdgeX;
 
         public override void Start()
         {
             _button = Entity.GetComponent<ButtonComponent>();
             _tf = Entity.GetComponent<TransformComponent>();
-            _nameComp = Entity.GetComponent<NameComponent>();
 
-            if (_button == null) return;
+            if (_button == null)
+            {
+                Debug.Log("[VolumeSlider] ERROR: No Button");
+                return;
+            }
 
-            string name = _nameComp != null ? _nameComp.ToString() : "";
+            var nameComp = Entity.GetComponent<NameComponent>();
+            string name = nameComp != null ? nameComp.ToString() : "";
             _isMusic = !name.Contains("SFX");
 
             if (_tf != null)
             {
-                _maxWidth = _tf.Size.x;
-                _startCenterX = _tf.Position.x;
+                _fullWidth = _tf.Size.x;
+                _leftEdgeX = _tf.Position.x - (_fullWidth / 2.0f);
             }
 
             if (_isMusic) _currentT = AudioManager.playerMusVol;
@@ -70,8 +72,8 @@ namespace CrashoutsEngine
 
                 UpdateVisuals(_currentT);
 
-                string typeName = _isMusic ? "MUSIC" : "SFX";
-                Debug.Log("[VolumeSlider] Adjusting " + typeName + " | Volume: " + _currentT);
+                string type = _isMusic ? "MUSIC" : "SFX";
+                Debug.Log(type + " Vol: " + _currentT);
 
                 if (_isMusic) AudioManager.GetInstance().MusicVolume(_currentT);
                 else AudioManager.GetInstance().SFXVolume(_currentT);
@@ -82,25 +84,17 @@ namespace CrashoutsEngine
 
         private void UpdateVisuals(float t)
         {
-            CEVec3 newPos = _tf.Position;
-            CEVec2 newSize = _tf.Size;
+            float newWidth = _fullWidth * t;
 
-            float calculatedWidth = _maxWidth * t;
+            if (newWidth < 1.0f) newWidth = 1.0f;
 
-            float minPixelWidth = _maxWidth * _minVisualSize;
+            CEVec2 siz = _tf.Size;
+            siz.x = newWidth;
+            _tf.Size = siz;
 
-            if (calculatedWidth < minPixelWidth)
-            {
-                calculatedWidth = minPixelWidth;
-            }
-
-            newSize.x = calculatedWidth;
-
-            float originalLeftEdge = _startCenterX - (_maxWidth / 2.0f);
-            newPos.x = originalLeftEdge + (newSize.x / 2.0f);
-
-            _tf.Size = newSize;
-            _tf.Position = newPos;
+            CEVec3 pos = _tf.Position;
+            pos.x = _leftEdgeX + (newWidth / 2.0f);
+            _tf.Position = pos;
         }
     }
 }
