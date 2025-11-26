@@ -38,7 +38,7 @@ namespace CrashoutsEngine
             // CollisionEvents.RegisterTriggerExit(Entity.ID, OnTriggerExit);
             // CollisionEvents.RegisterTriggerStay(Entity.ID, OnTriggerStay);
 
-            //AudioManager.GetInstance().Play("ambient");
+            AudioManager.GetInstance().Play("ambient");
         }
 
         public override void Update()
@@ -135,6 +135,13 @@ namespace CrashoutsEngine
                 rb.AddForce(new CEVec3(0f, 20000f, 0f));
                 Console.WriteLine("[C#] mass=" + rb.GetMass());
             }
-            }
+        }
+
+        public override void OnDestroy()
+        {
+            // Cleanup logic for the player
+            Console.WriteLine("[C#] PlayerController OnDestroy() called");
+            AudioManager.GetInstance().Stop("ambient");
+        }
     }
 }

@@ -477,7 +477,7 @@ namespace Scene {
             {
                 RenderBatch& batch = circBatches[batchKey];
                 ConfigureBatch(batch);
-                batch.Add(tf->position, colorNorm, tf->rotation, 1.0f, tf->size.x * 0.5f, 0.0f);
+                batch.Add(tf->position, colorNorm, 0.0f, 1.0f, tf->size.x * 0.5f, 0.0f);
                 break;
             }
             case ShapeType::Line:

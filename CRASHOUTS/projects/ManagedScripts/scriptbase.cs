@@ -15,5 +15,8 @@ namespace CrashoutsEngine
 
         // Called at a fixed timestep
         public virtual void FixedUpdate() { }
+
+        // Called when the script instance is being destroyed
+        public virtual void OnDestroy() { }
     }
 }

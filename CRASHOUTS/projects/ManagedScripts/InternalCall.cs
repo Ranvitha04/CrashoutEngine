@@ -98,7 +98,7 @@ namespace CrashoutsEngine
         internal static extern void Audio_PlayMusicFileTagged(string key, string path, bool loop);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        internal static extern void Audio_PlaySFXFileTagged(string key, string path);
+        internal static extern void Audio_PlaySFXFileTagged(string key, string path, bool loop);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal static extern void Audio_StopTagged(string key);

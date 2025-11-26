@@ -20,7 +20,7 @@ public class AudioManager
                 "assets/audio/Footsteps2_Gravel-Dirt_far-small_1.wav",
                 1.0f, // base volume
                 true, // loop?
-                SoundType.Music // it's music, not SFX SFX DOESNT WORK LMAO
+                SoundType.SFX
             );
 
         RegisterSound(
@@ -48,8 +48,8 @@ public class AudioManager
     // Converted version of your "Sound[]" array
     private Dictionary<string, SoundData> sounds = new Dictionary<string, SoundData>();
 
-    public static float playerMusVol = 2f;
-    public static float playerSFXVol = 2f;
+    public static float playerMusVol = 1f;
+    public static float playerSFXVol = 1f;
 
     private class SoundData
     {
@@ -91,7 +91,7 @@ public class AudioManager
         if (s.Type == SoundType.Music)
             InternalCalls.Audio_PlayMusicFileTagged(s.Name, s.Path, s.Loop);
         else
-            InternalCalls.Audio_PlaySFXFileTagged(s.Name, s.Path);
+            InternalCalls.Audio_PlaySFXFileTagged(s.Name, s.Path, s.Loop);
     }
 
     // === Replacing Unity's Stop(name)

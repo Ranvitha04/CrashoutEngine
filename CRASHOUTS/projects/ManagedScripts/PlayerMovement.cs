@@ -28,7 +28,7 @@ namespace CrashoutsEngine
         #region COLLISION EVENTS
         // 1. Trigger Events (Ghost/Sensor collisions)
         public void OnTriggerEnter(uint otherEntity)
-        { 
+        {
             Entity other = new Entity(otherEntity);
 
             // Identify the object
@@ -391,6 +391,9 @@ namespace CrashoutsEngine
         //    //Debug.Log("respawn idle here"); //gets to this line but still plays falling animation? does it need yo be in collisionExit
         //    GObackground.SetActive(false);
 
-        //}
+        public override void OnDestroy()
+        {
+
+        }
     }
 }

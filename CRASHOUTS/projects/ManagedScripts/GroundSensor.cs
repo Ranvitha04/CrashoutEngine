@@ -75,5 +75,11 @@ namespace CrashoutsEngine
         {
             base.FixedUpdate();
         }
+
+        public override void OnDestroy()
+        {
+
+
+        }
     }
 }

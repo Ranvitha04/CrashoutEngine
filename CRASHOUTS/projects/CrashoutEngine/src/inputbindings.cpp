@@ -27,9 +27,29 @@ static bool InternalIsKeyHeld(int key)
     return InputManager::IsKeyHeld(key);
 }
 
+static void InternalGetMousePosition(CEVec2* outPos)
+{
+    *outPos = InputManager::GetMousePosition();
+}
+
+static bool InternalIsMouseButtonDown(int button)
+{
+    return InputManager::IsMouseButtonPressed(button);
+}
+
+static bool InternalIsMouseButtonReleased(int button)
+{
+    // Released = not pressed
+    return !InputManager::IsMouseButtonPressed(button);
+}
+
 void CrashoutsEngine::Bindings::RegisterInputBindings()
 {
     mono_add_internal_call("CrashoutsEngine.Input::InternalIsKeyPressed", reinterpret_cast<const void*>(InternalIsKeyPressed));
     mono_add_internal_call("CrashoutsEngine.Input::InternalIsKeyTriggered", reinterpret_cast<const void*>(InternalIsKeyTriggered));
 	mono_add_internal_call("CrashoutsEngine.Input::InternalIsKeyHeld", reinterpret_cast<const void*>(InternalIsKeyHeld));
+    mono_add_internal_call("CrashoutsEngine.Input::InternalGetMousePosition", reinterpret_cast<const void*>(InternalGetMousePosition));
+    mono_add_internal_call("CrashoutsEngine.Input::InternalIsMouseButtonDown", reinterpret_cast<const void*>(InternalIsMouseButtonDown));
+    mono_add_internal_call("CrashoutsEngine.Input::InternalIsMouseButtonReleased", reinterpret_cast<const void*>(InternalIsMouseButtonReleased));
 }
+ 

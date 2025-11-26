@@ -1845,6 +1845,9 @@ namespace UI { // --------------------------------------------------------------
             if (ImGui::Button("PLAY", ImVec2(70, 25))) {
                 if (engineState == EngineState::STOP && !currSceneName.empty()) Serialization::SaveScenes(currSceneName);
                 engineState = EngineState::PLAY;
+
+                CrashoutsEngine::Audio::AudioSystem::instance().setPaused(false);
+
                 CrashoutsEngine::RenderCamera::engineCamera.SetPostiion(CEVec3{ 0.f, 0.f, 0.f });
                 CrashoutsEngine::RenderCamera::engineCamera.SetZoom(1.f);
                 CrashoutsEngine::RenderCamera::engineCamera.SetTargetAR(16.0f / 9.0f);
@@ -1857,8 +1860,7 @@ namespace UI { // --------------------------------------------------------------
                 if (engineState == EngineState::STOP && !currSceneName.empty()) Serialization::SaveScenes(currSceneName);
                 engineState = EngineState::PAUSE;
 
-                CrashoutsEngine::Audio::AudioSystem::instance().stopMusicGroup(); // Stop FMOD Studio
-                CrashoutsEngine::Audio::AudioSystem::instance().stopSFXGroup(); 
+                CrashoutsEngine::Audio::AudioSystem::instance().setPaused(true);
             }
             ImGui::SameLine();
             // Stop
@@ -1873,8 +1875,8 @@ namespace UI { // --------------------------------------------------------------
                 //MonoManager::ReloadScripts();
                 engineState = EngineState::STOP;
                 
-                CrashoutsEngine::Audio::AudioSystem::instance().stopMusicGroup(); // Stop FMOD Studio
-                CrashoutsEngine::Audio::AudioSystem::instance().stopSFXGroup();
+				CrashoutsEngine::Audio::AudioSystem::instance().stopAll(true); // Stop FMOD Studio
+                CrashoutsEngine::Audio::AudioSystem::instance().setPaused(false);
 
             }
             ImGui::SameLine();
@@ -1924,6 +1926,7 @@ namespace UI { // --------------------------------------------------------------
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0)); // No padding
         // Begin the ImGUI window, enable Docking
         bool open = ImGui::Begin( "Game Viewport", nullptr, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse );
+        static bool allowGizmoInPlay = false;
 
         if (open) {
 
@@ -1948,6 +1951,12 @@ namespace UI { // --------------------------------------------------------------
             if (ImGui::Checkbox("Local", &isLocal)) g_gizmoMode = isLocal ? ImGuizmo::LOCAL : ImGuizmo::WORLD;
             ImGui::SameLine();
             ImGui::Checkbox("Snap", &g_snapOn);
+
+            ImGui::SameLine();
+            ImGui::SeparatorEx(ImGuiSeparatorFlags_Vertical);
+            ImGui::SameLine();
+            ImGui::Checkbox("Allow in Play", &allowGizmoInPlay);
+
             ImGui::PopStyleVar();
 
             ImGui::Separator();
@@ -2216,7 +2225,8 @@ namespace UI { // --------------------------------------------------------------
             // END OF TILEMAP
             
             // 5) if we have a selected entity, let gizmo edit its TRS
-            if (selected && ecs.HasComponent<Component::TransformComponent>(selected))
+            bool isPlaying = (engineState == EngineState::PLAY || engineState == EngineState::PAUSE);
+            if ((!isPlaying || allowGizmoInPlay) && selected && ecs.HasComponent<Component::TransformComponent>(selected))
             {
                 Entity root = CrashoutsEngine::GetRoot(ecs, selected);
 

@@ -801,7 +801,6 @@ namespace CrashoutsEngine::Audio
         if (ch) {
             ch->setMode(FMOD_2D);
 
-            // Set a callback to release the sound when the channel stops
             ch->setCallback([](FMOD_CHANNELCONTROL* channelcontrol,
                 FMOD_CHANNELCONTROL_TYPE /*controltype*/,
                 FMOD_CHANNELCONTROL_CALLBACK_TYPE callbacktype,
@@ -818,7 +817,6 @@ namespace CrashoutsEngine::Audio
                 });
         }
 
-        // Don't release here - let the callback handle it
         return ch;
     }
 
@@ -894,8 +892,6 @@ namespace CrashoutsEngine::Audio
             mTaggedChannels[key] = ch;
         }
 
-        // Same reasoning as playMusicFile(): we keep snd alive for streaming
-        // and do not call release() here.
         return true;
     }
 
@@ -903,16 +899,22 @@ namespace CrashoutsEngine::Audio
     @brief Plays a SFX file and tags its FMOD channel so it can be stopped by key.
     */
     bool AudioSystem::playSFXFileTagged(const std::string& key,
-        const std::string& path)
+        const std::string& path, bool loop)
     {
         if (!mCore || !mSFXGroup) {
             std::fprintf(stderr, "[Audio] playSFXFile called before init: %s\n", path.c_str());
             return false;
         }
 
+        FMOD_MODE mode = FMOD_DEFAULT | FMOD_2D;
+        if (loop)
+            mode |= FMOD_LOOP_NORMAL;
+        else
+            mode |= FMOD_LOOP_OFF;
+
         FMOD::Sound* snd = nullptr;
         if (!ok(mCore->createSound(path.c_str(),
-            FMOD_DEFAULT | FMOD_2D,
+            mode,
             nullptr,
             &snd),
             "createSound(sfxTagged)"))
@@ -931,11 +933,24 @@ namespace CrashoutsEngine::Audio
         if (ch)
         {
             ch->setMode(FMOD_2D);
+            ch->setCallback([](FMOD_CHANNELCONTROL* channelcontrol,
+                FMOD_CHANNELCONTROL_TYPE /*controltype*/,
+                FMOD_CHANNELCONTROL_CALLBACK_TYPE callbacktype,
+                void* /*commanddata1*/,
+                void* /*commanddata2*/) -> FMOD_RESULT
+                {
+                    if (callbacktype == FMOD_CHANNELCONTROL_CALLBACK_END) {
+                        FMOD::Channel* ch = (FMOD::Channel*)channelcontrol;
+                        FMOD::Sound* snd = nullptr;
+                        if (ch->getCurrentSound(&snd) == FMOD_OK && snd) {
+                            snd->release();
+                        }
+                    }
+                    return FMOD_OK;
+                });
             mTaggedChannels[key] = ch;
         }
 
-        // SFX are still fire-and-forget for the sound handle itself.
-        snd->release();
         return true;
     }
 

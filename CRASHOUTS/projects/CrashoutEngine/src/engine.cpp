@@ -107,6 +107,12 @@ Call to ensure safe load based off run order
 */
 void PerformPendingSceneLoad() {
     if (g_IsSceneLoadPending) {
+
+        CrashoutsEngine::Audio::AudioSystem::instance().stopAll(false);
+
+        // Before nuking, destroy scripts
+        CrashoutsEngine::ScriptSystem::DestroyAll();
+
         // Now it is safe to nuke the world
         CrashoutsEngine::ECS::getInstance()->Reset();
         CrashoutsEngine::CollisionEventManager::GetInstance().Clear();
@@ -556,6 +562,8 @@ void Update(double const& dt) {
     if (engineState == EngineState::PLAY) {
         CrashoutsEngine::ScriptSystem::UpdateAll();
 
+        CrashoutsEngine::ScriptSystem::UpdateAll();
+
         aiSystem.Update();
 
         {
@@ -668,6 +676,8 @@ void Update(double const& dt) {
 Release resources
 */
 void CleanUp() {
+    CrashoutsEngine::ScriptSystem::DestroyAll();
+
     CrashoutsEngine::PostProcessing::ShutdownPP();
 
     UI::Shutdown();
