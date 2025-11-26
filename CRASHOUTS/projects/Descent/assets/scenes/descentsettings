@@ -790,6 +790,11 @@
                     "z": 0.0
                 }
             },
+            "script": {
+                "scripts": [
+                    "VolumeSlider"
+                ]
+            },
             "parent": {
                 "parentName": "MusicBarParent",
                 "localPos": {

@@ -40,8 +40,8 @@ public class AudioManager
     // Converted version of your "Sound[]" array
     private Dictionary<string, SoundData> sounds = new Dictionary<string, SoundData>();
 
-    public static float playerMusVol = 2f;
-    public static float playerSFXVol = 2f;
+    public static float playerMusVol = 1f;
+    public static float playerSFXVol = 1f;
 
     private class SoundData
     {

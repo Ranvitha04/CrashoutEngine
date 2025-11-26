@@ -26,5 +26,31 @@ namespace CrashoutsEngine
         }
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern bool InternalIsKeyHeld(Key key);
+
+        public static CEVec2 GetMousePosition()
+        {
+            CEVec2 pos;
+            InternalGetMousePosition(out pos);
+            return pos;
+        }
+
+        public static bool IsMouseButtonDown(int button)
+        {
+            return InternalIsMouseButtonDown(button);
+        }
+
+        public static bool IsMouseButtonReleased(int button)
+        {
+            return InternalIsMouseButtonReleased(button);
+        }
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern void InternalGetMousePosition(out CEVec2 pos);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern bool InternalIsMouseButtonDown(int button);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern bool InternalIsMouseButtonReleased(int button);
     }
 }
