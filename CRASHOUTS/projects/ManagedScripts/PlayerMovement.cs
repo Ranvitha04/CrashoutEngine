@@ -4,6 +4,19 @@ namespace CrashoutsEngine
     [ScriptBehaviour]
     public class PlayerMovement : ScriptBase
     {
+        //bool isFacingRight = true;
+        //float moveSpeed = 6f;
+
+        float horizontalInput;
+        float maxSpeed = 50f;
+
+        bool moveLeft;
+        bool moveRight;
+        bool footstepsPlaying = false;
+
+        public float jumpPower = 20000f;
+        public static bool isJumping = false;
+        public static bool isFalling = false;
 
         // --- STATIC INSTANCE (Singleton Pattern for simple communication) ---
         public static PlayerMovement Instance;
@@ -70,20 +83,6 @@ namespace CrashoutsEngine
             // isGrounded = false;
         }
         #endregion
-
-        //bool isFacingRight = true;
-        //float moveSpeed = 6f;
-
-        float horizontalInput;
-        float maxSpeed = 5f;
-
-        bool moveLeft;
-        bool moveRight;
-        bool footstepsPlaying = false;
-
-        public float jumpPower = 20000f;
-        public static bool isJumping = false;
-        public static bool isFalling = false;
 
         //private float lastY;
         //public float FallingThreshold = -0.01f;
@@ -152,27 +151,33 @@ namespace CrashoutsEngine
             horizontalInput = 0f;
             moveLeft = Input.IsKeyPressed(Key.A);
             moveRight = Input.IsKeyPressed(Key.D);
-            if (moveLeft)
-            {
-                horizontalInput = -1f;
-            }
-            else if (moveRight)
-            {
-                horizontalInput = 1f;
-            }
 
-            //lastY = transform.position.y;
-            if ((horizontalInput != 0.0f) && IsGrounded && !footstepsPlaying)
+            float velocityX = Math.Abs(rb.LinearVelocity.x);
+
+            if (velocityX < maxSpeed)
             {
-                //Console.WriteLine("[C#] Player started moving -> Play footsteps");
-                AudioManager.GetInstance().Play("footsteps");
-                footstepsPlaying = true;
-            }
-            else if (!IsGrounded || (horizontalInput == 0.0f) && footstepsPlaying)
-            {
-                //Console.WriteLine("[C#] Player stopped moving -> Stop footsteps_loop");
-                AudioManager.GetInstance().Stop("footsteps");
-                footstepsPlaying = false;
+                if (moveLeft)
+                {
+                    horizontalInput = -1f;
+                }
+                else if (moveRight)
+                {
+                    horizontalInput = 1f;
+                }
+
+                //lastY = transform.position.y;
+                if ((horizontalInput != 0.0f) && IsGrounded && !footstepsPlaying)
+                {
+                    //Console.WriteLine("[C#] Player started moving -> Play footsteps");
+                    AudioManager.GetInstance().Play("footsteps");
+                    footstepsPlaying = true;
+                }
+                else if (!IsGrounded || (horizontalInput == 0.0f) && footstepsPlaying)
+                {
+                    //Console.WriteLine("[C#] Player stopped moving -> Stop footsteps_loop");
+                    AudioManager.GetInstance().Stop("footsteps");
+                    footstepsPlaying = false;
+                }
             }
 
             /*
@@ -188,7 +193,7 @@ namespace CrashoutsEngine
             }
             */
 
-            if (Input.IsKeyTriggered(Key.Space) && IsGrounded)
+            if (Input.IsKeyTriggered(Key.Space))// && IsGrounded)
             {
                 rb.AddForce(new CEVec3(0f, jumpPower, 0f));
                 isJumping = true;
@@ -210,7 +215,6 @@ namespace CrashoutsEngine
                 switchcharacter?.SwitchAvatar();
             }
             */
-            var vel = rb.LinearVelocity;
             /*
             // Jump started and peak reached then beginning to fall
             if (animator.GetBool("IsJumping") && vel.y < 0f && !IsOnPlatform)

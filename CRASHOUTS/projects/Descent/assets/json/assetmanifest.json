@@ -1,6 +1,10 @@
 {
     "audio": [
         {
+            "name": "23.Lava-Volcano-Wind-Environment_LOOP",
+            "path": "23.Lava-Volcano-Wind-Environment_LOOP.wav"
+        },
+        {
             "name": "Ambience",
             "path": "banks\\Ambience.bank"
         },
@@ -25,8 +29,40 @@
             "path": "banks\\Squishy-Movement_1 (1).wav"
         },
         {
+            "name": "footsteps 1",
+            "path": "footsteps 1.wav"
+        },
+        {
+            "name": "footsteps 2",
+            "path": "footsteps 2.wav"
+        },
+        {
+            "name": "footsteps 3",
+            "path": "footsteps 3.wav"
+        },
+        {
+            "name": "footsteps 4",
+            "path": "footsteps 4.wav"
+        },
+        {
+            "name": "footsteps 5",
+            "path": "footsteps 5.wav"
+        },
+        {
+            "name": "footsteps 6",
+            "path": "footsteps 6.wav"
+        },
+        {
             "name": "Footsteps2_Gravel-Dirt_far-small_1",
             "path": "Footsteps2_Gravel-Dirt_far-small_1.wav"
+        },
+        {
+            "name": "Squishy-Movement_1",
+            "path": "Squishy-Movement_1.wav"
+        },
+        {
+            "name": "Switch_StepOn",
+            "path": "Switch_StepOn.wav"
         }
     ],
     "fonts": [
