@@ -1877,6 +1877,7 @@ namespace UI { // --------------------------------------------------------------
                 
 				CrashoutsEngine::Audio::AudioSystem::instance().stopAll(true); // Stop FMOD Studio
                 CrashoutsEngine::Audio::AudioSystem::instance().setPaused(false);
+                CrashoutsEngine::Audio::AudioSystem::instance().stopMusicGroup(); // <-- Seems to work better than the above
 
             }
             ImGui::SameLine();
