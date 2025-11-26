@@ -101,6 +101,9 @@ public:
 
     static bool IsKeyTriggered(Key key);
 
+    static void ClearInputs();
+
+
 private:
     /// Pointer to the GLFW window
     static GLFWwindow* Window;

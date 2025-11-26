@@ -443,9 +443,21 @@ namespace Physics {
 
 				/*APPLY ANY FORCE GENERATOR HERE, EVERY ENTITY IS AFFECTED*/
 				ForceManager& fm{ rigidBody->getForceManager() };
+				CEVec3 forces = fm.ResolveForces((f32)deltaTime, rigidBody->getMass());
 
-				CEVec3 resultant{ fm.ResolveForces(static_cast<f32>(deltaTime), rigidBody->getMass()) };
-				rigidBody->addForce(resultant); /*GRAVITY*/
+				// 2. Apply Gravity Manually
+				CEVec3 gravityAccel = sGravity; // e.g., (0, -70, 0)
+
+				if (rigidBody->getMass() < 0.f) {
+					// Anti-Gravity: Flip the acceleration vector
+					gravityAccel = -sGravity; // (0, 70, 0)
+				}
+
+				// F = m * a
+				CEVec3 gravityForce = rigidBody->getMass() * gravityAccel;
+
+				// 3. Combine
+				rigidBody->addForce(forces + gravityForce);
 
 
 			}

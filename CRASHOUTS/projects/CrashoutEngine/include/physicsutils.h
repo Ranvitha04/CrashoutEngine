@@ -41,14 +41,14 @@ namespace Physics {
 		std::vector<LinearForce> forceList;
 
 		ForceManager() {
-			forceList.push_back(LinearForce{
+			/*forceList.push_back(LinearForce{
 				GRAVITY,
 				CEVec3{0.f, -1.f, 0.f},
 				DEFAULT_GRAVITY_VALUE,
 				0.f,
 				0.f,
 				true
-				});
+				});*/
 		}
 
 		CEVec3 ResolveForces(f32 dt, f32 s = 1.f) {

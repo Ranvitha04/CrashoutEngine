@@ -4,6 +4,7 @@
 @date       06/11/2025
 @brief		Definition of script system functions
 */
+#include "aibindings.h"
 #include "animatorbindings.h"
 #include "colliderbindings.h"
 #include "collidereventbindings.h"
@@ -38,6 +39,7 @@ namespace CrashoutsEngine
         Bindings::RegisterUIBindings();
         Bindings::RegisterLayerBindings();
         Bindings::RegisterDebugBindings();
+        Bindings::RegisterAIBindings();
 	}
 
     void ScriptSystem::InitializeAll(MonoDomain* domain, MonoAssembly* assembly)
