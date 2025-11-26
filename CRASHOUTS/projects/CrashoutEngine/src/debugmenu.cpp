@@ -1464,6 +1464,19 @@ namespace UI { // --------------------------------------------------------------
         ImGui::SameLine(); ImGui::Checkbox("All colliders", &ui.drawAllColliders); 
         ImGui::SameLine(); ImGui::Checkbox("QuadTree", &ui.drawQuadTree);
 
+        ImGui::Separator();
+
+        Collision::CollisionHandler& collisionHandler{ Collision::CollisionHandler::GetInstance() };
+
+        f32 newMin[2]{ collisionHandler.quadTree.boundary.min.x, collisionHandler.quadTree.boundary.min.y };
+        f32 newMax[2]{ collisionHandler.quadTree.boundary.max.x, collisionHandler.quadTree.boundary.max.y };
+
+        if (ImGui::DragFloat2("Min", newMin)) {
+            collisionHandler.quadTree.Resize(Collision::AABBRect{ CEVec3{newMin[0], newMin[1], 0.f}, CEVec3{newMax[0], newMax[1], 0.f} });
+        } if (ImGui::DragFloat2("Max", newMax)) {
+            collisionHandler.quadTree.Resize(Collision::AABBRect{ CEVec3{newMin[0], newMin[1], 0.f}, CEVec3{newMax[0], newMax[1], 0.f} });
+        }
+
         // When a way to implement the velocity line happens
         // ImGui::SameLine(); ImGui::Checkbox("Velocities", &ui.drawVelocities);
 

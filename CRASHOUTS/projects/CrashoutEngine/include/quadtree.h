@@ -30,7 +30,7 @@ namespace DataStructure {
 
 		std::array<std::unique_ptr<QuadTree>, 4> childRegions;
 		std::array<Collision::AABBRect, 4> childSizes;
-		Collision::AABBRect boundary; //This current node's size
+		
 
 		int depth;
 		bool divided;
@@ -38,6 +38,7 @@ namespace DataStructure {
 		std::vector<std::pair<CrashoutsEngine::Entity, Collision::AABBRect>> objects;
 
 	public:
+		Collision::AABBRect boundary; //This current node's size
 
 		QuadTree(Collision::AABBRect const& boundary = Collision::AABBRect{ CEVec3{}, CEVec3{} }, int const& depth = 0);
 
