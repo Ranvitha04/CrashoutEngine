@@ -114,7 +114,7 @@ void TextRenderer::RenderText(const std::string& text, GLfloat x, GLfloat y, GLf
     }
     else {
         // SCREEN SPACE: Use the static UI camera
-        Component::Rendering& renderer = Component::Rendering::Get();
+        //Component::Rendering& renderer = Component::Rendering::Get();
         projection = glm::ortho(
             0.0f, static_cast<float>(GLApp::width),
             0.0f, static_cast<float>(GLApp::height),

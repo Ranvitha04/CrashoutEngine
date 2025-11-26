@@ -16,30 +16,36 @@ namespace CrashoutsEngine
             var name = Entity.GetComponent<NameComponent>();
             if (btn.IsClicked())
             {
-                Console.WriteLine("[C#] Name is " + name);
+                //Console.WriteLine("[C#] Name is " + name);
+
+                string msg = "[C#] Name is " + name;
+                Debug.Log(msg);
 
                 // FOR StartBtn
-                if(name.ToString() == "StartBtn")
+                if (name.ToString() == "StartBtn")
                 {
-                    Console.WriteLine("[C#] Loading Scene...");
+                    Debug.Log("[C#] Loading Scene...");
                     SceneManager.LoadScene("descentgame");
                 }
                 // FOR SettingsBtn
                 else if (name.ToString() == "SettingsBtn")
                 {
-                    Console.WriteLine("[C#] Loading Scene...");
+                    //Console.WriteLine("[C#] Loading Scene...");
+                    Debug.Log("[C#] Loading Scene...");
                     SceneManager.LoadScene("descentsettings");
                 }
                 // FOR CloseBtn
                 else if (name.ToString() == "CloseBtn")
                 {
-                    Console.WriteLine("[C#] Loading Scene...");
+                    //Console.WriteLine("[C#] Loading Scene...");
+                    Debug.Log("[C#] Loading Scene...");
                     SceneManager.LoadScene("descentmenu");
                 }
                 // FOR QuitBtn
                 else if (name.ToString() == "QuitBtn")
                 {
-                    Console.WriteLine("[C#] Quitting Game...");
+                    //Console.WriteLine("[C#] Quitting Game...");
+                    Debug.Log("[C#] Quitting Game...");
                     SceneManager.QuitGame();
                 }
             }

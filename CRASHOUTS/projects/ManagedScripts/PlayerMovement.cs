@@ -4,16 +4,78 @@ namespace CrashoutsEngine
     [ScriptBehaviour]
     public class PlayerMovement : ScriptBase
     {
-        float horizontalInput;
+
+        // --- CALLBACK DEFINITIONS ---
+        #region COLLISION EVENTS
+        // 1. Trigger Events (Ghost/Sensor collisions)
+        public void OnTriggerEnter(uint otherEntity)
+        {
+            //Console.WriteLine("[C#] OnTriggerEnter: Hit entity " + otherEntity);
+            string msg = "[C#] OnTriggerEnter: Hit entity " + otherEntity;
+            Debug.Log(msg);
+            // Logic: Check for pickups, checkpoints, etc.
+        }
+
+        public void OnTriggerStay(uint otherEntity)
+        {
+            // Console.WriteLine("[C#] OnTriggerStay: Inside entity " + otherEntity);
+            string msg = "[C#] OnTriggerStay: Inside entity " + otherEntity;
+            Debug.Log(msg);
+            // Logic: Damage over time (Lava), conveyor belts
+        }
+
+        public void OnTriggerExit(uint otherEntity)
+        {
+            //Console.WriteLine("[C#] OnTriggerExit: Left entity " + otherEntity);
+            string msg = "[C#] OnTriggerExit: Left entity " + otherEntity;
+            Debug.Log(msg);
+        }
+
+        // 2. Collision Events (Physical/Solid collisions)
+        public void OnCollideEnter(uint otherEntity)
+        {
+            //Console.WriteLine("[C#] OnCollideEnter: Hit solid object " + otherEntity);
+            string msg = "[C#] OnCollideEnter: Hit solid object " + otherEntity;
+            Debug.Log(msg);
+
+            // Logic: Reset Jump if we hit the ground
+            // isGrounded = true;
+            // isJumping = false;
+        }
+
+        public void OnCollideStay(uint otherEntity)
+        {
+            // Logic: Friction, pushing objects
+            string msg = "[C#] OnCollideStay: Touching entity " + otherEntity;
+            Debug.Log(msg);
+        }
+
+        public void OnCollideExit(uint otherEntity)
+        {
+            //Console.WriteLine("[C#] OnCollideExit: Left solid object " + otherEntity);
+            string msg = "[C#] OnCollideExit: Left solid object " + otherEntity;
+            Debug.Log(msg);
+            // Logic: Coyote time, falling detection
+            // isGrounded = false;
+        }
+        #endregion
+
+        //bool isFacingRight = true;
         //float moveSpeed = 6f;
-        bool isFacingRight = true;
+
+        float horizontalInput;
+        float maxSpeed = 5f;
+
         bool moveLeft;
         bool moveRight;
         bool isMoving = false;
         bool wasMoving = false;
+        bool isGrounded = false;
+
         public float jumpPower = 20000f;
         public static bool isJumping = false;
         public static bool isFalling = false;
+
         //private float lastY;
         //public float FallingThreshold = -0.01f;
         //private int onPlatform = 0;
@@ -34,20 +96,15 @@ namespace CrashoutsEngine
 
         //public GameObject GObackground;
 
-
-        //public void Awake()
-        //{
-        //    spriteRenderer = GetComponent<SpriteRenderer>();
-        //}
-
         // Start is called before the first frame update
         public override void Start()
         {
             //animator = Entity.GetComponent<Animator>();
             rb = Entity.GetComponent<RigidBodyComponent>();
+
             //lastY = transform.position.y;
             //animator.SetBool("IsRunning", false);
-           // animator.SetBool("IsFalling", false);
+            //animator.SetBool("IsFalling", false);
             //animator.SetBool("IsJumping", false);
             //animator.SetBool("PressQ", false);
             //startPos = transform.position;
@@ -55,12 +112,23 @@ namespace CrashoutsEngine
             //GObackground.SetActive(false);
 
             //AudioManager.GetInstance().Play("ambient");
+            isGrounded = false;
 
+            // --- REGISTER ALL CALLBACKS ---
+            // Pass 'this.MethodName' to the engine bindings
+            CollisionEvents.RegisterTriggerEnter(Entity.ID, this.OnTriggerEnter);
+            CollisionEvents.RegisterTriggerStay(Entity.ID, this.OnTriggerStay);
+            CollisionEvents.RegisterTriggerExit(Entity.ID, this.OnTriggerExit);
+
+            CollisionEvents.RegisterCollideEnter(Entity.ID, this.OnCollideEnter);
+            CollisionEvents.RegisterCollideStay(Entity.ID, this.OnCollideStay);
+            CollisionEvents.RegisterCollideExit(Entity.ID, this.OnCollideExit);
         }
 
         // Update is called once per frame
         public override void Update()
         {
+
             var tf = Entity.GetComponent<TransformComponent>();
             //horizontalInput = Input.GetAxis("Horizontal");
             horizontalInput = 0f;
@@ -76,27 +144,29 @@ namespace CrashoutsEngine
             }
             //lastY = transform.position.y;
             isMoving = moveLeft || moveRight;
-            if (isMoving && !wasMoving)
+            if (isMoving && !wasMoving && isGrounded)
             {
                 //Console.WriteLine("[C#] Player started moving -> Play footsteps");
                 AudioManager.GetInstance().Play("footsteps");
             }
-            else if (!isMoving && wasMoving)
+            else if (!isGrounded || !isMoving && wasMoving)
             {
                 //Console.WriteLine("[C#] Player stopped moving -> Stop footsteps_loop");
                 AudioManager.GetInstance().Stop("footsteps");
             }
 
-            //FlipSprite(horizontalInput);
+            /*
+            FlipSprite(horizontalInput);
 
-            //if (Input.GetButtonDown("Jump") && !isJumping)
-            //{
-            //    rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpPower);
-            //    isJumping = true;
-            //    animator.SetBool("IsJumping", true);
+            if (Input.GetButtonDown("Jump") && !isJumping)
+            {
+                rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpPower);
+                isJumping = true;
+                animator.SetBool("IsJumping", true);
 
-            //    switchcharacter?.SwitchAvatar();
-            //}
+                switchcharacter?.SwitchAvatar();
+            }
+            */
 
             if (Input.IsKeyTriggered(Key.Space) && !isJumping)
             {
@@ -104,20 +174,22 @@ namespace CrashoutsEngine
                 isJumping = true;
                 //animator.SetBool("IsJumping", true);
             }
-            //if (animator.GetBool("IsJumping") && rb.linearVelocity.y < 0 && IsOnPlatform == false)
-            //{
-            //    // isFalling = true;
-            //    animator.SetBool("IsFalling", true);
-            //    animator.SetBool("IsJumping", false);
-            //    isJumping = false;
-            //    switchcharacter?.SwitchAvatar();
-            //}
-            /*  else if (rb.linearVelocity.y < 0)
-              {
-                  Debug.Log("Keepsfalling");
-                  animator.SetBool("IsFalling", true);
-                  switchcharacter?.SwitchAvatar();
-              } */
+            /*
+            if (animator.GetBool("IsJumping") && rb.linearVelocity.y < 0 && IsOnPlatform == false)
+            {
+                // isFalling = true;
+                animator.SetBool("IsFalling", true);
+                animator.SetBool("IsJumping", false);
+                isJumping = false;
+                switchcharacter?.SwitchAvatar();
+            }
+            else if (rb.linearVelocity.y < 0)
+            {
+                Debug.Log("Keepsfalling");
+                animator.SetBool("IsFalling", true);
+                switchcharacter?.SwitchAvatar();
+            }
+            */
             var vel = rb.LinearVelocity;
             /*
             // Jump started and peak reached then beginning to fall
@@ -148,35 +220,37 @@ namespace CrashoutsEngine
             }*/
         }
 
-        //private void FixedUpdate()
-        //{
-        //    if (IsOnPlatform)
-        //    {
-        //        rb.linearVelocity = new Vector2((horizontalInput * moveSpeed) + platformRb.linearVelocity.x, rb.linearVelocity.y);
-        //    }
+        /*
+        private void FixedUpdate()
+        {
+            if (IsOnPlatform)
+            {
+                rb.linearVelocity = new Vector2((horizontalInput * moveSpeed) + platformRb.linearVelocity.x, rb.linearVelocity.y);
+            }
 
-        //    else
-        //    {
-        //        rb.linearVelocity = new Vector2(horizontalInput * moveSpeed, rb.linearVelocity.y);
-        //    }
-        //    if (horizontalInput != 0)
-        //    {
-        //        animator.SetBool("IsRunning", true);
-        //    }
-        //    else if (!animator.GetBool("IsJumping") && !animator.GetBool("IsFalling") && !animator.GetBool("PressQ"))
-        //    {
-        //        animator.SetBool("IsRunning", false);
-        //        if (animator.GetBool("IsLight"))
-        //        {
-        //            animator.Play("Idle Light");
-        //        }
-        //        else
-        //        {
-        //            // Debug.Log("Play Idle");
-        //            animator.Play("Idle");
-        //        }
-        //    }
-        //}
+            else
+            {
+                rb.linearVelocity = new Vector2(horizontalInput * moveSpeed, rb.linearVelocity.y);
+            }
+            if (horizontalInput != 0)
+            {
+                animator.SetBool("IsRunning", true);
+            }
+            else if (!animator.GetBool("IsJumping") && !animator.GetBool("IsFalling") && !animator.GetBool("PressQ"))
+            {
+                animator.SetBool("IsRunning", false);
+                if (animator.GetBool("IsLight"))
+                {
+                    animator.Play("Idle Light");
+                }
+                else
+                {
+                    // Debug.Log("Play Idle");
+                    animator.Play("Idle");
+                }
+            }
+        }*/
+
         public override void FixedUpdate()
         {
             // movement

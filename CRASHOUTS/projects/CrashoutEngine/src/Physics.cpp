@@ -409,8 +409,8 @@ namespace Physics {
 				Component::RigidBodyComponent* rigidBody1{ globalECS.GetComponent<Component::RigidBodyComponent>(evnt.entity1) };
 				Component::RigidBodyComponent* rigidBody2{ globalECS.GetComponent<Component::RigidBodyComponent>(evnt.entity2) };
 
-				Component::ColliderComponent* collider1{ globalECS.GetComponent<Component::ColliderComponent>(evnt.entity1) };
-				Component::ColliderComponent* collider2{ globalECS.GetComponent<Component::ColliderComponent>(evnt.entity2) };
+				//Component::ColliderComponent* collider1{ globalECS.GetComponent<Component::ColliderComponent>(evnt.entity1) };
+				//Component::ColliderComponent* collider2{ globalECS.GetComponent<Component::ColliderComponent>(evnt.entity2) };
 
 				/*Collision::AABBRect region1{ Collision::GetAABB(*(collider1->collider), collider1->collider->position) };
 				Collision::AABBRect region2{ Collision::GetAABB(*(collider2->collider), collider2->collider->position) };*/
