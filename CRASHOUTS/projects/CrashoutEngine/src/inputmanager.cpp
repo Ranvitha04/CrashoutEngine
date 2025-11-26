@@ -15,7 +15,7 @@ Handles keyboard mouse and scroll wheel input using GLFW
 #include <glm/glm.hpp>
 
 #include "CEVec2.h"
-//ENTIRE INPUTMANAGER IS TO BE REFACTORED/REMOVED LATER TO ADHERE TO ECS - Rain
+
 /// Static storage for the GLFW window pointer
 GLFWwindow* InputManager::Window = nullptr;
 
@@ -243,3 +243,13 @@ bool InputManager::IsKeyHeld(Key key)
 {
     return IsKeyHeld(static_cast<int>(key));
 }
+
+void InputManager::ClearInputs()
+{
+    Keys.clear();
+    MouseButtons.clear();
+    ScrollYAccum = 0.0f;
+    ScrollYFrame = 0.0f;
+    s_typedChars.clear();
+}
+

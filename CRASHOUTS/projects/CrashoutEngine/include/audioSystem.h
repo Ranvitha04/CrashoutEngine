@@ -92,6 +92,8 @@ namespace CrashoutsEngine
 
             bool stopTagged(const std::string& key);
 
+            void setPaused(bool paused);
+
         private:
             AudioSystem() = default;
             ~AudioSystem() = default;
