@@ -2,9 +2,9 @@ namespace CrashoutsEngine
 {
     public static class Time
     {
-        public static double dt => InternalCalls.TimeGetDT();
-        public static double fixedDT => InternalCalls.TimeGetFixedDT();
-        public static double fps => InternalCalls.TimeGetFPS();
-        public static int steps => InternalCalls.TimeGetSteps();
+        public static double DT => InternalCalls.TimeGetDT();
+        public static double FixedDT => InternalCalls.TimeGetFixedDT();
+        public static double FPS => InternalCalls.TimeGetFPS();
+        public static int Steps => InternalCalls.TimeGetSteps();
     }
 }

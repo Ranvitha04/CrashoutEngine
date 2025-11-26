@@ -36,6 +36,14 @@ namespace CrashoutsEngine
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal static extern bool EntityHasCollider(uint entityID);
 
+        // Inter Script Communications
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern object GetScript(uint entityID, string scriptName);
+
+        // Find Entity
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern uint FindEntityByName(string name);
+
         //time
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal static extern double TimeGetDT();

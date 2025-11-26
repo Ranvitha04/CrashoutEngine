@@ -660,13 +660,13 @@
         {
             "name": "Player",
             "layer": {
-                "currentLayer": 0
+                "currentLayer": 1
             },
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 4.2785749435424809,
-                    "y": 25.79373550415039,
+                    "x": -47.375213623046878,
+                    "y": 206.28384399414063,
                     "z": 1.0
                 },
                 "size": {
@@ -691,8 +691,8 @@
             "collider": {
                 "helperType": 2,
                 "position": {
-                    "x": 4.2785749435424809,
-                    "y": 25.79373550415039,
+                    "x": -47.375213623046878,
+                    "y": 206.28384399414063,
                     "z": 1.0
                 },
                 "offset": {
@@ -701,13 +701,13 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": -6.921439170837402,
-                    "y": -4.459318161010742,
+                    "x": -58.57518005371094,
+                    "y": 176.02659606933595,
                     "z": 1.0
                 },
                 "max": {
-                    "x": 15.478589057922364,
-                    "y": 56.046791076660159,
+                    "x": -36.17524719238281,
+                    "y": 236.5410919189453,
                     "z": 1.0
                 },
                 "rotation": 0.0
@@ -744,7 +744,13 @@
             },
             "script": {
                 "scripts": [
-                    "PlayerMovement"
+                    {
+                        "className": "PlayerMovement",
+                        "fields": {
+                            "jumpPower": 25000.0,
+                            "IsOnPlatform": false
+                        }
+                    }
                 ]
             },
             "camera": {
@@ -767,8 +773,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 4.2785749435424809,
-                    "y": 11.171735763549805,
+                    "x": -47.375213623046878,
+                    "y": 191.66184997558595,
                     "z": -4.199999809265137
                 },
                 "size": {
@@ -793,8 +799,8 @@
             "collider": {
                 "helperType": 0,
                 "position": {
-                    "x": 4.2785749435424809,
-                    "y": 3.1717357635498049,
+                    "x": -47.375213623046878,
+                    "y": 183.66184997558595,
                     "z": -4.199999809265137
                 },
                 "offset": {
@@ -804,14 +810,17 @@
                 },
                 "radius": 10.800000190734864,
                 "center": {
-                    "x": 4.2785749435424809,
-                    "y": 3.1717357635498049,
+                    "x": -47.375213623046878,
+                    "y": 183.66184997558595,
                     "z": -4.199999809265137
                 }
             },
             "script": {
                 "scripts": [
-                    "GroundSensor"
+                    {
+                        "className": "GroundSensor",
+                        "fields": {}
+                    }
                 ]
             },
             "parent": {
@@ -836,15 +845,15 @@
             }
         },
         {
-            "name": "Tex_Pressure Plate",
+            "name": "plate_1",
             "layer": {
                 "currentLayer": 0
             },
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 128.25469970703126,
-                    "y": 23.276437759399415,
+                    "x": -47.94267272949219,
+                    "y": 150.77984619140626,
                     "z": -1.0
                 },
                 "size": {
@@ -869,8 +878,8 @@
             "collider": {
                 "helperType": 1,
                 "position": {
-                    "x": 128.25469970703126,
-                    "y": 5.276437759399414,
+                    "x": -47.94267272949219,
+                    "y": 132.77984619140626,
                     "z": -1.0
                 },
                 "offset": {
@@ -879,13 +888,13 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 112.40469360351563,
-                    "y": -0.6235618591308594,
+                    "x": -63.79267883300781,
+                    "y": 126.87985229492188,
                     "z": -1.0
                 },
                 "max": {
-                    "x": 144.10470581054688,
-                    "y": 11.176437377929688,
+                    "x": -32.09266662597656,
+                    "y": 138.67984008789063,
                     "z": -1.0
                 }
             },
@@ -921,7 +930,104 @@
             },
             "script": {
                 "scripts": [
-                    "PressurePlate"
+                    {
+                        "className": "PressurePlate",
+                        "fields": {
+                            "wallName": "wall_test"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "wall_test",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 16.0,
+                    "y": 16.0,
+                    "z": -1.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "spritesheet\\lava platform\\lava platform_42.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 0.8232043981552124,
+                    "y": 0.8232043981552124,
+                    "z": 0.8232043981552124,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "MovingWall",
+                        "fields": {
+                            "PlatesActive": 0
+                        }
+                    }
+                ]
+            },
+            "tilemap": {
+                "tileSize": 32,
+                "activeAsset": "tilemaps/Rock_Door",
+                "tileAssetNames": [
+                    "Rock_Door"
+                ],
+                "gridData": [
+                    {
+                        "x": -2,
+                        "y": 0,
+                        "asset": "tilemaps/Rock_Door"
+                    },
+                    {
+                        "x": -1,
+                        "y": 0,
+                        "asset": "tilemaps/Rock_Door"
+                    },
+                    {
+                        "x": 0,
+                        "y": 0,
+                        "asset": "tilemaps/Rock_Door"
+                    },
+                    {
+                        "x": 1,
+                        "y": 0,
+                        "asset": "tilemaps/Rock_Door"
+                    },
+                    {
+                        "x": 2,
+                        "y": 0,
+                        "asset": "tilemaps/Rock_Door"
+                    }
                 ]
             }
         }

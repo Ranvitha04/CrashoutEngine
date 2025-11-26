@@ -115,6 +115,7 @@ void PerformPendingSceneLoad() {
 
         // Now it is safe to nuke the world
         CrashoutsEngine::ECS::getInstance()->Reset();
+        CrashoutsEngine::CollisionEventManager::GetInstance().Clear();
         CrashoutsEngine::Serialization::currSceneName = g_PendingSceneName;
         CrashoutsEngine::Serialization::LoadScenes(g_PendingSceneName);
 
@@ -559,6 +560,7 @@ void Update(double const& dt) {
     CrashoutsEngine::UpdateHierarchy(*CrashoutsEngine::ECS::getInstance());
 
     if (engineState == EngineState::PLAY) {
+        CrashoutsEngine::ScriptSystem::UpdateAll();
 
         CrashoutsEngine::ScriptSystem::UpdateAll();
 

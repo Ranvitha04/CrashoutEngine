@@ -49,6 +49,10 @@
 #include "textinputcomponent.h"
 #include "uilayoutcomponent.h"
 
+// Script + Reflection
+#include <mono/metadata/reflection.h>
+#include <mono/metadata/attrdefs.h>
+
 // File I/O Util Functions
 namespace {
     /*!
@@ -317,8 +321,19 @@ namespace CrashoutsEngine {
                 }
 
                 // Set Entity Layer
-                if (entityValue.HasMember(Keys::LAYER_COMPONENT) && entityValue[Keys::LAYER_COMPONENT].IsUint()) {
-                    layerComp.currentLayer = entityValue[Keys::LAYER_COMPONENT].GetUint();
+                if (entityValue.HasMember(Keys::LAYER_COMPONENT)) {
+                    const rapidjson::Value& layerVal = entityValue[Keys::LAYER_COMPONENT];
+
+                    // Case 1: Old Format (Raw Int) - Backward compatibility
+                    if (layerVal.IsUint()) {
+                        layerComp.currentLayer = layerVal.GetUint();
+                    }
+                    // Case 2: New Format (Object)
+                    else if (layerVal.IsObject()) {
+                        if (layerVal.HasMember("currentLayer") && layerVal["currentLayer"].IsUint()) {
+                            layerComp.currentLayer = layerVal["currentLayer"].GetUint();
+                        }
+                    }
                 }
 
                 // Set Entity Transform
@@ -716,25 +731,76 @@ namespace CrashoutsEngine {
                 // Check if Script
                 if (entityValue.HasMember(Keys::SCRIPT_COMPONENT) && entityValue[Keys::SCRIPT_COMPONENT].IsObject()) {
                     const rapidjson::Value& scriptValue = entityValue[Keys::SCRIPT_COMPONENT];
-
-                    // Create the component: default to empty constructor first
                     ScriptComponent& sc = gECS.AddComponent<ScriptComponent>(newEntity);
                     sc.EntityID = static_cast<uint32_t>(newEntity);
 
-                    // Load scripts array
+                    // --- PASS 1: Instantiate Scripts ---
                     if (scriptValue.HasMember("scripts") && scriptValue["scripts"].IsArray()) {
                         const rapidjson::Value& scriptsArr = scriptValue["scripts"];
+
                         for (rapidjson::SizeType k = 0; k < scriptsArr.Size(); ++k) {
-                            if (scriptsArr[k].IsString()) {
-                                std::string className = scriptsArr[k].GetString();
-                                sc.AddScript(className);
+                            const rapidjson::Value& item = scriptsArr[k];
+
+                            // Handle Old Format (String only) for compatibility
+                            if (item.IsString()) {
+                                sc.AddScript(item.GetString());
+                            }
+                            // Handle New Format (Object)
+                            else if (item.IsObject() && item.HasMember("className")) {
+                                sc.AddScript(item["className"].GetString());
                             }
                         }
                     }
 
-                    // Initialize scripts immediately if Mono is ready
+                    // Initialize to create MonoObjects (Memory Allocation)
                     if (MonoManager::GetDomain() && MonoManager::GetAssembly()) {
                         sc.Initialize(MonoManager::GetDomain(), MonoManager::GetAssembly());
+                    }
+
+                    // --- PASS 2: Apply Field Data ---
+                    // Now that 'sc.Scripts[i].Instance' exists, we can write data to it.
+                    if (scriptValue.HasMember("scripts") && scriptValue["scripts"].IsArray()) {
+                        const rapidjson::Value& scriptsArr = scriptValue["scripts"];
+
+                        for (rapidjson::SizeType k = 0; k < scriptsArr.Size(); ++k) {
+                            const rapidjson::Value& item = scriptsArr[k];
+
+                            // We match index k in JSON to index k in ScriptComponent
+                            if (k >= sc.Scripts.size()) break;
+                            ScriptInstance& inst = sc.Scripts[k];
+
+                            if (item.IsObject() && item.HasMember("fields") && inst.Instance && inst.Class) {
+                                const rapidjson::Value& fields = item["fields"];
+
+                                for (auto it = fields.MemberBegin(); it != fields.MemberEnd(); ++it) {
+                                    const char* fieldName = it->name.GetString();
+                                    MonoClassField* field = mono_class_get_field_from_name(inst.Class, fieldName);
+
+                                    if (field) {
+                                        MonoType* type = mono_field_get_type(field);
+                                        int typeEnum = mono_type_get_type(type);
+
+                                        // Apply based on type
+                                        if (typeEnum == MONO_TYPE_I4 && it->value.IsInt()) {
+                                            int val = it->value.GetInt();
+                                            mono_field_set_value(inst.Instance, field, &val);
+                                        }
+                                        else if (typeEnum == MONO_TYPE_R4 && it->value.IsNumber()) {
+                                            float val = it->value.GetFloat();
+                                            mono_field_set_value(inst.Instance, field, &val);
+                                        }
+                                        else if (typeEnum == MONO_TYPE_BOOLEAN && it->value.IsBool()) {
+                                            bool val = it->value.GetBool();
+                                            mono_field_set_value(inst.Instance, field, &val);
+                                        }
+                                        else if (typeEnum == MONO_TYPE_STRING && it->value.IsString()) {
+                                            MonoString* str = mono_string_new(MonoManager::GetDomain(), it->value.GetString());
+                                            mono_field_set_value(inst.Instance, field, str);
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
 
@@ -1493,21 +1559,86 @@ namespace CrashoutsEngine {
                 if (gECS.HasComponent<ScriptComponent>(id)) {
                     const ScriptComponent& scriptComp = *gECS.GetComponent<ScriptComponent>(id);
                     rapidjson::Value scriptValue(rapidjson::kObjectType);
-
-                    // Create array for script names
                     rapidjson::Value scriptsArray(rapidjson::kArrayType);
 
-                    for (const auto& scriptInstance : scriptComp.Scripts) {
-                        // Save the class name. State inside C# scripts is NOT saved here 
-                        if (!scriptInstance.ClassName.empty()) {
-                            rapidjson::Value strVal;
-                            strVal.SetString(scriptInstance.ClassName.c_str(), allocator);
-                            scriptsArray.PushBack(strVal, allocator);
+                    for (const auto& inst : scriptComp.Scripts) {
+                        if (inst.ClassName.empty()) continue;
+
+                        // 1. Create Script Object
+                        rapidjson::Value scriptObj(rapidjson::kObjectType);
+
+                        // Save ClassName
+                        rapidjson::Value nameVal;
+                        nameVal.SetString(inst.ClassName.c_str(), allocator);
+                        scriptObj.AddMember("className", nameVal, allocator);
+
+                        // 2. Serialize Fields
+                        if (inst.Instance && inst.Class) {
+                            rapidjson::Value fieldsObj(rapidjson::kObjectType);
+
+                            void* iter = nullptr;
+                            while (MonoClassField* field = mono_class_get_fields(inst.Class, &iter)) {
+                                const char* fieldName = mono_field_get_name(field);
+                                uint32_t flags = mono_field_get_flags(field);
+
+                                if (flags & MONO_FIELD_ATTR_STATIC) continue;
+
+                                // Check Visibility (Public or Attribute)
+                                bool isPublic = (flags & MONO_FIELD_ATTR_PUBLIC);
+                                bool hasAttribute = false;
+
+                                // Look up the attribute class (Cache this static pointer for speed!)
+                                static MonoClass* attrClass = mono_class_from_name(
+                                    MonoManager::GetImage(), "CrashoutsEngine", "SerializeField");
+
+                                if (attrClass) {
+                                    // Get all attributes on this specific field
+                                    MonoCustomAttrInfo* attrInfo = mono_custom_attrs_from_field(inst.Class, field);
+                                    if (attrInfo) {
+                                        // Check if our specific attribute is present
+                                        hasAttribute = mono_custom_attrs_has_attr(attrInfo, attrClass);
+                                        mono_custom_attrs_free(attrInfo); // Important: Clean up!
+                                    }
+                                }
+
+                                if (isPublic || hasAttribute) {
+                                    MonoType* type = mono_field_get_type(field);
+                                    int typeEnum = mono_type_get_type(type);
+                                    rapidjson::Value key(fieldName, allocator);
+
+                                    if (typeEnum == MONO_TYPE_I4) {
+                                        int val;
+                                        mono_field_get_value(inst.Instance, field, &val);
+                                        fieldsObj.AddMember(key, val, allocator);
+                                    }
+                                    else if (typeEnum == MONO_TYPE_R4) {
+                                        float val;
+                                        mono_field_get_value(inst.Instance, field, &val);
+                                        fieldsObj.AddMember(key, val, allocator);
+                                    }
+                                    else if (typeEnum == MONO_TYPE_BOOLEAN) {
+                                        bool val;
+                                        mono_field_get_value(inst.Instance, field, &val);
+                                        fieldsObj.AddMember(key, val, allocator);
+                                    }
+                                    else if (typeEnum == MONO_TYPE_STRING) {
+                                        MonoString* monoStr = nullptr;
+                                        mono_field_get_value(inst.Instance, field, &monoStr);
+                                        if (monoStr) {
+                                            char* str = mono_string_to_utf8(monoStr);
+                                            rapidjson::Value sVal(str, allocator);
+                                            fieldsObj.AddMember(key, sVal, allocator);
+                                            mono_free(str);
+                                        }
+                                    }
+                                }
+                            }
+                            scriptObj.AddMember("fields", fieldsObj, allocator);
                         }
+                        scriptsArray.PushBack(scriptObj, allocator);
                     }
 
                     scriptValue.AddMember("scripts", scriptsArray, allocator);
-
                     entityValue.AddMember(rapidjson::StringRef(Keys::SCRIPT_COMPONENT), scriptValue, allocator);
                 }
 

@@ -60,6 +60,7 @@ namespace CrashoutsEngine {
 			return instance;
 		}
 
+		void Clear() { collisionEvents.clear(); }
 		void initEvent(CrashoutsEngine::Entity entity, Type type);
 
 		void registerCollideEnter(CrashoutsEngine::Entity entity, CallbackFnCollide fn);

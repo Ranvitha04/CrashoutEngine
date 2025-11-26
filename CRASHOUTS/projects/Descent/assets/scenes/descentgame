@@ -16767,6 +16767,6 @@
         "Default": 0,
         "Ground": 2,
         "Lava": 4,
-        "Player": 1
+        "Player": 8
     }
 }

@@ -1866,9 +1866,6 @@ namespace UI { // --------------------------------------------------------------
                 CrashoutsEngine::RenderCamera::engineCamera.SetTargetAR(16.0f / 9.0f);
                 CrashoutsEngine::RenderCamera::engineCamera.UpdateMatrices(Settings::GetScreenWidth(), Settings::GetScreenHeight());
 
-                if (MonoManager::GetDomain() && MonoManager::GetAssembly()) {
-                    CrashoutsEngine::ScriptSystem::InitializeAll( MonoManager::GetDomain(), MonoManager::GetAssembly() );
-                }
             }
             ImGui::SameLine();
             // Pause
@@ -1893,10 +1890,8 @@ namespace UI { // --------------------------------------------------------------
                 
 				CrashoutsEngine::Audio::AudioSystem::instance().stopAll(true); // Stop FMOD Studio
                 CrashoutsEngine::Audio::AudioSystem::instance().setPaused(false);
+                CrashoutsEngine::Audio::AudioSystem::instance().stopMusicGroup(); // <-- Seems to work better than the above
 
-                if (MonoManager::GetDomain() && MonoManager::GetAssembly()) {
-                    CrashoutsEngine::ScriptSystem::DestroyAll();
-                }
             }
             ImGui::SameLine();
             // SAVE
