@@ -19,6 +19,7 @@
 #include "audiobindings.h"
 #include "scenebindings.h"
 #include "uibindings.h"
+#include "layerbindings.h"
 
 namespace CrashoutsEngine
 {
@@ -35,6 +36,8 @@ namespace CrashoutsEngine
         Bindings::RegisterAnimatorBindings();
         Bindings::RegisterSceneBindings();
         Bindings::RegisterUIBindings();
+        Bindings::RegisterLayerBindings();
+        Bindings::RegisterDebugBindings();
 	}
 
     void ScriptSystem::InitializeAll(MonoDomain* domain, MonoAssembly* assembly)

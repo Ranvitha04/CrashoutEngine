@@ -12,6 +12,10 @@
 #include <mono/metadata/debug-helpers.h>
 //#include <mono/metadata/appdomain.h>
 
+namespace CrashoutsEngine::Bindings {
+    void RegisterDebugBindings();
+};
+
 class MonoManager
 {
 public:

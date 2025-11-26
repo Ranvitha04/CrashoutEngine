@@ -1296,8 +1296,18 @@ namespace UI { // --------------------------------------------------------------
         }
 
         // Controls
-        if (autoscroll && ImGui::GetScrollY() >= ImGui::GetScrollMaxY())
+        static size_t lastLogSize = 0;
+        bool newLogsArrived = (logs.size() > lastLogSize);
+        lastLogSize = logs.size();
+
+        // ... [Draw Filtered Logs] ...
+
+        // --- SMART AUTO SCROLL ---
+        // Only scroll if we are at the bottom OR if new logs just arrived while we were at the bottom.
+        if (autoscroll && newLogsArrived)
+        {
             ImGui::SetScrollHereY(1.0f);
+        }
 
         if (ImGui::Button("Clear")) {
             Logger::Instance().Clear();
