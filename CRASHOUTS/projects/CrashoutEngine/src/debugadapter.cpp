@@ -24,6 +24,7 @@ runtime-extensible and project-agnostic.
 #include "debugdefaults.h"
 #include "debugAssetLoader.h"
 #include "changevaluecommand.h"
+#include "scriptvalidation.h"
 #include "undomanager.h"
 
 /*                                                         component includes
@@ -1502,12 +1503,36 @@ namespace {
 				if (inst.ClassName.size() < sizeof(buf))
 					std::memcpy(buf, inst.ClassName.data(), inst.ClassName.size());
 
-				// Plain typing still works
+				static std::string s_lastScriptError; // error message storage
+				std::string oldClass = inst.ClassName; // keep previous valid name
+
 				if (ImGui::InputText("Class Name", buf, sizeof(buf))) {
-					inst.ClassName = buf;
-					if (!inst.ClassName.empty() && monoReady) {
-						sc->Destroy();
-						sc->Initialize(MonoManager::GetDomain(), MonoManager::GetAssembly());
+					std::string newName = buf;
+
+					// Validate using your new helper
+					if (!newName.empty() &&
+						!CrashoutsEngine::IsValidScriptBehaviourClass(newName))
+					{
+						s_lastScriptError =
+							"The class '" + newName +
+							"' is not a valid script.\n\n"
+							"Scripts must contain [ScriptBehaviour] and match the filename.";
+
+						// revert textbox value to old valid name
+						std::strncpy(buf, oldClass.c_str(), sizeof(buf) - 1);
+						buf[sizeof(buf) - 1] = '\0';
+
+						ImGui::OpenPopup("Script Error");
+					}
+					else {
+						// Accept new name
+						inst.ClassName = newName;
+
+						// Reinitialize if valid and Mono is ready
+						if (!inst.ClassName.empty() && monoReady) {
+							sc->Destroy();
+							sc->Initialize(MonoManager::GetDomain(), MonoManager::GetAssembly());
+						}
 					}
 				}
 
