@@ -801,8 +801,8 @@ namespace Collision {
 		}
 
 		/*-------------------*/
-		currentFrameCollision.clear();
 		std::swap(currentFrameCollision, lastFrameCollision);
+		currentFrameCollision.clear();
 		
 
 	}

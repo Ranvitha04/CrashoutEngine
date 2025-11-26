@@ -116,5 +116,15 @@ namespace CrashoutsEngine
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal static extern bool EntityHasButton(uint entityID);
+
+        // --- LAYER COMPONENT LIFECYCLE ---
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern void AddLayer(uint entityID);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern void RemoveLayer(uint entityID);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern bool EntityHasLayer(uint entityID);
     }
 }

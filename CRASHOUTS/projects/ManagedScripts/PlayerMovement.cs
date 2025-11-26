@@ -5,38 +5,49 @@ namespace CrashoutsEngine
     public class PlayerMovement : ScriptBase
     {
 
+        // --- STATIC INSTANCE (Singleton Pattern for simple communication) ---
+        public static PlayerMovement Instance;
+
+        // --- Public State ---
+        public bool IsGrounded { get; private set; } = false;
+
         // --- CALLBACK DEFINITIONS ---
         #region COLLISION EVENTS
         // 1. Trigger Events (Ghost/Sensor collisions)
         public void OnTriggerEnter(uint otherEntity)
-        {
-            //Console.WriteLine("[C#] OnTriggerEnter: Hit entity " + otherEntity);
-            string msg = "[C#] OnTriggerEnter: Hit entity " + otherEntity;
-            Debug.Log(msg);
-            // Logic: Check for pickups, checkpoints, etc.
+        { 
+            Entity other = new Entity(otherEntity);
+
+            // Identify the object
+            var nameComp = other.GetComponent<NameComponent>();
+            string name = (nameComp != null) ? nameComp.Value : "Unnamed";
+            Debug.Log($"[C#] Hit Entity {otherEntity}: '{name}'");
         }
 
         public void OnTriggerStay(uint otherEntity)
         {
             // Console.WriteLine("[C#] OnTriggerStay: Inside entity " + otherEntity);
-            string msg = "[C#] OnTriggerStay: Inside entity " + otherEntity;
-            Debug.Log(msg);
+            //string msg = "[C#] OnTriggerStay: Inside entity " + otherEntity;
+            //Debug.Log(msg);
             // Logic: Damage over time (Lava), conveyor belts
         }
 
         public void OnTriggerExit(uint otherEntity)
         {
-            //Console.WriteLine("[C#] OnTriggerExit: Left entity " + otherEntity);
-            string msg = "[C#] OnTriggerExit: Left entity " + otherEntity;
-            Debug.Log(msg);
+            Entity other = new Entity(otherEntity);
+
+            // Identify the object
+            var nameComp = other.GetComponent<NameComponent>();
+            string name = (nameComp != null) ? nameComp.Value : "Unnamed";
+            Debug.Log($"[C#] Left Entity {otherEntity}: '{name}'");
         }
 
         // 2. Collision Events (Physical/Solid collisions)
         public void OnCollideEnter(uint otherEntity)
         {
             //Console.WriteLine("[C#] OnCollideEnter: Hit solid object " + otherEntity);
-            string msg = "[C#] OnCollideEnter: Hit solid object " + otherEntity;
-            Debug.Log(msg);
+            //string msg = "[C#] OnCollideEnter: Hit solid object " + otherEntity;
+            //Debug.Log(msg);
 
             // Logic: Reset Jump if we hit the ground
             // isGrounded = true;
@@ -46,15 +57,15 @@ namespace CrashoutsEngine
         public void OnCollideStay(uint otherEntity)
         {
             // Logic: Friction, pushing objects
-            string msg = "[C#] OnCollideStay: Touching entity " + otherEntity;
-            Debug.Log(msg);
+            //string msg = "[C#] OnCollideStay: Touching entity " + otherEntity;
+            //Debug.Log(msg);
         }
 
         public void OnCollideExit(uint otherEntity)
         {
             //Console.WriteLine("[C#] OnCollideExit: Left solid object " + otherEntity);
-            string msg = "[C#] OnCollideExit: Left solid object " + otherEntity;
-            Debug.Log(msg);
+            //string msg = "[C#] OnCollideExit: Left solid object " + otherEntity;
+            //Debug.Log(msg);
             // Logic: Coyote time, falling detection
             // isGrounded = false;
         }
@@ -68,9 +79,7 @@ namespace CrashoutsEngine
 
         bool moveLeft;
         bool moveRight;
-        bool isMoving = false;
-        bool wasMoving = false;
-        bool isGrounded = false;
+        bool footstepsPlaying = false;
 
         public float jumpPower = 20000f;
         public static bool isJumping = false;
@@ -95,13 +104,20 @@ namespace CrashoutsEngine
         RigidBodyComponent rb;
 
         //public GameObject GObackground;
+        public void SetGrounded(bool state)
+        {
+            IsGrounded = state;
+            // Optional: Reset vertical velocity if landing?
+            // if (state) isJumping = false;
+        }
 
         // Start is called before the first frame update
         public override void Start()
         {
+            Instance = this;
             //animator = Entity.GetComponent<Animator>();
             rb = Entity.GetComponent<RigidBodyComponent>();
-
+            //Debug.Log("start");
             //lastY = transform.position.y;
             //animator.SetBool("IsRunning", false);
             //animator.SetBool("IsFalling", false);
@@ -112,7 +128,8 @@ namespace CrashoutsEngine
             //GObackground.SetActive(false);
 
             //AudioManager.GetInstance().Play("ambient");
-            isGrounded = false;
+            IsGrounded = false;
+            footstepsPlaying = false;
 
             // --- REGISTER ALL CALLBACKS ---
             // Pass 'this.MethodName' to the engine bindings
@@ -128,7 +145,8 @@ namespace CrashoutsEngine
         // Update is called once per frame
         public override void Update()
         {
-
+            AudioManager.GetInstance().Stop("footsteps");
+            //Debug.Log("Updaet");
             var tf = Entity.GetComponent<TransformComponent>();
             //horizontalInput = Input.GetAxis("Horizontal");
             horizontalInput = 0f;
@@ -142,17 +160,19 @@ namespace CrashoutsEngine
             {
                 horizontalInput = 1f;
             }
+
             //lastY = transform.position.y;
-            isMoving = moveLeft || moveRight;
-            if (isMoving && !wasMoving && isGrounded)
+            if ((horizontalInput != 0.0f) && IsGrounded && !footstepsPlaying)
             {
                 //Console.WriteLine("[C#] Player started moving -> Play footsteps");
                 AudioManager.GetInstance().Play("footsteps");
+                footstepsPlaying = true;
             }
-            else if (!isGrounded || !isMoving && wasMoving)
+            else if (!IsGrounded || (horizontalInput == 0.0f) && footstepsPlaying)
             {
                 //Console.WriteLine("[C#] Player stopped moving -> Stop footsteps_loop");
                 AudioManager.GetInstance().Stop("footsteps");
+                footstepsPlaying = false;
             }
 
             /*
@@ -168,7 +188,7 @@ namespace CrashoutsEngine
             }
             */
 
-            if (Input.IsKeyTriggered(Key.Space) && !isJumping)
+            if (Input.IsKeyTriggered(Key.Space) && IsGrounded)
             {
                 rb.AddForce(new CEVec3(0f, jumpPower, 0f));
                 isJumping = true;

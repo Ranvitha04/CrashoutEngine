@@ -7,11 +7,12 @@ namespace CrashoutsEngine
     {
         public override void Start()
         {
-
+            //Debug.Log("Start");
         }
 
         public override void Update()
         {
+            //Debug.Log("TEST");
             var btn = Entity.GetComponent<ButtonComponent>();
             var name = Entity.GetComponent<NameComponent>();
             if (btn.IsClicked())
