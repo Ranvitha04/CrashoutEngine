@@ -178,11 +178,21 @@ void Init() {
     if (!GLApp::init(Settings::GetScreenWidth(), Settings::GetScreenHeight(), "CRASHOUTS")) {
         std::exit(EXIT_FAILURE);
     }
-    std::cout << Settings::GetScreenWidth()
-        << "x"
-        << Settings::GetScreenHeight()
-        << std::endl;
-    
+    glfwSetWindowFocusCallback(GLApp::ptr_window,
+        [](GLFWwindow*, int focused)
+        {
+            if (focused == GLFW_TRUE) {
+                engineState = EngineState::PLAY;   // window focused
+                CrashoutsEngine::Audio::AudioSystem::instance().setPaused(false);
+            }
+            else {
+                engineState = EngineState::PAUSE;  // window unfocused (ALT-TAB)
+                CrashoutsEngine::Audio::AudioSystem::instance().setPaused(true);
+                InputManager::ClearInputs();
+            }
+        }
+    );
+
     // Generate and Load Assets and Manifest
     CrashoutsEngine::Assets::GenerateAssetManifest();
     CrashoutsEngine::Assets::AssetManager::GetInstance().LoadManifestAssets();
@@ -596,6 +606,12 @@ void Update(double const& dt) {
 #else
         CrashoutsEngine::RenderCamera::engineCamera.UpdateMatrices(GLApp::width, GLApp::height);
 #endif
+    }
+    else if (engineState == EngineState::PAUSE) {
+        // Freeze gameplay, but still allow editor camera to move
+        physicsSystem.update(0.f);
+        InputManager::ClearInputs();
+        return;
     }
     else {
         FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Physics");
