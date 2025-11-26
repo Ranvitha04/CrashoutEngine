@@ -11,11 +11,12 @@
 #include "hierarchy_components.h"
 #include "entitymanager.h"
 #include "namecomponent.h"
+//#include "collidercomponent.h"
+#include "transformcomponent.h"
+#include "shapescomponent.h"
 #include <cmath> 
 #include "shapes.h"              
 #include <glm/gtc/matrix_transform.hpp>
-#include "transformcomponent.h"
-#include "shapescomponent.h"
 
 namespace CrashoutsEngine {
 
@@ -276,6 +277,18 @@ namespace CrashoutsEngine {
 
             // D. Z-Axis (Simple addition for 2D layers)
             childTransform->position.z = parentTransform->position.z + pointerParentComp->localPos.z;
+
+            //if (ecs.HasComponent<ColliderComponent>(child)) {
+            //    auto* colliderComp = ecs.GetComponent<ColliderComponent>(child);
+            //    if (colliderComp && colliderComp->collider) {
+            //        // 1. Sync Position
+            //        colliderComp->collider->updateCollider(childTransform->position);
+            //
+            //        // 2. Sync Rotation (Add parent's rotation influence)
+            //        // If your OBB/Polygon supports rotation, pass the new child rotation
+            //        colliderComp->collider->updateRotation(childTransform->rotation);
+            //    }
+            //}
 
             // ----------------------------------------------------------
             // 4. COLOR

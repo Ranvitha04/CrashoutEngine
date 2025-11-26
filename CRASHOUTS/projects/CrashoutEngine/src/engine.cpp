@@ -35,6 +35,7 @@ context and implement a game loop.
 #include "hierarchy_components.h" 
 #include "prefab_init.h"
 #include "instanceSystem.h"
+#include "sceneasset.h"
 
 #include "glapp.h"
 #include "log.h"
@@ -91,6 +92,35 @@ int gameTextureHeight = 600;    // Will be resized
 bool gameWinHovered{ false };
 #endif
 
+std::string g_PendingSceneName = "";
+bool g_IsSceneLoadPending = false;
+
+
+/*  _________________________________________________________________________ */
+/*! PerformPendingSceneLoad
+
+@param none
+
+@return none
+
+Call to ensure safe load based off run order
+*/
+void PerformPendingSceneLoad() {
+    if (g_IsSceneLoadPending) {
+        // Now it is safe to nuke the world
+        CrashoutsEngine::ECS::getInstance()->Reset();
+        CrashoutsEngine::Serialization::currSceneName = g_PendingSceneName;
+        CrashoutsEngine::Serialization::LoadScenes(g_PendingSceneName);
+
+        // Reset flags
+        g_IsSceneLoadPending = false;
+        g_PendingSceneName = "";
+
+        // Reset Mono to ensure scripts re-bind correctly
+        // (Optional depending on your architecture, but safe)
+        // MonoManager::ReloadScripts(); 
+    }
+}
 
 /*  _________________________________________________________________________ */
 /*! SetupConsole
@@ -489,6 +519,7 @@ Ensure time per frame and FPS are recorded.
 Let application update state changes (such as animation).
 */
 void Update(double const& dt) {
+    PerformPendingSceneLoad();
 
     GLApp::update_time();
 

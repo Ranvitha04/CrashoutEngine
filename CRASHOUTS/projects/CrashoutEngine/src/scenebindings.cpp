@@ -10,6 +10,7 @@
 #include "entitymanager.h"
 #include "assetmanager.h"
 #include "glapp.h"
+#include "engine.h"
 
 // Mono headers
 #include "mono/metadata/loader.h"
@@ -26,17 +27,17 @@ namespace
         char* utf8 = mono_string_to_utf8(sceneName);
 
         std::string nameString{ utf8 };
+        mono_free(utf8);
         if (nameString.empty()) return;
         if (nameString == Serialization::currSceneName) return;
 
         Assets::AssetManager& assetManager = Assets::AssetManager::GetInstance();
         if (!assetManager.Exists(nameString)) return;
 
-        ECS::getInstance()->Reset();
-        Serialization::currSceneName = nameString;
-        Serialization::LoadScenes(nameString);
+        g_PendingSceneName = nameString;
+        g_IsSceneLoadPending = true;
 
-        mono_free(utf8);
+        std::cout << "[Engine] Scene Load Scheduled: " << nameString << std::endl;
     }
 
     static void InternalQuitGame() {

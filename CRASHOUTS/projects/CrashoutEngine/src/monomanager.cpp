@@ -14,10 +14,35 @@
 #include "ScriptSystem.h"
 #include <thread>
 
+#include "mono/metadata/object.h"
+#include "mono/metadata/loader.h"
+#include "log.h" 
+
 MonoDomain* MonoManager::s_Domain = nullptr;
 MonoAssembly* MonoManager::s_Assembly = nullptr;
 std::filesystem::file_time_type MonoManager::s_LastWriteTime{};
 std::string MonoManager::s_AssemblyPath = "";
+
+namespace CrashoutsEngine::Bindings {
+
+    // 1. The C++ Helper Function
+    static void InternalLog(MonoString* message) {
+        if (message == nullptr) return;
+
+        // Convert C# string to C++ string
+        char* cStr = mono_string_to_utf8(message);
+        std::string msg(cStr);
+        mono_free(cStr);
+
+        // Send to your ImGui Console
+        Logger::Instance().Add(LogMessage::Level::Info, LogMessage::Subsystem::Scripting, msg);
+    }
+
+    // 2. Register it (Call this where you register other bindings)
+    void RegisterDebugBindings() {
+        mono_add_internal_call("CrashoutsEngine.Debug::Log", (const void*)InternalLog);
+    }
+};
 
 
 void MonoManager::Init(const std::string& domainName)

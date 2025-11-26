@@ -188,6 +188,14 @@ namespace CrashoutsEngine {
             // Cycle through sceneAsset sceneData (JSON document) for testing
             std::string fullPath = Assets::rootPath + "/scenes/" + sceneName;
 
+            char logBuffer[256];
+            // Format the string into the buffer
+            std::snprintf(logBuffer, sizeof(logBuffer),
+                "Scene changed to %s", sceneName.c_str());
+
+            // Pass the formatted string to the macro
+            LOGI(Core, logBuffer);
+
             std::string jsonContent = ReadFileToString(fullPath);
             if (jsonContent.empty()) {
                 std::cout << "ERROR: Failed to read scene file: " << fullPath << std::endl;

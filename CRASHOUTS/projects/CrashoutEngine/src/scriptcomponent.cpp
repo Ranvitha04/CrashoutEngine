@@ -150,6 +150,7 @@ namespace CrashoutsEngine
             {
                 ok &= InitializeOne(domain, assembly, EntityID, script);
             }
+            //script.Started = false;
         }
         return ok;
     }
@@ -160,7 +161,6 @@ namespace CrashoutsEngine
         {
             if (script.Started || !script.MethodStart || !script.Instance)
                 continue;
-
             MonoObject* exc = nullptr;
             mono_runtime_invoke(script.MethodStart, script.Instance, nullptr, &exc);
             if (exc) mono_print_unhandled_exception(exc);

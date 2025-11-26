@@ -41,4 +41,7 @@ extern int gameTextureHeight;    // Will be resized
 extern bool gameWinHovered;
 #endif
 
+extern std::string g_PendingSceneName;
+extern bool g_IsSceneLoadPending;
+
 #endif
