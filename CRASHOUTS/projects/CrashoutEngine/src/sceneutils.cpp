@@ -99,15 +99,30 @@ namespace Scene {
                         }
                     }
 
-                    float compensatedScale = tc->scale / RenderCamera::Camera::g_zoom;
+                    float finalScale = tc->scale;
 
                     std::string font = tc->font;
                     if (font == "") font = "Exo2-Regular";
 
+                    if (tc->isWorldSpace) {
+                        // Case 1: World Space Text (Behaves like a sprite)
+                        // DO NOT divide by zoom. Let the View Matrix handle the zoom scaling naturally.
+                        finalScale = tc->scale;
+                    }
+                    else {
+                        // Case 2: UI Text (Screen Space)
+                        // If your TextRenderer applies the Camera View Matrix to UI text (which is common in simple engines),
+                        // then you MUST compensate to keep it static.
+                        // However, the cleaner way is to NOT apply the View Matrix inside RenderText for UI.
+
+                        // Assuming your TextRenderer applies Camera View Matrix to everything:
+                        finalScale = tc->scale / RenderCamera::Camera::g_zoom;
+                    }
+
                     if (tc->centered)
-                        gTextRenderer->RenderCenteredText(tc->text, newOffset.x, newOffset.y, compensatedScale, tc->color, font, tc->isWorldSpace);
+                        gTextRenderer->RenderCenteredText(tc->text, newOffset.x, newOffset.y, finalScale, tc->color, font, tc->isWorldSpace);
                     else
-                        gTextRenderer->RenderText(tc->text, newOffset.x, newOffset.y, compensatedScale, tc->color, font, tc->isWorldSpace);
+                        gTextRenderer->RenderText(tc->text, newOffset.x, newOffset.y, finalScale, tc->color, font, tc->isWorldSpace);
 
                     TextInputComponent* input = globalECS.GetComponent<TextInputComponent>(id);
                     // Check if this entity is a focused text input
