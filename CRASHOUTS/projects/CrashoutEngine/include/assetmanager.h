@@ -25,11 +25,11 @@ namespace CrashoutsEngine {
 		
 	namespace Assets {
 
-		const std::string rootPath = "../../projects/Descent/assets/";
-#ifdef DEBUG
 		//const std::string rootPath = "../../projects/Descent/assets/";
+#ifdef DEBUG
+		const std::string rootPath = "../../projects/Descent/assets/";
 #else	// RELEASE MODE
-		//const std::string rootPath = "assets/";
+		const std::string rootPath = "assets/";
 #endif
 
 		const std::string assetManifestPath = rootPath + "json/assetmanifest.json";

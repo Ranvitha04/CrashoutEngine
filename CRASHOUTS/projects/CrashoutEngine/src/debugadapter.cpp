@@ -41,6 +41,7 @@ runtime-extensible and project-agnostic.
 #include "collidercomponent.h"
 #include "tilemapcomponent.h"
 #include "keyframe.h" // For AnimationComponent
+#include "hierarchy_components.h"
 
 // FOR GAME GUI
 #include "buttoncomponent.h"
@@ -245,42 +246,83 @@ namespace {
 		}
 		void drawInspector(ECS& ecs, Entity e) override {
 			using CrashoutsEngine::TransformState;
-			if (auto* t = ecs.GetComponent<Component::TransformComponent>(e)) {
-				// snapshot before drawing the fields
+			auto* t = ecs.GetComponent<Component::TransformComponent>(e);
+			if (!t) return;
+
+			// --- HIERARCHY AWARENESS FIX ---
+			// Check if this entity is a child
+			Component::ParentComponent* parentComp = nullptr;
+			if (ecs.HasComponent<Component::ParentComponent>(e)) {
+				parentComp = ecs.GetComponent<Component::ParentComponent>(e);
+				// Ensure parent is valid (id != 0)
+				if (parentComp && parentComp->parent == 0) parentComp = nullptr;
+			}
+
+			if (parentComp) {
+				// ============================================================
+				// CHILD MODE: Edit Local Transform (ParentComponent)
+				// ============================================================
+				ImGui::TextColored(ImVec4(0.5f, 1.0f, 0.5f, 1.0f), "Child Mode (Local Space)");
+
+				bool changed = false;
+
+				// 1. Local Position
+				float pos[3] = { parentComp->localPos.x, parentComp->localPos.y, parentComp->localPos.z };
+				if (ImGui::DragFloat3("Local Position", pos, 0.1f)) {
+					parentComp->localPos = { pos[0], pos[1], pos[2] };
+					changed = true;
+				}
+
+				// 2. Local Rotation (Degrees for UI, Radians internally?)
+				// Assuming localRot is in Radians to match TransformComponent standard
+				float rot = parentComp->localRot;
+				if (ImGui::DragFloat("Local Rotation", &rot, 1.0f)) {
+					parentComp->localRot = rot;
+					changed = true;
+				}
+
+				// 3. Local Scale
+				float scale[2] = { parentComp->localScale.x, parentComp->localScale.y };
+				if (ImGui::DragFloat2("Local Scale", scale, 0.05f)) {
+					parentComp->localScale = { scale[0], scale[1] };
+					changed = true;
+				}
+
+				// No Undo logic implemented here for brevity, but you can add it similar to below.
+				// IMPORTANT: Force update world transform immediately for responsiveness?
+				// Usually the system handles it next frame, which is fine.
+			}
+			else {
+				// ============================================================
+				// ROOT MODE: Edit World Transform (TransformComponent)
+				// ============================================================
+				// This is your existing logic, just wrapped in an else block.
+
+				ImGui::TextDisabled("World Space");
+
 				TransformState before{
 					t->position,
-					t->rotation,   // radians
-					t->size        // CEVec2
+					t->rotation,
+					t->size
 				};
 
-				// Track an edit session across all fields in this adapter
 				static bool   sEditing = false;
 				static Entity sEditingEntity = 0;
 				static TransformState sStart{};
 
-				//const bool wasAnyActive = ImGui::IsAnyItemActive();
-				draw_reflected(*t, "Transform");
+				draw_reflected(*t, "Transform"); // Your reflection helper
 
 				const bool nowAnyActive = ImGui::IsAnyItemActive();
 
-				// detect edit begin
-				if (!sEditing && nowAnyActive)
-				{
+				if (!sEditing && nowAnyActive) {
 					sEditing = true;
 					sEditingEntity = e;
-					sStart = before; // store the pre-edit state
+					sStart = before;
 				}
 
-				// detect edit end and record one undo
-				if (sEditing && sEditingEntity == e && !nowAnyActive)
-				{
+				if (sEditing && sEditingEntity == e && !nowAnyActive) {
 					sEditing = false;
-
-					TransformState after{
-						t->position,
-						t->rotation, // radians
-						t->size
-					};
+					TransformState after{ t->position, t->rotation, t->size };
 
 					const bool changed =
 						(sStart.position.x != after.position.x) ||
@@ -290,13 +332,11 @@ namespace {
 						(sStart.scale.x != after.scale.x) ||
 						(sStart.scale.y != after.scale.y);
 
-					if (changed)
-					{
+					if (changed) {
 						UndoManager::GetInstance().AddCommand(
-							std::make_unique<CrashoutsEngine::TransformEntityCommand>(
-								e, sStart, after));
+							std::make_unique<CrashoutsEngine::TransformEntityCommand>(e, sStart, after)
+						);
 					}
-
 					sEditingEntity = 0;
 				}
 			}
@@ -1824,7 +1864,7 @@ namespace CrashoutsEngine
 			// Helper function to convert 0-255 CEVec3 to 0-1 float[3] for ImGui's picker
 			auto EditColor = [](const char* label, CEColor& colorVec) {
 				float col[4] = { colorVec.x(), colorVec.y(), colorVec.z(), colorVec.w() };
-				if (ImGui::ColorEdit4(label, col)) {
+				if (ImGui::ColorEdit4(label, col, ImGuiColorEditFlags_AlphaBar)) {
 					colorVec.x() = col[0];
 					colorVec.y() = col[1];
 					colorVec.z() = col[2];

@@ -1,0 +1,56 @@
+using System;
+
+namespace CrashoutsEngine
+{
+    [ScriptBehaviour]
+    public class MenuButtons : ScriptBase
+    {
+        public override void Start()
+        {
+
+        }
+
+        public override void Update()
+        {
+            var btn = Entity.GetComponent<ButtonComponent>();
+            var name = Entity.GetComponent<NameComponent>();
+            if (btn.IsClicked())
+            {
+                Console.WriteLine("[C#] Name is " + name);
+
+                // FOR StartBtn
+                if(name.ToString() == "StartBtn")
+                {
+                    Console.WriteLine("[C#] Loading Scene...");
+                    SceneManager.LoadScene("descentgame");
+                }
+                // FOR SettingsBtn
+                else if (name.ToString() == "SettingsBtn")
+                {
+                    Console.WriteLine("[C#] Loading Scene...");
+                    SceneManager.LoadScene("descentsettings");
+                }
+                // FOR CloseBtn
+                else if (name.ToString() == "CloseBtn")
+                {
+                    Console.WriteLine("[C#] Loading Scene...");
+                    SceneManager.LoadScene("descentmenu");
+                }
+                // FOR QuitBtn
+                else if (name.ToString() == "QuitBtn")
+                {
+                    Console.WriteLine("[C#] Quitting Game...");
+                    SceneManager.QuitGame();
+                }
+            }
+            if (btn.IsHovered())
+            {
+                //Console.WriteLine("Hovered");
+            }
+        }
+
+        public override void FixedUpdate()
+        {
+        }
+    }
+}
