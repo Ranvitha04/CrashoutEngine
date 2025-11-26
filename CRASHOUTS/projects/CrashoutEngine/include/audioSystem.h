@@ -88,7 +88,7 @@ namespace CrashoutsEngine
             bool playMusicFileTagged(const std::string& key, const std::string& path, bool loop = true);
 
             bool playSFXFileTagged(const std::string& key,
-                const std::string& path);
+                const std::string& path, bool loop);
 
             bool stopTagged(const std::string& key);
 

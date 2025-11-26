@@ -59,5 +59,9 @@ namespace CrashoutsEngine
         public override void FixedUpdate()
         {
         }
+
+        public override void OnDestroy()
+        {
+        }
     }
 }

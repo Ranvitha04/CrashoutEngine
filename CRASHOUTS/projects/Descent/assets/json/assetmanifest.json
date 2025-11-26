@@ -57,6 +57,14 @@
             "path": "Footsteps2_Gravel-Dirt_far-small_1.wav"
         },
         {
+            "name": "Nightshift_BGM_Loop_70bpm",
+            "path": "Nightshift_BGM_Loop_70bpm.wav"
+        },
+        {
+            "name": "Nightshift_Menu_Loop_70bpm",
+            "path": "Nightshift_Menu_Loop_70bpm.wav"
+        },
+        {
             "name": "Squishy-Movement_1",
             "path": "Squishy-Movement_1.wav"
         },

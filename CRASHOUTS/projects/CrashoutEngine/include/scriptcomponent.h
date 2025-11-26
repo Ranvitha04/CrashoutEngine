@@ -23,6 +23,7 @@ namespace CrashoutsEngine
         MonoMethod* MethodStart = nullptr;
         MonoMethod* MethodUpdate = nullptr;
         MonoMethod* MethodFixedUpdate = nullptr;
+		MonoMethod* MethodOnDestroy = nullptr;
         bool Started = false;
         CE::u32 GCHandle = 0;
 

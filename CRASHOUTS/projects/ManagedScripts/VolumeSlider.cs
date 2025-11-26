@@ -81,6 +81,11 @@ namespace CrashoutsEngine
                 _lastMouseX = mousePos.x;
             }
         }
+        
+        public override void OnDestroy()
+        {
+            // Cleanup if necessary
+        }
 
         private void UpdateVisuals(float t)
         {

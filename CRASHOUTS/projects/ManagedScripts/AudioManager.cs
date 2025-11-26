@@ -9,7 +9,7 @@ public class AudioManager
     private AudioManager() {
         RegisterSound(
                 "ambient", // key you use in Play("ambient")
-                "assets/audio/Nightshift BGM_Loop_70bpm.wav",
+                "assets/audio/Nightshift_BGM_Loop_70bpm.wav",
                 1.0f, // base volume
                 true, // loop? (ambient usually yes)
                 SoundType.Music // it's music, not SFX
@@ -83,7 +83,7 @@ public class AudioManager
         if (s.Type == SoundType.Music)
             InternalCalls.Audio_PlayMusicFileTagged(s.Name, s.Path, s.Loop);
         else
-            InternalCalls.Audio_PlaySFXFileTagged(s.Name, s.Path);
+            InternalCalls.Audio_PlaySFXFileTagged(s.Name, s.Path, s.Loop);
     }
 
     // === Replacing Unity's Stop(name)

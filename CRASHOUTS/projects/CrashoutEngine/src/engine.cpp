@@ -107,6 +107,10 @@ Call to ensure safe load based off run order
 */
 void PerformPendingSceneLoad() {
     if (g_IsSceneLoadPending) {
+
+        // Before nuking, destroy scripts
+        CrashoutsEngine::ScriptSystem::DestroyAll();
+
         // Now it is safe to nuke the world
         CrashoutsEngine::ECS::getInstance()->Reset();
         CrashoutsEngine::Serialization::currSceneName = g_PendingSceneName;
@@ -669,6 +673,8 @@ void Update(double const& dt) {
 Release resources
 */
 void CleanUp() {
+    CrashoutsEngine::ScriptSystem::DestroyAll();
+
     CrashoutsEngine::PostProcessing::ShutdownPP();
 
     UI::Shutdown();
