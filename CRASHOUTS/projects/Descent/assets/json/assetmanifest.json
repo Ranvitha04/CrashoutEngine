@@ -301,6 +301,10 @@
             "path": "Character\\Normal Mode\\Chibi-Actions-SpriteSheet.png"
         },
         {
+            "name": "Normal spritesheet",
+            "path": "Character\\Normal spritesheet.png"
+        },
+        {
             "name": "Run Light",
             "path": "Character\\Run Light.gif"
         },

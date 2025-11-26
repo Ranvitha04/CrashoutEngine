@@ -147,6 +147,8 @@ namespace InstancingSystem {
         const InstancedParams& params
     );        
 
+    void RenderInstancedCirclesFromECS(bool previewOnly, int segments, const InstancedParams& params);
+
 
     //...................Rectangle.................................//
 
@@ -181,6 +183,8 @@ namespace InstancingSystem {
     void RenderInstancedRectangles(const InstancedParams& params);
 
     void ClearRectangleData();
+    void PopulateRectanglesFromECS(bool previewOnly);
+    void PopulateRectanglesFromEntities(const std::vector<CrashoutsEngine::Entity>& ids, bool previewOnly);
     
 
     //................Triangle................//
@@ -240,6 +244,8 @@ namespace InstancingSystem {
     void RenderMode4Circles(const InstancedParams& params);
     
     void RenderInstancedRectangles(const InstancedParams& params);
+    void RenderInstancedCirclesFromECS(bool previewOnly, int segments, const InstancedParams& params);
+    void RenderInstancedCirclesFromEntities(const std::vector<CrashoutsEngine::Entity>& ids, bool previewOnly, int segments, const InstancedParams& params);
     
     
     
@@ -288,7 +294,10 @@ namespace InstancingSystem {
     @details Creates Transform/DuckMotion/SpriteSheet/SpriteAnim components.
     */
     void InitializeSingleEcsDuck(float x, float y, float rotationDeg, float uniformScale);
+    void InitializeSecondEcsDuck(float x, float y, float rotationDeg, float uniformScale);
     void InitializeSingleEcsDuck(float x, float y, float rotationDeg, float uniformScale, const std::string& assetName, int cols, int rows, CEVec2 worldSize);
+    CrashoutsEngine::Entity GetSingleDuckEntity();
+    CrashoutsEngine::Entity GetSecondDuckEntity();
 
     void SetEntitySpriteSheet(CrashoutsEngine::Entity e, const std::string& assetName, int cols, int rows, CEVec2 worldSize);
 

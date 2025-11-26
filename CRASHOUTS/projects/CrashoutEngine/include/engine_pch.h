@@ -30,4 +30,5 @@
 // (Only add the most stable ones that are used *everywhere*)
 #include "entitymanager.h" 
 #include "assetmanager.h"
+#include "particleSystem.h"
 // ...
