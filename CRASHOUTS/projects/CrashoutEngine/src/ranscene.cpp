@@ -5,7 +5,7 @@
 @brief
 This source file implements the **Ran game state** logic for the CrashoutsEngine-based
 project. It contains functions responsible for initializing, updating, and rendering
-game elements within the “Ran” state, including ECS-driven random shape generation,
+game elements within the "Ran" state, including ECS-driven random shape generation,
 background rendering, and state transitions.
 
 The file primarily handles:
@@ -17,7 +17,7 @@ The file primarily handles:
 
 This module interacts closely with the `InstancingSystem` and the global ECS manager to
 maintain a flexible and data-driven rendering flow for the Ran state. It serves as the
-entry point for Ran’s lifecycle functions — including initialization (`InitRan`),
+entry point for Ran's lifecycle functions — including initialization (`InitRan`),
 rendering (`RenderBackground`), and updating (`UpdateRan`).
 */
 
@@ -41,6 +41,7 @@ rendering (`RenderBackground`), and updating (`UpdateRan`).
 #include <vector>
 #include <string>
 #include <cmath>
+#include <unordered_set>
 
 #include "namecomponent.h"
 #include "transformcomponent.h"
@@ -58,6 +59,9 @@ static bool gSpriteInitializedInScene = false;
 static Component::ParticleEmitter* gParticleEmitter = nullptr;
 static Component::FireEmitter* gFireEmitter = nullptr;
 static Component::FireballEmitter* gFireballEmitter = nullptr;
+static Component::ExplosionEmitter* gExplosionEmitter = nullptr;
+static Component::TrajectoryEmitter* gTrajectoryEmitter = nullptr;
+
 
 // Duck controls/state
 static float gDuckX = 0.0f;
@@ -124,6 +128,9 @@ static int gM5CircSegments = 24;
 static bool gMode6Initialized = false;
 static bool gPrevIPressed = false;
 
+// Mode 10 (All 3 particle systems together)
+static bool gMode10Initialized = false;
+
 static void ComputeWorldDimensions(float& worldWidth, float& worldHeight) {
     const float BASE_SIZE = 100.0f;
     float aspect = static_cast<float>(GLApp::width) / static_cast<float>(GLApp::height);
@@ -156,6 +163,7 @@ static void EnsureDuckInitialized() {
     Component::Animator::m_sprite.setRotation(gDuckRotationDeg);
 
     InstancingSystem::InitializeSingleEcsDuck(gDuckX, gDuckY, gDuckRotationDeg, gDuckScale);
+    InstancingSystem::InitializeSecondEcsDuck(gDuckX + 10.f, gDuckY, gDuckRotationDeg, gDuckScale);
     gSpriteInitializedInScene = true;
 }
 
@@ -257,12 +265,6 @@ static void InitializeMode5EcsRandomShapes(int perTypeCount) {
             gM5TriColor.push_back(c01);
             gM5TriRot.push_back(rot);
             gM5TriScale.push_back(1.0f);
-
-            // Derive side length from t1..t3 (use edge t2-t3)
-            //auto dx = sc->t3.x - sc->t2.x;
-            //auto dy = sc->t3.y - sc->t2.y;
-            //float side = std::sqrt(dx * dx + dy * dy);
-            //gM5TriSide.push_back(side);
         } break;
         default: break;
         }
@@ -294,6 +296,10 @@ static void InitializeMode5EcsRandomShapes(int perTypeCount) {
 static void EnsureDuckCleaned() {
     if (!gSpriteInitializedInScene) return;
     Component::Animator::m_sprite.cleanup();
+    CrashoutsEngine::Entity e1 = InstancingSystem::GetSingleDuckEntity();
+    CrashoutsEngine::Entity e2 = InstancingSystem::GetSecondDuckEntity();
+    if (e1) globalECS->DestroyEntity(e1);
+    if (e2) globalECS->DestroyEntity(e2);
     gSpriteInitializedInScene = false;
 }
 
@@ -361,10 +367,11 @@ void RenderSpriteAnimation()
 /*!
 @brief Update loop for Ran scene handling input and per-mode logic.
 @details
-- Press `G` to cycle display modes (0..6) and reinitialize mode-specific data.
+- Press `G` to cycle display modes (0..10) and reinitialize mode-specific data.
 - Press `M` to toggle textures in modes 2/3/5.
 - Mode 1: update duck movement, scale, and rotation.
 - Mode 6: update ECS duck motion and handle `I` key to cycle manual animation.
+- Mode 10: render all 3 particle systems together.
 */
 void UpdateRan()
 {
@@ -373,17 +380,45 @@ void UpdateRan()
     bool gPressed = (gState == GLFW_PRESS);
     if (gPressed && !gPrevGPressed) {
         int prevMode = gDisplayMode;
-        int nextMode = (gDisplayMode + 1) % 10;
+        int nextMode = (gDisplayMode + 1) % 12;  // Changed from 10 to 11 to include mode 10
         gDisplayMode = nextMode;
         if (prevMode == 6) {
             gMode6Initialized = false;
         }
         if (gDisplayMode != 3) {
+            // Protect emitter-owned entities from being destroyed during the global sweep.
             const CrashoutsEngine::ECS::ComponentArray<Component::NameComponent>& nameArray =
                 globalECS->GetComponentArray<Component::NameComponent>();
-            if (nameArray.indexToEntity.size() > 0) {
+            if (!nameArray.indexToEntity.empty()) {
+                std::unordered_set<CrashoutsEngine::Entity> protectedIds;
+                // collect entities that belong to emitters so we don't destroy them
+                if (gParticleEmitter) {
+                    const auto& pe = gParticleEmitter->GetEntities();
+                    for (auto e : pe) protectedIds.insert(e);
+                }
+                if (gFireEmitter) {
+                    const auto& fe = gFireEmitter->GetEntities();
+                    for (auto e : fe) protectedIds.insert(e);
+                }
+                if (gFireballEmitter) {
+                    const auto& t = gFireballEmitter->GetTrailEntities();
+                    for (auto e : t) protectedIds.insert(e);
+                    CrashoutsEngine::Entity core = gFireballEmitter->GetCoreEntity();
+                    if (core) protectedIds.insert(core);
+                }
+                if (gExplosionEmitter) {
+                    const auto& ee = gExplosionEmitter->GetEntities();
+                    for (auto e : ee) protectedIds.insert(e);
+                }
+                if (gTrajectoryEmitter) {
+                    const auto& te = gTrajectoryEmitter->GetEntities();
+                    for (auto e : te) protectedIds.insert(e);
+                }
+
                 for (auto id : nameArray.indexToEntity) {
-                    globalECS->DestroyEntity(id);
+                    if (protectedIds.find(id) == protectedIds.end()) {
+                        globalECS->DestroyEntity(id);
+                    }
                 }
             }
         }
@@ -448,6 +483,77 @@ void UpdateRan()
             }
         }
 
+        // Initialize all 3 particle systems when entering mode 10
+        if (gDisplayMode == 10) {
+            // Ensure world dims available once
+            float worldW, worldH; ComputeWorldDimensions(worldW, worldH);
+
+            // ParticleEmitter: create if missing, then always Initialize to rebuild ECS entities
+            if (!gParticleEmitter) gParticleEmitter = new Component::ParticleEmitter(5000);
+            gParticleEmitter->Initialize(CEVec3(-worldW * 0.3f, 0.f, 0.f));
+            gParticleEmitter->SetEmissionRate(1500.f);
+            gParticleEmitter->SetLifeRange(0.6f, 1.2f);
+            gParticleEmitter->SetSpeedRange(12.f, 22.f);
+            gParticleEmitter->SetGravity(CEVec3(0.f, -30.f, 0.f));
+            gParticleEmitter->SetSizeRange(0.35f, 0.0f);
+            gParticleEmitter->SetColorRange(CEVec3(1.f, 0.8f, 0.2f), CEVec3(0.1f, 0.1f, 0.1f));
+
+            // FireEmitter: create if missing, then Initialize (rebuilds ECS entities)
+            if (!gFireEmitter) gFireEmitter = new Component::FireEmitter(4000);
+            gFireEmitter->Initialize(CEVec3(0.f, -20.f, 0.f));
+            gFireEmitter->SetEmissionRate(2000.f);
+            gFireEmitter->SetLifeRange(0.4f, 0.9f);
+            gFireEmitter->SetSpeedRange(6.f, 14.f);
+            gFireEmitter->SetGravity(CEVec3(0.f, 20.f, 0.f));
+            gFireEmitter->SetSizeRange(0.6f, 0.0f);
+            gFireEmitter->SetColorRange(CEVec3(1.f,0.9f,0.4f), CEVec3(0.3f,0.05f,0.0f));
+            gFireEmitter->SetSpread(0.6f);
+
+            // FireballEmitter: create if missing, then Initialize (rebuilds ECS entities)
+            if (!gFireballEmitter) gFireballEmitter = new Component::FireballEmitter(5000);
+            gFireballEmitter->Initialize(CEVec3(worldW * 0.3f, -worldH * 0.45f, 0.f));
+            gFireballEmitter->SetBounds(worldW, worldH);
+            gFireballEmitter->SetVelocity(CEVec3(0.f, 0.35f, 0.f));
+            gFireballEmitter->SetRadius(4.f);
+            gFireballEmitter->SetEmissionRate(1600.f);
+            gFireballEmitter->SetLifeRange(0.35f, 0.85f);
+            gFireballEmitter->SetSpeedRange(8.f, 18.f);
+            gFireballEmitter->SetGravity(CEVec3(0.f, 0.f, 0.f));
+            gFireballEmitter->SetColorRange(CEVec3(1.f,0.8f,0.3f), CEVec3(0.4f,0.05f,0.0f));
+            gFireballEmitter->SetSpread(0.5f);  
+
+            if (!gExplosionEmitter) {
+                gExplosionEmitter = new Component::ExplosionEmitter(5000);
+                gExplosionEmitter->Initialize(CEVec3(0.f, 20.f, 0.f));
+                gExplosionEmitter->SetEmissionRate(100);
+                gExplosionEmitter->SetLifeRange(0.25f, 0.6f);
+                gExplosionEmitter->SetSpeedRange(12.f, 28.f);
+                gExplosionEmitter->SetGravity(CEVec3(0.f, -10.f, 0.f));
+                gExplosionEmitter->SetColorRange(CEVec3(1.f, 0.7f, 0.2f), CEVec3(0.25f, 0.25f, 0.25f));
+                gExplosionEmitter->SetSpread(1.0f);
+                gExplosionEmitter->SetBurst(1200, 1.8f);
+                gExplosionEmitter->TriggerBurst();
+            }
+
+            gMode10Initialized = true;
+        }
+
+        if (gDisplayMode == 11) {
+            if (!gExplosionEmitter) {
+                gExplosionEmitter = new Component::ExplosionEmitter(5000);
+                gExplosionEmitter->Initialize(CEVec3(0.f, 0.f, 0.f));
+                gExplosionEmitter->SetEmissionRate(100);
+                gExplosionEmitter->SetLifeRange(0.25f, 0.6f);
+                gExplosionEmitter->SetSpeedRange(12.f, 28.f);
+                gExplosionEmitter->SetGravity(CEVec3(0.f, -10.f, 0.f));
+                gExplosionEmitter->SetColorRange(CEVec3(1.f, 0.7f, 0.2f), CEVec3(0.25f, 0.25f, 0.25f));
+                gExplosionEmitter->SetSpread(1.0f);
+                gExplosionEmitter->SetBurst(1200, 1.8f);
+                gExplosionEmitter->TriggerBurst();
+            }
+        }
+
+        
 
         // Initialize randomized ECS rectangles when entering ECS mode (3)
         if (gDisplayMode == 3 && !gEcsRectsInitialized) {
@@ -466,7 +572,7 @@ void UpdateRan()
                 globalECS->DestroyEntity(id);
             }
 
-            // Seed rectangles via InstancingSystem’s existing ECS helper
+            // Seed rectangles via InstancingSystem's existing ECS helper
             InstancingSystem::InitializeEcsRectanglesDataRandom(2500);
             gEcsRectsInitialized = true;
         }
@@ -520,16 +626,32 @@ void UpdateRan()
         }
 
         // Cleanup particle system when leaving mode 7
-        if (prevMode == 7 && nextMode != 7) {
+        if (prevMode == 7 && nextMode != 7 && nextMode != 10) {
             if (gParticleEmitter) { gParticleEmitter->Cleanup(); delete gParticleEmitter; gParticleEmitter = nullptr; }
         }
         // Cleanup fire system when leaving mode 8
-        if (prevMode == 8 && nextMode != 8) {
+        if (prevMode == 8 && nextMode != 8 && nextMode != 10) {
             if (gFireEmitter) { gFireEmitter->Cleanup(); delete gFireEmitter; gFireEmitter = nullptr; }
         }
         // Cleanup fireball system when leaving mode 9
-        if (prevMode == 9 && nextMode != 9) {
+        if (prevMode == 9 && nextMode != 9 && nextMode != 10) {
             if (gFireballEmitter) { gFireballEmitter->Cleanup(); delete gFireballEmitter; gFireballEmitter = nullptr; }
+        }
+        // Cleanup all particle systems when leaving mode 10
+        if (prevMode == 10 && nextMode != 10) {
+            gMode10Initialized = false;
+            if (gParticleEmitter) { gParticleEmitter->Cleanup(); delete gParticleEmitter; gParticleEmitter = nullptr; }
+            if (gFireEmitter) { gFireEmitter->Cleanup(); delete gFireEmitter; gFireEmitter = nullptr; }
+            if (gFireballEmitter) { gFireballEmitter->Cleanup(); delete gFireballEmitter; gFireballEmitter = nullptr; }
+        }
+
+        
+        if (prevMode == 11 && nextMode != 11) {
+            if (gExplosionEmitter) { gExplosionEmitter->Cleanup(); delete gExplosionEmitter; gExplosionEmitter = nullptr; }
+        }
+
+        if (prevMode == 1 && nextMode != 1) {
+            if (gTrajectoryEmitter) { gTrajectoryEmitter->Cleanup(); delete gTrajectoryEmitter; gTrajectoryEmitter = nullptr; }
         }
 
 
@@ -637,6 +759,10 @@ void UpdateRan()
             if (auto* T = globalECS->GetComponent<Component::TransformComponent>(e)) {
                 T->size.x = gDuckScale; T->size.y = gDuckScale;
             }
+            auto e2 = InstancingSystem::GetSecondDuckEntity();
+            if (auto* T2 = globalECS->GetComponent<Component::TransformComponent>(e2)) {
+                T2->size.x = gDuckScale; T2->size.y = gDuckScale;
+            }
         }
 
         int rState = glfwGetKey(GLApp::ptr_window, GLFW_KEY_R);
@@ -653,9 +779,54 @@ void UpdateRan()
             if (auto* T = globalECS->GetComponent<Component::TransformComponent>(e)) {
                 T->rotation = gDuckRotationDeg;
             }
+            auto e2 = InstancingSystem::GetSecondDuckEntity();
+            if (auto* T2 = globalECS->GetComponent<Component::TransformComponent>(e2)) {
+                T2->rotation = gDuckRotationDeg;
+            }
         }
 
-        // Advance animation timers for ECS duck
+        int leftState = glfwGetKey(GLApp::ptr_window, GLFW_KEY_LEFT);
+        int rightState = glfwGetKey(GLApp::ptr_window, GLFW_KEY_RIGHT);
+        int upState = glfwGetKey(GLApp::ptr_window, GLFW_KEY_UP);
+        int downState = glfwGetKey(GLApp::ptr_window, GLFW_KEY_DOWN);
+        bool left = (leftState == GLFW_PRESS) || (leftState == GLFW_REPEAT);
+        bool right = (rightState == GLFW_PRESS) || (rightState == GLFW_REPEAT);
+        bool up = (upState == GLFW_PRESS) || (upState == GLFW_REPEAT);
+        bool down = (downState == GLFW_PRESS) || (downState == GLFW_REPEAT);
+        float dx = 0.f; float dy = 0.f;
+        if (left && !right) dx = -DUCK_SPEED * dt;
+        else if (right && !left) dx = DUCK_SPEED * dt;
+        if (up && !down) dy = DUCK_SPEED * dt;
+        else if (down && !up) dy = -DUCK_SPEED * dt;
+        auto e2 = InstancingSystem::GetSecondDuckEntity();
+        if (auto* T2 = globalECS->GetComponent<Component::TransformComponent>(e2)) {
+            T2->position.x += dx;
+            T2->position.y += dy;
+        }
+        if (auto* DM2 = globalECS->GetComponent<Component::DuckMotionComponent>(e2)) {
+            if (dx != 0.f || dy != 0.f) DM2->animationMode = 2; else DM2->animationMode = 3;
+        }
+        if (auto* A2 = globalECS->GetComponent<Component::SpriteAnimComponent>(e2)) {
+            if (left && !right) A2->flip = true; else if (right && !left) A2->flip = false;
+        }
+        if (!gTrajectoryEmitter) {
+            gTrajectoryEmitter = new Component::TrajectoryEmitter(64);
+            CEVec3 a = CEVec3(0.f,0.f,0.f);
+            CEVec3 b = CEVec3(0.f,0.f,0.f);
+            auto e1 = InstancingSystem::GetSingleDuckEntity();
+            auto e2 = InstancingSystem::GetSecondDuckEntity();
+            if (auto* t1 = globalECS->GetComponent<Component::TransformComponent>(e1)) {
+                a = t1->position;
+            }
+            if (auto* t2 = globalECS->GetComponent<Component::TransformComponent>(e2)) {
+                b = t2->position;
+            }
+            gTrajectoryEmitter->Initialize(a,b);
+            gTrajectoryEmitter->SetMass(1.f);
+            gTrajectoryEmitter->SetSpeed(22.f);
+            gTrajectoryEmitter->SetGravity(9.8f);
+        }
+        gTrajectoryEmitter->Update(dt);
         InstancingSystem::UpdateEcsDuckSprites();
     }
 
@@ -675,6 +846,21 @@ void UpdateRan()
     if (gDisplayMode == 9 && gFireballEmitter) {
         float dt = static_cast<float>(FrameRateController::GetInstance().DT());
         gFireballEmitter->Update(dt);
+    }
+    
+    // Update all 3 particle systems in mode 10
+    if (gDisplayMode == 10 && gMode10Initialized) {
+        float dt = static_cast<float>(FrameRateController::GetInstance().DT());
+        if (gParticleEmitter) gParticleEmitter->Update(dt);
+        if (gFireEmitter) gFireEmitter->Update(dt);
+        if (gFireballEmitter) gFireballEmitter->Update(dt);
+		if (gExplosionEmitter) gExplosionEmitter->Update(dt);
+    }
+
+    // Update explosion system in mode 11
+    if (gDisplayMode == 11 && gExplosionEmitter) {
+        float dt = static_cast<float>(FrameRateController::GetInstance().DT());
+        gExplosionEmitter->Update(dt);
     }
     
 
@@ -703,14 +889,14 @@ void RenderRan()
     case 0: // Background image
         RenderBackground();
         break;
-    case 1: // Duck sprite animation via ECS
+    case 1:
         InstancingSystem::RenderEcsDuckSprites();
+        if (gTrajectoryEmitter) {
+            gTrajectoryEmitter->Render(false);
+        }
         break;
     case 2: //Mode M toggles texture
-        //if (!gSquaresInitialized) {
-        //    InitializeInstancedSquaresData(25000);
-        //}
-        std::cout << "non ecs" << std::endl;
+
         if (!gRectsInitialized) {
             InstancingSystem::InitializeInstancedRectanglesData(2500);
             gRectsInitialized = true;
@@ -732,11 +918,9 @@ void RenderRan()
         }
         break;
     case 3:
-        std::cout << "ec" << std::endl;
-        //Scene::RenderScene(*globalECS);
+
         break;
-    case 4: { // Non-ECS instanced random triangles, rectangles, circles with texture toggle
-        std::cout << "rand shap" << std::endl;
+    case 4: { // Non-ECS instanced random triangles, rectangles, circles with texture toggl
 
         // No re-init here; seed in UpdateRan or when entering mode
         InstancingSystem::InstancedParams params{};
@@ -752,7 +936,7 @@ void RenderRan()
     } break;
 
     case 5: { // ECS-driven random shapes; circles separate
-        //std::cout << "ecs rando " << std::endl;
+
         if (!gMode5Initialized) {
             InitializeMode5EcsRandomShapes(500);
         }
@@ -851,7 +1035,25 @@ void RenderRan()
             gFireballEmitter->Render(false);
         }
     } break;
-    
+    case 10: { // All 3 particle systems together
+        if (gParticleEmitter) {
+            gParticleEmitter->Render(false);
+        }
+        if (gFireEmitter) {
+            gFireEmitter->Render(false);
+        }
+        if (gFireballEmitter) {
+            gFireballEmitter->Render(false);
+        }
+        if (gExplosionEmitter) {
+            gExplosionEmitter->Render(false);
+        }
+    } break;
+    case 11: { // Explosion system
+        if (gExplosionEmitter) {
+            gExplosionEmitter->Render(false);
+        }
+    } break;
     }
 }
 
@@ -877,6 +1079,8 @@ void FreeRan()
     if (gParticleEmitter) { gParticleEmitter->Cleanup(); delete gParticleEmitter; gParticleEmitter = nullptr; }
     if (gFireEmitter) { gFireEmitter->Cleanup(); delete gFireEmitter; gFireEmitter = nullptr; }
     if (gFireballEmitter) { gFireballEmitter->Cleanup(); delete gFireballEmitter; gFireballEmitter = nullptr; }
+    if (gExplosionEmitter) { gExplosionEmitter->Cleanup(); delete gExplosionEmitter; gExplosionEmitter = nullptr; }
+    if (gTrajectoryEmitter) { gTrajectoryEmitter->Cleanup(); delete gTrajectoryEmitter; gTrajectoryEmitter = nullptr; }
 }
 
 void UnloadRan()

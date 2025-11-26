@@ -294,7 +294,10 @@ namespace InstancingSystem {
     @details Creates Transform/DuckMotion/SpriteSheet/SpriteAnim components.
     */
     void InitializeSingleEcsDuck(float x, float y, float rotationDeg, float uniformScale);
+    void InitializeSecondEcsDuck(float x, float y, float rotationDeg, float uniformScale);
     void InitializeSingleEcsDuck(float x, float y, float rotationDeg, float uniformScale, const std::string& assetName, int cols, int rows, CEVec2 worldSize);
+    CrashoutsEngine::Entity GetSingleDuckEntity();
+    CrashoutsEngine::Entity GetSecondDuckEntity();
 
     void SetEntitySpriteSheet(CrashoutsEngine::Entity e, const std::string& assetName, int cols, int rows, CEVec2 worldSize);
 

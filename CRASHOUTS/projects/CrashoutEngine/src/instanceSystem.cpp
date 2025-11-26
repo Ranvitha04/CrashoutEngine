@@ -97,6 +97,7 @@ namespace InstancingSystem {
     };
 
     static CrashoutsEngine::Entity s_singleDuckId = 0;
+    static CrashoutsEngine::Entity s_secondDuckId = 0;
 
     static DuckAnimState MakeAnimByMode(int mode) {
         DuckAnimState s{};
@@ -295,6 +296,10 @@ namespace InstancingSystem {
             int frameX = globalFrame % sheet->cols;
 
             GLuint handle = Component::TextureRenderer::GetTextureHandle(sheet->textureAsset);
+            CEColor tintColor = CEColor(1.0f, 1.0f, 1.0f);
+            if (id == s_secondDuckId) {
+                tintColor = CEColor(0.85f, 0.4f, 1.0f);
+            }
             if (handle != 0) {
                 Component::TextureRenderer::CreateSpriteFrameFlipped(
                     handle,
@@ -305,7 +310,7 @@ namespace InstancingSystem {
                     anim->flip,
                     tf->rotation,
                     tf->size.x,
-                    CEColor(1.0f, 1.0f, 1.0f),
+                    tintColor,
                     false
                 );
             } else {
@@ -317,7 +322,7 @@ namespace InstancingSystem {
                     sheet->cols, sheet->rows,
                     tf->rotation,
                     tf->size.x,
-                    CEColor(1.0f, 1.0f, 1.0f),
+                    tintColor,
                     false
                 );
             }
@@ -396,6 +401,49 @@ namespace InstancingSystem {
         anim.frameIndex = 0;
         anim.flip = false;
         globalECS->AddComponent<Component::SpriteAnimComponent>(e, anim);
+    }
+
+    void InitializeSecondEcsDuck(float x, float y, float rotationDeg, float uniformScale) {
+        EnsureGlobalECSInitialized();
+        if (!globalECS) return;
+        if (s_secondDuckId != 0) {
+            globalECS->DestroyEntity(s_secondDuckId);
+            s_secondDuckId = 0;
+        }
+        Component::TextureRenderer::PreloadTexture(DUCK_SPRITESHEET_PATH);
+        s_duckSheetHandle = Component::TextureRenderer::GetTextureHandle(DUCK_SPRITESHEET_ASSET);
+        auto e = globalECS->CreateEntity();
+        s_secondDuckId = e;
+        globalECS->AddComponent<Component::NameComponent>(e, Component::NameComponent{ "Duck_Purple" });
+        globalECS->AddComponent<Component::TransformComponent>(e, Component::TransformComponent{ rotationDeg, CEVec2{uniformScale, uniformScale}, CEVec3{x, y, 0.0f} });
+        Component::DuckMotionComponent dm{};
+        dm.speed = 0.0f;
+        dm.turnRate = 0.0f;
+        dm.oscillation = 0.0f;
+        dm.noiseTime = 0.0f;
+        dm.velocity = CEVec3{1.0f, 0.0f, 0.0f};
+        dm.animationMode = 2;
+        dm.SetBoundsFromWorld(100.0f, 60.0f);
+        globalECS->AddComponent<Component::DuckMotionComponent>(e, dm);
+        Component::SpriteSheetComponent sheet{};
+        sheet.textureAsset = DUCK_SPRITESHEET_ASSET;
+        sheet.cols = DUCK_COLS;
+        sheet.rows = DUCK_ROWS;
+        sheet.worldSize = DUCK_SIZE;
+        globalECS->AddComponent<Component::SpriteSheetComponent>(e, sheet);
+        DuckAnimState defaults = MakeAnimByMode(dm.animationMode);
+        Component::SpriteAnimComponent anim{};
+        anim.startFrame = defaults.startFrame;
+        anim.frameCount = defaults.frameCount;
+        anim.frameTime  = defaults.frameTime;
+        anim.timer = 0.0f;
+        anim.frameIndex = 0;
+        anim.flip = false;
+        globalECS->AddComponent<Component::SpriteAnimComponent>(e, anim);
+    }
+
+    CrashoutsEngine::Entity GetSecondDuckEntity() {
+        return s_secondDuckId;
     }
 
 CrashoutsEngine::Entity GetSingleDuckEntity() {
@@ -712,15 +760,23 @@ void InstancingSystem::SetEntitySpriteSheet(CrashoutsEngine::Entity e, const std
     int count,
     int segments,
     const InstancedParams& params
-    ) {
-        if (count <= 0) return;
-        if (!params.textured) {
-            CreateInstancedCircles(positions, colors, rotations, scales, radii, count, segments);
-        }
-        else {
-            CreateInstancedCirclesTextured(params.textureName, positions, colors, rotations, scales, radii, count, segments, params.tint, params.uvSize);
-        }
+) {
+    if (count <= 0) return;
+
+    if (!s_circInstanceBuffersInitialized || s_circSegmentsCurrent != segments) {
+        // This function is a bit of a mess. It seems to be a legacy function that was replaced by CreateInstancedCircles.
+        // For now, we will just call the new function.
+        //SetupCircleInstanceBuffers(segments);
+        s_circSegmentsCurrent = segments;
     }
+
+    if (!params.textured) {
+        CreateInstancedCircles(positions, colors, rotations, scales, radii, count, segments);
+    }
+    else {
+        CreateInstancedCirclesTextured(params.textureName, positions, colors, rotations, scales, radii, count, segments, params.tint, params.uvSize);
+    }
+}
 
 
 
@@ -744,7 +800,7 @@ void InstancingSystem::SetEntitySpriteSheet(CrashoutsEngine::Entity e, const std
     static std::vector<float>  gM4CircRot;
     static std::vector<float>  gM4CircScale;    
     static std::vector<float>  gM4CircRadius;
-    static int gM4CircSegments = 24;
+    static int gM4CircSegments = 64;
 
     void InstancingSystem::InitializeMode4RandomShapes(int perTypeCount) {
         //gMode4Initialized = false;
@@ -801,7 +857,7 @@ void InstancingSystem::SetEntitySpriteSheet(CrashoutsEngine::Entity e, const std
         for (int i = 0; i < perTypeCount; ++i) {
             gM4CircPos.emplace_back(posX(rng), posY(rng), 0.0f);
             gM4CircColor.emplace_back(col01(rng), col01(rng), col01(rng), col01(rng));
-            gM4CircRot.emplace_back(rotDeg(rng));
+            gM4CircRot.emplace_back(0.0f);
             gM4CircScale.emplace_back(1.0f);
             gM4CircRadius.emplace_back(circRadius(rng));
         }
@@ -1294,7 +1350,7 @@ void InstancingSystem::PopulateRectanglesFromECS(bool previewOnly) {
         if (sc->type != Component::ShapeType::Rectangle) continue;
         if (previewOnly && !sc->preview) continue;
         gInstPositions.emplace_back(tf->position);
-        gInstColors.emplace_back(CEVec3{ sc->color.x * (1.f/255.f), sc->color.y * (1.f/255.f), sc->color.z * (1.f/255.f) });
+        gInstColors.emplace_back(CEColor{ sc->color.r * (1.f/255.f), sc->color.g * (1.f/255.f), sc->color.b * (1.f/255.f) });
         gInstRotations.emplace_back(tf->rotation);
         gInstScales.emplace_back(1.f);
         gInstWidths.emplace_back(tf->size.x);
@@ -1320,7 +1376,7 @@ void InstancingSystem::PopulateRectanglesFromEntities(const std::vector<Crashout
         if (previewOnly && !sc->preview) continue;
         if (tf->size.x <= 0.f || tf->size.y <= 0.f) continue;
         gInstPositions.emplace_back(tf->position);
-        gInstColors.emplace_back(CEVec3{ sc->color.x * (1.f/255.f), sc->color.y * (1.f/255.f), sc->color.z * (1.f/255.f) });
+        gInstColors.emplace_back(CEColor{ sc->color.r * (1.f/255.f), sc->color.g * (1.f/255.f), sc->color.b * (1.f/255.f) });
         gInstRotations.emplace_back(tf->rotation);
         gInstScales.emplace_back(1.f);
         gInstWidths.emplace_back(tf->size.x);
@@ -1332,7 +1388,7 @@ void InstancingSystem::RenderInstancedCirclesFromECS(bool previewOnly, int segme
     EnsureGlobalECSInitialized();
     if (!globalECS) return;
     std::vector<CEVec3> pos;
-    std::vector<CEVec3> col;
+    std::vector<CEColor> col;
     std::vector<float> rot;
     std::vector<float> sca;
     std::vector<float> rad;
@@ -1344,7 +1400,7 @@ void InstancingSystem::RenderInstancedCirclesFromECS(bool previewOnly, int segme
         if (sc->type != Component::ShapeType::Circle) continue;
         if (previewOnly && !sc->preview) continue;
         pos.emplace_back(tf->position);
-        col.emplace_back(CEVec3{ sc->color.x * (1.f/255.f), sc->color.y * (1.f/255.f), sc->color.z * (1.f/255.f) });
+        col.emplace_back(sc->color);
         rot.emplace_back(tf->rotation);
         sca.emplace_back(1.f);
         rad.emplace_back(tf->size.x);
@@ -1366,7 +1422,7 @@ void InstancingSystem::RenderInstancedCirclesFromEntities(const std::vector<Cras
     EnsureGlobalECSInitialized();
     if (!globalECS) return;
     std::vector<CEVec3> pos;
-    std::vector<CEVec3> col;
+    std::vector<CEColor> col;
     std::vector<float> rot;
     std::vector<float> sca;
     std::vector<float> rad;
@@ -1382,7 +1438,7 @@ void InstancingSystem::RenderInstancedCirclesFromEntities(const std::vector<Cras
         if (sc->type != Component::ShapeType::Circle) continue;
         if (previewOnly && !sc->preview) continue;
         pos.emplace_back(tf->position);
-        col.emplace_back(CEVec3{ sc->color.x * (1.f/255.f), sc->color.y * (1.f/255.f), sc->color.z * (1.f/255.f) });
+        col.emplace_back(sc->color);
         rot.emplace_back(tf->rotation);
         sca.emplace_back(1.f);
         rad.emplace_back(tf->size.x);

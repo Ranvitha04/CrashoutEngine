@@ -5,7 +5,7 @@ namespace CrashoutsEngine
     {
         float horizontalInput;
         //float moveSpeed = 6f;
-        bool isFacingRight = true;
+        
         bool moveLeft;
         bool moveRight;
         bool isMoving = false;
@@ -24,7 +24,7 @@ namespace CrashoutsEngine
         //[SerializeField] private SwitchCharacter switchcharacter;
         //[SerializeField] private BoxCollider2D playerCollider;
 
-        private Animator animator;
+        
         public bool IsOnPlatform;
         //public Rigidbody2D platformRb;
 
@@ -59,6 +59,14 @@ namespace CrashoutsEngine
 
             CollisionEvents.RegisterCollideEnter(Entity.ID, OnCollideEnter);
             CollisionEvents.RegisterCollideExit(Entity.ID, OnCollideExit);
+        }
+
+        public void OnCollideEnter(uint otherEntity)
+        {
+        }
+
+        public void OnCollideExit(uint otherEntity)
+        {
         }
 
         // Update is called once per frame
