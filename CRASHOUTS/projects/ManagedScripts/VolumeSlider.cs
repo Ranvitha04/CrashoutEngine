@@ -3,100 +3,82 @@
 namespace CrashoutsEngine
 {
     [ScriptBehaviour]
-    public class VolumeSlider : ScriptBase
+    public class VolumeBar : ScriptBase
     {
-        private float _sensitivity = 0.002f;
-        private float _minVisualSize = 0.01f; // Keep 5% of the bar visible always so it's clickable
+        public bool IsMusicSlider = true;   // true = Music, false = SFX
 
-        private bool _isDragging = false;
-        private bool _isMusic = true;
-        private float _currentT = 1.0f; // This is the LOGICAL volume (0.0 to 1.0)
-        private float _lastMouseX;
+        // Screen/world X coordinates for left/right edges of the bar
+        public float LeftX;
+        public float RightX;
 
-        private ButtonComponent _button;
-        private TransformComponent _tf;
-        private NameComponent _nameComp;
-
-        private float _maxWidth;
-        private float _startCenterX;
+        private ButtonComponent button;
+        private TransformComponent tf;
+        private float baseWidth; // original Size.x
 
         public override void Start()
         {
-            _button = Entity.GetComponent<ButtonComponent>();
-            _tf = Entity.GetComponent<TransformComponent>();
-            _nameComp = Entity.GetComponent<NameComponent>();
+            button = Entity.GetComponent<ButtonComponent>();
+            tf = Entity.GetComponent<TransformComponent>();
 
-            if (_button == null) return;
-
-            string name = _nameComp != null ? _nameComp.ToString() : "";
-            _isMusic = !name.Contains("SFX");
-
-            if (_tf != null)
+            if (button == null || tf == null)
             {
-                _maxWidth = _tf.Size.x;
-                _startCenterX = _tf.Position.x;
+                Console.WriteLine("[VolumeBar] Missing Button or Transform on entity " + Entity.ID);
+                return;
             }
 
-            if (_isMusic) _currentT = AudioManager.playerMusVol;
-            else _currentT = AudioManager.playerSFXVol;
+            if (Math.Abs(RightX - LeftX) < 0.0001f)
+            {
+                Console.WriteLine("[VolumeBar] LeftX and RightX are equal on entity " + Entity.ID);
+                return;
+            }
 
-            UpdateVisuals(_currentT);
+            baseWidth = tf.Size.x;  // full bar width
+
+            // Initialise from stored volume
+            float v = IsMusicSlider ? AudioManager.playerMusVol : AudioManager.playerSFXVol;
+            v = Clamp01(v);
+            ApplyValue(v);
         }
 
         public override void Update()
         {
-            if (_button == null || _tf == null) return;
+            if (button == null || tf == null)
+                return;
 
-            CEVec2 mousePos = Input.GetMousePosition();
+            // Only react while mouse is held on the bar
+            if (!button.IsHovered() || !Input.IsMouseButtonDown(0))
+                return;
 
-            if (Input.IsMouseButtonDown(0) && _button.IsHovered())
-            {
-                _isDragging = true;
-                _lastMouseX = mousePos.x;
-            }
+            CEVec2 mouse = Input.GetMousePosition();
+            float mouseX = mouse.x;
 
-            if (Input.IsMouseButtonReleased(0))
-            {
-                _isDragging = false;
-            }
+            // Map mouse X → 0..1 along the bar
+            float t = (mouseX - LeftX) / (RightX - LeftX);
+            t = Clamp01(t);
 
-            if (_isDragging)
-            {
-                float delta = mousePos.x - _lastMouseX;
-                _currentT += delta * _sensitivity;
-
-                if (_currentT < 0.0f) _currentT = 0.0f;
-                if (_currentT > 1.0f) _currentT = 1.0f;
-
-                UpdateVisuals(_currentT);
-
-                if (_isMusic) AudioManager.GetInstance().MusicVolume(_currentT);
-                else AudioManager.GetInstance().SFXVolume(_currentT);
-
-                _lastMouseX = mousePos.x;
-            }
+            ApplyValue(t);
         }
 
-        private void UpdateVisuals(float t)
+        private void ApplyValue(float t)
         {
-            CEVec3 newPos = _tf.Position;
-            CEVec2 newSize = _tf.Size;
+            // Scale bar width
+            var size = tf.Size;
+            size.x = baseWidth * t;
+            tf.Size = size;
 
-            float calculatedWidth = _maxWidth * t;
-            float minPixelWidth = _maxWidth * _minVisualSize;
+            // Send volume
+            var audio = AudioManager.GetInstance();
+            if (IsMusicSlider)
+                audio.MusicVolume(t);
+            else
+                audio.SFXVolume(t);
+        }
 
-            if (calculatedWidth < minPixelWidth)
-            {
-                calculatedWidth = minPixelWidth;
-            }
-
-            newSize.x = calculatedWidth;
-
-            float originalLeftEdge = _startCenterX - (_maxWidth / 2.0f);
-            newPos.x = originalLeftEdge + (newSize.x / 2.0f);
-
-            _tf.Size = newSize;
-            _tf.Position = newPos;
+        private float Clamp01(float v)
+        {
+            if (v < 0f) return 0f;
+            if (v > 1f) return 1f;
+            return v;
         }
     }
 }
