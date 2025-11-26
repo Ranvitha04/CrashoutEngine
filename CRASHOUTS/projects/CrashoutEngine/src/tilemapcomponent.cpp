@@ -120,9 +120,14 @@ namespace CrashoutsEngine::TileMapUtils {
 
 		// Iterate over every painted tile
 		for (auto const& [pos, tileAssetName] : map.gridData) {
-
 			// A. Get the Asset
 			TileMapAsset* asset = AssetManager::GetInstance().Get<TileMapAsset>(tileAssetName);
+
+			if (!asset) {
+				std::string fixedPath = "tilemaps/" + tileAssetName;
+				asset = AssetManager::GetInstance().Get<TileMapAsset>(fixedPath);
+			}
+
 			if (!asset) continue;
 
 			// B. Calculate Bitmask & Find Rule
@@ -185,7 +190,7 @@ namespace CrashoutsEngine::TileMapUtils {
 			Component::TransformComponent& t = ecs->AddComponent<Component::TransformComponent>(ent);
 			t.position.x = (float)pos.first * map.tileSize + map.tileSize * .5f;
 			t.position.y = (float)pos.second * map.tileSize + map.tileSize * .5f;
-			t.position.z = 0.1f; // Slight Z offset
+			t.position.z = ecs->GetComponent<Component::TransformComponent>(parentEnt)->position.z;
 			t.size = CEVec2((float)map.tileSize, (float)map.tileSize);
 
 			// 3. Collider
@@ -198,42 +203,42 @@ namespace CrashoutsEngine::TileMapUtils {
 				float rot = t.rotation;
 
 				std::unique_ptr<Collision::Collider> newCollider = nullptr;
-				Collision::HelperType helperT = Collision::AABB_T; // Default
+				Collision::HelperType helperT = Collision::HelperType::AABB_T; // Default
 
 				switch (matchedRule->colliderType) {
 					// --------------------------------------------------------
-					// SPHERE
+					// ColliderType::SPHERE
 					// --------------------------------------------------------
 					case Collision::ColliderType::SPHERE: {
 						// Radius is usually half the width (or average of width/height)
 						float radius = std::min(halfW, halfH);
 						newCollider = std::make_unique<Collision::Sphere>(radius, tPos);
-						helperT = Collision::SPHERE_T;
+						helperT = Collision::HelperType::SPHERE_T;
 						break;
 					}
 					// --------------------------------------------------------
-					// AABB (Axis Aligned Bounding Box)
+					// ColliderType::AABB (Axis Aligned Bounding Box)
 					// --------------------------------------------------------
 					case Collision::ColliderType::AABB: {
 						CEVec3 min{ tPos.x - halfW, tPos.y - halfH, 0.0f };
 						CEVec3 max{ tPos.x + halfW, tPos.y + halfH, 0.0f };
 						newCollider = std::make_unique<Collision::AABBRect>(min, max);
-						helperT = Collision::AABB_T;
+						helperT = Collision::HelperType::AABB_T;
 						break;
 					}
 					// --------------------------------------------------------
-					// OBB (Oriented Bounding Box)
+					// ColliderType::OBB (Oriented Bounding Box)
 					// --------------------------------------------------------
 					case Collision::ColliderType::OBB: {
-						// OBB needs min/max (usually unrotated or local) + rotation
+						// ColliderType::OBB needs min/max (usually unrotated or local) + rotation
 						CEVec3 min{ tPos.x - halfW, tPos.y - halfH, 0.0f };
 						CEVec3 max{ tPos.x + halfW, tPos.y + halfH, 0.0f };
 						newCollider = std::make_unique<Collision::OBBRect>(min, max, rot);
-						helperT = Collision::OBB_T;
+						helperT = Collision::HelperType::OBB_T;
 						break;
 					}
 					// --------------------------------------------------------
-					// POLYGON (Box Shape)
+					// ColliderType::POLYGON (Box Shape)
 					// --------------------------------------------------------
 					case Collision::ColliderType::POLYGON: {
 						// Create a box polygon relative to the center
@@ -249,7 +254,7 @@ namespace CrashoutsEngine::TileMapUtils {
 							rot,
 							tPos
 						);
-						helperT = Collision::POLYGON_T;
+						helperT = Collision::HelperType::POLYGON_T;
 						break;
 					}
 				}
@@ -274,7 +279,6 @@ namespace CrashoutsEngine::TileMapUtils {
 
 			// 7. Parent it (Optional, if your hierarchy system supports it)
 			CrashoutsEngine::AttachChild(*ecs, parentEnt, ent);
-
 		}
 
 		std::cout << "TileMapComponent: Cache Rebuilt. Tiles: " << map.tileCache.size() << "\n";
@@ -314,7 +318,7 @@ namespace CrashoutsEngine::Editor {
 					for (const auto& entry : fs::directory_iterator(path)) {
 						std::string filename = entry.path().filename().string();
 						if (ImGui::Selectable(filename.c_str())) {
-							tmComp->activeAsset = filename;
+							tmComp->activeAsset = "tilemaps/" + filename;
 						}
 					}
 				}

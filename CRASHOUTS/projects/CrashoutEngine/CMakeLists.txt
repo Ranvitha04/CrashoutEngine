@@ -25,6 +25,9 @@ file(GLOB_RECURSE resource_include_files "${project_dir}/include/*asset.*")
 file(GLOB_RECURSE debug_src_files     "${project_dir}/src/debug*.*")
 file(GLOB_RECURSE debug_include_files "${project_dir}/include/debug*.*")
 
+file(GLOB_RECURSE binding_src_files     "${project_dir}/src/*bindings.*")
+file(GLOB_RECURSE binding_include_files "${project_dir}/include/*bindings.*")
+
 file(GLOB_RECURSE message_include_files 
 "${project_dir}/include/messages.h"
 "${project_dir}/include/observable.h"
@@ -34,6 +37,7 @@ file(GLOB_RECURSE math_include_files
 "${project_dir}/include/CEMath.h"
 "${project_dir}/include/CEMtx33.h"
 "${project_dir}/include/CETypes.h"
+"${project_dir}/include/CEColor.h"
 "${project_dir}/include/CEVec2.h"
 "${project_dir}/include/CEVec3.h")
 
@@ -43,10 +47,10 @@ file(GLOB_RECURSE all_include_files "${project_dir}/include/*.h" "${project_dir}
 
 # --- 3. Create lists of all categorized files ---
 set(categorized_src_files ${manager_src_files} ${component_src_files} ${scene_src_files} ${resource_src_files}
-${debug_src_files})
+${debug_src_files} ${binding_src_files})
 
 set(categorized_include_files ${manager_include_files} ${component_include_files} ${scene_include_files} 
-${resource_include_files} ${debug_include_files} ${message_include_files} ${math_include_files})
+${resource_include_files} ${debug_include_files} ${message_include_files} ${math_include_files} ${binding_include_files})
 
 # --- 4. Subtract the categorized lists to find the "other" files ---
 list(REMOVE_ITEM all_src_files     ${categorized_src_files})
@@ -85,6 +89,9 @@ source_group("include\\Resources"     FILES ${resource_include_files})
 
 source_group("src\\Debug"     FILES ${debug_src_files})
 source_group("include\\Debug"     FILES ${debug_include_files})
+
+source_group("src\\Bindings"     FILES ${binding_src_files})
+source_group("include\\Bindings"     FILES ${binding_include_files})
 
 source_group("include\\Messaging"     FILES ${message_include_files})
         

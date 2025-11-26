@@ -20,7 +20,7 @@ namespace Component {
 		f32 mMass{};
 		CEVec3 mNetForce;
 		f32 mRestitutionCoeff{}; /*Measure of elasticity*/
-		Physics::ForceManager fm;
+		Physics::ForceManager fm{};
 		std::bitset<8> flags{ 0b0000'0000 };
 
 	public:

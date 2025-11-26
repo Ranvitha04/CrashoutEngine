@@ -16,7 +16,6 @@ namespace CrashoutsEngine
             ID = id;
         }
         public RigidBodyComponent RigidBodyComponent => GetComponent<RigidBodyComponent>();
-
         public ColliderComponent ColliderComponent => GetComponent<ColliderComponent>();
         public bool HasCollider => Has<ColliderComponent>();
 

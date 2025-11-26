@@ -2,6 +2,7 @@ using System;
 using System.Numerics;
 namespace CrashoutsEngine
 {
+    [ScriptBehaviour]
     public class PlayerController : ScriptBase
     {
         bool moveLeft;
@@ -99,6 +100,8 @@ namespace CrashoutsEngine
                     Entity.GetComponent<ColliderComponent>().UpdateRotation(tf.Rotation);
                 }
             }
+            /*
+            */
             moveLeft = Input.IsKeyPressed(Key.A);
             moveRight = Input.IsKeyPressed(Key.D);
 
@@ -113,6 +116,9 @@ namespace CrashoutsEngine
             var rb = Entity.GetComponent<RigidBodyComponent>();
             if (rb == null) return;
 
+            // Retrieve current horizontal speed
+            //double xSpeed = rb.getVelocity().x; 
+            //Console.WriteLine("[C#] speedx=" + xSpeed);
             // Apply physics here (fixed 60hz)
             if (moveLeft)
             {
@@ -130,5 +136,5 @@ namespace CrashoutsEngine
                 Console.WriteLine("[C#] mass=" + rb.GetMass());
             }
             }
-        }
+    }
 }

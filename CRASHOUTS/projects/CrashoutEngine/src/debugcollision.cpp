@@ -140,19 +140,19 @@ namespace CollisionGizmos {
 
             const CEColor color = IsColliding(e, events) ? hit : ok;
 
-            if (pColliderComp.collider->type == Collision::SPHERE) {
+            if (pColliderComp.collider->type == Collision::ColliderType::SPHERE) {
                 Collision::Sphere const& sphereTemp = dynamic_cast<Collision::Sphere const&>(*pColliderComp.collider);
                 DrawCircleOutline(sphereTemp.position, sphereTemp.radius, 48, wireThickness, color);
             }
-            else if (pColliderComp.collider->type == Collision::AABB) {
+            else if (pColliderComp.collider->type == Collision::ColliderType::AABB) {
                 Collision::AABBRect const& aabbTemp = dynamic_cast<Collision::AABBRect const&>(*pColliderComp.collider);
                 DrawAABBOutline(aabbTemp.min , aabbTemp.max, wireThickness, color);
             }
-            else if (pColliderComp.collider->type == Collision::OBB) {
+            else if (pColliderComp.collider->type == Collision::ColliderType::OBB) {
                 Collision::OBBRect const& obbTemp = dynamic_cast<Collision::OBBRect const&>(*pColliderComp.collider);
                 DrawOBBOutline(&obbTemp, wireThickness, color);
             }
-            else if (pColliderComp.collider->type == Collision::POLYGON) {
+            else if (pColliderComp.collider->type == Collision::ColliderType::POLYGON) {
                 Collision::Polygon const& polygonTemp = dynamic_cast<Collision::Polygon const&>(*pColliderComp.collider);
                 DrawPolygon(&polygonTemp, wireThickness, color);
             }

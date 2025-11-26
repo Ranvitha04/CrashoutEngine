@@ -658,14 +658,14 @@ void InstancingSystem::SetEntitySpriteSheet(CrashoutsEngine::Entity e, const std
         glBindBuffer(GL_ARRAY_BUFFER, s_circInstanceDataVBO);
         glBufferData(GL_ARRAY_BUFFER, instanceData.size() * sizeof(CircleInstanceData), instanceData.data(), GL_DYNAMIC_DRAW);
 
-        renderer.shdr_pgm_instanced.Use();
+        renderer.shdr_pgm_instanced->Use();
         glm::mat4 model = glm::mat4(1.0f);
-        renderer.shdr_pgm_instanced.SetUniform("uModel", model);
+        renderer.shdr_pgm_instanced->SetUniform("uModel", model);
 
         // Setup Uniforms for non-textured circle
-        GLint useTexture_loc = glGetUniformLocation(renderer.shdr_pgm_instanced.GetHandle(), "u_useTexture");
+        GLint useTexture_loc = glGetUniformLocation(renderer.shdr_pgm_instanced->GetHandle(), "u_useTexture");
         if (useTexture_loc != -1) glUniform1i(useTexture_loc, 0);
-        GLint tint_loc = glGetUniformLocation(renderer.shdr_pgm_instanced.GetHandle(), "u_tint");
+        GLint tint_loc = glGetUniformLocation(renderer.shdr_pgm_instanced->GetHandle(), "u_tint");
         if (tint_loc != -1) glUniform4f(tint_loc, 1.0f, 1.0f, 1.0f, 1.0f);
 
         int elements = segments * 3;
@@ -719,23 +719,25 @@ void InstancingSystem::SetEntitySpriteSheet(CrashoutsEngine::Entity e, const std
         Component::Rendering& renderer = Component::Rendering::Get();
         GLuint textureHandle = Component::TextureRenderer::GetTextureHandle(textureName);
 
-        renderer.shdr_pgm_instanced.Use();
-        renderer.shdr_pgm_instanced.SetUniform("uModel", glm::mat4(1.0f));
+        renderer.shdr_pgm_instanced->Use();
+        renderer.shdr_pgm_instanced->SetUniform("uModel", glm::mat4(1.0f));
 
         // Uniforms
-        GLint useTexture_loc = glGetUniformLocation(renderer.shdr_pgm_instanced.GetHandle(), "u_useTexture");
+        GLint useTexture_loc = glGetUniformLocation(renderer.shdr_pgm_instanced->GetHandle(), "u_useTexture");
         if (useTexture_loc != -1) glUniform1i(useTexture_loc, 1);
 
-        GLint tint_loc = glGetUniformLocation(renderer.shdr_pgm_instanced.GetHandle(), "u_tint");
+        GLint tint_loc = glGetUniformLocation(renderer.shdr_pgm_instanced->GetHandle(), "u_tint");
         if (tint_loc != -1) glUniform4f(tint_loc, tint.r, tint.g, tint.b, tint.a);
 
-        GLint uvSize_loc = glGetUniformLocation(renderer.shdr_pgm_instanced.GetHandle(), "u_uvSize");
+        GLint uvSize_loc = glGetUniformLocation(renderer.shdr_pgm_instanced->GetHandle(), "u_uvSize");
         if (uvSize_loc != -1) glUniform2f(uvSize_loc, uvSize.x, uvSize.y);
 
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        //glEnable(GL_BLEND);
+        //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         //glDepthMask(GL_FALSE);
+        glDisable(GL_BLEND);    // No blending
+        glDepthMask(GL_TRUE);   // Write depth normally
 
         // Bind Texture
         glBindTextureUnit(0, textureHandle); // DSA or standard
@@ -747,7 +749,7 @@ void InstancingSystem::SetEntitySpriteSheet(CrashoutsEngine::Entity e, const std
 
         // 3. Reset State
         //glDepthMask(GL_TRUE); // Important!
-        glDisable(GL_BLEND);
+        //glDisable(GL_BLEND);
         glEnable(GL_CULL_FACE);
     }
 
@@ -1218,13 +1220,13 @@ void InstancingSystem::CreateInstancedRectangles(const CEVec3* positions, const 
     glBindBuffer(GL_ARRAY_BUFFER, s_rectInstanceDataVBO);
     glBufferData(GL_ARRAY_BUFFER, instanceData.size() * sizeof(RectInstanceData), instanceData.data(), GL_DYNAMIC_DRAW);
 
-    renderer.shdr_pgm_instanced.Use();
-    renderer.shdr_pgm_instanced.SetUniform("uModel", glm::mat4(1.0f));
+    renderer.shdr_pgm_instanced->Use();
+    renderer.shdr_pgm_instanced->SetUniform("uModel", glm::mat4(1.0f));
 
-    GLint useTexture_loc = glGetUniformLocation(renderer.shdr_pgm_instanced.GetHandle(), "u_useTexture");
+    GLint useTexture_loc = glGetUniformLocation(renderer.shdr_pgm_instanced->GetHandle(), "u_useTexture");
     if (useTexture_loc != -1) glUniform1i(useTexture_loc, 0);
 
-    GLint tint_loc = glGetUniformLocation(renderer.shdr_pgm_instanced.GetHandle(), "u_tint");
+    GLint tint_loc = glGetUniformLocation(renderer.shdr_pgm_instanced->GetHandle(), "u_tint");
     if (tint_loc != -1) glUniform4f(tint_loc, 1.0f, 1.0f, 1.0f, 1.0f);
 
     glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, 0, count);
@@ -1272,24 +1274,27 @@ void InstancingSystem::CreateInstancedRectanglesTextured(
     Component::Rendering& renderer = Component::Rendering::Get();
     GLuint textureHandle = Component::TextureRenderer::GetTextureHandle(textureName);
 
-    renderer.shdr_pgm_instanced.Use();
-    renderer.shdr_pgm_instanced.SetUniform("uModel", glm::mat4(1.0f));
+    renderer.shdr_pgm_instanced->Use();
+    renderer.shdr_pgm_instanced->SetUniform("uModel", glm::mat4(1.0f));
 
-    GLint useTexture_loc = glGetUniformLocation(renderer.shdr_pgm_instanced.GetHandle(), "u_useTexture");
+    GLint useTexture_loc = glGetUniformLocation(renderer.shdr_pgm_instanced->GetHandle(), "u_useTexture");
     if (useTexture_loc != -1) glUniform1i(useTexture_loc, 1);
 
-    GLint tint_loc = glGetUniformLocation(renderer.shdr_pgm_instanced.GetHandle(), "u_tint");
+    GLint tint_loc = glGetUniformLocation(renderer.shdr_pgm_instanced->GetHandle(), "u_tint");
     if (tint_loc != -1) glUniform4f(tint_loc, tint.r, tint.g, tint.b, tint.a);
 
-    GLint uvSize_loc = glGetUniformLocation(renderer.shdr_pgm_instanced.GetHandle(), "u_uvSize");
+    GLint uvSize_loc = glGetUniformLocation(renderer.shdr_pgm_instanced->GetHandle(), "u_uvSize");
     if (uvSize_loc != -1) glUniform2f(uvSize_loc, uvSize.x, uvSize.y);
 
-    // 1. Handle Transparency
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-    // 2. Disable Depth Write so transparent textures don't occlusion-cull things behind them
+    //// 1. Handle Transparency
+    //glEnable(GL_BLEND);
+    //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    //
+    //// 2. Disable Depth Write so transparent textures don't occlusion-cull things behind them
     //glDepthMask(GL_FALSE);
+
+    //glDisable(GL_BLEND);    // No blending
+    glDepthMask(GL_TRUE);   // Write depth normally
 
     glBindTextureUnit(0, textureHandle);
     glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, 0, count);
@@ -1299,7 +1304,7 @@ void InstancingSystem::CreateInstancedRectanglesTextured(
 
     // 3. Reset State
     //glDepthMask(GL_TRUE); // Important!
-    glDisable(GL_BLEND);
+    //glDisable(GL_BLEND);
     glEnable(GL_CULL_FACE);
 }
 
@@ -1542,13 +1547,13 @@ void InstancingSystem::CreateInstancedTriangles(
     glBindBuffer(GL_ARRAY_BUFFER, s_triInstanceDataVBO);
     glBufferData(GL_ARRAY_BUFFER, instanceData.size() * sizeof(TriInstanceData), instanceData.data(), GL_DYNAMIC_DRAW);
 
-    renderer.shdr_pgm_instanced.Use();
-    renderer.shdr_pgm_instanced.SetUniform("uModel", glm::mat4(1.0f));
+    renderer.shdr_pgm_instanced->Use();
+    renderer.shdr_pgm_instanced->SetUniform("uModel", glm::mat4(1.0f));
 
-    GLint useTexture_loc = glGetUniformLocation(renderer.shdr_pgm_instanced.GetHandle(), "u_useTexture");
+    GLint useTexture_loc = glGetUniformLocation(renderer.shdr_pgm_instanced->GetHandle(), "u_useTexture");
     if (useTexture_loc != -1) glUniform1i(useTexture_loc, 0);
 
-    GLint tint_loc = glGetUniformLocation(renderer.shdr_pgm_instanced.GetHandle(), "u_tint");
+    GLint tint_loc = glGetUniformLocation(renderer.shdr_pgm_instanced->GetHandle(), "u_tint");
     if (tint_loc != -1) glUniform4f(tint_loc, 1.0f, 1.0f, 1.0f, 1.0f);
 
     glDrawElementsInstanced(GL_TRIANGLES, 3, GL_UNSIGNED_SHORT, 0, count);
@@ -1592,22 +1597,25 @@ void InstancingSystem::CreateInstancedTrianglesTextured(
     Component::Rendering& renderer = Component::Rendering::Get();
     GLuint textureHandle = Component::TextureRenderer::GetTextureHandle(textureName);
 
-    renderer.shdr_pgm_instanced.Use();
-    renderer.shdr_pgm_instanced.SetUniform("uModel", glm::mat4(1.0f));
+    renderer.shdr_pgm_instanced->Use();
+    renderer.shdr_pgm_instanced->SetUniform("uModel", glm::mat4(1.0f));
 
-    GLint useTexture_loc = glGetUniformLocation(renderer.shdr_pgm_instanced.GetHandle(), "u_useTexture");
+    GLint useTexture_loc = glGetUniformLocation(renderer.shdr_pgm_instanced->GetHandle(), "u_useTexture");
     if (useTexture_loc != -1) glUniform1i(useTexture_loc, 1);
 
-    GLint tint_loc = glGetUniformLocation(renderer.shdr_pgm_instanced.GetHandle(), "u_tint");
+    GLint tint_loc = glGetUniformLocation(renderer.shdr_pgm_instanced->GetHandle(), "u_tint");
     if (tint_loc != -1) glUniform4f(tint_loc, tint.r, tint.g, tint.b, tint.a);
 
-    GLint uvSize_loc = glGetUniformLocation(renderer.shdr_pgm_instanced.GetHandle(), "u_uvSize");
+    GLint uvSize_loc = glGetUniformLocation(renderer.shdr_pgm_instanced->GetHandle(), "u_uvSize");
     if (uvSize_loc != -1) glUniform2f(uvSize_loc, uvSize.x, uvSize.y);
 
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    //glEnable(GL_BLEND);
+    //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     //glDepthMask(GL_FALSE);
+
+    glDisable(GL_BLEND);    // No blending
+    glDepthMask(GL_TRUE);   // Write depth normally
 
     glBindTextureUnit(0, textureHandle);
     glDrawElementsInstanced(GL_TRIANGLES, 3, GL_UNSIGNED_SHORT, 0, count);
@@ -1616,7 +1624,7 @@ void InstancingSystem::CreateInstancedTrianglesTextured(
     glBindVertexArray(0);
 
     //glDepthMask(GL_TRUE); 
-    glDisable(GL_BLEND);
+    //glDisable(GL_BLEND);
     glEnable(GL_CULL_FACE);
 }
 

@@ -136,7 +136,7 @@ namespace Component {
         GLuint tex_vbo_hdl{ 0 };
         GLuint texobj{ 0 };
         GLSLShader* shdr_pgm = nullptr;
-        GLSLShader shdr_pgm_instanced;
+        GLSLShader* shdr_pgm_instanced = nullptr;
         
         glm::mat4 viewMatrix;
         glm::mat4 projectionMatrix;

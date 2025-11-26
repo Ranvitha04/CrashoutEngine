@@ -1,0 +1,956 @@
+{
+    "entities": [
+        {
+            "name": "BG",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": -20.0
+                },
+                "size": {
+                    "x": 2000.0,
+                    "y": 2000.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "camera": {
+                "zoom": 0.20000000298023225,
+                "xBounds": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "yBounds": {
+                    "x": 0.0,
+                    "y": 0.0
+                }
+            }
+        },
+        {
+            "name": "Title",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": -40.644142150878909,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 921.0999755859375,
+                    "y": 560.2000122070313
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI\\Title.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            }
+        },
+        {
+            "name": "CloseBtn",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 151.64492797851563,
+                    "y": 1.4430732727050782,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 79.0,
+                    "y": 16.399999618530275
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 0.6795580387115479,
+                    "y": 0.6795580387115479,
+                    "z": 0.6795580387115479,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "text": {
+                "font": "Exo2-Regular",
+                "text": "Close",
+                "scale": 6.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.2154695987701416,
+                    "y": 0.2154695987701416,
+                    "z": 0.2154695987701416,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": true
+            },
+            "script": {
+                "scripts": [
+                    "MenuButtons"
+                ]
+            },
+            "button": {
+                "buttonState": 0,
+                "shapeNormalColor": {
+                    "x": 0.6795580387115479,
+                    "y": 0.6795580387115479,
+                    "z": 0.6795580387115479,
+                    "w": 1.0
+                },
+                "shapeHoveredColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.5
+                },
+                "shapePressedColor": {
+                    "x": 0.699999988079071,
+                    "y": 0.699999988079071,
+                    "z": 0.699999988079071,
+                    "w": 0.699999988079071
+                },
+                "textNormalColor": {
+                    "x": 0.2154695987701416,
+                    "y": 0.2154695987701416,
+                    "z": 0.2154695987701416,
+                    "w": 1.0
+                },
+                "textHoveredColor": {
+                    "x": 0.1712707281112671,
+                    "y": 0.1712707281112671,
+                    "z": 0.1712707281112671,
+                    "w": 0.0
+                },
+                "textPressedColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.5
+                }
+            },
+            "gui": {
+                "uiType": 7
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "uiLayout": 4
+            }
+        },
+        {
+            "name": "SettingsPanel",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": -101.09684753417969,
+                    "z": -10.0
+                },
+                "size": {
+                    "x": 401.5,
+                    "y": 241.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 0.22651934623718263,
+                    "y": 0.22651934623718263,
+                    "z": 0.22651934623718263,
+                    "w": 0.7679557800292969
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            }
+        },
+        {
+            "name": "Instructions",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -128.98143005371095,
+                    "y": -134.06048583984376,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "text": {
+                "font": "Exo2-Regular",
+                "text": "A: Move Left",
+                "scale": 5.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": true
+            }
+        },
+        {
+            "name": "Entity 5_Clone6",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -125.75492858886719,
+                    "y": -149.06051635742188,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "text": {
+                "font": "Exo2-Regular",
+                "text": "D: Move Right",
+                "scale": 5.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": true
+            },
+            "parent": {
+                "parentName": "Instructions",
+                "localPos": {
+                    "x": 3.22650146484375,
+                    "y": -15.000038146972657,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            }
+        },
+        {
+            "name": "Entity 5_Clone6_Clone7",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -86.26390075683594,
+                    "y": -164.06051635742188,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "text": {
+                "font": "Exo2-Regular",
+                "text": "S: Drop down from platform",
+                "scale": 5.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": true
+            },
+            "parent": {
+                "parentName": "Instructions",
+                "localPos": {
+                    "x": 42.717533111572269,
+                    "y": -30.000030517578126,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            }
+        },
+        {
+            "name": "Entity 5_Clone6_Clone7_Clone8",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -120.54585266113281,
+                    "y": -179.06051635742188,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "text": {
+                "font": "Exo2-Regular",
+                "text": "Spacebar: Jump",
+                "scale": 5.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": true
+            },
+            "parent": {
+                "parentName": "Instructions",
+                "localPos": {
+                    "x": 8.435577392578125,
+                    "y": -45.000030517578128,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            }
+        },
+        {
+            "name": "Entity 5_Clone6_Clone7_Clone8_Clone9",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -49.91327667236328,
+                    "y": -194.06051635742188,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "text": {
+                "font": "Exo2-Regular",
+                "text": "Q: Switch between Normal & LightWeight",
+                "scale": 5.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": true
+            },
+            "parent": {
+                "parentName": "Instructions",
+                "localPos": {
+                    "x": 79.06815338134766,
+                    "y": -60.000030517578128,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            }
+        },
+        {
+            "name": "Music",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -138.92300415039063,
+                    "y": -43.0474853515625,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "text": {
+                "font": "Exo2-Regular",
+                "text": "Music",
+                "scale": 8.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": true
+            }
+        },
+        {
+            "name": "SFX",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -138.9227294921875,
+                    "y": -81.88119506835938,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "text": {
+                "font": "Exo2-Regular",
+                "text": "SFX",
+                "scale": 8.0,
+                "offset": {
+                    "x": -9.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": true
+            }
+        },
+        {
+            "name": "MusicBarParent",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -65.69954681396485,
+                    "y": -43.04766082763672,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 0.699999988079071,
+                    "y": 1.0
+                }
+            },
+            "parent": {
+                "parentName": "Music",
+                "localPos": {
+                    "x": 73.22345733642578,
+                    "y": -0.0001735687255859375,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.699999988079071,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            }
+        },
+        {
+            "name": "MusicBarBG",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 15.963836669921875,
+                    "y": -43.04766082763672,
+                    "z": -1.0
+                },
+                "size": {
+                    "x": 162.60000610351563,
+                    "y": 13.800000190734864
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentName": "Music",
+                "localPos": {
+                    "x": 154.8868408203125,
+                    "y": -0.0001735687255859375,
+                    "z": -1.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 162.60000610351563,
+                    "y": 13.800000190734864
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            }
+        },
+        {
+            "name": "SFXBarParent",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -65.69927215576172,
+                    "y": -81.8813705444336,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 0.699999988079071,
+                    "y": 1.0
+                }
+            },
+            "parent": {
+                "parentName": "SFX",
+                "localPos": {
+                    "x": 73.22345733642578,
+                    "y": -0.0001735687255859375,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.699999988079071,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            }
+        },
+        {
+            "name": "MusicBar",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -8.535179138183594,
+                    "y": -43.04766082763672,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 113.81999969482422,
+                    "y": 13.800000190734864
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 0.7529411911964417,
+                    "y": 0.10980392247438431,
+                    "z": 0.10980392247438431,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentName": "MusicBarParent",
+                "localPos": {
+                    "x": 81.66338348388672,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 162.60000610351563,
+                    "y": 13.800000190734864
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            }
+        },
+        {
+            "name": "SFXBar",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -8.534904479980469,
+                    "y": -81.8813705444336,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 113.81999969482422,
+                    "y": 13.800000190734864
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 0.7513812184333801,
+                    "y": 0.10793322324752808,
+                    "z": 0.10793322324752808,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentName": "SFXBarParent",
+                "localPos": {
+                    "x": 81.66338348388672,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 162.60000610351563,
+                    "y": 13.800000190734864
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            }
+        },
+        {
+            "name": "SFXBarBG",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 15.964111328125,
+                    "y": -81.8813705444336,
+                    "z": -1.0
+                },
+                "size": {
+                    "x": 162.60000610351563,
+                    "y": 13.800000190734864
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentName": "SFX",
+                "localPos": {
+                    "x": 154.8868408203125,
+                    "y": -0.0001735687255859375,
+                    "z": -1.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 162.60000610351563,
+                    "y": 13.800000190734864
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            }
+        }
+    ],
+    "layers": {
+        "Default": 0,
+        "Ground": 2,
+        "Player": 1
+    }
+}

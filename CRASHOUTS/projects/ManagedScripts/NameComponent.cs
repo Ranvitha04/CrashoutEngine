@@ -7,7 +7,7 @@ namespace CrashoutsEngine
     {
         public uint EntityID;
 
-        internal NameComponent() { }
+        public NameComponent() { }
 
         public string Value
         {

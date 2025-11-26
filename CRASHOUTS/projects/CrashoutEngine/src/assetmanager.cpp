@@ -417,11 +417,9 @@ namespace CrashoutsEngine {
 				for (rapidjson::SizeType i = 0; i < tilemapArray.Size(); ++i) {
 					const rapidjson::Value& asset = tilemapArray[i];
 					if (asset.HasMember("name") && asset.HasMember("path")) {
-						std::string name = asset["name"].GetString();
+						std::string name = "tilemaps/";
+						name += asset["name"].GetString();
 						std::string relativePath = asset["path"].GetString();
-
-						// Construct full path relative to the root asset directory
-						fs::path fullPath = fs::path(rootAssetPath) / "tilemaps" / relativePath;
 
 						// Create TileMapAsset object from file data (JSON)
 						std::unique_ptr<TileMapAsset> newTileMap = TileMapAsset::Create(relativePath);
@@ -430,11 +428,11 @@ namespace CrashoutsEngine {
 						if (newTileMap) {
 							// Load the TileMapAsset into AssetManager
 							AssetManager::GetInstance().Load(name, std::move(newTileMap));
-							std::cout << "AssetManager loaded tilemap data: " << name << "(" << fullPath.string() << ")"
+							std::cout << "AssetManager loaded tilemap data: " << name << "(" << relativePath << ")"
 								<< std::endl;
 						}
 						else {
-							std::cerr << "Failed to create TileMapAsset: " << name << " at " << fullPath.string() << std::endl;
+							std::cerr << "Failed to create TileMapAsset: " << name << " at " << relativePath << std::endl;
 						}
 					}
 					else {

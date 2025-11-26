@@ -6,9 +6,9 @@
              Transform {position, rotation, size},
              Shape {type, width, height, size, color, enableTexture, textureName},
              RigidBody {mass, restitution},
-             Collider (AABB from width/height)
+             Collider (ColliderType::AABB from width/height)
              Text, Camera, Script, AudioEmitter, Gui, PPComponent
-             and Collider (AABB by default).
+             and Collider (ColliderType::AABB by default).
 */
 
 #include <memory>
@@ -43,9 +43,9 @@
 using namespace CrashoutsEngine;
 using namespace Component;
 /**
- * @brief Create an AABB (min/max corners) from center and width/height.
+ * @brief Create an ColliderType::AABB (min/max corners) from center and width/height.
  */
- // Compute-and-return AABB unique_ptr based on center+dimensions
+ // Compute-and-return ColliderType::AABB unique_ptr based on center+dimensions
 static std::unique_ptr<Collision::AABBRect>
 MakeCenteredAABB3(const CEVec3& center, float width, float height)
 {
@@ -460,7 +460,7 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path)
                 // RigidBody
                 e.AddComponent<RigidBodyComponent>(entitty, CEVec3{ 0,0,0 }, mass, restitution);
 
-                // Collider (AABB)
+                // Collider (ColliderType::AABB)
                 {
                     auto aabb = MakeCenteredAABB3(transform.position, width, height);
                     e.AddComponent<ColliderComponent>(entitty, ColliderComponent{ std::move(aabb) });

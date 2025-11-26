@@ -4,7 +4,7 @@
 @co-author  lee.r@digipen.edu           (20%)
 @date       25/09/2025
 @brief      Implementation of the TextRenderer class
- 
+
 Handles font loading character atlas creation and text rendering with FreeType and OpenGL
 */
 
@@ -12,10 +12,11 @@ Handles font loading character atlas creation and text rendering with FreeType a
 #include "TextRenderer.h"
 #include "shapes.h"
 #include "glapp.h"
+#include <CEVec3.h>
 #include <iostream>
 #include <fstream>
 #include <sstream>
-//#include <iostream>
+#include <iostream>
 #include "engine.h"
 
 #include "settings.h"
@@ -30,19 +31,19 @@ Handles font loading character atlas creation and text rendering with FreeType a
 /*!
 @brief Construct a new TextRenderer
 */
-TextRenderer::TextRenderer(){
+TextRenderer::TextRenderer() {
     using namespace CrashoutsEngine::Assets;
 
-	ShaderAsset* textureShader = AssetManager::GetInstance().Get<ShaderAsset>("TextShader");
+    ShaderAsset* textureShader = AssetManager::GetInstance().Get<ShaderAsset>("TextShader");
 
-	if (!textureShader) {
-		std::cerr << "ERROR::TEXTRENDERER: Could not find TextShader asset\n";
-		shaderID = 0;
-		return;
-	}
+    if (!textureShader) {
+        std::cerr << "ERROR::TEXTRENDERER: Could not find TextShader asset\n";
+        shaderID = 0;
+        return;
+    }
 
     shaderID = textureShader->shaderObject.GetHandle();
-    
+
     /// Configure VAO/VBO
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
@@ -79,20 +80,19 @@ TextRenderer::TextRenderer(){
 @param fontName The name of the font asset (in AssetManager) to use
 */
 void TextRenderer::RenderText(const std::string& text, GLfloat x, GLfloat y, GLfloat scale, CEColor colorCEV, const std::string fontName, bool isWorldSpace) {
-	scale *= FONT_SCALE;
-    glm::vec3 color{ colorCEV.r, colorCEV.g, colorCEV.b };
-    
+    scale *= FONT_SCALE;
+
     using namespace CrashoutsEngine::Assets;
-	AssetManager& assetManager = AssetManager::GetInstance();
-	FontAsset* font = assetManager.Get<FontAsset>(fontName);
+    AssetManager& assetManager = AssetManager::GetInstance();
+    FontAsset* font = assetManager.Get<FontAsset>(fontName);
 
     if (!font) {
         std::cerr << "ERROR::TEXTRENDERER: Font not found: " << fontName << std::endl;
         return;
     }
     // Get character map
-	const std::map<GLchar, Character>& characters = font->characters;
-    
+    const std::map<GLchar, Character>& characters = font->characters;
+
     glUseProgram(shaderID);
 
     // Get the *current* camera matrices every frame
@@ -101,7 +101,7 @@ void TextRenderer::RenderText(const std::string& text, GLfloat x, GLfloat y, GLf
 
     if (isWorldSpace) {
         // WORLD SPACE: Use the game's moving camera
-        
+
         if (engineState == EngineState::STOP) {
             projection = CrashoutsEngine::RenderCamera::engineCamera.GetProjectionMatrix();
             view = CrashoutsEngine::RenderCamera::engineCamera.GetViewMatrix();
@@ -114,8 +114,14 @@ void TextRenderer::RenderText(const std::string& text, GLfloat x, GLfloat y, GLf
     }
     else {
         // SCREEN SPACE: Use the static UI camera
-        Component::Rendering& renderer = Component::Rendering::Get();
-        projection = renderer.projectionMatrix;
+        //Component::Rendering& renderer = Component::Rendering::Get();
+        projection = glm::ortho(
+            0.0f, static_cast<float>(GLApp::width),
+            0.0f, static_cast<float>(GLApp::height),
+            -1.0f, 1.0f
+        );
+
+        // 2. View is Identity (No camera movement)
         view = glm::mat4(1.0f);
     }
 
@@ -123,7 +129,7 @@ void TextRenderer::RenderText(const std::string& text, GLfloat x, GLfloat y, GLf
     glUniformMatrix4fv(glGetUniformLocation(shaderID, "projection"), 1, GL_FALSE, &projection[0][0]);
     glUniformMatrix4fv(glGetUniformLocation(shaderID, "view"), 1, GL_FALSE, &view[0][0]);
 
-    glUniform3f(glGetUniformLocation(shaderID, "textColor"), color.x, color.y, color.z);
+    glUniform4f(glGetUniformLocation(shaderID, "textColor"), colorCEV.r, colorCEV.g, colorCEV.b, colorCEV.a);
     glActiveTexture(GL_TEXTURE0);
     glBindVertexArray(VAO);
 
@@ -213,7 +219,7 @@ void TextRenderer::RenderText(const std::string& text, GLfloat x, GLfloat y, GLf
 Measures text dimensions and adjusts position so that text is centered on the given coordinates
 */
 void TextRenderer::RenderCenteredText(const std::string& text, GLfloat x, GLfloat y, GLfloat scale, CEColor color, const std::string fontName, bool isWorldSpace) {
-	scale *= FONT_SCALE;
+    scale *= FONT_SCALE;
     using namespace CrashoutsEngine::Assets;
     AssetManager& assetManager = AssetManager::GetInstance();
     FontAsset* font = assetManager.Get<FontAsset>(fontName);
@@ -224,7 +230,7 @@ void TextRenderer::RenderCenteredText(const std::string& text, GLfloat x, GLfloa
     }
     // Get character map
     const std::map<GLchar, Character>& characters = font->characters;
-    
+
     // Measure total width and max full height (including descent)
     GLfloat textWidth = 0.0f;
     GLfloat maxAscent = 0.0f;

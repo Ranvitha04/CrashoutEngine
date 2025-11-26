@@ -1,0 +1,65 @@
+{
+    "layerMask": 2,
+    "tilemap": [
+        {
+            "texAssetName": "spritesheet\\Rock\\Rock_09.png",
+            "colliderType": "ColliderType::NONE",
+            "ruleBitMap": 15
+        },
+        {
+            "texAssetName": "spritesheet\\Rock\\Rock_00.png",
+            "colliderType": "ColliderType::AABB",
+            "ruleBitMap": 2
+        },
+        {
+            "texAssetName": "spritesheet\\Rock\\Rock_01.png",
+            "colliderType": "ColliderType::AABB",
+            "ruleBitMap": 10
+        },
+        {
+            "texAssetName": "spritesheet\\Rock\\Rock_02.png",
+            "colliderType": "ColliderType::AABB",
+            "ruleBitMap": 8
+        },
+        {
+            "texAssetName": "spritesheet\\Rock\\Rock_23.png",
+            "colliderType": "ColliderType::AABB",
+            "ruleBitMap": 11
+        },
+        {
+            "texAssetName": "spritesheet\\Rock\\Rock_24.png",
+            "colliderType": "ColliderType::AABB",
+            "ruleBitMap": 9
+        },
+        {
+            "texAssetName": "spritesheet\\Rock\\Rock_00.png",
+            "colliderType": "ColliderType::AABB",
+            "ruleBitMap": 6
+        },
+        {
+            "texAssetName": "spritesheet\\Rock\\Rock_01.png",
+            "colliderType": "ColliderType::AABB",
+            "ruleBitMap": 14
+        },
+        {
+            "texAssetName": "spritesheet\\Rock\\Rock_02.png",
+            "colliderType": "ColliderType::AABB",
+            "ruleBitMap": 12
+        },
+        {
+            "texAssetName": "spritesheet\\Rock\\Rock_11.png",
+            "colliderType": "ColliderType::AABB",
+            "ruleBitMap": 7
+        },
+        {
+            "texAssetName": "spritesheet\\Rock\\Rock_13.png",
+            "colliderType": "ColliderType::AABB",
+            "ruleBitMap": 13
+        },
+        {
+            "texAssetName": "spritesheet\\Rock\\Rock_22.png",
+            "colliderType": "ColliderType::AABB",
+            "ruleBitMap": 3
+        }
+    ]
+}

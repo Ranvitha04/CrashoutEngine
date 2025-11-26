@@ -8,6 +8,7 @@ Handles registration initialization updating and transitions between different g
 */
 
 #include "gamestatemanager.h"
+#include "collidereventmanager.h"
 #include "engine.h"
 #include <GLFW/glfw3.h>
 #include <audioSystem.h>
@@ -98,6 +99,7 @@ void UpdateGameStateManager() {
     }
     /// normal transition to a different state
     else if (NextGameState != CurrentGameState) {
+        CrashoutsEngine::CollisionEventManager::GetInstance().getCollisionEvents().clear();
         if (CurrentDescriptor) {
             if (CurrentDescriptor->Free)   CurrentDescriptor->Free();
             if (CurrentDescriptor->Unload) CurrentDescriptor->Unload();

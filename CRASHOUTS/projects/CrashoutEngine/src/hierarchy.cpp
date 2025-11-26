@@ -11,11 +11,12 @@
 #include "hierarchy_components.h"
 #include "entitymanager.h"
 #include "namecomponent.h"
+//#include "collidercomponent.h"
+#include "transformcomponent.h"
+#include "shapescomponent.h"
 #include <cmath> 
 #include "shapes.h"              
 #include <glm/gtc/matrix_transform.hpp>
-#include "transformcomponent.h"
-#include "shapescomponent.h"
 
 namespace CrashoutsEngine {
 
@@ -97,7 +98,7 @@ namespace CrashoutsEngine {
     // Create a parent→child relationship
     void AttachChild(ECS& ecs, Entity parent, Entity child) {
         if (parent == 0 || child == 0 || parent == child) return;
-   
+
         if (ecs.HasComponent<Component::ParentComponent>(child)) {
             auto* old = ecs.GetComponent<Component::ParentComponent>(child);
             if (old->parent == parent) return;
@@ -114,22 +115,46 @@ namespace CrashoutsEngine {
             auto* parentTransform = ecs.GetComponent<TransformComponent>(parent);
             auto* childTransform = ecs.GetComponent<TransformComponent>(child);
 
+            // 1. Local Rotation: Simple subtraction
             pointerParentComp->localRot = childTransform->rotation - parentTransform->rotation;
-            pointerParentComp->localScale = { childTransform->size.x / (parentTransform->size.x == 0.f ? 1.f : parentTransform->size.x), childTransform->size.y / (parentTransform->size.y == 0.f ? 1.f : parentTransform->size.y) };
-            const float s = std::sin(-parentTransform->rotation);
-            const float c = std::cos(-parentTransform->rotation);
-            const float dx = childTransform->position.x - parentTransform->position.x;
-            const float dy = childTransform->position.y - parentTransform->position.y;
-            pointerParentComp->localPos = { c * dx - s * dy, s * dx + c * dy, childTransform->position.z - parentTransform->position.z };
+
+            // 2. Local Scale: Child Scale / Parent Scale
+            // Safety check for zero scale
+            float pX = (parentTransform->size.x == 0.f) ? 1.f : parentTransform->size.x;
+            float pY = (parentTransform->size.y == 0.f) ? 1.f : parentTransform->size.y;
+            pointerParentComp->localScale = { childTransform->size.x / pX, childTransform->size.y / pY };
+
+            // 3. Local Position: The Inverse Transform
+            // We need the vector from Parent->Child, un-rotated and un-scaled by the parent.
+
+            // A. Get distance vector
+            float dx = childTransform->position.x - parentTransform->position.x;
+            float dy = childTransform->position.y - parentTransform->position.y;
+
+            // B. Inverse Rotation (Rotate backwards by Parent Angle)
+            // Convert degrees to radians
+            const float DEG_TO_RAD = 0.0174532925f;
+            float angleRad = -parentTransform->rotation * DEG_TO_RAD; // Negative for inverse
+            float s = std::sin(angleRad);
+            float c = std::cos(angleRad);
+
+            // Un-rotated vector
+            float unRotX = (c * dx) - (s * dy);
+            float unRotY = (s * dx) + (c * dy);
+
+            // C. Inverse Scale (Divide by Parent Scale)
+            pointerParentComp->localPos = {
+                unRotX / pX,
+                unRotY / pY,
+                childTransform->position.z - parentTransform->position.z // Z is relative offset
+            };
         }
         else {
-           
-            pointerParentComp->localPos = { 0,0,0 };
+            pointerParentComp->localPos = { 0,0,0.1f }; // Default Z offset
             pointerParentComp->localRot = 0.f;
             pointerParentComp->localScale = { 1.f,1.f };
         }
 
-        
         AddChildLink(ecs, parent, child);
     }
     //Remove a child’s parent link.
@@ -206,31 +231,71 @@ namespace CrashoutsEngine {
     {
        
         ValidateHierarchy(ecs);
-     
+
         auto applyWorldFrom = [&](Entity parent, Entity child) {
             auto* parentTransform = ecs.GetComponent<TransformComponent>(parent);
             auto* childTransform = ecs.GetComponent<TransformComponent>(child);
             auto* pointerParentComp = ecs.GetComponent<ParentComponent>(child);
+
             if (!parentTransform || !childTransform || !pointerParentComp) return;
 
-            // scale
+            // ----------------------------------------------------------
+            // 1. SCALE (Multiplicative)
+            // ----------------------------------------------------------
             childTransform->size.x = parentTransform->size.x * pointerParentComp->localScale.x;
             childTransform->size.y = parentTransform->size.y * pointerParentComp->localScale.y;
 
-            // rotation
-            const float rot = parentTransform->rotation + pointerParentComp->localRot;
-            childTransform->rotation = rot;
+            // ----------------------------------------------------------
+            // 2. ROTATION (Additive)
+            // ----------------------------------------------------------
+            childTransform->rotation = parentTransform->rotation + pointerParentComp->localRot;
 
-            // position = parentPos + R(parentRot) * localPos
-            /*const float s = std::sin(parentTransform->rotation);
-            const float c = std::cos(parentTransform->rotation);
-            const float lx = pointerParentComp->localPos.x;
-            const float ly = pointerParentComp->localPos.y;
-            const float wx = parentTransform->position.x + (c * lx - s * ly);
-            const float wy = parentTransform->position.y + (s * lx + c * ly);
-            const float wz = parentTransform->position.z + pointerParentComp->localPos.z;
-            childTransform->position = { wx, wy, wz };*/
-            if(ecs.HasComponent<ShapeComponent>(parent)) ForceInheritColorFromParent(ecs, child);
+            // ----------------------------------------------------------
+            // 3. POSITION (Orbit Logic)
+            // ----------------------------------------------------------
+            // The child's local position must be SCALED by the parent's size,
+            // and then ROTATED by the parent's rotation.
+
+            const float DEG_TO_RAD = 0.0174532925f;
+            float parentRad = parentTransform->rotation * DEG_TO_RAD;
+            float s = std::sin(parentRad);
+            float c = std::cos(parentRad);
+
+            // A. Apply Parent Scale to the Offset
+            // (If parent grows, child moves further away)
+            float scaledOffsetX = pointerParentComp->localPos.x * parentTransform->size.x;
+            float scaledOffsetY = pointerParentComp->localPos.y * parentTransform->size.y;
+
+            // B. Rotate the Scaled Offset
+            // Standard Rotation Matrix: x' = x*c - y*s, y' = x*s + y*c
+            float rotatedX = (c * scaledOffsetX) - (s * scaledOffsetY);
+            float rotatedY = (s * scaledOffsetX) + (c * scaledOffsetY);
+
+            // C. Add to Parent World Position
+            childTransform->position.x = parentTransform->position.x + rotatedX;
+            childTransform->position.y = parentTransform->position.y + rotatedY;
+
+            // D. Z-Axis (Simple addition for 2D layers)
+            childTransform->position.z = parentTransform->position.z + pointerParentComp->localPos.z;
+
+            //if (ecs.HasComponent<ColliderComponent>(child)) {
+            //    auto* colliderComp = ecs.GetComponent<ColliderComponent>(child);
+            //    if (colliderComp && colliderComp->collider) {
+            //        // 1. Sync Position
+            //        colliderComp->collider->updateCollider(childTransform->position);
+            //
+            //        // 2. Sync Rotation (Add parent's rotation influence)
+            //        // If your OBB/Polygon supports rotation, pass the new child rotation
+            //        colliderComp->collider->updateRotation(childTransform->rotation);
+            //    }
+            //}
+
+            // ----------------------------------------------------------
+            // 4. COLOR
+            // ----------------------------------------------------------
+            if (ecs.HasComponent<ShapeComponent>(parent)) {
+                ForceInheritColorFromParent(ecs, child);
+            }
             };
 
         
@@ -250,6 +315,7 @@ namespace CrashoutsEngine {
             dfs(e);
         }
     }
+
     // Find top most ancestor of entity.
     Entity GetRoot(ECS& ecs, Entity e)
     {

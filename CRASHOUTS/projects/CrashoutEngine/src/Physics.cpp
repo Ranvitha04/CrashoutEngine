@@ -8,6 +8,7 @@
 
 #include "physicsmanager.h"
 #include "frameratecontroller.h"
+#include "hierarchy_components.h"
 #include "namecomponent.h"
 #include "log.h"
 #include <cstdio>
@@ -194,6 +195,52 @@ namespace Physics {
 	void PhysicsHandler::SetLinearDamping(float c) { sLinDamp = c; }
 	float PhysicsHandler::GetLinearDamping() { return sLinDamp; }
 
+	// Helper to recursively update child transforms and colliders after physics step
+	void SyncHierarchyPhysics(CrashoutsEngine::Entity parent, CrashoutsEngine::ECS& ecs) {
+		if (!ecs.HasComponent<Component::ChildrenComponent>(parent)) return;
+
+		auto* childrenComp = ecs.GetComponent<Component::ChildrenComponent>(parent);
+		auto* parentTransform = ecs.GetComponent<Component::TransformComponent>(parent);
+
+		for (CrashoutsEngine::Entity child : childrenComp->children) {
+			if (!ecs.HasComponent<Component::TransformComponent>(child)) continue;
+			if (!ecs.HasComponent<Component::ParentComponent>(child)) continue;
+
+			auto* childTransform = ecs.GetComponent<Component::TransformComponent>(child);
+			auto* parentRel = ecs.GetComponent<Component::ParentComponent>(child);
+
+			// 1. Manually Re-calculate Child World Position based on NEW Parent Position
+			// (Same logic as UpdateHierarchy, but local to this physics step)
+			// This ensures the child 'teleports' along with the parent for collision checks
+
+			// Simple version (assuming no rotation for brevity, add rotation math if needed)
+			// childTransform->position = parentTransform->position + parentRel->localPos; 
+
+			// FULL MATH (Matching your Hierarchy.cpp):
+			const float s = std::sin(parentTransform->rotation);
+			const float c = std::cos(parentTransform->rotation);
+			const float lx = parentRel->localPos.x;
+			const float ly = parentRel->localPos.y;
+			const float rotatedX = (c * lx - s * ly);
+			const float rotatedY = (s * lx + c * ly);
+
+			childTransform->position.x = parentTransform->position.x + rotatedX;
+			childTransform->position.y = parentTransform->position.y + rotatedY;
+			childTransform->position.z = parentTransform->position.z + parentRel->localPos.z;
+
+			// 2. Update Child Collider if it exists
+			if (ecs.HasComponent<Component::ColliderComponent>(child)) {
+				auto* childCol = ecs.GetComponent<Component::ColliderComponent>(child);
+				childCol->collider->updateCollider(childTransform->position);
+				// Also update rotation if needed
+				// childCol->collider->updateRotation(childTransform->rotation);
+			}
+
+			// Recurse
+			SyncHierarchyPhysics(child, ecs);
+		}
+	}
+
 	/*UPDATE BOTH THE RIGIDBODY AND TRANSFORM COMPONENT*/
 	void PhysicsHandler::updatePhysics(Component::TransformComponent* transformComp, Component::RigidBodyComponent* rigidBodyComp, double deltaTime) {
 
@@ -368,7 +415,7 @@ namespace Physics {
 			// allow exactly one tick when paused+Step pressed
 		}
 
-		std::pair<f32, f32> newDimen{ ComputeWorldDimensions() };
+		/*std::pair<f32, f32> newDimen{ ComputeWorldDimensions() };
 
 		newDimen.first *= 1.2f;
 		newDimen.second *= 1.2f;
@@ -377,7 +424,7 @@ namespace Physics {
 
 		CEVec3 pos{ CrashoutsEngine::RenderCamera::gameCamera.GetPosition() };
 
-		Collision::AABBRect bounds{ pos - newExtents, pos + newExtents };
+		Collision::AABBRect bounds{ pos - newExtents, pos + newExtents };*/
 
 		int step{ FrameRateController::GetInstance().StepCount() };
 
@@ -391,14 +438,26 @@ namespace Physics {
 				Component::ColliderComponent* collider1{ globalECS.GetComponent<Component::ColliderComponent>(entity) };
 				Collision::AABBRect region{ Collision::GetAABB(*(collider1->collider), collider1->collider->position) };
 
-				if (!bounds.contains(region)) continue;
+				//if (!bounds.contains(region)) continue;
 
 
 				/*APPLY ANY FORCE GENERATOR HERE, EVERY ENTITY IS AFFECTED*/
 				ForceManager& fm{ rigidBody->getForceManager() };
+				CEVec3 forces = fm.ResolveForces((f32)deltaTime, rigidBody->getMass());
 
-				CEVec3 resultant{ fm.ResolveForces(static_cast<f32>(deltaTime), rigidBody->getMass()) };
-				rigidBody->addForce(resultant); /*GRAVITY*/
+				// 2. Apply Gravity Manually
+				CEVec3 gravityAccel = sGravity; // e.g., (0, -70, 0)
+
+				if (rigidBody->getMass() < 0.f) {
+					// Anti-Gravity: Flip the acceleration vector
+					gravityAccel = -sGravity; // (0, 70, 0)
+				}
+
+				// F = m * a
+				CEVec3 gravityForce = rigidBody->getMass() * gravityAccel;
+
+				// 3. Combine
+				rigidBody->addForce(forces + gravityForce);
 
 
 			}
@@ -409,13 +468,13 @@ namespace Physics {
 				Component::RigidBodyComponent* rigidBody1{ globalECS.GetComponent<Component::RigidBodyComponent>(evnt.entity1) };
 				Component::RigidBodyComponent* rigidBody2{ globalECS.GetComponent<Component::RigidBodyComponent>(evnt.entity2) };
 
-				Component::ColliderComponent* collider1{ globalECS.GetComponent<Component::ColliderComponent>(evnt.entity1) };
-				Component::ColliderComponent* collider2{ globalECS.GetComponent<Component::ColliderComponent>(evnt.entity2) };
+				//Component::ColliderComponent* collider1{ globalECS.GetComponent<Component::ColliderComponent>(evnt.entity1) };
+				//Component::ColliderComponent* collider2{ globalECS.GetComponent<Component::ColliderComponent>(evnt.entity2) };
 
-				Collision::AABBRect region1{ Collision::GetAABB(*(collider1->collider), collider1->collider->position) };
-				Collision::AABBRect region2{ Collision::GetAABB(*(collider2->collider), collider2->collider->position) };
+				/*Collision::AABBRect region1{ Collision::GetAABB(*(collider1->collider), collider1->collider->position) };
+				Collision::AABBRect region2{ Collision::GetAABB(*(collider2->collider), collider2->collider->position) };*/
 
-				if (!bounds.contains(region1) && !bounds.contains(region2)) continue;
+				//if (!bounds.contains(region1) && !bounds.contains(region2)) continue;
 
 				if (!rigidBody1->getFlags().test(SIMULATE_DYNAMICS) || !rigidBody2->getFlags().test(SIMULATE_DYNAMICS)) continue;
 				PositionCorrection(evnt, globalECS);
@@ -428,30 +487,50 @@ namespace Physics {
 				Component::TransformComponent* transform{ globalECS.GetComponent<Component::TransformComponent>(entity) };
 				Component::RigidBodyComponent* rigidBody{ globalECS.GetComponent<Component::RigidBodyComponent>(entity) };
 
-				Component::ColliderComponent* collider1{ globalECS.GetComponent<Component::ColliderComponent>(entity) };
+				// -------------------------------------------------------
+				// CASE A: DYNAMIC (Physics Drives Transform)
+				// -------------------------------------------------------
+				if (rigidBody->getFlags().test(SIMULATE_DYNAMICS)) {
 
-				if (!rigidBody->getFlags().test(SIMULATE_DYNAMICS)) continue;
+					updatePhysics(transform, rigidBody, deltaTime);
 
-				Collision::AABBRect region{ Collision::GetAABB(*(collider1->collider), collider1->collider->position) };
+					rigidBody->setVelocity(rigidBody->getVelocity() * 0.999f);
+					rigidBody->angularVelocity *= 0.999f;
 
-				if (!bounds.contains(region)) continue;
+					if (globalECS.HasComponent<Component::ColliderComponent>(entity)) {
+						Component::ColliderComponent* c{ globalECS.GetComponent<Component::ColliderComponent>(entity) };
 
-				updatePhysics(transform, rigidBody, deltaTime);
-
-				rigidBody->setVelocity(rigidBody->getVelocity()*0.999f);
-				rigidBody->angularVelocity *= 0.999f;
-
-				if (globalECS.HasComponent<Component::ColliderComponent>(entity)) {
-					Component::ColliderComponent* c{ globalECS.GetComponent<Component::ColliderComponent>(entity) };
-
-					if (rigidBody->getMass() && rigidBody->inertia) {
-						c->collider->updateRotation(rigidBody->orientation);
+						if (rigidBody->getMass() && rigidBody->inertia) {
+							c->collider->updateRotation(rigidBody->orientation);
+						}
+						c->collider->updateCollider(transform->position);
 					}
 
-					c->collider->updateCollider(transform->position);
-					
+					// Sync children so they "ride" the dynamic parent
+					SyncHierarchyPhysics(entity, globalECS);
 				}
+				// -------------------------------------------------------
+				// CASE B: KINEMATIC / STATIC (Transform Drives Physics)
+				// -------------------------------------------------------
+				else {
+					// The Hierarchy System or Scripts moved the Transform. 
+					// We just need to ensure the Collider follows.
+					if (globalECS.HasComponent<Component::ColliderComponent>(entity)) {
+						auto* c = globalECS.GetComponent<Component::ColliderComponent>(entity);
 
+						// Sync Collider Rotation to Transform Rotation
+						// (Your RigidBody orientation might be stale if you rotated Transform via script)
+						rigidBody->setRotation(transform->rotation);
+						c->collider->updateRotation(transform->rotation);
+
+						// Sync Collider Position
+						c->collider->updateCollider(transform->position);
+					}
+
+					// --- ADD THIS ---
+					// Ensure children (like Spikes on a Platform) update their colliders too!
+					SyncHierarchyPhysics(entity, globalECS);
+				}
 			}
 		}
 

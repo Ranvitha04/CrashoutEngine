@@ -24,20 +24,22 @@ namespace Collision {
 	@enum	ColliderType
 	@brief	Different types of colliders
 	*/
-	enum ColliderType {
+	enum class ColliderType {
 		SPHERE,
 		AABB,
-		POLYGON,
 		OBB,
+		TRIANGLE,
+		POLYGON,
 		NONE
 	};
 
-	enum HelperType {
+	enum class HelperType {
 		SPHERE_T,
 		AABB_T,
 		OBB_T,
 		TRIANGLE_T,
-		POLYGON_T
+		POLYGON_T,
+		NONE
 	};
 
 	/*!
@@ -46,7 +48,7 @@ namespace Collision {
 	*/
 	struct CollisionManifold {
 		CEVec3 normal;
-		std::array<CEVec3, 2> contactPoints; /*Max contact point of 2 for AABB, 1 for Circle*/
+		std::array<CEVec3, 2> contactPoints; /*Max contact point of 2 for ColliderType::AABB, 1 for Circle*/
 		f32 depth;
 		bool collisionOccured;
 		int numOfContacts;
@@ -123,7 +125,7 @@ namespace Collision {
 
 	/*!
 	@class OBBRect
-	@brief OBB rectangle with a collection of Vertices
+	@brief ColliderType::OBB rectangle with a collection of Vertices
 	*/
 	class OBBRect : public Collider {
 		/*NORMAL AND VERTEX FOR THE PAIR*/
@@ -185,12 +187,12 @@ namespace Collision {
 
 		void forceUpdateRotation(f32 newRotation);
 
-		/*OBB HELPER FUNCTIONS*/
+		/*ColliderType::OBB HELPER FUNCTIONS*/
 		static Polygon createOBB(CEVec3 const& min, CEVec3 const& max, f32 rotation, CEVec3 offset);
 		static void updateOBB(CEVec3 const& min, CEVec3 const& max, Polygon& polygon);
 		static CEVec3 calculateOBBExtents(Polygon const& polygon);
 		
-		/*AABB HELPER FUNCTIONS*/
+		/*ColliderType::AABB HELPER FUNCTIONS*/
 		static Polygon createAABB(CEVec3 const& min, CEVec3 const& max, CEVec3 offset);
 
 		virtual std::unique_ptr<Collider> clone() const override {
@@ -210,7 +212,7 @@ namespace Collision {
 		ColliderFactory() = default;
 
 		std::unique_ptr<Collider> CreateCollider(ColliderType type) {
-			if (type == SPHERE) {
+			if (type == ColliderType::SPHERE) {
 
 				return std::make_unique<Sphere>(Sphere{
 					std::stof(defaultedArg("radius","0.f")),
@@ -221,7 +223,7 @@ namespace Collision {
 					}
 					});
 
-			} if (type == AABB) {
+			} if (type == ColliderType::AABB) {
 
 				return std::make_unique<AABBRect>(AABBRect{
 					CEVec3{
@@ -235,7 +237,7 @@ namespace Collision {
 					}
 					});
 
-			} if (type == OBB) {
+			} if (type == ColliderType::OBB) {
 
 				return std::make_unique<OBBRect>(OBBRect{
 					CEVec3{
@@ -250,6 +252,13 @@ namespace Collision {
 					std::stof(defaultedArg("rotation", "0.f"))
 					});
 
+			} if (type == ColliderType::POLYGON || type == ColliderType::TRIANGLE) {
+				// Default Polygon/Triangle (Empty or basic quad)
+				return std::make_unique<Polygon>(
+					std::initializer_list<CEVec3>{
+						{-0.5f, -0.5f, 0.f}, { 0.5f, -0.5f, 0.f }, { 0.5f, 0.5f, 0.f }
+				}
+				);
 			}
 
 			return std::make_unique<Sphere>(Sphere{ 0.f, CEVec3{} });

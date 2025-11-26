@@ -239,7 +239,7 @@ bool GLApp::init(GLint w, GLint h, std::string t) {
 
     // Enable transparency/blending for sprites
     glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 
     // Enable depth testing but allow transparent objects
     glEnable(GL_DEPTH_TEST);

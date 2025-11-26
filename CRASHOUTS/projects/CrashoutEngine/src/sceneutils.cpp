@@ -46,11 +46,19 @@ namespace Scene {
         @param      globalECS Reference to the ECS system to retrieve components.
         */
         void RenderTextAndCursor(ECS& globalECS) {
-            Component::Rendering& renderer = Component::Rendering::Get();
 
-            renderer.shdr_pgm->Use(); // Switch back to standard shader for text/UI
+            // 1. Reset Shader
+            Component::Rendering& renderer = Component::Rendering::Get();
+            renderer.shdr_pgm->Use(); // Switch back to standard shader
             renderer.shdr_pgm->SetUniform("uView", renderer.viewMatrix);
             renderer.shdr_pgm->SetUniform("uProjection", renderer.projectionMatrix);
+
+            // 2. Reset Blending (The fix for your current issue)
+            glEnable(GL_BLEND);
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+            // 3. Reset Culling (Text is often double-sided or winding order might vary)
+            glDisable(GL_CULL_FACE);
 
             // For Drawing Text Components
             const ECS::ComponentArray<TextComponent>& textArray = globalECS.GetComponentArray<TextComponent>();
@@ -91,15 +99,30 @@ namespace Scene {
                         }
                     }
 
-                    float compensatedScale = tc->scale / RenderCamera::Camera::g_zoom;
+                    float finalScale = tc->scale;
 
                     std::string font = tc->font;
                     if (font == "") font = "Exo2-Regular";
 
+                    if (tc->isWorldSpace) {
+                        // Case 1: World Space Text (Behaves like a sprite)
+                        // DO NOT divide by zoom. Let the View Matrix handle the zoom scaling naturally.
+                        finalScale = tc->scale;
+                    }
+                    else {
+                        // Case 2: UI Text (Screen Space)
+                        // If your TextRenderer applies the Camera View Matrix to UI text (which is common in simple engines),
+                        // then you MUST compensate to keep it static.
+                        // However, the cleaner way is to NOT apply the View Matrix inside RenderText for UI.
+
+                        // Assuming your TextRenderer applies Camera View Matrix to everything:
+                        finalScale = tc->scale / RenderCamera::Camera::g_zoom;
+                    }
+
                     if (tc->centered)
-                        gTextRenderer->RenderCenteredText(tc->text, newOffset.x, newOffset.y, compensatedScale, tc->color, font, tc->isWorldSpace);
+                        gTextRenderer->RenderCenteredText(tc->text, newOffset.x, newOffset.y, finalScale, tc->color, font, tc->isWorldSpace);
                     else
-                        gTextRenderer->RenderText(tc->text, newOffset.x, newOffset.y, compensatedScale, tc->color, font, tc->isWorldSpace);
+                        gTextRenderer->RenderText(tc->text, newOffset.x, newOffset.y, finalScale, tc->color, font, tc->isWorldSpace);
 
                     TextInputComponent* input = globalECS.GetComponent<TextInputComponent>(id);
                     // Check if this entity is a focused text input
@@ -181,7 +204,7 @@ namespace Scene {
                 ButtonComponent* b = globalECS.GetComponent<ButtonComponent>(id);
                 TransformComponent* t = globalECS.GetComponent<TransformComponent>(id);
 
-                // AABB the button
+                // ColliderType::AABB the button
                 float halfW = t->size.x * 0.5f;
                 float halfH = t->size.y * 0.5f;
                 CEVec2 aa{ t->position.x - halfW, t->position.y - halfH };
@@ -237,7 +260,7 @@ namespace Scene {
             for (const Entity& id : textInputArray.indexToEntity) {
                 TransformComponent* t = globalECS.GetComponent<TransformComponent>(id);
 
-                // AABB check
+                // ColliderType::AABB check
                 float halfW = t->size.x * 0.5f;
                 float halfH = t->size.y * 0.5f;
                 CEVec2 aa{ t->position.x - halfW, t->position.y - halfH };
@@ -379,16 +402,17 @@ namespace Scene {
     std::unordered_map<std::string, RenderBatch> circBatches;
 
     void RenderScene(CrashoutsEngine::ECS& globalECS) {
+
         using namespace CrashoutsEngine;
         using Component::Rendering;
 
         Rendering& renderer = Rendering::Get();
-        if (!renderer.shdr_pgm) return;
+        if (!renderer.shdr_pgm_instanced) return;
 
         // 1. Setup Shader
-        renderer.shdr_pgm_instanced.Use();
-        renderer.shdr_pgm_instanced.SetUniform("uView", renderer.viewMatrix);
-        renderer.shdr_pgm_instanced.SetUniform("uProjection", renderer.projectionMatrix);
+        renderer.shdr_pgm_instanced->Use();
+        renderer.shdr_pgm_instanced->SetUniform("uView", renderer.viewMatrix);
+        renderer.shdr_pgm_instanced->SetUniform("uProjection", renderer.projectionMatrix);
 
         // 2. Clear previous batches
         for (auto& kv : rectBatches) kv.second.Clear();
@@ -462,7 +486,7 @@ namespace Scene {
                 renderer.shdr_pgm->SetUniform("uView", renderer.viewMatrix);
                 renderer.shdr_pgm->SetUniform("uProjection", renderer.projectionMatrix);
                 Shapes::CreateLine(sc->p1 + tf->position, sc->p2 + tf->position, sc->thickness, sc->color, sc->isWorldSpace);
-                renderer.shdr_pgm_instanced.Use(); // Switch back
+                renderer.shdr_pgm_instanced->Use(); // Switch back
                 break;
             }
         }
@@ -486,7 +510,6 @@ namespace Scene {
             params.textureName = batch.textureName;
             params.tint = { 1,1,1 };
             params.uvSize = batch.uvSize;
-
 
             InstancingSystem::RenderInstancedRectanglesBatch(
                 batch.positions.data(),

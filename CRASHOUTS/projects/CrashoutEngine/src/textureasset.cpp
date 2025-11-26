@@ -691,10 +691,15 @@ namespace Component {
         // Bind texture to texture unit 6
         glBindTextureUnit(6, textureHandle);
 
+        glEnable(GL_DEPTH_TEST);
+        glDepthMask(GL_FALSE);
+
         // Use shared VAO for rendering (no buffer creation/deletion per call)
         glBindVertexArray(sharedVAO);
         glDrawElements(GL_TRIANGLES, INDICES_COUNT, GL_UNSIGNED_SHORT, 0);
         glBindVertexArray(0);
+
+        glDepthMask(GL_TRUE);
 
         // Unbind texture and shader
         glBindTextureUnit(6, 0);
@@ -797,11 +802,16 @@ namespace Component {
         // Bind texture to texture unit 6
         glBindTextureUnit(6, textureHandle);
 
+        glEnable(GL_DEPTH_TEST);
+        glDepthMask(GL_FALSE);
+
         // Render the quad
         glDrawElements(GL_TRIANGLES, INDICES_COUNT, GL_UNSIGNED_SHORT, 0);
 
         // Unbind shared resources
         glBindVertexArray(0);
+
+        glDepthMask(GL_TRUE);
 
         // Unbind texture and shader
         glBindTextureUnit(6, 0);
