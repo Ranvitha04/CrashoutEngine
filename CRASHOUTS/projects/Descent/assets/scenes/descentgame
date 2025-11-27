@@ -14331,7 +14331,13 @@
             },
             "script": {
                 "scripts": [
-                    "PlayerMovement"
+                    {
+                        "className": "PlayerMovement",
+                        "fields": {
+                            "jumpPower": 20000.0,
+                            "IsOnPlatform": false
+                        }
+                    }
                 ]
             },
             "camera": {
@@ -16768,5 +16774,15 @@
         "Ground": 2,
         "Lava": 4,
         "Player": 8
+    },
+    "quadtree": {
+        "min": {
+            "x": -2000.0,
+            "y": -2000.0
+        },
+        "max": {
+            "x": 2000.0,
+            "y": 2000.0
+        }
     }
 }
