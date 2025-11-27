@@ -54,13 +54,13 @@ namespace CrashoutsEngine
             isMoving = moveLeft || moveRight;
             if (isMoving && !wasMoving)
             {
-                //Console.WriteLine("[C#] Player started moving -> Play footsteps");
-                AudioManager.GetInstance().Play("footsteps");
+                //Console.WriteLine("[C#] Player started moving -> Play footstep1");
+                AudioManager.GetInstance().Play("footstep1");
             }
             else if (!isMoving && wasMoving)
             {
                 //Console.WriteLine("[C#] Player stopped moving -> Stop footsteps_loop");
-                AudioManager.GetInstance().Stop("footsteps");
+                AudioManager.GetInstance().Stop("footstep1");
             }
             //if (Input.IsKeyPressed(Key.A))
             //{
