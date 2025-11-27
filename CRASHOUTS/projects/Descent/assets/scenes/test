@@ -747,15 +747,15 @@
                     {
                         "className": "PlayerMovement",
                         "fields": {
-                            "moveSpeed": 200.0,
+                            "moveSpeed": 2000.0,
                             "maxRunSpeed": 100.0,
-                            "jumpPower": 20000.0,
+                            "jumpPower": 50000.0,
                             "groundDrag": 0.15000000596046449,
                             "airDrag": 0.019999999552965165,
                             "gravityScale": 2.5,
                             "turnMultiplier": 2.0,
                             "frictionMultiplier": 500.0,
-                            "gravityForceMultiplier": 10.0,
+                            "gravityForceMultiplier": 7.5,
                             "stepInterval": 0.3499999940395355,
                             "normalMass": 4.5,
                             "lightMass": 2.5
@@ -1150,6 +1150,28 @@
                     "y": 0.0,
                     "z": 0.0
                 }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "SlimeMovement",
+                        "fields": {
+                            "moveSpeed": 200.0,
+                            "maxRunSpeed": 100.0,
+                            "minX": 0.0,
+                            "maxX": 0.0,
+                            "groundDrag": 0.15000000596046449,
+                            "airDrag": 0.019999999552965165,
+                            "gravityScale": 2.5,
+                            "turnMultiplier": 2.0,
+                            "frictionMultiplier": 500.0,
+                            "gravityForceMultiplier": 10.0,
+                            "activationAreaX": 20.0,
+                            "activationAreaY": 20.0,
+                            "activationDist": 15.0
+                        }
+                    }
+                ]
             }
         },
         {

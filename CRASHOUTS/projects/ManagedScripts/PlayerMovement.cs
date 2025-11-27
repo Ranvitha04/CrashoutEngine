@@ -223,7 +223,7 @@ namespace CrashoutsEngine
             var layer = other.GetComponent<LayerComponent>();
 
             // Leaving Ground
-            if (layer != null && (layer.HasLayer("Ground") || layer.HasLayer("Platform")))
+            if (layer != null && layer.HasLayer("Ground"))
             {
                 IsGrounded = false;
             }
