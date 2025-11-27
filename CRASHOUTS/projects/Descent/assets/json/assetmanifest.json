@@ -585,6 +585,38 @@
             "path": "spritesheet\\Darker Platform\\Darker Platform_43.png"
         },
         {
+            "name": "Energy Ball spritesheet_00",
+            "path": "spritesheet\\Energy Ball spritesheet\\Energy Ball spritesheet_00.png"
+        },
+        {
+            "name": "Energy Ball spritesheet_01",
+            "path": "spritesheet\\Energy Ball spritesheet\\Energy Ball spritesheet_01.png"
+        },
+        {
+            "name": "Energy Ball spritesheet_02",
+            "path": "spritesheet\\Energy Ball spritesheet\\Energy Ball spritesheet_02.png"
+        },
+        {
+            "name": "Energy Ball spritesheet_03",
+            "path": "spritesheet\\Energy Ball spritesheet\\Energy Ball spritesheet_03.png"
+        },
+        {
+            "name": "Energy Ball spritesheet_04",
+            "path": "spritesheet\\Energy Ball spritesheet\\Energy Ball spritesheet_04.png"
+        },
+        {
+            "name": "Energy Ball spritesheet_05",
+            "path": "spritesheet\\Energy Ball spritesheet\\Energy Ball spritesheet_05.png"
+        },
+        {
+            "name": "Energy Ball spritesheet_06",
+            "path": "spritesheet\\Energy Ball spritesheet\\Energy Ball spritesheet_06.png"
+        },
+        {
+            "name": "Energy Ball spritesheet_07",
+            "path": "spritesheet\\Energy Ball spritesheet\\Energy Ball spritesheet_07.png"
+        },
+        {
             "name": "lava platform_00",
             "path": "spritesheet\\lava platform\\lava platform_00.png"
         },
