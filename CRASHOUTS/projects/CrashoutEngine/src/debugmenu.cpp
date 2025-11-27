@@ -310,7 +310,7 @@ namespace UI { // --------------------------------------------------------------
     */
     void Shutdown() {
 
-        if (!currSceneName.empty()) Serialization::SaveScenes(currSceneName);
+        if (!currSceneName.empty() && engineState == EngineState::STOP) Serialization::SaveScenes(currSceneName);
 
         ImGui_ImplOpenGL3_Shutdown();
         ImGui_ImplGlfw_Shutdown();

@@ -21,7 +21,7 @@ namespace CrashoutsEngine
         public void OnTriggerEnter(uint otherEntity) {
             //Console.WriteLine("Entered Inside Me BOUNCE");
             var rb = Entity.GetComponent<RigidBodyComponent>();
-            // rb.AddForce(new CEVec3(0f, 20000f, 0f)); //* rb.GetMass());
+            // rb.AddForce(new CEVec3(0f, 20000f, 0f)); //* rb.Mass);
         }
      
 
@@ -123,9 +123,9 @@ namespace CrashoutsEngine
             wasMoving = isMoving;
             //if (Input.IsKeyPressed(Key.A))
             //{
-            //    //Console.WriteLine($"[DEBUG] A pressed, rb ID = {rb.EntityID}, mass = {rb.GetMass()}");
+            //    //Console.WriteLine($"[DEBUG] A pressed, rb ID = {rb.EntityID}, mass = {rb.Mass}");
             //    //Console.WriteLine("A key is pressed");
-            //    //Console.WriteLine("[C#] mass=" + rb.GetMass());
+            //    //Console.WriteLine("[C#] mass=" + rb.Mass);
             //    rb.AddForce(new CEVec3(-500f, 0f, 0f));
             //}
 
@@ -136,8 +136,8 @@ namespace CrashoutsEngine
 
             //if (Input.IsKeyTriggered(Key.Space))
             //{
-            //    rb.AddForce(new CEVec3(0f, 20000f, 0f)); //* rb.GetMass());
-            //    Console.WriteLine("[C#] mass=" + rb.GetMass());
+            //    rb.AddForce(new CEVec3(0f, 20000f, 0f)); //* rb.Mass);
+            //    Console.WriteLine("[C#] mass=" + rb.Mass);
             //}
 
             if (Input.IsKeyPressed(Key.S))
@@ -188,7 +188,7 @@ namespace CrashoutsEngine
             if (jump)
             {
                 rb.AddForce(new CEVec3(0f, 20000f, 0f));
-                Console.WriteLine("[C#] mass=" + rb.GetMass());
+                Console.WriteLine("[C#] mass=" + rb.Mass);
             }
         }
 

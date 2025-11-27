@@ -70,7 +70,7 @@ namespace CrashoutsEngine
             if (_isOpen && !_stopMoving)
             {
                 //Console.WriteLine(Time.DT);
-                float increment = MoveSpeed;// * ((float)Time.DT);
+                float increment = MoveSpeed * ((float)Time.DT);
                 //Console.WriteLine(increment);
                 // Force transform location now because collider kinda wonky (NEED FIXING)
                 if (transform != null)
@@ -86,9 +86,9 @@ namespace CrashoutsEngine
                         if (oldXY.y >= newXY.y) _stopMoving = true;
                     }
                     transform.Position = new CEVec3(oldXY.x, oldXY.y, transform.Position.z);
-                    Debug.Log("move");
+                    //Debug.Log("move");
                 }
-                Debug.Log("wtdf");
+                //Debug.Log("wtdf");
             }
         }
 

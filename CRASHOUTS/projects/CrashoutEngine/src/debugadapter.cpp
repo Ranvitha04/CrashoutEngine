@@ -1864,8 +1864,10 @@ namespace CrashoutsEngine
 							"dotnet clean \"../../projects/ManagedScripts/ManagedScripts.csproj\" -c Debug > buildlog.txt 2>&1 && "
 							"dotnet build \"../../projects/ManagedScripts/ManagedScripts.csproj\" -c Debug > buildlog.txt 2>&1"
 						);
-						if (result == 0)
+						if (result == 0) {
 							reloadPending = true; // signal reload
+
+						}
 						isBuilding = false;
 						}).detach();
 				}
