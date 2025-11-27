@@ -89,30 +89,24 @@ namespace CrashoutsEngine
                 //Console.WriteLine("[C#] Player stopped moving -> Stop footsteps_loop");
                 AudioManager.GetInstance().Stop("footsteps");
             }
-            // --- ANIMATION (ALL C# NOW) ---
+          
 
             if (animator != null)
             {
-                // Flip based on direction
+               
                 if (moveLeft && !moveRight)
                 {
-                    animator.SetFlip(true);   // face left
+                    animator.SetFlip(true);   
                 }
                 else if (moveRight && !moveLeft)
                 {
-                    animator.SetFlip(false);  // face right
+                    animator.SetFlip(false);  
                 }
 
-                // Decide which state to play
-                // For now: just normal idle / walk.
-                // Later you can expand to idle_alt / walk_alt with isAlt.
+          
                 string desiredState;
 
-                // Example with future alt mode support:
-                // if (isAlt)
-                //     desiredState = isMoving ? "walk_alt" : "idle_alt";
-                // else
-                //     desiredState = isMoving ? "walk_normal" : "idle_normal";
+            
 
                 
                 desiredState = isMoving ? "walk_normal" : "idle_normal";
