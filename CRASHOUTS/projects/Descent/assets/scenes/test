@@ -665,17 +665,17 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -47.375213623046878,
-                    "y": 206.28384399414063,
+                    "x": 139.19996643066407,
+                    "y": 30.229028701782228,
                     "z": 1.0
                 },
                 "size": {
-                    "x": 115.19999694824219,
+                    "x": -115.19999694824219,
                     "y": 71.4000015258789
                 }
             },
             "rigidbody": {
-                "mass": 5.0,
+                "mass": 4.5,
                 "restitutionCoeff": 0.0,
                 "maximumVelocity": {
                     "x": 0.0,
@@ -691,8 +691,8 @@
             "collider": {
                 "helperType": 2,
                 "position": {
-                    "x": -47.375213623046878,
-                    "y": 206.28384399414063,
+                    "x": 139.19996643066407,
+                    "y": 30.229028701782228,
                     "z": 1.0
                 },
                 "offset": {
@@ -701,13 +701,13 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": -58.57518005371094,
-                    "y": 176.02659606933595,
+                    "x": 127.99998474121094,
+                    "y": -0.027776718139648439,
                     "z": 1.0
                 },
                 "max": {
-                    "x": -36.17524719238281,
-                    "y": 236.5410919189453,
+                    "x": 150.3999481201172,
+                    "y": 60.48583221435547,
                     "z": 1.0
                 },
                 "rotation": 0.0
@@ -747,14 +747,23 @@
                     {
                         "className": "PlayerMovement",
                         "fields": {
-                            "jumpPower": 25000.0,
-                            "IsOnPlatform": false
+                            "moveSpeed": 200.0,
+                            "maxRunSpeed": 100.0,
+                            "jumpPower": 20000.0,
+                            "groundDrag": 0.15000000596046449,
+                            "airDrag": 0.019999999552965165,
+                            "gravityScale": 2.5,
+                            "turnMultiplier": 2.0,
+                            "frictionMultiplier": 500.0,
+                            "gravityForceMultiplier": 10.0,
+                            "normalMass": 4.5,
+                            "lightMass": 2.5
                         }
                     }
                 ]
             },
             "camera": {
-                "zoom": 0.46000000834465029,
+                "zoom": 0.25999999046325686,
                 "xBounds": {
                     "x": 0.0,
                     "y": 0.0
@@ -762,85 +771,6 @@
                 "yBounds": {
                     "x": 0.0,
                     "y": 0.0
-                }
-            }
-        },
-        {
-            "name": "GroundCollider",
-            "layer": {
-                "currentLayer": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": -47.375213623046878,
-                    "y": 191.66184997558595,
-                    "z": -4.199999809265137
-                },
-                "size": {
-                    "x": 1.0,
-                    "y": 1.0
-                }
-            },
-            "rigidbody": {
-                "mass": 0.0,
-                "restitutionCoeff": 0.0,
-                "maximumVelocity": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "staticFriction": 0.5,
-                "dynamicFriction": 0.5,
-                "inertia": 0.0,
-                "invInertia": 0.0,
-                "isTrigger": true
-            },
-            "collider": {
-                "helperType": 0,
-                "position": {
-                    "x": -47.375213623046878,
-                    "y": 183.66184997558595,
-                    "z": -4.199999809265137
-                },
-                "offset": {
-                    "x": 0.0,
-                    "y": -8.0,
-                    "z": 0.0
-                },
-                "radius": 10.800000190734864,
-                "center": {
-                    "x": -47.375213623046878,
-                    "y": 183.66184997558595,
-                    "z": -4.199999809265137
-                }
-            },
-            "script": {
-                "scripts": [
-                    {
-                        "className": "GroundSensor",
-                        "fields": {}
-                    }
-                ]
-            },
-            "parent": {
-                "parentName": "Player",
-                "localPos": {
-                    "x": 0.0,
-                    "y": -14.621999740600586,
-                    "z": -5.199999809265137
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 0.0086805559694767,
-                    "y": 0.014005602337419987
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
                 }
             }
         },
@@ -853,7 +783,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": -47.94267272949219,
-                    "y": 150.77984619140626,
+                    "y": 151.87222290039063,
                     "z": -1.0
                 },
                 "size": {
@@ -879,7 +809,7 @@
                 "helperType": 1,
                 "position": {
                     "x": -47.94267272949219,
-                    "y": 132.77984619140626,
+                    "y": 133.87222290039063,
                     "z": -1.0
                 },
                 "offset": {
@@ -889,12 +819,12 @@
                 },
                 "min": {
                     "x": -63.79267883300781,
-                    "y": 126.87985229492188,
+                    "y": 127.97222900390625,
                     "z": -1.0
                 },
                 "max": {
                     "x": -32.09266662597656,
-                    "y": 138.67984008789063,
+                    "y": 139.772216796875,
                     "z": -1.0
                 }
             },
@@ -933,6 +863,7 @@
                     {
                         "className": "PressurePlate",
                         "fields": {
+                            "decrease": 5.0,
                             "wallName": "wall_test"
                         }
                     }
@@ -948,7 +879,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": 16.0,
-                    "y": 16.0,
+                    "y": 26.032276153564454,
                     "z": -1.0
                 },
                 "size": {
@@ -991,7 +922,11 @@
                     {
                         "className": "MovingWall",
                         "fields": {
-                            "PlatesActive": 0
+                            "PlatesActive": 0,
+                            "PlatesRequired": 1,
+                            "MoveRight": false,
+                            "MoveDist": 200.0,
+                            "MoveSpeed": 50.0
                         }
                     }
                 ]
@@ -1030,11 +965,121 @@
                     }
                 ]
             }
+        },
+        {
+            "name": "BigBox",
+            "layer": {
+                "currentLayer": 2
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 228.1483612060547,
+                    "y": 119.81104278564453,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 58.099998474121097,
+                    "y": 10.0
+                }
+            },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0,
+                "isTrigger": true
+            },
+            "collider": {
+                "helperType": 1,
+                "position": {
+                    "x": 228.1483612060547,
+                    "y": 119.81104278564453,
+                    "z": 0.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": 199.09835815429688,
+                    "y": 114.81104278564453,
+                    "z": 0.0
+                },
+                "max": {
+                    "x": 257.1983642578125,
+                    "y": 124.81104278564453,
+                    "z": 0.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 255.0,
+                    "y": 255.0,
+                    "z": 255.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "WeightedPlatform",
+                        "fields": {
+                            "IsMoving": true,
+                            "MoveRight": true,
+                            "MovementDistance": 200.0,
+                            "MoveSpeed": 50.0,
+                            "VerticalSpeed": 50.0,
+                            "maxDrop": 50.0
+                        }
+                    }
+                ]
+            }
         }
     ],
     "layers": {
         "Default": 0,
         "Ground": 2,
         "Player": 1
+    },
+    "quadtree": {
+        "min": {
+            "x": -2000.0,
+            "y": -2000.0
+        },
+        "max": {
+            "x": 2000.0,
+            "y": 2000.0
+        }
     }
 }

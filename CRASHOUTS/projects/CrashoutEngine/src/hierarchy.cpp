@@ -38,6 +38,7 @@ namespace CrashoutsEngine {
 
 
     // inheritance helpers
+    /*
     static CEColor GetAncestorColor(ECS& ecs, Entity e) {
         using namespace Component;
         // if this direct parent has ShapeComponent, use that;
@@ -74,6 +75,7 @@ namespace CrashoutsEngine {
         shapeComp->color.a = parentCol.a * parentComp->colorMul.a;
         
     }
+    */
 
     // Check if child is already in parent’s list
     bool IsAlreadyChildOf(ECS& ecs, Entity parent, Entity child) {
@@ -180,7 +182,9 @@ namespace CrashoutsEngine {
         DetachChild(ecs, child);
         AttachChild(ecs, newParent, child);
     }
+    
     // Keep Parent/Children structures consistent.
+    /*
     static void ValidateHierarchy(ECS& ecs) {
 
         auto& arr = ecs.GetComponentArray<ChildrenComponent>();
@@ -226,12 +230,15 @@ namespace CrashoutsEngine {
             AddChildLink(ecs, parent, child);
         }
     }
+    */
+    
     // Per-frame propagation entry point.
     void UpdateHierarchy(ECS& ecs)
     {
        
-        ValidateHierarchy(ecs);
+        //ValidateHierarchy(ecs);
 
+#if 0
         auto applyWorldFrom = [&](Entity parent, Entity child) {
             auto* parentTransform = ecs.GetComponent<TransformComponent>(parent);
             auto* childTransform = ecs.GetComponent<TransformComponent>(child);
@@ -313,6 +320,77 @@ namespace CrashoutsEngine {
             if (!ecs.HasComponent<ChildrenComponent>(e)) continue;
             if (ecs.HasComponent<ParentComponent>(e)) continue;
             dfs(e);
+        }
+#endif
+        // Define the recursive function efficiently
+    // Pass parentTransform by POINTER to avoid looking it up again
+        std::function<void(Entity, const TransformComponent*)> processChildren =
+            [&](Entity parentEntity, const TransformComponent* parentTransform)
+            {
+                // 1. Get Children Component (Early exit if none)
+                auto* kids = ecs.GetComponent<ChildrenComponent>(parentEntity);
+                if (!kids || kids->children.empty()) return;
+
+                // 2. PRE-CALCULATE PARENT MATH (The Optimization)
+                // We calculate this ONCE per parent, not once per child.
+                const float DEG_TO_RAD = 0.0174532925f;
+                float parentRad = parentTransform->rotation * DEG_TO_RAD;
+                float s = std::sin(parentRad);
+                float c = std::cos(parentRad);
+
+                // 3. Iterate Children
+                for (Entity child : kids->children) {
+
+                    // Get Child Components
+                    auto* childTransform = ecs.GetComponent<TransformComponent>(child);
+                    auto* pointerParentComp = ecs.GetComponent<ParentComponent>(child);
+
+                    // Safety check
+                    if (!childTransform || !pointerParentComp) continue;
+
+                    // --- APPLY TRANSFORMS (Inline for speed) ---
+
+                    // A. Scale
+                    childTransform->size.x = parentTransform->size.x * pointerParentComp->localScale.x;
+                    childTransform->size.y = parentTransform->size.y * pointerParentComp->localScale.y;
+
+                    // B. Rotation
+                    childTransform->rotation = parentTransform->rotation + pointerParentComp->localRot;
+
+                    // C. Position (Orbit Logic using pre-calc Sine/Cosine)
+                    float scaledOffsetX = pointerParentComp->localPos.x * parentTransform->size.x;
+                    float scaledOffsetY = pointerParentComp->localPos.y * parentTransform->size.y;
+
+                    float rotatedX = (c * scaledOffsetX) - (s * scaledOffsetY);
+                    float rotatedY = (s * scaledOffsetX) + (c * scaledOffsetY);
+
+                    childTransform->position.x = parentTransform->position.x + rotatedX;
+                    childTransform->position.y = parentTransform->position.y + rotatedY;
+                    childTransform->position.z = parentTransform->position.z + pointerParentComp->localPos.z;
+
+                    // D. Color Inheritance (Optional optimization: Check HasComponent only if needed)
+                    // if (ecs.HasComponent<ShapeComponent>(parentEntity)) { ... }
+
+                    // 4. RECURSE
+                    // Pass the CURRENT child as the NEW parent
+                    processChildren(child, childTransform);
+                }
+            };
+
+        // -------------------------------------------------------
+        // MAIN LOOP: Only find Roots
+        // -------------------------------------------------------
+        // Optimization: Iterate NameComponent or TransformComponent if smaller than ChildrenComponent
+        auto& childArray = ecs.GetComponentArray<ChildrenComponent>();
+
+        for (Entity e : childArray.indexToEntity) {
+            // We only start the recursion on ROOTS (Entities that have children but NO parent)
+            if (!ecs.HasComponent<ParentComponent>(e)) {
+                // Get the root transform once
+                if (auto* rootTransform = ecs.GetComponent<TransformComponent>(e)) {
+                    processChildren(e, rootTransform);
+                }
+            }
         }
     }
 

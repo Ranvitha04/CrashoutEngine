@@ -31,7 +31,7 @@ namespace Physics {
 			static inline bool sOverrideDt = false;
 			static inline double sDebugDt = 1.0 / 60.0;
 
-			static inline CEVec3 sGravity{ 0.f, -70.f, 0.f };
+			static inline CEVec3 sGravity{ 0.f, -200.f, 0.f };
 			static inline float  sLinDamp = .1f;
 
 			PhysicsHandler();

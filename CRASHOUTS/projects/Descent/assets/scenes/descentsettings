@@ -651,7 +651,8 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "VolumeSlider"
+                        "className": "VolumeSlider",
+                        "fields": {}
                     }
                 ]
             },

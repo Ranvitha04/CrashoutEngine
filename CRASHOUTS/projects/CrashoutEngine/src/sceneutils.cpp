@@ -397,19 +397,44 @@ namespace Scene {
         }
     };
 
-    std::unordered_map<std::string, RenderBatch> rectBatches;
-    std::unordered_map<std::string, RenderBatch> triBatches;
-    std::unordered_map<std::string, RenderBatch> circBatches;
+    struct BatchKey {
+        std::string textureName;
+        float uvX, uvY;
+        int wrapU, wrapV;
+
+        // Equality operator required for Map/UnorderedMap
+        bool operator==(const BatchKey& other) const {
+            return textureName == other.textureName &&
+                uvX == other.uvX && uvY == other.uvY &&
+                wrapU == other.wrapU && wrapV == other.wrapV;
+        }
+    };
+
+    // Hasher for std::unordered_map
+    struct BatchKeyHasher {
+        std::size_t operator()(const BatchKey& k) const {
+            // Combine hashes (simple XOR combination)
+            std::size_t h1 = std::hash<std::string>{}(k.textureName);
+            std::size_t h2 = std::hash<float>{}(k.uvX);
+            std::size_t h3 = std::hash<float>{}(k.uvY);
+            std::size_t h4 = std::hash<int>{}(k.wrapU);
+            std::size_t h5 = std::hash<int>{}(k.wrapV);
+            return h1 ^ (h2 << 1) ^ (h3 << 2) ^ (h4 << 3) ^ (h5 << 4);
+        }
+    };
+    
+    std::unordered_map<BatchKey, RenderBatch, BatchKeyHasher> rectBatches;
+    std::unordered_map<BatchKey, RenderBatch, BatchKeyHasher> triBatches;
+    std::unordered_map<BatchKey, RenderBatch, BatchKeyHasher> circBatches;
 
     void RenderScene(CrashoutsEngine::ECS& globalECS) {
-
         using namespace CrashoutsEngine;
         using Component::Rendering;
 
         Rendering& renderer = Rendering::Get();
         if (!renderer.shdr_pgm_instanced) return;
 
-        // 1. Setup Shader
+        // 1. Setup Instanced Shader
         renderer.shdr_pgm_instanced->Use();
         renderer.shdr_pgm_instanced->SetUniform("uView", renderer.viewMatrix);
         renderer.shdr_pgm_instanced->SetUniform("uProjection", renderer.projectionMatrix);
@@ -422,32 +447,34 @@ namespace Scene {
         // 3. Iterate ECS
         const ECS::ComponentArray<ShapeComponent>& shapeArray = globalECS.GetComponentArray<ShapeComponent>();
 
+        // Store lines to render AFTER the loop (avoids shader switching)
+        std::vector<std::pair<TransformComponent*, ShapeComponent*>> lineQueue;
+
         for (const Entity& id : shapeArray.indexToEntity) {
             if (!globalECS.HasComponent<TransformComponent>(id)) continue;
 
             TransformComponent* tf = globalECS.GetComponent<TransformComponent>(id);
             ShapeComponent* sc = globalECS.GetComponent<ShapeComponent>(id);
 
-            std::string batchKey;
+            // OPTIMIZATION: Defer Lines
+            if (sc->type == ShapeType::Line) {
+                lineQueue.push_back({ tf, sc });
+                continue;
+            }
+
+            // OPTIMIZATION: Create Key Struct directly (No string conversion!)
+            BatchKey key;
             if (sc->enableTexture) {
-                batchKey = sc->textureName + "_" +
-                    std::to_string(sc->uvSize.x) + "_" +
-                    std::to_string(sc->uvSize.y) + "_" +
-                    std::to_string(sc->wrapModeU) + "_" +
-                    std::to_string(sc->wrapModeV);
+                key = { sc->textureName, sc->uvSize.x, sc->uvSize.y, sc->wrapModeU, sc->wrapModeV };
             }
             else {
-                batchKey = "NoTexture";
+                key = { "NoTexture", 1.0f, 1.0f, 0, 0 };
             }
 
-            CEColor colorNorm(
-                sc->color.x(),
-                sc->color.y(),
-                sc->color.z(),
-                sc->color.w()
-            );
+            // Prepare Color
+            CEColor colorNorm(sc->color.x(), sc->color.y(), sc->color.z(), sc->color.w());
 
-
+            // Helper Lambda
             auto ConfigureBatch = [&](RenderBatch& batch) {
                 if (batch.positions.empty()) {
                     batch.uvSize = sc->uvSize;
@@ -458,36 +485,27 @@ namespace Scene {
                 }
                 };
 
+            // Add to appropriate batch map
             switch (sc->type) {
-            case ShapeType::Rectangle:
-            {
-                RenderBatch& batch = rectBatches[batchKey];
+            case ShapeType::Rectangle: {
+                RenderBatch& batch = rectBatches[key]; // Fast Hash Lookup
                 ConfigureBatch(batch);
                 batch.Add(tf->position, colorNorm, tf->rotation, 1.0f, tf->size.x, tf->size.y);
                 break;
             }
-            case ShapeType::Triangle:
-            {
-                RenderBatch& batch = triBatches[batchKey];
+            case ShapeType::Triangle: {
+                RenderBatch& batch = triBatches[key];
                 ConfigureBatch(batch);
                 batch.Add(tf->position, colorNorm, tf->rotation, 1.0f, tf->size.x, 0.0f);
                 break;
             }
-            case ShapeType::Circle:
-            {
-                RenderBatch& batch = circBatches[batchKey];
+            case ShapeType::Circle: {
+                RenderBatch& batch = circBatches[key];
                 ConfigureBatch(batch);
                 batch.Add(tf->position, colorNorm, 0.0f, 1.0f, tf->size.x * 0.5f, 0.0f);
                 break;
             }
-            case ShapeType::Line:
-                // Lines are not instanced in this system, render immediately
-                renderer.shdr_pgm->Use();
-                renderer.shdr_pgm->SetUniform("uView", renderer.viewMatrix);
-                renderer.shdr_pgm->SetUniform("uProjection", renderer.projectionMatrix);
-                Shapes::CreateLine(sc->p1 + tf->position, sc->p2 + tf->position, sc->thickness, sc->color, sc->isWorldSpace);
-                renderer.shdr_pgm_instanced->Use(); // Switch back
-                break;
+            default: break;
             }
         }
 
@@ -580,6 +598,20 @@ namespace Scene {
                 32,
                 params
             );
+        }
+
+        if (!lineQueue.empty()) {
+            renderer.shdr_pgm->Use(); // Switch shader ONCE
+            renderer.shdr_pgm->SetUniform("uView", renderer.viewMatrix);
+            renderer.shdr_pgm->SetUniform("uProjection", renderer.projectionMatrix);
+
+            for (auto& pair : lineQueue) {
+                TransformComponent* tf = pair.first;
+                ShapeComponent* sc = pair.second;
+                Shapes::CreateLine(sc->p1 + tf->position, sc->p2 + tf->position, sc->thickness, sc->color, sc->isWorldSpace);
+            }
+
+            renderer.shdr_pgm_instanced->Use(); // Switch back if needed
         }
 
         // 5. Draw Text / UI (Now via UI namespace)

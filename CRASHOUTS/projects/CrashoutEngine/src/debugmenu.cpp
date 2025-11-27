@@ -51,7 +51,7 @@ for Crashout Engine.
 #include "ppmanager.h"
 #include "keyframe.h"
 #include "spritesheet.h"
-
+#include "spritecomponent.h"
 #include "engine.h"
 #include <filesystem>
 #include <iostream>
@@ -310,7 +310,7 @@ namespace UI { // --------------------------------------------------------------
     */
     void Shutdown() {
 
-        if (!currSceneName.empty()) Serialization::SaveScenes(currSceneName);
+        if (!currSceneName.empty() && engineState == EngineState::STOP) Serialization::SaveScenes(currSceneName);
 
         ImGui_ImplOpenGL3_Shutdown();
         ImGui_ImplGlfw_Shutdown();
@@ -355,6 +355,109 @@ namespace UI { // --------------------------------------------------------------
         };
 
         static Selection gSel;
+        
+        static bool gRecordMode = false;
+
+        
+        static float GetCurrentPropValue(CrashoutsEngine::ECS& ecs,
+            CrashoutsEngine::Entity e,
+            KFProperty p)
+        {
+            using namespace CrashoutsEngine;
+
+            if (p == KFProperty::SpriteIndex)
+            {
+                if (auto* anim = ecs.GetComponent<Component::SpriteAnimComponent>(e))
+                    return static_cast<float>(anim->frameIndex);
+                return 0.0f;
+            }
+
+           
+            auto* t = ecs.GetComponent<Component::TransformComponent>(e);
+            if (!t) return 0.0f;
+
+            switch (p)
+            {
+            case KFProperty::PosX:   return t->position.x;
+            case KFProperty::PosY:   return t->position.y;
+            case KFProperty::PosZ:   return t->position.z;
+            case KFProperty::RotZ:   return t->rotation;
+            case KFProperty::ScaleX: return t->size.x;
+            case KFProperty::ScaleY: return t->size.y;
+            default:                 return 0.0f;
+            }
+        }
+
+       
+        static void AutoKeyTransform(CrashoutsEngine::ECS& ecs,
+            CrashoutsEngine::Entity e)
+        {
+            using namespace CrashoutsEngine;
+
+            if (!gRecordMode) return;  
+
+            auto* anim = ecs.GetComponent<KeyframeAnimatorComponent>(e);
+            if (!anim) return;
+            if (anim->current.empty()) return;
+
+            auto it = anim->clips.find(anim->current);
+            if (it == anim->clips.end()) return;
+
+            AnimationClip& clip = it->second;
+
+            float t = anim->t;
+            float len = clip.Length();
+            if (len <= 0.0f) return;
+            if (t < 0.0f) t = 0.0f;
+            if (t > len)  t = len;
+
+            const float eps = 1e-3f;
+
+            for (KFBinding& b : clip.bindings)
+            {
+               
+                bool supported =
+                    b.property == KFProperty::PosX ||
+                    b.property == KFProperty::PosY ||
+                    b.property == KFProperty::PosZ ||
+                    b.property == KFProperty::RotZ ||
+                    b.property == KFProperty::ScaleX ||
+                    b.property == KFProperty::ScaleY ||
+                    b.property == KFProperty::SpriteIndex;
+
+                if (!supported) continue;
+
+                float v = GetCurrentPropValue(ecs, e, b.property);
+
+                
+                int existing = -1;
+                for (int i = 0; i < (int)b.curve.keys.size(); ++i)
+                {
+                    if (std::fabs(b.curve.keys[i].time - t) <= eps)
+                    {
+                        existing = i;
+                        break;
+                    }
+                }
+
+                if (existing >= 0)
+                {
+                   
+                    b.curve.keys[existing].value = v;
+                }
+                else
+                {
+                   
+                    KFKey k{};
+                    k.time = t;
+                    k.value = v;
+                    k.inTan = 0.0f;
+                    k.outTan = 0.0f;
+                    k.interp = KFInterp::Linear;
+                    b.curve.Add(k);   
+                }
+            }
+        }
 
         static const char* KFPropertyName(KFProperty p)
         {
@@ -554,7 +657,13 @@ namespace UI { // --------------------------------------------------------------
         const float length = clip->Length();
         ImGui::Text("Clip: %s (%.2fs)", clip->name.c_str(), length);
         ImGui::Separator();
-
+        static float s_newKeyTime = 0.0f;
+        if (length > 0.0f)
+        {
+            if (s_newKeyTime < 0.0f)      s_newKeyTime = 0.0f;
+            if (s_newKeyTime > length)    s_newKeyTime = length;
+            ImGui::SliderFloat("New key time", &s_newKeyTime, 0.0f, length);
+        }
         // --- Timeline layout ---
         ImDrawList* draw = ImGui::GetWindowDrawList();
         ImVec2 origin = ImGui::GetCursorScreenPos();
@@ -625,6 +734,15 @@ namespace UI { // --------------------------------------------------------------
 
         ImGui::Dummy(ImVec2(0.f, rows * rowH + 4.f));
         ImGui::Separator();
+        // Unity-style Record toggle
+        ImGui::Checkbox("Record", &KeyframeUnityEditor::gRecordMode);
+        ImGui::SameLine();
+        ImGui::TextDisabled(
+            KeyframeUnityEditor::gRecordMode
+            ? "Recording: moving with gizmo will auto-key Transform."
+            : "Manual mode: move object then edit keys in the list."
+        );
+        ImGui::Separator();
 
         // --- Keyframe inspector ---
         if (gSel.entity == selected &&
@@ -632,6 +750,8 @@ namespace UI { // --------------------------------------------------------------
             gSel.bindingIndex < (int)clip->bindings.size())
         {
             KFBinding& b = clip->bindings[gSel.bindingIndex];
+
+           
             if (gSel.keyIndex >= 0 &&
                 gSel.keyIndex < (int)b.curve.keys.size())
             {
@@ -649,10 +769,53 @@ namespace UI { // --------------------------------------------------------------
                     k.interp = (KFInterp)interp;
                 }
             }
+            else
+            {
+                ImGui::TextDisabled("No key selected on this track.");
+            }
+
+            ImGui::Separator();
+
+           
+            if (ImGui::Button("Add key at time"))
+            {
+                KFKey newKey{};
+                newKey.time = s_newKeyTime;        
+                newKey.value = (b.curve.keys.empty() ? 0.0f : b.curve.keys.back().value);
+                newKey.inTan = 0.0f;
+                newKey.outTan = 0.0f;
+                newKey.interp = KFInterp::Linear;
+
+                
+                b.curve.Add(newKey);
+
+               
+                gSel.keyIndex = (int)b.curve.keys.size() - 1;
+            }
+
+            ImGui::SameLine();
+
+            bool canDelete =
+                (gSel.keyIndex >= 0 &&
+                    gSel.keyIndex < (int)b.curve.keys.size());
+
+            if (!canDelete) ImGui::BeginDisabled();
+            if (ImGui::Button("Delete selected key") && canDelete)
+            {
+                b.curve.keys.erase(b.curve.keys.begin() + gSel.keyIndex);
+
+               
+                if (gSel.keyIndex >= (int)b.curve.keys.size())
+                    gSel.keyIndex = (int)b.curve.keys.size() - 1;
+                if (b.curve.keys.empty())
+                    gSel.keyIndex = -1;
+            }
+            if (!canDelete) ImGui::EndDisabled();
         }
         else {
             ImGui::TextDisabled("Click a keyframe diamond to edit it.");
         }
+
     }
 
     /*!
@@ -2419,6 +2582,7 @@ namespace UI { // --------------------------------------------------------------
                                 s.rotation = t->rotation;
                                 s.scale = t->size;
                                 endStates.push_back(s);
+                                KeyframeUnityEditor::AutoKeyTransform(ecs, e);
                             }
                         }
 

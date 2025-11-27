@@ -62,7 +62,7 @@ namespace CrashoutsEngine
             if (Input.IsKeyPressed(Key.Left))
             {
                 //Console.WriteLine("A key is pressed");
-                //Console.WriteLine("[C#] mass=" + rb.GetMass());
+                //Console.WriteLine("[C#] mass=" + rb.Mass);
                 rb.AddForce(new CEVec3(-100f, 0f, 0f));
             }
 
@@ -73,7 +73,7 @@ namespace CrashoutsEngine
 
             if (Input.IsKeyPressed(Key.Up))
             {
-                rb.AddForce(new CEVec3(0f, 300f, 0f) * rb.GetMass());
+                rb.AddForce(new CEVec3(0f, 300f, 0f) * rb.Mass);
             }
         }
 

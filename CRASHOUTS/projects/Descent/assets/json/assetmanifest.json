@@ -57,6 +57,10 @@
             "path": "Lava-Volcano-Wind-Environment_LOOP.wav"
         },
         {
+            "name": "level bgm 1",
+            "path": "level bgm 1.wav"
+        },
+        {
             "name": "Nightshift_BGM_Loop_70bpm",
             "path": "Nightshift_BGM_Loop_70bpm.wav"
         },
@@ -1265,8 +1269,20 @@
     ],
     "prefabs": [
         {
+            "name": "1",
+            "path": "1.json"
+        },
+        {
             "name": "BlueBox",
             "path": "BlueBox.json"
+        },
+        {
+            "name": "hanging Man",
+            "path": "hanging Man.json"
+        },
+        {
+            "name": "HangMan",
+            "path": "HangMan.json"
         },
         {
             "name": "Number1",

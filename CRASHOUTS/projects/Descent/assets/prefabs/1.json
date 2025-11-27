@@ -1,0 +1,48 @@
+{
+    "prefabs": [
+        {
+            "type": "Box",
+            "name": "1",
+            "transform": {
+                "position": {
+                    "x": 0.0,
+                    "y": 20.0,
+                    "z": 0.0
+                },
+                "rotation": 0.0,
+                "size": {
+                    "x": 10.0,
+                    "y": 10.0
+                }
+            },
+            "shape": {
+                "type": 0,
+                "kind": "Rectangle",
+                "width": 10.0,
+                "height": 10.0,
+                "size": 10.0,
+                "color": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "enableTexture": true,
+                "textureName": "Concept"
+            },
+            "rigidbody": {
+                "mass": 5.0,
+                "restitution": 0.0
+            },
+            "script": {
+                "entityID": 1,
+                "className": "PlayerController",
+                "scripts": [
+                    {
+                        "className": "PlayerController"
+                    }
+                ]
+            }
+        }
+    ]
+}

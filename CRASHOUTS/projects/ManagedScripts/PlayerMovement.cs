@@ -1,399 +1,234 @@
 using System;
+
 namespace CrashoutsEngine
 {
     [ScriptBehaviour]
     public class PlayerMovement : ScriptBase
     {
-        //bool isFacingRight = true;
-        //float moveSpeed = 6f;
+        // --- TUNING VARIABLES (Edit in Inspector) ---
+        [SerializeField] public float moveSpeed = 200f;       // Force applied to move
+        [SerializeField] public float maxRunSpeed = 100.0f;     // Max horizontal speed cap
+        [SerializeField] public float jumpPower = 20000f;      // Jump Force
 
-        float horizontalInput;
-        float maxSpeed = 50f;
+        [SerializeField] public float groundDrag = 0.15f;      // Friction on ground (0.2 = snappy, 0.05 = ice)
+        [SerializeField] public float airDrag = 0.02f;         // Friction in air (lower for better air control)
 
-        bool moveLeft;
-        bool moveRight;
-        bool footstepsPlaying = false;
+        [SerializeField] public float gravityScale = 2.5f;     // Gravity multiplier when falling (Higher = less floaty)
+        [SerializeField] public float turnMultiplier = 2.0f;   // Extra force applied when turning opposite direction
 
-        public float jumpPower = 20000f;
-        public static bool isJumping = false;
-        public static bool isFalling = false;
+        // "Magic Number" Multipliers (Tweak if mass/units change)
+        [SerializeField] public float frictionMultiplier = 500.0f;
+        [SerializeField] public float gravityForceMultiplier = 10.0f;
 
-        // --- STATIC INSTANCE (Singleton Pattern for simple communication) ---
+        // Mass Settings (For Weighted Platform interaction)
+        public float normalMass = 7.0f;
+        public float lightMass = 4.5f;
+
+        // --- STATE VARIABLES ---
+        private float horizontalInput;
+        private bool isJumpHeld;
+        private bool footstepsPlaying = false;
+
+        // Public state for other scripts
+        public bool IsGrounded { get; private set; } = false;
+        public bool OnWall { get; private set; } = false;
+
+        // Singleton Instance
         public static PlayerMovement Instance;
 
-        // --- Public State ---
-        public bool IsGrounded { get; private set; } = false;
+        // Components
+        private RigidBodyComponent rb;
+        private TransformComponent tf;
 
-        // --- CALLBACK DEFINITIONS ---
-        #region COLLISION EVENTS
-        // 1. Trigger Events (Ghost/Sensor collisions)
-        public void OnTriggerEnter(uint otherEntity)
-        {
-            Entity other = new Entity(otherEntity);
-
-            // Identify the object
-            var nameComp = other.GetComponent<NameComponent>();
-            string name = (nameComp != null) ? nameComp.Value : "Unnamed";
-            Debug.Log($"[C#] Hit Entity {otherEntity}: '{name}'");
-        }
-
-        public void OnTriggerStay(uint otherEntity)
-        {
-            // Console.WriteLine("[C#] OnTriggerStay: Inside entity " + otherEntity);
-            //string msg = "[C#] OnTriggerStay: Inside entity " + otherEntity;
-            //Debug.Log(msg);
-            // Logic: Damage over time (Lava), conveyor belts
-        }
-
-        public void OnTriggerExit(uint otherEntity)
-        {
-            Entity other = new Entity(otherEntity);
-
-            // Identify the object
-            var nameComp = other.GetComponent<NameComponent>();
-            string name = (nameComp != null) ? nameComp.Value : "Unnamed";
-            Debug.Log($"[C#] Left Entity {otherEntity}: '{name}'");
-        }
-
-        // 2. Collision Events (Physical/Solid collisions)
-        public void OnCollideEnter(uint otherEntity)
-        {
-            //Console.WriteLine("[C#] OnCollideEnter: Hit solid object " + otherEntity);
-            //string msg = "[C#] OnCollideEnter: Hit solid object " + otherEntity;
-            //Debug.Log(msg);
-
-            // Logic: Reset Jump if we hit the ground
-            // isGrounded = true;
-            // isJumping = false;
-        }
-
-        public void OnCollideStay(uint otherEntity)
-        {
-            // Logic: Friction, pushing objects
-            //string msg = "[C#] OnCollideStay: Touching entity " + otherEntity;
-            //Debug.Log(msg);
-        }
-
-        public void OnCollideExit(uint otherEntity)
-        {
-            //Console.WriteLine("[C#] OnCollideExit: Left solid object " + otherEntity);
-            //string msg = "[C#] OnCollideExit: Left solid object " + otherEntity;
-            //Debug.Log(msg);
-            // Logic: Coyote time, falling detection
-            // isGrounded = false;
-        }
-        #endregion
-
-        //private float lastY;
-        //public float FallingThreshold = -0.01f;
-        //private int onPlatform = 0;
-        //CEVec2 startPos;
-        //SpriteRenderer spriteRenderer;
-
-        //[SerializeField] private SwitchCharacter switchcharacter;
-        //[SerializeField] private BoxCollider2D playerCollider;
-
-        //private Animator animator;
-        public bool IsOnPlatform;
-        //public Rigidbody2D platformRb;
-
-        //PressurePlate pressureplate;
-
-        RigidBodyComponent rb;
-        TransformComponent tf;
-
-        //public GameObject GObackground;
-        public void SetGrounded(bool state)
-        {
-            IsGrounded = state;
-            // Optional: Reset vertical velocity if landing?
-            // if (state) isJumping = false;
-        }
-
-        // Start is called before the first frame update
         public override void Start()
         {
             Instance = this;
-            //animator = Entity.GetComponent<Animator>();
             rb = Entity.GetComponent<RigidBodyComponent>();
             tf = Entity.GetComponent<TransformComponent>();
-            //Debug.Log("start");
-            //lastY = transform.position.y;
-            //animator.SetBool("IsRunning", false);
-            //animator.SetBool("IsFalling", false);
-            //animator.SetBool("IsJumping", false);
-            //animator.SetBool("PressQ", false);
-            //startPos = transform.position;
 
-            //GObackground.SetActive(false);
-
-            AudioManager.GetInstance().Play("ambient");
+            // Initial Setup
+            rb.Mass = normalMass;
             IsGrounded = false;
             footstepsPlaying = false;
+            AudioManager.GetInstance().Play("ambient");
+            AudioManager.GetInstance().Play("bgm1");
 
-            // --- REGISTER ALL CALLBACKS ---
-            // Pass 'this.MethodName' to the engine bindings
+            // Register Callbacks
             CollisionEvents.RegisterTriggerEnter(Entity.ID, this.OnTriggerEnter);
             CollisionEvents.RegisterTriggerStay(Entity.ID, this.OnTriggerStay);
             CollisionEvents.RegisterTriggerExit(Entity.ID, this.OnTriggerExit);
-
             CollisionEvents.RegisterCollideEnter(Entity.ID, this.OnCollideEnter);
             CollisionEvents.RegisterCollideStay(Entity.ID, this.OnCollideStay);
             CollisionEvents.RegisterCollideExit(Entity.ID, this.OnCollideExit);
         }
 
-        // Update is called once per frame
         public override void Update()
         {
-            //AudioManager.GetInstance().Stop("footsteps");
-            //Debug.Log("Updaet");
-            //horizontalInput = Input.GetAxis("Horizontal");
+            // 1. POLL INPUT (Happens every frame)
             horizontalInput = 0f;
-            moveLeft = Input.IsKeyPressed(Key.A);
-            moveRight = Input.IsKeyPressed(Key.D);
+            if (Input.IsKeyPressed(Key.A)) horizontalInput = -1f;
+            if (Input.IsKeyPressed(Key.D)) horizontalInput = 1f;
 
-            float velocityX = Math.Abs(rb.LinearVelocity.x);
+            // Flip Sprite Scale based on direction
+            if (horizontalInput < 0 && tf.Size.x > 0) tf.Size = new CEVec2(-tf.Size.x, tf.Size.y);
+            else if (horizontalInput > 0 && tf.Size.x < 0) tf.Size = new CEVec2(-tf.Size.x, tf.Size.y);
 
-            if (velocityX < maxSpeed)
+            // Check Jump Hold State (For variable jump height)
+            isJumpHeld = Input.IsKeyPressed(Key.Space);
+
+            // 2. JUMP TRIGGER
+            if (Input.IsKeyTriggered(Key.Space) && IsGrounded)
             {
-                if (moveLeft)
-                {
-                    horizontalInput = -1f;
-                    if(tf.Size.x > 0.0f) tf.Size = new CEVec2(-tf.Size.x, tf.Size.y);
-                }
-                else if (moveRight)
-                {
-                    horizontalInput = 1f;
-                    if(tf.Size.x < 0.0f) tf.Size = new CEVec2(-tf.Size.x, tf.Size.y);
-                }
-
-                //lastY = transform.position.y;
-                if ((horizontalInput != 0.0f) && IsGrounded && !footstepsPlaying)
-                {
-                    //Console.WriteLine("[C#] Player started moving -> Play footsteps");
-                    AudioManager.GetInstance().Play("footsteps");
-                    footstepsPlaying = true;
-                }
-                else if (!IsGrounded || (horizontalInput == 0.0f) && footstepsPlaying)
-                {
-                    //Console.WriteLine("[C#] Player stopped moving -> Stop footsteps_loop");
-                    AudioManager.GetInstance().Stop("footsteps");
-                    footstepsPlaying = false;
-                }
-            }
-
-            /*
-            FlipSprite(horizontalInput);
-
-            if (Input.GetButtonDown("Jump") && !isJumping)
-            {
-                rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpPower);
-                isJumping = true;
-                animator.SetBool("IsJumping", true);
-
-                switchcharacter?.SwitchAvatar();
-            }
-            */
-
-            if (Input.IsKeyTriggered(Key.Space))// && IsGrounded)
-            {
+                // Reset vertical velocity for consistent jump height even if moving down slightly
+                rb.LinearVelocity = new CEVec3(rb.LinearVelocity.x, 0f, 0f);
                 rb.AddForce(new CEVec3(0f, jumpPower, 0f));
-                isJumping = true;
-                //animator.SetBool("IsJumping", true);
-            }
-            /*
-            if (animator.GetBool("IsJumping") && rb.linearVelocity.y < 0 && IsOnPlatform == false)
-            {
-                // isFalling = true;
-                animator.SetBool("IsFalling", true);
-                animator.SetBool("IsJumping", false);
-                isJumping = false;
-                switchcharacter?.SwitchAvatar();
-            }
-            else if (rb.linearVelocity.y < 0)
-            {
-                Debug.Log("Keepsfalling");
-                animator.SetBool("IsFalling", true);
-                switchcharacter?.SwitchAvatar();
-            }
-            */
-            /*
-            // Jump started and peak reached then beginning to fall
-            if (animator.GetBool("IsJumping") && vel.y < 0f && !IsOnPlatform)
-            {
-                animator.SetBool("IsFalling", true);
-                animator.SetBool("IsJumping", false);
 
-                isJumping = false;
-                isFalling = true;
+                // Optional: Add "Stretch" effect or Jump Sound here
             }
 
-            // Player is falling normally
-            else if (vel.y < 0f && !IsOnPlatform)
+            // 3. WEIGHT MECHANIC
+            if (Input.IsKeyTriggered(Key.Q))
             {
-                animator.SetBool("IsFalling", true);
-                isFalling = true;
+                // Floating point comparison with epsilon safety
+                if (Math.Abs(rb.Mass - normalMass) < 0.1f) rb.Mass = lightMass;
+                else rb.Mass = normalMass;
+                Debug.Log("Mass toggled to: " + rb.Mass);
             }
 
-            // Player lands on platform so reset falling/jumping??
-            else if (IsOnPlatform && vel.y == 0f)
+            // 4. AUDIO LOGIC
+            if (horizontalInput != 0.0f && IsGrounded && !footstepsPlaying)
             {
-                animator.SetBool("IsFalling", false);
-                animator.SetBool("IsJumping", false);
-
-                isJumping = false;
-                isFalling = false;
-            }*/
+                AudioManager.GetInstance().Play("footsteps");
+                footstepsPlaying = true;
+            }
+            else if ((!IsGrounded || horizontalInput == 0.0f) && footstepsPlaying)
+            {
+                AudioManager.GetInstance().Stop("footsteps");
+                footstepsPlaying = false;
+            }
         }
-
-        /*
-        private void FixedUpdate()
-        {
-            if (IsOnPlatform)
-            {
-                rb.linearVelocity = new Vector2((horizontalInput * moveSpeed) + platformRb.linearVelocity.x, rb.linearVelocity.y);
-            }
-
-            else
-            {
-                rb.linearVelocity = new Vector2(horizontalInput * moveSpeed, rb.linearVelocity.y);
-            }
-            if (horizontalInput != 0)
-            {
-                animator.SetBool("IsRunning", true);
-            }
-            else if (!animator.GetBool("IsJumping") && !animator.GetBool("IsFalling") && !animator.GetBool("PressQ"))
-            {
-                animator.SetBool("IsRunning", false);
-                if (animator.GetBool("IsLight"))
-                {
-                    animator.Play("Idle Light");
-                }
-                else
-                {
-                    // Debug.Log("Play Idle");
-                    animator.Play("Idle");
-                }
-            }
-        }*/
 
         public override void FixedUpdate()
         {
-            // movement
-            if (horizontalInput != 0f)
-            {
-                // force multiplier
-                float force = 500f * horizontalInput;
+            // Get current velocity
+            CEVec3 velocity = rb.LinearVelocity;
 
-                rb.AddForce(new CEVec3(force, 0f, 0f));
+            // ------------------------------------------------------------
+            // A. HORIZONTAL MOVEMENT
+            // ------------------------------------------------------------
+            if (horizontalInput != 0f && !OnWall)
+            {
+                // Instant Turn Logic: Are we trying to move opposite to our velocity?
+                bool isTurning = (horizontalInput > 0 && velocity.x < 0) ||
+                                 (horizontalInput < 0 && velocity.x > 0);
+
+                if (isTurning)
+                {
+                    // Apply extra force to turn quickly
+                    rb.AddForce(new CEVec3(horizontalInput * moveSpeed * turnMultiplier, 0f, 0f));
+                }
+                // Standard Acceleration
+                else if (Math.Abs(velocity.x) < maxRunSpeed)
+                {
+                    rb.AddForce(new CEVec3(horizontalInput * moveSpeed, 0f, 0f));
+                }
             }
 
-            /*// animation
-            if (horizontalInput != 0f)
-            {
-                animator.SetBool("IsRunning", true);
-            }
-            else
-            {
-                animator.SetBool("IsRunning", false);
-
-                if (animator.GetBool("IsLight"))
-                {
-                    animator.Play("Idle Light");
-                }
-                else
-                {
-                    animator.Play("Idle");
-                }
-            }*/
-        }
-
-        //void FlipSprite()
-        //{
-        //    if (isFacingRight && horizontalInput < 0f || !isFacingRight && horizontalInput > 0f)
-        //    {
-        //        isFacingRight = !isFacingRight;
-        //        Vector3 ls = transform.localScale;
-        //        ls.x *= -1f;
-        //        transform.localScale = ls;
-        //    }
-        //}
-        /*
-        void FlipSprite(float horizontalInput)
-        {
+            // ------------------------------------------------------------
+            // B. DRAG / FRICTION (Stopping Power)
+            // ------------------------------------------------------------
+            // If no input is pressed, apply force against velocity to stop.
             if (horizontalInput == 0f)
-                return;
-
-            // Same logic as Unity
-            if ((isFacingRight && horizontalInput < 0f) || (!isFacingRight && horizontalInput > 0f))
             {
-                isFacingRight = !isFacingRight;
+                float drag = IsGrounded ? groundDrag : airDrag;
+                rb.AddForce(new CEVec3(-velocity.x * drag * frictionMultiplier, 0f, 0f));
+            }
 
-                // Flip horizontally using animator
-                animator.SetFlip(!isFacingRight);
+            // ------------------------------------------------------------
+            // C. VARIABLE GRAVITY (The "Feel" Fix)
+            // ------------------------------------------------------------
+            // 1. Falling? Fall Faster.
+            if (velocity.y < 0)
+            {
+                // Apply extra downward force
+                rb.AddForce(new CEVec3(0f, -9.81f * gravityScale * rb.Mass * gravityForceMultiplier, 0f));
+            }
+            // 2. Jumping but released Space? Fall Faster immediately (Short Hop).
+            else if (velocity.y > 0 && !isJumpHeld)
+            {
+                // Cut the jump short by applying half the fall gravity
+                rb.AddForce(new CEVec3(0f, -9.81f * (gravityScale * 0.5f) * rb.Mass * gravityForceMultiplier, 0f));
             }
         }
-        */
 
-        //private void OnCollisionEnter2D(Collision2D collision)
-        //{
-        //    Debug.Log("Collided enter =>" + collision.gameObject.name);
-        //    isJumping = false;
-        //   // isFalling = false;
-        //    animator.SetBool("IsJumping", false);
-        //    animator.SetBool("IsFalling", false);
-        //    // switchcharacter.SwitchAvatar();
-        //    ++onPlatform;
+        // --- COLLISION CALLBACKS ---
 
-        //    if (collision.gameObject.CompareTag("Enemy"))
-        //    {
-        //        Die();
-        //    }
-        //    if (animator.GetBool("IsLight"))
-        //    {
-        //        return;
-        //    }
-        //    else
-        //    {
-        //        if (collision.gameObject.CompareTag("Lava"))
-        //        {
-        //            Die();
-        //        }
-        //    }
-        //}
+        public void OnTriggerEnter(uint otherEntity)
+        {
+            Entity other = new Entity(otherEntity);
+            var layer = other.GetComponent<LayerComponent>();
+            var otherTf = other.GetComponent<TransformComponent>();
 
-        //private void OnCollisionExit2D(Collision2D collision)
-        //{
-        //    --onPlatform;
-        //    if (!animator.GetBool("IsJumping") && onPlatform == 0 && IsOnPlatform == false)
-        //    {
-        //            Debug.Log("Collided exit =>" + collision.gameObject.name);
-        //            animator.SetBool("IsFalling", true);
-        //            switchcharacter?.SwitchAvatar();
-        //    }
-        //}
+            // Ground / Platform Detection
+            if (layer != null && (layer.HasLayer("Ground") || layer.HasLayer("Platform")))
+            {
+                // Geometry Check: Are we landing on TOP?
+                if (otherTf != null && this.tf.Position.y > otherTf.Position.y)
+                {
+                    IsGrounded = true;
 
-        //void Die()
-        //{
-        //    GObackground.SetActive(true);
+                    if (layer.HasLayer("Platform"))
+                    {
+                        // Handled by WeightedPlatform script via Instance check, 
+                        // but we flag it here if needed later.
+                    }
+                }
+            }
 
-        //    //StartCoroutine(Respawn(0.5f));
-        //    rb.linearVelocity = new Vector2(0, 0);
-        //    spriteRenderer.enabled = false; //disappears when collide with enemy
-        // }
+            // Wall Detection
+            if (layer != null && layer.HasLayer("Wall"))
+            {
+                OnWall = true;
+                // Kill horizontal momentum on wall hit to prevent sticky physics
+                rb.LinearVelocity = new CEVec3(0, rb.LinearVelocity.y, 0);
+            }
 
-        //public void respawn()
-        //{
-        //    transform.position = startPos;
-        //    spriteRenderer.enabled = true; //appears again after cooldown
+            // Hazards
+            if (layer != null && (layer.HasLayer("Lava") || layer.HasLayer("Enemy")))
+            {
+                Debug.Log("Player Died");
+                // Die();
+            }
+        }
 
-        //    //animator.Play("Idle");
-        //    //Debug.Log("respawn idle here"); //gets to this line but still plays falling animation? does it need yo be in collisionExit
-        //    GObackground.SetActive(false);
+        public void OnTriggerExit(uint otherEntity)
+        {
+            Entity other = new Entity(otherEntity);
+            var layer = other.GetComponent<LayerComponent>();
+
+            // Leaving Ground
+            if (layer != null && (layer.HasLayer("Ground") || layer.HasLayer("Platform")))
+            {
+                IsGrounded = false;
+            }
+
+            // Leaving Wall
+            if (layer != null && layer.HasLayer("Wall"))
+            {
+                OnWall = false;
+            }
+        }
+
+        // Required placeholders for engine bindings
+        public void OnTriggerStay(uint otherEntity) { }
+        public void OnCollideEnter(uint otherEntity) { }
+        public void OnCollideStay(uint otherEntity) { }
+        public void OnCollideExit(uint otherEntity) { }
 
         public override void OnDestroy()
         {
-
+            // Cleanup Singleton to prevent accessing dead object
+            if (Instance == this) Instance = null;
         }
     }
 }

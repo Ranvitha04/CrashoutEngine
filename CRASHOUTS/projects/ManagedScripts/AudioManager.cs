@@ -10,7 +10,7 @@ public class AudioManager
         RegisterSound(
                 "ambient", // key you use in Play("ambient")
                 "assets/audio/Lava-Volcano-Wind-Environment_LOOP.wav",
-                0.3f, // base volume
+                0.15f, // base volume
                 true, // loop? (ambient usually yes)
                 SoundType.Music // it's music, not SFX
             );
@@ -28,6 +28,14 @@ public class AudioManager
                 "assets/audio/Switch_StepOn.wav",
                 0.6f, // base volume
                 false, // loop?
+                SoundType.Music // it's music, not SFX SFX DOESNT WORK LMAO
+            );
+
+        RegisterSound(
+                "bgm1",
+                "assets/audio/level bgm 1.wav",
+                0.4f, // base volume
+                true, // loop?
                 SoundType.Music // it's music, not SFX SFX DOESNT WORK LMAO
             );
 
