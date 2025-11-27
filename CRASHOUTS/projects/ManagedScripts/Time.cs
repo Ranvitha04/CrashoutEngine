@@ -1,3 +1,5 @@
+using System.Runtime.CompilerServices;
+
 namespace CrashoutsEngine
 {
     public static class Time

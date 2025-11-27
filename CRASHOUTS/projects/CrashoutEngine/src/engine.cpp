@@ -105,7 +105,7 @@ bool g_IsSceneLoadPending = false;
 
 Call to ensure safe load based off run order
 */
-void PerformPendingSceneLoad() {
+bool PerformPendingSceneLoad() {
     if (g_IsSceneLoadPending) {
 
         CrashoutsEngine::Audio::AudioSystem::instance().stopAll(false);
@@ -126,7 +126,9 @@ void PerformPendingSceneLoad() {
         // Reset Mono to ensure scripts re-bind correctly
         // (Optional depending on your architecture, but safe)
         // MonoManager::ReloadScripts(); 
+        return true;
     }
+    return false;
 }
 
 /*  _________________________________________________________________________ */
@@ -208,14 +210,14 @@ void Init() {
     Component::Rendering::Initialize(); // Initializes the main shader
     Component::TextureRenderer::Initialize(); // Initializes the texture/sprite shader
 
+	MonoManager::Init("CrashoutDomain");
+    MonoManager::LoadAssembly("scripts/ManagedScripts.dll");
+    RegisterBuiltinComponentAdapters();
+    CrashoutsEngine::InitPrefabs();
+
     /// register game states and start with main menu
     RegisterAllStates();
     InitGameStateManager(MAIN_MENU);
-
-    RegisterBuiltinComponentAdapters();
-    CrashoutsEngine::InitPrefabs();
-	MonoManager::Init("CrashoutDomain");
-    MonoManager::LoadAssembly("scripts/ManagedScripts.dll");
 
     CrashoutsEngine::ScriptSystem::InitializeAll(MonoManager::GetDomain(), MonoManager::GetAssembly());
 
@@ -536,13 +538,13 @@ Ensure time per frame and FPS are recorded.
 Let application update state changes (such as animation).
 */
 void Update(double const& dt) {
-    PerformPendingSceneLoad();
+    MonoManager::CheckHotReload();
+    if(PerformPendingSceneLoad()) return;
 
     GLApp::update_time();
 
     UpdateGameStateManager();
 
-    MonoManager::CheckHotReload();
 
     if (CurrentDescriptor->Update) CurrentDescriptor->Update();
 
@@ -560,8 +562,6 @@ void Update(double const& dt) {
     CrashoutsEngine::UpdateHierarchy(*CrashoutsEngine::ECS::getInstance());
 
     if (engineState == EngineState::PLAY) {
-        CrashoutsEngine::ScriptSystem::UpdateAll();
-
         CrashoutsEngine::ScriptSystem::UpdateAll();
 
         aiSystem.Update();
@@ -676,11 +676,11 @@ void Update(double const& dt) {
 Release resources
 */
 void CleanUp() {
+    UI::Shutdown();
     CrashoutsEngine::ScriptSystem::DestroyAll();
 
     CrashoutsEngine::PostProcessing::ShutdownPP();
 
-    UI::Shutdown();
     DebugReflection::ComponentRegistry::instance().clear();
     DebugReflection::PanelRegistry::instance().clear();
     DebugReflection::PhysicsRegistry::instance().clear();

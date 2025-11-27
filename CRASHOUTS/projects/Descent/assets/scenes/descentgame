@@ -19,7 +19,7 @@
             },
             "tilemap": {
                 "tileSize": 32,
-                "activeAsset": "tilemaps/Rock",
+                "activeAsset": "tilemaps/Platform",
                 "tileAssetNames": [
                     "Rock",
                     "Lava_Platform",
@@ -10808,6 +10808,16 @@
                     },
                     {
                         "x": 50,
+                        "y": -30,
+                        "asset": ""
+                    },
+                    {
+                        "x": 50,
+                        "y": -29,
+                        "asset": "tilemaps/Platform"
+                    },
+                    {
+                        "x": 50,
                         "y": -18,
                         "asset": "tilemaps/Rock"
                     },
@@ -10988,6 +10998,21 @@
                     },
                     {
                         "x": 51,
+                        "y": -31,
+                        "asset": ""
+                    },
+                    {
+                        "x": 51,
+                        "y": -30,
+                        "asset": ""
+                    },
+                    {
+                        "x": 51,
+                        "y": -29,
+                        "asset": "tilemaps/Platform"
+                    },
+                    {
+                        "x": 51,
                         "y": -19,
                         "asset": "tilemaps/Rock"
                     },
@@ -11163,6 +11188,26 @@
                     },
                     {
                         "x": 52,
+                        "y": -32,
+                        "asset": ""
+                    },
+                    {
+                        "x": 52,
+                        "y": -31,
+                        "asset": ""
+                    },
+                    {
+                        "x": 52,
+                        "y": -30,
+                        "asset": ""
+                    },
+                    {
+                        "x": 52,
+                        "y": -29,
+                        "asset": "tilemaps/Platform"
+                    },
+                    {
+                        "x": 52,
                         "y": -19,
                         "asset": "tilemaps/Rock"
                     },
@@ -11325,6 +11370,11 @@
                         "x": 53,
                         "y": -33,
                         "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 53,
+                        "y": -29,
+                        "asset": "tilemaps/Platform"
                     },
                     {
                         "x": 53,
@@ -11900,6 +11950,11 @@
                         "x": 57,
                         "y": -39,
                         "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 57,
+                        "y": -35,
+                        "asset": ""
                     },
                     {
                         "x": 57,
@@ -14247,13 +14302,13 @@
         {
             "name": "Player",
             "layer": {
-                "currentLayer": 0
+                "currentLayer": 8
             },
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -41.71518325805664,
-                    "y": 28.85696029663086,
+                    "x": -32.37535858154297,
+                    "y": 9.414337158203125,
                     "z": 1.0
                 },
                 "size": {
@@ -14262,7 +14317,7 @@
                 }
             },
             "rigidbody": {
-                "mass": 5.0,
+                "mass": 4.0,
                 "restitutionCoeff": 0.0,
                 "maximumVelocity": {
                     "x": 0.0,
@@ -14278,8 +14333,8 @@
             "collider": {
                 "helperType": 2,
                 "position": {
-                    "x": -41.71518325805664,
-                    "y": 29.85696029663086,
+                    "x": -32.37535858154297,
+                    "y": 10.414337158203125,
                     "z": 1.0
                 },
                 "offset": {
@@ -14288,13 +14343,13 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": -52.565185546875,
-                    "y": -0.6435279846191406,
+                    "x": -43.22545623779297,
+                    "y": -20.086151123046876,
                     "z": 1.0
                 },
                 "max": {
-                    "x": -30.86518096923828,
-                    "y": 60.35744857788086,
+                    "x": -21.52526092529297,
+                    "y": 40.914825439453128,
                     "z": 1.0
                 },
                 "rotation": 0.0
@@ -14331,7 +14386,22 @@
             },
             "script": {
                 "scripts": [
-                    "PlayerMovement"
+                    {
+                        "className": "PlayerMovement",
+                        "fields": {
+                            "moveSpeed": 2000.0,
+                            "maxRunSpeed": 200.0,
+                            "jumpPower": 50000.0,
+                            "groundDrag": 0.15000000596046449,
+                            "airDrag": 0.10000000149011612,
+                            "gravityScale": 2.5,
+                            "turnMultiplier": 2.0,
+                            "frictionMultiplier": 500.0,
+                            "gravityForceMultiplier": 10.0,
+                            "normalMass": 4.5,
+                            "lightMass": 3.0
+                        }
+                    }
                 ]
             },
             "camera": {
@@ -15245,6 +15315,71 @@
                         "asset": "tilemaps/Darker_Platform"
                     },
                     {
+                        "x": 50,
+                        "y": -29,
+                        "asset": ""
+                    },
+                    {
+                        "x": 51,
+                        "y": -31,
+                        "asset": ""
+                    },
+                    {
+                        "x": 51,
+                        "y": -30,
+                        "asset": ""
+                    },
+                    {
+                        "x": 51,
+                        "y": -29,
+                        "asset": ""
+                    },
+                    {
+                        "x": 52,
+                        "y": -32,
+                        "asset": ""
+                    },
+                    {
+                        "x": 52,
+                        "y": -31,
+                        "asset": ""
+                    },
+                    {
+                        "x": 52,
+                        "y": -30,
+                        "asset": "tilemaps/Darker_Platform"
+                    },
+                    {
+                        "x": 52,
+                        "y": -29,
+                        "asset": "tilemaps/Darker_Platform"
+                    },
+                    {
+                        "x": 53,
+                        "y": -32,
+                        "asset": "tilemaps/Darker_Platform"
+                    },
+                    {
+                        "x": 53,
+                        "y": -31,
+                        "asset": "tilemaps/Darker_Platform"
+                    },
+                    {
+                        "x": 53,
+                        "y": -30,
+                        "asset": "tilemaps/Darker_Platform"
+                    },
+                    {
+                        "x": 53,
+                        "y": -29,
+                        "asset": "tilemaps/Darker_Platform"
+                    },
+                    {
+                        "x": 54,
+                        "y": -32,
+                        "asset": ""
+                    },
+                    {
                         "x": 56,
                         "y": -6,
                         "asset": "tilemaps/Darker_Platform"
@@ -15266,6 +15401,11 @@
                     },
                     {
                         "x": 57,
+                        "y": -35,
+                        "asset": ""
+                    },
+                    {
+                        "x": 57,
                         "y": -5,
                         "asset": ""
                     },
@@ -15278,6 +15418,11 @@
                         "x": 57,
                         "y": -3,
                         "asset": "tilemaps/Darker_Platform"
+                    },
+                    {
+                        "x": 63,
+                        "y": -36,
+                        "asset": "tilemaps/Platform"
                     }
                 ]
             }
@@ -16761,6 +16906,3032 @@
                     "z": 0.0
                 }
             }
+        },
+        {
+            "name": "PressurePlate",
+            "layer": {
+                "currentLayer": 2
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 194.45278930664063,
+                    "y": -39.93634033203125,
+                    "z": -1.0
+                },
+                "size": {
+                    "x": 32.0,
+                    "y": 50.0
+                }
+            },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0,
+                "isTrigger": true
+            },
+            "collider": {
+                "helperType": 1,
+                "position": {
+                    "x": 194.45278930664063,
+                    "y": -59.93634033203125,
+                    "z": -1.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": -20.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": 180.95278930664063,
+                    "y": -66.93634033203125,
+                    "z": -1.0
+                },
+                "max": {
+                    "x": 207.95278930664063,
+                    "y": -52.93634033203125,
+                    "z": -1.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "Pressure Plate",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 0.5690600275993347,
+                    "z": 0.969048023223877,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "PressurePlate",
+                        "fields": {
+                            "decrease": 5.0,
+                            "wallName": "Wall"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "Wall",
+            "layer": {
+                "currentLayer": 2
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 204.0975799560547,
+                    "y": -246.17955017089845,
+                    "z": -5.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "spritesheet\\lava platform\\lava platform_42.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 0.7014925479888916,
+                    "y": 0.7014925479888916,
+                    "z": 0.7014925479888916,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "MovingWall",
+                        "fields": {
+                            "PlatesActive": 0,
+                            "PlatesRequired": 1,
+                            "MoveRight": true,
+                            "MoveDist": 75.0,
+                            "MoveSpeed": 25.0
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "Wall(1)",
+            "layer": {
+                "currentLayer": 2
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 204.0975799560547,
+                    "y": -246.17955017089845,
+                    "z": -5.0
+                },
+                "size": {
+                    "x": 32.0,
+                    "y": 32.0
+                }
+            },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0,
+                "isTrigger": true
+            },
+            "collider": {
+                "helperType": 1,
+                "position": {
+                    "x": 204.0975799560547,
+                    "y": -246.17955017089845,
+                    "z": -5.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": 188.0975799560547,
+                    "y": -262.1795654296875,
+                    "z": -5.0
+                },
+                "max": {
+                    "x": 220.0975799560547,
+                    "y": -230.17953491210938,
+                    "z": -5.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "spritesheet\\Rock\\Rock_34.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 0.7014925479888916,
+                    "y": 0.7014925479888916,
+                    "z": 0.7014925479888916,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentName": "Wall",
+                "localPos": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 32.0,
+                    "y": 32.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            }
+        },
+        {
+            "name": "Wall(2)",
+            "layer": {
+                "currentLayer": 2
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 172.0975799560547,
+                    "y": -246.17955017089845,
+                    "z": -5.0
+                },
+                "size": {
+                    "x": 32.0,
+                    "y": 32.0
+                }
+            },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0,
+                "isTrigger": true
+            },
+            "collider": {
+                "helperType": 1,
+                "position": {
+                    "x": 172.0975799560547,
+                    "y": -246.17955017089845,
+                    "z": -5.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": 156.0975799560547,
+                    "y": -262.1795654296875,
+                    "z": -5.0
+                },
+                "max": {
+                    "x": 188.0975799560547,
+                    "y": -230.17953491210938,
+                    "z": -5.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "spritesheet\\Rock\\Rock_34.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 0.7014925479888916,
+                    "y": 0.7014925479888916,
+                    "z": 0.7014925479888916,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentName": "Wall",
+                "localPos": {
+                    "x": -32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 32.0,
+                    "y": 32.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            }
+        },
+        {
+            "name": "Wall(3)",
+            "layer": {
+                "currentLayer": 2
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 236.0975799560547,
+                    "y": -246.17955017089845,
+                    "z": -5.0
+                },
+                "size": {
+                    "x": 32.0,
+                    "y": 32.0
+                }
+            },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0,
+                "isTrigger": true
+            },
+            "collider": {
+                "helperType": 1,
+                "position": {
+                    "x": 236.0975799560547,
+                    "y": -246.17955017089845,
+                    "z": -5.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": 220.0975799560547,
+                    "y": -262.1795654296875,
+                    "z": -5.0
+                },
+                "max": {
+                    "x": 252.0975799560547,
+                    "y": -230.17953491210938,
+                    "z": -5.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "spritesheet\\Rock\\Rock_34.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 0.7014925479888916,
+                    "y": 0.7014925479888916,
+                    "z": 0.7014925479888916,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentName": "Wall",
+                "localPos": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 32.0,
+                    "y": 32.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            }
+        },
+        {
+            "name": "Wall(4)",
+            "layer": {
+                "currentLayer": 2
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 140.0975799560547,
+                    "y": -246.17955017089845,
+                    "z": -5.0
+                },
+                "size": {
+                    "x": 32.0,
+                    "y": 32.0
+                }
+            },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0,
+                "isTrigger": true
+            },
+            "collider": {
+                "helperType": 1,
+                "position": {
+                    "x": 140.0975799560547,
+                    "y": -246.17955017089845,
+                    "z": -5.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": 124.09757995605469,
+                    "y": -262.1795654296875,
+                    "z": -5.0
+                },
+                "max": {
+                    "x": 156.0975799560547,
+                    "y": -230.17953491210938,
+                    "z": -5.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "spritesheet\\Rock\\Rock_33.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 0.7014925479888916,
+                    "y": 0.7014925479888916,
+                    "z": 0.7014925479888916,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentName": "Wall",
+                "localPos": {
+                    "x": -64.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 32.0,
+                    "y": 32.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            }
+        },
+        {
+            "name": "Wall(5)",
+            "layer": {
+                "currentLayer": 2
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 268.09759521484377,
+                    "y": -246.17955017089845,
+                    "z": -5.0
+                },
+                "size": {
+                    "x": 32.0,
+                    "y": 32.0
+                }
+            },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0,
+                "isTrigger": true
+            },
+            "collider": {
+                "helperType": 1,
+                "position": {
+                    "x": 268.09759521484377,
+                    "y": -246.17955017089845,
+                    "z": -5.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": 252.09759521484376,
+                    "y": -262.1795654296875,
+                    "z": -5.0
+                },
+                "max": {
+                    "x": 284.09759521484377,
+                    "y": -230.17953491210938,
+                    "z": -5.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "spritesheet\\Rock\\Rock_34.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 0.7014925479888916,
+                    "y": 0.7014925479888916,
+                    "z": 0.7014925479888916,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentName": "Wall",
+                "localPos": {
+                    "x": 64.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 32.0,
+                    "y": 32.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            }
+        },
+        {
+            "name": "Wall2",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 274.5287170410156,
+                    "y": -469.6745300292969,
+                    "z": -5.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "spritesheet\\lava platform\\lava platform_42.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 0.7019608020782471,
+                    "y": 0.7019608020782471,
+                    "z": 0.7019608020782471,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "MovingWall",
+                        "fields": {
+                            "PlatesActive": 0,
+                            "PlatesRequired": 1,
+                            "MoveRight": true,
+                            "MoveDist": 100.0,
+                            "MoveSpeed": 25.0
+                        }
+                    }
+                ]
+            },
+            "tilemap": {
+                "tileSize": 32,
+                "activeAsset": "tilemaps/Rock_Door",
+                "tileAssetNames": [
+                    "Rock_Door"
+                ],
+                "gridData": [
+                    {
+                        "x": 6,
+                        "y": -15,
+                        "asset": "tilemaps/Rock_Door"
+                    },
+                    {
+                        "x": 7,
+                        "y": -15,
+                        "asset": "tilemaps/Rock_Door"
+                    },
+                    {
+                        "x": 8,
+                        "y": -15,
+                        "asset": "tilemaps/Rock_Door"
+                    },
+                    {
+                        "x": 9,
+                        "y": -15,
+                        "asset": "tilemaps/Rock_Door"
+                    },
+                    {
+                        "x": 10,
+                        "y": -15,
+                        "asset": "tilemaps/Rock_Door"
+                    },
+                    {
+                        "x": 11,
+                        "y": -15,
+                        "asset": "tilemaps/Rock_Door"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "PressurePlate2",
+            "layer": {
+                "currentLayer": 2
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -79.86735534667969,
+                    "y": -488.35107421875,
+                    "z": -1.0
+                },
+                "size": {
+                    "x": 32.0,
+                    "y": 50.0
+                }
+            },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0,
+                "isTrigger": true
+            },
+            "collider": {
+                "helperType": 1,
+                "position": {
+                    "x": -79.86735534667969,
+                    "y": -508.35107421875,
+                    "z": -1.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": -20.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": -93.36735534667969,
+                    "y": -515.35107421875,
+                    "z": -1.0
+                },
+                "max": {
+                    "x": -66.36735534667969,
+                    "y": -501.35107421875,
+                    "z": -1.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "Pressure Plate",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 0.5690600275993347,
+                    "z": 0.969048023223877,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "PressurePlate",
+                        "fields": {
+                            "decrease": 5.0,
+                            "wallName": "Wall2"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "PressurePlate3",
+            "layer": {
+                "currentLayer": 2
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 558.7850952148438,
+                    "y": -777.9962158203125,
+                    "z": -1.0
+                },
+                "size": {
+                    "x": 32.0,
+                    "y": 50.0
+                }
+            },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0,
+                "isTrigger": true
+            },
+            "collider": {
+                "helperType": 1,
+                "position": {
+                    "x": 558.7850952148438,
+                    "y": -797.9962158203125,
+                    "z": -1.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": -20.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": 545.2850952148438,
+                    "y": -804.9962158203125,
+                    "z": -1.0
+                },
+                "max": {
+                    "x": 572.2850952148438,
+                    "y": -790.9962158203125,
+                    "z": -1.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "Pressure Plate",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 0.5690600275993347,
+                    "z": 0.969048023223877,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "PressurePlate",
+                        "fields": {
+                            "decrease": 5.0,
+                            "wallName": "Wall3"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "Wall3",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 605.7684936523438,
+                    "y": -1064.8089599609376,
+                    "z": -5.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "spritesheet\\Rock\\Rock_43.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 0.7019608020782471,
+                    "y": 0.7019608020782471,
+                    "z": 0.7019608020782471,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "MovingWall",
+                        "fields": {
+                            "PlatesActive": 0,
+                            "PlatesRequired": 2,
+                            "MoveRight": true,
+                            "MoveDist": 120.0,
+                            "MoveSpeed": 25.0
+                        }
+                    }
+                ]
+            },
+            "tilemap": {
+                "tileSize": 32,
+                "activeAsset": "tilemaps/Rock_Door",
+                "tileAssetNames": [
+                    "Rock_Door"
+                ],
+                "gridData": [
+                    {
+                        "x": 16,
+                        "y": -34,
+                        "asset": "tilemaps/Rock_Door"
+                    },
+                    {
+                        "x": 17,
+                        "y": -34,
+                        "asset": "tilemaps/Rock_Door"
+                    },
+                    {
+                        "x": 18,
+                        "y": -34,
+                        "asset": "tilemaps/Rock_Door"
+                    },
+                    {
+                        "x": 19,
+                        "y": -34,
+                        "asset": "tilemaps/Rock_Door"
+                    },
+                    {
+                        "x": 20,
+                        "y": -34,
+                        "asset": "tilemaps/Rock_Door"
+                    },
+                    {
+                        "x": 21,
+                        "y": -34,
+                        "asset": "tilemaps/Rock_Door"
+                    },
+                    {
+                        "x": 22,
+                        "y": -34,
+                        "asset": "tilemaps/Rock_Door"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "PressurePlate4",
+            "layer": {
+                "currentLayer": 2
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 753.4859008789063,
+                    "y": -777.3080444335938,
+                    "z": -1.0
+                },
+                "size": {
+                    "x": 32.0,
+                    "y": 50.0
+                }
+            },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0,
+                "isTrigger": true
+            },
+            "collider": {
+                "helperType": 1,
+                "position": {
+                    "x": 753.4859008789063,
+                    "y": -797.3080444335938,
+                    "z": -1.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": -20.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": 739.9859008789063,
+                    "y": -804.3080444335938,
+                    "z": -1.0
+                },
+                "max": {
+                    "x": 766.9859008789063,
+                    "y": -790.3080444335938,
+                    "z": -1.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "Pressure Plate",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 0.5690600275993347,
+                    "z": 0.969048023223877,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "PressurePlate",
+                        "fields": {
+                            "decrease": 5.0,
+                            "wallName": "Wall3"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "PressurePlate5",
+            "layer": {
+                "currentLayer": 2
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -8.966255187988282,
+                    "y": -1706.28759765625,
+                    "z": -1.0
+                },
+                "size": {
+                    "x": 32.0,
+                    "y": 50.0
+                }
+            },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0,
+                "isTrigger": true
+            },
+            "collider": {
+                "helperType": 1,
+                "position": {
+                    "x": -8.966255187988282,
+                    "y": -1726.28759765625,
+                    "z": -1.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": -20.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": -22.46625518798828,
+                    "y": -1733.28759765625,
+                    "z": -1.0
+                },
+                "max": {
+                    "x": 4.533744812011719,
+                    "y": -1719.28759765625,
+                    "z": -1.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "Pressure Plate",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 0.5690600275993347,
+                    "z": 0.969048023223877,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "PressurePlate",
+                        "fields": {
+                            "decrease": 5.0,
+                            "wallName": "Wall4"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "PressurePlate6",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 815.9459838867188,
+                    "y": -1000.2607421875,
+                    "z": -1.0
+                },
+                "size": {
+                    "x": 32.0,
+                    "y": 50.0
+                }
+            },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0,
+                "isTrigger": true
+            },
+            "collider": {
+                "helperType": 1,
+                "position": {
+                    "x": 815.9459838867188,
+                    "y": -1020.2607421875,
+                    "z": -1.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": -20.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": 802.4459838867188,
+                    "y": -1027.2607421875,
+                    "z": -1.0
+                },
+                "max": {
+                    "x": 829.4459838867188,
+                    "y": -1013.2607421875,
+                    "z": -1.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "Pressure Plate",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 0.5690600275993347,
+                    "z": 0.969048023223877,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "PressurePlate",
+                        "fields": {
+                            "decrease": 5.0,
+                            "wallName": "Wall5"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "PressurePlate7",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 1985.900146484375,
+                    "y": 22.341442108154298,
+                    "z": -1.0
+                },
+                "size": {
+                    "x": 32.0,
+                    "y": 50.0
+                }
+            },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0,
+                "isTrigger": true
+            },
+            "collider": {
+                "helperType": 1,
+                "position": {
+                    "x": 1985.900146484375,
+                    "y": 2.341442108154297,
+                    "z": -1.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": -20.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": 1972.400146484375,
+                    "y": -4.658557891845703,
+                    "z": -1.0
+                },
+                "max": {
+                    "x": 1999.400146484375,
+                    "y": 9.341442108154297,
+                    "z": -1.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "Pressure Plate",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 0.5690600275993347,
+                    "z": 0.969048023223877,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "PressurePlate",
+                        "fields": {
+                            "decrease": 5.0,
+                            "wallName": "Wall6"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "Exit",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 1971.03369140625,
+                    "y": -386.20855712890627,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 64.0,
+                    "y": 100.0
+                }
+            },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0,
+                "isTrigger": true
+            },
+            "collider": {
+                "helperType": 1,
+                "position": {
+                    "x": 1971.03369140625,
+                    "y": -386.20855712890627,
+                    "z": 0.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": 1941.03369140625,
+                    "y": -436.20855712890627,
+                    "z": 0.0
+                },
+                "max": {
+                    "x": 2001.03369140625,
+                    "y": -336.20855712890627,
+                    "z": 0.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            }
+        },
+        {
+            "name": "Wall4",
+            "layer": {
+                "currentLayer": 2
+            },
+            "transform": {
+                "rotation": 90.0,
+                "position": {
+                    "x": 600.0,
+                    "y": -1650.0,
+                    "z": -5.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "spritesheet\\lava platform\\lava platform_42.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 0.7019608020782471,
+                    "y": 0.7019608020782471,
+                    "z": 0.7019608020782471,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "MovingWall",
+                        "fields": {
+                            "PlatesActive": 0,
+                            "PlatesRequired": 1,
+                            "MoveRight": false,
+                            "MoveDist": 150.0,
+                            "MoveSpeed": 25.0
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "Wall4(1)",
+            "layer": {
+                "currentLayer": 2
+            },
+            "transform": {
+                "rotation": 90.0,
+                "position": {
+                    "x": 600.0,
+                    "y": -1650.0,
+                    "z": -5.0
+                },
+                "size": {
+                    "x": 32.0,
+                    "y": 32.0
+                }
+            },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0,
+                "isTrigger": true
+            },
+            "collider": {
+                "helperType": 1,
+                "position": {
+                    "x": 600.0,
+                    "y": -1650.0,
+                    "z": -5.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": 584.0,
+                    "y": -1666.0,
+                    "z": -5.0
+                },
+                "max": {
+                    "x": 616.0,
+                    "y": -1634.0,
+                    "z": -5.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "spritesheet\\Rock\\Rock_34.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 0.7019608020782471,
+                    "y": 0.7019608020782471,
+                    "z": 0.7019608020782471,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentName": "Wall4",
+                "localPos": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 32.0,
+                    "y": 32.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            }
+        },
+        {
+            "name": "Wall4(1)_Clone2765",
+            "layer": {
+                "currentLayer": 2
+            },
+            "transform": {
+                "rotation": 90.0,
+                "position": {
+                    "x": 600.0,
+                    "y": -1618.0,
+                    "z": -5.0
+                },
+                "size": {
+                    "x": 32.0,
+                    "y": 32.0
+                }
+            },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0,
+                "isTrigger": true
+            },
+            "collider": {
+                "helperType": 1,
+                "position": {
+                    "x": 600.0,
+                    "y": -1618.0,
+                    "z": -5.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": 584.0,
+                    "y": -1634.0,
+                    "z": -5.0
+                },
+                "max": {
+                    "x": 616.0,
+                    "y": -1602.0,
+                    "z": -5.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "spritesheet\\Rock\\Rock_34.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 0.7019608020782471,
+                    "y": 0.7019608020782471,
+                    "z": 0.7019608020782471,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentName": "Wall4",
+                "localPos": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 32.0,
+                    "y": 32.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            }
+        },
+        {
+            "name": "Wall4(1)_Clone2765_Clone2766",
+            "layer": {
+                "currentLayer": 2
+            },
+            "transform": {
+                "rotation": 90.0,
+                "position": {
+                    "x": 600.0,
+                    "y": -1586.0,
+                    "z": -5.0
+                },
+                "size": {
+                    "x": 32.0,
+                    "y": 32.0
+                }
+            },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0,
+                "isTrigger": true
+            },
+            "collider": {
+                "helperType": 1,
+                "position": {
+                    "x": 600.0,
+                    "y": -1586.0,
+                    "z": -5.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": 584.0,
+                    "y": -1602.0,
+                    "z": -5.0
+                },
+                "max": {
+                    "x": 616.0,
+                    "y": -1570.0,
+                    "z": -5.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "spritesheet\\Rock\\Rock_34.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 0.7019608020782471,
+                    "y": 0.7019608020782471,
+                    "z": 0.7019608020782471,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentName": "Wall4",
+                "localPos": {
+                    "x": 64.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 32.0,
+                    "y": 32.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            }
+        },
+        {
+            "name": "Wall4(1)_Clone2765_Clone2766_Clone2767",
+            "layer": {
+                "currentLayer": 2
+            },
+            "transform": {
+                "rotation": 90.0,
+                "position": {
+                    "x": 600.0,
+                    "y": -1682.0,
+                    "z": -5.0
+                },
+                "size": {
+                    "x": 32.0,
+                    "y": 32.0
+                }
+            },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0,
+                "isTrigger": true
+            },
+            "collider": {
+                "helperType": 1,
+                "position": {
+                    "x": 600.0,
+                    "y": -1682.0,
+                    "z": -5.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": 584.0,
+                    "y": -1698.0,
+                    "z": -5.0
+                },
+                "max": {
+                    "x": 616.0,
+                    "y": -1666.0,
+                    "z": -5.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "spritesheet\\Rock\\Rock_33.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 0.7019608020782471,
+                    "y": 0.7019608020782471,
+                    "z": 0.7019608020782471,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentName": "Wall4",
+                "localPos": {
+                    "x": -32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 32.0,
+                    "y": 32.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            }
+        },
+        {
+            "name": "MovingPlatform",
+            "layer": {
+                "currentLayer": 2
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 484.43231201171877,
+                    "y": -1626.6378173828126,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 128.0,
+                    "y": 16.0
+                }
+            },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0,
+                "isTrigger": true
+            },
+            "collider": {
+                "helperType": 1,
+                "position": {
+                    "x": 484.43231201171877,
+                    "y": -1626.6378173828126,
+                    "z": 0.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": 420.4322509765625,
+                    "y": -1634.6378173828126,
+                    "z": 0.0
+                },
+                "max": {
+                    "x": 548.432373046875,
+                    "y": -1618.6378173828126,
+                    "z": 0.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "spritesheet\\Rock\\Rock_05.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "WeightedPlatform",
+                        "fields": {
+                            "IsMoving": true,
+                            "MoveRight": false,
+                            "MovementDistance": 400.0,
+                            "MoveSpeed": 20.0,
+                            "VerticalSpeed": 50.0,
+                            "maxDrop": 65.0
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "Wall5",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 971.43603515625,
+                    "y": -474.500732421875,
+                    "z": -5.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "spritesheet\\lava platform\\lava platform_43.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 0.7019608020782471,
+                    "y": 0.7019608020782471,
+                    "z": 0.7019608020782471,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "MovingWall",
+                        "fields": {
+                            "PlatesActive": 0,
+                            "PlatesRequired": 1,
+                            "MoveRight": true,
+                            "MoveDist": 100.0,
+                            "MoveSpeed": 25.0
+                        }
+                    }
+                ]
+            },
+            "tilemap": {
+                "tileSize": 32,
+                "activeAsset": "tilemaps/Rock_Door",
+                "tileAssetNames": [
+                    "Rock_Door"
+                ],
+                "gridData": [
+                    {
+                        "x": 28,
+                        "y": -15,
+                        "asset": "tilemaps/Rock_Door"
+                    },
+                    {
+                        "x": 29,
+                        "y": -15,
+                        "asset": "tilemaps/Rock_Door"
+                    },
+                    {
+                        "x": 30,
+                        "y": -15,
+                        "asset": "tilemaps/Rock_Door"
+                    },
+                    {
+                        "x": 31,
+                        "y": -15,
+                        "asset": "tilemaps/Rock_Door"
+                    },
+                    {
+                        "x": 32,
+                        "y": -15,
+                        "asset": "tilemaps/Rock_Door"
+                    },
+                    {
+                        "x": 33,
+                        "y": -15,
+                        "asset": "tilemaps/Rock_Door"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "Wall6",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": -90.0,
+                "position": {
+                    "x": 1892.16796875,
+                    "y": -355.4495849609375,
+                    "z": -5.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "spritesheet\\lava platform\\lava platform_41.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 0.7019608020782471,
+                    "y": 0.7019608020782471,
+                    "z": 0.7019608020782471,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "MovingWall",
+                        "fields": {
+                            "PlatesActive": 0,
+                            "PlatesRequired": 1,
+                            "MoveRight": false,
+                            "MoveDist": 200.0,
+                            "MoveSpeed": 25.0
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "New Child",
+            "layer": {
+                "currentLayer": 2
+            },
+            "transform": {
+                "rotation": -90.0,
+                "position": {
+                    "x": 1892.16796875,
+                    "y": -355.4495849609375,
+                    "z": -5.0
+                },
+                "size": {
+                    "x": 32.0,
+                    "y": 32.0
+                }
+            },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0,
+                "isTrigger": true
+            },
+            "collider": {
+                "helperType": 1,
+                "position": {
+                    "x": 1892.16796875,
+                    "y": -355.4495849609375,
+                    "z": -5.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": 1876.16796875,
+                    "y": -371.4495849609375,
+                    "z": -5.0
+                },
+                "max": {
+                    "x": 1908.16796875,
+                    "y": -339.4495849609375,
+                    "z": -5.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "spritesheet\\Rock\\Rock_34.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 0.7019608020782471,
+                    "y": 0.7019608020782471,
+                    "z": 0.7019608020782471,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentName": "Wall6",
+                "localPos": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 32.0,
+                    "y": 32.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            }
+        },
+        {
+            "name": "New Child_Clone2805",
+            "layer": {
+                "currentLayer": 2
+            },
+            "transform": {
+                "rotation": -90.0,
+                "position": {
+                    "x": 1892.16796875,
+                    "y": -387.4495849609375,
+                    "z": -5.0
+                },
+                "size": {
+                    "x": 32.0,
+                    "y": 32.0
+                }
+            },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0,
+                "isTrigger": true
+            },
+            "collider": {
+                "helperType": 1,
+                "position": {
+                    "x": 1892.16796875,
+                    "y": -387.4495849609375,
+                    "z": -5.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": 1876.16796875,
+                    "y": -403.4495849609375,
+                    "z": -5.0
+                },
+                "max": {
+                    "x": 1908.16796875,
+                    "y": -371.4495849609375,
+                    "z": -5.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "spritesheet\\Rock\\Rock_34.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 0.7019608020782471,
+                    "y": 0.7019608020782471,
+                    "z": 0.7019608020782471,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentName": "Wall6",
+                "localPos": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 32.0,
+                    "y": 32.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            }
+        },
+        {
+            "name": "New Child_Clone2805_Clone2806",
+            "layer": {
+                "currentLayer": 2
+            },
+            "transform": {
+                "rotation": -90.0,
+                "position": {
+                    "x": 1892.16796875,
+                    "y": -419.4495849609375,
+                    "z": -5.0
+                },
+                "size": {
+                    "x": 32.0,
+                    "y": 32.0
+                }
+            },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0,
+                "isTrigger": true
+            },
+            "collider": {
+                "helperType": 1,
+                "position": {
+                    "x": 1892.16796875,
+                    "y": -419.4495849609375,
+                    "z": -5.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": 1876.16796875,
+                    "y": -435.4495849609375,
+                    "z": -5.0
+                },
+                "max": {
+                    "x": 1908.16796875,
+                    "y": -403.4495849609375,
+                    "z": -5.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "spritesheet\\Rock\\Rock_34.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 0.7019608020782471,
+                    "y": 0.7019608020782471,
+                    "z": 0.7019608020782471,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentName": "Wall6",
+                "localPos": {
+                    "x": 64.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 32.0,
+                    "y": 32.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            }
+        },
+        {
+            "name": "New Child_Clone2805_Clone2806_Clone2807",
+            "layer": {
+                "currentLayer": 2
+            },
+            "transform": {
+                "rotation": -90.0,
+                "position": {
+                    "x": 1892.16796875,
+                    "y": -323.4495849609375,
+                    "z": -5.0
+                },
+                "size": {
+                    "x": 32.0,
+                    "y": 32.0
+                }
+            },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0,
+                "isTrigger": true
+            },
+            "collider": {
+                "helperType": 1,
+                "position": {
+                    "x": 1892.16796875,
+                    "y": -323.4495849609375,
+                    "z": -5.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": 1876.16796875,
+                    "y": -339.4495849609375,
+                    "z": -5.0
+                },
+                "max": {
+                    "x": 1908.16796875,
+                    "y": -307.4495849609375,
+                    "z": -5.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "spritesheet\\Rock\\Rock_34.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 0.7019608020782471,
+                    "y": 0.7019608020782471,
+                    "z": 0.7019608020782471,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentName": "Wall6",
+                "localPos": {
+                    "x": -32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 32.0,
+                    "y": 32.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            }
+        },
+        {
+            "name": "New Child_Clone2805_Clone2806_Clone2807_Clone2808",
+            "layer": {
+                "currentLayer": 2
+            },
+            "transform": {
+                "rotation": -90.0,
+                "position": {
+                    "x": 1892.16796875,
+                    "y": -291.4495849609375,
+                    "z": -5.0
+                },
+                "size": {
+                    "x": 32.0,
+                    "y": 32.0
+                }
+            },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0,
+                "isTrigger": true
+            },
+            "collider": {
+                "helperType": 1,
+                "position": {
+                    "x": 1892.16796875,
+                    "y": -291.4495849609375,
+                    "z": -5.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": 1876.16796875,
+                    "y": -307.4495849609375,
+                    "z": -5.0
+                },
+                "max": {
+                    "x": 1908.16796875,
+                    "y": -275.4495849609375,
+                    "z": -5.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "spritesheet\\Rock\\Rock_34.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 0.7019608020782471,
+                    "y": 0.7019608020782471,
+                    "z": 0.7019608020782471,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentName": "Wall6",
+                "localPos": {
+                    "x": -64.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 32.0,
+                    "y": 32.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            }
+        },
+        {
+            "name": "New Child_Clone2805_Clone2806_Clone2807_Clone2808_Clone2809",
+            "layer": {
+                "currentLayer": 2
+            },
+            "transform": {
+                "rotation": -90.0,
+                "position": {
+                    "x": 1892.16796875,
+                    "y": -259.4495849609375,
+                    "z": -5.0
+                },
+                "size": {
+                    "x": 32.0,
+                    "y": 32.0
+                }
+            },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0,
+                "isTrigger": true
+            },
+            "collider": {
+                "helperType": 1,
+                "position": {
+                    "x": 1892.16796875,
+                    "y": -259.4495849609375,
+                    "z": -5.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": 1876.16796875,
+                    "y": -275.4495849609375,
+                    "z": -5.0
+                },
+                "max": {
+                    "x": 1908.16796875,
+                    "y": -243.4495849609375,
+                    "z": -5.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "spritesheet\\Rock\\Rock_34.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 0.7019608020782471,
+                    "y": 0.7019608020782471,
+                    "z": 0.7019608020782471,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentName": "Wall6",
+                "localPos": {
+                    "x": -96.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 32.0,
+                    "y": 32.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            }
+        },
+        {
+            "name": "MovingPlatform(1)",
+            "layer": {
+                "currentLayer": 2
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 1070.7742919921876,
+                    "y": -783.498291015625,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 275.0,
+                    "y": 16.0
+                }
+            },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0,
+                "isTrigger": true
+            },
+            "collider": {
+                "helperType": 1,
+                "position": {
+                    "x": 1070.7742919921876,
+                    "y": -783.498291015625,
+                    "z": 0.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": 933.2742919921875,
+                    "y": -791.498291015625,
+                    "z": 0.0
+                },
+                "max": {
+                    "x": 1208.2742919921876,
+                    "y": -775.498291015625,
+                    "z": 0.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "spritesheet\\Rock\\Rock_05.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "WeightedPlatform",
+                        "fields": {
+                            "IsMoving": true,
+                            "MoveRight": false,
+                            "MovementDistance": 400.0,
+                            "MoveSpeed": 65.0,
+                            "VerticalSpeed": 55.0,
+                            "maxDrop": 65.0
+                        }
+                    }
+                ]
+            }
         }
     ],
     "layers": {
@@ -16768,5 +19939,15 @@
         "Ground": 2,
         "Lava": 4,
         "Player": 8
+    },
+    "quadtree": {
+        "min": {
+            "x": -2000.0,
+            "y": -2000.0
+        },
+        "max": {
+            "x": 2000.0,
+            "y": 2000.0
+        }
     }
 }

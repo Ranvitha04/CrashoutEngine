@@ -8,14 +8,17 @@ namespace CrashoutsEngine
 
         bool stepOn = false;
         float oldY, newY;
-        const float decrease = 5.0f;
+        [SerializeField]
+        float decrease = 15.0f;
         TransformComponent transform;
+        RigidBodyComponent rb;
 
         public string wallName = "wall";
         private MovingWall _targetScript;
 
         void GetWall()
         {
+            if (wallName.Length <= 0) return;
             // Find the wall (SORRY THIS IS HARDCODED, ALL WALLS MUST BE NAMED "wall_{pressure plate name}"
             // Example, this pressure plate is named "plate_1", the respective wall is named "wall_plate_1"
             //wallName = "wall_" + Entity.GetComponent<NameComponent>().ToString();
@@ -47,6 +50,7 @@ namespace CrashoutsEngine
                 stepOn = true;
 
                 if(Entity.Find(wallName) != null) _targetScript.PlatesActive++;
+                rb.SetDynamic(false);
             }
         }
 
@@ -71,6 +75,9 @@ namespace CrashoutsEngine
             oldY = transform.Position.y;
             newY = oldY - decrease;
             stepOn = false;
+
+            rb = Entity.GetComponent<RigidBodyComponent>();
+            rb.SetDynamic(true);
         }
 
         public override void Update()
