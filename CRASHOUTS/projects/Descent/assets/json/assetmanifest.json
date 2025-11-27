@@ -57,6 +57,10 @@
             "path": "Lava-Volcano-Wind-Environment_LOOP.wav"
         },
         {
+            "name": "level bgm 1",
+            "path": "level bgm 1.wav"
+        },
+        {
             "name": "Nightshift_BGM_Loop_70bpm",
             "path": "Nightshift_BGM_Loop_70bpm.wav"
         },
