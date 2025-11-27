@@ -666,7 +666,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": 139.19996643066407,
-                    "y": 30.229028701782228,
+                    "y": 76.09512329101563,
                     "z": 1.0
                 },
                 "size": {
@@ -692,7 +692,7 @@
                 "helperType": 2,
                 "position": {
                     "x": 139.19996643066407,
-                    "y": 30.229028701782228,
+                    "y": 76.09512329101563,
                     "z": 1.0
                 },
                 "offset": {
@@ -702,12 +702,12 @@
                 },
                 "min": {
                     "x": 127.99998474121094,
-                    "y": -0.027776718139648439,
+                    "y": 45.83831787109375,
                     "z": 1.0
                 },
                 "max": {
                     "x": 150.3999481201172,
-                    "y": 60.48583221435547,
+                    "y": 106.3519287109375,
                     "z": 1.0
                 },
                 "rotation": 0.0
@@ -864,6 +864,7 @@
                     {
                         "className": "PressurePlate",
                         "fields": {
+                            "decrease": 5.0,
                             "wallName": "wall_test"
                         }
                     }
@@ -922,7 +923,11 @@
                     {
                         "className": "MovingWall",
                         "fields": {
-                            "PlatesActive": 0
+                            "PlatesActive": 0,
+                            "PlatesRequired": 1,
+                            "MoveRight": false,
+                            "MoveDist": 10.0,
+                            "MoveSpeed": 5.0
                         }
                     }
                 ]
@@ -1050,26 +1055,70 @@
                 "scripts": [
                     {
                         "className": "WeightedPlatform",
-                        "fields": {}
+                        "fields": {
+                            "IsMoving": true,
+                            "MoveRight": true,
+                            "MovementDistance": 100.0,
+                            "MoveSpeed": 20.0,
+                            "VerticalSpeed": 50.0,
+                            "maxDrop": 50.0
+                        }
                     }
                 ]
             }
         },
         {
-            "name": "Tex_Slime spritesheet_04",
+            "name": "Slime",
             "layer": {
-                "currentLayer": 0
+                "currentLayer": 4
             },
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 114.47247314453125,
-                    "y": 96.48698425292969,
+                    "x": 32.39573287963867,
+                    "y": 150.26564025878907,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 288.0,
-                    "y": 268.0
+                    "x": 72.0,
+                    "y": 67.0
+                }
+            },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0,
+                "isTrigger": true
+            },
+            "collider": {
+                "helperType": 1,
+                "position": {
+                    "x": 33.79573440551758,
+                    "y": 147.06564331054688,
+                    "z": 0.0
+                },
+                "offset": {
+                    "x": 1.399999976158142,
+                    "y": -3.200000047683716,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": 16.545734405517579,
+                    "y": 134.26564025878907,
+                    "z": 0.0
+                },
+                "max": {
+                    "x": 51.04573440551758,
+                    "y": 159.8656463623047,
+                    "z": 0.0
                 }
             },
             "shape": {
@@ -1080,7 +1129,88 @@
                 "thickness": 1.0,
                 "preview": false,
                 "type": 0,
-                "textureName": "Monsters\\Monsters_7.png",
+                "textureName": "spritesheet\\Slime spritesheet\\Slime spritesheet_04.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            }
+        },
+        {
+            "name": "EnergyBall",
+            "layer": {
+                "currentLayer": 8
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 99.11139678955078,
+                    "y": 151.59146118164063,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 32.0,
+                    "y": 40.0
+                }
+            },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0,
+                "isTrigger": true
+            },
+            "collider": {
+                "helperType": 0,
+                "position": {
+                    "x": 99.11139678955078,
+                    "y": 148.59146118164063,
+                    "z": 0.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": -3.0,
+                    "z": 0.0
+                },
+                "radius": 9.699999809265137,
+                "center": {
+                    "x": 99.11139678955078,
+                    "y": 148.59146118164063,
+                    "z": 0.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "Energy Ball spritesheet_00",
                 "uvSize": {
                     "x": 1.0,
                     "y": 1.0
@@ -1106,6 +1236,8 @@
     ],
     "layers": {
         "Default": 0,
+        "Enemy": 4,
+        "Energy": 8,
         "Ground": 2,
         "Player": 1
     },
