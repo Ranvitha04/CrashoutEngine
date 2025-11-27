@@ -38,6 +38,7 @@ namespace CrashoutsEngine {
 
 
     // inheritance helpers
+    /*
     static CEColor GetAncestorColor(ECS& ecs, Entity e) {
         using namespace Component;
         // if this direct parent has ShapeComponent, use that;
@@ -56,7 +57,6 @@ namespace CrashoutsEngine {
         return CEColor{ 1.f, 1.f, 1.f, 1.f };
     }
     // Force a child to take its parent's (ancestor) color every update.
-    /*
     static void ForceInheritColorFromParent(ECS& ecs, Entity child) {
         using namespace Component;
 
