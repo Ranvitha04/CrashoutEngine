@@ -814,7 +814,7 @@ void UpdateRan()
             CEVec3 a = CEVec3(0.f,0.f,0.f);
             CEVec3 b = CEVec3(0.f,0.f,0.f);
             auto e1 = InstancingSystem::GetSingleDuckEntity();
-            auto e2 = InstancingSystem::GetSecondDuckEntity();
+            e2 = InstancingSystem::GetSecondDuckEntity();
             if (auto* t1 = globalECS->GetComponent<Component::TransformComponent>(e1)) {
                 a = t1->position;
             }

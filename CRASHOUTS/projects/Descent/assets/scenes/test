@@ -666,7 +666,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": 139.19996643066407,
-                    "y": 94.26351928710938,
+                    "y": 30.229028701782228,
                     "z": 1.0
                 },
                 "size": {
@@ -692,7 +692,7 @@
                 "helperType": 2,
                 "position": {
                     "x": 139.19996643066407,
-                    "y": 94.26351928710938,
+                    "y": 30.229028701782228,
                     "z": 1.0
                 },
                 "offset": {
@@ -702,12 +702,12 @@
                 },
                 "min": {
                     "x": 127.99998474121094,
-                    "y": 64.0067138671875,
+                    "y": -0.027776718139648439,
                     "z": 1.0
                 },
                 "max": {
                     "x": 150.3999481201172,
-                    "y": 124.52032470703125,
+                    "y": 60.48583221435547,
                     "z": 1.0
                 },
                 "rotation": 0.0
@@ -756,7 +756,7 @@
                             "turnMultiplier": 2.0,
                             "frictionMultiplier": 500.0,
                             "gravityForceMultiplier": 10.0,
-                            "stepInterval": 0.15000000596046449,
+                            "stepInterval": 0.3499999940395355,
                             "normalMass": 4.5,
                             "lightMass": 2.5
                         }
@@ -963,20 +963,113 @@
             }
         },
         {
-            "name": "Slime",
+            "name": "BigBox",
+            "layer": {
+                "currentLayer": 2
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 228.1483612060547,
+                    "y": 119.81104278564453,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 58.099998474121097,
+                    "y": 10.0
+                }
+            },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0,
+                "isTrigger": true
+            },
+            "collider": {
+                "helperType": 1,
+                "position": {
+                    "x": 228.1483612060547,
+                    "y": 119.81104278564453,
+                    "z": 0.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": 199.09835815429688,
+                    "y": 114.81104278564453,
+                    "z": 0.0
+                },
+                "max": {
+                    "x": 257.1983642578125,
+                    "y": 124.81104278564453,
+                    "z": 0.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 255.0,
+                    "y": 255.0,
+                    "z": 255.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "WeightedPlatform",
+                        "fields": {}
+                    }
+                ]
+            }
+        },
+        {
+            "name": "Tex_Slime spritesheet_04",
             "layer": {
                 "currentLayer": 0
             },
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 86.04629516601563,
-                    "y": 191.6031951904297,
+                    "x": 114.47247314453125,
+                    "y": 96.48698425292969,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 32.0,
-                    "y": 32.0
+                    "x": 288.0,
+                    "y": 268.0
                 }
             },
             "shape": {
@@ -987,7 +1080,7 @@
                 "thickness": 1.0,
                 "preview": false,
                 "type": 0,
-                "textureName": "spritesheet\\Slime spritesheet\\Slime spritesheet_04.png",
+                "textureName": "Monsters\\Monsters_7.png",
                 "uvSize": {
                     "x": 1.0,
                     "y": 1.0
@@ -1008,14 +1101,6 @@
                     "y": 0.0,
                     "z": 0.0
                 }
-            },
-            "script": {
-                "scripts": [
-                    {
-                        "className": "PlayerController",
-                        "fields": {}
-                    }
-                ]
             }
         }
     ],

@@ -20,6 +20,8 @@ namespace CrashoutsEngine
         [SerializeField] public float frictionMultiplier = 500.0f;
         [SerializeField] public float gravityForceMultiplier = 10.0f;
 
+        [SerializeField] public float stepInterval = 0.075f; // Time between steps (lower = faster steps)
+
         // Mass Settings (For Weighted Platform interaction)
         public float normalMass = 7.0f;
         public float lightMass = 4.5f;
@@ -27,7 +29,6 @@ namespace CrashoutsEngine
         // --- STATE VARIABLES ---
         private float horizontalInput;
         private bool isJumpHeld;
-        private bool footstepsPlaying = false;
 
         // Public state for other scripts
         public bool IsGrounded { get; private set; } = false;
@@ -40,6 +41,9 @@ namespace CrashoutsEngine
         private RigidBodyComponent rb;
         private TransformComponent tf;
 
+        private float stepTimer = 0.0f;
+        private Random rng = new Random();
+        
         public override void Start()
         {
             Instance = this;
@@ -49,7 +53,6 @@ namespace CrashoutsEngine
             // Initial Setup
             rb.Mass = normalMass;
             IsGrounded = false;
-            footstepsPlaying = false;
             AudioManager.GetInstance().Play("ambient");
             AudioManager.GetInstance().Play("bgm1");
 
@@ -95,16 +98,29 @@ namespace CrashoutsEngine
                 Debug.Log("Mass toggled to: " + rb.Mass);
             }
 
-            // 4. AUDIO LOGIC
-            if (horizontalInput != 0.0f && IsGrounded && !footstepsPlaying)
+            // 4. AUDIO LOGIC (Randomized Footsteps)
+            if (horizontalInput != 0.0f && IsGrounded)
             {
-                AudioManager.GetInstance().Play("footsteps");
-                footstepsPlaying = true;
+                stepTimer -= (float)Time.DT;
+
+                if (stepTimer <= 0.0f)
+                {
+                    // 1. Generate Random Index (1 to 6)
+                    int index = rng.Next(1, 7); // Max is exclusive
+                    string soundName = "footstep" + index;
+
+                    // 2. Play Sound (Assuming your Audio System supports "One Shot" playback)
+                    // If your system only supports looping, you might need a different approach.
+                    AudioManager.GetInstance().Play(soundName);
+
+                    // 3. Reset Timer
+                    stepTimer = stepInterval;
+                }
             }
-            else if ((!IsGrounded || horizontalInput == 0.0f) && footstepsPlaying)
+            else
             {
-                AudioManager.GetInstance().Stop("footsteps");
-                footstepsPlaying = false;
+                // Reset timer so the first step plays immediately when starting to move again
+                stepTimer = 0.0f;
             }
         }
 
