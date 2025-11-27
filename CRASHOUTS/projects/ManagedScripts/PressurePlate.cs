@@ -5,13 +5,12 @@ namespace CrashoutsEngine
     [ScriptBehaviour]
     public class PressurePlate : ScriptBase
     {
-
         bool stepOn = false;
         float oldY, newY;
         [SerializeField]
-        float decrease = 15.0f;
+        float decrease = 5.0f;
         TransformComponent transform;
-        RigidBodyComponent rb;
+        RigidBodyComponent rb; // The plate's RB
 
         public string wallName = "wall";
         private MovingWall _targetScript;
@@ -19,15 +18,10 @@ namespace CrashoutsEngine
         void GetWall()
         {
             if (wallName.Length <= 0) return;
-            // Find the wall (SORRY THIS IS HARDCODED, ALL WALLS MUST BE NAMED "wall_{pressure plate name}"
-            // Example, this pressure plate is named "plate_1", the respective wall is named "wall_plate_1"
-            //wallName = "wall_" + Entity.GetComponent<NameComponent>().ToString();
             Entity wallEnt = Entity.Find(wallName);
 
-            //// Failsafe doesn't seem to work, WILL CRASH IF NAMED WRONGLY!!
             if (wallEnt != null)
             {
-                // 2. Get the C# Script instance from it (The magic!)
                 _targetScript = wallEnt.GetScript<MovingWall>();
             }
             else
@@ -38,30 +32,71 @@ namespace CrashoutsEngine
 
         public void OnTriggerEnter(uint otherEntityID)
         {
+            // If already pressed, don't calculate again
+            if (stepOn) return;
+
             Entity other = new Entity(otherEntityID);
             var layer = other.GetComponent<LayerComponent>();
 
-            if (layer != null && layer.HasLayer("Player") && !stepOn)
+            if (layer == null) return;
+
+            bool isValidTrigger = false;
+
+            // --- CHECK 1: IS IT AN ENEMY? ---
+            if (layer.HasLayer("Enemy"))
+            {
+                Debug.Log("Enemy stepped on plate.");
+                isValidTrigger = true;
+            }
+            // --- CHECK 2: IS IT THE PLAYER? ---
+            else if (layer.HasLayer("Player"))
+            {
+                var otherRb = other.GetComponent<RigidBodyComponent>();
+
+                // We need to access the Player Singleton to know what "Normal" mass is.
+                // We also check if the colliding object actually has a Rigidbody to read mass from.
+                if (otherRb != null && PlayerMovement.Instance != null)
+                {
+                    // Check if current mass is greater than or equal to the Normal Mass defined in PlayerMovement
+                    // (Using -0.1f buffer for floating point safety)
+                    if (otherRb.Mass >= (PlayerMovement.Instance.normalMass - 0.1f))
+                    {
+                        Debug.Log("Player (Heavy) stepped on plate.");
+                        isValidTrigger = true;
+                    }
+                    else
+                    {
+                        Debug.Log("Player (Light) stepped on plate - Not heavy enough!");
+                    }
+                }
+            }
+
+            // --- EXECUTE ACTION ---
+            if (isValidTrigger)
             {
                 transform.Position = new CEVec3(transform.Position.x, newY, transform.Position.z);
                 Debug.Log("Stepped on Pressure Plate!");
+
                 AudioManager.GetInstance().Play("pressureplate");
-                Debug.Log("Played Sound");
+
                 stepOn = true;
 
-                if(Entity.Find(wallName) != null) _targetScript.PlatesActive++;
-                rb.SetDynamic(false);
+                if (_targetScript != null)
+                {
+                    _targetScript.PlatesActive++;
+                }
+
+                // Stop the plate from moving via physics since we hard-set position
+                if (rb != null) rb.SetDynamic(false);
             }
         }
 
         public void OnTriggerExit(uint otherEntityID)
         {
-            Entity other = new Entity(otherEntityID);
-            var layer = other.GetComponent<LayerComponent>();
-
-            if (layer != null && layer.HasLayer("Player"))
-            {
-            }
+            // Note: Currently your plate logic is "One Way" (it stays down).
+            // If you want it to rise up when the player/enemy leaves, 
+            // you would add logic here to decrement _targetScript.PlatesActive
+            // and reset stepOn = false.
         }
 
         public override void Start()
@@ -72,18 +107,22 @@ namespace CrashoutsEngine
             CollisionEvents.RegisterTriggerExit(Entity.ID, OnTriggerExit);
 
             transform = Entity.GetComponent<TransformComponent>();
-            oldY = transform.Position.y;
-            newY = oldY - decrease;
+
+            if (transform != null)
+            {
+                oldY = transform.Position.y;
+                newY = oldY - decrease;
+            }
+
             stepOn = false;
 
             rb = Entity.GetComponent<RigidBodyComponent>();
-            rb.SetDynamic(true);
+            if (rb != null) rb.SetDynamic(true);
         }
 
         public override void Update()
         {
             base.Update();
-            //Debug.Log("test");
         }
 
         public override void FixedUpdate()

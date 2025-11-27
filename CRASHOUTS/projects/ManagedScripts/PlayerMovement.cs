@@ -7,7 +7,7 @@ namespace CrashoutsEngine
     {
         // --- TUNING VARIABLES (Edit in Inspector) ---
         [SerializeField] public float moveSpeed = 200f;       // Force applied to move
-        [SerializeField] public float maxRunSpeed = 15.0f;     // Max horizontal speed cap
+        [SerializeField] public float maxRunSpeed = 100.0f;     // Max horizontal speed cap
         [SerializeField] public float jumpPower = 20000f;      // Jump Force
 
         [SerializeField] public float groundDrag = 0.15f;      // Friction on ground (0.2 = snappy, 0.05 = ice)
@@ -51,6 +51,7 @@ namespace CrashoutsEngine
             IsGrounded = false;
             footstepsPlaying = false;
             AudioManager.GetInstance().Play("ambient");
+            AudioManager.GetInstance().Play("bgm1");
 
             // Register Callbacks
             CollisionEvents.RegisterTriggerEnter(Entity.ID, this.OnTriggerEnter);
