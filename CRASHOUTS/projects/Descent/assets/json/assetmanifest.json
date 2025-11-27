@@ -1113,6 +1113,54 @@
             "path": "spritesheet\\Rock\\Rock_43.png"
         },
         {
+            "name": "Slime spritesheet_00",
+            "path": "spritesheet\\Slime spritesheet\\Slime spritesheet_00.png"
+        },
+        {
+            "name": "Slime spritesheet_01",
+            "path": "spritesheet\\Slime spritesheet\\Slime spritesheet_01.png"
+        },
+        {
+            "name": "Slime spritesheet_02",
+            "path": "spritesheet\\Slime spritesheet\\Slime spritesheet_02.png"
+        },
+        {
+            "name": "Slime spritesheet_03",
+            "path": "spritesheet\\Slime spritesheet\\Slime spritesheet_03.png"
+        },
+        {
+            "name": "Slime spritesheet_04",
+            "path": "spritesheet\\Slime spritesheet\\Slime spritesheet_04.png"
+        },
+        {
+            "name": "Slime spritesheet_05",
+            "path": "spritesheet\\Slime spritesheet\\Slime spritesheet_05.png"
+        },
+        {
+            "name": "Slime spritesheet_06",
+            "path": "spritesheet\\Slime spritesheet\\Slime spritesheet_06.png"
+        },
+        {
+            "name": "Slime spritesheet_07",
+            "path": "spritesheet\\Slime spritesheet\\Slime spritesheet_07.png"
+        },
+        {
+            "name": "Slime spritesheet_08",
+            "path": "spritesheet\\Slime spritesheet\\Slime spritesheet_08.png"
+        },
+        {
+            "name": "Slime spritesheet_09",
+            "path": "spritesheet\\Slime spritesheet\\Slime spritesheet_09.png"
+        },
+        {
+            "name": "Slime spritesheet_10",
+            "path": "spritesheet\\Slime spritesheet\\Slime spritesheet_10.png"
+        },
+        {
+            "name": "Slime spritesheet_11",
+            "path": "spritesheet\\Slime spritesheet\\Slime spritesheet_11.png"
+        },
+        {
             "name": "Switch-State-SpriteSheet_00",
             "path": "spritesheet\\Switch-State-SpriteSheet\\Switch-State-SpriteSheet_00.png"
         },

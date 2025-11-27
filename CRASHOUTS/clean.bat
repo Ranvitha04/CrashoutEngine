@@ -2,24 +2,24 @@
 setlocal
 pushd "%~dp0"
 
-echo Saving modified assets...
+REM echo Saving modified assets...
 
-set "SOURCE_ASSETS=projects\Descent\assets"
-set "BUILD_DIR=build"
-set "DEBUG_ASSETS=%BUILD_DIR%\x64-Debug\assets"
-set "RELEASE_ASSETS=%BUILD_DIR%\x64-Release\assets"
+REM set "SOURCE_ASSETS=projects\Descent\assets"
+REM set "BUILD_DIR=build"
+REM set "DEBUG_ASSETS=%BUILD_DIR%\x64-Debug\assets"
+REM set "RELEASE_ASSETS=%BUILD_DIR%\x64-Release\assets"
 
 REM Check for Debug assets and copy only newer files back to source
-if exist "%DEBUG_ASSETS%" (
-    echo Syncing from Debug...
-    robocopy "%DEBUG_ASSETS%" "%SOURCE_ASSETS%" /E /XO
-)
+REM if exist "%DEBUG_ASSETS%" (
+REM    echo Syncing from Debug...
+REM    robocopy "%DEBUG_ASSETS%" "%SOURCE_ASSETS%" /E /XO
+REM )
 
 REM Check for Release assets and copy only newer files back to source
-if exist "%RELEASE_ASSETS%" (
-    echo Syncing from Release...
-    robocopy "%RELEASE_ASSETS%" "%SOURCE_ASSETS%" /E /XO
-)
+REM if exist "%RELEASE_ASSETS%" (
+REM    echo Syncing from Release...
+REM    robocopy "%RELEASE_ASSETS%" "%SOURCE_ASSETS%" /E /XO
+REM )
 
 echo.
 echo Cleaning build artifacts...
