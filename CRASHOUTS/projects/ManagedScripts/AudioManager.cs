@@ -16,11 +16,57 @@ public class AudioManager
             );
 
         RegisterSound(
-                "footsteps",
-                "assets/audio/Footsteps2_Gravel-Dirt_far-small_1.wav",
+                "footstep1",
+                "assets/audio/footsteps 1.wav",
                 1.0f, // base volume
-                true, // loop?
-                SoundType.SFX
+                false, // loop?
+                //SoundType.SFX //SFX broken
+                SoundType.Music
+            );
+
+        RegisterSound(
+                "footstep2",
+                "assets/audio/footsteps 2.wav",
+                1.0f, // base volume
+                false, // loop?
+                      //SoundType.SFX //SFX broken
+                SoundType.Music
+            );
+
+        RegisterSound(
+                "footstep3",
+                "assets/audio/footsteps 3.wav",
+                1.0f, // base volume
+                false, // loop?
+                      //SoundType.SFX //SFX broken
+                SoundType.Music
+            );
+
+        RegisterSound(
+                "footstep4",
+                "assets/audio/footsteps 4.wav",
+                1.0f, // base volume
+                false, // loop?
+                      //SoundType.SFX //SFX broken
+                SoundType.Music
+            );
+
+        RegisterSound(
+                "footstep5",
+                "assets/audio/footsteps 5.wav",
+                1.0f, // base volume
+                false, // loop?
+                      //SoundType.SFX //SFX broken
+                SoundType.Music
+            );
+
+        RegisterSound(
+                "footstep6",
+                "assets/audio/footsteps 6.wav",
+                1.0f, // base volume
+                false, // loop?
+                      //SoundType.SFX //SFX broken
+                SoundType.Music
             );
 
         RegisterSound(

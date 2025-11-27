@@ -14398,6 +14398,7 @@
                             "turnMultiplier": 2.0,
                             "frictionMultiplier": 500.0,
                             "gravityForceMultiplier": 10.0,
+                            "stepInterval": 0.15000000596046449,
                             "normalMass": 4.5,
                             "lightMass": 3.0
                         }
@@ -16996,7 +16997,6 @@
                     {
                         "className": "PressurePlate",
                         "fields": {
-                            "decrease": 5.0,
                             "wallName": "Wall"
                         }
                     }
@@ -17055,11 +17055,7 @@
                     {
                         "className": "MovingWall",
                         "fields": {
-                            "PlatesActive": 0,
-                            "PlatesRequired": 1,
-                            "MoveRight": true,
-                            "MoveDist": 75.0,
-                            "MoveSpeed": 25.0
+                            "PlatesActive": 0
                         }
                     }
                 ]
@@ -17642,11 +17638,7 @@
                     {
                         "className": "MovingWall",
                         "fields": {
-                            "PlatesActive": 0,
-                            "PlatesRequired": 1,
-                            "MoveRight": true,
-                            "MoveDist": 100.0,
-                            "MoveSpeed": 25.0
+                            "PlatesActive": 0
                         }
                     }
                 ]
@@ -17780,7 +17772,6 @@
                     {
                         "className": "PressurePlate",
                         "fields": {
-                            "decrease": 5.0,
                             "wallName": "Wall2"
                         }
                     }
@@ -17876,7 +17867,6 @@
                     {
                         "className": "PressurePlate",
                         "fields": {
-                            "decrease": 5.0,
                             "wallName": "Wall3"
                         }
                     }
@@ -17935,11 +17925,7 @@
                     {
                         "className": "MovingWall",
                         "fields": {
-                            "PlatesActive": 0,
-                            "PlatesRequired": 2,
-                            "MoveRight": true,
-                            "MoveDist": 120.0,
-                            "MoveSpeed": 25.0
+                            "PlatesActive": 0
                         }
                     }
                 ]
@@ -18078,7 +18064,6 @@
                     {
                         "className": "PressurePlate",
                         "fields": {
-                            "decrease": 5.0,
                             "wallName": "Wall3"
                         }
                     }
@@ -18174,7 +18159,6 @@
                     {
                         "className": "PressurePlate",
                         "fields": {
-                            "decrease": 5.0,
                             "wallName": "Wall4"
                         }
                     }
@@ -18270,7 +18254,6 @@
                     {
                         "className": "PressurePlate",
                         "fields": {
-                            "decrease": 5.0,
                             "wallName": "Wall5"
                         }
                     }
@@ -18366,7 +18349,6 @@
                     {
                         "className": "PressurePlate",
                         "fields": {
-                            "decrease": 5.0,
                             "wallName": "Wall6"
                         }
                     }
@@ -18510,11 +18492,7 @@
                     {
                         "className": "MovingWall",
                         "fields": {
-                            "PlatesActive": 0,
-                            "PlatesRequired": 1,
-                            "MoveRight": false,
-                            "MoveDist": 150.0,
-                            "MoveSpeed": 25.0
+                            "PlatesActive": 0
                         }
                     }
                 ]
@@ -19028,14 +19006,7 @@
                 "scripts": [
                     {
                         "className": "WeightedPlatform",
-                        "fields": {
-                            "IsMoving": true,
-                            "MoveRight": false,
-                            "MovementDistance": 400.0,
-                            "MoveSpeed": 20.0,
-                            "VerticalSpeed": 50.0,
-                            "maxDrop": 65.0
-                        }
+                        "fields": {}
                     }
                 ]
             }
@@ -19092,11 +19063,7 @@
                     {
                         "className": "MovingWall",
                         "fields": {
-                            "PlatesActive": 0,
-                            "PlatesRequired": 1,
-                            "MoveRight": true,
-                            "MoveDist": 100.0,
-                            "MoveSpeed": 25.0
+                            "PlatesActive": 0
                         }
                     }
                 ]
@@ -19193,11 +19160,7 @@
                     {
                         "className": "MovingWall",
                         "fields": {
-                            "PlatesActive": 0,
-                            "PlatesRequired": 1,
-                            "MoveRight": false,
-                            "MoveDist": 200.0,
-                            "MoveSpeed": 25.0
+                            "PlatesActive": 0
                         }
                     }
                 ]
@@ -19921,14 +19884,7 @@
                 "scripts": [
                     {
                         "className": "WeightedPlatform",
-                        "fields": {
-                            "IsMoving": true,
-                            "MoveRight": false,
-                            "MovementDistance": 400.0,
-                            "MoveSpeed": 65.0,
-                            "VerticalSpeed": 55.0,
-                            "maxDrop": 65.0
-                        }
+                        "fields": {}
                     }
                 ]
             }
