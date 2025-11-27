@@ -16,10 +16,7 @@
 #include <random>
 #include <string>
 #include <chrono> // Used to seed the random number generator
-#include "frameratecontroller.h"
-#include "keyframe.h"
-#include "spritecomponent.h"   
-#include "spriteAnimation.h"  
+
 #include "scriptcomponent.h"
 #include "glm/vec3.hpp"
 #include "GLFW/glfw3.h"
@@ -61,24 +58,6 @@ static int itemCount = 0;
 static CrashoutsEngine::Entity entity1;
 static CrashoutsEngine::Entity entity2;
 static CrashoutsEngine::Entity entity3;
-
-static const char* WALK_SHEET_PATH =
-"images/Character/Normal Mode/Chibi-Actions-SpriteSheet.png";
-
-static const char* JUMP_SHEET_PATH =
-"images/Character/New Artstyle/Switch-State-SpriteSheet.png";
-
-static const int SHEET_COLS = 3;
-static const int SHEET_ROWS = 3;
-
-enum class PlayerSheet
-{
-	Walk,
-	LightMode
-};
-
-static PlayerSheet gCurrentSheet = PlayerSheet::Walk;
-static bool gZWasDown = false;   
 
 static std::string s_entity1Script = "PlayerController";
 static std::string s_entity3Script = "EnemyController";
@@ -149,32 +128,6 @@ void InitMainMenu()
 		sc->Destroy();
 		sc->Initialize(MonoManager::GetDomain(), MonoManager::GetAssembly());
 	}
-	// After entity1 = AddPhysicsEntity(...)
-
-	using namespace Component;
-
-	
-	CEVec2 worldSize{ 1.0f, 1.0f };
-
-
-	SetSpriteSheet(
-		entity1,
-		WALK_SHEET_PATH,
-		SHEET_COLS,   
-		SHEET_ROWS,   
-		worldSize
-	);
-
-
-	SpriteAnimComponent anim{};
-	anim.startFrame = 0;    
-	anim.frameCount = 1;      
-	anim.frameTime = 0.10f;
-	anim.frameIndex = 0;
-	anim.timer = 0.0f;
-	anim.flip = false;
-
-	globalECS->AddComponent<SpriteAnimComponent>(entity1, anim);
 
 	AddPhysicsEntity(
 		entity2,
@@ -239,232 +192,10 @@ void CreateRandBox() {
 		globalECS->AddComponent<Component::RigidBodyComponent>(entityId, rb_init_velocity, rb_mass, rb_restitution);
 	}
 }
+
 void UpdateMainMenu()
 {
-	if (!globalECS)
-		return;
 
-	float dt = static_cast<float>(FrameRateController::GetInstance().DT());
-	KeyframeUnity::UpdateAll(*globalECS, dt);
-
-	// --- Get components on entity1 (player in main menu) ---
-	auto* rb = globalECS->GetComponent<Component::RigidBodyComponent>(entity1);
-	auto* anim = globalECS->GetComponent<Component::SpriteAnimComponent>(entity1);
-
-	bool isMovingHoriz = false;
-
-	if (rb) {
-		CEVec3 vel = rb->getVelocity();
-		if (vel.x > 0.1f || vel.x < -0.1f)
-			isMovingHoriz = true;
-	}
-
-	// --- Z toggle: swap between the two spritesheets ---
-	bool zDown = InputManager::IsKeyPressed(Key::Z);
-
-	if (zDown && !gZWasDown) {
-		// Just pressed this frame
-		if (gCurrentSheet == PlayerSheet::Walk) {
-			gCurrentSheet = PlayerSheet::LightMode;
-
-			Component::SetSpriteSheet(
-				entity1,
-				JUMP_SHEET_PATH,             // Switch-Style-SpriteSheet
-				SHEET_COLS, SHEET_ROWS,
-				CEVec2{ 1.0f, 1.0f }
-			);
-		}
-		else {
-			gCurrentSheet = PlayerSheet::Walk;
-
-			Component::SetSpriteSheet(
-				entity1,
-				WALK_SHEET_PATH,             // Chibi-Actions-SpriteSheet
-				SHEET_COLS, SHEET_ROWS,
-				CEVec2{ 1.0f, 1.0f }
-			);
-		}
-	}
-
-	gZWasDown = zDown;
-
-	// --- Simple animation region on the current sheet ---
-	if (anim) {
-		if (isMovingHoriz) {
-			// walking: use frames 3–5 on the sheet
-			anim->startFrame = 3;
-			anim->frameCount = 3;
-		}
-		else {
-			// idle: first frame
-			anim->startFrame = 0;
-			anim->frameCount = 1;
-			anim->frameIndex = 0;
-			anim->timer = 0.0f;
-		}
-
-		// Flip sprite based on input
-		if (InputManager::IsKeyPressed(Key::A) || InputManager::IsKeyPressed(Key::Left)) {
-			anim->flip = true;
-		}
-		else if (InputManager::IsKeyPressed(Key::D) || InputManager::IsKeyPressed(Key::Right)) {
-			anim->flip = false;
-		}
-
-		Component::UpdateSpriteAnimationsECS();
-	}
-
-	// --- Keep your scale & rotate controls ---
-	Component::TransformComponent* transform =
-		globalECS->GetComponent<Component::TransformComponent>(entity1);
-
-	if (!transform)
-		return;
-
-	// SCALE UP (E)
-	if (InputManager::IsKeyPressed(Key::E)) {
-		transform->size *= 0.9f;
-	}
-
-	// SCALE DOWN (Q)
-	if (InputManager::IsKeyPressed(Key::Q)) {
-		transform->size *= 1.1f;
-	}
-
-	// ROTATE (R)
-	if (InputManager::IsKeyPressed(Key::R)) {
-		transform->rotation += 3.f;
-		if (globalECS->HasComponent<Component::ColliderComponent>(entity1)) {
-			Component::ColliderComponent* collider1{
-				globalECS->GetComponent<Component::ColliderComponent>(entity1) };
-			if (collider1->collider->type == Collision::ColliderType::OBB) {
-				Collision::OBBRect& obbTemp2 =
-					dynamic_cast<Collision::OBBRect&>(*(collider1->collider));
-				obbTemp2.updateRotation(transform->rotation);
-			}
-		}
-	}
-}
-
-/*
-void UpdateMainMenu()
-{
-	if (!globalECS)
-		return;
-
-	
-	float dt = static_cast<float>(FrameRateController::GetInstance().DT());
-	KeyframeUnity::UpdateAll(*globalECS, dt);
-
-	
-	auto* rb = globalECS->GetComponent<Component::RigidBodyComponent>(entity1);
-	auto* anim = globalECS->GetComponent<Component::SpriteAnimComponent>(entity1);
-
-	bool isMovingHoriz = false;
-	
-
-	if (rb) {
-		CEVec3 vel = rb->getVelocity();
-
-		
-		if (vel.x > 0.1f || vel.x < -0.1f)
-			isMovingHoriz = true;
-
-		
-	}
-
-
-	bool zDown = InputManager::IsKeyPressed(Key::Z);
-
-	
-	if (zDown && !gZWasDown) {
-		
-		if (gCurrentSheet == PlayerSheet::Walk) {
-			gCurrentSheet = PlayerSheet::LightMode;
-
-			
-			Component::SetSpriteSheet(
-				entity1,
-				JUMP_SHEET_PATH,
-				SHEET_COLS, SHEET_ROWS,
-				CEVec2{ 1.0f, 1.0f }
-			);
-		}
-		else {
-			gCurrentSheet = PlayerSheet::Walk;
-
-		
-			Component::SetSpriteSheet(
-				entity1,
-				WALK_SHEET_PATH,
-				SHEET_COLS, SHEET_ROWS,
-				CEVec2{ 1.0f, 1.0f }
-			);
-		}
-	}
-
-	
-	gZWasDown = zDown;
-
-
-	if (anim) {
-		if (isMovingHoriz) {
-		
-			anim->startFrame = 3;
-			anim->frameCount = 3;
-		}
-		else {
-		
-			anim->startFrame = 0;
-			anim->frameCount = 1;
-			anim->frameIndex = 0;
-			anim->timer = 0.0f;
-		}
-
-		
-		if (InputManager::IsKeyPressed(Key::A) || InputManager::IsKeyPressed(Key::Left)) {
-			anim->flip = true;  
-		}
-		else if (InputManager::IsKeyPressed(Key::D) || InputManager::IsKeyPressed(Key::Right)) {
-			anim->flip = false;  
-		}
-	
-		
-		Component::UpdateSpriteAnimationsECS();
-	}
-
-	
-
-	Component::TransformComponent* transform =
-		globalECS->GetComponent<Component::TransformComponent>(entity1);
-
-	if (!transform)
-		return;
-
-	// SCALE UP
-	if (InputManager::IsKeyPressed(Key::E)) {
-		transform->size *= 0.9f;
-	}
-
-	// SCALE DOWN
-	if (InputManager::IsKeyPressed(Key::Q)) {
-		transform->size *= 1.1f;
-	}
-
-	// ROTATE
-	if (InputManager::IsKeyPressed(Key::R)) {
-		transform->rotation += 3.f;
-		if (globalECS->HasComponent<Component::ColliderComponent>(entity1)) {
-			Component::ColliderComponent* collider1{
-				globalECS->GetComponent<Component::ColliderComponent>(entity1) };
-			if (collider1->collider->type ==
-				Collision::ColliderType::OBB) {
-				Collision::OBBRect& obbTemp2 =
-					dynamic_cast<Collision::OBBRect&>(*(collider1->collider));
-				obbTemp2.updateRotation(transform->rotation);
-			}
-		}
-	}
 	//Component::RigidBodyComponent* rigidBody{ globalECS->GetComponent<Component::RigidBodyComponent>(entity1) };
 	//Component::TransformComponent* transform{ globalECS->GetComponent<Component::TransformComponent>(entity1) };
 
@@ -515,7 +246,7 @@ void UpdateMainMenu()
 			}
 		}
 	}*/
-
+}
 
 void RenderMainMenu()
 {
@@ -525,7 +256,6 @@ void RenderMainMenu()
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 #endif
-	Component::RenderSpriteAnimationsECS();
 	//Scene::RenderScene(*globalECS);
 }
 

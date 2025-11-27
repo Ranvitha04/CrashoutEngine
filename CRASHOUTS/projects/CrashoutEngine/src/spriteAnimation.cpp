@@ -336,39 +336,28 @@ namespace Component {
     */
 
     void Animator::setupDuckAnimations() {
-
-        // ----- existing states -----
+        
+        // Row 1: idle_normal (2 frames) = frames 0-1
+        // Row 2: walk_normal (6 frames) = frames 6-11  
+        // Row 3: idle_bounce (4 frames) = frames 12-15
+        // Row 4: walk_bounce (6 frames) = frames 18-23 
+        
+        // idle_normal: 2 frames (row 1, frames 0-1) - Slower for breathing effect
         addAnimationState("idle_normal", AnimationState(0, 2, 0.8f, true));
+        
+        // walk_normal: 6 frames (row 2, frames 6-11) - Faster for smooth walking
         addAnimationState("walk_normal", AnimationState(6, 6, 0.12f, true));
+        
+        // idle_bounce: 4 frames (row 3, frames 12-15) - Medium speed for bounce effect
         addAnimationState("idle_bounce", AnimationState(12, 4, 0.15f, true));
+        
+        // walk_bounce: Use all 6 frames (row 4, frames 18-23) - Smooth bouncy walk
         addAnimationState("walk_bounce", AnimationState(18, 6, 0.1f, true));
-
-        // ----- NEW: light-mode states on a 3x3 sheet (frames 1–7) -----
-        // 3x3 -> indices:
-        // row0: 0 1 2
-        // row1: 3 4 5
-        // row2: 6 7 8
-
-        // idle_light: just frame 1
-        addAnimationState("idle_light", AnimationState(
-            1,      // startIndex
-            1,      // frameCount (only frame 1)
-            0.8f,   // slower, like idle_normal
-            true    // loop
-        ));
-
-        // walk_light: frames 1..7 (7 frames total)
-        addAnimationState("walk_light", AnimationState(
-            1,      // start at frame 1
-            7,      // use frames 1,2,3,4,5,6,7
-            0.12f,  // walking speed
-            true
-        ));
-
-        // default state
+        
+        // Set default animation
+        
         setAnimationState("idle_normal");
     }
-
 }
 
 namespace Component {

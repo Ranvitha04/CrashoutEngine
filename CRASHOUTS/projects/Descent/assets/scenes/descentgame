@@ -19,7 +19,7 @@
             },
             "tilemap": {
                 "tileSize": 32,
-                "activeAsset": "tilemaps/Platform",
+                "activeAsset": "tilemaps/Lava_Platform",
                 "tileAssetNames": [
                     "Rock",
                     "Lava_Platform",
@@ -7554,7 +7554,7 @@
                     {
                         "x": 29,
                         "y": -4,
-                        "asset": "tilemaps/Rock"
+                        "asset": ""
                     },
                     {
                         "x": 29,
@@ -7564,7 +7564,7 @@
                     {
                         "x": 29,
                         "y": -2,
-                        "asset": ""
+                        "asset": "tilemaps/Rock"
                     },
                     {
                         "x": 29,
@@ -7649,7 +7649,7 @@
                     {
                         "x": 30,
                         "y": -4,
-                        "asset": "tilemaps/Rock"
+                        "asset": ""
                     },
                     {
                         "x": 30,
@@ -7659,7 +7659,7 @@
                     {
                         "x": 30,
                         "y": -2,
-                        "asset": ""
+                        "asset": "tilemaps/Rock"
                     },
                     {
                         "x": 30,
@@ -7744,7 +7744,7 @@
                     {
                         "x": 31,
                         "y": -2,
-                        "asset": ""
+                        "asset": "tilemaps/Rock"
                     },
                     {
                         "x": 31,
@@ -7859,7 +7859,7 @@
                     {
                         "x": 32,
                         "y": -2,
-                        "asset": ""
+                        "asset": "tilemaps/Rock"
                     },
                     {
                         "x": 32,
@@ -7974,7 +7974,7 @@
                     {
                         "x": 33,
                         "y": -2,
-                        "asset": ""
+                        "asset": "tilemaps/Rock"
                     },
                     {
                         "x": 33,
@@ -8124,7 +8124,7 @@
                     {
                         "x": 34,
                         "y": -2,
-                        "asset": ""
+                        "asset": "tilemaps/Rock"
                     },
                     {
                         "x": 34,
@@ -8309,7 +8309,7 @@
                     {
                         "x": 35,
                         "y": -2,
-                        "asset": ""
+                        "asset": "tilemaps/Rock"
                     },
                     {
                         "x": 35,
@@ -8674,7 +8674,7 @@
                     {
                         "x": 37,
                         "y": -3,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": "tilemaps/Rock"
                     },
                     {
                         "x": 37,
@@ -12623,13 +12623,18 @@
                     },
                     {
                         "x": 61,
+                        "y": -35,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 61,
                         "y": -34,
                         "asset": "tilemaps/Rock"
                     },
                     {
                         "x": 61,
                         "y": -33,
-                        "asset": "tilemaps/Rock"
+                        "asset": ""
                     },
                     {
                         "x": 61,
@@ -12843,13 +12848,28 @@
                     },
                     {
                         "x": 62,
+                        "y": -43,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 62,
+                        "y": -42,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 62,
+                        "y": -35,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 62,
                         "y": -34,
                         "asset": "tilemaps/Rock"
                     },
                     {
                         "x": 62,
                         "y": -33,
-                        "asset": "tilemaps/Rock"
+                        "asset": ""
                     },
                     {
                         "x": 62,
@@ -14308,7 +14328,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": -32.37535858154297,
-                    "y": 9.414337158203125,
+                    "y": 6.297464370727539,
                     "z": 1.0
                 },
                 "size": {
@@ -14317,7 +14337,7 @@
                 }
             },
             "rigidbody": {
-                "mass": 4.0,
+                "mass": 4.5,
                 "restitutionCoeff": 0.0,
                 "maximumVelocity": {
                     "x": 0.0,
@@ -14334,7 +14354,7 @@
                 "helperType": 2,
                 "position": {
                     "x": -32.37535858154297,
-                    "y": 10.414337158203125,
+                    "y": 7.297464370727539,
                     "z": 1.0
                 },
                 "offset": {
@@ -14344,12 +14364,12 @@
                 },
                 "min": {
                     "x": -43.22545623779297,
-                    "y": -20.086151123046876,
+                    "y": -23.203025817871095,
                     "z": 1.0
                 },
                 "max": {
                     "x": -21.52526092529297,
-                    "y": 40.914825439453128,
+                    "y": 37.79795455932617,
                     "z": 1.0
                 },
                 "rotation": 0.0
@@ -16997,6 +17017,7 @@
                     {
                         "className": "PressurePlate",
                         "fields": {
+                            "decrease": 5.0,
                             "wallName": "Wall"
                         }
                     }
@@ -17055,7 +17076,11 @@
                     {
                         "className": "MovingWall",
                         "fields": {
-                            "PlatesActive": 0
+                            "PlatesActive": 0,
+                            "PlatesRequired": 1,
+                            "MoveRight": true,
+                            "MoveDist": 100.0,
+                            "MoveSpeed": 30.0
                         }
                     }
                 ]
@@ -17638,7 +17663,11 @@
                     {
                         "className": "MovingWall",
                         "fields": {
-                            "PlatesActive": 0
+                            "PlatesActive": 0,
+                            "PlatesRequired": 1,
+                            "MoveRight": true,
+                            "MoveDist": 150.0,
+                            "MoveSpeed": 30.0
                         }
                     }
                 ]
@@ -17772,6 +17801,7 @@
                     {
                         "className": "PressurePlate",
                         "fields": {
+                            "decrease": 5.0,
                             "wallName": "Wall2"
                         }
                     }
@@ -17867,6 +17897,7 @@
                     {
                         "className": "PressurePlate",
                         "fields": {
+                            "decrease": 5.0,
                             "wallName": "Wall3"
                         }
                     }
@@ -17925,7 +17956,11 @@
                     {
                         "className": "MovingWall",
                         "fields": {
-                            "PlatesActive": 0
+                            "PlatesActive": 0,
+                            "PlatesRequired": 2,
+                            "MoveRight": true,
+                            "MoveDist": 150.0,
+                            "MoveSpeed": 30.0
                         }
                     }
                 ]
@@ -18064,6 +18099,7 @@
                     {
                         "className": "PressurePlate",
                         "fields": {
+                            "decrease": 5.0,
                             "wallName": "Wall3"
                         }
                     }
@@ -18159,6 +18195,7 @@
                     {
                         "className": "PressurePlate",
                         "fields": {
+                            "decrease": 5.0,
                             "wallName": "Wall4"
                         }
                     }
@@ -18254,6 +18291,7 @@
                     {
                         "className": "PressurePlate",
                         "fields": {
+                            "decrease": 5.0,
                             "wallName": "Wall5"
                         }
                     }
@@ -18349,6 +18387,7 @@
                     {
                         "className": "PressurePlate",
                         "fields": {
+                            "decrease": 5.0,
                             "wallName": "Wall6"
                         }
                     }
@@ -18492,7 +18531,11 @@
                     {
                         "className": "MovingWall",
                         "fields": {
-                            "PlatesActive": 0
+                            "PlatesActive": 0,
+                            "PlatesRequired": 1,
+                            "MoveRight": false,
+                            "MoveDist": 120.0,
+                            "MoveSpeed": 30.0
                         }
                     }
                 ]
@@ -18926,7 +18969,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 484.43231201171877,
+                    "x": 486.5945129394531,
                     "y": -1626.6378173828126,
                     "z": 0.0
                 },
@@ -18952,7 +18995,7 @@
             "collider": {
                 "helperType": 1,
                 "position": {
-                    "x": 484.43231201171877,
+                    "x": 486.5945129394531,
                     "y": -1626.6378173828126,
                     "z": 0.0
                 },
@@ -18962,12 +19005,12 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 420.4322509765625,
+                    "x": 422.59442138671877,
                     "y": -1634.6378173828126,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 548.432373046875,
+                    "x": 550.5946044921875,
                     "y": -1618.6378173828126,
                     "z": 0.0
                 }
@@ -19006,7 +19049,14 @@
                 "scripts": [
                     {
                         "className": "WeightedPlatform",
-                        "fields": {}
+                        "fields": {
+                            "IsMoving": true,
+                            "MoveRight": true,
+                            "MovementDistance": 550.0,
+                            "MoveSpeed": 20.0,
+                            "VerticalSpeed": 50.0,
+                            "maxDrop": 50.0
+                        }
                     }
                 ]
             }
@@ -19063,7 +19113,11 @@
                     {
                         "className": "MovingWall",
                         "fields": {
-                            "PlatesActive": 0
+                            "PlatesActive": 0,
+                            "PlatesRequired": 1,
+                            "MoveRight": false,
+                            "MoveDist": 130.0,
+                            "MoveSpeed": 30.0
                         }
                     }
                 ]
@@ -19160,7 +19214,11 @@
                     {
                         "className": "MovingWall",
                         "fields": {
-                            "PlatesActive": 0
+                            "PlatesActive": 0,
+                            "PlatesRequired": 1,
+                            "MoveRight": false,
+                            "MoveDist": 75.0,
+                            "MoveSpeed": 30.0
                         }
                     }
                 ]
@@ -19804,8 +19862,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1070.7742919921876,
-                    "y": -783.498291015625,
+                    "x": 1066.6007080078126,
+                    "y": -778.0928344726563,
                     "z": 0.0
                 },
                 "size": {
@@ -19830,8 +19888,8 @@
             "collider": {
                 "helperType": 1,
                 "position": {
-                    "x": 1070.7742919921876,
-                    "y": -783.498291015625,
+                    "x": 1066.6007080078126,
+                    "y": -778.0928344726563,
                     "z": 0.0
                 },
                 "offset": {
@@ -19840,13 +19898,13 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 933.2742919921875,
-                    "y": -791.498291015625,
+                    "x": 929.1007080078125,
+                    "y": -786.0928344726563,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 1208.2742919921876,
-                    "y": -775.498291015625,
+                    "x": 1204.1007080078126,
+                    "y": -770.0928344726563,
                     "z": 0.0
                 }
             },
@@ -19884,7 +19942,14 @@
                 "scripts": [
                     {
                         "className": "WeightedPlatform",
-                        "fields": {}
+                        "fields": {
+                            "IsMoving": true,
+                            "MoveRight": false,
+                            "MovementDistance": 275.0,
+                            "MoveSpeed": 50.0,
+                            "VerticalSpeed": 50.0,
+                            "maxDrop": 50.0
+                        }
                     }
                 ]
             }

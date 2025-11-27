@@ -288,6 +288,11 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path)
                 const auto& sJ = prefabs["script"];
 
              
+                if (sJ.HasMember("className") && sJ["className"].IsString()) {
+                    scriptClassNames.emplace_back(sJ["className"].GetString());
+                }
+
+             
                 if (sJ.HasMember("scripts") && sJ["scripts"].IsArray()) {
                     for (auto& sVal : sJ["scripts"].GetArray()) {
                         if (!sVal.IsObject()) continue;
@@ -296,13 +301,9 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path)
                         }
                     }
                 }
-                else if (sJ.HasMember("className") && sJ["className"].IsString()) {
-                    scriptClassNames.emplace_back(sJ["className"].GetString());
-                }
 
                 if (sJ.HasMember("entityID") && sJ["entityID"].IsUint())
                     scriptEntityID = sJ["entityID"].GetUint();
-
 
                 hasScriptComponent = !scriptClassNames.empty();
             }
@@ -463,7 +464,6 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path)
                 {
                     auto aabb = MakeCenteredAABB3(transform.position, width, height);
                     e.AddComponent<ColliderComponent>(entitty, ColliderComponent{ std::move(aabb) });
-
                 }
 
                 // Text

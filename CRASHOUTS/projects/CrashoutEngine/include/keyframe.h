@@ -5,7 +5,7 @@
 #include <functional>
 #include <algorithm>
 
-
+// ---- Forward minimal engine types (adjust if your names differ)
 namespace CrashoutsEngine {
     using Entity = unsigned int;
     class ECS;
@@ -26,19 +26,17 @@ struct AnimationCurve {
     std::vector<KFKey> keys;  // keep time-sorted
 
     void  Add(const KFKey& k);
-    void RemoveAt(size_t index);
-    void RemoveNear(float time, float eps = 0.01f);
     float Evaluate(float t) const;      // evaluate without wrapping
     float StartTime() const { return keys.empty() ? 0.f : keys.front().time; }
     float EndTime()   const { return keys.empty() ? 0.f : keys.back().time; }
 };
 
-
+// Which property a curve controls (expand as needed)
 enum class KFProperty {
     PosX, PosY, PosZ,
     RotZ,
     ScaleX, ScaleY,
-    SpriteIndex   
+    SpriteIndex   // treated as integer-ish; rounded at apply time
 };
 
 struct KFBinding {

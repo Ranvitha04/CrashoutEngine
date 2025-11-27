@@ -1,12 +1,10 @@
-﻿/*!
+/*!
 @file        animatorbindings.cpp
 @author
 @date
 @brief       Definition of animator bindings functions
 */
 
- 
-#include "CEVec2.h"       
 #include "animatorbindings.h"
 #include "spriteAnimation.h"
 #include "mono/metadata/loader.h"
@@ -17,14 +15,6 @@
 using namespace CrashoutsEngine;
 using namespace Component;
 
-namespace Component
-{
-    void SetSpriteSheet(CrashoutsEngine::Entity e,
-        const std::string& assetName,
-        int cols,
-        int rows,
-        CEVec2 worldSize);
-}
 namespace
 {
     // get Animator* from entity
@@ -34,26 +24,6 @@ namespace
         if (!ecs) return nullptr;
         return ecs->GetComponent<Animator>(entityID);
     }
-    // C# to C++: change the SpriteSheet for an entity
-    static void InternalSetSpriteSheet(uint32_t id, MonoString* monoPath, int cols, int rows, float worldWidth, float worldHeight)
-    {
-        if (!monoPath)
-            return;
-
-        char* cstr = mono_string_to_utf8(monoPath);
-        std::string path = cstr ? cstr : "";
-        mono_free(cstr);
-
-        if (path.empty())
-            return;
-
-        CEVec2 worldSize{ worldWidth, worldHeight };
-
-       
-        Component::SetSpriteSheet(
-            static_cast<CrashoutsEngine::Entity>(id),path,cols, rows, worldSize      );
-    }
-
 
 	// internal calls
 
@@ -130,6 +100,6 @@ void CrashoutsEngine::Bindings::RegisterAnimatorBindings()
     mono_add_internal_call("CrashoutsEngine.Animator::InternalSetFlip", (const void*)InternalSetFlip);
     mono_add_internal_call("CrashoutsEngine.Animator::InternalGetCurrentState", (const void*)InternalGetCurrentState);
     mono_add_internal_call("CrashoutsEngine.Animator::InternalGetBool", (const void*)InternalGetBool);
-    mono_add_internal_call("CrashoutsEngine.Animator::InternalSetSpriteSheet", (const void*)InternalSetSpriteSheet);
+
 
 }
