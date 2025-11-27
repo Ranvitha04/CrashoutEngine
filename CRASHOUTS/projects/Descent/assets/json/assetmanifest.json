@@ -1245,6 +1245,10 @@
             "path": "UI\\Pressure Plate.png"
         },
         {
+            "name": "startmenu_BG",
+            "path": "UI\\startmenu_BG.png"
+        },
+        {
             "name": "team logo",
             "path": "UI\\team logo.png"
         },

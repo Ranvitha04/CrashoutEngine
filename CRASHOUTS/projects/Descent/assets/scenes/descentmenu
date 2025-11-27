@@ -174,7 +174,8 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "MenuButtons"
+                        "className": "MenuButtons",
+                        "fields": {}
                     }
                 ]
             },
@@ -295,7 +296,8 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "MenuButtons"
+                        "className": "MenuButtons",
+                        "fields": {}
                     }
                 ]
             },
@@ -416,7 +418,8 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "MenuButtons"
+                        "className": "MenuButtons",
+                        "fields": {}
                     }
                 ]
             },
