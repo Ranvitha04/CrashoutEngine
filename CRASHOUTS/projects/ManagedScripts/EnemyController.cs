@@ -76,5 +76,15 @@ namespace CrashoutsEngine
                 rb.AddForce(new CEVec3(0f, 300f, 0f) * rb.GetMass());
             }
         }
+
+        public override void FixedUpdate()
+        {
+            // Physics update logic for the enemy
+        }   
+
+        public override void OnDestroy()
+        {
+            // Cleanup logic for the enemy
+        }
     }
 }

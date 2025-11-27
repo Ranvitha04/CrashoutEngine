@@ -24,6 +24,32 @@
 
 namespace CrashoutsEngine
 {
+
+    // Helper to find a specific C# script instance on an entity
+    static MonoObject* InternalGetScript(uint32_t entityID, MonoString* scriptName) {
+        auto* ecs = ECS::getInstance();
+
+        // 1. Check if entity has scripts
+        if (!ecs->HasComponent<ScriptComponent>(entityID)) return nullptr;
+
+        auto* sc = ecs->GetComponent<ScriptComponent>(entityID);
+        if(!sc) return nullptr;
+        
+        // 2. Convert C# string to std::string
+        char* cStr = mono_string_to_utf8(scriptName);
+        std::string name(cStr);
+        mono_free(cStr);
+
+        // 3. Search the vector for the matching class name
+        for (auto& instance : sc->Scripts) {
+            if (instance.ClassName == name) {
+                return instance.Instance; // Return the raw MonoObject*
+            }
+        }
+
+        return nullptr;
+    }
+
     void ScriptSystem::RegisterAllBindings()
 	{
         Bindings::RegisterTransformBindings();
@@ -40,7 +66,10 @@ namespace CrashoutsEngine
         Bindings::RegisterLayerBindings();
         Bindings::RegisterDebugBindings();
         Bindings::RegisterAIBindings();
-	}
+
+        mono_add_internal_call("CrashoutsEngine.InternalCalls::GetScript", (const void*)InternalGetScript);    
+    }
+
 
     void ScriptSystem::InitializeAll(MonoDomain* domain, MonoAssembly* assembly)
     {

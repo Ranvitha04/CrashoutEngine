@@ -11,6 +11,7 @@
 #include "assetmanager.h"
 #include "glapp.h"
 #include "engine.h"
+#include "audioSystem.h"
 
 // Mono headers
 #include "mono/metadata/loader.h"
@@ -36,6 +37,8 @@ namespace
 
         g_PendingSceneName = nameString;
         g_IsSceneLoadPending = true;
+        CrashoutsEngine::Audio::AudioSystem::instance().stopMusicGroup(); // Stop FMOD Studio
+        CrashoutsEngine::Audio::AudioSystem::instance().stopSFXGroup();
 
         std::cout << "[Engine] Scene Load Scheduled: " << nameString << std::endl;
     }

@@ -1627,6 +1627,19 @@ namespace UI { // --------------------------------------------------------------
         ImGui::SameLine(); ImGui::Checkbox("All colliders", &ui.drawAllColliders); 
         ImGui::SameLine(); ImGui::Checkbox("QuadTree", &ui.drawQuadTree);
 
+        ImGui::Separator();
+
+        Collision::CollisionHandler& collisionHandler{ Collision::CollisionHandler::GetInstance() };
+
+        f32 newMin[2]{ collisionHandler.quadTree.boundary.min.x, collisionHandler.quadTree.boundary.min.y };
+        f32 newMax[2]{ collisionHandler.quadTree.boundary.max.x, collisionHandler.quadTree.boundary.max.y };
+
+        if (ImGui::DragFloat2("Min", newMin)) {
+            collisionHandler.quadTree.Resize(Collision::AABBRect{ CEVec3{newMin[0], newMin[1], 0.f}, CEVec3{newMax[0], newMax[1], 0.f} });
+        } if (ImGui::DragFloat2("Max", newMax)) {
+            collisionHandler.quadTree.Resize(Collision::AABBRect{ CEVec3{newMin[0], newMin[1], 0.f}, CEVec3{newMax[0], newMax[1], 0.f} });
+        }
+
         // When a way to implement the velocity line happens
         // ImGui::SameLine(); ImGui::Checkbox("Velocities", &ui.drawVelocities);
 
@@ -2008,20 +2021,22 @@ namespace UI { // --------------------------------------------------------------
             if (ImGui::Button("PLAY", ImVec2(70, 25))) {
                 if (engineState == EngineState::STOP && !currSceneName.empty()) Serialization::SaveScenes(currSceneName);
                 engineState = EngineState::PLAY;
+
+                CrashoutsEngine::Audio::AudioSystem::instance().setPaused(false);
+
                 CrashoutsEngine::RenderCamera::engineCamera.SetPostiion(CEVec3{ 0.f, 0.f, 0.f });
                 CrashoutsEngine::RenderCamera::engineCamera.SetZoom(1.f);
                 CrashoutsEngine::RenderCamera::engineCamera.SetTargetAR(16.0f / 9.0f);
                 CrashoutsEngine::RenderCamera::engineCamera.UpdateMatrices(Settings::GetScreenWidth(), Settings::GetScreenHeight());
 
-                if (MonoManager::GetDomain() && MonoManager::GetAssembly()) {
-                    CrashoutsEngine::ScriptSystem::InitializeAll( MonoManager::GetDomain(), MonoManager::GetAssembly() );
-                }
             }
             ImGui::SameLine();
             // Pause
             if (ImGui::Button("PAUSE", ImVec2(70, 25))) {
                 if (engineState == EngineState::STOP && !currSceneName.empty()) Serialization::SaveScenes(currSceneName);
                 engineState = EngineState::PAUSE;
+
+                CrashoutsEngine::Audio::AudioSystem::instance().setPaused(true);
             }
             ImGui::SameLine();
             // Stop
@@ -2037,10 +2052,9 @@ namespace UI { // --------------------------------------------------------------
                 engineState = EngineState::STOP;
                 
 				CrashoutsEngine::Audio::AudioSystem::instance().stopAll(true); // Stop FMOD Studio
+                CrashoutsEngine::Audio::AudioSystem::instance().setPaused(false);
+                CrashoutsEngine::Audio::AudioSystem::instance().stopMusicGroup(); // <-- Seems to work better than the above
 
-                if (MonoManager::GetDomain() && MonoManager::GetAssembly()) {
-                    CrashoutsEngine::ScriptSystem::DestroyAll();
-                }
             }
             ImGui::SameLine();
             // SAVE
@@ -2089,6 +2103,7 @@ namespace UI { // --------------------------------------------------------------
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0)); // No padding
         // Begin the ImGUI window, enable Docking
         bool open = ImGui::Begin( "Game Viewport", nullptr, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse );
+        static bool allowGizmoInPlay = false;
 
         if (open) {
 
@@ -2113,6 +2128,12 @@ namespace UI { // --------------------------------------------------------------
             if (ImGui::Checkbox("Local", &isLocal)) g_gizmoMode = isLocal ? ImGuizmo::LOCAL : ImGuizmo::WORLD;
             ImGui::SameLine();
             ImGui::Checkbox("Snap", &g_snapOn);
+
+            ImGui::SameLine();
+            ImGui::SeparatorEx(ImGuiSeparatorFlags_Vertical);
+            ImGui::SameLine();
+            ImGui::Checkbox("Allow in Play", &allowGizmoInPlay);
+
             ImGui::PopStyleVar();
 
             ImGui::Separator();
@@ -2381,7 +2402,8 @@ namespace UI { // --------------------------------------------------------------
             // END OF TILEMAP
             
             // 5) if we have a selected entity, let gizmo edit its TRS
-            if (selected && ecs.HasComponent<Component::TransformComponent>(selected))
+            bool isPlaying = (engineState == EngineState::PLAY || engineState == EngineState::PAUSE);
+            if ((!isPlaying || allowGizmoInPlay) && selected && ecs.HasComponent<Component::TransformComponent>(selected))
             {
                 Entity root = CrashoutsEngine::GetRoot(ecs, selected);
 
@@ -2845,10 +2867,9 @@ namespace UI { // --------------------------------------------------------------
             if(engineState == EngineState::STOP) thicknessRatio = CrashoutsEngine::RenderCamera::engineCamera.GetZoom();
             else thicknessRatio = CrashoutsEngine::RenderCamera::gameCamera.GetZoom();
 
-            CollisionGizmos::DrawAllColliders(ecs, &collisions, ui.overlayThickness / thicknessRatio);
-            if (ui.drawQuadTree) {
-                Collision::CollisionHandler::GetInstance().quadTree.Draw();
-            }
+            if(ui.drawAllColliders) CollisionGizmos::DrawAllColliders(ecs, &collisions, ui.overlayThickness / thicknessRatio);
+            if (ui.drawQuadTree) Collision::CollisionHandler::GetInstance().quadTree.Draw();
+            
             //CollisionGizmos::DrawContactsAndNormals(collisions, 0.25f, ui.overlayThickness); //Removed for now, will need to calculate the collision pair for normals properly
         }
         collisions = std::vector<Collision::CollisionEvent>{};

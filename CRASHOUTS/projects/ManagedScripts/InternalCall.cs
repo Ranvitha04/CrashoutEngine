@@ -36,6 +36,14 @@ namespace CrashoutsEngine
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal static extern bool EntityHasCollider(uint entityID);
 
+        // Inter Script Communications
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern object GetScript(uint entityID, string scriptName);
+
+        // Find Entity
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern uint FindEntityByName(string name);
+
         //time
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal static extern double TimeGetDT();
@@ -90,7 +98,7 @@ namespace CrashoutsEngine
         internal static extern void Audio_PlayMusicFileTagged(string key, string path, bool loop);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        internal static extern void Audio_PlaySFXFileTagged(string key, string path);
+        internal static extern void Audio_PlaySFXFileTagged(string key, string path, bool loop);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal static extern void Audio_StopTagged(string key);

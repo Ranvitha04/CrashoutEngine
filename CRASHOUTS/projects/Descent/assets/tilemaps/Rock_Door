@@ -1,0 +1,20 @@
+{
+    "layerMask": 2,
+    "tilemap": [
+        {
+            "texAssetName": "spritesheet\\Rock\\Rock_34.png",
+            "colliderType": "ColliderType::AABB",
+            "ruleBitMap": 10
+        },
+        {
+            "texAssetName": "spritesheet\\Rock\\Rock_33.png",
+            "colliderType": "ColliderType::AABB",
+            "ruleBitMap": 2
+        },
+        {
+            "texAssetName": "spritesheet\\Rock\\Rock_35.png",
+            "colliderType": "ColliderType::AABB",
+            "ruleBitMap": 8
+        }
+    ]
+}

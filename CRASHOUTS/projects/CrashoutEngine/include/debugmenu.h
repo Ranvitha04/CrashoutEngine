@@ -61,7 +61,7 @@ namespace UI {
         bool showAnimation = true; 
         bool showSpriteSheet = true;
 
-        bool drawAllColliders = true;   // draw wireframes for every collider, not just colliding ones
+        bool drawAllColliders = false;   // draw wireframes for every collider, not just colliding ones
         bool drawVelocities = false;    // draw velocity arrows if RigidBodyComponent exists
         float overlayThickness = .35f;  // line thickness for wireframes
         float fontScale = 1.0f;         // Set the font scale

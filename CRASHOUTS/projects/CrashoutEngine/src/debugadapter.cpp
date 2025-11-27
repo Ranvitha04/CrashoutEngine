@@ -24,6 +24,7 @@ runtime-extensible and project-agnostic.
 #include "debugdefaults.h"
 #include "debugAssetLoader.h"
 #include "changevaluecommand.h"
+#include "scriptvalidation.h"
 #include "undomanager.h"
 
 /*                                                         component includes
@@ -60,6 +61,10 @@ runtime-extensible and project-agnostic.
 #include "layercomponent.h"
 #include "transformentitycommand.h"
 #include <memory>
+
+// FOR MONO SCRIPTING
+#include <mono/metadata/reflection.h>
+#include <mono/metadata/attrdefs.h>
 
 
 using namespace CrashoutsEngine;
@@ -433,6 +438,19 @@ namespace {
 				if (ImGui::DragFloat("Inertia", &inertia)) {
 					rb->setInertia(inertia);
 				}
+
+				/*Static Friction*/
+				f32 staticFric{ rb->staticFriction };
+				if (ImGui::DragFloat("Static Friction", &staticFric)) {
+					rb->staticFriction = staticFric;
+				}
+
+				/*Dynamic Friction*/
+				f32 dynamicFric{ rb->dynamicFriction };
+				if (ImGui::DragFloat("Dynamic Friction", &dynamicFric)) {
+					rb->dynamicFriction = dynamicFric;
+				}
+
 				if (ecs.HasComponent<Component::ColliderComponent>(e)) {
 					Component::ColliderComponent* collider{ ecs.GetComponent<Component::ColliderComponent>(e) };
 					if (ImGui::Button("Calculate Inertia##rb")) rb->setInertia(collider->collider->calculateInertia(rb->getMass())); /*For rotational stuff*/
@@ -1542,12 +1560,36 @@ namespace {
 				if (inst.ClassName.size() < sizeof(buf))
 					std::memcpy(buf, inst.ClassName.data(), inst.ClassName.size());
 
-				// Plain typing still works
+				static std::string s_lastScriptError; // error message storage
+				std::string oldClass = inst.ClassName; // keep previous valid name
+
 				if (ImGui::InputText("Class Name", buf, sizeof(buf))) {
-					inst.ClassName = buf;
-					if (!inst.ClassName.empty() && monoReady) {
-						sc->Destroy();
-						sc->Initialize(MonoManager::GetDomain(), MonoManager::GetAssembly());
+					std::string newName = buf;
+
+					// Validate using your new helper
+					if (!newName.empty() &&
+						!CrashoutsEngine::IsValidScriptBehaviourClass(newName))
+					{
+						s_lastScriptError =
+							"The class '" + newName +
+							"' is not a valid script.\n\n"
+							"Scripts must contain [ScriptBehaviour] and match the filename.";
+
+						// revert textbox value to old valid name
+						std::strncpy(buf, oldClass.c_str(), sizeof(buf) - 1);
+						buf[sizeof(buf) - 1] = '\0';
+
+						ImGui::OpenPopup("Script Error");
+					}
+					else {
+						// Accept new name
+						inst.ClassName = newName;
+
+						// Reinitialize if valid and Mono is ready
+						if (!inst.ClassName.empty() && monoReady) {
+							sc->Destroy();
+							sc->Initialize(MonoManager::GetDomain(), MonoManager::GetAssembly());
+						}
 					}
 				}
 
@@ -1674,6 +1716,84 @@ namespace {
 					sc->RemoveScript(i);
 					ImGui::PopID();
 					break; // list changed
+				}
+
+				if (inst.Instance && inst.Class) {
+					ImGui::Indent();
+					ImGui::TextDisabled("Properties:");
+
+					void* iter = nullptr;
+					while (MonoClassField* field = mono_class_get_fields(inst.Class, &iter)) {
+						const char* fieldName = mono_field_get_name(field);
+						uint32_t flags = mono_field_get_flags(field);
+
+						// 1. Filter: Must NOT be static
+						if (flags & MONO_FIELD_ATTR_STATIC) continue;
+
+						// 2. Filter: Must be Public OR have [SerializeField]
+						bool isPublic = (flags & MONO_FIELD_ATTR_PUBLIC);
+						bool hasAttribute = false;
+
+						// Look up the attribute class (Cache this static pointer for speed!)
+						static MonoClass* attrClass = mono_class_from_name(
+							MonoManager::GetImage(), "CrashoutsEngine", "SerializeField");
+
+						if (attrClass) {
+							// Get all attributes on this specific field
+							MonoCustomAttrInfo* attrInfo = mono_custom_attrs_from_field(inst.Class, field);
+							if (attrInfo) {
+								// Check if our specific attribute is present
+								hasAttribute = mono_custom_attrs_has_attr(attrInfo, attrClass);
+								mono_custom_attrs_free(attrInfo); // Important: Clean up!
+							}
+						}
+
+						if (isPublic || hasAttribute) { // || hasAttribute
+							MonoType* type = mono_field_get_type(field);
+							int typeEnum = mono_type_get_type(type);
+
+							// Integer
+							if (typeEnum == MONO_TYPE_I4) {
+								int val = 0;
+								mono_field_get_value(inst.Instance, field, &val);
+								if (ImGui::DragInt(fieldName, &val)) {
+									mono_field_set_value(inst.Instance, field, &val);
+								}
+							}
+							// Float
+							else if (typeEnum == MONO_TYPE_R4) {
+								float val = 0.0f;
+								mono_field_get_value(inst.Instance, field, &val);
+								if (ImGui::DragFloat(fieldName, &val, 0.1f)) {
+									mono_field_set_value(inst.Instance, field, &val);
+								}
+							}
+							// Boolean
+							else if (typeEnum == MONO_TYPE_BOOLEAN) {
+								bool val = false;
+								mono_field_get_value(inst.Instance, field, &val);
+								if (ImGui::Checkbox(fieldName, &val)) {
+									mono_field_set_value(inst.Instance, field, &val);
+								}
+							}
+							// String
+							else if (typeEnum == MONO_TYPE_STRING) {
+								MonoString* monoStr = nullptr;
+								mono_field_get_value(inst.Instance, field, &monoStr);
+								char strBuf[128] = "";
+								if (monoStr) {
+									char* raw = mono_string_to_utf8(monoStr);
+									strncpy(strBuf, raw, 127);
+									mono_free(raw);
+								}
+								if (ImGui::InputText(fieldName, strBuf, 128)) {
+									MonoString* newStr = mono_string_new(MonoManager::GetDomain(), strBuf);
+									mono_field_set_value(inst.Instance, field, newStr);
+								}
+							}
+						}
+					}
+					ImGui::Unindent();
 				}
 
 				ImGui::PopID();

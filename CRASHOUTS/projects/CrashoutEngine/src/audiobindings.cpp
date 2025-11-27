@@ -34,12 +34,13 @@ namespace
         );
     }
 
-    static void ICALL_Audio_PlaySFXFileTagged(MonoString* key, MonoString* path)
+    static void ICALL_Audio_PlaySFXFileTagged(MonoString* key, MonoString* path, mono_bool loop)
     {
         auto& audio = AudioSystem::instance();
         audio.playSFXFileTagged(
             MonoToStdString(key),
-            MonoToStdString(path)
+            MonoToStdString(path),
+            loop != 0
         );
     }
 

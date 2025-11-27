@@ -72,6 +72,8 @@ namespace CrashoutsEngine
             script.MethodUpdate = mono_class_get_method_from_name(script.Class, "Update", 0);
             // Cache FixedUpdate()
             script.MethodFixedUpdate = mono_class_get_method_from_name(script.Class, "FixedUpdate", 0);
+			// Cache OnDestroy()
+			script.MethodOnDestroy = mono_class_get_method_from_name(script.Class, "OnDestroy", 0);
 
 
             if (script.MethodStart)
@@ -101,6 +103,15 @@ namespace CrashoutsEngine
                 std::cout << "[Mono] No FixedUpdate() in " << script.ClassName << '\n';
             }
 
+            if (script.MethodOnDestroy)
+            {
+                std::cout << "[Mono] Found OnDestroy() for " << script.ClassName << '\n';
+            }
+            else
+            {
+                std::cout << "[Mono] No OnDestroy() in " << script.ClassName << '\n';
+			}
+
             std::cout << "[Mono] ScriptInstance for class " << script.ClassName
                 << " initialized successfully\n";
 
@@ -110,6 +121,13 @@ namespace CrashoutsEngine
 
         void DestroyOne(ScriptInstance& script)
         {
+            if (script.Instance && script.MethodOnDestroy)
+            {
+                MonoObject* exc = nullptr;
+                mono_runtime_invoke(script.MethodOnDestroy, script.Instance, nullptr, &exc);
+                if (exc) mono_print_unhandled_exception(exc);
+            }
+
             if (script.GCHandle)
             {
                 mono_gchandle_free(script.GCHandle);
@@ -120,6 +138,8 @@ namespace CrashoutsEngine
             script.Class = nullptr;
             script.MethodStart = nullptr;
             script.MethodUpdate = nullptr;
+			script.MethodFixedUpdate = nullptr; 
+			script.MethodOnDestroy = nullptr;   
             script.Started = false;
         }
     }

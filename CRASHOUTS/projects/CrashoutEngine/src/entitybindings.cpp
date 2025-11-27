@@ -7,6 +7,7 @@
 #include "entitymanager.h"
 #include "transformcomponent.h"
 #include "rigidbodycomponent.h"
+#include "namecomponent.h"
 #include "monomanager.h"
 #include <mono/jit/jit.h>
 #include <mono/metadata/assembly.h>
@@ -39,6 +40,28 @@ namespace CrashoutsEngine::Bindings
         MonoObject* obj = mono_object_new(MonoManager::GetDomain(), cls);
         mono_runtime_object_init(obj);
         return obj;
+    }
+
+    // Helper to find ID by Name
+    static uint32_t InternalFindEntityByName(MonoString* name) {
+        if (!name) return 0;
+
+        char* cName = mono_string_to_utf8(name);
+        std::string searchName(cName);
+        mono_free(cName);
+
+        auto* ecs = ECS::getInstance();
+        // Access the NameComponent array directly for speed
+        auto& nameArray = ecs->GetComponentArray<Component::NameComponent>();
+
+        for (size_t i = 0; i < nameArray.dense.size(); ++i) {
+            if (nameArray.dense[i].name == searchName) {
+                // Return the Entity ID associated with this component
+                return nameArray.indexToEntity[i];
+            }
+        }
+
+        return std::numeric_limits<uint32_t>::max(); // Not found
     }
 
 	// add component functions
@@ -84,6 +107,8 @@ namespace CrashoutsEngine::Bindings
         mono_add_internal_call("CrashoutsEngine.InternalCalls::RemoveTransform", (const void*)InternalRemoveTransform);
         mono_add_internal_call("CrashoutsEngine.InternalCalls::RemoveRigidBody", (const void*)InternalRemoveRigidBody);
         mono_add_internal_call("CrashoutsEngine.InternalCalls::RemoveCollider", (const void*)InternalRemoveCollider);
+
+        mono_add_internal_call("CrashoutsEngine.InternalCalls::FindEntityByName", (const void*)InternalFindEntityByName);
 
         std::cout << "[Mono] Registered: CrashoutsEngine.Entity bindings\n";
     }

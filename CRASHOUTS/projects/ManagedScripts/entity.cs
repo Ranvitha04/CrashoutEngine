@@ -115,6 +115,32 @@ namespace CrashoutsEngine
             return instance;
         }
 
+        // Static helper to find an entity globally
+        public static Entity Find(string name)
+        {
+            uint id = InternalCalls.FindEntityByName(name);
+            if (id == uint.MaxValue)
+            {
+                Debug.Log("Null");
+                return null; // Check against MaxValue
+            }
+            Debug.Log("Weird" + name);
+
+            return new Entity(id);
+        }
+
+        public T GetScript<T>() where T : ScriptBase
+        {
+            // 1. Get the class name (e.g., "GoalScript")
+            string name = typeof(T).Name;
+
+            // 2. Ask C++ for the instance
+            object scriptObj = InternalCalls.GetScript(ID, name);
+
+            // 3. Cast and return
+            return scriptObj as T;
+        }
+
         ////name component
         //public bool HasName => InternalCalls.EntityHasName(ID);
 

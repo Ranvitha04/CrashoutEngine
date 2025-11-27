@@ -28,7 +28,7 @@ namespace CrashoutsEngine
         #region COLLISION EVENTS
         // 1. Trigger Events (Ghost/Sensor collisions)
         public void OnTriggerEnter(uint otherEntity)
-        { 
+        {
             Entity other = new Entity(otherEntity);
 
             // Identify the object
@@ -99,8 +99,8 @@ namespace CrashoutsEngine
 
         //PressurePlate pressureplate;
 
-        //Rigidbody2D rb;
         RigidBodyComponent rb;
+        TransformComponent tf;
 
         //public GameObject GObackground;
         public void SetGrounded(bool state)
@@ -116,6 +116,7 @@ namespace CrashoutsEngine
             Instance = this;
             //animator = Entity.GetComponent<Animator>();
             rb = Entity.GetComponent<RigidBodyComponent>();
+            tf = Entity.GetComponent<TransformComponent>();
             //Debug.Log("start");
             //lastY = transform.position.y;
             //animator.SetBool("IsRunning", false);
@@ -126,7 +127,7 @@ namespace CrashoutsEngine
 
             //GObackground.SetActive(false);
 
-            //AudioManager.GetInstance().Play("ambient");
+            AudioManager.GetInstance().Play("ambient");
             IsGrounded = false;
             footstepsPlaying = false;
 
@@ -144,9 +145,8 @@ namespace CrashoutsEngine
         // Update is called once per frame
         public override void Update()
         {
-            AudioManager.GetInstance().Stop("footsteps");
+            //AudioManager.GetInstance().Stop("footsteps");
             //Debug.Log("Updaet");
-            var tf = Entity.GetComponent<TransformComponent>();
             //horizontalInput = Input.GetAxis("Horizontal");
             horizontalInput = 0f;
             moveLeft = Input.IsKeyPressed(Key.A);
@@ -159,10 +159,12 @@ namespace CrashoutsEngine
                 if (moveLeft)
                 {
                     horizontalInput = -1f;
+                    if(tf.Size.x > 0.0f) tf.Size = new CEVec2(-tf.Size.x, tf.Size.y);
                 }
                 else if (moveRight)
                 {
                     horizontalInput = 1f;
+                    if(tf.Size.x < 0.0f) tf.Size = new CEVec2(-tf.Size.x, tf.Size.y);
                 }
 
                 //lastY = transform.position.y;
@@ -389,6 +391,9 @@ namespace CrashoutsEngine
         //    //Debug.Log("respawn idle here"); //gets to this line but still plays falling animation? does it need yo be in collisionExit
         //    GObackground.SetActive(false);
 
-        //}
+        public override void OnDestroy()
+        {
+
+        }
     }
 }
