@@ -19,8 +19,8 @@ namespace CrashoutsEngine
         // "Magic Number" Multipliers (Tweak if mass/units change)
         [SerializeField] public float frictionMultiplier = 500.0f;
         [SerializeField] public float gravityForceMultiplier = 10.0f;
-
         [SerializeField] public float stepInterval = 0.075f; // Time between steps (lower = faster steps)
+        [SerializeField] public float energyConsumption = 12.5f; // Time between steps (lower = faster steps)
 
         // Mass Settings (For Weighted Platform interaction)
         public float normalMass = 7.0f;
@@ -36,6 +36,10 @@ namespace CrashoutsEngine
 
         // Singleton Instance
         public static PlayerMovement Instance;
+
+        // Energy Data
+        public float CurrentEnergy = 0.0f;
+        public float MaxEnergy = 100.0f;
 
         // Components
         private RigidBodyComponent rb;
@@ -55,6 +59,7 @@ namespace CrashoutsEngine
             IsGrounded = false;
             AudioManager.GetInstance().Play("ambient");
             AudioManager.GetInstance().Play("bgm1");
+            CurrentEnergy = MaxEnergy;
 
             // Register Callbacks
             CollisionEvents.RegisterTriggerEnter(Entity.ID, this.OnTriggerEnter);
@@ -90,8 +95,9 @@ namespace CrashoutsEngine
             }
 
             // 3. WEIGHT MECHANIC
-            if (Input.IsKeyTriggered(Key.Q))
+            if (Input.IsKeyTriggered(Key.Q) && CurrentEnergy >= energyConsumption)
             {
+                CurrentEnergy -= energyConsumption;
                 // Floating point comparison with epsilon safety
                 if (Math.Abs(rb.Mass - normalMass) < 0.1f) rb.Mass = lightMass;
                 else rb.Mass = normalMass;
@@ -245,6 +251,18 @@ namespace CrashoutsEngine
         {
             // Cleanup Singleton to prevent accessing dead object
             if (Instance == this) Instance = null;
+        }
+    
+        // Helper for the ball to call
+        public void AddEnergy(float amount)
+        {
+            CurrentEnergy += amount;
+            if (CurrentEnergy > MaxEnergy) CurrentEnergy = MaxEnergy;
+            
+            Console.WriteLine($"[Player] Energy Recharged! Current: {CurrentEnergy}");
+            
+            // Optional: Play sound?
+            // AudioManager.GetInstance().Play("EnergyUp");
         }
     }
 }

@@ -1,176 +1,200 @@
 using System;
+using System.Numerics; // For math helpers
 
 namespace CrashoutsEngine
 {
     [ScriptBehaviour]
     public class SlimeMovement : ScriptBase
     {
-        // --- TUNING VARIABLES (Edit in Inspector) ---
-        [SerializeField] private float moveSpeed = 200f;         // Force applied to move
-        [SerializeField] private float maxRunSpeed = 100.0f;     // Max horizontal speed cap
-        [SerializeField] private float minX = 0.0f;              // min X position (Prowling) 
-        [SerializeField] private float maxX = 0.0f;              // max X position (Prowling)
-
-        [SerializeField] private float groundDrag = 0.15f;       // Friction on ground (0.2 = snappy, 0.05 = ice)
-        [SerializeField] private float airDrag = 0.02f;          // Friction in air (lower for better air control)
-
-        [SerializeField] private float gravityScale = 2.5f;      // Gravity multiplier when falling (Higher = less floaty)
-        [SerializeField] private float turnMultiplier = 2.0f;    // Extra force applied when turning opposite direction
-
-        // "Magic Number" Multipliers (Tweak if mass/units change)
-        [SerializeField] private float frictionMultiplier = 500.0f;
-        [SerializeField] private float gravityForceMultiplier = 10.0f;
-        [SerializeField] private float activationAreaX = 0.0f;   // min/max X for activation
-        [SerializeField] private float activationAreaY = 0.0f;   // min/max Y for activation
-        [SerializeField] private float activationDist = 15.0f;
-        private float activationDistSquared;
-
-        // --- STATE VARIABLES ---
-        private bool isProwling;
-        private bool isChasing;
-        private bool footstepsPlaying = false;
-
-        bool IsGrounded = false;
-        bool MoveRight = false;
-        bool isGrabbed = false;
-
-        // Components
+        // --- SETTINGS (Edit in Inspector) ---
+        [SerializeField] private float moveSpeed = 5000f;      // Force applied
+        [SerializeField] private float maxSpeed = 50.0f;       // Speed cap
+        [SerializeField] private float turnTimer = 2.0f;       // How often to turn when prowling (if no walls)
+        [SerializeField] private float detectionRange = 300.0f;// Distance to spot player
+        [SerializeField] private float jumpForce = 15000.0f;   // For hopping
+        
+        [SerializeField] private float gravityScale = 5.0f;    // Fall faster
+        
+        // --- INTERNAL STATE ---
         private RigidBodyComponent rb;
         private TransformComponent tf;
-        private PlayerMovement playerMovement;
+        private PlayerMovement playerScript; // Reference to player singleton
+
+        private bool isGrounded = false;
+        private bool moveRight = true;
+        private float currentTurnTime = 0.0f;
+        private bool isChasing = false;
+        private bool isGrabbed = false;
+        
+        // Helper to prevent rapid flipping
+        private float flipCooldown = 0.0f; 
 
         public override void Start()
         {
             rb = Entity.GetComponent<RigidBodyComponent>();
             tf = Entity.GetComponent<TransformComponent>();
-            playerMovement = PlayerMovement.Instance;
-            // Initial Setup
-            IsGrounded = false;
-            footstepsPlaying = false;
+            
+            // Get Player reference (assuming PlayerMovement has 'public static PlayerMovement Instance')
+            playerScript = PlayerMovement.Instance; 
 
-            activationDistSquared = activationDist * activationDist;
-
-            // Register Callbacks
+            // Register Physics Callbacks
             CollisionEvents.RegisterTriggerEnter(Entity.ID, this.OnTriggerEnter);
-            CollisionEvents.RegisterTriggerStay(Entity.ID, this.OnTriggerStay);
             CollisionEvents.RegisterTriggerExit(Entity.ID, this.OnTriggerExit);
-            CollisionEvents.RegisterCollideEnter(Entity.ID, this.OnCollideEnter);
-            CollisionEvents.RegisterCollideStay(Entity.ID, this.OnCollideStay);
-            CollisionEvents.RegisterCollideExit(Entity.ID, this.OnCollideExit);
-        }
-
-        private float distSquared(CEVec3 p1, CEVec3 p2)
-        {
-            float sqrtX = (p2.x - p1.x) * (p2.x - p1.x);
-            float sqrtY = (p2.y - p1.y) * (p2.y - p1.y);
-            return (sqrtX - sqrtY);
+            
+            // Ensure we have gravity/mass settings correct
+            if (rb != null) {
+                rb.LinearVelocity = new CEVec3(0,0,0);
+            }
+            
+            Console.WriteLine("[Slime] AI Initialized.");
         }
 
         public override void Update()
         {
-            // Check states and determine movement
+            if (rb == null || tf == null) return;
 
-            // Flip Sprite Scale based on direction
-            if (!MoveRight && tf.Size.x > 0) tf.Size = new CEVec2(-tf.Size.x, tf.Size.y);
-            else if (MoveRight && tf.Size.x < 0) tf.Size = new CEVec2(-tf.Size.x, tf.Size.y);
+            float dt = (float)Time.DT;
+            if (flipCooldown > 0) flipCooldown -= dt;
 
-            // 4. AUDIO LOGIC
-            if (IsGrounded && !footstepsPlaying)
-            {
-                //AudioManager.GetInstance().Play("footstep1");
-                footstepsPlaying = true;
-            }
-            else if (!IsGrounded && footstepsPlaying)
-            {
-                //AudioManager.GetInstance().Stop("footstep1");
-                footstepsPlaying = false;
-            }
+            // 1. CHECK GRAB INPUT (Mouse Interaction)
+            HandleGrabLogic();
+            if (isGrabbed) return; // Don't move if being held
 
-            // Check position of player with respect to Player
-            TransformComponent playerTf = playerMovement.Entity.GetComponent<TransformComponent>();
-            if(distSquared(playerTf.Position, tf.Position) <= activationDistSquared)
+            // 2. AI DECISION LOGIC
+            if (playerScript != null)
             {
-                // In activation area
-                if (Input.IsMouseButtonDown(1))
+                // Calculate distance to player
+                TransformComponent playerTf = playerScript.Entity.GetComponent<TransformComponent>();
+                if (playerTf != null)
                 {
-                    Debug.Log("Near enough button down");
-                    CEVec2 mousePos = Input.GetMousePosition();
-                    // X LIMITS
-                    if(mousePos.x <= (tf.Position.x + activationAreaX) && mousePos.x >= (tf.Position.x - activationAreaX) &&
-                    // Y LIMITS
-                    mousePos.y <= (tf.Position.y + activationAreaY) && mousePos.y >= (tf.Position.y - activationAreaY)){
-                        Debug.Log("GRAB THE SLIME!!!");
-                        isGrabbed = true;
+                    float dist = Distance(tf.Position, playerTf.Position);
+                    
+                    // State Switch: Chase if close, Prowl if far
+                    isChasing = (dist < detectionRange);
+                    
+                    if (isChasing)
+                    {
+                        // Face the player
+                        if (playerTf.Position.x > tf.Position.x) moveRight = true;
+                        else moveRight = false;
                     }
-                    else isGrabbed = false;
                 }
-                else isGrabbed = false;
             }
+
+            // 3. PROWLING LOGIC (If not chasing)
+            if (!isChasing && isGrounded)
+            {
+                currentTurnTime -= dt;
+                if (currentTurnTime <= 0)
+                {
+                    // Random turn intervals
+                    moveRight = !moveRight;
+                    currentTurnTime = turnTimer; 
+                }
+            }
+
+            // 4. VISUALS
+            // Flip Sprite Scale based on direction
+            float absX = Math.Abs(tf.Size.x);
+            if (moveRight) tf.Size = new CEVec2(absX, tf.Size.y);
+            else           tf.Size = new CEVec2(-absX, tf.Size.y);
         }
 
         public override void FixedUpdate()
         {
-            // Get current velocity
+            if (rb == null || isGrabbed) return;
+
             CEVec3 velocity = rb.LinearVelocity;
+            
+            // 1. APPLY MOVEMENT FORCE
+            float dir = moveRight ? 1.0f : -1.0f;
+            float speedMult = isChasing ? 1.5f : 1.0f; // Run faster when chasing
 
-            // ------------------------------------------------------------
-            // HORIZONTAL MOVEMENT ( CHECK IF HIT & FACING WALL OR SOMETHING )
-            // ------------------------------------------------------------
-            if (IsGrounded)
+            // Only accelerate if under max speed
+            if (Math.Abs(velocity.x) < maxSpeed * speedMult)
             {
-                // Instant Turn Logic: Are we trying to move opposite to our velocity?
-                bool isTurning = (velocity.x < 0) ||
-                                 (velocity.x > 0);
-                if (isTurning)
-                {
-                    // Apply extra force to turn quickly
-                    rb.AddForce(new CEVec3(moveSpeed * turnMultiplier, 0f, 0f));
-                }
-                // Standard Acceleration
-                else if (Math.Abs(velocity.x) < maxRunSpeed)
-                {
-                    rb.AddForce(new CEVec3(moveSpeed, 0f, 0f));
-                }
+                rb.AddForce(new CEVec3(moveSpeed * dir * speedMult, 0, 0));
             }
+            
+            // 2. HOPPING (Optional - makes slime feel jumpy)
+            /* if (isGrounded && isChasing && Math.Abs(velocity.x) > 5.0f) {
+                 // Small chance to hop while chasing
+                 if (new Random().Next(0, 50) == 0) {
+                     rb.AddForce(new CEVec3(0, jumpForce, 0));
+                     isGrounded = false;
+                 }
+            }
+            */
 
-            // ------------------------------------------------------------
-            // VARIABLE GRAVITY (The "Feel" Fix)
-            // ------------------------------------------------------------
-            // 1. Falling? Fall Faster.
+            // 3. CUSTOM GRAVITY (Fall faster for snappy feel)
             if (velocity.y < 0)
             {
-                // Apply extra downward force
-                rb.AddForce(new CEVec3(0f, -9.81f * gravityScale * rb.Mass * gravityForceMultiplier, 0f));
-            }
-            // 2. Jumping but released Space? Fall Faster immediately (Short Hop).
-            else if (velocity.y > 0)
-            {
-                // Cut the jump short by applying half the fall gravity
-                rb.AddForce(new CEVec3(0f, -9.81f * (gravityScale * 0.5f) * rb.Mass * gravityForceMultiplier, 0f));
+                 // Apply extra gravity
+                 rb.AddForce(new CEVec3(0f, -9.81f * gravityScale * rb.Mass, 0f));
             }
         }
 
-        // --- COLLISION CALLBACKS ---
+        private void HandleGrabLogic()
+        {
+            // Right Click to Grab
+            if (Input.IsMouseButtonDown(0)) // 1 = Left Click
+            {
+                CEVec2 mousePos = Input.GetMousePosition();
+                
+                // Simple bounding box check for mouse cursor
+                float halfW = Math.Abs(tf.Size.x) * 0.5f + 20.0f; // + padding
+                float halfH = Math.Abs(tf.Size.y) * 0.5f + 20.0f;
+
+                bool mouseOver = mousePos.x >= tf.Position.x - halfW && 
+                                  mousePos.x <= tf.Position.x + halfW &&
+                                  mousePos.y >= tf.Position.y - halfH && 
+                                  mousePos.y <= tf.Position.y + halfH;
+
+                if (mouseOver)
+                {
+                    Debug.Log("GRAAAB");
+                    isGrabbed = true;
+                    rb.LinearVelocity = new CEVec3(0, 0, 0); // Stop physics
+                    tf.Position = new CEVec3(mousePos.x, mousePos.y, tf.Position.z);
+                }
+            }
+            else
+            {
+                if (isGrabbed)
+                {
+                    isGrabbed = false;
+                    // Optional: Throw the slime when releasing?
+                }
+            }
+        }
+
+        // --- PHYSICS EVENTS ---
 
         public void OnTriggerEnter(uint otherEntity)
         {
             Entity other = new Entity(otherEntity);
-            var layer = other.GetComponent<LayerComponent>();
-            var otherTf = other.GetComponent<TransformComponent>();
+            
+            // Check for Ground
+            LayerComponent layer = other.GetComponent<LayerComponent>();
+            TransformComponent otherTf = other.GetComponent<TransformComponent>();
 
-            // Ground / Platform Detection
             if (layer != null && layer.HasLayer("Ground"))
             {
-                // Geometry Check: Are we landing on TOP?
-                if (otherTf != null && this.tf.Position.y > otherTf.Position.y)
+                // Check if we are landing on TOP of the ground
+                if (otherTf != null && tf.Position.y > otherTf.Position.y + (otherTf.Size.y * 0.4f))
                 {
-                    IsGrounded = true;
+                    isGrounded = true;
                 }
                 else
                 {
-                    // On the sides? WALL DETECTION
-                    MoveRight = !MoveRight;
-                    rb.LinearVelocity = new CEVec3(0, rb.LinearVelocity.y, 0);
+                    // We hit a WALL (Side collision) -> Turn around
+                    if (flipCooldown <= 0)
+                    {
+                        moveRight = !moveRight;
+                        // Kill horizontal momentum immediately for snappy turn
+                        rb.LinearVelocity = new CEVec3(0, rb.LinearVelocity.y, 0);
+                        flipCooldown = 0.2f; // Prevent double-flip glitch
+                    }
                 }
             }
         }
@@ -178,19 +202,26 @@ namespace CrashoutsEngine
         public void OnTriggerExit(uint otherEntity)
         {
             Entity other = new Entity(otherEntity);
-            var layer = other.GetComponent<LayerComponent>();
+            LayerComponent layer = other.GetComponent<LayerComponent>();
 
-            // Leaving Ground
             if (layer != null && layer.HasLayer("Ground"))
             {
-                IsGrounded = false;
+                isGrounded = false;
             }
         }
+        
+        // Unused callbacks required by bindings
+        public void OnTriggerStay(uint e) {}
+        public void OnCollideEnter(uint e) {}
+        public void OnCollideStay(uint e) {}
+        public void OnCollideExit(uint e) {}
 
-        // Required placeholders for engine bindings
-        public void OnTriggerStay(uint otherEntity) { }
-        public void OnCollideEnter(uint otherEntity) { }
-        public void OnCollideStay(uint otherEntity) { }
-        public void OnCollideExit(uint otherEntity) { }
+        // Math Helper
+        private float Distance(CEVec3 a, CEVec3 b)
+        {
+            float dx = a.x - b.x;
+            float dy = a.y - b.y;
+            return (float)Math.Sqrt(dx*dx + dy*dy);
+        }
     }
 }

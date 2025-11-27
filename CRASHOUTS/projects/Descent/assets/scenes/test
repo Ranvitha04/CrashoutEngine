@@ -25,39 +25,364 @@
                 ],
                 "gridData": [
                     {
+                        "x": -16,
+                        "y": -2,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -16,
+                        "y": -1,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -16,
+                        "y": 0,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -16,
+                        "y": 1,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -16,
+                        "y": 2,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -16,
+                        "y": 3,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -15,
+                        "y": -2,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -15,
+                        "y": -1,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -15,
+                        "y": 0,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -15,
+                        "y": 1,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -15,
+                        "y": 2,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -15,
+                        "y": 3,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -14,
+                        "y": -2,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -14,
+                        "y": -1,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -14,
+                        "y": 0,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -14,
+                        "y": 1,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -14,
+                        "y": 2,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -14,
+                        "y": 3,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -13,
+                        "y": -2,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -13,
+                        "y": -1,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -13,
+                        "y": 0,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -13,
+                        "y": 1,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -13,
+                        "y": 2,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -13,
+                        "y": 3,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -12,
+                        "y": -2,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -12,
+                        "y": -1,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -12,
+                        "y": 0,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -12,
+                        "y": 1,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -12,
+                        "y": 2,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -12,
+                        "y": 3,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -11,
+                        "y": -2,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -11,
+                        "y": -1,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -11,
+                        "y": 0,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -11,
+                        "y": 1,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -11,
+                        "y": 2,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -11,
+                        "y": 3,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -10,
+                        "y": -2,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -10,
+                        "y": -1,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -10,
+                        "y": 0,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -10,
+                        "y": 1,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -10,
+                        "y": 2,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -10,
+                        "y": 3,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -9,
+                        "y": -2,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -9,
+                        "y": -1,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -9,
+                        "y": 0,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -9,
+                        "y": 1,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -9,
+                        "y": 2,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -9,
+                        "y": 3,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -8,
+                        "y": -2,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -8,
+                        "y": -1,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -8,
+                        "y": 0,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -8,
+                        "y": 1,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -8,
+                        "y": 2,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -8,
+                        "y": 3,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -7,
+                        "y": -2,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -7,
+                        "y": -1,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -7,
+                        "y": 0,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -7,
+                        "y": 1,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -7,
+                        "y": 2,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -7,
+                        "y": 3,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
                         "x": -6,
                         "y": -2,
-                        "asset": ""
+                        "asset": "tilemaps/Rock"
                     },
                     {
                         "x": -6,
                         "y": -1,
-                        "asset": ""
+                        "asset": "tilemaps/Rock"
                     },
                     {
                         "x": -6,
                         "y": 0,
-                        "asset": ""
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -6,
+                        "y": 1,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -6,
+                        "y": 2,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -6,
+                        "y": 3,
+                        "asset": "tilemaps/Rock"
                     },
                     {
                         "x": -5,
                         "y": -2,
-                        "asset": ""
+                        "asset": "tilemaps/Rock"
                     },
                     {
                         "x": -5,
                         "y": -1,
-                        "asset": ""
+                        "asset": "tilemaps/Rock"
                     },
                     {
                         "x": -5,
                         "y": 0,
-                        "asset": ""
+                        "asset": "tilemaps/Rock"
                     },
                     {
                         "x": -5,
                         "y": 1,
-                        "asset": ""
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -5,
+                        "y": 2,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -5,
+                        "y": 3,
+                        "asset": "tilemaps/Rock"
                     },
                     {
                         "x": -4,
@@ -757,8 +1082,11 @@
                             "frictionMultiplier": 500.0,
                             "gravityForceMultiplier": 7.5,
                             "stepInterval": 0.3499999940395355,
+                            "energyConsumption": 12.5,
                             "normalMass": 4.5,
-                            "lightMass": 2.5
+                            "lightMass": 2.5,
+                            "CurrentEnergy": 0.0,
+                            "MaxEnergy": 100.0
                         }
                     }
                 ]
@@ -940,6 +1268,76 @@
                 ],
                 "gridData": [
                     {
+                        "x": -18,
+                        "y": 3,
+                        "asset": ""
+                    },
+                    {
+                        "x": -17,
+                        "y": 3,
+                        "asset": ""
+                    },
+                    {
+                        "x": -16,
+                        "y": 3,
+                        "asset": ""
+                    },
+                    {
+                        "x": -15,
+                        "y": 3,
+                        "asset": ""
+                    },
+                    {
+                        "x": -14,
+                        "y": 3,
+                        "asset": ""
+                    },
+                    {
+                        "x": -13,
+                        "y": 3,
+                        "asset": ""
+                    },
+                    {
+                        "x": -12,
+                        "y": 3,
+                        "asset": ""
+                    },
+                    {
+                        "x": -11,
+                        "y": 3,
+                        "asset": ""
+                    },
+                    {
+                        "x": -10,
+                        "y": 3,
+                        "asset": ""
+                    },
+                    {
+                        "x": -9,
+                        "y": 3,
+                        "asset": ""
+                    },
+                    {
+                        "x": -8,
+                        "y": 3,
+                        "asset": ""
+                    },
+                    {
+                        "x": -7,
+                        "y": 3,
+                        "asset": ""
+                    },
+                    {
+                        "x": -6,
+                        "y": 3,
+                        "asset": ""
+                    },
+                    {
+                        "x": -5,
+                        "y": 3,
+                        "asset": ""
+                    },
+                    {
                         "x": -2,
                         "y": 0,
                         "asset": "tilemaps/Rock_Door"
@@ -1085,7 +1483,7 @@
                 }
             },
             "rigidbody": {
-                "mass": 0.0,
+                "mass": 1.0,
                 "restitutionCoeff": 0.0,
                 "maximumVelocity": {
                     "x": 0.0,
@@ -1157,33 +1555,26 @@
                         "className": "SlimeMovement",
                         "fields": {
                             "moveSpeed": 200.0,
-                            "maxRunSpeed": 100.0,
-                            "minX": 0.0,
-                            "maxX": 0.0,
-                            "groundDrag": 0.15000000596046449,
-                            "airDrag": 0.019999999552965165,
-                            "gravityScale": 2.5,
-                            "turnMultiplier": 2.0,
-                            "frictionMultiplier": 500.0,
-                            "gravityForceMultiplier": 10.0,
-                            "activationAreaX": 20.0,
-                            "activationAreaY": 20.0,
-                            "activationDist": 15.0
+                            "maxSpeed": 50.0,
+                            "turnTimer": 2.0,
+                            "detectionRange": 10.0,
+                            "jumpForce": 15000.0,
+                            "gravityScale": 2.5
                         }
                     }
                 ]
             }
         },
         {
-            "name": "EnergyBall",
+            "name": "Ball",
             "layer": {
                 "currentLayer": 8
             },
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 99.11139678955078,
-                    "y": 151.59146118164063,
+                    "x": 190.80714416503907,
+                    "y": 60.74479675292969,
                     "z": 0.0
                 },
                 "size": {
@@ -1208,8 +1599,8 @@
             "collider": {
                 "helperType": 0,
                 "position": {
-                    "x": 99.11139678955078,
-                    "y": 148.59146118164063,
+                    "x": 190.80714416503907,
+                    "y": 57.74479675292969,
                     "z": 0.0
                 },
                 "offset": {
@@ -1219,8 +1610,8 @@
                 },
                 "radius": 9.699999809265137,
                 "center": {
-                    "x": 99.11139678955078,
-                    "y": 148.59146118164063,
+                    "x": 190.80714416503907,
+                    "y": 57.74479675292969,
                     "z": 0.0
                 }
             },
@@ -1253,6 +1644,17 @@
                     "y": 0.0,
                     "z": 0.0
                 }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "EnergyBall",
+                        "fields": {
+                            "energyAmount": 25.0,
+                            "respawnTime": 5.0
+                        }
+                    }
+                ]
             }
         }
     ],
