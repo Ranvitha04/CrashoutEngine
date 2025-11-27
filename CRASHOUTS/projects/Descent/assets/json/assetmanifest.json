@@ -1233,6 +1233,10 @@
             "path": "UI\\Background .png"
         },
         {
+            "name": "Bar_Area",
+            "path": "UI\\Bar_Area.png"
+        },
+        {
             "name": "1",
             "path": "UI\\Energy Ball\\1.png"
         },
@@ -1339,6 +1343,10 @@
         {
             "name": "prefab",
             "path": "prefab.json"
+        },
+        {
+            "name": "PressurePlate",
+            "path": "PressurePlate.json"
         },
         {
             "name": "RedBox",
