@@ -78,10 +78,35 @@ namespace CrashoutsEngine
             var tf = Entity.GetComponent<TransformComponent>();
             //if (rb == null) Console.WriteLine("[C#] rb is null");
             if (tf == null) Console.WriteLine("[C#] tf is null");
-            if (Input.IsKeyTriggered(Key.Z))
+            if (Input.IsKeyTriggered(Key.Z) && animator != null)
             {
-                isAlt=!isAlt;
+                isAlt = !isAlt;
+
+                if (isAlt)
+                {
+                    
+                    animator.SetSpriteSheet(
+                        "images/Character/New Artstyle/Switch-Style-SpriteSheet.png",
+                        3, 3,
+                        1.0f, 1.0f  
+                    );
+                    Console.WriteLine("[C#] Switched to Switch-Style-SpriteSheet");
+                }
+                else
+                {
+                    // Back to normal Chibi sheet
+                    animator.SetSpriteSheet(
+                        "images/Character/Normal Mode/Chibi-Actions-SpriteSheet.png",
+                        3, 3,
+                        1.0f, 1.0f
+                    );
+                    Console.WriteLine("[C#] Switched to Chibi-Actions-SpriteSheet");
+                }
+
+               
+                currentAnimState = "";
             }
+
             if (isMoving && !wasMoving)
             {
                 //Console.WriteLine("[C#] Player started moving -> Play footstep1");
@@ -102,12 +127,9 @@ namespace CrashoutsEngine
                 else if (moveRight && !moveLeft)
                     animator.SetFlip(false);
 
-                // pick animation based on isAlt + movement
-                string desiredState;
-                if (isAlt)
-                    desiredState = isMoving ? "walk_light" : "idle_light";  // <- your light sprites
-                else
-                    desiredState = isMoving ? "walk_normal" : "idle_normal";
+                
+                string desiredState = isMoving ? "walk_normal" : "idle_normal";
+
 
                 if (desiredState != currentAnimState)
                 {
