@@ -1265,8 +1265,20 @@
     ],
     "prefabs": [
         {
+            "name": "1",
+            "path": "1.json"
+        },
+        {
             "name": "BlueBox",
             "path": "BlueBox.json"
+        },
+        {
+            "name": "hanging Man",
+            "path": "hanging Man.json"
+        },
+        {
+            "name": "HangMan",
+            "path": "HangMan.json"
         },
         {
             "name": "Number1",
