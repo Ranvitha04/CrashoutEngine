@@ -78,7 +78,10 @@ namespace CrashoutsEngine
             var tf = Entity.GetComponent<TransformComponent>();
             //if (rb == null) Console.WriteLine("[C#] rb is null");
             if (tf == null) Console.WriteLine("[C#] tf is null");
-
+            if (Input.IsKeyTriggered(Key.Z))
+            {
+                isAlt=!isAlt;
+            }
             if (isMoving && !wasMoving)
             {
                 //Console.WriteLine("[C#] Player started moving -> Play footsteps");
@@ -89,29 +92,23 @@ namespace CrashoutsEngine
                 //Console.WriteLine("[C#] Player stopped moving -> Stop footsteps_loop");
                 AudioManager.GetInstance().Stop("footsteps");
             }
-          
+
 
             if (animator != null)
             {
-               
+                // flip
                 if (moveLeft && !moveRight)
-                {
-                    animator.SetFlip(true);   
-                }
+                    animator.SetFlip(true);
                 else if (moveRight && !moveLeft)
-                {
-                    animator.SetFlip(false);  
-                }
+                    animator.SetFlip(false);
 
-          
+                // pick animation based on isAlt + movement
                 string desiredState;
+                if (isAlt)
+                    desiredState = isMoving ? "walk_light" : "idle_light";  // <- your light sprites
+                else
+                    desiredState = isMoving ? "walk_normal" : "idle_normal";
 
-            
-
-                
-                desiredState = isMoving ? "walk_normal" : "idle_normal";
-
-              
                 if (desiredState != currentAnimState)
                 {
                     Console.WriteLine("[C#] Animator.Play -> " + desiredState);

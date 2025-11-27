@@ -244,11 +244,77 @@ void UpdateMainMenu()
 	if (!globalECS)
 		return;
 
-	
 	float dt = static_cast<float>(FrameRateController::GetInstance().DT());
 	KeyframeUnity::UpdateAll(*globalECS, dt);
 
+	// --- Get components on entity1 (player in main menu) ---
+	auto* rb = globalECS->GetComponent<Component::RigidBodyComponent>(entity1);
+	auto* anim = globalECS->GetComponent<Component::SpriteAnimComponent>(entity1);
 
+	bool isMovingHoriz = false;
+
+	if (rb) {
+		CEVec3 vel = rb->getVelocity();
+		if (vel.x > 0.1f || vel.x < -0.1f)
+			isMovingHoriz = true;
+	}
+
+	// --- Z toggle: swap between the two spritesheets ---
+	bool zDown = InputManager::IsKeyPressed(Key::Z);
+
+	if (zDown && !gZWasDown) {
+		// Just pressed this frame
+		if (gCurrentSheet == PlayerSheet::Walk) {
+			gCurrentSheet = PlayerSheet::LightMode;
+
+			Component::SetSpriteSheet(
+				entity1,
+				JUMP_SHEET_PATH,             // Switch-Style-SpriteSheet
+				SHEET_COLS, SHEET_ROWS,
+				CEVec2{ 1.0f, 1.0f }
+			);
+		}
+		else {
+			gCurrentSheet = PlayerSheet::Walk;
+
+			Component::SetSpriteSheet(
+				entity1,
+				WALK_SHEET_PATH,             // Chibi-Actions-SpriteSheet
+				SHEET_COLS, SHEET_ROWS,
+				CEVec2{ 1.0f, 1.0f }
+			);
+		}
+	}
+
+	gZWasDown = zDown;
+
+	// --- Simple animation region on the current sheet ---
+	if (anim) {
+		if (isMovingHoriz) {
+			// walking: use frames 3–5 on the sheet
+			anim->startFrame = 3;
+			anim->frameCount = 3;
+		}
+		else {
+			// idle: first frame
+			anim->startFrame = 0;
+			anim->frameCount = 1;
+			anim->frameIndex = 0;
+			anim->timer = 0.0f;
+		}
+
+		// Flip sprite based on input
+		if (InputManager::IsKeyPressed(Key::A) || InputManager::IsKeyPressed(Key::Left)) {
+			anim->flip = true;
+		}
+		else if (InputManager::IsKeyPressed(Key::D) || InputManager::IsKeyPressed(Key::Right)) {
+			anim->flip = false;
+		}
+
+		Component::UpdateSpriteAnimationsECS();
+	}
+
+	// --- Keep your scale & rotate controls ---
 	Component::TransformComponent* transform =
 		globalECS->GetComponent<Component::TransformComponent>(entity1);
 
@@ -279,6 +345,7 @@ void UpdateMainMenu()
 		}
 	}
 }
+
 /*
 void UpdateMainMenu()
 {

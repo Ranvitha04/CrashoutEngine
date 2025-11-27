@@ -25,6 +25,7 @@ using CrashoutsEngine::Audio::AudioSystem;
 using namespace CrashoutsEngine;
 using namespace Component;
 static Entity gKFBox = 0;
+static bool gUseSwitchStyle = false;
 // ============================================================================
 // In-file, minimal Prefab registry (name -> factory) so we don't need new files
 // ============================================================================
@@ -320,8 +321,32 @@ void UpdateAfiq()
         if (gKFBox && ecs->HasComponent<KeyframeAnimatorComponent>(gKFBox)) {
             auto* anim = ecs->GetComponent<KeyframeAnimatorComponent>(gKFBox);
 
-           
+            
             if (InputManager::IsKeyTriggered(Key::Z)) {
+                gUseSwitchStyle = !gUseSwitchStyle;
+
+                CEVec2 worldSize{ 40.0f, 40.0f }; 
+
+                if (gUseSwitchStyle) {
+                    
+                    Component::SetSpriteSheet(
+                        gKFBox,
+                        "images/Character/New Artstyle/Switch-Style-SpriteSheet.png",
+                        3, 3,
+                        worldSize
+                    );
+                }
+                else {
+                    
+                    Component::SetSpriteSheet(
+                        gKFBox,
+                        "images/spritesheet/Chibi-Actions-SpriteSheet.png",
+                        3, 3,
+                        worldSize
+                    );
+                }
+
+                
                 KeyframeUnity::Play(*anim, "Walk", true);
             }
 
@@ -330,6 +355,7 @@ void UpdateAfiq()
                 KeyframeUnity::Play(*anim, "Jump", true);
             }
         }
+
     }
 }
 
