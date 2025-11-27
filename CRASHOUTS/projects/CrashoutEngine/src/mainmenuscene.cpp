@@ -239,7 +239,47 @@ void CreateRandBox() {
 		globalECS->AddComponent<Component::RigidBodyComponent>(entityId, rb_init_velocity, rb_mass, rb_restitution);
 	}
 }
+void UpdateMainMenu()
+{
+	if (!globalECS)
+		return;
 
+	
+	float dt = static_cast<float>(FrameRateController::GetInstance().DT());
+	KeyframeUnity::UpdateAll(*globalECS, dt);
+
+
+	Component::TransformComponent* transform =
+		globalECS->GetComponent<Component::TransformComponent>(entity1);
+
+	if (!transform)
+		return;
+
+	// SCALE UP (E)
+	if (InputManager::IsKeyPressed(Key::E)) {
+		transform->size *= 0.9f;
+	}
+
+	// SCALE DOWN (Q)
+	if (InputManager::IsKeyPressed(Key::Q)) {
+		transform->size *= 1.1f;
+	}
+
+	// ROTATE (R)
+	if (InputManager::IsKeyPressed(Key::R)) {
+		transform->rotation += 3.f;
+		if (globalECS->HasComponent<Component::ColliderComponent>(entity1)) {
+			Component::ColliderComponent* collider1{
+				globalECS->GetComponent<Component::ColliderComponent>(entity1) };
+			if (collider1->collider->type == Collision::ColliderType::OBB) {
+				Collision::OBBRect& obbTemp2 =
+					dynamic_cast<Collision::OBBRect&>(*(collider1->collider));
+				obbTemp2.updateRotation(transform->rotation);
+			}
+		}
+	}
+}
+/*
 void UpdateMainMenu()
 {
 	if (!globalECS)
@@ -408,7 +448,7 @@ void UpdateMainMenu()
 			}
 		}
 	}*/
-}
+
 
 void RenderMainMenu()
 {
