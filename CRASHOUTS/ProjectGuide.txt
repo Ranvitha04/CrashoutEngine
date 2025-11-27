@@ -62,8 +62,7 @@ If you need to delete all generated files and start over, use the "clean.bat" sc
 * How to run: Simply double-click the "clean.bat" file.
 
 * What it does:
-    1.  IMPORTANT (Saves Assets): This script first checks your "build/Debug/assets" and "build/Release/assets" folders. Any files that are *newer* than your source files (e.g., modified levels, JSON configs) will be copied "back" to your main "projects/Descent/assets" folder. This saves your work!
-    2.  Cleans Project: After syncing your assets, it completely deletes the "build" directory.
+    1.  Cleans Project: After syncing your assets, it completely deletes the "build" directory.
 
 ***
 ==================================================
