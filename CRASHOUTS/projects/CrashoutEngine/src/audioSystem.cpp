@@ -904,31 +904,22 @@ namespace CrashoutsEngine::Audio
     bool AudioSystem::playSFXFileTagged(const std::string& key,
         const std::string& path, bool loop, float volume)
     {
-        if (!mCore || !mSFXGroup) {
-            std::fprintf(stderr, "[Audio] playSFXFile called before init: %s\n", path.c_str());
-            return false;
-        }
+        if (!mCore || !mSFXGroup) return false;
 
-        FMOD_MODE mode = FMOD_DEFAULT | FMOD_2D;
-        if (loop)
-            mode |= FMOD_LOOP_NORMAL;
-        else
-            mode |= FMOD_LOOP_OFF;
+        FMOD_MODE mode = FMOD_DEFAULT | FMOD_2D | FMOD_CREATESAMPLE;
+        mode |= (loop ? FMOD_LOOP_NORMAL : FMOD_LOOP_OFF);
 
         FMOD::Sound* snd = nullptr;
-        if (!ok(mCore->createSound(path.c_str(),
-            mode,
-            nullptr,
-            &snd),
-            "createSound(sfxTagged)"))
-        {
+        FMOD_RESULT r = mCore->createSound(path.c_str(), mode, nullptr, &snd);
+        if (r != FMOD_OK) {
+            LOGE(Audio, "SFX File Missing: " + path);
             return false;
         }
 
         FMOD::Channel* ch = nullptr;
-        if (!ok(mCore->playSound(snd, mSFXGroup, false, &ch),
-            "playSound(sfxTagged)"))
-        {
+
+        r = mCore->playSound(snd, mSFXGroup, true, &ch);
+        if (r != FMOD_OK) {
             snd->release();
             return false;
         }
@@ -937,11 +928,11 @@ namespace CrashoutsEngine::Audio
         {
             ch->setMode(FMOD_2D);
             ch->setVolume(volume);
+
             ch->setCallback([](FMOD_CHANNELCONTROL* channelcontrol,
-                FMOD_CHANNELCONTROL_TYPE /*controltype*/,
+                FMOD_CHANNELCONTROL_TYPE,
                 FMOD_CHANNELCONTROL_CALLBACK_TYPE callbacktype,
-                void* /*commanddata1*/,
-                void* /*commanddata2*/) -> FMOD_RESULT
+                void*, void*) -> FMOD_RESULT
                 {
                     if (callbacktype == FMOD_CHANNELCONTROL_CALLBACK_END) {
                         FMOD::Channel* ch = (FMOD::Channel*)channelcontrol;
@@ -952,7 +943,10 @@ namespace CrashoutsEngine::Audio
                     }
                     return FMOD_OK;
                 });
+
             mTaggedChannels[key] = ch;
+
+            ch->setPaused(false);
         }
 
         return true;

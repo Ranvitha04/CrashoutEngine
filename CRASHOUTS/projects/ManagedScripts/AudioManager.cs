@@ -12,7 +12,7 @@ public class AudioManager
                 "assets/audio/Lava-Volcano-Wind-Environment_LOOP.wav",
                 0.05f, // base volume
                 true, // loop? (ambient usually yes)
-                SoundType.SFX // it's music, not SFX
+                SoundType.Music // it's music, not SFX
             );
 
         RegisterSound(
@@ -20,7 +20,6 @@ public class AudioManager
                 "assets/audio/footsteps 1.wav",
                 1.0f, // base volume
                 true, // loop?
-                //SoundType.SFX //SFX broken
                 SoundType.SFX
             );
 
@@ -29,7 +28,6 @@ public class AudioManager
                 "assets/audio/footsteps 2.wav",
                 1.0f, // base volume
                 true, // loop?
-                      //SoundType.SFX //SFX broken
                 SoundType.SFX
             );
 
@@ -38,7 +36,6 @@ public class AudioManager
                 "assets/audio/footsteps 3.wav",
                 1.0f, // base volume
                 true, // loop?
-                      //SoundType.SFX //SFX broken
                 SoundType.SFX
             );
 
@@ -47,7 +44,6 @@ public class AudioManager
                 "assets/audio/footsteps 4.wav",
                 1.0f, // base volume
                 true, // loop?
-                      //SoundType.SFX //SFX broken
                 SoundType.SFX
             );
 
@@ -56,7 +52,6 @@ public class AudioManager
                 "assets/audio/footsteps 5.wav",
                 1.0f, // base volume
                 true, // loop?
-                      //SoundType.SFX //SFX broken
                 SoundType.SFX
             );
 
@@ -65,7 +60,6 @@ public class AudioManager
                 "assets/audio/footsteps 6.wav",
                 1.0f, // base volume
                 true, // loop?
-                      //SoundType.SFX //SFX broken
                 SoundType.SFX
             );
 
@@ -74,7 +68,7 @@ public class AudioManager
                 "assets/audio/Switch_StepOn.wav",
                 0.6f, // base volume
                 false, // loop?
-                SoundType.SFX // it's music, not SFX SFX DOESNT WORK LMAO
+                SoundType.SFX 
             );
 
         RegisterSound(
@@ -82,7 +76,7 @@ public class AudioManager
                 "assets/audio/level bgm 1.wav",
                 0.8f, // base volume
                 true, // loop?
-                SoundType.SFX // it's music, not SFX SFX DOESNT WORK LMAO
+                SoundType.SFX
             );
 
         /*RegisterSound(
