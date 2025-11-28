@@ -14,6 +14,10 @@ namespace CrashoutsEngine
         {
             InternalPlay(EntityID, state);
         }
+        public void SetSpriteSheet(string assetName, int cols, int rows, float worldWidth, float worldHeight)
+        {
+            InternalSetSpriteSheet(EntityID, assetName, cols, rows, worldWidth, worldHeight);
+        }
 
         public void SetBool(string key, bool value)
         {
@@ -66,5 +70,12 @@ namespace CrashoutsEngine
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private extern static bool InternalGetBool(uint entityID, string key);
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private extern static void InternalSetSpriteSheet(uint entityID,
+                                                  string path,
+                                                  int cols,
+                                                  int rows,
+                                                  float worldWidth,
+                                                  float worldHeight);
     }
 }

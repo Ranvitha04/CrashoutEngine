@@ -190,12 +190,16 @@ void Init() {
     glfwSetWindowFocusCallback(GLApp::ptr_window,
         [](GLFWwindow*, int focused)
         {
-            if (focused == GLFW_TRUE) {
-                engineState = EngineState::PLAY;   // window focused
-                CrashoutsEngine::Audio::AudioSystem::instance().setPaused(false);
+            if (focused == GLFW_TRUE)
+            {
+                // Window regained focus
+                if (engineState == EngineState::PLAY)
+                    CrashoutsEngine::Audio::AudioSystem::instance().setPaused(false);
             }
-            else {
-                engineState = EngineState::PAUSE;  // window unfocused (ALT-TAB)
+            else
+            {
+                // Window lost focus (ALT+TAB)
+                engineState = EngineState::PAUSE;
                 CrashoutsEngine::Audio::AudioSystem::instance().setPaused(true);
                 InputManager::ClearInputs();
             }

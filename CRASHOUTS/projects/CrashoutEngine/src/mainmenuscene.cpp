@@ -16,6 +16,7 @@
 #include <random>
 #include <string>
 #include <chrono> // Used to seed the random number generator
+#include "spriteAnimation.h"
 
 #include "scriptcomponent.h"
 #include "glm/vec3.hpp"
@@ -195,6 +196,7 @@ void CreateRandBox() {
 
 void UpdateMainMenu()
 {
+	Component::UpdateSpriteAnimationsECS();
 
 	//Component::RigidBodyComponent* rigidBody{ globalECS->GetComponent<Component::RigidBodyComponent>(entity1) };
 	//Component::TransformComponent* transform{ globalECS->GetComponent<Component::TransformComponent>(entity1) };
@@ -257,6 +259,8 @@ void RenderMainMenu()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 #endif
 	//Scene::RenderScene(*globalECS);
+	Component::RenderSpriteAnimationsECS();
+
 }
 
 void FreeMainMenu()

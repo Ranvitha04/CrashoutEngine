@@ -1,3 +1,11 @@
+/*!
+@file        keyframe.h
+@author      b.mohamadafiq@digipen.edu
+@date        28/9/2025
+@brief       Declares the keyframe() function that registers all the keyframe when it starts.
+
+*/
+
 #pragma once
 #include <string>
 #include <vector>
@@ -5,7 +13,7 @@
 #include <functional>
 #include <algorithm>
 
-// ---- Forward minimal engine types (adjust if your names differ)
+
 namespace CrashoutsEngine {
     using Entity = unsigned int;
     class ECS;
@@ -15,28 +23,28 @@ enum class KFInterp { Constant, Linear, Cubic };
 enum class KFWrap { Loop, Clamp };
 
 struct KFKey {
-    float time = 0.f;     // seconds
-    float value = 0.f;     // generic numeric value (pos, angle, scale, spriteIndex)
-    float inTan = 0.f;     // incoming tangent  (Cubic only)
-    float outTan = 0.f;     // outgoing tangent (Cubic only)
+    float time = 0.f;     
+    float value = 0.f;     
+    float inTan = 0.f;     
+    float outTan = 0.f;     
     KFInterp interp = KFInterp::Linear;
 };
 
 struct AnimationCurve {
-    std::vector<KFKey> keys;  // keep time-sorted
+    std::vector<KFKey> keys;  
 
     void  Add(const KFKey& k);
-    float Evaluate(float t) const;      // evaluate without wrapping
+    float Evaluate(float t) const;      
     float StartTime() const { return keys.empty() ? 0.f : keys.front().time; }
     float EndTime()   const { return keys.empty() ? 0.f : keys.back().time; }
 };
 
-// Which property a curve controls (expand as needed)
+
 enum class KFProperty {
     PosX, PosY, PosZ,
     RotZ,
     ScaleX, ScaleY,
-    SpriteIndex   // treated as integer-ish; rounded at apply time
+    SpriteIndex   
 };
 
 struct KFBinding {
@@ -59,18 +67,18 @@ struct AnimationClip {
 struct KeyframeAnimatorComponent {
     std::unordered_map<std::string, AnimationClip> clips;
 
-    std::string current;    // active clip name
-    float       t = 0.f;    // time in current clip
+    std::string current;    
+    float       t = 0.f;    
     bool        playing = true;
 
-    // Optional: map sprite frame index -> texture name
+    
     std::function<std::string(int)> spriteResolver;
 };
 
 // ---------- Runtime API ----------
 namespace KeyframeUnity {
 
-    // Ensure the component exists and return it
+    
     KeyframeAnimatorComponent& AddAnimator(CrashoutsEngine::ECS& ecs, CrashoutsEngine::Entity e);
 
     // Add/replace a clip
@@ -82,6 +90,6 @@ namespace KeyframeUnity {
     // Update a single entity’s animator
     void Update(CrashoutsEngine::ECS& ecs, CrashoutsEngine::Entity e, KeyframeAnimatorComponent& a, float dt);
 
-    // Update all animators in ECS (assumes your ECS exposes GetComponentArray<T>())
+    // Update all animators in ECS 
     void UpdateAll(CrashoutsEngine::ECS& ecs, float dt);
 }
