@@ -10,7 +10,7 @@ namespace CrashoutsEngine
         bool isMoving;
         bool wasMoving;
         bool jump;
-
+        Animator animator;
         /*SAMPLE TRIGGERS*/
         public void OnTriggerEnter(uint otherEntity)
         {
@@ -40,6 +40,24 @@ namespace CrashoutsEngine
             // CollisionEvents.RegisterTriggerStay(Entity.ID, OnTriggerStay);
 
             AudioManager.GetInstance().Play("ambient");
+
+                              
+            animator = Entity.GetComponent<Animator>(); 
+
+          //  if (animator == null)
+          //  {
+          //      Console.WriteLine("[C#] PlayerController: FAILED to get Animator on entity " + Entity.ID);
+           //     return;
+           // }
+
+           // animator.SetSpriteSheet(
+            //    "images/spritesheet/ducky_2_spritesheet.png",
+            //    6,   // cols
+             //   4,   // rows
+             //   10.0f,
+             //   10.0f
+           // );
+           
         }
 
         public override void Update()
@@ -106,8 +124,22 @@ namespace CrashoutsEngine
             moveLeft = Input.IsKeyPressed(Key.A);
             moveRight = Input.IsKeyPressed(Key.D);
 
-            wasMoving = isMoving;
-            jump = Input.IsKeyTriggered(Key.Space);
+           // if (animator != null)
+           // {
+           //     bool moving = moveLeft || moveRight;
+           //     if (!moving)
+            //        animator.Play("idle_normal");
+            //    else
+            //    {
+              //      animator.Play("walk_normal");
+              //      if (moveLeft && !moveRight)
+               //         animator.SetFlip(true);
+                //    else if (moveRight && !moveLeft)
+               //         animator.SetFlip(false);
+               // }
+           // }
+           // wasMoving = isMoving;
+            //jump = Input.IsKeyTriggered(Key.Space);
 
         }
 
