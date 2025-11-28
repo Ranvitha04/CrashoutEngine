@@ -96,6 +96,7 @@ std::string g_PendingSceneName = "";
 bool g_IsSceneLoadPending = false;
 
 static EngineState previousState = EngineState::STOP;
+bool g_fullscreen = false;
 
 /*  _________________________________________________________________________ */
 /*! PerformPendingSceneLoad
@@ -189,6 +190,9 @@ void Init() {
     if (!GLApp::init(Settings::GetScreenWidth(), Settings::GetScreenHeight(), "CRASHOUTS")) {
         std::exit(EXIT_FAILURE);
     }
+    // Detect if window starts fullscreen (decorated = false)
+    int decorated = glfwGetWindowAttrib(GLApp::ptr_window, GLFW_DECORATED);
+    g_fullscreen = (decorated == GLFW_FALSE);
 
     glfwSetWindowFocusCallback(GLApp::ptr_window,
         [](GLFWwindow*, int focused)
@@ -367,8 +371,8 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
         ImGui::SameLine(0.0f, 0.0f);
 
         // fullscreen
-        static bool fullscreen = true;
-        if (DrawTitleButton(fullscreen ? "[ ]" : "[]"))
+        //static bool fullscreen = true;
+        if (DrawTitleButton(g_fullscreen ? "[ ]" : "[]"))
         {
             GLFWmonitor* mon = glfwGetPrimaryMonitor();
             const GLFWvidmode* mode = glfwGetVideoMode(mon);
@@ -376,7 +380,7 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
             int mx, my;
             glfwGetMonitorPos(mon, &mx, &my);
 
-            if (!fullscreen) {
+            if (!g_fullscreen) {
                 glfwSetWindowAttrib(GLApp::ptr_window, GLFW_DECORATED, GLFW_FALSE);
                 glfwSetWindowMonitor(GLApp::ptr_window, NULL, mx, my, mode->width, mode->height, 0);
             }
@@ -384,7 +388,7 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
                 glfwSetWindowAttrib(GLApp::ptr_window, GLFW_DECORATED, GLFW_FALSE);
                 glfwSetWindowMonitor(GLApp::ptr_window, NULL, 100, 100, 1600, 900, 0);
             }
-            fullscreen = !fullscreen;
+            g_fullscreen = !g_fullscreen;
         }
 
 
@@ -397,7 +401,7 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
 		// dragging is stupidly bugged but whatever - Rain
 		// YEAHHHHH ITS FIXED
         // Disable dragging in fullscreen
-        if (!fullscreen)
+        if (!g_fullscreen)
         {
             static bool draggingWindow = false;
             static POINT cursorStart;
@@ -554,6 +558,31 @@ Let application update state changes (such as animation).
 void Update(double const& dt) {
     MonoManager::CheckHotReload();
     if(PerformPendingSceneLoad()) return;
+
+    // ALT+ENTER fullscreen toggle using InputManager
+// ------------------------------------------------------
+    if (InputManager::IsKeyHeld(Key::LeftAlt) && InputManager::IsKeyTriggered(Key::Enter))
+    {
+        GLFWwindow* window = GLApp::ptr_window;
+        GLFWmonitor* mon = glfwGetPrimaryMonitor();
+        const GLFWvidmode* mode = glfwGetVideoMode(mon);
+
+        int mx, my;
+        glfwGetMonitorPos(mon, &mx, &my);
+
+        if (!g_fullscreen)
+        {
+            glfwSetWindowAttrib(window, GLFW_DECORATED, GLFW_FALSE);
+            glfwSetWindowMonitor(window, nullptr, mx, my, mode->width, mode->height, 0);
+        }
+        else
+        {
+            glfwSetWindowAttrib(window, GLFW_DECORATED, GLFW_FALSE);
+            glfwSetWindowMonitor(window, nullptr, 100, 100, 1600, 900, 0);
+        }
+
+        g_fullscreen = !g_fullscreen;
+    }
 
     GLApp::update_time();
 
