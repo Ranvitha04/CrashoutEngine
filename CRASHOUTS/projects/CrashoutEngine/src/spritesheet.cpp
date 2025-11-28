@@ -8,6 +8,7 @@
 
 #include "spritesheet.h"
 #include "spriteAnimation.h"
+#include "keyframe.h"
 #include "rendering.h"
 #include "textureasset.h"
 #include "assetmanager.h"
@@ -478,6 +479,7 @@ namespace UI
             ImGui::Text("Has SpriteAnimComponent:  %s", hasAnim ? "YES" : "NO");
         }
 
+        /*
         if (ImGui::Button("Apply selected frame to entity"))
         {
 
@@ -506,7 +508,78 @@ namespace UI
                 anim->timer = 0.0f;
             }
         }
+        */
 
+        // This button takes the temporary UI clips and saves them to the Entity
+        // =================================================================================
+        // CONVERSION LOGIC: Tool (Simple Frames) -> Engine (Keyframe Curves)
+        // =================================================================================
+        if (selected && ImGui::Button("Save Animation Set to Entity"))
+        {
+            using namespace KeyframeUnity; // Ensure we can access AddAnimator helper
+
+            // 1. Update Sprite Sheet Data (Texture path, rows, cols)
+            CEVec2 worldSize{ 25.0f, 25.0f };
+            if (ecs.HasComponent<Component::TransformComponent>(selected)) {
+                worldSize = ecs.GetComponent<Component::TransformComponent>(selected)->size;
+            }
+            Component::SetSpriteSheet(selected, gSpritePath, gCols, gRows, worldSize);
+
+            // 2. Get or Add the Keyframe Component
+            auto& animComp = AddAnimator(ecs, selected);
+
+            // Clear old clips so we don't duplicate
+            animComp.clips.clear();
+
+            // 3. Convert UI Clips to Keyframe Clips
+            for (const auto& uiClip : gClips) {
+                AnimationClip newClip;
+                newClip.name = uiClip.name;
+
+                // Set Wrap Mode
+                newClip.wrap = uiClip.loop ? KFWrap::Loop : KFWrap::Clamp;
+
+                // Create the Binding for the Sprite Index
+                KFBinding spriteBinding;
+                spriteBinding.property = KFProperty::SpriteIndex;
+
+                // Calculate time per frame
+                float frameDuration = (uiClip.fps > 0.0f) ? (1.0f / uiClip.fps) : 0.1f;
+
+                // Generate Keys for every frame
+                for (int i = 0; i < uiClip.frameCount; ++i) {
+                    KFKey k{};
+                    k.time = i * frameDuration;           // When this frame starts
+                    k.value = (float)(uiClip.startFrame + i); // Which sprite index
+                    k.interp = KFInterp::Constant;        // Snap, don't fade
+
+                    spriteBinding.curve.Add(k);
+                }
+
+                // Add a final "dummy" key to define the end duration of the last frame
+                // otherwise the last frame would last 0 seconds
+                KFKey endKey{};
+                endKey.time = uiClip.frameCount * frameDuration;
+                endKey.value = (float)(uiClip.startFrame + uiClip.frameCount - 1); // Keep last value
+                endKey.interp = KFInterp::Constant;
+                spriteBinding.curve.Add(endKey);
+
+                // Add Binding to Clip
+                newClip.bindings.push_back(spriteBinding);
+
+                // Register Clip to Component
+                animComp.clips[newClip.name] = newClip;
+            }
+
+            // 4. Set default state
+            if (!gClips.empty()) {
+                animComp.current = gClips[0].name;
+                animComp.playing = true;
+                animComp.t = 0.0f;
+            }
+
+            std::cout << "Converted & Saved " << gClips.size() << " clips to KeyframeAnimator on Entity " << selected << std::endl;
+        }
 
 
         if (ImGui::Button("Add new clip"))

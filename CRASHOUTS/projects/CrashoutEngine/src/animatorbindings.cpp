@@ -162,119 +162,83 @@ void CrashoutsEngine::Bindings::RegisterAnimatorBindings()
 }
 #endif
 
-// animatorbindings.cpp
 #include "engine_pch.h"
 #include "animatorbindings.h"
 
 // Engine Systems
+#include "keyframe.h" // <--- Include your new header here
 #include "entitymanager.h"
-#include "monomanager.h"       // Need this for GetDomain()
-#include "spriteAnimation.h"   // Your C++ Animator Component header
+#include "monomanager.h"
 
 // Mono Headers
 #include <mono/jit/jit.h>
 #include <mono/metadata/assembly.h>
-#include <mono/metadata/object.h>
 
 using namespace CrashoutsEngine;
-using namespace Component;
 
-namespace {
-
-    // --- HELPER: Get Component Safely ---
-    static Animator* GetAnimator(uint32_t entityID) {
-        auto* ecs = ECS::getInstance();
-        if (ecs->HasComponent<Animator>(entityID)) {
-            return ecs->GetComponent<Animator>(entityID);
-        }
-        // Warn if script tries to access missing component
-        std::cout << "[Mono Warning] Entity " << entityID << " has no Animator!" << std::endl;
-        return nullptr;
+// --- HELPER ---
+static KeyframeAnimatorComponent* GetKeyframeAnimator(uint32_t entityID) {
+    auto* ecs = ECS::getInstance();
+    if (ecs->HasComponent<KeyframeAnimatorComponent>(entityID)) {
+        return ecs->GetComponent<KeyframeAnimatorComponent>(entityID);
     }
+    return nullptr;
+}
 
-    // =============================================================
-    // 1. LIFECYCLE HANDLERS (Matches [NativeComponent] attributes)
-    // =============================================================
+// =============================================================
+// 1. LIFECYCLE (Matches [NativeComponent])
+// =============================================================
 
-    static void AddAnimator(uint32_t entityID) {
-        ECS::getInstance()->AddComponent<Animator>(entityID);
+static void AddKeyframeAnimator(uint32_t entityID) {
+    // Uses the function from your header: KeyframeUnity::AddAnimator
+    KeyframeUnity::AddAnimator(*ECS::getInstance(), entityID);
+}
+
+static void RemoveKeyframeAnimator(uint32_t entityID) {
+    ECS::getInstance()->RemoveComponent<KeyframeAnimatorComponent>(entityID);
+}
+
+static bool EntityHasKeyframeAnimator(uint32_t entityID) {
+    return ECS::getInstance()->HasComponent<KeyframeAnimatorComponent>(entityID);
+}
+
+// =============================================================
+// 2. METHODS
+// =============================================================
+
+// C#: void Play(string clipName, bool restart)
+static void InternalPlay(uint32_t entityID, MonoString* clipName, bool restart) {
+    if (auto* ka = GetKeyframeAnimator(entityID)) {
+        char* str = mono_string_to_utf8(clipName);
+
+        // Call the Runtime API from your header
+        KeyframeUnity::Play(*ka, std::string(str), restart);
+
+        mono_free(str);
     }
+}
 
-    static void RemoveAnimator(uint32_t entityID) {
-        ECS::getInstance()->RemoveComponent<Animator>(entityID);
+// C#: bool IsPlaying { get; }
+static bool InternalGetPlaying(uint32_t entityID) {
+    if (auto* ka = GetKeyframeAnimator(entityID)) {
+        return ka->playing;
     }
+    return false;
+}
 
-    static bool EntityHasAnimator(uint32_t entityID) {
-        return ECS::getInstance()->HasComponent<Animator>(entityID);
+// C#: bool IsPlaying { set; }
+static void InternalSetPlaying(uint32_t entityID, bool playing) {
+    if (auto* ka = GetKeyframeAnimator(entityID)) {
+        ka->playing = playing;
     }
+}
 
-    // =============================================================
-    // 2. INTERNAL CALL IMPLEMENTATIONS
-    // =============================================================
-
-    // C#: private extern static void InternalPlay(uint entityID, string state);
-    static void InternalPlay(uint32_t entityID, MonoString* stateName) {
-        if (auto* anim = GetAnimator(entityID)) {
-            char* str = mono_string_to_utf8(stateName); // Convert C# -> C++
-            anim->Play(str);
-            mono_free(str); // IMPORTANT: Free the temp string
-        }
+// C#: string CurrentClip { get; }
+static MonoString* InternalGetCurrentClip(uint32_t entityID) {
+    if (auto* ka = GetKeyframeAnimator(entityID)) {
+        return mono_string_new(MonoManager::GetDomain(), ka->current.c_str());
     }
-
-    // C#: private extern static void InternalSetBool(uint entityID, string key, bool value);
-    static void InternalSetBool(uint32_t entityID, MonoString* key, bool value) {
-        if (auto* anim = GetAnimator(entityID)) {
-            char* str = mono_string_to_utf8(key);
-            anim->SetBool(str, value);
-            mono_free(str);
-        }
-    }
-
-    // C#: private extern static void InternalSetFloat(uint entityID, string key, float value);
-    static void InternalSetFloat(uint32_t entityID, MonoString* key, float value) {
-        if (auto* anim = GetAnimator(entityID)) {
-            char* str = mono_string_to_utf8(key);
-            anim->SetFloat(str, value);
-            mono_free(str);
-        }
-    }
-
-    // C#: private extern static void InternalSetTrigger(uint entityID, string key);
-    static void InternalSetTrigger(uint32_t entityID, MonoString* key) {
-        if (auto* anim = GetAnimator(entityID)) {
-            char* str = mono_string_to_utf8(key);
-            anim->SetTrigger(str);
-            mono_free(str);
-        }
-    }
-
-    // C#: private extern static void InternalSetFlip(uint entityID, bool flip);
-    static void InternalSetFlip(uint32_t entityID, bool flip) {
-        if (auto* anim = GetAnimator(entityID)) {
-            anim->setFlipHorizontal(flip);
-        }
-    }
-
-    // C#: private extern static string InternalGetCurrentState(uint entityID);
-    static MonoString* InternalGetCurrentState(uint32_t entityID) {
-        if (auto* anim = GetAnimator(entityID)) {
-            std::string state = anim->GetCurrentState();
-            // Convert C++ -> C# String
-            return mono_string_new(MonoManager::GetDomain(), state.c_str());
-        }
-        return mono_string_new(MonoManager::GetDomain(), "");
-    }
-
-    // C#: private extern static bool InternalGetBool(uint entityID, string key);
-    static bool InternalGetBool(uint32_t entityID, MonoString* key) {
-        if (auto* anim = GetAnimator(entityID)) {
-            char* str = mono_string_to_utf8(key);
-            bool result = anim->GetBool(str);
-            mono_free(str);
-            return result;
-        }
-        return false;
-    }
+    return mono_string_new(MonoManager::GetDomain(), "");
 }
 
 // =============================================================
@@ -283,20 +247,16 @@ namespace {
 
 void CrashoutsEngine::Bindings::RegisterAnimatorBindings() {
 
-    // Lifecycle
-    mono_add_internal_call("CrashoutsEngine.InternalCalls::AddAnimator", reinterpret_cast<void*>(AddAnimator));
-    mono_add_internal_call("CrashoutsEngine.InternalCalls::RemoveAnimator", reinterpret_cast<void*>(RemoveAnimator));
-    mono_add_internal_call("CrashoutsEngine.InternalCalls::EntityHasAnimator", reinterpret_cast<void*>(EntityHasAnimator));
+    // Lifecycle Mapping
+    mono_add_internal_call("CrashoutsEngine.InternalCalls::AddKeyframeAnimator", reinterpret_cast<void*>(AddKeyframeAnimator));
+    mono_add_internal_call("CrashoutsEngine.InternalCalls::RemoveKeyframeAnimator", reinterpret_cast<void*>(RemoveKeyframeAnimator));
+    mono_add_internal_call("CrashoutsEngine.InternalCalls::EntityHasKeyframeAnimator", reinterpret_cast<void*>(EntityHasKeyframeAnimator));
 
-    // Methods
-    // NOTE: The string MUST match "Namespace.Class::MethodName" exactly as written in C#
+    // Method Mapping
     mono_add_internal_call("CrashoutsEngine.Animator::InternalPlay", reinterpret_cast<void*>(InternalPlay));
-    mono_add_internal_call("CrashoutsEngine.Animator::InternalSetBool", reinterpret_cast<void*>(InternalSetBool));
-    mono_add_internal_call("CrashoutsEngine.Animator::InternalSetFloat", reinterpret_cast<void*>(InternalSetFloat));
-    mono_add_internal_call("CrashoutsEngine.Animator::InternalSetTrigger", reinterpret_cast<void*>(InternalSetTrigger));
-    mono_add_internal_call("CrashoutsEngine.Animator::InternalSetFlip", reinterpret_cast<void*>(InternalSetFlip));
-    mono_add_internal_call("CrashoutsEngine.Animator::InternalGetCurrentState", reinterpret_cast<void*>(InternalGetCurrentState));
-    mono_add_internal_call("CrashoutsEngine.Animator::InternalGetBool", reinterpret_cast<void*>(InternalGetBool));
+    mono_add_internal_call("CrashoutsEngine.Animator::InternalGetPlaying", reinterpret_cast<void*>(InternalGetPlaying));
+    mono_add_internal_call("CrashoutsEngine.Animator::InternalSetPlaying", reinterpret_cast<void*>(InternalSetPlaying));
+    mono_add_internal_call("CrashoutsEngine.Animator::InternalGetCurrentClip", reinterpret_cast<void*>(InternalGetCurrentClip));
 
-    std::cout << "[Mono] Registered Animator Bindings" << std::endl;
+    std::cout << "[Mono] Registered Keyframe Animator Bindings" << std::endl;
 }

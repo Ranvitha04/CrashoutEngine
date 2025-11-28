@@ -36,6 +36,7 @@ context and implement a game loop.
 #include "prefab_init.h"
 #include "instanceSystem.h"
 #include "sceneasset.h"
+#include "keyframe.h"
 
 #include "glapp.h"
 #include "log.h"
@@ -566,6 +567,7 @@ void Update(double const& dt) {
     CrashoutsEngine::UpdateHierarchy(*CrashoutsEngine::ECS::getInstance());
 
     if (engineState == EngineState::PLAY) {
+        KeyframeUnity::UpdateAll(*CrashoutsEngine::ECS::getInstance(), (float)dt);
         CrashoutsEngine::ScriptSystem::UpdateAll();
 
         aiSystem.Update();
