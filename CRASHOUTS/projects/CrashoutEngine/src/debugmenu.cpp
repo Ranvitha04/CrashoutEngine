@@ -1890,16 +1890,17 @@ namespace UI { // --------------------------------------------------------------
             if (ImGui::Button("STOP", ImVec2(70, 25))) {
                 if (engineState == EngineState::STOP && !currSceneName.empty()) Serialization::SaveScenes(currSceneName);
 
+                CrashoutsEngine::Audio::AudioSystem::instance().stopAll(false);
+                CrashoutsEngine::ScriptSystem::DestroyAll();
+                
                 if(currSceneName.empty()) RestartGameState();       // Legacy scene system
                 else {
-                    CrashoutsEngine::ScriptSystem::DestroyAll();
                     ECS::getInstance()->Reset();
                     Serialization::LoadScenes(currSceneName);
                     CrashoutsEngine::ScriptSystem::InitializeAll(MonoManager::GetDomain(), MonoManager::GetAssembly());
                 }
                 //MonoManager::ReloadScripts();
                 CrashoutsEngine::Audio::AudioSystem::instance().stopAll(true); // Stop FMOD Studio
-                CrashoutsEngine::Audio::AudioSystem::instance().setPaused(false);
                 CrashoutsEngine::Audio::AudioSystem::instance().stopMusicGroup(); // <-- Seems to work better than the above
 
                 engineState = EngineState::STOP;

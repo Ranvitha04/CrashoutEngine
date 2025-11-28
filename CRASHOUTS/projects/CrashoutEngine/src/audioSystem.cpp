@@ -345,8 +345,11 @@ namespace CrashoutsEngine::Audio
     */
     bool AudioSystem::stopAll(bool fadeOut)
     {
-        // Master bus stops *everything* (music + sfx)
-        return stopAllOnBus("bus:/", fadeOut);
+        bool studioResult = stopAllOnBus("bus:/", fadeOut);
+
+        stopAllRaw();
+
+        return studioResult;
     }
 
     /*!
