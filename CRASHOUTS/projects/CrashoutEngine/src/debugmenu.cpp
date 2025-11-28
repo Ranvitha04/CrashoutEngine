@@ -1570,24 +1570,21 @@ namespace UI { // --------------------------------------------------------------
             };
 
         // SAFE STOP FUNCTION (EVENT / RAW SFX / RAW MUSIC)
-        auto StopAny = [&](void* handle)
+        auto StopAny = [&](void* handle, const std::string& id)
             {
                 if (!handle) return;
 
                 // 1) FMOD EVENT INSTANCE
-                if ((uintptr_t)handle > 0x1000 && (uintptr_t)handle < 0xFFFFFFFF)
+                if (id.rfind("event:/", 0) == 0)
                 {
                     auto* inst = static_cast<FMOD::Studio::EventInstance*>(handle);
-
-                    FMOD_STUDIO_PLAYBACK_STATE st;
-                    if (inst->getPlaybackState(&st) == FMOD_OK)
+                    if (inst && inst->isValid())
                     {
                         inst->stop(FMOD_STUDIO_STOP_IMMEDIATE);
                         inst->release();
                     }
                     return;
                 }
-
                 // 2) RAW MUSIC TAG (dummy handle 0xBEEF)
                 if (handle == (void*)0xBEEF)
                 {
@@ -1733,27 +1730,51 @@ namespace UI { // --------------------------------------------------------------
 
         // BGM
         EventCombo("Background Music", pickBGM);
-        if (ImGui::Button("Play##bgm"))      hBGM = PlayAny(pickBGM, true);
+        if (ImGui::Button("Play##bgm")) {
+            if (hBGM) StopAny(hBGM, pickBGM);
+            hBGM = PlayAny(pickBGM, true);
+        }
         ImGui::SameLine();
-        if (ImGui::Button("Stop##bgm")) { StopAny(hBGM); hBGM = nullptr; }
+        if (ImGui::Button("Stop##bgm")) {
+            StopAny(hBGM, pickBGM);
+            hBGM = nullptr;
+        }
 
-        // SFX1
+        // SFX 1
         EventCombo("SFX 1", pickSFX1);
-        if (ImGui::Button("Play##sfx1"))    hSFX1 = PlayAny(pickSFX1);
+        if (ImGui::Button("Play##sfx1")) {
+            if (hSFX1) StopAny(hSFX1, pickSFX1);
+            hSFX1 = PlayAny(pickSFX1);
+        }
         ImGui::SameLine();
-        if (ImGui::Button("Stop##sfx1")) { StopAny(hSFX1); hSFX1 = nullptr; }
+        if (ImGui::Button("Stop##sfx1")) {
+            StopAny(hSFX1, pickSFX1);
+            hSFX1 = nullptr;
+        }
 
-        // SFX2
+        // SFX 2
         EventCombo("SFX 2", pickSFX2);
-        if (ImGui::Button("Play##sfx2"))    hSFX2 = PlayAny(pickSFX2);
+        if (ImGui::Button("Play##sfx2")) {
+            if (hSFX2) StopAny(hSFX2, pickSFX2);
+            hSFX2 = PlayAny(pickSFX2);
+        }
         ImGui::SameLine();
-        if (ImGui::Button("Stop##sfx2")) { StopAny(hSFX2); hSFX2 = nullptr; }
+        if (ImGui::Button("Stop##sfx2")) {
+            StopAny(hSFX2, pickSFX2);
+            hSFX2 = nullptr;
+        }
 
-        // SFX3
+        // SFX 3
         EventCombo("SFX 3", pickSFX3);
-        if (ImGui::Button("Play##sfx3"))    hSFX3 = PlayAny(pickSFX3);
+        if (ImGui::Button("Play##sfx3")) {
+            if (hSFX3) StopAny(hSFX3, pickSFX3);
+            hSFX3 = PlayAny(pickSFX3);
+        }
         ImGui::SameLine();
-        if (ImGui::Button("Stop##sfx3")) { StopAny(hSFX3); hSFX3 = nullptr; }
+        if (ImGui::Button("Stop##sfx3")) {
+            StopAny(hSFX3, pickSFX3);
+            hSFX3 = nullptr;
+        }
 
         // MASTER VOLUME
         ImGui::SeparatorText("Master Volume");
