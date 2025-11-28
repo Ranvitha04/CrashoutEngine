@@ -1,0 +1,48 @@
+{
+    "prefabs": [
+        {
+            "type": "Box",
+            "name": "Slime",
+            "transform": {
+                "position": {
+                    "x": -197.609283,
+                    "y": 150.26564,
+                    "z": 0.0
+                },
+                "rotation": 0.0,
+                "size": {
+                    "x": 72.0,
+                    "y": 67.0
+                }
+            },
+            "shape": {
+                "type": 0,
+                "kind": "Rectangle",
+                "width": 72.0,
+                "height": 67.0,
+                "size": 72.0,
+                "color": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "enableTexture": true,
+                "textureName": "spritesheet\\Slime spritesheet\\Slime spritesheet_04.png"
+            },
+            "rigidbody": {
+                "mass": 1.0,
+                "restitution": 0.0
+            },
+            "script": {
+                "entityID": 6,
+                "className": "SlimeMovement",
+                "scripts": [
+                    {
+                        "className": "SlimeMovement"
+                    }
+                ]
+            }
+        }
+    ]
+}

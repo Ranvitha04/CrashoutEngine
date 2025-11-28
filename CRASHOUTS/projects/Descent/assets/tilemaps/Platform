@@ -3,7 +3,7 @@
     "tilemap": [
         {
             "texAssetName": "spritesheet\\Platform\\Platform_36.png",
-            "colliderType": "ColliderType::NONE",
+            "colliderType": "ColliderType::AABB",
             "ruleBitMap": 15
         },
         {

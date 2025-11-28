@@ -34,6 +34,13 @@ namespace CrashoutsEngine
             return pos;
         }
 
+        public static CEVec2 GetMouseWorldPosition()
+        {
+            CEVec2 pos;
+            InternalGetMouseWorldPosition(out pos);
+            return pos;
+        }
+
         public static bool IsMouseButtonDown(int button)
         {
             return InternalIsMouseButtonDown(button);
@@ -46,6 +53,9 @@ namespace CrashoutsEngine
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern void InternalGetMousePosition(out CEVec2 pos);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern void InternalGetMouseWorldPosition(out CEVec2 pos);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern bool InternalIsMouseButtonDown(int button);

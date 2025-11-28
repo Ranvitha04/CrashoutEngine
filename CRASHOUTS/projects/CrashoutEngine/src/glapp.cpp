@@ -404,10 +404,11 @@ This function is called when keyboard buttons are pressed.
 When the ESC key is pressed, the close flag of the window is set.
 */
 void GLApp::key_cb(GLFWwindow* pwin, int key, [[maybe_unused]] int scancode, int action, [[maybe_unused]] int mod) {
+    (void)pwin;
     //ImGui_ImplGlfw_KeyCallback(pwin, key, scancode, action, mod);
 #ifdef _DEBUG
     Key k = static_cast<Key>(key);
-#endif
+#endif  
     if (GLFW_PRESS == action) {
 #ifdef _DEBUG
         LOGI(Input, std::string(KeyToString(k)) + " is pressed");
@@ -427,9 +428,9 @@ void GLApp::key_cb(GLFWwindow* pwin, int key, [[maybe_unused]] int scancode, int
     // Delegate sprite animation key input handling to ran.cpp
     HandleSpriteKeyInput(key, action);
 
-    if (GLFW_KEY_ESCAPE == key && GLFW_PRESS == action) {
-        glfwSetWindowShouldClose(pwin, GLFW_TRUE);
-    }
+    //if (GLFW_KEY_ESCAPE == key && GLFW_PRESS == action) {
+    //    glfwSetWindowShouldClose(pwin, GLFW_TRUE);da
+    //}
 }
 
 /* _________________________________________________________________________*/
