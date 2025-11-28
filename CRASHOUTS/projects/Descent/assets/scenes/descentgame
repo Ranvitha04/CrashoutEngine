@@ -21411,7 +21411,7 @@
                 "position": {
                     "x": 0.0,
                     "y": 0.0,
-                    "z": -107.19999694824219
+                    "z": -100.0
                 },
                 "size": {
                     "x": 1000.0,
@@ -21446,6 +21446,413 @@
                     "x": 32.0,
                     "y": 0.0,
                     "z": 0.0
+                }
+            }
+        },
+        {
+            "name": "GameOverBG",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": -100.0
+                },
+                "size": {
+                    "x": 201.0,
+                    "y": 131.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI\\Pause Menu Open.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentName": "GameOverScreen",
+                "localPos": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.20100000500679017,
+                    "y": 0.13099999725818635
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            }
+        },
+        {
+            "name": "GAMEOVER",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": -99.69999694824219
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "text": {
+                "font": "Exo2-Regular",
+                "text": "GAME OVER",
+                "scale": 23.0,
+                "offset": {
+                    "x": 958.0,
+                    "y": 688.0
+                },
+                "color": {
+                    "x": 0.4751381278038025,
+                    "y": 0.11812826246023178,
+                    "z": 0.11812826246023178,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": false
+            },
+            "parent": {
+                "parentName": "GameOverScreen",
+                "localPos": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.30000001192092898
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.0010000000474974514,
+                    "y": 0.0010000000474974514
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            }
+        },
+        {
+            "name": "RestartBtn",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -14.800000190734864,
+                    "y": 0.0,
+                    "z": -99.9000015258789
+                },
+                "size": {
+                    "x": 18.600000381469728,
+                    "y": 9.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "text": {
+                "font": "Exo2-Regular",
+                "text": "Restart",
+                "scale": 21.0,
+                "offset": {
+                    "x": 814.0,
+                    "y": 541.0
+                },
+                "color": {
+                    "x": 0.3867403268814087,
+                    "y": 0.034186992794275287,
+                    "z": 0.034186992794275287,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": false
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "GameOverUI",
+                        "fields": {}
+                    }
+                ]
+            },
+            "button": {
+                "buttonState": 0,
+                "shapeNormalColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "shapeHoveredColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.5
+                },
+                "shapePressedColor": {
+                    "x": 0.699999988079071,
+                    "y": 0.699999988079071,
+                    "z": 0.699999988079071,
+                    "w": 0.699999988079071
+                },
+                "textNormalColor": {
+                    "x": 0.3867403268814087,
+                    "y": 0.034186992794275287,
+                    "z": 0.034186992794275287,
+                    "w": 1.0
+                },
+                "textHoveredColor": {
+                    "x": 0.4364640712738037,
+                    "y": 0.04581666365265846,
+                    "z": 0.04581666365265846,
+                    "w": 0.7348066568374634
+                },
+                "textPressedColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.5
+                }
+            },
+            "gui": {
+                "uiType": 6
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "uiLayout": 4
+            },
+            "parent": {
+                "parentName": "GameOverScreen",
+                "localPos": {
+                    "x": -0.014800000004470349,
+                    "y": 0.0,
+                    "z": 0.10000002384185791
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.01860000006854534,
+                    "y": 0.008999999612569809
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            }
+        },
+        {
+            "name": "QuitBtn",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 14.300000190734864,
+                    "y": 0.0,
+                    "z": -99.9000015258789
+                },
+                "size": {
+                    "x": 18.600000381469728,
+                    "y": 9.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "text": {
+                "font": "Exo2-Regular",
+                "text": "Quit",
+                "scale": 20.0,
+                "offset": {
+                    "x": 1097.0,
+                    "y": 537.0
+                },
+                "color": {
+                    "x": 0.3867403268814087,
+                    "y": 0.034186992794275287,
+                    "z": 0.034186992794275287,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": false
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "GameOverUI",
+                        "fields": {}
+                    }
+                ]
+            },
+            "button": {
+                "buttonState": 0,
+                "shapeNormalColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "shapeHoveredColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.5
+                },
+                "shapePressedColor": {
+                    "x": 0.699999988079071,
+                    "y": 0.699999988079071,
+                    "z": 0.699999988079071,
+                    "w": 0.699999988079071
+                },
+                "textNormalColor": {
+                    "x": 0.3867403268814087,
+                    "y": 0.034186992794275287,
+                    "z": 0.034186992794275287,
+                    "w": 1.0
+                },
+                "textHoveredColor": {
+                    "x": 0.4364640712738037,
+                    "y": 0.04581666365265846,
+                    "z": 0.04581666365265846,
+                    "w": 0.7348066568374634
+                },
+                "textPressedColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.5
+                }
+            },
+            "gui": {
+                "uiType": 6
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "uiLayout": 4
+            },
+            "parent": {
+                "parentName": "GameOverScreen",
+                "localPos": {
+                    "x": 0.014299999922513962,
+                    "y": 0.0,
+                    "z": 0.10000002384185791
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.01860000006854534,
+                    "y": 0.008999999612569809
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
                 }
             }
         }

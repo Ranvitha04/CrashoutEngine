@@ -224,6 +224,13 @@ namespace CrashoutsEngine
                 Debug.Log("Player Died");
                 alive = false;
                 // Die();
+
+                Entity gameOverEnt = Entity.Find("GameOverScreen");
+                if (gameOverEnt != null)
+                {
+                    var gameOverT = gameOverEnt.GetComponent<TransformComponent>();
+                    gameOverT.Position = new CEVec3(gameOverT.Position.x, gameOverT.Position.y, 0.8f);
+                }
             }
         }
 

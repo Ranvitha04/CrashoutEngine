@@ -8,7 +8,7 @@ namespace CrashoutsEngine
     {
         // Name of the scene to reload when restarting
         // You can hardcode this or maybe get the current scene name if exposed
-        private string currentSceneName = "Level1.json";
+        private string currentSceneName = "descentgame";
 
         public override void Start()
         {
@@ -34,7 +34,7 @@ namespace CrashoutsEngine
                 else if (btnName == "QuitBtn")
                 {
                     Console.WriteLine("[GameOverUI] Quitting Game...");
-                    SceneManager.QuitGame(); // Assuming you have exposed QuitGame()
+                    SceneManager.QuitGame(); 
                 }
             }
 

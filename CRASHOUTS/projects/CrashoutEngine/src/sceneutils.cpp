@@ -203,6 +203,7 @@ namespace Scene {
             // This logic ensures UI clicks work regardless of Camera Zoom/Position.
             CEVec2 mouseUI;
             CEVec2 rawMouse = InputManager::GetMousePosition(); // Pixels: 0..W, 0..H
+
             float winW = (float)GLApp::width;
             float winH = (float)GLApp::height;
 
@@ -242,6 +243,8 @@ namespace Scene {
                 if (isUI) {
                     checkPos = mouseUI;
                 }
+
+                std::cout << "Mouse pos is " << checkPos.x << ", " << checkPos.y << "Button Pos is" << t->position.x << ", " << t->position.y << std::endl;
 
                 // --- COLLISION CHECK (AABB) ---
                 float halfW = t->size.x * 0.5f;
