@@ -345,8 +345,11 @@ namespace CrashoutsEngine::Audio
     */
     bool AudioSystem::stopAll(bool fadeOut)
     {
-        // Master bus stops *everything* (music + sfx)
-        return stopAllOnBus("bus:/", fadeOut);
+        bool studioResult = stopAllOnBus("bus:/", fadeOut);
+
+        stopAllRaw();
+
+        return studioResult;
     }
 
     /*!
@@ -765,35 +768,30 @@ namespace CrashoutsEngine::Audio
 
     FMOD::Channel* AudioSystem::playSFXFileEx(const std::string& path)
     {
-        if (!mCore || !mSFXGroup)
-            return nullptr;
+        if (!mCore || !mSFXGroup) return nullptr;
 
-        if (!IsSupportedAudioFile(path))
-        {
-            std::string msg =
-                "Unsupported audio format for SFX file:\n\n" + path +
-                "\n\nSupported formats: .mp3, .ogg, .wav";
-
+        if (!IsSupportedAudioFile(path)) {
+            std::string msg = "Unsupported audio format: " + path;
             ShowAudioErrorPopup(msg);
             LOGE(Audio, msg);
-
             return nullptr;
         }
 
+        FMOD_MODE mode = FMOD_DEFAULT | FMOD_2D | FMOD_CREATESAMPLE;
+
         FMOD::Sound* snd = nullptr;
-        if (!ok(mCore->createSound(path.c_str(),
-            FMOD_DEFAULT | FMOD_2D,
-            nullptr,
-            &snd),
-            "createSound(sfx)"))
-        {
+        FMOD_RESULT r = mCore->createSound(path.c_str(), mode, nullptr, &snd);
+
+        if (r != FMOD_OK) {
+            LOGE(Audio, "Preview Failed (CreateSound): " + path);
             return nullptr;
         }
 
         FMOD::Channel* ch = nullptr;
-        if (!ok(mCore->playSound(snd, mSFXGroup, false, &ch),
-            "playSound(sfx)"))
-        {
+
+        r = mCore->playSound(snd, mSFXGroup, true, &ch);
+
+        if (r != FMOD_OK) {
             snd->release();
             return nullptr;
         }
@@ -802,10 +800,9 @@ namespace CrashoutsEngine::Audio
             ch->setMode(FMOD_2D);
 
             ch->setCallback([](FMOD_CHANNELCONTROL* channelcontrol,
-                FMOD_CHANNELCONTROL_TYPE /*controltype*/,
+                FMOD_CHANNELCONTROL_TYPE,
                 FMOD_CHANNELCONTROL_CALLBACK_TYPE callbacktype,
-                void* /*commanddata1*/,
-                void* /*commanddata2*/) -> FMOD_RESULT {
+                void*, void*) -> FMOD_RESULT {
                     if (callbacktype == FMOD_CHANNELCONTROL_CALLBACK_END) {
                         FMOD::Channel* ch = (FMOD::Channel*)channelcontrol;
                         FMOD::Sound* snd = nullptr;
@@ -815,6 +812,8 @@ namespace CrashoutsEngine::Audio
                     }
                     return FMOD_OK;
                 });
+
+            ch->setPaused(false);
         }
 
         return ch;
@@ -862,8 +861,7 @@ namespace CrashoutsEngine::Audio
     @brief Plays a music file and tags its FMOD channel so it can be stopped by key.
     */
     bool AudioSystem::playMusicFileTagged(const std::string& key,
-        const std::string& path,
-        bool loop)
+        const std::string& path, bool loop, float volume)
     {
         if (!mCore || !mMusicGroup)
             return false;
@@ -889,6 +887,7 @@ namespace CrashoutsEngine::Audio
         if (ch)
         {
             ch->setMode(FMOD_2D);
+            ch->setVolume(volume);
             mTaggedChannels[key] = ch;
         }
 
@@ -899,33 +898,24 @@ namespace CrashoutsEngine::Audio
     @brief Plays a SFX file and tags its FMOD channel so it can be stopped by key.
     */
     bool AudioSystem::playSFXFileTagged(const std::string& key,
-        const std::string& path, bool loop)
+        const std::string& path, bool loop, float volume)
     {
-        if (!mCore || !mSFXGroup) {
-            std::fprintf(stderr, "[Audio] playSFXFile called before init: %s\n", path.c_str());
-            return false;
-        }
+        if (!mCore || !mSFXGroup) return false;
 
-        FMOD_MODE mode = FMOD_DEFAULT | FMOD_2D;
-        if (loop)
-            mode |= FMOD_LOOP_NORMAL;
-        else
-            mode |= FMOD_LOOP_OFF;
+        FMOD_MODE mode = FMOD_DEFAULT | FMOD_2D | FMOD_CREATESAMPLE;
+        mode |= (loop ? FMOD_LOOP_NORMAL : FMOD_LOOP_OFF);
 
         FMOD::Sound* snd = nullptr;
-        if (!ok(mCore->createSound(path.c_str(),
-            mode,
-            nullptr,
-            &snd),
-            "createSound(sfxTagged)"))
-        {
+        FMOD_RESULT r = mCore->createSound(path.c_str(), mode, nullptr, &snd);
+        if (r != FMOD_OK) {
+            LOGE(Audio, "SFX File Missing: " + path);
             return false;
         }
 
         FMOD::Channel* ch = nullptr;
-        if (!ok(mCore->playSound(snd, mSFXGroup, false, &ch),
-            "playSound(sfxTagged)"))
-        {
+
+        r = mCore->playSound(snd, mSFXGroup, true, &ch);
+        if (r != FMOD_OK) {
             snd->release();
             return false;
         }
@@ -933,11 +923,12 @@ namespace CrashoutsEngine::Audio
         if (ch)
         {
             ch->setMode(FMOD_2D);
+            ch->setVolume(volume);
+
             ch->setCallback([](FMOD_CHANNELCONTROL* channelcontrol,
-                FMOD_CHANNELCONTROL_TYPE /*controltype*/,
+                FMOD_CHANNELCONTROL_TYPE,
                 FMOD_CHANNELCONTROL_CALLBACK_TYPE callbacktype,
-                void* /*commanddata1*/,
-                void* /*commanddata2*/) -> FMOD_RESULT
+                void*, void*) -> FMOD_RESULT
                 {
                     if (callbacktype == FMOD_CHANNELCONTROL_CALLBACK_END) {
                         FMOD::Channel* ch = (FMOD::Channel*)channelcontrol;
@@ -948,7 +939,10 @@ namespace CrashoutsEngine::Audio
                     }
                     return FMOD_OK;
                 });
+
             mTaggedChannels[key] = ch;
+
+            ch->setPaused(false);
         }
 
         return true;

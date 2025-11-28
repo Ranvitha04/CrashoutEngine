@@ -19,54 +19,48 @@ public class AudioManager
                 "footstep1",
                 "assets/audio/footsteps 1.wav",
                 1.0f, // base volume
-                false, // loop?
-                //SoundType.SFX //SFX broken
-                SoundType.Music
+                true, // loop?
+                SoundType.SFX
             );
 
         RegisterSound(
                 "footstep2",
                 "assets/audio/footsteps 2.wav",
                 1.0f, // base volume
-                false, // loop?
-                      //SoundType.SFX //SFX broken
-                SoundType.Music
+                true, // loop?
+                SoundType.SFX
             );
 
         RegisterSound(
                 "footstep3",
                 "assets/audio/footsteps 3.wav",
                 1.0f, // base volume
-                false, // loop?
-                      //SoundType.SFX //SFX broken
-                SoundType.Music
+                true, // loop?
+                SoundType.SFX
             );
 
         RegisterSound(
                 "footstep4",
                 "assets/audio/footsteps 4.wav",
                 1.0f, // base volume
-                false, // loop?
-                      //SoundType.SFX //SFX broken
-                SoundType.Music
+                true, // loop?
+                SoundType.SFX
             );
 
         RegisterSound(
                 "footstep5",
                 "assets/audio/footsteps 5.wav",
                 1.0f, // base volume
-                false, // loop?
-                      //SoundType.SFX //SFX broken
-                SoundType.Music
+                true, // loop?
+                SoundType.SFX
             );
 
         RegisterSound(
                 "footstep6",
                 "assets/audio/footsteps 6.wav",
                 1.0f, // base volume
-                false, // loop?
-                      //SoundType.SFX //SFX broken
-                SoundType.Music
+                true, // loop?
+                SoundType.SFX
             );
 
         RegisterSound(
@@ -74,7 +68,7 @@ public class AudioManager
                 "assets/audio/Switch_StepOn.wav",
                 0.6f, // base volume
                 false, // loop?
-                SoundType.Music // it's music, not SFX SFX DOESNT WORK LMAO
+                SoundType.SFX 
             );
 
         RegisterSound(
@@ -82,7 +76,7 @@ public class AudioManager
                 "assets/audio/level bgm 1.wav",
                 0.8f, // base volume
                 true, // loop?
-                SoundType.Music // it's music, not SFX SFX DOESNT WORK LMAO
+                SoundType.SFX
             );
 
         /*RegisterSound(
@@ -90,7 +84,7 @@ public class AudioManager
                 "assets/audio/Nightshift BGM_Loop_70bpm.wav",
                 1.0f,
                 true,
-                SoundType.Music
+                SoundType.SFX
             );*/
     }
 
@@ -143,9 +137,9 @@ public class AudioManager
         }
 
         if (s.Type == SoundType.Music)
-            InternalCalls.Audio_PlayMusicFileTagged(s.Name, s.Path, s.Loop);
+            InternalCalls.Audio_PlayMusicFileTagged(s.Name, s.Path, s.Loop, s.BaseVolume);
         else
-            InternalCalls.Audio_PlaySFXFileTagged(s.Name, s.Path, s.Loop);
+            InternalCalls.Audio_PlaySFXFileTagged(s.Name, s.Path, s.Loop, s.BaseVolume);
     }
 
     // === Replacing Unity's Stop(name)

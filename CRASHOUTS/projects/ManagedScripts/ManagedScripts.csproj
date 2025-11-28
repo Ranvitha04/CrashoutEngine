@@ -20,8 +20,8 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)'=='Release'">
-    <OutputPath>..\..\build\x64-Release\scripts\</OutputPath>
-    <Optimize>true</Optimize>
+	  <OutputPath>$(USERPROFILE)\Documents\CrashoutsEngine\Scripts\</OutputPath>
+	  <Optimize>true</Optimize>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -39,11 +39,11 @@
     <PropertyGroup>
       <TimestampedDll>$(OutputPath)$(AssemblyName).dll</TimestampedDll>
       <!-- Stable DLL inside CrashoutEngine/scripts -->
-      <StableDll>..\CrashoutEngine\scripts\ManagedScripts.dll</StableDll>
-    </PropertyGroup>
+		<StableDll>$(USERPROFILE)\Documents\CrashoutsEngine\Scripts\ManagedScripts.dll</StableDll>
+	</PropertyGroup>
     <!-- Create the destination folder if it doesn't exist -->
-    <MakeDir Directories="..\CrashoutEngine\scripts" />
-    <!-- Copy timestamped DLL → stable DLL in CrashoutEngine/scripts -->
+	  <MakeDir Directories="$(USERPROFILE)\Documents\CrashoutsEngine\Scripts" />
+	  <!-- Copy timestamped DLL → stable DLL in CrashoutEngine/scripts -->
     <Copy SourceFiles="$(TimestampedDll)" DestinationFiles="$(StableDll)" OverwriteReadOnlyFiles="true" />
   </Target>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
