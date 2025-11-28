@@ -1880,7 +1880,7 @@ namespace UI { // --------------------------------------------------------------
             if (ImGui::Button("PAUSE", ImVec2(70, 25))) {
                 if (engineState == EngineState::STOP && !currSceneName.empty()) Serialization::SaveScenes(currSceneName);
                 engineState = EngineState::PAUSE;
-
+					
                 CrashoutsEngine::Audio::AudioSystem::instance().setPaused(true);
             }
             ImGui::SameLine();
