@@ -221,7 +221,10 @@ void Init() {
     );
 
     // Generate and Load Assets and Manifest
+    #if USE_IMGUI_EDITOR
     CrashoutsEngine::Assets::GenerateAssetManifest();
+    #endif
+
     CrashoutsEngine::Assets::AssetManager::GetInstance().LoadManifestAssets();
 
     //Component::Rendering::Get().Setup_VAO(); // Setup default quad VAO
@@ -556,7 +559,10 @@ Ensure time per frame and FPS are recorded.
 Let application update state changes (such as animation).
 */
 void Update(double const& dt) {
+    #if USE_IMGUI_EDITOR
     MonoManager::CheckHotReload();
+    #endif
+
     if(PerformPendingSceneLoad()) return;
 
     // ALT+ENTER fullscreen toggle using InputManager
