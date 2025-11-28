@@ -14419,8 +14419,11 @@
                             "frictionMultiplier": 500.0,
                             "gravityForceMultiplier": 10.0,
                             "stepInterval": 0.15000000596046449,
+                            "energyConsumption": 12.5,
                             "normalMass": 4.5,
-                            "lightMass": 3.0
+                            "lightMass": 3.0,
+                            "CurrentEnergy": 0.0,
+                            "MaxEnergy": 100.0
                         }
                     }
                 ]
