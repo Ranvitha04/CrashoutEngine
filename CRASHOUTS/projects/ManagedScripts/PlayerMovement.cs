@@ -45,6 +45,7 @@ namespace CrashoutsEngine
         // Components
         private RigidBodyComponent rb;
         private TransformComponent tf;
+        private Animator animator;
 
         private float stepTimer = 0.0f;
         private Random rng = new Random();
@@ -56,6 +57,8 @@ namespace CrashoutsEngine
             Instance = this;
             rb = Entity.GetComponent<RigidBodyComponent>();
             tf = Entity.GetComponent<TransformComponent>();
+            Entity.Add<Animator>();
+            animator = Entity.GetComponent<Animator>();
 
             // Initial Setup
             rb.Mass = normalMass;
@@ -107,9 +110,13 @@ namespace CrashoutsEngine
                 Debug.Log("Mass toggled to: " + rb.Mass);
             }
 
-            // 4. AUDIO LOGIC (Randomized Footsteps)
+            // 4. AUDIO LOGIC (Randomized Footsteps) && anim
             if (horizontalInput != 0.0f && IsGrounded && alive)
             {
+                if(animator != null){
+                    animator.Play("Walk");
+                    Debug.Log("ANIMATE");
+                }
                 stepTimer -= (float)Time.DT;
 
                 if (stepTimer <= 0.0f)

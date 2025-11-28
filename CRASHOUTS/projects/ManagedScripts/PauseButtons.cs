@@ -39,19 +39,24 @@ namespace CrashoutsEngine
                 string name = nameComp != null ? nameComp.ToString() : "Unknown";
 
                 Console.WriteLine("[C#] Clicked: " + name);
+                Entity screen = new Entity(_pauseScreenID);
+                var tf = screen.GetComponent<TransformComponent>();
 
-                if (name == "ResumeBtn")
+                if (tf.Position.z >= 0.0f)
                 {
-                    SetPauseMenu(false);
+                    if (name == "ResumeBtn")
+                    {
+                        SetPauseMenu(false);
+                    }
+                    else if (name == "SettingsBtn")
+                    {
+                        Console.WriteLine("Settings not implemented");
+                    }
+                    else if (name == "PauseQuitBtn")
+                    {
+                        SceneManager.QuitGame();
+                    }
                 }
-                else if (name == "SettingsBtn")
-                {
-                    Console.WriteLine("Settings not implemented");
-                }
-                // else if (name == "QuitBtn")
-                // {
-                //     SceneManager.QuitGame();
-                // }
             }
         }
 
