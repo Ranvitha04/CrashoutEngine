@@ -40,7 +40,7 @@ __________________________________________________________________________*/
 #include <GL/glew.h>
 #include "entitymanager.h"
 
-
+#include "CEVec2.h" 
 
 namespace Component {
     
@@ -97,7 +97,6 @@ namespace Component {
         bool GetBool(const std::string& key) const;
         void SetTrigger(const std::string& key);
         void SetFloat(const std::string& key, float value);
-
         void AddState(const std::string& name, const AnimationState& state);
         const std::string& GetCurrentState() const { return currentState; }
 
@@ -205,4 +204,16 @@ namespace Component {
         std::unordered_map<std::string, float> floatParams;
         std::unordered_map<std::string, bool> triggerParams;
     };
+    void SetSpriteSheet(CrashoutsEngine::Entity e,
+        const std::string& assetName,
+        int cols, int rows,
+        CEVec2 worldSize);
+
+    void UpdateSpriteAnimationsECS();
+    void RenderSpriteAnimationsECS();
+
+    void AnimatorPlayOnSprite(CrashoutsEngine::Entity e,
+        const std::string& stateName);
+
+    void AnimatorSetFlipOnSprite(CrashoutsEngine::Entity e, bool flip);
 }

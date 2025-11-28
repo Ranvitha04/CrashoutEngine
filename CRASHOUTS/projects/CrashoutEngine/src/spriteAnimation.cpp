@@ -442,4 +442,281 @@ namespace Component {
             }
         }
     }
+    void AnimatorPlayOnSprite(CrashoutsEngine::Entity e,
+        const std::string& stateName)
+    {
+        auto* ecs = CrashoutsEngine::ECS::getInstance();
+        if (!ecs) return;
+
+        // Get or create SpriteAnimComponent on this entity
+        auto* anim = ecs->GetComponent<SpriteAnimComponent>(e);
+        if (!anim)
+        {
+            SpriteAnimComponent newAnim{};
+            newAnim.startFrame = 0;
+            newAnim.frameCount = 1;
+            newAnim.frameTime = 0.1f;
+            newAnim.frameIndex = 0;
+            newAnim.timer = 0.0f;
+            newAnim.flip = false;
+            ecs->AddComponent<SpriteAnimComponent>(e, newAnim);
+            anim = ecs->GetComponent<SpriteAnimComponent>(e);
+            if (!anim) return;
+        }
+
+        // Map animation names to frame ranges
+        // Use the SAME layout as setupDuckAnimations():
+        //
+        // Row 1: idle_normal  (2 frames)  = frames 0–1
+        // Row 2: walk_normal  (6 frames)  = frames 6–11
+        // Row 3: idle_bounce  (4 frames)  = frames 12–15
+        // Row 4: walk_bounce  (6 frames)  = frames 18–23
+
+        if (stateName == "idle_normal")
+        {
+            anim->startFrame = 0;
+            anim->frameCount = 2;
+            anim->frameTime = 0.8f;
+        }
+        else if (stateName == "walk_normal")
+        {
+            anim->startFrame = 6;
+            anim->frameCount = 6;
+            anim->frameTime = 0.12f;
+        }
+        else if (stateName == "idle_bounce")
+        {
+            anim->startFrame = 12;
+            anim->frameCount = 4;
+            anim->frameTime = 0.15f;
+        }
+        else if (stateName == "walk_bounce")
+        {
+            anim->startFrame = 18;
+            anim->frameCount = 6;
+            anim->frameTime = 0.1f;
+        }
+        // Optional: your alt/light versions – adjust frame indices if needed
+        else if (stateName == "idle_light")
+        {
+            // TODO: change these to match your Switch-Style-SpriteSheet layout
+            anim->startFrame = 0;
+            anim->frameCount = 2;
+            anim->frameTime = 0.8f;
+        }
+        else if (stateName == "walk_light")
+        {
+            // TODO: change these to match your Switch-Style-SpriteSheet layout
+            anim->startFrame = 6;
+            anim->frameCount = 6;
+            anim->frameTime = 0.12f;
+        }
+        else
+        {
+            // Unknown state name -> do nothing
+            return;
+        }
+
+        // Reset playback
+        anim->frameIndex = 0;
+        anim->timer = 0.0f;
+    }
+
+    void AnimatorSetFlipOnSprite(CrashoutsEngine::Entity e, bool flip)
+    {
+        auto* ecs = CrashoutsEngine::ECS::getInstance();
+        if (!ecs) return;
+
+        auto* anim = ecs->GetComponent<SpriteAnimComponent>(e);
+        if (!anim) return;
+
+        anim->flip = flip;
+    }
+    namespace Component
+    {
+        void SetSpriteSheet(CrashoutsEngine::Entity e,
+            const std::string& assetName,
+            int cols, int rows,
+            CEVec2 worldSize)
+        {
+            auto* ecs = CrashoutsEngine::ECS::getInstance();
+            if (!ecs) return;
+
+            auto* sheet = ecs->GetComponent<SpriteSheetComponent>(e);
+            if (!sheet)
+            {
+                SpriteSheetComponent s{};
+                s.textureAsset = assetName;
+                s.cols = cols;
+                s.rows = rows;
+                s.worldSize = worldSize;
+                ecs->AddComponent<SpriteSheetComponent>(e, s);
+            }
+            else
+            {
+                sheet->textureAsset = assetName;
+                sheet->cols = cols;
+                sheet->rows = rows;
+                sheet->worldSize = worldSize;
+            }
+        }
+
+        void UpdateSpriteAnimationsECS()
+        {
+            auto* ecs = CrashoutsEngine::ECS::getInstance();
+            if (!ecs) return;
+
+            float dt = static_cast<float>(FrameRateController::GetInstance().DT());
+            auto& arr = ecs->GetComponentArray<SpriteAnimComponent>();
+
+            for (size_t i = 0; i < arr.indexToEntity.size(); ++i)
+            {
+                auto id = arr.indexToEntity[i];
+                auto* anim = ecs->GetComponent<SpriteAnimComponent>(id);
+                if (!anim) continue;
+
+                anim->timer += dt;
+                if (anim->timer >= anim->frameTime)
+                {
+                    anim->timer -= anim->frameTime;
+                    anim->frameIndex = (anim->frameIndex + 1) % std::max(anim->frameCount, 1);
+                }
+            }
+        }
+
+        void RenderSpriteAnimationsECS()
+        {
+            auto* ecs = CrashoutsEngine::ECS::getInstance();
+            if (!ecs) return;
+
+            auto& arr = ecs->GetComponentArray<SpriteAnimComponent>();
+            for (size_t i = 0; i < arr.indexToEntity.size(); ++i)
+            {
+                auto id = arr.indexToEntity[i];
+                auto* tf = ecs->GetComponent<TransformComponent>(id);
+                auto* anim = ecs->GetComponent<SpriteAnimComponent>(id);
+                auto* sheet = ecs->GetComponent<SpriteSheetComponent>(id);
+                if (!tf || !anim || !sheet) continue;
+
+                int globalFrame = anim->startFrame + anim->frameIndex;
+                int frameY = sheet->cols > 0 ? globalFrame / sheet->cols : 0;
+                int frameX = sheet->cols > 0 ? globalFrame % sheet->cols : 0;
+
+                GLuint handle = TextureRenderer::GetTextureHandle(sheet->textureAsset);
+                if (handle != 0)
+                {
+                    TextureRenderer::CreateSpriteFrameFlipped(
+                        handle,
+                        tf->position,
+                        sheet->worldSize,
+                        frameX, frameY,
+                        sheet->cols, sheet->rows,
+                        anim->flip,
+                        tf->rotation,
+                        tf->size.x,
+                        CEColor(1.0f, 1.0f, 1.0f, 1.0f),
+                        false
+                    );
+                }
+                else
+                {
+                    TextureRenderer::CreateSpriteFrame(
+                        sheet->textureAsset,
+                        tf->position,
+                        sheet->worldSize,
+                        frameX, frameY,
+                        sheet->cols, sheet->rows,
+                        tf->rotation,
+                        tf->size.x,
+                        CEColor(1.0f, 1.0f, 1.0f, 1.0f),
+                        false
+                    );
+                }
+            }
+        }
+
+        void AnimatorPlayOnSprite(CrashoutsEngine::Entity e,
+            const std::string& stateName)
+        {
+            auto* ecs = CrashoutsEngine::ECS::getInstance();
+            if (!ecs) return;
+
+            // Get / create SpriteAnimComponent on this entity
+            auto* anim = ecs->GetComponent<SpriteAnimComponent>(e);
+            if (!anim)
+            {
+                SpriteAnimComponent newAnim{};
+                newAnim.startFrame = 0;
+                newAnim.frameCount = 1;
+                newAnim.frameTime = 0.1f;
+                newAnim.frameIndex = 0;
+                newAnim.timer = 0.0f;
+                newAnim.flip = false;
+                ecs->AddComponent<SpriteAnimComponent>(e, newAnim);
+                anim = ecs->GetComponent<SpriteAnimComponent>(e);
+                if (!anim) return;
+            }
+
+            // Map state names -> frame ranges (same layout as setupDuckAnimations)
+            if (stateName == "idle_normal")
+            {
+                anim->startFrame = 0;
+                anim->frameCount = 2;
+                anim->frameTime = 0.8f;
+            }
+            else if (stateName == "walk_normal")
+            {
+                anim->startFrame = 6;
+                anim->frameCount = 6;
+                anim->frameTime = 0.12f;
+            }
+            else if (stateName == "idle_bounce")
+            {
+                anim->startFrame = 12;
+                anim->frameCount = 4;
+                anim->frameTime = 0.15f;
+            }
+            else if (stateName == "walk_bounce")
+            {
+                anim->startFrame = 18;
+                anim->frameCount = 6;
+                anim->frameTime = 0.10f;
+            }
+            else if (stateName == "idle_light")
+            {
+                // TODO: adjust indices for your light/Slime sheet
+                anim->startFrame = 0;
+                anim->frameCount = 2;
+                anim->frameTime = 0.8f;
+            }
+            else if (stateName == "walk_light")
+            {
+                // TODO: adjust indices for your light/Slime sheet
+                anim->startFrame = 6;
+                anim->frameCount = 6;
+                anim->frameTime = 0.12f;
+            }
+            else
+            {
+                // Unknown state, do nothing
+                return;
+            }
+
+            // Reset animation playback
+            anim->frameIndex = 0;
+            anim->timer = 0.0f;
+        }
+
+        void AnimatorSetFlipOnSprite(CrashoutsEngine::Entity e, bool flip)
+        {
+            auto* ecs = CrashoutsEngine::ECS::getInstance();
+            if (!ecs) return;
+
+            auto* anim = ecs->GetComponent<SpriteAnimComponent>(e);
+            if (!anim) return;
+
+            anim->flip = flip;
+        }
+    } // namespace Component
+
 }

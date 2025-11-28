@@ -103,12 +103,12 @@ namespace UI
         unsigned char* pixels = stbi_load( sheetPath.c_str(), &width, &height, &channels, desiredChannels);
      
         if (!pixels) {
-            std::printf("SpriteSheet export failed: cannot load '%s'\n", gSpritePath);
+            
             return;
         }
 
         if (gTileW <= 0 || gTileH <= 0) {
-            std::printf("SpriteSheet export failed: tile W/H must be > 0\n");
+            
             stbi_image_free(pixels);
             return;
         }
@@ -128,7 +128,7 @@ namespace UI
         int rows = height / tileH;
 
         if (cols <= 0 || rows <= 0) {
-            std::printf("SpriteSheet export failed: invalid rows/cols from tile size\n");
+            
             stbi_image_free(pixels);
             return;
         }
@@ -329,8 +329,7 @@ namespace UI
                 sheetW, sheetH, gCols, gRows);
         }
         else {
-            ImGui::TextColored(ImVec4(1, 0.3f, 0.3f, 1),
-                "Could not read image info.");
+            
         }
 
         if (ImGui::Button("Export tiles to PNGs")) {

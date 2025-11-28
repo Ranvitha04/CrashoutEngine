@@ -117,26 +117,26 @@ namespace CrashoutsEngine {
             auto* parentTransform = ecs.GetComponent<TransformComponent>(parent);
             auto* childTransform = ecs.GetComponent<TransformComponent>(child);
 
-            // 1. Local Rotation: Simple subtraction
+            
             pointerParentComp->localRot = childTransform->rotation - parentTransform->rotation;
 
-            // 2. Local Scale: Child Scale / Parent Scale
+            
             // Safety check for zero scale
             float pX = (parentTransform->size.x == 0.f) ? 1.f : parentTransform->size.x;
             float pY = (parentTransform->size.y == 0.f) ? 1.f : parentTransform->size.y;
             pointerParentComp->localScale = { childTransform->size.x / pX, childTransform->size.y / pY };
 
-            // 3. Local Position: The Inverse Transform
+            
             // We need the vector from Parent->Child, un-rotated and un-scaled by the parent.
 
-            // A. Get distance vector
+            
             float dx = childTransform->position.x - parentTransform->position.x;
             float dy = childTransform->position.y - parentTransform->position.y;
 
-            // B. Inverse Rotation (Rotate backwards by Parent Angle)
+            
             // Convert degrees to radians
             const float DEG_TO_RAD = 0.0174532925f;
-            float angleRad = -parentTransform->rotation * DEG_TO_RAD; // Negative for inverse
+            float angleRad = -parentTransform->rotation * DEG_TO_RAD; 
             float s = std::sin(angleRad);
             float c = std::cos(angleRad);
 
@@ -148,11 +148,11 @@ namespace CrashoutsEngine {
             pointerParentComp->localPos = {
                 unRotX / pX,
                 unRotY / pY,
-                childTransform->position.z - parentTransform->position.z // Z is relative offset
+                childTransform->position.z - parentTransform->position.z 
             };
         }
         else {
-            pointerParentComp->localPos = { 0,0,0.1f }; // Default Z offset
+            pointerParentComp->localPos = { 0,0,0.1f }; 
             pointerParentComp->localRot = 0.f;
             pointerParentComp->localScale = { 1.f,1.f };
         }

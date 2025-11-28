@@ -40,6 +40,7 @@ for Crashout Engine.
 #include "debugcollision.h"
 #include "debugAssetLoader.h"
 #include "frameratecontroller.h"
+#include "prefabcomponent.h"
 #include "audioSystem.h"
 #include "prefab_init.h"  
 #include <fmod_studio.hpp> 
@@ -419,7 +420,7 @@ namespace UI { // --------------------------------------------------------------
         }
         ImGui::Separator();
         ImGui::TextUnformatted("Entities");
-        // --- Unity-style tree: draw roots (entities with no ParentComponent) ---
+        
         {
             auto& tArr = ecs.GetComponentArray<Component::TransformComponent>();
             bool anyDrawn = false;
@@ -448,37 +449,44 @@ namespace UI { // --------------------------------------------------------------
         if (ImGui::Button("Save Prefab")) {
             namespace fs = std::filesystem;
 
-            //  Use the text box as the prefab name
-            const std::string newName = (prefabNameBuf[0] ? prefabNameBuf : "Entity");
+           
+            std::string newName;
+            if (prefabNameBuf[0]) {
+                
+                newName = prefabNameBuf;
+            }
+            else if (ecs.HasComponent<Component::PrefabInstanceComponent>(selected)) {
+                
+                auto* inst = ecs.GetComponent<Component::PrefabInstanceComponent>(selected);
+                newName = inst ? inst->prefabName : "Entity";
+            }
+            else {
+                
+                newName = "Entity";
+            }
 
-            // Save into its OWN file: prefabs/<name>.json
+            
             fs::path jsonPath = fs::path(CrashoutsEngine::Assets::rootPath)
                 / "prefabs"
                 / (newName + ".json");
 
-            fs::create_directories(jsonPath.parent_path()); // safe if exists
+            fs::create_directories(jsonPath.parent_path()); 
 
-            // Save this entity as a Box prefab into that file
             const bool ok = SaveBoxPrefabToJson_RJ(
                 ecs, selected,
                 newName,
-                jsonPath.generic_string(),     
-                /*matchName*/ newName          
+                jsonPath.generic_string(),
+                /*matchName*/ newName
             );
 
             if (ok) {
-
                 const std::string dirPath =
                     (fs::path(CrashoutsEngine::Assets::rootPath) / "prefabs").generic_string();
 
-                
                 CrashoutsEngine::ReloadPrefabsFromDisk(dirPath);
-
-                
                 CrashoutsEngine::RecreateInstancesForPrefab(ecs, newName);
 
-                LOGI(Core, std::string("Saved & reloaded prefab json: ") + jsonPath.generic_string());
-                prefabNameBuf[0] = '\0';
+                prefabNameBuf[0] = '\0'; 
             }
 
         }

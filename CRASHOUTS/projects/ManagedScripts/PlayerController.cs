@@ -1,19 +1,27 @@
-using System;
+﻿using System;
 using System.Numerics;
+
 namespace CrashoutsEngine
 {
     [ScriptBehaviour]
     public class PlayerController : ScriptBase
     {
+        // -------- Fields --------
+        RigidBodyComponent rb;
+        TransformComponent tf;
+        Animator animator;
+
         bool moveLeft;
         bool moveRight;
         bool isMoving;
         bool wasMoving;
         bool jump;
 
+        bool isFacingLeft;     // for flip
+
         /*SAMPLE TRIGGERS*/
-        public void OnTriggerEnter(uint otherEntity) {
-            //Console.WriteLine("Entered Inside Me BOUNCE");
+        public void OnTriggerEnter(uint otherEntity)
+        {
             var rb = Entity.GetComponent<RigidBodyComponent>();
             // rb.AddForce(new CEVec3(0f, 20000f, 0f)); //* rb.Mass);
         }
@@ -30,84 +38,114 @@ namespace CrashoutsEngine
 
         public override void Start()
         {
-            // Initialization logic for the player
+            rb = Entity.GetComponent<RigidBodyComponent>();
+            tf = Entity.GetComponent<TransformComponent>();
+
+            // IMPORTANT: we don't rely on a native Animator component;
+            // we just create a wrapper and tell it which Entity it controls.
+            animator = new Animator();
+            animator.EntityID = Entity.ID;
+
+            if (rb == null)
+                Console.WriteLine("[C#] WARNING: RigidBodyComponent is NULL on Player!");
+            if (tf == null)
+                Console.WriteLine("[C#] WARNING: TransformComponent is NULL on Player!");
+
+            if (animator == null) // this should never be null now
+            {
+                Console.WriteLine("[C#] WARNING: Animator wrapper is NULL on Player! (No animation will play)");
+            }
+            else
+            {
+                // *** THIS WAS MISSING BEFORE ***
+                // Give this entity a SpriteSheetComponent + texture + size
+                animator.SetSpriteSheet(
+                    "images/Character/Normal Mode/Chibi-Actions-SpriteSheet.png",
+                    7,      // columns in your sheet
+                    3,      // rows   in your sheet
+                    2.0f,   // world width
+                    2.0f    // world height
+                );
+
+                // Start in idle
+                animator.Play("idle_normal");
+                isFacingLeft = false;
+            }
+
             Console.WriteLine("[C#] PlayerController Start() called, Entity is " + (Entity == null ? "NULL" : "OK!!"));
             CollisionEvents.RegisterTriggerEnter(Entity.ID, this.OnTriggerEnter);
-            //Entity.Add<RigidBodyComponent>();
-            //Entity.Add<TransformComponent>();
-            // CollisionEvents.RegisterTriggerExit(Entity.ID, OnTriggerExit);
-            // CollisionEvents.RegisterTriggerStay(Entity.ID, OnTriggerStay);
 
             AudioManager.GetInstance().Play("ambient");
         }
 
         public override void Update()
         {
-            //Console.WriteLine("Has RB? " + Entity.Has<RigidBodyComponent>());
+            if (tf == null)
+                tf = Entity.GetComponent<TransformComponent>();
 
-            //Console.WriteLine("[C#] PlayerController Update() called with dt: " + dt);
-            // Access physics and transform components from your entity
-            //var rb = Entity.GetComponent<RigidBodyComponent>();
-            var tf = Entity.GetComponent<TransformComponent>();
-            //if (rb == null) Console.WriteLine("[C#] rb is null");
-            if (tf == null) Console.WriteLine("[C#] tf is null");
+            // --- Input flags for movement ---
+            moveLeft = Input.IsKeyPressed(Key.A);
+            moveRight = Input.IsKeyPressed(Key.D);
+            jump = Input.IsKeyTriggered(Key.Space);
+
             isMoving = moveLeft || moveRight;
+
+            // --- Choose animation state + facing ---
+            string desiredState = "idle_normal";
+
+            if (isMoving)
+            {
+                desiredState = "walk_normal";
+
+                // update facing based on last horizontal direction
+                if (moveLeft && !moveRight)
+                    isFacingLeft = true;
+                else if (moveRight && !moveLeft)
+                    isFacingLeft = false;
+            }
+
+            // --- Drive Animator (this is what actually animates!) ---
+            if (animator != null)
+            {
+                animator.Play(desiredState);     // idle_normal / walk_normal
+                animator.SetFlip(isFacingLeft);  // flip on A vs D
+            }
+
+            // --- Footstep audio ---
             if (isMoving && !wasMoving)
             {
-                //Console.WriteLine("[C#] Player started moving -> Play footstep1");
                 AudioManager.GetInstance().Play("footstep1");
             }
             else if (!isMoving && wasMoving)
             {
-                //Console.WriteLine("[C#] Player stopped moving -> Stop footsteps_loop");
                 AudioManager.GetInstance().Stop("footstep1");
             }
-            //if (Input.IsKeyPressed(Key.A))
-            //{
-            //    //Console.WriteLine($"[DEBUG] A pressed, rb ID = {rb.EntityID}, mass = {rb.Mass}");
-            //    //Console.WriteLine("A key is pressed");
-            //    //Console.WriteLine("[C#] mass=" + rb.Mass);
-            //    rb.AddForce(new CEVec3(-500f, 0f, 0f));
-            //}
 
-            //if (Input.IsKeyPressed(Key.D))
-            //{
-            //    rb.AddForce(new CEVec3(500f, 0f, 0f));
-            //}
-
-            //if (Input.IsKeyTriggered(Key.Space))
-            //{
-            //    rb.AddForce(new CEVec3(0f, 20000f, 0f)); //* rb.Mass);
-            //    Console.WriteLine("[C#] mass=" + rb.Mass);
-            //}
-
-            if (Input.IsKeyPressed(Key.S))
+            // --- Size & rotation debug controls (same as before) ---
+            if (tf != null)
             {
-                tf.Size *= 0.9f;
-            }
-
-            if (Input.IsKeyPressed(Key.Q))
-            {
-                tf.Size *= 1.1f;
-            }
-
-            if (Input.IsKeyPressed(Key.F))
-            {
-                tf.Rotation += 3f;
-
-                if (Entity.Has<ColliderComponent>())
+                if (Input.IsKeyPressed(Key.S))
                 {
-                    Entity.GetComponent<ColliderComponent>().UpdateRotation(tf.Rotation);
+                    tf.Size *= 0.9f;
+                }
+
+                if (Input.IsKeyPressed(Key.Q))
+                {
+                    tf.Size *= 1.1f;
+                }
+
+                if (Input.IsKeyPressed(Key.F))
+                {
+                    tf.Rotation += 3f;
+
+                    if (Entity.Has<ColliderComponent>())
+                    {
+                        Entity.GetComponent<ColliderComponent>().UpdateRotation(tf.Rotation);
+                    }
                 }
             }
-            /*
-            */
-            moveLeft = Input.IsKeyPressed(Key.A);
-            moveRight = Input.IsKeyPressed(Key.D);
 
             wasMoving = isMoving;
-            jump = Input.IsKeyTriggered(Key.Space);
-
         }
 
         public override void FixedUpdate()
@@ -116,10 +154,6 @@ namespace CrashoutsEngine
             var rb = Entity.GetComponent<RigidBodyComponent>();
             if (rb == null) return;
 
-            // Retrieve current horizontal speed
-            //double xSpeed = rb.getVelocity().x; 
-            //Console.WriteLine("[C#] speedx=" + xSpeed);
-            // Apply physics here (fixed 60hz)
             if (moveLeft)
             {
                 rb.AddForce(new CEVec3(-500f, 0f, 0f));
@@ -139,7 +173,6 @@ namespace CrashoutsEngine
 
         public override void OnDestroy()
         {
-            // Cleanup logic for the player
             Console.WriteLine("[C#] PlayerController OnDestroy() called");
             AudioManager.GetInstance().Stop("ambient");
         }
