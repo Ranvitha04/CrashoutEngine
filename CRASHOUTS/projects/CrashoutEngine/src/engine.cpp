@@ -95,6 +95,7 @@ bool gameWinHovered{ false };
 std::string g_PendingSceneName = "";
 bool g_IsSceneLoadPending = false;
 
+static EngineState previousState = EngineState::STOP;
 
 /*  _________________________________________________________________________ */
 /*! PerformPendingSceneLoad
@@ -187,18 +188,26 @@ void Init() {
     if (!GLApp::init(Settings::GetScreenWidth(), Settings::GetScreenHeight(), "CRASHOUTS")) {
         std::exit(EXIT_FAILURE);
     }
+
     glfwSetWindowFocusCallback(GLApp::ptr_window,
         [](GLFWwindow*, int focused)
         {
             if (focused == GLFW_TRUE)
             {
                 // Window regained focus
-                if (engineState == EngineState::PLAY)
-                    CrashoutsEngine::Audio::AudioSystem::instance().setPaused(false);
+                engineState = previousState;
+
+                // Restore audio only if previous state was PLAY
+                CrashoutsEngine::Audio::AudioSystem::instance().setPaused(
+                    engineState != EngineState::PLAY
+                );
             }
             else
             {
-                // Window lost focus (ALT+TAB)
+                // Window loses focus remember current state
+                previousState = engineState;
+
+                // Always pause the engine when unfocused
                 engineState = EngineState::PAUSE;
                 CrashoutsEngine::Audio::AudioSystem::instance().setPaused(true);
                 InputManager::ClearInputs();
