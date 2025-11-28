@@ -421,6 +421,7 @@ namespace Scene {
         std::vector<float> scales;
         std::vector<float> dim1;
         std::vector<float> dim2;
+        std::vector<CEVec2> uvOffsets;
 
         CEVec2 uvSize{ 1.0f, 1.0f };
         std::string textureName = "";
@@ -430,7 +431,7 @@ namespace Scene {
 
         void Clear() {
             positions.clear(); colors.clear(); rotations.clear();
-            scales.clear(); dim1.clear(); dim2.clear();
+            scales.clear(); dim1.clear(); dim2.clear(); uvOffsets.clear();
             uvSize = { 1.0f, 1.0f };
             textureName = "";
             enableTexture = false;
@@ -438,13 +439,14 @@ namespace Scene {
             wrapV = TextureMode::ClampToEdge;
         }
 
-        void Add(const CEVec3& pos, const CEColor& col, float rot, float scale, float d1, float d2) {
+        void Add(const CEVec3& pos, const CEColor& col, float rot, float scale, float d1, float d2, const CEVec2& offset) {
             positions.push_back(pos);
             colors.push_back(col);
             rotations.push_back(rot);
             scales.push_back(scale);
             dim1.push_back(d1);
             dim2.push_back(d2);
+            uvOffsets.push_back(offset);
         }
     };
 
@@ -516,19 +518,19 @@ namespace Scene {
             case ShapeType::Rectangle: {
                 RenderBatch& batch = rects[key];
                 ConfigureBatch(batch);
-                batch.Add(tf->position, colorNorm, tf->rotation, 1.0f, tf->size.x, tf->size.y);
+                batch.Add(tf->position, colorNorm, tf->rotation, 1.0f, tf->size.x, tf->size.y, sc->uvOffset);
                 break;
             }
             case ShapeType::Triangle: {
                 RenderBatch& batch = tris[key];
                 ConfigureBatch(batch);
-                batch.Add(tf->position, colorNorm, tf->rotation, 1.0f, tf->size.x, 0.0f);
+                batch.Add(tf->position, colorNorm, tf->rotation, 1.0f, tf->size.x, 0.0f, sc->uvOffset);
                 break;
             }
             case ShapeType::Circle: {
                 RenderBatch& batch = circs[key];
                 ConfigureBatch(batch);
-                batch.Add(tf->position, colorNorm, tf->rotation, 1.0f, tf->size.x * 0.5f, 0.0f);
+                batch.Add(tf->position, colorNorm, tf->rotation, 1.0f, tf->size.x * 0.5f, 0.0f, sc->uvOffset);
                 break;
             }
             default: break;
@@ -561,6 +563,7 @@ namespace Scene {
             InstancingSystem::RenderInstancedRectanglesBatch(
                 batch.positions.data(), batch.colors.data(), batch.rotations.data(),
                 batch.scales.data(), batch.dim1.data(), batch.dim2.data(),
+                batch.uvOffsets.data(),
                 (int)batch.positions.size(), params);
 
             batch.Clear();
@@ -584,6 +587,7 @@ namespace Scene {
             InstancingSystem::RenderInstancedTrianglesBatch(
                 batch.positions.data(), batch.colors.data(), batch.rotations.data(),
                 batch.scales.data(), batch.dim1.data(),
+                batch.uvOffsets.data(),
                 (int)batch.positions.size(), params);
 
             batch.Clear();
@@ -607,6 +611,7 @@ namespace Scene {
             InstancingSystem::RenderInstancedCirclesBatch(
                 batch.positions.data(), batch.colors.data(), batch.rotations.data(),
                 batch.scales.data(), batch.dim1.data(),
+                batch.uvOffsets.data(),
                 (int)batch.positions.size(), 32, params);
 
             batch.Clear();

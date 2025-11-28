@@ -1050,6 +1050,10 @@
                     "x": 1.0,
                     "y": 1.0
                 },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
                 "color": {
                     "x": 1.0,
                     "y": 1.0,
@@ -1073,18 +1077,19 @@
                         "className": "PlayerMovement",
                         "fields": {
                             "moveSpeed": 2000.0,
-                            "maxRunSpeed": 100.0,
+                            "maxRunSpeed": 150.0,
                             "jumpPower": 50000.0,
                             "groundDrag": 0.15000000596046449,
                             "airDrag": 0.019999999552965165,
-                            "gravityScale": 2.5,
+                            "gravityScale": 2.0,
                             "turnMultiplier": 2.0,
                             "frictionMultiplier": 500.0,
-                            "gravityForceMultiplier": 7.5,
-                            "stepInterval": 0.3499999940395355,
+                            "gravityForceMultiplier": 10.0,
+                            "stepInterval": 0.07500000298023224,
+                            "swapPause": 1.0,
                             "energyConsumption": 12.5,
                             "normalMass": 4.5,
-                            "lightMass": 2.5,
+                            "lightMass": 3.0,
                             "CurrentEnergy": 0.0,
                             "MaxEnergy": 100.0,
                             "alive": true
@@ -1102,6 +1107,169 @@
                     "x": 0.0,
                     "y": 0.0
                 }
+            },
+            "keyframe_animator": {
+                "current": "idle_normal",
+                "t": 0.0,
+                "playing": true,
+                "clips": [
+                    {
+                        "name": "idle_normal",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\Normal Mode\\Chibi-Actions-SpriteSheet.png",
+                        "spriteCols": 3,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": 230.0,
+                        "targetHeight": 277.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.125,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "walk_normal",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\Normal Mode\\Chibi-Actions-SpriteSheet.png",
+                        "spriteCols": 3,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": 230.0,
+                        "targetHeight": 277.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 3.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.125,
+                                        "v": 4.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 5.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.375,
+                                        "v": 6.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.5,
+                                        "v": 6.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "swap_state",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\New Artstyle\\Switch-State-SpriteSheet.png",
+                        "spriteCols": 3,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": -115.19999694824219,
+                        "targetHeight": 71.4000015258789,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 1.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.5,
+                                        "v": 2.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.75,
+                                        "v": 3.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 1.0,
+                                        "v": 4.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 1.25,
+                                        "v": 5.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 1.5,
+                                        "v": 6.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 1.75,
+                                        "v": 6.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
             }
         },
         {
@@ -1171,6 +1339,10 @@
                     "x": 1.0,
                     "y": 1.0
                 },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
                 "color": {
                     "x": 1.0,
                     "y": 0.5690608024597168,
@@ -1229,6 +1401,10 @@
                 "uvSize": {
                     "x": 1.0,
                     "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
                 },
                 "color": {
                     "x": 0.8232043981552124,
@@ -1433,6 +1609,10 @@
                     "x": 1.0,
                     "y": 1.0
                 },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
                 "color": {
                     "x": 255.0,
                     "y": 255.0,
@@ -1474,8 +1654,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -197.60928344726563,
-                    "y": 150.26564025878907,
+                    "x": -177.3569793701172,
+                    "y": 158.58355712890626,
                     "z": 0.0
                 },
                 "size": {
@@ -1500,8 +1680,8 @@
             "collider": {
                 "helperType": 1,
                 "position": {
-                    "x": -196.20928955078126,
-                    "y": 147.06564331054688,
+                    "x": -175.9569854736328,
+                    "y": 155.38356018066407,
                     "z": 0.0
                 },
                 "offset": {
@@ -1510,13 +1690,13 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": -213.45928955078126,
-                    "y": 134.26564025878907,
+                    "x": -193.2069854736328,
+                    "y": 142.58355712890626,
                     "z": 0.0
                 },
                 "max": {
-                    "x": -178.95928955078126,
-                    "y": 159.8656463623047,
+                    "x": -158.7069854736328,
+                    "y": 168.18356323242188,
                     "z": 0.0
                 }
             },
@@ -1532,6 +1712,10 @@
                 "uvSize": {
                     "x": 1.0,
                     "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
                 },
                 "color": {
                     "x": 1.0,
@@ -1631,6 +1815,10 @@
                     "x": 1.0,
                     "y": 1.0
                 },
+                "uvOffset": {
+                    "x": 1.0499999523162842,
+                    "y": 1.0
+                },
                 "color": {
                     "x": 1.0,
                     "y": 1.0,
@@ -1689,6 +1877,10 @@
                 "uvSize": {
                     "x": 1.0,
                     "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
                 },
                 "color": {
                     "x": 1.0,

@@ -23,18 +23,23 @@ namespace CrashoutsEngine
 
             if (btn != null && btn.IsClicked())
             {
-                string btnName = (nameComp != null) ? nameComp.ToString() : "Unknown";
-                Console.WriteLine("[GameOverUI] Button Clicked: " + btnName);
+                Entity gameOverEnt = Entity.Find("GameOverScreen");
+                if (gameOverEnt != null)
+                {
+                    var gameOverT = gameOverEnt.GetComponent<TransformComponent>();
+                    string btnName = (nameComp != null) ? nameComp.ToString() : "Unknown";
+                    Console.WriteLine("[GameOverUI] Button Clicked: " + btnName);
 
-                if (btnName == "RestartBtn")
-                {
-                    Console.WriteLine("[GameOverUI] Restarting Game...");
-                    SceneManager.LoadScene(currentSceneName);
-                }
-                else if (btnName == "QuitBtn")
-                {
-                    Console.WriteLine("[GameOverUI] Quitting Game...");
-                    SceneManager.QuitGame(); 
+                    if (btnName == "RestartBtn" && gameOverT.Position.z > 0.0f)
+                    {
+                        Console.WriteLine("[GameOverUI] Restarting Game...");
+                        SceneManager.LoadScene(currentSceneName);
+                    }
+                    else if (btnName == "QuitBtn" && gameOverT.Position.z > 0.0f)
+                    {
+                        Console.WriteLine("[GameOverUI] Quitting Game...");
+                        SceneManager.QuitGame(); 
+                    }
                 }
             }
 

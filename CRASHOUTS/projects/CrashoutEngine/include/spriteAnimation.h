@@ -44,6 +44,42 @@ __________________________________________________________________________*/
 
 namespace Component {
     
+    // Data structure for one animation (Idle, Walk, Jump)
+    struct SpriteClip {
+        std::string name;
+        int startFrame;
+        int frameCount;
+        float fps; // or frameTime
+        bool loop;
+    };
+
+    // The Component attached to the Entity
+    struct SpriteAnimatorComponent {
+        // A library of animations for this entity
+        std::vector<SpriteClip> clips;
+
+        // Playback state
+        std::string currentClipName;
+        int currentFrameIndex = 0;
+        float timer = 0.0f;
+        bool playing = true;
+        bool flipH = false;
+
+        // Helper to add a clip
+        void AddClip(const std::string& name, int start, int count, float fps, bool loop) {
+            // Remove if exists, or just push back
+            clips.push_back({ name, start, count, fps, loop });
+        }
+
+        // Helper to find a clip
+        const SpriteClip* GetClip(const std::string& name) const {
+            for (const auto& c : clips) {
+                if (c.name == name) return &c;
+            }
+            return nullptr;
+        }
+    };
+
     /*!
     @struct AnimationState
     @brief Represents a single animation sequence within a sprite sheet.

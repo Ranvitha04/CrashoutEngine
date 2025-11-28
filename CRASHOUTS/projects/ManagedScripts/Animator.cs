@@ -3,79 +3,48 @@ using System.Runtime.CompilerServices;
 
 namespace CrashoutsEngine
 {
-    [NativeComponent("AddAnimator", "RemoveAnimator", "EntityHasAnimator")]
+    // attributes match the C++ component lifecycle functions
+    [NativeComponent("AddKeyframeAnimator", "RemoveKeyframeAnimator", "EntityHasKeyframeAnimator")]
     public class Animator
     {
         public uint EntityID;
 
-        internal Animator() { }
+        // Internal constructor prevents "new Animator()" usage by users
+        public Animator() { }
 
-        public void Play(string state)
-        {
-            InternalPlay(EntityID, state);
-        }
-        public void SetSpriteSheet(string assetName, int cols, int rows, float worldWidth, float worldHeight)
-        {
-            InternalSetSpriteSheet(EntityID, assetName, cols, rows, worldWidth, worldHeight);
-        }
+        // --- PUBLIC API ---
 
-        public void SetBool(string key, bool value)
+        // Play a specific clip by name
+        public void Play(string clipName, bool restart = true)
         {
-            InternalSetBool(EntityID, key, value);
+            InternalPlay(EntityID, clipName, restart);
         }
 
-        public void SetFloat(string key, float value)
+        // Check if current animation is playing
+        public bool IsPlaying
         {
-            InternalSetFloat(EntityID, key, value);
+            get => InternalGetPlaying(EntityID);
+            set => InternalSetPlaying(EntityID, value);
         }
 
-        public void SetTrigger(string key)
+        // Get the name of the currently playing clip
+        public string CurrentClip
         {
-            InternalSetTrigger(EntityID, key);
+            get => InternalGetCurrentClip(EntityID);
         }
 
-        public void SetFlip(bool flip)
-        {
-            InternalSetFlip(EntityID, flip);
-        }
-
-        public string CurrentState
-        {
-            get => InternalGetCurrentState(EntityID);
-        }
-
-        public bool GetBool(string key)
-        {
-            return InternalGetBool(EntityID, key);
-        }
-
+        // --- INTERNAL CALLS ---
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        private extern static void InternalPlay(uint entityID, string state);
+        private extern static void InternalPlay(uint entityID, string clipName, bool restart);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        private extern static void InternalSetBool(uint entityID, string key, bool value);
+        private extern static bool InternalGetPlaying(uint entityID);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        private extern static void InternalSetFloat(uint entityID, string key, float value);
+        private extern static void InternalSetPlaying(uint entityID, bool playing);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        private extern static void InternalSetTrigger(uint entityID, string key);
-
-        [MethodImpl(MethodImplOptions.InternalCall)]
-        private extern static void InternalSetFlip(uint entityID, bool flip);
-
-        [MethodImpl(MethodImplOptions.InternalCall)]
-        private extern static string InternalGetCurrentState(uint entityID);
-
-        [MethodImpl(MethodImplOptions.InternalCall)]
-        private extern static bool InternalGetBool(uint entityID, string key);
-        [MethodImpl(MethodImplOptions.InternalCall)]
-        private extern static void InternalSetSpriteSheet(uint entityID,
-                                                  string path,
-                                                  int cols,
-                                                  int rows,
-                                                  float worldWidth,
-                                                  float worldHeight);
+        private extern static string InternalGetCurrentClip(uint entityID);
     }
 }
