@@ -988,30 +988,36 @@ namespace UI { // --------------------------------------------------------------
                 ImGui::TextUnformatted("Audio File:");
                 ImGui::Text("%s", fs::path(outSelectedAsset).filename().string().c_str());
 
-                static std::string lastPreview = "";
-                static bool previewPlaying = false;
+                static FMOD::Channel* s_previewChannel = nullptr;
+                static std::string s_lastPreviewPath = "";
 
-                if (ImGui::Button(previewPlaying ? "Stop" : "Play"))
+                bool isPlaying = false;
+                if (s_previewChannel) {
+                    s_previewChannel->isPlaying(&isPlaying);
+                }
+
+                if (ImGui::Button(isPlaying ? "Stop" : "Play"))
                 {
-                    if (!previewPlaying)
+                    if (!isPlaying)
                     {
-                        CrashoutsEngine::Audio::AudioSystem::instance().playSFXFile(outSelectedAsset);
+                        s_previewChannel = CrashoutsEngine::Audio::AudioSystem::instance().playSFXFileEx(outSelectedAsset);
 
-                        previewPlaying = true;
-                        lastPreview = outSelectedAsset;
+                        s_lastPreviewPath = outSelectedAsset;
                     }
                     else
                     {
-                        CrashoutsEngine::Audio::AudioSystem::instance().stopSFXGroup();
-                        previewPlaying = false;
+                        s_previewChannel->stop();
+                        s_previewChannel = nullptr;
                     }
                 }
 
-                // Auto-stop if the user selects a new asset
-                if (lastPreview != outSelectedAsset && previewPlaying)
+                if (s_lastPreviewPath != outSelectedAsset)
                 {
-                    CrashoutsEngine::Audio::AudioSystem::instance().stopSFXGroup();
-                    previewPlaying = false;
+                    if (isPlaying && s_previewChannel) {
+                        s_previewChannel->stop();
+                    }
+                    s_previewChannel = nullptr;
+                    s_lastPreviewPath = outSelectedAsset;
                 }
             }
 
