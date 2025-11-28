@@ -48,6 +48,8 @@ namespace UI
     static int   gTileW = 32;   
     static int   gTileH = 32;  
 
+    static float gAnimW = 1.0f;
+    static float gAnimH = 1.0f;
 
     static int   gRows = 4;
     static int   gCols = 6;
@@ -225,8 +227,8 @@ namespace UI
         gSpritePath[sizeof(gSpritePath) - 1] = '\0';
 
 
-        gRows = 4;
-        gCols = 6;
+        //gRows = 4;
+        //gCols = 6;
         gSelectedFrame = 0;
     }
 
@@ -323,14 +325,18 @@ namespace UI
         }
 
         if (stbi_info(sheetPath.c_str(), &sheetW, &sheetH, &channels)) {
-            gCols = std::max(1, sheetW / gTileW);
-            gRows = std::max(1, sheetH / gTileH);
+            int calculatedCols = std::max(1, sheetW / gTileW);
+            int calculatedRows = std::max(1, sheetH / gTileH);
 
-            ImGui::Text("Sheet %d x %d -> %d cols x %d rows",
+            // Update Globals
+            gCols = calculatedCols;
+            gRows = calculatedRows;
+
+            ImGui::TextColored(ImVec4(0, 1, 0, 1), "Loaded: %dx%d | Grid: %dx%d",
                 sheetW, sheetH, gCols, gRows);
         }
         else {
-            
+            ImGui::TextColored(ImVec4(1, 0, 0, 1), "Failed to load image header: %s", sheetPath.c_str());
         }
 
         if (ImGui::Button("Export tiles to PNGs")) {
@@ -510,31 +516,43 @@ namespace UI
         }
         */
 
+        ImGui::SeparatorText("Animation Settings");
+        ImGui::DragFloat("Target Width", &gAnimW, 0.1f);
+        ImGui::DragFloat("Target Height", &gAnimH, 0.1f);
+
+        if (selected && ImGui::Button("Fetch Size from Entity")) {
+            if (ecs.HasComponent<Component::TransformComponent>(selected)) {
+                auto* t = ecs.GetComponent<Component::TransformComponent>(selected);
+                gAnimW = t->size.x;
+                gAnimH = t->size.y;
+            }
+        }
+
         // This button takes the temporary UI clips and saves them to the Entity
-        // =================================================================================
-        // CONVERSION LOGIC: Tool (Simple Frames) -> Engine (Keyframe Curves)
-        // =================================================================================
         if (selected && ImGui::Button("Save Animation Set to Entity"))
         {
             using namespace KeyframeUnity; // Ensure we can access AddAnimator helper
 
-            // 1. Update Sprite Sheet Data (Texture path, rows, cols)
-            CEVec2 worldSize{ 25.0f, 25.0f };
-            if (ecs.HasComponent<Component::TransformComponent>(selected)) {
-                worldSize = ecs.GetComponent<Component::TransformComponent>(selected)->size;
-            }
-            Component::SetSpriteSheet(selected, gSpritePath, gCols, gRows, worldSize);
-
+            // 1. Get current Editor State (Texture, Grid, Size)
+            // We use the global variables from this file because that's what the editor is looking at.
+            std::string currentTexturePath = gSpritePath;
+            int currentCols = gCols;
+            int currentRows = gRows;
+            std::cout << "Max col? " << gCols << " Max rows? " << gRows << std::endl;
             // 2. Get or Add the Keyframe Component
             auto& animComp = AddAnimator(ecs, selected);
-
-            // Clear old clips so we don't duplicate
-            animComp.clips.clear();
 
             // 3. Convert UI Clips to Keyframe Clips
             for (const auto& uiClip : gClips) {
                 AnimationClip newClip;
                 newClip.name = uiClip.name;
+
+                newClip.textureAsset = currentTexturePath;
+                newClip.spriteCols = currentCols;
+                newClip.spriteRows = currentRows;
+                newClip.useCustomSize = true; // Use the size visible in editor
+                newClip.targetWidth = gAnimW;
+                newClip.targetHeight = gAnimH;
 
                 // Set Wrap Mode
                 newClip.wrap = uiClip.loop ? KFWrap::Loop : KFWrap::Clamp;
@@ -557,30 +575,28 @@ namespace UI
                 }
 
                 // Add a final "dummy" key to define the end duration of the last frame
-                // otherwise the last frame would last 0 seconds
                 KFKey endKey{};
                 endKey.time = uiClip.frameCount * frameDuration;
-                endKey.value = (float)(uiClip.startFrame + uiClip.frameCount - 1); // Keep last value
+                endKey.value = (float)(uiClip.startFrame + uiClip.frameCount - 1);
                 endKey.interp = KFInterp::Constant;
                 spriteBinding.curve.Add(endKey);
 
                 // Add Binding to Clip
                 newClip.bindings.push_back(spriteBinding);
 
-                // Register Clip to Component
+                // Register Clip to Component (Overwrites if name exists, Adds if new)
                 animComp.clips[newClip.name] = newClip;
             }
 
-            // 4. Set default state
-            if (!gClips.empty()) {
+            // 4. Set default state only if nothing is currently playing/selected
+            if (animComp.current.empty() && !gClips.empty()) {
                 animComp.current = gClips[0].name;
                 animComp.playing = true;
                 animComp.t = 0.0f;
             }
 
-            std::cout << "Converted & Saved " << gClips.size() << " clips to KeyframeAnimator on Entity " << selected << std::endl;
+            std::cout << "Merged " << gClips.size() << " clips into Entity " << selected << std::endl;
         }
-
 
         if (ImGui::Button("Add new clip"))
         {

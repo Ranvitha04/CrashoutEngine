@@ -84,6 +84,9 @@ namespace KeyframeUnity {
             a.current = clipName;
             a.t = 0.0f;
             a.playing = true;
+        
+            //const AnimationClip& clip = a.clips.at(clipName);
+            a.needStateUpdate = true;
         }
         return true;
     }
@@ -94,6 +97,38 @@ namespace KeyframeUnity {
         // 1. Find Clip
         if (a.clips.find(a.current) == a.clips.end()) return;
         const AnimationClip& clip = a.clips.at(a.current);
+
+        // Apply State Changes (Texture / Size) once
+        if (a.needStateUpdate) {
+            using namespace Component;
+
+            // Apply Texture & Grid Settings from the Animation Clip
+            if (!clip.textureAsset.empty()) {
+                // Update SpriteSheetComponent (Critical for UV Math)
+                if (auto* sheet = ecs.GetComponent<SpriteSheetComponent>(e)) {
+                    sheet->textureAsset = clip.textureAsset;
+                    // Prevent division by zero
+                    sheet->cols = std::max(1, clip.spriteCols);
+                    sheet->rows = std::max(1, clip.spriteRows);
+                }
+
+                // Update ShapeComponent (Critical for Rendering)
+                if (auto* shape = ecs.GetComponent<ShapeComponent>(e)) {
+                    shape->textureName = clip.textureAsset;
+                    shape->enableTexture = true;
+                }
+            }
+
+            // Apply Size Settings
+            if (clip.useCustomSize) {
+                if (auto* t = ecs.GetComponent<TransformComponent>(e)) {
+                    t->size.x = clip.targetWidth;
+                    t->size.y = clip.targetHeight;
+                }
+            }
+
+            a.needStateUpdate = false;
+        }
 
         // 2. Advance Time
         a.t += dt;
@@ -137,49 +172,48 @@ namespace KeyframeUnity {
                 // --- SPRITE ANIMATION (The Important Part) ---
             case KFProperty::SpriteIndex:
             {
-                // We need the SpriteSheet info (Rows/Cols) to calculate UVs
-                // Assuming you have a component that stores this?
-                // Let's check for SpriteSheetComponent
                 using namespace Component;
 
-                // DEFAULT GRID (If no component found)
+                // A. Fetch current grid settings (now updated by the block above)
                 int cols = 1;
                 int rows = 1;
 
-                // Try to find grid data (Modify this type if your component is named differently)
-                if (ecs.HasComponent<SpriteSheetComponent>(e)) {
+                // 2. PRIORITY: Use data from the AnimationClip if valid
+                if (clip.spriteCols > 0 && clip.spriteRows > 0) {
+                    cols = clip.spriteCols;
+                    rows = clip.spriteRows;
+                }
+                // 3. FALLBACK: Check SpriteSheetComponent (Legacy support)
+                else if (ecs.HasComponent<SpriteSheetComponent>(e)) {
                     auto* sheet = ecs.GetComponent<SpriteSheetComponent>(e);
-                    cols = std::max(1, sheet->cols); // Ensure no division by zero
+                    cols = std::max(1, sheet->cols);
                     rows = std::max(1, sheet->rows);
                 }
 
-                // 1. Calculate UV Size (1.0 / cols)
-                float uSize = 1.0f / cols;
-                float vSize = 1.0f / rows;
+                // B. Determine Row and Column from Frame Index
+                int frameIdx = (int)val; // e.g., 3
 
-                // 2. Determine Row/Col for this Frame Index
-                int frameIdx = (int)val;
-                int r = frameIdx / cols;
-                int c = frameIdx % cols;
+                // Standard Row-Major Layout calculation
+                int r = frameIdx / cols; // 3 / 6 = 0 (Row 0)
+                int c = frameIdx % cols; // 3 % 6 = 3 (Col 3)
 
-                // 3. Calculate UV Offset
-                float uOffset = c * uSize;
+                // C. Calculate Normalized UV Data (0.0 to 1.0)
+                float uSize = 1.0f / cols; // 1.0 / 6 = 0.166
+                float vSize = 1.0f / rows; // 1.0 / 4 = 0.25
+                std::cout << "Max col? " << cols << " Max rows? " << rows << std::endl;
+                float uOffset = c * uSize; // 3 * 0.166 = 0.5
+
+                // NOTE: Coordinate system matters here.
+                // If Row 0 is Top, and UV 0 is Bottom, you might need: vOffset = (rows - 1 - r) * vSize;
+                // For now, assuming Row 0 starts at UV 0.
                 float vOffset = r * vSize;
 
-                // 4. Apply to ShapeComponent (Visuals)
+                // D. Apply to Shape
                 if (auto* shape = ecs.GetComponent<ShapeComponent>(e)) {
-                    // Ensure the shape knows the tile size (Zoom)
                     shape->uvSize.x = uSize;
                     shape->uvSize.y = vSize;
-
-                    // *** CRITICAL: You must have an offset field in ShapeComponent ***
-                    // If you don't have 'uvOffset', you need to add it to ShapeComponent.h
-                    // shape->uvOffset.x = uOffset;
-                    // shape->uvOffset.y = vOffset;
-
-                    // WORKAROUND if you lack uvOffset: Use WrapMode/Offset hacking or add the field.
-                    // Ideally:
-                    shape->uvOffset = { uOffset, vOffset };
+                    shape->uvOffset.x = uOffset;
+                    shape->uvOffset.y = vOffset;
                 }
                 break;
             }

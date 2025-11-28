@@ -244,7 +244,7 @@ namespace Scene {
                     checkPos = mouseUI;
                 }
 
-                std::cout << "Mouse pos is " << checkPos.x << ", " << checkPos.y << "Button Pos is" << t->position.x << ", " << t->position.y << std::endl;
+                //std::cout << "Mouse pos is " << checkPos.x << ", " << checkPos.y << "Button Pos is" << t->position.x << ", " << t->position.y << std::endl;
 
                 // --- COLLISION CHECK (AABB) ---
                 float halfW = t->size.x * 0.5f;

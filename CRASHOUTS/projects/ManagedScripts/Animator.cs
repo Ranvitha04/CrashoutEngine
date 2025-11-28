@@ -10,7 +10,7 @@ namespace CrashoutsEngine
         public uint EntityID;
 
         // Internal constructor prevents "new Animator()" usage by users
-        internal Animator() { }
+        public Animator() { }
 
         // --- PUBLIC API ---
 

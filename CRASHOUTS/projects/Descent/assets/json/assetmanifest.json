@@ -257,6 +257,10 @@
             "path": "Character\\New Artstyle\\Switch State spritesheet.png"
         },
         {
+            "name": "Switch-State-SpriteSheet-Reverse",
+            "path": "Character\\New Artstyle\\Switch-State-SpriteSheet-Reverse.png"
+        },
+        {
             "name": "Switch-State-SpriteSheet",
             "path": "Character\\New Artstyle\\Switch-State-SpriteSheet.png"
         },

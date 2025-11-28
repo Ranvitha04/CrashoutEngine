@@ -1074,8 +1074,26 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "PlayerController",
-                        "fields": {}
+                        "className": "PlayerMovement",
+                        "fields": {
+                            "moveSpeed": 2000.0,
+                            "maxRunSpeed": 150.0,
+                            "jumpPower": 50000.0,
+                            "groundDrag": 0.15000000596046449,
+                            "airDrag": 0.019999999552965165,
+                            "gravityScale": 2.0,
+                            "turnMultiplier": 2.0,
+                            "frictionMultiplier": 500.0,
+                            "gravityForceMultiplier": 10.0,
+                            "stepInterval": 0.07500000298023224,
+                            "swapPause": 1.0,
+                            "energyConsumption": 12.5,
+                            "normalMass": 4.5,
+                            "lightMass": 3.0,
+                            "CurrentEnergy": 0.0,
+                            "MaxEnergy": 100.0,
+                            "alive": true
+                        }
                     }
                 ]
             },
@@ -1091,13 +1109,19 @@
                 }
             },
             "keyframe_animator": {
-                "current": "walk_normal",
+                "current": "idle_normal",
                 "t": 0.0,
-                "playing": false,
+                "playing": true,
                 "clips": [
                     {
                         "name": "idle_normal",
                         "wrap": 0,
+                        "textureAsset": "images/Character\\Normal Mode\\Chibi-Actions-SpriteSheet.png",
+                        "spriteCols": 3,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": 230.0,
+                        "targetHeight": 277.0,
                         "bindings": [
                             {
                                 "property": 6,
@@ -1123,6 +1147,12 @@
                     {
                         "name": "walk_normal",
                         "wrap": 0,
+                        "textureAsset": "images/Character\\Normal Mode\\Chibi-Actions-SpriteSheet.png",
+                        "spriteCols": 3,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": 230.0,
+                        "targetHeight": 277.0,
                         "bindings": [
                             {
                                 "property": 6,
@@ -1157,6 +1187,79 @@
                                     },
                                     {
                                         "t": 0.5,
+                                        "v": 6.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "swap_state",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\New Artstyle\\Switch-State-SpriteSheet.png",
+                        "spriteCols": 3,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": -115.19999694824219,
+                        "targetHeight": 71.4000015258789,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 1.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.5,
+                                        "v": 2.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.75,
+                                        "v": 3.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 1.0,
+                                        "v": 4.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 1.25,
+                                        "v": 5.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 1.5,
+                                        "v": 6.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 1.75,
                                         "v": 6.0,
                                         "i": 0,
                                         "in": 0.0,

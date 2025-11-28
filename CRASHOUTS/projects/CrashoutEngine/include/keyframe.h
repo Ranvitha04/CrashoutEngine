@@ -57,6 +57,14 @@ struct AnimationClip {
     KFWrap                 wrap = KFWrap::Loop;
     std::vector<KFBinding> bindings;
 
+    std::string textureAsset = ""; // If set, switch texture when clip starts
+    int spriteCols = 0;            // If > 0, update SpriteSheetComponent
+    int spriteRows = 0;            // If > 0, update SpriteSheetComponent
+
+    bool useCustomSize = false;    // Should we resize the entity?
+    float targetWidth = 1.0f;      // New Scale/Size X
+    float targetHeight = 1.0f;     // New Scale/Size Y
+
     float Length() const {
         float t = 0.f;
         for (auto const& b : bindings) t = std::max(t, b.curve.EndTime());
@@ -73,12 +81,12 @@ struct KeyframeAnimatorComponent {
 
     
     std::function<std::string(int)> spriteResolver;
+    bool needStateUpdate{ true };
 };
 
 // ---------- Runtime API ----------
 namespace KeyframeUnity {
 
-    
     KeyframeAnimatorComponent& AddAnimator(CrashoutsEngine::ECS& ecs, CrashoutsEngine::Entity e);
 
     // Add/replace a clip

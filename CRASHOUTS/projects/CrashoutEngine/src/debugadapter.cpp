@@ -2775,27 +2775,43 @@ namespace CrashoutsEngine
 			// --- 2. Clip List (Details) ---
 			ImGui::SeparatorText("Loaded Clips");
 
-			if (ImGui::BeginTable("ClipsTable", 3, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
-				ImGui::TableSetupColumn("Name");
-				ImGui::TableSetupColumn("Length");
-				ImGui::TableSetupColumn("Wrap");
+			ImGui::Separator();
+			ImGui::Text("Entity Clips (%zu):", anim->clips.size());
+
+			std::string clipToDelete = "";
+
+			if (ImGui::BeginTable("EntityClipsTable", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
+				ImGui::TableSetupColumn("Clip Name");
+				ImGui::TableSetupColumn("Actions", ImGuiTableColumnFlags_WidthFixed, 60.0f);
 				ImGui::TableHeadersRow();
 
-				for (const auto& pair : anim->clips) {
-					const auto& clip = pair.second;
+				for (auto& [name, clip] : anim->clips) {
+					ImGui::PushID(name.c_str());
 					ImGui::TableNextRow();
 
 					ImGui::TableSetColumnIndex(0);
-					ImGui::Text("%s", clip.name.c_str());
+					ImGui::Text("%s", name.c_str());
+					if (ImGui::IsItemHovered()) {
+						ImGui::SetTooltip("Texture: %s\nGrid: %dx%d", clip.textureAsset.c_str(), clip.spriteCols, clip.spriteRows);
+					}
 
 					ImGui::TableSetColumnIndex(1);
-					ImGui::Text("%.2fs", clip.Length());
-
-					ImGui::TableSetColumnIndex(2);
-					const char* wrapMode = (clip.wrap == KFWrap::Loop) ? "Loop" : "Clamp";
-					ImGui::Text("%s", wrapMode);
+					if (ImGui::SmallButton("Delete")) {
+						clipToDelete = name;
+					}
+					ImGui::PopID();
 				}
 				ImGui::EndTable();
+			}
+
+			// Perform deletion safely outside loop
+			if (!clipToDelete.empty()) {
+				anim->clips.erase(clipToDelete);
+				// If we deleted the currently playing clip, stop playback
+				if (anim->current == clipToDelete) {
+					anim->current = "";
+					anim->playing = false;
+				}
 			}
 		}
 	};

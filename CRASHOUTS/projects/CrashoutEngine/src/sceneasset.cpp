@@ -1121,6 +1121,26 @@ namespace CrashoutsEngine {
                             if (clipVal.HasMember("name")) newClip.name = clipVal["name"].GetString();
                             if (clipVal.HasMember("wrap")) newClip.wrap = static_cast<KFWrap>(clipVal["wrap"].GetInt());
 
+                            // --- [NEW] Load Texture & Size Data ---
+                            if (clipVal.HasMember("textureAsset") && clipVal["textureAsset"].IsString())
+                                newClip.textureAsset = clipVal["textureAsset"].GetString();
+
+                            if (clipVal.HasMember("spriteCols") && clipVal["spriteCols"].IsInt())
+                                newClip.spriteCols = clipVal["spriteCols"].GetInt();
+
+                            if (clipVal.HasMember("spriteRows") && clipVal["spriteRows"].IsInt())
+                                newClip.spriteRows = clipVal["spriteRows"].GetInt();
+
+                            if (clipVal.HasMember("useCustomSize") && clipVal["useCustomSize"].IsBool())
+                                newClip.useCustomSize = clipVal["useCustomSize"].GetBool();
+
+                            if (clipVal.HasMember("targetWidth") && clipVal["targetWidth"].IsFloat())
+                                newClip.targetWidth = clipVal["targetWidth"].GetFloat();
+
+                            if (clipVal.HasMember("targetHeight") && clipVal["targetHeight"].IsFloat())
+                                newClip.targetHeight = clipVal["targetHeight"].GetFloat();
+                            // --------------------------------------
+
                             if (clipVal.HasMember("bindings")) {
                                 for (const auto& bVal : clipVal["bindings"].GetArray()) {
                                     KFBinding newBinding;
@@ -1134,7 +1154,7 @@ namespace CrashoutsEngine {
                                             if (kVal.HasMember("i")) k.interp = static_cast<KFInterp>(kVal["i"].GetInt());
                                             if (kVal.HasMember("in")) k.inTan = kVal["in"].GetFloat();
                                             if (kVal.HasMember("out")) k.outTan = kVal["out"].GetFloat();
-                                            newBinding.curve.Add(k);
+                                            newBinding.curve.Add(k); // Using Add ensures sorting!
                                         }
                                     }
                                     newClip.bindings.push_back(newBinding);
@@ -2050,6 +2070,19 @@ namespace CrashoutsEngine {
                         clipVal.AddMember("name", cName, allocator);
                         clipVal.AddMember("wrap", static_cast<int>(clip.wrap), allocator);
 
+                        // --- [NEW] Save Texture & Size Data ---
+                        if (!clip.textureAsset.empty()) {
+                            rapidjson::Value texName;
+                            texName.SetString(clip.textureAsset.c_str(), allocator);
+                            clipVal.AddMember("textureAsset", texName, allocator);
+                        }
+                        clipVal.AddMember("spriteCols", clip.spriteCols, allocator);
+                        clipVal.AddMember("spriteRows", clip.spriteRows, allocator);
+                        clipVal.AddMember("useCustomSize", clip.useCustomSize, allocator);
+                        clipVal.AddMember("targetWidth", clip.targetWidth, allocator);
+                        clipVal.AddMember("targetHeight", clip.targetHeight, allocator);
+                        // --------------------------------------
+
                         // 3. Save Bindings
                         rapidjson::Value bindArr(rapidjson::kArrayType);
                         for (const auto& binding : clip.bindings) {
@@ -2063,7 +2096,6 @@ namespace CrashoutsEngine {
                                 kVal.AddMember("t", k.time, allocator);
                                 kVal.AddMember("v", k.value, allocator);
                                 kVal.AddMember("i", static_cast<int>(k.interp), allocator);
-                                // Tangents are optional for sprites, but good for position curves
                                 kVal.AddMember("in", k.inTan, allocator);
                                 kVal.AddMember("out", k.outTan, allocator);
                                 keyArr.PushBack(kVal, allocator);
