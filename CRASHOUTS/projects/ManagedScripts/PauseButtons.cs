@@ -48,10 +48,10 @@ namespace CrashoutsEngine
                 {
                     Console.WriteLine("Settings not implemented");
                 }
-                else if (name == "QuitBtn")
-                {
-                    SceneManager.QuitGame();
-                }
+                // else if (name == "QuitBtn")
+                // {
+                //     SceneManager.QuitGame();
+                // }
             }
         }
 

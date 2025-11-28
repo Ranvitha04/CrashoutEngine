@@ -8,7 +8,7 @@ namespace CrashoutsEngine
     {
         public uint EntityID;
 
-        internal Animator() { }
+        public Animator() { }
 
         public void Play(string state)
         {

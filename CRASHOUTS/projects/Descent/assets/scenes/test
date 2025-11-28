@@ -1102,6 +1102,98 @@
                     "x": 0.0,
                     "y": 0.0
                 }
+            },
+            "keyframe_animator": {
+                "current": "Walk",
+                "t": 0.0,
+                "playing": true,
+                "clips": [
+                    {
+                        "name": "Walk",
+                        "wrap": 0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "time": 0.0,
+                                        "value": 0.0,
+                                        "inTan": 0.0,
+                                        "outTan": 0.0,
+                                        "interp": 0
+                                    },
+                                    {
+                                        "time": 0.10000000149011612,
+                                        "value": 1.0,
+                                        "inTan": 0.0,
+                                        "outTan": 0.0,
+                                        "interp": 0
+                                    },
+                                    {
+                                        "time": 0.20000000298023225,
+                                        "value": 2.0,
+                                        "inTan": 0.0,
+                                        "outTan": 0.0,
+                                        "interp": 0
+                                    },
+                                    {
+                                        "time": 0.30000001192092898,
+                                        "value": 3.0,
+                                        "inTan": 0.0,
+                                        "outTan": 0.0,
+                                        "interp": 0
+                                    },
+                                    {
+                                        "time": 0.4000000059604645,
+                                        "value": 0.0,
+                                        "inTan": 0.0,
+                                        "outTan": 0.0,
+                                        "interp": 0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Jump",
+                        "wrap": 1,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "time": 0.0,
+                                        "value": 4.0,
+                                        "inTan": 0.0,
+                                        "outTan": 0.0,
+                                        "interp": 0
+                                    },
+                                    {
+                                        "time": 0.15000000596046449,
+                                        "value": 5.0,
+                                        "inTan": 0.0,
+                                        "outTan": 0.0,
+                                        "interp": 0
+                                    },
+                                    {
+                                        "time": 0.30000001192092898,
+                                        "value": 6.0,
+                                        "inTan": 0.0,
+                                        "outTan": 0.0,
+                                        "interp": 0
+                                    },
+                                    {
+                                        "time": 0.44999998807907107,
+                                        "value": 7.0,
+                                        "inTan": 0.0,
+                                        "outTan": 0.0,
+                                        "interp": 0
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
             }
         },
         {

@@ -12,6 +12,7 @@ namespace CrashoutsEngine
 
         public override void Start()
         {
+            gameWon = false;
             // Register Trigger Event for this "Win Zone" entity
             CollisionEvents.RegisterTriggerEnter(Entity.ID, OnTriggerEnter);
 

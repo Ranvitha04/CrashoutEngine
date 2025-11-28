@@ -42,6 +42,7 @@
 #include "tilemapcomponent.h"
 #include "hierarchy_components.h"
 #include "transientcomponent.h"
+#include "keyframe.h"
 
 // FOR GAME GUI
 #include "buttoncomponent.h"
@@ -163,7 +164,8 @@ namespace CrashoutsEngine {
             const char* const AUDIO_COMPONENT           = "audio";  
             const char* const SCRIPT_COMPONENT          = "script";
             const char* const CAMERA_COMPONENT          = "camera";
-            const char* const TILEMAP_COMPONENT          = "tilemap";
+            const char* const TILEMAP_COMPONENT         = "tilemap";
+            const char* const KEYFRAME_ANIMATOR_COMPONENT = "keyframe_animator";
             // UI COMPONENT ITEMS
             const char* const BUTTON_COMPONENT          = "button";
             const char* const GUI_COMPONENT             = "gui";
@@ -1063,6 +1065,78 @@ namespace CrashoutsEngine {
                     }
                 }
 
+                // =========================================================
+                // R. KeyframeAnimatorComponent
+                // =========================================================
+                if (entityValue.HasMember(Keys::KEYFRAME_ANIMATOR_COMPONENT) && entityValue[Keys::KEYFRAME_ANIMATOR_COMPONENT].IsObject()) {
+                    KeyframeAnimatorComponent& ka = gECS.AddComponent<KeyframeAnimatorComponent>(newEntity);
+                    const rapidjson::Value& kaVal = entityValue[Keys::KEYFRAME_ANIMATOR_COMPONENT];
+
+                    // 1. Basic State
+                    if (kaVal.HasMember("current") && kaVal["current"].IsString())
+                        ka.current = kaVal["current"].GetString();
+
+                    if (kaVal.HasMember("t") && kaVal["t"].IsFloat())
+                        ka.t = kaVal["t"].GetFloat();
+
+                    if (kaVal.HasMember("playing") && kaVal["playing"].IsBool())
+                        ka.playing = kaVal["playing"].GetBool();
+
+                    // 2. Load Clips
+                    if (kaVal.HasMember("clips") && kaVal["clips"].IsArray()) {
+                        const rapidjson::Value& clipsArr = kaVal["clips"];
+
+                        for (rapidjson::SizeType c = 0; c < clipsArr.Size(); ++c) {
+                            const rapidjson::Value& clipVal = clipsArr[c];
+                            AnimationClip newClip;
+
+                            // Clip Name
+                            if (clipVal.HasMember("name") && clipVal["name"].IsString())
+                                newClip.name = clipVal["name"].GetString();
+
+                            // Clip Wrap Mode (Enum)
+                            if (clipVal.HasMember("wrap") && clipVal["wrap"].IsInt())
+                                newClip.wrap = static_cast<KFWrap>(clipVal["wrap"].GetInt());
+
+                            // 3. Load Bindings inside Clip
+                            if (clipVal.HasMember("bindings") && clipVal["bindings"].IsArray()) {
+                                const rapidjson::Value& bindArr = clipVal["bindings"];
+
+                                for (rapidjson::SizeType b = 0; b < bindArr.Size(); ++b) {
+                                    const rapidjson::Value& bVal = bindArr[b];
+                                    KFBinding newBinding;
+
+                                    // Property Enum
+                                    if (bVal.HasMember("property") && bVal["property"].IsInt())
+                                        newBinding.property = static_cast<KFProperty>(bVal["property"].GetInt());
+
+                                    // 4. Load Keys inside Curve
+                                    if (bVal.HasMember("keys") && bVal["keys"].IsArray()) {
+                                        const rapidjson::Value& keyArr = bVal["keys"];
+                                        for (rapidjson::SizeType k = 0; k < keyArr.Size(); ++k) {
+                                            const rapidjson::Value& kVal = keyArr[k];
+                                            KFKey newKey;
+
+                                            if (kVal.HasMember("time")) newKey.time = kVal["time"].GetFloat();
+                                            if (kVal.HasMember("value")) newKey.value = kVal["value"].GetFloat();
+                                            if (kVal.HasMember("inTan")) newKey.inTan = kVal["inTan"].GetFloat();
+                                            if (kVal.HasMember("outTan")) newKey.outTan = kVal["outTan"].GetFloat();
+                                            if (kVal.HasMember("interp")) newKey.interp = static_cast<KFInterp>(kVal["interp"].GetInt());
+
+                                            newBinding.curve.Add(newKey);
+                                        }
+                                    }
+                                    newClip.bindings.push_back(newBinding);
+                                }
+                            }
+                            // Insert into map
+                            ka.clips[newClip.name] = newClip;
+                        }
+                    }
+                    // Note: 'spriteResolver' std::function cannot be saved. 
+                    // You must re-assign it in C++ logic (e.g., inside a Script's Start() or system init).
+                }
+
                 // Check if ParentComponent
                 if (entityValue.HasMember(Keys::PARENT_COMPONENT) && entityValue[Keys::PARENT_COMPONENT].IsObject()) {
                     const rapidjson::Value& pVal = entityValue[Keys::PARENT_COMPONENT];
@@ -1850,6 +1924,65 @@ namespace CrashoutsEngine {
                     // Note: We do NOT save pOpen, isCacheDirty, or renderCache as these are runtime/editor only.
 
                     entityValue.AddMember(rapidjson::StringRef(Keys::TILEMAP_COMPONENT), tmValue, allocator);
+                }
+
+                // =========================================================
+                // S. KeyframeAnimatorComponent
+                // =========================================================
+                if (gECS.HasComponent<KeyframeAnimatorComponent>(id)) {
+                    const KeyframeAnimatorComponent& ka = *gECS.GetComponent<KeyframeAnimatorComponent>(id);
+                    rapidjson::Value kaVal(rapidjson::kObjectType);
+
+                    // 1. Basic State
+                    rapidjson::Value currentVal;
+                    currentVal.SetString(ka.current.c_str(), allocator);
+                    kaVal.AddMember("current", currentVal, allocator);
+                    kaVal.AddMember("t", ka.t, allocator);
+                    kaVal.AddMember("playing", ka.playing, allocator);
+
+                    // 2. Save Clips Map -> Array
+                    rapidjson::Value clipsArr(rapidjson::kArrayType);
+
+                    for (const auto& pair : ka.clips) {
+                        const AnimationClip& clip = pair.second;
+                        rapidjson::Value clipVal(rapidjson::kObjectType);
+
+                        // Clip Name
+                        rapidjson::Value cName;
+                        cName.SetString(clip.name.c_str(), allocator);
+                        clipVal.AddMember("name", cName, allocator);
+
+                        // Clip Wrap Enum
+                        clipVal.AddMember("wrap", static_cast<int>(clip.wrap), allocator);
+
+                        // 3. Save Bindings
+                        rapidjson::Value bindArr(rapidjson::kArrayType);
+                        for (const auto& binding : clip.bindings) {
+                            rapidjson::Value bVal(rapidjson::kObjectType);
+
+                            // Property Enum
+                            bVal.AddMember("property", static_cast<int>(binding.property), allocator);
+
+                            // 4. Save Keys
+                            rapidjson::Value keyArr(rapidjson::kArrayType);
+                            for (const auto& k : binding.curve.keys) {
+                                rapidjson::Value kVal(rapidjson::kObjectType);
+                                kVal.AddMember("time", k.time, allocator);
+                                kVal.AddMember("value", k.value, allocator);
+                                kVal.AddMember("inTan", k.inTan, allocator);
+                                kVal.AddMember("outTan", k.outTan, allocator);
+                                kVal.AddMember("interp", static_cast<int>(k.interp), allocator);
+                                keyArr.PushBack(kVal, allocator);
+                            }
+                            bVal.AddMember("keys", keyArr, allocator);
+                            bindArr.PushBack(bVal, allocator);
+                        }
+                        clipVal.AddMember("bindings", bindArr, allocator);
+                        clipsArr.PushBack(clipVal, allocator);
+                    }
+
+                    kaVal.AddMember("clips", clipsArr, allocator);
+                    entityValue.AddMember(rapidjson::StringRef(Keys::KEYFRAME_ANIMATOR_COMPONENT), kaVal, allocator);
                 }
 
                 // =========================================================

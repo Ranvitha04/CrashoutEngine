@@ -20083,7 +20083,7 @@
             }
         },
         {
-            "name": "QuitBtn",
+            "name": "PauseQuitBtn",
             "layer": {
                 "currentLayer": 0
             },
