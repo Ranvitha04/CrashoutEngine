@@ -1399,6 +1399,7 @@ namespace UI { // --------------------------------------------------------------
                         currSceneName = name;
                         Serialization::LoadScenes(name);
                         CrashoutsEngine::ScriptSystem::InitializeAll(MonoManager::GetDomain(), MonoManager::GetAssembly());
+                        MonoManager::ReloadScripts();
                     }
 
                     ImGui::SameLine();
@@ -1867,7 +1868,7 @@ namespace UI { // --------------------------------------------------------------
             if (ImGui::Button("PLAY", ImVec2(70, 25))) {
                 if (engineState == EngineState::STOP && !currSceneName.empty()) Serialization::SaveScenes(currSceneName);
                 engineState = EngineState::PLAY;
-
+                MonoManager::ReloadScripts();
                 CrashoutsEngine::Audio::AudioSystem::instance().setPaused(false);
 
                 CrashoutsEngine::RenderCamera::engineCamera.SetPostiion(CEVec3{ 0.f, 0.f, 0.f });
@@ -1891,17 +1892,17 @@ namespace UI { // --------------------------------------------------------------
 
                 if(currSceneName.empty()) RestartGameState();       // Legacy scene system
                 else {
+                    CrashoutsEngine::ScriptSystem::DestroyAll();
                     ECS::getInstance()->Reset();
                     Serialization::LoadScenes(currSceneName);
                     CrashoutsEngine::ScriptSystem::InitializeAll(MonoManager::GetDomain(), MonoManager::GetAssembly());
                 }
                 //MonoManager::ReloadScripts();
-                engineState = EngineState::STOP;
-                
-				CrashoutsEngine::Audio::AudioSystem::instance().stopAll(true); // Stop FMOD Studio
+                CrashoutsEngine::Audio::AudioSystem::instance().stopAll(true); // Stop FMOD Studio
                 CrashoutsEngine::Audio::AudioSystem::instance().setPaused(false);
                 CrashoutsEngine::Audio::AudioSystem::instance().stopMusicGroup(); // <-- Seems to work better than the above
 
+                engineState = EngineState::STOP;
             }
             ImGui::SameLine();
             // SAVE

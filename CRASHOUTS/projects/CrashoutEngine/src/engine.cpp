@@ -118,7 +118,7 @@ bool PerformPendingSceneLoad() {
         CrashoutsEngine::CollisionEventManager::GetInstance().Clear();
         CrashoutsEngine::Serialization::currSceneName = g_PendingSceneName;
         CrashoutsEngine::Serialization::LoadScenes(g_PendingSceneName);
-        CrashoutsEngine::ScriptSystem::InitializeAll(MonoManager::GetDomain(), MonoManager::GetAssembly());
+		MonoManager::ReloadScripts();
 
         // Reset flags
         g_IsSceneLoadPending = false;

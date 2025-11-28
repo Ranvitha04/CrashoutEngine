@@ -19,7 +19,7 @@ public class AudioManager
                 "footstep1",
                 "assets/audio/footsteps 1.wav",
                 1.0f, // base volume
-                false, // loop?
+                true, // loop?
                 //SoundType.SFX //SFX broken
                 SoundType.Music
             );
@@ -28,7 +28,7 @@ public class AudioManager
                 "footstep2",
                 "assets/audio/footsteps 2.wav",
                 1.0f, // base volume
-                false, // loop?
+                true, // loop?
                       //SoundType.SFX //SFX broken
                 SoundType.Music
             );
@@ -37,7 +37,7 @@ public class AudioManager
                 "footstep3",
                 "assets/audio/footsteps 3.wav",
                 1.0f, // base volume
-                false, // loop?
+                true, // loop?
                       //SoundType.SFX //SFX broken
                 SoundType.Music
             );
@@ -46,7 +46,7 @@ public class AudioManager
                 "footstep4",
                 "assets/audio/footsteps 4.wav",
                 1.0f, // base volume
-                false, // loop?
+                true, // loop?
                       //SoundType.SFX //SFX broken
                 SoundType.Music
             );
@@ -55,7 +55,7 @@ public class AudioManager
                 "footstep5",
                 "assets/audio/footsteps 5.wav",
                 1.0f, // base volume
-                false, // loop?
+                true, // loop?
                       //SoundType.SFX //SFX broken
                 SoundType.Music
             );
@@ -64,7 +64,7 @@ public class AudioManager
                 "footstep6",
                 "assets/audio/footsteps 6.wav",
                 1.0f, // base volume
-                false, // loop?
+                true, // loop?
                       //SoundType.SFX //SFX broken
                 SoundType.Music
             );
