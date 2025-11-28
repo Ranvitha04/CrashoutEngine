@@ -62,23 +62,16 @@ namespace
         if (!stateName) return;
 
         char* cstr = mono_string_to_utf8(stateName);
-        std::string state = cstr ? cstr : "";
+        if (!cstr) return;
+
+        std::string state(cstr);
         mono_free(cstr);
 
         if (state.empty()) return;
 
-        auto* ecs = ECS::getInstance();
-        if (!ecs) return;
-
-        auto* anim = ecs->GetComponent<Component::Animator>(id);
-        if (!anim) {
-            std::cout << "[Animator] No Animator component on entity " << id << "\n";
-            return;
-        }
-
-        anim->Play(state);
+        // Drive ECS SpriteAnimComponent instead of private Animator
+        Component::AnimatorPlayOnSprite(static_cast<CrashoutsEngine::Entity>(id), state);
     }
-
 
     static void InternalSetBool(uint32_t id, MonoString* key, bool value)
     {

@@ -59,7 +59,6 @@ context and implement a game loop.
 #include <filesystem>
 
 #include "imgui_internal.h"
-#include "spriteAnimation.h"
 /*                                                   type declarations
 ----------------------------------------------------------------------------- */
 
@@ -609,23 +608,6 @@ void Update(double const& dt) {
         CrashoutsEngine::ScriptSystem::UpdateAll();
 
         aiSystem.Update();
-
-        // --- UPDATE ALL ANIMATORS ---
-        {
-            FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "AnimatorUpdate");
-
-            auto* ecs = CrashoutsEngine::ECS::getInstance();
-            auto& arr = ecs->GetComponentArray<Component::Animator>();
-
-            float dt_f = (float)dt;
-
-            for (size_t i = 0; i < arr.indexToEntity.size(); ++i) {
-                auto id = arr.indexToEntity[i];
-                auto* anim = ecs->GetComponent<Component::Animator>(id);
-                if (anim)
-                    anim->update(dt_f);
-            }
-        }
 
         {
             FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Collision");
