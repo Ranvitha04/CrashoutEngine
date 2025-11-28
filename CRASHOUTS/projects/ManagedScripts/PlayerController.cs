@@ -10,7 +10,11 @@ namespace CrashoutsEngine
         bool isMoving;
         bool wasMoving;
         bool jump;
+        private float stepTimer = 0.0f;
+        private float stepInterval = 0.35f;
+        private Random rng = new Random();
 
+        Animator animator;
         /*SAMPLE TRIGGERS*/
         public void OnTriggerEnter(uint otherEntity)
         {
@@ -40,6 +44,24 @@ namespace CrashoutsEngine
             // CollisionEvents.RegisterTriggerStay(Entity.ID, OnTriggerStay);
 
             AudioManager.GetInstance().Play("ambient");
+
+                              
+            animator = Entity.GetComponent<Animator>(); 
+
+          //  if (animator == null)
+          //  {
+          //      Console.WriteLine("[C#] PlayerController: FAILED to get Animator on entity " + Entity.ID);
+           //     return;
+           // }
+
+           // animator.SetSpriteSheet(
+            //    "images/spritesheet/ducky_2_spritesheet.png",
+            //    6,   // cols
+             //   4,   // rows
+             //   10.0f,
+             //   10.0f
+           // );
+           
         }
 
         public override void Update()
@@ -51,17 +73,28 @@ namespace CrashoutsEngine
             //var rb = Entity.GetComponent<RigidBodyComponent>();
             var tf = Entity.GetComponent<TransformComponent>();
             //if (rb == null) Console.WriteLine("[C#] rb is null");
-            if (tf == null) Console.WriteLine("[C#] tf is null");
+            moveLeft = Input.IsKeyPressed(Key.A);
+            moveRight = Input.IsKeyPressed(Key.D);
             isMoving = moveLeft || moveRight;
-            if (isMoving && !wasMoving)
+            if (isMoving)
             {
-                //Console.WriteLine("[C#] Player started moving -> Play footsteps");
-                AudioManager.GetInstance().Play("footsteps");
+                // Count down
+                stepTimer -= (float)Time.DT;
+
+                // Time to take a step?
+                if (stepTimer <= 0.0f)
+                {
+                    // Play random sound
+                    int index = rng.Next(1, 7);
+                    AudioManager.GetInstance().Play("footstep" + index);
+
+                    // Reset timer
+                    stepTimer = stepInterval;
+                }
             }
-            else if (!isMoving && wasMoving)
+            else
             {
-                //Console.WriteLine("[C#] Player stopped moving -> Stop footsteps_loop");
-                AudioManager.GetInstance().Stop("footsteps");
+                if (stepTimer < 0.1f) stepTimer = 0.1f;
             }
             //if (Input.IsKeyPressed(Key.A))
             //{
@@ -103,11 +136,23 @@ namespace CrashoutsEngine
             }
             /*
             */
-            moveLeft = Input.IsKeyPressed(Key.A);
-            moveRight = Input.IsKeyPressed(Key.D);
 
-            wasMoving = isMoving;
-            jump = Input.IsKeyTriggered(Key.Space);
+           // if (animator != null)
+           // {
+           //     bool moving = moveLeft || moveRight;
+           //     if (!moving)
+            //        animator.Play("idle_normal");
+            //    else
+            //    {
+              //      animator.Play("walk_normal");
+              //      if (moveLeft && !moveRight)
+               //         animator.SetFlip(true);
+                //    else if (moveRight && !moveLeft)
+               //         animator.SetFlip(false);
+               // }
+           // }
+           // wasMoving = isMoving;
+            //jump = Input.IsKeyTriggered(Key.Space);
 
         }
 

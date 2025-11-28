@@ -988,30 +988,39 @@ namespace UI { // --------------------------------------------------------------
                 ImGui::TextUnformatted("Audio File:");
                 ImGui::Text("%s", fs::path(outSelectedAsset).filename().string().c_str());
 
-                static std::string lastPreview = "";
-                static bool previewPlaying = false;
-
-                if (ImGui::Button(previewPlaying ? "Stop" : "Play"))
-                {
-                    if (!previewPlaying)
-                    {
-                        CrashoutsEngine::Audio::AudioSystem::instance().playSFXFile(outSelectedAsset);
-
-                        previewPlaying = true;
-                        lastPreview = outSelectedAsset;
-                    }
-                    else
-                    {
-                        CrashoutsEngine::Audio::AudioSystem::instance().stopSFXGroup();
-                        previewPlaying = false;
+                static FMOD::Channel* s_previewChannel = nullptr;
+                static std::string s_lastPreviewPath = "";
+ 
+                bool isPlaying = false;
+                if (s_previewChannel) {
+                    FMOD_RESULT r = s_previewChannel->isPlaying(&isPlaying);
+                    if (r != FMOD_OK || !isPlaying) {
+                        s_previewChannel = nullptr;
+                        isPlaying = false;
                     }
                 }
 
-                // Auto-stop if the user selects a new asset
-                if (lastPreview != outSelectedAsset && previewPlaying)
+                if (ImGui::Button(isPlaying ? "Stop" : "Play"))
                 {
-                    CrashoutsEngine::Audio::AudioSystem::instance().stopSFXGroup();
-                    previewPlaying = false;
+                    if (!isPlaying)
+                    {
+                        s_previewChannel = CrashoutsEngine::Audio::AudioSystem::instance().playSFXFileEx(outSelectedAsset);
+                        s_lastPreviewPath = outSelectedAsset;
+                    }
+                    else
+                    {
+                        s_previewChannel->stop();
+                        s_previewChannel = nullptr;
+                    }
+                }
+
+                if (s_lastPreviewPath != outSelectedAsset)
+                {
+                    if (isPlaying && s_previewChannel) {
+                        s_previewChannel->stop();
+                    }
+                    s_previewChannel = nullptr;
+                    s_lastPreviewPath = outSelectedAsset;
                 }
             }
 
@@ -1398,6 +1407,8 @@ namespace UI { // --------------------------------------------------------------
                         ECS::getInstance()->Reset();
                         currSceneName = name;
                         Serialization::LoadScenes(name);
+                        CrashoutsEngine::ScriptSystem::InitializeAll(MonoManager::GetDomain(), MonoManager::GetAssembly());
+                        MonoManager::ReloadScripts();
                     }
 
                     ImGui::SameLine();
@@ -1562,24 +1573,21 @@ namespace UI { // --------------------------------------------------------------
             };
 
         // SAFE STOP FUNCTION (EVENT / RAW SFX / RAW MUSIC)
-        auto StopAny = [&](void* handle)
+        auto StopAny = [&](void* handle, const std::string& id)
             {
                 if (!handle) return;
 
                 // 1) FMOD EVENT INSTANCE
-                if ((uintptr_t)handle > 0x1000 && (uintptr_t)handle < 0xFFFFFFFF)
+                if (id.rfind("event:/", 0) == 0)
                 {
                     auto* inst = static_cast<FMOD::Studio::EventInstance*>(handle);
-
-                    FMOD_STUDIO_PLAYBACK_STATE st;
-                    if (inst->getPlaybackState(&st) == FMOD_OK)
+                    if (inst && inst->isValid())
                     {
                         inst->stop(FMOD_STUDIO_STOP_IMMEDIATE);
                         inst->release();
                     }
                     return;
                 }
-
                 // 2) RAW MUSIC TAG (dummy handle 0xBEEF)
                 if (handle == (void*)0xBEEF)
                 {
@@ -1725,27 +1733,51 @@ namespace UI { // --------------------------------------------------------------
 
         // BGM
         EventCombo("Background Music", pickBGM);
-        if (ImGui::Button("Play##bgm"))      hBGM = PlayAny(pickBGM, true);
+        if (ImGui::Button("Play##bgm")) {
+            if (hBGM) StopAny(hBGM, pickBGM);
+            hBGM = PlayAny(pickBGM, true);
+        }
         ImGui::SameLine();
-        if (ImGui::Button("Stop##bgm")) { StopAny(hBGM); hBGM = nullptr; }
+        if (ImGui::Button("Stop##bgm")) {
+            StopAny(hBGM, pickBGM);
+            hBGM = nullptr;
+        }
 
-        // SFX1
+        // SFX 1
         EventCombo("SFX 1", pickSFX1);
-        if (ImGui::Button("Play##sfx1"))    hSFX1 = PlayAny(pickSFX1);
+        if (ImGui::Button("Play##sfx1")) {
+            if (hSFX1) StopAny(hSFX1, pickSFX1);
+            hSFX1 = PlayAny(pickSFX1);
+        }
         ImGui::SameLine();
-        if (ImGui::Button("Stop##sfx1")) { StopAny(hSFX1); hSFX1 = nullptr; }
+        if (ImGui::Button("Stop##sfx1")) {
+            StopAny(hSFX1, pickSFX1);
+            hSFX1 = nullptr;
+        }
 
-        // SFX2
+        // SFX 2
         EventCombo("SFX 2", pickSFX2);
-        if (ImGui::Button("Play##sfx2"))    hSFX2 = PlayAny(pickSFX2);
+        if (ImGui::Button("Play##sfx2")) {
+            if (hSFX2) StopAny(hSFX2, pickSFX2);
+            hSFX2 = PlayAny(pickSFX2);
+        }
         ImGui::SameLine();
-        if (ImGui::Button("Stop##sfx2")) { StopAny(hSFX2); hSFX2 = nullptr; }
+        if (ImGui::Button("Stop##sfx2")) {
+            StopAny(hSFX2, pickSFX2);
+            hSFX2 = nullptr;
+        }
 
-        // SFX3
+        // SFX 3
         EventCombo("SFX 3", pickSFX3);
-        if (ImGui::Button("Play##sfx3"))    hSFX3 = PlayAny(pickSFX3);
+        if (ImGui::Button("Play##sfx3")) {
+            if (hSFX3) StopAny(hSFX3, pickSFX3);
+            hSFX3 = PlayAny(pickSFX3);
+        }
         ImGui::SameLine();
-        if (ImGui::Button("Stop##sfx3")) { StopAny(hSFX3); hSFX3 = nullptr; }
+        if (ImGui::Button("Stop##sfx3")) {
+            StopAny(hSFX3, pickSFX3);
+            hSFX3 = nullptr;
+        }
 
         // MASTER VOLUME
         ImGui::SeparatorText("Master Volume");
@@ -1866,7 +1898,7 @@ namespace UI { // --------------------------------------------------------------
             if (ImGui::Button("PLAY", ImVec2(70, 25))) {
                 if (engineState == EngineState::STOP && !currSceneName.empty()) Serialization::SaveScenes(currSceneName);
                 engineState = EngineState::PLAY;
-
+                MonoManager::ReloadScripts();
                 CrashoutsEngine::Audio::AudioSystem::instance().setPaused(false);
 
                 CrashoutsEngine::RenderCamera::engineCamera.SetPostiion(CEVec3{ 0.f, 0.f, 0.f });
@@ -1888,18 +1920,20 @@ namespace UI { // --------------------------------------------------------------
             if (ImGui::Button("STOP", ImVec2(70, 25))) {
                 if (engineState == EngineState::STOP && !currSceneName.empty()) Serialization::SaveScenes(currSceneName);
 
+                CrashoutsEngine::Audio::AudioSystem::instance().stopAll(false);
+                CrashoutsEngine::ScriptSystem::DestroyAll();
+                
                 if(currSceneName.empty()) RestartGameState();       // Legacy scene system
                 else {
                     ECS::getInstance()->Reset();
                     Serialization::LoadScenes(currSceneName);
+                    CrashoutsEngine::ScriptSystem::InitializeAll(MonoManager::GetDomain(), MonoManager::GetAssembly());
                 }
                 //MonoManager::ReloadScripts();
-                engineState = EngineState::STOP;
-                
-				CrashoutsEngine::Audio::AudioSystem::instance().stopAll(true); // Stop FMOD Studio
-                CrashoutsEngine::Audio::AudioSystem::instance().setPaused(false);
+                CrashoutsEngine::Audio::AudioSystem::instance().stopAll(true); // Stop FMOD Studio
                 CrashoutsEngine::Audio::AudioSystem::instance().stopMusicGroup(); // <-- Seems to work better than the above
 
+                engineState = EngineState::STOP;
             }
             ImGui::SameLine();
             // SAVE
@@ -2597,7 +2631,6 @@ namespace UI { // --------------------------------------------------------------
             // ------------------------------------------------------------
             if (ImGui::BeginDragDropTarget()) {
                 if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSET/PAYLOAD")) {
-                    // Hard guard: ignore if wrong payload struct
                     if (!payload->Data || payload->DataSize != sizeof(AssetDragPayload)) {
                         LOGW(Debug, "Dropped payload of wrong size onto viewport");
                     }
@@ -2608,7 +2641,6 @@ namespace UI { // --------------------------------------------------------------
                         using CrashoutsEngine::Assets::AssetManager;
                         using CrashoutsEngine::Assets::TextureAsset;
 
-                        // 1) Texture → spawn textured Shape entity
                         if (p->kind == AssetKind::Texture) {
                             if (auto* tex = AssetManager::GetInstance().Get<TextureAsset>(p->name)) {
                                 Entity e = ecs.CreateEntity();
@@ -2626,25 +2658,30 @@ namespace UI { // --------------------------------------------------------------
                                 }
                             }
                         }
-                        // 2) Prefab -> instantiate and move to drop
                         else if (p->kind == AssetKind::Prefab) {
                             Entity e = Prefab::Create(ecs, std::string(p->name));
                             if (e && ecs.HasComponent<Component::TransformComponent>(e))
                                 ecs.GetComponent<Component::TransformComponent>(e)->position = dropWorld;
                         }
-                        // 3) Audio -> create / retarget Audio entity
                         else if (p->kind == AssetKind::Audio) {
                             std::string rel = p->relPath;
 
-                            const std::string prefix = "audio/";
-                            auto pos = rel.find(prefix);
-                            if (pos != std::string::npos)
-                                rel = rel.substr(pos + prefix.size());
+                            std::string ext = std::filesystem::path(rel).extension().string();
+                            std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
 
-                            if (auto dot = rel.find_last_of('.'); dot != std::string::npos)
-                                rel.erase(dot);
+                            if (rel.find("audio/") == 0) rel = rel.substr(6);
+                            else if (rel.find("assets/audio/") == 0) rel = rel.substr(13);
 
-                            std::string eventLike = std::string("event:/") + rel;
+                            std::string finalPath;
+
+                            if (ext == ".bank") {
+                                if (auto dot = rel.find_last_of('.'); dot != std::string::npos)
+                                    rel.erase(dot);
+                                finalPath = std::string("event:/") + rel;
+                            }
+                            else {
+                                finalPath = rel;
+                            }
 
                             Entity target = selected;
                             if (!target) {
@@ -2656,11 +2693,11 @@ namespace UI { // --------------------------------------------------------------
                                     t->size = { 10.0f, 10.0f };
                                 }
 
-                                // give it a visual
                                 ecs.AddComponent<Component::ShapeComponent>(target);
                                 if (auto* sc = ecs.GetComponent<Component::ShapeComponent>(target)) {
-                                    sc->enableTexture = false; // simple square placeholder
+									sc->enableTexture = false; // no texture, just color
                                     sc->textureName = "audio_icon";
+                                    sc->color = { 1.0f, 0.5f, 0.0f, 1.0f };
                                 }
                             }
                             else {
@@ -2673,10 +2710,11 @@ namespace UI { // --------------------------------------------------------------
                                 ecs.AddComponent<AudioEmitterComponent>(target);
                             }
                             if (auto* ac = ecs.GetComponent<AudioEmitterComponent>(target)) {
-                                ac->eventPath = eventLike;
+                                ac->eventPath = finalPath;
+
+                                ac->spatial3D = true;
                             }
                         }
-                        // Other AssetKind values are just ignored
                     }
                 }
                 ImGui::EndDragDropTarget();

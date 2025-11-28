@@ -85,10 +85,9 @@ namespace CrashoutsEngine
 
             // Tagged playback for Unity-like Play/Stop("Name")
             // Thin helpers so C# AudioManager can track and stop by name.
-            bool playMusicFileTagged(const std::string& key, const std::string& path, bool loop = true);
+            bool playMusicFileTagged(const std::string& key, const std::string& path, bool loop = true, float volume = 1.0f);
 
-            bool playSFXFileTagged(const std::string& key,
-                const std::string& path, bool loop);
+            bool playSFXFileTagged(const std::string& key, const std::string& path, bool loop, float volume = 1.0f);
 
             bool stopTagged(const std::string& key);
 
