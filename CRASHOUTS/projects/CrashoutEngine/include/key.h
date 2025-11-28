@@ -46,6 +46,7 @@ enum class Key {
     Minus = GLFW_KEY_MINUS,
     Equal = GLFW_KEY_EQUAL,
 	LeftCtrl = GLFW_KEY_LEFT_CONTROL,
+	LeftAlt = GLFW_KEY_LEFT_ALT,
 
     /// arrows
     Up = GLFW_KEY_UP,
