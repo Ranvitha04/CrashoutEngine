@@ -1398,6 +1398,7 @@ namespace UI { // --------------------------------------------------------------
                         ECS::getInstance()->Reset();
                         currSceneName = name;
                         Serialization::LoadScenes(name);
+                        CrashoutsEngine::ScriptSystem::InitializeAll(MonoManager::GetDomain(), MonoManager::GetAssembly());
                     }
 
                     ImGui::SameLine();
@@ -1892,6 +1893,7 @@ namespace UI { // --------------------------------------------------------------
                 else {
                     ECS::getInstance()->Reset();
                     Serialization::LoadScenes(currSceneName);
+                    CrashoutsEngine::ScriptSystem::InitializeAll(MonoManager::GetDomain(), MonoManager::GetAssembly());
                 }
                 //MonoManager::ReloadScripts();
                 engineState = EngineState::STOP;
