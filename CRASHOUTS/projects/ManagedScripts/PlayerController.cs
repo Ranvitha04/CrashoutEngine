@@ -10,6 +10,10 @@ namespace CrashoutsEngine
         bool isMoving;
         bool wasMoving;
         bool jump;
+        private float stepTimer = 0.0f;
+        private float stepInterval = 0.35f;
+        private Random rng = new Random();
+
         Animator animator;
         /*SAMPLE TRIGGERS*/
         public void OnTriggerEnter(uint otherEntity)
@@ -69,17 +73,28 @@ namespace CrashoutsEngine
             //var rb = Entity.GetComponent<RigidBodyComponent>();
             var tf = Entity.GetComponent<TransformComponent>();
             //if (rb == null) Console.WriteLine("[C#] rb is null");
-            if (tf == null) Console.WriteLine("[C#] tf is null");
+            moveLeft = Input.IsKeyPressed(Key.A);
+            moveRight = Input.IsKeyPressed(Key.D);
             isMoving = moveLeft || moveRight;
-            if (isMoving && !wasMoving)
+            if (isMoving)
             {
-                //Console.WriteLine("[C#] Player started moving -> Play footsteps");
-                AudioManager.GetInstance().Play("footstep1");
+                // Count down
+                stepTimer -= (float)Time.DT;
+
+                // Time to take a step?
+                if (stepTimer <= 0.0f)
+                {
+                    // Play random sound
+                    int index = rng.Next(1, 7);
+                    AudioManager.GetInstance().Play("footstep" + index);
+
+                    // Reset timer
+                    stepTimer = stepInterval;
+                }
             }
-            else if (!isMoving && wasMoving)
+            else
             {
-                //Console.WriteLine("[C#] Player stopped moving -> Stop footsteps_loop");
-                AudioManager.GetInstance().Stop("footstep1");
+                if (stepTimer < 0.1f) stepTimer = 0.1f;
             }
             //if (Input.IsKeyPressed(Key.A))
             //{
@@ -121,8 +136,6 @@ namespace CrashoutsEngine
             }
             /*
             */
-            moveLeft = Input.IsKeyPressed(Key.A);
-            moveRight = Input.IsKeyPressed(Key.D);
 
            // if (animator != null)
            // {
