@@ -990,10 +990,14 @@ namespace UI { // --------------------------------------------------------------
 
                 static FMOD::Channel* s_previewChannel = nullptr;
                 static std::string s_lastPreviewPath = "";
-
+ 
                 bool isPlaying = false;
                 if (s_previewChannel) {
-                    s_previewChannel->isPlaying(&isPlaying);
+                    FMOD_RESULT r = s_previewChannel->isPlaying(&isPlaying);
+                    if (r != FMOD_OK || !isPlaying) {
+                        s_previewChannel = nullptr;
+                        isPlaying = false;
+                    }
                 }
 
                 if (ImGui::Button(isPlaying ? "Stop" : "Play"))
@@ -1001,7 +1005,6 @@ namespace UI { // --------------------------------------------------------------
                     if (!isPlaying)
                     {
                         s_previewChannel = CrashoutsEngine::Audio::AudioSystem::instance().playSFXFileEx(outSelectedAsset);
-
                         s_lastPreviewPath = outSelectedAsset;
                     }
                     else
@@ -2628,7 +2631,6 @@ namespace UI { // --------------------------------------------------------------
             // ------------------------------------------------------------
             if (ImGui::BeginDragDropTarget()) {
                 if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSET/PAYLOAD")) {
-                    // Hard guard: ignore if wrong payload struct
                     if (!payload->Data || payload->DataSize != sizeof(AssetDragPayload)) {
                         LOGW(Debug, "Dropped payload of wrong size onto viewport");
                     }
@@ -2639,7 +2641,6 @@ namespace UI { // --------------------------------------------------------------
                         using CrashoutsEngine::Assets::AssetManager;
                         using CrashoutsEngine::Assets::TextureAsset;
 
-                        // 1) Texture → spawn textured Shape entity
                         if (p->kind == AssetKind::Texture) {
                             if (auto* tex = AssetManager::GetInstance().Get<TextureAsset>(p->name)) {
                                 Entity e = ecs.CreateEntity();
@@ -2657,25 +2658,30 @@ namespace UI { // --------------------------------------------------------------
                                 }
                             }
                         }
-                        // 2) Prefab -> instantiate and move to drop
                         else if (p->kind == AssetKind::Prefab) {
                             Entity e = Prefab::Create(ecs, std::string(p->name));
                             if (e && ecs.HasComponent<Component::TransformComponent>(e))
                                 ecs.GetComponent<Component::TransformComponent>(e)->position = dropWorld;
                         }
-                        // 3) Audio -> create / retarget Audio entity
                         else if (p->kind == AssetKind::Audio) {
                             std::string rel = p->relPath;
 
-                            const std::string prefix = "audio/";
-                            auto pos = rel.find(prefix);
-                            if (pos != std::string::npos)
-                                rel = rel.substr(pos + prefix.size());
+                            std::string ext = std::filesystem::path(rel).extension().string();
+                            std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
 
-                            if (auto dot = rel.find_last_of('.'); dot != std::string::npos)
-                                rel.erase(dot);
+                            if (rel.find("audio/") == 0) rel = rel.substr(6);
+                            else if (rel.find("assets/audio/") == 0) rel = rel.substr(13);
 
-                            std::string eventLike = std::string("event:/") + rel;
+                            std::string finalPath;
+
+                            if (ext == ".bank") {
+                                if (auto dot = rel.find_last_of('.'); dot != std::string::npos)
+                                    rel.erase(dot);
+                                finalPath = std::string("event:/") + rel;
+                            }
+                            else {
+                                finalPath = rel;
+                            }
 
                             Entity target = selected;
                             if (!target) {
@@ -2687,11 +2693,11 @@ namespace UI { // --------------------------------------------------------------
                                     t->size = { 10.0f, 10.0f };
                                 }
 
-                                // give it a visual
                                 ecs.AddComponent<Component::ShapeComponent>(target);
                                 if (auto* sc = ecs.GetComponent<Component::ShapeComponent>(target)) {
-                                    sc->enableTexture = false; // simple square placeholder
+									sc->enableTexture = false; // no texture, just color
                                     sc->textureName = "audio_icon";
+                                    sc->color = { 1.0f, 0.5f, 0.0f, 1.0f };
                                 }
                             }
                             else {
@@ -2704,10 +2710,11 @@ namespace UI { // --------------------------------------------------------------
                                 ecs.AddComponent<AudioEmitterComponent>(target);
                             }
                             if (auto* ac = ecs.GetComponent<AudioEmitterComponent>(target)) {
-                                ac->eventPath = eventLike;
+                                ac->eventPath = finalPath;
+
+                                ac->spatial3D = true;
                             }
                         }
-                        // Other AssetKind values are just ignored
                     }
                 }
                 ImGui::EndDragDropTarget();

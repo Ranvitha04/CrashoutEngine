@@ -768,35 +768,30 @@ namespace CrashoutsEngine::Audio
 
     FMOD::Channel* AudioSystem::playSFXFileEx(const std::string& path)
     {
-        if (!mCore || !mSFXGroup)
-            return nullptr;
+        if (!mCore || !mSFXGroup) return nullptr;
 
-        if (!IsSupportedAudioFile(path))
-        {
-            std::string msg =
-                "Unsupported audio format for SFX file:\n\n" + path +
-                "\n\nSupported formats: .mp3, .ogg, .wav";
-
+        if (!IsSupportedAudioFile(path)) {
+            std::string msg = "Unsupported audio format: " + path;
             ShowAudioErrorPopup(msg);
             LOGE(Audio, msg);
-
             return nullptr;
         }
 
+        FMOD_MODE mode = FMOD_DEFAULT | FMOD_2D | FMOD_CREATESAMPLE;
+
         FMOD::Sound* snd = nullptr;
-        if (!ok(mCore->createSound(path.c_str(),
-            FMOD_DEFAULT | FMOD_2D,
-            nullptr,
-            &snd),
-            "createSound(sfx)"))
-        {
+        FMOD_RESULT r = mCore->createSound(path.c_str(), mode, nullptr, &snd);
+
+        if (r != FMOD_OK) {
+            LOGE(Audio, "Preview Failed (CreateSound): " + path);
             return nullptr;
         }
 
         FMOD::Channel* ch = nullptr;
-        if (!ok(mCore->playSound(snd, mSFXGroup, false, &ch),
-            "playSound(sfx)"))
-        {
+
+        r = mCore->playSound(snd, mSFXGroup, true, &ch);
+
+        if (r != FMOD_OK) {
             snd->release();
             return nullptr;
         }
@@ -805,10 +800,9 @@ namespace CrashoutsEngine::Audio
             ch->setMode(FMOD_2D);
 
             ch->setCallback([](FMOD_CHANNELCONTROL* channelcontrol,
-                FMOD_CHANNELCONTROL_TYPE /*controltype*/,
+                FMOD_CHANNELCONTROL_TYPE,
                 FMOD_CHANNELCONTROL_CALLBACK_TYPE callbacktype,
-                void* /*commanddata1*/,
-                void* /*commanddata2*/) -> FMOD_RESULT {
+                void*, void*) -> FMOD_RESULT {
                     if (callbacktype == FMOD_CHANNELCONTROL_CALLBACK_END) {
                         FMOD::Channel* ch = (FMOD::Channel*)channelcontrol;
                         FMOD::Sound* snd = nullptr;
@@ -818,6 +812,8 @@ namespace CrashoutsEngine::Audio
                     }
                     return FMOD_OK;
                 });
+
+            ch->setPaused(false);
         }
 
         return ch;

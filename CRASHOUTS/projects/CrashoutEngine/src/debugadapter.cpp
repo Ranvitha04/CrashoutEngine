@@ -1248,11 +1248,9 @@ namespace {
 
 			ImGui::SeparatorText("Audio Source");
 
-			// --- 1. Path Input & Drag-Drop ---
 			char buf[256]{};
 			if (c->eventPath.size() < sizeof(buf)) std::memcpy(buf, c->eventPath.data(), c->eventPath.size());
-
-			if (ImGui::InputTextWithHint("##event_path", "event:/Name OR path/to/sound.wav", buf, sizeof(buf))) {
+			if (ImGui::InputTextWithHint("##event_path", "Path (e.g. sound.wav OR event:/Jump)", buf, sizeof(buf))) {
 				c->eventPath = buf;
 			}
 
@@ -1260,20 +1258,29 @@ namespace {
 				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSET/PAYLOAD")) {
 					if (payload->Data && payload->DataSize == sizeof(AssetDragPayload)) {
 						const auto* d = static_cast<const AssetDragPayload*>(payload->Data);
-						if (d->kind == AssetKind::Audio) {
-							std::filesystem::path relPath = d->relPath;
-							std::string ext = relPath.extension().string();
-							std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+
+						std::filesystem::path relPath = d->relPath;
+						std::string ext = relPath.extension().string();
+						std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+
+						bool isAudioFile = (ext == ".wav" || ext == ".mp3" || ext == ".ogg" || ext == ".bank");
+
+						if (d->kind == AssetKind::Audio || isAudioFile) {
+
 							std::string rel = relPath.generic_string();
 
+							// Cleanup: Remove "audio/" or "assets/audio/" prefix for cleaner paths
 							if (rel.find("audio/") == 0) rel = rel.substr(6);
+							else if (rel.find("assets/audio/") == 0) rel = rel.substr(13);
 
-							if (ext == ".wav" || ext == ".ogg" || ext == ".mp3") {
-								c->eventPath = rel;
-							}
-							else {
+							// Logic: Banks are Events, everything else is Raw
+							if (ext == ".bank") {
 								if (auto dot = rel.find_last_of('.'); dot != std::string::npos) rel.erase(dot);
 								c->eventPath = std::string("event:/") + rel;
+							}
+							else {
+								// Default to Raw File path
+								c->eventPath = rel;
 							}
 						}
 					}
@@ -1281,10 +1288,17 @@ namespace {
 				ImGui::EndDragDropTarget();
 			}
 
-			// --- 2. Playback Controls ---
 			ImGui::DragFloat("Volume", &c->volume, 0.01f, 0.f, 2.f);
 			ImGui::DragFloat("Pitch", &c->pitch, 0.01f, 0.1f, 3.f);
 			ImGui::Checkbox("3D Spatial", &c->spatial3D);
+
+			// VISUAL INDICATOR
+			bool isEventPath = (c->eventPath.rfind("event:/", 0) == 0);
+			if (!c->eventPath.empty()) {
+				ImGui::SameLine();
+				if (isEventPath) ImGui::TextColored(ImVec4(0.5f, 0.8f, 1.0f, 1.0f), "[EVENT]");
+				else             ImGui::TextColored(ImVec4(0.5f, 1.0f, 0.5f, 1.0f), "[RAW]");
+			}
 
 			auto& audio = Audio::AudioSystem::instance();
 
@@ -1295,9 +1309,9 @@ namespace {
 
 			ImGui::Spacing();
 
-			// PLAY BUTTON
 			if (ImGui::Button(isPlaying ? "Restart" : "Play")) {
 				if (!c->eventPath.empty()) {
+					// Stop old audio
 					if (c->inst) {
 						c->inst->stop(FMOD_STUDIO_STOP_IMMEDIATE);
 						c->inst->release();
@@ -1308,7 +1322,8 @@ namespace {
 						c->channel = nullptr;
 					}
 
-					if (c->eventPath.rfind("event:/", 0) == 0) {
+					if (isEventPath) {
+						// EVENT MODE
 						FMOD::Studio::EventInstance* inst = audio.createInstance(c->eventPath);
 						if (inst) {
 							inst->setVolume(c->volume);
@@ -1317,20 +1332,26 @@ namespace {
 							c->inst = inst;
 						}
 						else {
-							LOGW(Audio, "Failed to create Event Instance: " + c->eventPath);
+							LOGW(Audio, "Failed to create Event: " + c->eventPath);
 						}
 					}
 					else {
+						// RAW FILE MODE
 						std::string path = c->eventPath;
-						if (path.find("assets/") == std::string::npos) {
-							path = "assets/audio/" + path;
+						namespace fs = std::filesystem;
+
+						// Auto-resolve path if file is missing
+						if (!fs::exists(path)) {
+							if (fs::exists("assets/audio/" + path)) path = "assets/audio/" + path;
+							else if (fs::exists("assets/" + path)) path = "assets/" + path;
 						}
 
+						// Play
 						c->channel = audio.playSFXFileEx(path);
 						if (c->channel) {
 							c->channel->setVolume(c->volume);
 							c->channel->setPitch(c->pitch);
-							c->channel->setMode(c->spatial3D ? FMOD_3D : FMOD_2D);
+							c->channel->setMode(FMOD_2D);
 						}
 						else {
 							LOGW(Audio, "Failed to play Raw File: " + path);
@@ -1341,7 +1362,6 @@ namespace {
 
 			ImGui::SameLine();
 
-			// STOP BUTTON
 			if (ImGui::Button("Stop")) {
 				if (c->inst) {
 					c->inst->stop(FMOD_STUDIO_STOP_ALLOWFADEOUT);
@@ -1360,18 +1380,17 @@ namespace {
 				FMOD_STUDIO_PLAYBACK_STATE state;
 				c->inst->getPlaybackState(&state);
 				bool actuallyPlaying = (state == FMOD_STUDIO_PLAYBACK_PLAYING);
-
 				ImGui::TextColored(actuallyPlaying ? ImVec4(0, 1, 0, 1) : ImVec4(1, 1, 0, 1),
-					"Event: %s", actuallyPlaying ? "PLAYING" : "STOPPING/IDLE");
-
-				c->inst->setVolume(c->volume);
-				c->inst->setPitch(c->pitch);
+					"Event: %s", actuallyPlaying ? "PLAYING" : "IDLE");
+				if (c->inst->isValid()) {
+					c->inst->setVolume(c->volume);
+					c->inst->setPitch(c->pitch);
+				}
 			}
 			else if (c->channel) {
 				bool playing = false;
-				FMOD_RESULT r = c->channel->isPlaying(&playing);
-
-				if (r == FMOD_OK && playing) {
+				c->channel->isPlaying(&playing);
+				if (playing) {
 					ImGui::TextColored(ImVec4(0, 1, 0, 1), "Raw File: PLAYING");
 					c->channel->setVolume(c->volume);
 					c->channel->setPitch(c->pitch);
@@ -1382,7 +1401,7 @@ namespace {
 				}
 			}
 			else {
-				ImGui::TextDisabled("Status: Idle / Null");
+				ImGui::TextDisabled("Status: Idle");
 			}
 		}
 	};
