@@ -74,7 +74,7 @@ namespace CrashoutsEngine
                 if (tf != null)
                 {
                     // Bring to front
-                    tf.Position = new CEVec3(tf.Position.x, tf.Position.y, 0.8f);
+                    tf.Position = new CEVec3(tf.Position.x, tf.Position.y, 0.5f);
                 }
             }
             else
