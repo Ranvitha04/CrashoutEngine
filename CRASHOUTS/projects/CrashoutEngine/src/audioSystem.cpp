@@ -862,8 +862,7 @@ namespace CrashoutsEngine::Audio
     @brief Plays a music file and tags its FMOD channel so it can be stopped by key.
     */
     bool AudioSystem::playMusicFileTagged(const std::string& key,
-        const std::string& path,
-        bool loop)
+        const std::string& path, bool loop, float volume)
     {
         if (!mCore || !mMusicGroup)
             return false;
@@ -889,6 +888,7 @@ namespace CrashoutsEngine::Audio
         if (ch)
         {
             ch->setMode(FMOD_2D);
+            ch->setVolume(volume);
             mTaggedChannels[key] = ch;
         }
 
@@ -899,7 +899,7 @@ namespace CrashoutsEngine::Audio
     @brief Plays a SFX file and tags its FMOD channel so it can be stopped by key.
     */
     bool AudioSystem::playSFXFileTagged(const std::string& key,
-        const std::string& path, bool loop)
+        const std::string& path, bool loop, float volume)
     {
         if (!mCore || !mSFXGroup) {
             std::fprintf(stderr, "[Audio] playSFXFile called before init: %s\n", path.c_str());
@@ -933,6 +933,7 @@ namespace CrashoutsEngine::Audio
         if (ch)
         {
             ch->setMode(FMOD_2D);
+            ch->setVolume(volume);
             ch->setCallback([](FMOD_CHANNELCONTROL* channelcontrol,
                 FMOD_CHANNELCONTROL_TYPE /*controltype*/,
                 FMOD_CHANNELCONTROL_CALLBACK_TYPE callbacktype,

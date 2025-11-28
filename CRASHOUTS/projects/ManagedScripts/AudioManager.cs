@@ -143,9 +143,9 @@ public class AudioManager
         }
 
         if (s.Type == SoundType.Music)
-            InternalCalls.Audio_PlayMusicFileTagged(s.Name, s.Path, s.Loop);
+            InternalCalls.Audio_PlayMusicFileTagged(s.Name, s.Path, s.Loop, s.BaseVolume);
         else
-            InternalCalls.Audio_PlaySFXFileTagged(s.Name, s.Path, s.Loop);
+            InternalCalls.Audio_PlaySFXFileTagged(s.Name, s.Path, s.Loop, s.BaseVolume);
     }
 
     // === Replacing Unity's Stop(name)
