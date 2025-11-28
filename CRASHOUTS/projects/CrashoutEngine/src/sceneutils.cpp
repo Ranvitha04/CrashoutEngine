@@ -58,7 +58,7 @@ namespace Scene {
             // 2. Reset Blending (The fix for your current issue)
             glEnable(GL_BLEND);
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
+            glEnable(GL_DEPTH_TEST);
             // 3. Reset Culling (Text is often double-sided or winding order might vary)
             glDisable(GL_CULL_FACE);
 
@@ -72,9 +72,10 @@ namespace Scene {
 
             for (const Entity& id : textArray.indexToEntity) {
                 TextComponent* tc = globalECS.GetComponent<TextComponent>(id);
+                float depthZ = 0.0f;
                 if (globalECS.HasComponent<TransformComponent>(id)) {
                     TransformComponent* t = globalECS.GetComponent<TransformComponent>(id);
-
+                    depthZ = t->position.z;
                     CEVec2 newOffset = CEVec2{ t->position.x + tc->offset.x, t->position.y + tc->offset.y };
 
                     // Modify Offset if UILayout Present
@@ -119,9 +120,9 @@ namespace Scene {
                     }
 
                     if (tc->centered)
-                        gTextRenderer->RenderCenteredText(tc->text, newOffset.x, newOffset.y, finalScale, tc->color, font, tc->isWorldSpace);
+                        gTextRenderer->RenderCenteredText(tc->text, newOffset.x, newOffset.y, depthZ, finalScale, tc->color, font, tc->isWorldSpace);
                     else
-                        gTextRenderer->RenderText(tc->text, newOffset.x, newOffset.y, finalScale, tc->color, font, tc->isWorldSpace);
+                        gTextRenderer->RenderText(tc->text, newOffset.x, newOffset.y, depthZ, finalScale, tc->color, font, tc->isWorldSpace);
 
                     TextInputComponent* input = globalECS.GetComponent<TextInputComponent>(id);
                     // Check if this entity is a focused text input
