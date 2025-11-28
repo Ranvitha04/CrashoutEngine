@@ -1321,12 +1321,32 @@
             "path": "UI\\Menu.png"
         },
         {
+            "name": "paper texture",
+            "path": "UI\\paper texture.png"
+        },
+        {
             "name": "Pause Menu Closed",
             "path": "UI\\Pause Menu Closed.png"
         },
         {
             "name": "Pause Menu Open",
             "path": "UI\\Pause Menu Open.png"
+        },
+        {
+            "name": "pause menu text",
+            "path": "UI\\pause menu text.png"
+        },
+        {
+            "name": "pause quit text",
+            "path": "UI\\pause quit text.png"
+        },
+        {
+            "name": "pause resume text",
+            "path": "UI\\pause resume text.png"
+        },
+        {
+            "name": "pause settings text",
+            "path": "UI\\pause settings text.png"
         },
         {
             "name": "Pressure Plate",
@@ -1353,6 +1373,10 @@
     ],
     "prefabs": [
         {
+            "name": "Ball",
+            "path": "Ball.json"
+        },
+        {
             "name": "BlueBox",
             "path": "BlueBox.json"
         },
@@ -1371,6 +1395,10 @@
         {
             "name": "shitasswork",
             "path": "shitasswork.json"
+        },
+        {
+            "name": "Slime",
+            "path": "Slime.json"
         }
     ],
     "scenes": [

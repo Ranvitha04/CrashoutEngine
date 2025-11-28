@@ -17,6 +17,7 @@
 #include "sceneutils.h"
 #include "engine.h"
 #include "instanceSystem.h"
+#include "glapp.h"
 
 #include "shapescomponent.h"
 #include "transformcomponent.h"
@@ -27,6 +28,7 @@
 #include "textinputcomponent.h"
 #include "buttoncomponent.h"
 #include "tilemapcomponent.h"
+#include "camera.h"
 
 #define FONT_SCALE 0.05f
 
@@ -56,7 +58,7 @@ namespace Scene {
             // 2. Reset Blending (The fix for your current issue)
             glEnable(GL_BLEND);
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
+            glEnable(GL_DEPTH_TEST);
             // 3. Reset Culling (Text is often double-sided or winding order might vary)
             glDisable(GL_CULL_FACE);
 
@@ -70,9 +72,10 @@ namespace Scene {
 
             for (const Entity& id : textArray.indexToEntity) {
                 TextComponent* tc = globalECS.GetComponent<TextComponent>(id);
+                float depthZ = 0.0f;
                 if (globalECS.HasComponent<TransformComponent>(id)) {
                     TransformComponent* t = globalECS.GetComponent<TransformComponent>(id);
-
+                    depthZ = t->position.z;
                     CEVec2 newOffset = CEVec2{ t->position.x + tc->offset.x, t->position.y + tc->offset.y };
 
                     // Modify Offset if UILayout Present
@@ -111,18 +114,15 @@ namespace Scene {
                     }
                     else {
                         // Case 2: UI Text (Screen Space)
-                        // If your TextRenderer applies the Camera View Matrix to UI text (which is common in simple engines),
-                        // then you MUST compensate to keep it static.
-                        // However, the cleaner way is to NOT apply the View Matrix inside RenderText for UI.
-
-                        // Assuming your TextRenderer applies Camera View Matrix to everything:
-                        finalScale = tc->scale / RenderCamera::Camera::g_zoom;
+                        // RenderText now handles the projection matrix switch internally,
+                        // so we pass the raw scale.
+                        finalScale = tc->scale;
                     }
 
                     if (tc->centered)
-                        gTextRenderer->RenderCenteredText(tc->text, newOffset.x, newOffset.y, finalScale, tc->color, font, tc->isWorldSpace);
+                        gTextRenderer->RenderCenteredText(tc->text, newOffset.x, newOffset.y, depthZ, finalScale, tc->color, font, tc->isWorldSpace);
                     else
-                        gTextRenderer->RenderText(tc->text, newOffset.x, newOffset.y, finalScale, tc->color, font, tc->isWorldSpace);
+                        gTextRenderer->RenderText(tc->text, newOffset.x, newOffset.y, depthZ, finalScale, tc->color, font, tc->isWorldSpace);
 
                     TextInputComponent* input = globalECS.GetComponent<TextInputComponent>(id);
                     // Check if this entity is a focused text input
@@ -180,7 +180,8 @@ namespace Scene {
                                     startPoint,           // start
                                     endPoint,             // end
                                     cursorThickness,      // thickness
-                                    cursorColor           // color
+                                    cursorColor,          // color
+                                    tc->isWorldSpace      // Respect World vs UI space
                                 );
                             }
                         }
@@ -194,144 +195,193 @@ namespace Scene {
         @param      globalECS Reference to the ECS system.
         */
         void UpdateButtons(ECS& globalECS) {
-            // Call UI items
-            // Button objects
-            const ECS::ComponentArray<ButtonComponent>& buttonArray = globalECS.GetComponentArray<ButtonComponent>();
-
+            // 1. Get MOUSE in WORLD Space (For Game Objects)
+            // (Assuming GetMouseWorldPos works correctly for your camera)
             CEVec2 mouseWorld = InputManager::GetMouseWorldPos();
+
+            // 2. Calculate MOUSE in UI Space (Center Origin, Fixed Height 100.0f)
+            // This logic ensures UI clicks work regardless of Camera Zoom/Position.
+            CEVec2 mouseUI;
+            CEVec2 rawMouse = InputManager::GetMousePosition(); // Pixels: 0..W, 0..H
+
+            float winW = (float)GLApp::width;
+            float winH = (float)GLApp::height;
+
+            // Calculate NDC (-1 to 1)
+            // Flip Y because Input is Top-Down, but OpenGL/World is Bottom-Up
+            float ndcX = (rawMouse.x / winW) * 2.0f - 1.0f;
+            float ndcY = 1.0f - (rawMouse.y / winH) * 2.0f;
+
+            // Scale NDC to your Fixed UI Units (Base Height = 100.0f)
+            // This MUST match the projection used in RenderScene!
+            float baseHeight = 100.0f;
+            float aspect = winW / winH;
+            float baseWidth = baseHeight * aspect;
+
+            mouseUI.x = ndcX * (baseWidth * 0.5f);
+            mouseUI.y = ndcY * (baseHeight * 0.5f);
+
+            const ECS::ComponentArray<ButtonComponent>& buttonArray = globalECS.GetComponentArray<ButtonComponent>();
 
             for (const Entity& id : buttonArray.indexToEntity) {
                 ButtonComponent* b = globalECS.GetComponent<ButtonComponent>(id);
                 TransformComponent* t = globalECS.GetComponent<TransformComponent>(id);
 
-                // ColliderType::AABB the button
+                // --- DETERMINE COORDINATE SPACE ---
+                ShapeComponent* s = globalECS.GetComponent<ShapeComponent>(id);
+                TextComponent* txt = globalECS.GetComponent<TextComponent>(id);
+
+                // Default to checking against World Mouse
+                CEVec2 checkPos = mouseWorld;
+
+                // Check if this entity is explicitly Screen Space
+                bool isUI = false;
+                if (s && !s->isWorldSpace) isUI = true;
+                else if (txt && !txt->isWorldSpace) isUI = true;
+
+                // If it's UI, switch to checking against the Scaled UI Mouse
+                if (isUI) {
+                    checkPos = mouseUI;
+                }
+
+                std::cout << "Mouse pos is " << checkPos.x << ", " << checkPos.y << "Button Pos is" << t->position.x << ", " << t->position.y << std::endl;
+
+                // --- COLLISION CHECK (AABB) ---
                 float halfW = t->size.x * 0.5f;
                 float halfH = t->size.y * 0.5f;
                 CEVec2 aa{ t->position.x - halfW, t->position.y - halfH };
                 CEVec2 bb{ t->position.x + halfW, t->position.y + halfH };
 
-                // Check if mouse pos within
-                if (mouseWorld.x >= aa.x && mouseWorld.x <= bb.x && mouseWorld.y >= aa.y && mouseWorld.y <= bb.y) {
+                bool isHovering = (checkPos.x >= aa.x && checkPos.x <= bb.x &&
+                    checkPos.y >= aa.y && checkPos.y <= bb.y);
+
+                if (isHovering) {
                     if (InputManager::IsMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT)) {
                         b->buttonState = ButtonState::PRESSED;
-                        ShapeComponent* s = globalECS.GetComponent<ShapeComponent>(id);
-                        TextComponent* text = globalECS.GetComponent<TextComponent>(id);
                         if (s) s->color = b->shapePressedColor;
-                        if (text) text->color = b->textPressedColor;
-
-                        continue;
+                        if (txt) txt->color = b->textPressedColor;
                     }
                     else {
                         b->buttonState = ButtonState::HOVERED;
-                        ShapeComponent* s = globalECS.GetComponent<ShapeComponent>(id);
-                        TextComponent* text = globalECS.GetComponent<TextComponent>(id);
                         if (s) s->color = b->shapeHoveredColor;
-                        if (text) text->color = b->textHoveredColor;
-
-                        continue;
+                        if (txt) txt->color = b->textHoveredColor;
                     }
                 }
                 else if (b->buttonState != ButtonState::NORMAL) {
                     b->buttonState = ButtonState::NORMAL;
-                    ShapeComponent* s = globalECS.GetComponent<ShapeComponent>(id);
-                    TextComponent* text = globalECS.GetComponent<TextComponent>(id);
                     if (s) s->color = b->shapeNormalColor;
-                    if (text) text->color = b->textNormalColor;
-
-                    continue;
+                    if (txt) txt->color = b->textNormalColor;
                 }
             }
         }
 
         /*!
-        @brief      Updates text input focus logic and handles keyboard events for typing.
+        @brief      Updates text input focus logic and handles keyboard events.
         @param      globalECS Reference to the ECS system.
         */
         void UpdateInputs(ECS& globalECS) {
-            // Text Input objects
             static Entity selectedTextInput = (Entity)-1;
             const ECS::ComponentArray<TextInputComponent>& textInputArray = globalECS.GetComponentArray<TextInputComponent>();
 
+            // 1. Calculate Mouse Positions (Same logic as UpdateButtons)
             CEVec2 mouseWorld = InputManager::GetMouseWorldPos();
+
+            CEVec2 mouseUI;
+            CEVec2 rawMouse = InputManager::GetMousePosition();
+            float winW = (float)GLApp::width;
+            float winH = (float)GLApp::height;
+            float ndcX = (rawMouse.x / winW) * 2.0f - 1.0f;
+            float ndcY = 1.0f - (rawMouse.y / winH) * 2.0f;
+
+            float baseHeight = 100.0f;
+            float aspect = winW / winH;
+            float baseWidth = baseHeight * aspect;
+
+            mouseUI.x = ndcX * (baseWidth * 0.5f);
+            mouseUI.y = ndcY * (baseHeight * 0.5f);
+
             bool clickedThisFrame = InputManager::IsMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT);
             Entity newSelection = (Entity)-1;
 
-            // 1. Detect clicks on input fields
+            // 2. Detect clicks on input fields
             for (const Entity& id : textInputArray.indexToEntity) {
                 TransformComponent* t = globalECS.GetComponent<TransformComponent>(id);
+                TextComponent* txt = globalECS.GetComponent<TextComponent>(id);
 
-                // ColliderType::AABB check
+                // Determine Space
+                CEVec2 checkPos = mouseWorld;
+                bool isUI = false;
+                if (txt && !txt->isWorldSpace) isUI = true;
+
+                // Also check ShapeComponent if present (often used for background box)
+                if (!isUI && globalECS.HasComponent<ShapeComponent>(id)) {
+                    if (!globalECS.GetComponent<ShapeComponent>(id)->isWorldSpace) isUI = true;
+                }
+
+                if (isUI) checkPos = mouseUI;
+
+                // AABB Check
                 float halfW = t->size.x * 0.5f;
                 float halfH = t->size.y * 0.5f;
                 CEVec2 aa{ t->position.x - halfW, t->position.y - halfH };
                 CEVec2 bb{ t->position.x + halfW, t->position.y + halfH };
 
-                if (mouseWorld.x >= aa.x && mouseWorld.x <= bb.x && mouseWorld.y >= aa.y && mouseWorld.y <= bb.y) {
+                if (checkPos.x >= aa.x && checkPos.x <= bb.x && checkPos.y >= aa.y && checkPos.y <= bb.y) {
                     if (clickedThisFrame) {
                         newSelection = id; // We clicked this input!
                     }
                 }
             }
 
-            // 2. Update the focus state
+            // 3. Update the focus state
             if (clickedThisFrame) {
                 if (selectedTextInput != -1 && selectedTextInput != newSelection) {
-                    // Unfocus the *old* one
                     if (auto* oldInput = globalECS.GetComponent<TextInputComponent>(selectedTextInput)) {
                         oldInput->isFocused = false;
                     }
                 }
                 if (newSelection != -1) {
-                    // Focus the *new* one
                     globalECS.GetComponent<TextInputComponent>(newSelection)->isFocused = true;
                 }
                 selectedTextInput = newSelection;
             }
 
-            // 3. Process Input for the selected field
+            // 4. Process Input for the selected field
             if (selectedTextInput != -1) {
                 TextInputComponent* textInput = globalECS.GetComponent<TextInputComponent>(selectedTextInput);
                 TextComponent* text = globalECS.GetComponent<TextComponent>(selectedTextInput);
 
                 if (textInput && text) {
-                    // --- A. Handle Character Typing ---
+                    // A. Character Typing
                     std::string typed = InputManager::GetTypedCharacters();
                     if (!typed.empty()) {
-                        // Calculate how much space is left
                         size_t currentLength = text->text.length();
                         if (currentLength < textInput->maxCharacters) {
                             size_t remainingSpace = textInput->maxCharacters - currentLength;
-
-                            // If the typed string is too long, truncate it
                             if (typed.length() > remainingSpace) {
                                 typed = typed.substr(0, remainingSpace);
                             }
-
-                            // Now, insert the (potentially truncated) string
                             text->text.insert(textInput->cursorPos, typed);
                             textInput->cursorPos += typed.length();
                         }
-                        // If currentLength is already at max, do nothing.
                     }
 
-                    // --- B. Handle Backspace ---
+                    // B. Backspace
                     if (InputManager::IsKeyTriggered(GLFW_KEY_BACKSPACE)) {
                         if (textInput->cursorPos > 0 && !text->text.empty()) {
-                            // Erase one character before the cursor
                             text->text.erase(textInput->cursorPos - 1, 1);
                             textInput->cursorPos--;
                         }
                     }
 
-                    // --- C. Handle Delete Key ---
+                    // C. Delete
                     if (InputManager::IsKeyTriggered(GLFW_KEY_DELETE)) {
                         if (textInput->cursorPos < text->text.length()) {
-                            // Erase one character at the cursor
                             text->text.erase(textInput->cursorPos, 1);
                         }
                     }
 
-                    // --- D. Handle Arrow Keys ---
+                    // D. Arrows
                     if (InputManager::IsKeyTriggered(GLFW_KEY_LEFT)) {
                         if (textInput->cursorPos > 0) textInput->cursorPos--;
                     }
@@ -339,7 +389,7 @@ namespace Scene {
                         if (textInput->cursorPos < text->text.length()) textInput->cursorPos++;
                     }
 
-                    // --- E. Handle Enter Key for next line ---
+                    // E. Enter
                     if (InputManager::IsKeyTriggered(GLFW_KEY_ENTER)) {
                         text->text.insert(textInput->cursorPos, "\n");
                         textInput->cursorPos += 1;
@@ -353,7 +403,6 @@ namespace Scene {
     // SCENE RENDERING
     // ============================================================================
 
-    // Helper to convert simple Integers to TextureMode
     TextureMode GetWrapMode(int mode) {
         switch (mode) {
         case 0: return TextureMode::ClampToEdge;
@@ -365,11 +414,11 @@ namespace Scene {
 
     struct RenderBatch {
         std::vector<CEVec3> positions;
-        std::vector<CEColor> colors; // Changed to CEColor to match new InstanceSystem
+        std::vector<CEColor> colors;
         std::vector<float> rotations;
         std::vector<float> scales;
-        std::vector<float> dim1; // Width/Side/Radius
-        std::vector<float> dim2; // Height
+        std::vector<float> dim1;
+        std::vector<float> dim2;
 
         CEVec2 uvSize{ 1.0f, 1.0f };
         std::string textureName = "";
@@ -402,7 +451,6 @@ namespace Scene {
         float uvX, uvY;
         int wrapU, wrapV;
 
-        // Equality operator required for Map/UnorderedMap
         bool operator==(const BatchKey& other) const {
             return textureName == other.textureName &&
                 uvX == other.uvX && uvY == other.uvY &&
@@ -410,10 +458,8 @@ namespace Scene {
         }
     };
 
-    // Hasher for std::unordered_map
     struct BatchKeyHasher {
         std::size_t operator()(const BatchKey& k) const {
-            // Combine hashes (simple XOR combination)
             std::size_t h1 = std::hash<std::string>{}(k.textureName);
             std::size_t h2 = std::hash<float>{}(k.uvX);
             std::size_t h3 = std::hash<float>{}(k.uvY);
@@ -422,59 +468,38 @@ namespace Scene {
             return h1 ^ (h2 << 1) ^ (h3 << 2) ^ (h4 << 3) ^ (h5 << 4);
         }
     };
-    
+
     std::unordered_map<BatchKey, RenderBatch, BatchKeyHasher> rectBatches;
     std::unordered_map<BatchKey, RenderBatch, BatchKeyHasher> triBatches;
     std::unordered_map<BatchKey, RenderBatch, BatchKeyHasher> circBatches;
 
-    void RenderScene(CrashoutsEngine::ECS& globalECS) {
-        using namespace CrashoutsEngine;
-        using Component::Rendering;
-
-        Rendering& renderer = Rendering::Get();
-        if (!renderer.shdr_pgm_instanced) return;
-
-        // 1. Setup Instanced Shader
-        renderer.shdr_pgm_instanced->Use();
-        renderer.shdr_pgm_instanced->SetUniform("uView", renderer.viewMatrix);
-        renderer.shdr_pgm_instanced->SetUniform("uProjection", renderer.projectionMatrix);
-
-        // 2. Clear previous batches
-        for (auto& kv : rectBatches) kv.second.Clear();
-        for (auto& kv : triBatches)  kv.second.Clear();
-        for (auto& kv : circBatches) kv.second.Clear();
-
-        // 3. Iterate ECS
-        const ECS::ComponentArray<ShapeComponent>& shapeArray = globalECS.GetComponentArray<ShapeComponent>();
-
-        // Store lines to render AFTER the loop (avoids shader switching)
-        std::vector<std::pair<TransformComponent*, ShapeComponent*>> lineQueue;
-
-        for (const Entity& id : shapeArray.indexToEntity) {
+    // --- HELPER: BatchEntities (Processes a specific list of entities) ---
+    void BatchEntities(
+        const std::vector<Entity>& entities,
+        ECS& globalECS,
+        std::unordered_map<BatchKey, RenderBatch, BatchKeyHasher>& rects,
+        std::unordered_map<BatchKey, RenderBatch, BatchKeyHasher>& tris,
+        std::unordered_map<BatchKey, RenderBatch, BatchKeyHasher>& circs,
+        std::vector<std::pair<TransformComponent*, ShapeComponent*>>& lines)
+    {
+        for (const Entity& id : entities) {
             if (!globalECS.HasComponent<TransformComponent>(id)) continue;
 
-            TransformComponent* tf = globalECS.GetComponent<TransformComponent>(id);
-            ShapeComponent* sc = globalECS.GetComponent<ShapeComponent>(id);
+            auto* tf = globalECS.GetComponent<TransformComponent>(id);
+            auto* sc = globalECS.GetComponent<ShapeComponent>(id);
 
-            // OPTIMIZATION: Defer Lines
+            // Lines are not batched here
             if (sc->type == ShapeType::Line) {
-                lineQueue.push_back({ tf, sc });
+                lines.push_back({ tf, sc });
                 continue;
             }
 
-            // OPTIMIZATION: Create Key Struct directly (No string conversion!)
             BatchKey key;
-            if (sc->enableTexture) {
-                key = { sc->textureName, sc->uvSize.x, sc->uvSize.y, sc->wrapModeU, sc->wrapModeV };
-            }
-            else {
-                key = { "NoTexture", 1.0f, 1.0f, 0, 0 };
-            }
+            if (sc->enableTexture) key = { sc->textureName, sc->uvSize.x, sc->uvSize.y, sc->wrapModeU, sc->wrapModeV };
+            else key = { "NoTexture", 1.0f, 1.0f, 0, 0 };
 
-            // Prepare Color
             CEColor colorNorm(sc->color.x(), sc->color.y(), sc->color.z(), sc->color.w());
 
-            // Helper Lambda
             auto ConfigureBatch = [&](RenderBatch& batch) {
                 if (batch.positions.empty()) {
                     batch.uvSize = sc->uvSize;
@@ -485,42 +510,44 @@ namespace Scene {
                 }
                 };
 
-            // Add to appropriate batch map
             switch (sc->type) {
             case ShapeType::Rectangle: {
-                RenderBatch& batch = rectBatches[key]; // Fast Hash Lookup
+                RenderBatch& batch = rects[key];
                 ConfigureBatch(batch);
                 batch.Add(tf->position, colorNorm, tf->rotation, 1.0f, tf->size.x, tf->size.y);
                 break;
             }
             case ShapeType::Triangle: {
-                RenderBatch& batch = triBatches[key];
+                RenderBatch& batch = tris[key];
                 ConfigureBatch(batch);
                 batch.Add(tf->position, colorNorm, tf->rotation, 1.0f, tf->size.x, 0.0f);
                 break;
             }
             case ShapeType::Circle: {
-                RenderBatch& batch = circBatches[key];
+                RenderBatch& batch = circs[key];
                 ConfigureBatch(batch);
-                batch.Add(tf->position, colorNorm, 0.0f, 1.0f, tf->size.x * 0.5f, 0.0f);
+                batch.Add(tf->position, colorNorm, tf->rotation, 1.0f, tf->size.x * 0.5f, 0.0f);
                 break;
             }
             default: break;
             }
         }
+    }
 
-        // 4. Render Batches
-
+    // --- HELPER: FlushBatches (Draws and clears the maps) ---
+    void FlushBatches(
+        std::unordered_map<BatchKey, RenderBatch, BatchKeyHasher>& rects,
+        std::unordered_map<BatchKey, RenderBatch, BatchKeyHasher>& tris,
+        std::unordered_map<BatchKey, RenderBatch, BatchKeyHasher>& circs)
+    {
         // --- Rectangles ---
-        for (auto& kv : rectBatches) {
+        for (auto& kv : rects) {
             RenderBatch& batch = kv.second;
             if (batch.positions.empty()) continue;
 
             if (batch.enableTexture && !batch.textureName.empty()) {
-                Assets::TextureAsset* tex = Assets::AssetManager::GetInstance().Get<Assets::TextureAsset>(batch.textureName);
-                if (tex) {
-                    tex->SetTextureMode(batch.wrapU, batch.wrapV);
-                }
+                auto* tex = Assets::AssetManager::GetInstance().Get<Assets::TextureAsset>(batch.textureName);
+                if (tex) tex->SetTextureMode(batch.wrapU, batch.wrapV);
             }
 
             InstancingSystem::InstancedParams params;
@@ -530,29 +557,22 @@ namespace Scene {
             params.uvSize = batch.uvSize;
 
             InstancingSystem::RenderInstancedRectanglesBatch(
-                batch.positions.data(),
-                batch.colors.data(), // Now passing CEColor*
-                batch.rotations.data(),
-                batch.scales.data(),
-                batch.dim1.data(),
-                batch.dim2.data(),
-                static_cast<int>(batch.positions.size()),
-                params
-            );
+                batch.positions.data(), batch.colors.data(), batch.rotations.data(),
+                batch.scales.data(), batch.dim1.data(), batch.dim2.data(),
+                (int)batch.positions.size(), params);
+
+            batch.Clear();
         }
 
         // --- Triangles ---
-        for (auto& kv : triBatches) {
+        for (auto& kv : tris) {
             RenderBatch& batch = kv.second;
             if (batch.positions.empty()) continue;
 
             if (batch.enableTexture && !batch.textureName.empty()) {
-                Assets::TextureAsset* tex = Assets::AssetManager::GetInstance().Get<Assets::TextureAsset>(batch.textureName);
-                if (tex) {
-                    tex->SetTextureMode(batch.wrapU, batch.wrapV);
-                }
+                auto* tex = Assets::AssetManager::GetInstance().Get<Assets::TextureAsset>(batch.textureName);
+                if (tex) tex->SetTextureMode(batch.wrapU, batch.wrapV);
             }
-
             InstancingSystem::InstancedParams params;
             params.textured = batch.enableTexture;
             params.textureName = batch.textureName;
@@ -560,28 +580,22 @@ namespace Scene {
             params.uvSize = batch.uvSize;
 
             InstancingSystem::RenderInstancedTrianglesBatch(
-                batch.positions.data(),
-                batch.colors.data(),
-                batch.rotations.data(),
-                batch.scales.data(),
-                batch.dim1.data(),
-                static_cast<int>(batch.positions.size()),
-                params
-            );
+                batch.positions.data(), batch.colors.data(), batch.rotations.data(),
+                batch.scales.data(), batch.dim1.data(),
+                (int)batch.positions.size(), params);
+
+            batch.Clear();
         }
 
         // --- Circles ---
-        for (auto& kv : circBatches) {
+        for (auto& kv : circs) {
             RenderBatch& batch = kv.second;
             if (batch.positions.empty()) continue;
 
             if (batch.enableTexture && !batch.textureName.empty()) {
-                Assets::TextureAsset* tex = Assets::AssetManager::GetInstance().Get<Assets::TextureAsset>(batch.textureName);
-                if (tex) {
-                    tex->SetTextureMode(batch.wrapU, batch.wrapV);
-                }
+                auto* tex = Assets::AssetManager::GetInstance().Get<Assets::TextureAsset>(batch.textureName);
+                if (tex) tex->SetTextureMode(batch.wrapU, batch.wrapV);
             }
-
             InstancingSystem::InstancedParams params;
             params.textured = batch.enableTexture;
             params.textureName = batch.textureName;
@@ -589,19 +603,50 @@ namespace Scene {
             params.uvSize = batch.uvSize;
 
             InstancingSystem::RenderInstancedCirclesBatch(
-                batch.positions.data(),
-                batch.colors.data(),
-                batch.rotations.data(),
-                batch.scales.data(),
-                batch.dim1.data(),
-                static_cast<int>(batch.positions.size()),
-                32,
-                params
-            );
+                batch.positions.data(), batch.colors.data(), batch.rotations.data(),
+                batch.scales.data(), batch.dim1.data(),
+                (int)batch.positions.size(), 32, params);
+
+            batch.Clear();
+        }
+    }
+
+    void RenderScene(CrashoutsEngine::ECS& globalECS) {
+        using namespace CrashoutsEngine;
+        using Component::Rendering;
+        Rendering& renderer = Rendering::Get();
+        if (!renderer.shdr_pgm_instanced) return;
+
+        const auto& shapeArray = globalECS.GetComponentArray<ShapeComponent>();
+
+        // 1. PRE-SORT into World vs Screen lists
+        std::vector<Entity> worldEntities;
+        std::vector<Entity> screenEntities;
+        worldEntities.reserve(shapeArray.indexToEntity.size());
+        screenEntities.reserve(shapeArray.indexToEntity.size());
+
+        for (const Entity& id : shapeArray.indexToEntity) {
+            auto* sc = globalECS.GetComponent<ShapeComponent>(id);
+            if (sc->isWorldSpace) worldEntities.push_back(id);
+            else                  screenEntities.push_back(id);
         }
 
+        // -------------------------------------------------------
+        // PASS 1: WORLD SPACE (Uses Camera Matrices)
+        // -------------------------------------------------------
+        renderer.shdr_pgm_instanced->Use();
+        renderer.shdr_pgm_instanced->SetUniform("uView", renderer.viewMatrix);
+        renderer.shdr_pgm_instanced->SetUniform("uProjection", renderer.projectionMatrix);
+
+        // Store lines for later
+        std::vector<std::pair<TransformComponent*, ShapeComponent*>> lineQueue;
+
+        BatchEntities(worldEntities, globalECS, rectBatches, triBatches, circBatches, lineQueue);
+        FlushBatches(rectBatches, triBatches, circBatches);
+
+        // Flush World Lines (Non-instanced)
         if (!lineQueue.empty()) {
-            renderer.shdr_pgm->Use(); // Switch shader ONCE
+            renderer.shdr_pgm->Use();
             renderer.shdr_pgm->SetUniform("uView", renderer.viewMatrix);
             renderer.shdr_pgm->SetUniform("uProjection", renderer.projectionMatrix);
 
@@ -610,9 +655,40 @@ namespace Scene {
                 ShapeComponent* sc = pair.second;
                 Shapes::CreateLine(sc->p1 + tf->position, sc->p2 + tf->position, sc->thickness, sc->color, sc->isWorldSpace);
             }
-
-            renderer.shdr_pgm_instanced->Use(); // Switch back if needed
+            lineQueue.clear();
         }
+
+        // -------------------------------------------------------
+        // PASS 2: SCREEN SPACE (Uses UI Matrices)
+        // -------------------------------------------------------
+        renderer.shdr_pgm_instanced->Use();
+        // View is Identity (No camera movement)
+        renderer.shdr_pgm_instanced->SetUniform("uView", glm::mat4(1.0f));
+
+        // Fixed UI Projection (Centered Origin)
+        float aspect = (float)GLApp::width / (float)GLApp::height;
+        float h = 100.0f; // Base Height (Matches your engine standard)
+        float w = h * aspect;
+        glm::mat4 uiProj = glm::ortho(-w * 0.5f, w * 0.5f, -h * 0.5f, h * 0.5f);
+        renderer.shdr_pgm_instanced->SetUniform("uProjection", uiProj);
+
+        BatchEntities(screenEntities, globalECS, rectBatches, triBatches, circBatches, lineQueue);
+        FlushBatches(rectBatches, triBatches, circBatches);
+
+        // Flush Screen Lines
+        if (!lineQueue.empty()) {
+            renderer.shdr_pgm->Use();
+            renderer.shdr_pgm->SetUniform("uView", glm::mat4(1.0f));
+            renderer.shdr_pgm->SetUniform("uProjection", uiProj);
+
+            for (auto& pair : lineQueue) {
+                TransformComponent* tf = pair.first;
+                ShapeComponent* sc = pair.second;
+                Shapes::CreateLine(sc->p1 + tf->position, sc->p2 + tf->position, sc->thickness, sc->color, sc->isWorldSpace);
+            }
+        }
+
+        renderer.shdr_pgm_instanced->Use(); // Restore state
 
         // 5. Draw Text / UI (Now via UI namespace)
         Scene::UI::RenderTextAndCursor(globalECS);
