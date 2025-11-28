@@ -207,6 +207,8 @@ namespace Scene {
             float winW = (float)GLApp::width;
             float winH = (float)GLApp::height;
 
+            std::cout << winW << '\n';
+
             // Calculate NDC (-1 to 1)
             // Flip Y because Input is Top-Down, but OpenGL/World is Bottom-Up
             float ndcX = (rawMouse.x / winW) * 2.0f - 1.0f;
@@ -244,7 +246,7 @@ namespace Scene {
                     checkPos = mouseUI;
                 }
 
-                std::cout << "Mouse pos is " << checkPos.x << ", " << checkPos.y << "Button Pos is" << t->position.x << ", " << t->position.y << std::endl;
+                //std::cout << "Mouse pos is " << checkPos.x << ", " << checkPos.y << "Button Pos is" << t->position.x << ", " << t->position.y << std::endl;
 
                 // --- COLLISION CHECK (AABB) ---
                 float halfW = t->size.x * 0.5f;
