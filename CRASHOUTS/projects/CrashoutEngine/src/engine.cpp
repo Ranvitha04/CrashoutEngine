@@ -75,7 +75,11 @@ static CrashoutsEngine::AIManager aiSystem;
 // ImGui in-game performance viewer
 static FrameProfiler gProfiler;
 
+#if USE_IMGUI_EDITOR
 EngineState engineState = EngineState::STOP;
+#else
+EngineState engineState = EngineState::PLAY;
+#endif
 
 const float moveSpeed = 6.7f;
 
@@ -96,7 +100,12 @@ bool gameWinHovered{ false };
 std::string g_PendingSceneName = "";
 bool g_IsSceneLoadPending = false;
 
+#if USE_IMGUI_EDITOR
 static EngineState previousState = EngineState::STOP;
+#else
+static EngineState previousState = EngineState::PLAY;
+#endif
+
 bool g_fullscreen = false;
 
 /*  _________________________________________________________________________ */
@@ -239,14 +248,19 @@ void Init() {
 
     /// register game states and start with main menu
     RegisterAllStates();
-    InitGameStateManager(MAIN_MENU);
+    InitGameStateManager(SCENE);
 
     CrashoutsEngine::ScriptSystem::InitializeAll(MonoManager::GetDomain(), MonoManager::GetAssembly());
 
     InputManager::Init(GLApp::ptr_window);
     UI::Init(GLApp::ptr_window); // NEW
     PerformanceSystem::Get().Attach(gProfiler);
+
+    #if USE_IMGUI_EDITOR
     engineState = EngineState::STOP;
+    #else
+    engineState = EngineState::PLAY;
+    #endif  
 
     glEnable(GL_DEPTH_TEST);
 
@@ -700,7 +714,7 @@ void Update(double const& dt) {
     
     CrashoutsEngine::PostProcessing::UpdatePP();
 
-#if USE_IMGUI_EDITOR
+
     // Cycle and draw Tile Map Editor if needed
     CrashoutsEngine::ECS::ComponentArray<Component::TileMapComponent>& tmArray =
         CrashoutsEngine::ECS::getInstance()->GetComponentArray<Component::TileMapComponent>();
@@ -713,7 +727,6 @@ void Update(double const& dt) {
         CrashoutsEngine::Entity entityID = tmArray.indexToEntity[i];
         if (tm.isCacheDirty) CrashoutsEngine::TileMapUtils::RebuildCache(tm, entityID);
     }
-#endif
 
 }
 
