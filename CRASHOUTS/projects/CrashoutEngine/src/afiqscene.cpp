@@ -46,13 +46,13 @@ namespace {
         return false;
     }
 
-    
+    // One-time registration guard
     static bool gPrefabsInited = false;
     static void InitPrefabsOnce() {
         if (gPrefabsInited) return;
         gPrefabsInited = true;
 
-      
+        // Fallback: create a plain named entity with a Transform
         PrefabSetFallback([](ECS& e, const std::string& name) {
             auto ent = e.CreateEntity();
             e.AddComponent<NameComponent>(ent, NameComponent{ name });
@@ -61,7 +61,9 @@ namespace {
             }
             });
 
-      
+        // Example prefabs you can extend any time:
+
+        // Platform: wide rectangle
         PrefabRegister("Platform", [](ECS& e) {
             auto ent = e.CreateEntity();
             e.AddComponent<NameComponent>(ent, NameComponent{ "Platform" });
@@ -70,7 +72,7 @@ namespace {
           
             });
 
-        
+        // Box: small rectangle
         PrefabRegister("Box", [](ECS& e) {
             auto ent = e.CreateEntity();
             e.AddComponent<NameComponent>(ent, NameComponent{ "Box" });
@@ -80,9 +82,9 @@ namespace {
     
         PrefabRegister("KF_Box", [](ECS& e) {
             auto ent = e.CreateEntity();
-            gKFBox = ent; 
+            gKFBox = ent;  // remember which entity is our animated test box
 
-            
+            // Basic components
             e.AddComponent<NameComponent>(ent, NameComponent{ "KF_Box" });
 
             TransformComponent t{};
@@ -94,161 +96,71 @@ namespace {
             s.type = ShapeType::Rectangle;
             s.color = CEColor{ 0.9f, 0.4f, 0.2f, 1.f };
             e.AddComponent<ShapeComponent>(ent, s);
-            
-            {
-                CEVec2 worldSize{ 40.0f, 40.0f };  
-            
-                Component::SetSpriteSheet(
-                    ent,
-                    "images/spritesheet/Chibi-Actions-SpriteSheet.png", 
-                    3, 
-                    3,  
-                    worldSize
-                );
 
-                
-                auto* animSprite = e.GetComponent<Component::SpriteAnimComponent>(ent);
-                if (!animSprite) {
-                    Component::SpriteAnimComponent newAnim{};
-                    newAnim.startFrame = 0;
-                    newAnim.frameCount = 1;
-                    newAnim.frameTime = 0.1f;
-                    newAnim.frameIndex = 0;
-                    newAnim.timer = 0.0f;
-                    newAnim.flip = false;
-                    e.AddComponent<Component::SpriteAnimComponent>(ent, newAnim);
-                }
-            }
-
-            
+            // Attach animator component
             auto& anim = KeyframeUnity::AddAnimator(e, ent);
 
+            // -------------------------------------------------
+            // CLIP 1: "Walk"  (small, slower sway)
+            // -------------------------------------------------
             AnimationClip walk{};
             walk.name = "Walk";
             walk.wrap = KFWrap::Loop;
 
-            
-            KFBinding walkSprite{};
-            walkSprite.property = KFProperty::SpriteIndex;
+            KFBinding walkRot{};
+            walkRot.property = KFProperty::RotZ;
 
-            
-            {
-               
-                KFKey k0{};
-                k0.time = 0.0f;
-                k0.value = 3.0f;   
-                k0.inTan = 0.0f;
-                k0.outTan = 0.0f;
-                k0.interp = KFInterp::Linear;
-                walkSprite.curve.Add(k0);
+            KFKey walk0{};
+            walk0.time = 0.f;
+            walk0.value = -30.f;           // degrees
+            walk0.inTan = 0.f;
+            walk0.outTan = 0.f;
+            walk0.interp = KFInterp::Linear;
 
-              
-                KFKey k1{};
-                k1.time = 0.12f;
-                k1.value = 4.0f;   
-                k1.inTan = 0.0f;
-                k1.outTan = 0.0f;
-                k1.interp = KFInterp::Linear;
-                walkSprite.curve.Add(k1);
+            KFKey walk1{};
+            walk1.time = 0.5f;
+            walk1.value = 30.f;            // degrees
+            walk1.inTan = 0.f;
+            walk1.outTan = 0.f;
+            walk1.interp = KFInterp::Linear;
 
-               
-                KFKey k2{};
-                k2.time = 0.24f;
-                k2.value = 5.0f;   
-                k2.inTan = 0.0f;
-                k2.outTan = 0.0f;
-                k2.interp = KFInterp::Linear;
-                walkSprite.curve.Add(k2);
-
-                
-                KFKey k3{};
-                k3.time = 0.36f;
-                k3.value = 4.0f;   
-                k3.inTan = 0.0f;
-                k3.outTan = 0.0f;
-                k3.interp = KFInterp::Linear;
-                walkSprite.curve.Add(k3);
-            }
-
-          
-            walk.bindings.push_back(walkSprite);
-         
-
-           
-            KFBinding scaleX;
-            scaleX.property = KFProperty::ScaleX;
-
-            KFKey sx0{};
-            sx0.time = 0.0f;
-            sx0.value = 1.0f; 
-            sx0.inTan = 0.0f;
-            sx0.outTan = 0.0f;
-            sx0.interp = KFInterp::Linear;
-            scaleX.curve.Add(sx0);
-
-            walk.bindings.push_back(scaleX);
-
-            
-            KFBinding scaleY;
-            scaleY.property = KFProperty::ScaleY;
-
-            KFKey sy0{};
-            sy0.time = 0.0f;
-            sy0.value = 1.0f;  
-            sy0.inTan = 0.0f;
-            sy0.outTan = 0.0f;
-            sy0.interp = KFInterp::Linear;
-            scaleY.curve.Add(sy0);
-
-            walk.bindings.push_back(scaleY);
+            walkRot.curve.Add(walk0);
+            walkRot.curve.Add(walk1);
+            walk.bindings.push_back(walkRot);
 
             KeyframeUnity::SetClip(anim, walk);
 
-            KeyframeUnity::SetClip(anim, walk);
-
-            
+            // -------------------------------------------------
+            // CLIP 2: "Jump" (bigger, faster swing)
+            // -------------------------------------------------
             AnimationClip jump{};
             jump.name = "Jump";
             jump.wrap = KFWrap::Loop;
 
-            KFBinding jumpSprite{};
-            jumpSprite.property = KFProperty::SpriteIndex;
+            KFBinding jumpRot{};
+            jumpRot.property = KFProperty::RotZ;
 
-          
-            {
-                KFKey j0{};
-                j0.time = 0.0f;
-                j0.value = 0.0f;   
-                j0.inTan = 0.0f;
-                j0.outTan = 0.0f;
-                j0.interp = KFInterp::Linear;
-                jumpSprite.curve.Add(j0);
+            KFKey jump0{};
+            jump0.time = 0.f;
+            jump0.value = -90.f;
+            jump0.inTan = 0.f;
+            jump0.outTan = 0.f;
+            jump0.interp = KFInterp::Linear;
 
-                KFKey j1{};
-                j1.time = 0.10f;
-                j1.value = 1.0f;  
-                j1.inTan = 0.0f;
-                j1.outTan = 0.0f;
-                j1.interp = KFInterp::Linear;
-                jumpSprite.curve.Add(j1);
+            KFKey jump1{};
+            jump1.time = 0.25f;
+            jump1.value = 90.f;
+            jump1.inTan = 0.f;
+            jump1.outTan = 0.f;
+            jump1.interp = KFInterp::Linear;
 
-                KFKey j2{};
-                j2.time = 0.20f;
-                j2.value = 2.0f;   
-                j2.inTan = 0.0f;
-                j2.outTan = 0.0f;
-                j2.interp = KFInterp::Linear;
-                jumpSprite.curve.Add(j2);
-            }
+            jumpRot.curve.Add(jump0);
+            jumpRot.curve.Add(jump1);
+            jump.bindings.push_back(jumpRot);
 
-            jump.bindings.push_back(jumpSprite);
             KeyframeUnity::SetClip(anim, jump);
 
-           
-            KeyframeUnity::Play(anim, "Walk", true);
-
-
-            
+            // Start in "Walk" by default
             KeyframeUnity::Play(anim, "Walk", true);
             });
 
@@ -284,7 +196,7 @@ void InitAfiq()
 {
     LOGI(Core, "Afiq Initialized");
 
-    
+    // Get ECS pointer
     ECS* ecs = ECS::getInstance();
     ecs->Reset();
 
@@ -292,10 +204,10 @@ void InitAfiq()
 
     if (!s_audioReady) return;
 
-    
+    // quick beep to prove audio works
     AudioSystem::instance().playOneShot("event:/sfexbeep");
 
-   
+    // start menu music
     s_menuMusic = AudioSystem::instance().createInstance("event:/Music/Menu");
     if (s_menuMusic) {
         s_menuMusic->start();
@@ -315,17 +227,19 @@ void UpdateAfiq()
         KeyframeUnity::UpdateAll(*ecs, dt);
         Component::UpdateSpriteAnimationsECS();
 
-    
-      
+        // -------------------------------------------------
+        // Keyboard: Z = Walk, Y = Jump (two clips on same
+        // character, like your rubric wants).
+        // -------------------------------------------------
         if (gKFBox && ecs->HasComponent<KeyframeAnimatorComponent>(gKFBox)) {
             auto* anim = ecs->GetComponent<KeyframeAnimatorComponent>(gKFBox);
 
-           
+            // Play "Walk" clip
             if (InputManager::IsKeyTriggered(Key::Z)) {
                 KeyframeUnity::Play(*anim, "Walk", true);
             }
 
-           
+            // Play "Jump" clip
             if (InputManager::IsKeyTriggered(Key::Y)) {
                 KeyframeUnity::Play(*anim, "Jump", true);
             }
@@ -337,12 +251,12 @@ void UpdateAfiq()
 void RenderAfiq()
 {
 #if !USE_IMGUI_EDITOR
-    
+    // Non-editor build: clear screen, then draw
     glClearColor(0.1f, 0.2f, 0.4f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 #endif
 
-    
+    // Draw all entities that have SpriteSheetComponent + SpriteAnimComponent
     Component::RenderSpriteAnimationsECS();
 }
 

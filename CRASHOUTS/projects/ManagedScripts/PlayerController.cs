@@ -11,19 +11,12 @@ namespace CrashoutsEngine
         bool wasMoving;
         bool jump;
 
-        private RigidBodyComponent rb;
-        private TransformComponent tf;
-        private Animator animator;
-
-        private string currentAnimState = "";
-        private bool isAlt = false;
         /*SAMPLE TRIGGERS*/
         public void OnTriggerEnter(uint otherEntity) {
             //Console.WriteLine("Entered Inside Me BOUNCE");
             var rb = Entity.GetComponent<RigidBodyComponent>();
             // rb.AddForce(new CEVec3(0f, 20000f, 0f)); //* rb.Mass);
         }
-     
 
         public void OnTriggerExit(uint otherEntity)
         {
@@ -37,39 +30,19 @@ namespace CrashoutsEngine
 
         public override void Start()
         {
-
+            // Initialization logic for the player
             Console.WriteLine("[C#] PlayerController Start() called, Entity is " + (Entity == null ? "NULL" : "OK!!"));
-
-
-            rb = Entity.GetComponent<RigidBodyComponent>();
-            tf = Entity.GetComponent<TransformComponent>();
-            animator = Entity.GetComponent<Animator>();
-
-            if (rb == null)
-                Console.WriteLine("[C#] WARNING: RigidBodyComponent is NULL on Player!");
-
-            if (tf == null)
-                Console.WriteLine("[C#] WARNING: TransformComponent is NULL on Player!");
-
-            if (animator == null)
-                Console.WriteLine("[C#] WARNING: Animator component is NULL on Player! (No animation will play)");
-
-            // Register trigger callbacks
             CollisionEvents.RegisterTriggerEnter(Entity.ID, this.OnTriggerEnter);
-            //CollisionEvents.RegisterTriggerExit(Entity.ID, this.OnTriggerExit);
-            //CollisionEvents.RegisterTriggerStay(Entity.ID, this.OnTriggerStay);
+            //Entity.Add<RigidBodyComponent>();
+            //Entity.Add<TransformComponent>();
+            // CollisionEvents.RegisterTriggerExit(Entity.ID, OnTriggerExit);
+            // CollisionEvents.RegisterTriggerStay(Entity.ID, OnTriggerStay);
 
-            // Start ambient audio
             AudioManager.GetInstance().Play("ambient");
         }
 
         public override void Update()
         {
-            moveLeft = Input.IsKeyPressed(Key.A);
-            moveRight = Input.IsKeyPressed(Key.D);
-            jump = Input.IsKeyTriggered(Key.Space);
-
-            isMoving = moveLeft || moveRight;
             //Console.WriteLine("Has RB? " + Entity.Has<RigidBodyComponent>());
 
             //Console.WriteLine("[C#] PlayerController Update() called with dt: " + dt);
@@ -78,7 +51,7 @@ namespace CrashoutsEngine
             var tf = Entity.GetComponent<TransformComponent>();
             //if (rb == null) Console.WriteLine("[C#] rb is null");
             if (tf == null) Console.WriteLine("[C#] tf is null");
-
+            isMoving = moveLeft || moveRight;
             if (isMoving && !wasMoving)
             {
                 //Console.WriteLine("[C#] Player started moving -> Play footstep1");
@@ -89,38 +62,6 @@ namespace CrashoutsEngine
                 //Console.WriteLine("[C#] Player stopped moving -> Stop footsteps_loop");
                 AudioManager.GetInstance().Stop("footstep1");
             }
-          
-
-            if (animator != null)
-            {
-               
-                if (moveLeft && !moveRight)
-                {
-                    animator.SetFlip(true);   
-                }
-                else if (moveRight && !moveLeft)
-                {
-                    animator.SetFlip(false);  
-                }
-
-          
-                string desiredState;
-
-            
-
-                
-                desiredState = isMoving ? "walk_normal" : "idle_normal";
-
-              
-                if (desiredState != currentAnimState)
-                {
-                    Console.WriteLine("[C#] Animator.Play -> " + desiredState);
-                    animator.Play(desiredState);
-                    currentAnimState = desiredState;
-                }
-            }
-
-            wasMoving = isMoving;
             //if (Input.IsKeyPressed(Key.A))
             //{
             //    //Console.WriteLine($"[DEBUG] A pressed, rb ID = {rb.EntityID}, mass = {rb.Mass}");
@@ -161,7 +102,11 @@ namespace CrashoutsEngine
             }
             /*
             */
-         
+            moveLeft = Input.IsKeyPressed(Key.A);
+            moveRight = Input.IsKeyPressed(Key.D);
+
+            wasMoving = isMoving;
+            jump = Input.IsKeyTriggered(Key.Space);
 
         }
 
@@ -200,4 +145,3 @@ namespace CrashoutsEngine
         }
     }
 }
-
