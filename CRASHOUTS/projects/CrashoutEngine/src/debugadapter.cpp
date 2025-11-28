@@ -1000,8 +1000,8 @@ namespace {
 				// UV offset
 				CEVec2 oldUVoffset = sc->uvOffset;
 				float offset[2] = { sc->uvOffset.x, sc->uvOffset.y };
-				if (ImGui::DragFloat2("UV Offset", size, D.drag_small)) {
-					CEVec2 newUV = { size[0], size[1] };
+				if (ImGui::DragFloat2("UV Offset", offset, D.drag_small)) {
+					CEVec2 newUV = { offset[0], offset[1] };
 					if (ImGui::IsItemDeactivatedAfterEdit() && newUV != oldUV) {
 						UndoManager::GetInstance().AddCommand(
 							std::make_unique<CrashoutsEngine::ChangeValueCommand<CEVec2>>(

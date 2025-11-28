@@ -53,6 +53,15 @@ namespace {
     }
 }
 
+void AnimationCurve::Add(const KFKey& k) {
+    keys.push_back(k);
+
+    // Lambda to sort keys by time (ascending)
+    std::sort(keys.begin(), keys.end(), [](const KFKey& a, const KFKey& b) {
+        return a.time < b.time;
+        });
+}
+
 namespace KeyframeUnity {
 
     // Helper to get/add component

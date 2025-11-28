@@ -34,7 +34,7 @@ struct AnimationCurve {
     std::vector<KFKey> keys;  
 
     void  Add(const KFKey& k);
-    float Evaluate(float t) const;      
+    //float Evaluate(float t) const;      
     float StartTime() const { return keys.empty() ? 0.f : keys.front().time; }
     float EndTime()   const { return keys.empty() ? 0.f : keys.back().time; }
 };

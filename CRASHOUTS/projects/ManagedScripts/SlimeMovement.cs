@@ -59,10 +59,13 @@ namespace CrashoutsEngine
 
             float dt = (float)Time.DT;
             if (flipCooldown > 0) flipCooldown -= dt;
-
-            float dist = Distance(tf.Position, playerScript.Entity.GetComponent<TransformComponent>().Position);
-            if (dist <= grabRange) HandleGrabLogic();
-            if (isGrabbed) return;
+            float dist = 0.0f;
+            if (playerScript != null)
+            {
+                dist = Distance(tf.Position, playerScript.Entity.GetComponent<TransformComponent>().Position);
+                if (dist <= grabRange) HandleGrabLogic();
+                if (isGrabbed) return;
+            }
 
             // 1. CHECK PLAYER (CHASE LOGIC)
             isChasing = false;

@@ -12,6 +12,7 @@ layout (location = 5) in float aInstanceRot;
 layout (location = 6) in vec4  aInstanceColor; // CHANGED: vec3 -> vec4
 layout (location = 7) in float aInstanceWidth;
 layout (location = 8) in float aInstanceHeight;
+layout (location = 9) in vec2  aInstanceOffset;
 
 // Uniforms
 uniform mat4 uModel;
@@ -46,7 +47,7 @@ void main() {
         color = aInstanceColor; // Now preserves Alpha from instance data
         
         vec2 uvSize = (u_uvSize.x > 0.0 && u_uvSize.y > 0.0) ? u_uvSize : vec2(1.0);
-        texCoord = aTexCoord * uvSize;
+        texCoord = (aTexCoord * uvSize) + aInstanceOffset;
     } else {
         gl_Position = uProjection * uView * uModel * vec4(aPos, 1.0);
         

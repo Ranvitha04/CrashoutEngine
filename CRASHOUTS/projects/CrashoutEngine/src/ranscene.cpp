@@ -110,18 +110,21 @@ static std::vector<float>  gM5RectRot;
 static std::vector<float>  gM5RectScale;    // keep 1.0f and bake into width/height
 static std::vector<float>  gM5RectW;
 static std::vector<float>  gM5RectH;
+static std::vector<CEVec2>  gM5RectOffset;
 
 static std::vector<CEVec3> gM5TriPos;
 static std::vector<CEColor> gM5TriColor;     // 0..1 colors
 static std::vector<float>  gM5TriRot;
 static std::vector<float>  gM5TriScale;     // use 1.0f
 static std::vector<float>  gM5TriSide;      // derived from t1..t3
+static std::vector<CEVec2>  gM5TriOffset;
 
 static std::vector<CEVec3> gM5CircPos;
 static std::vector<CEColor> gM5CircColor;
 static std::vector<float>  gM5CircRot;
 static std::vector<float>  gM5CircScale;
 static std::vector<float>  gM5CircRadius;
+static std::vector<CEVec2>  gM5CircOffset;
 static int gM5CircSegments = 24;
 
 // Mode 6 (ECS ducks)
@@ -284,6 +287,7 @@ static void InitializeMode5EcsRandomShapes(int perTypeCount) {
         gM5CircRot.emplace_back(rotDeg(rng));
         gM5CircScale.emplace_back(1.0f);
         gM5CircRadius.emplace_back(circRadius(rng));
+        gM5CircOffset.emplace_back(0.0f, 0.0f);
     }
 
     gMode5Initialized = true;
@@ -935,7 +939,7 @@ void RenderRan()
         InstancingSystem::RenderMode4Rectangles(params);
     } break;
 
-    case 5: { // ECS-driven random shapes; circles separate
+    case 5: { // ECS-driven random shapes
 
         if (!gMode5Initialized) {
             InitializeMode5EcsRandomShapes(500);
@@ -946,13 +950,14 @@ void RenderRan()
         params.tint = CEColor(1.f, 1.f, 1.f);
         params.uvSize = CEVec2(1.f, 1.f);
 
-        // Circles FIRST to avoid covering ECS rectangles/triangles
+        // Circles
         if (!gM5CircPos.empty()) {
             if (!gMode5TexturesEnabled) {
                 InstancingSystem::CreateInstancedCircles(
                     gM5CircPos.data(), gM5CircColor.data(),
                     gM5CircRot.data(), gM5CircScale.data(),
                     gM5CircRadius.data(),
+                    gM5CircOffset.data(), // CHANGED: Passed Offset
                     static_cast<int>(gM5CircPos.size()),
                     gM5CircSegments
                 );
@@ -963,6 +968,7 @@ void RenderRan()
                     gM5CircPos.data(), gM5CircColor.data(),
                     gM5CircRot.data(), gM5CircScale.data(),
                     gM5CircRadius.data(),
+                    gM5CircOffset.data(), // CHANGED: Passed Offset
                     static_cast<int>(gM5CircPos.size()),
                     gM5CircSegments,
                     params.tint, params.uvSize
@@ -970,7 +976,7 @@ void RenderRan()
             }
         }
 
-        // Rectangles and Triangles after circles
+        // Rectangles and Triangles
         if (!gM5RectPos.empty()) {
             std::vector<float> rectScales(gM5RectPos.size(), 1.0f);
             if (!gMode5TexturesEnabled) {
@@ -978,6 +984,7 @@ void RenderRan()
                     gM5RectPos.data(), gM5RectColor.data(),
                     gM5RectRot.data(), rectScales.data(),
                     gM5RectW.data(), gM5RectH.data(),
+                    gM5RectOffset.data(), // CHANGED: Passed Offset
                     static_cast<int>(gM5RectPos.size())
                 );
             }
@@ -987,6 +994,7 @@ void RenderRan()
                     gM5RectPos.data(), gM5RectColor.data(),
                     gM5RectRot.data(), rectScales.data(),
                     gM5RectW.data(), gM5RectH.data(),
+                    gM5RectOffset.data(), // CHANGED: Passed Offset
                     static_cast<int>(gM5RectPos.size()),
                     params.tint, params.uvSize
                 );
@@ -998,6 +1006,7 @@ void RenderRan()
                     gM5TriPos.data(), gM5TriColor.data(),
                     gM5TriRot.data(), gM5TriScale.data(),
                     gM5TriSide.data(),
+                    gM5TriOffset.data(), // CHANGED: Passed Offset
                     static_cast<int>(gM5TriPos.size())
                 );
             }
@@ -1007,6 +1016,7 @@ void RenderRan()
                     gM5TriPos.data(), gM5TriColor.data(),
                     gM5TriRot.data(), gM5TriScale.data(),
                     gM5TriSide.data(),
+                    gM5TriOffset.data(), // CHANGED: Passed Offset
                     static_cast<int>(gM5TriPos.size()),
                     params.tint, params.uvSize
                 );
