@@ -14409,20 +14409,20 @@
                     {
                         "className": "PlayerMovement",
                         "fields": {
-                            "moveSpeed": 2000.0,
-                            "maxRunSpeed": 200.0,
-                            "jumpPower": 50000.0,
+                            "moveSpeed": 200.0,
+                            "maxRunSpeed": 100.0,
+                            "jumpPower": 20000.0,
                             "groundDrag": 0.15000000596046449,
-                            "airDrag": 0.10000000149011612,
+                            "airDrag": 0.019999999552965165,
                             "gravityScale": 2.5,
                             "turnMultiplier": 2.0,
                             "frictionMultiplier": 500.0,
                             "gravityForceMultiplier": 10.0,
-                            "stepInterval": 0.15000000596046449,
+                            "stepInterval": 0.07500000298023224,
                             "energyConsumption": 12.5,
-                            "normalMass": 4.5,
-                            "lightMass": 3.0,
-                            "CurrentEnergy": 100.0,
+                            "normalMass": 7.0,
+                            "lightMass": 4.5,
+                            "CurrentEnergy": 0.0,
                             "MaxEnergy": 100.0,
                             "alive": true
                         }
@@ -17022,7 +17022,7 @@
                         "className": "PressurePlate",
                         "fields": {
                             "decrease": 5.0,
-                            "wallName": "Wall"
+                            "wallName": "wall"
                         }
                     }
                 ]
@@ -17082,9 +17082,9 @@
                         "fields": {
                             "PlatesActive": 0,
                             "PlatesRequired": 1,
-                            "MoveRight": true,
-                            "MoveDist": 100.0,
-                            "MoveSpeed": 30.0
+                            "MoveRight": false,
+                            "MoveDist": 10.0,
+                            "MoveSpeed": 5.0
                         }
                     }
                 ]
@@ -17669,9 +17669,9 @@
                         "fields": {
                             "PlatesActive": 0,
                             "PlatesRequired": 1,
-                            "MoveRight": true,
-                            "MoveDist": 150.0,
-                            "MoveSpeed": 30.0
+                            "MoveRight": false,
+                            "MoveDist": 10.0,
+                            "MoveSpeed": 5.0
                         }
                     }
                 ]
@@ -17806,7 +17806,7 @@
                         "className": "PressurePlate",
                         "fields": {
                             "decrease": 5.0,
-                            "wallName": "Wall2"
+                            "wallName": "wall"
                         }
                     }
                 ]
@@ -17902,7 +17902,7 @@
                         "className": "PressurePlate",
                         "fields": {
                             "decrease": 5.0,
-                            "wallName": "Wall3"
+                            "wallName": "wall"
                         }
                     }
                 ]
@@ -17961,10 +17961,10 @@
                         "className": "MovingWall",
                         "fields": {
                             "PlatesActive": 0,
-                            "PlatesRequired": 2,
-                            "MoveRight": true,
-                            "MoveDist": 150.0,
-                            "MoveSpeed": 30.0
+                            "PlatesRequired": 1,
+                            "MoveRight": false,
+                            "MoveDist": 10.0,
+                            "MoveSpeed": 5.0
                         }
                     }
                 ]
@@ -18104,7 +18104,7 @@
                         "className": "PressurePlate",
                         "fields": {
                             "decrease": 5.0,
-                            "wallName": "Wall3"
+                            "wallName": "wall"
                         }
                     }
                 ]
@@ -18200,7 +18200,7 @@
                         "className": "PressurePlate",
                         "fields": {
                             "decrease": 5.0,
-                            "wallName": "Wall4"
+                            "wallName": "wall"
                         }
                     }
                 ]
@@ -18296,7 +18296,7 @@
                         "className": "PressurePlate",
                         "fields": {
                             "decrease": 5.0,
-                            "wallName": "Wall5"
+                            "wallName": "wall"
                         }
                     }
                 ]
@@ -18392,7 +18392,7 @@
                         "className": "PressurePlate",
                         "fields": {
                             "decrease": 5.0,
-                            "wallName": "Wall6"
+                            "wallName": "wall"
                         }
                     }
                 ]
@@ -18546,8 +18546,8 @@
                             "PlatesActive": 0,
                             "PlatesRequired": 1,
                             "MoveRight": false,
-                            "MoveDist": 120.0,
-                            "MoveSpeed": 30.0
+                            "MoveDist": 10.0,
+                            "MoveSpeed": 5.0
                         }
                     }
                 ]
@@ -19064,7 +19064,7 @@
                         "fields": {
                             "IsMoving": true,
                             "MoveRight": true,
-                            "MovementDistance": 550.0,
+                            "MovementDistance": 100.0,
                             "MoveSpeed": 20.0,
                             "VerticalSpeed": 50.0,
                             "maxDrop": 50.0
@@ -19128,8 +19128,8 @@
                             "PlatesActive": 0,
                             "PlatesRequired": 1,
                             "MoveRight": false,
-                            "MoveDist": 130.0,
-                            "MoveSpeed": 30.0
+                            "MoveDist": 10.0,
+                            "MoveSpeed": 5.0
                         }
                     }
                 ]
@@ -19229,8 +19229,8 @@
                             "PlatesActive": 0,
                             "PlatesRequired": 1,
                             "MoveRight": false,
-                            "MoveDist": 120.0,
-                            "MoveSpeed": 30.0
+                            "MoveDist": 10.0,
+                            "MoveSpeed": 5.0
                         }
                     }
                 ]
@@ -19956,9 +19956,9 @@
                         "className": "WeightedPlatform",
                         "fields": {
                             "IsMoving": true,
-                            "MoveRight": false,
-                            "MovementDistance": 275.0,
-                            "MoveSpeed": 50.0,
+                            "MoveRight": true,
+                            "MovementDistance": 100.0,
+                            "MoveSpeed": 20.0,
                             "VerticalSpeed": 50.0,
                             "maxDrop": 50.0
                         }
@@ -20649,14 +20649,14 @@
                     {
                         "className": "SlimeMovement",
                         "fields": {
-                            "moveSpeed": 1000.0,
+                            "moveSpeed": 5000.0,
                             "maxSpeed": 50.0,
                             "turnTimer": 2.0,
-                            "detectionRange": 85.0,
+                            "detectionRange": 300.0,
                             "gravityScale": 5.0,
                             "grabRange": 100.0,
                             "grabEnergy": 6.25,
-                            "MaxDist": 150.0
+                            "MaxDist": 200.0
                         }
                     }
                 ]
@@ -20751,14 +20751,14 @@
                     {
                         "className": "SlimeMovement",
                         "fields": {
-                            "moveSpeed": 1000.0,
+                            "moveSpeed": 5000.0,
                             "maxSpeed": 50.0,
                             "turnTimer": 2.0,
-                            "detectionRange": 85.0,
+                            "detectionRange": 300.0,
                             "gravityScale": 5.0,
                             "grabRange": 100.0,
                             "grabEnergy": 6.25,
-                            "MaxDist": 150.0
+                            "MaxDist": 200.0
                         }
                     }
                 ]
@@ -20853,14 +20853,14 @@
                     {
                         "className": "SlimeMovement",
                         "fields": {
-                            "moveSpeed": 1000.0,
+                            "moveSpeed": 5000.0,
                             "maxSpeed": 50.0,
                             "turnTimer": 2.0,
-                            "detectionRange": 85.0,
+                            "detectionRange": 300.0,
                             "gravityScale": 5.0,
                             "grabRange": 100.0,
                             "grabEnergy": 6.25,
-                            "MaxDist": 150.0
+                            "MaxDist": 200.0
                         }
                     }
                 ]
@@ -21089,14 +21089,14 @@
                     {
                         "className": "SlimeMovement",
                         "fields": {
-                            "moveSpeed": 1000.0,
+                            "moveSpeed": 5000.0,
                             "maxSpeed": 50.0,
                             "turnTimer": 2.0,
-                            "detectionRange": 85.0,
+                            "detectionRange": 300.0,
                             "gravityScale": 5.0,
                             "grabRange": 100.0,
                             "grabEnergy": 6.25,
-                            "MaxDist": 50.0
+                            "MaxDist": 200.0
                         }
                     }
                 ]
@@ -21191,14 +21191,14 @@
                     {
                         "className": "SlimeMovement",
                         "fields": {
-                            "moveSpeed": 1000.0,
+                            "moveSpeed": 5000.0,
                             "maxSpeed": 50.0,
                             "turnTimer": 2.0,
-                            "detectionRange": 85.0,
+                            "detectionRange": 300.0,
                             "gravityScale": 5.0,
                             "grabRange": 100.0,
                             "grabEnergy": 6.25,
-                            "MaxDist": 50.0
+                            "MaxDist": 200.0
                         }
                     }
                 ]
@@ -21293,14 +21293,14 @@
                     {
                         "className": "SlimeMovement",
                         "fields": {
-                            "moveSpeed": 1000.0,
+                            "moveSpeed": 5000.0,
                             "maxSpeed": 50.0,
                             "turnTimer": 2.0,
-                            "detectionRange": 85.0,
+                            "detectionRange": 300.0,
                             "gravityScale": 5.0,
                             "grabRange": 100.0,
                             "grabEnergy": 6.25,
-                            "MaxDist": 50.0
+                            "MaxDist": 200.0
                         }
                     }
                 ]

@@ -1,0 +1,38 @@
+{
+    "prefabs": [
+        {
+            "type": "Box",
+            "name": "BigBox",
+            "transform": {
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "rotation": 0.0,
+                "size": {
+                    "x": 10.0,
+                    "y": 10.0
+                }
+            },
+            "shape": {
+                "type": 0,
+                "kind": "Rectangle",
+                "width": 10.0,
+                "height": 10.0,
+                "size": 10.0,
+                "color": {
+                    "r": 1.0,
+                    "g": 0.17127,
+                    "b": 0.17127,
+                    "a": 1.0
+                },
+                "enableTexture": false
+            },
+            "rigidbody": {
+                "mass": 1.0,
+                "restitution": 0.0
+            }
+        }
+    ]
+}

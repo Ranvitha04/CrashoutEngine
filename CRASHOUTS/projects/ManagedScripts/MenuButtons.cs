@@ -38,17 +38,30 @@ namespace CrashoutsEngine
                 // FOR CloseBtn
                 else if (name.ToString() == "CloseBtn")
                 {
-                    //Console.WriteLine("[C#] Loading Scene...");
+                    
                     Debug.Log("[C#] Loading Scene...");
                     SceneManager.LoadScene("descentmenu");
                 }
                 // FOR QuitBtn
                 else if (name.ToString() == "QuitBtn")
                 {
-                    //Console.WriteLine("[C#] Quitting Game...");
-                    Debug.Log("[C#] Quitting Game...");
+                    // MAIN MENU "Quit Game" button
+                    Debug.Log("[C#] Open quit confirmation scene.");
+                    SceneManager.LoadScene("descentconfirm");
+                }
+                else if (name.ToString() == "QuitYesBtn")
+                {
+                    // YES on confirmation
+                    Debug.Log("[C#] Quitting Game from confirmation.");
                     SceneManager.QuitGame();
                 }
+                else if (name.ToString() == "QuitNoBtn")
+                {
+                    // NO on confirmation -> go back to main menu
+                    Debug.Log("[C#] Cancel quit, back to menu.");
+                    SceneManager.LoadScene("descentmenu"); 
+                }
+
             }
             if (btn.IsHovered())
             {

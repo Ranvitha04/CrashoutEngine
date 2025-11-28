@@ -1377,6 +1377,10 @@
             "path": "Ball.json"
         },
         {
+            "name": "BigBox",
+            "path": "BigBox.json"
+        },
+        {
             "name": "BlueBox",
             "path": "BlueBox.json"
         },
@@ -1409,6 +1413,10 @@
         {
             "name": "amir",
             "path": "amir"
+        },
+        {
+            "name": "descentconfirm",
+            "path": "descentconfirm"
         },
         {
             "name": "descentgame",

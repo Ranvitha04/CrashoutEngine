@@ -11,7 +11,6 @@
 #include "hierarchy_components.h"
 #include "entitymanager.h"
 #include "namecomponent.h"
-//#include "collidercomponent.h"
 #include "transformcomponent.h"
 #include "shapescomponent.h"
 #include <cmath> 
