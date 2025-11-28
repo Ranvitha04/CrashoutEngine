@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.CompilerServices;
 
 namespace CrashoutsEngine
 {
@@ -47,6 +48,8 @@ namespace CrashoutsEngine
 
         private float stepTimer = 0.0f;
         private Random rng = new Random();
+
+        public bool alive = true;
         
         public override void Start()
         {
@@ -74,8 +77,8 @@ namespace CrashoutsEngine
         {
             // 1. POLL INPUT (Happens every frame)
             horizontalInput = 0f;
-            if (Input.IsKeyPressed(Key.A)) horizontalInput = -1f;
-            if (Input.IsKeyPressed(Key.D)) horizontalInput = 1f;
+            if (Input.IsKeyPressed(Key.A) && alive) horizontalInput = -1f;
+            if (Input.IsKeyPressed(Key.D) && alive) horizontalInput = 1f;
 
             // Flip Sprite Scale based on direction
             if (horizontalInput < 0 && tf.Size.x > 0) tf.Size = new CEVec2(-tf.Size.x, tf.Size.y);
@@ -85,7 +88,7 @@ namespace CrashoutsEngine
             isJumpHeld = Input.IsKeyPressed(Key.Space);
 
             // 2. JUMP TRIGGER
-            if (Input.IsKeyTriggered(Key.Space) && IsGrounded)
+            if (Input.IsKeyTriggered(Key.Space) && IsGrounded && alive)
             {
                 // Reset vertical velocity for consistent jump height even if moving down slightly
                 rb.LinearVelocity = new CEVec3(rb.LinearVelocity.x, 0f, 0f);
@@ -95,9 +98,9 @@ namespace CrashoutsEngine
             }
 
             // 3. WEIGHT MECHANIC
-            if (Input.IsKeyTriggered(Key.Q) && CurrentEnergy >= energyConsumption)
+            if (Input.IsKeyTriggered(Key.Q) && CurrentEnergy >= energyConsumption && alive)
             {
-                CurrentEnergy -= energyConsumption;
+                RemoveEnergy(energyConsumption);
                 // Floating point comparison with epsilon safety
                 if (Math.Abs(rb.Mass - normalMass) < 0.1f) rb.Mass = lightMass;
                 else rb.Mass = normalMass;
@@ -105,7 +108,7 @@ namespace CrashoutsEngine
             }
 
             // 4. AUDIO LOGIC (Randomized Footsteps)
-            if (horizontalInput != 0.0f && IsGrounded)
+            if (horizontalInput != 0.0f && IsGrounded && alive)
             {
                 stepTimer -= (float)Time.DT;
 
@@ -138,7 +141,7 @@ namespace CrashoutsEngine
             // ------------------------------------------------------------
             // A. HORIZONTAL MOVEMENT
             // ------------------------------------------------------------
-            if (horizontalInput != 0f && !OnWall)
+            if (horizontalInput != 0f && !OnWall && alive)
             {
                 // Instant Turn Logic: Are we trying to move opposite to our velocity?
                 bool isTurning = (horizontalInput > 0 && velocity.x < 0) ||
@@ -192,7 +195,7 @@ namespace CrashoutsEngine
             var otherTf = other.GetComponent<TransformComponent>();
 
             // Ground / Platform Detection
-            if (layer != null && (layer.HasLayer("Ground") || layer.HasLayer("Platform")))
+            if (layer != null && (layer.HasLayer("Ground") || layer.HasLayer("Platform") || layer.HasLayer("Enemy")))
             {
                 // Geometry Check: Are we landing on TOP?
                 if (otherTf != null && this.tf.Position.y > otherTf.Position.y)
@@ -219,7 +222,15 @@ namespace CrashoutsEngine
             if (layer != null && (layer.HasLayer("Lava") || layer.HasLayer("Enemy")))
             {
                 Debug.Log("Player Died");
+                alive = false;
                 // Die();
+
+                Entity gameOverEnt = Entity.Find("GameOverScreen");
+                if (gameOverEnt != null)
+                {
+                    var gameOverT = gameOverEnt.GetComponent<TransformComponent>();
+                    gameOverT.Position = new CEVec3(gameOverT.Position.x, gameOverT.Position.y, 0.8f);
+                }
             }
         }
 
@@ -260,7 +271,34 @@ namespace CrashoutsEngine
             if (CurrentEnergy > MaxEnergy) CurrentEnergy = MaxEnergy;
             
             Console.WriteLine($"[Player] Energy Recharged! Current: {CurrentEnergy}");
+
+            Entity barEnt = Entity.Find("BarUI");
+            if (barEnt != null)
+            {
+                TransformComponent barT = barEnt.GetComponent<TransformComponent>();
+                float percentile = CurrentEnergy / MaxEnergy;
+                barT.Size = new CEVec2(percentile * 0.5f, barT.Size.y);
+            }
             
+            // Optional: Play sound?
+            // AudioManager.GetInstance().Play("EnergyUp");
+        }
+
+        public void RemoveEnergy(float amount)
+        {
+            CurrentEnergy -= amount;
+            if (CurrentEnergy < 0.0f) CurrentEnergy = 0.0f;
+
+            Console.WriteLine($"[Player] Energy Depleted! Current: {CurrentEnergy}");
+
+            Entity barEnt = Entity.Find("BarUI");
+            if (barEnt != null)
+            {
+                TransformComponent barT = barEnt.GetComponent<TransformComponent>();
+                float percentile = CurrentEnergy / MaxEnergy;
+                barT.Size = new CEVec2(percentile * 0.5f, barT.Size.y);
+            }
+
             // Optional: Play sound?
             // AudioManager.GetInstance().Play("EnergyUp");
         }

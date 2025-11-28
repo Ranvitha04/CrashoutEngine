@@ -79,7 +79,7 @@ TextRenderer::TextRenderer() {
 @param color RGB color of the text
 @param fontName The name of the font asset (in AssetManager) to use
 */
-void TextRenderer::RenderText(const std::string& text, GLfloat x, GLfloat y, GLfloat scale, CEColor colorCEV, const std::string fontName, bool isWorldSpace) {
+void TextRenderer::RenderText(const std::string& text, GLfloat x, GLfloat y, GLfloat z, GLfloat scale, CEColor colorCEV, const std::string fontName, bool isWorldSpace) {
     scale *= FONT_SCALE;
 
     using namespace CrashoutsEngine::Assets;
@@ -128,6 +128,7 @@ void TextRenderer::RenderText(const std::string& text, GLfloat x, GLfloat y, GLf
     // Send them to the text shader
     glUniformMatrix4fv(glGetUniformLocation(shaderID, "projection"), 1, GL_FALSE, &projection[0][0]);
     glUniformMatrix4fv(glGetUniformLocation(shaderID, "view"), 1, GL_FALSE, &view[0][0]);
+    glUniform1f(glGetUniformLocation(shaderID, "uDepth"), z);
 
     glUniform4f(glGetUniformLocation(shaderID, "textColor"), colorCEV.r, colorCEV.g, colorCEV.b, colorCEV.a);
     glActiveTexture(GL_TEXTURE0);
@@ -218,7 +219,7 @@ void TextRenderer::RenderText(const std::string& text, GLfloat x, GLfloat y, GLf
 
 Measures text dimensions and adjusts position so that text is centered on the given coordinates
 */
-void TextRenderer::RenderCenteredText(const std::string& text, GLfloat x, GLfloat y, GLfloat scale, CEColor color, const std::string fontName, bool isWorldSpace) {
+void TextRenderer::RenderCenteredText(const std::string& text, GLfloat x, GLfloat y, GLfloat z, GLfloat scale, CEColor color, const std::string fontName, bool isWorldSpace) {
     scale *= FONT_SCALE;
     using namespace CrashoutsEngine::Assets;
     AssetManager& assetManager = AssetManager::GetInstance();
@@ -250,7 +251,7 @@ void TextRenderer::RenderCenteredText(const std::string& text, GLfloat x, GLfloa
     GLfloat originX = x - textWidth / 2.0f;
     GLfloat originY = y - (maxAscent - (maxAscent + maxDescent) / 2.0f);
 
-    RenderText(text, originX, originY, scale * INV_FONT_SCALE, color, fontName, isWorldSpace);
+    RenderText(text, originX, originY, z, scale * INV_FONT_SCALE, color, fontName, isWorldSpace);
 }
 
 /*!

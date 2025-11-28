@@ -22,6 +22,7 @@
 #include "uibindings.h"
 #include "layerbindings.h"
 #include "timebindings.h"
+#include "shapebindings.h"
 
 namespace CrashoutsEngine
 {
@@ -68,6 +69,7 @@ namespace CrashoutsEngine
         Bindings::RegisterDebugBindings();
         Bindings::RegisterAIBindings();
         Bindings::RegisterTimeBindings();
+        Bindings::RegisterShapeBindings();
 
         mono_add_internal_call("CrashoutsEngine.InternalCalls::GetScript", (const void*)InternalGetScript);    
     }

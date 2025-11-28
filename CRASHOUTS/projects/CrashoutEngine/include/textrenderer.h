@@ -79,22 +79,24 @@ public:
     @param text String to render
     @param x Left aligned X position in screen space
     @param y Baseline Y position in screen space
+    @param z Center Z position in screen space
     @param scale Scale factor for text size
     @param color RGB color of the text
     @param fontName The name of the font asset (in AssetManager) to use
     */
-    void RenderText(const std::string& text, GLfloat x, GLfloat y, GLfloat scale, CEColor color, const std::string fontName = "Exo2-Regular", bool isWorldSpace = false);
+    void RenderText(const std::string& text, GLfloat x, GLfloat y, GLfloat z, GLfloat scale, CEColor color, const std::string fontName = "Exo2-Regular", bool isWorldSpace = false);
    
     /*!
     @brief Render centered text
     @param text String to render
     @param x Center X position in screen space
     @param y Center Y position in screen space
+    @param z Center Z position in screen space
     @param scale Scale factor for text size
     @param color RGB color of the text
     @param fontName The name of the font asset (in AssetManager) to use
     */
-    void RenderCenteredText(const std::string& text, GLfloat x, GLfloat y, GLfloat scale, CEColor color, const std::string fontName = "Exo2-Regular", bool isWorldSpace = false);
+    void RenderCenteredText(const std::string& text, GLfloat x, GLfloat y, GLfloat z, GLfloat scale, CEColor color, const std::string fontName = "Exo2-Regular", bool isWorldSpace = false);
 
     // Function to get the (x, y) baseline position of the cursor
     CEVec2 GetCursorPosition(const std::string& text, size_t cursorPos,

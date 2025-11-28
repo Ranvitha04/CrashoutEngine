@@ -10,7 +10,7 @@
                 "position": {
                     "x": 0.0,
                     "y": 0.0,
-                    "z": 0.0
+                    "z": -0.10000000149011612
                 },
                 "size": {
                     "x": 1.0,
@@ -19,7 +19,7 @@
             },
             "tilemap": {
                 "tileSize": 32,
-                "activeAsset": "tilemaps/Lava_Platform",
+                "activeAsset": "tilemaps/Platform",
                 "tileAssetNames": [
                     "Rock",
                     "Lava_Platform",
@@ -14327,9 +14327,9 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -32.37535858154297,
-                    "y": 6.297464370727539,
-                    "z": 1.0
+                    "x": -35.70806884765625,
+                    "y": 23.367042541503908,
+                    "z": 0.0
                 },
                 "size": {
                     "x": 124.75499725341797,
@@ -14353,9 +14353,9 @@
             "collider": {
                 "helperType": 2,
                 "position": {
-                    "x": -32.37535858154297,
-                    "y": 7.297464370727539,
-                    "z": 1.0
+                    "x": -35.70806884765625,
+                    "y": 24.367042541503908,
+                    "z": 0.0
                 },
                 "offset": {
                     "x": 0.0,
@@ -14363,14 +14363,14 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": -43.22545623779297,
-                    "y": -23.203025817871095,
-                    "z": 1.0
+                    "x": -46.55816650390625,
+                    "y": -6.133445739746094,
+                    "z": 0.0
                 },
                 "max": {
-                    "x": -21.52526092529297,
-                    "y": 37.79795455932617,
-                    "z": 1.0
+                    "x": -24.85797119140625,
+                    "y": 54.867530822753909,
+                    "z": 0.0
                 },
                 "rotation": 0.0
             },
@@ -14419,8 +14419,12 @@
                             "frictionMultiplier": 500.0,
                             "gravityForceMultiplier": 10.0,
                             "stepInterval": 0.15000000596046449,
+                            "energyConsumption": 12.5,
                             "normalMass": 4.5,
-                            "lightMass": 3.0
+                            "lightMass": 3.0,
+                            "CurrentEnergy": 100.0,
+                            "MaxEnergy": 100.0,
+                            "alive": true
                         }
                     }
                 ]
@@ -15526,7 +15530,7 @@
                 "position": {
                     "x": 323.65264892578127,
                     "y": 60.77685546875,
-                    "z": 100.0
+                    "z": 0.0
                 },
                 "size": {
                     "x": 1200.0,
@@ -15568,7 +15572,7 @@
                 "localPos": {
                     "x": -624.5918579101563,
                     "y": 817.01806640625,
-                    "z": 100.0
+                    "z": 0.0
                 },
                 "localRot": 0.0,
                 "localScale": {
@@ -15594,7 +15598,7 @@
                 "position": {
                     "x": 1410197.125,
                     "y": 729.8728637695313,
-                    "z": 100.0
+                    "z": 0.0
                 },
                 "size": {
                     "x": 1301.6995849609376,
@@ -18404,7 +18408,7 @@
                 "position": {
                     "x": 1971.03369140625,
                     "y": -386.20855712890627,
-                    "z": 0.0
+                    "z": -0.4000000059604645
                 },
                 "size": {
                     "x": 64.0,
@@ -18430,7 +18434,7 @@
                 "position": {
                     "x": 1971.03369140625,
                     "y": -386.20855712890627,
-                    "z": 0.0
+                    "z": -0.4000000059604645
                 },
                 "offset": {
                     "x": 0.0,
@@ -18438,14 +18442,14 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 1941.03369140625,
+                    "x": 1953.6837158203126,
                     "y": -436.20855712890627,
-                    "z": 0.0
+                    "z": -0.4000000059604645
                 },
                 "max": {
-                    "x": 2001.03369140625,
+                    "x": 1988.3836669921876,
                     "y": -336.20855712890627,
-                    "z": 0.0
+                    "z": -0.4000000059604645
                 }
             },
             "shape": {
@@ -18477,6 +18481,14 @@
                     "y": 0.0,
                     "z": 0.0
                 }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "WinGame",
+                        "fields": {}
+                    }
+                ]
             }
         },
         {
@@ -18969,7 +18981,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 486.5945129394531,
+                    "x": 489.2626953125,
                     "y": -1626.6378173828126,
                     "z": 0.0
                 },
@@ -18995,7 +19007,7 @@
             "collider": {
                 "helperType": 1,
                 "position": {
-                    "x": 486.5945129394531,
+                    "x": 489.2626953125,
                     "y": -1626.6378173828126,
                     "z": 0.0
                 },
@@ -19005,12 +19017,12 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 422.59442138671877,
+                    "x": 425.2625732421875,
                     "y": -1634.6378173828126,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 550.5946044921875,
+                    "x": 553.2628173828125,
                     "y": -1618.6378173828126,
                     "z": 0.0
                 }
@@ -19217,7 +19229,7 @@
                             "PlatesActive": 0,
                             "PlatesRequired": 1,
                             "MoveRight": false,
-                            "MoveDist": 75.0,
+                            "MoveDist": 120.0,
                             "MoveSpeed": 30.0
                         }
                     }
@@ -19863,7 +19875,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": 1066.6007080078126,
-                    "y": -778.0928344726563,
+                    "y": -771.4224853515625,
                     "z": 0.0
                 },
                 "size": {
@@ -19889,7 +19901,7 @@
                 "helperType": 1,
                 "position": {
                     "x": 1066.6007080078126,
-                    "y": -778.0928344726563,
+                    "y": -771.4224853515625,
                     "z": 0.0
                 },
                 "offset": {
@@ -19899,12 +19911,12 @@
                 },
                 "min": {
                     "x": 929.1007080078125,
-                    "y": -786.0928344726563,
+                    "y": -779.4224853515625,
                     "z": 0.0
                 },
                 "max": {
                     "x": 1204.1007080078126,
-                    "y": -770.0928344726563,
+                    "y": -763.4224853515625,
                     "z": 0.0
                 }
             },
@@ -19953,10 +19965,2154 @@
                     }
                 ]
             }
+        },
+        {
+            "name": "PauseScreen",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": -100.0
+                },
+                "size": {
+                    "x": 1000.0,
+                    "y": 1000.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.8342541456222534
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            }
+        },
+        {
+            "name": "PauseBG",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": -100.0
+                },
+                "size": {
+                    "x": 200.8000030517578,
+                    "y": 131.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI\\Pause Menu Open.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentName": "PauseScreen",
+                "localPos": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.20080000162124635,
+                    "y": 0.13099999725818635
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            }
+        },
+        {
+            "name": "QuitBtn",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -0.3790000081062317,
+                    "y": -1.9889999628067017,
+                    "z": -99.9000015258789
+                },
+                "size": {
+                    "x": 148.1999969482422,
+                    "y": 106.4000015258789
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI\\pause quit text.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "PauseButtons",
+                        "fields": {}
+                    }
+                ]
+            },
+            "button": {
+                "buttonState": 0,
+                "shapeNormalColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "shapeHoveredColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.5
+                },
+                "shapePressedColor": {
+                    "x": 0.699999988079071,
+                    "y": 0.699999988079071,
+                    "z": 0.699999988079071,
+                    "w": 0.699999988079071
+                },
+                "textNormalColor": {
+                    "x": 0.30000001192092898,
+                    "y": 0.30000001192092898,
+                    "z": 0.30000001192092898,
+                    "w": 0.699999988079071
+                },
+                "textHoveredColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.0
+                },
+                "textPressedColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.5
+                }
+            },
+            "gui": {
+                "uiType": 5
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "uiLayout": 4
+            },
+            "parent": {
+                "parentName": "PauseScreen",
+                "localPos": {
+                    "x": -0.00037900000461377203,
+                    "y": -0.0019890000112354757,
+                    "z": 0.10000000149011612
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.14819999039173127,
+                    "y": 0.10639999806880951
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            }
+        },
+        {
+            "name": "ResumeBtn",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.020999999716877939,
+                    "y": -0.8889999985694885,
+                    "z": -99.9000015258789
+                },
+                "size": {
+                    "x": 148.1999969482422,
+                    "y": 106.4000015258789
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI\\pause resume text.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "PauseButtons",
+                        "fields": {}
+                    }
+                ]
+            },
+            "button": {
+                "buttonState": 0,
+                "shapeNormalColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "shapeHoveredColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.5
+                },
+                "shapePressedColor": {
+                    "x": 0.699999988079071,
+                    "y": 0.699999988079071,
+                    "z": 0.699999988079071,
+                    "w": 0.699999988079071
+                },
+                "textNormalColor": {
+                    "x": 0.30000001192092898,
+                    "y": 0.30000001192092898,
+                    "z": 0.30000001192092898,
+                    "w": 0.699999988079071
+                },
+                "textHoveredColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.0
+                },
+                "textPressedColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.5
+                }
+            },
+            "gui": {
+                "uiType": 5
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "uiLayout": 4
+            },
+            "parent": {
+                "parentName": "PauseScreen",
+                "localPos": {
+                    "x": 0.00002099999983329326,
+                    "y": -0.00088900001719594,
+                    "z": 0.10000000149011612
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.14819999039173127,
+                    "y": 0.10639999806880951
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            }
+        },
+        {
+            "name": "SettingsBtn",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.020999999716877939,
+                    "y": -1.4889999628067017,
+                    "z": -99.9000015258789
+                },
+                "size": {
+                    "x": 148.1999969482422,
+                    "y": 106.4000015258789
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI\\pause settings text.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "PauseButtons",
+                        "fields": {}
+                    }
+                ]
+            },
+            "button": {
+                "buttonState": 0,
+                "shapeNormalColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "shapeHoveredColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.5
+                },
+                "shapePressedColor": {
+                    "x": 0.699999988079071,
+                    "y": 0.699999988079071,
+                    "z": 0.699999988079071,
+                    "w": 0.699999988079071
+                },
+                "textNormalColor": {
+                    "x": 0.30000001192092898,
+                    "y": 0.30000001192092898,
+                    "z": 0.30000001192092898,
+                    "w": 0.699999988079071
+                },
+                "textHoveredColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.0
+                },
+                "textPressedColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.5
+                }
+            },
+            "gui": {
+                "uiType": 5
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "uiLayout": 4
+            },
+            "parent": {
+                "parentName": "PauseScreen",
+                "localPos": {
+                    "x": 0.00002099999983329326,
+                    "y": -0.001488999929279089,
+                    "z": 0.10000000149011612
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.14819999039173127,
+                    "y": 0.10639999806880951
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            }
+        },
+        {
+            "name": "Ball",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 1504.64306640625,
+                    "y": -772.4300537109375,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 32.0,
+                    "y": 40.0
+                }
+            },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0,
+                "isTrigger": true
+            },
+            "collider": {
+                "helperType": 1,
+                "position": {
+                    "x": 1504.64306640625,
+                    "y": -772.4300537109375,
+                    "z": 0.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": 1496.64306640625,
+                    "y": -782.4300537109375,
+                    "z": 0.0
+                },
+                "max": {
+                    "x": 1512.64306640625,
+                    "y": -762.4300537109375,
+                    "z": 0.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "Energy Ball spritesheet_00",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "EnergyBall",
+                        "fields": {
+                            "energyAmount": 25.0,
+                            "respawnTime": 5.0
+                        }
+                    },
+                    {
+                        "className": "EnergyBall",
+                        "fields": {
+                            "energyAmount": 25.0,
+                            "respawnTime": 5.0
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "Slime",
+            "layer": {
+                "currentLayer": 16
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 159.79751586914063,
+                    "y": -421.0413818359375,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 72.0,
+                    "y": 67.0
+                }
+            },
+            "rigidbody": {
+                "mass": 1.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0,
+                "isTrigger": true
+            },
+            "collider": {
+                "helperType": 1,
+                "position": {
+                    "x": 159.79751586914063,
+                    "y": -421.0413818359375,
+                    "z": 0.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": 146.79751586914063,
+                    "y": -434.0413818359375,
+                    "z": 0.0
+                },
+                "max": {
+                    "x": 172.79751586914063,
+                    "y": -408.0413818359375,
+                    "z": 0.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "spritesheet\\Slime spritesheet\\Slime spritesheet_04.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "SlimeMovement",
+                        "fields": {
+                            "moveSpeed": 1000.0,
+                            "maxSpeed": 50.0,
+                            "turnTimer": 2.0,
+                            "detectionRange": 85.0,
+                            "gravityScale": 5.0,
+                            "grabRange": 100.0,
+                            "grabEnergy": 6.25,
+                            "MaxDist": 150.0
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "Slime (2)",
+            "layer": {
+                "currentLayer": 16
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 1475.74951171875,
+                    "y": -1525.515625,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 72.0,
+                    "y": 67.0
+                }
+            },
+            "rigidbody": {
+                "mass": 1.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0,
+                "isTrigger": true
+            },
+            "collider": {
+                "helperType": 1,
+                "position": {
+                    "x": 1475.74951171875,
+                    "y": -1525.515625,
+                    "z": 0.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": 1462.74951171875,
+                    "y": -1538.515625,
+                    "z": 0.0
+                },
+                "max": {
+                    "x": 1488.74951171875,
+                    "y": -1512.515625,
+                    "z": 0.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "spritesheet\\Slime spritesheet\\Slime spritesheet_04.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "SlimeMovement",
+                        "fields": {
+                            "moveSpeed": 1000.0,
+                            "maxSpeed": 50.0,
+                            "turnTimer": 2.0,
+                            "detectionRange": 85.0,
+                            "gravityScale": 5.0,
+                            "grabRange": 100.0,
+                            "grabEnergy": 6.25,
+                            "MaxDist": 150.0
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "Slime (3)",
+            "layer": {
+                "currentLayer": 16
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 1626.396728515625,
+                    "y": -1525.515625,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 72.0,
+                    "y": 67.0
+                }
+            },
+            "rigidbody": {
+                "mass": 1.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0,
+                "isTrigger": true
+            },
+            "collider": {
+                "helperType": 1,
+                "position": {
+                    "x": 1626.396728515625,
+                    "y": -1525.515625,
+                    "z": 0.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": 1613.396728515625,
+                    "y": -1538.515625,
+                    "z": 0.0
+                },
+                "max": {
+                    "x": 1639.396728515625,
+                    "y": -1512.515625,
+                    "z": 0.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "spritesheet\\Slime spritesheet\\Slime spritesheet_04.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "SlimeMovement",
+                        "fields": {
+                            "moveSpeed": 1000.0,
+                            "maxSpeed": 50.0,
+                            "turnTimer": 2.0,
+                            "detectionRange": 85.0,
+                            "gravityScale": 5.0,
+                            "grabRange": 100.0,
+                            "grabEnergy": 6.25,
+                            "MaxDist": 150.0
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "BarUI",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -80.67279815673828,
+                    "y": 38.15660858154297,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 0.5,
+                    "y": 0.5
+                }
+            }
+        },
+        {
+            "name": "Bar Graphic",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -61.922428131103519,
+                    "y": 38.15660858154297,
+                    "z": 0.10000000149011612
+                },
+                "size": {
+                    "x": 37.5,
+                    "y": 5.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI\\Bar_Area.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentName": "BarUI",
+                "localPos": {
+                    "x": 37.50074005126953,
+                    "y": 0.0,
+                    "z": 0.10000000149011612
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 75.0,
+                    "y": 10.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            }
+        },
+        {
+            "name": "Bar Graphic_BG",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -61.922428131103519,
+                    "y": 38.15660858154297,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 37.5,
+                    "y": 5.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI\\Bar_Area.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 0.39475876092910769,
+                    "y": 0.09358689188957215,
+                    "z": 0.40331488847732546,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            }
+        },
+        {
+            "name": "Slime (4)",
+            "layer": {
+                "currentLayer": 16
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 1774.7196044921876,
+                    "y": -1525.515625,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 72.0,
+                    "y": 67.0
+                }
+            },
+            "rigidbody": {
+                "mass": 1.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0,
+                "isTrigger": true
+            },
+            "collider": {
+                "helperType": 1,
+                "position": {
+                    "x": 1774.7196044921876,
+                    "y": -1525.515625,
+                    "z": 0.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": 1761.7196044921876,
+                    "y": -1538.515625,
+                    "z": 0.0
+                },
+                "max": {
+                    "x": 1787.7196044921876,
+                    "y": -1512.515625,
+                    "z": 0.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "spritesheet\\Slime spritesheet\\Slime spritesheet_04.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "SlimeMovement",
+                        "fields": {
+                            "moveSpeed": 1000.0,
+                            "maxSpeed": 50.0,
+                            "turnTimer": 2.0,
+                            "detectionRange": 85.0,
+                            "gravityScale": 5.0,
+                            "grabRange": 100.0,
+                            "grabEnergy": 6.25,
+                            "MaxDist": 50.0
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "Slime (5)",
+            "layer": {
+                "currentLayer": 16
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 1153.586669921875,
+                    "y": -931.1002197265625,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 72.0,
+                    "y": 67.0
+                }
+            },
+            "rigidbody": {
+                "mass": 1.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0,
+                "isTrigger": true
+            },
+            "collider": {
+                "helperType": 1,
+                "position": {
+                    "x": 1153.586669921875,
+                    "y": -931.1002197265625,
+                    "z": 0.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": 1140.586669921875,
+                    "y": -944.1002197265625,
+                    "z": 0.0
+                },
+                "max": {
+                    "x": 1166.586669921875,
+                    "y": -918.1002197265625,
+                    "z": 0.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "spritesheet\\Slime spritesheet\\Slime spritesheet_04.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "SlimeMovement",
+                        "fields": {
+                            "moveSpeed": 1000.0,
+                            "maxSpeed": 50.0,
+                            "turnTimer": 2.0,
+                            "detectionRange": 85.0,
+                            "gravityScale": 5.0,
+                            "grabRange": 100.0,
+                            "grabEnergy": 6.25,
+                            "MaxDist": 50.0
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "Slime (6)",
+            "layer": {
+                "currentLayer": 16
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 482.7310485839844,
+                    "y": -291.32080078125,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 72.0,
+                    "y": 67.0
+                }
+            },
+            "rigidbody": {
+                "mass": 1.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0,
+                "isTrigger": true
+            },
+            "collider": {
+                "helperType": 1,
+                "position": {
+                    "x": 482.7310485839844,
+                    "y": -291.32080078125,
+                    "z": 0.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": 469.7310485839844,
+                    "y": -304.32080078125,
+                    "z": 0.0
+                },
+                "max": {
+                    "x": 495.7310485839844,
+                    "y": -278.32080078125,
+                    "z": 0.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "spritesheet\\Slime spritesheet\\Slime spritesheet_04.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "SlimeMovement",
+                        "fields": {
+                            "moveSpeed": 1000.0,
+                            "maxSpeed": 50.0,
+                            "turnTimer": 2.0,
+                            "detectionRange": 85.0,
+                            "gravityScale": 5.0,
+                            "grabRange": 100.0,
+                            "grabEnergy": 6.25,
+                            "MaxDist": 50.0
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "Ball (2)",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 1200.2230224609376,
+                    "y": -1162.20263671875,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 32.0,
+                    "y": 40.0
+                }
+            },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0,
+                "isTrigger": true
+            },
+            "collider": {
+                "helperType": 1,
+                "position": {
+                    "x": 1200.2230224609376,
+                    "y": -1162.20263671875,
+                    "z": 0.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": 1192.2230224609376,
+                    "y": -1172.20263671875,
+                    "z": 0.0
+                },
+                "max": {
+                    "x": 1208.2230224609376,
+                    "y": -1152.20263671875,
+                    "z": 0.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "Energy Ball spritesheet_00",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "EnergyBall",
+                        "fields": {
+                            "energyAmount": 25.0,
+                            "respawnTime": 5.0
+                        }
+                    },
+                    {
+                        "className": "EnergyBall",
+                        "fields": {
+                            "energyAmount": 25.0,
+                            "respawnTime": 5.0
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "GameOverScreen",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": -100.0
+                },
+                "size": {
+                    "x": 1000.0,
+                    "y": 1000.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.8352941274642944
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            }
+        },
+        {
+            "name": "GameOverBG",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": -100.0
+                },
+                "size": {
+                    "x": 201.0,
+                    "y": 131.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI\\Pause Menu Open.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentName": "GameOverScreen",
+                "localPos": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.20100000500679017,
+                    "y": 0.13099999725818635
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            }
+        },
+        {
+            "name": "GAMEOVER",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": -99.69999694824219
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "text": {
+                "font": "Exo2-Regular",
+                "text": "GAME OVER",
+                "scale": 23.0,
+                "offset": {
+                    "x": 958.0,
+                    "y": 688.0
+                },
+                "color": {
+                    "x": 0.4751381278038025,
+                    "y": 0.11812826246023178,
+                    "z": 0.11812826246023178,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": false
+            },
+            "parent": {
+                "parentName": "GameOverScreen",
+                "localPos": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.30000001192092898
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.0010000000474974514,
+                    "y": 0.0010000000474974514
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            }
+        },
+        {
+            "name": "RestartBtn",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -14.800000190734864,
+                    "y": 0.0,
+                    "z": -99.9000015258789
+                },
+                "size": {
+                    "x": 18.600000381469728,
+                    "y": 9.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "text": {
+                "font": "Exo2-Regular",
+                "text": "Restart",
+                "scale": 21.0,
+                "offset": {
+                    "x": 814.0,
+                    "y": 541.0
+                },
+                "color": {
+                    "x": 0.3867403268814087,
+                    "y": 0.034186992794275287,
+                    "z": 0.034186992794275287,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": false
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "GameOverUI",
+                        "fields": {}
+                    }
+                ]
+            },
+            "button": {
+                "buttonState": 0,
+                "shapeNormalColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "shapeHoveredColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.5
+                },
+                "shapePressedColor": {
+                    "x": 0.699999988079071,
+                    "y": 0.699999988079071,
+                    "z": 0.699999988079071,
+                    "w": 0.699999988079071
+                },
+                "textNormalColor": {
+                    "x": 0.3867403268814087,
+                    "y": 0.034186992794275287,
+                    "z": 0.034186992794275287,
+                    "w": 1.0
+                },
+                "textHoveredColor": {
+                    "x": 0.4364640712738037,
+                    "y": 0.04581666365265846,
+                    "z": 0.04581666365265846,
+                    "w": 0.7348066568374634
+                },
+                "textPressedColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.5
+                }
+            },
+            "gui": {
+                "uiType": 6
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "uiLayout": 4
+            },
+            "parent": {
+                "parentName": "GameOverScreen",
+                "localPos": {
+                    "x": -0.014800000004470349,
+                    "y": 0.0,
+                    "z": 0.10000002384185791
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.01860000006854534,
+                    "y": 0.008999999612569809
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            }
+        },
+        {
+            "name": "QuitBtn",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 14.300000190734864,
+                    "y": 0.0,
+                    "z": -99.9000015258789
+                },
+                "size": {
+                    "x": 18.600000381469728,
+                    "y": 9.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "text": {
+                "font": "Exo2-Regular",
+                "text": "Quit",
+                "scale": 20.0,
+                "offset": {
+                    "x": 1097.0,
+                    "y": 537.0
+                },
+                "color": {
+                    "x": 0.3867403268814087,
+                    "y": 0.034186992794275287,
+                    "z": 0.034186992794275287,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": false
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "GameOverUI",
+                        "fields": {}
+                    }
+                ]
+            },
+            "button": {
+                "buttonState": 0,
+                "shapeNormalColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "shapeHoveredColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.5
+                },
+                "shapePressedColor": {
+                    "x": 0.699999988079071,
+                    "y": 0.699999988079071,
+                    "z": 0.699999988079071,
+                    "w": 0.699999988079071
+                },
+                "textNormalColor": {
+                    "x": 0.3867403268814087,
+                    "y": 0.034186992794275287,
+                    "z": 0.034186992794275287,
+                    "w": 1.0
+                },
+                "textHoveredColor": {
+                    "x": 0.4364640712738037,
+                    "y": 0.04581666365265846,
+                    "z": 0.04581666365265846,
+                    "w": 0.7348066568374634
+                },
+                "textPressedColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.5
+                }
+            },
+            "gui": {
+                "uiType": 6
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "uiLayout": 4
+            },
+            "parent": {
+                "parentName": "GameOverScreen",
+                "localPos": {
+                    "x": 0.014299999922513962,
+                    "y": 0.0,
+                    "z": 0.10000002384185791
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.01860000006854534,
+                    "y": 0.008999999612569809
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            }
+        },
+        {
+            "name": "WinScreen",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": -100.0
+                },
+                "size": {
+                    "x": 1000.0,
+                    "y": 1000.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.8352941274642944
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            }
+        },
+        {
+            "name": "WinMessage",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": -99.69999694824219
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "text": {
+                "font": "Exo2-Regular",
+                "text": "Level cleared",
+                "scale": 20.0,
+                "offset": {
+                    "x": 963.0,
+                    "y": 556.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": false
+            },
+            "parent": {
+                "parentName": "WinScreen",
+                "localPos": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.30000001192092898
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.0010000000474974514,
+                    "y": 0.0010000000474974514
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            }
+        },
+        {
+            "name": "QuitBtn",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": -14.199999809265137,
+                    "z": -99.69999694824219
+                },
+                "size": {
+                    "x": 17.399999618530275,
+                    "y": 6.5
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "text": {
+                "font": "Exo2-Regular",
+                "text": "Quit",
+                "scale": 26.0,
+                "offset": {
+                    "x": 956.0,
+                    "y": 399.0
+                },
+                "color": {
+                    "x": 0.2209944725036621,
+                    "y": 0.1982278674840927,
+                    "z": 0.056164342910051349,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": false
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "GameOverUI",
+                        "fields": {}
+                    }
+                ]
+            },
+            "button": {
+                "buttonState": 0,
+                "shapeNormalColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "shapeHoveredColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.5
+                },
+                "shapePressedColor": {
+                    "x": 0.699999988079071,
+                    "y": 0.699999988079071,
+                    "z": 0.699999988079071,
+                    "w": 0.699999988079071
+                },
+                "textNormalColor": {
+                    "x": 0.2209944725036621,
+                    "y": 0.1982278674840927,
+                    "z": 0.056164342910051349,
+                    "w": 1.0
+                },
+                "textHoveredColor": {
+                    "x": 0.6961326003074646,
+                    "y": 0.6580122113227844,
+                    "z": 0.1653795838356018,
+                    "w": 0.0
+                },
+                "textPressedColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.5
+                }
+            },
+            "gui": {
+                "uiType": 7
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "uiLayout": 4
+            },
+            "parent": {
+                "parentName": "WinScreen",
+                "localPos": {
+                    "x": 0.0,
+                    "y": -0.0142000000923872,
+                    "z": 0.30000001192092898
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.017400000244379045,
+                    "y": 0.006500000134110451
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            }
         }
     ],
     "layers": {
         "Default": 0,
+        "Enemy": 16,
         "Ground": 2,
         "Lava": 4,
         "Player": 8
