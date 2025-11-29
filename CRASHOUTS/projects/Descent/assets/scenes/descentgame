@@ -14423,7 +14423,7 @@
                             "frictionMultiplier": 500.0,
                             "gravityForceMultiplier": 10.0,
                             "stepInterval": 0.15000000596046449,
-                            "swapPause": 1.2999999523162842,
+                            "swapPause": 1.05,
                             "energyConsumption": 12.5,
                             "normalMass": 4.5,
                             "lightMass": 3.0,
