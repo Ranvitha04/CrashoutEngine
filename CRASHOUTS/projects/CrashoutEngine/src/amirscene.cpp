@@ -1,4 +1,13 @@
 /*!
+@file        amirscene.cpp
+@author      mohamadamirakmal.b@digipen.edu
+@date        18/09/2025
+@brief       
+
+This file contains the implementation of the Amir scene, including loading, initialization, updating, rendering, freeing, and unloading functions.
+*/
+
+/*!
 All content © 2025 Digipen Institute of Technology Singapore.All rights reserved.
 
 //__________________________________________________________________________*/
