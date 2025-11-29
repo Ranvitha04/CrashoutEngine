@@ -1,11 +1,14 @@
 ﻿/*!
 @file        audioSystem.cpp
-@author      b.mohamadafiq@digipen.edu
+@author      b.mohamadafiq@digipen.edu (70%)
+@co-auther   mohamadamirakmal.b@digipen.edu (30%)
 @date        28/9/2025
 @brief      Minimal FMOD Studio wrapper for the CrashoutsEngine.
              - Creates/initializes FMOD Studio/Core systems
-             - Loads/unloads bank files
+             - Loads/unloads bank and raw files
              - Plays one-shot events (fire-and-forget)
+			 - Plays tagged audio files (music/sfx)
+			 - Stops audio (all/tagged)
              - Creates long-lived event instances (music/loops)
              - Controls buses (stop/mute/set volume)
              - Updates FMOD every frame
@@ -24,10 +27,7 @@
 
 namespace CrashoutsEngine::Audio
 {
-    // -------------------------------------------------------------------------
     // Small helpers
-    // -------------------------------------------------------------------------
-
     /*!
     @brief Joins two path segments using the correct platform-specific separator.
     */
@@ -96,10 +96,7 @@ namespace CrashoutsEngine::Audio
         return false;
     }
 
-    // -------------------------------------------------------------------------
     // Singleton & error helper
-    // -------------------------------------------------------------------------
-
     /*!
     @brief Returns the global AudioSystem singleton instance.
     */
@@ -123,10 +120,7 @@ namespace CrashoutsEngine::Audio
         return true;
     }
 
-    // -------------------------------------------------------------------------
     // Lifetime
-    // -------------------------------------------------------------------------
-
     /*!
     @brief Initializes the FMOD Studio and Core systems and sets up channel groups for music and SFX.
     */
@@ -199,10 +193,7 @@ namespace CrashoutsEngine::Audio
         mSFXGroup = nullptr;
     }
 
-    // -------------------------------------------------------------------------
     // Bank management
-    // -------------------------------------------------------------------------
-
     /*!
     @brief Loads a FMOD Studio bank file from the configured banks directory.
     */
@@ -248,9 +239,7 @@ namespace CrashoutsEngine::Audio
         mBanks.clear();
     }
 
-    // -------------------------------------------------------------------------
     // Raw management
-    // -------------------------------------------------------------------------
     void AudioSystem::registerRawAudio(const std::string& relPath)
     {
         auto it = std::find(mRawAudioFiles.begin(), mRawAudioFiles.end(), relPath);
@@ -297,10 +286,7 @@ namespace CrashoutsEngine::Audio
         std::cout << "[Audio] Unloaded ALL raw sounds\n";
     }
 
-    // -------------------------------------------------------------------------
     // Bus / group controls
-    // -------------------------------------------------------------------------
-
     /*!
     @brief Stops all events playing on the specified FMOD Studio bus.
     */
@@ -449,10 +435,7 @@ namespace CrashoutsEngine::Audio
         return setBusMute(busPath, true);
     }
 
-    // -------------------------------------------------------------------------
     // Event-based (Studio) playback
-    // -------------------------------------------------------------------------
-
     /*!
     @brief Retrieves the FMOD event description for a given event path.
     */
@@ -500,10 +483,7 @@ namespace CrashoutsEngine::Audio
         return inst;
     }
 
-    // -------------------------------------------------------------------------
     // Introspection / debug helpers
-    // -------------------------------------------------------------------------
-
     /*!
     @brief Collects the paths of all events from all loaded banks.
     */
@@ -716,10 +696,7 @@ namespace CrashoutsEngine::Audio
         bank->unload();
     }
 
-    // -------------------------------------------------------------------------
     // File-based playback (Core API)
-    // -------------------------------------------------------------------------
-
     /*!
     @brief Plays a music file through the music channel group, optionally looping it.
     */
@@ -854,10 +831,7 @@ namespace CrashoutsEngine::Audio
         return master->setVolume(v01) == FMOD_OK;
     }
 
-    // -------------------------------------------------------------------------
-    // NEW: Tagged playback for Unity-like Play/Stop("Name")
-    // -------------------------------------------------------------------------
-
+    // Tagged playback for different groups (SFX/Music)
     /*!
     @brief Plays a music file and tags its FMOD channel so it can be stopped by key.
     */

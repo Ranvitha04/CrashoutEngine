@@ -1,6 +1,7 @@
 /*!
 @file   assetmanager.cpp
-@author lee.r@digipen.edu
+@author lee.r@digipen.edu (95%)
+@co-auther mohamadamirakmak.b (5%)
 @date   28/09/2025
 
 @brief	This file implements an Asset Manager
@@ -442,6 +443,10 @@ namespace CrashoutsEngine {
 			}
 		}
 
+		/*!
+		@brief Loads a single asset given its full file path.
+		@param fullPath The full path to the asset file to be loaded.
+		*/
 		void AssetManager::LoadSingleAsset(const std::string& fullPath)
 		{
 			namespace fs = std::filesystem;
@@ -471,7 +476,7 @@ namespace CrashoutsEngine {
 
 			std::string folder = rel.begin()->string();
 
-			// TEXTURES  (images/)
+			// TEXTURES (images/)
 			if (folder == "images")
 			{
 				if (ext == ".png" || ext == ".jpg" || ext == ".jpeg" || ext == ".bmp" || ext == ".tga")
@@ -485,7 +490,7 @@ namespace CrashoutsEngine {
 				return;
 			}
 
-			// SPRITE SHEET  (sprite_sheet/)
+			// SPRITE SHEET (sprite_sheet/)
 			if (folder == "spritesheet")
 			{
 				if (ext == ".png" || ext == ".jpg" || ext == ".jpeg")
@@ -499,7 +504,7 @@ namespace CrashoutsEngine {
 				return;
 			}
 
-			// SCENES  (scenes/)
+			// SCENES (scenes/)
 			if (folder == "scenes")
 			{
 				if (ext == ".json" || ext == ".scene")

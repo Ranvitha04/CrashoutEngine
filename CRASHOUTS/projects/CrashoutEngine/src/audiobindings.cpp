@@ -1,3 +1,9 @@
+/*!
+@file		colliderbindings.cpp
+@author     mohamadamirakmal.b@digipen.edu
+@date       19/11/2025
+@brief		Definition of audio bindings functions
+*/
 #include "audiobindings.h"
 #include "audioSystem.h"
 #include "audiocomponent.h"
