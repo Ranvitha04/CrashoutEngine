@@ -61,9 +61,9 @@ struct AnimationClip {
     int spriteCols = 0;            // If > 0, update SpriteSheetComponent
     int spriteRows = 0;            // If > 0, update SpriteSheetComponent
 
-    bool useCustomSize = false;    // Should we resize the entity?
-    float targetWidth = 1.0f;      // New Scale/Size X
-    float targetHeight = 1.0f;     // New Scale/Size Y
+    bool useCustomSize = false;    
+    float targetWidth = 1.0f;      
+    float targetHeight = 1.0f;    
 
     float Length() const {
         float t = 0.f;

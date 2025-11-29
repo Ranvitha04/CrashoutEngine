@@ -321,17 +321,16 @@ namespace CrashoutsEngine {
             dfs(e);
         }
 #endif
-        // Define the recursive function efficiently
-    // Pass parentTransform by POINTER to avoid looking it up again
+ 
+    
         std::function<void(Entity, const TransformComponent*)> processChildren =
             [&](Entity parentEntity, const TransformComponent* parentTransform)
             {
-                // 1. Get Children Component (Early exit if none)
+                // 1. Get Children Component 
                 auto* kids = ecs.GetComponent<ChildrenComponent>(parentEntity);
                 if (!kids || kids->children.empty()) return;
 
-                // 2. PRE-CALCULATE PARENT MATH (The Optimization)
-                // We calculate this ONCE per parent, not once per child.
+                
                 const float DEG_TO_RAD = 0.0174532925f;
                 float parentRad = parentTransform->rotation * DEG_TO_RAD;
                 float s = std::sin(parentRad);
@@ -367,8 +366,7 @@ namespace CrashoutsEngine {
                     childTransform->position.y = parentTransform->position.y + rotatedY;
                     childTransform->position.z = parentTransform->position.z + pointerParentComp->localPos.z;
 
-                    // D. Color Inheritance (Optional optimization: Check HasComponent only if needed)
-                    // if (ecs.HasComponent<ShapeComponent>(parentEntity)) { ... }
+                 
 
                     // 4. RECURSE
                     // Pass the CURRENT child as the NEW parent

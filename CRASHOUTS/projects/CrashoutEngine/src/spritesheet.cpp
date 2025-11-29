@@ -2,7 +2,8 @@
 @file       spritesheet.cpp
 @author     b.mohamadafiq@digipen.edu
 @date       19/11/2025
-
+@brief      Can push the configured clips into the selected entity’s Keyframe Animator, wiring spritesheet,
+            grid info, and clip settings directly into the runtime animation syste
 */
 
 
@@ -266,7 +267,7 @@ namespace UI
                 s_scanned = true;
                 s_assets.clear();
 
-                const std::string assetRoot = CrashoutsEngine::Assets::rootPath + "images"; // base folder
+                const std::string assetRoot = CrashoutsEngine::Assets::rootPath + "images"; 
                 for (auto& p : fs::recursive_directory_iterator(assetRoot)) {
                     if (!p.is_regular_file()) continue;
 
@@ -293,7 +294,7 @@ namespace UI
                     std::string fullRelPath = "images/" + f;
 
                     std::strncpy(gSpritePath, fullRelPath.c_str(), sizeof(gSpritePath));
-                    gSpritePath[sizeof(gSpritePath) - 1] = '\0'; // Ensure null termination
+                    gSpritePath[sizeof(gSpritePath) - 1] = '\0'; 
 
                     // Reset other UI states since texture changed
                     gSelectedFrame = 0;
@@ -528,10 +529,10 @@ namespace UI
             }
         }
 
-        // This button takes the temporary UI clips and saves them to the Entity
+       
         if (selected && ImGui::Button("Save Animation Set to Entity"))
         {
-            using namespace KeyframeUnity; // Ensure we can access AddAnimator helper
+            using namespace KeyframeUnity; 
 
             // 1. Get current Editor State (Texture, Grid, Size)
             // We use the global variables from this file because that's what the editor is looking at.
@@ -550,7 +551,7 @@ namespace UI
                 newClip.textureAsset = currentTexturePath;
                 newClip.spriteCols = currentCols;
                 newClip.spriteRows = currentRows;
-                newClip.useCustomSize = true; // Use the size visible in editor
+                newClip.useCustomSize = true; 
                 newClip.targetWidth = gAnimW;
                 newClip.targetHeight = gAnimH;
 
@@ -567,9 +568,9 @@ namespace UI
                 // Generate Keys for every frame
                 for (int i = 0; i < uiClip.frameCount; ++i) {
                     KFKey k{};
-                    k.time = i * frameDuration;           // When this frame starts
-                    k.value = (float)(uiClip.startFrame + i); // Which sprite index
-                    k.interp = KFInterp::Constant;        // Snap, don't fade
+                    k.time = i * frameDuration;          
+                    k.value = (float)(uiClip.startFrame + i); 
+                    k.interp = KFInterp::Constant;       
 
                     spriteBinding.curve.Add(k);
                 }

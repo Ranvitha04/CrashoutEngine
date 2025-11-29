@@ -831,7 +831,7 @@ namespace CrashoutsEngine {
 
             obj.AddMember("audio", audioJson, allocate);
         }
-        // 
+       
 
         if (auto* gui = ecs.GetComponent<Component::GuiComponent>(e)) {
             rapidjson::Value guiJson(rapidjson::kObjectType);
