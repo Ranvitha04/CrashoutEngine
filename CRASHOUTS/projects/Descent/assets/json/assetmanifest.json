@@ -253,10 +253,6 @@
             "path": "Character\\New Artstyle\\Chibi-7.png"
         },
         {
-            "name": "Switch State spritesheet",
-            "path": "Character\\New Artstyle\\Switch State spritesheet.png"
-        },
-        {
             "name": "Switch-State-SpriteSheet-Reverse",
             "path": "Character\\New Artstyle\\Switch-State-SpriteSheet-Reverse.png"
         },
