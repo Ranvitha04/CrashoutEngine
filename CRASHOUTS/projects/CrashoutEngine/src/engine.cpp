@@ -130,7 +130,6 @@ bool PerformPendingSceneLoad() {
         CrashoutsEngine::CollisionEventManager::GetInstance().Clear();
         CrashoutsEngine::Serialization::currSceneName = g_PendingSceneName;
         CrashoutsEngine::Serialization::LoadScenes(g_PendingSceneName);
-		MonoManager::ReloadScripts();
 
         // Reset flags
         g_IsSceneLoadPending = false;
@@ -200,29 +199,18 @@ void Init() {
     if (!GLApp::init(Settings::GetScreenWidth(), Settings::GetScreenHeight(), "CRASHOUTS")) {
         std::exit(EXIT_FAILURE);
     }
-    // Detect if window starts fullscreen (decorated = false)
-    int decorated = glfwGetWindowAttrib(GLApp::ptr_window, GLFW_DECORATED);
-    g_fullscreen = (decorated == GLFW_FALSE);
-
     glfwSetWindowFocusCallback(GLApp::ptr_window,
         [](GLFWwindow*, int focused)
         {
             if (focused == GLFW_TRUE)
             {
                 // Window regained focus
-                engineState = previousState;
-
-                // Restore audio only if previous state was PLAY
-                CrashoutsEngine::Audio::AudioSystem::instance().setPaused(
-                    engineState != EngineState::PLAY
-                );
+                if (engineState == EngineState::PLAY)
+                    CrashoutsEngine::Audio::AudioSystem::instance().setPaused(false);
             }
             else
             {
-                // Window loses focus remember current state
-                previousState = engineState;
-
-                // Always pause the engine when unfocused
+                // Window lost focus (ALT+TAB)
                 engineState = EngineState::PAUSE;
                 CrashoutsEngine::Audio::AudioSystem::instance().setPaused(true);
                 InputManager::ClearInputs();
@@ -231,10 +219,7 @@ void Init() {
     );
 
     // Generate and Load Assets and Manifest
-    #if USE_IMGUI_EDITOR
     CrashoutsEngine::Assets::GenerateAssetManifest();
-    #endif
-
     CrashoutsEngine::Assets::AssetManager::GetInstance().LoadManifestAssets();
 
     //Component::Rendering::Get().Setup_VAO(); // Setup default quad VAO
@@ -422,8 +407,8 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
         ImGui::SameLine(0.0f, 0.0f);
 
         // fullscreen
-        //static bool fullscreen = true;
-        if (DrawTitleButton(g_fullscreen ? "[ ]" : "[]"))
+        static bool fullscreen = true;
+        if (DrawTitleButton(fullscreen ? "[ ]" : "[]"))
         {
             GLFWmonitor* mon = glfwGetPrimaryMonitor();
             const GLFWvidmode* mode = glfwGetVideoMode(mon);
@@ -431,7 +416,7 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
             int mx, my;
             glfwGetMonitorPos(mon, &mx, &my);
 
-            if (!g_fullscreen) {
+            if (!fullscreen) {
                 glfwSetWindowAttrib(GLApp::ptr_window, GLFW_DECORATED, GLFW_FALSE);
                 glfwSetWindowMonitor(GLApp::ptr_window, NULL, mx, my, mode->width, mode->height, 0);
             }
@@ -439,7 +424,7 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
                 glfwSetWindowAttrib(GLApp::ptr_window, GLFW_DECORATED, GLFW_FALSE);
                 glfwSetWindowMonitor(GLApp::ptr_window, NULL, 100, 100, 1600, 900, 0);
             }
-            g_fullscreen = !g_fullscreen;
+            fullscreen = !fullscreen;
         }
 
 
@@ -452,7 +437,7 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
 		// dragging is stupidly bugged but whatever - Rain
 		// YEAHHHHH ITS FIXED
         // Disable dragging in fullscreen
-        if (!g_fullscreen)
+        if (!fullscreen)
         {
             static bool draggingWindow = false;
             static POINT cursorStart;
@@ -609,36 +594,8 @@ Ensure time per frame and FPS are recorded.
 Let application update state changes (such as animation).
 */
 void Update(double const& dt) {
-    #if USE_IMGUI_EDITOR
     MonoManager::CheckHotReload();
-    #endif
-
     if(PerformPendingSceneLoad()) return;
-
-    // ALT+ENTER fullscreen toggle using InputManager
-// ------------------------------------------------------
-    if (InputManager::IsKeyHeld(Key::LeftAlt) && InputManager::IsKeyTriggered(Key::Enter))
-    {
-        GLFWwindow* window = GLApp::ptr_window;
-        GLFWmonitor* mon = glfwGetPrimaryMonitor();
-        const GLFWvidmode* mode = glfwGetVideoMode(mon);
-
-        int mx, my;
-        glfwGetMonitorPos(mon, &mx, &my);
-
-        if (!g_fullscreen)
-        {
-            glfwSetWindowAttrib(window, GLFW_DECORATED, GLFW_FALSE);
-            glfwSetWindowMonitor(window, nullptr, mx, my, mode->width, mode->height, 0);
-        }
-        else
-        {
-            glfwSetWindowAttrib(window, GLFW_DECORATED, GLFW_FALSE);
-            glfwSetWindowMonitor(window, nullptr, 100, 100, 1600, 900, 0);
-        }
-
-        g_fullscreen = !g_fullscreen;
-    }
 
     GLApp::update_time();
 
