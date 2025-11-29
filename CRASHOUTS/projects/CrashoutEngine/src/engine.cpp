@@ -210,8 +210,10 @@ void Init() {
             }
             else
             {
+#if USE_IMGUI_EDITOR
                 // Window lost focus (ALT+TAB)
                 engineState = EngineState::PAUSE;
+#endif
                 CrashoutsEngine::Audio::AudioSystem::instance().setPaused(true);
                 InputManager::ClearInputs();
             }
@@ -264,7 +266,7 @@ Uses GLHelper::GLFWWindow* to get handle to OpenGL context.
 */
 void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
 
-#if USE_IMGUI_EDITOR == 0
+#if !USE_IMGUI_EDITOR 
     (void)globalSelectedEntity;
 #endif
 
@@ -276,13 +278,45 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
     glBindFramebuffer(GL_FRAMEBUFFER, gameFboID);
 
     #if !USE_IMGUI_EDITOR
-        int w, h;
-        glfwGetFramebufferSize(GLApp::ptr_window, &w, &h);
+        int windowW, windowH;
+        glfwGetFramebufferSize(GLApp::ptr_window, &windowW, &windowH);
+
+        const float targetAspectRatio = 16.0f / 9.0f;
+        float currentAspectRatio = (float)windowW / (float)windowH;
+
+        int vpX, vpY, vpW, vpH;
+
+        // Calculate Viewport (Letterboxing)
+        if (currentAspectRatio > targetAspectRatio) {
+            // Window is too wide (Black bars on left/right)
+            vpH = windowH;
+            vpW = static_cast<int>(windowH * targetAspectRatio);
+            vpX = (windowW - vpW) / 2;
+            vpY = 0;
+        }
+        else {
+            // Window is too tall (Black bars on top/bottom)
+            vpW = windowW;
+            vpH = static_cast<int>(windowW / targetAspectRatio);
+            vpX = 0;
+            vpY = (windowH - vpH) / 2;
+        }
+
+        // 4. Clear the FULL window to black (The "Bars")
+
+        // 5. Set Viewport to the Game Area & Enable Scissor Test
+        // Scissor ensures we don't draw outside the calculated game area
+        //glEnable(GL_SCISSOR_TEST);
+        //glScissor(vpX, vpY, vpW, vpH);
+        glViewport(vpX, vpY, vpW, vpH);
+
+        // 7. Update Camera Matrices to match the VIEWPORT size, not window size
+        CrashoutsEngine::RenderCamera::gameCamera.UpdateMatrices(vpW, vpH);
 
         // If the window size differs from our internal texture size
-        if (w != gameTextureWidth || h != gameTextureHeight) {
-            gameTextureWidth = w;
-            gameTextureHeight = h;
+        if (vpW != gameTextureWidth || vpH != gameTextureHeight) {
+            gameTextureWidth = vpW;
+            gameTextureHeight = vpH;
 
             // --- RESIZE THE TEXTURE MEMORY ---
 
@@ -305,9 +339,11 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
             // Note: We don't need to re-attach them to the gameFboID usually, 
             // as the FBO holds references to the IDs, which haven't changed.
         }
-    #endif
+    #else
 
     glViewport(0, 0, gameTextureWidth, gameTextureHeight);
+
+    #endif
     glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
