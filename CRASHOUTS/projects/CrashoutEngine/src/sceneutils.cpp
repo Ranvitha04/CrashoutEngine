@@ -38,10 +38,28 @@ namespace Scene {
     using namespace CrashoutsEngine;
     using namespace CrashoutsEngine::Assets;
 
+    CEVec3 GetMouseInWorld() {
+
+        double u, v;
+        glfwGetCursorPos(GLApp::ptr_window, &u, &v);
+        u /= GLApp::width;
+        v /= GLApp::height;
+
+        const float ndcX = (float)u * 2.f - 1.f;
+        const float ndcY = 1.f - ((float)v * 2.f);
+        const glm::mat4 VP = Component::Rendering::Get().projectionMatrix * Component::Rendering::Get().viewMatrix;
+        const glm::mat4 invVP = glm::inverse(VP);
+        glm::vec4 w = invVP * glm::vec4(ndcX, ndcY, 0.f, 1.f);
+        if (w.w != 0.f) w /= w.w;
+        return CEVec3{ (float)w.x, (float)w.y, (float)w.z };
+    }
+
     // ============================================================================
     // UI SUB-NAMESPACE
     // ============================================================================
     namespace UI {
+
+        
 
         /*!
         @brief      Renders all text components and handles the blinking cursor for focused inputs.
@@ -206,8 +224,6 @@ namespace Scene {
 
             float winW = (float)GLApp::width;
             float winH = (float)GLApp::height;
-
-            std::cout << winW << '\n';
 
             // Calculate NDC (-1 to 1)
             // Flip Y because Input is Top-Down, but OpenGL/World is Bottom-Up

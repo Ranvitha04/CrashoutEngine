@@ -561,6 +561,8 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
 
 
 #else
+    CEVec3 mouseWorld{ Scene::GetMouseInWorld() };
+    InputManager::g_mouseWorldPos = CEVec2{ mouseWorld.x, mouseWorld.y };
 
     // Render directly to screen
     int displayWidth, displayHeight;
