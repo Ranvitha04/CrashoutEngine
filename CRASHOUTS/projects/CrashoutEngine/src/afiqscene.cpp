@@ -1,13 +1,14 @@
+// afiq.cpp — scene bootstrap + audio + in-file prefab registry (no ImGui here)
+
 /*!
-@file        keyframe.cpp
+@file        afiqscene.cpp
 @author      b.mohamadafiq@digipen.edu
-@date        28/11/2025
-@brief       Implements a simple keyframe animation system that drives transforms (position/rotation/scale)
-             and sprites over time using curves.
+@date        30/11/2025
+@brief       scene functions for Afiq scene
 
-All content � 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content © 2025 Digipen Institute of Technology Singapore.All rights reserved.
 
-*/
+//__________________________________________________________________________*/
 
 #include "afiqscene.h"
 #include "log.h"

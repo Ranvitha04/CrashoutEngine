@@ -1,13 +1,11 @@
 /*!
 @file        animatorbindings.cpp
-@author
-@date
-@brief       Definition of animator bindings functions
+@author      m.biniswandi@digipen.edu
+@date        30/11/2025
 @brief       Definition of animator bindings functions (Updated for Keyframe System)
 
 All content � 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
-@brief       Definition of animator bindings functions (Updated for Keyframe System)
 */
 
 #include "engine_pch.h"
