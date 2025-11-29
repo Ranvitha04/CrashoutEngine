@@ -85,12 +85,10 @@ namespace CrashoutsEngine
             bool setSFXGroupVolume(float v01);
             bool setMasterVolume(float v01);
 
-            // Tagged playback for Unity-like Play/Stop("Name")
-            // Thin helpers so C# AudioManager can track and stop by name.
+            // Tagged playback
             bool playMusicFileTagged(const std::string& key, const std::string& path, bool loop = true);
 
-            bool playSFXFileTagged(const std::string& key,
-                const std::string& path, bool loop);
+            bool playSFXFileTagged(const std::string& key, const std::string& path, bool loop);
 
             bool stopTagged(const std::string& key);
 
@@ -132,7 +130,7 @@ namespace CrashoutsEngine
             std::vector<std::string> mRawAudioFiles;
             std::unordered_map<std::string, FMOD::Sound*> mRawSoundCache;
 
-            //For tagged playback (Unity-style Stop("Name"))
+            //For tagged playback
             std::unordered_map<std::string, FMOD::Channel*> mTaggedChannels;
 
             // Helpers

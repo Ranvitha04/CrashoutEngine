@@ -1,4 +1,10 @@
-﻿using System;
+﻿/*!
+@file		AudioManager.cs
+@author     mohamadamirakmal.b@digipen.edu
+@date       26/11/2025
+@brief		Declaration and implementation of VolumeSlider class to manage volume slider UI component.
+*/
+using System;
 
 namespace CrashoutsEngine
 {

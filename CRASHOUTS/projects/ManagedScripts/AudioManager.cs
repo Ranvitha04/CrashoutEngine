@@ -1,3 +1,9 @@
+/*!
+@file		AudioManager.cs
+@author     mohamadamirakmal.b@digipen.edu
+@date       19/11/2025
+@brief		Declaration and implementation of AudioManager class to manage audio playback.
+*/
 using System;
 using System.Collections.Generic;
 using CrashoutsEngine;

@@ -384,7 +384,7 @@ namespace UI { // --------------------------------------------------------------
     */
     static void RenderEcsPanel(ECS& ecs, std::vector<Entity>& entities, Entity& selected, UIState& ui)
     {
-        static std::vector<Entity> multiSel;   // persistent multi-selection in the panel
+        static std::vector<Entity> multiSel;
 
         ScopedWindow win("Hierarchy", LockFlags(ui.lockLayout));
 
@@ -1834,9 +1834,9 @@ namespace UI { // --------------------------------------------------------------
         ImGui::SameLine(); 
         ImGui::SetNextItemWidth(120.0f); // Slightly wider for better dragging feel
         if (ImGui::DragFloat("##FontScale", &ui.fontScale,
-            0.01f,      // The sensitivity/speed: 0.01f changes the value by 1% per mouse unit
-            0.8f,       // New Minimum: Allows scaling down slightly
-            2.5f,       // New Maximum: Allows larger scaling up
+            0.01f,
+            0.8f,
+            2.5f,
             "Scale: %.2f")) // New Format: Shows two decimal places for precision
         {
             // Ensure the scale doesn't go below the intended minimum if dragged too fast
@@ -2085,7 +2085,6 @@ namespace UI { // --------------------------------------------------------------
             ImGuizmo::SetOrthographic(true);
 
             // TILEMAP EDITOR INTEGRATION!!!
-
             // Attempt to find an active TileMapComponent
             Component::TileMapComponent* activeTM = nullptr;
 
