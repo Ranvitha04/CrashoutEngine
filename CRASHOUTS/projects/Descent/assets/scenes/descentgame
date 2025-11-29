@@ -19,7 +19,7 @@
             },
             "tilemap": {
                 "tileSize": 32,
-                "activeAsset": "tilemaps/Platform",
+                "activeAsset": "tilemaps/Lava_Platform",
                 "tileAssetNames": [
                     "Rock",
                     "Lava_Platform",
@@ -8309,7 +8309,7 @@
                     {
                         "x": 35,
                         "y": -2,
-                        "asset": "tilemaps/Rock"
+                        "asset": ""
                     },
                     {
                         "x": 35,
@@ -8489,7 +8489,7 @@
                     {
                         "x": 36,
                         "y": -3,
-                        "asset": "tilemaps/Rock"
+                        "asset": "tilemaps/Lava_Platform"
                     },
                     {
                         "x": 36,
@@ -8674,7 +8674,7 @@
                     {
                         "x": 37,
                         "y": -3,
-                        "asset": "tilemaps/Rock"
+                        "asset": "tilemaps/Lava_Platform"
                     },
                     {
                         "x": 37,
@@ -8879,7 +8879,7 @@
                     {
                         "x": 38,
                         "y": -3,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": "tilemaps/Rock"
                     },
                     {
                         "x": 38,
@@ -9899,7 +9899,7 @@
                     {
                         "x": 44,
                         "y": -3,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": "tilemaps/Rock"
                     },
                     {
                         "x": 44,
@@ -14328,11 +14328,11 @@
                 "rotation": 0.0,
                 "position": {
                     "x": -35.70806884765625,
-                    "y": 23.367042541503908,
+                    "y": 14.714649200439454,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 124.75499725341797,
+                    "x": 62.0,
                     "y": 72.50599670410156
                 }
             },
@@ -14354,7 +14354,7 @@
                 "helperType": 2,
                 "position": {
                     "x": -35.70806884765625,
-                    "y": 24.367042541503908,
+                    "y": 15.714649200439454,
                     "z": 0.0
                 },
                 "offset": {
@@ -14364,12 +14364,12 @@
                 },
                 "min": {
                     "x": -46.55816650390625,
-                    "y": -6.133445739746094,
+                    "y": -14.785818099975586,
                     "z": 0.0
                 },
                 "max": {
                     "x": -24.85797119140625,
-                    "y": 54.867530822753909,
+                    "y": 46.215118408203128,
                     "z": 0.0
                 },
                 "rotation": 0.0
@@ -14382,10 +14382,14 @@
                 "thickness": 1.0,
                 "preview": false,
                 "type": 0,
-                "textureName": "spritesheet\\Switch-State-SpriteSheet\\Switch-State-SpriteSheet_00.png",
+                "textureName": "images/Character\\Normal Mode\\Chibi-Actions-SpriteSheet.png",
                 "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
+                    "x": 0.3333333432674408,
+                    "y": 0.3333333432674408
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
                 },
                 "color": {
                     "x": 1.0,
@@ -14419,13 +14423,14 @@
                             "frictionMultiplier": 500.0,
                             "gravityForceMultiplier": 10.0,
                             "stepInterval": 0.15000000596046449,
-                            "swapPause": 1.0499999523162842,
+                            "swapPause": 1.05,
                             "energyConsumption": 12.5,
                             "normalMass": 4.5,
                             "lightMass": 3.0,
                             "CurrentEnergy": 100.0,
                             "MaxEnergy": 100.0,
-                            "alive": true
+                            "alive": true,
+                            "isPaused": false
                         }
                     }
                 ]
@@ -14446,37 +14451,6 @@
                 "t": 1.049999713897705,
                 "playing": true,
                 "clips": [
-                    {
-                        "name": "playerJump",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\Normal Mode\\Chibi-Actions-SpriteSheet.png",
-                        "spriteCols": 3,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": 62.0,
-                        "targetHeight": 72.50599670410156,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 1.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 1.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
                     {
                         "name": "playerSwitch",
                         "wrap": 0,
@@ -14551,6 +14525,37 @@
                         ]
                     },
                     {
+                        "name": "playerJump",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\Normal Mode\\Chibi-Actions-SpriteSheet.png",
+                        "spriteCols": 3,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": 62.0,
+                        "targetHeight": 72.50599670410156,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 1.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 1.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
                         "name": "playerIdleLight",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Switch-State-SpriteSheet.png",
@@ -14573,6 +14578,37 @@
                                     {
                                         "t": 0.25,
                                         "v": 6.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "playerFallLight",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\Light Mode\\Chibi-Light-Actions-SpriteSheet.png",
+                        "spriteCols": 3,
+                        "spriteRows": 2,
+                        "useCustomSize": true,
+                        "targetWidth": 124.75499725341797,
+                        "targetHeight": 72.50599670410156,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 4.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 4.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -14634,37 +14670,6 @@
                         ]
                     },
                     {
-                        "name": "playerFallLight",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\Light Mode\\Chibi-Light-Actions-SpriteSheet.png",
-                        "spriteCols": 3,
-                        "spriteRows": 2,
-                        "useCustomSize": true,
-                        "targetWidth": 124.75499725341797,
-                        "targetHeight": 72.50599670410156,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 4.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 4.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
                         "name": "playerJumpLight",
                         "wrap": 0,
                         "textureAsset": "images/Character\\Light Mode\\Chibi-Light-Actions-SpriteSheet.png",
@@ -14687,37 +14692,6 @@
                                     {
                                         "t": 0.25,
                                         "v": 5.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "playerFall",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\Normal Mode\\Chibi-Actions-SpriteSheet.png",
-                        "spriteCols": 3,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": 62.0,
-                        "targetHeight": 72.50599670410156,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 2.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 2.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -14770,6 +14744,37 @@
                                     {
                                         "t": 1.0,
                                         "v": 6.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "playerFall",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\Normal Mode\\Chibi-Actions-SpriteSheet.png",
+                        "spriteCols": 3,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": 62.0,
+                        "targetHeight": 72.50599670410156,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 2.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 2.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -15905,7 +15910,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": 926.4397583007813,
-                    "y": -1593.85205078125,
+                    "y": -1598.6455078125,
                     "z": 50.0
                 },
                 "size": {
@@ -15925,6 +15930,10 @@
                 "uvSize": {
                     "x": 4.5,
                     "y": 1.149999976158142
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
                 },
                 "color": {
                     "x": 1.0,
@@ -15972,13 +15981,13 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 323.65264892578127,
-                    "y": 60.77685546875,
+                    "x": 359.33099365234377,
+                    "y": 9.4493408203125,
                     "z": 0.0
                 },
                 "size": {
                     "x": 1200.0,
-                    "y": 250.0
+                    "y": 375.04998779296877
                 }
             },
             "shape": {
@@ -15989,10 +15998,14 @@
                 "thickness": 1.0,
                 "preview": false,
                 "type": 0,
-                "textureName": "foreground top",
+                "textureName": "backgrounds\\foreground top.png",
                 "uvSize": {
-                    "x": 2.049999952316284,
-                    "y": 0.5
+                    "x": 0.9330000281333923,
+                    "y": 0.5329999923706055
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
                 },
                 "color": {
                     "x": 1.0,
@@ -16014,82 +16027,14 @@
             "parent": {
                 "parentName": "foreground",
                 "localPos": {
-                    "x": -624.5918579101563,
-                    "y": 817.01806640625,
+                    "x": -588.9135131835938,
+                    "y": 770.4840087890625,
                     "z": 0.0
                 },
                 "localRot": 0.0,
                 "localScale": {
                     "x": 1200.0,
-                    "y": 250.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            }
-        },
-        {
-            "name": "Tex_foreground top(2)",
-            "layer": {
-                "currentLayer": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 1410197.125,
-                    "y": 729.8728637695313,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 1301.6995849609376,
-                    "y": 250.00006103515626
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 2,
-                "wrapModeV": 1,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "foreground top",
-                "uvSize": {
-                    "x": 2.049999952316284,
-                    "y": 0.5
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentName": "Tex_foreground top",
-                "localPos": {
-                    "x": 1174.89453125,
-                    "y": 2.6763839721679689,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 1.084749698638916,
-                    "y": 1.000000238418579
+                    "y": 375.04998779296877
                 },
                 "inheritColor": false,
                 "colorMul": {
@@ -16109,7 +16054,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": 948.2445068359375,
-                    "y": -756.2412109375,
+                    "y": -761.03466796875,
                     "z": 0.0
                 },
                 "size": {
@@ -16165,6 +16110,10 @@
                 "uvSize": {
                     "x": 1.0,
                     "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
                 },
                 "color": {
                     "x": 1.0,
@@ -16234,6 +16183,10 @@
                     "x": 1.0,
                     "y": 1.0
                 },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
                 "color": {
                     "x": 1.0,
                     "y": 1.0,
@@ -16301,6 +16254,10 @@
                 "uvSize": {
                     "x": 1.0,
                     "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
                 },
                 "color": {
                     "x": 1.0,
@@ -16370,6 +16327,10 @@
                     "x": 1.0,
                     "y": 1.0
                 },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
                 "color": {
                     "x": 1.0,
                     "y": 1.0,
@@ -16438,6 +16399,10 @@
                     "x": 1.0,
                     "y": 1.0
                 },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
                 "color": {
                     "x": 1.0,
                     "y": 1.0,
@@ -16505,6 +16470,10 @@
                 "uvSize": {
                     "x": 1.0,
                     "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
                 },
                 "color": {
                     "x": 1.0,
@@ -16592,6 +16561,10 @@
                     "x": 1.0,
                     "y": 1.0
                 },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
                 "color": {
                     "x": 1.0,
                     "y": 1.0,
@@ -16659,6 +16632,10 @@
                 "uvSize": {
                     "x": 1.0,
                     "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
                 },
                 "color": {
                     "x": 1.0,
@@ -16728,6 +16705,10 @@
                     "x": 1.0,
                     "y": 1.0
                 },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
                 "color": {
                     "x": 1.0,
                     "y": 1.0,
@@ -16795,6 +16776,10 @@
                 "uvSize": {
                     "x": 1.0,
                     "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
                 },
                 "color": {
                     "x": 1.0,
@@ -16864,6 +16849,10 @@
                     "x": 1.0,
                     "y": 1.0
                 },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
                 "color": {
                     "x": 1.0,
                     "y": 1.0,
@@ -16931,6 +16920,10 @@
                 "uvSize": {
                     "x": 1.0,
                     "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
                 },
                 "color": {
                     "x": 1.0,
@@ -17018,6 +17011,10 @@
                     "x": 2.5999999046325685,
                     "y": 1.0
                 },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
                 "color": {
                     "x": 1.0,
                     "y": 1.0,
@@ -17085,6 +17082,10 @@
                 "uvSize": {
                     "x": 1.7000000476837159,
                     "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
                 },
                 "color": {
                     "x": 1.0,
@@ -17154,6 +17155,10 @@
                     "x": 1.0,
                     "y": 1.0
                 },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
                 "color": {
                     "x": 1.0,
                     "y": 1.0,
@@ -17221,6 +17226,10 @@
                 "uvSize": {
                     "x": 1.0,
                     "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
                 },
                 "color": {
                     "x": 1.0,
@@ -17290,6 +17299,10 @@
                     "x": 1.0,
                     "y": 1.0
                 },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
                 "color": {
                     "x": 1.0,
                     "y": 1.0,
@@ -17357,6 +17370,10 @@
                 "uvSize": {
                     "x": 1.0,
                     "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
                 },
                 "color": {
                     "x": 1.0,
@@ -17443,6 +17460,10 @@
                     "x": 1.0,
                     "y": 1.0
                 },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
                 "color": {
                     "x": 1.0,
                     "y": 0.5690600275993347,
@@ -17501,6 +17522,10 @@
                 "uvSize": {
                     "x": 1.0,
                     "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
                 },
                 "color": {
                     "x": 0.7014925479888916,
@@ -17600,6 +17625,10 @@
                 "uvSize": {
                     "x": 1.0,
                     "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
                 },
                 "color": {
                     "x": 0.7014925479888916,
@@ -17706,6 +17735,10 @@
                     "x": 1.0,
                     "y": 1.0
                 },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
                 "color": {
                     "x": 0.7014925479888916,
                     "y": 0.7014925479888916,
@@ -17810,6 +17843,10 @@
                 "uvSize": {
                     "x": 1.0,
                     "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
                 },
                 "color": {
                     "x": 0.7014925479888916,
@@ -17916,6 +17953,10 @@
                     "x": 1.0,
                     "y": 1.0
                 },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
                 "color": {
                     "x": 0.7014925479888916,
                     "y": 0.7014925479888916,
@@ -18021,6 +18062,10 @@
                     "x": 1.0,
                     "y": 1.0
                 },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
                 "color": {
                     "x": 0.7014925479888916,
                     "y": 0.7014925479888916,
@@ -18088,6 +18133,10 @@
                 "uvSize": {
                     "x": 1.0,
                     "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
                 },
                 "color": {
                     "x": 0.7019608020782471,
@@ -18227,6 +18276,10 @@
                     "x": 1.0,
                     "y": 1.0
                 },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
                 "color": {
                     "x": 1.0,
                     "y": 0.5690600275993347,
@@ -18323,6 +18376,10 @@
                     "x": 1.0,
                     "y": 1.0
                 },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
                 "color": {
                     "x": 1.0,
                     "y": 0.5690600275993347,
@@ -18381,6 +18438,10 @@
                 "uvSize": {
                     "x": 1.0,
                     "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
                 },
                 "color": {
                     "x": 0.7019608020782471,
@@ -18525,6 +18586,10 @@
                     "x": 1.0,
                     "y": 1.0
                 },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
                 "color": {
                     "x": 1.0,
                     "y": 0.5690600275993347,
@@ -18620,6 +18685,10 @@
                 "uvSize": {
                     "x": 1.0,
                     "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
                 },
                 "color": {
                     "x": 1.0,
@@ -18717,6 +18786,10 @@
                     "x": 1.0,
                     "y": 1.0
                 },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
                 "color": {
                     "x": 1.0,
                     "y": 0.5690600275993347,
@@ -18812,6 +18885,10 @@
                 "uvSize": {
                     "x": 1.0,
                     "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
                 },
                 "color": {
                     "x": 1.0,
@@ -18909,6 +18986,10 @@
                     "x": 1.0,
                     "y": 1.0
                 },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
                 "color": {
                     "x": 0.0,
                     "y": 0.0,
@@ -18964,6 +19045,10 @@
                 "uvSize": {
                     "x": 1.0,
                     "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
                 },
                 "color": {
                     "x": 0.7019608020782471,
@@ -19063,6 +19148,10 @@
                 "uvSize": {
                     "x": 1.0,
                     "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
                 },
                 "color": {
                     "x": 0.7019608020782471,
@@ -19169,6 +19258,10 @@
                     "x": 1.0,
                     "y": 1.0
                 },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
                 "color": {
                     "x": 0.7019608020782471,
                     "y": 0.7019608020782471,
@@ -19273,6 +19366,10 @@
                 "uvSize": {
                     "x": 1.0,
                     "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
                 },
                 "color": {
                     "x": 0.7019608020782471,
@@ -19379,6 +19476,10 @@
                     "x": 1.0,
                     "y": 1.0
                 },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
                 "color": {
                     "x": 0.7019608020782471,
                     "y": 0.7019608020782471,
@@ -19425,7 +19526,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 489.2626953125,
+                    "x": 513.8012084960938,
                     "y": -1626.6378173828126,
                     "z": 0.0
                 },
@@ -19451,7 +19552,7 @@
             "collider": {
                 "helperType": 1,
                 "position": {
-                    "x": 489.2626953125,
+                    "x": 513.8012084960938,
                     "y": -1626.6378173828126,
                     "z": 0.0
                 },
@@ -19461,12 +19562,12 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 425.2625732421875,
+                    "x": 449.80108642578127,
                     "y": -1634.6378173828126,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 553.2628173828125,
+                    "x": 577.8013305664063,
                     "y": -1618.6378173828126,
                     "z": 0.0
                 }
@@ -19483,6 +19584,10 @@
                 "uvSize": {
                     "x": 1.0,
                     "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
                 },
                 "color": {
                     "x": 1.0,
@@ -19509,7 +19614,7 @@
                             "IsMoving": true,
                             "MoveRight": true,
                             "MovementDistance": 550.0,
-                            "MoveSpeed": 20.0,
+                            "MoveSpeed": 50.0,
                             "VerticalSpeed": 50.0,
                             "maxDrop": 50.0
                         }
@@ -19547,6 +19652,10 @@
                     "x": 1.0,
                     "y": 1.0
                 },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
                 "color": {
                     "x": 0.7019608020782471,
                     "y": 0.7019608020782471,
@@ -19571,7 +19680,7 @@
                         "fields": {
                             "PlatesActive": 0,
                             "PlatesRequired": 1,
-                            "MoveRight": false,
+                            "MoveRight": true,
                             "MoveDist": 130.0,
                             "MoveSpeed": 30.0
                         }
@@ -19647,6 +19756,10 @@
                 "uvSize": {
                     "x": 1.0,
                     "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
                 },
                 "color": {
                     "x": 0.7019608020782471,
@@ -19746,6 +19859,10 @@
                 "uvSize": {
                     "x": 1.0,
                     "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
                 },
                 "color": {
                     "x": 0.7019608020782471,
@@ -19852,6 +19969,10 @@
                     "x": 1.0,
                     "y": 1.0
                 },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
                 "color": {
                     "x": 0.7019608020782471,
                     "y": 0.7019608020782471,
@@ -19956,6 +20077,10 @@
                 "uvSize": {
                     "x": 1.0,
                     "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
                 },
                 "color": {
                     "x": 0.7019608020782471,
@@ -20062,6 +20187,10 @@
                     "x": 1.0,
                     "y": 1.0
                 },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
                 "color": {
                     "x": 0.7019608020782471,
                     "y": 0.7019608020782471,
@@ -20166,6 +20295,10 @@
                 "uvSize": {
                     "x": 1.0,
                     "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
                 },
                 "color": {
                     "x": 0.7019608020782471,
@@ -20272,6 +20405,10 @@
                     "x": 1.0,
                     "y": 1.0
                 },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
                 "color": {
                     "x": 0.7019608020782471,
                     "y": 0.7019608020782471,
@@ -20319,7 +20456,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": 1066.6007080078126,
-                    "y": -771.4224853515625,
+                    "y": -710.0758666992188,
                     "z": 0.0
                 },
                 "size": {
@@ -20345,7 +20482,7 @@
                 "helperType": 1,
                 "position": {
                     "x": 1066.6007080078126,
-                    "y": -771.4224853515625,
+                    "y": -710.0758666992188,
                     "z": 0.0
                 },
                 "offset": {
@@ -20355,12 +20492,12 @@
                 },
                 "min": {
                     "x": 929.1007080078125,
-                    "y": -779.4224853515625,
+                    "y": -718.0758666992188,
                     "z": 0.0
                 },
                 "max": {
                     "x": 1204.1007080078126,
-                    "y": -763.4224853515625,
+                    "y": -702.0758666992188,
                     "z": 0.0
                 }
             },
@@ -20376,6 +20513,10 @@
                 "uvSize": {
                     "x": 1.0,
                     "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
                 },
                 "color": {
                     "x": 1.0,
@@ -20440,6 +20581,10 @@
                     "x": 1.0,
                     "y": 1.0
                 },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
                 "color": {
                     "x": 0.0,
                     "y": 0.0,
@@ -20466,12 +20611,12 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 0.0,
+                    "x": -3.0,
                     "y": 0.0,
                     "z": -100.0
                 },
                 "size": {
-                    "x": 200.8000030517578,
+                    "x": 225.0,
                     "y": 131.0
                 }
             },
@@ -20483,10 +20628,14 @@
                 "thickness": 1.0,
                 "preview": false,
                 "type": 0,
-                "textureName": "UI\\Pause Menu Open.png",
+                "textureName": "UI\\Pause Menu Closed.png",
                 "uvSize": {
                     "x": 1.0,
                     "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
                 },
                 "color": {
                     "x": 1.0,
@@ -20508,13 +20657,13 @@
             "parent": {
                 "parentName": "PauseScreen",
                 "localPos": {
-                    "x": 0.0,
+                    "x": -0.003000000026077032,
                     "y": 0.0,
                     "z": 0.0
                 },
                 "localRot": 0.0,
                 "localScale": {
-                    "x": 0.20080000162124635,
+                    "x": 0.22499999403953553,
                     "y": 0.13099999725818635
                 },
                 "inheritColor": false,
@@ -20527,20 +20676,20 @@
             }
         },
         {
-            "name": "QuitBtn",
+            "name": "PauseQuitBtn",
             "layer": {
                 "currentLayer": 0
             },
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -0.3790000081062317,
-                    "y": -1.9889999628067017,
+                    "x": 24.121000289916993,
+                    "y": -9.58899974822998,
                     "z": -99.9000015258789
                 },
                 "size": {
-                    "x": 148.1999969482422,
-                    "y": 106.4000015258789
+                    "x": 28.0,
+                    "y": 8.0
                 }
             },
             "shape": {
@@ -20556,6 +20705,10 @@
                     "x": 1.0,
                     "y": 1.0
                 },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
                 "color": {
                     "x": 1.0,
                     "y": 1.0,
@@ -20633,14 +20786,14 @@
             "parent": {
                 "parentName": "PauseScreen",
                 "localPos": {
-                    "x": -0.00037900000461377203,
-                    "y": -0.0019890000112354757,
-                    "z": 0.10000000149011612
+                    "x": 0.02412099950015545,
+                    "y": -0.009588999673724175,
+                    "z": 0.10000002384185791
                 },
                 "localRot": 0.0,
                 "localScale": {
-                    "x": 0.14819999039173127,
-                    "y": 0.10639999806880951
+                    "x": 0.02800000086426735,
+                    "y": 0.00800000037997961
                 },
                 "inheritColor": false,
                 "colorMul": {
@@ -20652,20 +20805,20 @@
             }
         },
         {
-            "name": "ResumeBtn",
+            "name": "PauseResumeBtn",
             "layer": {
                 "currentLayer": 0
             },
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 0.020999999716877939,
-                    "y": -0.8889999985694885,
+                    "x": 24.121000289916993,
+                    "y": 13.211000442504883,
                     "z": -99.9000015258789
                 },
                 "size": {
-                    "x": 148.1999969482422,
-                    "y": 106.4000015258789
+                    "x": 32.0,
+                    "y": 8.0
                 }
             },
             "shape": {
@@ -20681,6 +20834,10 @@
                     "x": 1.0,
                     "y": 1.0
                 },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
                 "color": {
                     "x": 1.0,
                     "y": 1.0,
@@ -20758,14 +20915,14 @@
             "parent": {
                 "parentName": "PauseScreen",
                 "localPos": {
-                    "x": 0.00002099999983329326,
-                    "y": -0.00088900001719594,
-                    "z": 0.10000000149011612
+                    "x": 0.02412099950015545,
+                    "y": 0.013211000710725785,
+                    "z": 0.10000002384185791
                 },
                 "localRot": 0.0,
                 "localScale": {
-                    "x": 0.14819999039173127,
-                    "y": 0.10639999806880951
+                    "x": 0.03200000151991844,
+                    "y": 0.00800000037997961
                 },
                 "inheritColor": false,
                 "colorMul": {
@@ -20784,13 +20941,13 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 0.020999999716877939,
-                    "y": -1.4889999628067017,
+                    "x": 24.121000289916993,
+                    "y": 1.6109999418258668,
                     "z": -99.9000015258789
                 },
                 "size": {
-                    "x": 148.1999969482422,
-                    "y": 106.4000015258789
+                    "x": 28.0,
+                    "y": 8.0
                 }
             },
             "shape": {
@@ -20805,6 +20962,10 @@
                 "uvSize": {
                     "x": 1.0,
                     "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
                 },
                 "color": {
                     "x": 1.0,
@@ -20883,14 +21044,14 @@
             "parent": {
                 "parentName": "PauseScreen",
                 "localPos": {
-                    "x": 0.00002099999983329326,
-                    "y": -0.001488999929279089,
-                    "z": 0.10000000149011612
+                    "x": 0.02412099950015545,
+                    "y": 0.0016109999269247056,
+                    "z": 0.10000002384185791
                 },
                 "localRot": 0.0,
                 "localScale": {
-                    "x": 0.14819999039173127,
-                    "y": 0.10639999806880951
+                    "x": 0.02800000086426735,
+                    "y": 0.00800000037997961
                 },
                 "inheritColor": false,
                 "colorMul": {
@@ -20910,7 +21071,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": 1504.64306640625,
-                    "y": -772.4300537109375,
+                    "y": -768.7833251953125,
                     "z": 0.0
                 },
                 "size": {
@@ -20936,7 +21097,7 @@
                 "helperType": 1,
                 "position": {
                     "x": 1504.64306640625,
-                    "y": -772.4300537109375,
+                    "y": -768.7833251953125,
                     "z": 0.0
                 },
                 "offset": {
@@ -20946,12 +21107,12 @@
                 },
                 "min": {
                     "x": 1496.64306640625,
-                    "y": -782.4300537109375,
+                    "y": -778.7833251953125,
                     "z": 0.0
                 },
                 "max": {
                     "x": 1512.64306640625,
-                    "y": -762.4300537109375,
+                    "y": -758.7833251953125,
                     "z": 0.0
                 }
             },
@@ -20963,10 +21124,14 @@
                 "thickness": 1.0,
                 "preview": false,
                 "type": 0,
-                "textureName": "Energy Ball spritesheet_00",
+                "textureName": "images/UI\\Energy Ball\\Energy Ball spritesheet.png",
                 "uvSize": {
-                    "x": 1.0,
+                    "x": 0.125,
                     "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
                 },
                 "color": {
                     "x": 1.0,
@@ -21002,6 +21167,117 @@
                         }
                     }
                 ]
+            },
+            "keyframe_animator": {
+                "current": "charged",
+                "t": 1.5499992370605469,
+                "playing": true,
+                "clips": [
+                    {
+                        "name": "charged",
+                        "wrap": 0,
+                        "textureAsset": "images/UI\\Energy Ball\\Energy Ball spritesheet.png",
+                        "spriteCols": 8,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 32.0,
+                        "targetHeight": 40.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 1.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.5,
+                                        "v": 2.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.75,
+                                        "v": 2.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "cooldown",
+                        "wrap": 0,
+                        "textureAsset": "images/UI\\Energy Ball\\Energy Ball spritesheet.png",
+                        "spriteCols": 8,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 32.0,
+                        "targetHeight": 40.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 3.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 4.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.5,
+                                        "v": 5.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.75,
+                                        "v": 6.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 1.0,
+                                        "v": 7.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 1.25,
+                                        "v": 7.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
             }
         },
         {
@@ -21012,12 +21288,12 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 159.79751586914063,
-                    "y": -421.0413818359375,
+                    "x": 130.47837829589845,
+                    "y": -435.0485534667969,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 72.0,
+                    "x": -72.0,
                     "y": 67.0
                 }
             },
@@ -21038,8 +21314,8 @@
             "collider": {
                 "helperType": 1,
                 "position": {
-                    "x": 159.79751586914063,
-                    "y": -421.0413818359375,
+                    "x": 130.47837829589845,
+                    "y": -435.0485534667969,
                     "z": 0.0
                 },
                 "offset": {
@@ -21048,13 +21324,13 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 146.79751586914063,
-                    "y": -434.0413818359375,
+                    "x": 117.47837829589844,
+                    "y": -448.0485534667969,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 172.79751586914063,
-                    "y": -408.0413818359375,
+                    "x": 143.47837829589845,
+                    "y": -422.0485534667969,
                     "z": 0.0
                 }
             },
@@ -21066,10 +21342,14 @@
                 "thickness": 1.0,
                 "preview": false,
                 "type": 0,
-                "textureName": "spritesheet\\Slime spritesheet\\Slime spritesheet_04.png",
+                "textureName": "images/Monsters\\Slime spritesheet.png",
                 "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
+                    "x": 0.25,
+                    "y": 0.3333333432674408
+                },
+                "uvOffset": {
+                    "x": 0.25,
+                    "y": 0.3333333432674408
                 },
                 "color": {
                     "x": 1.0,
@@ -21104,6 +21384,275 @@
                         }
                     }
                 ]
+            },
+            "keyframe_animator": {
+                "current": "slimeWalk",
+                "t": 1.5333325862884522,
+                "playing": true,
+                "clips": [
+                    {
+                        "name": "slimeCaution",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": 72.0,
+                        "targetHeight": 67.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "slimeIdle",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": 72.0,
+                        "targetHeight": 67.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 4.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 4.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "slimeFall",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": 72.0,
+                        "targetHeight": 67.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 1.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 1.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "slimeChase",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": 72.0,
+                        "targetHeight": 67.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 8.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 9.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.5,
+                                        "v": 9.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "slimeJump",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": 72.0,
+                        "targetHeight": 67.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 2.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 2.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "slimeWalk",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": 72.0,
+                        "targetHeight": 67.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 5.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 6.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.5,
+                                        "v": 6.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "slimeFound",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": 72.0,
+                        "targetHeight": 67.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 7.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 7.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "slimeGrabbed",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": 72.0,
+                        "targetHeight": 67.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 3.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 3.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
             }
         },
         {
@@ -21114,12 +21663,12 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1475.74951171875,
-                    "y": -1525.515625,
+                    "x": 1466.1806640625,
+                    "y": -1555.0487060546876,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 72.0,
+                    "x": -72.0,
                     "y": 67.0
                 }
             },
@@ -21140,8 +21689,8 @@
             "collider": {
                 "helperType": 1,
                 "position": {
-                    "x": 1475.74951171875,
-                    "y": -1525.515625,
+                    "x": 1466.1806640625,
+                    "y": -1555.0487060546876,
                     "z": 0.0
                 },
                 "offset": {
@@ -21150,13 +21699,13 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 1462.74951171875,
-                    "y": -1538.515625,
+                    "x": 1453.1806640625,
+                    "y": -1568.0487060546876,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 1488.74951171875,
-                    "y": -1512.515625,
+                    "x": 1479.1806640625,
+                    "y": -1542.0487060546876,
                     "z": 0.0
                 }
             },
@@ -21168,10 +21717,14 @@
                 "thickness": 1.0,
                 "preview": false,
                 "type": 0,
-                "textureName": "spritesheet\\Slime spritesheet\\Slime spritesheet_04.png",
+                "textureName": "images/Monsters\\Slime spritesheet.png",
                 "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
+                    "x": 0.25,
+                    "y": 0.3333333432674408
+                },
+                "uvOffset": {
+                    "x": 0.5,
+                    "y": 0.3333333432674408
                 },
                 "color": {
                     "x": 1.0,
@@ -21306,6 +21859,37 @@
                         ]
                     },
                     {
+                        "name": "slimeJump",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": 72.0,
+                        "targetHeight": 67.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 2.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 2.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
                         "name": "slimeChase",
                         "wrap": 0,
                         "textureAsset": "images/Monsters\\Slime spritesheet.png",
@@ -21335,37 +21919,6 @@
                                     {
                                         "t": 0.5,
                                         "v": 9.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "slimeJump",
-                        "wrap": 0,
-                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
-                        "spriteCols": 4,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": 72.0,
-                        "targetHeight": 67.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 2.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 2.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -21485,12 +22038,12 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1626.396728515625,
-                    "y": -1525.515625,
+                    "x": 1615.20361328125,
+                    "y": -1555.098876953125,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 72.0,
+                    "x": -72.0,
                     "y": 67.0
                 }
             },
@@ -21511,8 +22064,8 @@
             "collider": {
                 "helperType": 1,
                 "position": {
-                    "x": 1626.396728515625,
-                    "y": -1525.515625,
+                    "x": 1615.20361328125,
+                    "y": -1555.098876953125,
                     "z": 0.0
                 },
                 "offset": {
@@ -21521,13 +22074,13 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 1613.396728515625,
-                    "y": -1538.515625,
+                    "x": 1602.20361328125,
+                    "y": -1568.098876953125,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 1639.396728515625,
-                    "y": -1512.515625,
+                    "x": 1628.20361328125,
+                    "y": -1542.098876953125,
                     "z": 0.0
                 }
             },
@@ -21539,10 +22092,14 @@
                 "thickness": 1.0,
                 "preview": false,
                 "type": 0,
-                "textureName": "spritesheet\\Slime spritesheet\\Slime spritesheet_04.png",
+                "textureName": "images/Monsters\\Slime spritesheet.png",
                 "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
+                    "x": 0.25,
+                    "y": 0.3333333432674408
+                },
+                "uvOffset": {
+                    "x": 0.25,
+                    "y": 0.3333333432674408
                 },
                 "color": {
                     "x": 1.0,
@@ -21574,344 +22131,6 @@
                             "grabRange": 100.0,
                             "grabEnergy": 6.25,
                             "MaxDist": 150.0
-                        }
-                    }
-                ]
-            }
-        },
-        {
-            "name": "BarUI",
-            "layer": {
-                "currentLayer": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": -80.67279815673828,
-                    "y": 38.15660858154297,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 0.5,
-                    "y": 0.5
-                }
-            }
-        },
-        {
-            "name": "Bar Graphic",
-            "layer": {
-                "currentLayer": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": -61.922428131103519,
-                    "y": 38.15660858154297,
-                    "z": 0.10000000149011612
-                },
-                "size": {
-                    "x": 37.5,
-                    "y": 5.0
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": false,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "UI\\Bar_Area.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentName": "BarUI",
-                "localPos": {
-                    "x": 37.50074005126953,
-                    "y": 0.0,
-                    "z": 0.10000000149011612
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 75.0,
-                    "y": 10.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            }
-        },
-        {
-            "name": "Bar Graphic_BG",
-            "layer": {
-                "currentLayer": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": -61.922428131103519,
-                    "y": 38.15660858154297,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 37.5,
-                    "y": 5.0
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": false,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "UI\\Bar_Area.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "color": {
-                    "x": 0.39475876092910769,
-                    "y": 0.09358689188957215,
-                    "z": 0.40331488847732546,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            }
-        },
-        {
-            "name": "Slime (4)",
-            "layer": {
-                "currentLayer": 16
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 1774.7196044921876,
-                    "y": -1525.515625,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 72.0,
-                    "y": 67.0
-                }
-            },
-            "rigidbody": {
-                "mass": 1.0,
-                "restitutionCoeff": 0.0,
-                "maximumVelocity": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "staticFriction": 0.5,
-                "dynamicFriction": 0.5,
-                "inertia": 0.0,
-                "invInertia": 0.0,
-                "isTrigger": true
-            },
-            "collider": {
-                "helperType": 1,
-                "position": {
-                    "x": 1774.7196044921876,
-                    "y": -1525.515625,
-                    "z": 0.0
-                },
-                "offset": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "min": {
-                    "x": 1761.7196044921876,
-                    "y": -1538.515625,
-                    "z": 0.0
-                },
-                "max": {
-                    "x": 1787.7196044921876,
-                    "y": -1512.515625,
-                    "z": 0.0
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "spritesheet\\Slime spritesheet\\Slime spritesheet_04.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "script": {
-                "scripts": [
-                    {
-                        "className": "SlimeMovement",
-                        "fields": {
-                            "moveSpeed": 1000.0,
-                            "maxSpeed": 50.0,
-                            "turnTimer": 2.0,
-                            "detectionRange": 85.0,
-                            "gravityScale": 5.0,
-                            "grabRange": 100.0,
-                            "grabEnergy": 6.25,
-                            "MaxDist": 50.0
-                        }
-                    }
-                ]
-            }
-        },
-        {
-            "name": "Slime (5)",
-            "layer": {
-                "currentLayer": 16
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 1153.586669921875,
-                    "y": -931.1002197265625,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 72.0,
-                    "y": 67.0
-                }
-            },
-            "rigidbody": {
-                "mass": 1.0,
-                "restitutionCoeff": 0.0,
-                "maximumVelocity": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "staticFriction": 0.5,
-                "dynamicFriction": 0.5,
-                "inertia": 0.0,
-                "invInertia": 0.0,
-                "isTrigger": true
-            },
-            "collider": {
-                "helperType": 1,
-                "position": {
-                    "x": 1153.586669921875,
-                    "y": -931.1002197265625,
-                    "z": 0.0
-                },
-                "offset": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "min": {
-                    "x": 1140.586669921875,
-                    "y": -944.1002197265625,
-                    "z": 0.0
-                },
-                "max": {
-                    "x": 1166.586669921875,
-                    "y": -918.1002197265625,
-                    "z": 0.0
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "spritesheet\\Slime spritesheet\\Slime spritesheet_04.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "script": {
-                "scripts": [
-                    {
-                        "className": "SlimeMovement",
-                        "fields": {
-                            "moveSpeed": 1000.0,
-                            "maxSpeed": 50.0,
-                            "turnTimer": 2.0,
-                            "detectionRange": 85.0,
-                            "gravityScale": 5.0,
-                            "grabRange": 100.0,
-                            "grabEnergy": 6.25,
-                            "MaxDist": 50.0
                         }
                     }
                 ]
@@ -22187,19 +22406,161 @@
             }
         },
         {
-            "name": "Slime (6)",
+            "name": "BarUI",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -80.67279815673828,
+                    "y": 38.15660858154297,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 0.5,
+                    "y": 0.5
+                }
+            }
+        },
+        {
+            "name": "Bar Graphic",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -61.922428131103519,
+                    "y": 38.15660858154297,
+                    "z": 0.10000000149011612
+                },
+                "size": {
+                    "x": 37.5,
+                    "y": 5.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI\\Bar_Area.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentName": "BarUI",
+                "localPos": {
+                    "x": 37.50074005126953,
+                    "y": 0.0,
+                    "z": 0.10000000149011612
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 75.0,
+                    "y": 10.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            }
+        },
+        {
+            "name": "Bar Graphic_BG",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -61.922428131103519,
+                    "y": 38.15660858154297,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 37.5,
+                    "y": 5.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI\\Bar_Area.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.39475876092910769,
+                    "y": 0.09358689188957215,
+                    "z": 0.40331488847732546,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            }
+        },
+        {
+            "name": "Slime (4)",
             "layer": {
                 "currentLayer": 16
             },
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 482.7310485839844,
-                    "y": -291.32080078125,
+                    "x": 1761.3314208984376,
+                    "y": -1555.0487060546876,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 72.0,
+                    "x": -72.0,
                     "y": 67.0
                 }
             },
@@ -22220,8 +22581,8 @@
             "collider": {
                 "helperType": 1,
                 "position": {
-                    "x": 482.7310485839844,
-                    "y": -291.32080078125,
+                    "x": 1761.3314208984376,
+                    "y": -1555.0487060546876,
                     "z": 0.0
                 },
                 "offset": {
@@ -22230,13 +22591,13 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 469.7310485839844,
-                    "y": -304.32080078125,
+                    "x": 1748.3314208984376,
+                    "y": -1568.0487060546876,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 495.7310485839844,
-                    "y": -278.32080078125,
+                    "x": 1774.3314208984376,
+                    "y": -1542.0487060546876,
                     "z": 0.0
                 }
             },
@@ -22248,10 +22609,14 @@
                 "thickness": 1.0,
                 "preview": false,
                 "type": 0,
-                "textureName": "spritesheet\\Slime spritesheet\\Slime spritesheet_04.png",
+                "textureName": "images/Monsters\\Slime spritesheet.png",
                 "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
+                    "x": 0.25,
+                    "y": 0.3333333432674408
+                },
+                "uvOffset": {
+                    "x": 0.25,
+                    "y": 0.3333333432674408
                 },
                 "color": {
                     "x": 1.0,
@@ -22446,6 +22811,756 @@
                                     {
                                         "t": 0.5,
                                         "v": 9.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "slimeWalk",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": 72.0,
+                        "targetHeight": 67.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 5.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 6.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.5,
+                                        "v": 6.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "slimeFound",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": 72.0,
+                        "targetHeight": 67.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 7.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 7.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "slimeGrabbed",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": 72.0,
+                        "targetHeight": 67.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 3.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 3.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "name": "Slime (5)",
+            "layer": {
+                "currentLayer": 16
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 1125.2744140625,
+                    "y": -947.048583984375,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": -72.0,
+                    "y": 67.0
+                }
+            },
+            "rigidbody": {
+                "mass": 1.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0,
+                "isTrigger": true
+            },
+            "collider": {
+                "helperType": 1,
+                "position": {
+                    "x": 1125.2744140625,
+                    "y": -947.048583984375,
+                    "z": 0.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": 1112.2744140625,
+                    "y": -960.048583984375,
+                    "z": 0.0
+                },
+                "max": {
+                    "x": 1138.2744140625,
+                    "y": -934.048583984375,
+                    "z": 0.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "images/Monsters\\Slime spritesheet.png",
+                "uvSize": {
+                    "x": 0.25,
+                    "y": 0.3333333432674408
+                },
+                "uvOffset": {
+                    "x": 0.25,
+                    "y": 0.3333333432674408
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "SlimeMovement",
+                        "fields": {
+                            "moveSpeed": 1000.0,
+                            "maxSpeed": 50.0,
+                            "turnTimer": 2.0,
+                            "detectionRange": 85.0,
+                            "gravityScale": 5.0,
+                            "grabRange": 100.0,
+                            "grabEnergy": 6.25,
+                            "MaxDist": 50.0
+                        }
+                    }
+                ]
+            },
+            "keyframe_animator": {
+                "current": "slimeWalk",
+                "t": 1.5333325862884522,
+                "playing": true,
+                "clips": [
+                    {
+                        "name": "slimeCaution",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": 72.0,
+                        "targetHeight": 67.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "slimeIdle",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": 72.0,
+                        "targetHeight": 67.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 4.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 4.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "slimeFall",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": 72.0,
+                        "targetHeight": 67.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 1.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 1.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "slimeJump",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": 72.0,
+                        "targetHeight": 67.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 2.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 2.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "slimeChase",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": 72.0,
+                        "targetHeight": 67.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 8.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 9.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.5,
+                                        "v": 9.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "slimeWalk",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": 72.0,
+                        "targetHeight": 67.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 5.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 6.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.5,
+                                        "v": 6.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "slimeFound",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": 72.0,
+                        "targetHeight": 67.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 7.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 7.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "slimeGrabbed",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": 72.0,
+                        "targetHeight": 67.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 3.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 3.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "name": "Slime (6)",
+            "layer": {
+                "currentLayer": 16
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 454.160888671875,
+                    "y": -307.04852294921877,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": -72.0,
+                    "y": 67.0
+                }
+            },
+            "rigidbody": {
+                "mass": 1.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0,
+                "isTrigger": true
+            },
+            "collider": {
+                "helperType": 1,
+                "position": {
+                    "x": 454.160888671875,
+                    "y": -307.04852294921877,
+                    "z": 0.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": 441.160888671875,
+                    "y": -320.04852294921877,
+                    "z": 0.0
+                },
+                "max": {
+                    "x": 467.160888671875,
+                    "y": -294.04852294921877,
+                    "z": 0.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "images/Monsters\\Slime spritesheet.png",
+                "uvSize": {
+                    "x": 0.25,
+                    "y": 0.3333333432674408
+                },
+                "uvOffset": {
+                    "x": 0.25,
+                    "y": 0.3333333432674408
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "SlimeMovement",
+                        "fields": {
+                            "moveSpeed": 1000.0,
+                            "maxSpeed": 50.0,
+                            "turnTimer": 2.0,
+                            "detectionRange": 85.0,
+                            "gravityScale": 5.0,
+                            "grabRange": 100.0,
+                            "grabEnergy": 6.25,
+                            "MaxDist": 50.0
+                        }
+                    }
+                ]
+            },
+            "keyframe_animator": {
+                "current": "slimeWalk",
+                "t": 1.5333325862884522,
+                "playing": true,
+                "clips": [
+                    {
+                        "name": "slimeCaution",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": 72.0,
+                        "targetHeight": 67.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "slimeIdle",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": 72.0,
+                        "targetHeight": 67.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 4.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 4.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "slimeFall",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": 72.0,
+                        "targetHeight": 67.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 1.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 1.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "slimeChase",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": 72.0,
+                        "targetHeight": 67.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 8.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 9.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.5,
+                                        "v": 9.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "slimeJump",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": 72.0,
+                        "targetHeight": 67.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 2.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 2.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -22566,7 +23681,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": 1200.2230224609376,
-                    "y": -1162.20263671875,
+                    "y": -1158.55517578125,
                     "z": 0.0
                 },
                 "size": {
@@ -22592,7 +23707,7 @@
                 "helperType": 1,
                 "position": {
                     "x": 1200.2230224609376,
-                    "y": -1162.20263671875,
+                    "y": -1158.55517578125,
                     "z": 0.0
                 },
                 "offset": {
@@ -22602,12 +23717,12 @@
                 },
                 "min": {
                     "x": 1192.2230224609376,
-                    "y": -1172.20263671875,
+                    "y": -1168.55517578125,
                     "z": 0.0
                 },
                 "max": {
                     "x": 1208.2230224609376,
-                    "y": -1152.20263671875,
+                    "y": -1148.55517578125,
                     "z": 0.0
                 }
             },
@@ -22619,10 +23734,14 @@
                 "thickness": 1.0,
                 "preview": false,
                 "type": 0,
-                "textureName": "Energy Ball spritesheet_00",
+                "textureName": "images/UI\\Energy Ball\\Energy Ball spritesheet.png",
                 "uvSize": {
-                    "x": 1.0,
+                    "x": 0.125,
                     "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
                 },
                 "color": {
                     "x": 1.0,
@@ -22658,6 +23777,117 @@
                         }
                     }
                 ]
+            },
+            "keyframe_animator": {
+                "current": "charged",
+                "t": 1.5499992370605469,
+                "playing": true,
+                "clips": [
+                    {
+                        "name": "charged",
+                        "wrap": 0,
+                        "textureAsset": "images/UI\\Energy Ball\\Energy Ball spritesheet.png",
+                        "spriteCols": 8,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 32.0,
+                        "targetHeight": 40.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 1.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.5,
+                                        "v": 2.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.75,
+                                        "v": 2.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "cooldown",
+                        "wrap": 0,
+                        "textureAsset": "images/UI\\Energy Ball\\Energy Ball spritesheet.png",
+                        "spriteCols": 8,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 32.0,
+                        "targetHeight": 40.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 3.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 4.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.5,
+                                        "v": 5.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.75,
+                                        "v": 6.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 1.0,
+                                        "v": 7.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 1.25,
+                                        "v": 7.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
             }
         },
         {
@@ -22689,6 +23919,10 @@
                 "uvSize": {
                     "x": 1.0,
                     "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
                 },
                 "color": {
                     "x": 0.0,
@@ -22738,6 +23972,10 @@
                     "x": 1.0,
                     "y": 1.0
                 },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
                 "color": {
                     "x": 1.0,
                     "y": 1.0,
@@ -22785,7 +24023,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": 0.0,
-                    "y": 0.0,
+                    "y": 15.0,
                     "z": -99.69999694824219
                 },
                 "size": {
@@ -22798,8 +24036,8 @@
                 "text": "GAME OVER",
                 "scale": 23.0,
                 "offset": {
-                    "x": 958.0,
-                    "y": 688.0
+                    "x": 0.0,
+                    "y": 0.0
                 },
                 "color": {
                     "x": 0.4751381278038025,
@@ -22814,7 +24052,7 @@
                 "parentName": "GameOverScreen",
                 "localPos": {
                     "x": 0.0,
-                    "y": 0.0,
+                    "y": 0.014999999664723874,
                     "z": 0.30000001192092898
                 },
                 "localRot": 0.0,
@@ -22844,7 +24082,7 @@
                     "z": -99.9000015258789
                 },
                 "size": {
-                    "x": 18.600000381469728,
+                    "x": 20.0,
                     "y": 9.0
                 }
             },
@@ -22860,6 +24098,10 @@
                 "uvSize": {
                     "x": 1.0,
                     "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
                 },
                 "color": {
                     "x": 1.0,
@@ -22880,11 +24122,11 @@
             },
             "text": {
                 "font": "Exo2-Regular",
-                "text": "Restart",
-                "scale": 21.0,
+                "text": "Restart Game",
+                "scale": 14.0,
                 "offset": {
-                    "x": 814.0,
-                    "y": 541.0
+                    "x": 0.0,
+                    "y": 0.0
                 },
                 "color": {
                     "x": 0.3867403268814087,
@@ -22961,7 +24203,7 @@
                 },
                 "localRot": 0.0,
                 "localScale": {
-                    "x": 0.01860000006854534,
+                    "x": 0.019999999552965165,
                     "y": 0.008999999612569809
                 },
                 "inheritColor": false,
@@ -22986,7 +24228,7 @@
                     "z": -99.9000015258789
                 },
                 "size": {
-                    "x": 18.600000381469728,
+                    "x": 20.0,
                     "y": 9.0
                 }
             },
@@ -23002,6 +24244,10 @@
                 "uvSize": {
                     "x": 1.0,
                     "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
                 },
                 "color": {
                     "x": 1.0,
@@ -23022,11 +24268,11 @@
             },
             "text": {
                 "font": "Exo2-Regular",
-                "text": "Quit",
-                "scale": 20.0,
+                "text": "Quit Game",
+                "scale": 14.0,
                 "offset": {
-                    "x": 1097.0,
-                    "y": 537.0
+                    "x": 0.0,
+                    "y": 0.0
                 },
                 "color": {
                     "x": 0.3867403268814087,
@@ -23103,7 +24349,7 @@
                 },
                 "localRot": 0.0,
                 "localScale": {
-                    "x": 0.01860000006854534,
+                    "x": 0.019999999552965165,
                     "y": 0.008999999612569809
                 },
                 "inheritColor": false,
@@ -23145,6 +24391,10 @@
                     "x": 1.0,
                     "y": 1.0
                 },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
                 "color": {
                     "x": 0.0,
                     "y": 0.0,
@@ -23161,6 +24411,14 @@
                     "y": 0.0,
                     "z": 0.0
                 }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "WinGame",
+                        "fields": {}
+                    }
+                ]
             }
         },
         {
@@ -23185,8 +24443,8 @@
                 "text": "Level cleared",
                 "scale": 20.0,
                 "offset": {
-                    "x": 963.0,
-                    "y": 556.0
+                    "x": 0.0,
+                    "y": 0.0
                 },
                 "color": {
                     "x": 1.0,
@@ -23226,8 +24484,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 0.0,
-                    "y": -14.199999809265137,
+                    "x": 10.0,
+                    "y": -10.0,
                     "z": -99.69999694824219
                 },
                 "size": {
@@ -23248,6 +24506,10 @@
                     "x": 1.0,
                     "y": 1.0
                 },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
                 "color": {
                     "x": 1.0,
                     "y": 1.0,
@@ -23267,11 +24529,11 @@
             },
             "text": {
                 "font": "Exo2-Regular",
-                "text": "Quit",
-                "scale": 26.0,
+                "text": "Quit Game",
+                "scale": 14.0,
                 "offset": {
-                    "x": 956.0,
-                    "y": 399.0
+                    "x": 0.0,
+                    "y": 0.0
                 },
                 "color": {
                     "x": 0.2209944725036621,
@@ -23342,8 +24604,226 @@
             "parent": {
                 "parentName": "WinScreen",
                 "localPos": {
+                    "x": 0.009999999776482582,
+                    "y": -0.009999999776482582,
+                    "z": 0.30000001192092898
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.017400000244379045,
+                    "y": 0.006500000134110451
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            }
+        },
+        {
+            "name": "Tex_foreground top_Clone2826",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 1465.1739501953126,
+                    "y": -41.50567626953125,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1214.199951171875,
+                    "y": 456.79998779296877
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 2,
+                "wrapModeV": 1,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "backgrounds\\foreground top.png",
+                "uvSize": {
+                    "x": 1.6829999685287476,
+                    "y": 0.6000000238418579
+                },
+                "uvOffset": {
                     "x": 0.0,
-                    "y": -0.0142000000923872,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentName": "foreground",
+                "localPos": {
+                    "x": 516.929443359375,
+                    "y": 719.5289916992188,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1214.199951171875,
+                    "y": 456.79998779296877
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            }
+        },
+        {
+            "name": "ReturnButton",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -10.0,
+                    "y": -10.0,
+                    "z": -99.69999694824219
+                },
+                "size": {
+                    "x": 17.399999618530275,
+                    "y": 6.5
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "text": {
+                "font": "Exo2-Regular",
+                "text": "Return",
+                "scale": 14.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.2209944725036621,
+                    "y": 0.1982278674840927,
+                    "z": 0.056164342910051349,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": false
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "GameOverUI",
+                        "fields": {}
+                    }
+                ]
+            },
+            "button": {
+                "buttonState": 0,
+                "shapeNormalColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "shapeHoveredColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.5
+                },
+                "shapePressedColor": {
+                    "x": 0.699999988079071,
+                    "y": 0.699999988079071,
+                    "z": 0.699999988079071,
+                    "w": 0.699999988079071
+                },
+                "textNormalColor": {
+                    "x": 0.2209944725036621,
+                    "y": 0.1982278674840927,
+                    "z": 0.056164342910051349,
+                    "w": 1.0
+                },
+                "textHoveredColor": {
+                    "x": 0.6961326003074646,
+                    "y": 0.6580122113227844,
+                    "z": 0.1653795838356018,
+                    "w": 0.0
+                },
+                "textPressedColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.5
+                }
+            },
+            "gui": {
+                "uiType": 7
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "uiLayout": 4
+            },
+            "parent": {
+                "parentName": "WinScreen",
+                "localPos": {
+                    "x": -0.009999999776482582,
+                    "y": -0.009999999776482582,
                     "z": 0.30000001192092898
                 },
                 "localRot": 0.0,

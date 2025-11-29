@@ -284,18 +284,13 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path)
 
             // ---- script ----
             bool hasScriptComponent = false;
-            std::vector<std::string> scriptClassNames;  
+            std::vector<std::string> scriptClassNames;
             uint32_t scriptEntityID = 0;
 
             if (prefabs.HasMember("script") && prefabs["script"].IsObject()) {
                 const auto& sJ = prefabs["script"];
 
-             
-                if (sJ.HasMember("className") && sJ["className"].IsString()) {
-                    scriptClassNames.emplace_back(sJ["className"].GetString());
-                }
 
-             
                 if (sJ.HasMember("scripts") && sJ["scripts"].IsArray()) {
                     for (auto& sVal : sJ["scripts"].GetArray()) {
                         if (!sVal.IsObject()) continue;
@@ -304,9 +299,13 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path)
                         }
                     }
                 }
+                else if (sJ.HasMember("className") && sJ["className"].IsString()) {
+                    scriptClassNames.emplace_back(sJ["className"].GetString());
+                }
 
                 if (sJ.HasMember("entityID") && sJ["entityID"].IsUint())
                     scriptEntityID = sJ["entityID"].GetUint();
+
 
                 hasScriptComponent = !scriptClassNames.empty();
             }
@@ -338,7 +337,7 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path)
             bool hasGuiComponent = false;
             unsigned guiTypeMask = 0;
 
-            
+
             auto uiTypeFromString = [](const std::string& s) -> unsigned {
                 using Component::UIType;
                 if (s == "IMAGE")     return static_cast<unsigned>(UIType::IMAGE);
@@ -351,7 +350,7 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path)
             if (prefabs.HasMember("gui") && prefabs["gui"].IsObject()) {
                 const auto& guiJ = prefabs["gui"];
 
-               
+
                 if (guiJ.HasMember("uiType")) {
                     const auto& t = guiJ["uiType"];
                     if (t.IsString()) {
@@ -391,7 +390,7 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path)
             }
             // --- tilemap ---
             bool hasTileMap = false;
-            Component::TileMapComponent tileMapData;  
+            Component::TileMapComponent tileMapData;
 
             if (prefabs.HasMember("tilemap") && prefabs["tilemap"].IsObject()) {
                 const auto& tmJ = prefabs["tilemap"];
@@ -467,6 +466,7 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path)
                 {
                     auto aabb = MakeCenteredAABB3(transform.position, width, height);
                     e.AddComponent<ColliderComponent>(entitty, ColliderComponent{ std::move(aabb) });
+
                 }
 
                 // Text
@@ -493,7 +493,7 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path)
                 }
 
                 // Script
-             
+
                 if (hasScriptComponent && !scriptClassNames.empty()) {
                     ScriptComponent sc;
                     sc.EntityID = static_cast<uint32_t>(entitty);
@@ -509,12 +509,12 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path)
                 // --- AudioEmitterComponent 
                 if (hasAudioEmitter && !audioEventPath.empty()) {
                     Component::AudioEmitterComponent a{};
-                    a.eventPath = audioEventPath;ppSaturation;
+                    a.eventPath = audioEventPath;
                     a.volume = audioVolume;
                     a.pitch = audioPitch;
                     a.spatial3D = audioSpatial3D;
                     a.looping = audioLooping;
-            
+
                     e.AddComponent<Component::AudioEmitterComponent>(entitty, a);
                 }
                 // GUI
@@ -536,8 +536,8 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path)
                     auto& tm = e.AddComponent<Component::TileMapComponent>(entitty);
                     tm.tileSize = tileMapData.tileSize;
                     tm.activeAsset = tileMapData.activeAsset;
-                    tm.gridData = tileMapData.gridData;  
-                    tm.isCacheDirty = true;                
+                    tm.gridData = tileMapData.gridData;
+                    tm.isCacheDirty = true;
                 }
             });
 
@@ -576,7 +576,7 @@ namespace CrashoutsEngine {
             return false;
         }
         // Load / init doc
-   
+
         rapidjson::Document doc;
         {
             std::ifstream in(path, std::ios::binary);
@@ -585,11 +585,11 @@ namespace CrashoutsEngine {
                 doc.ParseStream(isw);
                 if (doc.HasParseError() || !doc.IsObject()) {
                     LOGE(Core, (std::string("Save aborted: JSON parse error in ") + path).c_str());
-                    return false; 
+                    return false;
                 }
             }
             else {
-                
+
                 doc.SetObject();
             }
         }
@@ -638,7 +638,7 @@ namespace CrashoutsEngine {
             // always write type as the enum integer
             shapeJson.AddMember("type", static_cast<int>(shape->type), allocate);
 
-            // optional: human-readable kind string
+            
             auto kindFrom = [](ShapeType t) -> const char* {
                 switch (t) {
                 case ShapeType::Rectangle: return "Rectangle";
@@ -675,13 +675,13 @@ namespace CrashoutsEngine {
             obj.AddMember("shape", shapeJson, allocate);
         }
 
-       
-       // rigidbody (mass, restitution)
-   
+
+        // rigidbody (mass, restitution)
+
         {
             rapidjson::Value rigidJson(rapidjson::kObjectType);
-            rigidJson.AddMember("mass", rigidbody->getMass(), allocate);          
-            rigidJson.AddMember("restitution", rigidbody->getCoeff(), allocate);  
+            rigidJson.AddMember("mass", rigidbody->getMass(), allocate);
+            rigidJson.AddMember("restitution", rigidbody->getCoeff(), allocate);
             obj.AddMember("rigidbody", rigidJson, allocate);
         }
         // camera (
@@ -713,7 +713,7 @@ namespace CrashoutsEngine {
 
             obj.AddMember("camera", cameraJson, allocate);
         }
-        // text (optional - only if entity has TextComponent)
+        // text 
         if (auto* txt = ecs.GetComponent<TextComponent>(e)) {
             rapidjson::Value textJson(rapidjson::kObjectType);
 
@@ -764,7 +764,7 @@ namespace CrashoutsEngine {
         }
 
         // script 
-  
+
         if (auto* script = ecs.GetComponent<ScriptComponent>(e)) {
             if (!script->Scripts.empty()) {
                 rapidjson::Value scriptJson(rapidjson::kObjectType);
@@ -773,7 +773,7 @@ namespace CrashoutsEngine {
                 scriptJson.AddMember("entityID",
                     static_cast<uint32_t>(script->EntityID), allocate);
 
-                
+
                 rapidjson::Value scriptsArr(rapidjson::kArrayType);
                 scriptsArr.Reserve(
                     static_cast<rapidjson::SizeType>(script->Scripts.size()),
@@ -796,7 +796,7 @@ namespace CrashoutsEngine {
                 }
 
                 if (!scriptsArr.Empty()) {
-                
+
                     const auto& first = script->Scripts.front();
                     if (!first.ClassName.empty()) {
                         rapidjson::Value firstName;
@@ -835,7 +835,7 @@ namespace CrashoutsEngine {
             obj.AddMember("audio", audioJson, allocate);
         }
         // 
-    
+
         if (auto* gui = ecs.GetComponent<Component::GuiComponent>(e)) {
             rapidjson::Value guiJson(rapidjson::kObjectType);
 
@@ -858,7 +858,7 @@ namespace CrashoutsEngine {
         if (auto* tm = ecs.GetComponent<Component::TileMapComponent>(e)) {
             rapidjson::Value tmJ(rapidjson::kObjectType);
 
-          
+
             tmJ.AddMember("tileSize", tm->tileSize, allocate);
 
             rapidjson::Value active;
@@ -867,7 +867,7 @@ namespace CrashoutsEngine {
                 allocate);
             tmJ.AddMember("activeAsset", active, allocate);
 
-        
+
             rapidjson::Value tiles(rapidjson::kArrayType);
             for (const auto& [pos, assetName] : tm->gridData) {
                 rapidjson::Value t(rapidjson::kObjectType);
@@ -897,7 +897,7 @@ namespace CrashoutsEngine {
             std::transform(inputString.begin(), inputString.end(), inputString.begin(), ::tolower);
             return inputString;
             };
-      // Upsert by key 
+        // Upsert by key 
         const std::string keyRaw = matchName.empty() ? newName : matchName;
         const std::string key = lower(trim(keyRaw));
 
@@ -930,23 +930,23 @@ namespace CrashoutsEngine {
         LOGI(Core, std::string(replaced ? "Updated prefab: " : "Saved new prefab: ") + newName);
         return true;
     }
-// ============================================================================
-// Utility: reload all prefabs from disk (clear registry then load)
-// ============================================================================
-/**
- * @brief Unregister all factories, then re-read the JSON file and re-register.
- */
+    // ============================================================================
+    // Utility: reload all prefabs from disk (clear registry then load)
+    // ============================================================================
+    /**
+     * @brief Unregister all factories, then re-read the JSON file and re-register.
+     */
     void ReloadPrefabsFromDisk(const std::string& path)
     {
         namespace fs = std::filesystem;
 
-        
+
         for (const auto& n : Prefab::Names())
             Prefab::Unregister(n);
 
         fs::path p(path);
 
-       
+
         if (fs::exists(p) && fs::is_directory(p)) {
             for (auto& entry : fs::directory_iterator(p)) {
                 if (!entry.is_regular_file()) continue;
@@ -955,19 +955,19 @@ namespace CrashoutsEngine {
                 }
             }
         }
-       
+
         else if (fs::exists(p) && fs::is_regular_file(p)) {
             LoadPrefabsFromJson_RJ(p.generic_string());
         }
 
-       
+
         for (const auto& n : Prefab::Names())
             LOGI(Core, std::string("Prefab available: ") + n);
     }
 
     void RecreateInstancesForPrefab(ECS& ecs, const std::string& prefabName)
     {
-        
+
         auto& tArr = ecs.GetComponentArray<TransformComponent>();
 
         std::vector<Entity> toRecreate;
@@ -975,7 +975,7 @@ namespace CrashoutsEngine {
 
         for (Entity e : tArr.indexToEntity)
         {
-           
+
             if (!ecs.HasComponent<PrefabInstanceComponent>(e))
                 continue;
 
@@ -989,37 +989,37 @@ namespace CrashoutsEngine {
         for (Entity e : toRecreate)
         {
             ecs.DestroyEntity(e);
-            Prefab::Create(ecs, prefabName);   
+            Prefab::Create(ecs, prefabName);
         }
     }
 
-// ============================================================================
- // Bootstrap: set fallback factory and load initial prefab file
- // ============================================================================
- /**
-  * @brief Set a fallback (creates minimal entity) and load JSON at startup.
-  */
- void InitPrefabs()
-{
-    Prefab::SetFallback([](ECS& e, const std::string& name) {
-        auto entity = e.CreateEntity();
-        e.AddComponent<NameComponent>(entity, NameComponent{ name });
-        if (!e.HasComponent<TransformComponent>(entity))
-            e.AddComponent<TransformComponent>(entity, TransformComponent{});
-    });
+    // ============================================================================
+     // Bootstrap: set fallback factory and load initial prefab file
+     // ============================================================================
+     /**
+      * @brief Set a fallback (creates minimal entity) and load JSON at startup.
+      */
+    void InitPrefabs()
+    {
+        Prefab::SetFallback([](ECS& e, const std::string& name) {
+            auto entity = e.CreateEntity();
+            e.AddComponent<NameComponent>(entity, NameComponent{ name });
+            if (!e.HasComponent<TransformComponent>(entity))
+                e.AddComponent<TransformComponent>(entity, TransformComponent{});
+            });
 
-    namespace fs = std::filesystem;
-    const fs::path dir = fs::path(CrashoutsEngine::Assets::rootPath) / "prefabs";
+        namespace fs = std::filesystem;
+        const fs::path dir = fs::path(CrashoutsEngine::Assets::rootPath) / "prefabs";
 
-    if (fs::exists(dir) && fs::is_directory(dir)) {
-        for (auto& entry : fs::directory_iterator(dir)) {
-            if (!entry.is_regular_file()) continue;
-            if (entry.path().extension() == ".json") {
-                LoadPrefabsFromJson_RJ(entry.path().generic_string());
+        if (fs::exists(dir) && fs::is_directory(dir)) {
+            for (auto& entry : fs::directory_iterator(dir)) {
+                if (!entry.is_regular_file()) continue;
+                if (entry.path().extension() == ".json") {
+                    LoadPrefabsFromJson_RJ(entry.path().generic_string());
+                }
             }
         }
+
     }
 
 }
-
-} 

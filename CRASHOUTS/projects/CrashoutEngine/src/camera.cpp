@@ -110,7 +110,8 @@ namespace CrashoutsEngine {
 			float currentAR = static_cast<float>(targetWidth) / static_cast<float>(targetHeight);
 			float worldWidth{ (float)GLApp::width }, worldHeight{ (float)GLApp::height };
 
-#if USE_IMGUI_EDITOR
+			/*UNMACRO-ED FOR NOW*/
+			//#if USE_IMGUI_EDITOR
 			// Calculate world dimensions based on base size, zoom, and aspect ratio
 			// Maintains baseOrthoSize vertically 
 			if (currentAR >= 1.0f) {	// Height < Width
@@ -121,7 +122,7 @@ namespace CrashoutsEngine {
 				worldWidth = baseOrthoSize / zoom;
 				worldHeight = worldWidth / currentAR;
 			}
-#endif
+			//#endif
 
 			projectionMtx = glm::ortho(
 				-worldWidth / 2.0f, worldWidth / 2.0f,

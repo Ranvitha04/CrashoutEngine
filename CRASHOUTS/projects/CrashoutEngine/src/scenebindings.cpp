@@ -33,7 +33,7 @@ namespace
         std::string nameString{ utf8 };
         mono_free(utf8);
         if (nameString.empty()) return;
-        if (nameString == Serialization::currSceneName) return;
+        //if (nameString == Serialization::currSceneName) return;
 
         Assets::AssetManager& assetManager = Assets::AssetManager::GetInstance();
         if (!assetManager.Exists(nameString)) return;

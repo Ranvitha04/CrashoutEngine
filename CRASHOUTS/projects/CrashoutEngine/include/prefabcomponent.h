@@ -18,5 +18,5 @@ namespace Component {
         std::string prefabName;  
     };
 
-} // namespace Component
+} 
 

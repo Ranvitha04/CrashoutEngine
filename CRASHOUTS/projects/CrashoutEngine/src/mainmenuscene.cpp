@@ -22,6 +22,7 @@ All content © 2025 Digipen Institute of Technology Singapore.All rights reserved
 #include <random>
 #include <string>
 #include <chrono> // Used to seed the random number generator
+#include "spriteAnimation.h"
 
 #include "scriptcomponent.h"
 #include "glm/vec3.hpp"
@@ -201,6 +202,7 @@ void CreateRandBox() {
 
 void UpdateMainMenu()
 {
+	Component::UpdateSpriteAnimationsECS();
 
 	//Component::RigidBodyComponent* rigidBody{ globalECS->GetComponent<Component::RigidBodyComponent>(entity1) };
 	//Component::TransformComponent* transform{ globalECS->GetComponent<Component::TransformComponent>(entity1) };
@@ -259,10 +261,12 @@ void RenderMainMenu()
 	// Render MainMenu state
 #if USE_IMGUI_EDITOR
 #else
-	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	//glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 #endif
 	//Scene::RenderScene(*globalECS);
+	Component::RenderSpriteAnimationsECS();
+
 }
 
 void FreeMainMenu()

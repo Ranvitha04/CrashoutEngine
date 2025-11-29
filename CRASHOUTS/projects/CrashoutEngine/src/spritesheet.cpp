@@ -10,6 +10,7 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserve
 
 #include "spritesheet.h"
 #include "spriteAnimation.h"
+#include "keyframe.h"
 #include "rendering.h"
 #include "textureasset.h"
 #include "assetmanager.h"
@@ -49,6 +50,8 @@ namespace UI
     static int   gTileW = 32;   
     static int   gTileH = 32;  
 
+    static float gAnimW = 1.0f;
+    static float gAnimH = 1.0f;
 
     static int   gRows = 4;
     static int   gCols = 6;
@@ -105,12 +108,12 @@ namespace UI
         unsigned char* pixels = stbi_load( sheetPath.c_str(), &width, &height, &channels, desiredChannels);
      
         if (!pixels) {
-            std::printf("SpriteSheet export failed: cannot load '%s'\n", gSpritePath);
+            
             return;
         }
 
         if (gTileW <= 0 || gTileH <= 0) {
-            std::printf("SpriteSheet export failed: tile W/H must be > 0\n");
+            
             stbi_image_free(pixels);
             return;
         }
@@ -130,7 +133,7 @@ namespace UI
         int rows = height / tileH;
 
         if (cols <= 0 || rows <= 0) {
-            std::printf("SpriteSheet export failed: invalid rows/cols from tile size\n");
+            
             stbi_image_free(pixels);
             return;
         }
@@ -226,8 +229,8 @@ namespace UI
         gSpritePath[sizeof(gSpritePath) - 1] = '\0';
 
 
-        gRows = 4;
-        gCols = 6;
+        //gRows = 4;
+        //gCols = 6;
         gSelectedFrame = 0;
     }
 
@@ -324,15 +327,18 @@ namespace UI
         }
 
         if (stbi_info(sheetPath.c_str(), &sheetW, &sheetH, &channels)) {
-            gCols = std::max(1, sheetW / gTileW);
-            gRows = std::max(1, sheetH / gTileH);
+            int calculatedCols = std::max(1, sheetW / gTileW);
+            int calculatedRows = std::max(1, sheetH / gTileH);
 
-            ImGui::Text("Sheet %d x %d -> %d cols x %d rows",
+            // Update Globals
+            gCols = calculatedCols;
+            gRows = calculatedRows;
+
+            ImGui::TextColored(ImVec4(0, 1, 0, 1), "Loaded: %dx%d | Grid: %dx%d",
                 sheetW, sheetH, gCols, gRows);
         }
         else {
-            ImGui::TextColored(ImVec4(1, 0.3f, 0.3f, 1),
-                "Could not read image info.");
+            ImGui::TextColored(ImVec4(1, 0, 0, 1), "Failed to load image header: %s", sheetPath.c_str());
         }
 
         if (ImGui::Button("Export tiles to PNGs")) {
@@ -481,6 +487,7 @@ namespace UI
             ImGui::Text("Has SpriteAnimComponent:  %s", hasAnim ? "YES" : "NO");
         }
 
+        /*
         if (ImGui::Button("Apply selected frame to entity"))
         {
 
@@ -509,8 +516,89 @@ namespace UI
                 anim->timer = 0.0f;
             }
         }
+        */
 
+        ImGui::SeparatorText("Animation Settings");
+        ImGui::DragFloat("Target Width", &gAnimW, 0.1f);
+        ImGui::DragFloat("Target Height", &gAnimH, 0.1f);
 
+        if (selected && ImGui::Button("Fetch Size from Entity")) {
+            if (ecs.HasComponent<Component::TransformComponent>(selected)) {
+                auto* t = ecs.GetComponent<Component::TransformComponent>(selected);
+                gAnimW = t->size.x;
+                gAnimH = t->size.y;
+            }
+        }
+
+        // This button takes the temporary UI clips and saves them to the Entity
+        if (selected && ImGui::Button("Save Animation Set to Entity"))
+        {
+            using namespace KeyframeUnity; // Ensure we can access AddAnimator helper
+
+            // 1. Get current Editor State (Texture, Grid, Size)
+            // We use the global variables from this file because that's what the editor is looking at.
+            std::string currentTexturePath = gSpritePath;
+            int currentCols = gCols;
+            int currentRows = gRows;
+            std::cout << "Max col? " << gCols << " Max rows? " << gRows << std::endl;
+            // 2. Get or Add the Keyframe Component
+            auto& animComp = AddAnimator(ecs, selected);
+
+            // 3. Convert UI Clips to Keyframe Clips
+            for (const auto& uiClip : gClips) {
+                AnimationClip newClip;
+                newClip.name = uiClip.name;
+
+                newClip.textureAsset = currentTexturePath;
+                newClip.spriteCols = currentCols;
+                newClip.spriteRows = currentRows;
+                newClip.useCustomSize = true; // Use the size visible in editor
+                newClip.targetWidth = gAnimW;
+                newClip.targetHeight = gAnimH;
+
+                // Set Wrap Mode
+                newClip.wrap = uiClip.loop ? KFWrap::Loop : KFWrap::Clamp;
+
+                // Create the Binding for the Sprite Index
+                KFBinding spriteBinding;
+                spriteBinding.property = KFProperty::SpriteIndex;
+
+                // Calculate time per frame
+                float frameDuration = (uiClip.fps > 0.0f) ? (1.0f / uiClip.fps) : 0.1f;
+
+                // Generate Keys for every frame
+                for (int i = 0; i < uiClip.frameCount; ++i) {
+                    KFKey k{};
+                    k.time = i * frameDuration;           // When this frame starts
+                    k.value = (float)(uiClip.startFrame + i); // Which sprite index
+                    k.interp = KFInterp::Constant;        // Snap, don't fade
+
+                    spriteBinding.curve.Add(k);
+                }
+
+                // Add a final "dummy" key to define the end duration of the last frame
+                KFKey endKey{};
+                endKey.time = uiClip.frameCount * frameDuration;
+                endKey.value = (float)(uiClip.startFrame + uiClip.frameCount - 1);
+                endKey.interp = KFInterp::Constant;
+                spriteBinding.curve.Add(endKey);
+
+                // Add Binding to Clip
+                newClip.bindings.push_back(spriteBinding);
+
+                // Register Clip to Component (Overwrites if name exists, Adds if new)
+                animComp.clips[newClip.name] = newClip;
+            }
+
+            // 4. Set default state only if nothing is currently playing/selected
+            if (animComp.current.empty() && !gClips.empty()) {
+                animComp.current = gClips[0].name;
+                animComp.playing = true;
+                animComp.t = 0.0f;
+            }
+
+            std::cout << "Merged " << gClips.size() << " clips into Entity " << selected << std::endl;
+        }
 
         if (ImGui::Button("Add new clip"))
         {

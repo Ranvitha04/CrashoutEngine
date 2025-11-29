@@ -134,5 +134,15 @@ namespace CrashoutsEngine
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal static extern bool EntityHasLayer(uint entityID);
+
+        // --- ANIMATOR ---
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern void AddKeyframeAnimator(uint entityID);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern void RemoveKeyframeAnimator(uint entityID);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern bool EntityHasKeyframeAnimator(uint entityID);
     }
 }

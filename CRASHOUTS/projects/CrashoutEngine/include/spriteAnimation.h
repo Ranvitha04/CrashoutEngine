@@ -44,10 +44,46 @@ __________________________________________________________________________*/
 #include <GL/glew.h>
 #include "entitymanager.h"
 
-
+#include "CEVec2.h" 
 
 namespace Component {
     
+    // Data structure for one animation (Idle, Walk, Jump)
+    struct SpriteClip {
+        std::string name;
+        int startFrame;
+        int frameCount;
+        float fps; // or frameTime
+        bool loop;
+    };
+
+    // The Component attached to the Entity
+    struct SpriteAnimatorComponent {
+        // A library of animations for this entity
+        std::vector<SpriteClip> clips;
+
+        // Playback state
+        std::string currentClipName;
+        int currentFrameIndex = 0;
+        float timer = 0.0f;
+        bool playing = true;
+        bool flipH = false;
+
+        // Helper to add a clip
+        void AddClip(const std::string& name, int start, int count, float fps, bool loop) {
+            // Remove if exists, or just push back
+            clips.push_back({ name, start, count, fps, loop });
+        }
+
+        // Helper to find a clip
+        const SpriteClip* GetClip(const std::string& name) const {
+            for (const auto& c : clips) {
+                if (c.name == name) return &c;
+            }
+            return nullptr;
+        }
+    };
+
     /*!
     @struct AnimationState
     @brief Represents a single animation sequence within a sprite sheet.
@@ -101,7 +137,6 @@ namespace Component {
         bool GetBool(const std::string& key) const;
         void SetTrigger(const std::string& key);
         void SetFloat(const std::string& key, float value);
-
         void AddState(const std::string& name, const AnimationState& state);
         const std::string& GetCurrentState() const { return currentState; }
 
@@ -209,4 +244,16 @@ namespace Component {
         std::unordered_map<std::string, float> floatParams;
         std::unordered_map<std::string, bool> triggerParams;
     };
+    void SetSpriteSheet(CrashoutsEngine::Entity e,
+        const std::string& assetName,
+        int cols, int rows,
+        CEVec2 worldSize);
+
+    void UpdateSpriteAnimationsECS();
+    void RenderSpriteAnimationsECS();
+
+    void AnimatorPlayOnSprite(CrashoutsEngine::Entity e,
+        const std::string& stateName);
+
+    void AnimatorSetFlipOnSprite(CrashoutsEngine::Entity e, bool flip);
 }

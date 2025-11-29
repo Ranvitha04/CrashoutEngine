@@ -43,7 +43,7 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserv
 #include "ppcomponent.h"
 #include "collidercomponent.h"
 #include "tilemapcomponent.h"
-#include "keyframe.h" // For AnimationComponent
+#include "keyframe.h" 
 #include "hierarchy_components.h"
 
 // FOR GAME GUI
@@ -987,7 +987,7 @@ namespace {
 				// UV size
 				CEVec2 oldUV = sc->uvSize;
 				float size[2] = { sc->uvSize.x, sc->uvSize.y };
-				if (ImGui::DragFloat2("UV", size, D.drag_small)) {
+				if (ImGui::DragFloat2("UV Size", size, D.drag_small)) {
 					CEVec2 newUV = { size[0], size[1] };
 					if (ImGui::IsItemDeactivatedAfterEdit() && newUV != oldUV) {
 						UndoManager::GetInstance().AddCommand(
@@ -998,6 +998,22 @@ namespace {
 						);
 					}
 					sc->uvSize = newUV;
+				}
+
+				// UV offset
+				CEVec2 oldUVoffset = sc->uvOffset;
+				float offset[2] = { sc->uvOffset.x, sc->uvOffset.y };
+				if (ImGui::DragFloat2("UV Offset", offset, D.drag_small)) {
+					CEVec2 newUV = { offset[0], offset[1] };
+					if (ImGui::IsItemDeactivatedAfterEdit() && newUV != oldUV) {
+						UndoManager::GetInstance().AddCommand(
+							std::make_unique<CrashoutsEngine::ChangeValueCommand<CEVec2>>(
+								oldUV, newUV,
+								[sc](const CEVec2& v) { sc->uvOffset = v; }
+							)
+						);
+					}
+					sc->uvOffset = newUV;
 				}
 
 			}
@@ -2687,7 +2703,7 @@ namespace CrashoutsEngine
 	@details Uses ImGui controls to manage keyframe animations.
 	*/
 	struct KeyframeAnimatorAdapter : DebugReflection::IComponentAdapter {
-		const char* name() const override { return "Animation (KeyframeAnimator)"; }
+		const char* name() const override { return "Animation (Keyframe)"; }
 
 		bool has(ECS& ecs, Entity e) const override {
 			return ecs.HasComponent<KeyframeAnimatorComponent>(e);
@@ -2695,63 +2711,9 @@ namespace CrashoutsEngine
 
 		void add(ECS& ecs, Entity e) override {
 			using namespace KeyframeUnity;
-
-			// Ensure component exists
-			auto& anim = AddAnimator(ecs, e);
-
-			// -------- sample WALK clip (frames 0–3 loop) --------
-			AnimationClip walk{};
-			walk.name = "Walk";
-			walk.wrap = KFWrap::Loop;
-
-			KFBinding walkSprite{};
-			walkSprite.property = KFProperty::SpriteIndex;
-
-			{
-				KFKey k{};
-				k.interp = KFInterp::Constant;
-
-				k.time = 0.0f; k.value = 0.f; walkSprite.curve.Add(k);
-				k.time = 0.1f; k.value = 1.f; walkSprite.curve.Add(k);
-				k.time = 0.2f; k.value = 2.f; walkSprite.curve.Add(k);
-				k.time = 0.3f; k.value = 3.f; walkSprite.curve.Add(k);
-				k.time = 0.4f; k.value = 0.f; walkSprite.curve.Add(k); // close loop
-			}
-
-			walk.bindings.push_back(walkSprite);
-
-			// -------- sample JUMP clip (frames 4–7, clamp) --------
-			AnimationClip jump{};
-			jump.name = "Jump";
-			jump.wrap = KFWrap::Clamp;
-
-			KFBinding jumpSprite{};
-			jumpSprite.property = KFProperty::SpriteIndex;
-
-			{
-				KFKey keyFrame{};
-				keyFrame.interp = KFInterp::Constant;
-
-				// start stand frame
-				keyFrame.time = 0.0f;  keyFrame.value = 4.f; jumpSprite.curve.Add(keyFrame);
-				// in-air
-				keyFrame.time = 0.15f; keyFrame.value = 5.f; jumpSprite.curve.Add(keyFrame);
-				// peak
-				keyFrame.time = 0.30f; keyFrame.value = 6.f; jumpSprite.curve.Add(keyFrame);
-				// landing
-				keyFrame.time = 0.45f; keyFrame.value = 7.f; jumpSprite.curve.Add(keyFrame);
-			}
-
-			jump.bindings.push_back(jumpSprite);
-
-			// Register both clips
-			anim.clips[walk.name] = walk;
-			anim.clips[jump.name] = jump;
-
-			// Start in WALK
-			anim.current = walk.name;
-			anim.t = 0.f;
-			anim.playing = true;
+			// Just ensure the component exists. Don't add sample data automatically.
+			// Let the user add clips via code or loading.
+			AddAnimator(ecs, e);
 		}
 
 		void remove(ECS& ecs, Entity e) override {
@@ -2765,18 +2727,45 @@ namespace CrashoutsEngine
 			auto* anim = ecs.GetComponent<KeyframeAnimatorComponent>(e);
 			if (!anim) return;
 
-			ImGui::SeparatorText("Animation");
+			// --- 1. Playback Controls ---
+			ImGui::SeparatorText("Playback State");
 
-			if (anim->current.empty()) {
-				ImGui::TextDisabled("No clip set. Use your code to SetClip() and Play().");
+			// Current Clip Name (Read-only or Dropdown)
+			if (anim->clips.empty()) {
+				ImGui::TextColored(ImVec4(1, 0, 0, 1), "No Clips Loaded!");
 			}
 			else {
-				ImGui::Text("Current clip: %s", anim->current.c_str());
+				if (ImGui::BeginCombo("Current Clip", anim->current.c_str())) {
+					for (const auto& pair : anim->clips) {
+						bool isSelected = (anim->current == pair.first);
+						if (ImGui::Selectable(pair.first.c_str(), isSelected)) {
+							Play(*anim, pair.first, true); // Restart on select
+						}
+						if (isSelected) ImGui::SetItemDefaultFocus();
+					}
+					ImGui::EndCombo();
+				}
 			}
 
-			ImGui::DragFloat("Time", &anim->t, 0.01f, 0.0f);
+			// Progress Bar / Time Slider
+			float currentLen = 0.0f;
+			if (!anim->current.empty() && anim->clips.count(anim->current)) {
+				currentLen = anim->clips.at(anim->current).Length();
+			}
 
-			// Play / Pause / Stop / Restart
+			if (currentLen > 0.0f) {
+				ImGui::Text("Time: %.2fs / %.2fs", anim->t, currentLen);
+				ImGui::ProgressBar(anim->t / currentLen, ImVec2(-1, 0));
+
+				// Manual Slider (for debugging specific frames)
+				if (ImGui::SliderFloat("Seek", &anim->t, 0.0f, currentLen)) {
+					anim->playing = false; // Pause if dragging
+					// Force update visual immediately (optional)
+					// KeyframeUnity::Update(ecs, e, *anim, 0.0f); 
+				}
+			}
+
+			// Buttons
 			if (ImGui::Button(anim->playing ? "Pause" : "Play")) {
 				anim->playing = !anim->playing;
 			}
@@ -2785,19 +2774,46 @@ namespace CrashoutsEngine
 				anim->playing = false;
 				anim->t = 0.f;
 			}
-			ImGui::SameLine();
-			if (ImGui::Button("Restart")) {
-				anim->t = 0.f;
-				anim->playing = true;
+
+			// --- 2. Clip List (Details) ---
+			ImGui::SeparatorText("Loaded Clips");
+
+			ImGui::Separator();
+			ImGui::Text("Entity Clips (%zu):", anim->clips.size());
+
+			std::string clipToDelete = "";
+
+			if (ImGui::BeginTable("EntityClipsTable", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
+				ImGui::TableSetupColumn("Clip Name");
+				ImGui::TableSetupColumn("Actions", ImGuiTableColumnFlags_WidthFixed, 60.0f);
+				ImGui::TableHeadersRow();
+
+				for (auto& [name, clip] : anim->clips) {
+					ImGui::PushID(name.c_str());
+					ImGui::TableNextRow();
+
+					ImGui::TableSetColumnIndex(0);
+					ImGui::Text("%s", name.c_str());
+					if (ImGui::IsItemHovered()) {
+						ImGui::SetTooltip("Texture: %s\nGrid: %dx%d", clip.textureAsset.c_str(), clip.spriteCols, clip.spriteRows);
+					}
+
+					ImGui::TableSetColumnIndex(1);
+					if (ImGui::SmallButton("Delete")) {
+						clipToDelete = name;
+					}
+					ImGui::PopID();
+				}
+				ImGui::EndTable();
 			}
 
-			ImGui::SeparatorText("Clips");
-			for (auto& kv : anim->clips) {
-				const std::string& clipName = kv.first;
-				bool isCurrent = (anim->current == clipName);
-
-				if (ImGui::Selectable(clipName.c_str(), isCurrent)) {
-					Play(*anim, clipName, true);
+			// Perform deletion safely outside loop
+			if (!clipToDelete.empty()) {
+				anim->clips.erase(clipToDelete);
+				// If we deleted the currently playing clip, stop playback
+				if (anim->current == clipToDelete) {
+					anim->current = "";
+					anim->playing = false;
 				}
 			}
 		}

@@ -9,6 +9,11 @@ set(project_dir ${CMAKE_CURRENT_LIST_DIR})
 # --- All file (GLOB_RECURSE...) commands go here ---
 message(STATUS "Configuring project: ${PROJECT_NAME}")
 
+# Embed application icon (Windows only)
+if (WIN32)
+    set(DESCENT_ICON "${CMAKE_CURRENT_SOURCE_DIR}/DescentResources.rc")
+endif()
+
 # --- 1. GLOB your specific categories ---
 
 # --- 2. GLOB ALL source and include files separately ---
@@ -28,6 +33,7 @@ set(other_include_files ${all_include_files})
 
 # --- 5. Create the executable (EXE) with ALL files ---
 add_executable(${PROJECT_NAME} WIN32
+    ${DESCENT_ICON}
     ${other_src_files}
     ${other_include_files}
     "${project_dir}/include/pch.h"
