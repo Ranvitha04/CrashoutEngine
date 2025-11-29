@@ -1,3 +1,13 @@
+/*!
+@file		colliderbindings.cpp
+@author     mohamadamirakmal.b@digipen.edu
+@date       19/11/2025
+@brief		Definition of audio bindings functions
+
+All content � 2025 Digipen Institute of Technology Singapore.All rights reserved.
+*/
+//__________________________________________________________________________*/
+
 #include "audiobindings.h"
 #include "audioSystem.h"
 #include "audiocomponent.h"
@@ -24,17 +34,24 @@ namespace
 
     // --------- Internal call implementations ----------
 
-    static void ICALL_Audio_PlayMusicFileTagged(MonoString* key, MonoString* path, mono_bool loop, float volume)
+    static void ICALL_Audio_PlayMusicFileTagged(MonoString* key, MonoString* path, mono_bool loop)
     {
         auto& audio = AudioSystem::instance();
-        audio.playMusicFileTagged(MonoToStdString(key), MonoToStdString(path), loop != 0, volume);
+        audio.playMusicFileTagged(
+            MonoToStdString(key),
+            MonoToStdString(path),
+            loop != 0
+        );
     }
 
-    // Added float volume argument
-    static void ICALL_Audio_PlaySFXFileTagged(MonoString* key, MonoString* path, mono_bool loop, float volume)
+    static void ICALL_Audio_PlaySFXFileTagged(MonoString* key, MonoString* path, mono_bool loop)
     {
         auto& audio = AudioSystem::instance();
-        audio.playSFXFileTagged(MonoToStdString(key), MonoToStdString(path), loop != 0, volume);
+        audio.playSFXFileTagged(
+            MonoToStdString(key),
+            MonoToStdString(path),
+            loop != 0
+        );
     }
 
     static void ICALL_Audio_StopTagged(MonoString* key)

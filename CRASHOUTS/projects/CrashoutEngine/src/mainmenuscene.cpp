@@ -1,5 +1,11 @@
+/*!
+All content © 2025 Digipen Institute of Technology Singapore.All rights reserved.
+
+//__________________________________________________________________________*/
+
 /*                                                   Includes
 ----------------------------------------------------------------------------- */
+
 #include "mainmenuscene.h"
 
 #include "sceneutils.h"
@@ -255,8 +261,8 @@ void RenderMainMenu()
 	// Render MainMenu state
 #if USE_IMGUI_EDITOR
 #else
-	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	//glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 #endif
 	//Scene::RenderScene(*globalECS);
 	Component::RenderSpriteAnimationsECS();

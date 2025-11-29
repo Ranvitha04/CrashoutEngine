@@ -3,6 +3,9 @@
 @author      lee.r@digipen.edu
 @date        23/11/2025
 @brief       Definition of scene bindings functions
+
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 */
 
 #include "scenebindings.h"
@@ -30,7 +33,7 @@ namespace
         std::string nameString{ utf8 };
         mono_free(utf8);
         if (nameString.empty()) return;
-        if (nameString == Serialization::currSceneName) return;
+        //if (nameString == Serialization::currSceneName) return;
 
         Assets::AssetManager& assetManager = Assets::AssetManager::GetInstance();
         if (!assetManager.Exists(nameString)) return;

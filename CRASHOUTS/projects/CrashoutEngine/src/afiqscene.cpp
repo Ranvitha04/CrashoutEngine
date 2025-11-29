@@ -1,4 +1,10 @@
 // afiq.cpp — scene bootstrap + audio + in-file prefab registry (no ImGui here)
+
+/*!
+All content © 2025 Digipen Institute of Technology Singapore.All rights reserved.
+
+//__________________________________________________________________________*/
+
 #include "afiqscene.h"
 #include "log.h"
 

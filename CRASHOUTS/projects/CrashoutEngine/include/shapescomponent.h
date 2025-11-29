@@ -5,6 +5,8 @@
 @brief	    This file defines the ShapesComponent, a simple data structure
             used to store an entity's shape type and variables.
 
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 //__________________________________________________________________________*/
 
 #pragma once
@@ -51,7 +53,7 @@ namespace Component {
         int  wrapModeV{ 0 }; ///< V wrap mode (renderer-defined enum/integer).
 
         CEVec2 uvSize{ 1.f, 1.f }; ///< UV tiling/repeat size when texturing is enabled.
-
+        CEVec2 uvOffset{ 0.f, 0.f };
         std::string textureName{}; ///< Name/identifier of the texture resource to sample.
 
         // -------------------- Shape Selection --------------------

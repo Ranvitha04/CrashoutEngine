@@ -10,6 +10,9 @@ Declares and registers built-in Debug Menu adapters & providers:
 
 These adapters make the ECS inspector and physics/game-state panels
 runtime-extensible and project-agnostic.
+
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 //__________________________________________________________________________*/
 
 /*                                                                   includes
@@ -40,7 +43,7 @@ runtime-extensible and project-agnostic.
 #include "ppcomponent.h"
 #include "collidercomponent.h"
 #include "tilemapcomponent.h"
-#include "keyframe.h" // For AnimationComponent
+#include "keyframe.h" 
 #include "hierarchy_components.h"
 
 // FOR GAME GUI
@@ -984,7 +987,7 @@ namespace {
 				// UV size
 				CEVec2 oldUV = sc->uvSize;
 				float size[2] = { sc->uvSize.x, sc->uvSize.y };
-				if (ImGui::DragFloat2("UV", size, D.drag_small)) {
+				if (ImGui::DragFloat2("UV Size", size, D.drag_small)) {
 					CEVec2 newUV = { size[0], size[1] };
 					if (ImGui::IsItemDeactivatedAfterEdit() && newUV != oldUV) {
 						UndoManager::GetInstance().AddCommand(
@@ -995,6 +998,22 @@ namespace {
 						);
 					}
 					sc->uvSize = newUV;
+				}
+
+				// UV offset
+				CEVec2 oldUVoffset = sc->uvOffset;
+				float offset[2] = { sc->uvOffset.x, sc->uvOffset.y };
+				if (ImGui::DragFloat2("UV Offset", offset, D.drag_small)) {
+					CEVec2 newUV = { offset[0], offset[1] };
+					if (ImGui::IsItemDeactivatedAfterEdit() && newUV != oldUV) {
+						UndoManager::GetInstance().AddCommand(
+							std::make_unique<CrashoutsEngine::ChangeValueCommand<CEVec2>>(
+								oldUV, newUV,
+								[sc](const CEVec2& v) { sc->uvOffset = v; }
+							)
+						);
+					}
+					sc->uvOffset = newUV;
 				}
 
 			}
@@ -1226,12 +1245,13 @@ namespace {
 		void remove(ECS& ecs, Entity e) override {
 			if (has(ecs, e)) {
 				if (auto* c = ecs.GetComponent<Component::AudioEmitterComponent>(e)) {
-					// Cleanup both types
+
 					if (c->inst) {
 						c->inst->stop(FMOD_STUDIO_STOP_IMMEDIATE);
 						c->inst->release();
 						c->inst = nullptr;
 					}
+
 					if (c->channel) {
 						c->channel->stop();
 						c->channel = nullptr;
@@ -1240,47 +1260,54 @@ namespace {
 				ecs.RemoveComponent<Component::AudioEmitterComponent>(e);
 			}
 		}
-
 		void drawInspector(ECS& ecs, Entity e) override {
 			using Component::AudioEmitterComponent;
 			auto* c = ecs.GetComponent<AudioEmitterComponent>(e);
 			if (!c) return;
 
-			ImGui::SeparatorText("Audio Source");
+			// Event path text
+			ImGui::SeparatorText("Event");
 
 			char buf[256]{};
 			if (c->eventPath.size() < sizeof(buf)) std::memcpy(buf, c->eventPath.data(), c->eventPath.size());
-			if (ImGui::InputTextWithHint("##event_path", "Path (e.g. sound.wav OR event:/Jump)", buf, sizeof(buf))) {
+			ImGui::SetNextItemWidth(ImGui::GetFontSize() * 18.0f);
+			ImGui::InputTextWithHint("##event_path", "event:/…", buf, sizeof(buf));
+			if (ImGui::IsItemEdited() || ImGui::IsItemDeactivatedAfterEdit()) {
 				c->eventPath = buf;
 			}
 
 			if (ImGui::BeginDragDropTarget()) {
 				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSET/PAYLOAD")) {
-					if (payload->Data && payload->DataSize == sizeof(AssetDragPayload)) {
+					// Hard guard: ignore wrong payload types
+					if (!payload->Data || payload->DataSize != sizeof(AssetDragPayload)) {
+						LOGW(Debug, "Dropped non-audio payload on AudioComponent eventPath");
+					}
+					else {
 						const auto* d = static_cast<const AssetDragPayload*>(payload->Data);
 
-						std::filesystem::path relPath = d->relPath;
-						std::string ext = relPath.extension().string();
-						std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
-
-						bool isAudioFile = (ext == ".wav" || ext == ".mp3" || ext == ".ogg" || ext == ".bank");
-
-						if (d->kind == AssetKind::Audio || isAudioFile) {
+						// Only accept Audio assets here
+						if (d->kind == AssetKind::Audio) {
+							std::filesystem::path relPath = d->relPath;
+							std::string ext = relPath.extension().string();
+							std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
 
 							std::string rel = relPath.generic_string();
+							const std::string prefix = "audio/";
+							auto pos = rel.find(prefix);
+							if (pos == 0) {
+								rel = rel.substr(prefix.size());
+							}
 
-							// Cleanup: Remove "audio/" or "assets/audio/" prefix for cleaner paths
-							if (rel.find("audio/") == 0) rel = rel.substr(6);
-							else if (rel.find("assets/audio/") == 0) rel = rel.substr(13);
-
-							// Logic: Banks are Events, everything else is Raw
-							if (ext == ".bank") {
-								if (auto dot = rel.find_last_of('.'); dot != std::string::npos) rel.erase(dot);
-								c->eventPath = std::string("event:/") + rel;
+							if (ext == ".wav" || ext == ".ogg" || ext == ".mp3") {
+								// raw clip → just store relative path
+								c->eventPath = rel;
 							}
 							else {
-								// Default to Raw File path
-								c->eventPath = rel;
+								// bank event → strip extension and prepend event:/
+								if (auto dot = rel.find_last_of('.'); dot != std::string::npos) {
+									rel.erase(dot);
+								}
+								c->eventPath = std::string("event:/") + rel;
 							}
 						}
 					}
@@ -1288,84 +1315,172 @@ namespace {
 				ImGui::EndDragDropTarget();
 			}
 
-			ImGui::DragFloat("Volume", &c->volume, 0.01f, 0.f, 2.f);
-			ImGui::DragFloat("Pitch", &c->pitch, 0.01f, 0.1f, 3.f);
-			ImGui::Checkbox("3D Spatial", &c->spatial3D);
+			ImGui::SameLine();
+			ImGui::TextDisabled("Event");
 
-			// VISUAL INDICATOR
-			bool isEventPath = (c->eventPath.rfind("event:/", 0) == 0);
-			if (!c->eventPath.empty()) {
-				ImGui::SameLine();
-				if (isEventPath) ImGui::TextColored(ImVec4(0.5f, 0.8f, 1.0f, 1.0f), "[EVENT]");
-				else             ImGui::TextColored(ImVec4(0.5f, 1.0f, 0.5f, 1.0f), "[RAW]");
+			ImGui::SameLine();
+			if (ImGui::SmallButton("Choose...")) {
+				ImGui::OpenPopup("Pick Audio Event");
 			}
 
+			if (ImGui::BeginPopupModal("Pick Audio Event", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
+				namespace fs = std::filesystem;
+				static std::vector<std::string> s_audioDisplay;
+				static std::vector<std::string> s_audioEvent;
+				static bool s_scanned = false;
+
+				// one-time (per session) scan
+				if (!s_scanned) {
+					s_scanned = true;
+					s_audioDisplay.clear();
+					s_audioEvent.clear();
+
+					const fs::path assetRoot = "assets/audio";
+					auto to_event_like = [&](const fs::path& p) -> std::string {
+						// turn assets/audio/SFX/Beep.wav -> event:/SFX/Beep
+						fs::path rel = fs::relative(p, assetRoot);
+						fs::path withoutExt = rel;
+						if (withoutExt.has_extension()) withoutExt.replace_extension();
+						std::string e = withoutExt.generic_string();
+
+						// Capitalization/punctuation are preserved; prepend event:/ and normalize slashes.
+						return "event:/" + e;
+						};
+
+					try {
+						for (auto& entry : fs::recursive_directory_iterator(assetRoot)) {
+							if (!entry.is_regular_file()) continue;
+
+							std::string ext = entry.path().extension().string();
+							std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+
+							std::string disp = fs::relative(entry.path(), assetRoot).generic_string();
+
+							if (ext == ".wav" || ext == ".mp3" || ext == ".ogg")
+							{
+								// raw audio file → store relative path
+								s_audioDisplay.push_back(disp);
+								s_audioEvent.push_back(disp);   // <-- no "event:/"
+							}
+
+							// Include common authoring/artifacts; refine as needed for your pipeline
+							else if (ext == ".bank") {
+								std::string rel = fs::relative(entry.path(), assetRoot).generic_string(); // e.g. "SFX/explosion.wav"
+
+								s_audioDisplay.push_back(rel);
+								s_audioEvent.push_back(rel);   // this will become c->eventPath
+							}
+						}
+
+						// Sort by display name
+						std::vector<size_t> idx(s_audioDisplay.size());
+						std::iota(idx.begin(), idx.end(), 0);
+						std::sort(idx.begin(), idx.end(), [&](size_t a, size_t b) {
+							return s_audioDisplay[a] < s_audioDisplay[b];
+							});
+
+						std::vector<std::string> disp2, ev2;
+						disp2.reserve(idx.size()); ev2.reserve(idx.size());
+						for (size_t i : idx) { disp2.push_back(std::move(s_audioDisplay[i])); ev2.push_back(std::move(s_audioEvent[i])); }
+						s_audioDisplay.swap(disp2); s_audioEvent.swap(ev2);
+					}
+					catch (...) {
+						// swallow errors; empty list will be shown
+					}
+				}
+
+				// Left: list
+				ImGui::BeginChild("audio_list", ImVec2(420, 300), true);
+				for (size_t i = 0; i < s_audioDisplay.size(); ++i) {
+					if (ImGui::Selectable(s_audioDisplay[i].c_str())) {
+						c->eventPath = s_audioEvent[i];
+
+						// reflect selection back to the read-only text box
+						std::strncpy(buf, c->eventPath.c_str(), sizeof(buf) - 1);
+						buf[sizeof(buf) - 1] = '\0';
+
+						ImGui::CloseCurrentPopup();
+						break;
+					}
+				}
+				ImGui::EndChild();
+
+				if (ImGui::Button("Rescan")) {
+					// allow rescanning if you add new audio during runtime
+					s_scanned = false;
+				}
+				ImGui::SameLine();
+				if (ImGui::Button("Cancel")) ImGui::CloseCurrentPopup();
+
+				ImGui::EndPopup();
+			}
+
+			ImGui::DragFloat("Volume", &c->volume, 0.01f, 0.f, 5.f);
+			ImGui::DragFloat("Pitch", &c->pitch, 0.01f, 0.25f, 4.f);
+			ImGui::Checkbox("3D Spatial", &c->spatial3D);
+
 			auto& audio = Audio::AudioSystem::instance();
-
-			// Check if anything is active
-			bool isEvent = (c->inst != nullptr);
-			bool isRaw = (c->channel != nullptr);
-			bool isPlaying = isEvent || isRaw;
-
-			ImGui::Spacing();
-
-			if (ImGui::Button(isPlaying ? "Restart" : "Play")) {
+			bool hasRunning = (c->inst != nullptr) || (c->channel != nullptr);
+			// Create/Play/Stop lifecycle
+			if (ImGui::Button(hasRunning ? "Restart" : "Play")) {
 				if (!c->eventPath.empty()) {
-					// Stop old audio
+					// stop old instance if any
 					if (c->inst) {
 						c->inst->stop(FMOD_STUDIO_STOP_IMMEDIATE);
 						c->inst->release();
 						c->inst = nullptr;
 					}
+
 					if (c->channel) {
 						c->channel->stop();
 						c->channel = nullptr;
 					}
 
-					if (isEventPath) {
-						// EVENT MODE
-						FMOD::Studio::EventInstance* inst = audio.createInstance(c->eventPath);
-						if (inst) {
+					// --- FMOD Studio event path ---
+					if (c->eventPath.rfind("event:/", 0) == 0) {
+						if (FMOD::Studio::EventInstance* inst = audio.createInstance(c->eventPath)) {
 							inst->setVolume(c->volume);
 							inst->setPitch(c->pitch);
+
+							if (c->spatial3D) {
+								if (auto* t = ecs.GetComponent<Component::TransformComponent>(e)) {
+									// your existing 3D attach code here
+								}
+							}
+
 							inst->start();
 							c->inst = inst;
 						}
-						else {
-							LOGW(Audio, "Failed to create Event: " + c->eventPath);
-						}
 					}
+					// --- raw file path under assets/audio (wav/ogg/mp3) ---
 					else {
-						// RAW FILE MODE
 						std::string path = c->eventPath;
-						namespace fs = std::filesystem;
+						if (path.rfind("assets/", 0) != 0)
+							path = "assets/audio/" + path;
 
-						// Auto-resolve path if file is missing
-						if (!fs::exists(path)) {
-							if (fs::exists("assets/audio/" + path)) path = "assets/audio/" + path;
-							else if (fs::exists("assets/" + path)) path = "assets/" + path;
+						// stop previous raw channel
+						if (c->channel) {
+							c->channel->stop();
+							c->channel = nullptr;
 						}
 
-						// Play
+						// play new raw file and store channel
 						c->channel = audio.playSFXFileEx(path);
-						if (c->channel) {
+
+						if (c->channel)
+						{
 							c->channel->setVolume(c->volume);
 							c->channel->setPitch(c->pitch);
-							c->channel->setMode(FMOD_2D);
-						}
-						else {
-							LOGW(Audio, "Failed to play Raw File: " + path);
 						}
 					}
 				}
 			}
 
 			ImGui::SameLine();
-
-			if (ImGui::Button("Stop")) {
+			if (ImGui::Button("Stop"))
+			{
 				if (c->inst) {
 					c->inst->stop(FMOD_STUDIO_STOP_ALLOWFADEOUT);
-					c->inst->release();
 					c->inst = nullptr;
 				}
 				if (c->channel) {
@@ -1374,34 +1489,37 @@ namespace {
 				}
 			}
 
-			ImGui::Separator();
-
-			if (c->inst) {
-				FMOD_STUDIO_PLAYBACK_STATE state;
-				c->inst->getPlaybackState(&state);
-				bool actuallyPlaying = (state == FMOD_STUDIO_PLAYBACK_PLAYING);
-				ImGui::TextColored(actuallyPlaying ? ImVec4(0, 1, 0, 1) : ImVec4(1, 1, 0, 1),
-					"Event: %s", actuallyPlaying ? "PLAYING" : "IDLE");
-				if (c->inst->isValid()) {
-					c->inst->setVolume(c->volume);
-					c->inst->setPitch(c->pitch);
-				}
-			}
-			else if (c->channel) {
-				bool playing = false;
-				c->channel->isPlaying(&playing);
-				if (playing) {
-					ImGui::TextColored(ImVec4(0, 1, 0, 1), "Raw File: PLAYING");
-					c->channel->setVolume(c->volume);
-					c->channel->setPitch(c->pitch);
-				}
-				else {
-					ImGui::TextColored(ImVec4(0.5f, 0.5f, 0.5f, 1), "Raw File: FINISHED");
-					c->channel = nullptr;
-				}
+			if (c->channel) {
+				bool isPlaying = false;
+				c->channel->isPlaying(&isPlaying);
+				ImGui::Text("Channel valid: %s", isPlaying ? "PLAYING" : "NOT PLAYING");
 			}
 			else {
-				ImGui::TextDisabled("Status: Idle");
+				ImGui::Text("Channel is NULL!");
+			}
+
+
+			// Live controls for a running instance
+			if (c->inst) {
+				c->inst->setVolume(c->volume);
+				c->inst->setPitch(c->pitch);
+
+				// Expose event parameters dynamically
+				FMOD::Studio::EventDescription* desc = nullptr;
+				c->inst->getDescription(&desc);
+				if (desc) {
+					int count = 0; desc->getParameterDescriptionCount(&count);
+					for (int i = 0; i < count; ++i) {
+						FMOD_STUDIO_PARAMETER_DESCRIPTION pd{};
+						if (desc->getParameterDescriptionByIndex(i, &pd) == FMOD_OK) {
+							float v = 0.f;
+							c->inst->getParameterByID(pd.id, &v, nullptr);
+							if (ImGui::DragFloat(pd.name, &v, 0.01f, pd.minimum, pd.maximum, "%.3f")) {
+								c->inst->setParameterByID(pd.id, v);
+							}
+						}
+					}
+				}
 			}
 		}
 	};
@@ -1745,7 +1863,7 @@ namespace CrashoutsEngine
 )";
 				out.close();
 
-				// Optionally automatically add this new script
+				// automatically add this new script
 				sc->AddScript(file.stem().string());
 			}
 
@@ -2585,7 +2703,7 @@ namespace CrashoutsEngine
 	@details Uses ImGui controls to manage keyframe animations.
 	*/
 	struct KeyframeAnimatorAdapter : DebugReflection::IComponentAdapter {
-		const char* name() const override { return "Animation (KeyframeAnimator)"; }
+		const char* name() const override { return "Animation (Keyframe)"; }
 
 		bool has(ECS& ecs, Entity e) const override {
 			return ecs.HasComponent<KeyframeAnimatorComponent>(e);
@@ -2593,63 +2711,9 @@ namespace CrashoutsEngine
 
 		void add(ECS& ecs, Entity e) override {
 			using namespace KeyframeUnity;
-
-			// Ensure component exists
-			auto& anim = AddAnimator(ecs, e);
-
-			// -------- sample WALK clip (frames 0–3 loop) --------
-			AnimationClip walk{};
-			walk.name = "Walk";
-			walk.wrap = KFWrap::Loop;
-
-			KFBinding walkSprite{};
-			walkSprite.property = KFProperty::SpriteIndex;
-
-			{
-				KFKey k{};
-				k.interp = KFInterp::Constant;
-
-				k.time = 0.0f; k.value = 0.f; walkSprite.curve.Add(k);
-				k.time = 0.1f; k.value = 1.f; walkSprite.curve.Add(k);
-				k.time = 0.2f; k.value = 2.f; walkSprite.curve.Add(k);
-				k.time = 0.3f; k.value = 3.f; walkSprite.curve.Add(k);
-				k.time = 0.4f; k.value = 0.f; walkSprite.curve.Add(k); // close loop
-			}
-
-			walk.bindings.push_back(walkSprite);
-
-			// -------- sample JUMP clip (frames 4–7, clamp) --------
-			AnimationClip jump{};
-			jump.name = "Jump";
-			jump.wrap = KFWrap::Clamp;
-
-			KFBinding jumpSprite{};
-			jumpSprite.property = KFProperty::SpriteIndex;
-
-			{
-				KFKey keyFrame{};
-				keyFrame.interp = KFInterp::Constant;
-
-				// start stand frame
-				keyFrame.time = 0.0f;  keyFrame.value = 4.f; jumpSprite.curve.Add(keyFrame);
-				// in-air
-				keyFrame.time = 0.15f; keyFrame.value = 5.f; jumpSprite.curve.Add(keyFrame);
-				// peak
-				keyFrame.time = 0.30f; keyFrame.value = 6.f; jumpSprite.curve.Add(keyFrame);
-				// landing
-				keyFrame.time = 0.45f; keyFrame.value = 7.f; jumpSprite.curve.Add(keyFrame);
-			}
-
-			jump.bindings.push_back(jumpSprite);
-
-			// Register both clips
-			anim.clips[walk.name] = walk;
-			anim.clips[jump.name] = jump;
-
-			// Start in WALK
-			anim.current = walk.name;
-			anim.t = 0.f;
-			anim.playing = true;
+			// Just ensure the component exists. Don't add sample data automatically.
+			// Let the user add clips via code or loading.
+			AddAnimator(ecs, e);
 		}
 
 		void remove(ECS& ecs, Entity e) override {
@@ -2663,18 +2727,45 @@ namespace CrashoutsEngine
 			auto* anim = ecs.GetComponent<KeyframeAnimatorComponent>(e);
 			if (!anim) return;
 
-			ImGui::SeparatorText("Animation");
+			// --- 1. Playback Controls ---
+			ImGui::SeparatorText("Playback State");
 
-			if (anim->current.empty()) {
-				ImGui::TextDisabled("No clip set. Use your code to SetClip() and Play().");
+			// Current Clip Name (Read-only or Dropdown)
+			if (anim->clips.empty()) {
+				ImGui::TextColored(ImVec4(1, 0, 0, 1), "No Clips Loaded!");
 			}
 			else {
-				ImGui::Text("Current clip: %s", anim->current.c_str());
+				if (ImGui::BeginCombo("Current Clip", anim->current.c_str())) {
+					for (const auto& pair : anim->clips) {
+						bool isSelected = (anim->current == pair.first);
+						if (ImGui::Selectable(pair.first.c_str(), isSelected)) {
+							Play(*anim, pair.first, true); // Restart on select
+						}
+						if (isSelected) ImGui::SetItemDefaultFocus();
+					}
+					ImGui::EndCombo();
+				}
 			}
 
-			ImGui::DragFloat("Time", &anim->t, 0.01f, 0.0f);
+			// Progress Bar / Time Slider
+			float currentLen = 0.0f;
+			if (!anim->current.empty() && anim->clips.count(anim->current)) {
+				currentLen = anim->clips.at(anim->current).Length();
+			}
 
-			// Play / Pause / Stop / Restart
+			if (currentLen > 0.0f) {
+				ImGui::Text("Time: %.2fs / %.2fs", anim->t, currentLen);
+				ImGui::ProgressBar(anim->t / currentLen, ImVec2(-1, 0));
+
+				// Manual Slider (for debugging specific frames)
+				if (ImGui::SliderFloat("Seek", &anim->t, 0.0f, currentLen)) {
+					anim->playing = false; // Pause if dragging
+					// Force update visual immediately (optional)
+					// KeyframeUnity::Update(ecs, e, *anim, 0.0f); 
+				}
+			}
+
+			// Buttons
 			if (ImGui::Button(anim->playing ? "Pause" : "Play")) {
 				anim->playing = !anim->playing;
 			}
@@ -2683,19 +2774,46 @@ namespace CrashoutsEngine
 				anim->playing = false;
 				anim->t = 0.f;
 			}
-			ImGui::SameLine();
-			if (ImGui::Button("Restart")) {
-				anim->t = 0.f;
-				anim->playing = true;
+
+			// --- 2. Clip List (Details) ---
+			ImGui::SeparatorText("Loaded Clips");
+
+			ImGui::Separator();
+			ImGui::Text("Entity Clips (%zu):", anim->clips.size());
+
+			std::string clipToDelete = "";
+
+			if (ImGui::BeginTable("EntityClipsTable", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
+				ImGui::TableSetupColumn("Clip Name");
+				ImGui::TableSetupColumn("Actions", ImGuiTableColumnFlags_WidthFixed, 60.0f);
+				ImGui::TableHeadersRow();
+
+				for (auto& [name, clip] : anim->clips) {
+					ImGui::PushID(name.c_str());
+					ImGui::TableNextRow();
+
+					ImGui::TableSetColumnIndex(0);
+					ImGui::Text("%s", name.c_str());
+					if (ImGui::IsItemHovered()) {
+						ImGui::SetTooltip("Texture: %s\nGrid: %dx%d", clip.textureAsset.c_str(), clip.spriteCols, clip.spriteRows);
+					}
+
+					ImGui::TableSetColumnIndex(1);
+					if (ImGui::SmallButton("Delete")) {
+						clipToDelete = name;
+					}
+					ImGui::PopID();
+				}
+				ImGui::EndTable();
 			}
 
-			ImGui::SeparatorText("Clips");
-			for (auto& kv : anim->clips) {
-				const std::string& clipName = kv.first;
-				bool isCurrent = (anim->current == clipName);
-
-				if (ImGui::Selectable(clipName.c_str(), isCurrent)) {
-					Play(*anim, clipName, true);
+			// Perform deletion safely outside loop
+			if (!clipToDelete.empty()) {
+				anim->clips.erase(clipToDelete);
+				// If we deleted the currently playing clip, stop playback
+				if (anim->current == clipToDelete) {
+					anim->current = "";
+					anim->playing = false;
 				}
 			}
 		}

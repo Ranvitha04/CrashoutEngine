@@ -31,6 +31,7 @@ namespace CrashoutsEngine
         private CEVec3 endPos;
 
         private float currentYOffset = 0.0f;
+        PlayerMovement playerScript;
 
         public override void Start()
         {
@@ -60,6 +61,7 @@ namespace CrashoutsEngine
 
             playerOnBoard = false;
             currentYOffset = 0.0f;
+            playerScript = PlayerMovement.Instance;
         }
 
         public void OnTriggerEnter(uint otherEntityID)
@@ -90,6 +92,7 @@ namespace CrashoutsEngine
 
         public override void Update()
         {
+            if(playerScript != null && playerScript.isPaused) { return; }
             if (transform == null) return;
 
             float dt = (float)Time.DT;

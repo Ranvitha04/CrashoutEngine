@@ -22,33 +22,61 @@ namespace CrashoutsEngine
                 string msg = "[C#] Name is " + name;
                 Debug.Log(msg);
 
-                // FOR StartBtn
+               
                 if (name.ToString() == "StartBtn")
                 {
                     Debug.Log("[C#] Loading Scene...");
                     SceneManager.LoadScene("descentgame");
                 }
-                // FOR SettingsBtn
+             
                 else if (name.ToString() == "SettingsBtn")
                 {
                     //Console.WriteLine("[C#] Loading Scene...");
                     Debug.Log("[C#] Loading Scene...");
                     SceneManager.LoadScene("descentsettings");
                 }
-                // FOR CloseBtn
+                
                 else if (name.ToString() == "CloseBtn")
                 {
-                    //Console.WriteLine("[C#] Loading Scene...");
+                    
                     Debug.Log("[C#] Loading Scene...");
                     SceneManager.LoadScene("descentmenu");
                 }
-                // FOR QuitBtn
+                
                 else if (name.ToString() == "QuitBtn")
                 {
-                    //Console.WriteLine("[C#] Quitting Game...");
-                    Debug.Log("[C#] Quitting Game...");
+                   
+                    SceneManager.LoadScene("descentconfirm");
+                }
+                else if (name.ToString() == "QuitYesBtn")
+                {
                     SceneManager.QuitGame();
                 }
+                else if (name.ToString() == "QuitNoBtn")
+                {
+               
+                    SceneManager.LoadScene("descentmenu"); 
+                }
+               
+                else if (name.ToString() == "PauseResumeBtn")
+                {
+                    // Resume Game from pause menu
+                    Debug.Log("[C#] Resume Game from pause menu.");
+                    SceneManager.LoadScene("descentgame");
+                }
+                else if (name.ToString() == "PauseSettingsBtn")
+                {
+                    // Go to settings from pause menu
+                    Debug.Log("[C#] Pause menu -> Settings.");
+                    SceneManager.LoadScene("descentsettings");
+                }
+                else if (name.ToString() == "PauseQuitBtn")
+                {
+                    
+                    SceneManager.LoadScene("descentconfirm");
+                }
+
+
             }
             if (btn.IsHovered())
             {

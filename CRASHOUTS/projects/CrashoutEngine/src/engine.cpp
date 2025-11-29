@@ -6,6 +6,8 @@
 This file uses functionality defined in type GLApp to initialize an OpenGL
 context and implement a game loop.
 
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 *//*__________________________________________________________________________*/
 
 /*                                                                   includes
@@ -36,6 +38,7 @@ context and implement a game loop.
 #include "prefab_init.h"
 #include "instanceSystem.h"
 #include "sceneasset.h"
+#include "keyframe.h"
 
 #include "glapp.h"
 #include "log.h"
@@ -74,7 +77,11 @@ static CrashoutsEngine::AIManager aiSystem;
 // ImGui in-game performance viewer
 static FrameProfiler gProfiler;
 
+#if USE_IMGUI_EDITOR
 EngineState engineState = EngineState::STOP;
+#else
+EngineState engineState = EngineState::PLAY;
+#endif
 
 const float moveSpeed = 6.7f;
 
@@ -95,7 +102,12 @@ bool gameWinHovered{ false };
 std::string g_PendingSceneName = "";
 bool g_IsSceneLoadPending = false;
 
+#if USE_IMGUI_EDITOR
 static EngineState previousState = EngineState::STOP;
+#else
+static EngineState previousState = EngineState::PLAY;
+#endif
+
 bool g_fullscreen = false;
 
 /*  _________________________________________________________________________ */
@@ -120,7 +132,6 @@ bool PerformPendingSceneLoad() {
         CrashoutsEngine::CollisionEventManager::GetInstance().Clear();
         CrashoutsEngine::Serialization::currSceneName = g_PendingSceneName;
         CrashoutsEngine::Serialization::LoadScenes(g_PendingSceneName);
-		MonoManager::ReloadScripts();
 
         // Reset flags
         g_IsSceneLoadPending = false;
@@ -190,30 +201,21 @@ void Init() {
     if (!GLApp::init(Settings::GetScreenWidth(), Settings::GetScreenHeight(), "CRASHOUTS")) {
         std::exit(EXIT_FAILURE);
     }
-    // Detect if window starts fullscreen (decorated = false)
-    int decorated = glfwGetWindowAttrib(GLApp::ptr_window, GLFW_DECORATED);
-    g_fullscreen = (decorated == GLFW_FALSE);
-
     glfwSetWindowFocusCallback(GLApp::ptr_window,
         [](GLFWwindow*, int focused)
         {
             if (focused == GLFW_TRUE)
             {
                 // Window regained focus
-                engineState = previousState;
-
-                // Restore audio only if previous state was PLAY
-                CrashoutsEngine::Audio::AudioSystem::instance().setPaused(
-                    engineState != EngineState::PLAY
-                );
+                if (engineState == EngineState::PLAY)
+                    CrashoutsEngine::Audio::AudioSystem::instance().setPaused(false);
             }
             else
             {
-                // Window loses focus remember current state
-                previousState = engineState;
-
-                // Always pause the engine when unfocused
+#if USE_IMGUI_EDITOR
+                // Window lost focus (ALT+TAB)
                 engineState = EngineState::PAUSE;
+#endif
                 CrashoutsEngine::Audio::AudioSystem::instance().setPaused(true);
                 InputManager::ClearInputs();
             }
@@ -221,10 +223,7 @@ void Init() {
     );
 
     // Generate and Load Assets and Manifest
-    #if USE_IMGUI_EDITOR
     CrashoutsEngine::Assets::GenerateAssetManifest();
-    #endif
-
     CrashoutsEngine::Assets::AssetManager::GetInstance().LoadManifestAssets();
 
     //Component::Rendering::Get().Setup_VAO(); // Setup default quad VAO
@@ -238,14 +237,19 @@ void Init() {
 
     /// register game states and start with main menu
     RegisterAllStates();
-    InitGameStateManager(MAIN_MENU);
+    InitGameStateManager(SCENE);
 
     CrashoutsEngine::ScriptSystem::InitializeAll(MonoManager::GetDomain(), MonoManager::GetAssembly());
 
     InputManager::Init(GLApp::ptr_window);
     UI::Init(GLApp::ptr_window); // NEW
     PerformanceSystem::Get().Attach(gProfiler);
+
+    #if USE_IMGUI_EDITOR
     engineState = EngineState::STOP;
+    #else
+    engineState = EngineState::PLAY;
+    #endif  
 
     glEnable(GL_DEPTH_TEST);
 
@@ -264,13 +268,84 @@ Uses GLHelper::GLFWWindow* to get handle to OpenGL context.
 */
 void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
 
+#if !USE_IMGUI_EDITOR 
+    (void)globalSelectedEntity;
+#endif
+
     static UI::UIState uiState;
 
     // --- 1: RENDER THE RAW GAME SCENE ---
     // FOR USE_IMGUI_EDITOR AND NOT USING
     // All game objects, sprites, text, etc., draw into 'gameFboID'.
     glBindFramebuffer(GL_FRAMEBUFFER, gameFboID);
+
+    #if !USE_IMGUI_EDITOR
+        int windowW, windowH;
+        glfwGetFramebufferSize(GLApp::ptr_window, &windowW, &windowH);
+
+        const float targetAspectRatio = 16.0f / 9.0f;
+        float currentAspectRatio = (float)windowW / (float)windowH;
+
+        int vpX, vpY, vpW, vpH;
+
+        // Calculate Viewport (Letterboxing)
+        if (currentAspectRatio > targetAspectRatio) {
+            // Window is too wide (Black bars on left/right)
+            vpH = windowH;
+            vpW = static_cast<int>(windowH * targetAspectRatio);
+            vpX = (windowW - vpW) / 2;
+            vpY = 0;
+        }
+        else {
+            // Window is too tall (Black bars on top/bottom)
+            vpW = windowW;
+            vpH = static_cast<int>(windowW / targetAspectRatio);
+            vpX = 0;
+            vpY = (windowH - vpH) / 2;
+        }
+
+        // 4. Clear the FULL window to black (The "Bars")
+
+        // 5. Set Viewport to the Game Area & Enable Scissor Test
+        // Scissor ensures we don't draw outside the calculated game area
+        //glEnable(GL_SCISSOR_TEST);
+        //glScissor(vpX, vpY, vpW, vpH);
+        glViewport(vpX, vpY, vpW, vpH);
+
+        // 7. Update Camera Matrices to match the VIEWPORT size, not window size
+        CrashoutsEngine::RenderCamera::gameCamera.UpdateMatrices(vpW, vpH);
+
+        // If the window size differs from our internal texture size
+        if (vpW != gameTextureWidth || vpH != gameTextureHeight) {
+            gameTextureWidth = vpW;
+            gameTextureHeight = vpH;
+
+            // --- RESIZE THE TEXTURE MEMORY ---
+
+            // 1. Resize the Color Texture
+            glBindTexture(GL_TEXTURE_2D, gameTextureColorBuffer);
+            // Re-allocate memory with the new width/height (NULL means we don't copy data, just alloc)
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, gameTextureWidth, gameTextureHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+
+            // 2. Resize the Depth/Stencil Buffer (Use RBO or Texture depending on your setup)
+            // Based on your variables, you likely use 'gameRboDepthStencil'
+            if (gameRboDepthStencil != 0) {
+                glBindRenderbuffer(GL_RENDERBUFFER, gameRboDepthStencil);
+                glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, gameTextureWidth, gameTextureHeight);
+            }
+
+            // Unbind to be safe
+            glBindTexture(GL_TEXTURE_2D, 0);
+            glBindRenderbuffer(GL_RENDERBUFFER, 0);
+
+            // Note: We don't need to re-attach them to the gameFboID usually, 
+            // as the FBO holds references to the IDs, which haven't changed.
+        }
+    #else
+
     glViewport(0, 0, gameTextureWidth, gameTextureHeight);
+
+    #endif
     glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
@@ -374,8 +449,8 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
         ImGui::SameLine(0.0f, 0.0f);
 
         // fullscreen
-        //static bool fullscreen = true;
-        if (DrawTitleButton(g_fullscreen ? "[ ]" : "[]"))
+        static bool fullscreen = true;
+        if (DrawTitleButton(fullscreen ? "[ ]" : "[]"))
         {
             GLFWmonitor* mon = glfwGetPrimaryMonitor();
             const GLFWvidmode* mode = glfwGetVideoMode(mon);
@@ -383,7 +458,7 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
             int mx, my;
             glfwGetMonitorPos(mon, &mx, &my);
 
-            if (!g_fullscreen) {
+            if (!fullscreen) {
                 glfwSetWindowAttrib(GLApp::ptr_window, GLFW_DECORATED, GLFW_FALSE);
                 glfwSetWindowMonitor(GLApp::ptr_window, NULL, mx, my, mode->width, mode->height, 0);
             }
@@ -391,7 +466,7 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
                 glfwSetWindowAttrib(GLApp::ptr_window, GLFW_DECORATED, GLFW_FALSE);
                 glfwSetWindowMonitor(GLApp::ptr_window, NULL, 100, 100, 1600, 900, 0);
             }
-            g_fullscreen = !g_fullscreen;
+            fullscreen = !fullscreen;
         }
 
 
@@ -404,7 +479,7 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
 		// dragging is stupidly bugged but whatever - Rain
 		// YEAHHHHH ITS FIXED
         // Disable dragging in fullscreen
-        if (!g_fullscreen)
+        if (!fullscreen)
         {
             static bool draggingWindow = false;
             static POINT cursorStart;
@@ -513,6 +588,8 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
 
 
 #else
+    CEVec3 mouseWorld{ Scene::GetMouseInWorld() };
+    InputManager::g_mouseWorldPos = CEVec2{ mouseWorld.x, mouseWorld.y };
 
     // Render directly to screen
     int displayWidth, displayHeight;
@@ -559,36 +636,8 @@ Ensure time per frame and FPS are recorded.
 Let application update state changes (such as animation).
 */
 void Update(double const& dt) {
-    #if USE_IMGUI_EDITOR
     MonoManager::CheckHotReload();
-    #endif
-
     if(PerformPendingSceneLoad()) return;
-
-    // ALT+ENTER fullscreen toggle using InputManager
-// ------------------------------------------------------
-    if (InputManager::IsKeyHeld(Key::LeftAlt) && InputManager::IsKeyTriggered(Key::Enter))
-    {
-        GLFWwindow* window = GLApp::ptr_window;
-        GLFWmonitor* mon = glfwGetPrimaryMonitor();
-        const GLFWvidmode* mode = glfwGetVideoMode(mon);
-
-        int mx, my;
-        glfwGetMonitorPos(mon, &mx, &my);
-
-        if (!g_fullscreen)
-        {
-            glfwSetWindowAttrib(window, GLFW_DECORATED, GLFW_FALSE);
-            glfwSetWindowMonitor(window, nullptr, mx, my, mode->width, mode->height, 0);
-        }
-        else
-        {
-            glfwSetWindowAttrib(window, GLFW_DECORATED, GLFW_FALSE);
-            glfwSetWindowMonitor(window, nullptr, 100, 100, 1600, 900, 0);
-        }
-
-        g_fullscreen = !g_fullscreen;
-    }
 
     GLApp::update_time();
 
@@ -611,6 +660,7 @@ void Update(double const& dt) {
     CrashoutsEngine::UpdateHierarchy(*CrashoutsEngine::ECS::getInstance());
 
     if (engineState == EngineState::PLAY) {
+        KeyframeUnity::UpdateAll(*CrashoutsEngine::ECS::getInstance(), (float)dt);
         CrashoutsEngine::ScriptSystem::UpdateAll();
 
         aiSystem.Update();
@@ -698,7 +748,7 @@ void Update(double const& dt) {
     
     CrashoutsEngine::PostProcessing::UpdatePP();
 
-#if USE_IMGUI_EDITOR
+
     // Cycle and draw Tile Map Editor if needed
     CrashoutsEngine::ECS::ComponentArray<Component::TileMapComponent>& tmArray =
         CrashoutsEngine::ECS::getInstance()->GetComponentArray<Component::TileMapComponent>();
@@ -711,7 +761,6 @@ void Update(double const& dt) {
         CrashoutsEngine::Entity entityID = tmArray.indexToEntity[i];
         if (tm.isCacheDirty) CrashoutsEngine::TileMapUtils::RebuildCache(tm, entityID);
     }
-#endif
 
 }
 

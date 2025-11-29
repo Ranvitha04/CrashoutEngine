@@ -4,6 +4,8 @@
 @date        13/09/2025
 @brief		 This file implements an entity manager
 
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 *//*__________________________________________________________________________*/
 
 /* _________________________________________________________________________

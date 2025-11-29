@@ -10,6 +10,8 @@ to load OpenGL extensions; initialize OpenGL state; and finally initialize
 the OpenGL application by calling initalization functions associated with
 objects participating in the application.
 
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 *//*__________________________________________________________________________*/
 
 /*                                                                      guard
@@ -47,6 +49,15 @@ struct GLApp
 	static void mousepos_cb(GLFWwindow* pwin, double xpos, double ypos);
 
 	static void update_time(double fpsCalcInt = 1.0);
+
+	static void ToggleFullscreen();
+	static void ToggleMaximize();
+	static void Minimize();
+
+	// State tracking variables
+	static bool is_fullscreen;
+	static bool is_maximized;
+	static int  windowed_x, windowed_y, windowed_w, windowed_h;
 
 	static GLint width, height;
 	static GLdouble fps;

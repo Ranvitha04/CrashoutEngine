@@ -1,7 +1,10 @@
+/*!
+All content © 2025 Digipen Institute of Technology Singapore.All rights reserved.
+
+//__________________________________________________________________________*/
+
 #include "shaderasset.h"
-
 #include "amirscene.h"
-
 #include "sceneutils.h"
 #include "log.h"
 #include "GLFW/glfw3.h"

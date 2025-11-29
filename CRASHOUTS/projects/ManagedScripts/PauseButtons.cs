@@ -9,6 +9,8 @@ namespace CrashoutsEngine
         private uint _pauseScreenID = 0;
         private bool _isPaused = false;
 
+        PlayerMovement playerMovement;
+
         public override void Start()
         {
             // 1. Find the screen ONCE at startup
@@ -16,11 +18,14 @@ namespace CrashoutsEngine
             if (screen != null)
             {
                 _pauseScreenID = screen.ID;
+                
             }
             else
             {
                 Console.WriteLine("[Error] PauseButtons could not find 'PauseScreen' entity!");
             }
+
+            playerMovement = PlayerMovement.Instance;
         }
 
         public override void Update()
@@ -39,18 +44,23 @@ namespace CrashoutsEngine
                 string name = nameComp != null ? nameComp.ToString() : "Unknown";
 
                 Console.WriteLine("[C#] Clicked: " + name);
+                Entity screen = new Entity(_pauseScreenID);
+                var tf = screen.GetComponent<TransformComponent>();
 
-                if (name == "ResumeBtn")
+                if (tf.Position.z >= 0.0f)
                 {
-                    SetPauseMenu(false);
-                }
-                else if (name == "SettingsBtn")
-                {
-                    Console.WriteLine("Settings not implemented");
-                }
-                else if (name == "QuitBtn")
-                {
-                    SceneManager.QuitGame();
+                    if (name == "PauseResumeBtn")
+                    {
+                        SetPauseMenu(false);
+                    }
+                    else if (name == "SettingsBtn")
+                    {
+                        Console.WriteLine("Settings not implemented");
+                    }
+                    else if (name == "PauseQuitBtn")
+                    {
+                        SceneManager.QuitGame();
+                    }
                 }
             }
         }
@@ -62,6 +72,7 @@ namespace CrashoutsEngine
 
         void SetPauseMenu(bool show)
         {
+            if(playerMovement != null) playerMovement.isPaused = show;
             // 4. Safety Check: Make sure we actually found the screen
             if (_pauseScreenID == 0) return;
 

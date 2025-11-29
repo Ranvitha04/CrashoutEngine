@@ -3,6 +3,9 @@
 @author     m.biniswandi@digipen.edu
 @date       06/11/2025
 @brief		Definition of mono manager functions
+
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 */
 #include "monomanager.h"
 
@@ -22,19 +25,6 @@ MonoDomain* MonoManager::s_Domain = nullptr;
 MonoAssembly* MonoManager::s_Assembly = nullptr;
 std::filesystem::file_time_type MonoManager::s_LastWriteTime{};
 std::string MonoManager::s_AssemblyPath = "";
-
-// USER DOCUMENTS SCRIPT PATH (Release Only)
-#ifdef NDEBUG
-#include <cstdlib>
-static const std::filesystem::path SCRIPT_ROOT =
-std::filesystem::path(std::getenv("USERPROFILE")) /
-"Documents" / "CrashoutsEngine" / "Scripts";
-#else
-static const std::filesystem::path SCRIPT_ROOT = "scripts";
-#endif
-
-static const std::filesystem::path SCRIPT_CACHE = SCRIPT_ROOT / "_cache";
-
 
 namespace CrashoutsEngine::Bindings {
 
@@ -96,8 +86,7 @@ void MonoManager::LoadAssembly(const std::string& assemblyPath)
     fs::path latestDll;
     auto latestTime = fs::file_time_type::min();
 
-    std::filesystem::create_directories(SCRIPT_ROOT);
-    for (const auto& file : fs::directory_iterator(SCRIPT_ROOT))
+    for (const auto& file : fs::directory_iterator("scripts"))
     {
         if (file.path().extension() == ".dll")
         {
@@ -170,8 +159,7 @@ void MonoManager::ReloadScripts()
         // find newest DLL in scripts folder
         fs::path latestDll;
         auto latestTime = fs::file_time_type::min();
-        std::filesystem::create_directories(SCRIPT_ROOT);
-        for (const auto& file : fs::directory_iterator(SCRIPT_ROOT))
+        for (const auto& file : fs::directory_iterator("scripts"))
         {
             if (file.path().extension() == ".dll")
             {
@@ -193,7 +181,7 @@ void MonoManager::ReloadScripts()
         std::cout << "[Mono][Debug] Latest DLL detected: " << latestDll << "\n";
 
         // prepare cache folder
-        fs::path dstDir = SCRIPT_CACHE;
+        fs::path dstDir = "scripts/_cache";
         fs::create_directories(dstDir);
 
         // generate a unique temp filename
@@ -278,7 +266,7 @@ std::string MonoManager::CopyAssemblyToTemp(const std::string& originalPath)
     namespace fs = std::filesystem;
 
     fs::path src = originalPath;
-    fs::path dst = SCRIPT_CACHE;
+    fs::path dst = "scripts/_cache";
     fs::create_directories(dst);
 
     fs::path tempFile = dst / src.filename();

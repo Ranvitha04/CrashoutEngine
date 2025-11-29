@@ -5,6 +5,9 @@
 @brief Definition of the Key enum class
 
 Provides a wrapper around GLFW key codes
+
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 //__________________________________________________________________________*/
 
 #pragma once
@@ -46,7 +49,6 @@ enum class Key {
     Minus = GLFW_KEY_MINUS,
     Equal = GLFW_KEY_EQUAL,
 	LeftCtrl = GLFW_KEY_LEFT_CONTROL,
-	LeftAlt = GLFW_KEY_LEFT_ALT,
 
     /// arrows
     Up = GLFW_KEY_UP,

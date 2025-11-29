@@ -4,185 +4,232 @@
 @date        28/11/2025
 @brief       Implements a simple keyframe animation system that drives transforms (position/rotation/scale) 
              and sprites over time using curves.
+
+All content � 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 */
 
+#include "engine_pch.h"
 #include "keyframe.h"
-#include <cassert>
+#include "entitymanager.h"
 #include "transformcomponent.h"
 #include "shapescomponent.h"
-#include "entitymanager.h"  
-#include "shapes.h"         
 #include "spritecomponent.h" 
-using namespace CrashoutsEngine;
-using Component::TransformComponent;
-using Component::ShapeComponent;
+#include <cmath>
 
-// ---------------- AnimationCurve ----------------
-static inline float lerp(float a, float b, float t) { return a + (b - a) * t; }
+namespace {
+    
+    float Lerp(float a, float b, float t) {
+        return a + (b - a) * t;
+    }
 
-// Cubic Hermite (explicit tangents, Unity-like)
-static float hermite(float p0, float m0, float p1, float m1, float t01, float dt) {
-    const float t = t01;
-    const float tt = t * t;
-    const float ttt = tt * t;
-    const float h00 = 2 * ttt - 3 * tt + 1;
-    const float h10 = ttt - 2 * tt + t;
-    const float h01 = -2 * ttt + 3 * tt;
-    const float h11 = ttt - tt;
-    return h00 * p0 + h10 * (m0 * dt) + h01 * p1 + h11 * (m1 * dt);
+    // Helper: Evaluate a single curve at time t
+    float EvaluateCurve(const AnimationCurve& curve, float t) {
+        if (curve.keys.empty()) return 0.0f;
+        if (curve.keys.size() == 1) return curve.keys[0].value;
+
+        // 1. Find the keyframe just before time t
+        // (Simple linear search for now, binary search is better for large curves)
+        size_t i = 0;
+        while (i < curve.keys.size() - 1 && curve.keys[i + 1].time < t) {
+            i++;
+        }
+
+        const KFKey& k1 = curve.keys[i];
+
+        // If we are past the last key, clamp to last value
+        if (i >= curve.keys.size() - 1) return k1.value;
+
+        const KFKey& k2 = curve.keys[i + 1];
+
+        // 2. Calculate percentage (0.0 to 1.0) between k1 and k2
+        float range = k2.time - k1.time;
+        float pct = (range > 0.00001f) ? (t - k1.time) / range : 0.0f;
+
+        // 3. Interpolate (Constant vs Linear)
+        if (k1.interp == KFInterp::Constant) {
+            return k1.value; 
+        }
+        else {
+            return Lerp(k1.value, k2.value, pct); 
+        }
+    }
 }
 
 void AnimationCurve::Add(const KFKey& k) {
     keys.push_back(k);
-    std::sort(keys.begin(), keys.end(), [](auto const& a, auto const& b) { return a.time < b.time; });
+
+    // Lambda to sort keys by time (ascending)
+    std::sort(keys.begin(), keys.end(), [](const KFKey& a, const KFKey& b) {
+        return a.time < b.time;
+        });
 }
 
-float AnimationCurve::Evaluate(float t) const {
-    if (keys.empty()) return 0.f;
-    if (t <= keys.front().time) return keys.front().value;
-    if (t >= keys.back().time)  return keys.back().value;
-
-    // find segment [i, i+1]
-    size_t i = 0;
-    while (i + 1 < keys.size() && keys[i + 1].time <= t) ++i;
-
-    const KFKey& A = keys[i];
-    const KFKey& B = keys[i + 1];
-
-    const float dt = (B.time - A.time);
-    const float u = dt > 0.f ? (t - A.time) / dt : 1.f;
-
-    switch (A.interp) {
-    case KFInterp::Constant: return A.value; 
-    case KFInterp::Linear:   return lerp(A.value, B.value, u);
-    case KFInterp::Cubic:
-    default:                 return hermite(A.value, A.outTan, B.value, B.inTan, std::clamp(u, 0.f, 1.f), dt);
-    }
-}
-
-// ---------------- Property application ----------------
-static void applyProperty(ECS& ecs, Entity e, KFProperty p, float v,
-    const std::function<std::string(int)>& spriteResolver)
-{
-    switch (p) {
-    case KFProperty::PosX:
-    case KFProperty::PosY:
-    case KFProperty::PosZ:
-    case KFProperty::RotZ:
-    case KFProperty::ScaleX:
-    case KFProperty::ScaleY:
-    {
-        auto* T = ecs.GetComponent<TransformComponent>(e);
-        if (!T) return;
-        if (p == KFProperty::PosX)   T->position.x = v;
-        if (p == KFProperty::PosY)   T->position.y = v;
-        if (p == KFProperty::PosZ)   T->position.z = v;
-        if (p == KFProperty::RotZ)   T->rotation = v;
-        if (p == KFProperty::ScaleX) T->size.x = v;
-        if (p == KFProperty::ScaleY) T->size.y = v;
-        break;
-    }
-    case KFProperty::SpriteIndex:
-    {
-     
-        if (auto* anim = ecs.GetComponent<Component::SpriteAnimComponent>(e))
-        {
-            int idx = (int)std::lround(v);
-            if (idx < 0) idx = 0;
-
-         
-            anim->startFrame = idx;   
-            anim->frameCount = 1;     
-            anim->frameIndex = 0;
-            anim->timer = 0.0f;
-
-            break; 
-        }
-
-
-        if (!spriteResolver) return;
-        auto* S = ecs.GetComponent<ShapeComponent>(e);
-        if (!S) return;
-
-        const int idx = (int)std::lround(v);
-        const std::string tex = spriteResolver(idx);
-        if (!tex.empty()) {
-            S->enableTexture = true;
-            S->textureName = tex;
-        }
-        break;
-    }
-
-    }
-}
-
-// ---------------- Animator runtime ----------------
 namespace KeyframeUnity {
 
-    KeyframeAnimatorComponent& AddAnimator(ECS& ecs, Entity e) {
-        if (!ecs.HasComponent<KeyframeAnimatorComponent>(e))
+    // Helper to get/add component
+    KeyframeAnimatorComponent& AddAnimator(CrashoutsEngine::ECS& ecs, CrashoutsEngine::Entity e) {
+        if (!ecs.HasComponent<KeyframeAnimatorComponent>(e)) {
             ecs.AddComponent<KeyframeAnimatorComponent>(e);
+        }
         return *ecs.GetComponent<KeyframeAnimatorComponent>(e);
     }
 
-    void SetClip(KeyframeAnimatorComponent& a, const AnimationClip& in) {
-        AnimationClip clip = in;
-        for (auto& b : clip.bindings) {
-            std::sort(b.curve.keys.begin(), b.curve.keys.end(),
-                [](auto const& x, auto const& y) { return x.time < y.time; });
-        }
-        a.clips[clip.name] = std::move(clip);
+    // Helper to set clip (used by C# bindings potentially)
+    void SetClip(KeyframeAnimatorComponent& a, const AnimationClip& clip) {
+        a.clips[clip.name] = clip;
     }
 
-    bool Play(KeyframeAnimatorComponent& a, const std::string& name, bool restart) {
-        if (!a.clips.count(name)) return false;
-        if (restart || a.current != name) {
-            a.current = name;
-            a.t = 0.f;
+    bool Play(KeyframeAnimatorComponent& a, const std::string& clipName, bool restart) {
+        if (a.clips.find(clipName) == a.clips.end()) return false;
+
+        if (a.current != clipName || restart) {
+            a.current = clipName;
+            a.t = 0.0f;
             a.playing = true;
+        
+            //const AnimationClip& clip = a.clips.at(clipName);
+            a.needStateUpdate = true;
         }
         return true;
     }
 
-    void Update(ECS& ecs, Entity e, KeyframeAnimatorComponent& a, float dt) {
-        if (!a.playing) return;
-        if (!a.clips.count(a.current)) return;
+    void Update(CrashoutsEngine::ECS& ecs, CrashoutsEngine::Entity e, KeyframeAnimatorComponent& a, float dt) {
+        if (!a.playing || a.current.empty()) return;
 
-        AnimationClip& clip = a.clips.at(a.current);
-        const float len = clip.Length();
+        // 1. Find Clip
+        if (a.clips.find(a.current) == a.clips.end()) return;
+        const AnimationClip& clip = a.clips.at(a.current);
 
-        // advance & wrap/clamp
+        // Apply State Changes (Texture / Size) once
+        if (a.needStateUpdate) {
+            using namespace Component;
+
+            // Apply Texture & Grid Settings from the Animation Clip
+            if (!clip.textureAsset.empty()) {
+                // Update SpriteSheetComponent (Critical for UV Math)
+                if (auto* sheet = ecs.GetComponent<SpriteSheetComponent>(e)) {
+                    sheet->textureAsset = clip.textureAsset;
+                    // Prevent division by zero
+                    sheet->cols = std::max(1, clip.spriteCols);
+                    sheet->rows = std::max(1, clip.spriteRows);
+                }
+
+                // Update ShapeComponent (Critical for Rendering)
+                if (auto* shape = ecs.GetComponent<ShapeComponent>(e)) {
+                    shape->textureName = clip.textureAsset;
+                    shape->enableTexture = true;
+                }
+            }
+
+            // Apply Size Settings
+            if (clip.useCustomSize) {
+                if (auto* t = ecs.GetComponent<TransformComponent>(e)) {
+                    t->size.x = clip.targetWidth;
+                    t->size.y = clip.targetHeight;
+                }
+            }
+
+            a.needStateUpdate = false;
+        }
+
+        // 2. Advance Time
         a.t += dt;
-        float localT = a.t;
-        if (len > 0.f) {
-            if (clip.wrap == KFWrap::Loop)  localT = std::fmod(localT, len);
-            else                            localT = std::min(localT, len);
+        float duration = clip.Length();
+
+        // 3. Handle Wrapping (Loop vs Clamp)
+        float evalTime = a.t;
+        if (duration > 0.0001f) {
+            if (clip.wrap == KFWrap::Loop) {
+                evalTime = std::fmod(a.t, duration);
+            }
+            else {
+                if (a.t > duration) evalTime = duration;
+            }
         }
-        a.t = localT;
 
-        // evaluate all bound curves
-        for (auto const& b : clip.bindings) {
-            const float v = b.curve.Evaluate(localT);
-            applyProperty(ecs, e, b.property, v, a.spriteResolver);
-        }
+        // 4. Apply Bindings
+        for (const auto& binding : clip.bindings) {
+            float val = EvaluateCurve(binding.curve, evalTime);
 
-        // stop at end if Clamp
-        if (clip.wrap == KFWrap::Clamp && len > 0.f && a.t >= len)
-            a.playing = false;
-    }
+            switch (binding.property) {
+                // --- TRANSFORM ANIMATION ---
+            case KFProperty::PosX:
+                if (auto* t = ecs.GetComponent<Component::TransformComponent>(e)) t->position.x = val;
+                break;
+            case KFProperty::PosY:
+                if (auto* t = ecs.GetComponent<Component::TransformComponent>(e)) t->position.y = val;
+                break;
+            case KFProperty::PosZ:
+                if (auto* t = ecs.GetComponent<Component::TransformComponent>(e)) t->position.z = val;
+                break;
+            case KFProperty::RotZ:
+                if (auto* t = ecs.GetComponent<Component::TransformComponent>(e)) t->rotation = val;
+                break;
+            case KFProperty::ScaleX:
+                if (auto* t = ecs.GetComponent<Component::TransformComponent>(e)) t->size.x = val;
+                break;
+            case KFProperty::ScaleY:
+                if (auto* t = ecs.GetComponent<Component::TransformComponent>(e)) t->size.y = val;
+                break;
+                // --- SPRITE ANIMATION (The Important Part) ---
+            case KFProperty::SpriteIndex:
+            {
+                using namespace Component;
 
-    void UpdateAll(CrashoutsEngine::ECS& ecs, float dt) {
-        auto& store = ecs.GetComponentArray<KeyframeAnimatorComponent>();
-        const auto& ids = store.indexToEntity;
-        for (size_t i = 0; i < ids.size(); ++i) {
-            CrashoutsEngine::Entity e = ids[i];
-            if (!e) continue;
-            if (auto* a = ecs.GetComponent<KeyframeAnimatorComponent>(e)) {
-                Update(ecs, e, *a, dt);
+                // A. Fetch current grid settings (now updated by the block above)
+                int cols = 1;
+                int rows = 1;
+
+                // 2. PRIORITY: Use data from the AnimationClip if valid
+                if (clip.spriteCols > 0 && clip.spriteRows > 0) {
+                    cols = clip.spriteCols;
+                    rows = clip.spriteRows;
+                }
+                // 3. FALLBACK: Check SpriteSheetComponent (Legacy support)
+                else if (ecs.HasComponent<SpriteSheetComponent>(e)) {
+                    auto* sheet = ecs.GetComponent<SpriteSheetComponent>(e);
+                    cols = std::max(1, sheet->cols);
+                    rows = std::max(1, sheet->rows);
+                }
+
+                // B. Determine Row and Column from Frame Index
+                int frameIdx = (int)val; // e.g., 3
+
+                // Standard Row-Major Layout calculation
+                int r = frameIdx / cols; // 3 / 6 = 0 (Row 0)
+                int c = frameIdx % cols; // 3 % 6 = 3 (Col 3)
+
+                // C. Calculate Normalized UV Data (0.0 to 1.0)
+                float uSize = 1.0f / cols; // 1.0 / 6 = 0.166
+                float vSize = 1.0f / rows; // 1.0 / 4 = 0.25
+                //std::cout << "Max col? " << cols << " Max rows? " << rows << std::endl;
+                float uOffset = c * uSize; // 3 * 0.166 = 0.5
+
+                // NOTE: Coordinate system matters here.
+                // If Row 0 is Top, and UV 0 is Bottom, you might need: vOffset = (rows - 1 - r) * vSize;
+                // For now, assuming Row 0 starts at UV 0.
+                float vOffset = r * vSize;
+
+                // D. Apply to Shape
+                if (auto* shape = ecs.GetComponent<ShapeComponent>(e)) {
+                    shape->uvSize.x = uSize;
+                    shape->uvSize.y = vSize;
+                    shape->uvOffset.x = uOffset;
+                    shape->uvOffset.y = vOffset;
+                }
+                break;
+            }
             }
         }
     }
 
+    void UpdateAll(CrashoutsEngine::ECS& ecs, float dt) {
+        auto& arr = ecs.GetComponentArray<KeyframeAnimatorComponent>();
+        for (size_t i = 0; i < arr.dense.size(); ++i) {
+            CrashoutsEngine::Entity e = arr.indexToEntity[i];
+            Update(ecs, e, arr.dense[i], dt);
+        }
+    }
+}
 
-
-} 

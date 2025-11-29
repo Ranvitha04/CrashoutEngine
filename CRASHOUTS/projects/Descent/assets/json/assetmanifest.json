@@ -257,6 +257,10 @@
             "path": "Character\\New Artstyle\\Switch State spritesheet.png"
         },
         {
+            "name": "Switch-State-SpriteSheet-Reverse",
+            "path": "Character\\New Artstyle\\Switch-State-SpriteSheet-Reverse.png"
+        },
+        {
             "name": "Switch-State-SpriteSheet",
             "path": "Character\\New Artstyle\\Switch-State-SpriteSheet.png"
         },
@@ -291,10 +295,6 @@
         {
             "name": "Chibi-Actions-SpriteSheet",
             "path": "Character\\Normal Mode\\Chibi-Actions-SpriteSheet.png"
-        },
-        {
-            "name": "Normal spritesheet",
-            "path": "Character\\Normal spritesheet.png"
         },
         {
             "name": "Run Light",
@@ -403,10 +403,6 @@
         {
             "name": "Sus Face Right",
             "path": "Monsters\\Sus Face Right.png"
-        },
-        {
-            "name": "Normal spritesheet",
-            "path": "Normal spritesheet.png"
         },
         {
             "name": "Darker Platform_00",
@@ -1377,6 +1373,10 @@
             "path": "Ball.json"
         },
         {
+            "name": "BigBox",
+            "path": "BigBox.json"
+        },
+        {
             "name": "BlueBox",
             "path": "BlueBox.json"
         },
@@ -1409,6 +1409,10 @@
         {
             "name": "amir",
             "path": "amir"
+        },
+        {
+            "name": "descentconfirm",
+            "path": "descentconfirm"
         },
         {
             "name": "descentgame",

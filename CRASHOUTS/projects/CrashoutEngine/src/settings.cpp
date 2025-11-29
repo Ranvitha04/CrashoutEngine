@@ -5,6 +5,9 @@
 @brief      Implementation of the Settings class
 
 Stores and manages screen resolution settings
+
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 */
 
 #include "settings.h"

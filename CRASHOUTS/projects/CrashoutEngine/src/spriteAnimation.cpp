@@ -20,6 +20,8 @@
         to work in conjunction with other engine modules such as
         `entitymanager`, `rendering`, and `textures` to support
         a component-based entity system.
+
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
 __________________________________________________________________________*/
 
 /*                                                                   includes

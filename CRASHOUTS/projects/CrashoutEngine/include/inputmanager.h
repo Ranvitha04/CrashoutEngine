@@ -5,6 +5,9 @@
 @brief      Declaration of the InputManager class
 
 Provides static functions to handle keyboard mouse and scroll wheel input using GLFW
+
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 */
 #pragma once
 

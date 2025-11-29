@@ -4,6 +4,8 @@
 @date       08/09/2025
 @brief      Contains Physics runSystem function for collision detection and physics resolution (calculate new pos by vel)
 
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 //__________________________________________________________________________*/
 
 #pragma once

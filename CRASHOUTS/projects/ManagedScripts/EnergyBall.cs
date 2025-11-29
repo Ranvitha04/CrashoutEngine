@@ -18,16 +18,19 @@ namespace CrashoutsEngine
         // Components
         private RigidBodyComponent _rb;
         private TransformComponent _tf;
-        //private ShapeComponent _shape; // To hide visuals
+        private Animator _anim; // The Keyframe Animator
 
         public override void Start()
         {
             _rb = Entity.GetComponent<RigidBodyComponent>();
             _tf = Entity.GetComponent<TransformComponent>();
-            //_shape = Entity.GetComponent<ShapeComponent>();
+            _anim = Entity.GetComponent<Animator>(); // Get Animator
 
             // Register Trigger Event
             CollisionEvents.RegisterTriggerEnter(Entity.ID, OnTriggerEnter);
+
+            // Set Initial Animation State
+            if (_anim != null) _anim.Play("charged");
 
             Console.WriteLine("[EnergyBall] Ready.");
         }
@@ -59,52 +62,59 @@ namespace CrashoutsEngine
             // 2. Disable Interaction
             _isActive = false;
             _timer = respawnTime;
-            _rb.SetDynamic(_isActive);
 
-            // 3. Disable Visuals (Hide)
-            // if (_shape != null) 
-            // {
-            //     // Hack: Move z-index far away or set alpha 0 if you have color control
-            //     // Better: Implement ShapeComponent.Enabled in C++
-            //     // For now, let's just shrink it to 0 or move it away?
-            //     // Let's move it to Z = -1000 (behind camera)
-            //     if (_tf != null) _tf.Position = new CEVec3(_tf.Position.x, _tf.Position.y, -1000.0f);
-            // }
+            // If you have a dynamic body, sleep it or stop simulation
+            if (_rb != null)
+            {
+                // Assuming SetDynamic toggles simulation/physics response
+                // If this method isn't exposed, you might just want to move it or change layers
+                // But based on your code:
+                _rb.SetDynamic(false);
+            }
 
-            // 4. Disable Physics (if it has a body)
-            // If it's a static trigger, we don't need to do much.
-            // But if it's dynamic, we might want to sleep it.
+            // 3. Switch Animation (Instead of hiding)
+            if (_anim != null) _anim.Play("cooldown");
         }
 
         private void Respawn()
         {
             Console.WriteLine("[EnergyBall] Respawned!");
             _isActive = true;
-            _rb.SetDynamic(_isActive);
-            // Restore Visuals
-            //if (_tf != null) _tf.Position = new CEVec3(_tf.Position.x, _tf.Position.y, 0.1f); // Restore Z
+
+            if (_rb != null) _rb.SetDynamic(true);
+
+            // Restore Animation
+            if (_anim != null) _anim.Play("charged");
         }
 
         public override void Update()
         {
+            float dt = (float)Time.DT;
+
             // Respawn Timer
             if (!_isActive)
             {
-                _timer -= (float)Time.DT;
+                _timer -= dt;
                 if (_timer <= 0.0f)
                 {
                     Respawn();
                 }
             }
-            time += (float)Time.DT;
-            // Optional: Bobbing animation while active
+
+            // Bobbing animation while active (visual polish)
             if (_isActive && _tf != null)
             {
-               // Simple Sine wave bob
-               float posY = _tf.Position.y;
-               posY += (float)Math.Sin(time * 4.0f) * 0.15f;
-               _tf.Position = new CEVec3(_tf.Position.x, posY, _tf.Position.z);
+                time += dt;
+                // Simple Sine wave bob logic
+                // Note: We must be careful not to drift the position if physics is also affecting it.
+                // Assuming this is a static/trigger pickup:
+                float bobOffset = (float)Math.Sin(time * 4.0f) * 0.15f;
 
+                // Apply directly to Y. 
+                // CAUTION: If this object moves, this will lock its Y position to the sine wave.
+                // Better to have a "baseY" stored in Start() if it's static.
+                // For now, assuming simple bob:
+                _tf.Position = new CEVec3(_tf.Position.x, _tf.Position.y + bobOffset, _tf.Position.z);
             }
         }
     }

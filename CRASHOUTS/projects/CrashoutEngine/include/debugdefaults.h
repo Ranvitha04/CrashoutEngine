@@ -5,6 +5,9 @@
 
 Declare struct defaults used across Debug Menu adapters
 (e.g., drag speeds, initial rigidbody values, default collider sizes).
+
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 //__________________________________________________________________________*/
 
 /*                                                                   includes

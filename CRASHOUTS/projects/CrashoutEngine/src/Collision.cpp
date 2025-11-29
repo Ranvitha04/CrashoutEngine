@@ -4,6 +4,8 @@
 @date       08/09/2025
 @brief      Function definitions for Basic Collision Functions and Colliders(Plane, ColliderType::AABB and Circle)
 
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 
 //__________________________________________________________________________*/
 

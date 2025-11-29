@@ -124,7 +124,7 @@ namespace CrashoutsEngine
                 Debug.Log("Null");
                 return null; // Check against MaxValue
             }
-            Debug.Log("Weird" + name);
+            //Debug.Log("Weird" + name);
 
             return new Entity(id);
         }

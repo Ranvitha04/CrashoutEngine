@@ -1,15 +1,20 @@
 ﻿/*!
 @file        audioSystem.cpp
-@author      b.mohamadafiq@digipen.edu
+@author      b.mohamadafiq@digipen.edu (70%)
+@co-auther   mohamadamirakmal.b@digipen.edu (30%)
 @date        28/9/2025
 @brief      Minimal FMOD Studio wrapper for the CrashoutsEngine.
              - Creates/initializes FMOD Studio/Core systems
-             - Loads/unloads bank files
+             - Loads/unloads bank and raw files
              - Plays one-shot events (fire-and-forget)
+			 - Plays tagged audio files (music/sfx)
+			 - Stops audio (all/tagged)
              - Creates long-lived event instances (music/loops)
              - Controls buses (stop/mute/set volume)
              - Updates FMOD every frame
              The class is a singleton accessed via AudioSystem::instance().
+
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 */
 
@@ -24,10 +29,7 @@
 
 namespace CrashoutsEngine::Audio
 {
-    // -------------------------------------------------------------------------
     // Small helpers
-    // -------------------------------------------------------------------------
-
     /*!
     @brief Joins two path segments using the correct platform-specific separator.
     */
@@ -96,10 +98,7 @@ namespace CrashoutsEngine::Audio
         return false;
     }
 
-    // -------------------------------------------------------------------------
     // Singleton & error helper
-    // -------------------------------------------------------------------------
-
     /*!
     @brief Returns the global AudioSystem singleton instance.
     */
@@ -123,10 +122,7 @@ namespace CrashoutsEngine::Audio
         return true;
     }
 
-    // -------------------------------------------------------------------------
     // Lifetime
-    // -------------------------------------------------------------------------
-
     /*!
     @brief Initializes the FMOD Studio and Core systems and sets up channel groups for music and SFX.
     */
@@ -199,10 +195,7 @@ namespace CrashoutsEngine::Audio
         mSFXGroup = nullptr;
     }
 
-    // -------------------------------------------------------------------------
     // Bank management
-    // -------------------------------------------------------------------------
-
     /*!
     @brief Loads a FMOD Studio bank file from the configured banks directory.
     */
@@ -248,9 +241,7 @@ namespace CrashoutsEngine::Audio
         mBanks.clear();
     }
 
-    // -------------------------------------------------------------------------
     // Raw management
-    // -------------------------------------------------------------------------
     void AudioSystem::registerRawAudio(const std::string& relPath)
     {
         auto it = std::find(mRawAudioFiles.begin(), mRawAudioFiles.end(), relPath);
@@ -297,10 +288,7 @@ namespace CrashoutsEngine::Audio
         std::cout << "[Audio] Unloaded ALL raw sounds\n";
     }
 
-    // -------------------------------------------------------------------------
     // Bus / group controls
-    // -------------------------------------------------------------------------
-
     /*!
     @brief Stops all events playing on the specified FMOD Studio bus.
     */
@@ -345,11 +333,8 @@ namespace CrashoutsEngine::Audio
     */
     bool AudioSystem::stopAll(bool fadeOut)
     {
-        bool studioResult = stopAllOnBus("bus:/", fadeOut);
-
-        stopAllRaw();
-
-        return studioResult;
+        // Master bus stops *everything* (music + sfx)
+        return stopAllOnBus("bus:/", fadeOut);
     }
 
     /*!
@@ -452,10 +437,7 @@ namespace CrashoutsEngine::Audio
         return setBusMute(busPath, true);
     }
 
-    // -------------------------------------------------------------------------
     // Event-based (Studio) playback
-    // -------------------------------------------------------------------------
-
     /*!
     @brief Retrieves the FMOD event description for a given event path.
     */
@@ -503,10 +485,7 @@ namespace CrashoutsEngine::Audio
         return inst;
     }
 
-    // -------------------------------------------------------------------------
     // Introspection / debug helpers
-    // -------------------------------------------------------------------------
-
     /*!
     @brief Collects the paths of all events from all loaded banks.
     */
@@ -719,10 +698,7 @@ namespace CrashoutsEngine::Audio
         bank->unload();
     }
 
-    // -------------------------------------------------------------------------
     // File-based playback (Core API)
-    // -------------------------------------------------------------------------
-
     /*!
     @brief Plays a music file through the music channel group, optionally looping it.
     */
@@ -768,30 +744,35 @@ namespace CrashoutsEngine::Audio
 
     FMOD::Channel* AudioSystem::playSFXFileEx(const std::string& path)
     {
-        if (!mCore || !mSFXGroup) return nullptr;
+        if (!mCore || !mSFXGroup)
+            return nullptr;
 
-        if (!IsSupportedAudioFile(path)) {
-            std::string msg = "Unsupported audio format: " + path;
+        if (!IsSupportedAudioFile(path))
+        {
+            std::string msg =
+                "Unsupported audio format for SFX file:\n\n" + path +
+                "\n\nSupported formats: .mp3, .ogg, .wav";
+
             ShowAudioErrorPopup(msg);
             LOGE(Audio, msg);
+
             return nullptr;
         }
 
-        FMOD_MODE mode = FMOD_DEFAULT | FMOD_2D | FMOD_CREATESAMPLE;
-
         FMOD::Sound* snd = nullptr;
-        FMOD_RESULT r = mCore->createSound(path.c_str(), mode, nullptr, &snd);
-
-        if (r != FMOD_OK) {
-            LOGE(Audio, "Preview Failed (CreateSound): " + path);
+        if (!ok(mCore->createSound(path.c_str(),
+            FMOD_DEFAULT | FMOD_2D,
+            nullptr,
+            &snd),
+            "createSound(sfx)"))
+        {
             return nullptr;
         }
 
         FMOD::Channel* ch = nullptr;
-
-        r = mCore->playSound(snd, mSFXGroup, true, &ch);
-
-        if (r != FMOD_OK) {
+        if (!ok(mCore->playSound(snd, mSFXGroup, false, &ch),
+            "playSound(sfx)"))
+        {
             snd->release();
             return nullptr;
         }
@@ -800,9 +781,10 @@ namespace CrashoutsEngine::Audio
             ch->setMode(FMOD_2D);
 
             ch->setCallback([](FMOD_CHANNELCONTROL* channelcontrol,
-                FMOD_CHANNELCONTROL_TYPE,
+                FMOD_CHANNELCONTROL_TYPE /*controltype*/,
                 FMOD_CHANNELCONTROL_CALLBACK_TYPE callbacktype,
-                void*, void*) -> FMOD_RESULT {
+                void* /*commanddata1*/,
+                void* /*commanddata2*/) -> FMOD_RESULT {
                     if (callbacktype == FMOD_CHANNELCONTROL_CALLBACK_END) {
                         FMOD::Channel* ch = (FMOD::Channel*)channelcontrol;
                         FMOD::Sound* snd = nullptr;
@@ -812,8 +794,6 @@ namespace CrashoutsEngine::Audio
                     }
                     return FMOD_OK;
                 });
-
-            ch->setPaused(false);
         }
 
         return ch;
@@ -853,15 +833,13 @@ namespace CrashoutsEngine::Audio
         return master->setVolume(v01) == FMOD_OK;
     }
 
-    // -------------------------------------------------------------------------
-    // NEW: Tagged playback for Unity-like Play/Stop("Name")
-    // -------------------------------------------------------------------------
-
+    // Tagged playback for different groups (SFX/Music)
     /*!
     @brief Plays a music file and tags its FMOD channel so it can be stopped by key.
     */
     bool AudioSystem::playMusicFileTagged(const std::string& key,
-        const std::string& path, bool loop, float volume)
+        const std::string& path,
+        bool loop)
     {
         if (!mCore || !mMusicGroup)
             return false;
@@ -887,7 +865,6 @@ namespace CrashoutsEngine::Audio
         if (ch)
         {
             ch->setMode(FMOD_2D);
-            ch->setVolume(volume);
             mTaggedChannels[key] = ch;
         }
 
@@ -898,24 +875,33 @@ namespace CrashoutsEngine::Audio
     @brief Plays a SFX file and tags its FMOD channel so it can be stopped by key.
     */
     bool AudioSystem::playSFXFileTagged(const std::string& key,
-        const std::string& path, bool loop, float volume)
+        const std::string& path, bool loop)
     {
-        if (!mCore || !mSFXGroup) return false;
+        if (!mCore || !mSFXGroup) {
+            std::fprintf(stderr, "[Audio] playSFXFile called before init: %s\n", path.c_str());
+            return false;
+        }
 
-        FMOD_MODE mode = FMOD_DEFAULT | FMOD_2D | FMOD_CREATESAMPLE;
-        mode |= (loop ? FMOD_LOOP_NORMAL : FMOD_LOOP_OFF);
+        FMOD_MODE mode = FMOD_DEFAULT | FMOD_2D;
+        if (loop)
+            mode |= FMOD_LOOP_NORMAL;
+        else
+            mode |= FMOD_LOOP_OFF;
 
         FMOD::Sound* snd = nullptr;
-        FMOD_RESULT r = mCore->createSound(path.c_str(), mode, nullptr, &snd);
-        if (r != FMOD_OK) {
-            LOGE(Audio, "SFX File Missing: " + path);
+        if (!ok(mCore->createSound(path.c_str(),
+            mode,
+            nullptr,
+            &snd),
+            "createSound(sfxTagged)"))
+        {
             return false;
         }
 
         FMOD::Channel* ch = nullptr;
-
-        r = mCore->playSound(snd, mSFXGroup, true, &ch);
-        if (r != FMOD_OK) {
+        if (!ok(mCore->playSound(snd, mSFXGroup, false, &ch),
+            "playSound(sfxTagged)"))
+        {
             snd->release();
             return false;
         }
@@ -923,12 +909,11 @@ namespace CrashoutsEngine::Audio
         if (ch)
         {
             ch->setMode(FMOD_2D);
-            ch->setVolume(volume);
-
             ch->setCallback([](FMOD_CHANNELCONTROL* channelcontrol,
-                FMOD_CHANNELCONTROL_TYPE,
+                FMOD_CHANNELCONTROL_TYPE /*controltype*/,
                 FMOD_CHANNELCONTROL_CALLBACK_TYPE callbacktype,
-                void*, void*) -> FMOD_RESULT
+                void* /*commanddata1*/,
+                void* /*commanddata2*/) -> FMOD_RESULT
                 {
                     if (callbacktype == FMOD_CHANNELCONTROL_CALLBACK_END) {
                         FMOD::Channel* ch = (FMOD::Channel*)channelcontrol;
@@ -939,10 +924,7 @@ namespace CrashoutsEngine::Audio
                     }
                     return FMOD_OK;
                 });
-
             mTaggedChannels[key] = ch;
-
-            ch->setPaused(false);
         }
 
         return true;

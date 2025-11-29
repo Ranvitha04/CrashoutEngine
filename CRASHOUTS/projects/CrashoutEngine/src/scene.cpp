@@ -6,6 +6,9 @@
 
 This file is the base template which all the future serialized scenes would 
 build off from.
+
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 */
 
 /*                                                   Includes
@@ -40,7 +43,7 @@ void LoadScene()
 void InitScene()
 {
 	// Initialize Scene state
-	//CrashoutsEngine::Serialization::LoadScenes(sceneName);
+	CrashoutsEngine::Serialization::LoadScenes("descentmenu");
 
 	LOGI(Core, "Scene Initialized");
 }
@@ -55,8 +58,8 @@ void RenderScene()
 	// Render Scene state
 #if USE_IMGUI_EDITOR
 #else
-	glClearColor(0.1f, 0.2f, 0.4f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	//glClearColor(0.1f, 0.2f, 0.4f, 1.0f);
+	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 #endif
 }
 
@@ -64,6 +67,7 @@ void FreeScene()
 {
 	// Free resources specific to Scene state
 	//if (CurrentGameState != NextGameState) CrashoutsEngine::Serialization::SaveScenes(sceneName);
+	globalECS->Reset();
 }
 
 void UnloadScene()

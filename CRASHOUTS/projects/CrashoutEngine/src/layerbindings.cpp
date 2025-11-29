@@ -3,6 +3,9 @@
 @author      lee.r@digipen.edu
 @date        26/11/2025
 @brief       Definition of button bindings functions
+
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 */
 
 #include "layerbindings.h"

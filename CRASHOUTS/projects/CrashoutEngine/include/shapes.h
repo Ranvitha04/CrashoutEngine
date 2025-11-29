@@ -16,6 +16,8 @@ and uniform coloring.
 The Shapes struct also provides a cleanup function to release
 rendering resources associated with these primitives.
 
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 *//*__________________________________________________________________________*/
 
 /*                                                                   includes

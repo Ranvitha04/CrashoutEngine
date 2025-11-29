@@ -4,6 +4,9 @@
 @date       26/11/2025
 
 Defines the functions for script validation.
+
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 //__________________________________________________________________________*/
 
 #include "ScriptValidation.h"

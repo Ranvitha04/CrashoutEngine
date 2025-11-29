@@ -11,6 +11,8 @@ window and start up an OpenGL context and to extract function pointers
 to OpenGL implementations. It also includes new functions for ImGui
 integration.
 
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 *//*__________________________________________________________________________*/
 
 /* _________________________________________________________________________
@@ -73,6 +75,14 @@ std::vector<CEVec3> current_positions;
 std::vector<CEVec3> current_colors;
 std::vector<GLApp::GLViewport> GLApp::vps;
 
+// --- Initialize Static Variables ---
+bool GLApp::is_fullscreen = false;
+bool GLApp::is_maximized = false;
+int GLApp::windowed_x = 0;
+int GLApp::windowed_y = 0;
+int GLApp::windowed_w = 1280;
+int GLApp::windowed_h = 720;
+
 
 /* _________________________________________________________________________ */
 /*! init
@@ -120,29 +130,37 @@ bool GLApp::init(GLint w, GLint h, std::string t) {
     // default behavior: colorbuffer is 32-bit RGBA, depthbuffer is 24-bits
     // don't change size of window
     glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
+    glfwWindowHint(GLFW_DECORATED, GL_TRUE);
 
-    // size of viewport: width x height
-    /*GLApp::ptr_window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);*/
+    GLApp::ptr_window = glfwCreateWindow(w, h, title.c_str(), NULL, NULL);
+
+    if (!GLApp::ptr_window) {
+        LOGE(Core, "GLFW create window failed");
+        glfwTerminate();
+        return false;
+    }
+
+    // Center the window initially
     GLFWmonitor* monitor = glfwGetPrimaryMonitor();
     const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+    int startX = (mode->width - w) / 2;
+    int startY = (mode->height - h) / 2;
+    glfwSetWindowPos(GLApp::ptr_window, startX, startY);
 
-    // Set window to be borderless
-    glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
-    glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
-    //glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE); // ensure maximize
-
-    //glfwWindowHint(GLFW_FLOATING, GLFW_FALSE);
-
-    GLApp::ptr_window = glfwCreateWindow(mode->width,mode->height,title.c_str(),NULL,NULL);
+    // Store initial windowed state
+    windowed_x = startX;
+    windowed_y = startY;
+    windowed_w = w;
+    windowed_h = h;
 
     // Borderless fullscreen (windowed)
     glfwSetWindowMonitor(GLApp::ptr_window,NULL,0, 0,mode->width,mode->height,0);
     // Move window to exact fullscreen position (0,0)
     //glfwSetWindowPos(GLApp::ptr_window, 0, 0);
 
-    // Override engine width/height
-    GLApp::width = mode->width;
-    GLApp::height = mode->height;
+    //// Override engine width/height
+    //GLApp::width = mode->width;
+    //GLApp::height = mode->height;
 
     // make the previously created OpenGL context current ...
     glfwMakeContextCurrent(GLApp::ptr_window);
@@ -275,7 +293,47 @@ bool GLApp::init(GLint w, GLint h, std::string t) {
     return true;
 }
 
+void GLApp::ToggleFullscreen() {
+    if (is_fullscreen) {
+        // Switch TO Windowed Mode
+        glfwSetWindowMonitor(ptr_window, nullptr, windowed_x, windowed_y, windowed_w, windowed_h, 0);
+        is_fullscreen = false;
+    }
+    else {
+        // Switch TO Fullscreen
+        // 1. Save current windowed state so we can restore it later
+        glfwGetWindowPos(ptr_window, &windowed_x, &windowed_y);
+        glfwGetWindowSize(ptr_window, &windowed_w, &windowed_h);
 
+        // 2. Get primary monitor info
+        GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+        const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+
+        // 3. Switch to borderless fullscreen using the monitor's current resolution/refresh rate
+        glfwSetWindowMonitor(ptr_window, monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
+        is_fullscreen = true;
+    }
+    // Force VSync off again if lost during switch
+    glfwSwapInterval(0);
+}
+
+void GLApp::ToggleMaximize() {
+    // Maximizing only makes sense in windowed mode
+    if (is_fullscreen) return;
+
+    if (is_maximized) {
+        glfwRestoreWindow(ptr_window);
+        is_maximized = false;
+    }
+    else {
+        glfwMaximizeWindow(ptr_window);
+        is_maximized = true;
+    }
+}
+
+void GLApp::Minimize() {
+    glfwIconifyWindow(ptr_window);
+}
 
 /* _________________________________________________________________________ */
 /*! update
@@ -401,36 +459,40 @@ were held down
 @return none
 
 This function is called when keyboard buttons are pressed.
-When the ESC key is pressed, the close flag of the window is set.
 */
 void GLApp::key_cb(GLFWwindow* pwin, int key, [[maybe_unused]] int scancode, int action, [[maybe_unused]] int mod) {
     (void)pwin;
-    //ImGui_ImplGlfw_KeyCallback(pwin, key, scancode, action, mod);
-#ifdef _DEBUG
-    Key k = static_cast<Key>(key);
-#endif  
-    if (GLFW_PRESS == action) {
-#ifdef _DEBUG
-        LOGI(Input, std::string(KeyToString(k)) + " is pressed");
-#endif
-    }
-    else if (GLFW_REPEAT == action) {
-#ifdef _DEBUG
-        LOGI(Input, std::string(KeyToString(k)) + " is repeatedly pressed");
-#endif
-    }
-    else if (GLFW_RELEASE == action) {
-#ifdef _DEBUG
-        LOGI(Input, std::string(KeyToString(k)) + " is released");
-#endif
-    }
 
-    // Delegate sprite animation key input handling to ran.cpp
+    // Ignore invalid keys
+    if (key < 0 || key > GLFW_KEY_LAST) return;
+
+#ifdef _DEBUG
+    // Only cast if within valid Key enum range
+    Key k = static_cast<Key>(key);
+
+    if (action == GLFW_PRESS) {
+        LOGI(Input, std::string(KeyToString(k)) + " is pressed");
+    }
+    else if (action == GLFW_REPEAT) {
+        LOGI(Input, std::string(KeyToString(k)) + " is repeatedly pressed");
+    }
+    else if (action == GLFW_RELEASE) {
+        LOGI(Input, std::string(KeyToString(k)) + " is released");
+    }
+#endif
+
+    // Safely delegate to sprite input handler (ignore unknown keys inside function)
     HandleSpriteKeyInput(key, action);
 
-    //if (GLFW_KEY_ESCAPE == key && GLFW_PRESS == action) {
-    //    glfwSetWindowShouldClose(pwin, GLFW_TRUE);da
-    //}
+    if (action != GLFW_PRESS) return;
+
+    switch (key) {
+    case GLFW_KEY_F11: ToggleFullscreen(); break;
+    case GLFW_KEY_F10: ToggleMaximize(); break;
+    case GLFW_KEY_F9:  Minimize(); break;
+        // case GLFW_KEY_ESCAPE: glfwSetWindowShouldClose(pwin, GLFW_TRUE); break;
+    default: break; // ignore all other keys
+    }
 }
 
 /* _________________________________________________________________________*/
@@ -582,15 +644,43 @@ This function is called when the window is resized - it receives the new size
 of the window in pixels.
 */
 void GLApp::fbsize_cb([[maybe_unused]] GLFWwindow* ptr_win, int fbWidth, int fbHeight) {
-    // use the entire framebuffer as drawing region
-    //glViewport(0, 0, fbWidth, fbHeight);;
-    // later, if working in 3D, we'll have to set the projection matrix here ...
-
+    // 1. Update Global State
     GLApp::width = fbWidth;
     GLApp::height = fbHeight;
 
+#if !USE_IMGUI_EDITOR
+    // GAME MODE: Handle Aspect Ratio Resize immediately to prevent visual glitches
+    // This ensures that if a render happens mid-resize, the camera matrix is correct.
+
+    const float targetAspectRatio = 16.0f / 9.0f;
+    float currentAspectRatio = (float)fbWidth / (float)fbHeight;
+
+    int vpW, vpH;
+
+    if (currentAspectRatio > targetAspectRatio) {
+        // Wide window: Clamp height
+        vpH = fbHeight;
+        vpW = static_cast<int>(fbHeight * targetAspectRatio);
+    }
+    else {
+        // Tall window: Clamp width
+        vpW = fbWidth;
+        vpH = static_cast<int>(fbWidth / targetAspectRatio);
+    }
+
+    // Update Camera with the CORRECTED aspect ratio dimensions
+    using namespace CrashoutsEngine::RenderCamera;
+    engineCamera.UpdateMatrices(vpW, vpH);
+
+    // Force viewport update immediately so the very next draw call is correct
+    // (Optional, but helps with flicker on some drivers)
+    // glViewport(0, 0, fbWidth, fbHeight); 
+
+#else
+    // EDITOR MODE: Just use full size
     using namespace CrashoutsEngine::RenderCamera;
     engineCamera.UpdateMatrices(fbWidth, fbHeight);
+#endif
 }
 
 

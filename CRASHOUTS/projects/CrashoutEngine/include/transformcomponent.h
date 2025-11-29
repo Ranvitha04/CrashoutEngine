@@ -5,6 +5,9 @@
 
 @brief	This file defines the TransformComponent, a simple data structure 
 		used to store an entity's 3D position, rotation, and scale.
+
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 //__________________________________________________________________________*/
 #pragma once
 

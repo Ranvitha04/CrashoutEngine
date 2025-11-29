@@ -4,6 +4,8 @@
 @date       26/10/2025
 @brief      Type declarations for the different types of colliders
 
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 
 //__________________________________________________________________________*/
 

@@ -1,3 +1,8 @@
+/*!
+All content © 2025 Digipen Institute of Technology Singapore.All rights reserved.
+
+//__________________________________________________________________________*/
+
 #include "namebindings.h"
 #include "entitymanager.h"
 #include "namecomponent.h"

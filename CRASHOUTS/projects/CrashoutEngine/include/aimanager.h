@@ -4,6 +4,8 @@
 @date       31/10/2025
 @brief      Declaration for the AI manager, used to update any entity with an attached state machine.
 
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 //__________________________________________________________________________*/
 
 #pragma once

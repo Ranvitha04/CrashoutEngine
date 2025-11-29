@@ -9,6 +9,9 @@
              Collider (ColliderType::AABB from width/height)
              Text, Camera, Script, AudioEmitter, Gui, PPComponent
              and Collider (ColliderType::AABB by default).
+
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 */
 
 #include <memory>
@@ -635,7 +638,7 @@ namespace CrashoutsEngine {
             // always write type as the enum integer
             shapeJson.AddMember("type", static_cast<int>(shape->type), allocate);
 
-            // optional: human-readable kind string
+            
             auto kindFrom = [](ShapeType t) -> const char* {
                 switch (t) {
                 case ShapeType::Rectangle: return "Rectangle";
@@ -710,7 +713,7 @@ namespace CrashoutsEngine {
 
             obj.AddMember("camera", cameraJson, allocate);
         }
-        // text (optional - only if entity has TextComponent)
+        // text 
         if (auto* txt = ecs.GetComponent<TextComponent>(e)) {
             rapidjson::Value textJson(rapidjson::kObjectType);
 
@@ -831,7 +834,7 @@ namespace CrashoutsEngine {
 
             obj.AddMember("audio", audioJson, allocate);
         }
-        // 
+       
 
         if (auto* gui = ecs.GetComponent<Component::GuiComponent>(e)) {
             rapidjson::Value guiJson(rapidjson::kObjectType);

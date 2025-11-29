@@ -1,3 +1,7 @@
+/*!
+All content © 2025 Digipen Institute of Technology Singapore.All rights reserved.
+
+//__________________________________________________________________________*/
 #include "frameratecontroller.h"
 #include "mono/metadata/loader.h"
 #include "timebindings.h"

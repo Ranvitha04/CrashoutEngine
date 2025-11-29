@@ -1,3 +1,7 @@
+/*!
+All content © 2025 Digipen Institute of Technology Singapore.All rights reserved.
+
+//__________________________________________________________________________*/
 #include "aimanager.h"
 #include "aicomponent.h"
 #include "entitymanager.h"

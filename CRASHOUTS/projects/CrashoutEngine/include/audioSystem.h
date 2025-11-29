@@ -4,6 +4,8 @@
 @date        28/9/2025
 @brief       Header file that defines the AudioSystem class and a simple wrapper around FMOD
 
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 */
 
 #pragma once
@@ -83,11 +85,10 @@ namespace CrashoutsEngine
             bool setSFXGroupVolume(float v01);
             bool setMasterVolume(float v01);
 
-            // Tagged playback for Unity-like Play/Stop("Name")
-            // Thin helpers so C# AudioManager can track and stop by name.
-            bool playMusicFileTagged(const std::string& key, const std::string& path, bool loop = true, float volume = 1.0f);
+            // Tagged playback
+            bool playMusicFileTagged(const std::string& key, const std::string& path, bool loop = true);
 
-            bool playSFXFileTagged(const std::string& key, const std::string& path, bool loop, float volume = 1.0f);
+            bool playSFXFileTagged(const std::string& key, const std::string& path, bool loop);
 
             bool stopTagged(const std::string& key);
 
@@ -129,7 +130,7 @@ namespace CrashoutsEngine
             std::vector<std::string> mRawAudioFiles;
             std::unordered_map<std::string, FMOD::Sound*> mRawSoundCache;
 
-            //For tagged playback (Unity-style Stop("Name"))
+            //For tagged playback
             std::unordered_map<std::string, FMOD::Channel*> mTaggedChannels;
 
             // Helpers

@@ -1,6 +1,9 @@
 /*!
 @file      contactinfobindings.cpp
 @brief     Mono bindings to expose ContactInfo data to C#
+
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 */
 
 #include "contactinfobindings.h"

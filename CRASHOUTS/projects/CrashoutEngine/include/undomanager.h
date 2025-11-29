@@ -3,6 +3,7 @@
 @author      m.biniswandi@digipen.edu
 @brief       Singleton manager for undo/redo command history (deque version)
 @date        08/11/2025
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
 */
 
 #pragma once
