@@ -45,7 +45,7 @@ namespace CrashoutsEngine
 
                 if (tf.Position.z >= 0.0f)
                 {
-                    if (name == "ResumeBtn")
+                    if (name == "PauseResumeBtn")
                     {
                         SetPauseMenu(false);
                     }

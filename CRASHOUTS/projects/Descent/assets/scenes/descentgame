@@ -20804,7 +20804,7 @@
             }
         },
         {
-            "name": "ResumeBtn",
+            "name": "PauseResumeBtn",
             "layer": {
                 "currentLayer": 0
             },
