@@ -1,5 +1,9 @@
 /*!
 @file       shapebindings.cpp
+@author     lee.r@digipen.edu
+@date       16/09/2025
+@brief      definition of shape component bindings functions
+
 All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
 */
 #include "shapebindings.h"

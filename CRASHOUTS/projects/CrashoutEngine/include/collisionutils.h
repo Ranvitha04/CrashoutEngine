@@ -1,6 +1,11 @@
 #pragma once
 
 /*!
+@file       collisionutils.h
+@author     miratristan.d@digipen.edu
+@date       29/11/2025
+@brief      Collider component to hold custom colliders for entities
+
 All content © 2025 Digipen Institute of Technology Singapore.All rights reserved.
 
 //__________________________________________________________________________*/
