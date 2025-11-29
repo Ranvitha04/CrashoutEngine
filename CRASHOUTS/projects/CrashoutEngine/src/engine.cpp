@@ -270,6 +270,39 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
     // FOR USE_IMGUI_EDITOR AND NOT USING
     // All game objects, sprites, text, etc., draw into 'gameFboID'.
     glBindFramebuffer(GL_FRAMEBUFFER, gameFboID);
+
+    #if !USE_IMGUI_EDITOR
+        int w, h;
+        glfwGetFramebufferSize(GLApp::ptr_window, &w, &h);
+
+        // If the window size differs from our internal texture size
+        if (w != gameTextureWidth || h != gameTextureHeight) {
+            gameTextureWidth = w;
+            gameTextureHeight = h;
+
+            // --- RESIZE THE TEXTURE MEMORY ---
+
+            // 1. Resize the Color Texture
+            glBindTexture(GL_TEXTURE_2D, gameTextureColorBuffer);
+            // Re-allocate memory with the new width/height (NULL means we don't copy data, just alloc)
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, gameTextureWidth, gameTextureHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+
+            // 2. Resize the Depth/Stencil Buffer (Use RBO or Texture depending on your setup)
+            // Based on your variables, you likely use 'gameRboDepthStencil'
+            if (gameRboDepthStencil != 0) {
+                glBindRenderbuffer(GL_RENDERBUFFER, gameRboDepthStencil);
+                glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, gameTextureWidth, gameTextureHeight);
+            }
+
+            // Unbind to be safe
+            glBindTexture(GL_TEXTURE_2D, 0);
+            glBindRenderbuffer(GL_RENDERBUFFER, 0);
+
+            // Note: We don't need to re-attach them to the gameFboID usually, 
+            // as the FBO holds references to the IDs, which haven't changed.
+        }
+    #endif
+
     glViewport(0, 0, gameTextureWidth, gameTextureHeight);
     glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
