@@ -264,6 +264,10 @@ Uses GLHelper::GLFWWindow* to get handle to OpenGL context.
 */
 void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
 
+#if USE_IMGUI_EDITOR == 0
+    (void)globalSelectedEntity;
+#endif
+
     static UI::UIState uiState;
 
     // --- 1: RENDER THE RAW GAME SCENE ---
