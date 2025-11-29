@@ -65,6 +65,20 @@ If you need to delete all generated files and start over, use the "clean.bat" sc
     1.  Cleans Project: After syncing your assets, it completely deletes the "build" directory.
 
 ***
+
+==================================================
+STEP 4: DISABLING IMGUI
+==================================================
+
+If you need need to test the game without the IMGUI.
+
+* How to run: Simply double-click the "TOP-LEVEL CMAKELISTS.TXT" Then look for "USE_IMGUI_EDITOR"
+	      flag and disable it by setting it to 0.
+
+* What it does:
+    1.  Tells the program to not use imgui.
+
+***
 ==================================================
 HOW TO DEBUG IN VISUAL STUDIO
 ==================================================
