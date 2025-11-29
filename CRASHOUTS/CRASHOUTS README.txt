@@ -112,3 +112,46 @@ Licensed under the MIT License.
 https://github.com/CedricGuillemet/ImGuizmo
 
 ============================================================
+                 TEAM ROSTER, LEADERSHIP & CHAMPIONING
+============================================================
+
+Team Name: BuiltIncorrectly_F24
+
+Team Leads
+------------------------------------------------------------
+- Renfred Lee Zi An (2400565)
+  Role: Technical Lead, Programmer, Engine Architecture Champion
+  • Oversees core engine architecture, low-level systems, and performance.
+  • Reviews major engine changes and ensures technical consistency.
+
+- Mohammad Shahrin Idzuan Bin Iswandi (2403171)
+  Role: Product Manager, Programmer, Level Editor Champion
+  • Coordinates project scope, priorities, and milestone planning.
+  • Owns the level editor workflow and overall editor experience.
+
+Champions & Core Contributors
+------------------------------------------------------------
+- Mohamad Afiq Bin Abdul Rahim (2403022)
+  Role: Programmer, Gameplay / Audio Champion  
+  • Implements gameplay logic, player systems, and moment-to-moment feel.
+  • Integrates FMOD events, mixing, and in-game audio behaviours.
+
+- Mohamad Amir Akmal Bin Nasrudin (2402967)
+  Role: Programmer, Debugging Tools Champion  
+  • Develops in-engine debugging, logging, and inspection tools.
+  • Champions workflows for profiling, diagnostics, and crash investigation.
+
+- Mira Tristan Dumlao (2401158)
+  Role: Programmer, Collision Champion , AI Champion  
+  • Owns collision detection and response systems.
+  • Ensures stable physics interactions for gameplay and level design.
+  • Implements enemy AI behaviours and decision-making.
+
+- Ranvitha (2402289)
+  Role: Programmer, Graphics Champion  
+  • Focuses on rendering features, visual quality, and graphics optimisation.
+  • Works closely with the team to keep the game visually consistent.
+
+------------------------------------------------------------
+
+
