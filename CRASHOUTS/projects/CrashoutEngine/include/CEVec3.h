@@ -5,6 +5,7 @@
 @brief      3D vector type with common operations
 
 The file defines a 3D vector structure with basic arithmetic and comparison operations.
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.s
 //__________________________________________________________________________*/
 
 #pragma once

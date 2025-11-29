@@ -5,6 +5,9 @@
 
 @brief	This file contains the definition of the tile map asset class, as well
         as the functions required to create it and use it.
+
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 __________________________________________________________________________*/
 #pragma once
 

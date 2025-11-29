@@ -1,4 +1,10 @@
 #pragma once
+
+/*!
+All content © 2025 Digipen Institute of Technology Singapore.All rights reserved.
+
+//__________________________________________________________________________*/
+
 #include "UndoManager.h"
 #include "entitymanager.h" // for ECS access
 #include "transformcomponent.h"

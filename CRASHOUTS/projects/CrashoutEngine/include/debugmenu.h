@@ -8,6 +8,8 @@
             declarations for initialization, shutdown, rendering, and debugging
             panels, as well as a UI state structure to manage panel toggles.
 
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 //__________________________________________________________________________*/
 
 /*                                                                   includes

@@ -5,6 +5,9 @@
 
 @brief	This file defines the LayerComponent, a simple data structure used to 
 		store an entity's layer name and bitflag.
+
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 //__________________________________________________________________________*/
 #pragma once
 

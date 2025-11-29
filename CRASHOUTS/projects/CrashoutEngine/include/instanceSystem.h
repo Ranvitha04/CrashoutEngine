@@ -24,6 +24,9 @@ Key functionalities include:
 This file works in conjunction with the `InstancedParams` structure and provides a unified API
 for shape instancing that other systems (e.g., game states or rendering passes) can call to
 generate procedurally varied, GPU-efficient visuals.
+
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 */
 
 #include "CEVec3.h"

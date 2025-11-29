@@ -4,6 +4,8 @@
 @date       31/10/2025
 @brief      Declaration for the template class of the FiniteStateMachine. This is used to provide a way to streamline creating a state machine for entities
 
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 //__________________________________________________________________________*/
 
 #pragma once

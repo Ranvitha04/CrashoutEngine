@@ -3,6 +3,11 @@
 @author      lee.r@digipen.edu
 @date        29/09/2025
 @brief       Implements function calls that run every frame for the scenes
+@brief       Implements function calls that run every frame for the scenes for shapes,
+			 and texts. As well as the update functionalities for GUI.
+
+All content � 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 */
 
 #include "rendering.h"

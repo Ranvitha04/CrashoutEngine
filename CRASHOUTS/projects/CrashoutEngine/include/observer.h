@@ -4,6 +4,9 @@
 @date       19/09/2025
 @brief      Declaration for the Base class Observar. Allows other system to inherit from this class to listen to messages emitted by
 			Observables
+
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 //__________________________________________________________________________*/
 
 #pragma once

@@ -5,6 +5,8 @@
 
 @brief	This file defines the functions that would be used by the
 		tilemapcomponent.
+
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
 __________________________________________________________________________*/
 
 /*                                                                   includes

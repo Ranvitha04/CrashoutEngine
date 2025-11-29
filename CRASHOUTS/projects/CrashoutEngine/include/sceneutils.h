@@ -4,6 +4,9 @@
 @date        29/09/2025
 @brief       Implements the main functions that run in engine.cpp to update
              visuals and elements in the scene.
+
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 */
 #pragma once
 

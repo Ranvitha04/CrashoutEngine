@@ -11,6 +11,8 @@ window and start up an OpenGL context and to extract function pointers
 to OpenGL implementations. It also includes new functions for ImGui
 integration.
 
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 *//*__________________________________________________________________________*/
 
 /* _________________________________________________________________________

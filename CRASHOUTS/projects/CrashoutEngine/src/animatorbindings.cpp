@@ -3,6 +3,10 @@
 @author
 @date
 @brief       Definition of animator bindings functions
+@brief       Definition of animator bindings functions (Updated for Keyframe System)
+
+All content � 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 */
 
 #include "animatorbindings.h"

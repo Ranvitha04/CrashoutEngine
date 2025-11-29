@@ -20,6 +20,15 @@ Key functionality includes:
 
 This file contains only declarations; implementations are provided in the corresponding
 `instancing_system.cpp` file.
+Key functionalities include:
+- **Instanced shape creation**: Initializes GPU buffers for circles, rectangles, and triangles.
+- **Batch rendering**: Renders multiple instances in a single draw call using shared geometry data.
+- **ECS integration**: Initializes and populates entity data for ECS-based rendering workflows.
+- **Texture and tint support**: Applies textures with adjustable UV scaling and color tinting.
+- **Cleanup utilities**: Frees GPU buffers and resets instancing data when no longer needed.
+
+All content � 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 */
 
 #include <cmath>

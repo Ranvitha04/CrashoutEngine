@@ -6,6 +6,9 @@
 @brief      Implementation of the TextRenderer class
 
 Handles font loading character atlas creation and text rendering with FreeType and OpenGL
+
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 */
 
 #include "rendering.h"

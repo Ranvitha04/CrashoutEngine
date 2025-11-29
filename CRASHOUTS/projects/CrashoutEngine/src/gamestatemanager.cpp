@@ -5,6 +5,9 @@
 @brief		Implementation of the game state manager
 
 Handles registration initialization updating and transitions between different game states based on Soroor's Module
+
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 */
 
 #include "gamestatemanager.h"

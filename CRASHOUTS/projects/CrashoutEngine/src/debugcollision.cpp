@@ -6,6 +6,9 @@
 @details    Renders wireframe overlays for all active colliders (AABBs & spheres),
             highlights entities participating in collisions, and draws contact
             points and normal vectors derived from the collision manifold.
+
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 //__________________________________________________________________________*/
 
 #include "debugcollision.h"

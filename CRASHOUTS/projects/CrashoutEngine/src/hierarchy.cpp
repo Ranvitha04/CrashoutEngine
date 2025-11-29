@@ -4,6 +4,8 @@
 @date        7/11/2025
 @brief       Parent–child hierarchy: linking, reparenting, and world transform and color.
 
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 */
 #include <algorithm>                 
 #include <utility>                  

@@ -3,6 +3,11 @@
 #include "colliders.h"
 #include <memory>
 
+/*!
+All content © 2025 Digipen Institute of Technology Singapore.All rights reserved.
+
+//__________________________________________________________________________*/
+
 namespace Component {
 	/*!
 	@struct	ColliderComponent

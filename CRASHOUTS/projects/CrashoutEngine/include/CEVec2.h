@@ -5,6 +5,7 @@
 @brief      2D vector type with common operations
 
 The file defines a 2D vector structure with basic arithmetic and comparison operations
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
 //__________________________________________________________________________*/
 
 #pragma once

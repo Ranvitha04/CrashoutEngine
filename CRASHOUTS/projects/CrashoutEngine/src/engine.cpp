@@ -6,6 +6,8 @@
 This file uses functionality defined in type GLApp to initialize an OpenGL
 context and implement a game loop.
 
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 *//*__________________________________________________________________________*/
 
 /*                                                                   includes

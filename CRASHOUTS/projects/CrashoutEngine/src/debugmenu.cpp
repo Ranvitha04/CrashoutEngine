@@ -17,6 +17,9 @@ for Crashout Engine.
             It also contains all the small, file-local editor state
             (selected entity, drag payloads, gizmo mode, etc.)
             so that the rest of the engine code stays clean.
+
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 //__________________________________________________________________________*/
 
 /*                                                                   includes

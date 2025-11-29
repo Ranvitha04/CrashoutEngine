@@ -10,6 +10,8 @@ to load OpenGL extensions; initialize OpenGL state; and finally initialize
 the OpenGL application by calling initalization functions associated with
 objects participating in the application.
 
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 *//*__________________________________________________________________________*/
 
 /*                                                                      guard
