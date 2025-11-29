@@ -460,15 +460,11 @@ This function is called when keyboard buttons are pressed.
 */
 void GLApp::key_cb(GLFWwindow* pwin, int key, [[maybe_unused]] int scancode, int action, [[maybe_unused]] int mod) {
     (void)pwin;
-    if (key < 0 || key > GLFW_KEY_LAST) return;
-#if USE_IMGUI_EDITOR
-    ImGui_ImplGlfw_KeyCallback(pwin, key, scancode, action, mod);
-#endif
 
     // Ignore invalid keys
     if (key < 0 || key > GLFW_KEY_LAST) return;
 
-#ifdef DEBUG
+#ifdef _DEBUG
     // Only cast if within valid Key enum range
     Key k = static_cast<Key>(key);
 
@@ -496,7 +492,6 @@ void GLApp::key_cb(GLFWwindow* pwin, int key, [[maybe_unused]] int scancode, int
     default: break; // ignore all other keys
     }
 }
-
 
 /* _________________________________________________________________________*/
 /*! mousebutton_cb
