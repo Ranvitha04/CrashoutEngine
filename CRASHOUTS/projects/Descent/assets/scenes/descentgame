@@ -19,7 +19,7 @@
             },
             "tilemap": {
                 "tileSize": 32,
-                "activeAsset": "tilemaps/Platform",
+                "activeAsset": "tilemaps/Lava_Platform",
                 "tileAssetNames": [
                     "Rock",
                     "Lava_Platform",
@@ -8309,7 +8309,7 @@
                     {
                         "x": 35,
                         "y": -2,
-                        "asset": "tilemaps/Rock"
+                        "asset": ""
                     },
                     {
                         "x": 35,
@@ -8489,7 +8489,7 @@
                     {
                         "x": 36,
                         "y": -3,
-                        "asset": "tilemaps/Rock"
+                        "asset": "tilemaps/Lava_Platform"
                     },
                     {
                         "x": 36,
@@ -8674,7 +8674,7 @@
                     {
                         "x": 37,
                         "y": -3,
-                        "asset": "tilemaps/Rock"
+                        "asset": "tilemaps/Lava_Platform"
                     },
                     {
                         "x": 37,
@@ -8879,7 +8879,7 @@
                     {
                         "x": 38,
                         "y": -3,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": "tilemaps/Rock"
                     },
                     {
                         "x": 38,
@@ -9899,7 +9899,7 @@
                     {
                         "x": 44,
                         "y": -3,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": "tilemaps/Rock"
                     },
                     {
                         "x": 44,
@@ -14429,7 +14429,8 @@
                             "lightMass": 3.0,
                             "CurrentEnergy": 100.0,
                             "MaxEnergy": 100.0,
-                            "alive": true
+                            "alive": true,
+                            "isPaused": false
                         }
                     }
                 ]
@@ -15981,12 +15982,12 @@
                 "rotation": 0.0,
                 "position": {
                     "x": 359.33099365234377,
-                    "y": 54.14892578125,
+                    "y": 9.4493408203125,
                     "z": 0.0
                 },
                 "size": {
                     "x": 1200.0,
-                    "y": 250.0
+                    "y": 375.04998779296877
                 }
             },
             "shape": {
@@ -15999,8 +16000,8 @@
                 "type": 0,
                 "textureName": "backgrounds\\foreground top.png",
                 "uvSize": {
-                    "x": 1.3830000162124634,
-                    "y": 0.43299999833106997
+                    "x": 0.9330000281333923,
+                    "y": 0.5329999923706055
                 },
                 "uvOffset": {
                     "x": 0.0,
@@ -16027,13 +16028,13 @@
                 "parentName": "foreground",
                 "localPos": {
                     "x": -588.9135131835938,
-                    "y": 815.18359375,
+                    "y": 770.4840087890625,
                     "z": 0.0
                 },
                 "localRot": 0.0,
                 "localScale": {
                     "x": 1200.0,
-                    "y": 250.0
+                    "y": 375.04998779296877
                 },
                 "inheritColor": false,
                 "colorMul": {
@@ -19613,7 +19614,7 @@
                             "IsMoving": true,
                             "MoveRight": true,
                             "MovementDistance": 550.0,
-                            "MoveSpeed": 20.0,
+                            "MoveSpeed": 50.0,
                             "VerticalSpeed": 50.0,
                             "maxDrop": 50.0
                         }
@@ -19679,7 +19680,7 @@
                         "fields": {
                             "PlatesActive": 0,
                             "PlatesRequired": 1,
-                            "MoveRight": false,
+                            "MoveRight": true,
                             "MoveDist": 130.0,
                             "MoveSpeed": 30.0
                         }
@@ -20610,12 +20611,12 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 0.0,
+                    "x": -3.0,
                     "y": 0.0,
                     "z": -100.0
                 },
                 "size": {
-                    "x": 200.8000030517578,
+                    "x": 225.0,
                     "y": 131.0
                 }
             },
@@ -20656,13 +20657,13 @@
             "parent": {
                 "parentName": "PauseScreen",
                 "localPos": {
-                    "x": 0.0,
+                    "x": -0.003000000026077032,
                     "y": 0.0,
                     "z": 0.0
                 },
                 "localRot": 0.0,
                 "localScale": {
-                    "x": 0.20080000162124635,
+                    "x": 0.22499999403953553,
                     "y": 0.13099999725818635
                 },
                 "inheritColor": false,
@@ -20682,13 +20683,13 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -0.3790000081062317,
-                    "y": -1.9889999628067017,
+                    "x": 24.121000289916993,
+                    "y": -9.58899974822998,
                     "z": -99.9000015258789
                 },
                 "size": {
-                    "x": 148.1999969482422,
-                    "y": 106.4000015258789
+                    "x": 28.0,
+                    "y": 8.0
                 }
             },
             "shape": {
@@ -20785,14 +20786,14 @@
             "parent": {
                 "parentName": "PauseScreen",
                 "localPos": {
-                    "x": -0.00037900000461377203,
-                    "y": -0.0019890000112354757,
-                    "z": 0.10000000149011612
+                    "x": 0.02412099950015545,
+                    "y": -0.009588999673724175,
+                    "z": 0.10000002384185791
                 },
                 "localRot": 0.0,
                 "localScale": {
-                    "x": 0.14819999039173127,
-                    "y": 0.10639999806880951
+                    "x": 0.02800000086426735,
+                    "y": 0.00800000037997961
                 },
                 "inheritColor": false,
                 "colorMul": {
@@ -20811,13 +20812,13 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 0.020999999716877939,
-                    "y": -0.8889999985694885,
+                    "x": 24.121000289916993,
+                    "y": 13.211000442504883,
                     "z": -99.9000015258789
                 },
                 "size": {
-                    "x": 148.1999969482422,
-                    "y": 106.4000015258789
+                    "x": 32.0,
+                    "y": 8.0
                 }
             },
             "shape": {
@@ -20914,14 +20915,14 @@
             "parent": {
                 "parentName": "PauseScreen",
                 "localPos": {
-                    "x": 0.00002099999983329326,
-                    "y": -0.00088900001719594,
-                    "z": 0.10000000149011612
+                    "x": 0.02412099950015545,
+                    "y": 0.013211000710725785,
+                    "z": 0.10000002384185791
                 },
                 "localRot": 0.0,
                 "localScale": {
-                    "x": 0.14819999039173127,
-                    "y": 0.10639999806880951
+                    "x": 0.03200000151991844,
+                    "y": 0.00800000037997961
                 },
                 "inheritColor": false,
                 "colorMul": {
@@ -20940,13 +20941,13 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 0.020999999716877939,
-                    "y": -1.4889999628067017,
+                    "x": 24.121000289916993,
+                    "y": 1.6109999418258668,
                     "z": -99.9000015258789
                 },
                 "size": {
-                    "x": 148.1999969482422,
-                    "y": 106.4000015258789
+                    "x": 28.0,
+                    "y": 8.0
                 }
             },
             "shape": {
@@ -21043,14 +21044,14 @@
             "parent": {
                 "parentName": "PauseScreen",
                 "localPos": {
-                    "x": 0.00002099999983329326,
-                    "y": -0.001488999929279089,
-                    "z": 0.10000000149011612
+                    "x": 0.02412099950015545,
+                    "y": 0.0016109999269247056,
+                    "z": 0.10000002384185791
                 },
                 "localRot": 0.0,
                 "localScale": {
-                    "x": 0.14819999039173127,
-                    "y": 0.10639999806880951
+                    "x": 0.02800000086426735,
+                    "y": 0.00800000037997961
                 },
                 "inheritColor": false,
                 "colorMul": {
@@ -24022,7 +24023,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": 0.0,
-                    "y": 0.0,
+                    "y": 15.0,
                     "z": -99.69999694824219
                 },
                 "size": {
@@ -24035,8 +24036,8 @@
                 "text": "GAME OVER",
                 "scale": 23.0,
                 "offset": {
-                    "x": 958.0,
-                    "y": 688.0
+                    "x": 0.0,
+                    "y": 0.0
                 },
                 "color": {
                     "x": 0.4751381278038025,
@@ -24051,7 +24052,7 @@
                 "parentName": "GameOverScreen",
                 "localPos": {
                     "x": 0.0,
-                    "y": 0.0,
+                    "y": 0.014999999664723874,
                     "z": 0.30000001192092898
                 },
                 "localRot": 0.0,
@@ -24081,7 +24082,7 @@
                     "z": -99.9000015258789
                 },
                 "size": {
-                    "x": 18.600000381469728,
+                    "x": 20.0,
                     "y": 9.0
                 }
             },
@@ -24121,11 +24122,11 @@
             },
             "text": {
                 "font": "Exo2-Regular",
-                "text": "Restart",
-                "scale": 21.0,
+                "text": "Restart Game",
+                "scale": 14.0,
                 "offset": {
-                    "x": 814.0,
-                    "y": 541.0
+                    "x": 0.0,
+                    "y": 0.0
                 },
                 "color": {
                     "x": 0.3867403268814087,
@@ -24202,7 +24203,7 @@
                 },
                 "localRot": 0.0,
                 "localScale": {
-                    "x": 0.01860000006854534,
+                    "x": 0.019999999552965165,
                     "y": 0.008999999612569809
                 },
                 "inheritColor": false,
@@ -24227,7 +24228,7 @@
                     "z": -99.9000015258789
                 },
                 "size": {
-                    "x": 18.600000381469728,
+                    "x": 20.0,
                     "y": 9.0
                 }
             },
@@ -24268,10 +24269,10 @@
             "text": {
                 "font": "Exo2-Regular",
                 "text": "Quit Game",
-                "scale": 20.0,
+                "scale": 14.0,
                 "offset": {
-                    "x": 1097.0,
-                    "y": 537.0
+                    "x": 0.0,
+                    "y": 0.0
                 },
                 "color": {
                     "x": 0.3867403268814087,
@@ -24348,7 +24349,7 @@
                 },
                 "localRot": 0.0,
                 "localScale": {
-                    "x": 0.01860000006854534,
+                    "x": 0.019999999552965165,
                     "y": 0.008999999612569809
                 },
                 "inheritColor": false,
@@ -24410,6 +24411,14 @@
                     "y": 0.0,
                     "z": 0.0
                 }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "WinGame",
+                        "fields": {}
+                    }
+                ]
             }
         },
         {
@@ -24434,8 +24443,8 @@
                 "text": "Level cleared",
                 "scale": 20.0,
                 "offset": {
-                    "x": 963.0,
-                    "y": 556.0
+                    "x": 0.0,
+                    "y": 0.0
                 },
                 "color": {
                     "x": 1.0,
@@ -24475,8 +24484,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 0.0,
-                    "y": -14.199999809265137,
+                    "x": 10.0,
+                    "y": -10.0,
                     "z": -99.69999694824219
                 },
                 "size": {
@@ -24521,10 +24530,10 @@
             "text": {
                 "font": "Exo2-Regular",
                 "text": "Quit Game",
-                "scale": 26.0,
+                "scale": 14.0,
                 "offset": {
-                    "x": 956.0,
-                    "y": 399.0
+                    "x": 0.0,
+                    "y": 0.0
                 },
                 "color": {
                     "x": 0.2209944725036621,
@@ -24595,8 +24604,8 @@
             "parent": {
                 "parentName": "WinScreen",
                 "localPos": {
-                    "x": 0.0,
-                    "y": -0.0142000000923872,
+                    "x": 0.009999999776482582,
+                    "y": -0.009999999776482582,
                     "z": 0.30000001192092898
                 },
                 "localRot": 0.0,
@@ -24622,12 +24631,12 @@
                 "rotation": 0.0,
                 "position": {
                     "x": 1465.1739501953126,
-                    "y": 44.894287109375,
+                    "y": -41.50567626953125,
                     "z": 0.0
                 },
                 "size": {
                     "x": 1214.199951171875,
-                    "y": 250.0
+                    "y": 456.79998779296877
                 }
             },
             "shape": {
@@ -24668,13 +24677,13 @@
                 "parentName": "foreground",
                 "localPos": {
                     "x": 516.929443359375,
-                    "y": 805.928955078125,
+                    "y": 719.5289916992188,
                     "z": 0.0
                 },
                 "localRot": 0.0,
                 "localScale": {
                     "x": 1214.199951171875,
-                    "y": 250.0
+                    "y": 456.79998779296877
                 },
                 "inheritColor": false,
                 "colorMul": {
@@ -24683,159 +24692,152 @@
                     "z": 1.0,
                     "w": 1.0
                 }
+            }
+        },
+        {
+            "name": "ReturnButton",
+            "layer": {
+                "currentLayer": 0
             },
-            "keyframe_animator": {
-                "current": "playerSwitchLight",
-                "t": 1.5666658878326417,
-                "playing": true,
-                "clips": [
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -10.0,
+                    "y": -10.0,
+                    "z": -99.69999694824219
+                },
+                "size": {
+                    "x": 17.399999618530275,
+                    "y": 6.5
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "text": {
+                "font": "Exo2-Regular",
+                "text": "Return",
+                "scale": 14.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.2209944725036621,
+                    "y": 0.1982278674840927,
+                    "z": 0.056164342910051349,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": false
+            },
+            "script": {
+                "scripts": [
                     {
-                        "name": "playerSwitchLight",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Switch-State-SpriteSheet.png",
-                        "spriteCols": 3,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": 1200.0,
-                        "targetHeight": 250.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 1.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.5,
-                                        "v": 2.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.75,
-                                        "v": 3.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 1.0,
-                                        "v": 4.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 1.25,
-                                        "v": 5.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 1.5,
-                                        "v": 6.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 1.75,
-                                        "v": 6.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "playerSwitch",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Switch-State-SpriteSheet-Reverse.png",
-                        "spriteCols": 3,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": 1200.0,
-                        "targetHeight": 250.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 1.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.5,
-                                        "v": 2.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.75,
-                                        "v": 3.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 1.0,
-                                        "v": 4.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 1.25,
-                                        "v": 5.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 1.5,
-                                        "v": 6.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 1.75,
-                                        "v": 6.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
+                        "className": "GameOverUI",
+                        "fields": {}
                     }
                 ]
+            },
+            "button": {
+                "buttonState": 0,
+                "shapeNormalColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "shapeHoveredColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.5
+                },
+                "shapePressedColor": {
+                    "x": 0.699999988079071,
+                    "y": 0.699999988079071,
+                    "z": 0.699999988079071,
+                    "w": 0.699999988079071
+                },
+                "textNormalColor": {
+                    "x": 0.2209944725036621,
+                    "y": 0.1982278674840927,
+                    "z": 0.056164342910051349,
+                    "w": 1.0
+                },
+                "textHoveredColor": {
+                    "x": 0.6961326003074646,
+                    "y": 0.6580122113227844,
+                    "z": 0.1653795838356018,
+                    "w": 0.0
+                },
+                "textPressedColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.5
+                }
+            },
+            "gui": {
+                "uiType": 7
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "uiLayout": 4
+            },
+            "parent": {
+                "parentName": "WinScreen",
+                "localPos": {
+                    "x": -0.009999999776482582,
+                    "y": -0.009999999776482582,
+                    "z": 0.30000001192092898
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.017400000244379045,
+                    "y": 0.006500000134110451
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
             }
         }
     ],

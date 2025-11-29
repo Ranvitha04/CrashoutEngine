@@ -52,6 +52,7 @@ namespace CrashoutsEngine
         private Random rng = new Random();
 
         public bool alive = true;
+        public bool isPaused = false;
 
         // Animation State
         private string currentAnimState = "";
@@ -87,6 +88,7 @@ namespace CrashoutsEngine
 
         public override void Update()
         {
+            if(isPaused) { return; }
             // 0. HANDLE DEATH / PAUSE
             if (!alive) return;
 

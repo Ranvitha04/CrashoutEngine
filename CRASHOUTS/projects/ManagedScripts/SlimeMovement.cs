@@ -58,6 +58,7 @@ namespace CrashoutsEngine
 
         public override void Update()
         {
+            if(playerScript != null && playerScript.isPaused) { return; } 
             if (rb == null || tf == null) return;
 
             float dt = (float)Time.DT;
