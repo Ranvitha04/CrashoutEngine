@@ -68,6 +68,7 @@ namespace InstancingSystem {
         float scale;      // 1 Float
         float width;      // 1 Float
         float height;     // 1 Float
+        CEVec2 uvOffset;
     };
 
     /*!
@@ -88,6 +89,7 @@ namespace InstancingSystem {
         float scale;
         float radius;
         float padding; // Keeps struct align comparable to Rect if needed, or use as radius
+        CEVec2 uvOffset;
     };
 
     /*!
@@ -106,6 +108,7 @@ namespace InstancingSystem {
         float rotation;
         float scale;
         float sideLength;
+        CEVec2 uvOffset;
         // Triangle height is usually calculated in shader or CPU, 
         // but can be passed as padding here if needed.
     };
@@ -126,12 +129,14 @@ namespace InstancingSystem {
     void CreateInstancedCircles(const CEVec3* positions, const CEColor* colors,
         const float* rotations, const float* scales,
         const float* radii,
+        const CEVec2* uvOffsets,
         int count, int segments);
 
     void CreateInstancedCirclesTextured(const std::string& textureName,
         const CEVec3* positions, const CEColor* colors,
         const float* rotations, const float* scales,
         const float* radii,
+        const CEVec2* uvOffsets,
         int count, int segments,
         const CEColor& tint = CEColor(1.0f, 1.0f, 1.0f),
         const CEVec2& uvSize = CEVec2(1.0f, 1.0f));
@@ -142,6 +147,7 @@ namespace InstancingSystem {
         const float* rotations,
         const float* scales,
         const float* radii,
+        const CEVec2* uvOffsets,
         int count,
         int segments,
         const InstancedParams& params
@@ -155,12 +161,14 @@ namespace InstancingSystem {
     void CreateInstancedRectangles(const CEVec3* positions, const CEColor* colors,
         const float* rotations, const float* scales,
         const float* widths, const float* heights,
+        const CEVec2* uvOffsets,
         int count);
 
     void CreateInstancedRectanglesTextured(const std::string& textureName,
         const CEVec3* positions, const CEColor* colors,
         const float* rotations, const float* scales,
         const float* widths, const float* heights,
+        const CEVec2* uvOffsets,
         int count,
         const CEColor& tint = CEColor(1.0f, 1.0f, 1.0f),
         const CEVec2& uvSize = CEVec2(1.0f, 1.0f));
@@ -172,6 +180,7 @@ namespace InstancingSystem {
         const float* scales,
         const float* widths,
         const float* heights,
+        const CEVec2* uvOffsets,
         int count,
         const InstancedParams& params
     );
@@ -192,12 +201,14 @@ namespace InstancingSystem {
     void CreateInstancedTriangles(const CEVec3* positions, const CEColor* colors,
         const float* rotations, const float* scales,
         const float* sideLengths,
+        const CEVec2* uvOffsets,
         int count);
 
     void CreateInstancedTrianglesTextured(const std::string& textureName,
         const CEVec3* positions, const CEColor* colors,
         const float* rotations, const float* scales,
         const float* sideLengths,
+        const CEVec2* uvOffsets,
         int count,
         const CEColor& tint = CEColor(1.0f, 1.0f, 1.0f),
         const CEVec2& uvSize = CEVec2(1.0f, 1.0f));
@@ -209,6 +220,7 @@ namespace InstancingSystem {
         const float* rotations,
         const float* scales,
         const float* sideLengths,
+        const CEVec2* uvOffsets,
         int count,
         const InstancingSystem::InstancedParams& params
     );

@@ -12,6 +12,7 @@ layout (location = 5) in float aInstanceRot;
 layout (location = 6) in float aInstanceScale;
 layout (location = 7) in float aInstanceWidth;
 layout (location = 8) in float aInstanceHeight;
+layout (location = 9) in vec2  aInstanceOffset;
 
 out vec4 color;   // CHANGED: vec3 -> vec4
 out vec2 texCoord;
@@ -57,7 +58,7 @@ void main() {
         // IMPORTANT: Use the attribute UVs, not position-based UVs.
         // The C++ system sends specific UVs for sprite sheets.
         vec2 uvSize = (u_uvSize.x > 0.0 && u_uvSize.y > 0.0) ? u_uvSize : vec2(1.0);
-        texCoord = aTexCoord * uvSize;
+        texCoord = (aTexCoord * uvSize) + aInstanceOffset;
         
     } else {
         // Non-instanced fallback

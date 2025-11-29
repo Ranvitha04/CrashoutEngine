@@ -23,6 +23,7 @@ namespace CrashoutsEngine
         // --- STATE ---
         private RigidBodyComponent rb;
         private TransformComponent tf;
+        private Animator anim; // The Animator
         private PlayerMovement playerScript;
 
         private bool isGrounded = false;
@@ -34,20 +35,22 @@ namespace CrashoutsEngine
 
         // NEW: Home Position
         private CEVec3 startPos;
-        private bool returningHome = false; // State to handle walking back
+        private bool returningHome = false;
+
+        // Animation State Tracking
+        private string currentAnimState = "";
 
         public override void Start()
         {
             rb = Entity.GetComponent<RigidBodyComponent>();
             tf = Entity.GetComponent<TransformComponent>();
+            anim = Entity.GetComponent<Animator>(); // Get Animator
             playerScript = PlayerMovement.Instance;
 
             CollisionEvents.RegisterTriggerEnter(Entity.ID, this.OnTriggerEnter);
             CollisionEvents.RegisterTriggerExit(Entity.ID, this.OnTriggerExit);
 
             if (rb != null) rb.LinearVelocity = new CEVec3(0, 0, 0);
-
-            // Cache the starting position as "Home"
             if (tf != null) startPos = tf.Position;
 
             Console.WriteLine("[Slime] AI Initialized. Home X: " + startPos.x);
@@ -60,9 +63,19 @@ namespace CrashoutsEngine
             float dt = (float)Time.DT;
             if (flipCooldown > 0) flipCooldown -= dt;
 
-            float dist = Distance(tf.Position, playerScript.Entity.GetComponent<TransformComponent>().Position);
-            if (dist <= grabRange) HandleGrabLogic();
-            if (isGrabbed) return;
+            // 0. GRAB LOGIC (Overrides everything)
+            float dist = 0.0f;
+            if (playerScript != null)
+            {
+                dist = Distance(tf.Position, playerScript.Entity.GetComponent<TransformComponent>().Position);
+                if (dist <= grabRange) HandleGrabLogic();
+
+                if (isGrabbed)
+                {
+                    UpdateAnimationState(); // Update anim even when grabbed
+                    return;
+                }
+            }
 
             // 1. CHECK PLAYER (CHASE LOGIC)
             isChasing = false;
@@ -75,8 +88,7 @@ namespace CrashoutsEngine
                     if (dist < detectionRange)
                     {
                         isChasing = true;
-                        returningHome = false; // Interrupt return
-                        // Face player
+                        returningHome = false;
                         moveRight = (playerTf.Position.x > tf.Position.x);
                     }
                 }
@@ -87,7 +99,7 @@ namespace CrashoutsEngine
             {
                 float distFromHome = tf.Position.x - startPos.x;
 
-                // A. If we are OUTSIDE the zone -> Return Home
+                // A. If OUTSIDE zone -> Return Home
                 if (Math.Abs(distFromHome) > MaxDist)
                 {
                     returningHome = true;
@@ -96,32 +108,27 @@ namespace CrashoutsEngine
                 // B. Returning Home Logic
                 if (returningHome)
                 {
-                    // Determine direction towards home
                     moveRight = (startPos.x > tf.Position.x);
-
-                    // If we are close enough to home (e.g. within 10 units), resume normal patrolling
                     if (Math.Abs(distFromHome) < 10.0f)
                     {
                         returningHome = false;
-                        currentTurnTime = turnTimer; // Reset patrol timer
+                        currentTurnTime = turnTimer;
                     }
                 }
-                // C. Normal Patrolling (Inside Zone)
+                // C. Normal Patrolling
                 else
                 {
-                    // Check boundaries: If hitting the edge of MaxDist, turn around!
                     if (distFromHome > MaxDist && moveRight)
                     {
-                        moveRight = false; // Turn Left
-                        rb.LinearVelocity = new CEVec3(0, rb.LinearVelocity.y, 0); // Kill momentum
+                        moveRight = false;
+                        rb.LinearVelocity = new CEVec3(0, rb.LinearVelocity.y, 0);
                     }
                     else if (distFromHome < -MaxDist && !moveRight)
                     {
-                        moveRight = true; // Turn Right
+                        moveRight = true;
                         rb.LinearVelocity = new CEVec3(0, rb.LinearVelocity.y, 0);
                     }
 
-                    // Standard Timer Turn
                     currentTurnTime -= dt;
                     if (currentTurnTime <= 0)
                     {
@@ -131,10 +138,48 @@ namespace CrashoutsEngine
                 }
             }
 
-            // 3. VISUALS
+            // 3. VISUALS (Flip)
             float absX = Math.Abs(tf.Size.x);
             if (moveRight) tf.Size = new CEVec2(absX, tf.Size.y);
             else tf.Size = new CEVec2(-absX, tf.Size.y);
+
+            // 4. ANIMATION UPDATE
+            UpdateAnimationState();
+        }
+
+        private void UpdateAnimationState()
+        {
+            if (anim == null) return;
+
+            string targetState = "";
+
+            // Priority 1: Grabbed
+            if (isGrabbed)
+            {
+                targetState = "slimeGrabbed";
+            }
+            // Priority 2: Chasing
+            else if (isChasing)
+            {
+                targetState = "slimeChase";
+            }
+            // Priority 3: Moving (Patrolling or Returning)
+            else if (Math.Abs(rb.LinearVelocity.x) > 1.0f) // Simple threshold to detect movement
+            {
+                targetState = "slimeWalk";
+            }
+            // Priority 4: Idle
+            else
+            {
+                targetState = "slimeIdle"; // Or "slimeWalk" if you don't have idle
+            }
+
+            // Apply if changed
+            if (targetState != currentAnimState)
+            {
+                anim.Play(targetState, true);
+                currentAnimState = targetState;
+            }
         }
 
         public override void FixedUpdate()
@@ -142,16 +187,10 @@ namespace CrashoutsEngine
             if (rb == null || isGrabbed) return;
 
             CEVec3 velocity = rb.LinearVelocity;
-
             float dir = moveRight ? 1.0f : -1.0f;
-            // Run faster if chasing OR returning home
             float speedMult = (isChasing || returningHome) ? 1.5f : 1.0f;
 
-
-            if (playerScript != null)
-            {
-                if (!playerScript.alive) return;
-            }
+            if (playerScript != null && !playerScript.alive) return;
 
             if (Math.Abs(velocity.x) < maxSpeed * speedMult)
             {
@@ -159,7 +198,7 @@ namespace CrashoutsEngine
             }
 
             if (velocity.y < 0)
-            { 
+            {
                 rb.AddForce(new CEVec3(0f, -9.81f * gravityScale * rb.Mass, 0f));
             }
         }
@@ -168,16 +207,14 @@ namespace CrashoutsEngine
         {
             if (Input.IsMouseButtonDown(0))
             {
-
                 CEVec2 mousePos = Input.GetMouseWorldPosition();
                 float halfW = Math.Abs(tf.Size.x) * 0.5f + 20.0f;
                 float halfH = Math.Abs(tf.Size.y) * 0.5f + 20.0f;
 
-                Debug.Log("LMB is down, enemy pos is " + tf.Position.ToString() + " mouse pos is " + mousePos.ToString());
                 bool mouseOver = mousePos.x >= tf.Position.x - halfW &&
-                                  mousePos.x <= tf.Position.x + halfW &&
-                                  mousePos.y >= tf.Position.y - halfH &&
-                                  mousePos.y <= tf.Position.y + halfH;
+                                 mousePos.x <= tf.Position.x + halfW &&
+                                 mousePos.y >= tf.Position.y - halfH &&
+                                 mousePos.y <= tf.Position.y + halfH;
 
                 if (mouseOver)
                 {
@@ -208,8 +245,6 @@ namespace CrashoutsEngine
                 }
                 else
                 {
-                    // Wall Hit: Only flip if we are NOT returning home or chasing
-                    // (If chasing/returning, we might want to jump or keep pushing)
                     if (!isChasing && !returningHome && flipCooldown <= 0)
                     {
                         moveRight = !moveRight;

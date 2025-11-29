@@ -10,6 +10,13 @@
 #include "entitymanager.h"
 
 namespace Scene {
+
+    /**
+     * @name    GetMouseInWorld
+     * @brief   Gets the mouse coordinates in world
+     */
+    CEVec3 GetMouseInWorld();
+
     /**
      * @name    RenderScene
      * @brief   Renders the scene by cycling through all ShapeComponents used.

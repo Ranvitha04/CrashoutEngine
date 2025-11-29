@@ -36,6 +36,7 @@ context and implement a game loop.
 #include "prefab_init.h"
 #include "instanceSystem.h"
 #include "sceneasset.h"
+#include "keyframe.h"
 
 #include "glapp.h"
 #include "log.h"
@@ -74,7 +75,11 @@ static CrashoutsEngine::AIManager aiSystem;
 // ImGui in-game performance viewer
 static FrameProfiler gProfiler;
 
+#if USE_IMGUI_EDITOR
 EngineState engineState = EngineState::STOP;
+#else
+EngineState engineState = EngineState::PLAY;
+#endif
 
 const float moveSpeed = 6.7f;
 
@@ -95,7 +100,12 @@ bool gameWinHovered{ false };
 std::string g_PendingSceneName = "";
 bool g_IsSceneLoadPending = false;
 
+#if USE_IMGUI_EDITOR
 static EngineState previousState = EngineState::STOP;
+#else
+static EngineState previousState = EngineState::PLAY;
+#endif
+
 bool g_fullscreen = false;
 
 /*  _________________________________________________________________________ */
@@ -238,14 +248,19 @@ void Init() {
 
     /// register game states and start with main menu
     RegisterAllStates();
-    InitGameStateManager(MAIN_MENU);
+    InitGameStateManager(SCENE);
 
     CrashoutsEngine::ScriptSystem::InitializeAll(MonoManager::GetDomain(), MonoManager::GetAssembly());
 
     InputManager::Init(GLApp::ptr_window);
     UI::Init(GLApp::ptr_window); // NEW
     PerformanceSystem::Get().Attach(gProfiler);
+
+    #if USE_IMGUI_EDITOR
     engineState = EngineState::STOP;
+    #else
+    engineState = EngineState::PLAY;
+    #endif  
 
     glEnable(GL_DEPTH_TEST);
 
@@ -270,6 +285,39 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
     // FOR USE_IMGUI_EDITOR AND NOT USING
     // All game objects, sprites, text, etc., draw into 'gameFboID'.
     glBindFramebuffer(GL_FRAMEBUFFER, gameFboID);
+
+    #if !USE_IMGUI_EDITOR
+        int w, h;
+        glfwGetFramebufferSize(GLApp::ptr_window, &w, &h);
+
+        // If the window size differs from our internal texture size
+        if (w != gameTextureWidth || h != gameTextureHeight) {
+            gameTextureWidth = w;
+            gameTextureHeight = h;
+
+            // --- RESIZE THE TEXTURE MEMORY ---
+
+            // 1. Resize the Color Texture
+            glBindTexture(GL_TEXTURE_2D, gameTextureColorBuffer);
+            // Re-allocate memory with the new width/height (NULL means we don't copy data, just alloc)
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, gameTextureWidth, gameTextureHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+
+            // 2. Resize the Depth/Stencil Buffer (Use RBO or Texture depending on your setup)
+            // Based on your variables, you likely use 'gameRboDepthStencil'
+            if (gameRboDepthStencil != 0) {
+                glBindRenderbuffer(GL_RENDERBUFFER, gameRboDepthStencil);
+                glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, gameTextureWidth, gameTextureHeight);
+            }
+
+            // Unbind to be safe
+            glBindTexture(GL_TEXTURE_2D, 0);
+            glBindRenderbuffer(GL_RENDERBUFFER, 0);
+
+            // Note: We don't need to re-attach them to the gameFboID usually, 
+            // as the FBO holds references to the IDs, which haven't changed.
+        }
+    #endif
+
     glViewport(0, 0, gameTextureWidth, gameTextureHeight);
     glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -513,6 +561,8 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
 
 
 #else
+    CEVec3 mouseWorld{ Scene::GetMouseInWorld() };
+    InputManager::g_mouseWorldPos = CEVec2{ mouseWorld.x, mouseWorld.y };
 
     // Render directly to screen
     int displayWidth, displayHeight;
@@ -611,6 +661,7 @@ void Update(double const& dt) {
     CrashoutsEngine::UpdateHierarchy(*CrashoutsEngine::ECS::getInstance());
 
     if (engineState == EngineState::PLAY) {
+        KeyframeUnity::UpdateAll(*CrashoutsEngine::ECS::getInstance(), (float)dt);
         CrashoutsEngine::ScriptSystem::UpdateAll();
 
         aiSystem.Update();
@@ -698,7 +749,7 @@ void Update(double const& dt) {
     
     CrashoutsEngine::PostProcessing::UpdatePP();
 
-#if USE_IMGUI_EDITOR
+
     // Cycle and draw Tile Map Editor if needed
     CrashoutsEngine::ECS::ComponentArray<Component::TileMapComponent>& tmArray =
         CrashoutsEngine::ECS::getInstance()->GetComponentArray<Component::TileMapComponent>();
@@ -711,7 +762,6 @@ void Update(double const& dt) {
         CrashoutsEngine::Entity entityID = tmArray.indexToEntity[i];
         if (tm.isCacheDirty) CrashoutsEngine::TileMapUtils::RebuildCache(tm, entityID);
     }
-#endif
 
 }
 
