@@ -95,10 +95,10 @@ namespace CrashoutsEngine
 
         // audio component
         [MethodImpl(MethodImplOptions.InternalCall)]
-        internal static extern void Audio_PlayMusicFileTagged(string key, string path, bool loop, float volume);
+        internal static extern void Audio_PlayMusicFileTagged(string key, string path, bool loop);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        internal static extern void Audio_PlaySFXFileTagged(string key, string path, bool loop, float volume);
+        internal static extern void Audio_PlaySFXFileTagged(string key, string path, bool loop);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal static extern void Audio_StopTagged(string key);

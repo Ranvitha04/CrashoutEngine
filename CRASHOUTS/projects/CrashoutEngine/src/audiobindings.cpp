@@ -24,17 +24,24 @@ namespace
 
     // --------- Internal call implementations ----------
 
-    static void ICALL_Audio_PlayMusicFileTagged(MonoString* key, MonoString* path, mono_bool loop, float volume)
+    static void ICALL_Audio_PlayMusicFileTagged(MonoString* key, MonoString* path, mono_bool loop)
     {
         auto& audio = AudioSystem::instance();
-        audio.playMusicFileTagged(MonoToStdString(key), MonoToStdString(path), loop != 0, volume);
+        audio.playMusicFileTagged(
+            MonoToStdString(key),
+            MonoToStdString(path),
+            loop != 0
+        );
     }
 
-    // Added float volume argument
-    static void ICALL_Audio_PlaySFXFileTagged(MonoString* key, MonoString* path, mono_bool loop, float volume)
+    static void ICALL_Audio_PlaySFXFileTagged(MonoString* key, MonoString* path, mono_bool loop)
     {
         auto& audio = AudioSystem::instance();
-        audio.playSFXFileTagged(MonoToStdString(key), MonoToStdString(path), loop != 0, volume);
+        audio.playSFXFileTagged(
+            MonoToStdString(key),
+            MonoToStdString(path),
+            loop != 0
+        );
     }
 
     static void ICALL_Audio_StopTagged(MonoString* key)
