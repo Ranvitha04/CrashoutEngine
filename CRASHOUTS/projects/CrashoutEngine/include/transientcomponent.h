@@ -5,6 +5,9 @@
 
 @brief	This file contains the transientcomponent flag, which tells others that
 		this is a runtime only entity.
+
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 //__________________________________________________________________________*/
 #pragma once
 

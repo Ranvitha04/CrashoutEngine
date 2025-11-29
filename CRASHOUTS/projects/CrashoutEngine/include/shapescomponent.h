@@ -5,6 +5,8 @@
 @brief	    This file defines the ShapesComponent, a simple data structure
             used to store an entity's shape type and variables.
 
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 //__________________________________________________________________________*/
 
 #pragma once

@@ -10,6 +10,9 @@ Declares and registers built-in Debug Menu adapters & providers:
 
 These adapters make the ECS inspector and physics/game-state panels
 runtime-extensible and project-agnostic.
+
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 //__________________________________________________________________________*/
 
 /*                                                                   includes

@@ -25,6 +25,9 @@ Usage:
 
 Clean-up functions are provided to release GPU resources and clear caches
 when shutting down the engine.
+
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 */
 
 #define STB_IMAGE_IMPLEMENTATION

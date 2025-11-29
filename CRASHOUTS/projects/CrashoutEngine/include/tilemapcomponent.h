@@ -5,6 +5,8 @@
 
 @brief	This file declares the TileMapComponent, which stores reference to a 
 		tile-map asset, tile-map grid size, and other required data. 
+
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
 __________________________________________________________________________*/
 #pragma once
 

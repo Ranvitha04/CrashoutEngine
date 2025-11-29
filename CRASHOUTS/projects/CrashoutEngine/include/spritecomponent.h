@@ -4,6 +4,12 @@
 #include <string>       
 #include "entitymanager.h" 
 
+/*!
+
+All content © 2025 Digipen Institute of Technology Singapore.All rights reserved.
+
+//__________________________________________________________________________*/
+
 
 namespace Component {
     struct DuckMotionComponent {

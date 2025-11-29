@@ -15,6 +15,8 @@ and set uniform variables of various types (scalars, vectors, and
 matrices). These implementations simplify shader program usage
 by encapsulating common OpenGL calls and error handling.
 
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 *//*__________________________________________________________________________*/
 
 /*                                                                   includes

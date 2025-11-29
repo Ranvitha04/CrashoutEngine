@@ -5,6 +5,9 @@
 @brief		Declaration for game state registration
 
 Provides a single function to register all available game states with the game state manager
+
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 */
 
 #pragma once

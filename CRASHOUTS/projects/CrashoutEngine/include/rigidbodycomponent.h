@@ -4,6 +4,8 @@
 @date       08/09/2025
 @brief      Declaration for the class RigidBodyComponent, used for Physics system
 
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 //__________________________________________________________________________*/
 
 #pragma once

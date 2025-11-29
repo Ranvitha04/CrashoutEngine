@@ -1,5 +1,6 @@
 /*!
 @file       shapebindings.cpp
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
 */
 #include "shapebindings.h"
 #include "shapescomponent.h" // Ensure this path is correct

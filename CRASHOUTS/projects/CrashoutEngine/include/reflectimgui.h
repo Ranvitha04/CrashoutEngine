@@ -6,6 +6,9 @@
 @details    Provides a small set of `draw_field(...)` overloads and one public
             function `draw_reflected(T&)` that iterates the reflected fields
             of any type `T` and renders appropriate ImGui editors.
+
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 //__________________________________________________________________________*/
 
 /*                                                                   includes

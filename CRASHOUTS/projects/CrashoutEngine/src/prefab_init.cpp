@@ -9,6 +9,9 @@
              Collider (ColliderType::AABB from width/height)
              Text, Camera, Script, AudioEmitter, Gui, PPComponent
              and Collider (ColliderType::AABB by default).
+
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 */
 
 #include <memory>

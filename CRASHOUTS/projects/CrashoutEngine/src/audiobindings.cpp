@@ -1,3 +1,8 @@
+/*!
+All content © 2025 Digipen Institute of Technology Singapore.All rights reserved.
+
+//__________________________________________________________________________*/
+
 #include "audiobindings.h"
 #include "audioSystem.h"
 #include "audiocomponent.h"

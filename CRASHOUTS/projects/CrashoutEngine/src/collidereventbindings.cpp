@@ -1,6 +1,9 @@
 /*!
 @file      collidereventbindings.cpp
 @brief     Mono bindings for collision event callbacks (enter/stay/exit)
+
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 */
 
 #include "collidereventbindings.h"

@@ -4,6 +4,7 @@
 @date   28/09/2025
 
 @brief	This file implements an Asset Manager
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
 //__________________________________________________________________________*/
 
 /*                                                                   includes

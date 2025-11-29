@@ -5,6 +5,9 @@
 @brief Definition of the Key enum class
 
 Provides a wrapper around GLFW key codes
+
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 //__________________________________________________________________________*/
 
 #pragma once

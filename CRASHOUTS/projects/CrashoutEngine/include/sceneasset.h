@@ -7,6 +7,7 @@
         of asset type that encapsulates a rapidjson value data. The class
         is designed to be used with the AssetManager and provides a static factory
         method for safe creation and resource management.
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
 //__________________________________________________________________________*/
 //#pragma once
 //

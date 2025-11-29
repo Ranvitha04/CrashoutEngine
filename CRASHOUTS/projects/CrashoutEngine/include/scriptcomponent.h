@@ -3,6 +3,8 @@
 @author     m.biniswandi@digipen.edu
 @date       06/11/2025
 @brief		Declaration of script component struct
+
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
 */
 #pragma once
 #include <mono/jit/jit.h>
