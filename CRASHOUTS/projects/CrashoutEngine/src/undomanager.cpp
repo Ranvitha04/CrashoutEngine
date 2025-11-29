@@ -2,6 +2,9 @@
 @file        UndoManager.cpp
 @brief       Implementation of UndoManager using std::deque
 @date        08/11/2025
+
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 */
 
 #include "undomanager.h"

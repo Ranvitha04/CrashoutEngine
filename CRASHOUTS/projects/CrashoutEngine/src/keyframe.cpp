@@ -4,6 +4,9 @@
 @date        28/11/2025
 @brief       Implements a simple keyframe animation system that drives transforms (position/rotation/scale) 
              and sprites over time using curves.
+
+All content � 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 */
 
 #include "engine_pch.h"

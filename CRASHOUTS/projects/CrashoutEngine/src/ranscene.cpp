@@ -19,6 +19,9 @@ This module interacts closely with the `InstancingSystem` and the global ECS man
 maintain a flexible and data-driven rendering flow for the Ran state. It serves as the
 entry point for Ran's lifecycle functions — including initialization (`InitRan`),
 rendering (`RenderBackground`), and updating (`UpdateRan`).
+
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 */
 
 

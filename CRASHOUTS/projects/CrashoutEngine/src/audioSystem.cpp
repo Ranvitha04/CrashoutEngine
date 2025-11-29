@@ -14,6 +14,8 @@
              - Updates FMOD every frame
              The class is a singleton accessed via AudioSystem::instance().
 
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 */
 
 #include "audioSystem.h"

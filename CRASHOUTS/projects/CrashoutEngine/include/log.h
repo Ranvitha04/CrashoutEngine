@@ -4,6 +4,9 @@
 @date       14/09/2025
 
 @brief      Lightweight logging utility for Crashout Engine.
+
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 //__________________________________________________________________________*/
 
 /*                                                                   includes

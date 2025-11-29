@@ -9,6 +9,9 @@
             trajectory preview computes a launch angle to reach the mouse
             target, samples the ballistic curve by arc length for even spacing,
             and scales marker size with the duck.
+
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 */
 #include "particleSystem.h"
 #include "transformcomponent.h"

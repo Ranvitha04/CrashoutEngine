@@ -1,3 +1,7 @@
+/*!
+All content © 2025 Digipen Institute of Technology Singapore.All rights reserved.
+
+//__________________________________________________________________________*/
 #include "colliders.h"
 #include "CEMath.h"
 #include "CEMtx33.h"

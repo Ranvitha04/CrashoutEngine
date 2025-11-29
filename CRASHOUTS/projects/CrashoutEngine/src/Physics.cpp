@@ -4,6 +4,8 @@
 @date       08/09/2025
 @brief      Contains Definitions for Physics runSystem function and the RigidBodyComponent
 
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 //__________________________________________________________________________*/
 
 #include "physicsmanager.h"

@@ -5,6 +5,9 @@
 @brief      Declaration of the Settings class
 
 Stores global configuration values like screen width and height
+
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 */
 
 #pragma once

@@ -4,6 +4,7 @@
 @date       27/10/2025
 @brief      Class declaration for the quadtree data structure, used for partitioning the screen into sections to speed up some processes (Broad phase collision)
 
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
 

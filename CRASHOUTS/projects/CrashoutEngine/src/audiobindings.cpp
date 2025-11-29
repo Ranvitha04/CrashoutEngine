@@ -3,7 +3,11 @@
 @author     mohamadamirakmal.b@digipen.edu
 @date       19/11/2025
 @brief		Definition of audio bindings functions
+
+All content � 2025 Digipen Institute of Technology Singapore.All rights reserved.
 */
+//__________________________________________________________________________*/
+
 #include "audiobindings.h"
 #include "audioSystem.h"
 #include "audiocomponent.h"

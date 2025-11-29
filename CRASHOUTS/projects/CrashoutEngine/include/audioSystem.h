@@ -4,6 +4,8 @@
 @date        28/9/2025
 @brief       Header file that defines the AudioSystem class and a simple wrapper around FMOD
 
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 */
 
 #pragma once

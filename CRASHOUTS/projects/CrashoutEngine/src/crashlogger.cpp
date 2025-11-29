@@ -6,6 +6,9 @@
 @brief
 This file provides a simple crash logger that writes error information
 to a text file when the program crashes.
+
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 //__________________________________________________________________________*/
 
 /*                                                                   includes

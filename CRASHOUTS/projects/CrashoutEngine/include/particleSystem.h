@@ -8,6 +8,9 @@
             integration under gravity, and configurable appearance. The
             trajectory emitter computes launch angle/flight-time kinematics and
             samples by arc length for evenly spaced preview markers.
+
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 */
 #pragma once
 

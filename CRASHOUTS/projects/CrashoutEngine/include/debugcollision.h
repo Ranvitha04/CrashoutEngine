@@ -6,6 +6,8 @@
 @details    This header provides functions for rendering collision-related
             debug overlays within the engine's ImGui-based debug tools.
 
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 //__________________________________________________________________________*/
 
 #pragma once

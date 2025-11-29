@@ -5,6 +5,9 @@
 @brief		Registers all available game states
 
 Creates descriptors for each state and registers them with the game state manager
+
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 */
 
 #include "registergamestate.h"

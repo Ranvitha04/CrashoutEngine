@@ -4,6 +4,8 @@
 @date       05/09/2025
 @brief      3x3 matrix for 2D affine transforms
 
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 bruh
 //__________________________________________________________________________*/
 
