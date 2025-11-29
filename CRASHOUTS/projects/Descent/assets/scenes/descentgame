@@ -20627,7 +20627,7 @@
                 "thickness": 1.0,
                 "preview": false,
                 "type": 0,
-                "textureName": "UI\\Pause Menu Open.png",
+                "textureName": "UI\\Pause Menu Closed.png",
                 "uvSize": {
                     "x": 1.0,
                     "y": 1.0
