@@ -14463,7 +14463,7 @@
                         "spriteCols": 2,
                         "spriteRows": 1,
                         "useCustomSize": true,
-                        "targetWidth": 124.0,
+                        "targetWidth": 158.0,
                         "targetHeight": 104.0,
                         "bindings": [
                             {
@@ -14494,8 +14494,8 @@
                         "spriteCols": 3,
                         "spriteRows": 3,
                         "useCustomSize": true,
-                        "targetWidth": 124.0,
-                        "targetHeight": 72.50599670410156,
+                        "targetWidth": 158.0,
+                        "targetHeight": 104.0,
                         "bindings": [
                             {
                                 "property": 6,
@@ -14544,14 +14544,7 @@
                                     },
                                     {
                                         "t": 1.5,
-                                        "v": 6.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 1.75,
-                                        "v": 6.0,
+                                        "v": 5.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -14563,12 +14556,12 @@
                     {
                         "name": "playerIdleLight",
                         "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Switch-State-SpriteSheet.png",
+                        "textureAsset": "images/Character\\New Artstyle\\Switch State spritesheet.png",
                         "spriteCols": 3,
                         "spriteRows": 3,
                         "useCustomSize": true,
-                        "targetWidth": 124.0,
-                        "targetHeight": 72.50599670410156,
+                        "targetWidth": 158.0,
+                        "targetHeight": 104.0,
                         "bindings": [
                             {
                                 "property": 6,
@@ -14598,7 +14591,7 @@
                         "spriteCols": 3,
                         "spriteRows": 3,
                         "useCustomSize": true,
-                        "targetWidth": 124.0,
+                        "targetWidth": 158.0,
                         "targetHeight": 104.0,
                         "bindings": [
                             {
@@ -14650,7 +14643,7 @@
                         "spriteCols": 2,
                         "spriteRows": 1,
                         "useCustomSize": true,
-                        "targetWidth": 124.0,
+                        "targetWidth": 158.0,
                         "targetHeight": 104.0,
                         "bindings": [
                             {
@@ -14681,7 +14674,7 @@
                         "spriteCols": 2,
                         "spriteRows": 1,
                         "useCustomSize": true,
-                        "targetWidth": 124.0,
+                        "targetWidth": 158.0,
                         "targetHeight": 104.0,
                         "bindings": [
                             {
@@ -14712,7 +14705,7 @@
                         "spriteCols": 2,
                         "spriteRows": 1,
                         "useCustomSize": true,
-                        "targetWidth": 124.0,
+                        "targetWidth": 158.0,
                         "targetHeight": 104.0,
                         "bindings": [
                             {
@@ -14743,7 +14736,7 @@
                         "spriteCols": 3,
                         "spriteRows": 3,
                         "useCustomSize": true,
-                        "targetWidth": 124.0,
+                        "targetWidth": 158.0,
                         "targetHeight": 104.0,
                         "bindings": [
                             {
@@ -14791,26 +14784,26 @@
                     {
                         "name": "playerIdle",
                         "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Switch-State-SpriteSheet.png",
+                        "textureAsset": "images/Character\\New Artstyle\\Switch State spritesheet.png",
                         "spriteCols": 3,
                         "spriteRows": 3,
                         "useCustomSize": true,
-                        "targetWidth": 124.0,
-                        "targetHeight": 72.50599670410156,
+                        "targetWidth": 158.0,
+                        "targetHeight": 104.0,
                         "bindings": [
                             {
                                 "property": 6,
                                 "keys": [
                                     {
                                         "t": 0.0,
-                                        "v": 6.0,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
                                         "t": 0.25,
-                                        "v": 6.0,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -14822,12 +14815,12 @@
                     {
                         "name": "playerSwitchLight",
                         "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Switch-State-SpriteSheet.png",
+                        "textureAsset": "images/Character\\New Artstyle\\Switch State spritesheet.png",
                         "spriteCols": 3,
                         "spriteRows": 3,
                         "useCustomSize": true,
-                        "targetWidth": 124.0,
-                        "targetHeight": 72.50599670410156,
+                        "targetWidth": 158.0,
+                        "targetHeight": 104.0,
                         "bindings": [
                             {
                                 "property": 6,
@@ -14876,14 +14869,7 @@
                                     },
                                     {
                                         "t": 1.5,
-                                        "v": 6.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 1.75,
-                                        "v": 6.0,
+                                        "v": 5.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -20817,13 +20803,13 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 3.8559999465942385,
-                    "y": 1.7230000495910645,
-                    "z": -99.9000015258789
+                    "x": 24.6560001373291,
+                    "y": 13.822999954223633,
+                    "z": 0.800000011920929
                 },
                 "size": {
-                    "x": 170.0,
-                    "y": 100.0
+                    "x": 22.299999237060548,
+                    "y": 11.300000190734864
                 }
             },
             "shape": {
@@ -20916,26 +20902,6 @@
                     "y": 0.0
                 },
                 "uiLayout": 4
-            },
-            "parent": {
-                "parentName": "PauseScreen",
-                "localPos": {
-                    "x": 0.0038560000248253347,
-                    "y": 0.001723000081256032,
-                    "z": 0.10000002384185791
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 0.17000000178813935,
-                    "y": 0.10000000149011612
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
             }
         },
         {
@@ -20946,8 +20912,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 25.231000900268556,
-                    "y": 0.41100001335144045,
+                    "x": 25.100000381469728,
+                    "y": 0.5,
                     "z": -99.9000015258789
                 },
                 "size": {
@@ -21049,8 +21015,8 @@
             "parent": {
                 "parentName": "PauseScreen",
                 "localPos": {
-                    "x": 0.025231000036001207,
-                    "y": 0.0004110000154469162,
+                    "x": 0.025100000202655793,
+                    "y": 0.0005000000237487257,
                     "z": 0.10000002384185791
                 },
                 "localRot": 0.0,
@@ -24853,13 +24819,13 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": -100.0
+                    "x": 24.600000381469728,
+                    "y": 3.5999999046325685,
+                    "z": -99.94999694824219
                 },
                 "size": {
-                    "x": 200.0,
-                    "y": 120.0
+                    "x": 19.799999237060548,
+                    "y": 31.899999618530275
                 }
             },
             "shape": {
@@ -24899,14 +24865,14 @@
             "parent": {
                 "parentName": "PauseScreen",
                 "localPos": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
+                    "x": 0.02460000105202198,
+                    "y": 0.003599999938160181,
+                    "z": 0.050000011920928958
                 },
                 "localRot": 0.0,
                 "localScale": {
-                    "x": 0.20000000298023225,
-                    "y": 0.11999999731779099
+                    "x": 0.01979999989271164,
+                    "y": 0.03189999982714653
                 },
                 "inheritColor": false,
                 "colorMul": {
