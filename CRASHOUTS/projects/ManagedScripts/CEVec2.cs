@@ -1,3 +1,12 @@
+/*!
+@file       CEVec2.cs
+@author     m.biniswandi@digipen.edu
+@date       29/11/2025
+@brief      CEVec2 struct for 2D vector representation
+
+All content © 2025 Digipen Institute of Technology Singapore.All rights reserved.
+
+//__________________________________________________________________________*/
 namespace CrashoutsEngine
 {
     public struct CEVec2

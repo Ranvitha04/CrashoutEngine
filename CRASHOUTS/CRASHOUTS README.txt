@@ -1,10 +1,21 @@
 ============================================================
-                     C R A S H O U T  E N G I N E
+                C R A S H O U T  E N G I N E
 ============================================================
 
 Version:      x.x
 Project:      CrashoutsEngine – A 2D Gameplay-Focused Engine
 Platform:     Windows (x64)
+
+Team: Crashouts
+--- Members ---
+[RTIS] Renfred  - Technical Lead  - Engine Champion
+[RTIS] Ranvitha - Programmer      - Graphics Champion
+[IMGD] Shahrin  - Project Manager - Level Editor Champion
+[IMGD] Tristan  - Programmer      - Collision Champion
+[IMGD] Amir     - Programmer      - Debugging Tools Champion
+[IMGD] Afiq     - Audio Lead      - Gameplay Champion
+[UXGD] Daphne   - Art Lead        - Story Champion, Secondary Designer
+[UXGD] Thadea   - Design Lead     - SFX Champion, Primary Designer
 ============================================================
 
 ABOUT THE ENGINE

@@ -253,16 +253,24 @@
             "path": "Character\\New Artstyle\\Chibi-7.png"
         },
         {
+            "name": "Fall spritesheet",
+            "path": "Character\\New Artstyle\\Fall spritesheet.png"
+        },
+        {
+            "name": "Jump spritesheet",
+            "path": "Character\\New Artstyle\\Jump spritesheet.png"
+        },
+        {
+            "name": "Run spritesheet",
+            "path": "Character\\New Artstyle\\Run spritesheet.png"
+        },
+        {
             "name": "Switch State spritesheet",
             "path": "Character\\New Artstyle\\Switch State spritesheet.png"
         },
         {
             "name": "Switch-State-SpriteSheet-Reverse",
             "path": "Character\\New Artstyle\\Switch-State-SpriteSheet-Reverse.png"
-        },
-        {
-            "name": "Switch-State-SpriteSheet",
-            "path": "Character\\New Artstyle\\Switch-State-SpriteSheet.png"
         },
         {
             "name": "Chibi-1",
@@ -295,6 +303,10 @@
         {
             "name": "Chibi-Actions-SpriteSheet",
             "path": "Character\\Normal Mode\\Chibi-Actions-SpriteSheet.png"
+        },
+        {
+            "name": "Normal spritesheet",
+            "path": "Character\\Normal spritesheet.png"
         },
         {
             "name": "Run Light",
@@ -403,6 +415,10 @@
         {
             "name": "Sus Face Right",
             "path": "Monsters\\Sus Face Right.png"
+        },
+        {
+            "name": "Normal spritesheet",
+            "path": "Normal spritesheet.png"
         },
         {
             "name": "Darker Platform_00",
@@ -1349,6 +1365,10 @@
             "path": "UI\\Pressure Plate.png"
         },
         {
+            "name": "Resume game hover",
+            "path": "UI\\Resume game hover.png"
+        },
+        {
             "name": "startmenu_BG",
             "path": "UI\\startmenu_BG.png"
         },
@@ -1462,6 +1482,42 @@
         }
     ],
     "tilemaps": [
+        {
+            "name": "ProjectSettings",
+            "path": ".vs\\ProjectSettings.json"
+        },
+        {
+            "name": "slnx",
+            "path": ".vs\\slnx.sqlite"
+        },
+        {
+            "name": "CodeChunks",
+            "path": ".vs\\tilemaps\\CopilotIndices\\17.14.1290.42047\\CodeChunks.db"
+        },
+        {
+            "name": "SemanticSymbols",
+            "path": ".vs\\tilemaps\\CopilotIndices\\17.14.1290.42047\\SemanticSymbols.db"
+        },
+        {
+            "name": "39a76b67-19c8-4f17-bd6f-82623f5e83f9",
+            "path": ".vs\\tilemaps\\FileContentIndex\\39a76b67-19c8-4f17-bd6f-82623f5e83f9.vsidx"
+        },
+        {
+            "name": "3a120126-1ab1-4b73-af3d-b16b9dd1f7fe",
+            "path": ".vs\\tilemaps\\FileContentIndex\\3a120126-1ab1-4b73-af3d-b16b9dd1f7fe.vsidx"
+        },
+        {
+            "name": ".wsuo",
+            "path": ".vs\\tilemaps\\v17\\.wsuo"
+        },
+        {
+            "name": "DocumentLayout",
+            "path": ".vs\\tilemaps\\v17\\DocumentLayout.json"
+        },
+        {
+            "name": "VSWorkspaceState",
+            "path": ".vs\\VSWorkspaceState.json"
+        },
         {
             "name": "Darker_Platform",
             "path": "Darker_Platform"

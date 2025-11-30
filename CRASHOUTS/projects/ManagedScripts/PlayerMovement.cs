@@ -179,7 +179,8 @@ namespace CrashoutsEngine
 
         private void UpdateAnimationState(bool isSwitching)
         {
-            string targetState = "";
+            // Default to Idle so we never have an empty state
+            string targetState = "playerIdle";
 
             // PRIORITY 1: Switching (Overrides everything)
             if (isSwitching)
@@ -189,22 +190,28 @@ namespace CrashoutsEngine
             // PRIORITY 2: Airborne (Jump/Fall)
             else if (!IsGrounded)
             {
-                // Check vertical velocity to decide Jump vs Fall
-                // Added buffer (+/- 1.0f) to prevent flickering at apex
+                // If moving up noticeably
                 if (rb.LinearVelocity.y > 1.0f)
+                {
                     targetState = "playerJump";
+                }
+                // If falling OR hovering near zero (apex of jump), default to Fall
                 else if (rb.LinearVelocity.y < -12.5f)
+                {
                     targetState = "playerFall";
+                }
             }
-            // PRIORITY 3: Movement (Walk)
-            else if (Math.Abs(horizontalInput) > 0.01f)
+            // PRIORITY 3: Grounded Movement
+            else 
             {
-                targetState = "playerWalk";
-            }
-            // PRIORITY 4: Idle
-            else
-            {
-                targetState = "playerIdle";
+                if (Math.Abs(horizontalInput) > 0.01f)
+                {
+                    targetState = "playerWalk";
+                }
+                else
+                {
+                    targetState = "playerIdle";
+                }
             }
 
             // SUFFIX LOGIC: Add "Light" if isLight is true
