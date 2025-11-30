@@ -200,7 +200,7 @@ namespace KeyframeUnity {
                 // C. Calculate Normalized UV Data (0.0 to 1.0)
                 float uSize = 1.0f / cols; // 1.0 / 6 = 0.166
                 float vSize = 1.0f / rows; // 1.0 / 4 = 0.25
-                std::cout << "Max col? " << cols << " Max rows? " << rows << std::endl;
+                //std::cout << "Max col? " << cols << " Max rows? " << rows << std::endl;
                 float uOffset = c * uSize; // 3 * 0.166 = 0.5
 
                 // NOTE: Coordinate system matters here.

@@ -253,16 +253,24 @@
             "path": "Character\\New Artstyle\\Chibi-7.png"
         },
         {
+            "name": "Fall spritesheet",
+            "path": "Character\\New Artstyle\\Fall spritesheet.png"
+        },
+        {
+            "name": "Jump spritesheet",
+            "path": "Character\\New Artstyle\\Jump spritesheet.png"
+        },
+        {
+            "name": "Run spritesheet",
+            "path": "Character\\New Artstyle\\Run spritesheet.png"
+        },
+        {
             "name": "Switch State spritesheet",
             "path": "Character\\New Artstyle\\Switch State spritesheet.png"
         },
         {
             "name": "Switch-State-SpriteSheet-Reverse",
             "path": "Character\\New Artstyle\\Switch-State-SpriteSheet-Reverse.png"
-        },
-        {
-            "name": "Switch-State-SpriteSheet",
-            "path": "Character\\New Artstyle\\Switch-State-SpriteSheet.png"
         },
         {
             "name": "Chibi-1",
@@ -1355,6 +1363,10 @@
         {
             "name": "Pressure Plate",
             "path": "UI\\Pressure Plate.png"
+        },
+        {
+            "name": "Resume game hover",
+            "path": "UI\\Resume game hover.png"
         },
         {
             "name": "startmenu_BG",

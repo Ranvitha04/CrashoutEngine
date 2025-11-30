@@ -9,6 +9,8 @@ namespace CrashoutsEngine
         private uint _pauseScreenID = 0;
         private bool _isPaused = false;
 
+        PlayerMovement playerMovement;
+
         public override void Start()
         {
             // 1. Find the screen ONCE at startup
@@ -22,6 +24,8 @@ namespace CrashoutsEngine
             {
                 Console.WriteLine("[Error] PauseButtons could not find 'PauseScreen' entity!");
             }
+
+            playerMovement = PlayerMovement.Instance;
         }
 
         public override void Update()
@@ -45,7 +49,7 @@ namespace CrashoutsEngine
 
                 if (tf.Position.z >= 0.0f)
                 {
-                    if (name == "ResumeBtn")
+                    if (name == "PauseResumeBtn")
                     {
                         SetPauseMenu(false);
                     }
@@ -68,6 +72,7 @@ namespace CrashoutsEngine
 
         void SetPauseMenu(bool show)
         {
+            if(playerMovement != null) playerMovement.isPaused = show;
             // 4. Safety Check: Make sure we actually found the screen
             if (_pauseScreenID == 0) return;
 
