@@ -305,10 +305,6 @@
             "path": "Character\\Normal Mode\\Chibi-Actions-SpriteSheet.png"
         },
         {
-            "name": "Normal spritesheet",
-            "path": "Character\\Normal spritesheet.png"
-        },
-        {
             "name": "Run Light",
             "path": "Character\\Run Light.gif"
         },
@@ -415,10 +411,6 @@
         {
             "name": "Sus Face Right",
             "path": "Monsters\\Sus Face Right.png"
-        },
-        {
-            "name": "Normal spritesheet",
-            "path": "Normal spritesheet.png"
         },
         {
             "name": "Darker Platform_00",
