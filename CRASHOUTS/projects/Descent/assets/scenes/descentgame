@@ -14457,45 +14457,14 @@
                 "playing": true,
                 "clips": [
                     {
-                        "name": "playerJump",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\Normal Mode\\Chibi-Actions-SpriteSheet.png",
-                        "spriteCols": 3,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": 62.0,
-                        "targetHeight": 72.50599670410156,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 1.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 1.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
                         "name": "playerSwitch",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Switch-State-SpriteSheet-Reverse.png",
                         "spriteCols": 3,
                         "spriteRows": 3,
                         "useCustomSize": true,
-                        "targetWidth": 124.0,
-                        "targetHeight": 72.50599670410156,
+                        "targetWidth": 158.0,
+                        "targetHeight": 104.0,
                         "bindings": [
                             {
                                 "property": 6,
@@ -14544,14 +14513,38 @@
                                     },
                                     {
                                         "t": 1.5,
-                                        "v": 6.0,
+                                        "v": 5.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "playerJump",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\New Artstyle\\Jump spritesheet.png",
+                        "spriteCols": 2,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 158.0,
+                        "targetHeight": 104.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
-                                        "t": 1.75,
-                                        "v": 6.0,
+                                        "t": 0.25,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -14563,12 +14556,12 @@
                     {
                         "name": "playerIdleLight",
                         "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Switch-State-SpriteSheet.png",
+                        "textureAsset": "images/Character\\New Artstyle\\Switch State spritesheet.png",
                         "spriteCols": 3,
                         "spriteRows": 3,
                         "useCustomSize": true,
-                        "targetWidth": 124.75499725341797,
-                        "targetHeight": 72.50599670410156,
+                        "targetWidth": 158.0,
+                        "targetHeight": 104.0,
                         "bindings": [
                             {
                                 "property": 6,
@@ -14592,14 +14585,128 @@
                         ]
                     },
                     {
+                        "name": "playerFallLight",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\New Artstyle\\Fall spritesheet.png",
+                        "spriteCols": 2,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 158.0,
+                        "targetHeight": 104.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 1.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 1.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
                         "name": "playerWalkLight",
                         "wrap": 0,
-                        "textureAsset": "images/Character\\Light Mode\\Chibi-Light-Actions-SpriteSheet.png",
+                        "textureAsset": "images/Character\\New Artstyle\\Run spritesheet.png",
                         "spriteCols": 3,
-                        "spriteRows": 2,
+                        "spriteRows": 3,
                         "useCustomSize": true,
-                        "targetWidth": 124.75499725341797,
-                        "targetHeight": 72.50599670410156,
+                        "targetWidth": 158.0,
+                        "targetHeight": 104.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 3.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 4.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.5,
+                                        "v": 5.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.75,
+                                        "v": 6.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 1.0,
+                                        "v": 6.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "playerJumpLight",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\New Artstyle\\Jump spritesheet.png",
+                        "spriteCols": 2,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 158.0,
+                        "targetHeight": 104.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 1.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 1.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "playerWalk",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\New Artstyle\\Run spritesheet.png",
+                        "spriteCols": 3,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": 158.0,
+                        "targetHeight": 104.0,
                         "bindings": [
                             {
                                 "property": 6,
@@ -14644,142 +14751,28 @@
                         ]
                     },
                     {
-                        "name": "playerFallLight",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\Light Mode\\Chibi-Light-Actions-SpriteSheet.png",
-                        "spriteCols": 3,
-                        "spriteRows": 2,
-                        "useCustomSize": true,
-                        "targetWidth": 124.75499725341797,
-                        "targetHeight": 72.50599670410156,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 4.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 4.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "playerJumpLight",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\Light Mode\\Chibi-Light-Actions-SpriteSheet.png",
-                        "spriteCols": 3,
-                        "spriteRows": 2,
-                        "useCustomSize": true,
-                        "targetWidth": 124.75499725341797,
-                        "targetHeight": 72.50599670410156,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 5.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 5.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
                         "name": "playerFall",
                         "wrap": 0,
-                        "textureAsset": "images/Character\\Normal Mode\\Chibi-Actions-SpriteSheet.png",
-                        "spriteCols": 3,
-                        "spriteRows": 3,
+                        "textureAsset": "images/Character\\New Artstyle\\Fall spritesheet.png",
+                        "spriteCols": 2,
+                        "spriteRows": 1,
                         "useCustomSize": true,
-                        "targetWidth": 62.0,
-                        "targetHeight": 72.50599670410156,
+                        "targetWidth": 158.0,
+                        "targetHeight": 104.0,
                         "bindings": [
                             {
                                 "property": 6,
                                 "keys": [
                                     {
                                         "t": 0.0,
-                                        "v": 2.0,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
                                         "t": 0.25,
-                                        "v": 2.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "playerWalk",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\Normal Mode\\Chibi-Actions-SpriteSheet.png",
-                        "spriteCols": 3,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": 62.0,
-                        "targetHeight": 72.50599670410156,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 3.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 4.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.5,
-                                        "v": 5.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.75,
-                                        "v": 6.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 1.0,
-                                        "v": 6.0,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -14791,12 +14784,12 @@
                     {
                         "name": "playerIdle",
                         "wrap": 0,
-                        "textureAsset": "images/Character\\Normal Mode\\Chibi-Actions-SpriteSheet.png",
+                        "textureAsset": "images/Character\\New Artstyle\\Switch State spritesheet.png",
                         "spriteCols": 3,
                         "spriteRows": 3,
                         "useCustomSize": true,
-                        "targetWidth": 62.0,
-                        "targetHeight": 72.50599670410156,
+                        "targetWidth": 158.0,
+                        "targetHeight": 104.0,
                         "bindings": [
                             {
                                 "property": 6,
@@ -14822,12 +14815,12 @@
                     {
                         "name": "playerSwitchLight",
                         "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Switch-State-SpriteSheet.png",
+                        "textureAsset": "images/Character\\New Artstyle\\Switch State spritesheet.png",
                         "spriteCols": 3,
                         "spriteRows": 3,
                         "useCustomSize": true,
-                        "targetWidth": 124.0,
-                        "targetHeight": 72.50599670410156,
+                        "targetWidth": 158.0,
+                        "targetHeight": 104.0,
                         "bindings": [
                             {
                                 "property": 6,
@@ -14876,14 +14869,7 @@
                                     },
                                     {
                                         "t": 1.5,
-                                        "v": 6.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 1.75,
-                                        "v": 6.0,
+                                        "v": 5.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -20566,7 +20552,7 @@
                 "position": {
                     "x": 0.0,
                     "y": 0.0,
-                    "z": -100.0
+                    "z": -100
                 },
                 "size": {
                     "x": 1000.0,
@@ -20618,7 +20604,7 @@
                 "position": {
                     "x": -3.0,
                     "y": 0.0,
-                    "z": -100.0
+                    "z": 0.699999988079071
                 },
                 "size": {
                     "x": 225.0,
@@ -20688,13 +20674,13 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 24.121000289916993,
-                    "y": -9.58899974822998,
-                    "z": -99.9000015258789
+                    "x": 24.899999618530275,
+                    "y": -10.300000190734864,
+                    "z": 0.7999984622001648
                 },
                 "size": {
-                    "x": 28.0,
-                    "y": 8.0
+                    "x": 21.0,
+                    "y": 5.5
                 }
             },
             "shape": {
@@ -20718,7 +20704,7 @@
                     "x": 1.0,
                     "y": 1.0,
                     "z": 1.0,
-                    "w": 1.0
+                    "w": 0.0
                 },
                 "p1": {
                     "x": 0.0,
@@ -20745,19 +20731,19 @@
                     "x": 1.0,
                     "y": 1.0,
                     "z": 1.0,
-                    "w": 1.0
+                    "w": 0.0
                 },
                 "shapeHoveredColor": {
                     "x": 1.0,
                     "y": 1.0,
                     "z": 1.0,
-                    "w": 0.5
+                    "w": 1.0
                 },
                 "shapePressedColor": {
-                    "x": 0.699999988079071,
-                    "y": 0.699999988079071,
-                    "z": 0.699999988079071,
-                    "w": 0.699999988079071
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.3764705955982208
                 },
                 "textNormalColor": {
                     "x": 0.30000001192092898,
@@ -20791,14 +20777,14 @@
             "parent": {
                 "parentName": "PauseScreen",
                 "localPos": {
-                    "x": 0.02412099950015545,
-                    "y": -0.009588999673724175,
-                    "z": 0.10000002384185791
+                    "x": 0.024900000542402269,
+                    "y": -0.010300000198185444,
+                    "z": 0.09999847412109375
                 },
                 "localRot": 0.0,
                 "localScale": {
-                    "x": 0.02800000086426735,
-                    "y": 0.00800000037997961
+                    "x": 0.020999999716877939,
+                    "y": 0.005499999970197678
                 },
                 "inheritColor": false,
                 "colorMul": {
@@ -20817,13 +20803,13 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 24.121000289916993,
-                    "y": 13.211000442504883,
-                    "z": -99.9000015258789
+                    "x": 24.6560001373291,
+                    "y": 13.822999954223633,
+                    "z": 0.7999984622001648
                 },
                 "size": {
-                    "x": 32.0,
-                    "y": 8.0
+                    "x": 22.299999237060548,
+                    "y": 11.300000190734864
                 }
             },
             "shape": {
@@ -20834,7 +20820,7 @@
                 "thickness": 1.0,
                 "preview": false,
                 "type": 0,
-                "textureName": "UI\\pause resume text.png",
+                "textureName": "UI\\Resume game hover.png",
                 "uvSize": {
                     "x": 1.0,
                     "y": 1.0
@@ -20847,7 +20833,7 @@
                     "x": 1.0,
                     "y": 1.0,
                     "z": 1.0,
-                    "w": 1.0
+                    "w": 0.0
                 },
                 "p1": {
                     "x": 0.0,
@@ -20874,19 +20860,19 @@
                     "x": 1.0,
                     "y": 1.0,
                     "z": 1.0,
-                    "w": 1.0
+                    "w": 0.0
                 },
                 "shapeHoveredColor": {
                     "x": 1.0,
                     "y": 1.0,
                     "z": 1.0,
-                    "w": 0.5
+                    "w": 1.0
                 },
                 "shapePressedColor": {
-                    "x": 0.699999988079071,
-                    "y": 0.699999988079071,
-                    "z": 0.699999988079071,
-                    "w": 0.699999988079071
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.3756905794143677
                 },
                 "textNormalColor": {
                     "x": 0.30000001192092898,
@@ -20920,14 +20906,14 @@
             "parent": {
                 "parentName": "PauseScreen",
                 "localPos": {
-                    "x": 0.02412099950015545,
-                    "y": 0.013211000710725785,
-                    "z": 0.10000002384185791
+                    "x": 0.02465599961578846,
+                    "y": 0.013822999782860279,
+                    "z": 0.09999847412109375
                 },
                 "localRot": 0.0,
                 "localScale": {
-                    "x": 0.03200000151991844,
-                    "y": 0.00800000037997961
+                    "x": 0.022299999371170999,
+                    "y": 0.011300000362098217
                 },
                 "inheritColor": false,
                 "colorMul": {
@@ -20946,13 +20932,13 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 24.121000289916993,
-                    "y": 1.6109999418258668,
-                    "z": -99.9000015258789
+                    "x": 25.100000381469728,
+                    "y": 0.5,
+                    "z": 0.7999984622001648
                 },
                 "size": {
-                    "x": 28.0,
-                    "y": 8.0
+                    "x": 24.0,
+                    "y": 6.5
                 }
             },
             "shape": {
@@ -20976,7 +20962,7 @@
                     "x": 1.0,
                     "y": 1.0,
                     "z": 1.0,
-                    "w": 1.0
+                    "w": 0.0
                 },
                 "p1": {
                     "x": 0.0,
@@ -21003,13 +20989,13 @@
                     "x": 1.0,
                     "y": 1.0,
                     "z": 1.0,
-                    "w": 1.0
+                    "w": 0.0
                 },
                 "shapeHoveredColor": {
                     "x": 1.0,
                     "y": 1.0,
                     "z": 1.0,
-                    "w": 0.5
+                    "w": 1.0
                 },
                 "shapePressedColor": {
                     "x": 0.699999988079071,
@@ -21018,10 +21004,10 @@
                     "w": 0.699999988079071
                 },
                 "textNormalColor": {
-                    "x": 0.30000001192092898,
-                    "y": 0.30000001192092898,
-                    "z": 0.30000001192092898,
-                    "w": 0.699999988079071
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
                 },
                 "textHoveredColor": {
                     "x": 0.0,
@@ -21049,14 +21035,14 @@
             "parent": {
                 "parentName": "PauseScreen",
                 "localPos": {
-                    "x": 0.02412099950015545,
-                    "y": 0.0016109999269247056,
-                    "z": 0.10000002384185791
+                    "x": 0.025100000202655793,
+                    "y": 0.0005000000237487257,
+                    "z": 0.09999847412109375
                 },
                 "localRot": 0.0,
                 "localScale": {
-                    "x": 0.02800000086426735,
-                    "y": 0.00800000037997961
+                    "x": 0.024000000208616258,
+                    "y": 0.006500000134110451
                 },
                 "inheritColor": false,
                 "colorMul": {
@@ -21864,6 +21850,37 @@
                         ]
                     },
                     {
+                        "name": "slimeJump",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": 72.0,
+                        "targetHeight": 67.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 2.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 2.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
                         "name": "slimeChase",
                         "wrap": 0,
                         "textureAsset": "images/Monsters\\Slime spritesheet.png",
@@ -21893,37 +21910,6 @@
                                     {
                                         "t": 0.5,
                                         "v": 9.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "slimeJump",
-                        "wrap": 0,
-                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
-                        "spriteCols": 4,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": 72.0,
-                        "targetHeight": 67.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 2.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 2.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -23131,6 +23117,37 @@
                         ]
                     },
                     {
+                        "name": "slimeJump",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": 72.0,
+                        "targetHeight": 67.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 2.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 2.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
                         "name": "slimeChase",
                         "wrap": 0,
                         "textureAsset": "images/Monsters\\Slime spritesheet.png",
@@ -23160,37 +23177,6 @@
                                     {
                                         "t": 0.5,
                                         "v": 9.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "slimeJump",
-                        "wrap": 0,
-                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
-                        "spriteCols": 4,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": 72.0,
-                        "targetHeight": 67.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 2.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 2.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -23506,37 +23492,6 @@
                         ]
                     },
                     {
-                        "name": "slimeJump",
-                        "wrap": 0,
-                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
-                        "spriteCols": 4,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": 72.0,
-                        "targetHeight": 67.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 2.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 2.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
                         "name": "slimeChase",
                         "wrap": 0,
                         "textureAsset": "images/Monsters\\Slime spritesheet.png",
@@ -23566,6 +23521,37 @@
                                     {
                                         "t": 0.5,
                                         "v": 9.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "slimeJump",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": 72.0,
+                        "targetHeight": 67.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 2.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 2.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -24835,6 +24821,78 @@
                 "localScale": {
                     "x": 0.017400000244379045,
                     "y": 0.006500000134110451
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            }
+        },
+        {
+            "name": "Pause Texts",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 24.600000381469728,
+                    "y": 3.5999999046325685,
+                    "z": 0.75
+                },
+                "size": {
+                    "x": 19.799999237060548,
+                    "y": 31.899999618530275
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI\\pause menu text.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentName": "PauseScreen",
+                "localPos": {
+                    "x": 0.02460000105202198,
+                    "y": 0.003599999938160181,
+                    "z": 0.050000011920928958
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.01979999989271164,
+                    "y": 0.03189999982714653
                 },
                 "inheritColor": false,
                 "colorMul": {
