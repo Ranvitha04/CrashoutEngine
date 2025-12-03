@@ -11,12 +11,9 @@ namespace UI {
     // Helper local to this file
     static void DrawHierarchyNode(ECS& ecs, Entity e, Entity& selected)
     {
-        std::string label = ecs.HasComponent<Component::NameComponent>(e)
-            ? ecs.GetComponent<Component::NameComponent>(e)->name
-            : ("Entity " + std::to_string(e));
+        std::string label = ecs.HasComponent<Component::NameComponent>(e) ? ecs.GetComponent<Component::NameComponent>(e)->name : ("Entity " + std::to_string(e));
 
-        const bool hasKids = ecs.HasComponent<Component::ChildrenComponent>(e)
-            && !ecs.GetComponent<Component::ChildrenComponent>(e)->children.empty();
+        const bool hasKids = ecs.HasComponent<Component::ChildrenComponent>(e) && !ecs.GetComponent<Component::ChildrenComponent>(e)->children.empty();
 
         ImGuiTreeNodeFlags flags =
             ImGuiTreeNodeFlags_OpenOnArrow |
@@ -83,7 +80,7 @@ namespace UI {
      @param entities List of ECS entities.
      @param selected Currently selected entity.
     */
-    static void RenderEcsPanel(CrashoutsEngine::ECS& ecs, std::vector<CrashoutsEngine::Entity>& entities, CrashoutsEngine::Entity& selected, UIState& ui)
+    void RenderEcsPanel(CrashoutsEngine::ECS& ecs, std::vector<CrashoutsEngine::Entity>& entities, CrashoutsEngine::Entity& selected, UIState& ui)
     {
         static std::vector<Entity> multiSel;
 
@@ -227,7 +224,7 @@ namespace UI {
      @param ui UI state reference.
      @param selected Currently selected entity.
     */
-    static void RenderAnimationPanel(CrashoutsEngine::ECS& ecs, CrashoutsEngine::Entity selected, UIState& ui)
+    void RenderAnimationPanel(CrashoutsEngine::ECS& ecs, CrashoutsEngine::Entity selected, UIState& ui)
     {
         using namespace KeyframeUnity;
         using namespace KeyframeUnityEditor;
@@ -373,7 +370,7 @@ namespace UI {
     @param selected Currently selected entity.
     @param ui UI state toggles.
     */
-    static void UI::RenderInspectorPanel(CrashoutsEngine::ECS& ecs, CrashoutsEngine::Entity selected, UIState& ui)
+    void RenderInspectorPanel(CrashoutsEngine::ECS& ecs, CrashoutsEngine::Entity selected, UIState& ui)
     {
         if (!ui.showInspector) return;
         ScopedWindow w("Inspector", LockFlags(ui.lockLayout));
@@ -469,7 +466,7 @@ namespace UI {
      @param profiler Frame profiler reference.
      @param ui UI state toggles.
     */
-    static void RenderPerformancePanel(FrameProfiler& profiler, UIState& ui) {
+    void RenderPerformancePanel(FrameProfiler& profiler, UIState& ui) {
         if (!ui.showPerf) return;
 
         ScopedWindow w("Performance", LockFlags(ui.lockLayout));
@@ -509,7 +506,7 @@ namespace UI {
      @brief Renders the console log viewer panel.
      @param ui UI state toggles.
     */
-    static void RenderConsolePanel(UIState& ui) {
+    void RenderConsolePanel(UIState& ui) {
         if (!ui.showConsole) return;
 
         ScopedWindow w("Console", LockFlags(ui.lockLayout));
@@ -611,7 +608,7 @@ namespace UI {
      @param state gameState reference.
      @param ui UI state toggles.
     */
-    static void RenderGameStatePanel(UIState& ui) {
+    void RenderGameStatePanel(UIState& ui) {
         if (!ui.showGameState) return;
 
         ScopedWindow w("GameState", LockFlags(ui.lockLayout));
@@ -658,7 +655,7 @@ namespace UI {
      @brief Renders the scene panel
      @param ui UI state toggles.
     */
-    static void RenderGameScenePanel(UIState& ui) {
+    void RenderGameScenePanel(UIState& ui) {
 
         if (!ui.showGameScene) return;
 
@@ -751,7 +748,7 @@ namespace UI {
      @param phys Physics handler reference.
      @param ui UI state toggles.
     */
-    static void RenderPhysicsPanel([[maybe_unused]] FrameProfiler& profiler, ECS& ecs, ::Physics::PhysicsHandler& phys, UIState& ui)
+    void RenderPhysicsPanel([[maybe_unused]] FrameProfiler& profiler, ECS& ecs, ::Physics::PhysicsHandler& phys, UIState& ui)
     {
         if (!ui.showPhysics) return;
         ScopedWindow w("Physics / Collision", LockFlags(ui.lockLayout));
@@ -835,7 +832,7 @@ namespace UI {
      @param ecs ECS reference.
      @param ui UI state toggles.
     */
-    static void UI::RenderAudioPanel([[maybe_unused]] FrameProfiler& profiler, [[maybe_unused]] CrashoutsEngine::ECS& ecs, UIState& ui)
+    void RenderAudioPanel([[maybe_unused]] FrameProfiler& profiler, [[maybe_unused]] CrashoutsEngine::ECS& ecs, UIState& ui)
     {
         if (!ui.showAudio) return;
         ScopedWindow w("Audio", LockFlags(ui.lockLayout));
@@ -1116,7 +1113,7 @@ namespace UI {
     /*!
      @brief Renders the Scene control bar on top of game viewport
     */
-    static void RenderEngineStateBar(UIState& ui) {
+    void RenderEngineStateBar(UIState& ui) {
         if (!ui.showEngineControl) return;
 
         ImGuiWindowFlags window_flags =

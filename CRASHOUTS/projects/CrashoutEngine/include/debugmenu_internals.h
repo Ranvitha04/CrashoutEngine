@@ -65,7 +65,6 @@
 #include "debugAssetLoader.h"
 #include "performanceViewer.h"
 #include "hierarchy.h"
-#include "hierarchy_components.h"
 
 // --- 8. External / Utils ---
 #include <fmod_studio.hpp>
@@ -80,7 +79,7 @@
 #include "transformentitycommand.h"
 
 // Forward declarations of Engine types to speed up compilation
-namespace CrashoutsEngine { class ECS; struct Entity; }
+namespace CrashoutsEngine { class ECS; }
 namespace CrashoutsEngine::Physics { class PhysicsHandler; }
 class FrameProfiler;
 
@@ -158,5 +157,6 @@ namespace UI {
     void RenderGameStatePanel(UIState& ui);
     void RenderGameScenePanel(UIState& ui);
     void RenderEngineStateBar(UIState& ui);
-    void RenderSpriteSheetPanel(CrashoutsEngine::ECS& ecs, CrashoutsEngine::Entity selected);
+	// To be implemented in this file later
+    //void RenderSpriteSheetPanel(CrashoutsEngine::ECS& ecs, CrashoutsEngine::Entity selected);
 }

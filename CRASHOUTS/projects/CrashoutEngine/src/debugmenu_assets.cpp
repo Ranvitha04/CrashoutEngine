@@ -10,7 +10,7 @@ namespace UI {
      @param root Root path for assets.
      @param outSelectedAsset Output parameter for the selected asset path.
     */
-    static void RenderAssetBrowserPanel(UIState& ui, const char* root, std::string& outSelectedAsset)
+    void RenderAssetBrowserPanel(UIState& ui, const char* root, std::string& outSelectedAsset)
     {
         ScopedWindow win("Assets", LockFlags(ui.lockLayout));
 
