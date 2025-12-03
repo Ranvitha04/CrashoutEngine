@@ -124,7 +124,7 @@ namespace UI { // --------------------------------------------------------------
     // -- Coordinator(s) --------------------------------------------------------
 
     void RenderDebugMenuBar(UIState& ui) {
-        if (ImGui::BeginMainMenuBar()) {
+        if (ImGui::BeginMenuBar()) {
             if (ImGui::BeginMenu("File")) {
                 if (ImGui::MenuItem("Save Scene")) {
                     if (!currSceneName.empty()) Serialization::SaveScenes(currSceneName);
@@ -147,7 +147,7 @@ namespace UI { // --------------------------------------------------------------
                 ImGui::MenuItem("Game Scene", nullptr, &ui.showGameScene);
                 ImGui::EndMenu();
             }
-            ImGui::EndMainMenuBar();
+            ImGui::EndMenuBar();
         }
     }
 
