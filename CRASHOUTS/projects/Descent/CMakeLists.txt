@@ -1,37 +1,30 @@
 ﻿#projects/Descent/CMakeLists.txt
 
-# Project name for the DLL file.
 project(Descent)
 
-# Set the project directory variable for convenience
 set(project_dir ${CMAKE_CURRENT_LIST_DIR})
 
-# --- All file (GLOB_RECURSE...) commands go here ---
 message(STATUS "Configuring project: ${PROJECT_NAME}")
 
-# Embed application icon (Windows only)
+# ------------------------------------------------------------
+# ICON (Windows only)
+# ------------------------------------------------------------
 if (WIN32)
-    set(DESCENT_ICON "${CMAKE_CURRENT_SOURCE_DIR}/DescentResources.rc")
+    set(DESCENT_ICON "${project_dir}/DescentResources.rc")
 endif()
 
-# --- 1. GLOB your specific categories ---
-
-# --- 2. GLOB ALL source and include files separately ---
+# ------------------------------------------------------------
+# SOURCE / HEADER GLOBS
+# ------------------------------------------------------------
 file(GLOB_RECURSE all_src_files     "${project_dir}/src/*.cpp")
 file(GLOB_RECURSE all_include_files "${project_dir}/include/*.h" "${project_dir}/include/*.hpp")
 
-# --- 3. Create lists of all categorized files ---
-#set(categorized_src_files)
-
-#set(categorized_include_files)
-
-# --- 4. Subtract the categorized lists to find the "other" files ---
-#list(REMOVE_ITEM all_src_files     ${categorized_src_files})
-#list(REMOVE_ITEM all_include_files ${categorized_include_files})
 set(other_src_files     ${all_src_files})
 set(other_include_files ${all_include_files})
 
-# --- 5. Create the executable (EXE) with ALL files ---
+# ------------------------------------------------------------
+# DESCENT GAME BUILD (Descent.exe)
+# ------------------------------------------------------------
 add_executable(${PROJECT_NAME} WIN32
     ${DESCENT_ICON}
     ${other_src_files}
@@ -39,42 +32,79 @@ add_executable(${PROJECT_NAME} WIN32
     "${project_dir}/include/pch.h"
 )
 
-# Tell CMake to use pch.h as the precompiled header
-target_precompile_headers(${PROJECT_NAME}
-    PRIVATE
-        "include/pch.h"
-)
+# PCH
+target_precompile_headers(${PROJECT_NAME} PRIVATE "include/pch.h")
 
-# --- 6. Assign ALL file groups to filters ✨ ---
+# Organize in Visual Studio filters
 source_group("src"     FILES ${other_src_files})
 source_group("include" FILES ${other_include_files})
 
-# Link libraries
+# Link runtime engine
 target_link_libraries(${PROJECT_NAME}
-    PRIVATE
-    CrashoutEngine
-    #CrashoutsAudio
+    PRIVATE CrashoutEngine
 )
-#link_fmod_to(${PROJECT_NAME}) 
+
 link_mono_to(${PROJECT_NAME})
 
-# Apply common include directories
 target_include_directories(${PROJECT_NAME} PRIVATE
     ${project_dir}/include
 )
-        
-set_property(TARGET ${PROJECT_NAME} PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "$<TARGET_FILE_DIR:${PROJECT_NAME}>")
 
-# Copy assets (Simplified path variables)
+set_property(TARGET ${PROJECT_NAME}
+    PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "$<TARGET_FILE_DIR:${PROJECT_NAME}>"
+)
+
+# Copy assets
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory_if_different
     "${project_dir}/assets"
-    $<TARGET_FILE_DIR:${PROJECT_NAME}>/assets
+    "$<TARGET_FILE_DIR:${PROJECT_NAME}>/assets"
 )
 
-# Ensure C# scripts (ManagedScripts) are built before Descent
+# Ensure scripts build before the game
 if (TARGET ManagedScripts)
     add_dependencies(Descent ManagedScripts)
 endif()
 
+# ------------------------------------------------------------
+# EDITOR BUILD (CrashoutEditor.exe)
+# ------------------------------------------------------------
+add_executable(CrashoutEditor WIN32
+    ${DESCENT_ICON}
+    ${other_src_files}
+    ${other_include_files}
+    "${project_dir}/include/pch.h"
+)
 
+set_target_properties(CrashoutEditor
+    PROPERTIES OUTPUT_NAME "CrashoutEditor"
+)
+
+target_precompile_headers(CrashoutEditor PRIVATE "include/pch.h")
+
+target_link_libraries(CrashoutEditor
+    PRIVATE CrashoutEngine.Editor
+)
+
+link_mono_to(CrashoutEditor)
+link_fmod_to(CrashoutEditor)
+
+target_include_directories(CrashoutEditor PRIVATE
+    ${project_dir}/include
+    ${CMAKE_SOURCE_DIR}/projects/CrashoutEngine/include
+)
+
+set_property(TARGET CrashoutEditor
+    PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "$<TARGET_FILE_DIR:CrashoutEditor>"
+)
+
+# Copy assets for editor
+add_custom_command(TARGET CrashoutEditor POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory_if_different
+        "${project_dir}/assets"
+        "$<TARGET_FILE_DIR:CrashoutEditor>/assets"
+)
+
+if (TARGET ManagedScripts)
+    add_dependencies(CrashoutEditor ManagedScripts)
+endif()

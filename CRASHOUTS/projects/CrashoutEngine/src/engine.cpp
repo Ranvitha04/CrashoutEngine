@@ -254,6 +254,29 @@ void Init() {
     glEnable(GL_DEPTH_TEST);
 
     CrashoutsEngine::PostProcessing::InitPP();
+    glGenFramebuffers(1, &gameFboID);
+    glBindFramebuffer(GL_FRAMEBUFFER, gameFboID);
+
+    // --- Color Texture ---
+    glGenTextures(1, &gameTextureColorBuffer);
+    glBindTexture(GL_TEXTURE_2D, gameTextureColorBuffer);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, gameTextureWidth, gameTextureHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, gameTextureColorBuffer, 0);
+
+    // --- Depth/Stencil Renderbuffer ---
+    glGenRenderbuffers(1, &gameRboDepthStencil);
+    glBindRenderbuffer(GL_RENDERBUFFER, gameRboDepthStencil);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, gameTextureWidth, gameTextureHeight);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, gameRboDepthStencil);
+
+    // Validate
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+        std::cout << "ERROR: Game framebuffer not complete!" << std::endl;
+    }
+
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 /*  _________________________________________________________________________ */
@@ -379,7 +402,7 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
     
     // Unbind FBO
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    auto DrawTitleButton = [&](const char* label)
+    /*auto DrawTitleButton = [&](const char* label)
         {
             ImFont* mono = ImGui::GetIO().Fonts->Fonts[0]; // first baked font is monospace
             ImGui::PushFont(mono);
@@ -405,13 +428,13 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
 
 
             return clicked;
-        };
+        };*/
 
 #if USE_IMGUI_EDITOR
     // 1. Start the Dear ImGui frame
     UI::BeginFrame();
     //goddamn lobotomy
-    const float titleBarHeight = 30.0f;
+    /*const float titleBarHeight = 30.0f;
     {
         ImGuiViewport* viewport = ImGui::GetMainViewport();
 
@@ -449,25 +472,21 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
         ImGui::SameLine(0.0f, 0.0f);
 
         // fullscreen
-        static bool fullscreen = true;
+        static bool fullscreen = false; // start windowed
+
         if (DrawTitleButton(fullscreen ? "[ ]" : "[]"))
         {
             GLFWmonitor* mon = glfwGetPrimaryMonitor();
             const GLFWvidmode* mode = glfwGetVideoMode(mon);
 
-            int mx, my;
-            glfwGetMonitorPos(mon, &mx, &my);
-
-            if (!fullscreen) {
-                glfwSetWindowAttrib(GLApp::ptr_window, GLFW_DECORATED, GLFW_FALSE);
-                glfwSetWindowMonitor(GLApp::ptr_window, NULL, mx, my, mode->width, mode->height, 0);
-            }
-            else {
-                glfwSetWindowAttrib(GLApp::ptr_window, GLFW_DECORATED, GLFW_FALSE);
+            if (!fullscreen)
+                glfwSetWindowMonitor(GLApp::ptr_window, mon, 0, 0, mode->width, mode->height, mode->refreshRate);
+            else
                 glfwSetWindowMonitor(GLApp::ptr_window, NULL, 100, 100, 1600, 900, 0);
-            }
+
             fullscreen = !fullscreen;
         }
+
 
 
         ImGui::SameLine(0.0f, 0.0f);
@@ -527,12 +546,14 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
         ImGui::End();
         ImGui::PopStyleColor();
         ImGui::PopStyleVar(2);
-    }
+    }*/
 
     // 2. Setup Dockspace 
     ImGuiViewport* viewport = ImGui::GetMainViewport();
-    ImVec2 dockPos = ImVec2(viewport->Pos.x, viewport->Pos.y + titleBarHeight);
-    ImVec2 dockSize = ImVec2(viewport->Size.x, viewport->Size.y - titleBarHeight);
+    /*ImVec2 dockPos = ImVec2(viewport->Pos.x, viewport->Pos.y + titleBarHeight);
+    ImVec2 dockSize = ImVec2(viewport->Size.x, viewport->Size.y - titleBarHeight);*/
+    ImVec2 dockPos = viewport->Pos;
+    ImVec2 dockSize = viewport->Size;
     /*ImGui::SetNextWindowPos(viewport->WorkPos);
     ImGui::SetNextWindowSize(viewport->WorkSize);*/
 	ImGui::SetNextWindowPos(dockPos);
@@ -599,7 +620,7 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
     glClear(GL_COLOR_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
 
-    CrashoutsEngine::PostProcessing::RenderPP(gameTextureColorBuffer);
+    //CrashoutsEngine::PostProcessing::RenderPP(gameTextureColorBuffer);
 
 #endif
     // APPLY POST_PROCESSING TO FBO 
