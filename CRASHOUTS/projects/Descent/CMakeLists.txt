@@ -98,7 +98,7 @@ set_property(TARGET CrashoutEditor
     PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "$<TARGET_FILE_DIR:CrashoutEditor>"
 )
 
-# Copy assets for editor
+# assets for editor
 add_custom_command(TARGET CrashoutEditor POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory_if_different
         "${project_dir}/assets"

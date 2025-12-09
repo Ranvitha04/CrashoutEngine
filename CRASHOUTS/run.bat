@@ -2,24 +2,71 @@
 setlocal enabledelayedexpansion
 pushd "%~dp0"
 
-set "EXE_NAME=Descent.exe"
-set "SLN_FILE=CrashoutEngine.sln"
+REM ======================================================
+REM Default settings
+REM ======================================================
+set "DEFAULT_TARGET=CrashoutEditor"
+set "DEFAULT_CONFIG=Debug"
+REM Capture start time
+set "start=%time%"
+REM ======================================================
+REM Parse arguments
+REM Usage:
+REM   run.bat                → CrashoutEditor Debug
+REM   run.bat Release        → CrashoutEditor Release
+REM   run.bat Descent        → Descent Debug
+REM   run.bat Descent Release → Descent Release
+REM ======================================================
+
+set "TARGET_INPUT=%~1"
+set "CONFIG_INPUT=%~2"
+
+REM Determine target
+if /i "%TARGET_INPUT%"=="Descent" (
+    set "TARGET=Descent"
+) else if /i "%TARGET_INPUT%"=="CrashoutEditor" (
+    set "TARGET=CrashoutEditor"
+) else if /i "%TARGET_INPUT%"=="Debug" (
+    set "TARGET=%DEFAULT_TARGET%"
+    set "CONFIG=Debug"
+) else if /i "%TARGET_INPUT%"=="Release" (
+    set "TARGET=%DEFAULT_TARGET%"
+    set "CONFIG=Release"
+) else if "%TARGET_INPUT%"=="" (
+    set "TARGET=%DEFAULT_TARGET%"
+) else (
+    REM Unknown input → treat as default target
+    set "TARGET=%DEFAULT_TARGET%"
+)
+
+REM Determine config if not already set
+if not defined CONFIG (
+    if /i "%CONFIG_INPUT%"=="Release" (
+        set "CONFIG=Release"
+    ) else if /i "%CONFIG_INPUT%"=="Debug" (
+        set "CONFIG=Debug"
+    ) else (
+        set "CONFIG=%DEFAULT_CONFIG%"
+    )
+)
+
+echo.
+echo ======================================================
+echo   Building Target: %TARGET%
+echo   Configuration : %CONFIG%
+echo ======================================================
+echo.
+
+REM ======================================================
+REM Build folder
+REM ======================================================
 set "BUILD_DIR=build"
 
-REM --- Configuration Selection ---
-set "CONFIG=%~1"
-if not defined CONFIG set "CONFIG=Debug"
-if /i "%CONFIG%"=="debug" set "CONFIG=Debug"
-if /i "%CONFIG%"=="release" set "CONFIG=Release"
-
-REM --- Start timer ---
-set "start=%time%"
-echo Target Configuration: %CONFIG%
-
-REM --- Ensure build folder exists ---
 if not exist "%BUILD_DIR%" mkdir "%BUILD_DIR%"
 
-REM STEP 1: Configure (only if needed)
+REM ======================================================
+REM Configure (only once)
+REM ======================================================
 if not exist "%BUILD_DIR%\CMakeCache.txt" (
     echo [1/3] Configuring project with CMake...
     cmake -S . -B "%BUILD_DIR%" -A x64
@@ -28,43 +75,49 @@ if not exist "%BUILD_DIR%\CMakeCache.txt" (
     echo [1/3] Skipping configure (already configured)
 )
 
-REM --- Auto-open Visual Studio Solution early ---
-set "SLN_PATH=%BUILD_DIR%\%SLN_FILE%"
-if exist "!SLN_PATH!" (
-    echo Opening Visual Studio: !SLN_PATH!
-    start "" "!SLN_PATH!"
-) else (
-    echo Solution not found yet. It will open after configure if available.
+REM ======================================================
+REM Auto-open solution
+REM ======================================================
+set "SLN_PATH=%BUILD_DIR%\CrashoutEngine.sln"
+if exist "%SLN_PATH%" (
+    echo Opening Visual Studio solution...
+    start "" "%SLN_PATH%"
 )
 
-REM STEP 2: Build (runs while VS opens)
-echo [2/3] Building %CONFIG% configuration...
-cmake --build "%BUILD_DIR%" --config %CONFIG% --parallel -j 8
+REM ======================================================
+REM Build only the requested target
+REM ======================================================
+echo [2/3] Building %TARGET% (%CONFIG%)...
+cmake --build "%BUILD_DIR%" --target %TARGET% --config %CONFIG% --parallel -j 8
 if ERRORLEVEL 1 goto :FAIL
 
-REM STEP 3: Run executable
-echo [3/3] Launching executable...
-set "EXE_PATH=%BUILD_DIR%\x64-%CONFIG%\%EXE_NAME%"
-if exist "%EXE_PATH%" (
-    echo Found: %EXE_PATH%
-    start "" /D "%BUILD_DIR%\x64-%CONFIG%" "%EXE_NAME%"
+REM ======================================================
+REM Determine executable name
+REM ======================================================
+if /i "%TARGET%"=="Descent" (
+    set "EXE_NAME=Descent.exe"
 ) else (
-    echo ERROR: Executable not found at %EXE_PATH%
-    goto :FAIL
+    set "EXE_NAME=CrashoutEditor.exe"
 )
 
-echo.
-echo --- SUCCESS ---
-goto :TIMER
+REM ======================================================
+REM Run the executable
+REM ======================================================
+echo [3/3] Launching %EXE_NAME%...
+set "EXE_PATH=%BUILD_DIR%\x64-%CONFIG%\%EXE_NAME%"
 
-:FAIL
-echo.
-echo --- FAILED ---
-echo An error occurred. Please check the messages above.
+if exist "%EXE_PATH%" (
+    start "" /D "%BUILD_DIR%\x64-%CONFIG%" "%EXE_NAME%"
+) else (
+    echo ERROR: Could not find executable at:
+    echo   %EXE_PATH%
+    goto :FAIL
+)
 
 :TIMER
 REM --- End timer and compute duration ---
 set "end=%time%"
+
 for /f "tokens=1-4 delims=:." %%a in ("%start%") do (
     set /a "startms=(1%%a-100)*3600000 + (1%%b-100)*60000 + (1%%c-100)*1000 + 1%%d-100"
 )
@@ -76,8 +129,11 @@ if !endms! lss !startms! set /a endms+=86400000
 set /a elapsed=!endms!-!startms!
 set /a minutes=!elapsed!/60000
 set /a seconds=(!elapsed!%%60000)/1000
+
 echo.
-echo Total Runtime: !minutes! min !seconds! sec
+echo Started : %start%
+echo Finished: %end%
+echo Total   : !minutes! min !seconds! sec
 echo.
 
 popd
