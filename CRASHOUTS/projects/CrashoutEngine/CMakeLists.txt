@@ -74,6 +74,18 @@ target_precompile_headers(${PROJECT_NAME}
         "include/engine_pch.h"
 )
 
+# Apply common include directories to runtime engine
+target_include_directories(${PROJECT_NAME}
+    PUBLIC
+        ${project_dir}/include
+        ${_MONO_INC}
+    PRIVATE
+        ${CMAKE_SOURCE_DIR}/lib/glm
+        ${_FMOD_INC}
+        ${_FREETYPE_INC}
+)
+
+
 # --- 6. Assign ALL file groups to filters ✨ ---
 source_group("src\\Managers"   FILES ${manager_src_files})
 source_group("include\\Managers"   FILES ${manager_include_files})
@@ -121,15 +133,51 @@ target_link_libraries(${PROJECT_NAME}
 link_fmod_to(${PROJECT_NAME})
 link_mono_to(${PROJECT_NAME})
 message(STATUS "Mono linked successfully to CrashoutEngine.")
-# Apply common include directories
-target_include_directories(${PROJECT_NAME} 
-PUBLIC
+
+add_library(CrashoutEngine.Editor STATIC
+    ${categorized_src_files}
+    ${categorized_include_files}
+    ${other_src_files}
+    ${other_include_files}
+    "${project_dir}/include/engine_pch.h"
+    "${project_dir}/src/particleSystem.cpp"
+    "${project_dir}/include/particleSystem.h"
+)
+
+target_precompile_headers(CrashoutEngine.Editor
+    PRIVATE "include/engine_pch.h"
+)
+
+target_include_directories(CrashoutEngine.Editor PRIVATE
     ${project_dir}/include
-    ${_MONO_INC}
-PRIVATE
-    ${CMAKE_SOURCE_DIR}/lib/glm                 # Added GLM include
-    ${_FMOD_INC}                                # Added FMOD include
-    ${_FREETYPE_INC}
+    ${CMAKE_SOURCE_DIR}/projects/CrashoutEngine/include   # <-- ADD THIS
+)
+
+
+target_link_libraries(CrashoutEngine.Editor
+    PUBLIC
+        libglew_static
+        glfw
+        glm::glm
+        imgui
+    PRIVATE
+        stb
+        freetype
+        rapidjson
+        reflect
+        CrashoutsAudio
+        imguizmo
+)
+
+
+
+# HERE is where editor mode is enabled:
+target_compile_definitions(CrashoutEngine.Editor
+    PRIVATE USE_IMGUI_EDITOR=1
+)
+
+set_property(TARGET CrashoutEngine.Editor
+    PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "$<TARGET_FILE_DIR:CrashoutEngine.Editor>"
 )
 
 # Build ManagedScripts.csproj automatically 
@@ -146,7 +194,5 @@ add_custom_command(
     COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_BINARY_DIR}/scripts"
     COMMENT "ManagedScripts.dll already built directly into runtime scripts folder"
 )
-
-
 
 set_property(TARGET ${PROJECT_NAME} PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "$<TARGET_FILE_DIR:${PROJECT_NAME}>")
