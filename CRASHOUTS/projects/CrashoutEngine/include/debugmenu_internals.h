@@ -102,7 +102,7 @@ namespace UI {
 
         static Selection gSel;
 
-        static const char* KFPropertyName(KFProperty p)
+        inline const char* KFPropertyName(KFProperty p)
         {
             switch (p) {
             case KFProperty::PosX:        return "Position X";
