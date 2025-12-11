@@ -3,8 +3,12 @@
 @author     m.biniswandi@digipen.edu
 @date       06/11/2025
 @brief		Definition of mono manager functions
+
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 */
 #include "monomanager.h"
+#include "engine.h"
 
 #include <cassert>
 #include <filesystem>
@@ -104,13 +108,16 @@ void MonoManager::LoadAssembly(const std::string& assemblyPath)
 
     s_AssemblyPath = latestDll.string();
 
-    std::cout << "[Mono][Debug] Initial DLL detected: " << s_AssemblyPath << "\n";
-    std::string TempDllPath = CopyAssemblyToTemp(s_AssemblyPath);
+#if !USE_IMGUI_EDITOR
+    // Copy assembly to appdata cache
+    std::string assemblyToLoadPath = CopyAssemblyToTemp(s_AssemblyPath);
+#else
+    std::string assemblyToLoadPath = s_AssemblyPath;
+#endif
 
-
-    if (!std::filesystem::exists(TempDllPath))
+    if (!std::filesystem::exists(assemblyToLoadPath))
     {
-        std::cerr << "[Mono] Assembly not found: " << TempDllPath << '\n';
+        std::cerr << "[Mono] Assembly not found: " << assemblyToLoadPath << '\n';
         return;
     }
 
@@ -120,10 +127,10 @@ void MonoManager::LoadAssembly(const std::string& assemblyPath)
         return;
     }
 
-    s_Assembly = mono_domain_assembly_open(s_Domain, TempDllPath.c_str());
+    s_Assembly = mono_domain_assembly_open(s_Domain, assemblyToLoadPath.c_str());
     if (!s_Assembly)
     {
-        std::cerr << "[Mono] Failed to load assembly: " << TempDllPath << '\n';
+        std::cerr << "[Mono] Failed to load assembly: " << assemblyToLoadPath << '\n';
         return;
     }
 
@@ -143,6 +150,7 @@ void MonoManager::LoadAssembly(const std::string& assemblyPath)
 
 void MonoManager::ReloadScripts()
 {
+#if USE_IMGUI_EDITOR
     std::cout << "[Mono] Reloading scripts...\n";
 
     CrashoutsEngine::ScriptSystem::DestroyAll();
@@ -212,11 +220,13 @@ void MonoManager::ReloadScripts()
     CrashoutsEngine::ScriptSystem::ReloadAll();
 
     std::cout << "[Mono] Hot reload completed.\n";
+#endif
 }
 
 
 void MonoManager::CheckHotReload()
 {
+#if USE_IMGUI_EDITOR
     namespace fs = std::filesystem;
 
     try
@@ -236,6 +246,7 @@ void MonoManager::CheckHotReload()
     {
         std::cerr << "[Mono] Hot reload check failed: " << e.what() << '\n';
     }
+#endif
 }
 
 
@@ -261,8 +272,33 @@ MonoImage* MonoManager::GetImage()
 std::string MonoManager::CopyAssemblyToTemp(const std::string& originalPath)
 {
     namespace fs = std::filesystem;
-
     fs::path src = originalPath;
+
+#if !USE_IMGUI_EDITOR
+    std::string appDataDir = GetLocalAppData();
+    if (appDataDir.empty()) {
+        std::cerr << "[Mono] Failed to get LocalAppData path.\n";
+        return "";
+    }
+
+    fs::path dst = fs::path(appDataDir) / "scripts/_cache";
+
+    // Create directory
+    std::error_code ec;
+    fs::create_directories(dst, ec);
+    if (ec) {
+        std::cerr << "[Mono] Failed to create cache directory: " << ec.message();
+        return "";
+    }
+
+    // Copy DLL to appdata cache
+    fs::path tempFile = dst / src.filename();
+    fs::copy_file(src, tempFile, fs::copy_options::overwrite_existing);
+
+    return tempFile.string();
+
+#else
+
     fs::path dst = "scripts/_cache";
     fs::create_directories(dst);
 
@@ -270,4 +306,5 @@ std::string MonoManager::CopyAssemblyToTemp(const std::string& originalPath)
     fs::copy_file(src, tempFile, fs::copy_options::overwrite_existing);
 
     return tempFile.string();
+#endif
 }

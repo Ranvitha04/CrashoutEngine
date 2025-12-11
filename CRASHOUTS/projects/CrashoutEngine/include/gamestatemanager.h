@@ -5,6 +5,9 @@
 @brief		Declarations for the game state manager
 
 Provides enums structures and functions for handling game state registration initialization updates and transitions
+
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 */
 #pragma once
 #include <unordered_map>

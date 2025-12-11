@@ -1,4 +1,13 @@
-﻿using System;
+﻿/*!
+@file       playercontroller.cs
+@author     m.biniswandi@digipen.edu
+@date       29/11/2025
+@brief      player controller script for handling player movement and actions
+
+All content © 2025 Digipen Institute of Technology Singapore.All rights reserved.
+
+//__________________________________________________________________________*/
+using System;
 using System.Numerics;
 namespace CrashoutsEngine
 {

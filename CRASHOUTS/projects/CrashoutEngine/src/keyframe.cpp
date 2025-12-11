@@ -4,6 +4,9 @@
 @date        28/11/2025
 @brief       Implements a simple keyframe animation system that drives transforms (position/rotation/scale) 
              and sprites over time using curves.
+
+All content � 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 */
 
 #include "engine_pch.h"
@@ -11,11 +14,11 @@
 #include "entitymanager.h"
 #include "transformcomponent.h"
 #include "shapescomponent.h"
-#include "spritecomponent.h" // Assuming this holds Rows/Cols info
+#include "spritecomponent.h" 
 #include <cmath>
 
 namespace {
-    // Helper: Linear Interpolation
+    
     float Lerp(float a, float b, float t) {
         return a + (b - a) * t;
     }
@@ -45,10 +48,10 @@ namespace {
 
         // 3. Interpolate (Constant vs Linear)
         if (k1.interp == KFInterp::Constant) {
-            return k1.value; // Snap behavior (good for sprites)
+            return k1.value; 
         }
         else {
-            return Lerp(k1.value, k2.value, pct); // Smooth behavior (good for position)
+            return Lerp(k1.value, k2.value, pct); 
         }
     }
 }

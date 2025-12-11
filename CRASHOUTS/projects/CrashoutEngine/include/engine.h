@@ -5,6 +5,8 @@
 
 This file 
 
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 *//*__________________________________________________________________________*/
 
 /*                                                                   includes
@@ -43,5 +45,7 @@ extern bool gameWinHovered;
 
 extern std::string g_PendingSceneName;
 extern bool g_IsSceneLoadPending;
+
+std::string GetLocalAppData();
 
 #endif

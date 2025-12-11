@@ -11,6 +11,8 @@ window and start up an OpenGL context and to extract function pointers
 to OpenGL implementations. It also includes new functions for ImGui
 integration.
 
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 *//*__________________________________________________________________________*/
 
 /* _________________________________________________________________________
@@ -131,18 +133,22 @@ bool GLApp::init(GLint w, GLint h, std::string t) {
     glfwWindowHint(GLFW_DECORATED, GL_TRUE);
 
     GLApp::ptr_window = glfwCreateWindow(w, h, title.c_str(), NULL, NULL);
+    glfwMaximizeWindow(GLApp::ptr_window);
+
 
     if (!GLApp::ptr_window) {
         LOGE(Core, "GLFW create window failed");
         glfwTerminate();
         return false;
     }
+    glfwSetWindowAttrib(GLApp::ptr_window, GLFW_DECORATED, GLFW_TRUE);
+
 
     // Center the window initially
     GLFWmonitor* monitor = glfwGetPrimaryMonitor();
     const GLFWvidmode* mode = glfwGetVideoMode(monitor);
     int startX = (mode->width - w) / 2;
-    int startY = (mode->height - h) / 2;
+    int startY = (mode->height - h) / 2 +32;
     glfwSetWindowPos(GLApp::ptr_window, startX, startY);
 
     // Store initial windowed state
@@ -152,7 +158,7 @@ bool GLApp::init(GLint w, GLint h, std::string t) {
     windowed_h = h;
 
     // Borderless fullscreen (windowed)
-    glfwSetWindowMonitor(GLApp::ptr_window,NULL,0, 0,mode->width,mode->height,0);
+    //glfwSetWindowMonitor(GLApp::ptr_window,NULL,0, 0,mode->width,mode->height,0);
     // Move window to exact fullscreen position (0,0)
     //glfwSetWindowPos(GLApp::ptr_window, 0, 0);
 
@@ -347,7 +353,7 @@ to window title bar.
 void GLApp::update() {
     // write window title with current fps ...
     std::stringstream sstr;
-    sstr << std::fixed << std::setprecision(2) << GLApp::title << " | " << FrameRateController::GetInstance().FPS();
+    sstr << std::fixed << std::setprecision(2) << GLApp::title;// << " | " << FrameRateController::GetInstance().FPS();
     glfwSetWindowTitle(GLApp::ptr_window, sstr.str().c_str());
 
     GLint w{ GLApp::width }, h{ GLApp::height };

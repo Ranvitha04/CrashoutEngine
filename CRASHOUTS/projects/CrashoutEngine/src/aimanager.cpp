@@ -1,3 +1,12 @@
+/*!
+@file       aimanager.cpp
+@author     miratristan.d@digipen.edu
+@date       29/11/2025
+@brief      aimanager.cpp file contains the definitions for AI utility functions
+
+All content © 2025 Digipen Institute of Technology Singapore.All rights reserved
+
+//__________________________________________________________________________*/
 #include "aimanager.h"
 #include "aicomponent.h"
 #include "entitymanager.h"

@@ -1,3 +1,13 @@
+/*!
+@file       aibindings.cpp
+@author     m.biniswandi@digipen.edu
+@date       29/11/2025
+@brief      aibindings.cpp file contains the function definitions for registering AI-related bindings in the CrashoutsEngine
+
+All content © 2025 Digipen Institute of Technology Singapore.All rights reserved.
+
+//__________________________________________________________________________*/
+
 #include "aimanager.h"
 #include "aicomponent.h"
 #include "state.h"
@@ -6,6 +16,8 @@
 #include <mono/jit/jit.h>
 #include <mono/metadata/object.h>
 #include <mono/metadata/assembly.h>
+
+
 
 using namespace CrashoutsEngine;
 

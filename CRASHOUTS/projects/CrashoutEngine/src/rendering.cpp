@@ -23,6 +23,9 @@ efficient resource management.
 This implementation provides the foundation for all 2D rendering operations
 in the CrashoutEngine, with particular emphasis on performance-critical
 applications such as sprite animation, particle systems, and dynamic geometry.
+
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 */
 
 /*                                                                   includes

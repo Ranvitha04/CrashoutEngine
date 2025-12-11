@@ -15,6 +15,9 @@
             These tools are intended for development builds to monitor
             performance bottlenecks, visualize profiling history, and
             analyze memory consumption in real-time.
+
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 //__________________________________________________________________________*/
 
 #pragma once

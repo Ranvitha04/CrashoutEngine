@@ -3,6 +3,9 @@
 @author     m.biniswandi@digipen.edu
 @date       06/11/2025
 @brief		Definition of transform bindings functions
+
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 */
 #include "transformbindings.h"
 #include "entitymanager.h"

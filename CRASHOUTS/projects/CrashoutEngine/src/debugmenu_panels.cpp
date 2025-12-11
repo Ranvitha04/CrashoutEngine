@@ -1,0 +1,1196 @@
+﻿#include "debugmenu_internals.h"
+#include "debugmenu.h"
+
+
+using namespace CrashoutsEngine;
+using namespace Serialization;
+using namespace KeyframeUnity;
+
+namespace UI {
+
+    // Helper local to this file
+    static void DrawHierarchyNode(ECS& ecs, Entity e, Entity& selected)
+    {
+        std::string label = ecs.HasComponent<Component::NameComponent>(e) ? ecs.GetComponent<Component::NameComponent>(e)->name : ("Entity " + std::to_string(e));
+
+        const bool hasKids = ecs.HasComponent<Component::ChildrenComponent>(e) && !ecs.GetComponent<Component::ChildrenComponent>(e)->children.empty();
+
+        ImGuiTreeNodeFlags flags =
+            ImGuiTreeNodeFlags_OpenOnArrow |
+            ImGuiTreeNodeFlags_SpanFullWidth |
+            (selected == e ? ImGuiTreeNodeFlags_Selected : 0) |
+            (!hasKids ? ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen : 0);
+
+        ImGui::PushID((int)e);
+        const bool opened = ImGui::TreeNodeEx("##node", flags, "%s", label.c_str());
+
+        if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen()) {
+            selected = e;
+        }
+
+        if (ImGui::BeginDragDropSource()) {
+            ImGui::SetDragDropPayload("HIER_ENTITY", &e, sizeof(Entity));
+            ImGui::TextUnformatted(label.c_str());
+            ImGui::EndDragDropSource();
+        }
+
+        if (ImGui::BeginDragDropTarget()) {
+            if (const ImGuiPayload* pl = ImGui::AcceptDragDropPayload("HIER_ENTITY")) {
+                Entity dragged = *(const Entity*)pl->Data;
+                if (dragged && dragged != e) {
+                    bool ok = true;
+                    std::vector<Entity> subtree; subtree.reserve(16);
+                    CrashoutsEngine::GatherDescendants(ecs, dragged, subtree);
+                    ok = (std::find(subtree.begin(), subtree.end(), e) == subtree.end());
+                    if (ok) CrashoutsEngine::Reparent(ecs, dragged, e);
+                }
+            }
+            ImGui::EndDragDropTarget();
+        }
+
+        if (ImGui::BeginPopupContextItem("node_ctx")) {
+            if (ImGui::MenuItem("Ungroup (detach)"))
+                CrashoutsEngine::DetachChild(ecs, e);
+            if (ImGui::MenuItem("Create Empty Child")) {
+                Entity child = ecs.CreateEntity();
+                if (!ecs.HasComponent<Component::NameComponent>(child))
+                    ecs.AddComponent<Component::NameComponent>(child, "New Child");
+                if (!ecs.HasComponent<Component::TransformComponent>(child))
+                    ecs.AddComponent<Component::TransformComponent>(child);
+                CrashoutsEngine::AttachChild(ecs, e, child);
+            }
+            ImGui::EndPopup();
+
+        }
+
+        if (hasKids && opened) {
+            auto* kids = ecs.GetComponent<Component::ChildrenComponent>(e);
+            for (Entity c : kids->children)
+                DrawHierarchyNode(ecs, c, selected);
+            ImGui::TreePop();
+        }
+
+        ImGui::PopID();
+    }
+
+    /*!
+     @brief Renders the ECS debug panel, allowing creation, deletion, and inspection of entities.
+     @param profiler Frame profiler reference.
+     @param ecs ECS reference.
+     @param entities List of ECS entities.
+     @param selected Currently selected entity.
+    */
+    void RenderEcsPanel(CrashoutsEngine::ECS& ecs, std::vector<CrashoutsEngine::Entity>& entities, CrashoutsEngine::Entity& selected, UIState& ui)
+    {
+        static std::vector<Entity> multiSel;
+
+        ScopedWindow win("Hierarchy", LockFlags(ui.lockLayout));
+
+        // Create entity in the REAL ECS
+        if (ImGui::Button("Create Entity")) {
+            Entity e = ecs.CreateEntity();
+            entities.push_back(e);
+            if (!ecs.HasComponent<Component::NameComponent>(e)) {
+                ecs.AddComponent<Component::NameComponent>(e, "Entity " + std::to_string(e));
+            }
+            if (!ecs.HasComponent<Component::TransformComponent>(e)) {
+                ecs.AddComponent<Component::TransformComponent>(e);
+            }
+        }
+        ImGui::SeparatorText("Prefab Creator");
+        ImGui::Text("Entity Counter: %d", ecs.GetComponentArray<Component::NameComponent>().dense.size());
+        static char nameBuf[128] = { 0 };
+        {
+            auto names = Prefab::Names();
+            if (!names.empty()) {
+                static int sel = 0;
+                if (sel >= (int)names.size()) sel = 0;
+                if (ImGui::BeginCombo("Choose prefab", names[sel].c_str())) {
+                    for (int i = 0; i < (int)names.size(); ++i) {
+                        bool isSel = (i == sel);
+                        if (ImGui::Selectable(names[i].c_str(), isSel)) sel = i;
+                        if (isSel) ImGui::SetItemDefaultFocus();
+                    }
+                    ImGui::EndCombo();
+                }
+
+                if (ImGui::Button("Create Selected##Prefab")) {
+                    Prefab::Create(ecs, names[sel]);
+                }
+            }
+        }
+        ImGui::Separator();
+        ImGui::TextUnformatted("Entities");
+
+        {
+            auto& tArr = ecs.GetComponentArray<Component::TransformComponent>();
+            bool anyDrawn = false;
+            for (Entity e : tArr.indexToEntity)
+            {
+                if (!ecs.HasComponent<Component::TransformComponent>(e)) continue;
+                const bool hasParent = ecs.HasComponent<Component::ParentComponent>(e);
+                if (!hasParent) {
+                    DrawHierarchyNode(ecs, e, selected);
+                    anyDrawn = true;
+                }
+            }
+            if (!anyDrawn) ImGui::TextDisabled("No entities created yet.");
+        }
+
+
+        ImGui::Separator();
+        ImGui::Text("Selected Entity: %d", selected);
+
+        if (!selected) return;
+
+        static char prefabNameBuf[64] = "MyBox";
+        ImGui::SetNextItemWidth(220);
+        ImGui::InputTextWithHint("##save_prefab_name", "Prefab name...", prefabNameBuf, IM_ARRAYSIZE(prefabNameBuf));
+        ImGui::SameLine();
+        if (ImGui::Button("Save Prefab")) {
+            namespace fs = std::filesystem;
+
+
+            std::string newName;
+            if (prefabNameBuf[0]) {
+
+                newName = prefabNameBuf;
+            }
+            else if (ecs.HasComponent<Component::PrefabInstanceComponent>(selected)) {
+
+                auto* inst = ecs.GetComponent<Component::PrefabInstanceComponent>(selected);
+                newName = inst ? inst->prefabName : "Entity";
+            }
+            else {
+
+                newName = "Entity";
+            }
+
+
+            fs::path jsonPath = fs::path(CrashoutsEngine::Assets::rootPath)
+                / "prefabs"
+                / (newName + ".json");
+
+            fs::create_directories(jsonPath.parent_path());
+
+            const bool ok = SaveBoxPrefabToJson_RJ(
+                ecs, selected,
+                newName,
+                jsonPath.generic_string(),
+                /*matchName*/ newName
+            );
+
+            if (ok) {
+                const std::string dirPath =
+                    (fs::path(CrashoutsEngine::Assets::rootPath) / "prefabs").generic_string();
+
+                CrashoutsEngine::ReloadPrefabsFromDisk(dirPath);
+                CrashoutsEngine::RecreateInstancesForPrefab(ecs, newName);
+
+                prefabNameBuf[0] = '\0';
+            }
+
+        }
+
+
+        ImGui::Separator();
+
+
+        if (entities.size() > 0) {
+            if (ImGui::Button("Clone Selected")) {
+                selected = ecs.CloneEntity(selected);
+                return;
+            }
+
+            if (ImGui::Button("Destroy Selected")) {
+                if (selected) {
+
+                    if (ecs.HasComponent<Component::ParentComponent>(selected)) {
+                        CrashoutsEngine::DetachChild(ecs, selected);
+                    }
+                }
+                ecs.DestroyEntity(selected);
+                if (auto it = std::find(entities.begin(), entities.end(), selected);
+                    it != entities.end()) entities.erase(it);
+                selected = 0;
+                return;
+            }
+        }
+    }
+
+    /*!
+     @brief Draw a Unity-like keyframe timeline for the selected entity
+     @param ecs ECS reference.
+     @param ui UI state reference.
+     @param selected Currently selected entity.
+    */
+    void RenderAnimationPanel(CrashoutsEngine::ECS& ecs, CrashoutsEngine::Entity selected, UIState& ui)
+    {
+        using namespace KeyframeUnity;
+        using namespace KeyframeUnityEditor;
+        using CrashoutsEngine::Entity;
+
+        if (!ui.showAnimation) return;
+
+        ScopedWindow w("Animation", LockFlags(ui.lockLayout));
+
+        if (!selected) {
+            ImGui::TextDisabled("No entity selected.");
+            return;
+        }
+
+        auto* anim = ecs.GetComponent<KeyframeAnimatorComponent>(selected);
+        if (!anim) {
+            ImGui::TextDisabled("Entity has no KeyframeAnimatorComponent.");
+            ImGui::Text("Add it in Inspector first.");
+            return;
+        }
+
+
+        AnimationClip* clip = nullptr;
+        if (!anim->current.empty()) {
+            auto it = anim->clips.find(anim->current);
+            if (it != anim->clips.end())
+                clip = &it->second;
+        }
+
+        if (!clip) {
+            ImGui::TextDisabled("Animator has no active clip.");
+            ImGui::Text("Use your code to SetClip() and Play().");
+            return;
+        }
+
+        const float length = clip->Length();
+        ImGui::Text("Clip: %s (%.2fs)", clip->name.c_str(), length);
+        ImGui::Separator();
+
+        // --- Timeline layout ---
+        ImDrawList* draw = ImGui::GetWindowDrawList();
+        ImVec2 origin = ImGui::GetCursorScreenPos();
+        const float labelW = 140.0f;
+        const float rowH = 20.0f;
+        const float totalW = ImGui::GetContentRegionAvail().x;
+        const float timeW = totalW - labelW;
+        const int   rows = (int)clip->bindings.size();
+
+        for (int bi = 0; bi < rows; ++bi) {
+            KFBinding& b = clip->bindings[bi];
+            float rowTop = origin.y + bi * rowH;
+            float rowMid = rowTop + rowH * 0.5f;
+
+            // Property label
+            ImGui::SetCursorScreenPos(ImVec2(origin.x, rowTop));
+            ImGui::TextUnformatted(KFPropertyName(b.property));
+
+            // Row background
+            ImU32 rowCol = IM_COL32(40, 40, 40, 255);
+            draw->AddRectFilled(
+                ImVec2(origin.x + labelW, rowTop),
+                ImVec2(origin.x + labelW + timeW, rowTop + rowH),
+                rowCol);
+
+            // Keyframes 
+            int keyCount = (int)b.curve.keys.size();
+            for (int ki = 0; ki < keyCount; ++ki) {
+                KFKey& k = b.curve.keys[ki];
+
+                float t01 = (length > 0.f) ? (k.time / length) : 0.f;
+                t01 = std::clamp(t01, 0.0f, 1.0f);
+                float x = origin.x + labelW + t01 * timeW;
+                ImVec2 p(x, rowMid);
+
+                float size = 4.0f;
+                ImVec2 diamond[4] = {
+                    ImVec2(p.x,        p.y - size),
+                    ImVec2(p.x + size, p.y),
+                    ImVec2(p.x,        p.y + size),
+                    ImVec2(p.x - size, p.y)
+                };
+
+                bool selectedKey =
+                    (gSel.entity == selected &&
+                        gSel.bindingIndex == bi &&
+                        gSel.keyIndex == ki);
+
+                ImU32 col = selectedKey
+                    ? IM_COL32(255, 200, 0, 255)
+                    : IM_COL32(200, 200, 200, 255);
+
+                draw->AddConvexPolyFilled(diamond, 4, col);
+
+                // Clickable area
+                ImGui::SetCursorScreenPos(ImVec2(p.x - size - 3.f, p.y - size - 3.f));
+                ImGui::InvisibleButton(
+                    (std::string("kf_") + std::to_string(bi) + "_" + std::to_string(ki)).c_str(),
+                    ImVec2((size + 3.f) * 2.f, (size + 3.f) * 2.f));
+
+                if (ImGui::IsItemClicked()) {
+                    gSel.entity = selected;
+                    gSel.bindingIndex = bi;
+                    gSel.keyIndex = ki;
+                }
+            }
+        }
+
+        ImGui::Dummy(ImVec2(0.f, rows * rowH + 4.f));
+        ImGui::Separator();
+
+        // --- Keyframe inspector ---
+        if (gSel.entity == selected &&
+            gSel.bindingIndex >= 0 &&
+            gSel.bindingIndex < (int)clip->bindings.size())
+        {
+            KFBinding& b = clip->bindings[gSel.bindingIndex];
+            if (gSel.keyIndex >= 0 &&
+                gSel.keyIndex < (int)b.curve.keys.size())
+            {
+                KFKey& k = b.curve.keys[gSel.keyIndex];
+
+                ImGui::Text("Keyframe: %s", KFPropertyName(b.property));
+                ImGui::DragFloat("Time", &k.time, 0.01f, 0.0f, length);
+                ImGui::DragFloat("Value", &k.value, 0.1f);
+                ImGui::DragFloat("In Tan", &k.inTan, 0.1f);
+                ImGui::DragFloat("Out Tan", &k.outTan, 0.1f);
+
+                int interp = (int)k.interp;
+                const char* names[] = { "Constant", "Linear", "Cubic" };
+                if (ImGui::Combo("Interpolation", &interp, names, 3)) {
+                    k.interp = (KFInterp)interp;
+                }
+            }
+        }
+        else {
+            ImGui::TextDisabled("Click a keyframe diamond to edit it.");
+        }
+    }
+
+    /*!
+    @brief Renders the Inspector debug panel.
+    @param ecs ECS reference.
+    @param selected Currently selected entity.
+    @param ui UI state toggles.
+    */
+    void RenderInspectorPanel(CrashoutsEngine::ECS& ecs, CrashoutsEngine::Entity selected, UIState& ui)
+    {
+        if (!ui.showInspector) return;
+        ScopedWindow w("Inspector", LockFlags(ui.lockLayout));
+
+        if (!selected) {
+            ImGui::TextDisabled("No entity selected.");
+            return;
+        }
+
+        ImGui::Text("Selected Entity: %u", (unsigned)selected);
+        ImGui::SeparatorText("Add Components");
+
+        // Unity-style button
+        if (ImGui::Button("Add Component..."))
+            ImGui::OpenPopup("add_component_popup");
+
+        // Popup with search + list
+        if (ImGui::BeginPopup("add_component_popup"))
+        {
+            auto& reg = DebugReflection::ComponentRegistry::instance().all();
+
+            // Search bar
+            static ImGuiTextFilter filter;
+            filter.Draw("Search", ImGui::GetFontSize() * 16.0f);
+
+            ImGui::Separator();
+
+            // Build a sorted list of components that the entity DOESN'T yet have
+            std::vector<DebugReflection::IComponentAdapter*> candidates;
+            candidates.reserve(reg.size());
+            for (auto* ad : reg)
+            {
+                if (!ad->has(ecs, selected)) // hide ones already on this entity
+                    candidates.push_back(ad);
+            }
+
+            std::sort(candidates.begin(), candidates.end(),
+                [](auto* a, auto* b) { return std::strcmp(a->name(), b->name()) < 0; });
+
+            // Scrollable list so popup doesn’t get huge
+            ImGui::BeginChild("add_comp_list", ImVec2(0, 260), true);
+            for (auto* ad : candidates)
+            {
+                const char* label = ad->name();
+                if (!filter.PassFilter(label)) // filter by text
+                    continue;
+
+                if (ImGui::Selectable(label))
+                {
+                    ad->add(ecs, selected);
+                    ImGui::CloseCurrentPopup(); // close after choosing one
+                    break;
+                }
+            }
+            ImGui::EndChild();
+
+            ImGui::EndPopup();
+        }
+
+        ImGui::NewLine();
+
+        ImGui::SeparatorText("Components on Selected Entity");
+
+        for (auto* ad : DebugReflection::ComponentRegistry::instance().all()) {
+            if (!ad->has(ecs, selected)) continue;
+
+            ImGui::PushID(ad);
+
+            ImGui::Separator();
+            ImGui::TextUnformatted(ad->name());
+
+            // Right-align "Remove"
+            float remove_w = ImGui::CalcTextSize("Remove").x + ImGui::GetStyle().FramePadding.x * 2.0f;
+            float x = ImGui::GetCursorPosX() + ImGui::GetContentRegionAvail().x - remove_w;
+            ImGui::SameLine(x);
+            if (ImGui::SmallButton("Remove")) {
+                ad->remove(ecs, selected);
+                ImGui::PopID();
+                break;
+            }
+
+
+            ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(8, 6));
+            ad->drawInspector(ecs, selected);
+            ImGui::PopStyleVar();
+
+            ImGui::PopID();
+        }
+    }
+
+    /*!
+     @brief Renders the performance panel with profiler results.
+     @param profiler Frame profiler reference.
+     @param ui UI state toggles.
+    */
+    void RenderPerformancePanel(FrameProfiler& profiler, UIState& ui) {
+        if (!ui.showPerf) return;
+
+        ScopedWindow w("Performance", LockFlags(ui.lockLayout));
+
+        if (profiler.present_ready()) {
+            gPerfSnapshot = profiler.results();
+            gPerfSnapshotTotalMs = profiler.total_ms();
+        }
+
+        auto& frc = FrameRateController::GetInstance();
+        const double frame_ms = frc.DT() * 1000.0;
+        const double fps = frc.FPS();
+        //const int cap = frc.CAP();
+
+        ImGui::Text("Frame: %.3f ms (%.1f FPS)", frame_ms, fps);
+
+        if (ImGui::BeginTable("perf_table", 3, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
+            ImGui::TableSetupColumn("System");
+            ImGui::TableSetupColumn("ms");
+            ImGui::TableSetupColumn("% of frame");
+            ImGui::TableHeadersRow();
+
+            for (const auto& s : gPerfSnapshot) {
+                ImGui::TableNextRow();
+                ImGui::TableSetColumnIndex(0); ImGui::TextUnformatted(s.name.c_str());
+                ImGui::TableSetColumnIndex(1); ImGui::Text("%.3f", s.ms);
+                ImGui::TableSetColumnIndex(2); ImGui::Text("%.1f%%", s.pct);
+                ImGui::ProgressBar(float(s.pct / 100.0), ImVec2(-1, 0), "");
+            }
+            ImGui::EndTable();
+        }
+        DrawEngineMemoryPanel();      // memory view
+        DrawProfilerPanel(profiler);
+    }
+
+    /*!
+     @brief Renders the console log viewer panel.
+     @param ui UI state toggles.
+    */
+    void RenderConsolePanel(UIState& ui) {
+        if (!ui.showConsole) return;
+
+        ScopedWindow w("Console", LockFlags(ui.lockLayout));
+
+        // Dynamic filters driven by the X-macro lists - I don't even know if this is like the socially acceptable way of doing it
+        static bool levelOn[] = {
+        #define X(n) true,
+            LOG_LEVELS(X)
+        #undef X
+        };
+        static bool systemOn[] = {
+        #define X(n) true,
+            LOG_SYSTEMS(X)
+        #undef X
+        };
+        static char search[128] = { 0 };
+        static bool autoscroll = true;
+
+        // Level row
+        ImGui::TextDisabled("Levels:");
+        int li = 0;
+#define X(n) do { if (li > 0) ImGui::SameLine(); ImGui::Checkbox(#n, &levelOn[li++]); } while(0);
+        LOG_LEVELS(X)
+#undef X
+
+            // Subsystems row (simple grid)
+            ImGui::Separator();
+        ImGui::TextDisabled("Subsystems:");
+        int si = 0;
+        const int cols = 4;
+#define X(n) do { if (si % cols != 0) ImGui::SameLine(); ImGui::Checkbox(#n, &systemOn[si++]); } while(0);
+        LOG_SYSTEMS(X)
+#undef X
+
+            // Search & options
+            ImGui::Separator();
+        ImGui::InputTextWithHint("##search", "search text...", search, sizeof(search));
+        ImGui::SameLine();
+        ImGui::Checkbox("Auto-scroll", &autoscroll);
+
+        ImGui::Separator();
+
+        // Log list (virtualized)
+        const auto& logs = Logger::Instance().Get();
+
+        // Build filtered view (indices so we can clip)
+        static std::vector<int> filtered;
+        filtered.clear();
+        filtered.reserve(logs.size());
+        for (int i = 0; i < (int)logs.size(); ++i) {
+            const auto& log = logs[i];
+            if (!levelOn[(int)log.level])  continue;
+            if (!systemOn[(int)log.system]) continue;
+            if (search[0] && std::string(log.text).find(search) == std::string::npos) continue;
+            filtered.push_back(i);
+        }
+
+        ImGuiListClipper clipper;
+        clipper.Begin((int)filtered.size());
+        while (clipper.Step()) {
+            for (int row = clipper.DisplayStart; row < clipper.DisplayEnd; ++row) {
+                const auto& log = logs[filtered[row]];
+                // Color by level
+                const ImVec4 color =
+                    (log.level == LogMessage::Level::Error) ? ImVec4(1.0f, 0.3f, 0.3f, 1.0f) :
+                    (log.level == LogMessage::Level::Warning) ? ImVec4(1.0f, 0.9f, 0.4f, 1.0f) :
+                    (log.level == LogMessage::Level::Success) ? ImVec4(0.4f, 1.0f, 0.4f, 1.0f) :
+                    ImVec4(0.4f, 0.8f, 1.0f, 1.0f);
+                ImGui::PushStyleColor(ImGuiCol_Text, color);
+
+                // Prefix + message (avoid fmt when not needed)
+                ImGui::Text("[%s][%s] %s", ToString(log.level), ToString(log.system), log.text.c_str());
+
+                ImGui::PopStyleColor();
+            }
+        }
+
+        // Controls
+        static size_t lastLogSize = 0;
+        bool newLogsArrived = (logs.size() > lastLogSize);
+        lastLogSize = logs.size();
+
+        // ... [Draw Filtered Logs] ...
+
+        // --- SMART AUTO SCROLL ---
+        // Only scroll if we are at the bottom OR if new logs just arrived while we were at the bottom.
+        if (autoscroll && newLogsArrived)
+        {
+            ImGui::SetScrollHereY(1.0f);
+        }
+
+        if (ImGui::Button("Clear")) {
+            Logger::Instance().Clear();
+        }
+    }
+
+    /*!
+     @brief Renders the gameState panel
+     @param state gameState reference.
+     @param ui UI state toggles.
+    */
+    void RenderGameStatePanel(UIState& ui) {
+        if (!ui.showGameState) return;
+
+        ScopedWindow w("GameState", LockFlags(ui.lockLayout));
+
+        auto* P = DebugReflection::GetGameStateProvider();
+        if (!P) { ImGui::TextDisabled("No GameStateProvider registered."); return; }
+
+        auto nameFor = [&](int id) -> const char* {
+            for (auto const& kv : P->states()) {
+                if (kv.second == id) return kv.first;
+            }
+            return "(unknown)";
+            };
+
+        const int cur = P->current() ? P->current() : -1;
+        const int prev = P->previous() ? P->previous() : -1;
+        //const int next = P->next() ? P->next() : -1;
+
+        ImGui::Text("Current:  %s", nameFor(cur));
+        ImGui::Text("Previous: %s", nameFor(prev));
+
+        if (cur != GameState::SCENE && !currSceneName.empty()) currSceneName.clear();
+
+        ImGui::Separator();
+        int col = 0;
+        for (auto const& [label, id] : P->states()) {
+            if (ImGui::Button(label)) P->changeTo(id);
+            if (++col % 10 != 0) ImGui::SameLine();
+        }
+
+        ImGui::Separator();
+
+        // Utility Action
+        if (ImGui::Button("Restart Current State")) {
+            RestartGameState();
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("Quit")) {
+            glfwSetWindowShouldClose(GLApp::ptr_window, GLFW_TRUE);
+        }
+    }
+
+    /*!
+     @brief Renders the scene panel
+     @param ui UI state toggles.
+    */
+    void RenderGameScenePanel(UIState& ui) {
+
+        if (!ui.showGameScene) return;
+
+        ScopedWindow w("GameScene", LockFlags(ui.lockLayout));
+
+        ImGui::Separator();
+
+        // 1. Buffer to store the scene name from the text field
+        static char sceneNameBuffer[128] = "";
+
+        // 2. Draw the text input field. 
+        //    We use "##" to hide the label but keep a unique ID
+        ImGui::InputText("##SceneNameInput", sceneNameBuffer, IM_ARRAYSIZE(sceneNameBuffer));
+        //    Add a hint if the buffer is empty
+        if (sceneNameBuffer[0] == '\0') {
+            ImGui::SameLine();
+            ImGui::TextDisabled("Enter new scene name...");
+        }
+
+
+        // 3. Draw the "Create Scene" button
+        ImGui::SameLine();
+        if (ImGui::Button("Create Scene")) {
+            // Only create if the name field is not empty
+            if (std::strlen(sceneNameBuffer) > 0) {
+
+                // 4. Call your create function
+                Serialization::SaveScenes(sceneNameBuffer);
+
+                // 5. Clear the buffer after creation for good UX
+                sceneNameBuffer[0] = '\0';
+            }
+        }
+        // --- End New UI ---
+
+        ImGui::Separator();
+
+        // Draw all scene buttons
+        // Check manifest json file
+        std::ifstream ifs(Assets::assetManifestPath);
+        if (!ifs.is_open()) {
+            std::cerr << "Error: Could not open manifest file: " << Assets::assetManifestPath << std::endl;
+            return;
+        }
+
+        // Convert file to rapidJSON stream interface
+        rapidjson::IStreamWrapper isw(ifs);
+        rapidjson::Document doc;
+        doc.ParseStream(isw);
+
+        if (doc.HasParseError()) {
+            std::cerr << "Error parsing manifest JSON." << std::endl;
+            return;
+        }
+
+        if (doc.HasMember("scenes") && doc["scenes"].IsArray()) {
+            //std::cout << "Loading Scenes..." << std::endl;
+
+            const rapidjson::Value& sceneArray = doc["scenes"];
+
+            for (rapidjson::SizeType i = 0; i < sceneArray.Size(); ++i) {
+                const rapidjson::Value& asset = sceneArray[i];
+                if (asset.HasMember("name") && asset.HasMember("path")) {
+                    std::string name = asset["name"].GetString();
+                    std::string relativePath = asset["path"].GetString();
+
+                    if (ImGui::Button(name.c_str())) {
+                        if (!currSceneName.empty()) {
+                            if (engineState == EngineState::STOP) Serialization::SaveScenes(currSceneName);
+                        }
+                        // Load Scene flow
+                        ECS::getInstance()->Reset();
+                        currSceneName = name;
+                        Serialization::LoadScenes(name);
+                    }
+
+                    ImGui::SameLine();
+                }
+                else {
+                    std::cerr << "Warning: Scene asset entry missing 'name' or 'path' in manifest." << std::endl;
+                }
+            }
+        }
+    }
+
+    /*!
+     @brief Renders the physics panel, including collision event listings and controls.
+     @param profiler Frame profiler reference.
+     @param ecs ECS reference.
+     @param phys Physics handler reference.
+     @param ui UI state toggles.
+    */
+    void RenderPhysicsPanel([[maybe_unused]] FrameProfiler& profiler, ECS& ecs, ::Physics::PhysicsHandler& phys, UIState& ui)
+    {
+        if (!ui.showPhysics) return;
+        ScopedWindow w("Physics / Collision", LockFlags(ui.lockLayout));
+
+        bool paused = ::Physics::PhysicsHandler::GetPaused();
+        if (ImGui::Checkbox("Paused", &paused)) {
+            ::Physics::PhysicsHandler::SetPaused(paused);
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("Step")) {
+            ::Physics::PhysicsHandler::StepOnce(); Help("Advance one simulation tick when paused.");
+        }
+
+        ImGui::Checkbox("Freeze on collision", &ui.freezeOnCollision);
+        ImGui::SameLine(); Help("Automatically pause when any collision is detected this frame.");
+
+        static bool overrideDt = false;
+        static double dbgDt = 1.0 / 30.0;
+        ImGui::Checkbox("Override dt", &overrideDt); ImGui::SameLine();
+        if (overrideDt && ImGui::DragScalar("dt", ImGuiDataType_Double, &dbgDt, 0.001f, nullptr, nullptr, "%.4f")) {
+            ::Physics::PhysicsHandler::SetOverrideDt(true);
+            ::Physics::PhysicsHandler::SetDebugDt(dbgDt);
+        }
+        else if (!overrideDt) {
+            ::Physics::PhysicsHandler::SetOverrideDt(false);
+        }
+
+        ImGui::Separator();
+
+        ImGui::TextDisabled("Forces & Integrators");
+
+        for (auto* p : DebugReflection::PhysicsRegistry::instance().all()) {
+            if (!p) continue;
+            if (ImGui::TreeNode(p->name())) {
+                p->draw(ecs); // <- use the ecs param from this function
+                ImGui::TreePop();
+            }
+        }
+
+        ImGui::Separator();
+
+        const auto& evs = phys.collisions();
+
+        // auto pause if requested and collision occured
+        if (ui.freezeOnCollision && !paused && !evs.empty()) {
+            ::Physics::PhysicsHandler::SetPaused(true);
+            paused = true;
+        }
+
+        ImGui::Separator();
+
+        ImGui::Checkbox("Draw overlay", &ui.drawCollOverlay);
+        ImGui::SameLine(); ImGui::Checkbox("All colliders", &ui.drawAllColliders);
+        ImGui::SameLine(); ImGui::Checkbox("QuadTree", &ui.drawQuadTree);
+
+        ImGui::Separator();
+
+        Collision::CollisionHandler& collisionHandler{ Collision::CollisionHandler::GetInstance() };
+
+        f32 newMin[2]{ collisionHandler.quadTree.boundary.min.x, collisionHandler.quadTree.boundary.min.y };
+        f32 newMax[2]{ collisionHandler.quadTree.boundary.max.x, collisionHandler.quadTree.boundary.max.y };
+
+        if (ImGui::DragFloat2("Min", newMin)) {
+            collisionHandler.quadTree.Resize(Collision::AABBRect{ CEVec3{newMin[0], newMin[1], 0.f}, CEVec3{newMax[0], newMax[1], 0.f} });
+        } if (ImGui::DragFloat2("Max", newMax)) {
+            collisionHandler.quadTree.Resize(Collision::AABBRect{ CEVec3{newMin[0], newMin[1], 0.f}, CEVec3{newMax[0], newMax[1], 0.f} });
+        }
+
+        // When a way to implement the velocity line happens
+        // ImGui::SameLine(); ImGui::Checkbox("Velocities", &ui.drawVelocities);
+
+        // When a way to figure out how to make it a line instead of a whole shape
+        //ImGui::DragFloat("Line thickness", &ui.overlayThickness, 0.1f, 1.0f, 8.0f, "%.1f");
+
+        ImGui::TextDisabled("Pairs this frame: %d", (int)evs.size());
+    }
+
+    /*!
+     @brief Renders the audio panel.
+     @param profiler Frame profiler reference.
+     @param ecs ECS reference.
+     @param ui UI state toggles.
+    */
+    void RenderAudioPanel([[maybe_unused]] FrameProfiler& profiler, [[maybe_unused]] CrashoutsEngine::ECS& ecs, UIState& ui)
+    {
+        if (!ui.showAudio) return;
+        ScopedWindow w("Audio", LockFlags(ui.lockLayout));
+
+        auto& audio = Audio::AudioSystem::instance();
+
+        // SAFE PLAY FUNCTION (EVENT / RAW SFX / RAW MUSIC)
+        auto PlayAny = [&](const std::string& id, bool bgm = false) -> void*
+            {
+                if (id.empty()) return nullptr;
+
+                // 1) FMOD STUDIO EVENT
+                if (id.rfind("event:/", 0) == 0)
+                {
+                    auto* inst = audio.createInstance(id);
+                    if (inst)
+                    {
+                        inst->start();
+                        return inst; // event instance returned
+                    }
+                    return nullptr;
+                }
+
+                // 2) RAW AUDIO
+                if (id.rfind("[RAW] ", 0) == 0)
+                {
+                    std::string rel = id.substr(6);
+                    std::string full = "assets/audio/" + rel;
+
+                    if (bgm)
+                    {
+                        // PLAY MUSIC by TAG ("BGM")
+                        audio.playMusicFileTagged("BGM", full, true);
+                        return (void*)0xBEEF;
+                    }
+                    else
+                    {
+                        // PLAY RAW SFX (returns FMOD::Channel*)
+                        FMOD::Channel* ch = audio.playSFXFileEx(full);
+                        return ch;
+                    }
+                }
+
+                // 3) FALLBACK -> treat as RAW
+                std::string full = id;
+                if (full.rfind("assets/", 0) != 0)
+                    full = "assets/audio/" + full;
+
+                if (bgm)
+                {
+                    audio.playMusicFileTagged("BGM", full, true);
+                    return (void*)0xBEEF;
+                }
+                else
+                {
+                    FMOD::Channel* ch = audio.playSFXFileEx(full);
+                    return ch;
+                }
+            };
+
+        // SAFE STOP FUNCTION (EVENT / RAW SFX / RAW MUSIC)
+        auto StopAny = [&](void* handle)
+            {
+                if (!handle) return;
+
+                // 1) FMOD EVENT INSTANCE
+                if ((uintptr_t)handle > 0x1000 && (uintptr_t)handle < 0xFFFFFFFF)
+                {
+                    auto* inst = static_cast<FMOD::Studio::EventInstance*>(handle);
+
+                    FMOD_STUDIO_PLAYBACK_STATE st;
+                    if (inst->getPlaybackState(&st) == FMOD_OK)
+                    {
+                        inst->stop(FMOD_STUDIO_STOP_IMMEDIATE);
+                        inst->release();
+                    }
+                    return;
+                }
+
+                // 2) RAW MUSIC TAG (dummy handle 0xBEEF)
+                if (handle == (void*)0xBEEF)
+                {
+                    audio.stopTagged("BGM");
+                    return;
+                }
+
+                // 3) RAW SFX CHANNEL
+                auto* ch = static_cast<FMOD::Channel*>(handle);
+                if (ch)
+                {
+                    bool playing = false;
+                    if (ch->isPlaying(&playing) == FMOD_OK && playing)
+                        ch->stop();
+                }
+            };
+
+        // INITIALIZATION
+        if (!audio.isInitialized())
+        {
+            ImGui::TextDisabled("FMOD not initialized.");
+            if (ImGui::Button("Initialize Audio (assets/audio)"))
+                audio.init("assets/audio");
+        }
+
+        // LOAD FROM MANIFEST
+        static bool needRefresh = true;
+
+        if (ImGui::Button("Load banks + raw (manifest)"))
+        {
+            audio.stopAll(true);
+            audio.stopAllRaw();
+            audio.unloadAllBanks();
+            audio.unloadAllRawSounds();
+
+            CrashoutsEngine::Assets::AssetManager::GetInstance().LoadManifestAssets();
+            needRefresh = true;
+        }
+
+        ImGui::SameLine();
+        if (ImGui::Button("Refresh list"))
+            needRefresh = true;
+
+        // BUILD EVENT LIST (EVENTS + RAW)
+        static std::vector<std::string> allEvents;
+
+        if (needRefresh || allEvents.empty())
+        {
+            allEvents.clear();
+
+            // 1) FMOD events
+            audio.listAllEventPaths(allEvents);
+
+            // 2) RAW audio from manifest
+            for (auto& rel : audio.getRegisteredRawAudio())
+                allEvents.push_back("[RAW] " + rel);
+
+            std::sort(allEvents.begin(), allEvents.end());
+            allEvents.erase(std::unique(allEvents.begin(), allEvents.end()), allEvents.end());
+
+            needRefresh = false;
+        }
+
+        ImGui::SameLine();
+        ImGui::TextDisabled("%zu items", allEvents.size());
+
+        // COMBO SELECTOR
+        auto EventCombo = [&](const char* label, std::string& sel)
+            {
+                if (ImGui::BeginCombo(label, sel.empty() ? "(select)" : sel.c_str()))
+                {
+                    static char filter[128] = {};
+                    ImGui::InputTextWithHint("##filter", "type to filter...", filter, sizeof(filter));
+                    ImGui::Separator();
+
+                    for (auto& e : allEvents)
+                    {
+                        if (strlen(filter) > 0 && e.find(filter) == std::string::npos)
+                            continue;
+
+                        bool chosen = (sel == e);
+                        if (ImGui::Selectable(e.c_str(), chosen))
+                            sel = e;
+                        if (chosen)
+                            ImGui::SetItemDefaultFocus();
+                    }
+                    ImGui::EndCombo();
+                }
+
+                // Drag & Drop
+                if (ImGui::BeginDragDropTarget())
+                {
+                    if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSET/PAYLOAD"))
+                    {
+                        // Hard guard: wrong payload type/size → ignore safely
+                        if (!payload->Data || payload->DataSize != sizeof(AssetDragPayload))
+                        {
+                            LOGW(Debug, "Dropped payload of wrong size onto EventCombo");
+                        }
+                        else
+                        {
+                            const auto* d = static_cast<const AssetDragPayload*>(payload->Data);
+
+                            // Soft guard: only accept audio assets here
+                            if (d->kind == AssetKind::Audio)
+                            {
+                                std::filesystem::path rp = d->relPath;
+                                std::string ext = rp.extension().string();
+                                std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+
+                                std::string rel = rp.generic_string();
+                                if (rel.rfind("audio/", 0) == 0)
+                                    rel = rel.substr(6);
+
+                                if (ext == ".wav" || ext == ".ogg" || ext == ".mp3")
+                                {
+                                    // raw sound
+                                    sel = "[RAW] " + rel;
+                                }
+                                else
+                                {
+                                    // event-like path: strip extension and prepend event:/
+                                    if (auto dot = rel.find_last_of('.'); dot != std::string::npos)
+                                        rel.erase(dot);
+                                    sel = "event:/" + rel;
+                                }
+                            }
+                        }
+                    }
+                    ImGui::EndDragDropTarget();
+                }
+            };
+
+        // QUICK TEST UI
+        ImGui::SeparatorText("Quick Test (1 BGM + 3 SFX)");
+
+        static void* hBGM = nullptr;
+        static void* hSFX1 = nullptr;
+        static void* hSFX2 = nullptr;
+        static void* hSFX3 = nullptr;
+
+        static std::string pickBGM, pickSFX1, pickSFX2, pickSFX3;
+
+        // BGM
+        EventCombo("Background Music", pickBGM);
+        if (ImGui::Button("Play##bgm"))      hBGM = PlayAny(pickBGM, true);
+        ImGui::SameLine();
+        if (ImGui::Button("Stop##bgm")) { StopAny(hBGM); hBGM = nullptr; }
+
+        // SFX1
+        EventCombo("SFX 1", pickSFX1);
+        if (ImGui::Button("Play##sfx1"))    hSFX1 = PlayAny(pickSFX1);
+        ImGui::SameLine();
+        if (ImGui::Button("Stop##sfx1")) { StopAny(hSFX1); hSFX1 = nullptr; }
+
+        // SFX2
+        EventCombo("SFX 2", pickSFX2);
+        if (ImGui::Button("Play##sfx2"))    hSFX2 = PlayAny(pickSFX2);
+        ImGui::SameLine();
+        if (ImGui::Button("Stop##sfx2")) { StopAny(hSFX2); hSFX2 = nullptr; }
+
+        // SFX3
+        EventCombo("SFX 3", pickSFX3);
+        if (ImGui::Button("Play##sfx3"))    hSFX3 = PlayAny(pickSFX3);
+        ImGui::SameLine();
+        if (ImGui::Button("Stop##sfx3")) { StopAny(hSFX3); hSFX3 = nullptr; }
+
+        // MASTER VOLUME
+        ImGui::SeparatorText("Master Volume");
+
+        static float master = 1.0f;
+        if (ImGui::SliderFloat("Master", &master, 0.0f, 1.0f, "%.2f"))
+        {
+            audio.setBusVolume("bus:/", master);
+            audio.setMusicGroupVolume(master);
+            audio.setSFXGroupVolume(master);
+        }
+
+        static bool mute = false;
+        if (ImGui::Checkbox("Mute All", &mute))
+        {
+            float v = mute ? 0.0f : master;
+            audio.setBusVolume("bus:/", v);
+            audio.setMusicGroupVolume(v);
+            audio.setSFXGroupVolume(v);
+        }
+
+        // STOP ALL
+        ImGui::Separator();
+        if (ImGui::Button("Stop All"))
+        {
+            audio.stopAll(true);
+            audio.stopAllRaw();
+        }
+
+        audio.update();
+    }
+
+    /*!
+     @brief Renders the Scene control bar on top of game viewport
+    */
+    void RenderEngineStateBar(UIState& ui) {
+        if (!ui.showEngineControl) return;
+
+        ImGuiWindowFlags window_flags =
+            ImGuiWindowFlags_NoTitleBar |
+            ImGuiWindowFlags_NoScrollbar |
+            ImGuiWindowFlags_NoResize |
+            ImGuiWindowFlags_NoCollapse |
+            ImGuiWindowFlags_NoMove;
+
+        if (ImGui::Begin("Engine Controls", nullptr, window_flags)) {
+
+            // Play Stop Pause buttons
+            // Play
+            if (ImGui::Button("PLAY", ImVec2(70, 25))) {
+                if (engineState == EngineState::STOP && !currSceneName.empty()) Serialization::SaveScenes(currSceneName);
+                engineState = EngineState::PLAY;
+
+                CrashoutsEngine::Audio::AudioSystem::instance().setPaused(false);
+
+                CrashoutsEngine::RenderCamera::engineCamera.SetPostiion(CEVec3{ 0.f, 0.f, 0.f });
+                CrashoutsEngine::RenderCamera::engineCamera.SetZoom(1.f);
+                CrashoutsEngine::RenderCamera::engineCamera.SetTargetAR(16.0f / 9.0f);
+                CrashoutsEngine::RenderCamera::engineCamera.UpdateMatrices(Settings::GetScreenWidth(), Settings::GetScreenHeight());
+
+            }
+            ImGui::SameLine();
+            // Pause
+            if (ImGui::Button("PAUSE", ImVec2(70, 25))) {
+                if (engineState == EngineState::STOP && !currSceneName.empty()) Serialization::SaveScenes(currSceneName);
+                engineState = EngineState::PAUSE;
+
+                CrashoutsEngine::Audio::AudioSystem::instance().setPaused(true);
+            }
+            ImGui::SameLine();
+            // Stop
+            if (ImGui::Button("STOP", ImVec2(70, 25))) {
+                if (engineState == EngineState::STOP && !currSceneName.empty()) Serialization::SaveScenes(currSceneName);
+
+                if (currSceneName.empty()) RestartGameState();       // Legacy scene system
+                else {
+                    ECS::getInstance()->Reset();
+                    Serialization::LoadScenes(currSceneName);
+                }
+                //MonoManager::ReloadScripts();
+                engineState = EngineState::STOP;
+
+                CrashoutsEngine::Audio::AudioSystem::instance().stopAll(true); // Stop FMOD Studio
+                CrashoutsEngine::Audio::AudioSystem::instance().setPaused(false);
+                CrashoutsEngine::Audio::AudioSystem::instance().stopMusicGroup(); // <-- Seems to work better than the above
+
+            }
+            ImGui::SameLine();
+            // SAVE
+            if (ImGui::Button("SAVE", ImVec2(70, 25))) {
+                if (!currSceneName.empty()) Serialization::SaveScenes(currSceneName);
+
+                if (currSceneName.empty()) RestartGameState();       // Legacy scene system
+                else {
+                    ECS::getInstance()->Reset();
+                    Serialization::LoadScenes(currSceneName);
+                }
+
+            }
+
+
+            ImGui::SeparatorEx(ImGuiSeparatorFlags_Vertical);
+            ImGui::SameLine();
+
+            const char* stateText = "UNKNOWN";
+            switch (engineState) {
+            case EngineState::PLAY:  stateText = "PLAYING"; break;
+            case EngineState::PAUSE: stateText = "PAUSED";  break;
+            case EngineState::STOP:  stateText = "STOPPED"; break;
+            }
+            ImGui::TextDisabled("State: %s", stateText);
+        }
+
+        ImGui::End();
+    }
+}

@@ -7,6 +7,9 @@
         of asset type that encapsulates a rapidjson value data. The class
         is designed to be used with the AssetManager and provides a static factory
         method for safe creation and resource management.
+
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 //__________________________________________________________________________*/
 //#pragma once
 //
@@ -106,6 +109,8 @@ namespace CrashoutsEngine {
             std::string jsonContent = ReadFileToString(filePath);
             if (jsonContent.empty()) {
                 std::cout << "SceneAsset::Create - File not found or empty: " << filePath << std::endl;
+
+#if USE_IMGUI_EDITOR
                 std::cout << "Creating a new empty scene file..." << std::endl;
 
                 // Define empty scene content.
@@ -119,6 +124,10 @@ namespace CrashoutsEngine {
 
                 // Set the jsonContent to our new default string so the rest of the function can parse it.
                 jsonContent = emptySceneContent;
+#else
+                std::cout << "FATAL ERROR: Required scene file missing in release build: " << filePath << std::endl;
+                return nullptr;
+#endif
             }
 
             // Parse JSON string into RapidJSON document

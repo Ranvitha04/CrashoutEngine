@@ -4,6 +4,8 @@
 @co-author ranvitha@digipen.edu - 30%
 @date   16/09/2025
 
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 @brief	This file contains the declaration of the TextureAsset class, a concrete
 		asset type that encapsulates a texture's raw data and dimensions. The class
 		is designed to be used with the AssetManager and provides a static factory

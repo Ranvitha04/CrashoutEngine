@@ -10,6 +10,9 @@
             - IPhysicsProvider + PhysicsRegistry: physics debug controls
 
 These APIs let the debug UI be data-driven without hardcoding per-project UI.
+
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 //__________________________________________________________________________*/
 
 /*                                                                   includes

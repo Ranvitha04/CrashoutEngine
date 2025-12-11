@@ -4,6 +4,7 @@
 @date        7/11/2025
 @brief       declares a tiny prefab system
 
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 */
 #pragma once

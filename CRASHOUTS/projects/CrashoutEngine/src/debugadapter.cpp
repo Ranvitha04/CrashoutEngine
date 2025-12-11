@@ -10,6 +10,9 @@ Declares and registers built-in Debug Menu adapters & providers:
 
 These adapters make the ECS inspector and physics/game-state panels
 runtime-extensible and project-agnostic.
+
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 //__________________________________________________________________________*/
 
 /*                                                                   includes
@@ -1322,8 +1325,8 @@ namespace {
 
 			if (ImGui::BeginPopupModal("Pick Audio Event", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
 				namespace fs = std::filesystem;
-				static std::vector<std::string> s_audioDisplay;  // shown to user
-				static std::vector<std::string> s_audioEvent;    // actual event:/… we’ll write
+				static std::vector<std::string> s_audioDisplay;
+				static std::vector<std::string> s_audioEvent;
 				static bool s_scanned = false;
 
 				// one-time (per session) scan
@@ -1860,7 +1863,7 @@ namespace CrashoutsEngine
 )";
 				out.close();
 
-				// Optionally automatically add this new script
+				// automatically add this new script
 				sc->AddScript(file.stem().string());
 			}
 

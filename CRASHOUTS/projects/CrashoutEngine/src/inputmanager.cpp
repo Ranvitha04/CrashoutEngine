@@ -5,6 +5,9 @@
 @brief      Implementation of the InputManager class
 
 Handles keyboard mouse and scroll wheel input using GLFW
+
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 */
 #include "inputmanager.h"
 

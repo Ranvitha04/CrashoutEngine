@@ -4,6 +4,8 @@
 @date       24/09/2025
 @brief		Declaration for frame rate controller
 
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 */
 #pragma once
 #include <chrono>

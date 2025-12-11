@@ -6,6 +6,8 @@
 @author      lee.r@digipen.edu
 @date        29/10/2025
 
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 This file 
 *//*__________________________________________________________________________*/
 

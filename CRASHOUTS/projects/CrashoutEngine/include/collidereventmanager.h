@@ -1,5 +1,15 @@
 #pragma once
 
+/*!
+@file       collidereventmanager.h
+@author     miratristan.d@digipen.edu
+@date       29/11/2025
+@brief      colliderevent manager declaration
+
+All content © 2025 Digipen Institute of Technology Singapore.All rights reserved.
+
+//__________________________________________________________________________*/
+
 #include "entitymanager.h"
 #include "collisionmanager.h"
 #include "collisionutils.h"
