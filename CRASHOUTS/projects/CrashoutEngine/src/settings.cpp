@@ -102,4 +102,6 @@ void Settings::LoadFromFile(const char* path) {
  */
 void Settings::SaveToFile([[maybe_unused]] const char* path) {
     //for future me to write to JSON
+
+    // Use GetLocalAppData() to save in the appdata, else crash when running from program files
 }

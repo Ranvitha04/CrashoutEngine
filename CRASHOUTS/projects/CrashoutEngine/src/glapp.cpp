@@ -353,7 +353,7 @@ to window title bar.
 void GLApp::update() {
     // write window title with current fps ...
     std::stringstream sstr;
-    sstr << std::fixed << std::setprecision(2) << GLApp::title << " | " << FrameRateController::GetInstance().FPS();
+    sstr << std::fixed << std::setprecision(2) << GLApp::title;// << " | " << FrameRateController::GetInstance().FPS();
     glfwSetWindowTitle(GLApp::ptr_window, sstr.str().c_str());
 
     GLint w{ GLApp::width }, h{ GLApp::height };

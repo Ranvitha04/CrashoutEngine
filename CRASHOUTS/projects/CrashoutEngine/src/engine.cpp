@@ -62,6 +62,10 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserve
 #include <filesystem>
 
 #include "imgui_internal.h"
+
+// For getting folder path in windows
+#include "ShlObj_core.h"
+
 /*                                                   type declarations
 ----------------------------------------------------------------------------- */
 
@@ -190,7 +194,7 @@ void SetupConsole() {
 
 */
 void Init() {
-    InstallCrashLogger("CrashoutsEngine");
+    //InstallCrashLogger("CrashoutsEngine");
     glfwSwapInterval(0); // disable vsync
     collisionSystem.registerObserver(Messaging::getCollisionMsgID(), physicsSystem); /*Listen to messages(collisions)*/
     collisionSystem.registerObserver(Messaging::getExitMsgID(), collisionEvent); /*Listen to messages(collisions)*/
@@ -223,7 +227,10 @@ void Init() {
     );
 
     // Generate and Load Assets and Manifest
+
+#if USE_IMGUI_EDITOR
     CrashoutsEngine::Assets::GenerateAssetManifest();
+#endif
     CrashoutsEngine::Assets::AssetManager::GetInstance().LoadManifestAssets();
 
     //Component::Rendering::Get().Setup_VAO(); // Setup default quad VAO
@@ -369,6 +376,7 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
     glViewport(0, 0, gameTextureWidth, gameTextureHeight);
 
     #endif
+
     glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
@@ -816,4 +824,57 @@ void CleanUp() {
     Component::Rendering::Cleanup();
     CrashoutsEngine::Audio::AudioSystem::instance().shutdown();
     CrashoutsEngine::Assets::AssetManager::GetInstance().Shutdown();
+}
+
+// Game path offset
+const std::string gamePathOffset = "/Digipen/Descent/";
+
+/*
+/*! GetUserDocFolder
+
+@return String to LocalAppData Folder
+
+Retrieves the 'LocalAppData' folder of the user
+*/
+std::string GetLocalAppData() {
+    // Pointer to wide string
+    PWSTR ppszPath = NULL;  // NULL terminated
+    std::string path = "";
+    
+    HRESULT result = SHGetKnownFolderPath(FOLDERID_LocalAppData, 0, NULL, &ppszPath);
+    if (SUCCEEDED(result) && ppszPath) {
+        // Conversion to string
+        int requiredSize = WideCharToMultiByte(
+            CP_UTF8,       // Code page to use for the output string (UTF-8 is recommended)
+            0,             // dwFlags
+            ppszPath,      // Wide string input
+            -1,            // Input length (-1 for null-terminated string)
+            NULL,          // Output buffer (NULL to get size)
+            0,             // Size of output buffer (0)
+            NULL,          // lpDefaultChar
+            NULL           // lpUsedDefaultChar
+        );
+
+        if (requiredSize > 0) {
+            // Resize the string and perform conversion
+            path.resize(requiredSize);
+
+            WideCharToMultiByte(
+                CP_ACP,
+                0,
+                ppszPath,
+                -1,
+                &path[0],
+                requiredSize,
+                NULL,
+                NULL
+            );
+
+            path.resize(requiredSize - 1);
+        }
+    }
+
+    // Free mem allocated 
+    if (ppszPath) CoTaskMemFree(ppszPath);
+    return path + gamePathOffset;
 }
