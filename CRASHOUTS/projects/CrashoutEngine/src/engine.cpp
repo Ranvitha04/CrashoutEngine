@@ -194,7 +194,7 @@ void SetupConsole() {
 
 */
 void Init() {
-    //InstallCrashLogger("CrashoutsEngine");
+    InstallCrashLogger("CrashoutsEngine");
     glfwSwapInterval(0); // disable vsync
     collisionSystem.registerObserver(Messaging::getCollisionMsgID(), physicsSystem); /*Listen to messages(collisions)*/
     collisionSystem.registerObserver(Messaging::getExitMsgID(), collisionEvent); /*Listen to messages(collisions)*/

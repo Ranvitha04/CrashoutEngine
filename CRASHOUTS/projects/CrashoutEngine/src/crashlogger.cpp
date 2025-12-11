@@ -14,6 +14,7 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserve
 /*                                                                   includes
 ----------------------------------------------------------------------------- */
 #include "crashlogger.h"
+#include "engine.h"
 #include <windows.h>
 #include <csignal>
 #include <cstdio>
@@ -32,7 +33,7 @@ static const char* sApplicationName = "App";
  @return Filesystem path to the folder containing the running executable.
          Falls back to the current working directory if retrieval fails.
 */
-static std::filesystem::path GetExeDir()
+[[maybe_unused]] static std::filesystem::path GetExeDir()
 {
     char exePath[MAX_PATH]{};
     DWORD n = GetModuleFileNameA(nullptr, exePath, MAX_PATH);
@@ -50,9 +51,28 @@ static std::filesystem::path GetExeDir()
 */
 static std::filesystem::path EnsureCrashLogFolder()
 {
-    auto dir = GetExeDir() / "crashreports";
+    std::filesystem::path dir;
     std::error_code ec;
+
+#if USE_IMGUI_EDITOR
+    dir = GetExeDir() / "crashreports";
+#else
+    std::string appDataDir = GetLocalAppData();
+
+    if (appDataDir.empty()) {
+        OutputDebugStringA("[CrashLogger] FATAL: Could nto resolve AppData path.\n");
+        return {};
+    }
+
+    dir = std::filesystem::path(appDataDir) / "crashreports";
+#endif
     std::filesystem::create_directories(dir, ec); // harmless if it already exists
+
+    if (ec) {
+        OutputDebugStringA("[CrashLogger] FATAL: Failed to create log directory.\n");
+        return {};
+    }
+
     return dir;
 }
 
