@@ -214,11 +214,11 @@ void Init() {
                 if (engineState == EngineState::PLAY)
                     CrashoutsEngine::Audio::AudioSystem::instance().setPaused(false);
             }
-            else
+            else 
             {
 #if USE_IMGUI_EDITOR
                 // Window lost focus (ALT+TAB)
-                engineState = EngineState::PAUSE;
+                if (engineState != EngineState::STOP) engineState = EngineState::PAUSE;
 #endif
                 CrashoutsEngine::Audio::AudioSystem::instance().setPaused(true);
                 InputManager::ClearInputs();
