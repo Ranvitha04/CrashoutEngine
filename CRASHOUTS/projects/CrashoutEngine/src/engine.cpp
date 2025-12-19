@@ -196,10 +196,24 @@ void SetupConsole() {
 void Init() {
     InstallCrashLogger("CrashoutsEngine");
     glfwSwapInterval(0); // disable vsync
-    collisionSystem.registerObserver(Messaging::getCollisionMsgID(), physicsSystem); /*Listen to messages(collisions)*/
-    collisionSystem.registerObserver(Messaging::getExitMsgID(), collisionEvent); /*Listen to messages(collisions)*/
-    collisionSystem.registerObserver(Messaging::getStayMsgID(), collisionEvent); /*Listen to messages(collisions)*/
-    collisionSystem.registerObserver(Messaging::getEnterMsgID(), collisionEvent); /*Listen to messages(collisions)*/
+
+    using namespace Messaging;
+
+    // 1. PHYSICS SYSTEM 
+    // Only cares about physical collisions, ignores triggers (handled internally by PhysicsHandler)
+    collisionSystem.registerObserver(EventType::CollisionEnter, physicsSystem);
+    collisionSystem.registerObserver(EventType::CollisionStay, physicsSystem);
+
+    // 2. COLLISION EVENT MANAGER
+    // Physical Collisions
+    collisionSystem.registerObserver(EventType::CollisionEnter, collisionEvent);
+    collisionSystem.registerObserver(EventType::CollisionStay, collisionEvent);
+    collisionSystem.registerObserver(EventType::CollisionExit, collisionEvent);
+
+    // Trigger Overlaps
+    collisionSystem.registerObserver(EventType::TriggerEnter, collisionEvent);
+    collisionSystem.registerObserver(EventType::TriggerStay, collisionEvent);
+    collisionSystem.registerObserver(EventType::TriggerExit, collisionEvent);
 
     // start with a 16:9 aspect ratio
     if (!GLApp::init(Settings::GetScreenWidth(), Settings::GetScreenHeight(), "CRASHOUTS")) {
@@ -654,7 +668,7 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
 }
 
 /*  _________________________________________________________________________ */
-/*! update
+/*! Update
 
 @param none
 
@@ -662,7 +676,7 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
 
 Make sure callbacks are invoked when state changes in input devices occur.
 Ensure time per frame and FPS are recorded.
-Let application update state changes (such as animation).
+Let application Update state changes (such as animation).
 */
 void Update(double const& dt) {
     MonoManager::CheckHotReload();
@@ -696,20 +710,20 @@ void Update(double const& dt) {
 
         {
             FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Collision");
-            collisionSystem.update(dt, (Collision::EngineState)engineState);
+            collisionSystem.Update(dt, (Collision::EngineState)engineState);
         }
-        //fixed update please work
+        //fixed Update please work
         {
             FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "ScriptFixedUpdate");
             CrashoutsEngine::ScriptSystem::FixedUpdateAll();
         }
         {
             FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Physics");
-            physicsSystem.update(dt);
+            physicsSystem.Update(dt);
         }
         {
             FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Audio");
-            CrashoutsEngine::Audio::AudioSystem::instance().update();
+            CrashoutsEngine::Audio::AudioSystem::instance().Update();
         }
 
         // process events if any associated with input devices
@@ -722,16 +736,16 @@ void Update(double const& dt) {
         //Player::UpdateVelocity(playerRigidBody, moveSpeed);
 
         // animate scene
-        GLApp::update();
+        GLApp::Update();
     }
     else if (engineState == EngineState::STOP) {
         {
             FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Collision");
-            collisionSystem.update(dt, (Collision::EngineState)engineState);
+            collisionSystem.Update(dt, (Collision::EngineState)engineState);
         }
         {
             FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Physics");
-            physicsSystem.update(0.f);
+            physicsSystem.Update(0.f);
         }
 
         // Process Editor Camera Input
@@ -744,13 +758,13 @@ void Update(double const& dt) {
     }
     else if (engineState == EngineState::PAUSE) {
         // Freeze gameplay, but still allow editor camera to move
-        physicsSystem.update(0.f);
+        physicsSystem.Update(0.f);
         InputManager::ClearInputs();
         return;
     }
     else {
         FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Physics");
-        physicsSystem.update(0.f);
+        physicsSystem.Update(0.f);
     }
 
     // Process Game Camera

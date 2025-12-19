@@ -32,7 +32,7 @@ namespace State {
             StateWrapper(T mID) : mID{ mID } {}
 
             std::function<void()> enter;
-            std::function<void()> update;
+            std::function<void()> Update;
             std::function<void()> exit;
 
         public:
@@ -40,7 +40,7 @@ namespace State {
                 State<T> converted{mID};
 
                 converted.enter = std::move(enter);
-                converted.update = std::move(update);
+                converted.Update = std::move(Update);
                 converted.exit = std::move(exit);
 
                 return converted;
@@ -68,7 +68,7 @@ namespace State {
         }
 
         std::function<void()> enter;
-        std::function<void()> update;
+        std::function<void()> Update;
         std::function<void()> exit;
 
     private:
@@ -126,7 +126,7 @@ namespace State {
 
         void Update() {
             if (mCurrentState) {
-                mCurrentState->update();
+                mCurrentState->Update();
             }
         }
     };

@@ -14,6 +14,7 @@ All content © 2025 Digipen Institute of Technology Singapore.All rights reserved
 #include "collisionmanager.h"
 #include "collisionutils.h"
 #include "observer.h"
+#include "messages.h"
 #include <unordered_map>
 #include <functional>
 
@@ -26,40 +27,24 @@ namespace CrashoutsEngine {
 
 	class CollisionEventManager : public Messaging::Observer {
 	public:
-		enum Type { Trigger, Collidable };
+		using CallbackFn = std::function<void(Entity)>;
 
-		using CallbackFnCollide = std::function<void(Entity)>;
-		using CallbackTriggerFn = std::function<void(Entity)>;
+		/*
+		@brief Allows one entity to hold collider and trigger callbacks
+		*/
+		struct EntityEventCollection {
+			// Physics Collision Callbacks
+			CallbackFn onCollisionEnter = nullptr;
+			CallbackFn onCollisionStay = nullptr;
+			CallbackFn onCollisionExit = nullptr;
 
-
-		class Callable {
-		protected:
-			Callable(Type type) : type{ type } {}
-		public:
-			Type type;
-			virtual ~Callable() = default;
+			// Trigger Overlap Callbacks
+			CallbackFn onTriggerEnter = nullptr;
+			CallbackFn onTriggerStay = nullptr;
+			CallbackFn onTriggerExit = nullptr;
 		};
 
-		class ColliderFnCollection : public Callable {
-		public:
-			ColliderFnCollection(CallbackFnCollide enter, CallbackFnCollide stay, CallbackFnCollide exit) : Callable{ Collidable }, enter{ enter }, stay{ stay }, exit{ exit } {}
-
-			CallbackFnCollide enter;
-			CallbackFnCollide stay;
-			CallbackFnCollide exit;
-		};
-
-		class TriggerFnCollection : public Callable {
-		public:
-			TriggerFnCollection(CallbackTriggerFn enter, CallbackTriggerFn stay, CallbackTriggerFn exit) : Callable{ Trigger }, enter{ enter }, stay{ stay }, exit{ exit } {}
-
-			CallbackTriggerFn enter;
-			CallbackTriggerFn stay;
-			CallbackTriggerFn exit;
-		};
-
-
-		using CollisionEventMap = std::unordered_map<CrashoutsEngine::Entity, std::unique_ptr<Callable>>;
+		using CollisionEventMap = std::unordered_map<CrashoutsEngine::Entity, EntityEventCollection>;
 
 	public:
 
@@ -71,17 +56,16 @@ namespace CrashoutsEngine {
 		}
 
 		void Clear() { collisionEvents.clear(); }
-		void initEvent(CrashoutsEngine::Entity entity, Type type);
 
-		void registerCollideEnter(CrashoutsEngine::Entity entity, CallbackFnCollide fn);
-		void registerCollideStay(CrashoutsEngine::Entity entity, CallbackFnCollide fn);
-		void registerCollideExit(CrashoutsEngine::Entity entity, CallbackFnCollide fn);
+		void RegisterCollideEnter(CrashoutsEngine::Entity entity, CallbackFn fn);
+		void RegisterCollideStay(CrashoutsEngine::Entity entity, CallbackFn fn);
+		void RegisterCollideExit(CrashoutsEngine::Entity entity, CallbackFn fn);
+			 
+		void RegisterTriggerEnter(CrashoutsEngine::Entity entity, CallbackFn fn);
+		void RegisterTriggerStay(CrashoutsEngine::Entity entity, CallbackFn fn);
+		void RegisterTriggerExit(CrashoutsEngine::Entity entity, CallbackFn fn);
 
-		void registerTriggerEnter(CrashoutsEngine::Entity entity, CallbackTriggerFn fn);
-		void registerTriggerStay(CrashoutsEngine::Entity entity, CallbackTriggerFn fn);
-		void registerTriggerExit(CrashoutsEngine::Entity entity, CallbackTriggerFn fn);
-
-		inline CollisionEventMap& getCollisionEvents() {
+		inline CollisionEventMap& GetCollisionEvents() {
 			return collisionEvents;
 		}
 
@@ -97,10 +81,12 @@ namespace CrashoutsEngine {
 			lastContacts[entity] = info;
 		}
 
-
 		~CollisionEventManager() = default;
 
 	private:
+		// Helper to get and create the event struct safely
+		EntityEventCollection& GetEvents(Entity entity);
+
 		CollisionEventMap collisionEvents;
 		std::unordered_map<Entity, ContactInfo> lastContacts;
 

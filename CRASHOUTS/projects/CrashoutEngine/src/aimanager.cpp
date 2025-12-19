@@ -38,7 +38,7 @@ namespace AIUtils {
 			newExtents *= -2.f;
 		}
 
-		projectedAABB.updateCollider(targetTransform.position + newExtents);
+		projectedAABB.UpdateCollider(targetTransform.position + newExtents);
 
 		std::vector<CrashoutsEngine::Entity> colliderComps{ globalECS.GetComponentArray<Component::ColliderComponent>().indexToEntity };
 
@@ -83,7 +83,7 @@ namespace AIUtils {
 			newPos *= tolerance;
 		}
 
-		projectedAABB.updateCollider(newPos);
+		projectedAABB.UpdateCollider(newPos);
 
 		std::vector<CrashoutsEngine::Entity> colliderComps{ globalECS.GetComponentArray<Component::ColliderComponent>().indexToEntity };
 

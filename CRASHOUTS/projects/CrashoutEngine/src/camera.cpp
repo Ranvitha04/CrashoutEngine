@@ -134,7 +134,7 @@ namespace CrashoutsEngine {
 			renderer.projectionMatrix = projectionMtx;
 		}
 
-		// Central update function
+		// Central Update function
 		void Camera::UpdateMatrices(int targetWidth, int targetHeight) {
 			RecalculateViewMtx();
 			RecalculateProjectionMtx(targetWidth, targetHeight);

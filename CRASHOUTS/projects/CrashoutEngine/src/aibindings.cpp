@@ -101,7 +101,7 @@ namespace
         ECS& ecs = *ECS::getInstance();
         auto& ai = *ecs.GetComponent<Component::AIComponent>(entity);
 
-        ai.fsm.GetState(stateID).update = MakeManagedCallbackVoid(del);
+        ai.fsm.GetState(stateID).Update = MakeManagedCallbackVoid(del);
     }
 
     // Assign EXIT callback

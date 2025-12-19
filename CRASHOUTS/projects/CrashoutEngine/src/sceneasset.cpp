@@ -539,11 +539,24 @@ namespace CrashoutsEngine {
                         newCol->position = pos;
                         newCol->offset = off;
 
-                        // Force update
+                        // Force Update
                         newCol->forceUpdateRotation(rot);
 
                         newCol->helperType = helperT; // Set to POLYGON_T or TRIANGLE_T
                         col.collider = std::move(newCol);
+
+                        if (col.collider) {
+                            // Load isTrigger
+                            if (colliderValue.HasMember("isTrigger") && colliderValue["isTrigger"].IsBool()) {
+                                col.collider->isTrigger = colliderValue["isTrigger"].GetBool();
+                            }
+
+                            // Load enabled
+                            if (colliderValue.HasMember("enabled") && colliderValue["enabled"].IsBool()) {
+                                col.collider->enabled = colliderValue["enabled"].GetBool();
+                            }
+                        }
+
                         break;
                     }
                     default: break;
@@ -611,6 +624,9 @@ namespace CrashoutsEngine {
                             break;
                         case 2:
                             s.type = ShapeType::Triangle;
+                            break;
+                        case 3:
+                            s.type = ShapeType::Circle;
                             break;
                         default:
                             s.type = ShapeType::Rectangle;
@@ -1424,7 +1440,7 @@ namespace CrashoutsEngine {
                     rapidjson::Value rigidBodyValue{ rapidjson::kObjectType };
 
                     rigidBodyValue.AddMember("mass", rigidBodyComp.getMass(), allocator);
-                    rigidBodyValue.AddMember("restitutionCoeff", rigidBodyComp.getCoeff(), allocator);
+                    rigidBodyValue.AddMember("restitutionCoeff", rigidBodyComp.GetCoeff(), allocator);
 
                     rapidjson::Value maxVelVal{ rapidjson::kObjectType };
 
@@ -1456,6 +1472,12 @@ namespace CrashoutsEngine {
 
                     // 1. Helper Type (The Source of Truth)
                     colliderValue.AddMember("helperType", (int)colComp.collider->helperType, allocator);
+
+                    // Save isTrigger
+                    colliderValue.AddMember("isTrigger", colComp.collider->isTrigger, allocator);
+
+                    // Save enabled
+                    colliderValue.AddMember("enabled", colComp.collider->enabled, allocator);
 
                     // Common fields
                     rapidjson::Value posVal(rapidjson::kObjectType);

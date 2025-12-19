@@ -14356,28 +14356,29 @@
                 "isTrigger": true
             },
             "collider": {
-                "helperType": 2,
+                "helperType": 1,
+                "isTrigger": false,
+                "enabled": true,
                 "position": {
                     "x": -35.70806884765625,
-                    "y": 15.714649200439454,
+                    "y": 14.714649200439454,
                     "z": 0.0
                 },
                 "offset": {
                     "x": 0.0,
-                    "y": 1.0,
+                    "y": 0.0,
                     "z": 0.0
                 },
                 "min": {
-                    "x": -46.55816650390625,
-                    "y": -14.785818099975586,
+                    "x": -66.70806884765625,
+                    "y": -21.538349151611329,
                     "z": 0.0
                 },
                 "max": {
-                    "x": -24.85797119140625,
-                    "y": 46.215118408203128,
+                    "x": -4.70806884765625,
+                    "y": 50.967647552490237,
                     "z": 0.0
-                },
-                "rotation": 0.0
+                }
             },
             "shape": {
                 "useTexture": true,
@@ -14457,6 +14458,37 @@
                 "playing": true,
                 "clips": [
                     {
+                        "name": "playerJump",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\New Artstyle\\Jump spritesheet.png",
+                        "spriteCols": 2,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 158.0,
+                        "targetHeight": 104.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
                         "name": "playerSwitch",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Switch-State-SpriteSheet-Reverse.png",
@@ -14523,37 +14555,6 @@
                         ]
                     },
                     {
-                        "name": "playerJump",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Jump spritesheet.png",
-                        "spriteCols": 2,
-                        "spriteRows": 1,
-                        "useCustomSize": true,
-                        "targetWidth": 158.0,
-                        "targetHeight": 104.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
                         "name": "playerIdleLight",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Switch State spritesheet.png",
@@ -14576,37 +14577,6 @@
                                     {
                                         "t": 0.25,
                                         "v": 6.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "playerFallLight",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Fall spritesheet.png",
-                        "spriteCols": 2,
-                        "spriteRows": 1,
-                        "useCustomSize": true,
-                        "targetWidth": 158.0,
-                        "targetHeight": 104.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 1.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -14668,6 +14638,37 @@
                         ]
                     },
                     {
+                        "name": "playerFallLight",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\New Artstyle\\Fall spritesheet.png",
+                        "spriteCols": 2,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 158.0,
+                        "targetHeight": 104.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 1.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 1.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
                         "name": "playerJumpLight",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Jump spritesheet.png",
@@ -14690,6 +14691,37 @@
                                     {
                                         "t": 0.25,
                                         "v": 1.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "playerFall",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\New Artstyle\\Fall spritesheet.png",
+                        "spriteCols": 2,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 158.0,
+                        "targetHeight": 104.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -14742,37 +14774,6 @@
                                     {
                                         "t": 1.0,
                                         "v": 3.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "playerFall",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Fall spritesheet.png",
-                        "spriteCols": 2,
-                        "spriteRows": 1,
-                        "useCustomSize": true,
-                        "targetWidth": 158.0,
-                        "targetHeight": 104.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -17417,6 +17418,8 @@
             },
             "collider": {
                 "helperType": 1,
+                "isTrigger": false,
+                "enabled": true,
                 "position": {
                     "x": 194.45278930664063,
                     "y": -59.93634033203125,
@@ -17583,6 +17586,8 @@
             },
             "collider": {
                 "helperType": 1,
+                "isTrigger": false,
+                "enabled": true,
                 "position": {
                     "x": 204.0975799560547,
                     "y": -246.17955017089845,
@@ -17692,6 +17697,8 @@
             },
             "collider": {
                 "helperType": 1,
+                "isTrigger": false,
+                "enabled": true,
                 "position": {
                     "x": 172.0975799560547,
                     "y": -246.17955017089845,
@@ -17801,6 +17808,8 @@
             },
             "collider": {
                 "helperType": 1,
+                "isTrigger": false,
+                "enabled": true,
                 "position": {
                     "x": 236.0975799560547,
                     "y": -246.17955017089845,
@@ -17910,6 +17919,8 @@
             },
             "collider": {
                 "helperType": 1,
+                "isTrigger": false,
+                "enabled": true,
                 "position": {
                     "x": 140.0975799560547,
                     "y": -246.17955017089845,
@@ -18019,6 +18030,8 @@
             },
             "collider": {
                 "helperType": 1,
+                "isTrigger": false,
+                "enabled": true,
                 "position": {
                     "x": 268.09759521484377,
                     "y": -246.17955017089845,
@@ -18233,6 +18246,8 @@
             },
             "collider": {
                 "helperType": 1,
+                "isTrigger": false,
+                "enabled": true,
                 "position": {
                     "x": -79.86735534667969,
                     "y": -508.35107421875,
@@ -18333,6 +18348,8 @@
             },
             "collider": {
                 "helperType": 1,
+                "isTrigger": false,
+                "enabled": true,
                 "position": {
                     "x": 558.7850952148438,
                     "y": -797.9962158203125,
@@ -18543,6 +18560,8 @@
             },
             "collider": {
                 "helperType": 1,
+                "isTrigger": false,
+                "enabled": true,
                 "position": {
                     "x": 753.4859008789063,
                     "y": -797.3080444335938,
@@ -18643,6 +18662,8 @@
             },
             "collider": {
                 "helperType": 1,
+                "isTrigger": false,
+                "enabled": true,
                 "position": {
                     "x": -8.966255187988282,
                     "y": -1726.28759765625,
@@ -18743,6 +18764,8 @@
             },
             "collider": {
                 "helperType": 1,
+                "isTrigger": false,
+                "enabled": true,
                 "position": {
                     "x": 815.9459838867188,
                     "y": -1020.2607421875,
@@ -18843,6 +18866,8 @@
             },
             "collider": {
                 "helperType": 1,
+                "isTrigger": false,
+                "enabled": true,
                 "position": {
                     "x": 1985.900146484375,
                     "y": 2.341442108154297,
@@ -18943,6 +18968,8 @@
             },
             "collider": {
                 "helperType": 1,
+                "isTrigger": false,
+                "enabled": true,
                 "position": {
                     "x": 1971.03369140625,
                     "y": -386.20855712890627,
@@ -19106,6 +19133,8 @@
             },
             "collider": {
                 "helperType": 1,
+                "isTrigger": false,
+                "enabled": true,
                 "position": {
                     "x": 600.0,
                     "y": -1650.0,
@@ -19215,6 +19244,8 @@
             },
             "collider": {
                 "helperType": 1,
+                "isTrigger": false,
+                "enabled": true,
                 "position": {
                     "x": 600.0,
                     "y": -1618.0,
@@ -19324,6 +19355,8 @@
             },
             "collider": {
                 "helperType": 1,
+                "isTrigger": false,
+                "enabled": true,
                 "position": {
                     "x": 600.0,
                     "y": -1586.0,
@@ -19433,6 +19466,8 @@
             },
             "collider": {
                 "helperType": 1,
+                "isTrigger": false,
+                "enabled": true,
                 "position": {
                     "x": 600.0,
                     "y": -1682.0,
@@ -19542,6 +19577,8 @@
             },
             "collider": {
                 "helperType": 1,
+                "isTrigger": false,
+                "enabled": true,
                 "position": {
                     "x": 513.8012084960938,
                     "y": -1626.6378173828126,
@@ -19817,6 +19854,8 @@
             },
             "collider": {
                 "helperType": 1,
+                "isTrigger": false,
+                "enabled": true,
                 "position": {
                     "x": 1892.16796875,
                     "y": -355.4495849609375,
@@ -19926,6 +19965,8 @@
             },
             "collider": {
                 "helperType": 1,
+                "isTrigger": false,
+                "enabled": true,
                 "position": {
                     "x": 1892.16796875,
                     "y": -387.4495849609375,
@@ -20035,6 +20076,8 @@
             },
             "collider": {
                 "helperType": 1,
+                "isTrigger": false,
+                "enabled": true,
                 "position": {
                     "x": 1892.16796875,
                     "y": -419.4495849609375,
@@ -20144,6 +20187,8 @@
             },
             "collider": {
                 "helperType": 1,
+                "isTrigger": false,
+                "enabled": true,
                 "position": {
                     "x": 1892.16796875,
                     "y": -323.4495849609375,
@@ -20253,6 +20298,8 @@
             },
             "collider": {
                 "helperType": 1,
+                "isTrigger": false,
+                "enabled": true,
                 "position": {
                     "x": 1892.16796875,
                     "y": -291.4495849609375,
@@ -20362,6 +20409,8 @@
             },
             "collider": {
                 "helperType": 1,
+                "isTrigger": false,
+                "enabled": true,
                 "position": {
                     "x": 1892.16796875,
                     "y": -259.4495849609375,
@@ -20471,6 +20520,8 @@
             },
             "collider": {
                 "helperType": 1,
+                "isTrigger": false,
+                "enabled": true,
                 "position": {
                     "x": 1066.6007080078126,
                     "y": -710.0758666992188,
@@ -20552,7 +20603,7 @@
                 "position": {
                     "x": 0.0,
                     "y": 0.0,
-                    "z": -100
+                    "z": -100.0
                 },
                 "size": {
                     "x": 1000.0,
@@ -20604,7 +20655,7 @@
                 "position": {
                     "x": -3.0,
                     "y": 0.0,
-                    "z": 0.699999988079071
+                    "z": -100.0
                 },
                 "size": {
                     "x": 225.0,
@@ -20676,7 +20727,7 @@
                 "position": {
                     "x": 24.899999618530275,
                     "y": -10.300000190734864,
-                    "z": 0.7999984622001648
+                    "z": -99.9000015258789
                 },
                 "size": {
                     "x": 21.0,
@@ -20805,7 +20856,7 @@
                 "position": {
                     "x": 24.6560001373291,
                     "y": 13.822999954223633,
-                    "z": 0.7999984622001648
+                    "z": -99.9000015258789
                 },
                 "size": {
                     "x": 22.299999237060548,
@@ -20934,7 +20985,7 @@
                 "position": {
                     "x": 25.100000381469728,
                     "y": 0.5,
-                    "z": 0.7999984622001648
+                    "z": -99.9000015258789
                 },
                 "size": {
                     "x": 24.0,
@@ -21086,6 +21137,8 @@
             },
             "collider": {
                 "helperType": 1,
+                "isTrigger": false,
+                "enabled": true,
                 "position": {
                     "x": 1504.64306640625,
                     "y": -768.7833251953125,
@@ -21304,6 +21357,8 @@
             },
             "collider": {
                 "helperType": 1,
+                "isTrigger": false,
+                "enabled": true,
                 "position": {
                     "x": 130.47837829589845,
                     "y": -435.0485534667969,
@@ -21679,6 +21734,8 @@
             },
             "collider": {
                 "helperType": 1,
+                "isTrigger": false,
+                "enabled": true,
                 "position": {
                     "x": 1466.1806640625,
                     "y": -1555.0487060546876,
@@ -21850,37 +21907,6 @@
                         ]
                     },
                     {
-                        "name": "slimeJump",
-                        "wrap": 0,
-                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
-                        "spriteCols": 4,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": 72.0,
-                        "targetHeight": 67.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 2.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 2.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
                         "name": "slimeChase",
                         "wrap": 0,
                         "textureAsset": "images/Monsters\\Slime spritesheet.png",
@@ -21910,6 +21936,37 @@
                                     {
                                         "t": 0.5,
                                         "v": 9.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "slimeJump",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": 72.0,
+                        "targetHeight": 67.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 2.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 2.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -22054,6 +22111,8 @@
             },
             "collider": {
                 "helperType": 1,
+                "isTrigger": false,
+                "enabled": true,
                 "position": {
                     "x": 1615.20361328125,
                     "y": -1555.098876953125,
@@ -22571,6 +22630,8 @@
             },
             "collider": {
                 "helperType": 1,
+                "isTrigger": false,
+                "enabled": true,
                 "position": {
                     "x": 1761.3314208984376,
                     "y": -1555.0487060546876,
@@ -22946,6 +23007,8 @@
             },
             "collider": {
                 "helperType": 1,
+                "isTrigger": false,
+                "enabled": true,
                 "position": {
                     "x": 1125.2744140625,
                     "y": -947.048583984375,
@@ -23117,37 +23180,6 @@
                         ]
                     },
                     {
-                        "name": "slimeJump",
-                        "wrap": 0,
-                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
-                        "spriteCols": 4,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": 72.0,
-                        "targetHeight": 67.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 2.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 2.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
                         "name": "slimeChase",
                         "wrap": 0,
                         "textureAsset": "images/Monsters\\Slime spritesheet.png",
@@ -23177,6 +23209,37 @@
                                     {
                                         "t": 0.5,
                                         "v": 9.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "slimeJump",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": 72.0,
+                        "targetHeight": 67.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 2.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 2.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -23321,6 +23384,8 @@
             },
             "collider": {
                 "helperType": 1,
+                "isTrigger": false,
+                "enabled": true,
                 "position": {
                     "x": 454.160888671875,
                     "y": -307.04852294921877,
@@ -23492,6 +23557,37 @@
                         ]
                     },
                     {
+                        "name": "slimeJump",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": 72.0,
+                        "targetHeight": 67.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 2.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 2.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
                         "name": "slimeChase",
                         "wrap": 0,
                         "textureAsset": "images/Monsters\\Slime spritesheet.png",
@@ -23521,37 +23617,6 @@
                                     {
                                         "t": 0.5,
                                         "v": 9.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "slimeJump",
-                        "wrap": 0,
-                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
-                        "spriteCols": 4,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": 72.0,
-                        "targetHeight": 67.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 2.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 2.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -23696,6 +23761,8 @@
             },
             "collider": {
                 "helperType": 1,
+                "isTrigger": false,
+                "enabled": true,
                 "position": {
                     "x": 1200.2230224609376,
                     "y": -1158.55517578125,
@@ -24841,7 +24908,7 @@
                 "position": {
                     "x": 24.600000381469728,
                     "y": 3.5999999046325685,
-                    "z": 0.75
+                    "z": -99.94999694824219
                 },
                 "size": {
                     "x": 19.799999237060548,

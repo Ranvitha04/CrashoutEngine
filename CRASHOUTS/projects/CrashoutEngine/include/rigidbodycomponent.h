@@ -57,7 +57,7 @@ namespace Component {
 			};
 		}
 
-		void updatePhysicsWithRotation(double dt);
+		void UpdatePhysicsWithRotation(double dt);
 
 		/*Constructor*/
 		RigidBodyComponent(CEVec3 maximumVel = CEVec3{}, f32 mass = 0.f, f32 restitutionCoeff = 0.f);
@@ -103,17 +103,17 @@ namespace Component {
 		inline std::bitset<8>& getFlags() { return flags; }
 
 		/*Member Functions*/
-		f32 getInverseMass();
+		f32 GetInverseMass();
 		void setMass(f32 newMass);
 		void addForce(CEVec3 force);
 		void clearForceAccumulator();
-		void updatePhysics(double dt);
+		void UpdatePhysics(double dt);
 		void setMaxVelocity(CEVec3 const& newVel);
 		CEVec3 getMaxVelocity();
-		CEVec3 getVelocity();
+		CEVec3 GetVelocity();
 		void setRestitution(f32 restitution);
 		void setVelocity(CEVec3 const& newVel);
-		f32 getCoeff();
+		f32 GetCoeff();
 		Physics::ForceManager& getForceManager();
 	};
 }

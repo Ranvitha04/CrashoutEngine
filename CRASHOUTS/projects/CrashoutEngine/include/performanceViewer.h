@@ -148,10 +148,10 @@ public:
     void add_ms(const char* name, double ms) { sampleMS[name] += ms; }
 
     /*!
-    @brief  end the current frame and update smoothed values.
+    @brief  end the current frame and Update smoothed values.
     Steps performed:
     1) compute real frame duration from @ref begin_frame.
-    2) update EMA per region using the per-frame accumulators.
+    2) Update EMA per region using the per-frame accumulators.
     3) smooth the headline "frame ms" for UI display.
     4) build/sort rows and produce a throttled snapshot for the UI.
     @note Call after all @ref Scoped timers have been destroyed for this frame.
@@ -165,7 +165,7 @@ public:
             frameMSReal = 0.0001;
         }
 
-        // 2) update EMA per system
+        // 2) Update EMA per system
         for (auto& kv : sampleMS) {
             double& ema = emaMS[kv.first];
             ema = (1.0 - alpha) * ema + alpha * kv.second;

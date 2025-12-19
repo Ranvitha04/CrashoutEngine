@@ -681,7 +681,7 @@ namespace CrashoutsEngine {
         {
             rapidjson::Value rigidJson(rapidjson::kObjectType);
             rigidJson.AddMember("mass", rigidbody->getMass(), allocate);
-            rigidJson.AddMember("restitution", rigidbody->getCoeff(), allocate);
+            rigidJson.AddMember("restitution", rigidbody->GetCoeff(), allocate);
             obj.AddMember("rigidbody", rigidJson, allocate);
         }
         // camera (

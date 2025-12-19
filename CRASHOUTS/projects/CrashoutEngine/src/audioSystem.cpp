@@ -172,7 +172,7 @@ namespace CrashoutsEngine::Audio
     /*!
     @brief Updates the FMOD Studio system; must be called once per frame.
     */
-    void AudioSystem::update()
+    void AudioSystem::Update()
     {
         if (mStudio)
             mStudio->update();

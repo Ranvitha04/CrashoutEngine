@@ -60,8 +60,8 @@ struct AnimationClip {
     std::vector<KFBinding> bindings;
 
     std::string textureAsset = ""; // If set, switch texture when clip starts
-    int spriteCols = 0;            // If > 0, update SpriteSheetComponent
-    int spriteRows = 0;            // If > 0, update SpriteSheetComponent
+    int spriteCols = 0;            // If > 0, Update SpriteSheetComponent
+    int spriteRows = 0;            // If > 0, Update SpriteSheetComponent
 
     bool useCustomSize = false;    
     float targetWidth = 1.0f;      

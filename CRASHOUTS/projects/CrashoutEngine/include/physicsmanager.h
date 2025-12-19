@@ -20,7 +20,7 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserve
 
 namespace Physics {
 
-	void applyImpulse(Collision::CollisionEvent const& event, CrashoutsEngine::ECS& globalECS);
+	void ApplyImpulse(Collision::CollisionEvent const& event, CrashoutsEngine::ECS& globalECS);
 
 	class PhysicsHandler : public Messaging::Observer {
 		private:
@@ -53,15 +53,15 @@ namespace Physics {
 
 			~PhysicsHandler() = default;
 
-			static void handleCollisionMessages(Collision::CollisionMessage& collEvent, PhysicsHandler &observer);
+			static void HandleCollisionMessages(Messaging::Messages& collEventBase, Messaging::Observer& obsBase);
 
 			/*!
-			@brief Modify Transform Component, and do Collision checks and resolutions. Call this function for the main PHYSICS update. Every entity with a rigidbody, collider and transform component will get their transforms modified
+			@brief Modify Transform Component, and do Collision checks and resolutions. Call this function for the main PHYSICS Update. Every entity with a rigidbody, collider and transform component will get their transforms modified
 			@param globalECS ECS object for ECS functions
 			@param globalEntities Collection of Entities
 			@param deltatime Time taken for the previous frame
 			*/
-			void update(double deltatime);
+			void Update(double deltatime);
 
 			/*!
 			@brief Based on the velocity of the current RigidBodyComponent, modify the transformComponent accordingly
@@ -69,16 +69,16 @@ namespace Physics {
 			@param rigidBodyComp The rigidbody component to get the velocity from
 			@param deltaTime Time taken for the previous frame
 			*/
-			void updatePhysics(Component::TransformComponent *transformComp, Component::RigidBodyComponent *rigidBodyComp, double deltaTime);
+			void UpdatePhysics(Component::TransformComponent *transformComp, Component::RigidBodyComponent *rigidBodyComp, double deltaTime);
 
-			void setCollisionEvent(Collision::CollisionEvent const& event);
+			void SetCollisionEvent(Collision::CollisionEvent const& event);
 
 			//void fixedUpdate();
 
 			// --- Debug API ---
-			const std::vector<Collision::CollisionEvent>& collisions() const { return collisionEvents; }
-			std::vector<Collision::CollisionEvent>& collisions() { return collisionEvents; }
-			void clearCollisions() { collisionEvents.clear(); }
+			const std::vector<Collision::CollisionEvent>& Collisions() const { return collisionEvents; }
+			std::vector<Collision::CollisionEvent>& Collisions() { return collisionEvents; }
+			void ClearCollisions() { collisionEvents.clear(); }
 
 			static void SetPaused(bool p) { sPaused = p; }
 			static bool GetPaused() { return sPaused; }

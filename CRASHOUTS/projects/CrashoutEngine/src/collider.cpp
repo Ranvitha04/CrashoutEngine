@@ -16,7 +16,7 @@ namespace Collision {
 
 	Sphere::Sphere(f32 radius, CEVec3 const& center, CEVec3 const& newOffset) : Collider{ ColliderType::SPHERE }, radius{ radius } { position = center; offset = newOffset; helperType = HelperType::SPHERE_T; }
 
-	void Sphere::updateCollider(CEVec3 const& newPos) {
+	void Sphere::UpdateCollider(CEVec3 const& newPos) {
 		position = newPos + offset;
 	}
 
@@ -64,7 +64,7 @@ namespace Collision {
 
 	}
 
-	void AABBRect::updateCollider(CEVec3 const& newPos) {
+	void AABBRect::UpdateCollider(CEVec3 const& newPos) {
 		position = newPos + offset;
 		max = position + extents;
 		min = position - extents;
@@ -156,7 +156,8 @@ namespace Collision {
 		CEVec3 center{ max - extents };
 		
 		Polygon poly{ {min, CEVec3{min.x, min.y + extents.y * 2.f, 0.f}, max, CEVec3{min.x + extents.x * 2.f, min.y, center.z}}, rotation, center, offset };
-		poly.helperType = HelperType::OBB_T;
+		//poly.helperType = HelperType::OBB_T;
+		poly.helperType = HelperType::POLYGON_T;
 
 		return poly;
 	}
@@ -181,24 +182,34 @@ namespace Collision {
 	}
 
 	Polygon Polygon::createAABB(CEVec3 const& min, CEVec3 const& max, CEVec3 offset) {
-		CEVec3 extents{ 0.5f * (max - min) };
-		CEVec3 center{ max - extents };
 
 		Polygon poly{};
-
 		poly.offset = offset;
-
-		poly.rotatedVertices[0] = min;
-		poly.rotatedVertices[1] = CEVec3{ min.x, min.y + extents.y * 2.f, 0.f };
-		poly.rotatedVertices[2] = max;
-		poly.rotatedVertices[3] = CEVec3{ min.x + extents.x * 2.f, min.y, center.z };
-
-		poly.normalEdges[0] = CEVec3{ -1.f, 0.f, 0.f };
-		poly.normalEdges[1] = CEVec3{ 0.f, 1.f, 0.f };
-		poly.normalEdges[2] = CEVec3{ 1.f, 0.f, 0.f };
-		poly.normalEdges[3] = CEVec3{ 0.f, -1.f, 0.f };
+		float z = 0.f;
 
 		poly.vertexCount = 4;
+
+		// Vertex 0 (Bottom-Right)
+		poly.rotatedVertices[0] = { max.x, min.y, z };
+		// Vertex 1 (Bottom-Left)
+		poly.rotatedVertices[1] = { min.x, min.y, z };
+		// Vertex 2 (Top-Left)
+		poly.rotatedVertices[2] = { min.x, max.y, z };
+		// Vertex 3 (Top-Right)
+		poly.rotatedVertices[3] = { max.x, max.y, z };
+
+		// --- CORRESPONDING NORMALS ---
+		// Edge 0 (V0->V1): Bottom Edge -> Normal Points Down (0, -1)
+		poly.normalEdges[0] = CEVec3{ 0.f, -1.f, 0.f };
+
+		// Edge 1 (V1->V2): Left Edge -> Normal Points Left (-1, 0)
+		poly.normalEdges[1] = CEVec3{ -1.f, 0.f, 0.f };
+
+		// Edge 2 (V2->V3): Top Edge -> Normal Points Up (0, 1)
+		poly.normalEdges[2] = CEVec3{ 0.f, 1.f, 0.f };
+
+		// Edge 3 (V3->V0): Right Edge -> Normal Points Right (1, 0)
+		poly.normalEdges[3] = CEVec3{ 1.f, 0.f, 0.f };
 
 		return poly;
 	}
@@ -251,7 +262,7 @@ namespace Collision {
 		}
 	}
 
-	void Polygon::updateCollider(CEVec3 const& newPos) {
+	void Polygon::UpdateCollider(CEVec3 const& newPos) {
 		
 		updatePosition(newPos);
 		
@@ -294,7 +305,7 @@ namespace Collision {
 	}
 
 
-	void OBBRect::updateCollider(CEVec3 const& newPos) {
+	void OBBRect::UpdateCollider(CEVec3 const& newPos) {
 		CEVec3 currPos{ min + extents };
 		CEVec3 vecToNewPos{ newPos - currPos };
 

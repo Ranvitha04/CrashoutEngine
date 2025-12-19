@@ -162,7 +162,7 @@ namespace UI { // --------------------------------------------------------------
     */
     void RenderAll(FrameProfiler& profiler, ::Physics::PhysicsHandler& phys, UIState& ui, ECS& ecs, std::vector<Entity>& entities, Entity& selected)
     {
-        auto& collisions = phys.collisions();
+        auto& collisions = phys.Collisions();
         if (ui.drawCollOverlay) {
 
             // Get ratio based off zoom
@@ -171,10 +171,12 @@ namespace UI { // --------------------------------------------------------------
             if(engineState == EngineState::STOP) thicknessRatio = CrashoutsEngine::RenderCamera::engineCamera.GetZoom();
             else thicknessRatio = CrashoutsEngine::RenderCamera::gameCamera.GetZoom();
 
-            if(ui.drawAllColliders) CollisionGizmos::DrawAllColliders(ecs, &collisions, ui.overlayThickness / thicknessRatio);
+            if (ui.drawAllColliders) {
+                CollisionGizmos::DrawAllColliders(ecs, &collisions, ui.overlayThickness / thicknessRatio);
+                CollisionGizmos::DrawContactsAndNormals(*ECS::getInstance(), collisions, 10.f, ui.overlayThickness / thicknessRatio);
+            }
             if (ui.drawQuadTree) Collision::CollisionHandler::GetInstance().quadTree.Draw();
             
-            //CollisionGizmos::DrawContactsAndNormals(collisions, 0.25f, ui.overlayThickness); //Removed for now, will need to calculate the collision pair for normals properly
         }
         collisions = std::vector<Collision::CollisionEvent>{};
 

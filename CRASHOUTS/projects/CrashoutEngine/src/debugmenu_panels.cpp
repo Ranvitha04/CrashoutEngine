@@ -790,7 +790,7 @@ namespace UI {
 
         ImGui::Separator();
 
-        const auto& evs = phys.collisions();
+        const auto& evs = phys.Collisions();
 
         // auto pause if requested and collision occured
         if (ui.freezeOnCollision && !paused && !evs.empty()) {
@@ -1107,7 +1107,7 @@ namespace UI {
             audio.stopAllRaw();
         }
 
-        audio.update();
+        audio.Update();
     }
 
     /*!

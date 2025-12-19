@@ -153,9 +153,9 @@ namespace Component {
 
         /*!
         @brief Update the current animation state.
-        @param deltaTime Time elapsed since the last update (in seconds)
+        @param deltaTime Time elapsed since the last Update (in seconds)
         */
-        void update(float deltaTime);
+        void Update(float deltaTime);
 
         /*!
         @brief Render the current frame of the sprite.

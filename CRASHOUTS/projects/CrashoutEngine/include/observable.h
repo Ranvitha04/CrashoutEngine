@@ -11,7 +11,6 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserve
 #pragma once
 
 #include <map>
-#include <string>
 #include "messages.h"
 #include "observer.h"
 
@@ -24,11 +23,11 @@ namespace Messaging {
 	class Observable {
 		protected:
 			Observable();
-			Observable(const std::string& id);
+			Observable(const EventType& id);
 		private:
-			using Multimap = std::multimap<std::string, Observer&>;
+			using Multimap = std::multimap<EventType, Observer&>;
 			Multimap mMessageMap;
-			std::string mId;
+			EventType mType;
 		public:
 
 			virtual ~Observable() = default;
@@ -38,7 +37,7 @@ namespace Messaging {
 			@param messageId
 			@param observer
 			*/
-			void registerObserver(const std::string& messageId, Observer& observer);
+			void registerObserver(const EventType& messageType, Observer& observer);
 
 			/*!
 			@brief Call the callback function for the appropriate message passed in
@@ -46,7 +45,7 @@ namespace Messaging {
 			*/
 			void sendMessage(Messages& msg);
 
-			std::string id();
+			EventType Type();
 
 	};
 }

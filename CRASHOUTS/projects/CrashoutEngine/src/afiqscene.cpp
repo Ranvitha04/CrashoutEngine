@@ -229,7 +229,7 @@ void InitAfiq()
 void UpdateAfiq()
 {
     if (s_audioReady) {
-        AudioSystem::instance().update();
+        AudioSystem::instance().Update();
     }
 
     ECS* ecs = ECS::getInstance();

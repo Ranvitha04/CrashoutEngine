@@ -24,6 +24,7 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserve
 #include "audiocomponent.h"
 #include "scriptcomponent.h"
 #include "cameracomponent.h"
+#include "hierarchy_components.h"
 // UI COMPONENTS
 #include "buttoncomponent.h"
 #include "guicomponent.h"
@@ -51,6 +52,35 @@ using Entity = uint32_t;
 	The ID of the entity to be destroyed.
 	*/
 void CrashoutsEngine::ECS::DestroyEntity(CrashoutsEngine::Entity entityId) {
+
+	if (HasComponent<Component::ChildrenComponent>(entityId)) {
+		auto* childrenComp = GetComponent<ChildrenComponent>(entityId);
+		std::vector<CrashoutsEngine::Entity> childrenToKill = childrenComp->children;
+		
+		for (CrashoutsEngine::Entity childId : childrenToKill) {
+			DestroyEntity(childId); // <--- RECURSION HAPPENS HERE
+		}
+	}
+
+	// If I am being destroyed, I must remove myself from my Parent's list of children.
+	// Otherwise, the parent will try to update/access a dead child later.
+	if (HasComponent<ParentComponent>(entityId)) {
+		auto* myParentComp = GetComponent<ParentComponent>(entityId);
+		CrashoutsEngine::Entity parentId = myParentComp->parent;
+
+		// Check if parent is still alive/valid
+		if (HasComponent<ChildrenComponent>(parentId)) {
+			auto* parentChildrenComp = GetComponent<ChildrenComponent>(parentId);
+			std::vector<CrashoutsEngine::Entity>& siblings = parentChildrenComp->children;
+
+			// Remove myself from parent's list
+			siblings.erase(
+				std::remove(siblings.begin(), siblings.end(), entityId),
+				siblings.end()
+			);
+		}
+	}
+
 	// Iterate through all component arrays to remove components
 	for (auto const& pair : componentArrays) {
 		pair.second->RemoveComponent(entityId);

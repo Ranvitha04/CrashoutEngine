@@ -35,7 +35,7 @@ struct GLApp
 	*/
 {
 	static bool init(GLint w, GLint h, std::string t);
-	static void update();
+	static void Update();
 	static void draw();
 	static void cleanup();
 

@@ -43,6 +43,6 @@ namespace CollisionGizmos {
      @note Use this function to debug collision resolution behavior and validate
            contact point accuracy and normal direction calculations.
     */
-    void DrawContactsAndNormals(const std::vector<Collision::CollisionEvent>& events, float normalLen = 0.25f, float wireThickness = 0.02f);
+    void DrawContactsAndNormals(CrashoutsEngine::ECS& ecs, const std::vector<Collision::CollisionEvent>& events, float baseLen, float wireThickness);
 
 } // namespace CollisionGizmos

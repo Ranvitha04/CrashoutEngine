@@ -52,9 +52,9 @@ namespace Collision {
 		CrashoutsEngine::Entity entity1;
 		CrashoutsEngine::Entity entity2;
 	public:
-		CollisionMessage(const std::string& id, CollisionManifold const& colManifold, CrashoutsEngine::Entity entity1, CrashoutsEngine::Entity entity2);
-		std::pair<CrashoutsEngine::Entity, CrashoutsEngine::Entity> getCollisionPair();
-		CollisionManifold getCollisionManifold();
+		CollisionMessage(const Messaging::EventType& type, CollisionManifold const& colManifold, CrashoutsEngine::Entity entity1, CrashoutsEngine::Entity entity2);
+		std::pair<CrashoutsEngine::Entity, CrashoutsEngine::Entity> GetCollisionPair();
+		CollisionManifold GetCollisionManifold();
 	};
 
 
@@ -99,17 +99,6 @@ namespace Collision {
 			static CollisionManifold SphereToPolygonCollision(CollisionProps const& coll1, CollisionProps const& coll2);
 
 			static CollisionManifold AABBToPolygonCollision(CollisionProps const& coll1, CollisionProps const& coll2);
-
-			/*ColliderType::OBB SOON TO BE DEPRECATED*/
-
-			static CollisionManifold AABBToOBBCollision(CollisionProps const& coll1, CollisionProps const& coll2);
-
-			static CollisionManifold OBBToOBBCollision(CollisionProps const& coll1, CollisionProps const& coll2);
-
-			static CollisionManifold SphereToOBBCollision(CollisionProps const& coll1, CollisionProps const& coll2);
-
-			
-
 			
 		public:
 
@@ -126,7 +115,7 @@ namespace Collision {
 
 			CollisionHandler();
 
-			void update(double deltaTime, EngineState engineState);
+			void Update(double deltaTime, EngineState engineState);
 
 			/*!
 			@brief Return a function pointer to call the appropriate collision function

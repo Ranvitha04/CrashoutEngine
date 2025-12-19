@@ -65,7 +65,7 @@ static void InternalGetVelocity(uint32_t entityID, CEVec3* outVelocity)
     if (EntityHasRigidBody(entityID))
     {
         auto* rb = ecs.GetComponent<Component::RigidBodyComponent>(entityID);
-        *outVelocity = rb->getVelocity();
+        *outVelocity = rb->GetVelocity();
         return;
     }
 

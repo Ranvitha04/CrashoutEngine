@@ -29,9 +29,9 @@ namespace CrashoutsEngine {
 	namespace Assets {
 
 		//const std::string rootPath = "../../projects/Descent/assets/";
-#ifdef DEBUG
+#ifdef USE_IMGUI_EDITOR
 		const std::string rootPath = "../../projects/Descent/assets/";
-#else	// RELEASE MODE
+#else	// GAME MODE
 		const std::string rootPath = "assets/";
 #endif
 

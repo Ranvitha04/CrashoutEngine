@@ -296,7 +296,7 @@ namespace {
 				}
 
 				// No Undo logic implemented here for brevity, but you can add it similar to below.
-				// IMPORTANT: Force update world transform immediately for responsiveness?
+				// IMPORTANT: Force Update world transform immediately for responsiveness?
 				// Usually the system handles it next frame, which is fine.
 			}
 			else {
@@ -540,6 +540,8 @@ namespace {
 			auto& D = GetDebugDefaults();
 			if (!cc || !cc->collider) return;
 
+			ImGui::Checkbox("Enabled", &cc->collider->enabled);
+
 			if (!ecs.HasComponent<RigidBodyComponent>(e)) {
 				if (ImGui::Button("Add Static RigidBody (mass=0)")) {
 					auto& D3 = GetDebugDefaults();
@@ -732,7 +734,7 @@ namespace {
 				// 3. Edit Rotation
 				float rot = p.rotation;
 				if (ImGui::DragFloat("Rotation", &rot, 0.05f)) {
-					// We must update the internal rotation variable immediately
+					// We must Update the internal rotation variable immediately
 					// so that if we rebuild the box below, we don't lose the rotation.
 					p.rotation = rot;
 					edited = true;
@@ -764,6 +766,7 @@ namespace {
 					p.forceUpdateRotation(targetRotation);
 				}
 			}
+#if 0
 			// --- POLYGON / TRIANGLE ---
 			else if (cc->collider->helperType == Collision::HelperType::POLYGON_T ||
 				cc->collider->helperType == Collision::HelperType::TRIANGLE_T)
@@ -784,6 +787,8 @@ namespace {
 					p->updatePosition(transformPos); // Use helper to shift vertices
 				}
 			}
+#endif
+			ImGui::Checkbox("IsTrigger", &cc->collider->isTrigger);
 		}
 	};
 
@@ -2760,7 +2765,7 @@ namespace CrashoutsEngine
 				// Manual Slider (for debugging specific frames)
 				if (ImGui::SliderFloat("Seek", &anim->t, 0.0f, currentLen)) {
 					anim->playing = false; // Pause if dragging
-					// Force update visual immediately (optional)
+					// Force Update visual immediately (optional)
 					// KeyframeUnity::Update(ecs, e, *anim, 0.0f); 
 				}
 			}

@@ -76,12 +76,14 @@ namespace Collision {
 		Collider(ColliderType type);
 		virtual ~Collider() = default;
 		virtual std::unique_ptr<Collider> clone() const = 0;
-		virtual void updateCollider([[maybe_unused]] CEVec3 const& newPos) = 0;
+		virtual void UpdateCollider([[maybe_unused]] CEVec3 const& newPos) = 0;
 		virtual void updateRotation([[maybe_unused]] f32 newRotation) {};
 		virtual f32 calculateInertia([[maybe_unused]] f32 mass) { return 0.f; };
 		CEVec3 offset{};
 		CEVec3 position{};
 		HelperType helperType; /*HELPER FOR UI DROPDOWN*/
+		bool isTrigger = false;
+		bool enabled = true;
 	};
 
 	/*!
@@ -93,7 +95,7 @@ namespace Collision {
 		f32 radius;
 		Sphere(f32 radius, CEVec3 const& position, CEVec3 const& offset = CEVec3{});
 		~Sphere() = default;
-		virtual void updateCollider(CEVec3 const& newPos);
+		virtual void UpdateCollider(CEVec3 const& newPos);
 
 		virtual std::unique_ptr<Collider> clone() const override {
 			return std::make_unique<Sphere>(*this);
@@ -119,7 +121,7 @@ namespace Collision {
 
 		~AABBRect() = default;
 
-		virtual void updateCollider(CEVec3 const& newPos);
+		virtual void UpdateCollider(CEVec3 const& newPos);
 		virtual std::unique_ptr<Collider> clone() const override {
 			return std::make_unique<AABBRect>(*this);
 		}
@@ -145,7 +147,7 @@ namespace Collision {
 		OBBRect(CEVec3 const& min, CEVec3 const& max, f32 rotation = 0.f);
 		virtual void updateRotation(f32 newRotation);
 		~OBBRect() = default;
-		virtual void updateCollider(CEVec3 const&);
+		virtual void UpdateCollider(CEVec3 const&);
 
 		virtual std::unique_ptr<Collider> clone() const override {
 			return std::make_unique<OBBRect>(*this);
@@ -180,7 +182,7 @@ namespace Collision {
 		Polygon(std::initializer_list<CEVec3> vertices, f32 rotation = 0.f, CEVec3 const& position = {}, CEVec3 const& offset = {});
 		virtual void updateRotation(f32 newRotation);
 		~Polygon() = default;
-		virtual void updateCollider(CEVec3 const&);
+		virtual void UpdateCollider(CEVec3 const&);
 		void updatePosition(CEVec3 const& newPos);
 		void calcNormals();
 		CEVec3 calcNormal(CEVec3 const& edge);
