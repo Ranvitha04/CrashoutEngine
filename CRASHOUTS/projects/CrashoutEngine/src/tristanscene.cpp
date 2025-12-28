@@ -395,7 +395,7 @@ void UpdateTristan()
 			Component::ColliderComponent* collider1{ globalECS->GetComponent<Component::ColliderComponent>(entity1) };
 			if (collider1->collider->type == Collision::ColliderType::POLYGON) {
 				Collision::Polygon& obbTemp2 = dynamic_cast<Collision::Polygon&>(*(collider1->collider));
-				obbTemp2.updateRotation(transform->rotation);
+				obbTemp2.UpdateRotation(transform->rotation);
 			}
 		}
 	}

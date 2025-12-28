@@ -138,7 +138,7 @@ namespace CollisionGizmos {
 	 @note When @p events is provided, colliders for entities present in any event
 		   are tinted with a hit color to visually distinguish collisions.
 	*/
-	void DrawAllColliders(ECS& ecs, [[maybe_unused]] std::vector<Collision::CollisionEvent>* events, float wireThickness) {
+	void DrawAllColliders(ECS& ecs, [[maybe_unused]] const std::vector<Collision::CollisionEvent>& events, float wireThickness) {
 		auto& collArr = ecs.GetComponentArray<Component::ColliderComponent>();
 		const CEColor ok(0.15f, 0.8f, 0.55f);    // non-colliding tint
 		const CEColor hit(1.0f, 0.3f, 0.3f);     // colliding tint
@@ -204,9 +204,7 @@ namespace CollisionGizmos {
 		   the first contact point with length @p normalLen.
 	*/
 	void DrawContactsAndNormals(ECS& ecs, [[maybe_unused]] const std::vector<Collision::CollisionEvent>& events, float baseLen, float wireThickness) {
-		Collision::CollisionHandler& col = Collision::CollisionHandler::GetInstance();
-
-		for (const auto& info : col.lastFrameCollision) {
+		for (const auto& info : events) {
 			if (info.colManifold.contactPoints.empty()) continue;
 
 			const CEVec3& contactPt = info.colManifold.contactPoints[0];
@@ -217,13 +215,13 @@ namespace CollisionGizmos {
 			CEVec3 velB{ 0,0,0 };
 
 			// Check and retrieve velocity for Entity A
-			if (ecs.HasComponent<Component::RigidBodyComponent>(info.contacts.first)) {
-				velA = ecs.GetComponent<Component::RigidBodyComponent>(info.contacts.first)->GetVelocity();
+			if (ecs.HasComponent<Component::RigidBodyComponent>(info.entity1)) {
+				velA = ecs.GetComponent<Component::RigidBodyComponent>(info.entity1)->GetVelocity();
 			}
 
 			// Check and retrieve velocity for Entity B
-			if (ecs.HasComponent<Component::RigidBodyComponent>(info.contacts.second)) {
-				velB = ecs.GetComponent<Component::RigidBodyComponent>(info.contacts.second)->GetVelocity();
+			if (ecs.HasComponent<Component::RigidBodyComponent>(info.entity2)) {
+				velB = ecs.GetComponent<Component::RigidBodyComponent>(info.entity2)->GetVelocity();
 			}
 
 			CEVec3 relativeVel = velA - velB;
@@ -241,7 +239,7 @@ namespace CollisionGizmos {
 
 			// 3. Draw
 			// Draw contact point
-			DrawCircleOutline(contactPt, 2.0f, 8, wireThickness, CEColor{ 1.f, 0.f, 0.f }); // slightly larger circle
+			DrawCircleOutline(contactPt, wireThickness * 3.f, 8, wireThickness, CEColor{ 1.f, 0.f, 0.f }); // slightly larger circle
 
 			// Draw Normal Line scaled by velocity
 			Shapes::CreateLine(contactPt, contactPt + (normal * lineLength), wireThickness);

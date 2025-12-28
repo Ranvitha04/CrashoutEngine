@@ -748,15 +748,11 @@ namespace UI {
      @param phys Physics handler reference.
      @param ui UI state toggles.
     */
-    void RenderPhysicsPanel([[maybe_unused]] FrameProfiler& profiler, ECS& ecs, ::Physics::PhysicsHandler& phys, UIState& ui)
+    void RenderPhysicsPanel([[maybe_unused]] FrameProfiler& profiler, ECS& ecs, UIState& ui)
     {
         if (!ui.showPhysics) return;
         ScopedWindow w("Physics / Collision", LockFlags(ui.lockLayout));
 
-        bool paused = ::Physics::PhysicsHandler::GetPaused();
-        if (ImGui::Checkbox("Paused", &paused)) {
-            ::Physics::PhysicsHandler::SetPaused(paused);
-        }
         ImGui::SameLine();
         if (ImGui::Button("Step")) {
             ::Physics::PhysicsHandler::StepOnce(); Help("Advance one simulation tick when paused.");
@@ -790,13 +786,7 @@ namespace UI {
 
         ImGui::Separator();
 
-        const auto& evs = phys.Collisions();
-
-        // auto pause if requested and collision occured
-        if (ui.freezeOnCollision && !paused && !evs.empty()) {
-            ::Physics::PhysicsHandler::SetPaused(true);
-            paused = true;
-        }
+        const auto& evs = Collision::CollisionHandler::GetInstance().GetFrameCollisions();
 
         ImGui::Separator();
 
@@ -1165,20 +1155,6 @@ namespace UI {
                 CrashoutsEngine::Audio::AudioSystem::instance().stopMusicGroup(); // <-- Seems to work better than the above
 
             }
-            ImGui::SameLine();
-            // SAVE
-            if (ImGui::Button("SAVE", ImVec2(70, 25))) {
-                if (!currSceneName.empty()) Serialization::SaveScenes(currSceneName);
-
-                if (currSceneName.empty()) RestartGameState();       // Legacy scene system
-                else {
-                    ECS::getInstance()->Reset();
-                    Serialization::LoadScenes(currSceneName);
-                }
-
-            }
-
-
             ImGui::SeparatorEx(ImGuiSeparatorFlags_Vertical);
             ImGui::SameLine();
 

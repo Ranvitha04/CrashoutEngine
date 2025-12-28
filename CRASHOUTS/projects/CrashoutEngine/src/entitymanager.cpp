@@ -24,7 +24,7 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserve
 #include "audiocomponent.h"
 #include "scriptcomponent.h"
 #include "cameracomponent.h"
-#include "hierarchy_components.h"
+#include "hierarchycomponent.h"
 // UI COMPONENTS
 #include "buttoncomponent.h"
 #include "guicomponent.h"

@@ -99,6 +99,8 @@ namespace Collision {
 			static CollisionManifold SphereToPolygonCollision(CollisionProps const& coll1, CollisionProps const& coll2);
 
 			static CollisionManifold AABBToPolygonCollision(CollisionProps const& coll1, CollisionProps const& coll2);
+
+			std::vector<CollisionEvent> m_FrameCollisions;
 			
 		public:
 
@@ -125,6 +127,11 @@ namespace Collision {
 			*/
 			FunctionDispatchType callCollFunct(Collision::ColliderType type1, Collision::ColliderType type2);
 
+
+			// Getter for collision data that frame
+			const std::vector<CollisionEvent>& GetFrameCollisions() const {
+				return m_FrameCollisions;
+			}
 	};
 }
 

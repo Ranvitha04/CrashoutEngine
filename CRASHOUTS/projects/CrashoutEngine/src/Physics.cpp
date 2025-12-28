@@ -10,7 +10,7 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserve
 
 #include "physicsmanager.h"
 #include "frameratecontroller.h"
-#include "hierarchy_components.h"
+#include "hierarchycomponent.h"
 #include "namecomponent.h"
 #include "log.h"
 #include <cstdio>
@@ -171,52 +171,6 @@ namespace {
 
 namespace Physics {
 
-	void PhysicsHandler::HandleCollisionMessages(Messaging::Messages& collEventBase, Messaging::Observer& obsBase) {
-
-		Collision::CollisionMessage& collEvent = static_cast<Collision::CollisionMessage&>(collEventBase);
-		PhysicsHandler& observer = static_cast<PhysicsHandler&>(obsBase);
-
-		if (observer.GetPaused()) return;
-
-		CrashoutsEngine::ECS& globalECS = *(CrashoutsEngine::ECS::getInstance());
-		std::pair<CrashoutsEngine::Entity, CrashoutsEngine::Entity> colPair{ collEvent.GetCollisionPair() };
-
-		// Check for Triggers
-		if (globalECS.HasComponent<Component::ColliderComponent>(colPair.first) &&
-			globalECS.HasComponent<Component::ColliderComponent>(colPair.second)) {
-
-			Component::ColliderComponent* c1 = globalECS.GetComponent<Component::ColliderComponent>(colPair.first);
-			Component::ColliderComponent* c2 = globalECS.GetComponent<Component::ColliderComponent>(colPair.second);
-
-			if (c1->collider->isTrigger || c2->collider->isTrigger) return;
-		}
-
-		// Check for RigidBody
-		if (!globalECS.HasComponent<Component::RigidBodyComponent>(colPair.first) &&
-			!globalECS.HasComponent<Component::RigidBodyComponent>(colPair.second)) {
-
-			return;
-		}
-
-		Collision::CollisionEvent evnt{ collEvent.GetCollisionManifold(), colPair.first, colPair.second };
-		observer.SetCollisionEvent(evnt); /*TEMP FOR NOW*/
-	}
-
-	void PhysicsHandler::SetCollisionEvent(Collision::CollisionEvent const& event) {
-		collisionEvents.push_back(event);
-	}
-
-	PhysicsHandler::PhysicsHandler() : Messaging::Observer{} {
-		using namespace Messaging;
-
-		HANDLER handler = PhysicsHandler::HandleCollisionMessages;
-
-		// Physics occur on stay and on enter
-		attachHandler(EventType::CollisionEnter, handler);
-		attachHandler(EventType::CollisionStay, handler);
-	}
-
-
 	// Setters and Getters
 	void PhysicsHandler::SetGravity(const CEVec3& g) { sGravity = g; }
 	CEVec3 PhysicsHandler::GetGravity() { return sGravity; }
@@ -261,27 +215,12 @@ namespace Physics {
 				auto* childCol = ecs.GetComponent<Component::ColliderComponent>(child);
 				childCol->collider->UpdateCollider(childTransform->position);
 				// Also Update rotation if needed
-				// childCol->collider->updateRotation(childTransform->rotation);
+				// childCol->collider->UpdateRotation(childTransform->rotation);
 			}
 
 			// Recurse
 			SyncHierarchyPhysics(child, ecs);
 		}
-	}
-
-	/*UPDATE BOTH THE RIGIDBODY AND TRANSFORM COMPONENT*/
-	void PhysicsHandler::UpdatePhysics(Component::TransformComponent* transformComp, Component::RigidBodyComponent* rigidBodyComp, double deltaTime) {
-
-		// Debug Stepping one
-		//double dt = sOverrideDt ? sDebugDt : deltaTime;
-
-		f32 newDelta{ static_cast<float>(deltaTime) };
-		rigidBodyComp->UpdatePhysics(deltaTime); /*UPDATE CURRENT VELOCITY AND RESET NET FORCE*/
-		CEVec3 currentVel{ rigidBodyComp->GetVelocity() };
-		transformComp->position += currentVel * newDelta;
-
-		// Debug stepping two
-		if (sPaused && sStepOnce) sStepOnce = false;
 	}
 
 	void PositionCorrection(Collision::CollisionEvent const& event, CrashoutsEngine::ECS& globalECS) {
@@ -458,28 +397,19 @@ namespace Physics {
 	/*Main Physics Update*/
 	void PhysicsHandler::Update(double deltaTime) {
 
+		// Get collision data from handler
+		const auto& events = Collision::CollisionHandler::GetInstance().GetFrameCollisions();
+
 		CrashoutsEngine::ECS& globalECS = *(CrashoutsEngine::ECS::getInstance());
 
 		std::vector<CrashoutsEngine::Entity> globalEntities = globalECS.GetComponentArray<Component::RigidBodyComponent>().indexToEntity;
 
-		if (sPaused) {
-			collisionEvents = std::vector<Collision::CollisionEvent>{};
-			if (!sStepOnce) return;
-			// allow exactly one tick when paused+Step pressed
-		}
+		bool isSimulating = !sPaused || sStepOnce;
+		double simDt = isSimulating ? deltaTime : 0.0;
 
-		/*std::pair<f32, f32> newDimen{ ComputeWorldDimensions() };
+		if (sPaused && sStepOnce) sStepOnce = false;
 
-		newDimen.first *= 1.2f;
-		newDimen.second *= 1.2f;
-
-		CEVec3 newExtents{ newDimen.first * 0.5f, newDimen.second * 0.5f, 0.f };
-
-		CEVec3 pos{ CrashoutsEngine::RenderCamera::gameCamera.GetPosition() };
-
-		Collision::AABBRect bounds{ pos - newExtents, pos + newExtents };*/
-
-		int step{ FrameRateController::GetInstance().StepCount() };
+		int step = FrameRateController::GetInstance().StepCount();
 
 		/*Fixed step, accumulator will reach the target fixed dt and then execute physics simulation*/
 		for (int i{}; i < step; ++i) {
@@ -488,35 +418,31 @@ namespace Physics {
 				Component::RigidBodyComponent* rigidBody{ globalECS.GetComponent<Component::RigidBodyComponent>(entity) };
 				if (!rigidBody->getFlags().test(SIMULATE_DYNAMICS) || !rigidBody->getMass()) continue;
 
-				Component::ColliderComponent* collider1{ globalECS.GetComponent<Component::ColliderComponent>(entity) };
-				Collision::AABBRect region{ Collision::GetAABB(*(collider1->collider), collider1->collider->position) };
+				if (isSimulating) {
 
-				//if (!bounds.contains(region)) continue;
+					/*APPLY ANY FORCE GENERATOR HERE, EVERY ENTITY IS AFFECTED*/
+					ForceManager& fm{ rigidBody->getForceManager() };
+					CEVec3 forces = fm.ResolveForces((f32)simDt, rigidBody->getMass());
 
+					// 2. Apply Gravity Manually
+					CEVec3 gravityAccel = sGravity; // e.g., (0, -70, 0)
 
-				/*APPLY ANY FORCE GENERATOR HERE, EVERY ENTITY IS AFFECTED*/
-				ForceManager& fm{ rigidBody->getForceManager() };
-				CEVec3 forces = fm.ResolveForces((f32)deltaTime, rigidBody->getMass());
+					if (rigidBody->getMass() < 0.f) {
+						// Anti-Gravity: Flip the acceleration vector
+						gravityAccel = -sGravity; // (0, 70, 0)
+					}
 
-				// 2. Apply Gravity Manually
-				CEVec3 gravityAccel = sGravity; // e.g., (0, -70, 0)
+					// F = m * a
+					CEVec3 gravityForce = rigidBody->getMass() * gravityAccel;
 
-				if (rigidBody->getMass() < 0.f) {
-					// Anti-Gravity: Flip the acceleration vector
-					gravityAccel = -sGravity; // (0, 70, 0)
+					// 3. Combine
+					rigidBody->addForce(forces + gravityForce);
+					rigidBody->UpdatePhysics(simDt);
 				}
-
-				// F = m * a
-				CEVec3 gravityForce = rigidBody->getMass() * gravityAccel;
-
-				// 3. Combine
-				rigidBody->addForce(forces + gravityForce);
-
-
 			}
 
 			/*IMPULSE RESOLUTION*/
-			for (Collision::CollisionEvent const& evnt : collisionEvents) {
+			for (Collision::CollisionEvent const& evnt : events) {
 
 				Component::RigidBodyComponent* rigidBody1{ globalECS.GetComponent<Component::RigidBodyComponent>(evnt.entity1) };
 				Component::RigidBodyComponent* rigidBody2{ globalECS.GetComponent<Component::RigidBodyComponent>(evnt.entity2) };
@@ -524,18 +450,12 @@ namespace Physics {
 				bool isDynamic1 = rigidBody1 && rigidBody1->getFlags().test(SIMULATE_DYNAMICS);
 				bool isDynamic2 = rigidBody2 && rigidBody2->getFlags().test(SIMULATE_DYNAMICS);
 
-				//Component::ColliderComponent* collider1{ globalECS.GetComponent<Component::ColliderComponent>(evnt.entity1) };
-				//Component::ColliderComponent* collider2{ globalECS.GetComponent<Component::ColliderComponent>(evnt.entity2) };
-
-				/*Collision::AABBRect region1{ Collision::GetAABB(*(collider1->collider), collider1->collider->position) };
-				Collision::AABBRect region2{ Collision::GetAABB(*(collider2->collider), collider2->collider->position) };*/
-
-				//if (!bounds.contains(region1) && !bounds.contains(region2)) continue;
-
 				if (!isDynamic1 && !isDynamic2) continue;
 
-				PositionCorrection(evnt, globalECS);
-				ApplyImpulse(evnt, globalECS);
+				if (isSimulating) {
+					PositionCorrection(evnt, globalECS);
+					ApplyImpulse(evnt, globalECS);
+				}
 			}
 
 			/*PHYSICS SIM, UPDATE POSITION*/
@@ -549,17 +469,20 @@ namespace Physics {
 				// -------------------------------------------------------
 				if (rigidBody->getFlags().test(SIMULATE_DYNAMICS)) {
 
-					UpdatePhysics(transform, rigidBody, deltaTime);
+					// Apply position change
+					if (rigidBody->getMass() != 0.f) {
+						f32 newDelta{ static_cast<float>(simDt) }; // 0.0 if paused
+						CEVec3 currentVel{ rigidBody->GetVelocity() };
+						transform->position += currentVel * newDelta;
+					}
 
-					rigidBody->setVelocity(rigidBody->GetVelocity() * 0.999f);
-					rigidBody->angularVelocity *= 0.999f;
+					if (isSimulating) {
+						rigidBody->setVelocity(rigidBody->GetVelocity() * 0.999f);
+						rigidBody->angularVelocity *= 0.999f;
+					}
 
 					if (globalECS.HasComponent<Component::ColliderComponent>(entity)) {
 						Component::ColliderComponent* c{ globalECS.GetComponent<Component::ColliderComponent>(entity) };
-
-						/*if (rigidBody->getMass() && rigidBody->inertia) {
-							c->collider->updateRotation(rigidBody->orientation);
-						}*/
 						c->collider->UpdateCollider(transform->position);
 					}
 
@@ -578,7 +501,7 @@ namespace Physics {
 						// Sync Collider Rotation to Transform Rotation
 						// (Your RigidBody orientation might be stale if you rotated Transform via script)
 						rigidBody->setRotation(transform->rotation);
-						c->collider->updateRotation(transform->rotation);
+						c->collider->UpdateRotation(transform->rotation);
 
 						// Sync Collider Position
 						c->collider->UpdateCollider(transform->position);
@@ -590,9 +513,6 @@ namespace Physics {
 				}
 			}
 		}
-
-		collisionEvents.clear(); /*Fully consumed Collision Pairs*/
-
 	}
 
 }

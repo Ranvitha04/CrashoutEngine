@@ -77,7 +77,7 @@ namespace Collision {
 		virtual ~Collider() = default;
 		virtual std::unique_ptr<Collider> clone() const = 0;
 		virtual void UpdateCollider([[maybe_unused]] CEVec3 const& newPos) = 0;
-		virtual void updateRotation([[maybe_unused]] f32 newRotation) {};
+		virtual void UpdateRotation([[maybe_unused]] f32 newRotation) {};
 		virtual f32 calculateInertia([[maybe_unused]] f32 mass) { return 0.f; };
 		CEVec3 offset{};
 		CEVec3 position{};
@@ -145,7 +145,7 @@ namespace Collision {
 		Vertices originalVertices;
 		Normal normalEdges;
 		OBBRect(CEVec3 const& min, CEVec3 const& max, f32 rotation = 0.f);
-		virtual void updateRotation(f32 newRotation);
+		virtual void UpdateRotation(f32 newRotation);
 		~OBBRect() = default;
 		virtual void UpdateCollider(CEVec3 const&);
 
@@ -180,7 +180,7 @@ namespace Collision {
 
 		Polygon();
 		Polygon(std::initializer_list<CEVec3> vertices, f32 rotation = 0.f, CEVec3 const& position = {}, CEVec3 const& offset = {});
-		virtual void updateRotation(f32 newRotation);
+		virtual void UpdateRotation(f32 newRotation);
 		~Polygon() = default;
 		virtual void UpdateCollider(CEVec3 const&);
 		void updatePosition(CEVec3 const& newPos);

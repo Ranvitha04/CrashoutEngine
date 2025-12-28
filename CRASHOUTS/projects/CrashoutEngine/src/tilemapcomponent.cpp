@@ -25,7 +25,7 @@ __________________________________________________________________________*/
 #include "assetmanager.h"
 #include "tilemapasset.h"
 #include "textureasset.h"
-#include "hierarchy_components.h"
+#include "hierarchycomponent.h"
 #include "hierarchy.h"
 #include <filesystem>
 #include <cmath> // For std::floor

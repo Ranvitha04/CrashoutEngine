@@ -34,7 +34,7 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserve
 #include "performanceSystem.h"
 #include "performanceViewer.h"
 #include "hierarchy.h"   
-#include "hierarchy_components.h" 
+#include "hierarchycomponent.h" 
 #include "prefab_init.h"
 #include "instanceSystem.h"
 #include "sceneasset.h"
@@ -83,6 +83,7 @@ static FrameProfiler gProfiler;
 
 #if USE_IMGUI_EDITOR
 EngineState engineState = EngineState::STOP;
+static UI::UIState g_uiState;
 #else
 EngineState engineState = EngineState::PLAY;
 #endif
@@ -199,12 +200,7 @@ void Init() {
 
     using namespace Messaging;
 
-    // 1. PHYSICS SYSTEM 
-    // Only cares about physical collisions, ignores triggers (handled internally by PhysicsHandler)
-    collisionSystem.registerObserver(EventType::CollisionEnter, physicsSystem);
-    collisionSystem.registerObserver(EventType::CollisionStay, physicsSystem);
-
-    // 2. COLLISION EVENT MANAGER
+    // COLLISION EVENT MANAGER
     // Physical Collisions
     collisionSystem.registerObserver(EventType::CollisionEnter, collisionEvent);
     collisionSystem.registerObserver(EventType::CollisionStay, collisionEvent);
@@ -263,11 +259,11 @@ void Init() {
     CrashoutsEngine::ScriptSystem::InitializeAll(MonoManager::GetDomain(), MonoManager::GetAssembly());
 
     InputManager::Init(GLApp::ptr_window);
-    UI::Init(GLApp::ptr_window); // NEW
-    PerformanceSystem::Get().Attach(gProfiler);
 
     #if USE_IMGUI_EDITOR
     engineState = EngineState::STOP;
+    UI::Init(GLApp::ptr_window, g_uiState); 
+    PerformanceSystem::Get().Attach(gProfiler);
     #else
     engineState = EngineState::PLAY;
     #endif  
@@ -315,8 +311,6 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
 #if !USE_IMGUI_EDITOR 
     (void)globalSelectedEntity;
 #endif
-
-    static UI::UIState uiState;
 
     // --- 1: RENDER THE RAW GAME SCENE ---
     // FOR USE_IMGUI_EDITOR AND NOT USING
@@ -424,151 +418,10 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
     
     // Unbind FBO
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    /*auto DrawTitleButton = [&](const char* label)
-        {
-            ImFont* mono = ImGui::GetIO().Fonts->Fonts[0]; // first baked font is monospace
-            ImGui::PushFont(mono);
-
-            float btnW = 32.0f;
-            float btnH = 28.0f;
-
-            ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
-            ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 0.0f);
-            ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));
-            ImGui::PushStyleColor(ImGuiCol_Button, IM_COL32(40, 40, 40, 255));
-            ImGui::PushStyleColor(ImGuiCol_ButtonHovered, IM_COL32(60, 60, 60, 255));
-            ImGui::PushStyleColor(ImGuiCol_ButtonActive, IM_COL32(80, 80, 80, 255));
-            ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(220, 220, 220, 255));
-
-            ImGui::Button(label, ImVec2(btnW, btnH));
-
-            bool clicked = ImGui::IsItemClicked();
-
-            ImGui::PopStyleColor(4);
-            ImGui::PopStyleVar(3);
-            ImGui::PopFont();
-
-
-            return clicked;
-        };*/
 
 #if USE_IMGUI_EDITOR
     // 1. Start the Dear ImGui frame
     UI::BeginFrame();
-    //goddamn lobotomy
-    /*const float titleBarHeight = 30.0f;
-    {
-        ImGuiViewport* viewport = ImGui::GetMainViewport();
-
-        ImGui::SetNextWindowPos(viewport->Pos);
-        ImGui::SetNextWindowSize(ImVec2(viewport->Size.x, titleBarHeight));
-        ImGui::SetNextWindowViewport(viewport->ID);
-
-        ImGuiWindowFlags flags =
-            ImGuiWindowFlags_NoDecoration |
-            ImGuiWindowFlags_NoDocking |
-            ImGuiWindowFlags_NoMove |
-            ImGuiWindowFlags_NoSavedSettings |
-            ImGuiWindowFlags_NoScrollbar |
-            ImGuiWindowFlags_NoScrollWithMouse;
-
-        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(8, 8));
-        ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(6, 4));
-        ImGui::PushStyleColor(ImGuiCol_WindowBg, IM_COL32(25, 25, 25, 255));
-
-        ImGui::Begin("##TitleBarOverlay", nullptr, flags);
-
-        // Title text
-        ImGui::SetCursorPosY((titleBarHeight - ImGui::GetTextLineHeight()) * 0.5f);
-        ImGui::Text("CRASHOUTS ENGINE");
-
-        // Right aligned buttons
-        float buttonRightOffset = 10.0f;
-        float buttonArea = 3 * 32;    // three 32px buttons
-        ImGui::SameLine(ImGui::GetWindowWidth() - buttonArea - buttonRightOffset);
-
-		// minimize
-        if (DrawTitleButton("-"))
-            glfwIconifyWindow(GLApp::ptr_window);
-
-        ImGui::SameLine(0.0f, 0.0f);
-
-        // fullscreen
-        static bool fullscreen = false; // start windowed
-
-        if (DrawTitleButton(fullscreen ? "[ ]" : "[]"))
-        {
-            GLFWmonitor* mon = glfwGetPrimaryMonitor();
-            const GLFWvidmode* mode = glfwGetVideoMode(mon);
-
-            if (!fullscreen)
-                glfwSetWindowMonitor(GLApp::ptr_window, mon, 0, 0, mode->width, mode->height, mode->refreshRate);
-            else
-                glfwSetWindowMonitor(GLApp::ptr_window, NULL, 100, 100, 1600, 900, 0);
-
-            fullscreen = !fullscreen;
-        }
-
-
-
-        ImGui::SameLine(0.0f, 0.0f);
-
-        //close
-        if (DrawTitleButton("X"))
-            glfwSetWindowShouldClose(GLApp::ptr_window, true);
-
-		// dragging is stupidly bugged but whatever - Rain
-		// YEAHHHHH ITS FIXED
-        // Disable dragging in fullscreen
-        if (!fullscreen)
-        {
-            static bool draggingWindow = false;
-            static POINT cursorStart;
-            static int winStartX, winStartY;
-
-            float buttonsWidth = 3 * 28 + 12;
-            ImVec2 titlebarMin = ImGui::GetWindowPos();
-            ImVec2 titlebarMax = ImVec2(
-                titlebarMin.x + ImGui::GetWindowWidth() - buttonsWidth,
-                titlebarMin.y + titleBarHeight
-            );
-
-            bool mouseInTitleBar = ImGui::IsMouseHoveringRect(titlebarMin, titlebarMax);
-            bool leftDown = ImGui::IsMouseDown(ImGuiMouseButton_Left);
-
-            // Start drag
-            if (mouseInTitleBar && leftDown && !draggingWindow && !ImGui::IsAnyItemHovered())
-            {
-                draggingWindow = true;
-
-                // Get initial cursor position (WIN32 absolute)
-                GetCursorPos(&cursorStart);
-
-                glfwGetWindowPos(GLApp::ptr_window, &winStartX, &winStartY);
-            }
-
-            // Dragging
-            if (draggingWindow)
-            {
-                POINT cursorNow;
-                GetCursorPos(&cursorNow);
-
-                int dx = cursorNow.x - cursorStart.x;
-                int dy = cursorNow.y - cursorStart.y;
-
-                glfwSetWindowPos(GLApp::ptr_window,
-                    winStartX + dx,
-                    winStartY + dy);
-
-                if (!leftDown)
-                    draggingWindow = false;
-            }
-        }
-
-        ImGui::End();
-        ImGui::PopStyleColor();
-        ImGui::PopStyleVar(2);
-    }*/
 
     // 2. Setup Dockspace 
     ImGuiViewport* viewport = ImGui::GetMainViewport();
@@ -595,7 +448,7 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
         ImGui::PopStyleVar(3);
 
         // Render the menu bar *inside* the Dockspace Begin/End
-        UI::RenderDebugMenuBar(uiState);
+        //UI::RenderDebugMenuBar(g_uiState);
 
         // Define the actual dockspace area
         ImGuiID dockspace_id = ImGui::GetID("Dockspace");
@@ -606,7 +459,7 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
         glBindFramebuffer(GL_FRAMEBUFFER, gameFboID);
         {
             FrameProfiler::Scoped s2(PerformanceSystem::Get().GetProfiler(), "UI");
-            UI::Render(gProfiler, physicsSystem, globalSelectedEntity, uiState);
+            UI::Render(gProfiler, globalSelectedEntity, g_uiState);
         }
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         //glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -702,16 +555,17 @@ void Update(double const& dt) {
     ScopedMemTag mem(MemTag::Update);
     CrashoutsEngine::UpdateHierarchy(*CrashoutsEngine::ECS::getInstance());
 
+    {
+        FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Collision");
+        collisionSystem.Update(dt, (Collision::EngineState)engineState);
+    }
+
     if (engineState == EngineState::PLAY) {
         KeyframeUnity::UpdateAll(*CrashoutsEngine::ECS::getInstance(), (float)dt);
         CrashoutsEngine::ScriptSystem::UpdateAll();
 
         aiSystem.Update();
 
-        {
-            FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Collision");
-            collisionSystem.Update(dt, (Collision::EngineState)engineState);
-        }
         //fixed Update please work
         {
             FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "ScriptFixedUpdate");
@@ -740,10 +594,6 @@ void Update(double const& dt) {
     }
     else if (engineState == EngineState::STOP) {
         {
-            FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Collision");
-            collisionSystem.Update(dt, (Collision::EngineState)engineState);
-        }
-        {
             FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Physics");
             physicsSystem.Update(0.f);
         }
@@ -761,10 +611,6 @@ void Update(double const& dt) {
         physicsSystem.Update(0.f);
         InputManager::ClearInputs();
         return;
-    }
-    else {
-        FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Physics");
-        physicsSystem.Update(0.f);
     }
 
     // Process Game Camera
@@ -817,7 +663,6 @@ void Update(double const& dt) {
 Release resources
 */
 void CleanUp() {
-    UI::Shutdown();
     CrashoutsEngine::ScriptSystem::DestroyAll();
 
     CrashoutsEngine::PostProcessing::ShutdownPP();
@@ -825,7 +670,12 @@ void CleanUp() {
     DebugReflection::ComponentRegistry::instance().clear();
     DebugReflection::PanelRegistry::instance().clear();
     DebugReflection::PhysicsRegistry::instance().clear();
+
+#if USE_IMGUI_EDITOR
+    UI::Shutdown(g_uiState);
     Logger::Instance().Clear();
+#endif
+
     GLApp::cleanup();
     InputManager::Shutdown();
     ShutdownGameStateManager();

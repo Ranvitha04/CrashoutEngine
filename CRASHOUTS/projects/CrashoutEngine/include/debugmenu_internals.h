@@ -36,7 +36,7 @@
 #include "audiocomponent.h"
 #include "tilemapcomponent.h"
 #include "prefabcomponent.h"
-#include "hierarchy_components.h" // Parent/Child components
+#include "hierarchycomponent.h" // Parent/Child components
 #include "keyframe.h" // Animator component
 
 // --- 5. Systems & Managers ---
@@ -151,7 +151,7 @@ namespace UI {
     void RenderInspectorPanel(CrashoutsEngine::ECS& ecs, CrashoutsEngine::Entity selected, UIState& ui);
     void RenderAnimationPanel(CrashoutsEngine::ECS& ecs, CrashoutsEngine::Entity selected, UIState& ui);
     void RenderAudioPanel(FrameProfiler& profiler, CrashoutsEngine::ECS& ecs, UIState& ui);
-    void RenderPhysicsPanel(FrameProfiler& profiler, CrashoutsEngine::ECS& ecs, ::Physics::PhysicsHandler& phys, UIState& ui);
+    void RenderPhysicsPanel(FrameProfiler& profiler, CrashoutsEngine::ECS& ecs, UIState& ui);
     void RenderPerformancePanel(FrameProfiler& profiler, UIState& ui);
     void RenderConsolePanel(UIState& ui);
     void RenderGameStatePanel(UIState& ui);

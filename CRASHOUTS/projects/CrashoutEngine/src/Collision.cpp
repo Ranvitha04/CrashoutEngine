@@ -528,6 +528,7 @@ namespace Collision {
 	}
 
 	void CollisionHandler::Update([[maybe_unused]] double deltaTime, EngineState state) {
+		m_FrameCollisions.clear();
 
 		CrashoutsEngine::ECS& globalECS = *(CrashoutsEngine::ECS::getInstance());
 
@@ -535,10 +536,23 @@ namespace Collision {
 		std::vector<CrashoutsEngine::Entity> colliderEntities =
 			globalECS.GetComponentArray<Component::ColliderComponent>().indexToEntity;
 
-		if (state == EngineState::PAUSE) return;
 		if (state == EngineState::STOP) {
 			lastFrameCollision.clear();
-			return;
+			currentFrameCollision.clear();
+		}
+
+		// Force all colliders to match their Transform position BEFORE we calculate collisions.
+		for (CrashoutsEngine::Entity& entity : colliderEntities) {
+			if (globalECS.HasComponent<Component::TransformComponent>(entity)) {
+				auto* transform = globalECS.GetComponent<Component::TransformComponent>(entity);
+				auto* collider = globalECS.GetComponent<Component::ColliderComponent>(entity);
+
+				// Sync Position & Rotation
+				if (collider && collider->collider) {
+					collider->collider->UpdateCollider(transform->position);
+					collider->collider->UpdateRotation(transform->rotation);
+				}
+			}
 		}
 
 		/*BROADPHASE*/
@@ -597,71 +611,86 @@ namespace Collision {
 					if (collider1->collider->type > collider2->collider->type) std::swap(entity1Ptr, entity2Ptr);
 					if (*entity1Ptr > *entity2Ptr) std::swap(entity1Ptr, entity2Ptr);
 
-					// If EITHER collider is a trigger, it is a Trigger Event.
-					// Otherwise, it is a Collision Event.
-					bool isTriggerInteraction = collider1->collider->isTrigger || collider2->collider->isTrigger;
+					// Populate master list
+					m_FrameCollisions.push_back(
+						CollisionEvent{ collisionManifold, *entity1Ptr, *entity2Ptr }
+					);
+
+					// Gameplay messaging only when in play mode
+
+					if (state == EngineState::PLAY) {
+						// If EITHER collider is a trigger, it is a Trigger Event.
+						// Otherwise, it is a Collision Event.
+						bool isTriggerInteraction = collider1->collider->isTrigger || collider2->collider->isTrigger;
+
+						using namespace Messaging;
+						EventType enterType = isTriggerInteraction ? EventType::TriggerEnter : EventType::CollisionEnter;
+						EventType stayType = isTriggerInteraction ? EventType::TriggerStay : EventType::CollisionStay;
+
+						// Check if this pair was already processed this frame (e.g. duplicate query)
+						bool isIn{ false };
+						for (ContactInformation const& test : currentFrameCollision) {
+							if (test.contacts.first == *entity1Ptr && test.contacts.second == *entity2Ptr) isIn = true;
+						}
+
+						if (!isIn) {
+							ContactPair pair{ *entity1Ptr, *entity2Ptr };
+
+							// Check if this pair existed Last Frame
+							if (isPairInCollection(pair, lastFrameCollision)) {
+								// STAY
+								CollisionMessage stayMessage{ stayType, collisionManifold, *entity1Ptr, *entity2Ptr };
+								sendMessage(stayMessage);
+							}
+							else {
+								// ENTER
+								CollisionMessage enterMessage{ enterType, collisionManifold, *entity1Ptr, *entity2Ptr };
+								sendMessage(enterMessage);
+							}
+
+							// Save contact
+							currentFrameCollision.push_back(std::move(ContactInformation{ pair, collisionManifold }));
+						}
+					}
+				}
+			}
+		}
+		if (state == EngineState::PLAY) {
+			// --- EXIT EVENT LOOP ---
+			for (ContactInformation const& contactInfo : lastFrameCollision) {
+				// If contact existed last frame but NOT this frame -> EXIT
+				if (!isPairInCollection(contactInfo.contacts, currentFrameCollision)) {
 
 					using namespace Messaging;
-					EventType enterType = isTriggerInteraction ? EventType::TriggerEnter : EventType::CollisionEnter;
-					EventType stayType = isTriggerInteraction ? EventType::TriggerStay : EventType::CollisionStay;
+					EventType exitType = EventType::CollisionExit; // Default to Collision
 
-					// Check if this pair was already processed this frame (e.g. duplicate query)
-					bool isIn{ false };
-					for (ContactInformation const& test : currentFrameCollision) {
-						if (test.contacts.first == *entity1Ptr && test.contacts.second == *entity2Ptr) isIn = true;
+					// Re-check if it was a trigger to send the right Exit message.
+					// Safely get components (entities might have been destroyed)
+					if (globalECS.HasComponent<Component::ColliderComponent>(contactInfo.contacts.first) &&
+						globalECS.HasComponent<Component::ColliderComponent>(contactInfo.contacts.second))
+					{
+						auto* c1 = globalECS.GetComponent<Component::ColliderComponent>(contactInfo.contacts.first);
+						auto* c2 = globalECS.GetComponent<Component::ColliderComponent>(contactInfo.contacts.second);
+
+						if (c1->collider->isTrigger || c2->collider->isTrigger) {
+							exitType = EventType::TriggerExit;
+						}
 					}
 
-					if (!isIn) {
-						ContactPair pair{ *entity1Ptr, *entity2Ptr };
-
-						// Check if this pair existed Last Frame
-						if (isPairInCollection(pair, lastFrameCollision)) {
-							// STAY
-							CollisionMessage stayMessage{ stayType, collisionManifold, *entity1Ptr, *entity2Ptr };
-							sendMessage(stayMessage);
-						}
-						else {
-							// ENTER
-							CollisionMessage enterMessage{ enterType, collisionManifold, *entity1Ptr, *entity2Ptr };
-							sendMessage(enterMessage);
-						}
-
-						// Save contact
-						currentFrameCollision.push_back(std::move(ContactInformation{ pair, collisionManifold }));
-					}
+					CollisionMessage exitMessage{ exitType, contactInfo.colManifold, contactInfo.contacts.first, contactInfo.contacts.second };
+					sendMessage(exitMessage);
 				}
 			}
+			// Swap Buffers
+			std::swap(currentFrameCollision, lastFrameCollision);
+			currentFrameCollision.clear();
 		}
 
-		// --- EXIT EVENT LOOP ---
-		for (ContactInformation const& contactInfo : lastFrameCollision) {
-			// If contact existed last frame but NOT this frame -> EXIT
-			if (!isPairInCollection(contactInfo.contacts, currentFrameCollision)) {
-
-				using namespace Messaging;
-				EventType exitType = EventType::CollisionExit; // Default to Collision
-
-				// Re-check if it was a trigger to send the right Exit message.
-				// Safely get components (entities might have been destroyed)
-				if (globalECS.HasComponent<Component::ColliderComponent>(contactInfo.contacts.first) &&
-					globalECS.HasComponent<Component::ColliderComponent>(contactInfo.contacts.second))
-				{
-					auto* c1 = globalECS.GetComponent<Component::ColliderComponent>(contactInfo.contacts.first);
-					auto* c2 = globalECS.GetComponent<Component::ColliderComponent>(contactInfo.contacts.second);
-
-					if (c1->collider->isTrigger || c2->collider->isTrigger) {
-						exitType = EventType::TriggerExit;
-					}
-				}
-
-				CollisionMessage exitMessage{ exitType, contactInfo.colManifold, contactInfo.contacts.first, contactInfo.contacts.second };
-				sendMessage(exitMessage);
-			}
+		if (state == EngineState::STOP) {
+			// Refresh collision data for the next play
+			currentFrameCollision.clear();
+			lastFrameCollision.clear();
 		}
-
-		// Swap Buffers
-		std::swap(currentFrameCollision, lastFrameCollision);
-		currentFrameCollision.clear();
 
 	}
 

@@ -255,7 +255,7 @@ void UpdateMainMenu()
 			Component::ColliderComponent* collider1{ globalECS->GetComponent<Component::ColliderComponent>(entity1) };
 			if (collider1->collider->type == Collision::ColliderType::ColliderType::OBB) {
 				Collision::OBBRect & obbTemp2 = dynamic_cast<Collision::OBBRect &>(*(collider1->collider));
-				obbTemp2.updateRotation(transform->rotation);
+				obbTemp2.UpdateRotation(transform->rotation);
 			}
 		}
 	}*/

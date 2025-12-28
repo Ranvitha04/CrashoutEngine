@@ -22,10 +22,8 @@ namespace Physics {
 
 	void ApplyImpulse(Collision::CollisionEvent const& event, CrashoutsEngine::ECS& globalECS);
 
-	class PhysicsHandler : public Messaging::Observer {
+	class PhysicsHandler {
 		private:
-			std::vector<Collision::CollisionEvent> collisionEvents;
-			Collision::CollisionHandler collisionHandler;
 
 			// --- Debug state (static so UI can toggle globally) ---
 			static inline bool sPaused = false;
@@ -36,7 +34,7 @@ namespace Physics {
 			static inline CEVec3 sGravity{ 0.f, -200.f, 0.f };
 			static inline float  sLinDamp = .1f;
 
-			PhysicsHandler();
+			PhysicsHandler() {};
 		public:
 
 			static PhysicsHandler& GetInstance() {
@@ -53,32 +51,13 @@ namespace Physics {
 
 			~PhysicsHandler() = default;
 
-			static void HandleCollisionMessages(Messaging::Messages& collEventBase, Messaging::Observer& obsBase);
-
 			/*!
-			@brief Modify Transform Component, and do Collision checks and resolutions. Call this function for the main PHYSICS Update. Every entity with a rigidbody, collider and transform component will get their transforms modified
+			@brief Modify Transform Component. Call this function for the main PHYSICS Update. Every entity with a rigidbody, collider and transform component will get their transforms modified
 			@param globalECS ECS object for ECS functions
 			@param globalEntities Collection of Entities
 			@param deltatime Time taken for the previous frame
 			*/
 			void Update(double deltatime);
-
-			/*!
-			@brief Based on the velocity of the current RigidBodyComponent, modify the transformComponent accordingly
-			@param transformComp The transform component to modify
-			@param rigidBodyComp The rigidbody component to get the velocity from
-			@param deltaTime Time taken for the previous frame
-			*/
-			void UpdatePhysics(Component::TransformComponent *transformComp, Component::RigidBodyComponent *rigidBodyComp, double deltaTime);
-
-			void SetCollisionEvent(Collision::CollisionEvent const& event);
-
-			//void fixedUpdate();
-
-			// --- Debug API ---
-			const std::vector<Collision::CollisionEvent>& Collisions() const { return collisionEvents; }
-			std::vector<Collision::CollisionEvent>& Collisions() { return collisionEvents; }
-			void ClearCollisions() { collisionEvents.clear(); }
 
 			static void SetPaused(bool p) { sPaused = p; }
 			static bool GetPaused() { return sPaused; }

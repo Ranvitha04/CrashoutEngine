@@ -94,7 +94,7 @@ namespace Collision {
 
 		}
 
-		updateRotation(newRotation);
+		UpdateRotation(newRotation);
 
 	}
 
@@ -114,7 +114,7 @@ namespace Collision {
 		}
 
 		if (newRotation) {
-			updateRotation(newRotation);
+			UpdateRotation(newRotation);
 			calcNormals();
 		}
 		else {
@@ -214,7 +214,7 @@ namespace Collision {
 		return poly;
 	}
 
-	void Polygon::updateRotation(f32 newRotation) {
+	void Polygon::UpdateRotation(f32 newRotation) {
 
 		/*Check if rotation didnt change from last time to avoid expensive calculation*/
 		/*same thing differernt day*/
@@ -269,7 +269,7 @@ namespace Collision {
 	}
 
 
-	void OBBRect::updateRotation(f32 newRotation) {
+	void OBBRect::UpdateRotation(f32 newRotation) {
 
 		/*Check if rotation didnt change from last time to avoid expensive calculation*/
 		if (rotation == newRotation) return;

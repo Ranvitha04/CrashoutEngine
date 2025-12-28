@@ -46,7 +46,7 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserve
 #include "collidercomponent.h"
 #include "layercomponent.h"
 #include "tilemapcomponent.h"
-#include "hierarchy_components.h"
+#include "hierarchycomponent.h"
 #include "transientcomponent.h"
 
 // FOR GAME GUI

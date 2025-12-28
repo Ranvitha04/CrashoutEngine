@@ -44,7 +44,7 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserv
 #include "collidercomponent.h"
 #include "tilemapcomponent.h"
 #include "keyframe.h" 
-#include "hierarchy_components.h"
+#include "hierarchycomponent.h"
 
 // FOR GAME GUI
 #include "buttoncomponent.h"
@@ -777,7 +777,7 @@ namespace {
 
 				float rot = p->rotation;
 				if (ImGui::DragFloat("Rotation", &rot, 0.05f)) {
-					p->updateRotation(rot);
+					p->UpdateRotation(rot);
 				}
 
 				// Offset Logic for Polygon

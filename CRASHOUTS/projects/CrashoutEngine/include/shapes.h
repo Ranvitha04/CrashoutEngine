@@ -132,7 +132,7 @@ namespace Component {
         number of segments. Higher segment counts produce smoother circles.
         */
         static void CreateCircle(const CEVec2& transformSize, const CEVec3& position, int segments = 32, 
-            float rotation = 0.0f, const CEColor& color = CEColor (1.0f, 1.0f, 1.0f), const bool isWorldSpace = true);
+            const CEColor& color = CEColor (1.0f, 1.0f, 1.0f), const bool isWorldSpace = true);
 
     };
     

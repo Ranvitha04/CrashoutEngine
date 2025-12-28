@@ -10,7 +10,7 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserv
 #include <algorithm>                 
 #include <utility>                  
 #include "hierarchy.h"
-#include "hierarchy_components.h"
+#include "hierarchycomponent.h"
 #include "entitymanager.h"
 #include "namecomponent.h"
 #include "transformcomponent.h"
@@ -294,7 +294,7 @@ namespace CrashoutsEngine {
             //
             //        // 2. Sync Rotation (Add parent's rotation influence)
             //        // If your OBB/Polygon supports rotation, pass the new child rotation
-            //        colliderComp->collider->updateRotation(childTransform->rotation);
+            //        colliderComp->collider->UpdateRotation(childTransform->rotation);
             //    }
             //}
 
