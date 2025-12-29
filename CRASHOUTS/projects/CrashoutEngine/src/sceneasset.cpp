@@ -423,10 +423,10 @@ namespace CrashoutsEngine {
                         rigidBodyComp.invInertia = rigidBodyValues["invInertia"].GetFloat();
                     }
 
-                    if (rigidBodyValues.HasMember("isTrigger") && rigidBodyValues["isTrigger"].IsBool()) {
+                    /*if (rigidBodyValues.HasMember("isTrigger") && rigidBodyValues["isTrigger"].IsBool()) {
                         bool isTrigger{ rigidBodyValues["isTrigger"].GetBool() };
                         if (!isTrigger) rigidBodyComp.getFlags().set(Physics::SIMULATE_DYNAMICS);
-                    }
+                    }*/
                 }
 
                 // Check if Collider 
@@ -434,7 +434,7 @@ namespace CrashoutsEngine {
                     const rapidjson::Value& colliderValue = entityValue[Keys::COLLIDER_COMPONENT];
 
                     // Check for HelperType (The UI/Logical Type)
-                    // Fallback to SPHERE if missing
+                    // Fallback to CIRCLE if missing
                     Collision::HelperType helperT = Collision::HelperType::SPHERE_T;
                     if (colliderValue.HasMember("helperType") && colliderValue["helperType"].IsInt()) {
                         helperT = static_cast<Collision::HelperType>(colliderValue["helperType"].GetInt());
@@ -453,7 +453,7 @@ namespace CrashoutsEngine {
                         if (colliderValue.HasMember("center"))
                             center = ReadVectorFromJson{}(colliderValue["center"]);
 
-                        auto newCol = std::make_unique<Collision::Sphere>(radius, center);
+                        auto newCol = std::make_unique<Collision::Circle>(radius, center);
                         // Offset logic if you save it separately
                         if (colliderValue.HasMember("offset")) newCol->offset = ReadVectorFromJson{}(colliderValue["offset"]);
 
@@ -1457,8 +1457,8 @@ namespace CrashoutsEngine {
                     rigidBodyValue.AddMember("inertia", rigidBodyComp.inertia, allocator);
                     rigidBodyValue.AddMember("invInertia", rigidBodyComp.invInertia, allocator);
 
-                    bool isTrigger{ rigidBodyComp.getFlags().test(Physics::SIMULATE_DYNAMICS) };
-                    rigidBodyValue.AddMember("isTrigger", isTrigger, allocator);
+                    //bool isTrigger{ rigidBodyComp.getFlags().test(Physics::SIMULATE_DYNAMICS) };
+                    //rigidBodyValue.AddMember("isTrigger", isTrigger, allocator);
 
                     entityValue.AddMember(rapidjson::StringRef(Keys::RIGIDBODY_COMPONENT), std::move(rigidBodyValue) , allocator);
                 }
@@ -1494,7 +1494,7 @@ namespace CrashoutsEngine {
 
                     switch (colComp.collider->helperType) {
                     case Collision::HelperType::SPHERE_T: {
-                        auto* s = static_cast<Collision::Sphere*>(colComp.collider.get());
+                        auto* s = static_cast<Collision::Circle*>(colComp.collider.get());
                         colliderValue.AddMember("radius", s->radius, allocator);
 
                         // Save Center specifically if needed, though position covers it

@@ -1,6 +1,6 @@
 ﻿#include "debugmenu_internals.h"
 #include "debugmenu.h"
-
+#include "physicsmanager.h"
 
 using namespace CrashoutsEngine;
 using namespace Serialization;
@@ -220,7 +220,7 @@ namespace UI {
             }
         }
 
-        ImGui::End();
+        //ImGui::End();
     }
 
     /*!
@@ -757,6 +757,8 @@ namespace UI {
                         ECS::getInstance()->Reset();
                         currSceneName = name;
                         Serialization::LoadScenes(name);
+
+                        if(engineState != EngineState::PLAY) ::Physics::PhysicsHandler::PhysicsHandler::GetInstance().SetPaused(true);
                     }
 
                     ImGui::SameLine();
@@ -1148,6 +1150,7 @@ namespace UI {
                 if (engineState == EngineState::STOP && !currSceneName.empty()) Serialization::SaveScenes(currSceneName);
                 engineState = EngineState::PLAY;
 
+                ::Physics::PhysicsHandler::PhysicsHandler::GetInstance().SetPaused(false);
                 CrashoutsEngine::Audio::AudioSystem::instance().setPaused(false);
 
                 CrashoutsEngine::RenderCamera::engineCamera.SetPostiion(CEVec3{ 0.f, 0.f, 0.f });
@@ -1162,6 +1165,7 @@ namespace UI {
                 if (engineState == EngineState::STOP && !currSceneName.empty()) Serialization::SaveScenes(currSceneName);
                 engineState = EngineState::PAUSE;
 
+                ::Physics::PhysicsHandler::PhysicsHandler::GetInstance().SetPaused(true);
                 CrashoutsEngine::Audio::AudioSystem::instance().setPaused(true);
             }
             ImGui::SameLine();
@@ -1176,6 +1180,8 @@ namespace UI {
                 }
                 //MonoManager::ReloadScripts();
                 engineState = EngineState::STOP;
+
+                ::Physics::PhysicsHandler::PhysicsHandler::GetInstance().SetPaused(true);
 
                 CrashoutsEngine::Audio::AudioSystem::instance().stopAll(true); // Stop FMOD Studio
                 CrashoutsEngine::Audio::AudioSystem::instance().setPaused(false);

@@ -14,9 +14,9 @@ All content © 2025 Digipen Institute of Technology Singapore.All rights reserved
 namespace Collision {
 	Collider::Collider(ColliderType type) : type{ type } { /*EMPTY BY DESIGN*/ }
 
-	Sphere::Sphere(f32 radius, CEVec3 const& center, CEVec3 const& newOffset) : Collider{ ColliderType::SPHERE }, radius{ radius } { position = center; offset = newOffset; helperType = HelperType::SPHERE_T; }
+	Circle::Circle(f32 radius, CEVec3 const& center, CEVec3 const& newOffset) : Collider{ ColliderType::CIRCLE }, radius{ radius } { position = center; offset = newOffset; helperType = HelperType::SPHERE_T; }
 
-	void Sphere::UpdateCollider(CEVec3 const& newPos) {
+	void Circle::UpdateCollider(CEVec3 const& newPos) {
 		position = newPos + offset;
 	}
 
@@ -31,10 +31,10 @@ namespace Collision {
 
 		switch (collider.type) {
 
-			case ColliderType::SPHERE: {
-				Sphere const& sphere{ dynamic_cast<Sphere const&>(collider) };
-				CEVec3 extents{ sphere.radius, sphere.radius, 0.f };
-				return AABBRect{ sphere.position - extents, sphere.position + extents };
+			case ColliderType::CIRCLE: {
+				Circle const& circle{ dynamic_cast<Circle const&>(collider) };
+				CEVec3 extents{ circle.radius, circle.radius, 0.f };
+				return AABBRect{ circle.position - extents, circle.position + extents };
 				}
 				break;
 			case ColliderType::AABB: {
@@ -138,17 +138,39 @@ namespace Collision {
 	}
 
 	f32 Polygon::calculateInertia(f32 mass) {
-		f32 inertia{};
-		f32 massPerTri{ mass / vertexCount };
+		f32 numeratorSum{};
+		f32 totalArea{};
+
 		for (int i{}; i < vertexCount; ++i) {
 			int nextIdx{ (i + 1) % vertexCount };
-			CEVec3 centerToVertice0{ vertices[i] - position };
-			CEVec3 centerToVertice1{ vertices[nextIdx] - position };
-			f32 inertiaTri{ massPerTri * (CEMath::LengthSq(centerToVertice0) + CEMath::LengthSq(centerToVertice1) + CEMath::Dot(centerToVertice0,centerToVertice1)) / 6.f };
-			inertia += inertiaTri;
+
+			// Vectors from Center (position) to vertices
+			CEVec3 v1{ vertices[i] - position };
+			CEVec3 v2{ vertices[nextIdx] - position };
+
+			// 1. Calculate Area of this triangle (Cross Product Magnitude / 2)
+			// For 2D on Z-plane, Cross Product is (x1*y2 - y1*x2)
+			f32 crossZ = std::abs(v1.x * v2.y - v1.y * v2.x);
+			f32 triArea = crossZ * 0.5f;
+
+			totalArea += triArea;
+
+			// 2. Calculate Geometric Inertia part for this triangle
+			// Formula: Area * (v1^2 + v2^2 + v1.v2) / 6
+			// We accumulate just the (v1^2... part * Area) first
+			f32 term = (CEMath::LengthSq(v1) + CEMath::LengthSq(v2) + CEMath::Dot(v1, v2));
+
+			// We multiply by density later, effectively:
+			// Inertia = Sum( Density * Area * term / 6 )
+			// Inertia = (Mass / TotalArea) * Sum( Area * term / 6 )
+			numeratorSum += (triArea * term);
 		}
+
+		if (totalArea == 0.f) return 0.f;
 		
-		return inertia;
+		// I = (Mass / TotalArea) * (Sum(Area * Term) / 6)
+		// Density = Mass / TotalArea
+		return (mass / totalArea) * (numeratorSum / 6.f);
 	}
 
 	Polygon Polygon::createOBB(CEVec3 const &min, CEVec3 const &max, f32 rotation, CEVec3 offset) {
@@ -176,8 +198,6 @@ namespace Collision {
 	CEVec3 Polygon::calculateOBBExtents(Polygon const& polygon) {
 		CEVec3 position{ polygon.position.x, polygon.position.y, 0.f };
 		CEVec3 extents{ position.x - polygon.vertices[0].x, position.y - polygon.vertices[0].y, 0.f };
-
-
 		return extents;
 	}
 

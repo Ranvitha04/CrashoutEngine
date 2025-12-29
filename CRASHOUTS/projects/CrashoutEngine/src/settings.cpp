@@ -21,6 +21,7 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserve
 
 #include "imgui.h" 
 #include "assetmanager.h"
+#include "frameratecontroller.h"
 
 /// Default screen width before loading from file
 unsigned int Settings::screenWidth = 1280;
@@ -139,6 +140,7 @@ void Settings::SaveEditorSettings(const UI::UIState& uiState) {
     // --- 2. Floating Point Values ---
     json.AddMember("overlayThickness", uiState.overlayThickness, allocator);
     json.AddMember("fontScale", uiState.fontScale, allocator); 
+    json.AddMember("fpsCap", FrameRateController::GetInstance().CAP(), allocator);
 
     // 3. Save Colors
     // We create an array of arrays: [[r,g,b,a], [r,g,b,a], ...]
@@ -219,6 +221,10 @@ void Settings::LoadEditorSettings(UI::UIState& uiState) {
         uiState.fontScale = json["fontScale"].GetFloat();
         // Apply zoom immediately
         ImGui::GetIO().FontGlobalScale = uiState.fontScale;
+    }
+
+    if (json.HasMember("fpsCap") && json["fpsCap"].IsInt()) {
+        FrameRateController::GetInstance().SetTargetFPS(json["fpsCap"].GetInt());
     }
 
     // --- 3. Load Colors ---

@@ -11,6 +11,7 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserv
 
 //__________________________________________________________________________*/
 
+#include "engine.h"
 #include "debugcollision.h"
 #include <algorithm>
 #include <cmath>
@@ -19,6 +20,7 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserv
 #include "rigidbodycomponent.h"
 #include "CEMath.h"
 #include "shapes.h"
+#include <limits>
 
 using namespace CrashoutsEngine;
 using namespace Component;
@@ -101,7 +103,7 @@ static void DrawPolygon(const Collision::Polygon* vertices, float thickness, con
 }
 
 /*!
- @brief Draws a 2D circle wireframe (used for sphere colliders projected to XY).
+ @brief Draws a 2D circle wireframe (used for circle colliders projected to XY).
  @param c            Center position.
  @param r            Radius.
  @param segments     Number of line segments (clamped to minimum of 8).
@@ -143,6 +145,20 @@ namespace CollisionGizmos {
 		const CEColor ok(0.15f, 0.8f, 0.55f);    // non-colliding tint
 		const CEColor hit(1.0f, 0.3f, 0.3f);     // colliding tint
 
+		// Culling preperations
+
+		RenderCamera::Camera& cam = (engineState != EngineState::PLAY) ? 
+			RenderCamera::engineCamera : RenderCamera::gameCamera;
+		CEVec3 camPos = cam.GetPosition();
+		float camHeight = cam.GetVisibleWorldHeight();
+		float camWidth = cam.GetVisibleWorldWidth();
+
+		// Create a bounding box for the camera viewport
+		float camMinX = camPos.x - (camWidth * 0.5f);
+		float camMaxX = camPos.x + (camWidth * 0.5f);
+		float camMinY = camPos.y - (camHeight * 0.5f);
+		float camMaxY = camPos.y + (camHeight * 0.5f);
+
 		// We use a HashSet for O(1) lookups later.
 		std::unordered_set<Entity> collidingEntities;
 
@@ -166,26 +182,53 @@ namespace CollisionGizmos {
 			// Skip drawing inactive/disabled colliders if desired
 			if (!pColliderComp->collider->enabled) continue;
 
+			// Frustum Culling Check
+
 			switch (pColliderComp->collider->type) {
-			case Collision::ColliderType::SPHERE: {
-				auto& sphereTemp = static_cast<Collision::Sphere const&>(*pColliderComp->collider);
-				// Reduced segments from 48 to 24 for performance
-				DrawCircleOutline(sphereTemp.position, sphereTemp.radius, 24, wireThickness, color);
+			case Collision::ColliderType::CIRCLE: {
+				auto& circle = static_cast<Collision::Circle const&>(*pColliderComp->collider);
+				// Simple Circle vs AABB (Camera) check
+				float closestX = std::fmaxf(camMinX, std::fminf(circle.position.x, camMaxX));
+				float closestY = std::fminf(camMinY, std::fminf(circle.position.y, camMaxY));
+				float distanceSq = std::powf(circle.position.x - closestX, 2) + std::powf(circle.position.y - closestY, 2);
+
+				if (distanceSq < (circle.radius * circle.radius)) {
+					// Reduced segments from 48 to 24 for performance
+					DrawCircleOutline(circle.position, circle.radius, 24, wireThickness, color);
+				}
 				break;
 			}
 			case Collision::ColliderType::AABB: {
-				auto& aabbTemp = static_cast<Collision::AABBRect const&>(*pColliderComp->collider);
-				DrawAABBOutline(aabbTemp.min, aabbTemp.max, wireThickness, color);
+				auto& aabb = static_cast<Collision::AABBRect const&>(*pColliderComp->collider);
+				// Standard AABB vs AABB check
+				if (aabb.max.x > camMinX && aabb.min.x < camMaxX &&
+					aabb.max.y > camMinY && aabb.min.y < camMaxY) {
+					DrawAABBOutline(aabb.min, aabb.max, wireThickness, color);
+				}
 				break;
 			}
-			case Collision::ColliderType::OBB: {
-				auto& obbTemp = static_cast<Collision::OBBRect const&>(*pColliderComp->collider);
-				DrawOBBOutline(&obbTemp, wireThickness, color);
-				break;
-			}
+			case Collision::ColliderType::OBB:
 			case Collision::ColliderType::POLYGON: {
-				auto& polygonTemp = static_cast<Collision::Polygon const&>(*pColliderComp->collider);
-				DrawPolygon(&polygonTemp, wireThickness, color);
+				// For OBB and Polygon, use their pre-calculated AABB 
+				auto& poly = static_cast<Collision::Polygon const&>(*pColliderComp->collider);
+
+				// Manual mini-AABB check for the polygon vertices
+				float pMinX = 1e10f, pMaxX = -1e10f, pMinY = 1e10f, pMaxY = -1e10f;
+				for (int i = 0; i < poly.vertexCount; ++i) {
+					pMinX = std::min(pMinX, poly.rotatedVertices[i].x);
+					pMaxX = std::max(pMaxX, poly.rotatedVertices[i].x);
+					pMinY = std::min(pMinY, poly.rotatedVertices[i].y);
+					pMaxY = std::max(pMaxY, poly.rotatedVertices[i].y);
+				}
+
+				if (pMaxX > camMinX && pMinX < camMaxX && pMaxY > camMinY && pMinY < camMaxY) {
+					if (pColliderComp->collider->type == Collision::ColliderType::OBB) {
+						auto& obbTemp = static_cast<Collision::OBBRect const&>(*pColliderComp->collider);
+						DrawOBBOutline(&obbTemp, wireThickness, color);
+					}
+					else
+						DrawPolygon(&poly, wireThickness, color);
+				}
 				break;
 			}
 			}
@@ -224,23 +267,12 @@ namespace CollisionGizmos {
 
 			CEVec3 relativeVel = velA - velB;
 
-			// Project relative velocity onto the normal to see how fast they are "approaching"
-			float impactSpeed = std::abs(CEMath::Dot(relativeVel, normal));
-
-			// 2. Determine Length
-			// Base length + extra length based on speed. 
-			// e.g., 5 units fixed + 0.5 units per 1 m/s of speed.
-			float lineLength = baseLen + (impactSpeed * 0.5f);
-
-			// Clamp it so it doesn't go to infinity or zero
-			lineLength = std::clamp(lineLength, baseLen, baseLen * 5.0f);
-
 			// 3. Draw
 			// Draw contact point
 			DrawCircleOutline(contactPt, wireThickness * 3.f, 8, wireThickness, CEColor{ 1.f, 0.f, 0.f }); // slightly larger circle
 
 			// Draw Normal Line scaled by velocity
-			Shapes::CreateLine(contactPt, contactPt + (normal * lineLength), wireThickness);
+			Shapes::CreateLine(contactPt, contactPt + (normal * baseLen), wireThickness);
 		}
 	}
 

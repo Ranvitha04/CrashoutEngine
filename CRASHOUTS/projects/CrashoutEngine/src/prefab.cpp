@@ -536,7 +536,7 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path) {
                 rb.dynamicFriction = rbD.dFric;
                 rb.inertia = rbD.inert;
                 rb.invInertia = rbD.invInert;
-                if (!rbD.isTrigger) rb.getFlags().set(Physics::SIMULATE_DYNAMICS); // Set True if NOT a trigger
+                //if (!rbD.isTrigger) rb.getFlags().set(Physics::SIMULATE_DYNAMICS); // Set True if NOT a trigger
             }
 
             // Collider
@@ -545,7 +545,7 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path) {
                 std::unique_ptr<Collision::Collider> ptr;
                 switch (colD.type) {
                 case Collision::HelperType::SPHERE_T:
-                    ptr = std::make_unique<Collision::Sphere>(colD.radius, colD.pos);
+                    ptr = std::make_unique<Collision::Circle>(colD.radius, colD.pos);
                     break;
                 case Collision::HelperType::OBB_T:
                     ptr = std::make_unique<Collision::Polygon>(Collision::Polygon::createOBB(colD.min, colD.max, colD.rotation, CEVec3{}));
@@ -790,8 +790,8 @@ namespace CrashoutsEngine {
             rbObj.AddMember("dynamicFriction", rb->dynamicFriction, allocator);
             rbObj.AddMember("inertia", rb->inertia, allocator);
             rbObj.AddMember("invInertia", rb->invInertia, allocator);
-            bool isTrigger = !rb->getFlags().test(Physics::SIMULATE_DYNAMICS);
-            rbObj.AddMember("isTrigger", isTrigger, allocator);
+            //bool isTrigger = !rb->getFlags().test(Physics::SIMULATE_DYNAMICS);
+            //rbObj.AddMember("isTrigger", isTrigger, allocator);
             obj.AddMember("rigidbody", rbObj, allocator);
         }
 
@@ -810,7 +810,7 @@ namespace CrashoutsEngine {
             // Specifics based on Type
             switch (col->collider->helperType) {
             case Collision::HelperType::SPHERE_T: {
-                auto* s = static_cast<Collision::Sphere*>(col->collider.get());
+                auto* s = static_cast<Collision::Circle*>(col->collider.get());
                 colObj.AddMember("radius", s->radius, allocator);
                 break;
             }

@@ -27,7 +27,7 @@ namespace Collision {
 	@brief	Different types of colliders
 	*/
 	enum class ColliderType {
-		SPHERE,
+		CIRCLE,
 		AABB,
 		OBB,
 		TRIANGLE,
@@ -87,18 +87,18 @@ namespace Collision {
 	};
 
 	/*!
-	@class	Sphere
-	@brief	Basic Sphere collider with radius and position
+	@class	Circle
+	@brief	Basic Circle collider with radius and position
 	*/
-	class Sphere : public Collider {
+	class Circle : public Collider {
 	public:
 		f32 radius;
-		Sphere(f32 radius, CEVec3 const& position, CEVec3 const& offset = CEVec3{});
-		~Sphere() = default;
+		Circle(f32 radius, CEVec3 const& position, CEVec3 const& offset = CEVec3{});
+		~Circle() = default;
 		virtual void UpdateCollider(CEVec3 const& newPos);
 
 		virtual std::unique_ptr<Collider> clone() const override {
-			return std::make_unique<Sphere>(*this);
+			return std::make_unique<Circle>(*this);
 		}
 	};
 
@@ -216,9 +216,9 @@ namespace Collision {
 		ColliderFactory() = default;
 
 		std::unique_ptr<Collider> CreateCollider(ColliderType type) {
-			if (type == ColliderType::SPHERE) {
+			if (type == ColliderType::CIRCLE) {
 
-				return std::make_unique<Sphere>(Sphere{
+				return std::make_unique<Circle>(Circle{
 					std::stof(defaultedArg("radius","0.f")),
 					CEVec3{
 						std::stof(defaultedArg("centerX", "0.f")),
@@ -265,7 +265,7 @@ namespace Collision {
 				);
 			}
 
-			return std::make_unique<Sphere>(Sphere{ 0.f, CEVec3{} });
+			return std::make_unique<Circle>(Circle{ 0.f, CEVec3{} });
 		}
 
 		void setArgs(ArgMap newArgs) {

@@ -1,5 +1,670 @@
 {
-    "entities": [],
+    "entities": [
+        {
+            "name": "box",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -26.711341857910158,
+                    "y": 9.416379928588868,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 10.0,
+                    "y": 10.0
+                }
+            },
+            "rigidbody": {
+                "mass": 1.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.0,
+                "dynamicFriction": 0.0,
+                "inertia": 0.0,
+                "invInertia": 0.0
+            },
+            "collider": {
+                "helperType": 1,
+                "isTrigger": false,
+                "enabled": true,
+                "position": {
+                    "x": -26.711341857910158,
+                    "y": 9.416379928588868,
+                    "z": 0.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": -31.711341857910158,
+                    "y": 4.416379928588867,
+                    "z": 0.0
+                },
+                "max": {
+                    "x": -21.711341857910158,
+                    "y": 14.416379928588868,
+                    "z": 0.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.0,
+                    "y": 0.4198894500732422,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            }
+        },
+        {
+            "name": "camera",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "camera": {
+                "zoom": 0.6000000238418579,
+                "xBounds": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "yBounds": {
+                    "x": 0.0,
+                    "y": 0.0
+                }
+            }
+        },
+        {
+            "name": "Circle",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -56.878475189208987,
+                    "y": -0.25731658935546877,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 10.0,
+                    "y": 10.0
+                }
+            },
+            "rigidbody": {
+                "mass": 1.0,
+                "restitutionCoeff": 1.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0
+            },
+            "collider": {
+                "helperType": 0,
+                "isTrigger": false,
+                "enabled": true,
+                "position": {
+                    "x": -56.878475189208987,
+                    "y": -0.25731658935546877,
+                    "z": 0.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "radius": 5.0,
+                "center": {
+                    "x": -56.878475189208987,
+                    "y": -0.25731658935546877,
+                    "z": 0.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 3,
+                "textureName": "",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            }
+        },
+        {
+            "name": "box_OBB",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": -30.100000381469728,
+                "position": {
+                    "x": 0.6847972869873047,
+                    "y": 5.846179962158203,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 10.0,
+                    "y": 10.0
+                }
+            },
+            "rigidbody": {
+                "mass": 1.0,
+                "restitutionCoeff": 0.25,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.20000000298023225,
+                "dynamicFriction": 0.10000000149011612,
+                "inertia": 16.66666603088379,
+                "invInertia": 0.06000000238418579
+            },
+            "collider": {
+                "helperType": 2,
+                "isTrigger": false,
+                "enabled": true,
+                "position": {
+                    "x": 0.6847972869873047,
+                    "y": 5.846179962158203,
+                    "z": 0.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": -4.315202713012695,
+                    "y": 0.8461799621582031,
+                    "z": 0.0
+                },
+                "max": {
+                    "x": 5.684797286987305,
+                    "y": 10.846179962158204,
+                    "z": 0.0
+                },
+                "rotation": -30.100000381469728
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 0.0,
+                    "z": 0.4309391975402832,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            }
+        },
+        {
+            "name": "Platform",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": -43.28511428833008,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 235.5,
+                    "y": 10.0
+                }
+            },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0
+            },
+            "collider": {
+                "helperType": 1,
+                "isTrigger": false,
+                "enabled": true,
+                "position": {
+                    "x": 0.0,
+                    "y": -43.28511428833008,
+                    "z": 0.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": -117.75,
+                    "y": -48.28511428833008,
+                    "z": 0.0
+                },
+                "max": {
+                    "x": 117.75,
+                    "y": -38.28511428833008,
+                    "z": 0.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            }
+        },
+        {
+            "name": "box_Clone6",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -13.883075714111329,
+                    "y": -30.608501434326173,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 69.5999984741211,
+                    "y": 16.899999618530275
+                }
+            },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0
+            },
+            "collider": {
+                "helperType": 3,
+                "isTrigger": false,
+                "enabled": true,
+                "position": {
+                    "x": -13.883075714111329,
+                    "y": -30.608501434326173,
+                    "z": 0.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "rotation": 0.0,
+                "vertices": [
+                    {
+                        "x": -48.683074951171878,
+                        "y": -39.058502197265628,
+                        "z": 0.0
+                    },
+                    {
+                        "x": -13.883075714111329,
+                        "y": -22.15850067138672,
+                        "z": 0.0
+                    },
+                    {
+                        "x": 20.91692352294922,
+                        "y": -39.058502197265628,
+                        "z": 0.0
+                    }
+                ]
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 2,
+                "textureName": "",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.0,
+                    "y": 0.4198894500732422,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            }
+        },
+        {
+            "name": "Platform_Clone7_Clone8",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -112.05886840820313,
+                    "y": -43.28511428833008,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 10.0,
+                    "y": 235.5
+                }
+            },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0
+            },
+            "collider": {
+                "helperType": 1,
+                "isTrigger": false,
+                "enabled": true,
+                "position": {
+                    "x": -112.05886840820313,
+                    "y": -43.28511428833008,
+                    "z": 0.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": -117.05886840820313,
+                    "y": -161.0351104736328,
+                    "z": 0.0
+                },
+                "max": {
+                    "x": -107.05886840820313,
+                    "y": 74.46488952636719,
+                    "z": 0.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            }
+        },
+        {
+            "name": "Platform_Clone7_Clone8_Clone9",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 111.72245788574219,
+                    "y": -43.28511428833008,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 10.0,
+                    "y": 235.5
+                }
+            },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0
+            },
+            "collider": {
+                "helperType": 1,
+                "isTrigger": false,
+                "enabled": true,
+                "position": {
+                    "x": 111.72245788574219,
+                    "y": -43.28511428833008,
+                    "z": 0.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": 106.72245788574219,
+                    "y": -161.0351104736328,
+                    "z": 0.0
+                },
+                "max": {
+                    "x": 116.72245788574219,
+                    "y": 74.46488952636719,
+                    "z": 0.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            }
+        }
+    ],
     "layers": {
         "Default": 0,
         "Enemy": 4,

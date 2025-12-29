@@ -100,7 +100,7 @@ namespace Component {
 			return mMass;
 		}
 
-		inline std::bitset<8>& getFlags() { return flags; }
+		//inline std::bitset<8>& getFlags() { return flags; }
 
 		/*Member Functions*/
 		f32 GetInverseMass();

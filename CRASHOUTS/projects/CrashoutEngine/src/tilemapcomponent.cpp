@@ -209,12 +209,12 @@ namespace CrashoutsEngine::TileMapUtils {
 
 				switch (matchedRule->colliderType) {
 					// --------------------------------------------------------
-					// ColliderType::SPHERE
+					// ColliderType::CIRCLE
 					// --------------------------------------------------------
-					case Collision::ColliderType::SPHERE: {
+					case Collision::ColliderType::CIRCLE: {
 						// Radius is usually half the width (or average of width/height)
 						float radius = std::min(halfW, halfH);
-						newCollider = std::make_unique<Collision::Sphere>(radius, tPos);
+						newCollider = std::make_unique<Collision::Circle>(radius, tPos);
 						helperT = Collision::HelperType::SPHERE_T;
 						break;
 					}

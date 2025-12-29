@@ -57,7 +57,7 @@ namespace Collision {
 		return closestPt;
 	}
 
-	std::pair<f32, f32> projectCircleOntoAxis(Sphere const& sphere2Temp, CEVec3 const& center, CEVec3 const& axis) {
+	std::pair<f32, f32> projectCircleOntoAxis(Circle const& sphere2Temp, CEVec3 const& center, CEVec3 const& axis) {
 
 		CEVec3 outerPoint1{ center + axis * sphere2Temp.radius };
 		CEVec3 outerPoint2{ center - axis * sphere2Temp.radius };
@@ -115,12 +115,14 @@ namespace Collision {
 
 	}
 
-	CollisionHandler::Contact sphereVsPolyEdges(const Sphere& a, const Polygon& b) {
+	CollisionHandler::Contact sphereVsPolyEdges(const Circle& a, const Polygon& b) {
 
 		CEVec3 sphereCenter{a.position};
 
 		std::optional<CEVec3> nearestEdgeNormal{ std::nullopt };
 		std::optional<CEVec3> nearestEdgeVertex{ std::nullopt };
+
+		float minProj = std::numeric_limits<float>::max();
 
 		for (int i{}; i < b.vertexCount; ++i) {
 			int idx{ (i + 1) % b.vertexCount };
@@ -133,7 +135,6 @@ namespace Collision {
 			dirToNext = CEMath::Normalize(dirToNext);
 
 			f32 dirToNextProjection{ CEMath::Dot(vertToCirc, dirToNext) };
-			float minProj = std::numeric_limits<float>::max();
 
 			if (dirToNextProjection > 0.f && dirToNextProjection < dirToNextLength) {
 				float dist = std::abs(CEMath::Dot(b.normalEdges[i], vertToCirc));
@@ -152,24 +153,32 @@ namespace Collision {
 		if (projToEdgeNormal - a.radius < 0.f) {
 			f32 depth{ a.radius - projToEdgeNormal };
 			CEVec3 penetrationPt{ sphereCenter + (*nearestEdgeNormal * -a.radius) };
-			return std::make_optional(CollisionManifold{ *nearestEdgeNormal * -1.f, {penetrationPt}, depth, true, 1 });
+			return std::make_optional(CollisionManifold{ *nearestEdgeNormal, {penetrationPt}, depth, true, 1 });
 		}
 
 		return std::nullopt;
 
 	}
 
-	CollisionHandler::Contact sphereVsPolyCorner(const Sphere& a, const Polygon& b) {
+	CollisionHandler::Contact sphereVsPolyCorner(const Circle& a, const Polygon& b) {
 
 		CEVec3 sphereCenter{ a.position };
 
 		for (int i{}; i < b.vertexCount; ++i) {
 			CEVec3 vertex{ b.rotatedVertices[i] };
-			CEVec3 dirToSphereCenter = CEMath::Normalize(sphereCenter - vertex);
-			if (CEMath::LengthSq(dirToSphereCenter) < a.radius * a.radius) {
-				f32 depth{ a.radius - CEMath::Length(dirToSphereCenter) };
-				dirToSphereCenter = CEMath::Normalize(dirToSphereCenter);
-				return std::make_optional(CollisionManifold{ dirToSphereCenter, {vertex}, depth, true, 1 }); /*COME BACK TO THIS LATER TOO*/
+			CEVec3 vertToCenter = sphereCenter - vertex;
+			float distSq = CEMath::LengthSq(vertToCenter);
+
+			if (distSq < a.radius * a.radius) {
+				float distance = std::sqrt(distSq);
+
+				if (distance == 0.0f) return std::nullopt;
+
+				f32 depth{ a.radius - distance };
+
+				CEVec3 normal = vertToCenter * (1.0f / distance);
+
+				return std::make_optional(CollisionManifold{ normal, {vertex}, depth, true, 1 });
 			}
 		}
 
@@ -180,14 +189,14 @@ namespace Collision {
 /*ALL THE COLLISION DETECTIONS RIGHT HERE*/
 namespace Collision {
 	
-	// SPHERE to SPHERE
-	CollisionManifold CollisionHandler::SphereToSphereCollision(CollisionProps const& coll1, CollisionProps const& coll2) {
+	// CIRCLE to CIRCLE
+	CollisionManifold CollisionHandler::CircleToCircleCollision(CollisionProps const& coll1, CollisionProps const& coll2) {
 
 		CollisionManifold result{ .collisionOccured = false };
 
-		Sphere const& sphere1Temp = dynamic_cast<Sphere const&>(*(coll1.collider));
+		Circle const& sphere1Temp = dynamic_cast<Circle const&>(*(coll1.collider));
 
-		Sphere const& sphere2Temp = dynamic_cast<Sphere const&>(*(coll2.collider));
+		Circle const& sphere2Temp = dynamic_cast<Circle const&>(*(coll2.collider));
 
 		float totalRadius{ sphere1Temp.radius + sphere2Temp.radius };
 		CEVec3 circ1ToCirc2{ coll2.position - coll1.position };
@@ -300,30 +309,40 @@ namespace Collision {
 	}
 
 	// MIX
-	CollisionManifold CollisionHandler::SphereToPolygonCollision(CollisionProps const& coll1, CollisionProps const& coll2) {
+	CollisionManifold CollisionHandler::CircleToPolygonCollision(CollisionProps const& coll1, CollisionProps const& coll2) {
 		
-		CollisionManifold result{ .collisionOccured = false };
-
 		CollisionProps const* spherePtr{ &coll1 };
 		CollisionProps const* polygonPtr{ &coll2 };
+		bool swapped = false;
 
 		if (spherePtr->collider->type > polygonPtr->collider->type) {
 			std::swap(spherePtr, polygonPtr);
+			swapped = true;
 		}
 
-		Sphere const& sphere = dynamic_cast<Sphere const&>(*(spherePtr->collider));
-
+		Circle const& circle = dynamic_cast<Circle const&>(*(spherePtr->collider));
 		Polygon const& polygon = dynamic_cast<Polygon const&>(*(polygonPtr->collider));
 
-		std::optional<CollisionManifold> contact{ sphereVsPolyEdges(sphere, polygon) };
-		if (contact) return *contact;
-		else {
-			std::optional<CollisionManifold> contact2{ sphereVsPolyCorner(sphere, polygon) };
-			if (contact2) return *contact2;
+		std::optional<CollisionManifold> manifold;
+		// Check Edges first
+		manifold = sphereVsPolyEdges(circle, polygon);
+		// If no edge collision, check corners
+		if (!manifold) {
+			manifold = sphereVsPolyCorner(circle, polygon);
 		}
 
-		
-		return result;
+		if (manifold) {
+			CollisionManifold result = *manifold;
+
+			if (!swapped) {
+				result.normal = -1.f * result.normal;
+			}
+
+			return result;
+		}
+
+		// No collision
+		return CollisionManifold{ .collisionOccured = false };
 	}
 
 	CollisionManifold CollisionHandler::AABBToPolygonCollision(CollisionProps const& coll1, CollisionProps const& coll2) {
@@ -333,8 +352,10 @@ namespace Collision {
 		CollisionProps const* polyPtr{ &coll2 };
 
 		// Sort inputs so we know which is which (Enum Order: AABB < POLYGON)
+		bool swapped = false;
 		if (aabbPtr->collider->type > polyPtr->collider->type) {
 			std::swap(aabbPtr, polyPtr);
+			swapped = true;
 		}
 
 		AABBRect const& aabb = dynamic_cast<AABBRect const&>(*(aabbPtr->collider));
@@ -356,7 +377,7 @@ namespace Collision {
 			tempPoly.normalEdges[3] = CEVec3{ -1.f, 0.f, 0.f }; // Left Edge Normal
 		}
 
-		// 3. SAT Checks
+		// SAT Checks
 		Contact contactA{ getContactPoint(tempPoly, existingPoly) };
 		if (!contactA) return result;
 
@@ -367,25 +388,24 @@ namespace Collision {
 
 		if (contactA->depth < contactB->depth) {
 			finalManifold = *contactA;
+
+			// SAT found smallest overlap on AABB's axis.
+			// Normal currently pushes Polygon OUT of AABB.
+			// Flip normal to push AABB away from Polygon (AABB -> Polygon collision)
+			finalManifold.normal = -1.f * finalManifold.normal;
 		}
 		else {
-			finalManifold = CollisionManifold{ -1.f * contactB->normal, contactB->contactPoints, contactB->depth, true, contactB->numOfContacts };
+			finalManifold = *contactB;
 		}
 
-		// Calculate the vector between the actual physical centers
-		CEVec3 aabbCenter = aabbPos;
-		CEVec3 polyCenter = polyPtr->position + existingPoly.offset;
-		CEVec3 centerToCenter = polyCenter - aabbCenter;
-
-		// If the normal points opposite to the center-to-center vector, flip it.
-		if (CEMath::Dot(finalManifold.normal, centerToCenter) < 0.0f) {
+		if (!swapped) {
 			finalManifold.normal = -1.f * finalManifold.normal;
 		}
 
 		return finalManifold;
 	}
 
-	CollisionManifold CollisionHandler::SphereToAABBCollision(CollisionProps const& coll1, CollisionProps const& coll2) {
+	CollisionManifold CollisionHandler::CircleToAABBCollision(CollisionProps const& coll1, CollisionProps const& coll2) {
 		CollisionManifold result{ .collisionOccured = false };
 
 		CollisionProps const* spherePtr{ &coll1 };
@@ -398,7 +418,7 @@ namespace Collision {
 			swapped = true;
 		}
 
-		Sphere const& sphere1Temp = dynamic_cast<Sphere const&>(*(spherePtr->collider));
+		Circle const& sphere1Temp = dynamic_cast<Circle const&>(*(spherePtr->collider));
 		AABBRect const& aabb2Temp = dynamic_cast<AABBRect const&>(*(aabbPtr->collider));
 
 		// Apply Offsets (Use the collider's effective center, not just entity position)
@@ -425,7 +445,7 @@ namespace Collision {
 			result.collisionOccured = true;
 			result.numOfContacts = 1;
 
-			// Sphere Center is INSIDE the AABB
+			// Circle Center is INSIDE the AABB
 			if (closestPtSquared == 0.f) {
 				float left = spherePos.x - minAABB.x;
 				float right = maxAABB.x - spherePos.x;
@@ -451,7 +471,7 @@ namespace Collision {
 				result.depth = sphere1Temp.radius + minDist;
 				result.contactPoints[0] = spherePos - result.normal * minDist;
 			}
-			// Sphere Center is OUTSIDE (touching edge/corner)
+			// Circle Center is OUTSIDE (touching edge/corner)
 			else {
 				f32 distance{ CEMath::Length(ClosestPtToCirc) };
 
@@ -461,14 +481,8 @@ namespace Collision {
 			}
 
 			// Handle swapped normal
-			if (swapped) {
+			if (!swapped) {
 				result.normal = -1.f * result.normal;
-			}
-
-
-			CEVec3 centerDir = aabbPos - spherePos;
-			if (CEMath::Dot(result.normal, centerDir) < 0.f) {
-				result.normal = -result.normal;
 			}
 		}
 
@@ -499,28 +513,28 @@ namespace Collision {
 
 	CollisionHandler::CollisionHandler() : Messaging::Observable{}, collideFuncts{}
 	{
-		int sphere = static_cast<int>(ColliderType::SPHERE);   // 0
+		int circle = static_cast<int>(ColliderType::CIRCLE);   // 0
 		int aabb = static_cast<int>(ColliderType::AABB);     // 1
 		int poly = static_cast<int>(ColliderType::POLYGON);  // 4
 
 		quadTree.Resize(AABBRect{ CEVec3{-2000.f, -2000.f, 0.f}, CEVec3{2000.f, 2000.f, 0.f} });
 
-		/*Fill in the table of collisions, e.g collideFuncts[0] will be ColliderType::SPHERE TO ColliderType::SPHERE collision (2 total collider types will have 2^2 permutations(different types of collisions possible) ) */
+		/*Fill in the table of collisions, e.g collideFuncts[0] will be ColliderType::CIRCLE TO ColliderType::CIRCLE collision (2 total collider types will have 2^2 permutations(different types of collisions possible) ) */
 		
-		// Sphere vs Sphere
-		collideFuncts[sphere * SHAPE_COUNT + sphere] = SphereToSphereCollision;
+		// Circle vs Circle
+		collideFuncts[circle * SHAPE_COUNT + circle] = CircleToCircleCollision;
 
 		// AABB vs AABB
 		collideFuncts[aabb * SHAPE_COUNT + aabb] = AABBToAABBCollision;
 
-		// Sphere vs AABB (Sphere is 0, AABB is 1. 0 < 1, so index is 0 * N + 1)
-		collideFuncts[sphere * SHAPE_COUNT + aabb] = SphereToAABBCollision;
+		// Circle vs AABB (Circle is 0, AABB is 1. 0 < 1, so index is 0 * N + 1)
+		collideFuncts[circle * SHAPE_COUNT + aabb] = CircleToAABBCollision;
 
 		// AABB vs Polygon (AABB is 1, Poly is 4. 1 < 4)
 		collideFuncts[aabb * SHAPE_COUNT + poly] = AABBToPolygonCollision;
 
-		// Sphere vs Polygon (Sphere is 0, Poly is 4. 0 < 4)
-		collideFuncts[sphere * SHAPE_COUNT + poly] = SphereToPolygonCollision;
+		// Circle vs Polygon (Circle is 0, Poly is 4. 0 < 4)
+		collideFuncts[circle * SHAPE_COUNT + poly] = CircleToPolygonCollision;
 
 		// Polygon vs Polygon
 		collideFuncts[poly * SHAPE_COUNT + poly] = PolygonToPolygonCollision;
@@ -564,13 +578,16 @@ namespace Collision {
 			quadTree.Insert(entity1);
 		}
 
+		static std::vector<CrashoutsEngine::Entity> collidableObjects{};
+		
 		/*DETECT COLLISION AND UPDATE COLLISION EVENTS MEMBER*/
 		for (CrashoutsEngine::Entity& entity1 : colliderEntities) {
 
 			if (!globalECS.HasComponent<Component::TransformComponent>(entity1)) continue;			
 			if(!globalECS.GetComponent<Component::ColliderComponent>(entity1)->collider->enabled) continue;
 
-			std::vector<CrashoutsEngine::Entity> collidableObjects{};
+			collidableObjects.clear();
+
 			Component::ColliderComponent* collider1{ globalECS.GetComponent<Component::ColliderComponent>(entity1) };
 			Component::TransformComponent* transform1{ globalECS.GetComponent<Component::TransformComponent>(entity1) };
 
@@ -579,6 +596,11 @@ namespace Collision {
 
 			for (CrashoutsEngine::Entity const& entity2 : collidableObjects) {
 				if (entity1 == entity2) continue;
+
+				// Prevents double checks, only process if ID1 < ID2
+				// Ensures pair (A,B) is processed, and skip (B,A)
+				if (entity1 > entity2) continue;
+
 				if (CrashoutsEngine::IsAlreadyChildOf(globalECS, entity1, entity2) ||
 					CrashoutsEngine::IsAlreadyChildOf(globalECS, entity2, entity1)) continue;
 
@@ -604,16 +626,9 @@ namespace Collision {
 				}
 				
 				if (collisionManifold.collisionOccured) {
-					CrashoutsEngine::Entity const* entity1Ptr{ &entity1 };
-					CrashoutsEngine::Entity const* entity2Ptr{ &entity2 };
-
-					// Ensure consistent entity ordering (ID A < ID B)
-					if (collider1->collider->type > collider2->collider->type) std::swap(entity1Ptr, entity2Ptr);
-					if (*entity1Ptr > *entity2Ptr) std::swap(entity1Ptr, entity2Ptr);
-
 					// Populate master list
 					m_FrameCollisions.push_back(
-						CollisionEvent{ collisionManifold, *entity1Ptr, *entity2Ptr }
+						CollisionEvent{ collisionManifold, entity1, entity2 }
 					);
 
 					// Gameplay messaging only when in play mode
@@ -630,21 +645,21 @@ namespace Collision {
 						// Check if this pair was already processed this frame (e.g. duplicate query)
 						bool isIn{ false };
 						for (ContactInformation const& test : currentFrameCollision) {
-							if (test.contacts.first == *entity1Ptr && test.contacts.second == *entity2Ptr) isIn = true;
+							if (test.contacts.first == entity1 && test.contacts.second == entity2) isIn = true;
 						}
 
 						if (!isIn) {
-							ContactPair pair{ *entity1Ptr, *entity2Ptr };
+							ContactPair pair{ entity1, entity2 };
 
 							// Check if this pair existed Last Frame
 							if (isPairInCollection(pair, lastFrameCollision)) {
 								// STAY
-								CollisionMessage stayMessage{ stayType, collisionManifold, *entity1Ptr, *entity2Ptr };
+								CollisionMessage stayMessage{ stayType, collisionManifold, entity1, entity2 };
 								sendMessage(stayMessage);
 							}
 							else {
 								// ENTER
-								CollisionMessage enterMessage{ enterType, collisionManifold, *entity1Ptr, *entity2Ptr };
+								CollisionMessage enterMessage{ enterType, collisionManifold, entity1, entity2 };
 								sendMessage(enterMessage);
 							}
 
@@ -696,7 +711,7 @@ namespace Collision {
 
 	FunctionDispatchType CollisionHandler::callCollFunct(Collision::ColliderType type1, Collision::ColliderType type2) {
 
-		/*Swap the type according to enum order, e.g function exists for sphere to aabb but not aabb to sphere*/
+		/*Swap the type according to enum order, e.g function exists for circle to aabb but not aabb to circle*/
 		if (type1 > type2) {
 			std::swap(type1, type2);
 		}

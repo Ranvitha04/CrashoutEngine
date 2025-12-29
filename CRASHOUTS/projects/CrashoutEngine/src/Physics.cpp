@@ -68,7 +68,7 @@ namespace Component {
 
 	RigidBodyComponent::RigidBodyComponent(CEVec3 maximumVel, f32 mass, f32 restitutionCoeff)
 		: mVelocity{ CEVec3{} }, mMaximumVel{ maximumVel }, mMass{ mass }, mNetForce{ CEVec3{} }, mRestitutionCoeff{ restitutionCoeff } {
-		flags.set(Physics::SIMULATE_DYNAMICS);
+		//flags.set(Physics::SIMULATE_DYNAMICS);
 	}
 
 	/*Euler*/
@@ -327,7 +327,7 @@ namespace Physics {
 
 	}
 
-	void ApplyRotationalImpulse(Collision::CollisionEvent const& event, CrashoutsEngine::ECS& globalECS) {
+	void ApplyRotationalImpulse(Collision::CollisionEvent const& event, CrashoutsEngine::ECS& globalECS, float dt) {
 		Component::RigidBodyComponent* rigidBody1{ globalECS.GetComponent<Component::RigidBodyComponent>(event.entity1) };
 		Component::ColliderComponent* collider1{ globalECS.GetComponent<Component::ColliderComponent>(event.entity1) };
 
@@ -371,10 +371,18 @@ namespace Physics {
 			return;
 		}
 
-		float e{ std::min(coeff1, coeff2) }; /*COEFFICIENT OF RESTITUTION*/
+		float e{ std::max(coeff1, coeff2) }; /*COEFFICIENT OF RESTITUTION*/
+
+		// Calculate how much velocity gravity added this frame.
+		float gravityLen = CEMath::Length(PhysicsHandler::GetGravity()); // Assuming you have a Length() helper
+		float threshold = gravityLen * dt * 2.0f; // * 2.0f provides a safety buffer
+		// If impact speed is tiny, kill restitution
+		if (std::abs(velAlongNormal) < threshold) {
+			e = 0.0f;
+		}
+
 		f32 pToPosCrossNormal1{ Cross(penetrationTo1, event.colManifold.normal) };
 		f32 pToPosCrossNormal2{ Cross(penetrationTo2, event.colManifold.normal) };
-
 
 		float numerator{ -(1.f + e) * velAlongNormal };
 
@@ -392,31 +400,118 @@ namespace Physics {
 			rigidBody2->setVelocity(rigidBody2->GetVelocity() + impulse * invMass2);
 			rigidBody2->angularVelocity += pToPosCrossNormal2 * j * invInertia2;
 		}
+
+		// FRICTION SOLVER
+
+		// Re-calculate Relative Velocity on top of newly applied Normal Impulse
+		vel1 = rigidBody1 ? rigidBody1->GetVelocity() : CEVec3{};
+		vel2 = rigidBody2 ? rigidBody2->GetVelocity() : CEVec3{};
+		angVel1 = rigidBody1 ? rigidBody1->angularVelocity : 0.0f;
+		angVel2 = rigidBody2 ? rigidBody2->angularVelocity : 0.0f;
+
+		CEVec3 angVelP1{ CEVec3{-1.f * angVel1 * penetrationTo1.y, angVel1 * penetrationTo1.x, 0.f} };
+		CEVec3 angVelP2{ CEVec3{-1.f * angVel2 * penetrationTo2.y, angVel2 * penetrationTo2.x, 0.f} };
+
+		CEVec3 newRelVel = (vel2 + angVelP2) - (vel1 + angVelP1);
+
+		// Find Tangent Vector (The direction of the slide)
+		// Tangent is perpendicular to Normal, in the direction of velocity
+		CEVec3 tangent = newRelVel - CEMath::Dot(newRelVel, event.colManifold.normal) * event.colManifold.normal;
+		float tangentLen = CEMath::Length(tangent);
+
+		// If barely sliding, skip friction
+		if (tangentLen < 0.001f) return;
+
+		// Normalize tangent
+		tangent = tangent * (1.0f / tangentLen);
+
+		// Solve for Friction Impulse Magnitude (jt)
+		// This is similar to the Normal Impulse (j) math, but using the Tangent vector
+		float jtNumerator = -CEMath::Dot(newRelVel, tangent);
+
+		float r1CrossT = Cross(penetrationTo1, tangent);
+		float r2CrossT = Cross(penetrationTo2, tangent);
+
+		float frictionCrossSum = (r1CrossT * r1CrossT * invInertia1) + (r2CrossT * r2CrossT * invInertia2);
+
+		float jt = jtNumerator / (sumInvMass + frictionCrossSum);
+
+		// Coulomb's Law (Clamping)
+		// Friction cannot be stronger than the Normal Force * Coefficient
+		// If it is, we switch from Static to Dynamic friction.
+
+		// Combine friction coefficients (Average is a common approximation)
+		float f1 = rigidBody1 ? rigidBody1->getStaticFriction() : 0.5f;
+		float f2 = rigidBody2 ? rigidBody2->getStaticFriction() : 0.5f;
+		float muStatic = (f1 + f2) * 0.5f;
+
+		float d1 = rigidBody1 ? rigidBody1->getDynamicFriction() : 0.3f;
+		float d2 = rigidBody2 ? rigidBody2->getDynamicFriction() : 0.3f;
+		float muDynamic = (d1 + d2) * 0.5f;
+
+		CEVec3 frictionImpulseVec;
+
+		// Determine if we hold still (Static) or slide (Dynamic)
+		if (std::abs(jt) < j * muStatic) {
+			// Static Friction: We can generate enough force to stop the slide completely.
+			frictionImpulseVec = jt * tangent;
+		}
+		else {
+			// Dynamic Friction: The slide is too strong. We apply a constant drag force.
+			// Force = NormalForce * DynamicCoeff
+			frictionImpulseVec = -j * tangent * muDynamic;
+		}
+
+		// Apply Friction Impulse 
+		if (rigidBody1) {
+			// Apply Linear Friction Drag
+			rigidBody1->setVelocity(rigidBody1->GetVelocity() - frictionImpulseVec * invMass1);
+
+			// Apply Angular Friction Torque
+			// We use Cross Product to convert the linear friction force into torque
+			rigidBody1->angularVelocity += -Cross(penetrationTo1, frictionImpulseVec) * invInertia1;
+		}
+
+		if (rigidBody2) {
+			rigidBody2->setVelocity(rigidBody2->GetVelocity() + frictionImpulseVec * invMass2);
+			rigidBody2->angularVelocity += Cross(penetrationTo2, frictionImpulseVec) * invInertia2;
+		}
 	}
 
 	/*Main Physics Update*/
-	void PhysicsHandler::Update(double deltaTime) {
-
-		// Get collision data from handler
-		const auto& events = Collision::CollisionHandler::GetInstance().GetFrameCollisions();
+	void PhysicsHandler::Update(double fixedDT) {
 
 		CrashoutsEngine::ECS& globalECS = *(CrashoutsEngine::ECS::getInstance());
 
-		std::vector<CrashoutsEngine::Entity> globalEntities = globalECS.GetComponentArray<Component::RigidBodyComponent>().indexToEntity;
+		const std::vector<CrashoutsEngine::Entity>& globalEntities = globalECS.GetComponentArray<Component::RigidBodyComponent>().indexToEntity;
 
 		bool isSimulating = !sPaused || sStepOnce;
-		double simDt = isSimulating ? deltaTime : 0.0;
-
-		if (sPaused && sStepOnce) sStepOnce = false;
+		double simDt = isSimulating ? fixedDT : 0.0;
 
 		int step = FrameRateController::GetInstance().StepCount();
+		
 
 		/*Fixed step, accumulator will reach the target fixed dt and then execute physics simulation*/
 		for (int i{}; i < step; ++i) {
 
-			for (CrashoutsEngine::Entity& entity : globalEntities) {
+			for (const CrashoutsEngine::Entity& entity : globalEntities) {
 				Component::RigidBodyComponent* rigidBody{ globalECS.GetComponent<Component::RigidBodyComponent>(entity) };
-				if (!rigidBody->getFlags().test(SIMULATE_DYNAMICS) || !rigidBody->getMass()) continue;
+				//if (!rigidBody->getFlags().test(SIMULATE_DYNAMICS) || !rigidBody->getMass()) continue;
+				if (!rigidBody || !rigidBody->getMass()) continue;
+
+				// Compute Inertia
+				if (rigidBody->invInertia == 0.0f) {
+					if (globalECS.HasComponent<Component::ColliderComponent>(entity)) {
+						auto* colComp = globalECS.GetComponent<Component::ColliderComponent>(entity);
+
+						// Safety Check
+						if (colComp && colComp->collider) {
+							float inertia = colComp->collider->calculateInertia(rigidBody->getMass());
+
+							rigidBody->setInertia(inertia);
+						}
+					}
+				}
 
 				if (isSimulating) {
 
@@ -425,12 +520,7 @@ namespace Physics {
 					CEVec3 forces = fm.ResolveForces((f32)simDt, rigidBody->getMass());
 
 					// 2. Apply Gravity Manually
-					CEVec3 gravityAccel = sGravity; // e.g., (0, -70, 0)
-
-					if (rigidBody->getMass() < 0.f) {
-						// Anti-Gravity: Flip the acceleration vector
-						gravityAccel = -sGravity; // (0, 70, 0)
-					}
+					CEVec3 gravityAccel = (rigidBody->getMass() < 0.f) ? -sGravity : sGravity;
 
 					// F = m * a
 					CEVec3 gravityForce = rigidBody->getMass() * gravityAccel;
@@ -441,25 +531,8 @@ namespace Physics {
 				}
 			}
 
-			/*IMPULSE RESOLUTION*/
-			for (Collision::CollisionEvent const& evnt : events) {
-
-				Component::RigidBodyComponent* rigidBody1{ globalECS.GetComponent<Component::RigidBodyComponent>(evnt.entity1) };
-				Component::RigidBodyComponent* rigidBody2{ globalECS.GetComponent<Component::RigidBodyComponent>(evnt.entity2) };
-
-				bool isDynamic1 = rigidBody1 && rigidBody1->getFlags().test(SIMULATE_DYNAMICS);
-				bool isDynamic2 = rigidBody2 && rigidBody2->getFlags().test(SIMULATE_DYNAMICS);
-
-				if (!isDynamic1 && !isDynamic2) continue;
-
-				if (isSimulating) {
-					PositionCorrection(evnt, globalECS);
-					ApplyImpulse(evnt, globalECS);
-				}
-			}
-
 			/*PHYSICS SIM, UPDATE POSITION*/
-			for (CrashoutsEngine::Entity& entity : globalEntities) {
+			for (const CrashoutsEngine::Entity& entity : globalEntities) {
 				if (!globalECS.HasComponent<Component::TransformComponent>(entity)) continue;
 				Component::TransformComponent* transform{ globalECS.GetComponent<Component::TransformComponent>(entity) };
 				Component::RigidBodyComponent* rigidBody{ globalECS.GetComponent<Component::RigidBodyComponent>(entity) };
@@ -467,23 +540,49 @@ namespace Physics {
 				// -------------------------------------------------------
 				// CASE A: DYNAMIC (Physics Drives Transform)
 				// -------------------------------------------------------
-				if (rigidBody->getFlags().test(SIMULATE_DYNAMICS)) {
+				//if (rigidBody->getFlags().test(SIMULATE_DYNAMICS)) {
+				if (rigidBody->getMass()) {
 
 					// Apply position change
-					if (rigidBody->getMass() != 0.f) {
-						f32 newDelta{ static_cast<float>(simDt) }; // 0.0 if paused
-						CEVec3 currentVel{ rigidBody->GetVelocity() };
+					f32 newDelta{ static_cast<float>(simDt) }; // 0.0 if paused
+					CEVec3 currentVel{ rigidBody->GetVelocity() };
+					if (isSimulating) {
+						// Apply Velocity to Position
+						currentVel = rigidBody->GetVelocity();
 						transform->position += currentVel * newDelta;
+					}
+
+					// Rotate Orientation
+					// orientation (Degrees) += AngularVel (Radians/s) * conversion * dt
+					if (rigidBody->invInertia > 0.0f) {
+						if (isSimulating) {
+							// PHYSICS DRIVES TRANSFORM
+							float angularChange = rigidBody->angularVelocity * (180.f / CEMath::PI) * newDelta;
+							rigidBody->orientation += angularChange;
+							transform->rotation = rigidBody->orientation;
+						}
+						else {
+							// STOPPED: TRANSFORM (UI) DRIVES PHYSICS
+							rigidBody->orientation = transform->rotation;
+							rigidBody->angularVelocity = 0.0f; 
+						}
 					}
 
 					if (isSimulating) {
 						rigidBody->setVelocity(rigidBody->GetVelocity() * 0.999f);
-						rigidBody->angularVelocity *= 0.999f;
+						rigidBody->angularVelocity *= 0.98f;	// Angular Drag
+
+						// Kill tiny wobble
+						if (std::abs(rigidBody->angularVelocity) < 0.1f) {
+							rigidBody->angularVelocity = 0.0f;
+						}
 					}
 
 					if (globalECS.HasComponent<Component::ColliderComponent>(entity)) {
 						Component::ColliderComponent* c{ globalECS.GetComponent<Component::ColliderComponent>(entity) };
+						// Sync BOTH position and rotation
 						c->collider->UpdateCollider(transform->position);
+						c->collider->UpdateRotation(transform->rotation);
 					}
 
 					// Sync children so they "ride" the dynamic parent
@@ -512,7 +611,38 @@ namespace Physics {
 					SyncHierarchyPhysics(entity, globalECS);
 				}
 			}
+
+			// Detect collisions
+			{
+				auto& colSys = Collision::CollisionHandler::GetInstance();
+
+				// Determine state for collision (simplification)
+				Collision::EngineState state = isSimulating ? Collision::EngineState::PLAY : Collision::EngineState::STOP;
+
+				colSys.Update(simDt, state);
+			}
+
+			// Get collision data from handler
+			const auto& events = Collision::CollisionHandler::GetInstance().GetFrameCollisions();
+
+			/*IMPULSE RESOLUTION*/
+			for (Collision::CollisionEvent const& evnt : events) {
+
+				Component::RigidBodyComponent* rigidBody1{ globalECS.GetComponent<Component::RigidBodyComponent>(evnt.entity1) };
+				Component::RigidBodyComponent* rigidBody2{ globalECS.GetComponent<Component::RigidBodyComponent>(evnt.entity2) };
+
+				//bool isDynamic1 = rigidBody1 && rigidBody1->getFlags().test(SIMULATE_DYNAMICS);
+				//bool isDynamic2 = rigidBody2 && rigidBody2->getFlags().test(SIMULATE_DYNAMICS);
+				bool isDynamic1 = rigidBody1 && rigidBody1->getMass();
+				bool isDynamic2 = rigidBody2 && rigidBody2->getMass();
+
+				if (!isDynamic1 && !isDynamic2) continue;
+
+				if (isSimulating) {
+					PositionCorrection(evnt, globalECS);
+					ApplyRotationalImpulse(evnt, globalECS, (float)simDt);
+				}
+			}
 		}
 	}
-
 }

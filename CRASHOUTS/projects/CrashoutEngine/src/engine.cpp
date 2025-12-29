@@ -293,230 +293,6 @@ void Init() {
 }
 
 /*  _________________________________________________________________________ */
-/*! draw
-
-@param 
-
-@return none
-
-Call application to draw and then swap front and back frame buffers ...
-Uses GLHelper::GLFWWindow* to get handle to OpenGL context.
-*/
-void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
-
-#if !USE_IMGUI_EDITOR 
-    (void)globalSelectedEntity;
-#endif
-
-    // --- 1: RENDER THE RAW GAME SCENE ---
-    // FOR USE_IMGUI_EDITOR AND NOT USING
-    // All game objects, sprites, text, etc., draw into 'gameFboID'.
-    glBindFramebuffer(GL_FRAMEBUFFER, gameFboID);
-
-    #if !USE_IMGUI_EDITOR
-        int windowW, windowH;
-        glfwGetFramebufferSize(GLApp::ptr_window, &windowW, &windowH);
-
-        const float targetAspectRatio = 16.0f / 9.0f;
-        float currentAspectRatio = (float)windowW / (float)windowH;
-
-        int vpX, vpY, vpW, vpH;
-
-        // Calculate Viewport (Letterboxing)
-        if (currentAspectRatio > targetAspectRatio) {
-            // Window is too wide (Black bars on left/right)
-            vpH = windowH;
-            vpW = static_cast<int>(windowH * targetAspectRatio);
-            vpX = (windowW - vpW) / 2;
-            vpY = 0;
-        }
-        else {
-            // Window is too tall (Black bars on top/bottom)
-            vpW = windowW;
-            vpH = static_cast<int>(windowW / targetAspectRatio);
-            vpX = 0;
-            vpY = (windowH - vpH) / 2;
-        }
-
-        // 4. Clear the FULL window to black (The "Bars")
-
-        // 5. Set Viewport to the Game Area & Enable Scissor Test
-        // Scissor ensures we don't draw outside the calculated game area
-        //glEnable(GL_SCISSOR_TEST);
-        //glScissor(vpX, vpY, vpW, vpH);
-        glViewport(vpX, vpY, vpW, vpH);
-
-        // 7. Update Camera Matrices to match the VIEWPORT size, not window size
-        CrashoutsEngine::RenderCamera::gameCamera.UpdateMatrices(vpW, vpH);
-
-        // If the window size differs from our internal texture size
-        if (vpW != gameTextureWidth || vpH != gameTextureHeight) {
-            gameTextureWidth = vpW;
-            gameTextureHeight = vpH;
-
-            // --- RESIZE THE TEXTURE MEMORY ---
-
-            // 1. Resize the Color Texture
-            glBindTexture(GL_TEXTURE_2D, gameTextureColorBuffer);
-            // Re-allocate memory with the new width/height (NULL means we don't copy data, just alloc)
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, gameTextureWidth, gameTextureHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-
-            // 2. Resize the Depth/Stencil Buffer (Use RBO or Texture depending on your setup)
-            // Based on your variables, you likely use 'gameRboDepthStencil'
-            if (gameRboDepthStencil != 0) {
-                glBindRenderbuffer(GL_RENDERBUFFER, gameRboDepthStencil);
-                glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, gameTextureWidth, gameTextureHeight);
-            }
-
-            // Unbind to be safe
-            glBindTexture(GL_TEXTURE_2D, 0);
-            glBindRenderbuffer(GL_RENDERBUFFER, 0);
-
-            // Note: We don't need to re-attach them to the gameFboID usually, 
-            // as the FBO holds references to the IDs, which haven't changed.
-        }
-    #else
-
-    glViewport(0, 0, gameTextureWidth, gameTextureHeight);
-
-    #endif
-
-    glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LEQUAL);
-    glDepthMask(GL_TRUE);
-    glDisable(GL_BLEND);
-
-    // --- Camera Setup ---
-    using namespace CrashoutsEngine::RenderCamera;
-#if USE_IMGUI_EDITOR
-    Camera& currentCamera = (engineState == EngineState::STOP) ? engineCamera : gameCamera;
-#else
-    Camera& currentCamera = gameCamera;
-#endif
-    glm::mat4 view = currentCamera.GetViewMatrix();
-    glm::mat4 proj = currentCamera.GetProjectionMatrix();
-
-    // --- Profiling & Scene Rendering ---
-    FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Graphics");
-    ScopedMemTag mem(MemTag::Graphics);
-    {
-        FrameProfiler::Scoped s2(PerformanceSystem::Get().GetProfiler(), "Scene");
-        //GLApp::draw();
-        Scene::RenderScene(*CrashoutsEngine::ECS::getInstance());
-
-        if (CurrentDescriptor) {
-            //if (CurrentDescriptor->Update) CurrentDescriptor->Update();
-            if (CurrentDescriptor->Render) CurrentDescriptor->Render();
-        }
-    }
-    
-    // Unbind FBO
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-#if USE_IMGUI_EDITOR
-    // 1. Start the Dear ImGui frame
-    UI::BeginFrame();
-
-    // 2. Setup Dockspace 
-    ImGuiViewport* viewport = ImGui::GetMainViewport();
-    /*ImVec2 dockPos = ImVec2(viewport->Pos.x, viewport->Pos.y + titleBarHeight);
-    ImVec2 dockSize = ImVec2(viewport->Size.x, viewport->Size.y - titleBarHeight);*/
-    ImVec2 dockPos = viewport->Pos;
-    ImVec2 dockSize = viewport->Size;
-    /*ImGui::SetNextWindowPos(viewport->WorkPos);
-    ImGui::SetNextWindowSize(viewport->WorkSize);*/
-	ImGui::SetNextWindowPos(dockPos);
-	ImGui::SetNextWindowSize(dockSize);
-    ImGui::SetNextWindowViewport(viewport->ID);
-    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-    ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
-    ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
-    // Begin Dockspace window (needs ImGuiWindowFlags_MenuBar for the menu)
-    bool dockspaceVisible = ImGui::Begin("Dockspace", nullptr,
-        ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoTitleBar |
-        ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
-        ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBringToFrontOnFocus |
-        ImGuiWindowFlags_NoNavFocus | ImGuiWindowFlags_NoBackground);
-
-    if (dockspaceVisible == true) {
-        ImGui::PopStyleVar(3);
-
-        // Render the menu bar *inside* the Dockspace Begin/End
-        //UI::RenderDebugMenuBar(g_uiState);
-
-        // Define the actual dockspace area
-        ImGuiID dockspace_id = ImGui::GetID("Dockspace");
-        ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_PassthruCentralNode;
-        ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
-
-        // Render ImGui UI on top of the scene
-        glBindFramebuffer(GL_FRAMEBUFFER, gameFboID);
-        {
-            FrameProfiler::Scoped s2(PerformanceSystem::Get().GetProfiler(), "UI");
-            UI::Render(gProfiler, globalSelectedEntity, g_uiState);
-        }
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        //glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-        // Cycle and draw Tile Map Editor if needed
-        CrashoutsEngine::ECS::ComponentArray<Component::TileMapComponent>& tmArray =
-            CrashoutsEngine::ECS::getInstance()->GetComponentArray<Component::TileMapComponent>();
-
-        for (Component::TileMapComponent& tm : tmArray.dense) {
-            CrashoutsEngine::Editor::DrawTileMapEditor(&tm, &tm.pOpen);
-        }
-    }
-    else {
-        ImGui::PopStyleVar(3);
-    }
-    
-
-    ImGui::End(); // End the Dockspace window begun earlier
-
-    // End the ImGui frame and render draw data
-    UI::EndFrame();
-
-
-#else
-    CEVec3 mouseWorld{ Scene::GetMouseInWorld() };
-    InputManager::g_mouseWorldPos = CEVec2{ mouseWorld.x, mouseWorld.y };
-
-    // Render directly to screen
-    int displayWidth, displayHeight;
-    glfwGetFramebufferSize(GLApp::ptr_window, &displayWidth, &displayHeight);
-    glViewport(0, 0, displayWidth, displayHeight); // Use main window size
-
-    glClear(GL_COLOR_BUFFER_BIT);
-    glEnable(GL_DEPTH_TEST);
-
-    //CrashoutsEngine::PostProcessing::RenderPP(gameTextureColorBuffer);
-
-#endif
-    // APPLY POST_PROCESSING TO FBO 
-
-    // Bind FBO to get post-processed image
-    glBindFramebuffer(GL_FRAMEBUFFER, CrashoutsEngine::PostProcessing::ppFboID);
-    glViewport(0, 0, gameTextureWidth, gameTextureHeight);
-    glClear(GL_COLOR_BUFFER_BIT);
-    glDisable(GL_DEPTH_TEST);
-
-    CrashoutsEngine::PostProcessing::RenderPP(gameTextureColorBuffer);
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-    // render scene
-    // GLApp::draw();
-
-    // end of frame profiling
-    PerformanceSystem::Get().EndFrame();
-
-    // swap buffers: front <-> back
-    // GLApp::ptr_window is handle to window that defines the OpenGL context
-    glfwSwapBuffers(GLApp::ptr_window);
-}
-
-/*  _________________________________________________________________________ */
 /*! Update
 
 @param none
@@ -535,7 +311,6 @@ void Update(double const& dt) {
 
     UpdateGameStateManager();
 
-
     if (CurrentDescriptor->Update) CurrentDescriptor->Update();
 
     // process events if any associated with input devices
@@ -549,15 +324,13 @@ void Update(double const& dt) {
     
     FrameProfiler::Scoped frameScope(PerformanceSystem::Get().GetProfiler(), "Game/Update");
     ScopedMemTag mem(MemTag::Update);
-    CrashoutsEngine::UpdateHierarchy(*CrashoutsEngine::ECS::getInstance());
 
-    {
-        FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Collision");
-        collisionSystem.Update(dt, (Collision::EngineState)engineState);
-    }
+    CrashoutsEngine::ECS& ecs = *CrashoutsEngine::ECS::getInstance();
+
+    CrashoutsEngine::UpdateHierarchy(ecs);
 
     if (engineState == EngineState::PLAY) {
-        KeyframeUnity::UpdateAll(*CrashoutsEngine::ECS::getInstance(), (float)dt);
+        KeyframeUnity::UpdateAll(ecs, (float)dt);
         CrashoutsEngine::ScriptSystem::UpdateAll();
 
         //fixed Update please work
@@ -567,7 +340,7 @@ void Update(double const& dt) {
         }
         {
             FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Physics");
-            physicsSystem.Update(dt);
+            physicsSystem.Update(FrameRateController::GetInstance().FixedDT());
         }
         {
             FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Audio");
@@ -612,8 +385,7 @@ void Update(double const& dt) {
         using namespace CrashoutsEngine;
         using namespace Component;
 
-        ECS& ecs = *ECS::getInstance();
-        std::vector<CameraComponent> c = ecs.GetComponentArray<CameraComponent>().dense;
+        std::vector<CameraComponent>& c = ecs.GetComponentArray<CameraComponent>().dense;
         if (c.size() > 0) {
             Entity camEntity = ecs.GetComponentArray<CameraComponent>().indexToEntity.back();
             RenderCamera::PlayerCameraInput(c.back(), camEntity);
@@ -624,7 +396,7 @@ void Update(double const& dt) {
 #else
         RenderCamera::gameCamera.UpdateMatrices(GLApp::width, GLApp::height);
 #endif
-        Scene::UpdateScene(*CrashoutsEngine::ECS::getInstance());
+        Scene::UpdateScene(ecs);
     }
 
     InputManager::Update();
@@ -645,6 +417,230 @@ void Update(double const& dt) {
         if (tm.isCacheDirty) CrashoutsEngine::TileMapUtils::RebuildCache(tm, entityID);
     }
 
+}
+
+/*  _________________________________________________________________________ */
+/*! draw
+
+@param
+
+@return none
+
+Call application to draw and then swap front and back frame buffers ...
+Uses GLHelper::GLFWWindow* to get handle to OpenGL context.
+*/
+void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
+
+#if !USE_IMGUI_EDITOR 
+    (void)globalSelectedEntity;
+#endif
+
+    // --- 1: RENDER THE RAW GAME SCENE ---
+    // FOR USE_IMGUI_EDITOR AND NOT USING
+    // All game objects, sprites, text, etc., draw into 'gameFboID'.
+    glBindFramebuffer(GL_FRAMEBUFFER, gameFboID);
+
+#if !USE_IMGUI_EDITOR
+    int windowW, windowH;
+    glfwGetFramebufferSize(GLApp::ptr_window, &windowW, &windowH);
+
+    const float targetAspectRatio = 16.0f / 9.0f;
+    float currentAspectRatio = (float)windowW / (float)windowH;
+
+    int vpX, vpY, vpW, vpH;
+
+    // Calculate Viewport (Letterboxing)
+    if (currentAspectRatio > targetAspectRatio) {
+        // Window is too wide (Black bars on left/right)
+        vpH = windowH;
+        vpW = static_cast<int>(windowH * targetAspectRatio);
+        vpX = (windowW - vpW) / 2;
+        vpY = 0;
+    }
+    else {
+        // Window is too tall (Black bars on top/bottom)
+        vpW = windowW;
+        vpH = static_cast<int>(windowW / targetAspectRatio);
+        vpX = 0;
+        vpY = (windowH - vpH) / 2;
+    }
+
+    // 4. Clear the FULL window to black (The "Bars")
+
+    // 5. Set Viewport to the Game Area & Enable Scissor Test
+    // Scissor ensures we don't draw outside the calculated game area
+    //glEnable(GL_SCISSOR_TEST);
+    //glScissor(vpX, vpY, vpW, vpH);
+    glViewport(vpX, vpY, vpW, vpH);
+
+    // 7. Update Camera Matrices to match the VIEWPORT size, not window size
+    CrashoutsEngine::RenderCamera::gameCamera.UpdateMatrices(vpW, vpH);
+
+    // If the window size differs from our internal texture size
+    if (vpW != gameTextureWidth || vpH != gameTextureHeight) {
+        gameTextureWidth = vpW;
+        gameTextureHeight = vpH;
+
+        // --- RESIZE THE TEXTURE MEMORY ---
+
+        // 1. Resize the Color Texture
+        glBindTexture(GL_TEXTURE_2D, gameTextureColorBuffer);
+        // Re-allocate memory with the new width/height (NULL means we don't copy data, just alloc)
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, gameTextureWidth, gameTextureHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+
+        // 2. Resize the Depth/Stencil Buffer (Use RBO or Texture depending on your setup)
+        // Based on your variables, you likely use 'gameRboDepthStencil'
+        if (gameRboDepthStencil != 0) {
+            glBindRenderbuffer(GL_RENDERBUFFER, gameRboDepthStencil);
+            glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, gameTextureWidth, gameTextureHeight);
+        }
+
+        // Unbind to be safe
+        glBindTexture(GL_TEXTURE_2D, 0);
+        glBindRenderbuffer(GL_RENDERBUFFER, 0);
+
+        // Note: We don't need to re-attach them to the gameFboID usually, 
+        // as the FBO holds references to the IDs, which haven't changed.
+    }
+#else
+
+    glViewport(0, 0, gameTextureWidth, gameTextureHeight);
+
+#endif
+
+    glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LEQUAL);
+    glDepthMask(GL_TRUE);
+    glDisable(GL_BLEND);
+
+    // --- Camera Setup ---
+    using namespace CrashoutsEngine::RenderCamera;
+#if USE_IMGUI_EDITOR
+    Camera& currentCamera = (engineState == EngineState::STOP) ? engineCamera : gameCamera;
+#else
+    Camera& currentCamera = gameCamera;
+#endif
+    glm::mat4 view = currentCamera.GetViewMatrix();
+    glm::mat4 proj = currentCamera.GetProjectionMatrix();
+
+    // --- Profiling & Scene Rendering ---
+    FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Graphics");
+    ScopedMemTag mem(MemTag::Graphics);
+    {
+        FrameProfiler::Scoped s2(PerformanceSystem::Get().GetProfiler(), "Scene");
+        //GLApp::draw();
+        Scene::RenderScene(*CrashoutsEngine::ECS::getInstance());
+
+        if (CurrentDescriptor) {
+            //if (CurrentDescriptor->Update) CurrentDescriptor->Update();
+            if (CurrentDescriptor->Render) CurrentDescriptor->Render();
+        }
+    }
+
+    // Unbind FBO
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+#if USE_IMGUI_EDITOR
+    // 1. Start the Dear ImGui frame
+    UI::BeginFrame();
+
+    // 2. Setup Dockspace 
+    ImGuiViewport* viewport = ImGui::GetMainViewport();
+    /*ImVec2 dockPos = ImVec2(viewport->Pos.x, viewport->Pos.y + titleBarHeight);
+    ImVec2 dockSize = ImVec2(viewport->Size.x, viewport->Size.y - titleBarHeight);*/
+    ImVec2 dockPos = viewport->Pos;
+    ImVec2 dockSize = viewport->Size;
+    /*ImGui::SetNextWindowPos(viewport->WorkPos);
+    ImGui::SetNextWindowSize(viewport->WorkSize);*/
+    ImGui::SetNextWindowPos(dockPos);
+    ImGui::SetNextWindowSize(dockSize);
+    ImGui::SetNextWindowViewport(viewport->ID);
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+    // Begin Dockspace window (needs ImGuiWindowFlags_MenuBar for the menu)
+    bool dockspaceVisible = ImGui::Begin("Dockspace", nullptr,
+        ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoTitleBar |
+        ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
+        ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBringToFrontOnFocus |
+        ImGuiWindowFlags_NoNavFocus | ImGuiWindowFlags_NoBackground);
+
+    if (dockspaceVisible == true) {
+        ImGui::PopStyleVar(3);
+
+        // Render the menu bar *inside* the Dockspace Begin/End
+        //UI::RenderDebugMenuBar(g_uiState);
+
+        // Define the actual dockspace area
+        ImGuiID dockspace_id = ImGui::GetID("Dockspace");
+        ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_PassthruCentralNode;
+        ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
+
+        // Render ImGui UI on top of the scene
+        glBindFramebuffer(GL_FRAMEBUFFER, gameFboID);
+        {
+            FrameProfiler::Scoped s2(PerformanceSystem::Get().GetProfiler(), "UI");
+            UI::Render(gProfiler, globalSelectedEntity, g_uiState);
+        }
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        //glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+        // Cycle and draw Tile Map Editor if needed
+        CrashoutsEngine::ECS::ComponentArray<Component::TileMapComponent>& tmArray =
+            CrashoutsEngine::ECS::getInstance()->GetComponentArray<Component::TileMapComponent>();
+
+        for (Component::TileMapComponent& tm : tmArray.dense) {
+            CrashoutsEngine::Editor::DrawTileMapEditor(&tm, &tm.pOpen);
+        }
+    }
+    else {
+        ImGui::PopStyleVar(3);
+    }
+
+
+    ImGui::End(); // End the Dockspace window begun earlier
+
+    // End the ImGui frame and render draw data
+    UI::EndFrame();
+
+
+#else
+    CEVec3 mouseWorld{ Scene::GetMouseInWorld() };
+    InputManager::g_mouseWorldPos = CEVec2{ mouseWorld.x, mouseWorld.y };
+
+    // Render directly to screen
+    int displayWidth, displayHeight;
+    glfwGetFramebufferSize(GLApp::ptr_window, &displayWidth, &displayHeight);
+    glViewport(0, 0, displayWidth, displayHeight); // Use main window size
+
+    glClear(GL_COLOR_BUFFER_BIT);
+    glEnable(GL_DEPTH_TEST);
+
+    //CrashoutsEngine::PostProcessing::RenderPP(gameTextureColorBuffer);
+
+#endif
+    // APPLY POST_PROCESSING TO FBO 
+
+    // Bind FBO to get post-processed image
+    glBindFramebuffer(GL_FRAMEBUFFER, CrashoutsEngine::PostProcessing::ppFboID);
+    glViewport(0, 0, gameTextureWidth, gameTextureHeight);
+    glClear(GL_COLOR_BUFFER_BIT);
+    glDisable(GL_DEPTH_TEST);
+
+    CrashoutsEngine::PostProcessing::RenderPP(gameTextureColorBuffer);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+    // render scene
+    // GLApp::draw();
+
+    // end of frame profiling
+    PerformanceSystem::Get().EndFrame();
+
+    // swap buffers: front <-> back
+    // GLApp::ptr_window is handle to window that defines the OpenGL context
+    glfwSwapBuffers(GLApp::ptr_window);
 }
 
 /*  _________________________________________________________________________ */

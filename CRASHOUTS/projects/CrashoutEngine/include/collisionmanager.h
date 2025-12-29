@@ -86,9 +86,9 @@ namespace Collision {
 
 			std::array<FunctionDispatchType, SHAPE_COUNT* SHAPE_COUNT> collideFuncts;
 
-			static CollisionManifold SphereToSphereCollision(CollisionProps const& coll1, CollisionProps const& coll2);
+			static CollisionManifold CircleToCircleCollision(CollisionProps const& coll1, CollisionProps const& coll2);
 
-			static CollisionManifold SphereToAABBCollision(CollisionProps const& coll1, CollisionProps const& coll2);
+			static CollisionManifold CircleToAABBCollision(CollisionProps const& coll1, CollisionProps const& coll2);
 
 			static CollisionManifold AABBToAABBCollision(CollisionProps const& coll1, CollisionProps const& coll2);
 
@@ -96,7 +96,7 @@ namespace Collision {
 
 			static CollisionManifold PolygonToPolygonCollision(CollisionProps const& coll1, CollisionProps const& coll2);
 
-			static CollisionManifold SphereToPolygonCollision(CollisionProps const& coll1, CollisionProps const& coll2);
+			static CollisionManifold CircleToPolygonCollision(CollisionProps const& coll1, CollisionProps const& coll2);
 
 			static CollisionManifold AABBToPolygonCollision(CollisionProps const& coll1, CollisionProps const& coll2);
 

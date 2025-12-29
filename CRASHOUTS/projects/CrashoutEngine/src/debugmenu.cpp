@@ -97,8 +97,6 @@ namespace UI { // --------------------------------------------------------------
 			ImGui::SaveIniSettingsToDisk(g_IniPath.c_str());
 		}
 
-		if (!currSceneName.empty() && engineState == EngineState::STOP) Serialization::SaveScenes(currSceneName);
-
 		ImGui_ImplOpenGL3_Shutdown();
 		ImGui_ImplGlfw_Shutdown();
 		ImGui::DestroyContext();
@@ -297,7 +295,7 @@ namespace UI { // --------------------------------------------------------------
 
 			if (ui.drawAllColliders) {
 				CollisionGizmos::DrawAllColliders(ecs, collisions, ui.overlayThickness / thicknessRatio);
-				CollisionGizmos::DrawContactsAndNormals(*ECS::getInstance(), collisions, 10.f, ui.overlayThickness / thicknessRatio);
+				CollisionGizmos::DrawContactsAndNormals(*ECS::getInstance(), collisions, 3.5f, ui.overlayThickness / thicknessRatio);
 			}
 			if (ui.drawQuadTree) Collision::CollisionHandler::GetInstance().quadTree.Draw();
 

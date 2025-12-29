@@ -26,7 +26,7 @@ namespace Physics {
 		private:
 
 			// --- Debug state (static so UI can toggle globally) ---
-			static inline bool sPaused = false;
+			static inline bool sPaused = true;
 			static inline bool sStepOnce = false;
 			static inline bool sOverrideDt = false;
 			static inline double sDebugDt = 1.0 / 60.0;
