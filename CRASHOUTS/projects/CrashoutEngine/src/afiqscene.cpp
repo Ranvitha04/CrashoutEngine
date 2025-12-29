@@ -14,7 +14,7 @@ All content © 2025 Digipen Institute of Technology Singapore.All rights reserve
 #include "log.h"
 
 #include "entitymanager.h"  
-#include "prefab_init.h"
+
 #include <functional>
 #include <unordered_map>
 #include <vector>
@@ -58,124 +58,124 @@ namespace {
     }
 
     // One-time registration guard
-    static bool gPrefabsInited = false;
-    static void InitPrefabsOnce() {
-        if (gPrefabsInited) return;
-        gPrefabsInited = true;
+    //static bool gPrefabsInited = false;
+    //static void InitPrefabsOnce() {
+    //    if (gPrefabsInited) return;
+    //    gPrefabsInited = true;
 
-        // Fallback: create a plain named entity with a Transform
-        PrefabSetFallback([](ECS& e, const std::string& name) {
-            auto ent = e.CreateEntity();
-            e.AddComponent<NameComponent>(ent, NameComponent{ name });
-            if (!e.HasComponent<TransformComponent>(ent)) {
-                e.AddComponent<TransformComponent>(ent, TransformComponent{});
-            }
-            });
+    //    // Fallback: create a plain named entity with a Transform
+    //    PrefabSetFallback([](ECS& e, const std::string& name) {
+    //        auto ent = e.CreateEntity();
+    //        e.AddComponent<NameComponent>(ent, NameComponent{ name });
+    //        if (!e.HasComponent<TransformComponent>(ent)) {
+    //            e.AddComponent<TransformComponent>(ent, TransformComponent{});
+    //        }
+    //        });
 
-        // Example prefabs you can extend any time:
+    //    // Example prefabs you can extend any time:
 
-        // Platform: wide rectangle
-        PrefabRegister("Platform", [](ECS& e) {
-            auto ent = e.CreateEntity();
-            e.AddComponent<NameComponent>(ent, NameComponent{ "Platform" });
-            e.AddComponent<TransformComponent>(ent, TransformComponent{ .size{100.f, 10.f} });
-            e.AddComponent<ShapeComponent>(ent, ShapeComponent{ .type = ShapeType::Rectangle });
-          
-            });
+    //    // Platform: wide rectangle
+    //    PrefabRegister("Platform", [](ECS& e) {
+    //        auto ent = e.CreateEntity();
+    //        e.AddComponent<NameComponent>(ent, NameComponent{ "Platform" });
+    //        e.AddComponent<TransformComponent>(ent, TransformComponent{ .size{100.f, 10.f} });
+    //        e.AddComponent<ShapeComponent>(ent, ShapeComponent{ .type = ShapeType::Rectangle });
+    //      
+    //        });
 
-        // Box: small rectangle
-        PrefabRegister("Box", [](ECS& e) {
-            auto ent = e.CreateEntity();
-            e.AddComponent<NameComponent>(ent, NameComponent{ "Box" });
-            e.AddComponent<TransformComponent>(ent, TransformComponent{ .size{20.f, 20.f} });
-            e.AddComponent<ShapeComponent>(ent, ShapeComponent{ .type = ShapeType::Rectangle });
-            });
-    
-        PrefabRegister("KF_Box", [](ECS& e) {
-            auto ent = e.CreateEntity();
-            gKFBox = ent;  // remember which entity is our animated test box
+    //    // Box: small rectangle
+    //    PrefabRegister("Box", [](ECS& e) {
+    //        auto ent = e.CreateEntity();
+    //        e.AddComponent<NameComponent>(ent, NameComponent{ "Box" });
+    //        e.AddComponent<TransformComponent>(ent, TransformComponent{ .size{20.f, 20.f} });
+    //        e.AddComponent<ShapeComponent>(ent, ShapeComponent{ .type = ShapeType::Rectangle });
+    //        });
+    //
+    //    PrefabRegister("KF_Box", [](ECS& e) {
+    //        auto ent = e.CreateEntity();
+    //        gKFBox = ent;  // remember which entity is our animated test box
 
-            // Basic components
-            e.AddComponent<NameComponent>(ent, NameComponent{ "KF_Box" });
+    //        // Basic components
+    //        e.AddComponent<NameComponent>(ent, NameComponent{ "KF_Box" });
 
-            TransformComponent t{};
-            t.position = { 0.f, 0.f, 0.f };
-            t.size = { 40.f, 40.f };
-            e.AddComponent<TransformComponent>(ent, t);
+    //        TransformComponent t{};
+    //        t.position = { 0.f, 0.f, 0.f };
+    //        t.size = { 40.f, 40.f };
+    //        e.AddComponent<TransformComponent>(ent, t);
 
-            ShapeComponent s{};
-            s.type = ShapeType::Rectangle;
-            s.color = CEColor{ 0.9f, 0.4f, 0.2f, 1.f };
-            e.AddComponent<ShapeComponent>(ent, s);
+    //        ShapeComponent s{};
+    //        s.type = ShapeType::Rectangle;
+    //        s.color = CEColor{ 0.9f, 0.4f, 0.2f, 1.f };
+    //        e.AddComponent<ShapeComponent>(ent, s);
 
-            // Attach animator component
-            auto& anim = KeyframeUnity::AddAnimator(e, ent);
+    //        // Attach animator component
+    //        auto& anim = KeyframeUnity::AddAnimator(e, ent);
 
-            // -------------------------------------------------
-            // CLIP 1: "Walk"  (small, slower sway)
-            // -------------------------------------------------
-            AnimationClip walk{};
-            walk.name = "Walk";
-            walk.wrap = KFWrap::Loop;
+    //        // -------------------------------------------------
+    //        // CLIP 1: "Walk"  (small, slower sway)
+    //        // -------------------------------------------------
+    //        AnimationClip walk{};
+    //        walk.name = "Walk";
+    //        walk.wrap = KFWrap::Loop;
 
-            KFBinding walkRot{};
-            walkRot.property = KFProperty::RotZ;
+    //        KFBinding walkRot{};
+    //        walkRot.property = KFProperty::RotZ;
 
-            KFKey walk0{};
-            walk0.time = 0.f;
-            walk0.value = -30.f;           // degrees
-            walk0.inTan = 0.f;
-            walk0.outTan = 0.f;
-            walk0.interp = KFInterp::Linear;
+    //        KFKey walk0{};
+    //        walk0.time = 0.f;
+    //        walk0.value = -30.f;           // degrees
+    //        walk0.inTan = 0.f;
+    //        walk0.outTan = 0.f;
+    //        walk0.interp = KFInterp::Linear;
 
-            KFKey walk1{};
-            walk1.time = 0.5f;
-            walk1.value = 30.f;            // degrees
-            walk1.inTan = 0.f;
-            walk1.outTan = 0.f;
-            walk1.interp = KFInterp::Linear;
+    //        KFKey walk1{};
+    //        walk1.time = 0.5f;
+    //        walk1.value = 30.f;            // degrees
+    //        walk1.inTan = 0.f;
+    //        walk1.outTan = 0.f;
+    //        walk1.interp = KFInterp::Linear;
 
-            walkRot.curve.Add(walk0);
-            walkRot.curve.Add(walk1);
-            walk.bindings.push_back(walkRot);
+    //        walkRot.curve.Add(walk0);
+    //        walkRot.curve.Add(walk1);
+    //        walk.bindings.push_back(walkRot);
 
-            KeyframeUnity::SetClip(anim, walk);
+    //        KeyframeUnity::SetClip(anim, walk);
 
-            // -------------------------------------------------
-            // CLIP 2: "Jump" (bigger, faster swing)
-            // -------------------------------------------------
-            AnimationClip jump{};
-            jump.name = "Jump";
-            jump.wrap = KFWrap::Loop;
+    //        // -------------------------------------------------
+    //        // CLIP 2: "Jump" (bigger, faster swing)
+    //        // -------------------------------------------------
+    //        AnimationClip jump{};
+    //        jump.name = "Jump";
+    //        jump.wrap = KFWrap::Loop;
 
-            KFBinding jumpRot{};
-            jumpRot.property = KFProperty::RotZ;
+    //        KFBinding jumpRot{};
+    //        jumpRot.property = KFProperty::RotZ;
 
-            KFKey jump0{};
-            jump0.time = 0.f;
-            jump0.value = -90.f;
-            jump0.inTan = 0.f;
-            jump0.outTan = 0.f;
-            jump0.interp = KFInterp::Linear;
+    //        KFKey jump0{};
+    //        jump0.time = 0.f;
+    //        jump0.value = -90.f;
+    //        jump0.inTan = 0.f;
+    //        jump0.outTan = 0.f;
+    //        jump0.interp = KFInterp::Linear;
 
-            KFKey jump1{};
-            jump1.time = 0.25f;
-            jump1.value = 90.f;
-            jump1.inTan = 0.f;
-            jump1.outTan = 0.f;
-            jump1.interp = KFInterp::Linear;
+    //        KFKey jump1{};
+    //        jump1.time = 0.25f;
+    //        jump1.value = 90.f;
+    //        jump1.inTan = 0.f;
+    //        jump1.outTan = 0.f;
+    //        jump1.interp = KFInterp::Linear;
 
-            jumpRot.curve.Add(jump0);
-            jumpRot.curve.Add(jump1);
-            jump.bindings.push_back(jumpRot);
+    //        jumpRot.curve.Add(jump0);
+    //        jumpRot.curve.Add(jump1);
+    //        jump.bindings.push_back(jumpRot);
 
-            KeyframeUnity::SetClip(anim, jump);
+    //        KeyframeUnity::SetClip(anim, jump);
 
-            // Start in "Walk" by default
-            KeyframeUnity::Play(anim, "Walk", true);
-            });
+    //        // Start in "Walk" by default
+    //        KeyframeUnity::Play(anim, "Walk", true);
+    //        });
 
-    }
+    //}
 } // anon ns (prefab)
 
 // ============================================================================
@@ -189,9 +189,9 @@ static FMOD::Studio::EventInstance* s_menuMusic = nullptr;
 // ============================================================================
 void LoadAfiq()
 {
-    InitPrefabs();
-    // One-time prefab registration
-    InitPrefabsOnce();
+    //InitPrefabs();
+    //// One-time prefab registration
+    //InitPrefabsOnce();
 
     // Audio init + banks
     if (!s_audioReady) {
@@ -229,7 +229,7 @@ void InitAfiq()
 void UpdateAfiq()
 {
     if (s_audioReady) {
-        AudioSystem::instance().update();
+        AudioSystem::instance().Update();
     }
 
     ECS* ecs = ECS::getInstance();

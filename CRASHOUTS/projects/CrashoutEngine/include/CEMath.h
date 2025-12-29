@@ -69,6 +69,25 @@ namespace CEMath
 	}
 
 	/*!
+	@brief Returns a vector rotated 90 degrees counter-clockwise
+	@param v  The vector2
+	@return The normal to v
+	*/
+	inline CEVec2 GetNormal(const CEVec2& v) {
+		return CEVec2{ -v.y, v.x };
+	}
+
+	/*!
+	@brief Distance between two vec2 points
+	@param a  The first vector
+	@param b The second vector
+	@return The dot product
+	*/
+	inline f32 Distance(const CEVec2& a, const CEVec2& b) {
+		return Length(CEVec2{ b.x - a.x, b.y - a.y });
+	}
+
+	/*!
 	@brief Calculate the dot product of two 3D vectors
 	@param leftVector  The first vector
 	@param rightVector The second vector

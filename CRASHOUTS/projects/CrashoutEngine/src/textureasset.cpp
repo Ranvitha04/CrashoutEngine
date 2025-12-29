@@ -869,11 +869,12 @@ namespace Component {
     @brief Clears all cached textures and frees GPU resources.
     */
 
-    void TextureRenderer::ClearTextureCache() {
+    void inline TextureRenderer::ClearTextureCache() {
         for (const auto& pair : textureCache) {
             glDeleteTextures(1, &pair.second);
         }
         textureCache.clear();
+        std::unordered_map<std::string, GLuint>().swap(textureCache);
         std::cout << "Cleared texture cache." << std::endl;
     }
 

@@ -262,7 +262,7 @@ namespace InstancingSystem {
 				tf->rotation = std::atan2(dm->velocity.y, dm->velocity.x) * 57.2957795f;
 			}
 
-			// Animation update
+			// Animation Update
 			float speedMag = std::sqrt(dm->velocity.x * dm->velocity.x + dm->velocity.y * dm->velocity.y) * dm->speed;
 			const float moveThresh = 1.5f;
 			int desiredMode = dm->animationMode; // 1..4 manual modes; 0 = auto

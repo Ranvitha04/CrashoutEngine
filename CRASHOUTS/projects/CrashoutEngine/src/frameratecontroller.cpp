@@ -48,11 +48,33 @@ void FrameRateController::FrameStart()
 void FrameRateController::FrameEnd()
 {
 	using namespace std::chrono;
+
+	// Frame capping
+	if (mTargetFPS > 0 && mTargetDT > 0.0)
+	{
+		while (true)
+		{
+			// Check how much time has passed since FrameStart
+			double currentElapsed = duration<double>(ClockTime::now() - mFrameStart).count();
+
+			// If we have passed our target duration, break the loop
+			if (currentElapsed >= mTargetDT)
+				break;
+
+		}
+	}
+
+	// Actual elapsed time
 	double elapsed = duration<double>(ClockTime::now() - mFrameStart).count();
 
 	//clamp dt between 0.1ms and 250ms so the game does not blow up - Rain
 	mDT = std::clamp(elapsed, 0.0001, 0.15);
-	mFPS = 1.0 / mDT;
+	
+	// Smooth FPS Display
+	double currentInstantFPS = 1.0 / mDT;
+	if (mFPS == 0.0) mFPS = currentInstantFPS; // Initialize if first frame
+	else mFPS = (mFPS * 0.9) + (currentInstantFPS * 0.1);
+
 	mCurrentSteps = 0;
 	// accumulate time since last frame
 	mAccumulatedTime += mDT;

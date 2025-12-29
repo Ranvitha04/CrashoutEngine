@@ -8,281 +8,100 @@ All content © 2025 Digipen Institute of Technology Singapore.All rights reserved
 
 //__________________________________________________________________________*/
 #include "collidereventmanager.h"
-#include "messages.h"
-
-namespace {
-	//void executeEvent(CrashoutsEngine::CollisionEventManager::CollisionEventMap::iterator &eventIter, Collision::CollisionMessage& collEvent) {
-	//	using namespace CrashoutsEngine;
-	//	switch (eventIter->second->type) {
-	//			case CollisionEventManager::Collidable: {
-	//				CollisionEventManager::ColliderFnCollection& event{ dynamic_cast<CollisionEventManager::ColliderFnCollection&>(*eventIter->second) };
-	//				//event.stay();
-	//			}
-	//			break;
-
-	//			case CollisionEventManager::Trigger:
-	//				CollisionEventManager::TriggerFnCollection& event{ dynamic_cast<CollisionEventManager::TriggerFnCollection&>(*eventIter->second) };
-	//				//event.stay();
-	//			break;
-	//	}
-	//}
-}
 
 namespace CrashoutsEngine {
 
+	/*
+	@brief	Creates or retrieves events from an entity
+	@param	entity - entity to get event from
+	@return events
+	*/
+	CollisionEventManager::EntityEventCollection& CollisionEventManager::GetEvents(Entity entity) {
+		return collisionEvents[entity];
+	}
+
+	/*
+	@brief Template function to invoke callback
+	@param fn		- Function to invoke
+	@param other	- Collided entity to invoke function on
+	*/
+	template <typename Func>
+	static void TryInvoke(const Func& fn, Entity other) {
+		if (fn) fn(other);
+	}
+
 	/*ENTER, STAY, EXIT EVENT HANDLERS*/
-	static void handleExitEvents(Collision::CollisionMessage& collEvent, CollisionEventManager& observer) {
-		Collision::ContactPair pair{ collEvent.getCollisionPair() };
+	static void HandleCollisionMessages(Messaging::Messages& msgBase, Messaging::Observer& obsBase) {
 
-		CollisionEventManager::CollisionEventMap& currentEvents{ observer.getCollisionEvents() };
+		auto& msg = static_cast<Collision::CollisionMessage&>(msgBase);
+		auto& observer = static_cast<CollisionEventManager&>(obsBase);
 
-		CollisionEventManager::CollisionEventMap::iterator firstIter{ currentEvents.find(pair.first) };
+		// 1. Get Data from Message
+		Collision::ContactPair pair = msg.GetCollisionPair();
+		Messaging::EventType type = msg.GetType();
 
-		CollisionEventManager::CollisionEventMap::iterator secondIter{ currentEvents.find(pair.second) };
+		CollisionEventManager::CollisionEventMap& eventsMap = observer.GetCollisionEvents();
 
-		if (firstIter != currentEvents.end()) {
-			switch (firstIter->second->type) {
-				case CollisionEventManager::Collidable: {
-					CollisionEventManager::ColliderFnCollection& event{ dynamic_cast<CollisionEventManager::ColliderFnCollection&>(*firstIter->second) };
-					if (event.exit) event.exit(pair.second);
-					}
-					break;
+		// 2. Lambda to handle one side of the interaction
+		auto HandleSide = [&](Entity me, Entity other) {
+			CollisionEventManager::CollisionEventMap::iterator it = eventsMap.find(me);
+			if (it == eventsMap.end()) return;
 
-				case CollisionEventManager::Trigger:
-					CollisionEventManager::TriggerFnCollection& event{ dynamic_cast<CollisionEventManager::TriggerFnCollection&>(*firstIter->second) };
-					if (event.exit) event.exit(pair.second);
-					break;
+			// 3. Check collision type and invoke
+			switch (type) {
+				// Physics Collisions
+				case Messaging::EventType::CollisionEnter: TryInvoke(it->second.onCollisionEnter, other); break;
+				case Messaging::EventType::CollisionStay: TryInvoke(it->second.onCollisionStay, other); break;
+				case Messaging::EventType::CollisionExit: TryInvoke(it->second.onCollisionExit, other); break;
+
+				// Trigger Overlaps
+				case Messaging::EventType::TriggerEnter: TryInvoke(it->second.onTriggerEnter, other); break;
+				case Messaging::EventType::TriggerStay: TryInvoke(it->second.onTriggerStay, other); break;
+				case Messaging::EventType::TriggerExit: TryInvoke(it->second.onTriggerExit, other); break;
+
+				default: break;
 			}
-		}
+		};
 
-		if (secondIter != currentEvents.end()) {
-			switch (secondIter->second->type) {
-				case CollisionEventManager::Collidable: {
-					CollisionEventManager::ColliderFnCollection& event{ dynamic_cast<CollisionEventManager::ColliderFnCollection&>(*secondIter->second) };
-					if (event.exit) event.exit(pair.first);
-				}
-					break;
-
-				case CollisionEventManager::Trigger:
-					CollisionEventManager::TriggerFnCollection& event{ dynamic_cast<CollisionEventManager::TriggerFnCollection&>(*secondIter->second) };
-					if (event.exit) event.exit(pair.first);
-					break;
-			}
-		}
-
+		// 4. Run for both entities colliding or overlapping
+		HandleSide(pair.first, pair.second);
+		HandleSide(pair.second, pair.first);
 	}
 
-
-	static void handleStayEvents(Collision::CollisionMessage& collEvent, CollisionEventManager& observer) {
-		Collision::ContactPair pair{ collEvent.getCollisionPair() };
-
-		CollisionEventManager::CollisionEventMap& currentEvents{ observer.getCollisionEvents() };
-
-		CollisionEventManager::CollisionEventMap::iterator firstIter{ currentEvents.find(pair.first) };
-
-		CollisionEventManager::CollisionEventMap::iterator secondIter{ currentEvents.find(pair.second) };
-
-		if (firstIter != currentEvents.end()) {
-			switch (firstIter->second->type) {
-				case CollisionEventManager::Collidable:
-				{
-					auto& event = dynamic_cast<CollisionEventManager::ColliderFnCollection&>(*firstIter->second);
-					if (event.stay) event.stay(pair.second);
-
-				}
-				break;
-
-				case CollisionEventManager::Trigger:
-				{
-					auto& event = dynamic_cast<CollisionEventManager::TriggerFnCollection&>(*firstIter->second);
-					if (event.stay) event.stay(pair.second);
-
-				}
-				break;
-			}
-		}
-
-		if (secondIter != currentEvents.end()) {
-			switch (secondIter->second->type) {
-			case CollisionEventManager::Collidable:
-			{
-				auto& event = dynamic_cast<CollisionEventManager::ColliderFnCollection&>(*secondIter->second);
-				if (event.stay) event.stay(pair.first);
-			}
-			break;
-
-			case CollisionEventManager::Trigger:
-			{
-				auto& event = dynamic_cast<CollisionEventManager::TriggerFnCollection&>(*secondIter->second);
-				if (event.stay) event.stay(pair.first);
-
-			}
-			break;
-			}
-		}
-	}
-
-	static void handleEnterEvents(Collision::CollisionMessage& collEvent, CollisionEventManager& observer) {
-		Collision::ContactPair pair{ collEvent.getCollisionPair() };
-
-		CollisionEventManager::CollisionEventMap& currentEvents{ observer.getCollisionEvents() };
-
-		CollisionEventManager::CollisionEventMap::iterator firstIter{ currentEvents.find(pair.first) };
-
-		CollisionEventManager::CollisionEventMap::iterator secondIter{ currentEvents.find(pair.second) };
-
-		if (firstIter != currentEvents.end()) {
-			switch (firstIter->second->type) {
-			case CollisionEventManager::Collidable: {
-				CollisionEventManager::ColliderFnCollection& event{ dynamic_cast<CollisionEventManager::ColliderFnCollection&>(*firstIter->second) };
-				if (event.enter) event.enter(pair.second);
-			}
-				break;
-
-			case CollisionEventManager::Trigger:
-				CollisionEventManager::TriggerFnCollection& event{ dynamic_cast<CollisionEventManager::TriggerFnCollection&>(*firstIter->second) };
-				if (event.enter) event.enter(pair.second);
-				break;
-			}
-		}
-
-		if (secondIter != currentEvents.end()) {
-			switch (secondIter->second->type) {
-			case CollisionEventManager::Collidable: {
-				CollisionEventManager::ColliderFnCollection& event{ dynamic_cast<CollisionEventManager::ColliderFnCollection&>(*secondIter->second) };
-				if (event.enter) event.enter(pair.first);
-			}
-				break;
-
-			case CollisionEventManager::Trigger:
-				CollisionEventManager::TriggerFnCollection& event{ dynamic_cast<CollisionEventManager::TriggerFnCollection&>(*secondIter->second) };
-				if (event.enter) event.enter(pair.first);
-				break;
-			}
-		}
-	}
 	/*-----------------------------------*/
 
-	CollisionEventManager::CollisionEventManager() : Messaging::Observer{ "CollisionEventHandler" } {
-		attachHandler(Messaging::getExitMsgID(), (Messaging::HANDLER)handleExitEvents);
-		attachHandler(Messaging::getStayMsgID(), (Messaging::HANDLER)handleStayEvents);
-		attachHandler(Messaging::getEnterMsgID(), (Messaging::HANDLER)handleEnterEvents);
+	CollisionEventManager::CollisionEventManager() : Messaging::Observer{} {
+		using namespace Messaging;
+
+		HANDLER handler = HandleCollisionMessages;
+
+		attachHandler(EventType::CollisionEnter, handler);
+		attachHandler(EventType::CollisionStay, handler);
+		attachHandler(EventType::CollisionExit, handler);
+
+		attachHandler(EventType::TriggerEnter, handler);
+		attachHandler(EventType::TriggerStay, handler);
+		attachHandler(EventType::TriggerExit, handler);
 	}
 
-	void CollisionEventManager::initEvent(CrashoutsEngine::Entity entity, Type type) {
-
-		CollisionEventMap::iterator iter{ collisionEvents.find(entity) };
-		if (iter == collisionEvents.end()) {
-			if (type == Type::Collidable) {
-				collisionEvents.insert(std::pair<CrashoutsEngine::Entity, std::unique_ptr<Callable>>{
-					entity,
-
-						std::make_unique<ColliderFnCollection>(ColliderFnCollection{
-							nullptr,
-							nullptr,
-							nullptr
-							})
-
-				});
-			}
-			else {
-				collisionEvents.insert(std::pair<CrashoutsEngine::Entity, std::unique_ptr<Callable>>{
-					entity,
-
-						std::make_unique<TriggerFnCollection>(TriggerFnCollection{
-							nullptr,
-							nullptr,
-							nullptr
-							})
-
-				});
-			}
-
-		}
-
+	void CollisionEventManager::RegisterCollideEnter(Entity entity, CallbackFn fn) {
+		GetEvents(entity).onCollisionEnter = fn;
+	}
+	void CollisionEventManager::RegisterCollideStay(Entity entity, CallbackFn fn) {
+		GetEvents(entity).onCollisionStay = fn;
+	}
+	void CollisionEventManager::RegisterCollideExit(Entity entity, CallbackFn fn) {
+		GetEvents(entity).onCollisionExit = fn;
 	}
 
-	void CollisionEventManager::registerCollideEnter(CrashoutsEngine::Entity entity, CallbackFnCollide fn) {
-		initEvent(entity, Collidable);
-		CollisionEventMap::iterator iter{ collisionEvents.find(entity) };
-		try {
-			ColliderFnCollection& event{ dynamic_cast<ColliderFnCollection&>(*iter->second) };
-			event.enter = fn;
-		}
-		catch ([[maybe_unused]] std::bad_cast const& err) {
-			return;
-		}
-
+	void CollisionEventManager::RegisterTriggerEnter(Entity entity, CallbackFn fn) {
+		GetEvents(entity).onTriggerEnter = fn;
 	}
-
-	void CollisionEventManager::registerCollideStay(CrashoutsEngine::Entity entity, CallbackFnCollide fn) {
-		initEvent(entity, Collidable);
-		CollisionEventMap::iterator iter{ collisionEvents.find(entity) };
-
-		try {
-			ColliderFnCollection& event{ dynamic_cast<ColliderFnCollection&>(*iter->second) };
-			event.stay = fn;
-		}
-		catch ([[maybe_unused]] std::bad_cast const& err) {
-			return;
-		}
-
-
+	void CollisionEventManager::RegisterTriggerStay(Entity entity, CallbackFn fn) {
+		GetEvents(entity).onTriggerStay = fn;
 	}
-
-	void CollisionEventManager::registerCollideExit(CrashoutsEngine::Entity entity, CallbackFnCollide fn) {
-		initEvent(entity, Collidable);
-		CollisionEventMap::iterator iter{ collisionEvents.find(entity) };
-
-		try {
-			ColliderFnCollection& event{ dynamic_cast<ColliderFnCollection&>(*iter->second) };
-			event.exit = fn;
-		}
-		catch ([[maybe_unused]] std::bad_cast const& err) {
-			return;
-		}
-
+	void CollisionEventManager::RegisterTriggerExit(Entity entity, CallbackFn fn) {
+		GetEvents(entity).onTriggerExit = fn;
 	}
-
-	void CollisionEventManager::registerTriggerEnter(CrashoutsEngine::Entity entity, CallbackTriggerFn fn) {
-		initEvent(entity, Trigger);
-		CollisionEventMap::iterator iter{ collisionEvents.find(entity) };
-		try {
-			TriggerFnCollection& event{ dynamic_cast<TriggerFnCollection&>(*iter->second) };
-			event.enter = fn;
-		}
-		catch ([[maybe_unused]] std::bad_cast const& err) {
-			return;
-		}
-	}
-
-	void CollisionEventManager::registerTriggerStay(CrashoutsEngine::Entity entity, CallbackTriggerFn fn) {
-		initEvent(entity, Trigger);
-		CollisionEventMap::iterator iter{ collisionEvents.find(entity) };
-
-		try {
-			TriggerFnCollection& event{ dynamic_cast<TriggerFnCollection&>(*iter->second) };
-			event.stay = fn;
-		}
-		catch ([[maybe_unused]] std::bad_cast const& err) {
-			return;
-		}
-
-	}
-
-	void CollisionEventManager::registerTriggerExit(CrashoutsEngine::Entity entity, CallbackTriggerFn fn) {
-		initEvent(entity, Trigger);
-		CollisionEventMap::iterator iter{ collisionEvents.find(entity) };
-
-		try {
-			TriggerFnCollection& event{ dynamic_cast<TriggerFnCollection&>(*iter->second) };
-			event.exit = fn;
-		}
-		catch ([[maybe_unused]] std::bad_cast const& err) {
-			return;
-		}
-
-	}
-
 
 }

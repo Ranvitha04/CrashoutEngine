@@ -89,6 +89,7 @@ namespace CrashoutsEngine {
                 for (std::pair<const GLchar, Character>& pair : characters) {
                     glDeleteTextures(1, &pair.second.TextureID);
                 }
+                characters.clear();
             }
 
             // Public member functions

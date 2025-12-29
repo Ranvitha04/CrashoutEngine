@@ -376,8 +376,8 @@ void RenderSpriteAnimation()
 @details
 - Press `G` to cycle display modes (0..10) and reinitialize mode-specific data.
 - Press `M` to toggle textures in modes 2/3/5.
-- Mode 1: update duck movement, scale, and rotation.
-- Mode 6: update ECS duck motion and handle `I` key to cycle manual animation.
+- Mode 1: Update duck movement, scale, and rotation.
+- Mode 6: Update ECS duck motion and handle `I` key to cycle manual animation.
 - Mode 10: render all 3 particle systems together.
 */
 void UpdateRan()
@@ -837,7 +837,7 @@ void UpdateRan()
         InstancingSystem::UpdateEcsDuckSprites();
     }
 
-    // ECS ducks update for mode 6
+    // ECS ducks Update for mode 6
     if (gDisplayMode == 6 && gMode6Initialized) {
         InstancingSystem::UpdateEcsDuckSprites();
     }

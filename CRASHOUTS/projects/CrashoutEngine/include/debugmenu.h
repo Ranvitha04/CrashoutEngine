@@ -75,11 +75,11 @@ namespace UI {
     @brief Initializes ImGui with a GLFW window.
     @param window Pointer to the GLFW window handle.
     */
-    void Init(GLFWwindow* window);
+    void Init(GLFWwindow* window, UI::UIState& uiState);
     /*!
     @brief Shuts down ImGui and releases resources.
     */
-    void Shutdown();
+    void Shutdown(UI::UIState& uiState);
 
     // -- Rendering entry points ---------------------------------------
 
@@ -91,7 +91,7 @@ namespace UI {
     @param entities List of entities currently tracked.
     @param selected Currently selected entity.
     */
-    void Render(FrameProfiler& profiler, ::Physics::PhysicsHandler& phys, CrashoutsEngine::Entity& selected, UIState& ui);
+    void Render(FrameProfiler& profiler, CrashoutsEngine::Entity& selected, UIState& ui);
 
     // -- Helper Functions ---------------------------------------------
     /*!
@@ -118,7 +118,7 @@ namespace UI {
     @param entities List of ECS entities.
     @param selected Currently selected entity.
     */
-    void RenderAll(FrameProfiler& profiler, ::Physics::PhysicsHandler& phys, UIState& ui, CrashoutsEngine::ECS& ecs, std::vector<CrashoutsEngine::Entity>& entities, CrashoutsEngine::Entity& selected);
+    void RenderAll(FrameProfiler& profiler, UIState& ui, CrashoutsEngine::ECS& ecs, std::vector<CrashoutsEngine::Entity>& entities, CrashoutsEngine::Entity& selected);
 
     void SetDarkGrayTheme();
 

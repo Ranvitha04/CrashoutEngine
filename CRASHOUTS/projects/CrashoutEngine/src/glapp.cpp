@@ -340,7 +340,7 @@ void GLApp::Minimize() {
 }
 
 /* _________________________________________________________________________ */
-/*! update
+/*! Update
 
 @param none
 
@@ -349,8 +349,8 @@ void GLApp::Minimize() {
 For now, there is nothing to do except to write appropriate information
 to window title bar.
 */
-// method: void GLApp::update()
-void GLApp::update() {
+// method: void GLApp::Update()
+void GLApp::Update() {
     // write window title with current fps ...
     std::stringstream sstr;
     sstr << std::fixed << std::setprecision(2) << GLApp::title;// << " | " << FrameRateController::GetInstance().FPS();
@@ -368,10 +368,10 @@ void GLApp::update() {
         old_h = h;
     }
 
-    // NEW: update scene per-frame (handles duck movement)
+    // NEW: Update scene per-frame (handles duck movement)
     //UpdateRan();
 
-    // Sprite animation update logic is now handled in ran.cpp
+    // Sprite animation Update logic is now handled in ran.cpp
 }
 
 /* _________________________________________________________________________ */
@@ -676,7 +676,7 @@ void GLApp::fbsize_cb([[maybe_unused]] GLFWwindow* ptr_win, int fbWidth, int fbH
     using namespace CrashoutsEngine::RenderCamera;
     engineCamera.UpdateMatrices(vpW, vpH);
 
-    // Force viewport update immediately so the very next draw call is correct
+    // Force viewport Update immediately so the very next draw call is correct
     // (Optional, but helps with flicker on some drivers)
     // glViewport(0, 0, fbWidth, fbHeight); 
 
@@ -720,7 +720,7 @@ void GLApp::update_time(double fps_calc_interval) {
 
     ++count;
 
-    // update fps at least every 10 seconds ...
+    // Update fps at least every 10 seconds ...
     fps_calc_interval = (fps_calc_interval < 0.0) ? 0.0 : fps_calc_interval;
     fps_calc_interval = (fps_calc_interval > 10.0) ? 10.0 : fps_calc_interval;
     if (elapsed_time > fps_calc_interval) {

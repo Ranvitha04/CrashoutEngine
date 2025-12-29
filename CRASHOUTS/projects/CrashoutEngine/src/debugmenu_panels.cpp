@@ -1,6 +1,6 @@
 ﻿#include "debugmenu_internals.h"
 #include "debugmenu.h"
-
+#include "physicsmanager.h"
 
 using namespace CrashoutsEngine;
 using namespace Serialization;
@@ -150,31 +150,33 @@ namespace UI {
         if (ImGui::Button("Save Prefab")) {
             namespace fs = std::filesystem;
 
-
             std::string newName;
             if (prefabNameBuf[0]) {
-
                 newName = prefabNameBuf;
             }
             else if (ecs.HasComponent<Component::PrefabInstanceComponent>(selected)) {
-
                 auto* inst = ecs.GetComponent<Component::PrefabInstanceComponent>(selected);
                 newName = inst ? inst->prefabName : "Entity";
             }
             else {
-
                 newName = "Entity";
             }
 
-
+#if USE_IMGUI_EDITOR
             fs::path jsonPath = fs::path(CrashoutsEngine::Assets::rootPath)
                 / "prefabs"
                 / (newName + ".json");
+#else
+            fs::path jsonPath = fs::path(GetLocalAppData())
+                / "prefabs"
+                / (newName + ".json");
+#endif
 
             fs::create_directories(jsonPath.parent_path());
 
-            const bool ok = SaveBoxPrefabToJson_RJ(
-                ecs, selected,
+            const bool ok = CrashoutsEngine::SavePrefabToJson(
+                ecs,
+                selected,
                 newName,
                 jsonPath.generic_string(),
                 /*matchName*/ newName
@@ -192,9 +194,7 @@ namespace UI {
 
         }
 
-
         ImGui::Separator();
-
 
         if (entities.size() > 0) {
             if (ImGui::Button("Clone Selected")) {
@@ -204,18 +204,23 @@ namespace UI {
 
             if (ImGui::Button("Destroy Selected")) {
                 if (selected) {
-
                     if (ecs.HasComponent<Component::ParentComponent>(selected)) {
                         CrashoutsEngine::DetachChild(ecs, selected);
                     }
                 }
+
                 ecs.DestroyEntity(selected);
-                if (auto it = std::find(entities.begin(), entities.end(), selected);
-                    it != entities.end()) entities.erase(it);
+
+                auto it = std::find(entities.begin(), entities.end(), selected);
+                if (it != entities.end()) {
+                    entities.erase(it);
+                }
+
                 selected = 0;
-                return;
             }
         }
+
+        //ImGui::End();
     }
 
     /*!
@@ -477,11 +482,33 @@ namespace UI {
         }
 
         auto& frc = FrameRateController::GetInstance();
-        const double frame_ms = frc.DT() * 1000.0;
         const double fps = frc.FPS();
+        const double frame_ms = (fps > 0.0) ? (1000.0 / fps) : 0.0;
         //const int cap = frc.CAP();
 
         ImGui::Text("Frame: %.3f ms (%.1f FPS)", frame_ms, fps);
+        ImGui::Separator();
+
+        // FPS Controls
+        int currentCap = frc.CAP();
+
+        ImGui::Text("Target FPS:");
+        ImGui::SameLine();
+        ImGui::SetNextItemWidth(150);
+        // 0 to 240 range. 0 = Uncapped.
+        if (ImGui::DragInt("##FPSLimit", &currentCap, 1, 0, 240, "%d FPS")) {
+            if (currentCap < 0) currentCap = 0;
+            frc.SetTargetFPS(currentCap);
+        }
+
+        // Helper buttons for quick setting
+        if (ImGui::Button("VSync (60)")) frc.SetTargetFPS(60);
+        ImGui::SameLine();
+        if (ImGui::Button("120")) frc.SetTargetFPS(120);
+        ImGui::SameLine();
+        if (ImGui::Button("Uncapped")) frc.SetTargetFPS(0);
+
+        ImGui::Separator();
 
         if (ImGui::BeginTable("perf_table", 3, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
             ImGui::TableSetupColumn("System");
@@ -730,6 +757,8 @@ namespace UI {
                         ECS::getInstance()->Reset();
                         currSceneName = name;
                         Serialization::LoadScenes(name);
+
+                        if(engineState != EngineState::PLAY) ::Physics::PhysicsHandler::PhysicsHandler::GetInstance().SetPaused(true);
                     }
 
                     ImGui::SameLine();
@@ -748,15 +777,11 @@ namespace UI {
      @param phys Physics handler reference.
      @param ui UI state toggles.
     */
-    void RenderPhysicsPanel([[maybe_unused]] FrameProfiler& profiler, ECS& ecs, ::Physics::PhysicsHandler& phys, UIState& ui)
+    void RenderPhysicsPanel([[maybe_unused]] FrameProfiler& profiler, ECS& ecs, UIState& ui)
     {
         if (!ui.showPhysics) return;
         ScopedWindow w("Physics / Collision", LockFlags(ui.lockLayout));
 
-        bool paused = ::Physics::PhysicsHandler::GetPaused();
-        if (ImGui::Checkbox("Paused", &paused)) {
-            ::Physics::PhysicsHandler::SetPaused(paused);
-        }
         ImGui::SameLine();
         if (ImGui::Button("Step")) {
             ::Physics::PhysicsHandler::StepOnce(); Help("Advance one simulation tick when paused.");
@@ -790,13 +815,7 @@ namespace UI {
 
         ImGui::Separator();
 
-        const auto& evs = phys.collisions();
-
-        // auto pause if requested and collision occured
-        if (ui.freezeOnCollision && !paused && !evs.empty()) {
-            ::Physics::PhysicsHandler::SetPaused(true);
-            paused = true;
-        }
+        const auto& evs = Collision::CollisionHandler::GetInstance().GetFrameCollisions();
 
         ImGui::Separator();
 
@@ -1107,7 +1126,7 @@ namespace UI {
             audio.stopAllRaw();
         }
 
-        audio.update();
+        audio.Update();
     }
 
     /*!
@@ -1131,6 +1150,7 @@ namespace UI {
                 if (engineState == EngineState::STOP && !currSceneName.empty()) Serialization::SaveScenes(currSceneName);
                 engineState = EngineState::PLAY;
 
+                ::Physics::PhysicsHandler::PhysicsHandler::GetInstance().SetPaused(false);
                 CrashoutsEngine::Audio::AudioSystem::instance().setPaused(false);
 
                 CrashoutsEngine::RenderCamera::engineCamera.SetPostiion(CEVec3{ 0.f, 0.f, 0.f });
@@ -1145,6 +1165,7 @@ namespace UI {
                 if (engineState == EngineState::STOP && !currSceneName.empty()) Serialization::SaveScenes(currSceneName);
                 engineState = EngineState::PAUSE;
 
+                ::Physics::PhysicsHandler::PhysicsHandler::GetInstance().SetPaused(true);
                 CrashoutsEngine::Audio::AudioSystem::instance().setPaused(true);
             }
             ImGui::SameLine();
@@ -1160,25 +1181,13 @@ namespace UI {
                 //MonoManager::ReloadScripts();
                 engineState = EngineState::STOP;
 
+                ::Physics::PhysicsHandler::PhysicsHandler::GetInstance().SetPaused(true);
+
                 CrashoutsEngine::Audio::AudioSystem::instance().stopAll(true); // Stop FMOD Studio
                 CrashoutsEngine::Audio::AudioSystem::instance().setPaused(false);
                 CrashoutsEngine::Audio::AudioSystem::instance().stopMusicGroup(); // <-- Seems to work better than the above
 
             }
-            ImGui::SameLine();
-            // SAVE
-            if (ImGui::Button("SAVE", ImVec2(70, 25))) {
-                if (!currSceneName.empty()) Serialization::SaveScenes(currSceneName);
-
-                if (currSceneName.empty()) RestartGameState();       // Legacy scene system
-                else {
-                    ECS::getInstance()->Reset();
-                    Serialization::LoadScenes(currSceneName);
-                }
-
-            }
-
-
             ImGui::SeparatorEx(ImGuiSeparatorFlags_Vertical);
             ImGui::SameLine();
 

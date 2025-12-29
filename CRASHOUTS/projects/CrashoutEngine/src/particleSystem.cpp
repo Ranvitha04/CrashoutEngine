@@ -366,7 +366,7 @@ void TrajectoryEmitter::Recompute() {
 - Estimate marker radius from distance and duck scale; spacing ≈ `2.25×radius`.
 - Target sample count ≈ `distance/spacing` scaled by wheel density, clamped to
   `[m_minSamples, m_maxSamples]`. Recreate ECS entities on change.
-- Recompute ballistic points and update entity transforms.
+- Recompute ballistic points and Update entity transforms.
 */
 void TrajectoryEmitter::Update(float dt) {
     auto& ecs = *CrashoutsEngine::ECS::getInstance();
@@ -443,7 +443,7 @@ void TrajectoryEmitter::Update(float dt) {
         }
     }
 
-    // no projectile update
+    // no projectile Update
 
     // Advance loop timer and restart when flight time reached or projectile passes target x
     m_tAccum += dt;

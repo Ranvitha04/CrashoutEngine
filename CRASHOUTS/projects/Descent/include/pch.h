@@ -1,7 +1,6 @@
 // This file will be precompiled
 
 #pragma once
-
 /*!
 All content © 2025 Digipen Institute of Technology Singapore.All rights reserved.
 
