@@ -2,38 +2,94 @@
 @file        prefab.cpp
 @author      b.mohamadafiq@digipen.edu
 @date        28/9/2025
-@brief       Factory where we make prefab
+@brief       Implementation of Prefab Factory and JSON Serialization.
 
 All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 */
+
+#include "engine.h"
 #include "prefab.h"
+#include "entitymanager.h"
+#include "collisionmanager.h" // For MakeCenteredAABB
+#include "transformcomponent.h"
+#include "shapescomponent.h"
+#include "rigidbodycomponent.h"
+#include "collidercomponent.h"
+#include "namecomponent.h"
+#include "textcomponent.h"
+#include "cameracomponent.h"
+#include "scriptcomponent.h"
+#include "audiocomponent.h"
+#include "guicomponent.h"
+#include "ppcomponent.h"
+#include "tilemapcomponent.h"
+#include "prefabcomponent.h"
+#include "hierarchycomponent.h"
+#include "spriteAnimation.h"
+#include "keyframe.h"
+#include "buttoncomponent.h"
+#include "textinputcomponent.h"
+#include "uilayoutcomponent.h"
+#include "layercomponent.h"
+
+// RapidJSON
+#include "rapidjson/document.h"
+#include "rapidjson/istreamwrapper.h"
+#include "rapidjson/ostreamwrapper.h"
+#include "rapidjson/prettywriter.h"
+#include "rapidjson/stringbuffer.h"
+
 #include <fstream>
 #include <sstream>
 #include <algorithm>
+#include <unordered_map>
+#include <filesystem>
+#include <iostream>
 
+// --- Static Registry ---
 namespace {
     std::unordered_map<std::string, Prefab::Factory>& Reg() {
         static std::unordered_map<std::string, Prefab::Factory> R;
         return R;
     }
     Prefab::Fallback& FallbackFn() {
-        static Prefab::Fallback FB; 
+        static Prefab::Fallback FB;
         return FB;
     }
 }
 
+// --- Helper Functions ---
+static std::unique_ptr<Collision::AABBRect> MakeCenteredAABB3(const CEVec3& center, float width, float height) {
+    const float halfwidth = 0.5f * width, halfheight = 0.5f * height;
+    CEVec3 minCorner{ center.x - halfwidth, center.y - halfheight, center.z };
+    CEVec3 maxCorner{ center.x + halfwidth, center.y + halfheight, center.z };
+    return std::make_unique<Collision::AABBRect>(minCorner, maxCorner);
+}
+
+// Utility for parsing Vectors
+struct ReadVectorFromJson {
+    CEVec3 operator()(const rapidjson::Value& val) {
+        CEVec3 newVal{};
+        if (val.HasMember("x")) newVal.x = val["x"].GetFloat();
+        if (val.HasMember("y")) newVal.y = val["y"].GetFloat();
+        if (val.HasMember("z")) newVal.z = val["z"].GetFloat();
+        return newVal;
+    }
+};
+
+// --- Core Prefab Logic ---
 namespace Prefab {
 
     bool Register(const std::string& name, Factory f) {
-        Reg()[name] = std::move(f);   
+        Reg()[name] = std::move(f);
         return true;
     }
-
 
     //Remove prefab
     bool Unregister(const std::string& name) { return Reg().erase(name) > 0; }
     bool Exists(const std::string& name) { return Reg().find(name) != Reg().end(); }
+
     //Get a list sort them by names
     std::vector<std::string> Names() {
         std::vector<std::string> v;
@@ -42,6 +98,7 @@ namespace Prefab {
         std::sort(v.begin(), v.end());
         return v;
     }
+
     //Make gameobj
     bool Create(CrashoutsEngine::ECS& ecs, const std::string& name) {
         auto it = Reg().find(name);
@@ -52,38 +109,835 @@ namespace Prefab {
     }
 
     void SetFallback(Fallback fb) { FallbackFn() = std::move(fb); }
-    //Load prefab from file
-    bool LoadFromFile(
-        const std::string& path,
-        const std::function<bool(
-            const std::string&,
-            const std::vector<std::string>&,
-            Factory&)>& translator)
-    {
-        std::ifstream file(path);
-        if (!file.is_open()) return false;
 
-        std::string line;
-        while (std::getline(file, line)) {
-            auto beg = line.find_first_not_of(" \t\r\n");
-            if (beg == std::string::npos) continue;
-            if (line[beg] == '#') continue;
+    void ClearRegistry() {
+        Reg().clear();
+        std::unordered_map<std::string, Factory>().swap(Reg());
+        FallbackFn() = nullptr;
+    }
+} 
 
-            std::istringstream iss(line);
-            std::string type; iss >> type;
-            if (type.empty()) continue;
+// --- DATA STRUCTS FOR CAPTURE ---
+namespace CaptureData {
+    
+    using namespace Component;
 
-            std::vector<std::string> tokens;
-            for (std::string tok; iss >> tok; ) tokens.push_back(tok);
-            if (tokens.empty()) continue; 
-            const std::string& name = tokens[0];
+    struct TransformData { CEVec3 pos{ 0,0,0 }; float rot{ 0.f }; CEVec2 size{ 1,1 }; };
+    struct LayerData { unsigned int layer{ 0 }; };
+    struct RBData { float mass{ 0 }, rest{ 0 }, sFric{ 0 }, dFric{ 0 }, inert{ 0 }, invInert{ 0 }; bool isTrigger{ false }; bool hasComp{ false }; };
+    struct ColliderData {
+        bool hasComp{ false }; Collision::HelperType type{ Collision::HelperType::AABB_T };
+        bool isTrigger{ false }; bool enabled{ true };
+        CEVec3 pos{ 0,0,0 }; CEVec3 offset{ 0,0,0 };
+        float radius{ 1.f }; CEVec3 min{ 0,0,0 }; CEVec3 max{ 0,0,0 }; float rotation{ 0.f };
+        std::vector<CEVec3> verts; // For Polygon
+    };
+    struct ShapeData { bool hasComp{ false }; ShapeComponent c; };
+    struct TextData { bool hasComp{ false }; TextComponent c; };
+    struct AudioData { bool hasComp{ false }; AudioEmitterComponent c; };
+    struct ScriptData { bool hasComp{ false }; std::vector<std::string> classes; };
+    struct CameraData { bool hasComp{ false }; CameraComponent c; };
+    struct SpriteData { bool hasComp{ false }; SpriteAnimatorComponent c; };
+    struct KeyframeData { bool hasComp{ false }; KeyframeAnimatorComponent c; };
+    struct TileMapData { bool hasComp{ false }; TileMapComponent c; };
+    struct ParentData { bool hasComp{ false }; ParentComponent c; };
+    struct GuiData { bool hasComp{ false }; GuiComponent c; };
+    struct ButtonData { bool hasComp{ false }; ButtonComponent c; };
+    struct InputData { bool hasComp{ false }; TextInputComponent c; };
+    struct LayoutData { bool hasComp{ false }; UILayoutComponent c; };
+    struct PPData { bool hasComp{ false }; PPComponent c; };
+}
 
-            Factory f;
-            if (translator && translator(type, tokens, f)) {
-                Register(name, std::move(f));
+// Helper to read color from JSON object {x,y,z,w}
+auto ReadColor = [](const rapidjson::Value& val) -> CEColor {
+    CEColor c{ 0.f, 0.f, 0.f, 1.f };
+    // Handle specific X/Y/Z/W format from your snippet
+    if (val.HasMember("x")) c.x() = val["x"].GetFloat();
+    if (val.HasMember("y")) c.y() = val["y"].GetFloat();
+    if (val.HasMember("z")) c.z() = val["z"].GetFloat();
+    if (val.HasMember("w")) c.w() = val["w"].GetFloat();
+    // Fallback for r/g/b/a if mixed formats exist
+    if (val.HasMember("r")) c.x() = val["r"].GetFloat();
+    if (val.HasMember("g")) c.y() = val["g"].GetFloat();
+    if (val.HasMember("b")) c.z() = val["b"].GetFloat();
+    if (val.HasMember("a")) c.w() = val["a"].GetFloat();
+    return c;
+    };
+
+// --- JSON Loading Logic ---
+static bool LoadPrefabsFromJson_RJ(const std::string& path) {
+    using namespace CaptureData;
+
+    std::ifstream inputFile(path);
+    if (!inputFile) return false;
+
+    rapidjson::IStreamWrapper isw(inputFile);
+    rapidjson::Document doc;
+    doc.ParseStream(isw);
+
+    if (doc.HasParseError() || !doc.IsObject() || !doc.HasMember("prefabs")) return false;
+
+    const auto& arr = doc["prefabs"].GetArray();
+    for (auto& prefabs : arr) {
+        if (!prefabs.IsObject()) continue;
+        if (!prefabs.HasMember("name") || !prefabs["name"].IsString()) continue;
+
+        const std::string name = prefabs["name"].GetString();
+
+        // -------------------------------------------------------------------------
+        // 1. EXTRACT DATA TO LOCAL STRUCTS
+        // -------------------------------------------------------------------------
+
+        // Transform
+        TransformData trD;
+        if (prefabs.HasMember("transform")) {
+            const auto& t = prefabs["transform"];
+            if (t.HasMember("position")) trD.pos = ReadVectorFromJson{}(t["position"]);
+            if (t.HasMember("rotation")) trD.rot = t["rotation"].GetFloat();
+            if (t.HasMember("size")) { trD.size.x = t["size"]["x"].GetFloat(); trD.size.y = t["size"]["y"].GetFloat(); }
+        }
+
+        // Layer
+        LayerData lyD;
+        if (prefabs.HasMember("layer")) {
+            const auto& l = prefabs["layer"];
+            if (l.IsObject() && l.HasMember("currentLayer")) lyD.layer = l["currentLayer"].GetUint();
+            else if (l.IsUint()) lyD.layer = l.GetUint();
+        }
+
+        // RigidBody
+        RBData rbD;
+        if (prefabs.HasMember("rigidbody")) {
+            rbD.hasComp = true;
+            const auto& r = prefabs["rigidbody"];
+            if (r.HasMember("mass")) rbD.mass = r["mass"].GetFloat();
+            if (r.HasMember("restitution")) rbD.rest = r["restitution"].GetFloat(); 
+            if (r.HasMember("restitutionCoeff")) rbD.rest = r["restitutionCoeff"].GetFloat();
+            if (r.HasMember("staticFriction")) rbD.sFric = r["staticFriction"].GetFloat();
+            if (r.HasMember("dynamicFriction")) rbD.dFric = r["dynamicFriction"].GetFloat();
+            if (r.HasMember("inertia")) rbD.inert = r["inertia"].GetFloat();
+            if (r.HasMember("invInertia")) rbD.invInert = r["invInertia"].GetFloat();
+            if (r.HasMember("isTrigger")) rbD.isTrigger = r["isTrigger"].GetBool();
+        }
+
+        // Collider
+        ColliderData colD;
+        if (prefabs.HasMember("collider")) {
+            colD.hasComp = true;
+            const auto& c = prefabs["collider"];
+            if (c.HasMember("helperType")) colD.type = static_cast<Collision::HelperType>(c["helperType"].GetInt());
+            if (c.HasMember("isTrigger")) colD.isTrigger = c["isTrigger"].GetBool();
+            if (c.HasMember("enabled")) colD.enabled = c["enabled"].GetBool();
+            if (c.HasMember("position")) colD.pos = ReadVectorFromJson{}(c["position"]);
+            if (c.HasMember("offset")) colD.offset = ReadVectorFromJson{}(c["offset"]);
+
+            // Type Specifics
+            if (c.HasMember("radius")) colD.radius = c["radius"].GetFloat();
+            if (c.HasMember("min")) colD.min = ReadVectorFromJson{}(c["min"]);
+            if (c.HasMember("max")) colD.max = ReadVectorFromJson{}(c["max"]);
+            if (c.HasMember("rotation")) colD.rotation = c["rotation"].GetFloat();
+            if (c.HasMember("vertices") && c["vertices"].IsArray()) {
+                for (auto& v : c["vertices"].GetArray()) colD.verts.push_back(ReadVectorFromJson{}(v));
             }
         }
-        return true;
+        // Fallback for Box type without collider block (old prefab support)
+        else if (std::string(prefabs["type"].GetString()) == "Box") {
+            colD.hasComp = true;
+            colD.type = Collision::HelperType::AABB_T;
+            // Auto-calc done in lambda
+        }
+
+        // Shape
+        ShapeData shD;
+        if (prefabs.HasMember("shape")) {
+            shD.hasComp = true;
+            const auto& s = prefabs["shape"];
+            if (s.HasMember("type")) shD.c.type = static_cast<ShapeType>(s["type"].GetInt());
+            if (s.HasMember("color") && s["color"].IsObject()) {
+                const auto& cObj = s["color"];
+
+                if (cObj.HasMember("r") && cObj["r"].IsNumber()) shD.c.color.r = cObj["r"].GetFloat();
+                if (cObj.HasMember("g") && cObj["g"].IsNumber()) shD.c.color.g = cObj["g"].GetFloat();
+                if (cObj.HasMember("b") && cObj["b"].IsNumber()) shD.c.color.b = cObj["b"].GetFloat();
+                if (cObj.HasMember("a") && cObj["a"].IsNumber()) shD.c.color.a = cObj["a"].GetFloat();
+            }
+            if (s.HasMember("enableTexture")) shD.c.enableTexture = s["enableTexture"].GetBool();
+            if (s.HasMember("textureName")) shD.c.textureName = s["textureName"].GetString();
+            if (s.HasMember("uvSize")) { shD.c.uvSize.x = s["uvSize"]["x"].GetFloat(); shD.c.uvSize.y = s["uvSize"]["y"].GetFloat(); }
+            if (s.HasMember("uvOffset")) { shD.c.uvOffset.x = s["uvOffset"]["x"].GetFloat(); shD.c.uvOffset.y = s["uvOffset"]["y"].GetFloat(); }
+            if (s.HasMember("thickness")) shD.c.thickness = s["thickness"].GetFloat();
+            if (s.HasMember("wrapModeU")) shD.c.wrapModeU = s["wrapModeU"].GetInt();
+            if (s.HasMember("wrapModeV")) shD.c.wrapModeV = s["wrapModeV"].GetInt();
+            if (s.HasMember("preview")) shD.c.preview = s["preview"].GetBool();
+            if (s.HasMember("isWorldSpace")) shD.c.isWorldSpace = s["isWorldSpace"].GetBool();
+        }
+
+        // Text
+        TextData txD;
+        if (prefabs.HasMember("text")) {
+            txD.hasComp = true;
+            const auto& t = prefabs["text"];
+            if (t.HasMember("font")) txD.c.font = t["font"].GetString();
+            if (t.HasMember("text")) txD.c.text = t["text"].GetString();
+            if (t.HasMember("scale")) txD.c.scale = t["scale"].GetFloat();
+            if (t.HasMember("centered")) txD.c.centered = t["centered"].GetBool();
+            if (t.HasMember("isworldspace")) txD.c.isWorldSpace = t["isworldspace"].GetBool(); 
+            if (t.HasMember("offset")) { txD.c.offset.x = t["offset"]["x"].GetFloat(); txD.c.offset.y = t["offset"]["y"].GetFloat(); }
+            if (t.HasMember("color") && t["color"].IsObject()) {
+                const auto& cObj = t["color"];
+
+                if (cObj.HasMember("r") && cObj["r"].IsNumber()) txD.c.color.r = cObj["r"].GetFloat();
+                if (cObj.HasMember("g") && cObj["g"].IsNumber()) txD.c.color.g = cObj["g"].GetFloat();
+                if (cObj.HasMember("b") && cObj["b"].IsNumber()) txD.c.color.b = cObj["b"].GetFloat();
+                if (cObj.HasMember("a") && cObj["a"].IsNumber()) txD.c.color.a = cObj["a"].GetFloat();
+            }
+        }
+
+        // Script
+        ScriptData scD;
+        if (prefabs.HasMember("script")) {
+            scD.hasComp = true;
+            const auto& s = prefabs["script"];
+            if (s.HasMember("scripts")) {
+                for (auto& v : s["scripts"].GetArray()) {
+                    if (v.HasMember("className")) scD.classes.push_back(v["className"].GetString());
+                }
+            }
+            else if (s.HasMember("className")) {
+                scD.classes.push_back(s["className"].GetString());
+            }
+        }
+
+        // Audio
+        AudioData auD;
+        if (prefabs.HasMember("audio")) {
+            auD.hasComp = true;
+            const auto& a = prefabs["audio"];
+            if (a.HasMember("eventPath")) auD.c.eventPath = a["eventPath"].GetString();
+            if (a.HasMember("volume")) auD.c.volume = a["volume"].GetFloat();
+            if (a.HasMember("pitch")) auD.c.pitch = a["pitch"].GetFloat();
+            if (a.HasMember("looping")) auD.c.looping = a["looping"].GetBool();
+            if (a.HasMember("spatial3D")) auD.c.spatial3D = a["spatial3D"].GetBool();
+        }
+
+        // Camera
+        CameraData camD;
+        if (prefabs.HasMember("camera")) {
+            camD.hasComp = true;
+            const auto& c = prefabs["camera"];
+            if (c.HasMember("zoom")) camD.c.zoom = c["zoom"].GetFloat();
+            if (c.HasMember("position")) camD.c.position = ReadVectorFromJson{}(c["position"]);
+            if (c.HasMember("xBounds")) { camD.c.xBounds.x = c["xBounds"]["x"].GetFloat(); camD.c.xBounds.y = c["xBounds"]["y"].GetFloat(); }
+            if (c.HasMember("yBounds")) { camD.c.yBounds.x = c["yBounds"]["x"].GetFloat(); camD.c.yBounds.y = c["yBounds"]["y"].GetFloat(); }
+        }
+
+        // Sprite Animator
+        SpriteData spD;
+        if (prefabs.HasMember("sprite_animator")) {
+            spD.hasComp = true;
+            const auto& sa = prefabs["sprite_animator"];
+            if (sa.HasMember("currentClip")) spD.c.currentClipName = sa["currentClip"].GetString();
+            if (sa.HasMember("playing")) spD.c.playing = sa["playing"].GetBool();
+            if (sa.HasMember("flipH")) spD.c.flipH = sa["flipH"].GetBool();
+            if (sa.HasMember("clips") && sa["clips"].IsArray()) {
+                for (auto& c : sa["clips"].GetArray()) {
+                    std::string n = c["name"].GetString();
+                    int start = c["start"].GetInt();
+                    int cnt = c["count"].GetInt();
+                    float fps = c["fps"].GetFloat();
+                    bool loop = c["loop"].GetBool();
+                    spD.c.AddClip(n, start, cnt, fps, loop);
+                }
+            }
+        }
+
+        // Keyframe Animator (Simplified load logic, full logic matches sceneasset)
+        KeyframeData kfD;
+        if (prefabs.HasMember("keyframe_animator")) {
+            kfD.hasComp = true;
+            const auto& kaVal = prefabs["keyframe_animator"];
+            if (kaVal.HasMember("current")) kfD.c.current = kaVal["current"].GetString();
+            if (kaVal.HasMember("playing")) kfD.c.playing = kaVal["playing"].GetBool();
+            
+            if (kaVal.HasMember("clips") && kaVal["clips"].IsArray()) {
+                for (const auto& clipVal : kaVal["clips"].GetArray()) {
+                    AnimationClip newClip;
+                    if (clipVal.HasMember("name")) newClip.name = clipVal["name"].GetString();
+                    if (clipVal.HasMember("wrap")) newClip.wrap = static_cast<KFWrap>(clipVal["wrap"].GetInt());
+
+                    // --- [NEW] Load Texture & Size Data ---
+                    if (clipVal.HasMember("textureAsset") && clipVal["textureAsset"].IsString())
+                        newClip.textureAsset = clipVal["textureAsset"].GetString();
+
+                    if (clipVal.HasMember("spriteCols") && clipVal["spriteCols"].IsInt())
+                        newClip.spriteCols = clipVal["spriteCols"].GetInt();
+
+                    if (clipVal.HasMember("spriteRows") && clipVal["spriteRows"].IsInt())
+                        newClip.spriteRows = clipVal["spriteRows"].GetInt();
+
+                    if (clipVal.HasMember("useCustomSize") && clipVal["useCustomSize"].IsBool())
+                        newClip.useCustomSize = clipVal["useCustomSize"].GetBool();
+
+                    if (clipVal.HasMember("targetWidth") && clipVal["targetWidth"].IsFloat())
+                        newClip.targetWidth = clipVal["targetWidth"].GetFloat();
+
+                    if (clipVal.HasMember("targetHeight") && clipVal["targetHeight"].IsFloat())
+                        newClip.targetHeight = clipVal["targetHeight"].GetFloat();
+                    // --------------------------------------
+
+                    if (clipVal.HasMember("bindings")) {
+                        for (const auto& bVal : clipVal["bindings"].GetArray()) {
+                            KFBinding newBinding;
+                            newBinding.property = static_cast<KFProperty>(bVal["property"].GetInt());
+
+                            if (bVal.HasMember("keys")) {
+                                for (const auto& kVal : bVal["keys"].GetArray()) {
+                                    KFKey k;
+                                    k.time = kVal["t"].GetFloat();
+                                    k.value = kVal["v"].GetFloat();
+                                    if (kVal.HasMember("i")) k.interp = static_cast<KFInterp>(kVal["i"].GetInt());
+                                    if (kVal.HasMember("in")) k.inTan = kVal["in"].GetFloat();
+                                    if (kVal.HasMember("out")) k.outTan = kVal["out"].GetFloat();
+                                    newBinding.curve.Add(k); // Using Add ensures sorting!
+                                }
+                            }
+                            newClip.bindings.push_back(newBinding);
+                        }
+                    }
+                    kfD.c.clips[newClip.name] = newClip;
+                }
+            }
+        }
+
+        // Tilemap
+        TileMapData tmD;
+        if (prefabs.HasMember("tilemap")) {
+            tmD.hasComp = true;
+            const auto& t = prefabs["tilemap"];
+            if (t.HasMember("tileSize")) tmD.c.tileSize = t["tileSize"].GetInt();
+            if (t.HasMember("activeAsset")) tmD.c.activeAsset = t["activeAsset"].GetString();
+            if (t.HasMember("tiles") && t["tiles"].IsArray()) {
+                for (auto& tile : t["tiles"].GetArray()) {
+                    tmD.c.gridData[{tile["x"].GetInt(), tile["y"].GetInt()}] = tile["asset"].GetString();
+                }
+            }
+            if (t.HasMember("tileAssetNames") && t["tileAssetNames"].IsArray()) {
+                for (auto& n : t["tileAssetNames"].GetArray()) tmD.c.tileAssetNames.push_back(n.GetString());
+            }
+            tmD.c.isCacheDirty = true;
+        }
+
+        // Parent
+        ParentData parD;
+        if (prefabs.HasMember("parent")) {
+            parD.hasComp = true;
+            const auto& p = prefabs["parent"];
+            if (p.HasMember("localPos")) parD.c.localPos = ReadVectorFromJson{}(p["localPos"]);
+            if (p.HasMember("localRot")) parD.c.localRot = p["localRot"].GetFloat();
+            if (p.HasMember("localScale")) { parD.c.localScale.x = p["localScale"]["x"].GetFloat(); parD.c.localScale.y = p["localScale"]["y"].GetFloat(); }
+            if (p.HasMember("inheritColor")) parD.c.inheritColor = p["inheritColor"].GetBool();
+            if (p.HasMember("colorMul")) { auto& m = p["colorMul"]; parD.c.colorMul = { m["x"].GetFloat(), m["y"].GetFloat(), m["z"].GetFloat(), m["w"].GetFloat() }; }
+        }
+
+        // GUI / Button / Input / Layout
+        GuiData guiD;
+        if (prefabs.HasMember("gui")) {
+            guiD.hasComp = true;
+            if (prefabs["gui"].HasMember("uiType")) guiD.c.uiType = static_cast<UIType>(prefabs["gui"]["uiType"].GetUint());
+        }
+
+        ButtonData btnD;
+        if (prefabs.HasMember("button")) {
+            btnD.hasComp = true;
+            const auto& b = prefabs["button"];
+            // 1. State
+            if (b.HasMember("buttonState"))
+                btnD.c.buttonState = static_cast<ButtonState>(b["buttonState"].GetUint());
+
+            // 2. Shape Normal
+            if (b.HasMember("shapeNormalColor"))
+                btnD.c.shapeNormalColor = ReadColor(b["shapeNormalColor"]);
+
+            // 3. Shape Hover
+            if (b.HasMember("shapeHoveredColor"))
+                btnD.c.shapeHoveredColor = ReadColor(b["shapeHoveredColor"]);
+
+            // 4. Shape Pressed
+            if (b.HasMember("shapePressedColor"))
+                btnD.c.shapePressedColor = ReadColor(b["shapePressedColor"]);
+
+            // 5. Text Normal
+            if (b.HasMember("textNormalColor"))
+                btnD.c.textNormalColor = ReadColor(b["textNormalColor"]);
+
+            // 6. Text Hover
+            if (b.HasMember("textHoveredColor"))
+                btnD.c.textHoveredColor = ReadColor(b["textHoveredColor"]);
+
+            // 7. Text Pressed
+            if (b.HasMember("textPressedColor"))
+                btnD.c.textPressedColor = ReadColor(b["textPressedColor"]);
+        }
+
+        InputData inpD;
+        if (prefabs.HasMember("textinput")) {
+            inpD.hasComp = true;
+            const auto& t = prefabs["textinput"];
+            if (t.HasMember("isFocused")) inpD.c.isFocused = t["isFocused"].GetBool();
+            if (t.HasMember("maxCharacters")) inpD.c.maxCharacters = t["maxCharacters"].GetUint();
+        }
+
+        LayoutData layD;
+        if (prefabs.HasMember("uilayout")) {
+            layD.hasComp = true;
+            const auto& u = prefabs["uilayout"];
+            if (u.HasMember("uiLayout")) layD.c.uiLayout = static_cast<UILayout>(u["uiLayout"].GetUint());
+            if (u.HasMember("paddingXY")) { layD.c.paddingXY.x = u["paddingXY"]["x"].GetFloat(); layD.c.paddingXY.y = u["paddingXY"]["y"].GetFloat(); }
+        }
+
+        PPData ppD;
+        if (prefabs.HasMember("postprocessing")) {
+            ppD.hasComp = true;
+            const auto& p = prefabs["postprocessing"];
+            if (p.HasMember("active")) ppD.c.active = p["active"].GetBool();
+            if (p.HasMember("brightness")) ppD.c.brightness = p["brightness"].GetFloat();
+            if (p.HasMember("contrast")) ppD.c.contrast = p["contrast"].GetFloat();
+            if (p.HasMember("saturation")) ppD.c.saturation = p["saturation"].GetFloat();
+        }
+
+
+        // -------------------------------------------------------------------------
+        // 2. REGISTER LAMBDA FACTORY
+        // -------------------------------------------------------------------------
+        Prefab::Register(name, [=](CrashoutsEngine::ECS& ecs) {
+            using Entity = uint32_t;
+            Entity e = ecs.CreateEntity();
+            ecs.AddComponent<NameComponent>(e, NameComponent{ name });
+            ecs.AddComponent<PrefabInstanceComponent>(e, PrefabInstanceComponent{ name });
+
+            // Transform
+            TransformComponent tc{};
+            tc.position = trD.pos;
+            tc.rotation = trD.rot;
+            tc.size = trD.size;
+            ecs.AddComponent<TransformComponent>(e, tc);
+
+            // Layer
+            auto& lc = ecs.AddComponent<LayerComponent>(e);
+            lc.currentLayer = lyD.layer;
+
+            // Shape
+            if (shD.hasComp) ecs.AddComponent<ShapeComponent>(e, shD.c);
+
+            // Rigidbody
+            if (rbD.hasComp) {
+                auto& rb = ecs.AddComponent<RigidBodyComponent>(e, CEVec3{ 0,0,0 }, rbD.mass, rbD.rest);
+                rb.staticFriction = rbD.sFric;
+                rb.dynamicFriction = rbD.dFric;
+                rb.inertia = rbD.inert;
+                rb.invInertia = rbD.invInert;
+                if (!rbD.isTrigger) rb.getFlags().set(Physics::SIMULATE_DYNAMICS); // Set True if NOT a trigger
+            }
+
+            // Collider
+            if (colD.hasComp) {
+                // Reconstruct collider unique_ptr
+                std::unique_ptr<Collision::Collider> ptr;
+                switch (colD.type) {
+                case Collision::HelperType::SPHERE_T:
+                    ptr = std::make_unique<Collision::Sphere>(colD.radius, colD.pos);
+                    break;
+                case Collision::HelperType::OBB_T:
+                    ptr = std::make_unique<Collision::Polygon>(Collision::Polygon::createOBB(colD.min, colD.max, colD.rotation, CEVec3{}));
+                    static_cast<Collision::Polygon*>(ptr.get())->position = colD.pos; // Fix drift
+                    break;
+                case Collision::HelperType::POLYGON_T:
+                case Collision::HelperType::TRIANGLE_T: {
+                    auto p = std::make_unique<Collision::Polygon>();
+                    p->vertexCount = std::min((int)colD.verts.size(), Collision::Polygon::MAX_VERTEX);
+                    for (int i = 0; i < p->vertexCount; ++i) p->vertices[i] = colD.verts[i];
+                    p->rotation = colD.rotation;
+                    p->position = colD.pos;
+                    p->forceUpdateRotation(colD.rotation);
+                    ptr = std::move(p);
+                    break;
+                }
+                case Collision::HelperType::AABB_T:
+                default:
+                    // Fallback logic if min/max are zero (e.g. from simple box prefab)
+                    if (colD.min.x == 0 && colD.max.x == 0) {
+                        ptr = MakeCenteredAABB3(trD.pos, trD.size.x, trD.size.y);
+                    }
+                    else {
+                        ptr = std::make_unique<Collision::AABBRect>(colD.min, colD.max);
+                    }
+                    break;
+                }
+
+                if (ptr) {
+                    ptr->helperType = colD.type;
+                    ptr->isTrigger = colD.isTrigger;
+                    ptr->enabled = colD.enabled;
+                    ptr->offset = colD.offset;
+                    // If pos wasn't set specifically by type, ensure it matches
+                    if (ptr->position.x == 0 && ptr->position.y == 0 && colD.type != Collision::HelperType::SPHERE_T) ptr->position = colD.pos;
+
+                    ecs.AddComponent<ColliderComponent>(e, ColliderComponent{ std::move(ptr) });
+                }
+            }
+
+            // Text
+            if (txD.hasComp) ecs.AddComponent<TextComponent>(e, txD.c);
+
+            // Scripts
+            if (scD.hasComp) {
+                ScriptComponent sc;
+                sc.EntityID = (uint32_t)e;
+                for (const auto& s : scD.classes) sc.AddScript(s);
+                ecs.AddComponent<ScriptComponent>(e, sc);
+            }
+
+            // Audio
+            if (auD.hasComp) ecs.AddComponent<AudioEmitterComponent>(e, auD.c);
+
+            // Sprite Anim
+            if (spD.hasComp) ecs.AddComponent<SpriteAnimatorComponent>(e, spD.c);
+
+            // Keyframe Anim
+            if (kfD.hasComp) ecs.AddComponent<KeyframeAnimatorComponent>(e, kfD.c);
+
+            // Tilemap
+            if (tmD.hasComp) {
+                auto& tm = ecs.AddComponent<TileMapComponent>(e);
+                tm.tileSize = tmD.c.tileSize;
+                tm.activeAsset = tmD.c.activeAsset;
+                tm.gridData = tmD.c.gridData;
+                tm.tileAssetNames = tmD.c.tileAssetNames;
+                tm.isCacheDirty = true;
+            }
+
+            // UI Components
+            if (guiD.hasComp) ecs.AddComponent<GuiComponent>(e, guiD.c);
+            {
+                ecs.AddComponent<ButtonComponent>(e, btnD.c);
+
+                // --- SYNC COLORS (Matches SceneAsset logic) ---
+                if (auto* s = ecs.GetComponent<ShapeComponent>(e)) {
+                    s->color = btnD.c.shapeNormalColor;
+                }
+                if (auto* t = ecs.GetComponent<TextComponent>(e)) {
+                    t->color = btnD.c.textNormalColor;
+                }
+            }
+            if (inpD.hasComp) ecs.AddComponent<TextInputComponent>(e, inpD.c);
+            if (layD.hasComp) ecs.AddComponent<UILayoutComponent>(e, layD.c);
+
+            // PP
+            if (ppD.hasComp) ecs.AddComponent<PPComponent>(e, ppD.c);
+
+            // Parent (Data only)
+            if (parD.hasComp) ecs.AddComponent<ParentComponent>(e, parD.c);
+            });
+    }
+    return true;
+}
+
+namespace CrashoutsEngine {
+    using namespace ::Component;
+
+    void InitPrefabs() {
+        Prefab::SetFallback([](ECS& e, const std::string& name) {
+            auto entity = e.CreateEntity();
+            e.AddComponent<NameComponent>(entity, NameComponent{ name });
+            e.AddComponent<TransformComponent>(entity, TransformComponent{});
+            });
+
+        namespace fs = std::filesystem;
+
+#if USE_IMGUI_EDITOR
+        const fs::path dir = fs::path(CrashoutsEngine::Assets::rootPath) / "prefabs";
+#else
+        const fs::path dir = fs::path(GetLocalAppData()) / "prefabs";
+#endif
+        if (fs::exists(dir) && fs::is_directory(dir)) {
+            for (auto& entry : fs::directory_iterator(dir)) {
+                if (entry.is_regular_file() && entry.path().extension() == ".json") {
+                    //std::cout << entry.path().generic_string() << std::endl;
+                    LoadPrefabsFromJson_RJ(entry.path().generic_string());
+                }
+            }
+        }
     }
 
-} 
+    void ReloadPrefabsFromDisk(const std::string& path) {
+        // 1. Wipe everything (Factories + Fallback)
+        Prefab::ClearRegistry();
+
+        // 2. Re-register the default Fallback 
+        Prefab::SetFallback([](ECS& e, const std::string& name) {
+            auto entity = e.CreateEntity();
+            e.AddComponent<NameComponent>(entity, NameComponent{ name });
+            e.AddComponent<TransformComponent>(entity, TransformComponent{});
+            });
+
+        // 3. Load from the SPECIFIC path provided
+        namespace fs = std::filesystem;
+        fs::path dirPath(path);
+
+        // Check if it exists
+        if (fs::exists(dirPath)) {
+            // Case A: It's a directory (Load all JSONs inside)
+            if (fs::is_directory(dirPath)) {
+                for (const auto& entry : fs::directory_iterator(dirPath)) {
+                    if (entry.is_regular_file() && entry.path().extension() == ".json") {
+                        LoadPrefabsFromJson_RJ(entry.path().generic_string());
+                    }
+                }
+            }
+            // Case B: It's a single file (Load just that file)
+            else if (fs::is_regular_file(dirPath) && dirPath.extension() == ".json") {
+                LoadPrefabsFromJson_RJ(dirPath.generic_string());
+            }
+        }
+        else {
+            std::cerr << "[Prefab System] Warning: Reload path does not exist: " << path << std::endl;
+        }
+    }
+
+    void RecreateInstancesForPrefab(ECS& ecs, const std::string& prefabName) {
+        auto& arr = ecs.GetComponentArray<PrefabInstanceComponent>();
+        std::vector<Entity> toRecreate;
+        for (size_t i = 0; i < arr.dense.size(); ++i) {
+            if (arr.dense[i].prefabName == prefabName) {
+                toRecreate.push_back(arr.indexToEntity[i]);
+            }
+        }
+        for (Entity e : toRecreate) {
+            ecs.DestroyEntity(e);
+            Prefab::Create(ecs, prefabName);
+        }
+    }
+
+    // --- SAVE LOGIC (Mirror of Load) ---
+    bool SavePrefabToJson(ECS& ecs, Entity e, const std::string& newName, const std::string& path, const std::string& matchName) {
+        using namespace rapidjson;
+        using namespace Component;
+
+        Document doc;
+        {
+            std::ifstream in(path, std::ios::binary);
+            if (in) {
+                IStreamWrapper isw(in);
+                doc.ParseStream(isw);
+            }
+            else {
+                doc.SetObject();
+            }
+        }
+        if (!doc.IsObject()) doc.SetObject();
+
+        auto& allocator = doc.GetAllocator();
+        if (!doc.HasMember("prefabs")) doc.AddMember("prefabs", Value(kArrayType), allocator);
+        Value& prefabs = doc["prefabs"];
+
+        Value obj(kObjectType);
+        obj.AddMember("type", "Box", allocator); // Tag type
+        obj.AddMember("name", Value(newName.c_str(), allocator), allocator);
+
+        // Transform
+        if (auto* tc = ecs.GetComponent<TransformComponent>(e)) {
+            Value tObj(kObjectType);
+            Value pos(kObjectType); pos.AddMember("x", tc->position.x, allocator).AddMember("y", tc->position.y, allocator).AddMember("z", tc->position.z, allocator);
+            Value size(kObjectType); size.AddMember("x", tc->size.x, allocator).AddMember("y", tc->size.y, allocator);
+            tObj.AddMember("position", pos, allocator).AddMember("rotation", tc->rotation, allocator).AddMember("size", size, allocator);
+            obj.AddMember("transform", tObj, allocator);
+        }
+
+        // Layer
+        if (auto* lc = ecs.GetComponent<LayerComponent>(e)) {
+            Value lObj(kObjectType);
+            lObj.AddMember("currentLayer", lc->currentLayer, allocator);
+            obj.AddMember("layer", lObj, allocator);
+        }
+
+        // Shape
+        if (auto* sc = ecs.GetComponent<ShapeComponent>(e)) {
+            Value sObj(kObjectType);
+            sObj.AddMember("type", (int)sc->type, allocator);
+            Value col(kObjectType); col.AddMember("r", sc->color.r, allocator).AddMember("g", sc->color.g, allocator).AddMember("b", sc->color.b, allocator).AddMember("a", sc->color.a, allocator);
+            sObj.AddMember("color", col, allocator);
+            sObj.AddMember("enableTexture", sc->enableTexture, allocator);
+            if (!sc->textureName.empty()) sObj.AddMember("textureName", Value(sc->textureName.c_str(), allocator), allocator);
+
+            Value uvSize(kObjectType); uvSize.AddMember("x", sc->uvSize.x, allocator).AddMember("y", sc->uvSize.y, allocator);
+            sObj.AddMember("uvSize", uvSize, allocator);
+            Value uvOff(kObjectType); uvOff.AddMember("x", sc->uvOffset.x, allocator).AddMember("y", sc->uvOffset.y, allocator);
+            sObj.AddMember("uvOffset", uvOff, allocator);
+
+            sObj.AddMember("thickness", sc->thickness, allocator);
+            sObj.AddMember("isWorldSpace", sc->isWorldSpace, allocator);
+            sObj.AddMember("wrapModeU", sc->wrapModeU, allocator);
+            sObj.AddMember("wrapModeV", sc->wrapModeV, allocator);
+            obj.AddMember("shape", sObj, allocator);
+        }
+
+        // Rigidbody
+        if (auto* rb = ecs.GetComponent<RigidBodyComponent>(e)) {
+            Value rbObj(kObjectType);
+            rbObj.AddMember("mass", rb->getMass(), allocator);
+            rbObj.AddMember("restitution", rb->GetCoeff(), allocator);
+            rbObj.AddMember("staticFriction", rb->staticFriction, allocator);
+            rbObj.AddMember("dynamicFriction", rb->dynamicFriction, allocator);
+            rbObj.AddMember("inertia", rb->inertia, allocator);
+            rbObj.AddMember("invInertia", rb->invInertia, allocator);
+            bool isTrigger = !rb->getFlags().test(Physics::SIMULATE_DYNAMICS);
+            rbObj.AddMember("isTrigger", isTrigger, allocator);
+            obj.AddMember("rigidbody", rbObj, allocator);
+        }
+
+        // Collider
+        if (auto* col = ecs.GetComponent<ColliderComponent>(e)) {
+            Value colObj(kObjectType);
+            colObj.AddMember("helperType", (int)col->collider->helperType, allocator);
+            colObj.AddMember("isTrigger", col->collider->isTrigger, allocator);
+            colObj.AddMember("enabled", col->collider->enabled, allocator);
+
+            Value pos(kObjectType); pos.AddMember("x", col->collider->position.x, allocator).AddMember("y", col->collider->position.y, allocator).AddMember("z", col->collider->position.z, allocator);
+            colObj.AddMember("position", pos, allocator);
+            Value off(kObjectType); off.AddMember("x", col->collider->offset.x, allocator).AddMember("y", col->collider->offset.y, allocator).AddMember("z", col->collider->offset.z, allocator);
+            colObj.AddMember("offset", off, allocator);
+
+            // Specifics based on Type
+            switch (col->collider->helperType) {
+            case Collision::HelperType::SPHERE_T: {
+                auto* s = static_cast<Collision::Sphere*>(col->collider.get());
+                colObj.AddMember("radius", s->radius, allocator);
+                break;
+            }
+            case Collision::HelperType::AABB_T: {
+                auto* a = static_cast<Collision::AABBRect*>(col->collider.get());
+                Value min(kObjectType); min.AddMember("x", a->min.x, allocator).AddMember("y", a->min.y, allocator).AddMember("z", a->min.z, allocator);
+                colObj.AddMember("min", min, allocator);
+                Value max(kObjectType); max.AddMember("x", a->max.x, allocator).AddMember("y", a->max.y, allocator).AddMember("z", a->max.z, allocator);
+                colObj.AddMember("max", max, allocator);
+                break;
+            }
+                                              // OBB/Poly logic omitted for brevity but should match sceneasset if needed
+            }
+            obj.AddMember("collider", colObj, allocator);
+        }
+
+        // Script
+        if (auto* script = ecs.GetComponent<ScriptComponent>(e)) {
+            Value sObj(kObjectType);
+            Value arr(kArrayType);
+            for (const auto& s : script->Scripts) {
+                if (s.ClassName.empty()) continue;
+                Value item(kObjectType);
+                item.AddMember("className", Value(s.ClassName.c_str(), allocator), allocator);
+                arr.PushBack(item, allocator);
+            }
+            sObj.AddMember("scripts", arr, allocator);
+            obj.AddMember("script", sObj, allocator);
+        }
+
+        // Sprite Animator
+        if (auto* sa = ecs.GetComponent<SpriteAnimatorComponent>(e)) {
+            Value animObj(kObjectType);
+            animObj.AddMember("currentClip", Value(sa->currentClipName.c_str(), allocator), allocator);
+            animObj.AddMember("playing", sa->playing, allocator);
+            animObj.AddMember("flipH", sa->flipH, allocator);
+
+            Value clips(kArrayType);
+            for (auto& c : sa->clips) {
+                Value clip(kObjectType);
+                clip.AddMember("name", Value(c.name.c_str(), allocator), allocator);
+                clip.AddMember("start", c.startFrame, allocator);
+                clip.AddMember("count", c.frameCount, allocator);
+                clip.AddMember("fps", c.fps, allocator);
+                clip.AddMember("loop", c.loop, allocator);
+                clips.PushBack(clip, allocator);
+            }
+            animObj.AddMember("clips", clips, allocator);
+            obj.AddMember("sprite_animator", animObj, allocator);
+        }
+
+        // Tilemap
+        if (auto* tm = ecs.GetComponent<TileMapComponent>(e)) {
+            Value tmObj(kObjectType);
+            tmObj.AddMember("tileSize", tm->tileSize, allocator);
+            tmObj.AddMember("activeAsset", Value(tm->activeAsset.c_str(), allocator), allocator);
+
+            Value tiles(kArrayType);
+            for (const auto& [pos, asset] : tm->gridData) {
+                Value t(kObjectType);
+                t.AddMember("x", pos.first, allocator);
+                t.AddMember("y", pos.second, allocator);
+                t.AddMember("asset", Value(asset.c_str(), allocator), allocator);
+                tiles.PushBack(t, allocator);
+            }
+            tmObj.AddMember("tiles", tiles, allocator);
+            obj.AddMember("tilemap", tmObj, allocator);
+        }
+
+        // Parent
+        if (auto* pc = ecs.GetComponent<ParentComponent>(e)) {
+            Value pObj(kObjectType);
+            Value pos(kObjectType); pos.AddMember("x", pc->localPos.x, allocator).AddMember("y", pc->localPos.y, allocator).AddMember("z", pc->localPos.z, allocator);
+            pObj.AddMember("localPos", pos, allocator);
+            pObj.AddMember("localRot", pc->localRot, allocator);
+            Value scl(kObjectType); scl.AddMember("x", pc->localScale.x, allocator).AddMember("y", pc->localScale.y, allocator);
+            pObj.AddMember("localScale", scl, allocator);
+            obj.AddMember("parent", pObj, allocator);
+        }
+
+        // GUI / Button / Input / Layout
+        if (auto* gui = ecs.GetComponent<GuiComponent>(e)) {
+            Value gObj(kObjectType);
+            gObj.AddMember("uiType", static_cast<unsigned>(gui->uiType), allocator);
+            obj.AddMember("gui", gObj, allocator);
+        }
+        if (auto* btn = ecs.GetComponent<ButtonComponent>(e)) {
+            Value bObj(kObjectType);
+            bObj.AddMember("buttonState", static_cast<unsigned>(btn->buttonState), allocator);
+
+            // Helper lambda to write a color object
+            auto WriteColor = [&](const char* key, const CEColor& c) {
+                Value col(kObjectType);
+                col.AddMember("x", c.x(), allocator).AddMember("y", c.y(), allocator)
+                    .AddMember("z", c.z(), allocator).AddMember("w", c.w(), allocator);
+                bObj.AddMember(Value(key, allocator), col, allocator);
+                };
+
+            WriteColor("shapeNormalColor", btn->shapeNormalColor);
+            WriteColor("shapeHoveredColor", btn->shapeHoveredColor);
+            WriteColor("shapePressedColor", btn->shapePressedColor);
+
+            WriteColor("textNormalColor", btn->textNormalColor);
+            WriteColor("textHoveredColor", btn->textHoveredColor);
+            WriteColor("textPressedColor", btn->textPressedColor); 
+
+            obj.AddMember("button", bObj, allocator);
+        }
+
+        // Upsert
+        bool replaced = false;
+        std::string searchKey = matchName.empty() ? newName : matchName;
+        for (auto& p : prefabs.GetArray()) {
+            if (p.HasMember("name") && std::string(p["name"].GetString()) == searchKey) {
+                p.CopyFrom(obj, allocator);
+                replaced = true;
+                break;
+            }
+        }
+        if (!replaced) prefabs.PushBack(obj, allocator);
+
+        StringBuffer sb;
+        PrettyWriter<StringBuffer> writer(sb);
+        doc.Accept(writer);
+
+        std::ofstream out(path);
+        out << sb.GetString();
+        return true;
+    }
+}

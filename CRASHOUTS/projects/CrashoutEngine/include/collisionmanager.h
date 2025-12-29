@@ -127,6 +127,17 @@ namespace Collision {
 			*/
 			FunctionDispatchType callCollFunct(Collision::ColliderType type1, Collision::ColliderType type2);
 
+			/*!
+			@brief Cleanup
+			*/
+			void Shutdown() {
+				std::vector<CollisionEvent>().swap(m_FrameCollisions);
+
+				ContactCollection().swap(currentFrameCollision);
+				ContactCollection().swap(lastFrameCollision);
+
+				ClearObservers();
+			}
 
 			// Getter for collision data that frame
 			const std::vector<CollisionEvent>& GetFrameCollisions() const {

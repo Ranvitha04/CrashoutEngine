@@ -138,22 +138,20 @@ namespace CollisionGizmos {
 	 @note When @p events is provided, colliders for entities present in any event
 		   are tinted with a hit color to visually distinguish collisions.
 	*/
-	void DrawAllColliders(ECS& ecs, [[maybe_unused]] const std::vector<Collision::CollisionEvent>& events, float wireThickness) {
+	void DrawAllColliders(ECS& ecs, const std::vector<Collision::CollisionEvent>& events, float wireThickness) {
 		auto& collArr = ecs.GetComponentArray<Component::ColliderComponent>();
 		const CEColor ok(0.15f, 0.8f, 0.55f);    // non-colliding tint
 		const CEColor hit(1.0f, 0.3f, 0.3f);     // colliding tint
-
-		Collision::CollisionHandler& colHandler{ Collision::CollisionHandler::GetInstance() };
 
 		// We use a HashSet for O(1) lookups later.
 		std::unordered_set<Entity> collidingEntities;
 
 		// Reserve space to avoid reallocations
-		collidingEntities.reserve(colHandler.lastFrameCollision.size() * 2);
+		collidingEntities.reserve(events.size() * 2);
 
-		for (const auto& ev : colHandler.lastFrameCollision) {
-			collidingEntities.insert(ev.contacts.first);
-			collidingEntities.insert(ev.contacts.second);
+		for (const auto& ev : events) {
+			collidingEntities.insert(ev.entity1);
+			collidingEntities.insert(ev.entity2);
 		}
 
 		for (auto e : collArr.indexToEntity) {
@@ -203,7 +201,7 @@ namespace CollisionGizmos {
 		   If any contact exists, the manifold�s normal is drawn starting at
 		   the first contact point with length @p normalLen.
 	*/
-	void DrawContactsAndNormals(ECS& ecs, [[maybe_unused]] const std::vector<Collision::CollisionEvent>& events, float baseLen, float wireThickness) {
+	void DrawContactsAndNormals(ECS& ecs, const std::vector<Collision::CollisionEvent>& events, float baseLen, float wireThickness) {
 		for (const auto& info : events) {
 			if (info.colManifold.contactPoints.empty()) continue;
 

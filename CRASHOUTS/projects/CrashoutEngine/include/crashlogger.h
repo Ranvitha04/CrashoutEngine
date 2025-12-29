@@ -22,3 +22,8 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserve
  @warning This function should be called once per process.
 */
 void InstallCrashLogger(const char* name);
+
+/*!
+ @brief Call this manually at the end of main() to log the exit code
+*/
+void LogExitCode();

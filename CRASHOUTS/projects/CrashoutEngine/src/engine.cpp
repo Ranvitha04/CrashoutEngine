@@ -35,7 +35,7 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserve
 #include "performanceViewer.h"
 #include "hierarchy.h"   
 #include "hierarchycomponent.h" 
-#include "prefab_init.h"
+#include "prefab.h"
 #include "instanceSystem.h"
 #include "sceneasset.h"
 #include "keyframe.h"
@@ -44,10 +44,8 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserve
 #include "log.h"
 #include "physicsmanager.h"            // Component::RigidBodyComponent
 #include "collidereventmanager.h"
-#include "aimanager.h"
 #include "inputmanager.h"
 #include "debugreflection.h"
-#include "crashlogger.h"
 
 // ImGui headers for callbacks
 #include <imgui.h>
@@ -76,7 +74,6 @@ std::mutex CrashoutsEngine::ECS::mtx;
 auto& physicsSystem = Physics::PhysicsHandler::GetInstance();
 Collision::CollisionHandler& collisionSystem{Collision::CollisionHandler::GetInstance()};
 CrashoutsEngine::CollisionEventManager &collisionEvent = CrashoutsEngine::CollisionEventManager::GetInstance();
-static CrashoutsEngine::AIManager aiSystem;
 
 // ImGui in-game performance viewer
 static FrameProfiler gProfiler;
@@ -195,7 +192,6 @@ void SetupConsole() {
 
 */
 void Init() {
-    InstallCrashLogger("CrashoutsEngine");
     glfwSwapInterval(0); // disable vsync
 
     using namespace Messaging;
@@ -564,8 +560,6 @@ void Update(double const& dt) {
         KeyframeUnity::UpdateAll(*CrashoutsEngine::ECS::getInstance(), (float)dt);
         CrashoutsEngine::ScriptSystem::UpdateAll();
 
-        aiSystem.Update();
-
         //fixed Update please work
         {
             FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "ScriptFixedUpdate");
@@ -663,31 +657,40 @@ void Update(double const& dt) {
 Release resources
 */
 void CleanUp() {
+
+    gProfiler.Clear(); 
+    Prefab::ClearRegistry();
+
+    // 1. STOP LOGIC & SCRIPTS (So they don't try to play sounds/move things)
     CrashoutsEngine::ScriptSystem::DestroyAll();
+    MonoManager::Shutdown(); // Stop C# scripts before killing the ECS
+    ShutdownGameStateManager();
+    InputManager::Shutdown();
 
+    // 2. STOP SYSTEMS (Audio/Rendering need ECS to be alive to clean up their components)
+    CrashoutsEngine::Audio::AudioSystem::instance().shutdown(); 
+    InstancingSystem::ShutdownInstancing();                     
+    Component::Rendering::Cleanup();    
+    Component::TextureRenderer::Cleanup();
     CrashoutsEngine::PostProcessing::ShutdownPP();
+    collisionSystem.Shutdown();
+    CrashoutsEngine::CollisionEventManager::GetInstance().Clear();
 
+    // 3. SHUTDOWN UI (Depends on everything)
     DebugReflection::ComponentRegistry::instance().clear();
     DebugReflection::PanelRegistry::instance().clear();
     DebugReflection::PhysicsRegistry::instance().clear();
-
 #if USE_IMGUI_EDITOR
     UI::Shutdown(g_uiState);
     Logger::Instance().Clear();
 #endif
 
-    GLApp::cleanup();
-    InputManager::Shutdown();
-    ShutdownGameStateManager();
-
+    // 4. DESTROY ECS (Now safe, because no systems are trying to access it)
     CrashoutsEngine::ECS::DestroyInstance();
 
-    MonoManager::Shutdown();
-
-    InstancingSystem::ShutdownInstancing();
-    Component::Rendering::Cleanup();
-    CrashoutsEngine::Audio::AudioSystem::instance().shutdown();
+    // 5. CLEANUP RESOURCES & WINDOW (Low level stuff)
     CrashoutsEngine::Assets::AssetManager::GetInstance().Shutdown();
+    GLApp::cleanup();
 }
 
 // Game path offset

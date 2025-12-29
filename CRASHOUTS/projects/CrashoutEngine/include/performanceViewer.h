@@ -290,6 +290,24 @@ public:
     const HistArray& frame_ms_history() const { return frameMSHist; }
     const EmaHistMap& ema_history()   const { return emaHist; }
 
+    void Clear() {
+        // 1. Force release memory for all maps and vectors
+        std::unordered_map<std::string, double>().swap(sampleMS);
+        std::unordered_map<std::string, double>().swap(emaMS);
+        std::vector<ProfilerSample>().swap(rowsTmp);
+        std::vector<ProfilerSample>().swap(snapShot);
+        EmaHistMap().swap(emaHist);
+
+        // 2. Reset primitive states
+        frameOpen = false;
+        frameMSDisplay = 0.0;
+        snapShotFrameMS = 0.0;
+        histIndex = 0;
+        histCount = 0;
+
+        // 3. Zero out the fixed array
+        frameMSHist.fill(0.0f);
+    }
 
 private:
 

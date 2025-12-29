@@ -9,108 +9,51 @@ All content © 2025 Digipen Institute of Technology Singapore.All rights reserved
 //__________________________________________________________________________*/
 
 #include "aimanager.h"
-#include "aicomponent.h"
-#include "state.h"
 #include "entitymanager.h"
 
 #include <mono/jit/jit.h>
 #include <mono/metadata/object.h>
 #include <mono/metadata/assembly.h>
 
-
-
 using namespace CrashoutsEngine;
 
 namespace
 {
-	// ai manager func
-
-    static void InternalAIManagerUpdate()
+    std::string MonoStringToString(MonoString* str)
     {
-        AIManager manager;
-        manager.Update();
+        if (!str) return "";
+        char* cStr = mono_string_to_utf8(str);
+        std::string result(cStr);
+        mono_free(cStr); // Important: Free the raw Mono buffer
+        return result;
     }
 
-    // fsm func
+    // --- AI UTILITY WRAPPERS ---
 
-    static void InternalFSMSetState(uint32_t entity, int32_t stateID)
+    static bool Internal_IsPlatformInFront(uint32_t entityID, float direction, MonoString* tag)
     {
-        ECS& ecs = *ECS::getInstance();
-        auto& ai = *ecs.GetComponent<Component::AIComponent>(entity);
-        ai.fsm.SetCurrentState(stateID);
+        // Convert Mono types to C++ types
+        return AIUtils::IsPlatformInFront((Entity)entityID, direction, MonoStringToString(tag));
     }
 
-    static int32_t InternalFSMGetState(uint32_t entity)
+    static bool Internal_IsObstacleInFront(uint32_t entityID, float direction, MonoString* tag)
     {
-        ECS& ecs = *ECS::getInstance();
-        auto& ai = *ecs.GetComponent<Component::AIComponent>(entity);
-        return ai.fsm.GetCurrentState().GetID();
+        return AIUtils::IsObstacleInFront((Entity)entityID, direction, MonoStringToString(tag));
     }
 
-	// Helper that convert MonoDelegate to std::function<void()>
-    static std::function<void()> MakeManagedCallbackVoid(MonoDelegate* del)
+    static bool Internal_IsObstacleIntersecting(uint32_t entityID, MonoString* tag)
     {
-        if (!del)
-            return {};
-
-        MonoObject* obj = (MonoObject*)del;
-        MonoClass* klass = mono_object_get_class(obj);
-        if (!klass)
-            return {};
-
-        MonoMethod* invoke = mono_get_delegate_invoke(klass);
-        if (!invoke)
-            return {};
-
-        // pin the delegate so GC does not collect it
-        uint32_t handle = mono_gchandle_new(obj, /* pinned */ true);
-
-        return [handle, invoke]()
-            {
-                MonoObject* target = mono_gchandle_get_target(handle);
-                if (!target)
-                    return;
-
-                void* args[1] = { nullptr };
-                MonoObject* exc = nullptr;
-
-                mono_runtime_invoke(invoke, target, args, &exc);
-
-                if (exc)
-                {
-                    MonoString* msg = mono_object_to_string(exc, nullptr);
-                    char* cmsg = mono_string_to_utf8(msg);
-                    printf("[Mono Exception] %s\n", cmsg);
-                    mono_free(cmsg);
-                }
-            };
+        return AIUtils::IsObstacleIntersecting((Entity)entityID, MonoStringToString(tag));
     }
 
-    // Assign ENTER callback
-    static void InternalFSMSetEnter(uint32_t entity, int32_t stateID, MonoDelegate* del)
+    static bool Internal_IsIntersecting(uint32_t entity1, uint32_t entity2)
     {
-        ECS& ecs = *ECS::getInstance();
-        auto& ai = *ecs.GetComponent<Component::AIComponent>(entity);
-
-        ai.fsm.GetState(stateID).enter = MakeManagedCallbackVoid(del);
+        return AIUtils::IsIntersecting((Entity)entity1, (Entity)entity2);
     }
 
-    // Assign UPDATE callback
-    static void InternalFSMSetUpdate(uint32_t entity, int32_t stateID, MonoDelegate* del)
+    static bool Internal_EntityInRange(uint32_t entity1, uint32_t entity2, float tolerance)
     {
-        ECS& ecs = *ECS::getInstance();
-        auto& ai = *ecs.GetComponent<Component::AIComponent>(entity);
-
-        ai.fsm.GetState(stateID).Update = MakeManagedCallbackVoid(del);
-    }
-
-    // Assign EXIT callback
-    static void InternalFSMSetExit(uint32_t entity, int32_t stateID, MonoDelegate* del)
-    {
-        ECS& ecs = *ECS::getInstance();
-        auto& ai = *ecs.GetComponent<Component::AIComponent>(entity);
-
-        ai.fsm.GetState(stateID).exit = MakeManagedCallbackVoid(del);
+        return AIUtils::EntityInRange((Entity)entity1, (Entity)entity2, tolerance);
     }
 
 }
@@ -118,12 +61,11 @@ namespace CrashoutsEngine::Bindings
 {
     void RegisterAIBindings()
     {
-        mono_add_internal_call("CrashoutsEngine.AI::Update",reinterpret_cast<const void*>(InternalAIManagerUpdate));
-        mono_add_internal_call("CrashoutsEngine.AI::SetState", reinterpret_cast<const void*>(InternalFSMSetState));
-        mono_add_internal_call("CrashoutsEngine.AI::GetState", reinterpret_cast<const void*>(InternalFSMGetState));
-        mono_add_internal_call("CrashoutsEngine.AI::SetEnter", reinterpret_cast<const void*>(InternalFSMSetEnter));
-        mono_add_internal_call("CrashoutsEngine.AI::SetUpdate", reinterpret_cast<const void*>(InternalFSMSetUpdate));
-        mono_add_internal_call("CrashoutsEngine.AI::SetExit", reinterpret_cast<const void*>(InternalFSMSetExit));
+        mono_add_internal_call("CrashoutsEngine.AI::IsPlatformInFront", reinterpret_cast<const void*>(Internal_IsPlatformInFront));
+        mono_add_internal_call("CrashoutsEngine.AI::IsObstacleInFront", reinterpret_cast<const void*>(Internal_IsObstacleInFront));
+        mono_add_internal_call("CrashoutsEngine.AI::IsObstacleIntersecting", reinterpret_cast<const void*>(Internal_IsObstacleIntersecting));
+        mono_add_internal_call("CrashoutsEngine.AI::IsIntersecting", reinterpret_cast<const void*>(Internal_IsIntersecting));
+        mono_add_internal_call("CrashoutsEngine.AI::EntityInRange", reinterpret_cast<const void*>(Internal_EntityInRange));
     }
 }
 

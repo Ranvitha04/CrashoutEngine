@@ -33,10 +33,14 @@ namespace CrashoutsEngine
         ScriptInstance(const std::string& name) : ClassName(name) {}
     };
 
+}
+
+namespace Component {
+
     struct ScriptComponent
     {
         uint32_t EntityID = 0;
-        std::vector<ScriptInstance> Scripts;
+        std::vector<CrashoutsEngine::ScriptInstance> Scripts;
 
         ScriptComponent() = default;
 
@@ -46,7 +50,7 @@ namespace CrashoutsEngine
         }
 
         // Manage scripts
-        ScriptInstance& AddScript(const std::string& className);
+        CrashoutsEngine::ScriptInstance& AddScript(const std::string& className);
         void RemoveScript(size_t index);
 
         bool Initialize(MonoDomain* domain, MonoAssembly* assembly);
@@ -55,4 +59,5 @@ namespace CrashoutsEngine
         void FixedUpdate();
         void Destroy();
     };
+
 }

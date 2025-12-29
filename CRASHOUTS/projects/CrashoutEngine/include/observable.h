@@ -47,6 +47,13 @@ namespace Messaging {
 
 			EventType Type();
 
+			/*!
+			@brief Cleanup
+			*/
+			void ClearObservers() {
+				std::multimap<EventType, Observer&>().swap(mMessageMap);
+			}
+
 	};
 }
 

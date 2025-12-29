@@ -55,7 +55,6 @@
 #include "sceneasset.h"
 #include "spritesheet.h"
 #include "prefab.h"
-#include "prefab_init.h"
 #include "stb_image.h"
 
 // --- 7. Debug Specific Tools ---

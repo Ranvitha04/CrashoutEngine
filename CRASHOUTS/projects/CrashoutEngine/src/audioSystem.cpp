@@ -185,10 +185,21 @@ namespace CrashoutsEngine::Audio
     {
         // Stop any tagged channels we tracked
         mTaggedChannels.clear();
+        std::unordered_map<std::string, FMOD::Channel*>().swap(mTaggedChannels);
 
         unloadAllRawSounds();
+        std::unordered_map<std::string, FMOD::Sound*>().swap(mRawSoundCache);
+
         unloadAllBanks();
+        std::unordered_map<std::string, FMOD::Studio::Bank*>().swap(mBanks);
+
+        mRawAudioFiles.clear();
+        std::vector<std::string>().swap(mRawAudioFiles);
+
+        if (mStudio) mStudio->release();
         mStudio.reset();
+
+        if (mCore) mCore->release();
         mCore.reset();
 
         mMusicGroup = nullptr;

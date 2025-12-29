@@ -1537,21 +1537,21 @@ namespace {
 		const char* name() const override { return "ScriptComponent"; }
 
 		bool has(ECS& ecs, Entity e) const override {
-			return ecs.HasComponent<CrashoutsEngine::ScriptComponent>(e);
+			return ecs.HasComponent<ScriptComponent>(e);
 		}
 
 		void add(ECS& ecs, Entity e) override {
 			if (!has(ecs, e)) {
 				static char className[64] = "PlayerController";
 				ImGui::InputText("Class Name to Add", className, sizeof(className));
-				CrashoutsEngine::ScriptComponent sc(className, e);
-				ecs.AddComponent<CrashoutsEngine::ScriptComponent>(e, sc);
+				ScriptComponent sc(className, e);
+				ecs.AddComponent<ScriptComponent>(e, sc);
 			}
 		}
 
 		void remove(ECS& ecs, Entity e) override {
 			if (has(ecs, e)) {
-				ecs.RemoveComponent<CrashoutsEngine::ScriptComponent>(e);
+				ecs.RemoveComponent<ScriptComponent>(e);
 			}
 		}
 

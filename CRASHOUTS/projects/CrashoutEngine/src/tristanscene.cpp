@@ -20,7 +20,7 @@ All content © 2025 Digipen Institute of Technology Singapore.All rights reserved
 #include "shaderasset.h"
 #include "inputmanager.h"
 #include "collisionmanager.h"
-#include "aicomponent.h"
+#include "tagcomponent.h"
 #include "CEMath.h"
 #include "frameratecontroller.h"
 #include "collidereventmanager.h"
@@ -120,17 +120,17 @@ public:
 
 		Update = []() {
 			Component::RigidBodyComponent* comp{ globalECS->GetComponent<Component::RigidBodyComponent>(entity3) };
-			Component::AIComponent* fsm{ globalECS->GetComponent<Component::AIComponent>(entity3) };
+			//Component::AIComponent* fsm{ globalECS->GetComponent<Component::AIComponent>(entity3) };
 			CEVec3 origVel{ comp->GetVelocity() };
 			if (!AIUtils::IsPlatformInFront(entity3, 1.f) || AIUtils::IsObstacleInFront(entity3, 1.f)) {
 				comp->clearForceAccumulator();
 				comp->setVelocity(CEVec3{ 0.f, origVel.y, 0.f });
-				fsm->fsm.SetCurrentState(PATROL_LEFT);
+				//fsm->fsm.SetCurrentState(PATROL_LEFT);
 				return;
 			} if (AIUtils::IsIntersecting(entity1, entity3)) {
 				comp->clearForceAccumulator();
 				comp->setVelocity(CEVec3{ 0.f, origVel.y, 0.f });
-				fsm->fsm.SetCurrentState(STOP);
+				//fsm->fsm.SetCurrentState(STOP);
 				return;
 			}
 			comp->addForce(CEVec3{ 100.f, 0.f, 0.f });
@@ -149,7 +149,7 @@ public:
 
 		Update = []() {
 			Component::RigidBodyComponent* comp{ globalECS->GetComponent<Component::RigidBodyComponent>(entity3) };
-			Component::AIComponent* fsm{ globalECS->GetComponent<Component::AIComponent>(entity3) };
+			//Component::AIComponent* fsm{ globalECS->GetComponent<Component::AIComponent>(entity3) };
 
 			Component::TransformComponent* t1{ globalECS->GetComponent<Component::TransformComponent>(entity3) };
 			Component::TransformComponent* t2{ globalECS->GetComponent<Component::TransformComponent>(entity1) };
@@ -159,14 +159,14 @@ public:
 			if (AIUtils::IsIntersecting(entity1, entity3)) {
 				comp->clearForceAccumulator();
 				comp->setVelocity(CEVec3{ 0.f, origVel.y, 0.f });
-				fsm->fsm.SetCurrentState(STOP);
+				//fsm->fsm.SetCurrentState(STOP);
 				return;
 			}
 
 			if (!AIUtils::EntityInRange(entity1, entity3, 40.f)) {
 				comp->clearForceAccumulator();
 				comp->setVelocity(CEVec3{ 0.f, origVel.y, 0.f });
-				fsm->fsm.SetCurrentState(PATROL_RIGHT);
+				//fsm->fsm.SetCurrentState(PATROL_RIGHT);
 				return;
 			}
 
@@ -192,22 +192,22 @@ public:
 
 		Update = []() {
 			Component::RigidBodyComponent* comp{ globalECS->GetComponent<Component::RigidBodyComponent>(entity3) };
-			Component::AIComponent* fsm{ globalECS->GetComponent<Component::AIComponent>(entity3) };
+			//Component::AIComponent* fsm{ globalECS->GetComponent<Component::AIComponent>(entity3) };
 			CEVec3 origVel{ comp->GetVelocity() };
 			if (AIUtils::EntityInRange(entity1, entity3, 40.f)) {
-				fsm->fsm.SetCurrentState(CHASE);
+				//fsm->fsm.SetCurrentState(CHASE);
 				return;
 			}
 			if (!AIUtils::IsPlatformInFront(entity3, -1.f, std::string{ "P" }) || AIUtils::IsObstacleInFront(entity3, -1.f, std::string{ "W" })) {
 				comp->clearForceAccumulator();
 				comp->setVelocity(CEVec3{ 0.f, origVel.y, 0.f });
-				fsm->fsm.SetCurrentState(PATROL_RIGHT);
+				//fsm->fsm.SetCurrentState(PATROL_RIGHT);
 				return;
 			}
 			if (AIUtils::IsIntersecting(entity1, entity3)) {
 				comp->clearForceAccumulator();
 				comp->setVelocity(CEVec3{ 0.f, origVel.y, 0.f });
-				fsm->fsm.SetCurrentState(STOP);
+				//fsm->fsm.SetCurrentState(STOP);
 				return;
 			}
 			comp->addForce(CEVec3{ -100.f, 0.f, 0.f });
@@ -225,13 +225,13 @@ public:
 		enter = []() {};
 
 		Update = []() {
-			Component::AIComponent* fsm{ globalECS->GetComponent<Component::AIComponent>(entity3) };
+			//Component::AIComponent* fsm{ globalECS->GetComponent<Component::AIComponent>(entity3) };
 			if (AIUtils::EntityInRange(entity1, entity3, 40.f)) {
-				fsm->fsm.SetCurrentState(CHASE);
+				//fsm->fsm.SetCurrentState(CHASE);
 				return;
 			}
 			else {
-				fsm->fsm.SetCurrentState(PATROL_RIGHT); //PLACEHOLDER
+				//fsm->fsm.SetCurrentState(PATROL_RIGHT); //PLACEHOLDER
 			}
 			};
 

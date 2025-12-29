@@ -28,14 +28,8 @@ namespace CrashoutsEngine {
 		
 	namespace Assets {
 
-		//const std::string rootPath = "../../projects/Descent/assets/";
-#ifdef USE_IMGUI_EDITOR
-		const std::string rootPath = "../../projects/Descent/assets/";
-#else	// GAME MODE
-		const std::string rootPath = "assets/";
-#endif
-
-		const std::string assetManifestPath = rootPath + "json/assetmanifest.json";
+		extern const std::string rootPath;
+		extern const std::string assetManifestPath;
 
 		// Function to load assets in a json
 		/*!

@@ -46,8 +46,6 @@ namespace CrashoutsEngine {
 
 		using CollisionEventMap = std::unordered_map<CrashoutsEngine::Entity, EntityEventCollection>;
 
-	public:
-
 		CollisionEventManager();
 
 		static CollisionEventManager& GetInstance() {
@@ -55,7 +53,10 @@ namespace CrashoutsEngine {
 			return instance;
 		}
 
-		void Clear() { collisionEvents.clear(); }
+		void Clear() { 
+			CollisionEventMap().swap(collisionEvents); 
+			std::unordered_map<Entity, ContactInfo>().swap(lastContacts);
+		}
 
 		void RegisterCollideEnter(CrashoutsEngine::Entity entity, CallbackFn fn);
 		void RegisterCollideStay(CrashoutsEngine::Entity entity, CallbackFn fn);

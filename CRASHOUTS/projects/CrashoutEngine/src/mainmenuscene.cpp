@@ -95,13 +95,15 @@ void LoadMainMenu()
 	// Load resources specific to MainMenu state
 	globalECS = CrashoutsEngine::ECS::getInstance();
 
-	if (entity1 && globalECS->HasComponent<CrashoutsEngine::ScriptComponent>(entity1)) {
-		auto* sc = globalECS->GetComponent<CrashoutsEngine::ScriptComponent>(entity1);
+	using namespace Component;
+
+	if (entity1 && globalECS->HasComponent<ScriptComponent>(entity1)) {
+		auto* sc = globalECS->GetComponent<ScriptComponent>(entity1);
 		if (!sc->Scripts.empty())
 			s_entity1Script = sc->Scripts[0].ClassName;
 	}
-	if (entity3 && globalECS->HasComponent<CrashoutsEngine::ScriptComponent>(entity3)) {
-		auto* sc = globalECS->GetComponent<CrashoutsEngine::ScriptComponent>(entity3);
+	if (entity3 && globalECS->HasComponent<ScriptComponent>(entity3)) {
+		auto* sc = globalECS->GetComponent<ScriptComponent>(entity3);
 		if (!sc->Scripts.empty())
 			s_entity3Script = sc->Scripts[0].ClassName;
 	}
@@ -117,20 +119,22 @@ void LoadMainMenu()
 
 void InitMainMenu()
 {
+	using namespace Component;
+
 	AddPhysicsEntity(
 		entity1,
 		Component::RigidBodyComponent{ CEVec3{}, 5.f, 0.f },
 		Component::TransformComponent{ .size = CEVec2{10.f, 10.f}, .position = CEVec3{0.f, 20.f, 0.f}},
 		Component::ShapeComponent{.enableTexture=true, .textureName="Concept"}
 	);
-	if (!globalECS->HasComponent<CrashoutsEngine::ScriptComponent>(entity1)) {
-		globalECS->AddComponent<CrashoutsEngine::ScriptComponent>(
+	if (!globalECS->HasComponent<ScriptComponent>(entity1)) {
+		globalECS->AddComponent<ScriptComponent>(
 			entity1,
-			CrashoutsEngine::ScriptComponent(s_entity1Script, entity1)
+			ScriptComponent(s_entity1Script, entity1)
 		);
 	}
 	else {
-		auto* sc = globalECS->GetComponent<CrashoutsEngine::ScriptComponent>(entity1);
+		auto* sc = globalECS->GetComponent<ScriptComponent>(entity1);
 
 		if (sc->Scripts.empty())
 			sc->AddScript(s_entity1Script);
@@ -155,14 +159,14 @@ void InitMainMenu()
 		Component::TransformComponent{ .size = CEVec2{10.f, 10.f}, .position = CEVec3{5.f, 20.f, 0.f} },
 		Component::ShapeComponent{ .type = Component::ShapeType::Rectangle }
 	);
-	if (!globalECS->HasComponent<CrashoutsEngine::ScriptComponent>(entity3)) {
-		globalECS->AddComponent<CrashoutsEngine::ScriptComponent>(
+	if (!globalECS->HasComponent<ScriptComponent>(entity3)) {
+		globalECS->AddComponent<ScriptComponent>(
 			entity3,
-			CrashoutsEngine::ScriptComponent(s_entity3Script, entity3)
+			ScriptComponent(s_entity3Script, entity3)
 		);
 	}
 	else {
-		auto* sc = globalECS->GetComponent<CrashoutsEngine::ScriptComponent>(entity3);
+		auto* sc = globalECS->GetComponent<ScriptComponent>(entity3);
 
 		if (sc->Scripts.empty())
 			sc->AddScript(s_entity3Script);
