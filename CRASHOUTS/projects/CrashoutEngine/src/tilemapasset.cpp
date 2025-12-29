@@ -5,6 +5,9 @@
 
 @brief	This file contains the definition of the tile map asset class, as well
         as the functions required to create it and use it.
+
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 __________________________________________________________________________*/
 #pragma once
 
@@ -136,7 +139,7 @@ namespace CrashoutsEngine {
                         std::string colliderType = obj["colliderType"].GetString();
 
                         if (colliderType == "ColliderType::AABB") ruleTile.colliderType = Collision::ColliderType::AABB;
-                        else if (colliderType == "ColliderType::SPHERE") ruleTile.colliderType = Collision::ColliderType::SPHERE;
+                        else if (colliderType == "ColliderType::CIRCLE") ruleTile.colliderType = Collision::ColliderType::CIRCLE;
                         else if (colliderType == "ColliderType::OBB") ruleTile.colliderType = Collision::ColliderType::OBB;
                         else if (colliderType == "ColliderType::NONE") ruleTile.colliderType = Collision::ColliderType::NONE;
                     }
@@ -182,8 +185,8 @@ namespace CrashoutsEngine {
 
                 // Add "ColliderType"
                 std::string colliderString{ "ColliderType::AABB" };
-                if (ruleTile.colliderType == Collision::ColliderType::SPHERE) {
-                    colliderString = "ColliderType::SPHERE";
+                if (ruleTile.colliderType == Collision::ColliderType::CIRCLE) {
+                    colliderString = "ColliderType::CIRCLE";
                 }
                 else if (ruleTile.colliderType == Collision::ColliderType::OBB) {
                     colliderString = "ColliderType::OBB";

@@ -5,6 +5,9 @@
 
 Declare struct defaults used across Debug Menu adapters
 (e.g., drag speeds, initial rigidbody values, default collider sizes).
+
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 //__________________________________________________________________________*/
 
 /*                                                                   includes
@@ -42,7 +45,7 @@ struct DebugDefaults {
 
     // -- Collider Defaults ----------------------------------------------------
 
-    /*! @brief Default radius for sphere colliders. */
+    /*! @brief Default radius for circle colliders. */
     float sphere_radius = 1.f;
 
     /*! @brief Default half-extent for ColliderType::AABB colliders (centered on transform). */

@@ -3,6 +3,8 @@
 @author     m.biniswandi@digipen.edu
 @date       06/11/2025
 @brief		Declaration of script component struct
+
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
 */
 #pragma once
 #include <mono/jit/jit.h>
@@ -31,10 +33,14 @@ namespace CrashoutsEngine
         ScriptInstance(const std::string& name) : ClassName(name) {}
     };
 
+}
+
+namespace Component {
+
     struct ScriptComponent
     {
         uint32_t EntityID = 0;
-        std::vector<ScriptInstance> Scripts;
+        std::vector<CrashoutsEngine::ScriptInstance> Scripts;
 
         ScriptComponent() = default;
 
@@ -44,7 +50,7 @@ namespace CrashoutsEngine
         }
 
         // Manage scripts
-        ScriptInstance& AddScript(const std::string& className);
+        CrashoutsEngine::ScriptInstance& AddScript(const std::string& className);
         void RemoveScript(size_t index);
 
         bool Initialize(MonoDomain* domain, MonoAssembly* assembly);
@@ -53,4 +59,5 @@ namespace CrashoutsEngine
         void FixedUpdate();
         void Destroy();
     };
+
 }

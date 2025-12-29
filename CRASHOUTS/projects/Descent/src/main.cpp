@@ -6,6 +6,8 @@
 This file uses functionality defined in type GLApp to initialize an OpenGL
 context and implement a game loop.
 
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 *//*__________________________________________________________________________*/
 
 /*                                                                   includes
@@ -27,6 +29,7 @@ context and implement a game loop.
 #include "glapp.h"
 
 #include "frameratecontroller.h"
+#include "crashlogger.h"
 
 /*                                                   type declarations
 ----------------------------------------------------------------------------- */
@@ -56,44 +59,42 @@ int WINAPI WinMain(
     [[maybe_unused]] _In_     int       nCmdShow
 ) {
 #if DEBUG
-    _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-    //_CrtSetBreakAlloc(638935);
     UNREFERENCED_PARAMETER(hPrevInstance);
     UNREFERENCED_PARAMETER(lpCmdLine);
-    _CrtMemState stateStart, stateEnd, stateDiff;
-    _CrtMemCheckpoint(&stateStart);
+
+    _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+    //_CrtMemState stateStart, stateEnd, stateDiff;
+    //_CrtMemCheckpoint(&stateStart);
 
     SetupConsole();
 #endif
+    InstallCrashLogger("CrashoutsEngine");
 
     Init();
     double fixedDT = FRC.FixedDT();
-    //double variableDT = 0.0;
 
     // window's close flag is set by clicking close widget or Alt+F4
     while (!glfwWindowShouldClose(GLApp::ptr_window)) {
         FRC.FrameStart();
         glfwPollEvents();
-        //variableDT = FRC.DT();
         fixedDT = FRC.FixedDT();
-
-        //int steps = FRC.StepCount();
-        //for (int i = 0; i < steps; ++i) FixedUpdate(playerRigidBody, fixedDT);
 
         Update(fixedDT);
         Draw(globalSelectedEntity);
         FRC.FrameEnd();
     }
 
+    LogExitCode();
     // Cleanup
     CleanUp();
 
-#if DEBUG
-    _CrtMemCheckpoint(&stateEnd);
-    if (_CrtMemDifference(&stateDiff, &stateStart, &stateEnd)) {
-        OutputDebugString("Memory leaks detected!\n");
-        _CrtMemDumpStatistics(&stateDiff);
-    }
-#endif
+//#if DEBUG
+//    _CrtMemCheckpoint(&stateEnd);
+//    if (_CrtMemDifference(&stateDiff, &stateStart, &stateEnd)) {
+//        OutputDebugString("Memory leaks detected!\n");
+//        _CrtMemDumpStatistics(&stateDiff);
+//    }
+//#endif
+
     return EXIT_SUCCESS;
 }

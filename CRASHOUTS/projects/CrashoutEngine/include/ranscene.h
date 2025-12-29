@@ -24,6 +24,7 @@
 
             Press 'G' to cycle display modes and reinitialize mode-specific data
             as needed. In Mode 6, pressing 'I' cycles duck animation states.
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
 //__________________________________________________________________________*/
 
 #pragma once

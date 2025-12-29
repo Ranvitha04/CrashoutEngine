@@ -4,32 +4,29 @@
 @date       19/09/2025
 @brief      Declaration for the Base class Messages, and common IDS for messages to listen to.
 
-//__________________________________________________________________________*/
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
+//__________________________________________________________________________*/
 #pragma once
 
-#include <string>
+#include <cstdint>
 
 namespace Messaging {
 
 	/*COMMON MESSAGE TYPES*/
-	inline std::string getCollisionMsgID() {
-		return std::string{ "0" };
-	}
+	enum class EventType : uint32_t {
+		None = 0,
 
-	inline std::string getEnterMsgID() {
-		return std::string{ "1" };
-	}
+		// Physical Collisions
+		CollisionEnter = 1,
+		CollisionStay = 2,
+		CollisionExit = 3,
 
-	inline std::string getStayMsgID() {
-		return std::string{ "2" };
-	}
-
-	inline std::string getExitMsgID() {
-		return std::string{ "3" };
-	}
-
-
+		// Trigger Overlaps
+		TriggerEnter = 4,
+		TriggerStay = 5,
+		TriggerExit = 6
+	};
 
 	/*!
 	@class Messages
@@ -37,24 +34,24 @@ namespace Messaging {
 	*/
 	class Messages {
 	protected:
-		std::string mId;
-		Messages() : mId{ "Default" } {}
+		EventType mType;
+		Messages() : mType { EventType::None } {}
 
 		/*!
 		@brief Constructor for message
-		@param id arg to set mId to
+		@param type arg to set mType to
 		*/
-		Messages(std::string const& id) : mId{ id } {}
+		Messages(EventType const& type) : mType { type } {}
 
 		/*!
 		@brief Move Constructor for message
-		@param id arg to set mId to
+		@param type arg to set mType to
 		*/
-		Messages(std::string&& id) : mId{ id } {}
+		Messages(EventType&& type) : mType { type } {}
 
 
 	public:
 		virtual ~Messages() = default;
-		std::string id() { return mId; }
+		EventType GetType() const { return mType; }
 	};
 }

@@ -5,6 +5,9 @@
 @brief      Implementation of the InputManager class
 
 Handles keyboard mouse and scroll wheel input using GLFW
+
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 */
 #include "inputmanager.h"
 
@@ -25,7 +28,7 @@ std::unordered_map<int, bool> InputManager::Keys;
 /// Map of mouse button states indexed by GLFW button codes
 std::unordered_map<int, bool> InputManager::MouseButtons;
 
-/// Accumulated scroll wheel delta since last update
+/// Accumulated scroll wheel delta since last Update
 float InputManager::ScrollYAccum = 0.0f;
 
 /// Scroll wheel delta captured during the current frame

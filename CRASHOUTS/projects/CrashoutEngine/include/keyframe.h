@@ -4,6 +4,8 @@
 @date        28/9/2025
 @brief       Declares the keyframe() function that registers all the keyframe when it starts.
 
+All content ï¿½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 */
 
 #pragma once
@@ -58,12 +60,12 @@ struct AnimationClip {
     std::vector<KFBinding> bindings;
 
     std::string textureAsset = ""; // If set, switch texture when clip starts
-    int spriteCols = 0;            // If > 0, update SpriteSheetComponent
-    int spriteRows = 0;            // If > 0, update SpriteSheetComponent
+    int spriteCols = 0;            // If > 0, Update SpriteSheetComponent
+    int spriteRows = 0;            // If > 0, Update SpriteSheetComponent
 
-    bool useCustomSize = false;    // Should we resize the entity?
-    float targetWidth = 1.0f;      // New Scale/Size X
-    float targetHeight = 1.0f;     // New Scale/Size Y
+    bool useCustomSize = false;    
+    float targetWidth = 1.0f;      
+    float targetHeight = 1.0f;    
 
     float Length() const {
         float t = 0.f;
@@ -95,7 +97,7 @@ namespace KeyframeUnity {
     // Switch clip; restart when requested or when changing to a new clip
     bool Play(KeyframeAnimatorComponent& a, const std::string& clipName, bool restart = true);
 
-    // Update a single entity’s animator
+    // Update a single entityï¿½s animator
     void Update(CrashoutsEngine::ECS& ecs, CrashoutsEngine::Entity e, KeyframeAnimatorComponent& a, float dt);
 
     // Update all animators in ECS 

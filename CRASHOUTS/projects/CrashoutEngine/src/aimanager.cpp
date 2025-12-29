@@ -1,5 +1,14 @@
+/*!
+@file       aimanager.cpp
+@author     miratristan.d@digipen.edu
+@date       29/11/2025
+@brief      Definitions for AI utility functions
+
+All content © 2025 Digipen Institute of Technology Singapore.All rights reserved
+
+//__________________________________________________________________________*/
 #include "aimanager.h"
-#include "aicomponent.h"
+#include "tagcomponent.h"
 #include "entitymanager.h"
 #include "colliders.h"
 #include "collidercomponent.h"
@@ -11,6 +20,7 @@
 #include "transformcomponent.h"
 
 namespace AIUtils {
+
 	bool AIUtils::IsPlatformInFront(CrashoutsEngine::Entity entity, float direction, std::string tag) {
 		CrashoutsEngine::ECS& globalECS{ *CrashoutsEngine::ECS::getInstance() };
 		if (!globalECS.HasComponent<Component::ColliderComponent>(entity)) return false;
@@ -29,10 +39,9 @@ namespace AIUtils {
 			newExtents *= -2.f;
 		}
 
-		projectedAABB.updateCollider(targetTransform.position + newExtents);
+		projectedAABB.UpdateCollider(targetTransform.position + newExtents);
 
 		std::vector<CrashoutsEngine::Entity> colliderComps{ globalECS.GetComponentArray<Component::ColliderComponent>().indexToEntity };
-
 
 		for (CrashoutsEngine::Entity entityToComp : colliderComps) {
 			if (entity == entityToComp) continue;
@@ -47,7 +56,6 @@ namespace AIUtils {
 			if (aabbCompare.intersect(projectedAABB)) return true;
 
 		}
-
 
 		return false;
 	}
@@ -74,7 +82,7 @@ namespace AIUtils {
 			newPos *= tolerance;
 		}
 
-		projectedAABB.updateCollider(newPos);
+		projectedAABB.UpdateCollider(newPos);
 
 		std::vector<CrashoutsEngine::Entity> colliderComps{ globalECS.GetComponentArray<Component::ColliderComponent>().indexToEntity };
 
@@ -149,21 +157,5 @@ namespace AIUtils {
 		if (tolerance >= squaredMag) return true;
 
 		return false;
-	}
-}
-
-namespace CrashoutsEngine {
-	void AIManager::Update() {
-		ECS& aiManagerECS{ *ECS::getInstance() };
-
-
-		std::vector<CrashoutsEngine::Entity> aiComps{ aiManagerECS.GetComponentArray<Component::AIComponent>().indexToEntity };
-
-
-		for (CrashoutsEngine::Entity entity : aiComps) {
-			Component::AIComponent& ai{ *aiManagerECS.GetComponent<Component::AIComponent>(entity) };
-
-			ai.fsm.Update();
-		}
 	}
 }

@@ -10,12 +10,23 @@ The module leverages **OpenGL instancing** to efficiently render large batches o
 each with its own transformation, color, and texture properties. It supports both textured
 and non-textured variants, allowing flexible visual presentation and dynamic scene composition.
 
+Key functionality includes:
+- Instanced rendering setup for circles, rectangles, and triangles.
+- Textured instancing with tint and UV scaling support.
+- Randomized ECS entity initialization for procedural scenes.
+- Shared GPU buffer management for efficient rendering performance.
+
+This file contains only declarations; implementations are provided in the corresponding
+`instancing_system.cpp` file.
 Key functionalities include:
 - **Instanced shape creation**: Initializes GPU buffers for circles, rectangles, and triangles.
 - **Batch rendering**: Renders multiple instances in a single draw call using shared geometry data.
 - **ECS integration**: Initializes and populates entity data for ECS-based rendering workflows.
 - **Texture and tint support**: Applies textures with adjustable UV scaling and color tinting.
 - **Cleanup utilities**: Frees GPU buffers and resets instancing data when no longer needed.
+
+All content � 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 */
 
 #include <cmath>
@@ -251,7 +262,7 @@ namespace InstancingSystem {
 				tf->rotation = std::atan2(dm->velocity.y, dm->velocity.x) * 57.2957795f;
 			}
 
-			// Animation update
+			// Animation Update
 			float speedMag = std::sqrt(dm->velocity.x * dm->velocity.x + dm->velocity.y * dm->velocity.y) * dm->speed;
 			const float moveThresh = 1.5f;
 			int desiredMode = dm->animationMode; // 1..4 manual modes; 0 = auto

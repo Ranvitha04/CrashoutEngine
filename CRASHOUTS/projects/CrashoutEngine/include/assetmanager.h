@@ -6,6 +6,9 @@
 @brief	This file contains the declaration of the AssetManager, a singleton
 		class responsible for managing and providing access to various game assets.
 		It uses a two-map approach for efficient asset retrieval by name.
+
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 //__________________________________________________________________________*/
 #pragma once
 
@@ -25,14 +28,8 @@ namespace CrashoutsEngine {
 		
 	namespace Assets {
 
-		//const std::string rootPath = "../../projects/Descent/assets/";
-#ifdef DEBUG
-		const std::string rootPath = "../../projects/Descent/assets/";
-#else	// RELEASE MODE
-		const std::string rootPath = "assets/";
-#endif
-
-		const std::string assetManifestPath = rootPath + "json/assetmanifest.json";
+		extern const std::string rootPath;
+		extern const std::string assetManifestPath;
 
 		// Function to load assets in a json
 		/*!

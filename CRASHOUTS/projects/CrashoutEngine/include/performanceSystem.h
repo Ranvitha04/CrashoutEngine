@@ -12,6 +12,9 @@
 
             This keeps the ImGui performance panel code in one place instead of
             scattering it across engine/editor files.
+
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 //__________________________________________________________________________*/
 
 /*                                                                   includes
@@ -54,7 +57,7 @@ public:
     }
 
     /*!
-     @brief  Finish the profiling frame and update UI snapshots.
+     @brief  Finish the profiling frame and Update UI snapshots.
      @note   Call this once after all timed scopes have been destroyed. :contentReference[oaicite:2]{index=2}
      */
     void EndFrame() {

@@ -5,6 +5,7 @@
 @brief      Math utilities for 2D vector operations
 
 Provides common vector math operations and a constant for PI
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
 //__________________________________________________________________________*/
 
 #pragma once
@@ -65,6 +66,25 @@ namespace CEMath
 			return CEVec2{ vector.x / length, vector.y / length };
 		}
 		return CEVec2{ 0.0f, 0.0f }; //return zero vector if length is zero to avoid division by zero
+	}
+
+	/*!
+	@brief Returns a vector rotated 90 degrees counter-clockwise
+	@param v  The vector2
+	@return The normal to v
+	*/
+	inline CEVec2 GetNormal(const CEVec2& v) {
+		return CEVec2{ -v.y, v.x };
+	}
+
+	/*!
+	@brief Distance between two vec2 points
+	@param a  The first vector
+	@param b The second vector
+	@return The dot product
+	*/
+	inline f32 Distance(const CEVec2& a, const CEVec2& b) {
+		return Length(CEVec2{ b.x - a.x, b.y - a.y });
 	}
 
 	/*!

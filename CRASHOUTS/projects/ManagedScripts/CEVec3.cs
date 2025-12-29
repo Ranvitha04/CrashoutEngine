@@ -1,3 +1,12 @@
+/*!
+@file       CEVec3.cs
+@author     m.biniswandi@digipen.edu
+@date       29/11/2025
+@brief      CEVec3 struct for 3D vector representation
+
+All content © 2025 Digipen Institute of Technology Singapore.All rights reserved.
+
+//__________________________________________________________________________*/
 namespace CrashoutsEngine
 {
     public struct CEVec3

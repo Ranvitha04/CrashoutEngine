@@ -15,6 +15,9 @@
             These tools are intended for development builds to monitor
             performance bottlenecks, visualize profiling history, and
             analyze memory consumption in real-time.
+
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 //__________________________________________________________________________*/
 
 #pragma once
@@ -145,10 +148,10 @@ public:
     void add_ms(const char* name, double ms) { sampleMS[name] += ms; }
 
     /*!
-    @brief  end the current frame and update smoothed values.
+    @brief  end the current frame and Update smoothed values.
     Steps performed:
     1) compute real frame duration from @ref begin_frame.
-    2) update EMA per region using the per-frame accumulators.
+    2) Update EMA per region using the per-frame accumulators.
     3) smooth the headline "frame ms" for UI display.
     4) build/sort rows and produce a throttled snapshot for the UI.
     @note Call after all @ref Scoped timers have been destroyed for this frame.
@@ -162,7 +165,7 @@ public:
             frameMSReal = 0.0001;
         }
 
-        // 2) update EMA per system
+        // 2) Update EMA per system
         for (auto& kv : sampleMS) {
             double& ema = emaMS[kv.first];
             ema = (1.0 - alpha) * ema + alpha * kv.second;
@@ -287,6 +290,24 @@ public:
     const HistArray& frame_ms_history() const { return frameMSHist; }
     const EmaHistMap& ema_history()   const { return emaHist; }
 
+    void Clear() {
+        // 1. Force release memory for all maps and vectors
+        std::unordered_map<std::string, double>().swap(sampleMS);
+        std::unordered_map<std::string, double>().swap(emaMS);
+        std::vector<ProfilerSample>().swap(rowsTmp);
+        std::vector<ProfilerSample>().swap(snapShot);
+        EmaHistMap().swap(emaHist);
+
+        // 2. Reset primitive states
+        frameOpen = false;
+        frameMSDisplay = 0.0;
+        snapShotFrameMS = 0.0;
+        histIndex = 0;
+        histCount = 0;
+
+        // 3. Zero out the fixed array
+        frameMSHist.fill(0.0f);
+    }
 
 private:
 

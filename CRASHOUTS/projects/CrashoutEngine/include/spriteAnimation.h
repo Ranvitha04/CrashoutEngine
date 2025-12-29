@@ -28,7 +28,11 @@
         dependencies (`entitymanager`, `rendering`, and
         `textures`) to support a component-based entity system
         with animated 2D graphics.
+
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
 __________________________________________________________________________*/
+
+
 
 
 
@@ -149,9 +153,9 @@ namespace Component {
 
         /*!
         @brief Update the current animation state.
-        @param deltaTime Time elapsed since the last update (in seconds)
+        @param deltaTime Time elapsed since the last Update (in seconds)
         */
-        void update(float deltaTime);
+        void Update(float deltaTime);
 
         /*!
         @brief Render the current frame of the sprite.

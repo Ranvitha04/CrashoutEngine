@@ -45,6 +45,9 @@ state across the entire engine, accessible via the Get() static method.
 Designed to work seamlessly with the Shapes, TextureRenderer, and
 sprite animation systems, providing the low-level rendering foundation
 for all 2D graphics operations in the engine.
+
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 *//*__________________________________________________________________________*/
 
 /*                                                                   includes

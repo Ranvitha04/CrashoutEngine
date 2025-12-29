@@ -8,6 +8,8 @@
             declarations for initialization, shutdown, rendering, and debugging
             panels, as well as a UI state structure to manage panel toggles.
 
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 //__________________________________________________________________________*/
 
 /*                                                                   includes
@@ -73,11 +75,11 @@ namespace UI {
     @brief Initializes ImGui with a GLFW window.
     @param window Pointer to the GLFW window handle.
     */
-    void Init(GLFWwindow* window);
+    void Init(GLFWwindow* window, UI::UIState& uiState);
     /*!
     @brief Shuts down ImGui and releases resources.
     */
-    void Shutdown();
+    void Shutdown(UI::UIState& uiState);
 
     // -- Rendering entry points ---------------------------------------
 
@@ -89,7 +91,7 @@ namespace UI {
     @param entities List of entities currently tracked.
     @param selected Currently selected entity.
     */
-    void Render(FrameProfiler& profiler, Physics::PhysicsHandler& phys, CrashoutsEngine::Entity& selected, UIState& ui);
+    void Render(FrameProfiler& profiler, CrashoutsEngine::Entity& selected, UIState& ui);
 
     // -- Helper Functions ---------------------------------------------
     /*!
@@ -101,84 +103,11 @@ namespace UI {
     */
     void EndFrame();
 
-    // -- Panels (Easier to implement more Panel)-----------------------
-    /*!
-    @brief Renders the ECS debug panel.
-    @param ecs ECS reference.
-    @param entities List of ECS entities.
-    @param selected Currently selected entity.
-    */
-    static void RenderEcsPanel(CrashoutsEngine::ECS& ecs, std::vector<CrashoutsEngine::Entity>& entities, CrashoutsEngine::Entity& selected, UIState& ui);
-
-    /*!
-    @brief Renders the Asset Browser debug panel.
-    @param ui UI state toggles.
-    @param root
-    @param outSelectedAsset
-    */
-    static void RenderAssetBrowserPanel(UIState& ui, const char* root, std::string& outSelectedAsset);
-
-    /*!
-    @brief Renders the Inspector debug panel.
-    @param ecs ECS reference.
-    @param selected Currently selected entity.
-    @param ui UI state toggles.
-    */
-    static void RenderInspectorPanel(CrashoutsEngine::ECS& ecs, CrashoutsEngine::Entity selected, UIState& ui);
-
-    /*!
-    @brief Renders the performance profiling panel.
-    @param profiler Frame profiler reference.
-    @param ui UI state toggles.
-    */
-    static void RenderPerformancePanel(FrameProfiler& profiler, UIState& ui);
-    
-    /*!
-    @brief Renders the console log panel.
-    @param ui UI state toggles.
-    */
-    static void RenderConsolePanel(UIState& ui);
-
-    /*!
-     @brief Renders the gameState panel
-     @param state gameState reference.
-     @param ui UI state toggles.
-    */
-    static void RenderGameStatePanel(UIState& ui);
-
-    /*!
-     @brief Renders the Scenes panel
-     @param ui UI state toggles.
-    */
-    static void RenderGameScenePanel(UIState& ui);
-    
-    /*!
-    @brief Renders the physics and collision panel.
-    @param profiler Frame profiler reference.
-    @param ecs ECS reference.
-    @param phys Physics handler reference.
-    @param ui UI state toggles.
-    */
-    static void RenderPhysicsPanel(FrameProfiler& profiler, CrashoutsEngine::ECS& ecs, Physics::PhysicsHandler& phys, UIState& ui);
-    
-    /*!
-     @brief Renders the audio panel.
-     @param profiler Frame profiler reference.
-     @param ecs ECS reference.
-     @param ui UI state toggles.
-    */
-    static void RenderAudioPanel(FrameProfiler&, CrashoutsEngine::ECS& ecs, UIState& ui);
-
     /*!
      @brief Renders the debugmenu panel.
      @param ui UI state toggles.
     */
     void RenderDebugMenuBar(UIState& ui);
-
-    /*!
-     @brief Renders the Scene control bar on top of game viewport
-    */
-    static void RenderEngineStateBar(UIState& ui);
 
     /*!
     @brief Renders all UI panels and overlays in sequence.
@@ -189,7 +118,7 @@ namespace UI {
     @param entities List of ECS entities.
     @param selected Currently selected entity.
     */
-    void RenderAll(FrameProfiler& profiler, Physics::PhysicsHandler& phys, UIState& ui, CrashoutsEngine::ECS& ecs, std::vector<CrashoutsEngine::Entity>& entities, CrashoutsEngine::Entity& selected);
+    void RenderAll(FrameProfiler& profiler, UIState& ui, CrashoutsEngine::ECS& ecs, std::vector<CrashoutsEngine::Entity>& entities, CrashoutsEngine::Entity& selected);
 
     void SetDarkGrayTheme();
 

@@ -3,6 +3,9 @@
 @author     m.biniswandi@digipen.edu
 @date       06/11/2025
 @brief		Definition of script system functions
+
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 */
 #include "aibindings.h"
 #include "animatorbindings.h"
@@ -26,7 +29,7 @@
 
 namespace CrashoutsEngine
 {
-
+    using namespace Component;
     // Helper to find a specific C# script instance on an entity
     static MonoObject* InternalGetScript(uint32_t entityID, MonoString* scriptName) {
         auto* ecs = ECS::getInstance();

@@ -5,6 +5,8 @@
 
 @brief	This file declares the TileMapComponent, which stores reference to a 
 		tile-map asset, tile-map grid size, and other required data. 
+
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
 __________________________________________________________________________*/
 #pragma once
 
@@ -82,7 +84,7 @@ namespace CrashoutsEngine {
 
 		/*!
 		@brief  Iterates through the gridData and recalculates the Rule Bitmasks
-				for every tile to update the 'renderCache'.
+				for every tile to Update the 'renderCache'.
 		@param  map TileMapComponent to reference.
 		*/
 		void RebuildCache(Component::TileMapComponent& map, const Entity& parentEnt);

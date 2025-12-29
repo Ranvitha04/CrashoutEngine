@@ -4,6 +4,9 @@
 @date   05/11/2025
 
 @brief	This file defines the post-processing component. 
+
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 //__________________________________________________________________________*/
 #pragma once
 

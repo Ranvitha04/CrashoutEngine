@@ -23,6 +23,9 @@ efficient resource management.
 This implementation provides the foundation for all 2D rendering operations
 in the CrashoutEngine, with particular emphasis on performance-critical
 applications such as sprite animation, particle systems, and dynamic geometry.
+
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 */
 
 /*                                                                   includes
@@ -244,7 +247,7 @@ namespace Component {
     @details
     Creates persistent mapped buffers using OpenGL 4.4+ buffer storage functionality
     to achieve the highest possible performance for dynamic geometry updates. This
-    approach eliminates the overhead of mapping/unmapping buffers for each update.
+    approach eliminates the overhead of mapping/unmapping buffers for each Update.
 
     **Buffer Storage Flags:**
     - GL_DYNAMIC_STORAGE_BIT: Allows buffer content modification after creation

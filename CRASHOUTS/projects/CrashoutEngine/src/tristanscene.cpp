@@ -1,3 +1,13 @@
+/*!
+@file       tristanscene.cpp
+@author     miratristan.d@digipen.edu
+@date       29/11/2025
+@brief      scene functions for Tristan scene
+
+All content © 2025 Digipen Institute of Technology Singapore.All rights reserved.
+
+//__________________________________________________________________________*/
+
 #include "mainmenuscene.h"
 
 #include "sceneutils.h"
@@ -10,7 +20,7 @@
 #include "shaderasset.h"
 #include "inputmanager.h"
 #include "collisionmanager.h"
-#include "aicomponent.h"
+#include "tagcomponent.h"
 #include "CEMath.h"
 #include "frameratecontroller.h"
 #include "collidereventmanager.h"
@@ -67,7 +77,7 @@ static void AddPhysicsEntity2(CrashoutsEngine::Entity& entity, Component::RigidB
 	globalECS->AddComponent<Component::ShapeComponent>(entity, shape);
 	globalECS->AddComponent<Component::Tag>(entity, name);
 	globalECS->AddComponent<Component::ColliderComponent>(entity, Component::ColliderComponent{
-		std::make_unique<Collision::Sphere>(Collision::Sphere{10.f, {transform.position.x, transform.position.y, 0.f}}) });
+		std::make_unique<Collision::Circle>(Collision::Circle{10.f, {transform.position.x, transform.position.y, 0.f}}) });
 
 	globalECS->GetComponent<Component::RigidBodyComponent>(entity)->setInertia(globalECS->GetComponent<Component::ColliderComponent>(entity)->collider->calculateInertia(globalECS->GetComponent<Component::RigidBodyComponent>(entity)->getMass()));
 	
@@ -108,19 +118,19 @@ public:
 
 		enter = []() {};
 
-		update = []() {
+		Update = []() {
 			Component::RigidBodyComponent* comp{ globalECS->GetComponent<Component::RigidBodyComponent>(entity3) };
-			Component::AIComponent* fsm{ globalECS->GetComponent<Component::AIComponent>(entity3) };
-			CEVec3 origVel{ comp->getVelocity() };
+			//Component::AIComponent* fsm{ globalECS->GetComponent<Component::AIComponent>(entity3) };
+			CEVec3 origVel{ comp->GetVelocity() };
 			if (!AIUtils::IsPlatformInFront(entity3, 1.f) || AIUtils::IsObstacleInFront(entity3, 1.f)) {
 				comp->clearForceAccumulator();
 				comp->setVelocity(CEVec3{ 0.f, origVel.y, 0.f });
-				fsm->fsm.SetCurrentState(PATROL_LEFT);
+				//fsm->fsm.SetCurrentState(PATROL_LEFT);
 				return;
 			} if (AIUtils::IsIntersecting(entity1, entity3)) {
 				comp->clearForceAccumulator();
 				comp->setVelocity(CEVec3{ 0.f, origVel.y, 0.f });
-				fsm->fsm.SetCurrentState(STOP);
+				//fsm->fsm.SetCurrentState(STOP);
 				return;
 			}
 			comp->addForce(CEVec3{ 100.f, 0.f, 0.f });
@@ -137,26 +147,26 @@ public:
 
 		enter = []() {};
 
-		update = []() {
+		Update = []() {
 			Component::RigidBodyComponent* comp{ globalECS->GetComponent<Component::RigidBodyComponent>(entity3) };
-			Component::AIComponent* fsm{ globalECS->GetComponent<Component::AIComponent>(entity3) };
+			//Component::AIComponent* fsm{ globalECS->GetComponent<Component::AIComponent>(entity3) };
 
 			Component::TransformComponent* t1{ globalECS->GetComponent<Component::TransformComponent>(entity3) };
 			Component::TransformComponent* t2{ globalECS->GetComponent<Component::TransformComponent>(entity1) };
 
-			CEVec3 origVel{ comp->getVelocity() };
+			CEVec3 origVel{ comp->GetVelocity() };
 
 			if (AIUtils::IsIntersecting(entity1, entity3)) {
 				comp->clearForceAccumulator();
 				comp->setVelocity(CEVec3{ 0.f, origVel.y, 0.f });
-				fsm->fsm.SetCurrentState(STOP);
+				//fsm->fsm.SetCurrentState(STOP);
 				return;
 			}
 
 			if (!AIUtils::EntityInRange(entity1, entity3, 40.f)) {
 				comp->clearForceAccumulator();
 				comp->setVelocity(CEVec3{ 0.f, origVel.y, 0.f });
-				fsm->fsm.SetCurrentState(PATROL_RIGHT);
+				//fsm->fsm.SetCurrentState(PATROL_RIGHT);
 				return;
 			}
 
@@ -180,24 +190,24 @@ public:
 	PatrolLeft() : StateWrapper{ static_cast<State::StateType>(PATROL_LEFT) } {
 		enter = []() {};
 
-		update = []() {
+		Update = []() {
 			Component::RigidBodyComponent* comp{ globalECS->GetComponent<Component::RigidBodyComponent>(entity3) };
-			Component::AIComponent* fsm{ globalECS->GetComponent<Component::AIComponent>(entity3) };
-			CEVec3 origVel{ comp->getVelocity() };
+			//Component::AIComponent* fsm{ globalECS->GetComponent<Component::AIComponent>(entity3) };
+			CEVec3 origVel{ comp->GetVelocity() };
 			if (AIUtils::EntityInRange(entity1, entity3, 40.f)) {
-				fsm->fsm.SetCurrentState(CHASE);
+				//fsm->fsm.SetCurrentState(CHASE);
 				return;
 			}
 			if (!AIUtils::IsPlatformInFront(entity3, -1.f, std::string{ "P" }) || AIUtils::IsObstacleInFront(entity3, -1.f, std::string{ "W" })) {
 				comp->clearForceAccumulator();
 				comp->setVelocity(CEVec3{ 0.f, origVel.y, 0.f });
-				fsm->fsm.SetCurrentState(PATROL_RIGHT);
+				//fsm->fsm.SetCurrentState(PATROL_RIGHT);
 				return;
 			}
 			if (AIUtils::IsIntersecting(entity1, entity3)) {
 				comp->clearForceAccumulator();
 				comp->setVelocity(CEVec3{ 0.f, origVel.y, 0.f });
-				fsm->fsm.SetCurrentState(STOP);
+				//fsm->fsm.SetCurrentState(STOP);
 				return;
 			}
 			comp->addForce(CEVec3{ -100.f, 0.f, 0.f });
@@ -214,14 +224,14 @@ public:
 	Stop() : StateWrapper{ static_cast<State::StateType>(STOP) } {
 		enter = []() {};
 
-		update = []() {
-			Component::AIComponent* fsm{ globalECS->GetComponent<Component::AIComponent>(entity3) };
+		Update = []() {
+			//Component::AIComponent* fsm{ globalECS->GetComponent<Component::AIComponent>(entity3) };
 			if (AIUtils::EntityInRange(entity1, entity3, 40.f)) {
-				fsm->fsm.SetCurrentState(CHASE);
+				//fsm->fsm.SetCurrentState(CHASE);
 				return;
 			}
 			else {
-				fsm->fsm.SetCurrentState(PATROL_RIGHT); //PLACEHOLDER
+				//fsm->fsm.SetCurrentState(PATROL_RIGHT); //PLACEHOLDER
 			}
 			};
 
@@ -344,17 +354,17 @@ void InitTristan() {
 
 	CrashoutsEngine::CollisionEventManager& colEvent{ CrashoutsEngine::CollisionEventManager::GetInstance() };
 
-	colEvent.registerCollideStay(entity3, Stay2);
-	colEvent.registerCollideExit(entity3, Exit2);
-	colEvent.registerCollideEnter(entity3, Enter2);
+	colEvent.RegisterCollideStay(entity3, Stay2);
+	colEvent.RegisterCollideExit(entity3, Exit2);
+	colEvent.RegisterCollideEnter(entity3, Enter2);
 
-	colEvent.registerCollideStay(entity1, Stay);
-	colEvent.registerCollideExit(entity1, Exit);
-	colEvent.registerCollideEnter(entity1, Enter);
+	colEvent.RegisterCollideStay(entity1, Stay);
+	colEvent.RegisterCollideExit(entity1, Exit);
+	colEvent.RegisterCollideEnter(entity1, Enter);
 
-	colEvent.registerTriggerStay(entity4, Stay3);
-	colEvent.registerTriggerExit(entity4, Exit3);
-	colEvent.registerTriggerEnter(entity4, Enter3);
+	colEvent.RegisterTriggerStay(entity4, Stay3);
+	colEvent.RegisterTriggerExit(entity4, Exit3);
+	colEvent.RegisterTriggerEnter(entity4, Enter3);
 
 
 
@@ -369,10 +379,10 @@ void UpdateTristan()
 
 	f32 dt{ f32(FrameRateController::GetInstance().DT()) };
 	if (rigidBody) {
-		if (InputManager::IsKeyPressed(Key::A)) rigidBody->setVelocity(CEVec3{-15.f, rigidBody->getVelocity().y, 0.f});
-		else if (InputManager::IsKeyPressed(Key::D)) rigidBody->setVelocity(CEVec3{15.f, rigidBody->getVelocity().y, 0.f });
+		if (InputManager::IsKeyPressed(Key::A)) rigidBody->setVelocity(CEVec3{-15.f, rigidBody->GetVelocity().y, 0.f});
+		else if (InputManager::IsKeyPressed(Key::D)) rigidBody->setVelocity(CEVec3{15.f, rigidBody->GetVelocity().y, 0.f });
 		else {
-			rigidBody->setVelocity(CEVec3{ 0.f, rigidBody->getVelocity().y, 0.f });
+			rigidBody->setVelocity(CEVec3{ 0.f, rigidBody->GetVelocity().y, 0.f });
 		}
 
 		if (InputManager::IsKeyPressed(Key::Space)) rigidBody->addForce(CEVec3{ 0.f, 4000.f, 0.f }*40.f *dt );
@@ -385,7 +395,7 @@ void UpdateTristan()
 			Component::ColliderComponent* collider1{ globalECS->GetComponent<Component::ColliderComponent>(entity1) };
 			if (collider1->collider->type == Collision::ColliderType::POLYGON) {
 				Collision::Polygon& obbTemp2 = dynamic_cast<Collision::Polygon&>(*(collider1->collider));
-				obbTemp2.updateRotation(transform->rotation);
+				obbTemp2.UpdateRotation(transform->rotation);
 			}
 		}
 	}
@@ -410,7 +420,7 @@ void FreeTristan() {
 	globalECS->Reset();
 	CrashoutsEngine::CollisionEventManager& currentEvents{ CrashoutsEngine::CollisionEventManager::GetInstance() };
 
-	currentEvents.getCollisionEvents().clear();
+	currentEvents.GetCollisionEvents().clear();
 }
 
 void UnloadTristan()

@@ -9,6 +9,9 @@
             trajectory preview computes a launch angle to reach the mouse
             target, samples the ballistic curve by arc length for even spacing,
             and scales marker size with the duck.
+
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 */
 #include "particleSystem.h"
 #include "transformcomponent.h"
@@ -363,7 +366,7 @@ void TrajectoryEmitter::Recompute() {
 - Estimate marker radius from distance and duck scale; spacing ≈ `2.25×radius`.
 - Target sample count ≈ `distance/spacing` scaled by wheel density, clamped to
   `[m_minSamples, m_maxSamples]`. Recreate ECS entities on change.
-- Recompute ballistic points and update entity transforms.
+- Recompute ballistic points and Update entity transforms.
 */
 void TrajectoryEmitter::Update(float dt) {
     auto& ecs = *CrashoutsEngine::ECS::getInstance();
@@ -440,7 +443,7 @@ void TrajectoryEmitter::Update(float dt) {
         }
     }
 
-    // no projectile update
+    // no projectile Update
 
     // Advance loop timer and restart when flight time reached or projectile passes target x
     m_tAccum += dt;

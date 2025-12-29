@@ -6,6 +6,8 @@
 This file uses functionality defined in type GLApp to initialize an OpenGL
 context and implement a game loop.
 
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 *//*__________________________________________________________________________*/
 
 /*                                                                   includes
@@ -32,8 +34,8 @@ context and implement a game loop.
 #include "performanceSystem.h"
 #include "performanceViewer.h"
 #include "hierarchy.h"   
-#include "hierarchy_components.h" 
-#include "prefab_init.h"
+#include "hierarchycomponent.h" 
+#include "prefab.h"
 #include "instanceSystem.h"
 #include "sceneasset.h"
 #include "keyframe.h"
@@ -42,10 +44,8 @@ context and implement a game loop.
 #include "log.h"
 #include "physicsmanager.h"            // Component::RigidBodyComponent
 #include "collidereventmanager.h"
-#include "aimanager.h"
 #include "inputmanager.h"
 #include "debugreflection.h"
-#include "crashlogger.h"
 
 // ImGui headers for callbacks
 #include <imgui.h>
@@ -60,6 +60,10 @@ context and implement a game loop.
 #include <filesystem>
 
 #include "imgui_internal.h"
+
+// For getting folder path in windows
+#include "ShlObj_core.h"
+
 /*                                                   type declarations
 ----------------------------------------------------------------------------- */
 
@@ -70,13 +74,13 @@ std::mutex CrashoutsEngine::ECS::mtx;
 auto& physicsSystem = Physics::PhysicsHandler::GetInstance();
 Collision::CollisionHandler& collisionSystem{Collision::CollisionHandler::GetInstance()};
 CrashoutsEngine::CollisionEventManager &collisionEvent = CrashoutsEngine::CollisionEventManager::GetInstance();
-static CrashoutsEngine::AIManager aiSystem;
 
 // ImGui in-game performance viewer
 static FrameProfiler gProfiler;
 
 #if USE_IMGUI_EDITOR
 EngineState engineState = EngineState::STOP;
+static UI::UIState g_uiState;
 #else
 EngineState engineState = EngineState::PLAY;
 #endif
@@ -188,12 +192,20 @@ void SetupConsole() {
 
 */
 void Init() {
-    InstallCrashLogger("CrashoutsEngine");
     glfwSwapInterval(0); // disable vsync
-    collisionSystem.registerObserver(Messaging::getCollisionMsgID(), physicsSystem); /*Listen to messages(collisions)*/
-    collisionSystem.registerObserver(Messaging::getExitMsgID(), collisionEvent); /*Listen to messages(collisions)*/
-    collisionSystem.registerObserver(Messaging::getStayMsgID(), collisionEvent); /*Listen to messages(collisions)*/
-    collisionSystem.registerObserver(Messaging::getEnterMsgID(), collisionEvent); /*Listen to messages(collisions)*/
+
+    using namespace Messaging;
+
+    // COLLISION EVENT MANAGER
+    // Physical Collisions
+    collisionSystem.registerObserver(EventType::CollisionEnter, collisionEvent);
+    collisionSystem.registerObserver(EventType::CollisionStay, collisionEvent);
+    collisionSystem.registerObserver(EventType::CollisionExit, collisionEvent);
+
+    // Trigger Overlaps
+    collisionSystem.registerObserver(EventType::TriggerEnter, collisionEvent);
+    collisionSystem.registerObserver(EventType::TriggerStay, collisionEvent);
+    collisionSystem.registerObserver(EventType::TriggerExit, collisionEvent);
 
     // start with a 16:9 aspect ratio
     if (!GLApp::init(Settings::GetScreenWidth(), Settings::GetScreenHeight(), "CRASHOUTS")) {
@@ -208,11 +220,11 @@ void Init() {
                 if (engineState == EngineState::PLAY)
                     CrashoutsEngine::Audio::AudioSystem::instance().setPaused(false);
             }
-            else
+            else 
             {
 #if USE_IMGUI_EDITOR
                 // Window lost focus (ALT+TAB)
-                engineState = EngineState::PAUSE;
+                if (engineState != EngineState::STOP) engineState = EngineState::PAUSE;
 #endif
                 CrashoutsEngine::Audio::AudioSystem::instance().setPaused(true);
                 InputManager::ClearInputs();
@@ -221,7 +233,10 @@ void Init() {
     );
 
     // Generate and Load Assets and Manifest
+
+#if USE_IMGUI_EDITOR
     CrashoutsEngine::Assets::GenerateAssetManifest();
+#endif
     CrashoutsEngine::Assets::AssetManager::GetInstance().LoadManifestAssets();
 
     //Component::Rendering::Get().Setup_VAO(); // Setup default quad VAO
@@ -240,11 +255,11 @@ void Init() {
     CrashoutsEngine::ScriptSystem::InitializeAll(MonoManager::GetDomain(), MonoManager::GetAssembly());
 
     InputManager::Init(GLApp::ptr_window);
-    UI::Init(GLApp::ptr_window); // NEW
-    PerformanceSystem::Get().Attach(gProfiler);
 
     #if USE_IMGUI_EDITOR
     engineState = EngineState::STOP;
+    UI::Init(GLApp::ptr_window, g_uiState); 
+    PerformanceSystem::Get().Attach(gProfiler);
     #else
     engineState = EngineState::PLAY;
     #endif  
@@ -252,12 +267,162 @@ void Init() {
     glEnable(GL_DEPTH_TEST);
 
     CrashoutsEngine::PostProcessing::InitPP();
+    glGenFramebuffers(1, &gameFboID);
+    glBindFramebuffer(GL_FRAMEBUFFER, gameFboID);
+
+    // --- Color Texture ---
+    glGenTextures(1, &gameTextureColorBuffer);
+    glBindTexture(GL_TEXTURE_2D, gameTextureColorBuffer);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, gameTextureWidth, gameTextureHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, gameTextureColorBuffer, 0);
+
+    // --- Depth/Stencil Renderbuffer ---
+    glGenRenderbuffers(1, &gameRboDepthStencil);
+    glBindRenderbuffer(GL_RENDERBUFFER, gameRboDepthStencil);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, gameTextureWidth, gameTextureHeight);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, gameRboDepthStencil);
+
+    // Validate
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+        std::cout << "ERROR: Game framebuffer not complete!" << std::endl;
+    }
+
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+/*  _________________________________________________________________________ */
+/*! Update
+
+@param none
+
+@return none
+
+Make sure callbacks are invoked when state changes in input devices occur.
+Ensure time per frame and FPS are recorded.
+Let application Update state changes (such as animation).
+*/
+void Update(double const& dt) {
+    MonoManager::CheckHotReload();
+    if(PerformPendingSceneLoad()) return;
+
+    GLApp::update_time();
+
+    UpdateGameStateManager();
+
+    if (CurrentDescriptor->Update) CurrentDescriptor->Update();
+
+    // process events if any associated with input devices
+    //glfwPollEvents();
+
+    // start frame profiling
+    PerformanceSystem::Get().BeginFrame();
+
+    // main loop computes fps and other time related stuff once for all apps ...
+    GLApp::update_time(1.0);
+    
+    FrameProfiler::Scoped frameScope(PerformanceSystem::Get().GetProfiler(), "Game/Update");
+    ScopedMemTag mem(MemTag::Update);
+
+    CrashoutsEngine::ECS& ecs = *CrashoutsEngine::ECS::getInstance();
+
+    CrashoutsEngine::UpdateHierarchy(ecs);
+
+    if (engineState == EngineState::PLAY) {
+        KeyframeUnity::UpdateAll(ecs, (float)dt);
+        CrashoutsEngine::ScriptSystem::UpdateAll();
+
+        //fixed Update please work
+        {
+            FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "ScriptFixedUpdate");
+            CrashoutsEngine::ScriptSystem::FixedUpdateAll();
+        }
+        {
+            FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Physics");
+            physicsSystem.Update(FrameRateController::GetInstance().FixedDT());
+        }
+        {
+            FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Audio");
+            CrashoutsEngine::Audio::AudioSystem::instance().Update();
+        }
+
+        // process events if any associated with input devices
+        //glfwPollEvents();
+
+        // main loop computes fps and other time related stuff once for all apps ...
+        GLApp::update_time(1.0);
+
+        //Update 
+        //Player::UpdateVelocity(playerRigidBody, moveSpeed);
+
+        // animate scene
+        GLApp::Update();
+    }
+    else if (engineState == EngineState::STOP) {
+        {
+            FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Physics");
+            physicsSystem.Update(0.f);
+        }
+
+        // Process Editor Camera Input
+#if USE_IMGUI_EDITOR
+        if(gameWinHovered) CrashoutsEngine::RenderCamera::EditorCameraInput();
+        CrashoutsEngine::RenderCamera::engineCamera.UpdateMatrices(gameTextureWidth, gameTextureHeight);
+#else
+        CrashoutsEngine::RenderCamera::engineCamera.UpdateMatrices(GLApp::width, GLApp::height);
+#endif
+    }
+    else if (engineState == EngineState::PAUSE) {
+        // Freeze gameplay, but still allow editor camera to move
+        physicsSystem.Update(0.f);
+        InputManager::ClearInputs();
+        return;
+    }
+
+    // Process Game Camera
+    if (engineState != EngineState::STOP) {
+        using namespace CrashoutsEngine;
+        using namespace Component;
+
+        std::vector<CameraComponent>& c = ecs.GetComponentArray<CameraComponent>().dense;
+        if (c.size() > 0) {
+            Entity camEntity = ecs.GetComponentArray<CameraComponent>().indexToEntity.back();
+            RenderCamera::PlayerCameraInput(c.back(), camEntity);
+        }
+
+#ifdef USE_IMGUI_EDITOR
+        RenderCamera::gameCamera.UpdateMatrices(Settings::GetScreenWidth(), Settings::GetScreenHeight());
+#else
+        RenderCamera::gameCamera.UpdateMatrices(GLApp::width, GLApp::height);
+#endif
+        Scene::UpdateScene(ecs);
+    }
+
+    InputManager::Update();
+    
+    CrashoutsEngine::PostProcessing::UpdatePP();
+
+
+    // Cycle and draw Tile Map Editor if needed
+    CrashoutsEngine::ECS::ComponentArray<Component::TileMapComponent>& tmArray =
+        CrashoutsEngine::ECS::getInstance()->GetComponentArray<Component::TileMapComponent>();
+
+    for (size_t i = 0; i < tmArray.dense.size(); ++i) {
+        // 1. Get the Component
+        Component::TileMapComponent& tm = tmArray.dense[i];
+
+        // 2. Get the Entity ID associated with this index
+        CrashoutsEngine::Entity entityID = tmArray.indexToEntity[i];
+        if (tm.isCacheDirty) CrashoutsEngine::TileMapUtils::RebuildCache(tm, entityID);
+    }
+
 }
 
 /*  _________________________________________________________________________ */
 /*! draw
 
-@param 
+@param
 
 @return none
 
@@ -270,80 +435,79 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
     (void)globalSelectedEntity;
 #endif
 
-    static UI::UIState uiState;
-
     // --- 1: RENDER THE RAW GAME SCENE ---
     // FOR USE_IMGUI_EDITOR AND NOT USING
     // All game objects, sprites, text, etc., draw into 'gameFboID'.
     glBindFramebuffer(GL_FRAMEBUFFER, gameFboID);
 
-    #if !USE_IMGUI_EDITOR
-        int windowW, windowH;
-        glfwGetFramebufferSize(GLApp::ptr_window, &windowW, &windowH);
+#if !USE_IMGUI_EDITOR
+    int windowW, windowH;
+    glfwGetFramebufferSize(GLApp::ptr_window, &windowW, &windowH);
 
-        const float targetAspectRatio = 16.0f / 9.0f;
-        float currentAspectRatio = (float)windowW / (float)windowH;
+    const float targetAspectRatio = 16.0f / 9.0f;
+    float currentAspectRatio = (float)windowW / (float)windowH;
 
-        int vpX, vpY, vpW, vpH;
+    int vpX, vpY, vpW, vpH;
 
-        // Calculate Viewport (Letterboxing)
-        if (currentAspectRatio > targetAspectRatio) {
-            // Window is too wide (Black bars on left/right)
-            vpH = windowH;
-            vpW = static_cast<int>(windowH * targetAspectRatio);
-            vpX = (windowW - vpW) / 2;
-            vpY = 0;
+    // Calculate Viewport (Letterboxing)
+    if (currentAspectRatio > targetAspectRatio) {
+        // Window is too wide (Black bars on left/right)
+        vpH = windowH;
+        vpW = static_cast<int>(windowH * targetAspectRatio);
+        vpX = (windowW - vpW) / 2;
+        vpY = 0;
+    }
+    else {
+        // Window is too tall (Black bars on top/bottom)
+        vpW = windowW;
+        vpH = static_cast<int>(windowW / targetAspectRatio);
+        vpX = 0;
+        vpY = (windowH - vpH) / 2;
+    }
+
+    // 4. Clear the FULL window to black (The "Bars")
+
+    // 5. Set Viewport to the Game Area & Enable Scissor Test
+    // Scissor ensures we don't draw outside the calculated game area
+    //glEnable(GL_SCISSOR_TEST);
+    //glScissor(vpX, vpY, vpW, vpH);
+    glViewport(vpX, vpY, vpW, vpH);
+
+    // 7. Update Camera Matrices to match the VIEWPORT size, not window size
+    CrashoutsEngine::RenderCamera::gameCamera.UpdateMatrices(vpW, vpH);
+
+    // If the window size differs from our internal texture size
+    if (vpW != gameTextureWidth || vpH != gameTextureHeight) {
+        gameTextureWidth = vpW;
+        gameTextureHeight = vpH;
+
+        // --- RESIZE THE TEXTURE MEMORY ---
+
+        // 1. Resize the Color Texture
+        glBindTexture(GL_TEXTURE_2D, gameTextureColorBuffer);
+        // Re-allocate memory with the new width/height (NULL means we don't copy data, just alloc)
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, gameTextureWidth, gameTextureHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+
+        // 2. Resize the Depth/Stencil Buffer (Use RBO or Texture depending on your setup)
+        // Based on your variables, you likely use 'gameRboDepthStencil'
+        if (gameRboDepthStencil != 0) {
+            glBindRenderbuffer(GL_RENDERBUFFER, gameRboDepthStencil);
+            glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, gameTextureWidth, gameTextureHeight);
         }
-        else {
-            // Window is too tall (Black bars on top/bottom)
-            vpW = windowW;
-            vpH = static_cast<int>(windowW / targetAspectRatio);
-            vpX = 0;
-            vpY = (windowH - vpH) / 2;
-        }
 
-        // 4. Clear the FULL window to black (The "Bars")
+        // Unbind to be safe
+        glBindTexture(GL_TEXTURE_2D, 0);
+        glBindRenderbuffer(GL_RENDERBUFFER, 0);
 
-        // 5. Set Viewport to the Game Area & Enable Scissor Test
-        // Scissor ensures we don't draw outside the calculated game area
-        //glEnable(GL_SCISSOR_TEST);
-        //glScissor(vpX, vpY, vpW, vpH);
-        glViewport(vpX, vpY, vpW, vpH);
-
-        // 7. Update Camera Matrices to match the VIEWPORT size, not window size
-        CrashoutsEngine::RenderCamera::gameCamera.UpdateMatrices(vpW, vpH);
-
-        // If the window size differs from our internal texture size
-        if (vpW != gameTextureWidth || vpH != gameTextureHeight) {
-            gameTextureWidth = vpW;
-            gameTextureHeight = vpH;
-
-            // --- RESIZE THE TEXTURE MEMORY ---
-
-            // 1. Resize the Color Texture
-            glBindTexture(GL_TEXTURE_2D, gameTextureColorBuffer);
-            // Re-allocate memory with the new width/height (NULL means we don't copy data, just alloc)
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, gameTextureWidth, gameTextureHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-
-            // 2. Resize the Depth/Stencil Buffer (Use RBO or Texture depending on your setup)
-            // Based on your variables, you likely use 'gameRboDepthStencil'
-            if (gameRboDepthStencil != 0) {
-                glBindRenderbuffer(GL_RENDERBUFFER, gameRboDepthStencil);
-                glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, gameTextureWidth, gameTextureHeight);
-            }
-
-            // Unbind to be safe
-            glBindTexture(GL_TEXTURE_2D, 0);
-            glBindRenderbuffer(GL_RENDERBUFFER, 0);
-
-            // Note: We don't need to re-attach them to the gameFboID usually, 
-            // as the FBO holds references to the IDs, which haven't changed.
-        }
-    #else
+        // Note: We don't need to re-attach them to the gameFboID usually, 
+        // as the FBO holds references to the IDs, which haven't changed.
+    }
+#else
 
     glViewport(0, 0, gameTextureWidth, gameTextureHeight);
 
-    #endif
+#endif
+
     glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
@@ -374,167 +538,24 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
             if (CurrentDescriptor->Render) CurrentDescriptor->Render();
         }
     }
-    
+
     // Unbind FBO
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    auto DrawTitleButton = [&](const char* label)
-        {
-            ImFont* mono = ImGui::GetIO().Fonts->Fonts[0]; // first baked font is monospace
-            ImGui::PushFont(mono);
-
-            float btnW = 32.0f;
-            float btnH = 28.0f;
-
-            ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
-            ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 0.0f);
-            ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));
-            ImGui::PushStyleColor(ImGuiCol_Button, IM_COL32(40, 40, 40, 255));
-            ImGui::PushStyleColor(ImGuiCol_ButtonHovered, IM_COL32(60, 60, 60, 255));
-            ImGui::PushStyleColor(ImGuiCol_ButtonActive, IM_COL32(80, 80, 80, 255));
-            ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(220, 220, 220, 255));
-
-            ImGui::Button(label, ImVec2(btnW, btnH));
-
-            bool clicked = ImGui::IsItemClicked();
-
-            ImGui::PopStyleColor(4);
-            ImGui::PopStyleVar(3);
-            ImGui::PopFont();
-
-
-            return clicked;
-        };
 
 #if USE_IMGUI_EDITOR
     // 1. Start the Dear ImGui frame
     UI::BeginFrame();
-    //goddamn lobotomy
-    const float titleBarHeight = 30.0f;
-    {
-        ImGuiViewport* viewport = ImGui::GetMainViewport();
-
-        ImGui::SetNextWindowPos(viewport->Pos);
-        ImGui::SetNextWindowSize(ImVec2(viewport->Size.x, titleBarHeight));
-        ImGui::SetNextWindowViewport(viewport->ID);
-
-        ImGuiWindowFlags flags =
-            ImGuiWindowFlags_NoDecoration |
-            ImGuiWindowFlags_NoDocking |
-            ImGuiWindowFlags_NoMove |
-            ImGuiWindowFlags_NoSavedSettings |
-            ImGuiWindowFlags_NoScrollbar |
-            ImGuiWindowFlags_NoScrollWithMouse;
-
-        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(8, 8));
-        ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(6, 4));
-        ImGui::PushStyleColor(ImGuiCol_WindowBg, IM_COL32(25, 25, 25, 255));
-
-        ImGui::Begin("##TitleBarOverlay", nullptr, flags);
-
-        // Title text
-        ImGui::SetCursorPosY((titleBarHeight - ImGui::GetTextLineHeight()) * 0.5f);
-        ImGui::Text("CRASHOUTS ENGINE");
-
-        // Right aligned buttons
-        float buttonRightOffset = 10.0f;
-        float buttonArea = 3 * 32;    // three 32px buttons
-        ImGui::SameLine(ImGui::GetWindowWidth() - buttonArea - buttonRightOffset);
-
-		// minimize
-        if (DrawTitleButton("-"))
-            glfwIconifyWindow(GLApp::ptr_window);
-
-        ImGui::SameLine(0.0f, 0.0f);
-
-        // fullscreen
-        static bool fullscreen = true;
-        if (DrawTitleButton(fullscreen ? "[ ]" : "[]"))
-        {
-            GLFWmonitor* mon = glfwGetPrimaryMonitor();
-            const GLFWvidmode* mode = glfwGetVideoMode(mon);
-
-            int mx, my;
-            glfwGetMonitorPos(mon, &mx, &my);
-
-            if (!fullscreen) {
-                glfwSetWindowAttrib(GLApp::ptr_window, GLFW_DECORATED, GLFW_FALSE);
-                glfwSetWindowMonitor(GLApp::ptr_window, NULL, mx, my, mode->width, mode->height, 0);
-            }
-            else {
-                glfwSetWindowAttrib(GLApp::ptr_window, GLFW_DECORATED, GLFW_FALSE);
-                glfwSetWindowMonitor(GLApp::ptr_window, NULL, 100, 100, 1600, 900, 0);
-            }
-            fullscreen = !fullscreen;
-        }
-
-
-        ImGui::SameLine(0.0f, 0.0f);
-
-        //close
-        if (DrawTitleButton("X"))
-            glfwSetWindowShouldClose(GLApp::ptr_window, true);
-
-		// dragging is stupidly bugged but whatever - Rain
-		// YEAHHHHH ITS FIXED
-        // Disable dragging in fullscreen
-        if (!fullscreen)
-        {
-            static bool draggingWindow = false;
-            static POINT cursorStart;
-            static int winStartX, winStartY;
-
-            float buttonsWidth = 3 * 28 + 12;
-            ImVec2 titlebarMin = ImGui::GetWindowPos();
-            ImVec2 titlebarMax = ImVec2(
-                titlebarMin.x + ImGui::GetWindowWidth() - buttonsWidth,
-                titlebarMin.y + titleBarHeight
-            );
-
-            bool mouseInTitleBar = ImGui::IsMouseHoveringRect(titlebarMin, titlebarMax);
-            bool leftDown = ImGui::IsMouseDown(ImGuiMouseButton_Left);
-
-            // Start drag
-            if (mouseInTitleBar && leftDown && !draggingWindow && !ImGui::IsAnyItemHovered())
-            {
-                draggingWindow = true;
-
-                // Get initial cursor position (WIN32 absolute)
-                GetCursorPos(&cursorStart);
-
-                glfwGetWindowPos(GLApp::ptr_window, &winStartX, &winStartY);
-            }
-
-            // Dragging
-            if (draggingWindow)
-            {
-                POINT cursorNow;
-                GetCursorPos(&cursorNow);
-
-                int dx = cursorNow.x - cursorStart.x;
-                int dy = cursorNow.y - cursorStart.y;
-
-                glfwSetWindowPos(GLApp::ptr_window,
-                    winStartX + dx,
-                    winStartY + dy);
-
-                if (!leftDown)
-                    draggingWindow = false;
-            }
-        }
-
-        ImGui::End();
-        ImGui::PopStyleColor();
-        ImGui::PopStyleVar(2);
-    }
 
     // 2. Setup Dockspace 
     ImGuiViewport* viewport = ImGui::GetMainViewport();
-    ImVec2 dockPos = ImVec2(viewport->Pos.x, viewport->Pos.y + titleBarHeight);
-    ImVec2 dockSize = ImVec2(viewport->Size.x, viewport->Size.y - titleBarHeight);
+    /*ImVec2 dockPos = ImVec2(viewport->Pos.x, viewport->Pos.y + titleBarHeight);
+    ImVec2 dockSize = ImVec2(viewport->Size.x, viewport->Size.y - titleBarHeight);*/
+    ImVec2 dockPos = viewport->Pos;
+    ImVec2 dockSize = viewport->Size;
     /*ImGui::SetNextWindowPos(viewport->WorkPos);
     ImGui::SetNextWindowSize(viewport->WorkSize);*/
-	ImGui::SetNextWindowPos(dockPos);
-	ImGui::SetNextWindowSize(dockSize);
+    ImGui::SetNextWindowPos(dockPos);
+    ImGui::SetNextWindowSize(dockSize);
     ImGui::SetNextWindowViewport(viewport->ID);
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
     ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
@@ -550,7 +571,7 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
         ImGui::PopStyleVar(3);
 
         // Render the menu bar *inside* the Dockspace Begin/End
-        UI::RenderDebugMenuBar(uiState);
+        //UI::RenderDebugMenuBar(g_uiState);
 
         // Define the actual dockspace area
         ImGuiID dockspace_id = ImGui::GetID("Dockspace");
@@ -561,7 +582,7 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
         glBindFramebuffer(GL_FRAMEBUFFER, gameFboID);
         {
             FrameProfiler::Scoped s2(PerformanceSystem::Get().GetProfiler(), "UI");
-            UI::Render(gProfiler, physicsSystem, globalSelectedEntity, uiState);
+            UI::Render(gProfiler, globalSelectedEntity, g_uiState);
         }
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         //glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -577,7 +598,7 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
     else {
         ImGui::PopStyleVar(3);
     }
-    
+
 
     ImGui::End(); // End the Dockspace window begun earlier
 
@@ -597,7 +618,7 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
     glClear(GL_COLOR_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
 
-    CrashoutsEngine::PostProcessing::RenderPP(gameTextureColorBuffer);
+    //CrashoutsEngine::PostProcessing::RenderPP(gameTextureColorBuffer);
 
 #endif
     // APPLY POST_PROCESSING TO FBO 
@@ -623,146 +644,6 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
 }
 
 /*  _________________________________________________________________________ */
-/*! update
-
-@param none
-
-@return none
-
-Make sure callbacks are invoked when state changes in input devices occur.
-Ensure time per frame and FPS are recorded.
-Let application update state changes (such as animation).
-*/
-void Update(double const& dt) {
-    MonoManager::CheckHotReload();
-    if(PerformPendingSceneLoad()) return;
-
-    GLApp::update_time();
-
-    UpdateGameStateManager();
-
-
-    if (CurrentDescriptor->Update) CurrentDescriptor->Update();
-
-    // process events if any associated with input devices
-    //glfwPollEvents();
-
-    // start frame profiling
-    PerformanceSystem::Get().BeginFrame();
-
-    // main loop computes fps and other time related stuff once for all apps ...
-    GLApp::update_time(1.0);
-    
-    FrameProfiler::Scoped frameScope(PerformanceSystem::Get().GetProfiler(), "Game/Update");
-    ScopedMemTag mem(MemTag::Update);
-    CrashoutsEngine::UpdateHierarchy(*CrashoutsEngine::ECS::getInstance());
-
-    if (engineState == EngineState::PLAY) {
-        KeyframeUnity::UpdateAll(*CrashoutsEngine::ECS::getInstance(), (float)dt);
-        CrashoutsEngine::ScriptSystem::UpdateAll();
-
-        aiSystem.Update();
-
-        {
-            FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Collision");
-            collisionSystem.update(dt, (Collision::EngineState)engineState);
-        }
-        //fixed update please work
-        {
-            FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "ScriptFixedUpdate");
-            CrashoutsEngine::ScriptSystem::FixedUpdateAll();
-        }
-        {
-            FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Physics");
-            physicsSystem.update(dt);
-        }
-        {
-            FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Audio");
-            CrashoutsEngine::Audio::AudioSystem::instance().update();
-        }
-
-        // process events if any associated with input devices
-        //glfwPollEvents();
-
-        // main loop computes fps and other time related stuff once for all apps ...
-        GLApp::update_time(1.0);
-
-        //Update 
-        //Player::UpdateVelocity(playerRigidBody, moveSpeed);
-
-        // animate scene
-        GLApp::update();
-    }
-    else if (engineState == EngineState::STOP) {
-        {
-            FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Collision");
-            collisionSystem.update(dt, (Collision::EngineState)engineState);
-        }
-        {
-            FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Physics");
-            physicsSystem.update(0.f);
-        }
-
-        // Process Editor Camera Input
-#if USE_IMGUI_EDITOR
-        if(gameWinHovered) CrashoutsEngine::RenderCamera::EditorCameraInput();
-        CrashoutsEngine::RenderCamera::engineCamera.UpdateMatrices(gameTextureWidth, gameTextureHeight);
-#else
-        CrashoutsEngine::RenderCamera::engineCamera.UpdateMatrices(GLApp::width, GLApp::height);
-#endif
-    }
-    else if (engineState == EngineState::PAUSE) {
-        // Freeze gameplay, but still allow editor camera to move
-        physicsSystem.update(0.f);
-        InputManager::ClearInputs();
-        return;
-    }
-    else {
-        FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Physics");
-        physicsSystem.update(0.f);
-    }
-
-    // Process Game Camera
-    if (engineState != EngineState::STOP) {
-        using namespace CrashoutsEngine;
-        using namespace Component;
-
-        ECS& ecs = *ECS::getInstance();
-        std::vector<CameraComponent> c = ecs.GetComponentArray<CameraComponent>().dense;
-        if (c.size() > 0) {
-            Entity camEntity = ecs.GetComponentArray<CameraComponent>().indexToEntity.back();
-            RenderCamera::PlayerCameraInput(c.back(), camEntity);
-        }
-
-#ifdef USE_IMGUI_EDITOR
-        RenderCamera::gameCamera.UpdateMatrices(Settings::GetScreenWidth(), Settings::GetScreenHeight());
-#else
-        RenderCamera::gameCamera.UpdateMatrices(GLApp::width, GLApp::height);
-#endif
-        Scene::UpdateScene(*CrashoutsEngine::ECS::getInstance());
-    }
-
-    InputManager::Update();
-    
-    CrashoutsEngine::PostProcessing::UpdatePP();
-
-
-    // Cycle and draw Tile Map Editor if needed
-    CrashoutsEngine::ECS::ComponentArray<Component::TileMapComponent>& tmArray =
-        CrashoutsEngine::ECS::getInstance()->GetComponentArray<Component::TileMapComponent>();
-
-    for (size_t i = 0; i < tmArray.dense.size(); ++i) {
-        // 1. Get the Component
-        Component::TileMapComponent& tm = tmArray.dense[i];
-
-        // 2. Get the Entity ID associated with this index
-        CrashoutsEngine::Entity entityID = tmArray.indexToEntity[i];
-        if (tm.isCacheDirty) CrashoutsEngine::TileMapUtils::RebuildCache(tm, entityID);
-    }
-
-}
-
-/*  _________________________________________________________________________ */
 /*! CleanUp
 
 @param none
@@ -772,25 +653,91 @@ void Update(double const& dt) {
 Release resources
 */
 void CleanUp() {
-    UI::Shutdown();
+
+    gProfiler.Clear(); 
+    Prefab::ClearRegistry();
+
+    // 1. STOP LOGIC & SCRIPTS (So they don't try to play sounds/move things)
     CrashoutsEngine::ScriptSystem::DestroyAll();
+    MonoManager::Shutdown(); // Stop C# scripts before killing the ECS
+    ShutdownGameStateManager();
+    InputManager::Shutdown();
 
+    // 2. STOP SYSTEMS (Audio/Rendering need ECS to be alive to clean up their components)
+    CrashoutsEngine::Audio::AudioSystem::instance().shutdown(); 
+    InstancingSystem::ShutdownInstancing();                     
+    Component::Rendering::Cleanup();    
+    Component::TextureRenderer::Cleanup();
     CrashoutsEngine::PostProcessing::ShutdownPP();
+    collisionSystem.Shutdown();
+    CrashoutsEngine::CollisionEventManager::GetInstance().Clear();
 
+    // 3. SHUTDOWN UI (Depends on everything)
     DebugReflection::ComponentRegistry::instance().clear();
     DebugReflection::PanelRegistry::instance().clear();
     DebugReflection::PhysicsRegistry::instance().clear();
+#if USE_IMGUI_EDITOR
+    UI::Shutdown(g_uiState);
     Logger::Instance().Clear();
-    GLApp::cleanup();
-    InputManager::Shutdown();
-    ShutdownGameStateManager();
+#endif
 
+    // 4. DESTROY ECS (Now safe, because no systems are trying to access it)
     CrashoutsEngine::ECS::DestroyInstance();
 
-    MonoManager::Shutdown();
-
-    InstancingSystem::ShutdownInstancing();
-    Component::Rendering::Cleanup();
-    CrashoutsEngine::Audio::AudioSystem::instance().shutdown();
+    // 5. CLEANUP RESOURCES & WINDOW (Low level stuff)
     CrashoutsEngine::Assets::AssetManager::GetInstance().Shutdown();
+    GLApp::cleanup();
+}
+
+// Game path offset
+const std::string gamePathOffset = "/Digipen/Descent/";
+
+/*
+/*! GetUserDocFolder
+
+@return String to LocalAppData Folder
+
+Retrieves the 'LocalAppData' folder of the user
+*/
+std::string GetLocalAppData() {
+    // Pointer to wide string
+    PWSTR ppszPath = NULL;  // NULL terminated
+    std::string path = "";
+    
+    HRESULT result = SHGetKnownFolderPath(FOLDERID_LocalAppData, 0, NULL, &ppszPath);
+    if (SUCCEEDED(result) && ppszPath) {
+        // Conversion to string
+        int requiredSize = WideCharToMultiByte(
+            CP_UTF8,       // Code page to use for the output string (UTF-8 is recommended)
+            0,             // dwFlags
+            ppszPath,      // Wide string input
+            -1,            // Input length (-1 for null-terminated string)
+            NULL,          // Output buffer (NULL to get size)
+            0,             // Size of output buffer (0)
+            NULL,          // lpDefaultChar
+            NULL           // lpUsedDefaultChar
+        );
+
+        if (requiredSize > 0) {
+            // Resize the string and perform conversion
+            path.resize(requiredSize);
+
+            WideCharToMultiByte(
+                CP_ACP,
+                0,
+                ppszPath,
+                -1,
+                &path[0],
+                requiredSize,
+                NULL,
+                NULL
+            );
+
+            path.resize(requiredSize - 1);
+        }
+    }
+
+    // Free mem allocated 
+    if (ppszPath) CoTaskMemFree(ppszPath);
+    return path + gamePathOffset;
 }

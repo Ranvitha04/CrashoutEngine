@@ -10,6 +10,9 @@ Implements lightweight reflection registries used by the Debug Menu:
 - PhysicsRegistry:   lists physics debug providers (e.g., global gravity UI)
 
 These registries allow the UI to be data-driven instead of hardcoded.
+
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 //__________________________________________________________________________*/
 
 /*                                                                   includes

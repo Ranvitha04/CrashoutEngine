@@ -25,6 +25,9 @@ Usage:
 
 Clean-up functions are provided to release GPU resources and clear caches
 when shutting down the engine.
+
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 */
 
 #define STB_IMAGE_IMPLEMENTATION
@@ -866,11 +869,12 @@ namespace Component {
     @brief Clears all cached textures and frees GPU resources.
     */
 
-    void TextureRenderer::ClearTextureCache() {
+    void inline TextureRenderer::ClearTextureCache() {
         for (const auto& pair : textureCache) {
             glDeleteTextures(1, &pair.second);
         }
         textureCache.clear();
+        std::unordered_map<std::string, GLuint>().swap(textureCache);
         std::cout << "Cleared texture cache." << std::endl;
     }
 

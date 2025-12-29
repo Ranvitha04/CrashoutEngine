@@ -1,8 +1,10 @@
 /*!
-@file       Collision.h
+@file       collisionmanager.h
 @author     miratristan.d@digipen.edu
 @date       08/09/2025
 @brief      Basic Collision Functions and Colliders(Plane, ColliderType::AABB and Circle)
+
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 
 //__________________________________________________________________________*/
@@ -50,9 +52,9 @@ namespace Collision {
 		CrashoutsEngine::Entity entity1;
 		CrashoutsEngine::Entity entity2;
 	public:
-		CollisionMessage(const std::string& id, CollisionManifold const& colManifold, CrashoutsEngine::Entity entity1, CrashoutsEngine::Entity entity2);
-		std::pair<CrashoutsEngine::Entity, CrashoutsEngine::Entity> getCollisionPair();
-		CollisionManifold getCollisionManifold();
+		CollisionMessage(const Messaging::EventType& type, CollisionManifold const& colManifold, CrashoutsEngine::Entity entity1, CrashoutsEngine::Entity entity2);
+		std::pair<CrashoutsEngine::Entity, CrashoutsEngine::Entity> GetCollisionPair();
+		CollisionManifold GetCollisionManifold();
 	};
 
 
@@ -84,9 +86,9 @@ namespace Collision {
 
 			std::array<FunctionDispatchType, SHAPE_COUNT* SHAPE_COUNT> collideFuncts;
 
-			static CollisionManifold SphereToSphereCollision(CollisionProps const& coll1, CollisionProps const& coll2);
+			static CollisionManifold CircleToCircleCollision(CollisionProps const& coll1, CollisionProps const& coll2);
 
-			static CollisionManifold SphereToAABBCollision(CollisionProps const& coll1, CollisionProps const& coll2);
+			static CollisionManifold CircleToAABBCollision(CollisionProps const& coll1, CollisionProps const& coll2);
 
 			static CollisionManifold AABBToAABBCollision(CollisionProps const& coll1, CollisionProps const& coll2);
 
@@ -94,20 +96,11 @@ namespace Collision {
 
 			static CollisionManifold PolygonToPolygonCollision(CollisionProps const& coll1, CollisionProps const& coll2);
 
-			static CollisionManifold SphereToPolygonCollision(CollisionProps const& coll1, CollisionProps const& coll2);
+			static CollisionManifold CircleToPolygonCollision(CollisionProps const& coll1, CollisionProps const& coll2);
 
 			static CollisionManifold AABBToPolygonCollision(CollisionProps const& coll1, CollisionProps const& coll2);
 
-			/*ColliderType::OBB SOON TO BE DEPRECATED*/
-
-			static CollisionManifold AABBToOBBCollision(CollisionProps const& coll1, CollisionProps const& coll2);
-
-			static CollisionManifold OBBToOBBCollision(CollisionProps const& coll1, CollisionProps const& coll2);
-
-			static CollisionManifold SphereToOBBCollision(CollisionProps const& coll1, CollisionProps const& coll2);
-
-			
-
+			std::vector<CollisionEvent> m_FrameCollisions;
 			
 		public:
 
@@ -124,7 +117,7 @@ namespace Collision {
 
 			CollisionHandler();
 
-			void update(double deltaTime, EngineState engineState);
+			void Update(double deltaTime, EngineState engineState);
 
 			/*!
 			@brief Return a function pointer to call the appropriate collision function
@@ -134,6 +127,22 @@ namespace Collision {
 			*/
 			FunctionDispatchType callCollFunct(Collision::ColliderType type1, Collision::ColliderType type2);
 
+			/*!
+			@brief Cleanup
+			*/
+			void Shutdown() {
+				std::vector<CollisionEvent>().swap(m_FrameCollisions);
+
+				ContactCollection().swap(currentFrameCollision);
+				ContactCollection().swap(lastFrameCollision);
+
+				ClearObservers();
+			}
+
+			// Getter for collision data that frame
+			const std::vector<CollisionEvent>& GetFrameCollisions() const {
+				return m_FrameCollisions;
+			}
 	};
 }
 

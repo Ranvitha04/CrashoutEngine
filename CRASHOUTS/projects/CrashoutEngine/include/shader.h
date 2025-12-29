@@ -61,6 +61,8 @@ This class serves as the foundation for all shader operations in the CrashoutEng
 providing a safe, efficient, and feature-rich interface for modern OpenGL shader
 programming while maintaining compatibility with automated testing systems.
 
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 *//*__________________________________________________________________________*/
 
 /*                                                                   includes

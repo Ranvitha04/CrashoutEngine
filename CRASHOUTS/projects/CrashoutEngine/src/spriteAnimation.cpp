@@ -20,6 +20,8 @@
         to work in conjunction with other engine modules such as
         `entitymanager`, `rendering`, and `textures` to support
         a component-based entity system.
+
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
 __________________________________________________________________________*/
 
 /*                                                                   includes
@@ -164,7 +166,7 @@ namespace Component {
    /*!
    @brief Updates the current animation frame based on elapsed time.
 
-   @param deltaTime Time (in seconds) since the last update call.
+   @param deltaTime Time (in seconds) since the last Update call.
 
    @details
    This function advances the animation frame when the accumulated time exceeds
@@ -172,7 +174,7 @@ namespace Component {
    updates the `currentFrame` index accordingly.
    */
 
-    void Animator::update(float deltaTime) {
+    void Animator::Update(float deltaTime) {
         if (!initialized) {
             return;
         }

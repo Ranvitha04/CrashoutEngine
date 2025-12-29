@@ -6,6 +6,9 @@
 @brief	This file contains the definition of the ShaderAsset class.
          It loads shader paths from a JSON file and uses the
          GLSLShader class to compile and link them.
+
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 //__________________________________________________________________________*/
 
 #include "shaderasset.h"

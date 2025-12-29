@@ -10,6 +10,9 @@ Declares and registers built-in Debug Menu adapters & providers:
 
 These adapters make the ECS inspector and physics/game-state panels
 runtime-extensible and project-agnostic.
+
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 //__________________________________________________________________________*/
 
 /*                                                                   includes
@@ -41,7 +44,7 @@ runtime-extensible and project-agnostic.
 #include "collidercomponent.h"
 #include "tilemapcomponent.h"
 #include "keyframe.h" 
-#include "hierarchy_components.h"
+#include "hierarchycomponent.h"
 
 // FOR GAME GUI
 #include "buttoncomponent.h"
@@ -293,7 +296,7 @@ namespace {
 				}
 
 				// No Undo logic implemented here for brevity, but you can add it similar to below.
-				// IMPORTANT: Force update world transform immediately for responsiveness?
+				// IMPORTANT: Force Update world transform immediately for responsiveness?
 				// Usually the system handles it next frame, which is fine.
 			}
 			else {
@@ -370,10 +373,9 @@ namespace {
 			if (has(ecs, e)) ecs.RemoveComponent<RigidBodyComponent>(e);
 		}
 
-
-
 		void drawInspector(ECS& ecs, Entity e) override {
 			if (auto* rb = ecs.GetComponent<RigidBodyComponent>(e)) {
+				ImGui::PushID((int)e);
 
 				// Reflect current values to a temp
 				auto oldRef = rb->reflection();
@@ -389,14 +391,20 @@ namespace {
 				// one static session
 				static EditSession sess;
 
-				ImGui::PushID((int)e);
 				ImGuiID activeBefore = ImGui::GetActiveID();
 
 				// Draw all fields
 				bool anyChangedThisFrame = draw_reflected(ref, "RigidBody (data)");
+				if (anyChangedThisFrame) {
+					// 1. Clamp Restitution [0.0 - 1.0]
+					if (ref.restitution < 0.0f) ref.restitution = 0.0f;
+					if (ref.restitution > 1.0f) ref.restitution = 1.0f;
+
+					// 2. Clamp Mass [0.0 - infinity]
+					if (ref.mass < 0.0f) ref.mass = 0.0f;
+				}
 
 				ImGuiID activeAfter = ImGui::GetActiveID();
-				ImGui::PopID();
 
 				// Start of an edit session
 				if (!sess.active && activeBefore == 0 && activeAfter != 0) {
@@ -434,20 +442,23 @@ namespace {
 				}
 
 				/*INERTIA CALCULATIONS*/
+				// Clamp Inertia to be positive
 				f32 inertia{ rb->inertia };
-				if (ImGui::DragFloat("Inertia", &inertia)) {
+				if (ImGui::DragFloat("Inertia", &inertia, 1.0f, 0.0f, FLT_MAX)) { // Min 0.0f
 					rb->setInertia(inertia);
 				}
 
 				/*Static Friction*/
+				// Clamp [0.0 - 1.0]
 				f32 staticFric{ rb->staticFriction };
-				if (ImGui::DragFloat("Static Friction", &staticFric)) {
+				if (ImGui::DragFloat("Static Friction", &staticFric, 0.01f, 0.0f, 1.0f)) {
 					rb->staticFriction = staticFric;
 				}
 
 				/*Dynamic Friction*/
+				// Clamp [0.0 - 1.0]
 				f32 dynamicFric{ rb->dynamicFriction };
-				if (ImGui::DragFloat("Dynamic Friction", &dynamicFric)) {
+				if (ImGui::DragFloat("Dynamic Friction", &dynamicFric, 0.01f, 0.0f, 1.0f)) {
 					rb->dynamicFriction = dynamicFric;
 				}
 
@@ -457,36 +468,36 @@ namespace {
 				}
 
 				// Simulate toggle
-				bool prevSim = rb->getFlags().test(Physics::SIMULATE_DYNAMICS);
-				bool simulate = prevSim;  // use a local variable for ImGui checkbox
+				//bool prevSim = rb->getFlags().test(Physics::SIMULATE_DYNAMICS);
+				//bool simulate = prevSim;  // use a local variable for ImGui checkbox
 
-				if (ImGui::Checkbox("Simulate Dynamics", &simulate)) {
-					// record undo for the flag change
-					UndoManager::GetInstance().AddCommand(
-						std::make_unique<CrashoutsEngine::ChangeValueCommand<bool>>(
-							prevSim, simulate,
-							[rb](bool v) {
-								if (v)
-								{
-									rb->getFlags().set(Physics::SIMULATE_DYNAMICS);
-								}
-								else
-								{
-									rb->getFlags().reset(Physics::SIMULATE_DYNAMICS);
-								}
-							}
-						)
-					);
-					// apply new value now
-					if (simulate)
-					{
-						rb->getFlags().set(Physics::SIMULATE_DYNAMICS);
-					}
-					else
-					{
-						rb->getFlags().reset(Physics::SIMULATE_DYNAMICS);
-					}
-				}
+				//if (ImGui::Checkbox("Simulate Dynamics", &simulate)) {
+				//	// record undo for the flag change
+				//	UndoManager::GetInstance().AddCommand(
+				//		std::make_unique<CrashoutsEngine::ChangeValueCommand<bool>>(
+				//			prevSim, simulate,
+				//			[rb](bool v) {
+				//				if (v)
+				//				{
+				//					rb->getFlags().set(Physics::SIMULATE_DYNAMICS);
+				//				}
+				//				else
+				//				{
+				//					rb->getFlags().reset(Physics::SIMULATE_DYNAMICS);
+				//				}
+				//			}
+				//		)
+				//	);
+				//	// apply new value now
+				//	if (simulate)
+				//	{
+				//		rb->getFlags().set(Physics::SIMULATE_DYNAMICS);
+				//	}
+				//	else
+				//	{
+				//		rb->getFlags().reset(Physics::SIMULATE_DYNAMICS);
+				//	}
+				//}
 
 
 				// Forces
@@ -496,13 +507,15 @@ namespace {
 				ImGui::SameLine();
 				if (ImGui::Button("Apply Force##rb")) rb->addForce({ f[0], f[1], f[2] });
 				if (ImGui::Button("Clear Force Accumulator##rb")) rb->clearForceAccumulator();
+
+				ImGui::PopID();
 			}
 		}
 
 	};
 
 	/*!
-	@brief Adapter for editing Component::ColliderComponent (Sphere / ColliderType::AABB).
+	@brief Adapter for editing Component::ColliderComponent (Circle / ColliderType::AABB).
 	@details Lets users switch collider type and tweak radius/min/max; can snap to Transform.
 	*/
 	struct ColliderAdapter : DebugReflection::IComponentAdapter {
@@ -514,11 +527,11 @@ namespace {
 
 		void add(ECS& ecs, Entity e) override {
 			auto& D = GetDebugDefaults();
-			// Default to a 1.0-radius sphere at the entity's transform position (if present)
+			// Default to a 1.0-radius circle at the entity's transform position (if present)
 			CEVec3 center{ 0.f,0.f,0.f };
 			if (auto* t = ecs.GetComponent<TransformComponent>(e)) center = t->position;
 
-			auto col = std::make_unique<Collision::Sphere>(D.sphere_radius, center);
+			auto col = std::make_unique<Collision::Circle>(D.sphere_radius, center);
 			col->helperType = Collision::HelperType::SPHERE_T;
 			ecs.AddComponent<ColliderComponent>(e, std::move(col));
 
@@ -537,6 +550,8 @@ namespace {
 			auto& D = GetDebugDefaults();
 			if (!cc || !cc->collider) return;
 
+			ImGui::Checkbox("Enabled", &cc->collider->enabled);
+
 			if (!ecs.HasComponent<RigidBodyComponent>(e)) {
 				if (ImGui::Button("Add Static RigidBody (mass=0)")) {
 					auto& D3 = GetDebugDefaults();
@@ -546,7 +561,7 @@ namespace {
 
 			// Type selector
 			int type = static_cast<int>(cc->collider->helperType);
-			const char* items[] = { "Sphere", "AABB", "OBB", "Triangle", "Polygon", "None" };
+			const char* items[] = { "Circle", "AABB", "OBB", "Triangle", "Polygon", "None" };
 			if (type < 0 || type >= IM_ARRAYSIZE(items)) type = 0;
 
 			Collision::AABBRect shapeDefault{ {-D.aabb_half, -D.aabb_half, 0.f}, {D.aabb_half, D.aabb_half, 0.f} };
@@ -570,7 +585,7 @@ namespace {
 				// SWITCH on the HelperType (UI choice), not the ColliderType
 				switch (targetType) {
 				case Collision::HelperType::SPHERE_T: {
-					newCol = std::make_unique<Collision::Sphere>((shapeDefault.max - shapeDefault.min).x * 0.5f, c);
+					newCol = std::make_unique<Collision::Circle>((shapeDefault.max - shapeDefault.min).x * 0.5f, c);
 					break;
 				}
 				case Collision::HelperType::AABB_T: {
@@ -623,10 +638,10 @@ namespace {
 			if (auto* t = ecs.GetComponent<TransformComponent>(e)) transformPos = t->position;
 
 			// Draw fields per type
-			// --- SPHERE ---
+			// --- CIRCLE ---
 			if (cc->collider->helperType == Collision::HelperType::SPHERE_T) {
-				auto* s = static_cast<Collision::Sphere*>(cc->collider.get());
-				ImGui::TextColored(ImVec4(0.6f, 1.f, 0.6f, 1.f), "Sphere Collider");
+				auto* s = static_cast<Collision::Circle*>(cc->collider.get());
+				ImGui::TextColored(ImVec4(0.6f, 1.f, 0.6f, 1.f), "Circle Collider");
 
 				float r = s->radius;
 				if (ImGui::DragFloat("Radius", &r, 0.05f, 0.0f, 10000.0f)) {
@@ -729,7 +744,7 @@ namespace {
 				// 3. Edit Rotation
 				float rot = p.rotation;
 				if (ImGui::DragFloat("Rotation", &rot, 0.05f)) {
-					// We must update the internal rotation variable immediately
+					// We must Update the internal rotation variable immediately
 					// so that if we rebuild the box below, we don't lose the rotation.
 					p.rotation = rot;
 					edited = true;
@@ -761,6 +776,7 @@ namespace {
 					p.forceUpdateRotation(targetRotation);
 				}
 			}
+#if 0
 			// --- POLYGON / TRIANGLE ---
 			else if (cc->collider->helperType == Collision::HelperType::POLYGON_T ||
 				cc->collider->helperType == Collision::HelperType::TRIANGLE_T)
@@ -771,7 +787,7 @@ namespace {
 
 				float rot = p->rotation;
 				if (ImGui::DragFloat("Rotation", &rot, 0.05f)) {
-					p->updateRotation(rot);
+					p->UpdateRotation(rot);
 				}
 
 				// Offset Logic for Polygon
@@ -781,6 +797,8 @@ namespace {
 					p->updatePosition(transformPos); // Use helper to shift vertices
 				}
 			}
+#endif
+			ImGui::Checkbox("IsTrigger", &cc->collider->isTrigger);
 		}
 	};
 
@@ -1322,8 +1340,8 @@ namespace {
 
 			if (ImGui::BeginPopupModal("Pick Audio Event", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
 				namespace fs = std::filesystem;
-				static std::vector<std::string> s_audioDisplay;  // shown to user
-				static std::vector<std::string> s_audioEvent;    // actual event:/… we’ll write
+				static std::vector<std::string> s_audioDisplay;
+				static std::vector<std::string> s_audioEvent;
 				static bool s_scanned = false;
 
 				// one-time (per session) scan
@@ -1529,21 +1547,21 @@ namespace {
 		const char* name() const override { return "ScriptComponent"; }
 
 		bool has(ECS& ecs, Entity e) const override {
-			return ecs.HasComponent<CrashoutsEngine::ScriptComponent>(e);
+			return ecs.HasComponent<ScriptComponent>(e);
 		}
 
 		void add(ECS& ecs, Entity e) override {
 			if (!has(ecs, e)) {
 				static char className[64] = "PlayerController";
 				ImGui::InputText("Class Name to Add", className, sizeof(className));
-				CrashoutsEngine::ScriptComponent sc(className, e);
-				ecs.AddComponent<CrashoutsEngine::ScriptComponent>(e, sc);
+				ScriptComponent sc(className, e);
+				ecs.AddComponent<ScriptComponent>(e, sc);
 			}
 		}
 
 		void remove(ECS& ecs, Entity e) override {
 			if (has(ecs, e)) {
-				ecs.RemoveComponent<CrashoutsEngine::ScriptComponent>(e);
+				ecs.RemoveComponent<ScriptComponent>(e);
 			}
 		}
 
@@ -1860,7 +1878,7 @@ namespace CrashoutsEngine
 )";
 				out.close();
 
-				// Optionally automatically add this new script
+				// automatically add this new script
 				sc->AddScript(file.stem().string());
 			}
 
@@ -2508,7 +2526,7 @@ namespace CrashoutsEngine
 							}
 
 							// B. Collider Type
-							const char* colliderNames[] = { "Sphere", "AABB", "OBB", "Triangle", "Polygon", "None" };
+							const char* colliderNames[] = { "Circle", "AABB", "OBB", "Triangle", "Polygon", "None" };
 							int currentItem = (int)rule.colliderType;
 							if (ImGui::Combo("Collider", &currentItem, colliderNames, 6)) {
 								rule.colliderType = (Collision::ColliderType)currentItem;
@@ -2757,7 +2775,7 @@ namespace CrashoutsEngine
 				// Manual Slider (for debugging specific frames)
 				if (ImGui::SliderFloat("Seek", &anim->t, 0.0f, currentLen)) {
 					anim->playing = false; // Pause if dragging
-					// Force update visual immediately (optional)
+					// Force Update visual immediately (optional)
 					// KeyframeUnity::Update(ecs, e, *anim, 0.0f); 
 				}
 			}

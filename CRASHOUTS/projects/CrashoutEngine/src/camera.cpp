@@ -6,6 +6,11 @@
 This file
 *//*__________________________________________________________________________*/
 
+/*!
+All content © 2025 Digipen Institute of Technology Singapore.All rights reserved.
+
+//__________________________________________________________________________*/
+
 /*                                                                   includes
 ----------------------------------------------------------------------------- */
 
@@ -129,7 +134,7 @@ namespace CrashoutsEngine {
 			renderer.projectionMatrix = projectionMtx;
 		}
 
-		// Central update function
+		// Central Update function
 		void Camera::UpdateMatrices(int targetWidth, int targetHeight) {
 			RecalculateViewMtx();
 			RecalculateProjectionMtx(targetWidth, targetHeight);
@@ -206,11 +211,26 @@ namespace CrashoutsEngine {
 			if(gameCamera.GetZoom() != cameraComponent.zoom) 
 				gameCamera.SetZoom(cameraComponent.zoom);
 		}
+
+		float Camera::GetVisibleWorldHeight() const {
+			float currentAR = targetAR; // Or calculate from GLApp::width/height
+			if (currentAR >= 1.0f) {
+				return baseOrthoSize / zoom;
+			}
+			else {
+				return (baseOrthoSize / zoom) / currentAR;
+			}
+		}
+
+		float Camera::GetVisibleWorldWidth() const {
+			float currentAR = targetAR;
+			if (currentAR >= 1.0f) {
+				return (baseOrthoSize / zoom) * currentAR;
+			}
+			else {
+				return baseOrthoSize / zoom;
+			}
+		}
 	}
 
 }
-
-
-
-
-

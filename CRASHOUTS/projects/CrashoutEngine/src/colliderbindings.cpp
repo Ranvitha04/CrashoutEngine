@@ -3,6 +3,9 @@
 @author     m.biniswandi@digipen.edu
 @date       06/11/2025
 @brief		Definition of collider bindings functions
+
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 */
 #include "colliderbindings.h"
 #include "collidercomponent.h"
@@ -23,7 +26,7 @@ static void InternalUpdateRotation(uint32_t entityID, float rot)
     if (collider->type == Collision::ColliderType::OBB)
     {
         auto& obb = dynamic_cast<Collision::OBBRect&>(*collider);
-        obb.updateRotation(rot);
+        obb.UpdateRotation(rot);
     }
 }
 

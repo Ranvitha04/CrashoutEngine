@@ -4,12 +4,15 @@
 @date       28/09/2025
 
 @brief      Lightweight logging macro lists for Crashout Engine.
+
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 //__________________________________________________________________________*/
 
 #pragma once
 
 // Keep one authoritative list of levels & subsystems.
-// Add here -> enums, names, UI filters all update automatically.
+// Add here -> enums, names, UI filters all Update automatically.
 
 /*                                                                   macros
 ----------------------------------------------------------------------------- */

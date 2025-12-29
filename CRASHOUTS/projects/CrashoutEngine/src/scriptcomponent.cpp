@@ -3,6 +3,9 @@
 @author     m.biniswandi@digipen.edu
 @date       06/11/2025
 @brief		Definitions of script component functions
+
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 */
 #include "ScriptComponent.h"
 #include <mono/metadata/mono-config.h>
@@ -72,8 +75,8 @@ namespace CrashoutsEngine
             script.MethodUpdate = mono_class_get_method_from_name(script.Class, "Update", 0);
             // Cache FixedUpdate()
             script.MethodFixedUpdate = mono_class_get_method_from_name(script.Class, "FixedUpdate", 0);
-			// Cache OnDestroy()
-			script.MethodOnDestroy = mono_class_get_method_from_name(script.Class, "OnDestroy", 0);
+            // Cache OnDestroy()
+            script.MethodOnDestroy = mono_class_get_method_from_name(script.Class, "OnDestroy", 0);
 
 
             if (script.MethodStart)
@@ -110,7 +113,7 @@ namespace CrashoutsEngine
             else
             {
                 std::cout << "[Mono] No OnDestroy() in " << script.ClassName << '\n';
-			}
+            }
 
             std::cout << "[Mono] ScriptInstance for class " << script.ClassName
                 << " initialized successfully\n";
@@ -138,12 +141,15 @@ namespace CrashoutsEngine
             script.Class = nullptr;
             script.MethodStart = nullptr;
             script.MethodUpdate = nullptr;
-			script.MethodFixedUpdate = nullptr; 
-			script.MethodOnDestroy = nullptr;   
+            script.MethodFixedUpdate = nullptr;
+            script.MethodOnDestroy = nullptr;
             script.Started = false;
         }
     }
+}
 
+namespace Component{
+    using namespace CrashoutsEngine;
     ScriptInstance& ScriptComponent::AddScript(const std::string& className)
     {
         Scripts.emplace_back(className);

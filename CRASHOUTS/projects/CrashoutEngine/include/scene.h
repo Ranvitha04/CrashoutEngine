@@ -6,6 +6,9 @@
 
 This file is the base template which all the future serialized scenes would
 build off from.
+
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 */
 
 #pragma once

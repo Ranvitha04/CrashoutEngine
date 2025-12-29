@@ -12,6 +12,9 @@
 		efficient O(1) component addition, retrieval, and removal, optimizing 
 		memory layout for performance. It also includes utility functions for
 		managing entities by both their ID and name.
+
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 //__________________________________________________________________________*/
 #pragma once
 

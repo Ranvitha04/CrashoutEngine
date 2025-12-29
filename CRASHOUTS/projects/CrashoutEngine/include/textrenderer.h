@@ -5,6 +5,8 @@
 @brief      Declaration of the TextRenderer class
 
 Provides text rendering using FreeType and OpenGL
+
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
 */
 
 #pragma once

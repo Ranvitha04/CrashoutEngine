@@ -4,6 +4,8 @@
 @date        7/11/2025
 @brief
 
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 */
 #pragma once
 #include "entitymanager.h"

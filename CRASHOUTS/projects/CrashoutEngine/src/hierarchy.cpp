@@ -4,11 +4,13 @@
 @date        7/11/2025
 @brief       Parent–child hierarchy: linking, reparenting, and world transform and color.
 
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 */
 #include <algorithm>                 
 #include <utility>                  
 #include "hierarchy.h"
-#include "hierarchy_components.h"
+#include "hierarchycomponent.h"
 #include "entitymanager.h"
 #include "namecomponent.h"
 #include "transformcomponent.h"
@@ -55,7 +57,7 @@ namespace CrashoutsEngine {
         // no ancestor with a ShapeComponent 
         return CEColor{ 1.f, 1.f, 1.f, 1.f };
     }
-    // Force a child to take its parent's (ancestor) color every update.
+    // Force a child to take its parent's (ancestor) color every Update.
     static void ForceInheritColorFromParent(ECS& ecs, Entity child) {
         using namespace Component;
 
@@ -205,7 +207,7 @@ namespace CrashoutsEngine {
                 Entity c = *it;
 
                 if (!ecs.HasComponent<NameComponent>(c)) {
-                    it = kids->children.erase(it); // Remove dead ID and update iterator
+                    it = kids->children.erase(it); // Remove dead ID and Update iterator
                     continue;
                 }
 
@@ -288,11 +290,11 @@ namespace CrashoutsEngine {
             //    auto* colliderComp = ecs.GetComponent<ColliderComponent>(child);
             //    if (colliderComp && colliderComp->collider) {
             //        // 1. Sync Position
-            //        colliderComp->collider->updateCollider(childTransform->position);
+            //        colliderComp->collider->UpdateCollider(childTransform->position);
             //
             //        // 2. Sync Rotation (Add parent's rotation influence)
             //        // If your OBB/Polygon supports rotation, pass the new child rotation
-            //        colliderComp->collider->updateRotation(childTransform->rotation);
+            //        colliderComp->collider->UpdateRotation(childTransform->rotation);
             //    }
             //}
 
@@ -321,17 +323,16 @@ namespace CrashoutsEngine {
             dfs(e);
         }
 #endif
-        // Define the recursive function efficiently
-    // Pass parentTransform by POINTER to avoid looking it up again
+ 
+    
         std::function<void(Entity, const TransformComponent*)> processChildren =
             [&](Entity parentEntity, const TransformComponent* parentTransform)
             {
-                // 1. Get Children Component (Early exit if none)
+                // 1. Get Children Component 
                 auto* kids = ecs.GetComponent<ChildrenComponent>(parentEntity);
                 if (!kids || kids->children.empty()) return;
 
-                // 2. PRE-CALCULATE PARENT MATH (The Optimization)
-                // We calculate this ONCE per parent, not once per child.
+                
                 const float DEG_TO_RAD = 0.0174532925f;
                 float parentRad = parentTransform->rotation * DEG_TO_RAD;
                 float s = std::sin(parentRad);
@@ -367,8 +368,7 @@ namespace CrashoutsEngine {
                     childTransform->position.y = parentTransform->position.y + rotatedY;
                     childTransform->position.z = parentTransform->position.z + pointerParentComp->localPos.z;
 
-                    // D. Color Inheritance (Optional optimization: Check HasComponent only if needed)
-                    // if (ecs.HasComponent<ShapeComponent>(parentEntity)) { ... }
+                 
 
                     // 4. RECURSE
                     // Pass the CURRENT child as the NEW parent

@@ -5,6 +5,8 @@
 
 @brief	This file defines the functions that would be used by the
 		tilemapcomponent.
+
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
 __________________________________________________________________________*/
 
 /*                                                                   includes
@@ -23,7 +25,7 @@ __________________________________________________________________________*/
 #include "assetmanager.h"
 #include "tilemapasset.h"
 #include "textureasset.h"
-#include "hierarchy_components.h"
+#include "hierarchycomponent.h"
 #include "hierarchy.h"
 #include <filesystem>
 #include <cmath> // For std::floor
@@ -207,12 +209,12 @@ namespace CrashoutsEngine::TileMapUtils {
 
 				switch (matchedRule->colliderType) {
 					// --------------------------------------------------------
-					// ColliderType::SPHERE
+					// ColliderType::CIRCLE
 					// --------------------------------------------------------
-					case Collision::ColliderType::SPHERE: {
+					case Collision::ColliderType::CIRCLE: {
 						// Radius is usually half the width (or average of width/height)
 						float radius = std::min(halfW, halfH);
-						newCollider = std::make_unique<Collision::Sphere>(radius, tPos);
+						newCollider = std::make_unique<Collision::Circle>(radius, tPos);
 						helperT = Collision::HelperType::SPHERE_T;
 						break;
 					}

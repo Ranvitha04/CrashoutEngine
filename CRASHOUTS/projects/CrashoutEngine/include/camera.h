@@ -6,6 +6,8 @@
 @author      lee.r@digipen.edu
 @date        29/10/2025
 
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 This file 
 *//*__________________________________________________________________________*/
 
@@ -48,6 +50,10 @@ namespace CrashoutsEngine {
 			// --- Input Handling ---
 			void MouseWheelDrag(CEVec2& oldMousePos);
 			void MouseWheelScroll(float yOffset);
+
+			// Get visible width and height
+			float GetVisibleWorldHeight() const;
+			float GetVisibleWorldWidth() const;
 
 			static float g_zoom;
 
