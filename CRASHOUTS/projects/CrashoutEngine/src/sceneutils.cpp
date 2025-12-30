@@ -568,7 +568,7 @@ namespace Scene {
 			case ShapeType::Triangle: {
 				RenderBatch& batch = tris[key];
 				ConfigureBatch(batch);
-				batch.Add(tf->position, colorNorm, tf->rotation, 1.0f, tf->size.x, 0.0f, sc->uvOffset);
+				batch.Add(tf->position, colorNorm, tf->rotation, 1.0f, tf->size.x, tf->size.y, sc->uvOffset);
 				break;
 			}
 			case ShapeType::Circle: {
@@ -630,7 +630,7 @@ namespace Scene {
 
 			InstancingSystem::RenderInstancedTrianglesBatch(
 				batch.positions.data(), batch.colors.data(), batch.rotations.data(),
-				batch.scales.data(), batch.dim1.data(),
+				batch.scales.data(), batch.dim1.data(), batch.dim2.data(),
 				batch.uvOffsets.data(),
 				(int)batch.positions.size(), params);
 

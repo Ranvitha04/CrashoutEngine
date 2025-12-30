@@ -435,7 +435,7 @@ namespace CrashoutsEngine {
 
                     // Check for HelperType (The UI/Logical Type)
                     // Fallback to CIRCLE if missing
-                    Collision::HelperType helperT = Collision::HelperType::SPHERE_T;
+                    Collision::HelperType helperT = Collision::HelperType::CIRCLE_T;
                     if (colliderValue.HasMember("helperType") && colliderValue["helperType"].IsInt()) {
                         helperT = static_cast<Collision::HelperType>(colliderValue["helperType"].GetInt());
                     }
@@ -444,7 +444,7 @@ namespace CrashoutsEngine {
 
                     // Construct manually based on type, similar to the Inspector logic
                     switch (helperT) {
-                    case Collision::HelperType::SPHERE_T: {
+                    case Collision::HelperType::CIRCLE_T: {
                         float radius = 1.0f;
                         if (colliderValue.HasMember("radius") && colliderValue["radius"].IsFloat())
                             radius = colliderValue["radius"].GetFloat();
@@ -462,7 +462,7 @@ namespace CrashoutsEngine {
                             newCol->position = pos;
                         }
 
-                        newCol->helperType = Collision::HelperType::SPHERE_T;
+                        newCol->helperType = Collision::HelperType::CIRCLE_T;
                         col.collider = std::move(newCol);
                         break;
                     }
@@ -496,7 +496,7 @@ namespace CrashoutsEngine {
 
                         // Create via Factory/Helper to ensure vertices are built
                         auto newCol = std::make_unique<Collision::Polygon>(
-                            Collision::Polygon::createOBB(min, max, rot, CEVec3{})
+                            Collision::Polygon::CreateOBB(min, max, rot, CEVec3{})
                         );
 
                         if (colliderValue.HasMember("offset")) newCol->offset = ReadVectorFromJson{}(colliderValue["offset"]);
@@ -540,7 +540,7 @@ namespace CrashoutsEngine {
                         newCol->offset = off;
 
                         // Force Update
-                        newCol->forceUpdateRotation(rot);
+                        newCol->ForceUpdateRotation(rot);
 
                         newCol->helperType = helperT; // Set to POLYGON_T or TRIANGLE_T
                         col.collider = std::move(newCol);
@@ -1493,7 +1493,7 @@ namespace CrashoutsEngine {
                     colliderValue.AddMember("offset", offVal, allocator);
 
                     switch (colComp.collider->helperType) {
-                    case Collision::HelperType::SPHERE_T: {
+                    case Collision::HelperType::CIRCLE_T: {
                         auto* s = static_cast<Collision::Circle*>(colComp.collider.get());
                         colliderValue.AddMember("radius", s->radius, allocator);
 
@@ -1525,8 +1525,8 @@ namespace CrashoutsEngine {
                         // Cast to Polygon (since OBB is now a Polygon backend)
                         auto* p = static_cast<Collision::Polygon*>(colComp.collider.get());
 
-                        // Save Min/Max/Rotation so createOBB can reconstruct it
-                        CEVec3 extents = Collision::Polygon::calculateOBBExtents(*p);
+                        // Save Min/Max/Rotation so CreateOBB can reconstruct it
+                        CEVec3 extents = Collision::Polygon::CalculateOBBExtents(*p);
 
                         // Reconstruct Min/Max for saving
                         CEVec3 center = p->position;

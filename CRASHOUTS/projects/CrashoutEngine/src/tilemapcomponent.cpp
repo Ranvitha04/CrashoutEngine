@@ -215,7 +215,7 @@ namespace CrashoutsEngine::TileMapUtils {
 						// Radius is usually half the width (or average of width/height)
 						float radius = std::min(halfW, halfH);
 						newCollider = std::make_unique<Collision::Circle>(radius, tPos);
-						helperT = Collision::HelperType::SPHERE_T;
+						helperT = Collision::HelperType::CIRCLE_T;
 						break;
 					}
 					// --------------------------------------------------------

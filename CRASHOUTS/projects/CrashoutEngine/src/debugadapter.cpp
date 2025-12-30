@@ -464,7 +464,7 @@ namespace {
 
 				if (ecs.HasComponent<Component::ColliderComponent>(e)) {
 					Component::ColliderComponent* collider{ ecs.GetComponent<Component::ColliderComponent>(e) };
-					if (ImGui::Button("Calculate Inertia##rb")) rb->setInertia(collider->collider->calculateInertia(rb->getMass())); /*For rotational stuff*/
+					if (ImGui::Button("Calculate Inertia##rb")) rb->setInertia(collider->collider->CalculateInertia(rb->getMass())); /*For rotational stuff*/
 				}
 
 				// Simulate toggle
@@ -532,7 +532,7 @@ namespace {
 			if (auto* t = ecs.GetComponent<TransformComponent>(e)) center = t->position;
 
 			auto col = std::make_unique<Collision::Circle>(D.sphere_radius, center);
-			col->helperType = Collision::HelperType::SPHERE_T;
+			col->helperType = Collision::HelperType::CIRCLE_T;
 			ecs.AddComponent<ColliderComponent>(e, std::move(col));
 
 			if (!ecs.HasComponent<RigidBodyComponent>(e)) {
@@ -565,9 +565,9 @@ namespace {
 			if (type < 0 || type >= IM_ARRAYSIZE(items)) type = 0;
 
 			Collision::AABBRect shapeDefault{ {-D.aabb_half, -D.aabb_half, 0.f}, {D.aabb_half, D.aabb_half, 0.f} };
-			if(ecs.HasComponent<Component::TransformComponent>(e)) {
-				Component::TransformComponent *transform{ ecs.GetComponent<Component::TransformComponent>(e) };
-				CEVec3 extents{transform->size.x * 0.5f, transform->size.y * 0.5f, 0.f};
+			if (ecs.HasComponent<Component::TransformComponent>(e)) {
+				Component::TransformComponent* transform{ ecs.GetComponent<Component::TransformComponent>(e) };
+				CEVec3 extents{ transform->size.x * 0.5f, transform->size.y * 0.5f, 0.f };
 				shapeDefault.min = transform->position - extents;
 				shapeDefault.max = transform->position + extents;
 			}
@@ -584,7 +584,7 @@ namespace {
 
 				// SWITCH on the HelperType (UI choice), not the ColliderType
 				switch (targetType) {
-				case Collision::HelperType::SPHERE_T: {
+				case Collision::HelperType::CIRCLE_T: {
 					newCol = std::make_unique<Collision::Circle>((shapeDefault.max - shapeDefault.min).x * 0.5f, c);
 					break;
 				}
@@ -596,15 +596,15 @@ namespace {
 					break;
 				}
 				case Collision::HelperType::OBB_T: {
-					newCol = std::make_unique<Collision::Polygon>(Collision::Polygon::createOBB(
-						shapeDefault.min, 
-						shapeDefault.max, 
+					newCol = std::make_unique<Collision::Polygon>(Collision::Polygon::CreateOBB(
+						shapeDefault.min,
+						shapeDefault.max,
 						0.f, CEVec3{}));
 					newCol->helperType = Collision::HelperType::OBB_T;
 					break;
 				}
 				case Collision::HelperType::POLYGON_T: {
-					newCol = std::make_unique<Collision::Polygon>(Collision::Polygon::createOBB(
+					newCol = std::make_unique<Collision::Polygon>(Collision::Polygon::CreateOBB(
 						shapeDefault.min,
 						shapeDefault.max,
 						0.f, CEVec3{}));
@@ -615,10 +615,9 @@ namespace {
 					/*o*/
 					newCol = std::make_unique<Collision::Polygon>(
 						std::initializer_list<CEVec3>{
-							shapeDefault.min,
+						shapeDefault.min,
 							CEVec3{ (shapeDefault.min.x + shapeDefault.max.x) * 0.5f, shapeDefault.max.y, 0.f },
-							{ shapeDefault.min.x + (shapeDefault.max.x-shapeDefault.min.x) , shapeDefault.min.y, 0.f },
-							
+						{ shapeDefault.min.x + (shapeDefault.max.x - shapeDefault.min.x) , shapeDefault.min.y, 0.f },
 					},
 						0.f, c
 					);
@@ -639,7 +638,7 @@ namespace {
 
 			// Draw fields per type
 			// --- CIRCLE ---
-			if (cc->collider->helperType == Collision::HelperType::SPHERE_T) {
+			if (cc->collider->helperType == Collision::HelperType::CIRCLE_T) {
 				auto* s = static_cast<Collision::Circle*>(cc->collider.get());
 				ImGui::TextColored(ImVec4(0.6f, 1.f, 0.6f, 1.f), "Circle Collider");
 
@@ -682,7 +681,7 @@ namespace {
 					a->offset = CEVec3{ c[0], c[1], 0.f };
 				}
 
-				// optional: snap AABB around Transform
+				// snap AABB around Transform
 				if (auto* t = ecs.GetComponent<TransformComponent>(e)) {
 					if (ImGui::Button("Fit around Transform##aabb")) {
 						if (ecs.HasComponent<Component::ShapeComponent>(e)) {
@@ -721,13 +720,13 @@ namespace {
 			}
 			// --- OBB ---
 			else if (cc->collider->helperType == Collision::HelperType::OBB_T) {
-				// Cast to Polygon because that is what createOBB returns
+				// Cast to Polygon because that is what CreateOBB returns
 				auto& p = dynamic_cast<Collision::Polygon&>(*cc->collider);
 
 				ImGui::TextColored(ImVec4(0.6f, 1.f, 0.6f, 1.f), "OBB Collider (Polygon)");
 
 				// 1. Calculate current Extents (Half-Width/Height)
-				CEVec3 extents = Collision::Polygon::calculateOBBExtents(p);
+				CEVec3 extents = Collision::Polygon::CalculateOBBExtents(p);
 
 				bool edited = false;
 				// Note: Dragging "Extents" implies editing Half-Width. 
@@ -768,12 +767,51 @@ namespace {
 					CEVec3 max = center + extents;
 
 					// 7. Update the Polygon Vertices (Resets them to axis-aligned first)
-					Collision::Polygon::updateOBB(min, max, p);
+					Collision::Polygon::UpdateOBB(min, max, p);
 
 					// 8. Re-apply Rotation
-					// updateOBB sets vertices axis-aligned. We must re-rotate them 
+					// UpdateOBB sets vertices axis-aligned. We must re-rotate them 
 					// around the center to match the p.rotation we just edited.
-					p.forceUpdateRotation(targetRotation);
+					p.ForceUpdateRotation(targetRotation);
+				}
+
+				if (ImGui::Button("Fit to Sprite Size")) {
+					if (auto* t = ecs.GetComponent<TransformComponent>(e)) {
+						// Treat transform->size as the target diameter/bound
+						CEVec3 targetExtents = std::move(CEVec3(t->size.x * .5f, t->size.y * .5f, 0.f));
+						p.Rescale(targetExtents);
+					}
+				}
+			}
+			// --- TRIANGLE ---
+			else if (cc->collider->helperType == Collision::HelperType::TRIANGLE_T)
+			{
+				auto* p = static_cast<Collision::Polygon*>(cc->collider.get());
+				ImGui::TextColored(ImVec4(0.6f, 1.f, 0.6f, 1.f), "Triangle Collider");
+
+				CEVec3 size = p->extents;
+				if (ImGui::DragFloat2("Size", &size.x, 0.05f, 0.1f, 1000.f)) {
+					p->Rescale(size);
+				}
+
+				float rot = p->rotation;
+				if (ImGui::DragFloat("Rotation", &rot, 0.05f)) {
+					p->UpdateRotation(rot);
+				}
+
+				// Offset Logic for Triangle
+				float c[2]{ p->offset.x, p->offset.y };
+				if (ImGui::DragFloat2("Offset", c, 0.05f)) {
+					p->offset = CEVec3{ c[0], c[1], 0.f };
+					p->UpdatePosition(transformPos); // Use helper to shift vertices
+				}
+
+				if (ImGui::Button("Fit to Sprite Size")) {
+					if (auto* t = ecs.GetComponent<TransformComponent>(e)) {
+						// Treat transform->size as the target diameter/bound
+						CEVec3 targetExtents = std::move(CEVec3(t->size.x * .5f, t->size.y * .5f, 0.f));
+						p->Rescale(targetExtents);
+					}
 				}
 			}
 #if 0
@@ -794,7 +832,7 @@ namespace {
 				float c[2]{ p->offset.x, p->offset.y };
 				if (ImGui::DragFloat2("Offset", c, 0.05f)) {
 					p->offset = CEVec3{ c[0], c[1], 0.f };
-					p->updatePosition(transformPos); // Use helper to shift vertices
+					p->UpdatePosition(transformPos); // Use helper to shift vertices
 				}
 			}
 #endif

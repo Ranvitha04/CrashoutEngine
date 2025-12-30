@@ -14,7 +14,7 @@ All content © 2025 Digipen Institute of Technology Singapore.All rights reserved
 namespace Collision {
 	Collider::Collider(ColliderType type) : type{ type } { /*EMPTY BY DESIGN*/ }
 
-	Circle::Circle(f32 radius, CEVec3 const& center, CEVec3 const& newOffset) : Collider{ ColliderType::CIRCLE }, radius{ radius } { position = center; offset = newOffset; helperType = HelperType::SPHERE_T; }
+	Circle::Circle(f32 radius, CEVec3 const& center, CEVec3 const& newOffset) : Collider{ ColliderType::CIRCLE }, radius{ radius } { position = center; offset = newOffset; helperType = HelperType::CIRCLE_T; }
 
 	void Circle::UpdateCollider(CEVec3 const& newPos) {
 		position = newPos + offset;
@@ -69,6 +69,7 @@ namespace Collision {
 		max = position + extents;
 		min = position - extents;
 	}
+
 	OBBRect::OBBRect(CEVec3 const& min, CEVec3 const& max, f32 newRotation) : Collider{ ColliderType::OBB }, min{ min }, max{ max }, rotation{ 0.f } {
 		
 		extents = (max - min) * 0.5f;
@@ -115,16 +116,29 @@ namespace Collision {
 
 		if (newRotation) {
 			UpdateRotation(newRotation);
-			calcNormals();
+			CalcNormals();
 		}
 		else {
 			rotatedVertices = vertices;
-			calcNormals();
+			CalcNormals();
 		}
 
+		float minX = vertices[0].x, maxX = vertices[0].x;
+		float minY = vertices[0].y, maxY = vertices[0].y;
+		// Calculate initial extents (bounding box half-size)
+		if (vertexCount > 0) {
+			for (int i = 1; i < vertexCount; ++i) {
+				minX = std::min(minX, vertices[i].x);
+				maxX = std::max(maxX, vertices[i].x);
+				minY = std::min(minY, vertices[i].y);
+				maxY = std::max(maxY, vertices[i].y);
+			}
+		}
+
+		extents = CEVec3((maxX - minX) * 0.5f, (maxY - minY) * 0.5f, 0.f);
 	}
 
-	void Polygon::calcNormals() {
+	void Polygon::CalcNormals() {
 		for (int i{}; i < vertexCount; ++i) {
 			int nextVertexIdx{ (i + 1) % vertexCount };
 			CEVec3 edge{ rotatedVertices[nextVertexIdx] - rotatedVertices[i] };
@@ -133,11 +147,34 @@ namespace Collision {
 		}
 	}
 
-	CEVec3 Polygon::calcNormal(CEVec3 const &edge) {
+	CEVec3 Polygon::CalcNormal(CEVec3 const &edge) {
 		return CEVec3 { -edge.y, edge.x, edge.z };
 	}
 
-	f32 Polygon::calculateInertia(f32 mass) {
+	void Polygon::Rescale(const CEVec3& newExtents) {
+		// Calculate scale factor relative to current extents
+		float scaleX = newExtents.x / (extents.x > 0 ? extents.x : 1.0f);
+		float scaleY = newExtents.y / (extents.y > 0 ? extents.y : 1.0f);
+
+		for (int i = 0; i < vertexCount; ++i) {
+			// Step A: Move vertex to local space (relative to position)
+			float localX = vertices[i].x - position.x;
+			float localY = vertices[i].y - position.y;
+
+			// Step B: Apply scale
+			localX *= scaleX;
+			localY *= scaleY;
+
+			// Step C: Move back to world space
+			vertices[i].x = position.x + localX;
+			vertices[i].y = position.y + localY;
+		}
+		extents = newExtents;
+		// Update physics state
+		ForceUpdateRotation(rotation);
+	}
+
+	f32 Polygon::CalculateInertia(f32 mass) {
 		f32 numeratorSum{};
 		f32 totalArea{};
 
@@ -173,7 +210,7 @@ namespace Collision {
 		return (mass / totalArea) * (numeratorSum / 6.f);
 	}
 
-	Polygon Polygon::createOBB(CEVec3 const &min, CEVec3 const &max, f32 rotation, CEVec3 offset) {
+	Polygon Polygon::CreateOBB(CEVec3 const &min, CEVec3 const &max, f32 rotation, CEVec3 offset) {
 		CEVec3 extents{ 0.5f*(max - min) };
 		CEVec3 center{ max - extents };
 		
@@ -184,7 +221,7 @@ namespace Collision {
 		return poly;
 	}
 
-	void Polygon::updateOBB(CEVec3 const& min, CEVec3 const& max, Polygon& polygon) {
+	void Polygon::UpdateOBB(CEVec3 const& min, CEVec3 const& max, Polygon& polygon) {
 
 		CEVec3 extents{ (max - min) * 0.5f };
 		polygon.vertices[0] = min;
@@ -192,16 +229,16 @@ namespace Collision {
 		polygon.vertices[2] = max;
 		polygon.vertices[3] = CEVec3{ min.x + extents.x * 2.f, min.y , 0.f };
 
-		polygon.forceUpdateRotation(0.f);
+		polygon.ForceUpdateRotation(0.f);
 	}
 
-	CEVec3 Polygon::calculateOBBExtents(Polygon const& polygon) {
+	CEVec3 Polygon::CalculateOBBExtents(Polygon const& polygon) {
 		CEVec3 position{ polygon.position.x, polygon.position.y, 0.f };
 		CEVec3 extents{ position.x - polygon.vertices[0].x, position.y - polygon.vertices[0].y, 0.f };
 		return extents;
 	}
 
-	Polygon Polygon::createAABB(CEVec3 const& min, CEVec3 const& max, CEVec3 offset) {
+	Polygon Polygon::CreateAABB(CEVec3 const& min, CEVec3 const& max, CEVec3 offset) {
 
 		Polygon poly{};
 		poly.offset = offset;
@@ -250,10 +287,10 @@ namespace Collision {
 			rotatedVertices[i] += position;
 		}
 
-		calcNormals();
+		CalcNormals();
 	}
 
-	void Polygon::forceUpdateRotation(f32 newRotation) {
+	void Polygon::ForceUpdateRotation(f32 newRotation) {
 
 		/*Check if rotation didnt change from last time to avoid expensive calculation*/
 		/*same thing differernt day*/
@@ -268,10 +305,10 @@ namespace Collision {
 			rotatedVertices[i] += position;
 		}
 
-		calcNormals();
+		CalcNormals();
 	}
 
-	void Polygon::updatePosition(CEVec3 const& newPos) {
+	void Polygon::UpdatePosition(CEVec3 const& newPos) {
 
 		CEVec3 vecToNewPos{ (newPos + offset) - position };
 		position = newPos + offset;
@@ -284,7 +321,7 @@ namespace Collision {
 
 	void Polygon::UpdateCollider(CEVec3 const& newPos) {
 		
-		updatePosition(newPos);
+		UpdatePosition(newPos);
 		
 	}
 

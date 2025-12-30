@@ -506,7 +506,7 @@ namespace Physics {
 
 						// Safety Check
 						if (colComp && colComp->collider) {
-							float inertia = colComp->collider->calculateInertia(rigidBody->getMass());
+							float inertia = colComp->collider->CalculateInertia(rigidBody->getMass());
 
 							rigidBody->setInertia(inertia);
 						}

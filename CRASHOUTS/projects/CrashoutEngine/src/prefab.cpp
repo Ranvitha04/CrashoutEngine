@@ -544,11 +544,11 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path) {
                 // Reconstruct collider unique_ptr
                 std::unique_ptr<Collision::Collider> ptr;
                 switch (colD.type) {
-                case Collision::HelperType::SPHERE_T:
+                case Collision::HelperType::CIRCLE_T:
                     ptr = std::make_unique<Collision::Circle>(colD.radius, colD.pos);
                     break;
                 case Collision::HelperType::OBB_T:
-                    ptr = std::make_unique<Collision::Polygon>(Collision::Polygon::createOBB(colD.min, colD.max, colD.rotation, CEVec3{}));
+                    ptr = std::make_unique<Collision::Polygon>(Collision::Polygon::CreateOBB(colD.min, colD.max, colD.rotation, CEVec3{}));
                     static_cast<Collision::Polygon*>(ptr.get())->position = colD.pos; // Fix drift
                     break;
                 case Collision::HelperType::POLYGON_T:
@@ -558,7 +558,7 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path) {
                     for (int i = 0; i < p->vertexCount; ++i) p->vertices[i] = colD.verts[i];
                     p->rotation = colD.rotation;
                     p->position = colD.pos;
-                    p->forceUpdateRotation(colD.rotation);
+                    p->ForceUpdateRotation(colD.rotation);
                     ptr = std::move(p);
                     break;
                 }
@@ -580,7 +580,7 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path) {
                     ptr->enabled = colD.enabled;
                     ptr->offset = colD.offset;
                     // If pos wasn't set specifically by type, ensure it matches
-                    if (ptr->position.x == 0 && ptr->position.y == 0 && colD.type != Collision::HelperType::SPHERE_T) ptr->position = colD.pos;
+                    if (ptr->position.x == 0 && ptr->position.y == 0 && colD.type != Collision::HelperType::CIRCLE_T) ptr->position = colD.pos;
 
                     ecs.AddComponent<ColliderComponent>(e, ColliderComponent{ std::move(ptr) });
                 }
@@ -809,7 +809,7 @@ namespace CrashoutsEngine {
 
             // Specifics based on Type
             switch (col->collider->helperType) {
-            case Collision::HelperType::SPHERE_T: {
+            case Collision::HelperType::CIRCLE_T: {
                 auto* s = static_cast<Collision::Circle*>(col->collider.get());
                 colObj.AddMember("radius", s->radius, allocator);
                 break;

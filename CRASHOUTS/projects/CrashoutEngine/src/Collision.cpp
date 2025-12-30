@@ -367,7 +367,7 @@ namespace Collision {
 		CEVec3 maxWorld = aabbPos + aabb.extents;
 
 		// Create the temporary polygon in World Space
-		Polygon tempPoly = Polygon::createAABB(minWorld, maxWorld, CEVec3{ 0,0,0 });
+		Polygon tempPoly = Polygon::CreateAABB(minWorld, maxWorld, CEVec3{ 0,0,0 });
 
 		// Ensure the temp polygon has valid normals!
 		if (tempPoly.normalEdges[0] == CEVec3{ 0,0,0 }) {

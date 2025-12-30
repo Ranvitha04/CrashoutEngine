@@ -36,7 +36,7 @@ namespace Collision {
 	};
 
 	enum class HelperType {
-		SPHERE_T,
+		CIRCLE_T,
 		AABB_T,
 		OBB_T,
 		TRIANGLE_T,
@@ -78,7 +78,7 @@ namespace Collision {
 		virtual std::unique_ptr<Collider> clone() const = 0;
 		virtual void UpdateCollider([[maybe_unused]] CEVec3 const& newPos) = 0;
 		virtual void UpdateRotation([[maybe_unused]] f32 newRotation) {};
-		virtual f32 calculateInertia([[maybe_unused]] f32 mass) { return 0.f; };
+		virtual f32 CalculateInertia([[maybe_unused]] f32 mass) { return 0.f; };
 		CEVec3 offset{};
 		CEVec3 position{};
 		HelperType helperType; /*HELPER FOR UI DROPDOWN*/
@@ -173,6 +173,7 @@ namespace Collision {
 		float rotation{};
 		int vertexCount{};
 
+		CEVec3 extents{ 1.0f, 1.0f, 0.0f };
 
 		Vertices vertices;
 		Vertices rotatedVertices;
@@ -183,21 +184,23 @@ namespace Collision {
 		virtual void UpdateRotation(f32 newRotation);
 		~Polygon() = default;
 		virtual void UpdateCollider(CEVec3 const&);
-		void updatePosition(CEVec3 const& newPos);
-		void calcNormals();
-		CEVec3 calcNormal(CEVec3 const& edge);
+		void UpdatePosition(CEVec3 const& newPos);
+		void CalcNormals();
+		//Re-scales vertices based on a new size
+		void Rescale(const CEVec3& newExtents);
+		CEVec3 CalcNormal(CEVec3 const& edge);
 
-		virtual f32 calculateInertia(f32 mass) override;
+		virtual f32 CalculateInertia(f32 mass) override;
 
-		void forceUpdateRotation(f32 newRotation);
+		void ForceUpdateRotation(f32 newRotation);
 
 		/*ColliderType::OBB HELPER FUNCTIONS*/
-		static Polygon createOBB(CEVec3 const& min, CEVec3 const& max, f32 rotation, CEVec3 offset);
-		static void updateOBB(CEVec3 const& min, CEVec3 const& max, Polygon& polygon);
-		static CEVec3 calculateOBBExtents(Polygon const& polygon);
+		static Polygon CreateOBB(CEVec3 const& min, CEVec3 const& max, f32 rotation, CEVec3 offset);
+		static void UpdateOBB(CEVec3 const& min, CEVec3 const& max, Polygon& polygon);
+		static CEVec3 CalculateOBBExtents(Polygon const& polygon);
 		
 		/*ColliderType::AABB HELPER FUNCTIONS*/
-		static Polygon createAABB(CEVec3 const& min, CEVec3 const& max, CEVec3 offset);
+		static Polygon CreateAABB(CEVec3 const& min, CEVec3 const& max, CEVec3 offset);
 
 		virtual std::unique_ptr<Collider> clone() const override {
 			return std::make_unique<Polygon>(*this);
@@ -256,14 +259,23 @@ namespace Collision {
 					std::stof(defaultedArg("rotation", "0.f"))
 					});
 
-			} if (type == ColliderType::POLYGON || type == ColliderType::TRIANGLE) {
-				// Default Polygon/Triangle (Empty or basic quad)
+			} if (type == ColliderType::TRIANGLE) {
+				// Default Triangle (Empty or basic quad)
 				return std::make_unique<Polygon>(
 					std::initializer_list<CEVec3>{
 						{-0.5f, -0.5f, 0.f}, { 0.5f, -0.5f, 0.f }, { 0.5f, 0.5f, 0.f }
 				}
 				);
 			}
+			/*
+			if (type == ColliderType::POLYGON || type == ColliderType::TRIANGLE) {
+				// Default Polygon/Triangle (Empty or basic quad)
+				return std::make_unique<Polygon>(
+					std::initializer_list<CEVec3>{
+						{-0.5f, -0.5f, 0.f}, { 0.5f, -0.5f, 0.f }, { 0.5f, 0.5f, 0.f }
+				}
+				);
+			}*/
 
 			return std::make_unique<Circle>(Circle{ 0.f, CEVec3{} });
 		}
