@@ -528,8 +528,24 @@ namespace Scene {
 		std::unordered_map<BatchKey, RenderBatch, BatchKeyHasher>& rects,
 		std::unordered_map<BatchKey, RenderBatch, BatchKeyHasher>& tris,
 		std::unordered_map<BatchKey, RenderBatch, BatchKeyHasher>& circs,
-		std::vector<std::pair<TransformComponent*, ShapeComponent*>>& lines)
+		std::vector<std::pair<TransformComponent*, ShapeComponent*>>& lines,
+		bool enableCulling = false)
 	{
+
+		// Culling preperations
+
+		RenderCamera::Camera& cam = (engineState != EngineState::PLAY) ?
+			RenderCamera::engineCamera : RenderCamera::gameCamera;
+		CEVec3 camPos = cam.GetPosition();
+		float camHeight = cam.GetVisibleWorldHeight();
+		float camWidth = cam.GetVisibleWorldWidth();
+
+		// Create a bounding box for the camera viewport
+		float camMinX = camPos.x - (camWidth * 0.5f);
+		float camMaxX = camPos.x + (camWidth * 0.5f);
+		float camMinY = camPos.y - (camHeight * 0.5f);
+		float camMaxY = camPos.y + (camHeight * 0.5f);
+
 		for (const Entity& id : entities) {
 			if (!globalECS.HasComponent<TransformComponent>(id)) continue;
 
@@ -558,26 +574,35 @@ namespace Scene {
 				}
 				};
 
-			switch (sc->type) {
-			case ShapeType::Rectangle: {
-				RenderBatch& batch = rects[key];
-				ConfigureBatch(batch);
-				batch.Add(tf->position, colorNorm, tf->rotation, 1.0f, tf->size.x, tf->size.y, sc->uvOffset);
-				break;
-			}
-			case ShapeType::Triangle: {
-				RenderBatch& batch = tris[key];
-				ConfigureBatch(batch);
-				batch.Add(tf->position, colorNorm, tf->rotation, 1.0f, tf->size.x, tf->size.y, sc->uvOffset);
-				break;
-			}
-			case ShapeType::Circle: {
-				RenderBatch& batch = circs[key];
-				ConfigureBatch(batch);
-				batch.Add(tf->position, colorNorm, tf->rotation, 1.0f, tf->size.x * 0.5f, 0.0f, sc->uvOffset);
-				break;
-			}
-			default: break;
+			f32 maxX = tf->position.x + tf->size.x;
+			f32 minX = tf->position.x - tf->size.x;
+			f32 maxY = tf->position.y + tf->size.y;
+			f32 minY = tf->position.y - tf->size.y;
+
+			if (maxX > camMinX && minX < camMaxX &&
+				maxY > camMinY && minY < camMaxY && enableCulling) {
+
+				switch (sc->type) {
+				case ShapeType::Rectangle: {
+					RenderBatch& batch = rects[key];
+					ConfigureBatch(batch);
+					batch.Add(tf->position, colorNorm, tf->rotation, 1.0f, tf->size.x, tf->size.y, sc->uvOffset);
+					break;
+				}
+				case ShapeType::Triangle: {
+					RenderBatch& batch = tris[key];
+					ConfigureBatch(batch);
+					batch.Add(tf->position, colorNorm, tf->rotation, 1.0f, tf->size.x, tf->size.y, sc->uvOffset);
+					break;
+				}
+				case ShapeType::Circle: {
+					RenderBatch& batch = circs[key];
+					ConfigureBatch(batch);
+					batch.Add(tf->position, colorNorm, tf->rotation, 1.0f, tf->size.x * 0.5f, 0.0f, sc->uvOffset);
+					break;
+				}
+				default: break;
+				}
 			}
 		}
 	}
@@ -692,7 +717,7 @@ namespace Scene {
 		// Store lines for later
 		std::vector<std::pair<TransformComponent*, ShapeComponent*>> lineQueue;
 
-		BatchEntities(worldEntities, globalECS, rectBatches, triBatches, circBatches, lineQueue);
+		BatchEntities(worldEntities, globalECS, rectBatches, triBatches, circBatches, lineQueue, true);
 		FlushBatches(rectBatches, triBatches, circBatches);
 
 		// Flush World Lines (Non-instanced)
@@ -723,7 +748,7 @@ namespace Scene {
 		glm::mat4 uiProj = glm::ortho(-w * 0.5f, w * 0.5f, -h * 0.5f, h * 0.5f);
 		renderer.shdr_pgm_instanced->SetUniform("uProjection", uiProj);
 
-		BatchEntities(screenEntities, globalECS, rectBatches, triBatches, circBatches, lineQueue);
+		BatchEntities(screenEntities, globalECS, rectBatches, triBatches, circBatches, lineQueue, false);
 		FlushBatches(rectBatches, triBatches, circBatches);
 
 		// Flush Screen Lines
