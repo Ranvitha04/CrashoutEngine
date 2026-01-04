@@ -3,7 +3,7 @@
 @author     Ranvitha
 @date       26/11/2025
 @brief      Declarations for particle and trajectory emitters.
-@details    Provides emitter interfaces that update ECS entities for instanced
+@details    Provides emitter interfaces that Update ECS entities for instanced
             rendering. Emitters implement randomized spawning, explicit Euler
             integration under gravity, and configurable appearance. The
             trajectory emitter computes launch angle/flight-time kinematics and

@@ -272,7 +272,7 @@ namespace Component {
         renderer.Draw();
     }
 
-    void Shapes::CreateCircle(const CEVec2& transformSize, const CEVec3& position, int segments, float rotation, const CEColor& color, const bool isWorldSpace) {
+    void Shapes::CreateCircle(const CEVec2& transformSize, const CEVec3& position, int segments, const CEColor& color, const bool isWorldSpace) {
         Component::Rendering& renderer = Component::Rendering::Get();
 
         //minimum segments for circle
@@ -317,7 +317,6 @@ namespace Component {
         // Create model matrix for world position
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(position.x, position.y, position.z));
-        model = glm::rotate(model, glm::radians(rotation), glm::vec3(0, 0, 1));
         model = glm::scale(model, glm::vec3(transformSize.x, transformSize.y, 1.0f));
 
         glm::mat4 finalModelMatrix;

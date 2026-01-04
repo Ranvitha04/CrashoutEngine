@@ -10,7 +10,7 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserv
 #include <algorithm>                 
 #include <utility>                  
 #include "hierarchy.h"
-#include "hierarchy_components.h"
+#include "hierarchycomponent.h"
 #include "entitymanager.h"
 #include "namecomponent.h"
 #include "transformcomponent.h"
@@ -57,7 +57,7 @@ namespace CrashoutsEngine {
         // no ancestor with a ShapeComponent 
         return CEColor{ 1.f, 1.f, 1.f, 1.f };
     }
-    // Force a child to take its parent's (ancestor) color every update.
+    // Force a child to take its parent's (ancestor) color every Update.
     static void ForceInheritColorFromParent(ECS& ecs, Entity child) {
         using namespace Component;
 
@@ -207,7 +207,7 @@ namespace CrashoutsEngine {
                 Entity c = *it;
 
                 if (!ecs.HasComponent<NameComponent>(c)) {
-                    it = kids->children.erase(it); // Remove dead ID and update iterator
+                    it = kids->children.erase(it); // Remove dead ID and Update iterator
                     continue;
                 }
 
@@ -290,11 +290,11 @@ namespace CrashoutsEngine {
             //    auto* colliderComp = ecs.GetComponent<ColliderComponent>(child);
             //    if (colliderComp && colliderComp->collider) {
             //        // 1. Sync Position
-            //        colliderComp->collider->updateCollider(childTransform->position);
+            //        colliderComp->collider->UpdateCollider(childTransform->position);
             //
             //        // 2. Sync Rotation (Add parent's rotation influence)
             //        // If your OBB/Polygon supports rotation, pass the new child rotation
-            //        colliderComp->collider->updateRotation(childTransform->rotation);
+            //        colliderComp->collider->UpdateRotation(childTransform->rotation);
             //    }
             //}
 

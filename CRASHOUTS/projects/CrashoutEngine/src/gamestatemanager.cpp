@@ -85,7 +85,7 @@ void ChangeGameState(GameState newState, bool resetEngineState) {
 /*!
 @brief Update the game state manager
 
-Handles transitions between states and calls update and render on the active state
+Handles transitions between states and calls Update and render on the active state
 */
 void UpdateGameStateManager() {
     /// restart to reload the same state
@@ -102,7 +102,7 @@ void UpdateGameStateManager() {
     }
     /// normal transition to a different state
     else if (NextGameState != CurrentGameState) {
-        CrashoutsEngine::CollisionEventManager::GetInstance().getCollisionEvents().clear();
+        CrashoutsEngine::CollisionEventManager::GetInstance().GetCollisionEvents().clear();
         if (CurrentDescriptor) {
             if (CurrentDescriptor->Free)   CurrentDescriptor->Free();
             if (CurrentDescriptor->Unload) CurrentDescriptor->Unload();

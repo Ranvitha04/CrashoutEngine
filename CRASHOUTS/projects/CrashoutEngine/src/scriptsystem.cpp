@@ -29,7 +29,7 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserve
 
 namespace CrashoutsEngine
 {
-
+    using namespace Component;
     // Helper to find a specific C# script instance on an entity
     static MonoObject* InternalGetScript(uint32_t entityID, MonoString* scriptName) {
         auto* ecs = ECS::getInstance();

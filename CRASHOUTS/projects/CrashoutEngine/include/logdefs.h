@@ -12,7 +12,7 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserve
 #pragma once
 
 // Keep one authoritative list of levels & subsystems.
-// Add here -> enums, names, UI filters all update automatically.
+// Add here -> enums, names, UI filters all Update automatically.
 
 /*                                                                   macros
 ----------------------------------------------------------------------------- */

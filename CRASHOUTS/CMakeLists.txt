@@ -45,7 +45,6 @@ add_definitions(-DUSE_CSD3151_AUTOMATION=0) # For instructor automation
 
 add_compile_definitions(
     $<$<CONFIG:Debug>:DEBUG=1>
-    USE_IMGUI_EDITOR=1
 )
 
 # Include path for GLM (optional if not using FetchContent)

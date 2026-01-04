@@ -84,7 +84,7 @@ namespace CrashoutsEngine {
 
 		/*!
 		@brief  Iterates through the gridData and recalculates the Rule Bitmasks
-				for every tile to update the 'renderCache'.
+				for every tile to Update the 'renderCache'.
 		@param  map TileMapComponent to reference.
 		*/
 		void RebuildCache(Component::TileMapComponent& map, const Entity& parentEnt);

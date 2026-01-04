@@ -35,6 +35,14 @@ namespace CrashoutsEngine {
 
 	namespace Assets {
 
+#ifdef USE_IMGUI_EDITOR
+		const std::string rootPath = "../../projects/Descent/assets/";
+#else	// GAME MODE
+		const std::string rootPath = "assets/";
+#endif
+
+		const std::string assetManifestPath = rootPath + "json/assetmanifest.json";
+
 		namespace fs = std::filesystem;
 
 		AssetManager::AssetManager() {
@@ -50,15 +58,18 @@ namespace CrashoutsEngine {
 		}
 
 		void AssetManager::Shutdown() {
-			for (auto& kv : assets) {
-				kv.second.reset();
-			}
 			assets.clear();
-			assets.rehash(0);
 			assetNames.clear();
-			assetNames.rehash(0);
+
+			std::unordered_map<unsigned int, std::unique_ptr<IAsset>>().swap(assets);
+			std::unordered_map<std::string, unsigned int>().swap(assetNames);
+
 			nextAssetID = 0;
-			FT_Done_FreeType(ftLibrary);
+			
+			if (ftLibrary) {
+				FT_Done_FreeType(ftLibrary);
+				ftLibrary = nullptr; 
+			}
 		}
 
 		// Function to load assets in a json

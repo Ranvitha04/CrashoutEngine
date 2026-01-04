@@ -14,13 +14,13 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserve
 /*                                                                   includes
 ----------------------------------------------------------------------------- */
 #include "crashlogger.h"
+#include "engine.h"
 #include <windows.h>
 #include <csignal>
 #include <cstdio>
 #include <ctime>
 #include <string>
-#include <cstdlib>
-#include <filesystem>
+#include <vector>
 //---------------------------------------------------------------------------
 
 // Application name used in the crash log
@@ -32,27 +32,26 @@ static const char* sApplicationName = "App";
  @return Filesystem path to the folder containing the running executable.
          Falls back to the current working directory if retrieval fails.
 */
-static std::filesystem::path GetExeDir()
+static std::string GetExeDir()
 {
-    char exePath[MAX_PATH]{};
-    DWORD n = GetModuleFileNameA(nullptr, exePath, MAX_PATH);
-    if (n == 0 || n == MAX_PATH) {
-        // Fallback to current_path() if something very odd happens.
-        return std::filesystem::current_path();
-    }
-    return std::filesystem::path(exePath).parent_path();
+    char buffer[MAX_PATH];
+    GetModuleFileNameA(NULL, buffer, MAX_PATH);
+    std::string::size_type pos = std::string(buffer).find_last_of("\\/");
+    return std::string(buffer).substr(0, pos);
 }
 
 /*!
- @brief Ensure that a `crashreports` folder exists beside the executable.
- @return Filesystem path to the `crashreports` folder. The folder will be
-         created if it does not already exist.
+ @brief Ensure that a `crashreports` folder exists (Win32 API version).
 */
-static std::filesystem::path EnsureCrashLogFolder()
+static std::string EnsureCrashLogFolder()
 {
-    auto dir = GetExeDir() / "crashreports";
-    std::error_code ec;
-    std::filesystem::create_directories(dir, ec); // harmless if it already exists
+#if USE_IMGUI_EDITOR
+    std::string dir = GetExeDir() + "\\crashreports";
+#else
+    std::string dir = GetLocalAppData() + "\\crashreports";
+#endif
+    // Win32 API to create directory (Returns non-zero on success or if exists)
+    CreateDirectoryA(dir.c_str(), NULL);
     return dir;
 }
 
@@ -63,15 +62,17 @@ static std::filesystem::path EnsureCrashLogFolder()
 */
 static std::string GetCrashLogFilePath()
 {
-    auto dir = EnsureCrashLogFolder();
+    std::string dir = EnsureCrashLogFolder();
 
-    std::time_t currentTime = std::time(nullptr);
-    char timeBuffer[64]{};
-    std::strftime(timeBuffer, sizeof(timeBuffer), "%Y%m%d_%H%M%S",
-        std::localtime(&currentTime));
+    SYSTEMTIME st;
+    GetLocalTime(&st);
 
-    auto path = dir / (std::string("crashlog_") + timeBuffer + ".txt");
-    return path.string();
+    char timeBuffer[64];
+    // Manually format: crashlog_YYYYMMDD_HHMMSS.txt
+    wsprintfA(timeBuffer, "crashlog_%04d%02d%02d_%02d%02d%02d.txt",
+        st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond);
+
+    return dir + "\\" + timeBuffer;
 }
 
 // -- Core ------------------------------------------------------------------
@@ -87,20 +88,19 @@ static void WriteCrashLog(const char* message)
     FILE* logFile = nullptr;
     fopen_s(&logFile, filePath.c_str(), "a");
     if (!logFile) {
-        // Make failures visible in the debugger.
-        OutputDebugStringA("[CrashLogger] Failed to open crash log file.\n");
-        OutputDebugStringA(filePath.c_str());
-        OutputDebugStringA("\n");
+        OutputDebugStringA("Failed to open log file\n");
         return;
     }
 
-    // Timestamp for the entry
-    std::time_t currentTime = std::time(nullptr);
-    char timeBuffer[64]{};
-    ctime_s(timeBuffer, sizeof(timeBuffer), &currentTime);
-    timeBuffer[strcspn(timeBuffer, "\n")] = 0; // strip newline
+    SYSTEMTIME st;
+    GetLocalTime(&st);
 
-    std::fprintf(logFile, "[%s] Crash in %s: %s\n", timeBuffer, sApplicationName, message);
+    char timeBuffer[64];
+    // Format: [YYYY-MM-DD HH:MM:SS]
+    wsprintfA(timeBuffer, "[%04d-%02d-%02d %02d:%02d:%02d]",
+        st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond);
+
+    std::fprintf(logFile, "%s Crash in %s: %s\n", timeBuffer, sApplicationName, message);
     std::fclose(logFile);
 }
 
@@ -136,7 +136,7 @@ static void SignalCrashHandler(int signalNumber)
 /*!
  @brief Called automatically on normal exit to record the exit code.
 */
-static void OnExit()
+void LogExitCode()
 {
     DWORD code = 0;
     if (GetExitCodeProcess(GetCurrentProcess(), &code))
@@ -173,7 +173,5 @@ void InstallCrashLogger(const char* name)
 
     // Create the folder right away so path problems appear early
     (void)EnsureCrashLogFolder();
-    
-    // Log exit codes too
-    std::atexit(OnExit);
+
 }

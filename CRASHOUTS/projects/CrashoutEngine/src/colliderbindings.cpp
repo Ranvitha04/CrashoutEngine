@@ -26,7 +26,7 @@ static void InternalUpdateRotation(uint32_t entityID, float rot)
     if (collider->type == Collision::ColliderType::OBB)
     {
         auto& obb = dynamic_cast<Collision::OBBRect&>(*collider);
-        obb.updateRotation(rot);
+        obb.UpdateRotation(rot);
     }
 }
 

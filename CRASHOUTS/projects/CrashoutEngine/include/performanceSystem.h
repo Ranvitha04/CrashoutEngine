@@ -57,7 +57,7 @@ public:
     }
 
     /*!
-     @brief  Finish the profiling frame and update UI snapshots.
+     @brief  Finish the profiling frame and Update UI snapshots.
      @note   Call this once after all timed scopes have been destroyed. :contentReference[oaicite:2]{index=2}
      */
     void EndFrame() {

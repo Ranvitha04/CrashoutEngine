@@ -46,4 +46,6 @@ extern bool gameWinHovered;
 extern std::string g_PendingSceneName;
 extern bool g_IsSceneLoadPending;
 
+std::string GetLocalAppData();
+
 #endif

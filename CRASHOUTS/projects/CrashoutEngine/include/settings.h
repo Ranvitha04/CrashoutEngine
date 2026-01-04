@@ -11,6 +11,7 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserve
 */
 
 #pragma once
+#include "debugmenu.h"
 
 /*!
 @class Settings
@@ -55,6 +56,18 @@ public:
     */
     static void SaveToFile(const char* path);
 
+    // --- EDITOR SETTINGS ---
+    /*!
+    @brief Saves Zoom, Colors, and Docking state
+    @param uiState UIState to reference
+    */
+    static void SaveEditorSettings(const UI::UIState& uiState);
+    /*!
+    @brief Loads Zoom, Colors, and applies them to ImGui immediately
+    @param uiState UIState to reference
+    */
+    static void LoadEditorSettings(UI::UIState& uiState);
+
 private:
     //TEMPORARY USE TO BE REMOVED AS IT DOESNT ADHERE TO ECS - Rain
     /// Current screen width
@@ -62,4 +75,5 @@ private:
 
     /// Current screen height
     static unsigned int screenHeight;
+
 };

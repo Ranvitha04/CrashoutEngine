@@ -31,7 +31,7 @@ namespace CollisionGizmos {
            all active colliders, and highlighting those currently involved in
            collisions when collision event data is available.
     */
-    void DrawAllColliders(CrashoutsEngine::ECS& ecs, std::vector<Collision::CollisionEvent>* events = nullptr, float wireThickness = 0.3f);
+    void DrawAllColliders(CrashoutsEngine::ECS& ecs, const std::vector<Collision::CollisionEvent>& events, float wireThickness = 0.3f);
 
     // -- Contact Point & Normal Visualization ---------------------------------
 
@@ -43,6 +43,6 @@ namespace CollisionGizmos {
      @note Use this function to debug collision resolution behavior and validate
            contact point accuracy and normal direction calculations.
     */
-    void DrawContactsAndNormals(const std::vector<Collision::CollisionEvent>& events, float normalLen = 0.25f, float wireThickness = 0.02f);
+    void DrawContactsAndNormals(CrashoutsEngine::ECS& ecs, const std::vector<Collision::CollisionEvent>& events, float baseLen, float wireThickness);
 
 } // namespace CollisionGizmos

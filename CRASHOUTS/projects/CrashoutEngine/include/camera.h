@@ -51,6 +51,10 @@ namespace CrashoutsEngine {
 			void MouseWheelDrag(CEVec2& oldMousePos);
 			void MouseWheelScroll(float yOffset);
 
+			// Get visible width and height
+			float GetVisibleWorldHeight() const;
+			float GetVisibleWorldWidth() const;
+
 			static float g_zoom;
 
 		private:

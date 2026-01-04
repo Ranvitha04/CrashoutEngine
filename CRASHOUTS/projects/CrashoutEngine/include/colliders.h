@@ -27,7 +27,7 @@ namespace Collision {
 	@brief	Different types of colliders
 	*/
 	enum class ColliderType {
-		SPHERE,
+		CIRCLE,
 		AABB,
 		OBB,
 		TRIANGLE,
@@ -76,27 +76,29 @@ namespace Collision {
 		Collider(ColliderType type);
 		virtual ~Collider() = default;
 		virtual std::unique_ptr<Collider> clone() const = 0;
-		virtual void updateCollider([[maybe_unused]] CEVec3 const& newPos) = 0;
-		virtual void updateRotation([[maybe_unused]] f32 newRotation) {};
+		virtual void UpdateCollider([[maybe_unused]] CEVec3 const& newPos) = 0;
+		virtual void UpdateRotation([[maybe_unused]] f32 newRotation) {};
 		virtual f32 calculateInertia([[maybe_unused]] f32 mass) { return 0.f; };
 		CEVec3 offset{};
 		CEVec3 position{};
 		HelperType helperType; /*HELPER FOR UI DROPDOWN*/
+		bool isTrigger = false;
+		bool enabled = true;
 	};
 
 	/*!
-	@class	Sphere
-	@brief	Basic Sphere collider with radius and position
+	@class	Circle
+	@brief	Basic Circle collider with radius and position
 	*/
-	class Sphere : public Collider {
+	class Circle : public Collider {
 	public:
 		f32 radius;
-		Sphere(f32 radius, CEVec3 const& position, CEVec3 const& offset = CEVec3{});
-		~Sphere() = default;
-		virtual void updateCollider(CEVec3 const& newPos);
+		Circle(f32 radius, CEVec3 const& position, CEVec3 const& offset = CEVec3{});
+		~Circle() = default;
+		virtual void UpdateCollider(CEVec3 const& newPos);
 
 		virtual std::unique_ptr<Collider> clone() const override {
-			return std::make_unique<Sphere>(*this);
+			return std::make_unique<Circle>(*this);
 		}
 	};
 
@@ -119,7 +121,7 @@ namespace Collision {
 
 		~AABBRect() = default;
 
-		virtual void updateCollider(CEVec3 const& newPos);
+		virtual void UpdateCollider(CEVec3 const& newPos);
 		virtual std::unique_ptr<Collider> clone() const override {
 			return std::make_unique<AABBRect>(*this);
 		}
@@ -143,9 +145,9 @@ namespace Collision {
 		Vertices originalVertices;
 		Normal normalEdges;
 		OBBRect(CEVec3 const& min, CEVec3 const& max, f32 rotation = 0.f);
-		virtual void updateRotation(f32 newRotation);
+		virtual void UpdateRotation(f32 newRotation);
 		~OBBRect() = default;
-		virtual void updateCollider(CEVec3 const&);
+		virtual void UpdateCollider(CEVec3 const&);
 
 		virtual std::unique_ptr<Collider> clone() const override {
 			return std::make_unique<OBBRect>(*this);
@@ -178,9 +180,9 @@ namespace Collision {
 
 		Polygon();
 		Polygon(std::initializer_list<CEVec3> vertices, f32 rotation = 0.f, CEVec3 const& position = {}, CEVec3 const& offset = {});
-		virtual void updateRotation(f32 newRotation);
+		virtual void UpdateRotation(f32 newRotation);
 		~Polygon() = default;
-		virtual void updateCollider(CEVec3 const&);
+		virtual void UpdateCollider(CEVec3 const&);
 		void updatePosition(CEVec3 const& newPos);
 		void calcNormals();
 		CEVec3 calcNormal(CEVec3 const& edge);
@@ -214,9 +216,9 @@ namespace Collision {
 		ColliderFactory() = default;
 
 		std::unique_ptr<Collider> CreateCollider(ColliderType type) {
-			if (type == ColliderType::SPHERE) {
+			if (type == ColliderType::CIRCLE) {
 
-				return std::make_unique<Sphere>(Sphere{
+				return std::make_unique<Circle>(Circle{
 					std::stof(defaultedArg("radius","0.f")),
 					CEVec3{
 						std::stof(defaultedArg("centerX", "0.f")),
@@ -263,7 +265,7 @@ namespace Collision {
 				);
 			}
 
-			return std::make_unique<Sphere>(Sphere{ 0.f, CEVec3{} });
+			return std::make_unique<Circle>(Circle{ 0.f, CEVec3{} });
 		}
 
 		void setArgs(ArgMap newArgs) {

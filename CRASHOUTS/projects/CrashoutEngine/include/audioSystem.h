@@ -31,7 +31,7 @@ namespace CrashoutsEngine
 
             // Lifetime
             bool init(const std::string& banksDir = "assets/audio/banks");
-            void update();
+            void Update();
             void shutdown();
 
             // Bank management
