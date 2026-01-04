@@ -6,11 +6,6 @@ All content © 2025 Digipen Institute of Technology Singapore.All rights reserved
 
 //__________________________________________________________________________*/
 
-/*!
-All content © 2025 Digipen Institute of Technology Singapore.All rights reserved.
-
-//__________________________________________________________________________*/
-
 // C++ Standard Library
 #include <vector>
 #include <string>

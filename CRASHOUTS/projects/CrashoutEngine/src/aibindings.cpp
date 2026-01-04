@@ -15,8 +15,6 @@ All content © 2025 Digipen Institute of Technology Singapore.All rights reserved
 #include <mono/metadata/object.h>
 #include <mono/metadata/assembly.h>
 
-
-
 using namespace CrashoutsEngine;
 
 namespace
