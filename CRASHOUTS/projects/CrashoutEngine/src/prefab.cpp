@@ -126,7 +126,7 @@ namespace CaptureData {
     struct LayerData { unsigned int layer{ 0 }; };
     struct RBData { float mass{ 0 }, rest{ 0 }, sFric{ 0 }, dFric{ 0 }, inert{ 0 }, invInert{ 0 }; bool isTrigger{ false }; bool hasComp{ false }; };
     struct ColliderData {
-        bool hasComp{ false }; Collision::HelperType type{ Collision::HelperType::AABB_T };
+        bool hasComp{ false }; Collision::ColliderType type{ Collision::ColliderType::AABB };
         bool isTrigger{ false }; bool enabled{ true };
         CEVec3 pos{ 0,0,0 }; CEVec3 offset{ 0,0,0 };
         float radius{ 1.f }; CEVec3 min{ 0,0,0 }; CEVec3 max{ 0,0,0 }; float rotation{ 0.f };
@@ -225,7 +225,7 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path) {
         if (prefabs.HasMember("collider")) {
             colD.hasComp = true;
             const auto& c = prefabs["collider"];
-            if (c.HasMember("helperType")) colD.type = static_cast<Collision::HelperType>(c["helperType"].GetInt());
+            if (c.HasMember("ColliderType")) colD.type = static_cast<Collision::ColliderType>(c["ColliderType"].GetInt());
             if (c.HasMember("isTrigger")) colD.isTrigger = c["isTrigger"].GetBool();
             if (c.HasMember("enabled")) colD.enabled = c["enabled"].GetBool();
             if (c.HasMember("position")) colD.pos = ReadVectorFromJson{}(c["position"]);
@@ -243,7 +243,7 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path) {
         // Fallback for Box type without collider block (old prefab support)
         else if (std::string(prefabs["type"].GetString()) == "Box") {
             colD.hasComp = true;
-            colD.type = Collision::HelperType::AABB_T;
+            colD.type = Collision::ColliderType::AABB;
             // Auto-calc done in lambda
         }
 
@@ -544,15 +544,15 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path) {
                 // Reconstruct collider unique_ptr
                 std::unique_ptr<Collision::Collider> ptr;
                 switch (colD.type) {
-                case Collision::HelperType::CIRCLE_T:
+                case Collision::ColliderType::CIRCLE:
                     ptr = std::make_unique<Collision::Circle>(colD.radius, colD.pos);
                     break;
-                case Collision::HelperType::OBB_T:
+                case Collision::ColliderType::OBB:
                     ptr = std::make_unique<Collision::Polygon>(Collision::Polygon::CreateOBB(colD.min, colD.max, colD.rotation, CEVec3{}));
                     static_cast<Collision::Polygon*>(ptr.get())->position = colD.pos; // Fix drift
                     break;
-                case Collision::HelperType::POLYGON_T:
-                case Collision::HelperType::TRIANGLE_T: {
+                case Collision::ColliderType::POLYGON:
+                case Collision::ColliderType::TRIANGLE: {
                     auto p = std::make_unique<Collision::Polygon>();
                     p->vertexCount = std::min((int)colD.verts.size(), Collision::Polygon::MAX_VERTEX);
                     for (int i = 0; i < p->vertexCount; ++i) p->vertices[i] = colD.verts[i];
@@ -562,7 +562,7 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path) {
                     ptr = std::move(p);
                     break;
                 }
-                case Collision::HelperType::AABB_T:
+                case Collision::ColliderType::AABB:
                 default:
                     // Fallback logic if min/max are zero (e.g. from simple box prefab)
                     if (colD.min.x == 0 && colD.max.x == 0) {
@@ -575,12 +575,12 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path) {
                 }
 
                 if (ptr) {
-                    ptr->helperType = colD.type;
+                    ptr->ColliderType = colD.type;
                     ptr->isTrigger = colD.isTrigger;
                     ptr->enabled = colD.enabled;
                     ptr->offset = colD.offset;
                     // If pos wasn't set specifically by type, ensure it matches
-                    if (ptr->position.x == 0 && ptr->position.y == 0 && colD.type != Collision::HelperType::CIRCLE_T) ptr->position = colD.pos;
+                    if (ptr->position.x == 0 && ptr->position.y == 0 && colD.type != Collision::ColliderType::CIRCLE) ptr->position = colD.pos;
 
                     ecs.AddComponent<ColliderComponent>(e, ColliderComponent{ std::move(ptr) });
                 }
@@ -798,7 +798,7 @@ namespace CrashoutsEngine {
         // Collider
         if (auto* col = ecs.GetComponent<ColliderComponent>(e)) {
             Value colObj(kObjectType);
-            colObj.AddMember("helperType", (int)col->collider->helperType, allocator);
+            colObj.AddMember("ColliderType", (int)col->collider->ColliderType, allocator);
             colObj.AddMember("isTrigger", col->collider->isTrigger, allocator);
             colObj.AddMember("enabled", col->collider->enabled, allocator);
 
@@ -808,13 +808,13 @@ namespace CrashoutsEngine {
             colObj.AddMember("offset", off, allocator);
 
             // Specifics based on Type
-            switch (col->collider->helperType) {
-            case Collision::HelperType::CIRCLE_T: {
+            switch (col->collider->ColliderType) {
+            case Collision::ColliderType::CIRCLE: {
                 auto* s = static_cast<Collision::Circle*>(col->collider.get());
                 colObj.AddMember("radius", s->radius, allocator);
                 break;
             }
-            case Collision::HelperType::AABB_T: {
+            case Collision::ColliderType::AABB: {
                 auto* a = static_cast<Collision::AABBRect*>(col->collider.get());
                 Value min(kObjectType); min.AddMember("x", a->min.x, allocator).AddMember("y", a->min.y, allocator).AddMember("z", a->min.z, allocator);
                 colObj.AddMember("min", min, allocator);

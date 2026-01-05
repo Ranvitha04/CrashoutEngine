@@ -31,7 +31,7 @@
                 "invInertia": 0.0
             },
             "collider": {
-                "helperType": 1,
+                "ColliderType": 1,
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
@@ -150,7 +150,7 @@
                 "invInertia": 0.0
             },
             "collider": {
-                "helperType": 0,
+                "ColliderType": 0,
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
@@ -236,7 +236,7 @@
                 "invInertia": 0.06000000238418579
             },
             "collider": {
-                "helperType": 2,
+                "ColliderType": 2,
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
@@ -327,7 +327,7 @@
                 "invInertia": 0.0
             },
             "collider": {
-                "helperType": 1,
+                "ColliderType": 1,
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
@@ -417,7 +417,7 @@
                 "invInertia": 0.0
             },
             "collider": {
-                "helperType": 1,
+                "ColliderType": 1,
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
@@ -507,7 +507,7 @@
                 "invInertia": 0.0
             },
             "collider": {
-                "helperType": 1,
+                "ColliderType": 1,
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
@@ -597,7 +597,7 @@
                 "invInertia": 0.0
             },
             "collider": {
-                "helperType": 3,
+                "ColliderType": 4,
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
@@ -618,7 +618,7 @@
                         "z": 0.0
                     },
                     {
-                        "x": -21.652379989624025,
+                        "x": -21.652381896972658,
                         "y": -18.666542053222658,
                         "z": 0.0
                     },
@@ -695,7 +695,7 @@
                 "invInertia": 0.06000000238418579
             },
             "collider": {
-                "helperType": 3,
+                "ColliderType": 4,
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
@@ -752,6 +752,71 @@
                 },
                 "p1": {
                     "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            }
+        },
+        {
+            "name": "Line",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 48.17212677001953,
+                    "y": -14.178630828857422,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 0.5,
+                "preview": false,
+                "type": 1,
+                "textureName": "",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": -32.0,
                     "y": 0.0,
                     "z": 0.0
                 },

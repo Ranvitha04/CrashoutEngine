@@ -579,30 +579,36 @@ namespace Scene {
 			f32 maxY = tf->position.y + tf->size.y;
 			f32 minY = tf->position.y - tf->size.y;
 
-			if (maxX > camMinX && minX < camMaxX &&
-				maxY > camMinY && minY < camMaxY && enableCulling) {
-
-				switch (sc->type) {
-				case ShapeType::Rectangle: {
-					RenderBatch& batch = rects[key];
-					ConfigureBatch(batch);
-					batch.Add(tf->position, colorNorm, tf->rotation, 1.0f, tf->size.x, tf->size.y, sc->uvOffset);
-					break;
+			if (enableCulling) {
+				// If ANY of these are true, the object is completely outside the viewport
+				if (maxX < camMinX || // Entirely to the left
+					minX > camMaxX || // Entirely to the right
+					maxY < camMinY || // Entirely below
+					minY > camMaxY)   // Entirely above
+				{
+					continue;
 				}
-				case ShapeType::Triangle: {
-					RenderBatch& batch = tris[key];
-					ConfigureBatch(batch);
-					batch.Add(tf->position, colorNorm, tf->rotation, 1.0f, tf->size.x, tf->size.y, sc->uvOffset);
-					break;
-				}
-				case ShapeType::Circle: {
-					RenderBatch& batch = circs[key];
-					ConfigureBatch(batch);
-					batch.Add(tf->position, colorNorm, tf->rotation, 1.0f, tf->size.x * 0.5f, 0.0f, sc->uvOffset);
-					break;
-				}
-				default: break;
-				}
+			}
+			switch (sc->type) {
+			case ShapeType::Rectangle: {
+				RenderBatch& batch = rects[key];
+				ConfigureBatch(batch);
+				batch.Add(tf->position, colorNorm, tf->rotation, 1.0f, tf->size.x, tf->size.y, sc->uvOffset);
+				break;
+			}
+			case ShapeType::Triangle: {
+				RenderBatch& batch = tris[key];
+				ConfigureBatch(batch);
+				batch.Add(tf->position, colorNorm, tf->rotation, 1.0f, tf->size.x, tf->size.y, sc->uvOffset);
+				break;
+			}
+			case ShapeType::Circle: {
+				RenderBatch& batch = circs[key];
+				ConfigureBatch(batch);
+				batch.Add(tf->position, colorNorm, tf->rotation, 1.0f, tf->size.x * 0.5f, 0.0f, sc->uvOffset);
+				break;
+			}
+			default: break;
 			}
 		}
 	}

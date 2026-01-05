@@ -205,7 +205,7 @@ namespace CrashoutsEngine::TileMapUtils {
 				float rot = t.rotation;
 
 				std::unique_ptr<Collision::Collider> newCollider = nullptr;
-				Collision::HelperType helperT = Collision::HelperType::AABB_T; // Default
+				Collision::ColliderType helperT = Collision::ColliderType::AABB; // Default
 
 				switch (matchedRule->colliderType) {
 					// --------------------------------------------------------
@@ -215,7 +215,7 @@ namespace CrashoutsEngine::TileMapUtils {
 						// Radius is usually half the width (or average of width/height)
 						float radius = std::min(halfW, halfH);
 						newCollider = std::make_unique<Collision::Circle>(radius, tPos);
-						helperT = Collision::HelperType::CIRCLE_T;
+						helperT = Collision::ColliderType::CIRCLE;
 						break;
 					}
 					// --------------------------------------------------------
@@ -225,7 +225,7 @@ namespace CrashoutsEngine::TileMapUtils {
 						CEVec3 min{ tPos.x - halfW, tPos.y - halfH, 0.0f };
 						CEVec3 max{ tPos.x + halfW, tPos.y + halfH, 0.0f };
 						newCollider = std::make_unique<Collision::AABBRect>(min, max);
-						helperT = Collision::HelperType::AABB_T;
+						helperT = Collision::ColliderType::AABB;
 						break;
 					}
 					// --------------------------------------------------------
@@ -236,7 +236,7 @@ namespace CrashoutsEngine::TileMapUtils {
 						CEVec3 min{ tPos.x - halfW, tPos.y - halfH, 0.0f };
 						CEVec3 max{ tPos.x + halfW, tPos.y + halfH, 0.0f };
 						newCollider = std::make_unique<Collision::OBBRect>(min, max, rot);
-						helperT = Collision::HelperType::OBB_T;
+						helperT = Collision::ColliderType::OBB;
 						break;
 					}
 					// --------------------------------------------------------
@@ -256,14 +256,14 @@ namespace CrashoutsEngine::TileMapUtils {
 							rot,
 							tPos
 						);
-						helperT = Collision::HelperType::POLYGON_T;
+						helperT = Collision::ColliderType::POLYGON;
 						break;
 					}
 				}
 				// Assign to Entity if created successfully
 				if (newCollider) {
 					// IMPORTANT: Set the type so your Inspector can read it correctly
-					newCollider->helperType = helperT;
+					newCollider->ColliderType = helperT;
 
 					Component::ColliderComponent& c = ecs->AddComponent<Component::ColliderComponent>(ent);
 					c.collider = std::move(newCollider);

@@ -600,10 +600,13 @@ namespace Physics {
 						// Sync Collider Rotation to Transform Rotation
 						// (Your RigidBody orientation might be stale if you rotated Transform via script)
 						rigidBody->setRotation(transform->rotation);
-						c->collider->UpdateRotation(transform->rotation);
 
-						// Sync Collider Position
-						c->collider->UpdateCollider(transform->position);
+						if (c && c->collider) {
+							c->collider->UpdateRotation(transform->rotation);
+
+							// Sync Collider Position
+							c->collider->UpdateCollider(transform->position);
+						}
 					}
 
 					// --- ADD THIS ---
