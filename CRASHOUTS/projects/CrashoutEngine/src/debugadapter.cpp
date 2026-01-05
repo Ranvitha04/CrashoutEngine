@@ -89,7 +89,7 @@ namespace {
 		@usage DrawUndoable("Label", myFloat, DrawFunc); DrawFunc should return true if value changed
 		*/
 		template<typename T, typename Func>
-		void DrawUndoableGeneric(const char* label, T& ref, Func drawFunc) {
+		void DrawUndoableGeneric(const char* label, T& ref, Func drawFunc, std::function<void(const T&)> customSetter = nullptr) {
 			static std::unordered_map<ImGuiID, T> startValues;
 			ImGuiID id = ImGui::GetID(label);
 
@@ -109,9 +109,11 @@ namespace {
 					T start = startValues[id];
 					T end = ref;
 					if (start != end) {
+						// If a custom setter is provided, use it. Otherwise default to writing to the reference.
+						auto applyFunc = customSetter ? customSetter : [&ref](const T& v) { ref = v; };
+
 						UndoManager::GetInstance().AddCommand(
-							std::make_unique<ChangeValueCommand<T>>(start, end,
-								[&ref](const T& v) { ref = v; })
+							std::make_unique<ChangeValueCommand<T>>(start, end, applyFunc)
 						);
 					}
 					startValues.erase(id);
@@ -120,30 +122,31 @@ namespace {
 		}
 
 		// Specializations 
-		void DrawUndoableFloat(const char* label, float& ref, float speed = 0.1f, float min = 0.0f, float max = 0.0f) {
-			DrawUndoableGeneric(label, ref, [&]() { return ImGui::DragFloat(label, &ref, speed, min, max); });
+		void DrawUndoableFloat(const char* label, float& ref, float speed = 0.1f, float min = 0.0f, float max = 0.0f, std::function<void(const float&)> setter = nullptr) {
+			DrawUndoableGeneric(label, ref, [&]() { return ImGui::DragFloat(label, &ref, speed, min, max); }, setter);
 		}
 
-		void DrawUndoableVec2(const char* label, CEVec2& ref, float speed = 0.1f) {
-			DrawUndoableGeneric(label, ref, [&]() { return ImGui::DragFloat2(label, &ref.x, speed); });
+		void DrawUndoableVec2(const char* label, CEVec2& ref, float speed = 0.1f, std::function<void(const CEVec2&)> setter = nullptr) {
+			DrawUndoableGeneric(label, ref, [&]() { return ImGui::DragFloat2(label, &ref.x, speed); }, setter);
 		}
 
-		void DrawUndoableVec3(const char* label, CEVec3& ref, float speed = 0.1f) {
-			DrawUndoableGeneric(label, ref, [&]() { return ImGui::DragFloat3(label, &ref.x, speed); });
+		void DrawUndoableVec3(const char* label, CEVec3& ref, float speed = 0.1f, std::function<void(const CEVec3&)> setter = nullptr) {
+			DrawUndoableGeneric(label, ref, [&]() { return ImGui::DragFloat3(label, &ref.x, speed); }, setter);
 		}
 
-		void DrawUndoableInt(const char* label, int& ref, float speed = 1.0f, int min = 0, int max = 0) {
-			DrawUndoableGeneric(label, ref, [&]() { return ImGui::DragInt(label, &ref, speed, min, max); });
+		void DrawUndoableInt(const char* label, int& ref, float speed = 1.0f, int min = 0, int max = 0, std::function<void(const int&)> setter = nullptr) {
+			DrawUndoableGeneric(label, ref, [&]() { return ImGui::DragInt(label, &ref, speed, min, max); }, setter);
 		}
 
 		/*
 		@brief Helper for Bools; Callable to create imgui editable boolean value
 		*/
-		void DrawUndoableBool(const char* label, bool& ref) {
+		void DrawUndoableBool(const char* label, bool& ref, std::function<void(const bool&)> setter = nullptr) {
 			bool old = ref;
 			if (ImGui::Checkbox(label, &ref)) {
+				auto applyFunc = setter ? setter : [&ref](const bool& v) { ref = v; };
 				UndoManager::GetInstance().AddCommand(
-					std::make_unique<ChangeValueCommand<bool>>(old, ref, [&ref](bool v) { ref = v; })
+					std::make_unique<ChangeValueCommand<bool>>(old, ref, applyFunc)
 				);
 			}
 		}
@@ -399,7 +402,21 @@ namespace {
 				UIHelpers::DrawUndoableVec2("Local Scale", parentComp->localScale);
 			}
 			else {
-				draw_reflected(*t, "Transform");
+				//draw_reflected(*t, "Transform");	// <--- how?
+
+				ImGui::SeparatorText("World Transform");
+
+				using CrashoutsEngine::TransformState;
+
+				TransformState before{ t->position, t->rotation, t->size };
+				static bool sEditing = false;
+				static Entity sEditingEntity = 0;
+				static TransformState sStart{};
+
+				UIHelpers::DrawUndoableVec3("Position", t->position);
+				UIHelpers::DrawUndoableFloat("Rotation", t->rotation);
+
+				UIHelpers::DrawUndoableVec2("Scale", t->size);
 			}
 		}
 	};
@@ -435,12 +452,12 @@ namespace {
 
 			// Set rigidbody mass
 			float mass = rb->getMass();
-			UIHelpers::DrawUndoableFloat("Mass", mass, 0.1f, 0.0f);
+			UIHelpers::DrawUndoableFloat("Mass", mass, 0.1f, 0.0f, 0.0f, [rb](const float& v) { rb->setMass(v); });
 			if (mass != rb->getMass()) rb->setMass(mass);
 
 			// Set rigidbody restitution (bounciness)
 			float rest = rb->GetCoeff();
-			UIHelpers::DrawUndoableFloat("Restitution", rest, 0.01f, 0.0f, 1.0f);
+			UIHelpers::DrawUndoableFloat("Restitution", rest, 0.01f, 0.0f, 1.0f, [rb](const float& v) { rb->setRestitution(v); });
 			if (rest != rb->GetCoeff()) rb->setRestitution(rest);
 
 			// Set Static / Dynamic friction
@@ -449,7 +466,7 @@ namespace {
 
 			// Set intertia
 			float inertia = rb->inertia;
-			UIHelpers::DrawUndoableFloat("Inertia", inertia);
+			UIHelpers::DrawUndoableFloat("Inertia", inertia, 1.0f, 0.0f, 0.0f, [rb](const float& v) { rb->setInertia(v); });
 			if (inertia != rb->inertia) rb->setInertia(inertia);
 
 			// HELPER to automatically calculate inertia
