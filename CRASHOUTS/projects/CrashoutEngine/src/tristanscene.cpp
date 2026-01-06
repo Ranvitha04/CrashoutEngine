@@ -56,10 +56,10 @@ static void AddPhysicsEntity(CrashoutsEngine::Entity& entity, Component::RigidBo
 	globalECS->AddComponent<Component::ShapeComponent>(entity, shape);
 	globalECS->AddComponent<Component::Tag>(entity, name);
 	globalECS->AddComponent<Component::ColliderComponent>(entity, Component::ColliderComponent{
-		std::make_unique<Collision::Polygon>(Collision::Polygon::createOBB(transform.position + extents, transform.position - extents, 50.f, CEVec3{0.f, 0.f, 0.f}))
+		std::make_unique<Collision::Polygon>(Collision::Polygon::CreateOBB(transform.position + extents, transform.position - extents, 50.f, CEVec3{0.f, 0.f, 0.f}))
 	});
 
-	globalECS->GetComponent<Component::RigidBodyComponent>(entity)->setInertia(globalECS->GetComponent<Component::ColliderComponent>(entity)->collider->calculateInertia(globalECS->GetComponent<Component::RigidBodyComponent>(entity)->getMass()));
+	globalECS->GetComponent<Component::RigidBodyComponent>(entity)->setInertia(globalECS->GetComponent<Component::ColliderComponent>(entity)->collider->CalculateInertia(globalECS->GetComponent<Component::RigidBodyComponent>(entity)->getMass()));
 
 }
 
@@ -79,7 +79,7 @@ static void AddPhysicsEntity2(CrashoutsEngine::Entity& entity, Component::RigidB
 	globalECS->AddComponent<Component::ColliderComponent>(entity, Component::ColliderComponent{
 		std::make_unique<Collision::Circle>(Collision::Circle{10.f, {transform.position.x, transform.position.y, 0.f}}) });
 
-	globalECS->GetComponent<Component::RigidBodyComponent>(entity)->setInertia(globalECS->GetComponent<Component::ColliderComponent>(entity)->collider->calculateInertia(globalECS->GetComponent<Component::RigidBodyComponent>(entity)->getMass()));
+	globalECS->GetComponent<Component::RigidBodyComponent>(entity)->setInertia(globalECS->GetComponent<Component::ColliderComponent>(entity)->collider->CalculateInertia(globalECS->GetComponent<Component::RigidBodyComponent>(entity)->getMass()));
 	
 }
 #endif

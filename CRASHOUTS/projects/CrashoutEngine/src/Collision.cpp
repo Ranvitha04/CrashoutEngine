@@ -23,7 +23,7 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserve
 
 /*UTILS RIGHT HERE*/
 namespace Collision {
-	std::pair<f32, f32> projOBBOnAxis(std::array<CEVec3, 4> const& vertices, CEVec3 const& axis) {
+	std::pair<f32, f32> projOBBOnAxis(Polygon::Vertices const& vertices, CEVec3 const& axis) {
 		f32 min{ CEMath::Dot(vertices[0], axis) };
 		f32 max{ min };
 
@@ -183,6 +183,30 @@ namespace Collision {
 		}
 
 		return std::nullopt;
+	}
+
+	/*
+	* @brief Find the point on segment AB that is closed to point P
+	* @param A - Vertex A
+	* @param B - Vertex B
+	* @param P - Point P
+	* @return The point on AB closed to P
+	*/
+	CEVec3 ClosestPointOnSegment(CEVec3 const& A, CEVec3 const& B, CEVec3 const& P) {
+		CEVec3 AP = P - A;
+		CEVec3 AB = B - A;
+
+		f32 ab2 = CEMath::LengthSq(AB);
+		f32 apDotAb = CEMath::Dot(AP, AB);
+
+		// Projection Ratio
+		f32 t = apDotAb / ab2;
+
+		// Clamp t to segment [0, 1]
+		if (t < 0.f) t = 0.f;
+		if (t > 1.f) t = 1.f;
+
+		return A + (AB * t);
 	}
 }
 
@@ -345,66 +369,6 @@ namespace Collision {
 		return CollisionManifold{ .collisionOccured = false };
 	}
 
-	CollisionManifold CollisionHandler::AABBToPolygonCollision(CollisionProps const& coll1, CollisionProps const& coll2) {
-		CollisionManifold result{ .collisionOccured = false };
-
-		CollisionProps const* aabbPtr{ &coll1 };
-		CollisionProps const* polyPtr{ &coll2 };
-
-		// Sort inputs so we know which is which (Enum Order: AABB < POLYGON)
-		bool swapped = false;
-		if (aabbPtr->collider->type > polyPtr->collider->type) {
-			std::swap(aabbPtr, polyPtr);
-			swapped = true;
-		}
-
-		AABBRect const& aabb = dynamic_cast<AABBRect const&>(*(aabbPtr->collider));
-		Polygon const& existingPoly = dynamic_cast<Polygon const&>(*(polyPtr->collider));
-
-		// Cannot use aabb.min/max directly if they are local. We use Position +/- Extents
-		CEVec3 aabbPos = aabbPtr->position + aabb.offset;
-		CEVec3 minWorld = aabbPos - aabb.extents;
-		CEVec3 maxWorld = aabbPos + aabb.extents;
-
-		// Create the temporary polygon in World Space
-		Polygon tempPoly = Polygon::createAABB(minWorld, maxWorld, CEVec3{ 0,0,0 });
-
-		// Ensure the temp polygon has valid normals!
-		if (tempPoly.normalEdges[0] == CEVec3{ 0,0,0 }) {
-			tempPoly.normalEdges[0] = CEVec3{ 0.f, -1.f, 0.f }; // Bottom Edge Normal
-			tempPoly.normalEdges[1] = CEVec3{ 1.f, 0.f, 0.f };  // Right Edge Normal
-			tempPoly.normalEdges[2] = CEVec3{ 0.f, 1.f, 0.f };  // Top Edge Normal
-			tempPoly.normalEdges[3] = CEVec3{ -1.f, 0.f, 0.f }; // Left Edge Normal
-		}
-
-		// SAT Checks
-		Contact contactA{ getContactPoint(tempPoly, existingPoly) };
-		if (!contactA) return result;
-
-		Contact contactB{ getContactPoint(existingPoly, tempPoly) };
-		if (!contactB) return result;
-
-		CollisionManifold finalManifold;
-
-		if (contactA->depth < contactB->depth) {
-			finalManifold = *contactA;
-
-			// SAT found smallest overlap on AABB's axis.
-			// Normal currently pushes Polygon OUT of AABB.
-			// Flip normal to push AABB away from Polygon (AABB -> Polygon collision)
-			finalManifold.normal = -1.f * finalManifold.normal;
-		}
-		else {
-			finalManifold = *contactB;
-		}
-
-		if (!swapped) {
-			finalManifold.normal = -1.f * finalManifold.normal;
-		}
-
-		return finalManifold;
-	}
-
 	CollisionManifold CollisionHandler::CircleToAABBCollision(CollisionProps const& coll1, CollisionProps const& coll2) {
 		CollisionManifold result{ .collisionOccured = false };
 
@@ -488,6 +452,320 @@ namespace Collision {
 
 		return result;
 	}
+	
+	CollisionManifold CollisionHandler::CircleToLineCollision(CollisionProps const& coll1, CollisionProps const& coll2) {
+		CollisionManifold result{ .collisionOccured = false };
+
+		CollisionProps const* circlePtr{ &coll1 };
+		CollisionProps const* linePtr{ &coll2 };
+		bool swapped = false;
+
+		// Ensure strict ordering
+		if (circlePtr->collider->type == ColliderType::LINE) {
+			std::swap(circlePtr, linePtr);
+			swapped = true;
+		}
+
+		Circle const& circle = dynamic_cast<Circle const&>(*(circlePtr->collider));
+		LineSegment const& line = dynamic_cast<LineSegment const&>(*(linePtr->collider));
+
+		// Find closest point on line segment to circle
+		CEVec3 closest = ClosestPointOnSegment(line.GetWorldP1(), line.GetWorldP2(), circle.position);
+
+		// Check distance
+		CEVec3 vecToCirlce = circle.position - closest;
+		f32 distSq = CEMath::LengthSq(vecToCirlce);
+
+		if (distSq < circle.radius * circle.radius) {
+			f32 dist = CEMath::Length(vecToCirlce);
+
+			result.collisionOccured = true;
+			result.depth = circle.radius - dist;
+			result.contactPoints[0] = closest;
+			result.numOfContacts = 1;
+
+			// Handle normal
+			if (dist > 0.0001f) {
+				result.normal = vecToCirlce * (1.f / dist); // Normalized
+			}
+			else {
+				// If circle center is on line, use line normal
+				result.normal = line.GetNormal();
+			}
+
+			if (swapped) result.normal = -1.f * result.normal;
+		}
+
+		return result;
+	}
+
+	CollisionManifold CollisionHandler::AABBToPolygonCollision(CollisionProps const& coll1, CollisionProps const& coll2) {
+		CollisionManifold result{ .collisionOccured = false };
+
+		CollisionProps const* aabbPtr{ &coll1 };
+		CollisionProps const* polyPtr{ &coll2 };
+
+		// Sort inputs so we know which is which (Enum Order: AABB < POLYGON)
+		bool swapped = false;
+		if (aabbPtr->collider->type > polyPtr->collider->type) {
+			std::swap(aabbPtr, polyPtr);
+			swapped = true;
+		}
+
+		AABBRect const& aabb = dynamic_cast<AABBRect const&>(*(aabbPtr->collider));
+		Polygon const& existingPoly = dynamic_cast<Polygon const&>(*(polyPtr->collider));
+
+		// Cannot use aabb.min/max directly if they are local. We use Position +/- Extents
+		CEVec3 aabbPos = aabbPtr->position + aabb.offset;
+		CEVec3 minWorld = aabbPos - aabb.extents;
+		CEVec3 maxWorld = aabbPos + aabb.extents;
+
+		// Create the temporary polygon in World Space
+		Polygon tempPoly = Polygon::CreateAABB(minWorld, maxWorld, CEVec3{ 0,0,0 });
+
+		// Ensure the temp polygon has valid normals!
+		if (tempPoly.normalEdges[0] == CEVec3{ 0,0,0 }) {
+			tempPoly.normalEdges[0] = CEVec3{ 0.f, -1.f, 0.f }; // Bottom Edge Normal
+			tempPoly.normalEdges[1] = CEVec3{ 1.f, 0.f, 0.f };  // Right Edge Normal
+			tempPoly.normalEdges[2] = CEVec3{ 0.f, 1.f, 0.f };  // Top Edge Normal
+			tempPoly.normalEdges[3] = CEVec3{ -1.f, 0.f, 0.f }; // Left Edge Normal
+		}
+
+		// SAT Checks
+		Contact contactA{ getContactPoint(tempPoly, existingPoly) };
+		if (!contactA) return result;
+
+		Contact contactB{ getContactPoint(existingPoly, tempPoly) };
+		if (!contactB) return result;
+
+		CollisionManifold finalManifold;
+
+		if (contactA->depth < contactB->depth) {
+			finalManifold = *contactA;
+
+			// SAT found smallest overlap on AABB's axis.
+			// Normal currently pushes Polygon OUT of AABB.
+			// Flip normal to push AABB away from Polygon (AABB -> Polygon collision)
+			finalManifold.normal = -1.f * finalManifold.normal;
+		}
+		else {
+			finalManifold = *contactB;
+		}
+
+		if (!swapped) {
+			finalManifold.normal = -1.f * finalManifold.normal;
+		}
+
+		return finalManifold;
+	}
+
+	CollisionManifold CollisionHandler::PolygonToLineCollision(CollisionProps const& coll1, CollisionProps const& coll2) {
+		CollisionManifold result{ .collisionOccured = false };
+
+		CollisionProps const* polyPtr{ &coll1 };
+		CollisionProps const* linePtr{ &coll2 };
+
+		// Sort inputs so we know which is which 
+		bool swapped = false;
+		if (polyPtr->collider->type == ColliderType::LINE) {
+			std::swap(polyPtr, linePtr);
+			swapped = true;
+		}
+
+		Polygon const& poly = dynamic_cast<Polygon const&>(*(polyPtr->collider));
+		LineSegment const& line = dynamic_cast<LineSegment const&>(*(linePtr->collider));
+	
+		f32 minOverlap = std::numeric_limits<f32>::max();
+		CEVec3 bestAxis{ 0.f, 0.f, 0.f };
+
+		// Test 1: Polygon axes
+		for (int i = 0; i < poly.vertexCount; ++i) {
+			CEVec3 axis = poly.normalEdges[i];
+
+			// Project poly
+			std::pair<f32, f32> proj = projOBBOnAxis(poly.rotatedVertices, axis);
+
+			// Project line
+			f32 dotP1 = CEMath::Dot(line.GetWorldP1(), axis);
+			f32 dotP2 = CEMath::Dot(line.GetWorldP2(), axis);
+			f32 minLine = std::min(dotP1, dotP2);
+			f32 maxLine = std::max(dotP1, dotP2);
+
+			// Check Overlap
+			f32 overlap = std::min(proj.second, maxLine) - std::max(proj.first, minLine);
+			if (overlap < 0) return result;	// SAT found
+			
+			if (overlap < minOverlap) {
+				minOverlap = overlap;
+				bestAxis = axis;
+			}
+		}
+
+		// Test 2: Line Axis
+		{
+			CEVec3 axis = line.GetNormal();
+
+			// Project Poly
+			f32 minPoly = std::numeric_limits<f32>::max();
+			f32 maxPoly = std::numeric_limits<f32>::min();
+			for (int i = 0; i < poly.vertexCount; ++i) {
+				f32 dot = CEMath::Dot(poly.rotatedVertices[i], axis);
+				minPoly = std::min(minPoly, dot);
+				maxPoly = std::max(maxPoly, dot);
+			}
+
+			// Project Line
+			f32 lineProj = CEMath::Dot(line.GetWorldP1(), axis);
+
+			f32 minLine = lineProj;
+			f32 maxLine = lineProj;
+
+			// Check Overlap
+			f32 overlap = std::min(maxPoly, maxLine) - std::max(minPoly, minLine);
+			if (overlap < 0) return result;
+
+			if (overlap < minOverlap) {
+				minOverlap = overlap;
+				bestAxis = axis;
+			}
+		}
+
+		// Collision Confirmed
+		result.collisionOccured = true;
+		result.depth = minOverlap;
+		result.normal = bestAxis;
+
+		// Ensure normal points from poly to line
+		CEVec3 dir = line.GetWorldP1() - poly.position;
+		if (CEMath::Dot(result.normal, dir) < 0.f) {
+			result.normal = -1.f * result.normal;
+		}
+
+		if (swapped) result.normal = -1.f * result.normal;
+
+		return result;
+	}
+
+	CollisionManifold CollisionHandler::AABBToLineCollision(CollisionProps const& coll1, CollisionProps const& coll2) {
+		CollisionManifold result{ .collisionOccured = false };
+
+		// 1. Sort Inputs (AABB vs Line)
+		CollisionProps const* aabbPtr = (coll1.collider->type == ColliderType::AABB) ? &coll1 : &coll2;
+		CollisionProps const* linePtr = (coll1.collider->type == ColliderType::LINE) ? &coll1 : &coll2;
+
+		// Detect if we swapped (so we can flip the normal later)
+		bool swapped = (coll1.collider->type == ColliderType::LINE);
+
+		// 2. Cast to specific types
+		AABBRect const& aabb = dynamic_cast<AABBRect const&>(*(aabbPtr->collider));
+		LineSegment const& line = dynamic_cast<LineSegment const&>(*(linePtr->collider));
+
+		// 3. Get World Space Data
+		// AABB Center & Extents
+		CEVec3 aabbCenter = aabbPtr->position + aabb.offset;
+		CEVec3 extents = aabb.extents;
+
+		// Line Points (World Space)
+		CEVec3 p1 = line.GetWorldP1();
+		CEVec3 p2 = line.GetWorldP2();
+
+		// 4. SAT (Separating Axis Theorem) - Check 3 Axes
+		// We look for the "Minimum Translation Vector" (MTV) - the smallest overlap.
+
+		float minOverlap = std::numeric_limits<float>::max();
+		CEVec3 bestAxis{ 0.f, 0.f, 0.f };
+
+		// --- AXIS 1: AABB X-Axis (1, 0) ---
+		{
+			// Project AABB: [center.x - extents.x, center.x + extents.x]
+			float minA = aabbCenter.x - extents.x;
+			float maxA = aabbCenter.x + extents.x;
+
+			// Project Line: [min(p1.x, p2.x), max(p1.x, p2.x)]
+			float minL = std::min(p1.x, p2.x);
+			float maxL = std::max(p1.x, p2.x);
+
+			// Check Overlap
+			float overlap = std::min(maxA, maxL) - std::max(minA, minL);
+			if (overlap < 0) return result; // Separated!
+
+			if (overlap < minOverlap) {
+				minOverlap = overlap;
+				bestAxis = CEVec3{ 1.f, 0.f, 0.f };
+				// Point axis towards AABB? We fix direction at the end.
+			}
+		}
+
+		// --- AXIS 2: AABB Y-Axis (0, 1) ---
+		{
+			float minA = aabbCenter.y - extents.y;
+			float maxA = aabbCenter.y + extents.y;
+
+			float minL = std::min(p1.y, p2.y);
+			float maxL = std::max(p1.y, p2.y);
+
+			float overlap = std::min(maxA, maxL) - std::max(minA, minL);
+			if (overlap < 0) return result; // Separated!
+
+			if (overlap < minOverlap) {
+				minOverlap = overlap;
+				bestAxis = CEVec3{ 0.f, 1.f, 0.f };
+			}
+		}
+
+		// --- AXIS 3: Line Normal ---
+
+		{
+			CEVec3 axis = line.GetNormal();
+
+			// Project AABB (Radius projection formula)
+			// Radius = ext.x * |axis.x| + ext.y * |axis.y|
+			float r = extents.x * std::abs(axis.x) + extents.y * std::abs(axis.y);
+			float centerProj = CEMath::Dot(aabbCenter, axis);
+			float minA = centerProj - r;
+			float maxA = centerProj + r;
+
+			// Project Line (The normal is perpendicular to the line, so p1 and p2 project to the SAME value)
+			float lineProj = CEMath::Dot(p1, axis);
+			float minL = lineProj; // Line is "flat" on its own normal
+			float maxL = lineProj;
+
+			float overlap = std::min(maxA, maxL) - std::max(minA, minL);
+			if (overlap < 0) return result; // Separated!
+
+			if (overlap < minOverlap) {
+				minOverlap = overlap;
+				bestAxis = axis;
+			}
+		}
+
+		// 5. Collision Confirmed!
+		result.collisionOccured = true;
+		result.depth = minOverlap;
+		result.normal = bestAxis;
+		result.numOfContacts = 1;
+
+		// 6. Ensure Normal Direction (Push AABB away from Line)
+		// Vector from Line Center to AABB Center
+		CEVec3 lineCenter = (p1 + p2) * 0.5f;
+		CEVec3 dir = aabbCenter - lineCenter;
+
+		// If normal points opposite to direction, flip it
+		if (CEMath::Dot(result.normal, dir) < 0.f) {
+			result.normal = -1.f * result.normal;
+		}
+
+		// Calculate Contact Point (Approximation for AABB on Line)
+		// Closest point on segment to box center
+		result.contactPoints[0] = ClosestPointOnSegment(p1, p2, aabbCenter);
+
+		// 7. Handle Swapping (If input was Line vs AABB, flip normal)
+		if (swapped) {
+			result.normal = -1.f * result.normal;
+		}
+
+		return result;
+	}
 }
 
 /*MAIN UPDATE STUFF!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
@@ -513,9 +791,10 @@ namespace Collision {
 
 	CollisionHandler::CollisionHandler() : Messaging::Observable{}, collideFuncts{}
 	{
-		int circle = static_cast<int>(ColliderType::CIRCLE);   // 0
-		int aabb = static_cast<int>(ColliderType::AABB);     // 1
-		int poly = static_cast<int>(ColliderType::POLYGON);  // 4
+		int line = static_cast<int>(ColliderType::LINE);
+		int circle = static_cast<int>(ColliderType::CIRCLE);
+		int aabb = static_cast<int>(ColliderType::AABB);
+		int poly = static_cast<int>(ColliderType::POLYGON);
 
 		quadTree.Resize(AABBRect{ CEVec3{-2000.f, -2000.f, 0.f}, CEVec3{2000.f, 2000.f, 0.f} });
 
@@ -538,6 +817,12 @@ namespace Collision {
 
 		// Polygon vs Polygon
 		collideFuncts[poly * SHAPE_COUNT + poly] = PolygonToPolygonCollision;
+
+		collideFuncts[line * SHAPE_COUNT + circle] = CircleToLineCollision;
+
+		collideFuncts[line * SHAPE_COUNT + aabb] = AABBToLineCollision;
+
+		collideFuncts[line * SHAPE_COUNT + poly ] = PolygonToLineCollision;
 
 	}
 
@@ -574,7 +859,9 @@ namespace Collision {
 		quadTree.Clear();
 		for (CrashoutsEngine::Entity& entity1 : colliderEntities) { // Changed from globalEntities
 			if (!globalECS.HasComponent<Component::TransformComponent>(entity1)) continue;
-			if (!globalECS.GetComponent<Component::ColliderComponent>(entity1)->collider->enabled) continue;
+			auto* collider = globalECS.GetComponent<Component::ColliderComponent>(entity1);
+			if (!collider || !collider->collider) continue;
+			if (!collider->collider->enabled) continue;
 			quadTree.Insert(entity1);
 		}
 
@@ -584,7 +871,9 @@ namespace Collision {
 		for (CrashoutsEngine::Entity& entity1 : colliderEntities) {
 
 			if (!globalECS.HasComponent<Component::TransformComponent>(entity1)) continue;			
-			if(!globalECS.GetComponent<Component::ColliderComponent>(entity1)->collider->enabled) continue;
+			auto* collider = globalECS.GetComponent<Component::ColliderComponent>(entity1);
+			if (!collider || !collider->collider) continue;
+			if (!collider->collider->enabled) continue;
 
 			collidableObjects.clear();
 

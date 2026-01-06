@@ -30,6 +30,10 @@
                     "x": 1.0,
                     "y": 1.0
                 },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
                 "color": {
                     "x": 59.750240325927737,
                     "y": 24.299999237060548,
@@ -72,14 +76,30 @@
                     "x": 0.0,
                     "y": 0.0,
                     "z": 0.0
-                }
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0
             },
             "collider": {
-                "type": 0,
+                "ColliderType": 0,
+                "isTrigger": false,
+                "enabled": true,
+                "position": {
+                    "x": 0.0,
+                    "y": -780.4058227539063,
+                    "z": 0.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
                 "radius": 10.0,
                 "center": {
                     "x": 0.0,
-                    "y": 0.0,
+                    "y": -780.4058227539063,
                     "z": 0.0
                 }
             },
@@ -95,6 +115,10 @@
                 "uvSize": {
                     "x": 1.0,
                     "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
                 },
                 "color": {
                     "x": 40.75,
@@ -138,18 +162,30 @@
                     "x": 0.0,
                     "y": 0.0,
                     "z": 0.0
-                }
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0
             },
             "collider": {
-                "type": 1,
-                "min": {
-                    "x": -5.0,
-                    "y": -10.0,
+                "ColliderType": 0,
+                "isTrigger": false,
+                "enabled": true,
+                "position": {
+                    "x": 0.0,
+                    "y": -5.0,
                     "z": 0.0
                 },
-                "max": {
-                    "x": 5.0,
+                "offset": {
+                    "x": 0.0,
                     "y": 0.0,
+                    "z": 0.0
+                },
+                "radius": 1.0,
+                "center": {
+                    "x": 0.0,
+                    "y": -5.0,
                     "z": 0.0
                 }
             },
@@ -165,6 +201,10 @@
                 "uvSize": {
                     "x": 1.0,
                     "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
                 },
                 "color": {
                     "x": 40.75,
@@ -208,16 +248,28 @@
                     "x": 0.0,
                     "y": 0.0,
                     "z": 0.0
-                }
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0
             },
             "collider": {
-                "type": 1,
-                "min": {
+                "ColliderType": 0,
+                "isTrigger": false,
+                "enabled": true,
+                "position": {
                     "x": -10.299288749694825,
                     "y": -474.4051513671875,
                     "z": 0.0
                 },
-                "max": {
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "radius": 1.0,
+                "center": {
                     "x": -10.299288749694825,
                     "y": -474.4051513671875,
                     "z": 0.0
@@ -235,6 +287,10 @@
                 "uvSize": {
                     "x": 1.0,
                     "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
                 },
                 "color": {
                     "x": 40.75,
@@ -259,5 +315,15 @@
         "Default": 0,
         "Ground": 2,
         "Player": 1
+    },
+    "quadtree": {
+        "min": {
+            "x": -2000.0,
+            "y": -2000.0
+        },
+        "max": {
+            "x": 2000.0,
+            "y": 2000.0
+        }
     }
 }
