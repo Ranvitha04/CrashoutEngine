@@ -433,18 +433,18 @@ namespace CrashoutsEngine {
                 if (entityValue.HasMember(Keys::COLLIDER_COMPONENT) && entityValue[Keys::COLLIDER_COMPONENT].IsObject()) {
                     const rapidjson::Value& colliderValue = entityValue[Keys::COLLIDER_COMPONENT];
 
-                    // Check for HelperType (The UI/Logical Type)
+                    // Check for ColliderType (The UI/Logical Type)
                     // Fallback to CIRCLE if missing
-                    Collision::HelperType helperT = Collision::HelperType::SPHERE_T;
-                    if (colliderValue.HasMember("helperType") && colliderValue["helperType"].IsInt()) {
-                        helperT = static_cast<Collision::HelperType>(colliderValue["helperType"].GetInt());
+                    Collision::ColliderType helperT = Collision::ColliderType::CIRCLE;
+                    if (colliderValue.HasMember("ColliderType") && colliderValue["ColliderType"].IsInt()) {
+                        helperT = static_cast<Collision::ColliderType>(colliderValue["ColliderType"].GetInt());
                     }
 
                     ColliderComponent& col = gECS.AddComponent<ColliderComponent>(newEntity);
 
                     // Construct manually based on type, similar to the Inspector logic
                     switch (helperT) {
-                    case Collision::HelperType::SPHERE_T: {
+                    case Collision::ColliderType::CIRCLE: {
                         float radius = 1.0f;
                         if (colliderValue.HasMember("radius") && colliderValue["radius"].IsFloat())
                             radius = colliderValue["radius"].GetFloat();
@@ -462,12 +462,12 @@ namespace CrashoutsEngine {
                             newCol->position = pos;
                         }
 
-                        newCol->helperType = Collision::HelperType::SPHERE_T;
+                        newCol->ColliderType = Collision::ColliderType::CIRCLE;
                         col.collider = std::move(newCol);
                         break;
                     }
 
-                    case Collision::HelperType::AABB_T: {
+                    case Collision::ColliderType::AABB: {
                         CEVec3 min{ 0,0,0 }, max{ 0,0,0 };
                         if (colliderValue.HasMember("min")) min = ReadVectorFromJson{}(colliderValue["min"]);
                         if (colliderValue.HasMember("max")) max = ReadVectorFromJson{}(colliderValue["max"]);
@@ -480,12 +480,12 @@ namespace CrashoutsEngine {
                             newCol->position = pos;
                         }
 
-                        newCol->helperType = Collision::HelperType::AABB_T;
+                        newCol->ColliderType = Collision::ColliderType::AABB;
                         col.collider = std::move(newCol);
                         break;
                     }
 
-                    case Collision::HelperType::OBB_T: {
+                    case Collision::ColliderType::OBB: {
                         CEVec3 min{ 0,0,0 }, max{ 0,0,0 };
                         float rot = 0.0f;
 
@@ -496,19 +496,19 @@ namespace CrashoutsEngine {
 
                         // Create via Factory/Helper to ensure vertices are built
                         auto newCol = std::make_unique<Collision::Polygon>(
-                            Collision::Polygon::createOBB(min, max, rot, CEVec3{})
+                            Collision::Polygon::CreateOBB(min, max, rot, CEVec3{})
                         );
 
                         if (colliderValue.HasMember("offset")) newCol->offset = ReadVectorFromJson{}(colliderValue["offset"]);
                         newCol->position = ReadVectorFromJson{}(colliderValue["position"]); // Important for OBB drift!
 
-                        newCol->helperType = Collision::HelperType::OBB_T;
+                        newCol->ColliderType = Collision::ColliderType::OBB;
                         col.collider = std::move(newCol);
                         break;
                     }
 
-                    case Collision::HelperType::POLYGON_T:
-                    case Collision::HelperType::TRIANGLE_T: {
+                    case Collision::ColliderType::POLYGON:
+                    case Collision::ColliderType::TRIANGLE: {
 
                         std::vector<CEVec3> verts;
                         if (colliderValue.HasMember("vertices") && colliderValue["vertices"].IsArray()) {
@@ -540,9 +540,9 @@ namespace CrashoutsEngine {
                         newCol->offset = off;
 
                         // Force Update
-                        newCol->forceUpdateRotation(rot);
+                        newCol->ForceUpdateRotation(rot);
 
-                        newCol->helperType = helperT; // Set to POLYGON_T or TRIANGLE_T
+                        newCol->ColliderType = helperT; // Set to POLYGON or TRIANGLE
                         col.collider = std::move(newCol);
 
                         if (col.collider) {
@@ -1471,7 +1471,7 @@ namespace CrashoutsEngine {
                     rapidjson::Value colliderValue(rapidjson::kObjectType);
 
                     // 1. Helper Type (The Source of Truth)
-                    colliderValue.AddMember("helperType", (int)colComp.collider->helperType, allocator);
+                    colliderValue.AddMember("ColliderType", (int)colComp.collider->ColliderType, allocator);
 
                     // Save isTrigger
                     colliderValue.AddMember("isTrigger", colComp.collider->isTrigger, allocator);
@@ -1492,8 +1492,8 @@ namespace CrashoutsEngine {
                     offVal.AddMember("z", colComp.collider->offset.z, allocator);
                     colliderValue.AddMember("offset", offVal, allocator);
 
-                    switch (colComp.collider->helperType) {
-                    case Collision::HelperType::SPHERE_T: {
+                    switch (colComp.collider->ColliderType) {
+                    case Collision::ColliderType::CIRCLE: {
                         auto* s = static_cast<Collision::Circle*>(colComp.collider.get());
                         colliderValue.AddMember("radius", s->radius, allocator);
 
@@ -1505,7 +1505,7 @@ namespace CrashoutsEngine {
                         colliderValue.AddMember("center", cVal, allocator);
                         break;
                     }
-                    case Collision::HelperType::AABB_T: {
+                    case Collision::ColliderType::AABB: {
                         auto* a = static_cast<Collision::AABBRect*>(colComp.collider.get());
 
                         rapidjson::Value min(rapidjson::kObjectType);
@@ -1521,12 +1521,12 @@ namespace CrashoutsEngine {
                         colliderValue.AddMember("max", max, allocator);
                         break;
                     }
-                    case Collision::HelperType::OBB_T: {
+                    case Collision::ColliderType::OBB: {
                         // Cast to Polygon (since OBB is now a Polygon backend)
                         auto* p = static_cast<Collision::Polygon*>(colComp.collider.get());
 
-                        // Save Min/Max/Rotation so createOBB can reconstruct it
-                        CEVec3 extents = Collision::Polygon::calculateOBBExtents(*p);
+                        // Save Min/Max/Rotation so CreateOBB can reconstruct it
+                        CEVec3 extents = Collision::Polygon::CalculateOBBExtents(*p);
 
                         // Reconstruct Min/Max for saving
                         CEVec3 center = p->position;
@@ -1544,8 +1544,8 @@ namespace CrashoutsEngine {
                         colliderValue.AddMember("rotation", p->rotation, allocator);
                         break;
                     }
-                    case Collision::HelperType::POLYGON_T:
-                    case Collision::HelperType::TRIANGLE_T: {
+                    case Collision::ColliderType::POLYGON:
+                    case Collision::ColliderType::TRIANGLE: {
                         auto* p = static_cast<Collision::Polygon*>(colComp.collider.get());
                         colliderValue.AddMember("rotation", p->rotation, allocator);
 

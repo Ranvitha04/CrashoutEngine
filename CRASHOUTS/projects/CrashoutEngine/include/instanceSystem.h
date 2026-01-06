@@ -110,7 +110,8 @@ namespace InstancingSystem {
         CEColor color;
         float rotation;
         float scale;
-        float sideLength;
+        float width;
+        float height;
         CEVec2 uvOffset;
         // Triangle height is usually calculated in shader or CPU, 
         // but can be passed as padding here if needed.
@@ -203,14 +204,16 @@ namespace InstancingSystem {
 
     void CreateInstancedTriangles(const CEVec3* positions, const CEColor* colors,
         const float* rotations, const float* scales,
-        const float* sideLengths,
+        const float* width,
+        const float* height,
         const CEVec2* uvOffsets,
         int count);
 
     void CreateInstancedTrianglesTextured(const std::string& textureName,
         const CEVec3* positions, const CEColor* colors,
         const float* rotations, const float* scales,
-        const float* sideLengths,
+        const float* width,
+        const float* height,
         const CEVec2* uvOffsets,
         int count,
         const CEColor& tint = CEColor(1.0f, 1.0f, 1.0f),
@@ -222,7 +225,8 @@ namespace InstancingSystem {
         const CEColor* colors,
         const float* rotations,
         const float* scales,
-        const float* sideLengths,
+        const float* width,
+        const float* height,
         const CEVec2* uvOffsets,
         int count,
         const InstancingSystem::InstancedParams& params

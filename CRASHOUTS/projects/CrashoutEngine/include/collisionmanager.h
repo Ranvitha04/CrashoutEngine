@@ -100,6 +100,13 @@ namespace Collision {
 
 			static CollisionManifold AABBToPolygonCollision(CollisionProps const& coll1, CollisionProps const& coll2);
 
+			/*ColliderType::LINE FUNCTIONS*/
+			static CollisionManifold CircleToLineCollision(CollisionProps const& coll1, CollisionProps const& coll2);
+
+			static CollisionManifold PolygonToLineCollision(CollisionProps const& coll1, CollisionProps const& coll2);
+
+			static CollisionManifold AABBToLineCollision(CollisionProps const& coll1, CollisionProps const& coll2);
+
 			std::vector<CollisionEvent> m_FrameCollisions;
 			
 		public:
