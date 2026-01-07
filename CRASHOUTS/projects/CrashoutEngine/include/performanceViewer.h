@@ -121,20 +121,22 @@ public:
         @param  p     owning profiler instance.
         @param  name  label for the timed region (must outlive the scope).
         */
-        Scoped(FrameProfiler& p, const char* name) : p_(p), name(name), t0(Clock::now()) {
-
+        Scoped(FrameProfiler* p, const char* name) : p_(p), name(name), t0(Clock::now()) {
+            if (p_) t0 = Clock::now();
         }
 
         /*!
         @brief  on destruction, records elapsed time to the profiler.
         */
         ~Scoped() {
-            using namespace std::chrono;
-            const double ms = duration<double, std::milli>(Clock::now() - t0).count();
-            p_.add_ms(name, ms);
+            if (p_) {
+                using namespace std::chrono;
+                const double ms = duration<double, std::milli>(Clock::now() - t0).count();
+                p_->add_ms(name, ms);
+            }
         }
     private:
-        FrameProfiler& p_;
+        FrameProfiler* p_;
         const char* name;
         using Clock = std::chrono::steady_clock;
         Clock::time_point t0;
