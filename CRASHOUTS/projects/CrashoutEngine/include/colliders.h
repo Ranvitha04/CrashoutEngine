@@ -30,19 +30,20 @@ namespace Collision {
 		CIRCLE,
 		AABB,
 		OBB,
+		LINE,
 		TRIANGLE,
 		POLYGON,
 		NONE
 	};
 
-	enum class HelperType {
-		SPHERE_T,
-		AABB_T,
-		OBB_T,
-		TRIANGLE_T,
-		POLYGON_T,
+	/*enum class ColliderType {
+		CIRCLE,
+		AABB,
+		OBB,
+		TRIANGLE,
+		POLYGON,
 		NONE
-	};
+	};*/
 
 	/*!
 	@struct	CollisionManifold
@@ -78,10 +79,10 @@ namespace Collision {
 		virtual std::unique_ptr<Collider> clone() const = 0;
 		virtual void UpdateCollider([[maybe_unused]] CEVec3 const& newPos) = 0;
 		virtual void UpdateRotation([[maybe_unused]] f32 newRotation) {};
-		virtual f32 calculateInertia([[maybe_unused]] f32 mass) { return 0.f; };
+		virtual f32 CalculateInertia([[maybe_unused]] f32 mass) { return 0.f; };
 		CEVec3 offset{};
 		CEVec3 position{};
-		HelperType helperType; /*HELPER FOR UI DROPDOWN*/
+		ColliderType ColliderType; /*HELPER FOR UI DROPDOWN*/
 		bool isTrigger = false;
 		bool enabled = true;
 	};
@@ -173,6 +174,7 @@ namespace Collision {
 		float rotation{};
 		int vertexCount{};
 
+		CEVec3 extents{ 1.0f, 1.0f, 0.0f };
 
 		Vertices vertices;
 		Vertices rotatedVertices;
@@ -183,26 +185,76 @@ namespace Collision {
 		virtual void UpdateRotation(f32 newRotation);
 		~Polygon() = default;
 		virtual void UpdateCollider(CEVec3 const&);
-		void updatePosition(CEVec3 const& newPos);
-		void calcNormals();
-		CEVec3 calcNormal(CEVec3 const& edge);
+		void UpdatePosition(CEVec3 const& newPos);
+		void CalcNormals();
+		//Re-scales vertices based on a new size
+		void Rescale(const CEVec3& newExtents);
+		CEVec3 CalcNormal(CEVec3 const& edge);
 
-		virtual f32 calculateInertia(f32 mass) override;
+		virtual f32 CalculateInertia(f32 mass) override;
 
-		void forceUpdateRotation(f32 newRotation);
+		void ForceUpdateRotation(f32 newRotation);
 
 		/*ColliderType::OBB HELPER FUNCTIONS*/
-		static Polygon createOBB(CEVec3 const& min, CEVec3 const& max, f32 rotation, CEVec3 offset);
-		static void updateOBB(CEVec3 const& min, CEVec3 const& max, Polygon& polygon);
-		static CEVec3 calculateOBBExtents(Polygon const& polygon);
+		static Polygon CreateOBB(CEVec3 const& min, CEVec3 const& max, f32 rotation, CEVec3 offset);
+		static void UpdateOBB(CEVec3 const& min, CEVec3 const& max, Polygon& polygon);
+		static CEVec3 CalculateOBBExtents(Polygon const& polygon);
 		
 		/*ColliderType::AABB HELPER FUNCTIONS*/
-		static Polygon createAABB(CEVec3 const& min, CEVec3 const& max, CEVec3 offset);
+		static Polygon CreateAABB(CEVec3 const& min, CEVec3 const& max, CEVec3 offset);
 
 		virtual std::unique_ptr<Collider> clone() const override {
 			return std::make_unique<Polygon>(*this);
 		}
 
+	};
+
+	/*!
+	@class LineSegment
+	@brief	Struct for the Line Segment collider
+	*/
+	class LineSegment : public Collider {	
+	public:
+		// GETTERS
+		const CEVec3& GetWorldP1() const { return worldP1; }
+		const CEVec3& GetWorldP2() const  { return worldP2; }
+		const CEVec3& GetNormal() const { return normal; }
+
+		// SETTERS
+		void SetWorldP1(CEVec3& newP1) { worldP1 = newP1; }
+		void SetWorldP2(CEVec3& newP2) { worldP2 = newP2; }
+		void SetNormal(CEVec3& newNormal) { normal = newNormal; }
+
+		/*
+		* @brief Constructor for LineSegment struct
+		* @param start - Start vertex
+		* @param end - End vertex
+		*/
+		LineSegment(const CEVec3& start, const CEVec3& end);
+
+		/*
+		* @brief Override function personalized for Line Segement
+		* @param newPos - New Position data
+		*/
+		void UpdateCollider(CEVec3 const& newPos) override;
+
+		/*
+		* @brief Override function personalized for Line Segement
+		* @param newRot - New rotation data in degrees
+		*/
+		void UpdateRotation(f32 newRotation) override;
+
+		virtual std::unique_ptr<Collider> clone() const override {
+			return std::make_unique<LineSegment>(*this);
+		}
+
+		CEVec3 p1;		// Local Start
+		CEVec3 p2;		// Local End
+
+	private:
+		CEVec3 worldP1;		// World Start
+		CEVec3 worldP2;		// World End
+		CEVec3 normal;	// Normal perpendicular to the line
 	};
 
 	class ColliderFactory
@@ -256,14 +308,30 @@ namespace Collision {
 					std::stof(defaultedArg("rotation", "0.f"))
 					});
 
-			} if (type == ColliderType::POLYGON || type == ColliderType::TRIANGLE) {
-				// Default Polygon/Triangle (Empty or basic quad)
+			} if (type == ColliderType::LINE) {
+
+				return std::make_unique<LineSegment>(
+					CEVec3{ -0.5f, 0.f, 0.f }, // Default Start (p1)
+					CEVec3{ 0.5f, 0.f, 0.f }  // Default End (p2)
+				);
+
+			} if (type == ColliderType::TRIANGLE) {
+				// Default Triangle (Empty or basic quad)
 				return std::make_unique<Polygon>(
 					std::initializer_list<CEVec3>{
 						{-0.5f, -0.5f, 0.f}, { 0.5f, -0.5f, 0.f }, { 0.5f, 0.5f, 0.f }
 				}
 				);
 			}
+			/*
+			if (type == ColliderType::POLYGON || type == ColliderType::TRIANGLE) {
+				// Default Polygon/Triangle (Empty or basic quad)
+				return std::make_unique<Polygon>(
+					std::initializer_list<CEVec3>{
+						{-0.5f, -0.5f, 0.f}, { 0.5f, -0.5f, 0.f }, { 0.5f, 0.5f, 0.f }
+				}
+				);
+			}*/
 
 			return std::make_unique<Circle>(Circle{ 0.f, CEVec3{} });
 		}

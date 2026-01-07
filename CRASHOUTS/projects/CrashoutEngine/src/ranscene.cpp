@@ -1009,6 +1009,7 @@ void RenderRan()
                     gM5TriPos.data(), gM5TriColor.data(),
                     gM5TriRot.data(), gM5TriScale.data(),
                     gM5TriSide.data(),
+                    gM5TriSide.data(),
                     gM5TriOffset.data(), // CHANGED: Passed Offset
                     static_cast<int>(gM5TriPos.size())
                 );
@@ -1018,6 +1019,7 @@ void RenderRan()
                     params.textureName,
                     gM5TriPos.data(), gM5TriColor.data(),
                     gM5TriRot.data(), gM5TriScale.data(),
+                    gM5TriSide.data(),
                     gM5TriSide.data(),
                     gM5TriOffset.data(), // CHANGED: Passed Offset
                     static_cast<int>(gM5TriPos.size()),

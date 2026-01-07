@@ -73,13 +73,7 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserv
 using namespace CrashoutsEngine;
 using namespace Component;
 
-//----------------------------------------------------------------------------- file-local state & helpers
-namespace {
-	f32 max(f32 x1, f32 y2, f32 z3) {
-		return std::max(std::max(x1, y2), z3);
-	}
-}
-
+//---------------------------------------- file-local state & helpers ---------------------------------------- 
 /*!
  @brief File-local adapters/providers and registration.
 
@@ -87,6 +81,141 @@ namespace {
  once via RegisterBuiltinComponentAdapters(), which the app calls at startup.
 */
 namespace {
+
+	//------------------------------------- UI Helpers for Undo/ Redo logic -------------------------------------- 
+	namespace UIHelpers {
+		/*
+		@brief Generic Undo Helper
+		@usage DrawUndoable("Label", myFloat, DrawFunc); DrawFunc should return true if value changed
+		*/
+		template<typename T, typename Func>
+		void DrawUndoableGeneric(const char* label, T& ref, Func drawFunc, std::function<void(const T&)> customSetter = nullptr) {
+			static std::unordered_map<ImGuiID, T> startValues;
+			ImGuiID id = ImGui::GetID(label);
+
+			// Draw UI
+			if (drawFunc()) {
+				// Value modified this frame
+			}
+
+			// Capture start value
+			if (ImGui::IsItemActivated()) {
+				startValues[id] = ref;
+			}
+
+			// Capture start value
+			if(ImGui::IsItemDeactivatedAfterEdit()){
+				if (startValues.find(id) != startValues.end()) {
+					T start = startValues[id];
+					T end = ref;
+					if (start != end) {
+						// If a custom setter is provided, use it. Otherwise default to writing to the reference.
+						auto applyFunc = customSetter ? customSetter : [&ref](const T& v) { ref = v; };
+
+						UndoManager::GetInstance().AddCommand(
+							std::make_unique<ChangeValueCommand<T>>(start, end, applyFunc)
+						);
+					}
+					startValues.erase(id);
+				}
+			}
+		}
+
+		// Specializations 
+		void DrawUndoableFloat(const char* label, float& ref, float speed = 0.1f, float min = 0.0f, float max = 0.0f, std::function<void(const float&)> setter = nullptr) {
+			DrawUndoableGeneric(label, ref, [&]() { return ImGui::DragFloat(label, &ref, speed, min, max); }, setter);
+		}
+
+		void DrawUndoableVec2(const char* label, CEVec2& ref, float speed = 0.1f, std::function<void(const CEVec2&)> setter = nullptr) {
+			DrawUndoableGeneric(label, ref, [&]() { return ImGui::DragFloat2(label, &ref.x, speed); }, setter);
+		}
+
+		void DrawUndoableVec3(const char* label, CEVec3& ref, float speed = 0.1f, std::function<void(const CEVec3&)> setter = nullptr) {
+			DrawUndoableGeneric(label, ref, [&]() { return ImGui::DragFloat3(label, &ref.x, speed); }, setter);
+		}
+
+		void DrawUndoableInt(const char* label, int& ref, float speed = 1.0f, int min = 0, int max = 0, std::function<void(const int&)> setter = nullptr) {
+			DrawUndoableGeneric(label, ref, [&]() { return ImGui::DragInt(label, &ref, speed, min, max); }, setter);
+		}
+
+		/*
+		@brief Helper for Bools; Callable to create imgui editable boolean value
+		*/
+		void DrawUndoableBool(const char* label, bool& ref, std::function<void(const bool&)> setter = nullptr) {
+			bool old = ref;
+			if (ImGui::Checkbox(label, &ref)) {
+				auto applyFunc = setter ? setter : [&ref](const bool& v) { ref = v; };
+				UndoManager::GetInstance().AddCommand(
+					std::make_unique<ChangeValueCommand<bool>>(old, ref, applyFunc)
+				);
+			}
+		}
+	
+		/*
+		@brief Helper for std::string; Callable to create imgui editable string value
+		*/
+		void DrawUndoableString(const char* label, std::string& ref) {
+			static std::unordered_map<ImGuiID, std::string> startValues;
+			ImGuiID id = ImGui::GetID(label);
+
+			char buf[256];
+			strncpy(buf, ref.c_str(), sizeof(buf));
+
+			if (ImGui::InputText(label, buf, sizeof(buf))) {
+				ref = std::string(buf);
+			}
+
+			if (ImGui::IsItemActivated()) startValues[id] = ref;
+
+			if (ImGui::IsItemDeactivatedAfterEdit()) {
+				if (startValues.count(id)) {
+					std::string start = startValues[id];
+					if (start != ref) {
+						UndoManager::GetInstance().AddCommand(
+							std::make_unique<ChangeValueCommand<std::string>>(start, ref, [&ref](const std::string& v) { ref = v; })
+						);
+					}
+					startValues.erase(id);
+				}
+			}
+		}
+
+		/*
+		@brief Helper for CEColor; Callable to create imgui editable color value
+		*/
+		void DrawUndoableColor(const char* label, CEColor& ref) {
+			static std::unordered_map<ImGuiID, CEColor> startValues;
+			static bool isEditing = false;
+
+			ImGuiID id = ImGui::GetID(label);
+			float col[4] = { ref.x(), ref.y(), ref.z(), ref.w() };
+
+			if (ImGui::ColorEdit4(label, col, ImGuiColorEditFlags_AlphaBar)) {
+				if (!isEditing) {
+					startValues[id] = ref;
+					isEditing = true;
+				}
+				ref = { col[0], col[1], col[2], col[3] };
+			}
+
+			if (ImGui::IsItemDeactivated()) {
+				if (isEditing && startValues.count(id)) {
+					CEColor start = startValues[id];
+					if (start != ref) {
+						UndoManager::GetInstance().AddCommand(
+							std::make_unique<ChangeValueCommand<CEColor>>(start, ref, [&ref](const CEColor& v) { ref = v; })
+						);
+					}
+					startValues.erase(id);
+				}
+				isEditing = false;
+			}
+		}
+	}
+
+	f32 max(f32 x1, f32 y2, f32 z3) {
+		return std::max(std::max(x1, y2), z3);
+	}
 
 	/*!
 	@brief Adapter for editing Component::NameComponent (text name).
@@ -106,7 +235,7 @@ namespace {
 		}
 		void drawInspector(ECS& ecs, Entity e) override {
 			if (auto* c = ecs.GetComponent<Component::NameComponent>(e)) {
-				draw_reflected(*c, "Name");
+				UIHelpers::DrawUndoableString("Entity Name", c->name);
 			}
 		}
 	};
@@ -144,67 +273,64 @@ namespace {
 			for (auto const& [name, bit] : layerMap) {
 				bool isSelected = (mask & bit) != 0;
 
-				float buttonWidth = 25.f;
-				float selectableWidth = ImGui::GetContentRegionAvail().x - buttonWidth - ImGui::GetStyle().ItemSpacing.x;
+				// Use Selectable so we can detect clicks easily
+				if (ImGui::Selectable(name.c_str(), isSelected, ImGuiSelectableFlags_DontClosePopups)) {
+					unsigned int oldMask = mask;
+					unsigned int newMask = mask ^ bit; // Toggle
 
-				// Use DontClosePopups so we can click multiple items
-				if (ImGui::Selectable(name.c_str(), isSelected, ImGuiSelectableFlags_DontClosePopups, ImVec2(selectableWidth, 0))) {
-					mask ^= bit; // Toggle bit
+					UndoManager::GetInstance().AddCommand(
+						std::make_unique<ChangeValueCommand<unsigned int>>(
+							oldMask, newMask, [&mask](unsigned int v) { mask = v; }
+						)
+					);
+					mask = newMask;
 				}
 
-				// Delete Button (Don't allow deleting Default)
+				// Remove Button
 				if (name != "Default") {
 					ImGui::SameLine();
-					if (ImGui::Button(("X##Remove" + name).c_str(), ImVec2(buttonWidth, 0))) {
-						layerToRemove = name;
-					}
+					if (ImGui::SmallButton(("X##" + name).c_str())) layerToRemove = name;
 				}
 			}
 
 			// --- 4. Removal Logic (Global removal) ---
 			if (!layerToRemove.empty()) {
-				unsigned int bitToRemove = layerMap[layerToRemove];
+				// Complex undo: Removing a layer affects ALL entities. 
+				// For simplicity, just undo the removal from the map, not the entities.
+				unsigned int bit = layerMap[layerToRemove];
 				layerMap.erase(layerToRemove);
 
-				// Clear this bit from ALL entities in the world
-				// (This is why we need the ECS reference)
-				std::vector<LayerComponent>& layerComponents = ecs.GetComponentArray<LayerComponent>().dense;
-				for (LayerComponent& layer : layerComponents) {
-					layer.currentLayer &= ~bitToRemove;
+				// Clear from current mask with undo
+				unsigned int oldMask = mask;
+				mask &= ~bit;
+				if (mask != oldMask) {
+					UndoManager::GetInstance().AddCommand(
+						std::make_unique<ChangeValueCommand<unsigned int>>(oldMask, mask, [&mask](unsigned int v) { mask = v; })
+					);
 				}
 
-				// Also clear it from the current mask being edited immediately
-				mask &= ~bitToRemove;
+				// Clean up all entities immediately (Not undoable currently for simplicity)
+				for (LayerComponent& lc : ecs.GetComponentArray<LayerComponent>().dense) {
+					lc.currentLayer &= ~bit;
+				}
 			}
 
 			// --- 5. Add New Layer Logic ---
 			ImGui::Separator();
-			static char newLayerBuffer[64] = "";
-			if (ImGui::InputText("##NewLayer", newLayerBuffer, 64, ImGuiInputTextFlags_EnterReturnsTrue)) {
-				if (strlen(newLayerBuffer) > 0) {
-					if (layerMap.find(newLayerBuffer) == layerMap.end()) {
-						unsigned int nextBit = 1;
-						if (!layerMap.empty()) {
-							auto maxElement = std::max_element(layerMap.begin(), layerMap.end(),
-								[](const auto& a, const auto& b) { return a.second < b.second; });
-							nextBit = maxElement->second << 1;
-						}
-						layerMap.emplace(newLayerBuffer, nextBit);
-					}
-					newLayerBuffer[0] = '\0';
-				}
-			}
+			static char newLayerBuf[64] = "";
+			bool add = ImGui::InputText("New Layer", newLayerBuf, 64, ImGuiInputTextFlags_EnterReturnsTrue);
 			ImGui::SameLine();
-			if (ImGui::Button("Add")) {
-				if (strlen(newLayerBuffer) > 0 && layerMap.find(newLayerBuffer) == layerMap.end()) {
+			if (ImGui::Button("Add") || add) {
+				if (strlen(newLayerBuf) > 0 && layerMap.find(newLayerBuf) == layerMap.end()) {
 					unsigned int nextBit = 1;
 					if (!layerMap.empty()) {
-						auto maxElement = std::max_element(layerMap.begin(), layerMap.end(),
+						auto maxEl = std::max_element(layerMap.begin(), layerMap.end(),
 							[](const auto& a, const auto& b) { return a.second < b.second; });
-						nextBit = maxElement->second << 1;
+						nextBit = maxEl->second << 1;
 					}
-					layerMap.emplace(newLayerBuffer, nextBit);
-					newLayerBuffer[0] = '\0';
+					// TODO: Add AddLayerCommand for undoing layer creation
+					layerMap.emplace(newLayerBuf, nextBit);
+					newLayerBuf[0] = '\0';
 				}
 			}
 
@@ -271,81 +397,26 @@ namespace {
 				// ============================================================
 				ImGui::TextColored(ImVec4(0.5f, 1.0f, 0.5f, 1.0f), "Child Mode (Local Space)");
 
-				bool changed = false;
-
-				// 1. Local Position
-				float pos[3] = { parentComp->localPos.x, parentComp->localPos.y, parentComp->localPos.z };
-				if (ImGui::DragFloat3("Local Position", pos, 0.1f)) {
-					parentComp->localPos = { pos[0], pos[1], pos[2] };
-					changed = true;
-				}
-
-				// 2. Local Rotation (Degrees for UI, Radians internally?)
-				// Assuming localRot is in Radians to match TransformComponent standard
-				float rot = parentComp->localRot;
-				if (ImGui::DragFloat("Local Rotation", &rot, 1.0f)) {
-					parentComp->localRot = rot;
-					changed = true;
-				}
-
-				// 3. Local Scale
-				float scale[2] = { parentComp->localScale.x, parentComp->localScale.y };
-				if (ImGui::DragFloat2("Local Scale", scale, 0.05f)) {
-					parentComp->localScale = { scale[0], scale[1] };
-					changed = true;
-				}
-
-				// No Undo logic implemented here for brevity, but you can add it similar to below.
-				// IMPORTANT: Force Update world transform immediately for responsiveness?
-				// Usually the system handles it next frame, which is fine.
+				UIHelpers::DrawUndoableVec3("Local Position", parentComp->localPos);
+				UIHelpers::DrawUndoableFloat("Local Rotation", parentComp->localRot);
+				UIHelpers::DrawUndoableVec2("Local Scale", parentComp->localScale);
 			}
 			else {
-				// ============================================================
-				// ROOT MODE: Edit World Transform (TransformComponent)
-				// ============================================================
-				// This is your existing logic, just wrapped in an else block.
+				//draw_reflected(*t, "Transform");	// <--- how?
 
-				ImGui::TextDisabled("World Space");
+				ImGui::SeparatorText("World Transform");
 
-				TransformState before{
-					t->position,
-					t->rotation,
-					t->size
-				};
+				using CrashoutsEngine::TransformState;
 
-				static bool   sEditing = false;
+				TransformState before{ t->position, t->rotation, t->size };
+				static bool sEditing = false;
 				static Entity sEditingEntity = 0;
 				static TransformState sStart{};
 
-				draw_reflected(*t, "Transform"); // Your reflection helper
+				UIHelpers::DrawUndoableVec3("Position", t->position);
+				UIHelpers::DrawUndoableFloat("Rotation", t->rotation);
 
-				const bool nowAnyActive = ImGui::IsAnyItemActive();
-
-				if (!sEditing && nowAnyActive) {
-					sEditing = true;
-					sEditingEntity = e;
-					sStart = before;
-				}
-
-				if (sEditing && sEditingEntity == e && !nowAnyActive) {
-					sEditing = false;
-					TransformState after{ t->position, t->rotation, t->size };
-
-					const bool changed =
-						(sStart.position.x != after.position.x) ||
-						(sStart.position.y != after.position.y) ||
-						(sStart.position.z != after.position.z) ||
-						(sStart.rotation != after.rotation) ||
-						(sStart.scale.x != after.scale.x) ||
-						(sStart.scale.y != after.scale.y);
-
-					if (changed) {
-						UndoManager::GetInstance().AddCommand(
-							std::make_unique<CrashoutsEngine::TransformEntityCommand>(e, sStart, after)
-						);
-					}
-					sEditingEntity = 0;
-				}
+				UIHelpers::DrawUndoableVec2("Scale", t->size);
 			}
 		}
 	};
@@ -374,142 +445,45 @@ namespace {
 		}
 
 		void drawInspector(ECS& ecs, Entity e) override {
-			if (auto* rb = ecs.GetComponent<RigidBodyComponent>(e)) {
-				ImGui::PushID((int)e);
+			auto* rb = ecs.GetComponent<RigidBodyComponent>(e);
+			if (!rb) return;
 
-				// Reflect current values to a temp
-				auto oldRef = rb->reflection();
-				auto ref = oldRef;
+			ImGui::SeparatorText("Dynamics");
 
-				// edit session tracking
-				struct EditSession {
-					bool active = false;
-					ImGuiID beginActiveId = 0;
-					Component::RigidBodyComponent::ReflectionType startRef{};
-					Entity entity = 0;
-				};
-				// one static session
-				static EditSession sess;
+			// Set rigidbody mass
+			float mass = rb->getMass();
+			UIHelpers::DrawUndoableFloat("Mass", mass, 0.1f, 0.0f, 0.0f, [rb](const float& v) { rb->setMass(v); });
+			if (mass != rb->getMass()) rb->setMass(mass);
 
-				ImGuiID activeBefore = ImGui::GetActiveID();
+			// Set rigidbody restitution (bounciness)
+			float rest = rb->GetCoeff();
+			UIHelpers::DrawUndoableFloat("Restitution", rest, 0.01f, 0.0f, 1.0f, [rb](const float& v) { rb->setRestitution(v); });
+			if (rest != rb->GetCoeff()) rb->setRestitution(rest);
 
-				// Draw all fields
-				bool anyChangedThisFrame = draw_reflected(ref, "RigidBody (data)");
-				if (anyChangedThisFrame) {
-					// 1. Clamp Restitution [0.0 - 1.0]
-					if (ref.restitution < 0.0f) ref.restitution = 0.0f;
-					if (ref.restitution > 1.0f) ref.restitution = 1.0f;
+			// Set Static / Dynamic friction
+			UIHelpers::DrawUndoableFloat("Static Friction", rb->staticFriction, 0.01f, 0.0f, 1.0f);
+			UIHelpers::DrawUndoableFloat("Dynamic Friction", rb->dynamicFriction, 0.01f, 0.0f, 1.0f);
 
-					// 2. Clamp Mass [0.0 - infinity]
-					if (ref.mass < 0.0f) ref.mass = 0.0f;
+			// Set intertia
+			float inertia = rb->inertia;
+			UIHelpers::DrawUndoableFloat("Inertia", inertia, 1.0f, 0.0f, 0.0f, [rb](const float& v) { rb->setInertia(v); });
+			if (inertia != rb->inertia) rb->setInertia(inertia);
+
+			// HELPER to automatically calculate inertia
+			if (ecs.HasComponent<ColliderComponent>(e)) {
+				if (ImGui::Button("Auto-Calc Inertia")) {
+					auto* cc = ecs.GetComponent<ColliderComponent>(e);
+					if (cc && cc->collider) rb->setInertia(cc->collider->CalculateInertia(rb->getMass()));
 				}
-
-				ImGuiID activeAfter = ImGui::GetActiveID();
-
-				// Start of an edit session
-				if (!sess.active && activeBefore == 0 && activeAfter != 0) {
-					sess.active = true;
-					sess.beginActiveId = activeAfter;
-					sess.startRef = oldRef;
-					sess.entity = e;
-				}
-
-				// Apply live
-				if (anyChangedThisFrame) {
-					*rb = Component::RigidBodyComponent(ref);
-				}
-
-				// when no control is active anymore
-				if (sess.active && sess.entity == e && activeAfter == 0) {
-					sess.active = false;
-
-					auto endRef = rb->reflection();
-					if (sess.startRef.velocity != endRef.velocity ||
-						sess.startRef.max_velocity != endRef.max_velocity ||
-						sess.startRef.mass != endRef.mass ||
-						sess.startRef.restitution != endRef.restitution)
-					{
-						using RefT = Component::RigidBodyComponent::ReflectionType;
-						UndoManager::GetInstance().AddCommand(
-							std::make_unique<CrashoutsEngine::ChangeValueCommand<RefT>>(
-								sess.startRef, endRef,
-								[rb](const RefT& v) { *rb = Component::RigidBodyComponent(v); }
-							)
-						);
-					}
-					// reset session state
-					sess = {};
-				}
-
-				/*INERTIA CALCULATIONS*/
-				// Clamp Inertia to be positive
-				f32 inertia{ rb->inertia };
-				if (ImGui::DragFloat("Inertia", &inertia, 1.0f, 0.0f, FLT_MAX)) { // Min 0.0f
-					rb->setInertia(inertia);
-				}
-
-				/*Static Friction*/
-				// Clamp [0.0 - 1.0]
-				f32 staticFric{ rb->staticFriction };
-				if (ImGui::DragFloat("Static Friction", &staticFric, 0.01f, 0.0f, 1.0f)) {
-					rb->staticFriction = staticFric;
-				}
-
-				/*Dynamic Friction*/
-				// Clamp [0.0 - 1.0]
-				f32 dynamicFric{ rb->dynamicFriction };
-				if (ImGui::DragFloat("Dynamic Friction", &dynamicFric, 0.01f, 0.0f, 1.0f)) {
-					rb->dynamicFriction = dynamicFric;
-				}
-
-				if (ecs.HasComponent<Component::ColliderComponent>(e)) {
-					Component::ColliderComponent* collider{ ecs.GetComponent<Component::ColliderComponent>(e) };
-					if (ImGui::Button("Calculate Inertia##rb")) rb->setInertia(collider->collider->calculateInertia(rb->getMass())); /*For rotational stuff*/
-				}
-
-				// Simulate toggle
-				//bool prevSim = rb->getFlags().test(Physics::SIMULATE_DYNAMICS);
-				//bool simulate = prevSim;  // use a local variable for ImGui checkbox
-
-				//if (ImGui::Checkbox("Simulate Dynamics", &simulate)) {
-				//	// record undo for the flag change
-				//	UndoManager::GetInstance().AddCommand(
-				//		std::make_unique<CrashoutsEngine::ChangeValueCommand<bool>>(
-				//			prevSim, simulate,
-				//			[rb](bool v) {
-				//				if (v)
-				//				{
-				//					rb->getFlags().set(Physics::SIMULATE_DYNAMICS);
-				//				}
-				//				else
-				//				{
-				//					rb->getFlags().reset(Physics::SIMULATE_DYNAMICS);
-				//				}
-				//			}
-				//		)
-				//	);
-				//	// apply new value now
-				//	if (simulate)
-				//	{
-				//		rb->getFlags().set(Physics::SIMULATE_DYNAMICS);
-				//	}
-				//	else
-				//	{
-				//		rb->getFlags().reset(Physics::SIMULATE_DYNAMICS);
-				//	}
-				//}
-
-
-				// Forces
-				ImGui::SeparatorText("Forces");
-				static float f[3]{ 0.f, 0.f, 0.f };
-				ImGui::InputFloat3("Force", f);
-				ImGui::SameLine();
-				if (ImGui::Button("Apply Force##rb")) rb->addForce({ f[0], f[1], f[2] });
-				if (ImGui::Button("Clear Force Accumulator##rb")) rb->clearForceAccumulator();
-
-				ImGui::PopID();
 			}
+
+			// Extra force settings to apply externally onto object
+			ImGui::SeparatorText("Forces");
+			static float f[3]{ 0.f, 0.f, 0.f };
+			ImGui::InputFloat3("Force Vector", f);
+			if (ImGui::Button("Apply Force")) rb->addForce({ f[0], f[1], f[2] });
+			ImGui::SameLine();
+			if (ImGui::Button("Clear Forces")) rb->clearForceAccumulator();
 		}
 
 	};
@@ -532,7 +506,7 @@ namespace {
 			if (auto* t = ecs.GetComponent<TransformComponent>(e)) center = t->position;
 
 			auto col = std::make_unique<Collision::Circle>(D.sphere_radius, center);
-			col->helperType = Collision::HelperType::SPHERE_T;
+			col->ColliderType = Collision::ColliderType::CIRCLE;
 			ecs.AddComponent<ColliderComponent>(e, std::move(col));
 
 			if (!ecs.HasComponent<RigidBodyComponent>(e)) {
@@ -547,258 +521,158 @@ namespace {
 
 		void drawInspector(ECS& ecs, Entity e) override {
 			auto* cc = ecs.GetComponent<ColliderComponent>(e);
-			auto& D = GetDebugDefaults();
 			if (!cc || !cc->collider) return;
 
-			ImGui::Checkbox("Enabled", &cc->collider->enabled);
+			UIHelpers::DrawUndoableBool("Enabled", cc->collider->enabled);
+			UIHelpers::DrawUndoableBool("Is Trigger", cc->collider->isTrigger);
 
-			if (!ecs.HasComponent<RigidBodyComponent>(e)) {
-				if (ImGui::Button("Add Static RigidBody (mass=0)")) {
-					auto& D3 = GetDebugDefaults();
-					ecs.AddComponent<RigidBodyComponent>(e, CEVec3{ 0.f,0.f,0.f }, 0.0f, D3.rb_restitution);
-				}
-			}
+			// Type Switching
+			int type = static_cast<int>(cc->collider->ColliderType);
+			const char* items[] = { "Circle", "AABB", "OBB", "Line", "Triangle", "None" };
 
-			// Type selector
-			int type = static_cast<int>(cc->collider->helperType);
-			const char* items[] = { "Circle", "AABB", "OBB", "Triangle", "Polygon", "None" };
-			if (type < 0 || type >= IM_ARRAYSIZE(items)) type = 0;
-
-			Collision::AABBRect shapeDefault{ {-D.aabb_half, -D.aabb_half, 0.f}, {D.aabb_half, D.aabb_half, 0.f} };
-			if(ecs.HasComponent<Component::TransformComponent>(e)) {
-				Component::TransformComponent *transform{ ecs.GetComponent<Component::TransformComponent>(e) };
-				CEVec3 extents{transform->size.x * 0.5f, transform->size.y * 0.5f, 0.f};
-				shapeDefault.min = transform->position - extents;
-				shapeDefault.max = transform->position + extents;
-			}
-
-			// LOOK FOR A CHANGE IN DROPDOWN, CHANGE COLLIDER IF SO
-			/*TODO CALC COLLIDER BASED ON TEXTURE*/
+			// Create default collider as requested
 			if (ImGui::Combo("Type", &type, items, IM_ARRAYSIZE(items))) {
-
-				CEVec3 c{ 0.f,0.f,0.f };
-				if (auto* t = ecs.GetComponent<TransformComponent>(e)) c = t->position;
-
-				std::unique_ptr<Collision::Collider> newCol = nullptr;
-				Collision::HelperType targetType = static_cast<Collision::HelperType>(type);
-
-				// SWITCH on the HelperType (UI choice), not the ColliderType
-				switch (targetType) {
-				case Collision::HelperType::SPHERE_T: {
-					newCol = std::make_unique<Collision::Circle>((shapeDefault.max - shapeDefault.min).x * 0.5f, c);
-					break;
-				}
-				case Collision::HelperType::AABB_T: {
-					newCol = std::make_unique<Collision::AABBRect>(
-						shapeDefault.min,
-						shapeDefault.max
-					);
-					break;
-				}
-				case Collision::HelperType::OBB_T: {
-					newCol = std::make_unique<Collision::Polygon>(Collision::Polygon::createOBB(
-						shapeDefault.min, 
-						shapeDefault.max, 
-						0.f, CEVec3{}));
-					newCol->helperType = Collision::HelperType::OBB_T;
-					break;
-				}
-				case Collision::HelperType::POLYGON_T: {
-					newCol = std::make_unique<Collision::Polygon>(Collision::Polygon::createOBB(
-						shapeDefault.min,
-						shapeDefault.max,
-						0.f, CEVec3{}));
-					newCol->helperType = Collision::HelperType::POLYGON_T;
-					break;
-				}
-				case Collision::HelperType::TRIANGLE_T: {
-					/*o*/
-					newCol = std::make_unique<Collision::Polygon>(
-						std::initializer_list<CEVec3>{
-							shapeDefault.min,
-							CEVec3{ (shapeDefault.min.x + shapeDefault.max.x) * 0.5f, shapeDefault.max.y, 0.f },
-							{ shapeDefault.min.x + (shapeDefault.max.x-shapeDefault.min.x) , shapeDefault.min.y, 0.f },
-							
-					},
-						0.f, c
-					);
-					break;
-				}
-				default: break;
-				}
-
-				// Assign HelperType to NEW Collider
+				Collision::ColliderFactory factory;
+				auto newCol = factory.CreateCollider((Collision::ColliderType)type);
 				if (newCol) {
-					newCol->helperType = targetType;
+					newCol->ColliderType = (Collision::ColliderType)type;
 					cc->collider = std::move(newCol);
 				}
 			}
 
+			// Sync with Transform
 			CEVec3 transformPos{ 0.f,0.f,0.f };
 			if (auto* t = ecs.GetComponent<TransformComponent>(e)) transformPos = t->position;
 
-			// Draw fields per type
+			using namespace Collision;
+
 			// --- CIRCLE ---
-			if (cc->collider->helperType == Collision::HelperType::SPHERE_T) {
-				auto* s = static_cast<Collision::Circle*>(cc->collider.get());
+			if (cc->collider->ColliderType == ColliderType::CIRCLE) {
+				auto* s = static_cast<Circle*>(cc->collider.get());
+
 				ImGui::TextColored(ImVec4(0.6f, 1.f, 0.6f, 1.f), "Circle Collider");
-
-				float r = s->radius;
-				if (ImGui::DragFloat("Radius", &r, 0.05f, 0.0f, 10000.0f)) {
-					if (r < 0.0f) r = 0.0f;
-					s->radius = r;
-				}
-
-				float c[2]{ s->offset.x, s->offset.y };
-				if (ImGui::DragFloat2("Offset", c, 0.1f)) {
-					s->offset = CEVec3{ c[0], c[1], 0.f };
-					s->position = transformPos + s->offset;
-				}
+				
+				UIHelpers::DrawUndoableFloat("Radius", s->radius, 0.05f, 0.0f);
+				UIHelpers::DrawUndoableVec3("Offset", s->offset);
+				s->position = transformPos + s->offset;
 			}
 			// --- AABB ---
-			else if (cc->collider->helperType == Collision::HelperType::AABB_T) {
-				auto* a = static_cast<Collision::AABBRect*>(cc->collider.get());
-				ImGui::TextColored(ImVec4(0.6f, 1.f, 0.6f, 1.f), "ColliderType::AABB Collider");
+			else if (cc->collider->ColliderType == ColliderType::AABB) {
+				auto* a = static_cast<AABBRect*>(cc->collider.get());
+				
+				ImGui::TextColored(ImVec4(0.6f, 1.f, 0.6f, 1.f), "AABB Collider");
+				
+				UIHelpers::DrawUndoableVec3("Extents", a->extents);
+				UIHelpers::DrawUndoableVec3("Offset", a->offset);
 
-				CEVec3& newExtents{ a->extents };
-
-				CEVec3 transform{ a->position };
-
-				bool edited = false;
-				ImGui::DragFloat("Width", &newExtents.x, 0.05f);  edited |= ImGui::IsItemEdited() || ImGui::IsItemDeactivatedAfterEdit();
-				ImGui::DragFloat("Height", &newExtents.y, 0.05f);  edited |= ImGui::IsItemEdited() || ImGui::IsItemDeactivatedAfterEdit();
-
-				if (edited) {
-					CEVec3 newMin{ transform - newExtents };
-					CEVec3 newMax{ transform + newExtents };
-
-					a->min = CEVec3{ newMin.x, newMin.y, 0.f };
-					a->max = CEVec3{ newMax.x, newMax.y, 0.f };
-				}
-
-				float c[2]{ a->offset.x, a->offset.y };
-				ImGui::DragFloat2("Offset", c, 0.1f);
-				if (ImGui::IsItemEdited() || ImGui::IsItemDeactivatedAfterEdit()) {
-					a->offset = CEVec3{ c[0], c[1], 0.f };
-				}
-
-				// optional: snap AABB around Transform
-				if (auto* t = ecs.GetComponent<TransformComponent>(e)) {
-					if (ImGui::Button("Fit around Transform##aabb")) {
-						if (ecs.HasComponent<Component::ShapeComponent>(e)) {
-							auto* shape{ ecs.GetComponent<Component::ShapeComponent>(e) };
-							CEVec3 extents{};
-
-
-							switch (shape->type) {
-							case ShapeType::Rectangle: {
-								extents.x = t->size.x * 0.5f;
-								extents.y = t->size.y * 0.5f;
-								break;
-							}
-							case ShapeType::Triangle: {
-								CEVec3 t1 = { t->position.x - .5f, t->position.y - .5f, t->position.z };
-								CEVec3 t2 = { t->position.x + .5f, t->position.y - .5f, t->position.z };
-								CEVec3 t3 = { t->position.x, t->position.y + .5f, t->position.z };
-
-								CEVec3 diffP1P2{ t1 - t2 };
-								CEVec3 diffP1P3{ t1 - t3 };
-								CEVec3 diffP2P3{ t2 - t3 };
-
-								extents.x = max(std::fabs(diffP1P2.x), std::fabsf(diffP1P3.x), std::fabsf(diffP2P3.x)) * 0.5f;
-								extents.y = max(std::fabs(diffP1P2.y), std::fabsf(diffP1P3.y), std::fabsf(diffP2P3.y)) * 0.5f;
-								break;
-							}
-							}
-
-							a->min = t->position - extents;
-							a->max = t->position + extents;
-							a->extents = (a->max - a->min) * 0.5f;
-						}
-
-					}
-				}
-			}
-			// --- OBB ---
-			else if (cc->collider->helperType == Collision::HelperType::OBB_T) {
-				// Cast to Polygon because that is what createOBB returns
-				auto& p = dynamic_cast<Collision::Polygon&>(*cc->collider);
-
-				ImGui::TextColored(ImVec4(0.6f, 1.f, 0.6f, 1.f), "OBB Collider (Polygon)");
-
-				// 1. Calculate current Extents (Half-Width/Height)
-				CEVec3 extents = Collision::Polygon::calculateOBBExtents(p);
-
-				bool edited = false;
-				// Note: Dragging "Extents" implies editing Half-Width. 
-				if (ImGui::DragFloat("Half Width", &extents.x, 0.05f, 0.1f)) edited = true;
-				if (ImGui::DragFloat("Half Height", &extents.y, 0.05f, 0.1f)) edited = true;
-
-				// 2. Edit Offset
-				float c[2]{ p.offset.x, p.offset.y };
-				if (ImGui::DragFloat2("Offset", c, 0.05f)) {
-					p.offset = CEVec3{ c[0], c[1], 0.f };
-					edited = true;
-				}
-
-				// 3. Edit Rotation
-				float rot = p.rotation;
-				if (ImGui::DragFloat("Rotation", &rot, 0.05f)) {
-					// We must Update the internal rotation variable immediately
-					// so that if we rebuild the box below, we don't lose the rotation.
-					p.rotation = rot;
-					edited = true;
-				}
-
-				if (edited) {
-					// 4. Get LIVE Transform to prevent drift
-					float targetRotation = p.rotation;
-
-					CEVec3 currentTransformPos{ 0.f, 0.f, 0.f };
+				if (ImGui::Button("Fit to Transform")) {
 					if (auto* t = ecs.GetComponent<TransformComponent>(e)) {
-						currentTransformPos = t->position;
+						a->extents = { t->size.x * 0.5f, t->size.y * 0.5f, 0.f };
 					}
+				}
+				a->min = transformPos + a->offset - a->extents;
+				a->max = transformPos + a->offset + a->extents;
+			}
+			// --- LINE ---
+			else if (cc->collider->ColliderType == ColliderType::LINE) {
+				auto* l = dynamic_cast<LineSegment*>(cc->collider.get());
+				if (l) {
+					ImGui::TextColored(ImVec4(0.6f, 1.f, 0.6f, 1.f), "Line Segment");
+					UIHelpers::DrawUndoableVec3("P1 (Start)", l->p1);
+					UIHelpers::DrawUndoableVec3("P2 (End)", l->p2);
+					UIHelpers::DrawUndoableVec3("Offset", l->offset);
 
-					// 5. Calculate the True Center
-					CEVec3 center = currentTransformPos + p.offset;
-					p.position = center;
-
-					// 6. Reconstruct Bounds around the Center
-					CEVec3 min = center - extents;
-					CEVec3 max = center + extents;
-
-					// 7. Update the Polygon Vertices (Resets them to axis-aligned first)
-					Collision::Polygon::updateOBB(min, max, p);
-
-					// 8. Re-apply Rotation
-					// updateOBB sets vertices axis-aligned. We must re-rotate them 
-					// around the center to match the p.rotation we just edited.
-					p.forceUpdateRotation(targetRotation);
+					if (ImGui::Button("Fit to Transform Width")) {
+						if (auto* t = ecs.GetComponent<TransformComponent>(e)) {
+							float halfW = t->size.x * 0.5f;
+							l->p1 = CEVec3{ -halfW, 0.f, 0.f };
+							l->p2 = CEVec3{ halfW, 0.f, 0.f };
+						}
+					}
+					l->UpdateCollider(transformPos);
+					if (auto* t = ecs.GetComponent<TransformComponent>(e)) l->UpdateRotation(t->rotation);
 				}
 			}
-#if 0
-			// --- POLYGON / TRIANGLE ---
-			else if (cc->collider->helperType == Collision::HelperType::POLYGON_T ||
-				cc->collider->helperType == Collision::HelperType::TRIANGLE_T)
+			// --- TRIANGLE ---
+			else if (cc->collider->ColliderType == ColliderType::TRIANGLE)
 			{
 				auto* p = static_cast<Collision::Polygon*>(cc->collider.get());
-				ImGui::TextColored(ImVec4(0.6f, 1.f, 0.6f, 1.f), "Polygon/Triangle Collider");
-				ImGui::Text("Vertices: %d", p->vertexCount);
+				ImGui::TextColored(ImVec4(0.6f, 1.f, 0.6f, 1.f), "Triangle Collider");
+				bool changed = false;
 
-				float rot = p->rotation;
-				if (ImGui::DragFloat("Rotation", &rot, 0.05f)) {
-					p->UpdateRotation(rot);
+				// Size (Extents) - requires Rescale logic on change
+				CEVec2 currentSize = { p->extents.x, p->extents.y };
+				CEVec2 oldSize = currentSize;
+				UIHelpers::DrawUndoableVec2("Size", currentSize, 0.05f);
+				if (currentSize.x != oldSize.x || currentSize.y != oldSize.y) {
+					p->Rescale(CEVec3(currentSize.x, currentSize.y, 0.f));
+					changed = true;
 				}
 
-				// Offset Logic for Polygon
-				float c[2]{ p->offset.x, p->offset.y };
-				if (ImGui::DragFloat2("Offset", c, 0.05f)) {
-					p->offset = CEVec3{ c[0], c[1], 0.f };
-					p->updatePosition(transformPos); // Use helper to shift vertices
+				// Rotation
+				float oldRot = p->rotation;
+				UIHelpers::DrawUndoableFloat("Rotation", p->rotation, 0.05f);
+				if (p->rotation != oldRot) changed = true;
+
+				// Offset
+				CEVec3 oldOffset = p->offset;
+				UIHelpers::DrawUndoableVec3("Offset", p->offset);
+				if (p->offset != oldOffset) changed = true;
+
+				// Fit Button
+				if (ImGui::Button("Fit to Sprite Size")) {
+					if (auto* t = ecs.GetComponent<TransformComponent>(e)) {
+						CEVec3 oldExt = p->extents;
+						CEVec3 newExt = CEVec3(t->size.x * .5f, t->size.y * .5f, 0.f);
+						UndoManager::GetInstance().AddCommand(
+							std::make_unique<ChangeValueCommand<CEVec3>>(oldExt, newExt, [p](const CEVec3& v) { p->Rescale(v); })
+						);
+						p->Rescale(newExt);
+						changed = true;
+					}
+				}
+
+				// Visual Updates
+				if (changed) {
+					p->UpdatePosition(transformPos);
+					p->UpdateRotation(p->rotation);
 				}
 			}
-#endif
-			ImGui::Checkbox("IsTrigger", &cc->collider->isTrigger);
+			// --- OBB/POLYGON INSPECTOR ---
+			else if (cc->collider->ColliderType == ColliderType::OBB || cc->collider->ColliderType == ColliderType::POLYGON)
+			{
+				auto* p = static_cast<Collision::Polygon*>(cc->collider.get());
+				ImGui::TextColored(ImVec4(0.6f, 1.f, 0.6f, 1.f), "OBB Collider");
+				bool changed = false;
+
+				UIHelpers::DrawUndoableVec3("Extents", p->extents);
+
+				CEVec3 oldOffset = p->offset;
+				UIHelpers::DrawUndoableVec3("Offset", p->offset);
+				if (p->offset != oldOffset) changed = true;
+
+				float oldRot = p->rotation;
+				UIHelpers::DrawUndoableFloat("Rotation", p->rotation);
+				if (p->rotation != oldRot) changed = true;
+
+				if (ImGui::Button("Fit to Sprite")) {
+					if (auto* t = ecs.GetComponent<TransformComponent>(e)) {
+						p->Rescale(CEVec3(t->size.x * 0.5f, t->size.y * 0.5f, 0.f));
+						changed = true;
+					}
+				}
+
+				// Update Collider Logic
+				p->UpdateCollider(transformPos);
+				if (changed) {
+					if (auto* t = ecs.GetComponent<TransformComponent>(e)) {
+						p->UpdateRotation(t->rotation);
+					}
+					else {
+						p->UpdateRotation(p->rotation);
+					}
+				}
+			}
 		}
 	};
 
@@ -818,343 +692,60 @@ namespace {
 			if (has(ecs, e)) ecs.RemoveComponent<Component::ShapeComponent>(e);
 		}
 		void drawInspector(ECS& ecs, Entity e) override {
-			using namespace Component;
 			auto* sc = ecs.GetComponent<ShapeComponent>(e);
-			auto& D = GetDebugDefaults();
 			if (!sc) return;
 
-			// type
-			int oldType = (int)sc->type;
-			int t = oldType;
-			const char* items[] = { "Rectangle","Line","Triangle","Circle" };
-			if (ImGui::Combo("Type", &t, items, IM_ARRAYSIZE(items))) {
+			ImGui::SeparatorText("Shape Settings");
+
+			// Type
+			int t = (int)sc->type;
+			if (ImGui::Combo("Type", &t, "Rectangle\0Line\0Triangle\0Circle\0")) {
 				UndoManager::GetInstance().AddCommand(
-					std::make_unique<CrashoutsEngine::ChangeValueCommand<int>>(
-						oldType, t,
-						[sc](int v) { sc->type = (ShapeType)v; }
-					)
+					std::make_unique<ChangeValueCommand<int>>((int)sc->type, t, [sc](int v) { sc->type = (ShapeType)v; })
 				);
 				sc->type = (ShapeType)t;
 			}
 
-			//draw_reflected(*sc, "Shape");
+			UIHelpers::DrawUndoableBool("World Space", sc->isWorldSpace);
+			UIHelpers::DrawUndoableBool("Use Texture", sc->enableTexture);
 
-			// shared
-			bool oldTex = sc->enableTexture;
-			if (ImGui::Checkbox("Use TextureAsset", &sc->enableTexture)) {
-				UndoManager::GetInstance().AddCommand(
-					std::make_unique<CrashoutsEngine::ChangeValueCommand<bool>>(
-						oldTex, sc->enableTexture,
-						[sc](bool v) { sc->enableTexture = v; }
-					)
-				);
-			}
-			bool oldWorld = sc->isWorldSpace;
-			if (ImGui::Checkbox("Use World Space", &sc->isWorldSpace)) {
-				UndoManager::GetInstance().AddCommand(
-					std::make_unique<CrashoutsEngine::ChangeValueCommand<bool>>(
-						oldWorld, sc->isWorldSpace,
-						[sc](bool v) { sc->isWorldSpace = v; }
-					)
-				);
-			}
+			// Texture Name (Keep DragDrop logic, simplified here to String Input for brevity)
+			UIHelpers::DrawUndoableString("Texture Asset", sc->textureName);
 
-			char buf[256]{};
-			if (sc->textureName.size() < sizeof(buf)) std::memcpy(buf, sc->textureName.data(), sc->textureName.size());
-
-			ImGui::SetNextItemWidth(ImGui::GetFontSize() * 18.0f);
-			ImGui::InputText("##tex_name", buf, sizeof(buf), ImGuiInputTextFlags_ReadOnly);
-
-			if (ImGui::BeginDragDropTarget()) {
-				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSET/PAYLOAD")) {
-					// Hard guard: verify this is actually an AssetDragPayload
-					if (!payload->Data || payload->DataSize != sizeof(AssetDragPayload)) {
-						LOGW(Debug, "Dropped non-asset payload on Shape texture field");
-					}
-					else {
-						const auto* d = static_cast<const AssetDragPayload*>(payload->Data);
-
-						// Only accept textures here
-						if (d->kind == AssetKind::Texture) {
-							std::string oldTexName = sc->textureName;
-
-							// d->relPath is something like "images/ui/button.png"
-							std::string rel = d->relPath;
-							const std::string prefix = "images/";
-							auto pos = rel.find(prefix);
-							if (pos == 0) {
-								// Store path relative to the images root, matching the picker
-								rel = rel.substr(prefix.size());
-							}
-
-							// Fallback to the asset name if something is weird
-							sc->textureName = rel.empty() ? std::string(d->name) : rel;
-
-							// Using a texture now
-							sc->enableTexture = true;
-
-							// Undo support
-							UndoManager::GetInstance().AddCommand(
-								std::make_unique<CrashoutsEngine::ChangeValueCommand<std::string>>(
-									oldTexName, sc->textureName,
-									[sc](const std::string& v) { sc->textureName = v; }
-								)
-							);
-						}
-					}
-				}
-				ImGui::EndDragDropTarget();
-			}
-
-			ImGui::SameLine();
-			ImGui::TextDisabled("TextureAsset");
-
-			ImGui::SameLine();
-			if (ImGui::SmallButton("Choose...")) {
-				ImGui::OpenPopup("Pick Texture");
-			}
-
-			// Modal popup with a simple file browser
-			if (ImGui::BeginPopupModal("Pick Texture", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
-				namespace fs = std::filesystem;
-				static std::vector<std::string> s_assets;
-				static bool s_scanned = false;
-
-				// Refresh List button
-				if (ImGui::Button("Refresh List")) {
-					s_scanned = false;
-				}
-				ImGui::SameLine();
-
-				if (!s_scanned) {
-					s_scanned = true;
-					s_assets.clear();
-
-					const std::string assetRoot = CrashoutsEngine::Assets::rootPath + "images"; // base folder
-					for (auto& p : fs::recursive_directory_iterator(assetRoot)) {
-						if (!p.is_regular_file()) continue;
-
-						const std::string ext = p.path().extension().string();
-						std::string lower = ext;
-						std::transform(lower.begin(), lower.end(), lower.begin(), ::tolower);
-						if (lower == ".png" || lower == ".jpg" || lower == ".jpeg" ||
-							lower == ".tga" || lower == ".bmp") {
-
-							// Store relative path for cleaner display
-							std::string rel = fs::relative(p.path(), assetRoot).string();
-							s_assets.push_back(rel);
-						}
-					}
-
-					std::sort(s_assets.begin(), s_assets.end());
-				}
-
-				// Left: list; Right: preview name
-				ImGui::BeginChild("asset_list", ImVec2(420, 300), true);
-				for (auto const& f : s_assets) {
-					if (ImGui::Selectable(f.c_str())) {
-						std::string oldTexName = sc->textureName;
-						sc->textureName = f;
-						UndoManager::GetInstance().AddCommand(
-							std::make_unique<CrashoutsEngine::ChangeValueCommand<std::string>>(
-								oldTexName, sc->textureName,
-								[sc](const std::string& v) { sc->textureName = v; }
-							)
-						);
-						ImGui::CloseCurrentPopup();
-						break;
-					}
-				}
-				ImGui::EndChild();
-
-				if (ImGui::Button("Cancel")) ImGui::CloseCurrentPopup();
-				ImGui::EndPopup();
-			}
-
-			// If using texture, enable the texture options
+			// UVs
 			if (sc->enableTexture) {
-
-				const char* wrapModes[] = { "Clamp To Edge","Repeat","Mirror" };
-				const int numWrapModes = IM_ARRAYSIZE(wrapModes);
-
-				// U (HORIZONTAL) WRAP MODE
-				int oldU = sc->wrapModeU;
-				if (ImGui::Combo("U Wrap Mode", &sc->wrapModeU, wrapModes, numWrapModes)) {
-					UndoManager::GetInstance().AddCommand(
-						std::make_unique<CrashoutsEngine::ChangeValueCommand<int>>(
-							oldU, sc->wrapModeU,
-							[sc](int v) { sc->wrapModeU = v; }
-						)
-					);
-				}
-
-				// V (HORIZONTAL) WRAP MODE
-				int oldV = sc->wrapModeV;
-				if (ImGui::Combo("V Wrap Mode", &sc->wrapModeV, wrapModes, numWrapModes)) {
-					UndoManager::GetInstance().AddCommand(
-						std::make_unique<CrashoutsEngine::ChangeValueCommand<int>>(
-							oldV, sc->wrapModeV,
-							[sc](int v) { sc->wrapModeV = v; }
-						)
-					);
-				}
-
-				// UV size
-				CEVec2 oldUV = sc->uvSize;
-				float size[2] = { sc->uvSize.x, sc->uvSize.y };
-				if (ImGui::DragFloat2("UV Size", size, D.drag_small)) {
-					CEVec2 newUV = { size[0], size[1] };
-					if (ImGui::IsItemDeactivatedAfterEdit() && newUV != oldUV) {
-						UndoManager::GetInstance().AddCommand(
-							std::make_unique<CrashoutsEngine::ChangeValueCommand<CEVec2>>(
-								oldUV, newUV,
-								[sc](const CEVec2& v) { sc->uvSize = v; }
-							)
-						);
-					}
-					sc->uvSize = newUV;
-				}
-
-				// UV offset
-				CEVec2 oldUVoffset = sc->uvOffset;
-				float offset[2] = { sc->uvOffset.x, sc->uvOffset.y };
-				if (ImGui::DragFloat2("UV Offset", offset, D.drag_small)) {
-					CEVec2 newUV = { offset[0], offset[1] };
-					if (ImGui::IsItemDeactivatedAfterEdit() && newUV != oldUV) {
-						UndoManager::GetInstance().AddCommand(
-							std::make_unique<CrashoutsEngine::ChangeValueCommand<CEVec2>>(
-								oldUV, newUV,
-								[sc](const CEVec2& v) { sc->uvOffset = v; }
-							)
-						);
-					}
-					sc->uvOffset = newUV;
-				}
-
+				UIHelpers::DrawUndoableInt("U Wrap", sc->wrapModeU);
+				UIHelpers::DrawUndoableInt("V Wrap", sc->wrapModeV);
+				UIHelpers::DrawUndoableVec2("UV Size", sc->uvSize);
+				UIHelpers::DrawUndoableVec2("UV Offset", sc->uvOffset);
 			}
 
-			//ImGui::DragFloat3("Color", &sc->color.x, D.drag_small, 0.f, 255.f);
-			//ImGui::DragFloat("Rotation", &sc->rotation, D.drag_rotation);
-			//ImGui::DragFloat("Scale", &sc->scale, D.drag_small, 0.01f, 100.f);
+			UIHelpers::DrawUndoableColor("Color", sc->color);
 
-			// Colour Mixer a la carte
-			{
-				static CEColor startColor;
-				static bool editingColor = false;
-
-				//CEVec3 oldColor = sc->color;
-				float col[4] = {
-					sc->color.x(),
-					sc->color.y(),
-					sc->color.z(),
-					sc->color.w()
-				};
-
-				ImGuiColorEditFlags flags =
-					ImGuiColorEditFlags_DisplayHSV |
-					ImGuiColorEditFlags_InputRGB |
-					ImGuiColorEditFlags_PickerHueBar |
-					ImGuiColorEditFlags_AlphaBar;
-
-				// start editing when user opens popup
-				if (ImGui::ColorEdit4("Color", col, flags) && !editingColor) {
-					editingColor = true;
-					startColor = sc->color;
-				}
-				if (ImGui::IsItemDeactivated() && editingColor) {
-					// item lost focus (enter pressed / tab / clicked away)
-					CEColor newColor = { col[0], col[1], col[2], col[3] };
-					if (newColor != startColor) {
-						UndoManager::GetInstance().AddCommand(
-							std::make_unique<CrashoutsEngine::ChangeValueCommand<CEColor>>(
-								startColor, newColor,
-								[sc](const CEColor& v) { sc->color = v; }));
-					}
-					editingColor = false;
-				}
-
-				// apply live color
-				sc->color = { col[0], col[1], col[2], col[3] };
-
-				if (ImGui::SmallButton("Open Color Picker"))
-					ImGui::OpenPopup("##shape_color_picker");
-
-				if (ImGui::BeginPopup("##shape_color_picker")) {
-					static CEColor popupStart;
-					static bool popupEditing = false;
-
-					// snapshot when opened
-					if (!popupEditing) { popupEditing = true; popupStart = sc->color; }
-
-					float pick[4] = {
-						sc->color.x() ,
-						sc->color.y() ,
-						sc->color.z() ,
-						sc->color.w()
-					};
-					if (ImGui::ColorPicker4("##picker", pick, flags)) {
-						sc->color = { pick[0], pick[1], pick[2], pick[3] };
-					}
-
-					// detect popup close
-					if (!ImGui::IsWindowAppearing() && !ImGui::IsWindowFocused()) {
-						CEColor newCol = sc->color;
-						if (popupEditing && newCol != popupStart) {
-							UndoManager::GetInstance().AddCommand(
-								std::make_unique<CrashoutsEngine::ChangeValueCommand<CEColor>>(
-									popupStart, newCol,
-									[sc](const CEColor& v) { sc->color = v; }));
-						}
-						popupEditing = false;
-						ImGui::CloseCurrentPopup();
-					}
-
-					ImGui::EndPopup();
-				}
-			}
-
-			// per-type
 			if (sc->type == ShapeType::Line) {
-				CEVec3 oldP1 = sc->p1;
-				CEVec3 oldP2 = sc->p2;
-				float oldThick = sc->thickness;
+				ImGui::SeparatorText("Line Details");
+				UIHelpers::DrawUndoableVec3("Start (P1)", sc->p1);
+				UIHelpers::DrawUndoableVec3("End (P2)", sc->p2);
+				UIHelpers::DrawUndoableFloat("Thickness", sc->thickness);
 
-				ImGui::DragFloat3("P1", &sc->p1.x, 0.5f);
-				if (ImGui::IsItemDeactivatedAfterEdit() && sc->p1 != oldP1) {
-					UndoManager::GetInstance().AddCommand(
-						std::make_unique<CrashoutsEngine::ChangeValueCommand<CEVec3>>(
-							oldP1, sc->p1,
-							[sc](const CEVec3& v) { sc->p1 = v; }));
-				}
+				if (ImGui::Button("Fit to Transform Width")) {
+					if (auto* transform = ecs.GetComponent<TransformComponent>(e)) {
+						CEVec3 oldP1 = sc->p1;
+						CEVec3 oldP2 = sc->p2;
+						float halfW = transform->size.x * 0.5f;
+						CEVec3 newP1 = { -halfW, 0.f, 0.f };
+						CEVec3 newP2 = { halfW, 0.f, 0.f };
 
-				ImGui::DragFloat3("P2", &sc->p2.x, 0.5f);
-				if (ImGui::IsItemDeactivatedAfterEdit() && sc->p2 != oldP2) {
-					UndoManager::GetInstance().AddCommand(
-						std::make_unique<CrashoutsEngine::ChangeValueCommand<CEVec3>>(
-							oldP2, sc->p2,
-							[sc](const CEVec3& v) { sc->p2 = v; }));
-				}
-
-				ImGui::DragFloat("Thickness", &sc->thickness, 0.1f, 0.0f, 1e6f);
-				if (ImGui::IsItemDeactivatedAfterEdit() && sc->thickness != oldThick) {
-					UndoManager::GetInstance().AddCommand(
-						std::make_unique<CrashoutsEngine::ChangeValueCommand<float>>(
-							oldThick, sc->thickness,
-							[sc](float v) { sc->thickness = v; }));
+						UndoManager::GetInstance().AddCommand(
+							std::make_unique<ChangeValueCommand<std::pair<CEVec3, CEVec3>>>(
+								std::make_pair(oldP1, oldP2), std::make_pair(newP1, newP2),
+								[sc](const std::pair<CEVec3, CEVec3>& v) { sc->p1 = v.first; sc->p2 = v.second; }
+							)
+						);
+						sc->p1 = newP1; sc->p2 = newP2;
+					}
 				}
 			}
-
-
-			/*CEVec3 pos{ 0,0,0 };
-			if (auto* tf = ecs.GetComponent<Component::TransformComponent>(e)) pos = tf->position;
-			switch (sc->type) {
-			case Component::ShapeType::Square:    Component::Shapes::CreateSquare(pos, sc->size, sc->rotation, sc->scale, sc->color); break;
-			case Component::ShapeType::Rectangle: Component::Shapes::CreateRectangle(pos, sc->width, sc->height, sc->rotation, sc->scale, sc->color); break;
-			case Component::ShapeType::Line:      Component::Shapes::
-			(sc->p1, sc->p2, sc->thickness, sc->rotation, sc->scale, sc->color); break;
-			case Component::ShapeType::Triangle:  Component::Shapes::CreateTriangle(sc->t1, sc->t2, sc->t3, sc->rotation, sc->scale, sc->color); break;
-			}*/
-			// reminder to ask how/where is the rendering of the shapes done in general, i don't wanna hunt for functions
 		}
 	};
 
@@ -1174,74 +765,16 @@ namespace {
 			if (has(ecs, e)) ecs.RemoveComponent<Component::TextComponent>(e);
 		}
 		void drawInspector(ECS& ecs, Entity e) override {
-			using namespace Component;
 			auto* fc = ecs.GetComponent<TextComponent>(e);
-			//auto& D = GetDebugDefaults();
 			if (!fc) return;
 
-			char buf[256]{};
-			if (fc->font.size() < sizeof(buf)) std::memcpy(buf, fc->font.data(), fc->font.size());
-
-			ImGui::InputText("Font Name", buf, sizeof(buf));
-			if (ImGui::IsItemEdited() || ImGui::IsItemDeactivatedAfterEdit()) {
-				fc->font = buf;
-			}
-
-			char buf2[512]{};
-			if (fc->text.size() < sizeof(buf2)) std::memcpy(buf2, fc->text.data(), fc->text.size());
-
-			ImGui::InputText("Display Text", buf2, sizeof(buf2));
-			if (ImGui::IsItemEdited() || ImGui::IsItemDeactivatedAfterEdit()) {
-				fc->text = buf2;
-			}
-
-			ImGui::Checkbox("Center Text", &fc->centered);
-
-			ImGui::Checkbox("Use World Space", &fc->isWorldSpace);
-
-			ImGui::DragFloat("Scale", &fc->scale);
-
-			ImGui::DragFloat2("offset", &fc->offset.x);
-
-			//ImGui::DragFloat3("Color", &fc->color.x, 1.f, 0.f, 255.f);
-
-			{
-				float col[4] = {
-					fc->color.x(),
-					fc->color.y(),
-					fc->color.z(),
-					fc->color.w()
-				};
-
-				ImGuiColorEditFlags flags =
-					ImGuiColorEditFlags_DisplayHSV |
-					ImGuiColorEditFlags_InputRGB |
-					ImGuiColorEditFlags_PickerHueBar |
-					ImGuiColorEditFlags_AlphaBar;
-
-				if (ImGui::ColorEdit4("Color", col, flags) || ImGui::IsItemDeactivatedAfterEdit())
-				{
-					fc->color.x() = col[0];
-					fc->color.y() = col[1];
-					fc->color.z() = col[2];
-					fc->color.w() = col[3];
-				}
-
-				if (ImGui::SmallButton("Open Color Picker"))
-					ImGui::OpenPopup("##shape_color_picker");
-
-				if (ImGui::BeginPopup("##shape_color_picker"))
-				{
-					if (ImGui::ColorPicker4("##picker", col, flags))
-					{
-						fc->color.x() = col[0];
-						fc->color.y() = col[1];
-						fc->color.z() = col[2];
-						fc->color.w() = col[3];
-					}
-					ImGui::EndPopup();
-				}
-			}
+			UIHelpers::DrawUndoableString("Font Name", fc->font);
+			UIHelpers::DrawUndoableString("Display Text", fc->text);
+			UIHelpers::DrawUndoableBool("Centered", fc->centered);
+			UIHelpers::DrawUndoableBool("World Space", fc->isWorldSpace);
+			UIHelpers::DrawUndoableFloat("Scale", fc->scale);
+			UIHelpers::DrawUndoableVec2("Offset", fc->offset);
+			UIHelpers::DrawUndoableColor("Color", fc->color);
 		}
 	};
 
@@ -1258,22 +791,12 @@ namespace {
 			if (!has(ecs, e)) ecs.AddComponent<Component::AudioEmitterComponent>(e);
 		}
 		void remove(ECS& ecs, Entity e) override {
-			if (has(ecs, e)) {
-				if (auto* c = ecs.GetComponent<Component::AudioEmitterComponent>(e)) {
-
-					if (c->inst) {
-						c->inst->stop(FMOD_STUDIO_STOP_IMMEDIATE);
-						c->inst->release();
-						c->inst = nullptr;
-					}
-
-					if (c->channel) {
-						c->channel->stop();
-						c->channel = nullptr;
-					}
-				}
-				ecs.RemoveComponent<Component::AudioEmitterComponent>(e);
+			// Stop audio before removal
+			if (auto* c = ecs.GetComponent<AudioEmitterComponent>(e)) {
+				if (c->inst) { c->inst->stop(FMOD_STUDIO_STOP_IMMEDIATE); c->inst->release(); }
+				if (c->channel) c->channel->stop();
 			}
+			if (has(ecs, e)) ecs.RemoveComponent<AudioEmitterComponent>(e);
 		}
 		void drawInspector(ECS& ecs, Entity e) override {
 			using Component::AudioEmitterComponent;
@@ -1430,9 +953,9 @@ namespace {
 				ImGui::EndPopup();
 			}
 
-			ImGui::DragFloat("Volume", &c->volume, 0.01f, 0.f, 5.f);
-			ImGui::DragFloat("Pitch", &c->pitch, 0.01f, 0.25f, 4.f);
-			ImGui::Checkbox("3D Spatial", &c->spatial3D);
+			UIHelpers::DrawUndoableFloat("Volume", c->volume, 0.01f, 0.f, 5.f);
+			UIHelpers::DrawUndoableFloat("Pitch", c->pitch, 0.01f, 0.25f, 4.f);
+			UIHelpers::DrawUndoableBool("3D Spatial", c->spatial3D);
 
 			auto& audio = Audio::AudioSystem::instance();
 			bool hasRunning = (c->inst != nullptr) || (c->channel != nullptr);
@@ -1504,37 +1027,14 @@ namespace {
 				}
 			}
 
-			if (c->channel) {
-				bool isPlaying = false;
-				c->channel->isPlaying(&isPlaying);
-				ImGui::Text("Channel valid: %s", isPlaying ? "PLAYING" : "NOT PLAYING");
-			}
-			else {
-				ImGui::Text("Channel is NULL!");
-			}
-
-
-			// Live controls for a running instance
+			// Live Updates
 			if (c->inst) {
 				c->inst->setVolume(c->volume);
 				c->inst->setPitch(c->pitch);
-
-				// Expose event parameters dynamically
-				FMOD::Studio::EventDescription* desc = nullptr;
-				c->inst->getDescription(&desc);
-				if (desc) {
-					int count = 0; desc->getParameterDescriptionCount(&count);
-					for (int i = 0; i < count; ++i) {
-						FMOD_STUDIO_PARAMETER_DESCRIPTION pd{};
-						if (desc->getParameterDescriptionByIndex(i, &pd) == FMOD_OK) {
-							float v = 0.f;
-							c->inst->getParameterByID(pd.id, &v, nullptr);
-							if (ImGui::DragFloat(pd.name, &v, 0.01f, pd.minimum, pd.maximum, "%.3f")) {
-								c->inst->setParameterByID(pd.id, v);
-							}
-						}
-					}
-				}
+			}
+			if (c->channel) {
+				c->channel->setVolume(c->volume);
+				c->channel->setPitch(c->pitch);
 			}
 		}
 	};
@@ -1752,84 +1252,60 @@ namespace {
 					break; // list changed
 				}
 
+				// --- MONO REFLECTION UNDO ---
 				if (inst.Instance && inst.Class) {
 					ImGui::Indent();
-					ImGui::TextDisabled("Properties:");
-
 					void* iter = nullptr;
 					while (MonoClassField* field = mono_class_get_fields(inst.Class, &iter)) {
-						const char* fieldName = mono_field_get_name(field);
+						const char* fName = mono_field_get_name(field);
 						uint32_t flags = mono_field_get_flags(field);
 
-						// 1. Filter: Must NOT be static
 						if (flags & MONO_FIELD_ATTR_STATIC) continue;
-
-						// 2. Filter: Must be Public OR have [SerializeField]
-						bool isPublic = (flags & MONO_FIELD_ATTR_PUBLIC);
-						bool hasAttribute = false;
-
-						// Look up the attribute class (Cache this static pointer for speed!)
-						static MonoClass* attrClass = mono_class_from_name(
-							MonoManager::GetImage(), "CrashoutsEngine", "SerializeField");
-
-						if (attrClass) {
-							// Get all attributes on this specific field
-							MonoCustomAttrInfo* attrInfo = mono_custom_attrs_from_field(inst.Class, field);
-							if (attrInfo) {
-								// Check if our specific attribute is present
-								hasAttribute = mono_custom_attrs_has_attr(attrInfo, attrClass);
-								mono_custom_attrs_free(attrInfo); // Important: Clean up!
-							}
-						}
-
-						if (isPublic || hasAttribute) { // || hasAttribute
+						if (flags & MONO_FIELD_ATTR_PUBLIC) {
 							MonoType* type = mono_field_get_type(field);
 							int typeEnum = mono_type_get_type(type);
 
-							// Integer
-							if (typeEnum == MONO_TYPE_I4) {
+							if (typeEnum == MONO_TYPE_R4) { // Float
+								float val = 0.f;
+								mono_field_get_value(inst.Instance, field, &val);
+								UIHelpers::DrawUndoableFloat(fName, val);
+								mono_field_set_value(inst.Instance, field, &val);
+							}
+							else if (typeEnum == MONO_TYPE_I4) { // Int
 								int val = 0;
 								mono_field_get_value(inst.Instance, field, &val);
-								if (ImGui::DragInt(fieldName, &val)) {
-									mono_field_set_value(inst.Instance, field, &val);
-								}
+								UIHelpers::DrawUndoableInt(fName, val);
+								mono_field_set_value(inst.Instance, field, &val);
 							}
-							// Float
-							else if (typeEnum == MONO_TYPE_R4) {
-								float val = 0.0f;
-								mono_field_get_value(inst.Instance, field, &val);
-								if (ImGui::DragFloat(fieldName, &val, 0.1f)) {
-									mono_field_set_value(inst.Instance, field, &val);
-								}
-							}
-							// Boolean
-							else if (typeEnum == MONO_TYPE_BOOLEAN) {
+							else if (typeEnum == MONO_TYPE_BOOLEAN) { // Bool
 								bool val = false;
 								mono_field_get_value(inst.Instance, field, &val);
-								if (ImGui::Checkbox(fieldName, &val)) {
-									mono_field_set_value(inst.Instance, field, &val);
-								}
+								UIHelpers::DrawUndoableBool(fName, val);
+								mono_field_set_value(inst.Instance, field, &val);
 							}
-							// String
-							else if (typeEnum == MONO_TYPE_STRING) {
+							else if (typeEnum == MONO_TYPE_STRING) { // String
 								MonoString* monoStr = nullptr;
 								mono_field_get_value(inst.Instance, field, &monoStr);
-								char strBuf[128] = "";
+
+								std::string strVal = "";
 								if (monoStr) {
 									char* raw = mono_string_to_utf8(monoStr);
-									strncpy(strBuf, raw, 127);
+									strVal = raw;
 									mono_free(raw);
 								}
-								if (ImGui::InputText(fieldName, strBuf, 128)) {
-									MonoString* newStr = mono_string_new(MonoManager::GetDomain(), strBuf);
-									mono_field_set_value(inst.Instance, field, newStr);
+
+								std::string oldVal = strVal;
+								UIHelpers::DrawUndoableString(fName, strVal);
+
+								if (strVal != oldVal) {
+									MonoString* newMonoStr = mono_string_new(MonoManager::GetDomain(), strVal.c_str());
+									mono_field_set_value(inst.Instance, field, newMonoStr);
 								}
 							}
 						}
 					}
 					ImGui::Unindent();
 				}
-
 				ImGui::PopID();
 			}
 
@@ -1944,17 +1420,12 @@ namespace CrashoutsEngine
 			if (has(ecs, e)) ecs.RemoveComponent<Component::CameraComponent>(e);
 		}
 		void drawInspector(ECS& ecs, Entity e) override {
-			using namespace Component;
 			auto* cc = ecs.GetComponent<CameraComponent>(e);
-			//auto& D = GetDebugDefaults();
 			if (!cc) return;
 
-			// ImGui::Checkbox("Enable Camera", &cc->enabled);      // CURRENTLY NOT IMPLEMENTED
-			// ImGui::DragFloat3("Position", &cc->position.x, 1.f); // Locked access
-			ImGui::DragFloat("Zoom", &cc->zoom, 0.005f, 0.05f);
-			// ImGui::DragFloat("Target Aspect Ratio", &cc->targetAR);
-			ImGui::DragFloat2("X Boundaries (min/max)", &cc->xBounds.x, 1.f);
-			ImGui::DragFloat2("Y Boundaries (min/max)", &cc->yBounds.x, 1.f);
+			UIHelpers::DrawUndoableFloat("Zoom", cc->zoom, 0.005f, 0.05f);
+			UIHelpers::DrawUndoableVec2("X Bounds", cc->xBounds);
+			UIHelpers::DrawUndoableVec2("Y Bounds", cc->yBounds);
 
 		}
 	};
@@ -2276,37 +1747,16 @@ namespace CrashoutsEngine
 			if (has(ecs, e)) ecs.RemoveComponent<Component::PPComponent>(e);
 		}
 		void drawInspector(ECS& ecs, Entity e) override {
-			using namespace Component;
-			// 1. Get the PPComponent
 			auto* ppc = ecs.GetComponent<PPComponent>(e);
-
 			if (!ppc) return;
 
-			ImGui::SeparatorText("Post-Processing");
+			UIHelpers::DrawUndoableBool("Active", ppc->active);
+			UIHelpers::DrawUndoableFloat("Brightness", ppc->brightness, 0.01f, -1.0f, 1.0f);
+			UIHelpers::DrawUndoableFloat("Contrast", ppc->contrast, 0.01f, -1.0f, 1.0f);
+			UIHelpers::DrawUndoableFloat("Saturation", ppc->saturation, 0.01f, -1.0f, 1.0f);
 
-			// 2. Add ImGui widgets for each component member
-
-			// Checkbox for the 'active' bool
-			ImGui::Checkbox("Active", &ppc->active);
-
-			// DragFloats for the color grading values
-			// We use a small speed (0.01f) and a sensible range.
-			// These values are 0.0 by default, representing "no change".
-
-			// Brightness: -1.0 (black) to 1.0 (double bright)
-			ImGui::DragFloat("Brightness", &ppc->brightness, 0.01f, -1.0f, 1.0f);
-
-			// Contrast: -1.0 (all gray) to 1.0 (double contrast)
-			ImGui::DragFloat("Contrast", &ppc->contrast, 0.01f, -1.0f, 1.0f);
-
-			// Saturation: -1.0 (grayscale) to 1.0 (double saturation)
-			ImGui::DragFloat("Saturation", &ppc->saturation, 0.01f, -1.0f, 1.0f);
-
-			// A reset button is very useful for these settings
-			if (ImGui::Button("Reset Values")) {
-				ppc->brightness = 0.0f;
-				ppc->contrast = 0.0f;
-				ppc->saturation = 0.0f;
+			if (ImGui::Button("Reset")) {
+				ppc->brightness = 0.0f; ppc->contrast = 0.0f; ppc->saturation = 0.0f;
 			}
 		}
 	};
@@ -2866,20 +2316,13 @@ namespace CrashoutsEngine
 		void draw(CrashoutsEngine::ECS&) override {
 			// Gravity
 			CEVec3 g = Physics::PhysicsHandler::GetGravity();
-			float gv[3]{ g.x,g.y,g.z };
-			if (ImGui::DragFloat3("Gravity (m/s^2)", gv, 0.1f)) {
-				Physics::PhysicsHandler::SetGravity({ gv[0],gv[1],gv[2] });
-			}
-			ImGui::SameLine();
-			if (ImGui::Button("Reset g##phys")) {
-				Physics::PhysicsHandler::SetGravity({ 0.f,-2.f,0.f });
-			}
+			UIHelpers::DrawUndoableVec3("Gravity", g);
+			Physics::PhysicsHandler::SetGravity(g);
 
-			// Linear damping
+			// Linear Damping
 			float d = Physics::PhysicsHandler::GetLinearDamping();
-			if (ImGui::DragFloat("Linear damping", &d, 0.05f, 0.f, 100.f)) {
-				Physics::PhysicsHandler::SetLinearDamping(d);
-			}
+			UIHelpers::DrawUndoableFloat("Damping", d);
+			Physics::PhysicsHandler::SetLinearDamping(d);
 		}
 	};
 
