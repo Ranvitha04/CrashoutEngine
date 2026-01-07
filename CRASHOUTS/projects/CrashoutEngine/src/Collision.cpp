@@ -185,6 +185,36 @@ namespace Collision {
 		return std::nullopt;
 	}
 
+	// --- Helper: Get Support Point ---
+	// Returns the corner of the AABB furthest in the direction of 'dir'
+	CEVec3 GetAABBSupport(const AABBRect& box, const CEVec3& dir) {
+		CEVec3 center{ box.position + box.offset };
+		return {
+			dir.x >= 0 ? center.x + box.extents.x : center.x - box.extents.x,
+			dir.y >= 0 ? center.y + box.extents.y : center.y - box.extents.y,
+			0.f
+		};
+	}
+
+	// --- Helper: Project Segment onto Axis ---
+	void ProjectSegment(const LineSegment& seg, const CEVec3& axis, float& min, float& max) {
+		float dot1 = CEMath::Dot(seg.GetWorldP1(),axis);
+		float dot2 = CEMath::Dot(seg.GetWorldP2(),axis);
+		min = std::min(dot1, dot2);
+		max = std::max(dot1, dot2);
+	}
+
+	// --- Helper: Project AABB onto Axis ---
+	void ProjectAABB(const AABBRect& box, const CEVec3& axis, float& min, float& max) {
+		CEVec3 center{ box.position + box.offset };
+		float centerProj = CEMath::Dot(center, axis);
+		// Project half-extents (radius calculation)
+		// We take absolute value of dot products to map half-extents to the axis
+		float r = box.extents.x * std::abs(axis.x) + box.extents.y * std::abs(axis.y);
+		min = centerProj - r;
+		max = centerProj + r;
+	}
+
 	/*
 	* @brief Find the point on segment AB that is closed to point P
 	* @param A - Vertex A
@@ -486,7 +516,7 @@ namespace Collision {
 
 			// Handle normal
 			if (dist > 0.0001f) {
-				result.normal = vecToCirlce * (1.f / dist); // Normalized
+				result.normal = -1.f * (vecToCirlce * (1.f / dist)); // Normalized
 			}
 			else {
 				// If circle center is on line, use line normal
@@ -648,6 +678,7 @@ namespace Collision {
 
 	CollisionManifold CollisionHandler::AABBToLineCollision(CollisionProps const& coll1, CollisionProps const& coll2) {
 		CollisionManifold result{ .collisionOccured = false };
+		result.depth = std::numeric_limits<float>::max();
 
 		// 1. Sort Inputs (AABB vs Line)
 		CollisionProps const* aabbPtr = (coll1.collider->type == ColliderType::AABB) ? &coll1 : &coll2;
@@ -669,96 +700,78 @@ namespace Collision {
 		CEVec3 p1 = line.GetWorldP1();
 		CEVec3 p2 = line.GetWorldP2();
 
-		// 4. SAT (Separating Axis Theorem) - Check 3 Axes
-		// We look for the "Minimum Translation Vector" (MTV) - the smallest overlap.
+		// 1. Define the 3 axes to test
+		// Axis 1 & 2: AABB local axes (Global X and Y)
+		// Axis 3: Segment normal
+		CEVec3 segDir = p2 - p1;
+		CEVec3 segNormal = line.GetNormal();
 
-		float minOverlap = std::numeric_limits<float>::max();
-		CEVec3 bestAxis{ 0.f, 0.f, 0.f };
+		CEVec3 axes[3] = {
+			{1.0f, 0.0f, 0.f}, // AABB X
+			{0.0f, 1.0f, 0.f}, // AABB Y
+			segNormal     // Segment Normal
+		};
 
-		// --- AXIS 1: AABB X-Axis (1, 0) ---
-		{
-			// Project AABB: [center.x - extents.x, center.x + extents.x]
-			float minA = aabbCenter.x - extents.x;
-			float maxA = aabbCenter.x + extents.x;
+		// 2. Loop through axes and find overlap
+		for (int i = 0; i < 3; i++) {
+			CEVec3 axis = axes[i];
 
-			// Project Line: [min(p1.x, p2.x), max(p1.x, p2.x)]
-			float minL = std::min(p1.x, p2.x);
-			float maxL = std::max(p1.x, p2.x);
+			// Project both shapes
+			float minA, maxA, minB, maxB;
+			ProjectAABB(aabb, axis, minA, maxA);
+			ProjectSegment(line, axis, minB, maxB);
 
-			// Check Overlap
-			float overlap = std::min(maxA, maxL) - std::max(minA, minL);
-			if (overlap < 0) return result; // Separated!
+			// Check for separation
+			if (maxA < minB || maxB < minA) {
+				return result; // No collision found, return empty
+			}
 
-			if (overlap < minOverlap) {
-				minOverlap = overlap;
-				bestAxis = CEVec3{ 1.f, 0.f, 0.f };
-				// Point axis towards AABB? We fix direction at the end.
+			// Calculate overlap
+			float axisDepth = std::min(maxA - minB, maxB - minA);
+
+			// Keep the smallest overlap (this is the penetration depth)
+			if (axisDepth < result.depth) {
+				result.depth = axisDepth;
+				result.normal = axis;
 			}
 		}
 
-		// --- AXIS 2: AABB Y-Axis (0, 1) ---
-		{
-			float minA = aabbCenter.y - extents.y;
-			float maxA = aabbCenter.y + extents.y;
+		// 3. Ensure Normal Direction
+		// We want the normal to point from Box -> Segment.
+		// We check the vector from Box Center to Segment Center (approx midpoint)
+		CEVec3 segMid = (p1 + p2) * 0.5f;
+		CEVec3 direction = segMid - aabbCenter;
 
-			float minL = std::min(p1.y, p2.y);
-			float maxL = std::max(p1.y, p2.y);
-
-			float overlap = std::min(maxA, maxL) - std::max(minA, minL);
-			if (overlap < 0) return result; // Separated!
-
-			if (overlap < minOverlap) {
-				minOverlap = overlap;
-				bestAxis = CEVec3{ 0.f, 1.f, 0.f };
-			}
+		if (CEMath::Dot( direction, result.normal) < 0) {
+			result.normal = result.normal * -1.0f;
 		}
 
-		// --- AXIS 3: Line Normal ---
-
-		{
-			CEVec3 axis = line.GetNormal();
-
-			// Project AABB (Radius projection formula)
-			// Radius = ext.x * |axis.x| + ext.y * |axis.y|
-			float r = extents.x * std::abs(axis.x) + extents.y * std::abs(axis.y);
-			float centerProj = CEMath::Dot(aabbCenter, axis);
-			float minA = centerProj - r;
-			float maxA = centerProj + r;
-
-			// Project Line (The normal is perpendicular to the line, so p1 and p2 project to the SAME value)
-			float lineProj = CEMath::Dot(p1, axis);
-			float minL = lineProj; // Line is "flat" on its own normal
-			float maxL = lineProj;
-
-			float overlap = std::min(maxA, maxL) - std::max(minA, minL);
-			if (overlap < 0) return result; // Separated!
-
-			if (overlap < minOverlap) {
-				minOverlap = overlap;
-				bestAxis = axis;
-			}
-		}
-
-		// 5. Collision Confirmed!
 		result.collisionOccured = true;
-		result.depth = minOverlap;
-		result.normal = bestAxis;
-		result.numOfContacts = 1;
 
-		// 6. Ensure Normal Direction (Push AABB away from Line)
-		// Vector from Line Center to AABB Center
-		CEVec3 lineCenter = (p1 + p2) * 0.5f;
-		CEVec3 dir = aabbCenter - lineCenter;
-
-		// If normal points opposite to direction, flip it
-		if (CEMath::Dot(result.normal, dir) < 0.f) {
-			result.normal = -1.f * result.normal;
+		// 4. Calculate Contact Point
+		// Case A: The collision axis is the Segment Normal. 
+		// This means a corner of the AABB is hitting the flat side of the line.
+		// We find the AABB corner closest to the segment.
+		if (std::abs( CEMath::Dot(result.normal,segNormal)) > 0.99f) {
+			// Find the support point on the box in the direction of the normal (towards segment)
+			result.contactPoints[0] = GetAABBSupport(aabb, result.normal);
 		}
+		// Case B: The collision axis is one of the AABB axes (X or Y).
+		// This means the tip of the line segment is hitting a flat face of the box.
+		// We find which segment endpoint is inside the box.
+		else {
 
-		// Calculate Contact Point (Approximation for AABB on Line)
-		// Closest point on segment to box center
-		result.contactPoints[0] = ClosestPointOnSegment(p1, p2, aabbCenter);
-
+			// Since normal points Box -> Segment, the point closer to the box has a *smaller* dot product along that normal?
+			// Actually, simpler logic: The point overlapping the box is the contact.
+			// We pick the point closest to the box center.
+			if ( CEMath::LengthSq(p1 - aabbCenter) < CEMath::LengthSq(p2 - aabbCenter)) {
+				result.contactPoints[0] = p1;
+			}
+			else {
+				result.contactPoints[0] = p2;
+			}
+		}
+		
 		// 7. Handle Swapping (If input was Line vs AABB, flip normal)
 		if (swapped) {
 			result.normal = -1.f * result.normal;
@@ -791,9 +804,9 @@ namespace Collision {
 
 	CollisionHandler::CollisionHandler() : Messaging::Observable{}, collideFuncts{}
 	{
-		int line = static_cast<int>(ColliderType::LINE);
 		int circle = static_cast<int>(ColliderType::CIRCLE);
 		int aabb = static_cast<int>(ColliderType::AABB);
+		int line = static_cast<int>(ColliderType::LINE);
 		int poly = static_cast<int>(ColliderType::POLYGON);
 
 		quadTree.Resize(AABBRect{ CEVec3{-2000.f, -2000.f, 0.f}, CEVec3{2000.f, 2000.f, 0.f} });
@@ -803,8 +816,12 @@ namespace Collision {
 		// Circle vs Circle
 		collideFuncts[circle * SHAPE_COUNT + circle] = CircleToCircleCollision;
 
+		collideFuncts[circle * SHAPE_COUNT + line] = CircleToLineCollision;
+
 		// AABB vs AABB
 		collideFuncts[aabb * SHAPE_COUNT + aabb] = AABBToAABBCollision;
+
+		collideFuncts[aabb * SHAPE_COUNT + line] = AABBToLineCollision;
 
 		// Circle vs AABB (Circle is 0, AABB is 1. 0 < 1, so index is 0 * N + 1)
 		collideFuncts[circle * SHAPE_COUNT + aabb] = CircleToAABBCollision;
@@ -815,14 +832,11 @@ namespace Collision {
 		// Circle vs Polygon (Circle is 0, Poly is 4. 0 < 4)
 		collideFuncts[circle * SHAPE_COUNT + poly] = CircleToPolygonCollision;
 
+		collideFuncts[line * SHAPE_COUNT + poly ] = PolygonToLineCollision;
+
 		// Polygon vs Polygon
 		collideFuncts[poly * SHAPE_COUNT + poly] = PolygonToPolygonCollision;
-
-		collideFuncts[line * SHAPE_COUNT + circle] = CircleToLineCollision;
-
-		collideFuncts[line * SHAPE_COUNT + aabb] = AABBToLineCollision;
-
-		collideFuncts[line * SHAPE_COUNT + poly ] = PolygonToLineCollision;
+	
 
 	}
 
