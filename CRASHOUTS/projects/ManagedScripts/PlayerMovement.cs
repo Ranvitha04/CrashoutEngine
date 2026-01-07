@@ -289,6 +289,17 @@ namespace CrashoutsEngine
 
         public void OnTriggerEnter(uint otherEntity)
         {
+            
+        }
+        public void OnTriggerStay(uint otherEntity) { }
+
+        public void OnTriggerExit(uint otherEntity)
+        {
+            
+        }
+
+        public void OnCollideEnter(uint otherEntity)
+        {
             Entity other = new Entity(otherEntity);
             var layer = other.GetComponent<LayerComponent>();
             var otherTf = other.GetComponent<TransformComponent>();
@@ -325,8 +336,8 @@ namespace CrashoutsEngine
                 }
             }
         }
-
-        public void OnTriggerExit(uint otherEntity)
+        public void OnCollideStay(uint otherEntity) { }
+        public void OnCollideExit(uint otherEntity)
         {
             Entity other = new Entity(otherEntity);
             var layer = other.GetComponent<LayerComponent>();
@@ -341,11 +352,6 @@ namespace CrashoutsEngine
                 OnWall = false;
             }
         }
-
-        public void OnTriggerStay(uint otherEntity) { }
-        public void OnCollideEnter(uint otherEntity) { }
-        public void OnCollideStay(uint otherEntity) { }
-        public void OnCollideExit(uint otherEntity) { }
 
         public override void OnDestroy()
         {
