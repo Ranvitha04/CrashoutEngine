@@ -189,7 +189,7 @@ namespace CollisionGizmos {
 				auto& circle = static_cast<Collision::Circle const&>(*pColliderComp->collider);
 				// Simple Circle vs AABB (Camera) check
 				float closestX = std::fmaxf(camMinX, std::fminf(circle.position.x, camMaxX));
-				float closestY = std::fminf(camMinY, std::fminf(circle.position.y, camMaxY));
+				float closestY = std::fmaxf(camMinY, std::fminf(circle.position.y, camMaxY));
 				float distanceSq = std::powf(circle.position.x - closestX, 2) + std::powf(circle.position.y - closestY, 2);
 
 				if (distanceSq < (circle.radius * circle.radius)) {

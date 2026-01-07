@@ -47,8 +47,8 @@ namespace CrashoutsEngine
             anim = Entity.GetComponent<Animator>(); // Get Animator
             playerScript = PlayerMovement.Instance;
 
-            CollisionEvents.RegisterTriggerEnter(Entity.ID, this.OnTriggerEnter);
-            CollisionEvents.RegisterTriggerExit(Entity.ID, this.OnTriggerExit);
+            CollisionEvents.RegisterCollideEnter(Entity.ID, this.OnCollideEnter);
+            CollisionEvents.RegisterCollideExit(Entity.ID, this.OnCollideExit);
 
             if (rb != null) rb.LinearVelocity = new CEVec3(0, 0, 0);
             if (tf != null) startPos = tf.Position;
@@ -232,7 +232,7 @@ namespace CrashoutsEngine
             }
         }
 
-        public void OnTriggerEnter(uint otherEntity)
+        public void OnCollideEnter(uint otherEntity)
         {
             Entity other = new Entity(otherEntity);
             var layer = other.GetComponent<LayerComponent>();
@@ -256,18 +256,12 @@ namespace CrashoutsEngine
             }
         }
 
-        public void OnTriggerExit(uint otherEntity)
+        public void OnCollideExit(uint otherEntity)
         {
             Entity other = new Entity(otherEntity);
             var layer = other.GetComponent<LayerComponent>();
             if (layer != null && layer.HasLayer("Ground")) isGrounded = false;
         }
-
-        // Placeholders
-        public void OnTriggerStay(uint e) { }
-        public void OnCollideEnter(uint e) { }
-        public void OnCollideStay(uint e) { }
-        public void OnCollideExit(uint e) { }
 
         private float Distance(CEVec3 a, CEVec3 b)
         {

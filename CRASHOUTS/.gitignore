@@ -94,6 +94,7 @@ dist/
 .vs/
 docs/
 obj/
+*.ini
 
 # Force-include third_party folder and all its contents
 !/third_party/

@@ -1480,7 +1480,7 @@ namespace InstancingSystem {
 	void CreateInstancedTriangles(
 		const CEVec3* positions, const CEColor* colors,
 		const float* rotations, const float* scales,
-		const float* sideLengths,
+		const float* width, const float* height,
 		const CEVec2* uvOffsets, // Added UV Offsets
 		int count
 	) {
@@ -1542,10 +1542,15 @@ namespace InstancingSystem {
 			glEnableVertexAttribArray(6);
 			glVertexAttribDivisor(6, 1);
 
-			// Loc 7: Side Length
-			glVertexAttribPointer(7, 1, GL_FLOAT, GL_FALSE, stride, (void*)offsetof(TriInstanceData, sideLength));
+			// Loc 7: Width 
+			glVertexAttribPointer(7, 1, GL_FLOAT, GL_FALSE, stride, (void*)offsetof(TriInstanceData, width));
 			glEnableVertexAttribArray(7);
 			glVertexAttribDivisor(7, 1);
+
+			// Loc 8: Height
+			glVertexAttribPointer(8, 1, GL_FLOAT, GL_FALSE, stride, (void*)offsetof(TriInstanceData, height));
+			glEnableVertexAttribArray(8);
+			glVertexAttribDivisor(8, 1);
 
 			// Loc 9: UV Offset
 			glVertexAttribPointer(9, 2, GL_FLOAT, GL_FALSE, stride, (void*)offsetof(TriInstanceData, uvOffset));
@@ -1562,7 +1567,8 @@ namespace InstancingSystem {
 			instanceData[i].color = colors[i];
 			instanceData[i].rotation = rotations[i];
 			instanceData[i].scale = scales[i];
-			instanceData[i].sideLength = sideLengths[i];
+			instanceData[i].width = width[i];
+			instanceData[i].height = height[i];
 			instanceData[i].uvOffset = (uvOffsets != nullptr) ? uvOffsets[i] : CEVec2(0.0f, 0.0f);
 		}
 
@@ -1591,7 +1597,7 @@ namespace InstancingSystem {
 		const std::string& textureName,
 		const CEVec3* positions, const CEColor* colors,
 		const float* rotations, const float* scales,
-		const float* sideLengths,
+		const float* width, const float* height,
 		const CEVec2* uvOffsets, // Added UV Offsets
 		int count,
 		const CEColor& tint,
@@ -1602,7 +1608,7 @@ namespace InstancingSystem {
 
 		if (!s_triInstanceBuffersInitialized) {
 			CEVec3 p; CEColor c; float f = 0; CEVec2 u;
-			CreateInstancedTriangles(&p, &c, &f, &f, &f, &u, 0);
+			CreateInstancedTriangles(&p, &c, &f, &f, &f, &f, &u, 0);
 		}
 
 		std::vector<TriInstanceData> instanceData(count);
@@ -1611,7 +1617,8 @@ namespace InstancingSystem {
 			instanceData[i].color = colors[i];
 			instanceData[i].rotation = rotations[i];
 			instanceData[i].scale = scales[i];
-			instanceData[i].sideLength = sideLengths[i];
+			instanceData[i].width = width[i];
+			instanceData[i].height = height[i];
 			instanceData[i].uvOffset = (uvOffsets != nullptr) ? uvOffsets[i] : CEVec2(0.0f, 0.0f);
 		}
 
@@ -1653,17 +1660,18 @@ namespace InstancingSystem {
 		const CEColor* colors,
 		const float* rotations,
 		const float* scales,
-		const float* sideLengths,
+		const float* width,
+		const float* height,
 		const CEVec2* uvOffsets, // Added UV Offsets
 		int count,
 		const InstancingSystem::InstancedParams& params
 	) {
 		if (count <= 0) return;
 		if (!params.textured) {
-			CreateInstancedTriangles(positions, colors, rotations, scales, sideLengths, uvOffsets, count);
+			CreateInstancedTriangles(positions, colors, rotations, scales, width, height, uvOffsets, count);
 		}
 		else {
-			CreateInstancedTrianglesTextured(params.textureName, positions, colors, rotations, scales, sideLengths, uvOffsets, count, params.tint, params.uvSize);
+			CreateInstancedTrianglesTextured(params.textureName, positions, colors, rotations, scales, width, height, uvOffsets, count, params.tint, params.uvSize);
 		}
 	}
 
@@ -1689,6 +1697,7 @@ namespace InstancingSystem {
 				gM4TriPos.data(), gM4TriColor.data(),
 				gM4TriRot.data(), gM4TriScale.data(),
 				gM4TriSide.data(),
+				gM4TriSide.data(),
 				nullptr, // No UV offsets for Mode 4
 				static_cast<int>(gM4TriPos.size())
 			);
@@ -1698,6 +1707,7 @@ namespace InstancingSystem {
 				params.textureName,
 				gM4TriPos.data(), gM4TriColor.data(),
 				gM4TriRot.data(), gM4TriScale.data(),
+				gM4TriSide.data(),
 				gM4TriSide.data(),
 				nullptr, // No UV offsets for Mode 4
 				static_cast<int>(gM4TriPos.size()),

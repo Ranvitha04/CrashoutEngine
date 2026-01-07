@@ -30,7 +30,7 @@ namespace CrashoutsEngine
             }
         }
 
-        public void OnTriggerEnter(uint otherEntityID)
+        public void OnCollideEnter(uint otherEntityID)
         {
             // If already pressed, don't calculate again
             if (stepOn) return;
@@ -91,7 +91,7 @@ namespace CrashoutsEngine
             }
         }
 
-        public void OnTriggerExit(uint otherEntityID)
+        public void OnCollideExit(uint otherEntityID)
         {
             // Note: Currently your plate logic is "One Way" (it stays down).
             // If you want it to rise up when the player/enemy leaves, 
@@ -103,8 +103,8 @@ namespace CrashoutsEngine
         {
             GetWall();
 
-            CollisionEvents.RegisterTriggerEnter(Entity.ID, OnTriggerEnter);
-            CollisionEvents.RegisterTriggerExit(Entity.ID, OnTriggerExit);
+            CollisionEvents.RegisterCollideEnter(Entity.ID, OnCollideEnter);
+            CollisionEvents.RegisterCollideExit(Entity.ID, OnCollideExit);
 
             transform = Entity.GetComponent<TransformComponent>();
 

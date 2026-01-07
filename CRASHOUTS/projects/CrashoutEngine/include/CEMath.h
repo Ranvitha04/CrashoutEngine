@@ -87,6 +87,10 @@ namespace CEMath
 		return Length(CEVec2{ b.x - a.x, b.y - a.y });
 	}
 
+	inline f32 Distance(const CEVec3& a, const CEVec3& b) {
+		return Distance(CEVec2{ a.x, a.y }, CEVec2{ b.x, b.y });
+	}
+
 	/*!
 	@brief Calculate the dot product of two 3D vectors
 	@param leftVector  The first vector
