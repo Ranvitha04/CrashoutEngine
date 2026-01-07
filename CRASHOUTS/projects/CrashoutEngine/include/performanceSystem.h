@@ -68,7 +68,7 @@ public:
      @brief  Retrieve the attached profiler.
      @return Reference to the profiler. Caller must ensure one was attached.
      */
-    FrameProfiler& GetProfiler() { return *profiler; }
+    FrameProfiler* GetProfiler() { return profiler; }
 
 private:
     PerformanceSystem() = default;
