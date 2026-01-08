@@ -133,6 +133,14 @@ static void DrawCircleOutline(const CEVec3& c, float r, int segments, float thic
 namespace CollisionGizmos {
 
 	/*!
+	 @brief Helper function for the Polygon Drawing
+	 @param 
+	 @param 
+	 @param 
+
+	*/
+
+	/*!
 	 @brief Draws wireframes for all colliders in the ECS; tints colliding ones.
 	 @param ecs            Reference to ECS.
 	 @param events         Optional collision events to determine tinting.
@@ -207,7 +215,44 @@ namespace CollisionGizmos {
 				}
 				break;
 			}
-			case Collision::ColliderType::OBB:
+			case Collision::ColliderType::OBB: {
+				// For OBB and Polygon, use their pre-calculated AABB 
+				auto& poly = static_cast<Collision::Polygon const&>(*pColliderComp->collider);
+
+				// Manual mini-AABB check for the polygon vertices
+				float pMinX = 1e10f, pMaxX = -1e10f, pMinY = 1e10f, pMaxY = -1e10f;
+				for (int i = 0; i < poly.vertexCount; ++i) {
+					pMinX = std::min(pMinX, poly.rotatedVertices[i].x);
+					pMaxX = std::max(pMaxX, poly.rotatedVertices[i].x);
+					pMinY = std::min(pMinY, poly.rotatedVertices[i].y);
+					pMaxY = std::max(pMaxY, poly.rotatedVertices[i].y);
+				}
+
+				if (pMaxX > camMinX && pMinX < camMaxX && pMaxY > camMinY && pMinY < camMaxY) {
+					if (pColliderComp->collider->type == Collision::ColliderType::OBB) {
+						auto& obbTemp = static_cast<Collision::OBBRect const&>(*pColliderComp->collider);
+						DrawOBBOutline(&obbTemp, wireThickness, color);
+					}
+					else
+						DrawPolygon(&poly, wireThickness, color);
+				}
+				break;
+			} case Collision::ColliderType::LINE: {
+				auto& line = static_cast<Collision::LineSegment const&>(*pColliderComp->collider);
+
+				CEVec3 min{ line.GetWorldP1() };
+				CEVec3 max{ line.GetWorldP2() };
+
+				if (min.x > max.x) std::swap(min.x, max.x);
+				if (min.y > max.y) std::swap(min.y, max.y);
+
+				if (max.x > camMinX && min.x < camMaxX && max.y > camMinY && min.y < camMaxY) {
+
+					Shapes::CreateLine(line.GetWorldP1(), line.GetWorldP2(), 0.5f, color);
+
+				}
+				break;
+			}
 			case Collision::ColliderType::POLYGON: {
 				// For OBB and Polygon, use their pre-calculated AABB 
 				auto& poly = static_cast<Collision::Polygon const&>(*pColliderComp->collider);
