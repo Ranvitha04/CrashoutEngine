@@ -18,6 +18,7 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserve
 #include "observer.h"
 #include "glapp.h"
 #include "camera.h"
+#include "sceneasset.h"
 
 namespace {
 
@@ -477,7 +478,6 @@ namespace Physics {
 			rigidBody2->angularVelocity += Cross(penetrationTo2, frictionImpulseVec) * invInertia2;
 		}
 	}
-
 	/*Main Physics Update*/
 	void PhysicsHandler::Update(double fixedDT) {
 
@@ -485,7 +485,8 @@ namespace Physics {
 
 		const std::vector<CrashoutsEngine::Entity>& globalEntities = globalECS.GetComponentArray<Component::RigidBodyComponent>().indexToEntity;
 
-		bool isSimulating = !sPaused || sStepOnce;
+		bool isSimulating = !sPaused;// || sStepOnce;
+
 		double simDt = isSimulating ? fixedDT : 0.0;
 
 		int step = FrameRateController::GetInstance().StepCount();
