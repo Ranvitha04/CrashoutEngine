@@ -48,7 +48,7 @@ namespace CrashoutsEngine
             // CollisionEvents.RegisterTriggerExit(Entity.ID, OnTriggerExit);
             // CollisionEvents.RegisterTriggerStay(Entity.ID, OnTriggerStay);
 
-            AudioManager.GetInstance().Play("ambient");
+            //AudioManager.GetInstance().Play("ambient");
         }
 
         public override void Update()

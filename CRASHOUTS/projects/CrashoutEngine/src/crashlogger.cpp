@@ -32,6 +32,7 @@ static const char* sApplicationName = "App";
  @return Filesystem path to the folder containing the running executable.
          Falls back to the current working directory if retrieval fails.
 */
+#if USE_IMGUI_EDITOR
 static std::string GetExeDir()
 {
     char buffer[MAX_PATH];
@@ -39,6 +40,7 @@ static std::string GetExeDir()
     std::string::size_type pos = std::string(buffer).find_last_of("\\/");
     return std::string(buffer).substr(0, pos);
 }
+#endif
 
 /*!
  @brief Ensure that a `crashreports` folder exists (Win32 API version).

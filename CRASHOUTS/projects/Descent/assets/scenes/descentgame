@@ -14351,8 +14351,8 @@
                 },
                 "staticFriction": 1.0,
                 "dynamicFriction": 1.0,
-                "inertia": 0.75,
-                "invInertia": 1.3333333730697632
+                "inertia": 0.0,
+                "invInertia": 0.0
             },
             "collider": {
                 "ColliderType": 1,

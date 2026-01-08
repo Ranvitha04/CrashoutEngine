@@ -147,7 +147,7 @@ namespace CollisionGizmos {
 
 		// Culling preperations
 
-		RenderCamera::Camera& cam = (engineState != EngineState::PLAY) ? 
+		RenderCamera::Camera& cam = (engineState == EngineState::STOP) ? 
 			RenderCamera::engineCamera : RenderCamera::gameCamera;
 		CEVec3 camPos = cam.GetPosition();
 		float camHeight = cam.GetVisibleWorldHeight();

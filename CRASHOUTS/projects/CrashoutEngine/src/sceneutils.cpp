@@ -531,20 +531,19 @@ namespace Scene {
 		std::vector<std::pair<TransformComponent*, ShapeComponent*>>& lines,
 		bool enableCulling = false)
 	{
-
 		// Culling preperations
 
-		RenderCamera::Camera& cam = (engineState != EngineState::PLAY) ?
+		RenderCamera::Camera& cam = (engineState == EngineState::STOP) ?
 			RenderCamera::engineCamera : RenderCamera::gameCamera;
 		CEVec3 camPos = cam.GetPosition();
 		float camHeight = cam.GetVisibleWorldHeight();
 		float camWidth = cam.GetVisibleWorldWidth();
 
 		// Create a bounding box for the camera viewport
-		float camMinX = camPos.x - (camWidth * 0.5f);
-		float camMaxX = camPos.x + (camWidth * 0.5f);
-		float camMinY = camPos.y - (camHeight * 0.5f);
-		float camMaxY = camPos.y + (camHeight * 0.5f);
+		float camMinX = camPos.x - (camWidth * 0.65f);
+		float camMaxX = camPos.x + (camWidth * 0.65f);
+		float camMinY = camPos.y - (camHeight * 0.65f);
+		float camMaxY = camPos.y + (camHeight * 0.65f);
 
 		for (const Entity& id : entities) {
 			if (!globalECS.HasComponent<TransformComponent>(id)) continue;
