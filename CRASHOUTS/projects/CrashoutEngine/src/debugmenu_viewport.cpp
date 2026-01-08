@@ -433,14 +433,25 @@ namespace UI {
                         if (changed) {
                             if (movedEntities.size() > 1) {
                                 UndoManager::GetInstance().AddCommand(
-                                    std::make_unique<CrashoutsEngine::TransformGroupCommand>(movedEntities, startStates, endStates));
+                                    std::make_unique<CrashoutsEngine::TransformGroupCommand>(movedEntities, startStates, endStates)
+                                );
+                            }
+                            else if (movedEntities.size() == 1) {
+                                UndoManager::GetInstance().AddCommand(
+                                    std::make_unique<TransformEntityCommand>(
+                                        movedEntities[0],
+                                        startStates[0],
+                                        endStates[0]
+                                    )
+                                );
                             }
                         }
+
                         movedEntities.clear();
                         startStates.clear();
                     }
 
-                    if (!ImGuizmo::IsUsing()) undoTriggeredThisFrame = false;
+                    //if (!ImGuizmo::IsUsing()) undoTriggeredThisFrame = false;
                 }
             }
 
