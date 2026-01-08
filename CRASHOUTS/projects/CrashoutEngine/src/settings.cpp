@@ -231,6 +231,12 @@ void Settings::LoadEditorSettings(UI::UIState& uiState) {
         FrameRateController::GetInstance().SetTargetFPS(json["fpsCap"].GetInt());
     }
 
+    // In case we use Master Volume later lul
+    /*if (json.HasMember("masterVolume") && json["masterVolume"].IsFloat()) {
+        float vol = json["masterVolume"].GetFloat();
+        CrashoutsEngine::Audio::AudioSystem::instance().setMasterVolume(vol);
+	}*/  
+
     if (json.HasMember("musicVolume") && json["musicVolume"].IsFloat()) {
         float vol = json["musicVolume"].GetFloat();
         CrashoutsEngine::Audio::AudioSystem::instance().setMusicGroupVolume(vol);

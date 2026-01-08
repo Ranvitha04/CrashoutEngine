@@ -84,23 +84,18 @@ namespace
         audio.setMasterVolume(volume);
     }
 
-    static void ICALL_Audio_GetMusicVolume()
-    {
-        auto& audio = AudioSystem::instance();
-        audio.GetMusicVolume();
+    static float ICALL_Audio_GetMusicVolume() {
+        return AudioSystem::instance().GetMusicVolume();
     }
 
-    static void ICALL_Audio_GetSFXVolume()
-    {
-        auto& audio = AudioSystem::instance();
-        audio.GetSFXVolume();
+    static float ICALL_Audio_GetSFXVolume() {
+        return AudioSystem::instance().GetSFXVolume();
 	}
 
-    static void ICALL_Audio_GetMasterVolume()
-    {
-        auto& audio = AudioSystem::instance();
-        audio.GetMasterVolume();
-	}
+    static float ICALL_Audio_GetMasterVolume() {
+        return AudioSystem::instance().GetMasterVolume();
+    }
+
 }
 // ---------- REGISTRATION ----------
 

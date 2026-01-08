@@ -125,13 +125,13 @@ namespace CrashoutsEngine
         internal static extern void Audio_SetMasterVolume(float volume);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        internal static extern void Audio_GetMusicVolume(float volume);
+        internal static extern float Audio_GetMusicVolume();
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        internal static extern void Audio_GetSFXVolume(float volume);
+        internal static extern float Audio_GetSFXVolume();
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        internal static extern void Audio_GetMasterVolume(float volume);
+        internal static extern float Audio_GetMasterVolume();
 
         // --- BUTTON COMPONENT LIFECYCLE ---
         [MethodImpl(MethodImplOptions.InternalCall)]
