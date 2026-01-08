@@ -453,7 +453,7 @@ void UpdateRan()
                 gParticleEmitter->SetSpeedRange(12.f, 22.f);
                 gParticleEmitter->SetGravity(CEVec3(0.f, -30.f, 0.f));
                 gParticleEmitter->SetSizeRange(0.35f, 0.0f);
-                gParticleEmitter->SetColorRange(CEVec3(1.f, 0.8f, 0.2f), CEVec3(0.1f, 0.1f, 0.1f));
+                gParticleEmitter->SetColorRange(CEColor(1.f, 0.8f, 0.2f), CEColor(0.1f, 0.1f, 0.1f));
             }
         }
 
@@ -467,7 +467,7 @@ void UpdateRan()
                 gFireEmitter->SetSpeedRange(6.f, 14.f);
                 gFireEmitter->SetGravity(CEVec3(0.f, 20.f, 0.f));
                 gFireEmitter->SetSizeRange(0.6f, 0.0f);
-                gFireEmitter->SetColorRange(CEVec3(1.f,0.9f,0.4f), CEVec3(0.3f,0.05f,0.0f));
+                gFireEmitter->SetColorRange(CEColor(1.f,0.9f,0.4f), CEColor(0.3f,0.05f,0.0f));
                 gFireEmitter->SetSpread(0.6f);
             }
         }
@@ -485,7 +485,7 @@ void UpdateRan()
                 gFireballEmitter->SetLifeRange(0.35f, 0.85f);
                 gFireballEmitter->SetSpeedRange(8.f, 18.f);
                 gFireballEmitter->SetGravity(CEVec3(0.f, 0.f, 0.f));
-                gFireballEmitter->SetColorRange(CEVec3(1.f,0.8f,0.3f), CEVec3(0.4f,0.05f,0.0f));
+                gFireballEmitter->SetColorRange(CEColor(1.f,0.8f,0.3f), CEColor(0.4f,0.05f,0.0f));
                 gFireballEmitter->SetSpread(0.5f);
             }
         }
@@ -503,7 +503,7 @@ void UpdateRan()
             gParticleEmitter->SetSpeedRange(12.f, 22.f);
             gParticleEmitter->SetGravity(CEVec3(0.f, -30.f, 0.f));
             gParticleEmitter->SetSizeRange(0.35f, 0.0f);
-            gParticleEmitter->SetColorRange(CEVec3(1.f, 0.8f, 0.2f), CEVec3(0.1f, 0.1f, 0.1f));
+            gParticleEmitter->SetColorRange(CEColor(1.f, 0.8f, 0.2f), CEColor(0.1f, 0.1f, 0.1f));
 
             // FireEmitter: create if missing, then Initialize (rebuilds ECS entities)
             if (!gFireEmitter) gFireEmitter = new Component::FireEmitter(4000);
@@ -513,7 +513,7 @@ void UpdateRan()
             gFireEmitter->SetSpeedRange(6.f, 14.f);
             gFireEmitter->SetGravity(CEVec3(0.f, 20.f, 0.f));
             gFireEmitter->SetSizeRange(0.6f, 0.0f);
-            gFireEmitter->SetColorRange(CEVec3(1.f,0.9f,0.4f), CEVec3(0.3f,0.05f,0.0f));
+            gFireEmitter->SetColorRange(CEColor(1.f,0.9f,0.4f), CEColor(0.3f,0.05f,0.0f));
             gFireEmitter->SetSpread(0.6f);
 
             // FireballEmitter: create if missing, then Initialize (rebuilds ECS entities)
@@ -526,7 +526,7 @@ void UpdateRan()
             gFireballEmitter->SetLifeRange(0.35f, 0.85f);
             gFireballEmitter->SetSpeedRange(8.f, 18.f);
             gFireballEmitter->SetGravity(CEVec3(0.f, 0.f, 0.f));
-            gFireballEmitter->SetColorRange(CEVec3(1.f,0.8f,0.3f), CEVec3(0.4f,0.05f,0.0f));
+            gFireballEmitter->SetColorRange(CEColor(1.f,0.8f,0.3f), CEColor(0.4f,0.05f,0.0f));
             gFireballEmitter->SetSpread(0.5f);  
 
             if (!gExplosionEmitter) {
@@ -536,7 +536,7 @@ void UpdateRan()
                 gExplosionEmitter->SetLifeRange(0.25f, 0.6f);
                 gExplosionEmitter->SetSpeedRange(12.f, 28.f);
                 gExplosionEmitter->SetGravity(CEVec3(0.f, -10.f, 0.f));
-                gExplosionEmitter->SetColorRange(CEVec3(1.f, 0.7f, 0.2f), CEVec3(0.25f, 0.25f, 0.25f));
+                gExplosionEmitter->SetColorRange(CEColor(1.f, 0.7f, 0.2f), CEColor(0.25f, 0.25f, 0.25f));
                 gExplosionEmitter->SetSpread(1.0f);
                 gExplosionEmitter->SetBurst(1200, 1.8f);
                 gExplosionEmitter->TriggerBurst();
@@ -553,7 +553,7 @@ void UpdateRan()
                 gExplosionEmitter->SetLifeRange(0.25f, 0.6f);
                 gExplosionEmitter->SetSpeedRange(12.f, 28.f);
                 gExplosionEmitter->SetGravity(CEVec3(0.f, -10.f, 0.f));
-                gExplosionEmitter->SetColorRange(CEVec3(1.f, 0.7f, 0.2f), CEVec3(0.25f, 0.25f, 0.25f));
+                gExplosionEmitter->SetColorRange(CEColor(1.f, 0.7f, 0.2f), CEColor(0.25f, 0.25f, 0.25f));
                 gExplosionEmitter->SetSpread(1.0f);
                 gExplosionEmitter->SetBurst(1200, 1.8f);
                 gExplosionEmitter->TriggerBurst();

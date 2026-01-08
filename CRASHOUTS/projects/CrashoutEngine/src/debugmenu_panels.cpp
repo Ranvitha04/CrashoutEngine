@@ -709,7 +709,10 @@ namespace UI {
             // Only create if the name field is not empty
             if (std::strlen(sceneNameBuffer) > 0) {
 
+
                 // 4. Call your create function
+                Serialization::SaveScenes(sceneNameBuffer);
+                ECS::getInstance()->Reset();
                 Serialization::SaveScenes(sceneNameBuffer);
 
                 // 5. Clear the buffer after creation for good UX

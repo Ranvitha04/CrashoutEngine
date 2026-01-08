@@ -79,12 +79,96 @@
     ],
     "fonts": [
         {
+            "name": "AlegreyaSC-Black",
+            "path": "AlegreyaSC-Black.jpg"
+        },
+        {
+            "name": "AlegreyaSC-Black",
+            "path": "AlegreyaSC-Black.ttf"
+        },
+        {
+            "name": "AlegreyaSC-BlackItalic",
+            "path": "AlegreyaSC-BlackItalic.jpg"
+        },
+        {
+            "name": "AlegreyaSC-BlackItalic",
+            "path": "AlegreyaSC-BlackItalic.ttf"
+        },
+        {
+            "name": "AlegreyaSC-Bold",
+            "path": "AlegreyaSC-Bold.jpg"
+        },
+        {
+            "name": "AlegreyaSC-Bold",
+            "path": "AlegreyaSC-Bold.ttf"
+        },
+        {
+            "name": "AlegreyaSC-BoldItalic",
+            "path": "AlegreyaSC-BoldItalic.jpg"
+        },
+        {
+            "name": "AlegreyaSC-BoldItalic",
+            "path": "AlegreyaSC-BoldItalic.ttf"
+        },
+        {
+            "name": "AlegreyaSC-ExtraBold",
+            "path": "AlegreyaSC-ExtraBold.jpg"
+        },
+        {
+            "name": "AlegreyaSC-ExtraBold",
+            "path": "AlegreyaSC-ExtraBold.ttf"
+        },
+        {
+            "name": "AlegreyaSC-ExtraBoldItalic",
+            "path": "AlegreyaSC-ExtraBoldItalic.jpg"
+        },
+        {
+            "name": "AlegreyaSC-ExtraBoldItalic",
+            "path": "AlegreyaSC-ExtraBoldItalic.ttf"
+        },
+        {
+            "name": "AlegreyaSC-Italic",
+            "path": "AlegreyaSC-Italic.jpg"
+        },
+        {
+            "name": "AlegreyaSC-Italic",
+            "path": "AlegreyaSC-Italic.ttf"
+        },
+        {
+            "name": "AlegreyaSC-Medium",
+            "path": "AlegreyaSC-Medium.jpg"
+        },
+        {
+            "name": "AlegreyaSC-Medium",
+            "path": "AlegreyaSC-Medium.ttf"
+        },
+        {
+            "name": "AlegreyaSC-MediumItalic",
+            "path": "AlegreyaSC-MediumItalic.jpg"
+        },
+        {
+            "name": "AlegreyaSC-MediumItalic",
+            "path": "AlegreyaSC-MediumItalic.ttf"
+        },
+        {
+            "name": "AlegreyaSC-Regular",
+            "path": "AlegreyaSC-Regular.jpg"
+        },
+        {
+            "name": "AlegreyaSC-Regular",
+            "path": "AlegreyaSC-Regular.ttf"
+        },
+        {
             "name": "Exo2-Regular",
             "path": "Exo2-Regular.ttf"
         },
         {
             "name": "Silver",
             "path": "Silver.ttf"
+        },
+        {
+            "name": "_licenseinfo",
+            "path": "_licenseinfo.txt"
         }
     ],
     "images": [

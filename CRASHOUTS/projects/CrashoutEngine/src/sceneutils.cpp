@@ -34,7 +34,8 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 #include "textinputcomponent.h"
 #include "buttoncomponent.h"
 #include "tilemapcomponent.h"
-#include "camera.h"
+#include "particleSystem.h"
+//#include "camera.h"
 
 #define FONT_SCALE 0.05f
 
@@ -101,7 +102,7 @@ namespace Scene {
 		@brief       Renders all text components and handles the blinking cursor for focused inputs.
 		@param       globalECS Reference to the ECS system to retrieve components.
 		*/
-		void RenderTextAndCursor(ECS& globalECS) {
+		static void RenderTextAndCursor(ECS& globalECS) {
 
 			// 1. Reset Shader
 			Component::Rendering& renderer = Component::Rendering::Get();
@@ -235,7 +236,7 @@ namespace Scene {
 		@brief      Updates button states (Hover, Pressed, Normal) and visual feedback.
 		@param      globalECS Reference to the ECS system.
 		*/
-		void UpdateButtons(ECS& globalECS) {
+		static void UpdateButtons(ECS& globalECS) {
 
 			// 1. Get MOUSE in WORLD Space
 			CEVec2 mouseWorld = InputManager::GetMouseWorldPos();
@@ -322,7 +323,7 @@ namespace Scene {
 		@brief      Updates text input focus logic and handles keyboard events.
 		@param      globalECS Reference to the ECS system.
 		*/
-		void UpdateInputs(ECS& globalECS) {
+		static void UpdateInputs(ECS& globalECS) {
 			static Entity selectedTextInput = (Entity)-1;
 			const ECS::ComponentArray<TextInputComponent>& textInputArray = globalECS.GetComponentArray<TextInputComponent>();
 
@@ -445,11 +446,79 @@ namespace Scene {
 		}
 	}
 
+	namespace Particles {
+		// ============================================================================
+		// PARTICLE HELPERS
+		// ============================================================================
+
+		/*!
+		@brief      Iterates all particle component arrays and calls Update(dt).
+		*/
+		static void UpdateAllParticles(ECS& globalECS) {
+			float dt = (float)FrameRateController::GetInstance().DT();
+
+			// 1. Standard Particles
+			auto& arr1 = globalECS.GetComponentArray<ParticleEmitter>();
+			for (const Entity& id : arr1.indexToEntity) {
+				globalECS.GetComponent<ParticleEmitter>(id)->Update(dt);
+			}
+
+			// 2. Fire
+			auto& arr2 = globalECS.GetComponentArray<FireEmitter>();
+			for (const Entity& id : arr2.indexToEntity) {
+				globalECS.GetComponent<FireEmitter>(id)->Update(dt);
+			}
+
+			// 3. Fireball
+			auto& arr3 = globalECS.GetComponentArray<FireballEmitter>();
+			for (const Entity& id : arr3.indexToEntity) {
+				globalECS.GetComponent<FireballEmitter>(id)->Update(dt);
+			}
+
+			// 4. Explosion
+			auto& arr4 = globalECS.GetComponentArray<ExplosionEmitter>();
+			for (const Entity& id : arr4.indexToEntity) {
+				globalECS.GetComponent<ExplosionEmitter>(id)->Update(dt);
+			}
+
+			// 5. Trajectory
+			auto& arr5 = globalECS.GetComponentArray<TrajectoryEmitter>();
+			for (const Entity& id : arr5.indexToEntity) {
+				globalECS.GetComponent<TrajectoryEmitter>(id)->Update(dt);
+			}
+		}
+
+		/*!
+		@brief      Iterates all particle component arrays and calls Render().
+		@note       Assumes the Instanced Shader is currently bound and in World Space.
+		*/
+		static void RenderAllParticles(ECS& globalECS) {
+			// Note: The Render() function in your header defaults to untextured (useTexture=false).
+			// If you want specific textures, you need to store the texture name in the Component 
+			// and pass it here. For now, we call the default Render().
+
+			auto& arr1 = globalECS.GetComponentArray<ParticleEmitter>();
+			for (const Entity& id : arr1.indexToEntity) globalECS.GetComponent<ParticleEmitter>(id)->Render();
+
+			auto& arr2 = globalECS.GetComponentArray<FireEmitter>();
+			for (const Entity& id : arr2.indexToEntity) globalECS.GetComponent<FireEmitter>(id)->Render();
+
+			auto& arr3 = globalECS.GetComponentArray<FireballEmitter>();
+			for (const Entity& id : arr3.indexToEntity) globalECS.GetComponent<FireballEmitter>(id)->Render();
+
+			auto& arr4 = globalECS.GetComponentArray<ExplosionEmitter>();
+			for (const Entity& id : arr4.indexToEntity) globalECS.GetComponent<ExplosionEmitter>(id)->Render();
+
+			auto& arr5 = globalECS.GetComponentArray<TrajectoryEmitter>();
+			for (const Entity& id : arr5.indexToEntity) globalECS.GetComponent<TrajectoryEmitter>(id)->Render();
+		}
+
+	}
 	// ============================================================================
 	// SCENE RENDERING
 	// ============================================================================
 
-	TextureMode GetWrapMode(int mode) {
+	static TextureMode GetWrapMode(int mode) {
 		switch (mode) {
 		case 0: return TextureMode::ClampToEdge;
 		case 1: return TextureMode::Repeat;
@@ -522,7 +591,7 @@ namespace Scene {
 	std::unordered_map<BatchKey, RenderBatch, BatchKeyHasher> circBatches;
 
 	// --- HELPER: BatchEntities (Processes a specific list of entities) ---
-	void BatchEntities(
+	static void BatchEntities(
 		const std::vector<Entity>& entities,
 		ECS& globalECS,
 		std::unordered_map<BatchKey, RenderBatch, BatchKeyHasher>& rects,
@@ -613,7 +682,7 @@ namespace Scene {
 	}
 
 	// --- HELPER: FlushBatches (Draws and clears the maps) ---
-	void FlushBatches(
+	static void FlushBatches(
 		std::unordered_map<BatchKey, RenderBatch, BatchKeyHasher>& rects,
 		std::unordered_map<BatchKey, RenderBatch, BatchKeyHasher>& tris,
 		std::unordered_map<BatchKey, RenderBatch, BatchKeyHasher>& circs)
@@ -756,6 +825,9 @@ namespace Scene {
 		BatchEntities(screenEntities, globalECS, rectBatches, triBatches, circBatches, lineQueue, false);
 		FlushBatches(rectBatches, triBatches, circBatches);
 
+		// Render Particles (World Space)
+		Particles::RenderAllParticles(globalECS);
+
 		// Flush Screen Lines
 		if (!lineQueue.empty()) {
 			renderer.shdr_pgm->Use();
@@ -779,5 +851,8 @@ namespace Scene {
 		using namespace CrashoutsEngine;
 		Scene::UI::UpdateButtons(globalECS);
 		Scene::UI::UpdateInputs(globalECS);
+
+		// Particle Updates (Physics/Lifecycle)
+		Particles::UpdateAllParticles(globalECS);
 	}
 }
