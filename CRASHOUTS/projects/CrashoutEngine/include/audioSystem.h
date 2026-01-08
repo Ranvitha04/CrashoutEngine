@@ -14,6 +14,8 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserve
 #include <unordered_map>
 #include <memory>
 #include <vector>
+#include <list>
+#include <utility>
 
 #include <fmod_studio.hpp>
 #include <fmod.hpp>
@@ -139,6 +141,8 @@ namespace CrashoutsEngine
 
             //For tagged playback
             std::unordered_map<std::string, FMOD::Channel*> mTaggedChannels;
+
+            std::list<std::pair<FMOD::Channel*, FMOD::Sound*>> mActiveSounds;
 
             // Helpers
             FMOD::Studio::EventDescription* getEventDesc(const std::string& eventPath);

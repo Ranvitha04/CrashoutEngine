@@ -176,6 +176,26 @@ namespace CrashoutsEngine::Audio
     {
         if (mStudio)
             mStudio->update();
+
+        auto it = mActiveSounds.begin();
+        while (it != mActiveSounds.end())
+        {
+            FMOD::Channel* ch = it->first;
+            FMOD::Sound* snd = it->second;
+
+            bool isPlaying = false;
+            ch->isPlaying(&isPlaying);
+
+            if (!isPlaying)
+            {
+                snd->release();
+                it = mActiveSounds.erase(it);
+            }
+            else
+            {
+                ++it;
+            }
+        }
     }
 
     /*!
@@ -790,21 +810,7 @@ namespace CrashoutsEngine::Audio
 
         if (ch) {
             ch->setMode(FMOD_2D);
-
-            ch->setCallback([](FMOD_CHANNELCONTROL* channelcontrol,
-                FMOD_CHANNELCONTROL_TYPE /*controltype*/,
-                FMOD_CHANNELCONTROL_CALLBACK_TYPE callbacktype,
-                void* /*commanddata1*/,
-                void* /*commanddata2*/) -> FMOD_RESULT {
-                    if (callbacktype == FMOD_CHANNELCONTROL_CALLBACK_END) {
-                        FMOD::Channel* ch = (FMOD::Channel*)channelcontrol;
-                        FMOD::Sound* snd = nullptr;
-                        if (ch->getCurrentSound(&snd) == FMOD_OK && snd) {
-                            snd->release();
-                        }
-                    }
-                    return FMOD_OK;
-                });
+            mActiveSounds.emplace_back(ch, snd);
         }
 
         return ch;
@@ -963,21 +969,7 @@ namespace CrashoutsEngine::Audio
         if (ch)
         {
             ch->setMode(FMOD_2D);
-            ch->setCallback([](FMOD_CHANNELCONTROL* channelcontrol,
-                FMOD_CHANNELCONTROL_TYPE /*controltype*/,
-                FMOD_CHANNELCONTROL_CALLBACK_TYPE callbacktype,
-                void* /*commanddata1*/,
-                void* /*commanddata2*/) -> FMOD_RESULT
-                {
-                    if (callbacktype == FMOD_CHANNELCONTROL_CALLBACK_END) {
-                        FMOD::Channel* ch = (FMOD::Channel*)channelcontrol;
-                        FMOD::Sound* snd = nullptr;
-                        if (ch->getCurrentSound(&snd) == FMOD_OK && snd) {
-                            snd->release();
-                        }
-                    }
-                    return FMOD_OK;
-                });
+            mActiveSounds.emplace_back(ch, snd);
             mTaggedChannels[key] = ch;
         }
 
