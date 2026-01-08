@@ -22,6 +22,7 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserve
 #include "imgui.h" 
 #include "assetmanager.h"
 #include "frameratecontroller.h"
+#include "audioSystem.h"
 
 /// Default screen width before loading from file
 unsigned int Settings::screenWidth = 1280;
@@ -142,6 +143,9 @@ void Settings::SaveEditorSettings(const UI::UIState& uiState) {
     json.AddMember("fontScale", uiState.fontScale, allocator); 
     json.AddMember("fpsCap", FrameRateController::GetInstance().CAP(), allocator);
 
+	json.AddMember("musicVolume", CrashoutsEngine::Audio::AudioSystem::instance().GetMusicVolume(), allocator);
+	json.AddMember("sfxVolume", CrashoutsEngine::Audio::AudioSystem::instance().GetSFXVolume(), allocator);
+
     // 3. Save Colors
     // We create an array of arrays: [[r,g,b,a], [r,g,b,a], ...]
     rapidjson::Value colorArray(rapidjson::kArrayType);
@@ -225,6 +229,16 @@ void Settings::LoadEditorSettings(UI::UIState& uiState) {
 
     if (json.HasMember("fpsCap") && json["fpsCap"].IsInt()) {
         FrameRateController::GetInstance().SetTargetFPS(json["fpsCap"].GetInt());
+    }
+
+    if (json.HasMember("musicVolume") && json["musicVolume"].IsFloat()) {
+        float vol = json["musicVolume"].GetFloat();
+        CrashoutsEngine::Audio::AudioSystem::instance().setMusicGroupVolume(vol);
+    }
+
+    if (json.HasMember("sfxVolume") && json["sfxVolume"].IsFloat()) {
+        float vol = json["sfxVolume"].GetFloat();
+        CrashoutsEngine::Audio::AudioSystem::instance().setSFXGroupVolume(vol);
     }
 
     // --- 3. Load Colors ---

@@ -15,6 +15,8 @@ namespace CrashoutsEngine
 
         private bool _isDragging = false;
         private bool _isMusic = true;
+
+        // Use _currentT for data binding
         private float _currentT = 1.0f;
         private float _lastMouseX;
 
@@ -71,19 +73,24 @@ namespace CrashoutsEngine
             if (_isDragging)
             {
                 float delta = mousePos.x - _lastMouseX;
-                _currentT += delta * _sensitivity;
+                float nextT = _currentT + delta * _sensitivity;
 
-                if (_currentT < 0.0f) _currentT = 0.0f;
-                if (_currentT > 1.0f) _currentT = 1.0f;
+                if (nextT < 0.0f) nextT = 0.0f;
+                if (nextT > 1.0f) nextT = 1.0f;
 
-                UpdateVisuals(_currentT);
+                // Only update if the value has changed by more than 0.1%
+                if (Math.Abs(nextT - _currentT) > 0.001f)
+                {
+                    _currentT = nextT;
+                    UpdateVisuals(_currentT);
 
-                string type = _isMusic ? "MUSIC" : "SFX";
-                Debug.Log(type + " Vol: " + _currentT);
+                    // REMOVE LATER
+                    string type = _isMusic ? "MUSIC" : "SFX";
+                    Debug.Log(type + " Vol: " + _currentT);
 
-                if (_isMusic) AudioManager.GetInstance().MusicVolume(_currentT);
-                else AudioManager.GetInstance().SFXVolume(_currentT);
-
+                    if (_isMusic) AudioManager.GetInstance().MusicVolume(_currentT);
+                    else AudioManager.GetInstance().SFXVolume(_currentT);
+                }
                 _lastMouseX = mousePos.x;
             }
         }

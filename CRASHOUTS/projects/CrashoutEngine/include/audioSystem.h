@@ -81,9 +81,16 @@ namespace CrashoutsEngine
             FMOD::Channel* playSFXFile(const std::string& path);
             FMOD::Channel* playSFXFileEx(const std::string& path);
 
+
+            // Setters
             bool setMusicGroupVolume(float v01);
             bool setSFXGroupVolume(float v01);
             bool setMasterVolume(float v01);
+
+            // Getters
+            float GetMusicVolume() const;
+            float GetSFXVolume() const;
+            float GetMasterVolume() const;
 
             // Tagged playback
             bool playMusicFileTagged(const std::string& key, const std::string& path, bool loop = true);

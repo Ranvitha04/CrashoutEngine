@@ -844,6 +844,49 @@ namespace CrashoutsEngine::Audio
         return master->setVolume(v01) == FMOD_OK;
     }
 
+    /*!
+@brief Returns the current volume of the music channel group (0.0 to 1.0).
+*/
+    float AudioSystem::GetMusicVolume() const
+    {
+        float vol = 0.0f;
+        if (mMusicGroup)
+        {
+            mMusicGroup->getVolume(&vol);
+        }
+        return vol;
+    }
+
+    /*!
+    @brief Returns the current volume of the SFX channel group (0.0 to 1.0).
+    */
+    float AudioSystem::GetSFXVolume() const
+    {
+        float vol = 0.0f;
+        if (mSFXGroup)
+        {
+            mSFXGroup->getVolume(&vol);
+        }
+        return vol;
+    }
+
+    /*!
+    @brief Returns the current master volume from the FMOD Core system.
+    */
+    float AudioSystem::GetMasterVolume() const
+    {
+        float vol = 0.0f;
+        if (!mCore) return vol;
+
+        FMOD::ChannelGroup* master = nullptr;
+        if (mCore->getMasterChannelGroup(&master) == FMOD_OK && master)
+        {
+            master->getVolume(&vol);
+        }
+        return vol;
+    }
+
+
     // Tagged playback for different groups (SFX/Music)
     /*!
     @brief Plays a music file and tags its FMOD channel so it can be stopped by key.

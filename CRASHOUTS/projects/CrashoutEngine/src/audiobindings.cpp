@@ -83,6 +83,24 @@ namespace
         auto& audio = AudioSystem::instance();
         audio.setMasterVolume(volume);
     }
+
+    static void ICALL_Audio_GetMusicVolume()
+    {
+        auto& audio = AudioSystem::instance();
+        audio.GetMusicVolume();
+    }
+
+    static void ICALL_Audio_GetSFXVolume()
+    {
+        auto& audio = AudioSystem::instance();
+        audio.GetSFXVolume();
+	}
+
+    static void ICALL_Audio_GetMasterVolume()
+    {
+        auto& audio = AudioSystem::instance();
+        audio.GetMasterVolume();
+	}
 }
 // ---------- REGISTRATION ----------
 
@@ -101,4 +119,10 @@ void CrashoutsEngine::Bindings::RegisterAudioBindings()
     mono_add_internal_call("CrashoutsEngine.InternalCalls::Audio_SetSFXVolume", (const void*)ICALL_Audio_SetSFXVolume);
 
     mono_add_internal_call("CrashoutsEngine.InternalCalls::Audio_SetMasterVolume", (const void*)ICALL_Audio_SetMasterVolume);
+    
+	mono_add_internal_call("CrashoutsEngine.InternalCalls::Audio_GetMusicVolume", (const void*)ICALL_Audio_GetMusicVolume);
+
+    mono_add_internal_call("CrashoutsEngine.InternalCalls::Audio_GetSFXVolume", (const void*)ICALL_Audio_GetSFXVolume);
+
+	mono_add_internal_call("CrashoutsEngine.InternalCalls::Audio_GetMasterVolume", (const void*)ICALL_Audio_GetMasterVolume);
 }
