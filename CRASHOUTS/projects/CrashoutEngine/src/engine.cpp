@@ -142,6 +142,10 @@ bool PerformPendingSceneLoad() {
         // Reset Mono to ensure scripts re-bind correctly
         // (Optional depending on your architecture, but safe)
         // MonoManager::ReloadScripts(); 
+#if !USE_IMGUI_EDITOR
+        if (Physics::PhysicsHandler::GetInstance().GetPaused())
+            Physics::PhysicsHandler::PhysicsHandler::GetInstance().SetPaused(false);
+#endif
         return true;
     }
     return false;
@@ -346,7 +350,6 @@ void Update(double const& dt) {
             FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Audio");
             CrashoutsEngine::Audio::AudioSystem::instance().Update();
         }
-
         // process events if any associated with input devices
         //glfwPollEvents();
 
