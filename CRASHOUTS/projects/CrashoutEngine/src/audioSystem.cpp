@@ -177,6 +177,34 @@ namespace CrashoutsEngine::Audio
         if (mStudio)
             mStudio->update();
 
+        auto fit = mFadingChannels.begin();
+        while (fit != mFadingChannels.end())
+        {
+            bool isPlaying = false;
+            fit->channel->isPlaying(&isPlaying);
+
+            if (!isPlaying)
+            {
+                fit = mFadingChannels.erase(fit);
+                continue;
+            }
+
+            float dt = 1.0f / 60.0f;
+
+            fit->currentVol -= fit->fadeRate * dt;
+
+            if (fit->currentVol <= 0.0f)
+            {
+                fit->channel->stop();
+                fit = mFadingChannels.erase(fit);
+            }
+            else
+            {
+                fit->channel->setVolume(fit->currentVol);
+                ++fit;
+            }
+        }
+
         auto it = mActiveSounds.begin();
         while (it != mActiveSounds.end())
         {
@@ -188,6 +216,16 @@ namespace CrashoutsEngine::Audio
 
             if (!isPlaying)
             {
+                for (auto mapIt = mTaggedChannels.begin(); mapIt != mTaggedChannels.end(); )
+                {
+                    if (mapIt->second == ch) {
+                        mapIt = mTaggedChannels.erase(mapIt);
+                    }
+                    else {
+                        ++mapIt;
+                    }
+                }
+
                 snd->release();
                 it = mActiveSounds.erase(it);
             }
@@ -979,23 +1017,43 @@ namespace CrashoutsEngine::Audio
     /*!
     @brief Stops a previously tagged channel by its string key.
     */
-    bool AudioSystem::stopTagged(const std::string& key)
+    bool AudioSystem::stopTagged(const std::string& key, float fadeOutSeconds)
     {
         auto it = mTaggedChannels.find(key);
         if (it == mTaggedChannels.end())
             return false;
 
         FMOD::Channel* ch = it->second;
+
+        // Remove from map immediately so the key is free to be used again
+        mTaggedChannels.erase(it);
+
         if (ch)
         {
             bool playing = false;
             if (ch->isPlaying(&playing) == FMOD_OK && playing)
             {
-                ch->stop();
+                if (fadeOutSeconds <= 0.0f)
+                {
+                    // Immediate stop (Hard cut)
+                    ch->stop();
+                }
+                else
+                {
+                    // Hand off to the fade system
+                    float currentVol = 1.0f;
+                    ch->getVolume(&currentVol);
+
+                    FadingChannel fc;
+                    fc.channel = ch;
+                    fc.currentVol = currentVol;
+                    fc.fadeRate = currentVol / fadeOutSeconds; // Calculate rate to hit 0 in X seconds
+
+                    mFadingChannels.push_back(fc);
+                }
             }
         }
 
-        mTaggedChannels.erase(it);
         return true;
     }
 

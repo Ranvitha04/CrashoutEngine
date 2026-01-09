@@ -54,10 +54,10 @@ namespace
         );
     }
 
-    static void ICALL_Audio_StopTagged(MonoString* key)
+    static void ICALL_Audio_StopTagged(MonoString* key, float fadeDuration)
     {
         auto& audio = AudioSystem::instance();
-        audio.stopTagged(MonoToStdString(key));
+        audio.stopTagged(MonoToStdString(key), fadeDuration);
     }
 
     static void ICALL_Audio_StopMusic()

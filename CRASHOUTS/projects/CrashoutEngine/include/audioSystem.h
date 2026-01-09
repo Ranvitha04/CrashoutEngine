@@ -99,7 +99,7 @@ namespace CrashoutsEngine
 
             bool playSFXFileTagged(const std::string& key, const std::string& path, bool loop);
 
-            bool stopTagged(const std::string& key);
+            bool stopTagged(const std::string& key, float fadeOutSeconds = 0.0f);
 
             void setPaused(bool paused);
 
@@ -125,10 +125,20 @@ namespace CrashoutsEngine
                     }
                 }
             };
+
             struct CoreNoop
             {
                 void operator()(FMOD::System* /*p*/) const {}
             };
+
+            struct FadingChannel
+            {
+                FMOD::Channel* channel;
+                float currentVol;
+                float fadeRate;
+            };
+
+            std::vector<FadingChannel> mFadingChannels;
 
             std::unique_ptr<FMOD::Studio::System, StudioDeleter> mStudio;
             std::unique_ptr<FMOD::System, CoreNoop>              mCore;
