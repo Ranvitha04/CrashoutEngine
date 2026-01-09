@@ -201,7 +201,35 @@ namespace UI {
                 selected = ecs.CloneEntity(selected);
                 return;
             }
+            const bool delPressed =
+                ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows) &&
+                ImGui::IsKeyPressed(ImGuiKey_Delete, false) &&
+                !ImGui::GetIO().WantTextInput &&
+                !ImGui::IsAnyItemActive();
+            if (ImGui::Button("Destroy Selected") || delPressed)
+            {
+                if (selected)
+                {
+                    
+                    std::vector<CrashoutsEngine::Entity> nodes;
+                    CrashoutsEngine::GatherDescendants(ecs, selected, nodes);
+                    std::reverse(nodes.begin(), nodes.end());
 
+                    for (auto e : nodes)
+                    {
+                        if (ecs.HasComponent<Component::ParentComponent>(e))
+                            CrashoutsEngine::DetachChild(ecs, e);
+
+                        ecs.DestroyEntity(e);
+
+                        auto it = std::find(entities.begin(), entities.end(), e);
+                        if (it != entities.end()) entities.erase(it);
+                    }
+
+                    selected = 0;
+                }
+                }
+                /*
             if (ImGui::Button("Destroy Selected")) {
                 if (selected) {
                     if (ecs.HasComponent<Component::ParentComponent>(selected)) {
@@ -217,7 +245,7 @@ namespace UI {
                 }
 
                 selected = 0;
-            }
+            }*/
         }
 
         //ImGui::End();
