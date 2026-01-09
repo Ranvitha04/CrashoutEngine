@@ -1,5 +1,5 @@
 /*!
-@file		colliderbindings.cpp
+@file		audiobindings.cpp
 @author     mohamadamirakmal.b@digipen.edu
 @date       19/11/2025
 @brief		Definition of audio bindings functions

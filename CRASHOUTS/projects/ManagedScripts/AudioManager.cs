@@ -13,8 +13,10 @@ public class AudioManager
     public static AudioManager Instance { get; } = new AudioManager();
 
     private AudioManager() {
+
         playerMusVol = InternalCalls.Audio_GetMusicVolume();
         playerSFXVol = InternalCalls.Audio_GetSFXVolume();
+
         RegisterSound(
                 "ambient", // key you use in Play("ambient")
                 "assets/audio/Lava-Volcano-Wind-Environment_LOOP.wav",
