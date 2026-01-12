@@ -41,6 +41,17 @@ namespace Collision {
 				return dynamic_cast<AABBRect const&>(collider);
 				}
 				break;
+			case ColliderType::LINE: {
+				LineSegment const& line{ dynamic_cast<LineSegment const&>(collider) };
+				CEVec3 min{ line.GetWorldP1() };
+				CEVec3 max{ line.GetWorldP2() };
+
+				if (min.x > max.x) std::swap(min.x, max.x);
+				if (min.y > max.y) std::swap(min.y, max.y);
+
+				return AABBRect{ min, max };
+				}
+				break;
 			case ColliderType::POLYGON: {
 				Polygon const& polygon{ dynamic_cast<Polygon const&>(collider) };
 				CEVec3 minXY{ polygon.rotatedVertices[0].x, polygon.rotatedVertices[0].y, transform.z };

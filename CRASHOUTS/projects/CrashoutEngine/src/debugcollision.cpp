@@ -206,6 +206,21 @@ namespace CollisionGizmos {
 					DrawAABBOutline(aabb.min, aabb.max, wireThickness, color);
 				}
 				break;
+			} case Collision::ColliderType::LINE: {
+				auto& line = static_cast<Collision::LineSegment const&>(*pColliderComp->collider);
+
+				CEVec3 min{ line.GetWorldP1() };
+				CEVec3 max{ line.GetWorldP2() };
+
+				if (min.x > max.x) std::swap(min.x, max.x);
+				if (min.y > max.y) std::swap(min.y, max.y);
+
+				if (max.x > camMinX && min.x < camMaxX && max.y > camMinY && min.y < camMaxY) {
+
+					Shapes::CreateLine(line.GetWorldP1(), line.GetWorldP2(), 0.5f, color);
+
+				}
+				break;
 			}
 			case Collision::ColliderType::OBB:
 			case Collision::ColliderType::POLYGON: {
