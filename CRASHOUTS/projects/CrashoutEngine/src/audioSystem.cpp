@@ -98,6 +98,27 @@ namespace CrashoutsEngine::Audio
         return false;
     }
 
+    /*
+        @brief Resolves an audio file path by checking its existence directly and relative to a root directory.
+    */
+    static std::string ResolvePath(const std::string& root, const std::string& path) {
+        if (std::filesystem::exists(path)) return path;
+
+        std::string cleanPath = path;
+
+        const std::string prefix = "assets/";
+        const std::string prefixWin = "assets\\";
+
+        if (cleanPath.find(prefix) == 0) {
+            cleanPath = cleanPath.substr(prefix.length());
+        }
+        else if (cleanPath.find(prefixWin) == 0) {
+            cleanPath = cleanPath.substr(prefixWin.length());
+        }
+
+        return joinPath(root, cleanPath);
+    }
+
     // Singleton & error helper
     /*!
     @brief Returns the global AudioSystem singleton instance.
@@ -942,19 +963,17 @@ namespace CrashoutsEngine::Audio
         if (!mCore || !mMusicGroup)
             return false;
 
+        std::string finalPath = ResolvePath(mBanksDir, path);
+
         FMOD::Sound* snd = nullptr;
-        if (!ok(mCore->createSound(path.c_str(),
-            MusicMode(loop),
-            nullptr,
-            &snd),
-            "createSound(musicTagged)"))
+        // Use finalPath.c_str() here
+        if (!ok(mCore->createSound(finalPath.c_str(), MusicMode(loop), nullptr, &snd), "createSound(musicTagged)"))
         {
             return false;
         }
 
         FMOD::Channel* ch = nullptr;
-        if (!ok(mCore->playSound(snd, mMusicGroup, false, &ch),
-            "playSound(musicTagged)"))
+        if (!ok(mCore->playSound(snd, mMusicGroup, false, &ch), "playSound(musicTagged)"))
         {
             snd->release();
             return false;
@@ -980,25 +999,21 @@ namespace CrashoutsEngine::Audio
             return false;
         }
 
+        std::string finalPath = ResolvePath(mBanksDir, path);
+
         FMOD_MODE mode = FMOD_DEFAULT | FMOD_2D;
-        if (loop)
-            mode |= FMOD_LOOP_NORMAL;
-        else
-            mode |= FMOD_LOOP_OFF;
+        if (loop) mode |= FMOD_LOOP_NORMAL;
+        else mode |= FMOD_LOOP_OFF;
 
         FMOD::Sound* snd = nullptr;
-        if (!ok(mCore->createSound(path.c_str(),
-            mode,
-            nullptr,
-            &snd),
-            "createSound(sfxTagged)"))
+        // Use finalPath.c_str() here
+        if (!ok(mCore->createSound(finalPath.c_str(), mode, nullptr, &snd), "createSound(sfxTagged)"))
         {
             return false;
         }
 
         FMOD::Channel* ch = nullptr;
-        if (!ok(mCore->playSound(snd, mSFXGroup, false, &ch),
-            "playSound(sfxTagged)"))
+        if (!ok(mCore->playSound(snd, mSFXGroup, false, &ch), "playSound(sfxTagged)"))
         {
             snd->release();
             return false;

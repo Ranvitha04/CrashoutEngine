@@ -889,49 +889,56 @@ namespace {
 			}
 
 			ImGui::Separator();
+
+			static float s_inspectorFade = 0.5f;
+			ImGui::SliderFloat("Stop Fade (s)", &s_inspectorFade, 0.0f, 5.0f);
+
 			bool isPlaying = (c->inst != nullptr) || (c->channel != nullptr);
 
 			if (isPlaying) {
 				ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.8f, 0.2f, 0.2f, 1.0f));
 				if (ImGui::Button("Stop", ImVec2(-1, 0))) {
-					if (c->inst) { c->inst->stop(FMOD_STUDIO_STOP_ALLOWFADEOUT); }
-					if (c->channel) { c->channel->stop(); }
+
+					// Stop Studio Event
+					if (c->inst) {
+						c->inst->stop(s_inspectorFade > 0.f ? FMOD_STUDIO_STOP_ALLOWFADEOUT : FMOD_STUDIO_STOP_IMMEDIATE);
+					}
+
+					// Stop Raw Channel (Using Tagged System for Fade)
+					if (c->channel) {
+						std::string entityTag = "Entity_" + std::to_string((uint32_t)e);
+						Audio::AudioSystem::instance().stopTagged(entityTag, s_inspectorFade);
+						c->channel = nullptr;
+					}
 				}
 				ImGui::PopStyleColor();
 			}
 			else {
 				if (ImGui::Button("Play", ImVec2(-1, 0))) {
-					if (c->eventPath.empty()) return;
+					if (!c->eventPath.empty()) {
+						auto& audio = Audio::AudioSystem::instance();
+						std::string path = c->eventPath;
 
-					auto& audio = Audio::AudioSystem::instance();
-					std::string path = c->eventPath;
-
-					if (path.rfind("event:/", 0) == 0) {
-						if (auto* inst = audio.createInstance(path)) {
-							inst->setVolume(c->volume);
-							inst->setPitch(c->pitch);
-							if (c->spatial3D) { /* Attach to transform */ }
-							inst->start();
-							c->inst = inst;
+						if (path.rfind("event:/", 0) == 0) {
+							if (auto* inst = audio.createInstance(path)) {
+								inst->setVolume(c->volume);
+								inst->setPitch(c->pitch);
+								inst->start();
+								c->inst = inst;
+							}
 						}
-					}
-					else {
-						if (path.rfind("assets/", 0) != 0) path = "assets/audio/" + path;
+						else {
+							// Fix path prefix
+							if (path.rfind("assets/", 0) != 0) path = "assets/audio/" + path;
 
-						std::string entityTag = "Entity_" + std::to_string((uint32_t)e);
+							// Stop previous tagged sound
+							std::string entityTag = "Entity_" + std::to_string((uint32_t)e);
+							audio.stopTagged(entityTag, 0.05f);
 
-						audio.stopTagged(entityTag);
-
-						bool success = false;
-
-						success = audio.playSFXFileTagged(entityTag, path, s_loop);
-
-						if (success) {
-							c->channel = audio.playSFXFileEx(path);
-							if (c->channel) {
-								c->channel->setVolume(c->volume);
-								c->channel->setPitch(c->pitch);
-								c->channel->setMode(s_loop ? FMOD_LOOP_NORMAL : FMOD_LOOP_OFF);
+							// Play new
+							if (audio.playSFXFileTagged(entityTag, path, s_loop)) {
+								audio.stopTagged(entityTag);
+								audio.playSFXFileTagged(entityTag, path, s_loop);
 							}
 						}
 					}

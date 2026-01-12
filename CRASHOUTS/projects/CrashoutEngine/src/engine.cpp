@@ -236,12 +236,12 @@ void Init() {
         }
     );
 
-    // Generate and Load Assets and Manifest
-
 #if USE_IMGUI_EDITOR
     CrashoutsEngine::Assets::GenerateAssetManifest();
 #endif
     CrashoutsEngine::Assets::AssetManager::GetInstance().LoadManifestAssets();
+
+    CrashoutsEngine::Audio::AudioSystem::instance().Update();
 
     //Component::Rendering::Get().Setup_VAO(); // Setup default quad VAO
     Component::Rendering::Initialize(); // Initializes the main shader
@@ -255,6 +255,8 @@ void Init() {
     /// register game states and start with main menu
     RegisterAllStates();
     InitGameStateManager(SCENE);
+
+    //CrashoutsEngine::Audio::AudioSystem::instance().init();
 
     CrashoutsEngine::ScriptSystem::InitializeAll(MonoManager::GetDomain(), MonoManager::GetAssembly());
 

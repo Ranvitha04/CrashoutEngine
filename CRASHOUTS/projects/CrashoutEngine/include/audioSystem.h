@@ -32,7 +32,7 @@ namespace CrashoutsEngine
             static AudioSystem& instance();
 
             // Lifetime
-            bool init(const std::string& banksDir = "assets/audio/banks");
+            bool init(const std::string& banksDir);
             void Update();
             void shutdown();
 
