@@ -96,6 +96,9 @@ docs/
 obj/
 *.ini
 
+# Ignore project-specific settings
+projects/Descent/assets/settings.json
+
 # Force-include third_party folder and all its contents
 !/third_party/
 !/third_party/**

@@ -8,7 +8,7 @@
         is designed to be used with the AssetManager and provides a static factory
         method for safe creation and resource management.
 
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
 //#pragma once
@@ -187,6 +187,741 @@ namespace CrashoutsEngine {
             const char* const PP_COMPONENT              = "postprocessing";
             // HIERACHY ITEMS
             const char* const PARENT_COMPONENT          = "parent";
+        }
+
+        namespace JsonHelpers {
+            using Allocator = rapidjson::Document::AllocatorType;
+
+            // Serialization
+            void WriteVec3(rapidjson::Value& obj, const char* key, const CEVec3& v, Allocator& alloc) {
+                rapidjson::Value val(rapidjson::kObjectType);
+                val.AddMember("x", v.x, alloc); val.AddMember("y", v.y, alloc); val.AddMember("z", v.z, alloc);
+                obj.AddMember(rapidjson::StringRef(key), val, alloc);
+            }
+            void WriteVec2(rapidjson::Value& obj, const char* key, const CEVec2& v, Allocator& alloc) {
+                rapidjson::Value val(rapidjson::kObjectType);
+                val.AddMember("x", v.x, alloc); val.AddMember("y", v.y, alloc);
+                obj.AddMember(rapidjson::StringRef(key), val, alloc);
+            }
+            void WriteColor(rapidjson::Value& obj, const char* key, const CEColor& c, Allocator& alloc) {
+                rapidjson::Value val(rapidjson::kObjectType);
+                val.AddMember("x", c.x(), alloc); val.AddMember("y", c.y(), alloc);
+                val.AddMember("z", c.z(), alloc); val.AddMember("w", c.w(), alloc);
+                obj.AddMember(rapidjson::StringRef(key), val, alloc);
+            }
+
+            // Deserialization
+            float GetFloat(const rapidjson::Value& obj, const char* key, float def = 0.0f) {
+                if (obj.HasMember(key) && obj[key].IsNumber()) return obj[key].GetFloat();
+                return def;
+            }
+            int GetInt(const rapidjson::Value& obj, const char* key, int def = 0) {
+                if (obj.HasMember(key) && obj[key].IsInt()) return obj[key].GetInt();
+                return def;
+            }
+            bool GetBool(const rapidjson::Value& obj, const char* key, bool def = false) {
+                if (obj.HasMember(key) && obj[key].IsBool()) return obj[key].GetBool();
+                return def;
+            }
+            const char* GetString(const rapidjson::Value& obj, const char* key, const char* def = "") {
+                if (obj.HasMember(key) && obj[key].IsString()) return obj[key].GetString();
+                return def;
+            }
+
+            CEVec3 ReadVec3(const rapidjson::Value& v, CEVec3 def = {}) {
+                if (v.IsObject()) {
+                    if (v.HasMember("x")) def.x = v["x"].GetFloat();
+                    if (v.HasMember("y")) def.y = v["y"].GetFloat();
+                    if (v.HasMember("z")) def.z = v["z"].GetFloat();
+                }
+                return def;
+            }
+            CEVec2 ReadVec2(const rapidjson::Value& v, CEVec2 def = {}) {
+                if (v.IsObject()) {
+                    if (v.HasMember("x")) def.x = v["x"].GetFloat();
+                    if (v.HasMember("y")) def.y = v["y"].GetFloat();
+                }
+                return def;
+            }
+            CEColor ReadColor(const rapidjson::Value& v, CEColor def = {}) {
+                if (v.IsObject()) {
+                    if (v.HasMember("x")) def.x() = v["x"].GetFloat();
+                    if (v.HasMember("y")) def.y() = v["y"].GetFloat();
+                    if (v.HasMember("z")) def.z() = v["z"].GetFloat();
+                    if (v.HasMember("w")) def.w() = v["w"].GetFloat();
+                }
+                return def;
+            }
+        }
+
+        rapidjson::Value SerializeEntity(uint32_t entityId, rapidjson::Document::AllocatorType& allocator) {
+            ECS& gECS = *ECS::getInstance();
+            Entity id = static_cast<Entity>(entityId);
+            rapidjson::Value entityValue(rapidjson::kObjectType);
+            using namespace JsonHelpers;
+
+            if (gECS.HasComponent<NameComponent>(id)) {
+                entityValue.AddMember(rapidjson::StringRef(Keys::NAME_COMPONENT), 
+                    rapidjson::Value(gECS.GetComponent<NameComponent>(id)->name.c_str(), allocator), allocator);
+            }
+
+            if (gECS.HasComponent<LayerComponent>(id)) {
+                rapidjson::Value val(rapidjson::kObjectType);
+                val.AddMember("currentLayer", gECS.GetComponent<LayerComponent>(id)->currentLayer, allocator);
+                entityValue.AddMember(rapidjson::StringRef(Keys::LAYER_COMPONENT), val, allocator);
+            }
+
+            if (gECS.HasComponent<TransformComponent>(id)) {
+                const auto& c = *gECS.GetComponent<TransformComponent>(id);
+                rapidjson::Value val(rapidjson::kObjectType);
+                val.AddMember("rotation", c.rotation, allocator);
+                WriteVec3(val, "position", c.position, allocator);
+                WriteVec2(val, "size", c.size, allocator);
+                entityValue.AddMember(rapidjson::StringRef(Keys::TRANSFORM_COMPONENT), val, allocator);
+            }
+
+            if (gECS.HasComponent<RigidBodyComponent>(id)) {
+                auto& c = *gECS.GetComponent<RigidBodyComponent>(id);
+                rapidjson::Value val(rapidjson::kObjectType);
+                val.AddMember("mass", c.getMass(), allocator);
+                val.AddMember("restitutionCoeff", c.GetCoeff(), allocator);
+                WriteVec3(val, "maximumVelocity", c.getMaxVelocity(), allocator);
+                val.AddMember("staticFriction", c.staticFriction, allocator);
+                val.AddMember("dynamicFriction", c.dynamicFriction, allocator);
+                val.AddMember("inertia", c.inertia, allocator);
+                val.AddMember("invInertia", c.invInertia, allocator);
+                entityValue.AddMember(rapidjson::StringRef(Keys::RIGIDBODY_COMPONENT), val, allocator);
+            }
+
+            if (gECS.HasComponent<ColliderComponent>(id)) {
+                const auto& c = *gECS.GetComponent<ColliderComponent>(id);
+                if (c.collider) {
+                    rapidjson::Value val(rapidjson::kObjectType);
+                    val.AddMember("ColliderType", (int)c.collider->ColliderType, allocator);
+                    val.AddMember("isTrigger", c.collider->isTrigger, allocator);
+                    val.AddMember("enabled", c.collider->enabled, allocator);
+                    WriteVec3(val, "position", c.collider->position, allocator);
+                    WriteVec3(val, "offset", c.collider->offset, allocator);
+
+                    switch (c.collider->ColliderType) {
+                    case Collision::ColliderType::CIRCLE: {
+                        auto* s = static_cast<Collision::Circle*>(c.collider.get());
+                        val.AddMember("radius", s->radius, allocator);
+                        WriteVec3(val, "center", s->position, allocator);
+                        break;
+                    }
+                    case Collision::ColliderType::AABB: {
+                        auto* a = static_cast<Collision::AABBRect*>(c.collider.get());
+                        WriteVec3(val, "min", a->min, allocator);
+                        WriteVec3(val, "max", a->max, allocator);
+                        break;
+                    }
+                    case Collision::ColliderType::OBB: {
+                        auto* p = static_cast<Collision::Polygon*>(c.collider.get());
+                        CEVec3 extents = Collision::Polygon::CalculateOBBExtents(*p);
+                        WriteVec3(val, "min", p->position - extents, allocator);
+                        WriteVec3(val, "max", p->position + extents, allocator);
+                        val.AddMember("rotation", p->rotation, allocator);
+                        break;
+                    }
+                    case Collision::ColliderType::POLYGON:
+                    case Collision::ColliderType::TRIANGLE: {
+                        auto* p = static_cast<Collision::Polygon*>(c.collider.get());
+                        val.AddMember("rotation", p->rotation, allocator);
+                        rapidjson::Value verts(rapidjson::kArrayType);
+                        for (int k = 0; k < p->vertexCount; ++k) {
+                            rapidjson::Value v(rapidjson::kObjectType);
+                            v.AddMember("x", p->vertices[k].x, allocator);
+                            v.AddMember("y", p->vertices[k].y, allocator);
+                            v.AddMember("z", p->vertices[k].z, allocator);
+                            verts.PushBack(v, allocator);
+                        }
+                        val.AddMember("vertices", verts, allocator);
+                        break;
+                    }
+                    default: break;
+                    }
+                    entityValue.AddMember(rapidjson::StringRef(Keys::COLLIDER_COMPONENT), val, allocator);
+                }
+            }
+
+            if (gECS.HasComponent<ShapeComponent>(id)) {
+                const auto& c = *gECS.GetComponent<ShapeComponent>(id);
+                rapidjson::Value val(rapidjson::kObjectType);
+                val.AddMember("useTexture", c.enableTexture, allocator);
+                val.AddMember("isWorldSpace", c.isWorldSpace, allocator);
+                val.AddMember("wrapModeU", (int)c.wrapModeU, allocator);
+                val.AddMember("wrapModeV", (int)c.wrapModeV, allocator);
+                val.AddMember("thickness", c.thickness, allocator);
+                val.AddMember("preview", c.preview, allocator);
+                val.AddMember("type", (int)c.type, allocator);
+                val.AddMember("textureName", rapidjson::Value(c.textureName.c_str(), allocator), allocator);
+                WriteVec2(val, "uvSize", c.uvSize, allocator);
+                WriteVec2(val, "uvOffset", c.uvOffset, allocator);
+                WriteColor(val, "color", c.color, allocator);
+                WriteVec3(val, "p1", c.p1, allocator);
+                WriteVec3(val, "p2", c.p2, allocator);
+                entityValue.AddMember(rapidjson::StringRef(Keys::SHAPE_COMPONENT), val, allocator);
+            }
+
+            if (gECS.HasComponent<TextComponent>(id)) {
+                const auto& c = *gECS.GetComponent<TextComponent>(id);
+                rapidjson::Value val(rapidjson::kObjectType);
+                val.AddMember("font", rapidjson::Value(c.font.c_str(), allocator), allocator);
+                val.AddMember("text", rapidjson::Value(c.text.c_str(), allocator), allocator);
+                val.AddMember("scale", c.scale, allocator);
+                WriteVec2(val, "offset", c.offset, allocator);
+                WriteColor(val, "color", c.color, allocator);
+                val.AddMember("centered", c.centered, allocator);
+                val.AddMember("isworldspace", c.isWorldSpace, allocator);
+                entityValue.AddMember(rapidjson::StringRef(Keys::TEXT_COMPONENT), val, allocator);
+            }
+
+            if (gECS.HasComponent<AudioEmitterComponent>(id)) {
+                const auto& c = *gECS.GetComponent<AudioEmitterComponent>(id);
+                rapidjson::Value val(rapidjson::kObjectType);
+                val.AddMember("eventPath", rapidjson::Value(c.eventPath.c_str(), allocator), allocator);
+                val.AddMember("volume", c.volume, allocator);
+                val.AddMember("pitch", c.pitch, allocator);
+                val.AddMember("spatial3D", c.spatial3D, allocator);
+                val.AddMember("looping", c.looping, allocator);
+                entityValue.AddMember(rapidjson::StringRef(Keys::AUDIO_COMPONENT), val, allocator);
+            }
+
+            if (gECS.HasComponent<ScriptComponent>(id)) {
+                const auto& c = *gECS.GetComponent<ScriptComponent>(id);
+                rapidjson::Value val(rapidjson::kObjectType);
+                rapidjson::Value arr(rapidjson::kArrayType);
+                for (const auto& inst : c.Scripts) {
+                    if (inst.ClassName.empty()) continue;
+                    rapidjson::Value obj(rapidjson::kObjectType);
+                    obj.AddMember("className", rapidjson::Value(inst.ClassName.c_str(), allocator), allocator);
+                    if (inst.Instance && inst.Class) {
+                        rapidjson::Value fields(rapidjson::kObjectType);
+                        void* iter = nullptr;
+                        while (MonoClassField* field = mono_class_get_fields(inst.Class, &iter)) {
+                            const char* fName = mono_field_get_name(field);
+                            uint32_t flags = mono_field_get_flags(field);
+                            if (flags & MONO_FIELD_ATTR_STATIC) continue;
+                            bool isPublic = (flags & MONO_FIELD_ATTR_PUBLIC);
+                            bool hasAttr = false;
+                            static MonoClass* attrClass = mono_class_from_name(MonoManager::GetImage(), "CrashoutsEngine", "SerializeField");
+                            if (attrClass) {
+                                MonoCustomAttrInfo* attrInfo = mono_custom_attrs_from_field(inst.Class, field);
+                                if (attrInfo) {
+                                    hasAttr = mono_custom_attrs_has_attr(attrInfo, attrClass);
+                                    mono_custom_attrs_free(attrInfo);
+                                }
+                            }
+                            if (isPublic || hasAttr) {
+                                MonoType* type = mono_field_get_type(field);
+                                int tEnum = mono_type_get_type(type);
+                                rapidjson::Value key(fName, allocator);
+                                if (tEnum == MONO_TYPE_I4) { int v; mono_field_get_value(inst.Instance, field, &v); fields.AddMember(key, v, allocator); }
+                                else if (tEnum == MONO_TYPE_R4) { float v; mono_field_get_value(inst.Instance, field, &v); fields.AddMember(key, v, allocator); }
+                                else if (tEnum == MONO_TYPE_BOOLEAN) { bool v; mono_field_get_value(inst.Instance, field, &v); fields.AddMember(key, v, allocator); }
+                                else if (tEnum == MONO_TYPE_STRING) {
+                                    MonoString* ms = nullptr; mono_field_get_value(inst.Instance, field, &ms);
+                                    if (ms) { char* s = mono_string_to_utf8(ms); fields.AddMember(key, rapidjson::Value(s, allocator), allocator); mono_free(s); }
+                                }
+                            }
+                        }
+                        obj.AddMember("fields", fields, allocator);
+                    }
+                    arr.PushBack(obj, allocator);
+                }
+                val.AddMember("scripts", arr, allocator);
+                entityValue.AddMember(rapidjson::StringRef(Keys::SCRIPT_COMPONENT), val, allocator);
+            }
+
+            if (gECS.HasComponent<CameraComponent>(id)) {
+                const auto& c = *gECS.GetComponent<CameraComponent>(id);
+                rapidjson::Value val(rapidjson::kObjectType);
+                val.AddMember("zoom", c.zoom, allocator);
+                WriteVec2(val, "xBounds", c.xBounds, allocator);
+                WriteVec2(val, "yBounds", c.yBounds, allocator);
+                entityValue.AddMember(rapidjson::StringRef(Keys::CAMERA_COMPONENT), val, allocator);
+            }
+
+            if (gECS.HasComponent<ButtonComponent>(id)) {
+                const auto& c = *gECS.GetComponent<ButtonComponent>(id);
+                rapidjson::Value val(rapidjson::kObjectType);
+                val.AddMember("buttonState", static_cast<std::underlying_type_t<ButtonState>>(c.buttonState), allocator);
+                WriteColor(val, "shapeNormalColor", c.shapeNormalColor, allocator);
+                WriteColor(val, "shapeHoveredColor", c.shapeHoveredColor, allocator);
+                WriteColor(val, "shapePressedColor", c.shapePressedColor, allocator);
+                WriteColor(val, "textNormalColor", c.textNormalColor, allocator);
+                WriteColor(val, "textHoveredColor", c.textHoveredColor, allocator);
+                WriteColor(val, "textPressedColor", c.textPressedColor, allocator);
+                entityValue.AddMember(rapidjson::StringRef(Keys::BUTTON_COMPONENT), val, allocator);
+            }
+
+            if (gECS.HasComponent<GuiComponent>(id)) {
+                rapidjson::Value val(rapidjson::kObjectType);
+                val.AddMember("uiType", static_cast<std::underlying_type_t<UIType>>(gECS.GetComponent<GuiComponent>(id)->uiType), allocator);
+                entityValue.AddMember(rapidjson::StringRef(Keys::GUI_COMPONENT), val, allocator);
+            }
+
+            if (gECS.HasComponent<TextInputComponent>(id)) {
+                const auto& c = *gECS.GetComponent<TextInputComponent>(id);
+                rapidjson::Value val(rapidjson::kObjectType);
+                val.AddMember("isFocused", c.isFocused, allocator);
+                val.AddMember("cursorPos", c.cursorPos, allocator);
+                val.AddMember("maxCharacters", c.maxCharacters, allocator);
+                entityValue.AddMember(rapidjson::StringRef(Keys::TEXT_INPUT_COMPONENT), val, allocator);
+            }
+
+            if (gECS.HasComponent<UILayoutComponent>(id)) {
+                const auto& c = *gECS.GetComponent<UILayoutComponent>(id);
+                rapidjson::Value val(rapidjson::kObjectType);
+                WriteVec2(val, "paddingXY", c.paddingXY, allocator);
+                val.AddMember("uiLayout", static_cast<std::underlying_type_t<UILayout>>(c.uiLayout), allocator);
+                entityValue.AddMember(rapidjson::StringRef(Keys::UI_LAYOUT_COMPONENT), val, allocator);
+            }
+
+            if (gECS.HasComponent<PPComponent>(id)) {
+                const auto& c = *gECS.GetComponent<PPComponent>(id);
+                rapidjson::Value val(rapidjson::kObjectType);
+                val.AddMember("brightness", c.brightness, allocator);
+                val.AddMember("contrast", c.contrast, allocator);
+                val.AddMember("saturation", c.saturation, allocator);
+                val.AddMember("active", c.active, allocator);
+                entityValue.AddMember(rapidjson::StringRef(Keys::PP_COMPONENT), val, allocator);
+            }
+
+            if (gECS.HasComponent<TileMapComponent>(id)) {
+                const auto& c = *gECS.GetComponent<TileMapComponent>(id);
+                rapidjson::Value val(rapidjson::kObjectType);
+                val.AddMember("tileSize", c.tileSize, allocator);
+                val.AddMember("activeAsset", rapidjson::Value(c.activeAsset.c_str(), allocator), allocator);
+                rapidjson::Value assets(rapidjson::kArrayType);
+                for (const auto& name : c.tileAssetNames) assets.PushBack(rapidjson::Value(name.c_str(), allocator), allocator);
+                val.AddMember("tileAssetNames", assets, allocator);
+                rapidjson::Value grid(rapidjson::kArrayType);
+                for (const auto& [pos, name] : c.gridData) {
+                    rapidjson::Value t(rapidjson::kObjectType);
+                    t.AddMember("x", pos.first, allocator); t.AddMember("y", pos.second, allocator);
+                    t.AddMember("asset", rapidjson::Value(name.c_str(), allocator), allocator);
+                    grid.PushBack(t, allocator);
+                }
+                val.AddMember("gridData", grid, allocator);
+                entityValue.AddMember(rapidjson::StringRef(Keys::TILEMAP_COMPONENT), val, allocator);
+            }
+
+            if (gECS.HasComponent<SpriteAnimatorComponent>(id)) {
+                const auto& c = *gECS.GetComponent<SpriteAnimatorComponent>(id);
+                rapidjson::Value val(rapidjson::kObjectType);
+                val.AddMember("currentClip", rapidjson::Value(c.currentClipName.c_str(), allocator), allocator);
+                val.AddMember("flipH", c.flipH, allocator);
+                val.AddMember("playing", c.playing, allocator);
+                rapidjson::Value clips(rapidjson::kArrayType);
+                for (const auto& clip : c.clips) {
+                    rapidjson::Value obj(rapidjson::kObjectType);
+                    obj.AddMember("name", rapidjson::Value(clip.name.c_str(), allocator), allocator);
+                    obj.AddMember("start", clip.startFrame, allocator);
+                    obj.AddMember("count", clip.frameCount, allocator);
+                    obj.AddMember("fps", clip.fps, allocator);
+                    obj.AddMember("loop", clip.loop, allocator);
+                    clips.PushBack(obj, allocator);
+                }
+                val.AddMember("clips", clips, allocator);
+                entityValue.AddMember(rapidjson::StringRef(Keys::SPRITE_ANIMATOR_COMPONENT), val, allocator);
+            }
+
+            if (gECS.HasComponent<Component::ParentComponent>(id)) {
+                const auto& c = *gECS.GetComponent<Component::ParentComponent>(id);
+                if (c.parent != 0) {
+                    rapidjson::Value val(rapidjson::kObjectType);
+                    if (gECS.HasComponent<NameComponent>(c.parent)) {
+                        val.AddMember("parentName", rapidjson::Value(gECS.GetComponent<NameComponent>(c.parent)->name.c_str(), allocator), allocator);
+                    }
+                    WriteVec3(val, "localPos", c.localPos, allocator);
+                    val.AddMember("localRot", c.localRot, allocator);
+                    WriteVec2(val, "localScale", c.localScale, allocator);
+                    val.AddMember("inheritColor", c.inheritColor, allocator);
+                    WriteColor(val, "colorMul", c.colorMul, allocator);
+                    entityValue.AddMember(rapidjson::StringRef(Keys::PARENT_COMPONENT), val, allocator);
+                }
+            }
+
+            if (gECS.HasComponent<KeyframeAnimatorComponent>(id)) {
+                const auto& c = *gECS.GetComponent<KeyframeAnimatorComponent>(id);
+                rapidjson::Value val(rapidjson::kObjectType);
+                val.AddMember("current", rapidjson::Value(c.current.c_str(), allocator), allocator);
+                val.AddMember("t", c.t, allocator);
+                val.AddMember("playing", c.playing, allocator);
+                rapidjson::Value clips(rapidjson::kArrayType);
+                for (const auto& pair : c.clips) {
+                    const auto& clip = pair.second;
+                    rapidjson::Value cVal(rapidjson::kObjectType);
+                    cVal.AddMember("name", rapidjson::Value(clip.name.c_str(), allocator), allocator);
+                    cVal.AddMember("wrap", (int)clip.wrap, allocator);
+                    if (!clip.textureAsset.empty()) cVal.AddMember("textureAsset", rapidjson::Value(clip.textureAsset.c_str(), allocator), allocator);
+                    cVal.AddMember("spriteCols", clip.spriteCols, allocator);
+                    cVal.AddMember("spriteRows", clip.spriteRows, allocator);
+                    cVal.AddMember("useCustomSize", clip.useCustomSize, allocator);
+                    cVal.AddMember("targetWidth", clip.targetWidth, allocator);
+                    cVal.AddMember("targetHeight", clip.targetHeight, allocator);
+
+                    rapidjson::Value bindArr(rapidjson::kArrayType);
+                    for (const auto& binding : clip.bindings) {
+                        rapidjson::Value bVal(rapidjson::kObjectType);
+                        bVal.AddMember("property", (int)binding.property, allocator);
+                        rapidjson::Value keys(rapidjson::kArrayType);
+                        for (const auto& k : binding.curve.keys) {
+                            rapidjson::Value kVal(rapidjson::kObjectType);
+                            kVal.AddMember("t", k.time, allocator);
+                            kVal.AddMember("v", k.value, allocator);
+                            kVal.AddMember("i", (int)k.interp, allocator);
+                            kVal.AddMember("in", k.inTan, allocator);
+                            kVal.AddMember("out", k.outTan, allocator);
+                            keys.PushBack(kVal, allocator);
+                        }
+                        bVal.AddMember("keys", keys, allocator);
+                        bindArr.PushBack(bVal, allocator);
+                    }
+                    cVal.AddMember("bindings", bindArr, allocator);
+                    clips.PushBack(cVal, allocator);
+                }
+                val.AddMember("clips", clips, allocator);
+                entityValue.AddMember(rapidjson::StringRef(Keys::KEYFRAME_ANIMATOR_COMPONENT), val, allocator);
+            }
+            return entityValue;
+        }
+
+        uint32_t DeserializeEntity(const rapidjson::Value& entityValue, std::vector<ParentLinkInfo>* outParentLinks) {
+            ECS& gECS = *ECS::getInstance();
+            Entity newEntity = gECS.CreateEntity();
+            
+            NameComponent& nameComp = gECS.AddComponent<NameComponent>(newEntity, ("Entity" + std::to_string(newEntity)));
+            gECS.AddComponent<LayerComponent>(newEntity);
+            auto& transComp = gECS.AddComponent<TransformComponent>(newEntity);
+
+            if (!entityValue.IsObject()) return newEntity;
+            using namespace JsonHelpers;
+
+            // Name
+            if (entityValue.HasMember(Keys::NAME_COMPONENT)) {
+                const char* n = GetString(entityValue, Keys::NAME_COMPONENT);
+                if (n && *n) nameComp.name = n;
+            }
+            
+            // Layer
+            if (entityValue.HasMember(Keys::LAYER_COMPONENT)) {
+                const auto& v = entityValue[Keys::LAYER_COMPONENT];
+                if (v.IsUint()) gECS.GetComponent<LayerComponent>(newEntity)->currentLayer = v.GetUint();
+                else if (v.IsObject()) gECS.GetComponent<LayerComponent>(newEntity)->currentLayer = GetInt(v, "currentLayer");
+            }
+
+            // Transform
+            if (entityValue.HasMember(Keys::TRANSFORM_COMPONENT)) {
+                const auto& v = entityValue[Keys::TRANSFORM_COMPONENT];
+                transComp.rotation = GetFloat(v, "rotation");
+                if (v.HasMember("position")) transComp.position = ReadVec3(v["position"]);
+                if (v.HasMember("size")) transComp.size = ReadVec2(v["size"], {1.0f, 1.0f});
+            }
+
+            // RigidBody
+            if (entityValue.HasMember(Keys::RIGIDBODY_COMPONENT)) {
+                const auto& v = entityValue[Keys::RIGIDBODY_COMPONENT];
+                auto& c = gECS.AddComponent<RigidBodyComponent>(newEntity);
+                if (v.HasMember("maximumVelocity")) c.setMaxVelocity(ReadVec3(v["maximumVelocity"]));
+                if (v.HasMember("mass")) c.setMass(GetFloat(v, "mass"));
+                if (v.HasMember("restitutionCoeff")) c.setRestitution(GetFloat(v, "restitutionCoeff"));
+                c.staticFriction = GetFloat(v, "staticFriction");
+                c.dynamicFriction = GetFloat(v, "dynamicFriction");
+                c.inertia = GetFloat(v, "inertia");
+                c.invInertia = GetFloat(v, "invInertia");
+            }
+
+            // Collider
+            if (entityValue.HasMember(Keys::COLLIDER_COMPONENT)) {
+                const auto& v = entityValue[Keys::COLLIDER_COMPONENT];
+                auto type = static_cast<Collision::ColliderType>(GetInt(v, "ColliderType", (int)Collision::ColliderType::CIRCLE));
+                auto& c = gECS.AddComponent<ColliderComponent>(newEntity);
+                
+                std::unique_ptr<Collision::Collider> newCol;
+                switch (type) {
+                case Collision::ColliderType::CIRCLE: {
+                    float r = GetFloat(v, "radius", 1.0f);
+                    CEVec3 cen = ReadVec3(v["center"]);
+                    auto s = std::make_unique<Collision::Circle>(r, cen);
+                    s->ColliderType = Collision::ColliderType::CIRCLE;
+                    newCol = std::move(s);
+                    break;
+                }
+                case Collision::ColliderType::AABB: {
+                    auto s = std::make_unique<Collision::AABBRect>(ReadVec3(v["min"]), ReadVec3(v["max"]));
+                    s->ColliderType = Collision::ColliderType::AABB;
+                    newCol = std::move(s);
+                    break;
+                }
+                case Collision::ColliderType::OBB: {
+                    float rot = GetFloat(v, "rotation");
+                    auto s = std::make_unique<Collision::Polygon>(Collision::Polygon::CreateOBB(ReadVec3(v["min"]), ReadVec3(v["max"]), rot, CEVec3{}));
+                    s->position = ReadVec3(v["position"]);
+                    s->ColliderType = Collision::ColliderType::OBB;
+                    newCol = std::move(s);
+                    break;
+                }
+                case Collision::ColliderType::POLYGON:
+                case Collision::ColliderType::TRIANGLE: {
+                    std::vector<CEVec3> verts;
+                    if (v.HasMember("vertices") && v["vertices"].IsArray()) {
+                        for (const auto& vert : v["vertices"].GetArray()) verts.push_back(ReadVec3(vert));
+                    }
+                    if (verts.empty()) verts = {{-0.5f,-0.5f,0}, {0.5f,-0.5f,0}, {0.5f,0.5f,0}};
+                    auto s = std::make_unique<Collision::Polygon>();
+                    s->vertexCount = std::min((int)verts.size(), Collision::Polygon::MAX_VERTEX);
+                    for (int k = 0; k < s->vertexCount; ++k) s->vertices[k] = verts[k];
+                    s->rotation = GetFloat(v, "rotation");
+                    s->position = ReadVec3(v["position"]);
+                    s->offset = ReadVec3(v["offset"]);
+                    s->ForceUpdateRotation(s->rotation);
+                    s->ColliderType = type;
+                    newCol = std::move(s);
+                    break;
+                }
+                default: break;
+                }
+
+                if (newCol) {
+                    if (v.HasMember("offset")) newCol->offset = ReadVec3(v["offset"]);
+                    if (v.HasMember("position")) newCol->position = ReadVec3(v["position"]);
+                    newCol->isTrigger = GetBool(v, "isTrigger");
+                    newCol->enabled = GetBool(v, "enabled");
+                    c.collider = std::move(newCol);
+                }
+            }
+
+            // Shape
+            if (entityValue.HasMember(Keys::SHAPE_COMPONENT)) {
+                const auto& v = entityValue[Keys::SHAPE_COMPONENT];
+                auto& s = gECS.AddComponent<ShapeComponent>(newEntity);
+                s.enableTexture = GetBool(v, "useTexture");
+                s.isWorldSpace = GetBool(v, "isWorldSpace");
+                s.wrapModeU = GetInt(v, "wrapModeU");
+                s.wrapModeV = GetInt(v, "wrapModeV");
+                if (v.HasMember("uvSize")) s.uvSize = ReadVec2(v["uvSize"]);
+                if (v.HasMember("uvOffset")) s.uvOffset = ReadVec2(v["uvOffset"]);
+                s.textureName = GetString(v, "textureName");
+                int t = GetInt(v, "type");
+                s.type = (t >= 0 && t <= 3) ? static_cast<ShapeType>(t) : ShapeType::Rectangle;
+                if (v.HasMember("color")) s.color = ReadColor(v["color"]);
+                if (v.HasMember("p1")) s.p1 = ReadVec3(v["p1"]);
+                if (v.HasMember("p2")) s.p2 = ReadVec3(v["p2"]);
+                s.thickness = GetFloat(v, "thickness");
+                s.preview = GetBool(v, "preview");
+            }
+
+            // Text
+            if (entityValue.HasMember(Keys::TEXT_COMPONENT)) {
+                const auto& v = entityValue[Keys::TEXT_COMPONENT];
+                auto& t = gECS.AddComponent<TextComponent>(newEntity);
+                t.font = GetString(v, "font");
+                t.text = GetString(v, "text");
+                t.scale = GetFloat(v, "scale");
+                if (v.HasMember("offset")) t.offset = ReadVec2(v["offset"]);
+                if (v.HasMember("color")) t.color = ReadColor(v["color"]);
+                t.centered = GetBool(v, "centered");
+                t.isWorldSpace = GetBool(v, "isworldspace");
+            }
+
+            // Audio
+            if (entityValue.HasMember(Keys::AUDIO_COMPONENT)) {
+                const auto& v = entityValue[Keys::AUDIO_COMPONENT];
+                auto& a = gECS.AddComponent<AudioEmitterComponent>(newEntity);
+                a.eventPath = GetString(v, "eventPath");
+                a.volume = GetFloat(v, "volume");
+                a.pitch = GetFloat(v, "pitch");
+                a.spatial3D = GetBool(v, "spatial3D");
+                a.looping = GetBool(v, "looping");
+            }
+
+            // Script
+            if (entityValue.HasMember(Keys::SCRIPT_COMPONENT)) {
+                const auto& v = entityValue[Keys::SCRIPT_COMPONENT];
+                auto& s = gECS.AddComponent<ScriptComponent>(newEntity);
+                s.EntityID = static_cast<uint32_t>(newEntity);
+                if (v.HasMember("scripts") && v["scripts"].IsArray()) {
+                    for (const auto& item : v["scripts"].GetArray()) {
+                        if (item.IsString()) s.AddScript(item.GetString());
+                        else if (item.IsObject() && item.HasMember("className")) s.AddScript(item["className"].GetString());
+                    }
+                }
+                if (MonoManager::GetDomain() && MonoManager::GetAssembly()) s.Initialize(MonoManager::GetDomain(), MonoManager::GetAssembly());
+                if (v.HasMember("scripts") && v["scripts"].IsArray()) {
+                    const auto& arr = v["scripts"];
+                    for (rapidjson::SizeType k = 0; k < arr.Size(); ++k) {
+                        if (k >= s.Scripts.size()) break;
+                        auto& inst = s.Scripts[k];
+                        const auto& item = arr[k];
+                        if (item.IsObject() && item.HasMember("fields") && inst.Instance && inst.Class) {
+                            const auto& fields = item["fields"];
+                            for (auto it = fields.MemberBegin(); it != fields.MemberEnd(); ++it) {
+                                MonoClassField* field = mono_class_get_field_from_name(inst.Class, it->name.GetString());
+                                if (field) {
+                                    int typeEnum = mono_type_get_type(mono_field_get_type(field));
+                                    if (typeEnum == MONO_TYPE_I4 && it->value.IsInt()) { int val = it->value.GetInt(); mono_field_set_value(inst.Instance, field, &val); }
+                                    else if (typeEnum == MONO_TYPE_R4 && it->value.IsNumber()) { float val = it->value.GetFloat(); mono_field_set_value(inst.Instance, field, &val); }
+                                    else if (typeEnum == MONO_TYPE_BOOLEAN && it->value.IsBool()) { bool val = it->value.GetBool(); mono_field_set_value(inst.Instance, field, &val); }
+                                    else if (typeEnum == MONO_TYPE_STRING && it->value.IsString()) {
+                                        MonoString* str = mono_string_new(MonoManager::GetDomain(), it->value.GetString());
+                                        mono_field_set_value(inst.Instance, field, str);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Camera
+            if (entityValue.HasMember(Keys::CAMERA_COMPONENT)) {
+                const auto& v = entityValue[Keys::CAMERA_COMPONENT];
+                auto& c = gECS.AddComponent<CameraComponent>(newEntity);
+                c.zoom = GetFloat(v, "zoom");
+                if (v.HasMember("xBounds")) c.xBounds = ReadVec2(v["xBounds"]);
+                if (v.HasMember("yBounds")) c.yBounds = ReadVec2(v["yBounds"]);
+            }
+
+            // Button
+            if (entityValue.HasMember(Keys::BUTTON_COMPONENT)) {
+                const auto& v = entityValue[Keys::BUTTON_COMPONENT];
+                auto& b = gECS.AddComponent<ButtonComponent>(newEntity);
+                if (v.HasMember("buttonState")) b.buttonState = ButtonState::NORMAL;
+                if (v.HasMember("shapeNormalColor")) b.shapeNormalColor = ReadColor(v["shapeNormalColor"]);
+                if (v.HasMember("shapeHoveredColor")) b.shapeHoveredColor = ReadColor(v["shapeHoveredColor"]);
+                if (v.HasMember("shapePressedColor")) b.shapePressedColor = ReadColor(v["shapePressedColor"]);
+                if (v.HasMember("textNormalColor")) b.textNormalColor = ReadColor(v["textNormalColor"]);
+                if (v.HasMember("textHoveredColor")) b.textHoveredColor = ReadColor(v["textHoveredColor"]);
+                if (v.HasMember("textPressedColor")) b.textPressedColor = ReadColor(v["textPressedColor"]);
+                if (auto* s = gECS.GetComponent<ShapeComponent>(newEntity)) s->color = b.shapeNormalColor;
+                if (auto* t = gECS.GetComponent<TextComponent>(newEntity)) t->color = b.textNormalColor;
+            }
+
+            // GUI
+            if (entityValue.HasMember(Keys::GUI_COMPONENT)) {
+                 gECS.AddComponent<GuiComponent>(newEntity).uiType = static_cast<UIType>(GetInt(entityValue[Keys::GUI_COMPONENT], "uiType"));
+            }
+
+            // TextInput
+            if (entityValue.HasMember(Keys::TEXT_INPUT_COMPONENT)) {
+                const auto& v = entityValue[Keys::TEXT_INPUT_COMPONENT];
+                auto& t = gECS.AddComponent<TextInputComponent>(newEntity);
+                t.isFocused = GetBool(v, "isFocused");
+                t.cursorPos = GetInt(v, "cursorPos");
+                t.maxCharacters = GetInt(v, "maxCharacters");
+            }
+
+            // UILayout
+            if (entityValue.HasMember(Keys::UI_LAYOUT_COMPONENT)) {
+                const auto& v = entityValue[Keys::UI_LAYOUT_COMPONENT];
+                auto& u = gECS.AddComponent<UILayoutComponent>(newEntity);
+                if (v.HasMember("paddingXY")) u.paddingXY = ReadVec2(v["paddingXY"]);
+                u.uiLayout = static_cast<UILayout>(GetInt(v, "uiLayout"));
+            }
+
+            // PostProcessing
+            if (entityValue.HasMember(Keys::PP_COMPONENT)) {
+                const auto& v = entityValue[Keys::PP_COMPONENT];
+                auto& p = gECS.AddComponent<PPComponent>(newEntity);
+                p.brightness = GetFloat(v, "brightness");
+                p.contrast = GetFloat(v, "contrast");
+                p.saturation = GetFloat(v, "saturation");
+                p.active = GetBool(v, "active");
+            }
+
+            // TileMap
+            if (entityValue.HasMember(Keys::TILEMAP_COMPONENT)) {
+                const auto& v = entityValue[Keys::TILEMAP_COMPONENT];
+                auto& t = gECS.AddComponent<TileMapComponent>(newEntity);
+                t.activeAsset = "none"; t.pOpen = false; t.isCacheDirty = true;
+                t.tileSize = GetInt(v, "tileSize");
+                t.activeAsset = GetString(v, "activeAsset");
+                if (v.HasMember("tileAssetNames") && v["tileAssetNames"].IsArray()) {
+                    for (const auto& a : v["tileAssetNames"].GetArray()) if (a.IsString()) t.tileAssetNames.push_back(a.GetString());
+                }
+                if (v.HasMember("gridData") && v["gridData"].IsArray()) {
+                    for (const auto& item : v["gridData"].GetArray()) {
+                        if (item.IsObject() && item.HasMember("x") && item.HasMember("y") && item.HasMember("asset")) {
+                            t.gridData[{item["x"].GetInt(), item["y"].GetInt()}] = item["asset"].GetString();
+                        }
+                    }
+                }
+            }
+
+            // SpriteAnimator
+            if (entityValue.HasMember(Keys::SPRITE_ANIMATOR_COMPONENT)) {
+                const auto& v = entityValue[Keys::SPRITE_ANIMATOR_COMPONENT];
+                auto& c = gECS.AddComponent<SpriteAnimatorComponent>(newEntity);
+                c.currentClipName = GetString(v, "currentClip");
+                c.flipH = GetBool(v, "flipH");
+                c.playing = GetBool(v, "playing");
+                if (v.HasMember("clips") && v["clips"].IsArray()) {
+                    for (const auto& cl : v["clips"].GetArray()) {
+                        c.AddClip(GetString(cl, "name"), GetInt(cl, "start"), GetInt(cl, "count"), GetFloat(cl, "fps"), GetBool(cl, "loop"));
+                    }
+                }
+            }
+
+            // KeyframeAnimator
+            if (entityValue.HasMember(Keys::KEYFRAME_ANIMATOR_COMPONENT)) {
+                const auto& v = entityValue[Keys::KEYFRAME_ANIMATOR_COMPONENT];
+                auto& c = gECS.AddComponent<KeyframeAnimatorComponent>(newEntity);
+                c.current = GetString(v, "current");
+                c.t = GetFloat(v, "t");
+                c.playing = GetBool(v, "playing");
+                if (v.HasMember("clips") && v["clips"].IsArray()) {
+                    for (const auto& clipVal : v["clips"].GetArray()) {
+                        AnimationClip nc;
+                        nc.name = GetString(clipVal, "name");
+                        nc.wrap = static_cast<KFWrap>(GetInt(clipVal, "wrap"));
+                        nc.textureAsset = GetString(clipVal, "textureAsset");
+                        nc.spriteCols = GetInt(clipVal, "spriteCols");
+                        nc.spriteRows = GetInt(clipVal, "spriteRows");
+                        nc.useCustomSize = GetBool(clipVal, "useCustomSize");
+                        nc.targetWidth = GetFloat(clipVal, "targetWidth");
+                        nc.targetHeight = GetFloat(clipVal, "targetHeight");
+                        if (clipVal.HasMember("bindings") && clipVal["bindings"].IsArray()) {
+                            for (const auto& bVal : clipVal["bindings"].GetArray()) {
+                                KFBinding nb;
+                                nb.property = static_cast<KFProperty>(GetInt(bVal, "property"));
+                                if (bVal.HasMember("keys") && bVal["keys"].IsArray()) {
+                                    for (const auto& kVal : bVal["keys"].GetArray()) {
+                                        KFKey k;
+                                        k.time = GetFloat(kVal, "t");
+                                        k.value = GetFloat(kVal, "v");
+                                        k.interp = static_cast<KFInterp>(GetInt(kVal, "i"));
+                                        k.inTan = GetFloat(kVal, "in");
+                                        k.outTan = GetFloat(kVal, "out");
+                                        nb.curve.Add(k);
+                                    }
+                                }
+                                nc.bindings.push_back(nb);
+                            }
+                        }
+                        c.clips[nc.name] = nc;
+                    }
+                }
+            }
+
+            // Parent
+            if (entityValue.HasMember(Keys::PARENT_COMPONENT)) {
+                const auto& v = entityValue[Keys::PARENT_COMPONENT];
+                auto& p = gECS.AddComponent<Component::ParentComponent>(newEntity);
+                if (outParentLinks) {
+                    const char* pName = GetString(v, "parentName");
+                    if (*pName) outParentLinks->push_back({ static_cast<uint32_t>(newEntity), pName });
+                }
+                if (v.HasMember("localPos")) p.localPos = ReadVec3(v["localPos"]);
+                p.localRot = GetFloat(v, "localRot");
+                if (v.HasMember("localScale")) p.localScale = ReadVec2(v["localScale"]);
+                p.inheritColor = GetBool(v, "inheritColor");
+                if (v.HasMember("colorMul")) p.colorMul = ReadColor(v["colorMul"]);
+            }
+
+            return newEntity;
         }
         
         /*!
@@ -1274,7 +2009,7 @@ namespace CrashoutsEngine {
 
         /*!
         @brief Saves all current entities and their components from the ECS into a JSON scene file.
-        @param sceneName The name of the scene asset to save to (e.g., "level1.json").
+        @param sceneName The name of the scene asset to save to
         */
         void SaveScenes(std::string const& sceneName) {
             ECS& gECS = *ECS::getInstance();

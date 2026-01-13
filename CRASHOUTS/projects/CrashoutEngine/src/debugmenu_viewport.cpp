@@ -1,4 +1,5 @@
 ﻿#include "debugmenu_internals.h"
+#include "deleteentitycommand.h"
 
 using namespace CrashoutsEngine;
 
@@ -527,8 +528,10 @@ namespace UI {
                 if (over && ImGui::IsMouseClicked(ImGuiMouseButton_Right)) {
                     if (!ImGuizmo::IsOver() && !ImGuizmo::IsUsing()) selected = 0;
                 }
-                if (selected && ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows) && !ImGuizmo::IsUsing() && ImGui::IsKeyPressed(ImGuiKey_Delete)) {
-                    ecs.DestroyEntity(selected);
+                if (selected && ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows) && !ImGuizmo::IsUsing() && ImGui::IsKeyPressed(ImGuiKey_Delete) && !ImGui::GetIO().WantTextInput && !ImGui::IsAnyItemActive()) {
+                    auto cmd = std::make_unique<DeleteEntityCommand>(selected);
+                    cmd->Execute(); // Perform delete
+                    UndoManager::GetInstance().AddCommand(std::move(cmd));
                     selected = 0;
                 }
 
