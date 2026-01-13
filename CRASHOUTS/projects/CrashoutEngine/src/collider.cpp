@@ -50,8 +50,8 @@ namespace Collision {
 				if (min.y > max.y) std::swap(min.y, max.y);
 
 				return AABBRect{ min, max };
-				}
-				break;
+			}				   
+			    break;
 			case ColliderType::POLYGON: {
 				Polygon const& polygon{ dynamic_cast<Polygon const&>(collider) };
 				CEVec3 minXY{ polygon.rotatedVertices[0].x, polygon.rotatedVertices[0].y, transform.z };
