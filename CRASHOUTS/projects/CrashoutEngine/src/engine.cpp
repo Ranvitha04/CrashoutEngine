@@ -241,7 +241,6 @@ void Init() {
 #endif
     CrashoutsEngine::Assets::AssetManager::GetInstance().LoadManifestAssets();
 
-    CrashoutsEngine::Audio::AudioSystem::instance().Update();
 
     //Component::Rendering::Get().Setup_VAO(); // Setup default quad VAO
     Component::Rendering::Initialize(); // Initializes the main shader

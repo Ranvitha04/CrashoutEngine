@@ -567,7 +567,7 @@ namespace UI {
                                 ecs.GetComponent<Component::TransformComponent>(e)->position = dropWorld;
                         }
                         else if (p->kind == AssetKind::Audio) {
-                            // ... Audio spawn logic ...
+                            // Audio spawn logic
                             std::string rel = p->relPath;
                             const std::string prefix = "audio/";
                             auto pos = rel.find(prefix);
@@ -575,27 +575,28 @@ namespace UI {
                             if (auto dot = rel.find_last_of('.'); dot != std::string::npos) rel.erase(dot);
                             std::string eventLike = std::string("event:/") + rel;
 
-                            Entity target = selected;
-                            if (!target) {
-                                target = ecs.CreateEntity();
-                                ecs.AddComponent<Component::NameComponent>(target, std::string("Audio_") + p->name);
-                                ecs.AddComponent<Component::TransformComponent>(target);
-                                if (auto* t = ecs.GetComponent<Component::TransformComponent>(target)) {
-                                    t->position = dropWorld;
-                                    t->size = { 10.0f, 10.0f };
-                                }
-                                ecs.AddComponent<Component::ShapeComponent>(target);
-                                if (auto* sc = ecs.GetComponent<Component::ShapeComponent>(target)) {
-                                    sc->enableTexture = false;
-                                    sc->textureName = "audio_icon";
-                                }
+                            Entity target = ecs.CreateEntity();
+
+                            ecs.AddComponent<Component::NameComponent>(target, std::string("Audio_") + p->name);
+                            ecs.AddComponent<Component::TransformComponent>(target);
+                            if (auto* t = ecs.GetComponent<Component::TransformComponent>(target)) {
+                                t->position = dropWorld;
+                                t->size = { 30.0f, 30.0f };
                             }
-                            else {
-                                if (auto* t = ecs.GetComponent<Component::TransformComponent>(target)) t->position = dropWorld;
+
+                            // Add shape so it can be seen/selected in viewport
+                            ecs.AddComponent<Component::ShapeComponent>(target);
+                            if (auto* sc = ecs.GetComponent<Component::ShapeComponent>(target)) {
+                                sc->enableTexture = false;
+                                sc->type = Component::ShapeType::Circle;
+                                sc->color = { 0.2f, 0.8f, 0.2f, 0.8f }; // Green circle for audio
                             }
 
                             if (!ecs.HasComponent<Component::AudioEmitterComponent>(target)) ecs.AddComponent<Component::AudioEmitterComponent>(target);
                             if (auto* ac = ecs.GetComponent<Component::AudioEmitterComponent>(target)) ac->eventPath = eventLike;
+
+                            // Auto-select the new audio source
+                            selected = target;
                         }
                     }
                 }

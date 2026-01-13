@@ -874,6 +874,59 @@ namespace {
 			}
 
 			ImGui::SameLine();
+			// Search button to open popup
+			if (ImGui::Button("...")) {
+				ImGui::OpenPopup("audio_select_popup");
+			}
+
+			// Popup logic for audio selection
+			if (ImGui::BeginPopup("audio_select_popup")) {
+				static std::vector<std::string> s_audioList;
+				static bool s_needsRefresh = true;
+
+				// Refresh logic (do it on open or if empty)
+				if (s_needsRefresh || s_audioList.empty()) {
+					s_audioList.clear();
+					auto& audio = Audio::AudioSystem::instance();
+
+					// FMOD Events
+					audio.listAllEventPaths(s_audioList);
+
+					// Raw files
+					std::vector<std::string> raw;
+					audio.listRawAudioFiles(raw);
+					for (auto& f : raw) s_audioList.push_back("[RAW] assets/audio/" + f);
+
+					std::sort(s_audioList.begin(), s_audioList.end());
+					s_needsRefresh = false;
+				}
+
+				static ImGuiTextFilter filter;
+				filter.Draw("Filter", 200);
+
+				ImGui::Separator();
+
+				if (ImGui::BeginChild("audio_list_scroll", ImVec2(300, 400), true)) {
+					for (const auto& item : s_audioList) {
+						if (!filter.PassFilter(item.c_str())) continue;
+
+						std::string actualPath = item;
+						// Strip the [RAW] prefix if present for selection logic
+						if (actualPath.rfind("[RAW] ", 0) == 0) {
+							actualPath = actualPath.substr(6);
+						}
+
+						// Selection
+						if (ImGui::Selectable(item.c_str(), c->eventPath == actualPath)) {
+							c->eventPath = actualPath;
+							ImGui::CloseCurrentPopup();
+						}
+					}
+					ImGui::EndChild();
+				}
+				ImGui::EndPopup();
+			}
+
 			ImGui::TextDisabled("(?)");
 			if (ImGui::IsItemHovered()) ImGui::SetTooltip("Drag audio assets here or type path manually.");
 

@@ -334,9 +334,31 @@ namespace CrashoutsEngine::Audio
     // Raw management
     void AudioSystem::registerRawAudio(const std::string& relPath)
     {
-        auto it = std::find(mRawAudioFiles.begin(), mRawAudioFiles.end(), relPath);
-        if (it == mRawAudioFiles.end())
-            mRawAudioFiles.push_back(relPath);
+        // Normalize incoming path and store as path relative to the audio root, e.g. "Music/Menu.wav"
+        std::string p = relPath;
+        // normalize separators
+        std::replace(p.begin(), p.end(), '\\', '/');
+
+        // Strip "assets/" or "assets/audio/" or leading "audio/" if present
+        if (p.rfind("assets/audio/", 0) == 0) {
+            p = p.substr(strlen("assets/audio/"));
+        }
+        else if (p.rfind("assets/", 0) == 0) {
+            // if someone registered "assets/..." treat as under audio
+            std::string tmp = p.substr(strlen("assets/"));
+            if (tmp.rfind("audio/", 0) == 0) tmp = tmp.substr(strlen("audio/"));
+            p = tmp;
+        }
+        else if (p.rfind("audio/", 0) == 0) {
+            p = p.substr(strlen("audio/"));
+        }
+
+        // Trim any leading slashes
+        while (!p.empty() && (p.front() == '/' || p.front() == '\\')) p.erase(p.begin());
+
+        // Deduplicate
+        if (std::find(mRawAudioFiles.begin(), mRawAudioFiles.end(), p) == mRawAudioFiles.end())
+            mRawAudioFiles.push_back(p);
     }
 
     const std::vector<std::string>& AudioSystem::getRegisteredRawAudio() const
