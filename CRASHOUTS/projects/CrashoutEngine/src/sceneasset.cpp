@@ -8,7 +8,7 @@
         is designed to be used with the AssetManager and provides a static factory
         method for safe creation and resource management.
 
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
 //#pragma once
@@ -187,6 +187,1058 @@ namespace CrashoutsEngine {
             const char* const PP_COMPONENT              = "postprocessing";
             // HIERACHY ITEMS
             const char* const PARENT_COMPONENT          = "parent";
+        }
+
+        /*Utility struct for reading vectors*/
+        struct ReadVectorFromJson {
+            CEVec3 operator()(const rapidjson::Value& val) {
+                CEVec3 newVal{};
+                if (val.HasMember("x")) newVal.x = val["x"].GetFloat();
+                if (val.HasMember("y")) newVal.y = val["y"].GetFloat();
+                if (val.HasMember("z")) newVal.z = val["z"].GetFloat();
+                return newVal;
+            }
+        };
+
+        rapidjson::Value SerializeEntity(uint32_t entityId, rapidjson::Document::AllocatorType& allocator) {
+            ECS& gECS = *ECS::getInstance();
+            Entity id = static_cast<Entity>(entityId);
+            rapidjson::Value entityValue(rapidjson::kObjectType);
+
+            // =========================================================
+            // A. NameComponent
+            // =========================================================
+            if (gECS.HasComponent<NameComponent>(id)) {
+                const NameComponent& nameComp = *gECS.GetComponent<NameComponent>(id);
+                entityValue.AddMember(
+                    rapidjson::StringRef(Keys::NAME_COMPONENT), 
+                    rapidjson::Value(nameComp.name.c_str(), allocator), 
+                    allocator
+                );
+            }
+
+            // =========================================================
+            // B. LayerComponent
+            // =========================================================
+            if (gECS.HasComponent<LayerComponent>(id)) {
+                const LayerComponent& layerComp = *gECS.GetComponent<LayerComponent>(id);
+                rapidjson::Value layerValue(rapidjson::kObjectType);
+                layerValue.AddMember("currentLayer", layerComp.currentLayer, allocator);
+                entityValue.AddMember(rapidjson::StringRef(Keys::LAYER_COMPONENT), std::move(layerValue), allocator);
+            }
+
+            // =========================================================
+            // C. TransformComponent
+            // =========================================================
+            if (gECS.HasComponent<TransformComponent>(id)) {
+                const TransformComponent& transComp = *gECS.GetComponent<TransformComponent>(id);
+                rapidjson::Value transformValue(rapidjson::kObjectType);
+
+                transformValue.AddMember("rotation", transComp.rotation, allocator);
+
+                rapidjson::Value posValue(rapidjson::kObjectType);
+                posValue.AddMember("x", transComp.position.x, allocator);
+                posValue.AddMember("y", transComp.position.y, allocator);
+                posValue.AddMember("z", transComp.position.z, allocator);
+                transformValue.AddMember("position", posValue, allocator);
+
+                rapidjson::Value sizeValue(rapidjson::kObjectType);
+                sizeValue.AddMember("x", transComp.size.x, allocator);
+                sizeValue.AddMember("y", transComp.size.y, allocator);
+                transformValue.AddMember("size", sizeValue, allocator);
+
+                entityValue.AddMember(rapidjson::StringRef(Keys::TRANSFORM_COMPONENT), std::move(transformValue), allocator);
+            }
+
+            // =========================================================
+            // D. RigidBodyComponent
+            // =========================================================
+            if (gECS.HasComponent<RigidBodyComponent>(id)) {
+                RigidBodyComponent& rigidBodyComp = *gECS.GetComponent<RigidBodyComponent>(id);
+                rapidjson::Value rigidBodyValue{ rapidjson::kObjectType };
+
+                rigidBodyValue.AddMember("mass", rigidBodyComp.getMass(), allocator);
+                rigidBodyValue.AddMember("restitutionCoeff", rigidBodyComp.GetCoeff(), allocator);
+
+                rapidjson::Value maxVelVal{ rapidjson::kObjectType };
+                CEVec3 maxVel{ rigidBodyComp.getMaxVelocity() };
+                maxVelVal.AddMember("x", maxVel.x, allocator);
+                maxVelVal.AddMember("y", maxVel.y, allocator);
+                maxVelVal.AddMember("z", maxVel.z, allocator);
+                rigidBodyValue.AddMember("maximumVelocity", std::move(maxVelVal), allocator);
+
+                rigidBodyValue.AddMember("staticFriction", rigidBodyComp.staticFriction, allocator);
+                rigidBodyValue.AddMember("dynamicFriction", rigidBodyComp.dynamicFriction, allocator);
+                rigidBodyValue.AddMember("inertia", rigidBodyComp.inertia, allocator);
+                rigidBodyValue.AddMember("invInertia", rigidBodyComp.invInertia, allocator);
+
+                entityValue.AddMember(rapidjson::StringRef(Keys::RIGIDBODY_COMPONENT), std::move(rigidBodyValue), allocator);
+            }
+
+            // =========================================================
+            // E. ColliderComponent
+            // =========================================================
+            if (gECS.HasComponent<ColliderComponent>(id)) {
+                const ColliderComponent& colComp = *gECS.GetComponent<ColliderComponent>(id);
+                if (colComp.collider) {
+                    rapidjson::Value colliderValue(rapidjson::kObjectType);
+
+                    colliderValue.AddMember("ColliderType", (int)colComp.collider->ColliderType, allocator);
+                    colliderValue.AddMember("isTrigger", colComp.collider->isTrigger, allocator);
+                    colliderValue.AddMember("enabled", colComp.collider->enabled, allocator);
+
+                    rapidjson::Value posVal(rapidjson::kObjectType);
+                    posVal.AddMember("x", colComp.collider->position.x, allocator);
+                    posVal.AddMember("y", colComp.collider->position.y, allocator);
+                    posVal.AddMember("z", colComp.collider->position.z, allocator);
+                    colliderValue.AddMember("position", posVal, allocator);
+
+                    rapidjson::Value offVal(rapidjson::kObjectType);
+                    offVal.AddMember("x", colComp.collider->offset.x, allocator);
+                    offVal.AddMember("y", colComp.collider->offset.y, allocator);
+                    offVal.AddMember("z", colComp.collider->offset.z, allocator);
+                    colliderValue.AddMember("offset", offVal, allocator);
+
+                    switch (colComp.collider->ColliderType) {
+                    case Collision::ColliderType::CIRCLE: {
+                        auto* s = static_cast<Collision::Circle*>(colComp.collider.get());
+                        colliderValue.AddMember("radius", s->radius, allocator);
+                        rapidjson::Value cVal(rapidjson::kObjectType);
+                        cVal.AddMember("x", s->position.x, allocator);
+                        cVal.AddMember("y", s->position.y, allocator);
+                        cVal.AddMember("z", s->position.z, allocator);
+                        colliderValue.AddMember("center", cVal, allocator);
+                        break;
+                    }
+                    case Collision::ColliderType::AABB: {
+                        auto* a = static_cast<Collision::AABBRect*>(colComp.collider.get());
+                        rapidjson::Value min(rapidjson::kObjectType);
+                        min.AddMember("x", a->min.x, allocator); min.AddMember("y", a->min.y, allocator); min.AddMember("z", a->min.z, allocator);
+                        colliderValue.AddMember("min", min, allocator);
+                        rapidjson::Value max(rapidjson::kObjectType);
+                        max.AddMember("x", a->max.x, allocator); max.AddMember("y", a->max.y, allocator); max.AddMember("z", a->max.z, allocator);
+                        colliderValue.AddMember("max", max, allocator);
+                        break;
+                    }
+                    case Collision::ColliderType::OBB: {
+                        auto* p = static_cast<Collision::Polygon*>(colComp.collider.get());
+                        CEVec3 extents = Collision::Polygon::CalculateOBBExtents(*p);
+                        CEVec3 center = p->position;
+                        CEVec3 min = center - extents;
+                        CEVec3 max = center + extents;
+                        rapidjson::Value minV(rapidjson::kObjectType);
+                        minV.AddMember("x", min.x, allocator); minV.AddMember("y", min.y, allocator); minV.AddMember("z", min.z, allocator);
+                        colliderValue.AddMember("min", minV, allocator);
+                        rapidjson::Value maxV(rapidjson::kObjectType);
+                        maxV.AddMember("x", max.x, allocator); maxV.AddMember("y", max.y, allocator); maxV.AddMember("z", max.z, allocator);
+                        colliderValue.AddMember("max", maxV, allocator);
+                        colliderValue.AddMember("rotation", p->rotation, allocator);
+                        break;
+                    }
+                    case Collision::ColliderType::POLYGON:
+                    case Collision::ColliderType::TRIANGLE: {
+                        auto* p = static_cast<Collision::Polygon*>(colComp.collider.get());
+                        colliderValue.AddMember("rotation", p->rotation, allocator);
+                        rapidjson::Value verts(rapidjson::kArrayType);
+                        for (int k = 0; k < p->vertexCount; ++k) {
+                            rapidjson::Value v(rapidjson::kObjectType);
+                            v.AddMember("x", p->vertices[k].x, allocator);
+                            v.AddMember("y", p->vertices[k].y, allocator);
+                            v.AddMember("z", p->vertices[k].z, allocator);
+                            verts.PushBack(v, allocator);
+                        }
+                        colliderValue.AddMember("vertices", verts, allocator);
+                        break;
+                    }
+                    default: break;
+                    }
+                    entityValue.AddMember(rapidjson::StringRef(Keys::COLLIDER_COMPONENT), std::move(colliderValue), allocator);
+                }
+            }
+
+            // =========================================================
+            // F. ShapeComponent
+            // =========================================================
+            if (gECS.HasComponent<ShapeComponent>(id)) {
+                const ShapeComponent& sComp = *gECS.GetComponent<ShapeComponent>(id);
+                rapidjson::Value shapeValues(rapidjson::kObjectType);
+
+                shapeValues.AddMember("useTexture", sComp.enableTexture, allocator);
+                shapeValues.AddMember("isWorldSpace", sComp.isWorldSpace, allocator);
+                shapeValues.AddMember("wrapModeU", (int)sComp.wrapModeU, allocator);
+                shapeValues.AddMember("wrapModeV", (int)sComp.wrapModeV, allocator);
+                shapeValues.AddMember("thickness", sComp.thickness, allocator);
+                shapeValues.AddMember("preview", sComp.preview, allocator);
+                shapeValues.AddMember("type", (int)sComp.type, allocator);
+                shapeValues.AddMember("textureName", rapidjson::Value(sComp.textureName.c_str(), allocator), allocator);
+
+                rapidjson::Value uvSizeValue(rapidjson::kObjectType);
+                uvSizeValue.AddMember("x", sComp.uvSize.x, allocator);
+                uvSizeValue.AddMember("y", sComp.uvSize.y, allocator);
+                shapeValues.AddMember("uvSize", uvSizeValue, allocator);
+
+                rapidjson::Value uvOffsetValue(rapidjson::kObjectType);
+                uvOffsetValue.AddMember("x", sComp.uvOffset.x, allocator);
+                uvOffsetValue.AddMember("y", sComp.uvOffset.y, allocator);
+                shapeValues.AddMember("uvOffset", uvOffsetValue, allocator);
+
+                rapidjson::Value colorValue(rapidjson::kObjectType);
+                colorValue.AddMember("x", sComp.color.x(), allocator);
+                colorValue.AddMember("y", sComp.color.y(), allocator);
+                colorValue.AddMember("z", sComp.color.z(), allocator);
+                colorValue.AddMember("w", sComp.color.w(), allocator);
+                shapeValues.AddMember("color", colorValue, allocator);
+
+                rapidjson::Value p1Value(rapidjson::kObjectType);
+                p1Value.AddMember("x", sComp.p1.x, allocator);
+                p1Value.AddMember("y", sComp.p1.y, allocator);
+                p1Value.AddMember("z", sComp.p1.z, allocator);
+                shapeValues.AddMember("p1", p1Value, allocator);
+
+                rapidjson::Value p2Value(rapidjson::kObjectType);
+                p2Value.AddMember("x", sComp.p2.x, allocator);
+                p2Value.AddMember("y", sComp.p2.y, allocator);
+                p2Value.AddMember("z", sComp.p2.z, allocator);
+                shapeValues.AddMember("p2", p2Value, allocator);
+
+                entityValue.AddMember(rapidjson::StringRef(Keys::SHAPE_COMPONENT), shapeValues, allocator);
+            }
+
+            // =========================================================
+            // G. TextComponent
+            // =========================================================
+            if (gECS.HasComponent<TextComponent>(id)) {
+                const TextComponent& tComp = *gECS.GetComponent<TextComponent>(id);
+                rapidjson::Value textValue(rapidjson::kObjectType);
+
+                textValue.AddMember("font", rapidjson::Value(tComp.font.c_str(), allocator), allocator);
+                textValue.AddMember("text", rapidjson::Value(tComp.text.c_str(), allocator), allocator);
+                textValue.AddMember("scale", tComp.scale, allocator);
+
+                rapidjson::Value offsetValue(rapidjson::kObjectType);
+                offsetValue.AddMember("x", tComp.offset.x, allocator);
+                offsetValue.AddMember("y", tComp.offset.y, allocator);
+                textValue.AddMember("offset", offsetValue, allocator);
+
+                rapidjson::Value colorValue(rapidjson::kObjectType);
+                colorValue.AddMember("x", tComp.color.x(), allocator);
+                colorValue.AddMember("y", tComp.color.y(), allocator);
+                colorValue.AddMember("z", tComp.color.z(), allocator);
+                colorValue.AddMember("w", tComp.color.w(), allocator);
+                textValue.AddMember("color", colorValue, allocator);
+
+                textValue.AddMember("centered", tComp.centered, allocator);
+                textValue.AddMember("isworldspace", tComp.isWorldSpace, allocator);
+
+                entityValue.AddMember(rapidjson::StringRef(Keys::TEXT_COMPONENT), textValue, allocator);
+            }
+
+            // =========================================================
+            // H. AudioComponent
+            // =========================================================
+            if (gECS.HasComponent<AudioEmitterComponent>(id)) {
+                const AudioEmitterComponent& audioComp = *gECS.GetComponent<AudioEmitterComponent>(id);
+                rapidjson::Value audioValue(rapidjson::kObjectType);
+                audioValue.AddMember("eventPath", rapidjson::Value(audioComp.eventPath.c_str(), allocator), allocator);
+                audioValue.AddMember("volume", audioComp.volume, allocator);
+                audioValue.AddMember("pitch", audioComp.pitch, allocator);
+                audioValue.AddMember("spatial3D", audioComp.spatial3D, allocator);
+                audioValue.AddMember("looping", audioComp.looping, allocator);
+
+                entityValue.AddMember(rapidjson::StringRef(Keys::AUDIO_COMPONENT), audioValue, allocator);
+            }
+
+            // =========================================================
+            // I. ScriptComponent
+            // =========================================================
+            if (gECS.HasComponent<ScriptComponent>(id)) {
+                const ScriptComponent& scriptComp = *gECS.GetComponent<ScriptComponent>(id);
+                rapidjson::Value scriptValue(rapidjson::kObjectType);
+                rapidjson::Value scriptsArray(rapidjson::kArrayType);
+
+                for (const auto& inst : scriptComp.Scripts) {
+                    if (inst.ClassName.empty()) continue;
+                    rapidjson::Value scriptObj(rapidjson::kObjectType);
+                    scriptObj.AddMember("className", rapidjson::Value(inst.ClassName.c_str(), allocator), allocator);
+
+                    if (inst.Instance && inst.Class) {
+                        rapidjson::Value fieldsObj(rapidjson::kObjectType);
+                        void* iter = nullptr;
+                        while (MonoClassField* field = mono_class_get_fields(inst.Class, &iter)) {
+                            const char* fieldName = mono_field_get_name(field);
+                            uint32_t flags = mono_field_get_flags(field);
+                            if (flags & MONO_FIELD_ATTR_STATIC) continue;
+
+                            bool isPublic = (flags & MONO_FIELD_ATTR_PUBLIC);
+                            bool hasAttribute = false;
+                            static MonoClass* attrClass = mono_class_from_name(MonoManager::GetImage(), "CrashoutsEngine", "SerializeField");
+                            if (attrClass) {
+                                MonoCustomAttrInfo* attrInfo = mono_custom_attrs_from_field(inst.Class, field);
+                                if (attrInfo) {
+                                    hasAttribute = mono_custom_attrs_has_attr(attrInfo, attrClass);
+                                    mono_custom_attrs_free(attrInfo);
+                                }
+                            }
+
+                            if (isPublic || hasAttribute) {
+                                MonoType* type = mono_field_get_type(field);
+                                int typeEnum = mono_type_get_type(type);
+                                rapidjson::Value key(fieldName, allocator);
+
+                                if (typeEnum == MONO_TYPE_I4) {
+                                    int val; mono_field_get_value(inst.Instance, field, &val);
+                                    fieldsObj.AddMember(key, val, allocator);
+                                }
+                                else if (typeEnum == MONO_TYPE_R4) {
+                                    float val; mono_field_get_value(inst.Instance, field, &val);
+                                    fieldsObj.AddMember(key, val, allocator);
+                                }
+                                else if (typeEnum == MONO_TYPE_BOOLEAN) {
+                                    bool val; mono_field_get_value(inst.Instance, field, &val);
+                                    fieldsObj.AddMember(key, val, allocator);
+                                }
+                                else if (typeEnum == MONO_TYPE_STRING) {
+                                    MonoString* monoStr = nullptr;
+                                    mono_field_get_value(inst.Instance, field, &monoStr);
+                                    if (monoStr) {
+                                        char* str = mono_string_to_utf8(monoStr);
+                                        fieldsObj.AddMember(key, rapidjson::Value(str, allocator), allocator);
+                                        mono_free(str);
+                                    }
+                                }
+                            }
+                        }
+                        scriptObj.AddMember("fields", fieldsObj, allocator);
+                    }
+                    scriptsArray.PushBack(scriptObj, allocator);
+                }
+                scriptValue.AddMember("scripts", scriptsArray, allocator);
+                entityValue.AddMember(rapidjson::StringRef(Keys::SCRIPT_COMPONENT), scriptValue, allocator);
+            }
+
+            // =========================================================
+            // J. CameraComponent
+            // =========================================================
+            if (gECS.HasComponent<CameraComponent>(id)) {
+                const CameraComponent& cameraComp = *gECS.GetComponent<CameraComponent>(id);
+                rapidjson::Value camValue(rapidjson::kObjectType);
+                camValue.AddMember("zoom", cameraComp.zoom, allocator);
+
+                rapidjson::Value xBoundsValue(rapidjson::kObjectType);
+                xBoundsValue.AddMember("x", cameraComp.xBounds.x, allocator);
+                xBoundsValue.AddMember("y", cameraComp.xBounds.y, allocator);
+                camValue.AddMember("xBounds", xBoundsValue, allocator);
+
+                rapidjson::Value yBoundsValue(rapidjson::kObjectType);
+                yBoundsValue.AddMember("x", cameraComp.yBounds.x, allocator);
+                yBoundsValue.AddMember("y", cameraComp.yBounds.y, allocator);
+                camValue.AddMember("yBounds", yBoundsValue, allocator);
+
+                entityValue.AddMember(rapidjson::StringRef(Keys::CAMERA_COMPONENT), camValue, allocator);
+            }
+
+            // =========================================================
+            // K. ButtonComponent
+            // =========================================================
+            if (gECS.HasComponent<ButtonComponent>(id)) {
+                const ButtonComponent& buttonComp = *gECS.GetComponent<ButtonComponent>(id);
+                rapidjson::Value buttonVal(rapidjson::kObjectType);
+                buttonVal.AddMember("buttonState", static_cast<std::underlying_type_t<ButtonState>>(buttonComp.buttonState), allocator);
+
+                auto SaveColor = [&](const char* key, const CEColor& c) {
+                    rapidjson::Value cVal(rapidjson::kObjectType);
+                    cVal.AddMember("x", c.x(), allocator); cVal.AddMember("y", c.y(), allocator);
+                    cVal.AddMember("z", c.z(), allocator); cVal.AddMember("w", c.w(), allocator);
+                    buttonVal.AddMember(rapidjson::StringRef(key), cVal, allocator);
+                };
+                SaveColor("shapeNormalColor", buttonComp.shapeNormalColor);
+                SaveColor("shapeHoveredColor", buttonComp.shapeHoveredColor);
+                SaveColor("shapePressedColor", buttonComp.shapePressedColor);
+                SaveColor("textNormalColor", buttonComp.textNormalColor);
+                SaveColor("textHoveredColor", buttonComp.textHoveredColor);
+                SaveColor("textPressedColor", buttonComp.textPressedColor);
+
+                entityValue.AddMember(rapidjson::StringRef(Keys::BUTTON_COMPONENT), buttonVal, allocator);
+            }
+
+            // =========================================================
+            // L. GuiComponent
+            // =========================================================
+            if (gECS.HasComponent<GuiComponent>(id)) {
+                const GuiComponent& guiComp = *gECS.GetComponent<GuiComponent>(id);
+                rapidjson::Value guiValue(rapidjson::kObjectType);
+                guiValue.AddMember("uiType", static_cast<std::underlying_type_t<UIType>>(guiComp.uiType), allocator);
+                entityValue.AddMember(rapidjson::StringRef(Keys::GUI_COMPONENT), guiValue, allocator);
+            }
+
+            // =========================================================
+            // M. TextInputComponent
+            // =========================================================
+            if (gECS.HasComponent<TextInputComponent>(id)) {
+                const TextInputComponent& textInputComp = *gECS.GetComponent<TextInputComponent>(id);
+                rapidjson::Value textInputValue(rapidjson::kObjectType);
+                textInputValue.AddMember("isFocused", textInputComp.isFocused, allocator);
+                textInputValue.AddMember("cursorPos", textInputComp.cursorPos, allocator);
+                textInputValue.AddMember("maxCharacters", textInputComp.maxCharacters, allocator);
+                entityValue.AddMember(rapidjson::StringRef(Keys::TEXT_INPUT_COMPONENT), textInputValue, allocator);
+            }
+
+            // =========================================================
+            // N. UILayoutComponent
+            // =========================================================
+            if (gECS.HasComponent<UILayoutComponent>(id)) {
+                const UILayoutComponent& uiLayoutComp = *gECS.GetComponent<UILayoutComponent>(id);
+                rapidjson::Value uiLayoutValue(rapidjson::kObjectType);
+                rapidjson::Value paddingXYValue(rapidjson::kObjectType);
+                paddingXYValue.AddMember("x", uiLayoutComp.paddingXY.x, allocator);
+                paddingXYValue.AddMember("y", uiLayoutComp.paddingXY.y, allocator);
+                uiLayoutValue.AddMember("paddingXY", paddingXYValue, allocator);
+                uiLayoutValue.AddMember("uiLayout", static_cast<std::underlying_type_t<UILayout>>(uiLayoutComp.uiLayout), allocator);
+                entityValue.AddMember(rapidjson::StringRef(Keys::UI_LAYOUT_COMPONENT), uiLayoutValue, allocator);
+            }
+
+            // =========================================================
+            // O. PPComponent
+            // =========================================================
+            if (gECS.HasComponent<PPComponent>(id)) {
+                const PPComponent& ppComp = *gECS.GetComponent<PPComponent>(id);
+                rapidjson::Value ppValue(rapidjson::kObjectType);
+                ppValue.AddMember("brightness", ppComp.brightness, allocator);
+                ppValue.AddMember("contrast", ppComp.contrast, allocator);
+                ppValue.AddMember("saturation", ppComp.saturation, allocator);
+                ppValue.AddMember("active", ppComp.active, allocator);
+                entityValue.AddMember(rapidjson::StringRef(Keys::PP_COMPONENT), ppValue, allocator);
+            }
+
+            // =========================================================
+            // P. TileMapComponent
+            // =========================================================
+            if (gECS.HasComponent<TileMapComponent>(id)) {
+                const TileMapComponent& tmComp = *gECS.GetComponent<TileMapComponent>(id);
+                rapidjson::Value tmValue(rapidjson::kObjectType);
+                tmValue.AddMember("tileSize", tmComp.tileSize, allocator);
+                tmValue.AddMember("activeAsset", rapidjson::Value(tmComp.activeAsset.c_str(), allocator), allocator);
+
+                rapidjson::Value assetsArray(rapidjson::kArrayType);
+                for (const std::string& assetName : tmComp.tileAssetNames) {
+                    assetsArray.PushBack(rapidjson::Value(assetName.c_str(), allocator), allocator);
+                }
+                tmValue.AddMember("tileAssetNames", assetsArray, allocator);
+
+                rapidjson::Value gridDataArray(rapidjson::kArrayType);
+                for (const auto& [pos, assetName] : tmComp.gridData) {
+                    rapidjson::Value tileObj(rapidjson::kObjectType);
+                    tileObj.AddMember("x", pos.first, allocator);
+                    tileObj.AddMember("y", pos.second, allocator);
+                    tileObj.AddMember("asset", rapidjson::Value(assetName.c_str(), allocator), allocator);
+                    gridDataArray.PushBack(tileObj, allocator);
+                }
+                tmValue.AddMember("gridData", gridDataArray, allocator);
+                entityValue.AddMember(rapidjson::StringRef(Keys::TILEMAP_COMPONENT), tmValue, allocator);
+            }
+
+            // =========================================================
+            // Q. SpriteAnimatorComponent
+            // =========================================================
+            if (gECS.HasComponent<SpriteAnimatorComponent>(id)) {
+                const auto& comp = *gECS.GetComponent<SpriteAnimatorComponent>(id);
+                rapidjson::Value compVal(rapidjson::kObjectType);
+                compVal.AddMember("currentClip", rapidjson::Value(comp.currentClipName.c_str(), allocator), allocator);
+                compVal.AddMember("flipH", comp.flipH, allocator);
+                compVal.AddMember("playing", comp.playing, allocator);
+
+                rapidjson::Value clipsArr(rapidjson::kArrayType);
+                for (const auto& clip : comp.clips) {
+                    rapidjson::Value clipObj(rapidjson::kObjectType);
+                    clipObj.AddMember("name", rapidjson::Value(clip.name.c_str(), allocator), allocator);
+                    clipObj.AddMember("start", clip.startFrame, allocator);
+                    clipObj.AddMember("count", clip.frameCount, allocator);
+                    clipObj.AddMember("fps", clip.fps, allocator);
+                    clipObj.AddMember("loop", clip.loop, allocator);
+                    clipsArr.PushBack(clipObj, allocator);
+                }
+                compVal.AddMember("clips", clipsArr, allocator);
+                entityValue.AddMember(rapidjson::StringRef(Keys::SPRITE_ANIMATOR_COMPONENT), compVal, allocator);
+            }
+
+            // =========================================================
+            // R. ParentComponent
+            // =========================================================
+            if (gECS.HasComponent<Component::ParentComponent>(id)) {
+                const Component::ParentComponent& parentComp = *gECS.GetComponent<Component::ParentComponent>(id);
+                if (parentComp.parent != 0) {
+                    rapidjson::Value parentValue(rapidjson::kObjectType);
+                    if (gECS.HasComponent<NameComponent>(parentComp.parent)) {
+                        std::string pName = gECS.GetComponent<NameComponent>(parentComp.parent)->name;
+                        parentValue.AddMember("parentName", rapidjson::Value(pName.c_str(), allocator), allocator);
+                    }
+                    rapidjson::Value localPosVal(rapidjson::kObjectType);
+                    localPosVal.AddMember("x", parentComp.localPos.x, allocator);
+                    localPosVal.AddMember("y", parentComp.localPos.y, allocator);
+                    localPosVal.AddMember("z", parentComp.localPos.z, allocator);
+                    parentValue.AddMember("localPos", localPosVal, allocator);
+                    parentValue.AddMember("localRot", parentComp.localRot, allocator);
+                    rapidjson::Value localScaleVal(rapidjson::kObjectType);
+                    localScaleVal.AddMember("x", parentComp.localScale.x, allocator);
+                    localScaleVal.AddMember("y", parentComp.localScale.y, allocator);
+                    parentValue.AddMember("localScale", localScaleVal, allocator);
+                    parentValue.AddMember("inheritColor", parentComp.inheritColor, allocator);
+                    rapidjson::Value colVal(rapidjson::kObjectType);
+                    colVal.AddMember("x", parentComp.colorMul.x(), allocator);
+                    colVal.AddMember("y", parentComp.colorMul.y(), allocator);
+                    colVal.AddMember("z", parentComp.colorMul.z(), allocator);
+                    colVal.AddMember("w", parentComp.colorMul.w(), allocator);
+                    parentValue.AddMember("colorMul", colVal, allocator);
+                    entityValue.AddMember(rapidjson::StringRef(Keys::PARENT_COMPONENT), parentValue, allocator);
+                }
+            }
+
+            // =========================================================
+            // S. KeyframeAnimatorComponent
+            // =========================================================
+            if (gECS.HasComponent<KeyframeAnimatorComponent>(id)) {
+                const KeyframeAnimatorComponent& ka = *gECS.GetComponent<KeyframeAnimatorComponent>(id);
+                rapidjson::Value kaVal(rapidjson::kObjectType);
+                kaVal.AddMember("current", rapidjson::Value(ka.current.c_str(), allocator), allocator);
+                kaVal.AddMember("t", ka.t, allocator);
+                kaVal.AddMember("playing", ka.playing, allocator);
+
+                rapidjson::Value clipsArr(rapidjson::kArrayType);
+                for (const auto& pair : ka.clips) {
+                    const AnimationClip& clip = pair.second;
+                    rapidjson::Value clipVal(rapidjson::kObjectType);
+                    clipVal.AddMember("name", rapidjson::Value(clip.name.c_str(), allocator), allocator);
+                    clipVal.AddMember("wrap", static_cast<int>(clip.wrap), allocator);
+                    if (!clip.textureAsset.empty()) {
+                        clipVal.AddMember("textureAsset", rapidjson::Value(clip.textureAsset.c_str(), allocator), allocator);
+                    }
+                    clipVal.AddMember("spriteCols", clip.spriteCols, allocator);
+                    clipVal.AddMember("spriteRows", clip.spriteRows, allocator);
+                    clipVal.AddMember("useCustomSize", clip.useCustomSize, allocator);
+                    clipVal.AddMember("targetWidth", clip.targetWidth, allocator);
+                    clipVal.AddMember("targetHeight", clip.targetHeight, allocator);
+
+                    rapidjson::Value bindArr(rapidjson::kArrayType);
+                    for (const auto& binding : clip.bindings) {
+                        rapidjson::Value bVal(rapidjson::kObjectType);
+                        bVal.AddMember("property", static_cast<int>(binding.property), allocator);
+                        rapidjson::Value keyArr(rapidjson::kArrayType);
+                        for (const auto& k : binding.curve.keys) {
+                            rapidjson::Value kVal(rapidjson::kObjectType);
+                            kVal.AddMember("t", k.time, allocator);
+                            kVal.AddMember("v", k.value, allocator);
+                            kVal.AddMember("i", static_cast<int>(k.interp), allocator);
+                            kVal.AddMember("in", k.inTan, allocator);
+                            kVal.AddMember("out", k.outTan, allocator);
+                            keyArr.PushBack(kVal, allocator);
+                        }
+                        bVal.AddMember("keys", keyArr, allocator);
+                        bindArr.PushBack(bVal, allocator);
+                    }
+                    clipVal.AddMember("bindings", bindArr, allocator);
+                    clipsArr.PushBack(clipVal, allocator);
+                }
+                kaVal.AddMember("clips", clipsArr, allocator);
+                entityValue.AddMember(rapidjson::StringRef(Keys::KEYFRAME_ANIMATOR_COMPONENT), kaVal, allocator);
+            }
+
+            return entityValue;
+        }
+
+        uint32_t DeserializeEntity(const rapidjson::Value& entityValue, std::vector<ParentLinkInfo>* outParentLinks) {
+            ECS& gECS = *ECS::getInstance();
+            
+            // Create entity obj
+            Entity newEntity = gECS.CreateEntity();
+            // Add default components
+            NameComponent& nameComp = gECS.AddComponent<NameComponent>(newEntity, ("Entity" + std::to_string(newEntity)));
+            LayerComponent& layerComp = gECS.AddComponent<LayerComponent>(newEntity);
+            TransformComponent& transComp = gECS.AddComponent<TransformComponent>(newEntity);
+
+            if (!entityValue.IsObject()) return newEntity;
+
+            // Set Entity Name
+            if (entityValue.HasMember(Keys::NAME_COMPONENT) && entityValue[Keys::NAME_COMPONENT].IsString()) {
+                nameComp.name = entityValue[Keys::NAME_COMPONENT].GetString();
+            }
+
+            // Set Entity Layer
+            if (entityValue.HasMember(Keys::LAYER_COMPONENT)) {
+                const rapidjson::Value& layerVal = entityValue[Keys::LAYER_COMPONENT];
+                if (layerVal.IsUint()) {
+                    layerComp.currentLayer = layerVal.GetUint();
+                }
+                else if (layerVal.IsObject()) {
+                    if (layerVal.HasMember("currentLayer") && layerVal["currentLayer"].IsUint()) {
+                        layerComp.currentLayer = layerVal["currentLayer"].GetUint();
+                    }
+                }
+            }
+
+            // Set Entity Transform
+            if (entityValue.HasMember(Keys::TRANSFORM_COMPONENT) && entityValue[Keys::TRANSFORM_COMPONENT].IsObject()) {
+                const rapidjson::Value& transformValue = entityValue[Keys::TRANSFORM_COMPONENT];
+                float rotation = 0.0f;
+                if (transformValue.HasMember("rotation") && transformValue["rotation"].IsFloat()) {
+                    rotation = transformValue["rotation"].GetFloat();
+                }
+                CEVec3 pos{ 0.0f, 0.0f, 0.0f };
+                if (transformValue.HasMember("position") && transformValue["position"].IsObject()) {
+                    const rapidjson::Value& posValue = transformValue["position"];
+                    if (posValue.HasMember("x")) pos.x = posValue["x"].GetFloat();
+                    if (posValue.HasMember("y")) pos.y = posValue["y"].GetFloat();
+                    if (posValue.HasMember("z")) pos.z = posValue["z"].GetFloat();
+                }
+                CEVec2 size{ 1.0f, 1.0f };
+                if (transformValue.HasMember("size") && transformValue["size"].IsObject()) {
+                    const rapidjson::Value& sizeValue = transformValue["size"];
+                    if (sizeValue.HasMember("x")) size.x = sizeValue["x"].GetFloat();
+                    if (sizeValue.HasMember("y")) size.y = sizeValue["y"].GetFloat();
+                }
+                transComp.position = pos;
+                transComp.rotation = rotation;
+                transComp.size = size;
+            }
+
+            // Check if Rigid-Body
+            if (entityValue.HasMember(Keys::RIGIDBODY_COMPONENT) && entityValue[Keys::RIGIDBODY_COMPONENT].IsObject()) {
+                const rapidjson::Value& rigidBodyValues = entityValue[Keys::RIGIDBODY_COMPONENT];
+                Component::RigidBodyComponent& rigidBodyComp{ gECS.AddComponent<RigidBodyComponent>(newEntity) };
+
+                if (rigidBodyValues.HasMember("maximumVelocity") && rigidBodyValues["maximumVelocity"].IsObject()) {
+                    const rapidjson::Value& maximumVelVal{ rigidBodyValues["maximumVelocity"] };
+                    CEVec3 maxVel{ ReadVectorFromJson{}(maximumVelVal)};
+                    rigidBodyComp.setMaxVelocity(maxVel);
+                }
+                if (rigidBodyValues.HasMember("mass") && rigidBodyValues["mass"].IsFloat()) {
+                    rigidBodyComp.setMass(rigidBodyValues["mass"].GetFloat());
+                }
+                if (rigidBodyValues.HasMember("restitutionCoeff") && rigidBodyValues["restitutionCoeff"].IsFloat()) {
+                    rigidBodyComp.setRestitution(rigidBodyValues["restitutionCoeff"].GetFloat());
+                }
+                if (rigidBodyValues.HasMember("staticFriction") && rigidBodyValues["staticFriction"].IsFloat()) {
+                    rigidBodyComp.staticFriction = rigidBodyValues["staticFriction"].GetFloat();
+                }
+                if (rigidBodyValues.HasMember("dynamicFriction") && rigidBodyValues["dynamicFriction"].IsFloat()) {
+                    rigidBodyComp.dynamicFriction = rigidBodyValues["dynamicFriction"].GetFloat();
+                }
+                if (rigidBodyValues.HasMember("inertia") && rigidBodyValues["inertia"].IsFloat()) {
+                    rigidBodyComp.inertia = rigidBodyValues["inertia"].GetFloat();
+                }
+                if (rigidBodyValues.HasMember("invInertia") && rigidBodyValues["invInertia"].IsFloat()) {
+                    rigidBodyComp.invInertia = rigidBodyValues["invInertia"].GetFloat();
+                }
+            }
+
+            // Check if Collider 
+            if (entityValue.HasMember(Keys::COLLIDER_COMPONENT) && entityValue[Keys::COLLIDER_COMPONENT].IsObject()) {
+                const rapidjson::Value& colliderValue = entityValue[Keys::COLLIDER_COMPONENT];
+                Collision::ColliderType helperT = Collision::ColliderType::CIRCLE;
+                if (colliderValue.HasMember("ColliderType") && colliderValue["ColliderType"].IsInt()) {
+                    helperT = static_cast<Collision::ColliderType>(colliderValue["ColliderType"].GetInt());
+                }
+
+                ColliderComponent& col = gECS.AddComponent<ColliderComponent>(newEntity);
+
+                switch (helperT) {
+                case Collision::ColliderType::CIRCLE: {
+                    float radius = 1.0f;
+                    if (colliderValue.HasMember("radius") && colliderValue["radius"].IsFloat())
+                        radius = colliderValue["radius"].GetFloat();
+                    CEVec3 center{ 0,0,0 };
+                    if (colliderValue.HasMember("center")) center = ReadVectorFromJson{}(colliderValue["center"]);
+                    auto newCol = std::make_unique<Collision::Circle>(radius, center);
+                    if (colliderValue.HasMember("offset")) newCol->offset = ReadVectorFromJson{}(colliderValue["offset"]);
+                    if (colliderValue.HasMember("position") && colliderValue["position"].IsObject()) {
+                        CEVec3 pos{ ReadVectorFromJson{}(colliderValue["position"]) };
+                        newCol->position = pos;
+                    }
+                    newCol->ColliderType = Collision::ColliderType::CIRCLE;
+                    col.collider = std::move(newCol);
+                    break;
+                }
+                case Collision::ColliderType::AABB: {
+                    CEVec3 min{ 0,0,0 }, max{ 0,0,0 };
+                    if (colliderValue.HasMember("min")) min = ReadVectorFromJson{}(colliderValue["min"]);
+                    if (colliderValue.HasMember("max")) max = ReadVectorFromJson{}(colliderValue["max"]);
+                    auto newCol = std::make_unique<Collision::AABBRect>(min, max);
+                    if (colliderValue.HasMember("offset")) newCol->offset = ReadVectorFromJson{}(colliderValue["offset"]);
+                    if (colliderValue.HasMember("position") && colliderValue["position"].IsObject()) {
+                        CEVec3 pos{ ReadVectorFromJson{}(colliderValue["position"]) };
+                        newCol->position = pos;
+                    }
+                    newCol->ColliderType = Collision::ColliderType::AABB;
+                    col.collider = std::move(newCol);
+                    break;
+                }
+                case Collision::ColliderType::OBB: {
+                    CEVec3 min{ 0,0,0 }, max{ 0,0,0 };
+                    float rot = 0.0f;
+                    if (colliderValue.HasMember("min")) min = ReadVectorFromJson{}(colliderValue["min"]);
+                    if (colliderValue.HasMember("max")) max = ReadVectorFromJson{}(colliderValue["max"]);
+                    if (colliderValue.HasMember("rotation") && colliderValue["rotation"].IsFloat())
+                        rot = colliderValue["rotation"].GetFloat();
+                    auto newCol = std::make_unique<Collision::Polygon>(Collision::Polygon::CreateOBB(min, max, rot, CEVec3{}));
+                    if (colliderValue.HasMember("offset")) newCol->offset = ReadVectorFromJson{}(colliderValue["offset"]);
+                    newCol->position = ReadVectorFromJson{}(colliderValue["position"]);
+                    newCol->ColliderType = Collision::ColliderType::OBB;
+                    col.collider = std::move(newCol);
+                    break;
+                }
+                case Collision::ColliderType::POLYGON:
+                case Collision::ColliderType::TRIANGLE: {
+                    std::vector<CEVec3> verts;
+                    if (colliderValue.HasMember("vertices") && colliderValue["vertices"].IsArray()) {
+                        const auto& vArr = colliderValue["vertices"];
+                        for (rapidjson::SizeType k = 0; k < vArr.Size(); ++k) {
+                            verts.push_back(ReadVectorFromJson{}(vArr[k]));
+                        }
+                    }
+                    if (verts.empty()) verts = { {-0.5f,-0.5f,0}, {0.5f,-0.5f,0}, {0.5f,0.5f,0} };
+                    float rot = 0.0f;
+                    if (colliderValue.HasMember("rotation")) rot = colliderValue["rotation"].GetFloat();
+                    CEVec3 pos = ReadVectorFromJson{}(colliderValue["position"]);
+                    CEVec3 off = ReadVectorFromJson{}(colliderValue["offset"]);
+                    auto newCol = std::make_unique<Collision::Polygon>();
+                    newCol->vertexCount = std::min((int)verts.size(), Collision::Polygon::MAX_VERTEX);
+                    for (int k = 0; k < newCol->vertexCount; ++k) newCol->vertices[k] = verts[k];
+                    newCol->rotation = rot;
+                    newCol->position = pos;
+                    newCol->offset = off;
+                    newCol->ForceUpdateRotation(rot);
+                    newCol->ColliderType = helperT;
+                    col.collider = std::move(newCol);
+                    break;
+                }
+                default: break;
+                }
+
+                if (col.collider) {
+                    if (colliderValue.HasMember("isTrigger") && colliderValue["isTrigger"].IsBool()) {
+                        col.collider->isTrigger = colliderValue["isTrigger"].GetBool();
+                    }
+                    if (colliderValue.HasMember("enabled") && colliderValue["enabled"].IsBool()) {
+                        col.collider->enabled = colliderValue["enabled"].GetBool();
+                    }
+                }
+            }
+
+            // Check if Shape
+            if (entityValue.HasMember(Keys::SHAPE_COMPONENT) && entityValue[Keys::SHAPE_COMPONENT].IsObject()) {
+                ShapeComponent& s = gECS.AddComponent<ShapeComponent>(newEntity);
+                const rapidjson::Value& shapeValues = entityValue[Keys::SHAPE_COMPONENT];
+                if (shapeValues.HasMember("useTexture") && shapeValues["useTexture"].IsBool()) s.enableTexture = shapeValues["useTexture"].GetBool();
+                if (shapeValues.HasMember("isWorldSpace") && shapeValues["isWorldSpace"].IsBool()) s.isWorldSpace = shapeValues["isWorldSpace"].GetBool();
+                if (shapeValues.HasMember("wrapModeU") && shapeValues["wrapModeU"].IsInt()) s.wrapModeU = shapeValues["wrapModeU"].GetInt();
+                if (shapeValues.HasMember("wrapModeV") && shapeValues["wrapModeV"].IsInt()) s.wrapModeV = shapeValues["wrapModeV"].GetInt();
+                if (shapeValues.HasMember("uvSize") && shapeValues["uvSize"].IsObject()) {
+                    if (shapeValues["uvSize"].HasMember("x")) s.uvSize.x = shapeValues["uvSize"]["x"].GetFloat();
+                    if (shapeValues["uvSize"].HasMember("y")) s.uvSize.y = shapeValues["uvSize"]["y"].GetFloat();
+                }
+                if (shapeValues.HasMember("uvOffset") && shapeValues["uvOffset"].IsObject()) {
+                    if (shapeValues["uvOffset"].HasMember("x")) s.uvOffset.x = shapeValues["uvOffset"]["x"].GetFloat();
+                    if (shapeValues["uvOffset"].HasMember("y")) s.uvOffset.y = shapeValues["uvOffset"]["y"].GetFloat();
+                }
+                if (shapeValues.HasMember("textureName") && shapeValues["textureName"].IsString()) s.textureName = shapeValues["textureName"].GetString();
+                if (shapeValues.HasMember("type") && shapeValues["type"].IsInt()) {
+                    switch (shapeValues["type"].GetInt()) {
+                    case 0: s.type = ShapeType::Rectangle; break;
+                    case 1: s.type = ShapeType::Line; break;
+                    case 2: s.type = ShapeType::Triangle; break;
+                    case 3: s.type = ShapeType::Circle; break;
+                    default: s.type = ShapeType::Rectangle; break;
+                    };
+                }
+                if (shapeValues.HasMember("color") && shapeValues["color"].IsObject()) {
+                    if (shapeValues["color"].HasMember("x")) s.color.x() = shapeValues["color"]["x"].GetFloat();
+                    if (shapeValues["color"].HasMember("y")) s.color.y() = shapeValues["color"]["y"].GetFloat();
+                    if (shapeValues["color"].HasMember("z")) s.color.z() = shapeValues["color"]["z"].GetFloat();
+                    if (shapeValues["color"].HasMember("w")) s.color.w() = shapeValues["color"]["w"].GetFloat();
+                }
+                if (shapeValues.HasMember("p1") && shapeValues["p1"].IsObject()) {
+                    if (shapeValues["p1"].HasMember("x")) s.p1.x = shapeValues["p1"]["x"].GetFloat();
+                    if (shapeValues["p1"].HasMember("y")) s.p1.y = shapeValues["p1"]["y"].GetFloat();
+                    if (shapeValues["p1"].HasMember("z")) s.p1.z = shapeValues["p1"]["z"].GetFloat();
+                }
+                if (shapeValues.HasMember("p2") && shapeValues["p2"].IsObject()) {
+                    if (shapeValues["p2"].HasMember("x")) s.p2.x = shapeValues["p2"]["x"].GetFloat();
+                    if (shapeValues["p2"].HasMember("y")) s.p2.y = shapeValues["p2"]["y"].GetFloat();
+                    if (shapeValues["p2"].HasMember("z")) s.p2.z = shapeValues["p2"]["z"].GetFloat();
+                }
+                if (shapeValues.HasMember("thickness") && shapeValues["thickness"].IsFloat()) s.thickness = shapeValues["thickness"].GetFloat();
+                if (shapeValues.HasMember("preview") && shapeValues["preview"].IsBool()) s.preview = shapeValues["preview"].GetBool();
+            }
+
+            // Check if Text
+            if (entityValue.HasMember(Keys::TEXT_COMPONENT) && entityValue[Keys::TEXT_COMPONENT].IsObject()) {
+                TextComponent& t = gECS.AddComponent<TextComponent>(newEntity);
+                const rapidjson::Value& textValue = entityValue[Keys::TEXT_COMPONENT];
+                if (textValue.HasMember("font") && textValue["font"].IsString()) t.font = textValue["font"].GetString();
+                if (textValue.HasMember("text") && textValue["text"].IsString()) t.text = textValue["text"].GetString();
+                if (textValue.HasMember("scale") && textValue["scale"].IsFloat()) t.scale = textValue["scale"].GetFloat();
+                if (textValue.HasMember("offset") && textValue["offset"].IsObject()) {
+                    if (textValue["offset"].HasMember("x")) t.offset.x = textValue["offset"]["x"].GetFloat();
+                    if (textValue["offset"].HasMember("y")) t.offset.y = textValue["offset"]["y"].GetFloat();
+                }
+                if (textValue.HasMember("color") && textValue["color"].IsObject()) {
+                    if (textValue["color"].HasMember("x")) t.color.x() = textValue["color"]["x"].GetFloat();
+                    if (textValue["color"].HasMember("y")) t.color.y() = textValue["color"]["y"].GetFloat();
+                    if (textValue["color"].HasMember("z")) t.color.z() = textValue["color"]["z"].GetFloat();
+                    if (textValue["color"].HasMember("w")) t.color.w() = textValue["color"]["w"].GetFloat();
+                }
+                if (textValue.HasMember("centered") && textValue["centered"].IsBool()) t.centered = textValue["centered"].GetBool();
+                if (textValue.HasMember("isworldspace") && textValue["isworldspace"].IsBool()) t.isWorldSpace = textValue["isworldspace"].GetBool();
+            }
+
+            // Check if Audio
+            if (entityValue.HasMember(Keys::AUDIO_COMPONENT) && entityValue[Keys::AUDIO_COMPONENT].IsObject()) {
+                const rapidjson::Value& audioValue = entityValue[Keys::AUDIO_COMPONENT];
+                AudioEmitterComponent& ac = gECS.AddComponent<AudioEmitterComponent>(newEntity);
+                if (audioValue.HasMember("eventPath") && audioValue["eventPath"].IsString()) ac.eventPath = audioValue["eventPath"].GetString();
+                if (audioValue.HasMember("volume") && audioValue["volume"].IsFloat()) ac.volume = audioValue["volume"].GetFloat();
+                if (audioValue.HasMember("pitch") && audioValue["pitch"].IsFloat()) ac.pitch = audioValue["pitch"].GetFloat();
+                if (audioValue.HasMember("spatial3D") && audioValue["spatial3D"].IsBool()) ac.spatial3D = audioValue["spatial3D"].GetBool();
+                if (audioValue.HasMember("looping") && audioValue["looping"].IsBool()) ac.looping = audioValue["looping"].GetBool();
+            }
+
+            // Check if Script
+            if (entityValue.HasMember(Keys::SCRIPT_COMPONENT) && entityValue[Keys::SCRIPT_COMPONENT].IsObject()) {
+                const rapidjson::Value& scriptValue = entityValue[Keys::SCRIPT_COMPONENT];
+                ScriptComponent& sc = gECS.AddComponent<ScriptComponent>(newEntity);
+                sc.EntityID = static_cast<uint32_t>(newEntity);
+                if (scriptValue.HasMember("scripts") && scriptValue["scripts"].IsArray()) {
+                    const rapidjson::Value& scriptsArr = scriptValue["scripts"];
+                    for (rapidjson::SizeType k = 0; k < scriptsArr.Size(); ++k) {
+                        const rapidjson::Value& item = scriptsArr[k];
+                        if (item.IsString()) sc.AddScript(item.GetString());
+                        else if (item.IsObject() && item.HasMember("className")) sc.AddScript(item["className"].GetString());
+                    }
+                }
+                if (MonoManager::GetDomain() && MonoManager::GetAssembly()) sc.Initialize(MonoManager::GetDomain(), MonoManager::GetAssembly());
+                if (scriptValue.HasMember("scripts") && scriptValue["scripts"].IsArray()) {
+                    const rapidjson::Value& scriptsArr = scriptValue["scripts"];
+                    for (rapidjson::SizeType k = 0; k < scriptsArr.Size(); ++k) {
+                        const rapidjson::Value& item = scriptsArr[k];
+                        if (k >= sc.Scripts.size()) break;
+                        ScriptInstance& inst = sc.Scripts[k];
+                        if (item.IsObject() && item.HasMember("fields") && inst.Instance && inst.Class) {
+                            const rapidjson::Value& fields = item["fields"];
+                            for (auto it = fields.MemberBegin(); it != fields.MemberEnd(); ++it) {
+                                const char* fieldName = it->name.GetString();
+                                MonoClassField* field = mono_class_get_field_from_name(inst.Class, fieldName);
+                                if (field) {
+                                    MonoType* type = mono_field_get_type(field);
+                                    int typeEnum = mono_type_get_type(type);
+                                    if (typeEnum == MONO_TYPE_I4 && it->value.IsInt()) {
+                                        int val = it->value.GetInt(); mono_field_set_value(inst.Instance, field, &val);
+                                    }
+                                    else if (typeEnum == MONO_TYPE_R4 && it->value.IsNumber()) {
+                                        float val = it->value.GetFloat(); mono_field_set_value(inst.Instance, field, &val);
+                                    }
+                                    else if (typeEnum == MONO_TYPE_BOOLEAN && it->value.IsBool()) {
+                                        bool val = it->value.GetBool(); mono_field_set_value(inst.Instance, field, &val);
+                                    }
+                                    else if (typeEnum == MONO_TYPE_STRING && it->value.IsString()) {
+                                        MonoString* str = mono_string_new(MonoManager::GetDomain(), it->value.GetString());
+                                        mono_field_set_value(inst.Instance, field, str);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Check if Camera
+            if (entityValue.HasMember(Keys::CAMERA_COMPONENT) && entityValue[Keys::CAMERA_COMPONENT].IsObject()) {
+                CameraComponent& c = gECS.AddComponent<CameraComponent>(newEntity);
+                const rapidjson::Value& camValue = entityValue[Keys::CAMERA_COMPONENT];
+                if (camValue.HasMember("zoom") && camValue["zoom"].IsFloat()) c.zoom = camValue["zoom"].GetFloat();
+                if (camValue.HasMember("xBounds") && camValue["xBounds"].IsObject()) {
+                    if (camValue["xBounds"].HasMember("x")) c.xBounds.x = camValue["xBounds"]["x"].GetFloat();
+                    if (camValue["xBounds"].HasMember("y")) c.xBounds.y = camValue["xBounds"]["y"].GetFloat();
+                }
+                if (camValue.HasMember("yBounds") && camValue["yBounds"].IsObject()) {
+                    if (camValue["yBounds"].HasMember("x")) c.yBounds.x = camValue["yBounds"]["x"].GetFloat();
+                    if (camValue["yBounds"].HasMember("y")) c.yBounds.y = camValue["yBounds"]["y"].GetFloat();
+                }
+            }
+
+            // Check if Button
+            if (entityValue.HasMember(Keys::BUTTON_COMPONENT) && entityValue[Keys::BUTTON_COMPONENT].IsObject()) {
+                ButtonComponent& b = gECS.AddComponent<ButtonComponent>(newEntity);
+                const rapidjson::Value& buttonValue = entityValue[Keys::BUTTON_COMPONENT];
+                if (buttonValue.HasMember("buttonState") && buttonValue["buttonState"].IsUint()) b.buttonState = ButtonState::NORMAL;
+
+                auto LoadColor = [&](const char* key, CEColor& col) {
+                    if (buttonValue.HasMember(key) && buttonValue[key].IsObject()) {
+                        if (buttonValue[key].HasMember("x")) col.x() = buttonValue[key]["x"].GetFloat();
+                        if (buttonValue[key].HasMember("y")) col.y() = buttonValue[key]["y"].GetFloat();
+                        if (buttonValue[key].HasMember("z")) col.z() = buttonValue[key]["z"].GetFloat();
+                        if (buttonValue[key].HasMember("w")) col.w() = buttonValue[key]["w"].GetFloat();
+                    }
+                };
+                LoadColor("shapeNormalColor", b.shapeNormalColor);
+                LoadColor("shapeHoveredColor", b.shapeHoveredColor);
+                LoadColor("shapePressedColor", b.shapePressedColor);
+                LoadColor("textNormalColor", b.textNormalColor);
+                LoadColor("textHoveredColor", b.textHoveredColor);
+                LoadColor("textPressedColor", b.textPressedColor);
+
+                ShapeComponent* s = gECS.GetComponent<ShapeComponent>(newEntity);
+                if (s) s->color = b.shapeNormalColor;
+                TextComponent* t = gECS.GetComponent<TextComponent>(newEntity);
+                if (t) t->color = b.textNormalColor;
+            }
+
+            // Check if GUI
+            if (entityValue.HasMember(Keys::GUI_COMPONENT) && entityValue[Keys::GUI_COMPONENT].IsObject()) {
+                GuiComponent& g = gECS.AddComponent<GuiComponent>(newEntity);
+                const rapidjson::Value& guiValue = entityValue[Keys::GUI_COMPONENT];
+                if (guiValue.HasMember("uiType") && guiValue["uiType"].IsUint()) g.uiType = static_cast<UIType>(guiValue["uiType"].GetUint());
+            }
+
+            // Check if Text Input
+            if (entityValue.HasMember(Keys::TEXT_INPUT_COMPONENT) && entityValue[Keys::TEXT_INPUT_COMPONENT].IsObject()) {
+                TextInputComponent& t = gECS.AddComponent<TextInputComponent>(newEntity);
+                const rapidjson::Value& textInputValue = entityValue[Keys::TEXT_INPUT_COMPONENT];
+                if (textInputValue.HasMember("isFocused") && textInputValue["isFocused"].IsBool()) t.isFocused = textInputValue["isFocused"].GetBool();
+                if (textInputValue.HasMember("cursorPos") && textInputValue["cursorPos"].IsUint()) t.cursorPos = textInputValue["cursorPos"].GetUint();
+                if (textInputValue.HasMember("maxCharacters") && textInputValue["maxCharacters"].IsUint()) t.maxCharacters = textInputValue["maxCharacters"].GetUint();
+            }
+
+            // Check if UI Layout
+            if (entityValue.HasMember(Keys::UI_LAYOUT_COMPONENT) && entityValue[Keys::UI_LAYOUT_COMPONENT].IsObject()) {
+                UILayoutComponent& u = gECS.AddComponent<UILayoutComponent>(newEntity);
+                const rapidjson::Value& uiLayoutValue = entityValue[Keys::UI_LAYOUT_COMPONENT];
+                if (uiLayoutValue.HasMember("paddingXY") && uiLayoutValue["paddingXY"].IsObject()) {
+                    if (uiLayoutValue["paddingXY"].HasMember("x")) u.paddingXY.x = uiLayoutValue["paddingXY"]["x"].GetFloat();
+                    if (uiLayoutValue["paddingXY"].HasMember("y")) u.paddingXY.y = uiLayoutValue["paddingXY"]["y"].GetFloat();
+                }
+                if (uiLayoutValue.HasMember("uiLayout") && uiLayoutValue["uiLayout"].IsUint()) u.uiLayout = static_cast<UILayout>(uiLayoutValue["uiLayout"].GetUint());
+            }
+
+            // Check if Post Processing
+            if (entityValue.HasMember(Keys::PP_COMPONENT) && entityValue[Keys::PP_COMPONENT].IsObject()) {
+                PPComponent& p = gECS.AddComponent<PPComponent>(newEntity);
+                const rapidjson::Value& ppValue = entityValue[Keys::PP_COMPONENT];
+                if (ppValue.HasMember("brightness") && ppValue["brightness"].IsFloat()) p.brightness = ppValue["brightness"].GetFloat();
+                if (ppValue.HasMember("contrast") && ppValue["contrast"].IsFloat()) p.contrast = ppValue["contrast"].GetFloat();
+                if (ppValue.HasMember("saturation") && ppValue["saturation"].IsFloat()) p.saturation = ppValue["saturation"].GetFloat();
+                if (ppValue.HasMember("active") && ppValue["active"].IsBool()) p.active = ppValue["active"].GetBool();
+            }
+
+            // Check if TileMapComponent
+            if (entityValue.HasMember(Keys::TILEMAP_COMPONENT) && entityValue[Keys::TILEMAP_COMPONENT].IsObject()) {
+                TileMapComponent& tm = gECS.AddComponent<TileMapComponent>(newEntity);
+                const rapidjson::Value& tmValue = entityValue[Keys::TILEMAP_COMPONENT];
+                tm.activeAsset = "none"; tm.pOpen = false; tm.isCacheDirty = true;
+                if (tmValue.HasMember("tileSize") && tmValue["tileSize"].IsInt()) tm.tileSize = tmValue["tileSize"].GetInt();
+                if (tmValue.HasMember("activeAsset") && tmValue["activeAsset"].IsString()) tm.activeAsset = tmValue["activeAsset"].GetString();
+                if (tmValue.HasMember("tileAssetNames") && tmValue["tileAssetNames"].IsArray()) {
+                    const rapidjson::Value& assetsArr = tmValue["tileAssetNames"];
+                    for (rapidjson::SizeType k = 0; k < assetsArr.Size(); ++k) if (assetsArr[k].IsString()) tm.tileAssetNames.push_back(assetsArr[k].GetString());
+                }
+                if (tmValue.HasMember("gridData") && tmValue["gridData"].IsArray()) {
+                    const rapidjson::Value& gridArr = tmValue["gridData"];
+                    for (rapidjson::SizeType k = 0; k < gridArr.Size(); ++k) {
+                        const rapidjson::Value& tileObj = gridArr[k];
+                        if (tileObj.IsObject() && tileObj.HasMember("x") && tileObj.HasMember("y") && tileObj.HasMember("asset")) {
+                            tm.gridData[{tileObj["x"].GetInt(), tileObj["y"].GetInt()}] = tileObj["asset"].GetString();
+                        }
+                    }
+                }
+            }
+
+            // Check if Sprite Animator
+            if (entityValue.HasMember(Keys::SPRITE_ANIMATOR_COMPONENT)) {
+                auto& comp = gECS.AddComponent<SpriteAnimatorComponent>(newEntity);
+                const auto& val = entityValue[Keys::SPRITE_ANIMATOR_COMPONENT];
+                if (val.HasMember("currentClip")) comp.currentClipName = val["currentClip"].GetString();
+                if (val.HasMember("flipH")) comp.flipH = val["flipH"].GetBool();
+                if (val.HasMember("playing")) comp.playing = val["playing"].GetBool();
+                if (val.HasMember("clips") && val["clips"].IsArray()) {
+                    const auto& arr = val["clips"];
+                    for (rapidjson::SizeType k = 0; k < arr.Size(); ++k) {
+                        const auto& clipVal = arr[k];
+                        comp.AddClip(clipVal["name"].GetString(), clipVal["start"].GetInt(), clipVal["count"].GetInt(), clipVal["fps"].GetFloat(), clipVal["loop"].GetBool());
+                    }
+                }
+            }
+
+            // Check if Keyframe Animator Component
+            if (entityValue.HasMember(Keys::KEYFRAME_ANIMATOR_COMPONENT)) {
+                KeyframeAnimatorComponent& ka = gECS.AddComponent<KeyframeAnimatorComponent>(newEntity);
+                const rapidjson::Value& kaVal = entityValue[Keys::KEYFRAME_ANIMATOR_COMPONENT];
+                if (kaVal.HasMember("current")) ka.current = kaVal["current"].GetString();
+                if (kaVal.HasMember("t")) ka.t = kaVal["t"].GetFloat();
+                if (kaVal.HasMember("playing")) ka.playing = kaVal["playing"].GetBool();
+                if (kaVal.HasMember("clips") && kaVal["clips"].IsArray()) {
+                    for (const auto& clipVal : kaVal["clips"].GetArray()) {
+                        AnimationClip newClip;
+                        if (clipVal.HasMember("name")) newClip.name = clipVal["name"].GetString();
+                        if (clipVal.HasMember("wrap")) newClip.wrap = static_cast<KFWrap>(clipVal["wrap"].GetInt());
+                        if (clipVal.HasMember("textureAsset") && clipVal["textureAsset"].IsString()) newClip.textureAsset = clipVal["textureAsset"].GetString();
+                        if (clipVal.HasMember("spriteCols") && clipVal["spriteCols"].IsInt()) newClip.spriteCols = clipVal["spriteCols"].GetInt();
+                        if (clipVal.HasMember("spriteRows") && clipVal["spriteRows"].IsInt()) newClip.spriteRows = clipVal["spriteRows"].GetInt();
+                        if (clipVal.HasMember("useCustomSize") && clipVal["useCustomSize"].IsBool()) newClip.useCustomSize = clipVal["useCustomSize"].GetBool();
+                        if (clipVal.HasMember("targetWidth") && clipVal["targetWidth"].IsFloat()) newClip.targetWidth = clipVal["targetWidth"].GetFloat();
+                        if (clipVal.HasMember("targetHeight") && clipVal["targetHeight"].IsFloat()) newClip.targetHeight = clipVal["targetHeight"].GetFloat();
+                        if (clipVal.HasMember("bindings")) {
+                            for (const auto& bVal : clipVal["bindings"].GetArray()) {
+                                KFBinding newBinding;
+                                newBinding.property = static_cast<KFProperty>(bVal["property"].GetInt());
+                                if (bVal.HasMember("keys")) {
+                                    for (const auto& kVal : bVal["keys"].GetArray()) {
+                                        KFKey k;
+                                        k.time = kVal["t"].GetFloat();
+                                        k.value = kVal["v"].GetFloat();
+                                        if (kVal.HasMember("i")) k.interp = static_cast<KFInterp>(kVal["i"].GetInt());
+                                        if (kVal.HasMember("in")) k.inTan = kVal["in"].GetFloat();
+                                        if (kVal.HasMember("out")) k.outTan = kVal["out"].GetFloat();
+                                        newBinding.curve.Add(k);
+                                    }
+                                }
+                                newClip.bindings.push_back(newBinding);
+                            }
+                        }
+                        ka.clips[newClip.name] = newClip;
+                    }
+                }
+            }
+
+            // Check if ParentComponent
+            if (entityValue.HasMember(Keys::PARENT_COMPONENT) && entityValue[Keys::PARENT_COMPONENT].IsObject()) {
+                const rapidjson::Value& pVal = entityValue[Keys::PARENT_COMPONENT];
+                Component::ParentComponent& pc = gECS.AddComponent<Component::ParentComponent>(newEntity);
+                if (pVal.HasMember("parentName") && pVal["parentName"].IsString()) {
+                    if (outParentLinks) {
+                        ParentLinkInfo req;
+                        req.childEntity = newEntity;
+                        req.parentName = pVal["parentName"].GetString();
+                        outParentLinks->push_back(req);
+                    }
+                }
+                if (pVal.HasMember("localPos") && pVal["localPos"].IsObject()) {
+                    pc.localPos.x = pVal["localPos"]["x"].GetFloat();
+                    pc.localPos.y = pVal["localPos"]["y"].GetFloat();
+                    pc.localPos.z = pVal["localPos"]["z"].GetFloat();
+                }
+                if (pVal.HasMember("localRot") && pVal["localRot"].IsFloat()) pc.localRot = pVal["localRot"].GetFloat();
+                if (pVal.HasMember("localScale") && pVal["localScale"].IsObject()) {
+                    pc.localScale.x = pVal["localScale"]["x"].GetFloat();
+                    pc.localScale.y = pVal["localScale"]["y"].GetFloat();
+                }
+                if (pVal.HasMember("inheritColor") && pVal["inheritColor"].IsBool()) pc.inheritColor = pVal["inheritColor"].GetBool();
+                if (pVal.HasMember("colorMul") && pVal["colorMul"].IsObject()) {
+                    pc.colorMul.x() = pVal["colorMul"]["x"].GetFloat();
+                    pc.colorMul.y() = pVal["colorMul"]["y"].GetFloat();
+                    pc.colorMul.z() = pVal["colorMul"]["z"].GetFloat();
+                    pc.colorMul.w() = pVal["colorMul"]["w"].GetFloat();
+                }
+            }
+
+            return newEntity;
         }
         
         /*!

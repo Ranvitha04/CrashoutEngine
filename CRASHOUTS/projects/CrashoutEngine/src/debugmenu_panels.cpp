@@ -1,6 +1,7 @@
 ﻿#include "debugmenu_internals.h"
 #include "debugmenu.h"
 #include "physicsmanager.h"
+#include "deleteentitycommand.h"
 
 using namespace CrashoutsEngine;
 using namespace Serialization;
@@ -210,25 +211,18 @@ namespace UI {
             {
                 if (selected)
                 {
-                    
-                    std::vector<CrashoutsEngine::Entity> nodes;
-                    CrashoutsEngine::GatherDescendants(ecs, selected, nodes);
-                    std::reverse(nodes.begin(), nodes.end());
+                    // Use undoable delete command
+                    auto cmd = std::make_unique<DeleteEntityCommand>(selected);
+                    cmd->Execute(); // Perform delete
+                    UndoManager::GetInstance().AddCommand(std::move(cmd));
 
-                    for (auto e : nodes)
-                    {
-                        if (ecs.HasComponent<Component::ParentComponent>(e))
-                            CrashoutsEngine::DetachChild(ecs, e);
-
-                        ecs.DestroyEntity(e);
-
-                        auto it = std::find(entities.begin(), entities.end(), e);
-                        if (it != entities.end()) entities.erase(it);
-                    }
+                    // Update local entities list if necessary (remove invalid IDs)
+                    entities.erase(std::remove_if(entities.begin(), entities.end(),
+                        [&](Entity e) { return !ecs.HasComponent<Component::NameComponent>(e); }), entities.end());
 
                     selected = 0;
                 }
-                }
+            }
                 /*
             if (ImGui::Button("Destroy Selected")) {
                 if (selected) {
