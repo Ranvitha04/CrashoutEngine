@@ -30,12 +30,28 @@ namespace ParticleSystem {
 		return min + gDist01(gRng) * (max - min);
 	}
 
+	void ParticleInit(Component::ParticleComponent& comp) {
+		auto& data = comp.data;
+		size_t maxParticles = (size_t)comp.maxParticles;
+
+		data.positions.resize(maxParticles);
+		data.velocities.resize(maxParticles);
+		data.accelerations.resize(maxParticles);
+		data.colors.resize(maxParticles);
+		data.rotations.resize(maxParticles);
+		data.scales.resize(maxParticles);
+		data.lives.resize(maxParticles);
+		data.maxLives.resize(maxParticles);
+	}
+
 	void ParticleUpdate(CrashoutsEngine::Entity const entityId, Component::ParticleComponent& comp, f32 dt) {
 		auto& data = comp.data;
 
 		// Transform of the object with the particle system component
 		const Component::TransformComponent* t = 
 			CrashoutsEngine::ECS::getInstance()->GetComponent<Component::TransformComponent>(entityId);
+		f32 halfW = t->size.x * .5f;
+		f32 halfH = t->size.y * .5f;
 
 		// 1. Emission
 		if (comp.isEmitting && comp.emitRate > 0.f) {
@@ -53,59 +69,70 @@ namespace ParticleSystem {
 					data.lives[i] = startLife;
 					data.maxLives[i] = startLife;
 
-					float speed = RandomRange(comp.startSpeedMin, comp.startSpeedMax);
+					f32 speed = RandomRange(comp.startSpeedMin, comp.startSpeedMax);
 
-					CEVec3 localSpawnPos{ 0, 0, 0 };
-					CEVec3 localSpawnDir{ 0, 1, 0 }; // Default pointing "Up"
+					CEVec3 localPos{ 0, 0, 0 };
+					CEVec3 localDir{ 0, 1, 0 }; // Default pointing "Up"
 
 					switch (comp.emissionShape) {
 					case ParticleShape::LINE:
-						localSpawnPos.x = RandomRange(-1.0f, 1.0f); // Random spot on a horizontal line
-						localSpawnDir = { 0, 1, 0 };
+						localPos.x = RandomRange(-halfW, halfW); // Random spot on a horizontal line
+						localDir = { 0, 1, 0 };
 						break;
 					case ParticleShape::CIRCLE: {
-						float angle = RandomRange(0, 2.0f * 3.14159f);
-						localSpawnPos = { cosf(angle), sinf(angle), 0 };
-						localSpawnDir = localSpawnPos; // Shoot outwards from the center
+						f32 angle = RandomRange(0, 2.0f * 3.14159f);
+						// If radiusMax is near 0, fallback to transform width
+						f32 maxR = (comp.radiusMax <= 0.01f) ? halfW : comp.radiusMax;
+						f32 dist = RandomRange(comp.radiusMin, maxR);
+
+						localPos = { cosf(angle) * dist, sinf(angle) * dist, 0 };
+						localDir = { cosf(angle), sinf(angle), 0 }; // Outwards
 						break;
 					}
 					case ParticleShape::SQUARE:
-						localSpawnPos = { RandomRange(-1, 1), RandomRange(-1, 1), 0 };
-						localSpawnDir = { 0, 1, 0 };
+						localPos = { RandomRange(-halfW, halfW), RandomRange(-halfH, halfH), 0 };
+						localDir = { 0, 1, 0 };
 						break;
 					}
 
-					// Rotate and Translate for World Space
-					float speed = RandomRange(comp.startSpeedMin, comp.startSpeedMax);
+					// --- ROTATION (Applies to both) ---
+					// Rotate the local offset so it matches the emitter's orientation
+					f32 rads = t->rotation * (CEMath::PI / 180.0f);
+					f32 c = cosf(rads);
+					f32 s = sinf(rads);
 
-					if (comp.useWorldSpace && t) {
-						float radians = t->rotation * (CEMath::PI / 180.0f);
-						// Manually rotate the velocity vector using the Transform's rotation (theta)
-						float cosT = cosf(radians);
-						float sinT = sinf(radians);
+					CEVec3 rotatedPos;
+					rotatedPos.x = localPos.x * c - localPos.y * s;
+					rotatedPos.y = localPos.x * s + localPos.y * c;
 
-						// Rotate the local direction to match entity orientation
-						CEVec3 rotatedDir;
-						rotatedDir.x = localSpawnDir.x * cosT - localSpawnDir.y * sinT;
-						rotatedDir.y = localSpawnDir.x * sinT + localSpawnDir.y * cosT;
+					CEVec3 rotatedDir;
+					rotatedDir.x = localDir.x * c - localDir.y * s;
+					rotatedDir.y = localDir.x * s + localDir.y * c;
 
-						data.velocities[i] = rotatedDir * speed;
-
-						// Position becomes Emitter Pos + (Rotated Local Offset)
-						CEVec3 rotatedPos;
-						rotatedPos.x = localSpawnPos.x * cosT - localSpawnPos.y * sinT;
-						rotatedPos.y = localSpawnPos.x * sinT + localSpawnPos.y * cosT;
+					// --- SPAWN LOGIC ---
+					if (comp.useWorldSpace) {
 						data.positions[i] = t->position + rotatedPos;
 					}
 					else {
-						// Pure Local Space: we don't rotate by the entity's rotation here, 
-						// because the Renderer will handle the rotation of the entire "container"
-						data.velocities[i] = localSpawnDir * speed;
-						data.positions[i] = localSpawnPos;
+						data.positions[i] = rotatedPos;
 					}
 
+					// Velocity
+					speed = RandomRange(comp.startSpeedMin, comp.startSpeedMax);
+					data.velocities[i] = comp.startVelocity + (rotatedDir * speed);
+
+					// Properties
+					data.lives[i] = RandomRange(comp.startLifeMin, comp.startLifeMax);
+					data.maxLives[i] = data.lives[i];
 					data.colors[i] = comp.startcolor;
-					data.scales[i] = RandomRange(comp.startSizeMin, comp.startSizeMax);
+					if (comp.uniformSize) {
+						f32 size = RandomRange(comp.startSizeXMin, comp.startSizeXMax);
+						data.scales[i] = CEVec2(size, size);
+					}
+					else {
+						data.scales[i] = CEVec2(RandomRange(comp.startSizeXMin, comp.startSizeXMax), 
+							RandomRange(comp.startSizeYMin, comp.startSizeYMax));
+					}
 					data.rotations[i] = RandomRange(comp.startRotationMin, comp.startRotationMax);
 
 					data.activeCount++;
@@ -143,15 +170,16 @@ namespace ParticleSystem {
 
 			// Rotation & Scale Over Time (Angular Velocity)
 			data.rotations[i] += comp.rotationOverTime * dt;
-			data.scales[i] += comp.sizeOverTime * dt;
+			f32 sizeChange = comp.sizeOverTime * dt;
+			data.scales[i] += CEVec2(sizeChange, sizeChange);
 
 			// Simulate change over lifetime
-			f32 t = 1.0f - (data.lives[i] / data.maxLives[i]);
+			f32 factor = 1.0f - (data.lives[i] / data.maxLives[i]);
 
 			// Interpolate items
 			//float startSize = data.scales[i];
 			//data.scales[i] = std::lerp(data.scales[i], comp.endSize, t * 0.1f);
-			data.colors[i] = Lerp(data.colors[i], comp.endColor, t * 0.1f);
+			data.colors[i] = Lerp(data.colors[i], comp.endColor, factor * 0.1f);
 
 			i++;
 		}

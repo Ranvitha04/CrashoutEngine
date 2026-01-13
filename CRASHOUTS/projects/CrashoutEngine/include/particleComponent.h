@@ -36,7 +36,7 @@ namespace Component {
         std::vector<CEVec3> accelerations;  // For "Force over lifetime"
         std::vector<CEColor> colors;
         std::vector<f32>  rotations;
-        std::vector<f32>  scales;
+        std::vector<CEVec2>  scales;
 		std::vector<f32>  lives;          // Current life remaining
 		std::vector<f32>  maxLives;       // Maximum life assigned
     };
@@ -45,6 +45,7 @@ namespace Component {
     @brief  Particle Component data.
     */
     struct ParticleComponent {
+        bool playOnStop{ false };
         bool isEmitting{ false };
         bool useWorldSpace{ false };
         ParticleSystem::ParticleShape emissionShape{ ParticleSystem::ParticleShape::LINE };
@@ -59,7 +60,10 @@ namespace Component {
         f32 startLifeMin = 1.f, startLifeMax = 1.f;
         f32 startRotationMin = 0.f, startRotationMax = 0.f;
         f32 startSpeedMin = 1.f, startSpeedMax = 1.f;
-        f32 startSizeMin = 1.f, startSizeMax = 1.f;
+
+        bool uniformSize{ true };
+        f32 startSizeXMin = 1.f, startSizeXMax = 1.f;
+        f32 startSizeYMin = 1.f, startSizeYMax = 1.f;
         //f32 endSize = 1.f;
         CEColor startcolor{ 1.f, 1.f, 1.f, 1.f };
         CEColor endColor = { 1.f, 1.f, 1.f, 0.f };
@@ -82,6 +86,11 @@ namespace Component {
 }
 
 namespace ParticleSystem {
+    
+    /*
+    @brief Init for particle ( reserve space )
+    */
+    void ParticleInit(Component::ParticleComponent& comp);
 
     /*
     @brief Update for particle

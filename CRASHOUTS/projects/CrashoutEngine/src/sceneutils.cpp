@@ -24,6 +24,7 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 #include "engine.h"
 #include "instanceSystem.h"
 #include "glapp.h"
+#include "particleComponent.h"
 
 #include "shapescomponent.h"
 #include "transformcomponent.h"
@@ -34,7 +35,7 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 #include "textinputcomponent.h"
 #include "buttoncomponent.h"
 #include "tilemapcomponent.h"
-#include "particleSystem.h"
+//#include "particleSystem.h"
 //#include "camera.h"
 
 #define FONT_SCALE 0.05f
@@ -446,74 +447,135 @@ namespace Scene {
 		}
 	}
 
+	// ============================================================================
+	// PARTICLE HELPERS 
+	// ============================================================================
 	namespace Particles {
-		// ============================================================================
-		// PARTICLE HELPERS
-		// ============================================================================
 
 		/*!
-		@brief      Iterates all particle component arrays and calls Update(dt).
+		@brief      Update loop for the new ParticleComponent.
 		*/
 		static void UpdateAllParticles(ECS& globalECS) {
 			float dt = (float)FrameRateController::GetInstance().DT();
 
-			// 1. Standard Particles
-			auto& arr1 = globalECS.GetComponentArray<ParticleEmitter>();
-			for (const Entity& id : arr1.indexToEntity) {
-				globalECS.GetComponent<ParticleEmitter>(id)->Update(dt);
-			}
-
-			// 2. Fire
-			auto& arr2 = globalECS.GetComponentArray<FireEmitter>();
-			for (const Entity& id : arr2.indexToEntity) {
-				globalECS.GetComponent<FireEmitter>(id)->Update(dt);
-			}
-
-			// 3. Fireball
-			auto& arr3 = globalECS.GetComponentArray<FireballEmitter>();
-			for (const Entity& id : arr3.indexToEntity) {
-				globalECS.GetComponent<FireballEmitter>(id)->Update(dt);
-			}
-
-			// 4. Explosion
-			auto& arr4 = globalECS.GetComponentArray<ExplosionEmitter>();
-			for (const Entity& id : arr4.indexToEntity) {
-				globalECS.GetComponent<ExplosionEmitter>(id)->Update(dt);
-			}
-
-			// 5. Trajectory
-			auto& arr5 = globalECS.GetComponentArray<TrajectoryEmitter>();
-			for (const Entity& id : arr5.indexToEntity) {
-				globalECS.GetComponent<TrajectoryEmitter>(id)->Update(dt);
+			// Iterate over the single ParticleComponent type
+			auto& particleArray = globalECS.GetComponentArray<ParticleComponent>();
+			for (const Entity& id : particleArray.indexToEntity) {
+				ParticleComponent* pc = globalECS.GetComponent<ParticleComponent>(id);
+				if (pc) {
+					// Call the Update function declared in particleComponent.h
+					if(engineState == EngineState::STOP && pc->playOnStop)
+						ParticleSystem::ParticleUpdate(id, *pc, dt);
+					else if(engineState != EngineState::STOP) 
+						ParticleSystem::ParticleUpdate(id, *pc, dt);
+				}
 			}
 		}
 
 		/*!
-		@brief      Iterates all particle component arrays and calls Render().
-		@note       Assumes the Instanced Shader is currently bound and in World Space.
+		@brief      Render loop for the new ParticleComponent.
+		@details    Extracts data, splits Vec2 scales into float arrays, and handles Local Space transforms.
 		*/
 		static void RenderAllParticles(ECS& globalECS) {
-			// Note: The Render() function in your header defaults to untextured (useTexture=false).
-			// If you want specific textures, you need to store the texture name in the Component 
-			// and pass it here. For now, we call the default Render().
+			// Temp buffers to split CEVec2 scale into Width/Height arrays for the renderer
+			static std::vector<float> s_scaleXBuffer;
+			static std::vector<float> s_scaleYBuffer;
+			static std::vector<float> s_uniformScaleBuffer; // Always 1.0f
 
-			auto& arr1 = globalECS.GetComponentArray<ParticleEmitter>();
-			for (const Entity& id : arr1.indexToEntity) globalECS.GetComponent<ParticleEmitter>(id)->Render();
+			// Temp buffers for transforms
+			static std::vector<CEVec3> s_posBuffer;
+			static std::vector<CEVec2> s_uvOffsetBuffer;
 
-			auto& arr2 = globalECS.GetComponentArray<FireEmitter>();
-			for (const Entity& id : arr2.indexToEntity) globalECS.GetComponent<FireEmitter>(id)->Render();
+			auto& particleArray = globalECS.GetComponentArray<ParticleComponent>();
 
-			auto& arr3 = globalECS.GetComponentArray<FireballEmitter>();
-			for (const Entity& id : arr3.indexToEntity) globalECS.GetComponent<FireballEmitter>(id)->Render();
+			for (const Entity& id : particleArray.indexToEntity) {
+				ParticleComponent* pc = globalECS.GetComponent<ParticleComponent>(id);
+				TransformComponent* tc = globalECS.GetComponent<TransformComponent>(id);
 
-			auto& arr4 = globalECS.GetComponentArray<ExplosionEmitter>();
-			for (const Entity& id : arr4.indexToEntity) globalECS.GetComponent<ExplosionEmitter>(id)->Render();
+				if (!pc || pc->data.activeCount == 0) continue;
 
-			auto& arr5 = globalECS.GetComponentArray<TrajectoryEmitter>();
-			for (const Entity& id : arr5.indexToEntity) globalECS.GetComponent<TrajectoryEmitter>(id)->Render();
+				size_t count = pc->data.activeCount;
+
+				// 1. Resize Temp Buffers
+				if (s_scaleXBuffer.size() < count) s_scaleXBuffer.resize(count);
+				if (s_scaleYBuffer.size() < count) s_scaleYBuffer.resize(count);
+				if (s_uniformScaleBuffer.size() < count) s_uniformScaleBuffer.resize(count, 1.0f);
+				if (s_uvOffsetBuffer.size() < count) s_uvOffsetBuffer.resize(count, { 0.f, 0.f });
+
+				// Ensure uniform buffer is actually 1.0 (in case of resize dirty data)
+				// We map 1.0 here so we can pass the actual dimensions into Dim1/Dim2
+				std::fill(s_uniformScaleBuffer.begin(), s_uniformScaleBuffer.begin() + count, 1.0f);
+
+				// 2. Setup Data Pointers
+				CEVec3* posPtr = pc->data.positions.data();
+
+				// 3. Handle Local/World Space & Split Scales
+				// We need to loop anyway to split Vec2 -> Float, Float. 
+				// We combine the Transform logic into this loop for efficiency.
+
+				bool isLocal = (!pc->useWorldSpace && tc);
+				CEVec3 parentPos = { 0,0,0 };
+				float c = 1.f, s = 0.f;
+				float parentScaleX = 1.0f;
+				float parentScaleY = 1.0f;
+
+				if (isLocal) {
+					if (s_posBuffer.size() < count) s_posBuffer.resize(count);
+
+					parentPos = tc->position;
+					// If Local, particles should inherit Parent's size too
+					parentScaleX = tc->size.x;
+					parentScaleY = tc->size.y;
+
+					float rad = tc->rotation * (3.14159f / 180.0f);
+					c = cosf(rad);
+					s = sinf(rad);
+				}
+
+				// Process every particle to prepare render buffers
+				for (size_t k = 0; k < count; ++k) {
+					// A. Split Scale (Vec2 -> Float, Float)
+					// If Local, multiply by Parent Scale. If World, Parent Scale is 1.0.
+					s_scaleXBuffer[k] = pc->data.scales[k].x * parentScaleX;
+					s_scaleYBuffer[k] = pc->data.scales[k].y * parentScaleY;
+
+					// B. Transform Position (if Local)
+					if (isLocal) {
+						CEVec3 local = pc->data.positions[k];
+						float rotX = local.x * c - local.y * s;
+						float rotY = local.x * s + local.y * c;
+
+						s_posBuffer[k].x = rotX + parentPos.x;
+						s_posBuffer[k].y = rotY + parentPos.y;
+						s_posBuffer[k].z = local.z + parentPos.z;
+					}
+				}
+
+				// If Local, redirect pointer to the transformed buffer
+				if (isLocal) posPtr = s_posBuffer.data();
+
+				// 4. Submit to Renderer
+				InstancingSystem::InstancedParams params;
+				params.textured = pc->useTexture;
+				params.textureName = pc->textureName;
+				params.uvSize = pc->textureUV;
+				params.tint = { 1.0f, 1.0f, 1.0f };
+
+				InstancingSystem::RenderInstancedRectanglesBatch(
+					posPtr,                      // Correct World Position
+					pc->data.colors.data(),      // Colors
+					pc->data.rotations.data(),   // Rotations
+					s_uniformScaleBuffer.data(), // Uniform Scale (1.0)
+					s_scaleXBuffer.data(),       // Widths (X) 
+					s_scaleYBuffer.data(),       // Heights (Y)
+					s_uvOffsetBuffer.data(),     // UV Offsets (0,0)
+					(int)count,
+					params
+				);
+			}
 		}
-
 	}
+
 	// ============================================================================
 	// SCENE RENDERING
 	// ============================================================================
@@ -794,6 +856,9 @@ namespace Scene {
 		BatchEntities(worldEntities, globalECS, rectBatches, triBatches, circBatches, lineQueue, true);
 		FlushBatches(rectBatches, triBatches, circBatches);
 
+		// Render Particles (World Space)
+		Particles::RenderAllParticles(globalECS);
+
 		// Flush World Lines (Non-instanced)
 		if (!lineQueue.empty()) {
 			renderer.shdr_pgm->Use();
@@ -824,9 +889,6 @@ namespace Scene {
 
 		BatchEntities(screenEntities, globalECS, rectBatches, triBatches, circBatches, lineQueue, false);
 		FlushBatches(rectBatches, triBatches, circBatches);
-
-		// Render Particles (World Space)
-		Particles::RenderAllParticles(globalECS);
 
 		// Flush Screen Lines
 		if (!lineQueue.empty()) {

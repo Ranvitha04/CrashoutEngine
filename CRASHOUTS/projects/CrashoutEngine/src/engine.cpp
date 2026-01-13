@@ -399,8 +399,8 @@ void Update(double const& dt) {
 #else
         RenderCamera::gameCamera.UpdateMatrices(GLApp::width, GLApp::height);
 #endif
-        Scene::UpdateScene(ecs);
     }
+    Scene::UpdateScene(ecs);
 
     InputManager::Update();
     

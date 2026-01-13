@@ -826,6 +826,72 @@
                     "z": 0.0
                 }
             }
+        },
+        {
+            "name": "Particle",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 32.5,
+                "position": {
+                    "x": 22.458648681640626,
+                    "y": 9.574447631835938,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "particle": {
+                "isEmitting": true,
+                "useWorldSpace": true,
+                "maxParticles": 10000,
+                "emitRate": 10000.0,
+                "emissionShape": 1,
+                "radiusMin": 0.0,
+                "radiusMax": 5.0,
+                "startLifeMin": 1.0,
+                "startLifeMax": 1.0,
+                "startSpeedMin": 58.5,
+                "startSpeedMax": 1.0,
+                "uniformSize": true,
+                "startSizeXMin": 1.0,
+                "startSizeXMax": 1.0,
+                "startSizeYMin": 1.0,
+                "startSizeYMax": 1.0,
+                "sizeOverTime": 0.0,
+                "rotationOverTime": 0.0,
+                "startColor": {
+                    "x": 0.0,
+                    "y": 0.41706156730651858,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "endColor": {
+                    "x": 0.8507400751113892,
+                    "y": 0.8672986030578613,
+                    "z": 0.16852723062038423,
+                    "w": 0.23696684837341309
+                },
+                "gravity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "startVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "useTexture": false,
+                "textureName": "",
+                "textureUV": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            }
         }
     ],
     "layers": {

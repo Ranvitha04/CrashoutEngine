@@ -48,6 +48,7 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserve
 #include "tilemapcomponent.h"
 #include "hierarchycomponent.h"
 #include "transientcomponent.h"
+#include "particleComponent.h"
 
 // FOR GAME GUI
 #include "buttoncomponent.h"
@@ -178,6 +179,7 @@ namespace CrashoutsEngine {
             const char* const TILEMAP_COMPONENT         = "tilemap";
             const char* const SPRITE_ANIMATOR_COMPONENT = "sprite_animator";
             const char* const KEYFRAME_ANIMATOR_COMPONENT = "keyframe_animator";
+            const char* const PARTICLE_COMPONENT = "particle";
             // UI COMPONENT ITEMS
             const char* const BUTTON_COMPONENT          = "button";
             const char* const GUI_COMPONENT             = "gui";
@@ -1228,6 +1230,81 @@ namespace CrashoutsEngine {
                         pc.colorMul.w() = pVal["colorMul"]["w"].GetFloat();
                     }
                 }
+            
+                // =========================================================
+                // S. ParticleComponent DESERIALIZATION
+                // =========================================================
+                if (entityValue.HasMember(Keys::PARTICLE_COMPONENT)) {
+                    auto& pc = gECS.AddComponent<ParticleComponent>(newEntity);
+                    const auto& val = entityValue[Keys::PARTICLE_COMPONENT];
+
+                    // 1. General Settings
+                    if (val.HasMember("isEmitting")) pc.isEmitting = val["isEmitting"].GetBool();
+                    if (val.HasMember("useWorldSpace")) pc.useWorldSpace = val["useWorldSpace"].GetBool();
+                    if (val.HasMember("maxParticles")) pc.maxParticles = val["maxParticles"].GetInt();
+                    if (val.HasMember("emitRate")) pc.emitRate = val["emitRate"].GetFloat();
+
+                    // 2. Emission Shape
+                    if (val.HasMember("emissionShape"))
+                        pc.emissionShape = static_cast<ParticleSystem::ParticleShape>(val["emissionShape"].GetInt());
+                    if (val.HasMember("radiusMin")) pc.radiusMin = val["radiusMin"].GetFloat();
+                    if (val.HasMember("radiusMax")) pc.radiusMax = val["radiusMax"].GetFloat();
+
+                    // 3. Lifecycle & Speed
+                    if (val.HasMember("startLifeMin")) pc.startLifeMin = val["startLifeMin"].GetFloat();
+                    if (val.HasMember("startLifeMax")) pc.startLifeMax = val["startLifeMax"].GetFloat();
+                    if (val.HasMember("startSpeedMin")) pc.startSpeedMin = val["startSpeedMin"].GetFloat();
+                    if (val.HasMember("startSpeedMax")) pc.startSpeedMax = val["startSpeedMax"].GetFloat();
+
+                    // 4. Size & Rotation
+                    if (val.HasMember("uniformSize")) pc.uniformSize = val["uniformSize"].GetBool();
+
+                    if (val.HasMember("startSizeXMin")) pc.startSizeXMin = val["startSizeXMin"].GetFloat();
+                    if (val.HasMember("startSizeXMax")) pc.startSizeXMax = val["startSizeXMax"].GetFloat();
+                    if (val.HasMember("startSizeYMin")) pc.startSizeYMin = val["startSizeYMin"].GetFloat();
+                    if (val.HasMember("startSizeYMax")) pc.startSizeYMax = val["startSizeYMax"].GetFloat();
+
+                    if (val.HasMember("startRotationMin")) pc.startRotationMin = val["startRotationMin"].GetFloat();
+                    if (val.HasMember("startRotationMax")) pc.startRotationMax = val["startRotationMax"].GetFloat();
+
+                    if (val.HasMember("sizeOverTime")) pc.sizeOverTime = val["sizeOverTime"].GetFloat();
+                    if (val.HasMember("rotationOverTime")) pc.rotationOverTime = val["rotationOverTime"].GetFloat();
+
+                    // 5. Colors & Physics
+                    if (val.HasMember("startColor")) {
+                        pc.startcolor.x() = val["startColor"]["x"].GetFloat();
+                        pc.startcolor.y() = val["startColor"]["y"].GetFloat();
+                        pc.startcolor.z() = val["startColor"]["z"].GetFloat();
+                        pc.startcolor.w() = val["startColor"]["w"].GetFloat();
+                    }
+                    if (val.HasMember("endColor")) {
+                        pc.endColor.x() = val["endColor"]["x"].GetFloat();
+                        pc.endColor.y() = val["endColor"]["y"].GetFloat();
+                        pc.endColor.z() = val["endColor"]["z"].GetFloat();
+                        pc.endColor.w() = val["endColor"]["w"].GetFloat();
+                    }
+                    if (val.HasMember("gravity")) {
+                        pc.gravity.x = val["gravity"]["x"].GetFloat();
+                        pc.gravity.y = val["gravity"]["y"].GetFloat();
+                        pc.gravity.z = val["gravity"]["z"].GetFloat();
+                    }
+                    if (val.HasMember("startVelocity")) {
+                        pc.startVelocity.x = val["startVelocity"]["x"].GetFloat();
+                        pc.startVelocity.y = val["startVelocity"]["y"].GetFloat();
+                        pc.startVelocity.z = val["startVelocity"]["z"].GetFloat();
+                    }
+
+                    // 6. Texture
+                    if (val.HasMember("useTexture")) pc.useTexture = val["useTexture"].GetBool();
+                    if (val.HasMember("textureName")) pc.textureName = val["textureName"].GetString();
+                    if (val.HasMember("textureUV")) {
+                        pc.textureUV.x = val["textureUV"]["x"].GetFloat();
+                        pc.textureUV.y = val["textureUV"]["y"].GetFloat();
+                    }
+
+                    // Initialize vectors
+                    ParticleSystem::ParticleInit(pc);
+                }
             }
         
             // =========================================================
@@ -2140,6 +2217,81 @@ namespace CrashoutsEngine {
 
                     kaVal.AddMember("clips", clipsArr, allocator);
                     entityValue.AddMember(rapidjson::StringRef(Keys::KEYFRAME_ANIMATOR_COMPONENT), kaVal, allocator);
+                }
+                
+                // =========================================================
+                // S. ParticleComponent SERIALIZATION
+                // =========================================================
+                if (gECS.HasComponent<ParticleComponent>(id)) {
+                    const auto& pc = *gECS.GetComponent<ParticleComponent>(id);
+                    rapidjson::Value pVal(rapidjson::kObjectType);
+
+                    // 1. General Settings
+                    pVal.AddMember("isEmitting", pc.isEmitting, allocator);
+                    pVal.AddMember("useWorldSpace", pc.useWorldSpace, allocator);
+                    pVal.AddMember("maxParticles", pc.maxParticles, allocator);
+                    pVal.AddMember("emitRate", pc.emitRate, allocator);
+
+                    // 2. Emission Shape
+                    pVal.AddMember("emissionShape", static_cast<int>(pc.emissionShape), allocator);
+                    pVal.AddMember("radiusMin", pc.radiusMin, allocator);
+                    pVal.AddMember("radiusMax", pc.radiusMax, allocator);
+
+                    // 3. Lifecycle & Speed
+                    pVal.AddMember("startLifeMin", pc.startLifeMin, allocator);
+                    pVal.AddMember("startLifeMax", pc.startLifeMax, allocator);
+                    pVal.AddMember("startSpeedMin", pc.startSpeedMin, allocator);
+                    pVal.AddMember("startSpeedMax", pc.startSpeedMax, allocator);
+
+                    // 4. Size & Rotation
+                    pVal.AddMember("uniformSize", pc.uniformSize, allocator);
+                    pVal.AddMember("startSizeXMin", pc.startSizeXMin, allocator);
+                    pVal.AddMember("startSizeXMax", pc.startSizeXMax, allocator);
+                    pVal.AddMember("startSizeYMin", pc.startSizeYMin, allocator);
+                    pVal.AddMember("startSizeYMax", pc.startSizeYMax, allocator);
+
+                    pVal.AddMember("sizeOverTime", pc.sizeOverTime, allocator);
+                    pVal.AddMember("rotationOverTime", pc.rotationOverTime, allocator);
+
+                    // 5. Colors & Physics
+                    rapidjson::Value sCol(rapidjson::kObjectType);
+                    sCol.AddMember("x", pc.startcolor.x(), allocator);
+                    sCol.AddMember("y", pc.startcolor.y(), allocator);
+                    sCol.AddMember("z", pc.startcolor.z(), allocator);
+                    sCol.AddMember("w", pc.startcolor.w(), allocator);
+                    pVal.AddMember("startColor", sCol, allocator);
+
+                    rapidjson::Value eCol(rapidjson::kObjectType);
+                    eCol.AddMember("x", pc.endColor.x(), allocator);
+                    eCol.AddMember("y", pc.endColor.y(), allocator);
+                    eCol.AddMember("z", pc.endColor.z(), allocator);
+                    eCol.AddMember("w", pc.endColor.w(), allocator);
+                    pVal.AddMember("endColor", eCol, allocator);
+
+                    rapidjson::Value grav(rapidjson::kObjectType);
+                    grav.AddMember("x", pc.gravity.x, allocator);
+                    grav.AddMember("y", pc.gravity.y, allocator);
+                    grav.AddMember("z", pc.gravity.z, allocator);
+                    pVal.AddMember("gravity", grav, allocator);
+
+                    rapidjson::Value sVel(rapidjson::kObjectType);
+                    sVel.AddMember("x", pc.startVelocity.x, allocator);
+                    sVel.AddMember("y", pc.startVelocity.y, allocator);
+                    sVel.AddMember("z", pc.startVelocity.z, allocator);
+                    pVal.AddMember("startVelocity", sVel, allocator);
+
+                    // 6. Texture
+                    pVal.AddMember("useTexture", pc.useTexture, allocator);
+                    rapidjson::Value texName;
+                    texName.SetString(pc.textureName.c_str(), allocator);
+                    pVal.AddMember("textureName", texName, allocator);
+
+                    rapidjson::Value uv(rapidjson::kObjectType);
+                    uv.AddMember("x", pc.textureUV.x, allocator);
+                    uv.AddMember("y", pc.textureUV.y, allocator);
+                    pVal.AddMember("textureUV", uv, allocator);
+
+                    entityValue.AddMember(rapidjson::StringRef(Keys::PARTICLE_COMPONENT), pVal, allocator);
                 }
 
                 // Add the finished entity JSON object to the array

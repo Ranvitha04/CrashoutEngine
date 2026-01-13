@@ -45,6 +45,7 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserv
 #include "tilemapcomponent.h"
 #include "keyframe.h" 
 #include "hierarchycomponent.h"
+#include "particleComponent.h"
 
 // FOR GAME GUI
 #include "buttoncomponent.h"
@@ -63,7 +64,6 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserv
 #include "shapes.h"
 #include "layercomponent.h"
 #include "transformentitycommand.h"
-#include "particleSystem.h"
 #include <memory>
 
 // FOR MONO SCRIPTING
@@ -2285,8 +2285,6 @@ namespace CrashoutsEngine
 		}
 	};
 
-
-
 	/*!
 	@brief Game-state provider installed at runtime (no hardcoded state list).
 	@details Bridges GameStateManager to the Debug Menu; exposes current/previous/next and issues ChangeGameState() transitions from a reflected state list.
@@ -2308,202 +2306,227 @@ namespace CrashoutsEngine
 		}
 	};
 
+	/*!
+	@brief Adapter for editing Component::ParticleSystem.
+	@details Uses ImGui controls to manage particle system data.
+	*/
 	struct ParticleSystemAdapter : DebugReflection::IComponentAdapter {
 		const char* name() const override { return "Particle System"; }
 
+		// Check for the new single component
 		bool has(ECS& ecs, Entity e) const override {
-			using namespace Component;
-			return ecs.HasComponent<ParticleEmitter>(e) ||
-				ecs.HasComponent<FireEmitter>(e) ||
-				ecs.HasComponent<FireballEmitter>(e) ||
-				ecs.HasComponent<ExplosionEmitter>(e);
+			return ecs.HasComponent<Component::ParticleComponent>(e);
 		}
 
+		// Add default component
 		void add(ECS& ecs, Entity e) override {
-			using namespace Component;
 			if (!has(ecs, e)) {
-				ecs.AddComponent<ParticleEmitter>(e);
-				if (auto* p = ecs.GetComponent<ParticleEmitter>(e)) {
-					CEVec3 origin = { 0.f, 0.f, 0.f };
-					if (auto* t = ecs.GetComponent<TransformComponent>(e)) origin = t->position;
-					p->SetOrigin(origin);
-				}
+				Component::ParticleComponent pc;
+				// Initialize defaults if needed
+				pc.isEmitting = true;
+				pc.maxParticles = 1000;
+				auto& p = ecs.AddComponent<Component::ParticleComponent>(e, pc);
+				ParticleSystem::ParticleInit(p);
 			}
 		}
 
+		// Remove component
 		void remove(ECS& ecs, Entity e) override {
-			using namespace Component;
-			if (ecs.HasComponent<ParticleEmitter>(e)) ecs.RemoveComponent<ParticleEmitter>(e);
-			if (ecs.HasComponent<FireEmitter>(e)) ecs.RemoveComponent<FireEmitter>(e);
-			if (ecs.HasComponent<FireballEmitter>(e)) ecs.RemoveComponent<FireballEmitter>(e);
-			if (ecs.HasComponent<ExplosionEmitter>(e)) ecs.RemoveComponent<ExplosionEmitter>(e);
+			if (has(ecs, e)) ecs.RemoveComponent<Component::ParticleComponent>(e);
 		}
 
+		// Draw Inspector UI
 		void drawInspector(ECS& ecs, Entity e) override {
-			using namespace Component;
+			auto* pc = ecs.GetComponent<Component::ParticleComponent>(e);
+			if (!pc) return;
 
-			int currentType = 0; // 0: None, 1: Standard, 2: Fire, 3: Fireball, 4: Explosion
-			if (ecs.HasComponent<ParticleEmitter>(e)) currentType = 1;
-			else if (ecs.HasComponent<FireEmitter>(e)) currentType = 2;
-			else if (ecs.HasComponent<FireballEmitter>(e)) currentType = 3;
-			else if (ecs.HasComponent<ExplosionEmitter>(e)) currentType = 4;
+			// Helper to draw two float inputs side-by-side
+			auto DrawMinMaxRow = [](const char* label, float& minRef, float& maxRef, float speed, float minLimit, float maxLimit) {
+				ImGui::Text("%s", label);
+				float availW = ImGui::GetContentRegionAvail().x;
+				float itemW = (availW - ImGui::GetStyle().ItemSpacing.x) * 0.5f;
 
-			const char* types[] = { "Unknown", "Standard", "Fire", "Fireball", "Explosion" };
-			int selectedType = currentType;
+				ImGui::PushItemWidth(itemW);
+				std::string labelMin = "##Min" + std::string(label);
+				std::string labelMax = "##Max" + std::string(label);
 
-			ImGui::SeparatorText("Emitter Type");
-			if (ImGui::Combo("Type", &selectedType, types, IM_ARRAYSIZE(types))) {
-				if (selectedType != currentType && selectedType > 0) {
-					CEVec3 oldOrigin = { 0,0,0 };
-					if (auto* t = ecs.GetComponent<TransformComponent>(e)) oldOrigin = t->position;
-					remove(ecs, e);
-					switch (selectedType) {
-					case 1: ecs.AddComponent<ParticleEmitter>(e); ecs.GetComponent<ParticleEmitter>(e)->Initialize(oldOrigin); break;
-					case 2: ecs.AddComponent<FireEmitter>(e); ecs.GetComponent<FireEmitter>(e)->Initialize(oldOrigin); break;
-					case 3: ecs.AddComponent<FireballEmitter>(e); ecs.GetComponent<FireballEmitter>(e)->Initialize(oldOrigin); break;
-					case 4: ecs.AddComponent<ExplosionEmitter>(e); ecs.GetComponent<ExplosionEmitter>(e)->Initialize(oldOrigin); break;
+				UIHelpers::DrawUndoableFloat(labelMin.c_str(), minRef, speed, minLimit, maxLimit);
+				ImGui::SameLine();
+				UIHelpers::DrawUndoableFloat(labelMax.c_str(), maxRef, speed, minLimit, maxLimit);
+				ImGui::PopItemWidth();
+				};
+
+			// --- 1. General Settings ---
+			// Compact Header
+			if (ImGui::CollapsingHeader("Emitter Settings", ImGuiTreeNodeFlags_DefaultOpen)) {
+
+				// Toggle and Space on one line
+				float availW = ImGui::GetContentRegionAvail().x;
+				ImGui::PushItemWidth(availW * 0.4f);
+				UIHelpers::DrawUndoableBool("Emit on Stop", pc->playOnStop);
+				ImGui::SameLine();
+				UIHelpers::DrawUndoableBool("Emitting", pc->isEmitting);
+				ImGui::SameLine();
+				UIHelpers::DrawUndoableBool("World Space", pc->useWorldSpace);
+				ImGui::PopItemWidth();
+
+				// Counts
+				int maxP = pc->maxParticles;
+				if (ImGui::DragInt("Max Count", &maxP, 1.0f, 0, 10000)) {
+					if (maxP < 0) maxP = 0;
+					pc->maxParticles = maxP;
+					ParticleSystem::ParticleInit(*pc);
+				}
+				UIHelpers::DrawUndoableFloat("Rate (p/s)", pc->emitRate, 0.5f, 0.0f, 5000.0f);
+			}
+
+			// --- 2. Shape ---
+			ImGui::Separator();
+			const char* shapes[] = { "Line", "Circle", "Square" };
+			int currentShape = (int)pc->emissionShape;
+
+			// Draw Shape selector with label on left
+			ImGui::AlignTextToFramePadding();
+			ImGui::Text("Shape:"); ImGui::SameLine();
+			ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
+			if (ImGui::Combo("##Shape", &currentShape, shapes, IM_ARRAYSIZE(shapes))) {
+				pc->emissionShape = (ParticleSystem::ParticleShape)currentShape;
+			}
+
+			if (pc->emissionShape == ParticleSystem::ParticleShape::CIRCLE) {
+				DrawMinMaxRow("Radius (Min / Max)", pc->radiusMin, pc->radiusMax, 0.1f, 0.0f, 0.0f);
+			}
+
+			// --- 3. Particle Properties (Compacted) ---
+			ImGui::Separator();
+			ImGui::TextDisabled("Particle Properties");
+
+			DrawMinMaxRow("Lifetime (min / max)", pc->startLifeMin, pc->startLifeMax, 0.1f, 0.0f, 0.0f);
+			DrawMinMaxRow("Speed (min / max)", pc->startSpeedMin, pc->startSpeedMax, 0.1f, 0.0f, 0.0f);
+			
+			// --- 4. Size & Rotation ---
+			ImGui::SeparatorText("Size & Rotation");
+
+			// 1. Uniform Toggle
+			UIHelpers::DrawUndoableBool("Uniform Start Size", pc->uniformSize);
+
+			// 2. Conditional UI
+			if (pc->uniformSize) {
+				// In Uniform mode, we edit X, and the Manager applies it to both X and Y
+				DrawMinMaxRow("Start Size (Min / Max)", pc->startSizeXMin, pc->startSizeXMax, 0.05f, 0.0f, 0.0f);
+			}
+			else {
+				// In Non-Uniform mode, we edit X and Y separately
+				DrawMinMaxRow("Size X (Min / Max)", pc->startSizeXMin, pc->startSizeXMax, 0.05f, 0.0f, 0.0f);
+				DrawMinMaxRow("Size Y (Min / Max)", pc->startSizeYMin, pc->startSizeYMax, 0.05f, 0.0f, 0.0f);
+			}
+
+			// Rotation
+			DrawMinMaxRow("Start Rotation", pc->startRotationMin, pc->startRotationMax, 1.0f, 0.0f, 0.0f);
+
+			// Modifiers Row
+			ImGui::Text("Over Time Changes");
+			float availW = ImGui::GetContentRegionAvail().x;
+			float itemW = (availW - ImGui::GetStyle().ItemSpacing.x) * 0.5f;
+			ImGui::PushItemWidth(itemW);
+			UIHelpers::DrawUndoableFloat("Size Delta", pc->sizeOverTime, 0.01f);
+			//ImGui::SameLine();
+			UIHelpers::DrawUndoableFloat("Rot. Delta", pc->rotationOverTime, 0.1f);
+			ImGui::PopItemWidth();
+
+			// --- 4. Physics & Color (Collapsing) ---
+			if (ImGui::CollapsingHeader("Physics & Color")) {
+				UIHelpers::DrawUndoableVec3("Gravity", pc->gravity);
+				UIHelpers::DrawUndoableVec3("Velocity Offset", pc->startVelocity);
+
+				ImGui::Separator();
+				ImGui::Text("Color Gradient");
+				// Draw colors full width
+				UIHelpers::DrawUndoableColor("Start", pc->startcolor);
+				UIHelpers::DrawUndoableColor("End", pc->endColor);
+			}
+
+			// --- 5. Rendering (Collapsing) ---
+			if (ImGui::CollapsingHeader("Texture & UVs")) {
+				UIHelpers::DrawUndoableBool("Use Texture", pc->useTexture);
+
+				if (pc->useTexture) {
+					// Texture Selection Row
+					char buf[128];
+					// Shorten name for display if it's long
+					std::string displayTex = pc->textureName;
+					if (displayTex.length() > 20) displayTex = "..." + displayTex.substr(displayTex.length() - 17);
+					strncpy(buf, displayTex.c_str(), sizeof(buf));
+
+					float btnSize = ImGui::GetFrameHeight();
+					ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x - btnSize - 8);
+
+					// Read-only text box (edit via popup)
+					ImGui::InputText("##TexName", buf, sizeof(buf), ImGuiInputTextFlags_ReadOnly);
+
+					// Drag Drop
+					if (ImGui::BeginDragDropTarget()) {
+						if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSET/PAYLOAD")) {
+							const auto* d = static_cast<const AssetDragPayload*>(payload->Data);
+							if (d->kind == AssetKind::Texture) pc->textureName = d->relPath;
+						}
+						ImGui::EndDragDropTarget();
 					}
+
+					ImGui::SameLine();
+					if (ImGui::Button("...", ImVec2(btnSize, btnSize))) {
+						ImGui::OpenPopup("Pick Particle Texture");
+					}
+
+					// Popup Implementation (Kept logic, simplified display)
+					if (ImGui::BeginPopupModal("Pick Particle Texture", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
+						namespace fs = std::filesystem;
+						static std::vector<std::string> s_assets;
+						static bool s_scanned = false;
+
+						if (ImGui::Button("Refresh")) s_scanned = false;
+
+						if (!s_scanned) {
+							s_scanned = true;
+							s_assets.clear();
+							const std::string assetRoot = "assets/images";
+							if (fs::exists(assetRoot)) {
+								for (auto& p : fs::recursive_directory_iterator(assetRoot)) {
+									if (!p.is_regular_file()) continue;
+									std::string ext = p.path().extension().string();
+									std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+									if (ext == ".png" || ext == ".jpg" || ext == ".tga") {
+										s_assets.push_back(fs::relative(p.path(), assetRoot).string());
+									}
+								}
+								std::sort(s_assets.begin(), s_assets.end());
+							}
+						}
+
+						ImGui::Separator();
+						ImGui::BeginChild("tex_list", ImVec2(300, 300), true);
+						for (const auto& f : s_assets) {
+							if (ImGui::Selectable(f.c_str(), pc->textureName == f)) {
+								pc->textureName = f;
+								ImGui::CloseCurrentPopup();
+							}
+						}
+						ImGui::EndChild();
+
+						if (ImGui::Button("Cancel")) ImGui::CloseCurrentPopup();
+						ImGui::EndPopup();
+					}
+
+					UIHelpers::DrawUndoableVec2("UV Scale", pc->textureUV);
 				}
 			}
 
-			if (currentType == 1) DrawStandard(ecs.GetComponent<ParticleEmitter>(e));
-			else if (currentType == 2) DrawFire(ecs.GetComponent<FireEmitter>(e));
-			else if (currentType == 3) DrawFireball(ecs.GetComponent<FireballEmitter>(e));
-			else if (currentType == 4) DrawExplosion(ecs.GetComponent<ExplosionEmitter>(e));
-		}
-
-	private:
-		// REMOVED Size from DrawCommon because Fireball/Explosion don't have those members
-		template <typename T>
-		void DrawCommon(T* p) {
-			UIHelpers::DrawUndoableVec3("Gravity", p->m_gravity);
-			UIHelpers::DrawUndoableFloat("Emit Rate", p->m_emitRate, 0.1f, 0.1f, 1000.f);
-
-			ImGui::Text("Life Range");
-			UIHelpers::DrawUndoableFloat("Min##Life", p->m_lifeMin, 0.1f);
-			ImGui::SameLine();
-			UIHelpers::DrawUndoableFloat("Max##Life", p->m_lifeMax, 0.1f);
-
-			ImGui::Text("Speed Range");
-			UIHelpers::DrawUndoableFloat("Min##Spd", p->m_speedMin, 0.1f);
-			ImGui::SameLine();
-			UIHelpers::DrawUndoableFloat("Max##Spd", p->m_speedMax, 0.1f);
-
-			ImGui::SeparatorText("Color Over Lifetime");
-			UIHelpers::DrawUndoableColor("Start", p->m_startColor01);
-			UIHelpers::DrawUndoableColor("End", p->m_endColor01);
-		}
-
-		// New Helper just for Size (Only used for Particle & Fire)
-		template <typename T>
-		void DrawSizeControls(T* p) {
-			float startSize = p->m_startSize;
-			float endSize = p->m_endSize;
-			bool sizeChanged = false;
-
-			ImGui::Text("Size Range");
-			if (ImGui::DragFloat("Start Size", &startSize, 0.1f)) sizeChanged = true;
-			if (ImGui::DragFloat("End Size", &endSize, 0.1f)) sizeChanged = true;
-
-			if (sizeChanged) p->SetSizeRange(startSize, endSize);
-		}
-
-		void DrawStandard(Component::ParticleEmitter* p) {
-			if (!p) return;
-			ImGui::SeparatorText("Standard Settings");
-			DrawCommon(p);
-			DrawSizeControls(p); // Only added here
-		}
-
-		void DrawFire(Component::FireEmitter* p) {
-			if (!p) return;
-			ImGui::SeparatorText("Fire Settings");
-			DrawCommon(p);
-			DrawSizeControls(p); // And here
-			UIHelpers::DrawUndoableFloat("Spread (Rad)", p->m_spread, 0.01f);
-		}
-
-		void DrawFireball(Component::FireballEmitter* p) {
-			if (!p) return;
-			ImGui::SeparatorText("Fireball Core");
-			UIHelpers::DrawUndoableVec3("Core Velocity", p->m_coreVel);
-			UIHelpers::DrawUndoableFloat("Core Radius", p->m_coreRadius);
-			UIHelpers::DrawUndoableColor("Core Color", p->m_coreColor);
-
-			ImGui::SeparatorText("Trail Settings");
-			DrawCommon(p); // NO DrawSizeControls here!
-			UIHelpers::DrawUndoableFloat("Trail Spread", p->m_spread, 0.01f);
-
-			float w = p->m_worldW;
-			float h = p->m_worldH;
-			ImGui::Text("Bounds");
-			if (ImGui::DragFloat("Width", &w)) p->SetBounds(w, h);
-			if (ImGui::DragFloat("Height", &h)) p->SetBounds(w, h);
-		}
-
-		void DrawExplosion(Component::ExplosionEmitter* p) {
-			if (!p) return;
-			ImGui::SeparatorText("Explosion Settings");
-			DrawCommon(p); // NO DrawSizeControls here!
-			UIHelpers::DrawUndoableFloat("Spread (Rad)", p->m_spread, 0.01f);
-
-			ImGui::SeparatorText("Burst Control");
-			UIHelpers::DrawUndoableInt("Burst Count", p->m_burstCount);
-			UIHelpers::DrawUndoableFloat("Interval (s)", p->m_cycleInterval);
-
-			if (ImGui::Button("Trigger Burst Now", ImVec2(-1, 0))) {
-				p->TriggerBurst();
-			}
-		}
-	};
-
-	// --------------------------------------------------------------------------
-	// TRAJECTORY ADAPTER
-	// --------------------------------------------------------------------------
-	struct TrajectoryAdapter : DebugReflection::IComponentAdapter {
-		const char* name() const override { return "Trajectory Emitter"; }
-
-		bool has(ECS& ecs, Entity e) const override {
-			return ecs.HasComponent<Component::TrajectoryEmitter>(e);
-		}
-
-		void add(ECS& ecs, Entity e) override {
-			using namespace Component;
-			if (!has(ecs, e)) {
-				ecs.AddComponent<TrajectoryEmitter>(e);
-				if (auto* t = ecs.GetComponent<TrajectoryEmitter>(e)) {
-					t->Initialize({ 0,0,0 }, { 50, 0, 0 });
-				}
-			}
-		}
-
-		void remove(ECS& ecs, Entity e) override {
-			using namespace Component;
-			if (has(ecs, e)) ecs.RemoveComponent<TrajectoryEmitter>(e);
-		}
-
-		void drawInspector(ECS& ecs, Entity e) override {
-			auto* t = ecs.GetComponent<Component::TrajectoryEmitter>(e);
-			if (!t) return;
-
-			ImGui::SeparatorText("Ballistics");
-
-			UIHelpers::DrawUndoableVec3("Origin", t->m_origin);
-			UIHelpers::DrawUndoableVec3("Target", t->m_target);
-
-			if (ImGui::Button("Set Target to Transform")) {
-				if (auto* trans = ecs.GetComponent<TransformComponent>(e)) {
-					t->m_target = trans->position;
-				}
-			}
-
-			UIHelpers::DrawUndoableFloat("Mass", t->m_mass, 0.1f);
-			UIHelpers::DrawUndoableFloat("Launch Speed", t->m_speed, 0.5f);
-			UIHelpers::DrawUndoableFloat("Gravity", t->m_g, 0.1f);
-
-			ImGui::SeparatorText("Visuals");
-			UIHelpers::DrawUndoableInt("Samples", t->m_samples, 1.0f, 16, 256);
-			UIHelpers::DrawUndoableFloat("Duck Scale", t->m_duckScale, 0.1f);
+			// --- 6. Stats Footer ---
+			ImGui::Separator();
+			float fraction = (float)pc->data.activeCount / (float)pc->maxParticles;
+			char overlay[32];
+			sprintf(overlay, "%zu / %d", pc->data.activeCount, pc->maxParticles);
+			ImGui::ProgressBar(fraction, ImVec2(-1, 0.0f), overlay);
 		}
 	};
 
@@ -2551,7 +2574,6 @@ namespace CrashoutsEngine
 	static BuiltinPhysicsProvider gBuiltinPhys;
 	static KeyframeAnimatorAdapter gKeyframeAdapter;
 	static ParticleSystemAdapter gParticleAdapter;
-	static TrajectoryAdapter gTrajectoryAdapter;
 }
 
 /*!
@@ -2582,7 +2604,6 @@ extern "C" void RegisterBuiltinComponentAdapters() {
 	ComponentRegistry::instance().registerAdapter(&gTileMapAdapter);
 	ComponentRegistry::instance().registerAdapter(&gKeyframeAdapter);
 	ComponentRegistry::instance().registerAdapter(&gParticleAdapter);
-	ComponentRegistry::instance().registerAdapter(&gTrajectoryAdapter);
 	DebugReflection::SetGameStateProvider(&gProvider);
 	DebugReflection::PhysicsRegistry::instance().registerProvider(&gBuiltinPhys);
 
