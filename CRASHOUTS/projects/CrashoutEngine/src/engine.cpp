@@ -236,6 +236,8 @@ void Init() {
         }
     );
 
+    CrashoutsEngine::Audio::AudioSystem::instance().init(CrashoutsEngine::Assets::rootPath + "audio/");
+
 #if USE_IMGUI_EDITOR
     CrashoutsEngine::Assets::GenerateAssetManifest();
 #endif
@@ -334,6 +336,11 @@ void Update(double const& dt) {
 
     CrashoutsEngine::UpdateHierarchy(ecs);
 
+    {
+        FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Audio");
+        CrashoutsEngine::Audio::AudioSystem::instance().Update();
+    }
+
     if (engineState == EngineState::PLAY) {
         KeyframeUnity::UpdateAll(ecs, (float)dt);
         CrashoutsEngine::ScriptSystem::UpdateAll();
@@ -346,10 +353,6 @@ void Update(double const& dt) {
         {
             FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Physics");
             physicsSystem.Update(FrameRateController::GetInstance().FixedDT());
-        }
-        {
-            FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Audio");
-            CrashoutsEngine::Audio::AudioSystem::instance().Update();
         }
         // process events if any associated with input devices
         //glfwPollEvents();

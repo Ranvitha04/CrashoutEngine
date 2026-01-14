@@ -64,7 +64,6 @@ namespace UI {
         // ImGUI button to reload assets
         if (ImGui::Button("Reload Assets")) {
             using namespace CrashoutsEngine::Assets;
-            GenerateAssetManifest();
             AssetManager::GetInstance().LoadManifestAssets();
         }
 

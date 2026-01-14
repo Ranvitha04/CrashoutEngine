@@ -900,7 +900,7 @@ namespace UI {
                     return result;
                 }
 
-                // --- RAW FILE PATH FIX ---
+                // --- RAW FILE PATH ---
                 std::string full = id;
                 if (id.rfind("[RAW] ", 0) == 0) {
                     std::string rel = id.substr(6);

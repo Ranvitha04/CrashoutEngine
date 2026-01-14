@@ -158,6 +158,12 @@ public class AudioManager
             InternalCalls.Audio_PlaySFXFileTagged(s.Name, s.Path, s.Loop);
     }
 
+    // === Play sound attached to an entity
+    public void PlayAttachedSound(uint entityID)
+    {
+        InternalCalls.Audio_PlayComponent(entityID);
+    }
+
     // === Replacing Unity's Stop(name)
     public void Stop(string name, float fadeDuration = 0.5f)
     {

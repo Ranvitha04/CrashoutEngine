@@ -66,6 +66,64 @@ namespace
         audio.stopMusicGroup();
     }
 
+    static void ICALL_Audio_PlayComponent(uint32_t entityID)
+    {
+        auto* ecs = CrashoutsEngine::ECS::getInstance();
+
+        // Check if Entity has the component
+        if (!ecs->HasComponent<Component::AudioEmitterComponent>(entityID))
+        {
+            return;
+        }
+
+        // Get the component data
+        auto* ac = ecs->GetComponent<Component::AudioEmitterComponent>(entityID);
+        if (ac->eventPath.empty()) return;
+
+        auto& audio = CrashoutsEngine::Audio::AudioSystem::instance();
+
+        // Play based on type (FMOD Event vs Raw File)
+        if (ac->eventPath.find("event:/") == 0)
+        {
+            // FMOD Studio Event
+            // Check if we already have an instance playing, stop it if so (re-trigger behavior)
+            if (ac->inst) {
+                ac->inst->stop(FMOD_STUDIO_STOP_IMMEDIATE);
+                ac->inst->release();
+                ac->inst = nullptr;
+            }
+
+            auto* inst = audio.createInstance(ac->eventPath);
+            if (inst) {
+                inst->setVolume(ac->volume);
+                inst->setPitch(ac->pitch);
+                // 3D attributes would go here if you have 3D audio implemented
+                inst->start();
+
+                // Store it back in the component so the Inspector can see it/stop it
+                ac->inst = inst;
+            }
+        }
+        else
+        {
+            // Raw Audio File (wav/mp3/ogg)
+            std::string path = ac->eventPath;
+            if (path.rfind("assets/", 0) != 0) path = "assets/audio/" + path;
+
+            // Play and get channel
+            FMOD::Channel* ch = audio.playSFXFileEx(path);
+
+            if (ch) {
+                ch->setVolume(ac->volume);
+                ch->setPitch(ac->pitch);
+                ch->setMode(ac->looping ? FMOD_LOOP_NORMAL : FMOD_LOOP_OFF);
+
+                // Store in component
+                ac->channel = ch;
+            }
+        }
+    }
+
     static void ICALL_Audio_SetMusicVolume(float volume)
     {
         auto& audio = AudioSystem::instance();
@@ -108,6 +166,8 @@ void CrashoutsEngine::Bindings::RegisterAudioBindings()
     mono_add_internal_call("CrashoutsEngine.InternalCalls::Audio_StopTagged", (const void*)ICALL_Audio_StopTagged);
 
     mono_add_internal_call("CrashoutsEngine.InternalCalls::Audio_StopMusic", (const void*)ICALL_Audio_StopMusic);
+
+    mono_add_internal_call("CrashoutsEngine.InternalCalls::Audio_PlayComponent", (const void*)ICALL_Audio_PlayComponent);
 
     mono_add_internal_call("CrashoutsEngine.InternalCalls::Audio_SetMusicVolume", (const void*)ICALL_Audio_SetMusicVolume);
 

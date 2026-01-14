@@ -256,7 +256,7 @@ namespace CrashoutsEngine {
 				auto& audioSys = AudioSystem::instance();
 
 				// Point FMOD to assets/audio once
-				audioSys.init(rootAssetPath + "audio");
+				//audioSys.init(rootAssetPath + "audio");
 
 				const auto& audioArray = doc["audio"];
 
