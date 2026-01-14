@@ -7,7 +7,7 @@
         of asset type that encapsulates a rapidjson value data. The class
         is designed to be used with the AssetManager and provides a static factory
         method for safe creation and resource management.
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
 //__________________________________________________________________________*/
 //#pragma once
 //
@@ -20,6 +20,8 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserve
 // LIBRARIES INCLUDES
 #include <rapidjson/document.h>
 #include <string>
+#include <vector>
+#include <cstdint>
 
 #include "assetmanager.h"
 
@@ -80,6 +82,15 @@ namespace CrashoutsEngine {
 
         void LoadScenes(std::string const& sceneName);
         void SaveScenes(std::string const& sceneName);
+
+        // Helper functions for Undo/Redo and generic serialization
+        rapidjson::Value SerializeEntity(uint32_t entityId, rapidjson::Document::AllocatorType& allocator);
+        
+        struct ParentLinkInfo {
+            uint32_t childEntity;
+            std::string parentName;
+        };
+        uint32_t DeserializeEntity(const rapidjson::Value& entityValue, std::vector<ParentLinkInfo>* outParentLinks = nullptr);
     }
 }
 
