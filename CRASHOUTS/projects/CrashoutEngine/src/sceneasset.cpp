@@ -178,6 +178,7 @@ namespace CrashoutsEngine {
             const char* const TILEMAP_COMPONENT         = "tilemap";
             const char* const SPRITE_ANIMATOR_COMPONENT = "sprite_animator";
             const char* const KEYFRAME_ANIMATOR_COMPONENT = "keyframe_animator";
+
             // UI COMPONENT ITEMS
             const char* const BUTTON_COMPONENT          = "button";
             const char* const GUI_COMPONENT             = "gui";
@@ -187,6 +188,7 @@ namespace CrashoutsEngine {
             const char* const PP_COMPONENT              = "postprocessing";
             // HIERACHY ITEMS
             const char* const PARENT_COMPONENT          = "parent";
+            const char* const PARENT_NAME               = "parentName";
         }
 
         namespace JsonHelpers {
@@ -531,6 +533,8 @@ namespace CrashoutsEngine {
             if (gECS.HasComponent<Component::ParentComponent>(id)) {
                 const auto& c = *gECS.GetComponent<Component::ParentComponent>(id);
                 if (c.parent != 0) {
+
+
                     rapidjson::Value val(rapidjson::kObjectType);
                     if (gECS.HasComponent<NameComponent>(c.parent)) {
                         val.AddMember("parentName", rapidjson::Value(gECS.GetComponent<NameComponent>(c.parent)->name.c_str(), allocator), allocator);
@@ -543,6 +547,7 @@ namespace CrashoutsEngine {
                     entityValue.AddMember(rapidjson::StringRef(Keys::PARENT_COMPONENT), val, allocator);
                 }
             }
+     
 
             if (gECS.HasComponent<KeyframeAnimatorComponent>(id)) {
                 const auto& c = *gECS.GetComponent<KeyframeAnimatorComponent>(id);

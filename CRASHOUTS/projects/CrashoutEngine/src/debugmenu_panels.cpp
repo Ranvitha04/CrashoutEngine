@@ -2,7 +2,7 @@
 #include "debugmenu.h"
 #include "physicsmanager.h"
 #include "deleteentitycommand.h"
-
+#include "prefab.h"
 using namespace CrashoutsEngine;
 using namespace Serialization;
 using namespace KeyframeUnity;

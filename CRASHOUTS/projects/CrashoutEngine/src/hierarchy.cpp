@@ -232,7 +232,46 @@ namespace CrashoutsEngine {
         }
     }
     */
-    
+   
+    void RebuildHierarchyLinks(ECS& ecs)
+    {
+       
+        {
+            auto& childrenArr = ecs.GetComponentArray<Component::ChildrenComponent>();
+            for (Entity e : childrenArr.indexToEntity)
+            {
+                if (!ecs.HasComponent<Component::ChildrenComponent>(e)) continue;
+                ecs.GetComponent<Component::ChildrenComponent>(e)->children.clear();
+            }
+        }
+
+        
+        {
+            auto& parentArr = ecs.GetComponentArray<Component::ParentComponent>();
+            for (Entity child : parentArr.indexToEntity)
+            {
+                if (!ecs.HasComponent<Component::ParentComponent>(child)) continue;
+
+                auto* pc = ecs.GetComponent<Component::ParentComponent>(child);
+                Entity parent = pc->parent;
+
+                // basic validation
+                if (parent == 0 || parent == child) {
+                    pc->parent = 0;
+                    continue;
+                }
+
+                // parent might not exist anymore
+                if (!ecs.HasComponent<Component::NameComponent>(parent)) {
+                    pc->parent = 0;
+                    continue;
+                }
+
+                AddChildLink(ecs, parent, child);   
+            }
+        }
+    }
+
     // Per-frame propagation entry point.
     void UpdateHierarchy(ECS& ecs)
     {
