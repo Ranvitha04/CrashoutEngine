@@ -576,7 +576,7 @@ namespace {
 			}
 			// --- LINE ---
 			else if (cc->collider->ColliderType == ColliderType::LINE) {
-				auto* l = dynamic_cast<LineSegment*>(cc->collider.get());
+				auto* l = static_cast<LineSegment*>(cc->collider.get());
 				if (l) {
 					ImGui::TextColored(ImVec4(0.6f, 1.f, 0.6f, 1.f), "Line Segment");
 					UIHelpers::DrawUndoableVec3("P1 (Start)", l->p1);
