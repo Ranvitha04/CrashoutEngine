@@ -69,7 +69,7 @@ namespace CrashoutsEngine
             if (playerScript != null)
             {
                 dist = Distance(tf.Position, playerScript.Entity.GetComponent<TransformComponent>().Position);
-                if (dist <= grabRange) HandleGrabLogic();
+                if (dist <= grabRange || isGrabbed) HandleGrabLogic();
 
                 if (isGrabbed)
                 {
@@ -209,26 +209,43 @@ namespace CrashoutsEngine
             if (Input.IsMouseButtonDown(0))
             {
                 CEVec2 mousePos = Input.GetMouseWorldPosition();
-                float halfW = Math.Abs(tf.Size.x) * 0.5f + 20.0f;
-                float halfH = Math.Abs(tf.Size.y) * 0.5f + 20.0f;
-
-                bool mouseOver = mousePos.x >= tf.Position.x - halfW &&
-                                 mousePos.x <= tf.Position.x + halfW &&
-                                 mousePos.y >= tf.Position.y - halfH &&
-                                 mousePos.y <= tf.Position.y + halfH;
-
-                if (mouseOver)
+                
+                if (isGrabbed)
                 {
+                    // Move towards mouse using velocity to respect collisions
+                    float dx = mousePos.x - tf.Position.x;
+                    float dy = mousePos.y - tf.Position.y;
+                    float dragSpeed = 15.0f; 
+
+                    rb.LinearVelocity = new CEVec3(dx * dragSpeed, dy * dragSpeed, 0);
+
                     float val = grabEnergy * (float)Time.DT;
                     playerScript.RemoveEnergy(val);
-                    isGrabbed = true;
-                    rb.LinearVelocity = new CEVec3(0, 0, 0);
-                    tf.Position = new CEVec3(mousePos.x, mousePos.y, tf.Position.z);
+                }
+                else
+                {
+                    float halfW = Math.Abs(tf.Size.x) * 0.5f + 20.0f;
+                    float halfH = Math.Abs(tf.Size.y) * 0.5f + 20.0f;
+
+                    bool mouseOver = mousePos.x >= tf.Position.x - halfW &&
+                                     mousePos.x <= tf.Position.x + halfW &&
+                                     mousePos.y >= tf.Position.y - halfH &&
+                                     mousePos.y <= tf.Position.y + halfH;
+
+                    if (mouseOver)
+                    {
+                        isGrabbed = true;
+                        rb.LinearVelocity = new CEVec3(0, 0, 0);
+                    }
                 }
             }
             else
             {
-                if (isGrabbed) isGrabbed = false;
+                if (isGrabbed) 
+                {
+                    isGrabbed = false;
+                    rb.LinearVelocity = rb.LinearVelocity * 0.5f; // Dampen release
+                }
             }
         }
 
