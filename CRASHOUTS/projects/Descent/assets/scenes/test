@@ -768,7 +768,7 @@
                 "currentLayer": 0
             },
             "transform": {
-                "rotation": -15.399999618530274,
+                "rotation": 0.0,
                 "position": {
                     "x": 42.45800018310547,
                     "y": -10.737785339355469,
@@ -791,6 +791,31 @@
                 "dynamicFriction": 0.5,
                 "inertia": 0.0,
                 "invInertia": 0.0
+            },
+            "collider": {
+                "ColliderType": 3,
+                "isTrigger": false,
+                "enabled": true,
+                "position": {
+                    "x": 42.45800018310547,
+                    "y": -10.737785339355469,
+                    "z": 0.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p1": {
+                    "x": 13.25,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": -13.25,
+                    "y": 0.0,
+                    "z": 0.0
+                }
             },
             "shape": {
                 "useTexture": false,
@@ -824,6 +849,24 @@
                     "x": 32.0,
                     "y": 0.0,
                     "z": 0.0
+                }
+            }
+        },
+        {
+            "name": "Particle",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 32.5,
+                "position": {
+                    "x": 50.348716735839847,
+                    "y": 13.43614387512207,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
                 }
             }
         }

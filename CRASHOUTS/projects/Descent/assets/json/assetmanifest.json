@@ -79,12 +79,96 @@
     ],
     "fonts": [
         {
+            "name": "AlegreyaSC-Black",
+            "path": "AlegreyaSC-Black.jpg"
+        },
+        {
+            "name": "AlegreyaSC-Black",
+            "path": "AlegreyaSC-Black.ttf"
+        },
+        {
+            "name": "AlegreyaSC-BlackItalic",
+            "path": "AlegreyaSC-BlackItalic.jpg"
+        },
+        {
+            "name": "AlegreyaSC-BlackItalic",
+            "path": "AlegreyaSC-BlackItalic.ttf"
+        },
+        {
+            "name": "AlegreyaSC-Bold",
+            "path": "AlegreyaSC-Bold.jpg"
+        },
+        {
+            "name": "AlegreyaSC-Bold",
+            "path": "AlegreyaSC-Bold.ttf"
+        },
+        {
+            "name": "AlegreyaSC-BoldItalic",
+            "path": "AlegreyaSC-BoldItalic.jpg"
+        },
+        {
+            "name": "AlegreyaSC-BoldItalic",
+            "path": "AlegreyaSC-BoldItalic.ttf"
+        },
+        {
+            "name": "AlegreyaSC-ExtraBold",
+            "path": "AlegreyaSC-ExtraBold.jpg"
+        },
+        {
+            "name": "AlegreyaSC-ExtraBold",
+            "path": "AlegreyaSC-ExtraBold.ttf"
+        },
+        {
+            "name": "AlegreyaSC-ExtraBoldItalic",
+            "path": "AlegreyaSC-ExtraBoldItalic.jpg"
+        },
+        {
+            "name": "AlegreyaSC-ExtraBoldItalic",
+            "path": "AlegreyaSC-ExtraBoldItalic.ttf"
+        },
+        {
+            "name": "AlegreyaSC-Italic",
+            "path": "AlegreyaSC-Italic.jpg"
+        },
+        {
+            "name": "AlegreyaSC-Italic",
+            "path": "AlegreyaSC-Italic.ttf"
+        },
+        {
+            "name": "AlegreyaSC-Medium",
+            "path": "AlegreyaSC-Medium.jpg"
+        },
+        {
+            "name": "AlegreyaSC-Medium",
+            "path": "AlegreyaSC-Medium.ttf"
+        },
+        {
+            "name": "AlegreyaSC-MediumItalic",
+            "path": "AlegreyaSC-MediumItalic.jpg"
+        },
+        {
+            "name": "AlegreyaSC-MediumItalic",
+            "path": "AlegreyaSC-MediumItalic.ttf"
+        },
+        {
+            "name": "AlegreyaSC-Regular",
+            "path": "AlegreyaSC-Regular.jpg"
+        },
+        {
+            "name": "AlegreyaSC-Regular",
+            "path": "AlegreyaSC-Regular.ttf"
+        },
+        {
             "name": "Exo2-Regular",
             "path": "Exo2-Regular.ttf"
         },
         {
             "name": "Silver",
             "path": "Silver.ttf"
+        },
+        {
+            "name": "_licenseinfo",
+            "path": "_licenseinfo.txt"
         }
     ],
     "images": [
@@ -1474,6 +1558,42 @@
         }
     ],
     "tilemaps": [
+        {
+            "name": "ProjectSettings",
+            "path": ".vs\\ProjectSettings.json"
+        },
+        {
+            "name": "slnx",
+            "path": ".vs\\slnx.sqlite"
+        },
+        {
+            "name": "CodeChunks",
+            "path": ".vs\\tilemaps\\CopilotIndices\\17.14.1290.42047\\CodeChunks.db"
+        },
+        {
+            "name": "SemanticSymbols",
+            "path": ".vs\\tilemaps\\CopilotIndices\\17.14.1290.42047\\SemanticSymbols.db"
+        },
+        {
+            "name": "39a76b67-19c8-4f17-bd6f-82623f5e83f9",
+            "path": ".vs\\tilemaps\\FileContentIndex\\39a76b67-19c8-4f17-bd6f-82623f5e83f9.vsidx"
+        },
+        {
+            "name": "3a120126-1ab1-4b73-af3d-b16b9dd1f7fe",
+            "path": ".vs\\tilemaps\\FileContentIndex\\3a120126-1ab1-4b73-af3d-b16b9dd1f7fe.vsidx"
+        },
+        {
+            "name": ".wsuo",
+            "path": ".vs\\tilemaps\\v17\\.wsuo"
+        },
+        {
+            "name": "DocumentLayout",
+            "path": ".vs\\tilemaps\\v17\\DocumentLayout.json"
+        },
+        {
+            "name": "VSWorkspaceState",
+            "path": ".vs\\VSWorkspaceState.json"
+        },
         {
             "name": "Darker_Platform",
             "path": "Darker_Platform"

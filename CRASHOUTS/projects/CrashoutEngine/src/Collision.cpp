@@ -215,7 +215,6 @@ namespace Collision {
 		max = centerProj + r;
 	}
 
-
 	/*
 	* @brief Find the point on segment AB that is closed to point P
 	* @param A - Vertex A
@@ -738,30 +737,41 @@ namespace Collision {
 		}
 
 		// 3. Ensure Normal Direction
+		// We want the normal to point from Box -> Segment.
+		// We check the vector from Box Center to Segment Center (approx midpoint)
 		CEVec3 segMid = (p1 + p2) * 0.5f;
 		CEVec3 direction = segMid - aabbCenter;
 
-		if (CEMath::Dot(direction, result.normal) < 0) {
+		if (CEMath::Dot( direction, result.normal) < 0) {
 			result.normal = result.normal * -1.0f;
 		}
 
 		result.collisionOccured = true;
 
 		// 4. Calculate Contact Point
-		if (std::abs(CEMath::Dot(result.normal, segNormal)) > 0.99f) {
+		// Case A: The collision axis is the Segment Normal. 
+		// This means a corner of the AABB is hitting the flat side of the line.
+		// We find the AABB corner closest to the segment.
+		if (std::abs( CEMath::Dot(result.normal,segNormal)) > 0.99f) {
 			// Find the support point on the box in the direction of the normal (towards segment)
 			result.contactPoints[0] = GetAABBSupport(aabb, result.normal);
 		}
+		// Case B: The collision axis is one of the AABB axes (X or Y).
+		// This means the tip of the line segment is hitting a flat face of the box.
+		// We find which segment endpoint is inside the box.
 		else {
 
-			if (CEMath::LengthSq(p1 - aabbCenter) < CEMath::LengthSq(p2 - aabbCenter)) {
+			// Since normal points Box -> Segment, the point closer to the box has a *smaller* dot product along that normal?
+			// Actually, simpler logic: The point overlapping the box is the contact.
+			// We pick the point closest to the box center.
+			if ( CEMath::LengthSq(p1 - aabbCenter) < CEMath::LengthSq(p2 - aabbCenter)) {
 				result.contactPoints[0] = p1;
 			}
 			else {
 				result.contactPoints[0] = p2;
 			}
 		}
-
+		
 		// 7. Handle Swapping (If input was Line vs AABB, flip normal)
 		if (swapped) {
 			result.normal = -1.f * result.normal;
@@ -802,7 +812,7 @@ namespace Collision {
 		quadTree.Resize(AABBRect{ CEVec3{-2000.f, -2000.f, 0.f}, CEVec3{2000.f, 2000.f, 0.f} });
 
 		/*Fill in the table of collisions, e.g collideFuncts[0] will be ColliderType::CIRCLE TO ColliderType::CIRCLE collision (2 total collider types will have 2^2 permutations(different types of collisions possible) ) */
-
+		
 		// Circle vs Circle
 		collideFuncts[circle * SHAPE_COUNT + circle] = CircleToCircleCollision;
 
@@ -822,11 +832,11 @@ namespace Collision {
 		// Circle vs Polygon (Circle is 0, Poly is 4. 0 < 4)
 		collideFuncts[circle * SHAPE_COUNT + poly] = CircleToPolygonCollision;
 
-		collideFuncts[line * SHAPE_COUNT + poly] = PolygonToLineCollision;
+		collideFuncts[line * SHAPE_COUNT + poly ] = PolygonToLineCollision;
 
 		// Polygon vs Polygon
 		collideFuncts[poly * SHAPE_COUNT + poly] = PolygonToPolygonCollision;
-
+	
 
 	}
 

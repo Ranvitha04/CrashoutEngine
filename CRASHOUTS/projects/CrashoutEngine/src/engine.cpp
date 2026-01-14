@@ -121,7 +121,7 @@ bool g_fullscreen = false;
 
 Call to ensure safe load based off run order
 */
-bool PerformPendingSceneLoad() {
+static bool PerformPendingSceneLoad() {
     if (g_IsSceneLoadPending) {
 
         CrashoutsEngine::Audio::AudioSystem::instance().stopAll(false);
@@ -403,8 +403,8 @@ void Update(double const& dt) {
 #else
         RenderCamera::gameCamera.UpdateMatrices(GLApp::width, GLApp::height);
 #endif
-        Scene::UpdateScene(ecs);
     }
+    Scene::UpdateScene(ecs);
 
     InputManager::Update();
     
@@ -740,7 +740,7 @@ std::string GetLocalAppData() {
                 NULL
             );
 
-            path.resize(requiredSize - 1);
+            path.resize((size_t)(requiredSize - 1));
         }
     }
 
