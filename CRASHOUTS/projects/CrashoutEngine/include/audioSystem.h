@@ -75,6 +75,7 @@ namespace CrashoutsEngine
             bool listEventPathsFromBank(const std::string& bankFile, std::vector<std::string>& out);
             void inspectBankToConsole(const std::string& bankFile);
 			void listRawAudioFiles(std::vector<std::string>& out);
+            std::vector<std::string> listTaggedKeys() const;
 
             bool isInitialized() const { return mStudio != nullptr; }
 
@@ -88,11 +89,15 @@ namespace CrashoutsEngine
             bool setMusicGroupVolume(float v01);
             bool setSFXGroupVolume(float v01);
             bool setMasterVolume(float v01);
+            bool setTaggedVolume(const std::string& key, float vol);
 
             // Getters
             float GetMusicVolume() const;
             float GetSFXVolume() const;
             float GetMasterVolume() const;
+            bool getTaggedVolume(const std::string& key, float& outVol) const;
+
+            bool fadeTagged(const std::string& key, float seconds);
 
             // Tagged playback
             bool playMusicFileTagged(const std::string& key, const std::string& path, bool loop = true);

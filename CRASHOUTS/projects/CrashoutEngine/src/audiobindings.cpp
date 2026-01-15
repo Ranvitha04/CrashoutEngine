@@ -124,6 +124,51 @@ namespace
         }
     }
 
+    static void ICALL_Audio_StopComponent(uint32_t entityID, float fadeDuration)
+    {
+        auto* ecs = CrashoutsEngine::ECS::getInstance();
+        // Check if Entity has the component
+        if (!ecs->HasComponent<Component::AudioEmitterComponent>(entityID))
+        {
+            return;
+        }
+        // Get the component data
+        auto* ac = ecs->GetComponent<Component::AudioEmitterComponent>(entityID);
+        auto& audio = CrashoutsEngine::Audio::AudioSystem::instance();
+        // Stop based on type
+        if (ac->inst)
+        {
+            ac->inst->stop(fadeDuration > 0.0f ? FMOD_STUDIO_STOP_ALLOWFADEOUT : FMOD_STUDIO_STOP_IMMEDIATE);
+            ac->inst->release();
+            ac->inst = nullptr;
+        }
+        if (ac->channel)
+        {
+            if (fadeDuration <= 0.0f)
+            {
+                ac->channel->stop();
+            }
+            else
+            {
+                // Simple linear fade out over fadeDuration seconds
+                float currentVolume = 0.0f;
+                ac->channel->getVolume(&currentVolume);
+                const int steps = 20;
+                float stepTime = fadeDuration / steps;
+                float stepVolume = currentVolume / steps;
+                for (int i = 0; i < steps; ++i)
+                {
+                    currentVolume -= stepVolume;
+                    if (currentVolume < 0.0f) currentVolume = 0.0f;
+                    ac->channel->setVolume(currentVolume);
+                    std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(stepTime * 1000)));
+                }
+                ac->channel->stop();
+            }
+            ac->channel = nullptr;
+        }
+	}
+
     static void ICALL_Audio_SetMusicVolume(float volume)
     {
         auto& audio = AudioSystem::instance();
@@ -168,6 +213,8 @@ void CrashoutsEngine::Bindings::RegisterAudioBindings()
     mono_add_internal_call("CrashoutsEngine.InternalCalls::Audio_StopMusic", (const void*)ICALL_Audio_StopMusic);
 
     mono_add_internal_call("CrashoutsEngine.InternalCalls::Audio_PlayComponent", (const void*)ICALL_Audio_PlayComponent);
+
+	mono_add_internal_call("CrashoutsEngine.InternalCalls::Audio_StopComponent", (const void*)ICALL_Audio_StopComponent);
 
     mono_add_internal_call("CrashoutsEngine.InternalCalls::Audio_SetMusicVolume", (const void*)ICALL_Audio_SetMusicVolume);
 

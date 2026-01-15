@@ -999,6 +999,48 @@ namespace {
 				}
 			}
 
+			if (ImGui::CollapsingHeader("Active Tagged Sounds", ImGuiTreeNodeFlags_DefaultOpen)) {
+				auto& audio = Audio::AudioSystem::instance();
+				auto tagged = audio.listTaggedKeys(); // vector<string>
+
+				if (tagged.empty()) {
+					ImGui::TextDisabled("No tagged sounds playing");
+				}
+				else {
+					for (const auto& tag : tagged) {
+						ImGui::PushID(tag.c_str());
+
+						// Row: tag label + Stop (fade) + ForceStop + volume slider
+						ImGui::TextUnformatted(tag.c_str());
+						ImGui::SameLine(ImGui::GetContentRegionAvail().x - 240);
+
+						// Stop with fade using inspector fade slider
+						if (ImGui::SmallButton(("FadeStop##" + tag).c_str())) {
+							audio.stopTagged(tag, s_inspectorFade);
+						}
+						ImGui::SameLine();
+
+						// Force immediate stop
+						if (ImGui::SmallButton(("StopNow##" + tag).c_str())) {
+							audio.stopTagged(tag, 0.0f);
+						}
+						ImGui::SameLine();
+
+						float vol = 1.0f;
+						if (audio.getTaggedVolume(tag, vol)) {
+							if (ImGui::SliderFloat(("Vol##" + tag).c_str(), &vol, 0.0f, 1.5f, "%.2f")) {
+								audio.setTaggedVolume(tag, vol);
+							}
+						}
+						else {
+							ImGui::TextDisabled("vol: n/a");
+						}
+
+						ImGui::PopID();
+					}
+				}
+			}
+
 			if (isPlaying) {
 				if (c->inst && c->inst->isValid()) {
 					c->inst->setVolume(c->volume);

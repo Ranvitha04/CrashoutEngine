@@ -882,6 +882,20 @@ namespace CrashoutsEngine::Audio
         bank->unload();
     }
 
+    /*
+    @brief List tagged 
+    */
+    std::vector<std::string> AudioSystem::listTaggedKeys() const
+    {
+        std::vector<std::string> out;
+        out.reserve(mTaggedChannels.size());
+        for (const auto& kv : mTaggedChannels) {
+            out.push_back(kv.first);
+        }
+        std::sort(out.begin(), out.end());
+        return out;
+    }
+
     // File-based playback (Core API)
     /*!
     @brief Plays a music file through the music channel group, optionally looping it.
@@ -1034,8 +1048,19 @@ namespace CrashoutsEngine::Audio
     }
 
     /*!
-@brief Returns the current volume of the music channel group (0.0 to 1.0).
-*/
+	@brief Sets the volume of a tagged channel by its string key.
+    */
+    bool AudioSystem::setTaggedVolume(const std::string& key, float vol)
+    {
+        auto it = mTaggedChannels.find(key);
+        if (it == mTaggedChannels.end() || !it->second) return false;
+        FMOD::Channel* ch = it->second;
+        return (ch->setVolume(vol) == FMOD_OK);
+    }
+
+    /*!
+    @brief Returns the current volume of the music channel group (0.0 to 1.0).
+    */
     float AudioSystem::GetMusicVolume() const
     {
         float vol = 0.0f;
@@ -1073,6 +1098,27 @@ namespace CrashoutsEngine::Audio
             master->getVolume(&vol);
         }
         return vol;
+    }
+
+    /*!
+	@brief Gets the volume of a tagged channel by its string key.
+    */
+    bool AudioSystem::getTaggedVolume(const std::string& key, float& outVol) const
+    {
+        auto it = mTaggedChannels.find(key);
+        if (it == mTaggedChannels.end() || !it->second) return false;
+        FMOD::Channel* ch = it->second;
+        FMOD_RESULT r = ch->getVolume(&outVol);
+        return (r == FMOD_OK);
+    }
+
+    /*!
+	@brief Fades out and stops a tagged channel by its string key over the specified duration.
+    */
+    bool AudioSystem::fadeTagged(const std::string& key, float seconds)
+    {
+        // reuse existing stopTagged which handles fade queue
+        return stopTagged(key, seconds);
     }
 
 

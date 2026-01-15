@@ -119,6 +119,9 @@ namespace CrashoutsEngine
         internal static extern void Audio_PlayComponent(uint entityID);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern void Audio_StopComponent(uint entityID, float fadeDuration);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
         internal static extern void Audio_SetMusicVolume(float volume);
 
         [MethodImpl(MethodImplOptions.InternalCall)]

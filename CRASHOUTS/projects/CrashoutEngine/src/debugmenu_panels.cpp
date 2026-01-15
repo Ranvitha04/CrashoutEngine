@@ -921,7 +921,7 @@ namespace UI {
 
                 if (bgm) {
                     // Play as Music (Streamed)
-                    audio.playMusicFileTagged("BGM_DEBUG", full, true);
+                    audio.playMusicFileTagged("BGM", full, true);
                     result.type = EditorHandle::MusicTag;
                     return result;
                 }
@@ -948,7 +948,7 @@ namespace UI {
                     }
                 }
                 else if (h.type == EditorHandle::MusicTag) {
-                    audio.stopTagged("BGM_DEBUG", s_panelFadeDuration);
+                    audio.stopTagged("BGM", s_panelFadeDuration);
                 }
                 else if (h.type == EditorHandle::Channel) {
                     auto* ch = static_cast<FMOD::Channel*>(h.ptr);
@@ -995,9 +995,6 @@ namespace UI {
             needRefresh = true;
         }
 
-        ImGui::SameLine();
-        if (ImGui::Button("Refresh list")) needRefresh = true;
-
         // BUILD EVENT LIST
         static std::vector<std::string> allEvents;
         if (needRefresh || allEvents.empty())
@@ -1013,7 +1010,7 @@ namespace UI {
 
             for (auto& f : rawFiles) {
                 // f will look like "assets/audio/mysound.wav"
-                allEvents.push_back("[RAW] " + f);
+                allEvents.push_back(f);
             }
 
             std::sort(allEvents.begin(), allEvents.end());
@@ -1036,6 +1033,62 @@ namespace UI {
 
         ImGui::SeparatorText("Debug Settings");
         ImGui::SliderFloat("Fade Out Duration (s)", &s_panelFadeDuration, 0.0f, 5.0f);
+
+        if (audio.isInitialized())
+        {
+            // Master
+            float masterVol = audio.GetMasterVolume();
+            if (ImGui::SliderFloat("Master Volume", &masterVol, 0.0f, 1.0f, "%.2f")) {
+                audio.setMasterVolume(masterVol);
+            }
+            ImGui::SameLine();
+            if (ImGui::SmallButton("Reset##Master")) {
+                masterVol = 1.0f;
+                audio.setMasterVolume(masterVol);
+            }
+
+            // Music group
+            float musicVol = audio.GetMusicVolume();
+            if (ImGui::SliderFloat("Music Volume", &musicVol, 0.0f, 1.0f, "%.2f")) {
+                audio.setMusicGroupVolume(musicVol);
+            }
+            ImGui::SameLine();
+            if (ImGui::SmallButton("Reset##Music")) {
+                musicVol = 1.0f;
+                audio.setMusicGroupVolume(musicVol);
+            }
+
+            // SFX group
+            float sfxVol = audio.GetSFXVolume();
+            if (ImGui::SliderFloat("SFX Volume", &sfxVol, 0.0f, 1.0f, "%.2f")) {
+                audio.setSFXGroupVolume(sfxVol);
+            }
+            ImGui::SameLine();
+            if (ImGui::SmallButton("Reset##SFX")) {
+                sfxVol = 1.0f;
+                audio.setSFXGroupVolume(sfxVol);
+            }
+
+            // Quick diagnostic buttons
+            if (ImGui::Button("Log Volumes")) {
+                std::cout << "[AudioPanel] Master=" << audio.GetMasterVolume()
+                    << " Music=" << audio.GetMusicVolume()
+                    << " SFX=" << audio.GetSFXVolume() << std::endl;
+            }
+            ImGui::SameLine();
+            if (ImGui::Button("Unmute All")) {
+                // Try unmuting common buses if present
+                audio.setBusMute("bus:/", false);
+                audio.setBusMute("bus:/Master", false); // harmless if not present
+                audio.setMasterVolume(1.0f);
+                audio.setMusicGroupVolume(1.0f);
+                audio.setSFXGroupVolume(1.0f);
+            }
+        }
+        else
+        {
+            ImGui::TextDisabled("Audio not initialized (init first to show volumes).");
+        }
 
         ImGui::SeparatorText("Quick Test");
 
