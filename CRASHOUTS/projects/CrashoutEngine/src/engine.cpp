@@ -6,7 +6,7 @@
 This file uses functionality defined in type GLApp to initialize an OpenGL
 context and implement a game loop.
 
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 *//*__________________________________________________________________________*/
 
@@ -336,11 +336,6 @@ void Update(double const& dt) {
 
     CrashoutsEngine::UpdateHierarchy(ecs);
 
-    {
-        FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Audio");
-        CrashoutsEngine::Audio::AudioSystem::instance().Update();
-    }
-
     if (engineState == EngineState::PLAY) {
         KeyframeUnity::UpdateAll(ecs, (float)dt);
         CrashoutsEngine::ScriptSystem::UpdateAll();
@@ -353,6 +348,10 @@ void Update(double const& dt) {
         {
             FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Physics");
             physicsSystem.Update(FrameRateController::GetInstance().FixedDT());
+        }
+        {
+        FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Audio");
+        CrashoutsEngine::Audio::AudioSystem::instance().Update();
         }
         // process events if any associated with input devices
         //glfwPollEvents();
