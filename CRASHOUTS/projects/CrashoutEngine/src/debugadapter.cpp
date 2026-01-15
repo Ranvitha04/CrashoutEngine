@@ -713,6 +713,84 @@ namespace {
 			// Texture Name (Keep DragDrop logic, simplified here to String Input for brevity)
 			UIHelpers::DrawUndoableString("Texture Asset", sc->textureName);
 
+			// Drag & Drop support (ASSET/PAYLOAD)
+			if (ImGui::BeginDragDropTarget()) {
+				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSET/PAYLOAD")) {
+					if (payload->Data && payload->DataSize == sizeof(AssetDragPayload)) {
+						const auto* d = static_cast<const AssetDragPayload*>(payload->Data);
+						if (d->kind == AssetKind::Texture) {
+							std::string oldVal = sc->textureName;
+							std::string newVal = std::string(d->relPath);
+							sc->textureName = newVal;
+							UndoManager::GetInstance().AddCommand(
+								std::make_unique<ChangeValueCommand<std::string>>(oldVal, newVal, [sc](const std::string& v) { sc->textureName = v; })
+							);
+						}
+					}
+				}
+				ImGui::EndDragDropTarget();
+			}
+
+			// Search / pick popup button
+			ImGui::SameLine();
+			float btnSize = ImGui::GetFrameHeight();
+			if (ImGui::Button("...", ImVec2(btnSize, btnSize))) {
+				ImGui::OpenPopup("PickShapeTexturePopup");
+			}
+
+			if (ImGui::BeginPopupModal("PickShapeTexturePopup", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
+				namespace fs = std::filesystem;
+				static std::vector<std::string> s_assets;
+				static bool s_scanned = false;
+				static char s_filter[128] = "";
+
+				if (ImGui::Button("Refresh")) s_scanned = false;
+				ImGui::SameLine();
+				ImGui::SetNextItemWidth(-1);
+				ImGui::InputTextWithHint("##tex_filter", "filter...", s_filter, sizeof(s_filter));
+
+				if (!s_scanned) {
+					s_scanned = true;
+					s_assets.clear();
+					const std::string assetRoot = CrashoutsEngine::Assets::rootPath + "images";
+					try {
+						if (fs::exists(assetRoot)) {
+							for (auto& p : fs::recursive_directory_iterator(assetRoot)) {
+								if (!p.is_regular_file()) continue;
+								std::string ext = p.path().extension().string();
+								std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+								if (ext == ".png" || ext == ".jpg" || ext == ".jpeg" || ext == ".tga" || ext == ".bmp") {
+									std::string rel = fs::relative(p.path(), assetRoot).generic_string();
+									s_assets.push_back(rel);
+								}
+							}
+							std::sort(s_assets.begin(), s_assets.end());
+						}
+					}
+					catch (...) { /* ignore scan errors */ }
+				}
+
+				ImGui::Separator();
+				ImGui::BeginChild("tex_list", ImVec2(420, 300), true);
+				for (const auto& a : s_assets) {
+					if (s_filter[0] && a.find(s_filter) == std::string::npos) continue;
+					if (ImGui::Selectable(a.c_str(), sc->textureName == a)) {
+						std::string oldVal = sc->textureName;
+						sc->textureName = a;
+						UndoManager::GetInstance().AddCommand(
+							std::make_unique<ChangeValueCommand<std::string>>(oldVal, sc->textureName, [sc](const std::string& v) { sc->textureName = v; })
+						);
+						ImGui::CloseCurrentPopup();
+						break;
+					}
+				}
+				ImGui::EndChild();
+
+				ImGui::Separator();
+				if (ImGui::Button("Cancel")) ImGui::CloseCurrentPopup();
+				ImGui::EndPopup();
+			}
+
 			// UVs
 			if (sc->enableTexture) {
 				UIHelpers::DrawUndoableInt("U Wrap", sc->wrapModeU);

@@ -115,7 +115,7 @@ namespace UI {
                     ImGui::EndCombo();
                 }
 
-                if (ImGui::Button("Create Selected##Prefab")) {
+                if (ImGui::Button("Create Entity##Prefab")) {
                     Prefab::Create(ecs, names[sel]);
                 }
             }
@@ -123,6 +123,41 @@ namespace UI {
         ImGui::Separator();
         ImGui::TextUnformatted("Entities");
 
+        ImGui::Separator();
+
+        if (entities.size() > 0) {
+            if (ImGui::Button("Clone Selected")) {
+                selected = ecs.CloneEntity(selected);
+                return;
+            }
+            const bool delPressed =
+                ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows) &&
+                ImGui::IsKeyPressed(ImGuiKey_Delete, false) &&
+                !ImGui::GetIO().WantTextInput &&
+                !ImGui::IsAnyItemActive();
+
+            ImGui::SameLine();
+            
+            if (ImGui::Button("Destroy Selected") || delPressed)
+            {
+                if (selected)
+                {
+                    // Use undoable delete command
+                    auto cmd = std::make_unique<DeleteEntityCommand>(selected);
+                    cmd->Execute(); // Perform delete
+                    UndoManager::GetInstance().AddCommand(std::move(cmd));
+
+                    // Update local entities list if necessary (remove invalid IDs)
+                    entities.erase(std::remove_if(entities.begin(), entities.end(),
+                        [&](Entity e) { return !ecs.HasComponent<Component::NameComponent>(e); }), entities.end());
+
+                    selected = 0;
+                }
+            }
+
+        }
+        ImGui::Text("Selected Entity: %d", selected);
+        ImGui::Separator();
         {
             auto& tArr = ecs.GetComponentArray<Component::TransformComponent>();
             bool anyDrawn = false;
@@ -137,10 +172,6 @@ namespace UI {
             }
             if (!anyDrawn) ImGui::TextDisabled("No entities created yet.");
         }
-
-
-        ImGui::Separator();
-        ImGui::Text("Selected Entity: %d", selected);
 
         if (!selected) return;
 
@@ -193,53 +224,6 @@ namespace UI {
                 prefabNameBuf[0] = '\0';
             }
 
-        }
-
-        ImGui::Separator();
-
-        if (entities.size() > 0) {
-            if (ImGui::Button("Clone Selected")) {
-                selected = ecs.CloneEntity(selected);
-                return;
-            }
-            const bool delPressed =
-                ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows) &&
-                ImGui::IsKeyPressed(ImGuiKey_Delete, false) &&
-                !ImGui::GetIO().WantTextInput &&
-                !ImGui::IsAnyItemActive();
-            if (ImGui::Button("Destroy Selected") || delPressed)
-            {
-                if (selected)
-                {
-                    // Use undoable delete command
-                    auto cmd = std::make_unique<DeleteEntityCommand>(selected);
-                    cmd->Execute(); // Perform delete
-                    UndoManager::GetInstance().AddCommand(std::move(cmd));
-
-                    // Update local entities list if necessary (remove invalid IDs)
-                    entities.erase(std::remove_if(entities.begin(), entities.end(),
-                        [&](Entity e) { return !ecs.HasComponent<Component::NameComponent>(e); }), entities.end());
-
-                    selected = 0;
-                }
-            }
-                /*
-            if (ImGui::Button("Destroy Selected")) {
-                if (selected) {
-                    if (ecs.HasComponent<Component::ParentComponent>(selected)) {
-                        CrashoutsEngine::DetachChild(ecs, selected);
-                    }
-                }
-
-                ecs.DestroyEntity(selected);
-
-                auto it = std::find(entities.begin(), entities.end(), selected);
-                if (it != entities.end()) {
-                    entities.erase(it);
-                }
-
-                selected = 0;
-            }*/
         }
 
         //ImGui::End();
