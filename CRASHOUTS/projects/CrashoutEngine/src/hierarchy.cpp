@@ -271,6 +271,38 @@ namespace CrashoutsEngine {
             }
         }
     }
+   
+    static void RecomputeLocalFromWorld(
+        const Component::TransformComponent& parentW,
+        const Component::TransformComponent& childW,
+        Component::ParentComponent& pc)
+    {
+        const float DEG_TO_RAD = 0.0174532925f;
+
+        float pX = (parentW.size.x == 0.f) ? 1.f : parentW.size.x;
+        float pY = (parentW.size.y == 0.f) ? 1.f : parentW.size.y;
+
+        
+        pc.localScale.x = childW.size.x / pX;
+        pc.localScale.y = childW.size.y / pY;
+
+        
+        pc.localRot = childW.rotation - parentW.rotation;
+
+        float dx = childW.position.x - parentW.position.x;
+        float dy = childW.position.y - parentW.position.y;
+
+        float angleRad = -parentW.rotation * DEG_TO_RAD;
+        float s = std::sin(angleRad);
+        float c = std::cos(angleRad);
+
+        float unRotX = (c * dx) - (s * dy);
+        float unRotY = (s * dx) + (c * dy);
+
+        pc.localPos.x = unRotX / pX;
+        pc.localPos.y = unRotY / pY;
+        pc.localPos.z = childW.position.z - parentW.position.z;
+    }
 
     // Per-frame propagation entry point.
     void UpdateHierarchy(ECS& ecs)

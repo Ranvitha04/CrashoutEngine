@@ -32,7 +32,7 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 #include <utility>
 #include <filesystem>
 #include "keyframe.h"
-
+#include <unordered_map> 
 // Components
 #include "namecomponent.h"
 #include "transformcomponent.h"
@@ -49,6 +49,8 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 #include "hierarchycomponent.h"
 #include "transientcomponent.h"
 #include "particleComponent.h"
+#include "prefabcomponent.h"
+
 
 // FOR GAME GUI
 #include "buttoncomponent.h"
@@ -86,14 +88,25 @@ namespace {
     @return bool to determine if successful
     */
     inline bool WriteTextToFile(const std::string& filePath, const std::string& content) {
-        std::ofstream file(filePath);
+        std::ofstream file(filePath, std::ios::out | std::ios::trunc); // (optional but recommended)
         if (!file.is_open()) {
             std::cout << "ERROR: Could not open file for writing: " << filePath << std::endl;
             return false;
         }
+
         file << content;
+
+        file.flush();                 // <-- ADD THIS LINE
+        bool ok = file.good();         // <-- ADD THIS LINE
+        file.close();                  // <-- ADD THIS LINE
+
+        if (!ok) {                     // <-- ADD THIS BLOCK
+            std::cout << "ERROR: Write failed for file: " << filePath << std::endl;
+            return false;
+        }
         return true;
     }
+
 }
 
 namespace CrashoutsEngine {
@@ -189,6 +202,8 @@ namespace CrashoutsEngine {
             const char* const PP_COMPONENT              = "postprocessing";
             // HIERACHY ITEMS
             const char* const PARENT_COMPONENT          = "parent";
+            const char* const PREFAB_COMPONENT          = "prefab"; 
+
         }
 
         namespace JsonHelpers {
@@ -595,6 +610,16 @@ namespace CrashoutsEngine {
                 val.AddMember("clips", clips, allocator);
                 entityValue.AddMember(rapidjson::StringRef(Keys::KEYFRAME_ANIMATOR_COMPONENT), val, allocator);
             }
+           
+            if (gECS.HasComponent<PrefabInstanceComponent>(id)) {
+                const auto& p = *gECS.GetComponent<PrefabInstanceComponent>(id);
+
+                rapidjson::Value val(rapidjson::kObjectType);
+                val.AddMember("name", rapidjson::Value(p.prefabName.c_str(), allocator), allocator);
+
+                entityValue.AddMember(rapidjson::StringRef(Keys::PREFAB_COMPONENT), val, allocator);
+            }
+
             return entityValue;
         }
 
@@ -614,7 +639,21 @@ namespace CrashoutsEngine {
                 const char* n = GetString(entityValue, Keys::NAME_COMPONENT);
                 if (n && *n) nameComp.name = n;
             }
-            
+            // Prefab
+            if (entityValue.HasMember(Keys::PREFAB_COMPONENT)) {
+                const auto& v = entityValue[Keys::PREFAB_COMPONENT];
+
+                auto& pc = gECS.AddComponent<PrefabInstanceComponent>(newEntity);
+
+              
+                pc.prefabName = JsonHelpers::GetString(v, "name");
+            }
+            if (entityValue.HasMember(Keys::PREFAB_COMPONENT)) {
+                const auto& v = entityValue[Keys::PREFAB_COMPONENT];
+                auto& p = gECS.AddComponent<Component::PrefabInstanceComponent>(newEntity);
+                p.prefabName = JsonHelpers::GetString(v, "name");
+            }
+
             // Layer
             if (entityValue.HasMember(Keys::LAYER_COMPONENT)) {
                 const auto& v = entityValue[Keys::LAYER_COMPONENT];
@@ -952,6 +991,7 @@ namespace CrashoutsEngine {
         @param sceneName The name of the scene asset to load (e.g., "level1.json").
         */
         void LoadScenes(std::string const& sceneName) {
+            currSceneName = sceneName;
             Assets::AssetManager& assetManager = Assets::AssetManager::GetInstance();
 
             Assets::SceneAsset* sceneAsset = assetManager.Get<Assets::SceneAsset>(sceneName);
@@ -1058,15 +1098,15 @@ namespace CrashoutsEngine {
             ECS& gECS = *ECS::getInstance();
 
             // Helper struct to link parents after all entities are created
-            struct ParentLinkRequest {
-                Entity childEntity;
-                std::string parentName;
-            };
-            std::vector<ParentLinkRequest> parentLinksToProcess;
+            std::vector<ParentLinkInfo> parentLinksToProcess;
+
 
             for (rapidjson::SizeType i = 0; i < entitiesArray.Size(); ++i) {
-                DeserializeEntity(entitiesArray[i], nullptr);
+                DeserializeEntity(entitiesArray[i], &parentLinksToProcess);
+
             }
+          
+
         
             // =========================================================
             // POST-LOAD: Reconstruct Hierarchy Links
@@ -1115,6 +1155,25 @@ namespace CrashoutsEngine {
         @param sceneName The name of the scene asset to save to
         */
         void SaveScenes(std::string const& sceneName) {
+            LOGW(Core, "SaveScenes called with name='%s'", sceneName.c_str());
+            LOGW(Core, "Assets::rootPath = '%s'", Assets::rootPath.c_str());
+
+            // Always build a filesystem path once
+            std::filesystem::path scenePath = std::filesystem::path(Assets::rootPath) / "scenes" / sceneName;
+
+            // Make sure folder exists
+            std::filesystem::create_directories(scenePath.parent_path());
+
+            // Enforce .json extension (on the PATH, not the string)
+            if (scenePath.extension().empty()) {
+                scenePath.replace_extension(".json");
+            }
+
+            // Use string only when needed (logging / file IO helpers)
+            std::string fullPath = scenePath.string();
+
+            LOGW(Core, "Saving scene file to fullPath = '%s'", fullPath.c_str());
+
             ECS& gECS = *ECS::getInstance();
             Assets::AssetManager& assetManager = Assets::AssetManager::GetInstance();
 
@@ -1225,6 +1284,24 @@ namespace CrashoutsEngine {
                         rapidjson::Value(nameComp.name.c_str(), allocator), // Creates an rvalue for the value
                         allocator
                     );
+                }
+                // =========================================================
+                // A.5 PrefabComponent  (ADD THIS BLOCK)
+                // =========================================================
+                if (gECS.HasComponent<Component::PrefabInstanceComponent>(id)) {
+                    const auto& pc = *gECS.GetComponent<Component::PrefabInstanceComponent>(id);
+
+                    rapidjson::Value prefabVal(rapidjson::kObjectType);
+
+                    // IMPORTANT: change these field names to match your PrefabComponent fields
+                    // Common field names are: prefabName / source / prefabAsset / prefabPath
+                    prefabVal.AddMember("name", rapidjson::Value(pc.prefabName.c_str(), allocator), allocator);
+
+                    // Optional extras if you have them:
+                    // prefabVal.AddMember("isRoot", pc.isPrefabRoot, allocator);
+                    // prefabVal.AddMember("allowOverrides", pc.allowOverrides, allocator);
+
+                    entityValue.AddMember(rapidjson::StringRef(Keys::PREFAB_COMPONENT), prefabVal, allocator);
                 }
 
                 // =========================================================
@@ -1871,6 +1948,15 @@ namespace CrashoutsEngine {
 
                     entityValue.AddMember(rapidjson::StringRef(Keys::SPRITE_ANIMATOR_COMPONENT), compVal, allocator);
                 }
+                // =========================================================
+// PrefabInstanceComponent
+// =========================================================
+                if (gECS.HasComponent<Component::PrefabInstanceComponent>(id)) {
+                    const auto& p = *gECS.GetComponent<Component::PrefabInstanceComponent>(id);
+                    rapidjson::Value val(rapidjson::kObjectType);
+                    val.AddMember("name", rapidjson::Value(p.prefabName.c_str(), allocator), allocator);
+                    entityValue.AddMember(rapidjson::StringRef(Keys::PREFAB_COMPONENT), val, allocator);
+                }
 
                 // =========================================================
                 // Q. ParentComponent
@@ -1987,7 +2073,7 @@ namespace CrashoutsEngine {
                     kaVal.AddMember("clips", clipsArr, allocator);
                     entityValue.AddMember(rapidjson::StringRef(Keys::KEYFRAME_ANIMATOR_COMPONENT), kaVal, allocator);
                 }
-                
+            
                 // =========================================================
                 // S. ParticleComponent SERIALIZATION
                 // =========================================================
@@ -2111,7 +2197,8 @@ namespace CrashoutsEngine {
 
             // Get the resulting JSON string
             std::string content = buffer.GetString();
-            std::string fullPath = Assets::rootPath + "/scenes/" + sceneName;
+         
+            LOGW(Core, "About to write %zu bytes to '%s'", content.size(), fullPath.c_str());
 
             // =========================================================
             // 6. Write the string to the file directly

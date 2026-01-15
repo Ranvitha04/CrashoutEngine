@@ -279,10 +279,11 @@ namespace UI {
             bool isPlaying = (engineState == EngineState::PLAY || engineState == EngineState::PAUSE);
             if ((!isPlaying || allowGizmoInPlay) && selected && ecs.HasComponent<Component::TransformComponent>(selected))
             {
-                Entity root = CrashoutsEngine::GetRoot(ecs, selected);
+                Entity root = selected; 
 
                 std::vector<Entity> group;
                 group.reserve(16);
+                group.push_back(root);
                 CrashoutsEngine::GatherDescendants(ecs, root, group);
 
                 CEVec3 center{ 0.f, 0.f, 0.f };

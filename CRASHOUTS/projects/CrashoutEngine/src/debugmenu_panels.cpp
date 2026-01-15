@@ -3,11 +3,56 @@
 #include "physicsmanager.h"
 #include "deleteentitycommand.h"
 #include "prefab.h"
+#include "prefabcomponent.h"
+#include <fstream>
+#include <filesystem>
+#include "rapidjson/document.h"
+#include "rapidjson/istreamwrapper.h"
+#include "rapidjson/ostreamwrapper.h"
+#include "rapidjson/prettywriter.h"
 using namespace CrashoutsEngine;
 using namespace Serialization;
 using namespace KeyframeUnity;
 
 namespace UI {
+    static bool AddSceneToManifest(const std::string& name, const std::string& relPath)
+    {
+        using namespace CrashoutsEngine;
+        namespace fs = std::filesystem;
+
+        std::ifstream ifs(Assets::assetManifestPath);
+        if (!ifs.is_open()) return false;
+
+        rapidjson::IStreamWrapper isw(ifs);
+        rapidjson::Document doc;
+        doc.ParseStream(isw);
+        if (doc.HasParseError()) return false;
+
+        if (!doc.HasMember("scenes") || !doc["scenes"].IsArray())
+            doc.AddMember("scenes", rapidjson::Value(rapidjson::kArrayType), doc.GetAllocator());
+
+        auto& alloc = doc.GetAllocator();
+        auto& arr = doc["scenes"];
+
+        // already exists?
+        for (auto& v : arr.GetArray())
+            if (v.HasMember("name") && std::string(v["name"].GetString()) == name)
+                return true;
+
+        rapidjson::Value entry(rapidjson::kObjectType);
+        entry.AddMember("name", rapidjson::Value(name.c_str(), alloc), alloc);
+        entry.AddMember("path", rapidjson::Value(relPath.c_str(), alloc), alloc);
+        arr.PushBack(entry, alloc);
+
+        // write back
+        std::ofstream ofs(Assets::assetManifestPath);
+        if (!ofs.is_open()) return false;
+        rapidjson::OStreamWrapper osw(ofs);
+        rapidjson::PrettyWriter<rapidjson::OStreamWrapper> writer(osw);
+        doc.Accept(writer);
+        return true;
+    }
+
 
     // Helper local to this file
     static void DrawHierarchyNode(ECS& ecs, Entity e, Entity& selected)
@@ -184,11 +229,27 @@ namespace UI {
             );
 
             if (ok) {
+               
+                if (!ecs.HasComponent<Component::PrefabInstanceComponent>(selected))
+                {
+                    ecs.AddComponent<Component::PrefabInstanceComponent>(selected);
+                }
+                ecs.GetComponent<Component::PrefabInstanceComponent>(selected)->prefabName = newName;
+
                 const std::string dirPath =
                     (fs::path(CrashoutsEngine::Assets::rootPath) / "prefabs").generic_string();
 
                 CrashoutsEngine::ReloadPrefabsFromDisk(dirPath);
                 CrashoutsEngine::RecreateInstancesForPrefab(ecs, newName);
+               
+                if (!ecs.HasComponent<Component::PrefabInstanceComponent>(selected)) {
+                    ecs.AddComponent<Component::PrefabInstanceComponent>(selected,
+                        Component::PrefabInstanceComponent{ newName });
+                }
+                else {
+                    auto* inst = ecs.GetComponent<Component::PrefabInstanceComponent>(selected);
+                    if (inst) inst->prefabName = newName;
+                }
 
                 prefabNameBuf[0] = '\0';
             }
@@ -728,16 +789,13 @@ namespace UI {
         // 3. Draw the "Create Scene" button
         ImGui::SameLine();
         if (ImGui::Button("Create Scene")) {
-            // Only create if the name field is not empty
             if (std::strlen(sceneNameBuffer) > 0) {
+                currSceneName = sceneNameBuffer;
+                std::string relPath = "scenes/" + currSceneName + ".json";
 
+                ECS::getInstance()->Reset();             
+                Serialization::SaveScenes(currSceneName); 
 
-                // 4. Call your create function
-                Serialization::SaveScenes(sceneNameBuffer);
-                ECS::getInstance()->Reset();
-                Serialization::SaveScenes(sceneNameBuffer);
-
-                // 5. Clear the buffer after creation for good UX
                 sceneNameBuffer[0] = '\0';
             }
         }
@@ -1197,6 +1255,8 @@ namespace UI {
             // Stop
             if (ImGui::Button("STOP", ImVec2(70, 25))) {
                 if (engineState == EngineState::STOP && !currSceneName.empty()) Serialization::SaveScenes(currSceneName);
+                if (!currSceneName.empty())
+                    Serialization::SaveScenes(currSceneName);
 
                 if (currSceneName.empty()) RestartGameState();       // Legacy scene system
                 else {
