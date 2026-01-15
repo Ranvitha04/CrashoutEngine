@@ -24,6 +24,7 @@ namespace CrashoutsEngine
         private RigidBodyComponent rb;
         private TransformComponent tf;
         private Animator anim; // The Animator
+        private ColliderComponent col;
         private PlayerMovement playerScript;
 
         private bool isGrounded = false;
@@ -45,6 +46,7 @@ namespace CrashoutsEngine
             rb = Entity.GetComponent<RigidBodyComponent>();
             tf = Entity.GetComponent<TransformComponent>();
             anim = Entity.GetComponent<Animator>(); // Get Animator
+            col = Entity.GetComponent<ColliderComponent>();
             playerScript = PlayerMovement.Instance;
 
             CollisionEvents.RegisterCollideEnter(Entity.ID, this.OnCollideEnter);
@@ -165,14 +167,14 @@ namespace CrashoutsEngine
                 targetState = "slimeChase";
             }
             // Priority 3: Moving (Patrolling or Returning)
-            else if (Math.Abs(rb.LinearVelocity.x) > 1.0f) // Simple threshold to detect movement
+            else if (Math.Abs(rb.LinearVelocity.x) > 1.0f) 
             {
                 targetState = "slimeWalk";
             }
             // Priority 4: Idle
             else
             {
-                targetState = "slimeIdle"; // Or "slimeWalk" if you don't have idle
+                targetState = "slimeIdle";
             }
 
             // Apply if changed
@@ -244,7 +246,10 @@ namespace CrashoutsEngine
                 if (isGrabbed) 
                 {
                     isGrabbed = false;
-                    rb.LinearVelocity = rb.LinearVelocity * 0.5f; // Dampen release
+                    //make dynamic
+                    rb.SetDynamic(true);
+                    rb.LinearVelocity = rb.LinearVelocity * 0.5f;
+                    if (col != null) col.UpdateRotation(tf.Rotation);
                 }
             }
         }
