@@ -635,8 +635,13 @@ namespace Physics {
 				Component::RigidBodyComponent* rigidBody1{ globalECS.GetComponent<Component::RigidBodyComponent>(evnt.entity1) };
 				Component::RigidBodyComponent* rigidBody2{ globalECS.GetComponent<Component::RigidBodyComponent>(evnt.entity2) };
 
-				//bool isDynamic1 = rigidBody1 && rigidBody1->getFlags().test(SIMULATE_DYNAMICS);
-				//bool isDynamic2 = rigidBody2 && rigidBody2->getFlags().test(SIMULATE_DYNAMICS);
+				Component::ColliderComponent* col1 = globalECS.GetComponent<Component::ColliderComponent>(evnt.entity1);
+				Component::ColliderComponent* col2 = globalECS.GetComponent<Component::ColliderComponent>(evnt.entity2);
+				
+				if ((col1 && col1->collider->isTrigger) || (col2 && col2->collider->isTrigger)) {
+					continue;
+				}
+
 				bool isDynamic1 = rigidBody1 && rigidBody1->getMass();
 				bool isDynamic2 = rigidBody2 && rigidBody2->getMass();
 

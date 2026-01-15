@@ -946,8 +946,8 @@
                     {
                         "className": "PlayerMovement",
                         "fields": {
-                            "moveSpeed": 200.0,
-                            "maxRunSpeed": 100.0,
+                            "moveSpeed": 500.0,
+                            "maxRunSpeed": 5000.0,
                             "jumpPower": 20000.0,
                             "groundDrag": 0.15000000596046449,
                             "airDrag": 0.019999999552965165,
@@ -958,8 +958,8 @@
                             "stepInterval": 0.07500000298023224,
                             "swapPause": 1.0,
                             "energyConsumption": 12.5,
-                            "normalMass": 7.0,
-                            "lightMass": 4.5,
+                            "normalMass": 3.0,
+                            "lightMass": 1.0,
                             "CurrentEnergy": 0.0,
                             "MaxEnergy": 100.0,
                             "alive": true,
@@ -978,7 +978,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": 78.43009185791016,
-                    "y": -15.680181503295899,
+                    "y": 89.1723861694336,
                     "z": -1.0
                 },
                 "size": {
@@ -1005,7 +1005,7 @@
                 "enabled": true,
                 "position": {
                     "x": 78.43009185791016,
-                    "y": -34.08018112182617,
+                    "y": 70.77238464355469,
                     "z": -1.0
                 },
                 "offset": {
@@ -1015,12 +1015,12 @@
                 },
                 "min": {
                     "x": 62.430091857910159,
-                    "y": -39.780181884765628,
+                    "y": 65.0723876953125,
                     "z": -1.0
                 },
                 "max": {
                     "x": 94.43009185791016,
-                    "y": -28.38018035888672,
+                    "y": 76.47238159179688,
                     "z": -1.0
                 }
             },
@@ -1107,6 +1107,73 @@
                     "z": 0.0,
                     "w": 0.5
                 }
+            }
+        },
+        {
+            "name": "Entity 13",
+            "layer": {
+                "currentLayer": 2
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 79.26061248779297,
+                    "y": -33.791343688964847,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 39.900001525878909,
+                    "y": 10.5
+                }
+            },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0
+            },
+            "collider": {
+                "ColliderType": 1,
+                "isTrigger": false,
+                "enabled": true,
+                "position": {
+                    "x": 79.26061248779297,
+                    "y": -33.791343688964847,
+                    "z": 0.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": 59.31060791015625,
+                    "y": -39.041343688964847,
+                    "z": 0.0
+                },
+                "max": {
+                    "x": 99.21061706542969,
+                    "y": -28.541343688964845,
+                    "z": 0.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "PressurePlate",
+                        "fields": {
+                            "decrease": 5.0,
+                            "wallName": "wall"
+                        }
+                    }
+                ]
             }
         }
     ],

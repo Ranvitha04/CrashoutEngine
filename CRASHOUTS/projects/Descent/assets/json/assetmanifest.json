@@ -309,44 +309,108 @@
             "path": "Character\\Light Mode\\Left\\Switch State Idle .png"
         },
         {
-            "name": "Chibi-1",
-            "path": "Character\\New Artstyle\\Chibi-1.png"
+            "name": "Chibi(1)",
+            "path": "Character\\New Artstyle\\Fall\\Chibi(1).png"
         },
         {
-            "name": "Chibi-2",
-            "path": "Character\\New Artstyle\\Chibi-2.png"
+            "name": "Chibi",
+            "path": "Character\\New Artstyle\\Fall\\Chibi.png"
         },
         {
-            "name": "Chibi-3",
-            "path": "Character\\New Artstyle\\Chibi-3.png"
-        },
-        {
-            "name": "Chibi-4",
-            "path": "Character\\New Artstyle\\Chibi-4.png"
-        },
-        {
-            "name": "Chibi-5",
-            "path": "Character\\New Artstyle\\Chibi-5.png"
-        },
-        {
-            "name": "Chibi-6",
-            "path": "Character\\New Artstyle\\Chibi-6.png"
-        },
-        {
-            "name": "Chibi-7",
-            "path": "Character\\New Artstyle\\Chibi-7.png"
+            "name": "Fall spritesheet",
+            "path": "Character\\New Artstyle\\Fall\\Fall spritesheet.png"
         },
         {
             "name": "Fall spritesheet",
             "path": "Character\\New Artstyle\\Fall spritesheet.png"
         },
         {
+            "name": "Chibi(1)",
+            "path": "Character\\New Artstyle\\Jump\\Chibi(1).png"
+        },
+        {
+            "name": "Chibi",
+            "path": "Character\\New Artstyle\\Jump\\Chibi.png"
+        },
+        {
+            "name": "Jump spritesheet",
+            "path": "Character\\New Artstyle\\Jump\\Jump spritesheet.png"
+        },
+        {
             "name": "Jump spritesheet",
             "path": "Character\\New Artstyle\\Jump spritesheet.png"
         },
         {
+            "name": "1",
+            "path": "Character\\New Artstyle\\Run\\1.png"
+        },
+        {
+            "name": "2",
+            "path": "Character\\New Artstyle\\Run\\2.png"
+        },
+        {
+            "name": "3",
+            "path": "Character\\New Artstyle\\Run\\3.png"
+        },
+        {
+            "name": "4",
+            "path": "Character\\New Artstyle\\Run\\4.png"
+        },
+        {
+            "name": "5",
+            "path": "Character\\New Artstyle\\Run\\5.png"
+        },
+        {
+            "name": "6",
+            "path": "Character\\New Artstyle\\Run\\6.png"
+        },
+        {
+            "name": "7",
+            "path": "Character\\New Artstyle\\Run\\7.png"
+        },
+        {
+            "name": "8",
+            "path": "Character\\New Artstyle\\Run\\8.png"
+        },
+        {
+            "name": "Run spritesheet",
+            "path": "Character\\New Artstyle\\Run\\Run spritesheet.png"
+        },
+        {
             "name": "Run spritesheet",
             "path": "Character\\New Artstyle\\Run spritesheet.png"
+        },
+        {
+            "name": "Chibi-1",
+            "path": "Character\\New Artstyle\\Switch State\\Chibi-1.png"
+        },
+        {
+            "name": "Chibi-2",
+            "path": "Character\\New Artstyle\\Switch State\\Chibi-2.png"
+        },
+        {
+            "name": "Chibi-3",
+            "path": "Character\\New Artstyle\\Switch State\\Chibi-3.png"
+        },
+        {
+            "name": "Chibi-4",
+            "path": "Character\\New Artstyle\\Switch State\\Chibi-4.png"
+        },
+        {
+            "name": "Chibi-5",
+            "path": "Character\\New Artstyle\\Switch State\\Chibi-5.png"
+        },
+        {
+            "name": "Chibi-6",
+            "path": "Character\\New Artstyle\\Switch State\\Chibi-6.png"
+        },
+        {
+            "name": "Chibi-7",
+            "path": "Character\\New Artstyle\\Switch State\\Chibi-7.png"
+        },
+        {
+            "name": "Switch State spritesheet",
+            "path": "Character\\New Artstyle\\Switch State\\Switch State spritesheet.png"
         },
         {
             "name": "Switch State spritesheet",
