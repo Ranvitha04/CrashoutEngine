@@ -24,8 +24,9 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 #include "engine.h"
 #include "instanceSystem.h"
 #include "glapp.h"
-#include "particleComponent.h"
 
+#include "guicomponent.h"
+#include "particleComponent.h"
 #include "shapescomponent.h"
 #include "transformcomponent.h"
 #include "namecomponent.h"
@@ -263,7 +264,11 @@ namespace Scene {
 			const ECS::ComponentArray<ButtonComponent>& buttonArray = globalECS.GetComponentArray<ButtonComponent>();
 
 			for (const Entity& id : buttonArray.indexToEntity) {
-				ButtonComponent* b = globalECS.GetComponent<ButtonComponent>(id);
+				// Some weird bug here, ignore button interaction if no GUI component
+				GuiComponent* g = globalECS.GetComponent<GuiComponent>(id);
+				if (g == nullptr) continue;
+
+				ButtonComponent* b = globalECS.GetComponent<ButtonComponent>(id);				
 				TransformComponent* t = globalECS.GetComponent<TransformComponent>(id);
 				UILayoutComponent* u = globalECS.GetComponent<UILayoutComponent>(id);
 

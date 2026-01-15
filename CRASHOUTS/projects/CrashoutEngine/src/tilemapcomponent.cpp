@@ -271,7 +271,7 @@ namespace CrashoutsEngine::TileMapUtils {
 					// 5. RigidBody (CRITICAL FOR COLLISION)
 					// We add a Static Rigidbody (Mass = 0) so the physics engine knows this is a wall
 					if (!ecs->HasComponent<Component::RigidBodyComponent>(ent)) {
-						ecs->AddComponent<Component::RigidBodyComponent>(ent, CEVec3{ 0.f,0.f,0.f }, 0.0f, 0.5f);
+						ecs->AddComponent<Component::RigidBodyComponent>(ent, CEVec3{ 0.f,0.f,0.f }, 0.0f, 0.0f);
 					}
 				}
 			}

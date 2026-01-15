@@ -14349,8 +14349,8 @@
                     "y": 0.0,
                     "z": 0.0
                 },
-                "staticFriction": 1.0,
-                "dynamicFriction": 1.0,
+                "staticFriction": 0.0,
+                "dynamicFriction": 0.0,
                 "inertia": 0.0,
                 "invInertia": 0.0
             },
@@ -15942,26 +15942,6 @@
                     "y": 0.0,
                     "z": 0.0
                 }
-            },
-            "parent": {
-                "parentName": "foreground",
-                "localPos": {
-                    "x": -21.80474853515625,
-                    "y": -837.61083984375,
-                    "z": 50.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 2765.85205078125,
-                    "y": 811.2470092773438
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
             }
         },
         {
@@ -16013,26 +15993,6 @@
                     "x": 32.0,
                     "y": 0.0,
                     "z": 0.0
-                }
-            },
-            "parent": {
-                "parentName": "foreground",
-                "localPos": {
-                    "x": -588.9135131835938,
-                    "y": 770.4840087890625,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 1200.0,
-                    "y": 375.04998779296877
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
                 }
             }
         },
@@ -16122,26 +16082,6 @@
                     "y": 0.0,
                     "z": 0.0
                 }
-            },
-            "parent": {
-                "parentName": "background 1",
-                "localPos": {
-                    "x": -1147.4273681640626,
-                    "y": -1448.7742919921876,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
             }
         },
         {
@@ -16193,26 +16133,6 @@
                     "x": 32.0,
                     "y": 0.0,
                     "z": 0.0
-                }
-            },
-            "parent": {
-                "parentName": "background 1",
-                "localPos": {
-                    "x": 1148.6851806640626,
-                    "y": -755.0381469726563,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 2521.00146484375,
-                    "y": 1769.84423828125
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
                 }
             }
         },
@@ -16266,26 +16186,6 @@
                     "y": 0.0,
                     "z": 0.0
                 }
-            },
-            "parent": {
-                "parentName": "background 1",
-                "localPos": {
-                    "x": 330.8436279296875,
-                    "y": -48.1083984375,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 1407.2115478515626,
-                    "y": 460.206787109375
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
             }
         },
         {
@@ -16337,26 +16237,6 @@
                     "x": 32.0,
                     "y": 0.0,
                     "z": 0.0
-                }
-            },
-            "parent": {
-                "parentName": "background 1",
-                "localPos": {
-                    "x": 1666.6375732421876,
-                    "y": -62.3568115234375,
-                    "z": -5.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": -1407.2120361328126,
-                    "y": 460.2070007324219
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
                 }
             }
         },
@@ -16410,26 +16290,6 @@
                     "y": 0.0,
                     "z": 0.0
                 }
-            },
-            "parent": {
-                "parentName": "background 1",
-                "localPos": {
-                    "x": 1482.1695556640626,
-                    "y": -751.7570190429688,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 1140.5035400390626,
-                    "y": 2000.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
             }
         },
         {
@@ -16481,26 +16341,6 @@
                     "x": 32.0,
                     "y": 0.0,
                     "z": 0.0
-                }
-            },
-            "parent": {
-                "parentName": "background 1",
-                "localPos": {
-                    "x": 288.6571044921875,
-                    "y": -829.7508544921875,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 996.1389770507813,
-                    "y": 2111.896484375
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
                 }
             }
         },
@@ -16572,26 +16412,6 @@
                     "y": 0.0,
                     "z": 0.0
                 }
-            },
-            "parent": {
-                "parentName": "background 2",
-                "localPos": {
-                    "x": 393.91705322265627,
-                    "y": -90.40654754638672,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": -1440.2430419921876,
-                    "y": 511.9720153808594
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
             }
         },
         {
@@ -16643,26 +16463,6 @@
                     "x": 32.0,
                     "y": 0.0,
                     "z": 0.0
-                }
-            },
-            "parent": {
-                "parentName": "background 2",
-                "localPos": {
-                    "x": 1563.456298828125,
-                    "y": -85.053955078125,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 1440.2430419921876,
-                    "y": 511.9720153808594
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
                 }
             }
         },
@@ -16716,26 +16516,6 @@
                     "y": 0.0,
                     "z": 0.0
                 }
-            },
-            "parent": {
-                "parentName": "background 2",
-                "localPos": {
-                    "x": 935.244384765625,
-                    "y": -1576.248779296875,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": -2614.9130859375,
-                    "y": 381.4522705078125
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
             }
         },
         {
@@ -16787,26 +16567,6 @@
                     "x": 32.0,
                     "y": 0.0,
                     "z": 0.0
-                }
-            },
-            "parent": {
-                "parentName": "background 2",
-                "localPos": {
-                    "x": 2011.5789794921876,
-                    "y": -756.2031860351563,
-                    "z": 0.0
-                },
-                "localRot": 180.8000030517578,
-                "localScale": {
-                    "x": 1221.8836669921876,
-                    "y": 1774.721435546875
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
                 }
             }
         },
@@ -16860,26 +16620,6 @@
                     "y": 0.0,
                     "z": 0.0
                 }
-            },
-            "parent": {
-                "parentName": "background 2",
-                "localPos": {
-                    "x": 611.6541748046875,
-                    "y": -904.4901733398438,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 1121.7550048828126,
-                    "y": 1949.0860595703126
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
             }
         },
         {
@@ -16931,26 +16671,6 @@
                     "x": 32.0,
                     "y": 0.0,
                     "z": 0.0
-                }
-            },
-            "parent": {
-                "parentName": "background 2",
-                "localPos": {
-                    "x": 1358.1160888671876,
-                    "y": -609.2086791992188,
-                    "z": 0.0
-                },
-                "localRot": 182.3000030517578,
-                "localScale": {
-                    "x": 1407.06201171875,
-                    "y": 2079.025146484375
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
                 }
             }
         },
@@ -17022,26 +16742,6 @@
                     "y": 0.0,
                     "z": 0.0
                 }
-            },
-            "parent": {
-                "parentName": "background 3",
-                "localPos": {
-                    "x": 996.9154663085938,
-                    "y": -1348.0799560546876,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 2853.560546875,
-                    "y": 749.7183227539063
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
             }
         },
         {
@@ -17093,26 +16793,6 @@
                     "x": 32.0,
                     "y": 0.0,
                     "z": 0.0
-                }
-            },
-            "parent": {
-                "parentName": "background 3",
-                "localPos": {
-                    "x": 892.3238525390625,
-                    "y": -294.3450622558594,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 2479.00537109375,
-                    "y": 1000.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
                 }
             }
         },
@@ -17166,26 +16846,6 @@
                     "y": 0.0,
                     "z": 0.0
                 }
-            },
-            "parent": {
-                "parentName": "background 3",
-                "localPos": {
-                    "x": 1505.1168212890626,
-                    "y": -836.4364013671875,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 1653.240478515625,
-                    "y": 2076.8857421875
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
             }
         },
         {
@@ -17238,26 +16898,6 @@
                     "y": 0.0,
                     "z": 0.0
                 }
-            },
-            "parent": {
-                "parentName": "background 3",
-                "localPos": {
-                    "x": 2576.612060546875,
-                    "y": -627.8228759765625,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 1653.240478515625,
-                    "y": -2076.885986328125
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
             }
         },
         {
@@ -17309,26 +16949,6 @@
                     "x": 32.0,
                     "y": 0.0,
                     "z": 0.0
-                }
-            },
-            "parent": {
-                "parentName": "background 3",
-                "localPos": {
-                    "x": 803.420166015625,
-                    "y": -864.8651123046875,
-                    "z": 10.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 2931.76123046875,
-                    "y": 2235.576416015625
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
                 }
             }
         },
@@ -17393,7 +17013,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": 194.45278930664063,
-                    "y": -39.93634033203125,
+                    "y": -25.276859283447267,
                     "z": -1.0
                 },
                 "size": {
@@ -17409,35 +17029,36 @@
                     "y": 0.0,
                     "z": 0.0
                 },
-                "staticFriction": 0.5,
-                "dynamicFriction": 0.5,
+                "staticFriction": 0.0,
+                "dynamicFriction": 0.0,
                 "inertia": 0.0,
                 "invInertia": 0.0
             },
             "collider": {
-                "ColliderType": 1,
+                "ColliderType": 2,
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
                     "x": 194.45278930664063,
-                    "y": -59.7363395690918,
+                    "y": -43.776859283447269,
                     "z": -1.0
                 },
                 "offset": {
                     "x": 0.0,
-                    "y": -19.799999237060548,
+                    "y": -18.5,
                     "z": 0.0
                 },
                 "min": {
-                    "x": 178.45278930664063,
-                    "y": -63.93634033203125,
+                    "x": 193.45278930664063,
+                    "y": -43.776859283447269,
                     "z": -1.0
                 },
                 "max": {
-                    "x": 210.45278930664063,
-                    "y": -55.536338806152347,
+                    "x": 195.45278930664063,
+                    "y": -43.776859283447269,
                     "z": -1.0
-                }
+                },
+                "rotation": 0.0
             },
             "shape": {
                 "useTexture": true,
@@ -17639,26 +17260,6 @@
                     "y": 0.0,
                     "z": 0.0
                 }
-            },
-            "parent": {
-                "parentName": "Wall",
-                "localPos": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 32.0,
-                    "y": 32.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
             }
         },
         {
@@ -17748,26 +17349,6 @@
                     "x": 32.0,
                     "y": 0.0,
                     "z": 0.0
-                }
-            },
-            "parent": {
-                "parentName": "Wall",
-                "localPos": {
-                    "x": -32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 32.0,
-                    "y": 32.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
                 }
             }
         },
@@ -17859,26 +17440,6 @@
                     "y": 0.0,
                     "z": 0.0
                 }
-            },
-            "parent": {
-                "parentName": "Wall",
-                "localPos": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 32.0,
-                    "y": 32.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
             }
         },
         {
@@ -17969,26 +17530,6 @@
                     "y": 0.0,
                     "z": 0.0
                 }
-            },
-            "parent": {
-                "parentName": "Wall",
-                "localPos": {
-                    "x": -64.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 32.0,
-                    "y": 32.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
             }
         },
         {
@@ -18078,26 +17619,6 @@
                     "x": 32.0,
                     "y": 0.0,
                     "z": 0.0
-                }
-            },
-            "parent": {
-                "parentName": "Wall",
-                "localPos": {
-                    "x": 64.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 32.0,
-                    "y": 32.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
                 }
             }
         },
@@ -19146,26 +18667,6 @@
                     "y": 0.0,
                     "z": 0.0
                 }
-            },
-            "parent": {
-                "parentName": "Wall4",
-                "localPos": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 32.0,
-                    "y": 32.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
             }
         },
         {
@@ -19251,26 +18752,6 @@
                     "x": 32.0,
                     "y": 0.0,
                     "z": 0.0
-                }
-            },
-            "parent": {
-                "parentName": "Wall4",
-                "localPos": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 32.0,
-                    "y": 32.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
                 }
             }
         },
@@ -19358,26 +18839,6 @@
                     "y": 0.0,
                     "z": 0.0
                 }
-            },
-            "parent": {
-                "parentName": "Wall4",
-                "localPos": {
-                    "x": 64.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 32.0,
-                    "y": 32.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
             }
         },
         {
@@ -19463,26 +18924,6 @@
                     "x": 32.0,
                     "y": 0.0,
                     "z": 0.0
-                }
-            },
-            "parent": {
-                "parentName": "Wall4",
-                "localPos": {
-                    "x": -32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 32.0,
-                    "y": 32.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
                 }
             }
         },
@@ -19842,26 +19283,6 @@
                     "y": 0.0,
                     "z": 0.0
                 }
-            },
-            "parent": {
-                "parentName": "Wall6",
-                "localPos": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 32.0,
-                    "y": 32.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
             }
         },
         {
@@ -19947,26 +19368,6 @@
                     "x": 32.0,
                     "y": 0.0,
                     "z": 0.0
-                }
-            },
-            "parent": {
-                "parentName": "Wall6",
-                "localPos": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 32.0,
-                    "y": 32.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
                 }
             }
         },
@@ -20054,26 +19455,6 @@
                     "y": 0.0,
                     "z": 0.0
                 }
-            },
-            "parent": {
-                "parentName": "Wall6",
-                "localPos": {
-                    "x": 64.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 32.0,
-                    "y": 32.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
             }
         },
         {
@@ -20159,26 +19540,6 @@
                     "x": 32.0,
                     "y": 0.0,
                     "z": 0.0
-                }
-            },
-            "parent": {
-                "parentName": "Wall6",
-                "localPos": {
-                    "x": -32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 32.0,
-                    "y": 32.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
                 }
             }
         },
@@ -20266,26 +19627,6 @@
                     "y": 0.0,
                     "z": 0.0
                 }
-            },
-            "parent": {
-                "parentName": "Wall6",
-                "localPos": {
-                    "x": -64.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 32.0,
-                    "y": 32.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
             }
         },
         {
@@ -20371,26 +19712,6 @@
                     "x": 32.0,
                     "y": 0.0,
                     "z": 0.0
-                }
-            },
-            "parent": {
-                "parentName": "Wall6",
-                "localPos": {
-                    "x": -96.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 32.0,
-                    "y": 32.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
                 }
             }
         },
@@ -20597,26 +19918,6 @@
                     "y": 0.0,
                     "z": 0.0
                 }
-            },
-            "parent": {
-                "parentName": "PauseScreen",
-                "localPos": {
-                    "x": -0.003000000026077032,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 0.22499999403953553,
-                    "y": 0.13099999725818635
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
             }
         },
         {
@@ -20726,26 +20027,6 @@
                     "y": 0.0
                 },
                 "uiLayout": 4
-            },
-            "parent": {
-                "parentName": "PauseScreen",
-                "localPos": {
-                    "x": 0.024900000542402269,
-                    "y": -0.010300000198185444,
-                    "z": 0.09999847412109375
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 0.020999999716877939,
-                    "y": 0.005499999970197678
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
             }
         },
         {
@@ -20855,26 +20136,6 @@
                     "y": 0.0
                 },
                 "uiLayout": 4
-            },
-            "parent": {
-                "parentName": "PauseScreen",
-                "localPos": {
-                    "x": 0.02465599961578846,
-                    "y": 0.013822999782860279,
-                    "z": 0.09999847412109375
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 0.022299999371170999,
-                    "y": 0.011300000362098217
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
             }
         },
         {
@@ -20984,26 +20245,6 @@
                     "y": 0.0
                 },
                 "uiLayout": 4
-            },
-            "parent": {
-                "parentName": "PauseScreen",
-                "localPos": {
-                    "x": 0.025100000202655793,
-                    "y": 0.0005000000237487257,
-                    "z": 0.09999847412109375
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 0.024000000208616258,
-                    "y": 0.006500000134110451
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
             }
         },
         {
@@ -22408,26 +21649,6 @@
                     "x": 32.0,
                     "y": 0.0,
                     "z": 0.0
-                }
-            },
-            "parent": {
-                "parentName": "BarUI",
-                "localPos": {
-                    "x": 37.50074005126953,
-                    "y": 0.0,
-                    "z": 0.10000000149011612
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 75.0,
-                    "y": 10.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
                 }
             }
         },
@@ -23916,26 +23137,6 @@
                     "y": 0.0,
                     "z": 0.0
                 }
-            },
-            "parent": {
-                "parentName": "GameOverScreen",
-                "localPos": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 0.20100000500679017,
-                    "y": 0.13099999725818635
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
             }
         },
         {
@@ -23971,26 +23172,6 @@
                 },
                 "centered": true,
                 "isworldspace": false
-            },
-            "parent": {
-                "parentName": "GameOverScreen",
-                "localPos": {
-                    "x": 0.0,
-                    "y": 0.014999999664723874,
-                    "z": 0.30000001192092898
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 0.0010000000474974514,
-                    "y": 0.0010000000474974514
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
             }
         },
         {
@@ -24117,26 +23298,6 @@
                     "y": 0.0
                 },
                 "uiLayout": 4
-            },
-            "parent": {
-                "parentName": "GameOverScreen",
-                "localPos": {
-                    "x": -0.014800000004470349,
-                    "y": 0.0,
-                    "z": 0.10000002384185791
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 0.019999999552965165,
-                    "y": 0.008999999612569809
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
             }
         },
         {
@@ -24263,26 +23424,6 @@
                     "y": 0.0
                 },
                 "uiLayout": 4
-            },
-            "parent": {
-                "parentName": "GameOverScreen",
-                "localPos": {
-                    "x": 0.014299999922513962,
-                    "y": 0.0,
-                    "z": 0.10000002384185791
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 0.019999999552965165,
-                    "y": 0.008999999612569809
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
             }
         },
         {
@@ -24378,26 +23519,6 @@
                 },
                 "centered": true,
                 "isworldspace": false
-            },
-            "parent": {
-                "parentName": "WinScreen",
-                "localPos": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.30000001192092898
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 0.0010000000474974514,
-                    "y": 0.0010000000474974514
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
             }
         },
         {
@@ -24524,26 +23645,6 @@
                     "y": 0.0
                 },
                 "uiLayout": 4
-            },
-            "parent": {
-                "parentName": "WinScreen",
-                "localPos": {
-                    "x": 0.009999999776482582,
-                    "y": -0.009999999776482582,
-                    "z": 0.30000001192092898
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 0.017400000244379045,
-                    "y": 0.006500000134110451
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
             }
         },
         {
@@ -24595,26 +23696,6 @@
                     "x": 32.0,
                     "y": 0.0,
                     "z": 0.0
-                }
-            },
-            "parent": {
-                "parentName": "foreground",
-                "localPos": {
-                    "x": 516.929443359375,
-                    "y": 719.5289916992188,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 1214.199951171875,
-                    "y": 456.79998779296877
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
                 }
             }
         },
@@ -24742,26 +23823,6 @@
                     "y": 0.0
                 },
                 "uiLayout": 4
-            },
-            "parent": {
-                "parentName": "WinScreen",
-                "localPos": {
-                    "x": -0.009999999776482582,
-                    "y": -0.009999999776482582,
-                    "z": 0.30000001192092898
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 0.017400000244379045,
-                    "y": 0.006500000134110451
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
             }
         },
         {
@@ -24813,26 +23874,6 @@
                     "x": 32.0,
                     "y": 0.0,
                     "z": 0.0
-                }
-            },
-            "parent": {
-                "parentName": "PauseScreen",
-                "localPos": {
-                    "x": 0.02460000105202198,
-                    "y": 0.003599999938160181,
-                    "z": 0.050000011920928958
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 0.01979999989271164,
-                    "y": 0.03189999982714653
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
                 }
             }
         }
