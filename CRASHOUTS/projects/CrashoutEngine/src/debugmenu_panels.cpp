@@ -1052,21 +1052,30 @@ namespace UI {
             if (ImGui::SliderFloat("Music Volume", &musicVol, 0.0f, 1.0f, "%.2f")) {
                 audio.setMusicGroupVolume(musicVol);
             }
+            if (ImGui::IsItemDeactivatedAfterEdit()) {
+                Settings::SaveEditorSettings(ui);
+            }
             ImGui::SameLine();
             if (ImGui::SmallButton("Reset##Music")) {
                 musicVol = 1.0f;
                 audio.setMusicGroupVolume(musicVol);
+                Settings::SaveEditorSettings(ui);
             }
 
             // SFX group
             float sfxVol = audio.GetSFXVolume();
-            if (ImGui::SliderFloat("SFX Volume", &sfxVol, 0.0f, 1.0f, "%.2f")) {
+            if (ImGui::SliderFloat("SFX Volume", &sfxVol,
+                0.0f, 1.0f, "%.2f")) {
                 audio.setSFXGroupVolume(sfxVol);
+            }
+            if (ImGui::IsItemDeactivatedAfterEdit()) {
+                Settings::SaveEditorSettings(ui);
             }
             ImGui::SameLine();
             if (ImGui::SmallButton("Reset##SFX")) {
                 sfxVol = 1.0f;
                 audio.setSFXGroupVolume(sfxVol);
+                Settings::SaveEditorSettings(ui);
             }
 
             // Quick diagnostic buttons
