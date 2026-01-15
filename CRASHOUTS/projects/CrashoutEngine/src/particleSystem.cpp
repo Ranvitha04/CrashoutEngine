@@ -37,8 +37,8 @@ ParticleEmitter::ParticleEmitter(int maxCount)
       m_speedMax(25.f),
       m_startSize(0.4f),
       m_endSize(0.0f),
-      m_startColor01(CEVec3(1.f,0.8f,0.2f)),
-      m_endColor01(CEVec3(0.1f,0.1f,0.1f)),
+      m_startColor01(CEColor(1.f,0.8f,0.2f)),
+      m_endColor01(CEColor(0.1f,0.1f,0.1f)),
       m_maxParticles(maxCount),
       m_emitAccumulator(0.f),
       m_u01(0.f,1.f)
@@ -60,8 +60,8 @@ FireEmitter::FireEmitter(int maxCount)
       m_speedMax(0.5f),
       m_startSize(0.6f),
       m_endSize(0.0f),
-      m_startColor01(CEVec3(1.f,0.9f,0.4f)),
-      m_endColor01(CEVec3(0.3f,0.05f,0.0f)),
+      m_startColor01(CEColor(1.f,0.9f,0.4f)),
+      m_endColor01(CEColor(0.3f,0.05f,0.0f)),
       m_spread(0.6f),
       m_maxParticles(maxCount),
       m_emitAccumulator(0.f),
@@ -98,7 +98,7 @@ void FireEmitter::SetLifeRange(float minLife, float maxLife) { m_lifeMin = minLi
 void FireEmitter::SetSpeedRange(float minSpeed, float maxSpeed) { m_speedMin = minSpeed; m_speedMax = maxSpeed; }
 void FireEmitter::SetGravity(const CEVec3& g) { m_gravity = g; }
 void FireEmitter::SetSizeRange(float startSize, float endSize) { m_startSize = startSize; m_endSize = endSize; }
-void FireEmitter::SetColorRange(const CEVec3& startColor01, const CEVec3& endColor01) { m_startColor01 = startColor01; m_endColor01 = endColor01; }
+void FireEmitter::SetColorRange(const CEColor& startColor01, const CEColor& endColor01) { m_startColor01 = startColor01; m_endColor01 = endColor01; }
 void FireEmitter::SetSpread(float radians) { m_spread = radians; }
 
 /*! 
@@ -147,9 +147,10 @@ void FireEmitter::Update(float dt) {
         float t = 1.f - std::max(0.f, p.life) / std::max(0.0001f, p.maxLife);
         float size = m_startSize * (1.f - t) + m_endSize * t;
         p.size = size;
-        p.color.x = m_startColor01.x * (1.f - t) + m_endColor01.x * t;
-        p.color.y = m_startColor01.y * (1.f - t) + m_endColor01.y * t;
-        p.color.z = m_startColor01.z * (1.f - t) + m_endColor01.z * t;
+        p.color = CEColor(
+            m_startColor01.r * (1.f - t) + m_endColor01.r * t,
+            m_startColor01.g * (1.f - t) + m_endColor01.g * t,
+            m_startColor01.b * (1.f - t) + m_endColor01.b * t);
     }
 
     m_particles.erase(
@@ -165,7 +166,7 @@ void FireEmitter::Update(float dt) {
 */
 void FireEmitter::Render(bool useTexture,
                          const std::string& texName,
-                         const CEVec3& tint,
+                         const CEColor& tint,
                          const CEVec2& uvSize) const {
     size_t count = m_particles.size();
     if (count == 0) return;
@@ -179,13 +180,13 @@ void FireEmitter::Render(bool useTexture,
         t->position = p.position;
         t->rotation = p.rotation;
         t->size = CEVec2{ p.size, p.size };
-        s->color = CEColor{ p.color.x * 255.f, p.color.y * 255.f, p.color.z * 255.f, 1.f };
+        s->color = CEColor{ p.color.r * 255.f, p.color.g * 255.f, p.color.b * 255.f, 1.f };
     }
 
     InstancingSystem::InstancedParams params{};
     params.textured = useTexture;
     params.textureName = texName;
-    params.tint = CEColor(tint.x, tint.y, tint.z);
+    params.tint = CEColor(tint.r, tint.g, tint.b);
     params.uvSize = uvSize;
 
     InstancingSystem::PopulateRectanglesFromEntities(m_entities, true);
@@ -198,7 +199,7 @@ FireballEmitter::FireballEmitter(int maxCount)
     : m_corePos(CEVec3(0.f,0.f,0.f)),
       m_coreVel(CEVec3(40.f,0.f,0.f)),
       m_coreRadius(4.f),
-      m_coreColor(CEVec3(1.f,0.95f,0.7f)),
+      m_coreColor(CEColor(1.f,0.95f,0.7f)),
       m_gravity(CEVec3(0.f,0.f,0.f)),
       m_emitRate(1600.f),
       m_lifeMin(0.35f),
@@ -206,8 +207,8 @@ FireballEmitter::FireballEmitter(int maxCount)
       m_speedMin(8.f),
       m_speedMax(18.f),
       m_spread(0.5f),
-      m_startColor01(CEVec3(1.f,0.8f,0.3f)),
-      m_endColor01(CEVec3(0.4f,0.05f,0.0f)),
+      m_startColor01(CEColor(1.f,0.8f,0.3f)),
+      m_endColor01(CEColor(0.4f,0.05f,0.0f)),
       m_worldW(200.f),
       m_worldH(100.f),
       m_maxParticles(maxCount),
@@ -230,8 +231,8 @@ ExplosionEmitter::ExplosionEmitter(int maxCount)
       m_speedMin(1.f),
       m_speedMax(3.f),
       m_spread(0.3f),
-      m_startColor01(CEVec3(1.f,0.5f,0.1f)),
-      m_endColor01(CEVec3(0.3f,0.1f,0.0f)),
+      m_startColor01(CEColor(1.f,0.5f,0.1f)),
+      m_endColor01(CEColor(0.3f,0.1f,0.0f)),
       m_maxParticles(maxCount),
       m_emitAccumulator(0.f),
       m_u01(0.f,1.f)
@@ -459,12 +460,12 @@ void TrajectoryEmitter::Update(float dt) {
 */
 void TrajectoryEmitter::Render(bool useTexture,
                                const std::string& texName,
-                               const CEVec3& tint,
+                               const CEColor& tint,
                                const CEVec2& uvSize) const {
     InstancingSystem::InstancedParams params{};
     params.textured = useTexture;
     params.textureName = texName;
-    params.tint = CEColor(tint.x, tint.y, tint.z);
+    params.tint = CEColor(tint.r, tint.g, tint.b);
     params.uvSize = uvSize;
     int segments = std::clamp(24 + m_samples / 2, 32, 96);
     InstancingSystem::RenderInstancedCirclesFromEntities(m_entities, true, segments, params);
@@ -508,7 +509,7 @@ void ExplosionEmitter::SetEmissionRate(float particlesPerSecond) { m_emitRate = 
 void ExplosionEmitter::SetLifeRange(float minLife, float maxLife) { m_lifeMin = minLife; m_lifeMax = maxLife; }
 void ExplosionEmitter::SetSpeedRange(float minSpeed, float maxSpeed) { m_speedMin = minSpeed; m_speedMax = maxSpeed; }
 void ExplosionEmitter::SetGravity(const CEVec3& g) { m_gravity = g; }
-void ExplosionEmitter::SetColorRange(const CEVec3& startColor01, const CEVec3& endColor01) { m_startColor01 = startColor01; m_endColor01 = endColor01; }
+void ExplosionEmitter::SetColorRange(const CEColor& startColor01, const CEColor& endColor01) { m_startColor01 = startColor01; m_endColor01 = endColor01; }
 void ExplosionEmitter::SetSpread(float radians) { m_spread = radians; }
 
 void ExplosionEmitter::Update(float dt) {
@@ -529,9 +530,9 @@ void ExplosionEmitter::Update(float dt) {
         p.life -= dt;
         float t = 1.f - std::max(0.f, p.life) / std::max(0.0001f, p.maxLife);
         p.size = 0.6f + 0.9f * t;
-        p.color.x = m_startColor01.x * (1.f - t) + m_endColor01.x * t;
-        p.color.y = m_startColor01.y * (1.f - t) + m_endColor01.y * t;
-        p.color.z = m_startColor01.z * (1.f - t) + m_endColor01.z * t;
+        p.color.r = m_startColor01.r * (1.f - t) + m_endColor01.r * t;
+        p.color.g = m_startColor01.g * (1.f - t) + m_endColor01.g * t;
+        p.color.b = m_startColor01.b * (1.f - t) + m_endColor01.b * t;
     }
 
     m_particles.erase(
@@ -546,7 +547,7 @@ void ExplosionEmitter::Update(float dt) {
 
 void ExplosionEmitter::Render(bool useTexture,
                               const std::string& texName,
-                              const CEVec3& tint,
+                              const CEColor& tint,
                               const CEVec2& uvSize) const {
     size_t count = m_particles.size();
     if (count == 0) return;
@@ -562,7 +563,7 @@ void ExplosionEmitter::Render(bool useTexture,
         t->size = CEVec2{ p.size, p.size };
         float t01 = 1.f - std::max(0.f, p.life) / std::max(0.0001f, p.maxLife);
         float alpha = std::max(0.f, 1.f - t01);
-        s->color = CEColor{ p.color.x, p.color.y, p.color.z, alpha };
+        s->color = CEColor{ p.color.r, p.color.g, p.color.b, alpha };
         s->preview = true;
     }
 
@@ -576,7 +577,7 @@ void ExplosionEmitter::Render(bool useTexture,
     InstancingSystem::InstancedParams params{};
     params.textured = useTexture;
     params.textureName = texName;
-    params.tint = CEColor(tint.x, tint.y, tint.z);
+    params.tint = CEColor(tint.r, tint.g, tint.b);
     params.uvSize = uvSize;
 
     InstancingSystem::RenderInstancedCirclesFromEntities(m_entities, true, 64, params);
@@ -606,7 +607,7 @@ void ExplosionEmitter::SyncEcs() {
         t->size = CEVec2{ p.size, p.size };
         float t01 = 1.f - std::max(0.f, p.life) / std::max(0.0001f, p.maxLife);
         float alpha = std::max(0.f, 1.f - t01);
-        s->color = CEColor{ p.color.x, p.color.y, p.color.z, alpha };
+        s->color = CEColor{ p.color.r, p.color.g, p.color.b, alpha };
     }
 }
 
@@ -647,7 +648,7 @@ void FireballEmitter::Initialize(const CEVec3& origin) {
         CrashoutsEngine::ECS::getInstance()->AddComponent<Component::TransformComponent>(m_coreEntity, Component::TransformComponent{ 0.f, CEVec2{1.f,1.f}, origin });
             Component::ShapeComponent sc{};
             sc.type = Component::ShapeType::Circle;
-            sc.color = CEColor{ m_coreColor.x, m_coreColor.y, m_coreColor.z, 1.f };
+            sc.color = CEColor{ m_coreColor.r, m_coreColor.g, m_coreColor.b, 1.f };
             sc.enableTexture = false;
             sc.preview = true;
             CrashoutsEngine::ECS::getInstance()->AddComponent<Component::ShapeComponent>(m_coreEntity, sc);
@@ -675,7 +676,7 @@ void FireballEmitter::SetEmissionRate(float particlesPerSecond) { m_emitRate = p
 void FireballEmitter::SetLifeRange(float minLife, float maxLife) { m_lifeMin = minLife; m_lifeMax = maxLife; }
 void FireballEmitter::SetSpeedRange(float minSpeed, float maxSpeed) { m_speedMin = minSpeed; m_speedMax = maxSpeed; }
 void FireballEmitter::SetGravity(const CEVec3& g) { m_gravity = g; }
-void FireballEmitter::SetColorRange(const CEVec3& startColor01, const CEVec3& endColor01) { m_startColor01 = startColor01; m_endColor01 = endColor01; }
+void FireballEmitter::SetColorRange(const CEColor& startColor01, const CEColor& endColor01) { m_startColor01 = startColor01; m_endColor01 = endColor01; }
 void FireballEmitter::SetSpread(float radians) { m_spread = radians; }
 void FireballEmitter::SetBounds(float worldW, float worldH) { m_worldW = worldW; m_worldH = worldH; }
 
@@ -736,9 +737,9 @@ void FireballEmitter::Update(float dt) {
         // Size decay linear in age01
         p.size = m_coreRadius * (1.f - age01);
         // Color linear interpolation: start*(1-age01) + end*age01
-        p.color.x = m_startColor01.x * (1.f - age01) + m_endColor01.x * age01;
-        p.color.y = m_startColor01.y * (1.f - age01) + m_endColor01.y * age01;
-        p.color.z = m_startColor01.z * (1.f - age01) + m_endColor01.z * age01;
+        p.color.r = m_startColor01.r * (1.f - age01) + m_endColor01.r * age01;
+        p.color.g = m_startColor01.g * (1.f - age01) + m_endColor01.g * age01;
+        p.color.b = m_startColor01.b * (1.f - age01) + m_endColor01.b * age01;
     }
 
     m_particles.erase(
@@ -763,7 +764,7 @@ void FireballEmitter::Update(float dt) {
 
 void FireballEmitter::Render(bool useTexture,
                              const std::string& texName,
-                             const CEVec3& tint,
+                             const CEColor& tint,
                              const CEVec2& uvSize) const {
     size_t count = m_particles.size();
     for (size_t i = 0; i < count; ++i) {
@@ -775,7 +776,7 @@ void FireballEmitter::Render(bool useTexture,
         t->position = p.position;
         t->rotation = p.rotation;
         t->size = CEVec2{ p.size, p.size };
-        s->color = CEColor{ p.color.x, p.color.y, p.color.z, 1.f };
+        s->color = CEColor{ p.color.r, p.color.g, p.color.b, 1.f };
     }
 
     auto* ct = CrashoutsEngine::ECS::getInstance()->GetComponent<Component::TransformComponent>(m_coreEntity);
@@ -784,13 +785,13 @@ void FireballEmitter::Render(bool useTexture,
         ct->position = m_corePos;
         ct->rotation = 0.f;
         ct->size = CEVec2{ m_coreRadius, m_coreRadius };
-        cs->color = CEColor{ m_coreColor.x, m_coreColor.y, m_coreColor.z, 1.f };
+        cs->color = CEColor{ m_coreColor.r, m_coreColor.g, m_coreColor.b, 1.f };
     }
 
     InstancingSystem::InstancedParams params{};
     params.textured = useTexture;
     params.textureName = texName;
-    params.tint = CEColor(tint.x, tint.y, tint.z);
+    params.tint = CEColor(tint.r, tint.g, tint.b);
     params.uvSize = uvSize;
 
     InstancingSystem::RenderInstancedCirclesFromEntities(m_entities, true, 64, params);
@@ -823,7 +824,7 @@ void ParticleEmitter::SetLifeRange(float minLife, float maxLife) { m_lifeMin = m
 void ParticleEmitter::SetSpeedRange(float minSpeed, float maxSpeed) { m_speedMin = minSpeed; m_speedMax = maxSpeed; }
 void ParticleEmitter::SetGravity(const CEVec3& g) { m_gravity = g; }
 void ParticleEmitter::SetSizeRange(float startSize, float endSize) { m_startSize = startSize; m_endSize = endSize; }
-void ParticleEmitter::SetColorRange(const CEVec3& startColor01, const CEVec3& endColor01) { m_startColor01 = startColor01; m_endColor01 = endColor01; }
+void ParticleEmitter::SetColorRange(const CEColor& startColor01, const CEColor& endColor01) { m_startColor01 = startColor01; m_endColor01 = endColor01; }
 
 void ParticleEmitter::Update(float dt) {
     // Emit count from rate via accumulator then clamp
@@ -862,9 +863,9 @@ void ParticleEmitter::Update(float dt) {
         // Normalized age and linear size/color interpolation
         float age01 = 1.f - std::max(0.f, p.life) / std::max(0.0001f, p.maxLife);
         p.size = m_startSize * (1.f - age01) + m_endSize * age01;
-        p.color.x = m_startColor01.x * (1.f - age01) + m_endColor01.x * age01;
-        p.color.y = m_startColor01.y * (1.f - age01) + m_endColor01.y * age01;
-        p.color.z = m_startColor01.z * (1.f - age01) + m_endColor01.z * age01;
+        p.color.r = m_startColor01.r * (1.f - age01) + m_endColor01.r * age01;
+        p.color.g = m_startColor01.g * (1.f - age01) + m_endColor01.g * age01;
+        p.color.b = m_startColor01.b * (1.f - age01) + m_endColor01.b * age01;
     }
 
     m_particles.erase(
@@ -875,7 +876,7 @@ void ParticleEmitter::Update(float dt) {
 
 void ParticleEmitter::Render(bool useTexture,
                              const std::string& texName,
-                             const CEVec3& tint,
+                             const CEColor& tint,
                              const CEVec2& uvSize) const {
     size_t count = m_particles.size();
     if (count == 0) return;
@@ -889,13 +890,13 @@ void ParticleEmitter::Render(bool useTexture,
         t->position = p.position;
         t->rotation = p.rotation;
         t->size = CEVec2{ p.size, p.size };
-        s->color = CEColor{ p.color.x * 255.f, p.color.y * 255.f, p.color.z * 255.f, 1.f };
+        s->color = CEColor{ p.color.r * 255.f, p.color.g * 255.f, p.color.b * 255.f, 1.f };
     }
 
     InstancingSystem::InstancedParams params{};
     params.textured = useTexture;
     params.textureName = texName;
-    params.tint = CEColor(tint.x, tint.y, tint.z);
+    params.tint = CEColor(tint.r, tint.g, tint.b);
     params.uvSize = uvSize;
 
     InstancingSystem::PopulateRectanglesFromECS(true);
@@ -924,7 +925,7 @@ void FireEmitter::SyncEcs() {
         t->position = p.position;
         t->rotation = p.rotation;
         t->size = CEVec2{ p.size, p.size };
-        s->color = CEColor{ p.color.x, p.color.y, p.color.z, 1.f };
+        s->color = CEColor{ p.color.r, p.color.g, p.color.b, 1.f };
     }
 }
 
@@ -950,7 +951,7 @@ void ParticleEmitter::SyncEcs() {
         t->position = p.position;
         t->rotation = p.rotation;
         t->size = CEVec2{ p.size, p.size };
-        s->color = CEColor{ p.color.x * 255.f, p.color.y * 255.f, p.color.z * 255.f, 1.f };
+        s->color = CEColor{ p.color.r * 255.f, p.color.g * 255.f, p.color.b * 255.f, 1.f };
     }
 }
 
@@ -984,7 +985,7 @@ void FireballEmitter::SyncEcs() {
         t->position = p.position;
         t->rotation = p.rotation;
         t->size = CEVec2{ p.size * 0.9f, p.size * 1.6f };
-        s->color = CEColor{ p.color.x * 255.f, p.color.y * 255.f, p.color.z * 255.f, 1.f };
+        s->color = CEColor{ p.color.r * 255.f, p.color.g * 255.f, p.color.b * 255.f, 1.f };
     }
     auto* ct = CrashoutsEngine::ECS::getInstance()->GetComponent<Component::TransformComponent>(m_coreEntity);
     auto* cs = CrashoutsEngine::ECS::getInstance()->GetComponent<Component::ShapeComponent>(m_coreEntity);
@@ -992,7 +993,7 @@ void FireballEmitter::SyncEcs() {
         ct->position = m_corePos;
         ct->rotation = 0.f;
         ct->size = CEVec2{ m_coreRadius, m_coreRadius };
-        cs->color = CEColor{ m_coreColor.x, m_coreColor.y, m_coreColor.z, 1.f };
+        cs->color = CEColor{ m_coreColor.r, m_coreColor.g, m_coreColor.b, 1.f };
     }
 }
 
