@@ -120,7 +120,7 @@
                     {
                         "x": 1,
                         "y": 1,
-                        "asset": ""
+                        "asset": "tilemaps/Rock"
                     },
                     {
                         "x": 1,
@@ -156,6 +156,11 @@
                         "x": 3,
                         "y": 0,
                         "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 3,
+                        "y": 1,
+                        "asset": ""
                     },
                     {
                         "x": 4,
@@ -221,6 +226,11 @@
                         "x": 9,
                         "y": -1,
                         "asset": ""
+                    },
+                    {
+                        "x": 9,
+                        "y": 1,
+                        "asset": "tilemaps/Rock"
                     },
                     {
                         "x": 9,
@@ -269,7 +279,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": -36.27478790283203,
-                    "y": 130.6852569580078,
+                    "y": 125.36886596679688,
                     "z": 0.0
                 },
                 "size": {
@@ -278,7 +288,7 @@
                 }
             },
             "rigidbody": {
-                "mass": 4.5,
+                "mass": 7.0,
                 "restitutionCoeff": 0.0,
                 "maximumVelocity": {
                     "x": 0.0,
@@ -296,7 +306,7 @@
                 "enabled": true,
                 "position": {
                     "x": -36.27478790283203,
-                    "y": 130.6852569580078,
+                    "y": 125.36886596679688,
                     "z": 0.0
                 },
                 "offset": {
@@ -306,12 +316,12 @@
                 },
                 "min": {
                     "x": -48.57478713989258,
-                    "y": 101.33226013183594,
+                    "y": 96.015869140625,
                     "z": 0.0
                 },
                 "max": {
                     "x": -23.974788665771486,
-                    "y": 160.0382537841797,
+                    "y": 154.72186279296876,
                     "z": 0.0
                 }
             },
@@ -354,21 +364,21 @@
                     {
                         "className": "PlayerMovement",
                         "fields": {
-                            "moveSpeed": 200.0,
-                            "maxRunSpeed": 100.0,
-                            "jumpPower": 20000.0,
+                            "moveSpeed": 2000.0,
+                            "maxRunSpeed": 200.0,
+                            "jumpPower": 50000.0,
                             "groundDrag": 0.15000000596046449,
                             "airDrag": 0.019999999552965165,
                             "gravityScale": 2.5,
                             "turnMultiplier": 2.0,
                             "frictionMultiplier": 500.0,
                             "gravityForceMultiplier": 10.0,
-                            "stepInterval": 0.07500000298023224,
+                            "stepInterval": 0.0,
                             "swapPause": 1.0,
                             "energyConsumption": 12.5,
-                            "normalMass": 7.0,
-                            "lightMass": 4.5,
-                            "CurrentEnergy": 0.0,
+                            "normalMass": 4.5,
+                            "lightMass": 3.0,
+                            "CurrentEnergy": 100.0,
                             "MaxEnergy": 100.0,
                             "alive": true,
                             "isPaused": false
@@ -377,7 +387,7 @@
                 ]
             },
             "camera": {
-                "zoom": 1.0,
+                "zoom": 0.23499999940395356,
                 "xBounds": {
                     "x": 0.0,
                     "y": 0.0
@@ -386,6 +396,152 @@
                     "x": 0.0,
                     "y": 0.0
                 }
+            },
+            "button": {
+                "buttonState": 0,
+                "shapeNormalColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "shapeHoveredColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.5
+                },
+                "shapePressedColor": {
+                    "x": 0.699999988079071,
+                    "y": 0.699999988079071,
+                    "z": 0.699999988079071,
+                    "w": 0.699999988079071
+                },
+                "textNormalColor": {
+                    "x": 0.30000001192092898,
+                    "y": 0.30000001192092898,
+                    "z": 0.30000001192092898,
+                    "w": 0.699999988079071
+                },
+                "textHoveredColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.0
+                },
+                "textPressedColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.5
+                }
+            }
+        },
+        {
+            "name": "Slime new",
+            "layer": {
+                "currentLayer": 16
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 161.93197631835938,
+                    "y": 97.63508605957031,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 72.0,
+                    "y": 67.0
+                }
+            },
+            "rigidbody": {
+                "mass": 1.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0
+            },
+            "collider": {
+                "ColliderType": 1,
+                "isTrigger": false,
+                "enabled": true,
+                "position": {
+                    "x": 160.43197631835938,
+                    "y": 94.13508605957031,
+                    "z": 0.0
+                },
+                "offset": {
+                    "x": -1.5,
+                    "y": -3.5,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": 138.03199768066407,
+                    "y": 80.13508605957031,
+                    "z": 0.0
+                },
+                "max": {
+                    "x": 182.8319549560547,
+                    "y": 108.13508605957031,
+                    "z": 0.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "images/Monsters\\Slime spritesheet.png",
+                "uvSize": {
+                    "x": 0.25,
+                    "y": 0.3333333432674408
+                },
+                "uvOffset": {
+                    "x": 0.25,
+                    "y": 0.3333333432674408
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "SlimeMovement",
+                        "fields": {
+                            "moveSpeed": 5000.0,
+                            "maxSpeed": 50.0,
+                            "turnTimer": 2.0,
+                            "detectionRange": 300.0,
+                            "gravityScale": 5.0,
+                            "grabRange": 100.0,
+                            "grabEnergy": 6.25,
+                            "MaxDist": 200.0
+                        }
+                    }
+                ]
             },
             "button": {
                 "buttonState": 0,
