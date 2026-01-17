@@ -14,6 +14,8 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserve
 #include <unordered_map>
 #include <memory>
 #include <vector>
+#include <list>
+#include <utility>
 
 #include <fmod_studio.hpp>
 #include <fmod.hpp>
@@ -30,7 +32,7 @@ namespace CrashoutsEngine
             static AudioSystem& instance();
 
             // Lifetime
-            bool init(const std::string& banksDir = "assets/audio/banks");
+            bool init(const std::string& banksDir);
             void Update();
             void shutdown();
 
@@ -73,6 +75,7 @@ namespace CrashoutsEngine
             bool listEventPathsFromBank(const std::string& bankFile, std::vector<std::string>& out);
             void inspectBankToConsole(const std::string& bankFile);
 			void listRawAudioFiles(std::vector<std::string>& out);
+            std::vector<std::string> listTaggedKeys() const;
 
             bool isInitialized() const { return mStudio != nullptr; }
 
@@ -81,16 +84,27 @@ namespace CrashoutsEngine
             FMOD::Channel* playSFXFile(const std::string& path);
             FMOD::Channel* playSFXFileEx(const std::string& path);
 
+
+            // Setters
             bool setMusicGroupVolume(float v01);
             bool setSFXGroupVolume(float v01);
             bool setMasterVolume(float v01);
+            bool setTaggedVolume(const std::string& key, float vol);
+
+            // Getters
+            float GetMusicVolume() const;
+            float GetSFXVolume() const;
+            float GetMasterVolume() const;
+            bool getTaggedVolume(const std::string& key, float& outVol) const;
+
+            bool fadeTagged(const std::string& key, float seconds);
 
             // Tagged playback
             bool playMusicFileTagged(const std::string& key, const std::string& path, bool loop = true);
 
             bool playSFXFileTagged(const std::string& key, const std::string& path, bool loop);
 
-            bool stopTagged(const std::string& key);
+            bool stopTagged(const std::string& key, float fadeOutSeconds = 0.0f);
 
             void setPaused(bool paused);
 
@@ -116,10 +130,20 @@ namespace CrashoutsEngine
                     }
                 }
             };
+
             struct CoreNoop
             {
                 void operator()(FMOD::System* /*p*/) const {}
             };
+
+            struct FadingChannel
+            {
+                FMOD::Channel* channel;
+                float currentVol;
+                float fadeRate;
+            };
+
+            std::vector<FadingChannel> mFadingChannels;
 
             std::unique_ptr<FMOD::Studio::System, StudioDeleter> mStudio;
             std::unique_ptr<FMOD::System, CoreNoop>              mCore;
@@ -132,6 +156,8 @@ namespace CrashoutsEngine
 
             //For tagged playback
             std::unordered_map<std::string, FMOD::Channel*> mTaggedChannels;
+
+            std::list<std::pair<FMOD::Channel*, FMOD::Sound*>> mActiveSounds;
 
             // Helpers
             FMOD::Studio::EventDescription* getEventDesc(const std::string& eventPath);
