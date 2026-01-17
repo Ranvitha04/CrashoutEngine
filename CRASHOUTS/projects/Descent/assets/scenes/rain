@@ -364,21 +364,21 @@
                     {
                         "className": "PlayerMovement",
                         "fields": {
-                            "moveSpeed": 200.0,
-                            "maxRunSpeed": 100.0,
+                            "moveSpeed": 2000.0,
+                            "maxRunSpeed": 200.0,
                             "jumpPower": 20000.0,
                             "groundDrag": 0.15000000596046449,
-                            "airDrag": 0.019999999552965165,
+                            "airDrag": 0.11999999731779099,
                             "gravityScale": 2.5,
                             "turnMultiplier": 2.0,
                             "frictionMultiplier": 500.0,
                             "gravityForceMultiplier": 10.0,
-                            "stepInterval": 0.07500000298023224,
+                            "footstepInterval": 0.07500000298023224,
                             "swapPause": 1.0,
                             "energyConsumption": 12.5,
-                            "normalMass": 7.0,
-                            "lightMass": 4.5,
-                            "CurrentEnergy": 0.0,
+                            "normalMass": 4.5,
+                            "lightMass": 3.0,
+                            "CurrentEnergy": 100.0,
                             "MaxEnergy": 100.0,
                             "alive": true,
                             "isPaused": false
@@ -445,8 +445,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 327.16326904296877,
-                    "y": 126.51326751708985,
+                    "x": 173.1859130859375,
+                    "y": 50.04022216796875,
                     "z": 0.0
                 },
                 "size": {
@@ -472,8 +472,8 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 325.66326904296877,
-                    "y": 123.01326751708985,
+                    "x": 171.6859130859375,
+                    "y": 46.54022216796875,
                     "z": 0.0
                 },
                 "offset": {
@@ -482,13 +482,13 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 303.2632751464844,
-                    "y": 109.01325988769531,
+                    "x": 149.28591918945313,
+                    "y": 32.54021453857422,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 348.0632629394531,
-                    "y": 137.01327514648438,
+                    "x": 194.08590698242188,
+                    "y": 60.54022979736328,
                     "z": 0.0
                 }
             },
