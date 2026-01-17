@@ -22,6 +22,7 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserve
 #include "imgui.h" 
 #include "assetmanager.h"
 #include "frameratecontroller.h"
+#include "audioSystem.h"
 
 /// Default screen width before loading from file
 unsigned int Settings::screenWidth = 1280;
@@ -142,6 +143,34 @@ void Settings::SaveEditorSettings(const UI::UIState& uiState) {
     json.AddMember("fontScale", uiState.fontScale, allocator); 
     json.AddMember("fpsCap", FrameRateController::GetInstance().CAP(), allocator);
 
+	// --- 3. Audio Volumes ---
+    float musicVol = 1.0f;
+    float sfxVol = 1.0f;
+    auto& audio = CrashoutsEngine::Audio::AudioSystem::instance();
+    if (audio.isInitialized()) {
+        musicVol = audio.GetMusicVolume();
+        sfxVol = audio.GetSFXVolume();
+    }
+    else {
+        // Attempt to read previously saved values so we don't overwrite them with 0.
+        std::string existingPath = CrashoutsEngine::Assets::rootPath + "settings.json";
+        std::ifstream ifs(existingPath);
+        if (ifs.is_open()) {
+            rapidjson::IStreamWrapper isw(ifs);
+            rapidjson::Document prev;
+            prev.ParseStream(isw);
+            if (!prev.HasParseError()) {
+                if (prev.HasMember("musicVolume") && prev["musicVolume"].IsFloat())
+                    musicVol = prev["musicVolume"].GetFloat();
+                if (prev.HasMember("sfxVolume") && prev["sfxVolume"].IsFloat())
+                    sfxVol = prev["sfxVolume"].GetFloat();
+            }
+        }
+    }
+
+    json.AddMember("musicVolume", musicVol, allocator);
+    json.AddMember("sfxVolume", sfxVol, allocator);
+
     // 3. Save Colors
     // We create an array of arrays: [[r,g,b,a], [r,g,b,a], ...]
     rapidjson::Value colorArray(rapidjson::kArrayType);
@@ -225,6 +254,22 @@ void Settings::LoadEditorSettings(UI::UIState& uiState) {
 
     if (json.HasMember("fpsCap") && json["fpsCap"].IsInt()) {
         FrameRateController::GetInstance().SetTargetFPS(json["fpsCap"].GetInt());
+    }
+
+    // In case we use Master Volume later lul
+    /*if (json.HasMember("masterVolume") && json["masterVolume"].IsFloat()) {
+        float vol = json["masterVolume"].GetFloat();
+        CrashoutsEngine::Audio::AudioSystem::instance().setMasterVolume(vol);
+	}*/  
+
+    if (json.HasMember("musicVolume") && json["musicVolume"].IsFloat()) {
+        float vol = json["musicVolume"].GetFloat();
+        CrashoutsEngine::Audio::AudioSystem::instance().setMusicGroupVolume(vol);
+    }
+
+    if (json.HasMember("sfxVolume") && json["sfxVolume"].IsFloat()) {
+        float vol = json["sfxVolume"].GetFloat();
+        CrashoutsEngine::Audio::AudioSystem::instance().setSFXGroupVolume(vol);
     }
 
     // --- 3. Load Colors ---

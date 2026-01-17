@@ -6,7 +6,7 @@
 This file uses functionality defined in type GLApp to initialize an OpenGL
 context and implement a game loop.
 
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 *//*__________________________________________________________________________*/
 
@@ -236,12 +236,13 @@ void Init() {
         }
     );
 
-    // Generate and Load Assets and Manifest
+    CrashoutsEngine::Audio::AudioSystem::instance().init(CrashoutsEngine::Assets::rootPath + "audio/");
 
 #if USE_IMGUI_EDITOR
     CrashoutsEngine::Assets::GenerateAssetManifest();
 #endif
     CrashoutsEngine::Assets::AssetManager::GetInstance().LoadManifestAssets();
+
 
     //Component::Rendering::Get().Setup_VAO(); // Setup default quad VAO
     Component::Rendering::Initialize(); // Initializes the main shader
@@ -255,6 +256,8 @@ void Init() {
     /// register game states and start with main menu
     RegisterAllStates();
     InitGameStateManager(SCENE);
+
+    //CrashoutsEngine::Audio::AudioSystem::instance().init();
 
     CrashoutsEngine::ScriptSystem::InitializeAll(MonoManager::GetDomain(), MonoManager::GetAssembly());
 
@@ -347,8 +350,8 @@ void Update(double const& dt) {
             physicsSystem.Update(FrameRateController::GetInstance().FixedDT());
         }
         {
-            FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Audio");
-            CrashoutsEngine::Audio::AudioSystem::instance().Update();
+        FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Audio");
+        CrashoutsEngine::Audio::AudioSystem::instance().Update();
         }
         // process events if any associated with input devices
         //glfwPollEvents();
