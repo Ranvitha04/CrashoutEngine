@@ -24,6 +24,7 @@ namespace CrashoutsEngine
         private RigidBodyComponent rb;
         private TransformComponent tf;
         private Animator anim; // The Animator
+        private ColliderComponent col;
         private PlayerMovement playerScript;
 
         private bool isGrounded = false;
@@ -32,6 +33,7 @@ namespace CrashoutsEngine
         private bool isChasing = false;
         private bool isGrabbed = false;
         private float flipCooldown = 0.0f;
+        // private bool wasMouseDown = false; // Removed
 
         // NEW: Home Position
         private CEVec3 startPos;
@@ -45,6 +47,7 @@ namespace CrashoutsEngine
             rb = Entity.GetComponent<RigidBodyComponent>();
             tf = Entity.GetComponent<TransformComponent>();
             anim = Entity.GetComponent<Animator>(); // Get Animator
+            col = Entity.GetComponent<ColliderComponent>();
             playerScript = PlayerMovement.Instance;
 
             CollisionEvents.RegisterCollideEnter(Entity.ID, this.OnCollideEnter);
@@ -165,14 +168,14 @@ namespace CrashoutsEngine
                 targetState = "slimeChase";
             }
             // Priority 3: Moving (Patrolling or Returning)
-            else if (Math.Abs(rb.LinearVelocity.x) > 1.0f) // Simple threshold to detect movement
+            else if (Math.Abs(rb.LinearVelocity.x) > 1.0f) 
             {
                 targetState = "slimeWalk";
             }
             // Priority 4: Idle
             else
             {
-                targetState = "slimeIdle"; // Or "slimeWalk" if you don't have idle
+                targetState = "slimeIdle";
             }
 
             // Apply if changed
@@ -206,26 +209,17 @@ namespace CrashoutsEngine
 
         private void HandleGrabLogic()
         {
-            if (Input.IsMouseButtonDown(0))
+            bool isDown = Input.IsMouseButtonDown(0);
+            CEVec2 mousePos = Input.GetMouseWorldPosition();
+
+            if (isDown)
             {
-                CEVec2 mousePos = Input.GetMouseWorldPosition();
-                
-                if (isGrabbed)
+                // IF NOT GRABBED YET, CHECK IF MOUSE IS OVER
+                if (!isGrabbed)
                 {
-                    // Move towards mouse using velocity to respect collisions
-                    float dx = mousePos.x - tf.Position.x;
-                    float dy = mousePos.y - tf.Position.y;
-                    float dragSpeed = 15.0f; 
-
-                    rb.LinearVelocity = new CEVec3(dx * dragSpeed, dy * dragSpeed, 0);
-
-                    float val = grabEnergy * (float)Time.DT;
-                    playerScript.RemoveEnergy(val);
-                }
-                else
-                {
-                    float halfW = Math.Abs(tf.Size.x) * 0.5f + 20.0f;
-                    float halfH = Math.Abs(tf.Size.y) * 0.5f + 20.0f;
+                    // Only try to grab if we just clicked (optional, or just proximity check)
+                    float halfW = Math.Abs(tf.Size.x) * 0.5f + 40.0f; // Extra buffer
+                    float halfH = Math.Abs(tf.Size.y) * 0.5f + 40.0f;
 
                     bool mouseOver = mousePos.x >= tf.Position.x - halfW &&
                                      mousePos.x <= tf.Position.x + halfW &&
@@ -235,16 +229,66 @@ namespace CrashoutsEngine
                     if (mouseOver)
                     {
                         isGrabbed = true;
-                        rb.LinearVelocity = new CEVec3(0, 0, 0);
+                        rb.SetDynamic(false); // Disable physics while holding
+                        
+                        // Remove Enemy Layer immediately
+                        var layer = Entity.GetComponent<LayerComponent>();
+                        if (layer != null) layer.RemoveLayer("Enemy");
                     }
+                }
+
+                // IF GRABBED, UPDATE POSITION (COMPANION MODE)
+                if (isGrabbed && playerScript != null)
+                {
+                    var playerTf = playerScript.Entity.GetComponent<TransformComponent>();
+                    
+                    // Determine offset based on player direction
+                    float offsetX = 60.0f; 
+                    if (playerTf.Size.x < 0) offsetX = -60.0f; // If facing Left, offset Left
+
+                    CEVec3 targetPos = new CEVec3(playerTf.Position.x + offsetX, playerTf.Position.y - 5.0f, playerTf.Position.z);
+                    tf.Position = targetPos;
+                    rb.LinearVelocity = new CEVec3(0, 0, 0);
                 }
             }
             else
             {
-                if (isGrabbed) 
+                // MOUSE RELEASED -> TOSS
+                if (isGrabbed)
                 {
                     isGrabbed = false;
-                    rb.LinearVelocity = rb.LinearVelocity * 0.5f; // Dampen release
+                    rb.SetDynamic(true);
+
+                    // Add Enemy Layer back
+                    var layer = Entity.GetComponent<LayerComponent>();
+                    if (layer != null) layer.AddLayer("Enemy");
+
+                    // TOSS LOGIC (Parabolic)
+                    // Calculate vector from Player to Mouse
+                    if (playerScript != null)
+                    {
+                        var playerTf = playerScript.Entity.GetComponent<TransformComponent>();
+                        float dx = mousePos.x - playerTf.Position.x;
+                        float dy = mousePos.y - playerTf.Position.y;
+
+                        // Normalize and apply force
+                        float length = (float)Math.Sqrt(dx * dx + dy * dy);
+                        if (length > 0.001f)
+                        {
+                            dx /= length;
+                            dy /= length;
+                        }
+
+                        // Throw settings
+                        float throwForceX = 1500.0f; 
+                        float throwForceY = 1500.0f; // Always add some UP force for parabola
+
+                        // If aiming down, still give it a little arc? 
+                        // Or just trust the aim. Let's bias Y upwards slightly for a "toss" feel.
+                        if (dy < 0.2f) dy = 0.5f; 
+
+                        rb.LinearVelocity = new CEVec3(dx * throwForceX, dy * throwForceY, 0);
+                    }
                 }
             }
         }
