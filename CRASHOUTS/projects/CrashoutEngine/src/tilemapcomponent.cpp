@@ -29,10 +29,21 @@ __________________________________________________________________________*/
 #include "hierarchy.h"
 #include <filesystem>
 #include <cmath> // For std::floor
+#include "inputmanager.h"
 
 /*
 ----------------------------------------------------------------------------- */
 namespace CrashoutsEngine::TileMapUtils {
+
+	// Directions for scanning
+	enum class EdgeType { Top, Bottom, Left, Right };
+
+	// Simple struct to hold a generated line segment in Grid Space
+	struct SegmentDef {
+		int x1, y1; // Start Grid Coords
+		int x2, y2; // End Grid Coords
+		EdgeType edge;
+	};
 
 	using namespace CrashoutsEngine::Assets;
 
@@ -102,6 +113,137 @@ namespace CrashoutsEngine::TileMapUtils {
 		return mask;
 	}
 
+	// Helper to check if a specific grid cell is solid
+	bool IsSolid(const Component::TileMapComponent& map, int x, int y) {
+		// 1. Check if anything is painted there
+		auto it = map.gridData.find({ x, y });
+		if (it == map.gridData.end()) return false;
+
+		std::string assetName = it->second;
+
+		// 2. Get the Asset data
+		using namespace CrashoutsEngine::Assets;
+		TileMapAsset* asset = AssetManager::GetInstance().Get<TileMapAsset>(assetName);
+		if (!asset) return false;
+
+		// 3. Calculate the Rule Mask for this specific tile
+		// (We need to verify if this tile connects to its neighbors to find the right rule)
+		unsigned int mask = CalculateBitMask(const_cast<Component::TileMapComponent&>(map), x, y, assetName);
+
+		// 4. Find the matching RuleTile
+		const RuleTile* matchedRule = nullptr;
+		for (const RuleTile& rule : asset->GetTiles()) {
+			if (rule.ruleBitMap == mask) {
+				matchedRule = &rule;
+				break;
+			}
+		}
+
+		// 5. Fallback rule (Index 0) if no specific mask matched
+		if (!matchedRule && !asset->GetTiles().empty()) {
+			matchedRule = &asset->GetTiles()[0];
+		}
+
+		// 6. The Final Check: Does this specific rule have a collider?
+		if (matchedRule && matchedRule->colliderType != Collision::ColliderType::NONE) {
+			return true;
+		}
+
+		return false;
+	}
+
+	// The Greedy Algorithm
+	std::vector<SegmentDef> GenerateGreedySegments(const Component::TileMapComponent& map) {
+		std::vector<SegmentDef> segments;
+
+		if (map.gridData.empty()) return segments;
+
+		// 1. Determine Bounds of the current map
+		int minX = 99999, maxX = -99999, minY = 99999, maxY = -99999;
+		for (const auto& [pos, val] : map.gridData) {
+			if (pos.first < minX) minX = pos.first;
+			if (pos.first > maxX) maxX = pos.first;
+			if (pos.second < minY) minY = pos.second;
+			if (pos.second > maxY) maxY = pos.second;
+		}
+
+		// Add 1 to max to ensure we check the empty space right after the last tile
+		maxX++; maxY++;
+
+		// 2. Horizontal Pass (Find Top and Bottom edges)
+		for (int y = minY; y <= maxY; ++y) {
+			// Trackers for current line. -1 means no line currently active.
+			int startTop = -1;
+			int startBottom = -1;
+
+			for (int x = minX; x <= maxX; ++x) {
+				bool currSolid = IsSolid(map, x, y);
+				bool aboveSolid = IsSolid(map, x, y + 1);
+				bool belowSolid = IsSolid(map, x, y - 1);
+
+				// --- TOP EDGE LOGIC (Current is Solid, Above is Empty) ---
+				if (currSolid && !aboveSolid) {
+					if (startTop == -1) startTop = x; // Start new line
+				}
+				else {
+					if (startTop != -1) {
+						// Line ended, push it
+						segments.push_back({ startTop, y, x, y, EdgeType::Top });
+						startTop = -1;
+					}
+				}
+
+				// --- BOTTOM EDGE LOGIC (Current is Solid, Below is Empty) ---
+				if (currSolid && !belowSolid) {
+					if (startBottom == -1) startBottom = x; // Start new line
+				}
+				else {
+					if (startBottom != -1) {
+						segments.push_back({ startBottom, y, x, y, EdgeType::Bottom });
+						startBottom = -1;
+					}
+				}
+			}
+		}
+
+		// 3. Vertical Pass (Find Left and Right edges)
+		for (int x = minX; x <= maxX; ++x) {
+			int startLeft = -1;
+			int startRight = -1;
+
+			for (int y = minY; y <= maxY; ++y) {
+				bool currSolid = IsSolid(map, x, y);
+				bool leftSolid = IsSolid(map, x - 1, y);
+				bool rightSolid = IsSolid(map, x + 1, y);
+
+				// --- LEFT EDGE LOGIC (Current Solid, Left Empty) ---
+				if (currSolid && !leftSolid) {
+					if (startLeft == -1) startLeft = y;
+				}
+				else {
+					if (startLeft != -1) {
+						// Note: Storing Y in x1/x2 slots for convenience, handled in generation
+						segments.push_back({ x, startLeft, x, y, EdgeType::Left });
+						startLeft = -1;
+					}
+				}
+
+				// --- RIGHT EDGE LOGIC (Current Solid, Right Empty) ---
+				if (currSolid && !rightSolid) {
+					if (startRight == -1) startRight = y;
+				}
+				else {
+					if (startRight != -1) {
+						segments.push_back({ x, startRight, x, y, EdgeType::Right });
+						startRight = -1;
+					}
+				}
+			}
+		}
+
+		return segments;
+	}
+
 	void RebuildCache(Component::TileMapComponent& map, const Entity& parentEnt) {
 		if (!map.isCacheDirty) return;
 
@@ -112,13 +254,18 @@ namespace CrashoutsEngine::TileMapUtils {
 		// We destroy all old tile colliders and rebuild them. 
 		ECS* ecs = ECS::getInstance();
 
-		for (std::map < std::pair<int, int>, Entity>::const_iterator c = map.tileCache.begin(); c != map.tileCache.end(); ++c) {
-			Entity entityToDestroy = c->second;
-			// Remove the entity from its parent's list BEFORE destroying it
-			CrashoutsEngine::DetachChild(*ecs, entityToDestroy);
-			ecs->DestroyEntity(entityToDestroy);
+		for (auto const& [key, entityID] : map.tileCache) {
+			CrashoutsEngine::DetachChild(*ecs, entityID);
+			ecs->DestroyEntity(entityID);
 		}
 		map.tileCache.clear();
+
+		// B. Clear Segment Entities (Greedy Lines)
+		for (Entity entityID : map.segmentCache) {
+			CrashoutsEngine::DetachChild(*ecs, entityID);
+			ecs->DestroyEntity(entityID);
+		}
+		map.segmentCache.clear();
 
 		// Iterate over every painted tile
 		for (auto const& [pos, tileAssetName] : map.gridData) {
@@ -164,12 +311,10 @@ namespace CrashoutsEngine::TileMapUtils {
 			GLuint handle = Component::TextureRenderer::GetTextureHandle(matchedRule->texAssetName);
 			if (handle != 0) map.renderCache[pos] = handle;
 
-			// --- D. HANDLE PHYSICS (The Entity part) ---
-			// Parent as needed
-
+			// --- D. HANDLE PHYSICS (Per-Tile Entities) ---			
 			Entity ent = ecs->CreateEntity();
 
-			// Mark enttity as transient (Runtime only)
+			// Mark entity as transient (Runtime only)
 			ecs->AddComponent<Component::TransientComponent>(ent);
 
 			// 1. Name it for debugging
@@ -178,10 +323,7 @@ namespace CrashoutsEngine::TileMapUtils {
 
 			ecs->AddComponent<Component::LayerComponent>(ent, asset->GetLayerMask());
 
-			// Check if entity with tilemapcomponent has hierachy component
-			// if (!ecs->HasComponent<Component::ChildrenComponent>(parentEnt)) ecs->AddComponent<Component::ChildrenComponent>(parentEnt);
-
-			// Add Sprite Component?
+			// Add Sprite Component
 			Component::ShapeComponent s;
 			s.enableTexture = true;
 			s.textureName = matchedRule->texAssetName;
@@ -196,7 +338,8 @@ namespace CrashoutsEngine::TileMapUtils {
 			t.size = CEVec2((float)map.tileSize, (float)map.tileSize);
 
 			// 3. Collider
-			if (matchedRule->colliderType != Collision::ColliderType::NONE) {
+			if (matchedRule->colliderType != Collision::ColliderType::NONE && 
+				matchedRule->colliderType != Collision::ColliderType::AABB) {
 
 				// Prepare common variables
 				float halfW = t.size.x * 0.5f;
@@ -205,7 +348,7 @@ namespace CrashoutsEngine::TileMapUtils {
 				float rot = t.rotation;
 
 				std::unique_ptr<Collision::Collider> newCollider = nullptr;
-				Collision::ColliderType helperT = Collision::ColliderType::AABB; // Default
+				Collision::ColliderType helperT = Collision::ColliderType::CIRCLE; // Default
 
 				switch (matchedRule->colliderType) {
 					// --------------------------------------------------------
@@ -216,16 +359,6 @@ namespace CrashoutsEngine::TileMapUtils {
 						float radius = std::min(halfW, halfH);
 						newCollider = std::make_unique<Collision::Circle>(radius, tPos);
 						helperT = Collision::ColliderType::CIRCLE;
-						break;
-					}
-					// --------------------------------------------------------
-					// ColliderType::AABB (Axis Aligned Bounding Box)
-					// --------------------------------------------------------
-					case Collision::ColliderType::AABB: {
-						CEVec3 min{ tPos.x - halfW, tPos.y - halfH, 0.0f };
-						CEVec3 max{ tPos.x + halfW, tPos.y + halfH, 0.0f };
-						newCollider = std::make_unique<Collision::AABBRect>(min, max);
-						helperT = Collision::ColliderType::AABB;
 						break;
 					}
 					// --------------------------------------------------------
@@ -259,6 +392,8 @@ namespace CrashoutsEngine::TileMapUtils {
 						helperT = Collision::ColliderType::POLYGON;
 						break;
 					}
+					default:
+						break;
 				}
 				// Assign to Entity if created successfully
 				if (newCollider) {
@@ -282,13 +417,117 @@ namespace CrashoutsEngine::TileMapUtils {
 			// 7. Parent it (Optional, if your hierarchy system supports it)
 			CrashoutsEngine::AttachChild(*ecs, parentEnt, ent);
 		}
+	
+		// FOR LINE SEGMENTS
+		{
+			// Generate Optimized Physics Entities
+			std::vector<SegmentDef> segments = GenerateGreedySegments(map);
+			float tSize = (float)map.tileSize;
+
+			// Get Parent Z depth to keep things aligned
+			float parentZ = ecs->GetComponent<Component::TransformComponent>(parentEnt)->position.z;
+
+			// Create entity for collision data
+			for (const auto& seg : segments) {
+				Entity ent = ecs->CreateEntity();
+				ecs->AddComponent<Component::TransientComponent>(ent);
+				ecs->AddComponent<Component::NameComponent>(ent, "MapSegment");
+
+				// Static Rigidbody
+				ecs->AddComponent<Component::RigidBodyComponent>(ent, CEVec3{ 0,0,0 }, 0.0f, 0.0f);
+
+				// Add layer data
+				// 1. Find the asset name used at the start of this segment
+				if (map.gridData.count({ seg.x1, seg.y1 })) {
+					std::string aName = map.gridData.at({ seg.x1, seg.y1 });
+
+					// 2. Get Asset Data
+					TileMapAsset* segAsset = AssetManager::GetInstance().Get<TileMapAsset>(aName);
+					if (!segAsset) segAsset = AssetManager::GetInstance().Get<TileMapAsset>("tilemaps/" + aName);
+
+					// 3. Apply Layer
+					if (segAsset) {
+						ecs->AddComponent<Component::LayerComponent>(ent, segAsset->GetLayerMask());
+					}
+					else {
+						// Default layer if asset missing (Safety)
+						ecs->AddComponent<Component::LayerComponent>(ent, 0);
+					}
+				}
+
+				// --- Calculate World Points ---
+				CEVec3 startPos{ 0,0,0 };
+				CEVec3 endPos{ 0,0,0 };
+
+				// Coordinates are Grid coordinates (Integers).
+				// 0,0 Grid -> 0.0f World. 
+				// 1,0 Grid -> 32.0f World.
+
+				// Adjust based on Edge Type to align with the edge of the tile, not the center
+				switch (seg.edge) {
+				case EdgeType::Top:
+					// Top of row y. Spans x1 to x2.
+					startPos = { seg.x1 * tSize, (seg.y1 + 1) * tSize, parentZ };
+					endPos = { seg.x2 * tSize, (seg.y2 + 1) * tSize, parentZ };
+					break;
+				case EdgeType::Bottom:
+					// Bottom of row y. Spans x1 to x2.
+					startPos = { seg.x1 * tSize, seg.y1 * tSize, parentZ };
+					endPos = { seg.x2 * tSize, seg.y2 * tSize, parentZ };
+					break;
+				case EdgeType::Left:
+					// Left of col x. Spans y1 to y2.
+					startPos = { seg.x1 * tSize, seg.y1 * tSize, parentZ };
+					endPos = { seg.x1 * tSize, seg.y2 * tSize, parentZ };
+					break;
+				case EdgeType::Right:
+					// Right of col x. Spans y1 to y2.
+					startPos = { (seg.x1 + 1) * tSize, seg.y1 * tSize, parentZ };
+					endPos = { (seg.x1 + 1) * tSize, seg.y2 * tSize, parentZ };
+					break;
+				}
+
+				// --- Create Transform ---
+				// We position the entity at the MIDPOINT of the line
+				Component::TransformComponent& t = ecs->AddComponent<Component::TransformComponent>(ent);
+				t.position = (startPos + endPos) * 0.5f;
+				t.size = { 1.0f, 1.0f }; // Scale doesn't affect LineSegment logic usually, but good to keep 1
+				t.rotation = 0.0f;
+
+				// --- Create Line Collider ---
+				// Calculate Local P1 and P2 relative to the center (Transform)
+				CEVec3 localP1 = startPos - t.position;
+				CEVec3 localP2 = endPos - t.position;
+
+				auto lineCol = std::make_unique<Collision::LineSegment>(localP1, localP2);
+				lineCol->ColliderType = Collision::ColliderType::LINE;
+
+				// Set Normal based on edge type (Important for physics resolution)
+				CEVec3 normal{ 0,0,0 };
+				if (seg.edge == EdgeType::Top) normal = { 0, 1, 0 };
+				else if (seg.edge == EdgeType::Bottom) normal = { 0, -1, 0 };
+				else if (seg.edge == EdgeType::Left) normal = { -1, 0, 0 };
+				else if (seg.edge == EdgeType::Right) normal = { 1, 0, 0 };
+
+				lineCol->SetNormal(normal);
+
+				ecs->AddComponent<Component::ColliderComponent>(ent, Component::ColliderComponent{ std::move(lineCol) });
+
+				// Parent it
+				CrashoutsEngine::AttachChild(*ecs, parentEnt, ent);
+
+				// Cache it using a unique key 
+				// For simplicity: We just add it to tileCache using the Start Grid Pos as key.
+				map.segmentCache.push_back(ent);
+			}
+		}
+
+		map.isCacheDirty = false;
 
 		std::cout << "TileMapComponent: Cache Rebuilt. Tiles: " << map.tileCache.size() << "\n";
 		map.isCacheDirty = false;
 	}
 }
-
-#include "inputmanager.h"
 
 namespace CrashoutsEngine::Editor {
 
