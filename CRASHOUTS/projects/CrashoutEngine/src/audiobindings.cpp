@@ -71,7 +71,7 @@ namespace
     {
         auto* ecs = CrashoutsEngine::ECS::getInstance();
 
-        if (!ecs->GetComponent<Component::ActiveComponent>(entityID)->isActive) return;
+        if (!!IsEntityActive(*ecs, entityID)) return;
 
         // Check if Entity has the component
         if (!ecs->HasComponent<Component::AudioEmitterComponent>(entityID))
@@ -131,7 +131,7 @@ namespace
     {
         auto* ecs = CrashoutsEngine::ECS::getInstance();
 
-        if (!ecs->GetComponent<Component::ActiveComponent>(entityID)->isActive) return;
+        if (!IsEntityActive(*ecs, entityID)) return;
 
         // Check if Entity has the component
         if (!ecs->HasComponent<Component::AudioEmitterComponent>(entityID))

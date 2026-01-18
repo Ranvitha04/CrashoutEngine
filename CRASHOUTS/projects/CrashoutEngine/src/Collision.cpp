@@ -857,7 +857,7 @@ namespace Collision {
 
 		// Force all colliders to match their Transform position BEFORE we calculate collisions.
 		for (CrashoutsEngine::Entity& entity : colliderEntities) {
-			if (!globalECS.GetComponent<Component::ActiveComponent>(entity)->isActive) continue;
+			if (!IsEntityActive(globalECS, entity)) continue;
 
 			if (globalECS.HasComponent<Component::TransformComponent>(entity)) {
 				auto* transform = globalECS.GetComponent<Component::TransformComponent>(entity);
@@ -875,7 +875,7 @@ namespace Collision {
 		// 2. Insert into QuadTree
 		quadTree.Clear();
 		for (CrashoutsEngine::Entity& entity1 : colliderEntities) { // Changed from globalEntities
-			if (!globalECS.GetComponent<Component::ActiveComponent>(entity1)->isActive) continue;
+			if (!IsEntityActive(globalECS, entity1)) continue;
 
 			if (!globalECS.HasComponent<Component::TransformComponent>(entity1)) continue;
 			auto* collider = globalECS.GetComponent<Component::ColliderComponent>(entity1);
@@ -888,7 +888,7 @@ namespace Collision {
 		
 		/*DETECT COLLISION AND UPDATE COLLISION EVENTS MEMBER*/
 		for (CrashoutsEngine::Entity& entity1 : colliderEntities) {
-			if (!globalECS.GetComponent<Component::ActiveComponent>(entity1)->isActive) continue;
+			if (!IsEntityActive(globalECS, entity1)) continue;
 
 			if (!globalECS.HasComponent<Component::TransformComponent>(entity1)) continue;			
 			auto* collider = globalECS.GetComponent<Component::ColliderComponent>(entity1);
@@ -904,7 +904,7 @@ namespace Collision {
 			quadTree.Query(region, collidableObjects);
 
 			for (CrashoutsEngine::Entity const& entity2 : collidableObjects) {
-				if (!globalECS.GetComponent<Component::ActiveComponent>(entity2)->isActive) continue;
+				if (!IsEntityActive(globalECS, entity2)) continue;
 
 				if (entity1 == entity2) continue;
 

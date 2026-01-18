@@ -366,7 +366,7 @@ void Update(double const& dt) {
 
             bool isActive = true;
             if (ecs.HasComponent<Component::ActiveComponent>(entityID)) {
-                isActive = ecs.GetComponent<Component::ActiveComponent>(entityID)->isActive;
+                isActive = !IsEntityActive(ecs, entityID);
             }
 
             // If inactive, force pause. If active, unpause (only if it was playing).

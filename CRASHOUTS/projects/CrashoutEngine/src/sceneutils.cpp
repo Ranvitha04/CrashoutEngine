@@ -147,7 +147,7 @@ namespace Scene {
 			}
 
 			for (const Entity& id : textArray.indexToEntity) {
-				if (!globalECS.GetComponent<ActiveComponent>(id)->isActive) continue;
+				if (!IsEntityActive(globalECS, id)) continue;
 
 				TextComponent* tc = globalECS.GetComponent<TextComponent>(id);
 				float depthZ = 0.0f;
@@ -267,7 +267,7 @@ namespace Scene {
 			const ECS::ComponentArray<ButtonComponent>& buttonArray = globalECS.GetComponentArray<ButtonComponent>();
 
 			for (const Entity& id : buttonArray.indexToEntity) {
-				if (!globalECS.GetComponent<ActiveComponent>(id)->isActive) continue;
+				if (!IsEntityActive(globalECS, id)) continue;
 
 				// Some weird bug here, ignore button interaction if no GUI component
 				GuiComponent* g = globalECS.GetComponent<GuiComponent>(id);
@@ -360,7 +360,7 @@ namespace Scene {
 
 			// 2. Detect clicks on input fields
 			for (const Entity& id : textInputArray.indexToEntity) {
-				if (!globalECS.GetComponent<ActiveComponent>(id)->isActive) continue;
+				if (!IsEntityActive(globalECS, id)) continue;
 
 				TransformComponent* t = globalECS.GetComponent<TransformComponent>(id);
 				UILayoutComponent* u = globalECS.GetComponent<UILayoutComponent>(id);
@@ -471,7 +471,7 @@ namespace Scene {
 			// Iterate over the single ParticleComponent type
 			auto& particleArray = globalECS.GetComponentArray<ParticleComponent>();
 			for (const Entity& id : particleArray.indexToEntity) {
-				if (!globalECS.GetComponent<ActiveComponent>(id)->isActive) continue;
+				if (!IsEntityActive(globalECS, id)) continue;
 
 				ParticleComponent* pc = globalECS.GetComponent<ParticleComponent>(id);
 				if (pc) {
@@ -489,7 +489,7 @@ namespace Scene {
 			// Iterate over the single ParticleComponent type
 			auto& particleArray = globalECS.GetComponentArray<ParticleComponent>();
 			for (const Entity& id : particleArray.indexToEntity) {
-				if (!globalECS.GetComponent<ActiveComponent>(id)->isActive) continue;
+				if (!IsEntityActive(globalECS, id)) continue;
 
 				ParticleComponent* pc = globalECS.GetComponent<ParticleComponent>(id);
 				if (pc) {
@@ -870,7 +870,7 @@ namespace Scene {
 		screenEntities.reserve(shapeArray.indexToEntity.size());
 
 		for (const Entity& id : shapeArray.indexToEntity) {
-			if (!globalECS.GetComponent<ActiveComponent>(id)->isActive) continue;
+			if (!IsEntityActive(globalECS, id)) continue;
 
 			auto* sc = globalECS.GetComponent<ShapeComponent>(id);
 			if (sc->isWorldSpace) worldEntities.push_back(id);

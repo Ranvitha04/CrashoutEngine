@@ -172,7 +172,7 @@ namespace CollisionGizmos {
 		}
 
 		for (auto e : collArr.indexToEntity) {
-			if (!ecs.GetComponent<ActiveComponent>(e)->isActive) continue;
+			if (!IsEntityActive(ecs, e)) continue;
 			Component::ColliderComponent const* pColliderComp = ecs.GetComponent<Component::ColliderComponent>(e);
 
 			if (!pColliderComp || !pColliderComp->collider) continue;

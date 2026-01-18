@@ -102,7 +102,7 @@ namespace CrashoutsEngine
 
             // --- ACTIVE CHECK ---
             if (ecs.HasComponent<ActiveComponent>(entityID)) {
-                if (!ecs.GetComponent<ActiveComponent>(entityID)->isActive) {
+                if (!IsEntityActive(ecs, entityID)) {
                     continue; // Skip Start/Update if disabled
                 }
             }
@@ -125,7 +125,7 @@ namespace CrashoutsEngine
 
             // --- ACTIVE CHECK ---
             if (ecs.HasComponent<ActiveComponent>(entityID)) {
-                if (!ecs.GetComponent<ActiveComponent>(entityID)->isActive) {
+                if (!IsEntityActive(ecs, entityID)) {
                     continue; // Skip FixedUpdate if disabled
                 }
             }

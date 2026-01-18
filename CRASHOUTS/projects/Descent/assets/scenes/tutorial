@@ -1,0 +1,20 @@
+{
+    "entities": [],
+    "layers": {
+        "Default": 0,
+        "Enemy": 4,
+        "Energy": 8,
+        "Ground": 2,
+        "Player": 1
+    },
+    "quadtree": {
+        "min": {
+            "x": -2000.0,
+            "y": -2000.0
+        },
+        "max": {
+            "x": 2000.0,
+            "y": 2000.0
+        }
+    }
+}

@@ -1639,8 +1639,16 @@
             "path": "test"
         },
         {
+            "name": "test2",
+            "path": "test2"
+        },
+        {
             "name": "tristan",
             "path": "tristan"
+        },
+        {
+            "name": "tutorial",
+            "path": "tutorial"
         }
     ],
     "shaders": [
