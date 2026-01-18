@@ -19,7 +19,7 @@ namespace CrashoutsEngine
 
         [SerializeField] public float frictionMultiplier = 500.0f;
         [SerializeField] public float gravityForceMultiplier = 10.0f;
-        [SerializeField] public float stepInterval = 0.075f;
+        [SerializeField] public float footstepInterval = 0.075f;
         [SerializeField] public float swapPause = 1f;
         [SerializeField] public float energyConsumption = 12.5f;
 
@@ -48,7 +48,7 @@ namespace CrashoutsEngine
         private TransformComponent tf;
         private Animator anim;
 
-        private float stepTimer = 0.0f;
+        private float footstepTimer = 0.0f;
         private Random rng = new Random();
 
         public bool alive = true;
@@ -159,18 +159,18 @@ namespace CrashoutsEngine
             // Only play sound if moving, grounded, and NOT switching
             if (horizontalInput != 0.0f && IsGrounded && !isSwitching)
             {
-                stepTimer -= (float)Time.DT;
-                if (stepTimer <= 0.0f)
+                footstepTimer -= (float)Time.DT;
+                if (footstepTimer <= 0.0f)
                 {
                     int index = rng.Next(1, 7);
                     string soundName = "footstep" + index;
                     AudioManager.GetInstance().Play(soundName);
-                    stepTimer = stepInterval;
+                    footstepTimer = footstepInterval;
                 }
             }
             else
             {
-                stepTimer = 0.0f;
+                footstepTimer = 0.0f;
             }
 
             // 6. DETERMINE ANIMATION STATE (The Fix)

@@ -22,7 +22,7 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserv
 #include <imgui.h>
 #include <algorithm>
 #include <filesystem>
-#include <numeric>
+//#include <numeric>
 #include <fstream>
 #include "debugdefaults.h"
 #include "debugAssetLoader.h"
@@ -46,6 +46,7 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserv
 #include "keyframe.h" 
 #include "hierarchycomponent.h"
 #include "particleComponent.h"
+#include "activecomponent.h"
 
 // FOR GAME GUI
 #include "buttoncomponent.h"
@@ -235,6 +236,18 @@ namespace {
 			if (has(ecs, e)) ecs.RemoveComponent<Component::NameComponent>(e);
 		}
 		void drawInspector(ECS& ecs, Entity e) override {
+			
+			// For active component (Set gameobject active or not active)
+			if (auto* ac = ecs.GetComponent<Component::ActiveComponent>(e)) {
+				ImGui::PushID("ActiveToggle");
+				UIHelpers::DrawUndoableBool("Enable GameObject##Active", ac->isActive);
+				ImGui::PopID();
+			}
+			// Add active component if not yet created
+			else {
+				ecs.AddComponent<Component::ActiveComponent>(e, true);
+			}
+
 			if (auto* c = ecs.GetComponent<Component::NameComponent>(e)) {
 				UIHelpers::DrawUndoableString("Entity Name", c->name);
 			}
@@ -713,6 +726,84 @@ namespace {
 			// Texture Name (Keep DragDrop logic, simplified here to String Input for brevity)
 			UIHelpers::DrawUndoableString("Texture Asset", sc->textureName);
 
+			// Drag & Drop support (ASSET/PAYLOAD)
+			if (ImGui::BeginDragDropTarget()) {
+				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSET/PAYLOAD")) {
+					if (payload->Data && payload->DataSize == sizeof(AssetDragPayload)) {
+						const auto* d = static_cast<const AssetDragPayload*>(payload->Data);
+						if (d->kind == AssetKind::Texture) {
+							std::string oldVal = sc->textureName;
+							std::string newVal = std::string(d->relPath);
+							sc->textureName = newVal;
+							UndoManager::GetInstance().AddCommand(
+								std::make_unique<ChangeValueCommand<std::string>>(oldVal, newVal, [sc](const std::string& v) { sc->textureName = v; })
+							);
+						}
+					}
+				}
+				ImGui::EndDragDropTarget();
+			}
+
+			// Search / pick popup button
+			ImGui::SameLine();
+			float btnSize = ImGui::GetFrameHeight();
+			if (ImGui::Button("...", ImVec2(btnSize, btnSize))) {
+				ImGui::OpenPopup("PickShapeTexturePopup");
+			}
+
+			if (ImGui::BeginPopupModal("PickShapeTexturePopup", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
+				namespace fs = std::filesystem;
+				static std::vector<std::string> s_assets;
+				static bool s_scanned = false;
+				static char s_filter[128] = "";
+
+				if (ImGui::Button("Refresh")) s_scanned = false;
+				ImGui::SameLine();
+				ImGui::SetNextItemWidth(-1);
+				ImGui::InputTextWithHint("##tex_filter", "filter...", s_filter, sizeof(s_filter));
+
+				if (!s_scanned) {
+					s_scanned = true;
+					s_assets.clear();
+					const std::string assetRoot = CrashoutsEngine::Assets::rootPath + "images";
+					try {
+						if (fs::exists(assetRoot)) {
+							for (auto& p : fs::recursive_directory_iterator(assetRoot)) {
+								if (!p.is_regular_file()) continue;
+								std::string ext = p.path().extension().string();
+								std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+								if (ext == ".png" || ext == ".jpg" || ext == ".jpeg" || ext == ".tga" || ext == ".bmp") {
+									std::string rel = fs::relative(p.path(), assetRoot).generic_string();
+									s_assets.push_back(rel);
+								}
+							}
+							std::sort(s_assets.begin(), s_assets.end());
+						}
+					}
+					catch (...) { /* ignore scan errors */ }
+				}
+
+				ImGui::Separator();
+				ImGui::BeginChild("tex_list", ImVec2(420, 300), true);
+				for (const auto& a : s_assets) {
+					if (s_filter[0] && a.find(s_filter) == std::string::npos) continue;
+					if (ImGui::Selectable(a.c_str(), sc->textureName == a)) {
+						std::string oldVal = sc->textureName;
+						sc->textureName = a;
+						UndoManager::GetInstance().AddCommand(
+							std::make_unique<ChangeValueCommand<std::string>>(oldVal, sc->textureName, [sc](const std::string& v) { sc->textureName = v; })
+						);
+						ImGui::CloseCurrentPopup();
+						break;
+					}
+				}
+				ImGui::EndChild();
+
+				ImGui::Separator();
+				if (ImGui::Button("Cancel")) ImGui::CloseCurrentPopup();
+				ImGui::EndPopup();
+			}
+
 			// UVs
 			if (sc->enableTexture) {
 				UIHelpers::DrawUndoableInt("U Wrap", sc->wrapModeU);
@@ -792,10 +883,19 @@ namespace {
 			if (!has(ecs, e)) ecs.AddComponent<Component::AudioEmitterComponent>(e);
 		}
 		void remove(ECS& ecs, Entity e) override {
-			// Stop audio before removal
 			if (auto* c = ecs.GetComponent<AudioEmitterComponent>(e)) {
-				if (c->inst) { c->inst->stop(FMOD_STUDIO_STOP_IMMEDIATE); c->inst->release(); }
-				if (c->channel) c->channel->stop();
+				// Stop Event
+				if (c->inst && c->inst->isValid()) {
+					c->inst->stop(FMOD_STUDIO_STOP_IMMEDIATE);
+					c->inst->release();
+				}
+				// Stop Raw Channel
+				if (c->channel) {
+					bool playing = false;
+					if (c->channel->isPlaying(&playing) == FMOD_OK && playing) {
+						c->channel->stop();
+					}
+				}
 			}
 			if (has(ecs, e)) ecs.RemoveComponent<AudioEmitterComponent>(e);
 		}
@@ -804,49 +904,60 @@ namespace {
 			auto* c = ecs.GetComponent<AudioEmitterComponent>(e);
 			if (!c) return;
 
-			// Event path text
-			ImGui::SeparatorText("Event");
+			if (c->channel) {
+				bool playing = false;
+				FMOD_RESULT r = c->channel->isPlaying(&playing);
+				if (r != FMOD_OK || !playing) {
+					c->channel = nullptr;
+				}
+			}
+			if (c->inst) {
+				if (!c->inst->isValid()) {
+					c->inst = nullptr;
+				}
+				else {
+					FMOD_STUDIO_PLAYBACK_STATE state;
+					c->inst->getPlaybackState(&state);
+					if (state == FMOD_STUDIO_PLAYBACK_STOPPED) {
+						c->inst->release();
+						c->inst = nullptr;
+					}
+				}
+			}
+
+			ImGui::SeparatorText("Audio Source");
 
 			char buf[256]{};
 			if (c->eventPath.size() < sizeof(buf)) std::memcpy(buf, c->eventPath.data(), c->eventPath.size());
-			ImGui::SetNextItemWidth(ImGui::GetFontSize() * 18.0f);
-			ImGui::InputTextWithHint("##event_path", "event:/…", buf, sizeof(buf));
-			if (ImGui::IsItemEdited() || ImGui::IsItemDeactivatedAfterEdit()) {
+
+			ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x - 30);
+			if (ImGui::InputTextWithHint("##event_path", "event:/... or assets/audio/...", buf, sizeof(buf))) {
 				c->eventPath = buf;
 			}
 
+			// Drag Drop Target
 			if (ImGui::BeginDragDropTarget()) {
 				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSET/PAYLOAD")) {
-					// Hard guard: ignore wrong payload types
-					if (!payload->Data || payload->DataSize != sizeof(AssetDragPayload)) {
-						LOGW(Debug, "Dropped non-audio payload on AudioComponent eventPath");
-					}
-					else {
+					if (payload->Data && payload->DataSize == sizeof(AssetDragPayload)) {
 						const auto* d = static_cast<const AssetDragPayload*>(payload->Data);
-
-						// Only accept Audio assets here
 						if (d->kind == AssetKind::Audio) {
-							std::filesystem::path relPath = d->relPath;
-							std::string ext = relPath.extension().string();
+							std::filesystem::path rp = d->relPath;
+							std::string ext = rp.extension().string();
 							std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
 
-							std::string rel = relPath.generic_string();
-							const std::string prefix = "audio/";
-							auto pos = rel.find(prefix);
-							if (pos == 0) {
-								rel = rel.substr(prefix.size());
+							// Smart format detection
+							if (ext == ".bank") {
+								c->eventPath = "event:/";
 							}
-
-							if (ext == ".wav" || ext == ".ogg" || ext == ".mp3") {
-								// raw clip → just store relative path
-								c->eventPath = rel;
+							else if (ext == ".wav" || ext == ".ogg" || ext == ".mp3") {
+								std::string full = rp.generic_string();
+								if (full.find("assets/audio/") == 0) full = full.substr(13);
+								c->eventPath = full;
 							}
 							else {
-								// bank event → strip extension and prepend event:/
-								if (auto dot = rel.find_last_of('.'); dot != std::string::npos) {
-									rel.erase(dot);
-								}
-								c->eventPath = std::string("event:/") + rel;
+								std::string rel = rp.generic_string();
+								if (auto dot = rel.find_last_of('.'); dot != std::string::npos) rel.erase(dot);
+								c->eventPath = "event:/" + rel;
 							}
 						}
 					}
@@ -855,187 +966,189 @@ namespace {
 			}
 
 			ImGui::SameLine();
-			ImGui::TextDisabled("Event");
-
-			ImGui::SameLine();
-			if (ImGui::SmallButton("Choose...")) {
-				ImGui::OpenPopup("Pick Audio Event");
+			// Search button to open popup
+			if (ImGui::Button("...")) {
+				ImGui::OpenPopup("audio_select_popup");
 			}
 
-			if (ImGui::BeginPopupModal("Pick Audio Event", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
-				namespace fs = std::filesystem;
-				static std::vector<std::string> s_audioDisplay;
-				static std::vector<std::string> s_audioEvent;
-				static bool s_scanned = false;
+			// Popup logic for audio selection
+			if (ImGui::BeginPopup("audio_select_popup")) {
+				static std::vector<std::string> s_audioList;
+				static bool s_needsRefresh = true;
 
-				// one-time (per session) scan
-				if (!s_scanned) {
-					s_scanned = true;
-					s_audioDisplay.clear();
-					s_audioEvent.clear();
+				// Refresh logic (do it on open or if empty)
+				if (s_needsRefresh || s_audioList.empty()) {
+					s_audioList.clear();
+					auto& audio = Audio::AudioSystem::instance();
 
-					const fs::path assetRoot = "assets/audio";
-					auto to_event_like = [&](const fs::path& p) -> std::string {
-						// turn assets/audio/SFX/Beep.wav -> event:/SFX/Beep
-						fs::path rel = fs::relative(p, assetRoot);
-						fs::path withoutExt = rel;
-						if (withoutExt.has_extension()) withoutExt.replace_extension();
-						std::string e = withoutExt.generic_string();
+					// FMOD Events
+					audio.listAllEventPaths(s_audioList);
 
-						// Capitalization/punctuation are preserved; prepend event:/ and normalize slashes.
-						return "event:/" + e;
-						};
+					// Raw files
+					std::vector<std::string> raw;
+					audio.listRawAudioFiles(raw);
+					for (auto& f : raw) s_audioList.push_back("[RAW] assets/audio/" + f);
 
-					try {
-						for (auto& entry : fs::recursive_directory_iterator(assetRoot)) {
-							if (!entry.is_regular_file()) continue;
+					std::sort(s_audioList.begin(), s_audioList.end());
+					s_needsRefresh = false;
+				}
 
-							std::string ext = entry.path().extension().string();
-							std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+				static ImGuiTextFilter filter;
+				filter.Draw("Filter", 200);
 
-							std::string disp = fs::relative(entry.path(), assetRoot).generic_string();
+				ImGui::Separator();
 
-							if (ext == ".wav" || ext == ".mp3" || ext == ".ogg")
-							{
-								// raw audio file → store relative path
-								s_audioDisplay.push_back(disp);
-								s_audioEvent.push_back(disp);   // <-- no "event:/"
-							}
+				if (ImGui::BeginChild("audio_list_scroll", ImVec2(300, 400), true)) {
+					for (const auto& item : s_audioList) {
+						if (!filter.PassFilter(item.c_str())) continue;
 
-							// Include common authoring/artifacts; refine as needed for your pipeline
-							else if (ext == ".bank") {
-								std::string rel = fs::relative(entry.path(), assetRoot).generic_string(); // e.g. "SFX/explosion.wav"
-
-								s_audioDisplay.push_back(rel);
-								s_audioEvent.push_back(rel);   // this will become c->eventPath
-							}
+						std::string actualPath = item;
+						// Strip the [RAW] prefix if present for selection logic
+						if (actualPath.rfind("[RAW] ", 0) == 0) {
+							actualPath = actualPath.substr(6);
 						}
 
-						// Sort by display name
-						std::vector<size_t> idx(s_audioDisplay.size());
-						std::iota(idx.begin(), idx.end(), 0);
-						std::sort(idx.begin(), idx.end(), [&](size_t a, size_t b) {
-							return s_audioDisplay[a] < s_audioDisplay[b];
-							});
-
-						std::vector<std::string> disp2, ev2;
-						disp2.reserve(idx.size()); ev2.reserve(idx.size());
-						for (size_t i : idx) { disp2.push_back(std::move(s_audioDisplay[i])); ev2.push_back(std::move(s_audioEvent[i])); }
-						s_audioDisplay.swap(disp2); s_audioEvent.swap(ev2);
+						// Selection
+						if (ImGui::Selectable(item.c_str(), c->eventPath == actualPath)) {
+							c->eventPath = actualPath;
+							ImGui::CloseCurrentPopup();
+						}
 					}
-					catch (...) {
-						// swallow errors; empty list will be shown
-					}
+					ImGui::EndChild();
 				}
-
-				// Left: list
-				ImGui::BeginChild("audio_list", ImVec2(420, 300), true);
-				for (size_t i = 0; i < s_audioDisplay.size(); ++i) {
-					if (ImGui::Selectable(s_audioDisplay[i].c_str())) {
-						c->eventPath = s_audioEvent[i];
-
-						// reflect selection back to the read-only text box
-						std::strncpy(buf, c->eventPath.c_str(), sizeof(buf) - 1);
-						buf[sizeof(buf) - 1] = '\0';
-
-						ImGui::CloseCurrentPopup();
-						break;
-					}
-				}
-				ImGui::EndChild();
-
-				if (ImGui::Button("Rescan")) {
-					// allow rescanning if you add new audio during runtime
-					s_scanned = false;
-				}
-				ImGui::SameLine();
-				if (ImGui::Button("Cancel")) ImGui::CloseCurrentPopup();
-
 				ImGui::EndPopup();
 			}
 
-			UIHelpers::DrawUndoableFloat("Volume", c->volume, 0.01f, 0.f, 5.f);
-			UIHelpers::DrawUndoableFloat("Pitch", c->pitch, 0.01f, 0.25f, 4.f);
+			ImGui::TextDisabled("(?)");
+			if (ImGui::IsItemHovered()) ImGui::SetTooltip("Drag audio assets here or type path manually.");
+
+			UIHelpers::DrawUndoableFloat("Volume", c->volume, 0.01f, 0.0f, 2.0f);
+			UIHelpers::DrawUndoableFloat("Pitch", c->pitch, 0.01f, 0.1f, 3.0f);
 			UIHelpers::DrawUndoableBool("3D Spatial", c->spatial3D);
 
-			auto& audio = Audio::AudioSystem::instance();
-			bool hasRunning = (c->inst != nullptr) || (c->channel != nullptr);
-			// Create/Play/Stop lifecycle
-			if (ImGui::Button(hasRunning ? "Restart" : "Play")) {
-				if (!c->eventPath.empty()) {
-					// stop old instance if any
+			static bool s_loop = false;
+			if (ImGui::Checkbox("Looping", &s_loop)) {
+				if (c->channel) {
+					c->channel->setMode(s_loop ? FMOD_LOOP_NORMAL : FMOD_LOOP_OFF);
+				}
+			}
+
+			ImGui::Separator();
+
+			static float s_inspectorFade = 0.5f;
+			ImGui::SliderFloat("Stop Fade (s)", &s_inspectorFade, 0.0f, 5.0f);
+
+			bool isPlaying = (c->inst != nullptr) || (c->channel != nullptr);
+
+			if (isPlaying) {
+				ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.8f, 0.2f, 0.2f, 1.0f));
+				if (ImGui::Button("Stop", ImVec2(-1, 0))) {
+
+					// Stop Studio Event
 					if (c->inst) {
-						c->inst->stop(FMOD_STUDIO_STOP_IMMEDIATE);
-						c->inst->release();
-						c->inst = nullptr;
+						c->inst->stop(s_inspectorFade > 0.f ? FMOD_STUDIO_STOP_ALLOWFADEOUT : FMOD_STUDIO_STOP_IMMEDIATE);
 					}
 
+					// Stop Raw Channel (Using Tagged System for Fade)
 					if (c->channel) {
-						c->channel->stop();
+						std::string entityTag = "Entity_" + std::to_string((uint32_t)e);
+						Audio::AudioSystem::instance().stopTagged(entityTag, s_inspectorFade);
 						c->channel = nullptr;
 					}
-
-					// --- FMOD Studio event path ---
-					if (c->eventPath.rfind("event:/", 0) == 0) {
-						if (FMOD::Studio::EventInstance* inst = audio.createInstance(c->eventPath)) {
-							inst->setVolume(c->volume);
-							inst->setPitch(c->pitch);
-
-							if (c->spatial3D) {
-								if (auto* t = ecs.GetComponent<Component::TransformComponent>(e)) {
-									// your existing 3D attach code here
-								}
-							}
-
-							inst->start();
-							c->inst = inst;
-						}
-					}
-					// --- raw file path under assets/audio (wav/ogg/mp3) ---
-					else {
+				}
+				ImGui::PopStyleColor();
+			}
+			else {
+				if (ImGui::Button("Play", ImVec2(-1, 0))) {
+					if (!c->eventPath.empty()) {
+						auto& audio = Audio::AudioSystem::instance();
 						std::string path = c->eventPath;
-						if (path.rfind("assets/", 0) != 0)
-							path = "assets/audio/" + path;
 
-						// stop previous raw channel
-						if (c->channel) {
-							c->channel->stop();
-							c->channel = nullptr;
+						if (path.rfind("event:/", 0) == 0) {
+							if (auto* inst = audio.createInstance(path)) {
+								inst->setVolume(c->volume);
+								inst->setPitch(c->pitch);
+								inst->start();
+								c->inst = inst;
+							}
 						}
+						else {
+							// Fix path prefix
+							if (path.rfind("assets/", 0) != 0) path = "assets/audio/" + path;
 
-						// play new raw file and store channel
-						c->channel = audio.playSFXFileEx(path);
+							// Stop previous tagged sound
+							std::string entityTag = "Entity_" + std::to_string((uint32_t)e);
+							audio.stopTagged(entityTag, 0.05f);
 
-						if (c->channel)
-						{
-							c->channel->setVolume(c->volume);
-							c->channel->setPitch(c->pitch);
+							// Play new
+							if (audio.playSFXFileTagged(entityTag, path, s_loop)) {
+								audio.stopTagged(entityTag);
+								audio.playSFXFileTagged(entityTag, path, s_loop);
+							}
 						}
 					}
 				}
 			}
 
-			ImGui::SameLine();
-			if (ImGui::Button("Stop"))
-			{
-				if (c->inst) {
-					c->inst->stop(FMOD_STUDIO_STOP_ALLOWFADEOUT);
-					c->inst = nullptr;
+			if (ImGui::CollapsingHeader("Active Tagged Sounds", ImGuiTreeNodeFlags_DefaultOpen)) {
+				auto& audio = Audio::AudioSystem::instance();
+				auto tagged = audio.listTaggedKeys(); // vector<string>
+
+				if (tagged.empty()) {
+					ImGui::TextDisabled("No tagged sounds playing");
+				}
+				else {
+					for (const auto& tag : tagged) {
+						ImGui::PushID(tag.c_str());
+
+						// Row: tag label + Stop (fade) + ForceStop + volume slider
+						ImGui::TextUnformatted(tag.c_str());
+						ImGui::SameLine(ImGui::GetContentRegionAvail().x - 240);
+
+						// Stop with fade using inspector fade slider
+						if (ImGui::SmallButton(("FadeStop##" + tag).c_str())) {
+							audio.stopTagged(tag, s_inspectorFade);
+						}
+						ImGui::SameLine();
+
+						// Force immediate stop
+						if (ImGui::SmallButton(("StopNow##" + tag).c_str())) {
+							audio.stopTagged(tag, 0.0f);
+						}
+						ImGui::SameLine();
+
+						float vol = 1.0f;
+						if (audio.getTaggedVolume(tag, vol)) {
+							if (ImGui::SliderFloat(("Vol##" + tag).c_str(), &vol, 0.0f, 1.5f, "%.2f")) {
+								audio.setTaggedVolume(tag, vol);
+							}
+						}
+						else {
+							ImGui::TextDisabled("vol: n/a");
+						}
+
+						ImGui::PopID();
+					}
+				}
+			}
+
+			if (isPlaying) {
+				if (c->inst && c->inst->isValid()) {
+					c->inst->setVolume(c->volume);
+					c->inst->setPitch(c->pitch);
 				}
 				if (c->channel) {
-					c->channel->stop();
-					c->channel = nullptr;
+					c->channel->setVolume(c->volume);
+					c->channel->setPitch(c->pitch);
+					FMOD_MODE m;
+					c->channel->getMode(&m);
+					bool channelLooping = (m & FMOD_LOOP_NORMAL);
+					if (channelLooping != s_loop) {
+						c->channel->setMode(s_loop ? FMOD_LOOP_NORMAL : FMOD_LOOP_OFF);
+					}
 				}
-			}
 
-			// Live Updates
-			if (c->inst) {
-				c->inst->setVolume(c->volume);
-				c->inst->setPitch(c->pitch);
-			}
-			if (c->channel) {
-				c->channel->setVolume(c->volume);
-				c->channel->setPitch(c->pitch);
+				ImGui::ProgressBar(1.0f, ImVec2(-1, 2), "");
 			}
 		}
 	};
@@ -2370,14 +2483,35 @@ namespace CrashoutsEngine
 				UIHelpers::DrawUndoableBool("World Space", pc->useWorldSpace);
 				ImGui::PopItemWidth();
 
+				int prevMax = pc->maxParticles;
+
 				// Counts
-				int maxP = pc->maxParticles;
-				if (ImGui::DragInt("Max Count", &maxP, 1.0f, 0, 10000)) {
-					if (maxP < 0) maxP = 0;
-					pc->maxParticles = maxP;
+				// Define the logic that runs during Undo/Redo AND when the user finishes editing
+				auto ApplyParticleCounts = [pc](const int& val) {
+					int v = val;
+					if (v < 0) v = 0;
+
+					pc->maxParticles = v;
+
+					// Clamp emit rate if max is lower
+					if (pc->emitRate > (f32)pc->maxParticles) {
+						pc->emitRate = (f32)pc->maxParticles;
+					}
+
+					// Resize memory vectors
 					ParticleSystem::ParticleInit(*pc);
+				};
+
+				// Pass 'ApplyParticleCounts' as the custom setter for the Undo Command
+				UIHelpers::DrawUndoableInt("Max Count", pc->maxParticles, 1.0f, 0, 100000, ApplyParticleCounts);
+
+				// If the integer changed this frame, resize memory NOW.
+				// Do not wait for the mouse release.
+				if (pc->maxParticles != prevMax) {
+					ApplyParticleCounts(pc->maxParticles);
 				}
-				UIHelpers::DrawUndoableFloat("Rate (p/s)", pc->emitRate, 0.5f, 0.0f, 5000.0f);
+
+				UIHelpers::DrawUndoableFloat("Rate (p/s)", pc->emitRate, 0.5f, 0.0f, (f32)pc->maxParticles);
 			}
 
 			// --- 2. Shape ---
@@ -2395,6 +2529,20 @@ namespace CrashoutsEngine
 
 			if (pc->emissionShape == ParticleSystem::ParticleShape::CIRCLE) {
 				DrawMinMaxRow("Radius (Min / Max)", pc->radiusMin, pc->radiusMax, 0.1f, 0.0f, 0.0f);
+			}
+			else if (pc->emissionShape == ParticleSystem::ParticleShape::LINE) {
+				// Controls for Line Length
+				DrawMinMaxRow("Length (Min / Max)", pc->lengthMin, pc->lengthMax, 0.1f, 0.0f, 0.0f);
+			}
+			else if (pc->emissionShape == ParticleSystem::ParticleShape::SQUARE) {
+				// Controls for Square Area (Width/Height)
+				// Note: Since area is a Vec2, we need two rows or a Vec2 drawer
+
+				// X Axis (Width)
+				DrawMinMaxRow("Width (Min / Max)", pc->areaMin.x, pc->areaMax.x, 0.1f, 0.0f, 0.0f);
+
+				// Y Axis (Height)
+				DrawMinMaxRow("Height (Min / Max)", pc->areaMin.y, pc->areaMax.y, 0.1f, 0.0f, 0.0f);
 			}
 
 			// --- 3. Particle Properties (Compacted) ---

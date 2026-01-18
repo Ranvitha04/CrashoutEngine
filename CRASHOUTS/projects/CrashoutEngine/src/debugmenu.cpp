@@ -142,7 +142,11 @@ namespace UI { // --------------------------------------------------------------
 					if (currSceneName.empty()) RestartGameState();       // Legacy scene system
 					else {
 						ECS::getInstance()->Reset();
-						Serialization::LoadScenes(currSceneName);
+						if (currSceneName.empty()) RestartGameState();       // Legacy scene system
+						else {
+							g_PendingSceneName = currSceneName;
+							g_IsSceneLoadPending = true;
+						}
 					}
 					//if (!currSceneName.empty()) Serialization::SaveScenes(currSceneName);
 				}

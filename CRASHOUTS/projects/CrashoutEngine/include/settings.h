@@ -76,4 +76,8 @@ private:
     /// Current screen height
     static unsigned int screenHeight;
 
+    // --- GAME SETTINGS ---
+    static float MusicVolume;
+    static float SFXVolume;
+
 };

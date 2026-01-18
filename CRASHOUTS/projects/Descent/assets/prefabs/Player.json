@@ -1,0 +1,86 @@
+{
+    "prefabs": [
+        {
+            "type": "Box",
+            "name": "Player",
+            "transform": {
+                "position": {
+                    "x": -35.70806884765625,
+                    "y": 14.714649200439454,
+                    "z": 0.0
+                },
+                "rotation": 0.0,
+                "size": {
+                    "x": 62.0,
+                    "y": 72.50599670410156
+                }
+            },
+            "layer": {
+                "currentLayer": 8
+            },
+            "shape": {
+                "type": 0,
+                "color": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "enableTexture": true,
+                "textureName": "images/Character\\Normal Mode\\Chibi-Actions-SpriteSheet.png",
+                "uvSize": {
+                    "x": 0.3333333432674408,
+                    "y": 0.3333333432674408
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "thickness": 1.0,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0
+            },
+            "rigidbody": {
+                "mass": 4.5,
+                "restitution": 0.0,
+                "staticFriction": 0.0,
+                "dynamicFriction": 0.0,
+                "inertia": 0.0,
+                "invInertia": 0.0
+            },
+            "collider": {
+                "ColliderType": 1,
+                "isTrigger": false,
+                "enabled": true,
+                "position": {
+                    "x": -35.70806884765625,
+                    "y": 14.714649200439454,
+                    "z": 0.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": -48.0080680847168,
+                    "y": -14.638351440429688,
+                    "z": 0.0
+                },
+                "max": {
+                    "x": -23.408069610595704,
+                    "y": 44.067649841308597,
+                    "z": 0.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "PlayerMovement"
+                    }
+                ]
+            }
+        }
+    ]
+}

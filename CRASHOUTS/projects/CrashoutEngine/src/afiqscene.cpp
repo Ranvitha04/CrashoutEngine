@@ -181,8 +181,8 @@ namespace {
 // ============================================================================
 // Afiq scene audio state
 // ============================================================================
-static bool s_audioReady = false;
-static FMOD::Studio::EventInstance* s_menuMusic = nullptr;
+//static bool s_audioReady = false;
+//static FMOD::Studio::EventInstance* s_menuMusic = nullptr;
 
 // ============================================================================
 // Scene API
@@ -194,6 +194,7 @@ void LoadAfiq()
     //InitPrefabsOnce();
 
     // Audio init + banks
+    /*
     if (!s_audioReady) {
         s_audioReady = AudioSystem::instance().init("assets"); 
         if (s_audioReady) {
@@ -201,6 +202,7 @@ void LoadAfiq()
             AudioSystem::instance().loadBank("Music.bank");
         }
     }
+    */
 }
 
 void InitAfiq()
@@ -213,24 +215,24 @@ void InitAfiq()
 
     PrefabCreate(*ecs, "KF_Box");
 
-    if (!s_audioReady) return;
+    //if (!s_audioReady) return;
 
     // quick beep to prove audio works
-    AudioSystem::instance().playOneShot("event:/sfexbeep");
+    //AudioSystem::instance().playOneShot("event:/sfexbeep");
 
     // start menu music
-    s_menuMusic = AudioSystem::instance().createInstance("event:/Music/Menu");
-    if (s_menuMusic) {
-        s_menuMusic->start();
-    }
+    //s_menuMusic = AudioSystem::instance().createInstance("event:/Music/Menu");
+    //if (s_menuMusic) {
+    //    s_menuMusic->start();
+    //}
 }
 
 
 void UpdateAfiq()
 {
-    if (s_audioReady) {
-        AudioSystem::instance().Update();
-    }
+    //if (s_audioReady) {
+    //    AudioSystem::instance().Update();
+    //}
 
     ECS* ecs = ECS::getInstance();
     if (ecs) {
@@ -273,11 +275,11 @@ void RenderAfiq()
 
 void FreeAfiq()
 {
-    if (s_menuMusic) {
-        s_menuMusic->stop(FMOD_STUDIO_STOP_ALLOWFADEOUT);
-        s_menuMusic->release();
-        s_menuMusic = nullptr;
-    }
+    //if (s_menuMusic) {
+    //    s_menuMusic->stop(FMOD_STUDIO_STOP_ALLOWFADEOUT);
+    //    s_menuMusic->release();
+    //    s_menuMusic = nullptr;
+    //}
 }
 
 void UnloadAfiq()
