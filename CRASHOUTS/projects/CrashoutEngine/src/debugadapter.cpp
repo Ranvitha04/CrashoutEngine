@@ -2470,14 +2470,35 @@ namespace CrashoutsEngine
 				UIHelpers::DrawUndoableBool("World Space", pc->useWorldSpace);
 				ImGui::PopItemWidth();
 
+				int prevMax = pc->maxParticles;
+
 				// Counts
-				int maxP = pc->maxParticles;
-				if (ImGui::DragInt("Max Count", &maxP, 1.0f, 0, 10000)) {
-					if (maxP < 0) maxP = 0;
-					pc->maxParticles = maxP;
+				// Define the logic that runs during Undo/Redo AND when the user finishes editing
+				auto ApplyParticleCounts = [pc](const int& val) {
+					int v = val;
+					if (v < 0) v = 0;
+
+					pc->maxParticles = v;
+
+					// Clamp emit rate if max is lower
+					if (pc->emitRate > (f32)pc->maxParticles) {
+						pc->emitRate = (f32)pc->maxParticles;
+					}
+
+					// Resize memory vectors
 					ParticleSystem::ParticleInit(*pc);
+				};
+
+				// Pass 'ApplyParticleCounts' as the custom setter for the Undo Command
+				UIHelpers::DrawUndoableInt("Max Count", pc->maxParticles, 1.0f, 0, 100000, ApplyParticleCounts);
+
+				// If the integer changed this frame, resize memory NOW.
+				// Do not wait for the mouse release.
+				if (pc->maxParticles != prevMax) {
+					ApplyParticleCounts(pc->maxParticles);
 				}
-				UIHelpers::DrawUndoableFloat("Rate (p/s)", pc->emitRate, 0.5f, 0.0f, 5000.0f);
+
+				UIHelpers::DrawUndoableFloat("Rate (p/s)", pc->emitRate, 0.5f, 0.0f, (f32)pc->maxParticles);
 			}
 
 			// --- 2. Shape ---

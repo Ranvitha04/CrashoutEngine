@@ -42,6 +42,12 @@ namespace ParticleSystem {
 		data.scales.resize(maxParticles);
 		data.lives.resize(maxParticles);
 		data.maxLives.resize(maxParticles);
+
+		// If we shrunk the arrays, we must reduce the active count to match.
+		// Otherwise, the Update loop will access out-of-bounds memory.
+		if (data.activeCount > maxParticles) {
+			data.activeCount = maxParticles;
+		}
 	}
 
 	void ParticleUpdate(CrashoutsEngine::Entity const entityId, Component::ParticleComponent& comp, f32 dt) {
@@ -55,7 +61,7 @@ namespace ParticleSystem {
 		f32 scaleY = t->size.y;
 
 		// 1. Emission
-		if (comp.isEmitting && comp.emitRate > 0.f) {
+		if (comp.isEmitting && comp.emitRate > 0.f && comp.maxParticles > 0) {
 			comp.emitAccumulator += dt;
 			f32 secondsPerParticle = 1.f / comp.emitRate;
 

@@ -958,8 +958,8 @@
                             "footstepInterval": 0.07500000298023224,
                             "swapPause": 1.0,
                             "energyConsumption": 12.5,
-                            "normalMass": 3.0,
-                            "lightMass": 1.0,
+                            "normalMass": 7.0,
+                            "lightMass": 4.0,
                             "CurrentEnergy": 0.0,
                             "MaxEnergy": 100.0,
                             "alive": true,
@@ -1184,8 +1184,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -1.1181206703186036,
-                    "y": 3.2440896034240724,
+                    "x": 9.537919044494629,
+                    "y": 34.736331939697269,
                     "z": 0.0
                 },
                 "size": {
@@ -1195,27 +1195,27 @@
             },
             "particle": {
                 "isEmitting": true,
-                "useWorldSpace": true,
+                "useWorldSpace": false,
                 "maxParticles": 1000,
-                "emitRate": 100.0,
+                "emitRate": 1000.0,
                 "playOnStop": false,
-                "emissionShape": 0,
-                "radiusMin": 0.0,
-                "radiusMax": 5.0,
-                "lengthMin": 0.0,
-                "lengthMax": 5.0,
+                "emissionShape": 2,
+                "radiusMin": 10.0,
+                "radiusMax": 10.0,
+                "lengthMin": 162.60000610351563,
+                "lengthMax": 91.19999694824219,
                 "areaMin": {
-                    "x": 0.0,
-                    "y": 0.0
+                    "x": 10.0,
+                    "y": 10.0
                 },
                 "areaMax": {
-                    "x": 5.0,
-                    "y": 5.0
+                    "x": 10.0,
+                    "y": 10.0
                 },
                 "startLifeMin": 1.0,
                 "startLifeMax": 1.0,
-                "startSpeedMin": 1.0,
-                "startSpeedMax": 1.0,
+                "startSpeedMin": 0.0,
+                "startSpeedMax": 0.0,
                 "uniformSize": true,
                 "startSizeXMin": 1.0,
                 "startSizeXMax": 1.0,
@@ -1224,18 +1224,18 @@
                 "sizeOverTime": 0.0,
                 "rotationOverTime": 0.0,
                 "startRotationMin": 0.0,
-                "startRotationMax": 0.0,
+                "startRotationMax": 360.0,
                 "startColor": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
+                    "x": 0.6574585437774658,
+                    "y": 0.021794212982058526,
+                    "z": 0.021794212982058526,
+                    "w": 0.6795580387115479
                 },
                 "endColor": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 0.0
+                    "x": 0.2928176522254944,
+                    "y": 0.2928176522254944,
+                    "z": 0.2928176522254944,
+                    "w": 0.3038673996925354
                 },
                 "gravity": {
                     "x": 0.0,
