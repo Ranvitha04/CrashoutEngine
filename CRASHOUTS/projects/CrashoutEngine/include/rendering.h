@@ -46,7 +46,7 @@ Designed to work seamlessly with the Shapes, TextureRenderer, and
 sprite animation systems, providing the low-level rendering foundation
 for all 2D graphics operations in the engine.
 
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content  2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 *//*__________________________________________________________________________*/
 
@@ -59,8 +59,26 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserve
 #include <vector>
 #include "shader.h"	
 #include "entitymanager.h"
+#include "CEColor.h"
+#include "CEVec2.h"
+#include "CEVec3.h"
 
 namespace Component {
+
+    struct DebugLine {
+        CEVec3 start;
+        CEVec3 end;
+        float thickness;
+        CEColor color;
+        bool isWorldSpace;
+    };
+
+    struct DebugCircle {
+        CEVec2 size;
+        CEVec3 position;
+        CEColor color;
+        bool isWorldSpace;
+    };
 
     /*!
     @class Rendering
@@ -153,6 +171,20 @@ namespace Component {
         
         // Buffer reuse or not bool
         bool buffers_initialized{ false };
+
+        // --- DEBUG QUEUE ---
+        std::vector<DebugLine> debugLines;
+        std::vector<DebugCircle> debugCircles;
+
+        void QueueLine(const CEVec3& start, const CEVec3& end, float thickness, const CEColor& color, bool isWorldSpace) {
+            debugLines.push_back({ start, end, thickness, color, isWorldSpace });
+        }
+
+        void QueueCircle(const CEVec2& size, const CEVec3& position, const CEColor& color, bool isWorldSpace) {
+            debugCircles.push_back({ size, position, color, isWorldSpace });
+        }
+
+        void FlushDebugQueue();
 
     private:
         // Performance optimization members
