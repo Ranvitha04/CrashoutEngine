@@ -11,6 +11,7 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserve
 #include "physicsmanager.h"
 #include "frameratecontroller.h"
 #include "hierarchycomponent.h"
+#include "activecomponent.h"
 #include "namecomponent.h"
 #include "log.h"
 #include <cstdio>
@@ -496,6 +497,8 @@ namespace Physics {
 		for (int i{}; i < step; ++i) {
 
 			for (const CrashoutsEngine::Entity& entity : globalEntities) {
+				if (!IsEntityActive(globalECS, entity)) continue;
+
 				Component::RigidBodyComponent* rigidBody{ globalECS.GetComponent<Component::RigidBodyComponent>(entity) };
 				//if (!rigidBody->getFlags().test(SIMULATE_DYNAMICS) || !rigidBody->getMass()) continue;
 				if (!rigidBody || !rigidBody->getMass()) continue;
@@ -534,6 +537,8 @@ namespace Physics {
 
 			/*PHYSICS SIM, UPDATE POSITION*/
 			for (const CrashoutsEngine::Entity& entity : globalEntities) {
+				if (!IsEntityActive(globalECS, entity)) continue;
+
 				if (!globalECS.HasComponent<Component::TransformComponent>(entity)) continue;
 				Component::TransformComponent* transform{ globalECS.GetComponent<Component::TransformComponent>(entity) };
 				Component::RigidBodyComponent* rigidBody{ globalECS.GetComponent<Component::RigidBodyComponent>(entity) };
@@ -635,8 +640,13 @@ namespace Physics {
 				Component::RigidBodyComponent* rigidBody1{ globalECS.GetComponent<Component::RigidBodyComponent>(evnt.entity1) };
 				Component::RigidBodyComponent* rigidBody2{ globalECS.GetComponent<Component::RigidBodyComponent>(evnt.entity2) };
 
-				//bool isDynamic1 = rigidBody1 && rigidBody1->getFlags().test(SIMULATE_DYNAMICS);
-				//bool isDynamic2 = rigidBody2 && rigidBody2->getFlags().test(SIMULATE_DYNAMICS);
+				Component::ColliderComponent* col1 = globalECS.GetComponent<Component::ColliderComponent>(evnt.entity1);
+				Component::ColliderComponent* col2 = globalECS.GetComponent<Component::ColliderComponent>(evnt.entity2);
+				
+				if ((col1 && col1->collider->isTrigger) || (col2 && col2->collider->isTrigger)) {
+					continue;
+				}
+
 				bool isDynamic1 = rigidBody1 && rigidBody1->getMass();
 				bool isDynamic2 = rigidBody2 && rigidBody2->getMass();
 

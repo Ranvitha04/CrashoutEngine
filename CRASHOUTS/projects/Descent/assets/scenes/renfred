@@ -1,6 +1,7 @@
 {
     "entities": [
         {
+            "active": true,
             "name": "Text_Input_Label",
             "layer": {
                 "currentLayer": 0

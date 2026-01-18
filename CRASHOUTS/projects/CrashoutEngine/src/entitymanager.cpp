@@ -25,6 +25,7 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserve
 #include "scriptcomponent.h"
 #include "cameracomponent.h"
 #include "hierarchycomponent.h"
+#include "activecomponent.h"
 // UI COMPONENTS
 #include "buttoncomponent.h"
 #include "guicomponent.h"
@@ -157,4 +158,33 @@ CrashoutsEngine::Entity CrashoutsEngine::ECS::FindEntityByName(std::string name)
 
     // Return 0 if not found
     return 0;
+}
+
+// Returns TRUE only if the entity AND all its parents are active.
+bool CrashoutsEngine::IsEntityActive(ECS& ecs, Entity entity) {
+	using namespace Component;
+
+	Entity current = entity;
+
+	// Loop until we run out of parents (current == 0)
+	while (current != 0) {
+
+		// 1. Check if the current link in the chain is disabled
+		if (ecs.HasComponent<ActiveComponent>(current)) {
+			if (!ecs.GetComponent<ActiveComponent>(current)->isActive) {
+				return false; // Found a "false" switch, so the whole branch is off
+			}
+		}
+
+		// 2. Climb up to the parent
+		if (ecs.HasComponent<ParentComponent>(current)) {
+			current = ecs.GetComponent<ParentComponent>(current)->parent;
+		}
+		else {
+			// We reached the root, and it was active. We are done.
+			break;
+		}
+	}
+
+	return true; // We climbed the whole tree and didn't find anyone disabled
 }

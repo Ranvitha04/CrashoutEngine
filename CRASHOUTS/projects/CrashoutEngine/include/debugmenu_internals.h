@@ -38,6 +38,7 @@
 #include "prefabcomponent.h"
 #include "hierarchycomponent.h" // Parent/Child components
 #include "keyframe.h" // Animator component
+#include "activecomponent.h"
 
 // --- 5. Systems & Managers ---
 #include "physicsmanager.h"

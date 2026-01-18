@@ -12,6 +12,7 @@ All content � 2025 Digipen Institute of Technology Singapore.All rights reserv
 #include "audioSystem.h"
 #include "audiocomponent.h"
 #include "entitymanager.h"
+#include "activecomponent.h"
 #include <mono/jit/jit.h>
 #include <mono/metadata/assembly.h>
 #include <mono/metadata/debug-helpers.h>
@@ -70,6 +71,8 @@ namespace
     {
         auto* ecs = CrashoutsEngine::ECS::getInstance();
 
+        if (!!IsEntityActive(*ecs, entityID)) return;
+
         // Check if Entity has the component
         if (!ecs->HasComponent<Component::AudioEmitterComponent>(entityID))
         {
@@ -127,6 +130,9 @@ namespace
     static void ICALL_Audio_StopComponent(uint32_t entityID, float fadeDuration)
     {
         auto* ecs = CrashoutsEngine::ECS::getInstance();
+
+        if (!IsEntityActive(*ecs, entityID)) return;
+
         // Check if Entity has the component
         if (!ecs->HasComponent<Component::AudioEmitterComponent>(entityID))
         {
@@ -134,7 +140,7 @@ namespace
         }
         // Get the component data
         auto* ac = ecs->GetComponent<Component::AudioEmitterComponent>(entityID);
-        auto& audio = CrashoutsEngine::Audio::AudioSystem::instance();
+        //auto& audio = CrashoutsEngine::Audio::AudioSystem::instance();
         // Stop based on type
         if (ac->inst)
         {

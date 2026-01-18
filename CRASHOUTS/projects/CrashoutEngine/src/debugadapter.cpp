@@ -22,7 +22,7 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserv
 #include <imgui.h>
 #include <algorithm>
 #include <filesystem>
-#include <numeric>
+//#include <numeric>
 #include <fstream>
 #include "debugdefaults.h"
 #include "debugAssetLoader.h"
@@ -46,6 +46,7 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserv
 #include "keyframe.h" 
 #include "hierarchycomponent.h"
 #include "particleComponent.h"
+#include "activecomponent.h"
 
 // FOR GAME GUI
 #include "buttoncomponent.h"
@@ -235,6 +236,18 @@ namespace {
 			if (has(ecs, e)) ecs.RemoveComponent<Component::NameComponent>(e);
 		}
 		void drawInspector(ECS& ecs, Entity e) override {
+			
+			// For active component (Set gameobject active or not active)
+			if (auto* ac = ecs.GetComponent<Component::ActiveComponent>(e)) {
+				ImGui::PushID("ActiveToggle");
+				UIHelpers::DrawUndoableBool("Enable GameObject##Active", ac->isActive);
+				ImGui::PopID();
+			}
+			// Add active component if not yet created
+			else {
+				ecs.AddComponent<Component::ActiveComponent>(e, true);
+			}
+
 			if (auto* c = ecs.GetComponent<Component::NameComponent>(e)) {
 				UIHelpers::DrawUndoableString("Entity Name", c->name);
 			}
@@ -2473,14 +2486,35 @@ namespace CrashoutsEngine
 				UIHelpers::DrawUndoableBool("World Space", pc->useWorldSpace);
 				ImGui::PopItemWidth();
 
+				int prevMax = pc->maxParticles;
+
 				// Counts
-				int maxP = pc->maxParticles;
-				if (ImGui::DragInt("Max Count", &maxP, 1.0f, 0, 10000)) {
-					if (maxP < 0) maxP = 0;
-					pc->maxParticles = maxP;
+				// Define the logic that runs during Undo/Redo AND when the user finishes editing
+				auto ApplyParticleCounts = [pc](const int& val) {
+					int v = val;
+					if (v < 0) v = 0;
+
+					pc->maxParticles = v;
+
+					// Clamp emit rate if max is lower
+					if (pc->emitRate > (f32)pc->maxParticles) {
+						pc->emitRate = (f32)pc->maxParticles;
+					}
+
+					// Resize memory vectors
 					ParticleSystem::ParticleInit(*pc);
+				};
+
+				// Pass 'ApplyParticleCounts' as the custom setter for the Undo Command
+				UIHelpers::DrawUndoableInt("Max Count", pc->maxParticles, 1.0f, 0, 100000, ApplyParticleCounts);
+
+				// If the integer changed this frame, resize memory NOW.
+				// Do not wait for the mouse release.
+				if (pc->maxParticles != prevMax) {
+					ApplyParticleCounts(pc->maxParticles);
 				}
-				UIHelpers::DrawUndoableFloat("Rate (p/s)", pc->emitRate, 0.5f, 0.0f, 5000.0f);
+
+				UIHelpers::DrawUndoableFloat("Rate (p/s)", pc->emitRate, 0.5f, 0.0f, (f32)pc->maxParticles);
 			}
 
 			// --- 2. Shape ---
@@ -2498,6 +2532,20 @@ namespace CrashoutsEngine
 
 			if (pc->emissionShape == ParticleSystem::ParticleShape::CIRCLE) {
 				DrawMinMaxRow("Radius (Min / Max)", pc->radiusMin, pc->radiusMax, 0.1f, 0.0f, 0.0f);
+			}
+			else if (pc->emissionShape == ParticleSystem::ParticleShape::LINE) {
+				// Controls for Line Length
+				DrawMinMaxRow("Length (Min / Max)", pc->lengthMin, pc->lengthMax, 0.1f, 0.0f, 0.0f);
+			}
+			else if (pc->emissionShape == ParticleSystem::ParticleShape::SQUARE) {
+				// Controls for Square Area (Width/Height)
+				// Note: Since area is a Vec2, we need two rows or a Vec2 drawer
+
+				// X Axis (Width)
+				DrawMinMaxRow("Width (Min / Max)", pc->areaMin.x, pc->areaMax.x, 0.1f, 0.0f, 0.0f);
+
+				// Y Axis (Height)
+				DrawMinMaxRow("Height (Min / Max)", pc->areaMin.y, pc->areaMax.y, 0.1f, 0.0f, 0.0f);
 			}
 
 			// --- 3. Particle Properties (Compacted) ---

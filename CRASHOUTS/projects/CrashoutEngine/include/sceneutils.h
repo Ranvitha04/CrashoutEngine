@@ -21,6 +21,13 @@ namespace Scene {
     CEVec3 GetMouseInWorld();
 
     /**
+     * @name    InitScene
+     * @brief   Initialize Required Scene data.
+     * @params  gECS - ECS to reference.
+     */
+    void InitScene(CrashoutsEngine::ECS& gECS);
+
+    /**
      * @name    RenderScene
      * @brief   Renders the scene by cycling through all ShapeComponents used.
      * @params  gECS - ECS to reference.

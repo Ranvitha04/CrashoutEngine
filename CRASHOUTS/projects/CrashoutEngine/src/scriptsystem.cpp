@@ -26,6 +26,7 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserve
 #include "layerbindings.h"
 #include "timebindings.h"
 #include "shapebindings.h"
+#include "activecomponent.h"
 
 namespace CrashoutsEngine
 {
@@ -94,8 +95,19 @@ namespace CrashoutsEngine
         auto& ecs = *ECS::getInstance();
         auto& scripts = ecs.GetComponentArray<ScriptComponent>();
 
-        for (auto& scriptComp : scripts.dense)
+        for (size_t i = 0; i < scripts.dense.size(); ++i)
         {
+            Entity entityID = scripts.indexToEntity[i];
+            auto& scriptComp = scripts.dense[i];
+
+            // --- ACTIVE CHECK ---
+            if (ecs.HasComponent<ActiveComponent>(entityID)) {
+                if (!IsEntityActive(ecs, entityID)) {
+                    continue; // Skip Start/Update if disabled
+                }
+            }
+            // --------------------
+
             scriptComp.Start();
             scriptComp.Update();
         }
@@ -106,8 +118,19 @@ namespace CrashoutsEngine
         auto& ecs = *ECS::getInstance();
         auto& scripts = ecs.GetComponentArray<ScriptComponent>();
 
-        for (auto& scriptComp : scripts.dense)
+        for (size_t i = 0; i < scripts.dense.size(); ++i)
         {
+            Entity entityID = scripts.indexToEntity[i];
+            auto& scriptComp = scripts.dense[i];
+
+            // --- ACTIVE CHECK ---
+            if (ecs.HasComponent<ActiveComponent>(entityID)) {
+                if (!IsEntityActive(ecs, entityID)) {
+                    continue; // Skip FixedUpdate if disabled
+                }
+            }
+            // --------------------
+
             scriptComp.FixedUpdate();
         }
     }

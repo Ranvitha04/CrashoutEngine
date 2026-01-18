@@ -50,30 +50,30 @@ namespace CrashoutsEngine::Audio
     /*!
     @brief Returns the FMOD_MODE flags used for music sounds based on loop state.
     */
-    static FMOD_MODE MusicMode(bool loop)
-    {
-        FMOD_MODE m = FMOD_DEFAULT | FMOD_CREATESTREAM | FMOD_2D;
-        if (loop)
-            m |= FMOD_LOOP_NORMAL;
-        else
-            m |= FMOD_LOOP_OFF;
-        return m;
-    }
-
-    static void ShowAudioErrorPopup(const std::string& msg)
-    {
-#ifdef _WIN32
-        MessageBoxA(
-            nullptr,
-            msg.c_str(),
-            "Audio Error",
-            MB_OK | MB_ICONERROR | MB_TOPMOST
-        );
-#endif
-
-        // Also log to console/log window
-        LOGE(Audio, msg);
-    }
+//    static FMOD_MODE MusicMode(bool loop)
+//    {
+//        FMOD_MODE m = FMOD_DEFAULT | FMOD_CREATESTREAM | FMOD_2D;
+//        if (loop)
+//            m |= FMOD_LOOP_NORMAL;
+//        else
+//            m |= FMOD_LOOP_OFF;
+//        return m;
+//    }
+//
+//    static void ShowAudioErrorPopup(const std::string& msg)
+//    {
+//#ifdef _WIN32
+//        MessageBoxA(
+//            nullptr,
+//            msg.c_str(),
+//            "Audio Error",
+//            MB_OK | MB_ICONERROR | MB_TOPMOST
+//        );
+//#endif
+//
+//        // Also log to console/log window
+//        LOGE(Audio, msg);
+//    }
 
     static bool IsSupportedAudioFile(const std::string& path)
     {

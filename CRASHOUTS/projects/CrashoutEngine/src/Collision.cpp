@@ -11,6 +11,7 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserve
 
 #include "collisionmanager.h"
 #include "rigidbodycomponent.h"
+#include "activecomponent.h"
 #include "glapp.h"
 #include "collidercomponent.h"
 #include "CEMath.h"
@@ -856,6 +857,8 @@ namespace Collision {
 
 		// Force all colliders to match their Transform position BEFORE we calculate collisions.
 		for (CrashoutsEngine::Entity& entity : colliderEntities) {
+			if (!IsEntityActive(globalECS, entity)) continue;
+
 			if (globalECS.HasComponent<Component::TransformComponent>(entity)) {
 				auto* transform = globalECS.GetComponent<Component::TransformComponent>(entity);
 				auto* collider = globalECS.GetComponent<Component::ColliderComponent>(entity);
@@ -872,6 +875,8 @@ namespace Collision {
 		// 2. Insert into QuadTree
 		quadTree.Clear();
 		for (CrashoutsEngine::Entity& entity1 : colliderEntities) { // Changed from globalEntities
+			if (!IsEntityActive(globalECS, entity1)) continue;
+
 			if (!globalECS.HasComponent<Component::TransformComponent>(entity1)) continue;
 			auto* collider = globalECS.GetComponent<Component::ColliderComponent>(entity1);
 			if (!collider || !collider->collider) continue;
@@ -883,6 +888,7 @@ namespace Collision {
 		
 		/*DETECT COLLISION AND UPDATE COLLISION EVENTS MEMBER*/
 		for (CrashoutsEngine::Entity& entity1 : colliderEntities) {
+			if (!IsEntityActive(globalECS, entity1)) continue;
 
 			if (!globalECS.HasComponent<Component::TransformComponent>(entity1)) continue;			
 			auto* collider = globalECS.GetComponent<Component::ColliderComponent>(entity1);
@@ -898,6 +904,8 @@ namespace Collision {
 			quadTree.Query(region, collidableObjects);
 
 			for (CrashoutsEngine::Entity const& entity2 : collidableObjects) {
+				if (!IsEntityActive(globalECS, entity2)) continue;
+
 				if (entity1 == entity2) continue;
 
 				// Prevents double checks, only process if ID1 < ID2

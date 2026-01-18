@@ -505,5 +505,13 @@ namespace CrashoutsEngine {
 		}
 		return static_cast<ComponentArray<T>&>(*componentArrays.at(typeIndex));
 	}
+
+	/*!
+	@brief  Checks if parent or self is set inactive
+
+	@return boolean
+	Where the entity is active or not
+	*/
+	bool IsEntityActive(ECS& ecs, Entity entity);
 }
 
