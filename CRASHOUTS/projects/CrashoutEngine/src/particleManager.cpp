@@ -50,8 +50,9 @@ namespace ParticleSystem {
 		// Transform of the object with the particle system component
 		const Component::TransformComponent* t = 
 			CrashoutsEngine::ECS::getInstance()->GetComponent<Component::TransformComponent>(entityId);
-		f32 halfW = t->size.x * .5f;
-		f32 halfH = t->size.y * .5f;
+
+		f32 scaleX = t->size.x;
+		f32 scaleY = t->size.y;
 
 		// 1. Emission
 		if (comp.isEmitting && comp.emitRate > 0.f) {
@@ -75,24 +76,56 @@ namespace ParticleSystem {
 					CEVec3 localDir{ 0, 1, 0 }; // Default pointing "Up"
 
 					switch (comp.emissionShape) {
-					case ParticleShape::LINE:
-						localPos.x = RandomRange(-halfW, halfW); // Random spot on a horizontal line
-						localDir = { 0, 1, 0 };
-						break;
-					case ParticleShape::CIRCLE: {
-						f32 angle = RandomRange(0, 2.0f * 3.14159f);
-						// If radiusMax is near 0, fallback to transform width
-						f32 maxR = (comp.radiusMax <= 0.01f) ? halfW : comp.radiusMax;
-						f32 dist = RandomRange(comp.radiusMin, maxR);
+					case ParticleShape::LINE: {
+						// Get random length, then scale by Object X scale
+						f32 baseLen = RandomRange(comp.lengthMin, comp.lengthMax);
+						f32 finalLen = baseLen * scaleX;
+						f32 halfLen = finalLen * 0.5f;
 
-						localPos = { cosf(angle) * dist, sinf(angle) * dist, 0 };
-						localDir = { cosf(angle), sinf(angle), 0 }; // Outwards
+						// Spawn anywhere along that line
+						localPos.x = RandomRange(-halfLen, halfLen);
+						localPos.y = 0.f;
+
+						// Line direction usually points "Up" (perpendicular to the line)
+						localDir = { 0, 1, 0 };
 						break;
 					}
-					case ParticleShape::SQUARE:
+					case ParticleShape::CIRCLE: {
+						f32 angle = RandomRange(0, 2.0f * 3.14159f);
+                        
+                        // Get random radius
+                        f32 baseRadius = RandomRange(comp.radiusMin, comp.radiusMax);
+
+                        // Ellipse Logic: Scale X and Y independently based on Transform
+                        // If scaleX == scaleY, it remains a perfect circle.
+                        f32 rX = baseRadius * scaleX;
+                        f32 rY = baseRadius * scaleY;
+
+                        localPos = { cosf(angle) * rX, sinf(angle) * rY, 0 };
+                        
+                        // Direction is normalized vector from center
+                        // (This ensures particles shoot outward even if shape is squashed)
+                        localDir = { cosf(angle), sinf(angle), 0 };
+                        break;
+					}
+					case ParticleShape::SQUARE: {
+						// Get random width/height range
+						f32 baseW = RandomRange(comp.areaMin.x, comp.areaMax.x);
+						f32 baseH = RandomRange(comp.areaMin.y, comp.areaMax.y);
+
+						// Scale by Object Transform
+						f32 finalW = baseW * scaleX;
+						f32 finalH = baseH * scaleY;
+
+						f32 halfW = finalW * 0.5f;
+						f32 halfH = finalH * 0.5f;
+
 						localPos = { RandomRange(-halfW, halfW), RandomRange(-halfH, halfH), 0 };
+
+						// Default square direction is usually Up, or you can randomize it
 						localDir = { 0, 1, 0 };
 						break;
+					}
 					}
 
 					// --- ROTATION (Applies to both) ---
@@ -130,8 +163,10 @@ namespace ParticleSystem {
 						data.scales[i] = CEVec2(size, size);
 					}
 					else {
-						data.scales[i] = CEVec2(RandomRange(comp.startSizeXMin, comp.startSizeXMax), 
-							RandomRange(comp.startSizeYMin, comp.startSizeYMax));
+						data.scales[i] = CEVec2(
+							RandomRange(comp.startSizeXMin, comp.startSizeXMax),
+							RandomRange(comp.startSizeYMin, comp.startSizeYMax)
+						);
 					}
 					data.rotations[i] = RandomRange(comp.startRotationMin, comp.startRotationMax);
 

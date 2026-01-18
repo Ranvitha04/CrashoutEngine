@@ -2496,6 +2496,20 @@ namespace CrashoutsEngine
 			if (pc->emissionShape == ParticleSystem::ParticleShape::CIRCLE) {
 				DrawMinMaxRow("Radius (Min / Max)", pc->radiusMin, pc->radiusMax, 0.1f, 0.0f, 0.0f);
 			}
+			else if (pc->emissionShape == ParticleSystem::ParticleShape::LINE) {
+				// Controls for Line Length
+				DrawMinMaxRow("Length (Min / Max)", pc->lengthMin, pc->lengthMax, 0.1f, 0.0f, 0.0f);
+			}
+			else if (pc->emissionShape == ParticleSystem::ParticleShape::SQUARE) {
+				// Controls for Square Area (Width/Height)
+				// Note: Since area is a Vec2, we need two rows or a Vec2 drawer
+
+				// X Axis (Width)
+				DrawMinMaxRow("Width (Min / Max)", pc->areaMin.x, pc->areaMax.x, 0.1f, 0.0f, 0.0f);
+
+				// Y Axis (Height)
+				DrawMinMaxRow("Height (Min / Max)", pc->areaMin.y, pc->areaMax.y, 0.1f, 0.0f, 0.0f);
+			}
 
 			// --- 3. Particle Properties (Compacted) ---
 			ImGui::Separator();

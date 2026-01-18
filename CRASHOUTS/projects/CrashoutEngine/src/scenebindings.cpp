@@ -9,8 +9,8 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserve
 */
 
 #include "scenebindings.h"
-#include "sceneasset.h"
-#include "entitymanager.h"
+//#include "sceneasset.h"
+//#include "entitymanager.h"
 #include "assetmanager.h"
 #include "glapp.h"
 #include "engine.h"
@@ -18,9 +18,9 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserve
 
 // Mono headers
 #include "mono/metadata/loader.h"
-#include "mono/metadata/appdomain.h"
+//#include "mono/metadata/appdomain.h"
 #include "mono/metadata/object.h"
-#include <mono/metadata/assembly.h>
+//#include <mono/metadata/assembly.h>
 
 using namespace CrashoutsEngine;
 

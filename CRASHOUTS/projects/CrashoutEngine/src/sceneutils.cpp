@@ -458,6 +458,20 @@ namespace Scene {
 	namespace Particles {
 
 		/*!
+		@brief      Init for the new ParticleComponent.
+		*/
+		static void InitAllParticles(ECS& globalECS) {
+			// Iterate over the single ParticleComponent type
+			auto& particleArray = globalECS.GetComponentArray<ParticleComponent>();
+			for (const Entity& id : particleArray.indexToEntity) {
+				ParticleComponent* pc = globalECS.GetComponent<ParticleComponent>(id);
+				if (pc) {
+					ParticleSystem::ParticleInit(*pc);
+				}
+			}
+		}
+
+		/*!
 		@brief      Update loop for the new ParticleComponent.
 		*/
 		static void UpdateAllParticles(ECS& globalECS) {
@@ -469,10 +483,8 @@ namespace Scene {
 				ParticleComponent* pc = globalECS.GetComponent<ParticleComponent>(id);
 				if (pc) {
 					// Call the Update function declared in particleComponent.h
-					if(engineState == EngineState::STOP && pc->playOnStop)
-						ParticleSystem::ParticleUpdate(id, *pc, dt);
-					else if(engineState != EngineState::STOP) 
-						ParticleSystem::ParticleUpdate(id, *pc, dt);
+					if (engineState == EngineState::PLAY || pc->playOnStop) ParticleSystem::ParticleUpdate(id, *pc, dt);
+					else pc->data.activeCount = 0;
 				}
 			}
 		}
@@ -826,6 +838,10 @@ namespace Scene {
 
 			batch.Clear();
 		}
+	}
+
+	void InitScene(CrashoutsEngine::ECS& globalECS) {
+		Particles::InitAllParticles(globalECS);
 	}
 
 	void RenderScene(CrashoutsEngine::ECS& globalECS) {

@@ -134,6 +134,8 @@ static bool PerformPendingSceneLoad() {
         CrashoutsEngine::CollisionEventManager::GetInstance().Clear();
         CrashoutsEngine::Serialization::currSceneName = g_PendingSceneName;
         CrashoutsEngine::Serialization::LoadScenes(g_PendingSceneName);
+        
+        Scene::InitScene(*CrashoutsEngine::ECS::getInstance());
 
         // Reset flags
         g_IsSceneLoadPending = false;
@@ -297,6 +299,8 @@ void Init() {
     }
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    
+    Scene::InitScene(*CrashoutsEngine::ECS::getInstance());
 }
 
 /*  _________________________________________________________________________ */

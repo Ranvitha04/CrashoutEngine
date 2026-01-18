@@ -134,7 +134,7 @@ namespace
         }
         // Get the component data
         auto* ac = ecs->GetComponent<Component::AudioEmitterComponent>(entityID);
-        auto& audio = CrashoutsEngine::Audio::AudioSystem::instance();
+        //auto& audio = CrashoutsEngine::Audio::AudioSystem::instance();
         // Stop based on type
         if (ac->inst)
         {

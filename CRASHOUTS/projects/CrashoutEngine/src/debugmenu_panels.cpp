@@ -714,8 +714,6 @@ namespace UI {
         if (ImGui::Button("Create Scene")) {
             // Only create if the name field is not empty
             if (std::strlen(sceneNameBuffer) > 0) {
-
-
                 // 4. Call your create function
                 Serialization::SaveScenes(sceneNameBuffer);
                 ECS::getInstance()->Reset();
@@ -763,9 +761,8 @@ namespace UI {
                             if (engineState == EngineState::STOP) Serialization::SaveScenes(currSceneName);
                         }
                         // Load Scene flow
-                        ECS::getInstance()->Reset();
-                        currSceneName = name;
-                        Serialization::LoadScenes(name);
+                        g_PendingSceneName = name;
+                        g_IsSceneLoadPending = true;
 
                         if(engineState != EngineState::PLAY) ::Physics::PhysicsHandler::PhysicsHandler::GetInstance().SetPaused(true);
                     }
@@ -1170,8 +1167,8 @@ namespace UI {
 
                 if (currSceneName.empty()) RestartGameState();       // Legacy scene system
                 else {
-                    ECS::getInstance()->Reset();
-                    Serialization::LoadScenes(currSceneName);
+                    g_PendingSceneName = currSceneName;
+                    g_IsSceneLoadPending = true;
                 }
                 //MonoManager::ReloadScripts();
                 engineState = EngineState::STOP;
