@@ -608,7 +608,13 @@ namespace UI {
                             }
 
                             if (!ecs.HasComponent<Component::AudioEmitterComponent>(target)) ecs.AddComponent<Component::AudioEmitterComponent>(target);
-                            if (auto* ac = ecs.GetComponent<Component::AudioEmitterComponent>(target)) ac->eventPath = eventLike;
+                            if (auto* ac = ecs.GetComponent<Component::AudioEmitterComponent>(target)) {
+                                if (ac->clips.empty()) {
+                                    ac->clips.emplace_back();
+                                    ac->clips.back().name = "Main Clip"; // Default name
+                                }
+                                ac->clips[0].path = eventLike;
+                            }
 
                             // Auto-select the new audio source
                             selected = target;

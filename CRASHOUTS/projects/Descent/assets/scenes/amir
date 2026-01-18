@@ -1,6 +1,7 @@
 {
     "entities": [
         {
+            "active": true,
             "name": "Box with audio",
             "layer": {
                 "currentLayer": 0
@@ -90,11 +91,17 @@
                 }
             },
             "audio": {
-                "eventPath": "event:/Squishy-Movement_3",
-                "volume": 0.5,
-                "pitch": 0.8999999761581421,
-                "spatial3D": false,
-                "looping": true
+                "clips": [
+                    {
+                        "name": "Main Clip",
+                        "path": "lava-volcano-wind-environment_loop.wav",
+                        "volume": 0.5,
+                        "pitch": 0.8999999761581421,
+                        "spatial3D": false,
+                        "looping": true,
+                        "isMusic": false
+                    }
+                ]
             },
             "button": {
                 "buttonState": 0,

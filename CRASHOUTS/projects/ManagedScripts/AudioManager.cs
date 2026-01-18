@@ -164,6 +164,17 @@ public class AudioManager
         InternalCalls.Audio_PlayComponent(entityID);
     }
 
+    public void PlayAttached(string clipName, uint entityID)
+    {
+        InternalCalls.Audio_PlayClipByName(entityID, clipName);
+    }
+
+    // === Stop sound attached to an entity ===
+    public void StopAttachedSound(uint entityID, float fadeDuration = 0.5f)
+    {
+        InternalCalls.Audio_StopComponent(entityID, fadeDuration);
+    }
+
     // === Replacing Unity's Stop(name)
     public void Stop(string name, float fadeDuration = 0.5f)
     {

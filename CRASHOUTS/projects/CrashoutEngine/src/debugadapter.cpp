@@ -883,275 +883,173 @@ namespace {
 			if (!has(ecs, e)) ecs.AddComponent<Component::AudioEmitterComponent>(e);
 		}
 		void remove(ECS& ecs, Entity e) override {
-			if (auto* c = ecs.GetComponent<AudioEmitterComponent>(e)) {
-				// Stop Event
-				if (c->inst && c->inst->isValid()) {
-					c->inst->stop(FMOD_STUDIO_STOP_IMMEDIATE);
-					c->inst->release();
-				}
-				// Stop Raw Channel
-				if (c->channel) {
-					bool playing = false;
-					if (c->channel->isPlaying(&playing) == FMOD_OK && playing) {
-						c->channel->stop();
-					}
+			auto* c = ecs.GetComponent<Component::AudioEmitterComponent>(e);
+			if (c) {
+				// Stop ALL sounds before removing
+				for (auto& clip : c->clips) {
+					if (clip.inst) { clip.inst->stop(FMOD_STUDIO_STOP_IMMEDIATE); clip.inst->release(); }
+					if (clip.channel) { clip.channel->stop(); }
 				}
 			}
-			if (has(ecs, e)) ecs.RemoveComponent<AudioEmitterComponent>(e);
+			if (has(ecs, e)) ecs.RemoveComponent<Component::AudioEmitterComponent>(e);
 		}
 		void drawInspector(ECS& ecs, Entity e) override {
 			using Component::AudioEmitterComponent;
+			using Component::AudioClip; // Important!
+
 			auto* c = ecs.GetComponent<AudioEmitterComponent>(e);
 			if (!c) return;
 
-			if (c->channel) {
-				bool playing = false;
-				FMOD_RESULT r = c->channel->isPlaying(&playing);
-				if (r != FMOD_OK || !playing) {
-					c->channel = nullptr;
-				}
-			}
-			if (c->inst) {
-				if (!c->inst->isValid()) {
-					c->inst = nullptr;
-				}
-				else {
-					FMOD_STUDIO_PLAYBACK_STATE state;
-					c->inst->getPlaybackState(&state);
-					if (state == FMOD_STUDIO_PLAYBACK_STOPPED) {
-						c->inst->release();
-						c->inst = nullptr;
-					}
-				}
-			}
-
-			ImGui::SeparatorText("Audio Source");
-
-			char buf[256]{};
-			if (c->eventPath.size() < sizeof(buf)) std::memcpy(buf, c->eventPath.data(), c->eventPath.size());
-
-			ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x - 30);
-			if (ImGui::InputTextWithHint("##event_path", "event:/... or assets/audio/...", buf, sizeof(buf))) {
-				c->eventPath = buf;
-			}
-
-			// Drag Drop Target
-			if (ImGui::BeginDragDropTarget()) {
-				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSET/PAYLOAD")) {
-					if (payload->Data && payload->DataSize == sizeof(AssetDragPayload)) {
-						const auto* d = static_cast<const AssetDragPayload*>(payload->Data);
-						if (d->kind == AssetKind::Audio) {
-							std::filesystem::path rp = d->relPath;
-							std::string ext = rp.extension().string();
-							std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
-
-							// Smart format detection
-							if (ext == ".bank") {
-								c->eventPath = "event:/";
-							}
-							else if (ext == ".wav" || ext == ".ogg" || ext == ".mp3") {
-								std::string full = rp.generic_string();
-								if (full.find("assets/audio/") == 0) full = full.substr(13);
-								c->eventPath = full;
-							}
-							else {
-								std::string rel = rp.generic_string();
-								if (auto dot = rel.find_last_of('.'); dot != std::string::npos) rel.erase(dot);
-								c->eventPath = "event:/" + rel;
-							}
-						}
-					}
-				}
-				ImGui::EndDragDropTarget();
-			}
-
-			ImGui::SameLine();
-			// Search button to open popup
-			if (ImGui::Button("...")) {
-				ImGui::OpenPopup("audio_select_popup");
-			}
-
-			// Popup logic for audio selection
-			if (ImGui::BeginPopup("audio_select_popup")) {
-				static std::vector<std::string> s_audioList;
-				static bool s_needsRefresh = true;
-
-				// Refresh logic (do it on open or if empty)
-				if (s_needsRefresh || s_audioList.empty()) {
-					s_audioList.clear();
-					auto& audio = Audio::AudioSystem::instance();
-
-					// FMOD Events
-					audio.listAllEventPaths(s_audioList);
-
-					// Raw files
-					std::vector<std::string> raw;
-					audio.listRawAudioFiles(raw);
-					for (auto& f : raw) s_audioList.push_back("[RAW] assets/audio/" + f);
-
-					std::sort(s_audioList.begin(), s_audioList.end());
-
-					s_audioList.erase(std::unique(s_audioList.begin(), s_audioList.end()), s_audioList.end());
-
-					s_needsRefresh = false;
-				}
-
-				static ImGuiTextFilter filter;
-				filter.Draw("Filter", 200);
-
-				ImGui::Separator();
-
-				if (ImGui::BeginChild("audio_list_scroll", ImVec2(300, 400), true)) {
-					for (int i = 0; i < s_audioList.size(); ++i) {
-						const auto& item = s_audioList[i]; // Access by index
-
-						if (!filter.PassFilter(item.c_str())) continue;
-
-						std::string actualPath = item;
-						if (actualPath.rfind("[RAW] ", 0) == 0) {
-							actualPath = actualPath.substr(6);
-						}
-
-						ImGui::PushID(i);
-
-						if (ImGui::Selectable(item.c_str(), c->eventPath == actualPath)) {
-							c->eventPath = actualPath;
-							ImGui::CloseCurrentPopup();
-						}
-
-						// [INSERT THIS] Pop ID
-						ImGui::PopID();
-					}
-					ImGui::EndChild();
-				}
-				ImGui::EndPopup();
-			}
-
-			ImGui::TextDisabled("(?)");
-			if (ImGui::IsItemHovered()) ImGui::SetTooltip("Drag audio assets here or type path manually.");
-
-			if (ImGui::DragFloat("Volume", &c->volume, 0.01f, 0.0f, 2.0f)) {
-				if (c->channel) c->channel->setVolume(c->volume);
-				if (c->inst)    c->inst->setVolume(c->volume);
-			}
-			if (ImGui::DragFloat("Pitch", &c->pitch, 0.01f, 0.1f, 3.0f)) {
-				if (c->channel) c->channel->setPitch(c->pitch);
-				if (c->inst)    c->inst->setPitch(c->pitch);
-			}
-
-			ImGui::Checkbox("3D Spatial", &c->spatial3D);
-
-			// Looping Toggle
-			if (ImGui::Checkbox("Looping", &c->looping)) {
-				if (c->channel) c->channel->setMode(c->looping ? FMOD_LOOP_NORMAL : FMOD_LOOP_OFF);
+			// Button to Create New Clip 
+			if (ImGui::Button("+ Add Audio Clip", ImVec2(-1, 0))) {
+				c->clips.emplace_back(); // Add empty
+				c->clips.back().name = "Sound " + std::to_string(c->clips.size());
 			}
 
 			ImGui::Separator();
 
-			static float s_inspectorFade = 0.5f;
-			ImGui::SliderFloat("Stop Fade (s)", &s_inspectorFade, 0.0f, 5.0f);
+			// Iterate Logic ---
+			int indexToRemove = -1;
 
-			// Button for Playing and Stopping Audio
-			bool isPlaying = (c->inst != nullptr) || (c->channel != nullptr);
-			float availWidth = ImGui::GetContentRegionAvail().x;
+			for (int i = 0; i < c->clips.size(); ++i) {
+				AudioClip& clip = c->clips[i];
 
-			// Green for Play, Red for Stop
-			ImVec4 btnColor = isPlaying ? ImVec4(0.8f, 0.2f, 0.2f, 1.0f) : ImVec4(0.2f, 0.7f, 0.2f, 1.0f);
-			const char* btnLabel = isPlaying ? "Stop" : "Play";
+				ImGui::PushID(i);
 
-			ImGui::PushStyleColor(ImGuiCol_Button, btnColor);
+				bool open = ImGui::CollapsingHeader(clip.name.c_str(), ImGuiTreeNodeFlags_DefaultOpen);
 
-			if (ImGui::Button(btnLabel, ImVec2(availWidth, 30))) {
-				if (isPlaying) {
-					// STOP LOGIC
-					if (c->inst) {
-						c->inst->stop(s_inspectorFade > 0.f ? FMOD_STUDIO_STOP_ALLOWFADEOUT : FMOD_STUDIO_STOP_IMMEDIATE);
-						c->inst->release();
-						c->inst = nullptr;
-					}
-					if (c->channel) {
-						// Stop raw channel with fade
-						std::string entityTag = "Entity_" + std::to_string((uint32_t)e);
-						Audio::AudioSystem::instance().stopTagged(entityTag, s_inspectorFade);
-						c->channel = nullptr;
-					}
+				if (ImGui::BeginPopupContextItem()) {
+					if (ImGui::Selectable("Remove Clip")) indexToRemove = i;
+					ImGui::EndPopup();
 				}
-				else {
-					// PLAY LOGIC
-					if (!c->eventPath.empty()) {
+
+				if (open) {
+					ImGui::Indent();
+
+					char nameBuf[64];
+					strcpy_s(nameBuf, clip.name.c_str());
+					if (ImGui::InputText("Name (Key)", nameBuf, sizeof(nameBuf))) {
+						clip.name = nameBuf;
+					}
+
+					char pathBuf[256]{};
+					if (clip.path.size() < sizeof(pathBuf)) std::memcpy(pathBuf, clip.path.data(), clip.path.size());
+
+					ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x - 30);
+					if (ImGui::InputTextWithHint("##path", "assets/audio/...", pathBuf, sizeof(pathBuf))) {
+						clip.path = pathBuf;
+					}
+
+					if (ImGui::BeginDragDropTarget()) {
+						if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSET/PAYLOAD")) {
+							if (payload->Data && payload->DataSize == sizeof(AssetDragPayload)) {
+								const auto* d = static_cast<const AssetDragPayload*>(payload->Data);
+								if (d->kind == AssetKind::Audio) {
+									// Convert char array to path object first!
+									std::filesystem::path p = d->relPath;
+									std::string full = p.generic_string();
+
+									if (full.find("assets/audio/") == 0) full = full.substr(13);
+									clip.path = full;
+								}
+							}
+						}
+						ImGui::EndDragDropTarget();
+					}
+
+					ImGui::SameLine();
+					if (ImGui::Button("...")) ImGui::OpenPopup("clip_select_popup");
+
+					// Popup ID Conflict
+					if (ImGui::BeginPopup("clip_select_popup")) {
+						static std::vector<std::string> rawFiles;
+						static bool s_audioScanned = false;
+
+						// Add a refresh button (matches other adapters)
+						if (ImGui::Button("Refresh List")) {
+							s_audioScanned = false;
+						}
+
+						if (!s_audioScanned) {
+							rawFiles.clear();
+							Audio::AudioSystem::instance().listRawAudioFiles(rawFiles);
+
+							std::sort(rawFiles.begin(), rawFiles.end());
+							rawFiles.erase(std::unique(rawFiles.begin(), rawFiles.end()), rawFiles.end());
+
+							s_audioScanned = true;
+						}
+
+						for (int j = 0; j < rawFiles.size(); ++j) {
+							ImGui::PushID(j);
+							if (ImGui::Selectable(rawFiles[j].c_str())) {
+								clip.path = rawFiles[j];
+								ImGui::CloseCurrentPopup();
+							}
+							ImGui::PopID();
+						}
+						ImGui::EndPopup();
+					}
+
+					ImGui::DragFloat("Volume", &clip.volume, 0.01f, 0.0f, 2.0f);
+					ImGui::DragFloat("Pitch", &clip.pitch, 0.01f, 0.1f, 3.0f);
+					ImGui::Checkbox("Looping", &clip.looping);
+					ImGui::SameLine();
+					ImGui::Checkbox("Is Music", &clip.isMusic);
+					ImGui::SameLine();
+					ImGui::Checkbox("3D Spatial", &clip.spatial3D);
+
+					static float s_debugFadeTime = 0.5f;
+					ImGui::DragFloat("Stop Fade (s)", &s_debugFadeTime, 0.1f, 0.0f, 5.0f);
+
+					bool isPlaying = (clip.channel != nullptr);
+					if (clip.channel) {
+						bool p = false;
+						clip.channel->isPlaying(&p);
+						if (!p) clip.channel = nullptr;
+					}
+
+					if (ImGui::Button(isPlaying ? "Stop##test" : "Play##test")) {
 						auto& audio = Audio::AudioSystem::instance();
-						std::string path = c->eventPath;
-
-						// FMOD Event
-						if (path.find("event:/") == 0) {
-							if (auto* inst = audio.createInstance(path)) {
-								inst->setVolume(c->volume);
-								inst->setPitch(c->pitch);
-								inst->start();
-								c->inst = inst;
-							}
+						if (isPlaying) {
+							if (clip.channel) audio.stopChannel(clip.channel, s_debugFadeTime);
+							clip.channel = nullptr;
 						}
-						// Raw File
 						else {
-							if (path.rfind("assets/", 0) != 0) path = "assets/audio/" + path;
+							std::string p = clip.path;
+							if (p.rfind("assets/", 0) != 0) p = "assets/audio/" + p;
 
-							// Stop any previous instance on this entity
-							std::string entityTag = "Entity_" + std::to_string((uint32_t)e);
-							audio.stopTagged(entityTag, 0.05f);
+							FMOD::Channel* ch = nullptr;
+							if (clip.isMusic) ch = audio.playMusicFile(p, clip.looping);
+							else ch = audio.playSFXFile(p);
 
-							// We use playSFXFileEx so we can get the 'channel' pointer for volume control
-							if (auto* ch = audio.playSFXFileEx(path)) {
-								ch->setVolume(c->volume);
-								ch->setPitch(c->pitch);
-								ch->setMode(c->looping ? FMOD_LOOP_NORMAL : FMOD_LOOP_OFF);
-								c->channel = ch;
+							if (ch) {
+								ch->setVolume(clip.volume);
+								ch->setPitch(clip.pitch);
+								ch->setMode(clip.looping ? FMOD_LOOP_NORMAL : FMOD_LOOP_OFF);
+								clip.channel = ch;
 							}
 						}
 					}
+
+					if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayNormal))
+					{
+						ImGui::BeginTooltip();
+
+						ImGui::TextColored(ImVec4(1.0f, 0.8f, 0.0f, 1.0f), "Warning:");
+						ImGui::SameLine();
+						ImGui::Text("Sound will only play if the scene is Active! PLEASE MAKE SURE YOU SET THE CURRENT ENGINE STATE TO PLAY AT THE TOP!");
+
+						ImGui::EndTooltip();
+					}
+
+					ImGui::Unindent();
 				}
+				ImGui::PopID();
 			}
-			ImGui::PopStyleColor();
 
-			if (ImGui::CollapsingHeader("Active Tagged Sounds", ImGuiTreeNodeFlags_DefaultOpen)) {
-				auto& audio = Audio::AudioSystem::instance();
-				auto tagged = audio.listTaggedKeys(); // vector<string>
-
-				if (tagged.empty()) {
-					ImGui::TextDisabled("No tagged sounds playing");
-				}
-				else {
-					for (const auto& tag : tagged) {
-						ImGui::PushID(tag.c_str());
-
-						// Row: tag label + Stop (fade) + ForceStop + volume slider
-						ImGui::TextUnformatted(tag.c_str());
-						ImGui::SameLine(ImGui::GetContentRegionAvail().x - 240);
-
-						// Stop with fade using inspector fade slider
-						if (ImGui::SmallButton(("FadeStop##" + tag).c_str())) {
-							audio.stopTagged(tag, s_inspectorFade);
-						}
-						ImGui::SameLine();
-
-						// Force immediate stop
-						if (ImGui::SmallButton(("StopNow##" + tag).c_str())) {
-							audio.stopTagged(tag, 0.0f);
-						}
-						ImGui::SameLine();
-
-						float vol = 1.0f;
-						if (audio.getTaggedVolume(tag, vol)) {
-							if (ImGui::SliderFloat(("Vol##" + tag).c_str(), &vol, 0.0f, 1.5f, "%.2f")) {
-								audio.setTaggedVolume(tag, vol);
-							}
-						}
-						else {
-							ImGui::TextDisabled("vol: n/a");
-						}
-
-						ImGui::PopID();
-					}
-				}
+			if (indexToRemove != -1) {
+				c->clips.erase(c->clips.begin() + indexToRemove);
 			}
 		}
 	};

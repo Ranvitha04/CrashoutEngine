@@ -58,6 +58,7 @@ namespace CrashoutsEngine
 
             bool stopMusicGroup();
             bool stopSFXGroup();
+            void stopChannel(FMOD::Channel* channel, float fadeSeconds);
 
             FMOD::Studio::System* studio() { return mStudio.get(); }
             FMOD::System* core() { return mCore.get(); }
@@ -82,8 +83,6 @@ namespace CrashoutsEngine
             // File-based playback (Core API)
             FMOD::Channel* playMusicFile(const std::string& path, bool loop = true);
             FMOD::Channel* playSFXFile(const std::string& path);
-            FMOD::Channel* playSFXFileEx(const std::string& path);
-
 
             // Setters
             bool setMusicGroupVolume(float v01);
