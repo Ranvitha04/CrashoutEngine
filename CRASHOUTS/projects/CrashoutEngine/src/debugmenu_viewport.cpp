@@ -466,7 +466,9 @@ namespace UI {
                 v = 1.f - (mouse.y - imgMin.y) / (imgMax.y - imgMin.y);
             }
 
-            if (gameWinFocused) {
+            if (gameWinHovered) {
+
+                // 1. Left Click Selection (With OBB Fix included)
                 if (over && ImGui::IsMouseClicked(ImGuiMouseButton_Left) && !ImGuizmo::IsOver() && !ImGuizmo::IsUsing())
                 {
                     CEVec3 worldPt = ViewUV_toWorld(u, v);
@@ -478,9 +480,11 @@ namespace UI {
                     {
                         if (!ecs.HasComponent<Component::TransformComponent>(e)) continue;
                         auto* t = ecs.GetComponent<Component::TransformComponent>(e);
-                        float hx = std::max(0.5f * t->size.x, 0.5f);
-                        float hy = std::max(0.5f * t->size.y, 0.5f);
+
+                        float hx = std::max(0.5f * std::abs(t->size.x), 0.5f);
+                        float hy = std::max(0.5f * std::abs(t->size.y), 0.5f);
                         bool  hit = false;
+                        bool  customShapeHit = false;
 
                         if (auto* sc = ecs.GetComponent<Component::ShapeComponent>(e))
                         {
@@ -488,10 +492,11 @@ namespace UI {
                             switch (sc->type)
                             {
                             case ShapeType::Circle: {
-                                const float r = 0.5f * std::min(t->size.x, t->size.y);
+                                const float r = 0.5f * std::min(std::abs(t->size.x), std::abs(t->size.y));
                                 const float dx = worldPt.x - t->position.x;
                                 const float dy = worldPt.y - t->position.y;
                                 hit = (dx * dx + dy * dy) <= r * r;
+                                customShapeHit = true;
                                 break;
                             }
                             case ShapeType::Line: {
@@ -501,22 +506,26 @@ namespace UI {
                                 const float maxy = std::max(sc->p1.y, sc->p2.y);
                                 hx = std::max(hx, std::max(0.5f * (maxx - minx), sc->thickness * 0.5f));
                                 hy = std::max(hy, std::max(0.5f * (maxy - miny), sc->thickness * 0.5f));
-                                [[fallthrough]];
-                            }
-                            case ShapeType::Rectangle:
-                            case ShapeType::Triangle:
-                            default: {
-                                const float minx = t->position.x - hx, maxx = t->position.x + hx;
-                                const float miny = t->position.y - hy, maxy = t->position.y + hy;
-                                hit = (worldPt.x >= minx && worldPt.x <= maxx && worldPt.y >= miny && worldPt.y <= maxy);
                                 break;
                             }
+                            default: break;
                             }
                         }
-                        else {
-                            const float minx = t->position.x - hx, maxx = t->position.x + hx;
-                            const float miny = t->position.y - hy, maxy = t->position.y + hy;
-                            hit = (worldPt.x >= minx && worldPt.x <= maxx && worldPt.y >= miny && worldPt.y <= maxy);
+
+                        if (!customShapeHit) {
+                            // OBB Check
+                            float localMouseX = worldPt.x - t->position.x;
+                            float localMouseY = worldPt.y - t->position.y;
+
+                            const float DEG2RAD = 0.0174532925f;
+                            float rad = -t->rotation * DEG2RAD;
+                            float s = std::sin(rad);
+                            float c = std::cos(rad);
+
+                            float rotatedX = (localMouseX * c) - (localMouseY * s);
+                            float rotatedY = (localMouseX * s) + (localMouseY * c);
+
+                            hit = (rotatedX >= -hx && rotatedX <= hx && rotatedY >= -hy && rotatedY <= hy);
                         }
 
                         if (hit && t->position.z >= bestZ) { bestZ = t->position.z; best = e; }
@@ -525,9 +534,12 @@ namespace UI {
                     if (best) selected = (selected == best) ? (Entity)0 : best;
                 }
 
+                // 2. Right Click Deselect
                 if (over && ImGui::IsMouseClicked(ImGuiMouseButton_Right)) {
                     if (!ImGuizmo::IsOver() && !ImGuizmo::IsUsing()) selected = 0;
                 }
+
+				// Undoable delete entity
                 if (selected && ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows) && !ImGuizmo::IsUsing() && ImGui::IsKeyPressed(ImGuiKey_Delete) && !ImGui::GetIO().WantTextInput && !ImGui::IsAnyItemActive()) {
                     auto cmd = std::make_unique<DeleteEntityCommand>(selected);
                     cmd->Execute(); // Perform delete
