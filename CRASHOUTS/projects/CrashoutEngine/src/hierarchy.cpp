@@ -14,6 +14,7 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserv
 #include "entitymanager.h"
 #include "namecomponent.h"
 #include "transformcomponent.h"
+#include "activecomponent.h"
 #include "shapescomponent.h"
 #include <cmath> 
 #include "shapes.h"              

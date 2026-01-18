@@ -18,6 +18,7 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserv
 #include "camera.h"
 #include "collidercomponent.h"
 #include "rigidbodycomponent.h"
+#include "activecomponent.h"
 #include "CEMath.h"
 #include "shapes.h"
 #include <limits>
@@ -171,6 +172,7 @@ namespace CollisionGizmos {
 		}
 
 		for (auto e : collArr.indexToEntity) {
+			if (!IsEntityActive(ecs, e)) continue;
 			Component::ColliderComponent const* pColliderComp = ecs.GetComponent<Component::ColliderComponent>(e);
 
 			if (!pColliderComp || !pColliderComp->collider) continue;

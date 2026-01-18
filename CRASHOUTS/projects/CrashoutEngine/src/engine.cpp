@@ -39,6 +39,8 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 #include "instanceSystem.h"
 #include "sceneasset.h"
 #include "keyframe.h"
+#include "activecomponent.h"
+#include "audiocomponent.h"
 
 #include "glapp.h"
 #include "log.h"
@@ -134,6 +136,8 @@ static bool PerformPendingSceneLoad() {
         CrashoutsEngine::CollisionEventManager::GetInstance().Clear();
         CrashoutsEngine::Serialization::currSceneName = g_PendingSceneName;
         CrashoutsEngine::Serialization::LoadScenes(g_PendingSceneName);
+        
+        Scene::InitScene(*CrashoutsEngine::ECS::getInstance());
 
         // Reset flags
         g_IsSceneLoadPending = false;
@@ -297,6 +301,8 @@ void Init() {
     }
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    
+    Scene::InitScene(*CrashoutsEngine::ECS::getInstance());
 }
 
 /*  _________________________________________________________________________ */
@@ -351,6 +357,41 @@ void Update(double const& dt) {
         }
         {
         FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Audio");
+
+        // Sync Audio Components (Mute/Unmute based on Active State)
+        auto& audioArray = ecs.GetComponentArray<Component::AudioEmitterComponent>();
+        for (size_t i = 0; i < audioArray.dense.size(); ++i) {
+            CrashoutsEngine::Entity entityID = audioArray.indexToEntity[i];
+            auto& audioComp = audioArray.dense[i];
+
+            bool isActive = true;
+            if (ecs.HasComponent<Component::ActiveComponent>(entityID)) {
+                isActive = !IsEntityActive(ecs, entityID);
+            }
+
+            // If inactive, force pause. If active, unpause (only if it was playing).
+            // Note: This logic assumes you want "Active = Unpause". 
+            if (!isActive) {
+                if (audioComp.channel) audioComp.channel->setPaused(true);
+                if (audioComp.inst) audioComp.inst->setPaused(true);
+            }
+            else {
+                // Only unpause if the GAME is playing. If game is paused, keep audio paused.
+                // Also check if we were "supposed" to be playing. 
+                // (A simpler version just unpauses everything when active).
+                if (engineState == EngineState::PLAY) {
+                    if (audioComp.channel) {
+                        bool p; audioComp.channel->getPaused(&p);
+                        if (p) audioComp.channel->setPaused(false);
+                    }
+                    if (audioComp.inst) {
+                        bool p; audioComp.inst->getPaused(&p);
+                        if (p) audioComp.inst->setPaused(false);
+                    }
+                }
+            }
+        }
+
         CrashoutsEngine::Audio::AudioSystem::instance().Update();
         }
         // process events if any associated with input devices

@@ -49,6 +49,7 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 #include "hierarchycomponent.h"
 #include "transientcomponent.h"
 #include "particleComponent.h"
+#include "activecomponent.h"
 
 // FOR GAME GUI
 #include "buttoncomponent.h"
@@ -166,6 +167,7 @@ namespace CrashoutsEngine {
         namespace Keys {
             const char* const ENTITIES                  = "entities";
             const char* const ENTITY_ID                 = "id";
+            const char* const ACTIVE_COMPONENT          = "active";
             const char* const NAME_COMPONENT            = "name";
             const char* const LAYER_COMPONENT           = "layer";
             const char* const TRANSFORM_COMPONENT       = "transform";
@@ -261,6 +263,11 @@ namespace CrashoutsEngine {
             Entity id = static_cast<Entity>(entityId);
             rapidjson::Value entityValue(rapidjson::kObjectType);
             using namespace JsonHelpers;
+
+            if (gECS.HasComponent<ActiveComponent>(id)) {
+                const auto& c = *gECS.GetComponent<ActiveComponent>(id);
+                entityValue.AddMember(rapidjson::StringRef(Keys::ACTIVE_COMPONENT), c.isActive, allocator);
+            }
 
             if (gECS.HasComponent<NameComponent>(id)) {
                 entityValue.AddMember(rapidjson::StringRef(Keys::NAME_COMPONENT), 
@@ -595,6 +602,65 @@ namespace CrashoutsEngine {
                 val.AddMember("clips", clips, allocator);
                 entityValue.AddMember(rapidjson::StringRef(Keys::KEYFRAME_ANIMATOR_COMPONENT), val, allocator);
             }
+            
+            if (gECS.HasComponent<ParticleComponent>(id)) {
+                const auto& pc = *gECS.GetComponent<ParticleComponent>(id);
+                rapidjson::Value pVal(rapidjson::kObjectType);
+
+                // 1. General Settings
+                pVal.AddMember("isEmitting", pc.isEmitting, allocator);
+                pVal.AddMember("useWorldSpace", pc.useWorldSpace, allocator);
+                pVal.AddMember("maxParticles", pc.maxParticles, allocator);
+                pVal.AddMember("emitRate", pc.emitRate, allocator);
+                pVal.AddMember("playOnStop", pc.playOnStop, allocator); // Don't forget this!
+
+                // 2. Emission Shape
+                pVal.AddMember("emissionShape", static_cast<int>(pc.emissionShape), allocator);
+                pVal.AddMember("radiusMin", pc.radiusMin, allocator);
+                pVal.AddMember("radiusMax", pc.radiusMax, allocator);
+                pVal.AddMember("lengthMin", pc.lengthMin, allocator);
+                pVal.AddMember("lengthMax", pc.lengthMax, allocator);
+
+                // Helper for Vec2 writing to clean up code
+                rapidjson::Value areaMinV(rapidjson::kObjectType);
+                areaMinV.AddMember("x", pc.areaMin.x, allocator); areaMinV.AddMember("y", pc.areaMin.y, allocator);
+                pVal.AddMember("areaMin", areaMinV, allocator);
+
+                rapidjson::Value areaMaxV(rapidjson::kObjectType);
+                areaMaxV.AddMember("x", pc.areaMax.x, allocator); areaMaxV.AddMember("y", pc.areaMax.y, allocator);
+                pVal.AddMember("areaMax", areaMaxV, allocator);
+
+                // 3. Lifecycle & Speed
+                pVal.AddMember("startLifeMin", pc.startLifeMin, allocator);
+                pVal.AddMember("startLifeMax", pc.startLifeMax, allocator);
+                pVal.AddMember("startSpeedMin", pc.startSpeedMin, allocator);
+                pVal.AddMember("startSpeedMax", pc.startSpeedMax, allocator);
+
+                // 4. Size & Rotation
+                pVal.AddMember("uniformSize", pc.uniformSize, allocator);
+                pVal.AddMember("startSizeXMin", pc.startSizeXMin, allocator);
+                pVal.AddMember("startSizeXMax", pc.startSizeXMax, allocator);
+                pVal.AddMember("startSizeYMin", pc.startSizeYMin, allocator);
+                pVal.AddMember("startSizeYMax", pc.startSizeYMax, allocator);
+                pVal.AddMember("sizeOverTime", pc.sizeOverTime, allocator);
+                pVal.AddMember("rotationOverTime", pc.rotationOverTime, allocator);
+                pVal.AddMember("startRotationMin", pc.startRotationMin, allocator);
+                pVal.AddMember("startRotationMax", pc.startRotationMax, allocator);
+
+                // 5. Colors & Physics (Using Write helper to be safer)
+                WriteColor(pVal, "startColor", pc.startcolor, allocator);
+                WriteColor(pVal, "endColor", pc.endColor, allocator);
+                WriteVec3(pVal, "gravity", pc.gravity, allocator);
+                WriteVec3(pVal, "startVelocity", pc.startVelocity, allocator);
+
+                // 6. Texture
+                pVal.AddMember("useTexture", pc.useTexture, allocator);
+                pVal.AddMember("textureName", rapidjson::Value(pc.textureName.c_str(), allocator), allocator);
+                WriteVec2(pVal, "textureUV", pc.textureUV, allocator);
+
+                entityValue.AddMember(rapidjson::StringRef(Keys::PARTICLE_COMPONENT), pVal, allocator);
+            }
+
             return entityValue;
         }
 
@@ -605,9 +671,16 @@ namespace CrashoutsEngine {
             NameComponent& nameComp = gECS.AddComponent<NameComponent>(newEntity, ("Entity" + std::to_string(newEntity)));
             gECS.AddComponent<LayerComponent>(newEntity);
             auto& transComp = gECS.AddComponent<TransformComponent>(newEntity);
+            auto& activeComp = gECS.AddComponent<ActiveComponent>(newEntity, true);
 
             if (!entityValue.IsObject()) return newEntity;
             using namespace JsonHelpers;
+
+            // Active State (GameObject)
+            if (entityValue.HasMember(Keys::ACTIVE_COMPONENT)) {
+                const auto& v = entityValue[Keys::ACTIVE_COMPONENT];
+                if (v.IsBool()) activeComp.isActive = v.GetBool();
+            }
 
             // Name
             if (entityValue.HasMember(Keys::NAME_COMPONENT)) {
@@ -944,6 +1017,60 @@ namespace CrashoutsEngine {
                 if (v.HasMember("colorMul")) p.colorMul = ReadColor(v["colorMul"]);
             }
 
+            // ParticleComponent
+            if (entityValue.HasMember(Keys::PARTICLE_COMPONENT)) {
+                const auto& v = entityValue[Keys::PARTICLE_COMPONENT];
+                auto& pc = gECS.AddComponent<ParticleComponent>(newEntity);
+
+                // 1. General
+                // Use defaults here (e.g., 100 max particles) so empty JSON doesn't break logic
+                pc.isEmitting = GetBool(v, "isEmitting", true);
+                pc.playOnStop = GetBool(v, "playOnStop", false);
+                pc.useWorldSpace = GetBool(v, "useWorldSpace", false);
+                pc.maxParticles = GetInt(v, "maxParticles", 100);
+                pc.emitRate = GetFloat(v, "emitRate", 10.0f);
+
+                // 2. Emission Shape
+                pc.emissionShape = static_cast<ParticleSystem::ParticleShape>(GetInt(v, "emissionShape", 0));
+                pc.radiusMin = GetFloat(v, "radiusMin", 0.f);
+                pc.radiusMax = GetFloat(v, "radiusMax", 1.f);
+                pc.lengthMin = GetFloat(v, "lengthMin", 0.f);
+                pc.lengthMax = GetFloat(v, "lengthMax", 1.f);
+
+                // Safe Vec2 reading
+                if (v.HasMember("areaMin")) pc.areaMin = ReadVec2(v["areaMin"]);
+                if (v.HasMember("areaMax")) pc.areaMax = ReadVec2(v["areaMax"], { 1.f, 1.f });
+
+                // 3. Lifecycle
+                pc.startLifeMin = GetFloat(v, "startLifeMin", 1.f);
+                pc.startLifeMax = GetFloat(v, "startLifeMax", 2.f);
+                pc.startSpeedMin = GetFloat(v, "startSpeedMin", 1.f);
+                pc.startSpeedMax = GetFloat(v, "startSpeedMax", 2.f);
+
+                // 4. Size & Rot
+                pc.uniformSize = GetBool(v, "uniformSize", true);
+                pc.startSizeXMin = GetFloat(v, "startSizeXMin", 1.f);
+                pc.startSizeXMax = GetFloat(v, "startSizeXMax", 1.f);
+                pc.startSizeYMin = GetFloat(v, "startSizeYMin", 1.f);
+                pc.startSizeYMax = GetFloat(v, "startSizeYMax", 1.f);
+
+                pc.sizeOverTime = GetFloat(v, "sizeOverTime", 0.f);
+                pc.rotationOverTime = GetFloat(v, "rotationOverTime", 0.f);
+                pc.startRotationMin = GetFloat(v, "startRotationMin", 0.f);
+                pc.startRotationMax = GetFloat(v, "startRotationMax", 0.f);
+
+                // 5. Physics & Color
+                if (v.HasMember("startColor")) pc.startcolor = ReadColor(v["startColor"], { 1,1,1,1 });
+                if (v.HasMember("endColor")) pc.endColor = ReadColor(v["endColor"], { 1,1,1,1 });
+                if (v.HasMember("gravity")) pc.gravity = ReadVec3(v["gravity"]);
+                if (v.HasMember("startVelocity")) pc.startVelocity = ReadVec3(v["startVelocity"]);
+
+                // 6. Texture
+                pc.useTexture = GetBool(v, "useTexture", false);
+                pc.textureName = GetString(v, "textureName", "");
+                if (v.HasMember("textureUV")) pc.textureUV = ReadVec2(v["textureUV"], { 1.f, 1.f });
+            }
+
             return newEntity;
         }
         
@@ -1210,858 +1337,12 @@ namespace CrashoutsEngine {
             // Cycle through entities
             for (Entity const& id : gECS.GetComponentArray<Component::NameComponent>().indexToEntity) {
 
+                // Skip transient entities (e.g., editor handles)
                 if (gECS.HasComponent<TransientComponent>(id)) continue;
 
-                rapidjson::Value entityValue(rapidjson::kObjectType);
-
-                // =========================================================
-                // A. NameComponent
-                // =========================================================
-                if (gECS.HasComponent<NameComponent>(id)) {
-                    const NameComponent& nameComp = *gECS.GetComponent<NameComponent>(id);
-                    rapidjson::Value nameValue(nameComp.name.c_str(), allocator);
-                    entityValue.AddMember(
-                        rapidjson::StringRef(Keys::NAME_COMPONENT), // StringRef for the key
-                        rapidjson::Value(nameComp.name.c_str(), allocator), // Creates an rvalue for the value
-                        allocator
-                    );
-                }
-
-                // =========================================================
-                // B. LayerComponent
-                // =========================================================
-                if (gECS.HasComponent<LayerComponent>(id)) {
-                    const LayerComponent& layerComp = *gECS.GetComponent<LayerComponent>(id);
-                    rapidjson::Value layerValue(rapidjson::kObjectType);
-
-                    // 1. Current Layer
-                    layerValue.AddMember("currentLayer", layerComp.currentLayer, allocator);
-
-                    entityValue.AddMember(rapidjson::StringRef(Keys::LAYER_COMPONENT),
-                        std::move(layerValue), allocator);
-                }
-
-                // =========================================================
-                // B. TransformComponent
-                // =========================================================
-                if (gECS.HasComponent<TransformComponent>(id)) {
-                    const TransformComponent& transComp = *gECS.GetComponent<TransformComponent>(id);
-                    rapidjson::Value transformValue(rapidjson::kObjectType);
-
-                    // 1. Rotation
-                    transformValue.AddMember("rotation", transComp.rotation, allocator);
-
-                    // 2. Position (CEVec3 -> JSON Object)
-                    rapidjson::Value posValue(rapidjson::kObjectType);
-                    posValue.AddMember("x", transComp.position.x, allocator);
-                    posValue.AddMember("y", transComp.position.y, allocator);
-                    posValue.AddMember("z", transComp.position.z, allocator);
-                    transformValue.AddMember("position", posValue, allocator);
-
-                    // 3. Size (CEVec2 -> JSON Object)
-                    rapidjson::Value sizeValue(rapidjson::kObjectType);
-                    sizeValue.AddMember("x", transComp.size.x, allocator);
-                    sizeValue.AddMember("y", transComp.size.y, allocator);
-                    transformValue.AddMember("size", sizeValue, allocator);
-
-                    entityValue.AddMember(rapidjson::StringRef(Keys::TRANSFORM_COMPONENT),
-                        std::move(transformValue), allocator);
-                }
-
-                // =========================================================
-                // C. RigidBodyComponent
-                // =========================================================
-                if (gECS.HasComponent<RigidBodyComponent>(id)) {
-                    // RigidBody is stored as a boolean 'true' if the component exists
-                    RigidBodyComponent& rigidBodyComp = *gECS.GetComponent<RigidBodyComponent>(id);
-
-                    rapidjson::Value rigidBodyValue{ rapidjson::kObjectType };
-
-                    rigidBodyValue.AddMember("mass", rigidBodyComp.getMass(), allocator);
-                    rigidBodyValue.AddMember("restitutionCoeff", rigidBodyComp.GetCoeff(), allocator);
-
-                    rapidjson::Value maxVelVal{ rapidjson::kObjectType };
-
-                    CEVec3 maxVel{ rigidBodyComp.getMaxVelocity() };
-                    maxVelVal.AddMember("x", maxVel.x, allocator);
-                    maxVelVal.AddMember("y", maxVel.y, allocator);
-                    maxVelVal.AddMember("z", maxVel.z, allocator);
-
-                    rigidBodyValue.AddMember("maximumVelocity", std::move(maxVelVal), allocator);
-
-                    rigidBodyValue.AddMember("staticFriction", rigidBodyComp.staticFriction, allocator);
-                    rigidBodyValue.AddMember("dynamicFriction", rigidBodyComp.dynamicFriction, allocator);
-
-                    rigidBodyValue.AddMember("inertia", rigidBodyComp.inertia, allocator);
-                    rigidBodyValue.AddMember("invInertia", rigidBodyComp.invInertia, allocator);
-
-                    //bool isTrigger{ rigidBodyComp.getFlags().test(Physics::SIMULATE_DYNAMICS) };
-                    //rigidBodyValue.AddMember("isTrigger", isTrigger, allocator);
-
-                    entityValue.AddMember(rapidjson::StringRef(Keys::RIGIDBODY_COMPONENT), std::move(rigidBodyValue) , allocator);
-                }
-
-                // =========================================================
-                // D. ColliderComponent
-                // =========================================================
-                if (gECS.HasComponent<ColliderComponent>(id)) {
-                    const ColliderComponent& colComp = *gECS.GetComponent<ColliderComponent>(id);
-                    rapidjson::Value colliderValue(rapidjson::kObjectType);
-
-                    // 1. Helper Type (The Source of Truth)
-                    colliderValue.AddMember("ColliderType", (int)colComp.collider->ColliderType, allocator);
-
-                    // Save isTrigger
-                    colliderValue.AddMember("isTrigger", colComp.collider->isTrigger, allocator);
-
-                    // Save enabled
-                    colliderValue.AddMember("enabled", colComp.collider->enabled, allocator);
-
-                    // Common fields
-                    rapidjson::Value posVal(rapidjson::kObjectType);
-                    posVal.AddMember("x", colComp.collider->position.x, allocator);
-                    posVal.AddMember("y", colComp.collider->position.y, allocator);
-                    posVal.AddMember("z", colComp.collider->position.z, allocator);
-                    colliderValue.AddMember("position", posVal, allocator);
-
-                    rapidjson::Value offVal(rapidjson::kObjectType);
-                    offVal.AddMember("x", colComp.collider->offset.x, allocator);
-                    offVal.AddMember("y", colComp.collider->offset.y, allocator);
-                    offVal.AddMember("z", colComp.collider->offset.z, allocator);
-                    colliderValue.AddMember("offset", offVal, allocator);
-
-                    switch (colComp.collider->ColliderType) {
-                    case Collision::ColliderType::CIRCLE: {
-                        auto* s = static_cast<Collision::Circle*>(colComp.collider.get());
-                        colliderValue.AddMember("radius", s->radius, allocator);
-
-                        // Save Center specifically if needed, though position covers it
-                        rapidjson::Value cVal(rapidjson::kObjectType);
-                        cVal.AddMember("x", s->position.x, allocator);
-                        cVal.AddMember("y", s->position.y, allocator);
-                        cVal.AddMember("z", s->position.z, allocator);
-                        colliderValue.AddMember("center", cVal, allocator);
-                        break;
-                    }
-                    case Collision::ColliderType::AABB: {
-                        auto* a = static_cast<Collision::AABBRect*>(colComp.collider.get());
-
-                        rapidjson::Value min(rapidjson::kObjectType);
-                        min.AddMember("x", a->min.x, allocator);
-                        min.AddMember("y", a->min.y, allocator);
-                        min.AddMember("z", a->min.z, allocator);
-                        colliderValue.AddMember("min", min, allocator);
-
-                        rapidjson::Value max(rapidjson::kObjectType);
-                        max.AddMember("x", a->max.x, allocator);
-                        max.AddMember("y", a->max.y, allocator);
-                        max.AddMember("z", a->max.z, allocator);
-                        colliderValue.AddMember("max", max, allocator);
-                        break;
-                    }
-                    case Collision::ColliderType::OBB: {
-                        // Cast to Polygon (since OBB is now a Polygon backend)
-                        auto* p = static_cast<Collision::Polygon*>(colComp.collider.get());
-
-                        // Save Min/Max/Rotation so CreateOBB can reconstruct it
-                        CEVec3 extents = Collision::Polygon::CalculateOBBExtents(*p);
-
-                        // Reconstruct Min/Max for saving
-                        CEVec3 center = p->position;
-                        CEVec3 min = center - extents;
-                        CEVec3 max = center + extents;
-
-                        rapidjson::Value minV(rapidjson::kObjectType);
-                        minV.AddMember("x", min.x, allocator); minV.AddMember("y", min.y, allocator); minV.AddMember("z", min.z, allocator);
-                        colliderValue.AddMember("min", minV, allocator);
-
-                        rapidjson::Value maxV(rapidjson::kObjectType);
-                        maxV.AddMember("x", max.x, allocator); maxV.AddMember("y", max.y, allocator); maxV.AddMember("z", max.z, allocator);
-                        colliderValue.AddMember("max", maxV, allocator);
-
-                        colliderValue.AddMember("rotation", p->rotation, allocator);
-                        break;
-                    }
-                    case Collision::ColliderType::LINE: {
-                        auto* l = static_cast<Collision::LineSegment*>(colComp.collider.get());
-
-                        // Save the local start and end points using your WriteVec3 helper
-                        JsonHelpers::WriteVec3(colliderValue, "p1", l->p1, allocator);
-                        JsonHelpers::WriteVec3(colliderValue, "p2", l->p2, allocator);
-                        break;
-                    }
-                    case Collision::ColliderType::POLYGON:
-                    case Collision::ColliderType::TRIANGLE: {
-                        auto* p = static_cast<Collision::Polygon*>(colComp.collider.get());
-                        colliderValue.AddMember("rotation", p->rotation, allocator);
-
-                        // Save Vertices Array
-                        rapidjson::Value verts(rapidjson::kArrayType);
-                        for (int k = 0; k < p->vertexCount; ++k) {
-                            rapidjson::Value v(rapidjson::kObjectType);
-                            v.AddMember("x", p->vertices[k].x, allocator);
-                            v.AddMember("y", p->vertices[k].y, allocator);
-                            v.AddMember("z", p->vertices[k].z, allocator);
-                            verts.PushBack(v, allocator);
-                        }
-                        colliderValue.AddMember("vertices", verts, allocator);
-                        break;
-                    }
-                    default: break;
-                    }
-
-                    entityValue.AddMember(rapidjson::StringRef(Keys::COLLIDER_COMPONENT), std::move(colliderValue), allocator);
-                }
-
-                // =========================================================
-                // E. ShapeComponent
-                // =========================================================
-                if (gECS.HasComponent<ShapeComponent>(id)) {
-                    const ShapeComponent& sComp = *gECS.GetComponent<ShapeComponent>(id);
-                    rapidjson::Value shapeValues(rapidjson::kObjectType);
-
-                    // Boolean, Integers, Floats
-                    shapeValues.AddMember("useTexture", sComp.enableTexture, allocator);
-                    shapeValues.AddMember("isWorldSpace", sComp.isWorldSpace, allocator);
-                    shapeValues.AddMember("wrapModeU", (int)sComp.wrapModeU, allocator);
-                    shapeValues.AddMember("wrapModeV", (int)sComp.wrapModeV, allocator);
-                    shapeValues.AddMember("thickness", sComp.thickness, allocator);
-                    shapeValues.AddMember("preview", sComp.preview, allocator);
-
-                    // ShapeType (integer)
-                    shapeValues.AddMember("type", (int)sComp.type, allocator);
-
-                    // Texture Name (string)
-                    rapidjson::Value textureNameValue(sComp.textureName.c_str(), allocator);
-                    shapeValues.AddMember("textureName", textureNameValue, allocator);
-
-                    // CEVec2 uvSize
-                    rapidjson::Value uvSizeValue(rapidjson::kObjectType);
-                    uvSizeValue.AddMember("x", sComp.uvSize.x, allocator);
-                    uvSizeValue.AddMember("y", sComp.uvSize.y, allocator);
-                    shapeValues.AddMember("uvSize", uvSizeValue, allocator);
-
-                    // CEVec2 uvOffset
-                    rapidjson::Value uvOffsetValue(rapidjson::kObjectType);
-                    uvOffsetValue.AddMember("x", sComp.uvOffset.x, allocator);
-                    uvOffsetValue.AddMember("y", sComp.uvOffset.y, allocator);
-                    shapeValues.AddMember("uvOffset", uvOffsetValue, allocator);
-
-                    // CEVec3 Color
-                    rapidjson::Value colorValue(rapidjson::kObjectType);
-                    colorValue.AddMember("x", sComp.color.x(), allocator);
-                    colorValue.AddMember("y", sComp.color.y(), allocator);
-                    colorValue.AddMember("z", sComp.color.z(), allocator);
-                    colorValue.AddMember("w", sComp.color.w(), allocator);
-                    shapeValues.AddMember("color", colorValue, allocator);
-
-                    // Line/Triangle points (p1, p2, t1, t2, t3)
-                    // NOTE: Your LoadScenes has a bug: it tries to read t1, t2, t3 even if the shape is a Line (which uses p1, p2). 
-                    // We save all to be robust.
-
-                    // p1
-                    rapidjson::Value p1Value(rapidjson::kObjectType);
-                    p1Value.AddMember("x", sComp.p1.x, allocator);
-                    p1Value.AddMember("y", sComp.p1.y, allocator);
-                    p1Value.AddMember("z", sComp.p1.z, allocator);
-                    shapeValues.AddMember("p1", p1Value, allocator);
-
-                    // p2
-                    rapidjson::Value p2Value(rapidjson::kObjectType);
-                    p2Value.AddMember("x", sComp.p2.x, allocator);
-                    p2Value.AddMember("y", sComp.p2.y, allocator);
-                    p2Value.AddMember("z", sComp.p2.z, allocator);
-                    shapeValues.AddMember("p2", p2Value, allocator);
-
-                    entityValue.AddMember(rapidjson::StringRef(Keys::SHAPE_COMPONENT), shapeValues, allocator);
-                }
-
-                // =========================================================
-                // F. TextComponent
-                // =========================================================
-                if (gECS.HasComponent<TextComponent>(id)) {
-                    const TextComponent& tComp = *gECS.GetComponent<TextComponent>(id);
-                    rapidjson::Value textValue(rapidjson::kObjectType);
-
-                    // 1. Font (string)
-                    rapidjson::Value fontValue(tComp.font.c_str(), allocator);
-                    textValue.AddMember("font", fontValue, allocator);
-
-                    // 2. Text (string)
-                    rapidjson::Value strValue(tComp.text.c_str(), allocator);
-                    textValue.AddMember("text", strValue, allocator);
-
-                    // 3. Scale (float)
-                    textValue.AddMember("scale", tComp.scale, allocator);
-
-                    // 4. Offset (CEVec2 -> JSON Object)
-                    rapidjson::Value offsetValue(rapidjson::kObjectType);
-                    offsetValue.AddMember("x", tComp.offset.x, allocator);
-                    offsetValue.AddMember("y", tComp.offset.y, allocator);
-                    textValue.AddMember("offset", offsetValue, allocator);
-
-                    // 5. Color (CEVec3 -> JSON Object)
-                    rapidjson::Value colorValue(rapidjson::kObjectType);
-                    colorValue.AddMember("x", tComp.color.x(), allocator);
-                    colorValue.AddMember("y", tComp.color.y(), allocator);
-                    colorValue.AddMember("z", tComp.color.z(), allocator);
-                    colorValue.AddMember("w", tComp.color.w(), allocator);
-                    textValue.AddMember("color", colorValue, allocator);
-
-                    // 6. Centered (bool)
-                    textValue.AddMember("centered", tComp.centered, allocator);
-
-                    // 7. IsWorldSpace (bool)
-                    textValue.AddMember("isworldspace", tComp.isWorldSpace, allocator);
-
-                    entityValue.AddMember(rapidjson::StringRef(Keys::TEXT_COMPONENT), textValue, allocator);
-                }
-
-                // =========================================================
-                // G. AudioComponent
-                // =========================================================
-                if (gECS.HasComponent<AudioEmitterComponent>(id)) {
-                    const AudioEmitterComponent& audioComp = *gECS.GetComponent<AudioEmitterComponent>(id);
-                    rapidjson::Value audioValue(rapidjson::kObjectType);
-
-                    // 1. Event Path
-                    rapidjson::Value pathVal;
-                    pathVal.SetString(audioComp.eventPath.c_str(), allocator);
-                    audioValue.AddMember("eventPath", pathVal, allocator);
-
-                    // 2. Properties
-                    audioValue.AddMember("volume", audioComp.volume, allocator);
-                    audioValue.AddMember("pitch", audioComp.pitch, allocator);
-                    audioValue.AddMember("spatial3D", audioComp.spatial3D, allocator);
-                    audioValue.AddMember("looping", audioComp.looping, allocator);
-
-                    entityValue.AddMember(rapidjson::StringRef(Keys::AUDIO_COMPONENT), audioValue, allocator);
-                }
-
-                // =========================================================
-                // H. ScriptComponent
-                // =========================================================
-                if (gECS.HasComponent<ScriptComponent>(id)) {
-                    const ScriptComponent& scriptComp = *gECS.GetComponent<ScriptComponent>(id);
-                    rapidjson::Value scriptValue(rapidjson::kObjectType);
-                    rapidjson::Value scriptsArray(rapidjson::kArrayType);
-
-                    for (const auto& inst : scriptComp.Scripts) {
-                        if (inst.ClassName.empty()) continue;
-
-                        // 1. Create Script Object
-                        rapidjson::Value scriptObj(rapidjson::kObjectType);
-
-                        // Save ClassName
-                        rapidjson::Value nameVal;
-                        nameVal.SetString(inst.ClassName.c_str(), allocator);
-                        scriptObj.AddMember("className", nameVal, allocator);
-
-                        // 2. Serialize Fields
-                        if (inst.Instance && inst.Class) {
-                            rapidjson::Value fieldsObj(rapidjson::kObjectType);
-
-                            void* iter = nullptr;
-                            while (MonoClassField* field = mono_class_get_fields(inst.Class, &iter)) {
-                                const char* fieldName = mono_field_get_name(field);
-                                uint32_t flags = mono_field_get_flags(field);
-
-                                if (flags & MONO_FIELD_ATTR_STATIC) continue;
-
-                                // Check Visibility (Public or Attribute)
-                                bool isPublic = (flags & MONO_FIELD_ATTR_PUBLIC);
-                                bool hasAttribute = false;
-
-                                // Look up the attribute class (Cache this static pointer for speed!)
-                                static MonoClass* attrClass = mono_class_from_name(
-                                    MonoManager::GetImage(), "CrashoutsEngine", "SerializeField");
-
-                                if (attrClass) {
-                                    // Get all attributes on this specific field
-                                    MonoCustomAttrInfo* attrInfo = mono_custom_attrs_from_field(inst.Class, field);
-                                    if (attrInfo) {
-                                        // Check if our specific attribute is present
-                                        hasAttribute = mono_custom_attrs_has_attr(attrInfo, attrClass);
-                                        mono_custom_attrs_free(attrInfo); // Important: Clean up!
-                                    }
-                                }
-
-                                if (isPublic || hasAttribute) {
-                                    MonoType* type = mono_field_get_type(field);
-                                    int typeEnum = mono_type_get_type(type);
-                                    rapidjson::Value key(fieldName, allocator);
-
-                                    if (typeEnum == MONO_TYPE_I4) {
-                                        int val;
-                                        mono_field_get_value(inst.Instance, field, &val);
-                                        fieldsObj.AddMember(key, val, allocator);
-                                    }
-                                    else if (typeEnum == MONO_TYPE_R4) {
-                                        float val;
-                                        mono_field_get_value(inst.Instance, field, &val);
-                                        fieldsObj.AddMember(key, val, allocator);
-                                    }
-                                    else if (typeEnum == MONO_TYPE_BOOLEAN) {
-                                        bool val;
-                                        mono_field_get_value(inst.Instance, field, &val);
-                                        fieldsObj.AddMember(key, val, allocator);
-                                    }
-                                    else if (typeEnum == MONO_TYPE_STRING) {
-                                        MonoString* monoStr = nullptr;
-                                        mono_field_get_value(inst.Instance, field, &monoStr);
-                                        if (monoStr) {
-                                            char* str = mono_string_to_utf8(monoStr);
-                                            rapidjson::Value sVal(str, allocator);
-                                            fieldsObj.AddMember(key, sVal, allocator);
-                                            mono_free(str);
-                                        }
-                                    }
-                                }
-                            }
-                            scriptObj.AddMember("fields", fieldsObj, allocator);
-                        }
-                        scriptsArray.PushBack(scriptObj, allocator);
-                    }
-
-                    scriptValue.AddMember("scripts", scriptsArray, allocator);
-                    entityValue.AddMember(rapidjson::StringRef(Keys::SCRIPT_COMPONENT), scriptValue, allocator);
-                }
-
-                // =========================================================
-                // I. CameraComponent
-                // =========================================================
-                if (gECS.HasComponent<CameraComponent>(id)) {
-                    const CameraComponent& cameraComp = *gECS.GetComponent<CameraComponent>(id);
-                    rapidjson::Value camValue(rapidjson::kObjectType);
-                    // 1. Zoom (float)
-                    camValue.AddMember("zoom", cameraComp.zoom, allocator);
-
-                    // 2. xBounds (CEVec2 -> JSON Object)
-                    rapidjson::Value xBoundsValue(rapidjson::kObjectType);
-                    xBoundsValue.AddMember("x", cameraComp.xBounds.x, allocator);
-                    xBoundsValue.AddMember("y", cameraComp.xBounds.y, allocator);
-                    camValue.AddMember("xBounds", xBoundsValue, allocator);
-
-                    // 2. yBounds (CEVec2 -> JSON Object)
-                    rapidjson::Value yBoundsValue(rapidjson::kObjectType);
-                    yBoundsValue.AddMember("x", cameraComp.yBounds.x, allocator);
-                    yBoundsValue.AddMember("y", cameraComp.yBounds.y, allocator);
-                    camValue.AddMember("yBounds", yBoundsValue, allocator);
-
-                    entityValue.AddMember(rapidjson::StringRef(Keys::CAMERA_COMPONENT), camValue, allocator);
-                }
-
-                // =========================================================
-                // J. ButtonComponent
-                // =========================================================
-                if (gECS.HasComponent<ButtonComponent>(id)) {
-                    const ButtonComponent& buttonComp = *gECS.GetComponent<ButtonComponent>(id);
-                    rapidjson::Value buttonVal(rapidjson::kObjectType);
-                    // 1.  buttonState (unsigned int)
-                    buttonVal.AddMember("buttonState", 
-                        static_cast<std::underlying_type_t<ButtonState>>(buttonComp.buttonState), allocator);
-                    
-                    // -------------------------------------------------------------------------------
-                    // 
-                    // 2. shapeNormalColor (CEVec3 -> JSON Object)
-                    rapidjson::Value shapeNormalColorValue(rapidjson::kObjectType);
-                    shapeNormalColorValue.AddMember("x", buttonComp.shapeNormalColor.x(), allocator);
-                    shapeNormalColorValue.AddMember("y", buttonComp.shapeNormalColor.y(), allocator);
-                    shapeNormalColorValue.AddMember("z", buttonComp.shapeNormalColor.z(), allocator);
-                    shapeNormalColorValue.AddMember("w", buttonComp.shapeNormalColor.w(), allocator);
-                    buttonVal.AddMember("shapeNormalColor", shapeNormalColorValue, allocator);
-
-                    // 3. shapeHoveredColor (CEVec2 -> JSON Object)
-                    rapidjson::Value shapeHoveredColorValue(rapidjson::kObjectType);
-                    shapeHoveredColorValue.AddMember("x", buttonComp.shapeHoveredColor.x(), allocator);
-                    shapeHoveredColorValue.AddMember("y", buttonComp.shapeHoveredColor.y(), allocator);
-                    shapeHoveredColorValue.AddMember("z", buttonComp.shapeHoveredColor.z(), allocator);
-                    shapeHoveredColorValue.AddMember("w", buttonComp.shapeHoveredColor.w(), allocator);
-                    buttonVal.AddMember("shapeHoveredColor", shapeHoveredColorValue, allocator);
-
-                    // 4. shapePressedColor (CEVec2 -> JSON Object)
-                    rapidjson::Value shapePressedColorValue(rapidjson::kObjectType);
-                    shapePressedColorValue.AddMember("x", buttonComp.shapePressedColor.x(), allocator);
-                    shapePressedColorValue.AddMember("y", buttonComp.shapePressedColor.y(), allocator);
-                    shapePressedColorValue.AddMember("z", buttonComp.shapePressedColor.z(), allocator);
-                    shapePressedColorValue.AddMember("w", buttonComp.shapePressedColor.w(), allocator);
-                    buttonVal.AddMember("shapePressedColor", shapePressedColorValue, allocator);
-
-                    // -------------------------------------------------------------------------------
-                    //
-                    // 5. textNormalColor (CEVec3 -> JSON Object)
-                    rapidjson::Value textNormalColorValue(rapidjson::kObjectType);
-                    textNormalColorValue.AddMember("x", buttonComp.textNormalColor.x(), allocator);
-                    textNormalColorValue.AddMember("y", buttonComp.textNormalColor.y(), allocator);
-                    textNormalColorValue.AddMember("z", buttonComp.textNormalColor.z(), allocator);
-                    textNormalColorValue.AddMember("w", buttonComp.textNormalColor.w(), allocator);
-                    buttonVal.AddMember("textNormalColor", textNormalColorValue, allocator);
-
-                    // 6. textHoveredColor (CEVec2 -> JSON Object)
-                    rapidjson::Value textHoveredColorValue(rapidjson::kObjectType);
-                    textHoveredColorValue.AddMember("x", buttonComp.textHoveredColor.x(), allocator);
-                    textHoveredColorValue.AddMember("y", buttonComp.textHoveredColor.y(), allocator);
-                    textHoveredColorValue.AddMember("z", buttonComp.textHoveredColor.z(), allocator);
-                    textHoveredColorValue.AddMember("w", buttonComp.textHoveredColor.w(), allocator);
-                    buttonVal.AddMember("textHoveredColor", textHoveredColorValue, allocator);
-
-                    // 7. textPressedColor (CEVec2 -> JSON Object)
-                    rapidjson::Value textPressedColorValue(rapidjson::kObjectType);
-                    textPressedColorValue.AddMember("x", buttonComp.textPressedColor.x(), allocator);
-                    textPressedColorValue.AddMember("y", buttonComp.textPressedColor.y(), allocator);
-                    textPressedColorValue.AddMember("z", buttonComp.textPressedColor.z(), allocator);
-                    textPressedColorValue.AddMember("w", buttonComp.textPressedColor.w(), allocator);
-                    buttonVal.AddMember("textPressedColor", textPressedColorValue, allocator);
-
-                    entityValue.AddMember(rapidjson::StringRef(Keys::BUTTON_COMPONENT), buttonVal, allocator);
-                }
-
-                // =========================================================
-                // K. GuiComponent
-                // =========================================================
-                if (gECS.HasComponent<GuiComponent>(id)) {
-                    const GuiComponent& guiComp = *gECS.GetComponent<GuiComponent>(id);
-                    rapidjson::Value guiValue(rapidjson::kObjectType);
-                    // 1.  uiType (unsigned int)
-                    guiValue.AddMember("uiType",
-                        static_cast<std::underlying_type_t<UIType>>(guiComp.uiType), allocator);
-
-                    entityValue.AddMember(rapidjson::StringRef(Keys::GUI_COMPONENT), guiValue, allocator);
-                }
-
-                // =========================================================
-                // L. TextInputComponent
-                // =========================================================
-                if (gECS.HasComponent<TextInputComponent>(id)) {
-                    const TextInputComponent& textInputComp = 
-                        *gECS.GetComponent<TextInputComponent>(id);
-                    rapidjson::Value textInputValue(rapidjson::kObjectType);
-
-                    // 1. isFocused (bool)
-                    textInputValue.AddMember("isFocused", textInputComp.isFocused, allocator);
-                    
-                    // 2. cursorPos (size_t)
-                    textInputValue.AddMember("cursorPos", textInputComp.cursorPos, allocator);
-
-                    // 3. maxCharacters (size_t)
-                    textInputValue.AddMember("maxCharacters", textInputComp.maxCharacters, allocator);
-
-                    entityValue.AddMember(rapidjson::StringRef(Keys::TEXT_INPUT_COMPONENT), textInputValue, allocator);
-                }
-
-                // =========================================================
-                // M. UILayoutComponent
-                // =========================================================
-                if (gECS.HasComponent<UILayoutComponent>(id)) {
-                    const UILayoutComponent& uiLayoutComp = *gECS.GetComponent<UILayoutComponent>(id);
-                    rapidjson::Value uiLayoutValue(rapidjson::kObjectType);
-                    // 2. paddingXY (CEVec2 -> JSON Object)
-                    rapidjson::Value paddingXYValue(rapidjson::kObjectType);
-                    paddingXYValue.AddMember("x", uiLayoutComp.paddingXY.x, allocator);
-                    paddingXYValue.AddMember("y", uiLayoutComp.paddingXY.y, allocator);
-                    uiLayoutValue.AddMember("paddingXY", paddingXYValue, allocator);
-                    
-                    // 2.  uiLayout (unsigned int)
-                    uiLayoutValue.AddMember("uiLayout",
-                        static_cast<std::underlying_type_t<UILayout>>(uiLayoutComp.uiLayout), allocator);
-
-                    entityValue.AddMember(rapidjson::StringRef(Keys::UI_LAYOUT_COMPONENT), uiLayoutValue, allocator);
-                }
-
-                // =========================================================
-                // N. PPComponent
-                // =========================================================
-                if (gECS.HasComponent<PPComponent>(id)) {
-                    const PPComponent& ppComp = *gECS.GetComponent<PPComponent>(id);
-                    rapidjson::Value ppValue(rapidjson::kObjectType);
-                    
-                    // 1.  brightness (float)
-                    ppValue.AddMember("brightness", ppComp.brightness, allocator);
-                    // 2.  contrast (float)
-                    ppValue.AddMember("contrast", ppComp.contrast, allocator);
-                    // 3.  saturation (float)
-                    ppValue.AddMember("saturation", ppComp.saturation, allocator);
-                    // 4.  active (bool)
-                    ppValue.AddMember("active", ppComp.active, allocator);
-
-                    entityValue.AddMember(rapidjson::StringRef(Keys::PP_COMPONENT), ppValue, allocator);
-                }
-
-                // =========================================================
-                // O. TileMapComponent (Refactored for Sparse Grid)
-                // =========================================================
-                if (gECS.HasComponent<TileMapComponent>(id)) {
-                    const TileMapComponent& tmComp = *gECS.GetComponent<TileMapComponent>(id);
-                    rapidjson::Value tmValue(rapidjson::kObjectType);
-
-                    // 1. tileSize (int)
-                    tmValue.AddMember("tileSize", tmComp.tileSize, allocator);
-
-                    // 2. activeAsset (string)
-                    // We save this so the editor remembers what brush was selected, 
-                    // though defaults reset it to "none" on load per your request, 
-                    // saving it allows you to remove that override later if you want persistence.
-                    rapidjson::Value activeAssetVal;
-                    activeAssetVal.SetString(tmComp.activeAsset.c_str(), allocator);
-                    tmValue.AddMember("activeAsset", activeAssetVal, allocator);
-
-                    // 3. tileAssetNames (vector<string>)
-                    rapidjson::Value assetsArray(rapidjson::kArrayType);
-                    for (const std::string& assetName : tmComp.tileAssetNames) {
-                        rapidjson::Value strVal;
-                        strVal.SetString(assetName.c_str(), allocator);
-                        assetsArray.PushBack(strVal, allocator);
-                    }
-                    tmValue.AddMember("tileAssetNames", assetsArray, allocator);
-
-                    // 4. gridData (map<pair<int,int>, string>)
-                    // Convert the map into an Array of Objects for JSON: [ {x:0, y:0, asset:"name"}, ... ]
-                    rapidjson::Value gridDataArray(rapidjson::kArrayType);
-
-                    for (const auto& [pos, assetName] : tmComp.gridData) {
-                        rapidjson::Value tileObj(rapidjson::kObjectType);
-
-                        tileObj.AddMember("x", pos.first, allocator);
-                        tileObj.AddMember("y", pos.second, allocator);
-
-                        rapidjson::Value assetVal;
-                        assetVal.SetString(assetName.c_str(), allocator);
-                        tileObj.AddMember("asset", assetVal, allocator);
-
-                        gridDataArray.PushBack(tileObj, allocator);
-                    }
-                    tmValue.AddMember("gridData", gridDataArray, allocator);
-
-                    // Note: We do NOT save pOpen, isCacheDirty, or renderCache as these are runtime/editor only.
-
-                    entityValue.AddMember(rapidjson::StringRef(Keys::TILEMAP_COMPONENT), tmValue, allocator);
-                }
-
-                // =========================================================
-                // P. SpriteAnimatorComponent
-                // =========================================================
-                if (gECS.HasComponent<SpriteAnimatorComponent>(id)) {
-                    const auto& comp = *gECS.GetComponent<SpriteAnimatorComponent>(id);
-                    rapidjson::Value compVal(rapidjson::kObjectType);
-
-                    // Save Playback State
-                    rapidjson::Value currName;
-                    currName.SetString(comp.currentClipName.c_str(), allocator);
-                    compVal.AddMember("currentClip", currName, allocator);
-                    compVal.AddMember("flipH", comp.flipH, allocator);
-                    compVal.AddMember("playing", comp.playing, allocator);
-
-                    // Save Clips Array
-                    rapidjson::Value clipsArr(rapidjson::kArrayType);
-                    for (const auto& clip : comp.clips) {
-                        rapidjson::Value clipObj(rapidjson::kObjectType);
-
-                        rapidjson::Value nameVal;
-                        nameVal.SetString(clip.name.c_str(), allocator);
-                        clipObj.AddMember("name", nameVal, allocator);
-
-                        clipObj.AddMember("start", clip.startFrame, allocator);
-                        clipObj.AddMember("count", clip.frameCount, allocator);
-                        clipObj.AddMember("fps", clip.fps, allocator);
-                        clipObj.AddMember("loop", clip.loop, allocator);
-
-                        clipsArr.PushBack(clipObj, allocator);
-                    }
-                    compVal.AddMember("clips", clipsArr, allocator);
-
-                    entityValue.AddMember(rapidjson::StringRef(Keys::SPRITE_ANIMATOR_COMPONENT), compVal, allocator);
-                }
-
-                // =========================================================
-                // Q. ParentComponent
-                // =========================================================
-                if (gECS.HasComponent<Component::ParentComponent>(id)) {
-                    const Component::ParentComponent& parentComp = *gECS.GetComponent<Component::ParentComponent>(id);
-
-                    // Only save if there is a valid parent
-                    if (parentComp.parent != 0) {
-                        rapidjson::Value parentValue(rapidjson::kObjectType);
-
-                        // 1. Save Parent Name (Critical for linking back up)
-                        // We assume the parent MUST have a NameComponent
-                        if (gECS.HasComponent<NameComponent>(parentComp.parent)) {
-                            std::string pName = gECS.GetComponent<NameComponent>(parentComp.parent)->name;
-                            rapidjson::Value pNameVal(pName.c_str(), allocator);
-                            parentValue.AddMember("parentName", pNameVal, allocator);
-                        }
-
-                        // 2. Local Position
-                        rapidjson::Value localPosVal(rapidjson::kObjectType);
-                        localPosVal.AddMember("x", parentComp.localPos.x, allocator);
-                        localPosVal.AddMember("y", parentComp.localPos.y, allocator);
-                        localPosVal.AddMember("z", parentComp.localPos.z, allocator);
-                        parentValue.AddMember("localPos", localPosVal, allocator);
-
-                        // 3. Local Rotation
-                        parentValue.AddMember("localRot", parentComp.localRot, allocator);
-
-                        // 4. Local Scale
-                        rapidjson::Value localScaleVal(rapidjson::kObjectType);
-                        localScaleVal.AddMember("x", parentComp.localScale.x, allocator);
-                        localScaleVal.AddMember("y", parentComp.localScale.y, allocator);
-                        parentValue.AddMember("localScale", localScaleVal, allocator);
-
-                        // 5. Color Inheritance
-                        parentValue.AddMember("inheritColor", parentComp.inheritColor, allocator);
-
-                        // 6. Color Multiplier
-                        rapidjson::Value colVal(rapidjson::kObjectType);
-                        colVal.AddMember("x", parentComp.colorMul.x(), allocator);
-                        colVal.AddMember("y", parentComp.colorMul.y(), allocator);
-                        colVal.AddMember("z", parentComp.colorMul.z(), allocator);
-                        colVal.AddMember("w", parentComp.colorMul.w(), allocator);
-                        parentValue.AddMember("colorMul", colVal, allocator);
-
-                        entityValue.AddMember(rapidjson::StringRef(Keys::PARENT_COMPONENT), parentValue, allocator);
-                    }
-                }
-
-                // =========================================================
-                // R. KeyframeAnimatorComponent SERIALIZATION
-                // =========================================================
-                if (gECS.HasComponent<KeyframeAnimatorComponent>(id)) {
-                    const KeyframeAnimatorComponent& ka = *gECS.GetComponent<KeyframeAnimatorComponent>(id);
-                    rapidjson::Value kaVal(rapidjson::kObjectType);
-
-                    // 1. Basic State
-                    rapidjson::Value currentVal;
-                    currentVal.SetString(ka.current.c_str(), allocator);
-                    kaVal.AddMember("current", currentVal, allocator);
-                    kaVal.AddMember("t", ka.t, allocator);
-                    kaVal.AddMember("playing", ka.playing, allocator);
-
-                    // 2. Save Clips
-                    rapidjson::Value clipsArr(rapidjson::kArrayType);
-
-                    for (const auto& pair : ka.clips) {
-                        const AnimationClip& clip = pair.second;
-                        rapidjson::Value clipVal(rapidjson::kObjectType);
-
-                        rapidjson::Value cName;
-                        cName.SetString(clip.name.c_str(), allocator);
-                        clipVal.AddMember("name", cName, allocator);
-                        clipVal.AddMember("wrap", static_cast<int>(clip.wrap), allocator);
-
-                        // --- [NEW] Save Texture & Size Data ---
-                        if (!clip.textureAsset.empty()) {
-                            rapidjson::Value texName;
-                            texName.SetString(clip.textureAsset.c_str(), allocator);
-                            clipVal.AddMember("textureAsset", texName, allocator);
-                        }
-                        clipVal.AddMember("spriteCols", clip.spriteCols, allocator);
-                        clipVal.AddMember("spriteRows", clip.spriteRows, allocator);
-                        clipVal.AddMember("useCustomSize", clip.useCustomSize, allocator);
-                        clipVal.AddMember("targetWidth", clip.targetWidth, allocator);
-                        clipVal.AddMember("targetHeight", clip.targetHeight, allocator);
-                        // --------------------------------------
-
-                        // 3. Save Bindings
-                        rapidjson::Value bindArr(rapidjson::kArrayType);
-                        for (const auto& binding : clip.bindings) {
-                            rapidjson::Value bVal(rapidjson::kObjectType);
-                            bVal.AddMember("property", static_cast<int>(binding.property), allocator);
-
-                            // 4. Save Keys
-                            rapidjson::Value keyArr(rapidjson::kArrayType);
-                            for (const auto& k : binding.curve.keys) {
-                                rapidjson::Value kVal(rapidjson::kObjectType);
-                                kVal.AddMember("t", k.time, allocator);
-                                kVal.AddMember("v", k.value, allocator);
-                                kVal.AddMember("i", static_cast<int>(k.interp), allocator);
-                                kVal.AddMember("in", k.inTan, allocator);
-                                kVal.AddMember("out", k.outTan, allocator);
-                                keyArr.PushBack(kVal, allocator);
-                            }
-                            bVal.AddMember("keys", keyArr, allocator);
-                            bindArr.PushBack(bVal, allocator);
-                        }
-                        clipVal.AddMember("bindings", bindArr, allocator);
-                        clipsArr.PushBack(clipVal, allocator);
-                    }
-
-                    kaVal.AddMember("clips", clipsArr, allocator);
-                    entityValue.AddMember(rapidjson::StringRef(Keys::KEYFRAME_ANIMATOR_COMPONENT), kaVal, allocator);
-                }
-                
-                // =========================================================
-                // S. ParticleComponent SERIALIZATION
-                // =========================================================
-                if (gECS.HasComponent<ParticleComponent>(id)) {
-                    const auto& pc = *gECS.GetComponent<ParticleComponent>(id);
-                    rapidjson::Value pVal(rapidjson::kObjectType);
-
-                    // 1. General Settings
-                    pVal.AddMember("isEmitting", pc.isEmitting, allocator);
-                    pVal.AddMember("useWorldSpace", pc.useWorldSpace, allocator);
-                    pVal.AddMember("maxParticles", pc.maxParticles, allocator);
-                    pVal.AddMember("emitRate", pc.emitRate, allocator);
-
-                    // 2. Emission Shape
-                    pVal.AddMember("emissionShape", static_cast<int>(pc.emissionShape), allocator);
-                    pVal.AddMember("radiusMin", pc.radiusMin, allocator);
-                    pVal.AddMember("radiusMax", pc.radiusMax, allocator);
-
-                    // 3. Lifecycle & Speed
-                    pVal.AddMember("startLifeMin", pc.startLifeMin, allocator);
-                    pVal.AddMember("startLifeMax", pc.startLifeMax, allocator);
-                    pVal.AddMember("startSpeedMin", pc.startSpeedMin, allocator);
-                    pVal.AddMember("startSpeedMax", pc.startSpeedMax, allocator);
-
-                    // 4. Size & Rotation
-                    pVal.AddMember("uniformSize", pc.uniformSize, allocator);
-                    pVal.AddMember("startSizeXMin", pc.startSizeXMin, allocator);
-                    pVal.AddMember("startSizeXMax", pc.startSizeXMax, allocator);
-                    pVal.AddMember("startSizeYMin", pc.startSizeYMin, allocator);
-                    pVal.AddMember("startSizeYMax", pc.startSizeYMax, allocator);
-
-                    pVal.AddMember("sizeOverTime", pc.sizeOverTime, allocator);
-                    pVal.AddMember("rotationOverTime", pc.rotationOverTime, allocator);
-
-                    // 5. Colors & Physics
-                    rapidjson::Value sCol(rapidjson::kObjectType);
-                    sCol.AddMember("x", pc.startcolor.x(), allocator);
-                    sCol.AddMember("y", pc.startcolor.y(), allocator);
-                    sCol.AddMember("z", pc.startcolor.z(), allocator);
-                    sCol.AddMember("w", pc.startcolor.w(), allocator);
-                    pVal.AddMember("startColor", sCol, allocator);
-
-                    rapidjson::Value eCol(rapidjson::kObjectType);
-                    eCol.AddMember("x", pc.endColor.x(), allocator);
-                    eCol.AddMember("y", pc.endColor.y(), allocator);
-                    eCol.AddMember("z", pc.endColor.z(), allocator);
-                    eCol.AddMember("w", pc.endColor.w(), allocator);
-                    pVal.AddMember("endColor", eCol, allocator);
-
-                    rapidjson::Value grav(rapidjson::kObjectType);
-                    grav.AddMember("x", pc.gravity.x, allocator);
-                    grav.AddMember("y", pc.gravity.y, allocator);
-                    grav.AddMember("z", pc.gravity.z, allocator);
-                    pVal.AddMember("gravity", grav, allocator);
-
-                    rapidjson::Value sVel(rapidjson::kObjectType);
-                    sVel.AddMember("x", pc.startVelocity.x, allocator);
-                    sVel.AddMember("y", pc.startVelocity.y, allocator);
-                    sVel.AddMember("z", pc.startVelocity.z, allocator);
-                    pVal.AddMember("startVelocity", sVel, allocator);
-
-                    // 6. Texture
-                    pVal.AddMember("useTexture", pc.useTexture, allocator);
-                    rapidjson::Value texName;
-                    texName.SetString(pc.textureName.c_str(), allocator);
-                    pVal.AddMember("textureName", texName, allocator);
-
-                    rapidjson::Value uv(rapidjson::kObjectType);
-                    uv.AddMember("x", pc.textureUV.x, allocator);
-                    uv.AddMember("y", pc.textureUV.y, allocator);
-                    pVal.AddMember("textureUV", uv, allocator);
-
-                    entityValue.AddMember(rapidjson::StringRef(Keys::PARTICLE_COMPONENT), pVal, allocator);
-                }
+                // Calls the centralized function. 
+                // Any changes to components only need to be updated in SerializeEntity now.
+                rapidjson::Value entityValue = SerializeEntity(static_cast<uint32_t>(id), allocator);
 
                 // Add the finished entity JSON object to the array
                 entitiesArray.PushBack(std::move(entityValue), allocator);

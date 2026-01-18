@@ -1,6 +1,7 @@
 {
     "entities": [
         {
+            "active": true,
             "name": "Rock_TileMap",
             "layer": {
                 "currentLayer": 0
@@ -14325,6 +14326,7 @@
             }
         },
         {
+            "active": true,
             "name": "Player",
             "layer": {
                 "currentLayer": 8
@@ -14349,8 +14351,8 @@
                     "y": 0.0,
                     "z": 0.0
                 },
-                "staticFriction": 1.0,
-                "dynamicFriction": 1.0,
+                "staticFriction": 0.0,
+                "dynamicFriction": 0.0,
                 "inertia": 0.0,
                 "invInertia": 0.0
             },
@@ -14882,6 +14884,7 @@
             }
         },
         {
+            "active": true,
             "name": "Post-Processing",
             "layer": {
                 "currentLayer": 0
@@ -14906,6 +14909,7 @@
             }
         },
         {
+            "active": true,
             "name": "BG_TileMap",
             "layer": {
                 "currentLayer": 0
@@ -15893,6 +15897,7 @@
             }
         },
         {
+            "active": true,
             "name": "Tex_foreground base",
             "layer": {
                 "currentLayer": 0
@@ -15945,6 +15950,7 @@
             }
         },
         {
+            "active": true,
             "name": "Tex_foreground top",
             "layer": {
                 "currentLayer": 0
@@ -15997,6 +16003,7 @@
             }
         },
         {
+            "active": true,
             "name": "foreground",
             "layer": {
                 "currentLayer": 0
@@ -16015,6 +16022,7 @@
             }
         },
         {
+            "active": true,
             "name": "background 1",
             "layer": {
                 "currentLayer": 0
@@ -16033,6 +16041,7 @@
             }
         },
         {
+            "active": true,
             "name": "Tex_bg 1 base",
             "layer": {
                 "currentLayer": 0
@@ -16085,6 +16094,7 @@
             }
         },
         {
+            "active": true,
             "name": "Tex_lava near",
             "layer": {
                 "currentLayer": 0
@@ -16137,6 +16147,7 @@
             }
         },
         {
+            "active": true,
             "name": "Tex_bg 1 top",
             "layer": {
                 "currentLayer": 0
@@ -16189,6 +16200,7 @@
             }
         },
         {
+            "active": true,
             "name": "Tex_bg 1 top (2)",
             "layer": {
                 "currentLayer": 0
@@ -16241,6 +16253,7 @@
             }
         },
         {
+            "active": true,
             "name": "Tex_bg 1 pillar",
             "layer": {
                 "currentLayer": 0
@@ -16293,6 +16306,7 @@
             }
         },
         {
+            "active": true,
             "name": "Tex_bg 1 pillar 2",
             "layer": {
                 "currentLayer": 0
@@ -16345,6 +16359,7 @@
             }
         },
         {
+            "active": true,
             "name": "background 2",
             "layer": {
                 "currentLayer": 0
@@ -16363,6 +16378,7 @@
             }
         },
         {
+            "active": true,
             "name": "Tex_bg2 top",
             "layer": {
                 "currentLayer": 0
@@ -16415,6 +16431,7 @@
             }
         },
         {
+            "active": true,
             "name": "Tex_bg2 top_Clone(2)",
             "layer": {
                 "currentLayer": 0
@@ -16467,6 +16484,7 @@
             }
         },
         {
+            "active": true,
             "name": "Tex_bg2 base",
             "layer": {
                 "currentLayer": 0
@@ -16519,6 +16537,7 @@
             }
         },
         {
+            "active": true,
             "name": "Tex_bg 2 p1",
             "layer": {
                 "currentLayer": 0
@@ -16571,6 +16590,7 @@
             }
         },
         {
+            "active": true,
             "name": "Tex_bg2 p2",
             "layer": {
                 "currentLayer": 0
@@ -16623,6 +16643,7 @@
             }
         },
         {
+            "active": true,
             "name": "Tex_bg 2 p1_Clone (2)",
             "layer": {
                 "currentLayer": 0
@@ -16675,6 +16696,7 @@
             }
         },
         {
+            "active": true,
             "name": "background 3",
             "layer": {
                 "currentLayer": 0
@@ -16693,6 +16715,7 @@
             }
         },
         {
+            "active": true,
             "name": "Tex_bg3 base",
             "layer": {
                 "currentLayer": 0
@@ -16745,6 +16768,7 @@
             }
         },
         {
+            "active": true,
             "name": "Tex_bg3 top",
             "layer": {
                 "currentLayer": 0
@@ -16797,6 +16821,7 @@
             }
         },
         {
+            "active": true,
             "name": "Tex_bg3 p2",
             "layer": {
                 "currentLayer": 0
@@ -16849,6 +16874,7 @@
             }
         },
         {
+            "active": true,
             "name": "Tex_bg3 p2(2)",
             "layer": {
                 "currentLayer": 0
@@ -16901,6 +16927,7 @@
             }
         },
         {
+            "active": true,
             "name": "Tex_lava far",
             "layer": {
                 "currentLayer": 0
@@ -16953,6 +16980,7 @@
             }
         },
         {
+            "active": true,
             "name": "Tex_bg colour",
             "layer": {
                 "currentLayer": 0
@@ -17005,6 +17033,7 @@
             }
         },
         {
+            "active": true,
             "name": "PressurePlate",
             "layer": {
                 "currentLayer": 2
@@ -17013,7 +17042,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": 194.45278930664063,
-                    "y": -39.93634033203125,
+                    "y": -25.276859283447267,
                     "z": -1.0
                 },
                 "size": {
@@ -17029,35 +17058,36 @@
                     "y": 0.0,
                     "z": 0.0
                 },
-                "staticFriction": 0.5,
-                "dynamicFriction": 0.5,
+                "staticFriction": 0.0,
+                "dynamicFriction": 0.0,
                 "inertia": 0.0,
                 "invInertia": 0.0
             },
             "collider": {
-                "ColliderType": 1,
+                "ColliderType": 2,
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
                     "x": 194.45278930664063,
-                    "y": -59.7363395690918,
+                    "y": -43.776859283447269,
                     "z": -1.0
                 },
                 "offset": {
                     "x": 0.0,
-                    "y": -19.799999237060548,
+                    "y": -18.5,
                     "z": 0.0
                 },
                 "min": {
-                    "x": 178.45278930664063,
-                    "y": -63.93634033203125,
+                    "x": 193.45278930664063,
+                    "y": -43.776859283447269,
                     "z": -1.0
                 },
                 "max": {
-                    "x": 210.45278930664063,
-                    "y": -55.536338806152347,
+                    "x": 195.45278930664063,
+                    "y": -43.776859283447269,
                     "z": -1.0
-                }
+                },
+                "rotation": 0.0
             },
             "shape": {
                 "useTexture": true,
@@ -17106,6 +17136,7 @@
             }
         },
         {
+            "active": true,
             "name": "Wall",
             "layer": {
                 "currentLayer": 2
@@ -17172,6 +17203,7 @@
             }
         },
         {
+            "active": true,
             "name": "Wall(1)",
             "layer": {
                 "currentLayer": 2
@@ -17262,6 +17294,7 @@
             }
         },
         {
+            "active": true,
             "name": "Wall(2)",
             "layer": {
                 "currentLayer": 2
@@ -17352,6 +17385,7 @@
             }
         },
         {
+            "active": true,
             "name": "Wall(3)",
             "layer": {
                 "currentLayer": 2
@@ -17442,6 +17476,7 @@
             }
         },
         {
+            "active": true,
             "name": "Wall(4)",
             "layer": {
                 "currentLayer": 2
@@ -17532,6 +17567,7 @@
             }
         },
         {
+            "active": true,
             "name": "Wall(5)",
             "layer": {
                 "currentLayer": 2
@@ -17622,6 +17658,7 @@
             }
         },
         {
+            "active": true,
             "name": "Wall2",
             "layer": {
                 "currentLayer": 0
@@ -17727,6 +17764,7 @@
             }
         },
         {
+            "active": true,
             "name": "PressurePlate2",
             "layer": {
                 "currentLayer": 2
@@ -17828,6 +17866,7 @@
             }
         },
         {
+            "active": true,
             "name": "PressurePlate3",
             "layer": {
                 "currentLayer": 2
@@ -17925,6 +17964,7 @@
             }
         },
         {
+            "active": true,
             "name": "Wall3",
             "layer": {
                 "currentLayer": 0
@@ -18035,6 +18075,7 @@
             }
         },
         {
+            "active": true,
             "name": "PressurePlate4",
             "layer": {
                 "currentLayer": 2
@@ -18132,6 +18173,7 @@
             }
         },
         {
+            "active": true,
             "name": "PressurePlate5",
             "layer": {
                 "currentLayer": 2
@@ -18229,6 +18271,7 @@
             }
         },
         {
+            "active": true,
             "name": "PressurePlate6",
             "layer": {
                 "currentLayer": 0
@@ -18326,6 +18369,7 @@
             }
         },
         {
+            "active": true,
             "name": "PressurePlate7",
             "layer": {
                 "currentLayer": 0
@@ -18423,6 +18467,7 @@
             }
         },
         {
+            "active": true,
             "name": "Exit",
             "layer": {
                 "currentLayer": 0
@@ -18517,6 +18562,7 @@
             }
         },
         {
+            "active": true,
             "name": "Wall4",
             "layer": {
                 "currentLayer": 2
@@ -18583,6 +18629,7 @@
             }
         },
         {
+            "active": true,
             "name": "Wall4(1)",
             "layer": {
                 "currentLayer": 2
@@ -18669,6 +18716,7 @@
             }
         },
         {
+            "active": true,
             "name": "Wall4(1)_Clone2765",
             "layer": {
                 "currentLayer": 2
@@ -18755,6 +18803,7 @@
             }
         },
         {
+            "active": true,
             "name": "Wall4(1)_Clone2765_Clone2766",
             "layer": {
                 "currentLayer": 2
@@ -18841,6 +18890,7 @@
             }
         },
         {
+            "active": true,
             "name": "Wall4(1)_Clone2765_Clone2766_Clone2767",
             "layer": {
                 "currentLayer": 2
@@ -18927,6 +18977,7 @@
             }
         },
         {
+            "active": true,
             "name": "MovingPlatform",
             "layer": {
                 "currentLayer": 2
@@ -19028,6 +19079,7 @@
             }
         },
         {
+            "active": true,
             "name": "Wall5",
             "layer": {
                 "currentLayer": 0
@@ -19133,6 +19185,7 @@
             }
         },
         {
+            "active": true,
             "name": "Wall6",
             "layer": {
                 "currentLayer": 0
@@ -19199,6 +19252,7 @@
             }
         },
         {
+            "active": true,
             "name": "New Child",
             "layer": {
                 "currentLayer": 2
@@ -19285,6 +19339,7 @@
             }
         },
         {
+            "active": true,
             "name": "New Child_Clone2805",
             "layer": {
                 "currentLayer": 2
@@ -19371,6 +19426,7 @@
             }
         },
         {
+            "active": true,
             "name": "New Child_Clone2805_Clone2806",
             "layer": {
                 "currentLayer": 2
@@ -19457,6 +19513,7 @@
             }
         },
         {
+            "active": true,
             "name": "New Child_Clone2805_Clone2806_Clone2807",
             "layer": {
                 "currentLayer": 2
@@ -19543,6 +19600,7 @@
             }
         },
         {
+            "active": true,
             "name": "New Child_Clone2805_Clone2806_Clone2807_Clone2808",
             "layer": {
                 "currentLayer": 2
@@ -19629,6 +19687,7 @@
             }
         },
         {
+            "active": true,
             "name": "New Child_Clone2805_Clone2806_Clone2807_Clone2808_Clone2809",
             "layer": {
                 "currentLayer": 2
@@ -19715,6 +19774,7 @@
             }
         },
         {
+            "active": true,
             "name": "MovingPlatform(1)",
             "layer": {
                 "currentLayer": 2
@@ -19816,6 +19876,7 @@
             }
         },
         {
+            "active": true,
             "name": "PauseScreen",
             "layer": {
                 "currentLayer": 0
@@ -19868,6 +19929,7 @@
             }
         },
         {
+            "active": true,
             "name": "PauseBG",
             "layer": {
                 "currentLayer": 0
@@ -19920,6 +19982,7 @@
             }
         },
         {
+            "active": true,
             "name": "PauseQuitBtn",
             "layer": {
                 "currentLayer": 0
@@ -20029,6 +20092,7 @@
             }
         },
         {
+            "active": true,
             "name": "PauseResumeBtn",
             "layer": {
                 "currentLayer": 0
@@ -20138,6 +20202,7 @@
             }
         },
         {
+            "active": true,
             "name": "SettingsBtn",
             "layer": {
                 "currentLayer": 0
@@ -20247,6 +20312,7 @@
             }
         },
         {
+            "active": true,
             "name": "Ball",
             "layer": {
                 "currentLayer": 0
@@ -20462,6 +20528,7 @@
             }
         },
         {
+            "active": true,
             "name": "Slime",
             "layer": {
                 "currentLayer": 16
@@ -20841,6 +20908,7 @@
             }
         },
         {
+            "active": true,
             "name": "Slime (2)",
             "layer": {
                 "currentLayer": 16
@@ -21216,6 +21284,7 @@
             }
         },
         {
+            "active": true,
             "name": "Slime (3)",
             "layer": {
                 "currentLayer": 16
@@ -21591,6 +21660,7 @@
             }
         },
         {
+            "active": true,
             "name": "BarUI",
             "layer": {
                 "currentLayer": 0
@@ -21609,6 +21679,7 @@
             }
         },
         {
+            "active": true,
             "name": "Bar Graphic",
             "layer": {
                 "currentLayer": 0
@@ -21661,6 +21732,7 @@
             }
         },
         {
+            "active": true,
             "name": "Bar Graphic_BG",
             "layer": {
                 "currentLayer": 0
@@ -21713,6 +21785,7 @@
             }
         },
         {
+            "active": true,
             "name": "Slime (4)",
             "layer": {
                 "currentLayer": 16
@@ -22088,6 +22161,7 @@
             }
         },
         {
+            "active": true,
             "name": "Slime (5)",
             "layer": {
                 "currentLayer": 16
@@ -22463,6 +22537,7 @@
             }
         },
         {
+            "active": true,
             "name": "Slime (6)",
             "layer": {
                 "currentLayer": 16
@@ -22838,6 +22913,7 @@
             }
         },
         {
+            "active": true,
             "name": "Ball (2)",
             "layer": {
                 "currentLayer": 0
@@ -23053,6 +23129,7 @@
             }
         },
         {
+            "active": true,
             "name": "GameOverScreen",
             "layer": {
                 "currentLayer": 0
@@ -23105,6 +23182,7 @@
             }
         },
         {
+            "active": true,
             "name": "GameOverBG",
             "layer": {
                 "currentLayer": 0
@@ -23157,6 +23235,7 @@
             }
         },
         {
+            "active": true,
             "name": "GAMEOVER",
             "layer": {
                 "currentLayer": 0
@@ -23192,6 +23271,7 @@
             }
         },
         {
+            "active": true,
             "name": "RestartBtn",
             "layer": {
                 "currentLayer": 0
@@ -23318,6 +23398,7 @@
             }
         },
         {
+            "active": true,
             "name": "QuitBtn",
             "layer": {
                 "currentLayer": 0
@@ -23444,6 +23525,7 @@
             }
         },
         {
+            "active": true,
             "name": "WinScreen",
             "layer": {
                 "currentLayer": 0
@@ -23504,6 +23586,7 @@
             }
         },
         {
+            "active": true,
             "name": "WinMessage",
             "layer": {
                 "currentLayer": 0
@@ -23539,6 +23622,7 @@
             }
         },
         {
+            "active": true,
             "name": "QuitBtn",
             "layer": {
                 "currentLayer": 0
@@ -23665,6 +23749,7 @@
             }
         },
         {
+            "active": true,
             "name": "Tex_foreground top_Clone2826",
             "layer": {
                 "currentLayer": 0
@@ -23717,6 +23802,7 @@
             }
         },
         {
+            "active": true,
             "name": "ReturnButton",
             "layer": {
                 "currentLayer": 0
@@ -23843,6 +23929,7 @@
             }
         },
         {
+            "active": true,
             "name": "Pause Texts",
             "layer": {
                 "currentLayer": 0

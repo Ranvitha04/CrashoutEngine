@@ -56,6 +56,8 @@ namespace UI {
                 Entity child = ecs.CreateEntity();
                 if (!ecs.HasComponent<Component::NameComponent>(child))
                     ecs.AddComponent<Component::NameComponent>(child, "New Child");
+                if (!ecs.HasComponent<Component::ActiveComponent>(child))
+                    ecs.AddComponent<Component::ActiveComponent>(child, true);
                 if (!ecs.HasComponent<Component::TransformComponent>(child))
                     ecs.AddComponent<Component::TransformComponent>(child);
                 CrashoutsEngine::AttachChild(ecs, e, child);
@@ -94,6 +96,9 @@ namespace UI {
             if (!ecs.HasComponent<Component::NameComponent>(e)) {
                 ecs.AddComponent<Component::NameComponent>(e, "Entity " + std::to_string(e));
             }
+            if (!ecs.HasComponent<Component::ActiveComponent>(e)) {
+                ecs.AddComponent<Component::ActiveComponent>(e, true);
+            }
             if (!ecs.HasComponent<Component::TransformComponent>(e)) {
                 ecs.AddComponent<Component::TransformComponent>(e);
             }
@@ -115,7 +120,7 @@ namespace UI {
                     ImGui::EndCombo();
                 }
 
-                if (ImGui::Button("Create Entity##Prefab")) {
+                if (ImGui::Button("Create Prefab##Prefab")) {
                     Prefab::Create(ecs, names[sel]);
                 }
             }
@@ -714,10 +719,7 @@ namespace UI {
         if (ImGui::Button("Create Scene")) {
             // Only create if the name field is not empty
             if (std::strlen(sceneNameBuffer) > 0) {
-
-
                 // 4. Call your create function
-                Serialization::SaveScenes(sceneNameBuffer);
                 ECS::getInstance()->Reset();
                 Serialization::SaveScenes(sceneNameBuffer);
 
@@ -763,9 +765,8 @@ namespace UI {
                             if (engineState == EngineState::STOP) Serialization::SaveScenes(currSceneName);
                         }
                         // Load Scene flow
-                        ECS::getInstance()->Reset();
-                        currSceneName = name;
-                        Serialization::LoadScenes(name);
+                        g_PendingSceneName = name;
+                        g_IsSceneLoadPending = true;
 
                         if(engineState != EngineState::PLAY) ::Physics::PhysicsHandler::PhysicsHandler::GetInstance().SetPaused(true);
                     }
@@ -1170,8 +1171,8 @@ namespace UI {
 
                 if (currSceneName.empty()) RestartGameState();       // Legacy scene system
                 else {
-                    ECS::getInstance()->Reset();
-                    Serialization::LoadScenes(currSceneName);
+                    g_PendingSceneName = currSceneName;
+                    g_IsSceneLoadPending = true;
                 }
                 //MonoManager::ReloadScripts();
                 engineState = EngineState::STOP;

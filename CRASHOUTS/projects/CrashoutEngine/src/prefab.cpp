@@ -32,6 +32,7 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserve
 #include "textinputcomponent.h"
 #include "uilayoutcomponent.h"
 #include "layercomponent.h"
+#include "activecomponent.h"
 
 // RapidJSON
 #include "rapidjson/document.h"
@@ -146,6 +147,7 @@ namespace CaptureData {
     struct InputData { bool hasComp{ false }; TextInputComponent c; };
     struct LayoutData { bool hasComp{ false }; UILayoutComponent c; };
     struct PPData { bool hasComp{ false }; PPComponent c; };
+    struct ActiveData { bool hasComp{ false }; ActiveComponent c; };
 }
 
 // Helper to read color from JSON object {x,y,z,w}
@@ -187,6 +189,20 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path) {
         // -------------------------------------------------------------------------
         // 1. EXTRACT DATA TO LOCAL STRUCTS
         // -------------------------------------------------------------------------
+
+        // Active
+        ActiveData actD;
+        if (prefabs.HasMember("active")) {
+            actD.hasComp = true;
+            const auto& a = prefabs["active"];
+            if (a.HasMember("isActive")) actD.c.isActive = a["isActive"].GetBool();
+        }
+        else {
+            // If the prefab JSON doesn't mention "active",
+            // we assume it should exist and be enabled (Default behavior).
+            actD.hasComp = true;
+            actD.c.isActive = true;
+        }
 
         // Transform
         TransformData trD;
@@ -515,6 +531,11 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path) {
             ecs.AddComponent<NameComponent>(e, NameComponent{ name });
             ecs.AddComponent<PrefabInstanceComponent>(e, PrefabInstanceComponent{ name });
 
+            // Active 
+            if (actD.hasComp) {
+                ecs.AddComponent<ActiveComponent>(e, actD.c);
+            }
+
             // Transform
             TransformComponent tc{};
             tc.position = trD.pos;
@@ -743,6 +764,13 @@ namespace CrashoutsEngine {
         Value obj(kObjectType);
         obj.AddMember("type", "Box", allocator); // Tag type
         obj.AddMember("name", Value(newName.c_str(), allocator), allocator);
+
+        // Active
+        if (auto* ac = ecs.GetComponent<ActiveComponent>(e)) {
+            Value aObj(kObjectType);
+            aObj.AddMember("isActive", ac->isActive, allocator);
+            obj.AddMember("active", aObj, allocator);
+        }
 
         // Transform
         if (auto* tc = ecs.GetComponent<TransformComponent>(e)) {

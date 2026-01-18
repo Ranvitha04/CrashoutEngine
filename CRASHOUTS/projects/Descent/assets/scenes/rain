@@ -1,6 +1,7 @@
 {
     "entities": [
         {
+            "active": true,
             "name": "Entity 1",
             "layer": {
                 "currentLayer": 0
@@ -581,6 +582,7 @@
             }
         },
         {
+            "active": true,
             "name": "Player",
             "layer": {
                 "currentLayer": 8
@@ -748,6 +750,7 @@
             }
         },
         {
+            "active": true,
             "name": "Slime new",
             "layer": {
                 "currentLayer": 16

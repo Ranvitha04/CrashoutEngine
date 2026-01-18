@@ -29,6 +29,7 @@ namespace Component {
 	*/
 	struct TileMapComponent {
 		std::vector<std::string> tileAssetNames;				// Vector of names of the Tile Assets to be used
+		std::vector<CrashoutsEngine::Entity> segmentCache;						// For optimized LineSegments
 		std::string activeAsset;								// The currently active / selected Tile Asset
 		int tileSize = 32;										// Size of one tile in world units
 		bool pOpen = false;										// Toggle editor window

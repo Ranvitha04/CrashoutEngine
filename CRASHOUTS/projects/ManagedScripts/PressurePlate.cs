@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 
 namespace CrashoutsEngine
 {
@@ -32,6 +33,7 @@ namespace CrashoutsEngine
 
         public void OnCollideEnter(uint otherEntityID)
         {
+            Debug.Log("wweird");
             // If already pressed, don't calculate again
             if (stepOn) return;
 
