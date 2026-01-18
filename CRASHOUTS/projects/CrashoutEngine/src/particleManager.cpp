@@ -53,6 +53,23 @@ namespace ParticleSystem {
 	void ParticleUpdate(CrashoutsEngine::Entity const entityId, Component::ParticleComponent& comp, f32 dt) {
 		auto& data = comp.data;
 
+		// Get the TRUE capacity of the vectors.
+		size_t actualCapacity = data.positions.size();
+
+		if (actualCapacity == 0) {
+			data.activeCount = 0;
+			return; // Safety Exit: No memory allocated
+		}
+
+		// If vectors are mismatched size (rare, but possible if Init failed halfway), default to safest size.
+		if (data.velocities.size() < actualCapacity) actualCapacity = data.velocities.size();
+		if (data.colors.size() < actualCapacity) actualCapacity = data.colors.size();
+
+		// If activeCount exceeds the actual physical memory size, we MUST clamp it.
+		if (data.activeCount > actualCapacity) {
+			data.activeCount = actualCapacity;
+		}
+
 		// Transform of the object with the particle system component
 		const Component::TransformComponent* t = 
 			CrashoutsEngine::ECS::getInstance()->GetComponent<Component::TransformComponent>(entityId);
@@ -67,7 +84,7 @@ namespace ParticleSystem {
 
 			// If can emit base on time and rate
 			while (comp.emitAccumulator >= secondsPerParticle) {
-				if (data.activeCount < comp.maxParticles) {
+				if (data.activeCount < comp.maxParticles && data.activeCount < actualCapacity) {
 					// Init new particle at the activeCount index
 					size_t i = data.activeCount;
 

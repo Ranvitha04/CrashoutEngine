@@ -11,6 +11,7 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserve
 #include "physicsmanager.h"
 #include "frameratecontroller.h"
 #include "hierarchycomponent.h"
+#include "activecomponent.h"
 #include "namecomponent.h"
 #include "log.h"
 #include <cstdio>
@@ -496,6 +497,8 @@ namespace Physics {
 		for (int i{}; i < step; ++i) {
 
 			for (const CrashoutsEngine::Entity& entity : globalEntities) {
+				if (!globalECS.GetComponent<Component::ActiveComponent>(entity)->isActive) continue;
+
 				Component::RigidBodyComponent* rigidBody{ globalECS.GetComponent<Component::RigidBodyComponent>(entity) };
 				//if (!rigidBody->getFlags().test(SIMULATE_DYNAMICS) || !rigidBody->getMass()) continue;
 				if (!rigidBody || !rigidBody->getMass()) continue;
@@ -534,6 +537,8 @@ namespace Physics {
 
 			/*PHYSICS SIM, UPDATE POSITION*/
 			for (const CrashoutsEngine::Entity& entity : globalEntities) {
+				if (!globalECS.GetComponent<Component::ActiveComponent>(entity)->isActive) continue;
+
 				if (!globalECS.HasComponent<Component::TransformComponent>(entity)) continue;
 				Component::TransformComponent* transform{ globalECS.GetComponent<Component::TransformComponent>(entity) };
 				Component::RigidBodyComponent* rigidBody{ globalECS.GetComponent<Component::RigidBodyComponent>(entity) };

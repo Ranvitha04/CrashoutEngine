@@ -22,7 +22,7 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserv
 #include <imgui.h>
 #include <algorithm>
 #include <filesystem>
-#include <numeric>
+//#include <numeric>
 #include <fstream>
 #include "debugdefaults.h"
 #include "debugAssetLoader.h"
@@ -46,6 +46,7 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserv
 #include "keyframe.h" 
 #include "hierarchycomponent.h"
 #include "particleComponent.h"
+#include "activecomponent.h"
 
 // FOR GAME GUI
 #include "buttoncomponent.h"
@@ -235,6 +236,18 @@ namespace {
 			if (has(ecs, e)) ecs.RemoveComponent<Component::NameComponent>(e);
 		}
 		void drawInspector(ECS& ecs, Entity e) override {
+			
+			// For active component (Set gameobject active or not active)
+			if (auto* ac = ecs.GetComponent<Component::ActiveComponent>(e)) {
+				ImGui::PushID("ActiveToggle");
+				UIHelpers::DrawUndoableBool("Enable GameObject##Active", ac->isActive);
+				ImGui::PopID();
+			}
+			// Add active component if not yet created
+			else {
+				ecs.AddComponent<Component::ActiveComponent>(e, true);
+			}
+
 			if (auto* c = ecs.GetComponent<Component::NameComponent>(e)) {
 				UIHelpers::DrawUndoableString("Entity Name", c->name);
 			}

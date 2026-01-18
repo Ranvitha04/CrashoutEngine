@@ -56,6 +56,8 @@ namespace UI {
                 Entity child = ecs.CreateEntity();
                 if (!ecs.HasComponent<Component::NameComponent>(child))
                     ecs.AddComponent<Component::NameComponent>(child, "New Child");
+                if (!ecs.HasComponent<Component::ActiveComponent>(child))
+                    ecs.AddComponent<Component::ActiveComponent>(child, true);
                 if (!ecs.HasComponent<Component::TransformComponent>(child))
                     ecs.AddComponent<Component::TransformComponent>(child);
                 CrashoutsEngine::AttachChild(ecs, e, child);
@@ -94,6 +96,9 @@ namespace UI {
             if (!ecs.HasComponent<Component::NameComponent>(e)) {
                 ecs.AddComponent<Component::NameComponent>(e, "Entity " + std::to_string(e));
             }
+            if (!ecs.HasComponent<Component::ActiveComponent>(e)) {
+                ecs.AddComponent<Component::ActiveComponent>(e, true);
+            }
             if (!ecs.HasComponent<Component::TransformComponent>(e)) {
                 ecs.AddComponent<Component::TransformComponent>(e);
             }
@@ -115,7 +120,7 @@ namespace UI {
                     ImGui::EndCombo();
                 }
 
-                if (ImGui::Button("Create Entity##Prefab")) {
+                if (ImGui::Button("Create Prefab##Prefab")) {
                     Prefab::Create(ecs, names[sel]);
                 }
             }

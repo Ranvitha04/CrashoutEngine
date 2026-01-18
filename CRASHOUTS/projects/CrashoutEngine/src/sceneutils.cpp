@@ -18,7 +18,7 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 #include "inputmanager.h"
 #include "frameratecontroller.h"
 #include "camera.h"
-#include "settings.h"
+//#include "settings.h"
 #include "rendererconnector.h"
 #include "sceneutils.h"
 #include "engine.h"
@@ -29,13 +29,14 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 #include "particleComponent.h"
 #include "shapescomponent.h"
 #include "transformcomponent.h"
-#include "namecomponent.h"
+//#include "namecomponent.h"
 #include "textcomponent.h"
 #include "shapes.h"
 #include "uilayoutcomponent.h"
 #include "textinputcomponent.h"
 #include "buttoncomponent.h"
-#include "tilemapcomponent.h"
+//#include "tilemapcomponent.h"
+#include "activecomponent.h"
 //#include "particleSystem.h"
 //#include "camera.h"
 
@@ -146,6 +147,8 @@ namespace Scene {
 			}
 
 			for (const Entity& id : textArray.indexToEntity) {
+				if (!globalECS.GetComponent<ActiveComponent>(id)->isActive) continue;
+
 				TextComponent* tc = globalECS.GetComponent<TextComponent>(id);
 				float depthZ = 0.0f;
 
@@ -264,6 +267,8 @@ namespace Scene {
 			const ECS::ComponentArray<ButtonComponent>& buttonArray = globalECS.GetComponentArray<ButtonComponent>();
 
 			for (const Entity& id : buttonArray.indexToEntity) {
+				if (!globalECS.GetComponent<ActiveComponent>(id)->isActive) continue;
+
 				// Some weird bug here, ignore button interaction if no GUI component
 				GuiComponent* g = globalECS.GetComponent<GuiComponent>(id);
 				if (g == nullptr) continue;
@@ -355,6 +360,8 @@ namespace Scene {
 
 			// 2. Detect clicks on input fields
 			for (const Entity& id : textInputArray.indexToEntity) {
+				if (!globalECS.GetComponent<ActiveComponent>(id)->isActive) continue;
+
 				TransformComponent* t = globalECS.GetComponent<TransformComponent>(id);
 				UILayoutComponent* u = globalECS.GetComponent<UILayoutComponent>(id);
 				TextComponent* txt = globalECS.GetComponent<TextComponent>(id);
@@ -464,6 +471,8 @@ namespace Scene {
 			// Iterate over the single ParticleComponent type
 			auto& particleArray = globalECS.GetComponentArray<ParticleComponent>();
 			for (const Entity& id : particleArray.indexToEntity) {
+				if (!globalECS.GetComponent<ActiveComponent>(id)->isActive) continue;
+
 				ParticleComponent* pc = globalECS.GetComponent<ParticleComponent>(id);
 				if (pc) {
 					ParticleSystem::ParticleInit(*pc);
@@ -480,6 +489,8 @@ namespace Scene {
 			// Iterate over the single ParticleComponent type
 			auto& particleArray = globalECS.GetComponentArray<ParticleComponent>();
 			for (const Entity& id : particleArray.indexToEntity) {
+				if (!globalECS.GetComponent<ActiveComponent>(id)->isActive) continue;
+
 				ParticleComponent* pc = globalECS.GetComponent<ParticleComponent>(id);
 				if (pc) {
 					// Call the Update function declared in particleComponent.h
@@ -859,6 +870,8 @@ namespace Scene {
 		screenEntities.reserve(shapeArray.indexToEntity.size());
 
 		for (const Entity& id : shapeArray.indexToEntity) {
+			if (!globalECS.GetComponent<ActiveComponent>(id)->isActive) continue;
+
 			auto* sc = globalECS.GetComponent<ShapeComponent>(id);
 			if (sc->isWorldSpace) worldEntities.push_back(id);
 			else                  screenEntities.push_back(id);

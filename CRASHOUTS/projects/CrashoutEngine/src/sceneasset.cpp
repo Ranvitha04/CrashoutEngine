@@ -49,6 +49,7 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 #include "hierarchycomponent.h"
 #include "transientcomponent.h"
 #include "particleComponent.h"
+#include "activecomponent.h"
 
 // FOR GAME GUI
 #include "buttoncomponent.h"
@@ -166,6 +167,7 @@ namespace CrashoutsEngine {
         namespace Keys {
             const char* const ENTITIES                  = "entities";
             const char* const ENTITY_ID                 = "id";
+            const char* const ACTIVE_COMPONENT          = "active";
             const char* const NAME_COMPONENT            = "name";
             const char* const LAYER_COMPONENT           = "layer";
             const char* const TRANSFORM_COMPONENT       = "transform";
@@ -261,6 +263,11 @@ namespace CrashoutsEngine {
             Entity id = static_cast<Entity>(entityId);
             rapidjson::Value entityValue(rapidjson::kObjectType);
             using namespace JsonHelpers;
+
+            if (gECS.HasComponent<ActiveComponent>(id)) {
+                const auto& c = *gECS.GetComponent<ActiveComponent>(id);
+                entityValue.AddMember(rapidjson::StringRef(Keys::ACTIVE_COMPONENT), c.isActive, allocator);
+            }
 
             if (gECS.HasComponent<NameComponent>(id)) {
                 entityValue.AddMember(rapidjson::StringRef(Keys::NAME_COMPONENT), 
@@ -664,9 +671,16 @@ namespace CrashoutsEngine {
             NameComponent& nameComp = gECS.AddComponent<NameComponent>(newEntity, ("Entity" + std::to_string(newEntity)));
             gECS.AddComponent<LayerComponent>(newEntity);
             auto& transComp = gECS.AddComponent<TransformComponent>(newEntity);
+            auto& activeComp = gECS.AddComponent<ActiveComponent>(newEntity, true);
 
             if (!entityValue.IsObject()) return newEntity;
             using namespace JsonHelpers;
+
+            // Active State (GameObject)
+            if (entityValue.HasMember(Keys::ACTIVE_COMPONENT)) {
+                const auto& v = entityValue[Keys::ACTIVE_COMPONENT];
+                if (v.IsBool()) activeComp.isActive = v.GetBool();
+            }
 
             // Name
             if (entityValue.HasMember(Keys::NAME_COMPONENT)) {
