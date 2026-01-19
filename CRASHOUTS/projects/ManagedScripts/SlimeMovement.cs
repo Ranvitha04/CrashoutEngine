@@ -358,14 +358,22 @@ namespace CrashoutsEngine
 
         public void OnCollideEnter(uint otherEntity)
         {
-            if (isFollowingPath)
-            {
-                isFollowingPath = false;
-                activePath.Clear();
-            }
-
             Entity other = new Entity(otherEntity);
             var layer = other.GetComponent<LayerComponent>();
+
+            // Universal collision check for path cancellation
+            // If we hit ANYTHING static (Ground, Wall, Platform), stop flying.
+            if (layer != null && (layer.HasLayer("Ground") || layer.HasLayer("Wall") || layer.HasLayer("Platform")))
+            {
+                if (isFollowingPath)
+                {
+                    isFollowingPath = false;
+                    activePath.Clear();
+                    // Reset velocity to prevent "shooting" through the wall after releasing path control
+                    rb.LinearVelocity = new CEVec3(0, 0, 0); 
+                }
+            }
+
             if (layer != null && layer.HasLayer("Ground"))
             {
                 var otherTf = other.GetComponent<TransformComponent>();
