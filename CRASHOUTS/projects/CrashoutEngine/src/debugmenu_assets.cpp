@@ -251,7 +251,7 @@ namespace UI {
                         else if (rel.rfind("sprite_sheet/", 0) == 0) {
                             p.kind = AssetKind::SpriteSheet;
                         }
-                        else if (rel.rfind("scenes/", 0) == 0 || ext == ".scene" || ext == ".json") {
+                        else if (rel.rfind("scenes/", 0) == 0 || ext == ".scene") {
                             p.kind = AssetKind::Scene;
                         }
                         else if (rel.rfind("audio/", 0) == 0 || ext == ".bank" || ext == ".ogg" || ext == ".wav" || ext == ".mp3") {
