@@ -49,7 +49,9 @@ namespace Component {
         bool isEmitting{ false };
         bool useWorldSpace{ false };
         ParticleSystem::ParticleShape emissionShape{ ParticleSystem::ParticleShape::LINE };
+        f32 lengthMin{ 0.f }, lengthMax{ 5.f };     // For if ParticleShape is Line
         f32 radiusMin{ 0.f }, radiusMax{ 5.f };     // For if ParticleShape is Circle
+        CEVec2 areaMin{ 0.f, 0.f }, areaMax{ 5.f, 5.f };     // For if ParticleShape is Square
 
         // Emitter Settings
 		int maxParticles{ 1000 };
@@ -94,7 +96,9 @@ namespace ParticleSystem {
 
     /*
     @brief Update for particle
-    @param dt - Delta time to reference
+    @param entityId - ID of entity to reference
+    @param comp     - The particle component of this entity to reference
+    @param dt       - Delta time to reference
     */
     void ParticleUpdate(CrashoutsEngine::Entity const entityId, Component::ParticleComponent& comp, f32 dt);
     

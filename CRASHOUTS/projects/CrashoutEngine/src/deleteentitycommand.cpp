@@ -13,12 +13,12 @@ namespace CrashoutsEngine {
     DeleteEntityCommand::DeleteEntityCommand(Entity entityId) : m_targetEntity(entityId) {
         ECS& ecs = *ECS::getInstance();
 
-        // 1. Store Parent ID (if any) to re-attach later
+        // Store Parent ID to re-attach later
         if (ecs.HasComponent<Component::ParentComponent>(entityId)) {
             m_originalParentId = ecs.GetComponent<Component::ParentComponent>(entityId)->parent;
         }
 
-        // 2. Serialize Hierarchy (Root + Descendants)
+        // Serialize Hierarchy (Root + Descendants)
         rapidjson::Document doc;
         doc.SetArray();
         auto& allocator = doc.GetAllocator();
@@ -43,7 +43,7 @@ namespace CrashoutsEngine {
             }
         }
 
-        // 3. Convert to JSON String
+        // Convert to JSON String
         rapidjson::StringBuffer buffer;
         rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
         doc.Accept(writer);
@@ -121,10 +121,9 @@ namespace CrashoutsEngine {
             }
         }
 
-        // 3. Force re-attach root to original parent ID if valid
-        // (This overrides the name-based lookup if the parent was renamed but ID persisted)
+        // Force re-attach root to original parent ID if valid
         if (m_originalParentId != 0) {
-            // Check if parent still exists (has NameComponent is a good proxy for 'alive')
+            // Check if parent still exists has NameComponent is a good proxy for 'alive'
             if (ecs.HasComponent<Component::NameComponent>(m_originalParentId)) {
                 
                 // Fix ParentComponent on Child

@@ -1,0 +1,80 @@
+{
+    "prefabs": [
+        {
+            "type": "Box",
+            "name": "EnergyBall",
+            "transform": {
+                "position": {
+                    "x": 1200.2230224609376,
+                    "y": -1158.55517578125,
+                    "z": 0.0
+                },
+                "rotation": 0.0,
+                "size": {
+                    "x": 32.0,
+                    "y": 40.0
+                }
+            },
+            "layer": {
+                "currentLayer": 0
+            },
+            "shape": {
+                "type": 0,
+                "color": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "enableTexture": true,
+                "textureName": "images/UI\\Energy Ball\\Energy Ball spritesheet.png",
+                "uvSize": {
+                    "x": 0.125,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "thickness": 1.0,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0
+            },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitution": 0.0,
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0
+            },
+            "collider": {
+                "ColliderType": 0,
+                "isTrigger": false,
+                "enabled": true,
+                "position": {
+                    "x": 1200.2230224609376,
+                    "y": -1158.55517578125,
+                    "z": 0.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "radius": 1.0
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "EnergyBall"
+                    },
+                    {
+                        "className": "EnergyBall"
+                    }
+                ]
+            }
+        }
+    ]
+}

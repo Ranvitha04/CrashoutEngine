@@ -547,6 +547,32 @@ namespace UI {
                         const auto* p = static_cast<const AssetDragPayload*>(payload->Data);
                         CEVec3 dropWorld = ViewUV_toWorld(u, v);
 
+                        {
+                            // 1. Get the Camera currently rendering this viewport
+                            // (Use 'gameCamera' if playing, or 'engineCamera' if in editor mode
+                            auto& cam = (engineState == EngineState::STOP) ? RenderCamera::engineCamera :
+                                RenderCamera::gameCamera;
+
+                            // 2. Convert UV (0..1) to Normalized Device Coordinates (NDC -1..1)
+                            // ImGui (0,0) is Top-Left. OpenGL (-1,-1) is Bottom-Left.
+                            float ndcX = (u * 2.0f) - 1.0f;       // Map 0..1 to -1..1
+                            float ndcY = (v) * 2.0f - 1.0f; // Map 0..1 to 1..-1 (Flip Y)
+
+                            // 3. Create the Inverse View-Projection Matrix
+                            // This creates a magic matrix that undoes the Camera's Zoom and Position.
+                            glm::mat4 view = cam.GetViewMatrix();
+                            glm::mat4 proj = cam.GetProjectionMatrix();
+                            glm::mat4 invVP = glm::inverse(proj * view);
+
+                            // 4. Multiply to get World Coordinates
+                            glm::vec4 worldPos = invVP * glm::vec4(ndcX, ndcY, 0.0f, 1.0f);
+
+                            // Perspective divide (Safety for 2D, required for 3D)
+                            if (worldPos.w != 0.0f) worldPos /= worldPos.w;
+
+                            dropWorld = { worldPos.x, worldPos.y, 0.0f }; // Assuming Z=0 plane
+                        }
+
                         using CrashoutsEngine::Assets::AssetManager;
                         using CrashoutsEngine::Assets::TextureAsset;
 
@@ -566,12 +592,43 @@ namespace UI {
                             }
                         }
                         else if (p->kind == AssetKind::Prefab) {
-                            Entity e = Prefab::Create(ecs, std::string(p->name));
-                            if (e && ecs.HasComponent<Component::TransformComponent>(e))
-                                ecs.GetComponent<Component::TransformComponent>(e)->position = dropWorld;
+                            // 1. Capture the size of the transform list BEFORE creation
+                            auto& tArr = ecs.GetComponentArray<Component::TransformComponent>();
+                            size_t initialSize = tArr.indexToEntity.size();
+
+                            // 2. Create the Prefab
+                            bool success = Prefab::Create(ecs, std::string(p->name));
+
+                            // 3. Find and Move the new entity
+                            if (success && tArr.indexToEntity.size() > initialSize) {
+
+                                // Get the last entity created
+                                Entity newEntity = tArr.indexToEntity.back();
+
+                                // [IMPORTANT] Handle Hierarchies
+                                // If the prefab has children, 'newEntity' might be a child piece (e.g., the gun of a soldier).
+                                // We must walk up the tree to find the ROOT so we move the whole object.
+                                while (ecs.HasComponent<Component::ParentComponent>(newEntity)) {
+                                    Entity p = ecs.GetComponent<Component::ParentComponent>(newEntity)->parent;
+                                    if (p == 0) break; // Reached null parent
+                                    newEntity = p;
+                                }
+
+                                // 4. Move the Root
+                                if (auto* t = ecs.GetComponent<Component::TransformComponent>(newEntity)) {
+                                    // Preserve the Prefab's Z-layer (often critical for 2D sorting)
+                                    // or use dropWorld.z if you want to force it to the drag plane.
+                                    float originalZ = t->position.z;
+
+                                    t->position = dropWorld;
+                                    t->position.z = originalZ; // Restore Z so it doesn't clip behind background
+                                }
+
+                                selected = newEntity;
+                            }
                         }
                         else if (p->kind == AssetKind::Audio) {
-                            // ... Audio spawn logic ...
+                            // Audio spawn logic
                             std::string rel = p->relPath;
                             const std::string prefix = "audio/";
                             auto pos = rel.find(prefix);
@@ -579,27 +636,28 @@ namespace UI {
                             if (auto dot = rel.find_last_of('.'); dot != std::string::npos) rel.erase(dot);
                             std::string eventLike = std::string("event:/") + rel;
 
-                            Entity target = selected;
-                            if (!target) {
-                                target = ecs.CreateEntity();
-                                ecs.AddComponent<Component::NameComponent>(target, std::string("Audio_") + p->name);
-                                ecs.AddComponent<Component::TransformComponent>(target);
-                                if (auto* t = ecs.GetComponent<Component::TransformComponent>(target)) {
-                                    t->position = dropWorld;
-                                    t->size = { 10.0f, 10.0f };
-                                }
-                                ecs.AddComponent<Component::ShapeComponent>(target);
-                                if (auto* sc = ecs.GetComponent<Component::ShapeComponent>(target)) {
-                                    sc->enableTexture = false;
-                                    sc->textureName = "audio_icon";
-                                }
+                            Entity target = ecs.CreateEntity();
+
+                            ecs.AddComponent<Component::NameComponent>(target, std::string("Audio_") + p->name);
+                            ecs.AddComponent<Component::TransformComponent>(target);
+                            if (auto* t = ecs.GetComponent<Component::TransformComponent>(target)) {
+                                t->position = dropWorld;
+                                t->size = { 30.0f, 30.0f };
                             }
-                            else {
-                                if (auto* t = ecs.GetComponent<Component::TransformComponent>(target)) t->position = dropWorld;
+
+                            // Add shape so it can be seen/selected in viewport
+                            ecs.AddComponent<Component::ShapeComponent>(target);
+                            if (auto* sc = ecs.GetComponent<Component::ShapeComponent>(target)) {
+                                sc->enableTexture = false;
+                                sc->type = Component::ShapeType::Circle;
+                                sc->color = { 0.2f, 0.8f, 0.2f, 0.8f }; // Green circle for audio
                             }
 
                             if (!ecs.HasComponent<Component::AudioEmitterComponent>(target)) ecs.AddComponent<Component::AudioEmitterComponent>(target);
                             if (auto* ac = ecs.GetComponent<Component::AudioEmitterComponent>(target)) ac->eventPath = eventLike;
+
+                            // Auto-select the new audio source
+                            selected = target;
                         }
                     }
                 }

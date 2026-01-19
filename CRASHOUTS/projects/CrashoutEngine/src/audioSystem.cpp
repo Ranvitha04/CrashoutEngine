@@ -50,30 +50,30 @@ namespace CrashoutsEngine::Audio
     /*!
     @brief Returns the FMOD_MODE flags used for music sounds based on loop state.
     */
-    static FMOD_MODE MusicMode(bool loop)
-    {
-        FMOD_MODE m = FMOD_DEFAULT | FMOD_CREATESTREAM | FMOD_2D;
-        if (loop)
-            m |= FMOD_LOOP_NORMAL;
-        else
-            m |= FMOD_LOOP_OFF;
-        return m;
-    }
-
-    static void ShowAudioErrorPopup(const std::string& msg)
-    {
-#ifdef _WIN32
-        MessageBoxA(
-            nullptr,
-            msg.c_str(),
-            "Audio Error",
-            MB_OK | MB_ICONERROR | MB_TOPMOST
-        );
-#endif
-
-        // Also log to console/log window
-        LOGE(Audio, msg);
-    }
+//    static FMOD_MODE MusicMode(bool loop)
+//    {
+//        FMOD_MODE m = FMOD_DEFAULT | FMOD_CREATESTREAM | FMOD_2D;
+//        if (loop)
+//            m |= FMOD_LOOP_NORMAL;
+//        else
+//            m |= FMOD_LOOP_OFF;
+//        return m;
+//    }
+//
+//    static void ShowAudioErrorPopup(const std::string& msg)
+//    {
+//#ifdef _WIN32
+//        MessageBoxA(
+//            nullptr,
+//            msg.c_str(),
+//            "Audio Error",
+//            MB_OK | MB_ICONERROR | MB_TOPMOST
+//        );
+//#endif
+//
+//        // Also log to console/log window
+//        LOGE(Audio, msg);
+//    }
 
     static bool IsSupportedAudioFile(const std::string& path)
     {
@@ -96,6 +96,73 @@ namespace CrashoutsEngine::Audio
                 return true;
 
         return false;
+    }
+
+    /*
+        @brief Resolves an audio file path by checking its existence directly and relative to a root directory.
+    */
+    static std::string SanitizeKey(const std::string& path)
+    {
+        std::string clean = path;
+
+        // 1. Force Forward Slashes
+        std::replace(clean.begin(), clean.end(), '\\', '/');
+
+        // 2. Force Lowercase (Makes it case-insensitive)
+        std::transform(clean.begin(), clean.end(), clean.begin(),
+            [](unsigned char c) { return std::tolower(c); });
+
+        // 3. Strip everything before "audio/" if present
+        const std::string marker = "audio/";
+        size_t pos = clean.rfind(marker);
+        if (pos != std::string::npos) {
+            clean = clean.substr(pos + marker.size());
+        }
+
+        // 4. Safety: If it started with "assets/" but no "audio/" (rare)
+        if (clean.rfind("assets/", 0) == 0) {
+            clean = clean.substr(7);
+        }
+
+        // 5. Trim leading slashes
+        while (!clean.empty() && clean.front() == '/') {
+            clean.erase(0, 1);
+        }
+
+        return clean;
+    }
+
+    /*
+		@brief Finds a valid audio directory path by checking the suggested path and common alternatives.
+    */
+    static std::string FindValidAudioPath(const std::string& suggestedPath) {
+        namespace fs = std::filesystem;
+
+        // 1. If the suggested path works, trust it immediately.
+        if (fs::exists(suggestedPath) && fs::is_directory(suggestedPath)) {
+            return suggestedPath;
+        }
+
+        std::cout << "[Audio] Warning: Suggested path '" << suggestedPath << "' not found. Searching...\n";
+
+        // 2. List of places to check (prioritized)
+        std::vector<std::string> candidates = {
+            "../../projects/Descent/assets/audio/",  // Editor Default
+            "assets/audio/",                         // Release / Standalone
+            "../assets/audio/",                      // One folder up
+            "../../../assets/audio/"                 // Deep folder structure
+        };
+
+        for (const auto& path : candidates) {
+            if (fs::exists(path) && fs::is_directory(path)) {
+                std::cout << "[Audio] Found audio folder at: " << fs::absolute(path) << "\n";
+                return path;
+            }
+        }
+
+        // 3. Give up
+        std::cout << "[Audio] ERROR: Could not find 'audio' folder anywhere!\n";
+        return suggestedPath; // Return original so error logs show what was expected
     }
 
     // Singleton & error helper
@@ -128,44 +195,68 @@ namespace CrashoutsEngine::Audio
     */
     bool AudioSystem::init(const std::string& banksDir)
     {
-        mBanksDir = banksDir;
+        // Auto-Detect the real path
+        // This ignores whatever broken path engine.cpp might send if it doesn't exist.
+        mBanksDir = FindValidAudioPath(banksDir);
+
+        std::cout << "[Audio] Initializing FMOD...\n";
+        std::cout << "[Audio] Using Root Path: " << mBanksDir << "\n";
 
         // Create Studio system
         FMOD::Studio::System* rawStudio = nullptr;
-        if (!ok(FMOD::Studio::System::create(&rawStudio), "System::create"))
-            return false;
+        if (!ok(FMOD::Studio::System::create(&rawStudio), "System::create")) return false;
         mStudio.reset(rawStudio);
 
-        // Initialize Studio system
-        if (!ok(mStudio->initialize(1024,
-            FMOD_STUDIO_INIT_NORMAL,
-            FMOD_INIT_NORMAL,
-            nullptr),
-            "System::initialize"))
-            return false;
+        if (!ok(mStudio->initialize(1024, FMOD_STUDIO_INIT_NORMAL, FMOD_INIT_NORMAL, nullptr), "System::initialize")) return false;
 
-        // Get Core system
         FMOD::System* rawCore = nullptr;
-        if (!ok(mStudio->getCoreSystem(&rawCore), "getCoreSystem"))
-            return false;
+        if (!ok(mStudio->getCoreSystem(&rawCore), "getCoreSystem")) return false;
         mCore.reset(rawCore);
 
-        // Create channel groups for raw-file playback
+        // Channel Groups
         FMOD::ChannelGroup* master = nullptr;
         ok(mCore->getMasterChannelGroup(&master), "getMasterChannelGroup");
+        ok(mCore->createChannelGroup("Music", &mMusicGroup), "createChannelGroup Music");
+        ok(mCore->createChannelGroup("SFX", &mSFXGroup), "createChannelGroup SFX");
 
-        ok(mCore->createChannelGroup("Music", &mMusicGroup),
-            "createChannelGroup Music");
-        ok(mCore->createChannelGroup("SFX", &mSFXGroup),
-            "createChannelGroup SFX");
-
-        if (master)
-        {
-            ok(master->addGroup(mMusicGroup), "master.addGroup(Music)");
-            ok(master->addGroup(mSFXGroup), "master.addGroup(SFX)");
+        if (master) {
+            master->addGroup(mMusicGroup);
+            master->addGroup(mSFXGroup);
         }
 
-        // Banks are loaded on demand via loadBank()
+        // Scan Directory
+        try {
+            namespace fs = std::filesystem;
+            // Use the verified mBanksDir
+            fs::path audioRoot = mBanksDir;
+
+            if (fs::exists(audioRoot)) {
+                int count = 0;
+                for (auto& e : fs::recursive_directory_iterator(audioRoot)) {
+                    if (!e.is_regular_file()) continue;
+
+                    std::string diskPath = e.path().generic_string();
+                    if (!IsSupportedAudioFile(diskPath)) continue;
+
+                    std::string key = SanitizeKey(diskPath);
+
+                    if (std::find(mRawAudioFiles.begin(), mRawAudioFiles.end(), key) == mRawAudioFiles.end()) {
+                        mRawAudioFiles.push_back(key);
+                    }
+
+                    FMOD::Sound* s = nullptr;
+                    // FMOD_DEFAULT | FMOD_2D -> Load entirely into RAM
+                    FMOD_RESULT r = mCore->createSound(diskPath.c_str(), FMOD_DEFAULT | FMOD_2D, nullptr, &s);
+                    if (r == FMOD_OK && s) {
+                        mRawSoundCache[key] = s;
+                        count++;
+                    }
+                }
+                std::cout << "[Audio] Loaded " << count << " files.\n";
+            }
+        }
+        catch (...) { std::cout << "[Audio] Scan Error.\n"; }
+
         return true;
     }
 
@@ -176,6 +267,65 @@ namespace CrashoutsEngine::Audio
     {
         if (mStudio)
             mStudio->update();
+
+        auto fit = mFadingChannels.begin();
+        while (fit != mFadingChannels.end())
+        {
+            bool isPlaying = false;
+            fit->channel->isPlaying(&isPlaying);
+
+            if (!isPlaying)
+            {
+                fit = mFadingChannels.erase(fit);
+                continue;
+            }
+
+            float dt = 1.0f / 60.0f;
+
+            fit->currentVol -= fit->fadeRate * dt;
+
+            if (fit->currentVol <= 0.0f)
+            {
+                fit->channel->stop();
+                fit = mFadingChannels.erase(fit);
+            }
+            else
+            {
+                fit->channel->setVolume(fit->currentVol);
+                ++fit;
+            }
+        }
+
+        auto it = mActiveSounds.begin();
+        while (it != mActiveSounds.end())
+        {
+            FMOD::Channel* ch = it->first;
+            FMOD::Sound* snd = it->second;
+
+            bool isPlaying = false;
+            ch->isPlaying(&isPlaying);
+
+            if (!isPlaying)
+            {
+                for (auto mapIt = mTaggedChannels.begin(); mapIt != mTaggedChannels.end(); )
+                {
+                    if (mapIt->second == ch) {
+                        mapIt = mTaggedChannels.erase(mapIt);
+                    }
+                    else {
+                        ++mapIt;
+                    }
+                }
+
+                // release only the sounds we created temporarily (those tracked in mActiveSounds)
+                snd->release();
+                it = mActiveSounds.erase(it);
+            }
+            else
+            {
+                ++it;
+            }
+        }
     }
 
     /*!
@@ -215,14 +365,24 @@ namespace CrashoutsEngine::Audio
         if (!mStudio)
             return false;
 
-        // Already loaded
+        // Already loaded check
         if (mBanks.count(bankFile))
             return true;
 
-        std::string full = joinPath(mBanksDir, bankFile);
+        std::string fullPath;
+        std::filesystem::path p(bankFile);
+
+        if (p.is_absolute()) {
+            fullPath = bankFile;
+        }
+        else {
+            fullPath = joinPath(mBanksDir, bankFile);
+        }
+
         FMOD::Studio::Bank* b = nullptr;
 
-        if (!ok(mStudio->loadBankFile(full.c_str(),
+        // Load using the corrected path
+        if (!ok(mStudio->loadBankFile(fullPath.c_str(),
             FMOD_STUDIO_LOAD_BANK_NORMAL,
             &b),
             ("loadBankFile " + bankFile).c_str()))
@@ -255,9 +415,42 @@ namespace CrashoutsEngine::Audio
     // Raw management
     void AudioSystem::registerRawAudio(const std::string& relPath)
     {
-        auto it = std::find(mRawAudioFiles.begin(), mRawAudioFiles.end(), relPath);
-        if (it == mRawAudioFiles.end())
-            mRawAudioFiles.push_back(relPath);
+        // Normalize incoming path and store as path relative to the audio root, e.g. "Music/Menu.wav"
+        std::string p = relPath;
+        // normalize separators
+        std::replace(p.begin(), p.end(), '\\', '/');
+
+        // Strip "assets/" or "assets/audio/" or leading "audio/" if present
+        if (p.rfind("assets/audio/", 0) == 0) {
+            p = p.substr(strlen("assets/audio/"));
+        }
+        else if (p.rfind("assets/", 0) == 0) {
+            // if someone registered "assets/..." treat as under audio
+            std::string tmp = p.substr(strlen("assets/"));
+            if (tmp.rfind("audio/", 0) == 0) tmp = tmp.substr(strlen("audio/"));
+            p = tmp;
+        }
+        else if (p.rfind("audio/", 0) == 0) {
+            p = p.substr(strlen("audio/"));
+        }
+
+        // Trim any leading slashes
+        while (!p.empty() && (p.front() == '/' || p.front() == '\\')) p.erase(p.begin());
+
+        std::string fullPath = joinPath(mBanksDir, p);
+        FMOD::Sound* snd = nullptr;
+        FMOD_RESULT r = mCore->createSound(
+            fullPath.c_str(),
+            FMOD_DEFAULT | FMOD_2D,
+            nullptr,
+            &snd
+        );
+
+        if (r == FMOD_OK && snd) {
+            std::string cacheKey = SanitizeKey(p);
+            mRawSoundCache[cacheKey] = snd;  // Add to cache
+            mRawAudioFiles.push_back(cacheKey);
+        }
     }
 
     const std::vector<std::string>& AudioSystem::getRegisteredRawAudio() const
@@ -613,27 +806,7 @@ namespace CrashoutsEngine::Audio
     */
     void AudioSystem::listRawAudioFiles(std::vector<std::string>& out)
     {
-        out.clear();
-
-        namespace fs = std::filesystem;
-        fs::path audioRoot = "assets/audio";
-
-        if (!fs::exists(audioRoot))
-            return;
-
-        for (auto& e : fs::directory_iterator(audioRoot))
-        {
-            if (e.is_regular_file())
-            {
-                std::string ext = e.path().extension().string();
-                std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
-
-                if (ext == ".wav" || ext == ".ogg" || ext == ".mp3")
-                {
-                    out.push_back(e.path().generic_string());
-                }
-            }
-        }
+        out = mRawAudioFiles;
     }
 
     /*!
@@ -709,6 +882,20 @@ namespace CrashoutsEngine::Audio
         bank->unload();
     }
 
+    /*
+    @brief List tagged 
+    */
+    std::vector<std::string> AudioSystem::listTaggedKeys() const
+    {
+        std::vector<std::string> out;
+        out.reserve(mTaggedChannels.size());
+        for (const auto& kv : mTaggedChannels) {
+            out.push_back(kv.first);
+        }
+        std::sort(out.begin(), out.end());
+        return out;
+    }
+
     // File-based playback (Core API)
     /*!
     @brief Plays a music file through the music channel group, optionally looping it.
@@ -717,18 +904,45 @@ namespace CrashoutsEngine::Audio
     {
         if (!mCore || !mMusicGroup) return nullptr;
 
+        std::string key = SanitizeKey(path);
         FMOD::Sound* snd = nullptr;
-        if (!ok(mCore->createSound(path.c_str(),
-            FMOD_CREATESTREAM | (loop ? FMOD_LOOP_NORMAL : FMOD_LOOP_OFF),
-            nullptr,
-            &snd),
-            "playMusic createSound"))
-            return nullptr;
+        bool createdLocal = false;
+
+        auto it = mRawSoundCache.find(key);
+        if (it != mRawSoundCache.end()) {
+            snd = it->second;
+        }
+        else {
+            std::string fullPath = joinPath(mBanksDir, key);
+            createdLocal = true;
+            // Failsafe: Stream if not in cache
+            FMOD_RESULT r = mCore->createSound(fullPath.c_str(),
+                FMOD_CREATESTREAM | (loop ? FMOD_LOOP_NORMAL : FMOD_LOOP_OFF),
+                nullptr, &snd);
+
+            if (r != FMOD_OK) {
+                mCore->createSound(path.c_str(),
+                    FMOD_CREATESTREAM | (loop ? FMOD_LOOP_NORMAL : FMOD_LOOP_OFF),
+                    nullptr, &snd);
+            }
+        }
+
+        if (!snd) return nullptr;
 
         FMOD::Channel* ch = nullptr;
-        if (!ok(mCore->playSound(snd, mMusicGroup, false, &ch),
-            "playMusic playSound"))
+        // Play the sound
+        if (!ok(mCore->playSound(snd, mMusicGroup, false, &ch), "playMusic"))
+        {
+            if (createdLocal && snd) snd->release();
             return nullptr;
+        }
+
+        if (ch) {
+            // Cached sounds default to LOOP_OFF, must override it here.
+            ch->setMode(loop ? FMOD_LOOP_NORMAL : FMOD_LOOP_OFF);
+
+            if (createdLocal) mActiveSounds.emplace_back(ch, snd);
+        }
 
         return ch;
     }
@@ -736,75 +950,64 @@ namespace CrashoutsEngine::Audio
     /*!
     @brief Plays a one-shot SFX file through the SFX channel group.
     */
-    FMOD::Channel* AudioSystem::playSFXFile(const std::string& path)
-    {
-        if (!mCore || !mSFXGroup) return nullptr;
-
-        FMOD::Sound* snd = nullptr;
-        if (!ok(mCore->createSound(path.c_str(), FMOD_DEFAULT | FMOD_2D, nullptr, &snd),
-            "playSFX createSound"))
-            return nullptr;
-
-        FMOD::Channel* ch = nullptr;
-        if (!ok(mCore->playSound(snd, mSFXGroup, false, &ch),
-            "playSFX playSound"))
-            return nullptr;
-
-        return ch;
+    FMOD::Channel* AudioSystem::playSFXFile(const std::string& path) {
+        return playSFXFileEx(path);
     }
 
     FMOD::Channel* AudioSystem::playSFXFileEx(const std::string& path)
     {
-        if (!mCore || !mSFXGroup)
-            return nullptr;
+        if (!mCore || !mSFXGroup) return nullptr;
 
-        if (!IsSupportedAudioFile(path))
-        {
-            std::string msg =
-                "Unsupported audio format for SFX file:\n\n" + path +
-                "\n\nSupported formats: .mp3, .ogg, .wav";
-
-            ShowAudioErrorPopup(msg);
-            LOGE(Audio, msg);
-
-            return nullptr;
-        }
+        // SANITIZE (MATCH THE KEY)
+        std::string key = SanitizeKey(path);
 
         FMOD::Sound* snd = nullptr;
-        if (!ok(mCore->createSound(path.c_str(),
-            FMOD_DEFAULT | FMOD_2D,
-            nullptr,
-            &snd),
-            "createSound(sfx)"))
-        {
-            return nullptr;
+        bool createdLocal = false;
+
+        // LOOKUP
+        auto it = mRawSoundCache.find(key);
+        if (it != mRawSoundCache.end()) {
+            snd = it->second;
+        }
+        else {
+            // FAIL-SAFE
+            // This handles files dragged in while the game is running
+            std::string fullPath = joinPath(mBanksDir, key);
+
+            // Check extensions to be safe
+            if (!IsSupportedAudioFile(fullPath)) {
+                // Try the original path if the joinPath failed (e.g. absolute paths)
+                if (IsSupportedAudioFile(path)) fullPath = path;
+                else return nullptr;
+            }
+
+            createdLocal = true;
+            // Load into RAM
+            FMOD_RESULT r = mCore->createSound(fullPath.c_str(), FMOD_DEFAULT | FMOD_2D, nullptr, &snd);
+
+            if (r == FMOD_OK) {
+                mRawSoundCache[key] = snd;
+                createdLocal = false;
+
+                if (std::find(mRawAudioFiles.begin(), mRawAudioFiles.end(), key) == mRawAudioFiles.end()) {
+                    mRawAudioFiles.push_back(key);
+                }
+            }
+            else {
+                return nullptr;
+            }
         }
 
         FMOD::Channel* ch = nullptr;
-        if (!ok(mCore->playSound(snd, mSFXGroup, false, &ch),
-            "playSound(sfx)"))
+        if (!ok(mCore->playSound(snd, mSFXGroup, false, &ch), "playSound(sfx)"))
         {
-            snd->release();
+            if (createdLocal && snd) snd->release();
             return nullptr;
         }
 
         if (ch) {
             ch->setMode(FMOD_2D);
-
-            ch->setCallback([](FMOD_CHANNELCONTROL* channelcontrol,
-                FMOD_CHANNELCONTROL_TYPE /*controltype*/,
-                FMOD_CHANNELCONTROL_CALLBACK_TYPE callbacktype,
-                void* /*commanddata1*/,
-                void* /*commanddata2*/) -> FMOD_RESULT {
-                    if (callbacktype == FMOD_CHANNELCONTROL_CALLBACK_END) {
-                        FMOD::Channel* ch = (FMOD::Channel*)channelcontrol;
-                        FMOD::Sound* snd = nullptr;
-                        if (ch->getCurrentSound(&snd) == FMOD_OK && snd) {
-                            snd->release();
-                        }
-                    }
-                    return FMOD_OK;
-                });
+            if (createdLocal) mActiveSounds.emplace_back(ch, snd);
         }
 
         return ch;
@@ -844,6 +1047,81 @@ namespace CrashoutsEngine::Audio
         return master->setVolume(v01) == FMOD_OK;
     }
 
+    /*!
+	@brief Sets the volume of a tagged channel by its string key.
+    */
+    bool AudioSystem::setTaggedVolume(const std::string& key, float vol)
+    {
+        auto it = mTaggedChannels.find(key);
+        if (it == mTaggedChannels.end() || !it->second) return false;
+        FMOD::Channel* ch = it->second;
+        return (ch->setVolume(vol) == FMOD_OK);
+    }
+
+    /*!
+    @brief Returns the current volume of the music channel group (0.0 to 1.0).
+    */
+    float AudioSystem::GetMusicVolume() const
+    {
+        float vol = 0.0f;
+        if (mMusicGroup)
+        {
+            mMusicGroup->getVolume(&vol);
+        }
+        return vol;
+    }
+
+    /*!
+    @brief Returns the current volume of the SFX channel group (0.0 to 1.0).
+    */
+    float AudioSystem::GetSFXVolume() const
+    {
+        float vol = 0.0f;
+        if (mSFXGroup)
+        {
+            mSFXGroup->getVolume(&vol);
+        }
+        return vol;
+    }
+
+    /*!
+    @brief Returns the current master volume from the FMOD Core system.
+    */
+    float AudioSystem::GetMasterVolume() const
+    {
+        float vol = 0.0f;
+        if (!mCore) return vol;
+
+        FMOD::ChannelGroup* master = nullptr;
+        if (mCore->getMasterChannelGroup(&master) == FMOD_OK && master)
+        {
+            master->getVolume(&vol);
+        }
+        return vol;
+    }
+
+    /*!
+	@brief Gets the volume of a tagged channel by its string key.
+    */
+    bool AudioSystem::getTaggedVolume(const std::string& key, float& outVol) const
+    {
+        auto it = mTaggedChannels.find(key);
+        if (it == mTaggedChannels.end() || !it->second) return false;
+        FMOD::Channel* ch = it->second;
+        FMOD_RESULT r = ch->getVolume(&outVol);
+        return (r == FMOD_OK);
+    }
+
+    /*!
+	@brief Fades out and stops a tagged channel by its string key over the specified duration.
+    */
+    bool AudioSystem::fadeTagged(const std::string& key, float seconds)
+    {
+        // reuse existing stopTagged which handles fade queue
+        return stopTagged(key, seconds);
+    }
+
+
     // Tagged playback for different groups (SFX/Music)
     /*!
     @brief Plays a music file and tags its FMOD channel so it can be stopped by key.
@@ -852,31 +1130,48 @@ namespace CrashoutsEngine::Audio
         const std::string& path,
         bool loop)
     {
-        if (!mCore || !mMusicGroup)
-            return false;
+        if (!mCore || !mMusicGroup) return false;
 
+        std::string cacheKey = SanitizeKey(path);
         FMOD::Sound* snd = nullptr;
-        if (!ok(mCore->createSound(path.c_str(),
-            MusicMode(loop),
-            nullptr,
-            &snd),
-            "createSound(musicTagged)"))
-        {
-            return false;
+        bool createdLocal = false;
+
+        auto it = mRawSoundCache.find(cacheKey);
+        if (it != mRawSoundCache.end()) {
+            snd = it->second;
+        }
+        else {
+            std::string fullPath = joinPath(mBanksDir, cacheKey);
+            FMOD_MODE mode = FMOD_CREATESTREAM | FMOD_2D;
+            if (loop) mode |= FMOD_LOOP_NORMAL;
+            else      mode |= FMOD_LOOP_OFF;
+
+            FMOD_RESULT r = mCore->createSound(fullPath.c_str(), mode, nullptr, &snd);
+            if (r != FMOD_OK) {
+                mCore->createSound(path.c_str(), mode, nullptr, &snd);
+            }
+            if (snd) createdLocal = true;
         }
 
+        if (!snd) return false;
+
         FMOD::Channel* ch = nullptr;
-        if (!ok(mCore->playSound(snd, mMusicGroup, false, &ch),
-            "playSound(musicTagged)"))
+        if (!ok(mCore->playSound(snd, mMusicGroup, false, &ch), "playMusicTagged"))
         {
-            snd->release();
+            if (createdLocal) snd->release();
             return false;
         }
 
         if (ch)
         {
-            ch->setMode(FMOD_2D);
+            // Loop Mode override
+            ch->setMode(loop ? (FMOD_LOOP_NORMAL | FMOD_2D) : (FMOD_LOOP_OFF | FMOD_2D));
+
             mTaggedChannels[key] = ch;
+
+            if (createdLocal) {
+                mActiveSounds.emplace_back(ch, snd);
+            }
         }
 
         return true;
@@ -888,54 +1183,57 @@ namespace CrashoutsEngine::Audio
     bool AudioSystem::playSFXFileTagged(const std::string& key,
         const std::string& path, bool loop)
     {
-        if (!mCore || !mSFXGroup) {
-            std::fprintf(stderr, "[Audio] playSFXFile called before init: %s\n", path.c_str());
-            return false;
-        }
+        if (!mCore || !mSFXGroup) return false;
 
-        FMOD_MODE mode = FMOD_DEFAULT | FMOD_2D;
-        if (loop)
-            mode |= FMOD_LOOP_NORMAL;
-        else
-            mode |= FMOD_LOOP_OFF;
+        // SANITIZE
+        std::string cacheKey = SanitizeKey(path);
 
         FMOD::Sound* snd = nullptr;
-        if (!ok(mCore->createSound(path.c_str(),
-            mode,
-            nullptr,
-            &snd),
-            "createSound(sfxTagged)"))
-        {
-            return false;
+        bool createdLocal = false;
+
+        // CACHE LOOKUP
+        auto it = mRawSoundCache.find(cacheKey);
+        if (it != mRawSoundCache.end()) {
+            snd = it->second;
+        }
+        else {
+            // FAILSAFE
+            std::string fullPath = joinPath(mBanksDir, cacheKey);
+
+            FMOD_MODE mode = FMOD_DEFAULT | FMOD_2D;
+            if (loop) mode |= FMOD_LOOP_NORMAL;
+            else      mode |= FMOD_LOOP_OFF;
+
+            FMOD_RESULT r = mCore->createSound(fullPath.c_str(), mode, nullptr, &snd);
+
+            // If we loaded it successfully, let's cache it for next time!
+            if (r == FMOD_OK && snd) {
+                mRawSoundCache[cacheKey] = snd;
+                if (std::find(mRawAudioFiles.begin(), mRawAudioFiles.end(), cacheKey) == mRawAudioFiles.end()) {
+                    mRawAudioFiles.push_back(cacheKey);
+                }
+                // createdLocal stays FALSE because now the cache owns it
+            }
+            else {
+                return false;
+            }
         }
 
         FMOD::Channel* ch = nullptr;
-        if (!ok(mCore->playSound(snd, mSFXGroup, false, &ch),
-            "playSound(sfxTagged)"))
+        if (!ok(mCore->playSound(snd, mSFXGroup, false, &ch), "playSound(sfxTagged)"))
         {
-            snd->release();
+            if (createdLocal) snd->release();
             return false;
         }
 
         if (ch)
         {
             ch->setMode(FMOD_2D);
-            ch->setCallback([](FMOD_CHANNELCONTROL* channelcontrol,
-                FMOD_CHANNELCONTROL_TYPE /*controltype*/,
-                FMOD_CHANNELCONTROL_CALLBACK_TYPE callbacktype,
-                void* /*commanddata1*/,
-                void* /*commanddata2*/) -> FMOD_RESULT
-                {
-                    if (callbacktype == FMOD_CHANNELCONTROL_CALLBACK_END) {
-                        FMOD::Channel* ch = (FMOD::Channel*)channelcontrol;
-                        FMOD::Sound* snd = nullptr;
-                        if (ch->getCurrentSound(&snd) == FMOD_OK && snd) {
-                            snd->release();
-                        }
-                    }
-                    return FMOD_OK;
-                });
             mTaggedChannels[key] = ch;
+
+            if (createdLocal) {
+                mActiveSounds.emplace_back(ch, snd);
+            }
         }
 
         return true;
@@ -944,23 +1242,43 @@ namespace CrashoutsEngine::Audio
     /*!
     @brief Stops a previously tagged channel by its string key.
     */
-    bool AudioSystem::stopTagged(const std::string& key)
+    bool AudioSystem::stopTagged(const std::string& key, float fadeOutSeconds)
     {
         auto it = mTaggedChannels.find(key);
         if (it == mTaggedChannels.end())
             return false;
 
         FMOD::Channel* ch = it->second;
+
+        // Remove from map immediately so the key is free to be used again
+        mTaggedChannels.erase(it);
+
         if (ch)
         {
             bool playing = false;
             if (ch->isPlaying(&playing) == FMOD_OK && playing)
             {
-                ch->stop();
+                if (fadeOutSeconds <= 0.0f)
+                {
+                    // Immediate stop (Hard cut)
+                    ch->stop();
+                }
+                else
+                {
+                    // Hand off to the fade system
+                    float currentVol = 1.0f;
+                    ch->getVolume(&currentVol);
+
+                    FadingChannel fc;
+                    fc.channel = ch;
+                    fc.currentVol = currentVol;
+                    fc.fadeRate = currentVol / fadeOutSeconds; // Calculate rate to hit 0 in X seconds
+
+                    mFadingChannels.push_back(fc);
+                }
             }
         }
 
-        mTaggedChannels.erase(it);
         return true;
     }
 

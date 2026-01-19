@@ -28,10 +28,6 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserv
 #include "debugmenu_internals.h"
 #include "assetmanager.h"
 #include "settings.h"
-#include <filesystem>
-#include <unordered_set>
-#include "prefab.h"
-
 
 /*
 ----------------------------------------------------------------------------- */
@@ -134,52 +130,6 @@ namespace UI { // --------------------------------------------------------------
 			glfwMakeContextCurrent(backup);
 		}
 	}
-	static void SaveAllPrefabsInScene(ECS& ecs)
-	{
-		namespace fs = std::filesystem;
-
-		std::unordered_set<std::string> saved;
-
-		auto& instArr = ecs.GetComponentArray<Component::PrefabInstanceComponent>();
-
-		for (Entity e : instArr.indexToEntity)
-		{
-			if (!ecs.HasComponent<Component::PrefabInstanceComponent>(e)) continue;
-
-			auto* inst = ecs.GetComponent<Component::PrefabInstanceComponent>(e);
-			if (!inst) continue;
-
-			std::string prefabName = inst->prefabName; // COPY (safer)
-			if (prefabName.empty()) continue;
-
-			if (!saved.insert(prefabName).second) continue; // save each prefab once
-
-#if USE_IMGUI_EDITOR
-			fs::path jsonPath = fs::path(Assets::rootPath) / "prefabs" / (prefabName + ".json");
-#else
-			fs::path jsonPath = fs::path(GetLocalAppData()) / "prefabs" / (prefabName + ".json");
-#endif
-
-			fs::create_directories(jsonPath.parent_path());
-
-			SavePrefabToJson(
-				ecs,
-				e,
-				prefabName,
-				jsonPath.generic_string(),
-				/*matchName*/ prefabName
-			);
-		}
-
-#if USE_IMGUI_EDITOR
-		const std::string dirPath = (fs::path(Assets::rootPath) / "prefabs").generic_string();
-#else
-		const std::string dirPath = (fs::path(GetLocalAppData()) / "prefabs").generic_string();
-#endif
-
-		ReloadPrefabsFromDisk(dirPath);
-	}
-
 
 	// -- Coordinator(s) --------------------------------------------------------
 
@@ -187,17 +137,19 @@ namespace UI { // --------------------------------------------------------------
 		if (ImGui::BeginMenuBar()) {
 			if (ImGui::BeginMenu("File")) {
 				if (ImGui::MenuItem("Save Scene")) {
+					if (!currSceneName.empty()) Serialization::SaveScenes(currSceneName);
 
-					LOGW(Core, "SAVE SCENE CLICKED: currSceneName='%s'", currSceneName.c_str());
-
-					if (!currSceneName.empty())
-						Serialization::SaveScenes(currSceneName);
-					else
-						LOGE(Core, "Save Scene failed: currSceneName is EMPTY");
-
-					SaveAllPrefabsInScene(*ECS::getInstance());
+					if (currSceneName.empty()) RestartGameState();       // Legacy scene system
+					else {
+						ECS::getInstance()->Reset();
+						if (currSceneName.empty()) RestartGameState();       // Legacy scene system
+						else {
+							g_PendingSceneName = currSceneName;
+							g_IsSceneLoadPending = true;
+						}
+					}
+					//if (!currSceneName.empty()) Serialization::SaveScenes(currSceneName);
 				}
-
 
 				// --- ZOOM INPUT ---
 				// Display as integer percentage (50% to 300%)

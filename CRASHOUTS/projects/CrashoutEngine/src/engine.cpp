@@ -6,7 +6,7 @@
 This file uses functionality defined in type GLApp to initialize an OpenGL
 context and implement a game loop.
 
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 *//*__________________________________________________________________________*/
 
@@ -39,6 +39,8 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserve
 #include "instanceSystem.h"
 #include "sceneasset.h"
 #include "keyframe.h"
+#include "activecomponent.h"
+#include "audiocomponent.h"
 
 #include "glapp.h"
 #include "log.h"
@@ -134,6 +136,8 @@ static bool PerformPendingSceneLoad() {
         CrashoutsEngine::CollisionEventManager::GetInstance().Clear();
         CrashoutsEngine::Serialization::currSceneName = g_PendingSceneName;
         CrashoutsEngine::Serialization::LoadScenes(g_PendingSceneName);
+        
+        Scene::InitScene(*CrashoutsEngine::ECS::getInstance());
 
         // Reset flags
         g_IsSceneLoadPending = false;
@@ -245,12 +249,13 @@ void Init() {
         }
     );
 
-    // Generate and Load Assets and Manifest
+    CrashoutsEngine::Audio::AudioSystem::instance().init(CrashoutsEngine::Assets::rootPath + "audio/");
 
 #if USE_IMGUI_EDITOR
     CrashoutsEngine::Assets::GenerateAssetManifest();
 #endif
     CrashoutsEngine::Assets::AssetManager::GetInstance().LoadManifestAssets();
+
 
     //Component::Rendering::Get().Setup_VAO(); // Setup default quad VAO
     Component::Rendering::Initialize(); // Initializes the main shader
@@ -264,6 +269,8 @@ void Init() {
     /// register game states and start with main menu
     RegisterAllStates();
     InitGameStateManager(SCENE);
+
+    //CrashoutsEngine::Audio::AudioSystem::instance().init();
 
     CrashoutsEngine::ScriptSystem::InitializeAll(MonoManager::GetDomain(), MonoManager::GetAssembly());
 
@@ -303,6 +310,8 @@ void Init() {
     }
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    
+    Scene::InitScene(*CrashoutsEngine::ECS::getInstance());
 }
 
 /*  _________________________________________________________________________ */
@@ -356,8 +365,43 @@ void Update(double const& dt) {
             physicsSystem.Update(FrameRateController::GetInstance().FixedDT());
         }
         {
-            FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Audio");
-            CrashoutsEngine::Audio::AudioSystem::instance().Update();
+        FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Audio");
+
+        // Sync Audio Components (Mute/Unmute based on Active State)
+        auto& audioArray = ecs.GetComponentArray<Component::AudioEmitterComponent>();
+        for (size_t i = 0; i < audioArray.dense.size(); ++i) {
+            CrashoutsEngine::Entity entityID = audioArray.indexToEntity[i];
+            auto& audioComp = audioArray.dense[i];
+
+            bool isActive = true;
+            if (ecs.HasComponent<Component::ActiveComponent>(entityID)) {
+                isActive = !IsEntityActive(ecs, entityID);
+            }
+
+            // If inactive, force pause. If active, unpause (only if it was playing).
+            // Note: This logic assumes you want "Active = Unpause". 
+            if (!isActive) {
+                if (audioComp.channel) audioComp.channel->setPaused(true);
+                if (audioComp.inst) audioComp.inst->setPaused(true);
+            }
+            else {
+                // Only unpause if the GAME is playing. If game is paused, keep audio paused.
+                // Also check if we were "supposed" to be playing. 
+                // (A simpler version just unpauses everything when active).
+                if (engineState == EngineState::PLAY) {
+                    if (audioComp.channel) {
+                        bool p; audioComp.channel->getPaused(&p);
+                        if (p) audioComp.channel->setPaused(false);
+                    }
+                    if (audioComp.inst) {
+                        bool p; audioComp.inst->getPaused(&p);
+                        if (p) audioComp.inst->setPaused(false);
+                    }
+                }
+            }
+        }
+
+        CrashoutsEngine::Audio::AudioSystem::instance().Update();
         }
         // process events if any associated with input devices
         //glfwPollEvents();
@@ -544,6 +588,9 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
         FrameProfiler::Scoped s2(PerformanceSystem::Get().GetProfiler(), "Scene");
         //GLApp::draw();
         Scene::RenderScene(*CrashoutsEngine::ECS::getInstance());
+
+        // Flush Debug Queue (Lines/Circles from Scripts)
+        Component::Rendering::Get().FlushDebugQueue();
 
         if (CurrentDescriptor) {
             //if (CurrentDescriptor->Update) CurrentDescriptor->Update();

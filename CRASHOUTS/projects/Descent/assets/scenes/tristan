@@ -1,6 +1,7 @@
 {
     "entities": [
         {
+            "active": true,
             "name": "Backdrop",
             "layer": {
                 "currentLayer": 0
@@ -53,6 +54,7 @@
             }
         },
         {
+            "active": true,
             "name": "sampleShape",
             "layer": {
                 "currentLayer": 0
@@ -139,6 +141,7 @@
             }
         },
         {
+            "active": true,
             "name": "sampleShape",
             "layer": {
                 "currentLayer": 0
@@ -225,6 +228,7 @@
             }
         },
         {
+            "active": true,
             "name": "sampleShape",
             "layer": {
                 "currentLayer": 0

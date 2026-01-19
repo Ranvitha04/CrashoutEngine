@@ -1,0 +1,921 @@
+{
+    "entities": [
+        {
+            "active": true,
+            "name": "PressurePlate",
+            "layer": {
+                "currentLayer": 2
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 194.45278930664063,
+                    "y": -39.93634033203125,
+                    "z": -1.0
+                },
+                "size": {
+                    "x": 32.0,
+                    "y": 50.0
+                }
+            },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0
+            },
+            "collider": {
+                "ColliderType": 1,
+                "isTrigger": false,
+                "enabled": true,
+                "position": {
+                    "x": 194.45278930664063,
+                    "y": -61.43634033203125,
+                    "z": -1.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": -21.5,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": 178.45278930664063,
+                    "y": -67.93634033203125,
+                    "z": -1.0
+                },
+                "max": {
+                    "x": 210.45278930664063,
+                    "y": -54.93634033203125,
+                    "z": -1.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "Pressure Plate",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "PressurePlate",
+                        "fields": {
+                            "decrease": 5.0,
+                            "wallName": "wall"
+                        }
+                    }
+                ]
+            },
+            "button": {
+                "buttonState": 0,
+                "shapeNormalColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "shapeHoveredColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.5
+                },
+                "shapePressedColor": {
+                    "x": 0.699999988079071,
+                    "y": 0.699999988079071,
+                    "z": 0.699999988079071,
+                    "w": 0.699999988079071
+                },
+                "textNormalColor": {
+                    "x": 0.30000001192092898,
+                    "y": 0.30000001192092898,
+                    "z": 0.30000001192092898,
+                    "w": 0.699999988079071
+                },
+                "textHoveredColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.0
+                },
+                "textPressedColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.5
+                }
+            }
+        },
+        {
+            "active": true,
+            "name": "MovingWall",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 274.5287170410156,
+                    "y": -469.6745300292969,
+                    "z": -5.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "collider": {
+                "ColliderType": 1,
+                "isTrigger": false,
+                "enabled": true,
+                "position": {
+                    "x": 274.5287170410156,
+                    "y": -469.6745300292969,
+                    "z": -5.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": 274.0287170410156,
+                    "y": -470.1745300292969,
+                    "z": -5.0
+                },
+                "max": {
+                    "x": 275.0287170410156,
+                    "y": -469.1745300292969,
+                    "z": -5.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "spritesheet\\lava platform\\lava platform_42.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "MovingWall",
+                        "fields": {
+                            "PlatesActive": 0,
+                            "PlatesRequired": 1,
+                            "MoveRight": false,
+                            "MoveDist": 10.0,
+                            "MoveSpeed": 5.0
+                        }
+                    }
+                ]
+            },
+            "button": {
+                "buttonState": 0,
+                "shapeNormalColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "shapeHoveredColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.5
+                },
+                "shapePressedColor": {
+                    "x": 0.699999988079071,
+                    "y": 0.699999988079071,
+                    "z": 0.699999988079071,
+                    "w": 0.699999988079071
+                },
+                "textNormalColor": {
+                    "x": 0.30000001192092898,
+                    "y": 0.30000001192092898,
+                    "z": 0.30000001192092898,
+                    "w": 0.699999988079071
+                },
+                "textHoveredColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.0
+                },
+                "textPressedColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.5
+                }
+            },
+            "tilemap": {
+                "tileSize": 32,
+                "activeAsset": "tilemaps/Rock_Door",
+                "tileAssetNames": [],
+                "gridData": [
+                    {
+                        "x": 6,
+                        "y": -15,
+                        "asset": "tilemaps/Rock_Door"
+                    },
+                    {
+                        "x": 7,
+                        "y": -15,
+                        "asset": "tilemaps/Rock_Door"
+                    },
+                    {
+                        "x": 8,
+                        "y": -15,
+                        "asset": "tilemaps/Rock_Door"
+                    },
+                    {
+                        "x": 9,
+                        "y": -15,
+                        "asset": "tilemaps/Rock_Door"
+                    },
+                    {
+                        "x": 10,
+                        "y": -15,
+                        "asset": "tilemaps/Rock_Door"
+                    },
+                    {
+                        "x": 11,
+                        "y": -15,
+                        "asset": "tilemaps/Rock_Door"
+                    }
+                ]
+            }
+        },
+        {
+            "active": true,
+            "name": "EnergyBall",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 1200.2230224609376,
+                    "y": -1158.55517578125,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 32.0,
+                    "y": 40.0
+                }
+            },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0
+            },
+            "collider": {
+                "ColliderType": 0,
+                "isTrigger": false,
+                "enabled": true,
+                "position": {
+                    "x": 1200.2230224609376,
+                    "y": -1158.55517578125,
+                    "z": 0.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "radius": 1.0,
+                "center": {
+                    "x": 1200.2230224609376,
+                    "y": -1158.55517578125,
+                    "z": 0.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "images/UI\\Energy Ball\\Energy Ball spritesheet.png",
+                "uvSize": {
+                    "x": 0.125,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "EnergyBall",
+                        "fields": {
+                            "energyAmount": 25.0,
+                            "respawnTime": 5.0
+                        }
+                    },
+                    {
+                        "className": "EnergyBall",
+                        "fields": {
+                            "energyAmount": 25.0,
+                            "respawnTime": 5.0
+                        }
+                    }
+                ]
+            },
+            "button": {
+                "buttonState": 0,
+                "shapeNormalColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "shapeHoveredColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.5
+                },
+                "shapePressedColor": {
+                    "x": 0.699999988079071,
+                    "y": 0.699999988079071,
+                    "z": 0.699999988079071,
+                    "w": 0.699999988079071
+                },
+                "textNormalColor": {
+                    "x": 0.30000001192092898,
+                    "y": 0.30000001192092898,
+                    "z": 0.30000001192092898,
+                    "w": 0.699999988079071
+                },
+                "textHoveredColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.0
+                },
+                "textPressedColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.5
+                }
+            }
+        },
+        {
+            "active": true,
+            "name": "MovingWall",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 274.5287170410156,
+                    "y": -469.6745300292969,
+                    "z": -5.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "collider": {
+                "ColliderType": 1,
+                "isTrigger": false,
+                "enabled": true,
+                "position": {
+                    "x": 274.5287170410156,
+                    "y": -469.6745300292969,
+                    "z": -5.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": 274.0287170410156,
+                    "y": -470.1745300292969,
+                    "z": -5.0
+                },
+                "max": {
+                    "x": 275.0287170410156,
+                    "y": -469.1745300292969,
+                    "z": -5.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "spritesheet\\lava platform\\lava platform_42.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "MovingWall",
+                        "fields": {
+                            "PlatesActive": 0,
+                            "PlatesRequired": 1,
+                            "MoveRight": false,
+                            "MoveDist": 10.0,
+                            "MoveSpeed": 5.0
+                        }
+                    }
+                ]
+            },
+            "button": {
+                "buttonState": 0,
+                "shapeNormalColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "shapeHoveredColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.5
+                },
+                "shapePressedColor": {
+                    "x": 0.699999988079071,
+                    "y": 0.699999988079071,
+                    "z": 0.699999988079071,
+                    "w": 0.699999988079071
+                },
+                "textNormalColor": {
+                    "x": 0.30000001192092898,
+                    "y": 0.30000001192092898,
+                    "z": 0.30000001192092898,
+                    "w": 0.699999988079071
+                },
+                "textHoveredColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.0
+                },
+                "textPressedColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.5
+                }
+            },
+            "tilemap": {
+                "tileSize": 32,
+                "activeAsset": "tilemaps/Rock_Door",
+                "tileAssetNames": [],
+                "gridData": [
+                    {
+                        "x": 6,
+                        "y": -15,
+                        "asset": "tilemaps/Rock_Door"
+                    },
+                    {
+                        "x": 7,
+                        "y": -15,
+                        "asset": "tilemaps/Rock_Door"
+                    },
+                    {
+                        "x": 8,
+                        "y": -15,
+                        "asset": "tilemaps/Rock_Door"
+                    },
+                    {
+                        "x": 9,
+                        "y": -15,
+                        "asset": "tilemaps/Rock_Door"
+                    },
+                    {
+                        "x": 10,
+                        "y": -15,
+                        "asset": "tilemaps/Rock_Door"
+                    },
+                    {
+                        "x": 11,
+                        "y": -15,
+                        "asset": "tilemaps/Rock_Door"
+                    }
+                ]
+            }
+        },
+        {
+            "active": true,
+            "name": "RedBox",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 18.702116012573243,
+                    "y": 20.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 10.0,
+                    "y": 10.0
+                }
+            },
+            "rigidbody": {
+                "mass": 5.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.0,
+                "dynamicFriction": 0.0,
+                "inertia": 0.0,
+                "invInertia": 0.0
+            },
+            "collider": {
+                "ColliderType": 1,
+                "isTrigger": false,
+                "enabled": true,
+                "position": {
+                    "x": 18.702116012573243,
+                    "y": 20.0,
+                    "z": 0.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": 13.702116012573243,
+                    "y": 15.0,
+                    "z": 0.0
+                },
+                "max": {
+                    "x": 23.702116012573243,
+                    "y": 25.0,
+                    "z": 0.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "EnemyController",
+                        "fields": {}
+                    }
+                ]
+            },
+            "button": {
+                "buttonState": 0,
+                "shapeNormalColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "shapeHoveredColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.5
+                },
+                "shapePressedColor": {
+                    "x": 0.699999988079071,
+                    "y": 0.699999988079071,
+                    "z": 0.699999988079071,
+                    "w": 0.699999988079071
+                },
+                "textNormalColor": {
+                    "x": 0.30000001192092898,
+                    "y": 0.30000001192092898,
+                    "z": 0.30000001192092898,
+                    "w": 0.699999988079071
+                },
+                "textHoveredColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.0
+                },
+                "textPressedColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.5
+                }
+            }
+        },
+        {
+            "active": true,
+            "name": "PressurePlate",
+            "layer": {
+                "currentLayer": 2
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 194.45278930664063,
+                    "y": -39.93634033203125,
+                    "z": -1.0
+                },
+                "size": {
+                    "x": 32.0,
+                    "y": 50.0
+                }
+            },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0
+            },
+            "collider": {
+                "ColliderType": 1,
+                "isTrigger": false,
+                "enabled": true,
+                "position": {
+                    "x": 194.45278930664063,
+                    "y": -61.43634033203125,
+                    "z": -1.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": -21.5,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": 178.45278930664063,
+                    "y": -67.93634033203125,
+                    "z": -1.0
+                },
+                "max": {
+                    "x": 210.45278930664063,
+                    "y": -54.93634033203125,
+                    "z": -1.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "Pressure Plate",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "PressurePlate",
+                        "fields": {
+                            "decrease": 5.0,
+                            "wallName": "wall"
+                        }
+                    }
+                ]
+            },
+            "button": {
+                "buttonState": 0,
+                "shapeNormalColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "shapeHoveredColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.5
+                },
+                "shapePressedColor": {
+                    "x": 0.699999988079071,
+                    "y": 0.699999988079071,
+                    "z": 0.699999988079071,
+                    "w": 0.699999988079071
+                },
+                "textNormalColor": {
+                    "x": 0.30000001192092898,
+                    "y": 0.30000001192092898,
+                    "z": 0.30000001192092898,
+                    "w": 0.699999988079071
+                },
+                "textHoveredColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.0
+                },
+                "textPressedColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.5
+                }
+            }
+        }
+    ],
+    "layers": {
+        "Default": 0,
+        "Enemy": 4,
+        "Energy": 8,
+        "Ground": 2,
+        "Player": 1
+    },
+    "quadtree": {
+        "min": {
+            "x": -2000.0,
+            "y": -2000.0
+        },
+        "max": {
+            "x": 2000.0,
+            "y": 2000.0
+        }
+    }
+}

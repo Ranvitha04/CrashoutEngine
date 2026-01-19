@@ -17,6 +17,8 @@ namespace UI {
         namespace fs = std::filesystem;
 
         static char filter[128] = { 0 };
+        static bool s_showUnsupportedPopup = false;
+        static std::string s_lastErrorFile = "";
 
         // panel mode – 0 = normal assets, 1 = C# scripts
         static int s_location = 0;
@@ -62,7 +64,6 @@ namespace UI {
         // ImGUI button to reload assets
         if (ImGui::Button("Reload Assets")) {
             using namespace CrashoutsEngine::Assets;
-            GenerateAssetManifest();
             AssetManager::GetInstance().LoadManifestAssets();
         }
 
@@ -82,7 +83,13 @@ namespace UI {
                     ext == ".png" || ext == ".jpg" || ext == ".jpeg" || ext == ".bmp" || ext == ".tga" ||
                     ext == ".json" || ext == ".scene" || ext == ".bank" || ext == ".wav" || ext == ".ogg" || ext == ".mp3" ||
                     ext == ".vert" || ext == ".frag" || ext == ".cs";
-                if (!allowed) continue;
+
+                if (!allowed) {
+                    s_showUnsupportedPopup = true;
+                    s_lastErrorFile = src.filename().string();
+                    ImGui::OpenPopup("Asset Error");
+                    continue;
+                }
 
                 fs::path dst = current / src.filename();
                 if (fs::exists(dst, ec)) {
@@ -101,6 +108,20 @@ namespace UI {
 
             gDroppedPaths.clear();
             needScan = true;
+        }
+
+        if (ImGui::BeginPopupModal("Asset Error", &s_showUnsupportedPopup, ImGuiWindowFlags_AlwaysAutoResize)) {
+            ImGui::TextColored(ImVec4(1, 0.2f, 0.2f, 1), "Failed to import file:");
+            ImGui::Text("%s", s_lastErrorFile.c_str());
+            ImGui::Separator();
+            ImGui::Text("Unsupported file format.");
+            ImGui::TextDisabled("Accepted: images (.png, .jpg...), audio (.wav, .ogg, .bank), scenes, scripts (.cs)");
+
+            if (ImGui::Button("OK", ImVec2(120, 0))) {
+                s_showUnsupportedPopup = false;
+                ImGui::CloseCurrentPopup();
+            }
+            ImGui::EndPopup();
         }
 
         // LEFT: Folder tree
@@ -230,7 +251,7 @@ namespace UI {
                         else if (rel.rfind("sprite_sheet/", 0) == 0) {
                             p.kind = AssetKind::SpriteSheet;
                         }
-                        else if (rel.rfind("scenes/", 0) == 0 || ext == ".scene" || ext == ".json") {
+                        else if (rel.rfind("scenes/", 0) == 0 || ext == ".scene") {
                             p.kind = AssetKind::Scene;
                         }
                         else if (rel.rfind("audio/", 0) == 0 || ext == ".bank" || ext == ".ogg" || ext == ".wav" || ext == ".mp3") {

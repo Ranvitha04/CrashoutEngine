@@ -13,6 +13,10 @@ public class AudioManager
     public static AudioManager Instance { get; } = new AudioManager();
 
     private AudioManager() {
+
+        playerMusVol = InternalCalls.Audio_GetMusicVolume();
+        playerSFXVol = InternalCalls.Audio_GetSFXVolume();
+
         RegisterSound(
                 "ambient", // key you use in Play("ambient")
                 "assets/audio/Lava-Volcano-Wind-Environment_LOOP.wav",
@@ -27,7 +31,7 @@ public class AudioManager
                 1.0f, // base volume
                 false, // loop?
                 //SoundType.SFX //SFX broken
-                SoundType.Music
+                SoundType.SFX
             );
 
         RegisterSound(
@@ -36,7 +40,7 @@ public class AudioManager
                 1.0f, // base volume
                 false, // loop?
                       //SoundType.SFX //SFX broken
-                SoundType.Music
+                SoundType.SFX
             );
 
         RegisterSound(
@@ -45,7 +49,7 @@ public class AudioManager
                 1.0f, // base volume
                 false, // loop?
                       //SoundType.SFX //SFX broken
-                SoundType.Music
+                SoundType.SFX
             );
 
         RegisterSound(
@@ -54,7 +58,7 @@ public class AudioManager
                 1.0f, // base volume
                 false, // loop?
                       //SoundType.SFX //SFX broken
-                SoundType.Music
+                SoundType.SFX
             );
 
         RegisterSound(
@@ -63,7 +67,7 @@ public class AudioManager
                 1.0f, // base volume
                 false, // loop?
                       //SoundType.SFX //SFX broken
-                SoundType.Music
+                SoundType.SFX
             );
 
         RegisterSound(
@@ -72,7 +76,7 @@ public class AudioManager
                 1.0f, // base volume
                 false, // loop?
                       //SoundType.SFX //SFX broken
-                SoundType.Music
+                SoundType.SFX
             );
 
         RegisterSound(
@@ -80,7 +84,7 @@ public class AudioManager
                 "assets/audio/Switch_StepOn.wav",
                 0.6f, // base volume
                 false, // loop?
-                SoundType.Music // it's music, not SFX SFX DOESNT WORK LMAO
+                SoundType.SFX // it's music, not SFX SFX DOESNT WORK LMAO
             );
 
         RegisterSound(
@@ -107,7 +111,7 @@ public class AudioManager
 
     // Converted version of your "Sound[]" array
     private Dictionary<string, SoundData> sounds = new Dictionary<string, SoundData>();
-
+        
     public static float playerMusVol = 1f;
     public static float playerSFXVol = 1f;
 
@@ -150,14 +154,20 @@ public class AudioManager
 
         if (s.Type == SoundType.Music)
             InternalCalls.Audio_PlayMusicFileTagged(s.Name, s.Path, s.Loop);
-        else
+        else if (s.Type == SoundType.SFX)
             InternalCalls.Audio_PlaySFXFileTagged(s.Name, s.Path, s.Loop);
     }
 
-    // === Replacing Unity's Stop(name)
-    public void Stop(string name)
+    // === Play sound attached to an entity
+    public void PlayAttachedSound(uint entityID)
     {
-        InternalCalls.Audio_StopTagged(name);
+        InternalCalls.Audio_PlayComponent(entityID);
+    }
+
+    // === Replacing Unity's Stop(name)
+    public void Stop(string name, float fadeDuration = 0.5f)
+    {
+        InternalCalls.Audio_StopTagged(name, fadeDuration);
     }
 
     // === Equivalent of MusicStop()
