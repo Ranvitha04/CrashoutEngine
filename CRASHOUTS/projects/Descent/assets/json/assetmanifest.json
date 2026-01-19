@@ -1645,6 +1645,10 @@
         {
             "name": "tutorial",
             "path": "tutorial"
+        },
+        {
+            "name": "menu",
+            "path": "menu"
         }
     ],
     "shaders": [
