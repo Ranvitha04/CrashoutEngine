@@ -60,6 +60,7 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 // Script + Reflection
 #include <mono/metadata/reflection.h>
 #include <mono/metadata/attrdefs.h>
+#include <hierarchy.h>
 
 // File I/O Util Functions
 namespace {
@@ -1184,16 +1185,29 @@ namespace CrashoutsEngine {
 
             ECS& gECS = *ECS::getInstance();
 
+            {
+                
+                auto ids = gECS.GetComponentArray<Component::NameComponent>().indexToEntity;
+
+                for (Entity e : ids) {
+                    if (gECS.HasComponent<TransientComponent>(e)) continue; 
+                    gECS.DestroyEntity(e);
+                }
+            }
+
             // Helper struct to link parents after all entities are created
-            struct ParentLinkRequest {
-                Entity childEntity;
-                std::string parentName;
-            };
-            std::vector<ParentLinkRequest> parentLinksToProcess;
+            std::vector<ParentLinkInfo> parentLinksToProcess;
+            parentLinksToProcess.reserve(entitiesArray.Size());
+
+
+            std::vector<Entity> createdEntities;
+            createdEntities.reserve(entitiesArray.Size());
 
             for (rapidjson::SizeType i = 0; i < entitiesArray.Size(); ++i) {
-                DeserializeEntity(entitiesArray[i], nullptr);
+                Entity e = (Entity)DeserializeEntity(entitiesArray[i], &parentLinksToProcess);
+                createdEntities.push_back(e);
             }
+
         
             // =========================================================
             // POST-LOAD: Reconstruct Hierarchy Links
@@ -1202,13 +1216,16 @@ namespace CrashoutsEngine {
             // Since NameComponent isn't usually a map, we iterate (or you can build a temporary map for speed).
 
             // Optimization: Build a map of Name -> EntityID for the loaded scene
+        
             std::unordered_map<std::string, Entity> nameToEntityMap;
-            const auto& nameArr = gECS.GetComponentArray<NameComponent>();
-            for (Entity e : nameArr.indexToEntity) {
+            nameToEntityMap.reserve(createdEntities.size());
+
+            for (Entity e : createdEntities) {
                 if (gECS.HasComponent<NameComponent>(e)) {
                     nameToEntityMap[gECS.GetComponent<NameComponent>(e)->name] = e;
                 }
             }
+
 
             for (const auto& req : parentLinksToProcess) {
                 auto it = nameToEntityMap.find(req.parentName);
@@ -1235,6 +1252,8 @@ namespace CrashoutsEngine {
                         << "' for child Entity " << req.childEntity << std::endl;
                 }
             }
+            CrashoutsEngine::UpdateHierarchy(gECS);
+
         }
 
         /*!
@@ -1393,6 +1412,7 @@ namespace CrashoutsEngine {
             // Get the resulting JSON string
             std::string content = buffer.GetString();
             std::string fullPath = Assets::rootPath + "/scenes/" + sceneName;
+            std::filesystem::create_directories(std::filesystem::path(Assets::rootPath) / "scenes");
 
             // =========================================================
             // 6. Write the string to the file directly
