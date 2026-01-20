@@ -4,7 +4,7 @@
 @date       02/11/2025
 @brief      Declaration for types of forces and a force manager
 
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
 
@@ -19,7 +19,7 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserve
 namespace Physics {
 
 	/*FLAGS*/
-	//constexpr CE::u32 SIMULATE_DYNAMICS{ 1 };
+	constexpr CE::u32 SIMULATE_DYNAMICS{ 1 };
 
 	/*enum COMMON_FORCES {
 		GRAVITY

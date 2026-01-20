@@ -4,7 +4,7 @@
 @date       06/11/2025
 @brief		Definition of rigid body bindings functions
 
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 */
 #include "rigidbodybindings.h"
@@ -83,18 +83,18 @@ static void InternalSetVelocity(uint32_t entityID, const CEVec3* newVelocity)
     }
 }
 
-//static void InternalSetDynamic(uint32_t entityID, const bool newDynamic)
-//{
-//    auto& ecs = *ECS::getInstance();
-//    if (EntityHasRigidBody(entityID))
-//    {
-//        auto* rb = ecs.GetComponent<Component::RigidBodyComponent>(entityID);
-//        if (newDynamic) {
-//            rb->getFlags().set(Physics::SIMULATE_DYNAMICS);
-//        }
-//        else rb->getFlags().reset(Physics::SIMULATE_DYNAMICS);
-//    }
-//}
+static void InternalSetDynamic(uint32_t entityID, bool newDynamic)
+{
+    auto& ecs = *ECS::getInstance();
+    if (EntityHasRigidBody(entityID))
+    {
+        auto* rb = ecs.GetComponent<Component::RigidBodyComponent>(entityID);
+        if (newDynamic) {
+            rb->getFlags().set(Physics::SIMULATE_DYNAMICS);
+        }
+        else rb->getFlags().reset(Physics::SIMULATE_DYNAMICS);
+    }
+}
 
 void CrashoutsEngine::Bindings::RegisterRigidBodyBindings()
 {
@@ -104,7 +104,7 @@ void CrashoutsEngine::Bindings::RegisterRigidBodyBindings()
     mono_add_internal_call("CrashoutsEngine.RigidBodyComponent::InternalSetMass", reinterpret_cast<const void*>(InternalSetMass));
     mono_add_internal_call("CrashoutsEngine.RigidBodyComponent::InternalGetVelocity", reinterpret_cast<const void*>(InternalGetVelocity));
     mono_add_internal_call("CrashoutsEngine.RigidBodyComponent::InternalSetVelocity", reinterpret_cast<const void*>(InternalSetVelocity));
-    //mono_add_internal_call("CrashoutsEngine.RigidBodyComponent::InternalSetDynamic", reinterpret_cast<const void*>(InternalSetDynamic));
+    mono_add_internal_call("CrashoutsEngine.RigidBodyComponent::InternalSetDynamic", reinterpret_cast<const void*>(InternalSetDynamic));
 
     std::cout << "[Mono] Registered: CrashoutsEngine.RigidBodyComponent::InternalAddForce" << std::endl;
 }

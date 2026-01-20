@@ -4,7 +4,7 @@
 @date       08/09/2025
 @brief      Declaration for the class RigidBodyComponent, used for Physics system
 
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
 
@@ -100,7 +100,7 @@ namespace Component {
 			return mMass;
 		}
 
-		//inline std::bitset<8>& getFlags() { return flags; }
+		inline std::bitset<8>& getFlags() { return flags; }
 
 		/*Member Functions*/
 		f32 GetInverseMass();

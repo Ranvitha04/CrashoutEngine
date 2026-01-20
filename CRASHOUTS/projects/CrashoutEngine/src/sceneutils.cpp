@@ -884,6 +884,11 @@ namespace Scene {
 		renderer.shdr_pgm_instanced->SetUniform("uView", renderer.viewMatrix);
 		renderer.shdr_pgm_instanced->SetUniform("uProjection", renderer.projectionMatrix);
 
+		// ALSO Set standard shader matrices for non-instanced world objects
+		renderer.shdr_pgm->Use();
+		renderer.shdr_pgm->SetUniform("uView", renderer.viewMatrix);
+		renderer.shdr_pgm->SetUniform("uProjection", renderer.projectionMatrix);
+
 		// Store lines for later
 		std::vector<std::pair<TransformComponent*, ShapeComponent*>> lineQueue;
 
@@ -896,8 +901,7 @@ namespace Scene {
 		// Flush World Lines (Non-instanced)
 		if (!lineQueue.empty()) {
 			renderer.shdr_pgm->Use();
-			renderer.shdr_pgm->SetUniform("uView", renderer.viewMatrix);
-			renderer.shdr_pgm->SetUniform("uProjection", renderer.projectionMatrix);
+			// (Matrices already set above)
 
 			for (auto& pair : lineQueue) {
 				TransformComponent* tf = pair.first;
@@ -921,14 +925,18 @@ namespace Scene {
 		glm::mat4 uiProj = glm::ortho(-w * 0.5f, w * 0.5f, -h * 0.5f, h * 0.5f);
 		renderer.shdr_pgm_instanced->SetUniform("uProjection", uiProj);
 
+		// ALSO Set standard shader matrices for non-instanced UI objects
+		renderer.shdr_pgm->Use();
+		renderer.shdr_pgm->SetUniform("uView", glm::mat4(1.0f));
+		renderer.shdr_pgm->SetUniform("uProjection", uiProj);
+
 		BatchEntities(screenEntities, globalECS, rectBatches, triBatches, circBatches, lineQueue, false);
 		FlushBatches(rectBatches, triBatches, circBatches);
 
 		// Flush Screen Lines
 		if (!lineQueue.empty()) {
 			renderer.shdr_pgm->Use();
-			renderer.shdr_pgm->SetUniform("uView", glm::mat4(1.0f));
-			renderer.shdr_pgm->SetUniform("uProjection", uiProj);
+			// (Matrices already set above)
 
 			for (auto& pair : lineQueue) {
 				TransformComponent* tf = pair.first;

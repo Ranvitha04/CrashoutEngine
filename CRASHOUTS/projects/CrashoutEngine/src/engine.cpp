@@ -583,6 +583,9 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
         //GLApp::draw();
         Scene::RenderScene(*CrashoutsEngine::ECS::getInstance());
 
+        // Flush Debug Queue (Lines/Circles from Scripts)
+        Component::Rendering::Get().FlushDebugQueue();
+
         if (CurrentDescriptor) {
             //if (CurrentDescriptor->Update) CurrentDescriptor->Update();
             if (CurrentDescriptor->Render) CurrentDescriptor->Render();

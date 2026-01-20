@@ -3,7 +3,7 @@
     "tilemap": [
         {
             "texAssetName": "spritesheet\\Rock\\Rock_09.png",
-            "colliderType": "ColliderType::NONE",
+            "colliderType": "ColliderType::AABB",
             "ruleBitMap": 15
         },
         {

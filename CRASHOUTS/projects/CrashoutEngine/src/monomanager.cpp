@@ -4,7 +4,7 @@
 @date       06/11/2025
 @brief		Definition of mono manager functions
 
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 */
 #include "monomanager.h"
@@ -21,6 +21,8 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserve
 #include "mono/metadata/object.h"
 #include "mono/metadata/loader.h"
 #include "log.h" 
+#include "rendering.h"
+#include "shapes.h"
 
 MonoDomain* MonoManager::s_Domain = nullptr;
 MonoAssembly* MonoManager::s_Assembly = nullptr;
@@ -42,9 +44,25 @@ namespace CrashoutsEngine::Bindings {
         Logger::Instance().Add(LogMessage::Level::Info, LogMessage::Subsystem::Scripting, msg);
     }
 
+    static void InternalDrawLine(CEVec3* start, CEVec3* end, float thickness, CEVec3* color) {
+        if (!start || !end || !color) return;
+        CEColor col(color->x, color->y, color->z, 1.0f);
+        // Queue the line to be drawn at the end of the frame (Post-Clear)
+        Component::Rendering::Get().QueueLine(*start, *end, thickness, col, true);
+    }
+
+    static void InternalDrawCircle(CEVec2* size, CEVec3* position, CEVec3* color) {
+        if (!size || !position || !color) return;
+        CEColor col(color->x, color->y, color->z, 1.0f);
+        // Queue the circle to be drawn at the end of the frame
+        Component::Rendering::Get().QueueCircle(*size, *position, col, true);
+    }
+
     // 2. Register it (Call this where you register other bindings)
     void RegisterDebugBindings() {
         mono_add_internal_call("CrashoutsEngine.Debug::Log", (const void*)InternalLog);
+        mono_add_internal_call("CrashoutsEngine.Debug::DrawLine", (const void*)InternalDrawLine);
+        mono_add_internal_call("CrashoutsEngine.Debug::DrawCircle", (const void*)InternalDrawCircle);
     }
 };
 
