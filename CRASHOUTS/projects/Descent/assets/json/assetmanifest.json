@@ -1569,6 +1569,10 @@
             "path": "Player.json"
         },
         {
+            "name": "Player_Renfred",
+            "path": "Player_Renfred.json"
+        },
+        {
             "name": "prefab",
             "path": "prefab.json"
         },
