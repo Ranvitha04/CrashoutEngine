@@ -67,113 +67,26 @@ namespace
         audio.stopMusicGroup();
     }
 
-    static void ICALL_Audio_PlayComponent(uint32_t entityID)
-    {
-        auto* ecs = CrashoutsEngine::ECS::getInstance();
-
-        if (!!IsEntityActive(*ecs, entityID)) return;
-
-        // Check if Entity has the component
-        if (!ecs->HasComponent<Component::AudioEmitterComponent>(entityID))
-        {
-            return;
-        }
-
-        // Get the component data
-        auto* ac = ecs->GetComponent<Component::AudioEmitterComponent>(entityID);
-        if (ac->eventPath.empty()) return;
-
-        auto& audio = CrashoutsEngine::Audio::AudioSystem::instance();
-
-        // Play based on type (FMOD Event vs Raw File)
-        if (ac->eventPath.find("event:/") == 0)
-        {
-            // FMOD Studio Event
-            // Check if we already have an instance playing, stop it if so (re-trigger behavior)
-            if (ac->inst) {
-                ac->inst->stop(FMOD_STUDIO_STOP_IMMEDIATE);
-                ac->inst->release();
-                ac->inst = nullptr;
-            }
-
-            auto* inst = audio.createInstance(ac->eventPath);
-            if (inst) {
-                inst->setVolume(ac->volume);
-                inst->setPitch(ac->pitch);
-                // 3D attributes would go here if you have 3D audio implemented
-                inst->start();
-
-                // Store it back in the component so the Inspector can see it/stop it
-                ac->inst = inst;
-            }
-        }
-        else
-        {
-            // Raw Audio File (wav/mp3/ogg)
-            std::string path = ac->eventPath;
-            if (path.rfind("assets/", 0) != 0) path = "assets/audio/" + path;
-
-            // Play and get channel
-            FMOD::Channel* ch = audio.playSFXFileEx(path);
-
-            if (ch) {
-                ch->setVolume(ac->volume);
-                ch->setPitch(ac->pitch);
-                ch->setMode(ac->looping ? FMOD_LOOP_NORMAL : FMOD_LOOP_OFF);
-
-                // Store in component
-                ac->channel = ch;
-            }
-        }
-    }
-
     static void ICALL_Audio_StopComponent(uint32_t entityID, float fadeDuration)
     {
         auto* ecs = CrashoutsEngine::ECS::getInstance();
+        if (!ecs->HasComponent<Component::AudioEmitterComponent>(entityID)) return;
 
-        if (!IsEntityActive(*ecs, entityID)) return;
-
-        // Check if Entity has the component
-        if (!ecs->HasComponent<Component::AudioEmitterComponent>(entityID))
-        {
-            return;
-        }
-        // Get the component data
         auto* ac = ecs->GetComponent<Component::AudioEmitterComponent>(entityID);
-        //auto& audio = CrashoutsEngine::Audio::AudioSystem::instance();
-        // Stop based on type
-        if (ac->inst)
-        {
-            ac->inst->stop(fadeDuration > 0.0f ? FMOD_STUDIO_STOP_ALLOWFADEOUT : FMOD_STUDIO_STOP_IMMEDIATE);
-            ac->inst->release();
-            ac->inst = nullptr;
-        }
-        if (ac->channel)
-        {
-            if (fadeDuration <= 0.0f)
-            {
-                ac->channel->stop();
+        auto& audio = CrashoutsEngine::Audio::AudioSystem::instance();
+
+        for (auto& clip : ac->clips) {
+            if (clip.inst) {
+                clip.inst->stop(FMOD_STUDIO_STOP_IMMEDIATE);
+                clip.inst->release();
+                clip.inst = nullptr;
             }
-            else
-            {
-                // Simple linear fade out over fadeDuration seconds
-                float currentVolume = 0.0f;
-                ac->channel->getVolume(&currentVolume);
-                const int steps = 20;
-                float stepTime = fadeDuration / steps;
-                float stepVolume = currentVolume / steps;
-                for (int i = 0; i < steps; ++i)
-                {
-                    currentVolume -= stepVolume;
-                    if (currentVolume < 0.0f) currentVolume = 0.0f;
-                    ac->channel->setVolume(currentVolume);
-                    std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(stepTime * 1000)));
-                }
-                ac->channel->stop();
+            if (clip.channel) {
+                audio.stopChannel(clip.channel, fadeDuration);
+                clip.channel = nullptr;
             }
-            ac->channel = nullptr;
         }
-	}
+    }
 
     static void ICALL_Audio_SetMusicVolume(float volume)
     {
@@ -205,6 +118,92 @@ namespace
         return AudioSystem::instance().GetMasterVolume();
     }
 
+    static void ICALL_Audio_GetComponentData(uint32_t entityID, MonoString** outNameOrPath, float* outVol, float* outPitch, mono_bool* outLoop, mono_bool* outIsMusic)
+    {
+        *outNameOrPath = nullptr;
+        *outVol = 1.0f; *outPitch = 1.0f; *outLoop = false; *outIsMusic = false;
+
+        auto* ecs = CrashoutsEngine::ECS::getInstance();
+        if (!ecs->HasComponent<Component::AudioEmitterComponent>(entityID)) return;
+
+        auto* ac = ecs->GetComponent<Component::AudioEmitterComponent>(entityID);
+
+        // Fix: Use the first clip if it exists
+        if (!ac->clips.empty()) {
+            const auto& c = ac->clips[0];
+            *outNameOrPath = mono_string_new(mono_domain_get(), c.name.c_str()); // Send Name as key
+            *outVol = c.volume;
+            *outPitch = c.pitch;
+            *outLoop = c.looping;
+            *outIsMusic = c.isMusic;
+        }
+    }
+
+    static void ICALL_Audio_PlayClipByName(uint32_t entityID, MonoString* clipNameStr)
+    {
+        auto* ecs = CrashoutsEngine::ECS::getInstance();
+        if (!ecs->HasComponent<Component::AudioEmitterComponent>(entityID)) return;
+
+        auto* ac = ecs->GetComponent<Component::AudioEmitterComponent>(entityID);
+        auto& audio = CrashoutsEngine::Audio::AudioSystem::instance();
+        std::string target = MonoToStdString(clipNameStr);
+
+        // Search the vector
+        for (auto& clip : ac->clips) {
+            if (clip.name == target) {
+                // Found it -> Play it
+                std::string path = clip.path;
+                if (path.rfind("assets/", 0) != 0) path = "assets/audio/" + path;
+
+                if (clip.channel) clip.channel->stop(); // Stop previous overlap
+
+                FMOD::Channel* ch = nullptr;
+                if (clip.isMusic) ch = audio.playMusicFile(path, clip.looping);
+                else ch = audio.playSFXFile(path); // Or playSFXFileEx
+
+                if (ch) {
+                    ch->setVolume(clip.volume);
+                    ch->setPitch(clip.pitch);
+                    ch->setMode(clip.looping ? FMOD_LOOP_NORMAL : FMOD_LOOP_OFF);
+                    clip.channel = ch;
+                }
+                return;
+            }
+        }
+    }
+
+    static void ICALL_Audio_PlayPathOnEntity(uint32_t entityID, MonoString* pathStr, float vol, float pitch, mono_bool loop, mono_bool isMusic)
+    {
+        auto* ecs = CrashoutsEngine::ECS::getInstance();
+        if (!ecs->HasComponent<Component::AudioEmitterComponent>(entityID)) return;
+
+        auto& audio = CrashoutsEngine::Audio::AudioSystem::instance();
+        std::string path = MonoToStdString(pathStr);
+
+        if (path.rfind("assets/", 0) != 0) path = "assets/audio/" + path;
+
+        FMOD::Channel* ch = nullptr;
+        if (isMusic) ch = audio.playMusicFile(path, loop);
+        else ch = audio.playSFXFile(path);
+
+        if (ch) {
+            ch->setVolume(vol);
+            ch->setPitch(pitch);
+            if (!isMusic) ch->setMode(loop ? FMOD_LOOP_NORMAL : FMOD_LOOP_OFF);
+        }
+    }
+
+    static void ICALL_Audio_PlayComponent(uint32_t entityID)
+    {
+        auto* ecs = CrashoutsEngine::ECS::getInstance();
+        if (!ecs->HasComponent<Component::AudioEmitterComponent>(entityID)) return;
+        auto* ac = ecs->GetComponent<Component::AudioEmitterComponent>(entityID);
+
+        if (!ac->clips.empty()) {
+            ICALL_Audio_PlayClipByName(entityID, mono_string_new(mono_domain_get(), ac->clips[0].name.c_str()));
+        }
+    }
+
 }
 // ---------- REGISTRATION ----------
 
@@ -233,4 +232,10 @@ void CrashoutsEngine::Bindings::RegisterAudioBindings()
     mono_add_internal_call("CrashoutsEngine.InternalCalls::Audio_GetSFXVolume", (const void*)ICALL_Audio_GetSFXVolume);
 
 	mono_add_internal_call("CrashoutsEngine.InternalCalls::Audio_GetMasterVolume", (const void*)ICALL_Audio_GetMasterVolume);
+
+    mono_add_internal_call("CrashoutsEngine.InternalCalls::Audio_GetComponentData", (const void*)ICALL_Audio_GetComponentData);
+
+    mono_add_internal_call("CrashoutsEngine.InternalCalls::Audio_PlayPathOnEntity", (const void*)ICALL_Audio_PlayPathOnEntity);
+
+    mono_add_internal_call("CrashoutsEngine.InternalCalls::Audio_PlayClipByName", (const void*)ICALL_Audio_PlayClipByName);
 }

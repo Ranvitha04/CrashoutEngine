@@ -1,5 +1,641 @@
 {
-    "entities": [],
+    "entities": [
+        {
+            "active": true,
+            "name": "Player",
+            "layer": {
+                "currentLayer": 8
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 5.1378326416015629,
+                    "y": 40.01470947265625,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 62.0,
+                    "y": 72.50599670410156
+                }
+            },
+            "rigidbody": {
+                "mass": 4.5,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.0,
+                "dynamicFriction": 0.0,
+                "inertia": 0.0,
+                "invInertia": 0.0
+            },
+            "collider": {
+                "ColliderType": 1,
+                "isTrigger": false,
+                "enabled": true,
+                "position": {
+                    "x": 5.1378326416015629,
+                    "y": 40.01470947265625,
+                    "z": 0.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": -7.162166595458984,
+                    "y": 10.661712646484375,
+                    "z": 0.0
+                },
+                "max": {
+                    "x": 17.43783187866211,
+                    "y": 69.36770629882813,
+                    "z": 0.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "images/Character\\Normal Mode\\Chibi-Actions-SpriteSheet.png",
+                "uvSize": {
+                    "x": 0.3333333432674408,
+                    "y": 0.3333333432674408
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "bgm1",
+                        "path": "level bgm 1.wav",
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": true,
+                        "isMusic": true
+                    },
+                    {
+                        "name": "ambient",
+                        "path": "lava-volcano-wind-environment_loop.wav",
+                        "volume": 0.6100000143051148,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": true,
+                        "isMusic": true
+                    },
+                    {
+                        "name": "footstep1",
+                        "path": "footsteps 1.wav",
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    },
+                    {
+                        "name": "footstep2",
+                        "path": "footsteps 2.wav",
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    },
+                    {
+                        "name": "footstep3",
+                        "path": "footsteps 3.wav",
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    },
+                    {
+                        "name": "footstep4",
+                        "path": "footsteps 4.wav",
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    },
+                    {
+                        "name": "footstep5",
+                        "path": "footsteps 5.wav",
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    },
+                    {
+                        "name": "footstep6",
+                        "path": "footsteps 6.wav",
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    }
+                ]
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "PlayerMovement",
+                        "fields": {
+                            "moveSpeed": 200.0,
+                            "maxRunSpeed": 100.0,
+                            "jumpPower": 20000.0,
+                            "groundDrag": 0.15000000596046449,
+                            "airDrag": 0.019999999552965165,
+                            "gravityScale": 2.5,
+                            "turnMultiplier": 2.0,
+                            "frictionMultiplier": 500.0,
+                            "gravityForceMultiplier": 10.0,
+                            "footstepInterval": 0.5,
+                            "swapPause": 1.0,
+                            "energyConsumption": 12.5,
+                            "normalMass": 7.0,
+                            "lightMass": 4.5,
+                            "CurrentEnergy": 0.0,
+                            "MaxEnergy": 100.0,
+                            "alive": true,
+                            "isPaused": false
+                        }
+                    }
+                ]
+            },
+            "camera": {
+                "zoom": 1.0,
+                "xBounds": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "yBounds": {
+                    "x": 0.0,
+                    "y": 0.0
+                }
+            },
+            "button": {
+                "buttonState": 0,
+                "shapeNormalColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "shapeHoveredColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.5
+                },
+                "shapePressedColor": {
+                    "x": 0.699999988079071,
+                    "y": 0.699999988079071,
+                    "z": 0.699999988079071,
+                    "w": 0.699999988079071
+                },
+                "textNormalColor": {
+                    "x": 0.30000001192092898,
+                    "y": 0.30000001192092898,
+                    "z": 0.30000001192092898,
+                    "w": 0.699999988079071
+                },
+                "textHoveredColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.0
+                },
+                "textPressedColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.5
+                }
+            }
+        },
+        {
+            "active": true,
+            "name": "Entity 5",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "tilemap": {
+                "tileSize": 32,
+                "activeAsset": "tilemaps/Rock",
+                "tileAssetNames": [],
+                "gridData": [
+                    {
+                        "x": -6,
+                        "y": -2,
+                        "asset": ""
+                    },
+                    {
+                        "x": -5,
+                        "y": -5,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -5,
+                        "y": -4,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -5,
+                        "y": -3,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -5,
+                        "y": -2,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -5,
+                        "y": -1,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -5,
+                        "y": 3,
+                        "asset": ""
+                    },
+                    {
+                        "x": -4,
+                        "y": -5,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -4,
+                        "y": -4,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -4,
+                        "y": -3,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -4,
+                        "y": -2,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -4,
+                        "y": -1,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -4,
+                        "y": 3,
+                        "asset": ""
+                    },
+                    {
+                        "x": -3,
+                        "y": -5,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -3,
+                        "y": -4,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -3,
+                        "y": -3,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -3,
+                        "y": -2,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -3,
+                        "y": -1,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -3,
+                        "y": 3,
+                        "asset": ""
+                    },
+                    {
+                        "x": -2,
+                        "y": -5,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -2,
+                        "y": -4,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -2,
+                        "y": -2,
+                        "asset": ""
+                    },
+                    {
+                        "x": -2,
+                        "y": -1,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -2,
+                        "y": 3,
+                        "asset": ""
+                    },
+                    {
+                        "x": -1,
+                        "y": -5,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -1,
+                        "y": -4,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -1,
+                        "y": -2,
+                        "asset": ""
+                    },
+                    {
+                        "x": -1,
+                        "y": -1,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -1,
+                        "y": 3,
+                        "asset": ""
+                    },
+                    {
+                        "x": 0,
+                        "y": -5,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 0,
+                        "y": -4,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 0,
+                        "y": -2,
+                        "asset": ""
+                    },
+                    {
+                        "x": 0,
+                        "y": -1,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 0,
+                        "y": 3,
+                        "asset": ""
+                    },
+                    {
+                        "x": 1,
+                        "y": -5,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 1,
+                        "y": -4,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 1,
+                        "y": -2,
+                        "asset": ""
+                    },
+                    {
+                        "x": 1,
+                        "y": -1,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 1,
+                        "y": 3,
+                        "asset": ""
+                    },
+                    {
+                        "x": 2,
+                        "y": -5,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 2,
+                        "y": -4,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 2,
+                        "y": -2,
+                        "asset": ""
+                    },
+                    {
+                        "x": 2,
+                        "y": -1,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 2,
+                        "y": 3,
+                        "asset": ""
+                    },
+                    {
+                        "x": 3,
+                        "y": -5,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 3,
+                        "y": -4,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 3,
+                        "y": -2,
+                        "asset": ""
+                    },
+                    {
+                        "x": 3,
+                        "y": -1,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 3,
+                        "y": 3,
+                        "asset": ""
+                    },
+                    {
+                        "x": 4,
+                        "y": -5,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 4,
+                        "y": -4,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 4,
+                        "y": -2,
+                        "asset": ""
+                    },
+                    {
+                        "x": 4,
+                        "y": 3,
+                        "asset": ""
+                    },
+                    {
+                        "x": 5,
+                        "y": -5,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 5,
+                        "y": -4,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 5,
+                        "y": -3,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 5,
+                        "y": 3,
+                        "asset": ""
+                    },
+                    {
+                        "x": 6,
+                        "y": -5,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 6,
+                        "y": -4,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 6,
+                        "y": -3,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 6,
+                        "y": -2,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 6,
+                        "y": -1,
+                        "asset": ""
+                    },
+                    {
+                        "x": 7,
+                        "y": -5,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 7,
+                        "y": -4,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 7,
+                        "y": -3,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 7,
+                        "y": -2,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 7,
+                        "y": -1,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 8,
+                        "y": -5,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 8,
+                        "y": -4,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 8,
+                        "y": -3,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 8,
+                        "y": -2,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 8,
+                        "y": -1,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 9,
+                        "y": -4,
+                        "asset": ""
+                    }
+                ]
+            }
+        }
+    ],
     "layers": {
         "Default": 0,
         "Ground": 2,

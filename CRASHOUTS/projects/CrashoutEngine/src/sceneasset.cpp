@@ -396,11 +396,20 @@ namespace CrashoutsEngine {
             if (gECS.HasComponent<AudioEmitterComponent>(id)) {
                 const auto& c = *gECS.GetComponent<AudioEmitterComponent>(id);
                 rapidjson::Value val(rapidjson::kObjectType);
-                val.AddMember("eventPath", rapidjson::Value(c.eventPath.c_str(), allocator), allocator);
-                val.AddMember("volume", c.volume, allocator);
-                val.AddMember("pitch", c.pitch, allocator);
-                val.AddMember("spatial3D", c.spatial3D, allocator);
-                val.AddMember("looping", c.looping, allocator);
+                rapidjson::Value clipsArr(rapidjson::kArrayType);
+                for (const auto& clip : c.clips) {
+                    rapidjson::Value clipObj(rapidjson::kObjectType);
+                    // Save all properties of the AudioClip struct
+                    clipObj.AddMember("name", rapidjson::Value(clip.name.c_str(), allocator), allocator);
+                    clipObj.AddMember("path", rapidjson::Value(clip.path.c_str(), allocator), allocator);
+                    clipObj.AddMember("volume", clip.volume, allocator);
+                    clipObj.AddMember("pitch", clip.pitch, allocator);
+                    clipObj.AddMember("spatial3D", clip.spatial3D, allocator);
+                    clipObj.AddMember("looping", clip.looping, allocator);
+                    clipObj.AddMember("isMusic", clip.isMusic, allocator);
+                    clipsArr.PushBack(clipObj, allocator);
+                }
+                val.AddMember("clips", clipsArr, allocator);
                 entityValue.AddMember(rapidjson::StringRef(Keys::AUDIO_COMPONENT), val, allocator);
             }
 
@@ -826,12 +835,32 @@ namespace CrashoutsEngine {
             // Audio
             if (entityValue.HasMember(Keys::AUDIO_COMPONENT)) {
                 const auto& v = entityValue[Keys::AUDIO_COMPONENT];
-                auto& a = gECS.AddComponent<AudioEmitterComponent>(newEntity);
-                a.eventPath = GetString(v, "eventPath");
-                a.volume = GetFloat(v, "volume");
-                a.pitch = GetFloat(v, "pitch");
-                a.spatial3D = GetBool(v, "spatial3D");
-                a.looping = GetBool(v, "looping");
+                auto& ac = gECS.AddComponent<AudioEmitterComponent>(newEntity);
+                if (v.HasMember("clips") && v["clips"].IsArray()) {
+                    const auto& clipsArr = v["clips"];
+                    for (rapidjson::SizeType i = 0; i < clipsArr.Size(); ++i) {
+                        const auto& cVal = clipsArr[i];
+                        Component::AudioClip clip;
+                        if (cVal.HasMember("name")) clip.name = cVal["name"].GetString();
+                        if (cVal.HasMember("path")) clip.path = cVal["path"].GetString();
+                        if (cVal.HasMember("volume")) clip.volume = cVal["volume"].GetFloat();
+                        if (cVal.HasMember("pitch")) clip.pitch = cVal["pitch"].GetFloat();
+                        if (cVal.HasMember("looping")) clip.looping = cVal["looping"].GetBool();
+                        if (cVal.HasMember("isMusic")) clip.isMusic = cVal["isMusic"].GetBool();
+                        if (cVal.HasMember("spatial3D")) clip.spatial3D = cVal["spatial3D"].GetBool();
+                        ac.clips.push_back(clip);
+                    }
+                }
+                else {
+                    Component::AudioClip clip;
+                    clip.name = "Main Clip";
+                    if (v.HasMember("eventPath")) clip.path = v["eventPath"].GetString();
+                    if (v.HasMember("volume")) clip.volume = v["volume"].GetFloat();
+                    if (v.HasMember("pitch")) clip.pitch = v["pitch"].GetFloat();
+                    if (v.HasMember("spatial3D")) clip.spatial3D = v["spatial3D"].GetBool();
+                    if (v.HasMember("looping")) clip.looping = v["looping"].GetBool();
+                    ac.clips.push_back(clip);
+                }
             }
 
             // Script
