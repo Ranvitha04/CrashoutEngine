@@ -203,7 +203,16 @@ void Init() {
     glfwSwapInterval(0); // disable vsync
 
     using namespace Messaging;
+    namespace fs = std::filesystem;
 
+#if USE_IMGUI_EDITOR
+    const fs::path prefabDir = fs::path(CrashoutsEngine::Assets::rootPath) / "prefabs";
+#else
+    const fs::path prefabDir = fs::path(GetLocalAppData()) / "prefabs";
+#endif
+
+    fs::create_directories(prefabDir);
+    CrashoutsEngine::ReloadPrefabsFromDisk(prefabDir.generic_string());
     // COLLISION EVENT MANAGER
     // Physical Collisions
     collisionSystem.registerObserver(EventType::CollisionEnter, collisionEvent);
@@ -708,6 +717,8 @@ Release resources
 */
 void CleanUp() {
 
+    if (!CrashoutsEngine::Serialization::currSceneName.empty())
+        CrashoutsEngine::Serialization::SaveScenes(CrashoutsEngine::Serialization::currSceneName);
     gProfiler.Clear(); 
     Prefab::ClearRegistry();
 

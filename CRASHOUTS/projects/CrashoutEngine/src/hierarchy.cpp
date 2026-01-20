@@ -233,7 +233,78 @@ namespace CrashoutsEngine {
         }
     }
     */
-    
+   
+    void RebuildHierarchyLinks(ECS& ecs)
+    {
+       
+        {
+            auto& childrenArr = ecs.GetComponentArray<Component::ChildrenComponent>();
+            for (Entity e : childrenArr.indexToEntity)
+            {
+                if (!ecs.HasComponent<Component::ChildrenComponent>(e)) continue;
+                ecs.GetComponent<Component::ChildrenComponent>(e)->children.clear();
+            }
+        }
+
+        
+        {
+            auto& parentArr = ecs.GetComponentArray<Component::ParentComponent>();
+            for (Entity child : parentArr.indexToEntity)
+            {
+                if (!ecs.HasComponent<Component::ParentComponent>(child)) continue;
+
+                auto* pc = ecs.GetComponent<Component::ParentComponent>(child);
+                Entity parent = pc->parent;
+
+                // basic validation
+                if (parent == 0 || parent == child) {
+                    pc->parent = 0;
+                    continue;
+                }
+
+                // parent might not exist anymore
+                if (!ecs.HasComponent<Component::NameComponent>(parent)) {
+                    pc->parent = 0;
+                    continue;
+                }
+
+                AddChildLink(ecs, parent, child);   
+            }
+        }
+    }
+   
+    static void RecomputeLocalFromWorld(
+        const Component::TransformComponent& parentW,
+        const Component::TransformComponent& childW,
+        Component::ParentComponent& pc)
+    {
+        const float DEG_TO_RAD = 0.0174532925f;
+
+        float pX = (parentW.size.x == 0.f) ? 1.f : parentW.size.x;
+        float pY = (parentW.size.y == 0.f) ? 1.f : parentW.size.y;
+
+        
+        pc.localScale.x = childW.size.x / pX;
+        pc.localScale.y = childW.size.y / pY;
+
+        
+        pc.localRot = childW.rotation - parentW.rotation;
+
+        float dx = childW.position.x - parentW.position.x;
+        float dy = childW.position.y - parentW.position.y;
+
+        float angleRad = -parentW.rotation * DEG_TO_RAD;
+        float s = std::sin(angleRad);
+        float c = std::cos(angleRad);
+
+        float unRotX = (c * dx) - (s * dy);
+        float unRotY = (s * dx) + (c * dy);
+
+        pc.localPos.x = unRotX / pX;
+        pc.localPos.y = unRotY / pY;
+        pc.localPos.z = childW.position.z - parentW.position.z;
+    }
+
     // Per-frame propagation entry point.
     void UpdateHierarchy(ECS& ecs)
     {

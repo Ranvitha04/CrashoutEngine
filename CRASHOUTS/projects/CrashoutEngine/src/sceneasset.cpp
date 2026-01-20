@@ -1079,6 +1079,8 @@ namespace CrashoutsEngine {
         @param sceneName The name of the scene asset to load (e.g., "level1.json").
         */
         void LoadScenes(std::string const& sceneName) {
+            currSceneName = sceneName;
+
             Assets::AssetManager& assetManager = Assets::AssetManager::GetInstance();
 
             Assets::SceneAsset* sceneAsset = assetManager.Get<Assets::SceneAsset>(sceneName);
@@ -1184,15 +1186,24 @@ namespace CrashoutsEngine {
 
             ECS& gECS = *ECS::getInstance();
 
+            {
+                
+                auto ids = gECS.GetComponentArray<Component::NameComponent>().indexToEntity;
+
+                for (Entity e : ids) {
+                    if (gECS.HasComponent<TransientComponent>(e)) continue; 
+                    gECS.DestroyEntity(e);
+                }
+            }
+
             // Helper struct to link parents after all entities are created
-            struct ParentLinkRequest {
-                Entity childEntity;
-                std::string parentName;
-            };
-            std::vector<ParentLinkRequest> parentLinksToProcess;
+            std::vector<ParentLinkInfo> parentLinksToProcess;
+            parentLinksToProcess.reserve(entitiesArray.Size());
+
 
             for (rapidjson::SizeType i = 0; i < entitiesArray.Size(); ++i) {
-                DeserializeEntity(entitiesArray[i], nullptr);
+                DeserializeEntity(entitiesArray[i], &parentLinksToProcess);
+
             }
         
             // =========================================================

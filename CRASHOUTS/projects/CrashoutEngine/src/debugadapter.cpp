@@ -29,6 +29,7 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserv
 #include "changevaluecommand.h"
 #include "scriptvalidation.h"
 #include "undomanager.h"
+#include "hierarchy.h"
 
 /*                                                         component includes
 ----------------------------------------------------------------------------- */
@@ -375,6 +376,45 @@ namespace {
 			}
 		}
 	};
+	static void ApplyLocalToWorldNow(ECS& ecs, Entity child)
+	{
+		if (!ecs.HasComponent<Component::ParentComponent>(child)) return;
+
+		auto* pc = ecs.GetComponent<Component::ParentComponent>(child);
+		if (!pc || pc->parent == 0) return;
+
+		if (!ecs.HasComponent<Component::TransformComponent>(child)) return;
+		if (!ecs.HasComponent<Component::TransformComponent>(pc->parent)) return;
+
+		auto* childT = ecs.GetComponent<Component::TransformComponent>(child);
+		auto* parentT = ecs.GetComponent<Component::TransformComponent>(pc->parent);
+
+		const float DEG_TO_RAD = 0.0174532925f;
+		float parentRad = parentT->rotation * DEG_TO_RAD;
+		float s = std::sin(parentRad);
+		float c = std::cos(parentRad);
+
+		float pX = (parentT->size.x == 0.f) ? 1.f : parentT->size.x;
+		float pY = (parentT->size.y == 0.f) ? 1.f : parentT->size.y;
+
+		// WORLD SCALE
+		childT->size.x = parentT->size.x * pc->localScale.x;
+		childT->size.y = parentT->size.y * pc->localScale.y;
+
+		// WORLD ROT
+		childT->rotation = parentT->rotation + pc->localRot;
+
+		// WORLD POS
+		float scaledOffsetX = pc->localPos.x * pX;
+		float scaledOffsetY = pc->localPos.y * pY;
+
+		float rotatedX = (c * scaledOffsetX) - (s * scaledOffsetY);
+		float rotatedY = (s * scaledOffsetX) + (c * scaledOffsetY);
+
+		childT->position.x = parentT->position.x + rotatedX;
+		childT->position.y = parentT->position.y + rotatedY;
+		childT->position.z = parentT->position.z + pc->localPos.z;
+	}
 
 	/*!
 	@brief Adapter for editing Component::TransformComponent (position/scale/rotation).
@@ -414,6 +454,8 @@ namespace {
 				UIHelpers::DrawUndoableVec3("Local Position", parentComp->localPos);
 				UIHelpers::DrawUndoableFloat("Local Rotation", parentComp->localRot);
 				UIHelpers::DrawUndoableVec2("Local Scale", parentComp->localScale);
+				ApplyLocalToWorldNow(ecs, e);
+
 			}
 			else {
 				//draw_reflected(*t, "Transform");	// <--- how?
