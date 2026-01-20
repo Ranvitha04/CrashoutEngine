@@ -136,19 +136,27 @@ namespace UI { // --------------------------------------------------------------
 	void RenderDebugMenuBar(UIState& ui) {
 		if (ImGui::BeginMenuBar()) {
 			if (ImGui::BeginMenu("File")) {
-				if (ImGui::MenuItem("Save Scene")) {
-					if (!currSceneName.empty()) Serialization::SaveScenes(currSceneName);
-
-					if (currSceneName.empty()) RestartGameState();       // Legacy scene system
-					else {
-						ECS::getInstance()->Reset();
-						if (currSceneName.empty()) RestartGameState();       // Legacy scene system
-						else {
-							g_PendingSceneName = currSceneName;
-							g_IsSceneLoadPending = true;
-						}
+				if (ImGui::MenuItem("Save Scene"))
+				{
+					if (!CrashoutsEngine::Serialization::currSceneName.empty()) {
+						CrashoutsEngine::Serialization::SaveScenes(CrashoutsEngine::Serialization::currSceneName);
+						LOGI(Core, "Saved scene.");
 					}
-					//if (!currSceneName.empty()) Serialization::SaveScenes(currSceneName);
+					else {
+						LOGW(Core, "currSceneName is empty, nothing saved.");
+					}
+				}
+
+
+				if (ImGui::MenuItem("Save + Reload Scene"))
+				{
+					if (!currSceneName.empty())
+					{
+						Serialization::SaveScenes(currSceneName);
+						ECS::getInstance()->Reset();
+						g_PendingSceneName = currSceneName;
+						g_IsSceneLoadPending = true;
+					}
 				}
 
 				// --- ZOOM INPUT ---

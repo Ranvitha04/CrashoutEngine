@@ -759,16 +759,16 @@ namespace UI {
                 if (asset.HasMember("name") && asset.HasMember("path")) {
                     std::string name = asset["name"].GetString();
                     std::string relativePath = asset["path"].GetString();
-
-                    if (ImGui::Button(name.c_str())) {
+                    std::string btn = name + "##scene_" + relativePath + "_" + std::to_string((int)i);
+                    if (ImGui::Button(btn.c_str())) {
                         if (!currSceneName.empty()) {
                             if (engineState == EngineState::STOP) Serialization::SaveScenes(currSceneName);
                         }
-                        // Load Scene flow
                         g_PendingSceneName = name;
                         g_IsSceneLoadPending = true;
 
-                        if(engineState != EngineState::PLAY) ::Physics::PhysicsHandler::PhysicsHandler::GetInstance().SetPaused(true);
+                        if (engineState != EngineState::PLAY)
+                            ::Physics::PhysicsHandler::PhysicsHandler::GetInstance().SetPaused(true);
                     }
 
                     ImGui::SameLine();
