@@ -347,13 +347,17 @@ void Update(double const& dt) {
         CrashoutsEngine::ScriptSystem::UpdateAll();
 
         //fixed Update please work
+        int steps = FrameRateController::GetInstance().StepCount();
+        for (int i = 0; i < steps; ++i)
         {
-            FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "ScriptFixedUpdate");
-            CrashoutsEngine::ScriptSystem::FixedUpdateAll();
-        }
-        {
-            FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Physics");
-            physicsSystem.Update(FrameRateController::GetInstance().FixedDT());
+            {
+                FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "ScriptFixedUpdate");
+                CrashoutsEngine::ScriptSystem::FixedUpdateAll();
+            }
+            {
+                FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Physics");
+                physicsSystem.Update(FrameRateController::GetInstance().FixedDT());
+            }
         }
         {
         FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Audio");
