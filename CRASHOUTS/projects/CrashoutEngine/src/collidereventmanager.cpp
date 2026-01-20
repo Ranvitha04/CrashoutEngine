@@ -84,6 +84,12 @@ namespace CrashoutsEngine {
 		attachHandler(EventType::TriggerExit, handler);
 	}
 
+	void CollisionEventManager::RegisterPreSolve(Entity e, PreSolveFn fn) { preSolveCallbacks[e] = fn; }
+	bool CollisionEventManager::CheckPreSolve(Entity me, Entity other) {
+		if (preSolveCallbacks.count(me)) return preSolveCallbacks[me](other);
+		return true; // Default allow
+	}
+
 	void CollisionEventManager::RegisterCollideEnter(Entity entity, CallbackFn fn) {
 		GetEvents(entity).onCollisionEnter = fn;
 	}

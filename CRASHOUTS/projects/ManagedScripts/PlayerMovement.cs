@@ -84,6 +84,7 @@ namespace CrashoutsEngine
             CollisionEvents.RegisterCollideEnter(Entity.ID, this.OnCollideEnter);
             CollisionEvents.RegisterCollideStay(Entity.ID, this.OnCollideStay);
             CollisionEvents.RegisterCollideExit(Entity.ID, this.OnCollideExit);
+            CollisionEvents.RegisterPreSolve(Entity.ID, this.OnPreSolve);
         }
 
         public override void Update()
@@ -281,6 +282,50 @@ namespace CrashoutsEngine
 
         // --- COLLISION CALLBACKS ---
 
+        // Returns TRUE to allow collision, FALSE to ignore it
+        public bool OnPreSolve(uint otherEntity)
+        {
+            Entity other = new Entity(otherEntity);
+            var layer = other.GetComponent<LayerComponent>();
+
+            // 1. Check if it is a One-Way Platform
+            // (Make sure your TileMap/Platform entity actually has this Layer Name set!)
+            if (layer != null && layer.HasLayer("Passthrough"))
+            {
+                Debug.Log("drop");
+                // A. DROP DOWN LOGIC
+                // If holding S + Space (or just S depending on your design), fall through
+                if (Input.IsKeyPressed(Key.S))
+                {
+                    return false; // IGNORE COLLISION
+                }
+                // B. JUMP UP LOGIC
+                // If moving UP, ignore the platform so we jump through it
+                else if (rb.LinearVelocity.y > 0.5f)
+                {
+                    return false; // IGNORE COLLISION
+                }
+
+                // C. POSITION CHECK (Prevent Snapping)
+                // If our feet are slightly below the top of the platform, fall through.
+                // This prevents the physics engine from teleporting us up if we clip the edge.
+                var otherTf = other.GetComponent<TransformComponent>();
+                if (otherTf != null)
+                {
+                    float playerBottom = tf.Position.y - (Math.Abs(tf.Size.y) * 0.5f);
+                    float platTop = otherTf.Position.y + (Math.Abs(otherTf.Size.y) * 0.5f);
+
+                    // If feet are lower than the platform top (minus a small buffer), ignore it
+                    if (playerBottom < platTop - 5.0f) 
+                    {
+                        return false; // IGNORE COLLISION
+                    }
+                }
+            }
+
+            // Default: Collide with everything else (Walls, Ground, etc.)
+            return true; 
+        }
         public void OnTriggerEnter(uint otherEntity)
         {
             
