@@ -66,8 +66,48 @@
                         "asset": "tilemaps/Rock"
                     },
                     {
+                        "x": -11,
+                        "y": 5,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -11,
+                        "y": 6,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -11,
+                        "y": 7,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -11,
+                        "y": 8,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -11,
+                        "y": 9,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -11,
+                        "y": 10,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -11,
+                        "y": 11,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
                         "x": -10,
                         "y": -3,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -10,
+                        "y": 11,
                         "asset": "tilemaps/Rock"
                     },
                     {
@@ -76,11 +116,21 @@
                         "asset": "tilemaps/Rock"
                     },
                     {
+                        "x": -9,
+                        "y": 11,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
                         "x": -8,
                         "y": -3,
                         "asset": "tilemaps/Rock"
                     },
                     {
+                        "x": -8,
+                        "y": 11,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
                         "x": -7,
                         "y": -3,
                         "asset": "tilemaps/Rock"
@@ -101,6 +151,11 @@
                         "asset": ""
                     },
                     {
+                        "x": -7,
+                        "y": 11,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
                         "x": -6,
                         "y": -3,
                         "asset": "tilemaps/Rock"
@@ -119,6 +174,11 @@
                         "x": -6,
                         "y": 0,
                         "asset": ""
+                    },
+                    {
+                        "x": -6,
+                        "y": 11,
+                        "asset": "tilemaps/Rock"
                     },
                     {
                         "x": -5,
@@ -144,6 +204,11 @@
                         "x": -5,
                         "y": 1,
                         "asset": ""
+                    },
+                    {
+                        "x": -5,
+                        "y": 11,
+                        "asset": "tilemaps/Rock"
                     },
                     {
                         "x": -4,
@@ -196,6 +261,11 @@
                         "asset": ""
                     },
                     {
+                        "x": -4,
+                        "y": 11,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
                         "x": -3,
                         "y": -6,
                         "asset": ""
@@ -244,6 +314,11 @@
                         "x": -3,
                         "y": 3,
                         "asset": ""
+                    },
+                    {
+                        "x": -3,
+                        "y": 11,
+                        "asset": "tilemaps/Rock"
                     },
                     {
                         "x": -2,
@@ -306,6 +381,11 @@
                         "asset": ""
                     },
                     {
+                        "x": -2,
+                        "y": 11,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
                         "x": -1,
                         "y": -7,
                         "asset": ""
@@ -366,6 +446,11 @@
                         "asset": ""
                     },
                     {
+                        "x": -1,
+                        "y": 11,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
                         "x": 0,
                         "y": -7,
                         "asset": ""
@@ -419,6 +504,11 @@
                         "x": 0,
                         "y": 4,
                         "asset": ""
+                    },
+                    {
+                        "x": 0,
+                        "y": 11,
+                        "asset": "tilemaps/Rock"
                     },
                     {
                         "x": 1,
@@ -476,6 +566,11 @@
                         "asset": ""
                     },
                     {
+                        "x": 1,
+                        "y": 11,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
                         "x": 2,
                         "y": -4,
                         "asset": ""
@@ -504,6 +599,11 @@
                         "x": 2,
                         "y": 1,
                         "asset": ""
+                    },
+                    {
+                        "x": 2,
+                        "y": 11,
+                        "asset": "tilemaps/Rock"
                     },
                     {
                         "x": 3,
@@ -539,6 +639,11 @@
                         "x": 3,
                         "y": 2,
                         "asset": ""
+                    },
+                    {
+                        "x": 3,
+                        "y": 11,
+                        "asset": "tilemaps/Rock"
                     },
                     {
                         "x": 4,
@@ -581,6 +686,11 @@
                         "asset": ""
                     },
                     {
+                        "x": 4,
+                        "y": 11,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
                         "x": 5,
                         "y": -6,
                         "asset": ""
@@ -624,6 +734,11 @@
                         "x": 5,
                         "y": 2,
                         "asset": ""
+                    },
+                    {
+                        "x": 5,
+                        "y": 11,
+                        "asset": "tilemaps/Rock"
                     },
                     {
                         "x": 6,
@@ -686,6 +801,11 @@
                         "asset": ""
                     },
                     {
+                        "x": 6,
+                        "y": 11,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
                         "x": 7,
                         "y": -3,
                         "asset": "tilemaps/Rock"
@@ -693,17 +813,37 @@
                     {
                         "x": 7,
                         "y": -2,
-                        "asset": ""
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 7,
+                        "y": -1,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 7,
+                        "y": 0,
+                        "asset": "tilemaps/Rock"
                     },
                     {
                         "x": 7,
                         "y": 1,
-                        "asset": ""
+                        "asset": "tilemaps/Rock"
                     },
                     {
                         "x": 7,
                         "y": 2,
-                        "asset": ""
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 7,
+                        "y": 3,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 7,
+                        "y": 11,
+                        "asset": "tilemaps/Rock"
                     },
                     {
                         "x": 8,
@@ -713,17 +853,27 @@
                     {
                         "x": 8,
                         "y": -2,
-                        "asset": ""
+                        "asset": "tilemaps/Rock"
                     },
                     {
                         "x": 8,
                         "y": -1,
-                        "asset": ""
+                        "asset": "tilemaps/Rock"
                     },
                     {
                         "x": 8,
                         "y": 1,
                         "asset": ""
+                    },
+                    {
+                        "x": 8,
+                        "y": 3,
+                        "asset": ""
+                    },
+                    {
+                        "x": 8,
+                        "y": 11,
+                        "asset": "tilemaps/Rock"
                     },
                     {
                         "x": 9,
@@ -733,17 +883,47 @@
                     {
                         "x": 9,
                         "y": -2,
-                        "asset": ""
+                        "asset": "tilemaps/Rock"
                     },
                     {
                         "x": 9,
                         "y": -1,
-                        "asset": ""
+                        "asset": "tilemaps/Rock"
                     },
                     {
                         "x": 9,
                         "y": 1,
                         "asset": ""
+                    },
+                    {
+                        "x": 9,
+                        "y": 3,
+                        "asset": ""
+                    },
+                    {
+                        "x": 9,
+                        "y": 4,
+                        "asset": ""
+                    },
+                    {
+                        "x": 9,
+                        "y": 5,
+                        "asset": ""
+                    },
+                    {
+                        "x": 9,
+                        "y": 6,
+                        "asset": ""
+                    },
+                    {
+                        "x": 9,
+                        "y": 7,
+                        "asset": ""
+                    },
+                    {
+                        "x": 9,
+                        "y": 11,
+                        "asset": "tilemaps/Rock"
                     },
                     {
                         "x": 10,
@@ -768,12 +948,12 @@
                     {
                         "x": 10,
                         "y": -2,
-                        "asset": ""
+                        "asset": "tilemaps/Rock"
                     },
                     {
                         "x": 10,
                         "y": -1,
-                        "asset": ""
+                        "asset": "tilemaps/Rock"
                     },
                     {
                         "x": 10,
@@ -801,6 +981,41 @@
                         "asset": ""
                     },
                     {
+                        "x": 10,
+                        "y": 5,
+                        "asset": ""
+                    },
+                    {
+                        "x": 10,
+                        "y": 6,
+                        "asset": ""
+                    },
+                    {
+                        "x": 10,
+                        "y": 7,
+                        "asset": ""
+                    },
+                    {
+                        "x": 10,
+                        "y": 8,
+                        "asset": ""
+                    },
+                    {
+                        "x": 10,
+                        "y": 9,
+                        "asset": ""
+                    },
+                    {
+                        "x": 10,
+                        "y": 10,
+                        "asset": ""
+                    },
+                    {
+                        "x": 10,
+                        "y": 11,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
                         "x": 11,
                         "y": -6,
                         "asset": ""
@@ -818,17 +1033,17 @@
                     {
                         "x": 11,
                         "y": -3,
-                        "asset": ""
+                        "asset": "tilemaps/Rock"
                     },
                     {
                         "x": 11,
                         "y": -2,
-                        "asset": ""
+                        "asset": "tilemaps/Rock"
                     },
                     {
                         "x": 11,
                         "y": -1,
-                        "asset": ""
+                        "asset": "tilemaps/Rock"
                     },
                     {
                         "x": 11,
@@ -839,6 +1054,56 @@
                         "x": 11,
                         "y": 1,
                         "asset": ""
+                    },
+                    {
+                        "x": 11,
+                        "y": 3,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 11,
+                        "y": 4,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 11,
+                        "y": 5,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 11,
+                        "y": 6,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 11,
+                        "y": 7,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 11,
+                        "y": 8,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 11,
+                        "y": 9,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 11,
+                        "y": 10,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 11,
+                        "y": 11,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 12,
+                        "y": -3,
+                        "asset": "tilemaps/Rock"
                     },
                     {
                         "x": 12,
@@ -847,13 +1112,43 @@
                     },
                     {
                         "x": 13,
+                        "y": -3,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 13,
                         "y": 1,
                         "asset": ""
                     },
                     {
                         "x": 14,
+                        "y": -3,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 14,
                         "y": 1,
                         "asset": ""
+                    },
+                    {
+                        "x": 14,
+                        "y": 4,
+                        "asset": ""
+                    },
+                    {
+                        "x": 15,
+                        "y": -3,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 16,
+                        "y": -3,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 17,
+                        "y": -3,
+                        "asset": "tilemaps/Rock"
                     }
                 ]
             }
@@ -862,7 +1157,7 @@
             "active": true,
             "name": "Player",
             "layer": {
-                "currentLayer": 8
+                "currentLayer": 1
             },
             "transform": {
                 "rotation": 0.0,
@@ -961,8 +1256,8 @@
                         "className": "PlayerMovement",
                         "fields": {
                             "moveSpeed": 300.0,
-                            "maxRunSpeed": 600.0,
-                            "jumpPower": 32500.0,
+                            "maxRunSpeed": 500.0,
+                            "jumpPower": 35000.0,
                             "groundDrag": 0.15000000596046449,
                             "airDrag": 0.019999999552965165,
                             "gravityScale": 2.5,
@@ -983,7 +1278,7 @@
                 ]
             },
             "camera": {
-                "zoom": 0.4350000023841858,
+                "zoom": 0.28999999165534975,
                 "xBounds": {
                     "x": 0.0,
                     "y": 0.0
@@ -1032,6 +1327,49 @@
                     "w": 0.5
                 }
             }
+        },
+        {
+            "active": true,
+            "name": "Passthrough_Tiles",
+            "layer": {
+                "currentLayer": 16
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "tilemap": {
+                "tileSize": 32,
+                "activeAsset": "tilemaps/Passthrough_Floor",
+                "tileAssetNames": [
+                    "Passthrough_Floor"
+                ],
+                "gridData": [
+                    {
+                        "x": 8,
+                        "y": 3,
+                        "asset": "tilemaps/Passthrough_Floor"
+                    },
+                    {
+                        "x": 9,
+                        "y": 3,
+                        "asset": "tilemaps/Passthrough_Floor"
+                    },
+                    {
+                        "x": 10,
+                        "y": 3,
+                        "asset": "tilemaps/Passthrough_Floor"
+                    }
+                ]
+            }
         }
     ],
     "layers": {
@@ -1039,6 +1377,7 @@
         "Enemy": 4,
         "Energy": 8,
         "Ground": 2,
+        "Passthrough": 16,
         "Player": 1
     },
     "quadtree": {

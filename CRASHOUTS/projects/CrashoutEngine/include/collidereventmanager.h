@@ -58,6 +58,12 @@ namespace CrashoutsEngine {
 			std::unordered_map<Entity, ContactInfo>().swap(lastContacts);
 		}
 
+		using PreSolveFn = std::function<bool(Entity)>;
+		std::unordered_map<Entity, PreSolveFn> preSolveCallbacks;
+
+		void RegisterPreSolve(Entity e, PreSolveFn fn);
+		bool CheckPreSolve(Entity me, Entity other);
+
 		void RegisterCollideEnter(CrashoutsEngine::Entity entity, CallbackFn fn);
 		void RegisterCollideStay(CrashoutsEngine::Entity entity, CallbackFn fn);
 		void RegisterCollideExit(CrashoutsEngine::Entity entity, CallbackFn fn);

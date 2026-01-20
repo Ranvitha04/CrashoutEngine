@@ -1675,6 +1675,10 @@
             "path": "Lava_Platform"
         },
         {
+            "name": "Passthrough_Floor",
+            "path": "Passthrough_Floor"
+        },
+        {
             "name": "Platform",
             "path": "Platform"
         },
