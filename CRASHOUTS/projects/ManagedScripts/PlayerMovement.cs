@@ -71,8 +71,8 @@ namespace CrashoutsEngine
             IsGrounded = false;
 
             // Play music
-            AudioManager.GetInstance().Play("ambient");
-            AudioManager.GetInstance().Play("bgm1");
+            AudioManager.GetInstance().PlayAttached("ambient", Entity.ID);
+            AudioManager.GetInstance().PlayAttached("bgm1", Entity.ID);
 
             CurrentEnergy = MaxEnergy;
             swapPauseTimer = 0.0f;
@@ -162,8 +162,12 @@ namespace CrashoutsEngine
                 if (footstepTimer <= 0.0f)
                 {
                     int index = rng.Next(1, 7);
-                    string soundName = "footstep" + index;
-                    AudioManager.GetInstance().Play(soundName);
+
+                    
+                    string clipKey = "footstep" + index;
+
+                    AudioManager.GetInstance().PlayAttached(clipKey, Entity.ID);
+
                     footstepTimer = footstepInterval;
                 }
             }
