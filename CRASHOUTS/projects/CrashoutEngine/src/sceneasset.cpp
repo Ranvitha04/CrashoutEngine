@@ -60,7 +60,6 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 // Script + Reflection
 #include <mono/metadata/reflection.h>
 #include <mono/metadata/attrdefs.h>
-#include <hierarchy.h>
 
 // File I/O Util Functions
 namespace {
@@ -1080,6 +1079,8 @@ namespace CrashoutsEngine {
         @param sceneName The name of the scene asset to load (e.g., "level1.json").
         */
         void LoadScenes(std::string const& sceneName) {
+            currSceneName = sceneName;
+
             Assets::AssetManager& assetManager = Assets::AssetManager::GetInstance();
 
             Assets::SceneAsset* sceneAsset = assetManager.Get<Assets::SceneAsset>(sceneName);
@@ -1200,14 +1201,10 @@ namespace CrashoutsEngine {
             parentLinksToProcess.reserve(entitiesArray.Size());
 
 
-            std::vector<Entity> createdEntities;
-            createdEntities.reserve(entitiesArray.Size());
-
             for (rapidjson::SizeType i = 0; i < entitiesArray.Size(); ++i) {
-                Entity e = (Entity)DeserializeEntity(entitiesArray[i], &parentLinksToProcess);
-                createdEntities.push_back(e);
-            }
+                DeserializeEntity(entitiesArray[i], &parentLinksToProcess);
 
+            }
         
             // =========================================================
             // POST-LOAD: Reconstruct Hierarchy Links
@@ -1216,16 +1213,13 @@ namespace CrashoutsEngine {
             // Since NameComponent isn't usually a map, we iterate (or you can build a temporary map for speed).
 
             // Optimization: Build a map of Name -> EntityID for the loaded scene
-        
             std::unordered_map<std::string, Entity> nameToEntityMap;
-            nameToEntityMap.reserve(createdEntities.size());
-
-            for (Entity e : createdEntities) {
+            const auto& nameArr = gECS.GetComponentArray<NameComponent>();
+            for (Entity e : nameArr.indexToEntity) {
                 if (gECS.HasComponent<NameComponent>(e)) {
                     nameToEntityMap[gECS.GetComponent<NameComponent>(e)->name] = e;
                 }
             }
-
 
             for (const auto& req : parentLinksToProcess) {
                 auto it = nameToEntityMap.find(req.parentName);
@@ -1252,8 +1246,6 @@ namespace CrashoutsEngine {
                         << "' for child Entity " << req.childEntity << std::endl;
                 }
             }
-            CrashoutsEngine::UpdateHierarchy(gECS);
-
         }
 
         /*!
@@ -1412,7 +1404,6 @@ namespace CrashoutsEngine {
             // Get the resulting JSON string
             std::string content = buffer.GetString();
             std::string fullPath = Assets::rootPath + "/scenes/" + sceneName;
-            std::filesystem::create_directories(std::filesystem::path(Assets::rootPath) / "scenes");
 
             // =========================================================
             // 6. Write the string to the file directly

@@ -138,13 +138,11 @@ namespace UI { // --------------------------------------------------------------
 			if (ImGui::BeginMenu("File")) {
 				if (ImGui::MenuItem("Save Scene"))
 				{
-					if (!currSceneName.empty())
-					{
-						Serialization::SaveScenes(currSceneName);
-						LOGI(Core, "Saved scene to JSON.");
+					if (!CrashoutsEngine::Serialization::currSceneName.empty()) {
+						CrashoutsEngine::Serialization::SaveScenes(CrashoutsEngine::Serialization::currSceneName);
+						LOGI(Core, "Saved scene.");
 					}
-					else
-					{
+					else {
 						LOGW(Core, "currSceneName is empty, nothing saved.");
 					}
 				}
