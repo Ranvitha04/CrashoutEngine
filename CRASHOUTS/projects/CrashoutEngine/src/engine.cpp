@@ -370,7 +370,7 @@ void Update(double const& dt) {
                 isEntityActive = IsEntityActive(ecs, entityID);
             }
 
-            // FIX: Loop through ALL clips on this component
+            // Loop through ALL clips on this component
             for (auto& clip : audioComp.clips) {
 
                 // Case 1: Entity is Inactive -> Force Pause
