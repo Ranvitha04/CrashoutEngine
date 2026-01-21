@@ -2,6 +2,7 @@
 #include "debugmenu.h"
 #include "physicsmanager.h"
 #include "deleteentitycommand.h"
+#include <unordered_set>
 
 using namespace CrashoutsEngine;
 using namespace Serialization;
@@ -753,12 +754,16 @@ namespace UI {
             //std::cout << "Loading Scenes..." << std::endl;
 
             const rapidjson::Value& sceneArray = doc["scenes"];
-
+            std::unordered_set<std::string> seenSceneNames;
+            seenSceneNames.reserve(sceneArray.Size());
             for (rapidjson::SizeType i = 0; i < sceneArray.Size(); ++i) {
                 const rapidjson::Value& asset = sceneArray[i];
                 if (asset.HasMember("name") && asset.HasMember("path")) {
                     std::string name = asset["name"].GetString();
                     std::string relativePath = asset["path"].GetString();
+                    if (!seenSceneNames.insert(name).second)
+                        continue;
+
                     std::string btn = name + "##scene_" + relativePath + "_" + std::to_string((int)i);
                     if (ImGui::Button(btn.c_str())) {
                         if (!currSceneName.empty()) {
