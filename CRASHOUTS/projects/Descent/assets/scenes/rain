@@ -900,7 +900,7 @@
                 },
                 "min": {
                     "x": 96.0,
-                    "y": 31.97080421447754,
+                    "y": 31.970802307128908,
                     "z": 0.0
                 },
                 "max": {
@@ -946,7 +946,27 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "PlayerMovement"
+                        "className": "PlayerMovement",
+                        "fields": {
+                            "moveSpeed": 200.0,
+                            "maxRunSpeed": 100.0,
+                            "jumpPower": 20000.0,
+                            "groundDrag": 0.15000000596046449,
+                            "airDrag": 0.019999999552965165,
+                            "gravityScale": 2.5,
+                            "turnMultiplier": 2.0,
+                            "frictionMultiplier": 500.0,
+                            "gravityForceMultiplier": 10.0,
+                            "footstepInterval": 0.07500000298023224,
+                            "swapPause": 1.0,
+                            "energyConsumption": 12.5,
+                            "normalMass": 7.0,
+                            "lightMass": 4.5,
+                            "CurrentEnergy": 0.0,
+                            "MaxEnergy": 100.0,
+                            "alive": true,
+                            "isPaused": false
+                        }
                     }
                 ]
             },
@@ -1094,7 +1114,20 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "SlimeMovement"
+                        "className": "SlimeMovement",
+                        "fields": {
+                            "moveSpeed": 600.0,
+                            "maxSpeed": 15.0,
+                            "turnTimer": 2.0,
+                            "detectionRange": 250.0,
+                            "gravityScale": 2.0,
+                            "grabRange": 100.0,
+                            "minThrowSpeed": 50.0,
+                            "maxThrowSpeed": 200.0,
+                            "maxMouseDragDist": 400.0,
+                            "airDrag": 1.0,
+                            "MaxDist": 200.0
+                        }
                     }
                 ]
             },

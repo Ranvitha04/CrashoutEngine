@@ -1573,6 +1573,10 @@
             "path": "Number1.json"
         },
         {
+            "name": "Platform_Prefab",
+            "path": "Platform_Prefab.json"
+        },
+        {
             "name": "Player",
             "path": "Player.json"
         },

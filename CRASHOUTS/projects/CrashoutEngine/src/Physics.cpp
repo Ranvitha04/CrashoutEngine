@@ -180,50 +180,57 @@ namespace Physics {
 	float PhysicsHandler::GetLinearDamping() { return sLinDamp; }
 
 	// Helper to recursively Update child transforms and colliders after physics step
-	void SyncHierarchyPhysics(CrashoutsEngine::Entity parent, CrashoutsEngine::ECS& ecs) {
+	void SyncHierarchyPhysics(CrashoutsEngine::Entity parent, CrashoutsEngine::ECS& ecs)
+	{
 		if (!ecs.HasComponent<Component::ChildrenComponent>(parent)) return;
+		if (!ecs.HasComponent<Component::TransformComponent>(parent)) return;
 
-		auto* childrenComp = ecs.GetComponent<Component::ChildrenComponent>(parent);
 		auto* parentTransform = ecs.GetComponent<Component::TransformComponent>(parent);
+		auto* childrenComp = ecs.GetComponent<Component::ChildrenComponent>(parent);
 
-		for (CrashoutsEngine::Entity child : childrenComp->children) {
+		const float DEG_TO_RAD = 0.0174532925f;
+		float parentRad = parentTransform->rotation * DEG_TO_RAD;
+		float s = std::sin(parentRad);
+		float c = std::cos(parentRad);
+
+		for (CrashoutsEngine::Entity child : childrenComp->children)
+		{
 			if (!ecs.HasComponent<Component::TransformComponent>(child)) continue;
-			if (!ecs.HasComponent<Component::ParentComponent>(child)) continue;
+			if (!ecs.HasComponent<Component::ParentComponent>(child))    continue;
 
 			auto* childTransform = ecs.GetComponent<Component::TransformComponent>(child);
-			auto* parentRel = ecs.GetComponent<Component::ParentComponent>(child);
+			auto* rel = ecs.GetComponent<Component::ParentComponent>(child);
 
-			// 1. Manually Re-calculate Child World Position based on NEW Parent Position
-			// (Same logic as UpdateHierarchy, but local to this physics step)
-			// This ensures the child 'teleports' along with the parent for collision checks
+			// 1) SCALE (match hierarchy.cpp)
+			childTransform->size.x = parentTransform->size.x * rel->localScale.x;
+			childTransform->size.y = parentTransform->size.y * rel->localScale.y;
 
-			// Simple version (assuming no rotation for brevity, add rotation math if needed)
-			// childTransform->position = parentTransform->position + parentRel->localPos; 
+			// 2) ROTATION (degrees, additive)
+			childTransform->rotation = parentTransform->rotation + rel->localRot;
 
-			// FULL MATH (Matching your Hierarchy.cpp):
-			const float s = std::sin(parentTransform->rotation);
-			const float c = std::cos(parentTransform->rotation);
-			const float lx = parentRel->localPos.x;
-			const float ly = parentRel->localPos.y;
-			const float rotatedX = (c * lx - s * ly);
-			const float rotatedY = (s * lx + c * ly);
+			// 3) POSITION (match hierarchy.cpp: scale local offset by parent size, then rotate)
+			float scaledOffsetX = rel->localPos.x * parentTransform->size.x;
+			float scaledOffsetY = rel->localPos.y * parentTransform->size.y;
+
+			float rotatedX = (c * scaledOffsetX) - (s * scaledOffsetY);
+			float rotatedY = (s * scaledOffsetX) + (c * scaledOffsetY);
 
 			childTransform->position.x = parentTransform->position.x + rotatedX;
 			childTransform->position.y = parentTransform->position.y + rotatedY;
-			childTransform->position.z = parentTransform->position.z + parentRel->localPos.z;
+			childTransform->position.z = parentTransform->position.z + rel->localPos.z;
 
-			// 2. Update Child Collider if it exists
+			// 4) Update child collider too (position + rotation)
 			if (ecs.HasComponent<Component::ColliderComponent>(child)) {
 				auto* childCol = ecs.GetComponent<Component::ColliderComponent>(child);
 				childCol->collider->UpdateCollider(childTransform->position);
-				// Also Update rotation if needed
-				// childCol->collider->UpdateRotation(childTransform->rotation);
+				childCol->collider->UpdateRotation(childTransform->rotation);
 			}
 
-			// Recurse
+			// recurse
 			SyncHierarchyPhysics(child, ecs);
 		}
 	}
+
 
 	void PositionCorrection(Collision::CollisionEvent const& event, CrashoutsEngine::ECS& globalECS) {
 
