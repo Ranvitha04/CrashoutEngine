@@ -1623,24 +1623,12 @@
             "path": "descentgame"
         },
         {
-            "name": "descentgame",
-            "path": "descentgame.json"
-        },
-        {
             "name": "descentmenu",
             "path": "descentmenu"
         },
         {
-            "name": "descentmenu",
-            "path": "descentmenu.json"
-        },
-        {
             "name": "descentsettings",
             "path": "descentsettings"
-        },
-        {
-            "name": "descentsettings",
-            "path": "descentsettings.json"
         },
         {
             "name": "menu",
