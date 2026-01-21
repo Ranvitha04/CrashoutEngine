@@ -22,6 +22,7 @@ namespace CrashoutsEngine
         [SerializeField] private float maxThrowSpeed = 200.0f; 
         [SerializeField] private float maxMouseDragDist = 400.0f;
         [SerializeField] private float airDrag = 1.0f; 
+        [SerializeField] private float stunDuration = 1.0f;
 
         // Patrol Zone
         [SerializeField] private float MaxDist = 200.0f;
@@ -38,6 +39,9 @@ namespace CrashoutsEngine
         private float currentTurnTime = 0.0f;
         private bool isChasing = false;
         private bool isGrabbed = false;
+        private bool wasThrown = false;
+        private bool isStunned = false;
+        private float currentStunTime = 0.0f;
         private float flipCooldown = 0.0f;
         private float stuckTimer = 0.0f;
 
@@ -74,6 +78,18 @@ namespace CrashoutsEngine
             if (rb == null || tf == null) return;
 
             float dt = (float)Time.DT;
+
+            if (isStunned)
+            {
+                currentStunTime -= dt;
+                if (currentStunTime <= 0)
+                {
+                    isStunned = false;
+                }
+                UpdateAnimationState();
+                return;
+            }
+
             if (flipCooldown > 0) flipCooldown -= dt;
 
             // Handle Grab State
@@ -146,7 +162,7 @@ namespace CrashoutsEngine
             // Stuck Detection
             if ((isChasing || returningHome || isGrounded) && !isGrabbed && !isFollowingPath)
             {
-                if (Math.Abs(rb.LinearVelocity.x) < 5.0f)
+                if (Math.Abs(rb.LinearVelocity.x) < 2.0f)
                 {
                     stuckTimer += dt;
                     if (stuckTimer > 0.5f)
@@ -174,6 +190,7 @@ namespace CrashoutsEngine
         {
             if (anim == null) return;
             string targetState = isGrabbed ? "slimeGrabbed" : 
+                                 isStunned ? "slimeCaution" :
                                  isChasing ? "slimeChase" : 
                                  (Math.Abs(rb.LinearVelocity.x) > 1.0f ? "slimeWalk" : "slimeIdle");
 
@@ -186,7 +203,7 @@ namespace CrashoutsEngine
 
         public override void FixedUpdate()
         {
-            if (rb == null || isGrabbed) return;
+            if (rb == null || isGrabbed || isStunned) return;
 
             // --- PATH FOLLOWING MODE ---
             if (isFollowingPath)
@@ -228,8 +245,8 @@ namespace CrashoutsEngine
                     rb.AddForce(new CEVec3(moveSpeed * dir * speedMult, 0, 0));
                 }
                 
-                // Manual Friction
-                rb.AddForce(new CEVec3(-velocity.x * 10.0f * rb.Mass, 0, 0));
+                // Manual Friction (Reduced to prevent jitter)
+                rb.AddForce(new CEVec3(-velocity.x * 5.0f * rb.Mass, 0, 0));
             }
             else 
             {
@@ -280,6 +297,7 @@ namespace CrashoutsEngine
             else if (isGrabbed)
             {
                 isGrabbed = false;
+                wasThrown = true;
                 rb.SetDynamic(true);
                 var layer = Entity.GetComponent<LayerComponent>();
                 if (layer != null) layer.AddLayer("Enemy");
@@ -375,6 +393,14 @@ namespace CrashoutsEngine
                     activePath.Clear();
                     // Reset velocity to prevent "shooting" through the wall after releasing path control
                     rb.LinearVelocity = new CEVec3(0, 0, 0); 
+                }
+
+                if (wasThrown)
+                {
+                    wasThrown = false;
+                    isStunned = true;
+                    currentStunTime = stunDuration;
+                    rb.LinearVelocity = new CEVec3(0, 0, 0);
                 }
             }
 

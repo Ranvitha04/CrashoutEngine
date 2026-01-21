@@ -170,6 +170,8 @@ namespace Component{
         bool ok = true;
         for (auto& script : Scripts)
         {
+            if (script.Instance) continue;
+
             // Re-initialize each script
             DestroyOne(script);
             if (!script.ClassName.empty())
@@ -183,8 +185,9 @@ namespace Component{
 
     void ScriptComponent::Start()
     {
-        for (auto& script : Scripts)
+        for (size_t i = 0; i < Scripts.size(); ++i)
         {
+            auto& script = Scripts[i];
             if (script.Started) continue;
 
             if (!script.MethodStart) {
@@ -200,7 +203,8 @@ namespace Component{
             mono_runtime_invoke(script.MethodStart, script.Instance, nullptr, &exc);
             if (exc) mono_print_unhandled_exception(exc);
 
-            script.Started = true;
+            // Re-fetch reference in case vector reallocated during mono_runtime_invoke
+            Scripts[i].Started = true;
         }
     }
 
