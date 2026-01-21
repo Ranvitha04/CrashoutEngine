@@ -1318,7 +1318,19 @@ namespace {
 						uint32_t flags = mono_field_get_flags(field);
 
 						if (flags & MONO_FIELD_ATTR_STATIC) continue;
-						if (flags & MONO_FIELD_ATTR_PUBLIC) {
+
+						bool isPublic = (flags & MONO_FIELD_ATTR_PUBLIC);
+						bool hasAttr = false;
+						static MonoClass* attrClass = mono_class_from_name(MonoManager::GetImage(), "CrashoutsEngine", "SerializeField");
+						if (attrClass) {
+							MonoCustomAttrInfo* attrInfo = mono_custom_attrs_from_field(inst.Class, field);
+							if (attrInfo) {
+								hasAttr = mono_custom_attrs_has_attr(attrInfo, attrClass);
+								mono_custom_attrs_free(attrInfo);
+							}
+						}
+
+						if (isPublic || hasAttr) {
 							MonoType* type = mono_field_get_type(field);
 							int typeEnum = mono_type_get_type(type);
 

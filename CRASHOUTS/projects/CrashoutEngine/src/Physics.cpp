@@ -12,6 +12,7 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserve
 #include "frameratecontroller.h"
 #include "hierarchycomponent.h"
 #include "activecomponent.h"
+#include "collidereventmanager.h"
 #include "namecomponent.h"
 #include "log.h"
 #include <cstdio>
@@ -643,6 +644,16 @@ namespace Physics {
 
 			/*IMPULSE RESOLUTION*/
 			for (Collision::CollisionEvent const& evnt : events) {
+
+				// Check C# logic via the manager
+				bool allowCollision = CrashoutsEngine::CollisionEventManager::GetInstance().CheckPreSolve(evnt.entity1, evnt.entity2);
+
+				// Check the other way too
+				if (allowCollision) {
+					allowCollision = CrashoutsEngine::CollisionEventManager::GetInstance().CheckPreSolve(evnt.entity2, evnt.entity1);
+				}
+
+				if (!allowCollision) continue; 
 
 				Component::RigidBodyComponent* rigidBody1{ globalECS.GetComponent<Component::RigidBodyComponent>(evnt.entity1) };
 				Component::RigidBodyComponent* rigidBody2{ globalECS.GetComponent<Component::RigidBodyComponent>(evnt.entity2) };

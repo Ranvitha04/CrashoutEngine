@@ -1581,6 +1581,10 @@
             "path": "Player.json"
         },
         {
+            "name": "Player_Renfred",
+            "path": "Player_Renfred.json"
+        },
+        {
             "name": "prefab",
             "path": "prefab.json"
         },
@@ -1627,12 +1631,24 @@
             "path": "descentgame"
         },
         {
+            "name": "descentgame",
+            "path": "descentgame.json"
+        },
+        {
             "name": "descentmenu",
             "path": "descentmenu"
         },
         {
+            "name": "descentmenu",
+            "path": "descentmenu.json"
+        },
+        {
             "name": "descentsettings",
             "path": "descentsettings"
+        },
+        {
+            "name": "descentsettings",
+            "path": "descentsettings.json"
         },
         {
             "name": "menu",
@@ -1685,6 +1701,10 @@
         {
             "name": "Lava_Platform",
             "path": "Lava_Platform"
+        },
+        {
+            "name": "Passthrough_Floor",
+            "path": "Passthrough_Floor"
         },
         {
             "name": "Platform",

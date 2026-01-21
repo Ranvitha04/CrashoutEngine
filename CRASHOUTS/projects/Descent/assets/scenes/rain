@@ -453,12 +453,12 @@
                     {
                         "x": 2,
                         "y": 0,
-                        "asset": "tilemaps/Rock"
+                        "asset": ""
                     },
                     {
                         "x": 2,
                         "y": 1,
-                        "asset": "tilemaps/Rock"
+                        "asset": ""
                     },
                     {
                         "x": 2,
@@ -478,12 +478,17 @@
                     {
                         "x": 3,
                         "y": 0,
-                        "asset": "tilemaps/Rock"
+                        "asset": ""
                     },
                     {
                         "x": 3,
                         "y": 1,
                         "asset": ""
+                    },
+                    {
+                        "x": 3,
+                        "y": 2,
+                        "asset": "tilemaps/Rock"
                     },
                     {
                         "x": 3,
@@ -513,6 +518,11 @@
                     {
                         "x": 4,
                         "y": 0,
+                        "asset": ""
+                    },
+                    {
+                        "x": 4,
+                        "y": 2,
                         "asset": "tilemaps/Rock"
                     },
                     {
@@ -533,6 +543,16 @@
                     {
                         "x": 5,
                         "y": 0,
+                        "asset": ""
+                    },
+                    {
+                        "x": 5,
+                        "y": 1,
+                        "asset": ""
+                    },
+                    {
+                        "x": 5,
+                        "y": 2,
                         "asset": "tilemaps/Rock"
                     },
                     {
@@ -558,6 +578,16 @@
                     {
                         "x": 6,
                         "y": 0,
+                        "asset": ""
+                    },
+                    {
+                        "x": 6,
+                        "y": 1,
+                        "asset": ""
+                    },
+                    {
+                        "x": 6,
+                        "y": 2,
                         "asset": "tilemaps/Rock"
                     },
                     {
@@ -578,6 +608,16 @@
                     {
                         "x": 7,
                         "y": 0,
+                        "asset": ""
+                    },
+                    {
+                        "x": 7,
+                        "y": 1,
+                        "asset": ""
+                    },
+                    {
+                        "x": 7,
+                        "y": 2,
                         "asset": "tilemaps/Rock"
                     },
                     {
@@ -608,12 +648,12 @@
                     {
                         "x": 8,
                         "y": 0,
-                        "asset": "tilemaps/Rock"
+                        "asset": ""
                     },
                     {
                         "x": 8,
                         "y": 1,
-                        "asset": "tilemaps/Rock"
+                        "asset": ""
                     },
                     {
                         "x": 8,
@@ -857,22 +897,22 @@
             "active": true,
             "name": "Player",
             "layer": {
-                "currentLayer": 8
+                "currentLayer": 9
             },
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 108.30001831054688,
-                    "y": 61.32380676269531,
+                    "x": 113.00588989257813,
+                    "y": 125.32919311523438,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 62.0,
+                    "x": -62.0,
                     "y": 72.50599670410156
                 }
             },
             "rigidbody": {
-                "mass": 3.0,
+                "mass": 4.5,
                 "restitutionCoeff": 0.0,
                 "maximumVelocity": {
                     "x": 0.0,
@@ -889,8 +929,8 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 108.30001831054688,
-                    "y": 61.32380676269531,
+                    "x": 113.00588989257813,
+                    "y": 125.27364349365235,
                     "z": 0.0
                 },
                 "offset": {
@@ -899,13 +939,13 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 96.0,
-                    "y": 31.970802307128908,
+                    "x": 100.70587158203125,
+                    "y": 95.92063903808594,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 120.60003662109375,
-                    "y": 90.67681121826172,
+                    "x": 125.305908203125,
+                    "y": 154.62664794921876,
                     "z": 0.0
                 }
             },
@@ -948,21 +988,21 @@
                     {
                         "className": "PlayerMovement",
                         "fields": {
-                            "moveSpeed": 200.0,
-                            "maxRunSpeed": 100.0,
-                            "jumpPower": 20000.0,
+                            "moveSpeed": 2000.0,
+                            "maxRunSpeed": 200.0,
+                            "jumpPower": 50000.0,
                             "groundDrag": 0.15000000596046449,
-                            "airDrag": 0.019999999552965165,
+                            "airDrag": 0.10000000149011612,
                             "gravityScale": 2.5,
                             "turnMultiplier": 2.0,
                             "frictionMultiplier": 500.0,
                             "gravityForceMultiplier": 10.0,
-                            "footstepInterval": 0.07500000298023224,
-                            "swapPause": 1.0,
+                            "footstepInterval": 0.15000000596046449,
+                            "swapPause": 1.0499999523162842,
                             "energyConsumption": 12.5,
-                            "normalMass": 7.0,
-                            "lightMass": 4.5,
-                            "CurrentEnergy": 0.0,
+                            "normalMass": 4.5,
+                            "lightMass": 3.0,
+                            "CurrentEnergy": 100.0,
                             "MaxEnergy": 100.0,
                             "alive": true,
                             "isPaused": false
@@ -1030,13 +1070,13 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 403.4761962890625,
-                    "y": 50.11609649658203,
+                    "x": -71.25269317626953,
+                    "y": 113.93608856201172,
                     "z": 0.0
                 },
                 "size": {
-                    "x": -72.0,
-                    "y": 67.0
+                    "x": 72.00018310546875,
+                    "y": 67.00019073486328
                 }
             },
             "rigidbody": {
@@ -1057,8 +1097,8 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 401.9761962890625,
-                    "y": 46.61609649658203,
+                    "x": -72.75269317626953,
+                    "y": 110.43608856201172,
                     "z": 0.0
                 },
                 "offset": {
@@ -1067,13 +1107,13 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 379.5762939453125,
-                    "y": 32.6161003112793,
+                    "x": -95.15259552001953,
+                    "y": 96.43608856201172,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 424.3760986328125,
-                    "y": 60.616092681884769,
+                    "x": -50.35279083251953,
+                    "y": 124.43608856201172,
                     "z": 0.0
                 }
             },
@@ -1116,17 +1156,18 @@
                     {
                         "className": "SlimeMovement",
                         "fields": {
-                            "moveSpeed": 600.0,
-                            "maxSpeed": 15.0,
+                            "moveSpeed": 1000.0,
+                            "maxSpeed": 50.0,
                             "turnTimer": 2.0,
-                            "detectionRange": 250.0,
-                            "gravityScale": 2.0,
+                            "detectionRange": 85.0,
+                            "gravityScale": 5.0,
                             "grabRange": 100.0,
-                            "minThrowSpeed": 50.0,
-                            "maxThrowSpeed": 200.0,
-                            "maxMouseDragDist": 400.0,
+                            "minThrowSpeed": 500.0,
+                            "maxThrowSpeed": 2500.0,
+                            "maxMouseDragDist": 500.0,
                             "airDrag": 1.0,
-                            "MaxDist": 200.0
+                            "stunDuration": 5.0,
+                            "MaxDist": 150.0
                         }
                     }
                 ]

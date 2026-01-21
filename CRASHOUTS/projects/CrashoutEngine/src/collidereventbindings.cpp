@@ -69,6 +69,57 @@ namespace
 		};
 	}
 
+	// Wraps a C# delegate that returns a BOOL (true = collide, false = ignore)
+	static std::function<bool(Entity)> MakePreSolveCallback(MonoDelegate* del)
+	{
+		if (!del) return [](Entity) { return true; }; // Default to true if no delegate
+
+		MonoObject* obj = (MonoObject*)del;
+		MonoClass* klass = mono_object_get_class(obj);
+		if (!klass) return [](Entity) { return true; };
+
+		MonoMethod* invoke = mono_get_delegate_invoke(klass);
+		if (!invoke) return [](Entity) { return true; };
+
+		uint32_t handle = mono_gchandle_new(obj, /*pinned*/ true);
+
+		return [handle, invoke](Entity other) -> bool
+			{
+				MonoObject* target = mono_gchandle_get_target(handle);
+				if (!target) return true;
+
+				// Prepare arguments
+				uint32_t id = static_cast<uint32_t>(other);
+				void* args[1];
+				args[0] = &id;
+
+				MonoObject* exc = nullptr;
+
+				// --- CAPTURE THE RETURN VALUE ---
+				MonoObject* resultObj = mono_runtime_invoke(invoke, target, args, &exc);
+
+				if (exc) {
+					// Log error if needed: mono_print_unhandled_exception(exc);
+					return true; // Fail safe: collide normally
+				}
+
+				// Unbox the boolean result from C#
+				if (resultObj) {
+					return *(bool*)mono_object_unbox(resultObj);
+				}
+
+				return true;
+			};
+	};
+
+	// Internal call for PreSolve
+	static void Internal_RegisterPreSolve(uint32_t entity, MonoDelegate* del)
+	{
+		auto fn = MakePreSolveCallback(del);
+		// You need to add this function to your CollisionEventManager!
+		CollisionEventManager::GetInstance().RegisterPreSolve((Entity)entity, fn);
+	}
+
 	// COLLIDABLE EVENTS
 
 	static void Internal_RegisterCollideEnter(uint32_t entity, MonoDelegate* del)
@@ -119,6 +170,8 @@ namespace CrashoutsEngine::Bindings
 {
 	void RegisterCollisionEventBindings()
 	{
+		mono_add_internal_call("CrashoutsEngine.CollisionEvents::RegisterPreSolve", reinterpret_cast<const void*>(Internal_RegisterPreSolve));
+
 		// Physical Collisions
 		mono_add_internal_call("CrashoutsEngine.CollisionEvents::RegisterCollideEnter", reinterpret_cast<const void*>(Internal_RegisterCollideEnter));
 		mono_add_internal_call("CrashoutsEngine.CollisionEvents::RegisterCollideStay", reinterpret_cast<const void*>(Internal_RegisterCollideStay));
