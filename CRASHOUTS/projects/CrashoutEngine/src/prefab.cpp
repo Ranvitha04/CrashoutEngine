@@ -329,11 +329,41 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path) {
         if (prefabs.HasMember("audio")) {
             auD.hasComp = true;
             const auto& a = prefabs["audio"];
-            if (a.HasMember("eventPath")) auD.c.eventPath = a["eventPath"].GetString();
-            if (a.HasMember("volume")) auD.c.volume = a["volume"].GetFloat();
-            if (a.HasMember("pitch")) auD.c.pitch = a["pitch"].GetFloat();
-            if (a.HasMember("looping")) auD.c.looping = a["looping"].GetBool();
-            if (a.HasMember("spatial3D")) auD.c.spatial3D = a["spatial3D"].GetBool();
+
+            // NEW FORMAT
+            if (a.HasMember("clips") && a["clips"].IsArray()) {
+                const auto& clipsArr = a["clips"];
+                for (rapidjson::SizeType i = 0; i < clipsArr.Size(); ++i) {
+                    const auto& cVal = clipsArr[i];
+                    Component::AudioClip clip;
+
+                    if (cVal.HasMember("name")) clip.name = cVal["name"].GetString();
+                    if (cVal.HasMember("path")) clip.path = cVal["path"].GetString();
+                    if (cVal.HasMember("volume")) clip.volume = cVal["volume"].GetFloat();
+                    if (cVal.HasMember("pitch")) clip.pitch = cVal["pitch"].GetFloat();
+                    if (cVal.HasMember("looping")) clip.looping = cVal["looping"].GetBool();
+                    if (cVal.HasMember("isMusic")) clip.isMusic = cVal["isMusic"].GetBool();
+                    if (cVal.HasMember("spatial3D")) clip.spatial3D = cVal["spatial3D"].GetBool();
+
+                    auD.c.clips.push_back(clip);
+                }
+            }
+			// LEGACY FORMAT
+            else {
+                Component::AudioClip clip;
+                clip.name = "Main Clip"; // Default name for legacy data
+
+                if (a.HasMember("eventPath")) clip.path = a["eventPath"].GetString();
+                if (a.HasMember("volume")) clip.volume = a["volume"].GetFloat();
+                if (a.HasMember("pitch")) clip.pitch = a["pitch"].GetFloat();
+                if (a.HasMember("looping")) clip.looping = a["looping"].GetBool();
+                if (a.HasMember("spatial3D")) clip.spatial3D = a["spatial3D"].GetBool();
+
+                // Only add if there is actually data
+                if (!clip.path.empty()) {
+                    auD.c.clips.push_back(clip);
+                }
+            }
         }
 
         // Camera

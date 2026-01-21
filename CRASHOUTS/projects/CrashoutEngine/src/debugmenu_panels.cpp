@@ -917,7 +917,7 @@ namespace UI {
                 }
 
                 // Play as SFX (One-Shot)
-                FMOD::Channel* ch = audio.playSFXFileEx(full);
+                FMOD::Channel* ch = audio.playSFXFile(full);
                 if (ch) {
                     result.ptr = ch;
                     result.type = EditorHandle::Channel;

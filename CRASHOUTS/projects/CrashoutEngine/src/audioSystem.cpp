@@ -551,6 +551,37 @@ namespace CrashoutsEngine::Audio
         return mMusicGroup->stop() == FMOD_OK;
     }
 
+	/*!
+    @brief Stops a specific FMOD channel, optionally fading out over a specified duration.
+	*/
+    void AudioSystem::stopChannel(FMOD::Channel* channel, float fadeSeconds)
+    {
+        if (!channel) return;
+
+        bool playing = false;
+        channel->isPlaying(&playing);
+        if (!playing) return;
+
+        if (fadeSeconds <= 0.0f)
+        {
+            // Immediate stop (Hard cut)
+            channel->stop();
+        }
+        else
+        {
+            // Reuse the same fading logic you already have in stopTagged!
+            float currentVol = 1.0f;
+            channel->getVolume(&currentVol);
+
+            FadingChannel fc;
+            fc.channel = channel;
+            fc.currentVol = currentVol;
+            fc.fadeRate = currentVol / fadeSeconds; // Calculate rate to hit 0 in X seconds
+
+            mFadingChannels.push_back(fc);
+        }
+    }
+
     /*!
     @brief Stops all sounds currently playing on the SFX channel group.
     */
@@ -950,11 +981,7 @@ namespace CrashoutsEngine::Audio
     /*!
     @brief Plays a one-shot SFX file through the SFX channel group.
     */
-    FMOD::Channel* AudioSystem::playSFXFile(const std::string& path) {
-        return playSFXFileEx(path);
-    }
-
-    FMOD::Channel* AudioSystem::playSFXFileEx(const std::string& path)
+    FMOD::Channel* AudioSystem::playSFXFile(const std::string& path)
     {
         if (!mCore || !mSFXGroup) return nullptr;
 

@@ -356,13 +356,17 @@ void Update(double const& dt) {
         CrashoutsEngine::ScriptSystem::UpdateAll();
 
         //fixed Update please work
+        int steps = FrameRateController::GetInstance().StepCount();
+        for (int i = 0; i < steps; ++i)
         {
-            FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "ScriptFixedUpdate");
-            CrashoutsEngine::ScriptSystem::FixedUpdateAll();
-        }
-        {
-            FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Physics");
-            physicsSystem.Update(FrameRateController::GetInstance().FixedDT());
+            {
+                FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "ScriptFixedUpdate");
+                CrashoutsEngine::ScriptSystem::FixedUpdateAll();
+            }
+            {
+                FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Physics");
+                physicsSystem.Update(FrameRateController::GetInstance().FixedDT());
+            }
         }
         {
         FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Audio");
@@ -373,29 +377,32 @@ void Update(double const& dt) {
             CrashoutsEngine::Entity entityID = audioArray.indexToEntity[i];
             auto& audioComp = audioArray.dense[i];
 
-            bool isActive = true;
+            // Check if entity is active in hierarchy
+            bool isEntityActive = true;
             if (ecs.HasComponent<Component::ActiveComponent>(entityID)) {
-                isActive = !IsEntityActive(ecs, entityID);
+                isEntityActive = IsEntityActive(ecs, entityID);
             }
 
-            // If inactive, force pause. If active, unpause (only if it was playing).
-            // Note: This logic assumes you want "Active = Unpause". 
-            if (!isActive) {
-                if (audioComp.channel) audioComp.channel->setPaused(true);
-                if (audioComp.inst) audioComp.inst->setPaused(true);
-            }
-            else {
-                // Only unpause if the GAME is playing. If game is paused, keep audio paused.
-                // Also check if we were "supposed" to be playing. 
-                // (A simpler version just unpauses everything when active).
-                if (engineState == EngineState::PLAY) {
-                    if (audioComp.channel) {
-                        bool p; audioComp.channel->getPaused(&p);
-                        if (p) audioComp.channel->setPaused(false);
-                    }
-                    if (audioComp.inst) {
-                        bool p; audioComp.inst->getPaused(&p);
-                        if (p) audioComp.inst->setPaused(false);
+            // Loop through ALL clips on this component
+            for (auto& clip : audioComp.clips) {
+
+                // Case 1: Entity is Inactive -> Force Pause
+                if (!isEntityActive) {
+                    if (clip.channel) clip.channel->setPaused(true);
+                    if (clip.inst)    clip.inst->setPaused(true);
+                }
+                // Case 2: Entity is Active -> Unpause (if Game is Playing)
+                else {
+                    if (engineState == EngineState::PLAY) {
+                        // Only unpause if it was paused!
+                        if (clip.channel) {
+                            bool p; clip.channel->getPaused(&p);
+                            if (p) clip.channel->setPaused(false);
+                        }
+                        if (clip.inst) {
+                            bool p; clip.inst->getPaused(&p);
+                            if (p) clip.inst->setPaused(false);
+                        }
                     }
                 }
             }

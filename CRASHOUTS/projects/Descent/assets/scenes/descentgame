@@ -14415,6 +14415,82 @@
                     "z": 0.0
                 }
             },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "bgm",
+                        "path": "level bgm 1.wav",
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": true,
+                        "isMusic": true
+                    },
+                    {
+                        "name": "ambient",
+                        "path": "lava-volcano-wind-environment_loop.wav",
+                        "volume": 0.5,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": true,
+                        "isMusic": true
+                    },
+                    {
+                        "name": "footstep1",
+                        "path": "footsteps 1.wav",
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    },
+                    {
+                        "name": "footstep2",
+                        "path": "footsteps 2.wav",
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    },
+                    {
+                        "name": "footstep3",
+                        "path": "footsteps 3.wav",
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    },
+                    {
+                        "name": "footstep4",
+                        "path": "footsteps 4.wav",
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    },
+                    {
+                        "name": "footstep5",
+                        "path": "footsteps 5.wav",
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    },
+                    {
+                        "name": "footstep6",
+                        "path": "footsteps 6.wav",
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    }
+                ]
+            },
             "script": {
                 "scripts": [
                     {
