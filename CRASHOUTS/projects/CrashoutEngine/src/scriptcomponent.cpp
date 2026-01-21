@@ -4,7 +4,7 @@
 @date       06/11/2025
 @brief		Definitions of script component functions
 
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 */
 #include "ScriptComponent.h"
@@ -185,8 +185,17 @@ namespace Component{
     {
         for (auto& script : Scripts)
         {
-            if (script.Started || !script.MethodStart || !script.Instance)
+            if (script.Started) continue;
+
+            if (!script.MethodStart) {
+                // std::cout << "[Script] No Start() for " << script.ClassName << "\n";
                 continue;
+            }
+            if (!script.Instance) {
+                std::cerr << "[Script] Instance null for " << script.ClassName << "\n";
+                continue;
+            }
+
             MonoObject* exc = nullptr;
             mono_runtime_invoke(script.MethodStart, script.Instance, nullptr, &exc);
             if (exc) mono_print_unhandled_exception(exc);

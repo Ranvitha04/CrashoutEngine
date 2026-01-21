@@ -344,8 +344,12 @@ namespace CrashoutsEngine
 
                 if (drawOnly)
                 {
-                    CEVec3 col = new CEVec3(1.0f, 1.0f, 1.0f);
-                    Debug.DrawLine(ref currentPos, ref nextPos, 2.0f, ref col); 
+                    // Only draw every other segment to create a dotted line effect
+                    if (i % 2 == 0)
+                    {
+                        CEVec3 col = new CEVec3(1.0f, 1.0f, 1.0f);
+                        Debug.DrawLine(ref currentPos, ref nextPos, 2.0f, ref col); 
+                    }
                 }
                 else
                 {

@@ -857,13 +857,13 @@
             "active": true,
             "name": "Player",
             "layer": {
-                "currentLayer": 8
+                "currentLayer": 9
             },
             "transform": {
                 "rotation": 0.0,
                 "position": {
                     "x": 108.30001831054688,
-                    "y": 61.32380676269531,
+                    "y": 61.353004455566409,
                     "z": 0.0
                 },
                 "size": {
@@ -872,7 +872,7 @@
                 }
             },
             "rigidbody": {
-                "mass": 3.0,
+                "mass": 0.0,
                 "restitutionCoeff": 0.0,
                 "maximumVelocity": {
                     "x": 0.0,
@@ -890,7 +890,7 @@
                 "enabled": true,
                 "position": {
                     "x": 108.30001831054688,
-                    "y": 61.32380676269531,
+                    "y": 61.353004455566409,
                     "z": 0.0
                 },
                 "offset": {
@@ -900,12 +900,12 @@
                 },
                 "min": {
                     "x": 96.0,
-                    "y": 31.97080421447754,
+                    "y": 32.0,
                     "z": 0.0
                 },
                 "max": {
                     "x": 120.60003662109375,
-                    "y": 90.67681121826172,
+                    "y": 90.70600891113281,
                     "z": 0.0
                 }
             },
@@ -946,7 +946,27 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "PlayerMovement"
+                        "className": "PlayerMovement",
+                        "fields": {
+                            "moveSpeed": 2000.0,
+                            "maxRunSpeed": 200.0,
+                            "jumpPower": 50000.0,
+                            "groundDrag": 0.15000000596046449,
+                            "airDrag": 0.10000000149011612,
+                            "gravityScale": 2.5,
+                            "turnMultiplier": 2.0,
+                            "frictionMultiplier": 500.0,
+                            "gravityForceMultiplier": 10.0,
+                            "footstepInterval": 0.15000000596046449,
+                            "swapPause": 1.0499999523162842,
+                            "energyConsumption": 12.5,
+                            "normalMass": 4.5,
+                            "lightMass": 3.0,
+                            "CurrentEnergy": 100.0,
+                            "MaxEnergy": 100.0,
+                            "alive": true,
+                            "isPaused": false
+                        }
                     }
                 ]
             },
@@ -1010,13 +1030,13 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 403.4761962890625,
-                    "y": 50.11609649658203,
+                    "x": 176.1258087158203,
+                    "y": 51.598304748535159,
                     "z": 0.0
                 },
                 "size": {
-                    "x": -72.0,
-                    "y": 67.0
+                    "x": 72.0002212524414,
+                    "y": 67.00016021728516
                 }
             },
             "rigidbody": {
@@ -1037,8 +1057,8 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 401.9761962890625,
-                    "y": 46.61609649658203,
+                    "x": 174.6258087158203,
+                    "y": 48.098304748535159,
                     "z": 0.0
                 },
                 "offset": {
@@ -1047,13 +1067,13 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 379.5762939453125,
-                    "y": 32.6161003112793,
+                    "x": 152.2259063720703,
+                    "y": 34.098304748535159,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 424.3760986328125,
-                    "y": 60.616092681884769,
+                    "x": 197.0257110595703,
+                    "y": 62.098304748535159,
                     "z": 0.0
                 }
             },
@@ -1094,7 +1114,20 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "SlimeMovement"
+                        "className": "SlimeMovement",
+                        "fields": {
+                            "moveSpeed": 1000.0,
+                            "maxSpeed": 50.0,
+                            "turnTimer": 2.0,
+                            "detectionRange": 85.0,
+                            "gravityScale": 5.0,
+                            "grabRange": 100.0,
+                            "minThrowSpeed": 500.0,
+                            "maxThrowSpeed": 2500.0,
+                            "maxMouseDragDist": 500.0,
+                            "airDrag": 1.0,
+                            "MaxDist": 150.0
+                        }
                     }
                 ]
             },
