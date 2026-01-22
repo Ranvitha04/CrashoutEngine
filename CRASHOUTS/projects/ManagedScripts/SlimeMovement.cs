@@ -13,6 +13,7 @@ namespace CrashoutsEngine
         [SerializeField] private float moveSpeed = 600f; // Reduced force
         [SerializeField] private float maxSpeed = 15.0f; // Slower speed
         [SerializeField] private float moveAudioInterval = 0.4f;
+        [SerializeField] private float stopAudioDistance = 40.0f; // Distance to stop audio playback
         [SerializeField] private float turnTimer = 2.0f;
         [SerializeField] private float detectionRange = 250.0f;
         [SerializeField] private float gravityScale = 2.0f;
@@ -127,8 +128,10 @@ namespace CrashoutsEngine
                         moveRight = (playerTf.Position.x > tf.Position.x);
                         if (moveAudioTimer <= 0.0f)
                         {
-                            // Play sound attached to THIS slime
-                            AudioManager.GetInstance().PlayAttached("SlimeMove", Entity.ID);
+                            if (dist > stopAudioDistance)
+                            {
+                                AudioManager.GetInstance().PlayAttached("slimeMove", Entity.ID);
+                            }
                             moveAudioTimer = moveAudioInterval;
                         }
                     }

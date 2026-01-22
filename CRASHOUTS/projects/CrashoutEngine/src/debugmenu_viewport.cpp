@@ -678,13 +678,7 @@ namespace UI {
                         }
                         else if (p->kind == AssetKind::Audio) {
                             // Audio spawn logic
-                            std::string rel = p->relPath;
-                            const std::string prefix = "audio/";
-                            auto pos = rel.find(prefix);
-                            if (pos != std::string::npos) rel = rel.substr(pos + prefix.size());
-                            if (auto dot = rel.find_last_of('.'); dot != std::string::npos) rel.erase(dot);
-                            std::string eventLike = std::string("event:/") + rel;
-
+                            std::string audioPath = p->relPath;
                             Entity target = ecs.CreateEntity();
 
                             ecs.AddComponent<Component::NameComponent>(target, std::string("Audio_") + p->name);
@@ -694,21 +688,13 @@ namespace UI {
                                 t->size = { 30.0f, 30.0f };
                             }
 
-                            // Add shape so it can be seen/selected in viewport
-                            ecs.AddComponent<Component::ShapeComponent>(target);
-                            if (auto* sc = ecs.GetComponent<Component::ShapeComponent>(target)) {
-                                sc->enableTexture = false;
-                                sc->type = Component::ShapeType::Circle;
-                                sc->color = { 0.2f, 0.8f, 0.2f, 0.8f }; // Green circle for audio
-                            }
-
                             if (!ecs.HasComponent<Component::AudioEmitterComponent>(target)) ecs.AddComponent<Component::AudioEmitterComponent>(target);
                             if (auto* ac = ecs.GetComponent<Component::AudioEmitterComponent>(target)) {
                                 if (ac->clips.empty()) {
                                     ac->clips.emplace_back();
                                     ac->clips.back().name = "Main Clip"; // Default name
                                 }
-                                ac->clips[0].path = eventLike;
+                                ac->clips[0].path = audioPath;
                             }
 
                             // Auto-select the new audio source
