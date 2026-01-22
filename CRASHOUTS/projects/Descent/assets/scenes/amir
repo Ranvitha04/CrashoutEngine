@@ -169,27 +169,7 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "PlayerMovement",
-                        "fields": {
-                            "moveSpeed": 200.0,
-                            "maxRunSpeed": 100.0,
-                            "jumpPower": 20000.0,
-                            "groundDrag": 0.15000000596046449,
-                            "airDrag": 0.019999999552965165,
-                            "gravityScale": 2.5,
-                            "turnMultiplier": 2.0,
-                            "frictionMultiplier": 500.0,
-                            "gravityForceMultiplier": 10.0,
-                            "footstepInterval": 0.5,
-                            "swapPause": 1.0,
-                            "energyConsumption": 12.5,
-                            "normalMass": 7.0,
-                            "lightMass": 4.5,
-                            "CurrentEnergy": 0.0,
-                            "MaxEnergy": 100.0,
-                            "alive": true,
-                            "isPaused": false
-                        }
+                        "className": "PlayerMovement"
                     }
                 ]
             },
@@ -633,6 +613,143 @@
                         "asset": ""
                     }
                 ]
+            }
+        },
+        {
+            "active": true,
+            "name": "slime_w_actual_audio",
+            "layer": {
+                "currentLayer": 16
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 130.47935485839845,
+                    "y": 60.27413558959961,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 72.0,
+                    "y": 67.0
+                }
+            },
+            "rigidbody": {
+                "mass": 1.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0
+            },
+            "collider": {
+                "ColliderType": 1,
+                "isTrigger": false,
+                "enabled": true,
+                "position": {
+                    "x": 128.97935485839845,
+                    "y": 56.77413558959961,
+                    "z": 0.0
+                },
+                "offset": {
+                    "x": -1.5,
+                    "y": -3.5,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": 106.57936096191406,
+                    "y": 42.774131774902347,
+                    "z": 0.0
+                },
+                "max": {
+                    "x": 151.3793487548828,
+                    "y": 70.77413940429688,
+                    "z": 0.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "images/Monsters\\Slime spritesheet.png",
+                "uvSize": {
+                    "x": 0.25,
+                    "y": 0.3333333432674408
+                },
+                "uvOffset": {
+                    "x": 0.25,
+                    "y": 0.3333333432674408
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "SlimeMovement"
+                    }
+                ]
+            },
+            "button": {
+                "buttonState": 0,
+                "shapeNormalColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "shapeHoveredColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.5
+                },
+                "shapePressedColor": {
+                    "x": 0.699999988079071,
+                    "y": 0.699999988079071,
+                    "z": 0.699999988079071,
+                    "w": 0.699999988079071
+                },
+                "textNormalColor": {
+                    "x": 0.30000001192092898,
+                    "y": 0.30000001192092898,
+                    "z": 0.30000001192092898,
+                    "w": 0.699999988079071
+                },
+                "textHoveredColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.0
+                },
+                "textPressedColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.5
+                }
             }
         }
     ],
