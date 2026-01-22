@@ -11,13 +11,14 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserve
 #include "engine.h"
 #include "prefab.h"
 #include "entitymanager.h"
-#include "collisionmanager.h" // For MakeCenteredAABB
+#include "collisionmanager.h" 
 #include "transformcomponent.h"
 #include "shapescomponent.h"
 #include "rigidbodycomponent.h"
 #include "collidercomponent.h"
 #include "namecomponent.h"
 #include "textcomponent.h"
+#include "camera.h"
 #include "cameracomponent.h"
 #include "scriptcomponent.h"
 #include "audiocomponent.h"
@@ -33,6 +34,8 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserve
 #include "uilayoutcomponent.h"
 #include "layercomponent.h"
 #include "activecomponent.h"
+#include "particleComponent.h"
+#include "scriptcomponent.h"
 
 // RapidJSON
 #include "rapidjson/document.h"
@@ -137,6 +140,7 @@ namespace CaptureData {
     struct TextData { bool hasComp{ false }; TextComponent c; };
     struct AudioData { bool hasComp{ false }; AudioEmitterComponent c; };
     struct ScriptData { bool hasComp{ false }; std::vector<std::string> classes; };
+    struct ParticleData { bool hasComp{ false }; ParticleComponent c; };
     struct CameraData { bool hasComp{ false }; CameraComponent c; };
     struct SpriteData { bool hasComp{ false }; SpriteAnimatorComponent c; };
     struct KeyframeData { bool hasComp{ false }; KeyframeAnimatorComponent c; };
@@ -323,17 +327,108 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path) {
                 scD.classes.push_back(s["className"].GetString());
             }
         }
+        // Particle
+        ParticleData ptD;
+        if (prefabs.HasMember("particle")) {
+            ptD.hasComp = true;
+            const auto& p = prefabs["particle"];
+            auto& pc = ptD.c;
+
+            if (p.HasMember("playOnStop"))   pc.playOnStop = p["playOnStop"].GetBool();
+            if (p.HasMember("isEmitting"))   pc.isEmitting = p["isEmitting"].GetBool();
+            if (p.HasMember("useWorldSpace")) pc.useWorldSpace = p["useWorldSpace"].GetBool();
+
+            if (p.HasMember("emissionShape") && p["emissionShape"].IsString()) {
+                std::string s = p["emissionShape"].GetString();
+                if (s == "LINE")   pc.emissionShape = ParticleSystem::ParticleShape::LINE;
+                if (s == "CIRCLE") pc.emissionShape = ParticleSystem::ParticleShape::CIRCLE;
+                if (s == "SQUARE") pc.emissionShape = ParticleSystem::ParticleShape::SQUARE;
+            }
+
+            if (p.HasMember("lengthMin")) pc.lengthMin = p["lengthMin"].GetFloat();
+            if (p.HasMember("lengthMax")) pc.lengthMax = p["lengthMax"].GetFloat();
+            if (p.HasMember("radiusMin")) pc.radiusMin = p["radiusMin"].GetFloat();
+            if (p.HasMember("radiusMax")) pc.radiusMax = p["radiusMax"].GetFloat();
+
+            auto readVec2 = [&](const rapidjson::Value& v, CEVec2& out) {
+                if (v.HasMember("x")) out.x = v["x"].GetFloat();
+                if (v.HasMember("y")) out.y = v["y"].GetFloat();
+                };
+
+            if (p.HasMember("areaMin") && p["areaMin"].IsObject()) readVec2(p["areaMin"], pc.areaMin);
+            if (p.HasMember("areaMax") && p["areaMax"].IsObject()) readVec2(p["areaMax"], pc.areaMax);
+
+            if (p.HasMember("maxParticles")) pc.maxParticles = p["maxParticles"].GetInt();
+            if (p.HasMember("emitRate"))     pc.emitRate = p["emitRate"].GetFloat();
+
+            if (p.HasMember("startLifeMin")) pc.startLifeMin = p["startLifeMin"].GetFloat();
+            if (p.HasMember("startLifeMax")) pc.startLifeMax = p["startLifeMax"].GetFloat();
+            if (p.HasMember("startRotationMin")) pc.startRotationMin = p["startRotationMin"].GetFloat();
+            if (p.HasMember("startRotationMax")) pc.startRotationMax = p["startRotationMax"].GetFloat();
+            if (p.HasMember("startSpeedMin")) pc.startSpeedMin = p["startSpeedMin"].GetFloat();
+            if (p.HasMember("startSpeedMax")) pc.startSpeedMax = p["startSpeedMax"].GetFloat();
+
+            if (p.HasMember("uniformSize")) pc.uniformSize = p["uniformSize"].GetBool();
+            if (p.HasMember("startSizeXMin")) pc.startSizeXMin = p["startSizeXMin"].GetFloat();
+            if (p.HasMember("startSizeXMax")) pc.startSizeXMax = p["startSizeXMax"].GetFloat();
+            if (p.HasMember("startSizeYMin")) pc.startSizeYMin = p["startSizeYMin"].GetFloat();
+            if (p.HasMember("startSizeYMax")) pc.startSizeYMax = p["startSizeYMax"].GetFloat();
+
+            if (p.HasMember("startColor") && p["startColor"].IsObject()) pc.startcolor = ReadColor(p["startColor"]);
+            if (p.HasMember("endColor") && p["endColor"].IsObject())   pc.endColor = ReadColor(p["endColor"]);
+
+            if (p.HasMember("startVelocity")) pc.startVelocity = ReadVectorFromJson{}(p["startVelocity"]);
+            if (p.HasMember("endVelocity"))   pc.endVelocity = ReadVectorFromJson{}(p["endVelocity"]);
+            if (p.HasMember("gravity"))       pc.gravity = ReadVectorFromJson{}(p["gravity"]);
+
+            if (p.HasMember("rotationOverTime")) pc.rotationOverTime = p["rotationOverTime"].GetFloat();
+            if (p.HasMember("sizeOverTime"))     pc.sizeOverTime = p["sizeOverTime"].GetFloat();
+
+            if (p.HasMember("useTexture")) pc.useTexture = p["useTexture"].GetBool();
+            if (p.HasMember("textureName")) pc.textureName = p["textureName"].GetString();
+            if (p.HasMember("textureUV") && p["textureUV"].IsObject()) readVec2(p["textureUV"], pc.textureUV);
+        }
 
         // Audio
         AudioData auD;
         if (prefabs.HasMember("audio")) {
             auD.hasComp = true;
             const auto& a = prefabs["audio"];
-            if (a.HasMember("eventPath")) auD.c.eventPath = a["eventPath"].GetString();
-            if (a.HasMember("volume")) auD.c.volume = a["volume"].GetFloat();
-            if (a.HasMember("pitch")) auD.c.pitch = a["pitch"].GetFloat();
-            if (a.HasMember("looping")) auD.c.looping = a["looping"].GetBool();
-            if (a.HasMember("spatial3D")) auD.c.spatial3D = a["spatial3D"].GetBool();
+
+            // NEW FORMAT
+            if (a.HasMember("clips") && a["clips"].IsArray()) {
+                const auto& clipsArr = a["clips"];
+                for (rapidjson::SizeType i = 0; i < clipsArr.Size(); ++i) {
+                    const auto& cVal = clipsArr[i];
+                    Component::AudioClip clip;
+
+                    if (cVal.HasMember("name")) clip.name = cVal["name"].GetString();
+                    if (cVal.HasMember("path")) clip.path = cVal["path"].GetString();
+                    if (cVal.HasMember("volume")) clip.volume = cVal["volume"].GetFloat();
+                    if (cVal.HasMember("pitch")) clip.pitch = cVal["pitch"].GetFloat();
+                    if (cVal.HasMember("looping")) clip.looping = cVal["looping"].GetBool();
+                    if (cVal.HasMember("isMusic")) clip.isMusic = cVal["isMusic"].GetBool();
+                    if (cVal.HasMember("spatial3D")) clip.spatial3D = cVal["spatial3D"].GetBool();
+
+                    auD.c.clips.push_back(clip);
+                }
+            }
+			// LEGACY FORMAT
+            else {
+                Component::AudioClip clip;
+                clip.name = "Main Clip"; // Default name for legacy data
+
+                if (a.HasMember("eventPath")) clip.path = a["eventPath"].GetString();
+                if (a.HasMember("volume")) clip.volume = a["volume"].GetFloat();
+                if (a.HasMember("pitch")) clip.pitch = a["pitch"].GetFloat();
+                if (a.HasMember("looping")) clip.looping = a["looping"].GetBool();
+                if (a.HasMember("spatial3D")) clip.spatial3D = a["spatial3D"].GetBool();
+
+                // Only add if there is actually data
+                if (!clip.path.empty()) {
+                    auD.c.clips.push_back(clip);
+                }
+            }
         }
 
         // Camera
@@ -868,6 +963,108 @@ namespace CrashoutsEngine {
             sObj.AddMember("scripts", arr, allocator);
             obj.AddMember("script", sObj, allocator);
         }
+        // Particle
+        if (auto* pc = ecs.GetComponent<Component::ParticleComponent>(e)) {
+            using namespace rapidjson;
+            Value pObj(kObjectType);
+
+            pObj.AddMember("playOnStop", pc->playOnStop, allocator);
+            pObj.AddMember("isEmitting", pc->isEmitting, allocator);
+            pObj.AddMember("useWorldSpace", pc->useWorldSpace, allocator);
+
+            const char* shapeStr = "LINE";
+            if (pc->emissionShape == ParticleSystem::ParticleShape::CIRCLE) shapeStr = "CIRCLE";
+            if (pc->emissionShape == ParticleSystem::ParticleShape::SQUARE) shapeStr = "SQUARE";
+            pObj.AddMember("emissionShape", Value(shapeStr, allocator), allocator);
+
+            pObj.AddMember("lengthMin", pc->lengthMin, allocator);
+            pObj.AddMember("lengthMax", pc->lengthMax, allocator);
+            pObj.AddMember("radiusMin", pc->radiusMin, allocator);
+            pObj.AddMember("radiusMax", pc->radiusMax, allocator);
+
+            auto writeVec2 = [&](float x, float y) {
+                Value o(kObjectType);
+                o.AddMember("x", x, allocator);
+                o.AddMember("y", y, allocator);
+                return o;
+                };
+            auto writeVec3 = [&](const CEVec3& v) {
+                Value o(kObjectType);
+                o.AddMember("x", v.x, allocator);
+                o.AddMember("y", v.y, allocator);
+                o.AddMember("z", v.z, allocator);
+                return o;
+                };
+            auto writeColor = [&](const CEColor& c) {
+                Value o(kObjectType);
+                o.AddMember("x", c.x(), allocator);
+                o.AddMember("y", c.y(), allocator);
+                o.AddMember("z", c.z(), allocator);
+                o.AddMember("w", c.w(), allocator);
+                return o;
+                };
+
+            pObj.AddMember("areaMin", writeVec2(pc->areaMin.x, pc->areaMin.y), allocator);
+            pObj.AddMember("areaMax", writeVec2(pc->areaMax.x, pc->areaMax.y), allocator);
+
+            pObj.AddMember("maxParticles", pc->maxParticles, allocator);
+            pObj.AddMember("emitRate", pc->emitRate, allocator);
+
+            pObj.AddMember("startLifeMin", pc->startLifeMin, allocator);
+            pObj.AddMember("startLifeMax", pc->startLifeMax, allocator);
+            pObj.AddMember("startRotationMin", pc->startRotationMin, allocator);
+            pObj.AddMember("startRotationMax", pc->startRotationMax, allocator);
+            pObj.AddMember("startSpeedMin", pc->startSpeedMin, allocator);
+            pObj.AddMember("startSpeedMax", pc->startSpeedMax, allocator);
+
+            pObj.AddMember("uniformSize", pc->uniformSize, allocator);
+            pObj.AddMember("startSizeXMin", pc->startSizeXMin, allocator);
+            pObj.AddMember("startSizeXMax", pc->startSizeXMax, allocator);
+            pObj.AddMember("startSizeYMin", pc->startSizeYMin, allocator);
+            pObj.AddMember("startSizeYMax", pc->startSizeYMax, allocator);
+
+            pObj.AddMember("startColor", writeColor(pc->startcolor), allocator);
+            pObj.AddMember("endColor", writeColor(pc->endColor), allocator);
+
+            pObj.AddMember("startVelocity", writeVec3(pc->startVelocity), allocator);
+            pObj.AddMember("endVelocity", writeVec3(pc->endVelocity), allocator);
+            pObj.AddMember("gravity", writeVec3(pc->gravity), allocator);
+
+            pObj.AddMember("rotationOverTime", pc->rotationOverTime, allocator);
+            pObj.AddMember("sizeOverTime", pc->sizeOverTime, allocator);
+
+            pObj.AddMember("useTexture", pc->useTexture, allocator);
+            if (!pc->textureName.empty())
+                pObj.AddMember("textureName", Value(pc->textureName.c_str(), allocator), allocator);
+            pObj.AddMember("textureUV", writeVec2(pc->textureUV.x, pc->textureUV.y), allocator);
+
+            obj.AddMember("particle", pObj, allocator);
+        }
+
+        
+  // Camera
+        if (auto* cam = ecs.GetComponent<Component::CameraComponent>(e)) {
+            rapidjson::Value camObj(rapidjson::kObjectType);
+
+            camObj.AddMember("zoom", cam->zoom, allocator);
+            camObj.AddMember("x", cam->position.x, allocator);
+            camObj.AddMember("y", cam->position.y, allocator);
+
+            rapidjson::Value xb(rapidjson::kArrayType);
+            xb.PushBack(cam->xBounds.x, allocator);
+            xb.PushBack(cam->xBounds.y, allocator);
+            camObj.AddMember("xBounds", xb, allocator);
+
+            rapidjson::Value yb(rapidjson::kArrayType);
+            yb.PushBack(cam->yBounds.x, allocator);
+            yb.PushBack(cam->yBounds.y, allocator);
+            camObj.AddMember("yBounds", yb, allocator);
+
+            obj.AddMember("camera", camObj, allocator);
+        }
+
+
+
 
         // Sprite Animator
         if (auto* sa = ecs.GetComponent<SpriteAnimatorComponent>(e)) {

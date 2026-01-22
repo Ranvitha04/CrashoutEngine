@@ -26,6 +26,45 @@ namespace UI {
     // Ensure this macro is defined in settings.h or engine.h. 
     // If it's not defined, this whole block is skipped.
 #if USE_IMGUI_EDITOR
+    static inline void ApplyLocalToWorldNow(CrashoutsEngine::ECS& ecs, CrashoutsEngine::Entity child)
+    {
+        if (!ecs.HasComponent<Component::ParentComponent>(child)) return;
+
+        auto* pc = ecs.GetComponent<Component::ParentComponent>(child);
+        if (!pc || pc->parent == 0) return;
+
+        if (!ecs.HasComponent<Component::TransformComponent>(child)) return;
+        if (!ecs.HasComponent<Component::TransformComponent>(pc->parent)) return;
+
+        auto* childT = ecs.GetComponent<Component::TransformComponent>(child);
+        auto* parentT = ecs.GetComponent<Component::TransformComponent>(pc->parent);
+
+        const float DEG_TO_RAD = 0.0174532925f;
+        float parentRad = parentT->rotation * DEG_TO_RAD;
+        float s = std::sin(parentRad);
+        float c = std::cos(parentRad);
+
+        float pX = (parentT->size.x == 0.f) ? 1.f : parentT->size.x;
+        float pY = (parentT->size.y == 0.f) ? 1.f : parentT->size.y;
+
+        // WORLD SCALE
+        childT->size.x = parentT->size.x * pc->localScale.x;
+        childT->size.y = parentT->size.y * pc->localScale.y;
+
+        // WORLD ROT
+        childT->rotation = parentT->rotation + pc->localRot;
+
+        // WORLD POS
+        float scaledOffsetX = pc->localPos.x * pX;
+        float scaledOffsetY = pc->localPos.y * pY;
+
+        float rotatedX = (c * scaledOffsetX) - (s * scaledOffsetY);
+        float rotatedY = (s * scaledOffsetX) + (c * scaledOffsetY);
+
+        childT->position.x = parentT->position.x + rotatedX;
+        childT->position.y = parentT->position.y + rotatedY;
+        childT->position.z = parentT->position.z + pc->localPos.z;
+    }
 
     /*!
      @brief  Draws the editor game viewport.
@@ -279,10 +318,11 @@ namespace UI {
             bool isPlaying = (engineState == EngineState::PLAY || engineState == EngineState::PAUSE);
             if ((!isPlaying || allowGizmoInPlay) && selected && ecs.HasComponent<Component::TransformComponent>(selected))
             {
-                Entity root = CrashoutsEngine::GetRoot(ecs, selected);
+                Entity root = selected; 
 
                 std::vector<Entity> group;
                 group.reserve(16);
+                group.push_back(root);
                 CrashoutsEngine::GatherDescendants(ecs, root, group);
 
                 CEVec3 center{ 0.f, 0.f, 0.f };
@@ -347,60 +387,58 @@ namespace UI {
                         float newTr[3], newRt[3], newSc[3];
                         ImGuizmo::DecomposeMatrixToComponents(m, newTr, newRt, newSc);
 
-                        if (!dragging) {
-                            dragging = true;
-                            undoTriggeredThisFrame = false;
-                            movedEntities.clear();
-                            startStates.clear();
-
-                            for (Entity e : group) {
-                                if (!ecs.HasComponent<Component::TransformComponent>(e)) continue;
-                                auto* transform = ecs.GetComponent<Component::TransformComponent>(e);
-                                CrashoutsEngine::TransformState state;
-                                state.position = transform->position;
-                                state.rotation = transform->rotation;
-                                state.scale = transform->size;
-                                startStates.push_back(state);
-                                movedEntities.push_back(e);
-                            }
-                            s_parentAccumRotDeg = rootT->rotation;
-                            s_prevGizmoDeg = newRt[2];
+                        // If selected has a parent, update LOCAL (ParentComponent) instead of WORLD (TransformComponent)
+                        Component::ParentComponent* pc = nullptr;
+                        if (ecs.HasComponent<Component::ParentComponent>(root)) {
+                            pc = ecs.GetComponent<Component::ParentComponent>(root);
+                            if (pc && pc->parent == 0) pc = nullptr;
                         }
 
-                        if (g_gizmoOp == ImGuizmo::TRANSLATE) {
-                            CEVec3 offset{ newTr[0] - rootT->position.x, newTr[1] - rootT->position.y, newTr[2] - rootT->position.z };
-                            for (Entity e : group) {
-                                if (!ecs.HasComponent<Component::TransformComponent>(e)) continue;
-                                auto* t = ecs.GetComponent<Component::TransformComponent>(e);
-                                t->position.x += offset.x;
-                                t->position.y += offset.y;
-                                t->position.z += offset.z;
-                            }
+                        if (pc && ecs.HasComponent<Component::TransformComponent>(pc->parent))
+                        {
+                            auto* parentT = ecs.GetComponent<Component::TransformComponent>(pc->parent);
+
+                            // WORLD -> LOCAL conversion (inverse of ApplyLocalToWorldNow)
+                            const float DEG_TO_RAD = 0.0174532925f;
+                            float parentRad = parentT->rotation * DEG_TO_RAD;
+                            float s = std::sin(parentRad);
+                            float c = std::cos(parentRad);
+
+                            float pX = (parentT->size.x == 0.f) ? 1.f : parentT->size.x;
+                            float pY = (parentT->size.y == 0.f) ? 1.f : parentT->size.y;
+
+                            // delta in world space
+                            float dx = newTr[0] - parentT->position.x;
+                            float dy = newTr[1] - parentT->position.y;
+
+                            // unrotate by parent (rotate by -parentRad)
+                            float unrotX = (c * dx) + (s * dy);
+                            float unrotY = (-s * dx) + (c * dy);
+
+                            // unscale by parent
+                            pc->localPos.x = unrotX / pX;
+                            pc->localPos.y = unrotY / pY;
+                            pc->localPos.z = newTr[2] - parentT->position.z;
+
+                            // local rot/scale
+                            pc->localRot = newRt[2] - parentT->rotation;
+                            pc->localScale.x = (parentT->size.x == 0.f) ? 1.f : (newSc[0] / parentT->size.x);
+                            pc->localScale.y = (parentT->size.y == 0.f) ? 1.f : (newSc[1] / parentT->size.y);
+
+                            // Push the result immediately into world TRS so it looks right this frame
+                            ApplyLocalToWorldNow(ecs, root);
                         }
-                        else {
+                        else
+                        {
+                            // ROOT (no parent): edit world transform directly
                             rootT->position = { newTr[0], newTr[1], newTr[2] };
+                            rootT->rotation = newRt[2];
                             rootT->size.x = newSc[0];
                             rootT->size.y = newSc[1];
-
-                            if (g_gizmoOp == ImGuizmo::ROTATE) {
-                                float gizmoDeg = newRt[2];
-                                float stepDeg = gizmoDeg - s_prevGizmoDeg;
-                                if (stepDeg > 180.0f) stepDeg -= 360.0f;
-                                if (stepDeg < -180.0f) stepDeg += 360.0f;
-
-                                s_parentAccumRotDeg += stepDeg;
-                                rootT->rotation = s_parentAccumRotDeg;
-                                s_prevGizmoDeg = gizmoDeg;
-
-                                for (Entity e : group) {
-                                    if (e == root) continue;
-                                    if (!ecs.HasComponent<Component::ParentComponent>(e)) continue;
-                                    auto* ppc = ecs.GetComponent<Component::ParentComponent>(e);
-                                    ppc->localRot += stepDeg;
-                                }
-                            }
                         }
                     }
+
+                    
                     else if (dragging && !undoTriggeredThisFrame)
                     {
                         dragging = false;
@@ -466,7 +504,9 @@ namespace UI {
                 v = 1.f - (mouse.y - imgMin.y) / (imgMax.y - imgMin.y);
             }
 
-            if (gameWinFocused) {
+            if (gameWinHovered) {
+
+                // 1. Left Click Selection (With OBB Fix included)
                 if (over && ImGui::IsMouseClicked(ImGuiMouseButton_Left) && !ImGuizmo::IsOver() && !ImGuizmo::IsUsing())
                 {
                     CEVec3 worldPt = ViewUV_toWorld(u, v);
@@ -478,9 +518,11 @@ namespace UI {
                     {
                         if (!ecs.HasComponent<Component::TransformComponent>(e)) continue;
                         auto* t = ecs.GetComponent<Component::TransformComponent>(e);
-                        float hx = std::max(0.5f * t->size.x, 0.5f);
-                        float hy = std::max(0.5f * t->size.y, 0.5f);
+
+                        float hx = std::max(0.5f * std::abs(t->size.x), 0.5f);
+                        float hy = std::max(0.5f * std::abs(t->size.y), 0.5f);
                         bool  hit = false;
+                        bool  customShapeHit = false;
 
                         if (auto* sc = ecs.GetComponent<Component::ShapeComponent>(e))
                         {
@@ -488,10 +530,11 @@ namespace UI {
                             switch (sc->type)
                             {
                             case ShapeType::Circle: {
-                                const float r = 0.5f * std::min(t->size.x, t->size.y);
+                                const float r = 0.5f * std::min(std::abs(t->size.x), std::abs(t->size.y));
                                 const float dx = worldPt.x - t->position.x;
                                 const float dy = worldPt.y - t->position.y;
                                 hit = (dx * dx + dy * dy) <= r * r;
+                                customShapeHit = true;
                                 break;
                             }
                             case ShapeType::Line: {
@@ -501,22 +544,26 @@ namespace UI {
                                 const float maxy = std::max(sc->p1.y, sc->p2.y);
                                 hx = std::max(hx, std::max(0.5f * (maxx - minx), sc->thickness * 0.5f));
                                 hy = std::max(hy, std::max(0.5f * (maxy - miny), sc->thickness * 0.5f));
-                                [[fallthrough]];
-                            }
-                            case ShapeType::Rectangle:
-                            case ShapeType::Triangle:
-                            default: {
-                                const float minx = t->position.x - hx, maxx = t->position.x + hx;
-                                const float miny = t->position.y - hy, maxy = t->position.y + hy;
-                                hit = (worldPt.x >= minx && worldPt.x <= maxx && worldPt.y >= miny && worldPt.y <= maxy);
                                 break;
                             }
+                            default: break;
                             }
                         }
-                        else {
-                            const float minx = t->position.x - hx, maxx = t->position.x + hx;
-                            const float miny = t->position.y - hy, maxy = t->position.y + hy;
-                            hit = (worldPt.x >= minx && worldPt.x <= maxx && worldPt.y >= miny && worldPt.y <= maxy);
+
+                        if (!customShapeHit) {
+                            // OBB Check
+                            float localMouseX = worldPt.x - t->position.x;
+                            float localMouseY = worldPt.y - t->position.y;
+
+                            const float DEG2RAD = 0.0174532925f;
+                            float rad = -t->rotation * DEG2RAD;
+                            float s = std::sin(rad);
+                            float c = std::cos(rad);
+
+                            float rotatedX = (localMouseX * c) - (localMouseY * s);
+                            float rotatedY = (localMouseX * s) + (localMouseY * c);
+
+                            hit = (rotatedX >= -hx && rotatedX <= hx && rotatedY >= -hy && rotatedY <= hy);
                         }
 
                         if (hit && t->position.z >= bestZ) { bestZ = t->position.z; best = e; }
@@ -525,9 +572,12 @@ namespace UI {
                     if (best) selected = (selected == best) ? (Entity)0 : best;
                 }
 
+                // 2. Right Click Deselect
                 if (over && ImGui::IsMouseClicked(ImGuiMouseButton_Right)) {
                     if (!ImGuizmo::IsOver() && !ImGuizmo::IsUsing()) selected = 0;
                 }
+
+				// Undoable delete entity
                 if (selected && ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows) && !ImGuizmo::IsUsing() && ImGui::IsKeyPressed(ImGuiKey_Delete) && !ImGui::GetIO().WantTextInput && !ImGui::IsAnyItemActive()) {
                     auto cmd = std::make_unique<DeleteEntityCommand>(selected);
                     cmd->Execute(); // Perform delete
@@ -653,7 +703,13 @@ namespace UI {
                             }
 
                             if (!ecs.HasComponent<Component::AudioEmitterComponent>(target)) ecs.AddComponent<Component::AudioEmitterComponent>(target);
-                            if (auto* ac = ecs.GetComponent<Component::AudioEmitterComponent>(target)) ac->eventPath = eventLike;
+                            if (auto* ac = ecs.GetComponent<Component::AudioEmitterComponent>(target)) {
+                                if (ac->clips.empty()) {
+                                    ac->clips.emplace_back();
+                                    ac->clips.back().name = "Main Clip"; // Default name
+                                }
+                                ac->clips[0].path = eventLike;
+                            }
 
                             // Auto-select the new audio source
                             selected = target;

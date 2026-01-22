@@ -4,7 +4,7 @@
 @date       06/11/2025
 @brief		Definitions of script component functions
 
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 */
 #include "ScriptComponent.h"
@@ -170,6 +170,8 @@ namespace Component{
         bool ok = true;
         for (auto& script : Scripts)
         {
+            if (script.Instance) continue;
+
             // Re-initialize each script
             DestroyOne(script);
             if (!script.ClassName.empty())
@@ -183,15 +185,26 @@ namespace Component{
 
     void ScriptComponent::Start()
     {
-        for (auto& script : Scripts)
+        for (size_t i = 0; i < Scripts.size(); ++i)
         {
-            if (script.Started || !script.MethodStart || !script.Instance)
+            auto& script = Scripts[i];
+            if (script.Started) continue;
+
+            if (!script.MethodStart) {
+                // std::cout << "[Script] No Start() for " << script.ClassName << "\n";
                 continue;
+            }
+            if (!script.Instance) {
+                std::cerr << "[Script] Instance null for " << script.ClassName << "\n";
+                continue;
+            }
+
             MonoObject* exc = nullptr;
             mono_runtime_invoke(script.MethodStart, script.Instance, nullptr, &exc);
             if (exc) mono_print_unhandled_exception(exc);
 
-            script.Started = true;
+            // Re-fetch reference in case vector reallocated during mono_runtime_invoke
+            Scripts[i].Started = true;
         }
     }
 

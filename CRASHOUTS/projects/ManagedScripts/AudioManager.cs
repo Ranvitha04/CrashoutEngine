@@ -17,84 +17,7 @@ public class AudioManager
         playerMusVol = InternalCalls.Audio_GetMusicVolume();
         playerSFXVol = InternalCalls.Audio_GetSFXVolume();
 
-        RegisterSound(
-                "ambient", // key you use in Play("ambient")
-                "assets/audio/Lava-Volcano-Wind-Environment_LOOP.wav",
-                0.05f, // base volume
-                true, // loop? (ambient usually yes)
-                SoundType.Music // it's music, not SFX
-            );
-
-        RegisterSound(
-                "footstep1",
-                "assets/audio/footsteps 1.wav",
-                1.0f, // base volume
-                false, // loop?
-                //SoundType.SFX //SFX broken
-                SoundType.SFX
-            );
-
-        RegisterSound(
-                "footstep2",
-                "assets/audio/footsteps 2.wav",
-                1.0f, // base volume
-                false, // loop?
-                      //SoundType.SFX //SFX broken
-                SoundType.SFX
-            );
-
-        RegisterSound(
-                "footstep3",
-                "assets/audio/footsteps 3.wav",
-                1.0f, // base volume
-                false, // loop?
-                      //SoundType.SFX //SFX broken
-                SoundType.SFX
-            );
-
-        RegisterSound(
-                "footstep4",
-                "assets/audio/footsteps 4.wav",
-                1.0f, // base volume
-                false, // loop?
-                      //SoundType.SFX //SFX broken
-                SoundType.SFX
-            );
-
-        RegisterSound(
-                "footstep5",
-                "assets/audio/footsteps 5.wav",
-                1.0f, // base volume
-                false, // loop?
-                      //SoundType.SFX //SFX broken
-                SoundType.SFX
-            );
-
-        RegisterSound(
-                "footstep6",
-                "assets/audio/footsteps 6.wav",
-                1.0f, // base volume
-                false, // loop?
-                      //SoundType.SFX //SFX broken
-                SoundType.SFX
-            );
-
-        RegisterSound(
-                "pressureplate",
-                "assets/audio/Switch_StepOn.wav",
-                0.6f, // base volume
-                false, // loop?
-                SoundType.SFX // it's music, not SFX SFX DOESNT WORK LMAO
-            );
-
-        RegisterSound(
-                "bgm1",
-                "assets/audio/level bgm 1.wav",
-                0.8f, // base volume
-                true, // loop?
-                SoundType.Music // it's music, not SFX SFX DOESNT WORK LMAO
-            );
-
+        
         /*RegisterSound(
                 "ambient",
                 "assets/audio/Nightshift BGM_Loop_70bpm.wav",
@@ -162,6 +85,17 @@ public class AudioManager
     public void PlayAttachedSound(uint entityID)
     {
         InternalCalls.Audio_PlayComponent(entityID);
+    }
+
+    public void PlayAttached(string clipName, uint entityID)
+    {
+        InternalCalls.Audio_PlayClipByName(entityID, clipName);
+    }
+
+    // === Stop sound attached to an entity ===
+    public void StopAttachedSound(uint entityID, float fadeDuration = 0.5f)
+    {
+        InternalCalls.Audio_StopComponent(entityID, fadeDuration);
     }
 
     // === Replacing Unity's Stop(name)

@@ -1557,12 +1557,24 @@
             "path": "EnergyBall.json"
         },
         {
+            "name": "Entity",
+            "path": "Entity.json"
+        },
+        {
             "name": "MovingWall",
             "path": "MovingWall.json"
         },
         {
+            "name": "MyBox",
+            "path": "MyBox.json"
+        },
+        {
             "name": "Number1",
             "path": "Number1.json"
+        },
+        {
+            "name": "Platform_Prefab",
+            "path": "Platform_Prefab.json"
         },
         {
             "name": "Player",
@@ -1619,12 +1631,24 @@
             "path": "descentgame"
         },
         {
+            "name": "descentgame",
+            "path": "descentgame.json"
+        },
+        {
             "name": "descentmenu",
             "path": "descentmenu"
         },
         {
+            "name": "descentmenu",
+            "path": "descentmenu.json"
+        },
+        {
             "name": "descentsettings",
             "path": "descentsettings"
+        },
+        {
+            "name": "descentsettings",
+            "path": "descentsettings.json"
         },
         {
             "name": "menu",

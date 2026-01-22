@@ -13,7 +13,7 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserv
 #include <iostream>
 #include <fstream>
 #include <filesystem>
-
+#include <unordered_set>
 #include "assetmanager.h"
 #include "rapidjson/rapidjson.h"
 #include "rapidjson/document.h"
@@ -44,6 +44,19 @@ namespace CrashoutsEngine {
 		const std::string assetManifestPath = rootPath + "json/assetmanifest.json";
 
 		namespace fs = std::filesystem;
+		static bool EndsWithJson(const std::string& s)
+		{
+			if (s.size() < 5) return false;
+			return s.compare(s.size() - 5, 5, ".json") == 0;
+		}
+
+		static std::string NormalizeSceneRelPath(std::string p)
+		{
+			// Turn "descentmenu" into "descentmenu.json"
+			if (!EndsWithJson(p))
+				p += ".json";
+			return p;
+		}
 
 		AssetManager::AssetManager() {
 			// Load FT_Library
@@ -322,13 +335,17 @@ namespace CrashoutsEngine {
 				std::cout << "Loading Scenes..." << std::endl;
 
 				const rapidjson::Value& sceneArray = doc["scenes"];
-
+				std::unordered_set<std::string> loadedSceneNames;
+				loadedSceneNames.reserve(sceneArray.Size());
 				for (rapidjson::SizeType i = 0; i < sceneArray.Size(); ++i) {
 					const rapidjson::Value& asset = sceneArray[i];
 					if (asset.HasMember("name") && asset.HasMember("path")) {
 						std::string name = asset["name"].GetString();
 						std::string relativePath = asset["path"].GetString();
-
+						if (!loadedSceneNames.insert(name).second) {
+							std::cout << "[AssetManager] Duplicate scene in manifest, skipping: " << name << "\n";
+							continue;
+						}
 						fs::path fullPath = fs::path(rootAssetPath) / "scenes" / relativePath;
 
 						// Create SceneAsset object from file data (JSON)

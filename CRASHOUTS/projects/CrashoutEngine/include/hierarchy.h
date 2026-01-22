@@ -18,6 +18,7 @@ namespace CrashoutsEngine {
     bool IsAlreadyChildOf(ECS& ecs, Entity parent, Entity child);
 
     void UpdateHierarchy(ECS& ecs);
+    void RebuildHierarchyLinks(ECS& ecs);
 
     Entity GetRoot(ECS& ecs, Entity e);
     void GatherDescendants(ECS& ecs, Entity e, std::vector<Entity>& out);

@@ -24,7 +24,7 @@ This implementation provides the foundation for all 2D rendering operations
 in the CrashoutEngine, with particular emphasis on performance-critical
 applications such as sprite animation, particle systems, and dynamic geometry.
 
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 */
 
@@ -48,6 +48,7 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserve
 #include <GL/glew.h>
 #include <glm/gtc/matrix_transform.hpp>
 #include "settings.h"
+#include "shapes.h" // Added for FlushDebugQueue
 
 namespace Component {
 
@@ -979,5 +980,19 @@ namespace Component {
         else if (ebo != 0) {
             glDeleteBuffers(1, &ebo);
         }
+    }
+
+    void Rendering::FlushDebugQueue() {
+        if (!shdr_pgm) return;
+
+        for (const auto& line : debugLines) {
+            Shapes::CreateLine(line.start, line.end, line.thickness, line.color, line.isWorldSpace);
+        }
+        debugLines.clear();
+
+        for (const auto& circle : debugCircles) {
+            Shapes::CreateCircle(circle.size, circle.position, 32, circle.color, circle.isWorldSpace);
+        }
+        debugCircles.clear();
     }
 }

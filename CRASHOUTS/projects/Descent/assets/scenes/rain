@@ -21,11 +21,138 @@
             "tilemap": {
                 "tileSize": 32,
                 "activeAsset": "tilemaps/Rock",
-                "tileAssetNames": [],
+                "tileAssetNames": [
+                    "Rock"
+                ],
                 "gridData": [
+                    {
+                        "x": -10,
+                        "y": -1,
+                        "asset": ""
+                    },
+                    {
+                        "x": -10,
+                        "y": 0,
+                        "asset": ""
+                    },
+                    {
+                        "x": -10,
+                        "y": 1,
+                        "asset": ""
+                    },
+                    {
+                        "x": -9,
+                        "y": -4,
+                        "asset": ""
+                    },
+                    {
+                        "x": -9,
+                        "y": -3,
+                        "asset": ""
+                    },
+                    {
+                        "x": -9,
+                        "y": -2,
+                        "asset": ""
+                    },
+                    {
+                        "x": -9,
+                        "y": -1,
+                        "asset": ""
+                    },
+                    {
+                        "x": -9,
+                        "y": 0,
+                        "asset": ""
+                    },
+                    {
+                        "x": -9,
+                        "y": 1,
+                        "asset": ""
+                    },
+                    {
+                        "x": -9,
+                        "y": 2,
+                        "asset": ""
+                    },
+                    {
+                        "x": -9,
+                        "y": 3,
+                        "asset": ""
+                    },
+                    {
+                        "x": -9,
+                        "y": 4,
+                        "asset": ""
+                    },
+                    {
+                        "x": -8,
+                        "y": -3,
+                        "asset": ""
+                    },
+                    {
+                        "x": -8,
+                        "y": -2,
+                        "asset": ""
+                    },
+                    {
+                        "x": -7,
+                        "y": -3,
+                        "asset": ""
+                    },
+                    {
+                        "x": -7,
+                        "y": -2,
+                        "asset": ""
+                    },
+                    {
+                        "x": -7,
+                        "y": -1,
+                        "asset": ""
+                    },
+                    {
+                        "x": -7,
+                        "y": 0,
+                        "asset": ""
+                    },
+                    {
+                        "x": -6,
+                        "y": -4,
+                        "asset": ""
+                    },
+                    {
+                        "x": -6,
+                        "y": -2,
+                        "asset": ""
+                    },
+                    {
+                        "x": -6,
+                        "y": -1,
+                        "asset": ""
+                    },
                     {
                         "x": -6,
                         "y": 2,
+                        "asset": ""
+                    },
+                    {
+                        "x": -5,
+                        "y": -3,
+                        "asset": ""
+                    },
+                    {
+                        "x": -5,
+                        "y": -2,
+                        "asset": ""
+                    },
+                    {
+                        "x": -5,
+                        "y": -1,
+                        "asset": ""
+                    },
+                    {
+                        "x": -5,
+                        "y": 1,
                         "asset": ""
                     },
                     {
@@ -34,9 +161,114 @@
                         "asset": ""
                     },
                     {
+                        "x": -5,
+                        "y": 3,
+                        "asset": ""
+                    },
+                    {
+                        "x": -5,
+                        "y": 4,
+                        "asset": ""
+                    },
+                    {
+                        "x": -5,
+                        "y": 5,
+                        "asset": ""
+                    },
+                    {
+                        "x": -5,
+                        "y": 6,
+                        "asset": ""
+                    },
+                    {
+                        "x": -5,
+                        "y": 7,
+                        "asset": ""
+                    },
+                    {
+                        "x": -5,
+                        "y": 8,
+                        "asset": ""
+                    },
+                    {
+                        "x": -5,
+                        "y": 9,
+                        "asset": ""
+                    },
+                    {
+                        "x": -5,
+                        "y": 10,
+                        "asset": ""
+                    },
+                    {
+                        "x": -4,
+                        "y": 1,
+                        "asset": ""
+                    },
+                    {
                         "x": -4,
                         "y": 2,
+                        "asset": ""
+                    },
+                    {
+                        "x": -4,
+                        "y": 3,
                         "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -4,
+                        "y": 4,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -4,
+                        "y": 5,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -4,
+                        "y": 6,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -4,
+                        "y": 7,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -4,
+                        "y": 8,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -4,
+                        "y": 9,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -4,
+                        "y": 10,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -3,
+                        "y": -4,
+                        "asset": ""
+                    },
+                    {
+                        "x": -3,
+                        "y": -3,
+                        "asset": ""
+                    },
+                    {
+                        "x": -3,
+                        "y": -2,
+                        "asset": ""
+                    },
+                    {
+                        "x": -3,
+                        "y": -1,
+                        "asset": ""
                     },
                     {
                         "x": -3,
@@ -49,6 +281,26 @@
                         "asset": "tilemaps/Rock"
                     },
                     {
+                        "x": -3,
+                        "y": 10,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -2,
+                        "y": -4,
+                        "asset": ""
+                    },
+                    {
+                        "x": -2,
+                        "y": -3,
+                        "asset": ""
+                    },
+                    {
+                        "x": -2,
+                        "y": -2,
+                        "asset": ""
+                    },
+                    {
                         "x": -2,
                         "y": 1,
                         "asset": ""
@@ -59,6 +311,31 @@
                         "asset": "tilemaps/Rock"
                     },
                     {
+                        "x": -2,
+                        "y": 10,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -1,
+                        "y": -4,
+                        "asset": ""
+                    },
+                    {
+                        "x": -1,
+                        "y": -3,
+                        "asset": ""
+                    },
+                    {
+                        "x": -1,
+                        "y": -2,
+                        "asset": ""
+                    },
+                    {
+                        "x": -1,
+                        "y": -1,
+                        "asset": ""
+                    },
+                    {
                         "x": -1,
                         "y": 1,
                         "asset": ""
@@ -67,6 +344,31 @@
                         "x": -1,
                         "y": 2,
                         "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -1,
+                        "y": 10,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 0,
+                        "y": -4,
+                        "asset": ""
+                    },
+                    {
+                        "x": 0,
+                        "y": -3,
+                        "asset": ""
+                    },
+                    {
+                        "x": 0,
+                        "y": -1,
+                        "asset": ""
+                    },
+                    {
+                        "x": 0,
+                        "y": 0,
+                        "asset": ""
                     },
                     {
                         "x": 0,
@@ -114,6 +416,16 @@
                         "asset": ""
                     },
                     {
+                        "x": 0,
+                        "y": 10,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 1,
+                        "y": -1,
+                        "asset": ""
+                    },
+                    {
                         "x": 1,
                         "y": 0,
                         "asset": ""
@@ -121,11 +433,16 @@
                     {
                         "x": 1,
                         "y": 1,
-                        "asset": "tilemaps/Rock"
+                        "asset": ""
                     },
                     {
                         "x": 1,
                         "y": 2,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 1,
+                        "y": 10,
                         "asset": "tilemaps/Rock"
                     },
                     {
@@ -136,16 +453,21 @@
                     {
                         "x": 2,
                         "y": 0,
-                        "asset": "tilemaps/Rock"
+                        "asset": ""
                     },
                     {
                         "x": 2,
                         "y": 1,
-                        "asset": "tilemaps/Rock"
+                        "asset": ""
                     },
                     {
                         "x": 2,
                         "y": 2,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 2,
+                        "y": 10,
                         "asset": "tilemaps/Rock"
                     },
                     {
@@ -156,11 +478,36 @@
                     {
                         "x": 3,
                         "y": 0,
-                        "asset": "tilemaps/Rock"
+                        "asset": ""
                     },
                     {
                         "x": 3,
                         "y": 1,
+                        "asset": ""
+                    },
+                    {
+                        "x": 3,
+                        "y": 2,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 3,
+                        "y": 10,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 4,
+                        "y": -5,
+                        "asset": ""
+                    },
+                    {
+                        "x": 4,
+                        "y": -4,
+                        "asset": ""
+                    },
+                    {
+                        "x": 4,
+                        "y": -3,
                         "asset": ""
                     },
                     {
@@ -171,7 +518,22 @@
                     {
                         "x": 4,
                         "y": 0,
+                        "asset": ""
+                    },
+                    {
+                        "x": 4,
+                        "y": 2,
                         "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 4,
+                        "y": 10,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 5,
+                        "y": -3,
+                        "asset": ""
                     },
                     {
                         "x": 5,
@@ -181,7 +543,32 @@
                     {
                         "x": 5,
                         "y": 0,
+                        "asset": ""
+                    },
+                    {
+                        "x": 5,
+                        "y": 1,
+                        "asset": ""
+                    },
+                    {
+                        "x": 5,
+                        "y": 2,
                         "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 5,
+                        "y": 10,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 6,
+                        "y": -4,
+                        "asset": ""
+                    },
+                    {
+                        "x": 6,
+                        "y": -3,
+                        "asset": ""
                     },
                     {
                         "x": 6,
@@ -191,7 +578,27 @@
                     {
                         "x": 6,
                         "y": 0,
+                        "asset": ""
+                    },
+                    {
+                        "x": 6,
+                        "y": 1,
+                        "asset": ""
+                    },
+                    {
+                        "x": 6,
+                        "y": 2,
                         "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 6,
+                        "y": 10,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 7,
+                        "y": -4,
+                        "asset": ""
                     },
                     {
                         "x": 7,
@@ -201,7 +608,37 @@
                     {
                         "x": 7,
                         "y": 0,
+                        "asset": ""
+                    },
+                    {
+                        "x": 7,
+                        "y": 1,
+                        "asset": ""
+                    },
+                    {
+                        "x": 7,
+                        "y": 2,
                         "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 7,
+                        "y": 10,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 8,
+                        "y": -4,
+                        "asset": ""
+                    },
+                    {
+                        "x": 8,
+                        "y": -3,
+                        "asset": ""
+                    },
+                    {
+                        "x": 8,
+                        "y": -2,
+                        "asset": ""
                     },
                     {
                         "x": 8,
@@ -211,17 +648,32 @@
                     {
                         "x": 8,
                         "y": 0,
-                        "asset": "tilemaps/Rock"
+                        "asset": ""
                     },
                     {
                         "x": 8,
                         "y": 1,
-                        "asset": "tilemaps/Rock"
+                        "asset": ""
                     },
                     {
                         "x": 8,
                         "y": 2,
                         "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 8,
+                        "y": 10,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 9,
+                        "y": -5,
+                        "asset": ""
+                    },
+                    {
+                        "x": 9,
+                        "y": -4,
+                        "asset": ""
                     },
                     {
                         "x": 9,
@@ -230,13 +682,28 @@
                     },
                     {
                         "x": 9,
+                        "y": 0,
+                        "asset": ""
+                    },
+                    {
+                        "x": 9,
                         "y": 1,
-                        "asset": "tilemaps/Rock"
+                        "asset": ""
                     },
                     {
                         "x": 9,
                         "y": 2,
                         "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 9,
+                        "y": 10,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 10,
+                        "y": -5,
+                        "asset": ""
                     },
                     {
                         "x": 10,
@@ -245,7 +712,32 @@
                     },
                     {
                         "x": 10,
+                        "y": 0,
+                        "asset": ""
+                    },
+                    {
+                        "x": 10,
+                        "y": 1,
+                        "asset": ""
+                    },
+                    {
+                        "x": 10,
                         "y": 2,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 10,
+                        "y": 10,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 11,
+                        "y": 0,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 11,
+                        "y": 1,
                         "asset": "tilemaps/Rock"
                     },
                     {
@@ -254,8 +746,38 @@
                         "asset": "tilemaps/Rock"
                     },
                     {
+                        "x": 11,
+                        "y": 10,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 12,
+                        "y": 0,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 12,
+                        "y": 1,
+                        "asset": ""
+                    },
+                    {
                         "x": 12,
                         "y": 2,
+                        "asset": ""
+                    },
+                    {
+                        "x": 12,
+                        "y": 10,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 13,
+                        "y": 0,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 13,
+                        "y": 1,
                         "asset": "tilemaps/Rock"
                     },
                     {
@@ -264,9 +786,109 @@
                         "asset": "tilemaps/Rock"
                     },
                     {
+                        "x": 13,
+                        "y": 10,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 14,
+                        "y": 1,
+                        "asset": ""
+                    },
+                    {
                         "x": 14,
                         "y": 2,
+                        "asset": ""
+                    },
+                    {
+                        "x": 14,
+                        "y": 3,
                         "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 14,
+                        "y": 4,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 14,
+                        "y": 5,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 14,
+                        "y": 6,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 14,
+                        "y": 7,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 14,
+                        "y": 8,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 14,
+                        "y": 9,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 14,
+                        "y": 10,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 15,
+                        "y": 1,
+                        "asset": ""
+                    },
+                    {
+                        "x": 15,
+                        "y": 2,
+                        "asset": ""
+                    },
+                    {
+                        "x": 15,
+                        "y": 3,
+                        "asset": ""
+                    },
+                    {
+                        "x": 15,
+                        "y": 4,
+                        "asset": ""
+                    },
+                    {
+                        "x": 15,
+                        "y": 5,
+                        "asset": ""
+                    },
+                    {
+                        "x": 15,
+                        "y": 6,
+                        "asset": ""
+                    },
+                    {
+                        "x": 15,
+                        "y": 7,
+                        "asset": ""
+                    },
+                    {
+                        "x": 15,
+                        "y": 8,
+                        "asset": ""
+                    },
+                    {
+                        "x": 15,
+                        "y": 9,
+                        "asset": ""
+                    },
+                    {
+                        "x": 15,
+                        "y": 10,
+                        "asset": ""
                     }
                 ]
             }
@@ -275,17 +897,17 @@
             "active": true,
             "name": "Player",
             "layer": {
-                "currentLayer": 8
+                "currentLayer": 9
             },
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 12.41807746887207,
-                    "y": 131.09994506835938,
+                    "x": 113.00588989257813,
+                    "y": 125.32919311523438,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 62.0,
+                    "x": -62.0,
                     "y": 72.50599670410156
                 }
             },
@@ -298,7 +920,7 @@
                     "z": 0.0
                 },
                 "staticFriction": 1.0,
-                "dynamicFriction": 1.0,
+                "dynamicFriction": 0.0,
                 "inertia": 0.0,
                 "invInertia": 0.0
             },
@@ -307,8 +929,8 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 12.41807746887207,
-                    "y": 131.09994506835938,
+                    "x": 113.00588989257813,
+                    "y": 125.27364349365235,
                     "z": 0.0
                 },
                 "offset": {
@@ -317,13 +939,13 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 0.11805915832519531,
-                    "y": 101.7469482421875,
+                    "x": 100.70587158203125,
+                    "y": 95.92063903808594,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 24.718095779418947,
-                    "y": 160.45294189453126,
+                    "x": 125.305908203125,
+                    "y": 154.62664794921876,
                     "z": 0.0
                 }
             },
@@ -368,15 +990,15 @@
                         "fields": {
                             "moveSpeed": 2000.0,
                             "maxRunSpeed": 200.0,
-                            "jumpPower": 20000.0,
+                            "jumpPower": 50000.0,
                             "groundDrag": 0.15000000596046449,
-                            "airDrag": 0.11999999731779099,
+                            "airDrag": 0.10000000149011612,
                             "gravityScale": 2.5,
                             "turnMultiplier": 2.0,
                             "frictionMultiplier": 500.0,
                             "gravityForceMultiplier": 10.0,
-                            "footstepInterval": 0.07500000298023224,
-                            "swapPause": 1.0,
+                            "footstepInterval": 0.15000000596046449,
+                            "swapPause": 1.0499999523162842,
                             "energyConsumption": 12.5,
                             "normalMass": 4.5,
                             "lightMass": 3.0,
@@ -448,13 +1070,13 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 173.1859130859375,
-                    "y": 50.04022216796875,
+                    "x": -71.25269317626953,
+                    "y": 113.93608856201172,
                     "z": 0.0
                 },
                 "size": {
-                    "x": -72.0,
-                    "y": 67.0
+                    "x": 72.00018310546875,
+                    "y": 67.00019073486328
                 }
             },
             "rigidbody": {
@@ -475,8 +1097,8 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 171.6859130859375,
-                    "y": 46.54022216796875,
+                    "x": -72.75269317626953,
+                    "y": 110.43608856201172,
                     "z": 0.0
                 },
                 "offset": {
@@ -485,13 +1107,13 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 149.28591918945313,
-                    "y": 32.54021453857422,
+                    "x": -95.15259552001953,
+                    "y": 96.43608856201172,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 194.08590698242188,
-                    "y": 60.54022979736328,
+                    "x": -50.35279083251953,
+                    "y": 124.43608856201172,
                     "z": 0.0
                 }
             },
@@ -534,14 +1156,18 @@
                     {
                         "className": "SlimeMovement",
                         "fields": {
-                            "moveSpeed": 5000.0,
+                            "moveSpeed": 1000.0,
                             "maxSpeed": 50.0,
                             "turnTimer": 2.0,
-                            "detectionRange": 300.0,
+                            "detectionRange": 85.0,
                             "gravityScale": 5.0,
                             "grabRange": 100.0,
-                            "grabEnergy": 6.25,
-                            "MaxDist": 200.0
+                            "minThrowSpeed": 500.0,
+                            "maxThrowSpeed": 2500.0,
+                            "maxMouseDragDist": 500.0,
+                            "airDrag": 1.0,
+                            "stunDuration": 5.0,
+                            "MaxDist": 150.0
                         }
                     }
                 ]

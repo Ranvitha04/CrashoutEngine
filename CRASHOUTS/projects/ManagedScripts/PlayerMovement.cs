@@ -71,8 +71,8 @@ namespace CrashoutsEngine
             IsGrounded = false;
 
             // Play music
-            AudioManager.GetInstance().Play("ambient");
-            AudioManager.GetInstance().Play("bgm1");
+            AudioManager.GetInstance().PlayAttached("ambient", Entity.ID);
+            AudioManager.GetInstance().PlayAttached("bgm1", Entity.ID);
 
             CurrentEnergy = MaxEnergy;
             swapPauseTimer = 0.0f;
@@ -100,12 +100,12 @@ namespace CrashoutsEngine
                 swapPauseTimer -= (float)Time.DT;
                 isSwitching = true;
                 
-                // FREEZE MOVEMENT INPUT
+                // Freeze input during state switch
                 horizontalInput = 0f;
             }
             else
             {
-                // 2. POLL INPUT (Only if not switching)
+                // 2. POLL INPUT (Active only when not switching)
                 horizontalInput = 0f;
                 if (Input.IsKeyPressed(Key.A))
                 {
@@ -131,11 +131,11 @@ namespace CrashoutsEngine
                     // Reset Y velocity for consistent jump height
                     rb.LinearVelocity = new CEVec3(rb.LinearVelocity.x, 0f, 0f);
                     rb.AddForce(new CEVec3(0f, jumpPower, 0f));
-                    IsGrounded = false; // Immediately unground to prevent double jumps before physics updates
+                    IsGrounded = false; // Prevent double jumps
                 }
 
                 // 4. WEIGHT MECHANIC TRIGGER (Q)
-                // "Only allowed to swap state when grounded"
+                // State swap permitted only when grounded
                 if (Input.IsKeyTriggered(Key.Q) && IsGrounded && CurrentEnergy >= energyConsumption)
                 {
                     RemoveEnergy(energyConsumption);
@@ -151,21 +151,24 @@ namespace CrashoutsEngine
                     // Start Cooldown/Freeze
                     swapPauseTimer = swapPause;
 
-                    // Kill velocity so we don't slide while switching
+                    // Stop movement to prevent sliding during switch
                     rb.LinearVelocity = new CEVec3(0, 0, 0);
                 }
             }
 
             // 5. AUDIO LOGIC (Footsteps)
-            // Only play sound if moving, grounded, and NOT switching
             if (horizontalInput != 0.0f && IsGrounded && !isSwitching)
             {
                 footstepTimer -= (float)Time.DT;
                 if (footstepTimer <= 0.0f)
                 {
                     int index = rng.Next(1, 7);
-                    string soundName = "footstep" + index;
-                    AudioManager.GetInstance().Play(soundName);
+
+                    
+                    string clipKey = "footstep" + index;
+
+                    AudioManager.GetInstance().PlayAttached(clipKey, Entity.ID);
+
                     footstepTimer = footstepInterval;
                 }
             }
@@ -174,16 +177,15 @@ namespace CrashoutsEngine
                 footstepTimer = 0.0f;
             }
 
-            // 6. DETERMINE ANIMATION STATE (The Fix)
+            // 6. UPDATE ANIMATION STATE
             UpdateAnimationState(isSwitching);
         }
 
         private void UpdateAnimationState(bool isSwitching)
         {
-            // Default to Idle so we never have an empty state
             string targetState = "playerIdle";
 
-            // PRIORITY 1: Switching (Overrides everything)
+            // PRIORITY 1: Switching
             if (isSwitching)
             {
                 targetState = "playerSwitch";
@@ -191,12 +193,10 @@ namespace CrashoutsEngine
             // PRIORITY 2: Airborne (Jump/Fall)
             else if (!IsGrounded)
             {
-                // If moving up noticeably
                 if (rb.LinearVelocity.y > 1.0f)
                 {
                     targetState = "playerJump";
                 }
-                // If falling OR hovering near zero (apex of jump), default to Fall
                 else if (rb.LinearVelocity.y < -12.5f)
                 {
                     targetState = "playerFall";
@@ -215,18 +215,18 @@ namespace CrashoutsEngine
                 }
             }
 
-            // SUFFIX LOGIC: Add "Light" if isLight is true
+            // Suffix Logic for Light State
             if (isLight)
             {
                 targetState += "Light";
             }
 
-            // APPLY LOGIC: Only call Play if state changed
+            // Update Animator only on state change
             if (targetState != currentAnimState)
             {
                 if (anim != null)
                 {
-                    anim.Play(targetState, true); // true = restart clip
+                    anim.Play(targetState, true);
                 }
                 currentAnimState = targetState;
             }
@@ -234,22 +234,20 @@ namespace CrashoutsEngine
 
         public override void FixedUpdate()
         {
-            // If paused/switching, apply drag but NO movement force
+            // Apply drag but no movement force if paused or switching
             if (swapPauseTimer > 0.0f || !alive)
             {
-                // Apply simple ground friction to stop sliding
                 CEVec3 v = rb.LinearVelocity;
                 float d = groundDrag * frictionMultiplier;
                 rb.AddForce(new CEVec3(-v.x * d, 0f, 0f));
 
-                // Apply Gravity so we don't float if we switched mid-air (though we restrict switch to ground)
                 if (!IsGrounded)
                     rb.AddForce(new CEVec3(0f, -9.81f * gravityScale * rb.Mass * gravityForceMultiplier, 0f));
 
                 return;
             }
 
-            // --- NORMAL PHYSICS ---
+            // --- PHYSICS UPDATE ---
             CEVec3 velocity = rb.LinearVelocity;
 
             // A. HORIZONTAL MOVEMENT
