@@ -930,7 +930,7 @@
                 "enabled": true,
                 "position": {
                     "x": 113.00588989257813,
-                    "y": 125.27364349365235,
+                    "y": 125.32919311523438,
                     "z": 0.0
                 },
                 "offset": {
@@ -940,12 +940,12 @@
                 },
                 "min": {
                     "x": 100.70587158203125,
-                    "y": 95.92063903808594,
+                    "y": 95.9761962890625,
                     "z": 0.0
                 },
                 "max": {
                     "x": 125.305908203125,
-                    "y": 154.62664794921876,
+                    "y": 154.68218994140626,
                     "z": 0.0
                 }
             },
@@ -996,9 +996,9 @@
                             "gravityScale": 2.5,
                             "turnMultiplier": 2.0,
                             "frictionMultiplier": 500.0,
-                            "gravityForceMultiplier": 10.0,
-                            "footstepInterval": 0.15000000596046449,
-                            "swapPause": 1.0499999523162842,
+                            "gravityForceMultiplier": 18.200000762939454,
+                            "footstepInterval": 7.150000095367432,
+                            "swapPause": 8.449999809265137,
                             "energyConsumption": 12.5,
                             "normalMass": 4.5,
                             "lightMass": 3.0,

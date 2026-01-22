@@ -35,7 +35,7 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserve
 #include "layercomponent.h"
 #include "activecomponent.h"
 #include "particleComponent.h"
-#include "scriptcomponent.h"
+
 
 // RapidJSON
 #include "rapidjson/document.h"
@@ -866,7 +866,8 @@ namespace CrashoutsEngine {
             aObj.AddMember("isActive", ac->isActive, allocator);
             obj.AddMember("active", aObj, allocator);
         }
-
+        //Audio
+      
         // Transform
         if (auto* tc = ecs.GetComponent<TransformComponent>(e)) {
             Value tObj(kObjectType);
@@ -881,6 +882,33 @@ namespace CrashoutsEngine {
             Value lObj(kObjectType);
             lObj.AddMember("currentLayer", lc->currentLayer, allocator);
             obj.AddMember("layer", lObj, allocator);
+        }
+        // Audio
+        if (auto* audio = ecs.GetComponent<AudioEmitterComponent>(e)) {
+            rapidjson::Value audioObj(rapidjson::kObjectType);
+
+            
+            rapidjson::Value clipsArr(rapidjson::kArrayType);
+            for (const auto& c : audio->clips) {
+                rapidjson::Value clipObj(rapidjson::kObjectType);
+
+                
+                clipObj.AddMember("name", rapidjson::Value(c.name.c_str(), allocator), allocator);
+                clipObj.AddMember("path", rapidjson::Value(c.path.c_str(), allocator), allocator);
+
+                clipObj.AddMember("volume", c.volume, allocator);
+                clipObj.AddMember("pitch", c.pitch, allocator);
+                clipObj.AddMember("looping", c.looping, allocator);
+
+                
+                clipObj.AddMember("isMusic", c.isMusic, allocator);
+                clipObj.AddMember("spatial3D", c.spatial3D, allocator);
+
+                clipsArr.PushBack(clipObj, allocator);
+            }
+
+            audioObj.AddMember("clips", clipsArr, allocator);
+            obj.AddMember("audio", audioObj, allocator);
         }
 
         // Shape
