@@ -8,6 +8,7 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 
 */
 #include "ScriptComponent.h"
+#include "entitymanager.h"
 #include <mono/metadata/mono-config.h>
 
 namespace CrashoutsEngine
@@ -185,32 +186,79 @@ namespace Component{
 
     void ScriptComponent::Start()
     {
-        for (size_t i = 0; i < Scripts.size(); ++i)
-        {
-            auto& script = Scripts[i];
-            if (script.Started) continue;
+        // Snapshot class names to iterate safely. 
+        // We don't copy instances because they might become stale (e.g. if Entity is destroyed).
+        std::vector<std::string> scriptNames;
+        scriptNames.reserve(Scripts.size());
+        for (const auto& s : Scripts) {
+            scriptNames.push_back(s.ClassName);
+        }
 
-            if (!script.MethodStart) {
-                // std::cout << "[Script] No Start() for " << script.ClassName << "\n";
+        uint32_t myEntityID = EntityID;
+
+        for (const auto& name : scriptNames)
+        {
+            auto* ecs = ECS::getInstance();
+            if (!ecs) return; 
+
+            // Check if entity/component still exists
+            if (!ecs->HasComponent<ScriptComponent>(myEntityID)) {
+                return; // Entity or component destroyed
+            }
+
+            auto* liveComp = ecs->GetComponent<ScriptComponent>(myEntityID);
+            if (!liveComp) return; // Should not happen if HasComponent is true, but safe
+
+            // Find the live script instance
+            ScriptInstance* liveScript = nullptr;
+            for (size_t j = 0; j < liveComp->Scripts.size(); ++j)
+            {
+                if (liveComp->Scripts[j].ClassName == name)
+                {
+                    liveScript = &liveComp->Scripts[j];
+                    break;
+                }
+            }
+
+            // If script was removed or not found, skip
+            if (!liveScript) continue;
+
+            // Only start if not already started
+            if (liveScript->Started) continue;
+
+            if (!liveScript->MethodStart) {
+                // std::cout << "[Script] No Start() for " << liveScript->ClassName << "\n";
+                // Mark as started even if no method, so we don't check again
+                liveScript->Started = true;
                 continue;
             }
-            if (!script.Instance) {
-                std::cerr << "[Script] Instance null for " << script.ClassName << "\n";
+            if (!liveScript->Instance) {
+                std::cerr << "[Script] Instance null for " << liveScript->ClassName << "\n";
+                liveScript->Started = true;
                 continue;
             }
+
+            // Mark started BEFORE invocation.
+            // This prevents infinite recursion if Start() triggers Start(),
+            // and avoids using 'liveScript' pointer after invocation (which might be dangling if vector reallocates).
+            liveScript->Started = true;
+
+            // Cache necessary data for invocation to avoid accessing liveScript after this point
+            MonoMethod* methodStart = liveScript->MethodStart;
+            MonoObject* instance = liveScript->Instance;
 
             MonoObject* exc = nullptr;
-            mono_runtime_invoke(script.MethodStart, script.Instance, nullptr, &exc);
+            mono_runtime_invoke(methodStart, instance, nullptr, &exc);
             if (exc) mono_print_unhandled_exception(exc);
-
-            // Re-fetch reference in case vector reallocated during mono_runtime_invoke
-            Scripts[i].Started = true;
         }
     }
 
     void ScriptComponent::Update()
     {
-        for (auto& script : Scripts)
+        // Safe copy to handle case where 'this' moves or Scripts modified
+        std::vector<ScriptInstance> scriptsCopy = Scripts;
+
+        for (auto& script : scriptsCopy)
         {
             if (!script.MethodUpdate || !script.GCHandle)
                 continue;
@@ -224,7 +272,10 @@ namespace Component{
 
     void ScriptComponent::FixedUpdate()
     {
-        for (auto& script : Scripts)
+        // Safe copy to handle case where 'this' moves or Scripts modified
+        std::vector<ScriptInstance> scriptsCopy = Scripts;
+
+        for (auto& script : scriptsCopy)
         {
             if (!script.MethodFixedUpdate || !script.GCHandle)
                 continue;
