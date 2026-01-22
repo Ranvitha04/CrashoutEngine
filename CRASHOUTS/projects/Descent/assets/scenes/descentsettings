@@ -1,6 +1,7 @@
 {
     "entities": [
         {
+            "active": true,
             "name": "BG",
             "layer": {
                 "currentLayer": 0
@@ -64,6 +65,7 @@
             }
         },
         {
+            "active": true,
             "name": "Title",
             "layer": {
                 "currentLayer": 0
@@ -116,6 +118,7 @@
             }
         },
         {
+            "active": true,
             "name": "CloseBtn",
             "layer": {
                 "currentLayer": 0
@@ -242,6 +245,7 @@
             }
         },
         {
+            "active": true,
             "name": "SettingsPanel",
             "layer": {
                 "currentLayer": 0
@@ -294,6 +298,7 @@
             }
         },
         {
+            "active": true,
             "name": "Instructions",
             "layer": {
                 "currentLayer": 0
@@ -301,7 +306,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 84.41300201416016,
+                    "x": 89.95561981201172,
                     "y": 47.34700012207031,
                     "z": 0.0
                 },
@@ -311,7 +316,7 @@
                 }
             },
             "text": {
-                "font": "Exo2-Regular",
+                "font": "AlegreyaSC-Medium",
                 "text": "A & D: Left & Right",
                 "scale": 6.0,
                 "offset": {
@@ -329,6 +334,7 @@
             }
         },
         {
+            "active": true,
             "name": "Entity 5_Clone6",
             "layer": {
                 "currentLayer": 0
@@ -336,7 +342,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 76.74000549316406,
+                    "x": 82.28262329101563,
                     "y": 25.14699935913086,
                     "z": 0.0
                 },
@@ -346,7 +352,7 @@
                 }
             },
             "text": {
-                "font": "Exo2-Regular",
+                "font": "AlegreyaSC-Medium",
                 "text": "Q: Switch Modes",
                 "scale": 6.0,
                 "offset": {
@@ -384,6 +390,7 @@
             }
         },
         {
+            "active": true,
             "name": "Entity 5_Clone6_Clone7",
             "layer": {
                 "currentLayer": 0
@@ -391,7 +398,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 64.23100280761719,
+                    "x": 69.77362060546875,
                     "y": 1.3470001220703126,
                     "z": 0.0
                 },
@@ -401,7 +408,7 @@
                 }
             },
             "text": {
-                "font": "Exo2-Regular",
+                "font": "AlegreyaSC-Medium",
                 "text": "SPACE: Jump",
                 "scale": 6.0,
                 "offset": {
@@ -439,6 +446,7 @@
             }
         },
         {
+            "active": true,
             "name": "Entity 5_Clone6_Clone7_Clone8",
             "layer": {
                 "currentLayer": 0
@@ -446,7 +454,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 116.04900360107422,
+                    "x": 121.59162139892578,
                     "y": -20.25299835205078,
                     "z": 0.0
                 },
@@ -456,7 +464,7 @@
                 }
             },
             "text": {
-                "font": "Exo2-Regular",
+                "font": "AlegreyaSC-Medium",
                 "text": "LEFT MOUSE: Move Enemies",
                 "scale": 6.0,
                 "offset": {
@@ -494,6 +502,7 @@
             }
         },
         {
+            "active": true,
             "name": "Entity 5_Clone6_Clone7_Clone8_Clone9",
             "layer": {
                 "currentLayer": 0
@@ -501,7 +510,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 616.9810180664063,
+                    "x": 622.5236206054688,
                     "y": -52.25299835205078,
                     "z": 0.0
                 },
@@ -545,7 +554,7 @@
                 }
             },
             "text": {
-                "font": "Exo2-Regular",
+                "font": "AlegreyaSC-Medium",
                 "text": "Switch between modes to explore\nand solve puzzles.\nUse enemies to your advantage.\nLaval & Enemies kill you instantly,\nso be careful!\n\nActivate all the pressure plates to\nopen the door at the end!",
                 "scale": 5.5,
                 "offset": {
@@ -593,6 +602,7 @@
             }
         },
         {
+            "active": true,
             "name": "SFX",
             "layer": {
                 "currentLayer": 0
@@ -610,7 +620,7 @@
                 }
             },
             "text": {
-                "font": "Exo2-Regular",
+                "font": "AlegreyaSC-Medium",
                 "text": "SFX",
                 "scale": 11.0,
                 "offset": {
@@ -628,6 +638,7 @@
             }
         },
         {
+            "active": true,
             "name": "SFXBar",
             "layer": {
                 "currentLayer": 0
@@ -635,7 +646,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -109.00523376464844,
+                    "x": -111.11302185058594,
                     "y": -65.30364227294922,
                     "z": 0.0
                 },
@@ -737,6 +748,7 @@
             }
         },
         {
+            "active": true,
             "name": "MusicBar",
             "layer": {
                 "currentLayer": 0
@@ -846,6 +858,7 @@
             }
         },
         {
+            "active": true,
             "name": "Music",
             "layer": {
                 "currentLayer": 0
@@ -863,7 +876,7 @@
                 }
             },
             "text": {
-                "font": "Exo2-Regular",
+                "font": "AlegreyaSC-Medium",
                 "text": "Music",
                 "scale": 11.0,
                 "offset": {
@@ -881,6 +894,7 @@
             }
         },
         {
+            "active": true,
             "name": "Instruction",
             "layer": {
                 "currentLayer": 0
@@ -916,6 +930,7 @@
             }
         },
         {
+            "active": true,
             "name": "SFXBar_BG",
             "layer": {
                 "currentLayer": 0
@@ -968,6 +983,7 @@
             }
         },
         {
+            "active": true,
             "name": "MusicBar_BG",
             "layer": {
                 "currentLayer": 0

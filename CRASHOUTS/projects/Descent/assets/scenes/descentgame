@@ -14334,13 +14334,13 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -35.70806884765625,
-                    "y": 14.714649200439454,
+                    "x": -44.29373550415039,
+                    "y": -354.6708068847656,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 62.0,
-                    "y": 72.50599670410156
+                    "x": 158.0,
+                    "y": 104.0
                 }
             },
             "rigidbody": {
@@ -14361,8 +14361,8 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": -35.70806884765625,
-                    "y": 14.714649200439454,
+                    "x": -44.29373550415039,
+                    "y": -354.6708068847656,
                     "z": 0.0
                 },
                 "offset": {
@@ -14371,13 +14371,13 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": -48.0080680847168,
-                    "y": -14.638351440429688,
+                    "x": -56.59373474121094,
+                    "y": -384.0238037109375,
                     "z": 0.0
                 },
                 "max": {
-                    "x": -23.408069610595704,
-                    "y": 44.067649841308597,
+                    "x": -31.993736267089845,
+                    "y": -325.31781005859377,
                     "z": 0.0
                 }
             },
@@ -14389,7 +14389,7 @@
                 "thickness": 1.0,
                 "preview": false,
                 "type": 0,
-                "textureName": "images/Character\\Normal Mode\\Chibi-Actions-SpriteSheet.png",
+                "textureName": "images/Character\\New Artstyle\\Switch State spritesheet.png",
                 "uvSize": {
                     "x": 0.3333333432674408,
                     "y": 0.3333333432674408
@@ -14531,9 +14531,40 @@
             },
             "keyframe_animator": {
                 "current": "playerIdle",
-                "t": 1.049999713897705,
+                "t": 0.01666666753590107,
                 "playing": true,
                 "clips": [
+                    {
+                        "name": "playerJump",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\New Artstyle\\Jump spritesheet.png",
+                        "spriteCols": 2,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 158.0,
+                        "targetHeight": 104.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
                     {
                         "name": "playerSwitch",
                         "wrap": 0,
@@ -14601,37 +14632,6 @@
                         ]
                     },
                     {
-                        "name": "playerJump",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Jump spritesheet.png",
-                        "spriteCols": 2,
-                        "spriteRows": 1,
-                        "useCustomSize": true,
-                        "targetWidth": 158.0,
-                        "targetHeight": 104.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
                         "name": "playerIdleLight",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Switch State spritesheet.png",
@@ -14654,37 +14654,6 @@
                                     {
                                         "t": 0.25,
                                         "v": 6.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "playerFallLight",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Fall spritesheet.png",
-                        "spriteCols": 2,
-                        "spriteRows": 1,
-                        "useCustomSize": true,
-                        "targetWidth": 158.0,
-                        "targetHeight": 104.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 1.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -14746,6 +14715,37 @@
                         ]
                     },
                     {
+                        "name": "playerFallLight",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\New Artstyle\\Fall spritesheet.png",
+                        "spriteCols": 2,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 158.0,
+                        "targetHeight": 104.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 1.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 1.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
                         "name": "playerJumpLight",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Jump spritesheet.png",
@@ -14768,6 +14768,37 @@
                                     {
                                         "t": 0.25,
                                         "v": 1.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "playerFall",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\New Artstyle\\Fall spritesheet.png",
+                        "spriteCols": 2,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 158.0,
+                        "targetHeight": 104.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -14820,37 +14851,6 @@
                                     {
                                         "t": 1.0,
                                         "v": 3.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "playerFall",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Fall spritesheet.png",
-                        "spriteCols": 2,
-                        "spriteRows": 1,
-                        "useCustomSize": true,
-                        "targetWidth": 158.0,
-                        "targetHeight": 104.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -19061,7 +19061,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 513.8012084960938,
+                    "x": 543.8012084960938,
                     "y": -1626.6378173828126,
                     "z": 0.0
                 },
@@ -19088,7 +19088,7 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 513.8012084960938,
+                    "x": 543.8012084960938,
                     "y": -1626.6378173828126,
                     "z": 0.0
                 },
@@ -19099,7 +19099,7 @@
                 },
                 "radius": 1.0,
                 "center": {
-                    "x": 513.8012084960938,
+                    "x": 543.8012084960938,
                     "y": -1626.6378173828126,
                     "z": 0.0
                 }
@@ -19859,7 +19859,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": 1066.6007080078126,
-                    "y": -710.0758666992188,
+                    "y": -680.0758666992188,
                     "z": 0.0
                 },
                 "size": {
@@ -19886,7 +19886,7 @@
                 "enabled": true,
                 "position": {
                     "x": 1066.6007080078126,
-                    "y": -710.0758666992188,
+                    "y": -680.0758666992188,
                     "z": 0.0
                 },
                 "offset": {
@@ -19897,7 +19897,7 @@
                 "radius": 1.0,
                 "center": {
                     "x": 1066.6007080078126,
-                    "y": -710.0758666992188,
+                    "y": -680.0758666992188,
                     "z": 0.0
                 }
             },
@@ -20397,7 +20397,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": 1504.64306640625,
-                    "y": -768.7833251953125,
+                    "y": -767.8394775390625,
                     "z": 0.0
                 },
                 "size": {
@@ -20424,7 +20424,7 @@
                 "enabled": true,
                 "position": {
                     "x": 1504.64306640625,
-                    "y": -768.7833251953125,
+                    "y": -767.8394775390625,
                     "z": 0.0
                 },
                 "offset": {
@@ -20435,7 +20435,7 @@
                 "radius": 1.0,
                 "center": {
                     "x": 1504.64306640625,
-                    "y": -768.7833251953125,
+                    "y": -767.8394775390625,
                     "z": 0.0
                 }
             },
@@ -20493,7 +20493,7 @@
             },
             "keyframe_animator": {
                 "current": "charged",
-                "t": 1.5499992370605469,
+                "t": 0.05000000447034836,
                 "playing": true,
                 "clips": [
                     {
@@ -20612,12 +20612,12 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 130.47837829589845,
-                    "y": -435.0485534667969,
+                    "x": 134.92051696777345,
+                    "y": -1262.358642578125,
                     "z": 0.0
                 },
                 "size": {
-                    "x": -72.0,
+                    "x": 72.0,
                     "y": 67.0
                 }
             },
@@ -20639,8 +20639,8 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 128.97837829589845,
-                    "y": -438.5485534667969,
+                    "x": 133.42051696777345,
+                    "y": -1265.858642578125,
                     "z": 0.0
                 },
                 "offset": {
@@ -20649,13 +20649,13 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 106.57838439941406,
-                    "y": -452.5485534667969,
+                    "x": 111.02052307128906,
+                    "y": -1279.858642578125,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 151.3783721923828,
-                    "y": -424.5485534667969,
+                    "x": 155.8205108642578,
+                    "y": -1251.858642578125,
                     "z": 0.0
                 }
             },
@@ -20673,7 +20673,7 @@
                     "y": 0.3333333432674408
                 },
                 "uvOffset": {
-                    "x": 0.25,
+                    "x": 0.0,
                     "y": 0.3333333432674408
                 },
                 "color": {
@@ -20708,14 +20708,15 @@
                             "maxThrowSpeed": 200.0,
                             "maxMouseDragDist": 400.0,
                             "airDrag": 1.0,
+                            "stunDuration": 1.0,
                             "MaxDist": 150.0
                         }
                     }
                 ]
             },
             "keyframe_animator": {
-                "current": "slimeWalk",
-                "t": 1.5333325862884522,
+                "current": "slimeIdle",
+                "t": 0.05000000447034836,
                 "playing": true,
                 "clips": [
                     {
@@ -20993,11 +20994,11 @@
                 "rotation": 0.0,
                 "position": {
                     "x": 1466.1806640625,
-                    "y": -1555.0487060546876,
+                    "y": -11174.455078125,
                     "z": 0.0
                 },
                 "size": {
-                    "x": -72.0,
+                    "x": 72.0,
                     "y": 67.0
                 }
             },
@@ -21020,7 +21021,7 @@
                 "enabled": true,
                 "position": {
                     "x": 1466.1806640625,
-                    "y": -1555.0487060546876,
+                    "y": -11174.455078125,
                     "z": 0.0
                 },
                 "offset": {
@@ -21031,7 +21032,7 @@
                 "radius": 1.0,
                 "center": {
                     "x": 1466.1806640625,
-                    "y": -1555.0487060546876,
+                    "y": -11174.455078125,
                     "z": 0.0
                 }
             },
@@ -21049,7 +21050,7 @@
                     "y": 0.3333333432674408
                 },
                 "uvOffset": {
-                    "x": 0.5,
+                    "x": 0.0,
                     "y": 0.3333333432674408
                 },
                 "color": {
@@ -21084,14 +21085,15 @@
                             "maxThrowSpeed": 200.0,
                             "maxMouseDragDist": 400.0,
                             "airDrag": 1.0,
+                            "stunDuration": 1.0,
                             "MaxDist": 150.0
                         }
                     }
                 ]
             },
             "keyframe_animator": {
-                "current": "slimeWalk",
-                "t": 0.3833334445953369,
+                "current": "slimeIdle",
+                "t": 0.05000000447034836,
                 "playing": true,
                 "clips": [
                     {
@@ -21188,37 +21190,6 @@
                         ]
                     },
                     {
-                        "name": "slimeJump",
-                        "wrap": 0,
-                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
-                        "spriteCols": 4,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": 72.0,
-                        "targetHeight": 67.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 2.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 2.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
                         "name": "slimeChase",
                         "wrap": 0,
                         "textureAsset": "images/Monsters\\Slime spritesheet.png",
@@ -21248,6 +21219,37 @@
                                     {
                                         "t": 0.5,
                                         "v": 9.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "slimeJump",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": 72.0,
+                        "targetHeight": 67.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 2.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 2.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -21369,11 +21371,11 @@
                 "rotation": 0.0,
                 "position": {
                     "x": 1615.20361328125,
-                    "y": -1555.098876953125,
+                    "y": -11174.5048828125,
                     "z": 0.0
                 },
                 "size": {
-                    "x": -72.0,
+                    "x": 72.0,
                     "y": 67.0
                 }
             },
@@ -21396,7 +21398,7 @@
                 "enabled": true,
                 "position": {
                     "x": 1615.20361328125,
-                    "y": -1555.098876953125,
+                    "y": -11174.5048828125,
                     "z": 0.0
                 },
                 "offset": {
@@ -21407,7 +21409,7 @@
                 "radius": 1.0,
                 "center": {
                     "x": 1615.20361328125,
-                    "y": -1555.098876953125,
+                    "y": -11174.5048828125,
                     "z": 0.0
                 }
             },
@@ -21425,7 +21427,7 @@
                     "y": 0.3333333432674408
                 },
                 "uvOffset": {
-                    "x": 0.25,
+                    "x": 0.0,
                     "y": 0.3333333432674408
                 },
                 "color": {
@@ -21460,14 +21462,15 @@
                             "maxThrowSpeed": 200.0,
                             "maxMouseDragDist": 400.0,
                             "airDrag": 1.0,
+                            "stunDuration": 1.0,
                             "MaxDist": 150.0
                         }
                     }
                 ]
             },
             "keyframe_animator": {
-                "current": "slimeWalk",
-                "t": 1.5333325862884522,
+                "current": "slimeIdle",
+                "t": 0.05000000447034836,
                 "playing": true,
                 "clips": [
                     {
@@ -21870,11 +21873,11 @@
                 "rotation": 0.0,
                 "position": {
                     "x": 1761.3314208984376,
-                    "y": -1555.0487060546876,
+                    "y": -11174.455078125,
                     "z": 0.0
                 },
                 "size": {
-                    "x": -72.0,
+                    "x": 72.0,
                     "y": 67.0
                 }
             },
@@ -21897,7 +21900,7 @@
                 "enabled": true,
                 "position": {
                     "x": 1761.3314208984376,
-                    "y": -1555.0487060546876,
+                    "y": -11174.455078125,
                     "z": 0.0
                 },
                 "offset": {
@@ -21908,7 +21911,7 @@
                 "radius": 1.0,
                 "center": {
                     "x": 1761.3314208984376,
-                    "y": -1555.0487060546876,
+                    "y": -11174.455078125,
                     "z": 0.0
                 }
             },
@@ -21926,7 +21929,7 @@
                     "y": 0.3333333432674408
                 },
                 "uvOffset": {
-                    "x": 0.25,
+                    "x": 0.0,
                     "y": 0.3333333432674408
                 },
                 "color": {
@@ -21961,14 +21964,15 @@
                             "maxThrowSpeed": 200.0,
                             "maxMouseDragDist": 400.0,
                             "airDrag": 1.0,
+                            "stunDuration": 1.0,
                             "MaxDist": 50.0
                         }
                     }
                 ]
             },
             "keyframe_animator": {
-                "current": "slimeWalk",
-                "t": 1.5333325862884522,
+                "current": "slimeIdle",
+                "t": 0.05000000447034836,
                 "playing": true,
                 "clips": [
                     {
@@ -22246,11 +22250,11 @@
                 "rotation": 0.0,
                 "position": {
                     "x": 1125.2744140625,
-                    "y": -947.048583984375,
+                    "y": -10566.455078125,
                     "z": 0.0
                 },
                 "size": {
-                    "x": -72.0,
+                    "x": 72.0,
                     "y": 67.0
                 }
             },
@@ -22273,7 +22277,7 @@
                 "enabled": true,
                 "position": {
                     "x": 1125.2744140625,
-                    "y": -947.048583984375,
+                    "y": -10566.455078125,
                     "z": 0.0
                 },
                 "offset": {
@@ -22284,7 +22288,7 @@
                 "radius": 1.0,
                 "center": {
                     "x": 1125.2744140625,
-                    "y": -947.048583984375,
+                    "y": -10566.455078125,
                     "z": 0.0
                 }
             },
@@ -22302,7 +22306,7 @@
                     "y": 0.3333333432674408
                 },
                 "uvOffset": {
-                    "x": 0.25,
+                    "x": 0.0,
                     "y": 0.3333333432674408
                 },
                 "color": {
@@ -22337,14 +22341,15 @@
                             "maxThrowSpeed": 200.0,
                             "maxMouseDragDist": 400.0,
                             "airDrag": 1.0,
+                            "stunDuration": 1.0,
                             "MaxDist": 50.0
                         }
                     }
                 ]
             },
             "keyframe_animator": {
-                "current": "slimeWalk",
-                "t": 1.5333325862884522,
+                "current": "slimeIdle",
+                "t": 0.05000000447034836,
                 "playing": true,
                 "clips": [
                     {
@@ -22441,37 +22446,6 @@
                         ]
                     },
                     {
-                        "name": "slimeJump",
-                        "wrap": 0,
-                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
-                        "spriteCols": 4,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": 72.0,
-                        "targetHeight": 67.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 2.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 2.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
                         "name": "slimeChase",
                         "wrap": 0,
                         "textureAsset": "images/Monsters\\Slime spritesheet.png",
@@ -22501,6 +22475,37 @@
                                     {
                                         "t": 0.5,
                                         "v": 9.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "slimeJump",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": 72.0,
+                        "targetHeight": 67.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 2.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 2.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -22622,8 +22627,8 @@
                 "rotation": 0.0,
                 "position": {
                     "x": 454.160888671875,
-                    "y": -307.04852294921877,
-                    "z": 0.0
+                    "y": -9926.939453125,
+                    "z": 0.26142585277557375
                 },
                 "size": {
                     "x": -72.0,
@@ -22649,8 +22654,8 @@
                 "enabled": true,
                 "position": {
                     "x": 454.160888671875,
-                    "y": -307.04852294921877,
-                    "z": 0.0
+                    "y": -9926.939453125,
+                    "z": 0.26142585277557375
                 },
                 "offset": {
                     "x": 0.0,
@@ -22660,8 +22665,8 @@
                 "radius": 1.0,
                 "center": {
                     "x": 454.160888671875,
-                    "y": -307.04852294921877,
-                    "z": 0.0
+                    "y": -9926.939453125,
+                    "z": 0.26142585277557375
                 }
             },
             "shape": {
@@ -22678,7 +22683,7 @@
                     "y": 0.3333333432674408
                 },
                 "uvOffset": {
-                    "x": 0.25,
+                    "x": 0.0,
                     "y": 0.3333333432674408
                 },
                 "color": {
@@ -22713,14 +22718,15 @@
                             "maxThrowSpeed": 200.0,
                             "maxMouseDragDist": 400.0,
                             "airDrag": 1.0,
+                            "stunDuration": 1.0,
                             "MaxDist": 50.0
                         }
                     }
                 ]
             },
             "keyframe_animator": {
-                "current": "slimeWalk",
-                "t": 1.5333325862884522,
+                "current": "slimeIdle",
+                "t": 0.05000000447034836,
                 "playing": true,
                 "clips": [
                     {
@@ -22817,6 +22823,37 @@
                         ]
                     },
                     {
+                        "name": "slimeJump",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": 72.0,
+                        "targetHeight": 67.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 2.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 2.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
                         "name": "slimeChase",
                         "wrap": 0,
                         "textureAsset": "images/Monsters\\Slime spritesheet.png",
@@ -22846,37 +22883,6 @@
                                     {
                                         "t": 0.5,
                                         "v": 9.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "slimeJump",
-                        "wrap": 0,
-                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
-                        "spriteCols": 4,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": 72.0,
-                        "targetHeight": 67.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 2.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 2.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -22998,7 +23004,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": 1200.2230224609376,
-                    "y": -1158.55517578125,
+                    "y": -1157.611328125,
                     "z": 0.0
                 },
                 "size": {
@@ -23025,7 +23031,7 @@
                 "enabled": true,
                 "position": {
                     "x": 1200.2230224609376,
-                    "y": -1158.55517578125,
+                    "y": -1157.611328125,
                     "z": 0.0
                 },
                 "offset": {
@@ -23036,7 +23042,7 @@
                 "radius": 1.0,
                 "center": {
                     "x": 1200.2230224609376,
-                    "y": -1158.55517578125,
+                    "y": -1157.611328125,
                     "z": 0.0
                 }
             },
@@ -23094,7 +23100,7 @@
             },
             "keyframe_animator": {
                 "current": "charged",
-                "t": 1.5499992370605469,
+                "t": 0.05000000447034836,
                 "playing": true,
                 "clips": [
                     {
