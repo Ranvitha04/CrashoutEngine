@@ -19,6 +19,7 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserv
 ----------------------------------------------------------------------------- */
 #include "debugreflection.h"
 #include "entitymanager.h"
+#include "rendering.h"
 #include <imgui.h>
 #include <algorithm>
 #include <filesystem>
@@ -2353,6 +2354,67 @@ namespace CrashoutsEngine
 		}
 	};
 
+
+	struct ZOrderAdapter : DebugReflection::IComponentAdapter {
+		const char* name() const override { return "ZOrder (Rendering)"; }
+		bool has(ECS& ecs, Entity e) const override {
+			return ecs.HasComponent<Component::ZOrder>(e);
+		}
+		void add(ECS& ecs, Entity e) override {
+			if (!has(ecs, e)) ecs.AddComponent<Component::ZOrder>(e);
+		}
+		void remove(ECS& ecs, Entity e) override {
+			if (has(ecs, e)) ecs.RemoveComponent<Component::ZOrder>(e);
+		}
+		void drawInspector(ECS& ecs, Entity e) override {
+			auto* z = ecs.GetComponent<Component::ZOrder>(e);
+			if (!z) return;
+
+			int layer = static_cast<int>(z->layer);
+			const char* items[] = { "StaticBackground", "InteractiveBG", "WorldGeometry", "EffectsAndItems", "Players" };
+			if (ImGui::Combo("Layer", &layer, items, IM_ARRAYSIZE(items))) {
+				z->layer = static_cast<Component::RenderLayer>(layer);
+			}
+
+			ImGui::DragInt("Z Index", &z->z);
+
+			if (ecs.HasComponent<Component::TransformComponent>(e)) {
+				auto* t = ecs.GetComponent<Component::TransformComponent>(e);
+				Component::DebugZOverride* dbg = nullptr;
+				if (ecs.HasComponent<Component::DebugZOverride>(e)) {
+					dbg = ecs.GetComponent<Component::DebugZOverride>(e);
+				}
+				float depth = Component::Rendering::ComputeDepth(t->position, *z, dbg);
+				ImGui::TextDisabled("Computed Depth: %.2f", depth);
+			}
+		}
+	};
+
+	struct DebugZOverrideAdapter : DebugReflection::IComponentAdapter {
+		const char* name() const override { return "Debug Z Override"; }
+		bool has(ECS& ecs, Entity e) const override {
+			return ecs.HasComponent<Component::DebugZOverride>(e);
+		}
+		void add(ECS& ecs, Entity e) override {
+			if (!has(ecs, e)) ecs.AddComponent<Component::DebugZOverride>(e);
+		}
+		void remove(ECS& ecs, Entity e) override {
+			if (has(ecs, e)) ecs.RemoveComponent<Component::DebugZOverride>(e);
+		}
+		void drawInspector(ECS& ecs, Entity e) override {
+			auto* dbg = ecs.GetComponent<Component::DebugZOverride>(e);
+			if (!dbg) return;
+
+			ImGui::DragInt("Offset", &dbg->offset, 100.0f);
+
+			// Quick toggles
+			if (ImGui::Button("Reset")) dbg->offset = 0;
+			ImGui::SameLine();
+			if (ImGui::Button("+5M (Front)")) dbg->offset = 5000000;
+			ImGui::SameLine();
+			if (ImGui::Button("-5M (Back)")) dbg->offset = -5000000;
+		}
+	};
 	/*!
 	@brief Game-state provider installed at runtime (no hardcoded state list).
 	@details Bridges GameStateManager to the Debug Menu; exposes current/previous/next and issues ChangeGameState() transitions from a reflected state list.
@@ -2677,6 +2739,8 @@ namespace CrashoutsEngine
 	static BuiltinPhysicsProvider gBuiltinPhys;
 	static KeyframeAnimatorAdapter gKeyframeAdapter;
 	static ParticleSystemAdapter gParticleAdapter;
+    static ZOrderAdapter gZOrderAdapter;
+    static DebugZOverrideAdapter gDebugZOverrideAdapter;
 }
 
 /*!
@@ -2707,6 +2771,8 @@ extern "C" void RegisterBuiltinComponentAdapters() {
 	ComponentRegistry::instance().registerAdapter(&gTileMapAdapter);
 	ComponentRegistry::instance().registerAdapter(&gKeyframeAdapter);
 	ComponentRegistry::instance().registerAdapter(&gParticleAdapter);
+    ComponentRegistry::instance().registerAdapter(&gZOrderAdapter);
+	ComponentRegistry::instance().registerAdapter(&gDebugZOverrideAdapter);
 	DebugReflection::SetGameStateProvider(&gProvider);
 	DebugReflection::PhysicsRegistry::instance().registerProvider(&gBuiltinPhys);
 

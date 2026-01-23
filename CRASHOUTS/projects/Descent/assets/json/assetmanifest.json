@@ -1537,6 +1537,10 @@
         {
             "name": "assetmanifest",
             "path": "assetmanifest.json"
+        },
+        {
+            "name": "assetmanifest.json",
+            "path": "assetmanifest.json.bak"
         }
     ],
     "prefabs": [
@@ -1609,6 +1613,10 @@
             "path": "Slime.json"
         },
         {
+            "name": "SlimeMov",
+            "path": "SlimeMov.json"
+        },
+        {
             "name": "WinDoor",
             "path": "WinDoor.json"
         }
@@ -1631,12 +1639,24 @@
             "path": "descentgame"
         },
         {
+            "name": "descentgame",
+            "path": "descentgame.bak"
+        },
+        {
             "name": "descentmenu",
             "path": "descentmenu"
         },
         {
+            "name": "descentmenu",
+            "path": "descentmenu.bak"
+        },
+        {
             "name": "descentsettings",
             "path": "descentsettings"
+        },
+        {
+            "name": "descentsettings",
+            "path": "descentsettings.bak"
         },
         {
             "name": "menu",
@@ -1649,6 +1669,10 @@
         {
             "name": "ran",
             "path": "ran"
+        },
+        {
+            "name": "ran",
+            "path": "ran.bak"
         },
         {
             "name": "renfred",

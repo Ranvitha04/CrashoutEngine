@@ -32,6 +32,7 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 #include <utility>
 #include <filesystem>
 #include "keyframe.h"
+#include "rendering.h"
 
 // Components
 #include "namecomponent.h"
@@ -191,6 +192,7 @@ namespace CrashoutsEngine {
             const char* const PP_COMPONENT              = "postprocessing";
             // HIERACHY ITEMS
             const char* const PARENT_COMPONENT          = "parent";
+            const char* const Z_ORDER_COMPONENT         = "zorder";
         }
 
         namespace JsonHelpers {
@@ -569,6 +571,13 @@ namespace CrashoutsEngine {
                 }
             }
 
+            if (gECS.HasComponent<Component::ZOrder>(id)) {
+                const auto& c = *gECS.GetComponent<Component::ZOrder>(id);
+                rapidjson::Value val(rapidjson::kObjectType);
+                val.AddMember("layer", (int)c.layer, allocator);
+                val.AddMember("z", c.z, allocator);
+                entityValue.AddMember(rapidjson::StringRef(Keys::Z_ORDER_COMPONENT), val, allocator);
+            }
             if (gECS.HasComponent<KeyframeAnimatorComponent>(id)) {
                 const auto& c = *gECS.GetComponent<KeyframeAnimatorComponent>(id);
                 rapidjson::Value val(rapidjson::kObjectType);
@@ -679,6 +688,7 @@ namespace CrashoutsEngine {
             
             NameComponent& nameComp = gECS.AddComponent<NameComponent>(newEntity, ("Entity" + std::to_string(newEntity)));
             gECS.AddComponent<LayerComponent>(newEntity);
+            gECS.AddComponent<Component::ZOrder>(newEntity);
             auto& transComp = gECS.AddComponent<TransformComponent>(newEntity);
             auto& activeComp = gECS.AddComponent<ActiveComponent>(newEntity, true);
 
@@ -704,6 +714,16 @@ namespace CrashoutsEngine {
                 else if (v.IsObject()) gECS.GetComponent<LayerComponent>(newEntity)->currentLayer = GetInt(v, "currentLayer");
             }
 
+            // ZOrder
+            if (entityValue.HasMember(Keys::Z_ORDER_COMPONENT)) {
+                const auto& v = entityValue[Keys::Z_ORDER_COMPONENT];
+                if (!gECS.HasComponent<Component::ZOrder>(newEntity)) {
+                    gECS.AddComponent<Component::ZOrder>(newEntity);
+                }
+                auto* c = gECS.GetComponent<Component::ZOrder>(newEntity);
+                c->layer = static_cast<Component::RenderLayer>(GetInt(v, "layer", (int)Component::RenderLayer::WorldGeometry));
+                c->z = GetInt(v, "z", 0);
+            }
             // Transform
             if (entityValue.HasMember(Keys::TRANSFORM_COMPONENT)) {
                 const auto& v = entityValue[Keys::TRANSFORM_COMPONENT];
@@ -1383,6 +1403,20 @@ namespace CrashoutsEngine {
                 // Calls the centralized function. 
                 // Any changes to components only need to be updated in SerializeEntity now.
                 rapidjson::Value entityValue = SerializeEntity(static_cast<uint32_t>(id), allocator);
+                
+                // =========================================================
+                // ZOrder
+                // =========================================================
+                if (gECS.HasComponent<Component::ZOrder>(id)) {
+                    const Component::ZOrder& zOrderComp = *gECS.GetComponent<Component::ZOrder>(id);
+                    rapidjson::Value zOrderValue(rapidjson::kObjectType);
+                    
+                    zOrderValue.AddMember("layer", (int)zOrderComp.layer, allocator);
+                    zOrderValue.AddMember("z", zOrderComp.z, allocator);
+
+                    entityValue.AddMember(rapidjson::StringRef(Keys::Z_ORDER_COMPONENT),
+                        std::move(zOrderValue), allocator);
+                }
 
                 // Add the finished entity JSON object to the array
                 entitiesArray.PushBack(std::move(entityValue), allocator);

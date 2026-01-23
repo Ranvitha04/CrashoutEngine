@@ -57,6 +57,7 @@ All content  2025 Digipen Institute of Technology Singapore. All rights reserved
 #include <GL/glew.h>
 #include <glm/glm.hpp>
 #include <vector>
+#include <functional>
 #include "shader.h"	
 #include "entitymanager.h"
 #include "CEColor.h"
@@ -78,6 +79,30 @@ namespace Component {
         CEVec3 position;
         CEColor color;
         bool isWorldSpace;
+    };
+    
+     enum class RenderLayer : int {
+        StaticBackground = 0,   // 1
+        InteractiveBG = 1,      // 2
+        WorldGeometry = 2,      // 3
+        EffectsAndItems = 3,    // 4
+        Players = 4             // 5
+    };
+
+    // Each drawable entity has this struct
+    struct ZOrder {
+        RenderLayer layer; // Which group/layer
+        int z;             // Fine ordering within the layer
+    };
+
+    // Optional debug override (editor-only)
+    struct DebugZOverride {
+        int offset; // +ve brings forward, 0 = normal
+    };
+
+    struct RenderItem {
+        CrashoutsEngine::Entity id;
+        float depth; // final computed depth
     };
 
     /*!
@@ -144,7 +169,8 @@ namespace Component {
         */
         static void Cleanup();
 
-        
+        static float ComputeDepth(const CEVec3& position, const ZOrder& z, const DebugZOverride* debug = nullptr);
+        static void RenderAllSorted(CrashoutsEngine::ECS& registry, std::function<void(CrashoutsEngine::Entity)> drawCallback);
         Rendering(const Rendering&) = delete;
         Rendering& operator=(const Rendering&) = delete;
 

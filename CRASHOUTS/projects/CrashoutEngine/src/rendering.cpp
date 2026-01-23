@@ -49,6 +49,9 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 #include <glm/gtc/matrix_transform.hpp>
 #include "settings.h"
 #include "shapes.h" // Added for FlushDebugQueue
+#include "spriteAnimation.h"
+#include "transformcomponent.h"
+#include <algorithm>
 
 namespace Component {
 
@@ -994,5 +997,76 @@ namespace Component {
             Shapes::CreateCircle(circle.size, circle.position, 32, circle.color, circle.isWorldSpace);
         }
         debugCircles.clear();
+    }
+
+        float Rendering::ComputeDepth(const CEVec3& position, const ZOrder& z, const DebugZOverride* debug) {
+        // Hybrid: per-layer local for background/world, unified for players/effects
+        // For 2D Sorting:
+        // 1. Layer (primary sort key)
+        // 2. Z-Index (manual override within layer)
+        // 3. Y-Position (tie-breaker for same layer/z)
+        
+        // We render back-to-front (Painter's Algorithm).
+        // Sort order is ascending depth.
+        // Smaller Depth -> Drawn First (Background)
+        // Larger Depth  -> Drawn Last (Foreground)
+        
+        // Use +Y so that higher objects (visually higher/further up) are drawn LAST?
+        // Wait, for Platformer/Side-scroller (Gravity downwards):
+        // Y does not strictly define depth, but +Y (Higher) is often "In Front" of Lower?
+        // Actually, previous logic used +Y.
+        // If Player (Y=High) and Ground (Y=Low) are on same layer:
+        // +Y -> Player Depth > Ground Depth -> Player drawn Last -> Player on Top.
+        // This fixes the "Player behind Static" issue when they share Layer 0.
+        
+        float baseDepth = static_cast<int>(z.layer) * 10000000.0f
+            + static_cast<float>(z.z) * 10000.0f
+            + position.y; // Restored to +Y to maintain original draw order direction
+
+        if (debug) {
+            baseDepth += static_cast<float>(debug->offset) * 10000.0f;
+        }
+        return baseDepth;
+    }
+
+    void Rendering::RenderAllSorted(CrashoutsEngine::ECS& registry, std::function<void(CrashoutsEngine::Entity)> drawCallback) {
+        auto& zOrders = registry.GetComponentArray<ZOrder>();
+
+        struct SortableItem {
+            CrashoutsEngine::Entity id;
+            RenderLayer layer;
+            int z;
+            float y;
+        };
+
+        std::vector<SortableItem> renderList;
+        renderList.reserve(zOrders.dense.size());
+
+        for (size_t i = 0; i < zOrders.dense.size(); ++i) {
+            CrashoutsEngine::Entity e = zOrders.indexToEntity[i];
+
+            if (!registry.HasComponent<TransformComponent>(e)) continue;
+
+            auto* t = registry.GetComponent<TransformComponent>(e);
+            const auto& z = zOrders.dense[i];
+
+            // Uniform Y-sorting for all layers (including StaticBackground)
+            // This ensures "local depth" works everywhere, so moving an object in Y
+            // updates its sort order relative to neighbors in the same layer/Z.
+            float sortY = t->position.y;
+
+            renderList.push_back({ e, z.layer, z.z, sortY });
+        }
+
+        // Robust Tuple Sort: Layer > Z > Y
+        std::sort(renderList.begin(), renderList.end(), [](const SortableItem& a, const SortableItem& b) {
+            if (a.layer != b.layer) return static_cast<int>(a.layer) < static_cast<int>(b.layer);
+            if (a.z != b.z) return a.z < b.z;
+            return a.y < b.y; // +Y logic (Platformer style: Higher Y = Front)
+        });
+
+        for (const auto& item : renderList) {
+            drawCallback(item.id);
+        }
     }
 }

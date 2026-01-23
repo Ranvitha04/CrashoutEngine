@@ -862,6 +862,12 @@ namespace Scene {
 		if (!renderer.shdr_pgm_instanced) return;
 
 		const auto& shapeArray = globalECS.GetComponentArray<ShapeComponent>();
+		
+		// Structure for sorting
+		struct RenderEntry {
+			Entity entity;
+			float depth;
+		};
 
 		// 1. PRE-SORT into World vs Screen lists
 		std::vector<Entity> worldEntities;
@@ -873,8 +879,30 @@ namespace Scene {
 			if (!IsEntityActive(globalECS, id)) continue;
 
 			auto* sc = globalECS.GetComponent<ShapeComponent>(id);
+			auto* tc = globalECS.GetComponent<TransformComponent>(id);
+			
+			if (!tc) continue;
+
+			float depth = 0.0f;
+			if (globalECS.HasComponent<ZOrder>(id)) {
+				auto* z = globalECS.GetComponent<ZOrder>(id);
+				DebugZOverride* dbg = globalECS.HasComponent<DebugZOverride>(id) ? globalECS.GetComponent<DebugZOverride>(id) : nullptr;
+				depth = Component::Rendering::ComputeDepth(tc->position, *z, dbg);
+			}
+			else {
+				// Fallback depth calculation if no ZOrder
+				// Assume WorldGeometry layer (2) and z=0
+				Component::ZOrder defaultZ{ Component::RenderLayer::WorldGeometry, 0 };
+				depth = Component::Rendering::ComputeDepth(tc->position, defaultZ, nullptr);
+			}
+			
 			if (sc->isWorldSpace) worldEntities.push_back(id);
 			else                  screenEntities.push_back(id);
+			
+			
+			
+			
+			
 		}
 
 		// -------------------------------------------------------
