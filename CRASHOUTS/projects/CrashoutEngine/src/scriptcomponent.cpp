@@ -45,11 +45,11 @@ namespace CrashoutsEngine
             }
 
             // Create script instance
-            script.Instance = mono_object_new(domain, script.Class);
-            mono_runtime_object_init(script.Instance);
+            MonoObject* instance = mono_object_new(domain, script.Class);
+            mono_runtime_object_init(instance);
 
             // Create GC handle
-            script.GCHandle = mono_gchandle_new(script.Instance, false);
+            script.GCHandle = mono_gchandle_new(instance, false);
 
             // Construct C# Entity wrapper
             MonoObject* entityObj = mono_object_new(domain, entityClass);
@@ -68,7 +68,7 @@ namespace CrashoutsEngine
             MonoClassField* entityField = mono_class_get_field_from_name(script.Class, "Entity");
             if (entityField)
             {
-                mono_field_set_value(script.Instance, entityField, entityObj);
+                mono_field_set_value(instance, entityField, entityObj);
             }
 
             // Cache methods
@@ -125,20 +125,19 @@ namespace CrashoutsEngine
 
         void DestroyOne(ScriptInstance& script)
         {
-            if (script.Instance && script.MethodOnDestroy)
-            {
-                MonoObject* exc = nullptr;
-                mono_runtime_invoke(script.MethodOnDestroy, script.Instance, nullptr, &exc);
-                if (exc) mono_print_unhandled_exception(exc);
-            }
-
             if (script.GCHandle)
             {
+                MonoObject* instance = mono_gchandle_get_target(script.GCHandle);
+                if (instance && script.MethodOnDestroy)
+                {
+                    MonoObject* exc = nullptr;
+                    mono_runtime_invoke(script.MethodOnDestroy, instance, nullptr, &exc);
+                    if (exc) mono_print_unhandled_exception(exc);
+                }
                 mono_gchandle_free(script.GCHandle);
                 script.GCHandle = 0;
             }
 
-            script.Instance = nullptr;
             script.Class = nullptr;
             script.MethodStart = nullptr;
             script.MethodUpdate = nullptr;
@@ -171,7 +170,7 @@ namespace Component{
         bool ok = true;
         for (auto& script : Scripts)
         {
-            if (script.Instance) continue;
+            if (script.GCHandle) continue;
 
             // Re-initialize each script
             DestroyOne(script);
@@ -232,8 +231,8 @@ namespace Component{
                 liveScript->Started = true;
                 continue;
             }
-            if (!liveScript->Instance) {
-                std::cerr << "[Script] Instance null for " << liveScript->ClassName << "\n";
+            if (!liveScript->GCHandle) {
+                std::cerr << "[Script] GCHandle null for " << liveScript->ClassName << "\n";
                 liveScript->Started = true;
                 continue;
             }
@@ -245,11 +244,13 @@ namespace Component{
 
             // Cache necessary data for invocation to avoid accessing liveScript after this point
             MonoMethod* methodStart = liveScript->MethodStart;
-            MonoObject* instance = liveScript->Instance;
+            MonoObject* instance = mono_gchandle_get_target(liveScript->GCHandle);
 
-            MonoObject* exc = nullptr;
-            mono_runtime_invoke(methodStart, instance, nullptr, &exc);
-            if (exc) mono_print_unhandled_exception(exc);
+            if (instance) {
+                MonoObject* exc = nullptr;
+                mono_runtime_invoke(methodStart, instance, nullptr, &exc);
+                if (exc) mono_print_unhandled_exception(exc);
+            }
         }
     }
 

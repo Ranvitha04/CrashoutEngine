@@ -1310,7 +1310,10 @@ namespace {
 				}
 
 				// --- MONO REFLECTION UNDO ---
-				if (inst.Instance && inst.Class) {
+				if (inst.GCHandle && inst.Class) {
+					MonoObject* instance = mono_gchandle_get_target(inst.GCHandle);
+					if (!instance) continue;
+
 					ImGui::Indent();
 					void* iter = nullptr;
 					while (MonoClassField* field = mono_class_get_fields(inst.Class, &iter)) {
@@ -1336,25 +1339,25 @@ namespace {
 
 							if (typeEnum == MONO_TYPE_R4) { // Float
 								float val = 0.f;
-								mono_field_get_value(inst.Instance, field, &val);
+								mono_field_get_value(instance, field, &val);
 								UIHelpers::DrawUndoableFloat(fName, val);
-								mono_field_set_value(inst.Instance, field, &val);
+								mono_field_set_value(instance, field, &val);
 							}
 							else if (typeEnum == MONO_TYPE_I4) { // Int
 								int val = 0;
-								mono_field_get_value(inst.Instance, field, &val);
+								mono_field_get_value(instance, field, &val);
 								UIHelpers::DrawUndoableInt(fName, val);
-								mono_field_set_value(inst.Instance, field, &val);
+								mono_field_set_value(instance, field, &val);
 							}
 							else if (typeEnum == MONO_TYPE_BOOLEAN) { // Bool
 								bool val = false;
-								mono_field_get_value(inst.Instance, field, &val);
+								mono_field_get_value(instance, field, &val);
 								UIHelpers::DrawUndoableBool(fName, val);
-								mono_field_set_value(inst.Instance, field, &val);
+								mono_field_set_value(instance, field, &val);
 							}
 							else if (typeEnum == MONO_TYPE_STRING) { // String
 								MonoString* monoStr = nullptr;
-								mono_field_get_value(inst.Instance, field, &monoStr);
+								mono_field_get_value(instance, field, &monoStr);
 
 								std::string strVal = "";
 								if (monoStr) {
@@ -1368,7 +1371,7 @@ namespace {
 
 								if (strVal != oldVal) {
 									MonoString* newMonoStr = mono_string_new(MonoManager::GetDomain(), strVal.c_str());
-									mono_field_set_value(inst.Instance, field, newMonoStr);
+									mono_field_set_value(instance, field, newMonoStr);
 								}
 							}
 						}

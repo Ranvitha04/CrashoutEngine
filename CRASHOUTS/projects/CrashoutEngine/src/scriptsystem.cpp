@@ -49,7 +49,10 @@ namespace CrashoutsEngine
         // 3. Search the vector for the matching class name
         for (auto& instance : sc->Scripts) {
             if (instance.ClassName == name) {
-                return instance.Instance; // Return the raw MonoObject*
+                if (instance.GCHandle) {
+                    return mono_gchandle_get_target(instance.GCHandle);
+                }
+                return nullptr;
             }
         }
 
