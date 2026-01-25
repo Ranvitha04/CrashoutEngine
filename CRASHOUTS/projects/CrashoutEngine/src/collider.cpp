@@ -4,7 +4,7 @@
 @date       29/11/2025`
 @brief      collider class definitions and implementations
 
-All content © 2025 Digipen Institute of Technology Singapore.All rights reserved
+All content ï¿½ 2025 Digipen Institute of Technology Singapore.All rights reserved
 
 //__________________________________________________________________________*/
 #include "colliders.h"
@@ -22,6 +22,7 @@ namespace Collision {
 
 	AABBRect::AABBRect(CEVec3 const& min, CEVec3 const& max) : Collider{ ColliderType::AABB }, min{ min }, max{ max } {
 		extents = (max - min) * 0.5f;
+		offset = min + extents;
 		ColliderType = ColliderType::AABB;
 	}
 

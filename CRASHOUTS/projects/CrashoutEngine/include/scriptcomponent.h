@@ -4,7 +4,7 @@
 @date       06/11/2025
 @brief		Declaration of script component struct
 
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
 */
 #pragma once
 #include <mono/jit/jit.h>
@@ -20,7 +20,7 @@ namespace CrashoutsEngine
     struct ScriptInstance
     {
         std::string ClassName; // e.g. "PlayerScript" that does something for once.
-        MonoObject* Instance = nullptr;
+        // MonoObject* Instance = nullptr; // Removed: Use GCHandle
         MonoClass* Class = nullptr;
         MonoMethod* MethodStart = nullptr;
         MonoMethod* MethodUpdate = nullptr;
