@@ -16,7 +16,7 @@ and uniform coloring.
 The Shapes struct also provides a cleanup function to release
 rendering resources associated with these primitives.
 
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 *//*__________________________________________________________________________*/
 
@@ -132,6 +132,12 @@ namespace Component {
         number of segments. Higher segment counts produce smoother circles.
         */
         static void CreateCircle(const CEVec2& transformSize, const CEVec3& position, int segments = 32, 
+            const CEColor& color = CEColor (1.0f, 1.0f, 1.0f), const bool isWorldSpace = true);
+
+        /*!
+        @brief Create and render a circle outline primitive.
+        */
+        static void CreateCircleOutline(const CEVec2& transformSize, const CEVec3& position, int segments = 32, 
             const CEColor& color = CEColor (1.0f, 1.0f, 1.0f), const bool isWorldSpace = true);
 
     };

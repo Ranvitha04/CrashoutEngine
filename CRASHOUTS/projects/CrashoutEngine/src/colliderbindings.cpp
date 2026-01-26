@@ -4,7 +4,7 @@
 @date       06/11/2025
 @brief		Definition of collider bindings functions
 
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 */
 #include "colliderbindings.h"
@@ -13,6 +13,7 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserve
 #include "transformcomponent.h"
 #include "entitymanager.h"
 #include "monomanager.h"
+#include "collisionmanager.h"
 
 static void InternalUpdateRotation(uint32_t entityID, float rot)
 {
@@ -36,9 +37,25 @@ static bool InternalHasCollider(uint32_t entityID)
     return ecs.HasComponent<Component::ColliderComponent>(entityID);
 }
 
+static bool InternalRaycast(CEVec3& start, CEVec3& end, uint32_t& outEntityID, uint32_t ignoredEntity)
+{
+    CrashoutsEngine::Entity entity;
+    bool hit = Collision::CollisionHandler::GetInstance().Raycast(start, end, entity, ignoredEntity);
+    if (hit)
+    {
+        outEntityID = entity;
+    }
+    else
+    {
+        outEntityID = 0;
+    }
+    return hit;
+}
+
 
 void CrashoutsEngine::Bindings::RegisterColliderBindings()
 {
+    mono_add_internal_call("CrashoutsEngine.InternalCalls::Raycast", reinterpret_cast<const void*>(InternalRaycast));
     mono_add_internal_call("CrashoutsEngine.ColliderComponent::InternalUpdateRotation",reinterpret_cast<const void*>(InternalUpdateRotation));
     mono_add_internal_call("CrashoutsEngine.InternalCalls::EntityHasCollider",reinterpret_cast<const void*>(InternalHasCollider));
 }

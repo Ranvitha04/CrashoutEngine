@@ -837,6 +837,7 @@ namespace UI {
         ImGui::Checkbox("Draw overlay", &ui.drawCollOverlay);
         ImGui::SameLine(); ImGui::Checkbox("All colliders", &ui.drawAllColliders);
         ImGui::SameLine(); ImGui::Checkbox("QuadTree", &ui.drawQuadTree);
+        ImGui::SameLine(); ImGui::Checkbox("Script Debug Draw", &ui.drawGameDebug);
 
         ImGui::Separator();
 

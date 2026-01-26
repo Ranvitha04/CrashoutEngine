@@ -23,6 +23,7 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 #include "log.h" 
 #include "rendering.h"
 #include "shapes.h"
+#include "debugmenu.h"
 
 MonoDomain* MonoManager::s_Domain = nullptr;
 MonoAssembly* MonoManager::s_Assembly = nullptr;
@@ -45,6 +46,7 @@ namespace CrashoutsEngine::Bindings {
     }
 
     static void InternalDrawLine(CEVec3* start, CEVec3* end, float thickness, CEVec3* color) {
+        if (!UI::IsGameDebugDrawEnabled()) return;
         if (!start || !end || !color) return;
         CEColor col(color->x, color->y, color->z, 1.0f);
         // Queue the line to be drawn at the end of the frame (Post-Clear)
@@ -52,6 +54,7 @@ namespace CrashoutsEngine::Bindings {
     }
 
     static void InternalDrawCircle(CEVec2* size, CEVec3* position, CEVec3* color) {
+        if (!UI::IsGameDebugDrawEnabled()) return;
         if (!size || !position || !color) return;
         CEColor col(color->x, color->y, color->z, 1.0f);
         // Queue the circle to be drawn at the end of the frame

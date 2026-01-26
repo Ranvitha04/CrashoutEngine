@@ -622,7 +622,7 @@ namespace Component {
     void Rendering::SetupBuffersOptimized(const void* vertices, size_t vertex_size,
         const void* colors, size_t color_size,
         const void* indices, size_t index_count,
-        GLenum primitive) {
+        GLenum primitive, size_t color_stride) {
 
         size_t total_vertex_size = vertex_size + color_size;
         size_t total_index_size = sizeof(GLushort) * index_count;
@@ -704,7 +704,7 @@ namespace Component {
 
         // Color attribute (location 1)
         glEnableVertexArrayAttrib(vaoid, 1);
-        glVertexArrayVertexBuffer(vaoid, 1, vbo_hdl, vertex_size, sizeof(CEVec3)); // Correct offset
+        glVertexArrayVertexBuffer(vaoid, 1, vbo_hdl, vertex_size, static_cast<GLsizei>(color_stride)); // Correct offset
         glVertexArrayAttribFormat(vaoid, 1, 3, GL_FLOAT, GL_FALSE, 0);
         glVertexArrayAttribBinding(vaoid, 1, 1);
 
@@ -752,7 +752,7 @@ namespace Component {
         const void* colors, size_t color_size,
         const void* tex_coords, size_t tex_coord_size,
         const void* indices, size_t index_count,
-        GLenum primitive) {
+        GLenum primitive, size_t color_stride) {
 
         size_t total_vertex_size = vertex_size + color_size + tex_coord_size;
         size_t total_index_size = sizeof(GLushort) * index_count;
@@ -838,7 +838,7 @@ namespace Component {
         // Color attribute (location 1)
         glEnableVertexArrayAttrib(vaoid, 1);
         // Binds buffer 'vbo_hdl' to VAO binding point 1, with the *correct* offset for this frame
-        glVertexArrayVertexBuffer(vaoid, 1, vbo_hdl, vertex_size, sizeof(CEVec3));
+        glVertexArrayVertexBuffer(vaoid, 1, vbo_hdl, vertex_size, static_cast<GLsizei>(color_stride));
         glVertexArrayAttribFormat(vaoid, 1, 3, GL_FLOAT, GL_FALSE, 0);
         glVertexArrayAttribBinding(vaoid, 1, 1);
 
@@ -991,7 +991,7 @@ namespace Component {
         debugLines.clear();
 
         for (const auto& circle : debugCircles) {
-            Shapes::CreateCircle(circle.size, circle.position, 32, circle.color, circle.isWorldSpace);
+            Shapes::CreateCircleOutline(circle.size, circle.position, 32, circle.color, circle.isWorldSpace);
         }
         debugCircles.clear();
     }
