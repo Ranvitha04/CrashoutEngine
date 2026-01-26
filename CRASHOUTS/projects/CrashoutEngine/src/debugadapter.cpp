@@ -585,7 +585,7 @@ namespace {
 			}
 
 			// Type Switching
-			int type = (cc->collider != nullptr) ? static_cast<int>(cc->collider->ColliderType) : 0;
+			//int type = (cc->collider != nullptr) ? static_cast<int>(cc->collider->ColliderType) : 0;
 			//const char* items[] = { "Circle", "AABB", "OBB", "Line", "Triangle", "None" };
 			const char* items[] = { "Circle", "AABB", "Line", "Triangle", "None" };				// OBB not really working
 
