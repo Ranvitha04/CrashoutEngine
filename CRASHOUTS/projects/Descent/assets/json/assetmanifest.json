@@ -1609,6 +1609,10 @@
             "path": "Slime.json"
         },
         {
+            "name": "SlimeMov",
+            "path": "SlimeMov.json"
+        },
+        {
             "name": "WinDoor",
             "path": "WinDoor.json"
         }

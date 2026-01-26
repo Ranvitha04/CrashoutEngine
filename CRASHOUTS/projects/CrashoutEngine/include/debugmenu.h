@@ -8,7 +8,7 @@
             declarations for initialization, shutdown, rendering, and debugging
             panels, as well as a UI state structure to manage panel toggles.
 
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
 
@@ -67,6 +67,8 @@ namespace UI {
         bool drawVelocities = false;    // draw velocity arrows if RigidBodyComponent exists
         float overlayThickness = .35f;  // line thickness for wireframes
         float fontScale = 1.0f;         // Set the font scale
+
+        bool drawGameDebug = false;     // Toggle for script-based debug drawing (circles/lines)
     };
 
     // -- Lifecycle ----------------------------------------------------
@@ -76,6 +78,12 @@ namespace UI {
     @param window Pointer to the GLFW window handle.
     */
     void Init(GLFWwindow* window, UI::UIState& uiState);
+
+    /*!
+    @brief Helper to check if script debug drawing is enabled.
+    */
+    bool IsGameDebugDrawEnabled();
+    
     /*!
     @brief Shuts down ImGui and releases resources.
     */

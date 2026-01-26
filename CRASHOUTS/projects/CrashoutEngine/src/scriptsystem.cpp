@@ -149,6 +149,30 @@ namespace CrashoutsEngine
         }
     }
 
+    void ScriptSystem::DrawGizmosAll()
+    {
+        auto& ecs = *ECS::getInstance();
+        auto& scripts = ecs.GetComponentArray<ScriptComponent>();
+
+        for (size_t i = 0; i < scripts.dense.size(); ++i)
+        {
+            Entity entityID = scripts.indexToEntity[i];
+
+            // --- ACTIVE CHECK ---
+            if (ecs.HasComponent<ActiveComponent>(entityID)) {
+                if (!IsEntityActive(ecs, entityID)) {
+                    continue; 
+                }
+            }
+            // --------------------
+
+            if (ecs.HasComponent<ScriptComponent>(entityID))
+            {
+                ecs.GetComponent<ScriptComponent>(entityID)->DrawGizmos();
+            }
+        }
+    }
+
 
     void ScriptSystem::DestroyAll()
     {

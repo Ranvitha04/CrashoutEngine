@@ -460,6 +460,10 @@ void Update(double const& dt) {
         RenderCamera::gameCamera.UpdateMatrices(GLApp::width, GLApp::height);
 #endif
     }
+
+    // Always run Gizmo drawing (Debug shapes)
+    CrashoutsEngine::ScriptSystem::DrawGizmosAll();
+
     Scene::UpdateScene(ecs);
 
     InputManager::Update();

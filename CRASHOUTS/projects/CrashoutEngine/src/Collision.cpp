@@ -1033,5 +1033,79 @@ namespace Collision {
 		return collideFuncts[idx1 * SHAPE_COUNT + idx2];
 	}
 
-	/*----------------------------------------------------------------------------------------------------------*/
+	bool CollisionHandler::Raycast(CEVec3 start, CEVec3 end, CrashoutsEngine::Entity& outEntity, CrashoutsEngine::Entity ignoredEntity) {
+		CrashoutsEngine::ECS& globalECS = *(CrashoutsEngine::ECS::getInstance());
+
+		// Create a Line Segment Collider use local points as start/end, and position at 0,0,0
+		LineSegment rayLine(start, end);
+		rayLine.UpdateCollider(CEVec3{ 0.f, 0.f, 0.f }); // Initialize worldP1/P2
+
+		// Query QuadTree to calculate AABB of the line for QuadTree query rahhhhhhhh
+		CEVec3 min, max;
+		// Use World Points
+		CEVec3 pts[2] = { rayLine.GetWorldP1(), rayLine.GetWorldP2() };
+		min.x = std::min(pts[0].x, pts[1].x);
+		min.y = std::min(pts[0].y, pts[1].y);
+		min.z = 0.0f;
+		max.x = std::max(pts[0].x, pts[1].x);
+		max.y = std::max(pts[0].y, pts[1].y);
+		max.z = 0.0f;
+
+		// Expand AABB slightly to ensure we catch border cases
+		CEVec3 padding{ 5.0f, 5.0f, 0.0f }; // Increase padding slightly
+		min = min - padding;
+		max = max + padding;
+
+		AABBRect region(min, max);
+		static std::vector<CrashoutsEngine::Entity> candidates;
+		candidates.clear();
+		quadTree.Query(region, candidates);
+
+		// Check Collisions
+		float closestDistSq = std::numeric_limits<float>::max();
+		bool hitFound = false;
+
+		std::unique_ptr<Collider> rayCollider = std::make_unique<LineSegment>(rayLine);
+
+		CollisionProps rayProps{ rayCollider, CEVec3{0,0,0}, CEVec3{0,0,0} };
+
+		for (CrashoutsEngine::Entity const& entity : candidates) {
+			if (!IsEntityActive(globalECS, entity)) continue;
+			if (entity == ignoredEntity) continue;
+
+			// Do not raycast against Triggers
+			auto* colliderComp = globalECS.GetComponent<Component::ColliderComponent>(entity);
+			if (!colliderComp || !colliderComp->collider) continue;
+			if (colliderComp->collider->isTrigger) continue;
+			if (!colliderComp->collider->enabled) continue;
+
+			auto* transformComp = globalECS.GetComponent<Component::TransformComponent>(entity);
+			if (!transformComp) continue;
+
+			CEVec3 vel{ 0,0,0 };
+			if (globalECS.HasComponent<Component::RigidBodyComponent>(entity)) {
+				vel = globalECS.GetComponent<Component::RigidBodyComponent>(entity)->GetVelocity();
+			}
+
+			CollisionProps targetProps{ colliderComp->collider, vel, transformComp->position };
+
+			auto colFunc = callCollFunct(ColliderType::LINE, colliderComp->collider->type);
+			if (!colFunc) continue;
+
+			CollisionManifold manifold = colFunc(rayProps, targetProps);
+
+			if (manifold.collisionOccured) {
+				// Find distance to start point
+				float distSq = CEMath::LengthSq(manifold.contactPoints[0] - start);
+
+				if (distSq < closestDistSq) {
+					closestDistSq = distSq;
+					outEntity = entity;
+					hitFound = true;
+				}
+			}
+		}
+
+		return hitFound;
+	}
 }

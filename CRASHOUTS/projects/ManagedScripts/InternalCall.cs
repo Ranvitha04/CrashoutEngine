@@ -4,7 +4,7 @@
 @date       29/11/2025
 @brief      internal calls between managed and native code for Crashouts Engine
 
-All content © 2025 Digipen Institute of Technology Singapore.All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore.All rights reserved.
 
 //__________________________________________________________________________*/
 using System;
@@ -44,6 +44,9 @@ namespace CrashoutsEngine
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal static extern bool EntityHasCollider(uint entityID);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern bool Raycast(ref CEVec3 start, ref CEVec3 end, out uint entityID, uint ignoredEntity);
 
         // Inter Script Communications
         [MethodImpl(MethodImplOptions.InternalCall)]

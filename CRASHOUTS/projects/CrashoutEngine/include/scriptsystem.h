@@ -4,7 +4,7 @@
 @date       06/11/2025
 @brief		Declaration of script system class
 
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 */
 #pragma once
@@ -19,6 +19,7 @@ namespace CrashoutsEngine
         static void InitializeAll(MonoDomain* domain, MonoAssembly* assembly);
         static void UpdateAll();
         static void FixedUpdateAll();
+        static void DrawGizmosAll();
         static void RegisterAllBindings();
 
         static void DestroyAll();
