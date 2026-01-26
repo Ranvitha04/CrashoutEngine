@@ -388,6 +388,24 @@ namespace UI {
 
                     if (ImGuizmo::IsUsing())
                     {
+                        if (!dragging) {
+                            dragging = true;
+                            undoTriggeredThisFrame = false;
+                            movedEntities = group; // 'group' is already calculated above
+                            startStates.clear();
+
+                            for (auto e : movedEntities) {
+                                if (ecs.HasComponent<Component::TransformComponent>(e)) {
+                                    auto* t = ecs.GetComponent<Component::TransformComponent>(e);
+                                    CrashoutsEngine::TransformState s;
+                                    s.position = t->position;
+                                    s.rotation = t->rotation;
+                                    s.scale = t->size;
+                                    startStates.push_back(s);
+                                }
+                            }
+                        }
+
                         float newTr[3], newRt[3], newSc[3];
                         ImGuizmo::DecomposeMatrixToComponents(m, newTr, newRt, newSc);
 
