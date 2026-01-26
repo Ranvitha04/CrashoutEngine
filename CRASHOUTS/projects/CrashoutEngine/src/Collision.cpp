@@ -4,7 +4,7 @@
 @date       08/09/2025
 @brief      Function definitions for Basic Collision Functions and Colliders(Plane, ColliderType::AABB and Circle)
 
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 
 //__________________________________________________________________________*/
@@ -189,7 +189,7 @@ namespace Collision {
 	// --- Helper: Get Support Point ---
 	// Returns the corner of the AABB furthest in the direction of 'dir'
 	CEVec3 GetAABBSupport(const AABBRect& box, const CEVec3& dir) {
-		CEVec3 center{ box.position + box.offset };
+		CEVec3 center{ box.position };
 		return {
 			dir.x >= 0 ? center.x + box.extents.x : center.x - box.extents.x,
 			dir.y >= 0 ? center.y + box.extents.y : center.y - box.extents.y,
@@ -207,7 +207,7 @@ namespace Collision {
 
 	// --- Helper: Project AABB onto Axis ---
 	void ProjectAABB(const AABBRect& box, const CEVec3& axis, float& min, float& max) {
-		CEVec3 center{ box.position + box.offset };
+		CEVec3 center{ box.position };
 		float centerProj = CEMath::Dot(center, axis);
 		// Project half-extents (radius calculation)
 		// We take absolute value of dot products to map half-extents to the axis
@@ -282,7 +282,7 @@ namespace Collision {
 		AABBRect const& aabb1Temp = dynamic_cast<AABBRect const&>(*(coll1.collider));
 		AABBRect const& aabb2Temp = dynamic_cast<AABBRect const&>(*(coll2.collider));
 
-		CEVec3 posDelta{ (coll2.position) - (coll1.position) }; /*Vector showing distance + the direction*/
+		CEVec3 posDelta{ (coll2.position + aabb2Temp.offset) - (coll1.position + aabb1Temp.offset) }; /*Vector showing distance + the direction*/
 
 		f32 xDiff{ aabb1Temp.extents.x + aabb2Temp.extents.x - std::abs(posDelta.x) };
 
@@ -417,8 +417,8 @@ namespace Collision {
 		AABBRect const& aabb2Temp = dynamic_cast<AABBRect const&>(*(aabbPtr->collider));
 
 		// Apply Offsets (Use the collider's effective center, not just entity position)
-		CEVec3 spherePos = spherePtr->position;
-		CEVec3 aabbPos = aabbPtr->position;
+		CEVec3 spherePos = spherePtr->position + sphere1Temp.offset;
+		CEVec3 aabbPos = aabbPtr->position + aabb2Temp.offset;
 
 		CEVec3 minAABB{ aabbPos.x - aabb2Temp.extents.x, aabbPos.y - aabb2Temp.extents.y, 0.f };
 		CEVec3 maxAABB{ aabbPos.x + aabb2Temp.extents.x, aabbPos.y + aabb2Temp.extents.y, 0.f };

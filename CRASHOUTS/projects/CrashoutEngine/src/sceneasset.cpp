@@ -421,7 +421,8 @@ namespace CrashoutsEngine {
                     if (inst.ClassName.empty()) continue;
                     rapidjson::Value obj(rapidjson::kObjectType);
                     obj.AddMember("className", rapidjson::Value(inst.ClassName.c_str(), allocator), allocator);
-                    if (inst.Instance && inst.Class) {
+                    MonoObject* instance = inst.GCHandle ? mono_gchandle_get_target(inst.GCHandle) : nullptr;
+                    if (instance && inst.Class) {
                         rapidjson::Value fields(rapidjson::kObjectType);
                         void* iter = nullptr;
                         while (MonoClassField* field = mono_class_get_fields(inst.Class, &iter)) {
@@ -442,11 +443,11 @@ namespace CrashoutsEngine {
                                 MonoType* type = mono_field_get_type(field);
                                 int tEnum = mono_type_get_type(type);
                                 rapidjson::Value key(fName, allocator);
-                                if (tEnum == MONO_TYPE_I4) { int v; mono_field_get_value(inst.Instance, field, &v); fields.AddMember(key, v, allocator); }
-                                else if (tEnum == MONO_TYPE_R4) { float v; mono_field_get_value(inst.Instance, field, &v); fields.AddMember(key, v, allocator); }
-                                else if (tEnum == MONO_TYPE_BOOLEAN) { bool v; mono_field_get_value(inst.Instance, field, &v); fields.AddMember(key, v, allocator); }
+                                if (tEnum == MONO_TYPE_I4) { int v; mono_field_get_value(instance, field, &v); fields.AddMember(key, v, allocator); }
+                                else if (tEnum == MONO_TYPE_R4) { float v; mono_field_get_value(instance, field, &v); fields.AddMember(key, v, allocator); }
+                                else if (tEnum == MONO_TYPE_BOOLEAN) { bool v; mono_field_get_value(instance, field, &v); fields.AddMember(key, v, allocator); }
                                 else if (tEnum == MONO_TYPE_STRING) {
-                                    MonoString* ms = nullptr; mono_field_get_value(inst.Instance, field, &ms);
+                                    MonoString* ms = nullptr; mono_field_get_value(instance, field, &ms);
                                     if (ms) { char* s = mono_string_to_utf8(ms); fields.AddMember(key, rapidjson::Value(s, allocator), allocator); mono_free(s); }
                                 }
                             }
@@ -881,18 +882,19 @@ namespace CrashoutsEngine {
                         if (k >= s.Scripts.size()) break;
                         auto& inst = s.Scripts[k];
                         const auto& item = arr[k];
-                        if (item.IsObject() && item.HasMember("fields") && inst.Instance && inst.Class) {
+                        MonoObject* instance = inst.GCHandle ? mono_gchandle_get_target(inst.GCHandle) : nullptr;
+                        if (item.IsObject() && item.HasMember("fields") && instance && inst.Class) {
                             const auto& fields = item["fields"];
                             for (auto it = fields.MemberBegin(); it != fields.MemberEnd(); ++it) {
                                 MonoClassField* field = mono_class_get_field_from_name(inst.Class, it->name.GetString());
                                 if (field) {
                                     int typeEnum = mono_type_get_type(mono_field_get_type(field));
-                                    if (typeEnum == MONO_TYPE_I4 && it->value.IsInt()) { int val = it->value.GetInt(); mono_field_set_value(inst.Instance, field, &val); }
-                                    else if (typeEnum == MONO_TYPE_R4 && it->value.IsNumber()) { float val = it->value.GetFloat(); mono_field_set_value(inst.Instance, field, &val); }
-                                    else if (typeEnum == MONO_TYPE_BOOLEAN && it->value.IsBool()) { bool val = it->value.GetBool(); mono_field_set_value(inst.Instance, field, &val); }
+                                    if (typeEnum == MONO_TYPE_I4 && it->value.IsInt()) { int val = it->value.GetInt(); mono_field_set_value(instance, field, &val); }
+                                    else if (typeEnum == MONO_TYPE_R4 && it->value.IsNumber()) { float val = it->value.GetFloat(); mono_field_set_value(instance, field, &val); }
+                                    else if (typeEnum == MONO_TYPE_BOOLEAN && it->value.IsBool()) { bool val = it->value.GetBool(); mono_field_set_value(instance, field, &val); }
                                     else if (typeEnum == MONO_TYPE_STRING && it->value.IsString()) {
                                         MonoString* str = mono_string_new(MonoManager::GetDomain(), it->value.GetString());
-                                        mono_field_set_value(inst.Instance, field, str);
+                                        mono_field_set_value(instance, field, str);
                                     }
                                 }
                             }

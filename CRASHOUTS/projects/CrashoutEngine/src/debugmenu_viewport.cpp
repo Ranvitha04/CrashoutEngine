@@ -658,9 +658,9 @@ namespace UI {
                                 // If the prefab has children, 'newEntity' might be a child piece (e.g., the gun of a soldier).
                                 // We must walk up the tree to find the ROOT so we move the whole object.
                                 while (ecs.HasComponent<Component::ParentComponent>(newEntity)) {
-                                    Entity parent = ecs.GetComponent<Component::ParentComponent>(newEntity)->parent;
-                                    if (parent == 0) break; // Reached null parent
-                                    newEntity = parent;
+                                    Entity parentEnt = ecs.GetComponent<Component::ParentComponent>(newEntity)->parent;
+                                    if (parentEnt == 0) break; // Reached null parent
+                                    newEntity = parentEnt;
                                 }
 
                                 // 4. Move the Root

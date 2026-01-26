@@ -44,11 +44,11 @@ namespace CrashoutsEngine {
 		const std::string assetManifestPath = rootPath + "json/assetmanifest.json";
 
 		namespace fs = std::filesystem;
-		/*static bool EndsWithJson(const std::string& s)
-		{
-			if (s.size() < 5) return false;
-			return s.compare(s.size() - 5, 5, ".json") == 0;
-		}*/
+		//static bool EndsWithJson(const std::string& s)
+		//{
+		//	if (s.size() < 5) return false;
+		//	return s.compare(s.size() - 5, 5, ".json") == 0;
+		//}
 
 		//static std::string NormalizeSceneRelPath(std::string p)
 		//{

@@ -4,7 +4,7 @@
 @date       06/11/2025
 @brief		Definition of script system functions
 
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 */
 #include "aibindings.h"
@@ -49,7 +49,10 @@ namespace CrashoutsEngine
         // 3. Search the vector for the matching class name
         for (auto& instance : sc->Scripts) {
             if (instance.ClassName == name) {
-                return instance.Instance; // Return the raw MonoObject*
+                if (instance.GCHandle) {
+                    return mono_gchandle_get_target(instance.GCHandle);
+                }
+                return nullptr;
             }
         }
 
@@ -98,8 +101,7 @@ namespace CrashoutsEngine
         for (size_t i = 0; i < scripts.dense.size(); ++i)
         {
             Entity entityID = scripts.indexToEntity[i];
-            auto& scriptComp = scripts.dense[i];
-
+            
             // --- ACTIVE CHECK ---
             if (ecs.HasComponent<ActiveComponent>(entityID)) {
                 if (!IsEntityActive(ecs, entityID)) {
@@ -108,8 +110,17 @@ namespace CrashoutsEngine
             }
             // --------------------
 
-            scriptComp.Start();
-            scriptComp.Update();
+            // Re-fetch component safely before usage to handle potential reallocation
+            if (ecs.HasComponent<ScriptComponent>(entityID))
+            {
+                ecs.GetComponent<ScriptComponent>(entityID)->Start();
+            }
+
+            // Re-fetch again for Update, as Start() might have triggered reallocation
+            if (ecs.HasComponent<ScriptComponent>(entityID))
+            {
+                ecs.GetComponent<ScriptComponent>(entityID)->Update();
+            }
         }
     }
 
@@ -121,8 +132,7 @@ namespace CrashoutsEngine
         for (size_t i = 0; i < scripts.dense.size(); ++i)
         {
             Entity entityID = scripts.indexToEntity[i];
-            auto& scriptComp = scripts.dense[i];
-
+            
             // --- ACTIVE CHECK ---
             if (ecs.HasComponent<ActiveComponent>(entityID)) {
                 if (!IsEntityActive(ecs, entityID)) {
@@ -131,7 +141,11 @@ namespace CrashoutsEngine
             }
             // --------------------
 
-            scriptComp.FixedUpdate();
+            // Re-fetch component safely
+            if (ecs.HasComponent<ScriptComponent>(entityID))
+            {
+                ecs.GetComponent<ScriptComponent>(entityID)->FixedUpdate();
+            }
         }
     }
 
