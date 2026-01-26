@@ -347,9 +347,13 @@ namespace UI {
                 auto* rootT = ecs.GetComponent<Component::TransformComponent>(root);
                 if (rootT)
                 {
+                    float signX = (rootT->size.x < 0.0f) ? -1.0f : 1.0f;
+                    float signY = (rootT->size.y < 0.0f) ? -1.0f : 1.0f;
+
                     float tr[3] = { rootT->position.x, rootT->position.y, rootT->position.z };
                     float rt[3] = { 0.f, 0.f, rootT->rotation };
-                    float sc[3] = { rootT->size.x, rootT->size.y, 1.f };
+
+                    float sc[3] = { std::abs(rootT->size.x), std::abs(rootT->size.y), 1.f };
 
                     float m[16];
                     ImGuizmo::RecomposeMatrixFromComponents(tr, rt, sc, m);
@@ -386,6 +390,9 @@ namespace UI {
                     {
                         float newTr[3], newRt[3], newSc[3];
                         ImGuizmo::DecomposeMatrixToComponents(m, newTr, newRt, newSc);
+
+                        newSc[0] *= signX;
+                        newSc[1] *= signY;
 
                         // If selected has a parent, update LOCAL (ParentComponent) instead of WORLD (TransformComponent)
                         Component::ParentComponent* pc = nullptr;
