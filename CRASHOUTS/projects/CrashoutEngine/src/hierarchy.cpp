@@ -273,7 +273,7 @@ namespace CrashoutsEngine {
         }
     }
    
-    static void RecomputeLocalFromWorld(
+    /*static void RecomputeLocalFromWorld(
         const Component::TransformComponent& parentW,
         const Component::TransformComponent& childW,
         Component::ParentComponent& pc)
@@ -303,7 +303,7 @@ namespace CrashoutsEngine {
         pc.localPos.x = unRotX / pX;
         pc.localPos.y = unRotY / pY;
         pc.localPos.z = childW.position.z - parentW.position.z;
-    }
+    }*/
 
     // Per-frame propagation entry point.
     void UpdateHierarchy(ECS& ecs)
