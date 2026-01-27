@@ -118,9 +118,11 @@ namespace
         return AudioSystem::instance().GetMasterVolume();
     }
 
-    static void ICALL_Audio_GetComponentData(uint32_t entityID, MonoString** outNameOrPath, float* outVol, float* outPitch, mono_bool* outLoop, mono_bool* outIsMusic)
+    static void ICALL_Audio_GetComponentData(uint32_t entityID, MonoString** outName, MonoString** outPath, float* outVol, float* outPitch, mono_bool* outLoop, mono_bool* outIsMusic)
     {
-        *outNameOrPath = nullptr;
+        // Initialize defaults
+        *outName = nullptr;
+        *outPath = nullptr;
         *outVol = 1.0f; *outPitch = 1.0f; *outLoop = false; *outIsMusic = false;
 
         auto* ecs = CrashoutsEngine::ECS::getInstance();
@@ -128,10 +130,20 @@ namespace
 
         auto* ac = ecs->GetComponent<Component::AudioEmitterComponent>(entityID);
 
-        // Fix: Use the first clip if it exists
+        // Get data from the FIRST clip in the component
         if (!ac->clips.empty()) {
             const auto& c = ac->clips[0];
-            *outNameOrPath = mono_string_new(mono_domain_get(), c.name.c_str()); // Send Name as key
+
+            *outName = mono_string_new(mono_domain_get(), c.name.c_str());
+
+            // Return the Path
+            std::string finalPath = c.path;
+            // Ensure path has assets/audio prefix if missing
+            if (finalPath.rfind("assets/", 0) != 0) finalPath = "assets/audio/" + finalPath;
+
+            *outPath = mono_string_new(mono_domain_get(), finalPath.c_str());
+            // --------------------------------
+
             *outVol = c.volume;
             *outPitch = c.pitch;
             *outLoop = c.looping;
@@ -224,6 +236,8 @@ void CrashoutsEngine::Bindings::RegisterAudioBindings()
     mono_add_internal_call("CrashoutsEngine.InternalCalls::Audio_SetMusicVolume", (const void*)ICALL_Audio_SetMusicVolume);
 
     mono_add_internal_call("CrashoutsEngine.InternalCalls::Audio_SetSFXVolume", (const void*)ICALL_Audio_SetSFXVolume);
+
+    mono_add_internal_call("CrashoutsEngine.InternalCalls::Audio_SetTaggedVolume", (const void*)ICALL_Audio_SetTaggedVolume);
 
     mono_add_internal_call("CrashoutsEngine.InternalCalls::Audio_SetMasterVolume", (const void*)ICALL_Audio_SetMasterVolume);
     

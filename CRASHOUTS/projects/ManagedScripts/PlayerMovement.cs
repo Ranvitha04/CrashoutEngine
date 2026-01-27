@@ -70,9 +70,9 @@ namespace CrashoutsEngine
             rb.Mass = normalMass;
             IsGrounded = false;
 
-            // Play music
-            AudioManager.GetInstance().PlayAttached("ambient", Entity.ID);
-            AudioManager.GetInstance().PlayAttached("bgm1", Entity.ID);
+            // Play music - Clean up later
+            // AudioManager.GetInstance().PlayAttached("ambient", Entity.ID);
+            // AudioManager.GetInstance().PlayAttached("bgm1", Entity.ID);
 
             CurrentEnergy = MaxEnergy;
             swapPauseTimer = 0.0f;

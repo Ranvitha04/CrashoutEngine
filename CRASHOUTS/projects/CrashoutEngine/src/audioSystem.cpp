@@ -1159,6 +1159,16 @@ namespace CrashoutsEngine::Audio
     {
         if (!mCore || !mMusicGroup) return false;
 
+		// Safety First: Check if already playing
+        auto existing = mTaggedChannels.find(key);
+        if (existing != mTaggedChannels.end()) {
+            bool isPlaying = false;
+            existing->second->isPlaying(&isPlaying);
+            if (isPlaying) {
+                return true;
+            }
+        }
+
         std::string cacheKey = SanitizeKey(path);
         FMOD::Sound* snd = nullptr;
         bool createdLocal = false;

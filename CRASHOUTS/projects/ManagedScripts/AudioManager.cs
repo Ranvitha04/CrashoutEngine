@@ -12,6 +12,8 @@ public class AudioManager
 {
     public static AudioManager Instance { get; } = new AudioManager();
 
+    private Dictionary<string, string> _activeLayers = new Dictionary<string, string>();
+
     private AudioManager() {
 
         playerMusVol = InternalCalls.Audio_GetMusicVolume();
@@ -79,6 +81,39 @@ public class AudioManager
             InternalCalls.Audio_PlayMusicFileTagged(s.Name, s.Path, s.Loop);
         else if (s.Type == SoundType.SFX)
             InternalCalls.Audio_PlaySFXFileTagged(s.Name, s.Path, s.Loop);
+    }
+
+    // === Play music or ambience globally with layering support
+    public void PlayGlobal(string layerName, string key, string path, bool loop, float volume = 1.0f)
+    {
+        // Check what is currently playing on THIS specific layer
+        string currentKeyOnLayer = "";
+        if (_activeLayers.ContainsKey(layerName))
+        {
+            currentKeyOnLayer = _activeLayers[layerName];
+        }
+
+        // Logic Check: Is it the same file?
+        if (currentKeyOnLayer == key)
+        {
+            InternalCalls.Audio_SetTaggedVolume(key, volume);
+            return;
+        }
+
+        // Stop the OLD track on this layer (Fade out)
+        if (!string.IsNullOrEmpty(currentKeyOnLayer))
+        {
+            InternalCalls.Audio_StopTagged(currentKeyOnLayer, 2.0f); // 2-second fade
+        }
+
+        // New Track
+        InternalCalls.Audio_PlayMusicFileTagged(key, path, loop);
+
+        // Set Volume based on player settings
+        InternalCalls.Audio_SetTaggedVolume(key, volume);
+
+        // Update the Record
+        _activeLayers[layerName] = key;
     }
 
     // === Play sound attached to an entity
