@@ -888,8 +888,8 @@ namespace {
 
 			// UVs
 			if (sc->enableTexture) {
-				UIHelpers::DrawUndoableInt("U Wrap", sc->wrapModeU);
-				UIHelpers::DrawUndoableInt("V Wrap", sc->wrapModeV);
+				//UIHelpers::DrawUndoableInt("V Wrap", sc->wrapModeV);
+				//UIHelpers::DrawUndoableInt("U Wrap", sc->wrapModeU);
 				UIHelpers::DrawUndoableVec2("UV Size", sc->uvSize);
 				UIHelpers::DrawUndoableVec2("UV Offset", sc->uvOffset);
 			}

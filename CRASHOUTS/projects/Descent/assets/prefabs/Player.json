@@ -8,9 +8,9 @@
             },
             "transform": {
                 "position": {
-                    "x": 5.1378326416015629,
-                    "y": 40.01470947265625,
-                    "z": 0.0
+                    "x": -201.79754638671876,
+                    "y": 31.04273223876953,
+                    "z": 50.0
                 },
                 "rotation": 0.0,
                 "size": {
@@ -19,7 +19,20 @@
                 }
             },
             "layer": {
-                "currentLayer": 8
+                "currentLayer": 1
+            },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "Main Clip",
+                        "path": "",
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "looping": false,
+                        "isMusic": false,
+                        "spatial3D": false
+                    }
+                ]
             },
             "shape": {
                 "type": 0,
@@ -30,10 +43,10 @@
                     "a": 1.0
                 },
                 "enableTexture": true,
-                "textureName": "images/Character\\Normal Mode\\Chibi-Actions-SpriteSheet.png",
+                "textureName": "Character/Light Mode/Chibi-1.png",
                 "uvSize": {
-                    "x": 0.3333333432674408,
-                    "y": 0.3333333432674408
+                    "x": 1.0,
+                    "y": 1.0
                 },
                 "uvOffset": {
                     "x": 0.0,
@@ -45,7 +58,7 @@
                 "wrapModeV": 0
             },
             "rigidbody": {
-                "mass": 4.5,
+                "mass": 3.0,
                 "restitution": 0.0,
                 "staticFriction": 0.0,
                 "dynamicFriction": 0.0,
@@ -57,9 +70,9 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 5.1378326416015629,
-                    "y": 40.01470947265625,
-                    "z": 0.0
+                    "x": -201.79754638671876,
+                    "y": 31.04273223876953,
+                    "z": 50.0
                 },
                 "offset": {
                     "x": 0.0,
@@ -67,14 +80,14 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": -7.162166595458984,
-                    "y": 10.661712646484375,
-                    "z": 0.0
+                    "x": -215.19754028320313,
+                    "y": 0.28973388671875,
+                    "z": 50.0
                 },
                 "max": {
-                    "x": 17.43783187866211,
-                    "y": 69.36770629882813,
-                    "z": 0.0
+                    "x": -188.39755249023438,
+                    "y": 61.79573059082031,
+                    "z": 50.0
                 }
             },
             "script": {
@@ -82,6 +95,19 @@
                     {
                         "className": "PlayerMovement"
                     }
+                ]
+            },
+            "camera": {
+                "zoom": 0.28999999165534975,
+                "x": 0.0,
+                "y": 0.0,
+                "xBounds": [
+                    0.0,
+                    0.0
+                ],
+                "yBounds": [
+                    0.0,
+                    0.0
                 ]
             },
             "button": {
