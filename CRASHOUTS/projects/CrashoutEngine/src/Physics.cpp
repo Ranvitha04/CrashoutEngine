@@ -594,7 +594,6 @@ namespace Physics {
 
 					if (globalECS.HasComponent<Component::ColliderComponent>(entity)) {
 						Component::ColliderComponent* c{ globalECS.GetComponent<Component::ColliderComponent>(entity) };
-						if (c->collider == nullptr) continue;
 						// Sync BOTH position and rotation
 						c->collider->UpdateCollider(transform->position);
 						c->collider->UpdateRotation(transform->rotation);

@@ -577,59 +577,22 @@ namespace {
 
 		void drawInspector(ECS& ecs, Entity e) override {
 			auto* cc = ecs.GetComponent<ColliderComponent>(e);
-			if (!cc) return;
+			if (!cc || !cc->collider) return;
 
-			if (cc->collider != nullptr) {
-				UIHelpers::DrawUndoableBool("Enabled", cc->collider->enabled);
-				UIHelpers::DrawUndoableBool("Is Trigger", cc->collider->isTrigger);
-			}
+			UIHelpers::DrawUndoableBool("Enabled", cc->collider->enabled);
+			UIHelpers::DrawUndoableBool("Is Trigger", cc->collider->isTrigger);
 
 			// Type Switching
-			//int type = (cc->collider != nullptr) ? static_cast<int>(cc->collider->ColliderType) : 0;
-			//const char* items[] = { "Circle", "AABB", "OBB", "Line", "Triangle", "None" };
-			const char* items[] = { "Circle", "AABB", "Line", "Triangle", "None" };				// OBB not really working
+			int type = static_cast<int>(cc->collider->ColliderType);
+			const char* items[] = { "Circle", "AABB", "OBB", "Line", "Triangle", "None" };
 
-			static const Collision::ColliderType typeMap[] = {
-				Collision::ColliderType::CIRCLE,   // Index 0 -> Circle
-				Collision::ColliderType::AABB,     // Index 1 -> AABB
-				Collision::ColliderType::LINE,     // Index 2 -> Line (Skipped OBB)
-				Collision::ColliderType::TRIANGLE, // Index 3 -> Triangle
-				Collision::ColliderType::NONE      // Index 4 -> None (Skipped Polygon)
-			};
-
-			// Find current selection (Enum -> UI Index)
-			// We default to "None" (Index 4) if the current type isn't in our allowed list (like OBB)
-			int currentItemIndex = 4;
-
-			if (cc->collider) {
-				for (int i = 0; i < IM_ARRAYSIZE(typeMap); ++i) {
-					if (cc->collider->ColliderType == typeMap[i]) {
-						currentItemIndex = i;
-						break;
-					}
-				}
-			}
-
-			// Draw Combo & Handle Change
-			if (ImGui::Combo("Type", &currentItemIndex, items, IM_ARRAYSIZE(items))) {
-
-				// Convert UI Index back to Real Enum
-				Collision::ColliderType selectedType = typeMap[currentItemIndex];
-
-				// Handle "None" explicitly to remove component data
-				if (selectedType == Collision::ColliderType::NONE) {
-					cc->collider = nullptr;
-				}
-				else {
-					Collision::ColliderFactory factory;
-
-					// Pass the REAL Enum (selectedType), not the UI index!
-					auto newCol = factory.CreateCollider(selectedType);
-
-					if (newCol) {
-						newCol->ColliderType = selectedType;
-						cc->collider = std::move(newCol);
-					}
+			// Create default collider as requested
+			if (ImGui::Combo("Type", &type, items, IM_ARRAYSIZE(items))) {
+				Collision::ColliderFactory factory;
+				auto newCol = factory.CreateCollider((Collision::ColliderType)type);
+				if (newCol) {
+					newCol->ColliderType = (Collision::ColliderType)type;
+					cc->collider = std::move(newCol);
 				}
 			}
 
@@ -639,133 +602,130 @@ namespace {
 
 			using namespace Collision;
 
-			if (cc->collider != nullptr) {
+			// --- CIRCLE ---
+			if (cc->collider->ColliderType == ColliderType::CIRCLE) {
+				auto* s = static_cast<Circle*>(cc->collider.get());
 
-				// --- CIRCLE ---
-				if (cc->collider->ColliderType == ColliderType::CIRCLE) {
-					auto* s = static_cast<Circle*>(cc->collider.get());
+				ImGui::TextColored(ImVec4(0.6f, 1.f, 0.6f, 1.f), "Circle Collider");
+				
+				UIHelpers::DrawUndoableFloat("Radius", s->radius, 0.05f, 0.0f);
+				UIHelpers::DrawUndoableVec3("Offset", s->offset);
+				s->position = transformPos + s->offset;
+			}
+			// --- AABB ---
+			else if (cc->collider->ColliderType == ColliderType::AABB) {
+				auto* a = static_cast<AABBRect*>(cc->collider.get());
+				
+				ImGui::TextColored(ImVec4(0.6f, 1.f, 0.6f, 1.f), "AABB Collider");
+				
+				UIHelpers::DrawUndoableVec3("Extents", a->extents);
+				UIHelpers::DrawUndoableVec3("Offset", a->offset);
 
-					ImGui::TextColored(ImVec4(0.6f, 1.f, 0.6f, 1.f), "Circle Collider");
-
-					UIHelpers::DrawUndoableFloat("Radius", s->radius, 0.05f, 0.0f);
-					UIHelpers::DrawUndoableVec3("Offset", s->offset);
-					s->position = transformPos + s->offset;
+				if (ImGui::Button("Fit to Transform")) {
+					if (auto* t = ecs.GetComponent<TransformComponent>(e)) {
+						a->extents = { t->size.x * 0.5f, t->size.y * 0.5f, 0.f };
+					}
 				}
-				// --- AABB ---
-				else if (cc->collider->ColliderType == ColliderType::AABB) {
-					auto* a = static_cast<AABBRect*>(cc->collider.get());
+				a->min = transformPos + a->offset - a->extents;
+				a->max = transformPos + a->offset + a->extents;
+			}
+			// --- LINE ---
+			else if (cc->collider->ColliderType == ColliderType::LINE) {
+				auto* l = static_cast<LineSegment*>(cc->collider.get());
+				if (l) {
+					ImGui::TextColored(ImVec4(0.6f, 1.f, 0.6f, 1.f), "Line Segment");
+					UIHelpers::DrawUndoableVec3("P1 (Start)", l->p1);
+					UIHelpers::DrawUndoableVec3("P2 (End)", l->p2);
+					UIHelpers::DrawUndoableVec3("Offset", l->offset);
 
-					ImGui::TextColored(ImVec4(0.6f, 1.f, 0.6f, 1.f), "AABB Collider");
-
-					UIHelpers::DrawUndoableVec3("Extents", a->extents);
-					UIHelpers::DrawUndoableVec3("Offset", a->offset);
-
-					if (ImGui::Button("Fit to Transform")) {
+					if (ImGui::Button("Fit to Transform Width")) {
 						if (auto* t = ecs.GetComponent<TransformComponent>(e)) {
-							a->extents = { t->size.x * 0.5f, t->size.y * 0.5f, 0.f };
+							float halfW = t->size.x * 0.5f;
+							l->p1 = CEVec3{ -halfW, 0.f, 0.f };
+							l->p2 = CEVec3{ halfW, 0.f, 0.f };
 						}
 					}
-					a->min = transformPos + a->offset - a->extents;
-					a->max = transformPos + a->offset + a->extents;
+					l->UpdateCollider(transformPos);
+					if (auto* t = ecs.GetComponent<TransformComponent>(e)) l->UpdateRotation(t->rotation);
 				}
-				// --- LINE ---
-				else if (cc->collider->ColliderType == ColliderType::LINE) {
-					auto* l = static_cast<LineSegment*>(cc->collider.get());
-					if (l) {
-						ImGui::TextColored(ImVec4(0.6f, 1.f, 0.6f, 1.f), "Line Segment");
-						UIHelpers::DrawUndoableVec3("P1 (Start)", l->p1);
-						UIHelpers::DrawUndoableVec3("P2 (End)", l->p2);
-						UIHelpers::DrawUndoableVec3("Offset", l->offset);
+			}
+			// --- TRIANGLE ---
+			else if (cc->collider->ColliderType == ColliderType::TRIANGLE)
+			{
+				auto* p = static_cast<Collision::Polygon*>(cc->collider.get());
+				ImGui::TextColored(ImVec4(0.6f, 1.f, 0.6f, 1.f), "Triangle Collider");
+				bool changed = false;
 
-						if (ImGui::Button("Fit to Transform Width")) {
-							if (auto* t = ecs.GetComponent<TransformComponent>(e)) {
-								float halfW = t->size.x * 0.5f;
-								l->p1 = CEVec3{ -halfW, 0.f, 0.f };
-								l->p2 = CEVec3{ halfW, 0.f, 0.f };
-							}
-						}
-						l->UpdateCollider(transformPos);
-						if (auto* t = ecs.GetComponent<TransformComponent>(e)) l->UpdateRotation(t->rotation);
-					}
+				// Size (Extents) - requires Rescale logic on change
+				CEVec2 currentSize = { p->extents.x, p->extents.y };
+				CEVec2 oldSize = currentSize;
+				UIHelpers::DrawUndoableVec2("Size", currentSize, 0.05f);
+				if (currentSize.x != oldSize.x || currentSize.y != oldSize.y) {
+					p->Rescale(CEVec3(currentSize.x, currentSize.y, 0.f));
+					changed = true;
 				}
-				// --- TRIANGLE ---
-				else if (cc->collider->ColliderType == ColliderType::TRIANGLE)
-				{
-					auto* p = static_cast<Collision::Polygon*>(cc->collider.get());
-					ImGui::TextColored(ImVec4(0.6f, 1.f, 0.6f, 1.f), "Triangle Collider");
-					bool changed = false;
 
-					// Size (Extents) - requires Rescale logic on change
-					CEVec2 currentSize = { p->extents.x, p->extents.y };
-					CEVec2 oldSize = currentSize;
-					UIHelpers::DrawUndoableVec2("Size", currentSize, 0.05f);
-					if (currentSize.x != oldSize.x || currentSize.y != oldSize.y) {
-						p->Rescale(CEVec3(currentSize.x, currentSize.y, 0.f));
+				// Rotation
+				float oldRot = p->rotation;
+				UIHelpers::DrawUndoableFloat("Rotation", p->rotation, 0.05f);
+				if (p->rotation != oldRot) changed = true;
+
+				// Offset
+				CEVec3 oldOffset = p->offset;
+				UIHelpers::DrawUndoableVec3("Offset", p->offset);
+				if (p->offset != oldOffset) changed = true;
+
+				// Fit Button
+				if (ImGui::Button("Fit to Sprite Size")) {
+					if (auto* t = ecs.GetComponent<TransformComponent>(e)) {
+						CEVec3 oldExt = p->extents;
+						CEVec3 newExt = CEVec3(t->size.x * .5f, t->size.y * .5f, 0.f);
+						UndoManager::GetInstance().AddCommand(
+							std::make_unique<ChangeValueCommand<CEVec3>>(oldExt, newExt, [p](const CEVec3& v) { p->Rescale(v); })
+						);
+						p->Rescale(newExt);
 						changed = true;
 					}
+				}
 
-					// Rotation
-					float oldRot = p->rotation;
-					UIHelpers::DrawUndoableFloat("Rotation", p->rotation, 0.05f);
-					if (p->rotation != oldRot) changed = true;
+				// Visual Updates
+				if (changed) {
+					p->UpdatePosition(transformPos);
+					p->UpdateRotation(p->rotation);
+				}
+			}
+			// --- OBB/POLYGON INSPECTOR ---
+			else if (cc->collider->ColliderType == ColliderType::OBB || cc->collider->ColliderType == ColliderType::POLYGON)
+			{
+				auto* p = static_cast<Collision::Polygon*>(cc->collider.get());
+				ImGui::TextColored(ImVec4(0.6f, 1.f, 0.6f, 1.f), "OBB Collider");
+				bool changed = false;
 
-					// Offset
-					CEVec3 oldOffset = p->offset;
-					UIHelpers::DrawUndoableVec3("Offset", p->offset);
-					if (p->offset != oldOffset) changed = true;
+				UIHelpers::DrawUndoableVec3("Extents", p->extents);
 
-					// Fit Button
-					if (ImGui::Button("Fit to Sprite Size")) {
-						if (auto* t = ecs.GetComponent<TransformComponent>(e)) {
-							CEVec3 oldExt = p->extents;
-							CEVec3 newExt = CEVec3(t->size.x * .5f, t->size.y * .5f, 0.f);
-							UndoManager::GetInstance().AddCommand(
-								std::make_unique<ChangeValueCommand<CEVec3>>(oldExt, newExt, [p](const CEVec3& v) { p->Rescale(v); })
-							);
-							p->Rescale(newExt);
-							changed = true;
-						}
-					}
+				CEVec3 oldOffset = p->offset;
+				UIHelpers::DrawUndoableVec3("Offset", p->offset);
+				if (p->offset != oldOffset) changed = true;
 
-					// Visual Updates
-					if (changed) {
-						p->UpdatePosition(transformPos);
-						p->UpdateRotation(p->rotation);
+				float oldRot = p->rotation;
+				UIHelpers::DrawUndoableFloat("Rotation", p->rotation);
+				if (p->rotation != oldRot) changed = true;
+
+				if (ImGui::Button("Fit to Sprite")) {
+					if (auto* t = ecs.GetComponent<TransformComponent>(e)) {
+						p->Rescale(CEVec3(t->size.x * 0.5f, t->size.y * 0.5f, 0.f));
+						changed = true;
 					}
 				}
-				// --- OBB/POLYGON INSPECTOR ---
-				else if (cc->collider->ColliderType == ColliderType::OBB || cc->collider->ColliderType == ColliderType::POLYGON)
-				{
-					auto* p = static_cast<Collision::Polygon*>(cc->collider.get());
-					ImGui::TextColored(ImVec4(0.6f, 1.f, 0.6f, 1.f), "OBB Collider");
-					bool changed = false;
 
-					UIHelpers::DrawUndoableVec3("Extents", p->extents);
-
-					CEVec3 oldOffset = p->offset;
-					UIHelpers::DrawUndoableVec3("Offset", p->offset);
-					if (p->offset != oldOffset) changed = true;
-
-					float oldRot = p->rotation;
-					UIHelpers::DrawUndoableFloat("Rotation", p->rotation);
-					if (p->rotation != oldRot) changed = true;
-
-					if (ImGui::Button("Fit to Sprite")) {
-						if (auto* t = ecs.GetComponent<TransformComponent>(e)) {
-							p->Rescale(CEVec3(t->size.x * 0.5f, t->size.y * 0.5f, 0.f));
-							changed = true;
-						}
+				// Update Collider Logic
+				p->UpdateCollider(transformPos);
+				if (changed) {
+					if (auto* t = ecs.GetComponent<TransformComponent>(e)) {
+						p->UpdateRotation(t->rotation);
 					}
-
-					// Update Collider Logic
-					p->UpdateCollider(transformPos);
-					if (changed) {
-						if (auto* t = ecs.GetComponent<TransformComponent>(e)) {
-							p->UpdateRotation(t->rotation);
-						}
-						else {
-							p->UpdateRotation(p->rotation);
-						}
+					else {
+						p->UpdateRotation(p->rotation);
 					}
 				}
 			}
