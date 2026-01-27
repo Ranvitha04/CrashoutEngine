@@ -100,6 +100,12 @@ namespace
         audio.setSFXGroupVolume(volume);
     }
 
+    static void ICALL_Audio_SetTaggedVolume(MonoString* key, float vol)
+    {
+        auto& audio = AudioSystem::instance();
+        audio.setTaggedVolume(MonoToStdString(key), vol);
+    }
+
     static void ICALL_Audio_SetMasterVolume(float volume)
     {
         auto& audio = AudioSystem::instance();
