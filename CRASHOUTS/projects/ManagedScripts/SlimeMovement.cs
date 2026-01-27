@@ -12,6 +12,8 @@ namespace CrashoutsEngine
         // --- SETTINGS ---
         [SerializeField] private float moveSpeed = 600f; // Reduced force
         [SerializeField] private float maxSpeed = 15.0f; // Slower speed
+        [SerializeField] private float moveAudioInterval = 0.4f;
+        [SerializeField] private float stopAudioDistance = 40.0f; // Distance to stop audio playback
         [SerializeField] private float turnTimer = 2.0f;
         [SerializeField] private float detectionRange = 250.0f;
         [SerializeField] private float gravityScale = 2.0f;
@@ -28,9 +30,9 @@ namespace CrashoutsEngine
 
                         [SerializeField] private float MaxDist = 200.0f;
 
-                        [SerializeField] private float ledgeRayCastDistance = 100.0f;
         private bool isGrounded = false;
         private bool moveRight = true;
+        private float moveAudioTimer = 0.0f;
         private float currentTurnTime = 0.0f;
         private bool isChasing = false;
         private bool isGrabbed = false;
@@ -42,6 +44,119 @@ namespace CrashoutsEngine
 
                         [SerializeField] private float ledgeBuffer = 40.0f; // Distance from edge of collider to check
 
+        // PATH FOLLOWING STATE
+        private List<CEVec3> activePath = new List<CEVec3>();
+        private bool isFollowingPath = false;
+        private int pathIndex = 0;
+
+        private string currentAnimState = "";
+
+        public override void Start()
+        {
+            rb = Entity.GetComponent<RigidBodyComponent>();
+            tf = Entity.GetComponent<TransformComponent>();
+            anim = Entity.GetComponent<Animator>(); 
+            col = Entity.GetComponent<ColliderComponent>();
+            playerScript = PlayerMovement.Instance;
+
+            CollisionEvents.RegisterCollideEnter(Entity.ID, this.OnCollideEnter);
+            CollisionEvents.RegisterCollideExit(Entity.ID, this.OnCollideExit);
+
+            if (rb != null) rb.LinearVelocity = new CEVec3(0, 0, 0);
+            if (tf != null) startPos = tf.Position;
+
+            Console.WriteLine("[Slime] AI Initialized. Home X: " + startPos.x);
+        }
+
+        public override void Update()
+        {
+            if(playerScript != null && playerScript.isPaused) { return; } 
+            if (rb == null || tf == null) return;
+
+            float dt = (float)Time.DT;
+
+            if (isStunned)
+            {
+                currentStunTime -= dt;
+                if (currentStunTime <= 0)
+                {
+                    isStunned = false;
+                }
+                UpdateAnimationState();
+                return;
+            }
+
+            if (flipCooldown > 0) flipCooldown -= dt;
+
+            // Handle Grab State
+            if (playerScript != null)
+            {
+                var playerTf = playerScript.Entity.GetComponent<TransformComponent>();
+                if (playerTf != null)
+                {
+                     float dist = Distance(tf.Position, playerTf.Position);
+                     if (dist <= grabRange || isGrabbed) HandleGrabLogic();
+                }
+               
+                if (isGrabbed)
+                {
+                    UpdateAnimationState(); 
+                    return;
+                }
+            }
+
+            // Chase logic
+            isChasing = false;
+            if (playerScript != null)
+            {
+                var playerTf = playerScript.Entity.GetComponent<TransformComponent>();
+                if (playerTf != null)
+                {
+                    float dist = Distance(tf.Position, playerTf.Position);
+                    bool hasLineOfSight = false;
+                    
+                    if (dist < detectionRange && !isFollowingPath)
+                    {
+                         CEVec3 start = tf.Position;
+                         CEVec3 end = playerTf.Position;
+                         uint hitID;
+                         bool hit = InternalCalls.Raycast(ref start, ref end, out hitID, Entity.ID);
+                         
+                         if (hit && hitID == playerScript.Entity.ID)
+                         {
+                             hasLineOfSight = true;
+                         }
+                    }
+
+                    if (hasLineOfSight) 
+                    {
+                        moveAudioTimer -= dt;
+                        isChasing = true;
+                        returningHome = false;
+                        moveRight = (playerTf.Position.x > tf.Position.x);
+                        if (moveAudioTimer <= 0.0f)
+                        {
+                            if (dist > stopAudioDistance)
+                            {
+                                AudioManager.GetInstance().PlayAttached("slimeMove", Entity.ID);
+                            }
+                            moveAudioTimer = moveAudioInterval;
+                        }
+                    }
+                    else
+                    {
+                        moveAudioTimer = 0.0f;
+                    }
+                }
+            }
+
+            // Patrol logic
+            if (!isChasing && isGrounded && !isFollowingPath && !isGrabbed)
+            {
+                // 1. Check for Ledges (Holes)
+                float checkDir = moveRight ? 1.0f : -1.0f;
+                CEVec3 rayStart = new CEVec3(tf.Position.x + (checkDir * ledgeCheckXOffset), tf.Position.y, tf.Position.z);
+                CEVec3 rayEnd = new CEVec3(rayStart.x, rayStart.y - ledgeRayCastDistance, rayStart.z);
                 
 
                         // --- STATE ---
