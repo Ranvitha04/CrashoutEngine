@@ -383,7 +383,7 @@
                     {
                         "x": 0,
                         "y": 3,
-                        "asset": ""
+                        "asset": "tilemaps/Rock"
                     },
                     {
                         "x": 0,
@@ -442,6 +442,16 @@
                     },
                     {
                         "x": 1,
+                        "y": 3,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 1,
+                        "y": 4,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 1,
                         "y": 10,
                         "asset": "tilemaps/Rock"
                     },
@@ -467,6 +477,21 @@
                     },
                     {
                         "x": 2,
+                        "y": 3,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 2,
+                        "y": 4,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 2,
+                        "y": 5,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 2,
                         "y": 10,
                         "asset": "tilemaps/Rock"
                     },
@@ -488,6 +513,26 @@
                     {
                         "x": 3,
                         "y": 2,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 3,
+                        "y": 3,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 3,
+                        "y": 4,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 3,
+                        "y": 5,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 3,
+                        "y": 6,
                         "asset": "tilemaps/Rock"
                     },
                     {
@@ -527,6 +572,21 @@
                     },
                     {
                         "x": 4,
+                        "y": 3,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 4,
+                        "y": 4,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 4,
+                        "y": 5,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 4,
                         "y": 10,
                         "asset": "tilemaps/Rock"
                     },
@@ -553,6 +613,16 @@
                     {
                         "x": 5,
                         "y": 2,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 5,
+                        "y": 3,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 5,
+                        "y": 4,
                         "asset": "tilemaps/Rock"
                     },
                     {
@@ -592,6 +662,21 @@
                     },
                     {
                         "x": 6,
+                        "y": 3,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 6,
+                        "y": 4,
+                        "asset": ""
+                    },
+                    {
+                        "x": 6,
+                        "y": 6,
+                        "asset": ""
+                    },
+                    {
+                        "x": 6,
                         "y": 10,
                         "asset": "tilemaps/Rock"
                     },
@@ -618,6 +703,11 @@
                     {
                         "x": 7,
                         "y": 2,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 7,
+                        "y": 6,
                         "asset": "tilemaps/Rock"
                     },
                     {
@@ -662,6 +752,11 @@
                     },
                     {
                         "x": 8,
+                        "y": 6,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 8,
                         "y": 10,
                         "asset": "tilemaps/Rock"
                     },
@@ -697,6 +792,11 @@
                     },
                     {
                         "x": 9,
+                        "y": 6,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 9,
                         "y": 10,
                         "asset": "tilemaps/Rock"
                     },
@@ -727,6 +827,11 @@
                     },
                     {
                         "x": 10,
+                        "y": 6,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 10,
                         "y": 10,
                         "asset": "tilemaps/Rock"
                     },
@@ -784,6 +889,21 @@
                         "x": 13,
                         "y": 2,
                         "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 13,
+                        "y": 4,
+                        "asset": ""
+                    },
+                    {
+                        "x": 13,
+                        "y": 5,
+                        "asset": ""
+                    },
+                    {
+                        "x": 13,
+                        "y": 6,
+                        "asset": ""
                     },
                     {
                         "x": 13,
@@ -798,22 +918,22 @@
                     {
                         "x": 14,
                         "y": 2,
-                        "asset": ""
+                        "asset": "tilemaps/Rock"
                     },
                     {
                         "x": 14,
                         "y": 3,
-                        "asset": "tilemaps/Rock"
+                        "asset": ""
                     },
                     {
                         "x": 14,
                         "y": 4,
-                        "asset": "tilemaps/Rock"
+                        "asset": ""
                     },
                     {
                         "x": 14,
                         "y": 5,
-                        "asset": "tilemaps/Rock"
+                        "asset": ""
                     },
                     {
                         "x": 14,
@@ -823,17 +943,17 @@
                     {
                         "x": 14,
                         "y": 7,
-                        "asset": "tilemaps/Rock"
+                        "asset": ""
                     },
                     {
                         "x": 14,
                         "y": 8,
-                        "asset": "tilemaps/Rock"
+                        "asset": ""
                     },
                     {
                         "x": 14,
                         "y": 9,
-                        "asset": "tilemaps/Rock"
+                        "asset": ""
                     },
                     {
                         "x": 14,
@@ -848,7 +968,7 @@
                     {
                         "x": 15,
                         "y": 2,
-                        "asset": ""
+                        "asset": "tilemaps/Rock"
                     },
                     {
                         "x": 15,
@@ -868,7 +988,7 @@
                     {
                         "x": 15,
                         "y": 6,
-                        "asset": ""
+                        "asset": "tilemaps/Rock"
                     },
                     {
                         "x": 15,
@@ -888,7 +1008,102 @@
                     {
                         "x": 15,
                         "y": 10,
-                        "asset": ""
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 16,
+                        "y": 2,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 16,
+                        "y": 6,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 16,
+                        "y": 10,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 17,
+                        "y": 2,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 17,
+                        "y": 6,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 17,
+                        "y": 7,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 17,
+                        "y": 10,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 18,
+                        "y": 2,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 18,
+                        "y": 6,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 18,
+                        "y": 10,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 19,
+                        "y": 3,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 19,
+                        "y": 4,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 19,
+                        "y": 6,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 19,
+                        "y": 8,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 19,
+                        "y": 9,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 19,
+                        "y": 10,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 20,
+                        "y": 5,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 20,
+                        "y": 6,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 20,
+                        "y": 7,
+                        "asset": "tilemaps/Rock"
                     }
                 ]
             }
@@ -902,8 +1117,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 114.49921417236328,
-                    "y": 125.32918548583985,
+                    "x": 287.31719970703127,
+                    "y": 126.8740234375,
                     "z": 0.0
                 },
                 "size": {
@@ -929,8 +1144,8 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 113.00588989257813,
-                    "y": 125.32919311523438,
+                    "x": 287.31719970703127,
+                    "y": 126.8740234375,
                     "z": 0.0
                 },
                 "offset": {
@@ -939,13 +1154,13 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 100.70587158203125,
-                    "y": 95.9761962890625,
+                    "x": 275.0171813964844,
+                    "y": 97.52105712890625,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 125.305908203125,
-                    "y": 154.68218994140626,
+                    "x": 299.6172180175781,
+                    "y": 156.22698974609376,
                     "z": 0.0
                 }
             },
@@ -1070,13 +1285,13 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 216.0081329345703,
-                    "y": 119.58001708984375,
+                    "x": 524.8268432617188,
+                    "y": 239.8610382080078,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 72.00019073486328,
-                    "y": 67.0003433227539
+                    "x": -53.0,
+                    "y": 49.29999923706055
                 }
             },
             "rigidbody": {
@@ -1097,23 +1312,23 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 217.9081268310547,
-                    "y": 116.38002014160156,
+                    "x": 525.52685546875,
+                    "y": 236.3610382080078,
                     "z": 0.0
                 },
                 "offset": {
-                    "x": 1.899999976158142,
-                    "y": -3.200000047683716,
+                    "x": 0.699999988079071,
+                    "y": -3.5,
                     "z": 0.0
                 },
                 "min": {
-                    "x": 200.0081329345703,
-                    "y": 102.38002014160156,
+                    "x": 510.6268310546875,
+                    "y": 226.16099548339845,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 235.80812072753907,
-                    "y": 130.38002014160157,
+                    "x": 540.4268798828125,
+                    "y": 246.5610809326172,
                     "z": 0.0
                 }
             },
@@ -1156,18 +1371,22 @@
                     {
                         "className": "SlimeMovement",
                         "fields": {
-                            "moveSpeed": 1000.0,
+                            "moveSpeed": 250.0,
                             "maxSpeed": 50.0,
+                            "moveAudioInterval": 0.4000000059604645,
+                            "stopAudioDistance": 40.0,
                             "turnTimer": 2.0,
-                            "detectionRange": 85.0,
+                            "detectionRange": 134.39999389648438,
                             "gravityScale": 2.799999952316284,
-                            "grabRange": 100.0,
+                            "grabRange": 100.69999694824219,
                             "minThrowSpeed": 150.0,
                             "maxThrowSpeed": 1500.0,
                             "maxMouseDragDist": 400.0,
                             "airDrag": 0.10000000149011612,
                             "stunDuration": 1.0,
-                            "MaxDist": 150.0
+                            "MaxDist": 300.0,
+                            "ledgeBuffer": -6.699999809265137,
+                            "ledgeRayCastDistance": 50.70000076293945
                         }
                     }
                 ]

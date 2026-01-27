@@ -318,9 +318,10 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path) {
         if (prefabs.HasMember("script")) {
             scD.hasComp = true;
             const auto& s = prefabs["script"];
-            if (s.HasMember("scripts")) {
+            if (s.HasMember("scripts") && s["scripts"].IsArray()) {
                 for (auto& v : s["scripts"].GetArray()) {
-                    if (v.HasMember("className")) scD.classes.push_back(v["className"].GetString());
+                    if (v.HasMember("className") && v["className"].IsString())
+                        scD.classes.push_back(v["className"].GetString());
                 }
             }
             else if (s.HasMember("className")) {
@@ -438,8 +439,14 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path) {
             const auto& c = prefabs["camera"];
             if (c.HasMember("zoom")) camD.c.zoom = c["zoom"].GetFloat();
             if (c.HasMember("position")) camD.c.position = ReadVectorFromJson{}(c["position"]);
-            if (c.HasMember("xBounds")) { camD.c.xBounds.x = c["xBounds"]["x"].GetFloat(); camD.c.xBounds.y = c["xBounds"]["y"].GetFloat(); }
-            if (c.HasMember("yBounds")) { camD.c.yBounds.x = c["yBounds"]["x"].GetFloat(); camD.c.yBounds.y = c["yBounds"]["y"].GetFloat(); }
+            if (c.HasMember("xBounds") && c["xBounds"].IsArray() && c["xBounds"].Size() >= 2) { 
+                camD.c.xBounds.x = c["xBounds"][0].GetFloat(); 
+                camD.c.xBounds.y = c["xBounds"][1].GetFloat(); 
+            }
+            if (c.HasMember("yBounds") && c["yBounds"].IsArray() && c["yBounds"].Size() >= 2) { 
+                camD.c.yBounds.x = c["yBounds"][0].GetFloat(); 
+                camD.c.yBounds.y = c["yBounds"][1].GetFloat(); 
+            }
         }
 
         // Sprite Animator
@@ -501,11 +508,11 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path) {
                             KFBinding newBinding;
                             newBinding.property = static_cast<KFProperty>(bVal["property"].GetInt());
 
-                            if (bVal.HasMember("keys")) {
+                            if (bVal.HasMember("keys") && bVal["keys"].IsArray()) {
                                 for (const auto& kVal : bVal["keys"].GetArray()) {
                                     KFKey k;
-                                    k.time = kVal["t"].GetFloat();
-                                    k.value = kVal["v"].GetFloat();
+                                    if (kVal.HasMember("t")) k.time = kVal["t"].GetFloat();
+                                    if (kVal.HasMember("v")) k.value = kVal["v"].GetFloat();
                                     if (kVal.HasMember("i")) k.interp = static_cast<KFInterp>(kVal["i"].GetInt());
                                     if (kVal.HasMember("in")) k.inTan = kVal["in"].GetFloat();
                                     if (kVal.HasMember("out")) k.outTan = kVal["out"].GetFloat();
@@ -853,8 +860,12 @@ namespace CrashoutsEngine {
         if (!doc.IsObject()) doc.SetObject();
 
         auto& allocator = doc.GetAllocator();
-        if (!doc.HasMember("prefabs")) doc.AddMember("prefabs", Value(kArrayType), allocator);
-        Value& prefabs = doc["prefabs"];
+        if (!doc.HasMember("prefabs") || !doc["prefabs"].IsArray()) {
+            if (doc.HasMember("prefabs")) doc.RemoveMember("prefabs"); // Remove corrupt/null entry
+            doc.AddMember("prefabs", Value(kArrayType), allocator);    // Create fresh array
+        }
+
+        Value& prefabs = doc["prefabs"]; // Now guaranteed to be a valid Array
 
         Value obj(kObjectType);
         obj.AddMember("type", "Box", allocator); // Tag type
@@ -1176,11 +1187,14 @@ namespace CrashoutsEngine {
         // Upsert
         bool replaced = false;
         std::string searchKey = matchName.empty() ? newName : matchName;
-        for (auto& p : prefabs.GetArray()) {
-            if (p.HasMember("name") && std::string(p["name"].GetString()) == searchKey) {
-                p.CopyFrom(obj, allocator);
-                replaced = true;
-                break;
+        if (prefabs.IsArray()) {
+            for (auto& p : prefabs.GetArray()) {
+                // Safety check for name existence and type
+                if (p.HasMember("name") && p["name"].IsString() && std::string(p["name"].GetString()) == searchKey) {
+                    p.CopyFrom(obj, allocator);
+                    replaced = true;
+                    break;
+                }
             }
         }
         if (!replaced) prefabs.PushBack(obj, allocator);

@@ -76,6 +76,8 @@ namespace CrashoutsEngine
             script.MethodUpdate = mono_class_get_method_from_name(script.Class, "Update", 0);
             // Cache FixedUpdate()
             script.MethodFixedUpdate = mono_class_get_method_from_name(script.Class, "FixedUpdate", 0);
+            // Cache OnDrawGizmos()
+            script.MethodOnDrawGizmos = mono_class_get_method_from_name(script.Class, "OnDrawGizmos", 0);
             // Cache OnDestroy()
             script.MethodOnDestroy = mono_class_get_method_from_name(script.Class, "OnDestroy", 0);
 
@@ -284,6 +286,24 @@ namespace Component{
             MonoObject* target = mono_gchandle_get_target(script.GCHandle);
             MonoObject* exc = nullptr;
             mono_runtime_invoke(script.MethodFixedUpdate, target, nullptr, &exc);
+
+            if (exc) mono_print_unhandled_exception(exc);
+        }
+    }
+
+    void ScriptComponent::DrawGizmos()
+    {
+        // Safe copy to handle case where 'this' moves or Scripts modified
+        std::vector<ScriptInstance> scriptsCopy = Scripts;
+
+        for (auto& script : scriptsCopy)
+        {
+            if (!script.MethodOnDrawGizmos || !script.GCHandle)
+                continue;
+
+            MonoObject* target = mono_gchandle_get_target(script.GCHandle);
+            MonoObject* exc = nullptr;
+            mono_runtime_invoke(script.MethodOnDrawGizmos, target, nullptr, &exc);
 
             if (exc) mono_print_unhandled_exception(exc);
         }

@@ -347,9 +347,13 @@ namespace UI {
                 auto* rootT = ecs.GetComponent<Component::TransformComponent>(root);
                 if (rootT)
                 {
+                    float signX = (rootT->size.x < 0.0f) ? -1.0f : 1.0f;
+                    float signY = (rootT->size.y < 0.0f) ? -1.0f : 1.0f;
+
                     float tr[3] = { rootT->position.x, rootT->position.y, rootT->position.z };
                     float rt[3] = { 0.f, 0.f, rootT->rotation };
-                    float sc[3] = { rootT->size.x, rootT->size.y, 1.f };
+
+                    float sc[3] = { std::abs(rootT->size.x), std::abs(rootT->size.y), 1.f };
 
                     float m[16];
                     ImGuizmo::RecomposeMatrixFromComponents(tr, rt, sc, m);
@@ -384,8 +388,29 @@ namespace UI {
 
                     if (ImGuizmo::IsUsing())
                     {
+                        if (!dragging) {
+                            dragging = true;
+                            undoTriggeredThisFrame = false;
+                            movedEntities = group; // 'group' is already calculated above
+                            startStates.clear();
+
+                            for (auto e : movedEntities) {
+                                if (ecs.HasComponent<Component::TransformComponent>(e)) {
+                                    auto* t = ecs.GetComponent<Component::TransformComponent>(e);
+                                    CrashoutsEngine::TransformState s;
+                                    s.position = t->position;
+                                    s.rotation = t->rotation;
+                                    s.scale = t->size;
+                                    startStates.push_back(s);
+                                }
+                            }
+                        }
+
                         float newTr[3], newRt[3], newSc[3];
                         ImGuizmo::DecomposeMatrixToComponents(m, newTr, newRt, newSc);
+
+                        newSc[0] *= signX;
+                        newSc[1] *= signY;
 
                         // If selected has a parent, update LOCAL (ParentComponent) instead of WORLD (TransformComponent)
                         Component::ParentComponent* pc = nullptr;
@@ -658,9 +683,9 @@ namespace UI {
                                 // If the prefab has children, 'newEntity' might be a child piece (e.g., the gun of a soldier).
                                 // We must walk up the tree to find the ROOT so we move the whole object.
                                 while (ecs.HasComponent<Component::ParentComponent>(newEntity)) {
-                                    Entity p = ecs.GetComponent<Component::ParentComponent>(newEntity)->parent;
-                                    if (p == 0) break; // Reached null parent
-                                    newEntity = p;
+                                    Entity parentEnt = ecs.GetComponent<Component::ParentComponent>(newEntity)->parent;
+                                    if (parentEnt == 0) break; // Reached null parent
+                                    newEntity = parentEnt;
                                 }
 
                                 // 4. Move the Root
@@ -678,13 +703,7 @@ namespace UI {
                         }
                         else if (p->kind == AssetKind::Audio) {
                             // Audio spawn logic
-                            std::string rel = p->relPath;
-                            const std::string prefix = "audio/";
-                            auto pos = rel.find(prefix);
-                            if (pos != std::string::npos) rel = rel.substr(pos + prefix.size());
-                            if (auto dot = rel.find_last_of('.'); dot != std::string::npos) rel.erase(dot);
-                            std::string eventLike = std::string("event:/") + rel;
-
+                            std::string audioPath = p->relPath;
                             Entity target = ecs.CreateEntity();
 
                             ecs.AddComponent<Component::NameComponent>(target, std::string("Audio_") + p->name);
@@ -694,21 +713,13 @@ namespace UI {
                                 t->size = { 30.0f, 30.0f };
                             }
 
-                            // Add shape so it can be seen/selected in viewport
-                            ecs.AddComponent<Component::ShapeComponent>(target);
-                            if (auto* sc = ecs.GetComponent<Component::ShapeComponent>(target)) {
-                                sc->enableTexture = false;
-                                sc->type = Component::ShapeType::Circle;
-                                sc->color = { 0.2f, 0.8f, 0.2f, 0.8f }; // Green circle for audio
-                            }
-
                             if (!ecs.HasComponent<Component::AudioEmitterComponent>(target)) ecs.AddComponent<Component::AudioEmitterComponent>(target);
                             if (auto* ac = ecs.GetComponent<Component::AudioEmitterComponent>(target)) {
                                 if (ac->clips.empty()) {
                                     ac->clips.emplace_back();
                                     ac->clips.back().name = "Main Clip"; // Default name
                                 }
-                                ac->clips[0].path = eventLike;
+                                ac->clips[0].path = audioPath;
                             }
 
                             // Auto-select the new audio source

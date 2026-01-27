@@ -44,19 +44,19 @@ namespace CrashoutsEngine {
 		const std::string assetManifestPath = rootPath + "json/assetmanifest.json";
 
 		namespace fs = std::filesystem;
-		static bool EndsWithJson(const std::string& s)
-		{
-			if (s.size() < 5) return false;
-			return s.compare(s.size() - 5, 5, ".json") == 0;
-		}
+		//static bool EndsWithJson(const std::string& s)
+		//{
+		//	if (s.size() < 5) return false;
+		//	return s.compare(s.size() - 5, 5, ".json") == 0;
+		//}
 
-		static std::string NormalizeSceneRelPath(std::string p)
-		{
-			// Turn "descentmenu" into "descentmenu.json"
-			if (!EndsWithJson(p))
-				p += ".json";
-			return p;
-		}
+		//static std::string NormalizeSceneRelPath(std::string p)
+		//{
+		//	// Turn "descentmenu" into "descentmenu.json"
+		//	if (!EndsWithJson(p))
+		//		p += ".json";
+		//	return p;
+		//}
 
 		AssetManager::AssetManager() {
 			// Load FT_Library

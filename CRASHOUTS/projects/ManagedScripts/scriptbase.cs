@@ -4,7 +4,7 @@
 @date       29/11/2025
 @brief      the base class for all user-defined scripts in Crashouts Engine
 
-All content © 2025 Digipen Institute of Technology Singapore.All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore.All rights reserved.
 
 //__________________________________________________________________________*/
 using System;
@@ -24,6 +24,9 @@ namespace CrashoutsEngine
 
         // Called at a fixed timestep
         public virtual void FixedUpdate() { }
+
+        // Called for debug drawing (editor and play mode)
+        public virtual void OnDrawGizmos() { }
 
         // Called when the script instance is being destroyed
         public virtual void OnDestroy() { }

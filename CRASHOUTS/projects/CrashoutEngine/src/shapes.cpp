@@ -308,9 +308,9 @@ namespace Component {
 
         renderer.SetupBuffersOptimized(
             pos_vtx.data(), pos_vtx.size() * sizeof(CEVec3),
-            clr_vtx.data(), clr_vtx.size() * sizeof(CEColor), // Updated to use sizeof(CEColor)
+            clr_vtx.data(), clr_vtx.size() * sizeof(CEColor),
             idx_vtx.data(), idx_vtx.size(),
-            GL_TRIANGLES);
+            GL_TRIANGLES, sizeof(CEColor)); // Pass sizeof(CEColor) as stride
 
         renderer.shdr_pgm->Use();
 
@@ -339,6 +339,67 @@ namespace Component {
 
         GLint tint_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "u_tint");
         if (tint_loc != -1) glUniform4f(tint_loc, 1.0f, 1.0f, 1.0f, 1.f); // No tint modification
+
+        renderer.Draw();
+    }
+
+    void Shapes::CreateCircleOutline(const CEVec2& transformSize, const CEVec3& position, int segments, const CEColor& color, const bool isWorldSpace) {
+        Component::Rendering& renderer = Component::Rendering::Get();
+
+        //minimum segments for circle
+        if (segments < 3) segments = 3;
+        if (segments > 360) segments = 360;
+
+        std::vector<CEVec3> pos_vtx;
+        std::vector<CEColor> clr_vtx;
+        std::vector<GLushort> idx_vtx;
+
+        // For outline, we just need vertices on the perimeter
+        for (int i = 0; i < segments; ++i) {
+            float angle = 2.0f * static_cast<float>(CEMath::PI) * static_cast<float>(i) / static_cast<float>(segments);
+            float x = cosf(angle);
+            float y = sinf(angle);
+            pos_vtx.push_back(CEVec3(x, y, 0.0f));
+            clr_vtx.push_back(color);
+            idx_vtx.push_back(static_cast<GLushort>(i));
+        }
+
+        renderer.SetupBuffersOptimized(
+            pos_vtx.data(), pos_vtx.size() * sizeof(CEVec3),
+            clr_vtx.data(), clr_vtx.size() * sizeof(CEColor),
+            idx_vtx.data(), idx_vtx.size(),
+            GL_LINE_LOOP, sizeof(CEColor)); // Pass sizeof(CEColor) as stride
+
+        renderer.shdr_pgm->Use();
+        renderer.shdr_pgm->SetUniform("uView", renderer.viewMatrix);
+        renderer.shdr_pgm->SetUniform("uProjection", renderer.projectionMatrix);
+
+        // Create model matrix for world position
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(position.x, position.y, position.z));
+        
+        model = glm::scale(model, glm::vec3(transformSize.x * 0.5f, transformSize.y * 0.5f, 1.0f));
+
+        glm::mat4 finalModelMatrix;
+        if (isWorldSpace)
+        {
+            finalModelMatrix = model;
+        }
+        else
+        {
+            glm::mat4 viewMatrix = renderer.viewMatrix;
+            glm::mat4 invViewMatrix = glm::inverse(viewMatrix);
+
+            finalModelMatrix = invViewMatrix * model;
+        }
+
+        renderer.shdr_pgm->SetUniform("uModel", finalModelMatrix);
+
+        GLint useTexture_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "u_useTexture");
+        if (useTexture_loc != -1) glUniform1i(useTexture_loc, 0);
+
+        GLint tint_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "u_tint");
+        if (tint_loc != -1) glUniform4f(tint_loc, 1.0f, 1.0f, 1.0f, 1.f);
 
         renderer.Draw();
     }

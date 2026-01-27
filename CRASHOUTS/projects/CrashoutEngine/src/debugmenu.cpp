@@ -39,6 +39,7 @@ namespace UI { // --------------------------------------------------------------
 	std::string& currSceneName = CrashoutsEngine::Serialization::currSceneName;
 
 	static std::string g_IniPath;
+    static bool* s_GameDebugDrawPtr = nullptr;
 
 	// -- Lifecycle ------------------------------------------------------------
 	/*!
@@ -46,6 +47,8 @@ namespace UI { // --------------------------------------------------------------
 	 @param window GLFW window handle.
 	*/
 	void Init(GLFWwindow* window, UI::UIState& uiState) {
+        s_GameDebugDrawPtr = &uiState.drawGameDebug;
+
 		IMGUI_CHECKVERSION();
 		// Use your existing allocator tags (kept intact)
 		ImGui::SetAllocatorFunctions(
@@ -101,6 +104,10 @@ namespace UI { // --------------------------------------------------------------
 		ImGui_ImplGlfw_Shutdown();
 		ImGui::DestroyContext();
 	}
+
+    bool IsGameDebugDrawEnabled() {
+        return s_GameDebugDrawPtr ? *s_GameDebugDrawPtr : false;
+    }
 
 	// -- Frame ownership (exactly one pair per frame) -------------------------
 	/*!

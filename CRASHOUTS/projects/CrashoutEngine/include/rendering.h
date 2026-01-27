@@ -330,7 +330,7 @@ namespace Component {
         void SetupBuffersOptimized(const void* vertices, size_t vertex_size,
             const void* colors, size_t color_size,
             const void* indices, size_t index_count,
-            GLenum primitive);
+            GLenum primitive, size_t color_stride = sizeof(CEVec3));
             
         /*!
         @brief Set up optimized buffers for textured geometry rendering.
@@ -354,7 +354,7 @@ namespace Component {
             const void* colors, size_t color_size,
             const void* tex_coords, size_t tex_coord_size,
             const void* indices, size_t index_count,
-            GLenum primitive);
+            GLenum primitive, size_t color_stride = sizeof(CEVec3));
             
         /*!
         @brief Update buffer data in-place without recreating OpenGL objects.
