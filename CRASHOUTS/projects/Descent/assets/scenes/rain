@@ -1042,6 +1042,11 @@
                     },
                     {
                         "x": 17,
+                        "y": 8,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 17,
                         "y": 10,
                         "asset": "tilemaps/Rock"
                     },
@@ -1054,6 +1059,11 @@
                         "x": 18,
                         "y": 6,
                         "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 18,
+                        "y": 9,
+                        "asset": ""
                     },
                     {
                         "x": 18,
@@ -1078,12 +1088,12 @@
                     {
                         "x": 19,
                         "y": 8,
-                        "asset": "tilemaps/Rock"
+                        "asset": ""
                     },
                     {
                         "x": 19,
                         "y": 9,
-                        "asset": "tilemaps/Rock"
+                        "asset": ""
                     },
                     {
                         "x": 19,
@@ -1103,6 +1113,51 @@
                     {
                         "x": 20,
                         "y": 7,
+                        "asset": ""
+                    },
+                    {
+                        "x": 20,
+                        "y": 8,
+                        "asset": ""
+                    },
+                    {
+                        "x": 20,
+                        "y": 9,
+                        "asset": ""
+                    },
+                    {
+                        "x": 20,
+                        "y": 10,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 21,
+                        "y": 5,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 21,
+                        "y": 6,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 21,
+                        "y": 7,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 21,
+                        "y": 8,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 21,
+                        "y": 9,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 21,
+                        "y": 10,
                         "asset": "tilemaps/Rock"
                     }
                 ]
@@ -1118,7 +1173,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": 287.31719970703127,
-                    "y": 126.8740234375,
+                    "y": 125.32915496826172,
                     "z": 0.0
                 },
                 "size": {
@@ -1145,7 +1200,7 @@
                 "enabled": true,
                 "position": {
                     "x": 287.31719970703127,
-                    "y": 126.8740234375,
+                    "y": 125.32915496826172,
                     "z": 0.0
                 },
                 "offset": {
@@ -1155,12 +1210,12 @@
                 },
                 "min": {
                     "x": 275.0171813964844,
-                    "y": 97.52105712890625,
+                    "y": 95.9761962890625,
                     "z": 0.0
                 },
                 "max": {
                     "x": 299.6172180175781,
-                    "y": 156.22698974609376,
+                    "y": 154.68211364746095,
                     "z": 0.0
                 }
             },
@@ -1285,8 +1340,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 524.8268432617188,
-                    "y": 239.8610382080078,
+                    "x": 513.77783203125,
+                    "y": 237.34922790527345,
                     "z": 0.0
                 },
                 "size": {
@@ -1312,8 +1367,8 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 525.52685546875,
-                    "y": 236.3610382080078,
+                    "x": 514.4778442382813,
+                    "y": 233.84922790527345,
                     "z": 0.0
                 },
                 "offset": {
@@ -1322,13 +1377,13 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 510.6268310546875,
-                    "y": 226.16099548339845,
+                    "x": 499.57781982421877,
+                    "y": 223.64918518066407,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 540.4268798828125,
-                    "y": 246.5610809326172,
+                    "x": 529.3778686523438,
+                    "y": 244.0492706298828,
                     "z": 0.0
                 }
             },
@@ -1375,7 +1430,314 @@
                             "maxSpeed": 50.0,
                             "moveAudioInterval": 0.4000000059604645,
                             "stopAudioDistance": 40.0,
-                            "turnTimer": 2.0,
+                            "detectionRange": 134.39999389648438,
+                            "gravityScale": 2.799999952316284,
+                            "grabRange": 100.69999694824219,
+                            "minThrowSpeed": 150.0,
+                            "maxThrowSpeed": 1500.0,
+                            "maxMouseDragDist": 400.0,
+                            "airDrag": 0.10000000149011612,
+                            "stunDuration": 1.0,
+                            "MaxDist": 300.0,
+                            "ledgeBuffer": -6.699999809265137,
+                            "ledgeRayCastDistance": 50.70000076293945
+                        }
+                    }
+                ]
+            },
+            "button": {
+                "buttonState": 0,
+                "shapeNormalColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "shapeHoveredColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.5
+                },
+                "shapePressedColor": {
+                    "x": 0.699999988079071,
+                    "y": 0.699999988079071,
+                    "z": 0.699999988079071,
+                    "w": 0.699999988079071
+                },
+                "textNormalColor": {
+                    "x": 0.30000001192092898,
+                    "y": 0.30000001192092898,
+                    "z": 0.30000001192092898,
+                    "w": 0.699999988079071
+                },
+                "textHoveredColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.0
+                },
+                "textPressedColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.5
+                }
+            }
+        },
+        {
+            "active": true,
+            "name": "Slime new_Clone1928",
+            "layer": {
+                "currentLayer": 16
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 649.0337524414063,
+                    "y": 237.34922790527345,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": -53.0,
+                    "y": 49.29999923706055
+                }
+            },
+            "rigidbody": {
+                "mass": 0.10000000149011612,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.0,
+                "dynamicFriction": 0.0,
+                "inertia": 0.0,
+                "invInertia": 0.0
+            },
+            "collider": {
+                "ColliderType": 1,
+                "isTrigger": false,
+                "enabled": true,
+                "position": {
+                    "x": 649.7337646484375,
+                    "y": 233.84922790527345,
+                    "z": 0.0
+                },
+                "offset": {
+                    "x": 0.699999988079071,
+                    "y": -3.5,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": 634.833740234375,
+                    "y": 223.64918518066407,
+                    "z": 0.0
+                },
+                "max": {
+                    "x": 664.6337890625,
+                    "y": 244.0492706298828,
+                    "z": 0.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "images/Monsters\\Slime spritesheet.png",
+                "uvSize": {
+                    "x": 0.25,
+                    "y": 0.3333333432674408
+                },
+                "uvOffset": {
+                    "x": 0.25,
+                    "y": 0.3333333432674408
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "SlimeMovement",
+                        "fields": {
+                            "moveSpeed": 250.0,
+                            "maxSpeed": 50.0,
+                            "moveAudioInterval": 0.4000000059604645,
+                            "stopAudioDistance": 40.0,
+                            "detectionRange": 134.39999389648438,
+                            "gravityScale": 2.799999952316284,
+                            "grabRange": 100.69999694824219,
+                            "minThrowSpeed": 150.0,
+                            "maxThrowSpeed": 1500.0,
+                            "maxMouseDragDist": 400.0,
+                            "airDrag": 0.10000000149011612,
+                            "stunDuration": 1.0,
+                            "MaxDist": 300.0,
+                            "ledgeBuffer": -6.699999809265137,
+                            "ledgeRayCastDistance": 50.70000076293945
+                        }
+                    }
+                ]
+            },
+            "button": {
+                "buttonState": 0,
+                "shapeNormalColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "shapeHoveredColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.5
+                },
+                "shapePressedColor": {
+                    "x": 0.699999988079071,
+                    "y": 0.699999988079071,
+                    "z": 0.699999988079071,
+                    "w": 0.699999988079071
+                },
+                "textNormalColor": {
+                    "x": 0.30000001192092898,
+                    "y": 0.30000001192092898,
+                    "z": 0.30000001192092898,
+                    "w": 0.699999988079071
+                },
+                "textHoveredColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.0
+                },
+                "textPressedColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.5
+                }
+            }
+        },
+        {
+            "active": true,
+            "name": "Slime new_Clone154",
+            "layer": {
+                "currentLayer": 16
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 305.4844970703125,
+                    "y": 237.3492431640625,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 53.0,
+                    "y": 49.29999923706055
+                }
+            },
+            "rigidbody": {
+                "mass": 0.10000000149011612,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.0,
+                "dynamicFriction": 0.0,
+                "inertia": 0.0,
+                "invInertia": 0.0
+            },
+            "collider": {
+                "ColliderType": 1,
+                "isTrigger": false,
+                "enabled": true,
+                "position": {
+                    "x": 306.18450927734377,
+                    "y": 233.8492431640625,
+                    "z": 0.0
+                },
+                "offset": {
+                    "x": 0.699999988079071,
+                    "y": -3.5,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": 291.28448486328127,
+                    "y": 223.64918518066407,
+                    "z": 0.0
+                },
+                "max": {
+                    "x": 321.08453369140627,
+                    "y": 244.04930114746095,
+                    "z": 0.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "images/Monsters\\Slime spritesheet.png",
+                "uvSize": {
+                    "x": 0.25,
+                    "y": 0.3333333432674408
+                },
+                "uvOffset": {
+                    "x": 0.25,
+                    "y": 0.3333333432674408
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "SlimeMovement",
+                        "fields": {
+                            "moveSpeed": 250.0,
+                            "maxSpeed": 50.0,
+                            "moveAudioInterval": 0.4000000059604645,
+                            "stopAudioDistance": 40.0,
                             "detectionRange": 134.39999389648438,
                             "gravityScale": 2.799999952316284,
                             "grabRange": 100.69999694824219,
