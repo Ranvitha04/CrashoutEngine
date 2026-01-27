@@ -943,6 +943,89 @@ namespace {
 			if (!fc) return;
 
 			UIHelpers::DrawUndoableString("Font Name", fc->font);
+
+			if (ImGui::BeginDragDropTarget()) {
+				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSET/PAYLOAD")) {
+					if (payload->Data && payload->DataSize == sizeof(AssetDragPayload)) {
+						const auto* d = static_cast<const AssetDragPayload*>(payload->Data);
+
+						// Verify it is a font by extension
+						std::string p = d->relPath;
+						std::string ext = std::filesystem::path(p).extension().string();
+						std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+
+						if (ext == ".ttf" || ext == ".otf") {
+							std::string oldVal = fc->font;
+							// AssetManager keys fonts by their Stem (Name), not path.
+							std::string newVal = d->name;
+
+							fc->font = newVal;
+							UndoManager::GetInstance().AddCommand(
+								std::make_unique<ChangeValueCommand<std::string>>(oldVal, newVal, [fc](const std::string& v) { fc->font = v; })
+							);
+						}
+					}
+				}
+				ImGui::EndDragDropTarget();
+			}
+
+			ImGui::SameLine();
+			float btnSize = ImGui::GetFrameHeight();
+			if (ImGui::Button("...", ImVec2(btnSize, btnSize))) {
+				ImGui::OpenPopup("PickFontPopup");
+			}
+
+			if (ImGui::BeginPopupModal("PickFontPopup", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
+				namespace fs = std::filesystem;
+				static std::vector<std::string> s_fonts;
+				static bool s_scanned = false;
+
+				if (ImGui::Button("Refresh")) s_scanned = false;
+
+				if (!s_scanned) {
+					s_scanned = true;
+					s_fonts.clear();
+					// Assumes fonts are in assets/fonts/
+					const std::string assetRoot = CrashoutsEngine::Assets::rootPath + "fonts";
+
+					try {
+						if (fs::exists(assetRoot)) {
+							for (auto& p : fs::recursive_directory_iterator(assetRoot)) {
+								if (!p.is_regular_file()) continue;
+								std::string ext = p.path().extension().string();
+								std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+
+								if (ext == ".ttf" || ext == ".otf") {
+									// Store the STEM (filename without extension)
+									s_fonts.push_back(p.path().stem().string());
+								}
+							}
+							std::sort(s_fonts.begin(), s_fonts.end());
+						}
+					}
+					catch (...) { /* ignore scan errors */ }
+				}
+
+				ImGui::Separator();
+				ImGui::BeginChild("font_list", ImVec2(300, 300), true);
+				for (const auto& f : s_fonts) {
+					bool isSelected = (fc->font == f);
+					if (ImGui::Selectable(f.c_str(), isSelected)) {
+						std::string oldVal = fc->font;
+						fc->font = f;
+						UndoManager::GetInstance().AddCommand(
+							std::make_unique<ChangeValueCommand<std::string>>(oldVal, fc->font, [fc](const std::string& v) { fc->font = v; })
+						);
+						ImGui::CloseCurrentPopup();
+					}
+				}
+				ImGui::EndChild();
+
+				ImGui::Separator();
+				if (ImGui::Button("Cancel")) ImGui::CloseCurrentPopup();
+				ImGui::EndPopup();
+			}
+
 			UIHelpers::DrawUndoableString("Display Text", fc->text);
 			UIHelpers::DrawUndoableBool("Centered", fc->centered);
 			UIHelpers::DrawUndoableBool("World Space", fc->isWorldSpace);
@@ -990,7 +1073,7 @@ namespace {
 
 			ImGui::Separator();
 
-			// Iterate Logic ---
+			// Iterate Logic
 			int indexToRemove = -1;
 
 			for (int i = 0; i < c->clips.size(); ++i) {
