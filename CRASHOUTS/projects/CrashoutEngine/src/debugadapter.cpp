@@ -583,8 +583,9 @@ namespace {
 			UIHelpers::DrawUndoableBool("Is Trigger", cc->collider->isTrigger);
 
 			// Type Switching
-			int type = static_cast<int>(cc->collider->ColliderType);
-			const char* items[] = { "Circle", "AABB", "OBB", "Line", "Triangle", "None" };
+			int type = (cc->collider != nullptr) ? static_cast<int>(cc->collider->ColliderType) : 0;
+			//const char* items[] = { "Circle", "AABB", "OBB", "Line", "Triangle", "None" };
+			const char* items[] = { "Circle", "AABB", "Line", "Triangle", "None" };				// OBB not really working
 
 			// Create default collider as requested
 			if (ImGui::Combo("Type", &type, items, IM_ARRAYSIZE(items))) {
