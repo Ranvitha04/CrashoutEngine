@@ -780,6 +780,75 @@ namespace Collision {
 
 		return result;
 	}
+
+	CollisionManifold CollisionHandler::LineToLineCollision(CollisionProps const& coll1, CollisionProps const& coll2) {
+		CollisionManifold result{ .collisionOccured = false };
+
+		LineSegment const& line1 = dynamic_cast<LineSegment const&>(*(coll1.collider));
+		LineSegment const& line2 = dynamic_cast<LineSegment const&>(*(coll2.collider));
+
+		CEVec3 p1 = line1.GetWorldP1();
+		CEVec3 p2 = line1.GetWorldP2();
+		CEVec3 q1 = line2.GetWorldP1();
+		CEVec3 q2 = line2.GetWorldP2();
+
+		CEVec3 r = p2 - p1;
+		CEVec3 s = q2 - q1;
+		CEVec3 v = q1 - p1;
+
+		// 2D Cross Product (z component)
+		auto Cross2D = [](CEVec3 const& a, CEVec3 const& b) {
+			return a.x * b.y - a.y * b.x;
+		};
+
+		float rXs = Cross2D(r, s);
+		float qmp1Xr = Cross2D(v, r);
+
+		const float EPSILON = 1e-6f;
+
+		// If r x s = 0 and (q1-p1) x r = 0, then the two lines are collinear.
+		if (std::abs(rXs) < EPSILON && std::abs(qmp1Xr) < EPSILON) {
+			// Collinear case - check overlap
+			// Project onto r axis
+			float t0 = CEMath::Dot(v, r) / CEMath::Dot(r, r);
+			float t1 = t0 + CEMath::Dot(s, r) / CEMath::Dot(r, r);
+
+			// If interval [t0, t1] intersects [0, 1], they overlap
+			if ((t0 >= 0 && t0 <= 1) || (t1 >= 0 && t1 <= 1) || (t0 < 0 && t1 > 1) || (t1 < 0 && t0 > 1)) {
+				result.collisionOccured = true;
+				result.normal = line2.GetNormal(); // Just pick one normal
+				result.contactPoints[0] = p1; // Approximate
+				return result;
+			}
+			return result;
+		}
+
+		if (std::abs(rXs) < EPSILON) {
+			// Parallel but not collinear
+			return result;
+		}
+
+		float t = Cross2D(v, s) / rXs;
+		float u = Cross2D(v, r) / rXs;
+
+		if (t >= 0.0f && t <= 1.0f && u >= 0.0f && u <= 1.0f) {
+			result.collisionOccured = true;
+			result.contactPoints[0] = p1 + r * t;
+
+			// Normal handling: For raycasts, we usually want the normal of the surface we hit (line2).
+			result.normal = line2.GetNormal();
+
+			// Ensure normal faces against ray direction (r)
+			if (CEMath::Dot(result.normal, r) > 0) {
+				result.normal = result.normal * -1.0f;
+			}
+
+			// Calculate depth (distance) - for rays this is usually distance from start
+			result.depth = 0.0f;
+		}
+
+		return result;
+	}
 }
 
 /*MAIN UPDATE STUFF!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
@@ -818,11 +887,13 @@ namespace Collision {
 		collideFuncts[circle * SHAPE_COUNT + circle] = CircleToCircleCollision;
 
 		collideFuncts[circle * SHAPE_COUNT + line] = CircleToLineCollision;
+		collideFuncts[line * SHAPE_COUNT + circle] = CircleToLineCollision;
 
 		// AABB vs AABB
 		collideFuncts[aabb * SHAPE_COUNT + aabb] = AABBToAABBCollision;
 
 		collideFuncts[aabb * SHAPE_COUNT + line] = AABBToLineCollision;
+		collideFuncts[line * SHAPE_COUNT + aabb] = AABBToLineCollision;
 
 		// Circle vs AABB (Circle is 0, AABB is 1. 0 < 1, so index is 0 * N + 1)
 		collideFuncts[circle * SHAPE_COUNT + aabb] = CircleToAABBCollision;
@@ -834,6 +905,9 @@ namespace Collision {
 		collideFuncts[circle * SHAPE_COUNT + poly] = CircleToPolygonCollision;
 
 		collideFuncts[line * SHAPE_COUNT + poly ] = PolygonToLineCollision;
+
+		// Line vs Line
+		collideFuncts[line * SHAPE_COUNT + line] = LineToLineCollision;
 
 		// Polygon vs Polygon
 		collideFuncts[poly * SHAPE_COUNT + poly] = PolygonToPolygonCollision;
