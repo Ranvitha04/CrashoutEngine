@@ -395,10 +395,10 @@ namespace Component {
         };
 
         std::array<CEColor, 4> clr_vtx{
-           CEColor(1.0f, 1.0f, 1.0f, 1.0f), // white
-           CEColor(1.0f, 0.0f, 0.0f, 1.0f), // red
-           CEColor(0.0f, 1.0f, 0.0f, 1.0f), // green
-           CEColor(0.0f, 0.0f, 1.0f, 1.0f)  // blue
+           CEColor(0.0f, 0.0f, 0.0f, 0.0f), // red (BL)
+           CEColor(0.0f, 0.0f, 0.0f, 0.0f), // red (BR)
+           CEColor(0.0f, 0.0f, 0.0f, 0.0f), // red (TR)
+           CEColor(0.0f, 0.0f, 0.0f, 0.0f)  // red (TL)
         };
 
         GLsizei position_data_offset = 0;
@@ -708,7 +708,8 @@ namespace Component {
         // Color attribute (location 1)
         glEnableVertexArrayAttrib(vaoid, 1);
         glVertexArrayVertexBuffer(vaoid, 1, vbo_hdl, vertex_size, static_cast<GLsizei>(color_stride)); // Correct offset
-        glVertexArrayAttribFormat(vaoid, 1, 3, GL_FLOAT, GL_FALSE, 0);
+        GLint color_components = (color_stride == sizeof(CEColor)) ? 4 : 3;
+        glVertexArrayAttribFormat(vaoid, 1, color_components, GL_FLOAT, GL_FALSE, 0);
         glVertexArrayAttribBinding(vaoid, 1, 1);
 
         // Texture coordinate attribute (location 2)
@@ -842,7 +843,8 @@ namespace Component {
         glEnableVertexArrayAttrib(vaoid, 1);
         // Binds buffer 'vbo_hdl' to VAO binding point 1, with the *correct* offset for this frame
         glVertexArrayVertexBuffer(vaoid, 1, vbo_hdl, vertex_size, static_cast<GLsizei>(color_stride));
-        glVertexArrayAttribFormat(vaoid, 1, 3, GL_FLOAT, GL_FALSE, 0);
+        GLint tex_color_components = (color_stride == sizeof(CEColor)) ? 4 : 3;
+        glVertexArrayAttribFormat(vaoid, 1, tex_color_components, GL_FLOAT, GL_FALSE, 0);
         glVertexArrayAttribBinding(vaoid, 1, 1);
 
         // Texture coordinate attribute (location 2)
