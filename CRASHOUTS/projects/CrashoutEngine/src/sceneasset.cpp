@@ -390,6 +390,16 @@ namespace CrashoutsEngine {
                 WriteColor(val, "color", c.color, allocator);
                 val.AddMember("centered", c.centered, allocator);
                 val.AddMember("isworldspace", c.isWorldSpace, allocator);
+                val.AddMember("alignment", (int)c.alignment, allocator);
+                val.AddMember("verticalAlignment", (int)c.verticalAlignment, allocator);
+                val.AddMember("wrapText", c.wrapText, allocator);
+                WriteVec2(val, "padding", c.padding, allocator);
+                val.AddMember("letterSpacing", c.letterSpacing, allocator);
+                val.AddMember("lineSpacing", c.lineSpacing, allocator);
+                val.AddMember("isRevealing", c.isRevealing, allocator);
+                val.AddMember("revealSpeed", c.revealSpeed, allocator);
+                val.AddMember("dialogueFilePath", rapidjson::Value(c.dialogueFilePath.c_str(), allocator), allocator);
+                val.AddMember("dialogueID", rapidjson::Value(c.dialogueID.c_str(), allocator), allocator);
                 entityValue.AddMember(rapidjson::StringRef(Keys::TEXT_COMPONENT), val, allocator);
             }
 
@@ -831,6 +841,16 @@ namespace CrashoutsEngine {
                 if (v.HasMember("color")) t.color = ReadColor(v["color"]);
                 t.centered = GetBool(v, "centered");
                 t.isWorldSpace = GetBool(v, "isworldspace");
+                t.alignment = static_cast<TextAlignment>(GetInt(v, "alignment", 1)); 
+                t.verticalAlignment = static_cast<TextVerticalAlignment>(GetInt(v, "verticalAlignment", 1));
+                t.wrapText = GetBool(v, "wrapText", false);
+                if (v.HasMember("padding")) t.padding = ReadVec2(v["padding"]);
+                t.letterSpacing = GetFloat(v, "letterSpacing", 0.0f);
+                t.lineSpacing = GetFloat(v, "lineSpacing", 0.0f);
+                t.isRevealing = GetBool(v, "isRevealing", false);
+                t.revealSpeed = GetFloat(v, "revealSpeed", 10.0f);
+                t.dialogueFilePath = GetString(v, "dialogueFilePath", "");
+                t.dialogueID = GetString(v, "dialogueID", "");
             }
 
             // Audio

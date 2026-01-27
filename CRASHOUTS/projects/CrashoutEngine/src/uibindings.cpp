@@ -4,14 +4,19 @@
 @date        24/11/2025
 @brief       Definition of button bindings functions
 
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 */
 
 #include "uibindings.h"
 #include "buttoncomponent.h"
+#include "textcomponent.h"
+#include "sceneutils.h"
 #include "entitymanager.h"
 #include "mono/metadata/loader.h"
+#include <mono/jit/jit.h>
+#include <mono/metadata/object.h>
+#include <mono/metadata/assembly.h>
 
 using namespace CrashoutsEngine;
 using namespace Component;
@@ -50,6 +55,33 @@ namespace
     static bool InternalEntityHasButton(uint32_t id) {
         return ECS::getInstance()->HasComponent<ButtonComponent>(id);
     }
+
+    // --- Text / Dialogue Functions ---
+    static void InternalPlayDialogue(uint32_t id, MonoString* file, MonoString* dialogueID) {
+        auto* ecs = ECS::getInstance();
+        if (!ecs) return;
+        TextComponent* txt = ecs->GetComponent<TextComponent>(id);
+        if (txt) {
+            char* fileC = mono_string_to_utf8(file);
+            char* idC = mono_string_to_utf8(dialogueID);
+
+            txt->dialogueFilePath = fileC;
+            txt->dialogueID = idC;
+            Scene::UI::LoadDialogue(*txt);
+
+            mono_free(fileC);
+            mono_free(idC);
+        }
+    }
+
+    static void InternalLoadDialogue(uint32_t id) {
+        auto* ecs = ECS::getInstance();
+        if (!ecs) return;
+        TextComponent* txt = ecs->GetComponent<TextComponent>(id);
+        if (txt) {
+            Scene::UI::LoadDialogue(*txt);
+        }
+    }
 }
 
 void CrashoutsEngine::Bindings::RegisterUIBindings()
@@ -62,4 +94,8 @@ void CrashoutsEngine::Bindings::RegisterUIBindings()
     mono_add_internal_call("CrashoutsEngine.InternalCalls::AddButton", (const void*)InternalAddButton);
     mono_add_internal_call("CrashoutsEngine.InternalCalls::RemoveButton", (const void*)InternalRemoveButton);
     mono_add_internal_call("CrashoutsEngine.InternalCalls::EntityHasButton", (const void*)InternalEntityHasButton);
+
+    // 3. Register Dialogue Functions
+    mono_add_internal_call("CrashoutsEngine.InternalCalls::PlayDialogue", (const void*)InternalPlayDialogue);
+    mono_add_internal_call("CrashoutsEngine.InternalCalls::LoadDialogue", (const void*)InternalLoadDialogue);
 }

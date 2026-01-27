@@ -1032,6 +1032,167 @@ namespace {
 			UIHelpers::DrawUndoableFloat("Scale", fc->scale);
 			UIHelpers::DrawUndoableVec2("Offset", fc->offset);
 			UIHelpers::DrawUndoableColor("Color", fc->color);
+
+			ImGui::Separator();
+			UIHelpers::DrawUndoableBool("Wrap Text", fc->wrapText);
+
+			if (fc->wrapText) {
+				// Alignment controlled via UILayout or other means now
+				UIHelpers::DrawUndoableVec2("Padding (X, Y)", fc->padding);
+			}
+			
+			ImGui::Separator();
+			UIHelpers::DrawUndoableFloat("Letter Spacing", fc->letterSpacing, 0.05f);
+			UIHelpers::DrawUndoableFloat("Line Spacing", fc->lineSpacing, 0.05f);
+
+			ImGui::SeparatorText("Typewriter Effect");
+			UIHelpers::DrawUndoableBool("Enable Reveal", fc->isRevealing);
+			if (fc->isRevealing) {
+				UIHelpers::DrawUndoableFloat("Reveal Speed (cps)", fc->revealSpeed, 1.0f, 0.1f, 100.0f);
+				if (ImGui::Button("Reset Reveal")) {
+					fc->revealTimer = 0.0f;
+					fc->revealedCharCount = 0;
+				}
+			}
+
+			ImGui::SeparatorText("Dialogue Loading");
+			UIHelpers::DrawUndoableString("Dialogue File", fc->dialogueFilePath);
+			
+			// Drag & Drop for JSON
+			if (ImGui::BeginDragDropTarget()) {
+				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSET/PAYLOAD")) {
+					if (payload->Data && payload->DataSize == sizeof(AssetDragPayload)) {
+						const auto* d = static_cast<const AssetDragPayload*>(payload->Data);
+						std::string p = d->relPath;
+						std::string ext = std::filesystem::path(p).extension().string();
+						std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+
+						if (ext == ".json") {
+							// Check if it is in dialogue folder (optional but safer)
+							// if (p.find("dialogue") != std::string::npos) ...
+							
+							std::string oldVal = fc->dialogueFilePath;
+							std::string newVal = d->relPath; 
+							
+							fc->dialogueFilePath = newVal;
+							UndoManager::GetInstance().AddCommand(
+								std::make_unique<ChangeValueCommand<std::string>>(oldVal, newVal, [fc](const std::string& v) { fc->dialogueFilePath = v; })
+							);
+						}
+					}
+				}
+				ImGui::EndDragDropTarget();
+			}
+
+			ImGui::SameLine();
+			btnSize = ImGui::GetFrameHeight();
+			if (ImGui::Button("...##dialogue", ImVec2(btnSize, btnSize))) {
+				ImGui::OpenPopup("PickDialoguePopup");
+			}
+
+			if (ImGui::BeginPopupModal("PickDialoguePopup", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
+				namespace fs = std::filesystem;
+				static std::vector<std::string> s_dialogues;
+				static bool s_scanned = false;
+
+				if (ImGui::Button("Refresh")) s_scanned = false;
+
+				if (!s_scanned) {
+					s_scanned = true;
+					s_dialogues.clear();
+					// Assumes dialogues are in assets/dialogue/
+					const std::string assetRoot = CrashoutsEngine::Assets::rootPath + "dialogue";
+
+					try {
+						if (fs::exists(assetRoot)) {
+							for (auto& p : fs::recursive_directory_iterator(assetRoot)) {
+								if (!p.is_regular_file()) continue;
+								std::string ext = p.path().extension().string();
+								std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+
+								if (ext == ".json") {
+									// Store relative path from Assets::rootPath
+									// rootPath is usually "assets/"
+									// p is "assets/dialogue/file.json"
+									// relative is "dialogue/file.json"
+									std::string rel = fs::relative(p.path(), CrashoutsEngine::Assets::rootPath).generic_string();
+									s_dialogues.push_back(rel);
+								}
+							}
+							std::sort(s_dialogues.begin(), s_dialogues.end());
+						}
+					}
+					catch (...) { /* ignore scan errors */ }
+				}
+
+				ImGui::Separator();
+				ImGui::BeginChild("dialogue_list", ImVec2(300, 300), true);
+				for (const auto& f : s_dialogues) {
+					bool isSelected = (fc->dialogueFilePath == f);
+					if (ImGui::Selectable(f.c_str(), isSelected)) {
+						std::string oldVal = fc->dialogueFilePath;
+						fc->dialogueFilePath = f;
+						UndoManager::GetInstance().AddCommand(
+							std::make_unique<ChangeValueCommand<std::string>>(oldVal, fc->dialogueFilePath, [fc](const std::string& v) { fc->dialogueFilePath = v; })
+						);
+						ImGui::CloseCurrentPopup();
+					}
+				}
+				ImGui::EndChild();
+
+				ImGui::Separator();
+				if (ImGui::Button("Cancel")) ImGui::CloseCurrentPopup();
+				ImGui::EndPopup();
+			}
+
+			UIHelpers::DrawUndoableString("Dialogue ID", fc->dialogueID);
+			
+			if (ImGui::Button("Load Text from File")) {
+				// We'll implement the loading logic via a static helper or call it here directly if simple
+				// Since we can't easily include heavy logic here, let's signal the system or do a direct load if possible.
+				// For now, let's try to load it immediately if file exists.
+				
+				std::string fullPath = CrashoutsEngine::Assets::rootPath + fc->dialogueFilePath;
+				// Simplify path if it starts with assets/
+				if (fc->dialogueFilePath.rfind("assets/", 0) == 0) {
+					fullPath = fc->dialogueFilePath; // Already relative to project root? 
+					// Assets::rootPath is usually "assets/".
+					// If dialogueFilePath is "assets/json/dialogue.json", and rootPath is "assets/", 
+					// we might double up or not. AssetManager usually handles "assets/".
+					// Let's assume dialogueFilePath is relative to 'assets/' or project root.
+					// Safe bet: usage of ReadFileToString or similar.
+				}
+				
+				std::ifstream file(fullPath);
+				if (!file.is_open()) {
+					// Try prepending rootPath
+					fullPath = CrashoutsEngine::Assets::rootPath + fc->dialogueFilePath;
+					file.open(fullPath);
+				}
+
+				if (file.is_open()) {
+					std::stringstream buffer;
+					buffer << file.rdbuf();
+					std::string content = buffer.str();
+					file.close();
+
+					rapidjson::Document doc;
+					doc.Parse(content.c_str());
+					
+					if (!doc.HasParseError()) {
+						if (doc.HasMember(fc->dialogueID.c_str())) {
+							const auto& val = doc[fc->dialogueID.c_str()];
+							if (val.IsString()) {
+								std::string newText = val.GetString();
+								UndoManager::GetInstance().AddCommand(
+									std::make_unique<ChangeValueCommand<std::string>>(fc->text, newText, [fc](const std::string& v) { fc->text = v; })
+								);
+								fc->text = newText;
+							}
+						}
+					}
+				}
+			}
 		}
 	};
 
