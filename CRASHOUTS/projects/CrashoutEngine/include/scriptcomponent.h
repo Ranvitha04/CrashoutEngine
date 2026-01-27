@@ -25,6 +25,7 @@ namespace CrashoutsEngine
         MonoMethod* MethodStart = nullptr;
         MonoMethod* MethodUpdate = nullptr;
         MonoMethod* MethodFixedUpdate = nullptr;
+        MonoMethod* MethodOnDrawGizmos = nullptr;
 		MonoMethod* MethodOnDestroy = nullptr;
         bool Started = false;
         CE::u32 GCHandle = 0;
@@ -57,6 +58,7 @@ namespace Component {
         void Start();
         void Update();
         void FixedUpdate();
+        void DrawGizmos();
         void Destroy();
     };
 

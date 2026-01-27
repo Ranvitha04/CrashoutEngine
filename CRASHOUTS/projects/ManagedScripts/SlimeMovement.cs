@@ -12,6 +12,8 @@ namespace CrashoutsEngine
         // --- SETTINGS ---
         [SerializeField] private float moveSpeed = 600f; // Reduced force
         [SerializeField] private float maxSpeed = 15.0f; // Slower speed
+        [SerializeField] private float moveAudioInterval = 0.4f;
+        [SerializeField] private float stopAudioDistance = 40.0f; // Distance to stop audio playback
         [SerializeField] private float turnTimer = 2.0f;
         [SerializeField] private float detectionRange = 250.0f;
         [SerializeField] private float gravityScale = 2.0f;
@@ -26,6 +28,8 @@ namespace CrashoutsEngine
 
         // Patrol Zone
         [SerializeField] private float MaxDist = 200.0f;
+        [SerializeField] private float ledgeRayCastDistance = 100.0f;
+        [SerializeField] private float ledgeCheckXOffset = 60.0f;
 
         // --- STATE ---
         private RigidBodyComponent rb;
@@ -36,6 +40,7 @@ namespace CrashoutsEngine
 
         private bool isGrounded = false;
         private bool moveRight = true;
+        private float moveAudioTimer = 0.0f;
         private float currentTurnTime = 0.0f;
         private bool isChasing = false;
         private bool isGrabbed = false;
@@ -117,44 +122,82 @@ namespace CrashoutsEngine
                 if (playerTf != null)
                 {
                     float dist = Distance(tf.Position, playerTf.Position);
-                    if (dist < detectionRange && !isFollowingPath) 
+                    bool hasLineOfSight = false;
+                    
+                    if (dist < detectionRange && !isFollowingPath)
                     {
+                         CEVec3 start = tf.Position;
+                         CEVec3 end = playerTf.Position;
+                         uint hitID;
+                         bool hit = InternalCalls.Raycast(ref start, ref end, out hitID, Entity.ID);
+                         
+                         if (hit && hitID == playerScript.Entity.ID)
+                         {
+                             hasLineOfSight = true;
+                         }
+                    }
+
+                    if (hasLineOfSight) 
+                    {
+                        moveAudioTimer -= dt;
                         isChasing = true;
                         returningHome = false;
                         moveRight = (playerTf.Position.x > tf.Position.x);
+                        if (moveAudioTimer <= 0.0f)
+                        {
+                            if (dist > stopAudioDistance)
+                            {
+                                AudioManager.GetInstance().PlayAttached("slimeMove", Entity.ID);
+                            }
+                            moveAudioTimer = moveAudioInterval;
+                        }
+                    }
+                    else
+                    {
+                        moveAudioTimer = 0.0f;
                     }
                 }
             }
 
             // Patrol logic
-            if (!isChasing && isGrounded && !isFollowingPath)
+            if (!isChasing && isGrounded && !isFollowingPath && !isGrabbed)
             {
-                float distFromHome = tf.Position.x - startPos.x;
+                // 1. Check for Ledges (Holes)
+                float checkDir = moveRight ? 1.0f : -1.0f;
+                CEVec3 rayStart = new CEVec3(tf.Position.x + (checkDir * ledgeCheckXOffset), tf.Position.y, tf.Position.z);
+                CEVec3 rayEnd = new CEVec3(rayStart.x, rayStart.y - ledgeRayCastDistance, rayStart.z);
+                
+                uint hitGroundID;
+                bool hitGround = InternalCalls.Raycast(ref rayStart, ref rayEnd, out hitGroundID, Entity.ID);
 
-                if (Math.Abs(distFromHome) > MaxDist)
-                {
-                    returningHome = true;
-                }
+                // Debug Draw (Optional, but helpful)
+                // CEVec3 col = hitGround ? new CEVec3(0,1,0) : new CEVec3(1,0,0);
+                // Debug.DrawLine(ref rayStart, ref rayEnd, 2.0f, ref col);
 
-                if (returningHome)
+                if (!hitGround && flipCooldown <= 0)
                 {
-                    moveRight = (startPos.x > tf.Position.x);
-                    if (Math.Abs(distFromHome) < 10.0f)
-                    {
-                        returningHome = false;
-                        currentTurnTime = turnTimer;
-                    }
+                     moveRight = !moveRight;
+                     flipCooldown = 0.5f; // Add a small cooldown to prevent rapid flipping
                 }
                 else
                 {
-                    if (distFromHome > MaxDist && moveRight) moveRight = false;
-                    else if (distFromHome < -MaxDist && !moveRight) moveRight = true;
+                    // 2. Normal Patrol Distance Check
+                    float distFromHome = tf.Position.x - startPos.x;
 
-                    currentTurnTime -= dt;
-                    if (currentTurnTime <= 0)
+                    if (returningHome)
                     {
-                        moveRight = !moveRight;
-                        currentTurnTime = turnTimer;
+                        moveRight = (startPos.x > tf.Position.x);
+                        if (Math.Abs(distFromHome) < 10.0f)
+                        {
+                            returningHome = false;
+                        }
+                    }
+                    else
+                    {
+                        if (Math.Abs(distFromHome) > MaxDist)
+                        {
+                            returningHome = true; 
+                        }
                     }
                 }
             }
@@ -184,6 +227,22 @@ namespace CrashoutsEngine
             else tf.Size = new CEVec2(-absX, tf.Size.y);
 
             UpdateAnimationState();
+        }
+
+        public override void OnDrawGizmos()
+        {
+            if (tf == null) tf = Entity.GetComponent<TransformComponent>();
+            if (tf == null) return;
+
+            // Debug Drawing
+            CEVec3 detectionColor = new CEVec3(1.0f, 1.0f, 0.0f); // Yellow
+            CEVec2 detectionSize = new CEVec2(detectionRange * 2.0f, detectionRange * 2.0f);
+            CEVec3 myPos = tf.Position;
+            Debug.DrawCircle(ref detectionSize, ref myPos, ref detectionColor);
+
+            CEVec3 grabColor = new CEVec3(0.0f, 1.0f, 0.0f); // Green
+            CEVec2 grabSize = new CEVec2(grabRange * 2.0f, grabRange * 2.0f);
+            Debug.DrawCircle(ref grabSize, ref myPos, ref grabColor);
         }
 
         private void UpdateAnimationState()
