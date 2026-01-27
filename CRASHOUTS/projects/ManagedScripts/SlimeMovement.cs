@@ -29,6 +29,16 @@ namespace CrashoutsEngine
                         [SerializeField] private float MaxDist = 200.0f;
 
                         [SerializeField] private float ledgeRayCastDistance = 100.0f;
+        private bool isGrounded = false;
+        private bool moveRight = true;
+        private float currentTurnTime = 0.0f;
+        private bool isChasing = false;
+        private bool isGrabbed = false;
+        private bool wasThrown = false;
+        private bool isStunned = false;
+        private float currentStunTime = 0.0f;
+        private float flipCooldown = 0.0f;
+        private float stuckTimer = 0.0f;
 
                         [SerializeField] private float ledgeBuffer = 40.0f; // Distance from edge of collider to check
 
@@ -157,6 +167,14 @@ namespace CrashoutsEngine
                                 return;
 
                             }
+                    if (hasLineOfSight) 
+                    {
+                        isChasing = true;
+                        returningHome = false;
+                        moveRight = (playerTf.Position.x > tf.Position.x);
+                    }
+                }
+            }
 
                 
 
