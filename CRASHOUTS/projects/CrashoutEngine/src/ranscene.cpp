@@ -1144,6 +1144,47 @@ void RenderRan()
     glClearColor(0.1f, 0.2f, 0.4f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 #endif
+    auto drawCallback = [](CrashoutsEngine::Entity e) {
+        auto* ecs = CrashoutsEngine::ECS::getInstance();
+        auto* sc = ecs->GetComponent<Component::ShapeComponent>(e);
+        auto* tc = ecs->GetComponent<Component::TransformComponent>(e);
+        if (!sc || !tc) return;
+        if (sc->type == Component::ShapeType::Rectangle) {
+            if (sc->enableTexture) {
+                Component::Shapes::CreateTexturedRectangle(
+                    tc->size, sc->textureName, tc->position, tc->rotation,
+                    sc->color, sc->uvSize, sc->isWorldSpace
+                );
+            } else {
+                Component::Shapes::CreateRectangle(
+                    tc->size, tc->position, tc->rotation,
+                    sc->color, sc->isWorldSpace
+                );
+            }
+        }
+        else if (sc->type == Component::ShapeType::Triangle) {
+            if (sc->enableTexture) {
+                Component::Shapes::CreateTexturedTriangle(
+                    tc->size, sc->textureName, tc->position, tc->rotation,
+                    sc->color, sc->uvSize, sc->isWorldSpace
+                );
+            } else {
+                Component::Shapes::CreateTriangle(
+                    tc->size, tc->position, tc->rotation,
+                    sc->color, sc->isWorldSpace
+                );
+            }
+        }
+        else if (sc->type == Component::ShapeType::Circle) {
+            Component::Shapes::CreateCircle(
+                tc->size, tc->position, 32,
+                sc->color, sc->isWorldSpace
+            );
+        }
+    };
+    if (globalECS) {
+        Component::Rendering::RenderAllSorted(*globalECS, drawCallback);
+    }
 }
 
 void FreeRan() 
@@ -1160,4 +1201,4 @@ void RenderBackground() {}
 void RenderInstancing() {}
 void RenderSpriteAnimation() {}
 void UpdateSpriteAnimation() {}
-void HandleSpriteKeyInput(int key, int action) {}
+void HandleSpriteKeyInput(int key, int action) { (void)key; (void)action; }

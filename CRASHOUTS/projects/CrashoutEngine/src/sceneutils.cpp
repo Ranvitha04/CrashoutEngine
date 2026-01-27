@@ -855,6 +855,18 @@ namespace Scene {
 		Particles::InitAllParticles(globalECS);
 	}
 
+	/*!
+	@brief   Render scene shapes with z-depth sorting (world and screen space).
+	@param   globalECS Reference to ECS registry.
+
+	@details
+	Steps:
+	1) Collect Shape/Transform entities and compute depth via Rendering::ComputeDepth
+	2) Split into world-space vs screen-space lists
+	3) Sort each list ascending by depth (painter’s order)
+	4) Draw world-space with camera matrices; draw screen-space with UI projection
+	   Depth/cull disabled during sorted draws to preserve order
+	*/
 	void RenderScene(CrashoutsEngine::ECS& globalECS) {
 		using namespace CrashoutsEngine;
 		using Component::Rendering;
@@ -869,18 +881,18 @@ namespace Scene {
 			float depth;
 		};
 
-		// 1. PRE-SORT into World vs Screen lists
-		std::vector<Entity> worldEntities;
-		std::vector<Entity> screenEntities;
-		worldEntities.reserve(shapeArray.indexToEntity.size());
-		screenEntities.reserve(shapeArray.indexToEntity.size());
+		// 1. PRE-SORT into World vs Screen lists (collect entities and compute z-depth)
+		std::vector<RenderEntry> worldEntries;
+		std::vector<RenderEntry> screenEntries;
+		worldEntries.reserve(shapeArray.indexToEntity.size());
+		screenEntries.reserve(shapeArray.indexToEntity.size());
 
 		for (const Entity& id : shapeArray.indexToEntity) {
 			if (!IsEntityActive(globalECS, id)) continue;
 
 			auto* sc = globalECS.GetComponent<ShapeComponent>(id);
 			auto* tc = globalECS.GetComponent<TransformComponent>(id);
-			
+
 			if (!tc) continue;
 
 			float depth = 0.0f;
@@ -895,88 +907,106 @@ namespace Scene {
 				Component::ZOrder defaultZ{ Component::RenderLayer::WorldGeometry, 0 };
 				depth = Component::Rendering::ComputeDepth(tc->position, defaultZ, nullptr);
 			}
-			
-			if (sc->isWorldSpace) worldEntities.push_back(id);
-			else                  screenEntities.push_back(id);
-			
-			
-			
-			
-			
-		}
+
+			if (sc->isWorldSpace) worldEntries.push_back({ id, depth });
+			else                  screenEntries.push_back({ id, depth });
+		// 2. Sort by depth (painter's algorithm: lowest depth first)
+		auto sortFunc = [](const RenderEntry& a, const RenderEntry& b) { return a.depth < b.depth; };
+			std::sort(worldEntries.begin(), worldEntries.end(), sortFunc);
+			std::sort(screenEntries.begin(), screenEntries.end(), sortFunc);
+
+			auto DrawEntity = [&](Entity e) {
+				auto* sc = globalECS.GetComponent<ShapeComponent>(e);
+				auto* tc = globalECS.GetComponent<TransformComponent>(e);
+				if (!sc || !tc) return;
+				if (sc->type == ShapeType::Rectangle) {
+					if (sc->enableTexture) {
+					CEColor tint(1.0f, 1.0f, 1.0f, 1.0f);
+						Component::Shapes::CreateTexturedRectangle(
+						tc->size, sc->textureName, tc->position, tc->rotation,
+						tint, sc->uvSize, sc->isWorldSpace
+						);
+					}
+					else {
+						Component::Shapes::CreateRectangle(
+							tc->size, tc->position, tc->rotation,
+							sc->color, sc->isWorldSpace
+						);
+					}
+				}
+				else if (sc->type == ShapeType::Triangle) {
+					if (sc->enableTexture) {
+					CEColor tint(1.0f, 1.0f, 1.0f, 1.0f);
+						Component::Shapes::CreateTexturedTriangle(
+						tc->size, sc->textureName, tc->position, tc->rotation,
+						tint, sc->uvSize, sc->isWorldSpace
+						);
+					}
+					else {
+						Component::Shapes::CreateTriangle(
+							tc->size, tc->position, tc->rotation,
+							sc->color, sc->isWorldSpace
+						);
+					}
+				}
+				else if (sc->type == ShapeType::Circle) {
+					Component::Shapes::CreateCircle(
+						tc->size, tc->position, 32,
+						sc->color, sc->isWorldSpace
+					);
+				}
+				else if (sc->type == ShapeType::Line) {
+					Component::Shapes::CreateLine(sc->p1 + tc->position, sc->p2 + tc->position, sc->thickness, sc->color, sc->isWorldSpace);
+				}
+				};
 
 		// -------------------------------------------------------
-		// PASS 1: WORLD SPACE (Uses Camera Matrices)
+		// PASS 1: WORLD SPACE (Uses Camera Matrices, depth test disabled during sorted draw)
 		// -------------------------------------------------------
-		renderer.shdr_pgm_instanced->Use();
-		renderer.shdr_pgm_instanced->SetUniform("uView", renderer.viewMatrix);
-		renderer.shdr_pgm_instanced->SetUniform("uProjection", renderer.projectionMatrix);
-
-		// ALSO Set standard shader matrices for non-instanced world objects
-		renderer.shdr_pgm->Use();
-		renderer.shdr_pgm->SetUniform("uView", renderer.viewMatrix);
-		renderer.shdr_pgm->SetUniform("uProjection", renderer.projectionMatrix);
-
-		// Store lines for later
-		std::vector<std::pair<TransformComponent*, ShapeComponent*>> lineQueue;
-
-		BatchEntities(worldEntities, globalECS, rectBatches, triBatches, circBatches, lineQueue, true);
-		FlushBatches(rectBatches, triBatches, circBatches);
-
-		// Render Particles (World Space)
-		Particles::RenderAllParticles(globalECS);
-
-		// Flush World Lines (Non-instanced)
-		if (!lineQueue.empty()) {
 			renderer.shdr_pgm->Use();
-			// (Matrices already set above)
+			renderer.shdr_pgm->SetUniform("uView", renderer.viewMatrix);
+			renderer.shdr_pgm->SetUniform("uProjection", renderer.projectionMatrix);
 
-			for (auto& pair : lineQueue) {
-				TransformComponent* tf = pair.first;
-				ShapeComponent* sc = pair.second;
-				Shapes::CreateLine(sc->p1 + tf->position, sc->p2 + tf->position, sc->thickness, sc->color, sc->isWorldSpace);
+			{
+				GLboolean depthTestEnabled = glIsEnabled(GL_DEPTH_TEST);
+				GLboolean cullFaceEnabled = glIsEnabled(GL_CULL_FACE);
+				glDisable(GL_DEPTH_TEST);
+				glDisable(GL_CULL_FACE);
+				for (const auto& item : worldEntries) DrawEntity(item.entity);
+				if (depthTestEnabled) glEnable(GL_DEPTH_TEST);
+				if (cullFaceEnabled) glEnable(GL_CULL_FACE);
 			}
-			lineQueue.clear();
-		}
+
+			// Render Particles (World Space)
+			Particles::RenderAllParticles(globalECS);
+
 
 		// -------------------------------------------------------
-		// PASS 2: SCREEN SPACE (Uses UI Matrices)
+		// PASS 2: SCREEN SPACE (Uses UI Matrices, depth test disabled during sorted draw)
 		// -------------------------------------------------------
-		renderer.shdr_pgm_instanced->Use();
-		// View is Identity (No camera movement)
-		renderer.shdr_pgm_instanced->SetUniform("uView", glm::mat4(1.0f));
-
-		// Fixed UI Projection (Centered Origin)
-		float aspect = (float)GLApp::width / (float)GLApp::height;
-		float h = 100.0f; // Base Height (Matches your engine standard)
-		float w = h * aspect;
-		glm::mat4 uiProj = glm::ortho(-w * 0.5f, w * 0.5f, -h * 0.5f, h * 0.5f);
-		renderer.shdr_pgm_instanced->SetUniform("uProjection", uiProj);
-
-		// ALSO Set standard shader matrices for non-instanced UI objects
-		renderer.shdr_pgm->Use();
-		renderer.shdr_pgm->SetUniform("uView", glm::mat4(1.0f));
-		renderer.shdr_pgm->SetUniform("uProjection", uiProj);
-
-		BatchEntities(screenEntities, globalECS, rectBatches, triBatches, circBatches, lineQueue, false);
-		FlushBatches(rectBatches, triBatches, circBatches);
-
-		// Flush Screen Lines
-		if (!lineQueue.empty()) {
+			float aspect = (float)GLApp::width / (float)GLApp::height;
+			float h = 100.0f; // Base Height (Matches your engine standard)
+			float w = h * aspect;
+			glm::mat4 uiProj = glm::ortho(-w * 0.5f, w * 0.5f, -h * 0.5f, h * 0.5f);
 			renderer.shdr_pgm->Use();
-			// (Matrices already set above)
+			renderer.shdr_pgm->SetUniform("uView", glm::mat4(1.0f));
+			renderer.shdr_pgm->SetUniform("uProjection", uiProj);
 
-			for (auto& pair : lineQueue) {
-				TransformComponent* tf = pair.first;
-				ShapeComponent* sc = pair.second;
-				Shapes::CreateLine(sc->p1 + tf->position, sc->p2 + tf->position, sc->thickness, sc->color, sc->isWorldSpace);
+			{
+				GLboolean depthTestEnabled = glIsEnabled(GL_DEPTH_TEST);
+				GLboolean cullFaceEnabled = glIsEnabled(GL_CULL_FACE);
+				glDisable(GL_DEPTH_TEST);
+				glDisable(GL_CULL_FACE);
+				for (const auto& item : screenEntries) DrawEntity(item.entity);
+				if (depthTestEnabled) glEnable(GL_DEPTH_TEST);
+				if (cullFaceEnabled) glEnable(GL_CULL_FACE);
 			}
+
+			renderer.shdr_pgm_instanced->Use(); // Restore state
+
+			// 5. Draw Text / UI (Now via UI namespace)
+			Scene::UI::RenderTextAndCursor(globalECS);
 		}
-
-		renderer.shdr_pgm_instanced->Use(); // Restore state
-
-		// 5. Draw Text / UI (Now via UI namespace)
-		Scene::UI::RenderTextAndCursor(globalECS);
 	}
 
 	void UpdateScene(CrashoutsEngine::ECS& globalECS) {

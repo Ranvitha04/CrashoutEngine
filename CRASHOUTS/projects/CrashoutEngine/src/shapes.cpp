@@ -14,7 +14,7 @@ ensuring cleanup of GPU resources such as VAOs, VBOs, and EBOs. Helper
 functions are included to apply transformations (translation, rotation,
 scaling) to shape vertices for flexible rendering.
 
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 *//*__________________________________________________________________________*/
 
