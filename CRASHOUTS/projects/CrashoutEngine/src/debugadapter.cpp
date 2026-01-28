@@ -67,6 +67,7 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserv
 #include "layercomponent.h"
 #include "transformentitycommand.h"
 #include <memory>
+#include "scriptsystem.h"
 
 // FOR MONO SCRIPTING
 #include <mono/metadata/reflection.h>
@@ -107,7 +108,7 @@ namespace {
 			}
 
 			// Capture start value
-			if(ImGui::IsItemDeactivatedAfterEdit()){
+			if (ImGui::IsItemDeactivatedAfterEdit()) {
 				if (startValues.find(id) != startValues.end()) {
 					T start = startValues[id];
 					T end = ref;
@@ -153,7 +154,7 @@ namespace {
 				);
 			}
 		}
-	
+
 		/*
 		@brief Helper for std::string; Callable to create imgui editable string value
 		*/
@@ -237,7 +238,7 @@ namespace {
 			if (has(ecs, e)) ecs.RemoveComponent<Component::NameComponent>(e);
 		}
 		void drawInspector(ECS& ecs, Entity e) override {
-			
+
 			// For active component (Set gameobject active or not active)
 			if (auto* ac = ecs.GetComponent<Component::ActiveComponent>(e)) {
 				ImGui::PushID("ActiveToggle");
@@ -587,19 +588,20 @@ namespace {
 			// Type Switching
 			//int type = (cc->collider != nullptr) ? static_cast<int>(cc->collider->ColliderType) : 0;
 			//const char* items[] = { "Circle", "AABB", "OBB", "Line", "Triangle", "None" };
-			const char* items[] = { "Circle", "AABB", "Line", "Triangle", "None" };				// OBB not really working
+			const char* items[] = { "Circle", "AABB", "OBB", "Line", "Triangle", "None" }; // Re-enabled OBB
 
 			static const Collision::ColliderType typeMap[] = {
 				Collision::ColliderType::CIRCLE,   // Index 0 -> Circle
 				Collision::ColliderType::AABB,     // Index 1 -> AABB
-				Collision::ColliderType::LINE,     // Index 2 -> Line (Skipped OBB)
-				Collision::ColliderType::TRIANGLE, // Index 3 -> Triangle
-				Collision::ColliderType::NONE      // Index 4 -> None (Skipped Polygon)
+				Collision::ColliderType::OBB,      // Index 2 -> OBB (New)
+				Collision::ColliderType::LINE,     // Index 3 -> Line
+				Collision::ColliderType::TRIANGLE, // Index 4 -> Triangle
+				Collision::ColliderType::NONE      // Index 5 -> None
 			};
 
 			// Find current selection (Enum -> UI Index)
-			// We default to "None" (Index 4) if the current type isn't in our allowed list (like OBB)
-			int currentItemIndex = 4;
+			// We default to "None" (Index 5)
+			int currentItemIndex = 5;
 
 			if (cc->collider) {
 				for (int i = 0; i < IM_ARRAYSIZE(typeMap); ++i) {
@@ -1040,7 +1042,7 @@ namespace {
 				// Alignment controlled via UILayout or other means now
 				UIHelpers::DrawUndoableVec2("Padding (X, Y)", fc->padding);
 			}
-			
+
 			ImGui::Separator();
 			UIHelpers::DrawUndoableFloat("Letter Spacing", fc->letterSpacing, 0.05f);
 			UIHelpers::DrawUndoableFloat("Line Spacing", fc->lineSpacing, 0.05f);
@@ -1057,7 +1059,7 @@ namespace {
 
 			ImGui::SeparatorText("Dialogue Loading");
 			UIHelpers::DrawUndoableString("Dialogue File", fc->dialogueFilePath);
-			
+
 			// Drag & Drop for JSON
 			if (ImGui::BeginDragDropTarget()) {
 				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSET/PAYLOAD")) {
@@ -1070,10 +1072,10 @@ namespace {
 						if (ext == ".json") {
 							// Check if it is in dialogue folder (optional but safer)
 							// if (p.find("dialogue") != std::string::npos) ...
-							
+
 							std::string oldVal = fc->dialogueFilePath;
-							std::string newVal = d->relPath; 
-							
+							std::string newVal = d->relPath;
+
 							fc->dialogueFilePath = newVal;
 							UndoManager::GetInstance().AddCommand(
 								std::make_unique<ChangeValueCommand<std::string>>(oldVal, newVal, [fc](const std::string& v) { fc->dialogueFilePath = v; })
@@ -1146,12 +1148,12 @@ namespace {
 			}
 
 			UIHelpers::DrawUndoableString("Dialogue ID", fc->dialogueID);
-			
+
 			if (ImGui::Button("Load Text from File")) {
 				// We'll implement the loading logic via a static helper or call it here directly if simple
 				// Since we can't easily include heavy logic here, let's signal the system or do a direct load if possible.
 				// For now, let's try to load it immediately if file exists.
-				
+
 				std::string fullPath = CrashoutsEngine::Assets::rootPath + fc->dialogueFilePath;
 				// Simplify path if it starts with assets/
 				if (fc->dialogueFilePath.rfind("assets/", 0) == 0) {
@@ -1162,7 +1164,7 @@ namespace {
 					// Let's assume dialogueFilePath is relative to 'assets/' or project root.
 					// Safe bet: usage of ReadFileToString or similar.
 				}
-				
+
 				std::ifstream file(fullPath);
 				if (!file.is_open()) {
 					// Try prepending rootPath
@@ -1178,7 +1180,7 @@ namespace {
 
 					rapidjson::Document doc;
 					doc.Parse(content.c_str());
-					
+
 					if (!doc.HasParseError()) {
 						if (doc.HasMember(fc->dialogueID.c_str())) {
 							const auto& val = doc[fc->dialogueID.c_str()];
@@ -1725,6 +1727,10 @@ namespace CrashoutsEngine
 				if (!isBuilding)
 				{
 					isBuilding = true;
+
+					// PAUSE AUTOMATIC WATCHER
+					MonoManager::s_IsManualReloading = true;
+
 					std::thread([]() {
 						int result = system(
 							"dotnet clean \"../../projects/ManagedScripts/ManagedScripts.csproj\" -c Debug > buildlog.txt 2>&1 && "
@@ -1732,7 +1738,10 @@ namespace CrashoutsEngine
 						);
 						if (result == 0) {
 							reloadPending = true; // signal reload
-
+						}
+						else {
+							// If build fails, we must release the lock so auto-reload works later
+							MonoManager::s_IsManualReloading = false;
 						}
 						isBuilding = false;
 						}).detach();
@@ -1741,6 +1750,18 @@ namespace CrashoutsEngine
 			if (reloadPending)
 			{
 				reloadPending = false;
+
+				// PERFORM RELOAD (With Serialization)
+				CrashoutsEngine::ScriptSystem::ReloadAll();
+
+				// RESUME AUTOMATIC WATCHER
+				// Important: Update the last write time so the watcher doesn't trigger immediately
+				namespace fs = std::filesystem;
+				if (fs::exists(MonoManager::GetAssemblyPath())) {
+					MonoManager::SetLastWriteTime(fs::last_write_time(MonoManager::GetAssemblyPath()));
+				}
+				MonoManager::s_IsManualReloading = false;
+
 				MonoManager::ReloadScripts(); // called on main thread
 			}
 
@@ -1748,8 +1769,8 @@ namespace CrashoutsEngine
 				sc->Start();
 
 			ImGui::SameLine();
-			if (ImGui::Button("Update All"))
-				sc->Update();
+			//if (ImGui::Button("Update All"))
+			//	sc->Update();
 
 			ImGui::SameLine();
 			if (ImGui::Button("Destroy All"))
@@ -2742,7 +2763,7 @@ namespace CrashoutsEngine
 
 					// Resize memory vectors
 					ParticleSystem::ParticleInit(*pc);
-				};
+					};
 
 				// Pass 'ApplyParticleCounts' as the custom setter for the Undo Command
 				UIHelpers::DrawUndoableInt("Max Count", pc->maxParticles, 1.0f, 0, 100000, ApplyParticleCounts);
@@ -2793,7 +2814,7 @@ namespace CrashoutsEngine
 
 			DrawMinMaxRow("Lifetime (min / max)", pc->startLifeMin, pc->startLifeMax, 0.1f, 0.0f, 0.0f);
 			DrawMinMaxRow("Speed (min / max)", pc->startSpeedMin, pc->startSpeedMax, 0.1f, 0.0f, 0.0f);
-			
+
 			// --- 4. Size & Rotation ---
 			ImGui::SeparatorText("Size & Rotation");
 

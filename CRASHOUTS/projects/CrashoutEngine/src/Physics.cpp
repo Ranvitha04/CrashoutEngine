@@ -4,7 +4,7 @@
 @date       08/09/2025
 @brief      Contains Definitions for Physics runSystem function and the RigidBodyComponent
 
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
 
@@ -585,6 +585,10 @@ namespace Physics {
 					if (isSimulating) {
 						rigidBody->setVelocity(rigidBody->GetVelocity() * 0.999f);
 						rigidBody->angularVelocity *= 0.98f;	// Angular Drag
+
+						// Clamp Angular Velocity to prevent "Explosive Spinning"
+						if (rigidBody->angularVelocity > 15.0f) rigidBody->angularVelocity = 15.0f;
+						if (rigidBody->angularVelocity < -15.0f) rigidBody->angularVelocity = -15.0f;
 
 						// Kill tiny wobble
 						if (std::abs(rigidBody->angularVelocity) < 0.1f) {

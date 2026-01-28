@@ -72,7 +72,7 @@ namespace Collision {
 
 	}
 
-	Polygon::SupportPoint findSupportPoint(CEVec3 const& edgeNormal, CEVec3 const&pointOnEdge, const Polygon &otherPolygon) {
+	Polygon::SupportPoint findSupportPoint(CEVec3 const& edgeNormal, CEVec3 const& pointOnEdge, const Polygon& otherPolygon) {
 		f32 currentDeepestPenetration{ -std::numeric_limits<f32>::max() };
 		Polygon::SupportPoint supportPoint{ std::nullopt };
 
@@ -97,7 +97,7 @@ namespace Collision {
 
 	CollisionHandler::Contact getContactPoint(const Polygon& a, const Polygon& b) {
 		CollisionHandler::Contact contact{ std::nullopt };
-		f32 minimumPenetration{std::numeric_limits<f32>::max()};
+		f32 minimumPenetration{ std::numeric_limits<f32>::max() };
 
 		for (int i{}; i < a.vertexCount; ++i) {
 			CEVec3 pointOnEdge{ a.rotatedVertices[i] };
@@ -118,7 +118,7 @@ namespace Collision {
 
 	CollisionHandler::Contact sphereVsPolyEdges(const Circle& a, const Polygon& b) {
 
-		CEVec3 sphereCenter{a.position};
+		CEVec3 sphereCenter{ a.position };
 
 		std::optional<CEVec3> nearestEdgeNormal{ std::nullopt };
 		std::optional<CEVec3> nearestEdgeVertex{ std::nullopt };
@@ -128,7 +128,7 @@ namespace Collision {
 		for (int i{}; i < b.vertexCount; ++i) {
 			int idx{ (i + 1) % b.vertexCount };
 			CEVec3 vertex{ b.rotatedVertices[i] };
-			CEVec3 nextVertex{ b.rotatedVertices[idx]  };
+			CEVec3 nextVertex{ b.rotatedVertices[idx] };
 
 			CEVec3 vertToCirc{ sphereCenter - vertex };
 			CEVec3 dirToNext{ nextVertex - vertex };
@@ -149,7 +149,7 @@ namespace Collision {
 
 		if (!nearestEdgeNormal || !nearestEdgeVertex) return std::nullopt;
 
-		CEVec3 vertexToCircle{sphereCenter - *nearestEdgeVertex};
+		CEVec3 vertexToCircle{ sphereCenter - *nearestEdgeVertex };
 		f32 projToEdgeNormal{ CEMath::Dot(*nearestEdgeNormal, vertexToCircle) };
 		if (projToEdgeNormal - a.radius < 0.f) {
 			f32 depth{ a.radius - projToEdgeNormal };
@@ -199,8 +199,8 @@ namespace Collision {
 
 	// --- Helper: Project Segment onto Axis ---
 	void ProjectSegment(const LineSegment& seg, const CEVec3& axis, float& min, float& max) {
-		float dot1 = CEMath::Dot(seg.GetWorldP1(),axis);
-		float dot2 = CEMath::Dot(seg.GetWorldP2(),axis);
+		float dot1 = CEMath::Dot(seg.GetWorldP1(), axis);
+		float dot2 = CEMath::Dot(seg.GetWorldP2(), axis);
 		min = std::min(dot1, dot2);
 		max = std::max(dot1, dot2);
 	}
@@ -243,7 +243,7 @@ namespace Collision {
 
 /*ALL THE COLLISION DETECTIONS RIGHT HERE*/
 namespace Collision {
-	
+
 	// CIRCLE to CIRCLE
 	CollisionManifold CollisionHandler::CircleToCircleCollision(CollisionProps const& coll1, CollisionProps const& coll2) {
 
@@ -326,7 +326,7 @@ namespace Collision {
 		}
 		return result;
 	}
-	
+
 	// OBB to OBB (polygon to polygon)
 	CollisionManifold CollisionHandler::PolygonToPolygonCollision(CollisionProps const& coll1, CollisionProps const& coll2) {
 		CollisionManifold result{ .collisionOccured = false };
@@ -348,7 +348,8 @@ namespace Collision {
 
 		if (contactA->depth < contactB->depth) {
 			finalManifold = *contactA;
-		} else {
+		}
+		else {
 			finalManifold = CollisionManifold{ -1.f * contactB->normal, contactB->contactPoints, contactB->depth, true, contactB->numOfContacts };
 		}
 
@@ -365,7 +366,7 @@ namespace Collision {
 
 	// MIX
 	CollisionManifold CollisionHandler::CircleToPolygonCollision(CollisionProps const& coll1, CollisionProps const& coll2) {
-		
+
 		CollisionProps const* spherePtr{ &coll1 };
 		CollisionProps const* polygonPtr{ &coll2 };
 		bool swapped = false;
@@ -378,26 +379,107 @@ namespace Collision {
 		Circle const& circle = dynamic_cast<Circle const&>(*(spherePtr->collider));
 		Polygon const& polygon = dynamic_cast<Polygon const&>(*(polygonPtr->collider));
 
-		std::optional<CollisionManifold> manifold;
-		// Check Edges first
-		manifold = sphereVsPolyEdges(circle, polygon);
-		// If no edge collision, check corners
-		if (!manifold) {
-			manifold = sphereVsPolyCorner(circle, polygon);
-		}
+		// SAT IMPLEMENTATION (Replaces Edge/Corner helper logic for robustness)
+		float minOverlap = std::numeric_limits<float>::max();
+		CEVec3 bestAxis{ 0.f, 0.f, 0.f };
 
-		if (manifold) {
-			CollisionManifold result = *manifold;
+		// 1. Test Polygon Axes (Edge Normals)
+		for (int i = 0; i < polygon.vertexCount; ++i) {
+			CEVec3 axis = polygon.normalEdges[i];
 
-			if (!swapped) {
-				result.normal = -1.f * result.normal;
+			// Project Polygon
+			auto [minP, maxP] = projOBBOnAxis(polygon.rotatedVertices, axis);
+
+			// Project Circle
+			float cProj = CEMath::Dot(circle.position, axis);
+			float minC = cProj - circle.radius;
+			float maxC = cProj + circle.radius;
+
+			// Calc Overlap
+			float overlap = std::min(maxP, maxC) - std::max(minP, minC);
+
+			if (overlap < 0) return { .collisionOccured = false };
+
+			if (overlap < minOverlap) {
+				minOverlap = overlap;
+				bestAxis = axis;
 			}
-
-			return result;
 		}
 
-		// No collision
-		return CollisionManifold{ .collisionOccured = false };
+		// 2. Test Circle Axis (Center to Closest Vertex)
+		CEVec3 closestVert = polygon.rotatedVertices[0];
+		float minDistSq = std::numeric_limits<float>::max();
+
+		for (int i = 0; i < polygon.vertexCount; ++i) {
+			float d = CEMath::LengthSq(circle.position - polygon.rotatedVertices[i]);
+			if (d < minDistSq) {
+				minDistSq = d;
+				closestVert = polygon.rotatedVertices[i];
+			}
+		}
+
+		CEVec3 axis = circle.position - closestVert;
+		float len = CEMath::Length(axis);
+
+		// Only test this axis if we are outside (or barely inside) the vertex region.
+		// If center is same as vertex, ignore (fallback to edge normals).
+		if (len > 1e-5f) {
+			axis = axis * (1.0f / len); // Normalize
+
+			// Project Poly
+			auto [minP, maxP] = projOBBOnAxis(polygon.rotatedVertices, axis);
+
+			// Project Circle
+			float cProj = CEMath::Dot(circle.position, axis);
+			float minC = cProj - circle.radius;
+			float maxC = cProj + circle.radius;
+
+			float overlap = std::min(maxP, maxC) - std::max(minP, minC);
+
+			if (overlap < 0) return { .collisionOccured = false };
+
+			if (overlap < minOverlap) {
+				minOverlap = overlap;
+				bestAxis = axis;
+			}
+		}
+
+		// Collision Found
+		CollisionManifold result;
+		result.collisionOccured = true;
+		result.depth = minOverlap;
+		result.normal = bestAxis;
+		result.numOfContacts = 1;
+
+		// Ensure normal points Circle -> Polygon (Standard: Normal points FROM A TO B)
+		// Here A=Circle, B=Polygon.
+		// If normal points towards Circle, flip it.
+		// Vector from Circle to Poly Center:
+		CEVec3 dir = polygon.position - circle.position;
+		if (CEMath::Dot(result.normal, dir) < 0.f) {
+			result.normal = -1.f * result.normal;
+		}
+
+		// Calculate Contact Point
+		result.contactPoints[0] = circle.position + result.normal * circle.radius;
+
+		if (!swapped) {
+			// If not swapped, we want Normal to point A -> B (Circle -> Poly).
+			// The logic above ensures it points Circle -> Poly.
+			// But wait, the standard usually wants Normal pointing OUT of B towards A for resolution?
+			// Let's check CircleToCircle: normal is A -> B (normalized).
+			// Let's check AABBToAABB: normal points towards B?
+			// "result.normal = posDelta.x < 0 ? -1 : 1". PosDelta is B - A. So normal is roughly A->B.
+
+			// So result.normal IS correct (Circle -> Poly).
+		}
+		else {
+			// Swapped: Input was Poly vs Circle. We computed Circle vs Poly.
+			// We return normal relative to Poly (Poly -> Circle).
+			result.normal = -1.f * result.normal;
+		}
+
+		return result;
 	}
 
 	CollisionManifold CollisionHandler::CircleToAABBCollision(CollisionProps const& coll1, CollisionProps const& coll2) {
@@ -483,7 +565,7 @@ namespace Collision {
 
 		return result;
 	}
-	
+
 	CollisionManifold CollisionHandler::CircleToLineCollision(CollisionProps const& coll1, CollisionProps const& coll2) {
 		CollisionManifold result{ .collisionOccured = false };
 
@@ -605,9 +687,10 @@ namespace Collision {
 
 		Polygon const& poly = dynamic_cast<Polygon const&>(*(polyPtr->collider));
 		LineSegment const& line = dynamic_cast<LineSegment const&>(*(linePtr->collider));
-	
+
 		f32 minOverlap = std::numeric_limits<f32>::max();
 		CEVec3 bestAxis{ 0.f, 0.f, 0.f };
+		bool isLineAxis = false;
 
 		// Test 1: Polygon axes
 		for (int i = 0; i < poly.vertexCount; ++i) {
@@ -615,6 +698,8 @@ namespace Collision {
 
 			// Project poly
 			std::pair<f32, f32> proj = projOBBOnAxis(poly.rotatedVertices, axis);
+			float minPoly = proj.first;
+			float maxPoly = proj.second;
 
 			// Project line
 			f32 dotP1 = CEMath::Dot(line.GetWorldP1(), axis);
@@ -622,13 +707,20 @@ namespace Collision {
 			f32 minLine = std::min(dotP1, dotP2);
 			f32 maxLine = std::max(dotP1, dotP2);
 
-			// Check Overlap
-			f32 overlap = std::min(proj.second, maxLine) - std::max(proj.first, minLine);
+			// Calculate MTV (Minimum Translation Vector) using Extents
+			float rPoly = (maxPoly - minPoly) * 0.5f;
+			float rLine = (maxLine - minLine) * 0.5f;
+			float cPoly = minPoly + rPoly;
+			float cLine = minLine + rLine;
+
+			f32 overlap = (rPoly + rLine) - std::abs(cPoly - cLine);
+
 			if (overlap < 0) return result;	// SAT found
-			
+
 			if (overlap < minOverlap) {
 				minOverlap = overlap;
 				bestAxis = axis;
+				isLineAxis = false;
 			}
 		}
 
@@ -647,17 +739,26 @@ namespace Collision {
 
 			// Project Line
 			f32 lineProj = CEMath::Dot(line.GetWorldP1(), axis);
-
+			// Line projection on its own normal is a single point (0 thickness)
 			f32 minLine = lineProj;
 			f32 maxLine = lineProj;
 
-			// Check Overlap
-			f32 overlap = std::min(maxPoly, maxLine) - std::max(minPoly, minLine);
+			// Calculate MTV
+			float rPoly = (maxPoly - minPoly) * 0.5f;
+			float rLine = 0.0f; // Line has 0 thickness on its normal
+			float cPoly = minPoly + rPoly;
+			float cLine = lineProj;
+
+			f32 overlap = (rPoly + rLine) - std::abs(cPoly - cLine);
+
 			if (overlap < 0) return result;
 
-			if (overlap < minOverlap) {
+			// Bias towards Line Axis to prevent jitter (prefer sliding along line)
+			float bias = 0.95f;
+			if (overlap * bias < minOverlap) {
 				minOverlap = overlap;
 				bestAxis = axis;
+				isLineAxis = true;
 			}
 		}
 
@@ -666,11 +767,45 @@ namespace Collision {
 		result.depth = minOverlap;
 		result.normal = bestAxis;
 
-		// Ensure normal points from poly to line
-		CEVec3 dir = line.GetWorldP1() - poly.position;
+		// 1. SAFE NORMAL FLIPPING
+		// Use closest point on line for stability (fixes flip issues on long lines)
+		CEVec3 closestOnLine = ClosestPointOnSegment(line.GetWorldP1(), line.GetWorldP2(), poly.position);
+		CEVec3 dir = closestOnLine - poly.position;
+
 		if (CEMath::Dot(result.normal, dir) < 0.f) {
 			result.normal = -1.f * result.normal;
 		}
+
+		// 2. GENERATE CONTACT POINT (Critical for Torque stability)
+		if (isLineAxis) {
+			// Case A: Polygon Corner hitting Line Face
+			// Find the polygon vertex furthest in the direction of the normal
+			float maxProj = -std::numeric_limits<float>::max();
+			CEVec3 bestVert = poly.rotatedVertices[0];
+
+			for (int i = 0; i < poly.vertexCount; ++i) {
+				float proj = CEMath::Dot(poly.rotatedVertices[i], result.normal);
+				if (proj > maxProj) {
+					maxProj = proj;
+					bestVert = poly.rotatedVertices[i];
+				}
+			}
+			result.contactPoints[0] = bestVert;
+		}
+		else {
+			// Case B: Line Tip hitting Polygon Face
+			// Pick the line endpoint that is deepest into the polygon (against the normal)
+			float d1 = CEMath::Dot(line.GetWorldP1(), result.normal);
+			float d2 = CEMath::Dot(line.GetWorldP2(), result.normal);
+
+			if (d1 < d2) {
+				result.contactPoints[0] = line.GetWorldP1();
+			}
+			else {
+				result.contactPoints[0] = line.GetWorldP2();
+			}
+		}
+		result.numOfContacts = 1;
 
 		if (swapped) result.normal = -1.f * result.normal;
 
@@ -743,7 +878,7 @@ namespace Collision {
 		CEVec3 segMid = (p1 + p2) * 0.5f;
 		CEVec3 direction = segMid - aabbCenter;
 
-		if (CEMath::Dot( direction, result.normal) < 0) {
+		if (CEMath::Dot(direction, result.normal) < 0) {
 			result.normal = result.normal * -1.0f;
 		}
 
@@ -753,7 +888,7 @@ namespace Collision {
 		// Case A: The collision axis is the Segment Normal. 
 		// This means a corner of the AABB is hitting the flat side of the line.
 		// We find the AABB corner closest to the segment.
-		if (std::abs( CEMath::Dot(result.normal,segNormal)) > 0.99f) {
+		if (std::abs(CEMath::Dot(result.normal, segNormal)) > 0.99f) {
 			// Find the support point on the box in the direction of the normal (towards segment)
 			result.contactPoints[0] = GetAABBSupport(aabb, result.normal);
 		}
@@ -765,14 +900,14 @@ namespace Collision {
 			// Since normal points Box -> Segment, the point closer to the box has a *smaller* dot product along that normal?
 			// Actually, simpler logic: The point overlapping the box is the contact.
 			// We pick the point closest to the box center.
-			if ( CEMath::LengthSq(p1 - aabbCenter) < CEMath::LengthSq(p2 - aabbCenter)) {
+			if (CEMath::LengthSq(p1 - aabbCenter) < CEMath::LengthSq(p2 - aabbCenter)) {
 				result.contactPoints[0] = p1;
 			}
 			else {
 				result.contactPoints[0] = p2;
 			}
 		}
-		
+
 		// 7. Handle Swapping (If input was Line vs AABB, flip normal)
 		if (swapped) {
 			result.normal = -1.f * result.normal;
@@ -799,7 +934,7 @@ namespace Collision {
 		// 2D Cross Product (z component)
 		auto Cross2D = [](CEVec3 const& a, CEVec3 const& b) {
 			return a.x * b.y - a.y * b.x;
-		};
+			};
 
 		float rXs = Cross2D(r, s);
 		float qmp1Xr = Cross2D(v, r);
@@ -876,13 +1011,14 @@ namespace Collision {
 	{
 		int circle = static_cast<int>(ColliderType::CIRCLE);
 		int aabb = static_cast<int>(ColliderType::AABB);
+		int obb = static_cast<int>(ColliderType::OBB); // Map OBB
 		int line = static_cast<int>(ColliderType::LINE);
 		int poly = static_cast<int>(ColliderType::POLYGON);
 
 		quadTree.Resize(AABBRect{ CEVec3{-2000.f, -2000.f, 0.f}, CEVec3{2000.f, 2000.f, 0.f} });
 
 		/*Fill in the table of collisions, e.g collideFuncts[0] will be ColliderType::CIRCLE TO ColliderType::CIRCLE collision (2 total collider types will have 2^2 permutations(different types of collisions possible) ) */
-		
+
 		// Circle vs Circle
 		collideFuncts[circle * SHAPE_COUNT + circle] = CircleToCircleCollision;
 
@@ -900,18 +1036,23 @@ namespace Collision {
 
 		// AABB vs Polygon (AABB is 1, Poly is 4. 1 < 4)
 		collideFuncts[aabb * SHAPE_COUNT + poly] = AABBToPolygonCollision;
+		collideFuncts[aabb * SHAPE_COUNT + obb] = AABBToPolygonCollision; // AABB vs OBB uses Poly logic
 
 		// Circle vs Polygon (Circle is 0, Poly is 4. 0 < 4)
 		collideFuncts[circle * SHAPE_COUNT + poly] = CircleToPolygonCollision;
+		collideFuncts[circle * SHAPE_COUNT + obb] = CircleToPolygonCollision; // Circle vs OBB uses Poly logic
 
-		collideFuncts[line * SHAPE_COUNT + poly ] = PolygonToLineCollision;
+		collideFuncts[line * SHAPE_COUNT + poly] = PolygonToLineCollision;
+		collideFuncts[line * SHAPE_COUNT + obb] = PolygonToLineCollision; // Line vs OBB uses Poly logic
 
 		// Line vs Line
 		collideFuncts[line * SHAPE_COUNT + line] = LineToLineCollision;
 
-		// Polygon vs Polygon
+		// Polygon vs Polygon (and OBB vs OBB, and Mixed)
 		collideFuncts[poly * SHAPE_COUNT + poly] = PolygonToPolygonCollision;
-	
+		collideFuncts[obb * SHAPE_COUNT + obb] = PolygonToPolygonCollision;
+		collideFuncts[poly * SHAPE_COUNT + obb] = PolygonToPolygonCollision;
+		collideFuncts[obb * SHAPE_COUNT + poly] = PolygonToPolygonCollision;
 
 	}
 
@@ -959,12 +1100,12 @@ namespace Collision {
 		}
 
 		static std::vector<CrashoutsEngine::Entity> collidableObjects{};
-		
+
 		/*DETECT COLLISION AND UPDATE COLLISION EVENTS MEMBER*/
 		for (CrashoutsEngine::Entity& entity1 : colliderEntities) {
 			if (!IsEntityActive(globalECS, entity1)) continue;
 
-			if (!globalECS.HasComponent<Component::TransformComponent>(entity1)) continue;			
+			if (!globalECS.HasComponent<Component::TransformComponent>(entity1)) continue;
 			auto* collider = globalECS.GetComponent<Component::ColliderComponent>(entity1);
 			if (!collider || !collider->collider) continue;
 			if (!collider->collider->enabled) continue;
@@ -991,7 +1132,7 @@ namespace Collision {
 
 				Component::ColliderComponent* collider2{ globalECS.GetComponent<Component::ColliderComponent>(entity2) };
 				Component::TransformComponent* transform2{ globalECS.GetComponent<Component::TransformComponent>(entity2) };
-				
+
 				Collision::CollisionManifold collisionManifold;
 
 				// Optimization: Skip two static rigidbodies
@@ -1004,12 +1145,12 @@ namespace Collision {
 
 					// Check Collision
 					collisionManifold = callCollFunct(collider1->collider->type, collider2->collider->type)(
-						Collision::CollisionProps{ collider1->collider, rb1->GetVelocity(), transform1->position},
-						Collision::CollisionProps{ collider2->collider, rb2->GetVelocity(), transform2->position}
-					);
+						Collision::CollisionProps{ collider1->collider, rb1->GetVelocity(), transform1->position },
+						Collision::CollisionProps{ collider2->collider, rb2->GetVelocity(), transform2->position }
+						);
 
 				}
-				
+
 				if (collisionManifold.collisionOccured) {
 					// Populate master list
 					m_FrameCollisions.push_back(
