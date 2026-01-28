@@ -791,14 +791,14 @@ namespace Scene {
 	// SCENE RENDERING
 	// ============================================================================
 
-	static TextureMode GetWrapMode(int mode) {
+	/*static TextureMode GetWrapMode(int mode) {
 		switch (mode) {
 		case 0: return TextureMode::ClampToEdge;
 		case 1: return TextureMode::Repeat;
 		case 2: return TextureMode::Mirror;
 		default: return TextureMode::ClampToEdge;
 		}
-	}
+	}*/
 
 	struct RenderBatch {
 		std::vector<CEVec3> positions;

@@ -331,7 +331,7 @@ namespace InstancingSystem {
 			const auto& tf = transformArray.dense[transformArray.entityToIndex[id]];
 
 			// Default values
-			int layerID = 0; // Default
+			//int layerID = 0; // Default
 			int zIndex = 0;
 			float sortY = tf.position.y;
 			Component::LayerComponent* layer = nullptr;

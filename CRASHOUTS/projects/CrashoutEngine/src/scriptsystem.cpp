@@ -23,7 +23,7 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 #include "audiobindings.h"
 #include "scenebindings.h"
 #include "uibindings.h"
-#include "layerbindings.h"
+#include "tagbindings.h"
 #include "timebindings.h"
 #include "shapebindings.h"
 #include "activecomponent.h"
@@ -72,7 +72,7 @@ namespace CrashoutsEngine
         Bindings::RegisterAnimatorBindings();
         Bindings::RegisterSceneBindings();
         Bindings::RegisterUIBindings();
-        Bindings::RegisterLayerBindings();
+        Bindings::RegisterTagBindings();
         Bindings::RegisterDebugBindings();
         //Bindings::RegisterAIBindings();
         Bindings::RegisterTimeBindings();

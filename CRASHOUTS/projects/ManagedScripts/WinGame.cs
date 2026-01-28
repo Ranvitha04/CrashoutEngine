@@ -36,16 +36,16 @@ namespace CrashoutsEngine
 
             Entity other = new Entity(otherEntityID);
 
-            // Check if it's the Player
-            // Option A: Check Layer
-            var layer = other.GetComponent<LayerComponent>();
-            bool isPlayer = (layer != null && layer.HasLayer("Player"));
+            // Check if it's the PTag
+            // Option A: Check Tag
+            var Tag = other.GetComponent<TagComponent>();
+            bool isPTag = (Tag != null && Tag.HasTag("PTag"));
 
             // Option B: Check Name
             // var name = other.GetComponent<NameComponent>();
-            // bool isPlayer = (name != null && name.ToString() == "Player");
+            // bool isPTag = (name != null && name.ToString() == "PTag");
 
-            if (isPlayer)
+            if (isPTag)
             {
                 Win();
             }
@@ -56,14 +56,14 @@ namespace CrashoutsEngine
             Console.WriteLine("[WinGame] YOU WIN!");
             gameWon = true;
 
-            // 1. Disable Player Control
-            if (PlayerMovement.Instance != null)
+            // 1. Disable PTag Control
+            if (PTagMovement.Instance != null)
             {
                 // If you have an 'Alive' or 'CanMove' flag
-                // PlayerMovement.Instance.CanMove = false; 
+                // PTagMovement.Instance.CanMove = false; 
 
                 // Or just stop them
-                var rb = PlayerMovement.Instance.Entity.GetComponent<RigidBodyComponent>();
+                var rb = PTagMovement.Instance.Entity.GetComponent<RigidBodyComponent>();
                 if (rb != null) rb.LinearVelocity = new CEVec3(0, 0, 0);
             }
 
