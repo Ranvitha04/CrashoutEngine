@@ -1247,13 +1247,13 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -201.79754638671876,
-                    "y": 31.04273223876953,
+                    "x": -186.17532348632813,
+                    "y": 9.203598022460938,
                     "z": 50.0
                 },
                 "size": {
                     "x": 62.0,
-                    "y": 72.50599670410156
+                    "y": 72.5
                 }
             },
             "rigidbody": {
@@ -1274,23 +1274,23 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": -201.79754638671876,
-                    "y": 31.04273223876953,
+                    "x": -186.17532348632813,
+                    "y": 4.2035980224609379,
                     "z": 50.0
                 },
                 "offset": {
                     "x": 0.0,
-                    "y": 0.0,
+                    "y": -5.0,
                     "z": 0.0
                 },
                 "min": {
-                    "x": -215.19754028320313,
-                    "y": 0.28973388671875,
+                    "x": -204.97532653808595,
+                    "y": -26.296401977539064,
                     "z": 50.0
                 },
                 "max": {
-                    "x": -188.39755249023438,
-                    "y": 61.79573059082031,
+                    "x": -167.3753204345703,
+                    "y": 34.70359802246094,
                     "z": 50.0
                 }
             },
@@ -1302,7 +1302,7 @@
                 "thickness": 1.0,
                 "preview": false,
                 "type": 0,
-                "textureName": "Character/Light Mode/Chibi-1.png",
+                "textureName": "images/Character\\New Artstyle\\Fall spritesheet.png",
                 "uvSize": {
                     "x": 1.0,
                     "y": 1.0
@@ -1346,21 +1346,21 @@
                     {
                         "className": "PlayerMovement",
                         "fields": {
-                            "moveSpeed": 300.0,
-                            "maxRunSpeed": 500.0,
-                            "jumpPower": 35000.0,
+                            "moveSpeed": 250.0,
+                            "maxRunSpeed": 600.0,
+                            "jumpPower": 30000.0,
                             "groundDrag": 0.15000000596046449,
                             "airDrag": 0.019999999552965165,
-                            "gravityScale": 2.5,
+                            "gravityScale": 1.0,
                             "turnMultiplier": 2.0,
                             "frictionMultiplier": 500.0,
-                            "gravityForceMultiplier": 10.0,
+                            "gravityForceMultiplier": 1.0,
                             "footstepInterval": 0.07500000298023224,
                             "swapPause": 1.0,
                             "energyConsumption": 12.5,
                             "normalMass": 3.0,
                             "lightMass": 2.0,
-                            "CurrentEnergy": 100.0,
+                            "CurrentEnergy": 0.0,
                             "MaxEnergy": 100.0,
                             "alive": true,
                             "isPaused": false
@@ -1369,7 +1369,7 @@
                 ]
             },
             "camera": {
-                "zoom": 0.28999999165534975,
+                "zoom": 0.30000001192092898,
                 "xBounds": {
                     "x": 0.0,
                     "y": 0.0
@@ -1420,40 +1420,9 @@
             },
             "keyframe_animator": {
                 "current": "fall_normal",
-                "t": 0.0,
+                "t": 58.165950775146487,
                 "playing": true,
                 "clips": [
-                    {
-                        "name": "fall_normal",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Fall spritesheet.png",
-                        "spriteCols": 2,
-                        "spriteRows": 1,
-                        "useCustomSize": true,
-                        "targetWidth": 62.0,
-                        "targetHeight": 72.50599670410156,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
                     {
                         "name": "jump_light",
                         "wrap": 0,
@@ -1477,6 +1446,37 @@
                                     {
                                         "t": 0.25,
                                         "v": 1.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "fall_normal",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\New Artstyle\\Fall spritesheet.png",
+                        "spriteCols": 2,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 62.0,
+                        "targetHeight": 72.50599670410156,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -1819,6 +1819,318 @@
                                     },
                                     {
                                         "t": 1.75,
+                                        "v": 6.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "playerIdle",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\New Artstyle\\Switch State\\Switch State spritesheet.png",
+                        "spriteCols": 3,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": 140.0,
+                        "targetHeight": 100.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.125,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "playerSwitchLight",
+                        "wrap": 1,
+                        "textureAsset": "images/Character\\New Artstyle\\Switch State\\Switch State spritesheet.png",
+                        "spriteCols": 3,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": 140.0,
+                        "targetHeight": 100.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 1.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.5,
+                                        "v": 2.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.75,
+                                        "v": 3.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 1.0,
+                                        "v": 4.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 1.25,
+                                        "v": 5.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 1.5,
+                                        "v": 6.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 1.75,
+                                        "v": 6.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "playerWalk",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\New Artstyle\\Run\\Run spritesheet.png",
+                        "spriteCols": 3,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": 140.0,
+                        "targetHeight": 100.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 1.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.5,
+                                        "v": 2.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.75,
+                                        "v": 3.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 1.0,
+                                        "v": 3.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "playerWalkLight",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\New Artstyle\\Run\\Run spritesheet.png",
+                        "spriteCols": 3,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": 140.0,
+                        "targetHeight": 100.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 4.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 5.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.5,
+                                        "v": 6.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.75,
+                                        "v": 7.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 1.0,
+                                        "v": 7.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "playerSwitch",
+                        "wrap": 1,
+                        "textureAsset": "images/Character\\New Artstyle\\Switch-State-SpriteSheet-Reverse.png",
+                        "spriteCols": 3,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": 140.0,
+                        "targetHeight": 100.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 1.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.5,
+                                        "v": 2.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.75,
+                                        "v": 3.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 1.0,
+                                        "v": 4.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 1.25,
+                                        "v": 5.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 1.5,
+                                        "v": 6.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 1.75,
+                                        "v": 6.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "playerIdleLight",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\New Artstyle\\Switch State\\Switch State spritesheet.png",
+                        "spriteCols": 3,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": 140.0,
+                        "targetHeight": 100.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 6.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
                                         "v": 6.0,
                                         "i": 0,
                                         "in": 0.0,
