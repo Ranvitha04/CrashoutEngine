@@ -119,7 +119,7 @@ namespace CrashoutsEngine {
             std::unique_ptr<TileMapAsset> newAsset(new TileMapAsset(normalizedRelativePath));
 
             if (doc.HasMember("layerMask") && doc["layerMask"].IsUint()) {
-                newAsset->GetLayerMaskMutable() = doc["layerMask"].GetUint();
+                newAsset->GetTagMaskMutable() = doc["layerMask"].GetUint();
             }
 
             // 4. Populate Data 

@@ -49,6 +49,7 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserv
 #include "hierarchycomponent.h"
 #include "particleComponent.h"
 #include "activecomponent.h"
+#include "tagcomponent.h"
 
 // FOR GAME GUI
 #include "buttoncomponent.h"
@@ -108,7 +109,7 @@ namespace {
 			}
 
 			// Capture start value
-			if(ImGui::IsItemDeactivatedAfterEdit()){
+			if (ImGui::IsItemDeactivatedAfterEdit()) {
 				if (startValues.find(id) != startValues.end()) {
 					T start = startValues[id];
 					T end = ref;
@@ -154,7 +155,7 @@ namespace {
 				);
 			}
 		}
-	
+
 		/*
 		@brief Helper for std::string; Callable to create imgui editable string value
 		*/
@@ -238,7 +239,7 @@ namespace {
 			if (has(ecs, e)) ecs.RemoveComponent<Component::NameComponent>(e);
 		}
 		void drawInspector(ECS& ecs, Entity e) override {
-			
+
 			// For active component (Set gameobject active or not active)
 			if (auto* ac = ecs.GetComponent<Component::ActiveComponent>(e)) {
 				ImGui::PushID("ActiveToggle");
@@ -257,19 +258,19 @@ namespace {
 	};
 
 	/*!
-	@brief Shared helper to draw a multi-select layer dropdown.
-	@param ecs Reference to ECS (needed to clean up components if a layer is deleted).
+	@brief Shared helper to draw a multi-select tag dropdown.
+	@param ecs Reference to ECS (needed to clean up components if a tag is deleted).
 	@param mask Reference to the bitmask integer to edit.
 	*/
-	static void DrawLayerMultiSelect(ECS& ecs, unsigned int& mask) {
-		// Get the static map from LayerComponent
-		std::map<std::string, unsigned int>& layerMap = Component::LayerComponent::layers;
+	static void DrawTagMultiSelect(ECS& ecs, unsigned int& mask) {
+		// Get the static map from TagComponent
+		std::map<std::string, unsigned int>& tagMap = Component::TagComponent::tags;
 
 		// --- 1. Build the Preview String ---
 		std::string preview = "";
 		int selectedCount = 0;
 
-		for (auto const& [name, bit] : layerMap) {
+		for (auto const& [name, bit] : tagMap) {
 			if (mask & bit) {
 				if (selectedCount > 0) preview += ", ";
 				preview += name;
@@ -281,12 +282,12 @@ namespace {
 		else if (selectedCount > 2) preview = "Mixed...";
 
 		// --- 2. Draw the Multi-Select Dropdown ---
-		if (ImGui::BeginCombo("Layer Mask", preview.c_str())) {
+		if (ImGui::BeginCombo("Tag Mask", preview.c_str())) {
 
-			std::string layerToRemove = "";
+			std::string tagToRemove = "";
 
 			// --- 3. Draw Checkboxes ---
-			for (auto const& [name, bit] : layerMap) {
+			for (auto const& [name, bit] : tagMap) {
 				bool isSelected = (mask & bit) != 0;
 
 				// Use Selectable so we can detect clicks easily
@@ -305,16 +306,16 @@ namespace {
 				// Remove Button
 				if (name != "Default") {
 					ImGui::SameLine();
-					if (ImGui::SmallButton(("X##" + name).c_str())) layerToRemove = name;
+					if (ImGui::SmallButton(("X##" + name).c_str())) tagToRemove = name;
 				}
 			}
 
 			// --- 4. Removal Logic (Global removal) ---
-			if (!layerToRemove.empty()) {
-				// Complex undo: Removing a layer affects ALL entities. 
+			if (!tagToRemove.empty()) {
+				// Complex undo: Removing a tag affects ALL entities. 
 				// For simplicity, just undo the removal from the map, not the entities.
-				unsigned int bit = layerMap[layerToRemove];
-				layerMap.erase(layerToRemove);
+				unsigned int bit = tagMap[tagToRemove];
+				tagMap.erase(tagToRemove);
 
 				// Clear from current mask with undo
 				unsigned int oldMask = mask;
@@ -326,27 +327,27 @@ namespace {
 				}
 
 				// Clean up all entities immediately (Not undoable currently for simplicity)
-				for (LayerComponent& lc : ecs.GetComponentArray<LayerComponent>().dense) {
-					lc.currentLayer &= ~bit;
+				for (TagComponent& tc : ecs.GetComponentArray<TagComponent>().dense) {
+					tc.tagMask &= ~bit;
 				}
 			}
 
-			// --- 5. Add New Layer Logic ---
+			// --- 5. Add New Tag Logic ---
 			ImGui::Separator();
-			static char newLayerBuf[64] = "";
-			bool add = ImGui::InputText("New Layer", newLayerBuf, 64, ImGuiInputTextFlags_EnterReturnsTrue);
+			static char newTagBuf[64] = "";
+			bool add = ImGui::InputText("New Tag", newTagBuf, 64, ImGuiInputTextFlags_EnterReturnsTrue);
 			ImGui::SameLine();
 			if (ImGui::Button("Add") || add) {
-				if (strlen(newLayerBuf) > 0 && layerMap.find(newLayerBuf) == layerMap.end()) {
+				if (strlen(newTagBuf) > 0 && tagMap.find(newTagBuf) == tagMap.end()) {
 					unsigned int nextBit = 1;
-					if (!layerMap.empty()) {
-						auto maxEl = std::max_element(layerMap.begin(), layerMap.end(),
+					if (!tagMap.empty()) {
+						auto maxEl = std::max_element(tagMap.begin(), tagMap.end(),
 							[](const auto& a, const auto& b) { return a.second < b.second; });
 						nextBit = maxEl->second << 1;
 					}
-					// TODO: Add AddLayerCommand for undoing layer creation
-					layerMap.emplace(newLayerBuf, nextBit);
-					newLayerBuf[0] = '\0';
+					// TODO: Add AddTagCommand for undoing tag creation
+					tagMap.emplace(newTagBuf, nextBit);
+					newTagBuf[0] = '\0';
 				}
 			}
 
@@ -355,28 +356,104 @@ namespace {
 	}
 
 	/*!
-	@brief Adapter for editing Component::LayerComponent.
-	@details Shows a drop down of layers to choose from and create
+	@brief Adapter for editing Component::TagComponent.
+	@details Shows a drop down of tags to choose from and create
+	*/
+	struct TagAdapter : DebugReflection::IComponentAdapter {
+		const char* name() const override { return "TagComponent"; }
+		bool has(ECS& ecs, Entity e) const override {
+			return ecs.HasComponent<Component::TagComponent>(e);
+		}
+		void add(ECS& ecs, Entity e) override {
+			//auto& D = GetDebugDefaults();
+			if (!has(ecs, e)) ecs.AddComponent<Component::TagComponent>(e);
+		}
+		void remove(ECS& ecs, Entity e) override {
+			if (has(ecs, e)) ecs.RemoveComponent<Component::TagComponent>(e);
+		}
+		void drawInspector(ECS& ecs, Entity e) override {
+			if (auto* c = ecs.GetComponent<Component::TagComponent>(e)) {
+				// Use the helper function!
+				DrawTagMultiSelect(ecs, c->tagMask);
+			}
+		}
+	};
+
+	/*!
+	@brief Adapter for editing Component::LayerComponent (formerly ZOrder).
+	@details Controls Rendering Layer and Z-Index. Also provides visibility toggles for layers.
 	*/
 	struct LayerAdapter : DebugReflection::IComponentAdapter {
-		const char* name() const override { return "LayerComponent"; }
+		const char* name() const override { return "Layer"; }
 		bool has(ECS& ecs, Entity e) const override {
 			return ecs.HasComponent<Component::LayerComponent>(e);
 		}
 		void add(ECS& ecs, Entity e) override {
-			//auto& D = GetDebugDefaults();
 			if (!has(ecs, e)) ecs.AddComponent<Component::LayerComponent>(e);
 		}
 		void remove(ECS& ecs, Entity e) override {
 			if (has(ecs, e)) ecs.RemoveComponent<Component::LayerComponent>(e);
 		}
 		void drawInspector(ECS& ecs, Entity e) override {
-			if (auto* c = ecs.GetComponent<Component::LayerComponent>(e)) {
-				// Use the helper function!
-				DrawLayerMultiSelect(ecs, c->currentLayer);
+			auto* z = ecs.GetComponent<Component::LayerComponent>(e);
+			if (!z) return;
+
+			auto& layerMap = Component::LayerComponent::layerMap;
+
+			// --- Layer Dropdown ---
+			if (ImGui::BeginCombo("Render Layer", z->layerName.c_str())) {
+				for (const auto& [name, id] : layerMap) {
+					if (ImGui::Selectable(name.c_str(), z->layerName == name)) {
+						z->layerName = name;
+					}
+				}
+				ImGui::EndCombo();
 			}
+
+			// --- Add New Layer ---
+			static char newLayerName[64] = "";
+			ImGui::InputText("New Layer Name", newLayerName, 64);
+			ImGui::SameLine();
+			if (ImGui::Button("Add Layer")) {
+				if (strlen(newLayerName) > 0 && layerMap.find(newLayerName) == layerMap.end()) {
+					int nextID = 0;
+					for (const auto& pair : layerMap) nextID = std::max(nextID, pair.second);
+					layerMap[newLayerName] = nextID + 1;
+					Component::LayerComponent::layerVisibility[newLayerName] = true;
+					newLayerName[0] = '\0';
+				}
+			}
+
+			// Z-Index Drag
+			ImGui::DragInt("Z-Index", &z->z, 1, -1000, 1000);
+
+			ImGui::Separator();
+			ImGui::Text("Global Layer Visibility (Active State)");
+
+			// Global Visibility Toggles
+			auto& visMap = Component::LayerComponent::layerVisibility;
+
+			for (auto& [name, visible] : visMap) {
+				bool oldVis = visible;
+				if (ImGui::Checkbox(name.c_str(), &visible)) {
+					// Toggle Logic: Iterate all entities and set active state
+					if (visible != oldVis) {
+						auto& arr = ecs.GetComponentArray<Component::LayerComponent>();
+						for (size_t i = 0; i < arr.dense.size(); ++i) {
+							if (arr.dense[i].layerName == name) {
+								Entity ent = arr.indexToEntity[i];
+								if (ecs.HasComponent<Component::ActiveComponent>(ent)) {
+									ecs.GetComponent<Component::ActiveComponent>(ent)->isActive = visible;
+								}
+							}
+						}
+					}
+				}
+			}
+			ImGui::NewLine();
 		}
 	};
+
 	static void ApplyLocalToWorldNow(ECS& ecs, Entity child)
 	{
 		if (!ecs.HasComponent<Component::ParentComponent>(child)) return;
@@ -1041,7 +1118,7 @@ namespace {
 				// Alignment controlled via UILayout or other means now
 				UIHelpers::DrawUndoableVec2("Padding (X, Y)", fc->padding);
 			}
-			
+
 			ImGui::Separator();
 			UIHelpers::DrawUndoableFloat("Letter Spacing", fc->letterSpacing, 0.05f);
 			UIHelpers::DrawUndoableFloat("Line Spacing", fc->lineSpacing, 0.05f);
@@ -1058,7 +1135,7 @@ namespace {
 
 			ImGui::SeparatorText("Dialogue Loading");
 			UIHelpers::DrawUndoableString("Dialogue File", fc->dialogueFilePath);
-			
+
 			// Drag & Drop for JSON
 			if (ImGui::BeginDragDropTarget()) {
 				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSET/PAYLOAD")) {
@@ -1071,10 +1148,10 @@ namespace {
 						if (ext == ".json") {
 							// Check if it is in dialogue folder (optional but safer)
 							// if (p.find("dialogue") != std::string::npos) ...
-							
+
 							std::string oldVal = fc->dialogueFilePath;
-							std::string newVal = d->relPath; 
-							
+							std::string newVal = d->relPath;
+
 							fc->dialogueFilePath = newVal;
 							UndoManager::GetInstance().AddCommand(
 								std::make_unique<ChangeValueCommand<std::string>>(oldVal, newVal, [fc](const std::string& v) { fc->dialogueFilePath = v; })
@@ -1147,12 +1224,12 @@ namespace {
 			}
 
 			UIHelpers::DrawUndoableString("Dialogue ID", fc->dialogueID);
-			
+
 			if (ImGui::Button("Load Text from File")) {
 				// We'll implement the loading logic via a static helper or call it here directly if simple
 				// Since we can't easily include heavy logic here, let's signal the system or do a direct load if possible.
 				// For now, let's try to load it immediately if file exists.
-				
+
 				std::string fullPath = CrashoutsEngine::Assets::rootPath + fc->dialogueFilePath;
 				// Simplify path if it starts with assets/
 				if (fc->dialogueFilePath.rfind("assets/", 0) == 0) {
@@ -1163,7 +1240,7 @@ namespace {
 					// Let's assume dialogueFilePath is relative to 'assets/' or project root.
 					// Safe bet: usage of ReadFileToString or similar.
 				}
-				
+
 				std::ifstream file(fullPath);
 				if (!file.is_open()) {
 					// Try prepending rootPath
@@ -1179,7 +1256,7 @@ namespace {
 
 					rapidjson::Document doc;
 					doc.Parse(content.c_str());
-					
+
 					if (!doc.HasParseError()) {
 						if (doc.HasMember(fc->dialogueID.c_str())) {
 							const auto& val = doc[fc->dialogueID.c_str()];
@@ -2308,7 +2385,7 @@ namespace CrashoutsEngine
 
 					// Layer option
 					ImGui::Text("Layer Filter:");
-					DrawLayerMultiSelect(ecs, asset->GetLayerMaskMutable());
+					DrawTagMultiSelect(ecs, asset->GetTagMaskMutable());
 
 					auto& rules = asset->GetTilesMutable();
 					int ruleToDelete = -1;
@@ -2642,7 +2719,7 @@ namespace CrashoutsEngine
 	};
 
 
-	struct ZOrderAdapter : DebugReflection::IComponentAdapter {
+	/*struct ZOrderAdapter : DebugReflection::IComponentAdapter {
 		const char* name() const override { return "ZOrder (Rendering)"; }
 		bool has(ECS& ecs, Entity e) const override {
 			return ecs.HasComponent<Component::ZOrder>(e);
@@ -2675,7 +2752,7 @@ namespace CrashoutsEngine
 				ImGui::TextDisabled("Computed Depth: %.2f", depth);
 			}
 		}
-	};
+	};*/
 
 	struct DebugZOverrideAdapter : DebugReflection::IComponentAdapter {
 		const char* name() const override { return "Debug Z Override"; }
@@ -2804,7 +2881,7 @@ namespace CrashoutsEngine
 
 					// Resize memory vectors
 					ParticleSystem::ParticleInit(*pc);
-				};
+					};
 
 				// Pass 'ApplyParticleCounts' as the custom setter for the Undo Command
 				UIHelpers::DrawUndoableInt("Max Count", pc->maxParticles, 1.0f, 0, 100000, ApplyParticleCounts);
@@ -2855,7 +2932,7 @@ namespace CrashoutsEngine
 
 			DrawMinMaxRow("Lifetime (min / max)", pc->startLifeMin, pc->startLifeMax, 0.1f, 0.0f, 0.0f);
 			DrawMinMaxRow("Speed (min / max)", pc->startSpeedMin, pc->startSpeedMax, 0.1f, 0.0f, 0.0f);
-			
+
 			// --- 4. Size & Rotation ---
 			ImGui::SeparatorText("Size & Rotation");
 
@@ -3026,8 +3103,8 @@ namespace CrashoutsEngine
 	static BuiltinPhysicsProvider gBuiltinPhys;
 	static KeyframeAnimatorAdapter gKeyframeAdapter;
 	static ParticleSystemAdapter gParticleAdapter;
-    static ZOrderAdapter gZOrderAdapter;
-    static DebugZOverrideAdapter gDebugZOverrideAdapter;
+	static TagAdapter gTagAdapter;     
+	static DebugZOverrideAdapter gDebugZOverrideAdapter;
 }
 
 /*!
@@ -3044,8 +3121,10 @@ namespace CrashoutsEngine
 extern "C" void RegisterBuiltinComponentAdapters() {
 	using namespace DebugReflection;
 	ComponentRegistry::instance().registerAdapter(&gNameAdapter);
+	ComponentRegistry::instance().registerAdapter(&gTagAdapter);
 	ComponentRegistry::instance().registerAdapter(&gLayerAdapter);
 	ComponentRegistry::instance().registerAdapter(&gTransformAdapter);
+	ComponentRegistry::instance().registerAdapter(&gDebugZOverrideAdapter);
 	ComponentRegistry::instance().registerAdapter(&gRigidBodyAdapter);
 	ComponentRegistry::instance().registerAdapter(&gColliderAdapter);
 	ComponentRegistry::instance().registerAdapter(&gShapeAdapter);
@@ -3058,8 +3137,6 @@ extern "C" void RegisterBuiltinComponentAdapters() {
 	ComponentRegistry::instance().registerAdapter(&gTileMapAdapter);
 	ComponentRegistry::instance().registerAdapter(&gKeyframeAdapter);
 	ComponentRegistry::instance().registerAdapter(&gParticleAdapter);
-    ComponentRegistry::instance().registerAdapter(&gZOrderAdapter);
-	ComponentRegistry::instance().registerAdapter(&gDebugZOverrideAdapter);
 	DebugReflection::SetGameStateProvider(&gProvider);
 	DebugReflection::PhysicsRegistry::instance().registerProvider(&gBuiltinPhys);
 

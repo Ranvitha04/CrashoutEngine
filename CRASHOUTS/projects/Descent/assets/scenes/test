@@ -3,8 +3,8 @@
         {
             "active": true,
             "name": "box",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -90,20 +90,20 @@
                     "z": 0.0
                 }
             },
-            "zorder": {
-                "layer": 0,
+            "layer": {
+                "layerName": "StaticBackground",
                 "z": 0
             },
-            "zorder": {
-                "layer": 0,
+            "layer": {
+                "layerName": "StaticBackground",
                 "z": 0
             }
         },
         {
             "active": true,
             "name": "camera",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -128,20 +128,20 @@
                     "y": 0.0
                 }
             },
-            "zorder": {
-                "layer": 0,
+            "layer": {
+                "layerName": "StaticBackground",
                 "z": 0
             },
-            "zorder": {
-                "layer": 0,
+            "layer": {
+                "layerName": "StaticBackground",
                 "z": 0
             }
         },
         {
             "active": true,
             "name": "Circle",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -223,20 +223,20 @@
                     "z": 0.0
                 }
             },
-            "zorder": {
-                "layer": 0,
+            "layer": {
+                "layerName": "StaticBackground",
                 "z": 0
             },
-            "zorder": {
-                "layer": 0,
+            "layer": {
+                "layerName": "StaticBackground",
                 "z": 0
             }
         },
         {
             "active": true,
             "name": "box_OBB",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": -30.100000381469728,
@@ -323,20 +323,20 @@
                     "z": 0.0
                 }
             },
-            "zorder": {
-                "layer": 0,
+            "layer": {
+                "layerName": "StaticBackground",
                 "z": 0
             },
-            "zorder": {
-                "layer": 0,
+            "layer": {
+                "layerName": "StaticBackground",
                 "z": 0
             }
         },
         {
             "active": true,
             "name": "Platform",
-            "layer": {
-                "currentLayer": 2
+            "tag": {
+                "tagMask": 2
             },
             "transform": {
                 "rotation": 0.0,
@@ -422,20 +422,20 @@
                     "z": 0.0
                 }
             },
-            "zorder": {
-                "layer": 0,
+            "layer": {
+                "layerName": "StaticBackground",
                 "z": 0
             },
-            "zorder": {
-                "layer": 0,
+            "layer": {
+                "layerName": "StaticBackground",
                 "z": 0
             }
         },
         {
             "active": true,
             "name": "Platform_Clone7_Clone8_Clone9",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -521,20 +521,20 @@
                     "z": 0.0
                 }
             },
-            "zorder": {
-                "layer": 0,
+            "layer": {
+                "layerName": "StaticBackground",
                 "z": 0
             },
-            "zorder": {
-                "layer": 0,
+            "layer": {
+                "layerName": "StaticBackground",
                 "z": 0
             }
         },
         {
             "active": true,
             "name": "Platform_Clone7_Clone8",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -619,13 +619,21 @@
                     "y": 0.0,
                     "z": 0.0
                 }
+            },
+            "layer": {
+                "layerName": "StaticBackground",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "StaticBackground",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "Slope",
-            "layer": {
-                "currentLayer": 2
+            "tag": {
+                "tagMask": 2
             },
             "transform": {
                 "rotation": 0.0,
@@ -719,20 +727,20 @@
                     "z": 0.0
                 }
             },
-            "zorder": {
-                "layer": 0,
+            "layer": {
+                "layerName": "StaticBackground",
                 "z": 0
             },
-            "zorder": {
-                "layer": 0,
+            "layer": {
+                "layerName": "StaticBackground",
                 "z": 0
             }
         },
         {
             "active": true,
             "name": "triangle",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -826,20 +834,20 @@
                     "z": 0.0
                 }
             },
-            "zorder": {
-                "layer": 0,
+            "layer": {
+                "layerName": "StaticBackground",
                 "z": 0
             },
-            "zorder": {
-                "layer": 0,
+            "layer": {
+                "layerName": "StaticBackground",
                 "z": 0
             }
         },
         {
             "active": true,
             "name": "Line",
-            "layer": {
-                "currentLayer": 2
+            "tag": {
+                "tagMask": 2
             },
             "transform": {
                 "rotation": 0.0,
@@ -925,20 +933,20 @@
                     "z": 0.0
                 }
             },
-            "zorder": {
-                "layer": 0,
+            "layer": {
+                "layerName": "StaticBackground",
                 "z": 0
             },
-            "zorder": {
-                "layer": 0,
+            "layer": {
+                "layerName": "StaticBackground",
                 "z": 0
             }
         },
         {
             "active": true,
             "name": "Player",
-            "layer": {
-                "currentLayer": 1
+            "tag": {
+                "tagMask": 1
             },
             "transform": {
                 "rotation": 0.0,
@@ -1051,20 +1059,20 @@
                     }
                 ]
             },
-            "zorder": {
-                "layer": 0,
+            "layer": {
+                "layerName": "StaticBackground",
                 "z": 0
             },
-            "zorder": {
-                "layer": 0,
+            "layer": {
+                "layerName": "StaticBackground",
                 "z": 0
             }
         },
         {
             "active": false,
             "name": "PressurePlate",
-            "layer": {
-                "currentLayer": 2
+            "tag": {
+                "tagMask": 2
             },
             "transform": {
                 "rotation": 0.0,
@@ -1200,20 +1208,20 @@
                     "w": 0.5
                 }
             },
-            "zorder": {
-                "layer": 0,
+            "layer": {
+                "layerName": "StaticBackground",
                 "z": 0
             },
-            "zorder": {
-                "layer": 0,
+            "layer": {
+                "layerName": "StaticBackground",
                 "z": 0
             }
         },
         {
             "active": false,
             "name": "Entity 13",
-            "layer": {
-                "currentLayer": 2
+            "tag": {
+                "tagMask": 2
             },
             "transform": {
                 "rotation": 0.0,
@@ -1276,20 +1284,20 @@
                     }
                 ]
             },
-            "zorder": {
-                "layer": 0,
+            "layer": {
+                "layerName": "StaticBackground",
                 "z": 0
             },
-            "zorder": {
-                "layer": 0,
+            "layer": {
+                "layerName": "StaticBackground",
                 "z": 0
             }
         },
         {
             "active": false,
             "name": "Particle",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -1303,8 +1311,8 @@
                     "y": 1.0
                 }
             },
-            "zorder": {
-                "layer": 0,
+            "layer": {
+                "layerName": "StaticBackground",
                 "z": 0
             },
             "particle": {
@@ -1368,16 +1376,16 @@
                     "y": 1.0
                 }
             },
-            "zorder": {
-                "layer": 0,
+            "layer": {
+                "layerName": "StaticBackground",
                 "z": 0
             }
         },
         {
             "active": false,
             "name": "Entity 15",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -1391,20 +1399,20 @@
                     "y": 1.0
                 }
             },
-            "zorder": {
-                "layer": 0,
+            "layer": {
+                "layerName": "StaticBackground",
                 "z": 0
             },
-            "zorder": {
-                "layer": 0,
+            "layer": {
+                "layerName": "StaticBackground",
                 "z": 0
             }
         },
         {
             "active": true,
             "name": "Tex_bg colour",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -1452,25 +1460,25 @@
                     "z": 0.0
                 }
             },
-            "zorder": {
-                "layer": 0,
-                "z": 3
+            "layer": {
+                "layerName": "Default",
+                "z": 1
             },
-            "zorder": {
-                "layer": 0,
-                "z": 3
+            "layer": {
+                "layerName": "Default",
+                "z": 1
             }
         },
         {
             "active": true,
             "name": "Tex_bg 1 pillar",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -14.304291725158692,
+                    "x": -25.618732452392579,
                     "y": 12.776333808898926,
                     "z": 0.0
                 },
@@ -1500,7 +1508,7 @@
                     "x": 1.0,
                     "y": 1.0,
                     "z": 1.0,
-                    "w": 1.0
+                    "w": 0.3419913649559021
                 },
                 "p1": {
                     "x": 0.0,
@@ -1513,26 +1521,26 @@
                     "z": 0.0
                 }
             },
-            "zorder": {
-                "layer": 0,
-                "z": 0
+            "layer": {
+                "layerName": "WorldGeometry",
+                "z": 12
             },
-            "zorder": {
-                "layer": 0,
-                "z": 0
+            "layer": {
+                "layerName": "WorldGeometry",
+                "z": 12
             }
         },
         {
             "active": true,
             "name": "Tex_bg2 base",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -11.703516006469727,
-                    "y": 11.345900535583496,
+                    "x": -12.648033142089844,
+                    "y": 15.281357765197754,
                     "z": 0.0
                 },
                 "size": {
@@ -1574,20 +1582,20 @@
                     "z": 0.0
                 }
             },
-            "zorder": {
-                "layer": 0,
-                "z": -1
+            "layer": {
+                "layerName": "Default",
+                "z": 0
             },
-            "zorder": {
-                "layer": 0,
-                "z": -1
+            "layer": {
+                "layerName": "Default",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "text",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -1650,13 +1658,26 @@
                     "w": 1.0
                 },
                 "centered": false,
-                "isworldspace": true
+                "isworldspace": true,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": false,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 0.0,
+                "lineSpacing": 0.0,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
             },
             "gui": {
                 "uiType": 11
             },
             "textinput": {
-                "isFocused": true,
+                "isFocused": false,
                 "cursorPos": 6,
                 "maxCharacters": 255
             },
@@ -1666,6 +1687,14 @@
                     "y": 2.5
                 },
                 "uiLayout": 9
+            },
+            "layer": {
+                "layerName": "StaticBackground",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "StaticBackground",
+                "z": 0
             }
         }
     ],

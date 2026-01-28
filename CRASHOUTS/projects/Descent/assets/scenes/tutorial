@@ -3,8 +3,8 @@
         {
             "active": true,
             "name": "Tutorial_TileMap",
-            "layer": {
-                "currentLayer": 2
+            "tag": {
+                "tagMask": 2
             },
             "transform": {
                 "rotation": 0.0,
@@ -1236,13 +1236,21 @@
                         "asset": "tilemaps/Rock"
                     }
                 ]
+            },
+            "layer": {
+                "layerName": "StaticBackground",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "StaticBackground",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "Player",
-            "layer": {
-                "currentLayer": 1
+            "tag": {
+                "tagMask": 1
             },
             "transform": {
                 "rotation": 0.0,
@@ -1417,6 +1425,10 @@
                     "z": 0.0,
                     "w": 0.5
                 }
+            },
+            "layer": {
+                "layerName": "StaticBackground",
+                "z": 0
             },
             "keyframe_animator": {
                 "current": "fall_normal",
@@ -1829,13 +1841,17 @@
                         ]
                     }
                 ]
+            },
+            "layer": {
+                "layerName": "StaticBackground",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "Passthrough_Tiles",
-            "layer": {
-                "currentLayer": 18
+            "tag": {
+                "tagMask": 18
             },
             "transform": {
                 "rotation": 0.0,
@@ -1947,6 +1963,14 @@
                         "asset": ""
                     }
                 ]
+            },
+            "layer": {
+                "layerName": "StaticBackground",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "StaticBackground",
+                "z": 0
             }
         }
     ],

@@ -7,7 +7,7 @@
 All content � 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 */
-#include "aibindings.h"
+//#include "aibindings.h"
 #include "animatorbindings.h"
 #include "colliderbindings.h"
 #include "collidereventbindings.h"
@@ -74,7 +74,7 @@ namespace CrashoutsEngine
         Bindings::RegisterUIBindings();
         Bindings::RegisterLayerBindings();
         Bindings::RegisterDebugBindings();
-        Bindings::RegisterAIBindings();
+        //Bindings::RegisterAIBindings();
         Bindings::RegisterTimeBindings();
         Bindings::RegisterShapeBindings();
 

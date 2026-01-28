@@ -3,8 +3,8 @@
         {
             "active": true,
             "name": "BG",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -63,20 +63,20 @@
                     "y": 0.0
                 }
             },
-            "zorder": {
-                "layer": 0,
+            "layer": {
+                "layerName": "StaticBackground",
                 "z": 0
             },
-            "zorder": {
-                "layer": 0,
+            "layer": {
+                "layerName": "StaticBackground",
                 "z": 0
             }
         },
         {
             "active": true,
             "name": "QuitBtn",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -108,10 +108,10 @@
                     "y": 0.0
                 },
                 "color": {
-                    "x": 0.40392157435417178,
-                    "y": 0.0784313753247261,
-                    "z": 0.0784313753247261,
-                    "w": 1.0
+                    "x": 0.5966850519180298,
+                    "y": 0.09889807552099228,
+                    "z": 0.09889807552099228,
+                    "w": 0.18784528970718385
                 },
                 "p1": {
                     "x": 0.0,
@@ -136,10 +136,23 @@
                     "x": 1.0,
                     "y": 1.0,
                     "z": 1.0,
-                    "w": 1.0
+                    "w": 0.8066298365592957
                 },
                 "centered": true,
-                "isworldspace": true
+                "isworldspace": true,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": false,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 0.0,
+                "lineSpacing": 0.0,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
             },
             "script": {
                 "scripts": [
@@ -150,7 +163,7 @@
                 ]
             },
             "button": {
-                "buttonState": 0,
+                "buttonState": 2,
                 "shapeNormalColor": {
                     "x": 0.40392157435417178,
                     "y": 0.0784313753247261,
@@ -198,20 +211,20 @@
                 },
                 "uiLayout": 4
             },
-            "zorder": {
-                "layer": 0,
+            "layer": {
+                "layerName": "StaticBackground",
                 "z": 0
             },
-            "zorder": {
-                "layer": 0,
+            "layer": {
+                "layerName": "StaticBackground",
                 "z": 0
             }
         },
         {
             "active": true,
             "name": "StartBtn",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -274,7 +287,20 @@
                     "w": 1.0
                 },
                 "centered": true,
-                "isworldspace": true
+                "isworldspace": true,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": false,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 0.0,
+                "lineSpacing": 0.0,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
             },
             "script": {
                 "scripts": [
@@ -333,20 +359,20 @@
                 },
                 "uiLayout": 4
             },
-            "zorder": {
-                "layer": 0,
+            "layer": {
+                "layerName": "StaticBackground",
                 "z": 0
             },
-            "zorder": {
-                "layer": 0,
+            "layer": {
+                "layerName": "StaticBackground",
                 "z": 0
             }
         },
         {
             "active": true,
             "name": "SettingsBtn",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -378,10 +404,10 @@
                     "y": 0.0
                 },
                 "color": {
-                    "x": 0.5690608024597168,
-                    "y": 0.11003938317298889,
-                    "z": 0.11003938317298889,
-                    "w": 0.8453038930892944
+                    "x": 0.40331488847732546,
+                    "y": 0.07798906415700913,
+                    "z": 0.07798906415700913,
+                    "w": 1.0
                 },
                 "p1": {
                     "x": 0.0,
@@ -406,10 +432,23 @@
                     "x": 1.0,
                     "y": 1.0,
                     "z": 1.0,
-                    "w": 0.49171268939971926
+                    "w": 1.0
                 },
                 "centered": true,
-                "isworldspace": true
+                "isworldspace": true,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": false,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 0.0,
+                "lineSpacing": 0.0,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
             },
             "script": {
                 "scripts": [
@@ -420,7 +459,7 @@
                 ]
             },
             "button": {
-                "buttonState": 1,
+                "buttonState": 0,
                 "shapeNormalColor": {
                     "x": 0.40331488847732546,
                     "y": 0.07798906415700913,
@@ -468,12 +507,12 @@
                 },
                 "uiLayout": 4
             },
-            "zorder": {
-                "layer": 0,
+            "layer": {
+                "layerName": "StaticBackground",
                 "z": 0
             },
-            "zorder": {
-                "layer": 0,
+            "layer": {
+                "layerName": "StaticBackground",
                 "z": 0
             }
         }

@@ -37,7 +37,7 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 #include "buttoncomponent.h"
 //#include "tilemapcomponent.h"
 #include "activecomponent.h"
-//#include "particleSystem.h"
+#include "particleSystem.h"
 //#include "camera.h"
 
 #include <fstream>
@@ -218,9 +218,9 @@ namespace Scene {
 						tc->revealedCharCount = (int)(tc->revealTimer * tc->revealSpeed);
 						if (tc->revealedCharCount < 0) tc->revealedCharCount = 0;
 						if (tc->revealedCharCount > (int)tc->text.length()) tc->revealedCharCount = (int)tc->text.length();
-						
+
 						textToRender = tc->text.substr(0, tc->revealedCharCount);
-					} 
+					}
 					else if (tc->isRevealing && engineState == EngineState::STOP) {
 						// In STOP mode, reset or show full? Usually preview full or reset.
 						// Let's reset to allow previewing "from start" when playing.
@@ -322,47 +322,47 @@ namespace Scene {
 
 
 
-												gTextRenderer->RenderTextBounded(
+						gTextRenderer->RenderTextBounded(
 
 
 
-													textToRender, boundedX, boundedY, depthZ,
+							textToRender, boundedX, boundedY, depthZ,
 
 
 
-													maxWidth, maxHeight,
+							maxWidth, maxHeight,
 
 
 
-													finalScale, tc->color, font, tc->isWorldSpace,
+							finalScale, tc->color, font, tc->isWorldSpace,
 
 
 
-													align, vAlign, tc->padding, tc->letterSpacing, tc->lineSpacing
+							align, vAlign, tc->padding, tc->letterSpacing, tc->lineSpacing
 
 
 
-												);
+						);
 
 
 
-											}
+					}
 
 
 
-											else if (tc->centered)
+					else if (tc->centered)
 
 
 
-												gTextRenderer->RenderCenteredText(textToRender, finalX, finalY, depthZ, finalScale, tc->color, font, tc->isWorldSpace, tc->letterSpacing);
+						gTextRenderer->RenderCenteredText(textToRender, finalX, finalY, depthZ, finalScale, tc->color, font, tc->isWorldSpace, tc->letterSpacing);
 
 
 
-											else
+					else
 
 
 
-												gTextRenderer->RenderText(textToRender, finalX, finalY, depthZ, finalScale, tc->color, font, tc->isWorldSpace, tc->letterSpacing);
+						gTextRenderer->RenderText(textToRender, finalX, finalY, depthZ, finalScale, tc->color, font, tc->isWorldSpace, tc->letterSpacing);
 
 					// --- CURSOR LOGIC ---
 					TextInputComponent* input = globalECS.GetComponent<TextInputComponent>(id);
@@ -864,6 +864,7 @@ namespace Scene {
 	std::unordered_map<BatchKey, RenderBatch, BatchKeyHasher> circBatches;
 
 	// --- HELPER: BatchEntities (Processes a specific list of entities) ---
+	/*
 	static void BatchEntities(
 		const std::vector<Entity>& entities,
 		ECS& globalECS,
@@ -1033,6 +1034,7 @@ namespace Scene {
 			batch.Clear();
 		}
 	}
+	*/
 
 	void InitScene(CrashoutsEngine::ECS& globalECS) {
 		Particles::InitAllParticles(globalECS);
@@ -1058,7 +1060,7 @@ namespace Scene {
 		if (!renderer.shdr_pgm_instanced) return;
 
 		const auto& shapeArray = globalECS.GetComponentArray<ShapeComponent>();
-		
+
 		// Structure for sorting
 		struct RenderEntry {
 			Entity entity;
@@ -1080,117 +1082,140 @@ namespace Scene {
 			if (!tc) continue;
 
 			float depth = 0.0f;
-			if (globalECS.HasComponent<ZOrder>(id)) {
-				auto* z = globalECS.GetComponent<ZOrder>(id);
+			if (globalECS.HasComponent<Component::LayerComponent>(id)) {
+				auto* z = globalECS.GetComponent<Component::LayerComponent>(id);
+
+				// Check Visibility
+				if (Component::LayerComponent::layerVisibility.count(z->layerName)) {
+					if (!Component::LayerComponent::layerVisibility[z->layerName]) continue;
+				}
+
 				DebugZOverride* dbg = globalECS.HasComponent<DebugZOverride>(id) ? globalECS.GetComponent<DebugZOverride>(id) : nullptr;
 				depth = Component::Rendering::ComputeDepth(tc->position, *z, dbg);
 			}
 			else {
 				// Fallback depth calculation if no ZOrder
-				// Assume WorldGeometry layer (2) and z=0
-				Component::ZOrder defaultZ{ Component::RenderLayer::WorldGeometry, 0 };
+				// Assume Default layer (0)
+				Component::LayerComponent defaultZ{ "Default", 0 };
+				
+				// Check Visibility for fallback layer
+				if (Component::LayerComponent::layerVisibility.count("Default")) {
+					if (!Component::LayerComponent::layerVisibility["Default"]) continue;
+				}
+
 				depth = Component::Rendering::ComputeDepth(tc->position, defaultZ, nullptr);
 			}
 
 			if (sc->isWorldSpace) worldEntries.push_back({ id, depth });
 			else                  screenEntries.push_back({ id, depth });
+		} // Bracket closed here
+
 		// 2. Sort by depth (painter's algorithm: lowest depth first)
 		auto sortFunc = [](const RenderEntry& a, const RenderEntry& b) { return a.depth < b.depth; };
-			std::sort(worldEntries.begin(), worldEntries.end(), sortFunc);
-			std::sort(screenEntries.begin(), screenEntries.end(), sortFunc);
+		std::sort(worldEntries.begin(), worldEntries.end(), sortFunc);
+		std::sort(screenEntries.begin(), screenEntries.end(), sortFunc);
 
-			auto DrawEntity = [&](Entity e) {
-				auto* sc = globalECS.GetComponent<ShapeComponent>(e);
-				auto* tc = globalECS.GetComponent<TransformComponent>(e);
-				if (!sc || !tc) return;
-				if (sc->type == ShapeType::Rectangle) {
-					if (sc->enableTexture) {
+		auto DrawEntity = [&](Entity e) {
+			auto* sc = globalECS.GetComponent<ShapeComponent>(e);
+			auto* tc = globalECS.GetComponent<TransformComponent>(e);
+			if (!sc || !tc) return;
+			if (sc->type == ShapeType::Rectangle) {
+				if (sc->enableTexture) {
 					CEColor tint(1.0f, 1.0f, 1.0f, 1.0f);
-						Component::Shapes::CreateTexturedRectangle(
+					Component::Shapes::CreateTexturedRectangle(
 						tc->size, sc->textureName, tc->position, tc->rotation,
 						tint, sc->uvSize, sc->isWorldSpace
-						);
-					}
-					else {
-						Component::Shapes::CreateRectangle(
-							tc->size, tc->position, tc->rotation,
-							sc->color, sc->isWorldSpace
-						);
-					}
+					);
 				}
-				else if (sc->type == ShapeType::Triangle) {
-					if (sc->enableTexture) {
-					CEColor tint(1.0f, 1.0f, 1.0f, 1.0f);
-						Component::Shapes::CreateTexturedTriangle(
-						tc->size, sc->textureName, tc->position, tc->rotation,
-						tint, sc->uvSize, sc->isWorldSpace
-						);
-					}
-					else {
-						Component::Shapes::CreateTriangle(
-							tc->size, tc->position, tc->rotation,
-							sc->color, sc->isWorldSpace
-						);
-					}
-				}
-				else if (sc->type == ShapeType::Circle) {
-					Component::Shapes::CreateCircle(
-						tc->size, tc->position, 32,
+				else {
+					Component::Shapes::CreateRectangle(
+						tc->size, tc->position, tc->rotation,
 						sc->color, sc->isWorldSpace
 					);
 				}
-				else if (sc->type == ShapeType::Line) {
-					Component::Shapes::CreateLine(sc->p1 + tc->position, sc->p2 + tc->position, sc->thickness, sc->color, sc->isWorldSpace);
+			}
+			else if (sc->type == ShapeType::Triangle) {
+				if (sc->enableTexture) {
+					CEColor tint(1.0f, 1.0f, 1.0f, 1.0f);
+					Component::Shapes::CreateTexturedTriangle(
+						tc->size, sc->textureName, tc->position, tc->rotation,
+						tint, sc->uvSize, sc->isWorldSpace
+					);
 				}
-				};
+				else {
+					Component::Shapes::CreateTriangle(
+						tc->size, tc->position, tc->rotation,
+						sc->color, sc->isWorldSpace
+					);
+				}
+			}
+			else if (sc->type == ShapeType::Circle) {
+				Component::Shapes::CreateCircle(
+					tc->size, tc->position, 32,
+					sc->color, sc->isWorldSpace
+				);
+			}
+			else if (sc->type == ShapeType::Line) {
+				Component::Shapes::CreateLine(sc->p1 + tc->position, sc->p2 + tc->position, sc->thickness, sc->color, sc->isWorldSpace);
+			}
+			};
 
 		// -------------------------------------------------------
 		// PASS 1: WORLD SPACE (Uses Camera Matrices, depth test disabled during sorted draw)
 		// -------------------------------------------------------
-			renderer.shdr_pgm->Use();
-			renderer.shdr_pgm->SetUniform("uView", renderer.viewMatrix);
-			renderer.shdr_pgm->SetUniform("uProjection", renderer.projectionMatrix);
+		renderer.shdr_pgm->Use();
+		renderer.shdr_pgm->SetUniform("uView", renderer.viewMatrix);
+		renderer.shdr_pgm->SetUniform("uProjection", renderer.projectionMatrix);
 
-			{
-				GLboolean depthTestEnabled = glIsEnabled(GL_DEPTH_TEST);
-				GLboolean cullFaceEnabled = glIsEnabled(GL_CULL_FACE);
-				glDisable(GL_DEPTH_TEST);
-				glDisable(GL_CULL_FACE);
-				for (const auto& item : worldEntries) DrawEntity(item.entity);
-				if (depthTestEnabled) glEnable(GL_DEPTH_TEST);
-				if (cullFaceEnabled) glEnable(GL_CULL_FACE);
-			}
+		{
+			GLboolean depthTestEnabled = glIsEnabled(GL_DEPTH_TEST);
+			GLboolean cullFaceEnabled = glIsEnabled(GL_CULL_FACE);
 
-			// Render Particles (World Space)
-			Particles::RenderAllParticles(globalECS);
+			// --- ENABLE BLENDING GLOBALLY FOR SORTED PASS ---
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+			glDisable(GL_DEPTH_TEST);
+			glDisable(GL_CULL_FACE);
+			for (const auto& item : worldEntries) DrawEntity(item.entity);
+			if (depthTestEnabled) glEnable(GL_DEPTH_TEST);
+			if (cullFaceEnabled) glEnable(GL_CULL_FACE);
+		}
+
+		// Render Particles (World Space)
+		Particles::RenderAllParticles(globalECS);
 
 
 		// -------------------------------------------------------
 		// PASS 2: SCREEN SPACE (Uses UI Matrices, depth test disabled during sorted draw)
 		// -------------------------------------------------------
-			float aspect = (float)GLApp::width / (float)GLApp::height;
-			float h = 100.0f; // Base Height (Matches your engine standard)
-			float w = h * aspect;
-			glm::mat4 uiProj = glm::ortho(-w * 0.5f, w * 0.5f, -h * 0.5f, h * 0.5f);
-			renderer.shdr_pgm->Use();
-			renderer.shdr_pgm->SetUniform("uView", glm::mat4(1.0f));
-			renderer.shdr_pgm->SetUniform("uProjection", uiProj);
+		float aspect = (float)GLApp::width / (float)GLApp::height;
+		float h = 100.0f; // Base Height (Matches your engine standard)
+		float w = h * aspect;
+		glm::mat4 uiProj = glm::ortho(-w * 0.5f, w * 0.5f, -h * 0.5f, h * 0.5f);
+		renderer.shdr_pgm->Use();
+		renderer.shdr_pgm->SetUniform("uView", glm::mat4(1.0f));
+		renderer.shdr_pgm->SetUniform("uProjection", uiProj);
 
-			{
-				GLboolean depthTestEnabled = glIsEnabled(GL_DEPTH_TEST);
-				GLboolean cullFaceEnabled = glIsEnabled(GL_CULL_FACE);
-				glDisable(GL_DEPTH_TEST);
-				glDisable(GL_CULL_FACE);
-				for (const auto& item : screenEntries) DrawEntity(item.entity);
-				if (depthTestEnabled) glEnable(GL_DEPTH_TEST);
-				if (cullFaceEnabled) glEnable(GL_CULL_FACE);
-			}
+		{
+			GLboolean depthTestEnabled = glIsEnabled(GL_DEPTH_TEST);
+			GLboolean cullFaceEnabled = glIsEnabled(GL_CULL_FACE);
 
-			renderer.shdr_pgm_instanced->Use(); // Restore state
+			// Ensure blending is on for UI
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-			// 5. Draw Text / UI (Now via UI namespace)
-			Scene::UI::RenderTextAndCursor(globalECS);
+			glDisable(GL_DEPTH_TEST);
+			glDisable(GL_CULL_FACE);
+			for (const auto& item : screenEntries) DrawEntity(item.entity);
+			if (depthTestEnabled) glEnable(GL_DEPTH_TEST);
+			if (cullFaceEnabled) glEnable(GL_CULL_FACE);
 		}
+
+		renderer.shdr_pgm_instanced->Use(); // Restore state
+
+		// 5. Draw Text / UI (Now via UI namespace)
+		Scene::UI::RenderTextAndCursor(globalECS);
 	}
 
 	void UpdateScene(CrashoutsEngine::ECS& globalECS) {
