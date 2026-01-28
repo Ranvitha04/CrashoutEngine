@@ -38,6 +38,7 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 //#include "tilemapcomponent.h"
 #include "activecomponent.h"
 #include "particleSystem.h"
+#include "spriteAnimation.h"
 //#include "camera.h"
 
 #include <fstream>
@@ -1216,6 +1217,7 @@ namespace Scene {
 
 		// 5. Draw Text / UI (Now via UI namespace)
 		Scene::UI::RenderTextAndCursor(globalECS);
+		Component::RenderSpriteAnimationsECS();
 	}
 
 	void UpdateScene(CrashoutsEngine::ECS& globalECS) {
@@ -1225,5 +1227,6 @@ namespace Scene {
 
 		// Particle Updates (Physics/Lifecycle)
 		Particles::UpdateAllParticles(globalECS);
+		Component::UpdateSpriteAnimationsECS();
 	}
 }

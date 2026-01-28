@@ -31,6 +31,15 @@ std::filesystem::file_time_type MonoManager::s_LastWriteTime{};
 std::string MonoManager::s_AssemblyPath = "";
 bool MonoManager::s_IsManualReloading = false;
 
+MonoClass* MonoManager::GetSerializeFieldClass() {
+	static MonoClass* attrClass = nullptr;
+	if (!attrClass && s_Assembly) {
+		MonoImage* image = mono_assembly_get_image(s_Assembly);
+		attrClass = mono_class_from_name(image, "CrashoutsEngine", "SerializeField");
+	}
+	return attrClass;
+}
+
 namespace CrashoutsEngine::Bindings {
 
 	// 1. The C++ Helper Function

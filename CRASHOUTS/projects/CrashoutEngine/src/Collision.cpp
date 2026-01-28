@@ -740,8 +740,8 @@ namespace Collision {
 			// Project Line
 			f32 lineProj = CEMath::Dot(line.GetWorldP1(), axis);
 			// Line projection on its own normal is a single point (0 thickness)
-			f32 minLine = lineProj;
-			f32 maxLine = lineProj;
+			//f32 minLine = lineProj;
+			//f32 maxLine = lineProj;
 
 			// Calculate MTV
 			float rPoly = (maxPoly - minPoly) * 0.5f;

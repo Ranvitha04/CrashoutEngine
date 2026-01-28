@@ -41,9 +41,9 @@ namespace CrashoutsEngine
 
             Entity other = new Entity(otherID);
 
-            // Check Tag "PTag"
+            // Check Tag "player"
             TagComponent Tag = other.GetComponent<TagComponent>();
-            if (Tag != null && Tag.HasTag("PTag"))
+            if (Tag != null && Tag.HasTag("player"))
             {
                 Collect();
             }
@@ -53,10 +53,10 @@ namespace CrashoutsEngine
         {
             Console.WriteLine("[EnergyBall] Collected!");
 
-            // 1. Give Energy to PTag
-            if (PTagMovement.Instance != null)
+            // 1. Give Energy to player
+            if (PlayerMovement.Instance != null)
             {
-                PTagMovement.Instance.AddEnergy(energyAmount);
+                PlayerMovement.Instance.AddEnergy(energyAmount);
             }
 
             // 2. Disable Interaction

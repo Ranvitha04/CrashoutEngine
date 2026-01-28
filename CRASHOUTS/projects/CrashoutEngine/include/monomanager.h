@@ -47,6 +47,8 @@ public:
 		return s_AssemblyPath;
 	}
 
+	static MonoClass* GetSerializeFieldClass();
+
 private:
 	static MonoDomain* s_Domain;
 	static MonoAssembly* s_Assembly; // store last loaded assembly

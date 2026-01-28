@@ -444,6 +444,7 @@ namespace Component {
             }
         }
     }
+
     void AnimatorPlayOnSprite(CrashoutsEngine::Entity e,
         const std::string& stateName)
     {

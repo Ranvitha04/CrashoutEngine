@@ -113,7 +113,7 @@ namespace CrashoutsEngine
         internal static extern void Audio_PlaySFXFileTagged(string key, string path, bool loop);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        internal static extern void Audio_StopTagged(string key, float fadeDuration);
+        internal static extern void Audio_Stoplayerged(string key, float fadeDuration);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal static extern void Audio_StopMusic();
@@ -178,10 +178,10 @@ namespace CrashoutsEngine
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal static extern void RemoveKeyframeAnimator(uint entityID);
 
-    [MethodImpl(MethodImplOptions.InternalCall)]
-    public static extern void PlayDialogue(uint entityID, string fileName, string dialogueID);
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        public static extern void PlayDialogue(uint entityID, string fileName, string dialogueID);
 
-    [MethodImpl(MethodImplOptions.InternalCall)]
-    public static extern void LoadDialogue(uint entityID);
-}
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        public static extern void LoadDialogue(uint entityID);
+    }
 }

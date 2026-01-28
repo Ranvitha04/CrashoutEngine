@@ -50,6 +50,7 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserv
 #include "particleComponent.h"
 #include "activecomponent.h"
 #include "tagcomponent.h"
+#include "spritecomponent.h"
 
 // FOR GAME GUI
 #include "buttoncomponent.h"
@@ -1688,7 +1689,8 @@ namespace {
 
 						bool isPublic = (flags & MONO_FIELD_ATTR_PUBLIC);
 						bool hasAttr = false;
-						static MonoClass* attrClass = mono_class_from_name(MonoManager::GetImage(), "CrashoutsEngine", "SerializeField");
+						MonoClass* attrClass = MonoManager::GetSerializeFieldClass();
+
 						if (attrClass) {
 							MonoCustomAttrInfo* attrInfo = mono_custom_attrs_from_field(inst.Class, field);
 							if (attrInfo) {
@@ -2631,9 +2633,30 @@ namespace CrashoutsEngine
 
 		void add(ECS& ecs, Entity e) override {
 			using namespace KeyframeUnity;
-			// Just ensure the component exists. Don't add sample data automatically.
-			// Let the user add clips via code or loading.
+
+			// Add the main animator component
 			AddAnimator(ecs, e);
+
+			// Add SpriteSheetComponent with sensible defaults
+			if (!ecs.HasComponent<SpriteSheetComponent>(e)) {
+				SpriteSheetComponent sheet{};
+				sheet.textureAsset = "images/default.png";  // Default texture
+				sheet.cols = 1;
+				sheet.rows = 1;
+				sheet.worldSize = CEVec2(1.0f, 1.0f);
+				ecs.AddComponent<SpriteSheetComponent>(e, sheet);
+			}
+
+			// Add ShapeComponent with sensible defaults
+			if (!ecs.HasComponent<ShapeComponent>(e)) {
+				ShapeComponent shape{};
+				shape.type = ShapeType::Rectangle;
+				shape.color = CEColor(1.0f, 1.0f, 1.0f, 1.0f);
+				shape.isWorldSpace = false;
+				shape.enableTexture = true;
+				shape.textureName = "images/default.png";  // Match sheet asset
+				ecs.AddComponent<ShapeComponent>(e, shape);
+			}
 		}
 
 		void remove(ECS& ecs, Entity e) override {

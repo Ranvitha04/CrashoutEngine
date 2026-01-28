@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 namespace CrashoutsEngine
 {
     [ScriptBehaviour]
-    public class PTagMovement : ScriptBase
+    public class PlayerMovement : ScriptBase
     {
         // --- TUNING VARIABLES ---
         [SerializeField] public float moveSpeed = 200f;
@@ -37,7 +37,7 @@ namespace CrashoutsEngine
         public bool OnWall { get; private set; } = false;
 
         // Singleton Instance
-        public static PTagMovement Instance;
+        public static PlayerMovement Instance;
 
         // Energy Data
         public float CurrentEnergy = 0.0f;
@@ -89,6 +89,7 @@ namespace CrashoutsEngine
 
         public override void Update()
         {
+
             if(isPaused) { return; }
             // 0. HANDLE DEATH / PAUSE
             if (!alive) return;
@@ -183,23 +184,23 @@ namespace CrashoutsEngine
 
         private void UpdateAnimationState(bool isSwitching)
         {
-            string targetState = "pTagIdle";
+            string targetState = "playerIdle";
 
             // PRIORITY 1: Switching
             if (isSwitching)
             {
-                targetState = "pTagSwitch";
+                targetState = "playerSwitch";
             }
             // PRIORITY 2: Airborne (Jump/Fall)
             else if (!IsGrounded)
             {
                 if (rb.LinearVelocity.y > 1.0f)
                 {
-                    targetState = "pTagJump";
+                    targetState = "playerJump";
                 }
                 else if (rb.LinearVelocity.y < -12.5f)
                 {
-                    targetState = "pTagFall";
+                    targetState = "playerFall";
                 }
             }
             // PRIORITY 3: Grounded Movement
@@ -207,11 +208,11 @@ namespace CrashoutsEngine
             {
                 if (Math.Abs(horizontalInput) > 0.01f)
                 {
-                    targetState = "pTagWalk";
+                    targetState = "playerWalk";
                 }
                 else
                 {
-                    targetState = "pTagIdle";
+                    targetState = "playerIdle";
                 }
             }
 
@@ -316,11 +317,11 @@ namespace CrashoutsEngine
                 // var otherTf = other.GetComponent<TransformComponent>();
                 // if (otherTf != null)
                 // {
-                //     float pTagBottom = tf.Position.y - (Math.Abs(tf.Size.y) * 0.5f);
+                //     float playerBottom = tf.Position.y - (Math.Abs(tf.Size.y) * 0.5f);
                 //     float platTop = otherTf.Position.y + (Math.Abs(otherTf.Size.y) * 0.5f);
 
                 //     // If feet are lower than the platform top (minus a small buffer), ignore it
-                //     if (pTagBottom > platTop) 
+                //     if (playerBottom > platTop) 
                 //     {
                 //         return false; // IGNORE COLLISION
                 //     }
@@ -332,7 +333,7 @@ namespace CrashoutsEngine
         }
         
         public void OnTriggerEnter(uint otherEntity) { }
-        public void OnTriggerStay(uint otherEntity) { }
+        public void OnTriggerStay(uint otherEntity) { Debug.Log("isTrigger"); }
         public void OnTriggerExit(uint otherEntity) { }
 
         public void OnCollideEnter(uint otherEntity)
@@ -361,7 +362,7 @@ namespace CrashoutsEngine
             // Hazard Check
             if (Tag != null && (Tag.HasTag("Lava") || Tag.HasTag("Enemy")))
             {
-                Debug.Log("PTag Died");
+                Debug.Log("Player Died");
                 alive = false;
                 // TODO: Trigger Death Anim here?
 
@@ -375,6 +376,7 @@ namespace CrashoutsEngine
         }
         public void OnCollideStay(uint otherEntity)
         {
+            Debug.Log("Is Collide");
             Entity other = new Entity(otherEntity);
             var Tag = other.GetComponent<TagComponent>();
             var otherTf = other.GetComponent<TransformComponent>();

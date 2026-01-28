@@ -14,8 +14,8 @@ public class AudioManager
 
     private AudioManager() {
 
-        pTagMusVol = InternalCalls.Audio_GetMusicVolume();
-        pTagSFXVol = InternalCalls.Audio_GetSFXVolume();
+        playerMusVol = InternalCalls.Audio_GetMusicVolume();
+        playerSFXVol = InternalCalls.Audio_GetSFXVolume();
 
         
         /*RegisterSound(
@@ -35,8 +35,8 @@ public class AudioManager
     // Converted version of your "Sound[]" array
     private Dictionary<string, SoundData> sounds = new Dictionary<string, SoundData>();
         
-    public static float pTagMusVol = 1f;
-    public static float pTagSFXVol = 1f;
+    public static float playerMusVol = 1f;
+    public static float playerSFXVol = 1f;
 
     private class SoundData
     {
@@ -101,7 +101,7 @@ public class AudioManager
     // === Replacing Unity's Stop(name)
     public void Stop(string name, float fadeDuration = 0.5f)
     {
-        InternalCalls.Audio_StopTagged(name, fadeDuration);
+        InternalCalls.Audio_Stoplayerged(name, fadeDuration);
     }
 
     // === Equivalent of MusicStop()
@@ -112,13 +112,13 @@ public class AudioManager
 
     public void MusicVolume(float volume)
     {
-        pTagMusVol = volume;
+        playerMusVol = volume;
         InternalCalls.Audio_SetMusicVolume(volume);
     }
 
     public void SFXVolume(float volume)
     {
-        pTagSFXVol = volume;
+        playerSFXVol = volume;
         InternalCalls.Audio_SetSFXVolume(volume);
     }
 

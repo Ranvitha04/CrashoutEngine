@@ -28,6 +28,7 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 #include "shapebindings.h"
 #include "activecomponent.h"
 #include <mono/metadata/attrdefs.h>
+#include "collidereventmanager.h"
 
 namespace CrashoutsEngine
 {
@@ -366,6 +367,7 @@ namespace CrashoutsEngine
 		// 1. BACKUP STATE
 		std::cout << "[Mono] Backing up script state...\n";
 		GlobalScriptBackup backup = BackupScripts(ecs);
+		CollisionEventManager::GetInstance().Clear();
 
 		// 2. RELOAD DOMAIN
 		// This destroys all GCHandles and MonoObjects

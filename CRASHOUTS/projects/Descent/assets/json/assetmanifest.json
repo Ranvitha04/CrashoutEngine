@@ -1303,6 +1303,42 @@
             "path": "spritesheet\\Rock\\Rock_43.png"
         },
         {
+            "name": "Run spritesheet_00",
+            "path": "spritesheet\\Run spritesheet\\Run spritesheet_00.png"
+        },
+        {
+            "name": "Run spritesheet_01",
+            "path": "spritesheet\\Run spritesheet\\Run spritesheet_01.png"
+        },
+        {
+            "name": "Run spritesheet_02",
+            "path": "spritesheet\\Run spritesheet\\Run spritesheet_02.png"
+        },
+        {
+            "name": "Run spritesheet_03",
+            "path": "spritesheet\\Run spritesheet\\Run spritesheet_03.png"
+        },
+        {
+            "name": "Run spritesheet_04",
+            "path": "spritesheet\\Run spritesheet\\Run spritesheet_04.png"
+        },
+        {
+            "name": "Run spritesheet_05",
+            "path": "spritesheet\\Run spritesheet\\Run spritesheet_05.png"
+        },
+        {
+            "name": "Run spritesheet_06",
+            "path": "spritesheet\\Run spritesheet\\Run spritesheet_06.png"
+        },
+        {
+            "name": "Run spritesheet_07",
+            "path": "spritesheet\\Run spritesheet\\Run spritesheet_07.png"
+        },
+        {
+            "name": "Run spritesheet_08",
+            "path": "spritesheet\\Run spritesheet\\Run spritesheet_08.png"
+        },
+        {
             "name": "Slime spritesheet_00",
             "path": "spritesheet\\Slime spritesheet\\Slime spritesheet_00.png"
         },
