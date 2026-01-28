@@ -177,7 +177,7 @@ namespace Component {
         renderer.SetupBuffersOptimized(pos_vtx.data(), sizeof(pos_vtx),
             clr_vtx.data(), sizeof(clr_vtx),
             idx_vtx.data(), idx_vtx.size(),
-            GL_TRIANGLE_FAN);
+            GL_TRIANGLE_FAN, sizeof(CEColor));
 
         renderer.shdr_pgm->Use();
 
@@ -234,7 +234,7 @@ namespace Component {
         renderer.SetupBuffersOptimized(pos_vtx.data(), sizeof(pos_vtx),
             clr_vtx.data(), sizeof(clr_vtx),
             idx_vtx.data(), idx_vtx.size(),
-            GL_TRIANGLES);
+            GL_TRIANGLES, sizeof(CEColor));
 
         renderer.shdr_pgm->Use();
 

@@ -292,6 +292,8 @@ namespace InstancingSystem {
 		}
 	}
 
+#include "rendering.h" // Ensure ZOrder is available
+
 	/*!
 	@brief Render ECS ducks for the current frame using the duck spritesheet.
 	@details Computes spritesheet frame XY from per-entity animation state; applies rotation, scale, and optional flip.
@@ -304,8 +306,47 @@ namespace InstancingSystem {
 		}
 
 		auto& arr = globalECS->GetComponentArray<Component::SpriteAnimComponent>();
+		
+		// Collect entities for sorting
+		struct DuckRenderItem {
+			CrashoutsEngine::Entity id;
+			Component::RenderLayer layer;
+			int z;
+			float y;
+		};
+		std::vector<DuckRenderItem> sortedDucks;
+		sortedDucks.reserve(arr.indexToEntity.size());
+
 		for (size_t i = 0; i < arr.indexToEntity.size(); ++i) {
 			auto id = arr.indexToEntity[i];
+			auto* tf = globalECS->GetComponent<Component::TransformComponent>(id);
+			if (tf) {
+				// Default values if ZOrder is missing
+				Component::RenderLayer layer = Component::RenderLayer::EffectsAndItems; // Default layer for ducks?
+				int zIndex = 0;
+				float sortY = tf->position.y;
+
+				if (globalECS->HasComponent<Component::ZOrder>(id)) {
+					auto* zOrder = globalECS->GetComponent<Component::ZOrder>(id);
+					layer = zOrder->layer;
+					zIndex = zOrder->z;
+					// Uniform Y-sorting for all layers
+					sortY = tf->position.y;
+				}
+
+				sortedDucks.push_back({ id, layer, zIndex, sortY });
+			}
+		}
+
+		// Robust Tuple Sort: Layer > Z > Y
+		std::sort(sortedDucks.begin(), sortedDucks.end(), [](const DuckRenderItem& a, const DuckRenderItem& b) {
+			if (a.layer != b.layer) return static_cast<int>(a.layer) < static_cast<int>(b.layer);
+			if (a.z != b.z) return a.z < b.z;
+			return a.y < b.y;
+		});
+
+		for (const auto& item : sortedDucks) {
+			auto id = item.id;
 			auto* tf = globalECS->GetComponent<Component::TransformComponent>(id);
 			auto* anim = globalECS->GetComponent<Component::SpriteAnimComponent>(id);
 			auto* sheet = globalECS->GetComponent<Component::SpriteSheetComponent>(id);
@@ -1362,12 +1403,47 @@ namespace InstancingSystem {
 		ClearRectangleData();
 
 		auto& shapeArray = globalECS->GetComponentArray<Component::ShapeComponent>();
+		
+		struct RectSortItem {
+			CrashoutsEngine::Entity id;
+			Component::RenderLayer layer;
+			int z;
+			float y;
+		};
+		std::vector<RectSortItem> sortedItems;
+		sortedItems.reserve(shapeArray.indexToEntity.size());
+
 		for (const auto& id : shapeArray.indexToEntity) {
 			auto* sc = globalECS->GetComponent<Component::ShapeComponent>(id);
 			auto* tf = globalECS->GetComponent<Component::TransformComponent>(id);
 			if (!sc || !tf) continue;
 			if (sc->type != Component::ShapeType::Rectangle) continue;
 			if (previewOnly && !sc->preview) continue;
+
+			Component::RenderLayer layer = Component::RenderLayer::WorldGeometry;
+			int zIndex = 0;
+			if (globalECS->HasComponent<Component::ZOrder>(id)) {
+				auto* zOrder = globalECS->GetComponent<Component::ZOrder>(id);
+				layer = zOrder->layer;
+				zIndex = zOrder->z;
+			}
+
+			sortedItems.push_back({ id, layer, zIndex, tf->position.y });
+		}
+
+		// Sort: Layer > Z > Y
+		std::sort(sortedItems.begin(), sortedItems.end(), [](const RectSortItem& a, const RectSortItem& b) {
+			if (a.layer != b.layer) return static_cast<int>(a.layer) < static_cast<int>(b.layer);
+			if (a.z != b.z) return a.z < b.z;
+			return a.y < b.y;
+		});
+
+		// Populate global arrays in sorted order
+		for (const auto& item : sortedItems) {
+			auto id = item.id;
+			auto* sc = globalECS->GetComponent<Component::ShapeComponent>(id);
+			auto* tf = globalECS->GetComponent<Component::TransformComponent>(id);
+			
 			gInstPositions.emplace_back(tf->position);
 			gInstColors.emplace_back(CEColor{ sc->color.r * (1.f / 255.f), sc->color.g * (1.f / 255.f), sc->color.b * (1.f / 255.f) });
 			gInstRotations.emplace_back(tf->rotation);
@@ -1381,12 +1457,16 @@ namespace InstancingSystem {
 		EnsureGlobalECSInitialized();
 		if (!globalECS) return;
 		ClearRectangleData();
-		gInstPositions.reserve(ids.size());
-		gInstColors.reserve(ids.size());
-		gInstRotations.reserve(ids.size());
-		gInstScales.reserve(ids.size());
-		gInstWidths.reserve(ids.size());
-		gInstHeights.reserve(ids.size());
+		
+		struct RectSortItem {
+			CrashoutsEngine::Entity id;
+			Component::RenderLayer layer;
+			int z;
+			float y;
+		};
+		std::vector<RectSortItem> sortedItems;
+		sortedItems.reserve(ids.size());
+
 		for (auto id : ids) {
 			auto* sc = globalECS->GetComponent<Component::ShapeComponent>(id);
 			auto* tf = globalECS->GetComponent<Component::TransformComponent>(id);
@@ -1394,6 +1474,37 @@ namespace InstancingSystem {
 			if (sc->type != Component::ShapeType::Rectangle) continue;
 			if (previewOnly && !sc->preview) continue;
 			if (tf->size.x <= 0.f || tf->size.y <= 0.f) continue;
+
+			Component::RenderLayer layer = Component::RenderLayer::WorldGeometry;
+			int zIndex = 0;
+			if (globalECS->HasComponent<Component::ZOrder>(id)) {
+				auto* zOrder = globalECS->GetComponent<Component::ZOrder>(id);
+				layer = zOrder->layer;
+				zIndex = zOrder->z;
+			}
+
+			sortedItems.push_back({ id, layer, zIndex, tf->position.y });
+		}
+
+		// Sort: Layer > Z > Y
+		std::sort(sortedItems.begin(), sortedItems.end(), [](const RectSortItem& a, const RectSortItem& b) {
+			if (a.layer != b.layer) return static_cast<int>(a.layer) < static_cast<int>(b.layer);
+			if (a.z != b.z) return a.z < b.z;
+			return a.y < b.y;
+		});
+
+		gInstPositions.reserve(sortedItems.size());
+		gInstColors.reserve(sortedItems.size());
+		gInstRotations.reserve(sortedItems.size());
+		gInstScales.reserve(sortedItems.size());
+		gInstWidths.reserve(sortedItems.size());
+		gInstHeights.reserve(sortedItems.size());
+
+		for (const auto& item : sortedItems) {
+			auto id = item.id;
+			auto* sc = globalECS->GetComponent<Component::ShapeComponent>(id);
+			auto* tf = globalECS->GetComponent<Component::TransformComponent>(id);
+
 			gInstPositions.emplace_back(tf->position);
 			gInstColors.emplace_back(CEColor{ sc->color.r * (1.f / 255.f), sc->color.g * (1.f / 255.f), sc->color.b * (1.f / 255.f) });
 			gInstRotations.emplace_back(tf->rotation);
@@ -1406,25 +1517,70 @@ namespace InstancingSystem {
 	void RenderInstancedCirclesFromECS(bool previewOnly, int segments, const InstancedParams& params) {
 		EnsureGlobalECSInitialized();
 		if (!globalECS) return;
-		std::vector<CEVec3> pos;
-		std::vector<CEColor> col;
-		std::vector<float> rot;
-		std::vector<float> sca;
-		std::vector<float> rad;
+		
 		auto& shapeArray = globalECS->GetComponentArray<Component::ShapeComponent>();
+		
+		struct CircSortItem {
+			CrashoutsEngine::Entity id;
+			Component::RenderLayer layer;
+			int z;
+			float y;
+		};
+		std::vector<CircSortItem> sortedItems;
+		sortedItems.reserve(shapeArray.indexToEntity.size());
+
 		for (const auto& id : shapeArray.indexToEntity) {
 			auto* sc = globalECS->GetComponent<Component::ShapeComponent>(id);
 			auto* tf = globalECS->GetComponent<Component::TransformComponent>(id);
 			if (!sc || !tf) continue;
 			if (sc->type != Component::ShapeType::Circle) continue;
 			if (previewOnly && !sc->preview) continue;
+
+			Component::RenderLayer layer = Component::RenderLayer::WorldGeometry;
+			int zIndex = 0;
+			if (globalECS->HasComponent<Component::ZOrder>(id)) {
+				auto* zOrder = globalECS->GetComponent<Component::ZOrder>(id);
+				layer = zOrder->layer;
+				zIndex = zOrder->z;
+			}
+
+			sortedItems.push_back({ id, layer, zIndex, tf->position.y });
+		}
+
+		if (sortedItems.empty()) return;
+
+		// Sort: Layer > Z > Y
+		std::sort(sortedItems.begin(), sortedItems.end(), [](const CircSortItem& a, const CircSortItem& b) {
+			if (a.layer != b.layer) return static_cast<int>(a.layer) < static_cast<int>(b.layer);
+			if (a.z != b.z) return a.z < b.z;
+			return a.y < b.y;
+		});
+
+		std::vector<CEVec3> pos;
+		std::vector<CEColor> col;
+		std::vector<float> rot;
+		std::vector<float> sca;
+		std::vector<float> rad;
+		
+		size_t count = sortedItems.size();
+		pos.reserve(count);
+		col.reserve(count);
+		rot.reserve(count);
+		sca.reserve(count);
+		rad.reserve(count);
+
+		for (const auto& item : sortedItems) {
+			auto id = item.id;
+			auto* sc = globalECS->GetComponent<Component::ShapeComponent>(id);
+			auto* tf = globalECS->GetComponent<Component::TransformComponent>(id);
+
 			pos.emplace_back(tf->position);
 			col.emplace_back(sc->color);
 			rot.emplace_back(tf->rotation);
 			sca.emplace_back(1.f);
 			rad.emplace_back(tf->size.x);
 		}
-		if (pos.empty()) return;
+
 		RenderInstancedCirclesBatch(
 			pos.data(),
 			col.data(),
@@ -1441,29 +1597,68 @@ namespace InstancingSystem {
 	void RenderInstancedCirclesFromEntities(const std::vector<CrashoutsEngine::Entity>& ids, bool previewOnly, int segments, const InstancedParams& params) {
 		EnsureGlobalECSInitialized();
 		if (!globalECS) return;
-		std::vector<CEVec3> pos;
-		std::vector<CEColor> col;
-		std::vector<float> rot;
-		std::vector<float> sca;
-		std::vector<float> rad;
-		pos.reserve(ids.size());
-		col.reserve(ids.size());
-		rot.reserve(ids.size());
-		sca.reserve(ids.size());
-		rad.reserve(ids.size());
+		
+		struct CircSortItem {
+			CrashoutsEngine::Entity id;
+			Component::RenderLayer layer;
+			int z;
+			float y;
+		};
+		std::vector<CircSortItem> sortedItems;
+		sortedItems.reserve(ids.size());
+
 		for (auto id : ids) {
 			auto* sc = globalECS->GetComponent<Component::ShapeComponent>(id);
 			auto* tf = globalECS->GetComponent<Component::TransformComponent>(id);
 			if (!sc || !tf) continue;
 			if (sc->type != Component::ShapeType::Circle) continue;
 			if (previewOnly && !sc->preview) continue;
+
+			Component::RenderLayer layer = Component::RenderLayer::WorldGeometry;
+			int zIndex = 0;
+			if (globalECS->HasComponent<Component::ZOrder>(id)) {
+				auto* zOrder = globalECS->GetComponent<Component::ZOrder>(id);
+				layer = zOrder->layer;
+				zIndex = zOrder->z;
+			}
+
+			sortedItems.push_back({ id, layer, zIndex, tf->position.y });
+		}
+
+		if (sortedItems.empty()) return;
+
+		// Sort: Layer > Z > Y
+		std::sort(sortedItems.begin(), sortedItems.end(), [](const CircSortItem& a, const CircSortItem& b) {
+			if (a.layer != b.layer) return static_cast<int>(a.layer) < static_cast<int>(b.layer);
+			if (a.z != b.z) return a.z < b.z;
+			return a.y < b.y;
+		});
+
+		std::vector<CEVec3> pos;
+		std::vector<CEColor> col;
+		std::vector<float> rot;
+		std::vector<float> sca;
+		std::vector<float> rad;
+		
+		size_t count = sortedItems.size();
+		pos.reserve(count);
+		col.reserve(count);
+		rot.reserve(count);
+		sca.reserve(count);
+		rad.reserve(count);
+
+		for (const auto& item : sortedItems) {
+			auto id = item.id;
+			auto* sc = globalECS->GetComponent<Component::ShapeComponent>(id);
+			auto* tf = globalECS->GetComponent<Component::TransformComponent>(id);
+
 			pos.emplace_back(tf->position);
 			col.emplace_back(sc->color);
 			rot.emplace_back(tf->rotation);
 			sca.emplace_back(1.f);
 			rad.emplace_back(tf->size.x);
 		}
-		if (pos.empty()) return;
+
 		RenderInstancedCirclesBatch(
 			pos.data(),
 			col.data(),

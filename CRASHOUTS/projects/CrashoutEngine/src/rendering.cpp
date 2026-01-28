@@ -49,6 +49,9 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 #include <glm/gtc/matrix_transform.hpp>
 #include "settings.h"
 #include "shapes.h" // Added for FlushDebugQueue
+#include "spriteAnimation.h"
+#include "transformcomponent.h"
+#include <algorithm>
 
 namespace Component {
 
@@ -391,18 +394,18 @@ namespace Component {
             CEVec3(-0.5f, 0.5f, 0.0f)   // Top-left
         };
 
-        std::array<CEVec3, 4> clr_vtx{
-            CEVec3(1.0f, 1.0f, 1.0f), // white
-            CEVec3(1.0f, 0.0f, 0.0f), // red
-            CEVec3(0.0f, 1.0f, 0.0f), // green
-            CEVec3(0.0f, 0.0f, 1.0f)  // blue
+        std::array<CEColor, 4> clr_vtx{
+           CEColor(0.0f, 0.0f, 0.0f, 0.0f), // red (BL)
+           CEColor(0.0f, 0.0f, 0.0f, 0.0f), // red (BR)
+           CEColor(0.0f, 0.0f, 0.0f, 0.0f), // red (TR)
+           CEColor(0.0f, 0.0f, 0.0f, 0.0f)  // red (TL)
         };
 
         GLsizei position_data_offset = 0;
         GLsizei position_attribute_size = sizeof(CEVec3);
         GLsizei position_data_size = position_attribute_size * static_cast<GLsizei>(pos_vtx.size());
         GLsizei color_data_offset = position_data_size;
-        GLsizei color_attribute_size = sizeof(CEVec3);
+        GLsizei color_attribute_size = sizeof(CEColor);
         GLsizei color_data_size = color_attribute_size * static_cast<GLsizei>(clr_vtx.size());
 
         // Create and populate VBO
@@ -423,7 +426,7 @@ namespace Component {
         // Color attribute
         glEnableVertexArrayAttrib(vaoid, 1);
         glVertexArrayVertexBuffer(vaoid, 1, vbo_hdl, color_data_offset, color_attribute_size);
-        glVertexArrayAttribFormat(vaoid, 1, 3, GL_FLOAT, GL_FALSE, 0);
+        glVertexArrayAttribFormat(vaoid, 1, 4, GL_FLOAT, GL_FALSE, 0);
         glVertexArrayAttribBinding(vaoid, 1, 1);
 
         primitive_type = GL_TRIANGLE_FAN;
@@ -602,8 +605,8 @@ namespace Component {
         // Color attribute (location 1)
         glEnableVertexArrayAttrib(vaoid, 1);
         // Binds buffer 'vbo_hdl' to VAO binding point 1, with the *correct* offset for this frame
-        glVertexArrayVertexBuffer(vaoid, 1, vbo_hdl, vertex_size, sizeof(CEVec3));
-        glVertexArrayAttribFormat(vaoid, 1, 3, GL_FLOAT, GL_FALSE, 0);
+        glVertexArrayVertexBuffer(vaoid, 1, vbo_hdl, vertex_size, sizeof(CEColor));
+        glVertexArrayAttribFormat(vaoid, 1, 4, GL_FLOAT, GL_FALSE, 0);
         glVertexArrayAttribBinding(vaoid, 1, 1);
 
 
@@ -705,7 +708,8 @@ namespace Component {
         // Color attribute (location 1)
         glEnableVertexArrayAttrib(vaoid, 1);
         glVertexArrayVertexBuffer(vaoid, 1, vbo_hdl, vertex_size, static_cast<GLsizei>(color_stride)); // Correct offset
-        glVertexArrayAttribFormat(vaoid, 1, 3, GL_FLOAT, GL_FALSE, 0);
+        GLint color_components = (color_stride == sizeof(CEColor)) ? 4 : 3;
+        glVertexArrayAttribFormat(vaoid, 1, color_components, GL_FLOAT, GL_FALSE, 0);
         glVertexArrayAttribBinding(vaoid, 1, 1);
 
         // Texture coordinate attribute (location 2)
@@ -839,7 +843,8 @@ namespace Component {
         glEnableVertexArrayAttrib(vaoid, 1);
         // Binds buffer 'vbo_hdl' to VAO binding point 1, with the *correct* offset for this frame
         glVertexArrayVertexBuffer(vaoid, 1, vbo_hdl, vertex_size, static_cast<GLsizei>(color_stride));
-        glVertexArrayAttribFormat(vaoid, 1, 3, GL_FLOAT, GL_FALSE, 0);
+        GLint tex_color_components = (color_stride == sizeof(CEColor)) ? 4 : 3;
+        glVertexArrayAttribFormat(vaoid, 1, tex_color_components, GL_FLOAT, GL_FALSE, 0);
         glVertexArrayAttribBinding(vaoid, 1, 1);
 
         // Texture coordinate attribute (location 2)
@@ -897,8 +902,8 @@ namespace Component {
 
         // Color attribute (location 1)
         glEnableVertexArrayAttrib(vaoid, 1);
-        glVertexArrayVertexBuffer(vaoid, 1, vbo_hdl, vertex_size, sizeof(CEVec3));
-        glVertexArrayAttribFormat(vaoid, 1, 3, GL_FLOAT, GL_FALSE, 0);
+        glVertexArrayVertexBuffer(vaoid, 1, vbo_hdl, vertex_size, sizeof(CEColor));
+        glVertexArrayAttribFormat(vaoid, 1, 4, GL_FLOAT, GL_FALSE, 0);
         glVertexArrayAttribBinding(vaoid, 1, 1);
 
         // Texture coordinate attribute (location 2)
@@ -994,5 +999,111 @@ namespace Component {
             Shapes::CreateCircleOutline(circle.size, circle.position, 32, circle.color, circle.isWorldSpace);
         }
         debugCircles.clear();
+    }
+
+        /*!
+        @brief  Calculate sortable depth for 2D painter-style rendering.
+        @param  position Entity world position (x,y,z).
+        @param  z        ZOrder component (layer and z-index).
+        @param  debug    Optional debug override to offset depth.
+        @return Depth value used for global sorting (lower drawn first).
+
+        @details
+        Split logic:
+        - Background/World layers (0–2): Layer > Z > Y (prioritize manual Z over Y)
+        - Dynamic layers (3–4): Layer > Y > Z (prioritize Y for painter’s algorithm)
+        */
+        float Rendering::ComputeDepth(const CEVec3& position, const ZOrder& z, const DebugZOverride* debug) {
+        // Hybrid Sorting with Split Logic:
+        // Background/World (Layers 0-2): Layer > Z > Y
+        //    - Prioritize Z (manual layering) over Y (position)
+        //    - Solves "Static Background Z not updating" (Z was previously overshadowed by Y)
+        // Dynamic Entities (Layers 3-4): Layer > Y > Z
+        //    - Prioritize Y (Painter's Algorithm) over Z (fine tuning)
+        //    - Ensures correct perspective for moving objects
+        
+        float effectiveZ = static_cast<float>(z.z) + position.z;
+        float baseDepth = 0.0f;
+
+        if (z.layer <= RenderLayer::WorldGeometry) {
+             // Static/World: Z is dominant (x1000)
+             baseDepth = static_cast<int>(z.layer) * 1000000.0f 
+                       + effectiveZ * 1000.0f 
+                       + position.y;
+        } else {
+             // Dynamic: Y is dominant (x1000)
+             baseDepth = static_cast<int>(z.layer) * 1000000.0f 
+                       + position.y * 1000.0f 
+                       + effectiveZ;
+        }
+
+        if (debug) {
+            baseDepth += static_cast<float>(debug->offset);
+        }
+        return baseDepth;
+    }
+
+    /*!
+    @brief  Render all entities sorted by computed depth.
+    @param  registry     ECS registry to gather entities.
+    @param  drawCallback User-supplied draw function per entity.
+
+    @details
+    - Collects entities with ZOrder and TransformComponent
+    - Computes depth via ComputeDepth
+    - Sorts ascending (painter’s algorithm)
+    - Disables GL depth/cull during sorted draw to preserve order
+    */
+    void Rendering::RenderAllSorted(CrashoutsEngine::ECS& registry, std::function<void(CrashoutsEngine::Entity)> drawCallback) {
+        auto& zOrders = registry.GetComponentArray<ZOrder>();
+
+        // Use RenderItem from rendering.h
+        std::vector<RenderItem> renderList;
+        renderList.reserve(zOrders.dense.size());
+
+        for (size_t i = 0; i < zOrders.dense.size(); ++i) {
+            CrashoutsEngine::Entity e = zOrders.indexToEntity[i];
+
+            if (!registry.HasComponent<TransformComponent>(e)) continue;
+
+            auto* t = registry.GetComponent<TransformComponent>(e);
+            const auto& z = zOrders.dense[i];
+            
+            // Check for optional debug override
+            const DebugZOverride* debug = nullptr;
+            if (registry.HasComponent<DebugZOverride>(e)) {
+                debug = registry.GetComponent<DebugZOverride>(e);
+            }
+
+            float depth = ComputeDepth(t->position, z, debug);
+            renderList.push_back({ e, depth });
+        }
+
+        // Sort globally by depth (Painter's Algorithm: Draw lowest depth first)
+        std::sort(renderList.begin(), renderList.end(), [](const RenderItem& a, const RenderItem& b) {
+            return a.depth < b.depth;
+        });
+
+        // For 2D painter-style ordering, disable depth testing during the sorted draw
+        // so GPU depth writes do not override the intended order.
+        GLboolean depthEnabled = glIsEnabled(GL_DEPTH_TEST);
+        if (depthEnabled) {
+            glDisable(GL_DEPTH_TEST);
+        }
+        GLboolean cullEnabled = glIsEnabled(GL_CULL_FACE);
+        if (cullEnabled) {
+            glDisable(GL_CULL_FACE);
+        }
+
+        for (const auto& item : renderList) {
+            drawCallback(item.id);
+        }
+
+        if (cullEnabled) {
+            glEnable(GL_CULL_FACE);
+        }
+        if (depthEnabled) {
+            glEnable(GL_DEPTH_TEST);
+        }
     }
 }

@@ -34,6 +34,14 @@
                 },
                 "centered": true,
                 "isworldspace": true
+            },
+            "zorder": {
+                "layer": 0,
+                "z": 0
+            },
+            "zorder": {
+                "layer": 0,
+                "z": 0
             }
         }
     ],

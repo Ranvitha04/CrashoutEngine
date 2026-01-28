@@ -89,6 +89,14 @@
                     "y": 0.0,
                     "z": 0.0
                 }
+            },
+            "zorder": {
+                "layer": 0,
+                "z": 0
+            },
+            "zorder": {
+                "layer": 0,
+                "z": 0
             }
         },
         {
@@ -119,6 +127,14 @@
                     "x": 0.0,
                     "y": 0.0
                 }
+            },
+            "zorder": {
+                "layer": 0,
+                "z": 0
+            },
+            "zorder": {
+                "layer": 0,
+                "z": 0
             }
         },
         {
@@ -206,6 +222,14 @@
                     "y": 0.0,
                     "z": 0.0
                 }
+            },
+            "zorder": {
+                "layer": 0,
+                "z": 0
+            },
+            "zorder": {
+                "layer": 0,
+                "z": 0
             }
         },
         {
@@ -298,6 +322,14 @@
                     "y": 0.0,
                     "z": 0.0
                 }
+            },
+            "zorder": {
+                "layer": 0,
+                "z": 0
+            },
+            "zorder": {
+                "layer": 0,
+                "z": 0
             }
         },
         {
@@ -389,6 +421,14 @@
                     "y": 0.0,
                     "z": 0.0
                 }
+            },
+            "zorder": {
+                "layer": 0,
+                "z": 0
+            },
+            "zorder": {
+                "layer": 0,
+                "z": 0
             }
         },
         {
@@ -480,6 +520,14 @@
                     "y": 0.0,
                     "z": 0.0
                 }
+            },
+            "zorder": {
+                "layer": 0,
+                "z": 0
+            },
+            "zorder": {
+                "layer": 0,
+                "z": 0
             }
         },
         {
@@ -670,6 +718,14 @@
                     "y": 0.0,
                     "z": 0.0
                 }
+            },
+            "zorder": {
+                "layer": 0,
+                "z": 0
+            },
+            "zorder": {
+                "layer": 0,
+                "z": 0
             }
         },
         {
@@ -769,6 +825,14 @@
                     "y": 0.0,
                     "z": 0.0
                 }
+            },
+            "zorder": {
+                "layer": 0,
+                "z": 0
+            },
+            "zorder": {
+                "layer": 0,
+                "z": 0
             }
         },
         {
@@ -860,6 +924,14 @@
                     "y": 0.0,
                     "z": 0.0
                 }
+            },
+            "zorder": {
+                "layer": 0,
+                "z": 0
+            },
+            "zorder": {
+                "layer": 0,
+                "z": 0
             }
         },
         {
@@ -978,6 +1050,14 @@
                         }
                     }
                 ]
+            },
+            "zorder": {
+                "layer": 0,
+                "z": 0
+            },
+            "zorder": {
+                "layer": 0,
+                "z": 0
             }
         },
         {
@@ -1119,6 +1199,14 @@
                     "z": 0.0,
                     "w": 0.5
                 }
+            },
+            "zorder": {
+                "layer": 0,
+                "z": 0
+            },
+            "zorder": {
+                "layer": 0,
+                "z": 0
             }
         },
         {
@@ -1187,6 +1275,14 @@
                         }
                     }
                 ]
+            },
+            "zorder": {
+                "layer": 0,
+                "z": 0
+            },
+            "zorder": {
+                "layer": 0,
+                "z": 0
             }
         },
         {
@@ -1206,6 +1302,10 @@
                     "x": 1.0,
                     "y": 1.0
                 }
+            },
+            "zorder": {
+                "layer": 0,
+                "z": 0
             },
             "particle": {
                 "isEmitting": true,
@@ -1267,6 +1367,10 @@
                     "x": 1.0,
                     "y": 1.0
                 }
+            },
+            "zorder": {
+                "layer": 0,
+                "z": 0
             }
         },
         {
@@ -1286,6 +1390,197 @@
                     "x": 1.0,
                     "y": 1.0
                 }
+            },
+            "zorder": {
+                "layer": 0,
+                "z": 0
+            },
+            "zorder": {
+                "layer": 0,
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "Tex_bg colour",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -10.012998580932618,
+                    "y": 12.12614917755127,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 50.0,
+                    "y": 50.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "bg colour",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "zorder": {
+                "layer": 0,
+                "z": 3
+            },
+            "zorder": {
+                "layer": 0,
+                "z": 3
+            }
+        },
+        {
+            "active": true,
+            "name": "Tex_bg 1 pillar",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -14.304291725158692,
+                    "y": 12.776333808898926,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 50.0,
+                    "y": 50.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "bg 1 pillar",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "zorder": {
+                "layer": 0,
+                "z": 0
+            },
+            "zorder": {
+                "layer": 0,
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "Tex_bg2 base",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -11.703516006469727,
+                    "y": 11.345900535583496,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 50.0,
+                    "y": 50.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "bg2 base",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "zorder": {
+                "layer": 0,
+                "z": -1
+            },
+            "zorder": {
+                "layer": 0,
+                "z": -1
             }
         },
         {
