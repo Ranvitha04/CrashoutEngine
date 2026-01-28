@@ -38,37 +38,37 @@ namespace CrashoutsEngine
             if (stepOn) return;
 
             Entity other = new Entity(otherEntityID);
-            var layer = other.GetComponent<LayerComponent>();
+            var Tag = other.GetComponent<TagComponent>();
 
-            if (layer == null) return;
+            if (Tag == null) return;
 
             bool isValidTrigger = false;
 
             // --- CHECK 1: IS IT AN ENEMY? ---
-            if (layer.HasLayer("Enemy"))
+            if (Tag.HasTag("Enemy"))
             {
                 Debug.Log("Enemy stepped on plate.");
                 isValidTrigger = true;
             }
-            // --- CHECK 2: IS IT THE PLAYER? ---
-            else if (layer.HasLayer("Player"))
+            // --- CHECK 2: IS IT THE PTag? ---
+            else if (Tag.HasTag("PTag"))
             {
                 var otherRb = other.GetComponent<RigidBodyComponent>();
 
-                // We need to access the Player Singleton to know what "Normal" mass is.
+                // We need to access the PTag Singleton to know what "Normal" mass is.
                 // We also check if the colliding object actually has a Rigidbody to read mass from.
-                if (otherRb != null && PlayerMovement.Instance != null)
+                if (otherRb != null && PTagMovement.Instance != null)
                 {
-                    // Check if current mass is greater than or equal to the Normal Mass defined in PlayerMovement
+                    // Check if current mass is greater than or equal to the Normal Mass defined in PTagMovement
                     // (Using -0.1f buffer for floating point safety)
-                    if (otherRb.Mass >= (PlayerMovement.Instance.normalMass - 0.1f))
+                    if (otherRb.Mass >= (PTagMovement.Instance.normalMass - 0.1f))
                     {
-                        Debug.Log("Player (Heavy) stepped on plate.");
+                        Debug.Log("PTag (Heavy) stepped on plate.");
                         isValidTrigger = true;
                     }
                     else
                     {
-                        Debug.Log("Player (Light) stepped on plate - Not heavy enough!");
+                        Debug.Log("PTag (Light) stepped on plate - Not heavy enough!");
                     }
                 }
             }
@@ -96,7 +96,7 @@ namespace CrashoutsEngine
         public void OnCollideExit(uint otherEntityID)
         {
             // Note: Currently your plate logic is "One Way" (it stays down).
-            // If you want it to rise up when the player/enemy leaves, 
+            // If you want it to rise up when the pTag/enemy leaves, 
             // you would add logic here to decrement _targetScript.PlatesActive
             // and reset stepOn = false.
         }

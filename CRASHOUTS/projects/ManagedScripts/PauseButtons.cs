@@ -9,7 +9,7 @@ namespace CrashoutsEngine
         private uint _pauseScreenID = 0;
         private bool _isPaused = false;
 
-        PlayerMovement playerMovement;
+        PTagMovement pTagMovement;
 
         public override void Start()
         {
@@ -25,7 +25,7 @@ namespace CrashoutsEngine
                 Console.WriteLine("[Error] PauseButtons could not find 'PauseScreen' entity!");
             }
 
-            playerMovement = PlayerMovement.Instance;
+            pTagMovement = PTagMovement.Instance;
         }
 
         public override void Update()
@@ -72,7 +72,7 @@ namespace CrashoutsEngine
 
         void SetPauseMenu(bool show)
         {
-            if(playerMovement != null) playerMovement.isPaused = show;
+            if(pTagMovement != null) pTagMovement.isPaused = show;
             // 4. Safety Check: Make sure we actually found the screen
             if (_pauseScreenID == 0) return;
 

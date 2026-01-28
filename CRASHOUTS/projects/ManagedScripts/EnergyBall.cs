@@ -41,9 +41,9 @@ namespace CrashoutsEngine
 
             Entity other = new Entity(otherID);
 
-            // Check Layer "Player"
-            LayerComponent layer = other.GetComponent<LayerComponent>();
-            if (layer != null && layer.HasLayer("Player"))
+            // Check Tag "PTag"
+            TagComponent Tag = other.GetComponent<TagComponent>();
+            if (Tag != null && Tag.HasTag("PTag"))
             {
                 Collect();
             }
@@ -53,10 +53,10 @@ namespace CrashoutsEngine
         {
             Console.WriteLine("[EnergyBall] Collected!");
 
-            // 1. Give Energy to Player
-            if (PlayerMovement.Instance != null)
+            // 1. Give Energy to PTag
+            if (PTagMovement.Instance != null)
             {
-                PlayerMovement.Instance.AddEnergy(energyAmount);
+                PTagMovement.Instance.AddEnergy(energyAmount);
             }
 
             // 2. Disable Interaction
@@ -67,7 +67,7 @@ namespace CrashoutsEngine
             if (_rb != null)
             {
                 // Assuming SetDynamic toggles simulation/physics response
-                // If this method isn't exposed, you might just want to move it or change layers
+                // If this method isn't exposed, you might just want to move it or change Tags
                 // But based on your code:
                 _rb.SetDynamic(false);
             }

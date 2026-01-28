@@ -21,17 +21,17 @@ namespace CrashoutsEngine
         float maxDrop = 50.0f;       // Sink depth
 
         private TransformComponent transform;
-        private TransformComponent playerTf;
-        private RigidBodyComponent playerRb;
+        private TransformComponent pTagTf;
+        private RigidBodyComponent pTagRb;
 
-        private bool playerOnBoard = false;
+        private bool pTagOnBoard = false;
         private bool movingForward = true;
 
         private CEVec3 startPos;
         private CEVec3 endPos;
 
         private float currentYOffset = 0.0f;
-        PlayerMovement playerScript;
+        PTagMovement pTagScript;
 
         public override void Start()
         {
@@ -59,40 +59,40 @@ namespace CrashoutsEngine
                 }
             }
 
-            playerOnBoard = false;
+            pTagOnBoard = false;
             currentYOffset = 0.0f;
-            playerScript = PlayerMovement.Instance;
+            pTagScript = PTagMovement.Instance;
         }
 
         public void OnTriggerEnter(uint otherEntityID)
         {
             Entity other = new Entity(otherEntityID);
-            var layer = other.GetComponent<LayerComponent>();
+            var Tag = other.GetComponent<TagComponent>();
 
-            if (layer != null && layer.HasLayer("Player"))
+            if (Tag != null && Tag.HasTag("PTag"))
             {
-                playerTf = other.GetComponent<TransformComponent>();
-                playerRb = other.GetComponent<RigidBodyComponent>();
-                playerOnBoard = true;
+                pTagTf = other.GetComponent<TransformComponent>();
+                pTagRb = other.GetComponent<RigidBodyComponent>();
+                pTagOnBoard = true;
             }
         }
 
         public void OnTriggerExit(uint otherEntityID)
         {
             Entity other = new Entity(otherEntityID);
-            var layer = other.GetComponent<LayerComponent>();
+            var Tag = other.GetComponent<TagComponent>();
 
-            if (layer != null && layer.HasLayer("Player"))
+            if (Tag != null && Tag.HasTag("PTag"))
             {
-                playerOnBoard = false;
-                playerTf = null;
-                playerRb = null;
+                pTagOnBoard = false;
+                pTagTf = null;
+                pTagRb = null;
             }
         }
 
         public override void Update()
         {
-            if(playerScript != null && playerScript.isPaused) { return; }
+            if(pTagScript != null && pTagScript.isPaused) { return; }
             if (transform == null) return;
 
             float dt = (float)Time.DT;
@@ -152,7 +152,7 @@ namespace CrashoutsEngine
             // 2. Weight Logic (Sinking)
             // ---------------------------------------------------------
             // CHANGED: Only apply sinking if we are in Horizontal Mode (MoveRight == true).
-            // If moving Up/Down automatically, we ignore the player's mass.
+            // If moving Up/Down automatically, we ignore the pTag's mass.
 
             float totalY = nextY;
 
@@ -160,9 +160,9 @@ namespace CrashoutsEngine
             {
                 float targetYOffset = 0.0f;
 
-                if (playerOnBoard && playerRb != null && PlayerMovement.Instance != null)
+                if (pTagOnBoard && pTagRb != null && PTagMovement.Instance != null)
                 {
-                    if (playerRb.Mass >= (PlayerMovement.Instance.normalMass - 0.1f))
+                    if (pTagRb.Mass >= (PTagMovement.Instance.normalMass - 0.1f))
                     {
                         targetYOffset = -maxDrop;
                     }
@@ -190,17 +190,17 @@ namespace CrashoutsEngine
             transform.Position = new CEVec3(nextX, totalY, transform.Position.z);
 
             // ---------------------------------------------------------
-            // 4. Sync Player Position
+            // 4. Sync PTag Position
             // ---------------------------------------------------------
-            if (playerOnBoard && playerTf != null)
+            if (pTagOnBoard && pTagTf != null)
             {
                 float deltaX = transform.Position.x - previousPlatformPos.x;
                 float deltaY = transform.Position.y - previousPlatformPos.y;
 
-                playerTf.Position = new CEVec3(
-                    playerTf.Position.x + deltaX,
-                    playerTf.Position.y + deltaY,
-                    playerTf.Position.z
+                pTagTf.Position = new CEVec3(
+                    pTagTf.Position.x + deltaX,
+                    pTagTf.Position.y + deltaY,
+                    pTagTf.Position.z
                 );
             }
         }

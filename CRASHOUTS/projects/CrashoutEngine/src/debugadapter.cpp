@@ -19,6 +19,7 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserv
 ----------------------------------------------------------------------------- */
 #include "debugreflection.h"
 #include "entitymanager.h"
+#include "rendering.h"
 #include <imgui.h>
 #include <algorithm>
 #include <filesystem>
@@ -48,6 +49,7 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserv
 #include "hierarchycomponent.h"
 #include "particleComponent.h"
 #include "activecomponent.h"
+#include "tagcomponent.h"
 
 // FOR GAME GUI
 #include "buttoncomponent.h"
@@ -257,19 +259,19 @@ namespace {
 	};
 
 	/*!
-	@brief Shared helper to draw a multi-select layer dropdown.
-	@param ecs Reference to ECS (needed to clean up components if a layer is deleted).
+	@brief Shared helper to draw a multi-select tag dropdown.
+	@param ecs Reference to ECS (needed to clean up components if a tag is deleted).
 	@param mask Reference to the bitmask integer to edit.
 	*/
-	static void DrawLayerMultiSelect(ECS& ecs, unsigned int& mask) {
-		// Get the static map from LayerComponent
-		std::map<std::string, unsigned int>& layerMap = Component::LayerComponent::layers;
+	static void DrawTagMultiSelect(ECS& ecs, unsigned int& mask) {
+		// Get the static map from TagComponent
+		std::map<std::string, unsigned int>& tagMap = Component::TagComponent::tags;
 
 		// --- 1. Build the Preview String ---
 		std::string preview = "";
 		int selectedCount = 0;
 
-		for (auto const& [name, bit] : layerMap) {
+		for (auto const& [name, bit] : tagMap) {
 			if (mask & bit) {
 				if (selectedCount > 0) preview += ", ";
 				preview += name;
@@ -281,12 +283,12 @@ namespace {
 		else if (selectedCount > 2) preview = "Mixed...";
 
 		// --- 2. Draw the Multi-Select Dropdown ---
-		if (ImGui::BeginCombo("Layer Mask", preview.c_str())) {
+		if (ImGui::BeginCombo("Tag Mask", preview.c_str())) {
 
-			std::string layerToRemove = "";
+			std::string tagToRemove = "";
 
 			// --- 3. Draw Checkboxes ---
-			for (auto const& [name, bit] : layerMap) {
+			for (auto const& [name, bit] : tagMap) {
 				bool isSelected = (mask & bit) != 0;
 
 				// Use Selectable so we can detect clicks easily
@@ -305,16 +307,16 @@ namespace {
 				// Remove Button
 				if (name != "Default") {
 					ImGui::SameLine();
-					if (ImGui::SmallButton(("X##" + name).c_str())) layerToRemove = name;
+					if (ImGui::SmallButton(("X##" + name).c_str())) tagToRemove = name;
 				}
 			}
 
 			// --- 4. Removal Logic (Global removal) ---
-			if (!layerToRemove.empty()) {
-				// Complex undo: Removing a layer affects ALL entities. 
+			if (!tagToRemove.empty()) {
+				// Complex undo: Removing a tag affects ALL entities. 
 				// For simplicity, just undo the removal from the map, not the entities.
-				unsigned int bit = layerMap[layerToRemove];
-				layerMap.erase(layerToRemove);
+				unsigned int bit = tagMap[tagToRemove];
+				tagMap.erase(tagToRemove);
 
 				// Clear from current mask with undo
 				unsigned int oldMask = mask;
@@ -326,27 +328,27 @@ namespace {
 				}
 
 				// Clean up all entities immediately (Not undoable currently for simplicity)
-				for (LayerComponent& lc : ecs.GetComponentArray<LayerComponent>().dense) {
-					lc.currentLayer &= ~bit;
+				for (TagComponent& tc : ecs.GetComponentArray<TagComponent>().dense) {
+					tc.tagMask &= ~bit;
 				}
 			}
 
-			// --- 5. Add New Layer Logic ---
+			// --- 5. Add New Tag Logic ---
 			ImGui::Separator();
-			static char newLayerBuf[64] = "";
-			bool add = ImGui::InputText("New Layer", newLayerBuf, 64, ImGuiInputTextFlags_EnterReturnsTrue);
+			static char newTagBuf[64] = "";
+			bool add = ImGui::InputText("New Tag", newTagBuf, 64, ImGuiInputTextFlags_EnterReturnsTrue);
 			ImGui::SameLine();
 			if (ImGui::Button("Add") || add) {
-				if (strlen(newLayerBuf) > 0 && layerMap.find(newLayerBuf) == layerMap.end()) {
+				if (strlen(newTagBuf) > 0 && tagMap.find(newTagBuf) == tagMap.end()) {
 					unsigned int nextBit = 1;
-					if (!layerMap.empty()) {
-						auto maxEl = std::max_element(layerMap.begin(), layerMap.end(),
+					if (!tagMap.empty()) {
+						auto maxEl = std::max_element(tagMap.begin(), tagMap.end(),
 							[](const auto& a, const auto& b) { return a.second < b.second; });
 						nextBit = maxEl->second << 1;
 					}
-					// TODO: Add AddLayerCommand for undoing layer creation
-					layerMap.emplace(newLayerBuf, nextBit);
-					newLayerBuf[0] = '\0';
+					// TODO: Add AddTagCommand for undoing tag creation
+					tagMap.emplace(newTagBuf, nextBit);
+					newTagBuf[0] = '\0';
 				}
 			}
 
@@ -355,28 +357,104 @@ namespace {
 	}
 
 	/*!
-	@brief Adapter for editing Component::LayerComponent.
-	@details Shows a drop down of layers to choose from and create
+	@brief Adapter for editing Component::TagComponent.
+	@details Shows a drop down of tags to choose from and create
+	*/
+	struct TagAdapter : DebugReflection::IComponentAdapter {
+		const char* name() const override { return "TagComponent"; }
+		bool has(ECS& ecs, Entity e) const override {
+			return ecs.HasComponent<Component::TagComponent>(e);
+		}
+		void add(ECS& ecs, Entity e) override {
+			//auto& D = GetDebugDefaults();
+			if (!has(ecs, e)) ecs.AddComponent<Component::TagComponent>(e);
+		}
+		void remove(ECS& ecs, Entity e) override {
+			if (has(ecs, e)) ecs.RemoveComponent<Component::TagComponent>(e);
+		}
+		void drawInspector(ECS& ecs, Entity e) override {
+			if (auto* c = ecs.GetComponent<Component::TagComponent>(e)) {
+				// Use the helper function!
+				DrawTagMultiSelect(ecs, c->tagMask);
+			}
+		}
+	};
+
+	/*!
+	@brief Adapter for editing Component::LayerComponent (formerly ZOrder).
+	@details Controls Rendering Layer and Z-Index. Also provides visibility toggles for layers.
 	*/
 	struct LayerAdapter : DebugReflection::IComponentAdapter {
-		const char* name() const override { return "LayerComponent"; }
+		const char* name() const override { return "Layer"; }
 		bool has(ECS& ecs, Entity e) const override {
 			return ecs.HasComponent<Component::LayerComponent>(e);
 		}
 		void add(ECS& ecs, Entity e) override {
-			//auto& D = GetDebugDefaults();
 			if (!has(ecs, e)) ecs.AddComponent<Component::LayerComponent>(e);
 		}
 		void remove(ECS& ecs, Entity e) override {
 			if (has(ecs, e)) ecs.RemoveComponent<Component::LayerComponent>(e);
 		}
 		void drawInspector(ECS& ecs, Entity e) override {
-			if (auto* c = ecs.GetComponent<Component::LayerComponent>(e)) {
-				// Use the helper function!
-				DrawLayerMultiSelect(ecs, c->currentLayer);
+			auto* z = ecs.GetComponent<Component::LayerComponent>(e);
+			if (!z) return;
+
+			auto& layerMap = Component::LayerComponent::layerMap;
+
+			// --- Layer Dropdown ---
+			if (ImGui::BeginCombo("Render Layer", z->layerName.c_str())) {
+				for (const auto& [name, id] : layerMap) {
+					if (ImGui::Selectable(name.c_str(), z->layerName == name)) {
+						z->layerName = name;
+					}
+				}
+				ImGui::EndCombo();
 			}
+
+			// --- Add New Layer ---
+			static char newLayerName[64] = "";
+			ImGui::InputText("New Layer Name", newLayerName, 64);
+			ImGui::SameLine();
+			if (ImGui::Button("Add Layer")) {
+				if (strlen(newLayerName) > 0 && layerMap.find(newLayerName) == layerMap.end()) {
+					int nextID = 0;
+					for (const auto& pair : layerMap) nextID = std::max(nextID, pair.second);
+					layerMap[newLayerName] = nextID + 1;
+					Component::LayerComponent::layerVisibility[newLayerName] = true;
+					newLayerName[0] = '\0';
+				}
+			}
+
+			// Z-Index Drag
+			ImGui::DragInt("Z-Index", &z->z, 1, -1000, 1000);
+
+			ImGui::Separator();
+			ImGui::Text("Global Layer Visibility (Active State)");
+
+			// Global Visibility Toggles
+			auto& visMap = Component::LayerComponent::layerVisibility;
+
+			for (auto& [name, visible] : visMap) {
+				bool oldVis = visible;
+				if (ImGui::Checkbox(name.c_str(), &visible)) {
+					// Toggle Logic: Iterate all entities and set active state
+					if (visible != oldVis) {
+						auto& arr = ecs.GetComponentArray<Component::LayerComponent>();
+						for (size_t i = 0; i < arr.dense.size(); ++i) {
+							if (arr.dense[i].layerName == name) {
+								Entity ent = arr.indexToEntity[i];
+								if (ecs.HasComponent<Component::ActiveComponent>(ent)) {
+									ecs.GetComponent<Component::ActiveComponent>(ent)->isActive = visible;
+								}
+							}
+						}
+					}
+				}
+			}
+			ImGui::NewLine();
 		}
 	};
+
 	static void ApplyLocalToWorldNow(ECS& ecs, Entity child)
 	{
 		if (!ecs.HasComponent<Component::ParentComponent>(child)) return;
@@ -2328,7 +2406,7 @@ namespace CrashoutsEngine
 
 					// Layer option
 					ImGui::Text("Layer Filter:");
-					DrawLayerMultiSelect(ecs, asset->GetLayerMaskMutable());
+					DrawTagMultiSelect(ecs, asset->GetTagMaskMutable());
 
 					auto& rules = asset->GetTilesMutable();
 					int ruleToDelete = -1;
@@ -2661,6 +2739,67 @@ namespace CrashoutsEngine
 		}
 	};
 
+
+	/*struct ZOrderAdapter : DebugReflection::IComponentAdapter {
+		const char* name() const override { return "ZOrder (Rendering)"; }
+		bool has(ECS& ecs, Entity e) const override {
+			return ecs.HasComponent<Component::ZOrder>(e);
+		}
+		void add(ECS& ecs, Entity e) override {
+			if (!has(ecs, e)) ecs.AddComponent<Component::ZOrder>(e);
+		}
+		void remove(ECS& ecs, Entity e) override {
+			if (has(ecs, e)) ecs.RemoveComponent<Component::ZOrder>(e);
+		}
+		void drawInspector(ECS& ecs, Entity e) override {
+			auto* z = ecs.GetComponent<Component::ZOrder>(e);
+			if (!z) return;
+
+			int layer = static_cast<int>(z->layer);
+			const char* items[] = { "StaticBackground", "InteractiveBG", "WorldGeometry", "EffectsAndItems", "Players" };
+			if (ImGui::Combo("Layer", &layer, items, IM_ARRAYSIZE(items))) {
+				z->layer = static_cast<Component::RenderLayer>(layer);
+			}
+
+			ImGui::DragInt("Z Index", &z->z);
+
+			if (ecs.HasComponent<Component::TransformComponent>(e)) {
+				auto* t = ecs.GetComponent<Component::TransformComponent>(e);
+				Component::DebugZOverride* dbg = nullptr;
+				if (ecs.HasComponent<Component::DebugZOverride>(e)) {
+					dbg = ecs.GetComponent<Component::DebugZOverride>(e);
+				}
+				float depth = Component::Rendering::ComputeDepth(t->position, *z, dbg);
+				ImGui::TextDisabled("Computed Depth: %.2f", depth);
+			}
+		}
+	};*/
+
+	struct DebugZOverrideAdapter : DebugReflection::IComponentAdapter {
+		const char* name() const override { return "Debug Z Override"; }
+		bool has(ECS& ecs, Entity e) const override {
+			return ecs.HasComponent<Component::DebugZOverride>(e);
+		}
+		void add(ECS& ecs, Entity e) override {
+			if (!has(ecs, e)) ecs.AddComponent<Component::DebugZOverride>(e);
+		}
+		void remove(ECS& ecs, Entity e) override {
+			if (has(ecs, e)) ecs.RemoveComponent<Component::DebugZOverride>(e);
+		}
+		void drawInspector(ECS& ecs, Entity e) override {
+			auto* dbg = ecs.GetComponent<Component::DebugZOverride>(e);
+			if (!dbg) return;
+
+			ImGui::DragInt("Offset", &dbg->offset, 100.0f);
+
+			// Quick toggles
+			if (ImGui::Button("Reset")) dbg->offset = 0;
+			ImGui::SameLine();
+			if (ImGui::Button("+5M (Front)")) dbg->offset = 5000000;
+			ImGui::SameLine();
+			if (ImGui::Button("-5M (Back)")) dbg->offset = -5000000;
+		}
+	};
 	/*!
 	@brief Game-state provider installed at runtime (no hardcoded state list).
 	@details Bridges GameStateManager to the Debug Menu; exposes current/previous/next and issues ChangeGameState() transitions from a reflected state list.
@@ -2985,6 +3124,8 @@ namespace CrashoutsEngine
 	static BuiltinPhysicsProvider gBuiltinPhys;
 	static KeyframeAnimatorAdapter gKeyframeAdapter;
 	static ParticleSystemAdapter gParticleAdapter;
+	static TagAdapter gTagAdapter;     
+	static DebugZOverrideAdapter gDebugZOverrideAdapter;
 }
 
 /*!
@@ -3001,8 +3142,10 @@ namespace CrashoutsEngine
 extern "C" void RegisterBuiltinComponentAdapters() {
 	using namespace DebugReflection;
 	ComponentRegistry::instance().registerAdapter(&gNameAdapter);
+	ComponentRegistry::instance().registerAdapter(&gTagAdapter);
 	ComponentRegistry::instance().registerAdapter(&gLayerAdapter);
 	ComponentRegistry::instance().registerAdapter(&gTransformAdapter);
+	ComponentRegistry::instance().registerAdapter(&gDebugZOverrideAdapter);
 	ComponentRegistry::instance().registerAdapter(&gRigidBodyAdapter);
 	ComponentRegistry::instance().registerAdapter(&gColliderAdapter);
 	ComponentRegistry::instance().registerAdapter(&gShapeAdapter);

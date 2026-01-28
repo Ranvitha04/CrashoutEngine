@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 namespace CrashoutsEngine
 {
     [ScriptBehaviour]
-    public class PlayerMovement : ScriptBase
+    public class PTagMovement : ScriptBase
     {
         // --- TUNING VARIABLES ---
         [SerializeField] public float moveSpeed = 200f;
@@ -37,7 +37,7 @@ namespace CrashoutsEngine
         public bool OnWall { get; private set; } = false;
 
         // Singleton Instance
-        public static PlayerMovement Instance;
+        public static PTagMovement Instance;
 
         // Energy Data
         public float CurrentEnergy = 0.0f;
@@ -183,23 +183,23 @@ namespace CrashoutsEngine
 
         private void UpdateAnimationState(bool isSwitching)
         {
-            string targetState = "playerIdle";
+            string targetState = "pTagIdle";
 
             // PRIORITY 1: Switching
             if (isSwitching)
             {
-                targetState = "playerSwitch";
+                targetState = "pTagSwitch";
             }
             // PRIORITY 2: Airborne (Jump/Fall)
             else if (!IsGrounded)
             {
                 if (rb.LinearVelocity.y > 1.0f)
                 {
-                    targetState = "playerJump";
+                    targetState = "pTagJump";
                 }
                 else if (rb.LinearVelocity.y < -12.5f)
                 {
-                    targetState = "playerFall";
+                    targetState = "pTagFall";
                 }
             }
             // PRIORITY 3: Grounded Movement
@@ -207,11 +207,11 @@ namespace CrashoutsEngine
             {
                 if (Math.Abs(horizontalInput) > 0.01f)
                 {
-                    targetState = "playerWalk";
+                    targetState = "pTagWalk";
                 }
                 else
                 {
-                    targetState = "playerIdle";
+                    targetState = "pTagIdle";
                 }
             }
 
@@ -290,11 +290,11 @@ namespace CrashoutsEngine
         public bool OnPreSolve(uint otherEntity)
         {
             Entity other = new Entity(otherEntity);
-            var layer = other.GetComponent<LayerComponent>();
+            var Tag = other.GetComponent<TagComponent>();
 
             // 1. Check if it is a One-Way Platform
-            // (Make sure your TileMap/Platform entity actually has this Layer Name set!)
-            if (layer != null && layer.HasLayer("Passthrough"))
+            // (Make sure your TileMap/Platform entity actually has this Tag Name set!)
+            if (Tag != null && Tag.HasTag("Passthrough"))
             {
                 Debug.Log("drop");
                 // A. DROP DOWN LOGIC
@@ -316,11 +316,11 @@ namespace CrashoutsEngine
                 // var otherTf = other.GetComponent<TransformComponent>();
                 // if (otherTf != null)
                 // {
-                //     float playerBottom = tf.Position.y - (Math.Abs(tf.Size.y) * 0.5f);
+                //     float pTagBottom = tf.Position.y - (Math.Abs(tf.Size.y) * 0.5f);
                 //     float platTop = otherTf.Position.y + (Math.Abs(otherTf.Size.y) * 0.5f);
 
                 //     // If feet are lower than the platform top (minus a small buffer), ignore it
-                //     if (playerBottom > platTop) 
+                //     if (pTagBottom > platTop) 
                 //     {
                 //         return false; // IGNORE COLLISION
                 //     }
@@ -338,11 +338,11 @@ namespace CrashoutsEngine
         public void OnCollideEnter(uint otherEntity)
         {
             Entity other = new Entity(otherEntity);
-            var layer = other.GetComponent<LayerComponent>();
+            var Tag = other.GetComponent<TagComponent>();
             var otherTf = other.GetComponent<TransformComponent>();
 
             // Ground Check
-            if (layer != null && (layer.HasLayer("Ground") || layer.HasLayer("Platform") || layer.HasLayer("Enemy")))
+            if (Tag != null && (Tag.HasTag("Ground") || Tag.HasTag("Platform") || Tag.HasTag("Enemy")))
             {
                 // Simple foot check: Are we above the object?
                 if (otherTf != null && this.tf.Position.y > otherTf.Position.y)
@@ -352,16 +352,16 @@ namespace CrashoutsEngine
             }
 
             // Wall Check
-            if (layer != null && layer.HasLayer("Wall"))
+            if (Tag != null && Tag.HasTag("Wall"))
             {
                 OnWall = true;
                 rb.LinearVelocity = new CEVec3(0, rb.LinearVelocity.y, 0);
             }
 
             // Hazard Check
-            if (layer != null && (layer.HasLayer("Lava") || layer.HasLayer("Enemy")))
+            if (Tag != null && (Tag.HasTag("Lava") || Tag.HasTag("Enemy")))
             {
-                Debug.Log("Player Died");
+                Debug.Log("PTag Died");
                 alive = false;
                 // TODO: Trigger Death Anim here?
 
@@ -376,10 +376,10 @@ namespace CrashoutsEngine
         public void OnCollideStay(uint otherEntity)
         {
             Entity other = new Entity(otherEntity);
-            var layer = other.GetComponent<LayerComponent>();
+            var Tag = other.GetComponent<TagComponent>();
             var otherTf = other.GetComponent<TransformComponent>();
 
-            if (layer != null && (layer.HasLayer("Ground") || layer.HasLayer("Platform") || layer.HasLayer("Enemy")))
+            if (Tag != null && (Tag.HasTag("Ground") || Tag.HasTag("Platform") || Tag.HasTag("Enemy")))
             {
                 // Ensure we are actually on top
                 if (otherTf != null && this.tf.Position.y > otherTf.Position.y)
@@ -391,14 +391,14 @@ namespace CrashoutsEngine
         public void OnCollideExit(uint otherEntity)
         {
             Entity other = new Entity(otherEntity);
-            var layer = other.GetComponent<LayerComponent>();
+            var Tag = other.GetComponent<TagComponent>();
 
-            if (layer != null && layer.HasLayer("Ground"))
+            if (Tag != null && Tag.HasTag("Ground"))
             {
                 IsGrounded = false;
             }
 
-            if (layer != null && layer.HasLayer("Wall"))
+            if (Tag != null && Tag.HasTag("Wall"))
             {
                 OnWall = false;
             }

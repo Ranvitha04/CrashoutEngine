@@ -34,7 +34,7 @@ namespace CrashoutsEngine
         private TransformComponent tf;
         private Animator anim;
         private ColliderComponent col;
-        private PlayerMovement playerScript;
+        private PTagMovement pTagScript;
 
         private bool isGrounded = false;
         private bool moveRight = true;
@@ -75,16 +75,16 @@ namespace CrashoutsEngine
             bool isLeftGrounded = false;
             if (hitLeft) {
                  Entity hitEnt = new Entity(hitID);
-                 var layer = hitEnt.GetComponent<LayerComponent>();
-                 if (layer != null && (layer.HasLayer("Ground") || layer.HasLayer("Platform") || layer.HasLayer("Wall"))) isLeftGrounded = true;
+                 var Tag = hitEnt.GetComponent<TagComponent>();
+                 if (Tag != null && (Tag.HasTag("Ground") || Tag.HasTag("Platform") || Tag.HasTag("Wall"))) isLeftGrounded = true;
             }
 
             bool hitRight = InternalCalls.Raycast(ref startRight, ref endRight, out hitID, Entity.ID);
             bool isRightGrounded = false;
             if (hitRight) {
                  Entity hitEnt = new Entity(hitID);
-                 var layer = hitEnt.GetComponent<LayerComponent>();
-                 if (layer != null && (layer.HasLayer("Ground") || layer.HasLayer("Platform") || layer.HasLayer("Wall"))) isRightGrounded = true;
+                 var Tag = hitEnt.GetComponent<TagComponent>();
+                 if (Tag != null && (Tag.HasTag("Ground") || Tag.HasTag("Platform") || Tag.HasTag("Wall"))) isRightGrounded = true;
             }
             
             isGrounded = isLeftGrounded || isRightGrounded;
@@ -96,7 +96,7 @@ namespace CrashoutsEngine
             tf = Entity.GetComponent<TransformComponent>();
             anim = Entity.GetComponent<Animator>(); 
             col = Entity.GetComponent<ColliderComponent>();
-            playerScript = PlayerMovement.Instance;
+            pTagScript = PTagMovement.Instance;
 
             CollisionEvents.RegisterCollideEnter(Entity.ID, this.OnCollideEnter);
             CollisionEvents.RegisterCollideExit(Entity.ID, this.OnCollideExit);
@@ -109,7 +109,7 @@ namespace CrashoutsEngine
 
         public override void Update()
         {
-            if(playerScript != null && playerScript.isPaused) { return; } 
+            if(pTagScript != null && pTagScript.isPaused) { return; } 
             if (rb == null || tf == null) return;
 
             float dt = (float)Time.DT;
@@ -128,12 +128,12 @@ namespace CrashoutsEngine
             if (flipCooldown > 0) flipCooldown -= dt;
 
             // Handle Grab State
-            if (playerScript != null)
+            if (pTagScript != null)
             {
-                var playerTf = playerScript.Entity.GetComponent<TransformComponent>();
-                if (playerTf != null)
+                var pTagTf = pTagScript.Entity.GetComponent<TransformComponent>();
+                if (pTagTf != null)
                 {
-                     float dist = Distance(tf.Position, playerTf.Position);
+                     float dist = Distance(tf.Position, pTagTf.Position);
                      if (dist <= grabRange || isGrabbed) HandleGrabLogic();
                 }
                
@@ -151,10 +151,10 @@ namespace CrashoutsEngine
                 if (moveAudioTimer <= 0.0f)
                 {
                     float dist = 0f;
-                    if (playerScript != null)
+                    if (pTagScript != null)
                     {
-                         var playerTf = playerScript.Entity.GetComponent<TransformComponent>();
-                         if (playerTf != null) dist = Distance(tf.Position, playerTf.Position);
+                         var pTagTf = pTagScript.Entity.GetComponent<TransformComponent>();
+                         if (pTagTf != null) dist = Distance(tf.Position, pTagTf.Position);
                     }
 
                     if (dist > stopAudioDistance)
@@ -222,7 +222,7 @@ namespace CrashoutsEngine
         public override void FixedUpdate()
         {
             if (rb == null || isGrabbed || isStunned) return;
-            if(playerScript != null && playerScript.isPaused) return;
+            if(pTagScript != null && pTagScript.isPaused) return;
 
             CheckGrounded();
             float dt = (float)Time.FixedDT;
@@ -257,22 +257,22 @@ namespace CrashoutsEngine
             
             // Chase logic
             isChasing = false;
-            if (playerScript != null)
+            if (pTagScript != null)
             {
-                var playerTf = playerScript.Entity.GetComponent<TransformComponent>();
-                if (playerTf != null)
+                var pTagTf = pTagScript.Entity.GetComponent<TransformComponent>();
+                if (pTagTf != null)
                 {
-                    float dist = Distance(tf.Position, playerTf.Position);
+                    float dist = Distance(tf.Position, pTagTf.Position);
                     bool hasLineOfSight = false;
                     
                     if (dist < detectionRange)
                     {
                          CEVec3 start = tf.Position;
-                         CEVec3 end = playerTf.Position;
+                         CEVec3 end = pTagTf.Position;
                          uint hitID;
                          bool hit = InternalCalls.Raycast(ref start, ref end, out hitID, Entity.ID);
                          
-                         if (hit && hitID == playerScript.Entity.ID)
+                         if (hit && hitID == pTagScript.Entity.ID)
                          {
                              hasLineOfSight = true;
                          }
@@ -282,7 +282,7 @@ namespace CrashoutsEngine
                     {
                         isChasing = true;
                         returningHome = false;
-                        moveRight = (playerTf.Position.x > tf.Position.x);
+                        moveRight = (pTagTf.Position.x > tf.Position.x);
                     }
                 }
             }
@@ -305,11 +305,11 @@ namespace CrashoutsEngine
                 if (hitGround)
                 {
                     Entity hitEnt = new Entity(hitGroundID);
-                    var hitLayer = hitEnt.GetComponent<LayerComponent>();
+                    var hitTag = hitEnt.GetComponent<TagComponent>();
                     bool isValidGround = false;
-                    if (hitLayer != null)
+                    if (hitTag != null)
                     {
-                        if (hitLayer.HasLayer("Ground") || hitLayer.HasLayer("Platform") || hitLayer.HasLayer("Wall"))
+                        if (hitTag.HasTag("Ground") || hitTag.HasTag("Platform") || hitTag.HasTag("Wall"))
                         {
                             isValidGround = true;
                         }
@@ -382,7 +382,7 @@ namespace CrashoutsEngine
             float dir = moveRight ? 1.0f : -1.0f;
             float speedMult = (isChasing || returningHome) ? 1.2f : 1.0f;
 
-            if (playerScript != null && !playerScript.alive) return;
+            if (pTagScript != null && !pTagScript.alive) return;
 
             // Ground movement
             if (isGrounded || isChasing) 
@@ -423,19 +423,19 @@ namespace CrashoutsEngine
                         isFollowingPath = false;
                         activePath.Clear();
                         rb.SetDynamic(false);
-                        var layer = Entity.GetComponent<LayerComponent>();
-                        if (layer != null) layer.RemoveLayer("Enemy");
+                        var Tag = Entity.GetComponent<TagComponent>();
+                        if (Tag != null) Tag.RemoveTag("Enemy");
                     }
                 }
 
-                if (isGrabbed && playerScript != null)
+                if (isGrabbed && pTagScript != null)
                 {
-                    var playerTf = playerScript.Entity.GetComponent<TransformComponent>();
-                    float offsetX = playerTf.Size.x < 0 ? -60.0f : 60.0f;
-                    tf.Position = new CEVec3(playerTf.Position.x + offsetX, playerTf.Position.y - 5.0f, playerTf.Position.z);
+                    var pTagTf = pTagScript.Entity.GetComponent<TransformComponent>();
+                    float offsetX = pTagTf.Size.x < 0 ? -60.0f : 60.0f;
+                    tf.Position = new CEVec3(pTagTf.Position.x + offsetX, pTagTf.Position.y - 5.0f, pTagTf.Position.z);
                     rb.LinearVelocity = new CEVec3(0, 0, 0);
 
-                    CEVec3 throwVel = CalculateThrowVelocity(mousePos, playerTf.Position);
+                    CEVec3 throwVel = CalculateThrowVelocity(mousePos, pTagTf.Position);
                     SimulatePath(throwVel, tf.Position, true);
                 }
             }
@@ -444,12 +444,12 @@ namespace CrashoutsEngine
                 isGrabbed = false;
                 wasThrown = true;
                 rb.SetDynamic(true);
-                var layer = Entity.GetComponent<LayerComponent>();
-                if (layer != null) layer.AddLayer("Enemy");
+                var Tag = Entity.GetComponent<TagComponent>();
+                if (Tag != null) Tag.AddTag("Enemy");
 
-                if (playerScript != null)
+                if (pTagScript != null)
                 {
-                    CEVec3 throwVel = CalculateThrowVelocity(mousePos, playerScript.Entity.GetComponent<TransformComponent>().Position);
+                    CEVec3 throwVel = CalculateThrowVelocity(mousePos, pTagScript.Entity.GetComponent<TransformComponent>().Position);
                     
                     SimulatePath(throwVel, tf.Position, false);
                     if (activePath.Count > 0)
@@ -461,10 +461,10 @@ namespace CrashoutsEngine
             }
         }
 
-        private CEVec3 CalculateThrowVelocity(CEVec2 mousePos, CEVec3 playerPos)
+        private CEVec3 CalculateThrowVelocity(CEVec2 mousePos, CEVec3 pTagPos)
         {
-            float dx = playerPos.x - mousePos.x;
-            float dy = playerPos.y - mousePos.y;
+            float dx = pTagPos.x - mousePos.x;
+            float dy = pTagPos.y - mousePos.y;
             float dist = (float)Math.Sqrt(dx * dx + dy * dy);
             
             float dirX = 0f, dirY = 0f;
@@ -502,7 +502,7 @@ namespace CrashoutsEngine
 
                 CEVec3 nextPos = currentPos + (simVel * dt);
 
-                if (playerScript != null && playerScript.IsGrounded && nextPos.y < playerScript.Entity.GetComponent<TransformComponent>().Position.y - 50.0f)
+                if (pTagScript != null && pTagScript.IsGrounded && nextPos.y < pTagScript.Entity.GetComponent<TransformComponent>().Position.y - 50.0f)
                     break;
 
                 if (drawOnly)
@@ -526,11 +526,11 @@ namespace CrashoutsEngine
         public void OnCollideEnter(uint otherEntity)
         {
             Entity other = new Entity(otherEntity);
-            var layer = other.GetComponent<LayerComponent>();
+            var Tag = other.GetComponent<TagComponent>();
 
             // Universal collision check for path cancellation
             // If we hit ANYTHING static (Ground, Wall, Platform), stop flying.
-            if (layer != null && (layer.HasLayer("Ground") || layer.HasLayer("Wall") || layer.HasLayer("Platform")))
+            if (Tag != null && (Tag.HasTag("Ground") || Tag.HasTag("Wall") || Tag.HasTag("Platform")))
             {
                 if (isFollowingPath)
                 {
@@ -549,7 +549,7 @@ namespace CrashoutsEngine
                 }
             }
 
-            if (layer != null && (layer.HasLayer("Ground") || layer.HasLayer("Wall") || layer.HasLayer("Platform")))
+            if (Tag != null && (Tag.HasTag("Ground") || Tag.HasTag("Wall") || Tag.HasTag("Platform")))
             {
                 var otherTf = other.GetComponent<TransformComponent>();
                 bool isOnTop = otherTf != null && tf.Position.y > otherTf.Position.y + (otherTf.Size.y * 0.4f);

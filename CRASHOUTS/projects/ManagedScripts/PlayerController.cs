@@ -1,8 +1,8 @@
 ﻿/*!
-@file       playercontroller.cs
+@file       pTagcontroller.cs
 @author     m.biniswandi@digipen.edu
 @date       29/11/2025
-@brief      player controller script for handling player movement and actions
+@brief      pTag controller script for handling pTag movement and actions
 
 All content © 2025 Digipen Institute of Technology Singapore.All rights reserved.
 
@@ -12,7 +12,7 @@ using System.Numerics;
 namespace CrashoutsEngine
 {
     [ScriptBehaviour]
-    public class PlayerController : ScriptBase
+    public class PTagController : ScriptBase
     {
         bool moveLeft;
         bool moveRight;
@@ -40,8 +40,8 @@ namespace CrashoutsEngine
 
         public override void Start()
         {
-            // Initialization logic for the player
-            Console.WriteLine("[C#] PlayerController Start() called, Entity is " + (Entity == null ? "NULL" : "OK!!"));
+            // Initialization logic for the pTag
+            Console.WriteLine("[C#] PTagController Start() called, Entity is " + (Entity == null ? "NULL" : "OK!!"));
             CollisionEvents.RegisterTriggerEnter(Entity.ID, this.OnTriggerEnter);
             //Entity.Add<RigidBodyComponent>();
             //Entity.Add<TransformComponent>();
@@ -55,7 +55,7 @@ namespace CrashoutsEngine
         {
             //Console.WriteLine("Has RB? " + Entity.Has<RigidBodyComponent>());
 
-            //Console.WriteLine("[C#] PlayerController Update() called with dt: " + dt);
+            //Console.WriteLine("[C#] PTagController Update() called with dt: " + dt);
             // Access physics and transform components from your entity
             //var rb = Entity.GetComponent<RigidBodyComponent>();
             var tf = Entity.GetComponent<TransformComponent>();
@@ -64,12 +64,12 @@ namespace CrashoutsEngine
             isMoving = moveLeft || moveRight;
             if (isMoving && !wasMoving)
             {
-                //Console.WriteLine("[C#] Player started moving -> Play footsteps");
+                //Console.WriteLine("[C#] PTag started moving -> Play footsteps");
                 AudioManager.GetInstance().Play("footsteps");
             }
             else if (!isMoving && wasMoving)
             {
-                //Console.WriteLine("[C#] Player stopped moving -> Stop footsteps_loop");
+                //Console.WriteLine("[C#] PTag stopped moving -> Stop footsteps_loop");
                 AudioManager.GetInstance().Stop("footsteps");
             }
             //if (Input.IsKeyPressed(Key.A))
@@ -149,8 +149,8 @@ namespace CrashoutsEngine
 
         public override void OnDestroy()
         {
-            // Cleanup logic for the player
-            Console.WriteLine("[C#] PlayerController OnDestroy() called");
+            // Cleanup logic for the pTag
+            Console.WriteLine("[C#] PTagController OnDestroy() called");
             AudioManager.GetInstance().Stop("ambient");
         }
     }

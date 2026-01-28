@@ -47,8 +47,8 @@ namespace CrashoutsEngine
                 _leftEdgeX = _tf.Position.x - (_fullWidth / 2.0f);
             }
 
-            if (_isMusic) _currentT = AudioManager.playerMusVol;
-            else _currentT = AudioManager.playerSFXVol;
+            if (_isMusic) _currentT = AudioManager.pTagMusVol;
+            else _currentT = AudioManager.pTagSFXVol;
 
             UpdateVisuals(_currentT);
         }

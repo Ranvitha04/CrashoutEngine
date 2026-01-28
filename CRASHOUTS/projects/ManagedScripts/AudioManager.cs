@@ -14,8 +14,8 @@ public class AudioManager
 
     private AudioManager() {
 
-        playerMusVol = InternalCalls.Audio_GetMusicVolume();
-        playerSFXVol = InternalCalls.Audio_GetSFXVolume();
+        pTagMusVol = InternalCalls.Audio_GetMusicVolume();
+        pTagSFXVol = InternalCalls.Audio_GetSFXVolume();
 
         
         /*RegisterSound(
@@ -35,8 +35,8 @@ public class AudioManager
     // Converted version of your "Sound[]" array
     private Dictionary<string, SoundData> sounds = new Dictionary<string, SoundData>();
         
-    public static float playerMusVol = 1f;
-    public static float playerSFXVol = 1f;
+    public static float pTagMusVol = 1f;
+    public static float pTagSFXVol = 1f;
 
     private class SoundData
     {
@@ -112,13 +112,13 @@ public class AudioManager
 
     public void MusicVolume(float volume)
     {
-        playerMusVol = volume;
+        pTagMusVol = volume;
         InternalCalls.Audio_SetMusicVolume(volume);
     }
 
     public void SFXVolume(float volume)
     {
-        playerSFXVol = volume;
+        pTagSFXVol = volume;
         InternalCalls.Audio_SetSFXVolume(volume);
     }
 

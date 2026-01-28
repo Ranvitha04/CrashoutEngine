@@ -6,7 +6,7 @@
 @brief	This file defines the functions that would be used by the
 		tilemapcomponent.
 
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
 __________________________________________________________________________*/
 
 /*                                                                   includes
@@ -24,6 +24,7 @@ __________________________________________________________________________*/
 #include "namecomponent.h"
 #include "assetmanager.h"
 #include "tilemapasset.h"
+#include "tagcomponent.h"
 #include "textureasset.h"
 #include "hierarchycomponent.h"
 #include "hierarchy.h"
@@ -321,7 +322,7 @@ namespace CrashoutsEngine::TileMapUtils {
 			std::string name = "Tile (x:" + std::to_string(pos.first) + ",y:" + std::to_string(pos.second) + ")";
 			ecs->AddComponent<Component::NameComponent>(ent, name);
 
-			ecs->AddComponent<Component::LayerComponent>(ent, asset->GetLayerMask());
+			ecs->AddComponent<Component::TagComponent>(ent, asset->GetLayerMask());
 
 			// Add Sprite Component
 			Component::ShapeComponent s;
@@ -338,7 +339,7 @@ namespace CrashoutsEngine::TileMapUtils {
 			t.size = CEVec2((float)map.tileSize, (float)map.tileSize);
 
 			// 3. Collider
-			if (matchedRule->colliderType != Collision::ColliderType::NONE && 
+			if (matchedRule->colliderType != Collision::ColliderType::NONE &&
 				matchedRule->colliderType != Collision::ColliderType::AABB) {
 
 				// Prepare common variables
@@ -354,46 +355,46 @@ namespace CrashoutsEngine::TileMapUtils {
 					// --------------------------------------------------------
 					// ColliderType::CIRCLE
 					// --------------------------------------------------------
-					case Collision::ColliderType::CIRCLE: {
-						// Radius is usually half the width (or average of width/height)
-						float radius = std::min(halfW, halfH);
-						newCollider = std::make_unique<Collision::Circle>(radius, tPos);
-						helperT = Collision::ColliderType::CIRCLE;
-						break;
-					}
-					// --------------------------------------------------------
-					// ColliderType::OBB (Oriented Bounding Box)
-					// --------------------------------------------------------
-					case Collision::ColliderType::OBB: {
-						// ColliderType::OBB needs min/max (usually unrotated or local) + rotation
-						CEVec3 min{ tPos.x - halfW, tPos.y - halfH, 0.0f };
-						CEVec3 max{ tPos.x + halfW, tPos.y + halfH, 0.0f };
-						newCollider = std::make_unique<Collision::OBBRect>(min, max, rot);
-						helperT = Collision::ColliderType::OBB;
-						break;
-					}
-					// --------------------------------------------------------
-					// ColliderType::POLYGON (Box Shape)
-					// --------------------------------------------------------
-					case Collision::ColliderType::POLYGON: {
-						// Create a box polygon relative to the center
-						// Vertices are defined relative to the origin (0,0), 
-						// the Polygon class handles adding the position.
-						CEVec3 v1{ -halfW, -halfH, 0.0f };
-						CEVec3 v2{ halfW, -halfH, 0.0f };
-						CEVec3 v3{ halfW,  halfH, 0.0f };
-						CEVec3 v4{ -halfW,  halfH, 0.0f };
+				case Collision::ColliderType::CIRCLE: {
+					// Radius is usually half the width (or average of width/height)
+					float radius = std::min(halfW, halfH);
+					newCollider = std::make_unique<Collision::Circle>(radius, tPos);
+					helperT = Collision::ColliderType::CIRCLE;
+					break;
+				}
+													// --------------------------------------------------------
+													// ColliderType::OBB (Oriented Bounding Box)
+													// --------------------------------------------------------
+				case Collision::ColliderType::OBB: {
+					// ColliderType::OBB needs min/max (usually unrotated or local) + rotation
+					CEVec3 min{ tPos.x - halfW, tPos.y - halfH, 0.0f };
+					CEVec3 max{ tPos.x + halfW, tPos.y + halfH, 0.0f };
+					newCollider = std::make_unique<Collision::OBBRect>(min, max, rot);
+					helperT = Collision::ColliderType::OBB;
+					break;
+				}
+												 // --------------------------------------------------------
+												 // ColliderType::POLYGON (Box Shape)
+												 // --------------------------------------------------------
+				case Collision::ColliderType::POLYGON: {
+					// Create a box polygon relative to the center
+					// Vertices are defined relative to the origin (0,0), 
+					// the Polygon class handles adding the position.
+					CEVec3 v1{ -halfW, -halfH, 0.0f };
+					CEVec3 v2{ halfW, -halfH, 0.0f };
+					CEVec3 v3{ halfW,  halfH, 0.0f };
+					CEVec3 v4{ -halfW,  halfH, 0.0f };
 
-						newCollider = std::make_unique<Collision::Polygon>(
-							std::initializer_list<CEVec3>{v1, v2, v3, v4},
-							rot,
-							tPos
-						);
-						helperT = Collision::ColliderType::POLYGON;
-						break;
-					}
-					default:
-						break;
+					newCollider = std::make_unique<Collision::Polygon>(
+						std::initializer_list<CEVec3>{v1, v2, v3, v4},
+						rot,
+						tPos
+					);
+					helperT = Collision::ColliderType::POLYGON;
+					break;
+				}
+				default:
+					break;
 				}
 				// Assign to Entity if created successfully
 				if (newCollider) {
@@ -417,7 +418,7 @@ namespace CrashoutsEngine::TileMapUtils {
 			// 7. Parent it (Optional, if your hierarchy system supports it)
 			CrashoutsEngine::AttachChild(*ecs, parentEnt, ent);
 		}
-	
+
 		// FOR LINE SEGMENTS
 		{
 			// Generate Optimized Physics Entities
@@ -447,11 +448,11 @@ namespace CrashoutsEngine::TileMapUtils {
 
 					// 3. Apply Layer
 					if (segAsset) {
-						ecs->AddComponent<Component::LayerComponent>(ent, segAsset->GetLayerMask());
+						ecs->AddComponent<Component::TagComponent>(ent, segAsset->GetLayerMask());
 					}
 					else {
 						// Default layer if asset missing (Safety)
-						ecs->AddComponent<Component::LayerComponent>(ent, 0);
+						ecs->AddComponent<Component::TagComponent>(ent, 0);
 					}
 				}
 

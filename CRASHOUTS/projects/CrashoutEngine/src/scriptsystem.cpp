@@ -7,7 +7,7 @@
 All content � 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 */
-#include "aibindings.h"
+//#include "aibindings.h"
 #include "animatorbindings.h"
 #include "colliderbindings.h"
 #include "collidereventbindings.h"
@@ -23,7 +23,7 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 #include "audiobindings.h"
 #include "scenebindings.h"
 #include "uibindings.h"
-#include "layerbindings.h"
+#include "tagbindings.h"
 #include "timebindings.h"
 #include "shapebindings.h"
 #include "activecomponent.h"
@@ -235,22 +235,22 @@ namespace CrashoutsEngine
 
 	void ScriptSystem::RegisterAllBindings()
 	{
-		Bindings::RegisterTransformBindings();
-		Bindings::RegisterInputBindings();
-		Bindings::RegisterRigidBodyBindings();
-		Bindings::RegisterEntityBindings();
-		Bindings::RegisterColliderBindings();
-		Bindings::RegisterCollisionEventBindings();
-		Bindings::RegisterNameBindings();
-		Bindings::RegisterAudioBindings();
-		Bindings::RegisterAnimatorBindings();
-		Bindings::RegisterSceneBindings();
-		Bindings::RegisterUIBindings();
-		Bindings::RegisterLayerBindings();
-		Bindings::RegisterDebugBindings();
-		Bindings::RegisterAIBindings();
-		Bindings::RegisterTimeBindings();
-		Bindings::RegisterShapeBindings();
+        Bindings::RegisterTransformBindings();
+        Bindings::RegisterInputBindings();
+        Bindings::RegisterRigidBodyBindings();
+        Bindings::RegisterEntityBindings();
+        Bindings::RegisterColliderBindings();
+        Bindings::RegisterCollisionEventBindings();
+        Bindings::RegisterNameBindings();
+        Bindings::RegisterAudioBindings();
+        Bindings::RegisterAnimatorBindings();
+        Bindings::RegisterSceneBindings();
+        Bindings::RegisterUIBindings();
+        Bindings::RegisterTagBindings();
+        Bindings::RegisterDebugBindings();
+        //Bindings::RegisterAIBindings();
+        Bindings::RegisterTimeBindings();
+        Bindings::RegisterShapeBindings();
 
 		mono_add_internal_call("CrashoutsEngine.InternalCalls::GetScript", (const void*)InternalGetScript);
 	}

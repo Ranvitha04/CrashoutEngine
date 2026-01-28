@@ -60,7 +60,7 @@ namespace CrashoutsEngine
 
         public override void Update()
         {
-            //Console.WriteLine("[C#] PlayerController Update() called with dt: " + dt);
+            //Console.WriteLine("[C#] PTagController Update() called with dt: " + dt);
             // Access physics and transform components from your entity
             var rb = Entity.GetComponent<RigidBodyComponent>();
             var tf = Entity.GetComponent<TransformComponent>();
