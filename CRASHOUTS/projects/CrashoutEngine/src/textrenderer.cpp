@@ -7,7 +7,7 @@
 
 Handles font loading character atlas creation and text rendering with FreeType and OpenGL
 
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content  2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 */
 
@@ -19,7 +19,6 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserve
 #include <iostream>
 #include <fstream>
 #include <sstream>
-#include <iostream>
 #include "engine.h"
 
 #include "settings.h"
@@ -82,7 +81,7 @@ TextRenderer::TextRenderer() {
 @param color RGB color of the text
 @param fontName The name of the font asset (in AssetManager) to use
 */
-void TextRenderer::RenderText(const std::string& text, GLfloat x, GLfloat y, GLfloat z, GLfloat scale, CEColor colorCEV, const std::string fontName, bool isWorldSpace) {
+void TextRenderer::RenderText(const std::string& text, GLfloat x, GLfloat y, GLfloat z, GLfloat scale, CEColor colorCEV, const std::string fontName, bool isWorldSpace, float letterSpacing) {
     scale *= FONT_SCALE;
 
     using namespace CrashoutsEngine::Assets;
@@ -204,7 +203,7 @@ void TextRenderer::RenderText(const std::string& text, GLfloat x, GLfloat y, GLf
         glBindBuffer(GL_ARRAY_BUFFER, 0);
 
         glDrawArrays(GL_TRIANGLES, 0, 6);
-        x += (ch.Advance >> 6) * scale; // bitshift by 6 to get value in pixels
+        x += (ch.Advance >> 6) * scale + (letterSpacing * scale); // Apply letter spacing
     }
 
     glBindVertexArray(0);
@@ -222,7 +221,7 @@ void TextRenderer::RenderText(const std::string& text, GLfloat x, GLfloat y, GLf
 
 Measures text dimensions and adjusts position so that text is centered on the given coordinates
 */
-void TextRenderer::RenderCenteredText(const std::string& text, GLfloat x, GLfloat y, GLfloat z, GLfloat scale, CEColor color, const std::string fontName, bool isWorldSpace) {
+void TextRenderer::RenderCenteredText(const std::string& text, GLfloat x, GLfloat y, GLfloat z, GLfloat scale, CEColor color, const std::string fontName, bool isWorldSpace, float letterSpacing) {
     scale *= FONT_SCALE;
     using namespace CrashoutsEngine::Assets;
     AssetManager& assetManager = AssetManager::GetInstance();
@@ -240,9 +239,11 @@ void TextRenderer::RenderCenteredText(const std::string& text, GLfloat x, GLfloa
     GLfloat maxAscent = 0.0f;
     GLfloat maxDescent = 0.0f;
 
-    for (char c : text) {
+    for (size_t i = 0; i < text.length(); ++i) {
+        char c = text[i];
         Character ch = characters.at(c);
         textWidth += (ch.Advance >> 6) * scale;
+        if (i < text.length() - 1) textWidth += (letterSpacing * scale);
 
         GLfloat ascent = ch.Bearing.y * scale;
         GLfloat descent = (ch.Size.y - ch.Bearing.y) * scale;
@@ -254,7 +255,7 @@ void TextRenderer::RenderCenteredText(const std::string& text, GLfloat x, GLfloa
     GLfloat originX = x - textWidth / 2.0f;
     GLfloat originY = y - (maxAscent - (maxAscent + maxDescent) / 2.0f);
 
-    RenderText(text, originX, originY, z, scale * INV_FONT_SCALE, color, fontName, isWorldSpace);
+    RenderText(text, originX, originY, z, scale * INV_FONT_SCALE, color, fontName, isWorldSpace, letterSpacing);
 }
 
 /*!
@@ -388,7 +389,7 @@ CEVec2 TextRenderer::GetCursorPosition(const std::string& text, size_t cursorPos
         if (c == '\n') {
             y -= lineHeight * .5f;
             x = original_x;
-            continue;
+            continue; // Skip unknown chars
         }
 
         if (characters.find(c) == characters.end()) {
@@ -401,4 +402,142 @@ CEVec2 TextRenderer::GetCursorPosition(const std::string& text, size_t cursorPos
 
     // Return the final (x, y) baseline position
     return CEVec2{ x, y };
+}
+
+/*!
+@brief Render bounded and wrapped text
+*/
+void TextRenderer::RenderTextBounded(const std::string& text, 
+                                     GLfloat x, GLfloat y, GLfloat z, 
+                                     GLfloat maxWidth, GLfloat maxHeight, 
+                                     GLfloat scale, CEColor color, 
+                                     const std::string fontName, 
+                                     bool isWorldSpace,
+                                     int alignment, int verticalAlignment,
+                                     CEVec2 padding,
+                                     float letterSpacing, float lineSpacing) 
+{
+    // Alignment: 0=LEFT, 1=CENTER, 2=RIGHT
+    // VertAlign: 0=TOP, 1=MIDDLE, 2=BOTTOM
+
+    // Apply Padding to the Box Size
+    float effWidth = maxWidth - (padding.x * 2.0f);
+    float effHeight = maxHeight - (padding.y * 2.0f);
+
+    if (effWidth <= 0.0f) effWidth = 1.0f;
+
+    float renderScale = scale * FONT_SCALE;
+    using namespace CrashoutsEngine::Assets;
+    AssetManager& assetManager = AssetManager::GetInstance();
+    FontAsset* font = assetManager.Get<FontAsset>(fontName);
+
+    if (!font) {
+        std::cerr << "ERROR::TEXTRENDERER: Font not found: " << fontName << std::endl;
+        return;
+    }
+    const std::map<GLchar, Character>& characters = font->characters;
+
+    // 1. Calculate Line Height
+    GLfloat baseLineHeight = 64.0f;
+    if (characters.count('H')) baseLineHeight = (float)characters.at('H').Size.y;
+    else if (!characters.empty()) baseLineHeight = (float)characters.begin()->second.Size.y;
+    
+    GLfloat lineHeight = ((baseLineHeight * 1.2f) + lineSpacing) * renderScale;
+    
+    GLfloat spaceWidth = 0.0f;
+    if (characters.count(' ')) spaceWidth = (characters.at(' ').Advance >> 6) * renderScale + (letterSpacing * renderScale);
+    else spaceWidth = (baseLineHeight * 0.4f) * renderScale;
+
+    // 2. Word Wrap Logic (Space-based only)
+    std::vector<std::string> lines;
+    std::vector<float> lineWidths;
+
+    std::string currentLine = "";
+    float currentLineWidth = 0.0f;
+    bool firstWord = true;
+    
+    size_t start = 0;
+    while (start < text.length()) {
+        size_t end = text.find('\n', start);
+        std::string paragraph = text.substr(start, end == std::string::npos ? std::string::npos : end - start);
+        
+        std::stringstream pss(paragraph);
+        std::string pWord;
+        currentLine = "";
+        currentLineWidth = 0.0f;
+        firstWord = true;
+
+        while (pss >> pWord) {
+            float wordWidth = 0.0f;
+            for (size_t i = 0; i < pWord.length(); ++i) {
+                char c = pWord[i];
+                if (characters.count(c)) {
+                    wordWidth += (characters.at(c).Advance >> 6) * renderScale;
+                    if (i < pWord.length() - 1) wordWidth += (letterSpacing * renderScale);
+                }
+            }
+
+            if (firstWord) {
+                currentLine = pWord;
+                currentLineWidth = wordWidth;
+                firstWord = false;
+            } else {
+                if (currentLineWidth + spaceWidth + wordWidth <= effWidth) {
+                    currentLine += " " + pWord;
+                    currentLineWidth += spaceWidth + wordWidth;
+                } else {
+                    lines.push_back(currentLine);
+                    lineWidths.push_back(currentLineWidth);
+                    currentLine = pWord;
+                    currentLineWidth = wordWidth;
+                }
+            }
+        }
+        if (!currentLine.empty()) {
+            lines.push_back(currentLine);
+            lineWidths.push_back(currentLineWidth);
+        } else if (paragraph.empty() && end != std::string::npos) {
+             lines.push_back("");
+             lineWidths.push_back(0);
+        }
+
+        if (end == std::string::npos) break;
+        start = end + 1;
+    }
+
+    // 3. Calculate Vertical Start
+    float totalTextHeight = lines.size() * lineHeight;
+    
+    // Bounds edges (assuming x,y is center of box)
+    // Adjust box edges by padding
+    float boxTop = (y + maxHeight * 0.5f) - padding.y;
+    float boxBottom = (y - maxHeight * 0.5f) + padding.y;
+    float boxLeft = (x - maxWidth * 0.5f) + padding.x;
+    float boxRight = (x + maxWidth * 0.5f) - padding.x;
+
+    float startY = y;
+
+    if (verticalAlignment == 0) { // TOP
+        startY = boxTop - lineHeight; // Start drawing first line
+    } else if (verticalAlignment == 1) { // MIDDLE
+        // Center the text block around Y
+        float effCenterY = y; // Assuming margins are symmetric for center alignment
+        float blockTop = effCenterY + (totalTextHeight * 0.5f);
+        startY = blockTop - lineHeight * 0.8f; 
+    } else { // BOTTOM
+        startY = boxBottom + totalTextHeight - lineHeight * 0.8f;
+    }
+
+    // 4. Render Lines
+    for (size_t i = 0; i < lines.size(); ++i) {
+        float lineX = boxLeft;
+        if (alignment == 1) { // CENTER
+            lineX = x - (lineWidths[i] * 0.5f); 
+        } else if (alignment == 2) { // RIGHT
+            lineX = boxRight - lineWidths[i];
+        }
+
+        RenderText(lines[i], lineX, startY, z, scale, color, fontName, isWorldSpace, letterSpacing);
+        startY -= lineHeight;
+    }
 }

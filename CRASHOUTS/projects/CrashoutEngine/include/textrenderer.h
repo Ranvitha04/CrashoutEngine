@@ -6,7 +6,7 @@
 
 Provides text rendering using FreeType and OpenGL
 
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
 */
 
 #pragma once
@@ -86,7 +86,7 @@ public:
     @param color RGB color of the text
     @param fontName The name of the font asset (in AssetManager) to use
     */
-    void RenderText(const std::string& text, GLfloat x, GLfloat y, GLfloat z, GLfloat scale, CEColor color, const std::string fontName = "Exo2-Regular", bool isWorldSpace = false);
+    void RenderText(const std::string& text, GLfloat x, GLfloat y, GLfloat z, GLfloat scale, CEColor color, const std::string fontName = "Exo2-Regular", bool isWorldSpace = false, float letterSpacing = 0.0f);
    
     /*!
     @brief Render centered text
@@ -98,7 +98,21 @@ public:
     @param color RGB color of the text
     @param fontName The name of the font asset (in AssetManager) to use
     */
-    void RenderCenteredText(const std::string& text, GLfloat x, GLfloat y, GLfloat z, GLfloat scale, CEColor color, const std::string fontName = "Exo2-Regular", bool isWorldSpace = false);
+    void RenderCenteredText(const std::string& text, GLfloat x, GLfloat y, GLfloat z, GLfloat scale, CEColor color, const std::string fontName = "Exo2-Regular", bool isWorldSpace = false, float letterSpacing = 0.0f);
+
+    /*!
+    @brief Render text within a bounding box with wrapping and alignment
+    */
+    void RenderTextBounded(const std::string& text, 
+                           GLfloat x, GLfloat y, GLfloat z, 
+                           GLfloat maxWidth, GLfloat maxHeight, 
+                           GLfloat scale, CEColor color, 
+                           const std::string fontName, 
+                           bool isWorldSpace,
+                           int alignment, int verticalAlignment,
+                           CEVec2 padding = {0.f, 0.f},
+                           float letterSpacing = 0.0f,
+                           float lineSpacing = 0.0f);
 
     // Function to get the (x, y) baseline position of the cursor
     CEVec2 GetCursorPosition(const std::string& text, size_t cursorPos,

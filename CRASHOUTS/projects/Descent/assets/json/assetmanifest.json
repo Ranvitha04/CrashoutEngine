@@ -77,6 +77,12 @@
             "path": "Switch_StepOn.wav"
         }
     ],
+    "dialogue": [
+        {
+            "name": "dialogue",
+            "path": "dialogue.json"
+        }
+    ],
     "fonts": [
         {
             "name": "AlegreyaSC-Black",
@@ -1603,6 +1609,10 @@
         {
             "name": "Slime new",
             "path": "Slime new.json"
+        },
+        {
+            "name": "Slime V2",
+            "path": "Slime V2.json"
         },
         {
             "name": "Slime",

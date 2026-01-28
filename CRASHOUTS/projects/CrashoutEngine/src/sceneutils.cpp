@@ -40,6 +40,9 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 //#include "particleSystem.h"
 //#include "camera.h"
 
+#include <fstream>
+#include <sstream>
+
 #define FONT_SCALE 0.05f
 
 namespace Scene {
@@ -68,6 +71,42 @@ namespace Scene {
 	// UI SUB-NAMESPACE
 	// ============================================================================
 	namespace UI {
+
+		void LoadDialogue(TextComponent& tc) {
+			if (tc.dialogueFilePath.empty() || tc.dialogueID.empty()) return;
+
+			std::string fullPath = CrashoutsEngine::Assets::rootPath + tc.dialogueFilePath;
+			std::ifstream file(fullPath);
+			if (!file.is_open()) return;
+
+			std::stringstream buffer;
+			buffer << file.rdbuf();
+			std::string content = buffer.str();
+			file.close();
+
+			rapidjson::Document doc;
+			doc.Parse(content.c_str());
+
+			if (!doc.HasParseError()) {
+				if (doc.HasMember(tc.dialogueID.c_str())) {
+					const auto& val = doc[tc.dialogueID.c_str()];
+					if (val.IsString()) {
+						tc.text = val.GetString();
+					}
+				}
+			}
+		}
+
+		static void InitText(ECS& globalECS) {
+			const ECS::ComponentArray<TextComponent>& textArray = globalECS.GetComponentArray<TextComponent>();
+			for (const Entity& id : textArray.indexToEntity) {
+				if (!IsEntityActive(globalECS, id)) continue;
+				TextComponent* tc = globalECS.GetComponent<TextComponent>(id);
+				if (tc) {
+					LoadDialogue(*tc);
+				}
+			}
+		}
 
 		/*
 		@brief      HELPER: Calculates the final UI position (Center-Origin Units)
@@ -162,8 +201,37 @@ namespace Scene {
 
 					float finalX = unitPos.x;
 					float finalY = unitPos.y;
+
+					// Override for Bounded Text: Use Shape Center (ignoring UILayout shift)
+					if (tc->wrapText) {
+						finalX = t->position.x + tc->offset.x;
+						finalY = t->position.y + tc->offset.y;
+					}
+
 					float finalScale = tc->scale;
 					std::string font = tc->font.empty() ? "Exo2-Regular" : tc->font;
+
+					// --- TYPEWRITER LOGIC ---
+					std::string textToRender = tc->text;
+					if (tc->isRevealing && engineState == EngineState::PLAY) {
+						tc->revealTimer += (float)FrameRateController::GetInstance().DT();
+						tc->revealedCharCount = (int)(tc->revealTimer * tc->revealSpeed);
+						if (tc->revealedCharCount < 0) tc->revealedCharCount = 0;
+						if (tc->revealedCharCount > (int)tc->text.length()) tc->revealedCharCount = (int)tc->text.length();
+						
+						textToRender = tc->text.substr(0, tc->revealedCharCount);
+					} 
+					else if (tc->isRevealing && engineState == EngineState::STOP) {
+						// In STOP mode, reset or show full? Usually preview full or reset.
+						// Let's reset to allow previewing "from start" when playing.
+						tc->revealTimer = 0.0f;
+						tc->revealedCharCount = 0;
+						// If you want to see text in editor, maybe show full?
+						// textToRender = tc->text; 
+						// Or show empty? 
+						// Let's show empty to respect the flag, or user can toggle flag off to see text.
+						textToRender = "";
+					}
 
 					// --- COORDINATE SPACE CONVERSION ---
 					if (!tc->isWorldSpace) {
@@ -176,10 +244,125 @@ namespace Scene {
 					}
 
 					// Render Text
-					if (tc->centered)
-						gTextRenderer->RenderCenteredText(tc->text, finalX, finalY, depthZ, finalScale, tc->color, font, tc->isWorldSpace);
-					else
-						gTextRenderer->RenderText(tc->text, finalX, finalY, depthZ, finalScale, tc->color, font, tc->isWorldSpace);
+
+					if (tc->wrapText) {
+
+						float maxWidth = t->size.x;
+
+						float maxHeight = t->size.y;
+
+
+
+						if (!tc->isWorldSpace) {
+
+							// Convert dimensions from Units to Pixels (Full Size)
+
+							maxWidth = (t->size.x / uiWidth) * winW;
+
+							maxHeight = (t->size.y / uiHeight) * winH;
+
+						}
+
+
+
+						// Map UILayout to Text Alignment
+
+						int align = 1; // CENTER
+
+						int vAlign = 1; // MIDDLE
+
+
+
+						if (u) {
+
+							// Horizontal
+
+							if (static_cast<bool>(u->uiLayout & UILayout::LEFT)) align = 0;
+
+							else if (static_cast<bool>(u->uiLayout & UILayout::RIGHT)) align = 2;
+
+
+
+							// Vertical
+
+							if (static_cast<bool>(u->uiLayout & UILayout::TOP)) vAlign = 0;
+
+							else if (static_cast<bool>(u->uiLayout & UILayout::DOWN)) vAlign = 2;
+
+						}
+						else {
+
+							// Fallback to component internal values
+
+							align = (int)tc->alignment;
+
+							vAlign = (int)tc->verticalAlignment;
+
+						}
+
+
+
+						// Override finalX/Y for Bounded Text to use Shape Center
+
+						float boundedX = t->position.x + tc->offset.x;
+
+						float boundedY = t->position.y + tc->offset.y;
+
+
+
+						if (!tc->isWorldSpace) {
+
+							CEVec2 pixelPos = UnitsToPixels(boundedX, boundedY);
+
+							boundedX = pixelPos.x;
+
+							boundedY = pixelPos.y;
+
+						}
+
+
+
+												gTextRenderer->RenderTextBounded(
+
+
+
+													textToRender, boundedX, boundedY, depthZ,
+
+
+
+													maxWidth, maxHeight,
+
+
+
+													finalScale, tc->color, font, tc->isWorldSpace,
+
+
+
+													align, vAlign, tc->padding, tc->letterSpacing, tc->lineSpacing
+
+
+
+												);
+
+
+
+											}
+
+
+
+											else if (tc->centered)
+
+
+
+												gTextRenderer->RenderCenteredText(textToRender, finalX, finalY, depthZ, finalScale, tc->color, font, tc->isWorldSpace, tc->letterSpacing);
+
+
+
+											else
+
+
+
+												gTextRenderer->RenderText(textToRender, finalX, finalY, depthZ, finalScale, tc->color, font, tc->isWorldSpace, tc->letterSpacing);
 
 					// --- CURSOR LOGIC ---
 					TextInputComponent* input = globalECS.GetComponent<TextInputComponent>(id);
@@ -273,7 +456,7 @@ namespace Scene {
 				GuiComponent* g = globalECS.GetComponent<GuiComponent>(id);
 				if (g == nullptr) continue;
 
-				ButtonComponent* b = globalECS.GetComponent<ButtonComponent>(id);				
+				ButtonComponent* b = globalECS.GetComponent<ButtonComponent>(id);
 				TransformComponent* t = globalECS.GetComponent<TransformComponent>(id);
 				UILayoutComponent* u = globalECS.GetComponent<UILayoutComponent>(id);
 
@@ -853,6 +1036,7 @@ namespace Scene {
 
 	void InitScene(CrashoutsEngine::ECS& globalECS) {
 		Particles::InitAllParticles(globalECS);
+		UI::InitText(globalECS);
 	}
 
 	void RenderScene(CrashoutsEngine::ECS& globalECS) {

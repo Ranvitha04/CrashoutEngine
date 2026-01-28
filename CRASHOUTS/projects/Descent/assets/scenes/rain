@@ -1173,7 +1173,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": 287.31719970703127,
-                    "y": 125.32915496826172,
+                    "y": 125.35295104980469,
                     "z": 0.0
                 },
                 "size": {
@@ -1182,7 +1182,7 @@
                 }
             },
             "rigidbody": {
-                "mass": 4.5,
+                "mass": 7.0,
                 "restitutionCoeff": 0.0,
                 "maximumVelocity": {
                     "x": 0.0,
@@ -1200,7 +1200,7 @@
                 "enabled": true,
                 "position": {
                     "x": 287.31719970703127,
-                    "y": 125.32915496826172,
+                    "y": 125.35295104980469,
                     "z": 0.0
                 },
                 "offset": {
@@ -1210,12 +1210,12 @@
                 },
                 "min": {
                     "x": 275.0171813964844,
-                    "y": 95.9761962890625,
+                    "y": 96.0,
                     "z": 0.0
                 },
                 "max": {
                     "x": 299.6172180175781,
-                    "y": 154.68211364746095,
+                    "y": 154.70590209960938,
                     "z": 0.0
                 }
             },
@@ -1258,20 +1258,20 @@
                     {
                         "className": "PlayerMovement",
                         "fields": {
-                            "moveSpeed": 2000.0,
-                            "maxRunSpeed": 200.0,
-                            "jumpPower": 50000.0,
+                            "moveSpeed": 200.0,
+                            "maxRunSpeed": 100.0,
+                            "jumpPower": 20000.0,
                             "groundDrag": 0.15000000596046449,
-                            "airDrag": 0.10000000149011612,
+                            "airDrag": 0.019999999552965165,
                             "gravityScale": 2.5,
                             "turnMultiplier": 2.0,
                             "frictionMultiplier": 500.0,
-                            "gravityForceMultiplier": 18.200000762939454,
-                            "footstepInterval": 7.150000095367432,
-                            "swapPause": 8.449999809265137,
+                            "gravityForceMultiplier": 10.0,
+                            "footstepInterval": 0.07500000298023224,
+                            "swapPause": 1.0,
                             "energyConsumption": 12.5,
-                            "normalMass": 4.5,
-                            "lightMass": 3.0,
+                            "normalMass": 7.0,
+                            "lightMass": 4.5,
                             "CurrentEnergy": 100.0,
                             "MaxEnergy": 100.0,
                             "alive": true,
@@ -1340,12 +1340,12 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 513.77783203125,
-                    "y": 237.34922790527345,
+                    "x": 512.3507690429688,
+                    "y": 237.70004272460938,
                     "z": 0.0
                 },
                 "size": {
-                    "x": -53.0,
+                    "x": 53.0,
                     "y": 49.29999923706055
                 }
             },
@@ -1367,8 +1367,8 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 514.4778442382813,
-                    "y": 233.84922790527345,
+                    "x": 513.05078125,
+                    "y": 234.20004272460938,
                     "z": 0.0
                 },
                 "offset": {
@@ -1377,13 +1377,13 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 499.57781982421877,
-                    "y": 223.64918518066407,
+                    "x": 498.1507568359375,
+                    "y": 224.0,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 529.3778686523438,
-                    "y": 244.0492706298828,
+                    "x": 527.9508056640625,
+                    "y": 244.40008544921876,
                     "z": 0.0
                 }
             },
@@ -1426,21 +1426,21 @@
                     {
                         "className": "SlimeMovement",
                         "fields": {
-                            "moveSpeed": 250.0,
-                            "maxSpeed": 50.0,
+                            "moveSpeed": 600.0,
+                            "maxSpeed": 15.0,
                             "moveAudioInterval": 0.4000000059604645,
                             "stopAudioDistance": 40.0,
-                            "detectionRange": 134.39999389648438,
-                            "gravityScale": 2.799999952316284,
-                            "grabRange": 100.69999694824219,
-                            "minThrowSpeed": 150.0,
-                            "maxThrowSpeed": 1500.0,
+                            "detectionRange": 70.0,
+                            "gravityScale": 2.0,
+                            "grabRange": 60.0,
+                            "minThrowSpeed": 50.0,
+                            "maxThrowSpeed": 200.0,
                             "maxMouseDragDist": 400.0,
-                            "airDrag": 0.10000000149011612,
+                            "airDrag": 1.0,
                             "stunDuration": 1.0,
-                            "MaxDist": 300.0,
-                            "ledgeBuffer": -6.699999809265137,
-                            "ledgeRayCastDistance": 50.70000076293945
+                            "MaxDist": 200.0,
+                            "ledgeBuffer": 40.0,
+                            "ledgeRayCastDistance": 50.0
                         }
                     }
                 ]
@@ -1494,12 +1494,12 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 649.0337524414063,
-                    "y": 237.34922790527345,
+                    "x": 599.2272338867188,
+                    "y": 237.70004272460938,
                     "z": 0.0
                 },
                 "size": {
-                    "x": -53.0,
+                    "x": 53.0,
                     "y": 49.29999923706055
                 }
             },
@@ -1521,8 +1521,8 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 649.7337646484375,
-                    "y": 233.84922790527345,
+                    "x": 599.92724609375,
+                    "y": 234.20004272460938,
                     "z": 0.0
                 },
                 "offset": {
@@ -1531,13 +1531,13 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 634.833740234375,
-                    "y": 223.64918518066407,
+                    "x": 585.0272216796875,
+                    "y": 224.0,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 664.6337890625,
-                    "y": 244.0492706298828,
+                    "x": 614.8272705078125,
+                    "y": 244.40008544921876,
                     "z": 0.0
                 }
             },
@@ -1580,21 +1580,21 @@
                     {
                         "className": "SlimeMovement",
                         "fields": {
-                            "moveSpeed": 250.0,
-                            "maxSpeed": 50.0,
+                            "moveSpeed": 600.0,
+                            "maxSpeed": 15.0,
                             "moveAudioInterval": 0.4000000059604645,
                             "stopAudioDistance": 40.0,
-                            "detectionRange": 134.39999389648438,
-                            "gravityScale": 2.799999952316284,
-                            "grabRange": 100.69999694824219,
-                            "minThrowSpeed": 150.0,
-                            "maxThrowSpeed": 1500.0,
+                            "detectionRange": 70.0,
+                            "gravityScale": 2.0,
+                            "grabRange": 60.0,
+                            "minThrowSpeed": 50.0,
+                            "maxThrowSpeed": 200.0,
                             "maxMouseDragDist": 400.0,
-                            "airDrag": 0.10000000149011612,
+                            "airDrag": 1.0,
                             "stunDuration": 1.0,
-                            "MaxDist": 300.0,
-                            "ledgeBuffer": -6.699999809265137,
-                            "ledgeRayCastDistance": 50.70000076293945
+                            "MaxDist": 200.0,
+                            "ledgeBuffer": 40.0,
+                            "ledgeRayCastDistance": 50.0
                         }
                     }
                 ]
@@ -1648,8 +1648,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 305.4844970703125,
-                    "y": 237.3492431640625,
+                    "x": 272.1683654785156,
+                    "y": 237.70005798339845,
                     "z": 0.0
                 },
                 "size": {
@@ -1675,8 +1675,8 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 306.18450927734377,
-                    "y": 233.8492431640625,
+                    "x": 272.8683776855469,
+                    "y": 234.20005798339845,
                     "z": 0.0
                 },
                 "offset": {
@@ -1685,13 +1685,13 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 291.28448486328127,
-                    "y": 223.64918518066407,
+                    "x": 257.9683532714844,
+                    "y": 224.0,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 321.08453369140627,
-                    "y": 244.04930114746095,
+                    "x": 287.7684020996094,
+                    "y": 244.40011596679688,
                     "z": 0.0
                 }
             },
@@ -1734,21 +1734,21 @@
                     {
                         "className": "SlimeMovement",
                         "fields": {
-                            "moveSpeed": 250.0,
-                            "maxSpeed": 50.0,
+                            "moveSpeed": 600.0,
+                            "maxSpeed": 15.0,
                             "moveAudioInterval": 0.4000000059604645,
                             "stopAudioDistance": 40.0,
-                            "detectionRange": 134.39999389648438,
-                            "gravityScale": 2.799999952316284,
-                            "grabRange": 100.69999694824219,
-                            "minThrowSpeed": 150.0,
-                            "maxThrowSpeed": 1500.0,
+                            "detectionRange": 70.0,
+                            "gravityScale": 2.0,
+                            "grabRange": 60.0,
+                            "minThrowSpeed": 50.0,
+                            "maxThrowSpeed": 200.0,
                             "maxMouseDragDist": 400.0,
-                            "airDrag": 0.10000000149011612,
+                            "airDrag": 1.0,
                             "stunDuration": 1.0,
-                            "MaxDist": 300.0,
-                            "ledgeBuffer": -6.699999809265137,
-                            "ledgeRayCastDistance": 50.70000076293945
+                            "MaxDist": 200.0,
+                            "ledgeBuffer": 40.0,
+                            "ledgeRayCastDistance": 50.0
                         }
                     }
                 ]
@@ -1791,6 +1791,99 @@
                     "z": 0.0,
                     "w": 0.5
                 }
+            }
+        },
+        {
+            "active": true,
+            "name": "Entity 154",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 295.2951354980469,
+                    "y": 170.53575134277345,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 118.0999984741211,
+                    "y": 40.599998474121097
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.1767956018447876,
+                    "y": 0.13284090161323548,
+                    "z": 0.13284090161323548,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "text": {
+                "font": "AlegreyaSC-Medium",
+                "text": "This is a test sentence",
+                "scale": 4.699999809265137,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": true,
+                "alignment": 1,
+                "verticalAlignment": 0,
+                "wrapText": true,
+                "padding": {
+                    "x": 10.0,
+                    "y": 10.0
+                },
+                "letterSpacing": 2.0999999046325685,
+                "lineSpacing": 0.0,
+                "isRevealing": true,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "dialogue/dialogue.json",
+                "dialogueID": "test"
+            },
+            "gui": {
+                "uiType": 3
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "uiLayout": 12
             }
         }
     ],
