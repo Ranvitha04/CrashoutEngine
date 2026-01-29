@@ -433,15 +433,52 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path) {
         }
 
         // Camera
+      // Camera
         CameraData camD;
         if (prefabs.HasMember("camera")) {
             camD.hasComp = true;
             const auto& c = prefabs["camera"];
+
             if (c.HasMember("zoom")) camD.c.zoom = c["zoom"].GetFloat();
-            if (c.HasMember("position")) camD.c.position = ReadVectorFromJson{}(c["position"]);
-            if (c.HasMember("xBounds")) { camD.c.xBounds.x = c["xBounds"]["x"].GetFloat(); camD.c.xBounds.y = c["xBounds"]["y"].GetFloat(); }
-            if (c.HasMember("yBounds")) { camD.c.yBounds.x = c["yBounds"]["x"].GetFloat(); camD.c.yBounds.y = c["yBounds"]["y"].GetFloat(); }
+
+            // NEW FORMAT: position {x,y,z}
+            if (c.HasMember("position") && c["position"].IsObject()) {
+                camD.c.position = ReadVectorFromJson{}(c["position"]);
+            }
+            // LEGACY FORMAT: x, y (no "position" object)
+            else {
+                if (c.HasMember("x")) camD.c.position.x = c["x"].GetFloat();
+                if (c.HasMember("y")) camD.c.position.y = c["y"].GetFloat();
+                if (c.HasMember("z")) camD.c.position.z = c["z"].GetFloat();
+            }
+
+            // xBounds: NEW {x,y}  OR  LEGACY [min,max]
+            if (c.HasMember("xBounds")) {
+                const auto& xb = c["xBounds"];
+                if (xb.IsObject()) {
+                    if (xb.HasMember("x")) camD.c.xBounds.x = xb["x"].GetFloat();
+                    if (xb.HasMember("y")) camD.c.xBounds.y = xb["y"].GetFloat();
+                }
+                else if (xb.IsArray() && xb.Size() >= 2) {
+                    camD.c.xBounds.x = xb[0].GetFloat();
+                    camD.c.xBounds.y = xb[1].GetFloat();
+                }
+            }
+
+            // yBounds: NEW {x,y}  OR  LEGACY [min,max]
+            if (c.HasMember("yBounds")) {
+                const auto& yb = c["yBounds"];
+                if (yb.IsObject()) {
+                    if (yb.HasMember("x")) camD.c.yBounds.x = yb["x"].GetFloat();
+                    if (yb.HasMember("y")) camD.c.yBounds.y = yb["y"].GetFloat();
+                }
+                else if (yb.IsArray() && yb.Size() >= 2) {
+                    camD.c.yBounds.x = yb[0].GetFloat();
+                    camD.c.yBounds.y = yb[1].GetFloat();
+                }
+            }
         }
+
 
         // Sprite Animator
         SpriteData spD;
@@ -645,6 +682,8 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path) {
 
             // Shape
             if (shD.hasComp) ecs.AddComponent<ShapeComponent>(e, shD.c);
+            //Camera
+            if (camD.hasComp) ecs.AddComponent<Component::CameraComponent>(e, camD.c);
 
             // Rigidbody
             if (rbD.hasComp) {
@@ -1196,21 +1235,29 @@ namespace CrashoutsEngine {
             rapidjson::Value camObj(rapidjson::kObjectType);
 
             camObj.AddMember("zoom", cam->zoom, allocator);
-            camObj.AddMember("x", cam->position.x, allocator);
-            camObj.AddMember("y", cam->position.y, allocator);
 
-            rapidjson::Value xb(rapidjson::kArrayType);
-            xb.PushBack(cam->xBounds.x, allocator);
-            xb.PushBack(cam->xBounds.y, allocator);
+           
+            rapidjson::Value pos(rapidjson::kObjectType);
+            pos.AddMember("x", cam->position.x, allocator);
+            pos.AddMember("y", cam->position.y, allocator);
+            pos.AddMember("z", cam->position.z, allocator);
+            camObj.AddMember("position", pos, allocator);
+
+            
+            rapidjson::Value xb(rapidjson::kObjectType);
+            xb.AddMember("x", cam->xBounds.x, allocator);
+            xb.AddMember("y", cam->xBounds.y, allocator);
             camObj.AddMember("xBounds", xb, allocator);
 
-            rapidjson::Value yb(rapidjson::kArrayType);
-            yb.PushBack(cam->yBounds.x, allocator);
-            yb.PushBack(cam->yBounds.y, allocator);
+            
+            rapidjson::Value yb(rapidjson::kObjectType);
+            yb.AddMember("x", cam->yBounds.x, allocator);
+            yb.AddMember("y", cam->yBounds.y, allocator);
             camObj.AddMember("yBounds", yb, allocator);
 
             obj.AddMember("camera", camObj, allocator);
         }
+
 
 
 

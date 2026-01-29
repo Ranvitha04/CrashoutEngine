@@ -1549,6 +1549,10 @@
             "path": "BlueBox.json"
         },
         {
+            "name": "Camera",
+            "path": "Camera.json"
+        },
+        {
             "name": "EnergyBall",
             "path": "EnergyBall.json"
         },
