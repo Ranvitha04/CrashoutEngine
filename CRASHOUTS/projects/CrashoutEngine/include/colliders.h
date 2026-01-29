@@ -85,6 +85,11 @@ namespace Collision {
 		ColliderType ColliderType; /*HELPER FOR UI DROPDOWN*/
 		bool isTrigger = false;
 		bool enabled = true;
+
+		// --- AABB CACHING ---
+		mutable CEVec3 cachedMin;
+		mutable CEVec3 cachedMax;
+		mutable bool isAABBCacheDirty = true;
 	};
 
 	/*!

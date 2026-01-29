@@ -1071,17 +1071,20 @@ namespace Collision {
 		}
 
 		// Force all colliders to match their Transform position BEFORE we calculate collisions.
+		// ONLY for entities without RigidBodyComponent (Physics system handles the rest)
 		for (CrashoutsEngine::Entity& entity : colliderEntities) {
 			if (!IsEntityActive(globalECS, entity)) continue;
 
-			if (globalECS.HasComponent<Component::TransformComponent>(entity)) {
-				auto* transform = globalECS.GetComponent<Component::TransformComponent>(entity);
-				auto* collider = globalECS.GetComponent<Component::ColliderComponent>(entity);
+			if (!globalECS.HasComponent<Component::RigidBodyComponent>(entity)) {
+				if (globalECS.HasComponent<Component::TransformComponent>(entity)) {
+					auto* transform = globalECS.GetComponent<Component::TransformComponent>(entity);
+					auto* collider = globalECS.GetComponent<Component::ColliderComponent>(entity);
 
-				// Sync Position & Rotation
-				if (collider && collider->collider) {
-					collider->collider->UpdateCollider(transform->position);
-					collider->collider->UpdateRotation(transform->rotation);
+					// Sync Position & Rotation
+					if (collider && collider->collider) {
+						collider->collider->UpdateCollider(transform->position);
+						collider->collider->UpdateRotation(transform->rotation);
+					}
 				}
 			}
 		}

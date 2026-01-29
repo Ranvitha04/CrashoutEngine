@@ -18,6 +18,7 @@ namespace Collision {
 
 	void Circle::UpdateCollider(CEVec3 const& newPos) {
 		position = newPos + offset;
+		isAABBCacheDirty = true;
 	}
 
 	AABBRect::AABBRect(CEVec3 const& min, CEVec3 const& max) : Collider{ ColliderType::AABB }, min{ min }, max{ max } {
@@ -30,16 +31,21 @@ namespace Collision {
 
 	AABBRect GetAABB(Collider const& collider, CEVec3 const& transform) {
 
+		if (!collider.isAABBCacheDirty) return AABBRect{ collider.cachedMin, collider.cachedMax };
+
 		switch (collider.type) {
 
 			case ColliderType::CIRCLE: {
 				Circle const& circle{ dynamic_cast<Circle const&>(collider) };
 				CEVec3 extents{ circle.radius, circle.radius, 0.f };
-				return AABBRect{ circle.position - extents, circle.position + extents };
+				collider.cachedMin = circle.position - extents;
+				collider.cachedMax = circle.position + extents;
 				}
 				break;
 			case ColliderType::AABB: {
-				return dynamic_cast<AABBRect const&>(collider);
+				AABBRect const& aabb = dynamic_cast<AABBRect const&>(collider);
+				collider.cachedMin = aabb.min;
+				collider.cachedMax = aabb.max;
 				}
 				break;
 			case ColliderType::LINE: {
@@ -50,7 +56,8 @@ namespace Collision {
 				if (min.x > max.x) std::swap(min.x, max.x);
 				if (min.y > max.y) std::swap(min.y, max.y);
 
-				return AABBRect{ min, max };
+				collider.cachedMin = min;
+				collider.cachedMax = max;
 			}				   
 			    break;
 			case ColliderType::POLYGON: {
@@ -66,20 +73,25 @@ namespace Collision {
 					maxXY.y = std::max(maxXY.y, polygon.rotatedVertices[i].y);
 				}
 
-				return AABBRect{ minXY, maxXY };
+				collider.cachedMin = minXY;
+				collider.cachedMax = maxXY;
 				}
 				break;
-
+			default:
+				collider.cachedMin = CEVec3{};
+				collider.cachedMax = CEVec3{};
+				break;
 		}
 
-		return AABBRect{ CEVec3{}, CEVec3{} };
-
+		collider.isAABBCacheDirty = false;
+		return AABBRect{ collider.cachedMin, collider.cachedMax };
 	}
 
 	void AABBRect::UpdateCollider(CEVec3 const& newPos) {
 		position = newPos + offset;
 		max = position + extents;
 		min = position - extents;
+		isAABBCacheDirty = true;
 	}
 
 	OBBRect::OBBRect(CEVec3 const& min, CEVec3 const& max, f32 newRotation) : Collider{ ColliderType::OBB }, min{ min }, max{ max }, rotation{ 0.f } {
@@ -300,6 +312,7 @@ namespace Collision {
 		}
 
 		CalcNormals();
+		isAABBCacheDirty = true;
 	}
 
 	void Polygon::ForceUpdateRotation(f32 newRotation) {
@@ -318,6 +331,7 @@ namespace Collision {
 		}
 
 		CalcNormals();
+		isAABBCacheDirty = true;
 	}
 
 	void Polygon::UpdatePosition(CEVec3 const& newPos) {
@@ -329,6 +343,7 @@ namespace Collision {
 			rotatedVertices[i] += vecToNewPos;
 			vertices[i] += vecToNewPos;
 		}
+		isAABBCacheDirty = true;
 	}
 
 	void Polygon::UpdateCollider(CEVec3 const& newPos) {
@@ -370,6 +385,7 @@ namespace Collision {
 			normalEdges[i] = CEMath::Normalize(normalEdges[i]);
 
 		}
+		isAABBCacheDirty = true;
 	}
 
 	void OBBRect::UpdateCollider(CEVec3 const& newPos) {
@@ -385,6 +401,7 @@ namespace Collision {
 		rotatedVertices[1] += vecToNewPos;
 		rotatedVertices[2] += vecToNewPos;
 		rotatedVertices[3] += vecToNewPos;
+		isAABBCacheDirty = true;
 	}
 
 	LineSegment::LineSegment(const CEVec3& start, const CEVec3& end) :
@@ -401,6 +418,7 @@ namespace Collision {
 		// Calculate Normal (Perpendiculate 2D vector: -y, x)
 		CEVec3 dir = worldP2 - worldP1;
 		normal = CEMath::Normalize(CEVec3{ -dir.y, dir.x, 0.f });
+		isAABBCacheDirty = true;
 	}
 
 	void LineSegment::UpdateRotation(f32 newRotation) {
@@ -414,5 +432,6 @@ namespace Collision {
 		/// Calculate Normal (Perpendiculate 2D vector: -y, x)
 		CEVec3 dir = worldP2 - worldP1;
 		normal = CEMath::Normalize(CEVec3{ -dir.y, dir.x, 0.f });
+		isAABBCacheDirty = true;
 	}
 }

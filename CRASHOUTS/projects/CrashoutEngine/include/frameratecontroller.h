@@ -4,7 +4,7 @@
 @date       24/09/2025
 @brief		Declaration for frame rate controller
 
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 */
 #pragma once
@@ -44,6 +44,9 @@ public:
 	double FixedDT() const;
 	int StepCount() const;
 
+	void SetMaxPhysicsSteps(int max) { mMaxPhysicsSteps = max; }
+	int GetMaxPhysicsSteps() const { return mMaxPhysicsSteps; }
+
 private:
 	FrameRateController();
 	ClockTime::time_point mFrameStart{};
@@ -53,6 +56,7 @@ private:
 	double mDT{};
 	double mAccumulatedTime{};
 	int mCurrentSteps{};
+	int mMaxPhysicsSteps{ 5 }; // Default to 5 steps max
 	//Exponential moving average of FPS
 	///EMA calculate smoothed fps to avoid jumping fps values
 	double mFPS{};

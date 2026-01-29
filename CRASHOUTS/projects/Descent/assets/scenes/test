@@ -1037,14 +1037,13 @@
                     {
                         "className": "PlayerMovement",
                         "fields": {
-                            "moveSpeed": 500.0,
                             "maxRunSpeed": 5000.0,
+                            "maxAirSpeed": 120.0,
+                            "acceleration": 10.0,
+                            "deceleration": 10.0,
+                            "airAcceleration": 2.0,
                             "jumpPower": 20000.0,
-                            "groundDrag": 0.15000000596046449,
-                            "airDrag": 0.019999999552965165,
                             "gravityScale": 2.5,
-                            "turnMultiplier": 2.0,
-                            "frictionMultiplier": 500.0,
                             "gravityForceMultiplier": 10.0,
                             "footstepInterval": 0.07500000298023224,
                             "swapPause": 1.0,

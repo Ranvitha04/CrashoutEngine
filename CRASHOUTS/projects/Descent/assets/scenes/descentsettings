@@ -3,8 +3,8 @@
         {
             "active": true,
             "name": "BG",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -63,20 +63,20 @@
                     "y": 0.0
                 }
             },
-            "zorder": {
-                "layer": 0,
+            "layer": {
+                "layerName": "StaticBackground",
                 "z": 0
             },
-            "zorder": {
-                "layer": 0,
+            "layer": {
+                "layerName": "StaticBackground",
                 "z": 0
             }
         },
         {
             "active": true,
             "name": "Title",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -124,20 +124,20 @@
                     "z": 0.0
                 }
             },
-            "zorder": {
-                "layer": 0,
+            "layer": {
+                "layerName": "StaticBackground",
                 "z": 0
             },
-            "zorder": {
-                "layer": 0,
+            "layer": {
+                "layerName": "StaticBackground",
                 "z": 0
             }
         },
         {
             "active": true,
             "name": "CloseBtn",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -200,7 +200,20 @@
                     "w": 0.6298342943191528
                 },
                 "centered": true,
-                "isworldspace": true
+                "isworldspace": true,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": false,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 0.0,
+                "lineSpacing": 0.0,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
             },
             "script": {
                 "scripts": [
@@ -259,20 +272,20 @@
                 },
                 "uiLayout": 4
             },
-            "zorder": {
-                "layer": 0,
+            "layer": {
+                "layerName": "StaticBackground",
                 "z": 0
             },
-            "zorder": {
-                "layer": 0,
+            "layer": {
+                "layerName": "StaticBackground",
                 "z": 0
             }
         },
         {
             "active": true,
             "name": "SettingsPanel",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -320,20 +333,20 @@
                     "z": 0.0
                 }
             },
-            "zorder": {
-                "layer": 0,
+            "layer": {
+                "layerName": "StaticBackground",
                 "z": 0
             },
-            "zorder": {
-                "layer": 0,
+            "layer": {
+                "layerName": "StaticBackground",
                 "z": 0
             }
         },
         {
             "active": true,
             "name": "Instructions",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -362,22 +375,35 @@
                     "w": 1.0
                 },
                 "centered": true,
-                "isworldspace": true
+                "isworldspace": true,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": false,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 0.0,
+                "lineSpacing": 0.0,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
             },
-            "zorder": {
-                "layer": 0,
+            "layer": {
+                "layerName": "StaticBackground",
                 "z": 0
             },
-            "zorder": {
-                "layer": 0,
+            "layer": {
+                "layerName": "StaticBackground",
                 "z": 0
             }
         },
         {
             "active": true,
             "name": "Entity 5_Clone6",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -406,7 +432,20 @@
                     "w": 1.0
                 },
                 "centered": true,
-                "isworldspace": true
+                "isworldspace": true,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": false,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 0.0,
+                "lineSpacing": 0.0,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
             },
             "parent": {
                 "parentName": "Instructions",
@@ -428,20 +467,20 @@
                     "w": 1.0
                 }
             },
-            "zorder": {
-                "layer": 0,
+            "layer": {
+                "layerName": "StaticBackground",
                 "z": 0
             },
-            "zorder": {
-                "layer": 0,
+            "layer": {
+                "layerName": "StaticBackground",
                 "z": 0
             }
         },
         {
             "active": true,
             "name": "Entity 5_Clone6_Clone7",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -470,7 +509,20 @@
                     "w": 1.0
                 },
                 "centered": true,
-                "isworldspace": true
+                "isworldspace": true,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": false,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 0.0,
+                "lineSpacing": 0.0,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
             },
             "parent": {
                 "parentName": "Instructions",
@@ -492,20 +544,20 @@
                     "w": 1.0
                 }
             },
-            "zorder": {
-                "layer": 0,
+            "layer": {
+                "layerName": "StaticBackground",
                 "z": 0
             },
-            "zorder": {
-                "layer": 0,
+            "layer": {
+                "layerName": "StaticBackground",
                 "z": 0
             }
         },
         {
             "active": true,
             "name": "Entity 5_Clone6_Clone7_Clone8",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -534,7 +586,20 @@
                     "w": 1.0
                 },
                 "centered": true,
-                "isworldspace": true
+                "isworldspace": true,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": false,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 0.0,
+                "lineSpacing": 0.0,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
             },
             "parent": {
                 "parentName": "Instructions",
@@ -556,20 +621,20 @@
                     "w": 1.0
                 }
             },
-            "zorder": {
-                "layer": 0,
+            "layer": {
+                "layerName": "StaticBackground",
                 "z": 0
             },
-            "zorder": {
-                "layer": 0,
+            "layer": {
+                "layerName": "StaticBackground",
                 "z": 0
             }
         },
         {
             "active": true,
             "name": "Entity 5_Clone6_Clone7_Clone8_Clone9",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -632,7 +697,20 @@
                     "w": 1.0
                 },
                 "centered": true,
-                "isworldspace": true
+                "isworldspace": true,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": false,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 0.0,
+                "lineSpacing": 0.0,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
             },
             "gui": {
                 "uiType": 2
@@ -664,20 +742,20 @@
                     "w": 1.0
                 }
             },
-            "zorder": {
-                "layer": 0,
+            "layer": {
+                "layerName": "StaticBackground",
                 "z": 0
             },
-            "zorder": {
-                "layer": 0,
+            "layer": {
+                "layerName": "StaticBackground",
                 "z": 0
             }
         },
         {
             "active": true,
             "name": "SFX",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -706,22 +784,35 @@
                     "w": 1.0
                 },
                 "centered": true,
-                "isworldspace": true
+                "isworldspace": true,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": false,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 0.0,
+                "lineSpacing": 0.0,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
             },
-            "zorder": {
-                "layer": 0,
+            "layer": {
+                "layerName": "StaticBackground",
                 "z": 0
             },
-            "zorder": {
-                "layer": 0,
+            "layer": {
+                "layerName": "StaticBackground",
                 "z": 0
             }
         },
         {
             "active": true,
             "name": "SFXBar",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -826,20 +917,20 @@
                 },
                 "uiLayout": 4
             },
-            "zorder": {
-                "layer": 0,
+            "layer": {
+                "layerName": "StaticBackground",
                 "z": 0
             },
-            "zorder": {
-                "layer": 0,
+            "layer": {
+                "layerName": "StaticBackground",
                 "z": 0
             }
         },
         {
             "active": true,
             "name": "MusicBar",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -944,20 +1035,20 @@
                 },
                 "uiLayout": 4
             },
-            "zorder": {
-                "layer": 0,
+            "layer": {
+                "layerName": "StaticBackground",
                 "z": 0
             },
-            "zorder": {
-                "layer": 0,
+            "layer": {
+                "layerName": "StaticBackground",
                 "z": 0
             }
         },
         {
             "active": true,
             "name": "Music",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -986,22 +1077,35 @@
                     "w": 1.0
                 },
                 "centered": true,
-                "isworldspace": true
+                "isworldspace": true,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": false,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 0.0,
+                "lineSpacing": 0.0,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
             },
-            "zorder": {
-                "layer": 0,
+            "layer": {
+                "layerName": "StaticBackground",
                 "z": 0
             },
-            "zorder": {
-                "layer": 0,
+            "layer": {
+                "layerName": "StaticBackground",
                 "z": 0
             }
         },
         {
             "active": true,
             "name": "Instruction",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -1030,22 +1134,35 @@
                     "w": 1.0
                 },
                 "centered": true,
-                "isworldspace": true
+                "isworldspace": true,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": false,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 0.0,
+                "lineSpacing": 0.0,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
             },
-            "zorder": {
-                "layer": 0,
+            "layer": {
+                "layerName": "StaticBackground",
                 "z": 0
             },
-            "zorder": {
-                "layer": 0,
+            "layer": {
+                "layerName": "StaticBackground",
                 "z": 0
             }
         },
         {
             "active": true,
             "name": "SFXBar_BG",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -1093,20 +1210,20 @@
                     "z": 0.0
                 }
             },
-            "zorder": {
-                "layer": 0,
+            "layer": {
+                "layerName": "StaticBackground",
                 "z": 0
             },
-            "zorder": {
-                "layer": 0,
+            "layer": {
+                "layerName": "StaticBackground",
                 "z": 0
             }
         },
         {
             "active": true,
             "name": "MusicBar_BG",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -1154,12 +1271,12 @@
                     "z": 0.0
                 }
             },
-            "zorder": {
-                "layer": 0,
+            "layer": {
+                "layerName": "StaticBackground",
                 "z": 0
             },
-            "zorder": {
-                "layer": 0,
+            "layer": {
+                "layerName": "StaticBackground",
                 "z": 0
             }
         }

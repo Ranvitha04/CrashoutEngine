@@ -42,6 +42,7 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserv
 #include "scriptcomponent.h"
 #include "cameracomponent.h"
 #include "physicsmanager.h"
+#include "frameratecontroller.h"
 #include "ppcomponent.h"
 #include "collidercomponent.h"
 #include "tilemapcomponent.h"
@@ -3119,6 +3120,14 @@ namespace CrashoutsEngine
 			float d = Physics::PhysicsHandler::GetLinearDamping();
 			UIHelpers::DrawUndoableFloat("Damping", d);
 			Physics::PhysicsHandler::SetLinearDamping(d);
+
+			// Max Physics Steps
+			int maxSteps = FrameRateController::GetInstance().GetMaxPhysicsSteps();
+			if (ImGui::SliderInt("Max Physics Steps", &maxSteps, 1, 20)) {
+				FrameRateController::GetInstance().SetMaxPhysicsSteps(maxSteps);
+			}
+			ImGui::SameLine();
+			ImGui::Text("Limit physics ticks per frame to prevent the 'Spiral of Death' during lag spikes.");
 		}
 	};
 
