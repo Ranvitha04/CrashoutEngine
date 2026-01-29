@@ -1541,10 +1541,6 @@
     ],
     "prefabs": [
         {
-            "name": "Ball",
-            "path": "Ball.json"
-        },
-        {
             "name": "BigBox",
             "path": "BigBox.json"
         },
@@ -1625,6 +1621,10 @@
         {
             "name": "amir",
             "path": "amir"
+        },
+        {
+            "name": "descentClosedBook",
+            "path": "descentClosedBook"
         },
         {
             "name": "descentconfirm",

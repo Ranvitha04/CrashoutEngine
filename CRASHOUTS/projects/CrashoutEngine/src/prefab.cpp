@@ -50,6 +50,7 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserve
 #include <unordered_map>
 #include <filesystem>
 #include <iostream>
+#include <unordered_set>
 
 // --- Static Registry ---
 namespace {
@@ -784,7 +785,127 @@ namespace CrashoutsEngine {
             }
         }
     }
+    static void DestroyEntityRecursive(ECS& ecs, Entity e, std::unordered_set<Entity>& visited)
+    {
+        if (!e) return;
+        if (visited.find(e) != visited.end()) return;
+        visited.insert(e);
 
+        if (ecs.HasComponent<Component::ChildrenComponent>(e)) {
+            auto* kids = ecs.GetComponent<Component::ChildrenComponent>(e);
+            if (kids) {
+                auto copy = kids->children; 
+                for (Entity c : copy)
+                    DestroyEntityRecursive(ecs, c, visited);
+            }
+        }
+
+        ecs.DestroyEntity(e);
+    }
+    // Remove prefab fron json file
+    static bool RemovePrefabFromJsonFile(const std::filesystem::path& filePath, const std::string& prefabName)
+    {
+        using namespace rapidjson;
+
+        std::ifstream ifs(filePath, std::ios::binary);
+        if (!ifs.is_open()) return false;
+
+        IStreamWrapper isw(ifs);
+        Document doc;
+        doc.ParseStream(isw);
+        ifs.close();
+
+        if (doc.HasParseError() || !doc.IsObject()) return false;
+        if (!doc.HasMember("prefabs") || !doc["prefabs"].IsArray()) return false;
+
+        auto& alloc = doc.GetAllocator();
+        Value& arr = doc["prefabs"];
+        const auto oldCount = arr.Size();
+
+        Value newArr(kArrayType);
+        for (auto& p : arr.GetArray())
+        {
+            if (p.IsObject() && p.HasMember("name") && p["name"].IsString()) {
+                if (prefabName == p["name"].GetString())
+                    continue; 
+            }
+            Value copy;
+            copy.CopyFrom(p, alloc);
+            newArr.PushBack(copy, alloc);
+        }
+
+        if (newArr.Size() == oldCount)
+            return false; 
+
+        arr = newArr;
+
+        
+        if (arr.Empty()) {
+            std::error_code ec;
+            std::filesystem::remove(filePath, ec);
+            return true;
+        }
+
+        StringBuffer sb;
+        PrettyWriter<StringBuffer> writer(sb);
+        doc.Accept(writer);
+
+        std::ofstream ofs(filePath, std::ios::binary | std::ios::trunc);
+        if (!ofs.is_open()) return false;
+        ofs << sb.GetString();
+        ofs.close();
+
+        return true;
+    }
+    //Button call
+    bool DeletePrefabAsset(ECS& ecs, const std::string& prefabName)
+    {
+        if (prefabName.empty()) return false;
+
+        namespace fs = std::filesystem;
+        bool removedFromDisk = false;
+
+       
+        std::vector<Entity> rootsToDelete;
+        {
+            auto& arr = ecs.GetComponentArray<PrefabInstanceComponent>();
+            for (size_t i = 0; i < arr.dense.size(); ++i) {
+                if (arr.dense[i].prefabName == prefabName)
+                    rootsToDelete.push_back(arr.indexToEntity[i]);
+            }
+        }
+
+        std::unordered_set<Entity> visited;
+        visited.reserve(rootsToDelete.size() * 4);
+        for (Entity e : rootsToDelete)
+            DestroyEntityRecursive(ecs, e, visited);
+
+       
+        Prefab::Unregister(prefabName);
+
+       
+#if USE_IMGUI_EDITOR
+        const fs::path dir = fs::path(CrashoutsEngine::Assets::rootPath) / "prefabs";
+#else
+        const fs::path dir = fs::path(GetLocalAppData()) / "prefabs";
+#endif
+
+        if (fs::exists(dir) && fs::is_directory(dir)) {
+            for (auto& entry : fs::directory_iterator(dir)) {
+                if (!entry.is_regular_file()) continue;
+                if (entry.path().extension() != ".json") continue;
+
+                if (RemovePrefabFromJsonFile(entry.path(), prefabName))
+                    removedFromDisk = true;
+            }
+        }
+
+        
+        if (fs::exists(dir))
+            ReloadPrefabsFromDisk(dir.generic_string());
+
+        return removedFromDisk || !rootsToDelete.empty();
+    }
     void ReloadPrefabsFromDisk(const std::string& path) {
         // 1. Wipe everything (Factories + Fallback)
         Prefab::ClearRegistry();
