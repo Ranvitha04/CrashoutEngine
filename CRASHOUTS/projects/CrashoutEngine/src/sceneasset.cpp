@@ -1272,10 +1272,34 @@ namespace CrashoutsEngine {
 						// Get the key
 						std::string layerName = itr->name.GetString();
 						// Get value
-						unsigned int layerVal = 0;
-						if (itr->value.IsUint()) layerVal = itr->value.GetUint();
+						int layerVal = 0;
+						if (itr->value.IsInt()) layerVal = itr->value.GetInt();
 						// Insert the pair
 						LayerComponent::layerMap[layerName] = layerVal;
+					}
+				}
+			}
+
+			if (doc.HasMember("layer_visibility")) {
+				LayerComponent::layerVisibility.clear();
+				const rapidjson::Value& visMap = doc["layer_visibility"];
+				if (visMap.IsObject()) {
+					for (rapidjson::Value::ConstMemberIterator itr = visMap.MemberBegin();
+						itr != visMap.MemberEnd(); ++itr) {
+						std::string layerName = itr->name.GetString();
+						if (itr->value.IsBool()) LayerComponent::layerVisibility[layerName] = itr->value.GetBool();
+					}
+				}
+			}
+
+			if (doc.HasMember("tag_mapping")) {
+				TagComponent::tags.clear();
+				const rapidjson::Value& tagMap = doc["tag_mapping"];
+				if (tagMap.IsObject()) {
+					for (rapidjson::Value::ConstMemberIterator itr = tagMap.MemberBegin();
+						itr != tagMap.MemberEnd(); ++itr) {
+						std::string tagName = itr->name.GetString();
+						if (itr->value.IsUint()) TagComponent::tags[tagName] = itr->value.GetUint();
 					}
 				}
 			}
@@ -1453,16 +1477,6 @@ namespace CrashoutsEngine {
 				// Any changes to components only need to be updated in SerializeEntity now.
 				rapidjson::Value entityValue = SerializeEntity(static_cast<uint32_t>(id), allocator);
 
-				// =========================================================
-			// Layer (formerly ZOrder)
-			if (gECS.HasComponent<Component::LayerComponent>(id)) {
-				const auto& c = *gECS.GetComponent<Component::LayerComponent>(id);
-				rapidjson::Value val(rapidjson::kObjectType);
-				val.AddMember("layerName", rapidjson::Value(c.layerName.c_str(), allocator), allocator);
-				val.AddMember("z", c.z, allocator);
-				entityValue.AddMember(rapidjson::StringRef(Keys::LAYER_COMPONENT), val, allocator);
-			}
-
 				// Add the finished entity JSON object to the array
 				entitiesArray.PushBack(std::move(entityValue), allocator);
 			}
@@ -1479,6 +1493,20 @@ namespace CrashoutsEngine {
 			}
 
 			doc.AddMember("layers", std::move(layerNames), allocator);
+
+			// Layer Visibility Save
+			rapidjson::Value layerVisibility(rapidjson::kObjectType);
+			for (auto& vis : LayerComponent::layerVisibility) {
+				layerVisibility.AddMember(rapidjson::Value(vis.first.c_str(), allocator).Move(), vis.second, allocator);
+			}
+			doc.AddMember("layer_visibility", std::move(layerVisibility), allocator);
+
+			// Tag Mapping Save
+			rapidjson::Value tagMapping(rapidjson::kObjectType);
+			for (auto& tag : TagComponent::tags) {
+				tagMapping.AddMember(rapidjson::Value(tag.first.c_str(), allocator).Move(), tag.second, allocator);
+			}
+			doc.AddMember("tag_mapping", std::move(tagMapping), allocator);
 
 			// QuadTree Save
 			rapidjson::Value quadTree(rapidjson::kObjectType);

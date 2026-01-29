@@ -724,7 +724,7 @@ Release resources
 */
 void CleanUp() {
 
-    if (!CrashoutsEngine::Serialization::currSceneName.empty())
+    if (!CrashoutsEngine::Serialization::currSceneName.empty() && engineState == EngineState::STOP)
         CrashoutsEngine::Serialization::SaveScenes(CrashoutsEngine::Serialization::currSceneName);
     gProfiler.Clear(); 
     Prefab::ClearRegistry();

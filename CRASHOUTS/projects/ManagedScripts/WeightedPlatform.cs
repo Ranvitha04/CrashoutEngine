@@ -35,8 +35,8 @@ namespace CrashoutsEngine
 
         public override void Start()
         {
-            CollisionEvents.RegisterTriggerEnter(Entity.ID, OnTriggerEnter);
-            CollisionEvents.RegisterTriggerExit(Entity.ID, OnTriggerExit);
+            CollisionEvents.RegisterCollideStay(Entity.ID, OnCollideStay);
+            CollisionEvents.RegisterCollideExit(Entity.ID, OnCollideExit);
 
             transform = Entity.GetComponent<TransformComponent>();
 
@@ -64,12 +64,13 @@ namespace CrashoutsEngine
             playerScript = PlayerMovement.Instance;
         }
 
-        public void OnTriggerEnter(uint otherEntityID)
+        public void OnCollideStay(uint otherEntityID)
         {
+            Debug.Log("cock");
             Entity other = new Entity(otherEntityID);
             var Tag = other.GetComponent<TagComponent>();
 
-            if (Tag != null && Tag.HasTag("player"))
+            if (Tag != null && Tag.HasTag("Player"))
             {
                 playerTf = other.GetComponent<TransformComponent>();
                 playerRb = other.GetComponent<RigidBodyComponent>();
@@ -77,12 +78,12 @@ namespace CrashoutsEngine
             }
         }
 
-        public void OnTriggerExit(uint otherEntityID)
+        public void OnCollideExit(uint otherEntityID)
         {
             Entity other = new Entity(otherEntityID);
             var Tag = other.GetComponent<TagComponent>();
 
-            if (Tag != null && Tag.HasTag("player"))
+            if (Tag != null && Tag.HasTag("Player"))
             {
                 playerOnBoard = false;
                 playerTf = null;

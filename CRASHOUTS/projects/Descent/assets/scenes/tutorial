@@ -9665,10 +9665,6 @@
             "layer": {
                 "layerName": "",
                 "z": 0
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             }
         },
         {
@@ -9680,8 +9676,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1630.5360107421876,
-                    "y": -92.50000762939453,
+                    "x": -175.566162109375,
+                    "y": 39.156349182128909,
                     "z": 50.0
                 },
                 "size": {
@@ -9707,8 +9703,8 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 1630.5360107421876,
-                    "y": -97.50000762939453,
+                    "x": -175.566162109375,
+                    "y": 34.156349182128909,
                     "z": 50.0
                 },
                 "offset": {
@@ -9717,13 +9713,13 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 1611.7359619140626,
-                    "y": -128.0,
+                    "x": -194.3662109375,
+                    "y": 3.6563568115234377,
                     "z": 50.0
                 },
                 "max": {
-                    "x": 1649.3360595703126,
-                    "y": -67.00000762939453,
+                    "x": -156.76611328125,
+                    "y": 64.65634155273438,
                     "z": 50.0
                 }
             },
@@ -9781,7 +9777,7 @@
                         "fields": {
                             "maxRunSpeed": 1000.0,
                             "maxAirSpeed": 120.0,
-                            "acceleration": 10.0,
+                            "acceleration": 1.0,
                             "deceleration": 10.0,
                             "airAcceleration": 2.0,
                             "jumpPower": 40000.0,
@@ -9860,182 +9856,6 @@
                 "playing": true,
                 "clips": [
                     {
-                        "name": "fall_normal",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Fall spritesheet.png",
-                        "spriteCols": 2,
-                        "spriteRows": 1,
-                        "useCustomSize": true,
-                        "targetWidth": 62.0,
-                        "targetHeight": 72.50599670410156,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "jump_light",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Jump\\Jump spritesheet.png",
-                        "spriteCols": 2,
-                        "spriteRows": 1,
-                        "useCustomSize": true,
-                        "targetWidth": 62.0,
-                        "targetHeight": 72.50599670410156,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 1.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 1.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "fall_light",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Fall spritesheet.png",
-                        "spriteCols": 2,
-                        "spriteRows": 1,
-                        "useCustomSize": true,
-                        "targetWidth": 62.0,
-                        "targetHeight": 72.50599670410156,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 1.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 1.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "jump_normal",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Jump\\Jump spritesheet.png",
-                        "spriteCols": 2,
-                        "spriteRows": 1,
-                        "useCustomSize": true,
-                        "targetWidth": 62.0,
-                        "targetHeight": 72.50599670410156,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "run_normal",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Run spritesheet.png",
-                        "spriteCols": 3,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": 62.0,
-                        "targetHeight": 72.50599670410156,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 1.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.5,
-                                        "v": 2.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.75,
-                                        "v": 3.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 1.0,
-                                        "v": 3.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
                         "name": "playerFall",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
@@ -10067,97 +9887,14 @@
                         ]
                     },
                     {
-                        "name": "run_light",
+                        "name": "playerWalk",
                         "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Run spritesheet.png",
+                        "textureAsset": "images/Character\\New Artstyle\\Run\\Run spritesheet.png",
                         "spriteCols": 3,
                         "spriteRows": 3,
                         "useCustomSize": true,
-                        "targetWidth": 62.0,
-                        "targetHeight": 72.50599670410156,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 4.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 5.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.5,
-                                        "v": 6.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.75,
-                                        "v": 7.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 1.0,
-                                        "v": 7.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "idle",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Switch State\\Switch State spritesheet.png",
-                        "spriteCols": 3,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": 62.0,
-                        "targetHeight": 72.50599670410156,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "switch_to_light",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Switch State\\Switch State spritesheet.png",
-                        "spriteCols": 3,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": 62.0,
-                        "targetHeight": 72.50599670410156,
+                        "targetWidth": 140.0,
+                        "targetHeight": 100.0,
                         "bindings": [
                             {
                                 "property": 6,
@@ -10192,28 +9929,7 @@
                                     },
                                     {
                                         "t": 1.0,
-                                        "v": 4.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 1.25,
-                                        "v": 5.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 1.5,
-                                        "v": 6.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 1.75,
-                                        "v": 6.0,
+                                        "v": 3.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -10254,70 +9970,49 @@
                         ]
                     },
                     {
-                        "name": "switch_to_normal",
+                        "name": "playerWalkLight",
                         "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Switch-State-SpriteSheet-Reverse.png",
+                        "textureAsset": "images/Character\\New Artstyle\\Run\\Run spritesheet.png",
                         "spriteCols": 3,
                         "spriteRows": 3,
                         "useCustomSize": true,
-                        "targetWidth": 62.0,
-                        "targetHeight": 72.50599670410156,
+                        "targetWidth": 140.0,
+                        "targetHeight": 100.0,
                         "bindings": [
                             {
                                 "property": 6,
                                 "keys": [
                                     {
                                         "t": 0.0,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 1.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.5,
-                                        "v": 2.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.75,
-                                        "v": 3.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 1.0,
                                         "v": 4.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
-                                        "t": 1.25,
+                                        "t": 0.25,
                                         "v": 5.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
-                                        "t": 1.5,
+                                        "t": 0.5,
                                         "v": 6.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
-                                        "t": 1.75,
-                                        "v": 6.0,
+                                        "t": 0.75,
+                                        "v": 7.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 1.0,
+                                        "v": 7.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -10422,110 +10117,6 @@
                                     {
                                         "t": 1.75,
                                         "v": 6.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "playerWalk",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Run\\Run spritesheet.png",
-                        "spriteCols": 3,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": 140.0,
-                        "targetHeight": 100.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 1.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.5,
-                                        "v": 2.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.75,
-                                        "v": 3.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 1.0,
-                                        "v": 3.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "playerWalkLight",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Run\\Run spritesheet.png",
-                        "spriteCols": 3,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": 140.0,
-                        "targetHeight": 100.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 4.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 5.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.5,
-                                        "v": 6.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.75,
-                                        "v": 7.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 1.0,
-                                        "v": 7.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -10701,24 +10292,20 @@
                         ]
                     }
                 ]
-            },
-            "layer": {
-                "layerName": "Player",
-                "z": 0
             }
         },
         {
             "active": true,
             "name": "Passthrough_Tiles",
             "tag": {
-                "tagMask": 18
+                "tagMask": 22
             },
             "transform": {
                 "rotation": 0.0,
                 "position": {
                     "x": -770.0,
-                    "y": -480.0,
-                    "z": -1.0
+                    "y": -426.6369323730469,
+                    "z": -5.0
                 },
                 "size": {
                     "x": 1.0,
@@ -11570,11 +11157,7 @@
                 ]
             },
             "layer": {
-                "layerName": "",
-                "z": 0
-            },
-            "layer": {
-                "layerName": "",
+                "layerName": "Default",
                 "z": 0
             }
         },
@@ -11582,7 +11165,7 @@
             "active": true,
             "name": "Lava_TileMap",
             "tag": {
-                "tagMask": 6
+                "tagMask": 10
             },
             "transform": {
                 "rotation": 0.0,
@@ -11913,10 +11496,6 @@
             "layer": {
                 "layerName": "",
                 "z": 0
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             }
         },
         {
@@ -12062,10 +11641,6 @@
             "layer": {
                 "layerName": "",
                 "z": 0
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             }
         },
         {
@@ -12203,10 +11778,6 @@
                     "z": 0.0,
                     "w": 0.5
                 }
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             },
             "layer": {
                 "layerName": "",
@@ -12356,10 +11927,6 @@
             "layer": {
                 "layerName": "",
                 "z": 0
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             }
         },
         {
@@ -12501,10 +12068,6 @@
                     "z": 0.0,
                     "w": 0.5
                 }
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             },
             "layer": {
                 "layerName": "",
@@ -12654,10 +12217,6 @@
             "layer": {
                 "layerName": "",
                 "z": 0
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             }
         },
         {
@@ -12792,10 +12351,6 @@
                     "z": 0.0,
                     "w": 0.5
                 }
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             },
             "layer": {
                 "layerName": "",
@@ -13003,10 +12558,6 @@
                         "asset": ""
                     }
                 ]
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             },
             "layer": {
                 "layerName": "",
@@ -13223,17 +12774,13 @@
             "layer": {
                 "layerName": "",
                 "z": 0
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             }
         },
         {
             "active": true,
             "name": "Moving_Platform",
             "tag": {
-                "tagMask": 18
+                "tagMask": 22
             },
             "transform": {
                 "rotation": 0.0,
@@ -13337,17 +12884,13 @@
             "layer": {
                 "layerName": "",
                 "z": 0
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             }
         },
         {
             "active": true,
             "name": "Moving_Platform_Clone1948",
             "tag": {
-                "tagMask": 18
+                "tagMask": 22
             },
             "transform": {
                 "rotation": 0.0,
@@ -13451,17 +12994,13 @@
             "layer": {
                 "layerName": "",
                 "z": 0
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             }
         },
         {
             "active": true,
             "name": "Moving_Platform_Clone1948_Clone1949",
             "tag": {
-                "tagMask": 18
+                "tagMask": 22
             },
             "transform": {
                 "rotation": 0.0,
@@ -13565,17 +13104,13 @@
             "layer": {
                 "layerName": "",
                 "z": 0
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             }
         },
         {
             "active": true,
             "name": "Moving_Platform_Clone1948_Clone1949_Clone1950",
             "tag": {
-                "tagMask": 18
+                "tagMask": 22
             },
             "transform": {
                 "rotation": 0.0,
@@ -13617,7 +13152,7 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 933.3400268554688,
+                    "x": 933.340087890625,
                     "y": -795.3703002929688,
                     "z": 0.0
                 },
@@ -13675,10 +13210,6 @@
                         }
                     }
                 ]
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             },
             "layer": {
                 "layerName": "",
@@ -13793,10 +13324,6 @@
             "layer": {
                 "layerName": "",
                 "z": 0
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             }
         },
         {
@@ -13881,10 +13408,6 @@
                     "x": 1.0,
                     "y": 1.0
                 }
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             }
         },
         {
@@ -13906,7 +13429,7 @@
                 }
             },
             "layer": {
-                "layerName": "",
+                "layerName": "Default",
                 "z": 0
             },
             "particle": {
@@ -13914,7 +13437,7 @@
                 "useWorldSpace": false,
                 "maxParticles": 1000,
                 "emitRate": 25.0,
-                "playOnStop": false,
+                "playOnStop": true,
                 "emissionShape": 0,
                 "radiusMin": 0.0,
                 "radiusMax": 5.0,
@@ -13969,10 +13492,6 @@
                     "x": 1.0,
                     "y": 1.0
                 }
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             }
         },
         {
@@ -14057,10 +13576,6 @@
                     "x": 1.0,
                     "y": 1.0
                 }
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             }
         },
         {
@@ -14145,10 +13660,6 @@
                     "x": 1.0,
                     "y": 1.0
                 }
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             }
         },
         {
@@ -14233,10 +13744,63 @@
                     "x": 1.0,
                     "y": 1.0
                 }
+            }
+        },
+        {
+            "active": true,
+            "name": "Entity 1950",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 5000.0,
+                    "y": 5000.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
             },
             "layer": {
-                "layerName": "",
-                "z": 0
+                "layerName": "Player",
+                "z": 508
             }
         }
     ],
@@ -14246,6 +13810,16 @@
         "Energy": 8,
         "Ground": 2,
         "Passthrough": 16,
+        "Player": 1
+    },
+    "layer_visibility": {
+        "Default": true
+    },
+    "tag_mapping": {
+        "Default": 0,
+        "Enemy": 8,
+        "Ground": 2,
+        "Passthrough": 4,
         "Player": 1
     },
     "quadtree": {
