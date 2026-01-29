@@ -1277,6 +1277,23 @@ namespace CrashoutsEngine::Audio
     }
 
     /*!
+	@brief Checks if a tagged channel is currently playing.
+    */
+    bool AudioSystem::isTaggedPlaying(const std::string& key)
+    {
+        if (!mCore) return false;
+
+        auto it = mTaggedChannels.find(key);
+        if (it != mTaggedChannels.end())
+        {
+            bool playing = false;
+            FMOD_RESULT res = it->second->isPlaying(&playing);
+            return (res == FMOD_OK) && playing;
+        }
+        return false;
+    }
+
+    /*!
     @brief Stops a previously tagged channel by its string key.
     */
     bool AudioSystem::stopTagged(const std::string& key, float fadeOutSeconds)

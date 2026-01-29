@@ -113,6 +113,9 @@ namespace CrashoutsEngine
         internal static extern void Audio_PlaySFXFileTagged(string key, string path, bool loop);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern bool Audio_IsTaggedPlaying(string key);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
         internal static extern void Audio_StopTagged(string key, float fadeDuration);
 
         [MethodImpl(MethodImplOptions.InternalCall)]

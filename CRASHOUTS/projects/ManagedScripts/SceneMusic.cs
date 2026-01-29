@@ -15,6 +15,7 @@ namespace CrashoutsEngine
     {
 
         [SerializeField] private string layerName = "Music";
+        [SerializeField] private float fadeTime = 2.0f;
 
         public override void Start()
         {
@@ -28,16 +29,16 @@ namespace CrashoutsEngine
             if (!string.IsNullOrEmpty(path) && !string.IsNullOrEmpty(key))
             {
                 // Send to Manager with the specific LAYER NAME
-                AudioManager.GetInstance().PlayGlobal(layerName, key, path, loop, vol);
+                AudioManager.GetInstance().PlayGlobal(layerName, key, path, loop, vol, fadeTime);
             }
         }
 
         public override void Update() { }
 
-        public virtual void FixedUpdate() { }
+        public override void FixedUpdate() { }
 
-        public virtual void OnDrawGizmos() { }
+        public override void OnDrawGizmos() { }
 
-        public virtual void OnDestroy() { }
+        public override void OnDestroy() { }
     }
 }

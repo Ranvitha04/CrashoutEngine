@@ -93,24 +93,6 @@
             "audio": {
                 "clips": [
                     {
-                        "name": "bgm1",
-                        "path": "level bgm 1.wav",
-                        "volume": 0.699999988079071,
-                        "pitch": 1.0,
-                        "spatial3D": false,
-                        "looping": true,
-                        "isMusic": true
-                    },
-                    {
-                        "name": "ambient",
-                        "path": "lava-volcano-wind-environment_loop.wav",
-                        "volume": 0.6100000143051148,
-                        "pitch": 1.0,
-                        "spatial3D": false,
-                        "looping": true,
-                        "isMusic": true
-                    },
-                    {
                         "name": "footstep1",
                         "path": "footsteps 1.wav",
                         "volume": 1.0,
@@ -946,7 +928,7 @@
         },
         {
             "active": true,
-            "name": "AudioManager",
+            "name": "BGMManager",
             "layer": {
                 "currentLayer": 0
             },
@@ -965,9 +947,9 @@
             "audio": {
                 "clips": [
                     {
-                        "name": "Sound 1",
-                        "path": "nightshift_bgm_loop_70bpm.wav",
-                        "volume": 1.0,
+                        "name": "Level_1",
+                        "path": "level bgm 1.wav",
+                        "volume": 0.6000000238418579,
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": false,
@@ -980,7 +962,51 @@
                     {
                         "className": "SceneMusic",
                         "fields": {
-                            "layerName": "Music"
+                            "layerName": "Music",
+                            "fadeTime": 5.0
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "active": true,
+            "name": "AmbienceManager",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "Lava_Ambience",
+                        "path": "lava-volcano-wind-environment_loop.wav",
+                        "volume": 0.3499999940395355,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    }
+                ]
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "SceneMusic",
+                        "fields": {
+                            "layerName": "Ambiance",
+                            "fadeTime": 5.0
                         }
                     }
                 ]

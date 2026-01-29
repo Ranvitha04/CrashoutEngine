@@ -84,35 +84,33 @@ public class AudioManager
     }
 
     // === Play music or ambience globally with layering support
-    public void PlayGlobal(string layerName, string key, string path, bool loop, float volume = 1.0f)
+    public void PlayGlobal(string layerName, string key, string path, bool loop, float volume = 1.0f, float fadeDuration = 2.0f)
     {
-        // Check what is currently playing on THIS specific layer
         string currentKeyOnLayer = "";
         if (_activeLayers.ContainsKey(layerName))
         {
             currentKeyOnLayer = _activeLayers[layerName];
         }
 
-        // Logic Check: Is it the same file?
         if (currentKeyOnLayer == key)
         {
-            InternalCalls.Audio_SetTaggedVolume(key, volume);
-            return;
+            bool isActuallyPlaying = InternalCalls.Audio_IsTaggedPlaying(key);
+
+            if (isActuallyPlaying)
+            {
+                InternalCalls.Audio_SetTaggedVolume(key, volume);
+                return;
+            }
         }
 
-        // Stop the OLD track on this layer (Fade out)
         if (!string.IsNullOrEmpty(currentKeyOnLayer))
         {
-            InternalCalls.Audio_StopTagged(currentKeyOnLayer, 2.0f); // 2-second fade
+            InternalCalls.Audio_StopTagged(currentKeyOnLayer, fadeDuration);
         }
 
-        // New Track
         InternalCalls.Audio_PlayMusicFileTagged(key, path, loop);
-
-        // Set Volume based on player settings
         InternalCalls.Audio_SetTaggedVolume(key, volume);
 
-        // Update the Record
         _activeLayers[layerName] = key;
     }
 

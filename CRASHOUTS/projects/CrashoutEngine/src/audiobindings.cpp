@@ -222,6 +222,12 @@ namespace
         }
     }
 
+    static mono_bool ICALL_Audio_IsTaggedPlaying(MonoString* key)
+    {
+        auto& audio = AudioSystem::instance();
+        return audio.isTaggedPlaying(MonoToStdString(key));
+    }
+
 }
 // ---------- REGISTRATION ----------
 
@@ -230,6 +236,8 @@ void CrashoutsEngine::Bindings::RegisterAudioBindings()
     mono_add_internal_call("CrashoutsEngine.InternalCalls::Audio_PlayMusicFileTagged", (const void*)ICALL_Audio_PlayMusicFileTagged);
 
     mono_add_internal_call("CrashoutsEngine.InternalCalls::Audio_PlaySFXFileTagged", (const void*)ICALL_Audio_PlaySFXFileTagged);
+
+	mono_add_internal_call("CrashoutsEngine.InternalCalls::Audio_IsTaggedPlaying", (const void*)ICALL_Audio_IsTaggedPlaying);
 
     mono_add_internal_call("CrashoutsEngine.InternalCalls::Audio_StopTagged", (const void*)ICALL_Audio_StopTagged);
 
