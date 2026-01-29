@@ -179,6 +179,9 @@ namespace CrashoutsEngine
         internal static extern void RemoveKeyframeAnimator(uint entityID);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern bool EntityHasKeyframeAnimator(uint entityID);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
         public static extern void PlayDialogue(uint entityID, string fileName, string dialogueID);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
