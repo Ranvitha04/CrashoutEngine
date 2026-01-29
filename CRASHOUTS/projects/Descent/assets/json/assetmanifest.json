@@ -1549,6 +1549,10 @@
             "path": "BlueBox.json"
         },
         {
+            "name": "Button",
+            "path": "Button.json"
+        },
+        {
             "name": "Camera",
             "path": "Camera.json"
         },
@@ -1595,6 +1599,10 @@
         {
             "name": "RedBox",
             "path": "RedBox.json"
+        },
+        {
+            "name": "SettingButton",
+            "path": "SettingButton.json"
         },
         {
             "name": "shitasswork",

@@ -2,58 +2,84 @@
     "entities": [
         {
             "active": true,
-            "name": "Camera",
+            "name": "BG",
             "layer": {
                 "currentLayer": 0
             },
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 24.311918258666993,
+                    "x": -19.70416259765625,
                     "y": 0.0,
-                    "z": 0.0
+                    "z": -5.699999809265137
                 },
                 "size": {
-                    "x": 10.0,
-                    "y": 10.0
+                    "x": 1020.0,
+                    "y": 720.0
                 }
             },
-            "rigidbody": {
-                "mass": 1.0,
-                "restitutionCoeff": 0.0,
-                "maximumVelocity": {
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI\\startmenu_BG.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.469613254070282,
+                    "y": 0.4592350721359253,
+                    "z": 0.4592350721359253,
+                    "w": 1.0
+                },
+                "p1": {
                     "x": 0.0,
                     "y": 0.0,
                     "z": 0.0
                 },
-                "staticFriction": 0.0,
-                "dynamicFriction": 0.0,
-                "inertia": 0.0,
-                "invInertia": 0.0
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
             },
-            "collider": {
-                "ColliderType": 1,
-                "isTrigger": false,
-                "enabled": true,
-                "position": {
-                    "x": 24.311918258666993,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "offset": {
+            "camera": {
+                "zoom": 0.20000000298023225,
+                "xBounds": {
                     "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
+                    "y": 0.0
                 },
-                "min": {
-                    "x": 19.311918258666993,
-                    "y": -5.0,
-                    "z": 0.0
+                "yBounds": {
+                    "x": 0.0,
+                    "y": 0.0
+                }
+            }
+        },
+        {
+            "active": true,
+            "name": "QuitBtn",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": -132.70504760742188,
+                    "z": -0.8999999761581421
                 },
-                "max": {
-                    "x": 29.311918258666993,
-                    "y": 5.0,
-                    "z": 0.0
+                "size": {
+                    "x": 253.1999969482422,
+                    "y": 55.0
                 }
             },
             "shape": {
@@ -74,9 +100,9 @@
                     "y": 0.0
                 },
                 "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
+                    "x": 0.40392157435417178,
+                    "y": 0.0784313753247261,
+                    "z": 0.0784313753247261,
                     "w": 1.0
                 },
                 "p1": {
@@ -90,112 +116,333 @@
                     "z": 0.0
                 }
             },
-            "camera": {
-                "zoom": 1.534999966621399,
-                "xBounds": {
-                    "x": 14.699999809265137,
-                    "y": 10.5
+            "text": {
+                "font": "AlegreyaSC-Medium",
+                "text": "QUIT GAME",
+                "scale": 15.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
                 },
-                "yBounds": {
-                    "x": 12.800000190734864,
-                    "y": 9.199999809265137
-                }
-            },
-            "button": {
-                "buttonState": 0,
-                "shapeNormalColor": {
+                "color": {
                     "x": 1.0,
                     "y": 1.0,
                     "z": 1.0,
                     "w": 1.0
                 },
+                "centered": true,
+                "isworldspace": true
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "MenuButtons",
+                        "fields": {}
+                    }
+                ]
+            },
+            "button": {
+                "buttonState": 0,
+                "shapeNormalColor": {
+                    "x": 0.40392157435417178,
+                    "y": 0.0784313753247261,
+                    "z": 0.0784313753247261,
+                    "w": 1.0
+                },
                 "shapeHoveredColor": {
+                    "x": 0.5686274766921997,
+                    "y": 0.10980392247438431,
+                    "z": 0.10980392247438431,
+                    "w": 0.8470588326454163
+                },
+                "shapePressedColor": {
+                    "x": 0.5966850519180298,
+                    "y": 0.09889807552099228,
+                    "z": 0.09889807552099228,
+                    "w": 0.18784528970718385
+                },
+                "textNormalColor": {
                     "x": 1.0,
                     "y": 1.0,
                     "z": 1.0,
-                    "w": 0.5
-                },
-                "shapePressedColor": {
-                    "x": 0.699999988079071,
-                    "y": 0.699999988079071,
-                    "z": 0.699999988079071,
-                    "w": 0.699999988079071
-                },
-                "textNormalColor": {
-                    "x": 0.30000001192092898,
-                    "y": 0.30000001192092898,
-                    "z": 0.30000001192092898,
-                    "w": 0.699999988079071
+                    "w": 1.0
                 },
                 "textHoveredColor": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0,
-                    "w": 0.0
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.49171268939971926
                 },
                 "textPressedColor": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0,
-                    "w": 0.5
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.8066298365592957
                 }
+            },
+            "gui": {
+                "uiType": 7
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "uiLayout": 4
             }
         },
         {
             "active": true,
-            "name": "Entity 2",
+            "name": "StartBtn",
             "layer": {
                 "currentLayer": 0
             },
             "transform": {
                 "rotation": 0.0,
                 "position": {
+                    "x": 1.1542778015136719,
+                    "y": 37.919944763183597,
+                    "z": -3.299999952316284
+                },
+                "size": {
+                    "x": 253.1999969482422,
+                    "y": 58.19999694824219
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.40392157435417178,
+                    "y": 0.0784313753247261,
+                    "z": 0.0784313753247261,
+                    "w": 1.0
+                },
+                "p1": {
                     "x": 0.0,
                     "y": 0.0,
                     "z": 0.0
                 },
-                "size": {
-                    "x": 1.0,
-                    "y": 1.0
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
                 }
+            },
+            "text": {
+                "font": "AlegreyaSC-Medium",
+                "text": "START GAME",
+                "scale": 15.600000381469727,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": true
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "MenuButtons",
+                        "fields": {}
+                    }
+                ]
+            },
+            "button": {
+                "buttonState": 0,
+                "shapeNormalColor": {
+                    "x": 0.40392157435417178,
+                    "y": 0.0784313753247261,
+                    "z": 0.0784313753247261,
+                    "w": 1.0
+                },
+                "shapeHoveredColor": {
+                    "x": 0.5686274766921997,
+                    "y": 0.10980392247438431,
+                    "z": 0.10980392247438431,
+                    "w": 0.8470588326454163
+                },
+                "shapePressedColor": {
+                    "x": 0.5966850519180298,
+                    "y": 0.09889807552099228,
+                    "z": 0.09889807552099228,
+                    "w": 0.18784528970718385
+                },
+                "textNormalColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "textHoveredColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.49171268939971926
+                },
+                "textPressedColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.8066298365592957
+                }
+            },
+            "gui": {
+                "uiType": 7
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 78.0,
+                    "y": 212.5
+                },
+                "uiLayout": 4
             }
         },
         {
             "active": true,
-            "name": "Entity 3",
+            "name": "SettingsBtn",
             "layer": {
                 "currentLayer": 0
             },
             "transform": {
                 "rotation": 0.0,
                 "position": {
+                    "x": -1.100000023841858,
+                    "y": -46.75305938720703,
+                    "z": -0.30000001192092898
+                },
+                "size": {
+                    "x": 253.5,
+                    "y": 53.79999923706055
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.40331488847732546,
+                    "y": 0.07798906415700913,
+                    "z": 0.07798906415700913,
+                    "w": 1.0
+                },
+                "p1": {
                     "x": 0.0,
                     "y": 0.0,
                     "z": 0.0
                 },
-                "size": {
-                    "x": 1.0,
-                    "y": 1.0
-                }
-            }
-        },
-        {
-            "active": true,
-            "name": "Entity 4",
-            "layer": {
-                "currentLayer": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 21.33028793334961,
+                "p2": {
+                    "x": 32.0,
                     "y": 0.0,
                     "z": 0.0
-                },
-                "size": {
-                    "x": 1.0,
-                    "y": 1.0
                 }
+            },
+            "text": {
+                "font": "AlegreyaSC-Medium",
+                "text": "SETTINGS",
+                "scale": 15.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": true
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "MenuButtons",
+                        "fields": {}
+                    }
+                ]
+            },
+            "button": {
+                "buttonState": 0,
+                "shapeNormalColor": {
+                    "x": 0.40331488847732546,
+                    "y": 0.07798906415700913,
+                    "z": 0.07798906415700913,
+                    "w": 1.0
+                },
+                "shapeHoveredColor": {
+                    "x": 0.5690608024597168,
+                    "y": 0.11003938317298889,
+                    "z": 0.11003938317298889,
+                    "w": 0.8453038930892944
+                },
+                "shapePressedColor": {
+                    "x": 0.5966850519180298,
+                    "y": 0.09889807552099228,
+                    "z": 0.09889807552099228,
+                    "w": 0.18784528970718385
+                },
+                "textNormalColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "textHoveredColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.49171268939971926
+                },
+                "textPressedColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.8066298365592957
+                }
+            },
+            "gui": {
+                "uiType": 7
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "uiLayout": 4
             }
         }
     ],
