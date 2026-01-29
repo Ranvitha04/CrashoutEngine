@@ -866,7 +866,9 @@
                             "maxMouseDragDist": 400.0,
                             "airDrag": 1.0,
                             "stunDuration": 1.0,
-                            "MaxDist": 200.0
+                            "MaxDist": 200.0,
+                            "ledgeRayCastDistance": 100.0,
+                            "ledgeCheckXOffset": 60.0
                         }
                     }
                 ]

@@ -1373,6 +1373,8 @@
                         "fields": {
                             "moveSpeed": 1000.0,
                             "maxSpeed": 50.0,
+                            "moveAudioInterval": 0.4000000059604645,
+                            "stopAudioDistance": 40.0,
                             "turnTimer": 2.0,
                             "detectionRange": 81.0999984741211,
                             "gravityScale": 2.799999952316284,
