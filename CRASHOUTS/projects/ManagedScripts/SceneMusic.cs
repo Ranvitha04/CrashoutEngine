@@ -4,6 +4,8 @@
 @date       27/01/2026
 @brief		Declaration and implementation of SceneMusic script to manage background music per scene.
 */
+using System;
+using System.Runtime.CompilerServices;
 using CrashoutsEngine;
 
 namespace CrashoutsEngine
@@ -38,5 +40,4 @@ namespace CrashoutsEngine
 
         public virtual void OnDestroy() { }
     }
-}
 }

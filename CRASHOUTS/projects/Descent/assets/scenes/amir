@@ -857,7 +857,6 @@
                             "maxSpeed": 15.0,
                             "moveAudioInterval": 1.0,
                             "stopAudioDistance": 80.0,
-                            "turnTimer": 2.0,
                             "detectionRange": 250.0,
                             "gravityScale": 2.0,
                             "grabRange": 100.0,
@@ -866,7 +865,9 @@
                             "maxMouseDragDist": 400.0,
                             "airDrag": 1.0,
                             "stunDuration": 1.0,
-                            "MaxDist": 200.0
+                            "MaxDist": 200.0,
+                            "ledgeBuffer": 40.0,
+                            "ledgeRayCastDistance": 50.0
                         }
                     }
                 ]
@@ -913,59 +914,6 @@
         },
         {
             "active": true,
-            "name": "Entity 68",
-            "layer": {
-                "currentLayer": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": -92.21800231933594,
-                    "y": 117.77422332763672,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 1.0,
-                    "y": 1.0
-                }
-            },
-            "shape": {
-                "useTexture": false,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            }
-        },
-        {
-            "active": true,
             "name": "Audio_level bgm 1",
             "layer": {
                 "currentLayer": 0
@@ -992,6 +940,48 @@
                         "spatial3D": false,
                         "looping": false,
                         "isMusic": false
+                    }
+                ]
+            }
+        },
+        {
+            "active": true,
+            "name": "AudioManager",
+            "layer": {
+                "currentLayer": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "Sound 1",
+                        "path": "nightshift_bgm_loop_70bpm.wav",
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    }
+                ]
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "SceneMusic",
+                        "fields": {
+                            "layerName": "Music"
+                        }
                     }
                 ]
             }
