@@ -285,7 +285,7 @@ namespace CrashoutsEngine
             var otherTf = other.GetComponent<TransformComponent>();
 
             // Ground Check (Counter)
-            if (Tag != null && (Tag.HasTag("") || Tag.HasTag("Platform") || Tag.HasTag("Enemy")))
+            if (Tag != null && (Tag.HasTag("Ground") || Tag.HasTag("Platform") || Tag.HasTag("Enemy")))
             {
                 if (otherTf != null && this.tf.Position.y > otherTf.Position.y)
                 {

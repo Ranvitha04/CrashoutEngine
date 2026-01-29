@@ -35,8 +35,8 @@ namespace CrashoutsEngine
 
         public override void Start()
         {
-            CollisionEvents.RegisterCollideStay(Entity.ID, OnCollideStay);
-            CollisionEvents.RegisterCollideExit(Entity.ID, OnCollideExit);
+            CollisionEvents.RegisterCollideStay(Entity.ID, this.OnCollideStay);
+            CollisionEvents.RegisterCollideExit(Entity.ID, this.OnCollideExit);
 
             transform = Entity.GetComponent<TransformComponent>();
 
