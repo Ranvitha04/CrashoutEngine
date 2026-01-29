@@ -7,16 +7,17 @@ namespace CrashoutsEngine
     public class PlayerMovement : ScriptBase
     {
         // --- TUNING VARIABLES ---
-        [SerializeField] public float moveSpeed = 200f;
-        [SerializeField] public float maxRunSpeed = 100.0f;
+        [SerializeField] public float moveSpeed = 400f; // Increased force for snappier start
+        [SerializeField] public float maxRunSpeed = 150.0f; // Hard Cap on ground speed
+        [SerializeField] public float maxAirSpeed = 120.0f; // Hard Cap on air speed
+        [SerializeField] public float airControlFactor = 0.5f; // Multiplier for air movement (0.5 = half acceleration in air)
+
         [SerializeField] public float jumpPower = 20000f;
 
-        [SerializeField] public float groundDrag = 0.15f;
-        [SerializeField] public float airDrag = 0.02f;
+        [SerializeField] public float groundDrag = 0.2f;
+        [SerializeField] public float airDrag = 0.01f; // Very low drag in air so we glide
 
         [SerializeField] public float gravityScale = 2.5f;
-        [SerializeField] public float turnMultiplier = 2.0f;
-
         [SerializeField] public float frictionMultiplier = 500.0f;
         [SerializeField] public float gravityForceMultiplier = 10.0f;
         [SerializeField] public float footstepInterval = 0.075f;
@@ -51,6 +52,9 @@ namespace CrashoutsEngine
         private float footstepTimer = 0.0f;
         private Random rng = new Random();
 
+        // Fix for infinite fall: Count contacts instead of boolean toggle
+        private int groundContactCount = 0;
+
         public bool alive = true;
         public bool isPaused = false;
 
@@ -69,6 +73,7 @@ namespace CrashoutsEngine
             // Initial Setup
             rb.Mass = normalMass;
             IsGrounded = false;
+            groundContactCount = 0;
 
             // Play music
             AudioManager.GetInstance().PlayAttached("ambient", Entity.ID);
@@ -89,24 +94,26 @@ namespace CrashoutsEngine
 
         public override void Update()
         {
-            if(isPaused) { return; }
-            // 0. HANDLE DEATH / PAUSE
+            if (isPaused) { return; }
             if (!alive) return;
 
-            // 1. HANDLE STATE SWITCH TIMER
+            // 1. SAFETY RESET
+            if (groundContactCount < 0) groundContactCount = 0;
+
+            // 2. HANDLE STATE SWITCH TIMER
             bool isSwitching = false;
             if (swapPauseTimer > 0.0f)
             {
                 swapPauseTimer -= (float)Time.DT;
                 isSwitching = true;
-                
-                // Freeze input during state switch
                 horizontalInput = 0f;
             }
             else
             {
-                // 2. POLL INPUT (Active only when not switching)
+                // 3. POLL INPUT (Improved Logic)
                 horizontalInput = 0f;
+
+                // Allow input even in air (Air Control), but apply logic in FixedUpdate
                 if (Input.IsKeyPressed(Key.A))
                 {
                     horizontalInput = -1f;
@@ -118,57 +125,43 @@ namespace CrashoutsEngine
                     facingRight = true;
                 }
 
-                // Flip Sprite Scale based on direction
+                // Flip Sprite
                 if (!facingRight && tf.Size.x > 0) tf.Size = new CEVec2(-tf.Size.x, tf.Size.y);
                 else if (facingRight && tf.Size.x < 0) tf.Size = new CEVec2(-tf.Size.x, tf.Size.y);
 
-                // Check Jump Hold State
                 isJumpHeld = Input.IsKeyPressed(Key.Space);
 
-                // 3. JUMP TRIGGER
+                // JUMP TRIGGER
                 if (Input.IsKeyTriggered(Key.Space) && IsGrounded)
                 {
-                    // Reset Y velocity for consistent jump height
                     rb.LinearVelocity = new CEVec3(rb.LinearVelocity.x, 0f, 0f);
                     rb.AddForce(new CEVec3(0f, jumpPower, 0f));
-                    IsGrounded = false; // Prevent double jumps
+                    IsGrounded = false;
+                    // Note: We do not set horizontalInput to 0 here. Momentum is preserved.
                 }
 
-                // 4. WEIGHT MECHANIC TRIGGER (Q)
-                // State swap permitted only when grounded
+                // WEIGHT MECHANIC
                 if (Input.IsKeyTriggered(Key.Q) && IsGrounded && CurrentEnergy >= energyConsumption)
                 {
                     RemoveEnergy(energyConsumption);
-
-                    // Toggle State
                     isLight = !isLight;
-
                     if (isLight) rb.Mass = lightMass;
                     else rb.Mass = normalMass;
 
-                    Debug.Log("Mass toggled to: " + rb.Mass);
-
-                    // Start Cooldown/Freeze
                     swapPauseTimer = swapPause;
-
-                    // Stop movement to prevent sliding during switch
                     rb.LinearVelocity = new CEVec3(0, 0, 0);
                 }
             }
 
-            // 5. AUDIO LOGIC (Footsteps)
+            // 4. AUDIO LOGIC
             if (horizontalInput != 0.0f && IsGrounded && !isSwitching)
             {
                 footstepTimer -= (float)Time.DT;
                 if (footstepTimer <= 0.0f)
                 {
                     int index = rng.Next(1, 7);
-
-                    
                     string clipKey = "footstep" + index;
-
                     AudioManager.GetInstance().PlayAttached(clipKey, Entity.ID);
-
                     footstepTimer = footstepInterval;
                 }
             }
@@ -177,160 +170,95 @@ namespace CrashoutsEngine
                 footstepTimer = 0.0f;
             }
 
-            // 6. UPDATE ANIMATION STATE
+            // 5. UPDATE ANIMATION
             UpdateAnimationState(isSwitching);
-        }
-
-        private void UpdateAnimationState(bool isSwitching)
-        {
-            string targetState = "playerIdle";
-
-            // PRIORITY 1: Switching
-            if (isSwitching)
-            {
-                targetState = "playerSwitch";
-            }
-            // PRIORITY 2: Airborne (Jump/Fall)
-            else if (!IsGrounded)
-            {
-                if (rb.LinearVelocity.y > 1.0f)
-                {
-                    targetState = "playerJump";
-                }
-                else if (rb.LinearVelocity.y < -12.5f)
-                {
-                    targetState = "playerFall";
-                }
-            }
-            // PRIORITY 3: Grounded Movement
-            else 
-            {
-                if (Math.Abs(horizontalInput) > 0.01f)
-                {
-                    targetState = "playerWalk";
-                }
-                else
-                {
-                    targetState = "playerIdle";
-                }
-            }
-
-            // Suffix Logic for Light State
-            if (isLight)
-            {
-                targetState += "Light";
-            }
-
-            // Update Animator only on state change
-            if (targetState != currentAnimState)
-            {
-                if (anim != null)
-                {
-                    anim.Play(targetState, true);
-                }
-                currentAnimState = targetState;
-            }
         }
 
         public override void FixedUpdate()
         {
-            // Apply drag but no movement force if paused or switching
             if (swapPauseTimer > 0.0f || !alive)
             {
+                // Simple drag to stop player when switching
                 CEVec3 v = rb.LinearVelocity;
-                float d = groundDrag * frictionMultiplier;
-                rb.AddForce(new CEVec3(-v.x * d, 0f, 0f));
-
-                if (!IsGrounded)
-                    rb.AddForce(new CEVec3(0f, -9.81f * gravityScale * rb.Mass * gravityForceMultiplier, 0f));
-
+                rb.AddForce(new CEVec3(-v.x * 100.0f, 0f, 0f));
+                if (!IsGrounded) rb.AddForce(new CEVec3(0f, -9.81f * gravityScale * rb.Mass * gravityForceMultiplier, 0f));
                 return;
             }
 
-            // --- PHYSICS UPDATE ---
             CEVec3 velocity = rb.LinearVelocity;
 
-            // A. HORIZONTAL MOVEMENT
+            // --- A. HORIZONTAL MOVEMENT WITH SPEED CAP ---
+
+            // 1. Determine Max Speed for this frame
+            float currentMaxSpeed = IsGrounded ? maxRunSpeed : maxAirSpeed;
+
+            // 2. Determine Acceleration Force for this frame
+            float currentMoveForce = moveSpeed;
+            if (!IsGrounded) currentMoveForce *= airControlFactor; // Less force in air
+
+            // 3. Apply Force ONLY if we haven't hit the speed limit
             if (horizontalInput != 0f && !OnWall)
             {
-                bool isTurning = (horizontalInput > 0 && velocity.x < 0) ||
-                                 (horizontalInput < 0 && velocity.x > 0);
+                // Turning around feels snappier if we multiply force
+                bool isTurning = (horizontalInput > 0 && velocity.x < 0) || (horizontalInput < 0 && velocity.x > 0);
+                float turnBonus = isTurning ? 2.0f : 1.0f;
 
-                if (isTurning)
+                // CHECK: Only add force if we are below max speed in that direction
+                bool canAccelerate = false;
+                if (horizontalInput > 0 && velocity.x < currentMaxSpeed) canAccelerate = true;
+                if (horizontalInput < 0 && velocity.x > -currentMaxSpeed) canAccelerate = true;
+
+                if (canAccelerate)
                 {
-                    rb.AddForce(new CEVec3(horizontalInput * moveSpeed * turnMultiplier, 0f, 0f));
-                }
-                else if (Math.Abs(velocity.x) < maxRunSpeed)
-                {
-                    rb.AddForce(new CEVec3(horizontalInput * moveSpeed, 0f, 0f));
+                    rb.AddForce(new CEVec3(horizontalInput * currentMoveForce * turnBonus, 0f, 0f));
                 }
             }
 
-            // B. DRAG / FRICTION
-            if (horizontalInput == 0f)
+            // --- B. DRAG / FRICTION ---
+            // If no input, OR if we are moving faster than max speed (e.g. knocked back), apply drag
+            if (horizontalInput == 0f || Math.Abs(velocity.x) > currentMaxSpeed)
             {
                 float drag = IsGrounded ? groundDrag : airDrag;
+                // We clamp the drag force to avoid jittering near 0
                 rb.AddForce(new CEVec3(-velocity.x * drag * frictionMultiplier, 0f, 0f));
             }
 
-            // C. VARIABLE GRAVITY
+            // --- C. GRAVITY ---
             if (velocity.y < 0)
             {
+                // Fall faster
                 rb.AddForce(new CEVec3(0f, -9.81f * gravityScale * rb.Mass * gravityForceMultiplier, 0f));
             }
             else if (velocity.y > 0 && !isJumpHeld)
             {
+                // Short hop (let go of space to fall earlier)
                 rb.AddForce(new CEVec3(0f, -9.81f * (gravityScale * 0.5f) * rb.Mass * gravityForceMultiplier, 0f));
             }
         }
 
         // --- COLLISION CALLBACKS ---
 
-        // Returns TRUE to allow collision, FALSE to ignore it
         public bool OnPreSolve(uint otherEntity)
         {
             Entity other = new Entity(otherEntity);
             var layer = other.GetComponent<LayerComponent>();
 
-            // 1. Check if it is a One-Way Platform
-            // (Make sure your TileMap/Platform entity actually has this Layer Name set!)
             if (layer != null && layer.HasLayer("Passthrough"))
             {
-                Debug.Log("drop");
-                // A. DROP DOWN LOGIC
-                // If holding S (or just S depending on your design), fall through
-                if (Input.IsKeyPressed(Key.S))
-                {
-                    return false; // IGNORE COLLISION
-                }
-                // B. JUMP UP LOGIC
-                // If moving UP, ignore the platform so we jump through it
-                else if (rb.LinearVelocity.y > 0.0f)
-                {
-                    return false; // IGNORE COLLISION
-                }
-                
-                // C. POSITION CHECK (Prevent Snapping)
-                // If our feet are slightly below the top of the platform, fall through.
-                // This prevents the physics engine from teleporting us up if we clip the edge.
-                // var otherTf = other.GetComponent<TransformComponent>();
-                // if (otherTf != null)
-                // {
-                //     float playerBottom = tf.Position.y - (Math.Abs(tf.Size.y) * 0.5f);
-                //     float platTop = otherTf.Position.y + (Math.Abs(otherTf.Size.y) * 0.5f);
+                if (Input.IsKeyPressed(Key.S)) return false;
+                else if (rb.LinearVelocity.y > 0.0f) return false;
 
-                //     // If feet are lower than the platform top (minus a small buffer), ignore it
-                //     if (playerBottom > platTop) 
-                //     {
-                //         return false; // IGNORE COLLISION
-                //     }
-                // }
+                var otherTf = other.GetComponent<TransformComponent>();
+                if (otherTf != null)
+                {
+                    float playerBottom = tf.Position.y - (Math.Abs(tf.Size.y) * 0.5f);
+                    float platTop = otherTf.Position.y + (Math.Abs(otherTf.Size.y) * 0.5f);
+                    if (playerBottom > platTop) return false;
+                }
             }
-
-            // Default: Collide with everything else (Walls, Ground, etc.)
-            return true; 
+            return true;
         }
-        
+
         public void OnTriggerEnter(uint otherEntity) { }
         public void OnTriggerStay(uint otherEntity) { }
         public void OnTriggerExit(uint otherEntity) { }
@@ -341,21 +269,14 @@ namespace CrashoutsEngine
             var layer = other.GetComponent<LayerComponent>();
             var otherTf = other.GetComponent<TransformComponent>();
 
-            // Ground Check
+            // Ground Check using COUNTER
             if (layer != null && (layer.HasLayer("Ground") || layer.HasLayer("Platform") || layer.HasLayer("Enemy")))
             {
-                // Simple foot check: Are we above the object?
                 if (otherTf != null && this.tf.Position.y > otherTf.Position.y)
                 {
+                    groundContactCount++;
                     IsGrounded = true;
                 }
-            }
-
-            // Wall Check
-            if (layer != null && layer.HasLayer("Wall"))
-            {
-                OnWall = true;
-                rb.LinearVelocity = new CEVec3(0, rb.LinearVelocity.y, 0);
             }
 
             // Hazard Check
@@ -363,44 +284,31 @@ namespace CrashoutsEngine
             {
                 Debug.Log("Player Died");
                 alive = false;
-                // TODO: Trigger Death Anim here?
-
-                Entity gameOverEnt = Entity.Find("GameOverScreen");
-                if (gameOverEnt != null)
-                {
-                    var gameOverT = gameOverEnt.GetComponent<TransformComponent>();
-                    gameOverT.Position = new CEVec3(gameOverT.Position.x, gameOverT.Position.y, 0.8f);
-                }
+                // Game Over logic...
             }
         }
+
         public void OnCollideStay(uint otherEntity)
         {
-            Entity other = new Entity(otherEntity);
-            var layer = other.GetComponent<LayerComponent>();
-            var otherTf = other.GetComponent<TransformComponent>();
-
-            if (layer != null && (layer.HasLayer("Ground") || layer.HasLayer("Platform") || layer.HasLayer("Enemy")))
-            {
-                // Ensure we are actually on top
-                if (otherTf != null && this.tf.Position.y > otherTf.Position.y)
-                {
-                    IsGrounded = true;
-                }
-            }
+            // Usually redundant if using counters, but good for safety
+            // ...
         }
+
         public void OnCollideExit(uint otherEntity)
         {
             Entity other = new Entity(otherEntity);
             var layer = other.GetComponent<LayerComponent>();
 
-            if (layer != null && layer.HasLayer("Ground"))
+            // Ground Exit using COUNTER
+            if (layer != null && (layer.HasLayer("Ground") || layer.HasLayer("Platform") || layer.HasLayer("Enemy")))
             {
-                IsGrounded = false;
-            }
+                groundContactCount--;
+                if (groundContactCount < 0) groundContactCount = 0;
 
-            if (layer != null && layer.HasLayer("Wall"))
-            {
-                OnWall = false;
+                if (groundContactCount == 0)
+                {
+                    IsGrounded = false;
+                }
             }
         }
 
@@ -409,6 +317,7 @@ namespace CrashoutsEngine
             if (Instance == this) Instance = null;
         }
 
+        // Energy Logic Helpers
         public void AddEnergy(float amount)
         {
             CurrentEnergy += amount;
@@ -435,6 +344,32 @@ namespace CrashoutsEngine
                 TransformComponent barT = barEnt.GetComponent<TransformComponent>();
                 float percentile = CurrentEnergy / MaxEnergy;
                 barT.Size = new CEVec2(percentile * 0.5f, barT.Size.y);
+            }
+        }
+
+
+        // Animation Logic
+        private void UpdateAnimationState(bool isSwitching)
+        {
+            string targetState = "playerIdle";
+            if (isSwitching) targetState = "playerSwitch";
+            else if (!IsGrounded)
+            {
+                if (rb.LinearVelocity.y > 1.0f) targetState = "playerJump";
+                else if (rb.LinearVelocity.y < -12.5f) targetState = "playerFall";
+            }
+            else
+            {
+                if (Math.Abs(horizontalInput) > 0.01f) targetState = "playerWalk";
+                else targetState = "playerIdle";
+            }
+
+            if (isLight) targetState += "Light";
+
+            if (targetState != currentAnimState)
+            {
+                if (anim != null) anim.Play(targetState, true);
+                currentAnimState = targetState;
             }
         }
     }

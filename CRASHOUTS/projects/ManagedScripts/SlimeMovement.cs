@@ -28,10 +28,9 @@ namespace CrashoutsEngine
 
         // Patrol Zone
         [SerializeField] private float MaxDist = 200.0f;
-        [SerializeField] private float ledgeRayCastDistance = 100.0f;
-        [SerializeField] private float ledgeCheckXOffset = 60.0f;
+        [SerializeField] private float ledgeBuffer = 40.0f; // Distance from edge of collider to check
+        [SerializeField] private float ledgeRayCastDistance = 50.0f;
 
-        // --- STATE ---
         private RigidBodyComponent rb;
         private TransformComponent tf;
         private Animator anim;
@@ -49,6 +48,7 @@ namespace CrashoutsEngine
         private float currentStunTime = 0.0f;
         private float flipCooldown = 0.0f;
         private float stuckTimer = 0.0f;
+        private float ignoreHomeTimer = 0.0f;
 
         private CEVec3 startPos;
         private bool returningHome = false;
@@ -114,114 +114,32 @@ namespace CrashoutsEngine
                 }
             }
 
-            // Chase logic
-            isChasing = false;
-            if (playerScript != null)
+            // Audio Logic (Dependent on isChasing flag from FixedUpdate)
+            if (isChasing)
             {
-                var playerTf = playerScript.Entity.GetComponent<TransformComponent>();
-                if (playerTf != null)
+                moveAudioTimer -= dt;
+                if (moveAudioTimer <= 0.0f)
                 {
-                    float dist = Distance(tf.Position, playerTf.Position);
-                    bool hasLineOfSight = false;
-                    
-                    if (dist < detectionRange && !isFollowingPath)
+                    float dist = 0f;
+                    if (playerScript != null)
                     {
-                         CEVec3 start = tf.Position;
-                         CEVec3 end = playerTf.Position;
-                         uint hitID;
-                         bool hit = InternalCalls.Raycast(ref start, ref end, out hitID, Entity.ID);
-                         
-                         if (hit && hitID == playerScript.Entity.ID)
-                         {
-                             hasLineOfSight = true;
-                         }
+                         var playerTf = playerScript.Entity.GetComponent<TransformComponent>();
+                         if (playerTf != null) dist = Distance(tf.Position, playerTf.Position);
                     }
 
-                    if (hasLineOfSight) 
+                    if (dist > stopAudioDistance)
                     {
-                        moveAudioTimer -= dt;
-                        isChasing = true;
-                        returningHome = false;
-                        moveRight = (playerTf.Position.x > tf.Position.x);
-                        if (moveAudioTimer <= 0.0f)
-                        {
-                            if (dist > stopAudioDistance)
-                            {
-                                AudioManager.GetInstance().PlayAttached("slimeMove", Entity.ID);
-                            }
-                            moveAudioTimer = moveAudioInterval;
-                        }
+                        AudioManager.GetInstance().PlayAttached("slimeMove", Entity.ID);
                     }
-                    else
-                    {
-                        moveAudioTimer = 0.0f;
-                    }
+                    moveAudioTimer = moveAudioInterval;
                 }
             }
-
-            // Patrol logic
-            if (!isChasing && isGrounded && !isFollowingPath && !isGrabbed)
+            else
             {
-                // 1. Check for Ledges (Holes)
-                float checkDir = moveRight ? 1.0f : -1.0f;
-                CEVec3 rayStart = new CEVec3(tf.Position.x + (checkDir * ledgeCheckXOffset), tf.Position.y, tf.Position.z);
-                CEVec3 rayEnd = new CEVec3(rayStart.x, rayStart.y - ledgeRayCastDistance, rayStart.z);
-                
-                uint hitGroundID;
-                bool hitGround = InternalCalls.Raycast(ref rayStart, ref rayEnd, out hitGroundID, Entity.ID);
-
-                // Debug Draw (Optional, but helpful)
-                // CEVec3 col = hitGround ? new CEVec3(0,1,0) : new CEVec3(1,0,0);
-                // Debug.DrawLine(ref rayStart, ref rayEnd, 2.0f, ref col);
-
-                if (!hitGround && flipCooldown <= 0)
-                {
-                     moveRight = !moveRight;
-                     flipCooldown = 0.5f; // Add a small cooldown to prevent rapid flipping
-                }
-                else
-                {
-                    // 2. Normal Patrol Distance Check
-                    float distFromHome = tf.Position.x - startPos.x;
-
-                    if (returningHome)
-                    {
-                        moveRight = (startPos.x > tf.Position.x);
-                        if (Math.Abs(distFromHome) < 10.0f)
-                        {
-                            returningHome = false;
-                        }
-                    }
-                    else
-                    {
-                        if (Math.Abs(distFromHome) > MaxDist)
-                        {
-                            returningHome = true; 
-                        }
-                    }
-                }
+                moveAudioTimer = 0.0f;
             }
 
-            // Stuck Detection
-            if ((isChasing || returningHome || isGrounded) && !isGrabbed && !isFollowingPath)
-            {
-                if (Math.Abs(rb.LinearVelocity.x) < 2.0f)
-                {
-                    stuckTimer += dt;
-                    if (stuckTimer > 0.5f)
-                    {
-                        if (!isChasing) moveRight = !moveRight; 
-                        else rb.LinearVelocity = new CEVec3(rb.LinearVelocity.x, 200.0f, 0); 
-                        stuckTimer = 0.0f;
-                    }
-                }
-                else
-                {
-                    stuckTimer = 0.0f;
-                }
-            }
-
-            // Sprite flip
+            // Sprite flip visual update
             float absX = Math.Abs(tf.Size.x);
             if (moveRight) tf.Size = new CEVec2(absX, tf.Size.y);
             else tf.Size = new CEVec2(-absX, tf.Size.y);
@@ -243,11 +161,22 @@ namespace CrashoutsEngine
             CEVec3 grabColor = new CEVec3(0.0f, 1.0f, 0.0f); // Green
             CEVec2 grabSize = new CEVec2(grabRange * 2.0f, grabRange * 2.0f);
             Debug.DrawCircle(ref grabSize, ref myPos, ref grabColor);
+
+            // Draw Ledge Check Ray
+            float checkDir = moveRight ? 1.0f : -1.0f;
+            float halfWidth = Math.Abs(tf.Size.x) * 0.5f;
+            float rayOriginX = tf.Position.x + (checkDir * (halfWidth + ledgeBuffer));
+            
+            CEVec3 rayStart = new CEVec3(rayOriginX, tf.Position.y, tf.Position.z);
+            CEVec3 rayEnd = new CEVec3(rayStart.x, rayStart.y - ledgeRayCastDistance, rayStart.z);
+            CEVec3 rayColor = new CEVec3(1.0f, 0.0f, 0.0f); // Red
+            Debug.DrawLine(ref rayStart, ref rayEnd, 2.0f, ref rayColor);
         }
 
         private void UpdateAnimationState()
         {
             if (anim == null) return;
+
             string targetState = isGrabbed ? "slimeGrabbed" : 
                                  isStunned ? "slimeCaution" :
                                  isChasing ? "slimeChase" : 
@@ -263,6 +192,11 @@ namespace CrashoutsEngine
         public override void FixedUpdate()
         {
             if (rb == null || isGrabbed || isStunned) return;
+            if(playerScript != null && playerScript.isPaused) return;
+
+            float dt = (float)Time.FixedDT;
+            if (flipCooldown > 0) flipCooldown -= dt;
+            if (ignoreHomeTimer > 0) ignoreHomeTimer -= dt;
 
             // --- PATH FOLLOWING MODE ---
             if (isFollowingPath)
@@ -272,7 +206,6 @@ namespace CrashoutsEngine
                     CEVec3 target = activePath[pathIndex];
                     CEVec3 current = tf.Position;
                     
-                    float dt = (float)Time.FixedDT;
                     if (dt > 0.0001f)
                     {
                         float vx = (target.x - current.x) / dt;
@@ -289,7 +222,131 @@ namespace CrashoutsEngine
                 return; 
             }
 
-            // --- NORMAL PHYSICS ---
+            // --- AI LOGIC (Raycasts & Decisions) ---
+            
+            // Chase logic
+            isChasing = false;
+            if (playerScript != null)
+            {
+                var playerTf = playerScript.Entity.GetComponent<TransformComponent>();
+                if (playerTf != null)
+                {
+                    float dist = Distance(tf.Position, playerTf.Position);
+                    bool hasLineOfSight = false;
+                    
+                    if (dist < detectionRange)
+                    {
+                         CEVec3 start = tf.Position;
+                         CEVec3 end = playerTf.Position;
+                         uint hitID;
+                         bool hit = InternalCalls.Raycast(ref start, ref end, out hitID, Entity.ID);
+                         
+                         if (hit && hitID == playerScript.Entity.ID)
+                         {
+                             hasLineOfSight = true;
+                         }
+                    }
+
+                    if (hasLineOfSight) 
+                    {
+                        isChasing = true;
+                        returningHome = false;
+                        moveRight = (playerTf.Position.x > tf.Position.x);
+                    }
+                }
+            }
+
+            // Patrol logic
+            if (!isChasing && isGrounded)
+            {
+                // 1. Check for Ledges (Holes)
+                float checkDir = moveRight ? 1.0f : -1.0f;
+                float halfWidth = Math.Abs(tf.Size.x) * 0.5f;
+                float rayOriginX = tf.Position.x + (checkDir * (halfWidth + ledgeBuffer));
+
+                CEVec3 rayStart = new CEVec3(rayOriginX, tf.Position.y, tf.Position.z);
+                CEVec3 rayEnd = new CEVec3(rayStart.x, rayStart.y - ledgeRayCastDistance, rayStart.z);
+                
+                uint hitGroundID;
+                bool hitGround = InternalCalls.Raycast(ref rayStart, ref rayEnd, out hitGroundID, Entity.ID);
+
+                // Verify the hit object is actually ground/platform
+                if (hitGround)
+                {
+                    Entity hitEnt = new Entity(hitGroundID);
+                    var hitLayer = hitEnt.GetComponent<LayerComponent>();
+                    bool isValidGround = false;
+                    if (hitLayer != null)
+                    {
+                        if (hitLayer.HasLayer("Ground") || hitLayer.HasLayer("Platform") || hitLayer.HasLayer("Wall"))
+                        {
+                            isValidGround = true;
+                        }
+                    }
+                    if (!isValidGround) hitGround = false; // Treat non-ground hits (e.g. enemies) as holes
+                }
+
+                if (!hitGround && flipCooldown <= 0)
+                {
+                     moveRight = !moveRight;
+                     float newDir = moveRight ? 1.0f : -1.0f;
+                     rb.LinearVelocity = new CEVec3(newDir * 50.0f, rb.LinearVelocity.y, 0); // Kick away from ledge
+                     flipCooldown = 0.5f; 
+                     returningHome = false; 
+                     ignoreHomeTimer = 4.0f; 
+                     stuckTimer = 0.0f;
+                }
+                else
+                {
+                    // 2. Normal Patrol Distance Check
+                    float distFromHome = tf.Position.x - startPos.x;
+
+                    if (returningHome)
+                    {
+                        if (flipCooldown <= 0)
+                        {
+                            moveRight = (startPos.x > tf.Position.x);
+                        }
+                        
+                        if (Math.Abs(distFromHome) < 10.0f)
+                        {
+                            returningHome = false;
+                        }
+                    }
+                    else
+                    {
+                        if (Math.Abs(distFromHome) > MaxDist && ignoreHomeTimer <= 0)
+                        {
+                            returningHome = true; 
+                        }
+                    }
+                }
+            }
+
+            // Stuck Detection
+            if ((isChasing || returningHome || isGrounded))
+            {
+                if (Math.Abs(rb.LinearVelocity.x) < 2.0f)
+                {
+                    stuckTimer += dt;
+                    if (stuckTimer > 0.5f)
+                    {
+                        if (!isChasing) 
+                        {
+                            moveRight = !moveRight;
+                            ignoreHomeTimer = 2.0f;
+                        }
+                        else rb.LinearVelocity = new CEVec3(rb.LinearVelocity.x, 200.0f, 0); 
+                        stuckTimer = 0.0f;
+                    }
+                }
+                else
+                {
+                    stuckTimer = 0.0f;
+                }
+            }
+
+            // --- MOVEMENT PHYSICS ---
             CEVec3 velocity = rb.LinearVelocity;
             float dir = moveRight ? 1.0f : -1.0f;
             float speedMult = (isChasing || returningHome) ? 1.2f : 1.0f;
@@ -304,12 +361,10 @@ namespace CrashoutsEngine
                     rb.AddForce(new CEVec3(moveSpeed * dir * speedMult, 0, 0));
                 }
                 
-                // Manual Friction (Reduced to prevent jitter)
                 rb.AddForce(new CEVec3(-velocity.x * 5.0f * rb.Mass, 0, 0));
             }
             else 
             {
-                // Air Drag
                 rb.AddForce(new CEVec3(-velocity.x * airDrag * rb.Mass, -velocity.y * airDrag * 0.2f * rb.Mass, 0));
             }
 
@@ -472,6 +527,7 @@ namespace CrashoutsEngine
                 {
                     moveRight = !moveRight;
                     flipCooldown = 0.2f;
+                    ignoreHomeTimer = 4.0f; // Also ignore home if we hit a wall
                 }
             }
         }

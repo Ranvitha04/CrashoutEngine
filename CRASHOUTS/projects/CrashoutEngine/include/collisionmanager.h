@@ -107,6 +107,8 @@ namespace Collision {
 
 			static CollisionManifold AABBToLineCollision(CollisionProps const& coll1, CollisionProps const& coll2);
 
+			static CollisionManifold LineToLineCollision(CollisionProps const& coll1, CollisionProps const& coll2);
+
 			std::vector<CollisionEvent> m_FrameCollisions;
 			
 		public:

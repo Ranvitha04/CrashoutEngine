@@ -35,8 +35,8 @@ namespace CrashoutsEngine
 
         public override void Start()
         {
-            CollisionEvents.RegisterTriggerEnter(Entity.ID, OnTriggerEnter);
-            CollisionEvents.RegisterTriggerExit(Entity.ID, OnTriggerExit);
+            CollisionEvents.RegisterCollideEnter(Entity.ID, OnCollideEnter);
+            CollisionEvents.RegisterCollideExit(Entity.ID, OnCollideExit);
 
             transform = Entity.GetComponent<TransformComponent>();
 
@@ -64,7 +64,7 @@ namespace CrashoutsEngine
             playerScript = PlayerMovement.Instance;
         }
 
-        public void OnTriggerEnter(uint otherEntityID)
+        public void OnCollideEnter(uint otherEntityID)
         {
             Entity other = new Entity(otherEntityID);
             var layer = other.GetComponent<LayerComponent>();
@@ -77,7 +77,7 @@ namespace CrashoutsEngine
             }
         }
 
-        public void OnTriggerExit(uint otherEntityID)
+        public void OnCollideExit(uint otherEntityID)
         {
             Entity other = new Entity(otherEntityID);
             var layer = other.GetComponent<LayerComponent>();

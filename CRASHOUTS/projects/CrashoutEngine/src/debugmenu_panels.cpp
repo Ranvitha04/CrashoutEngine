@@ -229,10 +229,14 @@ namespace UI {
             );
 
             if (ok) {
-                const std::string dirPath =
-                    (fs::path(CrashoutsEngine::Assets::rootPath) / "prefabs").generic_string();
-
-                CrashoutsEngine::ReloadPrefabsFromDisk(dirPath);
+                //const std::string dirPath =
+                //    (fs::path(CrashoutsEngine::Assets::rootPath) / "prefabs").generic_string();
+#if USE_IMGUI_EDITOR
+                const fs::path dirPath = fs::path(CrashoutsEngine::Assets::rootPath) / "prefabs";
+#else
+                const fs::path dirPath = fs::path(GetLocalAppData()) / "prefabs";
+#endif
+                CrashoutsEngine::ReloadPrefabsFromDisk(dirPath.generic_string());
                 CrashoutsEngine::RecreateInstancesForPrefab(ecs, newName);
 
                 prefabNameBuf[0] = '\0';
