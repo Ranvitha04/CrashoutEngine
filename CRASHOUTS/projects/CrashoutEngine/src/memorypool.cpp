@@ -4,97 +4,75 @@
 @date       06/01/2026
 @brief		im getting cooked here chat
 
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 */
 
 #include "memorypool.h"
 
-#include <cstdlib>   // malloc, free
-#include <cstring>   // memset
-#include <cassert>
+bool MemMgrConfig::s_useMemoryPool = true;
 
-// Constructor
-MemoryPool::MemoryPool()
-    : m_BlockSize(0),
-    m_BlocksPerPage(0),
-    m_FreeList(nullptr),
-    m_Pages(nullptr)
-{
+static std::size_t AlignUp(std::size_t v, std::size_t a) {
+    return (v + (a - 1)) & ~(a - 1);
 }
 
-// Initialize the memory pool
-void MemoryPool::Init(size_t blockSize, size_t blocksPerPage)
-{
-    assert(blockSize >= sizeof(FreeNode) && "Block size too small");
-    assert(blocksPerPage > 0);
+void MemoryPool::Init(std::size_t blockSize, std::size_t blocksPerPage) {
+    // Ensure block can store a pointer for freelist
+    m_blockSize = (blockSize < sizeof(FreeNode)) ? sizeof(FreeNode) : blockSize;
+    m_blockSize = AlignUp(m_blockSize, alignof(std::max_align_t));
+    m_blocksPerPage = blocksPerPage;
 
-    m_BlockSize = blockSize;
-    m_BlocksPerPage = blocksPerPage;
-
-    m_FreeList = nullptr;
-    m_Pages = nullptr;
-
-    // Allocate the first page immediately
     AllocateNewPage();
 }
 
-// Allocate a block from the pool
-void* MemoryPool::Allocate()
-{
-    // If no free blocks, grow pool dynamically
-    if (!m_FreeList)
-    {
-        AllocateNewPage();
+void MemoryPool::Shutdown() {
+    // free all pages
+    PageHeader* p = m_pages;
+    while (p) {
+        PageHeader* next = p->next;
+        ::operator delete(p);
+        p = next;
     }
+    m_pages = nullptr;
+    m_freeList = nullptr;
+    m_pagesAllocated = 0;
+    m_activeAllocs = 0;
+}
 
-    // Pop from free list
-    FreeNode* node = m_FreeList;
-    m_FreeList = node->Next;
+void MemoryPool::AllocateNewPage() {
+    const std::size_t headerSize = AlignUp(sizeof(PageHeader), alignof(std::max_align_t));
+    const std::size_t pageBytes = headerSize + (m_blockSize * m_blocksPerPage);
 
+    void* raw = ::operator new(pageBytes); // allowed: ONLY when extending pages
+    auto* header = reinterpret_cast<PageHeader*>(raw);
+
+    header->next = m_pages;
+    m_pages = header;
+    ++m_pagesAllocated;
+
+    // Build freelist from blocks inside this page
+    std::uint8_t* blocks = reinterpret_cast<std::uint8_t*>(raw) + headerSize;
+    for (std::size_t i = 0; i < m_blocksPerPage; ++i) {
+        auto* node = reinterpret_cast<FreeNode*>(blocks + i * m_blockSize);
+        node->next = m_freeList;
+        m_freeList = node;
+    }
+}
+
+void* MemoryPool::Allocate() {
+    if (!m_freeList) {
+        AllocateNewPage(); // extend at runtime when out of preallocated
+    }
+    FreeNode* node = m_freeList;
+    m_freeList = node->next;
+    ++m_activeAllocs;
     return node;
 }
 
-// Free a block back to the pool
-void MemoryPool::Free(void* ptr)
-{
-    if (!ptr)
-        return;
-
-    // Push back into free list
-    FreeNode* node = static_cast<FreeNode*>(ptr);
-    node->Next = m_FreeList;
-    m_FreeList = node;
-}
-
-// Allocate a new page and populate free list
-void MemoryPool::AllocateNewPage()
-{
-    // Allocate raw memory for the page
-    size_t pageSize = m_BlockSize * m_BlocksPerPage;
-    void* pageMemory = std::malloc(pageSize);
-    assert(pageMemory && "MemoryPool page allocation failed");
-
-    // clear memory for safety
-    std::memset(pageMemory, 0, pageSize);
-
-    // Track the page
-    Page* newPage = static_cast<Page*>(std::malloc(sizeof(Page)));
-    assert(newPage && "MemoryPool page header allocation failed");
-
-    newPage->Memory = pageMemory;
-    newPage->Next = m_Pages;
-    m_Pages = newPage;
-
-    // Split page into blocks and push into free list
-    char* blockPtr = static_cast<char*>(pageMemory);
-
-    for (size_t i = 0; i < m_BlocksPerPage; ++i)
-    {
-        FreeNode* node = reinterpret_cast<FreeNode*>(blockPtr);
-        node->Next = m_FreeList;
-        m_FreeList = node;
-
-        blockPtr += m_BlockSize;
-    }
+void MemoryPool::Free(void* p) {
+    if (!p) return;
+    auto* node = reinterpret_cast<FreeNode*>(p);
+    node->next = m_freeList;
+    m_freeList = node;
+    --m_activeAllocs;
 }

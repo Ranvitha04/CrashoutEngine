@@ -16,7 +16,7 @@
             performance bottlenecks, visualize profiling history, and
             analyze memory consumption in real-time.
 
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
 
@@ -39,6 +39,7 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserve
 #include <algorithm>
 #include <array>
 #include <imgui.h>
+#include "entitymanager.h"
 
 
 // ---- Windows process-memory helper (Working Set & Private Bytes in MB) ----
@@ -261,7 +262,7 @@ public:
     /*!
     @brief  set EMA smoothing factor.
     @param  a  Alpha in [0, 1]; higher reacts faster, lower is smoother.
-    @note   Typical range 0.12–0.30. Values are clamped to [0.05, 1.0].
+    @note   Typical range 0.12ï¿½0.30. Values are clamped to [0.05, 1.0].
     */
     void set_ema_alpha(double a) {
         if (a < 0.05) a = 0.05;
@@ -441,6 +442,17 @@ inline void DrawEngineMemoryPanel() {
     ImGui::SeparatorText("Memory Usage");
     ImGui::Text("Working Set: %.2f MB", workingSetMB);
     ImGui::Text("Private Bytes: %.2f MB", privateBytesMB);
+    
+    ImGui::Separator();
+    bool usePool = MemMgrConfig::s_useMemoryPool;
+    ImGui::Text("Component Allocator: %s", usePool ? "Custom Memory Pool" : "OS Allocator");
+
+    size_t totalPages = 0;
+    size_t totalActive = 0;
+    CrashoutsEngine::ECS::getInstance()->GetMemoryStats(totalPages, totalActive);
+    ImGui::Text("Total Pages: %zu", totalPages);
+    ImGui::Text("Active Components: %zu", totalActive);
+
     // Add more performance stats here if you want
 
     //ImGui::SeparatorText("Framerate");

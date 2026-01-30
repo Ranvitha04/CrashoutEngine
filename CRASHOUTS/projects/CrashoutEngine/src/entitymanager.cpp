@@ -152,7 +152,7 @@ CrashoutsEngine::Entity CrashoutsEngine::ECS::FindEntityByName(std::string name)
 
 	auto& nameCompArray = GetComponentArray<NameComponent>();
 	for (size_t i = 0; i < nameCompArray.dense.size(); ++i) {
-		if (nameCompArray.dense[i].name == name) {
+		if (nameCompArray.dense[i]->name == name) {
 			return nameCompArray.indexToEntity[i];
 		}
 	}
@@ -188,4 +188,15 @@ bool CrashoutsEngine::IsEntityActive(ECS& ecs, Entity entity) {
 	}
 
 	return true; // We climbed the whole tree and didn't find anyone disabled
+}
+
+void CrashoutsEngine::ECS::GetMemoryStats(size_t& totalPages, size_t& totalActive) {
+	totalPages = 0;
+	totalActive = 0;
+	for (auto const& pair : componentArrays) {
+		if (pair.second) {
+			totalPages += pair.second->GetPageCount();
+			totalActive += pair.second->GetActiveAllocations();
+		}
+	}
 }

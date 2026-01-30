@@ -879,7 +879,7 @@ namespace CrashoutsEngine {
 		auto& arr = ecs.GetComponentArray<PrefabInstanceComponent>();
 		std::vector<Entity> toRecreate;
 		for (size_t i = 0; i < arr.dense.size(); ++i) {
-			if (arr.dense[i].prefabName == prefabName) {
+			if (arr.dense[i]->prefabName == prefabName) {
 				toRecreate.push_back(arr.indexToEntity[i]);
 			}
 		}

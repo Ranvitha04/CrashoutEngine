@@ -375,7 +375,7 @@ void Update(double const& dt) {
         auto& audioArray = ecs.GetComponentArray<Component::AudioEmitterComponent>();
         for (size_t i = 0; i < audioArray.dense.size(); ++i) {
             CrashoutsEngine::Entity entityID = audioArray.indexToEntity[i];
-            auto& audioComp = audioArray.dense[i];
+            auto* audioComp = audioArray.dense[i];
 
             // Check if entity is active in hierarchy
             bool isEntityActive = true;
@@ -384,7 +384,7 @@ void Update(double const& dt) {
             }
 
             // Loop through ALL clips on this component
-            for (auto& clip : audioComp.clips) {
+            for (auto& clip : audioComp->clips) {
 
                 // Case 1: Entity is Inactive -> Force Pause
                 if (!isEntityActive) {
@@ -448,10 +448,10 @@ void Update(double const& dt) {
         using namespace CrashoutsEngine;
         using namespace Component;
 
-        std::vector<CameraComponent>& c = ecs.GetComponentArray<CameraComponent>().dense;
+        std::vector<CameraComponent*>& c = ecs.GetComponentArray<CameraComponent>().dense;
         if (c.size() > 0) {
             Entity camEntity = ecs.GetComponentArray<CameraComponent>().indexToEntity.back();
-            RenderCamera::PlayerCameraInput(c.back(), camEntity);
+            RenderCamera::PlayerCameraInput(*c.back(), camEntity);
         }
 
 #ifdef USE_IMGUI_EDITOR
@@ -477,11 +477,11 @@ void Update(double const& dt) {
 
     for (size_t i = 0; i < tmArray.dense.size(); ++i) {
         // 1. Get the Component
-        Component::TileMapComponent& tm = tmArray.dense[i];
+        Component::TileMapComponent* tm = tmArray.dense[i];
 
         // 2. Get the Entity ID associated with this index
         CrashoutsEngine::Entity entityID = tmArray.indexToEntity[i];
-        if (tm.isCacheDirty) CrashoutsEngine::TileMapUtils::RebuildCache(tm, entityID);
+        if (tm->isCacheDirty) CrashoutsEngine::TileMapUtils::RebuildCache(*tm, entityID);
     }
 
 }
@@ -661,8 +661,8 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
         CrashoutsEngine::ECS::ComponentArray<Component::TileMapComponent>& tmArray =
             CrashoutsEngine::ECS::getInstance()->GetComponentArray<Component::TileMapComponent>();
 
-        for (Component::TileMapComponent& tm : tmArray.dense) {
-            CrashoutsEngine::Editor::DrawTileMapEditor(&tm, &tm.pOpen);
+        for (Component::TileMapComponent* tm : tmArray.dense) {
+            CrashoutsEngine::Editor::DrawTileMapEditor(tm, &tm->pOpen);
         }
     }
     else {

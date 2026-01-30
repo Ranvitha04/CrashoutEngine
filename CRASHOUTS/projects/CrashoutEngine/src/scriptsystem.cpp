@@ -136,7 +136,7 @@ namespace CrashoutsEngine
 
 		for (size_t i = 0; i < scripts.dense.size(); ++i) {
 			Entity entityID = scripts.indexToEntity[i];
-			ScriptComponent* sc = &scripts.dense[i];
+			ScriptComponent* sc = scripts.dense[i];
 
 			for (auto& inst : sc->Scripts) {
 				if (!inst.GCHandle) continue;
@@ -262,9 +262,9 @@ namespace CrashoutsEngine
 		auto& ecs = *ECS::getInstance();
 		auto& scripts = ecs.GetComponentArray<ScriptComponent>();
 
-		for (auto& scriptComp : scripts.dense)
+		for (auto* scriptComp : scripts.dense)
 		{
-			scriptComp.Initialize(domain, assembly);
+			scriptComp->Initialize(domain, assembly);
 		}
 	}
 
@@ -353,9 +353,9 @@ namespace CrashoutsEngine
 		auto& ecs = *ECS::getInstance();
 		auto& scripts = ecs.GetComponentArray<ScriptComponent>();
 
-		for (auto& scriptComp : scripts.dense)
+		for (auto* scriptComp : scripts.dense)
 		{
-			scriptComp.Destroy();
+			scriptComp->Destroy();
 		}
 		std::cout << "[Mono] All script instances destroyed.\n";
 	}
@@ -377,10 +377,10 @@ namespace CrashoutsEngine
 		// 3. RE-INITIALIZE
 		// Recreate the ScriptInstances (get new Class pointers, create new Objects)
 		auto& scripts = ecs.GetComponentArray<ScriptComponent>();
-		for (auto& scriptComp : scripts.dense)
+		for (auto* scriptComp : scripts.dense)
 		{
 			// This creates NEW 'empty' C# objects with default values
-			scriptComp.Initialize(MonoManager::GetDomain(), MonoManager::GetAssembly());
+			scriptComp->Initialize(MonoManager::GetDomain(), MonoManager::GetAssembly());
 		}
 
 		// 4. RESTORE STATE

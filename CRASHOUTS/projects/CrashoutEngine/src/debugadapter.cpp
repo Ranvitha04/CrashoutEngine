@@ -330,8 +330,8 @@ namespace {
 				}
 
 				// Clean up all entities immediately (Not undoable currently for simplicity)
-				for (TagComponent& tc : ecs.GetComponentArray<TagComponent>().dense) {
-					tc.tagMask &= ~bit;
+				for (TagComponent* tc : ecs.GetComponentArray<TagComponent>().dense) {
+					tc->tagMask &= ~bit;
 				}
 			}
 
@@ -443,7 +443,7 @@ namespace {
 					if (visible != oldVis) {
 						auto& arr = ecs.GetComponentArray<Component::LayerComponent>();
 						for (size_t i = 0; i < arr.dense.size(); ++i) {
-							if (arr.dense[i].layerName == name) {
+							if (arr.dense[i]->layerName == name) {
 								Entity ent = arr.indexToEntity[i];
 								if (ecs.HasComponent<Component::ActiveComponent>(ent)) {
 									ecs.GetComponent<Component::ActiveComponent>(ent)->isActive = visible;

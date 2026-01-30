@@ -5,7 +5,7 @@
 
 @brief	This file contains values and functions to manage post-processing.
 
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
 
@@ -98,7 +98,7 @@ namespace CrashoutsEngine {
 			ECS::ComponentArray<PPComponent>& ppArray = gECS.GetComponentArray<PPComponent>();
 
 			if (ppArray.indexToEntity.size() > 0) {
-				PPComponent& p = ppArray.dense.back();
+				PPComponent& p = *ppArray.dense.back();
 				if (!p.active) {
 					if (active != p.active) active = p.active;
 					return;

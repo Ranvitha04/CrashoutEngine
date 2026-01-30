@@ -1076,7 +1076,7 @@ namespace Component {
 		for (size_t i = 0; i < zOrders.dense.size(); ++i) {
 			CrashoutsEngine::Entity e = zOrders.indexToEntity[i];
 
-			const auto& z = zOrders.dense[i];
+			const auto& z = *zOrders.dense[i];
 
 			// Check Layer Visibility (using name lookup)
 			// If layer exists in map and is set to false, skip
@@ -1088,7 +1088,7 @@ namespace Component {
 			if (transforms.entityToIndex.find(e) == transforms.entityToIndex.end()) continue;
 
 			// Direct access (unsafe if index invalid, but we just checked map)
-			const auto& t = transforms.dense[transforms.entityToIndex[e]];
+			const auto& t = *transforms.dense[transforms.entityToIndex[e]];
 
 			// Check for optional debug override
 			const DebugZOverride* debug = nullptr;
