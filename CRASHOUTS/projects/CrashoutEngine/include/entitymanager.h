@@ -209,7 +209,7 @@ namespace CrashoutsEngine {
 		ComponentArray() {
 			m_usingPool = MemMgrConfig::s_useMemoryPool;
 			if (m_usingPool) {
-				m_pool.Init(sizeof(T), 1024);
+				m_pool.Init(sizeof(T), 1024, alignof(T));
 			}
 		}
 

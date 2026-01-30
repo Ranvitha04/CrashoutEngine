@@ -16,10 +16,16 @@ static std::size_t AlignUp(std::size_t v, std::size_t a) {
     return (v + (a - 1)) & ~(a - 1);
 }
 
-void MemoryPool::Init(std::size_t blockSize, std::size_t blocksPerPage) {
+void MemoryPool::Init(std::size_t blockSize, std::size_t blocksPerPage, std::size_t typeAlignment) {
     // Ensure block can store a pointer for freelist
+    // We need to store FreeNode in the block when it's free.
+    // So the block size must be at least sizeof(FreeNode).
+    // AND the alignment of the block must satisfy BOTH T and FreeNode.
+    
+    std::size_t requiredAlignment = std::max(typeAlignment, alignof(FreeNode));
+
     m_blockSize = (blockSize < sizeof(FreeNode)) ? sizeof(FreeNode) : blockSize;
-    m_blockSize = AlignUp(m_blockSize, alignof(std::max_align_t));
+    m_blockSize = AlignUp(m_blockSize, requiredAlignment);
     m_blocksPerPage = blocksPerPage;
 
     AllocateNewPage();

@@ -21,7 +21,7 @@ public:
     MemoryPool() = default;
     ~MemoryPool() = default;
 
-    void Init(std::size_t blockSize, std::size_t blocksPerPage);
+    void Init(std::size_t blockSize, std::size_t blocksPerPage, std::size_t typeAlignment);
     void Shutdown();
 
     void* Allocate();
