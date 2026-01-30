@@ -75,16 +75,16 @@ namespace CrashoutsEngine
             bool isLeftGrounded = false;
             if (hitLeft) {
                  Entity hitEnt = new Entity(hitID);
-                 var layer = hitEnt.GetComponent<LayerComponent>();
-                 if (layer != null && (layer.HasLayer("Ground") || layer.HasLayer("Platform") || layer.HasLayer("Wall"))) isLeftGrounded = true;
+                 var Tag = hitEnt.GetComponent<TagComponent>();
+                 if (Tag != null && (Tag.HasTag("Ground") || Tag.HasTag("Platform") || Tag.HasTag("Wall"))) isLeftGrounded = true;
             }
 
             bool hitRight = InternalCalls.Raycast(ref startRight, ref endRight, out hitID, Entity.ID);
             bool isRightGrounded = false;
             if (hitRight) {
                  Entity hitEnt = new Entity(hitID);
-                 var layer = hitEnt.GetComponent<LayerComponent>();
-                 if (layer != null && (layer.HasLayer("Ground") || layer.HasLayer("Platform") || layer.HasLayer("Wall"))) isRightGrounded = true;
+                 var Tag = hitEnt.GetComponent<TagComponent>();
+                 if (Tag != null && (Tag.HasTag("Ground") || Tag.HasTag("Platform") || Tag.HasTag("Wall"))) isRightGrounded = true;
             }
             
             isGrounded = isLeftGrounded || isRightGrounded;
@@ -305,11 +305,11 @@ namespace CrashoutsEngine
                 if (hitGround)
                 {
                     Entity hitEnt = new Entity(hitGroundID);
-                    var hitLayer = hitEnt.GetComponent<LayerComponent>();
+                    var hitTag = hitEnt.GetComponent<TagComponent>();
                     bool isValidGround = false;
-                    if (hitLayer != null)
+                    if (hitTag != null)
                     {
-                        if (hitLayer.HasLayer("Ground") || hitLayer.HasLayer("Platform") || hitLayer.HasLayer("Wall"))
+                        if (hitTag.HasTag("Ground") || hitTag.HasTag("Platform") || hitTag.HasTag("Wall"))
                         {
                             isValidGround = true;
                         }
@@ -423,8 +423,8 @@ namespace CrashoutsEngine
                         isFollowingPath = false;
                         activePath.Clear();
                         rb.SetDynamic(false);
-                        var layer = Entity.GetComponent<LayerComponent>();
-                        if (layer != null) layer.RemoveLayer("Enemy");
+                        var Tag = Entity.GetComponent<TagComponent>();
+                        if (Tag != null) Tag.RemoveTag("Enemy");
                     }
                 }
 
@@ -444,8 +444,8 @@ namespace CrashoutsEngine
                 isGrabbed = false;
                 wasThrown = true;
                 rb.SetDynamic(true);
-                var layer = Entity.GetComponent<LayerComponent>();
-                if (layer != null) layer.AddLayer("Enemy");
+                var Tag = Entity.GetComponent<TagComponent>();
+                if (Tag != null) Tag.AddTag("Enemy");
 
                 if (playerScript != null)
                 {
@@ -526,11 +526,11 @@ namespace CrashoutsEngine
         public void OnCollideEnter(uint otherEntity)
         {
             Entity other = new Entity(otherEntity);
-            var layer = other.GetComponent<LayerComponent>();
+            var Tag = other.GetComponent<TagComponent>();
 
             // Universal collision check for path cancellation
             // If we hit ANYTHING static (Ground, Wall, Platform), stop flying.
-            if (layer != null && (layer.HasLayer("Ground") || layer.HasLayer("Wall") || layer.HasLayer("Platform")))
+            if (Tag != null && (Tag.HasTag("Ground") || Tag.HasTag("Wall") || Tag.HasTag("Platform")))
             {
                 if (isFollowingPath)
                 {
@@ -549,7 +549,7 @@ namespace CrashoutsEngine
                 }
             }
 
-            if (layer != null && (layer.HasLayer("Ground") || layer.HasLayer("Wall") || layer.HasLayer("Platform")))
+            if (Tag != null && (Tag.HasTag("Ground") || Tag.HasTag("Wall") || Tag.HasTag("Platform")))
             {
                 var otherTf = other.GetComponent<TransformComponent>();
                 bool isOnTop = otherTf != null && tf.Position.y > otherTf.Position.y + (otherTf.Size.y * 0.4f);

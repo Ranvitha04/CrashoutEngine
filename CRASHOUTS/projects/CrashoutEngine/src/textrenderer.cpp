@@ -422,7 +422,7 @@ void TextRenderer::RenderTextBounded(const std::string& text,
 
     // Apply Padding to the Box Size
     float effWidth = maxWidth - (padding.x * 2.0f);
-    float effHeight = maxHeight - (padding.y * 2.0f);
+    //float effHeight = maxHeight - (padding.y * 2.0f);
 
     if (effWidth <= 0.0f) effWidth = 1.0f;
 

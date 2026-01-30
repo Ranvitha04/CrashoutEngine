@@ -3,8 +3,8 @@
         {
             "active": true,
             "name": "Backdrop",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -51,13 +51,21 @@
                     "y": 0.0,
                     "z": 0.0
                 }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "sampleShape",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -138,13 +146,21 @@
                     "y": 0.0,
                     "z": 0.0
                 }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "sampleShape",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -225,13 +241,21 @@
                     "y": 0.0,
                     "z": 0.0
                 }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "sampleShape",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -312,6 +336,14 @@
                     "y": 0.0,
                     "z": 0.0
                 }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         }
     ],

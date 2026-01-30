@@ -36,16 +36,16 @@ namespace CrashoutsEngine
 
             Entity other = new Entity(otherEntityID);
 
-            // Check if it's the Player
-            // Option A: Check Layer
-            var layer = other.GetComponent<LayerComponent>();
-            bool isPlayer = (layer != null && layer.HasLayer("Player"));
+            // Check if it's the player
+            // Option A: Check Tag
+            var Tag = other.GetComponent<TagComponent>();
+            bool isplayer = (Tag != null && Tag.HasTag("player"));
 
             // Option B: Check Name
             // var name = other.GetComponent<NameComponent>();
-            // bool isPlayer = (name != null && name.ToString() == "Player");
+            // bool isplayer = (name != null && name.ToString() == "player");
 
-            if (isPlayer)
+            if (isplayer)
             {
                 Win();
             }
@@ -56,7 +56,7 @@ namespace CrashoutsEngine
             Console.WriteLine("[WinGame] YOU WIN!");
             gameWon = true;
 
-            // 1. Disable Player Control
+            // 1. Disable player Control
             if (PlayerMovement.Instance != null)
             {
                 // If you have an 'Alive' or 'CanMove' flag

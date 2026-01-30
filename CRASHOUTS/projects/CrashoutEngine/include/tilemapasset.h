@@ -87,7 +87,7 @@ namespace CrashoutsEngine {
             const std::vector<RuleTile>& GetTiles() const { return tiles; }
             std::vector<RuleTile>& GetTilesMutable() { return tiles; }
             const unsigned int& GetLayerMask() { return layerMask; }
-            unsigned int& GetLayerMaskMutable() { return layerMask; }
+            unsigned int& GetTagMaskMutable() { return layerMask; }
 
             // SETTERS
             /*!

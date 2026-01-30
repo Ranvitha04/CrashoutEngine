@@ -4,7 +4,7 @@
 @date       26/10/2025
 @brief      Type declarations for the different types of colliders
 
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 
 //__________________________________________________________________________*/
@@ -85,6 +85,11 @@ namespace Collision {
 		ColliderType ColliderType; /*HELPER FOR UI DROPDOWN*/
 		bool isTrigger = false;
 		bool enabled = true;
+
+		// --- AABB CACHING ---
+		mutable CEVec3 cachedMin;
+		mutable CEVec3 cachedMax;
+		mutable bool isAABBCacheDirty = true;
 	};
 
 	/*!
@@ -199,7 +204,7 @@ namespace Collision {
 		static Polygon CreateOBB(CEVec3 const& min, CEVec3 const& max, f32 rotation, CEVec3 offset);
 		static void UpdateOBB(CEVec3 const& min, CEVec3 const& max, Polygon& polygon);
 		static CEVec3 CalculateOBBExtents(Polygon const& polygon);
-		
+
 		/*ColliderType::AABB HELPER FUNCTIONS*/
 		static Polygon CreateAABB(CEVec3 const& min, CEVec3 const& max, CEVec3 offset);
 
@@ -213,11 +218,11 @@ namespace Collision {
 	@class LineSegment
 	@brief	Struct for the Line Segment collider
 	*/
-	class LineSegment : public Collider {	
+	class LineSegment : public Collider {
 	public:
 		// GETTERS
 		const CEVec3& GetWorldP1() const { return worldP1; }
-		const CEVec3& GetWorldP2() const  { return worldP2; }
+		const CEVec3& GetWorldP2() const { return worldP2; }
 		const CEVec3& GetNormal() const { return normal; }
 
 		// SETTERS
@@ -295,18 +300,17 @@ namespace Collision {
 
 			} if (type == ColliderType::OBB) {
 
-				return std::make_unique<OBBRect>(OBBRect{
-					CEVec3{
-						std::stof(defaultedArg("minX", "0.f")),
-						std::stof(defaultedArg("minY", "0.f")),
-						std::stof("0.0")
-					}, CEVec3{
-						std::stof(defaultedArg("maxX", "0.f")),
-						std::stof(defaultedArg("maxY", "0.f")),
-						std::stof("0.0")
-					},
-					std::stof(defaultedArg("rotation", "0.f"))
-					});
+				// Use Polygon for OBB implementation
+				// 1. Calculate half-width and half-height
+				float w = std::stof(defaultedArg("maxX", "0.5")) - std::stof(defaultedArg("minX", "-0.5"));
+				float h = std::stof(defaultedArg("maxY", "0.5")) - std::stof(defaultedArg("minY", "-0.5"));
+				CEVec3 min = { -w * 0.5f, -h * 0.5f, 0.f };
+				CEVec3 max = { w * 0.5f, h * 0.5f, 0.f };
+
+				// 2. Create using Polygon's OBB helper
+				auto poly = std::make_unique<Polygon>(Polygon::CreateOBB(min, max, std::stof(defaultedArg("rotation", "0.f")), CEVec3{}));
+				poly->ColliderType = ColliderType::OBB; // Preserve the OBB Type for UI/Logic
+				return poly;
 
 			} if (type == ColliderType::LINE) {
 

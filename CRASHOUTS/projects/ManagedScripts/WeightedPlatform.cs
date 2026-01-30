@@ -67,9 +67,9 @@ namespace CrashoutsEngine
         public void OnTriggerEnter(uint otherEntityID)
         {
             Entity other = new Entity(otherEntityID);
-            var layer = other.GetComponent<LayerComponent>();
+            var Tag = other.GetComponent<TagComponent>();
 
-            if (layer != null && layer.HasLayer("Player"))
+            if (Tag != null && Tag.HasTag("player"))
             {
                 playerTf = other.GetComponent<TransformComponent>();
                 playerRb = other.GetComponent<RigidBodyComponent>();
@@ -80,9 +80,9 @@ namespace CrashoutsEngine
         public void OnTriggerExit(uint otherEntityID)
         {
             Entity other = new Entity(otherEntityID);
-            var layer = other.GetComponent<LayerComponent>();
+            var Tag = other.GetComponent<TagComponent>();
 
-            if (layer != null && layer.HasLayer("Player"))
+            if (Tag != null && Tag.HasTag("player"))
             {
                 playerOnBoard = false;
                 playerTf = null;
@@ -190,7 +190,7 @@ namespace CrashoutsEngine
             transform.Position = new CEVec3(nextX, totalY, transform.Position.z);
 
             // ---------------------------------------------------------
-            // 4. Sync Player Position
+            // 4. Sync player Position
             // ---------------------------------------------------------
             if (playerOnBoard && playerTf != null)
             {

@@ -4,7 +4,7 @@
 @date       29/11/2025
 @brief      quadtree function definitions
 
-All content © 2025 Digipen Institute of Technology Singapore.All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore.All rights reserved.
 
 //__________________________________________________________________________*/
 #include "quadtree.h"
@@ -95,18 +95,23 @@ namespace DataStructure {
 	}
 
 	void QuadTree::Clear() {
-		objects = std::vector<std::pair<CrashoutsEngine::Entity, Collision::AABBRect>>{};
+		objects.clear();
+		divided = false;
 
 		for (int i{}; i < 4; ++i) {
 			if (childRegions[i])
 				childRegions[i]->Clear();
-			childRegions[i].reset();
 		}
-
 	}
 
 	void QuadTree::Resize(Collision::AABBRect const& newBoundary) {
-		Clear();
+		objects.clear();
+		divided = false;
+
+		for (int i{}; i < 4; ++i) {
+			childRegions[i].reset();
+		}
+
 		boundary = newBoundary;
 		CEVec3 extents{ (newBoundary.max - newBoundary.min) * 0.5f };
 		childSizes = {

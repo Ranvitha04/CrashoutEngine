@@ -26,6 +26,10 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserv
 using namespace CrashoutsEngine;
 using namespace Component;
 
+static RenderCamera::Camera& GetActiveDebugCamera() {
+	return (engineState == EngineState::STOP) ? RenderCamera::engineCamera : RenderCamera::gameCamera;
+}
+
 /*                                                       internal helpers
 ----------------------------------------------------------------------------- */
 /*!
@@ -51,7 +55,7 @@ using namespace Component;
  @param color        RGB-like color vector used by the line drawer.
 */
 static void DrawAABBOutline(const CEVec3& minP, const CEVec3& maxP, float thickness, const CEColor& color) {
-	float z = RenderCamera::engineCamera.GetFar();
+	float z = GetActiveDebugCamera().GetFar();
 	CEVec3 p0(minP.x, minP.y, z);
 	CEVec3 p1(maxP.x, minP.y, z);
 	CEVec3 p2(maxP.x, maxP.y, z);
@@ -72,7 +76,7 @@ static void DrawAABBOutline(const CEVec3& minP, const CEVec3& maxP, float thickn
  @param color        RGB-like color vector used by the line drawer.
 */
 static void DrawOBBOutline(const Collision::OBBRect* vertices, float thickness, const CEColor& color) {
-	float z = RenderCamera::engineCamera.GetFar();
+	float z = GetActiveDebugCamera().GetFar();
 	// Create new vertices with the modified Z value
 	CEVec3 v0 = { vertices->rotatedVertices[0].x, vertices->rotatedVertices[0].y, z };
 	CEVec3 v1 = { vertices->rotatedVertices[1].x, vertices->rotatedVertices[1].y, z };
@@ -93,7 +97,7 @@ static void DrawOBBOutline(const Collision::OBBRect* vertices, float thickness, 
  @param color        RGB-like color vector used by the line drawer.
 */
 static void DrawPolygon(const Collision::Polygon* vertices, float thickness, const CEColor& color) {
-	float z = RenderCamera::engineCamera.GetFar();
+	float z = GetActiveDebugCamera().GetFar();
 
 	for (int i{}; i < vertices->vertexCount; ++i) {
 		int nextIdx{ (i + 1) % vertices->vertexCount };
@@ -119,7 +123,7 @@ static void DrawCircleOutline(const CEVec3& c, float r, int segments, float thic
 	const float step = twoPi / segments;
 
 	CEVec3 prev(c.x + r, c.y, 0.0f);
-	float z = RenderCamera::engineCamera.GetFar();
+	float z = GetActiveDebugCamera().GetFar();
 
 	for (int i = 1; i <= segments; ++i) {
 		float t = i * step;
@@ -148,8 +152,7 @@ namespace CollisionGizmos {
 
 		// Culling preperations
 
-		RenderCamera::Camera& cam = (engineState != EngineState::PLAY) ? 
-			RenderCamera::engineCamera : RenderCamera::gameCamera;
+		RenderCamera::Camera& cam = GetActiveDebugCamera();
 		CEVec3 camPos = cam.GetPosition();
 		float camHeight = cam.GetVisibleWorldHeight();
 		float camWidth = cam.GetVisibleWorldWidth();
@@ -187,79 +190,79 @@ namespace CollisionGizmos {
 			// Frustum Culling Check
 
 			switch (pColliderComp->collider->type) {
-				case Collision::ColliderType::CIRCLE: {
-					auto& circle = static_cast<Collision::Circle const&>(*pColliderComp->collider);
-					// Simple Circle vs AABB (Camera) check
-					float closestX = std::fmaxf(camMinX, std::fminf(circle.position.x, camMaxX));
-					float closestY = std::fmaxf(camMinY, std::fminf(circle.position.y, camMaxY));
-					float distanceSq = std::powf(circle.position.x - closestX, 2) + std::powf(circle.position.y - closestY, 2);
+			case Collision::ColliderType::CIRCLE: {
+				auto& circle = static_cast<Collision::Circle const&>(*pColliderComp->collider);
+				// Simple Circle vs AABB (Camera) check
+				float closestX = std::fmaxf(camMinX, std::fminf(circle.position.x, camMaxX));
+				float closestY = std::fmaxf(camMinY, std::fminf(circle.position.y, camMaxY));
+				float distanceSq = std::powf(circle.position.x - closestX, 2) + std::powf(circle.position.y - closestY, 2);
 
-					if (distanceSq < (circle.radius * circle.radius)) {
-						// Reduced segments from 48 to 24 for performance
-						DrawCircleOutline(circle.position, circle.radius, 24, wireThickness, color);
-					}
-					break;
+				if (distanceSq < (circle.radius * circle.radius)) {
+					// Reduced segments from 48 to 24 for performance
+					DrawCircleOutline(circle.position, circle.radius, 24, wireThickness, color);
 				}
-				case Collision::ColliderType::AABB: {
-					auto& aabb = static_cast<Collision::AABBRect const&>(*pColliderComp->collider);
-					// Standard AABB vs AABB check
-					if (aabb.max.x > camMinX && aabb.min.x < camMaxX &&
-						aabb.max.y > camMinY && aabb.min.y < camMaxY) {
-						DrawAABBOutline(aabb.min, aabb.max, wireThickness, color);
-					}
-					break;
+				break;
+			}
+			case Collision::ColliderType::AABB: {
+				auto& aabb = static_cast<Collision::AABBRect const&>(*pColliderComp->collider);
+				// Standard AABB vs AABB check
+				if (aabb.max.x > camMinX && aabb.min.x < camMaxX &&
+					aabb.max.y > camMinY && aabb.min.y < camMaxY) {
+					DrawAABBOutline(aabb.min, aabb.max, wireThickness, color);
 				}
-				case Collision::ColliderType::OBB: {
-					// For OBB and Polygon, use their pre-calculated AABB 
-					auto& poly = static_cast<Collision::Polygon const&>(*pColliderComp->collider);
+				break;
+			}
+			case Collision::ColliderType::OBB: {
+				// For OBB and Polygon, use their pre-calculated AABB 
+				auto& poly = static_cast<Collision::Polygon const&>(*pColliderComp->collider);
 
-					// Manual mini-AABB check for the polygon vertices
-					float pMinX = 1e10f, pMaxX = -1e10f, pMinY = 1e10f, pMaxY = -1e10f;
-					for (int i = 0; i < poly.vertexCount; ++i) {
-						pMinX = std::min(pMinX, poly.rotatedVertices[i].x);
-						pMaxX = std::max(pMaxX, poly.rotatedVertices[i].x);
-						pMinY = std::min(pMinY, poly.rotatedVertices[i].y);
-						pMaxY = std::max(pMaxY, poly.rotatedVertices[i].y);
-					}
-
-					if (pMaxX > camMinX && pMinX < camMaxX && pMaxY > camMinY && pMinY < camMaxY) {
-						if (pColliderComp->collider->type == Collision::ColliderType::OBB) {
-							auto& obbTemp = static_cast<Collision::OBBRect const&>(*pColliderComp->collider);
-							DrawOBBOutline(&obbTemp, wireThickness, color);
-						}
-						else
-							DrawPolygon(&poly, wireThickness, color);
-					}
-					break;
-				} case Collision::ColliderType::LINE: {
-					auto& line = static_cast<Collision::LineSegment const&>(*pColliderComp->collider);
-					Shapes::CreateLine(line.GetWorldP1(), line.GetWorldP2(),1.f, color);
-					Shapes::CreateLine(line.GetWorldP1(), line.GetWorldP1() + line.GetNormal(), 1.f, color);
-					break;
+				// Manual mini-AABB check for the polygon vertices
+				float pMinX = 1e10f, pMaxX = -1e10f, pMinY = 1e10f, pMaxY = -1e10f;
+				for (int i = 0; i < poly.vertexCount; ++i) {
+					pMinX = std::min(pMinX, poly.rotatedVertices[i].x);
+					pMaxX = std::max(pMaxX, poly.rotatedVertices[i].x);
+					pMinY = std::min(pMinY, poly.rotatedVertices[i].y);
+					pMaxY = std::max(pMaxY, poly.rotatedVertices[i].y);
 				}
-				case Collision::ColliderType::POLYGON: {
-					// For OBB and Polygon, use their pre-calculated AABB 
-					auto& poly = static_cast<Collision::Polygon const&>(*pColliderComp->collider);
 
-					// Manual mini-AABB check for the polygon vertices
-					float pMinX = 1e10f, pMaxX = -1e10f, pMinY = 1e10f, pMaxY = -1e10f;
-					for (int i = 0; i < poly.vertexCount; ++i) {
-						pMinX = std::min(pMinX, poly.rotatedVertices[i].x);
-						pMaxX = std::max(pMaxX, poly.rotatedVertices[i].x);
-						pMinY = std::min(pMinY, poly.rotatedVertices[i].y);
-						pMaxY = std::max(pMaxY, poly.rotatedVertices[i].y);
+				if (pMaxX > camMinX && pMinX < camMaxX && pMaxY > camMinY && pMinY < camMaxY) {
+					if (pColliderComp->collider->type == Collision::ColliderType::OBB) {
+						auto& obbTemp = static_cast<Collision::OBBRect const&>(*pColliderComp->collider);
+						DrawOBBOutline(&obbTemp, wireThickness, color);
 					}
-
-					if (pMaxX > camMinX && pMinX < camMaxX && pMaxY > camMinY && pMinY < camMaxY) {
-						if (pColliderComp->collider->type == Collision::ColliderType::OBB) {
-							auto& obbTemp = static_cast<Collision::OBBRect const&>(*pColliderComp->collider);
-							DrawOBBOutline(&obbTemp, wireThickness, color);
-						}
-						else
-							DrawPolygon(&poly, wireThickness, color);
-					}
-					break;
+					else
+						DrawPolygon(&poly, wireThickness, color);
 				}
+				break;
+			} case Collision::ColliderType::LINE: {
+				auto& line = static_cast<Collision::LineSegment const&>(*pColliderComp->collider);
+				Shapes::CreateLine(line.GetWorldP1(), line.GetWorldP2(), 1.f, color);
+				Shapes::CreateLine(line.GetWorldP1(), line.GetWorldP1() + line.GetNormal(), 1.f, color);
+				break;
+			}
+			case Collision::ColliderType::POLYGON: {
+				// For OBB and Polygon, use their pre-calculated AABB 
+				auto& poly = static_cast<Collision::Polygon const&>(*pColliderComp->collider);
+
+				// Manual mini-AABB check for the polygon vertices
+				float pMinX = 1e10f, pMaxX = -1e10f, pMinY = 1e10f, pMaxY = -1e10f;
+				for (int i = 0; i < poly.vertexCount; ++i) {
+					pMinX = std::min(pMinX, poly.rotatedVertices[i].x);
+					pMaxX = std::max(pMaxX, poly.rotatedVertices[i].x);
+					pMinY = std::min(pMinY, poly.rotatedVertices[i].y);
+					pMaxY = std::max(pMaxY, poly.rotatedVertices[i].y);
+				}
+
+				if (pMaxX > camMinX && pMinX < camMaxX && pMaxY > camMinY && pMinY < camMaxY) {
+					if (pColliderComp->collider->type == Collision::ColliderType::OBB) {
+						auto& obbTemp = static_cast<Collision::OBBRect const&>(*pColliderComp->collider);
+						DrawOBBOutline(&obbTemp, wireThickness, color);
+					}
+					else
+						DrawPolygon(&poly, wireThickness, color);
+				}
+				break;
+			}
 			}
 		}
 	}

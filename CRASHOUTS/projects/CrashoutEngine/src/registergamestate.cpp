@@ -17,7 +17,7 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserve
 #include "mainmenuscene.h"
 #include "rainscene.h"
 #include "renfredscene.h"
-#include "tristanscene.h"
+//#include "tristanscene.h"
 #include "ranscene.h"
 //#include "descentmenuscene.h"
 //#include "descentgamescene.h"
@@ -81,15 +81,15 @@ void RegisterAllStates(){
 		UnloadAfiq
 	};
 
-	GameStateDescriptor Tristan = {
-		"Tristan",
-		LoadTristan,
-		InitTristan,
-		UpdateTristan,
-		RenderTristan,
-		FreeTristan,
-		UnloadTristan
-	};
+	//GameStateDescriptor Tristan = {
+	//	"Tristan",
+	//	LoadTristan,
+	//	InitTristan,
+	//	UpdateTristan,
+	//	RenderTristan,
+	//	FreeTristan,
+	//	UnloadTristan
+	//};
 
 	GameStateDescriptor Ran = {
 		"Ran",
@@ -139,7 +139,7 @@ void RegisterAllStates(){
 	RegisterGameState(RAIN, Rain);
 	RegisterGameState(AMIR, Amir);
 	RegisterGameState(AFIQ, Afiq);
-	RegisterGameState(TRISTAN, Tristan);
+	//RegisterGameState(TRISTAN, Tristan);
 	RegisterGameState(RAN, Ran);
 	//RegisterGameState(DESCENT_MENU, DescentMenu);
 	//RegisterGameState(DESCENT_GAME, DescentGame);

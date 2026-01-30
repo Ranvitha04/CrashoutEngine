@@ -12,7 +12,7 @@ using System.Numerics;
 namespace CrashoutsEngine
 {
     [ScriptBehaviour]
-    public class PlayerController : ScriptBase
+    public class playerController : ScriptBase
     {
         bool moveLeft;
         bool moveRight;
@@ -41,7 +41,7 @@ namespace CrashoutsEngine
         public override void Start()
         {
             // Initialization logic for the player
-            Console.WriteLine("[C#] PlayerController Start() called, Entity is " + (Entity == null ? "NULL" : "OK!!"));
+            Console.WriteLine("[C#] playerController Start() called, Entity is " + (Entity == null ? "NULL" : "OK!!"));
             CollisionEvents.RegisterTriggerEnter(Entity.ID, this.OnTriggerEnter);
             //Entity.Add<RigidBodyComponent>();
             //Entity.Add<TransformComponent>();
@@ -55,7 +55,7 @@ namespace CrashoutsEngine
         {
             //Console.WriteLine("Has RB? " + Entity.Has<RigidBodyComponent>());
 
-            //Console.WriteLine("[C#] PlayerController Update() called with dt: " + dt);
+            //Console.WriteLine("[C#] playerController Update() called with dt: " + dt);
             // Access physics and transform components from your entity
             //var rb = Entity.GetComponent<RigidBodyComponent>();
             var tf = Entity.GetComponent<TransformComponent>();
@@ -64,12 +64,12 @@ namespace CrashoutsEngine
             isMoving = moveLeft || moveRight;
             if (isMoving && !wasMoving)
             {
-                //Console.WriteLine("[C#] Player started moving -> Play footsteps");
+                //Console.WriteLine("[C#] player started moving -> Play footsteps");
                 AudioManager.GetInstance().Play("footsteps");
             }
             else if (!isMoving && wasMoving)
             {
-                //Console.WriteLine("[C#] Player stopped moving -> Stop footsteps_loop");
+                //Console.WriteLine("[C#] player stopped moving -> Stop footsteps_loop");
                 AudioManager.GetInstance().Stop("footsteps");
             }
             //if (Input.IsKeyPressed(Key.A))
@@ -150,7 +150,7 @@ namespace CrashoutsEngine
         public override void OnDestroy()
         {
             // Cleanup logic for the player
-            Console.WriteLine("[C#] PlayerController OnDestroy() called");
+            Console.WriteLine("[C#] playerController OnDestroy() called");
             AudioManager.GetInstance().Stop("ambient");
         }
     }

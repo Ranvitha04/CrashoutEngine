@@ -134,7 +134,7 @@ public class AudioManager
     // === Replacing Unity's Stop(name)
     public void Stop(string name, float fadeDuration = 0.5f)
     {
-        InternalCalls.Audio_StopTagged(name, fadeDuration);
+        InternalCalls.Audio_Stoplayerged(name, fadeDuration);
     }
 
     // === Equivalent of MusicStop()
