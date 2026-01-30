@@ -494,22 +494,48 @@ namespace Scene {
 				bool isHovering = (checkPos.x >= aa.x && checkPos.x <= bb.x &&
 					checkPos.y >= aa.y && checkPos.y <= bb.y);
 
+				// Base Scale (assumes 1.0 is default/normal scale multiplier)
+				float targetScale = 1.0f;
+
 				if (isHovering) {
 					if (InputManager::IsMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT)) {
 						b->buttonState = ButtonState::PRESSED;
 						if (s) s->color = b->shapePressedColor;
 						if (txt) txt->color = b->textPressedColor;
+						targetScale = b->pressedScale;
 					}
 					else {
 						b->buttonState = ButtonState::HOVERED;
 						if (s) s->color = b->shapeHoveredColor;
 						if (txt) txt->color = b->textHoveredColor;
+						targetScale = b->hoverScale;
 					}
 				}
 				else if (b->buttonState != ButtonState::NORMAL) {
 					b->buttonState = ButtonState::NORMAL;
 					if (s) s->color = b->shapeNormalColor;
 					if (txt) txt->color = b->textNormalColor;
+					targetScale = 1.0f;
+				}
+
+				if (b->originalSize.x == 0.0f && b->originalSize.y == 0.0f) {
+					b->originalSize = t->size;
+				}
+				
+				// Apply target scale to Shape size
+				t->size.x = b->originalSize.x * targetScale;
+				t->size.y = b->originalSize.y * targetScale;
+
+				// Apply target scale to Text scale
+				if (txt) {
+					// Capture original text scale if not yet set
+					if (b->originalTextScale == 0.0f) {
+						b->originalTextScale = txt->scale;
+					}
+					// Only apply if we have a valid original scale (avoid shrinking to 0 if init failed)
+					if (b->originalTextScale > 0.0f) {
+						txt->scale = b->originalTextScale * targetScale;
+					}
 				}
 			}
 		}

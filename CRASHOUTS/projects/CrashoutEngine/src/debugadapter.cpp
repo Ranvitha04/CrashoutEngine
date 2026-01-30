@@ -1945,6 +1945,11 @@ namespace CrashoutsEngine
 			EditColor("Hovered", bc->textHoveredColor);
 			EditColor("Pressed", bc->textPressedColor);
 			ImGui::PopID();
+
+			// --- Scale Factors ---
+			ImGui::SeparatorText("Scale Factors");
+			UIHelpers::DrawUndoableFloat("Hover Scale", bc->hoverScale, 0.05f, 0.5f, 2.0f);
+			UIHelpers::DrawUndoableFloat("Pressed Scale", bc->pressedScale, 0.05f, 0.5f, 2.0f);
 		}
 	};
 
