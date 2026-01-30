@@ -84,7 +84,7 @@ public class AudioManager
     }
 
     // === Play music or ambience globally with layering support
-    public void PlayGlobal(string layerName, string key, string path, bool loop, float volume = 1.0f, float fadeDuration = 2.0f)
+    public void PlayLayer(string layerName, string key, string path, bool loop, float volume = 1.0f, float fadeDuration = 2.0f)
     {
         string currentKeyOnLayer = "";
         if (_activeLayers.ContainsKey(layerName))
@@ -134,7 +134,7 @@ public class AudioManager
     // === Replacing Unity's Stop(name)
     public void Stop(string name, float fadeDuration = 0.5f)
     {
-        InternalCalls.Audio_Stoplayerged(name, fadeDuration);
+        InternalCalls.Audio_StopTagged(name, fadeDuration);
     }
 
     // === Equivalent of MusicStop()
@@ -153,6 +153,24 @@ public class AudioManager
     {
         playerSFXVol = volume;
         InternalCalls.Audio_SetSFXVolume(volume);
+    }
+
+    public void StopLayer(string layerName, float fadeDuration)
+    {
+        // 1. Check if anything is playing on this layer
+        if (_activeLayers.ContainsKey(layerName))
+        {
+            string keyToStop = _activeLayers[layerName];
+
+            // 2. Tell C++ to stop that specific tag
+            if (!string.IsNullOrEmpty(keyToStop))
+            {
+                InternalCalls.Audio_StopTagged(keyToStop, fadeDuration);
+            }
+
+            // 3. Clear the record so we know nothing is playing
+            _activeLayers.Remove(layerName);
+        }
     }
 
     // A fade system can be added later

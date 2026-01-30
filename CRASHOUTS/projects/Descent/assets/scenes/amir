@@ -3,8 +3,8 @@
         {
             "active": true,
             "name": "Player",
-            "layer": {
-                "currentLayer": 8
+            "tag": {
+                "tagMask": 8
             },
             "transform": {
                 "rotation": 0.0,
@@ -153,14 +153,13 @@
                     {
                         "className": "PlayerMovement",
                         "fields": {
-                            "moveSpeed": 200.0,
                             "maxRunSpeed": 100.0,
+                            "maxAirSpeed": 120.0,
+                            "acceleration": 10.0,
+                            "deceleration": 10.0,
+                            "airAcceleration": 2.0,
                             "jumpPower": 20000.0,
-                            "groundDrag": 0.15000000596046449,
-                            "airDrag": 0.019999999552965165,
                             "gravityScale": 2.5,
-                            "turnMultiplier": 2.0,
-                            "frictionMultiplier": 500.0,
                             "gravityForceMultiplier": 10.0,
                             "footstepInterval": 0.07500000298023224,
                             "swapPause": 1.0,
@@ -224,13 +223,21 @@
                     "z": 0.0,
                     "w": 0.5
                 }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "Entity 5",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -725,13 +732,21 @@
                         "asset": "tilemaps/Rock"
                     }
                 ]
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "Slime",
-            "layer": {
-                "currentLayer": 16
+            "tag": {
+                "tagMask": 16
             },
             "transform": {
                 "rotation": 0.0,
@@ -892,13 +907,21 @@
                     "z": 0.0,
                     "w": 0.5
                 }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "Audio_level bgm 1",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -924,13 +947,21 @@
                         "isMusic": false
                     }
                 ]
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "BGMManager",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -963,17 +994,26 @@
                         "className": "SceneMusic",
                         "fields": {
                             "layerName": "Music",
-                            "fadeTime": 5.0
+                            "fadeTime": 5.0,
+                            "stopLayer": false
                         }
                     }
                 ]
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "AmbienceManager",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -1006,10 +1046,19 @@
                         "className": "SceneMusic",
                         "fields": {
                             "layerName": "Ambiance",
-                            "fadeTime": 5.0
+                            "fadeTime": 5.0,
+                            "stopLayer": false
                         }
                     }
                 ]
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         }
     ],

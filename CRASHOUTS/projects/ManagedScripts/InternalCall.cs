@@ -119,9 +119,6 @@ namespace CrashoutsEngine
         internal static extern void Audio_StopTagged(string key, float fadeDuration);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        internal static extern void Audio_Stoplayerged(string key, float fadeDuration);
-
-        [MethodImpl(MethodImplOptions.InternalCall)]
         internal static extern void Audio_StopMusic();
 
         [MethodImpl(MethodImplOptions.InternalCall)]
