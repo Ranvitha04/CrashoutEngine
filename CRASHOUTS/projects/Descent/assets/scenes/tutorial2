@@ -3,6 +3,9 @@
         {
             "active": true,
             "name": "Entity 1",
+            "tag": {
+                "tagMask": 0
+            },
             "transform": {
                 "rotation": 0.0,
                 "position": {
@@ -365,7 +368,7 @@
                     {
                         "x": 12,
                         "y": -9,
-                        "asset": "tilemaps/Rock"
+                        "asset": ""
                     },
                     {
                         "x": 12,
@@ -375,6 +378,11 @@
                     {
                         "x": 13,
                         "y": -10,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 13,
+                        "y": -9,
                         "asset": "tilemaps/Rock"
                     },
                     {
@@ -2183,6 +2191,14 @@
                         "asset": "tilemaps/Rock"
                     }
                 ]
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         }
     ],
