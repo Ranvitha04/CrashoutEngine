@@ -1317,6 +1317,7 @@ namespace InstancingSystem {
 
 	void CreateInstancedRectanglesTextured(
 		const std::string& textureName,
+		GLuint textureHandle, // Added handle
 		const CEVec3* positions, const CEColor* colors,
 		const float* rotations, const float* scales,
 		const float* widths, const float* heights,
@@ -1331,7 +1332,8 @@ namespace InstancingSystem {
 		// Init buffers if needed using base function logic
 		if (!s_rectInstanceBuffersInitialized) {
 			CEVec3 p; CEColor c; float f = 0; CEVec2 u;
-			CreateInstancedRectangles(&p, &c, &f, &f, &f, &f, &u, 0);
+			//CreateInstancedRectangles(&p, &c, &f, &f, &f, &f, &u, 0);
+			CreateInstancedRectanglesTextured("", 0, &p, &c, &f, &f, &f, &f, &u, 0);
 		}
 
 		std::vector<RectInstanceData> instanceData(count);
@@ -1350,7 +1352,12 @@ namespace InstancingSystem {
 		glBufferData(GL_ARRAY_BUFFER, instanceData.size() * sizeof(RectInstanceData), instanceData.data(), GL_DYNAMIC_DRAW);
 
 		Component::Rendering& renderer = Component::Rendering::Get();
-		GLuint textureHandle = Component::TextureRenderer::GetTextureHandle(textureName);
+		//GLuint textureHandle = Component::TextureRenderer::GetTextureHandle(textureName);
+		// Use raw handle if provided, otherwise lookup
+		GLuint handle = textureHandle;
+		if (handle == 0 && !textureName.empty()) {
+			handle = Component::TextureRenderer::GetTextureHandle(textureName);
+		}
 
 		renderer.shdr_pgm_instanced->Use();
 		renderer.shdr_pgm_instanced->SetUniform("uModel", glm::mat4(1.0f));
@@ -1367,7 +1374,8 @@ namespace InstancingSystem {
 		glDisable(GL_BLEND);    // No blending
 		glDepthMask(GL_TRUE);   // Write depth normally
 
-		glBindTextureUnit(0, textureHandle);
+		//glBindTextureUnit(0, textureHandle);
+		glBindTextureUnit(0, handle);
 		glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, 0, count);
 		glBindTextureUnit(0, 0);
 
@@ -1393,7 +1401,8 @@ namespace InstancingSystem {
 			CreateInstancedRectangles(positions, colors, rotations, scales, widths, heights, uvOffsets, count);
 		}
 		else {
-			CreateInstancedRectanglesTextured(params.textureName, positions, colors, rotations, scales, widths, heights, uvOffsets, count, params.tint, params.uvSize);
+			//CreateInstancedRectanglesTextured(params.textureName, positions, colors, rotations, scales, widths, heights, uvOffsets, count, params.tint, params.uvSize);
+			CreateInstancedRectanglesTextured(params.textureName, params.textureHandle, positions, colors, rotations, scales, widths, heights, uvOffsets, count, params.tint, params.uvSize);
 		}
 	}
 
@@ -1943,6 +1952,7 @@ namespace InstancingSystem {
 		else {
 			CreateInstancedRectanglesTextured(
 				params.textureName,
+				params.textureHandle, // Pass handle
 				gM4RectPos.data(), gM4RectColor.data(),
 				gM4RectRot.data(), rectScales.data(),
 				gM4RectW.data(), gM4RectH.data(),

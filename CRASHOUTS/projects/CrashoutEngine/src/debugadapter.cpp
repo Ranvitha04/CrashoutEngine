@@ -52,6 +52,8 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserv
 #include "activecomponent.h"
 #include "tagcomponent.h"
 #include "spritecomponent.h"
+#include "videocomponent.h"
+#include "videoloader.h"
 
 // FOR GAME GUI
 #include "buttoncomponent.h"
@@ -3109,6 +3111,148 @@ namespace CrashoutsEngine
 		}
 	};
 
+	struct VideoAdapter : DebugReflection::IComponentAdapter {
+		const char* name() const override { return "VideoComponent"; }
+		bool has(ECS& ecs, Entity e) const override {
+			return ecs.HasComponent<Component::VideoComponent>(e);
+		}
+		void add(ECS& ecs, Entity e) override {
+			if (!has(ecs, e)) ecs.AddComponent<Component::VideoComponent>(e);
+		}
+		void remove(ECS& ecs, Entity e) override {
+			if (has(ecs, e)) ecs.RemoveComponent<Component::VideoComponent>(e);
+		}
+		void drawInspector(ECS& ecs, Entity e) override {
+			auto* vc = ecs.GetComponent<Component::VideoComponent>(e);
+			if (!vc) return;
+
+			UIHelpers::DrawUndoableBool("Is Playing", vc->isPlaying);
+			UIHelpers::DrawUndoableBool("Loop", vc->loop);
+			UIHelpers::DrawUndoableBool("Is Cutscene", vc->isCutscene);
+			UIHelpers::DrawUndoableBool("Match Aspect Ratio", vc->matchAspectRatio);
+			UIHelpers::DrawUndoableFloat("FPS", vc->frameRate, 0.1f, 1.0f, 120.0f);
+
+			ImGui::Separator();
+			
+			// --- VIDEO PATH SELECTION ---
+			ImGui::Text("Video Source:");
+			std::string displayPath = vc->videoPath.empty() ? "<None>" : vc->videoPath;
+			ImGui::InputText("##VideoPath", (char*)displayPath.c_str(), displayPath.size(), ImGuiInputTextFlags_ReadOnly);
+
+			// Drag & Drop Target
+			if (ImGui::BeginDragDropTarget()) {
+				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSET/PAYLOAD")) {
+					if (payload->Data && payload->DataSize == sizeof(AssetDragPayload)) {
+						const auto* d = static_cast<const AssetDragPayload*>(payload->Data);
+						std::string p = d->relPath;
+						std::string ext = std::filesystem::path(p).extension().string();
+						std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+
+						if (ext == ".mp4") {
+							// Update path and reload
+							vc->videoPath = p;
+							if (vc->loader) vc->loader.reset(); // Stop current
+							
+							// Auto-load
+							vc->loader = std::make_shared<CrashoutsEngine::VideoLoader>(CrashoutsEngine::Assets::rootPath + p);
+							if (!vc->loader->Load()) {
+								vc->loader.reset();
+							} else {
+								//vc->frames.clear(); // Clear legacy frames if we switch to MP4?
+							}
+						}
+					}
+				}
+				ImGui::EndDragDropTarget();
+			}
+
+			ImGui::SameLine();
+			float btnSize = ImGui::GetFrameHeight();
+			if (ImGui::Button("...", ImVec2(btnSize, btnSize))) {
+				ImGui::OpenPopup("PickVideoPopup");
+			}
+
+			// Modal Popup for Picking MP4
+			if (ImGui::BeginPopupModal("PickVideoPopup", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
+				namespace fs = std::filesystem;
+				static std::vector<std::string> s_videos;
+				static bool s_scanned = false;
+
+				if (ImGui::Button("Refresh")) s_scanned = false;
+
+				if (!s_scanned) {
+					s_scanned = true;
+					s_videos.clear();
+					// Assumes videos are in assets/videos/ or just assets/
+					const std::string assetRoot = CrashoutsEngine::Assets::rootPath;
+
+					try {
+						if (fs::exists(assetRoot)) {
+							for (auto& p : fs::recursive_directory_iterator(assetRoot)) {
+								if (!p.is_regular_file()) continue;
+								std::string ext = p.path().extension().string();
+								std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+
+								if (ext == ".mp4") {
+									// Store relative path
+									std::string fullPath = p.path().generic_string();
+									// Attempt to make relative to asset root for cleaner display
+									// (Basic string manipulation if needed, or just store filename)
+									s_videos.push_back(fs::relative(p.path(), assetRoot).generic_string());
+								}
+							}
+							std::sort(s_videos.begin(), s_videos.end());
+						}
+					}
+					catch (...) { }
+				}
+
+				ImGui::Separator();
+				ImGui::BeginChild("video_list", ImVec2(400, 300), true);
+				for (const auto& v : s_videos) {
+					bool isSelected = (vc->videoPath == v);
+					if (ImGui::Selectable(v.c_str(), isSelected)) {
+						vc->videoPath = v;
+						
+						// Auto-load
+						if (vc->loader) vc->loader.reset();
+						vc->loader = std::make_shared<CrashoutsEngine::VideoLoader>(CrashoutsEngine::Assets::rootPath + v);
+						if (!vc->loader->Load()) {
+							vc->loader.reset();
+						}
+
+						ImGui::CloseCurrentPopup();
+					}
+				}
+				ImGui::EndChild();
+
+				ImGui::Separator();
+				if (ImGui::Button("Cancel")) ImGui::CloseCurrentPopup();
+				ImGui::EndPopup();
+			}
+			// ----------------------------
+
+			if (vc->loader && vc->loader->IsValid()) {
+				ImGui::Separator();
+				ImGui::TextColored(ImVec4(0, 1, 0, 1), "[ FFmpeg Streaming Active ]");
+				ImGui::Text("Video Size: %d x %d", vc->loader->GetWidth(), vc->loader->GetHeight());
+				ImGui::Text("Duration: %.2f s", vc->loader->GetDuration());
+				ImGui::Text("Texture Handle: %u", vc->loader->GetTextureHandle());
+			}
+			else {
+				ImGui::Separator();
+				ImGui::TextColored(ImVec4(1, 1, 0, 1), "[ Image Sequence Mode ]");
+				ImGui::Text("Frames Count: %zu", vc->frames.size());
+
+				if (ImGui::Button("Clear Frames")) {
+					vc->frames.clear();
+					vc->currentFrameIndex = 0;
+				}
+			}
+		}
+	};
+
+
 	/*!
 	@brief Physics debug provider (global forces / integrators).
 	@details Exposes gravity vector and linear damping via PhysicsHandler getters/setters.
@@ -3163,6 +3307,7 @@ namespace CrashoutsEngine
 	static ParticleSystemAdapter gParticleAdapter;
 	static TagAdapter gTagAdapter;     
 	static DebugZOverrideAdapter gDebugZOverrideAdapter;
+	static VideoAdapter gVideoAdapter;
 }
 
 /*!
@@ -3195,6 +3340,7 @@ extern "C" void RegisterBuiltinComponentAdapters() {
 	ComponentRegistry::instance().registerAdapter(&gTileMapAdapter);
 	ComponentRegistry::instance().registerAdapter(&gKeyframeAdapter);
 	ComponentRegistry::instance().registerAdapter(&gParticleAdapter);
+	ComponentRegistry::instance().registerAdapter(&gVideoAdapter);
 	DebugReflection::SetGameStateProvider(&gProvider);
 	DebugReflection::PhysicsRegistry::instance().registerProvider(&gBuiltinPhys);
 

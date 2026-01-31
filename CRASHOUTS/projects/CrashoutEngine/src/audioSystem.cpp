@@ -80,7 +80,8 @@ namespace CrashoutsEngine::Audio
         static const std::vector<std::string> allowed = {
             ".mp3",
             ".ogg",
-            ".wav"
+            ".wav",
+            ".mp4"
         };
 
         auto dot = path.find_last_of('.');
