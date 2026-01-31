@@ -3,8 +3,8 @@
         {
             "active": true,
             "name": "Rock_TileMap",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -14323,19 +14323,27 @@
                         "asset": "tilemaps/Rock"
                     }
                 ]
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "Player",
-            "layer": {
-                "currentLayer": 8
+            "tag": {
+                "tagMask": 8
             },
             "transform": {
                 "rotation": 0.0,
                 "position": {
                     "x": -44.29373550415039,
-                    "y": -418.6708068847656,
+                    "y": -354.6708068847656,
                     "z": 0.0
                 },
                 "size": {
@@ -14362,7 +14370,7 @@
                 "enabled": true,
                 "position": {
                     "x": -44.29373550415039,
-                    "y": -418.7263488769531,
+                    "y": -354.6708068847656,
                     "z": 0.0
                 },
                 "offset": {
@@ -14372,12 +14380,12 @@
                 },
                 "min": {
                     "x": -56.59373474121094,
-                    "y": -448.079345703125,
+                    "y": -384.0238037109375,
                     "z": 0.0
                 },
                 "max": {
                     "x": -31.993736267089845,
-                    "y": -389.37335205078127,
+                    "y": -325.31781005859377,
                     "z": 0.0
                 }
             },
@@ -14496,15 +14504,13 @@
                     {
                         "className": "PlayerMovement",
                         "fields": {
-                            "moveSpeed": 2000.0,
                             "maxRunSpeed": 200.0,
                             "maxAirSpeed": 120.0,
-                            "airControlFactor": 0.5,
+                            "acceleration": 10.0,
+                            "deceleration": 10.0,
+                            "airAcceleration": 2.0,
                             "jumpPower": 50000.0,
-                            "groundDrag": 0.15000000596046449,
-                            "airDrag": 0.10000000149011612,
                             "gravityScale": 2.5,
-                            "frictionMultiplier": 500.0,
                             "gravityForceMultiplier": 10.0,
                             "footstepInterval": 0.07500000298023224,
                             "swapPause": 1.0499999523162842,
@@ -14530,11 +14536,46 @@
                     "y": 33.0
                 }
             },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
             "keyframe_animator": {
                 "current": "playerIdle",
-                "t": 0.11666666716337204,
+                "t": 0.01666666753590107,
                 "playing": true,
                 "clips": [
+                    {
+                        "name": "playerJump",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\New Artstyle\\Jump spritesheet.png",
+                        "spriteCols": 2,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 158.0,
+                        "targetHeight": 104.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
                     {
                         "name": "playerSwitch",
                         "wrap": 0,
@@ -14602,37 +14643,6 @@
                         ]
                     },
                     {
-                        "name": "playerJump",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Jump spritesheet.png",
-                        "spriteCols": 2,
-                        "spriteRows": 1,
-                        "useCustomSize": true,
-                        "targetWidth": 158.0,
-                        "targetHeight": 104.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
                         "name": "playerIdleLight",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Switch State spritesheet.png",
@@ -14655,37 +14665,6 @@
                                     {
                                         "t": 0.25,
                                         "v": 6.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "playerFallLight",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Fall spritesheet.png",
-                        "spriteCols": 2,
-                        "spriteRows": 1,
-                        "useCustomSize": true,
-                        "targetWidth": 158.0,
-                        "targetHeight": 104.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 1.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -14747,6 +14726,37 @@
                         ]
                     },
                     {
+                        "name": "playerFallLight",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\New Artstyle\\Fall spritesheet.png",
+                        "spriteCols": 2,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 158.0,
+                        "targetHeight": 104.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 1.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 1.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
                         "name": "playerJumpLight",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Jump spritesheet.png",
@@ -14769,6 +14779,37 @@
                                     {
                                         "t": 0.25,
                                         "v": 1.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "playerFall",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\New Artstyle\\Fall spritesheet.png",
+                        "spriteCols": 2,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 158.0,
+                        "targetHeight": 104.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -14821,37 +14862,6 @@
                                     {
                                         "t": 1.0,
                                         "v": 3.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "playerFall",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Fall spritesheet.png",
-                        "spriteCols": 2,
-                        "spriteRows": 1,
-                        "useCustomSize": true,
-                        "targetWidth": 158.0,
-                        "targetHeight": 104.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -14958,13 +14968,17 @@
                         ]
                     }
                 ]
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "Post-Processing",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -14983,13 +14997,21 @@
                 "contrast": 0.009999999776482582,
                 "saturation": 0.05000000074505806,
                 "active": true
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "BG_TileMap",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -15971,13 +15993,21 @@
                         "asset": "tilemaps/Platform"
                     }
                 ]
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "Tex_foreground base",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -16024,24 +16054,32 @@
                     "y": 0.0,
                     "z": 0.0
                 }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "Tex_foreground top",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 359.33099365234377,
-                    "y": 9.4493408203125,
+                    "x": 295.2951354980469,
+                    "y": 170.53575134277345,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 1200.0,
-                    "y": 375.04998779296877
+                    "x": 118.0999984741211,
+                    "y": 40.599998474121097
                 }
             },
             "shape": {
@@ -16077,13 +16115,21 @@
                     "y": 0.0,
                     "z": 0.0
                 }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "foreground",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -16096,13 +16142,21 @@
                     "x": 1.0,
                     "y": 1.0
                 }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "background 1",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -16115,13 +16169,21 @@
                     "x": 1.0,
                     "y": 1.0
                 }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "Tex_bg 1 base",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -16168,13 +16230,21 @@
                     "y": 0.0,
                     "z": 0.0
                 }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "Tex_lava near",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -16221,13 +16291,21 @@
                     "y": 0.0,
                     "z": 0.0
                 }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "Tex_bg 1 top",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -16274,13 +16352,21 @@
                     "y": 0.0,
                     "z": 0.0
                 }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "Tex_bg 1 top (2)",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -16327,13 +16413,21 @@
                     "y": 0.0,
                     "z": 0.0
                 }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "Tex_bg 1 pillar",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -16380,13 +16474,21 @@
                     "y": 0.0,
                     "z": 0.0
                 }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "Tex_bg 1 pillar 2",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -16433,13 +16535,21 @@
                     "y": 0.0,
                     "z": 0.0
                 }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "background 2",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -16452,13 +16562,21 @@
                     "x": 1.0,
                     "y": 1.0
                 }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "Tex_bg2 top",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -16505,13 +16623,21 @@
                     "y": 0.0,
                     "z": 0.0
                 }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "Tex_bg2 top_Clone(2)",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -16558,13 +16684,21 @@
                     "y": 0.0,
                     "z": 0.0
                 }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "Tex_bg2 base",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -16611,13 +16745,21 @@
                     "y": 0.0,
                     "z": 0.0
                 }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "Tex_bg 2 p1",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 180.8000030517578,
@@ -16664,13 +16806,21 @@
                     "y": 0.0,
                     "z": 0.0
                 }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "Tex_bg2 p2",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -16717,13 +16867,21 @@
                     "y": 0.0,
                     "z": 0.0
                 }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "Tex_bg 2 p1_Clone (2)",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 182.3000030517578,
@@ -16770,13 +16928,21 @@
                     "y": 0.0,
                     "z": 0.0
                 }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "background 3",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -16789,13 +16955,21 @@
                     "x": 1.0,
                     "y": 1.0
                 }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "Tex_bg3 base",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -16842,13 +17016,21 @@
                     "y": 0.0,
                     "z": 0.0
                 }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "Tex_bg3 top",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -16895,13 +17077,21 @@
                     "y": 0.0,
                     "z": 0.0
                 }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "Tex_bg3 p2",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -16948,13 +17138,21 @@
                     "y": 0.0,
                     "z": 0.0
                 }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "Tex_bg3 p2(2)",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -17001,13 +17199,21 @@
                     "y": 0.0,
                     "z": 0.0
                 }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "Tex_lava far",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -17054,13 +17260,21 @@
                     "y": 0.0,
                     "z": 0.0
                 }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "Tex_bg colour",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -17107,13 +17321,21 @@
                     "y": 0.0,
                     "z": 0.0
                 }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "PressurePlate",
-            "layer": {
-                "currentLayer": 2
+            "tag": {
+                "tagMask": 2
             },
             "transform": {
                 "rotation": 0.0,
@@ -17210,13 +17432,21 @@
                         }
                     }
                 ]
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "Wall",
-            "layer": {
-                "currentLayer": 2
+            "tag": {
+                "tagMask": 2
             },
             "transform": {
                 "rotation": 0.0,
@@ -17277,13 +17507,21 @@
                         }
                     }
                 ]
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "Wall(1)",
-            "layer": {
-                "currentLayer": 2
+            "tag": {
+                "tagMask": 2
             },
             "transform": {
                 "rotation": 0.0,
@@ -17368,13 +17606,21 @@
                     "y": 0.0,
                     "z": 0.0
                 }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "Wall(2)",
-            "layer": {
-                "currentLayer": 2
+            "tag": {
+                "tagMask": 2
             },
             "transform": {
                 "rotation": 0.0,
@@ -17459,13 +17705,21 @@
                     "y": 0.0,
                     "z": 0.0
                 }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "Wall(3)",
-            "layer": {
-                "currentLayer": 2
+            "tag": {
+                "tagMask": 2
             },
             "transform": {
                 "rotation": 0.0,
@@ -17550,13 +17804,21 @@
                     "y": 0.0,
                     "z": 0.0
                 }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "Wall(4)",
-            "layer": {
-                "currentLayer": 2
+            "tag": {
+                "tagMask": 2
             },
             "transform": {
                 "rotation": 0.0,
@@ -17641,13 +17903,21 @@
                     "y": 0.0,
                     "z": 0.0
                 }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "Wall(5)",
-            "layer": {
-                "currentLayer": 2
+            "tag": {
+                "tagMask": 2
             },
             "transform": {
                 "rotation": 0.0,
@@ -17732,13 +18002,21 @@
                     "y": 0.0,
                     "z": 0.0
                 }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "Wall2",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -17838,13 +18116,21 @@
                         "asset": "tilemaps/Rock_Door"
                     }
                 ]
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "PressurePlate2",
-            "layer": {
-                "currentLayer": 2
+            "tag": {
+                "tagMask": 2
             },
             "transform": {
                 "rotation": 0.0,
@@ -17940,13 +18226,21 @@
                         }
                     }
                 ]
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "PressurePlate3",
-            "layer": {
-                "currentLayer": 2
+            "tag": {
+                "tagMask": 2
             },
             "transform": {
                 "rotation": 0.0,
@@ -18038,13 +18332,21 @@
                         }
                     }
                 ]
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "Wall3",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -18149,13 +18451,21 @@
                         "asset": "tilemaps/Rock_Door"
                     }
                 ]
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "PressurePlate4",
-            "layer": {
-                "currentLayer": 2
+            "tag": {
+                "tagMask": 2
             },
             "transform": {
                 "rotation": 0.0,
@@ -18247,13 +18557,21 @@
                         }
                     }
                 ]
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "PressurePlate5",
-            "layer": {
-                "currentLayer": 2
+            "tag": {
+                "tagMask": 2
             },
             "transform": {
                 "rotation": 0.0,
@@ -18345,13 +18663,21 @@
                         }
                     }
                 ]
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "PressurePlate6",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -18443,13 +18769,21 @@
                         }
                     }
                 ]
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "PressurePlate7",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -18541,13 +18875,21 @@
                         }
                     }
                 ]
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "Exit",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -18636,13 +18978,21 @@
                         "fields": {}
                     }
                 ]
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "Wall4",
-            "layer": {
-                "currentLayer": 2
+            "tag": {
+                "tagMask": 2
             },
             "transform": {
                 "rotation": 90.0,
@@ -18703,13 +19053,21 @@
                         }
                     }
                 ]
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "Wall4(1)",
-            "layer": {
-                "currentLayer": 2
+            "tag": {
+                "tagMask": 2
             },
             "transform": {
                 "rotation": 90.0,
@@ -18790,13 +19148,21 @@
                     "y": 0.0,
                     "z": 0.0
                 }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "Wall4(1)_Clone2765",
-            "layer": {
-                "currentLayer": 2
+            "tag": {
+                "tagMask": 2
             },
             "transform": {
                 "rotation": 90.0,
@@ -18877,13 +19243,21 @@
                     "y": 0.0,
                     "z": 0.0
                 }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "Wall4(1)_Clone2765_Clone2766",
-            "layer": {
-                "currentLayer": 2
+            "tag": {
+                "tagMask": 2
             },
             "transform": {
                 "rotation": 90.0,
@@ -18964,13 +19338,21 @@
                     "y": 0.0,
                     "z": 0.0
                 }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "Wall4(1)_Clone2765_Clone2766_Clone2767",
-            "layer": {
-                "currentLayer": 2
+            "tag": {
+                "tagMask": 2
             },
             "transform": {
                 "rotation": 90.0,
@@ -19051,18 +19433,26 @@
                     "y": 0.0,
                     "z": 0.0
                 }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "MovingPlatform",
-            "layer": {
-                "currentLayer": 2
+            "tag": {
+                "tagMask": 2
             },
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 617.696044921875,
+                    "x": 543.8012084960938,
                     "y": -1626.6378173828126,
                     "z": 0.0
                 },
@@ -19089,7 +19479,7 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 617.696044921875,
+                    "x": 543.8012084960938,
                     "y": -1626.6378173828126,
                     "z": 0.0
                 },
@@ -19100,7 +19490,7 @@
                 },
                 "radius": 1.0,
                 "center": {
-                    "x": 617.696044921875,
+                    "x": 543.8012084960938,
                     "y": -1626.6378173828126,
                     "z": 0.0
                 }
@@ -19153,13 +19543,21 @@
                         }
                     }
                 ]
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "Wall5",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -19259,13 +19657,21 @@
                         "asset": "tilemaps/Rock_Door"
                     }
                 ]
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "Wall6",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": -90.0,
@@ -19326,13 +19732,21 @@
                         }
                     }
                 ]
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "New Child",
-            "layer": {
-                "currentLayer": 2
+            "tag": {
+                "tagMask": 2
             },
             "transform": {
                 "rotation": -90.0,
@@ -19413,13 +19827,21 @@
                     "y": 0.0,
                     "z": 0.0
                 }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "New Child_Clone2805",
-            "layer": {
-                "currentLayer": 2
+            "tag": {
+                "tagMask": 2
             },
             "transform": {
                 "rotation": -90.0,
@@ -19500,13 +19922,21 @@
                     "y": 0.0,
                     "z": 0.0
                 }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "New Child_Clone2805_Clone2806",
-            "layer": {
-                "currentLayer": 2
+            "tag": {
+                "tagMask": 2
             },
             "transform": {
                 "rotation": -90.0,
@@ -19587,13 +20017,21 @@
                     "y": 0.0,
                     "z": 0.0
                 }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "New Child_Clone2805_Clone2806_Clone2807",
-            "layer": {
-                "currentLayer": 2
+            "tag": {
+                "tagMask": 2
             },
             "transform": {
                 "rotation": -90.0,
@@ -19674,13 +20112,21 @@
                     "y": 0.0,
                     "z": 0.0
                 }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "New Child_Clone2805_Clone2806_Clone2807_Clone2808",
-            "layer": {
-                "currentLayer": 2
+            "tag": {
+                "tagMask": 2
             },
             "transform": {
                 "rotation": -90.0,
@@ -19761,13 +20207,21 @@
                     "y": 0.0,
                     "z": 0.0
                 }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "New Child_Clone2805_Clone2806_Clone2807_Clone2808_Clone2809",
-            "layer": {
-                "currentLayer": 2
+            "tag": {
+                "tagMask": 2
             },
             "transform": {
                 "rotation": -90.0,
@@ -19848,19 +20302,27 @@
                     "y": 0.0,
                     "z": 0.0
                 }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "MovingPlatform(1)",
-            "layer": {
-                "currentLayer": 2
+            "tag": {
+                "tagMask": 2
             },
             "transform": {
                 "rotation": 0.0,
                 "position": {
                     "x": 1066.6007080078126,
-                    "y": -606.1810302734375,
+                    "y": -680.0758666992188,
                     "z": 0.0
                 },
                 "size": {
@@ -19887,7 +20349,7 @@
                 "enabled": true,
                 "position": {
                     "x": 1066.6007080078126,
-                    "y": -606.1810302734375,
+                    "y": -680.0758666992188,
                     "z": 0.0
                 },
                 "offset": {
@@ -19898,7 +20360,7 @@
                 "radius": 1.0,
                 "center": {
                     "x": 1066.6007080078126,
-                    "y": -606.1810302734375,
+                    "y": -680.0758666992188,
                     "z": 0.0
                 }
             },
@@ -19950,13 +20412,21 @@
                         }
                     }
                 ]
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "PauseScreen",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -20003,13 +20473,21 @@
                     "y": 0.0,
                     "z": 0.0
                 }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "PauseBG",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -20056,13 +20534,21 @@
                     "y": 0.0,
                     "z": 0.0
                 }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "PauseQuitBtn",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -20166,13 +20652,21 @@
                     "y": 0.0
                 },
                 "uiLayout": 4
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "PauseResumeBtn",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -20276,13 +20770,21 @@
                     "y": 0.0
                 },
                 "uiLayout": 4
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "SettingsBtn",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -20386,19 +20888,27 @@
                     "y": 0.0
                 },
                 "uiLayout": 4
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "Ball",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
                 "position": {
                     "x": 1504.64306640625,
-                    "y": -767.844482421875,
+                    "y": -767.8394775390625,
                     "z": 0.0
                 },
                 "size": {
@@ -20425,7 +20935,7 @@
                 "enabled": true,
                 "position": {
                     "x": 1504.64306640625,
-                    "y": -767.844482421875,
+                    "y": -767.8394775390625,
                     "z": 0.0
                 },
                 "offset": {
@@ -20436,7 +20946,7 @@
                 "radius": 1.0,
                 "center": {
                     "x": 1504.64306640625,
-                    "y": -767.844482421875,
+                    "y": -767.8394775390625,
                     "z": 0.0
                 }
             },
@@ -20492,9 +21002,13 @@
                     }
                 ]
             },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
             "keyframe_animator": {
                 "current": "charged",
-                "t": 0.15000000596046449,
+                "t": 0.05000000447034836,
                 "playing": true,
                 "clips": [
                     {
@@ -20602,19 +21116,23 @@
                         ]
                     }
                 ]
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "Slime",
-            "layer": {
-                "currentLayer": 16
+            "tag": {
+                "tagMask": 16
             },
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 140.47593688964845,
-                    "y": -1678.5238037109376,
+                    "x": 134.92051696777345,
+                    "y": -1262.358642578125,
                     "z": 0.0
                 },
                 "size": {
@@ -20640,8 +21158,8 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 138.97593688964845,
-                    "y": -1682.0794677734376,
+                    "x": 133.42051696777345,
+                    "y": -1265.858642578125,
                     "z": 0.0
                 },
                 "offset": {
@@ -20650,13 +21168,13 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 116.57594299316406,
-                    "y": -1696.0794677734376,
+                    "x": 111.02052307128906,
+                    "y": -1279.858642578125,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 161.3759307861328,
-                    "y": -1668.0794677734376,
+                    "x": 155.8205108642578,
+                    "y": -1251.858642578125,
                     "z": 0.0
                 }
             },
@@ -20716,7 +21234,6 @@
                             "maxSpeed": 50.0,
                             "moveAudioInterval": 1.0,
                             "stopAudioDistance": 40.0,
-                            "turnTimer": 2.0,
                             "detectionRange": 85.0,
                             "gravityScale": 5.0,
                             "grabRange": 100.0,
@@ -20727,14 +21244,18 @@
                             "stunDuration": 1.0,
                             "MaxDist": 150.0,
                             "ledgeBuffer": 40.0,
-                            "ledgeRayCastDistance": 100.0
+                            "ledgeRayCastDistance": 50.0
                         }
                     }
                 ]
             },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
             "keyframe_animator": {
                 "current": "slimeIdle",
-                "t": 0.15000000596046449,
+                "t": 0.05000000447034836,
                 "playing": true,
                 "clips": [
                     {
@@ -20831,6 +21352,37 @@
                         ]
                     },
                     {
+                        "name": "slimeJump",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": 72.0,
+                        "targetHeight": 67.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 2.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 2.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
                         "name": "slimeChase",
                         "wrap": 0,
                         "textureAsset": "images/Monsters\\Slime spritesheet.png",
@@ -20860,37 +21412,6 @@
                                     {
                                         "t": 0.5,
                                         "v": 9.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "slimeJump",
-                        "wrap": 0,
-                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
-                        "spriteCols": 4,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": 72.0,
-                        "targetHeight": 67.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 2.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 2.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -21000,19 +21521,23 @@
                         ]
                     }
                 ]
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "Slime (2)",
-            "layer": {
-                "currentLayer": 16
+            "tag": {
+                "tagMask": 16
             },
             "transform": {
                 "rotation": 0.0,
                 "position": {
                     "x": 1466.1806640625,
-                    "y": -57799.05078125,
+                    "y": -11174.455078125,
                     "z": 0.0
                 },
                 "size": {
@@ -21039,7 +21564,7 @@
                 "enabled": true,
                 "position": {
                     "x": 1466.1806640625,
-                    "y": -57799.05078125,
+                    "y": -11174.455078125,
                     "z": 0.0
                 },
                 "offset": {
@@ -21050,7 +21575,7 @@
                 "radius": 1.0,
                 "center": {
                     "x": 1466.1806640625,
-                    "y": -57799.05078125,
+                    "y": -11174.455078125,
                     "z": 0.0
                 }
             },
@@ -21110,7 +21635,6 @@
                             "maxSpeed": 50.0,
                             "moveAudioInterval": 1.0,
                             "stopAudioDistance": 40.0,
-                            "turnTimer": 2.0,
                             "detectionRange": 85.0,
                             "gravityScale": 5.0,
                             "grabRange": 100.0,
@@ -21121,14 +21645,18 @@
                             "stunDuration": 1.0,
                             "MaxDist": 150.0,
                             "ledgeBuffer": 40.0,
-                            "ledgeRayCastDistance": 100.0
+                            "ledgeRayCastDistance": 50.0
                         }
                     }
                 ]
             },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
             "keyframe_animator": {
                 "current": "slimeIdle",
-                "t": 0.15000000596046449,
+                "t": 0.05000000447034836,
                 "playing": true,
                 "clips": [
                     {
@@ -21225,37 +21753,6 @@
                         ]
                     },
                     {
-                        "name": "slimeJump",
-                        "wrap": 0,
-                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
-                        "spriteCols": 4,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": 72.0,
-                        "targetHeight": 67.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 2.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 2.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
                         "name": "slimeChase",
                         "wrap": 0,
                         "textureAsset": "images/Monsters\\Slime spritesheet.png",
@@ -21285,6 +21782,37 @@
                                     {
                                         "t": 0.5,
                                         "v": 9.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "slimeJump",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": 72.0,
+                        "targetHeight": 67.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 2.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 2.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -21394,19 +21922,23 @@
                         ]
                     }
                 ]
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "Slime (3)",
-            "layer": {
-                "currentLayer": 16
+            "tag": {
+                "tagMask": 16
             },
             "transform": {
                 "rotation": 0.0,
                 "position": {
                     "x": 1615.20361328125,
-                    "y": -57799.09765625,
+                    "y": -11174.5048828125,
                     "z": 0.0
                 },
                 "size": {
@@ -21433,7 +21965,7 @@
                 "enabled": true,
                 "position": {
                     "x": 1615.20361328125,
-                    "y": -57799.09765625,
+                    "y": -11174.5048828125,
                     "z": 0.0
                 },
                 "offset": {
@@ -21444,7 +21976,7 @@
                 "radius": 1.0,
                 "center": {
                     "x": 1615.20361328125,
-                    "y": -57799.09765625,
+                    "y": -11174.5048828125,
                     "z": 0.0
                 }
             },
@@ -21504,7 +22036,6 @@
                             "maxSpeed": 50.0,
                             "moveAudioInterval": 1.0,
                             "stopAudioDistance": 40.0,
-                            "turnTimer": 2.0,
                             "detectionRange": 85.0,
                             "gravityScale": 5.0,
                             "grabRange": 100.0,
@@ -21515,14 +22046,18 @@
                             "stunDuration": 1.0,
                             "MaxDist": 150.0,
                             "ledgeBuffer": 40.0,
-                            "ledgeRayCastDistance": 100.0
+                            "ledgeRayCastDistance": 50.0
                         }
                     }
                 ]
             },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
             "keyframe_animator": {
                 "current": "slimeIdle",
-                "t": 0.15000000596046449,
+                "t": 0.05000000447034836,
                 "playing": true,
                 "clips": [
                     {
@@ -21619,6 +22154,37 @@
                         ]
                     },
                     {
+                        "name": "slimeJump",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": 72.0,
+                        "targetHeight": 67.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 2.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 2.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
                         "name": "slimeChase",
                         "wrap": 0,
                         "textureAsset": "images/Monsters\\Slime spritesheet.png",
@@ -21648,37 +22214,6 @@
                                     {
                                         "t": 0.5,
                                         "v": 9.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "slimeJump",
-                        "wrap": 0,
-                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
-                        "spriteCols": 4,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": 72.0,
-                        "targetHeight": 67.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 2.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 2.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -21788,13 +22323,17 @@
                         ]
                     }
                 ]
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "BarUI",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -21807,13 +22346,21 @@
                     "x": 0.5,
                     "y": 0.5
                 }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "Bar Graphic",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -21860,13 +22407,21 @@
                     "y": 0.0,
                     "z": 0.0
                 }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "Bar Graphic_BG",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -21913,19 +22468,27 @@
                     "y": 0.0,
                     "z": 0.0
                 }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "Slime (4)",
-            "layer": {
-                "currentLayer": 16
+            "tag": {
+                "tagMask": 16
             },
             "transform": {
                 "rotation": 0.0,
                 "position": {
                     "x": 1761.3314208984376,
-                    "y": -57799.05078125,
+                    "y": -11174.455078125,
                     "z": 0.0
                 },
                 "size": {
@@ -21952,7 +22515,7 @@
                 "enabled": true,
                 "position": {
                     "x": 1761.3314208984376,
-                    "y": -57799.05078125,
+                    "y": -11174.455078125,
                     "z": 0.0
                 },
                 "offset": {
@@ -21963,7 +22526,7 @@
                 "radius": 1.0,
                 "center": {
                     "x": 1761.3314208984376,
-                    "y": -57799.05078125,
+                    "y": -11174.455078125,
                     "z": 0.0
                 }
             },
@@ -22023,7 +22586,6 @@
                             "maxSpeed": 50.0,
                             "moveAudioInterval": 1.0,
                             "stopAudioDistance": 40.0,
-                            "turnTimer": 2.0,
                             "detectionRange": 85.0,
                             "gravityScale": 5.0,
                             "grabRange": 100.0,
@@ -22034,14 +22596,18 @@
                             "stunDuration": 1.0,
                             "MaxDist": 50.0,
                             "ledgeBuffer": 40.0,
-                            "ledgeRayCastDistance": 100.0
+                            "ledgeRayCastDistance": 50.0
                         }
                     }
                 ]
             },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
             "keyframe_animator": {
                 "current": "slimeIdle",
-                "t": 0.15000000596046449,
+                "t": 0.05000000447034836,
                 "playing": true,
                 "clips": [
                     {
@@ -22138,37 +22704,6 @@
                         ]
                     },
                     {
-                        "name": "slimeJump",
-                        "wrap": 0,
-                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
-                        "spriteCols": 4,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": 72.0,
-                        "targetHeight": 67.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 2.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 2.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
                         "name": "slimeChase",
                         "wrap": 0,
                         "textureAsset": "images/Monsters\\Slime spritesheet.png",
@@ -22198,6 +22733,37 @@
                                     {
                                         "t": 0.5,
                                         "v": 9.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "slimeJump",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": 72.0,
+                        "targetHeight": 67.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 2.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 2.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -22307,19 +22873,23 @@
                         ]
                     }
                 ]
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "Slime (5)",
-            "layer": {
-                "currentLayer": 16
+            "tag": {
+                "tagMask": 16
             },
             "transform": {
                 "rotation": 0.0,
                 "position": {
                     "x": 1125.2744140625,
-                    "y": -57191.0546875,
+                    "y": -10566.455078125,
                     "z": 0.0
                 },
                 "size": {
@@ -22346,7 +22916,7 @@
                 "enabled": true,
                 "position": {
                     "x": 1125.2744140625,
-                    "y": -57191.0546875,
+                    "y": -10566.455078125,
                     "z": 0.0
                 },
                 "offset": {
@@ -22357,7 +22927,7 @@
                 "radius": 1.0,
                 "center": {
                     "x": 1125.2744140625,
-                    "y": -57191.0546875,
+                    "y": -10566.455078125,
                     "z": 0.0
                 }
             },
@@ -22417,7 +22987,6 @@
                             "maxSpeed": 50.0,
                             "moveAudioInterval": 1.0,
                             "stopAudioDistance": 40.0,
-                            "turnTimer": 2.0,
                             "detectionRange": 85.0,
                             "gravityScale": 5.0,
                             "grabRange": 100.0,
@@ -22428,14 +22997,18 @@
                             "stunDuration": 1.0,
                             "MaxDist": 50.0,
                             "ledgeBuffer": 40.0,
-                            "ledgeRayCastDistance": 100.0
+                            "ledgeRayCastDistance": 50.0
                         }
                     }
                 ]
             },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
             "keyframe_animator": {
                 "current": "slimeIdle",
-                "t": 0.15000000596046449,
+                "t": 0.05000000447034836,
                 "playing": true,
                 "clips": [
                     {
@@ -22532,37 +23105,6 @@
                         ]
                     },
                     {
-                        "name": "slimeJump",
-                        "wrap": 0,
-                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
-                        "spriteCols": 4,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": 72.0,
-                        "targetHeight": 67.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 2.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 2.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
                         "name": "slimeChase",
                         "wrap": 0,
                         "textureAsset": "images/Monsters\\Slime spritesheet.png",
@@ -22592,6 +23134,37 @@
                                     {
                                         "t": 0.5,
                                         "v": 9.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "slimeJump",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": 72.0,
+                        "targetHeight": 67.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 2.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 2.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -22701,23 +23274,27 @@
                         ]
                     }
                 ]
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "Slime (6)",
-            "layer": {
-                "currentLayer": 16
+            "tag": {
+                "tagMask": 16
             },
             "transform": {
                 "rotation": 0.0,
                 "position": {
                     "x": 454.160888671875,
-                    "y": -56551.54296875,
+                    "y": -9926.939453125,
                     "z": 0.26142585277557375
                 },
                 "size": {
-                    "x": 72.0,
+                    "x": -72.0,
                     "y": 67.0
                 }
             },
@@ -22740,7 +23317,7 @@
                 "enabled": true,
                 "position": {
                     "x": 454.160888671875,
-                    "y": -56551.54296875,
+                    "y": -9926.939453125,
                     "z": 0.26142585277557375
                 },
                 "offset": {
@@ -22751,7 +23328,7 @@
                 "radius": 1.0,
                 "center": {
                     "x": 454.160888671875,
-                    "y": -56551.54296875,
+                    "y": -9926.939453125,
                     "z": 0.26142585277557375
                 }
             },
@@ -22811,7 +23388,6 @@
                             "maxSpeed": 50.0,
                             "moveAudioInterval": 1.0,
                             "stopAudioDistance": 40.0,
-                            "turnTimer": 2.0,
                             "detectionRange": 85.0,
                             "gravityScale": 5.0,
                             "grabRange": 100.0,
@@ -22822,14 +23398,18 @@
                             "stunDuration": 1.0,
                             "MaxDist": 50.0,
                             "ledgeBuffer": 40.0,
-                            "ledgeRayCastDistance": 100.0
+                            "ledgeRayCastDistance": 50.0
                         }
                     }
                 ]
             },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
             "keyframe_animator": {
                 "current": "slimeIdle",
-                "t": 0.15000000596046449,
+                "t": 0.05000000447034836,
                 "playing": true,
                 "clips": [
                     {
@@ -22926,6 +23506,37 @@
                         ]
                     },
                     {
+                        "name": "slimeJump",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": 72.0,
+                        "targetHeight": 67.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 2.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 2.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
                         "name": "slimeChase",
                         "wrap": 0,
                         "textureAsset": "images/Monsters\\Slime spritesheet.png",
@@ -22955,37 +23566,6 @@
                                     {
                                         "t": 0.5,
                                         "v": 9.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "slimeJump",
-                        "wrap": 0,
-                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
-                        "spriteCols": 4,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": 72.0,
-                        "targetHeight": 67.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 2.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 2.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -23095,19 +23675,23 @@
                         ]
                     }
                 ]
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "Ball (2)",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
                 "position": {
                     "x": 1200.2230224609376,
-                    "y": -1157.6162109375,
+                    "y": -1157.611328125,
                     "z": 0.0
                 },
                 "size": {
@@ -23134,7 +23718,7 @@
                 "enabled": true,
                 "position": {
                     "x": 1200.2230224609376,
-                    "y": -1157.6162109375,
+                    "y": -1157.611328125,
                     "z": 0.0
                 },
                 "offset": {
@@ -23145,7 +23729,7 @@
                 "radius": 1.0,
                 "center": {
                     "x": 1200.2230224609376,
-                    "y": -1157.6162109375,
+                    "y": -1157.611328125,
                     "z": 0.0
                 }
             },
@@ -23201,9 +23785,13 @@
                     }
                 ]
             },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
             "keyframe_animator": {
                 "current": "charged",
-                "t": 0.15000000596046449,
+                "t": 0.05000000447034836,
                 "playing": true,
                 "clips": [
                     {
@@ -23311,13 +23899,17 @@
                         ]
                     }
                 ]
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "GameOverScreen",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -23364,13 +23956,21 @@
                     "y": 0.0,
                     "z": 0.0
                 }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "GameOverBG",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -23417,13 +24017,21 @@
                     "y": 0.0,
                     "z": 0.0
                 }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "GAMEOVER",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -23452,14 +24060,35 @@
                     "w": 1.0
                 },
                 "centered": true,
-                "isworldspace": false
+                "isworldspace": false,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": false,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 0.0,
+                "lineSpacing": 0.0,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "RestartBtn",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -23522,7 +24151,20 @@
                     "w": 1.0
                 },
                 "centered": true,
-                "isworldspace": false
+                "isworldspace": false,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": false,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 0.0,
+                "lineSpacing": 0.0,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
             },
             "script": {
                 "scripts": [
@@ -23580,13 +24222,21 @@
                     "y": 0.0
                 },
                 "uiLayout": 4
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "QuitBtn",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -23649,7 +24299,20 @@
                     "w": 1.0
                 },
                 "centered": true,
-                "isworldspace": false
+                "isworldspace": false,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": false,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 0.0,
+                "lineSpacing": 0.0,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
             },
             "script": {
                 "scripts": [
@@ -23707,13 +24370,21 @@
                     "y": 0.0
                 },
                 "uiLayout": 4
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "WinScreen",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -23768,13 +24439,21 @@
                         "fields": {}
                     }
                 ]
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "WinMessage",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -23803,14 +24482,35 @@
                     "w": 1.0
                 },
                 "centered": true,
-                "isworldspace": false
+                "isworldspace": false,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": false,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 0.0,
+                "lineSpacing": 0.0,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "QuitBtn",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -23873,7 +24573,20 @@
                     "w": 1.0
                 },
                 "centered": true,
-                "isworldspace": false
+                "isworldspace": false,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": false,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 0.0,
+                "lineSpacing": 0.0,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
             },
             "script": {
                 "scripts": [
@@ -23931,13 +24644,21 @@
                     "y": 0.0
                 },
                 "uiLayout": 4
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "Tex_foreground top_Clone2826",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -23984,13 +24705,21 @@
                     "y": 0.0,
                     "z": 0.0
                 }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "ReturnButton",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -24053,7 +24782,20 @@
                     "w": 1.0
                 },
                 "centered": true,
-                "isworldspace": false
+                "isworldspace": false,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": false,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 0.0,
+                "lineSpacing": 0.0,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
             },
             "script": {
                 "scripts": [
@@ -24111,13 +24853,21 @@
                     "y": 0.0
                 },
                 "uiLayout": 4
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "Pause Texts",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -24164,6 +24914,14 @@
                     "y": 0.0,
                     "z": 0.0
                 }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         }
     ],

@@ -77,6 +77,12 @@
             "path": "Switch_StepOn.wav"
         }
     ],
+    "dialogue": [
+        {
+            "name": "dialogue",
+            "path": "dialogue.json"
+        }
+    ],
     "fonts": [
         {
             "name": "AlegreyaSC-Black",
@@ -1541,20 +1547,20 @@
     ],
     "prefabs": [
         {
+            "name": "AudioManagerPrefab",
+            "path": "AudioManagerPrefab.json"
+        },
+        {
+            "name": "Ball",
+            "path": "Ball.json"
+        },
+        {
             "name": "BigBox",
             "path": "BigBox.json"
         },
         {
             "name": "BlueBox",
             "path": "BlueBox.json"
-        },
-        {
-            "name": "Button",
-            "path": "Button.json"
-        },
-        {
-            "name": "Camera",
-            "path": "Camera.json"
         },
         {
             "name": "EnergyBall",
@@ -1601,16 +1607,16 @@
             "path": "RedBox.json"
         },
         {
-            "name": "SettingButton",
-            "path": "SettingButton.json"
-        },
-        {
             "name": "shitasswork",
             "path": "shitasswork.json"
         },
         {
             "name": "Slime new",
             "path": "Slime new.json"
+        },
+        {
+            "name": "Slime V2",
+            "path": "Slime V2.json"
         },
         {
             "name": "Slime",
@@ -1633,10 +1639,6 @@
         {
             "name": "amir",
             "path": "amir"
-        },
-        {
-            "name": "descentClosedBook",
-            "path": "descentClosedBook"
         },
         {
             "name": "descentconfirm",

@@ -14,7 +14,6 @@ namespace CrashoutsEngine
         [SerializeField] private float maxSpeed = 15.0f; // Slower speed
         [SerializeField] private float moveAudioInterval = 0.4f;
         [SerializeField] private float stopAudioDistance = 40.0f; // Distance to stop audio playback
-        [SerializeField] private float turnTimer = 2.0f;
         [SerializeField] private float detectionRange = 250.0f;
         [SerializeField] private float gravityScale = 2.0f;
         [SerializeField] private float grabRange = 100.0f;
@@ -40,7 +39,6 @@ namespace CrashoutsEngine
         private bool isGrounded = false;
         private bool moveRight = true;
         private float moveAudioTimer = 0.0f;
-        private float currentTurnTime = 0.0f;
         private bool isChasing = false;
         private bool isGrabbed = false;
         private bool wasThrown = false;
@@ -59,6 +57,38 @@ namespace CrashoutsEngine
         private int pathIndex = 0;
 
         private string currentAnimState = "";
+
+        private void CheckGrounded()
+        {
+            float halfHeight = Math.Abs(tf.Size.y) * 0.5f;
+            float halfWidth = Math.Abs(tf.Size.x) * 0.5f;
+            float checkDist = 15.0f; 
+
+            CEVec3 startLeft = new CEVec3(tf.Position.x - (halfWidth * 0.5f), tf.Position.y, tf.Position.z);
+            CEVec3 endLeft = new CEVec3(startLeft.x, startLeft.y - (halfHeight + checkDist), startLeft.z);
+
+            CEVec3 startRight = new CEVec3(tf.Position.x + (halfWidth * 0.5f), tf.Position.y, tf.Position.z);
+            CEVec3 endRight = new CEVec3(startRight.x, startRight.y - (halfHeight + checkDist), startRight.z);
+
+            uint hitID;
+            bool hitLeft = InternalCalls.Raycast(ref startLeft, ref endLeft, out hitID, Entity.ID);
+            bool isLeftGrounded = false;
+            if (hitLeft) {
+                 Entity hitEnt = new Entity(hitID);
+                 var Tag = hitEnt.GetComponent<TagComponent>();
+                 if (Tag != null && (Tag.HasTag("Ground") || Tag.HasTag("Platform") || Tag.HasTag("Wall"))) isLeftGrounded = true;
+            }
+
+            bool hitRight = InternalCalls.Raycast(ref startRight, ref endRight, out hitID, Entity.ID);
+            bool isRightGrounded = false;
+            if (hitRight) {
+                 Entity hitEnt = new Entity(hitID);
+                 var Tag = hitEnt.GetComponent<TagComponent>();
+                 if (Tag != null && (Tag.HasTag("Ground") || Tag.HasTag("Platform") || Tag.HasTag("Wall"))) isRightGrounded = true;
+            }
+            
+            isGrounded = isLeftGrounded || isRightGrounded;
+        }
 
         public override void Start()
         {
@@ -194,6 +224,7 @@ namespace CrashoutsEngine
             if (rb == null || isGrabbed || isStunned) return;
             if(playerScript != null && playerScript.isPaused) return;
 
+            CheckGrounded();
             float dt = (float)Time.FixedDT;
             if (flipCooldown > 0) flipCooldown -= dt;
             if (ignoreHomeTimer > 0) ignoreHomeTimer -= dt;
@@ -274,11 +305,11 @@ namespace CrashoutsEngine
                 if (hitGround)
                 {
                     Entity hitEnt = new Entity(hitGroundID);
-                    var hitLayer = hitEnt.GetComponent<LayerComponent>();
+                    var hitTag = hitEnt.GetComponent<TagComponent>();
                     bool isValidGround = false;
-                    if (hitLayer != null)
+                    if (hitTag != null)
                     {
-                        if (hitLayer.HasLayer("Ground") || hitLayer.HasLayer("Platform") || hitLayer.HasLayer("Wall"))
+                        if (hitTag.HasTag("Ground") || hitTag.HasTag("Platform") || hitTag.HasTag("Wall"))
                         {
                             isValidGround = true;
                         }
@@ -392,8 +423,8 @@ namespace CrashoutsEngine
                         isFollowingPath = false;
                         activePath.Clear();
                         rb.SetDynamic(false);
-                        var layer = Entity.GetComponent<LayerComponent>();
-                        if (layer != null) layer.RemoveLayer("Enemy");
+                        var Tag = Entity.GetComponent<TagComponent>();
+                        if (Tag != null) Tag.RemoveTag("Enemy");
                     }
                 }
 
@@ -413,8 +444,8 @@ namespace CrashoutsEngine
                 isGrabbed = false;
                 wasThrown = true;
                 rb.SetDynamic(true);
-                var layer = Entity.GetComponent<LayerComponent>();
-                if (layer != null) layer.AddLayer("Enemy");
+                var Tag = Entity.GetComponent<TagComponent>();
+                if (Tag != null) Tag.AddTag("Enemy");
 
                 if (playerScript != null)
                 {
@@ -495,11 +526,11 @@ namespace CrashoutsEngine
         public void OnCollideEnter(uint otherEntity)
         {
             Entity other = new Entity(otherEntity);
-            var layer = other.GetComponent<LayerComponent>();
+            var Tag = other.GetComponent<TagComponent>();
 
             // Universal collision check for path cancellation
             // If we hit ANYTHING static (Ground, Wall, Platform), stop flying.
-            if (layer != null && (layer.HasLayer("Ground") || layer.HasLayer("Wall") || layer.HasLayer("Platform")))
+            if (Tag != null && (Tag.HasTag("Ground") || Tag.HasTag("Wall") || Tag.HasTag("Platform")))
             {
                 if (isFollowingPath)
                 {
@@ -518,25 +549,26 @@ namespace CrashoutsEngine
                 }
             }
 
-            if (layer != null && layer.HasLayer("Ground"))
+            if (Tag != null && (Tag.HasTag("Ground") || Tag.HasTag("Wall") || Tag.HasTag("Platform")))
             {
                 var otherTf = other.GetComponent<TransformComponent>();
-                if (otherTf != null && tf.Position.y > otherTf.Position.y + (otherTf.Size.y * 0.4f))
-                    isGrounded = true;
-                else if (flipCooldown <= 0 && !isChasing && !returningHome)
+                bool isOnTop = otherTf != null && tf.Position.y > otherTf.Position.y + (otherTf.Size.y * 0.4f);
+
+                // Side collision (Wall/Platform/Ground from side) -> Flip & Kick
+                if (!isOnTop && flipCooldown <= 0 && !isChasing && !returningHome)
                 {
                     moveRight = !moveRight;
+                    float newDir = moveRight ? 1.0f : -1.0f;
+                    rb.LinearVelocity = new CEVec3(newDir * 50.0f, rb.LinearVelocity.y, 0); // Kick away
                     flipCooldown = 0.2f;
-                    ignoreHomeTimer = 4.0f; // Also ignore home if we hit a wall
+                    ignoreHomeTimer = 4.0f; 
                 }
             }
         }
 
         public void OnCollideExit(uint otherEntity)
         {
-            Entity other = new Entity(otherEntity);
-            var layer = other.GetComponent<LayerComponent>();
-            if (layer != null && layer.HasLayer("Ground")) isGrounded = false;
+            // Ground check is handled by Raycast now.
         }
 
         private float Distance(CEVec3 a, CEVec3 b) => (float)Math.Sqrt(Math.Pow(a.x - b.x, 2) + Math.Pow(a.y - b.y, 2));

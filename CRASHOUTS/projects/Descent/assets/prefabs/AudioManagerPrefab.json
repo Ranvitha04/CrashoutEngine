@@ -1,0 +1,43 @@
+{
+    "prefabs": [
+        {
+            "type": "Box",
+            "name": "AudioManagerPrefab",
+            "active": {
+                "isActive": true
+            },
+            "transform": {
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "rotation": 0.0,
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "OnlyOneSound",
+                        "path": "nightshift_bgm_loop_70bpm.wav",
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "looping": false,
+                        "isMusic": false,
+                        "spatial3D": false
+                    }
+                ]
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "SceneMusic"
+                    }
+                ]
+            }
+        }
+    ]
+}

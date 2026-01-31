@@ -3,8 +3,8 @@
         {
             "active": true,
             "name": "Text_Input_Label",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -33,7 +33,28 @@
                     "w": 1.0
                 },
                 "centered": true,
-                "isworldspace": true
+                "isworldspace": true,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": false,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 0.0,
+                "lineSpacing": 0.0,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
+            },
+            "layer": {
+                "layerName": "StaticBackground",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "StaticBackground",
+                "z": 0
             }
         }
     ],

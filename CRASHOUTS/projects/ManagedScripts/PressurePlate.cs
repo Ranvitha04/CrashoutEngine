@@ -38,24 +38,24 @@ namespace CrashoutsEngine
             if (stepOn) return;
 
             Entity other = new Entity(otherEntityID);
-            var layer = other.GetComponent<LayerComponent>();
+            var Tag = other.GetComponent<TagComponent>();
 
-            if (layer == null) return;
+            if (Tag == null) return;
 
             bool isValidTrigger = false;
 
             // --- CHECK 1: IS IT AN ENEMY? ---
-            if (layer.HasLayer("Enemy"))
+            if (Tag.HasTag("Enemy"))
             {
                 Debug.Log("Enemy stepped on plate.");
                 isValidTrigger = true;
             }
-            // --- CHECK 2: IS IT THE PLAYER? ---
-            else if (layer.HasLayer("Player"))
+            // --- CHECK 2: IS IT THE player? ---
+            else if (Tag.HasTag("player"))
             {
                 var otherRb = other.GetComponent<RigidBodyComponent>();
 
-                // We need to access the Player Singleton to know what "Normal" mass is.
+                // We need to access the player Singleton to know what "Normal" mass is.
                 // We also check if the colliding object actually has a Rigidbody to read mass from.
                 if (otherRb != null && PlayerMovement.Instance != null)
                 {
@@ -63,12 +63,12 @@ namespace CrashoutsEngine
                     // (Using -0.1f buffer for floating point safety)
                     if (otherRb.Mass >= (PlayerMovement.Instance.normalMass - 0.1f))
                     {
-                        Debug.Log("Player (Heavy) stepped on plate.");
+                        Debug.Log("player (Heavy) stepped on plate.");
                         isValidTrigger = true;
                     }
                     else
                     {
-                        Debug.Log("Player (Light) stepped on plate - Not heavy enough!");
+                        Debug.Log("player (Light) stepped on plate - Not heavy enough!");
                     }
                 }
             }

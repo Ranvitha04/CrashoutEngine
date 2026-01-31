@@ -113,6 +113,9 @@ namespace CrashoutsEngine
         internal static extern void Audio_PlaySFXFileTagged(string key, string path, bool loop);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern bool Audio_IsTaggedPlaying(string key);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
         internal static extern void Audio_StopTagged(string key, float fadeDuration);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
@@ -125,7 +128,7 @@ namespace CrashoutsEngine
         internal static extern void Audio_StopComponent(uint entityID, float fadeDuration);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        internal static extern void Audio_GetComponentData(uint entityID, out string nameOrPath, out float vol, out float pitch, out bool loop, out bool isMusic);
+        internal static extern void Audio_GetComponentData(uint entityID, out string name, out string path, out float vol, out float pitch, out bool loop, out bool isMusic);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal static extern void Audio_PlayPathOnEntity(uint entityID, string path, float vol, float pitch, bool loop, bool isMusic);
@@ -138,6 +141,9 @@ namespace CrashoutsEngine
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal static extern void Audio_SetSFXVolume(float volume);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern void Audio_SetTaggedVolume(string key, float volume);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal static extern void Audio_SetMasterVolume(float volume);
@@ -161,15 +167,15 @@ namespace CrashoutsEngine
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal static extern bool EntityHasButton(uint entityID);
 
-        // --- LAYER COMPONENT LIFECYCLE ---
+        // --- Tag COMPONENT LIFECYCLE ---
         [MethodImpl(MethodImplOptions.InternalCall)]
-        internal static extern void AddLayer(uint entityID);
+        internal static extern void AddTag(uint entityID);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        internal static extern void RemoveLayer(uint entityID);
+        internal static extern void RemoveTag(uint entityID);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        internal static extern bool EntityHasLayer(uint entityID);
+        internal static extern bool EntityHasTag(uint entityID);
 
         // --- ANIMATOR ---
         [MethodImpl(MethodImplOptions.InternalCall)]
@@ -180,5 +186,11 @@ namespace CrashoutsEngine
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal static extern bool EntityHasKeyframeAnimator(uint entityID);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        public static extern void PlayDialogue(uint entityID, string fileName, string dialogueID);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        public static extern void LoadDialogue(uint entityID);
     }
 }

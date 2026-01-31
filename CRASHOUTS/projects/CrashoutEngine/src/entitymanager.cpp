@@ -4,7 +4,7 @@
 @date        13/09/2025
 @brief		 This file implements an entity manager
 
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 *//*__________________________________________________________________________*/
 
@@ -26,6 +26,7 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserve
 #include "cameracomponent.h"
 #include "hierarchycomponent.h"
 #include "activecomponent.h"
+#include "tagcomponent.h"
 // UI COMPONENTS
 #include "buttoncomponent.h"
 #include "guicomponent.h"
@@ -36,7 +37,7 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserve
 
 using namespace Component;
 
-std::map<std::string, unsigned int> LayerComponent::layers = {
+std::map<std::string, unsigned int> TagComponent::tags = {
 	{"Default", 0},
 	{"Player",	1 << 0},
 	{"Ground",	1 << 1}
@@ -57,7 +58,7 @@ void CrashoutsEngine::ECS::DestroyEntity(CrashoutsEngine::Entity entityId) {
 	if (HasComponent<Component::ChildrenComponent>(entityId)) {
 		auto* childrenComp = GetComponent<ChildrenComponent>(entityId);
 		std::vector<CrashoutsEngine::Entity> childrenToKill = childrenComp->children;
-		
+
 		for (CrashoutsEngine::Entity childId : childrenToKill) {
 			DestroyEntity(childId); // <--- RECURSION HAPPENS HERE
 		}
@@ -146,18 +147,18 @@ The name of the entity to search for.
 The ID of the found entity, or 0 if no entity with that name exists.
 */
 CrashoutsEngine::Entity CrashoutsEngine::ECS::FindEntityByName(std::string name) {
-    // Check if NameComponent array exists
-    // if (!HasComponent<NameComponent>(0)) return 0;
+	// Check if NameComponent array exists
+	// if (!HasComponent<NameComponent>(0)) return 0;
 
-    auto& nameCompArray = GetComponentArray<NameComponent>();
-    for (size_t i = 0; i < nameCompArray.dense.size(); ++i) {
-        if (nameCompArray.dense[i].name == name) {
-            return nameCompArray.indexToEntity[i];
-        }
-    }
+	auto& nameCompArray = GetComponentArray<NameComponent>();
+	for (size_t i = 0; i < nameCompArray.dense.size(); ++i) {
+		if (nameCompArray.dense[i]->name == name) {
+			return nameCompArray.indexToEntity[i];
+		}
+	}
 
-    // Return 0 if not found
-    return 0;
+	// Return 0 if not found
+	return 0;
 }
 
 // Returns TRUE only if the entity AND all its parents are active.
@@ -187,4 +188,15 @@ bool CrashoutsEngine::IsEntityActive(ECS& ecs, Entity entity) {
 	}
 
 	return true; // We climbed the whole tree and didn't find anyone disabled
+}
+
+void CrashoutsEngine::ECS::GetMemoryStats(size_t& totalPages, size_t& totalActive) {
+	totalPages = 0;
+	totalActive = 0;
+	for (auto const& pair : componentArrays) {
+		if (pair.second) {
+			totalPages += pair.second->GetPageCount();
+			totalActive += pair.second->GetActiveAllocations();
+		}
+	}
 }

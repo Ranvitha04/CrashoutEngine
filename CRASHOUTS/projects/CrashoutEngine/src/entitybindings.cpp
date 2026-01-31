@@ -4,7 +4,7 @@
 @date       06/11/2025
 @brief		Definition of entity bindings functions
 
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 */
 #include "entitymanager.h"
@@ -58,7 +58,7 @@ namespace CrashoutsEngine::Bindings
         auto& nameArray = ecs->GetComponentArray<Component::NameComponent>();
 
         for (size_t i = 0; i < nameArray.dense.size(); ++i) {
-            if (nameArray.dense[i].name == searchName) {
+            if (nameArray.dense[i]->name == searchName) {
                 // Return the Entity ID associated with this component
                 return nameArray.indexToEntity[i];
             }

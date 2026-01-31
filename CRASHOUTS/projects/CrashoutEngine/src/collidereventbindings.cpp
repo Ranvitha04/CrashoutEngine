@@ -31,30 +31,31 @@ namespace
 	// Wraps a Mono delegate into a C++ std::function<void(Entity)> so CollisionEventManager can call it just like a native callback?? maybe
 	static CollisionEventManager::CallbackFn MakeManagedCollisionCallback(MonoDelegate* del)
 	{
-		if (!del)
-			return {};
+		if (!del) return {};
 
 		MonoObject* obj = (MonoObject*)del;
 		MonoClass* klass = mono_object_get_class(obj);
-		if (!klass)
-			return nullptr;
+		if (!klass) return nullptr;
 
-		// Get the delegate's Invoke(...) method
 		MonoMethod* invoke = mono_get_delegate_invoke(klass);
-		if (!invoke)
-			return nullptr;
+		if (!invoke) return nullptr;
 
-		// Pin the delegate so it will not be collected
-		uint32_t handle = mono_gchandle_new(obj, /*pinned*/ true);
+		// Create the handle
+		uint32_t rawHandle = mono_gchandle_new(obj, true);
 
-		// Capture handle + invoke in a lambda
-		return [handle, invoke](Entity other)
+		// Wrap handle in a shared_ptr that calls mono_gchandle_free when the std::function dies
+		std::shared_ptr<uint32_t> handlePtr(new uint32_t(rawHandle), [](uint32_t* h) {
+			mono_gchandle_free(*h);
+			delete h;
+			});
+
+		return [handlePtr, invoke](Entity other)
 		{
-			MonoObject* target = mono_gchandle_get_target(handle);
-			if (!target)
-				return;
+			// Access the handle via the shared_ptr
+			MonoObject* target = mono_gchandle_get_target(*handlePtr);
 
-			// Our C# delegate signature is: void Callback(uint otherEntity)
+			if (!target) return; // Domain might be dead
+
 			uint32_t id = static_cast<uint32_t>(other);
 			void* args[1];
 			args[0] = &id;
@@ -62,12 +63,19 @@ namespace
 			MonoObject* exc = nullptr;
 			mono_runtime_invoke(invoke, target, args, &exc);
 
-			if (exc)
-			{
+			if (exc) {
+				// RETRIEVE AND PRINT THE ERROR MESSAGE
+				MonoObject* other_exc = nullptr;
+				MonoString* str = mono_object_to_string(exc, &other_exc);
+				const char* mess = mono_string_to_utf8(str);
 
+				std::cout << "[Mono Error] Collision Callback Failed: " << mess << std::endl;
+
+				mono_free((void*)mess);
 			}
 		};
 	}
+
 
 	// Wraps a C# delegate that returns a BOOL (true = collide, false = ignore)
 	static std::function<bool(Entity)> MakePreSolveCallback(MonoDelegate* del)

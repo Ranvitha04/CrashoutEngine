@@ -5,7 +5,7 @@
 
 @brief	This file defines the ButtonComponent
 
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
 #pragma once
@@ -42,6 +42,14 @@ namespace Component {
 		CEColor textHoveredColor = { 0.f, 0.f, 0.f, 0.f };
 		CEColor textPressedColor = { 0.f, 0.f, 0.f, 0.5f };
 		CEColor textNormalColor = { 0.3f, 0.3f, 0.3f, 0.7f };
+
+		// Scale Factors
+		float hoverScale = 1.1f;
+		float pressedScale = 0.95f;
+		
+		// Internal state to track original size
+		CEVec2 originalSize = { 0.f, 0.f };
+		float originalTextScale = 0.0f;
 	};
 }
 

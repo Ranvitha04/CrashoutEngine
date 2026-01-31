@@ -4,7 +4,7 @@
 @date       24/09/2025
 @brief		Definition for frame rate controller
 
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 */
 #include "frameratecontroller.h"
@@ -84,6 +84,14 @@ void FrameRateController::FrameEnd()
 	{
 		mAccumulatedTime -= mFixedDT;
 		mCurrentSteps++;
+	}
+
+	if (mCurrentSteps > mMaxPhysicsSteps)
+	{
+		mCurrentSteps = mMaxPhysicsSteps;
+		// If we capped, we should also discard the leftover accumulation 
+		// to prevent it from immediately causing more steps next frame.
+		mAccumulatedTime = 0.0;
 	}
 }
 

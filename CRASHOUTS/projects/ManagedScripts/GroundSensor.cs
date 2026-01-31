@@ -7,7 +7,7 @@
 //    {
 //        // Public field to assign the parent Entity ID in the Editor (if you have property drawers)
 //        // Or we can find it automatically.
-//        public uint PlayerEntityID = 0;
+//        public uint playerEntityID = 0;
 
 //        // Internal reference
 //        private PlayerMovement _playerScript = null;
@@ -17,30 +17,30 @@
 //        {
 //            // Ignore the player itself!
 //            Debug.Log("Hi");
-//            if (otherEntityID == PlayerEntityID) return;
+//            if (otherEntityID == playerEntityID) return;
 //            Entity other = new Entity(otherEntityID);
-//            var layer = other.GetComponent<LayerComponent>();
+//            var Tag = other.GetComponent<TagComponent>();
 
-//            if (layer != null && layer.HasLayer("Ground"))
+//            if (Tag != null && Tag.HasTag("Ground"))
 //            {
-//                NotifyPlayer(true);
+//                Notifyplayer(true);
 //            }
 //        }
 
 //        public void OnTriggerExit(uint otherEntityID)
 //        {
-//            if (otherEntityID == PlayerEntityID) return;
+//            if (otherEntityID == playerEntityID) return;
 
 //            Entity other = new Entity(otherEntityID);
-//            var layer = other.GetComponent<LayerComponent>();
+//            var Tag = other.GetComponent<TagComponent>();
 
-//            if (layer != null && layer.HasLayer("Ground"))
+//            if (Tag != null && Tag.HasTag("Ground"))
 //            {
-//                NotifyPlayer(false);
+//                Notifyplayer(false);
 //            }
 //        }
 
-//        private void NotifyPlayer(bool isGrounded)
+//        private void Notifyplayer(bool isGrounded)
 //        {
 //            _playerScript = PlayerMovement.Instance;
 //            if (PlayerMovement.Instance != null)
@@ -52,11 +52,11 @@
 //        public override void Start()
 //        {
 //            // Option A: Auto-find Parent (If your engine supports hierarchical lookup in C#)
-//            // If not, you can manually set PlayerEntityID in the editor.
-//            // For now, let's assume you set PlayerEntityID manually or we find it via a tag/name.
+//            // If not, you can manually set playerEntityID in the editor.
+//            // For now, let's assume you set playerEntityID manually or we find it via a tag/name.
 
 //            // If Entity.ParentID is exposed in your C# Entity class:
-//            // PlayerEntityID = Entity.ParentID; 
+//            // playerEntityID = Entity.ParentID; 
 
 //            // Register Callbacks for THIS entity (the sensor)
 //            CollisionEvents.RegisterTriggerEnter(Entity.ID, OnTriggerEnter);

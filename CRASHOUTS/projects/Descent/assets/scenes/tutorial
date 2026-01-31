@@ -3,8 +3,8 @@
         {
             "active": true,
             "name": "Tutorial_TileMap",
-            "layer": {
-                "currentLayer": 2
+            "tag": {
+                "tagMask": 2
             },
             "transform": {
                 "rotation": 0.0,
@@ -9661,19 +9661,27 @@
                         "asset": "tilemaps/Rock"
                     }
                 ]
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "Player",
-            "layer": {
-                "currentLayer": 1
+            "tag": {
+                "tagMask": 1
             },
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 778.0982666015625,
-                    "y": 30.948745727539064,
+                    "x": 856.8511352539063,
+                    "y": -444.5305480957031,
                     "z": 50.0
                 },
                 "size": {
@@ -9699,8 +9707,8 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 778.0982666015625,
-                    "y": 25.948745727539064,
+                    "x": 856.8511352539063,
+                    "y": -449.601806640625,
                     "z": 50.0
                 },
                 "offset": {
@@ -9709,13 +9717,13 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 759.2982177734375,
-                    "y": -4.5512542724609379,
+                    "x": 838.0510864257813,
+                    "y": -480.0305480957031,
                     "z": 50.0
                 },
                 "max": {
-                    "x": 796.8983154296875,
-                    "y": 56.44874572753906,
+                    "x": 875.6511840820313,
+                    "y": -419.0305480957031,
                     "z": 50.0
                 }
             },
@@ -9771,22 +9779,20 @@
                     {
                         "className": "PlayerMovement",
                         "fields": {
-                            "moveSpeed": 600.0,
-                            "maxRunSpeed": 1000.0,
+                            "maxRunSpeed": 100.0,
                             "maxAirSpeed": 120.0,
-                            "airControlFactor": 0.5,
+                            "acceleration": 10.0,
+                            "deceleration": 10.0,
+                            "airAcceleration": 2.0,
                             "jumpPower": 40000.0,
-                            "groundDrag": 0.20000000298023225,
-                            "airDrag": 0.009999999776482582,
                             "gravityScale": 2.5,
-                            "frictionMultiplier": 500.0,
                             "gravityForceMultiplier": 10.0,
                             "footstepInterval": 0.07500000298023224,
                             "swapPause": 1.0,
                             "energyConsumption": 12.5,
                             "normalMass": 3.0,
                             "lightMass": 2.0,
-                            "CurrentEnergy": 0.0,
+                            "CurrentEnergy": 75.0,
                             "MaxEnergy": 100.0,
                             "alive": true,
                             "isPaused": false
@@ -9844,9 +9850,13 @@
                     "w": 0.5
                 }
             },
+            "layer": {
+                "layerName": "Player",
+                "z": 0
+            },
             "keyframe_animator": {
                 "current": "playerIdle",
-                "t": 0.7166666388511658,
+                "t": 2.3499984741210939,
                 "playing": true,
                 "clips": [
                     {
@@ -10691,13 +10701,17 @@
                         ]
                     }
                 ]
+            },
+            "layer": {
+                "layerName": "Player",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "Passthrough_Tiles",
-            "layer": {
-                "currentLayer": 18
+            "tag": {
+                "tagMask": 18
             },
             "transform": {
                 "rotation": 0.0,
@@ -11554,13 +11568,21 @@
                         "asset": "tilemaps/Passthrough_Floor"
                     }
                 ]
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "Lava_TileMap",
-            "layer": {
-                "currentLayer": 6
+            "tag": {
+                "tagMask": 6
             },
             "transform": {
                 "rotation": 0.0,
@@ -11887,19 +11909,27 @@
                         "asset": "tilemaps/Lava_Platform"
                     }
                 ]
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "Ball",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
                 "position": {
                     "x": 1490.7039794921876,
-                    "y": -453.5025329589844,
+                    "y": -430.3423767089844,
                     "z": 0.0
                 },
                 "size": {
@@ -11926,7 +11956,7 @@
                 "enabled": true,
                 "position": {
                     "x": 1490.7039794921876,
-                    "y": -455.6025390625,
+                    "y": -432.5240783691406,
                     "z": 0.0
                 },
                 "offset": {
@@ -11936,12 +11966,12 @@
                 },
                 "min": {
                     "x": 1474.7039794921876,
-                    "y": -468.90252685546877,
+                    "y": -445.8240661621094,
                     "z": 0.0
                 },
                 "max": {
                     "x": 1506.7039794921876,
-                    "y": -442.30255126953127,
+                    "y": -419.2240905761719,
                     "z": 0.0
                 }
             },
@@ -12028,19 +12058,27 @@
                     "z": 0.0,
                     "w": 0.5
                 }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "Ball2",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
                 "position": {
                     "x": 95.65513610839844,
-                    "y": -734.6643676757813,
+                    "y": -711.5057373046875,
                     "z": 0.0
                 },
                 "size": {
@@ -12067,7 +12105,7 @@
                 "enabled": true,
                 "position": {
                     "x": 95.65513610839844,
-                    "y": -736.7643432617188,
+                    "y": -713.6873779296875,
                     "z": 0.0
                 },
                 "offset": {
@@ -12078,7 +12116,7 @@
                 "radius": 13.300000190734864,
                 "center": {
                     "x": 95.65513610839844,
-                    "y": -736.7643432617188,
+                    "y": -713.6873779296875,
                     "z": 0.0
                 }
             },
@@ -12165,13 +12203,21 @@
                     "z": 0.0,
                     "w": 0.5
                 }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "PressurePlate",
-            "layer": {
-                "currentLayer": 2
+            "tag": {
+                "tagMask": 2
             },
             "transform": {
                 "rotation": 0.0,
@@ -12306,13 +12352,21 @@
                     "z": 0.0,
                     "w": 0.5
                 }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "PressurePlate2",
-            "layer": {
-                "currentLayer": 2
+            "tag": {
+                "tagMask": 2
             },
             "transform": {
                 "rotation": 0.0,
@@ -12447,13 +12501,21 @@
                     "z": 0.0,
                     "w": 0.5
                 }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "PressurePlate3",
-            "layer": {
-                "currentLayer": 2
+            "tag": {
+                "tagMask": 2
             },
             "transform": {
                 "rotation": 0.0,
@@ -12588,13 +12650,21 @@
                     "z": 0.0,
                     "w": 0.5
                 }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "WinDoor",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -12722,13 +12792,21 @@
                     "z": 0.0,
                     "w": 0.5
                 }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "wall",
-            "layer": {
-                "currentLayer": 2
+            "tag": {
+                "tagMask": 2
             },
             "transform": {
                 "rotation": 0.0,
@@ -12925,13 +13003,21 @@
                         "asset": ""
                     }
                 ]
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "wall2",
-            "layer": {
-                "currentLayer": 2
+            "tag": {
+                "tagMask": 2
             },
             "transform": {
                 "rotation": 0.0,
@@ -13133,18 +13219,26 @@
                         "asset": "tilemaps/Rock_Door"
                     }
                 ]
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "Moving_Platform",
-            "layer": {
-                "currentLayer": 18
+            "tag": {
+                "tagMask": 18
             },
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1127.7032470703126,
+                    "x": 1472.4979248046876,
                     "y": -410.2161865234375,
                     "z": 0.0
                 },
@@ -13171,7 +13265,7 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 1127.7032470703126,
+                    "x": 1472.319091796875,
                     "y": -410.2161865234375,
                     "z": 0.0
                 },
@@ -13181,12 +13275,12 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 1077.7032470703126,
+                    "x": 1422.319091796875,
                     "y": -418.2161865234375,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 1177.7032470703126,
+                    "x": 1522.319091796875,
                     "y": -402.2161865234375,
                     "z": 0.0
                 }
@@ -13239,18 +13333,26 @@
                         }
                     }
                 ]
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "Moving_Platform_Clone1948",
-            "layer": {
-                "currentLayer": 18
+            "tag": {
+                "tagMask": 18
             },
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 852.03662109375,
+                    "x": 915.8954467773438,
                     "y": -410.2161865234375,
                     "z": 0.0
                 },
@@ -13277,7 +13379,7 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 852.03662109375,
+                    "x": 916.1338500976563,
                     "y": -410.2161865234375,
                     "z": 0.0
                 },
@@ -13287,12 +13389,12 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 802.03662109375,
+                    "x": 866.1338500976563,
                     "y": -418.2161865234375,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 902.03662109375,
+                    "x": 966.1338500976563,
                     "y": -402.2161865234375,
                     "z": 0.0
                 }
@@ -13345,18 +13447,26 @@
                         }
                     }
                 ]
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "Moving_Platform_Clone1948_Clone1949",
-            "layer": {
-                "currentLayer": 18
+            "tag": {
+                "tagMask": 18
             },
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 357.5425720214844,
+                    "x": 782.8506469726563,
                     "y": -334.189697265625,
                     "z": 0.0
                 },
@@ -13383,7 +13493,7 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 357.5425720214844,
+                    "x": 783.1486206054688,
                     "y": -334.189697265625,
                     "z": 0.0
                 },
@@ -13393,12 +13503,12 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 307.54254150390627,
+                    "x": 733.1485595703125,
                     "y": -342.189697265625,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 407.5426025390625,
+                    "x": 833.148681640625,
                     "y": -326.189697265625,
                     "z": 0.0
                 }
@@ -13451,18 +13561,26 @@
                         }
                     }
                 ]
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "Moving_Platform_Clone1948_Clone1949_Clone1950",
-            "layer": {
-                "currentLayer": 18
+            "tag": {
+                "tagMask": 18
             },
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 789.0728149414063,
+                    "x": 1214.378662109375,
                     "y": -786.3703002929688,
                     "z": 0.0
                 },
@@ -13489,7 +13607,7 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 789.0728149414063,
+                    "x": 1214.6766357421876,
                     "y": -786.3703002929688,
                     "z": 0.0
                 },
@@ -13499,12 +13617,12 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 710.7728271484375,
+                    "x": 1136.376708984375,
                     "y": -795.3703002929688,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 867.372802734375,
+                    "x": 1292.9765625,
                     "y": -777.3703002929688,
                     "z": 0.0
                 }
@@ -13557,13 +13675,21 @@
                         }
                     }
                 ]
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
-            "active": true,
+            "active": false,
             "name": "Moving_Platform_Clone1948_Clone1951",
-            "layer": {
-                "currentLayer": 18
+            "tag": {
+                "tagMask": 18
             },
             "transform": {
                 "rotation": 0.0,
@@ -13663,13 +13789,21 @@
                         }
                     }
                 ]
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "lavaParticle",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -13682,6 +13816,10 @@
                     "x": 10.0,
                     "y": 5.0
                 }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             },
             "particle": {
                 "isEmitting": true,
@@ -13743,13 +13881,17 @@
                     "x": 1.0,
                     "y": 1.0
                 }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "lavaParticle_Clone1953",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -13762,6 +13904,10 @@
                     "x": 10.0,
                     "y": 5.0
                 }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             },
             "particle": {
                 "isEmitting": true,
@@ -13823,13 +13969,17 @@
                     "x": 1.0,
                     "y": 1.0
                 }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "lavaParticle_Clone1953_Clone1954",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -13842,6 +13992,10 @@
                     "x": 10.0,
                     "y": 5.0
                 }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             },
             "particle": {
                 "isEmitting": true,
@@ -13903,13 +14057,17 @@
                     "x": 1.0,
                     "y": 1.0
                 }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "lavaParticle_Clone1953_Clone1954_Clone1955",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -13922,6 +14080,10 @@
                     "x": 10.0,
                     "y": 5.0
                 }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             },
             "particle": {
                 "isEmitting": true,
@@ -13983,13 +14145,17 @@
                     "x": 1.0,
                     "y": 1.0
                 }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "lavaParticle_Clone1953_Clone1954_Clone1955_Clone1956",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -14002,6 +14168,10 @@
                     "x": 10.0,
                     "y": 5.0
                 }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             },
             "particle": {
                 "isEmitting": true,
@@ -14063,6 +14233,10 @@
                     "x": 1.0,
                     "y": 1.0
                 }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         }
     ],

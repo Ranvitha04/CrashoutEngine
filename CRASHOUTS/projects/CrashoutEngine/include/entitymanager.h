@@ -13,7 +13,7 @@
 		memory layout for performance. It also includes utility functions for
 		managing entities by both their ID and name.
 
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
 #pragma once
@@ -26,6 +26,7 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserve
 #include <memory>
 #include <utility>
 #include <mutex>
+#include "memorypool.h"
 
 /*                                                                   
 ----------------------------------------------------------------------------- */
@@ -169,6 +170,8 @@ namespace CrashoutsEngine {
 		template<typename T>
 		bool HasComponent(std::string entityName);
 
+		void GetMemoryStats(size_t& totalPages, size_t& totalActive);
+
 		~ECS() = default;
 	};
 
@@ -187,6 +190,8 @@ namespace CrashoutsEngine {
 		virtual	~IComponentArray() = default;
 		virtual void RemoveComponent(Entity entityId) = 0;
 		virtual void CloneComponent(Entity srcEntity, Entity dstEntity) = 0;
+		virtual size_t GetPageCount() const = 0;
+		virtual size_t GetActiveAllocations() const = 0;
 	};
 
 	/*!
@@ -201,14 +206,42 @@ namespace CrashoutsEngine {
 	template<typename T>
 	class ECS::ComponentArray : public IComponentArray {
 	public:
+		ComponentArray() {
+			m_usingPool = MemMgrConfig::s_useMemoryPool;
+			if (m_usingPool) {
+				m_pool.Init(sizeof(T), 1024, alignof(T));
+			}
+		}
+
+		~ComponentArray() override {
+			for (T* ptr : dense) {
+				ptr->~T();
+				if (m_usingPool) m_pool.Free(ptr);
+				else ::operator delete(ptr);
+			}
+			m_pool.Shutdown();
+		}
+
 		void RemoveComponent(Entity entityId) override;
 		void CloneComponent(Entity srcEntity, Entity dstEntity) override;
 
+		size_t GetPageCount() const override {
+			return m_pool.GetPagesAllocated();
+		}
+
+		size_t GetActiveAllocations() const override {
+			if (m_usingPool) return m_pool.GetActiveAllocs();
+			return dense.size();
+		}
+
 		// Public members for dense set implementation
 		// Component values stored in dense
-		std::vector<T> dense;
+		std::vector<T*> dense;
 		std::unordered_map<Entity, size_t> entityToIndex;
 		std::vector<Entity> indexToEntity;
+		
+		MemoryPool m_pool;
+		bool m_usingPool = false;
 	};
 
 	/*!
@@ -236,8 +269,17 @@ namespace CrashoutsEngine {
 	T& ECS::AddComponent(Entity entityId, Args&&... args) {
 		auto& componentArray = GetComponentArray<T>();
 
-		// Construct component in-place
-		componentArray.dense.emplace_back(std::forward<Args>(args)...);
+		// Construct component
+		T* newComponent;
+		if (componentArray.m_usingPool) {
+			void* p = componentArray.m_pool.Allocate();
+			newComponent = new(p) T(std::forward<Args>(args)...);
+		}
+		else {
+			newComponent = new T(std::forward<Args>(args)...);
+		}
+
+		componentArray.dense.push_back(newComponent);
 
 		size_t newIndex = componentArray.dense.size() - 1;
 		// Save the entity's index in the component sparse set
@@ -245,7 +287,7 @@ namespace CrashoutsEngine {
 		// add the new component to the back of values
 		componentArray.indexToEntity.push_back(entityId);
 
-		return componentArray.dense.back();
+		return *componentArray.dense.back();
 	}
 
 	/*!
@@ -275,8 +317,17 @@ namespace CrashoutsEngine {
 
 		auto& componentArray = GetComponentArray<T>();
 
-		// Construct component in-place
-		componentArray.dense.emplace_back(std::forward<Args>(args)...);
+		// Construct component
+		T* newComponent;
+		if (componentArray.m_usingPool) {
+			void* p = componentArray.m_pool.Allocate();
+			newComponent = new(p) T(std::forward<Args>(args)...);
+		}
+		else {
+			newComponent = new T(std::forward<Args>(args)...);
+		}
+
+		componentArray.dense.push_back(newComponent);
 
 		size_t newIndex = componentArray.dense.size() - 1;
 		// Save the entity's index in the component sparse set
@@ -284,7 +335,7 @@ namespace CrashoutsEngine {
 		// add the new component to the back of values
 		componentArray.indexToEntity.push_back(entityId);
 
-		return componentArray.dense.back();
+		return *componentArray.dense.back();
 	}
 
 	/*!
@@ -386,7 +437,7 @@ namespace CrashoutsEngine {
 		}
 		auto& componentArray = GetComponentArray<T>();
 		size_t index = componentArray.entityToIndex.at(entityId);
-		return &componentArray.dense.at(index);
+		return componentArray.dense.at(index);
 	}
 	
 	/*!
@@ -412,7 +463,7 @@ namespace CrashoutsEngine {
 		}
 		auto& componentArray = GetComponentArray<T>();
 		size_t index = componentArray.entityToIndex.at(entityId);
-		return &componentArray.dense.at(index);
+		return componentArray.dense.at(index);
 	}
 
 	/*!
@@ -435,9 +486,15 @@ namespace CrashoutsEngine {
 		size_t indexToRemove = entityToIndex.at(entityId);
 		Entity lastEntity = indexToEntity.back();
 
+		// Destroy the component at indexToRemove
+		T* componentToRemove = dense[indexToRemove];
+		componentToRemove->~T();
+		if (m_usingPool) m_pool.Free(componentToRemove);
+		else ::operator delete(componentToRemove);
+
 		if (indexToRemove != dense.size() - 1) {
-			// Swap component data
-			dense[indexToRemove] = std::move(dense.back());
+			// Move the last element to the removed spot
+			dense[indexToRemove] = dense.back();
 
 			// Update the index mappings for the swapped entity
 			entityToIndex.at(lastEntity) = indexToRemove;
@@ -446,7 +503,7 @@ namespace CrashoutsEngine {
 
 		// Remove the entries from the sparse-set structures
 		entityToIndex.erase(entityId);
-		dense.pop_back();
+		dense.pop_back(); // Removes the pointer from vector (memory already freed above)
 		indexToEntity.pop_back();
 	}
 
@@ -474,10 +531,18 @@ namespace CrashoutsEngine {
 
 		// Get reference to the source component
 		size_t srcIndex = entityToIndex[srcEntity];
-		const T& srcComponent = dense[srcIndex];
+		const T* srcComponent = dense[srcIndex];
 
 		// Add a new component to destination entity by copying source
-		dense.emplace_back(srcComponent);
+		T* newComponent;
+		if (m_usingPool) {
+			void* p = m_pool.Allocate();
+			newComponent = new(p) T(*srcComponent); // Copy constructor
+		}
+		else {
+			newComponent = new T(*srcComponent);
+		}
+		dense.push_back(newComponent);
 
 		// Update sparse-set for the destination entity
 		size_t newIndex = dense.size() - 1;

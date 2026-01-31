@@ -37,8 +37,12 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 #include "buttoncomponent.h"
 //#include "tilemapcomponent.h"
 #include "activecomponent.h"
-//#include "particleSystem.h"
+#include "particleSystem.h"
+#include "spriteAnimation.h"
 //#include "camera.h"
+
+#include <fstream>
+#include <sstream>
 
 #define FONT_SCALE 0.05f
 
@@ -68,6 +72,42 @@ namespace Scene {
 	// UI SUB-NAMESPACE
 	// ============================================================================
 	namespace UI {
+
+		void LoadDialogue(TextComponent& tc) {
+			if (tc.dialogueFilePath.empty() || tc.dialogueID.empty()) return;
+
+			std::string fullPath = CrashoutsEngine::Assets::rootPath + tc.dialogueFilePath;
+			std::ifstream file(fullPath);
+			if (!file.is_open()) return;
+
+			std::stringstream buffer;
+			buffer << file.rdbuf();
+			std::string content = buffer.str();
+			file.close();
+
+			rapidjson::Document doc;
+			doc.Parse(content.c_str());
+
+			if (!doc.HasParseError()) {
+				if (doc.HasMember(tc.dialogueID.c_str())) {
+					const auto& val = doc[tc.dialogueID.c_str()];
+					if (val.IsString()) {
+						tc.text = val.GetString();
+					}
+				}
+			}
+		}
+
+		static void InitText(ECS& globalECS) {
+			const ECS::ComponentArray<TextComponent>& textArray = globalECS.GetComponentArray<TextComponent>();
+			for (const Entity& id : textArray.indexToEntity) {
+				if (!IsEntityActive(globalECS, id)) continue;
+				TextComponent* tc = globalECS.GetComponent<TextComponent>(id);
+				if (tc) {
+					LoadDialogue(*tc);
+				}
+			}
+		}
 
 		/*
 		@brief      HELPER: Calculates the final UI position (Center-Origin Units)
@@ -162,8 +202,37 @@ namespace Scene {
 
 					float finalX = unitPos.x;
 					float finalY = unitPos.y;
+
+					// Override for Bounded Text: Use Shape Center (ignoring UILayout shift)
+					if (tc->wrapText) {
+						finalX = t->position.x + tc->offset.x;
+						finalY = t->position.y + tc->offset.y;
+					}
+
 					float finalScale = tc->scale;
 					std::string font = tc->font.empty() ? "Exo2-Regular" : tc->font;
+
+					// --- TYPEWRITER LOGIC ---
+					std::string textToRender = tc->text;
+					if (tc->isRevealing && engineState == EngineState::PLAY) {
+						tc->revealTimer += (float)FrameRateController::GetInstance().DT();
+						tc->revealedCharCount = (int)(tc->revealTimer * tc->revealSpeed);
+						if (tc->revealedCharCount < 0) tc->revealedCharCount = 0;
+						if (tc->revealedCharCount > (int)tc->text.length()) tc->revealedCharCount = (int)tc->text.length();
+
+						textToRender = tc->text.substr(0, tc->revealedCharCount);
+					}
+					else if (tc->isRevealing && engineState == EngineState::STOP) {
+						// In STOP mode, reset or show full? Usually preview full or reset.
+						// Let's reset to allow previewing "from start" when playing.
+						tc->revealTimer = 0.0f;
+						tc->revealedCharCount = 0;
+						// If you want to see text in editor, maybe show full?
+						// textToRender = tc->text; 
+						// Or show empty? 
+						// Let's show empty to respect the flag, or user can toggle flag off to see text.
+						textToRender = "";
+					}
 
 					// --- COORDINATE SPACE CONVERSION ---
 					if (!tc->isWorldSpace) {
@@ -176,10 +245,125 @@ namespace Scene {
 					}
 
 					// Render Text
-					if (tc->centered)
-						gTextRenderer->RenderCenteredText(tc->text, finalX, finalY, depthZ, finalScale, tc->color, font, tc->isWorldSpace);
+
+					if (tc->wrapText) {
+
+						float maxWidth = t->size.x;
+
+						float maxHeight = t->size.y;
+
+
+
+						if (!tc->isWorldSpace) {
+
+							// Convert dimensions from Units to Pixels (Full Size)
+
+							maxWidth = (t->size.x / uiWidth) * winW;
+
+							maxHeight = (t->size.y / uiHeight) * winH;
+
+						}
+
+
+
+						// Map UILayout to Text Alignment
+
+						int align = 1; // CENTER
+
+						int vAlign = 1; // MIDDLE
+
+
+
+						if (u) {
+
+							// Horizontal
+
+							if (static_cast<bool>(u->uiLayout & UILayout::LEFT)) align = 0;
+
+							else if (static_cast<bool>(u->uiLayout & UILayout::RIGHT)) align = 2;
+
+
+
+							// Vertical
+
+							if (static_cast<bool>(u->uiLayout & UILayout::TOP)) vAlign = 0;
+
+							else if (static_cast<bool>(u->uiLayout & UILayout::DOWN)) vAlign = 2;
+
+						}
+						else {
+
+							// Fallback to component internal values
+
+							align = (int)tc->alignment;
+
+							vAlign = (int)tc->verticalAlignment;
+
+						}
+
+
+
+						// Override finalX/Y for Bounded Text to use Shape Center
+
+						float boundedX = t->position.x + tc->offset.x;
+
+						float boundedY = t->position.y + tc->offset.y;
+
+
+
+						if (!tc->isWorldSpace) {
+
+							CEVec2 pixelPos = UnitsToPixels(boundedX, boundedY);
+
+							boundedX = pixelPos.x;
+
+							boundedY = pixelPos.y;
+
+						}
+
+
+
+						gTextRenderer->RenderTextBounded(
+
+
+
+							textToRender, boundedX, boundedY, depthZ,
+
+
+
+							maxWidth, maxHeight,
+
+
+
+							finalScale, tc->color, font, tc->isWorldSpace,
+
+
+
+							align, vAlign, tc->padding, tc->letterSpacing, tc->lineSpacing
+
+
+
+						);
+
+
+
+					}
+
+
+
+					else if (tc->centered)
+
+
+
+						gTextRenderer->RenderCenteredText(textToRender, finalX, finalY, depthZ, finalScale, tc->color, font, tc->isWorldSpace, tc->letterSpacing);
+
+
+
 					else
-						gTextRenderer->RenderText(tc->text, finalX, finalY, depthZ, finalScale, tc->color, font, tc->isWorldSpace);
+
+
+
+						gTextRenderer->RenderText(textToRender, finalX, finalY, depthZ, finalScale, tc->color, font, tc->isWorldSpace, tc->letterSpacing);
 
 					// --- CURSOR LOGIC ---
 					TextInputComponent* input = globalECS.GetComponent<TextInputComponent>(id);
@@ -273,7 +457,7 @@ namespace Scene {
 				GuiComponent* g = globalECS.GetComponent<GuiComponent>(id);
 				if (g == nullptr) continue;
 
-				ButtonComponent* b = globalECS.GetComponent<ButtonComponent>(id);				
+				ButtonComponent* b = globalECS.GetComponent<ButtonComponent>(id);
 				TransformComponent* t = globalECS.GetComponent<TransformComponent>(id);
 				UILayoutComponent* u = globalECS.GetComponent<UILayoutComponent>(id);
 
@@ -310,22 +494,48 @@ namespace Scene {
 				bool isHovering = (checkPos.x >= aa.x && checkPos.x <= bb.x &&
 					checkPos.y >= aa.y && checkPos.y <= bb.y);
 
+				// Base Scale (assumes 1.0 is default/normal scale multiplier)
+				float targetScale = 1.0f;
+
 				if (isHovering) {
 					if (InputManager::IsMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT)) {
 						b->buttonState = ButtonState::PRESSED;
 						if (s) s->color = b->shapePressedColor;
 						if (txt) txt->color = b->textPressedColor;
+						targetScale = b->pressedScale;
 					}
 					else {
 						b->buttonState = ButtonState::HOVERED;
 						if (s) s->color = b->shapeHoveredColor;
 						if (txt) txt->color = b->textHoveredColor;
+						targetScale = b->hoverScale;
 					}
 				}
 				else if (b->buttonState != ButtonState::NORMAL) {
 					b->buttonState = ButtonState::NORMAL;
 					if (s) s->color = b->shapeNormalColor;
 					if (txt) txt->color = b->textNormalColor;
+					targetScale = 1.0f;
+				}
+
+				if (b->originalSize.x == 0.0f && b->originalSize.y == 0.0f) {
+					b->originalSize = t->size;
+				}
+				
+				// Apply target scale to Shape size
+				t->size.x = b->originalSize.x * targetScale;
+				t->size.y = b->originalSize.y * targetScale;
+
+				// Apply target scale to Text scale
+				if (txt) {
+					// Capture original text scale if not yet set
+					if (b->originalTextScale == 0.0f) {
+						b->originalTextScale = txt->scale;
+					}
+					// Only apply if we have a valid original scale (avoid shrinking to 0 if init failed)
+					if (b->originalTextScale > 0.0f) {
+						txt->scale = b->originalTextScale * targetScale;
+					}
 				}
 			}
 		}
@@ -607,7 +817,7 @@ namespace Scene {
 	// ============================================================================
 	// SCENE RENDERING
 	// ============================================================================
-
+	
 	static TextureMode GetWrapMode(int mode) {
 		switch (mode) {
 		case 0: return TextureMode::ClampToEdge;
@@ -617,6 +827,7 @@ namespace Scene {
 		}
 	}
 
+	// Data Holder
 	struct RenderBatch {
 		std::vector<CEVec3> positions;
 		std::vector<CEColor> colors;
@@ -635,11 +846,6 @@ namespace Scene {
 		void Clear() {
 			positions.clear(); colors.clear(); rotations.clear();
 			scales.clear(); dim1.clear(); dim2.clear(); uvOffsets.clear();
-			uvSize = { 1.0f, 1.0f };
-			textureName = "";
-			enableTexture = false;
-			wrapU = TextureMode::ClampToEdge;
-			wrapV = TextureMode::ClampToEdge;
 		}
 
 		void Add(const CEVec3& pos, const CEColor& col, float rot, float scale, float d1, float d2, const CEVec2& offset) {
@@ -652,209 +858,111 @@ namespace Scene {
 			uvOffsets.push_back(offset);
 		}
 	};
+	
+	// Linear Batcher Class
+	// Manages the batching states
+	struct LinearBatcher {
+		RenderBatch batch;
+		ShapeType currentShapeType = ShapeType::Rectangle;
+		
+		// Cleans the render batch data
+		void Flush() {
+			if (batch.positions.empty()) return;
 
-	struct BatchKey {
-		std::string textureName;
-		float uvX, uvY;
-		int wrapU, wrapV;
+			// Bind Texture if needed
+			if (batch.enableTexture && !batch.textureName.empty()) {
+				auto* tex = Assets::AssetManager::GetInstance().Get<Assets::TextureAsset>(batch.textureName);
+				if (tex) tex->SetTextureMode(batch.wrapU, batch.wrapV);
+			}
 
-		bool operator==(const BatchKey& other) const {
-			return textureName == other.textureName &&
-				uvX == other.uvX && uvY == other.uvY &&
-				wrapU == other.wrapU && wrapV == other.wrapV;
+			InstancingSystem::InstancedParams params;
+			params.textured = batch.enableTexture;
+			params.textureName = batch.textureName;
+			params.tint = { 1,1,1 };
+			params.uvSize = batch.uvSize;
+
+			int count = (int)batch.positions.size();
+
+			if (currentShapeType == ShapeType::Rectangle) {
+				InstancingSystem::RenderInstancedRectanglesBatch(
+					batch.positions.data(), batch.colors.data(), batch.rotations.data(),
+					batch.scales.data(), batch.dim1.data(), batch.dim2.data(),
+					batch.uvOffsets.data(), count, params);
+			}
+			else if (currentShapeType == ShapeType::Triangle) {
+				InstancingSystem::RenderInstancedTrianglesBatch(
+					batch.positions.data(), batch.colors.data(), batch.rotations.data(),
+					batch.scales.data(), batch.dim1.data(), batch.dim2.data(),
+					batch.uvOffsets.data(), count, params);
+			}
+			else if (currentShapeType == ShapeType::Circle) {
+				InstancingSystem::RenderInstancedCirclesBatch(
+					batch.positions.data(), batch.colors.data(), batch.rotations.data(),
+					batch.scales.data(), batch.dim1.data(),
+					batch.uvOffsets.data(), count, 32, params);
+			}
+
+			batch.Clear();
 		}
-	};
 
-	struct BatchKeyHasher {
-		std::size_t operator()(const BatchKey& k) const {
-			std::size_t h1 = std::hash<std::string>{}(k.textureName);
-			std::size_t h2 = std::hash<float>{}(k.uvX);
-			std::size_t h3 = std::hash<float>{}(k.uvY);
-			std::size_t h4 = std::hash<int>{}(k.wrapU);
-			std::size_t h5 = std::hash<int>{}(k.wrapV);
-			return h1 ^ (h2 << 1) ^ (h3 << 2) ^ (h4 << 3) ^ (h5 << 4);
-		}
-	};
-
-	std::unordered_map<BatchKey, RenderBatch, BatchKeyHasher> rectBatches;
-	std::unordered_map<BatchKey, RenderBatch, BatchKeyHasher> triBatches;
-	std::unordered_map<BatchKey, RenderBatch, BatchKeyHasher> circBatches;
-
-	// --- HELPER: BatchEntities (Processes a specific list of entities) ---
-	static void BatchEntities(
-		const std::vector<Entity>& entities,
-		ECS& globalECS,
-		std::unordered_map<BatchKey, RenderBatch, BatchKeyHasher>& rects,
-		std::unordered_map<BatchKey, RenderBatch, BatchKeyHasher>& tris,
-		std::unordered_map<BatchKey, RenderBatch, BatchKeyHasher>& circs,
-		std::vector<std::pair<TransformComponent*, ShapeComponent*>>& lines,
-		bool enableCulling = false)
-	{
-		// Culling preperations
-
-		RenderCamera::Camera& cam = (engineState == EngineState::STOP) ?
-			RenderCamera::engineCamera : RenderCamera::gameCamera;
-		CEVec3 camPos = cam.GetPosition();
-		float camHeight = cam.GetVisibleWorldHeight();
-		float camWidth = cam.GetVisibleWorldWidth();
-
-		// Create a bounding box for the camera viewport
-		float camMinX = camPos.x - (camWidth * 0.65f);
-		float camMaxX = camPos.x + (camWidth * 0.65f);
-		float camMinY = camPos.y - (camHeight * 0.65f);
-		float camMaxY = camPos.y + (camHeight * 0.65f);
-
-		for (const Entity& id : entities) {
-			if (!globalECS.HasComponent<TransformComponent>(id)) continue;
-
-			auto* tf = globalECS.GetComponent<TransformComponent>(id);
-			auto* sc = globalECS.GetComponent<ShapeComponent>(id);
-
-			// Lines are not batched here
+		// Send new batching data
+		void Submit(TransformComponent* tc, ShapeComponent* sc) {
+			// Special Case: Lines cannot be instanced in the same batch
 			if (sc->type == ShapeType::Line) {
-				lines.push_back({ tf, sc });
-				continue;
+				Flush(); // Break current batch
+				Component::Shapes::CreateLine(sc->p1 + tc->position, sc->p2 + tc->position, sc->thickness, sc->color, sc->isWorldSpace);
+				return;
 			}
 
-			BatchKey key;
-			if (sc->enableTexture) key = { sc->textureName, sc->uvSize.x, sc->uvSize.y, sc->wrapModeU, sc->wrapModeV };
-			else key = { "NoTexture", 1.0f, 1.0f, 0, 0 };
+			// Check for State Changes
+			bool typeChanged = (sc->type != currentShapeType);
+			bool textureChanged = false;
 
+			// Only check texture state if we aren't starting fresh
+			if (!batch.positions.empty()) {
+				if (sc->enableTexture != batch.enableTexture) textureChanged = true;
+				else if (sc->enableTexture) {
+					if (sc->textureName != batch.textureName) textureChanged = true;
+					else if (sc->uvSize != batch.uvSize) textureChanged = true; // UV Size is uniform
+					// Note: Wrap modes usually don't change often, but if they do, we must flush
+					else if (GetWrapMode(sc->wrapModeU) != batch.wrapU) textureChanged = true;
+				}
+			}
+
+			// Flush if state doesn't match
+			if (textureChanged || typeChanged) {
+				Flush();
+			}
+
+			// Init Batch properties if empty
+			if (batch.positions.empty()) {
+				currentShapeType = sc->type;
+				batch.textureName = sc->textureName;
+				batch.enableTexture = sc->enableTexture;
+				batch.uvSize = sc->uvSize;
+				batch.wrapU = GetWrapMode(sc->wrapModeU);
+				batch.wrapV = GetWrapMode(sc->wrapModeV);
+			}
+
+			// Add Data
 			CEColor colorNorm(sc->color.x(), sc->color.y(), sc->color.z(), sc->color.w());
+			float dim1 = tc->size.x;
+			float dim2 = tc->size.y;
+			if (sc->type == ShapeType::Circle) { dim1 = tc->size.x * 0.5f; dim2 = 0.0f; }
 
-			auto ConfigureBatch = [&](RenderBatch& batch) {
-				if (batch.positions.empty()) {
-					batch.uvSize = sc->uvSize;
-					batch.textureName = sc->textureName;
-					batch.enableTexture = sc->enableTexture;
-					batch.wrapU = GetWrapMode(sc->wrapModeU);
-					batch.wrapV = GetWrapMode(sc->wrapModeV);
-				}
-				};
-
-			f32 maxX = tf->position.x + tf->size.x;
-			f32 minX = tf->position.x - tf->size.x;
-			f32 maxY = tf->position.y + tf->size.y;
-			f32 minY = tf->position.y - tf->size.y;
-
-			if (enableCulling) {
-				// If ANY of these are true, the object is completely outside the viewport
-				if (maxX < camMinX || // Entirely to the left
-					minX > camMaxX || // Entirely to the right
-					maxY < camMinY || // Entirely below
-					minY > camMaxY)   // Entirely above
-				{
-					continue;
-				}
-			}
-			switch (sc->type) {
-			case ShapeType::Rectangle: {
-				RenderBatch& batch = rects[key];
-				ConfigureBatch(batch);
-				batch.Add(tf->position, colorNorm, tf->rotation, 1.0f, tf->size.x, tf->size.y, sc->uvOffset);
-				break;
-			}
-			case ShapeType::Triangle: {
-				RenderBatch& batch = tris[key];
-				ConfigureBatch(batch);
-				batch.Add(tf->position, colorNorm, tf->rotation, 1.0f, tf->size.x, tf->size.y, sc->uvOffset);
-				break;
-			}
-			case ShapeType::Circle: {
-				RenderBatch& batch = circs[key];
-				ConfigureBatch(batch);
-				batch.Add(tf->position, colorNorm, tf->rotation, 1.0f, tf->size.x * 0.5f, 0.0f, sc->uvOffset);
-				break;
-			}
-			default: break;
-			}
+			batch.Add(tc->position, colorNorm, tc->rotation, 1.0f, dim1, dim2, sc->uvOffset);
 		}
-	}
-
-	// --- HELPER: FlushBatches (Draws and clears the maps) ---
-	static void FlushBatches(
-		std::unordered_map<BatchKey, RenderBatch, BatchKeyHasher>& rects,
-		std::unordered_map<BatchKey, RenderBatch, BatchKeyHasher>& tris,
-		std::unordered_map<BatchKey, RenderBatch, BatchKeyHasher>& circs)
-	{
-		// --- Rectangles ---
-		for (auto& kv : rects) {
-			RenderBatch& batch = kv.second;
-			if (batch.positions.empty()) continue;
-
-			if (batch.enableTexture && !batch.textureName.empty()) {
-				auto* tex = Assets::AssetManager::GetInstance().Get<Assets::TextureAsset>(batch.textureName);
-				if (tex) tex->SetTextureMode(batch.wrapU, batch.wrapV);
-			}
-
-			InstancingSystem::InstancedParams params;
-			params.textured = batch.enableTexture;
-			params.textureName = batch.textureName;
-			params.tint = { 1,1,1 };
-			params.uvSize = batch.uvSize;
-
-			InstancingSystem::RenderInstancedRectanglesBatch(
-				batch.positions.data(), batch.colors.data(), batch.rotations.data(),
-				batch.scales.data(), batch.dim1.data(), batch.dim2.data(),
-				batch.uvOffsets.data(),
-				(int)batch.positions.size(), params);
-
-			batch.Clear();
-		}
-
-		// --- Triangles ---
-		for (auto& kv : tris) {
-			RenderBatch& batch = kv.second;
-			if (batch.positions.empty()) continue;
-
-			if (batch.enableTexture && !batch.textureName.empty()) {
-				auto* tex = Assets::AssetManager::GetInstance().Get<Assets::TextureAsset>(batch.textureName);
-				if (tex) tex->SetTextureMode(batch.wrapU, batch.wrapV);
-			}
-			InstancingSystem::InstancedParams params;
-			params.textured = batch.enableTexture;
-			params.textureName = batch.textureName;
-			params.tint = { 1,1,1 };
-			params.uvSize = batch.uvSize;
-
-			InstancingSystem::RenderInstancedTrianglesBatch(
-				batch.positions.data(), batch.colors.data(), batch.rotations.data(),
-				batch.scales.data(), batch.dim1.data(), batch.dim2.data(),
-				batch.uvOffsets.data(),
-				(int)batch.positions.size(), params);
-
-			batch.Clear();
-		}
-
-		// --- Circles ---
-		for (auto& kv : circs) {
-			RenderBatch& batch = kv.second;
-			if (batch.positions.empty()) continue;
-
-			if (batch.enableTexture && !batch.textureName.empty()) {
-				auto* tex = Assets::AssetManager::GetInstance().Get<Assets::TextureAsset>(batch.textureName);
-				if (tex) tex->SetTextureMode(batch.wrapU, batch.wrapV);
-			}
-			InstancingSystem::InstancedParams params;
-			params.textured = batch.enableTexture;
-			params.textureName = batch.textureName;
-			params.tint = { 1,1,1 };
-			params.uvSize = batch.uvSize;
-
-			InstancingSystem::RenderInstancedCirclesBatch(
-				batch.positions.data(), batch.colors.data(), batch.rotations.data(),
-				batch.scales.data(), batch.dim1.data(),
-				batch.uvOffsets.data(),
-				(int)batch.positions.size(), 32, params);
-
-			batch.Clear();
-		}
-	}
+	};
 
 	void InitScene(CrashoutsEngine::ECS& globalECS) {
 		Particles::InitAllParticles(globalECS);
+		UI::InitText(globalECS);
 	}
 
+	/*!
+	@brief   Render scene shapes with z-depth sorting (world and screen space).
+	@param   globalECS Reference to ECS registry.
+	*/
 	void RenderScene(CrashoutsEngine::ECS& globalECS) {
 		using namespace CrashoutsEngine;
 		using Component::Rendering;
@@ -863,92 +971,139 @@ namespace Scene {
 
 		const auto& shapeArray = globalECS.GetComponentArray<ShapeComponent>();
 
-		// 1. PRE-SORT into World vs Screen lists
-		std::vector<Entity> worldEntities;
-		std::vector<Entity> screenEntities;
-		worldEntities.reserve(shapeArray.indexToEntity.size());
-		screenEntities.reserve(shapeArray.indexToEntity.size());
+		// 1. Setup Camera & Culling Bounds
+		// ---------------------------------------------------------
+		RenderCamera::Camera& cam = (engineState == EngineState::STOP) ?
+			RenderCamera::engineCamera : RenderCamera::gameCamera;
 
+		CEVec3 camPos = cam.GetPosition();
+		float camHeight = cam.GetVisibleWorldHeight();
+		float camWidth = cam.GetVisibleWorldWidth();
+
+		// Add a margin (0.65f factor from your old code, or just add buffer)
+		// This prevents objects popping out at the very edge of the screen.
+		float cullMinX = camPos.x - (camWidth * 0.6f);
+		float cullMaxX = camPos.x + (camWidth * 0.6f);
+		float cullMinY = camPos.y - (camHeight * 0.6f);
+		float cullMaxY = camPos.y + (camHeight * 0.6f);
+		// ---------------------------------------------------------
+
+		struct RenderEntry {
+			Entity entity;
+			float depth;
+		};
+
+		std::vector<RenderEntry> worldEntries;
+		std::vector<RenderEntry> screenEntries;
+		worldEntries.reserve(shapeArray.indexToEntity.size());
+		screenEntries.reserve(shapeArray.indexToEntity.size());
+
+		// 2. PRE-SORT 
 		for (const Entity& id : shapeArray.indexToEntity) {
 			if (!IsEntityActive(globalECS, id)) continue;
-
+			auto* tc = globalECS.GetComponent<TransformComponent>(id);
+			if (!tc) continue;
 			auto* sc = globalECS.GetComponent<ShapeComponent>(id);
-			if (sc->isWorldSpace) worldEntities.push_back(id);
-			else                  screenEntities.push_back(id);
+
+			// Compute Depth
+			float depth = 0.0f;
+			if (globalECS.HasComponent<Component::LayerComponent>(id)) {
+				auto* z = globalECS.GetComponent<Component::LayerComponent>(id);
+				if (Component::LayerComponent::layerVisibility.count(z->layerName)) {
+					if (!Component::LayerComponent::layerVisibility[z->layerName]) continue;
+				}
+				DebugZOverride* dbg = globalECS.HasComponent<DebugZOverride>(id) ? globalECS.GetComponent<DebugZOverride>(id) : nullptr;
+				depth = Component::Rendering::ComputeDepth(tc->position, *z, dbg);
+			}
+			else {
+				Component::LayerComponent defaultZ{ "Default", 0 };
+				if (Component::LayerComponent::layerVisibility.count("Default")) {
+					if (!Component::LayerComponent::layerVisibility["Default"]) continue;
+				}
+				depth = Component::Rendering::ComputeDepth(tc->position, defaultZ, nullptr);
+			}
+
+			if (sc->isWorldSpace) worldEntries.push_back({ id, depth });
+			else                  screenEntries.push_back({ id, depth });
 		}
 
-		// -------------------------------------------------------
-		// PASS 1: WORLD SPACE (Uses Camera Matrices)
-		// -------------------------------------------------------
-		renderer.shdr_pgm_instanced->Use();
-		renderer.shdr_pgm_instanced->SetUniform("uView", renderer.viewMatrix);
-		renderer.shdr_pgm_instanced->SetUniform("uProjection", renderer.projectionMatrix);
+		// 3. SORT
+		auto sortFunc = [](const RenderEntry& a, const RenderEntry& b) { return a.depth < b.depth; };
+		std::sort(worldEntries.begin(), worldEntries.end(), sortFunc);
+		std::sort(screenEntries.begin(), screenEntries.end(), sortFunc);
 
-		// ALSO Set standard shader matrices for non-instanced world objects
+		// --- LINEAR BATCHER ---
+		static LinearBatcher batcher;
+		batcher.batch.Clear();
+
+		// Updated Processor: Now takes Culling Arguments
+		auto ProcessSortedList = [&](const std::vector<RenderEntry>& entries, bool useCulling) {
+			for (const auto& item : entries) {
+				auto* sc = globalECS.GetComponent<ShapeComponent>(item.entity);
+				auto* tc = globalECS.GetComponent<TransformComponent>(item.entity);
+
+				// --- RESTORED CULLING LOGIC ---
+				if (useCulling) {
+					float halfW = tc->size.x * 0.5f; // Approx radius/half-extents
+					float halfH = tc->size.y * 0.5f;
+
+					// Note: Your old code used 'tf->position.x + tf->size.x'. 
+					// Assuming size is full width/height and position is center:
+					float objMaxX = tc->position.x + halfW;
+					float objMinX = tc->position.x - halfW;
+					float objMaxY = tc->position.y + halfH;
+					float objMinY = tc->position.y - halfH;
+
+					// AABB vs AABB Intersection Check
+					if (objMaxX < cullMinX || objMinX > cullMaxX ||
+						objMaxY < cullMinY || objMinY > cullMaxY)
+					{
+						continue; // SKIP this entity
+					}
+				}
+				// -----------------------------
+
+				batcher.Submit(tc, sc);
+			}
+			batcher.Flush();
+			};
+
+		// 4. DRAW WORLD SPACE (Culling ENABLED)
 		renderer.shdr_pgm->Use();
 		renderer.shdr_pgm->SetUniform("uView", renderer.viewMatrix);
 		renderer.shdr_pgm->SetUniform("uProjection", renderer.projectionMatrix);
 
-		// Store lines for later
-		std::vector<std::pair<TransformComponent*, ShapeComponent*>> lineQueue;
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glDisable(GL_DEPTH_TEST);
+		glDisable(GL_CULL_FACE);
 
-		BatchEntities(worldEntities, globalECS, rectBatches, triBatches, circBatches, lineQueue, true);
-		FlushBatches(rectBatches, triBatches, circBatches);
+		// Pass 'true' to enable culling for world objects
+		ProcessSortedList(worldEntries, true);
 
-		// Render Particles (World Space)
 		Particles::RenderAllParticles(globalECS);
 
-		// Flush World Lines (Non-instanced)
-		if (!lineQueue.empty()) {
-			renderer.shdr_pgm->Use();
-			// (Matrices already set above)
-
-			for (auto& pair : lineQueue) {
-				TransformComponent* tf = pair.first;
-				ShapeComponent* sc = pair.second;
-				Shapes::CreateLine(sc->p1 + tf->position, sc->p2 + tf->position, sc->thickness, sc->color, sc->isWorldSpace);
-			}
-			lineQueue.clear();
-		}
-
-		// -------------------------------------------------------
-		// PASS 2: SCREEN SPACE (Uses UI Matrices)
-		// -------------------------------------------------------
-		renderer.shdr_pgm_instanced->Use();
-		// View is Identity (No camera movement)
-		renderer.shdr_pgm_instanced->SetUniform("uView", glm::mat4(1.0f));
-
-		// Fixed UI Projection (Centered Origin)
+		// 5. DRAW SCREEN SPACE (Culling DISABLED)
+		// Screen space UI shouldn't be culled by the World Camera bounds
 		float aspect = (float)GLApp::width / (float)GLApp::height;
-		float h = 100.0f; // Base Height (Matches your engine standard)
+		float h = 100.0f;
 		float w = h * aspect;
 		glm::mat4 uiProj = glm::ortho(-w * 0.5f, w * 0.5f, -h * 0.5f, h * 0.5f);
-		renderer.shdr_pgm_instanced->SetUniform("uProjection", uiProj);
 
-		// ALSO Set standard shader matrices for non-instanced UI objects
 		renderer.shdr_pgm->Use();
 		renderer.shdr_pgm->SetUniform("uView", glm::mat4(1.0f));
 		renderer.shdr_pgm->SetUniform("uProjection", uiProj);
 
-		BatchEntities(screenEntities, globalECS, rectBatches, triBatches, circBatches, lineQueue, false);
-		FlushBatches(rectBatches, triBatches, circBatches);
+		// Pass 'false' to disable culling for UI
+		ProcessSortedList(screenEntries, false);
 
-		// Flush Screen Lines
-		if (!lineQueue.empty()) {
-			renderer.shdr_pgm->Use();
-			// (Matrices already set above)
+		// Restore State
+		if (glIsEnabled(GL_DEPTH_TEST)) glEnable(GL_DEPTH_TEST);
+		if (glIsEnabled(GL_CULL_FACE)) glEnable(GL_CULL_FACE);
+		renderer.shdr_pgm_instanced->Use();
 
-			for (auto& pair : lineQueue) {
-				TransformComponent* tf = pair.first;
-				ShapeComponent* sc = pair.second;
-				Shapes::CreateLine(sc->p1 + tf->position, sc->p2 + tf->position, sc->thickness, sc->color, sc->isWorldSpace);
-			}
-		}
-
-		renderer.shdr_pgm_instanced->Use(); // Restore state
-
-		// 5. Draw Text / UI (Now via UI namespace)
 		Scene::UI::RenderTextAndCursor(globalECS);
+		Component::RenderSpriteAnimationsECS();
 	}
 
 	void UpdateScene(CrashoutsEngine::ECS& globalECS) {
@@ -958,5 +1113,6 @@ namespace Scene {
 
 		// Particle Updates (Physics/Lifecycle)
 		Particles::UpdateAllParticles(globalECS);
+		Component::UpdateSpriteAnimationsECS();
 	}
 }

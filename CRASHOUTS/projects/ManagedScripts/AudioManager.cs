@@ -12,6 +12,8 @@ public class AudioManager
 {
     public static AudioManager Instance { get; } = new AudioManager();
 
+    private Dictionary<string, string> _activeLayers = new Dictionary<string, string>();
+
     private AudioManager() {
 
         playerMusVol = InternalCalls.Audio_GetMusicVolume();
@@ -81,6 +83,37 @@ public class AudioManager
             InternalCalls.Audio_PlaySFXFileTagged(s.Name, s.Path, s.Loop);
     }
 
+    // === Play music or ambience globally with layering support
+    public void PlayLayer(string layerName, string key, string path, bool loop, float volume = 1.0f, float fadeDuration = 2.0f)
+    {
+        string currentKeyOnLayer = "";
+        if (_activeLayers.ContainsKey(layerName))
+        {
+            currentKeyOnLayer = _activeLayers[layerName];
+        }
+
+        if (currentKeyOnLayer == key)
+        {
+            bool isActuallyPlaying = InternalCalls.Audio_IsTaggedPlaying(key);
+
+            if (isActuallyPlaying)
+            {
+                InternalCalls.Audio_SetTaggedVolume(key, volume);
+                return;
+            }
+        }
+
+        if (!string.IsNullOrEmpty(currentKeyOnLayer))
+        {
+            InternalCalls.Audio_StopTagged(currentKeyOnLayer, fadeDuration);
+        }
+
+        InternalCalls.Audio_PlayMusicFileTagged(key, path, loop);
+        InternalCalls.Audio_SetTaggedVolume(key, volume);
+
+        _activeLayers[layerName] = key;
+    }
+
     // === Play sound attached to an entity
     public void PlayAttachedSound(uint entityID)
     {
@@ -120,6 +153,24 @@ public class AudioManager
     {
         playerSFXVol = volume;
         InternalCalls.Audio_SetSFXVolume(volume);
+    }
+
+    public void StopLayer(string layerName, float fadeDuration)
+    {
+        // 1. Check if anything is playing on this layer
+        if (_activeLayers.ContainsKey(layerName))
+        {
+            string keyToStop = _activeLayers[layerName];
+
+            // 2. Tell C++ to stop that specific tag
+            if (!string.IsNullOrEmpty(keyToStop))
+            {
+                InternalCalls.Audio_StopTagged(keyToStop, fadeDuration);
+            }
+
+            // 3. Clear the record so we know nothing is playing
+            _activeLayers.Remove(layerName);
+        }
     }
 
     // A fade system can be added later
