@@ -4,7 +4,7 @@
 @date        23/11/2025
 @brief       Definition of scene bindings functions
 
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 */
 
@@ -15,6 +15,7 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserve
 #include "glapp.h"
 #include "engine.h"
 #include "audioSystem.h"
+#include "scenetransition.h"
 
 // Mono headers
 #include "mono/metadata/loader.h"
@@ -49,10 +50,20 @@ namespace
     static void InternalQuitGame() {
         glfwSetWindowShouldClose(GLApp::ptr_window, GLFW_TRUE);
     }
+
+    static void InternalTransitionToScene(MonoString* sceneName, float duration) {
+        char* utf8 = mono_string_to_utf8(sceneName);
+        std::string nameString{ utf8 };
+        mono_free(utf8);
+        if (nameString.empty()) return;
+
+        CrashoutsEngine::SceneTransition::Start(nameString, duration);
+    }
 }
 
 void CrashoutsEngine::Bindings::RegisterSceneBindings()
 {
     mono_add_internal_call("CrashoutsEngine.SceneManager::LoadScene", (const void*)InternalLoadScene);
     mono_add_internal_call("CrashoutsEngine.SceneManager::QuitGame", (const void*)InternalQuitGame);
+    mono_add_internal_call("CrashoutsEngine.SceneManager::TransitionToScene", (const void*)InternalTransitionToScene);
 }

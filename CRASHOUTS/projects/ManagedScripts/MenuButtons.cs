@@ -25,8 +25,9 @@ namespace CrashoutsEngine
                
                 if (name.ToString() == "StartBtn")
                 {
-                    Debug.Log("[C#] Loading Scene...");
-                    SceneManager.LoadScene("descentgame");
+                    //Scene.Manager.LoadScene("descentgame");
+                    Debug.Log("[C#] Transitioning to Tutorial...");
+                    SceneManager.TransitionToScene("tutorial", 2f);
                 }
              
                 else if (name.ToString() == "SettingsBtn")
