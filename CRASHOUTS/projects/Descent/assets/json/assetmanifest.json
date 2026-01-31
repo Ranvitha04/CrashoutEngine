@@ -1547,6 +1547,10 @@
     ],
     "prefabs": [
         {
+            "name": "AudioManagerPrefab",
+            "path": "AudioManagerPrefab.json"
+        },
+        {
             "name": "Ball",
             "path": "Ball.json"
         },

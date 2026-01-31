@@ -3,8 +3,8 @@
         {
             "active": true,
             "name": "Entity 1",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -1161,13 +1161,21 @@
                         "asset": "tilemaps/Rock"
                     }
                 ]
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "Player",
-            "layer": {
-                "currentLayer": 9
+            "tag": {
+                "tagMask": 9
             },
             "transform": {
                 "rotation": 0.0,
@@ -1182,7 +1190,7 @@
                 }
             },
             "rigidbody": {
-                "mass": 7.0,
+                "mass": 4.0,
                 "restitutionCoeff": 0.0,
                 "maximumVelocity": {
                     "x": 0.0,
@@ -1258,20 +1266,19 @@
                     {
                         "className": "PlayerMovement",
                         "fields": {
-                            "moveSpeed": 200.0,
                             "maxRunSpeed": 100.0,
-                            "jumpPower": 20000.0,
-                            "groundDrag": 0.15000000596046449,
-                            "airDrag": 0.019999999552965165,
+                            "maxAirSpeed": 120.0,
+                            "acceleration": 10.0,
+                            "deceleration": 10.0,
+                            "airAcceleration": 2.0,
+                            "jumpPower": 50000.0,
                             "gravityScale": 2.5,
-                            "turnMultiplier": 2.0,
-                            "frictionMultiplier": 500.0,
                             "gravityForceMultiplier": 10.0,
                             "footstepInterval": 0.07500000298023224,
                             "swapPause": 1.0,
                             "energyConsumption": 12.5,
-                            "normalMass": 7.0,
-                            "lightMass": 4.5,
+                            "normalMass": 4.0,
+                            "lightMass": 3.0,
                             "CurrentEnergy": 100.0,
                             "MaxEnergy": 100.0,
                             "alive": true,
@@ -1329,23 +1336,31 @@
                     "z": 0.0,
                     "w": 0.5
                 }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "Slime new",
-            "layer": {
-                "currentLayer": 16
+            "tag": {
+                "tagMask": 16
             },
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 512.3507690429688,
+                    "x": 513.4176025390625,
                     "y": 237.70004272460938,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 53.0,
+                    "x": -53.0,
                     "y": 49.29999923706055
                 }
             },
@@ -1367,7 +1382,7 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 513.05078125,
+                    "x": 514.1176147460938,
                     "y": 234.20004272460938,
                     "z": 0.0
                 },
@@ -1377,12 +1392,12 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 498.1507568359375,
+                    "x": 499.21759033203127,
                     "y": 224.0,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 527.9508056640625,
+                    "x": 529.0176391601563,
                     "y": 244.40008544921876,
                     "z": 0.0
                 }
@@ -1439,7 +1454,7 @@
                             "airDrag": 1.0,
                             "stunDuration": 1.0,
                             "MaxDist": 200.0,
-                            "ledgeBuffer": 40.0,
+                            "ledgeBuffer": -7.0,
                             "ledgeRayCastDistance": 50.0
                         }
                     }
@@ -1483,18 +1498,26 @@
                     "z": 0.0,
                     "w": 0.5
                 }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "Slime new_Clone1928",
-            "layer": {
-                "currentLayer": 16
+            "tag": {
+                "tagMask": 16
             },
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 599.2272338867188,
+                    "x": 621.412353515625,
                     "y": 237.70004272460938,
                     "z": 0.0
                 },
@@ -1521,7 +1544,7 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 599.92724609375,
+                    "x": 622.1123657226563,
                     "y": 234.20004272460938,
                     "z": 0.0
                 },
@@ -1531,12 +1554,12 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 585.0272216796875,
+                    "x": 607.2123413085938,
                     "y": 224.0,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 614.8272705078125,
+                    "x": 637.0123901367188,
                     "y": 244.40008544921876,
                     "z": 0.0
                 }
@@ -1593,7 +1616,7 @@
                             "airDrag": 1.0,
                             "stunDuration": 1.0,
                             "MaxDist": 200.0,
-                            "ledgeBuffer": 40.0,
+                            "ledgeBuffer": -7.0,
                             "ledgeRayCastDistance": 50.0
                         }
                     }
@@ -1637,18 +1660,26 @@
                     "z": 0.0,
                     "w": 0.5
                 }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "Slime new_Clone154",
-            "layer": {
-                "currentLayer": 16
+            "tag": {
+                "tagMask": 16
             },
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 272.1683654785156,
+                    "x": 318.8754577636719,
                     "y": 237.70005798339845,
                     "z": 0.0
                 },
@@ -1675,7 +1706,7 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 272.8683776855469,
+                    "x": 319.5754699707031,
                     "y": 234.20005798339845,
                     "z": 0.0
                 },
@@ -1685,12 +1716,12 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 257.9683532714844,
+                    "x": 304.6754455566406,
                     "y": 224.0,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 287.7684020996094,
+                    "x": 334.4754943847656,
                     "y": 244.40011596679688,
                     "z": 0.0
                 }
@@ -1747,7 +1778,7 @@
                             "airDrag": 1.0,
                             "stunDuration": 1.0,
                             "MaxDist": 200.0,
-                            "ledgeBuffer": 40.0,
+                            "ledgeBuffer": -7.0,
                             "ledgeRayCastDistance": 50.0
                         }
                     }
@@ -1791,29 +1822,37 @@
                     "z": 0.0,
                     "w": 0.5
                 }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "Entity 154",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 295.2951354980469,
-                    "y": 170.53575134277345,
-                    "z": 0.0
+                    "x": 0.0,
+                    "y": -46.099998474121097,
+                    "z": -0.009999999776482582
                 },
                 "size": {
-                    "x": 118.0999984741211,
-                    "y": 40.599998474121097
+                    "x": 30.700000762939454,
+                    "y": 5.5
                 }
             },
             "shape": {
                 "useTexture": false,
-                "isWorldSpace": true,
+                "isWorldSpace": false,
                 "wrapModeU": 0,
                 "wrapModeV": 0,
                 "thickness": 1.0,
@@ -1848,7 +1887,7 @@
             "text": {
                 "font": "AlegreyaSC-Medium",
                 "text": "This is a test sentence",
-                "scale": 4.699999809265137,
+                "scale": 10.800000190734864,
                 "offset": {
                     "x": 0.0,
                     "y": 0.0
@@ -1860,7 +1899,7 @@
                     "w": 1.0
                 },
                 "centered": true,
-                "isworldspace": true,
+                "isworldspace": false,
                 "alignment": 1,
                 "verticalAlignment": 0,
                 "wrapText": true,
@@ -1884,6 +1923,14 @@
                     "y": 0.0
                 },
                 "uiLayout": 12
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         }
     ],

@@ -230,7 +230,7 @@ namespace KeyframeUnity {
 		auto& arr = ecs.GetComponentArray<KeyframeAnimatorComponent>();
 		for (size_t i = 0; i < arr.dense.size(); ++i) {
 			CrashoutsEngine::Entity e = arr.indexToEntity[i];
-			Update(ecs, e, arr.dense[i], dt);
+			Update(ecs, e, *arr.dense[i], dt);
 		}
 	}
 }

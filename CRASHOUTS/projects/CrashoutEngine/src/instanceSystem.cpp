@@ -328,7 +328,7 @@ namespace InstancingSystem {
 
 			// Fast Transform Check
 			if (transformArray.entityToIndex.find(id) == transformArray.entityToIndex.end()) continue;
-			const auto& tf = transformArray.dense[transformArray.entityToIndex[id]];
+			const auto& tf = *transformArray.dense[transformArray.entityToIndex[id]];
 
 			// Default values
 			//int layerID = 0; // Default
@@ -362,12 +362,12 @@ namespace InstancingSystem {
 			if (sheetArray.entityToIndex.find(id) == sheetArray.entityToIndex.end()) continue;
 
 			// Direct access references
-			const auto& tf = transformArray.dense[transformArray.entityToIndex[id]];
+			const auto& tf = *transformArray.dense[transformArray.entityToIndex[id]];
 			// We already have anim from the outer loop index, but getting it by ID is safe/fast enough here or we could cache index.
 			// Actually, animArray is dense, but sortedDucks scrambled the order.
 			// So lookup is needed. Since we hoisted the array, map lookup is faster than GetComp call overhead.
-			const auto& anim = animArray.dense[animArray.entityToIndex[id]];
-			const auto& sheet = sheetArray.dense[sheetArray.entityToIndex[id]];
+			const auto& anim = *animArray.dense[animArray.entityToIndex[id]];
+			const auto& sheet = *sheetArray.dense[sheetArray.entityToIndex[id]];
 
 			int globalFrame = anim.startFrame + anim.frameIndex;
 			int frameY = globalFrame / sheet.cols;

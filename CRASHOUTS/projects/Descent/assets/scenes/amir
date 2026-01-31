@@ -3,8 +3,8 @@
         {
             "active": true,
             "name": "Player",
-            "layer": {
-                "currentLayer": 8
+            "tag": {
+                "tagMask": 8
             },
             "transform": {
                 "rotation": 0.0,
@@ -93,24 +93,6 @@
             "audio": {
                 "clips": [
                     {
-                        "name": "bgm1",
-                        "path": "level bgm 1.wav",
-                        "volume": 0.699999988079071,
-                        "pitch": 1.0,
-                        "spatial3D": false,
-                        "looping": true,
-                        "isMusic": true
-                    },
-                    {
-                        "name": "ambient",
-                        "path": "lava-volcano-wind-environment_loop.wav",
-                        "volume": 0.6100000143051148,
-                        "pitch": 1.0,
-                        "spatial3D": false,
-                        "looping": true,
-                        "isMusic": true
-                    },
-                    {
                         "name": "footstep1",
                         "path": "footsteps 1.wav",
                         "volume": 1.0,
@@ -171,14 +153,13 @@
                     {
                         "className": "PlayerMovement",
                         "fields": {
-                            "moveSpeed": 200.0,
                             "maxRunSpeed": 100.0,
+                            "maxAirSpeed": 120.0,
+                            "acceleration": 10.0,
+                            "deceleration": 10.0,
+                            "airAcceleration": 2.0,
                             "jumpPower": 20000.0,
-                            "groundDrag": 0.15000000596046449,
-                            "airDrag": 0.019999999552965165,
                             "gravityScale": 2.5,
-                            "turnMultiplier": 2.0,
-                            "frictionMultiplier": 500.0,
                             "gravityForceMultiplier": 10.0,
                             "footstepInterval": 0.07500000298023224,
                             "swapPause": 1.0,
@@ -242,13 +223,21 @@
                     "z": 0.0,
                     "w": 0.5
                 }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "Entity 5",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -743,13 +732,21 @@
                         "asset": "tilemaps/Rock"
                     }
                 ]
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "Slime",
-            "layer": {
-                "currentLayer": 16
+            "tag": {
+                "tagMask": 16
             },
             "transform": {
                 "rotation": 0.0,
@@ -857,7 +854,6 @@
                             "maxSpeed": 15.0,
                             "moveAudioInterval": 1.0,
                             "stopAudioDistance": 80.0,
-                            "turnTimer": 2.0,
                             "detectionRange": 250.0,
                             "gravityScale": 2.0,
                             "grabRange": 100.0,
@@ -866,7 +862,9 @@
                             "maxMouseDragDist": 400.0,
                             "airDrag": 1.0,
                             "stunDuration": 1.0,
-                            "MaxDist": 200.0
+                            "MaxDist": 200.0,
+                            "ledgeBuffer": 40.0,
+                            "ledgeRayCastDistance": 50.0
                         }
                     }
                 ]
@@ -909,66 +907,21 @@
                     "z": 0.0,
                     "w": 0.5
                 }
-            }
-        },
-        {
-            "active": true,
-            "name": "Entity 68",
+            },
             "layer": {
-                "currentLayer": 0
+                "layerName": "",
+                "z": 0
             },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": -92.21800231933594,
-                    "y": 117.77422332763672,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 1.0,
-                    "y": 1.0
-                }
-            },
-            "shape": {
-                "useTexture": false,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "Audio_level bgm 1",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -994,6 +947,118 @@
                         "isMusic": false
                     }
                 ]
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "BGMManager",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "Level_1",
+                        "path": "level bgm 1.wav",
+                        "volume": 0.6000000238418579,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    }
+                ]
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "SceneMusic",
+                        "fields": {
+                            "layerName": "Music",
+                            "fadeTime": 5.0,
+                            "stopLayer": false
+                        }
+                    }
+                ]
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "AmbienceManager",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "Lava_Ambience",
+                        "path": "lava-volcano-wind-environment_loop.wav",
+                        "volume": 0.3499999940395355,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    }
+                ]
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "SceneMusic",
+                        "fields": {
+                            "layerName": "Ambiance",
+                            "fadeTime": 5.0,
+                            "stopLayer": false
+                        }
+                    }
+                ]
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         }
     ],

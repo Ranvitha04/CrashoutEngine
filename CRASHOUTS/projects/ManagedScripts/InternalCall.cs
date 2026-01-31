@@ -113,7 +113,10 @@ namespace CrashoutsEngine
         internal static extern void Audio_PlaySFXFileTagged(string key, string path, bool loop);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        internal static extern void Audio_Stoplayerged(string key, float fadeDuration);
+        internal static extern bool Audio_IsTaggedPlaying(string key);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern void Audio_StopTagged(string key, float fadeDuration);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal static extern void Audio_StopMusic();
@@ -125,7 +128,7 @@ namespace CrashoutsEngine
         internal static extern void Audio_StopComponent(uint entityID, float fadeDuration);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        internal static extern void Audio_GetComponentData(uint entityID, out string nameOrPath, out float vol, out float pitch, out bool loop, out bool isMusic);
+        internal static extern void Audio_GetComponentData(uint entityID, out string name, out string path, out float vol, out float pitch, out bool loop, out bool isMusic);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal static extern void Audio_PlayPathOnEntity(uint entityID, string path, float vol, float pitch, bool loop, bool isMusic);
@@ -138,6 +141,9 @@ namespace CrashoutsEngine
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal static extern void Audio_SetSFXVolume(float volume);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern void Audio_SetTaggedVolume(string key, float volume);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal static extern void Audio_SetMasterVolume(float volume);

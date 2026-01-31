@@ -74,8 +74,9 @@ namespace CrashoutsEngine
             IsGrounded = false;
             groundContactCount = 0;
 
-            AudioManager.GetInstance().PlayAttached("ambient", Entity.ID);
-            AudioManager.GetInstance().PlayAttached("bgm1", Entity.ID);
+            // Play music - Clean up later
+            // AudioManager.GetInstance().PlayAttached("ambient", Entity.ID);
+            // AudioManager.GetInstance().PlayAttached("bgm1", Entity.ID);
 
             CurrentEnergy = MaxEnergy;
             swapPauseTimer = 0.0f;

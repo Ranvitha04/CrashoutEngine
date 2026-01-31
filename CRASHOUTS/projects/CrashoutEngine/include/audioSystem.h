@@ -103,6 +103,8 @@ namespace CrashoutsEngine
 
             bool playSFXFileTagged(const std::string& key, const std::string& path, bool loop);
 
+            bool isTaggedPlaying(const std::string& key);
+
             bool stopTagged(const std::string& key, float fadeOutSeconds = 0.0f);
 
             void setPaused(bool paused);
