@@ -10,5 +10,8 @@ namespace CrashoutsEngine
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         public static extern void QuitGame();
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        public static extern void TransitionToScene(string sceneName, float duration);
     }
 }
