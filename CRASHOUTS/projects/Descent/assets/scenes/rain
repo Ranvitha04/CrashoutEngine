@@ -1994,7 +1994,8 @@
                 "isPlaying": true,
                 "loop": true,
                 "isCutscene": false,
-                "frameRate": 60.0
+                "matchAspectRatio": true,
+                "frameRate": 30.0
             },
             "layer": {
                 "layerName": "",

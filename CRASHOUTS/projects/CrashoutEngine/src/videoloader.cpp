@@ -64,6 +64,11 @@ namespace CrashoutsEngine {
         height = codecCtx->height;
         duration = (double)formatCtx->duration / AV_TIME_BASE;
 
+        // Cache Frame Delay
+        AVRational fps = formatCtx->streams[videoStreamIndex]->avg_frame_rate;
+        if (fps.num > 0) frameDelay = 1.0 / av_q2d(fps);
+        else frameDelay = 1.0 / 30.0;
+
         swsCtx = sws_getContext(width, height, codecCtx->pix_fmt,
                                 width, height, AV_PIX_FMT_RGBA,
                                 SWS_BILINEAR, nullptr, nullptr, nullptr);
@@ -89,19 +94,16 @@ namespace CrashoutsEngine {
         if (!isValid || !isPlaying) return;
 
         currentTime += dt;
-
-        double frameDelay = 1.0 / 30.0; // Default
-#ifdef USE_FFMPEG
-        if (formatCtx && videoStreamIndex >= 0) {
-            AVRational fps = formatCtx->streams[videoStreamIndex]->avg_frame_rate;
-            if (fps.num > 0) frameDelay = 1.0 / av_q2d(fps);
-        }
-#endif
-
         frameTimer += dt;
-        if (frameTimer >= frameDelay) {
-            frameTimer = 0.0;
-            ReadFrame();
+
+        // Catch-up / Frame Skipping logic
+        // If we fall behind, decode multiple frames but only the last one 
+        // will be uploaded to the GPU (efficiently keeping time sync).
+        int safetyLimit = 0;
+        while (frameTimer >= frameDelay && safetyLimit < 5) {
+            frameTimer -= frameDelay;
+            if (!ReadFrame()) break;
+            safetyLimit++;
         }
     }
 

@@ -43,6 +43,7 @@ namespace CrashoutsEngine {
         double currentTime{ 0.0 };
         double duration{ 0.0 };
         double frameTimer{ 0.0 };
+        double frameDelay{ 0.033 };
 
 #ifdef USE_FFMPEG
         AVFormatContext* formatCtx{ nullptr };
