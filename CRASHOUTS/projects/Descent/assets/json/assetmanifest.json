@@ -1687,6 +1687,10 @@
         {
             "name": "tutorial",
             "path": "tutorial"
+        },
+        {
+            "name": "tutorial2",
+            "path": "tutorial2"
         }
     ],
     "shaders": [
