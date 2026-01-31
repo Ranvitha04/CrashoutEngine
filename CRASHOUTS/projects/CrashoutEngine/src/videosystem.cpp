@@ -25,6 +25,14 @@ namespace CrashoutsEngine {
             Component::VideoComponent* vc = videoArray.dense[i];
             Entity entityID = videoArray.indexToEntity[i];
 
+            // Failsafe: Try to initialize loader if it's missing but we have an MP4 path
+            if (!vc->loader && !vc->videoPath.empty()) {
+                vc->loader = std::make_shared<VideoLoader>(vc->videoPath);
+                if (!vc->loader->Load()) {
+                    vc->loader.reset();
+                }
+            }
+
             // Priority: FFmpeg Loader -> Image Sequence
             if (vc->loader && vc->loader->IsValid()) {
                 if (vc->isPlaying) {

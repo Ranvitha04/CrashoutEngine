@@ -57,12 +57,12 @@
                 "z": 0
             },
             "video": {
-                "videoPath": "videos/Shrek - All star _ Intro HD (1080p) - Trim.mp4",
+                "videoPath": "videos/Shrek - All star _ Intro HD  - Trim.mp4",
                 "isPlaying": true,
                 "loop": false,
                 "isCutscene": true,
                 "matchAspectRatio": true,
-                "volume": 0.7699999809265137,
+                "volume": 0.12999999523162843,
                 "frameRate": 60.0
             },
             "layer": {

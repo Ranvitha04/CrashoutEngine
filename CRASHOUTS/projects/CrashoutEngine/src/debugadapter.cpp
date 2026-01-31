@@ -3137,8 +3137,14 @@ namespace CrashoutsEngine
 			
 			// --- VIDEO PATH SELECTION ---
 			ImGui::Text("Video Source:");
-			std::string displayPath = vc->videoPath.empty() ? "<None>" : vc->videoPath;
-			ImGui::InputText("##VideoPath", (char*)displayPath.c_str(), displayPath.size(), ImGuiInputTextFlags_ReadOnly);
+			
+			char pathBuf[256];
+			strncpy(pathBuf, vc->videoPath.c_str(), sizeof(pathBuf));
+			pathBuf[sizeof(pathBuf) - 1] = '\0';
+
+			if (ImGui::InputText("##VideoPath", pathBuf, sizeof(pathBuf))) {
+				vc->videoPath = pathBuf;
+			}
 
 			// Drag & Drop Target
 			if (ImGui::BeginDragDropTarget()) {
@@ -3150,21 +3156,24 @@ namespace CrashoutsEngine
 						std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
 
 						if (ext == ".mp4") {
-							// Update path and reload
 							vc->videoPath = p;
-							if (vc->loader) vc->loader.reset(); // Stop current
-							
-							// Auto-load
-							vc->loader = std::make_shared<CrashoutsEngine::VideoLoader>(CrashoutsEngine::Assets::rootPath + p);
-							if (!vc->loader->Load()) {
-								vc->loader.reset();
-							} else {
-								//vc->frames.clear(); // Clear legacy frames if we switch to MP4?
-							}
+							// Auto-load on drop
+							if (vc->loader) vc->loader.reset();
+							vc->loader = std::make_shared<CrashoutsEngine::VideoLoader>(vc->videoPath);
+							if (!vc->loader->Load()) vc->loader.reset();
 						}
 					}
 				}
 				ImGui::EndDragDropTarget();
+			}
+
+			ImGui::SameLine();
+			if (ImGui::Button("Load")) {
+				if (vc->loader) vc->loader.reset();
+				vc->loader = std::make_shared<CrashoutsEngine::VideoLoader>(vc->videoPath);
+				if (!vc->loader->Load()) {
+					// Add error logging or popup
+				}
 			}
 
 			ImGui::SameLine();
