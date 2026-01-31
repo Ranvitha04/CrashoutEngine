@@ -30,6 +30,7 @@ namespace CrashoutsEngine {
                 if (vc->isPlaying) {
                     vc->loader->Play();
                     vc->loader->SetLoop(vc->loop);
+                    vc->loader->SetVolume(vc->volume);
                     vc->loader->Update(dt);
                 } else {
                     vc->loader->Pause();

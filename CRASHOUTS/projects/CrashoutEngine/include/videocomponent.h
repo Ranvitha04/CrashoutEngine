@@ -16,6 +16,7 @@ namespace Component {
         bool loop = false;
         bool isCutscene = false; 
         bool matchAspectRatio = true;
+        float volume = 1.0f;
         std::string videoPath = "";
 
         // New: FFmpeg Support

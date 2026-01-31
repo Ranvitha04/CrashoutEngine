@@ -1990,11 +1990,12 @@
                 "z": 0
             },
             "video": {
-                "videoPath": "videos/Warframe 2025.08.24 - 21.25.27.01.mp4",
+                "videoPath": "videos/Shrek - All star _ Intro HD  - Trim.mp4",
                 "isPlaying": true,
                 "loop": true,
                 "isCutscene": false,
                 "matchAspectRatio": true,
+                "volume": 1.0,
                 "frameRate": 30.0
             },
             "layer": {

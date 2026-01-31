@@ -706,6 +706,7 @@ namespace CrashoutsEngine {
 				vVal.AddMember("loop", vc.loop, allocator);
 				vVal.AddMember("isCutscene", vc.isCutscene, allocator);
 				vVal.AddMember("matchAspectRatio", vc.matchAspectRatio, allocator);
+				vVal.AddMember("volume", vc.volume, allocator);
 				vVal.AddMember("frameRate", vc.frameRate, allocator);
 
 				entityValue.AddMember(rapidjson::StringRef(Keys::VIDEO_COMPONENT), vVal, allocator);
@@ -1127,6 +1128,7 @@ namespace CrashoutsEngine {
 				vc.loop = GetBool(v, "loop");
 				vc.isCutscene = GetBool(v, "isCutscene");
 				vc.matchAspectRatio = GetBool(v, "matchAspectRatio", true);
+				vc.volume = GetFloat(v, "volume", 1.0f);
 				vc.frameRate = GetFloat(v, "frameRate", 12.0f);
 
 				// Auto-load if path exists

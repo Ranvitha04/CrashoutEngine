@@ -3130,6 +3130,7 @@ namespace CrashoutsEngine
 			UIHelpers::DrawUndoableBool("Loop", vc->loop);
 			UIHelpers::DrawUndoableBool("Is Cutscene", vc->isCutscene);
 			UIHelpers::DrawUndoableBool("Match Aspect Ratio", vc->matchAspectRatio);
+			UIHelpers::DrawUndoableFloat("Volume", vc->volume, 0.01f, 0.0f, 1.0f);
 			UIHelpers::DrawUndoableFloat("FPS", vc->frameRate, 0.1f, 1.0f, 120.0f);
 
 			ImGui::Separator();
@@ -3238,6 +3239,9 @@ namespace CrashoutsEngine
 				ImGui::Text("Video Size: %d x %d", vc->loader->GetWidth(), vc->loader->GetHeight());
 				ImGui::Text("Duration: %.2f s", vc->loader->GetDuration());
 				ImGui::Text("Texture Handle: %u", vc->loader->GetTextureHandle());
+				
+				// Show audio state
+				ImGui::Text("Current Time: %.2f / %.2f s", (float)vc->loader->GetCurrentTime(), (float)vc->loader->GetDuration());
 			}
 			else {
 				ImGui::Separator();
