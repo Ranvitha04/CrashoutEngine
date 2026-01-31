@@ -675,22 +675,6 @@ namespace Scene {
 	// ============================================================================
 	namespace Particles {
 
-		static LayerComponent* FindEffectiveLayer(ECS& globalECS, Entity id) {
-			Entity current = id;
-			while (current != 0) {
-				if (globalECS.HasComponent<LayerComponent>(current)) {
-					return globalECS.GetComponent<LayerComponent>(current);
-				}
-				if (globalECS.HasComponent<Component::ParentComponent>(current)) {
-					current = globalECS.GetComponent<Component::ParentComponent>(current)->parent;
-				}
-				else {
-					break;
-				}
-			}
-			return nullptr;
-		}
-
 		/*!
 		@brief      Init for the new ParticleComponent.
 		*/
