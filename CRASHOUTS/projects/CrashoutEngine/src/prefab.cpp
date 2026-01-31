@@ -432,7 +432,6 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path) {
             }
         }
 
-        // Camera
       // Camera
         CameraData camD;
         if (prefabs.HasMember("camera")) {
@@ -594,7 +593,7 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path) {
             guiD.hasComp = true;
             if (prefabs["gui"].HasMember("uiType")) guiD.c.uiType = static_cast<UIType>(prefabs["gui"]["uiType"].GetUint());
         }
-
+     
         ButtonData btnD;
         if (prefabs.HasMember("button")) {
             btnD.hasComp = true;
@@ -1339,6 +1338,26 @@ namespace CrashoutsEngine {
             WriteColor("textPressedColor", btn->textPressedColor); 
 
             obj.AddMember("button", bObj, allocator);
+        }
+        // TextInput
+        if (auto* ti = ecs.GetComponent<TextInputComponent>(e)) {
+            rapidjson::Value tiObj(rapidjson::kObjectType);
+            tiObj.AddMember("isFocused", ti->isFocused, allocator);
+            tiObj.AddMember("maxCharacters", ti->maxCharacters, allocator);
+            obj.AddMember("textinput", tiObj, allocator);
+        }
+
+        // UILayout
+        if (auto* ul = ecs.GetComponent<UILayoutComponent>(e)) {
+            rapidjson::Value uObj(rapidjson::kObjectType);
+
+            rapidjson::Value pad(rapidjson::kObjectType);
+            pad.AddMember("x", ul->paddingXY.x, allocator);
+            pad.AddMember("y", ul->paddingXY.y, allocator);
+            uObj.AddMember("paddingXY", pad, allocator);
+
+            uObj.AddMember("uiLayout", static_cast<unsigned>(ul->uiLayout), allocator);
+            obj.AddMember("uilayout", uObj, allocator);
         }
 
         // Upsert

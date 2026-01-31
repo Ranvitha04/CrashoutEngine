@@ -234,7 +234,12 @@
                 }
             },
             "gui": {
-                "uiType": 7
+                "uiType": 15
+            },
+            "textinput": {
+                "isFocused": false,
+                "cursorPos": 0,
+                "maxCharacters": 255
             },
             "uilayout": {
                 "paddingXY": {
