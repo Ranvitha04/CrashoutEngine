@@ -9708,7 +9708,7 @@
                 "enabled": true,
                 "position": {
                     "x": 856.8511352539063,
-                    "y": -449.601806640625,
+                    "y": -449.5305480957031,
                     "z": 50.0
                 },
                 "offset": {
@@ -9764,8 +9764,53 @@
             "audio": {
                 "clips": [
                     {
-                        "name": "Main Clip",
-                        "path": "",
+                        "name": "footstep1",
+                        "path": "footsteps 1.wav",
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    },
+                    {
+                        "name": "footstep2",
+                        "path": "footsteps 2.wav",
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    },
+                    {
+                        "name": "footstep3",
+                        "path": "footsteps 3.wav",
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    },
+                    {
+                        "name": "footstep4",
+                        "path": "footsteps 4.wav",
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    },
+                    {
+                        "name": "footstep5",
+                        "path": "footsteps 5.wav",
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    },
+                    {
+                        "name": "footstep6",
+                        "path": "footsteps 6.wav",
                         "volume": 1.0,
                         "pitch": 1.0,
                         "spatial3D": false,
@@ -9787,7 +9832,7 @@
                             "jumpPower": 40000.0,
                             "gravityScale": 2.5,
                             "gravityForceMultiplier": 10.0,
-                            "footstepInterval": 0.07500000298023224,
+                            "footstepInterval": 0.5,
                             "swapPause": 1.0,
                             "energyConsumption": 12.5,
                             "normalMass": 3.0,
@@ -11956,7 +12001,7 @@
                 "enabled": true,
                 "position": {
                     "x": 1490.7039794921876,
-                    "y": -432.5240783691406,
+                    "y": -432.4423828125,
                     "z": 0.0
                 },
                 "offset": {
@@ -11966,12 +12011,12 @@
                 },
                 "min": {
                     "x": 1474.7039794921876,
-                    "y": -445.8240661621094,
+                    "y": -445.74237060546877,
                     "z": 0.0
                 },
                 "max": {
                     "x": 1506.7039794921876,
-                    "y": -419.2240905761719,
+                    "y": -419.14239501953127,
                     "z": 0.0
                 }
             },
@@ -12105,7 +12150,7 @@
                 "enabled": true,
                 "position": {
                     "x": 95.65513610839844,
-                    "y": -713.6873779296875,
+                    "y": -713.605712890625,
                     "z": 0.0
                 },
                 "offset": {
@@ -12116,7 +12161,7 @@
                 "radius": 13.300000190734864,
                 "center": {
                     "x": 95.65513610839844,
-                    "y": -713.6873779296875,
+                    "y": -713.605712890625,
                     "z": 0.0
                 }
             },
@@ -13265,7 +13310,7 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 1472.319091796875,
+                    "x": 1472.4979248046876,
                     "y": -410.2161865234375,
                     "z": 0.0
                 },
@@ -13275,12 +13320,12 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 1422.319091796875,
+                    "x": 1422.4979248046876,
                     "y": -418.2161865234375,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 1522.319091796875,
+                    "x": 1522.4979248046876,
                     "y": -402.2161865234375,
                     "z": 0.0
                 }
@@ -13379,7 +13424,7 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 916.1338500976563,
+                    "x": 915.8954467773438,
                     "y": -410.2161865234375,
                     "z": 0.0
                 },
@@ -13389,12 +13434,12 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 866.1338500976563,
+                    "x": 865.8954467773438,
                     "y": -418.2161865234375,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 966.1338500976563,
+                    "x": 965.8954467773438,
                     "y": -402.2161865234375,
                     "z": 0.0
                 }
@@ -13493,7 +13538,7 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 783.1486206054688,
+                    "x": 782.8506469726563,
                     "y": -334.189697265625,
                     "z": 0.0
                 },
@@ -13503,12 +13548,12 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 733.1485595703125,
+                    "x": 732.8505859375,
                     "y": -342.189697265625,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 833.148681640625,
+                    "x": 832.8507080078125,
                     "y": -326.189697265625,
                     "z": 0.0
                 }
@@ -13607,7 +13652,7 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 1214.6766357421876,
+                    "x": 1214.378662109375,
                     "y": -786.3703002929688,
                     "z": 0.0
                 },
@@ -13617,12 +13662,12 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 1136.376708984375,
+                    "x": 1136.0787353515626,
                     "y": -795.3703002929688,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 1292.9765625,
+                    "x": 1292.6785888671876,
                     "y": -777.3703002929688,
                     "z": 0.0
                 }
@@ -14236,6 +14281,238 @@
             },
             "layer": {
                 "layerName": "",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "MusicManager",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "collider": {
+                "ColliderType": 1,
+                "isTrigger": false,
+                "enabled": true,
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": -0.5,
+                    "y": -0.5,
+                    "z": 0.0
+                },
+                "max": {
+                    "x": 0.5,
+                    "y": 0.5,
+                    "z": 0.0
+                }
+            },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "TutorialBGM",
+                        "path": "level bgm 1.wav",
+                        "volume": 0.6000000238418579,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": true,
+                        "isMusic": true
+                    }
+                ]
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "SceneMusic",
+                        "fields": {
+                            "layerName": "Music",
+                            "fadeTime": 2.0,
+                            "stopLayer": false
+                        }
+                    }
+                ]
+            },
+            "button": {
+                "buttonState": 0,
+                "shapeNormalColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "shapeHoveredColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.5
+                },
+                "shapePressedColor": {
+                    "x": 0.699999988079071,
+                    "y": 0.699999988079071,
+                    "z": 0.699999988079071,
+                    "w": 0.699999988079071
+                },
+                "textNormalColor": {
+                    "x": 0.30000001192092898,
+                    "y": 0.30000001192092898,
+                    "z": 0.30000001192092898,
+                    "w": 0.699999988079071
+                },
+                "textHoveredColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.0
+                },
+                "textPressedColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.5
+                }
+            },
+            "layer": {
+                "layerName": "Default",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "Default",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "AmbianceManager",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "collider": {
+                "ColliderType": 1,
+                "isTrigger": false,
+                "enabled": true,
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": -0.5,
+                    "y": -0.5,
+                    "z": 0.0
+                },
+                "max": {
+                    "x": 0.5,
+                    "y": 0.5,
+                    "z": 0.0
+                }
+            },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "LavaAmbiance",
+                        "path": "lava-volcano-wind-environment_loop.wav",
+                        "volume": 0.30000001192092898,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": true,
+                        "isMusic": true
+                    }
+                ]
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "SceneMusic",
+                        "fields": {
+                            "layerName": "Ambiance",
+                            "fadeTime": 2.0,
+                            "stopLayer": false
+                        }
+                    }
+                ]
+            },
+            "button": {
+                "buttonState": 0,
+                "shapeNormalColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "shapeHoveredColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.5
+                },
+                "shapePressedColor": {
+                    "x": 0.699999988079071,
+                    "y": 0.699999988079071,
+                    "z": 0.699999988079071,
+                    "w": 0.699999988079071
+                },
+                "textNormalColor": {
+                    "x": 0.30000001192092898,
+                    "y": 0.30000001192092898,
+                    "z": 0.30000001192092898,
+                    "w": 0.699999988079071
+                },
+                "textHoveredColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.0
+                },
+                "textPressedColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.5
+                }
+            },
+            "layer": {
+                "layerName": "Default",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "Default",
                 "z": 0
             }
         }

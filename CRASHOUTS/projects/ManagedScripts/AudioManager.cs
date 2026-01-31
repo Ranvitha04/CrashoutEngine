@@ -84,7 +84,7 @@ public class AudioManager
     }
 
     // === Play music or ambience globally with layering support
-    public void PlayLayer(string layerName, string key, string path, bool loop, float volume = 1.0f, float fadeDuration = 2.0f)
+    public void PlayLayer(string layerName, string key, string path, bool loop, float volume, float fadeDuration, bool isMusic)
     {
         string currentKeyOnLayer = "";
         if (_activeLayers.ContainsKey(layerName))
@@ -108,7 +108,16 @@ public class AudioManager
             InternalCalls.Audio_StopTagged(currentKeyOnLayer, fadeDuration);
         }
 
-        InternalCalls.Audio_PlayMusicFileTagged(key, path, loop);
+        if (isMusic)
+        {
+            // Plays on Music Group (Controlled by Music Slider)
+            InternalCalls.Audio_PlayMusicFileTagged(key, path, loop);
+        }
+        else
+        {
+            // Plays on SFX Group (Controlled by SFX Slider)
+            InternalCalls.Audio_PlaySFXFileTagged(key, path, loop);
+        }
         InternalCalls.Audio_SetTaggedVolume(key, volume);
 
         _activeLayers[layerName] = key;

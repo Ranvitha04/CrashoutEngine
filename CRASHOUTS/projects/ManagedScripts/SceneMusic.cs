@@ -37,7 +37,7 @@ namespace CrashoutsEngine
             if (!string.IsNullOrEmpty(path) && !string.IsNullOrEmpty(key))
             {
                 // Send to Manager with the specific LAYER NAME
-                AudioManager.GetInstance().PlayLayer(layerName, key, path, loop, vol, fadeTime);
+                AudioManager.GetInstance().PlayLayer(layerName, key, path, loop, vol, fadeTime, isMusic);
             }
         }
 
