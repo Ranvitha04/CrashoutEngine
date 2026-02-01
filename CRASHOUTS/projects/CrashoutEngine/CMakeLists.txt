@@ -1,4 +1,4 @@
-#projects/CrashoutEngine/CMakeLists.txt
+﻿#projects/CrashoutEngine/CMakeLists.txt
 
 # Project name for the DLL file.
 project(CrashoutEngine)
@@ -132,7 +132,11 @@ target_link_libraries(${PROJECT_NAME}
 )
 link_fmod_to(${PROJECT_NAME})
 link_mono_to(${PROJECT_NAME})
-message(STATUS "Mono linked successfully to CrashoutEngine.")
+
+# Include FFmpeg helper and link
+link_ffmpeg_to(${PROJECT_NAME})
+
+message(STATUS "Mono and FFmpeg linked successfully to CrashoutEngine.")
 
 add_library(CrashoutEngine.Editor STATIC
     ${categorized_src_files}
@@ -168,7 +172,7 @@ target_link_libraries(CrashoutEngine.Editor
         CrashoutsAudio
         imguizmo
 )
-
+link_ffmpeg_to(CrashoutEngine.Editor)
 
 
 # HERE is where editor mode is enabled:

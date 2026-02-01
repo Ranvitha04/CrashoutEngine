@@ -80,7 +80,8 @@ namespace CrashoutsEngine::Audio
         static const std::vector<std::string> allowed = {
             ".mp3",
             ".ogg",
-            ".wav"
+            ".wav",
+            ".mp4"
         };
 
         auto dot = path.find_last_of('.');
@@ -970,7 +971,8 @@ namespace CrashoutsEngine::Audio
 
         if (ch) {
             // Cached sounds default to LOOP_OFF, must override it here.
-            ch->setMode(loop ? FMOD_LOOP_NORMAL : FMOD_LOOP_OFF);
+            //ch->setMode(loop ? FMOD_LOOP_NORMAL : FMOD_LOOP_OFF);
+            ch->setMode(loop ? (FMOD_LOOP_NORMAL | FMOD_2D) : (FMOD_LOOP_OFF | FMOD_2D));
 
             if (createdLocal) mActiveSounds.emplace_back(ch, snd);
         }

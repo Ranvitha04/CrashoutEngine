@@ -5,7 +5,7 @@
 @brief	    This file defines the ShapesComponent, a simple data structure
             used to store an entity's shape type and variables.
 
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
 
@@ -15,6 +15,7 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserve
 ----------------------------------------------------------------------------- */
 #include "CEVec3.h"
 #include "CEColor.h"
+#include <GL/glew.h>
 
 /*
 ----------------------------------------------------------------------------- */
@@ -55,6 +56,7 @@ namespace Component {
         CEVec2 uvSize{ 1.f, 1.f }; ///< UV tiling/repeat size when texturing is enabled.
         CEVec2 uvOffset{ 0.f, 0.f };
         std::string textureName{}; ///< Name/identifier of the texture resource to sample.
+        GLuint textureHandle{ 0 }; ///< Optional raw handle override (e.g. for VideoComponent)
 
         // -------------------- Shape Selection --------------------
 

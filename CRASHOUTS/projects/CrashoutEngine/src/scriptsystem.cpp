@@ -27,6 +27,7 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 #include "timebindings.h"
 #include "shapebindings.h"
 #include "activecomponent.h"
+#include "videobindings.h"
 #include <mono/metadata/attrdefs.h>
 #include "collidereventmanager.h"
 
@@ -252,6 +253,7 @@ namespace CrashoutsEngine
         //Bindings::RegisterAIBindings();
         Bindings::RegisterTimeBindings();
         Bindings::RegisterShapeBindings();
+        Bindings::RegisterVideoBindings();
 
 		mono_add_internal_call("CrashoutsEngine.InternalCalls::GetScript", (const void*)InternalGetScript);
 	}

@@ -840,6 +840,7 @@ namespace Scene {
 
 		CEVec2 uvSize{ 1.0f, 1.0f };
 		std::string textureName = "";
+		GLuint textureHandle = 0; // Added handle
 		bool enableTexture = false;
 		TextureMode wrapU = TextureMode::ClampToEdge;
 		TextureMode wrapV = TextureMode::ClampToEdge;
@@ -879,6 +880,7 @@ namespace Scene {
 			InstancingSystem::InstancedParams params;
 			params.textured = batch.enableTexture;
 			params.textureName = batch.textureName;
+			params.textureHandle = batch.textureHandle; // Pass handle
 			params.tint = { 1,1,1 };
 			params.uvSize = batch.uvSize;
 
@@ -923,7 +925,9 @@ namespace Scene {
 			if (!batch.positions.empty()) {
 				if (sc->enableTexture != batch.enableTexture) textureChanged = true;
 				else if (sc->enableTexture) {
+					// Check Name OR Handle
 					if (sc->textureName != batch.textureName) textureChanged = true;
+					else if (sc->textureHandle != batch.textureHandle) textureChanged = true; // Handle Check
 					else if (sc->uvSize != batch.uvSize) textureChanged = true; // UV Size is uniform
 					// Note: Wrap modes usually don't change often, but if they do, we must flush
 					else if (GetWrapMode(sc->wrapModeU) != batch.wrapU) textureChanged = true;
@@ -939,6 +943,7 @@ namespace Scene {
 			if (batch.positions.empty()) {
 				currentShapeType = sc->type;
 				batch.textureName = sc->textureName;
+				batch.textureHandle = sc->textureHandle; // Capture handle
 				batch.enableTexture = sc->enableTexture;
 				batch.uvSize = sc->uvSize;
 				batch.wrapU = GetWrapMode(sc->wrapModeU);
