@@ -1773,7 +1773,7 @@
                             "gravityScale": 2.0,
                             "grabRange": 60.0,
                             "minThrowSpeed": 50.0,
-                            "maxThrowSpeed": 200.0,
+                            "maxThrowSpeed": 2000.0,
                             "maxMouseDragDist": 400.0,
                             "airDrag": 1.0,
                             "stunDuration": 1.0,
