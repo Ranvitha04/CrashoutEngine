@@ -5,6 +5,7 @@ namespace CrashoutsEngine
     [ScriptBehaviour]
     public class MenuButtons : ScriptBase
     {
+        public static bool QuitFromPauseMenu = false;
         public override void Start()
         {
             //Debug.Log("Start");
@@ -12,8 +13,9 @@ namespace CrashoutsEngine
 
         public override void Update()
         {
-            //Debug.Log("TEST");
-            var btn = Entity.GetComponent<ButtonComponent>();
+            
+        //Debug.Log("TEST");
+        var btn = Entity.GetComponent<ButtonComponent>();
             var name = Entity.GetComponent<NameComponent>();
             if (btn.IsClicked())
             {
@@ -45,17 +47,37 @@ namespace CrashoutsEngine
                 
                 else if (name.ToString() == "QuitBtn")
                 {
-                   
-                    SceneManager.LoadScene("descentconfirm");
+                    QuitFromPauseMenu = false;
+                    SceneManager.LoadScene("descentClosedBook");
                 }
                 else if (name.ToString() == "QuitYesBtn")
                 {
-                    SceneManager.QuitGame();
+                    if (QuitFromPauseMenu)
+                    {
+                       
+                        SceneManager.LoadScene("descentmenu");
+                    }
+                    else
+                    {
+                      
+                        SceneManager.QuitGame();
+                    }
                 }
                 else if (name.ToString() == "QuitNoBtn")
                 {
-               
-                    SceneManager.LoadScene("descentmenu"); 
+
+                if (QuitFromPauseMenu)
+                    {
+                       
+                        
+                        SceneManager.LoadScene("descentpause");
+                        
+                    }
+                    else
+                    {
+                      
+                        SceneManager.LoadScene("descentmenu");
+                    }
                 }
                
                 else if (name.ToString() == "PauseResumeBtn")
@@ -72,8 +94,8 @@ namespace CrashoutsEngine
                 }
                 else if (name.ToString() == "PauseQuitBtn")
                 {
-                    
-                    SceneManager.LoadScene("descentconfirm");
+                    QuitFromPauseMenu = true;
+                    SceneManager.LoadScene("descentmenu");
                 }
                 else if (name.ToString() == "ResumeBtn")
                 {
