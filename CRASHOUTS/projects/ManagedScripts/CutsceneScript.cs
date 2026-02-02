@@ -5,7 +5,6 @@ namespace CrashoutsEngine
     [ScriptBehaviour]
     public class CutsceneScript : ScriptBase
     {
-        public Entity Entity;
 
         public override void Start() 
         { 
@@ -17,7 +16,7 @@ namespace CrashoutsEngine
             // Called every frame
             if (Input.IsKeyPressed(Key.K))
             {
-                Debug.Log("Transitifbfhdon");
+                Debug.Log("Transition");
                 SceneManager.TransitionToScene("", 1.0f);
             }
         }

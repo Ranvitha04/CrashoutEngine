@@ -1946,87 +1946,106 @@ namespace CrashoutsEngine
 				if (!isBuilding)
 				{
 					isBuilding = true;
-					MonoManager::s_IsManualReloading = true; // Lock watcher
+					MonoManager::s_IsManualReloading = true;
 
-					// Launch build on a separate thread to avoid freezing the UI
-					// Launch build on a separate thread
 					std::thread([]() {
 						namespace fs = std::filesystem;
 
-						// 1. Detect Configuration
+						// --- 1. CONFIGURATION ---
 						std::string config = "Release";
 #ifdef _DEBUG
 						config = "Debug";
 #endif
-
-						// 2. Resolve Absolute Paths (CRITICAL for Release Mode)
-						// This ensures we find the project even if the EXE is running from a different working directory
 						fs::path cwd = fs::current_path();
+
+						// Path to .csproj (Used for the build command)
 						fs::path projectPath = fs::absolute(cwd / "../../projects/ManagedScripts/ManagedScripts.csproj");
 
-						// Output folder
-						fs::path buildOutput = projectPath.parent_path() / "bin" / config / "net6.0";
+						// --- 2. CORRECTED OUTPUT PATH ---
+						// Your .csproj outputs to "..\..\build\x64-Debug\scripts\"
+						// Since our CWD is "build\x64-Debug", the output is just "scripts"
+						fs::path buildOutput = cwd / "scripts";
 
-						// Destination (Engine)
-						fs::path targetDll = MonoManager::GetAssemblyPath();
+						// Fallback: If "scripts" doesn't exist, try the default "bin" folder
+						if (!fs::exists(buildOutput)) {
+							buildOutput = projectPath.parent_path() / "bin" / config / "net6.0";
+						}
+
+						fs::path targetDll = MonoManager::GetAssemblyPath(); // e.g. "scripts/ManagedScripts.dll"
 						fs::path targetPdb = targetDll;
 						targetPdb.replace_extension(".pdb");
 
-						// 3. Clean Old Files
-						// Prevent confusion by deleting old timestamped DLLs before building
-						std::string cleanCmd = "del /Q \"" + buildOutput.string() + "\\ManagedScripts*.dll\" \"" + buildOutput.string() + "\\ManagedScripts*.pdb\"";
-						system(cleanCmd.c_str());
+						std::cout << "------------------------------------------------" << std::endl;
+						std::cout << "[HotReload] CWD: " << cwd.string() << std::endl;
+						std::cout << "[HotReload] Build Output: " << buildOutput.string() << std::endl;
+						std::cout << "------------------------------------------------" << std::endl;
 
-						// 4. Build
+						// --- 3. BUILD ---
 						std::string buildCmd = "dotnet build \"" + projectPath.string() + "\" -c " + config + " > buildlog.txt 2>&1";
 						int result = system(buildCmd.c_str());
 
-						if (result == 0) {
-							// 5. Scan for the FRESH timestamped DLL
-							fs::path foundDll;
-							fs::path foundPdb;
+						if (result != 0) {
+							std::cerr << "[HotReload] BUILD FAILED! Check buildlog.txt" << std::endl;
+							MonoManager::s_IsManualReloading = false;
+							isBuilding = false;
+							return;
+						}
 
-							if (fs::exists(buildOutput)) {
-								for (const auto& entry : fs::directory_iterator(buildOutput)) {
-									if (entry.is_regular_file()) {
-										std::string name = entry.path().filename().string();
+						// --- 4. FIND NEWEST FILE ---
+						fs::path bestDll;
+						fs::path bestPdb;
+						auto bestTime = fs::file_time_type::min();
 
-										// Look for files starting with "ManagedScripts"
-										if (name.find("ManagedScripts") == 0) {
-											std::string ext = entry.path().extension().string();
-											if (ext == ".dll") foundDll = entry.path();
-											else if (ext == ".pdb") foundPdb = entry.path();
+						if (fs::exists(buildOutput)) {
+							for (const auto& entry : fs::directory_iterator(buildOutput)) {
+								if (entry.is_regular_file()) {
+									std::string name = entry.path().filename().string();
+
+									// Look for timestamped files (e.g. ManagedScripts_Debug_2026...)
+									// We exclude the clean "ManagedScripts.dll" so we don't copy the file onto itself
+									if (name.find("ManagedScripts_") == 0 && entry.path().extension() == ".dll") {
+
+										if (entry.last_write_time() > bestTime) {
+											bestTime = entry.last_write_time();
+											bestDll = entry.path();
+
+											// Find matching PDB
+											fs::path p = entry.path();
+											p.replace_extension(".pdb");
+											if (fs::exists(p)) bestPdb = p;
 										}
 									}
 								}
 							}
+						}
+						else {
+							std::cerr << "[HotReload] ERROR: Directory not found: " << buildOutput << std::endl;
+							MonoManager::s_IsManualReloading = false;
+							isBuilding = false;
+							return;
+						}
 
-							// 6. COPY Logic (The "Hot Swap")
-							if (!foundDll.empty()) {
-								try {
-									// COPY foundDll (the timestamped one) -> targetDll (the clean name)
-									fs::copy_file(foundDll, targetDll, fs::copy_options::overwrite_existing);
+						// --- 5. COPY ---
+						if (!bestDll.empty()) {
+							try {
+								std::cout << "[HotReload] Found fresh build: " << bestDll.filename().string() << std::endl;
 
-									if (!foundPdb.empty()) {
-										fs::copy_file(foundPdb, targetPdb, fs::copy_options::overwrite_existing);
-									}
+								// Copy the timestamped DLL -> ManagedScripts.dll
+								fs::copy_file(bestDll, targetDll, fs::copy_options::overwrite_existing);
 
-									// Signal Success
-									reloadPending = true;
+								if (!bestPdb.empty()) {
+									fs::copy_file(bestPdb, targetPdb, fs::copy_options::overwrite_existing);
 								}
-								catch (const std::exception& e) {
-									std::cerr << "[Mono] Hot-Swap Copy Failed: " << e.what() << std::endl;
-									MonoManager::s_IsManualReloading = false;
-								}
+
+								reloadPending = true; // Success!
 							}
-							else {
-								std::cerr << "[Mono] Build passed, but no DLL found in: " << buildOutput << std::endl;
+							catch (const std::exception& e) {
+								std::cerr << "[HotReload] COPY FAILED: " << e.what() << std::endl;
 								MonoManager::s_IsManualReloading = false;
 							}
 						}
 						else {
-							// Build failed
-							std::cerr << "[Mono] Build Failed. Check buildlog.txt" << std::endl;
+							std::cerr << "[HotReload] Build passed, but NO NEW DLL FOUND in " << buildOutput << std::endl;
 							MonoManager::s_IsManualReloading = false;
 						}
 
