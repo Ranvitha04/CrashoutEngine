@@ -11687,10 +11687,7 @@
                 "scripts": [
                     {
                         "className": "EnergyBall",
-                        "fields": {
-                            "energyAmount": 25.0,
-                            "respawnTime": 5.0
-                        }
+                        "fields": {}
                     }
                 ]
             },
@@ -11828,10 +11825,7 @@
                 "scripts": [
                     {
                         "className": "EnergyBall",
-                        "fields": {
-                            "energyAmount": 25.0,
-                            "respawnTime": 5.0
-                        }
+                        "fields": {}
                     }
                 ]
             },
@@ -11974,7 +11968,6 @@
                     {
                         "className": "PressurePlate",
                         "fields": {
-                            "decrease": 6.0,
                             "wallName": "wall"
                         }
                     }
@@ -12119,7 +12112,6 @@
                     {
                         "className": "PressurePlate",
                         "fields": {
-                            "decrease": 6.0,
                             "wallName": "wall"
                         }
                     }
@@ -12264,7 +12256,6 @@
                     {
                         "className": "PressurePlate",
                         "fields": {
-                            "decrease": 6.0,
                             "wallName": "wall2"
                         }
                     }
@@ -12534,11 +12525,7 @@
                     {
                         "className": "MovingWall",
                         "fields": {
-                            "PlatesActive": 0,
-                            "PlatesRequired": 2,
-                            "MoveRight": true,
-                            "MoveDist": 250.0,
-                            "MoveSpeed": 10.0
+                            "PlatesActive": 0
                         }
                     }
                 ]
@@ -12741,11 +12728,7 @@
                     {
                         "className": "MovingWall",
                         "fields": {
-                            "PlatesActive": 0,
-                            "PlatesRequired": 1,
-                            "MoveRight": false,
-                            "MoveDist": 500.0,
-                            "MoveSpeed": 10.0
+                            "PlatesActive": 0
                         }
                     }
                 ]
@@ -12965,14 +12948,7 @@
                 "scripts": [
                     {
                         "className": "WeightedPlatform",
-                        "fields": {
-                            "IsMoving": true,
-                            "MoveRight": true,
-                            "MovementDistance": 200.0,
-                            "MoveSpeed": 15.0,
-                            "VerticalSpeed": 0.0,
-                            "maxDrop": 0.0
-                        }
+                        "fields": {}
                     }
                 ]
             },
@@ -13075,14 +13051,7 @@
                 "scripts": [
                     {
                         "className": "WeightedPlatform",
-                        "fields": {
-                            "IsMoving": true,
-                            "MoveRight": true,
-                            "MovementDistance": 200.0,
-                            "MoveSpeed": 20.0,
-                            "VerticalSpeed": 0.0,
-                            "maxDrop": 0.0
-                        }
+                        "fields": {}
                     }
                 ]
             },
@@ -13185,14 +13154,7 @@
                 "scripts": [
                     {
                         "className": "WeightedPlatform",
-                        "fields": {
-                            "IsMoving": true,
-                            "MoveRight": true,
-                            "MovementDistance": 300.0,
-                            "MoveSpeed": 25.0,
-                            "VerticalSpeed": 100.0,
-                            "maxDrop": 150.0
-                        }
+                        "fields": {}
                     }
                 ]
             },
@@ -13295,14 +13257,7 @@
                 "scripts": [
                     {
                         "className": "WeightedPlatform",
-                        "fields": {
-                            "IsMoving": true,
-                            "MoveRight": true,
-                            "MovementDistance": 300.0,
-                            "MoveSpeed": 25.0,
-                            "VerticalSpeed": 100.0,
-                            "maxDrop": 150.0
-                        }
+                        "fields": {}
                     }
                 ]
             },

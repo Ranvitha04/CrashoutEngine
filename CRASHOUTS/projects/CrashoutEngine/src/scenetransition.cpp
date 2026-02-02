@@ -14,47 +14,75 @@ namespace CrashoutsEngine {
 
     std::string SceneTransition::s_nextScene = "";
     float SceneTransition::s_timer = 0.0f;
+
+    float SceneTransition::s_durationOut = 1.0f; // Time to turn black
+    float SceneTransition::s_durationIn = 1.0f;  // Time to reveal scene
+
     float SceneTransition::s_duration = 1.0f;
     bool SceneTransition::s_active = false;
     bool SceneTransition::s_fadingOut = false;
     float SceneTransition::s_alpha = 0.0f;
 
-    void SceneTransition::Start(const std::string& nextSceneName, float fadeDuration) {
-        if (s_active) return; // Already running
+    // Starts fade without a target scene
+    void SceneTransition::Start(const std::string& nextSceneName, float fadeOutTime, float fadeInTime) {
+        if (s_active) return;
         s_nextScene = nextSceneName;
-        s_duration = fadeDuration;
-        if (s_duration <= 0.0f) s_duration = 0.01f;
+
+        // Safety check to prevent division by zero
+        s_durationOut = fadeOutTime > 0.0f ? fadeOutTime : 0.01f;
+        s_durationIn = fadeInTime > 0.0f ? fadeInTime : 0.01f;
+
         s_timer = 0.0f;
         s_active = true;
         s_fadingOut = true;
         s_alpha = 0.0f;
-        std::cout << "[SceneTransition] Starting fade to: " << nextSceneName << std::endl;
+        std::cout << "[SceneTransition] Fade to " << nextSceneName << " (Out: " << s_durationOut << "s, In: " << s_durationIn << "s)" << std::endl;
+    }
+
+    void SceneTransition::StartFade(float fadeOutTime, float fadeInTime) {
+        if (s_active) return;
+
+        s_nextScene = ""; // No load, just effect
+
+        s_durationOut = fadeOutTime > 0.0f ? fadeOutTime : 0.01f;
+        s_durationIn = fadeInTime > 0.0f ? fadeInTime : 0.01f;
+
+        s_timer = 0.0f;
+        s_active = true;
+        s_fadingOut = true;
+        s_alpha = 0.0f;
+        std::cout << "[SceneTransition] Effect started." << std::endl;
     }
 
     void SceneTransition::Update(float dt) {
         if (!s_active) return;
 
         s_timer += dt;
-        float progress = s_timer / s_duration;
+        // If we are fading out (going to black), use durationOut. Otherwise use durationIn.
+        float currentTargetTime = s_fadingOut ? s_durationOut : s_durationIn;
+
+        float progress = s_timer / currentTargetTime;
         if (progress > 1.0f) progress = 1.0f;
 
-        // Apply SmoothStep easing: t * t * (3 - 2 * t)
         float smoothed = progress * progress * (3.0f - 2.0f * progress);
 
         if (s_fadingOut) {
             s_alpha = smoothed;
             if (progress >= 1.0f) {
-                // Fade out complete -> Switch Scene
+                // FADE OUT COMPLETE
                 s_fadingOut = false;
                 s_timer = 0.0f;
-                s_alpha = 1.0f; // Keep black during load
-                
-                // Trigger Load
-                if (s_nextScene.size() > 0) g_PendingSceneName = s_nextScene;
-                g_IsSceneLoadPending = true;
+                s_alpha = 1.0f; // Ensure full black before switching
+
+                // Trigger Load if scene name is set
+                if (!s_nextScene.empty()) {
+                    g_PendingSceneName = s_nextScene;
+                    g_IsSceneLoadPending = true;
+                }
             }
-        } else {
-            // Fade In (from black)
+        }
+        else {
+            // FADE IN (Reveal)
             s_alpha = 1.0f - smoothed;
             if (progress >= 1.0f) {
                 s_active = false;
