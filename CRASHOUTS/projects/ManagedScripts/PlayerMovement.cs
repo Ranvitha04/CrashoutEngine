@@ -63,6 +63,8 @@ namespace CrashoutsEngine
         // NEW: Fall Through Logic
         private float fallThroughTimer = 0.0f;
         private float jumpCooldown = 0.0f; // Prevents grounding immediately after jumping
+        private bool isPassthrough = false;
+        private bool canPassthrough = false;
 
         public override void Start()
         {
@@ -82,10 +84,12 @@ namespace CrashoutsEngine
             // We keep Enter/Exit for Wall logic, but remove Ground logic
             CollisionEvents.RegisterCollideEnter(Entity.ID, this.OnCollideEnter);
             CollisionEvents.RegisterCollideExit(Entity.ID, this.OnCollideExit);
+            CollisionEvents.RegisterCollideStay(Entity.ID, this.OnCollideStay);
         }
 
         public override void Update()
         {
+
             if (isPaused || !alive) return;
 
             // 1. HANDLE STATE SWITCH
@@ -115,24 +119,11 @@ namespace CrashoutsEngine
 
             isJumpHeld = Input.IsKeyPressed(Key.Space);
 
-            // 3. JUMP & DROP DOWN LOGIC
-            bool downPressed = Input.IsKeyPressed(Key.S);
+            // 3. JUMP & DROP DOWN LOGI
 
             if (Input.IsKeyTriggered(Key.Space) && IsGrounded)
             {
-                if (downPressed)
-                {
-                    // DROP DOWN REQUEST
-                    // Set a timer where we ignore platform collisions
-                    fallThroughTimer = 0.25f;
-                    // Nudge player down slightly so they don't get stuck in the physics solver
-                    rb.LinearVelocity = new CEVec3(rb.LinearVelocity.x, -50.0f, 0.0f);
-                }
-                else
-                {
-                    // NORMAL JUMP REQUEST
-                    jumpRequested = true;
-                }
+                jumpRequested = true;
             }
 
             // WEIGHT MECHANIC
@@ -157,7 +148,6 @@ namespace CrashoutsEngine
             // Handle Timers
             if (swapPauseTimer > 0.0f) swapPauseTimer -= FIXED_TIMESTEP;
             if (jumpCooldown > 0.0f) jumpCooldown -= FIXED_TIMESTEP;
-            if (fallThroughTimer > 0.0f) fallThroughTimer -= FIXED_TIMESTEP;
 
             // 1. GROUND CHECK (RAYCAST)
             CheckGround();
@@ -192,19 +182,28 @@ namespace CrashoutsEngine
                 return;
             }
 
-            // We cast two rays: one from left foot, one from right foot.
-            // This prevents falling off ledges too early.
+            // 1. Calculate half-height to find where the feet are
+            float halfHeight = Math.Abs(tf.Size.y) * 0.5f;
+            
+            // 2. Define a buffer distance (how far below feet to check)
+            // If this is too small, it might not detect; too large, and you jump before landing.
+            float checkBuffer = 5.0f; 
 
             float xOffset = groundCheckWidth * 0.5f;
             CEVec3 origin = tf.Position;
 
+            // Start rays slightly *inside* the player (center) to ensure they don't start inside a wall 
+            // if you are standing partially inside one, but mainly to use the center as a reliable anchor.
+            float rayStartY = origin.y;
+            float rayEndY = origin.y - (halfHeight + checkBuffer);
+
             // Ray 1: Left Foot
-            CEVec3 startL = new CEVec3(origin.x - xOffset, origin.y, origin.z);
-            CEVec3 endL = new CEVec3(origin.x - xOffset, origin.y - groundCheckDistance, origin.z);
+            CEVec3 startL = new CEVec3(origin.x - xOffset, rayStartY, origin.z);
+            CEVec3 endL = new CEVec3(origin.x - xOffset, rayEndY, origin.z);
 
             // Ray 2: Right Foot
-            CEVec3 startR = new CEVec3(origin.x + xOffset, origin.y, origin.z);
-            CEVec3 endR = new CEVec3(origin.x + xOffset, origin.y - groundCheckDistance, origin.z);
+            CEVec3 startR = new CEVec3(origin.x + xOffset, rayStartY, origin.z);
+            CEVec3 endR = new CEVec3(origin.x + xOffset, rayEndY, origin.z);
 
             uint hitID = 0;
 
@@ -218,9 +217,10 @@ namespace CrashoutsEngine
             bool rightIsGround = false;
             if (hitRight && hitID != 0) rightIsGround = IsGroundOrPlatform(hitID);
 
-            // If either foot hit ground, we are grounded
-            bool wasGrounded = IsGrounded;
-            IsGrounded = (leftIsGround || rightIsGround) && rb.LinearVelocity.y <= 0.1f; // Only grounded if falling or still
+            // Logic: Grounded if feet touch ground AND we aren't moving up (jumping)
+            IsGrounded = (leftIsGround || rightIsGround) && rb.LinearVelocity.y <= 0.1f;
+            Debug.Log("RAYCASTING");
+
         }
 
         private bool IsGroundOrPlatform(uint entityID)
@@ -283,31 +283,25 @@ namespace CrashoutsEngine
 
         public bool OnPreSolve(uint otherEntity)
         {
+            Debug.Log("IS PASSTHROUGH: " + (isPassthrough ? "TRUE" : "FALSE"));
             Entity other = new Entity(otherEntity);
             var Tag = other.GetComponent<TagComponent>();
 
             // Passthrough Check
             if (Tag != null && Tag.HasTag("Passthrough"))
             {
-                // 1. If dropping down timer is active, DISABLE collision
-                if (fallThroughTimer > 0.0f) return false;
+                // 1. If holding Down (S), disable collision immediately so we fall through
+                if (Input.IsKeyPressed(Key.S)) { canPassthrough = true;  return false; }
 
-                // 2. If moving UP, DISABLE collision (jump through from bottom)
-                if (rb.LinearVelocity.y > 0.0f) return false;
+                // 2. If moving UP (velocity > 0), disable collision so we jump through the bottom
+                // We add a small threshold (0.1f) to ensure we don't accidentally fall through while standing still due to micro-jitters
+                if (rb.LinearVelocity.y > 0.1f) { canPassthrough = true; return false; }
 
-                // 3. Position Check: If we are not fully above the platform, disable collision
-                // This prevents snapping to the top if we clip the side
-                var otherTf = other.GetComponent<TransformComponent>();
-                if (otherTf != null)
-                {
-                    float playerBottom = tf.Position.y - (Math.Abs(tf.Size.y) * 0.5f);
-                    float platTop = otherTf.Position.y + (Math.Abs(otherTf.Size.y) * 0.5f);
-
-                    // Allow a small buffer (5.0f)
-                    if (playerBottom < (platTop - 5.0f)) return false;
-                }
+                if (isPassthrough) return false;
+                else { canPassthrough = false; return true; }
             }
-            return true;
+            canPassthrough = false;
+            return true; // Default: Enable Collision
         }
 
         public void OnCollideEnter(uint otherEntity)
@@ -328,6 +322,14 @@ namespace CrashoutsEngine
             }
         }
 
+        public void OnCollideStay(uint otherEntity)
+        {
+            Entity other = new Entity(otherEntity);
+            var Tag = other.GetComponent<TagComponent>();
+
+            if(Tag != null && Tag.HasTag("Passthrough") && canPassthrough) { isPassthrough = true; }
+        }
+
         public void OnCollideExit(uint otherEntity)
         {
             Entity other = new Entity(otherEntity);
@@ -337,6 +339,8 @@ namespace CrashoutsEngine
             {
                 OnWall = false;
             }
+
+            if (Tag != null && Tag.HasTag("Passthrough")) { canPassthrough = false;  isPassthrough = false; }
         }
 
         private void HandleFootsteps()

@@ -9858,37 +9858,6 @@
                 "playing": true,
                 "clips": [
                     {
-                        "name": "playerFall",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
-                        "spriteCols": 2,
-                        "spriteRows": 1,
-                        "useCustomSize": true,
-                        "targetWidth": 140.0,
-                        "targetHeight": 100.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
                         "name": "playerWalk",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Run\\Run spritesheet.png",
@@ -9941,7 +9910,7 @@
                         ]
                     },
                     {
-                        "name": "playerFallLight",
+                        "name": "playerFall",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
                         "spriteCols": 2,
@@ -9955,14 +9924,14 @@
                                 "keys": [
                                     {
                                         "t": 0.0,
-                                        "v": 1.0,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
                                         "t": 0.25,
-                                        "v": 1.0,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -10015,6 +9984,37 @@
                                     {
                                         "t": 1.0,
                                         "v": 7.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "playerFallLight",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
+                        "spriteCols": 2,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 140.0,
+                        "targetHeight": 100.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 1.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -11724,10 +11724,7 @@
                 "scripts": [
                     {
                         "className": "EnergyBall",
-                        "fields": {
-                            "energyAmount": 25.0,
-                            "respawnTime": 5.0
-                        }
+                        "fields": {}
                     }
                 ]
             },
@@ -11865,10 +11862,7 @@
                 "scripts": [
                     {
                         "className": "EnergyBall",
-                        "fields": {
-                            "energyAmount": 25.0,
-                            "respawnTime": 5.0
-                        }
+                        "fields": {}
                     }
                 ]
             },
@@ -12011,7 +12005,6 @@
                     {
                         "className": "PressurePlate",
                         "fields": {
-                            "decrease": 5.0,
                             "wallName": "wall"
                         }
                     }
@@ -12156,7 +12149,6 @@
                     {
                         "className": "PressurePlate",
                         "fields": {
-                            "decrease": 5.0,
                             "wallName": "wall"
                         }
                     }
@@ -12301,7 +12293,6 @@
                     {
                         "className": "PressurePlate",
                         "fields": {
-                            "decrease": 5.0,
                             "wallName": "wall2"
                         }
                     }
@@ -12571,11 +12562,7 @@
                     {
                         "className": "MovingWall",
                         "fields": {
-                            "PlatesActive": 0,
-                            "PlatesRequired": 2,
-                            "MoveRight": true,
-                            "MoveDist": 150.0,
-                            "MoveSpeed": 65.0
+                            "PlatesActive": 0
                         }
                     }
                 ]
@@ -12778,11 +12765,7 @@
                     {
                         "className": "MovingWall",
                         "fields": {
-                            "PlatesActive": 0,
-                            "PlatesRequired": 1,
-                            "MoveRight": false,
-                            "MoveDist": 200.0,
-                            "MoveSpeed": 65.0
+                            "PlatesActive": 0
                         }
                     }
                 ]
@@ -13002,14 +12985,7 @@
                 "scripts": [
                     {
                         "className": "WeightedPlatform",
-                        "fields": {
-                            "IsMoving": true,
-                            "MoveRight": true,
-                            "MovementDistance": 200.0,
-                            "MoveSpeed": 20.0,
-                            "VerticalSpeed": 0.0,
-                            "maxDrop": 0.0
-                        }
+                        "fields": {}
                     }
                 ]
             },
@@ -13112,14 +13088,7 @@
                 "scripts": [
                     {
                         "className": "WeightedPlatform",
-                        "fields": {
-                            "IsMoving": true,
-                            "MoveRight": true,
-                            "MovementDistance": 100.0,
-                            "MoveSpeed": 20.0,
-                            "VerticalSpeed": 50.0,
-                            "maxDrop": 50.0
-                        }
+                        "fields": {}
                     }
                 ]
             },
@@ -13222,14 +13191,7 @@
                 "scripts": [
                     {
                         "className": "WeightedPlatform",
-                        "fields": {
-                            "IsMoving": true,
-                            "MoveRight": true,
-                            "MovementDistance": 100.0,
-                            "MoveSpeed": 20.0,
-                            "VerticalSpeed": 50.0,
-                            "maxDrop": 50.0
-                        }
+                        "fields": {}
                     }
                 ]
             },
@@ -13332,14 +13294,7 @@
                 "scripts": [
                     {
                         "className": "WeightedPlatform",
-                        "fields": {
-                            "IsMoving": true,
-                            "MoveRight": true,
-                            "MovementDistance": 100.0,
-                            "MoveSpeed": 20.0,
-                            "VerticalSpeed": 50.0,
-                            "maxDrop": 50.0
-                        }
+                        "fields": {}
                     }
                 ]
             },
@@ -13862,14 +13817,7 @@
                 "scripts": [
                     {
                         "className": "WeightedPlatform",
-                        "fields": {
-                            "IsMoving": true,
-                            "MoveRight": true,
-                            "MovementDistance": 200.0,
-                            "MoveSpeed": 20.0,
-                            "VerticalSpeed": 0.0,
-                            "maxDrop": 0.0
-                        }
+                        "fields": {}
                     }
                 ]
             },
@@ -13887,7 +13835,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 0.0,
+                    "x": 0.000030517578125,
                     "y": 0.0,
                     "z": 0.0
                 },
@@ -13910,7 +13858,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -83.0,
+                    "x": -82.99996948242188,
                     "y": 33.0,
                     "z": 0.0
                 },
@@ -13987,7 +13935,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -83.0,
+                    "x": -82.99996948242188,
                     "y": 33.0,
                     "z": 0.0
                 },
@@ -14028,6 +13976,26 @@
                     "x": 32.0,
                     "y": 0.0,
                     "z": 0.0
+                }
+            },
+            "parent": {
+                "parentName": "PlayerEnergy",
+                "localPos": {
+                    "x": -83.0,
+                    "y": 33.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 30.0,
+                    "y": 15.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
                 }
             },
             "layer": {
@@ -14044,7 +14012,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -78.0,
+                    "x": -77.99996948242188,
                     "y": 33.0,
                     "z": 0.0
                 },
@@ -14085,6 +14053,26 @@
                     "x": 32.0,
                     "y": 0.0,
                     "z": 0.0
+                }
+            },
+            "parent": {
+                "parentName": "PlayerEnergy",
+                "localPos": {
+                    "x": -78.0,
+                    "y": 33.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 30.0,
+                    "y": 15.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
                 }
             },
             "layer": {
@@ -14101,7 +14089,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -73.0,
+                    "x": -72.99996948242188,
                     "y": 33.0,
                     "z": 0.0
                 },
@@ -14142,6 +14130,26 @@
                     "x": 32.0,
                     "y": 0.0,
                     "z": 0.0
+                }
+            },
+            "parent": {
+                "parentName": "PlayerEnergy",
+                "localPos": {
+                    "x": -73.0,
+                    "y": 33.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 30.0,
+                    "y": 15.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
                 }
             },
             "layer": {
@@ -14158,7 +14166,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -68.0,
+                    "x": -67.99996948242188,
                     "y": 33.0,
                     "z": 0.0
                 },
@@ -14199,6 +14207,26 @@
                     "x": 32.0,
                     "y": 0.0,
                     "z": 0.0
+                }
+            },
+            "parent": {
+                "parentName": "PlayerEnergy",
+                "localPos": {
+                    "x": -68.0,
+                    "y": 33.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 30.0,
+                    "y": 15.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
                 }
             },
             "layer": {
@@ -14215,7 +14243,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -63.0,
+                    "x": -62.999969482421878,
                     "y": 33.0,
                     "z": 0.0
                 },
@@ -14256,6 +14284,26 @@
                     "x": 32.0,
                     "y": 0.0,
                     "z": 0.0
+                }
+            },
+            "parent": {
+                "parentName": "PlayerEnergy",
+                "localPos": {
+                    "x": -63.0,
+                    "y": 33.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 30.0,
+                    "y": 15.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
                 }
             },
             "layer": {
@@ -14272,7 +14320,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -58.0,
+                    "x": -57.999969482421878,
                     "y": 33.0,
                     "z": 0.0
                 },
@@ -14313,6 +14361,26 @@
                     "x": 32.0,
                     "y": 0.0,
                     "z": 0.0
+                }
+            },
+            "parent": {
+                "parentName": "PlayerEnergy",
+                "localPos": {
+                    "x": -58.0,
+                    "y": 33.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 30.0,
+                    "y": 15.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
                 }
             },
             "layer": {
@@ -14329,7 +14397,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -53.0,
+                    "x": -52.999969482421878,
                     "y": 33.0,
                     "z": 0.0
                 },
@@ -14370,6 +14438,26 @@
                     "x": 32.0,
                     "y": 0.0,
                     "z": 0.0
+                }
+            },
+            "parent": {
+                "parentName": "PlayerEnergy",
+                "localPos": {
+                    "x": -53.0,
+                    "y": 33.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 30.0,
+                    "y": 15.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
                 }
             },
             "layer": {
@@ -14386,7 +14474,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -48.0,
+                    "x": -47.999969482421878,
                     "y": 33.0,
                     "z": 0.0
                 },
@@ -14427,6 +14515,26 @@
                     "x": 32.0,
                     "y": 0.0,
                     "z": 0.0
+                }
+            },
+            "parent": {
+                "parentName": "PlayerEnergy",
+                "localPos": {
+                    "x": -48.0,
+                    "y": 33.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 30.0,
+                    "y": 15.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
                 }
             },
             "layer": {
@@ -14443,7 +14551,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -43.0,
+                    "x": -42.999969482421878,
                     "y": 33.0,
                     "z": 0.0
                 },
@@ -14484,6 +14592,26 @@
                     "x": 32.0,
                     "y": 0.0,
                     "z": 0.0
+                }
+            },
+            "parent": {
+                "parentName": "PlayerEnergy",
+                "localPos": {
+                    "x": -43.0,
+                    "y": 33.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 30.0,
+                    "y": 15.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
                 }
             },
             "layer": {
@@ -14500,7 +14628,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -38.0,
+                    "x": -37.999969482421878,
                     "y": 33.0,
                     "z": 0.0
                 },
@@ -14543,6 +14671,26 @@
                     "z": 0.0
                 }
             },
+            "parent": {
+                "parentName": "PlayerEnergy",
+                "localPos": {
+                    "x": -38.0,
+                    "y": 33.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 30.0,
+                    "y": 15.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
             "layer": {
                 "layerName": "UI",
                 "z": 1
@@ -14557,7 +14705,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -78.0,
+                    "x": -77.99996948242188,
                     "y": 33.0,
                     "z": 0.0
                 },
@@ -14634,7 +14782,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -73.0,
+                    "x": -72.99996948242188,
                     "y": 33.0,
                     "z": 0.0
                 },
@@ -14711,7 +14859,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -68.0,
+                    "x": -67.99996948242188,
                     "y": 33.0,
                     "z": 0.0
                 },
@@ -14788,7 +14936,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -63.0,
+                    "x": -62.999969482421878,
                     "y": 33.0,
                     "z": 0.0
                 },
@@ -14865,7 +15013,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -58.0,
+                    "x": -57.999969482421878,
                     "y": 33.0,
                     "z": 0.0
                 },
@@ -14942,7 +15090,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -53.0,
+                    "x": -52.999969482421878,
                     "y": 33.0,
                     "z": 0.0
                 },
@@ -15019,7 +15167,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -48.0,
+                    "x": -47.999969482421878,
                     "y": 33.0,
                     "z": 0.0
                 },
@@ -15096,7 +15244,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -43.0,
+                    "x": -42.999969482421878,
                     "y": 33.0,
                     "z": 0.0
                 },
@@ -15173,7 +15321,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -38.0,
+                    "x": -37.999969482421878,
                     "y": 33.0,
                     "z": 0.0
                 },

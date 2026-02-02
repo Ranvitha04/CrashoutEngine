@@ -30,10 +30,11 @@ namespace CrashoutsEngine
                 {
                     Entity ballEnt = new Entity(id);
                     ballShapes[i] = ballEnt.GetComponent<ShapeComponent>();
+                    Debug.Log("load ball: " + i);
                 }
                 else
                 {
-                    Console.WriteLine("[EnergyUI] Error: Could not find " + ballBaseName + i);
+                    Debug.Log("[EnergyUI] Error: Could not find " + ballBaseName + i);
                 }
             }
         }
