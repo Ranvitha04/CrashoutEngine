@@ -85,7 +85,7 @@ namespace CrashoutsEngine
                 {
                     // Resume Game from pause menu
                     Debug.Log("[C#] Resume Game from pause menu.");
-                    SceneManager.LoadScene("descentgame");
+                    SceneManager.LoadScene("tutorial");
                 }
                 else if (name.ToString() == "PauseSettingsBtn")
                 {

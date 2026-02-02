@@ -118,6 +118,7 @@ namespace CrashoutsEngine
             wasMoving = isMoving;
             jump = Input.IsKeyTriggered(Key.Space);
 
+
         }
 
         public override void FixedUpdate()

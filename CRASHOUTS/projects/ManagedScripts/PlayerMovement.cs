@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Runtime.CompilerServices;
 
 namespace CrashoutsEngine
@@ -62,9 +62,18 @@ namespace CrashoutsEngine
         private string currentAnimState = "";
         private bool isLight = false;
         private float swapPauseTimer = 0.0f;
+        public static CEVec3 SavedPos;
+        public static bool HasSavedPos = false;
 
         public override void Start()
         {
+            if (HasSavedPos)
+            {
+                tf.Position = SavedPos;
+                rb.LinearVelocity = new CEVec3(0, 0, 0);
+                HasSavedPos = false;
+            }
+
             Instance = this;
             rb = Entity.GetComponent<RigidBodyComponent>();
             tf = Entity.GetComponent<TransformComponent>();
@@ -93,7 +102,18 @@ namespace CrashoutsEngine
 
         public override void Update()
         {
-            if (isPaused) { return; }
+
+            if (Input.IsKeyTriggered(Key.P))
+            {
+                SavedPos = tf.Position;
+                HasSavedPos = true;
+                SceneManager.LoadScene("descentconfirm");
+                return;
+            }
+
+            // Remove this line if you are using scene-load pause (recommended)
+            // if (isPaused) { return; }
+
             if (!alive) return;
 
             // Safety Reset
@@ -171,10 +191,13 @@ namespace CrashoutsEngine
 
             // 4. ANIMATION
             UpdateAnimationState(isSwitching);
+            
+          
         }
 
         public override void FixedUpdate()
         {
+            if (isPaused) return;
             // 1. HANDLE PAUSE TIMER (Physics Step Consistent)
             if (swapPauseTimer > 0.0f)
             {
@@ -353,6 +376,8 @@ namespace CrashoutsEngine
             if (CurrentEnergy > MaxEnergy) CurrentEnergy = MaxEnergy;
             UpdateBarUI();
         }
+    
+
 
         public void RemoveEnergy(float amount)
         {
