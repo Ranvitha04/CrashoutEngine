@@ -53,7 +53,12 @@
                 }
             },
             "script": {
-                "scripts": []
+                "scripts": [
+                    {
+                        "className": "CutsceneScript",
+                        "fields": {}
+                    }
+                ]
             },
             "layer": {
                 "layerName": "Transition",

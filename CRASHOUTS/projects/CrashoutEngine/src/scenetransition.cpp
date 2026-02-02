@@ -50,7 +50,7 @@ namespace CrashoutsEngine {
                 s_alpha = 1.0f; // Keep black during load
                 
                 // Trigger Load
-                g_PendingSceneName = s_nextScene;
+                if (s_nextScene.size() > 0) g_PendingSceneName = s_nextScene;
                 g_IsSceneLoadPending = true;
             }
         } else {

@@ -1852,52 +1852,87 @@ namespace {
 			}
 
 			ImGui::Separator();
+			ImGui::TextDisabled("Create New Script");
 
-			if (ImGui::SmallButton("New C# Script")) {
+			// 1. Buffer to hold the name (static so it persists between frames)
+			static char newScriptNameBuf[64] = "NewScript";
+
+			// 2. Input Field
+			// We use ##ID to hide the label but keep the ID unique
+			ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x * 0.6f);
+			ImGui::InputTextWithHint("##NewScriptName", "ClassName...", newScriptNameBuf, sizeof(newScriptNameBuf));
+
+			ImGui::SameLine();
+
+			// 3. Create Button
+			if (ImGui::Button("Create##CreateScript")) {
+				std::string className = newScriptNameBuf;
+
+				// Basic Validation: If empty, default to "NewScript"
+				if (className.empty()) className = "NewScript";
+
+				// Sanitize: Replace spaces with underscores to prevent C# compile errors
+				std::replace(className.begin(), className.end(), ' ', '_');
+
 				namespace fs = std::filesystem;
 				fs::path base = "../../projects/ManagedScripts";
 
-				std::string filename = "NewScript";
+				// Ensure directory exists
+				if (!fs::exists(base)) fs::create_directories(base);
+
+				fs::path file = base / (className + ".cs");
+
+				// 4. Check for duplicates
+				// If the user typed a name that already exists, we append a number 
+				// so we don't accidentally overwrite their existing code.
+				std::string finalClassName = className;
 				int counter = 1;
-				fs::path file = base / (filename + ".cs");
 				while (fs::exists(file)) {
-					file = base / (filename + std::to_string(counter++) + ".cs");
+					finalClassName = className + std::to_string(counter++);
+					file = base / (finalClassName + ".cs");
 				}
 
-				// write a basic template
+				// 5. Write the file
 				std::ofstream out(file);
-				out <<
-					R"(using CrashoutsEngine;
+				if (out.is_open()) {
+					out <<
+						R"(using System;
 
 namespace CrashoutsEngine
 {
-	// Attach this script to an Entity through the ScriptComponent UI.
-	// Scripts with [ScriptBehaviour] will appear in the editor's script list.
-	[ScriptBehaviour]
-	public class )" << file.stem().string() << R"(
-	{
-		// Reference to the entity this script instance is attached to.
-		// Automatically assigned by the engine before Start() runs.
-		public Entity Entity;
+    [ScriptBehaviour]
+    public class )" << finalClassName << R"( : ScriptBase
+    {
+        public Entity Entity;
 
-		// Called once when the script is first created.
-		// Initialize references or setup values here.
-		public void Start() { }
+        public override void Start() 
+        { 
+            // Called once on start
+        }
 
-		// Called every frame.
-		// Main game logic, movement, inputs, and updates go here.
-		public void Update() { }
+        public override void Update() 
+        { 
+            // Called every frame
+        }
 
-		// Called at a fixed timestep (ideal for physics logic).
-		// Runs independently from the frame rate.
-		public void FixedUpdate() { }
-	}
+        public override void FixedUpdate() 
+        { 
+            // Called every physics step
+        }
+    }
 }
 )";
-				out.close();
+					out.close();
 
-				// automatically add this new script
-				sc->AddScript(file.stem().string());
+					// 6. Automatically attach the new script
+					sc->AddScript(finalClassName);
+
+					// Optional: Reset buffer for next time
+					// strcpy_s(newScriptNameBuf, "NewScript"); 
+				}
+				else {
+					std::cerr << "Failed to create script file: " << file << std::endl;
+				}
 			}
 
 			// --- Mono reload / manual Start/Update/Destroy ---
@@ -1914,61 +1949,84 @@ namespace CrashoutsEngine
 					MonoManager::s_IsManualReloading = true; // Lock watcher
 
 					// Launch build on a separate thread to avoid freezing the UI
+					// Launch build on a separate thread
 					std::thread([]() {
-						// 1. Detect C++ Configuration
-						// If the C++ Engine is Debug, we build Debug scripts.
-						// If the C++ Engine is Release, we build Release scripts.
+						namespace fs = std::filesystem;
+
+						// 1. Detect Configuration
 						std::string config = "Release";
 #ifdef _DEBUG
 						config = "Debug";
 #endif
 
-						// 2. Setup Paths
-						// Adjust relative paths based on where your .exe is located
-						namespace fs = std::filesystem;
-						fs::path projectPath = "../../projects/ManagedScripts/ManagedScripts.csproj";
+						// 2. Resolve Absolute Paths (CRITICAL for Release Mode)
+						// This ensures we find the project even if the EXE is running from a different working directory
+						fs::path cwd = fs::current_path();
+						fs::path projectPath = fs::absolute(cwd / "../../projects/ManagedScripts/ManagedScripts.csproj");
 
-						// The folder where dotnet outputs the new DLL
-						fs::path buildOutput = fs::path("../../projects/ManagedScripts/bin") / config / "net6.0";
-						fs::path srcDll = buildOutput / "ManagedScripts.dll";
-						fs::path srcPdb = buildOutput / "ManagedScripts.pdb";
+						// Output folder
+						fs::path buildOutput = projectPath.parent_path() / "bin" / config / "net6.0";
 
-						// The location the Engine is currently reading from
+						// Destination (Engine)
 						fs::path targetDll = MonoManager::GetAssemblyPath();
 						fs::path targetPdb = targetDll;
 						targetPdb.replace_extension(".pdb");
 
-						// 3. Run Build Command
-						// We redirect output to a log file so you can debug build errors
-						std::string buildCmd = "dotnet build \"" + projectPath.string() + "\" -c " + config + " > buildlog.txt 2>&1";
+						// 3. Clean Old Files
+						// Prevent confusion by deleting old timestamped DLLs before building
+						std::string cleanCmd = "del /Q \"" + buildOutput.string() + "\\ManagedScripts*.dll\" \"" + buildOutput.string() + "\\ManagedScripts*.pdb\"";
+						system(cleanCmd.c_str());
 
-						// Execute Build
+						// 4. Build
+						std::string buildCmd = "dotnet build \"" + projectPath.string() + "\" -c " + config + " > buildlog.txt 2>&1";
 						int result = system(buildCmd.c_str());
 
 						if (result == 0) {
-							// 4. COPY Logic (The "Hot Swap")
-							try {
-								// We must use copy_options::overwrite_existing
-								fs::copy_file(srcDll, targetDll, fs::copy_options::overwrite_existing);
+							// 5. Scan for the FRESH timestamped DLL
+							fs::path foundDll;
+							fs::path foundPdb;
 
-								// Try to copy PDB (symbols) if they exist
-								if (fs::exists(srcPdb)) {
-									fs::copy_file(srcPdb, targetPdb, fs::copy_options::overwrite_existing);
+							if (fs::exists(buildOutput)) {
+								for (const auto& entry : fs::directory_iterator(buildOutput)) {
+									if (entry.is_regular_file()) {
+										std::string name = entry.path().filename().string();
+
+										// Look for files starting with "ManagedScripts"
+										if (name.find("ManagedScripts") == 0) {
+											std::string ext = entry.path().extension().string();
+											if (ext == ".dll") foundDll = entry.path();
+											else if (ext == ".pdb") foundPdb = entry.path();
+										}
+									}
 								}
-
-								// Success: Signal the main thread to reload the Domain
-								reloadPending = true;
 							}
-							catch (const std::exception& e) {
-								// PRINT THE ERROR so you know what happened
-								std::cerr << "[Mono] Hot-Swap Failed: " << e.what() << std::endl;
 
-								// Release the lock so the engine doesn't get stuck
+							// 6. COPY Logic (The "Hot Swap")
+							if (!foundDll.empty()) {
+								try {
+									// COPY foundDll (the timestamped one) -> targetDll (the clean name)
+									fs::copy_file(foundDll, targetDll, fs::copy_options::overwrite_existing);
+
+									if (!foundPdb.empty()) {
+										fs::copy_file(foundPdb, targetPdb, fs::copy_options::overwrite_existing);
+									}
+
+									// Signal Success
+									reloadPending = true;
+								}
+								catch (const std::exception& e) {
+									std::cerr << "[Mono] Hot-Swap Copy Failed: " << e.what() << std::endl;
+									MonoManager::s_IsManualReloading = false;
+								}
+							}
+							else {
+								std::cerr << "[Mono] Build passed, but no DLL found in: " << buildOutput << std::endl;
 								MonoManager::s_IsManualReloading = false;
 							}
 						}
 						else {
 							// Build failed
+							std::cerr << "[Mono] Build Failed. Check buildlog.txt" << std::endl;
 							MonoManager::s_IsManualReloading = false;
 						}
 
@@ -3281,10 +3339,10 @@ namespace CrashoutsEngine
 			UIHelpers::DrawUndoableFloat("FPS", vc->frameRate, 0.1f, 1.0f, 120.0f);
 
 			ImGui::Separator();
-
+			
 			// --- VIDEO PATH SELECTION ---
 			ImGui::Text("Video Source:");
-
+			
 			char pathBuf[256];
 			strncpy(pathBuf, vc->videoPath.c_str(), sizeof(pathBuf));
 			pathBuf[sizeof(pathBuf) - 1] = '\0';
@@ -3361,7 +3419,7 @@ namespace CrashoutsEngine
 							std::sort(s_videos.begin(), s_videos.end());
 						}
 					}
-					catch (...) {}
+					catch (...) { }
 				}
 
 				ImGui::Separator();
@@ -3370,7 +3428,7 @@ namespace CrashoutsEngine
 					bool isSelected = (vc->videoPath == v);
 					if (ImGui::Selectable(v.c_str(), isSelected)) {
 						vc->videoPath = v;
-
+						
 						// Auto-load
 						if (vc->loader) vc->loader.reset();
 						vc->loader = std::make_shared<CrashoutsEngine::VideoLoader>(CrashoutsEngine::Assets::rootPath + v);
@@ -3395,7 +3453,7 @@ namespace CrashoutsEngine
 				ImGui::Text("Video Size: %d x %d", vc->loader->GetWidth(), vc->loader->GetHeight());
 				ImGui::Text("Duration: %.2f s", vc->loader->GetDuration());
 				ImGui::Text("Texture Handle: %u", vc->loader->GetTextureHandle());
-
+				
 				// Show audio state
 				ImGui::Text("Current Time: %.2f / %.2f s", (float)vc->loader->GetCurrentTime(), (float)vc->loader->GetDuration());
 			}
@@ -3465,7 +3523,7 @@ namespace CrashoutsEngine
 	static BuiltinPhysicsProvider gBuiltinPhys;
 	static KeyframeAnimatorAdapter gKeyframeAdapter;
 	static ParticleSystemAdapter gParticleAdapter;
-	static TagAdapter gTagAdapter;
+	static TagAdapter gTagAdapter;     
 	static DebugZOverrideAdapter gDebugZOverrideAdapter;
 	static VideoAdapter gVideoAdapter;
 }
