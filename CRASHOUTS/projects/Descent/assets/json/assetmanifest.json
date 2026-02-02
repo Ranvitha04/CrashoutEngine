@@ -1571,6 +1571,10 @@
             "path": "Entity.json"
         },
         {
+            "name": "movingplatform",
+            "path": "movingplatform.json"
+        },
+        {
             "name": "MovingWall",
             "path": "MovingWall.json"
         },
