@@ -7,7 +7,6 @@
 using namespace CrashoutsEngine;
 using namespace Serialization;
 using namespace KeyframeUnity;
-namespace CrashoutsEngine { bool DeletePrefabAsset(CrashoutsEngine::ECS& ecs, const std::string& prefabName); }
 
 namespace UI {
 
@@ -124,13 +123,6 @@ namespace UI {
 
                 if (ImGui::Button("Create Prefab##Prefab")) {
                     Prefab::Create(ecs, names[sel]);
-
-                }
-                ImGui::SameLine();
-
-                if (ImGui::Button("Delete Prefab##Prefab")) {
-                    DeletePrefabAsset(ecs, names[sel]);
-                    sel = 0;
                 }
             }
         }

@@ -76,11 +76,6 @@ namespace CrashoutsEngine
                     
                     SceneManager.LoadScene("descentconfirm");
                 }
-                else if (name.ToString() == "ResumeBtn")
-                {
-
-                    SceneManager.LoadScene("descentgame");
-                }
 
 
             }
