@@ -1114,8 +1114,10 @@ namespace Scene {
 
 	void UpdateScene(CrashoutsEngine::ECS& globalECS) {
 		using namespace CrashoutsEngine;
-		Scene::UI::UpdateButtons(globalECS);
-		Scene::UI::UpdateInputs(globalECS);
+		if (engineState != EngineState::STOP) {
+			Scene::UI::UpdateButtons(globalECS);
+			Scene::UI::UpdateInputs(globalECS);
+		}
 
 		// Particle Updates (Physics/Lifecycle)
 		Particles::UpdateAllParticles(globalECS);

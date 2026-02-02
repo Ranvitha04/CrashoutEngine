@@ -66,10 +66,6 @@
             "layer": {
                 "layerName": "StaticBackground",
                 "z": 0
-            },
-            "layer": {
-                "layerName": "StaticBackground",
-                "z": 0
             }
         },
         {
@@ -123,10 +119,6 @@
                     "y": 0.0,
                     "z": 0.0
                 }
-            },
-            "layer": {
-                "layerName": "StaticBackground",
-                "z": 0
             },
             "layer": {
                 "layerName": "StaticBackground",
@@ -275,10 +267,6 @@
             "layer": {
                 "layerName": "StaticBackground",
                 "z": 0
-            },
-            "layer": {
-                "layerName": "StaticBackground",
-                "z": 0
             }
         },
         {
@@ -336,10 +324,6 @@
             "layer": {
                 "layerName": "StaticBackground",
                 "z": 0
-            },
-            "layer": {
-                "layerName": "StaticBackground",
-                "z": 0
             }
         },
         {
@@ -389,10 +373,6 @@
                 "revealSpeed": 10.0,
                 "dialogueFilePath": "",
                 "dialogueID": ""
-            },
-            "layer": {
-                "layerName": "StaticBackground",
-                "z": 0
             },
             "layer": {
                 "layerName": "StaticBackground",
@@ -470,10 +450,6 @@
             "layer": {
                 "layerName": "StaticBackground",
                 "z": 0
-            },
-            "layer": {
-                "layerName": "StaticBackground",
-                "z": 0
             }
         },
         {
@@ -547,10 +523,6 @@
             "layer": {
                 "layerName": "StaticBackground",
                 "z": 0
-            },
-            "layer": {
-                "layerName": "StaticBackground",
-                "z": 0
             }
         },
         {
@@ -620,10 +592,6 @@
                     "z": 1.0,
                     "w": 1.0
                 }
-            },
-            "layer": {
-                "layerName": "StaticBackground",
-                "z": 0
             },
             "layer": {
                 "layerName": "StaticBackground",
@@ -745,10 +713,6 @@
             "layer": {
                 "layerName": "StaticBackground",
                 "z": 0
-            },
-            "layer": {
-                "layerName": "StaticBackground",
-                "z": 0
             }
         },
         {
@@ -798,10 +762,6 @@
                 "revealSpeed": 10.0,
                 "dialogueFilePath": "",
                 "dialogueID": ""
-            },
-            "layer": {
-                "layerName": "StaticBackground",
-                "z": 0
             },
             "layer": {
                 "layerName": "StaticBackground",
@@ -920,10 +880,6 @@
             "layer": {
                 "layerName": "StaticBackground",
                 "z": 0
-            },
-            "layer": {
-                "layerName": "StaticBackground",
-                "z": 0
             }
         },
         {
@@ -1038,10 +994,6 @@
             "layer": {
                 "layerName": "StaticBackground",
                 "z": 0
-            },
-            "layer": {
-                "layerName": "StaticBackground",
-                "z": 0
             }
         },
         {
@@ -1095,10 +1047,6 @@
             "layer": {
                 "layerName": "StaticBackground",
                 "z": 0
-            },
-            "layer": {
-                "layerName": "StaticBackground",
-                "z": 0
             }
         },
         {
@@ -1148,10 +1096,6 @@
                 "revealSpeed": 10.0,
                 "dialogueFilePath": "",
                 "dialogueID": ""
-            },
-            "layer": {
-                "layerName": "StaticBackground",
-                "z": 0
             },
             "layer": {
                 "layerName": "StaticBackground",
@@ -1213,10 +1157,6 @@
             "layer": {
                 "layerName": "StaticBackground",
                 "z": 0
-            },
-            "layer": {
-                "layerName": "StaticBackground",
-                "z": 0
             }
         },
         {
@@ -1274,14 +1214,18 @@
             "layer": {
                 "layerName": "StaticBackground",
                 "z": 0
-            },
-            "layer": {
-                "layerName": "StaticBackground",
-                "z": 0
             }
         }
     ],
     "layers": {
+        "Default": 0,
+        "Ground": 2,
+        "Player": 1
+    },
+    "layer_visibility": {
+        "Default": true
+    },
+    "tag_mapping": {
         "Default": 0,
         "Ground": 2,
         "Player": 1

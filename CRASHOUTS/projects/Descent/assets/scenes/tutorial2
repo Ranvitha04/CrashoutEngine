@@ -3614,9 +3614,12 @@
         }
     ],
     "layers": {
-        "Default": 0,
-        "Ground": 2,
-        "Player": 1
+        "Background": 0,
+        "Middleground": 1,
+        "Foreground": 2,
+        "Default": 4,
+        "Ground": 8,
+        "Player": 16
     },
     "quadtree": {
         "min": {
