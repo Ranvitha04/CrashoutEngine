@@ -1437,16 +1437,16 @@
                             "maxSpeed": 15.0,
                             "moveAudioInterval": 0.4000000059604645,
                             "stopAudioDistance": 40.0,
-                            "detectionRange": 70.0,
+                            "detectionRange": 250.0,
                             "gravityScale": 2.0,
-                            "grabRange": 60.0,
+                            "grabRange": 100.0,
                             "minThrowSpeed": 50.0,
                             "maxThrowSpeed": 200.0,
                             "maxMouseDragDist": 400.0,
                             "airDrag": 1.0,
                             "stunDuration": 1.0,
                             "MaxDist": 200.0,
-                            "ledgeBuffer": -7.0,
+                            "ledgeBuffer": 40.0,
                             "ledgeRayCastDistance": 50.0
                         }
                     }
@@ -1595,16 +1595,16 @@
                             "maxSpeed": 15.0,
                             "moveAudioInterval": 0.4000000059604645,
                             "stopAudioDistance": 40.0,
-                            "detectionRange": 70.0,
+                            "detectionRange": 250.0,
                             "gravityScale": 2.0,
-                            "grabRange": 60.0,
+                            "grabRange": 100.0,
                             "minThrowSpeed": 50.0,
                             "maxThrowSpeed": 200.0,
                             "maxMouseDragDist": 400.0,
                             "airDrag": 1.0,
                             "stunDuration": 1.0,
                             "MaxDist": 200.0,
-                            "ledgeBuffer": -7.0,
+                            "ledgeBuffer": 40.0,
                             "ledgeRayCastDistance": 50.0
                         }
                     }
@@ -1753,16 +1753,16 @@
                             "maxSpeed": 15.0,
                             "moveAudioInterval": 0.4000000059604645,
                             "stopAudioDistance": 40.0,
-                            "detectionRange": 70.0,
+                            "detectionRange": 250.0,
                             "gravityScale": 2.0,
-                            "grabRange": 60.0,
+                            "grabRange": 100.0,
                             "minThrowSpeed": 50.0,
-                            "maxThrowSpeed": 2000.0,
+                            "maxThrowSpeed": 200.0,
                             "maxMouseDragDist": 400.0,
                             "airDrag": 1.0,
                             "stunDuration": 1.0,
                             "MaxDist": 200.0,
-                            "ledgeBuffer": -7.0,
+                            "ledgeBuffer": 40.0,
                             "ledgeRayCastDistance": 50.0
                         }
                     }
@@ -1982,7 +1982,9 @@
         "Player": 1
     },
     "layer_visibility": {
-        "Default": true
+        "Default": true,
+        "Ground": false,
+        "Player": false
     },
     "tag_mapping": {
         "Default": 0,

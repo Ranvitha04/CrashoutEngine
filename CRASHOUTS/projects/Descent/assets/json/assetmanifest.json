@@ -79,6 +79,10 @@
     ],
     "dialogue": [
         {
+            "name": "cutscenedialogue",
+            "path": "cutscenedialogue.json"
+        },
+        {
             "name": "dialogue",
             "path": "dialogue.json"
         }

@@ -180,8 +180,71 @@
             }
         },
         {
-            "active": true,
+            "active": false,
             "name": "Dialogue_1",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": -42.32943344116211,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 180.9047393798828,
+                    "y": 23.640331268310548
+                }
+            },
+            "text": {
+                "font": "AlegreyaSC-Regular",
+                "text": "Enter the dialogue for the first cutscene. [Spacebar to Proceed]",
+                "scale": 2.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": true,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": true,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 0.0,
+                "lineSpacing": 0.0,
+                "isRevealing": true,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "dialogue/cutscenedialogue.json",
+                "dialogueID": "1"
+            },
+            "gui": {
+                "uiType": 2
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "uiLayout": 4
+            },
+            "layer": {
+                "layerName": "Dialogue",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "DialogueBG",
             "tag": {
                 "tagMask": 0
             },
@@ -231,9 +294,42 @@
                     "z": 0.0
                 }
             },
+            "gui": {
+                "uiType": 1
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "uiLayout": 4
+            },
+            "layer": {
+                "layerName": "Dialogue",
+                "z": 0
+            }
+        },
+        {
+            "active": false,
+            "name": "Dialogue_2",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": -42.32943344116211,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 180.9047393798828,
+                    "y": 23.640331268310548
+                }
+            },
             "text": {
                 "font": "AlegreyaSC-Regular",
-                "text": "something something something help",
+                "text": "Enter the dialogue for the second cutscene. [Spacebar to Proceed]",
                 "scale": 2.0,
                 "offset": {
                     "x": 0.0,
@@ -258,11 +354,74 @@
                 "lineSpacing": 0.0,
                 "isRevealing": true,
                 "revealSpeed": 10.0,
-                "dialogueFilePath": "dialogue/cutscenedialogue1.json",
-                "dialogueID": "1"
+                "dialogueFilePath": "dialogue/cutscenedialogue.json",
+                "dialogueID": "2"
             },
             "gui": {
-                "uiType": 3
+                "uiType": 2
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "uiLayout": 4
+            },
+            "layer": {
+                "layerName": "Dialogue",
+                "z": 0
+            }
+        },
+        {
+            "active": false,
+            "name": "Dialogue_3",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": -42.32943344116211,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 180.9047393798828,
+                    "y": 23.640331268310548
+                }
+            },
+            "text": {
+                "font": "AlegreyaSC-Regular",
+                "text": "Enter the dialogue for the third cutscene. [Spacebar to Proceed]",
+                "scale": 2.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": true,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": true,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 0.0,
+                "lineSpacing": 0.0,
+                "isRevealing": true,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "dialogue/cutscenedialogue.json",
+                "dialogueID": "3"
+            },
+            "gui": {
+                "uiType": 2
             },
             "uilayout": {
                 "paddingXY": {
