@@ -121,7 +121,7 @@ namespace CrashoutsEngine
 
             // 3. JUMP & DROP DOWN LOGI
 
-            if (Input.IsKeyTriggered(Key.Space) && IsGrounded)
+            if (Input.IsKeyTriggered(Key.Space) && IsGrounded && !isPassthrough)
             {
                 jumpRequested = true;
             }
@@ -219,8 +219,7 @@ namespace CrashoutsEngine
 
             // Logic: Grounded if feet touch ground AND we aren't moving up (jumping)
             IsGrounded = (leftIsGround || rightIsGround) && rb.LinearVelocity.y <= 0.1f;
-            Debug.Log("RAYCASTING");
-
+            //Debug.Log("RAYCASTING");
         }
 
         private bool IsGroundOrPlatform(uint entityID)
@@ -283,9 +282,11 @@ namespace CrashoutsEngine
 
         public bool OnPreSolve(uint otherEntity)
         {
-            Debug.Log("IS PASSTHROUGH: " + (isPassthrough ? "TRUE" : "FALSE"));
+            //Debug.Log("IS PASSTHROUGH: " + (isPassthrough ? "TRUE" : "FALSE"));
             Entity other = new Entity(otherEntity);
             var Tag = other.GetComponent<TagComponent>();
+
+            if (Tag != null && Tag.HasTag("Passthrough") && canPassthrough) { isPassthrough = true; }
 
             // Passthrough Check
             if (Tag != null && Tag.HasTag("Passthrough"))

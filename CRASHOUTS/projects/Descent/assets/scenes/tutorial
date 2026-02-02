@@ -13844,6 +13844,20 @@
                     "y": 1.0
                 }
             },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "EnergyUI",
+                        "fields": {
+                            "totalBalls": 10,
+                            "maxPlayerEnergy": 100.0,
+                            "ballBaseName": "EnergyBall_",
+                            "activeAlpha": 1.0,
+                            "inactiveAlpha": 0.20000000298023225
+                        }
+                    }
+                ]
+            },
             "layer": {
                 "layerName": "",
                 "z": 0

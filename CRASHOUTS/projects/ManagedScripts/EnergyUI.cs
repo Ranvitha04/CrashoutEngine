@@ -1,4 +1,6 @@
+
 using System;
+using System.Runtime.CompilerServices;
 
 namespace CrashoutsEngine
 {
@@ -13,29 +15,19 @@ namespace CrashoutsEngine
         // Tuning
         public float activeAlpha = 1.0f;  // Fully lit
         public float inactiveAlpha = 0.2f; // Dim background (instead of invisible)
-
-        // Cache the components so we don't FindEntity every frame
-        private ShapeComponent[] ballShapes;
+        private uint[] ballShapes;
 
         public override void Start()
         {
-            ballShapes = new ShapeComponent[totalBalls];
+            ballShapes = new uint[totalBalls];
 
             for (int i = 0; i < totalBalls; i++)
             {
+                Debug.Log("Test: " + i + " Total is " + totalBalls);
                 // Find the existing UI entities in the scene
                 uint id = InternalCalls.FindEntityByName(ballBaseName + i);
-
-                if (id != uint.MaxValue) // Assuming MaxValue is your error code
-                {
-                    Entity ballEnt = new Entity(id);
-                    ballShapes[i] = ballEnt.GetComponent<ShapeComponent>();
-                    Debug.Log("load ball: " + i);
-                }
-                else
-                {
-                    Debug.Log("[EnergyUI] Error: Could not find " + ballBaseName + i);
-                }
+                ballShapes[i] = id;
+                Debug.Log("Reached End");
             }
         }
 
@@ -49,6 +41,11 @@ namespace CrashoutsEngine
             for (int i = 0; i < totalBalls; i++)
             {
                 if (ballShapes[i] == null) continue;
+                Debug.Log("hi");
+                
+                Entity ballEnt = new Entity(ballShapes[i]);
+                ShapeComponent sc = ballEnt.GetComponent<ShapeComponent>();
+                Debug.Log("Yippie");
 
                 // Determine the range this ball covers (e.g., Ball 0 covers 0-10, Ball 1 covers 10-20)
                 float ballMin = i * energyPerBall;
@@ -78,7 +75,7 @@ namespace CrashoutsEngine
                 }
 
                 // Apply the alpha using our new C++ binding
-                ballShapes[i].Alpha = targetAlpha;
+                sc.Alpha = targetAlpha;
             }
         }
     }
