@@ -7,7 +7,7 @@
 This file is the base template which all the future serialized scenes would 
 build off from.
 
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 */
 
@@ -24,6 +24,8 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserve
 #include "assetmanager.h"
 #include "sceneasset.h"
 #include "gamestatemanager.h"
+#include "scenetransition.h"
+#include "frameratecontroller.h"
 /*                                                   Global Variables
 ----------------------------------------------------------------------------- */
 
@@ -51,6 +53,8 @@ void InitScene()
 void UpdateScene()
 {
 	// Update logic for Scene state
+	float dt = (float)FrameRateController::GetInstance().DT();
+	CrashoutsEngine::SceneTransition::Update(dt);
 }
 
 void RenderScene()
@@ -61,6 +65,7 @@ void RenderScene()
 	//glClearColor(0.1f, 0.2f, 0.4f, 1.0f);
 	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 #endif
+	CrashoutsEngine::SceneTransition::Render();
 }
 
 void FreeScene()

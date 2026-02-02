@@ -192,5 +192,39 @@ namespace CrashoutsEngine
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         public static extern void LoadDialogue(uint entityID);
+
+        // --- VIDEO ---
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern void AddVideo(uint entityID);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern void RemoveVideo(uint entityID);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern bool EntityHasVideo(uint entityID);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern void Video_Play(uint entityID);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern void Video_Pause(uint entityID);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern void Video_Stop(uint entityID);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern void Video_SetLoop(uint entityID, bool loop);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern void Video_AddFrame(uint entityID, string path);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern void Video_SetFPS(uint entityID, float fps);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern void Video_ClearFrames(uint entityID);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern void Video_Load(uint entityID, string path);
     }
 }

@@ -41,6 +41,7 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 #include "keyframe.h"
 #include "activecomponent.h"
 #include "audiocomponent.h"
+#include "videosystem.h"
 
 #include "glapp.h"
 #include "log.h"
@@ -353,6 +354,7 @@ void Update(double const& dt) {
 
     if (engineState == EngineState::PLAY) {
         KeyframeUnity::UpdateAll(ecs, (float)dt);
+        CrashoutsEngine::VideoSystem::Update((float)dt);
         CrashoutsEngine::ScriptSystem::UpdateAll();
 
         //fixed Update please work

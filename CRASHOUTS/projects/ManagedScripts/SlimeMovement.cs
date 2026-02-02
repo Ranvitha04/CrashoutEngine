@@ -54,7 +54,7 @@ namespace CrashoutsEngine
         // PATH FOLLOWING STATE
         private List<CEVec3> activePath = new List<CEVec3>();
         private bool isFollowingPath = false;
-        private int pathIndex = 0;
+        //private int pathIndex = 0;
 
         private string currentAnimState = "";
 
@@ -201,6 +201,18 @@ namespace CrashoutsEngine
             CEVec3 rayEnd = new CEVec3(rayStart.x, rayStart.y - ledgeRayCastDistance, rayStart.z);
             CEVec3 rayColor = new CEVec3(1.0f, 0.0f, 0.0f); // Red
             Debug.DrawLine(ref rayStart, ref rayEnd, 2.0f, ref rayColor);
+
+            // Draw Trajectory Path (Visual Aid)
+            if (isGrabbed && activePath.Count > 1)
+            {
+                CEVec3 pathColor = new CEVec3(1.0f, 1.0f, 1.0f);
+                for (int i = 0; i < activePath.Count - 1; i += 2)
+                {
+                    CEVec3 p1 = activePath[i];
+                    CEVec3 p2 = activePath[i + 1];
+                    Debug.DrawTrajectory(ref p1, ref p2, 2.0f, ref pathColor);
+                }
+            }
         }
 
         private void UpdateAnimationState()
@@ -229,151 +241,131 @@ namespace CrashoutsEngine
             if (flipCooldown > 0) flipCooldown -= dt;
             if (ignoreHomeTimer > 0) ignoreHomeTimer -= dt;
 
-            // --- PATH FOLLOWING MODE ---
-            if (isFollowingPath)
-            {
-                if (pathIndex < activePath.Count)
-                {
-                    CEVec3 target = activePath[pathIndex];
-                    CEVec3 current = tf.Position;
-                    
-                    if (dt > 0.0001f)
-                    {
-                        float vx = (target.x - current.x) / dt;
-                        float vy = (target.y - current.y) / dt;
-                        rb.LinearVelocity = new CEVec3(vx, vy, 0);
-                    }
-                    pathIndex++;
-                }
-                else
-                {
-                    isFollowingPath = false;
-                    activePath.Clear();
-                }
-                return; 
-            }
-
             // --- AI LOGIC (Raycasts & Decisions) ---
             
-            // Chase logic
-            isChasing = false;
-            if (playerScript != null)
+            // Only run AI if not thrown
+            if (!wasThrown)
             {
-                var playerTf = playerScript.Entity.GetComponent<TransformComponent>();
-                if (playerTf != null)
+                // Chase logic
+                isChasing = false;
+                if (playerScript != null)
                 {
-                    float dist = Distance(tf.Position, playerTf.Position);
-                    bool hasLineOfSight = false;
-                    
-                    if (dist < detectionRange)
+                    var playerTf = playerScript.Entity.GetComponent<TransformComponent>();
+                    if (playerTf != null)
                     {
-                         CEVec3 start = tf.Position;
-                         CEVec3 end = playerTf.Position;
-                         uint hitID;
-                         bool hit = InternalCalls.Raycast(ref start, ref end, out hitID, Entity.ID);
-                         
-                         if (hit && hitID == playerScript.Entity.ID)
-                         {
-                             hasLineOfSight = true;
-                         }
-                    }
-
-                    if (hasLineOfSight) 
-                    {
-                        isChasing = true;
-                        returningHome = false;
-                        moveRight = (playerTf.Position.x > tf.Position.x);
-                    }
-                }
-            }
-
-            // Patrol logic
-            if (!isChasing && isGrounded)
-            {
-                // 1. Check for Ledges (Holes)
-                float checkDir = moveRight ? 1.0f : -1.0f;
-                float halfWidth = Math.Abs(tf.Size.x) * 0.5f;
-                float rayOriginX = tf.Position.x + (checkDir * (halfWidth + ledgeBuffer));
-
-                CEVec3 rayStart = new CEVec3(rayOriginX, tf.Position.y, tf.Position.z);
-                CEVec3 rayEnd = new CEVec3(rayStart.x, rayStart.y - ledgeRayCastDistance, rayStart.z);
-                
-                uint hitGroundID;
-                bool hitGround = InternalCalls.Raycast(ref rayStart, ref rayEnd, out hitGroundID, Entity.ID);
-
-                // Verify the hit object is actually ground/platform
-                if (hitGround)
-                {
-                    Entity hitEnt = new Entity(hitGroundID);
-                    var hitTag = hitEnt.GetComponent<TagComponent>();
-                    bool isValidGround = false;
-                    if (hitTag != null)
-                    {
-                        if (hitTag.HasTag("Ground") || hitTag.HasTag("Platform") || hitTag.HasTag("Wall"))
-                        {
-                            isValidGround = true;
-                        }
-                    }
-                    if (!isValidGround) hitGround = false; // Treat non-ground hits (e.g. enemies) as holes
-                }
-
-                if (!hitGround && flipCooldown <= 0)
-                {
-                     moveRight = !moveRight;
-                     float newDir = moveRight ? 1.0f : -1.0f;
-                     rb.LinearVelocity = new CEVec3(newDir * 50.0f, rb.LinearVelocity.y, 0); // Kick away from ledge
-                     flipCooldown = 0.5f; 
-                     returningHome = false; 
-                     ignoreHomeTimer = 4.0f; 
-                     stuckTimer = 0.0f;
-                }
-                else
-                {
-                    // 2. Normal Patrol Distance Check
-                    float distFromHome = tf.Position.x - startPos.x;
-
-                    if (returningHome)
-                    {
-                        if (flipCooldown <= 0)
-                        {
-                            moveRight = (startPos.x > tf.Position.x);
-                        }
+                        float dist = Distance(tf.Position, playerTf.Position);
+                        bool hasLineOfSight = false;
                         
-                        if (Math.Abs(distFromHome) < 10.0f)
+                        if (dist < detectionRange)
                         {
+                             CEVec3 start = tf.Position;
+                             CEVec3 end = playerTf.Position;
+                             uint hitID;
+                             bool hit = InternalCalls.Raycast(ref start, ref end, out hitID, Entity.ID);
+                             
+                             if (hit && hitID == playerScript.Entity.ID)
+                             {
+                                 hasLineOfSight = true;
+                             }
+                        }
+
+                        if (hasLineOfSight) 
+                        {
+                            isChasing = true;
                             returningHome = false;
+                            moveRight = (playerTf.Position.x > tf.Position.x);
+                        }
+                    }
+                }
+
+                // Patrol logic
+                if (!isChasing && isGrounded)
+                {
+                    // 1. Check for Ledges (Holes)
+                    float checkDir = moveRight ? 1.0f : -1.0f;
+                    float halfWidth = Math.Abs(tf.Size.x) * 0.5f;
+                    float rayOriginX = tf.Position.x + (checkDir * (halfWidth + ledgeBuffer));
+
+                    CEVec3 rayStart = new CEVec3(rayOriginX, tf.Position.y, tf.Position.z);
+                    CEVec3 rayEnd = new CEVec3(rayStart.x, rayStart.y - ledgeRayCastDistance, rayStart.z);
+                    
+                    uint hitGroundID;
+                    bool hitGround = InternalCalls.Raycast(ref rayStart, ref rayEnd, out hitGroundID, Entity.ID);
+
+                    // Verify the hit object is actually ground/platform
+                    if (hitGround)
+                    {
+                        Entity hitEnt = new Entity(hitGroundID);
+                        var hitTag = hitEnt.GetComponent<TagComponent>();
+                        bool isValidGround = false;
+                        if (hitTag != null)
+                        {
+                            if (hitTag.HasTag("Ground") || hitTag.HasTag("Platform") || hitTag.HasTag("Wall"))
+                            {
+                                isValidGround = true;
+                            }
+                        }
+                        if (!isValidGround) hitGround = false; // Treat non-ground hits (e.g. enemies) as holes
+                    }
+
+                    if (!hitGround && flipCooldown <= 0)
+                    {
+                         moveRight = !moveRight;
+                         float newDir = moveRight ? 1.0f : -1.0f;
+                         rb.LinearVelocity = new CEVec3(newDir * 50.0f, rb.LinearVelocity.y, 0); // Kick away from ledge
+                         flipCooldown = 0.5f; 
+                         returningHome = false; 
+                         ignoreHomeTimer = 4.0f; 
+                         stuckTimer = 0.0f;
+                    }
+                    else
+                    {
+                        // 2. Normal Patrol Distance Check
+                        float distFromHome = tf.Position.x - startPos.x;
+
+                        if (returningHome)
+                        {
+                            if (flipCooldown <= 0)
+                            {
+                                moveRight = (startPos.x > tf.Position.x);
+                            }
+                            
+                            if (Math.Abs(distFromHome) < 10.0f)
+                            {
+                                returningHome = false;
+                            }
+                        }
+                        else
+                        {
+                            if (Math.Abs(distFromHome) > MaxDist && ignoreHomeTimer <= 0)
+                            {
+                                returningHome = true; 
+                            }
+                        }
+                    }
+                }
+
+                // Stuck Detection
+                if ((isChasing || returningHome || isGrounded))
+                {
+                    if (Math.Abs(rb.LinearVelocity.x) < 2.0f)
+                    {
+                        stuckTimer += dt;
+                        if (stuckTimer > 0.5f)
+                        {
+                            if (!isChasing) 
+                            {
+                                moveRight = !moveRight;
+                                ignoreHomeTimer = 2.0f;
+                            }
+                            else rb.LinearVelocity = new CEVec3(rb.LinearVelocity.x, 200.0f, 0); 
+                            stuckTimer = 0.0f;
                         }
                     }
                     else
                     {
-                        if (Math.Abs(distFromHome) > MaxDist && ignoreHomeTimer <= 0)
-                        {
-                            returningHome = true; 
-                        }
-                    }
-                }
-            }
-
-            // Stuck Detection
-            if ((isChasing || returningHome || isGrounded))
-            {
-                if (Math.Abs(rb.LinearVelocity.x) < 2.0f)
-                {
-                    stuckTimer += dt;
-                    if (stuckTimer > 0.5f)
-                    {
-                        if (!isChasing) 
-                        {
-                            moveRight = !moveRight;
-                            ignoreHomeTimer = 2.0f;
-                        }
-                        else rb.LinearVelocity = new CEVec3(rb.LinearVelocity.x, 200.0f, 0); 
                         stuckTimer = 0.0f;
                     }
-                }
-                else
-                {
-                    stuckTimer = 0.0f;
                 }
             }
 
@@ -385,7 +377,7 @@ namespace CrashoutsEngine
             if (playerScript != null && !playerScript.alive) return;
 
             // Ground movement
-            if (isGrounded || isChasing) 
+            if (!wasThrown && (isGrounded || isChasing)) 
             {
                 if (Math.Abs(velocity.x) < maxSpeed * speedMult)
                 {
@@ -436,13 +428,14 @@ namespace CrashoutsEngine
                     rb.LinearVelocity = new CEVec3(0, 0, 0);
 
                     CEVec3 throwVel = CalculateThrowVelocity(mousePos, playerTf.Position);
-                    SimulatePath(throwVel, tf.Position, true);
+                    SimulatePath(throwVel, tf.Position);
                 }
             }
             else if (isGrabbed)
             {
                 isGrabbed = false;
                 wasThrown = true;
+                activePath.Clear();
                 rb.SetDynamic(true);
                 var Tag = Entity.GetComponent<TagComponent>();
                 if (Tag != null) Tag.AddTag("Enemy");
@@ -450,13 +443,7 @@ namespace CrashoutsEngine
                 if (playerScript != null)
                 {
                     CEVec3 throwVel = CalculateThrowVelocity(mousePos, playerScript.Entity.GetComponent<TransformComponent>().Position);
-                    
-                    SimulatePath(throwVel, tf.Position, false);
-                    if (activePath.Count > 0)
-                    {
-                        isFollowingPath = true;
-                        pathIndex = 0;
-                    }
+                    rb.LinearVelocity = throwVel;
                 }
             }
         }
@@ -476,9 +463,9 @@ namespace CrashoutsEngine
             return new CEVec3(dirX * speed, dirY * speed, 0);
         }
 
-        private void SimulatePath(CEVec3 velocity, CEVec3 startPos, bool drawOnly)
+        private void SimulatePath(CEVec3 velocity, CEVec3 startPos)
         {
-            if (!drawOnly) activePath.Clear();
+            activePath.Clear();
 
             CEVec3 currentPos = startPos;
             
@@ -488,7 +475,7 @@ namespace CrashoutsEngine
             int steps = (int)(2.0f / dt);
 
             CEVec3 simVel = velocity;
-            float totalAccelY = (-9.81f * 100.0f * gravityScale) - 70.0f;
+            float totalAccelY = (-9.81f * 100.0f * gravityScale); // Matched to FixedUpdate gravity
 
             for (int i = 0; i < steps; i++)
             {
@@ -497,28 +484,12 @@ namespace CrashoutsEngine
                 simVel.x += (-simVel.x * airDrag) * dt;
                 simVel.y += (-simVel.y * airDrag * 0.2f) * dt;
                 
-                simVel.x *= 0.999f;
-                simVel.y *= 0.999f;
-
                 CEVec3 nextPos = currentPos + (simVel * dt);
 
                 if (playerScript != null && playerScript.IsGrounded && nextPos.y < playerScript.Entity.GetComponent<TransformComponent>().Position.y - 50.0f)
                     break;
 
-                if (drawOnly)
-                {
-                    // Only draw every other segment to create a dotted line effect
-                    if (i % 2 == 0)
-                    {
-                        CEVec3 col = new CEVec3(1.0f, 1.0f, 1.0f);
-                        Debug.DrawLine(ref currentPos, ref nextPos, 2.0f, ref col); 
-                    }
-                }
-                else
-                {
-                    activePath.Add(nextPos);
-                }
-
+                activePath.Add(nextPos);
                 currentPos = nextPos;
             }
         }
