@@ -1,0 +1,48 @@
+{
+    "prefabs": [
+        {
+            "type": "Box",
+            "name": "Ball",
+            "transform": {
+                "position": {
+                    "x": 190.807144,
+                    "y": 60.744796,
+                    "z": 0.0
+                },
+                "rotation": 0.0,
+                "size": {
+                    "x": 32.0,
+                    "y": 40.0
+                }
+            },
+            "shape": {
+                "type": 0,
+                "kind": "Rectangle",
+                "width": 32.0,
+                "height": 40.0,
+                "size": 40.0,
+                "color": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "enableTexture": true,
+                "textureName": "Energy Ball spritesheet_00"
+            },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitution": 0.0
+            },
+            "script": {
+                "entityID": 7,
+                "className": "EnergyBall",
+                "scripts": [
+                    {
+                        "className": "EnergyBall"
+                    }
+                ]
+            }
+        }
+    ]
+}
