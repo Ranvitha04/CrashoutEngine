@@ -471,6 +471,18 @@
             "path": "Character\\Run.gif"
         },
         {
+            "name": "1",
+            "path": "Cutscenes\\1.png"
+        },
+        {
+            "name": "2",
+            "path": "Cutscenes\\2.png"
+        },
+        {
+            "name": "3",
+            "path": "Cutscenes\\3.png"
+        },
+        {
             "name": "Cutscene_",
             "path": "Cutscenes\\Cutscene_.png"
         },

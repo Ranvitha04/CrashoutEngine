@@ -8,6 +8,56 @@ using namespace CrashoutsEngine;
 using namespace Serialization;
 using namespace KeyframeUnity;
 
+namespace {
+    // 1. Checks if a specific name exists anywhere in the ECS (excluding the entity itself)
+    static bool NameExists(ECS& ecs, const std::string& targetName, Entity selfID) {
+        auto& nameArray = ecs.GetComponentArray<Component::NameComponent>();
+        for (size_t i = 0; i < nameArray.dense.size(); ++i) {
+            // Check if name matches AND it's not the entity we are currently renaming
+            if (nameArray.dense[i]->name == targetName && nameArray.indexToEntity[i] != selfID) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // 2. Generates a unique name (e.g., "Box" -> "Box (1)")
+    static void ResolveNameConflict(ECS& ecs, Entity entity) {
+        if (!ecs.HasComponent<Component::NameComponent>(entity)) return;
+
+        auto* nameComp = ecs.GetComponent<Component::NameComponent>(entity);
+        std::string baseName = nameComp->name;
+
+        // Remove existing suffix if it looks like " (Copy)" or similar to prevent "Box (Copy) (Copy)"
+        // (Optional: simple implementation just appends)
+
+        std::string candidate = baseName;
+        int counter = 1;
+
+        // Keep trying names until we find one that doesn't exist
+        while (NameExists(ecs, candidate, entity)) {
+            candidate = baseName + " (" + std::to_string(counter) + ")";
+            counter++;
+        }
+
+        nameComp->name = candidate;
+    }
+
+    // 3. Recursively renames the entity and all its children
+    static void MakeNamesUniqueRecursive(ECS& ecs, Entity root) {
+        // Rename the current entity
+        ResolveNameConflict(ecs, root);
+
+        // If it has children, process them too
+        if (ecs.HasComponent<Component::ChildrenComponent>(root)) {
+            auto* childrenComp = ecs.GetComponent<Component::ChildrenComponent>(root);
+            for (Entity childID : childrenComp->children) {
+                MakeNamesUniqueRecursive(ecs, childID);
+            }
+        }
+    }
+}
+
 namespace UI {
 
     // Helper local to this file
@@ -133,7 +183,18 @@ namespace UI {
 
         if (entities.size() > 0) {
             if (ImGui::Button("Clone Selected")) {
-                selected = ecs.CloneEntity(selected);
+                // 1. Perform the clone (Deep copy)
+                Entity clonedEntity = ecs.CloneEntity(selected);
+
+                // 2. Add to the local list so it appears in the Hierarchy immediately
+                entities.push_back(clonedEntity);
+
+                // 3. Apply the naming fix recursively
+                // This ensures the root and ALL children get unique names (e.g. "Arm (1)", "Hand (1)")
+                MakeNamesUniqueRecursive(ecs, clonedEntity);
+
+                // 4. Select the new clone
+                selected = clonedEntity;
                 return;
             }
             const bool delPressed =
