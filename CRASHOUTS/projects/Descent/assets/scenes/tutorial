@@ -10298,7 +10298,7 @@
             "active": true,
             "name": "Passthrough_Tiles",
             "tag": {
-                "tagMask": 18
+                "tagMask": 26
             },
             "transform": {
                 "rotation": 0.0,
@@ -13750,8 +13750,9 @@
     },
     "tag_mapping": {
         "Default": 0,
+        "Enemy": 4,
         "Ground": 2,
-        "Passthrough": 4,
+        "Passthrough": 8,
         "Player": 1
     },
     "quadtree": {

@@ -232,7 +232,7 @@ namespace {
 	@details Shows a single InputText and syncs the value back to the ECS component.
 	*/
 	struct NameAdapter : DebugReflection::IComponentAdapter {
-		const char* name() const override { return "NameComponent"; }
+		const char* name() const override { return "Name"; }
 		bool has(ECS& ecs, Entity e) const override {
 			return ecs.HasComponent<Component::NameComponent>(e);
 		}
@@ -381,7 +381,7 @@ namespace {
 	@details Shows a drop down of tags to choose from and create
 	*/
 	struct TagAdapter : DebugReflection::IComponentAdapter {
-		const char* name() const override { return "TagComponent"; }
+		const char* name() const override { return "Tag"; }
 		bool has(ECS& ecs, Entity e) const override {
 			return ecs.HasComponent<Component::TagComponent>(e);
 		}
@@ -605,7 +605,7 @@ namespace {
 	@details Uses ImGui drag controls and writes values back to the ECS each frame.
 	*/
 	struct TransformAdapter : DebugReflection::IComponentAdapter {
-		const char* name() const override { return "TransformComponent"; }
+		const char* name() const override { return "Transform"; }
 		bool has(ECS& ecs, Entity e) const override {
 			return ecs.HasComponent<Component::TransformComponent>(e);
 		}
@@ -962,7 +962,7 @@ namespace {
 	@details Edits type-specific parameters and supports a per-entity preview toggle.
 	*/
 	struct ShapeAdapter : DebugReflection::IComponentAdapter {
-		const char* name() const override { return "ShapeComponent"; }
+		const char* name() const override { return "Shape"; }
 		bool has(ECS& ecs, Entity e) const override {
 			return ecs.HasComponent<Component::ShapeComponent>(e);
 		}
@@ -1113,7 +1113,7 @@ namespace {
 	@details Edits type-specific parameters and supports a per-entity preview toggle.
 	*/
 	struct TextAdapter : DebugReflection::IComponentAdapter {
-		const char* name() const override { return "TextComponent"; }
+		const char* name() const override { return "Text"; }
 		bool has(ECS& ecs, Entity e) const override {
 			return ecs.HasComponent<Component::TextComponent>(e);
 		}
@@ -1570,7 +1570,7 @@ namespace {
 	@details Edits type-specific parameters and supports a per-entity preview toggle.
 	*/
 	struct ScriptAdapter : DebugReflection::IComponentAdapter {
-		const char* name() const override { return "ScriptComponent"; }
+		const char* name() const override { return "Script"; }
 
 		bool has(ECS& ecs, Entity e) const override {
 			return ecs.HasComponent<ScriptComponent>(e);
@@ -1871,27 +1871,27 @@ namespace {
 
 namespace CrashoutsEngine
 {
-    // Attach this script to an Entity through the ScriptComponent UI.
-    // Scripts with [ScriptBehaviour] will appear in the editor's script list.
-    [ScriptBehaviour]
-    public class )" << file.stem().string() << R"(
-    {
-        // Reference to the entity this script instance is attached to.
-        // Automatically assigned by the engine before Start() runs.
-        public Entity Entity;
+	// Attach this script to an Entity through the ScriptComponent UI.
+	// Scripts with [ScriptBehaviour] will appear in the editor's script list.
+	[ScriptBehaviour]
+	public class )" << file.stem().string() << R"(
+	{
+		// Reference to the entity this script instance is attached to.
+		// Automatically assigned by the engine before Start() runs.
+		public Entity Entity;
 
-        // Called once when the script is first created.
-        // Initialize references or setup values here.
-        public void Start() { }
+		// Called once when the script is first created.
+		// Initialize references or setup values here.
+		public void Start() { }
 
-        // Called every frame.
-        // Main game logic, movement, inputs, and updates go here.
-        public void Update() { }
+		// Called every frame.
+		// Main game logic, movement, inputs, and updates go here.
+		public void Update() { }
 
-        // Called at a fixed timestep (ideal for physics logic).
-        // Runs independently from the frame rate.
-        public void FixedUpdate() { }
-    }
+		// Called at a fixed timestep (ideal for physics logic).
+		// Runs independently from the frame rate.
+		public void FixedUpdate() { }
+	}
 }
 )";
 				out.close();
@@ -1911,23 +1911,69 @@ namespace CrashoutsEngine
 				if (!isBuilding)
 				{
 					isBuilding = true;
+					MonoManager::s_IsManualReloading = true; // Lock watcher
 
-					// PAUSE AUTOMATIC WATCHER
-					MonoManager::s_IsManualReloading = true;
-
+					// Launch build on a separate thread to avoid freezing the UI
 					std::thread([]() {
-						int result = system(
-							"dotnet clean \"../../projects/ManagedScripts/ManagedScripts.csproj\" -c Debug > buildlog.txt 2>&1 && "
-							"dotnet build \"../../projects/ManagedScripts/ManagedScripts.csproj\" -c Debug > buildlog.txt 2>&1"
-						);
+						// 1. Detect C++ Configuration
+						// If the C++ Engine is Debug, we build Debug scripts.
+						// If the C++ Engine is Release, we build Release scripts.
+						std::string config = "Release";
+#ifdef _DEBUG
+						config = "Debug";
+#endif
+
+						// 2. Setup Paths
+						// Adjust relative paths based on where your .exe is located
+						namespace fs = std::filesystem;
+						fs::path projectPath = "../../projects/ManagedScripts/ManagedScripts.csproj";
+
+						// The folder where dotnet outputs the new DLL
+						fs::path buildOutput = fs::path("../../projects/ManagedScripts/bin") / config / "net6.0";
+						fs::path srcDll = buildOutput / "ManagedScripts.dll";
+						fs::path srcPdb = buildOutput / "ManagedScripts.pdb";
+
+						// The location the Engine is currently reading from
+						fs::path targetDll = MonoManager::GetAssemblyPath();
+						fs::path targetPdb = targetDll;
+						targetPdb.replace_extension(".pdb");
+
+						// 3. Run Build Command
+						// We redirect output to a log file so you can debug build errors
+						std::string buildCmd = "dotnet build \"" + projectPath.string() + "\" -c " + config + " > buildlog.txt 2>&1";
+
+						// Execute Build
+						int result = system(buildCmd.c_str());
+
 						if (result == 0) {
-							reloadPending = true; // signal reload
+							// 4. COPY Logic (The "Hot Swap")
+							try {
+								// We must use copy_options::overwrite_existing
+								fs::copy_file(srcDll, targetDll, fs::copy_options::overwrite_existing);
+
+								// Try to copy PDB (symbols) if they exist
+								if (fs::exists(srcPdb)) {
+									fs::copy_file(srcPdb, targetPdb, fs::copy_options::overwrite_existing);
+								}
+
+								// Success: Signal the main thread to reload the Domain
+								reloadPending = true;
+							}
+							catch (const std::exception& e) {
+								// PRINT THE ERROR so you know what happened
+								std::cerr << "[Mono] Hot-Swap Failed: " << e.what() << std::endl;
+
+								// Release the lock so the engine doesn't get stuck
+								MonoManager::s_IsManualReloading = false;
+							}
 						}
 						else {
-							// If build fails, we must release the lock so auto-reload works later
+							// Build failed
 							MonoManager::s_IsManualReloading = false;
 						}
+
 						isBuilding = false;
+
 						}).detach();
 				}
 			}
@@ -1970,7 +2016,7 @@ namespace CrashoutsEngine
 	@details Uses ImGui drag controls and writes values back to the ECS each frame.
 	*/
 	struct CameraAdapter : DebugReflection::IComponentAdapter {
-		const char* name() const override { return "CameraComponent"; }
+		const char* name() const override { return "Camera"; }
 		bool has(ECS& ecs, Entity e) const override {
 			return ecs.HasComponent<Component::CameraComponent>(e);
 		}
@@ -1996,7 +2042,7 @@ namespace CrashoutsEngine
 	@details Uses ImGui drag controls and writes values back to the ECS each frame.
 	*/
 	struct ButtonAdapter : DebugReflection::IComponentAdapter {
-		const char* name() const override { return "ButtonComponent"; }
+		const char* name() const override { return "Button"; }
 		bool has(ECS& ecs, Entity e) const override {
 			return ecs.HasComponent<Component::ButtonComponent>(e);
 		}
@@ -2061,7 +2107,7 @@ namespace CrashoutsEngine
 	@details Uses ImGui drag controls and writes values back to the ECS each frame.
 	*/
 	struct UILayoutAdapater : DebugReflection::IComponentAdapter {
-		const char* name() const override { return "UILayoutComponent"; }
+		const char* name() const override { return "UI Layout"; }
 		bool has(ECS& ecs, Entity e) const override {
 			return ecs.HasComponent<Component::UILayoutComponent>(e);
 		}
@@ -2149,7 +2195,7 @@ namespace CrashoutsEngine
 	@details Uses ImGui drag controls and writes values back to the ECS each frame.
 	*/
 	struct TextInputAdapter : DebugReflection::IComponentAdapter {
-		const char* name() const override { return "TextInputComponent"; }
+		const char* name() const override { return "Text Input"; }
 		bool has(ECS& ecs, Entity e) const override {
 			return ecs.HasComponent<Component::TextInputComponent>(e);
 		}
@@ -2203,7 +2249,7 @@ namespace CrashoutsEngine
 	@details Uses ImGui drag controls and writes values back to the ECS each frame.
 	*/
 	struct GuiAdapter : DebugReflection::IComponentAdapter {
-		const char* name() const override { return "GuiComponent"; }
+		const char* name() const override { return "GUI"; }
 		bool has(ECS& ecs, Entity e) const override {
 			return ecs.HasComponent<GuiComponent>(e);
 		}
@@ -2302,7 +2348,7 @@ namespace CrashoutsEngine
 	 @details Uses ImGui controls and writes values back to the ECS each frame.
 	 */
 	struct PPAdapter : DebugReflection::IComponentAdapter {
-		const char* name() const override { return "Post-Process Component"; }
+		const char* name() const override { return "Post-Processing"; }
 		bool has(ECS& ecs, Entity e) const override {
 			return ecs.HasComponent<Component::PPComponent>(e);
 		}
@@ -2383,7 +2429,7 @@ namespace CrashoutsEngine
 	struct TileMapAdapter : DebugReflection::IComponentAdapter {
 
 		// 1. Update Name
-		const char* name() const override { return "Tile Map Component"; }
+		const char* name() const override { return "Tile Map"; }
 
 		// 2. Update 'Has' Check
 		bool has(ECS& ecs, Entity e) const override {
@@ -3213,7 +3259,7 @@ namespace CrashoutsEngine
 	};
 
 	struct VideoAdapter : DebugReflection::IComponentAdapter {
-		const char* name() const override { return "VideoComponent"; }
+		const char* name() const override { return "Video"; }
 		bool has(ECS& ecs, Entity e) const override {
 			return ecs.HasComponent<Component::VideoComponent>(e);
 		}
@@ -3235,10 +3281,10 @@ namespace CrashoutsEngine
 			UIHelpers::DrawUndoableFloat("FPS", vc->frameRate, 0.1f, 1.0f, 120.0f);
 
 			ImGui::Separator();
-			
+
 			// --- VIDEO PATH SELECTION ---
 			ImGui::Text("Video Source:");
-			
+
 			char pathBuf[256];
 			strncpy(pathBuf, vc->videoPath.c_str(), sizeof(pathBuf));
 			pathBuf[sizeof(pathBuf) - 1] = '\0';
@@ -3315,7 +3361,7 @@ namespace CrashoutsEngine
 							std::sort(s_videos.begin(), s_videos.end());
 						}
 					}
-					catch (...) { }
+					catch (...) {}
 				}
 
 				ImGui::Separator();
@@ -3324,7 +3370,7 @@ namespace CrashoutsEngine
 					bool isSelected = (vc->videoPath == v);
 					if (ImGui::Selectable(v.c_str(), isSelected)) {
 						vc->videoPath = v;
-						
+
 						// Auto-load
 						if (vc->loader) vc->loader.reset();
 						vc->loader = std::make_shared<CrashoutsEngine::VideoLoader>(CrashoutsEngine::Assets::rootPath + v);
@@ -3349,7 +3395,7 @@ namespace CrashoutsEngine
 				ImGui::Text("Video Size: %d x %d", vc->loader->GetWidth(), vc->loader->GetHeight());
 				ImGui::Text("Duration: %.2f s", vc->loader->GetDuration());
 				ImGui::Text("Texture Handle: %u", vc->loader->GetTextureHandle());
-				
+
 				// Show audio state
 				ImGui::Text("Current Time: %.2f / %.2f s", (float)vc->loader->GetCurrentTime(), (float)vc->loader->GetDuration());
 			}
@@ -3419,7 +3465,7 @@ namespace CrashoutsEngine
 	static BuiltinPhysicsProvider gBuiltinPhys;
 	static KeyframeAnimatorAdapter gKeyframeAdapter;
 	static ParticleSystemAdapter gParticleAdapter;
-	static TagAdapter gTagAdapter;     
+	static TagAdapter gTagAdapter;
 	static DebugZOverrideAdapter gDebugZOverrideAdapter;
 	static VideoAdapter gVideoAdapter;
 }

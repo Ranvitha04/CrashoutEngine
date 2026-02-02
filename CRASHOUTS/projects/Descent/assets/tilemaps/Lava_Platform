@@ -1,5 +1,5 @@
 {
-    "layerMask": 10,
+    "layerMask": 6,
     "tilemap": [
         {
             "texAssetName": "spritesheet\\lava platform\\lava platform_00.png",
