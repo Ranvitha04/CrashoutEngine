@@ -42,9 +42,12 @@ namespace CrashoutsEngine
             {
                 if (ballShapes[i] == null) continue;
                 Debug.Log("hi");
-                
+
                 Entity ballEnt = new Entity(ballShapes[i]);
+                bool hasComp = InternalCalls.
                 ShapeComponent sc = ballEnt.GetComponent<ShapeComponent>();
+                if (sc == null) Debug.Log(ballEnt.ID + " is null");
+                else Debug.Log(ballEnt.ID + " is not null");
                 Debug.Log("Yippie");
 
                 // Determine the range this ball covers (e.g., Ball 0 covers 0-10, Ball 1 covers 10-20)
