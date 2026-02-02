@@ -814,6 +814,79 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path) {
 }
 
 namespace CrashoutsEngine {
+	bool DeletePrefabAsset(ECS& ecs, const std::string& prefabName)
+	{
+		(void)ecs; // if you don't need ecs here
+
+		namespace fs = std::filesystem;
+
+#if USE_IMGUI_EDITOR
+		const fs::path dir = fs::path(CrashoutsEngine::Assets::rootPath) / "prefabs";
+#else
+		const fs::path dir = fs::path(GetLocalAppData()) / "prefabs";
+#endif
+
+		if (!fs::exists(dir) || !fs::is_directory(dir))
+			return false;
+
+		bool removedAnything = false;
+
+		for (const auto& entry : fs::directory_iterator(dir))
+		{
+			if (!entry.is_regular_file() || entry.path().extension() != ".json")
+				continue;
+
+			// Load JSON
+			rapidjson::Document doc;
+			{
+				std::ifstream in(entry.path(), std::ios::binary);
+				if (!in) continue;
+
+				rapidjson::IStreamWrapper isw(in);
+				doc.ParseStream(isw);
+			}
+
+			if (doc.HasParseError() || !doc.IsObject() || !doc.HasMember("prefabs") || !doc["prefabs"].IsArray())
+				continue;
+
+			auto& arr = doc["prefabs"];
+			bool changedThisFile = false;
+
+			// Remove any prefab objects with matching name
+			for (rapidjson::SizeType i = 0; i < arr.Size(); /* no ++ here */)
+			{
+				auto& p = arr[i];
+				if (p.IsObject() && p.HasMember("name") && p["name"].IsString())
+				{
+					if (prefabName == p["name"].GetString())
+					{
+						arr.Erase(arr.Begin() + i);
+						changedThisFile = true;
+						removedAnything = true;
+						continue; // don't increment i because we erased
+					}
+				}
+				++i;
+			}
+
+			if (!changedThisFile)
+				continue;
+
+			// Write JSON back
+			std::ofstream out(entry.path(), std::ios::binary);
+			if (!out) continue;
+
+			rapidjson::OStreamWrapper osw(out);
+			rapidjson::PrettyWriter<rapidjson::OStreamWrapper> writer(osw);
+			doc.Accept(writer);
+		}
+
+		// Also remove it from the in-memory registry
+		if (removedAnything)
+			Prefab::Unregister(prefabName);
+
+		return removedAnything;
+	}
 	using namespace ::Component;
 
 	void InitPrefabs() {

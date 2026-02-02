@@ -35,8 +35,13 @@ namespace CrashoutsEngine
 
         public override void Start()
         {
+<<<<<<< HEAD
             CollisionEvents.RegisterCollideStay(Entity.ID, this.OnCollideStay);
             CollisionEvents.RegisterCollideExit(Entity.ID, this.OnCollideExit);
+=======
+            CollisionEvents.RegisterCollideEnter(Entity.ID, OnCollideEnter);
+            CollisionEvents.RegisterCollideExit(Entity.ID, OnCollideExit);
+>>>>>>> origin/afiq1
 
             transform = Entity.GetComponent<TransformComponent>();
 
@@ -64,7 +69,11 @@ namespace CrashoutsEngine
             playerScript = PlayerMovement.Instance;
         }
 
+<<<<<<< HEAD
         public void OnCollideStay(uint otherEntityID)
+=======
+        public void OnCollideEnter(uint otherEntityID)
+>>>>>>> origin/afiq1
         {
             Debug.Log("cock");
             Entity other = new Entity(otherEntityID);

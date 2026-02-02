@@ -9676,8 +9676,13 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
+<<<<<<< HEAD
                     "x": -116.62979125976563,
                     "y": 11.83984375,
+=======
+                    "x": -151.27203369140626,
+                    "y": -17.493423461914064,
+>>>>>>> origin/afiq1
                     "z": 50.0
                 },
                 "size": {
@@ -9703,8 +9708,13 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
+<<<<<<< HEAD
                     "x": -116.62979125976563,
                     "y": 6.83984375,
+=======
+                    "x": -151.27203369140626,
+                    "y": -22.493423461914064,
+>>>>>>> origin/afiq1
                     "z": 50.0
                 },
                 "offset": {
@@ -9713,6 +9723,7 @@
                     "z": 0.0
                 },
                 "min": {
+<<<<<<< HEAD
                     "x": -135.42984008789063,
                     "y": -23.66015625,
                     "z": 50.0
@@ -9720,6 +9731,15 @@
                 "max": {
                     "x": -97.82974243164063,
                     "y": 37.33984375,
+=======
+                    "x": -170.07208251953126,
+                    "y": -52.99342346191406,
+                    "z": 50.0
+                },
+                "max": {
+                    "x": -132.47198486328126,
+                    "y": 8.006576538085938,
+>>>>>>> origin/afiq1
                     "z": 50.0
                 }
             },
@@ -9852,10 +9872,193 @@
             },
             "keyframe_animator": {
                 "current": "playerIdle",
+<<<<<<< HEAD
                 "t": 6.300027370452881,
                 "playing": true,
                 "clips": [
                     {
+=======
+                "t": 0.7333332896232605,
+                "playing": true,
+                "clips": [
+                    {
+                        "name": "jump_light",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\New Artstyle\\Jump\\Jump spritesheet.png",
+                        "spriteCols": 2,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 62.0,
+                        "targetHeight": 72.50599670410156,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 1.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 1.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "fall_normal",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\New Artstyle\\Fall spritesheet.png",
+                        "spriteCols": 2,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 62.0,
+                        "targetHeight": 72.50599670410156,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "fall_light",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\New Artstyle\\Fall spritesheet.png",
+                        "spriteCols": 2,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 62.0,
+                        "targetHeight": 72.50599670410156,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 1.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 1.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "jump_normal",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\New Artstyle\\Jump\\Jump spritesheet.png",
+                        "spriteCols": 2,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 62.0,
+                        "targetHeight": 72.50599670410156,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "run_normal",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\New Artstyle\\Run spritesheet.png",
+                        "spriteCols": 3,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": 62.0,
+                        "targetHeight": 72.50599670410156,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 1.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.5,
+                                        "v": 2.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.75,
+                                        "v": 3.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 1.0,
+                                        "v": 3.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+>>>>>>> origin/afiq1
                         "name": "playerFall",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
@@ -9939,6 +10142,7 @@
                         ]
                     },
                     {
+<<<<<<< HEAD
                         "name": "playerFallLight",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
@@ -9971,6 +10175,9 @@
                     },
                     {
                         "name": "playerWalkLight",
+=======
+                        "name": "switch_to_normal",
+>>>>>>> origin/afiq1
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Run\\Run spritesheet.png",
                         "spriteCols": 3,
@@ -10013,6 +10220,37 @@
                                     {
                                         "t": 1.0,
                                         "v": 7.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "playerFallLight",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
+                        "spriteCols": 2,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 140.0,
+                        "targetHeight": 100.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 1.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -11603,7 +11841,11 @@
                 "rotation": 0.0,
                 "position": {
                     "x": 1490.7039794921876,
+<<<<<<< HEAD
                     "y": -395.9412536621094,
+=======
+                    "y": -429.93310546875,
+>>>>>>> origin/afiq1
                     "z": 0.0
                 },
                 "size": {
@@ -11630,7 +11872,11 @@
                 "enabled": true,
                 "position": {
                     "x": 1490.7039794921876,
+<<<<<<< HEAD
                     "y": -398.041259765625,
+=======
+                    "y": -432.0331115722656,
+>>>>>>> origin/afiq1
                     "z": 0.0
                 },
                 "offset": {
@@ -11640,12 +11886,20 @@
                 },
                 "min": {
                     "x": 1474.7039794921876,
+<<<<<<< HEAD
                     "y": -411.34124755859377,
+=======
+                    "y": -445.3330993652344,
+>>>>>>> origin/afiq1
                     "z": 0.0
                 },
                 "max": {
                     "x": 1506.7039794921876,
+<<<<<<< HEAD
                     "y": -384.74127197265627,
+=======
+                    "y": -418.7331237792969,
+>>>>>>> origin/afiq1
                     "z": 0.0
                 }
             },
@@ -11748,7 +12002,11 @@
                 "rotation": 0.0,
                 "position": {
                     "x": 95.65513610839844,
+<<<<<<< HEAD
                     "y": -677.1007690429688,
+=======
+                    "y": -711.0966186523438,
+>>>>>>> origin/afiq1
                     "z": 0.0
                 },
                 "size": {
@@ -11775,7 +12033,11 @@
                 "enabled": true,
                 "position": {
                     "x": 95.65513610839844,
+<<<<<<< HEAD
                     "y": -679.2007446289063,
+=======
+                    "y": -713.1965942382813,
+>>>>>>> origin/afiq1
                     "z": 0.0
                 },
                 "offset": {
@@ -11786,7 +12048,11 @@
                 "radius": 13.300000190734864,
                 "center": {
                     "x": 95.65513610839844,
+<<<<<<< HEAD
                     "y": -679.2007446289063,
+=======
+                    "y": -713.1965942382813,
+>>>>>>> origin/afiq1
                     "z": 0.0
                 }
             },
@@ -12880,8 +13146,13 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
+<<<<<<< HEAD
                     "x": 801.639404296875,
                     "y": -341.5446472167969,
+=======
+                    "x": 1601.751953125,
+                    "y": -410.2161865234375,
+>>>>>>> origin/afiq1
                     "z": 0.0
                 },
                 "size": {
@@ -12907,8 +13178,13 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
+<<<<<<< HEAD
                     "x": 801.639404296875,
                     "y": -341.5446472167969,
+=======
+                    "x": 1601.751953125,
+                    "y": -410.2161865234375,
+>>>>>>> origin/afiq1
                     "z": 0.0
                 },
                 "offset": {
@@ -12917,6 +13193,7 @@
                     "z": 0.0
                 },
                 "min": {
+<<<<<<< HEAD
                     "x": 751.6395263671875,
                     "y": -349.5446472167969,
                     "z": 0.0
@@ -12924,6 +13201,15 @@
                 "max": {
                     "x": 851.6392822265625,
                     "y": -333.5446472167969,
+=======
+                    "x": 1551.751953125,
+                    "y": -418.2161865234375,
+                    "z": 0.0
+                },
+                "max": {
+                    "x": 1651.751953125,
+                    "y": -402.2161865234375,
+>>>>>>> origin/afiq1
                     "z": 0.0
                 }
             },
@@ -12990,7 +13276,11 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
+<<<<<<< HEAD
                     "x": 1098.046142578125,
+=======
+                    "x": 956.234130859375,
+>>>>>>> origin/afiq1
                     "y": -410.2161865234375,
                     "z": 0.0
                 },
@@ -13017,7 +13307,11 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
+<<<<<<< HEAD
                     "x": 1098.046142578125,
+=======
+                    "x": 956.234130859375,
+>>>>>>> origin/afiq1
                     "y": -410.2161865234375,
                     "z": 0.0
                 },
@@ -13027,12 +13321,20 @@
                     "z": 0.0
                 },
                 "min": {
+<<<<<<< HEAD
                     "x": 1048.046142578125,
+=======
+                    "x": 906.234130859375,
+>>>>>>> origin/afiq1
                     "y": -418.2161865234375,
                     "z": 0.0
                 },
                 "max": {
+<<<<<<< HEAD
                     "x": 1148.046142578125,
+=======
+                    "x": 1006.234130859375,
+>>>>>>> origin/afiq1
                     "y": -402.2161865234375,
                     "z": 0.0
                 }
@@ -13100,8 +13402,13 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
+<<<<<<< HEAD
                     "x": 237.3817138671875,
                     "y": -324.79510498046877,
+=======
+                    "x": 930.774169921875,
+                    "y": -334.189697265625,
+>>>>>>> origin/afiq1
                     "z": 0.0
                 },
                 "size": {
@@ -13127,8 +13434,13 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
+<<<<<<< HEAD
                     "x": 237.3817138671875,
                     "y": -324.79510498046877,
+=======
+                    "x": 930.774169921875,
+                    "y": -334.189697265625,
+>>>>>>> origin/afiq1
                     "z": 0.0
                 },
                 "offset": {
@@ -13137,6 +13449,7 @@
                     "z": 0.0
                 },
                 "min": {
+<<<<<<< HEAD
                     "x": 187.3817138671875,
                     "y": -332.79510498046877,
                     "z": 0.0
@@ -13144,6 +13457,15 @@
                 "max": {
                     "x": 287.3817138671875,
                     "y": -316.79510498046877,
+=======
+                    "x": 880.7741088867188,
+                    "y": -342.189697265625,
+                    "z": 0.0
+                },
+                "max": {
+                    "x": 980.7742309570313,
+                    "y": -326.189697265625,
+>>>>>>> origin/afiq1
                     "z": 0.0
                 }
             },
@@ -13210,7 +13532,11 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
+<<<<<<< HEAD
                     "x": 261.27392578125,
+=======
+                    "x": 1362.3021240234376,
+>>>>>>> origin/afiq1
                     "y": -786.3703002929688,
                     "z": 0.0
                 },
@@ -13237,7 +13563,11 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
+<<<<<<< HEAD
                     "x": 261.27392578125,
+=======
+                    "x": 1362.3021240234376,
+>>>>>>> origin/afiq1
                     "y": -786.3703002929688,
                     "z": 0.0
                 },
@@ -13247,12 +13577,20 @@
                     "z": 0.0
                 },
                 "min": {
+<<<<<<< HEAD
                     "x": 182.973876953125,
+=======
+                    "x": 1284.002197265625,
+>>>>>>> origin/afiq1
                     "y": -795.3703002929688,
                     "z": 0.0
                 },
                 "max": {
+<<<<<<< HEAD
                     "x": 339.573974609375,
+=======
+                    "x": 1440.60205078125,
+>>>>>>> origin/afiq1
                     "y": -777.3703002929688,
                     "z": 0.0
                 }
@@ -13729,6 +14067,131 @@
                     "x": 1.0,
                     "y": 1.0
                 }
+            }
+        },
+        {
+            "active": true,
+            "name": "Closedbg",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -210.3270263671875,
+                    "y": 11.915435791015625,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1448.0,
+                    "y": 886.0
+                }
+            },
+            "collider": {
+                "ColliderType": 1,
+                "isTrigger": false,
+                "enabled": true,
+                "position": {
+                    "x": -210.3270263671875,
+                    "y": 11.915435791015625,
+                    "z": 0.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": -934.3270263671875,
+                    "y": -431.0845642089844,
+                    "z": 0.0
+                },
+                "max": {
+                    "x": 513.6729736328125,
+                    "y": 454.9154357910156,
+                    "z": 0.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/Pause Menu Closed.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "button": {
+                "buttonState": 0,
+                "shapeNormalColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "shapeHoveredColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.5
+                },
+                "shapePressedColor": {
+                    "x": 0.699999988079071,
+                    "y": 0.699999988079071,
+                    "z": 0.699999988079071,
+                    "w": 0.699999988079071
+                },
+                "textNormalColor": {
+                    "x": 0.30000001192092898,
+                    "y": 0.30000001192092898,
+                    "z": 0.30000001192092898,
+                    "w": 0.699999988079071
+                },
+                "textHoveredColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.0
+                },
+                "textPressedColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.5
+                }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 1
+            },
+            "layer": {
+                "layerName": "",
+                "z": 1
             }
         }
     ],

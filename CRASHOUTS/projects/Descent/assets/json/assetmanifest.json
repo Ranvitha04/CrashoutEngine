@@ -1559,16 +1559,32 @@
             "path": "AudioManagerPrefab.json"
         },
         {
-            "name": "Ball",
-            "path": "Ball.json"
-        },
-        {
             "name": "BigBox",
             "path": "BigBox.json"
         },
         {
             "name": "BlueBox",
             "path": "BlueBox.json"
+        },
+        {
+            "name": "Button",
+            "path": "Button.json"
+        },
+        {
+            "name": "Camera",
+            "path": "Camera.json"
+        },
+        {
+            "name": "Closedbg",
+            "path": "Closedbg.json"
+        },
+        {
+            "name": "ClosedBook",
+            "path": "ClosedBook.json"
+        },
+        {
+            "name": "ClosedBookbg",
+            "path": "ClosedBookbg.json"
         },
         {
             "name": "EnergyBall",
@@ -1579,8 +1595,13 @@
             "path": "Entity.json"
         },
         {
+<<<<<<< HEAD
             "name": "movingplatform",
             "path": "movingplatform.json"
+=======
+            "name": "Exitbtn",
+            "path": "Exitbtn.json"
+>>>>>>> origin/afiq1
         },
         {
             "name": "MovingWall",
@@ -1623,6 +1644,18 @@
             "path": "RedBox.json"
         },
         {
+            "name": "Resumebtn",
+            "path": "Resumebtn.json"
+        },
+        {
+            "name": "SettingBtn",
+            "path": "SettingBtn.json"
+        },
+        {
+            "name": "SettingButton",
+            "path": "SettingButton.json"
+        },
+        {
             "name": "shitasswork",
             "path": "shitasswork.json"
         },
@@ -1657,8 +1690,13 @@
             "path": "amir"
         },
         {
+<<<<<<< HEAD
             "name": "Cutscene",
             "path": "Cutscene"
+=======
+            "name": "descentClosedBook",
+            "path": "descentClosedBook"
+>>>>>>> origin/afiq1
         },
         {
             "name": "descentconfirm",

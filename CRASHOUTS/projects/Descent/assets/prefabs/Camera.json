@@ -1,0 +1,140 @@
+{
+    "prefabs": [
+        {
+            "type": "Box",
+            "name": "Camera",
+            "active": {
+                "isActive": true
+            },
+            "transform": {
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "rotation": 0.0,
+                "size": {
+                    "x": 10.0,
+                    "y": 10.0
+                }
+            },
+            "tag": {
+                "tagMask": 0
+            },
+            "layer": {
+                "layerName": "Default",
+                "z": 0
+            },
+            "shape": {
+                "type": 0,
+                "color": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "enableTexture": false,
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "thickness": 1.0,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0
+            },
+            "rigidbody": {
+                "mass": 1.0,
+                "restitution": 0.0,
+                "staticFriction": 0.0,
+                "dynamicFriction": 0.0,
+                "inertia": 0.0,
+                "invInertia": 0.0
+            },
+            "collider": {
+                "ColliderType": 1,
+                "isTrigger": false,
+                "enabled": true,
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": -5.0,
+                    "y": -5.0,
+                    "z": 0.0
+                },
+                "max": {
+                    "x": 5.0,
+                    "y": 5.0,
+                    "z": 0.0
+                }
+            },
+            "camera": {
+                "zoom": 1.784999966621399,
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "xBounds": [
+                    12.899999618530274,
+                    6.099999904632568
+                ],
+                "yBounds": [
+                    12.5,
+                    9.0
+                ]
+            },
+            "button": {
+                "buttonState": 0,
+                "shapeNormalColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "shapeHoveredColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.5
+                },
+                "shapePressedColor": {
+                    "x": 0.699999988079071,
+                    "y": 0.699999988079071,
+                    "z": 0.699999988079071,
+                    "w": 0.699999988079071
+                },
+                "textNormalColor": {
+                    "x": 0.30000001192092898,
+                    "y": 0.30000001192092898,
+                    "z": 0.30000001192092898,
+                    "w": 0.699999988079071
+                },
+                "textHoveredColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.0
+                },
+                "textPressedColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.5
+                }
+            }
+        }
+    ]
+}
