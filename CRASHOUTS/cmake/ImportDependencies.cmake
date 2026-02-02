@@ -401,3 +401,57 @@ macro(importDependencies)
 
     message(STATUS "All dependencies have been imported successfully.")
 endmacro()
+
+# -------------------- FFmpeg --------------------
+set(FFMPEG_ROOT "${CMAKE_SOURCE_DIR}/third_party/ffmpeg")
+set(FFMPEG_INCLUDE_DIR "${FFMPEG_ROOT}/include")
+set(FFMPEG_LIBRARY_DIR "${FFMPEG_ROOT}/lib")
+set(FFMPEG_BINARY_DIR  "${FFMPEG_ROOT}/bin")
+
+set(FFMPEG_LIBS
+    avcodec
+    avdevice
+    avfilter
+    avformat
+    avutil
+    swresample
+    swscale
+)
+
+function(link_ffmpeg_to target)
+    if(NOT EXISTS "${FFMPEG_ROOT}")
+        message(WARNING "FFmpeg root directory not found at: ${FFMPEG_ROOT}. Video features may be disabled.")
+        return()
+    endif()
+
+    target_include_directories(${target} PRIVATE ${FFMPEG_INCLUDE_DIR})
+    
+    # Enable the flag for code wrapped in #ifdef USE_FFMPEG
+    target_compile_definitions(${target} PRIVATE USE_FFMPEG)
+
+    foreach(LIB_NAME ${FFMPEG_LIBS})
+        find_library(FFMPEG_${LIB_NAME}_LIB
+            NAMES ${LIB_NAME}
+            PATHS ${FFMPEG_LIBRARY_DIR}
+            NO_DEFAULT_PATH
+        )
+
+        if(FFMPEG_${LIB_NAME}_LIB)
+            target_link_libraries(${target} PRIVATE ${FFMPEG_${LIB_NAME}_LIB})
+        else()
+            message(WARNING "Could not find FFmpeg library: ${LIB_NAME} in ${FFMPEG_LIBRARY_DIR}")
+        endif()
+    endforeach()
+
+    # Copy DLLs to the executable directory (post-build)
+    file(GLOB FFMPEG_DLLS "${FFMPEG_BINARY_DIR}/*.dll")
+    
+    foreach(DLL ${FFMPEG_DLLS})
+        add_custom_command(TARGET ${target} POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            "${DLL}"
+            "$<TARGET_FILE_DIR:${target}>"
+            COMMENT "Copying FFmpeg DLL: ${DLL} to output directory"
+        )
+    endforeach()
+endfunction()

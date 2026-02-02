@@ -1,0 +1,158 @@
+{
+    "prefabs": [
+        {
+            "type": "Box",
+            "name": "Player V2",
+            "active": {
+                "isActive": true
+            },
+            "transform": {
+                "position": {
+                    "x": 1329.542724609375,
+                    "y": 67.515869140625,
+                    "z": 50.0
+                },
+                "rotation": 0.0,
+                "size": {
+                    "x": 140.0,
+                    "y": 100.0
+                }
+            },
+            "tag": {
+                "tagMask": 1
+            },
+            "layer": {
+                "layerName": "Player",
+                "z": 0
+            },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "Main Clip",
+                        "path": "",
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "looping": false,
+                        "isMusic": false,
+                        "spatial3D": false
+                    }
+                ]
+            },
+            "shape": {
+                "type": 0,
+                "color": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "enableTexture": true,
+                "textureName": "images/Character\\New Artstyle\\Switch State\\Switch State spritesheet.png",
+                "uvSize": {
+                    "x": 0.3333333432674408,
+                    "y": 0.3333333432674408
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "thickness": 1.0,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0
+            },
+            "rigidbody": {
+                "mass": 3.0,
+                "restitution": 0.0,
+                "staticFriction": 0.0,
+                "dynamicFriction": 0.0,
+                "inertia": 0.0,
+                "invInertia": 0.0
+            },
+            "collider": {
+                "ColliderType": 1,
+                "isTrigger": false,
+                "enabled": true,
+                "position": {
+                    "x": 1329.542724609375,
+                    "y": 62.515869140625,
+                    "z": 50.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": -5.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": 1310.74267578125,
+                    "y": 32.015869140625,
+                    "z": 50.0
+                },
+                "max": {
+                    "x": 1348.3427734375,
+                    "y": 93.015869140625,
+                    "z": 50.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "PlayerMovement"
+                    }
+                ]
+            },
+            "camera": {
+                "zoom": 0.30000001192092898,
+                "x": 0.0,
+                "y": 0.0,
+                "xBounds": [
+                    0.0,
+                    0.0
+                ],
+                "yBounds": [
+                    0.0,
+                    0.0
+                ]
+            },
+            "button": {
+                "buttonState": 0,
+                "shapeNormalColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "shapeHoveredColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.5
+                },
+                "shapePressedColor": {
+                    "x": 0.699999988079071,
+                    "y": 0.699999988079071,
+                    "z": 0.699999988079071,
+                    "w": 0.699999988079071
+                },
+                "textNormalColor": {
+                    "x": 0.30000001192092898,
+                    "y": 0.30000001192092898,
+                    "z": 0.30000001192092898,
+                    "w": 0.699999988079071
+                },
+                "textHoveredColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.0
+                },
+                "textPressedColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.5
+                }
+            }
+        }
+    ]
+}

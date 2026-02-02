@@ -63,6 +63,12 @@ namespace CrashoutsEngine::Bindings {
 		Component::Rendering::Get().QueueLine(*start, *end, thickness, col, true);
 	}
 
+	static void InternalDrawTrajectory(CEVec3* start, CEVec3* end, float thickness, CEVec3* color) {
+		if (!start || !end || !color) return;
+		CEColor col(color->x, color->y, color->z, 1.0f);
+		Component::Rendering::Get().QueueLine(*start, *end, thickness, col, true);
+	}
+
 	static void InternalDrawCircle(CEVec2* size, CEVec3* position, CEVec3* color) {
 		if (!UI::IsGameDebugDrawEnabled()) return;
 		if (!size || !position || !color) return;
@@ -75,6 +81,7 @@ namespace CrashoutsEngine::Bindings {
 	void RegisterDebugBindings() {
 		mono_add_internal_call("CrashoutsEngine.Debug::Log", (const void*)InternalLog);
 		mono_add_internal_call("CrashoutsEngine.Debug::DrawLine", (const void*)InternalDrawLine);
+		mono_add_internal_call("CrashoutsEngine.Debug::DrawTrajectory", (const void*)InternalDrawTrajectory);
 		mono_add_internal_call("CrashoutsEngine.Debug::DrawCircle", (const void*)InternalDrawCircle);
 	}
 };

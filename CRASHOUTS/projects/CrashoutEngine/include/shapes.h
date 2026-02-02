@@ -27,6 +27,7 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 #include "CEVec2.h"
 #include "CEColor.h"
 #include <iostream>
+#include <GL/glew.h>
                          
 namespace Component {
 
@@ -103,6 +104,12 @@ namespace Component {
         */
         static void CreateTexturedRectangle(const CEVec2& transformSize, const std::string& textureName, const CEVec3& position, float rotation = 0.0f,
             const CEColor& tint = CEColor (255.0f, 255.0f, 255.0f), CEVec2 const& uvSize = CEVec2(1.f, 1.f), const bool isWorldSpace = true);
+
+        /*!
+        @brief Create and render a textured rectangle primitive using raw handle.
+        */
+        static void CreateTexturedRectangle(const CEVec2& transformSize, GLuint textureHandle, const CEVec3& position, float rotation = 0.0f,
+            const CEColor& tint = CEColor(255.0f, 255.0f, 255.0f), CEVec2 const& uvSize = CEVec2(1.f, 1.f), const bool isWorldSpace = true);
 
         /*!
         @brief Create and render a textured triangle primitive.

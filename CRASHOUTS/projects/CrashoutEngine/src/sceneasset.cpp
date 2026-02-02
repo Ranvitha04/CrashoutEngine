@@ -38,6 +38,8 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 #include "namecomponent.h"
 #include "transformcomponent.h"
 #include "shapescomponent.h"
+#include "videocomponent.h"
+#include "videoloader.h"
 #include "audiocomponent.h"
 #include "textcomponent.h"
 #include "scriptcomponent.h"
@@ -195,6 +197,7 @@ namespace CrashoutsEngine {
 			// HIERACHY ITEMS
 			const char* const PARENT_COMPONENT = "parent";
 			const char* const Z_ORDER_COMPONENT = "zorder";
+			const char* const VIDEO_COMPONENT = "video";
 		}
 
 		namespace JsonHelpers {
@@ -694,6 +697,21 @@ namespace CrashoutsEngine {
 				entityValue.AddMember(rapidjson::StringRef(Keys::PARTICLE_COMPONENT), pVal, allocator);
 			}
 
+			if (gECS.HasComponent<VideoComponent>(id)) {
+				const auto& vc = *gECS.GetComponent<VideoComponent>(id);
+				rapidjson::Value vVal(rapidjson::kObjectType);
+				
+				vVal.AddMember("videoPath", rapidjson::Value(vc.videoPath.c_str(), allocator), allocator);
+				vVal.AddMember("isPlaying", vc.isPlaying, allocator);
+				vVal.AddMember("loop", vc.loop, allocator);
+				vVal.AddMember("isCutscene", vc.isCutscene, allocator);
+				vVal.AddMember("matchAspectRatio", vc.matchAspectRatio, allocator);
+				vVal.AddMember("volume", vc.volume, allocator);
+				vVal.AddMember("frameRate", vc.frameRate, allocator);
+
+				entityValue.AddMember(rapidjson::StringRef(Keys::VIDEO_COMPONENT), vVal, allocator);
+			}
+
 			return entityValue;
 		}
 
@@ -1100,7 +1118,36 @@ namespace CrashoutsEngine {
 				}
 			}
 
-			// Parent
+			// VideoComponent
+			if (entityValue.HasMember(Keys::VIDEO_COMPONENT)) {
+				const auto& v = entityValue[Keys::VIDEO_COMPONENT];
+				auto& vc = gECS.AddComponent<VideoComponent>(newEntity);
+				
+				vc.videoPath = GetString(v, "videoPath");
+				vc.isPlaying = GetBool(v, "isPlaying");
+				vc.loop = GetBool(v, "loop");
+				vc.isCutscene = GetBool(v, "isCutscene");
+				vc.matchAspectRatio = GetBool(v, "matchAspectRatio", true);
+				vc.volume = GetFloat(v, "volume", 1.0f);
+				vc.frameRate = GetFloat(v, "frameRate", 12.0f);
+
+				// Auto-load if path exists
+				if (!vc.videoPath.empty()) {
+#ifdef USE_FFMPEG
+					// Need to create loader if path is present
+					// We might need to verify if the file actually exists relative to asset root
+					vc.loader = std::make_shared<VideoLoader>(vc.videoPath);
+					if (!vc.loader->Load()) {
+						// Fallback or just log error
+						std::cerr << "Failed to load video on deserialize: " << vc.videoPath << std::endl;
+						vc.loader.reset();
+					}
+#endif
+				}
+			}
+
+			// Parent Component (Hierarchy)
+			// Instead of resolving immediately, we store the parent NAME and resolve later.
 			if (entityValue.HasMember(Keys::PARENT_COMPONENT)) {
 				const auto& v = entityValue[Keys::PARENT_COMPONENT];
 				auto& p = gECS.AddComponent<Component::ParentComponent>(newEntity);

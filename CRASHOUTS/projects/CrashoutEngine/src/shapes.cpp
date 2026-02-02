@@ -577,5 +577,84 @@ namespace Component {
 		renderer.Draw();
 		glBindTextureUnit(0, 0);
 	}
+
+	void Shapes::CreateTexturedRectangle(const CEVec2& transformSize, GLuint textureHandle, const CEVec3& position, float rotation,
+		const CEColor& tint, CEVec2 const& uvSize, const bool isWorldSpace) {
+		Component::Rendering& renderer = Component::Rendering::Get();
+
+		if (textureHandle == 0) {
+			return;
+		}
+
+		float halfWidth = .5f;
+		float halfHeight = .5f;
+
+		std::array<CEVec3, 4> pos_vtx{
+			CEVec3(-halfWidth, -halfHeight, 0.0f),
+			CEVec3(halfWidth, -halfHeight, 0.0f),
+			CEVec3(halfWidth, halfHeight, 0.0f),
+			CEVec3(-halfWidth, halfHeight, 0.0f)
+		};
+
+		std::array<CEColor, 4> clr_vtx{ tint, tint, tint, tint };
+
+		float uvWidthMax = uvSize.x;
+		float uvHeightMax = uvSize.y;
+
+
+		std::array<CEVec2, 4> tex_vtx{
+			CEVec2(0.0f, uvHeightMax),        // bottom left
+			CEVec2(uvWidthMax, uvHeightMax), // bottom right
+			CEVec2(uvWidthMax, 0.0f),         // top right
+			CEVec2(0.0f, 0.0f)                // top left
+		};
+
+		std::array<GLushort, 6> idx_vtx{ 0, 1, 2, 0, 2, 3 };
+
+		// Use optimized textured buffer setup
+		renderer.SetupTexturedBuffersOptimized(pos_vtx.data(), sizeof(pos_vtx),
+			clr_vtx.data(), sizeof(clr_vtx),
+			tex_vtx.data(), sizeof(tex_vtx),
+			idx_vtx.data(), idx_vtx.size(),
+			GL_TRIANGLES);
+
+		renderer.shdr_pgm->Use();
+
+		glm::mat4 model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(position.x, position.y, position.z));
+		model = glm::rotate(model, glm::radians(rotation), glm::vec3(0, 0, 1));
+		model = glm::scale(model, glm::vec3(transformSize.x, transformSize.y, 1.0f));
+
+		glm::mat4 finalModelMatrix;
+		if (isWorldSpace)
+		{
+			finalModelMatrix = model;
+		}
+		else
+		{
+			glm::mat4 viewMatrix = renderer.viewMatrix;
+			glm::mat4 invViewMatrix = glm::inverse(viewMatrix);
+
+			finalModelMatrix = invViewMatrix * model;
+		}
+
+		renderer.shdr_pgm->SetUniform("uModel", finalModelMatrix);
+
+
+		// TextureAsset uniforms
+		GLint useTexture_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "u_useTexture");
+		if (useTexture_loc != -1) glUniform1i(useTexture_loc, 1);
+
+		GLint tex_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "uTex2d");
+		if (tex_loc != -1) glUniform1i(tex_loc, 0);
+
+		// Updated tint usage: Accessed via .r, .g, .b (members) instead of .x, .y, .z
+		GLint tint_loc = glGetUniformLocation(renderer.shdr_pgm->GetHandle(), "u_tint");
+		if (tint_loc != -1) glUniform4f(tint_loc, tint.r, tint.g, tint.b, tint.a);
+
+		glBindTextureUnit(0, textureHandle);
+		renderer.Draw();
+		glBindTextureUnit(0, 0);
+	}
 }
 

@@ -36,6 +36,7 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserv
 #include "assetmanager.h"
 #include <string>
 #include <vector>
+#include <GL/glew.h>
 
 
 namespace InstancingSystem {
@@ -124,8 +125,9 @@ namespace InstancingSystem {
     struct InstancedParams {
         bool textured{ false };
         std::string textureName{};
-        CEColor tint{ 1.f, 1.f, 1.f };
-        CEVec2 uvSize{ 1.f, 1.f };
+        GLuint textureHandle{ 0 }; // Raw handle override
+        CEColor tint{ 1.0f, 1.0f, 1.0f };
+        CEVec2 uvSize{ 1.0f, 1.0f };
     };
 
     //....................Circle................//
@@ -169,6 +171,7 @@ namespace InstancingSystem {
         int count);
 
     void CreateInstancedRectanglesTextured(const std::string& textureName,
+        GLuint textureHandle,
         const CEVec3* positions, const CEColor* colors,
         const float* rotations, const float* scales,
         const float* widths, const float* heights,

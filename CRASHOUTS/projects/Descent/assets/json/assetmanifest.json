@@ -1571,6 +1571,10 @@
             "path": "Entity.json"
         },
         {
+            "name": "movingplatform",
+            "path": "movingplatform.json"
+        },
+        {
             "name": "MovingWall",
             "path": "MovingWall.json"
         },
@@ -1585,6 +1589,10 @@
         {
             "name": "Platform_Prefab",
             "path": "Platform_Prefab.json"
+        },
+        {
+            "name": "Player V2",
+            "path": "Player V2.json"
         },
         {
             "name": "Player",
@@ -1641,6 +1649,10 @@
             "path": "amir"
         },
         {
+            "name": "Cutscene",
+            "path": "Cutscene"
+        },
+        {
             "name": "descentconfirm",
             "path": "descentconfirm"
         },
@@ -1683,6 +1695,10 @@
         {
             "name": "tutorial",
             "path": "tutorial"
+        },
+        {
+            "name": "tutorial2",
+            "path": "tutorial2"
         }
     ],
     "shaders": [
@@ -1723,6 +1739,12 @@
         {
             "name": "Rock_Door",
             "path": "Rock_Door"
+        }
+    ],
+    "videos": [
+        {
+            "name": "Shrek - All star _ Intro HD  - Trim",
+            "path": "Shrek - All star _ Intro HD  - Trim.mp4"
         }
     ]
 }
