@@ -2,9 +2,9 @@
     "entities": [
         {
             "active": true,
-            "name": "Book",
-            "layer": {
-                "currentLayer": 0
+            "name": "ClosedBook",
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -90,13 +90,21 @@
                     "z": 0.0,
                     "w": 0.5
                 }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "Resume",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -184,7 +192,20 @@
                     "w": 1.0
                 },
                 "centered": true,
-                "isworldspace": true
+                "isworldspace": true,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": false,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 0.0,
+                "lineSpacing": 0.0,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
             },
             "script": {
                 "scripts": [
@@ -247,13 +268,21 @@
                     "y": 0.0
                 },
                 "uiLayout": 4
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "SettingButton",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -263,8 +292,8 @@
                     "z": 2.0999999046325685
                 },
                 "size": {
-                    "x": 200.0,
-                    "y": 50.0
+                    "x": 190.0,
+                    "y": 47.5
                 }
             },
             "collider": {
@@ -341,7 +370,20 @@
                     "w": 1.0
                 },
                 "centered": true,
-                "isworldspace": true
+                "isworldspace": true,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": false,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 0.0,
+                "lineSpacing": 0.0,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
             },
             "script": {
                 "scripts": [
@@ -399,19 +441,27 @@
                     "y": 0.0
                 },
                 "uiLayout": 4
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "Exit",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
                 "position": {
                     "x": -30.13448715209961,
-                    "y": -58.0902214050293,
+                    "y": -58.09021759033203,
                     "z": 2.0999999046325685
                 },
                 "size": {
@@ -425,7 +475,7 @@
                 "enabled": true,
                 "position": {
                     "x": -30.13448715209961,
-                    "y": -58.0902214050293,
+                    "y": -58.09021759033203,
                     "z": 2.0999999046325685
                 },
                 "offset": {
@@ -440,7 +490,7 @@
                 },
                 "max": {
                     "x": 96.46549987792969,
-                    "y": -28.99022674560547,
+                    "y": -28.990219116210939,
                     "z": 2.0999999046325685
                 }
             },
@@ -493,7 +543,20 @@
                     "w": 1.0
                 },
                 "centered": true,
-                "isworldspace": true
+                "isworldspace": true,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": false,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 0.0,
+                "lineSpacing": 0.0,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
             },
             "script": {
                 "scripts": [
@@ -551,6 +614,152 @@
                     "y": 0.0
                 },
                 "uiLayout": 4
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "ClosedBook",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 10.0,
+                    "y": 10.0
+                }
+            },
+            "rigidbody": {
+                "mass": 1.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.0,
+                "dynamicFriction": 0.0,
+                "inertia": 0.0,
+                "invInertia": 0.0
+            },
+            "collider": {
+                "ColliderType": 1,
+                "isTrigger": false,
+                "enabled": true,
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": -5.0,
+                    "y": -5.0,
+                    "z": 0.0
+                },
+                "max": {
+                    "x": 5.0,
+                    "y": 5.0,
+                    "z": 0.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "button": {
+                "buttonState": 0,
+                "shapeNormalColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "shapeHoveredColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.5
+                },
+                "shapePressedColor": {
+                    "x": 0.699999988079071,
+                    "y": 0.699999988079071,
+                    "z": 0.699999988079071,
+                    "w": 0.699999988079071
+                },
+                "textNormalColor": {
+                    "x": 0.30000001192092898,
+                    "y": 0.30000001192092898,
+                    "z": 0.30000001192092898,
+                    "w": 0.699999988079071
+                },
+                "textHoveredColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.0
+                },
+                "textPressedColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.5
+                }
+            },
+            "layer": {
+                "layerName": "Default",
+                "z": 0
+            },
+            "layer": {
+                "layerName": "Default",
+                "z": 0
             }
         }
     ],
