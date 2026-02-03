@@ -246,5 +246,9 @@ namespace CrashoutsEngine
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal static extern void SetActiveByName(string name, bool isActive);
+
+        // TEXT 
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        public static extern bool IsTextFinished(uint entityID);
     }
 }
