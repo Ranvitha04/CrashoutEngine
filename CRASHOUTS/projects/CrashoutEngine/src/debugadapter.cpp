@@ -2380,7 +2380,7 @@ namespace CrashoutsEngine
 				bool needsButton = (gc->uiType & UIType::BUTTON) != UIType::NONE;
 				bool needsInput = (gc->uiType & UIType::INPUTTEXT) != UIType::NONE;
 				bool needsText = needsInput || ((gc->uiType & UIType::TEXT) != UIType::NONE);
-				bool needsShape = needsText || ((gc->uiType & UIType::IMAGE) != UIType::NONE);
+				bool needsShape = ((gc->uiType & UIType::IMAGE) != UIType::NONE);
 				bool needsLayout = (gc->uiType != UIType::NONE); // adds UILayout if *any* flag is set
 
 				// Helper lambda to add/remove components
