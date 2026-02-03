@@ -23,11 +23,11 @@ namespace CrashoutsEngine
 
             for (int i = 0; i < totalBalls; i++)
             {
-                Debug.Log("Test: " + i + " Total is " + totalBalls);
+                //Debug.Log("Test: " + i + " Total is " + totalBalls);
                 // Find the existing UI entities in the scene
                 uint id = InternalCalls.FindEntityByName(ballBaseName + i);
                 ballShapes[i] = id;
-                Debug.Log("Reached End");
+                //Debug.Log("Reached End");
             }
         }
 
@@ -36,7 +36,7 @@ namespace CrashoutsEngine
             if (PlayerMovement.Instance == null) return;
 
             float currentEnergy = PlayerMovement.Instance.CurrentEnergy;
-            Debug.Log("Current energy is " +  currentEnergy);
+            //Debug.Log("Current energy is " +  currentEnergy);
             float energyPerBall = maxPlayerEnergy / totalBalls;
 
             for (int i = 0; i < totalBalls; i++)
@@ -80,7 +80,7 @@ namespace CrashoutsEngine
                 }
 
                 // Apply the alpha using our new C++ binding
-                Debug.Log("Alpha for Item: " + ballEnt.ID + " is " + targetAlpha); 
+                //Debug.Log("Alpha for Item: " + ballEnt.ID + " is " + targetAlpha); 
                 sc.Alpha = targetAlpha;
             }
         }

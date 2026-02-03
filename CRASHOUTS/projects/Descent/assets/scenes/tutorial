@@ -9676,8 +9676,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1259.9659423828126,
-                    "y": -621.0386352539063,
+                    "x": -177.57611083984376,
+                    "y": -1.720123291015625,
                     "z": 50.0
                 },
                 "size": {
@@ -9703,8 +9703,8 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 1259.9659423828126,
-                    "y": -626.0386352539063,
+                    "x": -177.57611083984376,
+                    "y": -6.720123291015625,
                     "z": 50.0
                 },
                 "offset": {
@@ -9713,13 +9713,13 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 1241.1658935546876,
-                    "y": -656.5386352539063,
+                    "x": -196.37615966796876,
+                    "y": -37.220123291015628,
                     "z": 50.0
                 },
                 "max": {
-                    "x": 1278.7659912109376,
-                    "y": -595.5386352539063,
+                    "x": -158.77606201171876,
+                    "y": 23.779876708984376,
                     "z": 50.0
                 }
             },
@@ -9790,6 +9790,7 @@
                             "lightMass": 2.0,
                             "groundCheckDistance": 26.0,
                             "groundCheckWidth": 10.0,
+                            "dialogueCooldown": 1.0,
                             "CurrentEnergy": 100.0,
                             "MaxEnergy": 100.0,
                             "alive": true,
@@ -9858,6 +9859,37 @@
                 "playing": true,
                 "clips": [
                     {
+                        "name": "playerFall",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
+                        "spriteCols": 2,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 140.0,
+                        "targetHeight": 100.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
                         "name": "playerWalk",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Run\\Run spritesheet.png",
@@ -9910,7 +9942,7 @@
                         ]
                     },
                     {
-                        "name": "playerFall",
+                        "name": "playerFallLight",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
                         "spriteCols": 2,
@@ -9924,14 +9956,14 @@
                                 "keys": [
                                     {
                                         "t": 0.0,
-                                        "v": 0.0,
+                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
                                         "t": 0.25,
-                                        "v": 0.0,
+                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -9984,37 +10016,6 @@
                                     {
                                         "t": 1.0,
                                         "v": 7.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "playerFallLight",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
-                        "spriteCols": 2,
-                        "spriteRows": 1,
-                        "useCustomSize": true,
-                        "targetWidth": 140.0,
-                        "targetHeight": 100.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 1.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -15246,7 +15247,7 @@
             }
         },
         {
-            "active": true,
+            "active": false,
             "name": "PlayerDialogue_1",
             "tag": {
                 "tagMask": 0
@@ -15254,8 +15255,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1259.9659423828126,
-                    "y": -562.668701171875,
+                    "x": -177.57611083984376,
+                    "y": 56.64978790283203,
                     "z": 50.0
                 },
                 "size": {
@@ -15371,8 +15372,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1259.9659423828126,
-                    "y": -562.668701171875,
+                    "x": -177.57611083984376,
+                    "y": 56.64978790283203,
                     "z": 50.0
                 },
                 "size": {
@@ -15488,8 +15489,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1259.9659423828126,
-                    "y": -562.668701171875,
+                    "x": -177.57611083984376,
+                    "y": 56.64978790283203,
                     "z": 50.0
                 },
                 "size": {
@@ -15605,8 +15606,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1259.9659423828126,
-                    "y": -562.668701171875,
+                    "x": -177.57611083984376,
+                    "y": 56.64978790283203,
                     "z": 50.0
                 },
                 "size": {
@@ -15722,8 +15723,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1259.9659423828126,
-                    "y": -562.668701171875,
+                    "x": -177.57611083984376,
+                    "y": 56.64978790283203,
                     "z": 50.0
                 },
                 "size": {
@@ -18178,6 +18179,35 @@
             "layer": {
                 "layerName": "Default",
                 "z": -10
+            }
+        },
+        {
+            "active": true,
+            "name": "Post-Process Volume",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "postprocessing": {
+                "brightness": -0.019999999552965165,
+                "contrast": -0.019999999552965165,
+                "saturation": 0.10000000149011612,
+                "active": true
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         }
     ],

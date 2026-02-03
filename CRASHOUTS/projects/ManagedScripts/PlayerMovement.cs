@@ -24,11 +24,17 @@ namespace CrashoutsEngine
         public float normalMass = 7.0f;
         public float lightMass = 4.5f;
 
-        // --- NEW: RAYCAST SETTINGS ---
-        // How far down to check for ground (BoxHeight/2 + Buffer)
-        // Adjust this if detection is spotty. Should be slightly longer than half your sprite height.
+        // --- RAYCAST SETTINGS ---
         public float groundCheckDistance = 26.0f;
-        public float groundCheckWidth = 10.0f; // Width between the two raycasts (feet)
+        public float groundCheckWidth = 10.0f;
+
+        // --- DIALOGUE VARIABLES ---
+        [SerializeField] public float dialogueCooldown = 1.0f; // Time to wait between dialogues
+        private Entity[] dialogueEntities;
+        private int currentDialogueIndex = 0;
+        private bool isDialogueActive = false;
+        private bool hasDialogueStarted = false;
+        private float dialogueTimer = 0.0f;
 
         // --- STATE VARIABLES ---
         private float horizontalInput;
@@ -60,9 +66,7 @@ namespace CrashoutsEngine
         private bool isLight = false;
         private float swapPauseTimer = 0.0f;
 
-        // NEW: Fall Through Logic
-        //private float fallThroughTimer = 0.0f;
-        private float jumpCooldown = 0.0f; // Prevents grounding immediately after jumping
+        private float jumpCooldown = 0.0f;
         private bool isPassthrough = false;
         private bool canPassthrough = false;
 
@@ -79,9 +83,22 @@ namespace CrashoutsEngine
             CurrentEnergy = MaxEnergy;
             swapPauseTimer = 0.0f;
 
+            // --- 1. SETUP DIALOGUES ---
+            dialogueEntities = new Entity[5];
+            for (int i = 0; i < 5; ++i)
+            {
+                // Find "PlayerDialogue_1", "PlayerDialogue_2", etc.
+                dialogueEntities[i] = Entity.Find("PlayerDialogue_" + (i + 1));
+
+                // Ensure they are hidden at start using InternalCalls (Safe method)
+                if (dialogueEntities[i] != null)
+                {
+                    InternalCalls.SetActive(dialogueEntities[i].ID, false);
+                }
+            }
+
             // Register Callbacks
             CollisionEvents.RegisterPreSolve(Entity.ID, this.OnPreSolve);
-            // We keep Enter/Exit for Wall logic, but remove Ground logic
             CollisionEvents.RegisterCollideEnter(Entity.ID, this.OnCollideEnter);
             CollisionEvents.RegisterCollideExit(Entity.ID, this.OnCollideExit);
             CollisionEvents.RegisterCollideStay(Entity.ID, this.OnCollideStay);
@@ -89,8 +106,37 @@ namespace CrashoutsEngine
 
         public override void Update()
         {
-
             if (isPaused || !alive) return;
+
+            // --- 2. DIALOGUE GATEKEEPER ---
+            if (!hasDialogueStarted)
+            {
+                // Wait for scene transition to finish (fade in complete)
+                if (!SceneManager.IsTransitioning())
+                {
+                    hasDialogueStarted = true;
+                    isDialogueActive = true;
+                    currentDialogueIndex = 0;
+                    dialogueTimer = 0.0f;
+
+                    // Activate the first dialogue immediately
+                    if (dialogueEntities[0] != null)
+                    {
+                        InternalCalls.SetActive(dialogueEntities[0].ID, true);
+                    }
+                }
+            }
+
+            // If dialogue is playing, run the sequence and SKIP normal movement
+            if (isDialogueActive)
+            {
+                HandleDialogueSequence();
+
+                // Force physics/anim to idle so player doesn't glide
+                horizontalInput = 0f;
+                UpdateAnimationState(false);
+                return; // STOP EXECUTION HERE
+            }
 
             // 1. HANDLE STATE SWITCH
             if (swapPauseTimer > 0.0f)
@@ -119,8 +165,7 @@ namespace CrashoutsEngine
 
             isJumpHeld = Input.IsKeyPressed(Key.Space);
 
-            // 3. JUMP & DROP DOWN LOGI
-
+            // 3. JUMP & DROP DOWN LOGIC
             if (Input.IsKeyTriggered(Key.Space) && IsGrounded && !isPassthrough)
             {
                 jumpRequested = true;
@@ -141,6 +186,58 @@ namespace CrashoutsEngine
             UpdateAnimationState(false);
         }
 
+        private void HandleDialogueSequence()
+        {
+            // Safety check
+            if (currentDialogueIndex >= dialogueEntities.Length)
+            {
+                isDialogueActive = false; // Sequence done
+                return;
+            }
+
+            Entity currentEnt = dialogueEntities[currentDialogueIndex];
+
+            // If entity is missing, skip it
+            if (currentEnt == null)
+            {
+                currentDialogueIndex++;
+                if (currentDialogueIndex < dialogueEntities.Length && dialogueEntities[currentDialogueIndex] != null)
+                    InternalCalls.SetActive(dialogueEntities[currentDialogueIndex].ID, true);
+                return;
+            }
+
+            // --- CHECK IF TYPING IS DONE ---
+            // Using InternalCalls exactly like CutsceneScript
+            bool isTypingDone = InternalCalls.IsTextFinished(currentEnt.ID);
+
+            if (isTypingDone)
+            {
+                // Start cooldown timer once text is fully revealed
+                dialogueTimer += (float)Time.DT;
+
+                if (dialogueTimer >= dialogueCooldown)
+                {
+                    // Cooldown finished, move to next
+                    InternalCalls.SetActive(currentEnt.ID, false); // Hide current
+
+                    currentDialogueIndex++;
+                    dialogueTimer = 0.0f;
+
+                    if (currentDialogueIndex < dialogueEntities.Length)
+                    {
+                        // Activate Next
+                        if (dialogueEntities[currentDialogueIndex] != null)
+                            InternalCalls.SetActive(dialogueEntities[currentDialogueIndex].ID, true);
+                    }
+                    else
+                    {
+                        // All done, return control to player
+                        isDialogueActive = false;
+                    }
+                }
+            }
+        }
+
         public override void FixedUpdate()
         {
             if (!alive) return;
@@ -153,16 +250,14 @@ namespace CrashoutsEngine
             CheckGround();
 
             // 2. EXECUTE JUMP
-            if (jumpRequested)
+            // Ensure we cannot jump if dialogue is active
+            if (jumpRequested && !isDialogueActive)
             {
                 rb.LinearVelocity = new CEVec3(rb.LinearVelocity.x, 0f, 0f);
                 rb.AddForce(new CEVec3(0f, jumpPower, 0f));
 
                 IsGrounded = false;
                 jumpRequested = false;
-
-                // Add cooldown so Raycast doesn't immediately snap us back to "Grounded"
-                // while we are still accelerating upwards
                 jumpCooldown = 0.1f;
             }
 
@@ -173,53 +268,32 @@ namespace CrashoutsEngine
             ApplyGravity();
         }
 
-        // --- NEW: ROBUST GROUND CHECK ---
         private void CheckGround()
         {
-            if (jumpCooldown > 0.0f)
-            {
-                IsGrounded = false;
-                return;
-            }
+            if (jumpCooldown > 0.0f) { IsGrounded = false; return; }
 
-            // 1. Calculate half-height to find where the feet are
             float halfHeight = Math.Abs(tf.Size.y) * 0.5f;
-            
-            // 2. Define a buffer distance (how far below feet to check)
-            // If this is too small, it might not detect; too large, and you jump before landing.
-            float checkBuffer = 5.0f; 
-
+            float checkBuffer = 5.0f;
             float xOffset = groundCheckWidth * 0.5f;
             CEVec3 origin = tf.Position;
-
-            // Start rays slightly *inside* the player (center) to ensure they don't start inside a wall 
-            // if you are standing partially inside one, but mainly to use the center as a reliable anchor.
             float rayStartY = origin.y;
             float rayEndY = origin.y - (halfHeight + checkBuffer);
 
-            // Ray 1: Left Foot
             CEVec3 startL = new CEVec3(origin.x - xOffset, rayStartY, origin.z);
             CEVec3 endL = new CEVec3(origin.x - xOffset, rayEndY, origin.z);
-
-            // Ray 2: Right Foot
             CEVec3 startR = new CEVec3(origin.x + xOffset, rayStartY, origin.z);
             CEVec3 endR = new CEVec3(origin.x + xOffset, rayEndY, origin.z);
 
             uint hitID = 0;
-
-            // Check Left
             bool hitLeft = InternalCalls.Raycast(ref startL, ref endL, out hitID, Entity.ID);
             bool leftIsGround = false;
             if (hitLeft && hitID != 0) leftIsGround = IsGroundOrPlatform(hitID);
 
-            // Check Right
             bool hitRight = InternalCalls.Raycast(ref startR, ref endR, out hitID, Entity.ID);
             bool rightIsGround = false;
             if (hitRight && hitID != 0) rightIsGround = IsGroundOrPlatform(hitID);
 
-            // Logic: Grounded if feet touch ground AND we aren't moving up (jumping)
             IsGrounded = (leftIsGround || rightIsGround) && rb.LinearVelocity.y <= 0.1f;
-            //Debug.Log("RAYCASTING");
         }
 
         private bool IsGroundOrPlatform(uint entityID)
@@ -234,7 +308,6 @@ namespace CrashoutsEngine
         {
             if (swapPauseTimer > 0.0f)
             {
-                // Stop player during swap
                 CEVec3 v = rb.LinearVelocity;
                 rb.AddForce(new CEVec3(-v.x * 100.0f, 0f, 0f));
                 return;
@@ -243,7 +316,8 @@ namespace CrashoutsEngine
             CEVec3 velocity = rb.LinearVelocity;
             float targetSpeed = 0.0f;
 
-            if (horizontalInput != 0f && !OnWall)
+            // Only calculate speed if NOT in dialogue
+            if (horizontalInput != 0f && !OnWall && !isDialogueActive)
             {
                 float maxSpeed = IsGrounded ? maxRunSpeed : maxAirSpeed;
                 targetSpeed = horizontalInput * maxSpeed;
@@ -261,7 +335,6 @@ namespace CrashoutsEngine
 
         private void ApplyGravity()
         {
-            // If switching, manual gravity
             if (swapPauseTimer > 0.0f && !IsGrounded)
             {
                 rb.AddForce(new CEVec3(0f, -9.81f * gravityScale * rb.Mass * gravityForceMultiplier, 0f));
@@ -278,31 +351,23 @@ namespace CrashoutsEngine
             }
         }
 
-        // --- COLLISION CALLBACKS ---
-
         public bool OnPreSolve(uint otherEntity)
         {
-            //Debug.Log("IS PASSTHROUGH: " + (isPassthrough ? "TRUE" : "FALSE"));
             Entity other = new Entity(otherEntity);
             var Tag = other.GetComponent<TagComponent>();
 
             if (Tag != null && Tag.HasTag("Passthrough") && canPassthrough) { isPassthrough = true; }
 
-            // Passthrough Check
             if (Tag != null && Tag.HasTag("Passthrough"))
             {
-                // 1. If holding Down (S), disable collision immediately so we fall through
-                if (Input.IsKeyPressed(Key.S)) { canPassthrough = true;  return false; }
-
-                // 2. If moving UP (velocity > 0), disable collision so we jump through the bottom
-                // We add a small threshold (0.1f) to ensure we don't accidentally fall through while standing still due to micro-jitters
+                if (Input.IsKeyPressed(Key.S)) { canPassthrough = true; return false; }
                 if (rb.LinearVelocity.y > 0.1f) { canPassthrough = true; return false; }
 
                 if (isPassthrough) return false;
                 else { canPassthrough = false; return true; }
             }
             canPassthrough = false;
-            return true; // Default: Enable Collision
+            return true;
         }
 
         public void OnCollideEnter(uint otherEntity)
@@ -310,7 +375,6 @@ namespace CrashoutsEngine
             Entity other = new Entity(otherEntity);
             var Tag = other.GetComponent<TagComponent>();
 
-            // Only using this for Wall / Hazard logic now. Ground logic is Raycast.
             if (Tag != null && Tag.HasTag("Wall"))
             {
                 OnWall = true;
@@ -327,8 +391,7 @@ namespace CrashoutsEngine
         {
             Entity other = new Entity(otherEntity);
             var Tag = other.GetComponent<TagComponent>();
-
-            if(Tag != null && Tag.HasTag("Passthrough") && canPassthrough) { isPassthrough = true; }
+            if (Tag != null && Tag.HasTag("Passthrough") && canPassthrough) { isPassthrough = true; }
         }
 
         public void OnCollideExit(uint otherEntity)
@@ -336,12 +399,8 @@ namespace CrashoutsEngine
             Entity other = new Entity(otherEntity);
             var Tag = other.GetComponent<TagComponent>();
 
-            if (Tag != null && Tag.HasTag("Wall"))
-            {
-                OnWall = false;
-            }
-
-            if (Tag != null && Tag.HasTag("Passthrough")) { canPassthrough = false;  isPassthrough = false; }
+            if (Tag != null && Tag.HasTag("Wall")) { OnWall = false; }
+            if (Tag != null && Tag.HasTag("Passthrough")) { canPassthrough = false; isPassthrough = false; }
         }
 
         private void HandleFootsteps()
@@ -361,6 +420,19 @@ namespace CrashoutsEngine
 
         private void UpdateAnimationState(bool isSwitching)
         {
+            // NEW: If dialogue is active, force Idle animation
+            if (isDialogueActive)
+            {
+                string idle = "playerIdle";
+                if (isLight) idle += "Light";
+                if (currentAnimState != idle)
+                {
+                    if (anim != null) anim.Play(idle, true);
+                    currentAnimState = idle;
+                }
+                return;
+            }
+
             string targetState = "playerIdle";
 
             if (isSwitching) targetState = "playerSwitch";
@@ -395,9 +467,7 @@ namespace CrashoutsEngine
             }
         }
 
-        // ... [Existing Energy/UI Helpers remain the same] ...
         public void AddEnergy(float amount) { CurrentEnergy = Math.Min(CurrentEnergy + amount, MaxEnergy); }
         public void RemoveEnergy(float amount) { CurrentEnergy = Math.Max(CurrentEnergy - amount, 0.0f); }
-
     }
 }
