@@ -9859,37 +9859,6 @@
                 "playing": true,
                 "clips": [
                     {
-                        "name": "playerFall",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
-                        "spriteCols": 2,
-                        "spriteRows": 1,
-                        "useCustomSize": true,
-                        "targetWidth": 140.0,
-                        "targetHeight": 100.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
                         "name": "playerWalk",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Run\\Run spritesheet.png",
@@ -9942,7 +9911,7 @@
                         ]
                     },
                     {
-                        "name": "playerFallLight",
+                        "name": "playerFall",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
                         "spriteCols": 2,
@@ -9956,14 +9925,14 @@
                                 "keys": [
                                     {
                                         "t": 0.0,
-                                        "v": 1.0,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
                                         "t": 0.25,
-                                        "v": 1.0,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -10016,6 +9985,37 @@
                                     {
                                         "t": 1.0,
                                         "v": 7.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "playerFallLight",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
+                        "spriteCols": 2,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 140.0,
+                        "targetHeight": 100.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 1.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -11721,7 +11721,10 @@
                 "scripts": [
                     {
                         "className": "EnergyBall",
-                        "fields": {}
+                        "fields": {
+                            "energyAmount": 25.0,
+                            "respawnTime": 5.0
+                        }
                     }
                 ]
             },
@@ -11970,7 +11973,10 @@
                 "scripts": [
                     {
                         "className": "EnergyBall",
-                        "fields": {}
+                        "fields": {
+                            "energyAmount": 25.0,
+                            "respawnTime": 5.0
+                        }
                     }
                 ]
             },
@@ -12224,6 +12230,7 @@
                     {
                         "className": "PressurePlate",
                         "fields": {
+                            "decrease": 5.0,
                             "wallName": "wall2"
                         }
                     }
@@ -12493,7 +12500,11 @@
                     {
                         "className": "MovingWall",
                         "fields": {
-                            "PlatesActive": 0
+                            "PlatesActive": 0,
+                            "PlatesRequired": 1,
+                            "MoveRight": false,
+                            "MoveDist": 10.0,
+                            "MoveSpeed": 5.0
                         }
                     }
                 ]
@@ -12696,7 +12707,11 @@
                     {
                         "className": "MovingWall",
                         "fields": {
-                            "PlatesActive": 0
+                            "PlatesActive": 0,
+                            "PlatesRequired": 1,
+                            "MoveRight": false,
+                            "MoveDist": 10.0,
+                            "MoveSpeed": 5.0
                         }
                     }
                 ]
@@ -12819,7 +12834,7 @@
             },
             "layer": {
                 "layerName": "Foreground",
-                "z": 1
+                "z": 100
             }
         },
         {
@@ -12916,7 +12931,14 @@
                 "scripts": [
                     {
                         "className": "WeightedPlatform",
-                        "fields": {}
+                        "fields": {
+                            "IsMoving": true,
+                            "MoveRight": true,
+                            "MovementDistance": 100.0,
+                            "MoveSpeed": 20.0,
+                            "VerticalSpeed": 0.0,
+                            "maxDrop": 0.0
+                        }
                     }
                 ]
             },
@@ -13019,7 +13041,14 @@
                 "scripts": [
                     {
                         "className": "WeightedPlatform",
-                        "fields": {}
+                        "fields": {
+                            "IsMoving": true,
+                            "MoveRight": true,
+                            "MovementDistance": 100.0,
+                            "MoveSpeed": 20.0,
+                            "VerticalSpeed": 0.0,
+                            "maxDrop": 0.0
+                        }
                     }
                 ]
             },
@@ -13122,7 +13151,14 @@
                 "scripts": [
                     {
                         "className": "WeightedPlatform",
-                        "fields": {}
+                        "fields": {
+                            "IsMoving": true,
+                            "MoveRight": true,
+                            "MovementDistance": 100.0,
+                            "MoveSpeed": 20.0,
+                            "VerticalSpeed": 50.0,
+                            "maxDrop": 50.0
+                        }
                     }
                 ]
             },
@@ -13225,7 +13261,14 @@
                 "scripts": [
                     {
                         "className": "WeightedPlatform",
-                        "fields": {}
+                        "fields": {
+                            "IsMoving": true,
+                            "MoveRight": true,
+                            "MovementDistance": 100.0,
+                            "MoveSpeed": 20.0,
+                            "VerticalSpeed": 50.0,
+                            "maxDrop": 50.0
+                        }
                     }
                 ]
             },
@@ -13828,7 +13871,14 @@
                 "scripts": [
                     {
                         "className": "WeightedPlatform",
-                        "fields": {}
+                        "fields": {
+                            "IsMoving": true,
+                            "MoveRight": true,
+                            "MovementDistance": 100.0,
+                            "MoveSpeed": 20.0,
+                            "VerticalSpeed": 0.0,
+                            "maxDrop": 0.0
+                        }
                     }
                 ]
             },
@@ -16144,9 +16194,9 @@
                     "y": 0.0
                 },
                 "color": {
-                    "x": 0.3027888536453247,
-                    "y": 0.1496570110321045,
-                    "z": 0.0880620926618576,
+                    "x": 0.27888447046279909,
+                    "y": 0.1386343538761139,
+                    "z": 0.08222091943025589,
                     "w": 1.0
                 },
                 "p1": {
@@ -18154,6 +18204,7 @@
                     {
                         "className": "PressurePlate",
                         "fields": {
+                            "decrease": 5.0,
                             "wallName": "wall"
                         }
                     }
@@ -18298,6 +18349,7 @@
                     {
                         "className": "PressurePlate",
                         "fields": {
+                            "decrease": 5.0,
                             "wallName": "wall"
                         }
                     }
