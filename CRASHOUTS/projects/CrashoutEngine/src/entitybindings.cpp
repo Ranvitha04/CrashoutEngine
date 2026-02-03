@@ -10,6 +10,7 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 #include "entitymanager.h"
 #include "transformcomponent.h"
 #include "rigidbodycomponent.h"
+#include "activecomponent.h"
 #include "namecomponent.h"
 #include "monomanager.h"
 #include <mono/jit/jit.h>
@@ -99,6 +100,39 @@ namespace CrashoutsEngine::Bindings
         ECS::getInstance()->RemoveComponent<Component::ColliderComponent>(entityID);
     }
 
+    // Set Active by ID
+    static void InternalSetActive(uint32_t entityID, bool isActive) {
+        auto* ecs = ECS::getInstance();
+        if (ecs->HasComponent<Component::ActiveComponent>(entityID)) {
+            ecs->GetComponent<Component::ActiveComponent>(entityID)->isActive = isActive;
+        }
+        else {
+            // Optional: Auto-add if missing, or just warn
+            // ecs->AddComponent<Component::ActiveComponent>(entityID, { isActive });
+        }
+    }
+
+    // Get Active by ID
+    static bool InternalGetActive(uint32_t entityID) {
+        auto* ecs = ECS::getInstance();
+        if (ecs->HasComponent<Component::ActiveComponent>(entityID)) {
+            return ecs->GetComponent<Component::ActiveComponent>(entityID)->isActive;
+        }
+        return true; // Default to true if missing
+    }
+
+    // Helper: Set Active by Name (Combines Find + Set)
+    static void InternalSetActiveByName(MonoString* name, bool isActive) {
+        uint32_t id = InternalFindEntityByName(name);
+        if (id != std::numeric_limits<uint32_t>::max()) {
+            InternalSetActive(id, isActive);
+        }
+        else {
+            std::cout << "[Mono] Warning: Could not find entity to set active: "
+                << mono_string_to_utf8(name) << std::endl;
+        }
+    }
+
     void RegisterEntityBindings() {
         mono_add_internal_call("CrashoutsEngine.Entity::InternalGetTransform",(const void*)InternalGetTransform);
         mono_add_internal_call("CrashoutsEngine.Entity::InternalGetRigidBody",(const void*)InternalGetRigidBody);
@@ -112,6 +146,10 @@ namespace CrashoutsEngine::Bindings
         mono_add_internal_call("CrashoutsEngine.InternalCalls::RemoveCollider", (const void*)InternalRemoveCollider);
 
         mono_add_internal_call("CrashoutsEngine.InternalCalls::FindEntityByName", (const void*)InternalFindEntityByName);
+
+        mono_add_internal_call("CrashoutsEngine.InternalCalls::SetActive", (const void*)InternalSetActive);
+        mono_add_internal_call("CrashoutsEngine.InternalCalls::GetActive", (const void*)InternalGetActive);
+        mono_add_internal_call("CrashoutsEngine.InternalCalls::SetActiveByName", (const void*)InternalSetActiveByName);
 
         std::cout << "[Mono] Registered: CrashoutsEngine.Entity bindings\n";
     }

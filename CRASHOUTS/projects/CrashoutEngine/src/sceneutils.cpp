@@ -39,6 +39,7 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 #include "activecomponent.h"
 #include "particleSystem.h"
 #include "spriteAnimation.h"
+#include "hierarchycomponent.h"
 //#include "camera.h"
 
 #include <fstream>
@@ -1113,8 +1114,10 @@ namespace Scene {
 
 	void UpdateScene(CrashoutsEngine::ECS& globalECS) {
 		using namespace CrashoutsEngine;
-		Scene::UI::UpdateButtons(globalECS);
-		Scene::UI::UpdateInputs(globalECS);
+		if (engineState != EngineState::STOP) {
+			Scene::UI::UpdateButtons(globalECS);
+			Scene::UI::UpdateInputs(globalECS);
+		}
 
 		// Particle Updates (Physics/Lifecycle)
 		Particles::UpdateAllParticles(globalECS);

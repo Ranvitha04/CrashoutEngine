@@ -26,6 +26,7 @@ namespace CrashoutsEngine
         }
         public RigidBodyComponent RigidBodyComponent => GetComponent<RigidBodyComponent>();
         public ColliderComponent ColliderComponent => GetComponent<ColliderComponent>();
+        public ShapeComponent ShapeComponent => GetComponent<ShapeComponent>();
         public bool HasCollider => Has<ColliderComponent>();
 
         //some of these are placeholders/temp func

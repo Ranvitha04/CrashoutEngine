@@ -14327,10 +14327,6 @@
             "layer": {
                 "layerName": "",
                 "z": 0
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             }
         },
         {
@@ -14517,6 +14513,8 @@
                             "energyConsumption": 12.5,
                             "normalMass": 4.5,
                             "lightMass": 3.0,
+                            "groundCheckDistance": 26.0,
+                            "groundCheckWidth": 10.0,
                             "CurrentEnergy": 100.0,
                             "MaxEnergy": 100.0,
                             "alive": true,
@@ -14545,6 +14543,37 @@
                 "t": 0.01666666753590107,
                 "playing": true,
                 "clips": [
+                    {
+                        "name": "playerJump",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\New Artstyle\\Jump spritesheet.png",
+                        "spriteCols": 2,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 158.0,
+                        "targetHeight": 104.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
                     {
                         "name": "playerSwitch",
                         "wrap": 0,
@@ -14612,37 +14641,6 @@
                         ]
                     },
                     {
-                        "name": "playerJump",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Jump spritesheet.png",
-                        "spriteCols": 2,
-                        "spriteRows": 1,
-                        "useCustomSize": true,
-                        "targetWidth": 158.0,
-                        "targetHeight": 104.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
                         "name": "playerIdleLight",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Switch State spritesheet.png",
@@ -14665,37 +14663,6 @@
                                     {
                                         "t": 0.25,
                                         "v": 6.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "playerFallLight",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Fall spritesheet.png",
-                        "spriteCols": 2,
-                        "spriteRows": 1,
-                        "useCustomSize": true,
-                        "targetWidth": 158.0,
-                        "targetHeight": 104.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 1.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -14757,6 +14724,37 @@
                         ]
                     },
                     {
+                        "name": "playerFallLight",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\New Artstyle\\Fall spritesheet.png",
+                        "spriteCols": 2,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 158.0,
+                        "targetHeight": 104.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 1.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 1.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
                         "name": "playerJumpLight",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Jump spritesheet.png",
@@ -14779,6 +14777,37 @@
                                     {
                                         "t": 0.25,
                                         "v": 1.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "playerFall",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\New Artstyle\\Fall spritesheet.png",
+                        "spriteCols": 2,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 158.0,
+                        "targetHeight": 104.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -14831,37 +14860,6 @@
                                     {
                                         "t": 1.0,
                                         "v": 3.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "playerFall",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Fall spritesheet.png",
-                        "spriteCols": 2,
-                        "spriteRows": 1,
-                        "useCustomSize": true,
-                        "targetWidth": 158.0,
-                        "targetHeight": 104.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -14968,10 +14966,6 @@
                         ]
                     }
                 ]
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             }
         },
         {
@@ -14997,10 +14991,6 @@
                 "contrast": 0.009999999776482582,
                 "saturation": 0.05000000074505806,
                 "active": true
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             },
             "layer": {
                 "layerName": "",
@@ -15997,10 +15987,6 @@
             "layer": {
                 "layerName": "",
                 "z": 0
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             }
         },
         {
@@ -16054,10 +16040,6 @@
                     "y": 0.0,
                     "z": 0.0
                 }
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             },
             "layer": {
                 "layerName": "",
@@ -16119,10 +16101,6 @@
             "layer": {
                 "layerName": "",
                 "z": 0
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             }
         },
         {
@@ -16146,10 +16124,6 @@
             "layer": {
                 "layerName": "",
                 "z": 0
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             }
         },
         {
@@ -16169,10 +16143,6 @@
                     "x": 1.0,
                     "y": 1.0
                 }
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             },
             "layer": {
                 "layerName": "",
@@ -16234,10 +16204,6 @@
             "layer": {
                 "layerName": "",
                 "z": 0
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             }
         },
         {
@@ -16291,10 +16257,6 @@
                     "y": 0.0,
                     "z": 0.0
                 }
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             },
             "layer": {
                 "layerName": "",
@@ -16356,10 +16318,6 @@
             "layer": {
                 "layerName": "",
                 "z": 0
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             }
         },
         {
@@ -16413,10 +16371,6 @@
                     "y": 0.0,
                     "z": 0.0
                 }
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             },
             "layer": {
                 "layerName": "",
@@ -16478,10 +16432,6 @@
             "layer": {
                 "layerName": "",
                 "z": 0
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             }
         },
         {
@@ -16539,10 +16489,6 @@
             "layer": {
                 "layerName": "",
                 "z": 0
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             }
         },
         {
@@ -16562,10 +16508,6 @@
                     "x": 1.0,
                     "y": 1.0
                 }
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             },
             "layer": {
                 "layerName": "",
@@ -16627,10 +16569,6 @@
             "layer": {
                 "layerName": "",
                 "z": 0
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             }
         },
         {
@@ -16684,10 +16622,6 @@
                     "y": 0.0,
                     "z": 0.0
                 }
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             },
             "layer": {
                 "layerName": "",
@@ -16749,10 +16683,6 @@
             "layer": {
                 "layerName": "",
                 "z": 0
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             }
         },
         {
@@ -16806,10 +16736,6 @@
                     "y": 0.0,
                     "z": 0.0
                 }
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             },
             "layer": {
                 "layerName": "",
@@ -16871,10 +16797,6 @@
             "layer": {
                 "layerName": "",
                 "z": 0
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             }
         },
         {
@@ -16932,10 +16854,6 @@
             "layer": {
                 "layerName": "",
                 "z": 0
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             }
         },
         {
@@ -16955,10 +16873,6 @@
                     "x": 1.0,
                     "y": 1.0
                 }
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             },
             "layer": {
                 "layerName": "",
@@ -17020,10 +16934,6 @@
             "layer": {
                 "layerName": "",
                 "z": 0
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             }
         },
         {
@@ -17077,10 +16987,6 @@
                     "y": 0.0,
                     "z": 0.0
                 }
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             },
             "layer": {
                 "layerName": "",
@@ -17142,10 +17048,6 @@
             "layer": {
                 "layerName": "",
                 "z": 0
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             }
         },
         {
@@ -17199,10 +17101,6 @@
                     "y": 0.0,
                     "z": 0.0
                 }
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             },
             "layer": {
                 "layerName": "",
@@ -17264,10 +17162,6 @@
             "layer": {
                 "layerName": "",
                 "z": 0
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             }
         },
         {
@@ -17321,10 +17215,6 @@
                     "y": 0.0,
                     "z": 0.0
                 }
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             },
             "layer": {
                 "layerName": "",
@@ -17436,10 +17326,6 @@
             "layer": {
                 "layerName": "",
                 "z": 0
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             }
         },
         {
@@ -17507,10 +17393,6 @@
                         }
                     }
                 ]
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             },
             "layer": {
                 "layerName": "",
@@ -17610,10 +17492,6 @@
             "layer": {
                 "layerName": "",
                 "z": 0
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             }
         },
         {
@@ -17705,10 +17583,6 @@
                     "y": 0.0,
                     "z": 0.0
                 }
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             },
             "layer": {
                 "layerName": "",
@@ -17808,10 +17682,6 @@
             "layer": {
                 "layerName": "",
                 "z": 0
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             }
         },
         {
@@ -17907,10 +17777,6 @@
             "layer": {
                 "layerName": "",
                 "z": 0
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             }
         },
         {
@@ -18002,10 +17868,6 @@
                     "y": 0.0,
                     "z": 0.0
                 }
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             },
             "layer": {
                 "layerName": "",
@@ -18120,10 +17982,6 @@
             "layer": {
                 "layerName": "",
                 "z": 0
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             }
         },
         {
@@ -18230,10 +18088,6 @@
             "layer": {
                 "layerName": "",
                 "z": 0
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             }
         },
         {
@@ -18332,10 +18186,6 @@
                         }
                     }
                 ]
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             },
             "layer": {
                 "layerName": "",
@@ -18455,10 +18305,6 @@
             "layer": {
                 "layerName": "",
                 "z": 0
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             }
         },
         {
@@ -18557,10 +18403,6 @@
                         }
                     }
                 ]
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             },
             "layer": {
                 "layerName": "",
@@ -18667,10 +18509,6 @@
             "layer": {
                 "layerName": "",
                 "z": 0
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             }
         },
         {
@@ -18769,10 +18607,6 @@
                         }
                     }
                 ]
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             },
             "layer": {
                 "layerName": "",
@@ -18879,10 +18713,6 @@
             "layer": {
                 "layerName": "",
                 "z": 0
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             }
         },
         {
@@ -18982,10 +18812,6 @@
             "layer": {
                 "layerName": "",
                 "z": 0
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             }
         },
         {
@@ -19053,10 +18879,6 @@
                         }
                     }
                 ]
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             },
             "layer": {
                 "layerName": "",
@@ -19152,10 +18974,6 @@
             "layer": {
                 "layerName": "",
                 "z": 0
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             }
         },
         {
@@ -19243,10 +19061,6 @@
                     "y": 0.0,
                     "z": 0.0
                 }
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             },
             "layer": {
                 "layerName": "",
@@ -19342,10 +19156,6 @@
             "layer": {
                 "layerName": "",
                 "z": 0
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             }
         },
         {
@@ -19433,10 +19243,6 @@
                     "y": 0.0,
                     "z": 0.0
                 }
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             },
             "layer": {
                 "layerName": "",
@@ -19543,10 +19349,6 @@
                         }
                     }
                 ]
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             },
             "layer": {
                 "layerName": "",
@@ -19661,10 +19463,6 @@
             "layer": {
                 "layerName": "",
                 "z": 0
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             }
         },
         {
@@ -19732,10 +19530,6 @@
                         }
                     }
                 ]
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             },
             "layer": {
                 "layerName": "",
@@ -19831,10 +19625,6 @@
             "layer": {
                 "layerName": "",
                 "z": 0
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             }
         },
         {
@@ -19922,10 +19712,6 @@
                     "y": 0.0,
                     "z": 0.0
                 }
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             },
             "layer": {
                 "layerName": "",
@@ -20021,10 +19807,6 @@
             "layer": {
                 "layerName": "",
                 "z": 0
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             }
         },
         {
@@ -20112,10 +19894,6 @@
                     "y": 0.0,
                     "z": 0.0
                 }
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             },
             "layer": {
                 "layerName": "",
@@ -20211,10 +19989,6 @@
             "layer": {
                 "layerName": "",
                 "z": 0
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             }
         },
         {
@@ -20302,10 +20076,6 @@
                     "y": 0.0,
                     "z": 0.0
                 }
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             },
             "layer": {
                 "layerName": "",
@@ -20416,10 +20186,6 @@
             "layer": {
                 "layerName": "",
                 "z": 0
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             }
         },
         {
@@ -20477,10 +20243,6 @@
             "layer": {
                 "layerName": "",
                 "z": 0
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             }
         },
         {
@@ -20534,10 +20296,6 @@
                     "y": 0.0,
                     "z": 0.0
                 }
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             },
             "layer": {
                 "layerName": "",
@@ -20656,10 +20414,6 @@
             "layer": {
                 "layerName": "",
                 "z": 0
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             }
         },
         {
@@ -20774,10 +20528,6 @@
             "layer": {
                 "layerName": "",
                 "z": 0
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             }
         },
         {
@@ -20888,10 +20638,6 @@
                     "y": 0.0
                 },
                 "uiLayout": 4
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             },
             "layer": {
                 "layerName": "",
@@ -21116,10 +20862,6 @@
                         ]
                     }
                 ]
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             }
         },
         {
@@ -21352,6 +21094,37 @@
                         ]
                     },
                     {
+                        "name": "slimeJump",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": 72.0,
+                        "targetHeight": 67.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 2.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 2.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
                         "name": "slimeChase",
                         "wrap": 0,
                         "textureAsset": "images/Monsters\\Slime spritesheet.png",
@@ -21381,37 +21154,6 @@
                                     {
                                         "t": 0.5,
                                         "v": 9.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "slimeJump",
-                        "wrap": 0,
-                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
-                        "spriteCols": 4,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": 72.0,
-                        "targetHeight": 67.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 2.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 2.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -21521,10 +21263,6 @@
                         ]
                     }
                 ]
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             }
         },
         {
@@ -21753,37 +21491,6 @@
                         ]
                     },
                     {
-                        "name": "slimeJump",
-                        "wrap": 0,
-                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
-                        "spriteCols": 4,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": 72.0,
-                        "targetHeight": 67.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 2.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 2.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
                         "name": "slimeChase",
                         "wrap": 0,
                         "textureAsset": "images/Monsters\\Slime spritesheet.png",
@@ -21813,6 +21520,37 @@
                                     {
                                         "t": 0.5,
                                         "v": 9.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "slimeJump",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": 72.0,
+                        "targetHeight": 67.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 2.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 2.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -21922,10 +21660,6 @@
                         ]
                     }
                 ]
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             }
         },
         {
@@ -22154,6 +21888,37 @@
                         ]
                     },
                     {
+                        "name": "slimeJump",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": 72.0,
+                        "targetHeight": 67.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 2.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 2.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
                         "name": "slimeChase",
                         "wrap": 0,
                         "textureAsset": "images/Monsters\\Slime spritesheet.png",
@@ -22183,37 +21948,6 @@
                                     {
                                         "t": 0.5,
                                         "v": 9.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "slimeJump",
-                        "wrap": 0,
-                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
-                        "spriteCols": 4,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": 72.0,
-                        "targetHeight": 67.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 2.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 2.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -22323,10 +22057,6 @@
                         ]
                     }
                 ]
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             }
         },
         {
@@ -22346,10 +22076,6 @@
                     "x": 0.5,
                     "y": 0.5
                 }
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             },
             "layer": {
                 "layerName": "",
@@ -22411,10 +22137,6 @@
             "layer": {
                 "layerName": "",
                 "z": 0
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             }
         },
         {
@@ -22468,10 +22190,6 @@
                     "y": 0.0,
                     "z": 0.0
                 }
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             },
             "layer": {
                 "layerName": "",
@@ -22704,37 +22422,6 @@
                         ]
                     },
                     {
-                        "name": "slimeJump",
-                        "wrap": 0,
-                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
-                        "spriteCols": 4,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": 72.0,
-                        "targetHeight": 67.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 2.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 2.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
                         "name": "slimeChase",
                         "wrap": 0,
                         "textureAsset": "images/Monsters\\Slime spritesheet.png",
@@ -22764,6 +22451,37 @@
                                     {
                                         "t": 0.5,
                                         "v": 9.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "slimeJump",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": 72.0,
+                        "targetHeight": 67.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 2.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 2.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -22873,10 +22591,6 @@
                         ]
                     }
                 ]
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             }
         },
         {
@@ -23105,37 +22819,6 @@
                         ]
                     },
                     {
-                        "name": "slimeJump",
-                        "wrap": 0,
-                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
-                        "spriteCols": 4,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": 72.0,
-                        "targetHeight": 67.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 2.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 2.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
                         "name": "slimeChase",
                         "wrap": 0,
                         "textureAsset": "images/Monsters\\Slime spritesheet.png",
@@ -23165,6 +22848,37 @@
                                     {
                                         "t": 0.5,
                                         "v": 9.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "slimeJump",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": 72.0,
+                        "targetHeight": 67.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 2.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 2.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -23274,10 +22988,6 @@
                         ]
                     }
                 ]
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             }
         },
         {
@@ -23506,6 +23216,37 @@
                         ]
                     },
                     {
+                        "name": "slimeJump",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": 72.0,
+                        "targetHeight": 67.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 2.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 2.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
                         "name": "slimeChase",
                         "wrap": 0,
                         "textureAsset": "images/Monsters\\Slime spritesheet.png",
@@ -23535,37 +23276,6 @@
                                     {
                                         "t": 0.5,
                                         "v": 9.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "slimeJump",
-                        "wrap": 0,
-                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
-                        "spriteCols": 4,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": 72.0,
-                        "targetHeight": 67.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 2.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 2.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -23675,10 +23385,6 @@
                         ]
                     }
                 ]
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             }
         },
         {
@@ -23899,10 +23605,6 @@
                         ]
                     }
                 ]
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             }
         },
         {
@@ -23956,10 +23658,6 @@
                     "y": 0.0,
                     "z": 0.0
                 }
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             },
             "layer": {
                 "layerName": "",
@@ -24021,10 +23719,6 @@
             "layer": {
                 "layerName": "",
                 "z": 0
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             }
         },
         {
@@ -24074,10 +23768,6 @@
                 "revealSpeed": 10.0,
                 "dialogueFilePath": "",
                 "dialogueID": ""
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             },
             "layer": {
                 "layerName": "",
@@ -24226,10 +23916,6 @@
             "layer": {
                 "layerName": "",
                 "z": 0
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             }
         },
         {
@@ -24374,10 +24060,6 @@
             "layer": {
                 "layerName": "",
                 "z": 0
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             }
         },
         {
@@ -24443,10 +24125,6 @@
             "layer": {
                 "layerName": "",
                 "z": 0
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             }
         },
         {
@@ -24496,10 +24174,6 @@
                 "revealSpeed": 10.0,
                 "dialogueFilePath": "",
                 "dialogueID": ""
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             },
             "layer": {
                 "layerName": "",
@@ -24648,10 +24322,6 @@
             "layer": {
                 "layerName": "",
                 "z": 0
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             }
         },
         {
@@ -24705,10 +24375,6 @@
                     "y": 0.0,
                     "z": 0.0
                 }
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             },
             "layer": {
                 "layerName": "",
@@ -24857,10 +24523,6 @@
             "layer": {
                 "layerName": "",
                 "z": 0
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             }
         },
         {
@@ -24918,10 +24580,6 @@
             "layer": {
                 "layerName": "",
                 "z": 0
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             }
         }
     ],
@@ -24931,6 +24589,14 @@
         "Ground": 2,
         "Lava": 4,
         "Player": 8
+    },
+    "layer_visibility": {
+        "Default": true
+    },
+    "tag_mapping": {
+        "Default": 0,
+        "Ground": 2,
+        "Player": 1
     },
     "quadtree": {
         "min": {

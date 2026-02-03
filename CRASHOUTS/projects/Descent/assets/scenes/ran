@@ -3,8 +3,8 @@
         {
             "active": true,
             "name": "Tex_Monsters(5)",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -52,20 +52,16 @@
                     "z": 0.0
                 }
             },
-            "zorder": {
-                "layer": 4,
-                "z": 1
-            },
-            "zorder": {
-                "layer": 4,
+            "layer": {
+                "layerName": "Players",
                 "z": 1
             }
         },
         {
             "active": true,
             "name": "Tex_bg colour",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -113,20 +109,16 @@
                     "z": 0.0
                 }
             },
-            "zorder": {
-                "layer": 0,
-                "z": 0
-            },
-            "zorder": {
-                "layer": 0,
+            "layer": {
+                "layerName": "StaticBackground",
                 "z": 0
             }
         },
         {
             "active": true,
             "name": "Tex_bg 1 pillar 2",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -174,20 +166,16 @@
                     "z": 0.0
                 }
             },
-            "zorder": {
-                "layer": 0,
-                "z": 4
-            },
-            "zorder": {
-                "layer": 0,
+            "layer": {
+                "layerName": "StaticBackground",
                 "z": 4
             }
         },
         {
             "active": true,
             "name": "Tex_bg2 base",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -235,20 +223,16 @@
                     "z": 0.0
                 }
             },
-            "zorder": {
-                "layer": 0,
-                "z": 6
-            },
-            "zorder": {
-                "layer": 0,
+            "layer": {
+                "layerName": "StaticBackground",
                 "z": 6
             }
         },
         {
             "active": true,
             "name": "Tex_Chibi-2",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -296,26 +280,22 @@
                     "z": 0.0
                 }
             },
-            "zorder": {
-                "layer": 4,
-                "z": 0
-            },
-            "zorder": {
-                "layer": 4,
+            "layer": {
+                "layerName": "Players",
                 "z": 0
             }
         },
         {
             "active": true,
             "name": "Tex_Monsters(8)",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 22.2463436126709,
-                    "y": -16.95343589782715,
+                    "x": 27.621170043945314,
+                    "y": 3.4143238067626955,
                     "z": 0.0
                 },
                 "size": {
@@ -357,20 +337,16 @@
                     "z": 0.0
                 }
             },
-            "zorder": {
-                "layer": 4,
-                "z": 5
-            },
-            "zorder": {
-                "layer": 4,
+            "layer": {
+                "layerName": "Players",
                 "z": 5
             }
         },
         {
             "active": true,
             "name": "Entity 7",
-            "layer": {
-                "currentLayer": 0
+            "tag": {
+                "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
@@ -384,8 +360,8 @@
                     "y": 1.0
                 }
             },
-            "zorder": {
-                "layer": 0,
+            "layer": {
+                "layerName": "StaticBackground",
                 "z": 0
             },
             "particle": {
@@ -448,14 +424,18 @@
                     "x": 1.0,
                     "y": 1.0
                 }
-            },
-            "zorder": {
-                "layer": 0,
-                "z": 0
             }
         }
     ],
     "layers": {
+        "Default": 0,
+        "Ground": 2,
+        "Player": 1
+    },
+    "layer_visibility": {
+        "Default": true
+    },
+    "tag_mapping": {
         "Default": 0,
         "Ground": 2,
         "Player": 1

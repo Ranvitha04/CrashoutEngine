@@ -79,6 +79,10 @@
     ],
     "dialogue": [
         {
+            "name": "cutscenedialogue",
+            "path": "cutscenedialogue.json"
+        },
+        {
             "name": "dialogue",
             "path": "dialogue.json"
         }
@@ -465,6 +469,18 @@
         {
             "name": "Run",
             "path": "Character\\Run.gif"
+        },
+        {
+            "name": "1",
+            "path": "Cutscenes\\1.png"
+        },
+        {
+            "name": "2",
+            "path": "Cutscenes\\2.png"
+        },
+        {
+            "name": "3",
+            "path": "Cutscenes\\3.png"
         },
         {
             "name": "Cutscene_",
@@ -1479,6 +1495,14 @@
             "path": "UI\\Icon.png"
         },
         {
+            "name": "mana UI single empty",
+            "path": "UI\\mana UI single empty.png"
+        },
+        {
+            "name": "mana UI single",
+            "path": "UI\\mana UI single.png"
+        },
+        {
             "name": "Menu",
             "path": "UI\\Menu.png"
         },
@@ -1573,6 +1597,10 @@
         {
             "name": "Entity",
             "path": "Entity.json"
+        },
+        {
+            "name": "movingplatform",
+            "path": "movingplatform.json"
         },
         {
             "name": "MovingWall",

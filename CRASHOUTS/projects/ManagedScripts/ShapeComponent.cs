@@ -32,12 +32,21 @@ namespace CrashoutsEngine
             InternalSetColor(EntityID, r, g, b, a);
         }
 
+        // Public Property for easy access
+        public float Alpha
+        {
+            set => InternalSetAlpha(EntityID, value);
+        }
+
         // --- Internal Calls ---
         [MethodImpl(MethodImplOptions.InternalCall)]
         private extern static void InternalGetColor(uint entityID, out float r, out float g, out float b, out float a);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private extern static void InternalSetColor(uint entityID, float r, float g, float b, float a);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern void InternalSetAlpha(uint entityID, float alpha);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private extern static int InternalGetType(uint entityID);

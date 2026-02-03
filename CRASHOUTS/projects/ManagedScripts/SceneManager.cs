@@ -12,6 +12,30 @@ namespace CrashoutsEngine
         public static extern void QuitGame();
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public static extern void TransitionToScene(string sceneName, float duration);
+        private static extern void TransitionToScene(string sceneName, float fadeOut, float fadeIn);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern void FadeEffect(float fadeOut, float fadeIn);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        public static extern bool IsTransitioning();
+
+        // 1. Detailed Control
+        public static void LoadScene(string sceneName, float fadeOut, float fadeIn)
+        {
+            TransitionToScene(sceneName, fadeOut, fadeIn);
+        }
+
+        // 2. Convenience (Same duration for both)
+        public static void LoadScene(string sceneName, float duration)
+        {
+            TransitionToScene(sceneName, duration, duration);
+        }
+
+        // 3. Effect Control
+        public static void Fade(float fadeOut, float fadeIn)
+        {
+            FadeEffect(fadeOut, fadeIn);
+        }
     }
 }

@@ -167,6 +167,16 @@ namespace CrashoutsEngine
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal static extern bool EntityHasButton(uint entityID);
 
+        // --- SHAPE COMPONENT LIFECYCLE ---
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern void AddShape(uint entityID);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern void RemoveShape(uint entityID);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern bool EntityHasShape(uint entityID);
+
         // --- Tag COMPONENT LIFECYCLE ---
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal static extern void AddTag(uint entityID);
@@ -229,5 +239,14 @@ namespace CrashoutsEngine
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal static extern void Particle_SetEmitting(uint entityID, bool emitting);
+        // Active Component
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern void SetActive(uint entityID, bool isActive);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern bool GetActive(uint entityID);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern void SetActiveByName(string name, bool isActive);
     }
 }
