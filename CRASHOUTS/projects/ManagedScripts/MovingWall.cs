@@ -15,8 +15,12 @@ namespace CrashoutsEngine
         [SerializeField]
         float MoveSpeed = 5.0f;
 
+        [SerializeField]
+        private float dustBurstDuration = 0.15f;
+
         private bool _isOpen = false;
         private bool _stopMoving = false;
+        private float _dustTimer = 0.0f;
         TransformComponent transform;
         private CEVec2 oldXY, newXY, startXY;
 
@@ -25,6 +29,7 @@ namespace CrashoutsEngine
             Console.WriteLine("Wall Opening!");
             _isOpen = true;
             _stopMoving = false;
+            TriggerDoorDust();
         }
 
         void CloseWall()
@@ -32,6 +37,7 @@ namespace CrashoutsEngine
             Console.WriteLine("Wall Closing!");
             _isOpen = false;
             _stopMoving = false;
+            TriggerDoorDust();
             if (transform != null)
             {
                 transform.Position = new CEVec3(startXY.x, startXY.y, transform.Position.z);
@@ -42,6 +48,7 @@ namespace CrashoutsEngine
         {
             _isOpen = false;
             _stopMoving = false;
+            _dustTimer = 0.0f;
             transform = Entity.GetComponent<TransformComponent>();
             if (transform != null)
             {
@@ -55,10 +62,21 @@ namespace CrashoutsEngine
                     newXY = new CEVec2(transform.Position.x, transform.Position.y + MoveDist);
                 }
             }
+
+            InternalCalls.Particle_SetEmitting(Entity.ID, false);
         }
 
         public override void Update()
         {
+            if (_dustTimer > 0.0f)
+            {
+                _dustTimer -= (float)Time.DT;
+                if (_dustTimer <= 0.0f)
+                {
+                    InternalCalls.Particle_SetEmitting(Entity.ID, false);
+                }
+            }
+
             // Logic: If enough plates are pressed, Open.
             if (PlatesActive >= PlatesRequired && !_isOpen)
             {
@@ -93,6 +111,13 @@ namespace CrashoutsEngine
                 }
                 //Debug.Log("wtdf");
             }
+        }
+
+        private void TriggerDoorDust()
+        {
+            if (dustBurstDuration <= 0.0f) return;
+            InternalCalls.Particle_SetEmitting(Entity.ID, true);
+            _dustTimer = dustBurstDuration;
         }
 
         public override void FixedUpdate()

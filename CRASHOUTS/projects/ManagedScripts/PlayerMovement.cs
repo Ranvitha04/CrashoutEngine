@@ -22,10 +22,8 @@ namespace CrashoutsEngine
         [SerializeField] public float energyConsumption = 12.5f;
 
         [SerializeField] private string landingDustName = "LandingDust";
-        [SerializeField] private string landingDustClip = "landingDust";
         [SerializeField] private float dustBurstDuration = 0.15f;
 
-        // Mass Settings
         public float normalMass = 7.0f;
         public float lightMass = 4.5f;
 
@@ -67,6 +65,8 @@ namespace CrashoutsEngine
 
         private uint landingDustID = 0;
         private float landingDustTimer = 0.0f;
+        private bool landingDustArmed = false;
+
         // NEW: Fall Through Logic
         private float fallThroughTimer = 0.0f;
         private float jumpCooldown = 0.0f; // Prevents grounding immediately after jumping
@@ -83,7 +83,11 @@ namespace CrashoutsEngine
             if (!string.IsNullOrEmpty(landingDustName))
             {
                 Entity e = Entity.Find(landingDustName);
-                if (e != null) landingDustID = e.ID;
+                if (e != null)
+                {
+                    landingDustID = e.ID;
+                    InternalCalls.Particle_SetEmitting(landingDustID, false);
+                }
             }
 
             rb.Mass = normalMass;
@@ -104,6 +108,15 @@ namespace CrashoutsEngine
         {
 
             if (isPaused || !alive) return;
+
+            if (landingDustTimer > 0.0f)
+            {
+                landingDustTimer -= (float)Time.DT;
+                if (landingDustTimer <= 0.0f && landingDustID != 0)
+                {
+                    InternalCalls.Particle_SetEmitting(landingDustID, false);
+                }
+            }
 
             // 1. HANDLE STATE SWITCH
             if (swapPauseTimer > 0.0f)
@@ -163,7 +176,14 @@ namespace CrashoutsEngine
             if (jumpCooldown > 0.0f) jumpCooldown -= FIXED_TIMESTEP;
 
             // 1. GROUND CHECK (RAYCAST)
+            bool wasGrounded = IsGrounded;
             CheckGround();
+
+            if (!wasGrounded && IsGrounded && landingDustArmed)
+            {
+                TriggerLandingDust();
+                landingDustArmed = false;
+            }
 
             // 2. EXECUTE JUMP
             if (jumpRequested)
@@ -177,14 +197,31 @@ namespace CrashoutsEngine
                 // Add cooldown so Raycast doesn't immediately snap us back to "Grounded"
                 // while we are still accelerating upwards
                 jumpCooldown = 0.1f;
+                landingDustArmed = true;
             }
 
-            if (horizontalInput != 0.0f && IsGrounded && !isSwitching)
             // 3. MOVEMENT PHYSICS
             ApplyMovementPhysics();
 
             // 4. GRAVITY
             ApplyGravity();
+        }
+
+        private void TriggerLandingDust()
+        {
+            if (landingDustID == 0) return;
+            if (tf == null) return;
+
+            Entity e = new Entity(landingDustID);
+            var dustTf = e.GetComponent<TransformComponent>();
+            if (dustTf != null)
+            {
+                float offsetY = -Math.Abs(tf.Size.y) * 0.5f;
+                dustTf.Position = new CEVec3(tf.Position.x, tf.Position.y + offsetY, dustTf.Position.z);
+            }
+
+            InternalCalls.Particle_SetEmitting(landingDustID, true);
+            landingDustTimer = dustBurstDuration;
         }
 
         // --- NEW: ROBUST GROUND CHECK ---
@@ -198,10 +235,10 @@ namespace CrashoutsEngine
 
             // 1. Calculate half-height to find where the feet are
             float halfHeight = Math.Abs(tf.Size.y) * 0.5f;
-            
+
             // 2. Define a buffer distance (how far below feet to check)
             // If this is too small, it might not detect; too large, and you jump before landing.
-            float checkBuffer = 5.0f; 
+            float checkBuffer = 5.0f;
 
             float xOffset = groundCheckWidth * 0.5f;
             CEVec3 origin = tf.Position;
@@ -306,7 +343,7 @@ namespace CrashoutsEngine
             if (Tag != null && Tag.HasTag("Passthrough"))
             {
                 // 1. If holding Down (S), disable collision immediately so we fall through
-                if (Input.IsKeyPressed(Key.S)) { canPassthrough = true;  return false; }
+                if (Input.IsKeyPressed(Key.S)) { canPassthrough = true; return false; }
 
                 // 2. If moving UP (velocity > 0), disable collision so we jump through the bottom
                 // We add a small threshold (0.1f) to ensure we don't accidentally fall through while standing still due to micro-jitters
@@ -342,7 +379,7 @@ namespace CrashoutsEngine
             Entity other = new Entity(otherEntity);
             var Tag = other.GetComponent<TagComponent>();
 
-            if(Tag != null && Tag.HasTag("Passthrough") && canPassthrough) { isPassthrough = true; }
+            if (Tag != null && Tag.HasTag("Passthrough") && canPassthrough) { isPassthrough = true; }
         }
 
         public void OnCollideExit(uint otherEntity)
@@ -355,7 +392,7 @@ namespace CrashoutsEngine
                 OnWall = false;
             }
 
-            if (Tag != null && Tag.HasTag("Passthrough")) { canPassthrough = false;  isPassthrough = false; }
+            if (Tag != null && Tag.HasTag("Passthrough")) { canPassthrough = false; isPassthrough = false; }
         }
 
         private void HandleFootsteps()
@@ -369,228 +406,6 @@ namespace CrashoutsEngine
                     AudioManager.GetInstance().PlayAttached("footstep" + index, Entity.ID);
                     footstepTimer = footstepInterval;
                 }
-            }
-            else
-            {
-                footstepTimer = 0.0f;
-            }
-
-            if (landingDustTimer > 0.0f)
-            {
-                landingDustTimer -= (float)Time.DT;
-                if (landingDustTimer <= 0.0f && landingDustID != 0)
-                {
-                    InternalCalls.Particle_SetEmitting(landingDustID, false);
-                }
-            }
-
-            // 4. ANIMATION
-            UpdateAnimationState(isSwitching);
-        }
-
-        public override void FixedUpdate()
-        {
-            // 1. HANDLE PAUSE TIMER (Physics Step Consistent)
-            if (swapPauseTimer > 0.0f)
-            {
-                swapPauseTimer -= FIXED_TIMESTEP;
-
-                // Apply massive drag to stop player while switching
-                CEVec3 v = rb.LinearVelocity;
-                rb.AddForce(new CEVec3(-v.x * 100.0f, 0f, 0f));
-
-                // Keep gravity if in air
-                if (!IsGrounded)
-                    rb.AddForce(new CEVec3(0f, -9.81f * gravityScale * rb.Mass * gravityForceMultiplier, 0f));
-
-                return;
-            }
-
-            if (!alive) return;
-
-            CEVec3 velocity = rb.LinearVelocity;
-
-            // 2. EXECUTE JUMP (Physics Step Consistent)
-            if (jumpRequested)
-            {
-                rb.LinearVelocity = new CEVec3(velocity.x, 0f, 0f);
-                rb.AddForce(new CEVec3(0f, jumpPower, 0f));
-                jumpRequested = false;
-                velocity = rb.LinearVelocity;
-            }
-
-            // A. Calculate Desired Target Speed
-            float targetSpeed = 0.0f;
-            if (horizontalInput != 0f && !OnWall)
-            {
-                float maxSpeed = IsGrounded ? maxRunSpeed : maxAirSpeed;
-                targetSpeed = horizontalInput * maxSpeed;
-            }
-
-            // B. Calculate Difference (Target - Current)
-            float speedDif = targetSpeed - velocity.x;
-
-            // C. Determine Acceleration Rate
-            float accelRate;
-
-            // If we are trying to move (Input != 0)
-            if (Math.Abs(targetSpeed) > 0.01f)
-            {
-                accelRate = IsGrounded ? acceleration : airAcceleration;
-            }
-            // If we are trying to stop (Input == 0)
-            else
-            {
-                accelRate = IsGrounded ? deceleration : 0.5f; // Very low friction in air
-            }
-
-            // D. Apply Force
-            // Force = Mass * Acceleration
-            // By scaling by SpeedDif, the force naturally decreases as we get closer to top speed.
-            float movementForce = speedDif * accelRate * rb.Mass;
-
-            rb.AddForce(new CEVec3(movementForce, 0f, 0f));
-
-            // 4. GRAVITY
-            velocity = rb.LinearVelocity;
-            if (velocity.y < 0)
-            {
-                // Fall faster
-                rb.AddForce(new CEVec3(0f, -9.81f * gravityScale * rb.Mass * gravityForceMultiplier, 0f));
-            }
-            else if (velocity.y > 0 && !isJumpHeld)
-            {
-                // Short Hop
-                rb.AddForce(new CEVec3(0f, -9.81f * (gravityScale * 0.5f) * rb.Mass * gravityForceMultiplier, 0f));
-            }
-        }
-
-        // --- COLLISION CALLBACKS ---
-
-        public bool OnPreSolve(uint otherEntity)
-        {
-            Entity other = new Entity(otherEntity);
-            var Tag = other.GetComponent<TagComponent>();
-
-            // Passthrough Check
-            if (Tag != null && Tag.HasTag("Passthrough"))
-            {
-                if (Input.IsKeyPressed(Key.S)) return false;
-                else if (rb.LinearVelocity.y > 0.0f) return false;
-
-                var otherTf = other.GetComponent<TransformComponent>();
-                if (otherTf != null)
-                {
-                    float playerBottom = tf.Position.y - (Math.Abs(tf.Size.y) * 0.5f);
-                    float platTop = otherTf.Position.y + (Math.Abs(otherTf.Size.y) * 0.5f);
-                    // Buffer for floating point errors
-                    if (playerBottom > (platTop - 5.0f)) return false;
-                }
-            }
-            return true;
-        }
-
-        public void OnTriggerEnter(uint otherEntity) { }
-        public void OnTriggerStay(uint otherEntity) { }
-        public void OnTriggerExit(uint otherEntity) { }
-
-        public void OnCollideEnter(uint otherEntity)
-        {
-            bool wasGrounded = IsGrounded;
-
-            Entity other = new Entity(otherEntity);
-            var Tag = other.GetComponent<TagComponent>();
-            var otherTf = other.GetComponent<TransformComponent>();
-
-            // Ground Check (Counter)
-            if (Tag != null && (Tag.HasTag("Ground") || Tag.HasTag("Platform") || Tag.HasTag("Enemy")))
-            {
-                if (otherTf != null && this.tf.Position.y > otherTf.Position.y)
-                {
-                    groundContactCount++;
-                    IsGrounded = true;
-                }
-            }
-
-            if (!wasGrounded && IsGrounded)
-            {
-                TriggerLandingDust();
-            }
-
-            // Wall Check
-            if (Tag != null && Tag.HasTag("Wall"))
-            {
-                OnWall = true;
-                rb.LinearVelocity = new CEVec3(0, rb.LinearVelocity.y, 0);
-            }
-
-            // Hazard Check
-            if (Tag != null && (Tag.HasTag("Lava") || Tag.HasTag("Enemy")))
-            {
-                Debug.Log("Player Died");
-                alive = false;
-
-                Entity gameOverEnt = Entity.Find("GameOverScreen");
-                if (gameOverEnt != null)
-                {
-                    var gameOverT = gameOverEnt.GetComponent<TransformComponent>();
-                    gameOverT.Position = new CEVec3(gameOverT.Position.x, gameOverT.Position.y, 0.8f);
-                }
-            }
-        }
-
-        public void OnCollideStay(uint otherEntity) { }
-
-        public void OnCollideExit(uint otherEntity)
-        {
-            Entity other = new Entity(otherEntity);
-            var Tag = other.GetComponent<TagComponent>();
-
-            // Ground Exit (Counter)
-            if (Tag != null && (Tag.HasTag("Ground") || Tag.HasTag("Platform") || Tag.HasTag("Enemy")))
-            {
-                groundContactCount--;
-                if (groundContactCount < 0) groundContactCount = 0;
-
-                if (groundContactCount == 0)
-                {
-                    IsGrounded = false;
-                }
-            }
-
-            if (Tag != null && Tag.HasTag("Wall"))
-            {
-                OnWall = false;
-            }
-        }
-
-        public override void OnDestroy()
-        {
-            if (Instance == this) Instance = null;
-        }
-
-        public void AddEnergy(float amount)
-        {
-            CurrentEnergy += amount;
-            if (CurrentEnergy > MaxEnergy) CurrentEnergy = MaxEnergy;
-            UpdateBarUI();
-        }
-
-        public void RemoveEnergy(float amount)
-        {
-            CurrentEnergy -= amount;
-            if (CurrentEnergy < 0.0f) CurrentEnergy = 0.0f;
-            UpdateBarUI();
-        }
-
-        private void UpdateBarUI()
-        {
-            Entity barEnt = Entity.Find("BarUI");
-            if (barEnt != null)
-            {
-                TransformComponent barT = barEnt.GetComponent<TransformComponent>();
-                float percentile = CurrentEnergy / MaxEnergy;
-                barT.Size = new CEVec2(percentile * 0.5f, barT.Size.y);
             }
             else footstepTimer = 0.0f;
         }
@@ -619,20 +434,6 @@ namespace CrashoutsEngine
             }
         }
 
-        private void TriggerLandingDust()
-        {
-            if (landingDustID == 0) return;
-            if (tf == null) return;
-            Entity e = new Entity(landingDustID);
-            var dustTf = e.GetComponent<TransformComponent>();
-            if (dustTf != null)
-            {
-                float offsetY = -Math.Abs(tf.Size.y) * 0.5f;
-                dustTf.Position = new CEVec3(tf.Position.x, tf.Position.y + offsetY, dustTf.Position.z);
-            }
-            InternalCalls.Particle_SetEmitting(landingDustID, true);
-            landingDustTimer = dustBurstDuration;
-        }
         private void HandleDeath()
         {
             Debug.Log("Player Died");
