@@ -85,6 +85,10 @@
         {
             "name": "dialogue",
             "path": "dialogue.json"
+        },
+        {
+            "name": "tutorialdialogue",
+            "path": "tutorialdialogue.json"
         }
     ],
     "fonts": [
