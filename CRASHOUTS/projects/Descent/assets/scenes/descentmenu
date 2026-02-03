@@ -66,10 +66,6 @@
             "layer": {
                 "layerName": "StaticBackground",
                 "z": 0
-            },
-            "layer": {
-                "layerName": "StaticBackground",
-                "z": 0
             }
         },
         {
@@ -214,10 +210,6 @@
             "layer": {
                 "layerName": "StaticBackground",
                 "z": 0
-            },
-            "layer": {
-                "layerName": "StaticBackground",
-                "z": 0
             }
         },
         {
@@ -234,8 +226,8 @@
                     "z": -3.299999952316284
                 },
                 "size": {
-                    "x": 240.5399932861328,
-                    "y": 55.28999710083008
+                    "x": 253.1999969482422,
+                    "y": 55.0
                 }
             },
             "shape": {
@@ -275,7 +267,7 @@
             "text": {
                 "font": "AlegreyaSC-Medium",
                 "text": "START GAME",
-                "scale": 14.820000648498536,
+                "scale": 15.0,
                 "offset": {
                     "x": 0.0,
                     "y": 0.0
@@ -362,10 +354,6 @@
             "layer": {
                 "layerName": "StaticBackground",
                 "z": 0
-            },
-            "layer": {
-                "layerName": "StaticBackground",
-                "z": 0
             }
         },
         {
@@ -382,8 +370,8 @@
                     "z": -0.30000001192092898
                 },
                 "size": {
-                    "x": 177.02847290039063,
-                    "y": 37.57054138183594
+                    "x": 253.1999969482422,
+                    "y": 55.0
                 }
             },
             "shape": {
@@ -423,7 +411,7 @@
             "text": {
                 "font": "AlegreyaSC-Medium",
                 "text": "SETTINGS",
-                "scale": 10.475058555603028,
+                "scale": 15.0,
                 "offset": {
                     "x": 0.0,
                     "y": 0.0
@@ -506,10 +494,6 @@
                     "y": 0.0
                 },
                 "uiLayout": 4
-            },
-            "layer": {
-                "layerName": "StaticBackground",
-                "z": 0
             },
             "layer": {
                 "layerName": "StaticBackground",
@@ -750,6 +734,14 @@
         }
     ],
     "layers": {
+        "Default": 0,
+        "Ground": 2,
+        "Player": 1
+    },
+    "layer_visibility": {
+        "Default": true
+    },
+    "tag_mapping": {
         "Default": 0,
         "Ground": 2,
         "Player": 1

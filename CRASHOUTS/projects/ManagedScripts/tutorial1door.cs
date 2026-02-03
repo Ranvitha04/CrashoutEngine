@@ -39,7 +39,7 @@ namespace CrashoutsEngine
             if (isPlayer)
             {
                 //Console.WriteLine("[TutorialDoor] Player detected! Loading tutorial2...");
-                SceneManager.TransitionToScene("tutorial2",2f);
+                SceneManager.LoadScene("tutorial2",2f);
             }
             // else
             // {

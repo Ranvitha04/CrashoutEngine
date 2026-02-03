@@ -268,6 +268,11 @@ namespace CrashoutsEngine::TileMapUtils {
 		}
 		map.segmentCache.clear();
 
+		Component::LayerComponent* parentLayer = nullptr;
+		if (ecs->HasComponent<Component::LayerComponent>(parentEnt)) {
+			parentLayer = ecs->GetComponent<Component::LayerComponent>(parentEnt);
+		}
+
 		// Iterate over every painted tile
 		for (auto const& [pos, tileAssetName] : map.gridData) {
 			// A. Get the Asset
@@ -337,6 +342,16 @@ namespace CrashoutsEngine::TileMapUtils {
 			t.position.y = (float)pos.second * map.tileSize + map.tileSize * .5f;
 			t.position.z = ecs->GetComponent<Component::TransformComponent>(parentEnt)->position.z;
 			t.size = CEVec2((float)map.tileSize, (float)map.tileSize);
+
+			// Apply Parent Layer to Child
+			if (parentLayer) {
+				// Copy the parent's layer settings exactly
+				ecs->AddComponent<Component::LayerComponent>(ent, *parentLayer);
+			}
+			else {
+				// Fallback if parent has no layer (rare, but safe)
+				ecs->AddComponent<Component::LayerComponent>(ent, Component::LayerComponent{ "Default", 0 });
+			}
 
 			// 3. Collider
 			if (matchedRule->colliderType != Collision::ColliderType::NONE &&

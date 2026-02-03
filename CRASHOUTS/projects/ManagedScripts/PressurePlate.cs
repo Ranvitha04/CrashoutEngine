@@ -33,7 +33,7 @@ namespace CrashoutsEngine
 
         public void OnCollideEnter(uint otherEntityID)
         {
-            Debug.Log("wweird");
+            //Debug.Log("wweird");
             // If already pressed, don't calculate again
             if (stepOn) return;
 
@@ -51,7 +51,7 @@ namespace CrashoutsEngine
                 isValidTrigger = true;
             }
             // --- CHECK 2: IS IT THE player? ---
-            else if (Tag.HasTag("player"))
+            else if (Tag.HasTag("Player"))
             {
                 var otherRb = other.GetComponent<RigidBodyComponent>();
 

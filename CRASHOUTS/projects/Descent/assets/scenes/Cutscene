@@ -2,7 +2,7 @@
     "entities": [
         {
             "active": true,
-            "name": "Entity 1",
+            "name": "Transition",
             "tag": {
                 "tagMask": 0
             },
@@ -10,12 +10,459 @@
                 "rotation": 0.0,
                 "position": {
                     "x": 0.0,
-                    "y": 0.7058486938476563,
+                    "y": 0.0,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 179.0,
-                    "y": 100.6875
+                    "x": 192.0,
+                    "y": 108.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "CutsceneScript",
+                        "fields": {}
+                    }
+                ]
+            },
+            "layer": {
+                "layerName": "Transition",
+                "z": 0
+            }
+        },
+        {
+            "active": false,
+            "name": "Dialogue_2_4",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": -42.32943344116211,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 180.9047393798828,
+                    "y": 23.640331268310548
+                }
+            },
+            "text": {
+                "font": "AlegreyaSC-Medium",
+                "text": "My only option, then, is to go to him, by any means necessary.",
+                "scale": 2.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": true,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": true,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 0.0,
+                "lineSpacing": 0.0,
+                "isRevealing": true,
+                "revealSpeed": 35.0,
+                "dialogueFilePath": "dialogue/cutscenedialogue.json",
+                "dialogueID": "2.4"
+            },
+            "gui": {
+                "uiType": 2
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "uiLayout": 4
+            },
+            "layer": {
+                "layerName": "Dialogue",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "Camera",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "camera": {
+                "zoom": 0.9300000071525574,
+                "xBounds": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "yBounds": {
+                    "x": 0.0,
+                    "y": 0.0
+                }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            }
+        },
+        {
+            "active": false,
+            "name": "Dialogue_2_5",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": -42.32943344116211,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 180.9047393798828,
+                    "y": 23.640331268310548
+                }
+            },
+            "text": {
+                "font": "AlegreyaSC-Medium",
+                "text": "Even if it costs me everything.",
+                "scale": 2.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": true,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": true,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 0.0,
+                "lineSpacing": 0.0,
+                "isRevealing": true,
+                "revealSpeed": 35.0,
+                "dialogueFilePath": "dialogue/cutscenedialogue.json",
+                "dialogueID": "2.5"
+            },
+            "gui": {
+                "uiType": 2
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "uiLayout": 4
+            },
+            "layer": {
+                "layerName": "Dialogue",
+                "z": 0
+            }
+        },
+        {
+            "active": false,
+            "name": "Dialogue_1_1",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": -42.32943344116211,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 150.0,
+                    "y": 23.640331268310548
+                }
+            },
+            "text": {
+                "font": "AlegreyaSC-Medium",
+                "text": "It was my fault. It was all my fault. If only I hadn’t distracted him back then, none of this would have happened.",
+                "scale": 2.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": -2.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": true,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": true,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 0.0,
+                "lineSpacing": 7.0,
+                "isRevealing": true,
+                "revealSpeed": 35.0,
+                "dialogueFilePath": "dialogue/cutscenedialogue.json",
+                "dialogueID": "1.1"
+            },
+            "gui": {
+                "uiType": 2
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "uiLayout": 4
+            },
+            "layer": {
+                "layerName": "Dialogue",
+                "z": 0
+            }
+        },
+        {
+            "active": false,
+            "name": "DialogueBG",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": -42.32943344116211,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 180.9047393798828,
+                    "y": 23.640331268310548
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.6243094205856323
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "gui": {
+                "uiType": 1
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "uiLayout": 4
+            },
+            "layer": {
+                "layerName": "Dialogue",
+                "z": 0
+            }
+        },
+        {
+            "active": false,
+            "name": "Dialogue_1_2",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": -42.32943344116211,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 150.0,
+                    "y": 23.640331268310548
+                }
+            },
+            "text": {
+                "font": "AlegreyaSC-Medium",
+                "text": "I don’t care that he was something as blasphemous as a cultist.",
+                "scale": 2.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": -2.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": true,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": true,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 0.0,
+                "lineSpacing": 7.0,
+                "isRevealing": true,
+                "revealSpeed": 35.0,
+                "dialogueFilePath": "dialogue/cutscenedialogue.json",
+                "dialogueID": "1.2"
+            },
+            "gui": {
+                "uiType": 2
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "uiLayout": 4
+            },
+            "layer": {
+                "layerName": "Dialogue",
+                "z": 0
+            }
+        },
+        {
+            "active": false,
+            "name": "Dialogue_1_3",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": -42.32943344116211,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 150.0,
+                    "y": 23.640331268310548
+                }
+            },
+            "text": {
+                "font": "AlegreyaSC-Medium",
+                "text": "I don’t care that he had essentially lied to me for the entirety of our relationship.",
+                "scale": 2.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": -2.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": true,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": true,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 0.0,
+                "lineSpacing": 7.0,
+                "isRevealing": true,
+                "revealSpeed": 35.0,
+                "dialogueFilePath": "dialogue/cutscenedialogue.json",
+                "dialogueID": "1.3"
+            },
+            "gui": {
+                "uiType": 2
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "uiLayout": 4
+            },
+            "layer": {
+                "layerName": "Dialogue",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "Cutscene_1",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 192.0,
+                    "y": 108.0
                 }
             },
             "shape": {
@@ -26,7 +473,7 @@
                 "thickness": 1.0,
                 "preview": false,
                 "type": 0,
-                "textureName": "",
+                "textureName": "Cutscenes/Cutscene_1.png",
                 "uvSize": {
                     "x": 1.0,
                     "y": 1.0
@@ -53,28 +500,950 @@
                 }
             },
             "layer": {
-                "layerName": "",
-                "z": 0
+                "layerName": "Cutscene",
+                "z": 1
+            }
+        },
+        {
+            "active": false,
+            "name": "Cutscene_2",
+            "tag": {
+                "tagMask": 0
             },
-            "video": {
-                "videoPath": "videos/Shrek - All star _ Intro HD  - Trim.mp4",
-                "isPlaying": true,
-                "loop": false,
-                "isCutscene": true,
-                "matchAspectRatio": true,
-                "volume": 0.12999999523162843,
-                "frameRate": 60.0
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 192.0,
+                    "y": 108.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "Cutscenes/Cutscene_2.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
             },
             "layer": {
-                "layerName": "",
+                "layerName": "Cutscene",
+                "z": 2
+            }
+        },
+        {
+            "active": false,
+            "name": "Cutscene_3",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 192.0,
+                    "y": 108.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "Cutscenes/Cutscene_3.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "layer": {
+                "layerName": "Cutscene",
+                "z": 3
+            }
+        },
+        {
+            "active": false,
+            "name": "Dialogue_1_4",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": -42.32943344116211,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 150.0,
+                    "y": 23.640331268310548
+                }
+            },
+            "text": {
+                "font": "AlegreyaSC-Medium",
+                "text": "I thought I would feel betrayed. And I did, briefly. But now there’s only an all-consuming sorrow.",
+                "scale": 2.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": -2.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": true,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": true,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 0.0,
+                "lineSpacing": 7.0,
+                "isRevealing": true,
+                "revealSpeed": 35.0,
+                "dialogueFilePath": "dialogue/cutscenedialogue.json",
+                "dialogueID": "1.4"
+            },
+            "gui": {
+                "uiType": 2
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "uiLayout": 4
+            },
+            "layer": {
+                "layerName": "Dialogue",
                 "z": 0
+            }
+        },
+        {
+            "active": false,
+            "name": "Dialogue_1_5",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": -42.32943344116211,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 150.0,
+                    "y": 23.640331268310548
+                }
+            },
+            "text": {
+                "font": "AlegreyaSC-Medium",
+                "text": "If only he had told me, everything would have been fine. Instead, he’s never coming back.",
+                "scale": 2.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": -2.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": true,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": true,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 0.0,
+                "lineSpacing": 7.0,
+                "isRevealing": true,
+                "revealSpeed": 35.0,
+                "dialogueFilePath": "dialogue/cutscenedialogue.json",
+                "dialogueID": "1.5"
+            },
+            "gui": {
+                "uiType": 2
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "uiLayout": 4
+            },
+            "layer": {
+                "layerName": "Dialogue",
+                "z": 0
+            }
+        },
+        {
+            "active": false,
+            "name": "Dialogue_2_1",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": -42.32943344116211,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 150.0,
+                    "y": 23.640331268310548
+                }
+            },
+            "text": {
+                "font": "AlegreyaSC-Medium",
+                "text": "With each passing day, my life grows duller, more meaningless. I’ve tried to move on, but I can’t endure it anymore.",
+                "scale": 2.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": -2.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": true,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": true,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 0.0,
+                "lineSpacing": 7.0,
+                "isRevealing": true,
+                "revealSpeed": 35.0,
+                "dialogueFilePath": "dialogue/cutscenedialogue.json",
+                "dialogueID": "2.1"
+            },
+            "gui": {
+                "uiType": 2
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "uiLayout": 4
+            },
+            "layer": {
+                "layerName": "Dialogue",
+                "z": 0
+            }
+        },
+        {
+            "active": false,
+            "name": "Dialogue_2_2",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": -42.32943344116211,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 150.0,
+                    "y": 23.640331268310548
+                }
+            },
+            "text": {
+                "font": "AlegreyaSC-Medium",
+                "text": "Living in a world without him is impossible.",
+                "scale": 2.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": -2.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": true,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": true,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 0.0,
+                "lineSpacing": 7.0,
+                "isRevealing": true,
+                "revealSpeed": 35.0,
+                "dialogueFilePath": "dialogue/cutscenedialogue.json",
+                "dialogueID": "2.2"
+            },
+            "gui": {
+                "uiType": 2
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "uiLayout": 4
+            },
+            "layer": {
+                "layerName": "Dialogue",
+                "z": 0
+            }
+        },
+        {
+            "active": false,
+            "name": "Dialogue_2_3",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": -42.32943344116211,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 150.0,
+                    "y": 23.640331268310548
+                }
+            },
+            "text": {
+                "font": "AlegreyaSC-Medium",
+                "text": "Finding something new to live for feels just as empty.",
+                "scale": 2.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": -2.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": true,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": true,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 0.0,
+                "lineSpacing": 7.0,
+                "isRevealing": true,
+                "revealSpeed": 35.0,
+                "dialogueFilePath": "dialogue/cutscenedialogue.json",
+                "dialogueID": "2.3"
+            },
+            "gui": {
+                "uiType": 2
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "uiLayout": 4
+            },
+            "layer": {
+                "layerName": "Dialogue",
+                "z": 0
+            }
+        },
+        {
+            "active": false,
+            "name": "Dialogue_2_4",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": -42.32943344116211,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 150.0,
+                    "y": 23.640331268310548
+                }
+            },
+            "text": {
+                "font": "AlegreyaSC-Medium",
+                "text": "My only option, then, is to go to him, by any means necessary.",
+                "scale": 2.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": -2.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": true,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": true,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 0.0,
+                "lineSpacing": 7.0,
+                "isRevealing": true,
+                "revealSpeed": 35.0,
+                "dialogueFilePath": "dialogue/cutscenedialogue.json",
+                "dialogueID": "2.4"
+            },
+            "gui": {
+                "uiType": 2
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "uiLayout": 4
+            },
+            "layer": {
+                "layerName": "Dialogue",
+                "z": 0
+            }
+        },
+        {
+            "active": false,
+            "name": "Dialogue_2_5",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": -42.32943344116211,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 150.0,
+                    "y": 23.640331268310548
+                }
+            },
+            "text": {
+                "font": "AlegreyaSC-Medium",
+                "text": "Even if it costs me everything.",
+                "scale": 2.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": -2.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": true,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": true,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 0.0,
+                "lineSpacing": 7.0,
+                "isRevealing": true,
+                "revealSpeed": 35.0,
+                "dialogueFilePath": "dialogue/cutscenedialogue.json",
+                "dialogueID": "2.5"
+            },
+            "gui": {
+                "uiType": 2
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "uiLayout": 4
+            },
+            "layer": {
+                "layerName": "Dialogue",
+                "z": 0
+            }
+        },
+        {
+            "active": false,
+            "name": "Dialogue_3_1",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": -42.32943344116211,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 150.0,
+                    "y": 23.640331268310548
+                }
+            },
+            "text": {
+                "font": "AlegreyaSC-Medium",
+                "text": "Using the ritual book that he used, I’m going to open a portal to hell. Whatever it takes, I’m going to reunite with him and bring him back to the surface.",
+                "scale": 2.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": -2.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": true,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": true,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 0.0,
+                "lineSpacing": 7.0,
+                "isRevealing": true,
+                "revealSpeed": 35.0,
+                "dialogueFilePath": "dialogue/cutscenedialogue.json",
+                "dialogueID": "3.1"
+            },
+            "gui": {
+                "uiType": 2
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "uiLayout": 4
+            },
+            "layer": {
+                "layerName": "Dialogue",
+                "z": 0
+            }
+        },
+        {
+            "active": false,
+            "name": "Dialogue_3_3",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": -42.32943344116211,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 150.0,
+                    "y": 23.640331268310548
+                }
+            },
+            "text": {
+                "font": "AlegreyaSC-Medium",
+                "text": "Even if I don’t know what awaits me below.",
+                "scale": 2.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": -2.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": true,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": true,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 0.0,
+                "lineSpacing": 7.0,
+                "isRevealing": true,
+                "revealSpeed": 35.0,
+                "dialogueFilePath": "dialogue/cutscenedialogue.json",
+                "dialogueID": "3.3"
+            },
+            "gui": {
+                "uiType": 2
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "uiLayout": 4
+            },
+            "layer": {
+                "layerName": "Dialogue",
+                "z": 0
+            }
+        },
+        {
+            "active": false,
+            "name": "Dialogue_3_4",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": -42.32943344116211,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 150.0,
+                    "y": 23.640331268310548
+                }
+            },
+            "text": {
+                "font": "AlegreyaSC-Medium",
+                "text": "Even if I don’t know whether I’ll be able to return.",
+                "scale": 2.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": -2.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": true,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": true,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 0.0,
+                "lineSpacing": 7.0,
+                "isRevealing": true,
+                "revealSpeed": 35.0,
+                "dialogueFilePath": "dialogue/cutscenedialogue.json",
+                "dialogueID": "3.4"
+            },
+            "gui": {
+                "uiType": 2
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "uiLayout": 4
+            },
+            "layer": {
+                "layerName": "Dialogue",
+                "z": 0
+            }
+        },
+        {
+            "active": false,
+            "name": "Dialogue_3_2",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": -42.32943344116211,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 150.0,
+                    "y": 23.640331268310548
+                }
+            },
+            "text": {
+                "font": "AlegreyaSC-Medium",
+                "text": "Even if it means committing a taboo.",
+                "scale": 2.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": -2.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": true,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": true,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 0.0,
+                "lineSpacing": 7.0,
+                "isRevealing": true,
+                "revealSpeed": 35.0,
+                "dialogueFilePath": "dialogue/cutscenedialogue.json",
+                "dialogueID": "3.2"
+            },
+            "gui": {
+                "uiType": 2
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "uiLayout": 4
+            },
+            "layer": {
+                "layerName": "Dialogue",
+                "z": 0
+            }
+        },
+        {
+            "active": false,
+            "name": "Dialogue_4_1",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": -42.32943344116211,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 150.0,
+                    "y": 23.640331268310548
+                }
+            },
+            "text": {
+                "font": "AlegreyaSC-Medium",
+                "text": "Even if it means committing a taboo.",
+                "scale": 2.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": -2.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": true,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": true,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 0.0,
+                "lineSpacing": 7.0,
+                "isRevealing": true,
+                "revealSpeed": 35.0,
+                "dialogueFilePath": "dialogue/cutscenedialogue.json",
+                "dialogueID": "4.1"
+            },
+            "gui": {
+                "uiType": 2
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "uiLayout": 4
+            },
+            "layer": {
+                "layerName": "Dialogue",
+                "z": 0
+            }
+        },
+        {
+            "active": false,
+            "name": "Cutscene_4",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 192.0,
+                    "y": 108.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "Cutscenes/Cutscene_3.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "layer": {
+                "layerName": "Cutscene",
+                "z": 3
             }
         }
     ],
     "layers": {
+        "Cutscene": 1,
         "Default": 0,
-        "Enemy": 4,
-        "Energy": 8,
+        "Dialogue": 2
+    },
+    "layer_visibility": {
+        "Cutscene": true,
+        "Default": true,
+        "Dialogue": true
+    },
+    "tag_mapping": {
+        "Default": 0,
         "Ground": 2,
         "Player": 1
     },

@@ -32,7 +32,7 @@ namespace CrashoutsEngine
             // Set Initial Animation State
             if (_anim != null) _anim.Play("charged");
 
-            Console.WriteLine("[EnergyBall] Ready.");
+            Debug.Log("[EnergyBall] Ready.");
         }
 
         public void OnTriggerEnter(uint otherID)

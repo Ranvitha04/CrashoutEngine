@@ -51,10 +51,6 @@
             "layer": {
                 "layerName": "StaticBackground",
                 "z": 0
-            },
-            "layer": {
-                "layerName": "StaticBackground",
-                "z": 0
             }
         }
     ],
@@ -63,6 +59,14 @@
         "Ground": 2,
         "Player": 1,
         "UI": 4
+    },
+    "layer_visibility": {
+        "Default": true
+    },
+    "tag_mapping": {
+        "Default": 0,
+        "Ground": 2,
+        "Player": 1
     },
     "quadtree": {
         "min": {

@@ -143,6 +143,10 @@
     ],
     "dialogue": [
         {
+            "name": "cutscenedialogue",
+            "path": "cutscenedialogue.json"
+        },
+        {
             "name": "dialogue",
             "path": "dialogue.json"
         }
@@ -533,6 +537,18 @@
         {
             "name": "Cutscene_",
             "path": "Cutscenes\\Cutscene_.png"
+        },
+        {
+            "name": "Cutscene_1",
+            "path": "Cutscenes\\Cutscene_1.png"
+        },
+        {
+            "name": "Cutscene_2",
+            "path": "Cutscenes\\Cutscene_2.png"
+        },
+        {
+            "name": "Cutscene_3",
+            "path": "Cutscenes\\Cutscene_3.png"
         },
         {
             "name": "ducky_2_spritesheet",
@@ -1541,6 +1557,14 @@
         {
             "name": "Icon",
             "path": "UI\\Icon.png"
+        },
+        {
+            "name": "mana UI single empty",
+            "path": "UI\\mana UI single empty.png"
+        },
+        {
+            "name": "mana UI single",
+            "path": "UI\\mana UI single.png"
         },
         {
             "name": "Menu",

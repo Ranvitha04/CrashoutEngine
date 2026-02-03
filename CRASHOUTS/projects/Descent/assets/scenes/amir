@@ -202,6 +202,8 @@
                             "energyConsumption": 12.5,
                             "normalMass": 1.0,
                             "lightMass": 4.5,
+                            "groundCheckDistance": 26.0,
+                            "groundCheckWidth": 10.0,
                             "CurrentEnergy": 100.0,
                             "MaxEnergy": 100.0,
                             "alive": true,
@@ -259,10 +261,6 @@
                     "z": 0.0,
                     "w": 0.5
                 }
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             },
             "layer": {
                 "layerName": "",
@@ -772,10 +770,6 @@
             "layer": {
                 "layerName": "",
                 "z": 0
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             }
         },
         {
@@ -992,10 +986,6 @@
             "layer": {
                 "layerName": "",
                 "z": 0
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             }
         },
         {
@@ -1028,10 +1018,6 @@
                         "isMusic": false
                     }
                 ]
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             },
             "layer": {
                 "layerName": "",
@@ -1084,10 +1070,6 @@
             "layer": {
                 "layerName": "",
                 "z": 0
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             }
         },
         {
@@ -1132,10 +1114,6 @@
                         }
                     }
                 ]
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             },
             "layer": {
                 "layerName": "",
@@ -1360,6 +1338,16 @@
         }
     ],
     "layers": {
+        "Default": 0,
+        "Ground": 2,
+        "Player": 1
+    },
+    "layer_visibility": {
+        "Cutscene": true,
+        "Default": true,
+        "Dialogue": true
+    },
+    "tag_mapping": {
         "Default": 0,
         "Ground": 2,
         "Player": 1

@@ -16,6 +16,7 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 #include "entitymanager.h"
 #include "monomanager.h"
 #include "CEVec2.h"
+#include "textcomponent.h"
 
 // Mono Headers
 #include <mono/jit/jit.h>
@@ -104,6 +105,20 @@ namespace {
         return mono_string_new(MonoManager::GetDomain(), "");
     }
 
+    // FOR TEXT 
+    static bool Internal_IsTextFinished(uint32_t entityID) {
+        auto* ecs = CrashoutsEngine::ECS::getInstance();
+        if (!ecs->HasComponent<Component::TextComponent>(entityID)) return true; // Safe default
+
+        auto* tc = ecs->GetComponent<Component::TextComponent>(entityID);
+
+        // If we aren't in revealing mode, we are technically "finished" immediately
+        if (!tc->isRevealing) return true;
+
+        // Check if the revealed count has caught up to the total length
+        return tc->revealedCharCount >= (int)tc->text.length();
+    }
+
 }
 
 // =============================================================
@@ -125,6 +140,8 @@ void CrashoutsEngine::Bindings::RegisterAnimatorBindings() {
     mono_add_internal_call("CrashoutsEngine.Animator::InternalGetPlaying", (void*)InternalGetPlaying);
     mono_add_internal_call("CrashoutsEngine.Animator::InternalSetPlaying", (void*)InternalSetPlaying);
     mono_add_internal_call("CrashoutsEngine.Animator::InternalGetCurrentClip", (void*)InternalGetCurrentClip);
+
+    mono_add_internal_call("CrashoutsEngine.InternalCalls::IsTextFinished", (const void*)Internal_IsTextFinished);
 
     std::cout << "[Mono] Registered Keyframe Animator Bindings" << std::endl;
 }
