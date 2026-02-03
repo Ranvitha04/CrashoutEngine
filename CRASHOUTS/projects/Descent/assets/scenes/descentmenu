@@ -78,12 +78,46 @@
                 "rotation": 0.0,
                 "position": {
                     "x": 0.0,
-                    "y": -130.0,
-                    "z": 0.0
+                    "y": -132.70504760742188,
+                    "z": -0.8999999761581421
                 },
                 "size": {
                     "x": 253.1999969482422,
                     "y": 55.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.40392157435417178,
+                    "y": 0.0784313753247261,
+                    "z": 0.0784313753247261,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
                 }
             },
             "text": {
@@ -164,7 +198,7 @@
                 }
             },
             "gui": {
-                "uiType": 6
+                "uiType": 7
             },
             "uilayout": {
                 "paddingXY": {
@@ -187,13 +221,47 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 0.0,
-                    "y": -10.0,
-                    "z": 0.0
+                    "x": 1.1542778015136719,
+                    "y": 37.919944763183597,
+                    "z": -3.299999952316284
                 },
                 "size": {
                     "x": 253.1999969482422,
                     "y": 55.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.5176470875740051,
+                    "y": 0.0784313753247261,
+                    "z": 0.0784313753247261,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
                 }
             },
             "text": {
@@ -274,7 +342,7 @@
                 }
             },
             "gui": {
-                "uiType": 6
+                "uiType": 7
             },
             "uilayout": {
                 "paddingXY": {
@@ -297,13 +365,47 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 0.0,
-                    "y": -70.0,
-                    "z": 0.0
+                    "x": -1.100000023841858,
+                    "y": -46.75305938720703,
+                    "z": -0.30000001192092898
                 },
                 "size": {
                     "x": 253.1999969482422,
                     "y": 55.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.40331488847732546,
+                    "y": 0.07798906415700913,
+                    "z": 0.07798906415700913,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
                 }
             },
             "text": {
@@ -384,7 +486,7 @@
                 }
             },
             "gui": {
-                "uiType": 6
+                "uiType": 7
             },
             "uilayout": {
                 "paddingXY": {
@@ -396,56 +498,6 @@
             "layer": {
                 "layerName": "StaticBackground",
                 "z": 0
-            }
-        },
-        {
-            "active": true,
-            "name": "Title",
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 0.0,
-                    "y": 91.74696350097656,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 450.0,
-                    "y": 110.0
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "UI/Title.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
             }
         }
     ],
