@@ -7,19 +7,21 @@ namespace CrashoutsEngine
     public class PlayerMovement : ScriptBase
     {
         // --- TUNING VARIABLES ---
-        [SerializeField] public float maxRunSpeed = 150.0f;
-        [SerializeField] public float maxAirSpeed = 120.0f;
-        [SerializeField] public float acceleration = 10.0f;
-        [SerializeField] public float deceleration = 10.0f;
-        [SerializeField] public float airAcceleration = 2.0f;
+        public float maxRunSpeed = 150.0f;
+        public float maxAirSpeed = 120.0f;
+        public float acceleration = 10.0f;
+        public float deceleration = 10.0f;
+        public float airAcceleration = 2.0f;
 
-        [SerializeField] public float jumpPower = 20000f;
-        [SerializeField] public float gravityScale = 2.5f;
-        [SerializeField] public float gravityForceMultiplier = 10.0f;
+        public float jumpPower = 20000f;
+        public float gravityScale = 2.5f;
+        public float gravityForceMultiplier = 10.0f;
 
-        [SerializeField] public float footstepInterval = 0.075f;
-        [SerializeField] public float swapPause = 1f;
-        [SerializeField] public float energyConsumption = 12.5f;
+        public float footstepInterval = 0.075f;
+        public float swapPause = 1f;
+        public float energyConsumption = 12.5f;
+        public float goalNoOfPlates = 1;
+        public int currentGoalPlates = 0;
 
         public float normalMass = 7.0f;
         public float lightMass = 4.5f;
@@ -172,7 +174,7 @@ namespace CrashoutsEngine
             }
 
             // WEIGHT MECHANIC
-            if (Input.IsKeyTriggered(Key.Q) && IsGrounded && CurrentEnergy >= energyConsumption)
+            if (Input.IsKeyTriggered(Key.E) && IsGrounded && CurrentEnergy >= energyConsumption)
             {
                 RemoveEnergy(energyConsumption);
                 isLight = !isLight;

@@ -8,8 +8,8 @@ namespace CrashoutsEngine
     {
         bool stepOn = false;
         float oldY, newY;
-        [SerializeField]
-        float decrease = 5.0f;
+        [SerializeField] float decrease = 5.0f;
+        [SerializeField] string goalTextName = null;
         TransformComponent transform;
         RigidBodyComponent rb; // The plate's RB
 
@@ -76,6 +76,20 @@ namespace CrashoutsEngine
             // --- EXECUTE ACTION ---
             if (isValidTrigger)
             {
+                if(goalTextName != null)
+                {
+                    // Get reference
+                    if (InternalCalls.FindEntityByName(goalTextName) != null)
+                    {
+                        // Add to player thing
+                        PlayerMovement.Instance.currentGoalPlates++;
+                        InternalCalls.SetText(InternalCalls.FindEntityByName(goalTextName), 
+                            "Activated Pressure Plates: [" +
+                            PlayerMovement.Instance.currentGoalPlates + "/" +
+                            PlayerMovement.Instance.goalNoOfPlates + "]");
+                    }
+                } 
+
                 transform.Position = new CEVec3(transform.Position.x, newY, transform.Position.z);
                 Debug.Log("Stepped on Pressure Plate!");
 

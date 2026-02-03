@@ -13,6 +13,7 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 #include "textcomponent.h"
 #include "sceneutils.h"
 #include "entitymanager.h"
+#include "monomanager.h"
 #include "mono/metadata/loader.h"
 #include <mono/jit/jit.h>
 #include <mono/metadata/object.h>
@@ -82,6 +83,31 @@ namespace
             Scene::UI::LoadDialogue(*txt);
         }
     }
+
+    // --- Dynamic Text Functions ---
+    static void InternalSetText(uint32_t id, MonoString* newText) {
+        auto* ecs = ECS::getInstance();
+        if (!ecs) return;
+
+        TextComponent* txt = ecs->GetComponent<TextComponent>(id);
+        if (txt) {
+            char* cStr = mono_string_to_utf8(newText);
+            txt->text = cStr; // Assuming txt->text is a std::string
+            mono_free(cStr);
+        }
+    }
+
+    static MonoString* InternalGetText(uint32_t id) {
+        auto* ecs = ECS::getInstance();
+        if (!ecs) return nullptr;
+
+        TextComponent* txt = ecs->GetComponent<TextComponent>(id);
+        if (txt) {
+            // Create a new C# string from our C++ std::string
+            return mono_string_new(MonoManager::GetDomain(), txt->text.c_str());
+        }
+        return mono_string_new(MonoManager::GetDomain(), "");
+    }
 }
 
 void CrashoutsEngine::Bindings::RegisterUIBindings()
@@ -98,4 +124,8 @@ void CrashoutsEngine::Bindings::RegisterUIBindings()
     // 3. Register Dialogue Functions
     mono_add_internal_call("CrashoutsEngine.InternalCalls::PlayDialogue", (const void*)InternalPlayDialogue);
     mono_add_internal_call("CrashoutsEngine.InternalCalls::LoadDialogue", (const void*)InternalLoadDialogue);
+
+    // 4. NEW: Register Text Functions
+    mono_add_internal_call("CrashoutsEngine.InternalCalls::SetText", (const void*)InternalSetText);
+    mono_add_internal_call("CrashoutsEngine.InternalCalls::GetText", (const void*)InternalGetText);
 }
