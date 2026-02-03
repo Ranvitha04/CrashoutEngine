@@ -15959,7 +15959,7 @@
                 }
             },
             "shape": {
-                "useTexture": true,
+                "useTexture": false,
                 "isWorldSpace": true,
                 "wrapModeU": 0,
                 "wrapModeV": 0,
@@ -15976,9 +15976,9 @@
                     "y": 0.0
                 },
                 "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
+                    "x": 0.3027888536453247,
+                    "y": 0.1496570110321045,
+                    "z": 0.0880620926618576,
                     "w": 1.0
                 },
                 "p1": {
@@ -18201,7 +18201,7 @@
             },
             "postprocessing": {
                 "brightness": -0.019999999552965165,
-                "contrast": -0.019999999552965165,
+                "contrast": -0.07999999821186066,
                 "saturation": 0.10000000149011612,
                 "active": true
             },
