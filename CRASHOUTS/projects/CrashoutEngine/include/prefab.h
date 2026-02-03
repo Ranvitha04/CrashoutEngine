@@ -35,7 +35,7 @@ namespace CrashoutsEngine {
     void InitPrefabs();
     void ReloadPrefabsFromDisk(const std::string& path);
     void RecreateInstancesForPrefab(ECS& ecs, const std::string& prefabName);
-    bool DeletePrefabAsset(ECS& ecs, const std::string& prefabName);
+
     // Save entity as prefab
     bool SavePrefabToJson(ECS& ecs,
         Entity e,

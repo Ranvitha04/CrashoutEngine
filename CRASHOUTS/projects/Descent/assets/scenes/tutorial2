@@ -2200,10 +2200,6 @@
             "layer": {
                 "layerName": "",
                 "z": 0
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             }
         },
         {
@@ -2327,6 +2323,8 @@
                             "energyConsumption": 12.5,
                             "normalMass": 3.0,
                             "lightMass": 2.0,
+                            "groundCheckDistance": 26.0,
+                            "groundCheckWidth": 10.0,
                             "CurrentEnergy": 100.0,
                             "MaxEnergy": 100.0,
                             "alive": true,
@@ -2384,10 +2382,6 @@
                     "z": 0.0,
                     "w": 0.5
                 }
-            },
-            "layer": {
-                "layerName": "Player",
-                "z": 0
             },
             "layer": {
                 "layerName": "Player",
@@ -2550,10 +2544,6 @@
             "layer": {
                 "layerName": "Default",
                 "z": 0
-            },
-            "layer": {
-                "layerName": "Default",
-                "z": 0
             }
         },
         {
@@ -2695,10 +2685,6 @@
                     "z": 0.0,
                     "w": 0.5
                 }
-            },
-            "layer": {
-                "layerName": "Default",
-                "z": 0
             },
             "layer": {
                 "layerName": "Default",
@@ -2848,10 +2834,6 @@
             "layer": {
                 "layerName": "Default",
                 "z": 0
-            },
-            "layer": {
-                "layerName": "Default",
-                "z": 0
             }
         },
         {
@@ -2986,10 +2968,6 @@
                     "z": 0.0,
                     "w": 0.5
                 }
-            },
-            "layer": {
-                "layerName": "Default",
-                "z": 0
             },
             "layer": {
                 "layerName": "Default",
@@ -3152,10 +3130,6 @@
             "layer": {
                 "layerName": "Default",
                 "z": 0
-            },
-            "layer": {
-                "layerName": "Default",
-                "z": 0
             }
         },
         {
@@ -3304,10 +3278,6 @@
             "layer": {
                 "layerName": "Default",
                 "z": 0
-            },
-            "layer": {
-                "layerName": "Default",
-                "z": 0
             }
         },
         {
@@ -3449,10 +3419,6 @@
                     "z": 0.0,
                     "w": 0.5
                 }
-            },
-            "layer": {
-                "layerName": "Default",
-                "z": 0
             },
             "layer": {
                 "layerName": "Default",
@@ -3606,14 +3572,21 @@
             "layer": {
                 "layerName": "",
                 "z": 0
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             }
         }
     ],
     "layers": {
+        "Background": 0,
+        "Default": 4,
+        "Foreground": 2,
+        "Ground": 8,
+        "Middleground": 1,
+        "Player": 16
+    },
+    "layer_visibility": {
+        "Default": true
+    },
+    "tag_mapping": {
         "Default": 0,
         "Ground": 2,
         "Player": 1

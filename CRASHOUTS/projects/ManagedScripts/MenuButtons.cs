@@ -5,7 +5,6 @@ namespace CrashoutsEngine
     [ScriptBehaviour]
     public class MenuButtons : ScriptBase
     {
-        public static bool QuitFromPauseMenu = false;
         public override void Start()
         {
             //Debug.Log("Start");
@@ -13,9 +12,8 @@ namespace CrashoutsEngine
 
         public override void Update()
         {
-            
-        //Debug.Log("TEST");
-        var btn = Entity.GetComponent<ButtonComponent>();
+            //Debug.Log("TEST");
+            var btn = Entity.GetComponent<ButtonComponent>();
             var name = Entity.GetComponent<NameComponent>();
             if (btn.IsClicked())
             {
@@ -28,8 +26,8 @@ namespace CrashoutsEngine
                 if (name.ToString() == "StartBtn")
                 {
                     //Scene.Manager.LoadScene("descentgame");
-                    Debug.Log("[C#] Transitioning to Tutorial...");
-                    SceneManager.TransitionToScene("tutorial", 2f);
+                    Debug.Log("[C#] Transitioning to Cutscene...");
+                    SceneManager.LoadScene("Cutscene", 2f);
                 }
              
                 else if (name.ToString() == "SettingsBtn")
@@ -48,46 +46,25 @@ namespace CrashoutsEngine
                 
                 else if (name.ToString() == "QuitBtn")
                 {
-                    QuitFromPauseMenu = false;
-                    SceneManager.LoadScene("descentClosedBook");
+                   
+                    SceneManager.LoadScene("descentconfirm");
                 }
                 else if (name.ToString() == "QuitYesBtn")
                 {
-                    if (QuitFromPauseMenu)
-                    {
-                       
-                        SceneManager.LoadScene("descentmenu");
-                    }
-                    else
-                    {
-                      
-                        SceneManager.QuitGame();
-                    }
+                    SceneManager.QuitGame();
                 }
                 else if (name.ToString() == "QuitNoBtn")
                 {
-
-                if (QuitFromPauseMenu)
-                    {
-                       
-                        
-                        SceneManager.LoadScene("descentpause");
-                        
-                    }
-                    else
-                    {
-                      
-                        SceneManager.LoadScene("descentmenu");
-                    }
+               
+                    SceneManager.LoadScene("descentmenu"); 
                 }
-                /*
-                 else if (name.ToString() == "PauseResumeBtn")
-                 {
-                     // Resume Game from pause menu
-                     Debug.Log("[C#] Resume Game from pause menu.");
-                     SceneManager.LoadScene("tutorial");
-                 }
-                */
+               
+                else if (name.ToString() == "PauseResumeBtn")
+                {
+                    // Resume Game from pause menu
+                    Debug.Log("[C#] Resume Game from pause menu.");
+                    SceneManager.LoadScene("descentgame");
+                }
                 else if (name.ToString() == "PauseSettingsBtn")
                 {
                     // Go to settings from pause menu
@@ -96,20 +73,8 @@ namespace CrashoutsEngine
                 }
                 else if (name.ToString() == "PauseQuitBtn")
                 {
-                    QuitFromPauseMenu = true;
-                    SceneManager.LoadScene("descentmenu");
-                }
-                /*
-                else if (name.ToString() == "ResumeBtn")
-                {
-
-                    SceneManager.LoadScene("descentgame");
-                }
-                */
-                else if (name.ToString() == "PauseResumeBtn" || name.ToString() == "ResumeBtn")
-                {
                     
-                      
+                    SceneManager.LoadScene("descentconfirm");
                 }
 
 

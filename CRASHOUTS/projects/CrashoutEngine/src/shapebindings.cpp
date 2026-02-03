@@ -70,12 +70,21 @@ namespace {
     static bool InternalEntityHasShape(uint32_t id) {
         return ECS::getInstance()->HasComponent<ShapeComponent>(id);
     }
+
+    // Dedicated Alpha Control
+    static void InternalSetAlpha(uint32_t id, float alpha) {
+        if (auto* s = GetShape(id)) {
+            // Keep existing RGB, update only Alpha
+            s->color.w() = alpha;
+        }
+    }
 }
 
 void CrashoutsEngine::Bindings::RegisterShapeBindings() {
     // 1. Logic (Registered to Component Class)
     mono_add_internal_call("CrashoutsEngine.ShapeComponent::InternalGetColor", (const void*)InternalGetColor);
     mono_add_internal_call("CrashoutsEngine.ShapeComponent::InternalSetColor", (const void*)InternalSetColor);
+    mono_add_internal_call("CrashoutsEngine.ShapeComponent::InternalSetAlpha", (const void*)InternalSetAlpha);
     mono_add_internal_call("CrashoutsEngine.ShapeComponent::InternalGetType", (const void*)InternalGetType);
     mono_add_internal_call("CrashoutsEngine.ShapeComponent::InternalSetType", (const void*)InternalSetType);
 

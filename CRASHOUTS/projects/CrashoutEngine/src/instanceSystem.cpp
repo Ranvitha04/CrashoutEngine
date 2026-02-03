@@ -768,7 +768,7 @@ namespace InstancingSystem {
 		glBindVertexArray(0);
 
 		//glDepthMask(GL_TRUE); // Re-enable depth writing for next objects
-		glDisable(GL_BLEND);  // Disable blending
+		//glDisable(GL_BLEND);  // Disable blending
 		glEnable(GL_CULL_FACE);
 	}
 
@@ -825,7 +825,8 @@ namespace InstancingSystem {
 		GLint uvSize_loc = glGetUniformLocation(renderer.shdr_pgm_instanced->GetHandle(), "u_uvSize");
 		if (uvSize_loc != -1) glUniform2f(uvSize_loc, uvSize.x, uvSize.y);
 
-		glDisable(GL_BLEND);    // No blending
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glDepthMask(GL_TRUE);   // Write depth normally
 
 		// Bind Texture
@@ -1311,7 +1312,7 @@ namespace InstancingSystem {
 
 		// --- Cleanup ---
 		//glDepthMask(GL_TRUE); // Re-enable depth writing for next objects
-		glDisable(GL_BLEND);  // Disable blending
+		//glDisable(GL_BLEND);  // Disable blending
 		glEnable(GL_CULL_FACE);
 	}
 
@@ -1371,7 +1372,8 @@ namespace InstancingSystem {
 		GLint uvSize_loc = glGetUniformLocation(renderer.shdr_pgm_instanced->GetHandle(), "u_uvSize");
 		if (uvSize_loc != -1) glUniform2f(uvSize_loc, uvSize.x, uvSize.y);
 
-		glDisable(GL_BLEND);    // No blending
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glDepthMask(GL_TRUE);   // Write depth normally
 
 		//glBindTextureUnit(0, textureHandle);
@@ -1810,7 +1812,7 @@ namespace InstancingSystem {
 		glBindVertexArray(0);
 
 		//glDepthMask(GL_TRUE); // Re-enable depth writing for next objects
-		glDisable(GL_BLEND);  // Disable blending
+		//glDisable(GL_BLEND);  // Disable blending
 		glEnable(GL_CULL_FACE);
 	}
 
@@ -1862,7 +1864,8 @@ namespace InstancingSystem {
 		GLint uvSize_loc = glGetUniformLocation(renderer.shdr_pgm_instanced->GetHandle(), "u_uvSize");
 		if (uvSize_loc != -1) glUniform2f(uvSize_loc, uvSize.x, uvSize.y);
 
-		glDisable(GL_BLEND);    // No blending
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glDepthMask(GL_TRUE);   // Write depth normally
 
 		glBindTextureUnit(0, textureHandle);

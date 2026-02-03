@@ -232,7 +232,7 @@ namespace {
 	@details Shows a single InputText and syncs the value back to the ECS component.
 	*/
 	struct NameAdapter : DebugReflection::IComponentAdapter {
-		const char* name() const override { return "NameComponent"; }
+		const char* name() const override { return "Name"; }
 		bool has(ECS& ecs, Entity e) const override {
 			return ecs.HasComponent<Component::NameComponent>(e);
 		}
@@ -272,33 +272,39 @@ namespace {
 		std::map<std::string, unsigned int>& tagMap = Component::TagComponent::tags;
 
 		// --- 1. Build the Preview String ---
-		std::string preview = "";
+		std::string preview = "None";
 		int selectedCount = 0;
 
 		for (auto const& [name, bit] : tagMap) {
 			if (mask & bit) {
-				if (selectedCount > 0) preview += ", ";
-				preview += name;
+				if (selectedCount == 0) preview = name;
+				else preview += ", " + name;
 				selectedCount++;
 			}
 		}
 
-		if (selectedCount == 0) preview = "None";
-		else if (selectedCount > 2) preview = "Mixed...";
+		if (selectedCount > 3) preview = "Mixed (" + std::to_string(selectedCount) + ")";
 
 		// --- 2. Draw the Multi-Select Dropdown ---
 		if (ImGui::BeginCombo("Tag Mask", preview.c_str())) {
 
-			std::string tagToRemove = "";
+			// Temporary storage for deletion to avoid iterator invalidation loop issues
+			std::string tagToDelete = "";
 
-			// --- 3. Draw Checkboxes ---
+			// --- 3. List Existing Tags ---
 			for (auto const& [name, bit] : tagMap) {
+				ImGui::PushID(name.c_str());
+
 				bool isSelected = (mask & bit) != 0;
 
-				// Use Selectable so we can detect clicks easily
-				if (ImGui::Selectable(name.c_str(), isSelected, ImGuiSelectableFlags_DontClosePopups)) {
+				// Fancy Layout: Checkbox on Left, Delete Button on Right
+				float availWidth = ImGui::GetContentRegionAvail().x;
+				float buttonSize = ImGui::GetFrameHeight();
+
+				// Selectable covers most of the width
+				if (ImGui::Selectable(name.c_str(), isSelected, ImGuiSelectableFlags_DontClosePopups, ImVec2(availWidth - buttonSize - 5, 0))) {
 					unsigned int oldMask = mask;
-					unsigned int newMask = mask ^ bit; // Toggle
+					unsigned int newMask = mask ^ bit; // Toggle bit
 
 					UndoManager::GetInstance().AddCommand(
 						std::make_unique<ChangeValueCommand<unsigned int>>(
@@ -308,51 +314,61 @@ namespace {
 					mask = newMask;
 				}
 
-				// Remove Button
-				if (name != "Default") {
+				// Delete Button (Right Aligned)
+				if (name != "Default") { // Prevent deleting default
 					ImGui::SameLine();
-					if (ImGui::SmallButton(("X##" + name).c_str())) tagToRemove = name;
+					ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.8f, 0.2f, 0.2f, 1.0f));
+					if (ImGui::SmallButton("X")) {
+						tagToDelete = name;
+					}
+					ImGui::PopStyleColor();
+					if (ImGui::IsItemHovered()) ImGui::SetTooltip("Delete Tag '%s' globally", name.c_str());
 				}
+
+				ImGui::PopID();
 			}
 
-			// --- 4. Removal Logic (Global removal) ---
-			if (!tagToRemove.empty()) {
-				// Complex undo: Removing a tag affects ALL entities. 
-				// For simplicity, just undo the removal from the map, not the entities.
-				unsigned int bit = tagMap[tagToRemove];
-				tagMap.erase(tagToRemove);
+			// --- 4. Handle Deletion ---
+			if (!tagToDelete.empty()) {
+				unsigned int bitToRemove = tagMap[tagToDelete];
 
-				// Clear from current mask with undo
-				unsigned int oldMask = mask;
-				mask &= ~bit;
-				if (mask != oldMask) {
-					UndoManager::GetInstance().AddCommand(
-						std::make_unique<ChangeValueCommand<unsigned int>>(oldMask, mask, [&mask](unsigned int v) { mask = v; })
-					);
+				// A. Remove from global map
+				tagMap.erase(tagToDelete);
+
+				// B. Clean up ALL entities (Expensive but necessary for data integrity)
+				// Iterate all entities with TagComponent and turn off that bit
+				auto& arr = ecs.GetComponentArray<Component::TagComponent>();
+				for (size_t i = 0; i < arr.dense.size(); ++i) {
+					Component::TagComponent* tc = arr.dense[i];
+					if (tc->tagMask & bitToRemove) {
+						tc->tagMask &= ~bitToRemove;
+					}
 				}
 
-				// Clean up all entities immediately (Not undoable currently for simplicity)
-				for (TagComponent* tc : ecs.GetComponentArray<TagComponent>().dense) {
-					tc->tagMask &= ~bit;
-				}
+				// C. Update current inspector mask immediately so UI doesn't lag
+				mask &= ~bitToRemove;
 			}
 
 			// --- 5. Add New Tag Logic ---
-			ImGui::Separator();
 			static char newTagBuf[64] = "";
-			bool add = ImGui::InputText("New Tag", newTagBuf, 64, ImGuiInputTextFlags_EnterReturnsTrue);
+			ImGui::InputTextWithHint("##NewTag", "New Tag Name", newTagBuf, 64);
 			ImGui::SameLine();
-			if (ImGui::Button("Add") || add) {
+			if (ImGui::Button("Add")) {
 				if (strlen(newTagBuf) > 0 && tagMap.find(newTagBuf) == tagMap.end()) {
+					// Find next available bit
 					unsigned int nextBit = 1;
 					if (!tagMap.empty()) {
+						// Simple logic: Shift the highest existing bit left by 1
 						auto maxEl = std::max_element(tagMap.begin(), tagMap.end(),
 							[](const auto& a, const auto& b) { return a.second < b.second; });
 						nextBit = maxEl->second << 1;
 					}
-					// TODO: Add AddTagCommand for undoing tag creation
-					tagMap.emplace(newTagBuf, nextBit);
-					newTagBuf[0] = '\0';
+
+					// Safety check for overflow (32 bits)
+					if (nextBit != 0) {
+						tagMap.emplace(newTagBuf, nextBit);
+						newTagBuf[0] = '\0'; // Clear buffer
+					}
 				}
 			}
 
@@ -365,7 +381,7 @@ namespace {
 	@details Shows a drop down of tags to choose from and create
 	*/
 	struct TagAdapter : DebugReflection::IComponentAdapter {
-		const char* name() const override { return "TagComponent"; }
+		const char* name() const override { return "Tag"; }
 		bool has(ECS& ecs, Entity e) const override {
 			return ecs.HasComponent<Component::TagComponent>(e);
 		}
@@ -385,9 +401,9 @@ namespace {
 	};
 
 	/*!
-	@brief Adapter for editing Component::LayerComponent (formerly ZOrder).
-	@details Controls Rendering Layer and Z-Index. Also provides visibility toggles for layers.
-	*/
+		@brief Adapter for editing Component::LayerComponent (formerly ZOrder).
+		@details Controls Rendering Layer and Z-Index. Uses ImGui Tables for a clean Layer Manager UI.
+		*/
 	struct LayerAdapter : DebugReflection::IComponentAdapter {
 		const char* name() const override { return "Layer"; }
 		bool has(ECS& ecs, Entity e) const override {
@@ -399,63 +415,148 @@ namespace {
 		void remove(ECS& ecs, Entity e) override {
 			if (has(ecs, e)) ecs.RemoveComponent<Component::LayerComponent>(e);
 		}
+
 		void drawInspector(ECS& ecs, Entity e) override {
-			auto* z = ecs.GetComponent<Component::LayerComponent>(e);
-			if (!z) return;
+			auto* layerComp = ecs.GetComponent<Component::LayerComponent>(e);
+			if (!layerComp) return;
 
 			auto& layerMap = Component::LayerComponent::layerMap;
+			auto& visMap = Component::LayerComponent::layerVisibility;
 
-			// --- Layer Dropdown ---
-			if (ImGui::BeginCombo("Render Layer", z->layerName.c_str())) {
-				for (const auto& [name, id] : layerMap) {
-					if (ImGui::Selectable(name.c_str(), z->layerName == name)) {
-						z->layerName = name;
+			// --- 1. Entity Layer Selection ---
+			// Sort layers for the dropdown so they appear in render order
+			std::vector<std::pair<std::string, int>> sortedLayers(layerMap.begin(), layerMap.end());
+			std::sort(sortedLayers.begin(), sortedLayers.end(),
+				[](const auto& a, const auto& b) { return a.second < b.second; });
+
+			if (ImGui::BeginCombo("Current Layer", layerComp->layerName.c_str())) {
+				for (const auto& [name, id] : sortedLayers) {
+					if (ImGui::Selectable(name.c_str(), layerComp->layerName == name)) {
+						// Undoable command
+						std::string oldL = layerComp->layerName;
+						std::string newL = name;
+						if (oldL != newL) {
+							UndoManager::GetInstance().AddCommand(
+								std::make_unique<ChangeValueCommand<std::string>>(
+									oldL, newL, [layerComp](const std::string& v) { layerComp->layerName = v; }
+								)
+							);
+							layerComp->layerName = newL;
+						}
 					}
 				}
 				ImGui::EndCombo();
 			}
 
-			// --- Add New Layer ---
-			static char newLayerName[64] = "";
-			ImGui::InputText("New Layer Name", newLayerName, 64);
-			ImGui::SameLine();
-			if (ImGui::Button("Add Layer")) {
-				if (strlen(newLayerName) > 0 && layerMap.find(newLayerName) == layerMap.end()) {
-					int nextID = 0;
-					for (const auto& pair : layerMap) nextID = std::max(nextID, pair.second);
-					layerMap[newLayerName] = nextID + 1;
-					Component::LayerComponent::layerVisibility[newLayerName] = true;
-					newLayerName[0] = '\0';
-				}
-			}
-
-			// Z-Index Drag
-			ImGui::DragInt("Z-Index", &z->z, 1, -1000, 1000);
+			UIHelpers::DrawUndoableInt("Order in Layer", layerComp->z);
 
 			ImGui::Separator();
-			ImGui::Text("Global Layer Visibility (Active State)");
 
-			// Global Visibility Toggles
-			auto& visMap = Component::LayerComponent::layerVisibility;
+			// --- 2. Layer Manager (Global) ---
+			if (ImGui::CollapsingHeader("Layer Manager (Global)", ImGuiTreeNodeFlags_None)) {
 
-			for (auto& [name, visible] : visMap) {
-				bool oldVis = visible;
-				if (ImGui::Checkbox(name.c_str(), &visible)) {
-					// Toggle Logic: Iterate all entities and set active state
-					if (visible != oldVis) {
-						auto& arr = ecs.GetComponentArray<Component::LayerComponent>();
-						for (size_t i = 0; i < arr.dense.size(); ++i) {
-							if (arr.dense[i]->layerName == name) {
-								Entity ent = arr.indexToEntity[i];
-								if (ecs.HasComponent<Component::ActiveComponent>(ent)) {
-									ecs.GetComponent<Component::ActiveComponent>(ent)->isActive = visible;
+				ImGui::Indent();
+
+				// Use a Table for perfect alignment
+				// 4 Columns: Name (Stretch), Priority (Fixed), Vis (Fixed), Del (Fixed)
+				if (ImGui::BeginTable("LayerManagerTable", 4, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_Resizable)) {
+
+					ImGui::TableSetupColumn("Name", ImGuiTableColumnFlags_WidthStretch);
+					ImGui::TableSetupColumn("Priority", ImGuiTableColumnFlags_WidthFixed, 65.0f);
+					ImGui::TableSetupColumn("Vis", ImGuiTableColumnFlags_WidthFixed, 30.0f);
+					ImGui::TableSetupColumn("Del", ImGuiTableColumnFlags_WidthFixed, 30.0f);
+					ImGui::TableHeadersRow();
+
+					std::string layerToRemove = "";
+					std::pair<std::string, int> layerToChange = { "", -9999 };
+
+					int index = 0;
+					for (auto& [name, priority] : sortedLayers) {
+						ImGui::PushID(name.c_str());
+						ImGui::TableNextRow();
+
+						// Highlight the row if it's the entity's current layer
+						if (name == layerComp->layerName) {
+							ImGui::TableSetBgColor(ImGuiTableBgTarget_RowBg0, ImGui::GetColorU32(ImVec4(0.26f, 0.59f, 0.98f, 0.25f)));
+						}
+
+						// Col 0: Name
+						ImGui::TableSetColumnIndex(0);
+						ImGui::AlignTextToFramePadding();
+						ImGui::Text("%s", name.c_str());
+
+						// Col 1: Priority Input
+						ImGui::TableSetColumnIndex(1);
+						ImGui::SetNextItemWidth(-FLT_MIN); // Use all available width in cell
+						int tempPrio = priority;
+						if (ImGui::InputInt("##prio", &tempPrio, 0, 0)) {
+							layerToChange = { name, tempPrio };
+						}
+						if (ImGui::IsItemHovered()) ImGui::SetTooltip("Lower = Background, Higher = Foreground");
+
+						// Col 2: Visibility
+						ImGui::TableSetColumnIndex(2);
+						bool isVisible = visMap[name];
+						if (ImGui::Checkbox("##vis", &isVisible)) {
+							visMap[name] = isVisible;
+							// Apply visibility to all entities immediately
+							auto& arr = ecs.GetComponentArray<Component::LayerComponent>();
+							for (size_t i = 0; i < arr.dense.size(); ++i) {
+								if (arr.dense[i]->layerName == name) {
+									Entity ent = arr.indexToEntity[i];
+									if (ecs.HasComponent<Component::ActiveComponent>(ent)) {
+										ecs.GetComponent<Component::ActiveComponent>(ent)->isActive = isVisible;
+									}
 								}
 							}
 						}
+
+						// Col 3: Delete
+						ImGui::TableSetColumnIndex(3);
+						if (name != "Default" && name != layerComp->layerName) {
+							ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.8f, 0.2f, 0.2f, 1.0f));
+							if (ImGui::SmallButton("X")) {
+								layerToRemove = name;
+							}
+							ImGui::PopStyleColor();
+						}
+
+						ImGui::PopID();
+						index++;
+					}
+					ImGui::EndTable();
+
+					// Apply Changes safely outside the loop
+					if (layerToChange.second != -9999) {
+						layerMap[layerToChange.first] = layerToChange.second;
+					}
+					if (!layerToRemove.empty()) {
+						layerMap.erase(layerToRemove);
+						visMap.erase(layerToRemove);
 					}
 				}
+
+				ImGui::Separator();
+
+				// Add New Layer Row
+				ImGui::Text("Add New:");
+				ImGui::SameLine();
+				static char newLayerBuf[64] = "";
+				ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x - 60);
+				ImGui::InputTextWithHint("##NewLayer", "Layer Name", newLayerBuf, 64);
+				ImGui::SameLine();
+				if (ImGui::Button("Add")) {
+					if (strlen(newLayerBuf) > 0 && layerMap.find(newLayerBuf) == layerMap.end()) {
+						int maxPrio = 0;
+						for (auto& [n, p] : layerMap) if (p > maxPrio) maxPrio = p;
+						layerMap[newLayerBuf] = maxPrio + 1;
+						visMap[newLayerBuf] = true;
+						newLayerBuf[0] = '\0';
+					}
+				}
+
+				ImGui::Unindent();
 			}
-			ImGui::NewLine();
 		}
 	};
 
@@ -504,7 +605,7 @@ namespace {
 	@details Uses ImGui drag controls and writes values back to the ECS each frame.
 	*/
 	struct TransformAdapter : DebugReflection::IComponentAdapter {
-		const char* name() const override { return "TransformComponent"; }
+		const char* name() const override { return "Transform"; }
 		bool has(ECS& ecs, Entity e) const override {
 			return ecs.HasComponent<Component::TransformComponent>(e);
 		}
@@ -861,7 +962,7 @@ namespace {
 	@details Edits type-specific parameters and supports a per-entity preview toggle.
 	*/
 	struct ShapeAdapter : DebugReflection::IComponentAdapter {
-		const char* name() const override { return "ShapeComponent"; }
+		const char* name() const override { return "Shape"; }
 		bool has(ECS& ecs, Entity e) const override {
 			return ecs.HasComponent<Component::ShapeComponent>(e);
 		}
@@ -1012,7 +1113,7 @@ namespace {
 	@details Edits type-specific parameters and supports a per-entity preview toggle.
 	*/
 	struct TextAdapter : DebugReflection::IComponentAdapter {
-		const char* name() const override { return "TextComponent"; }
+		const char* name() const override { return "Text"; }
 		bool has(ECS& ecs, Entity e) const override {
 			return ecs.HasComponent<Component::TextComponent>(e);
 		}
@@ -1469,7 +1570,7 @@ namespace {
 	@details Edits type-specific parameters and supports a per-entity preview toggle.
 	*/
 	struct ScriptAdapter : DebugReflection::IComponentAdapter {
-		const char* name() const override { return "ScriptComponent"; }
+		const char* name() const override { return "Script"; }
 
 		bool has(ECS& ecs, Entity e) const override {
 			return ecs.HasComponent<ScriptComponent>(e);
@@ -1751,52 +1852,87 @@ namespace {
 			}
 
 			ImGui::Separator();
+			ImGui::TextDisabled("Create New Script");
 
-			if (ImGui::SmallButton("New C# Script")) {
+			// 1. Buffer to hold the name (static so it persists between frames)
+			static char newScriptNameBuf[64] = "NewScript";
+
+			// 2. Input Field
+			// We use ##ID to hide the label but keep the ID unique
+			ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x * 0.6f);
+			ImGui::InputTextWithHint("##NewScriptName", "ClassName...", newScriptNameBuf, sizeof(newScriptNameBuf));
+
+			ImGui::SameLine();
+
+			// 3. Create Button
+			if (ImGui::Button("Create##CreateScript")) {
+				std::string className = newScriptNameBuf;
+
+				// Basic Validation: If empty, default to "NewScript"
+				if (className.empty()) className = "NewScript";
+
+				// Sanitize: Replace spaces with underscores to prevent C# compile errors
+				std::replace(className.begin(), className.end(), ' ', '_');
+
 				namespace fs = std::filesystem;
 				fs::path base = "../../projects/ManagedScripts";
 
-				std::string filename = "NewScript";
+				// Ensure directory exists
+				if (!fs::exists(base)) fs::create_directories(base);
+
+				fs::path file = base / (className + ".cs");
+
+				// 4. Check for duplicates
+				// If the user typed a name that already exists, we append a number 
+				// so we don't accidentally overwrite their existing code.
+				std::string finalClassName = className;
 				int counter = 1;
-				fs::path file = base / (filename + ".cs");
 				while (fs::exists(file)) {
-					file = base / (filename + std::to_string(counter++) + ".cs");
+					finalClassName = className + std::to_string(counter++);
+					file = base / (finalClassName + ".cs");
 				}
 
-				// write a basic template
+				// 5. Write the file
 				std::ofstream out(file);
-				out <<
-					R"(using CrashoutsEngine;
+				if (out.is_open()) {
+					out <<
+						R"(using System;
 
 namespace CrashoutsEngine
 {
-    // Attach this script to an Entity through the ScriptComponent UI.
-    // Scripts with [ScriptBehaviour] will appear in the editor's script list.
     [ScriptBehaviour]
-    public class )" << file.stem().string() << R"(
+    public class )" << finalClassName << R"( : ScriptBase
     {
-        // Reference to the entity this script instance is attached to.
-        // Automatically assigned by the engine before Start() runs.
         public Entity Entity;
 
-        // Called once when the script is first created.
-        // Initialize references or setup values here.
-        public void Start() { }
+        public override void Start() 
+        { 
+            // Called once on start
+        }
 
-        // Called every frame.
-        // Main game logic, movement, inputs, and updates go here.
-        public void Update() { }
+        public override void Update() 
+        { 
+            // Called every frame
+        }
 
-        // Called at a fixed timestep (ideal for physics logic).
-        // Runs independently from the frame rate.
-        public void FixedUpdate() { }
+        public override void FixedUpdate() 
+        { 
+            // Called every physics step
+        }
     }
 }
 )";
-				out.close();
+					out.close();
 
-				// automatically add this new script
-				sc->AddScript(file.stem().string());
+					// 6. Automatically attach the new script
+					sc->AddScript(finalClassName);
+
+					// Optional: Reset buffer for next time
+					// strcpy_s(newScriptNameBuf, "NewScript"); 
+				}
+				else {
+					std::cerr << "Failed to create script file: " << file << std::endl;
+				}
 			}
 
 			// --- Mono reload / manual Start/Update/Destroy ---
@@ -1810,23 +1946,111 @@ namespace CrashoutsEngine
 				if (!isBuilding)
 				{
 					isBuilding = true;
-
-					// PAUSE AUTOMATIC WATCHER
 					MonoManager::s_IsManualReloading = true;
 
 					std::thread([]() {
-						int result = system(
-							"dotnet clean \"../../projects/ManagedScripts/ManagedScripts.csproj\" -c Debug > buildlog.txt 2>&1 && "
-							"dotnet build \"../../projects/ManagedScripts/ManagedScripts.csproj\" -c Debug > buildlog.txt 2>&1"
-						);
-						if (result == 0) {
-							reloadPending = true; // signal reload
+						namespace fs = std::filesystem;
+
+						// --- 1. CONFIGURATION ---
+						std::string config = "Release";
+#ifdef _DEBUG
+						config = "Debug";
+#endif
+						fs::path cwd = fs::current_path();
+
+						// Path to .csproj (Used for the build command)
+						fs::path projectPath = fs::absolute(cwd / "../../projects/ManagedScripts/ManagedScripts.csproj");
+
+						// --- 2. CORRECTED OUTPUT PATH ---
+						// Your .csproj outputs to "..\..\build\x64-Debug\scripts\"
+						// Since our CWD is "build\x64-Debug", the output is just "scripts"
+						fs::path buildOutput = cwd / "scripts";
+
+						// Fallback: If "scripts" doesn't exist, try the default "bin" folder
+						if (!fs::exists(buildOutput)) {
+							buildOutput = projectPath.parent_path() / "bin" / config / "net6.0";
+						}
+
+						fs::path targetDll = MonoManager::GetAssemblyPath(); // e.g. "scripts/ManagedScripts.dll"
+						fs::path targetPdb = targetDll;
+						targetPdb.replace_extension(".pdb");
+
+						std::cout << "------------------------------------------------" << std::endl;
+						std::cout << "[HotReload] CWD: " << cwd.string() << std::endl;
+						std::cout << "[HotReload] Build Output: " << buildOutput.string() << std::endl;
+						std::cout << "------------------------------------------------" << std::endl;
+
+						// --- 3. BUILD ---
+						std::string buildCmd = "dotnet build \"" + projectPath.string() + "\" -c " + config + " > buildlog.txt 2>&1";
+						int result = system(buildCmd.c_str());
+
+						if (result != 0) {
+							std::cerr << "[HotReload] BUILD FAILED! Check buildlog.txt" << std::endl;
+							MonoManager::s_IsManualReloading = false;
+							isBuilding = false;
+							return;
+						}
+
+						// --- 4. FIND NEWEST FILE ---
+						fs::path bestDll;
+						fs::path bestPdb;
+						auto bestTime = fs::file_time_type::min();
+
+						if (fs::exists(buildOutput)) {
+							for (const auto& entry : fs::directory_iterator(buildOutput)) {
+								if (entry.is_regular_file()) {
+									std::string name = entry.path().filename().string();
+
+									// Look for timestamped files (e.g. ManagedScripts_Debug_2026...)
+									// We exclude the clean "ManagedScripts.dll" so we don't copy the file onto itself
+									if (name.find("ManagedScripts_") == 0 && entry.path().extension() == ".dll") {
+
+										if (entry.last_write_time() > bestTime) {
+											bestTime = entry.last_write_time();
+											bestDll = entry.path();
+
+											// Find matching PDB
+											fs::path p = entry.path();
+											p.replace_extension(".pdb");
+											if (fs::exists(p)) bestPdb = p;
+										}
+									}
+								}
+							}
 						}
 						else {
-							// If build fails, we must release the lock so auto-reload works later
+							std::cerr << "[HotReload] ERROR: Directory not found: " << buildOutput << std::endl;
+							MonoManager::s_IsManualReloading = false;
+							isBuilding = false;
+							return;
+						}
+
+						// --- 5. COPY ---
+						if (!bestDll.empty()) {
+							try {
+								std::cout << "[HotReload] Found fresh build: " << bestDll.filename().string() << std::endl;
+
+								// Copy the timestamped DLL -> ManagedScripts.dll
+								fs::copy_file(bestDll, targetDll, fs::copy_options::overwrite_existing);
+
+								if (!bestPdb.empty()) {
+									fs::copy_file(bestPdb, targetPdb, fs::copy_options::overwrite_existing);
+								}
+
+								reloadPending = true; // Success!
+							}
+							catch (const std::exception& e) {
+								std::cerr << "[HotReload] COPY FAILED: " << e.what() << std::endl;
+								MonoManager::s_IsManualReloading = false;
+							}
+						}
+						else {
+							std::cerr << "[HotReload] Build passed, but NO NEW DLL FOUND in " << buildOutput << std::endl;
 							MonoManager::s_IsManualReloading = false;
 						}
+
 						isBuilding = false;
+
 						}).detach();
 				}
 			}
@@ -1869,7 +2093,7 @@ namespace CrashoutsEngine
 	@details Uses ImGui drag controls and writes values back to the ECS each frame.
 	*/
 	struct CameraAdapter : DebugReflection::IComponentAdapter {
-		const char* name() const override { return "CameraComponent"; }
+		const char* name() const override { return "Camera"; }
 		bool has(ECS& ecs, Entity e) const override {
 			return ecs.HasComponent<Component::CameraComponent>(e);
 		}
@@ -1895,7 +2119,7 @@ namespace CrashoutsEngine
 	@details Uses ImGui drag controls and writes values back to the ECS each frame.
 	*/
 	struct ButtonAdapter : DebugReflection::IComponentAdapter {
-		const char* name() const override { return "ButtonComponent"; }
+		const char* name() const override { return "Button"; }
 		bool has(ECS& ecs, Entity e) const override {
 			return ecs.HasComponent<Component::ButtonComponent>(e);
 		}
@@ -1960,7 +2184,7 @@ namespace CrashoutsEngine
 	@details Uses ImGui drag controls and writes values back to the ECS each frame.
 	*/
 	struct UILayoutAdapater : DebugReflection::IComponentAdapter {
-		const char* name() const override { return "UILayoutComponent"; }
+		const char* name() const override { return "UI Layout"; }
 		bool has(ECS& ecs, Entity e) const override {
 			return ecs.HasComponent<Component::UILayoutComponent>(e);
 		}
@@ -2048,7 +2272,7 @@ namespace CrashoutsEngine
 	@details Uses ImGui drag controls and writes values back to the ECS each frame.
 	*/
 	struct TextInputAdapter : DebugReflection::IComponentAdapter {
-		const char* name() const override { return "TextInputComponent"; }
+		const char* name() const override { return "Text Input"; }
 		bool has(ECS& ecs, Entity e) const override {
 			return ecs.HasComponent<Component::TextInputComponent>(e);
 		}
@@ -2102,7 +2326,7 @@ namespace CrashoutsEngine
 	@details Uses ImGui drag controls and writes values back to the ECS each frame.
 	*/
 	struct GuiAdapter : DebugReflection::IComponentAdapter {
-		const char* name() const override { return "GuiComponent"; }
+		const char* name() const override { return "GUI"; }
 		bool has(ECS& ecs, Entity e) const override {
 			return ecs.HasComponent<GuiComponent>(e);
 		}
@@ -2201,7 +2425,7 @@ namespace CrashoutsEngine
 	 @details Uses ImGui controls and writes values back to the ECS each frame.
 	 */
 	struct PPAdapter : DebugReflection::IComponentAdapter {
-		const char* name() const override { return "Post-Process Component"; }
+		const char* name() const override { return "Post-Processing"; }
 		bool has(ECS& ecs, Entity e) const override {
 			return ecs.HasComponent<Component::PPComponent>(e);
 		}
@@ -2282,7 +2506,7 @@ namespace CrashoutsEngine
 	struct TileMapAdapter : DebugReflection::IComponentAdapter {
 
 		// 1. Update Name
-		const char* name() const override { return "Tile Map Component"; }
+		const char* name() const override { return "Tile Map"; }
 
 		// 2. Update 'Has' Check
 		bool has(ECS& ecs, Entity e) const override {
@@ -3112,7 +3336,7 @@ namespace CrashoutsEngine
 	};
 
 	struct VideoAdapter : DebugReflection::IComponentAdapter {
-		const char* name() const override { return "VideoComponent"; }
+		const char* name() const override { return "Video"; }
 		bool has(ECS& ecs, Entity e) const override {
 			return ecs.HasComponent<Component::VideoComponent>(e);
 		}

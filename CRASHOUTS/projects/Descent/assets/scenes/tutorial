@@ -9663,12 +9663,8 @@
                 ]
             },
             "layer": {
-                "layerName": "",
-                "z": 0
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
+                "layerName": "Default",
+                "z": 1
             }
         },
         {
@@ -9680,12 +9676,12 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1714.81640625,
-                    "y": -796.5,
+                    "x": -170.994873046875,
+                    "y": 14.385711669921875,
                     "z": 50.0
                 },
                 "size": {
-                    "x": 140.0,
+                    "x": -140.0,
                     "y": 100.0
                 }
             },
@@ -9707,8 +9703,8 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 1714.81640625,
-                    "y": -801.5,
+                    "x": -170.994873046875,
+                    "y": 9.385711669921875,
                     "z": 50.0
                 },
                 "offset": {
@@ -9717,13 +9713,13 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 1696.016357421875,
-                    "y": -832.0,
+                    "x": -189.794921875,
+                    "y": -21.114288330078126,
                     "z": 50.0
                 },
                 "max": {
-                    "x": 1733.616455078125,
-                    "y": -771.0,
+                    "x": -152.19482421875,
+                    "y": 39.885711669921878,
                     "z": 50.0
                 }
             },
@@ -9792,10 +9788,12 @@
                             "energyConsumption": 12.5,
                             "normalMass": 3.0,
                             "lightMass": 2.0,
+                            "groundCheckDistance": 26.0,
+                            "groundCheckWidth": 10.0,
                             "CurrentEnergy": 100.0,
                             "MaxEnergy": 100.0,
                             "alive": true,
-                            "isPaused": true
+                            "isPaused": false
                         }
                     }
                 ]
@@ -9856,142 +9854,18 @@
             },
             "keyframe_animator": {
                 "current": "playerIdle",
-                "t": 3.9333302974700929,
+                "t": 6.300027370452881,
                 "playing": true,
                 "clips": [
                     {
-                        "name": "fall_normal",
+                        "name": "playerWalk",
                         "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Fall spritesheet.png",
-                        "spriteCols": 2,
-                        "spriteRows": 1,
-                        "useCustomSize": true,
-                        "targetWidth": 62.0,
-                        "targetHeight": 72.50599670410156,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "jump_light",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Jump\\Jump spritesheet.png",
-                        "spriteCols": 2,
-                        "spriteRows": 1,
-                        "useCustomSize": true,
-                        "targetWidth": 62.0,
-                        "targetHeight": 72.50599670410156,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 1.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 1.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "fall_light",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Fall spritesheet.png",
-                        "spriteCols": 2,
-                        "spriteRows": 1,
-                        "useCustomSize": true,
-                        "targetWidth": 62.0,
-                        "targetHeight": 72.50599670410156,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 1.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 1.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "jump_normal",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Jump\\Jump spritesheet.png",
-                        "spriteCols": 2,
-                        "spriteRows": 1,
-                        "useCustomSize": true,
-                        "targetWidth": 62.0,
-                        "targetHeight": 72.50599670410156,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "run_normal",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Run spritesheet.png",
+                        "textureAsset": "images/Character\\New Artstyle\\Run\\Run spritesheet.png",
                         "spriteCols": 3,
                         "spriteRows": 3,
                         "useCustomSize": true,
-                        "targetWidth": 62.0,
-                        "targetHeight": 72.50599670410156,
+                        "targetWidth": 140.0,
+                        "targetHeight": 100.0,
                         "bindings": [
                             {
                                 "property": 6,
@@ -10067,14 +9941,14 @@
                         ]
                     },
                     {
-                        "name": "run_light",
+                        "name": "playerWalkLight",
                         "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Run spritesheet.png",
+                        "textureAsset": "images/Character\\New Artstyle\\Run\\Run spritesheet.png",
                         "spriteCols": 3,
                         "spriteRows": 3,
                         "useCustomSize": true,
-                        "targetWidth": 62.0,
-                        "targetHeight": 72.50599670410156,
+                        "targetWidth": 140.0,
+                        "targetHeight": 100.0,
                         "bindings": [
                             {
                                 "property": 6,
@@ -10110,110 +9984,6 @@
                                     {
                                         "t": 1.0,
                                         "v": 7.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "idle",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Switch State\\Switch State spritesheet.png",
-                        "spriteCols": 3,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": 62.0,
-                        "targetHeight": 72.50599670410156,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "switch_to_light",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Switch State\\Switch State spritesheet.png",
-                        "spriteCols": 3,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": 62.0,
-                        "targetHeight": 72.50599670410156,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 1.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.5,
-                                        "v": 2.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.75,
-                                        "v": 3.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 1.0,
-                                        "v": 4.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 1.25,
-                                        "v": 5.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 1.5,
-                                        "v": 6.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 1.75,
-                                        "v": 6.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -10245,79 +10015,6 @@
                                     {
                                         "t": 0.25,
                                         "v": 1.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "switch_to_normal",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Switch-State-SpriteSheet-Reverse.png",
-                        "spriteCols": 3,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": 62.0,
-                        "targetHeight": 72.50599670410156,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 1.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.5,
-                                        "v": 2.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.75,
-                                        "v": 3.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 1.0,
-                                        "v": 4.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 1.25,
-                                        "v": 5.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 1.5,
-                                        "v": 6.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 1.75,
-                                        "v": 6.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -10422,110 +10119,6 @@
                                     {
                                         "t": 1.75,
                                         "v": 6.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "playerWalk",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Run\\Run spritesheet.png",
-                        "spriteCols": 3,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": 140.0,
-                        "targetHeight": 100.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 1.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.5,
-                                        "v": 2.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.75,
-                                        "v": 3.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 1.0,
-                                        "v": 3.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "playerWalkLight",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Run\\Run spritesheet.png",
-                        "spriteCols": 3,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": 140.0,
-                        "targetHeight": 100.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 4.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 5.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.5,
-                                        "v": 6.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.75,
-                                        "v": 7.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 1.0,
-                                        "v": 7.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -10701,17 +10294,13 @@
                         ]
                     }
                 ]
-            },
-            "layer": {
-                "layerName": "Player",
-                "z": 0
             }
         },
         {
             "active": true,
             "name": "Passthrough_Tiles",
             "tag": {
-                "tagMask": 18
+                "tagMask": 26
             },
             "transform": {
                 "rotation": 0.0,
@@ -10735,36 +10324,71 @@
                     {
                         "x": -6,
                         "y": -52,
+                        "asset": ""
+                    },
+                    {
+                        "x": -6,
+                        "y": -50,
                         "asset": "tilemaps/Passthrough_Floor"
                     },
                     {
                         "x": -5,
                         "y": -52,
+                        "asset": ""
+                    },
+                    {
+                        "x": -5,
+                        "y": -50,
                         "asset": "tilemaps/Passthrough_Floor"
                     },
                     {
                         "x": -4,
                         "y": -52,
+                        "asset": ""
+                    },
+                    {
+                        "x": -4,
+                        "y": -50,
                         "asset": "tilemaps/Passthrough_Floor"
                     },
                     {
                         "x": -3,
                         "y": -52,
+                        "asset": ""
+                    },
+                    {
+                        "x": -3,
+                        "y": -50,
                         "asset": "tilemaps/Passthrough_Floor"
                     },
                     {
                         "x": -2,
                         "y": -52,
+                        "asset": ""
+                    },
+                    {
+                        "x": -2,
+                        "y": -50,
                         "asset": "tilemaps/Passthrough_Floor"
                     },
                     {
                         "x": -1,
                         "y": -52,
+                        "asset": ""
+                    },
+                    {
+                        "x": -1,
+                        "y": -50,
                         "asset": "tilemaps/Passthrough_Floor"
                     },
                     {
                         "x": 0,
                         "y": -52,
+                        "asset": ""
+                    },
+                    {
+                        "x": 0,
+                        "y": -50,
                         "asset": "tilemaps/Passthrough_Floor"
                     },
                     {
@@ -11665,12 +11289,8 @@
                 ]
             },
             "layer": {
-                "layerName": "",
-                "z": 0
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
+                "layerName": "Default",
+                "z": -20
             }
         },
         {
@@ -12008,10 +11628,6 @@
             "layer": {
                 "layerName": "",
                 "z": 0
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             }
         },
         {
@@ -12024,7 +11640,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": 1490.7039794921876,
-                    "y": -394.0533752441406,
+                    "y": -395.9412536621094,
                     "z": 0.0
                 },
                 "size": {
@@ -12051,7 +11667,7 @@
                 "enabled": true,
                 "position": {
                     "x": 1490.7039794921876,
-                    "y": -396.15338134765627,
+                    "y": -398.041259765625,
                     "z": 0.0
                 },
                 "offset": {
@@ -12061,12 +11677,12 @@
                 },
                 "min": {
                     "x": 1474.7039794921876,
-                    "y": -409.453369140625,
+                    "y": -411.34124755859377,
                     "z": 0.0
                 },
                 "max": {
                     "x": 1506.7039794921876,
-                    "y": -382.8533935546875,
+                    "y": -384.74127197265627,
                     "z": 0.0
                 }
             },
@@ -12157,10 +11773,6 @@
             "layer": {
                 "layerName": "",
                 "z": 0
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             }
         },
         {
@@ -12173,7 +11785,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": 95.65513610839844,
-                    "y": -675.212646484375,
+                    "y": -677.1007690429688,
                     "z": 0.0
                 },
                 "size": {
@@ -12200,7 +11812,7 @@
                 "enabled": true,
                 "position": {
                     "x": 95.65513610839844,
-                    "y": -677.3126220703125,
+                    "y": -679.2007446289063,
                     "z": 0.0
                 },
                 "offset": {
@@ -12211,7 +11823,7 @@
                 "radius": 13.300000190734864,
                 "center": {
                     "x": 95.65513610839844,
-                    "y": -677.3126220703125,
+                    "y": -679.2007446289063,
                     "z": 0.0
                 }
             },
@@ -12302,10 +11914,6 @@
             "layer": {
                 "layerName": "",
                 "z": 0
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             }
         },
         {
@@ -12318,7 +11926,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": 152.52655029296876,
-                    "y": -458.5573425292969,
+                    "y": -457.5597839355469,
                     "z": -1.0
                 },
                 "size": {
@@ -12345,7 +11953,7 @@
                 "enabled": true,
                 "position": {
                     "x": 152.52655029296876,
-                    "y": -480.0573425292969,
+                    "y": -479.0597839355469,
                     "z": -1.0
                 },
                 "offset": {
@@ -12355,12 +11963,12 @@
                 },
                 "min": {
                     "x": 136.52655029296876,
-                    "y": -486.5573425292969,
+                    "y": -485.5597839355469,
                     "z": -1.0
                 },
                 "max": {
                     "x": 168.52655029296876,
-                    "y": -473.5573425292969,
+                    "y": -472.5597839355469,
                     "z": -1.0
                 }
             },
@@ -12403,7 +12011,7 @@
                     {
                         "className": "PressurePlate",
                         "fields": {
-                            "decrease": 6.0,
+                            "decrease": 5.0,
                             "wallName": "wall"
                         }
                     }
@@ -12447,10 +12055,6 @@
                     "z": 0.0,
                     "w": 0.5
                 }
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             },
             "layer": {
                 "layerName": "",
@@ -12552,7 +12156,7 @@
                     {
                         "className": "PressurePlate",
                         "fields": {
-                            "decrease": 6.0,
+                            "decrease": 5.0,
                             "wallName": "wall"
                         }
                     }
@@ -12596,10 +12200,6 @@
                     "z": 0.0,
                     "w": 0.5
                 }
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             },
             "layer": {
                 "layerName": "",
@@ -12701,7 +12301,7 @@
                     {
                         "className": "PressurePlate",
                         "fields": {
-                            "decrease": 6.0,
+                            "decrease": 5.0,
                             "wallName": "wall2"
                         }
                     }
@@ -12745,10 +12345,6 @@
                     "z": 0.0,
                     "w": 0.5
                 }
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             },
             "layer": {
                 "layerName": "",
@@ -12891,10 +12487,6 @@
             "layer": {
                 "layerName": "",
                 "z": 0
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             }
         },
         {
@@ -12980,10 +12572,10 @@
                         "className": "MovingWall",
                         "fields": {
                             "PlatesActive": 0,
-                            "PlatesRequired": 2,
-                            "MoveRight": true,
-                            "MoveDist": 250.0,
-                            "MoveSpeed": 10.0
+                            "PlatesRequired": 1,
+                            "MoveRight": false,
+                            "MoveDist": 10.0,
+                            "MoveSpeed": 5.0
                         }
                     }
                 ]
@@ -13102,10 +12694,6 @@
             "layer": {
                 "layerName": "",
                 "z": 0
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             }
         },
         {
@@ -13193,8 +12781,8 @@
                             "PlatesActive": 0,
                             "PlatesRequired": 1,
                             "MoveRight": false,
-                            "MoveDist": 500.0,
-                            "MoveSpeed": 10.0
+                            "MoveDist": 10.0,
+                            "MoveSpeed": 5.0
                         }
                     }
                 ]
@@ -13318,10 +12906,6 @@
             "layer": {
                 "layerName": "",
                 "z": 0
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             }
         },
         {
@@ -13333,8 +12917,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1629.258056640625,
-                    "y": -341.5446472167969,
+                    "x": 894.6261596679688,
+                    "y": -357.0424499511719,
                     "z": 0.0
                 },
                 "size": {
@@ -13360,8 +12944,8 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 1629.258056640625,
-                    "y": -341.5446472167969,
+                    "x": 894.6261596679688,
+                    "y": -357.0424499511719,
                     "z": 0.0
                 },
                 "offset": {
@@ -13370,13 +12954,13 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 1579.2581787109376,
-                    "y": -349.5446472167969,
+                    "x": 844.6262817382813,
+                    "y": -365.0424499511719,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 1679.2579345703126,
-                    "y": -333.5446472167969,
+                    "x": 944.6260375976563,
+                    "y": -349.0424499511719,
                     "z": 0.0
                 }
             },
@@ -13421,17 +13005,13 @@
                         "fields": {
                             "IsMoving": true,
                             "MoveRight": true,
-                            "MovementDistance": 200.0,
-                            "MoveSpeed": 15.0,
-                            "VerticalSpeed": 0.0,
-                            "maxDrop": 0.0
+                            "MovementDistance": 100.0,
+                            "MoveSpeed": 20.0,
+                            "VerticalSpeed": 50.0,
+                            "maxDrop": 50.0
                         }
                     }
                 ]
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             },
             "layer": {
                 "layerName": "",
@@ -13447,7 +13027,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1884.455322265625,
+                    "x": 1166.924560546875,
                     "y": -410.2161865234375,
                     "z": 0.0
                 },
@@ -13474,7 +13054,7 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 1884.455322265625,
+                    "x": 1166.924560546875,
                     "y": -410.2161865234375,
                     "z": 0.0
                 },
@@ -13484,12 +13064,12 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 1834.455322265625,
+                    "x": 1116.924560546875,
                     "y": -418.2161865234375,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 1934.455322265625,
+                    "x": 1216.924560546875,
                     "y": -402.2161865234375,
                     "z": 0.0
                 }
@@ -13535,17 +13115,13 @@
                         "fields": {
                             "IsMoving": true,
                             "MoveRight": true,
-                            "MovementDistance": 200.0,
+                            "MovementDistance": 100.0,
                             "MoveSpeed": 20.0,
-                            "VerticalSpeed": 0.0,
-                            "maxDrop": 0.0
+                            "VerticalSpeed": 50.0,
+                            "maxDrop": 50.0
                         }
                     }
                 ]
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             },
             "layer": {
                 "layerName": "",
@@ -13561,7 +13137,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1669.2626953125,
+                    "x": 237.3817138671875,
                     "y": -324.79510498046877,
                     "z": 0.0
                 },
@@ -13588,7 +13164,7 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 1669.2626953125,
+                    "x": 237.3817138671875,
                     "y": -324.79510498046877,
                     "z": 0.0
                 },
@@ -13598,12 +13174,12 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 1619.2626953125,
+                    "x": 187.3817138671875,
                     "y": -332.79510498046877,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 1719.2626953125,
+                    "x": 287.3817138671875,
                     "y": -316.79510498046877,
                     "z": 0.0
                 }
@@ -13649,17 +13225,13 @@
                         "fields": {
                             "IsMoving": true,
                             "MoveRight": true,
-                            "MovementDistance": 300.0,
-                            "MoveSpeed": 25.0,
-                            "VerticalSpeed": 100.0,
-                            "maxDrop": 150.0
+                            "MovementDistance": 100.0,
+                            "MoveSpeed": 20.0,
+                            "VerticalSpeed": 50.0,
+                            "maxDrop": 50.0
                         }
                     }
                 ]
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             },
             "layer": {
                 "layerName": "",
@@ -13675,7 +13247,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 2796.0048828125,
+                    "x": 261.27392578125,
                     "y": -786.3703002929688,
                     "z": 0.0
                 },
@@ -13702,7 +13274,7 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 2796.0048828125,
+                    "x": 261.27392578125,
                     "y": -786.3703002929688,
                     "z": 0.0
                 },
@@ -13712,12 +13284,12 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 2717.704833984375,
+                    "x": 182.973876953125,
                     "y": -795.3703002929688,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 2874.304931640625,
+                    "x": 339.573974609375,
                     "y": -777.3703002929688,
                     "z": 0.0
                 }
@@ -13763,131 +13335,13 @@
                         "fields": {
                             "IsMoving": true,
                             "MoveRight": true,
-                            "MovementDistance": 300.0,
-                            "MoveSpeed": 25.0,
-                            "VerticalSpeed": 100.0,
-                            "maxDrop": 150.0
-                        }
-                    }
-                ]
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
-            }
-        },
-        {
-            "active": false,
-            "name": "Moving_Platform_Clone1948_Clone1951",
-            "tag": {
-                "tagMask": 18
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 288.66241455078127,
-                    "y": -816.0365600585938,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 100.0,
-                    "y": 16.0
-                }
-            },
-            "rigidbody": {
-                "mass": 0.0,
-                "restitutionCoeff": 0.0,
-                "maximumVelocity": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "staticFriction": 0.5,
-                "dynamicFriction": 0.5,
-                "inertia": 0.0,
-                "invInertia": 0.0
-            },
-            "collider": {
-                "ColliderType": 1,
-                "isTrigger": false,
-                "enabled": true,
-                "position": {
-                    "x": 288.66241455078127,
-                    "y": -816.0365600585938,
-                    "z": 0.0
-                },
-                "offset": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "min": {
-                    "x": 238.66241455078126,
-                    "y": -824.0365600585938,
-                    "z": 0.0
-                },
-                "max": {
-                    "x": 338.66241455078127,
-                    "y": -808.0365600585938,
-                    "z": 0.0
-                }
-            },
-            "shape": {
-                "useTexture": false,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 0.08366531133651734,
-                    "y": 0.04441096633672714,
-                    "z": 0.02466626837849617,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "script": {
-                "scripts": [
-                    {
-                        "className": "WeightedPlatform",
-                        "fields": {
-                            "IsMoving": true,
-                            "MoveRight": true,
-                            "MovementDistance": 200.0,
+                            "MovementDistance": 100.0,
                             "MoveSpeed": 20.0,
-                            "VerticalSpeed": 0.0,
-                            "maxDrop": 0.0
+                            "VerticalSpeed": 50.0,
+                            "maxDrop": 50.0
                         }
                     }
                 ]
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             },
             "layer": {
                 "layerName": "",
@@ -13976,10 +13430,6 @@
                     "x": 1.0,
                     "y": 1.0
                 }
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             }
         },
         {
@@ -14064,10 +13514,6 @@
                     "x": 1.0,
                     "y": 1.0
                 }
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             }
         },
         {
@@ -14152,10 +13598,6 @@
                     "x": 1.0,
                     "y": 1.0
                 }
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             }
         },
         {
@@ -14240,10 +13682,6 @@
                     "x": 1.0,
                     "y": 1.0
                 }
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             }
         },
         {
@@ -14328,6 +13766,112 @@
                     "x": 1.0,
                     "y": 1.0
                 }
+            }
+        },
+        {
+            "active": true,
+            "name": "Moving_Platform_Clone1949",
+            "tag": {
+                "tagMask": 18
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 763.9276733398438,
+                    "y": -762.397216796875,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 100.0,
+                    "y": 16.0
+                }
+            },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0
+            },
+            "collider": {
+                "ColliderType": 1,
+                "isTrigger": false,
+                "enabled": true,
+                "position": {
+                    "x": 763.9276733398438,
+                    "y": -762.397216796875,
+                    "z": 0.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": 713.9277954101563,
+                    "y": -770.397216796875,
+                    "z": 0.0
+                },
+                "max": {
+                    "x": 813.9275512695313,
+                    "y": -754.397216796875,
+                    "z": 0.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.08366531133651734,
+                    "y": 0.04441096633672714,
+                    "z": 0.02466626837849617,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "WeightedPlatform",
+                        "fields": {
+                            "IsMoving": true,
+                            "MoveRight": true,
+                            "MovementDistance": 100.0,
+                            "MoveSpeed": 20.0,
+                            "VerticalSpeed": 50.0,
+                            "maxDrop": 50.0
+                        }
+                    }
+                ]
             },
             "layer": {
                 "layerName": "",
@@ -14336,585 +13880,57 @@
         },
         {
             "active": true,
-            "name": "PauseResumeBtn",
+            "name": "PlayerEnergy",
             "tag": {
                 "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1.7846794128417969,
-                    "y": 23.62261962890625,
-                    "z": 0.8999999761581421
+                    "x": 0.000030517578125,
+                    "y": 0.0,
+                    "z": 0.0
                 },
                 "size": {
-                    "x": 10.0,
-                    "y": 10.0
-                }
-            },
-            "shape": {
-                "useTexture": false,
-                "isWorldSpace": false,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "",
-                "uvSize": {
                     "x": 1.0,
                     "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 0.027450980618596078,
-                    "y": 0.5333333611488342,
-                    "z": 1.0,
-                    "w": 0.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
                 }
-            },
-            "text": {
-                "font": "AlegreyaSC-ExtraBold",
-                "text": "Resume",
-                "scale": 80.0,
-                "offset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 0.027624309062957765,
-                    "y": 0.5326151847839356,
-                    "z": 1.0,
-                    "w": 0.699999988079071
-                },
-                "centered": true,
-                "isworldspace": false,
-                "alignment": 1,
-                "verticalAlignment": 1,
-                "wrapText": false,
-                "padding": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "letterSpacing": 0.0,
-                "lineSpacing": 0.0,
-                "isRevealing": false,
-                "revealSpeed": 10.0,
-                "dialogueFilePath": "",
-                "dialogueID": ""
             },
             "script": {
                 "scripts": [
                     {
-                        "className": "MenuButtons",
-                        "fields": {}
+                        "className": "EnergyUI",
+                        "fields": {
+                            "totalBalls": 10,
+                            "maxPlayerEnergy": 100.0,
+                            "ballBaseName": "EnergyBall_",
+                            "activeAlpha": 1.0,
+                            "inactiveAlpha": 0.20000000298023225
+                        }
                     }
                 ]
             },
-            "button": {
-                "buttonState": 0,
-                "shapeNormalColor": {
-                    "x": 0.027450980618596078,
-                    "y": 0.5333333611488342,
-                    "z": 1.0,
-                    "w": 0.0
-                },
-                "shapeHoveredColor": {
-                    "x": 0.027450980618596078,
-                    "y": 0.5333333611488342,
-                    "z": 1.0,
-                    "w": 0.0
-                },
-                "shapePressedColor": {
-                    "x": 0.027450980618596078,
-                    "y": 0.5333333611488342,
-                    "z": 1.0,
-                    "w": 0.022099435329437257
-                },
-                "textNormalColor": {
-                    "x": 0.027624309062957765,
-                    "y": 0.5326151847839356,
-                    "z": 1.0,
-                    "w": 0.699999988079071
-                },
-                "textHoveredColor": {
-                    "x": 0.027450980618596078,
-                    "y": 0.5333333611488342,
-                    "z": 1.0,
-                    "w": 0.7019608020782471
-                },
-                "textPressedColor": {
-                    "x": 0.027450980618596078,
-                    "y": 0.5333333611488342,
-                    "z": 1.0,
-                    "w": 0.7019608020782471
-                }
-            },
-            "gui": {
-                "uiType": 6
-            },
-            "uilayout": {
-                "paddingXY": {
-                    "x": 44.0,
-                    "y": 0.0
-                },
-                "uiLayout": 4
-            },
-            "parent": {
-                "parentName": "ClosedBook",
-                "localPos": {
-                    "x": 0.11543207615613938,
-                    "y": 0.03813687339425087,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 0.02715466544032097,
-                    "y": 0.05000000074505806
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
             "layer": {
-                "layerName": "UI",
-                "z": 100
-            },
-            "layer": {
-                "layerName": "UI",
-                "z": 100
+                "layerName": "",
+                "z": 0
             }
         },
         {
             "active": true,
-            "name": "SettingsBtn",
+            "name": "BallBG_0",
             "tag": {
                 "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 3.1178436279296877,
-                    "y": 4.737790107727051,
-                    "z": 0.8999999761581421
-                },
-                "size": {
-                    "x": 10.0,
-                    "y": 10.0
-                }
-            },
-            "shape": {
-                "useTexture": false,
-                "isWorldSpace": false,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 0.027450980618596078,
-                    "y": 0.5333333611488342,
-                    "z": 1.0,
-                    "w": 0.7019608020782471
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "text": {
-                "font": "AlegreyaSC-ExtraBold",
-                "text": "Setting",
-                "scale": 80.0,
-                "offset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 0.027450980618596078,
-                    "y": 0.5333333611488342,
-                    "z": 1.0,
-                    "w": 0.7019608020782471
-                },
-                "centered": true,
-                "isworldspace": false,
-                "alignment": 1,
-                "verticalAlignment": 1,
-                "wrapText": false,
-                "padding": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "letterSpacing": 0.0,
-                "lineSpacing": 0.0,
-                "isRevealing": false,
-                "revealSpeed": 10.0,
-                "dialogueFilePath": "",
-                "dialogueID": ""
-            },
-            "script": {
-                "scripts": [
-                    {
-                        "className": "MenuButtons",
-                        "fields": {}
-                    }
-                ]
-            },
-            "button": {
-                "buttonState": 0,
-                "shapeNormalColor": {
-                    "x": 0.027450980618596078,
-                    "y": 0.5333333611488342,
-                    "z": 1.0,
-                    "w": 0.7019608020782471
-                },
-                "shapeHoveredColor": {
-                    "x": 0.027450980618596078,
-                    "y": 0.5333333611488342,
-                    "z": 1.0,
-                    "w": 0.7019608020782471
-                },
-                "shapePressedColor": {
-                    "x": 0.027450980618596078,
-                    "y": 0.5333333611488342,
-                    "z": 1.0,
-                    "w": 0.7019608020782471
-                },
-                "textNormalColor": {
-                    "x": 0.027450980618596078,
-                    "y": 0.5333333611488342,
-                    "z": 1.0,
-                    "w": 0.7019608020782471
-                },
-                "textHoveredColor": {
-                    "x": 0.027450980618596078,
-                    "y": 0.5333333611488342,
-                    "z": 1.0,
-                    "w": 0.7019608020782471
-                },
-                "textPressedColor": {
-                    "x": 0.027450980618596078,
-                    "y": 0.5333333611488342,
-                    "z": 1.0,
-                    "w": 0.7019608020782471
-                }
-            },
-            "gui": {
-                "uiType": 6
-            },
-            "uilayout": {
-                "paddingXY": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "uiLayout": 4
-            },
-            "parent": {
-                "parentName": "ClosedBook",
-                "localPos": {
-                    "x": 0.11905223876237869,
-                    "y": -0.05628727376461029,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 0.02715466544032097,
-                    "y": 0.05000000074505806
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "UI",
-                "z": 100
-            },
-            "layer": {
-                "layerName": "UI",
-                "z": 100
-            }
-        },
-        {
-            "active": true,
-            "name": "QuitBtn",
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 0.0,
-                    "y": -14.699502944946289,
-                    "z": 0.8999999761581421
-                },
-                "size": {
-                    "x": 10.0,
-                    "y": 10.0
-                }
-            },
-            "shape": {
-                "useTexture": false,
-                "isWorldSpace": false,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 0.027450980618596078,
-                    "y": 0.5333333611488342,
-                    "z": 1.0,
-                    "w": 0.7019608020782471
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "text": {
-                "font": "AlegreyaSC-ExtraBold",
-                "text": "Exit",
-                "scale": 80.0,
-                "offset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 0.027450980618596078,
-                    "y": 0.5333333611488342,
-                    "z": 1.0,
-                    "w": 0.7019608020782471
-                },
-                "centered": true,
-                "isworldspace": false,
-                "alignment": 1,
-                "verticalAlignment": 1,
-                "wrapText": false,
-                "padding": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "letterSpacing": 0.0,
-                "lineSpacing": 0.0,
-                "isRevealing": false,
-                "revealSpeed": 10.0,
-                "dialogueFilePath": "",
-                "dialogueID": ""
-            },
-            "script": {
-                "scripts": [
-                    {
-                        "className": "MenuButtons",
-                        "fields": {}
-                    }
-                ]
-            },
-            "button": {
-                "buttonState": 0,
-                "shapeNormalColor": {
-                    "x": 0.027450980618596078,
-                    "y": 0.5333333611488342,
-                    "z": 1.0,
-                    "w": 0.7019608020782471
-                },
-                "shapeHoveredColor": {
-                    "x": 0.027450980618596078,
-                    "y": 0.5333333611488342,
-                    "z": 1.0,
-                    "w": 0.7019608020782471
-                },
-                "shapePressedColor": {
-                    "x": 0.027450980618596078,
-                    "y": 0.5333333611488342,
-                    "z": 1.0,
-                    "w": 0.7019608020782471
-                },
-                "textNormalColor": {
-                    "x": 0.027450980618596078,
-                    "y": 0.5333333611488342,
-                    "z": 1.0,
-                    "w": 0.7019608020782471
-                },
-                "textHoveredColor": {
-                    "x": 0.027450980618596078,
-                    "y": 0.5333333611488342,
-                    "z": 1.0,
-                    "w": 0.7019608020782471
-                },
-                "textPressedColor": {
-                    "x": 0.027450980618596078,
-                    "y": 0.5333333611488342,
-                    "z": 1.0,
-                    "w": 0.7019608020782471
-                }
-            },
-            "gui": {
-                "uiType": 6
-            },
-            "uilayout": {
-                "paddingXY": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "uiLayout": 4
-            },
-            "parent": {
-                "parentName": "ClosedBook",
-                "localPos": {
-                    "x": 0.11058583855628967,
-                    "y": -0.15347373485565186,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 0.02715466544032097,
-                    "y": 0.05000000074505806
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "UI",
-                "z": 100
-            },
-            "layer": {
-                "layerName": "UI",
-                "z": 100
-            }
-        },
-        {
-            "active": true,
-            "name": "ClosedBook",
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": -40.72443389892578,
-                    "y": 15.995244979858399,
-                    "z": 0.8999999761581421
-                },
-                "size": {
-                    "x": 368.2608337402344,
-                    "y": 200.0
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": false,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "UI/Pause Menu Closed.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": -0.10000000149011612
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "layer": {
-                "layerName": "UI",
-                "z": 100
-            },
-            "layer": {
-                "layerName": "UI",
-                "z": 100
-            }
-        },
-        {
-            "active": true,
-            "name": "Mana UI single",
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": -71.67431640625,
-                    "y": 29.243133544921876,
+                    "x": -82.99996948242188,
+                    "y": 33.0,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 49.93789291381836,
-                    "y": 40.0
+                    "x": 30.0,
+                    "y": 15.0
                 }
             },
             "shape": {
@@ -14941,7 +13957,7 @@
                     "w": 1.0
                 },
                 "p1": {
-                    "x": -10.600000381469727,
+                    "x": 0.0,
                     "y": 0.0,
                     "z": 0.0
                 },
@@ -14951,70 +13967,817 @@
                     "z": 0.0
                 }
             },
-            "button": {
-                "buttonState": 0,
-                "shapeNormalColor": {
+            "parent": {
+                "parentName": "EnergyBall_0",
+                "localPos": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
                     "x": 1.0,
                     "y": 1.0,
                     "z": 1.0,
                     "w": 1.0
-                },
-                "shapeHoveredColor": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 0.5
-                },
-                "shapePressedColor": {
-                    "x": 0.699999988079071,
-                    "y": 0.699999988079071,
-                    "z": 0.699999988079071,
-                    "w": 0.699999988079071
-                },
-                "textNormalColor": {
-                    "x": 0.30000001192092898,
-                    "y": 0.30000001192092898,
-                    "z": 0.30000001192092898,
-                    "w": 0.699999988079071
-                },
-                "textHoveredColor": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0,
-                    "w": 0.0
-                },
-                "textPressedColor": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0,
-                    "w": 0.5
                 }
             },
             "layer": {
                 "layerName": "UI",
-                "z": 100
-            },
-            "layer": {
-                "layerName": "UI",
-                "z": 100
+                "z": 0
             }
         },
         {
             "active": true,
-            "name": "Mana UI single_Clone1957",
+            "name": "EnergyBall_0",
             "tag": {
                 "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -57.79817199707031,
-                    "y": 29.243133544921876,
+                    "x": -82.99996948242188,
+                    "y": 33.0,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 49.93789291381836,
-                    "y": 40.0
+                    "x": 30.0,
+                    "y": 15.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/mana UI single.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentName": "PlayerEnergy",
+                "localPos": {
+                    "x": -83.0,
+                    "y": 33.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 30.0,
+                    "y": 15.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UI",
+                "z": 1
+            }
+        },
+        {
+            "active": true,
+            "name": "EnergyBall_1",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -77.99996948242188,
+                    "y": 33.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 30.0,
+                    "y": 15.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/mana UI single.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentName": "PlayerEnergy",
+                "localPos": {
+                    "x": -78.0,
+                    "y": 33.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 30.0,
+                    "y": 15.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UI",
+                "z": 1
+            }
+        },
+        {
+            "active": true,
+            "name": "EnergyBall_2",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -72.99996948242188,
+                    "y": 33.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 30.0,
+                    "y": 15.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/mana UI single.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentName": "PlayerEnergy",
+                "localPos": {
+                    "x": -73.0,
+                    "y": 33.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 30.0,
+                    "y": 15.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UI",
+                "z": 1
+            }
+        },
+        {
+            "active": true,
+            "name": "EnergyBall_3",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -67.99996948242188,
+                    "y": 33.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 30.0,
+                    "y": 15.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/mana UI single.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentName": "PlayerEnergy",
+                "localPos": {
+                    "x": -68.0,
+                    "y": 33.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 30.0,
+                    "y": 15.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UI",
+                "z": 1
+            }
+        },
+        {
+            "active": true,
+            "name": "EnergyBall_4",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -62.999969482421878,
+                    "y": 33.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 30.0,
+                    "y": 15.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/mana UI single.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentName": "PlayerEnergy",
+                "localPos": {
+                    "x": -63.0,
+                    "y": 33.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 30.0,
+                    "y": 15.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UI",
+                "z": 1
+            }
+        },
+        {
+            "active": true,
+            "name": "EnergyBall_5",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -57.999969482421878,
+                    "y": 33.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 30.0,
+                    "y": 15.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/mana UI single.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentName": "PlayerEnergy",
+                "localPos": {
+                    "x": -58.0,
+                    "y": 33.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 30.0,
+                    "y": 15.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UI",
+                "z": 1
+            }
+        },
+        {
+            "active": true,
+            "name": "EnergyBall_6",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -52.999969482421878,
+                    "y": 33.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 30.0,
+                    "y": 15.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/mana UI single.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentName": "PlayerEnergy",
+                "localPos": {
+                    "x": -53.0,
+                    "y": 33.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 30.0,
+                    "y": 15.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UI",
+                "z": 1
+            }
+        },
+        {
+            "active": true,
+            "name": "EnergyBall_7",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -47.999969482421878,
+                    "y": 33.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 30.0,
+                    "y": 15.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/mana UI single.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentName": "PlayerEnergy",
+                "localPos": {
+                    "x": -48.0,
+                    "y": 33.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 30.0,
+                    "y": 15.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UI",
+                "z": 1
+            }
+        },
+        {
+            "active": true,
+            "name": "EnergyBall_8",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -42.999969482421878,
+                    "y": 33.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 30.0,
+                    "y": 15.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/mana UI single.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentName": "PlayerEnergy",
+                "localPos": {
+                    "x": -43.0,
+                    "y": 33.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 30.0,
+                    "y": 15.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UI",
+                "z": 1
+            }
+        },
+        {
+            "active": true,
+            "name": "EnergyBall_9",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -37.999969482421878,
+                    "y": 33.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 30.0,
+                    "y": 15.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/mana UI single.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentName": "PlayerEnergy",
+                "localPos": {
+                    "x": -38.0,
+                    "y": 33.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 30.0,
+                    "y": 15.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UI",
+                "z": 1
+            }
+        },
+        {
+            "active": true,
+            "name": "BallBG_1",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -77.99996948242188,
+                    "y": 33.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 30.0,
+                    "y": 15.0
                 }
             },
             "shape": {
@@ -15041,7 +14804,7 @@
                     "w": 1.0
                 },
                 "p1": {
-                    "x": -10.600000381469727,
+                    "x": 0.0,
                     "y": 0.0,
                     "z": 0.0
                 },
@@ -15051,70 +14814,47 @@
                     "z": 0.0
                 }
             },
-            "button": {
-                "buttonState": 0,
-                "shapeNormalColor": {
+            "parent": {
+                "parentName": "EnergyBall_1",
+                "localPos": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
                     "x": 1.0,
                     "y": 1.0,
                     "z": 1.0,
                     "w": 1.0
-                },
-                "shapeHoveredColor": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 0.5
-                },
-                "shapePressedColor": {
-                    "x": 0.699999988079071,
-                    "y": 0.699999988079071,
-                    "z": 0.699999988079071,
-                    "w": 0.699999988079071
-                },
-                "textNormalColor": {
-                    "x": 0.30000001192092898,
-                    "y": 0.30000001192092898,
-                    "z": 0.30000001192092898,
-                    "w": 0.699999988079071
-                },
-                "textHoveredColor": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0,
-                    "w": 0.0
-                },
-                "textPressedColor": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0,
-                    "w": 0.5
                 }
             },
             "layer": {
                 "layerName": "UI",
-                "z": 100
-            },
-            "layer": {
-                "layerName": "UI",
-                "z": 100
+                "z": 0
             }
         },
         {
             "active": true,
-            "name": "Mana UI single_Clone1957_Clone1958",
+            "name": "BallBG_2",
             "tag": {
                 "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -46.21560287475586,
-                    "y": 29.243133544921876,
+                    "x": -72.99996948242188,
+                    "y": 33.0,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 49.93789291381836,
-                    "y": 40.0
+                    "x": 30.0,
+                    "y": 15.0
                 }
             },
             "shape": {
@@ -15141,7 +14881,7 @@
                     "w": 1.0
                 },
                 "p1": {
-                    "x": -10.600000381469727,
+                    "x": 0.0,
                     "y": 0.0,
                     "z": 0.0
                 },
@@ -15151,70 +14891,47 @@
                     "z": 0.0
                 }
             },
-            "button": {
-                "buttonState": 0,
-                "shapeNormalColor": {
+            "parent": {
+                "parentName": "EnergyBall_2",
+                "localPos": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
                     "x": 1.0,
                     "y": 1.0,
                     "z": 1.0,
                     "w": 1.0
-                },
-                "shapeHoveredColor": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 0.5
-                },
-                "shapePressedColor": {
-                    "x": 0.699999988079071,
-                    "y": 0.699999988079071,
-                    "z": 0.699999988079071,
-                    "w": 0.699999988079071
-                },
-                "textNormalColor": {
-                    "x": 0.30000001192092898,
-                    "y": 0.30000001192092898,
-                    "z": 0.30000001192092898,
-                    "w": 0.699999988079071
-                },
-                "textHoveredColor": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0,
-                    "w": 0.0
-                },
-                "textPressedColor": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0,
-                    "w": 0.5
                 }
             },
             "layer": {
                 "layerName": "UI",
-                "z": 100
-            },
-            "layer": {
-                "layerName": "UI",
-                "z": 100
+                "z": 0
             }
         },
         {
             "active": true,
-            "name": "Mana UI single_Clone1959",
+            "name": "BallBG_3",
             "tag": {
                 "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -71.67431640625,
-                    "y": 29.243133544921876,
+                    "x": -67.99996948242188,
+                    "y": 33.0,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 49.93789291381836,
-                    "y": 40.0
+                    "x": 30.0,
+                    "y": 15.0
                 }
             },
             "shape": {
@@ -15225,7 +14942,7 @@
                 "thickness": 1.0,
                 "preview": false,
                 "type": 0,
-                "textureName": "UI/mana UI single.png",
+                "textureName": "UI/mana UI single empty.png",
                 "uvSize": {
                     "x": 1.0,
                     "y": 1.0
@@ -15241,7 +14958,7 @@
                     "w": 1.0
                 },
                 "p1": {
-                    "x": -10.600000381469727,
+                    "x": 0.0,
                     "y": 0.0,
                     "z": 0.0
                 },
@@ -15251,70 +14968,47 @@
                     "z": 0.0
                 }
             },
-            "button": {
-                "buttonState": 0,
-                "shapeNormalColor": {
+            "parent": {
+                "parentName": "EnergyBall_3",
+                "localPos": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
                     "x": 1.0,
                     "y": 1.0,
                     "z": 1.0,
                     "w": 1.0
-                },
-                "shapeHoveredColor": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 0.5
-                },
-                "shapePressedColor": {
-                    "x": 0.699999988079071,
-                    "y": 0.699999988079071,
-                    "z": 0.699999988079071,
-                    "w": 0.699999988079071
-                },
-                "textNormalColor": {
-                    "x": 0.30000001192092898,
-                    "y": 0.30000001192092898,
-                    "z": 0.30000001192092898,
-                    "w": 0.699999988079071
-                },
-                "textHoveredColor": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0,
-                    "w": 0.0
-                },
-                "textPressedColor": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0,
-                    "w": 0.5
                 }
             },
             "layer": {
                 "layerName": "UI",
-                "z": 100
-            },
-            "layer": {
-                "layerName": "UI",
-                "z": 100
+                "z": 0
             }
         },
         {
             "active": true,
-            "name": "Mana UI single_Clone1957_Clone1961",
+            "name": "BallBG_4",
             "tag": {
                 "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -57.79817199707031,
-                    "y": 29.243133544921876,
+                    "x": -62.999969482421878,
+                    "y": 33.0,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 49.93789291381836,
-                    "y": 40.0
+                    "x": 30.0,
+                    "y": 15.0
                 }
             },
             "shape": {
@@ -15325,7 +15019,7 @@
                 "thickness": 1.0,
                 "preview": false,
                 "type": 0,
-                "textureName": "UI/mana UI single.png",
+                "textureName": "UI/mana UI single empty.png",
                 "uvSize": {
                     "x": 1.0,
                     "y": 1.0
@@ -15341,7 +15035,7 @@
                     "w": 1.0
                 },
                 "p1": {
-                    "x": -10.600000381469727,
+                    "x": 0.0,
                     "y": 0.0,
                     "z": 0.0
                 },
@@ -15351,70 +15045,47 @@
                     "z": 0.0
                 }
             },
-            "button": {
-                "buttonState": 0,
-                "shapeNormalColor": {
+            "parent": {
+                "parentName": "EnergyBall_4",
+                "localPos": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
                     "x": 1.0,
                     "y": 1.0,
                     "z": 1.0,
                     "w": 1.0
-                },
-                "shapeHoveredColor": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 0.5
-                },
-                "shapePressedColor": {
-                    "x": 0.699999988079071,
-                    "y": 0.699999988079071,
-                    "z": 0.699999988079071,
-                    "w": 0.699999988079071
-                },
-                "textNormalColor": {
-                    "x": 0.30000001192092898,
-                    "y": 0.30000001192092898,
-                    "z": 0.30000001192092898,
-                    "w": 0.699999988079071
-                },
-                "textHoveredColor": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0,
-                    "w": 0.0
-                },
-                "textPressedColor": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0,
-                    "w": 0.5
                 }
             },
             "layer": {
                 "layerName": "UI",
-                "z": 100
-            },
-            "layer": {
-                "layerName": "UI",
-                "z": 100
+                "z": 0
             }
         },
         {
             "active": true,
-            "name": "Mana UI single_Clone1957_Clone1958_Clone1962",
+            "name": "BallBG_5",
             "tag": {
                 "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -46.21560287475586,
-                    "y": 29.243133544921876,
+                    "x": -57.999969482421878,
+                    "y": 33.0,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 49.93789291381836,
-                    "y": 40.0
+                    "x": 30.0,
+                    "y": 15.0
                 }
             },
             "shape": {
@@ -15425,7 +15096,7 @@
                 "thickness": 1.0,
                 "preview": false,
                 "type": 0,
-                "textureName": "UI/mana UI single.png",
+                "textureName": "UI/mana UI single empty.png",
                 "uvSize": {
                     "x": 1.0,
                     "y": 1.0
@@ -15441,7 +15112,7 @@
                     "w": 1.0
                 },
                 "p1": {
-                    "x": -10.600000381469727,
+                    "x": 0.0,
                     "y": 0.0,
                     "z": 0.0
                 },
@@ -15451,63 +15122,364 @@
                     "z": 0.0
                 }
             },
-            "button": {
-                "buttonState": 0,
-                "shapeNormalColor": {
+            "parent": {
+                "parentName": "EnergyBall_5",
+                "localPos": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UI",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "BallBG_6",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -52.999969482421878,
+                    "y": 33.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 30.0,
+                    "y": 15.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/mana UI single empty.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
                     "x": 1.0,
                     "y": 1.0,
                     "z": 1.0,
                     "w": 1.0
                 },
-                "shapeHoveredColor": {
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentName": "EnergyBall_6",
+                "localPos": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
                     "x": 1.0,
                     "y": 1.0,
                     "z": 1.0,
-                    "w": 0.5
-                },
-                "shapePressedColor": {
-                    "x": 0.699999988079071,
-                    "y": 0.699999988079071,
-                    "z": 0.699999988079071,
-                    "w": 0.699999988079071
-                },
-                "textNormalColor": {
-                    "x": 0.30000001192092898,
-                    "y": 0.30000001192092898,
-                    "z": 0.30000001192092898,
-                    "w": 0.699999988079071
-                },
-                "textHoveredColor": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0,
-                    "w": 0.0
-                },
-                "textPressedColor": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0,
-                    "w": 0.5
+                    "w": 1.0
                 }
             },
             "layer": {
                 "layerName": "UI",
-                "z": 100
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "BallBG_7",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -47.999969482421878,
+                    "y": 33.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 30.0,
+                    "y": 15.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/mana UI single empty.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentName": "EnergyBall_7",
+                "localPos": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
             },
             "layer": {
                 "layerName": "UI",
-                "z": 100
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "BallBG_8",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -42.999969482421878,
+                    "y": 33.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 30.0,
+                    "y": 15.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/mana UI single empty.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentName": "EnergyBall_8",
+                "localPos": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UI",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "BallBG_9",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -37.999969482421878,
+                    "y": 33.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 30.0,
+                    "y": 15.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/mana UI single empty.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentName": "EnergyBall_9",
+                "localPos": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UI",
+                "z": 0
             }
         }
     ],
     "layers": {
+        "Background": 0,
+        "Default": 3,
+        "Enemy": 4,
+        "Foreground": 2,
+        "Middleground": 1,
+        "Player": 5,
+        "UI": 6
+    },
+    "layer_visibility": {
+        "Background": true,
+        "Default": true,
+        "Enemy": true,
+        "Foreground": true,
+        "Middleground": true,
+        "Player": true,
+        "UI": true
+    },
+    "tag_mapping": {
         "Default": 0,
         "Enemy": 4,
-        "Energy": 8,
         "Ground": 2,
-        "Passthrough": 16,
-        "Player": 1,
-        "UI": 100
+        "Passthrough": 8,
+        "Player": 1
     },
     "quadtree": {
         "min": {

@@ -106,14 +106,8 @@ namespace CrashoutsEngine {
 
 		if (ecs.HasComponent<Component::ParentComponent>(child)) {
 			auto* old = ecs.GetComponent<Component::ParentComponent>(child);
-
-			if (old->parent == parent) {
-				AddChildLink(ecs, parent, child);
-				return;
-			}
-
-			if (old->parent != 0)
-				RemoveChildLink(ecs, old->parent, child);
+			if (old->parent == parent) return;
+			if (old->parent != 0) RemoveChildLink(ecs, old->parent, child);
 		}
 
 		auto* pointerParentComp = GetOrAddParent(ecs, child);

@@ -7,7 +7,6 @@
 using namespace CrashoutsEngine;
 using namespace Serialization;
 using namespace KeyframeUnity;
-namespace CrashoutsEngine { bool DeletePrefabAsset(CrashoutsEngine::ECS& ecs, const std::string& prefabName); }
 
 namespace UI {
 
@@ -124,13 +123,6 @@ namespace UI {
 
                 if (ImGui::Button("Create Prefab##Prefab")) {
                     Prefab::Create(ecs, names[sel]);
-
-                }
-                ImGui::SameLine();
-
-                if (ImGui::Button("Delete Prefab##Prefab")) {
-                    DeletePrefabAsset(ecs, names[sel]);
-                    sel = 0;
                 }
             }
         }
@@ -732,12 +724,34 @@ namespace UI {
         if (ImGui::Button("Create Scene")) {
             // Only create if the name field is not empty
             if (std::strlen(sceneNameBuffer) > 0) {
-                // 4. Call your create function
-                ECS::getInstance()->Reset();
-                Serialization::SaveScenes(sceneNameBuffer);
 
-                // 5. Clear the buffer after creation for good UX
-                sceneNameBuffer[0] = '\0';
+                std::string newSceneName = sceneNameBuffer;
+
+                // SAFETY CHECK: Prevent overwriting the current scene if the user typed the same name
+                if (newSceneName == currSceneName) {
+                    // Log error or open a popup saying "Scene already exists/is active"
+                    std::cerr << "[Editor] Cannot create scene with same name as active scene." << std::endl;
+                }
+                else {
+                    // STEP 1: Save the OLD scene first (if valid) so we don't lose progress
+                    if (!currSceneName.empty()) {
+                        Serialization::SaveScenes(currSceneName);
+                        std::cout << "[Editor] Saved previous scene: " << currSceneName << std::endl;
+                    }
+
+                    // STEP 2: Wipe the ECS to create a blank slate
+                    ECS::getInstance()->Reset();
+
+                    // STEP 3: Save this NEW (empty) state to the NEW file
+                    Serialization::SaveScenes(newSceneName);
+
+                    // STEP 4: Update the Engine's current state tracking
+                    // We are now "living" in the new scene
+                    currSceneName = newSceneName;
+
+                    // Clear input
+                    sceneNameBuffer[0] = '\0';
+                }
             }
         }
         // --- End New UI ---
