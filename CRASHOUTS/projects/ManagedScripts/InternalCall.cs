@@ -250,5 +250,11 @@ namespace CrashoutsEngine
         // TEXT 
         [MethodImpl(MethodImplOptions.InternalCall)]
         public static extern bool IsTextFinished(uint entityID);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        public static extern void SetText(uint entityID, string text);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        public static extern string GetText(uint entityID);
     }
 }

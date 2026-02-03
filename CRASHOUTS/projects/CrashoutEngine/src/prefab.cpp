@@ -105,12 +105,18 @@ namespace Prefab {
 	}
 
 	//Make gameobj
-	bool Create(CrashoutsEngine::ECS& ecs, const std::string& name) {
+	CrashoutsEngine::Entity Create(CrashoutsEngine::ECS& ecs, const std::string& name) {
 		auto it = Reg().find(name);
-		if (it != Reg().end()) { it->second(ecs); return true; }
+		if (it != Reg().end()) {
+			return it->second(ecs); // Return the Entity ID from the factory
+		}
+
 		auto& fb = FallbackFn();
-		if (fb) { fb(ecs, name); return true; }
-		return false;
+		if (fb) {
+			return fb(ecs, name); // Return the Entity ID from the fallback
+		}
+
+		return 0; // Return 0 if failed
 	}
 
 	void SetFallback(Fallback fb) { FallbackFn() = std::move(fb); }
@@ -663,7 +669,7 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path) {
 		// -------------------------------------------------------------------------
 		// 2. REGISTER LAMBDA FACTORY
 		// -------------------------------------------------------------------------
-		Prefab::Register(name, [=](CrashoutsEngine::ECS& ecs) {
+		Prefab::Register(name, [=](CrashoutsEngine::ECS& ecs) -> uint32_t {
 			using Entity = uint32_t;
 			Entity e = ecs.CreateEntity();
 			ecs.AddComponent<NameComponent>(e, NameComponent{ name });
@@ -808,7 +814,8 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path) {
 
 			// Parent (Data only)
 			if (parD.hasComp) ecs.AddComponent<ParentComponent>(e, parD.c);
-			});
+			return e;
+		});
 	}
 	return true;
 }
@@ -817,10 +824,11 @@ namespace CrashoutsEngine {
 	using namespace ::Component;
 
 	void InitPrefabs() {
-		Prefab::SetFallback([](ECS& e, const std::string& name) {
+		Prefab::SetFallback([](ECS& e, const std::string& name) -> uint32_t {
 			auto entity = e.CreateEntity();
 			e.AddComponent<NameComponent>(entity, NameComponent{ name });
 			e.AddComponent<TransformComponent>(entity, TransformComponent{});
+			return entity; // <--- Return the ID
 			});
 
 		namespace fs = std::filesystem;
@@ -845,10 +853,11 @@ namespace CrashoutsEngine {
 		Prefab::ClearRegistry();
 
 		// 2. Re-register the default Fallback 
-		Prefab::SetFallback([](ECS& e, const std::string& name) {
+		Prefab::SetFallback([](ECS& e, const std::string& name) -> uint32_t {
 			auto entity = e.CreateEntity();
 			e.AddComponent<NameComponent>(entity, NameComponent{ name });
 			e.AddComponent<TransformComponent>(entity, TransformComponent{});
+			return entity; // <--- Return the ID
 			});
 
 		// 3. Load from the SPECIFIC path provided
@@ -878,14 +887,70 @@ namespace CrashoutsEngine {
 	void RecreateInstancesForPrefab(ECS& ecs, const std::string& prefabName) {
 		auto& arr = ecs.GetComponentArray<PrefabInstanceComponent>();
 		std::vector<Entity> toRecreate;
+
+		// 1. Find entities to update
 		for (size_t i = 0; i < arr.dense.size(); ++i) {
 			if (arr.dense[i]->prefabName == prefabName) {
 				toRecreate.push_back(arr.indexToEntity[i]);
 			}
 		}
+
+		// 2. Recreate them
 		for (Entity e : toRecreate) {
+			// --- BACKUP STATE ---
+			TransformComponent savedTransform;
+			bool hasTransform = false;
+			if (auto* tc = ecs.GetComponent<TransformComponent>(e)) {
+				savedTransform = *tc;
+				hasTransform = true;
+			}
+
+			// Backup Shape Color
+			CEColor savedShapeColor;
+			bool hasShape = false;
+			if (auto* sc = ecs.GetComponent<ShapeComponent>(e)) {
+				savedShapeColor = sc->color;
+				hasShape = true;
+			}
+
+			// Backup Text Color (if applicable)
+			CEColor savedTextColor;
+			bool hasText = false;
+			if (auto* txt = ecs.GetComponent<TextComponent>(e)) {
+				savedTextColor = txt->color;
+				hasText = true;
+			}
+
+			// --- DESTROY OLD ---
 			ecs.DestroyEntity(e);
-			Prefab::Create(ecs, prefabName);
+
+			// --- CREATE NEW (And capture ID) ---
+			// This now works because we updated Create() to return the ID
+			Entity newEntity = Prefab::Create(ecs, prefabName);
+
+			// --- RESTORE STATE ---
+			if (newEntity != 0) {
+				// Restore Transform
+				if (hasTransform) {
+					if (auto* newTc = ecs.GetComponent<TransformComponent>(newEntity)) {
+						*newTc = savedTransform;
+					}
+				}
+
+				// Restore Shape Color
+				if (hasShape) {
+					if (auto* newSc = ecs.GetComponent<ShapeComponent>(newEntity)) {
+						newSc->color = savedShapeColor;
+					}
+				}
+
+				// Restore Text Color
+				if (hasText) {
+					if (auto* newTxt = ecs.GetComponent<TextComponent>(newEntity)) {
+						newTxt->color = savedTextColor;
+					}
+				}
+			}
 		}
 	}
 

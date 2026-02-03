@@ -132,10 +132,23 @@ namespace UI {
         ImGui::Separator();
 
         if (entities.size() > 0) {
+            bool hasSelection = (selected != 0);
+
+            // Gray out the button if nothing is selected
+            if (!hasSelection) ImGui::BeginDisabled();
+
             if (ImGui::Button("Clone Selected")) {
-                selected = ecs.CloneEntity(selected);
-                return;
+                // Double check logic just to be safe
+                if (hasSelection) {
+                    selected = ecs.CloneEntity(selected);
+                    // If we disabled, we must end it before returning!
+                    if (!hasSelection) ImGui::EndDisabled();
+                    return;
+                }
             }
+
+            if (!hasSelection) ImGui::EndDisabled();
+
             const bool delPressed =
                 ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows) &&
                 ImGui::IsKeyPressed(ImGuiKey_Delete, false) &&

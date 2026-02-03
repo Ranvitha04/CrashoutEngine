@@ -1008,8 +1008,8 @@ namespace CrashoutsEngine {
 				if (v.HasMember("textNormalColor")) b.textNormalColor = ReadColor(v["textNormalColor"]);
 				if (v.HasMember("textHoveredColor")) b.textHoveredColor = ReadColor(v["textHoveredColor"]);
 				if (v.HasMember("textPressedColor")) b.textPressedColor = ReadColor(v["textPressedColor"]);
-				if (auto* s = gECS.GetComponent<ShapeComponent>(newEntity)) s->color = b.shapeNormalColor;
-				if (auto* t = gECS.GetComponent<TextComponent>(newEntity)) t->color = b.textNormalColor;
+				//if (auto* s = gECS.GetComponent<ShapeComponent>(newEntity)) s->color = b.shapeNormalColor;
+				//if (auto* t = gECS.GetComponent<TextComponent>(newEntity)) t->color = b.textNormalColor;
 			}
 
 			// GUI
