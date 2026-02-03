@@ -9681,7 +9681,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": 1714.81640625,
-                    "y": -796.5238037109375,
+                    "y": -796.5,
                     "z": 50.0
                 },
                 "size": {
@@ -9708,7 +9708,7 @@
                 "enabled": true,
                 "position": {
                     "x": 1714.81640625,
-                    "y": -801.5238037109375,
+                    "y": -801.5,
                     "z": 50.0
                 },
                 "offset": {
@@ -9718,12 +9718,12 @@
                 },
                 "min": {
                     "x": 1696.016357421875,
-                    "y": -832.0238037109375,
+                    "y": -832.0,
                     "z": 50.0
                 },
                 "max": {
                     "x": 1733.616455078125,
-                    "y": -771.0238037109375,
+                    "y": -771.0,
                     "z": 50.0
                 }
             },
@@ -9856,7 +9856,7 @@
             },
             "keyframe_animator": {
                 "current": "playerIdle",
-                "t": 0.6000000834465027,
+                "t": 3.9333302974700929,
                 "playing": true,
                 "clips": [
                     {
@@ -12024,7 +12024,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": 1490.7039794921876,
-                    "y": -394.48223876953127,
+                    "y": -394.0533752441406,
                     "z": 0.0
                 },
                 "size": {
@@ -12051,7 +12051,7 @@
                 "enabled": true,
                 "position": {
                     "x": 1490.7039794921876,
-                    "y": -396.5822448730469,
+                    "y": -396.15338134765627,
                     "z": 0.0
                 },
                 "offset": {
@@ -12061,12 +12061,12 @@
                 },
                 "min": {
                     "x": 1474.7039794921876,
-                    "y": -409.8822326660156,
+                    "y": -409.453369140625,
                     "z": 0.0
                 },
                 "max": {
                     "x": 1506.7039794921876,
-                    "y": -383.2822570800781,
+                    "y": -382.8533935546875,
                     "z": 0.0
                 }
             },
@@ -12173,7 +12173,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": 95.65513610839844,
-                    "y": -675.6419067382813,
+                    "y": -675.212646484375,
                     "z": 0.0
                 },
                 "size": {
@@ -12200,7 +12200,7 @@
                 "enabled": true,
                 "position": {
                     "x": 95.65513610839844,
-                    "y": -677.7418823242188,
+                    "y": -677.3126220703125,
                     "z": 0.0
                 },
                 "offset": {
@@ -12211,7 +12211,7 @@
                 "radius": 13.300000190734864,
                 "center": {
                     "x": 95.65513610839844,
-                    "y": -677.7418823242188,
+                    "y": -677.3126220703125,
                     "z": 0.0
                 }
             },
@@ -14333,6 +14333,1171 @@
                 "layerName": "",
                 "z": 0
             }
+        },
+        {
+            "active": true,
+            "name": "PauseResumeBtn",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 1.7846794128417969,
+                    "y": 23.62261962890625,
+                    "z": 0.8999999761581421
+                },
+                "size": {
+                    "x": 10.0,
+                    "y": 10.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.027450980618596078,
+                    "y": 0.5333333611488342,
+                    "z": 1.0,
+                    "w": 0.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "text": {
+                "font": "AlegreyaSC-ExtraBold",
+                "text": "Resume",
+                "scale": 80.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.027624309062957765,
+                    "y": 0.5326151847839356,
+                    "z": 1.0,
+                    "w": 0.699999988079071
+                },
+                "centered": true,
+                "isworldspace": false,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": false,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 0.0,
+                "lineSpacing": 0.0,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "MenuButtons",
+                        "fields": {}
+                    }
+                ]
+            },
+            "button": {
+                "buttonState": 0,
+                "shapeNormalColor": {
+                    "x": 0.027450980618596078,
+                    "y": 0.5333333611488342,
+                    "z": 1.0,
+                    "w": 0.0
+                },
+                "shapeHoveredColor": {
+                    "x": 0.027450980618596078,
+                    "y": 0.5333333611488342,
+                    "z": 1.0,
+                    "w": 0.0
+                },
+                "shapePressedColor": {
+                    "x": 0.027450980618596078,
+                    "y": 0.5333333611488342,
+                    "z": 1.0,
+                    "w": 0.022099435329437257
+                },
+                "textNormalColor": {
+                    "x": 0.027624309062957765,
+                    "y": 0.5326151847839356,
+                    "z": 1.0,
+                    "w": 0.699999988079071
+                },
+                "textHoveredColor": {
+                    "x": 0.027450980618596078,
+                    "y": 0.5333333611488342,
+                    "z": 1.0,
+                    "w": 0.7019608020782471
+                },
+                "textPressedColor": {
+                    "x": 0.027450980618596078,
+                    "y": 0.5333333611488342,
+                    "z": 1.0,
+                    "w": 0.7019608020782471
+                }
+            },
+            "gui": {
+                "uiType": 6
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 44.0,
+                    "y": 0.0
+                },
+                "uiLayout": 4
+            },
+            "parent": {
+                "parentName": "ClosedBook",
+                "localPos": {
+                    "x": 0.11543207615613938,
+                    "y": 0.03813687339425087,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.02715466544032097,
+                    "y": 0.05000000074505806
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UI",
+                "z": 100
+            },
+            "layer": {
+                "layerName": "UI",
+                "z": 100
+            }
+        },
+        {
+            "active": true,
+            "name": "SettingsBtn",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 3.1178436279296877,
+                    "y": 4.737790107727051,
+                    "z": 0.8999999761581421
+                },
+                "size": {
+                    "x": 10.0,
+                    "y": 10.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.027450980618596078,
+                    "y": 0.5333333611488342,
+                    "z": 1.0,
+                    "w": 0.7019608020782471
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "text": {
+                "font": "AlegreyaSC-ExtraBold",
+                "text": "Setting",
+                "scale": 80.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.027450980618596078,
+                    "y": 0.5333333611488342,
+                    "z": 1.0,
+                    "w": 0.7019608020782471
+                },
+                "centered": true,
+                "isworldspace": false,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": false,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 0.0,
+                "lineSpacing": 0.0,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "MenuButtons",
+                        "fields": {}
+                    }
+                ]
+            },
+            "button": {
+                "buttonState": 0,
+                "shapeNormalColor": {
+                    "x": 0.027450980618596078,
+                    "y": 0.5333333611488342,
+                    "z": 1.0,
+                    "w": 0.7019608020782471
+                },
+                "shapeHoveredColor": {
+                    "x": 0.027450980618596078,
+                    "y": 0.5333333611488342,
+                    "z": 1.0,
+                    "w": 0.7019608020782471
+                },
+                "shapePressedColor": {
+                    "x": 0.027450980618596078,
+                    "y": 0.5333333611488342,
+                    "z": 1.0,
+                    "w": 0.7019608020782471
+                },
+                "textNormalColor": {
+                    "x": 0.027450980618596078,
+                    "y": 0.5333333611488342,
+                    "z": 1.0,
+                    "w": 0.7019608020782471
+                },
+                "textHoveredColor": {
+                    "x": 0.027450980618596078,
+                    "y": 0.5333333611488342,
+                    "z": 1.0,
+                    "w": 0.7019608020782471
+                },
+                "textPressedColor": {
+                    "x": 0.027450980618596078,
+                    "y": 0.5333333611488342,
+                    "z": 1.0,
+                    "w": 0.7019608020782471
+                }
+            },
+            "gui": {
+                "uiType": 6
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "uiLayout": 4
+            },
+            "parent": {
+                "parentName": "ClosedBook",
+                "localPos": {
+                    "x": 0.11905223876237869,
+                    "y": -0.05628727376461029,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.02715466544032097,
+                    "y": 0.05000000074505806
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UI",
+                "z": 100
+            },
+            "layer": {
+                "layerName": "UI",
+                "z": 100
+            }
+        },
+        {
+            "active": true,
+            "name": "QuitBtn",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": -14.699502944946289,
+                    "z": 0.8999999761581421
+                },
+                "size": {
+                    "x": 10.0,
+                    "y": 10.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.027450980618596078,
+                    "y": 0.5333333611488342,
+                    "z": 1.0,
+                    "w": 0.7019608020782471
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "text": {
+                "font": "AlegreyaSC-ExtraBold",
+                "text": "Exit",
+                "scale": 80.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.027450980618596078,
+                    "y": 0.5333333611488342,
+                    "z": 1.0,
+                    "w": 0.7019608020782471
+                },
+                "centered": true,
+                "isworldspace": false,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": false,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 0.0,
+                "lineSpacing": 0.0,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "MenuButtons",
+                        "fields": {}
+                    }
+                ]
+            },
+            "button": {
+                "buttonState": 0,
+                "shapeNormalColor": {
+                    "x": 0.027450980618596078,
+                    "y": 0.5333333611488342,
+                    "z": 1.0,
+                    "w": 0.7019608020782471
+                },
+                "shapeHoveredColor": {
+                    "x": 0.027450980618596078,
+                    "y": 0.5333333611488342,
+                    "z": 1.0,
+                    "w": 0.7019608020782471
+                },
+                "shapePressedColor": {
+                    "x": 0.027450980618596078,
+                    "y": 0.5333333611488342,
+                    "z": 1.0,
+                    "w": 0.7019608020782471
+                },
+                "textNormalColor": {
+                    "x": 0.027450980618596078,
+                    "y": 0.5333333611488342,
+                    "z": 1.0,
+                    "w": 0.7019608020782471
+                },
+                "textHoveredColor": {
+                    "x": 0.027450980618596078,
+                    "y": 0.5333333611488342,
+                    "z": 1.0,
+                    "w": 0.7019608020782471
+                },
+                "textPressedColor": {
+                    "x": 0.027450980618596078,
+                    "y": 0.5333333611488342,
+                    "z": 1.0,
+                    "w": 0.7019608020782471
+                }
+            },
+            "gui": {
+                "uiType": 6
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "uiLayout": 4
+            },
+            "parent": {
+                "parentName": "ClosedBook",
+                "localPos": {
+                    "x": 0.11058583855628967,
+                    "y": -0.15347373485565186,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.02715466544032097,
+                    "y": 0.05000000074505806
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UI",
+                "z": 100
+            },
+            "layer": {
+                "layerName": "UI",
+                "z": 100
+            }
+        },
+        {
+            "active": true,
+            "name": "ClosedBook",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -40.72443389892578,
+                    "y": 15.995244979858399,
+                    "z": 0.8999999761581421
+                },
+                "size": {
+                    "x": 368.2608337402344,
+                    "y": 200.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/Pause Menu Closed.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": -0.10000000149011612
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "layer": {
+                "layerName": "UI",
+                "z": 100
+            },
+            "layer": {
+                "layerName": "UI",
+                "z": 100
+            }
+        },
+        {
+            "active": true,
+            "name": "Mana UI single",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -71.67431640625,
+                    "y": 29.243133544921876,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 49.93789291381836,
+                    "y": 40.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/mana UI single empty.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": -10.600000381469727,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "button": {
+                "buttonState": 0,
+                "shapeNormalColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "shapeHoveredColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.5
+                },
+                "shapePressedColor": {
+                    "x": 0.699999988079071,
+                    "y": 0.699999988079071,
+                    "z": 0.699999988079071,
+                    "w": 0.699999988079071
+                },
+                "textNormalColor": {
+                    "x": 0.30000001192092898,
+                    "y": 0.30000001192092898,
+                    "z": 0.30000001192092898,
+                    "w": 0.699999988079071
+                },
+                "textHoveredColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.0
+                },
+                "textPressedColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.5
+                }
+            },
+            "layer": {
+                "layerName": "UI",
+                "z": 100
+            },
+            "layer": {
+                "layerName": "UI",
+                "z": 100
+            }
+        },
+        {
+            "active": true,
+            "name": "Mana UI single_Clone1957",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -57.79817199707031,
+                    "y": 29.243133544921876,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 49.93789291381836,
+                    "y": 40.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/mana UI single empty.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": -10.600000381469727,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "button": {
+                "buttonState": 0,
+                "shapeNormalColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "shapeHoveredColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.5
+                },
+                "shapePressedColor": {
+                    "x": 0.699999988079071,
+                    "y": 0.699999988079071,
+                    "z": 0.699999988079071,
+                    "w": 0.699999988079071
+                },
+                "textNormalColor": {
+                    "x": 0.30000001192092898,
+                    "y": 0.30000001192092898,
+                    "z": 0.30000001192092898,
+                    "w": 0.699999988079071
+                },
+                "textHoveredColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.0
+                },
+                "textPressedColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.5
+                }
+            },
+            "layer": {
+                "layerName": "UI",
+                "z": 100
+            },
+            "layer": {
+                "layerName": "UI",
+                "z": 100
+            }
+        },
+        {
+            "active": true,
+            "name": "Mana UI single_Clone1957_Clone1958",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -46.21560287475586,
+                    "y": 29.243133544921876,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 49.93789291381836,
+                    "y": 40.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/mana UI single empty.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": -10.600000381469727,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "button": {
+                "buttonState": 0,
+                "shapeNormalColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "shapeHoveredColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.5
+                },
+                "shapePressedColor": {
+                    "x": 0.699999988079071,
+                    "y": 0.699999988079071,
+                    "z": 0.699999988079071,
+                    "w": 0.699999988079071
+                },
+                "textNormalColor": {
+                    "x": 0.30000001192092898,
+                    "y": 0.30000001192092898,
+                    "z": 0.30000001192092898,
+                    "w": 0.699999988079071
+                },
+                "textHoveredColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.0
+                },
+                "textPressedColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.5
+                }
+            },
+            "layer": {
+                "layerName": "UI",
+                "z": 100
+            },
+            "layer": {
+                "layerName": "UI",
+                "z": 100
+            }
+        },
+        {
+            "active": true,
+            "name": "Mana UI single_Clone1959",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -71.67431640625,
+                    "y": 29.243133544921876,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 49.93789291381836,
+                    "y": 40.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/mana UI single.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": -10.600000381469727,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "button": {
+                "buttonState": 0,
+                "shapeNormalColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "shapeHoveredColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.5
+                },
+                "shapePressedColor": {
+                    "x": 0.699999988079071,
+                    "y": 0.699999988079071,
+                    "z": 0.699999988079071,
+                    "w": 0.699999988079071
+                },
+                "textNormalColor": {
+                    "x": 0.30000001192092898,
+                    "y": 0.30000001192092898,
+                    "z": 0.30000001192092898,
+                    "w": 0.699999988079071
+                },
+                "textHoveredColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.0
+                },
+                "textPressedColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.5
+                }
+            },
+            "layer": {
+                "layerName": "UI",
+                "z": 100
+            },
+            "layer": {
+                "layerName": "UI",
+                "z": 100
+            }
+        },
+        {
+            "active": true,
+            "name": "Mana UI single_Clone1957_Clone1961",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -57.79817199707031,
+                    "y": 29.243133544921876,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 49.93789291381836,
+                    "y": 40.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/mana UI single.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": -10.600000381469727,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "button": {
+                "buttonState": 0,
+                "shapeNormalColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "shapeHoveredColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.5
+                },
+                "shapePressedColor": {
+                    "x": 0.699999988079071,
+                    "y": 0.699999988079071,
+                    "z": 0.699999988079071,
+                    "w": 0.699999988079071
+                },
+                "textNormalColor": {
+                    "x": 0.30000001192092898,
+                    "y": 0.30000001192092898,
+                    "z": 0.30000001192092898,
+                    "w": 0.699999988079071
+                },
+                "textHoveredColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.0
+                },
+                "textPressedColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.5
+                }
+            },
+            "layer": {
+                "layerName": "UI",
+                "z": 100
+            },
+            "layer": {
+                "layerName": "UI",
+                "z": 100
+            }
+        },
+        {
+            "active": true,
+            "name": "Mana UI single_Clone1957_Clone1958_Clone1962",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -46.21560287475586,
+                    "y": 29.243133544921876,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 49.93789291381836,
+                    "y": 40.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/mana UI single.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": -10.600000381469727,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "button": {
+                "buttonState": 0,
+                "shapeNormalColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "shapeHoveredColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.5
+                },
+                "shapePressedColor": {
+                    "x": 0.699999988079071,
+                    "y": 0.699999988079071,
+                    "z": 0.699999988079071,
+                    "w": 0.699999988079071
+                },
+                "textNormalColor": {
+                    "x": 0.30000001192092898,
+                    "y": 0.30000001192092898,
+                    "z": 0.30000001192092898,
+                    "w": 0.699999988079071
+                },
+                "textHoveredColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.0
+                },
+                "textPressedColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.5
+                }
+            },
+            "layer": {
+                "layerName": "UI",
+                "z": 100
+            },
+            "layer": {
+                "layerName": "UI",
+                "z": 100
+            }
         }
     ],
     "layers": {
@@ -14341,7 +15506,8 @@
         "Energy": 8,
         "Ground": 2,
         "Passthrough": 16,
-        "Player": 1
+        "Player": 1,
+        "UI": 100
     },
     "quadtree": {
         "min": {

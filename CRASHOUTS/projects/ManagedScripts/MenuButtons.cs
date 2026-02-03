@@ -80,13 +80,14 @@ namespace CrashoutsEngine
                         SceneManager.LoadScene("descentmenu");
                     }
                 }
-               
-                else if (name.ToString() == "PauseResumeBtn")
-                {
-                    // Resume Game from pause menu
-                    Debug.Log("[C#] Resume Game from pause menu.");
-                    SceneManager.LoadScene("tutorial");
-                }
+                /*
+                 else if (name.ToString() == "PauseResumeBtn")
+                 {
+                     // Resume Game from pause menu
+                     Debug.Log("[C#] Resume Game from pause menu.");
+                     SceneManager.LoadScene("tutorial");
+                 }
+                */
                 else if (name.ToString() == "PauseSettingsBtn")
                 {
                     // Go to settings from pause menu
@@ -98,10 +99,17 @@ namespace CrashoutsEngine
                     QuitFromPauseMenu = true;
                     SceneManager.LoadScene("descentmenu");
                 }
+                /*
                 else if (name.ToString() == "ResumeBtn")
                 {
 
                     SceneManager.LoadScene("descentgame");
+                }
+                */
+                else if (name.ToString() == "PauseResumeBtn" || name.ToString() == "ResumeBtn")
+                {
+                    
+                      
                 }
 
 

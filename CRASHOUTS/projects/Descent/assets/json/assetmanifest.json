@@ -1479,6 +1479,14 @@
             "path": "UI\\Icon.png"
         },
         {
+            "name": "mana UI single empty",
+            "path": "UI\\mana UI single empty.png"
+        },
+        {
+            "name": "mana UI single",
+            "path": "UI\\mana UI single.png"
+        },
+        {
             "name": "Menu",
             "path": "UI\\Menu.png"
         },
@@ -1579,6 +1587,10 @@
             "path": "ClosedBookbg.json"
         },
         {
+            "name": "ClosedBookprefab",
+            "path": "ClosedBookprefab.json"
+        },
+        {
             "name": "EnergyBall",
             "path": "EnergyBall.json"
         },
@@ -1589,6 +1601,10 @@
         {
             "name": "Exitbtn",
             "path": "Exitbtn.json"
+        },
+        {
+            "name": "Instruction",
+            "path": "Instruction.json"
         },
         {
             "name": "movingplatform",

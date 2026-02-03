@@ -64,25 +64,25 @@ namespace CrashoutsEngine
         private float swapPauseTimer = 0.0f;
         public static CEVec3 SavedPos;
         public static bool HasSavedPos = false;
-
+        private bool isBookActive = false;
         public override void Start()
         {
+            
+
+            Instance = this;
+            rb = Entity.GetComponent<RigidBodyComponent>();
+            tf = Entity.GetComponent<TransformComponent>();
+            anim = Entity.GetComponent<Animator>();
+            HideBothBooks();
+            rb.Mass = normalMass;
+            IsGrounded = false;
+            groundContactCount = 0;
             if (HasSavedPos)
             {
                 tf.Position = SavedPos;
                 rb.LinearVelocity = new CEVec3(0, 0, 0);
                 HasSavedPos = false;
             }
-
-            Instance = this;
-            rb = Entity.GetComponent<RigidBodyComponent>();
-            tf = Entity.GetComponent<TransformComponent>();
-            anim = Entity.GetComponent<Animator>();
-
-            rb.Mass = normalMass;
-            IsGrounded = false;
-            groundContactCount = 0;
-
             // Play music - Clean up later
             // AudioManager.GetInstance().PlayAttached("ambient", Entity.ID);
             // AudioManager.GetInstance().PlayAttached("bgm1", Entity.ID);
@@ -105,14 +105,12 @@ namespace CrashoutsEngine
 
             if (Input.IsKeyTriggered(Key.P))
             {
-                SavedPos = tf.Position;
-                HasSavedPos = true;
-                SceneManager.LoadScene("descentconfirm");
-                return;
+                isBookActive = !isBookActive;
+                Debug.Log("Book Active = " + isBookActive);
+                ToggleBookUI(isBookActive);
             }
 
-            // Remove this line if you are using scene-load pause (recommended)
-            // if (isPaused) { return; }
+
 
             if (!alive) return;
 
@@ -197,7 +195,7 @@ namespace CrashoutsEngine
 
         public override void FixedUpdate()
         {
-            if (isPaused) return;
+           
             // 1. HANDLE PAUSE TIMER (Physics Step Consistent)
             if (swapPauseTimer > 0.0f)
             {
@@ -296,6 +294,48 @@ namespace CrashoutsEngine
                 }
             }
             return true;
+        }
+        private void ToggleBookUI(bool showOpenBook)
+        {
+            Entity openBook = Entity.Find("OpenBook");
+            Entity closedBook = Entity.Find("ClosedBook");
+
+            // If names are wrong, this will tell you
+            Debug.Log("OpenBook found? " + (openBook != null));
+            Debug.Log("ClosedBook found? " + (closedBook != null));
+
+            // showOpenBook = true  -> OpenBook front, ClosedBook back
+            // showOpenBook = false -> OpenBook back, ClosedBook front
+            if (openBook != null)
+            {
+                var t = openBook.GetComponent<TransformComponent>();
+                if (t != null) t.Position = new CEVec3(t.Position.x, t.Position.y, showOpenBook ? 0.9f : -5.0f);
+            }
+
+            if (closedBook != null)
+            {
+                var t = closedBook.GetComponent<TransformComponent>();
+                if (t != null) t.Position = new CEVec3(t.Position.x, t.Position.y, showOpenBook ? -5.0f : 0.9f);
+            }
+        }
+
+
+        private void HideBothBooks()
+        {
+            Entity openBook = Entity.Find("OpenBook");
+            Entity closedBook = Entity.Find("ClosedBook");
+
+            if (openBook != null)
+            {
+                var t = openBook.GetComponent<TransformComponent>();
+                if (t != null) t.Position = new CEVec3(t.Position.x, t.Position.y, -100.0f);
+            }
+
+            if (closedBook != null)
+            {
+                var t = closedBook.GetComponent<TransformComponent>();
+                if (t != null) t.Position = new CEVec3(t.Position.x, t.Position.y, -100.0f);
+            }
         }
 
         public void OnTriggerEnter(uint otherEntity) { }

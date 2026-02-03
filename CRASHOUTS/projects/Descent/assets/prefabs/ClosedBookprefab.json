@@ -1,0 +1,53 @@
+{
+    "prefabs": [
+        {
+            "type": "Box",
+            "name": "ClosedBookprefab",
+            "active": {
+                "isActive": true
+            },
+            "transform": {
+                "position": {
+                    "x": -40.72443389892578,
+                    "y": 15.995244979858399,
+                    "z": 0.8999999761581421
+                },
+                "rotation": 0.0,
+                "size": {
+                    "x": 368.2608337402344,
+                    "y": 200.0
+                }
+            },
+            "tag": {
+                "tagMask": 0
+            },
+            "layer": {
+                "layerName": "UI",
+                "z": 100
+            },
+            "shape": {
+                "type": 0,
+                "color": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "enableTexture": true,
+                "textureName": "UI/Pause Menu Closed.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": -0.10000000149011612
+                },
+                "thickness": 1.0,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0
+            }
+        }
+    ]
+}
