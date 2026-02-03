@@ -2,7 +2,7 @@
     "entities": [
         {
             "active": true,
-            "name": "Entity 1",
+            "name": "Tilemap",
             "tag": {
                 "tagMask": 0
             },
@@ -1632,6 +1632,21 @@
                     },
                     {
                         "x": 43,
+                        "y": -5,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 43,
+                        "y": -4,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 43,
+                        "y": -3,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 43,
                         "y": 4,
                         "asset": "tilemaps/Rock"
                     },
@@ -2211,8 +2226,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1295.39697265625,
-                    "y": 21.576705932617189,
+                    "x": 777.5198364257813,
+                    "y": -139.82159423828126,
                     "z": 50.0
                 },
                 "size": {
@@ -2238,8 +2253,8 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 1295.39697265625,
-                    "y": 16.576705932617189,
+                    "x": 777.5198364257813,
+                    "y": -144.82159423828126,
                     "z": 50.0
                 },
                 "offset": {
@@ -2248,13 +2263,13 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 1276.596923828125,
-                    "y": -13.923286437988282,
+                    "x": 758.7197875976563,
+                    "y": -175.32159423828126,
                     "z": 50.0
                 },
                 "max": {
-                    "x": 1314.197021484375,
-                    "y": 47.076698303222659,
+                    "x": 796.3198852539063,
+                    "y": -114.32159423828125,
                     "z": 50.0
                 }
             },
@@ -2321,10 +2336,13 @@
                             "footstepInterval": 0.07500000298023224,
                             "swapPause": 1.0,
                             "energyConsumption": 12.5,
+                            "goalNoOfPlates": 1.0,
+                            "currentGoalPlates": 0,
                             "normalMass": 3.0,
                             "lightMass": 2.0,
                             "groundCheckDistance": 26.0,
                             "groundCheckWidth": 10.0,
+                            "dialogueCooldown": 1.0,
                             "CurrentEnergy": 100.0,
                             "MaxEnergy": 100.0,
                             "alive": true,
@@ -2555,8 +2573,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 399.42681884765627,
-                    "y": -262.8455810546875,
+                    "x": 399.8895568847656,
+                    "y": -264.3959655761719,
                     "z": -1.0
                 },
                 "size": {
@@ -2582,8 +2600,8 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 399.42681884765627,
-                    "y": -284.3455810546875,
+                    "x": 399.8895568847656,
+                    "y": -285.8959655761719,
                     "z": -1.0
                 },
                 "offset": {
@@ -2592,13 +2610,13 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 383.42681884765627,
-                    "y": -290.8455810546875,
+                    "x": 383.8895568847656,
+                    "y": -292.3959655761719,
                     "z": -1.0
                 },
                 "max": {
-                    "x": 415.42681884765627,
-                    "y": -277.8455810546875,
+                    "x": 415.8895568847656,
+                    "y": -279.3959655761719,
                     "z": -1.0
                 }
             },
@@ -2610,7 +2628,7 @@
                 "thickness": 1.0,
                 "preview": false,
                 "type": 0,
-                "textureName": "Pressure Plate",
+                "textureName": "UI/Pressure Plate.png",
                 "uvSize": {
                     "x": 1.0,
                     "y": 1.0
@@ -2621,8 +2639,8 @@
                 },
                 "color": {
                     "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
+                    "y": 0.4274509847164154,
+                    "z": 0.9490196108818054,
                     "w": 1.0
                 },
                 "p1": {
@@ -2688,152 +2706,7 @@
             },
             "layer": {
                 "layerName": "Default",
-                "z": 0
-            }
-        },
-        {
-            "active": true,
-            "name": "PressurePlate_Clone504",
-            "tag": {
-                "tagMask": 2
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 1328.005859375,
-                    "y": -70.56004333496094,
-                    "z": -1.0
-                },
-                "size": {
-                    "x": 32.0,
-                    "y": 50.0
-                }
-            },
-            "rigidbody": {
-                "mass": 0.0,
-                "restitutionCoeff": 0.0,
-                "maximumVelocity": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "staticFriction": 0.5,
-                "dynamicFriction": 0.5,
-                "inertia": 0.0,
-                "invInertia": 0.0
-            },
-            "collider": {
-                "ColliderType": 1,
-                "isTrigger": false,
-                "enabled": true,
-                "position": {
-                    "x": 1328.005859375,
-                    "y": -92.06004333496094,
-                    "z": -1.0
-                },
-                "offset": {
-                    "x": 0.0,
-                    "y": -21.5,
-                    "z": 0.0
-                },
-                "min": {
-                    "x": 1312.005859375,
-                    "y": -98.56004333496094,
-                    "z": -1.0
-                },
-                "max": {
-                    "x": 1344.005859375,
-                    "y": -85.56004333496094,
-                    "z": -1.0
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "Pressure Plate",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "script": {
-                "scripts": [
-                    {
-                        "className": "PressurePlate",
-                        "fields": {
-                            "decrease": 5.0,
-                            "wallName": "wall"
-                        }
-                    }
-                ]
-            },
-            "button": {
-                "buttonState": 0,
-                "shapeNormalColor": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "shapeHoveredColor": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 0.5
-                },
-                "shapePressedColor": {
-                    "x": 0.699999988079071,
-                    "y": 0.699999988079071,
-                    "z": 0.699999988079071,
-                    "w": 0.699999988079071
-                },
-                "textNormalColor": {
-                    "x": 0.30000001192092898,
-                    "y": 0.30000001192092898,
-                    "z": 0.30000001192092898,
-                    "w": 0.699999988079071
-                },
-                "textHoveredColor": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0,
-                    "w": 0.0
-                },
-                "textPressedColor": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0,
-                    "w": 0.5
-                }
-            },
-            "layer": {
-                "layerName": "Default",
-                "z": 0
+                "z": -10
             }
         },
         {
@@ -3165,7 +3038,7 @@
             },
             "collider": {
                 "ColliderType": 0,
-                "isTrigger": false,
+                "isTrigger": true,
                 "enabled": true,
                 "position": {
                     "x": 598.1819458007813,
@@ -3226,13 +3099,6 @@
                             "energyAmount": 25.0,
                             "respawnTime": 5.0
                         }
-                    },
-                    {
-                        "className": "EnergyBall",
-                        "fields": {
-                            "energyAmount": 25.0,
-                            "respawnTime": 5.0
-                        }
                     }
                 ]
             },
@@ -3278,6 +3144,117 @@
             "layer": {
                 "layerName": "Default",
                 "z": 0
+            },
+            "keyframe_animator": {
+                "current": "charged",
+                "t": 0.0,
+                "playing": true,
+                "clips": [
+                    {
+                        "name": "charged",
+                        "wrap": 0,
+                        "textureAsset": "images/UI\\Energy Ball\\Energy Ball spritesheet.png",
+                        "spriteCols": 8,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 32.0,
+                        "targetHeight": 40.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 1.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.5,
+                                        "v": 2.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.75,
+                                        "v": 2.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "cooldown",
+                        "wrap": 0,
+                        "textureAsset": "images/UI\\Energy Ball\\Energy Ball spritesheet.png",
+                        "spriteCols": 8,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 32.0,
+                        "targetHeight": 40.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 3.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 4.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.5,
+                                        "v": 5.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.75,
+                                        "v": 6.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 1.0,
+                                        "v": 7.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 1.25,
+                                        "v": 7.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
             }
         },
         {
@@ -3376,7 +3353,7 @@
                         "className": "PressurePlate",
                         "fields": {
                             "decrease": 5.0,
-                            "wallName": "wall"
+                            "wallName": "WinMovingWall"
                         }
                     }
                 ]
@@ -3434,7 +3411,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1446.117431640625,
+                    "x": 1466.995361328125,
                     "y": -71.9257583618164,
                     "z": 0.0
                 },
@@ -3461,7 +3438,7 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 1446.117431640625,
+                    "x": 1466.995361328125,
                     "y": -71.9257583618164,
                     "z": 0.0
                 },
@@ -3471,12 +3448,12 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 1396.1175537109376,
+                    "x": 1416.9954833984376,
                     "y": -79.9257583618164,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 1496.1173095703126,
+                    "x": 1516.9952392578126,
                     "y": -63.925758361816409,
                     "z": 0.0
                 }
@@ -3573,6 +3550,797 @@
                 "layerName": "",
                 "z": 0
             }
+        },
+        {
+            "active": true,
+            "name": "WinMovingWall",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 274.5287170410156,
+                    "y": -469.6745300292969,
+                    "z": -5.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "spritesheet\\lava platform\\lava platform_42.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "MovingWall",
+                        "fields": {
+                            "PlatesActive": 0,
+                            "PlatesRequired": 1,
+                            "MoveRight": false,
+                            "MoveDist": 250.0,
+                            "MoveSpeed": 75.0
+                        }
+                    }
+                ]
+            },
+            "button": {
+                "buttonState": 0,
+                "shapeNormalColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "shapeHoveredColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.5
+                },
+                "shapePressedColor": {
+                    "x": 0.699999988079071,
+                    "y": 0.699999988079071,
+                    "z": 0.699999988079071,
+                    "w": 0.699999988079071
+                },
+                "textNormalColor": {
+                    "x": 0.30000001192092898,
+                    "y": 0.30000001192092898,
+                    "z": 0.30000001192092898,
+                    "w": 0.699999988079071
+                },
+                "textHoveredColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.0
+                },
+                "textPressedColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.5
+                }
+            },
+            "tilemap": {
+                "tileSize": 32,
+                "activeAsset": "tilemaps/Rock_Door",
+                "tileAssetNames": [],
+                "gridData": [
+                    {
+                        "x": 6,
+                        "y": -15,
+                        "asset": ""
+                    },
+                    {
+                        "x": 7,
+                        "y": -15,
+                        "asset": ""
+                    },
+                    {
+                        "x": 8,
+                        "y": -15,
+                        "asset": ""
+                    },
+                    {
+                        "x": 9,
+                        "y": -15,
+                        "asset": ""
+                    },
+                    {
+                        "x": 10,
+                        "y": -15,
+                        "asset": ""
+                    },
+                    {
+                        "x": 11,
+                        "y": -15,
+                        "asset": ""
+                    },
+                    {
+                        "x": 12,
+                        "y": -15,
+                        "asset": ""
+                    },
+                    {
+                        "x": 55,
+                        "y": -8,
+                        "asset": "tilemaps/Rock_Door"
+                    },
+                    {
+                        "x": 55,
+                        "y": -7,
+                        "asset": "tilemaps/Rock_Door"
+                    },
+                    {
+                        "x": 55,
+                        "y": -6,
+                        "asset": "tilemaps/Rock_Door"
+                    },
+                    {
+                        "x": 55,
+                        "y": -5,
+                        "asset": "tilemaps/Rock_Door"
+                    },
+                    {
+                        "x": 55,
+                        "y": -4,
+                        "asset": "tilemaps/Rock_Door"
+                    },
+                    {
+                        "x": 56,
+                        "y": -8,
+                        "asset": "tilemaps/Rock_Door"
+                    },
+                    {
+                        "x": 56,
+                        "y": -7,
+                        "asset": "tilemaps/Rock_Door"
+                    },
+                    {
+                        "x": 56,
+                        "y": -6,
+                        "asset": "tilemaps/Rock_Door"
+                    },
+                    {
+                        "x": 56,
+                        "y": -5,
+                        "asset": "tilemaps/Rock_Door"
+                    },
+                    {
+                        "x": 56,
+                        "y": -4,
+                        "asset": "tilemaps/Rock_Door"
+                    }
+                ]
+            },
+            "layer": {
+                "layerName": "Default",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "MovingWall",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 274.5287170410156,
+                    "y": -469.6745300292969,
+                    "z": -5.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "spritesheet\\lava platform\\lava platform_42.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "MovingWall",
+                        "fields": {
+                            "PlatesActive": 0,
+                            "PlatesRequired": 1,
+                            "MoveRight": false,
+                            "MoveDist": 250.0,
+                            "MoveSpeed": 75.0
+                        }
+                    }
+                ]
+            },
+            "button": {
+                "buttonState": 0,
+                "shapeNormalColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "shapeHoveredColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.5
+                },
+                "shapePressedColor": {
+                    "x": 0.699999988079071,
+                    "y": 0.699999988079071,
+                    "z": 0.699999988079071,
+                    "w": 0.699999988079071
+                },
+                "textNormalColor": {
+                    "x": 0.30000001192092898,
+                    "y": 0.30000001192092898,
+                    "z": 0.30000001192092898,
+                    "w": 0.699999988079071
+                },
+                "textHoveredColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.0
+                },
+                "textPressedColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.5
+                }
+            },
+            "tilemap": {
+                "tileSize": 32,
+                "activeAsset": "tilemaps/Rock_Door",
+                "tileAssetNames": [],
+                "gridData": [
+                    {
+                        "x": 16,
+                        "y": -8,
+                        "asset": "tilemaps/Rock_Door"
+                    },
+                    {
+                        "x": 16,
+                        "y": -7,
+                        "asset": "tilemaps/Rock_Door"
+                    },
+                    {
+                        "x": 16,
+                        "y": -6,
+                        "asset": "tilemaps/Rock_Door"
+                    },
+                    {
+                        "x": 17,
+                        "y": -8,
+                        "asset": "tilemaps/Rock_Door"
+                    },
+                    {
+                        "x": 17,
+                        "y": -7,
+                        "asset": "tilemaps/Rock_Door"
+                    },
+                    {
+                        "x": 17,
+                        "y": -6,
+                        "asset": "tilemaps/Rock_Door"
+                    },
+                    {
+                        "x": 43,
+                        "y": -2,
+                        "asset": ""
+                    },
+                    {
+                        "x": 43,
+                        "y": -1,
+                        "asset": ""
+                    },
+                    {
+                        "x": 43,
+                        "y": 0,
+                        "asset": ""
+                    },
+                    {
+                        "x": 43,
+                        "y": 1,
+                        "asset": ""
+                    },
+                    {
+                        "x": 43,
+                        "y": 2,
+                        "asset": ""
+                    },
+                    {
+                        "x": 43,
+                        "y": 3,
+                        "asset": ""
+                    }
+                ]
+            },
+            "layer": {
+                "layerName": "Default",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "MovingWall2",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 274.5287170410156,
+                    "y": -469.6745300292969,
+                    "z": -5.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "spritesheet\\lava platform\\lava platform_42.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "MovingWall",
+                        "fields": {
+                            "PlatesActive": 0,
+                            "PlatesRequired": 1,
+                            "MoveRight": false,
+                            "MoveDist": 250.0,
+                            "MoveSpeed": 75.0
+                        }
+                    }
+                ]
+            },
+            "button": {
+                "buttonState": 0,
+                "shapeNormalColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "shapeHoveredColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.5
+                },
+                "shapePressedColor": {
+                    "x": 0.699999988079071,
+                    "y": 0.699999988079071,
+                    "z": 0.699999988079071,
+                    "w": 0.699999988079071
+                },
+                "textNormalColor": {
+                    "x": 0.30000001192092898,
+                    "y": 0.30000001192092898,
+                    "z": 0.30000001192092898,
+                    "w": 0.699999988079071
+                },
+                "textHoveredColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.0
+                },
+                "textPressedColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.5
+                }
+            },
+            "tilemap": {
+                "tileSize": 32,
+                "activeAsset": "tilemaps/Rock_Door",
+                "tileAssetNames": [],
+                "gridData": [
+                    {
+                        "x": 6,
+                        "y": -15,
+                        "asset": ""
+                    },
+                    {
+                        "x": 7,
+                        "y": -15,
+                        "asset": ""
+                    },
+                    {
+                        "x": 7,
+                        "y": -14,
+                        "asset": ""
+                    },
+                    {
+                        "x": 8,
+                        "y": -15,
+                        "asset": ""
+                    },
+                    {
+                        "x": 8,
+                        "y": -14,
+                        "asset": ""
+                    },
+                    {
+                        "x": 9,
+                        "y": -15,
+                        "asset": ""
+                    },
+                    {
+                        "x": 9,
+                        "y": -14,
+                        "asset": ""
+                    },
+                    {
+                        "x": 10,
+                        "y": -15,
+                        "asset": ""
+                    },
+                    {
+                        "x": 10,
+                        "y": -14,
+                        "asset": ""
+                    },
+                    {
+                        "x": 11,
+                        "y": -16,
+                        "asset": ""
+                    },
+                    {
+                        "x": 11,
+                        "y": -15,
+                        "asset": ""
+                    },
+                    {
+                        "x": 11,
+                        "y": -14,
+                        "asset": ""
+                    },
+                    {
+                        "x": 12,
+                        "y": -16,
+                        "asset": ""
+                    },
+                    {
+                        "x": 12,
+                        "y": -15,
+                        "asset": ""
+                    },
+                    {
+                        "x": 13,
+                        "y": -15,
+                        "asset": ""
+                    },
+                    {
+                        "x": 42,
+                        "y": -2,
+                        "asset": "tilemaps/Rock_Door"
+                    },
+                    {
+                        "x": 42,
+                        "y": -1,
+                        "asset": "tilemaps/Rock_Door"
+                    },
+                    {
+                        "x": 42,
+                        "y": 0,
+                        "asset": "tilemaps/Rock_Door"
+                    },
+                    {
+                        "x": 42,
+                        "y": 1,
+                        "asset": "tilemaps/Rock_Door"
+                    },
+                    {
+                        "x": 42,
+                        "y": 2,
+                        "asset": "tilemaps/Rock_Door"
+                    },
+                    {
+                        "x": 42,
+                        "y": 3,
+                        "asset": "tilemaps/Rock_Door"
+                    },
+                    {
+                        "x": 43,
+                        "y": -5,
+                        "asset": ""
+                    },
+                    {
+                        "x": 43,
+                        "y": -4,
+                        "asset": ""
+                    },
+                    {
+                        "x": 43,
+                        "y": -3,
+                        "asset": ""
+                    },
+                    {
+                        "x": 43,
+                        "y": -2,
+                        "asset": "tilemaps/Rock_Door"
+                    },
+                    {
+                        "x": 43,
+                        "y": -1,
+                        "asset": "tilemaps/Rock_Door"
+                    },
+                    {
+                        "x": 43,
+                        "y": 0,
+                        "asset": "tilemaps/Rock_Door"
+                    },
+                    {
+                        "x": 43,
+                        "y": 1,
+                        "asset": "tilemaps/Rock_Door"
+                    },
+                    {
+                        "x": 43,
+                        "y": 2,
+                        "asset": "tilemaps/Rock_Door"
+                    },
+                    {
+                        "x": 43,
+                        "y": 3,
+                        "asset": "tilemaps/Rock_Door"
+                    }
+                ]
+            },
+            "layer": {
+                "layerName": "Default",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "PressurePlate2",
+            "tag": {
+                "tagMask": 2
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 1328.4091796875,
+                    "y": -71.24458312988281,
+                    "z": -1.0
+                },
+                "size": {
+                    "x": 32.0,
+                    "y": 50.0
+                }
+            },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0
+            },
+            "collider": {
+                "ColliderType": 1,
+                "isTrigger": false,
+                "enabled": true,
+                "position": {
+                    "x": 1328.4091796875,
+                    "y": -92.74458312988281,
+                    "z": -1.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": -21.5,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": 1312.4091796875,
+                    "y": -99.24458312988281,
+                    "z": -1.0
+                },
+                "max": {
+                    "x": 1344.4091796875,
+                    "y": -86.24458312988281,
+                    "z": -1.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/Pressure Plate.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 0.4274509847164154,
+                    "z": 0.9490196108818054,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "PressurePlate",
+                        "fields": {
+                            "decrease": 5.0,
+                            "wallName": "MovingWall2"
+                        }
+                    }
+                ]
+            },
+            "button": {
+                "buttonState": 0,
+                "shapeNormalColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "shapeHoveredColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.5
+                },
+                "shapePressedColor": {
+                    "x": 0.699999988079071,
+                    "y": 0.699999988079071,
+                    "z": 0.699999988079071,
+                    "w": 0.699999988079071
+                },
+                "textNormalColor": {
+                    "x": 0.30000001192092898,
+                    "y": 0.30000001192092898,
+                    "z": 0.30000001192092898,
+                    "w": 0.699999988079071
+                },
+                "textHoveredColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.0
+                },
+                "textPressedColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.5
+                }
+            },
+            "layer": {
+                "layerName": "Default",
+                "z": -10
+            }
         }
     ],
     "layers": {
@@ -3588,6 +4356,7 @@
     },
     "tag_mapping": {
         "Default": 0,
+        "Enemy": 4,
         "Ground": 2,
         "Player": 1
     },
