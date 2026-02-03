@@ -9677,7 +9677,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": -170.994873046875,
-                    "y": 14.385711669921875,
+                    "y": -19.76300048828125,
                     "z": 50.0
                 },
                 "size": {
@@ -9704,7 +9704,7 @@
                 "enabled": true,
                 "position": {
                     "x": -170.994873046875,
-                    "y": 9.385711669921875,
+                    "y": -24.76300048828125,
                     "z": 50.0
                 },
                 "offset": {
@@ -9714,12 +9714,12 @@
                 },
                 "min": {
                     "x": -189.794921875,
-                    "y": -21.114288330078126,
+                    "y": -55.26300048828125,
                     "z": 50.0
                 },
                 "max": {
                     "x": -152.19482421875,
-                    "y": 39.885711669921878,
+                    "y": 5.73699951171875,
                     "z": 50.0
                 }
             },
@@ -11724,7 +11724,10 @@
                 "scripts": [
                     {
                         "className": "EnergyBall",
-                        "fields": {}
+                        "fields": {
+                            "energyAmount": 25.0,
+                            "respawnTime": 5.0
+                        }
                     }
                 ]
             },
@@ -11862,7 +11865,10 @@
                 "scripts": [
                     {
                         "className": "EnergyBall",
-                        "fields": {}
+                        "fields": {
+                            "energyAmount": 25.0,
+                            "respawnTime": 5.0
+                        }
                     }
                 ]
             },
@@ -12005,6 +12011,7 @@
                     {
                         "className": "PressurePlate",
                         "fields": {
+                            "decrease": 5.0,
                             "wallName": "wall"
                         }
                     }
@@ -12149,6 +12156,7 @@
                     {
                         "className": "PressurePlate",
                         "fields": {
+                            "decrease": 5.0,
                             "wallName": "wall"
                         }
                     }
@@ -12293,6 +12301,7 @@
                     {
                         "className": "PressurePlate",
                         "fields": {
+                            "decrease": 5.0,
                             "wallName": "wall2"
                         }
                     }
@@ -12562,7 +12571,11 @@
                     {
                         "className": "MovingWall",
                         "fields": {
-                            "PlatesActive": 0
+                            "PlatesActive": 0,
+                            "PlatesRequired": 1,
+                            "MoveRight": false,
+                            "MoveDist": 10.0,
+                            "MoveSpeed": 5.0
                         }
                     }
                 ]
@@ -12765,7 +12778,11 @@
                     {
                         "className": "MovingWall",
                         "fields": {
-                            "PlatesActive": 0
+                            "PlatesActive": 0,
+                            "PlatesRequired": 1,
+                            "MoveRight": false,
+                            "MoveDist": 10.0,
+                            "MoveSpeed": 5.0
                         }
                     }
                 ]
@@ -12985,7 +13002,14 @@
                 "scripts": [
                     {
                         "className": "WeightedPlatform",
-                        "fields": {}
+                        "fields": {
+                            "IsMoving": true,
+                            "MoveRight": true,
+                            "MovementDistance": 100.0,
+                            "MoveSpeed": 20.0,
+                            "VerticalSpeed": 50.0,
+                            "maxDrop": 50.0
+                        }
                     }
                 ]
             },
@@ -13088,7 +13112,14 @@
                 "scripts": [
                     {
                         "className": "WeightedPlatform",
-                        "fields": {}
+                        "fields": {
+                            "IsMoving": true,
+                            "MoveRight": true,
+                            "MovementDistance": 100.0,
+                            "MoveSpeed": 20.0,
+                            "VerticalSpeed": 50.0,
+                            "maxDrop": 50.0
+                        }
                     }
                 ]
             },
@@ -13191,7 +13222,14 @@
                 "scripts": [
                     {
                         "className": "WeightedPlatform",
-                        "fields": {}
+                        "fields": {
+                            "IsMoving": true,
+                            "MoveRight": true,
+                            "MovementDistance": 100.0,
+                            "MoveSpeed": 20.0,
+                            "VerticalSpeed": 50.0,
+                            "maxDrop": 50.0
+                        }
                     }
                 ]
             },
@@ -13294,7 +13332,14 @@
                 "scripts": [
                     {
                         "className": "WeightedPlatform",
-                        "fields": {}
+                        "fields": {
+                            "IsMoving": true,
+                            "MoveRight": true,
+                            "MovementDistance": 100.0,
+                            "MoveSpeed": 20.0,
+                            "VerticalSpeed": 50.0,
+                            "maxDrop": 50.0
+                        }
                     }
                 ]
             },
@@ -13817,7 +13862,14 @@
                 "scripts": [
                     {
                         "className": "WeightedPlatform",
-                        "fields": {}
+                        "fields": {
+                            "IsMoving": true,
+                            "MoveRight": true,
+                            "MovementDistance": 100.0,
+                            "MoveSpeed": 20.0,
+                            "VerticalSpeed": 50.0,
+                            "maxDrop": 50.0
+                        }
                     }
                 ]
             },
@@ -15400,6 +15452,591 @@
             },
             "layer": {
                 "layerName": "UI",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "PlayerDialogue_1",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -170.994873046875,
+                    "y": 38.606910705566409,
+                    "z": 50.0
+                },
+                "size": {
+                    "x": -98.0,
+                    "y": 50.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.3960784375667572
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "text": {
+                "font": "AlegreyaSC-Regular",
+                "text": "This place is…did I make it? Is this hell?",
+                "scale": 3.5,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": true,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": true,
+                "padding": {
+                    "x": 5.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 1.0,
+                "lineSpacing": 10.0,
+                "isRevealing": true,
+                "revealSpeed": 35.0,
+                "dialogueFilePath": "dialogue/tutorialdialogue.json",
+                "dialogueID": "1.1"
+            },
+            "gui": {
+                "uiType": 3
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "uiLayout": 4
+            },
+            "parent": {
+                "parentName": "Player",
+                "localPos": {
+                    "x": -0.0,
+                    "y": 0.583699107170105,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.699999988079071,
+                    "y": 0.5
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            }
+        },
+        {
+            "active": false,
+            "name": "PlayerDialogue_2",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -170.994873046875,
+                    "y": 38.606910705566409,
+                    "z": 50.0
+                },
+                "size": {
+                    "x": -98.0,
+                    "y": 50.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.3960784375667572
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "text": {
+                "font": "AlegreyaSC-Regular",
+                "text": "Heh. It's less fire and brimstone than I thought.",
+                "scale": 3.5,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": true,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": true,
+                "padding": {
+                    "x": 5.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 1.0,
+                "lineSpacing": 10.0,
+                "isRevealing": true,
+                "revealSpeed": 35.0,
+                "dialogueFilePath": "dialogue/tutorialdialogue.json",
+                "dialogueID": "1.2"
+            },
+            "gui": {
+                "uiType": 3
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "uiLayout": 4
+            },
+            "parent": {
+                "parentName": "Player",
+                "localPos": {
+                    "x": -0.0,
+                    "y": 0.583699107170105,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.699999988079071,
+                    "y": 0.5
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            }
+        },
+        {
+            "active": false,
+            "name": "PlayerDialogue_3",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -170.994873046875,
+                    "y": 38.606910705566409,
+                    "z": 50.0
+                },
+                "size": {
+                    "x": -98.0,
+                    "y": 50.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.3960784375667572
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "text": {
+                "font": "AlegreyaSC-Regular",
+                "text": "No better time than the present, I suppose.",
+                "scale": 3.5,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": true,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": true,
+                "padding": {
+                    "x": 5.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 1.0,
+                "lineSpacing": 10.0,
+                "isRevealing": true,
+                "revealSpeed": 35.0,
+                "dialogueFilePath": "dialogue/tutorialdialogue.json",
+                "dialogueID": "1.3"
+            },
+            "gui": {
+                "uiType": 3
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "uiLayout": 4
+            },
+            "parent": {
+                "parentName": "Player",
+                "localPos": {
+                    "x": -0.0,
+                    "y": 0.583699107170105,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.699999988079071,
+                    "y": 0.5
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            }
+        },
+        {
+            "active": false,
+            "name": "PlayerDialogue_4",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -170.994873046875,
+                    "y": 38.606910705566409,
+                    "z": 50.0
+                },
+                "size": {
+                    "x": -98.0,
+                    "y": 50.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.3960784375667572
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "text": {
+                "font": "AlegreyaSC-Regular",
+                "text": "I should explore this place as much as I can.",
+                "scale": 3.5,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": true,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": true,
+                "padding": {
+                    "x": 5.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 1.0,
+                "lineSpacing": 10.0,
+                "isRevealing": true,
+                "revealSpeed": 35.0,
+                "dialogueFilePath": "dialogue/tutorialdialogue.json",
+                "dialogueID": "1.4"
+            },
+            "gui": {
+                "uiType": 3
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "uiLayout": 4
+            },
+            "parent": {
+                "parentName": "Player",
+                "localPos": {
+                    "x": -0.0,
+                    "y": 0.583699107170105,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.699999988079071,
+                    "y": 0.5
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            }
+        },
+        {
+            "active": false,
+            "name": "PlayerDialogue_5",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -170.994873046875,
+                    "y": 38.606910705566409,
+                    "z": 50.0
+                },
+                "size": {
+                    "x": -98.0,
+                    "y": 50.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.3960784375667572
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "text": {
+                "font": "AlegreyaSC-Regular",
+                "text": "I wonder, if at the end of this journey, I'll find you, Keiran?",
+                "scale": 3.5,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": true,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": true,
+                "padding": {
+                    "x": 5.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 1.0,
+                "lineSpacing": 10.0,
+                "isRevealing": true,
+                "revealSpeed": 35.0,
+                "dialogueFilePath": "dialogue/tutorialdialogue.json",
+                "dialogueID": "1.5"
+            },
+            "gui": {
+                "uiType": 3
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "uiLayout": 4
+            },
+            "parent": {
+                "parentName": "Player",
+                "localPos": {
+                    "x": -0.0,
+                    "y": 0.583699107170105,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.699999988079071,
+                    "y": 0.5
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "",
                 "z": 0
             }
         }
