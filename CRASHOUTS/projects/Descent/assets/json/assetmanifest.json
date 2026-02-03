@@ -1563,6 +1563,50 @@
             "path": "UI\\Title.png"
         },
         {
+            "name": "eigth",
+            "path": "UI\\Tutorial\\eigth.png"
+        },
+        {
+            "name": "eleventh",
+            "path": "UI\\Tutorial\\eleventh.png"
+        },
+        {
+            "name": "fifth",
+            "path": "UI\\Tutorial\\fifth.png"
+        },
+        {
+            "name": "first",
+            "path": "UI\\Tutorial\\first.png"
+        },
+        {
+            "name": "fourth",
+            "path": "UI\\Tutorial\\fourth.png"
+        },
+        {
+            "name": "ninth",
+            "path": "UI\\Tutorial\\ninth.png"
+        },
+        {
+            "name": "second",
+            "path": "UI\\Tutorial\\second.png"
+        },
+        {
+            "name": "seventh",
+            "path": "UI\\Tutorial\\seventh.png"
+        },
+        {
+            "name": "sixth",
+            "path": "UI\\Tutorial\\sixth.png"
+        },
+        {
+            "name": "tenth",
+            "path": "UI\\Tutorial\\tenth.png"
+        },
+        {
+            "name": "third",
+            "path": "UI\\Tutorial\\third.png"
+        },
+        {
             "name": "Yes",
             "path": "UI\\Yes.png"
         }

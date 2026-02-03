@@ -17,8 +17,8 @@ namespace CrashoutsEngine { class ECS; }
 
 namespace Prefab {
 
-    using Factory = std::function<void(CrashoutsEngine::ECS&)>;
-    using Fallback = std::function<void(CrashoutsEngine::ECS&, const std::string& name)>;
+    using Factory = std::function<CrashoutsEngine::Entity(CrashoutsEngine::ECS&)>;
+    using Fallback = std::function<CrashoutsEngine::Entity(CrashoutsEngine::ECS&, const std::string&)>;
 
     bool Register(const std::string& name, Factory f);  
     bool Unregister(const std::string& name);
@@ -26,7 +26,7 @@ namespace Prefab {
     std::vector<std::string> Names();                                       
     void ClearRegistry();
 
-    bool Create(CrashoutsEngine::ECS& ecs, const std::string& name);
+    CrashoutsEngine::Entity Create(CrashoutsEngine::ECS& ecs, const std::string& name);
     void SetFallback(Fallback fb);    
 } 
 
