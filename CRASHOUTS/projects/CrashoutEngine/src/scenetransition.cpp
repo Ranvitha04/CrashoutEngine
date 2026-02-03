@@ -18,9 +18,13 @@ namespace CrashoutsEngine {
     float SceneTransition::s_durationOut = 1.0f; // Time to turn black
     float SceneTransition::s_durationIn = 1.0f;  // Time to reveal scene
 
+    float SceneTransition::s_holdDuration = 0.25f;
+
     float SceneTransition::s_duration = 1.0f;
     bool SceneTransition::s_active = false;
     bool SceneTransition::s_fadingOut = false;
+    bool SceneTransition::s_isHolding = false;
+
     float SceneTransition::s_alpha = 0.0f;
 
     // Starts fade without a target scene
@@ -35,6 +39,7 @@ namespace CrashoutsEngine {
         s_timer = 0.0f;
         s_active = true;
         s_fadingOut = true;
+        s_isHolding = false;
         s_alpha = 0.0f;
         std::cout << "[SceneTransition] Fade to " << nextSceneName << " (Out: " << s_durationOut << "s, In: " << s_durationIn << "s)" << std::endl;
     }
@@ -57,33 +62,52 @@ namespace CrashoutsEngine {
     void SceneTransition::Update(float dt) {
         if (!s_active) return;
 
-        s_timer += dt;
-        // If we are fading out (going to black), use durationOut. Otherwise use durationIn.
-        float currentTargetTime = s_fadingOut ? s_durationOut : s_durationIn;
-
-        float progress = s_timer / currentTargetTime;
-        if (progress > 1.0f) progress = 1.0f;
-
-        float smoothed = progress * progress * (3.0f - 2.0f * progress);
-
+        // --- STATE 1: FADING OUT (To Black) ---
         if (s_fadingOut) {
-            s_alpha = smoothed;
-            if (progress >= 1.0f) {
-                // FADE OUT COMPLETE
-                s_fadingOut = false;
-                s_timer = 0.0f;
-                s_alpha = 1.0f; // Ensure full black before switching
+            s_timer += dt;
+            float progress = s_timer / s_durationOut;
+            if (progress > 1.0f) progress = 1.0f;
 
-                // Trigger Load if scene name is set
+            // Use Linear instead of SmoothStep for alpha - usually feels more consistent
+            s_alpha = progress;
+
+            if (progress >= 1.0f) {
+                // Done fading out. Switch to HOLD state.
+                s_fadingOut = false;
+                s_isHolding = true;
+                s_timer = 0.0f; // Reset timer for the hold phase
+                s_alpha = 1.0f;
+            }
+        }
+        // --- STATE 2: HOLDING (Stay Black) ---
+        else if (s_isHolding) {
+            s_timer += dt;
+
+            // Keep screen black
+            s_alpha = 1.0f;
+
+            // Wait until hold duration is over
+            if (s_timer >= s_holdDuration) {
+                s_isHolding = false;
+                s_timer = 0.0f; // Reset timer for fade in
+
+                // TRIGGER LOAD NOW (in the middle of the blackness)
                 if (!s_nextScene.empty()) {
                     g_PendingSceneName = s_nextScene;
                     g_IsSceneLoadPending = true;
+                    // Note: If your engine loads synchronously, the game will freeze here 
+                    // on a black screen, which is perfect.
                 }
             }
         }
+        // --- STATE 3: FADING IN (To Transparent) ---
         else {
-            // FADE IN (Reveal)
-            s_alpha = 1.0f - smoothed;
+            s_timer += dt;
+            float progress = s_timer / s_durationIn;
+            if (progress > 1.0f) progress = 1.0f;
+
+            s_alpha = 1.0f - progress; // Linear fade in
+
             if (progress >= 1.0f) {
                 s_active = false;
                 s_alpha = 0.0f;

@@ -471,20 +471,20 @@
             "path": "Character\\Run.gif"
         },
         {
-            "name": "1",
-            "path": "Cutscenes\\1.png"
-        },
-        {
-            "name": "2",
-            "path": "Cutscenes\\2.png"
-        },
-        {
-            "name": "3",
-            "path": "Cutscenes\\3.png"
-        },
-        {
             "name": "Cutscene_",
             "path": "Cutscenes\\Cutscene_.png"
+        },
+        {
+            "name": "Cutscene_1",
+            "path": "Cutscenes\\Cutscene_1.png"
+        },
+        {
+            "name": "Cutscene_2",
+            "path": "Cutscenes\\Cutscene_2.png"
+        },
+        {
+            "name": "Cutscene_3",
+            "path": "Cutscenes\\Cutscene_3.png"
         },
         {
             "name": "ducky_2_spritesheet",

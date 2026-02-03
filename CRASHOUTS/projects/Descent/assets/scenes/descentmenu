@@ -64,7 +64,7 @@
                 }
             },
             "layer": {
-                "layerName": "Default",
+                "layerName": "StaticBackground",
                 "z": 0
             }
         },
@@ -78,12 +78,46 @@
                 "rotation": 0.0,
                 "position": {
                     "x": 0.0,
-                    "y": -142.7050018310547,
+                    "y": -132.70504760742188,
                     "z": -0.8999999761581421
                 },
                 "size": {
                     "x": 253.1999969482422,
                     "y": 55.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.40392157435417178,
+                    "y": 0.0784313753247261,
+                    "z": 0.0784313753247261,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
                 }
             },
             "text": {
@@ -164,7 +198,7 @@
                 }
             },
             "gui": {
-                "uiType": 6
+                "uiType": 7
             },
             "uilayout": {
                 "paddingXY": {
@@ -174,7 +208,7 @@
                 "uiLayout": 4
             },
             "layer": {
-                "layerName": "Default",
+                "layerName": "StaticBackground",
                 "z": 0
             }
         },
@@ -188,12 +222,46 @@
                 "rotation": 0.0,
                 "position": {
                     "x": 1.1542778015136719,
-                    "y": 7.920000076293945,
+                    "y": 37.919944763183597,
                     "z": -3.299999952316284
                 },
                 "size": {
                     "x": 253.1999969482422,
                     "y": 55.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.5176470875740051,
+                    "y": 0.0784313753247261,
+                    "z": 0.0784313753247261,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
                 }
             },
             "text": {
@@ -274,7 +342,7 @@
                 }
             },
             "gui": {
-                "uiType": 6
+                "uiType": 7
             },
             "uilayout": {
                 "paddingXY": {
@@ -284,7 +352,7 @@
                 "uiLayout": 4
             },
             "layer": {
-                "layerName": "Default",
+                "layerName": "StaticBackground",
                 "z": 0
             }
         },
@@ -298,12 +366,46 @@
                 "rotation": 0.0,
                 "position": {
                     "x": -1.100000023841858,
-                    "y": -66.75299835205078,
+                    "y": -46.75305938720703,
                     "z": -0.30000001192092898
                 },
                 "size": {
                     "x": 253.1999969482422,
                     "y": 55.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.40331488847732546,
+                    "y": 0.07798906415700913,
+                    "z": 0.07798906415700913,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
                 }
             },
             "text": {
@@ -384,7 +486,7 @@
                 }
             },
             "gui": {
-                "uiType": 6
+                "uiType": 7
             },
             "uilayout": {
                 "paddingXY": {
@@ -394,64 +496,7 @@
                 "uiLayout": 4
             },
             "layer": {
-                "layerName": "Default",
-                "z": 0
-            }
-        },
-        {
-            "active": true,
-            "name": "Title",
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 0.0,
-                    "y": 131.31906127929688,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 480.85198974609377,
-                    "y": 108.97699737548828
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "UI/Title.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "layer": {
-                "layerName": "Default",
+                "layerName": "StaticBackground",
                 "z": 0
             }
         }
