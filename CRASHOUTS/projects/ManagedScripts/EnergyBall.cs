@@ -43,7 +43,7 @@ namespace CrashoutsEngine
 
             // Check Tag "player"
             TagComponent Tag = other.GetComponent<TagComponent>();
-            if (Tag != null && Tag.HasTag("player"))
+            if (Tag != null && Tag.HasTag("Player"))
             {
                 Collect();
             }

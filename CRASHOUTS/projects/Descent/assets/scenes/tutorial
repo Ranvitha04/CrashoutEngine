@@ -9858,37 +9858,6 @@
                 "playing": true,
                 "clips": [
                     {
-                        "name": "playerFall",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
-                        "spriteCols": 2,
-                        "spriteRows": 1,
-                        "useCustomSize": true,
-                        "targetWidth": 140.0,
-                        "targetHeight": 100.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
                         "name": "playerWalk",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Run\\Run spritesheet.png",
@@ -9941,7 +9910,7 @@
                         ]
                     },
                     {
-                        "name": "playerFallLight",
+                        "name": "playerFall",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
                         "spriteCols": 2,
@@ -9955,14 +9924,14 @@
                                 "keys": [
                                     {
                                         "t": 0.0,
-                                        "v": 1.0,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
                                         "t": 0.25,
-                                        "v": 1.0,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -10015,6 +9984,37 @@
                                     {
                                         "t": 1.0,
                                         "v": 7.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "playerFallLight",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
+                        "spriteCols": 2,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 140.0,
+                        "targetHeight": 100.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 1.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -11640,7 +11640,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": 1490.7039794921876,
-                    "y": -395.9412536621094,
+                    "y": -442.4485778808594,
                     "z": 0.0
                 },
                 "size": {
@@ -11667,7 +11667,7 @@
                 "enabled": true,
                 "position": {
                     "x": 1490.7039794921876,
-                    "y": -398.041259765625,
+                    "y": -444.548583984375,
                     "z": 0.0
                 },
                 "offset": {
@@ -11677,12 +11677,12 @@
                 },
                 "min": {
                     "x": 1474.7039794921876,
-                    "y": -411.34124755859377,
+                    "y": -457.84857177734377,
                     "z": 0.0
                 },
                 "max": {
                     "x": 1506.7039794921876,
-                    "y": -384.74127197265627,
+                    "y": -431.24859619140627,
                     "z": 0.0
                 }
             },
@@ -11724,10 +11724,7 @@
                 "scripts": [
                     {
                         "className": "EnergyBall",
-                        "fields": {
-                            "energyAmount": 25.0,
-                            "respawnTime": 5.0
-                        }
+                        "fields": {}
                     }
                 ]
             },
@@ -11865,10 +11862,7 @@
                 "scripts": [
                     {
                         "className": "EnergyBall",
-                        "fields": {
-                            "energyAmount": 25.0,
-                            "respawnTime": 5.0
-                        }
+                        "fields": {}
                     }
                 ]
             },
@@ -12011,7 +12005,6 @@
                     {
                         "className": "PressurePlate",
                         "fields": {
-                            "decrease": 5.0,
                             "wallName": "wall"
                         }
                     }
@@ -12057,7 +12050,7 @@
                 }
             },
             "layer": {
-                "layerName": "",
+                "layerName": "Default",
                 "z": 0
             }
         },
@@ -12156,7 +12149,6 @@
                     {
                         "className": "PressurePlate",
                         "fields": {
-                            "decrease": 5.0,
                             "wallName": "wall"
                         }
                     }
@@ -12202,13 +12194,13 @@
                 }
             },
             "layer": {
-                "layerName": "",
-                "z": 0
+                "layerName": "Default",
+                "z": -10
             }
         },
         {
             "active": true,
-            "name": "PressurePlate3",
+            "name": "WinPressurePlate",
             "tag": {
                 "tagMask": 2
             },
@@ -12301,7 +12293,6 @@
                     {
                         "className": "PressurePlate",
                         "fields": {
-                            "decrease": 5.0,
                             "wallName": "wall2"
                         }
                     }
@@ -12347,8 +12338,8 @@
                 }
             },
             "layer": {
-                "layerName": "",
-                "z": 0
+                "layerName": "Default",
+                "z": -10
             }
         },
         {
@@ -12571,11 +12562,7 @@
                     {
                         "className": "MovingWall",
                         "fields": {
-                            "PlatesActive": 0,
-                            "PlatesRequired": 1,
-                            "MoveRight": false,
-                            "MoveDist": 10.0,
-                            "MoveSpeed": 5.0
+                            "PlatesActive": 0
                         }
                     }
                 ]
@@ -12778,11 +12765,7 @@
                     {
                         "className": "MovingWall",
                         "fields": {
-                            "PlatesActive": 0,
-                            "PlatesRequired": 1,
-                            "MoveRight": false,
-                            "MoveDist": 10.0,
-                            "MoveSpeed": 5.0
+                            "PlatesActive": 0
                         }
                     }
                 ]
@@ -13002,14 +12985,7 @@
                 "scripts": [
                     {
                         "className": "WeightedPlatform",
-                        "fields": {
-                            "IsMoving": true,
-                            "MoveRight": true,
-                            "MovementDistance": 100.0,
-                            "MoveSpeed": 20.0,
-                            "VerticalSpeed": 50.0,
-                            "maxDrop": 50.0
-                        }
+                        "fields": {}
                     }
                 ]
             },
@@ -13112,14 +13088,7 @@
                 "scripts": [
                     {
                         "className": "WeightedPlatform",
-                        "fields": {
-                            "IsMoving": true,
-                            "MoveRight": true,
-                            "MovementDistance": 100.0,
-                            "MoveSpeed": 20.0,
-                            "VerticalSpeed": 50.0,
-                            "maxDrop": 50.0
-                        }
+                        "fields": {}
                     }
                 ]
             },
@@ -13222,14 +13191,7 @@
                 "scripts": [
                     {
                         "className": "WeightedPlatform",
-                        "fields": {
-                            "IsMoving": true,
-                            "MoveRight": true,
-                            "MovementDistance": 100.0,
-                            "MoveSpeed": 20.0,
-                            "VerticalSpeed": 50.0,
-                            "maxDrop": 50.0
-                        }
+                        "fields": {}
                     }
                 ]
             },
@@ -13332,14 +13294,7 @@
                 "scripts": [
                     {
                         "className": "WeightedPlatform",
-                        "fields": {
-                            "IsMoving": true,
-                            "MoveRight": true,
-                            "MovementDistance": 100.0,
-                            "MoveSpeed": 20.0,
-                            "VerticalSpeed": 50.0,
-                            "maxDrop": 50.0
-                        }
+                        "fields": {}
                     }
                 ]
             },
@@ -13942,14 +13897,7 @@
                 "scripts": [
                     {
                         "className": "WeightedPlatform",
-                        "fields": {
-                            "IsMoving": true,
-                            "MoveRight": true,
-                            "MovementDistance": 100.0,
-                            "MoveSpeed": 20.0,
-                            "VerticalSpeed": 50.0,
-                            "maxDrop": 50.0
-                        }
+                        "fields": {}
                     }
                 ]
             },
