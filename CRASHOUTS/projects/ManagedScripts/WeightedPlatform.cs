@@ -78,7 +78,7 @@ namespace CrashoutsEngine
             }
         }
 
-        public void OnTriggerExit(uint otherEntityID)
+        public void OnCollideExit(uint otherEntityID)
         {
             Entity other = new Entity(otherEntityID);
             var Tag = other.GetComponent<TagComponent>();

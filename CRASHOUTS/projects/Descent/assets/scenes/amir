@@ -131,7 +131,7 @@
                     {
                         "name": "footstep5",
                         "path": "footsteps 5.wav",
-                        "volume": 1.0,
+                        "volume": 1.149999976158142,
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": false,
@@ -200,10 +200,13 @@
                             "footstepInterval": 0.25,
                             "swapPause": 1.0,
                             "energyConsumption": 12.5,
+                            "goalNoOfPlates": 1.0,
+                            "currentGoalPlates": 0,
                             "normalMass": 1.0,
                             "lightMass": 4.5,
                             "groundCheckDistance": 26.0,
                             "groundCheckWidth": 10.0,
+                            "dialogueCooldown": 1.0,
                             "CurrentEnergy": 100.0,
                             "MaxEnergy": 100.0,
                             "alive": true,
@@ -867,7 +870,7 @@
                     {
                         "name": "slimeMove1",
                         "path": "slime 1.wav",
-                        "volume": 0.30000001192092898,
+                        "volume": 0.15000000596046449,
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": false,
@@ -876,7 +879,7 @@
                     {
                         "name": "slimeMove2",
                         "path": "slime 2.wav",
-                        "volume": 0.30000001192092898,
+                        "volume": 0.15000000596046449,
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": false,
@@ -885,7 +888,7 @@
                     {
                         "name": "slimeMove3",
                         "path": "slime 3.wav",
-                        "volume": 0.30000001192092898,
+                        "volume": 0.15000000596046449,
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": false,
@@ -894,7 +897,7 @@
                     {
                         "name": "slimeMove4",
                         "path": "slime 4.wav",
-                        "volume": 0.30000001192092898,
+                        "volume": 0.15000000596046449,
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": false,
@@ -903,7 +906,7 @@
                     {
                         "name": "slimeMove5",
                         "path": "slime 5.wav",
-                        "volume": 0.30000001192092898,
+                        "volume": 0.15000000596046449,
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": false,
@@ -912,7 +915,7 @@
                     {
                         "name": "slimeImpact",
                         "path": "slime impact.wav",
-                        "volume": 0.30000001192092898,
+                        "volume": 0.15000000596046449,
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": false,
@@ -1222,10 +1225,6 @@
                     "x": 1.0,
                     "y": 1.0
                 }
-            },
-            "layer": {
-                "layerName": "Player",
-                "z": 0
             }
         },
         {
@@ -1330,10 +1329,6 @@
                     "x": 1.0,
                     "y": 1.0
                 }
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             }
         }
     ],

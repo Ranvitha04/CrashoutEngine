@@ -150,14 +150,19 @@ namespace CrashoutsEngine
 
             if (horizontalSpeed > 1.0f && isGrounded)
             {
-                moveAudioTimer -= dt;
-                if (moveAudioTimer <= 0.0f)
-                {
-                    int index = rng.Next(1, 6);
-                    AudioManager.GetInstance().PlayAttached("slimeMove" + index, Entity.ID);
+                float distToPlayer = playerScript != null ? Distance(tf.Position, playerScript.Entity.GetComponent<TransformComponent>().Position) : 0;
 
-                    float speedFactor = Math.Clamp(horizontalSpeed / maxSpeed, 0.5f, 2.0f);
-                    moveAudioTimer = moveAudioInterval / speedFactor;
+                if (distToPlayer <= stopAudioDistance)
+                {
+                    moveAudioTimer -= dt;
+                    if (moveAudioTimer <= 0.0f)
+                    {
+                        int index = rng.Next(1, 6);
+                        AudioManager.GetInstance().PlayAttached("slimeMove" + index, Entity.ID);
+
+                        float speedFactor = Math.Min(Math.Max(horizontalSpeed / maxSpeed, 0.5f), 2.0f);
+                        moveAudioTimer = moveAudioInterval / speedFactor;
+                    }
                 }
             }
             else
