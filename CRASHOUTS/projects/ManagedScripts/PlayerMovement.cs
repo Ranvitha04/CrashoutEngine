@@ -61,7 +61,7 @@ namespace CrashoutsEngine
         private float swapPauseTimer = 0.0f;
 
         // NEW: Fall Through Logic
-        private float fallThroughTimer = 0.0f;
+        //private float fallThroughTimer = 0.0f;
         private float jumpCooldown = 0.0f; // Prevents grounding immediately after jumping
         private bool isPassthrough = false;
         private bool canPassthrough = false;
