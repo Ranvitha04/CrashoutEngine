@@ -48,6 +48,7 @@ namespace CrashoutsEngine
         private Animator anim;
 
         private float footstepTimer = 0.0f;
+        private bool wasGroundedLastFrame = true;
         private Random rng = new Random();
 
         // FIX: Counter instead of boolean to prevent infinite fall
@@ -142,6 +143,9 @@ namespace CrashoutsEngine
                 {
                     RemoveEnergy(energyConsumption);
                     isLight = !isLight;
+
+                    AudioManager.GetInstance().PlayAttached("switchMassSound", Entity.ID);
+
                     if (isLight) rb.Mass = lightMass;
                     else rb.Mass = normalMass;
 
@@ -159,8 +163,9 @@ namespace CrashoutsEngine
                 footstepTimer -= (float)Time.DT;
                 if (footstepTimer <= 0.0f)
                 {
-                    int index = rng.Next(1, 7);
-                    AudioManager.GetInstance().PlayAttached("footstep" + index, Entity.ID);
+                    int index = rng.Next(1, 9);
+                    float pitch = 0.9f + ((float)rng.NextDouble() * 0.2f);
+                    AudioManager.GetInstance().PlayAttached("footstep" + index, Entity.ID, 1.0f, pitch);
                     footstepTimer = footstepInterval;
                 }
             }
@@ -290,6 +295,12 @@ namespace CrashoutsEngine
             {
                 if (otherTf != null && this.tf.Position.y > otherTf.Position.y)
                 {
+                    if (!IsGrounded)
+                    {
+                        float impactVelocity = Math.Abs(rb.LinearVelocity.y);
+                        float vol = Math.Clamp(impactVelocity / 1000.0f, 0.3f, 1.0f);
+                        AudioManager.GetInstance().PlayAttached("jumpLand", Entity.ID, vol, 0.9f);
+                    }
                     groundContactCount++;
                     IsGrounded = true;
                 }

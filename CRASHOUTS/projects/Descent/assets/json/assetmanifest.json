@@ -25,6 +25,10 @@
             "path": "banks\\Squishy-Movement_1 (1).wav"
         },
         {
+            "name": "book interaction",
+            "path": "book interaction.wav"
+        },
+        {
             "name": "footsteps 1",
             "path": "footsteps 1.wav"
         },
@@ -49,16 +53,40 @@
             "path": "footsteps 6.wav"
         },
         {
+            "name": "footsteps 7",
+            "path": "footsteps 7.wav"
+        },
+        {
+            "name": "footsteps 8",
+            "path": "footsteps 8.wav"
+        },
+        {
             "name": "Footsteps2_Gravel-Dirt_far-small_1",
             "path": "Footsteps2_Gravel-Dirt_far-small_1.wav"
+        },
+        {
+            "name": "jump landing",
+            "path": "jump landing.wav"
         },
         {
             "name": "Lava-Volcano-Wind-Environment_LOOP",
             "path": "Lava-Volcano-Wind-Environment_LOOP.wav"
         },
         {
+            "name": "level bgm 1 re-mixed",
+            "path": "level bgm 1 re-mixed.wav"
+        },
+        {
             "name": "level bgm 1",
             "path": "level bgm 1.wav"
+        },
+        {
+            "name": "main menu",
+            "path": "main menu.wav"
+        },
+        {
+            "name": "mana chime",
+            "path": "mana chime.wav"
         },
         {
             "name": "Nightshift_BGM_Loop_70bpm",
@@ -69,8 +97,44 @@
             "path": "Nightshift_Menu_Loop_70bpm.wav"
         },
         {
+            "name": "page flip",
+            "path": "page flip.wav"
+        },
+        {
+            "name": "portal SFX",
+            "path": "portal SFX.wav"
+        },
+        {
+            "name": "slime 1",
+            "path": "slime 1.wav"
+        },
+        {
+            "name": "slime 2",
+            "path": "slime 2.wav"
+        },
+        {
+            "name": "slime 3",
+            "path": "slime 3.wav"
+        },
+        {
+            "name": "slime 4",
+            "path": "slime 4.wav"
+        },
+        {
+            "name": "slime 5",
+            "path": "slime 5.wav"
+        },
+        {
+            "name": "slime impact",
+            "path": "slime impact.wav"
+        },
+        {
             "name": "Squishy-Movement_1",
             "path": "Squishy-Movement_1.wav"
+        },
+        {
+            "name": "switch state",
+            "path": "switch state.wav"
         },
         {
             "name": "Switch_StepOn",

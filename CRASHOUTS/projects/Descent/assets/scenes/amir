@@ -145,6 +145,42 @@
                         "spatial3D": false,
                         "looping": false,
                         "isMusic": false
+                    },
+                    {
+                        "name": "footstep7",
+                        "path": "footsteps 7.wav",
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    },
+                    {
+                        "name": "footstep8",
+                        "path": "footsteps 8.wav",
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    },
+                    {
+                        "name": "jumpLand",
+                        "path": "jump landing.wav",
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    },
+                    {
+                        "name": "switchMassSound",
+                        "path": "switch state.wav",
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
                     }
                 ]
             },
@@ -161,7 +197,7 @@
                             "jumpPower": 20000.0,
                             "gravityScale": 2.5,
                             "gravityForceMultiplier": 10.0,
-                            "footstepInterval": 0.07500000298023224,
+                            "footstepInterval": 0.25,
                             "swapPause": 1.0,
                             "energyConsumption": 12.5,
                             "normalMass": 1.0,
@@ -835,9 +871,54 @@
             "audio": {
                 "clips": [
                     {
-                        "name": "slimeMove",
-                        "path": "squishy-movement_1.wav",
-                        "volume": 0.5099999904632568,
+                        "name": "slimeMove1",
+                        "path": "slime 1.wav",
+                        "volume": 0.30000001192092898,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    },
+                    {
+                        "name": "slimeMove2",
+                        "path": "slime 2.wav",
+                        "volume": 0.30000001192092898,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    },
+                    {
+                        "name": "slimeMove3",
+                        "path": "slime 3.wav",
+                        "volume": 0.30000001192092898,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    },
+                    {
+                        "name": "slimeMove4",
+                        "path": "slime 4.wav",
+                        "volume": 0.30000001192092898,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    },
+                    {
+                        "name": "slimeMove5",
+                        "path": "slime 5.wav",
+                        "volume": 0.30000001192092898,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    },
+                    {
+                        "name": "slimeImpact",
+                        "path": "slime impact.wav",
+                        "volume": 0.30000001192092898,
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": false,
@@ -852,8 +933,8 @@
                         "fields": {
                             "moveSpeed": 600.0,
                             "maxSpeed": 15.0,
-                            "moveAudioInterval": 1.0,
-                            "stopAudioDistance": 80.0,
+                            "moveAudioInterval": 0.6000000238418579,
+                            "stopAudioDistance": 40.0,
                             "detectionRange": 250.0,
                             "gravityScale": 2.0,
                             "grabRange": 100.0,

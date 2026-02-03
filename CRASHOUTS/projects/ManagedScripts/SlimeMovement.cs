@@ -37,6 +37,8 @@ namespace CrashoutsEngine
         private PlayerMovement playerScript;
 
         private bool isGrounded = false;
+        private bool wasGroundedLastFrame = true;
+        private Random rng = new Random();
         private bool moveRight = true;
         private float moveAudioTimer = 0.0f;
         private bool isChasing = false;
@@ -144,28 +146,23 @@ namespace CrashoutsEngine
                 }
             }
 
-            // Audio Logic (Dependent on isChasing flag from FixedUpdate)
-            if (isChasing)
+            float horizontalSpeed = Math.Abs(rb.LinearVelocity.x);
+
+            if (horizontalSpeed > 1.0f && isGrounded)
             {
                 moveAudioTimer -= dt;
                 if (moveAudioTimer <= 0.0f)
                 {
-                    float dist = 0f;
-                    if (playerScript != null)
-                    {
-                         var playerTf = playerScript.Entity.GetComponent<TransformComponent>();
-                         if (playerTf != null) dist = Distance(tf.Position, playerTf.Position);
-                    }
+                    int index = rng.Next(1, 6);
+                    AudioManager.GetInstance().PlayAttached("slimeMove" + index, Entity.ID);
 
-                    if (dist > stopAudioDistance)
-                    {
-                        AudioManager.GetInstance().PlayAttached("slimeMove", Entity.ID);
-                    }
-                    moveAudioTimer = moveAudioInterval;
+                    float speedFactor = Math.Clamp(horizontalSpeed / maxSpeed, 0.5f, 2.0f);
+                    moveAudioTimer = moveAudioInterval / speedFactor;
                 }
             }
             else
             {
+                // Reset timer when stationary so the next step plays immediately
                 moveAudioTimer = 0.0f;
             }
 
@@ -238,6 +235,21 @@ namespace CrashoutsEngine
 
             CheckGrounded();
             float dt = (float)Time.FixedDT;
+
+            if (isGrounded != wasGroundedLastFrame)
+            {
+                if (!isGrounded && rb.LinearVelocity.y > 5.0f)
+                {
+                    // The Slime just jumped/hopped
+                    AudioManager.GetInstance().PlayAttached("slimeMove" + rng.Next(1, 6), Entity.ID);
+                }
+                else if (isGrounded)
+                {
+                    // The Slime just landed
+                    AudioManager.GetInstance().PlayAttached("slimeImpact", Entity.ID);
+                }
+            }
+
             if (flipCooldown > 0) flipCooldown -= dt;
             if (ignoreHomeTimer > 0) ignoreHomeTimer -= dt;
 
@@ -311,6 +323,7 @@ namespace CrashoutsEngine
                     if (!hitGround && flipCooldown <= 0)
                     {
                          moveRight = !moveRight;
+                         AudioManager.GetInstance().PlayAttached("slimeMove" + rng.Next(1, 6), Entity.ID);
                          float newDir = moveRight ? 1.0f : -1.0f;
                          rb.LinearVelocity = new CEVec3(newDir * 50.0f, rb.LinearVelocity.y, 0); // Kick away from ledge
                          flipCooldown = 0.5f; 
@@ -353,12 +366,16 @@ namespace CrashoutsEngine
                         stuckTimer += dt;
                         if (stuckTimer > 0.5f)
                         {
-                            if (!isChasing) 
+                            if (!isChasing)
                             {
                                 moveRight = !moveRight;
                                 ignoreHomeTimer = 2.0f;
                             }
-                            else rb.LinearVelocity = new CEVec3(rb.LinearVelocity.x, 200.0f, 0); 
+                            else
+                            {
+                                AudioManager.GetInstance().PlayAttached("slimeMove" + rng.Next(1, 6), Entity.ID);
+                                rb.LinearVelocity = new CEVec3(rb.LinearVelocity.x, 200.0f, 0); 
+                            }
                             stuckTimer = 0.0f;
                         }
                     }
@@ -394,6 +411,8 @@ namespace CrashoutsEngine
             // Gravity
             float gravityForce = -9.81f * 100.0f * gravityScale * rb.Mass;
             rb.AddForce(new CEVec3(0f, gravityForce, 0f));
+
+            wasGroundedLastFrame = isGrounded;
         }
 
         private void HandleGrabLogic()
@@ -513,6 +532,7 @@ namespace CrashoutsEngine
 
                 if (wasThrown)
                 {
+                    AudioManager.GetInstance().PlayAttached("slimeImpact", Entity.ID);
                     wasThrown = false;
                     isStunned = true;
                     currentStunTime = stunDuration;
