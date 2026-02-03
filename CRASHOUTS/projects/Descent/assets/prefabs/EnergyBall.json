@@ -3,10 +3,13 @@
         {
             "type": "Box",
             "name": "EnergyBall",
+            "active": {
+                "isActive": true
+            },
             "transform": {
                 "position": {
-                    "x": 1200.2230224609376,
-                    "y": -1158.55517578125,
+                    "x": -77.01409912109375,
+                    "y": -19.240127563476564,
                     "z": 0.0
                 },
                 "rotation": 0.0,
@@ -15,8 +18,12 @@
                     "y": 40.0
                 }
             },
+            "tag": {
+                "tagMask": 0
+            },
             "layer": {
-                "currentLayer": 0
+                "layerName": "Default",
+                "z": 0
             },
             "shape": {
                 "type": 0,
@@ -51,11 +58,11 @@
             },
             "collider": {
                 "ColliderType": 0,
-                "isTrigger": false,
+                "isTrigger": true,
                 "enabled": true,
                 "position": {
-                    "x": 1200.2230224609376,
-                    "y": -1158.55517578125,
+                    "x": -77.01409912109375,
+                    "y": -19.240127563476564,
                     "z": 0.0
                 },
                 "offset": {
@@ -69,11 +76,47 @@
                 "scripts": [
                     {
                         "className": "EnergyBall"
-                    },
-                    {
-                        "className": "EnergyBall"
                     }
                 ]
+            },
+            "button": {
+                "buttonState": 0,
+                "shapeNormalColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "shapeHoveredColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.5
+                },
+                "shapePressedColor": {
+                    "x": 0.699999988079071,
+                    "y": 0.699999988079071,
+                    "z": 0.699999988079071,
+                    "w": 0.699999988079071
+                },
+                "textNormalColor": {
+                    "x": 0.30000001192092898,
+                    "y": 0.30000001192092898,
+                    "z": 0.30000001192092898,
+                    "w": 0.699999988079071
+                },
+                "textHoveredColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.0
+                },
+                "textPressedColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.5
+                }
             }
         }
     ]

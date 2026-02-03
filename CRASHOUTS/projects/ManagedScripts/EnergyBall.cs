@@ -14,6 +14,7 @@ namespace CrashoutsEngine
         private bool _isActive = true;
         private float _timer = 0.0f;
         private float time = 0.0f;
+        private float bobDist = 0.4f;
 
         // Components
         private RigidBodyComponent _rb;
@@ -108,7 +109,7 @@ namespace CrashoutsEngine
                 // Simple Sine wave bob logic
                 // Note: We must be careful not to drift the position if physics is also affecting it.
                 // Assuming this is a static/trigger pickup:
-                float bobOffset = (float)Math.Sin(time * 4.0f) * 0.15f;
+                float bobOffset = (float)Math.Sin(time * 4.0f) * bobDist;
 
                 // Apply directly to Y. 
                 // CAUTION: If this object moves, this will lock its Y position to the sine wave.
