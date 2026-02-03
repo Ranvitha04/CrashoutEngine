@@ -9680,12 +9680,12 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1329.542724609375,
-                    "y": 67.515869140625,
+                    "x": 1639.744140625,
+                    "y": -796.5,
                     "z": 50.0
                 },
                 "size": {
-                    "x": 140.0,
+                    "x": -140.0,
                     "y": 100.0
                 }
             },
@@ -9707,8 +9707,8 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 1329.542724609375,
-                    "y": 62.515869140625,
+                    "x": 1639.744140625,
+                    "y": -801.5,
                     "z": 50.0
                 },
                 "offset": {
@@ -9717,13 +9717,13 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 1310.74267578125,
-                    "y": 32.015869140625,
+                    "x": 1620.944091796875,
+                    "y": -832.0,
                     "z": 50.0
                 },
                 "max": {
-                    "x": 1348.3427734375,
-                    "y": 93.015869140625,
+                    "x": 1658.544189453125,
+                    "y": -771.0,
                     "z": 50.0
                 }
             },
@@ -9790,9 +9790,12 @@
                             "footstepInterval": 0.07500000298023224,
                             "swapPause": 1.0,
                             "energyConsumption": 12.5,
+                            "landingDustName": "LandingDust",
+                            "landingDustClip": "landingDust",
+                            "dustBurstDuration": 0.15000000596046449,
                             "normalMass": 3.0,
                             "lightMass": 2.0,
-                            "CurrentEnergy": 100.0,
+                            "CurrentEnergy": 75.0,
                             "MaxEnergy": 100.0,
                             "alive": true,
                             "isPaused": false
@@ -9856,40 +9859,9 @@
             },
             "keyframe_animator": {
                 "current": "playerIdle",
-                "t": 1.3666660785675049,
+                "t": 2.383331775665283,
                 "playing": true,
                 "clips": [
-                    {
-                        "name": "fall_normal",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Fall spritesheet.png",
-                        "spriteCols": 2,
-                        "spriteRows": 1,
-                        "useCustomSize": true,
-                        "targetWidth": 62.0,
-                        "targetHeight": 72.50599670410156,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
                     {
                         "name": "jump_light",
                         "wrap": 0,
@@ -9913,6 +9885,37 @@
                                     {
                                         "t": 0.25,
                                         "v": 1.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "fall_normal",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\New Artstyle\\Fall spritesheet.png",
+                        "spriteCols": 2,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 62.0,
+                        "targetHeight": 72.50599670410156,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -10223,37 +10226,6 @@
                         ]
                     },
                     {
-                        "name": "playerFallLight",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
-                        "spriteCols": 2,
-                        "spriteRows": 1,
-                        "useCustomSize": true,
-                        "targetWidth": 140.0,
-                        "targetHeight": 100.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 1.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 1.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
                         "name": "switch_to_normal",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Switch-State-SpriteSheet-Reverse.png",
@@ -10318,6 +10290,37 @@
                                     {
                                         "t": 1.75,
                                         "v": 6.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "playerFallLight",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
+                        "spriteCols": 2,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 140.0,
+                        "targetHeight": 100.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 1.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -12024,7 +12027,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": 1490.7039794921876,
-                    "y": -410.2323303222656,
+                    "y": -407.743408203125,
                     "z": 0.0
                 },
                 "size": {
@@ -12051,7 +12054,7 @@
                 "enabled": true,
                 "position": {
                     "x": 1490.7039794921876,
-                    "y": -412.33233642578127,
+                    "y": -409.8434143066406,
                     "z": 0.0
                 },
                 "offset": {
@@ -12061,12 +12064,12 @@
                 },
                 "min": {
                     "x": 1474.7039794921876,
-                    "y": -425.63232421875,
+                    "y": -423.1434020996094,
                     "z": 0.0
                 },
                 "max": {
                     "x": 1506.7039794921876,
-                    "y": -399.0323486328125,
+                    "y": -396.5434265136719,
                     "z": 0.0
                 }
             },
@@ -12173,7 +12176,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": 95.65513610839844,
-                    "y": -691.3955688476563,
+                    "y": -688.9056396484375,
                     "z": 0.0
                 },
                 "size": {
@@ -12200,7 +12203,7 @@
                 "enabled": true,
                 "position": {
                     "x": 95.65513610839844,
-                    "y": -693.4955444335938,
+                    "y": -691.005615234375,
                     "z": 0.0
                 },
                 "offset": {
@@ -12211,7 +12214,7 @@
                 "radius": 13.300000190734864,
                 "center": {
                     "x": 95.65513610839844,
-                    "y": -693.4955444335938,
+                    "y": -691.005615234375,
                     "z": 0.0
                 }
             },
@@ -13333,7 +13336,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 2041.8726806640626,
+                    "x": 2187.27978515625,
                     "y": -410.2161865234375,
                     "z": 0.0
                 },
@@ -13360,7 +13363,7 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 2041.8726806640626,
+                    "x": 2187.27978515625,
                     "y": -410.2161865234375,
                     "z": 0.0
                 },
@@ -13370,12 +13373,12 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 1991.872802734375,
+                    "x": 2137.280029296875,
                     "y": -418.2161865234375,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 2091.87255859375,
+                    "x": 2237.279541015625,
                     "y": -402.2161865234375,
                     "z": 0.0
                 }
@@ -13447,7 +13450,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1495.85791015625,
+                    "x": 1691.856689453125,
                     "y": -410.2161865234375,
                     "z": 0.0
                 },
@@ -13474,7 +13477,7 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 1495.85791015625,
+                    "x": 1691.856689453125,
                     "y": -410.2161865234375,
                     "z": 0.0
                 },
@@ -13484,12 +13487,12 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 1445.85791015625,
+                    "x": 1641.856689453125,
                     "y": -418.2161865234375,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 1545.85791015625,
+                    "x": 1741.856689453125,
                     "y": -402.2161865234375,
                     "z": 0.0
                 }
@@ -13561,7 +13564,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1601.487060546875,
+                    "x": 1954.573974609375,
                     "y": -334.189697265625,
                     "z": 0.0
                 },
@@ -13588,7 +13591,7 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 1601.487060546875,
+                    "x": 1954.573974609375,
                     "y": -334.189697265625,
                     "z": 0.0
                 },
@@ -13598,12 +13601,12 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 1551.487060546875,
+                    "x": 1904.573974609375,
                     "y": -342.189697265625,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 1651.487060546875,
+                    "x": 2004.573974609375,
                     "y": -326.189697265625,
                     "z": 0.0
                 }
@@ -13675,7 +13678,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 2033.015869140625,
+                    "x": 2386.58154296875,
                     "y": -786.3703002929688,
                     "z": 0.0
                 },
@@ -13702,7 +13705,7 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 2033.015869140625,
+                    "x": 2386.58154296875,
                     "y": -786.3703002929688,
                     "z": 0.0
                 },
@@ -13712,12 +13715,12 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 1954.7158203125,
+                    "x": 2308.281494140625,
                     "y": -795.3703002929688,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 2111.31591796875,
+                    "x": 2464.881591796875,
                     "y": -777.3703002929688,
                     "z": 0.0
                 }
@@ -14321,6 +14324,114 @@
                     "x": 7.099999904632568,
                     "y": 13.100000381469727,
                     "z": 5.800000190734863
+                },
+                "useTexture": false,
+                "textureName": "",
+                "textureUV": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "LandingDust",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 1639.0509033203126,
+                    "y": -830.9312744140625,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": -1.0,
+                    "y": 1.0
+                }
+            },
+            "parent": {
+                "parentName": "Player",
+                "localPos": {
+                    "x": 0.00495169498026371,
+                    "y": -0.3443129062652588,
+                    "z": -50.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.0071428571827709679,
+                    "y": 0.009999999776482582
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "particle": {
+                "isEmitting": false,
+                "useWorldSpace": true,
+                "maxParticles": 200,
+                "emitRate": 100.5,
+                "playOnStop": false,
+                "emissionShape": 1,
+                "radiusMin": 0.0,
+                "radiusMax": 0.20000000298023225,
+                "lengthMin": 0.0,
+                "lengthMax": 0.5,
+                "areaMin": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "areaMax": {
+                    "x": 5.0,
+                    "y": 5.0
+                },
+                "startLifeMin": 0.30000001192092898,
+                "startLifeMax": 0.800000011920929,
+                "startSpeedMin": 10.300000190734864,
+                "startSpeedMax": 40.0,
+                "uniformSize": true,
+                "startSizeXMin": 3.299999952316284,
+                "startSizeXMax": 4.050000190734863,
+                "startSizeYMin": 1.0,
+                "startSizeYMax": 1.0,
+                "sizeOverTime": 0.0,
+                "rotationOverTime": 0.0,
+                "startRotationMin": 0.0,
+                "startRotationMax": 0.0,
+                "startColor": {
+                    "x": 0.5082873106002808,
+                    "y": 0.3758511543273926,
+                    "z": 0.26116421818733218,
+                    "w": 1.0
+                },
+                "endColor": {
+                    "x": 0.6298342943191528,
+                    "y": 0.6298342943191528,
+                    "z": 0.6298342943191528,
+                    "w": 0.0
+                },
+                "gravity": {
+                    "x": 0.0,
+                    "y": -9.800000190734864,
+                    "z": 0.0
+                },
+                "startVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
                 },
                 "useTexture": false,
                 "textureName": "",

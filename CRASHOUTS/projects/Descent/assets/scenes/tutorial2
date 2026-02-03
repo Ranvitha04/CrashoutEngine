@@ -2325,6 +2325,9 @@
                             "footstepInterval": 0.07500000298023224,
                             "swapPause": 1.0,
                             "energyConsumption": 12.5,
+                            "landingDustName": "LandingDust",
+                            "landingDustClip": "landingDust",
+                            "dustBurstDuration": 0.15000000596046449,
                             "normalMass": 3.0,
                             "lightMass": 2.0,
                             "CurrentEnergy": 0.0,
@@ -3457,6 +3460,103 @@
             "layer": {
                 "layerName": "Default",
                 "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "LandingDust",
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 40.9046630859375,
+                    "y": -14.924665451049805,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "parent": {
+                "parentName": "Player V2",
+                "localPos": {
+                    "x": 0.003096226369962096,
+                    "y": -0.2847517132759094,
+                    "z": -50.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.0071428571827709679,
+                    "y": 0.009999999776482582
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "particle": {
+                "isEmitting": true,
+                "useWorldSpace": false,
+                "maxParticles": 1000,
+                "emitRate": 100.0,
+                "playOnStop": true,
+                "emissionShape": 0,
+                "radiusMin": 0.0,
+                "radiusMax": 5.0,
+                "lengthMin": 0.0,
+                "lengthMax": 5.0,
+                "areaMin": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "areaMax": {
+                    "x": 5.0,
+                    "y": 5.0
+                },
+                "startLifeMin": 1.0,
+                "startLifeMax": 1.0,
+                "startSpeedMin": 1.0,
+                "startSpeedMax": 1.0,
+                "uniformSize": true,
+                "startSizeXMin": 1.0,
+                "startSizeXMax": 1.0,
+                "startSizeYMin": 1.0,
+                "startSizeYMax": 1.0,
+                "sizeOverTime": 0.0,
+                "rotationOverTime": 0.0,
+                "startRotationMin": 0.0,
+                "startRotationMax": 0.0,
+                "startColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "endColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.0
+                },
+                "gravity": {
+                    "x": 0.0,
+                    "y": -9.800000190734864,
+                    "z": 0.0
+                },
+                "startVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "useTexture": false,
+                "textureName": "",
+                "textureUV": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
             }
         }
     ],

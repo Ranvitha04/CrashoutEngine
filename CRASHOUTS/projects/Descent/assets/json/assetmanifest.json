@@ -1543,6 +1543,10 @@
         {
             "name": "assetmanifest",
             "path": "assetmanifest.json"
+        },
+        {
+            "name": "assetmanifest.json",
+            "path": "assetmanifest.json.bak"
         }
     ],
     "prefabs": [
@@ -1585,6 +1589,10 @@
         {
             "name": "Platform_Prefab",
             "path": "Platform_Prefab.json"
+        },
+        {
+            "name": "Player V2",
+            "path": "Player V2.json"
         },
         {
             "name": "Player",
@@ -1653,12 +1661,24 @@
             "path": "descentgame"
         },
         {
+            "name": "descentgame",
+            "path": "descentgame.bak"
+        },
+        {
             "name": "descentmenu",
             "path": "descentmenu"
         },
         {
+            "name": "descentmenu",
+            "path": "descentmenu.bak"
+        },
+        {
             "name": "descentsettings",
             "path": "descentsettings"
+        },
+        {
+            "name": "descentsettings",
+            "path": "descentsettings.bak"
         },
         {
             "name": "menu",

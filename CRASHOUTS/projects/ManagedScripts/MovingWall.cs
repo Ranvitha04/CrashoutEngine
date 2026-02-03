@@ -17,24 +17,25 @@ namespace CrashoutsEngine
 
         private bool _isOpen = false;
         private bool _stopMoving = false;
-        //private RigidBodyComponent _rb;
         TransformComponent transform;
-        private CEVec2 oldXY, newXY;
+        private CEVec2 oldXY, newXY, startXY;
 
         void OpenWall()
         {
             Console.WriteLine("Wall Opening!");
             _isOpen = true;
-            // Move the wall up
-            // _rb.LinearVelocity = new CEVec3(0, 5, 0); 
+            _stopMoving = false;
         }
 
         void CloseWall()
         {
             Console.WriteLine("Wall Closing!");
             _isOpen = false;
-            // Move the wall down
-            // _rb.LinearVelocity = new CEVec3(0, -5, 0);
+            _stopMoving = false;
+            if (transform != null)
+            {
+                transform.Position = new CEVec3(startXY.x, startXY.y, transform.Position.z);
+            }
         }
 
         public override void Start()
@@ -42,15 +43,17 @@ namespace CrashoutsEngine
             _isOpen = false;
             _stopMoving = false;
             transform = Entity.GetComponent<TransformComponent>();
-            //_rb = Entity.GetComponent<RigidBodyComponent>();
-            oldXY = new CEVec2(transform.Position.x, transform.Position.y);
-            if (MoveRight)
+            if (transform != null)
             {
-                newXY = new CEVec2(transform.Position.x + MoveDist, transform.Position.y);
-            }
-            else
-            {
-                newXY = new CEVec2(transform.Position.x, transform.Position.y + MoveDist);
+                startXY = new CEVec2(transform.Position.x, transform.Position.y);
+                if (MoveRight)
+                {
+                    newXY = new CEVec2(transform.Position.x + MoveDist, transform.Position.y);
+                }
+                else
+                {
+                    newXY = new CEVec2(transform.Position.x, transform.Position.y + MoveDist);
+                }
             }
         }
 

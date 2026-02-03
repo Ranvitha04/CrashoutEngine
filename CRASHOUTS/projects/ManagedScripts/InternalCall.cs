@@ -226,5 +226,8 @@ namespace CrashoutsEngine
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal static extern void Video_Load(uint entityID, string path);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern void Particle_SetEmitting(uint entityID, bool emitting);
     }
 }

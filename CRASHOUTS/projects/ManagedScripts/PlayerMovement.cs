@@ -23,6 +23,10 @@ namespace CrashoutsEngine
         [SerializeField] public float swapPause = 1f;
         [SerializeField] public float energyConsumption = 12.5f;
 
+        [SerializeField] private string landingDustName = "LandingDust";
+        [SerializeField] private string landingDustClip = "landingDust";
+        [SerializeField] private float dustBurstDuration = 0.15f;
+
         // Mass Settings
         public float normalMass = 7.0f;
         public float lightMass = 4.5f;
@@ -63,12 +67,21 @@ namespace CrashoutsEngine
         private bool isLight = false;
         private float swapPauseTimer = 0.0f;
 
+        private uint landingDustID = 0;
+        private float landingDustTimer = 0.0f;
+
         public override void Start()
         {
             Instance = this;
             rb = Entity.GetComponent<RigidBodyComponent>();
             tf = Entity.GetComponent<TransformComponent>();
             anim = Entity.GetComponent<Animator>();
+
+            if (!string.IsNullOrEmpty(landingDustName))
+            {
+                Entity e = Entity.Find(landingDustName);
+                if (e != null) landingDustID = e.ID;
+            }
 
             rb.Mass = normalMass;
             IsGrounded = false;
@@ -153,7 +166,6 @@ namespace CrashoutsEngine
                 }
             }
 
-            // 3. AUDIO LOGIC
             if (horizontalInput != 0.0f && IsGrounded && !isSwitching)
             {
                 footstepTimer -= (float)Time.DT;
@@ -167,6 +179,15 @@ namespace CrashoutsEngine
             else
             {
                 footstepTimer = 0.0f;
+            }
+
+            if (landingDustTimer > 0.0f)
+            {
+                landingDustTimer -= (float)Time.DT;
+                if (landingDustTimer <= 0.0f && landingDustID != 0)
+                {
+                    InternalCalls.Particle_SetEmitting(landingDustID, false);
+                }
             }
 
             // 4. ANIMATION
@@ -193,17 +214,16 @@ namespace CrashoutsEngine
 
             if (!alive) return;
 
+            CEVec3 velocity = rb.LinearVelocity;
+
             // 2. EXECUTE JUMP (Physics Step Consistent)
             if (jumpRequested)
             {
-                rb.LinearVelocity = new CEVec3(rb.LinearVelocity.x, 0f, 0f);
+                rb.LinearVelocity = new CEVec3(velocity.x, 0f, 0f);
                 rb.AddForce(new CEVec3(0f, jumpPower, 0f));
-                IsGrounded = false;
-                jumpRequested = false; // Reset request
+                jumpRequested = false;
+                velocity = rb.LinearVelocity;
             }
-
-            // 3. MOVEMENT PHYSICS (Target Velocity Method)
-            CEVec3 velocity = rb.LinearVelocity;
 
             // A. Calculate Desired Target Speed
             float targetSpeed = 0.0f;
@@ -238,6 +258,7 @@ namespace CrashoutsEngine
             rb.AddForce(new CEVec3(movementForce, 0f, 0f));
 
             // 4. GRAVITY
+            velocity = rb.LinearVelocity;
             if (velocity.y < 0)
             {
                 // Fall faster
@@ -281,6 +302,8 @@ namespace CrashoutsEngine
 
         public void OnCollideEnter(uint otherEntity)
         {
+            bool wasGrounded = IsGrounded;
+
             Entity other = new Entity(otherEntity);
             var Tag = other.GetComponent<TagComponent>();
             var otherTf = other.GetComponent<TransformComponent>();
@@ -293,6 +316,11 @@ namespace CrashoutsEngine
                     groundContactCount++;
                     IsGrounded = true;
                 }
+            }
+
+            if (!wasGrounded && IsGrounded)
+            {
+                TriggerLandingDust();
             }
 
             // Wall Check
@@ -398,6 +426,21 @@ namespace CrashoutsEngine
                 if (anim != null) anim.Play(targetState, true);
                 currentAnimState = targetState;
             }
+        }
+
+        private void TriggerLandingDust()
+        {
+            if (landingDustID == 0) return;
+            if (tf == null) return;
+            Entity e = new Entity(landingDustID);
+            var dustTf = e.GetComponent<TransformComponent>();
+            if (dustTf != null)
+            {
+                float offsetY = -Math.Abs(tf.Size.y) * 0.5f;
+                dustTf.Position = new CEVec3(tf.Position.x, tf.Position.y + offsetY, dustTf.Position.z);
+            }
+            InternalCalls.Particle_SetEmitting(landingDustID, true);
+            landingDustTimer = dustBurstDuration;
         }
     }
 }
