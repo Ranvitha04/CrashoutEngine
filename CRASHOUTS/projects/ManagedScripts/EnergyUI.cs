@@ -36,20 +36,22 @@ namespace CrashoutsEngine
             if (PlayerMovement.Instance == null) return;
 
             float currentEnergy = PlayerMovement.Instance.CurrentEnergy;
+            Debug.Log("Current energy is " +  currentEnergy);
             float energyPerBall = maxPlayerEnergy / totalBalls;
 
             for (int i = 0; i < totalBalls; i++)
             {
-                if (ballShapes[i] == null) continue;
-                Debug.Log("hi");
+                if (ballShapes[i] == uint.MaxValue) continue;
 
                 Entity ballEnt = new Entity(ballShapes[i]);
-                bool hasComp = InternalCalls.
+                //bool hasComp = InternalCalls.
                 ShapeComponent sc = ballEnt.GetComponent<ShapeComponent>();
-                if (sc == null) Debug.Log(ballEnt.ID + " is null");
-                else Debug.Log(ballEnt.ID + " is not null");
-                Debug.Log("Yippie");
-
+                //if (sc == null)
+                //{
+                //    Debug.Log(ballEnt.ID + " is null");
+                //    continue;
+                //}
+                
                 // Determine the range this ball covers (e.g., Ball 0 covers 0-10, Ball 1 covers 10-20)
                 float ballMin = i * energyPerBall;
                 float ballMax = (i + 1) * energyPerBall;
@@ -78,6 +80,7 @@ namespace CrashoutsEngine
                 }
 
                 // Apply the alpha using our new C++ binding
+                Debug.Log("Alpha for Item: " + ballEnt.ID + " is " + targetAlpha); 
                 sc.Alpha = targetAlpha;
             }
         }

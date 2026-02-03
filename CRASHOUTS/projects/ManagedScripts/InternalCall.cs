@@ -167,6 +167,16 @@ namespace CrashoutsEngine
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal static extern bool EntityHasButton(uint entityID);
 
+        // --- SHAPE COMPONENT LIFECYCLE ---
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern void AddShape(uint entityID);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern void RemoveShape(uint entityID);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern bool EntityHasShape(uint entityID);
+
         // --- Tag COMPONENT LIFECYCLE ---
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal static extern void AddTag(uint entityID);
