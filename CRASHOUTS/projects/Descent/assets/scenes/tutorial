@@ -9858,6 +9858,37 @@
                 "playing": true,
                 "clips": [
                     {
+                        "name": "playerFall",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
+                        "spriteCols": 2,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 140.0,
+                        "targetHeight": 100.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
                         "name": "playerWalk",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Run\\Run spritesheet.png",
@@ -9910,7 +9941,7 @@
                         ]
                     },
                     {
-                        "name": "playerFall",
+                        "name": "playerFallLight",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
                         "spriteCols": 2,
@@ -9924,14 +9955,14 @@
                                 "keys": [
                                     {
                                         "t": 0.0,
-                                        "v": 0.0,
+                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
                                         "t": 0.25,
-                                        "v": 0.0,
+                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -9984,37 +10015,6 @@
                                     {
                                         "t": 1.0,
                                         "v": 7.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "playerFallLight",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
-                        "spriteCols": 2,
-                        "spriteRows": 1,
-                        "useCustomSize": true,
-                        "targetWidth": 140.0,
-                        "targetHeight": 100.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 1.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -17798,6 +17798,9 @@
         {
             "active": true,
             "name": "Tex_bg3 p2",
+            "tag": {
+                "tagMask": 0
+            },
             "transform": {
                 "rotation": 0.0,
                 "position": {
@@ -17872,6 +17875,9 @@
         {
             "active": true,
             "name": "Tex_bg3 top",
+            "tag": {
+                "tagMask": 0
+            },
             "transform": {
                 "rotation": 0.0,
                 "position": {
@@ -17918,6 +17924,26 @@
                     "z": 0.0
                 }
             },
+            "parent": {
+                "parentName": "Foreground",
+                "localPos": {
+                    "x": 924.9457397460938,
+                    "y": 177.404296875,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 685.0269775390625,
+                    "y": 340.42999267578127
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
             "layer": {
                 "layerName": "Foreground",
                 "z": 0
@@ -17926,6 +17952,9 @@
         {
             "active": true,
             "name": "Tex_bg3 top",
+            "tag": {
+                "tagMask": 0
+            },
             "transform": {
                 "rotation": 0.0,
                 "position": {
@@ -17971,11 +18000,38 @@
                     "y": 0.0,
                     "z": 0.0
                 }
+            },
+            "parent": {
+                "parentName": "Foreground",
+                "localPos": {
+                    "x": 1587.8817138671876,
+                    "y": 173.10223388671876,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 678.0238647460938,
+                    "y": 326.0249938964844
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "Foreground",
+                "z": 0
             }
         },
         {
             "active": true,
             "name": "Tex_bg3 top",
+            "tag": {
+                "tagMask": 0
+            },
             "transform": {
                 "rotation": 0.0,
                 "position": {
@@ -18020,6 +18076,26 @@
                     "x": 32.0,
                     "y": 0.0,
                     "z": 0.0
+                }
+            },
+            "parent": {
+                "parentName": "Foreground",
+                "localPos": {
+                    "x": 143.6941375732422,
+                    "y": 161.68344116210938,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 941.5947265625,
+                    "y": 429.1199951171875
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
                 }
             },
             "layer": {
