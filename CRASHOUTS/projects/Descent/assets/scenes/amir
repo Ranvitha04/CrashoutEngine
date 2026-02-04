@@ -131,7 +131,7 @@
                     {
                         "name": "footstep5",
                         "path": "footsteps 5.wav",
-                        "volume": 1.0,
+                        "volume": 1.149999976158142,
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": false,
@@ -140,6 +140,42 @@
                     {
                         "name": "footstep6",
                         "path": "footsteps 6.wav",
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    },
+                    {
+                        "name": "footstep7",
+                        "path": "footsteps 7.wav",
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    },
+                    {
+                        "name": "footstep8",
+                        "path": "footsteps 8.wav",
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    },
+                    {
+                        "name": "jumpLand",
+                        "path": "jump landing.wav",
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    },
+                    {
+                        "name": "switchMassSound",
+                        "path": "switch state.wav",
                         "volume": 1.0,
                         "pitch": 1.0,
                         "spatial3D": false,
@@ -161,13 +197,16 @@
                             "jumpPower": 20000.0,
                             "gravityScale": 2.5,
                             "gravityForceMultiplier": 10.0,
-                            "footstepInterval": 0.07500000298023224,
+                            "footstepInterval": 0.25,
                             "swapPause": 1.0,
                             "energyConsumption": 12.5,
+                            "goalNoOfPlates": 1.0,
+                            "currentGoalPlates": 0,
                             "normalMass": 1.0,
                             "lightMass": 4.5,
                             "groundCheckDistance": 26.0,
                             "groundCheckWidth": 10.0,
+                            "dialogueCooldown": 1.0,
                             "CurrentEnergy": 100.0,
                             "MaxEnergy": 100.0,
                             "alive": true,
@@ -745,8 +784,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 550.5555419921875,
-                    "y": 18.859607696533204,
+                    "x": 105.40235137939453,
+                    "y": 44.8907470703125,
                     "z": 0.0
                 },
                 "size": {
@@ -772,8 +811,8 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 549.0555419921875,
-                    "y": 15.359607696533204,
+                    "x": 103.90235137939453,
+                    "y": 41.3907470703125,
                     "z": 0.0
                 },
                 "offset": {
@@ -782,13 +821,13 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 526.655517578125,
-                    "y": 1.3596115112304688,
+                    "x": 81.50232696533203,
+                    "y": 27.3907470703125,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 571.45556640625,
-                    "y": 29.359603881835939,
+                    "x": 126.30237579345703,
+                    "y": 55.3907470703125,
                     "z": 0.0
                 }
             },
@@ -829,9 +868,54 @@
             "audio": {
                 "clips": [
                     {
-                        "name": "slimeMove",
-                        "path": "squishy-movement_1.wav",
-                        "volume": 0.5099999904632568,
+                        "name": "slimeMove1",
+                        "path": "slime 1.wav",
+                        "volume": 0.15000000596046449,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    },
+                    {
+                        "name": "slimeMove2",
+                        "path": "slime 2.wav",
+                        "volume": 0.15000000596046449,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    },
+                    {
+                        "name": "slimeMove3",
+                        "path": "slime 3.wav",
+                        "volume": 0.15000000596046449,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    },
+                    {
+                        "name": "slimeMove4",
+                        "path": "slime 4.wav",
+                        "volume": 0.15000000596046449,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    },
+                    {
+                        "name": "slimeMove5",
+                        "path": "slime 5.wav",
+                        "volume": 0.15000000596046449,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    },
+                    {
+                        "name": "slimeImpact",
+                        "path": "slime impact.wav",
+                        "volume": 0.15000000596046449,
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": false,
@@ -846,8 +930,8 @@
                         "fields": {
                             "moveSpeed": 600.0,
                             "maxSpeed": 15.0,
-                            "moveAudioInterval": 1.0,
-                            "stopAudioDistance": 80.0,
+                            "moveAudioInterval": 0.6000000238418579,
+                            "stopAudioDistance": 40.0,
                             "detectionRange": 250.0,
                             "gravityScale": 2.0,
                             "grabRange": 100.0,
@@ -981,7 +1065,7 @@
                         "fields": {
                             "layerName": "Music",
                             "fadeTime": 5.0,
-                            "stopLayer": false
+                            "stopLayer": true
                         }
                     }
                 ]
@@ -1029,7 +1113,7 @@
                         "fields": {
                             "layerName": "Ambiance",
                             "fadeTime": 5.0,
-                            "stopLayer": false
+                            "stopLayer": true
                         }
                     }
                 ]
@@ -1037,6 +1121,214 @@
             "layer": {
                 "layerName": "",
                 "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "PlayerParticle",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 5.1378326416015629,
+                    "y": 0.32678794860839846,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "parent": {
+                "parentName": "Player",
+                "localPos": {
+                    "x": 0.0,
+                    "y": -0.4000000059604645,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.016129031777381898,
+                    "y": 0.013791962526738644
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "Player",
+                "z": 0
+            },
+            "particle": {
+                "isEmitting": true,
+                "useWorldSpace": true,
+                "maxParticles": 1000,
+                "emitRate": 100.0,
+                "playOnStop": false,
+                "emissionShape": 1,
+                "radiusMin": 0.0,
+                "radiusMax": 5.0,
+                "lengthMin": 0.0,
+                "lengthMax": 5.0,
+                "areaMin": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "areaMax": {
+                    "x": 5.0,
+                    "y": 5.0
+                },
+                "startLifeMin": 1.0,
+                "startLifeMax": 1.0,
+                "startSpeedMin": 1.0,
+                "startSpeedMax": 1.0,
+                "uniformSize": true,
+                "startSizeXMin": 1.0,
+                "startSizeXMax": 10.0,
+                "startSizeYMin": 1.0,
+                "startSizeYMax": 1.0,
+                "sizeOverTime": 0.0,
+                "rotationOverTime": 0.0,
+                "startRotationMin": 0.0,
+                "startRotationMax": 0.0,
+                "startColor": {
+                    "x": 0.3118970990180969,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.14147907495498658
+                },
+                "endColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.0
+                },
+                "gravity": {
+                    "x": 0.0,
+                    "y": -9.800000190734864,
+                    "z": 0.0
+                },
+                "startVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "useTexture": false,
+                "textureName": "",
+                "textureUV": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            }
+        },
+        {
+            "active": true,
+            "name": "SlimeParticle",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 103.48011016845703,
+                    "y": 29.83319854736328,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "parent": {
+                "parentName": "Slime",
+                "localPos": {
+                    "x": 0.02669779397547245,
+                    "y": -0.22473953664302827,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": -0.013888888992369175,
+                    "y": 0.014925372786819935
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "particle": {
+                "isEmitting": true,
+                "useWorldSpace": true,
+                "maxParticles": 1000,
+                "emitRate": 100.0,
+                "playOnStop": false,
+                "emissionShape": 1,
+                "radiusMin": 0.0,
+                "radiusMax": 5.0,
+                "lengthMin": 0.0,
+                "lengthMax": 5.0,
+                "areaMin": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "areaMax": {
+                    "x": 5.0,
+                    "y": 5.0
+                },
+                "startLifeMin": 10.0,
+                "startLifeMax": 10.0,
+                "startSpeedMin": 1.0,
+                "startSpeedMax": 1.0,
+                "uniformSize": true,
+                "startSizeXMin": 5.0,
+                "startSizeXMax": 15.0,
+                "startSizeYMin": 1.0,
+                "startSizeYMax": 1.0,
+                "sizeOverTime": 0.0,
+                "rotationOverTime": 0.0,
+                "startRotationMin": 0.0,
+                "startRotationMax": 0.0,
+                "startColor": {
+                    "x": 0.7799511551856995,
+                    "y": 0.566681444644928,
+                    "z": 0.8681672215461731,
+                    "w": 0.041800618171691897
+                },
+                "endColor": {
+                    "x": 0.32575392723083498,
+                    "y": 0.02357296645641327,
+                    "z": 0.3665595054626465,
+                    "w": 0.08038586378097534
+                },
+                "gravity": {
+                    "x": 0.0,
+                    "y": -9.800000190734864,
+                    "z": 0.0
+                },
+                "startVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "useTexture": false,
+                "textureName": "",
+                "textureUV": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
             }
         }
     ],

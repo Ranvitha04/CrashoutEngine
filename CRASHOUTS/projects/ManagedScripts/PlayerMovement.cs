@@ -61,6 +61,7 @@ namespace CrashoutsEngine
         private Animator anim;
 
         private float footstepTimer = 0.0f;
+        private bool wasGroundedLastFrame = true;
         private Random rng = new Random();
 
         private const float FIXED_TIMESTEP = 0.02f;
@@ -258,6 +259,7 @@ namespace CrashoutsEngine
             {
                 RemoveEnergy(energyConsumption);
                 isLight = !isLight;
+                AudioManager.GetInstance().PlayAttached("switchMassSound", Entity.ID);
                 rb.Mass = isLight ? lightMass : normalMass;
                 swapPauseTimer = swapPause;
                 rb.LinearVelocity = new CEVec3(0, 0, 0);
@@ -338,10 +340,15 @@ namespace CrashoutsEngine
                 landingDustArmed = false;
             }
 
-            // 2. EXECUTE JUMP
+            // 2. HANDLE LANDING SOUND
+            HandleLanding();
+
+            // 3. EXECUTE JUMP
             // Ensure we cannot jump if dialogue is active
             if (jumpRequested && !isDialogueActive)
             {
+                AudioManager.GetInstance().PlayAttached("JumpUp", Entity.ID);
+
                 rb.LinearVelocity = new CEVec3(rb.LinearVelocity.x, 0f, 0f);
                 rb.AddForce(new CEVec3(0f, jumpPower, 0f));
 
@@ -351,10 +358,10 @@ namespace CrashoutsEngine
                 landingDustArmed = true;
             }
 
-            // 3. MOVEMENT PHYSICS
+            // 4. MOVEMENT PHYSICS
             ApplyMovementPhysics();
 
-            // 4. GRAVITY
+            // 5. GRAVITY
             ApplyGravity();
         }
 
@@ -522,12 +529,21 @@ namespace CrashoutsEngine
                 footstepTimer -= (float)Time.DT;
                 if (footstepTimer <= 0.0f)
                 {
-                    int index = rng.Next(1, 7);
+                    int index = rng.Next(1, 9);
                     AudioManager.GetInstance().PlayAttached("footstep" + index, Entity.ID);
                     footstepTimer = footstepInterval;
                 }
             }
             else footstepTimer = 0.0f;
+        }
+
+        private void HandleLanding()
+        {
+            if (IsGrounded && !wasGroundedLastFrame)
+            {
+                AudioManager.GetInstance().PlayAttached("jumpLand", Entity.ID);
+            }
+            wasGroundedLastFrame = IsGrounded;
         }
 
         private void UpdateAnimationState(bool isSwitching)
