@@ -231,14 +231,14 @@
                 }
             },
             "shape": {
-                "useTexture": false,
+                "useTexture": true,
                 "isWorldSpace": true,
                 "wrapModeU": 0,
                 "wrapModeV": 0,
                 "thickness": 1.0,
                 "preview": false,
                 "type": 0,
-                "textureName": "",
+                "textureName": "UI/button.png",
                 "uvSize": {
                     "x": 1.0,
                     "y": 1.0
@@ -248,10 +248,10 @@
                     "y": 0.0
                 },
                 "color": {
-                    "x": 0.5176470875740051,
-                    "y": 0.0784313753247261,
-                    "z": 0.0784313753247261,
-                    "w": 0.0
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
                 },
                 "p1": {
                     "x": 0.0,

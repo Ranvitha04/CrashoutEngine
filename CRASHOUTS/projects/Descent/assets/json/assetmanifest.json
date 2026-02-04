@@ -1451,6 +1451,10 @@
             "path": "UI\\Bar_Area.png"
         },
         {
+            "name": "button",
+            "path": "UI\\button.png"
+        },
+        {
             "name": "1",
             "path": "UI\\Energy Ball\\1.png"
         },
