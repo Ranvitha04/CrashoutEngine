@@ -14513,6 +14513,8 @@
                             "energyConsumption": 12.5,
                             "goalNoOfPlates": 1,
                             "currentGoalPlates": 0,
+                            "landingDustName": "LandingDust",
+                            "dustBurstDuration": 0.15000000596046449,
                             "normalMass": 4.5,
                             "lightMass": 3.0,
                             "groundCheckDistance": 26.0,
@@ -17392,7 +17394,8 @@
                             "PlatesRequired": 1,
                             "MoveRight": true,
                             "MoveDist": 100.0,
-                            "MoveSpeed": 30.0
+                            "MoveSpeed": 30.0,
+                            "dustBurstDuration": 0.15000000596046449
                         }
                     }
                 ]
@@ -17938,7 +17941,8 @@
                             "PlatesRequired": 1,
                             "MoveRight": true,
                             "MoveDist": 150.0,
-                            "MoveSpeed": 30.0
+                            "MoveSpeed": 30.0,
+                            "dustBurstDuration": 0.15000000596046449
                         }
                     }
                 ]
@@ -18256,7 +18260,8 @@
                             "PlatesRequired": 2,
                             "MoveRight": true,
                             "MoveDist": 150.0,
-                            "MoveSpeed": 30.0
+                            "MoveSpeed": 30.0,
+                            "dustBurstDuration": 0.15000000596046449
                         }
                     }
                 ]
@@ -18878,7 +18883,8 @@
                             "PlatesRequired": 1,
                             "MoveRight": false,
                             "MoveDist": 120.0,
-                            "MoveSpeed": 30.0
+                            "MoveSpeed": 30.0,
+                            "dustBurstDuration": 0.15000000596046449
                         }
                     }
                 ]
@@ -19419,7 +19425,8 @@
                             "PlatesRequired": 1,
                             "MoveRight": true,
                             "MoveDist": 130.0,
-                            "MoveSpeed": 30.0
+                            "MoveSpeed": 30.0,
+                            "dustBurstDuration": 0.15000000596046449
                         }
                     }
                 ]
@@ -19529,7 +19536,8 @@
                             "PlatesRequired": 1,
                             "MoveRight": false,
                             "MoveDist": 120.0,
-                            "MoveSpeed": 30.0
+                            "MoveSpeed": 30.0,
+                            "dustBurstDuration": 0.15000000596046449
                         }
                     }
                 ]
@@ -20402,7 +20410,10 @@
                     "y": 0.0,
                     "z": 0.0,
                     "w": 0.5
-                }
+                },
+                "textureNormal": "",
+                "textureHovered": "",
+                "texturePressed": ""
             },
             "gui": {
                 "uiType": 5
@@ -20516,7 +20527,10 @@
                     "y": 0.0,
                     "z": 0.0,
                     "w": 0.5
-                }
+                },
+                "textureNormal": "",
+                "textureHovered": "",
+                "texturePressed": ""
             },
             "gui": {
                 "uiType": 5
@@ -20630,7 +20644,10 @@
                     "y": 0.0,
                     "z": 0.0,
                     "w": 0.5
-                }
+                },
+                "textureNormal": "",
+                "textureHovered": "",
+                "texturePressed": ""
             },
             "gui": {
                 "uiType": 5
@@ -23904,7 +23921,10 @@
                     "y": 0.0,
                     "z": 0.0,
                     "w": 0.5
-                }
+                },
+                "textureNormal": "",
+                "textureHovered": "",
+                "texturePressed": ""
             },
             "gui": {
                 "uiType": 6
@@ -24048,7 +24068,10 @@
                     "y": 0.0,
                     "z": 0.0,
                     "w": 0.5
-                }
+                },
+                "textureNormal": "",
+                "textureHovered": "",
+                "texturePressed": ""
             },
             "gui": {
                 "uiType": 6
@@ -24310,7 +24333,10 @@
                     "y": 0.0,
                     "z": 0.0,
                     "w": 0.5
-                }
+                },
+                "textureNormal": "",
+                "textureHovered": "",
+                "texturePressed": ""
             },
             "gui": {
                 "uiType": 7
@@ -24511,7 +24537,10 @@
                     "y": 0.0,
                     "z": 0.0,
                     "w": 0.5
-                }
+                },
+                "textureNormal": "",
+                "textureHovered": "",
+                "texturePressed": ""
             },
             "gui": {
                 "uiType": 7

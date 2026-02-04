@@ -759,7 +759,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -111.11302185058594,
+                    "x": -188.84193420410157,
                     "y": -65.30364227294922,
                     "z": 0.0
                 },
@@ -768,99 +768,15 @@
                     "y": 23.0
                 }
             },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "UI\\Bar_Area.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
             "script": {
                 "scripts": [
                     {
                         "className": "VolumeSlider",
-                        "fields": {}
+                        "fields": {
+                            "smoothingSpeed": 15.0
+                        }
                     }
                 ]
-            },
-            "button": {
-                "buttonState": 0,
-                "shapeNormalColor": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "shapeHoveredColor": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "shapePressedColor": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "textNormalColor": {
-                    "x": 0.30000001192092898,
-                    "y": 0.30000001192092898,
-                    "z": 0.30000001192092898,
-                    "w": 0.699999988079071
-                },
-                "textHoveredColor": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0,
-                    "w": 0.0
-                },
-                "textPressedColor": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0,
-                    "w": 0.5
-                },
-                "textureNormal": "",
-                "textureHovered": "",
-                "texturePressed": ""
-            },
-            "gui": {
-                "uiType": 4
-            },
-            "uilayout": {
-                "paddingXY": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "uiLayout": 4
             },
             "layer": {
                 "layerName": "StaticBackground",
@@ -876,108 +792,24 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -109.00523376464844,
+                    "x": -188.78140258789063,
                     "y": 44.794342041015628,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 147.10748291015626,
-                    "y": 20.75749969482422
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "UI\\Bar_Area.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
+                    "x": 163.0,
+                    "y": 23.0
                 }
             },
             "script": {
                 "scripts": [
                     {
                         "className": "VolumeSlider",
-                        "fields": {}
+                        "fields": {
+                            "smoothingSpeed": 15.0
+                        }
                     }
                 ]
-            },
-            "button": {
-                "buttonState": 0,
-                "shapeNormalColor": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "shapeHoveredColor": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 0.5
-                },
-                "shapePressedColor": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 0.699999988079071
-                },
-                "textNormalColor": {
-                    "x": 0.30000001192092898,
-                    "y": 0.30000001192092898,
-                    "z": 0.30000001192092898,
-                    "w": 0.699999988079071
-                },
-                "textHoveredColor": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0,
-                    "w": 0.0
-                },
-                "textPressedColor": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0,
-                    "w": 0.5
-                },
-                "textureNormal": "",
-                "textureHovered": "",
-                "texturePressed": ""
-            },
-            "gui": {
-                "uiType": 4
-            },
-            "uilayout": {
-                "paddingXY": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "uiLayout": 4
             },
             "layer": {
                 "layerName": "StaticBackground",
@@ -1156,7 +988,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -107.7699966430664,
+                    "x": -107.53600311279297,
                     "y": 44.069000244140628,
                     "z": -1.0
                 },
@@ -1265,9 +1097,9 @@
                     {
                         "className": "SceneMusic",
                         "fields": {
-                            "layerName": "Ambiance",
+                            "layerName": "Music",
                             "fadeTime": 2.0,
-                            "stopLayer": true
+                            "stopLayer": false
                         }
                     }
                 ]
@@ -1431,6 +1263,180 @@
             },
             "layer": {
                 "layerName": "Default",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "MusicBar_Image",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -107.53600311279297,
+                    "y": 44.794342041015628,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 163.0,
+                    "y": 23.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/Bar_Area.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "VolumeSlider",
+                        "fields": {
+                            "smoothingSpeed": 15.0
+                        }
+                    }
+                ]
+            },
+            "parent": {
+                "parentName": "MusicBar",
+                "localPos": {
+                    "x": 0.4984380304813385,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "StaticBackground",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "SFXBar_Child",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -107.53555297851563,
+                    "y": -65.30364227294922,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 163.0,
+                    "y": 23.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI\\Bar_Area.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "VolumeSlider",
+                        "fields": {
+                            "smoothingSpeed": 15.0
+                        }
+                    }
+                ]
+            },
+            "parent": {
+                "parentName": "SFXBar",
+                "localPos": {
+                    "x": 0.49881216883659365,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "StaticBackground",
                 "z": 0
             }
         }

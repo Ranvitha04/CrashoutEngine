@@ -532,23 +532,8 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
 
     int vpX{ 0 }, vpY{ 0 }, vpW, vpH;
 
-    // Calculate Viewport (Letterboxing)
-    //if (currentAspectRatio > targetAspectRatio) {
-    //    // Window is too wide (Black bars on left/right)
-    //    vpH = windowH;
-    //    vpW = static_cast<int>(windowH * targetAspectRatio);
-    //    vpX = (windowW - vpW);
-    //    vpY = 0;
-    //}
-    //else {
-    //    // Window is too tall (Black bars on top/bottom)
-    //    vpW = windowW;
-    //    vpH = static_cast<int>(windowW / targetAspectRatio);
-    //    vpX = 0;
-    //    vpY = (windowH - vpH);
-    //}
-        vpH = windowH;
-        vpW = windowW;
+    vpH = windowH;
+    vpW = windowW;
 
     // 4. Clear the FULL window to black (The "Bars")
 
