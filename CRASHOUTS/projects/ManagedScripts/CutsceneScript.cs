@@ -161,6 +161,7 @@ namespace CrashoutsEngine
                     // ---------------------------------------------------------
                     // TODO: CALL AUDIO PLAY FUNCTION HERE
                     // e.g. AudioManager.Play("dramatic_reveal");
+                    AudioManager.GetInstance().PlayAttached("PortalSFX", image_4.ID);
                     // ---------------------------------------------------------
 
                     // Show the text

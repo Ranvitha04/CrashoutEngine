@@ -1245,7 +1245,7 @@
                         "fields": {
                             "layerName": "Ambiance",
                             "fadeTime": 2.0,
-                            "stopLayer": false
+                            "stopLayer": true
                         }
                     }
                 ]
@@ -1288,10 +1288,6 @@
                     "z": 0.0,
                     "w": 0.5
                 }
-            },
-            "layer": {
-                "layerName": "Default",
-                "z": 0
             },
             "layer": {
                 "layerName": "Default",
@@ -1345,8 +1341,8 @@
                 "clips": [
                     {
                         "name": "MenuMusic",
-                        "path": "nightshift_bgm_loop_70bpm.wav",
-                        "volume": 1.0,
+                        "path": "main menu.wav",
+                        "volume": 0.6000000238418579,
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": true,
@@ -1404,10 +1400,6 @@
                     "z": 0.0,
                     "w": 0.5
                 }
-            },
-            "layer": {
-                "layerName": "Default",
-                "z": 0
             },
             "layer": {
                 "layerName": "Default",

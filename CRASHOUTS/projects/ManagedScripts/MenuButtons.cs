@@ -34,20 +34,20 @@ namespace CrashoutsEngine
                 {
                     //Console.WriteLine("[C#] Loading Scene...");
                     Debug.Log("[C#] Loading Scene...");
-                    SceneManager.LoadScene("descentsettings");
+                    SceneManager.LoadScene("descentsettings", 0.5f);
                 }
                 
                 else if (name.ToString() == "CloseBtn")
                 {
                     
                     Debug.Log("[C#] Loading Scene...");
-                    SceneManager.LoadScene("descentmenu");
+                    SceneManager.LoadScene("descentmenu", 0.5f);
                 }
                 
                 else if (name.ToString() == "QuitBtn")
                 {
                    
-                    SceneManager.LoadScene("descentconfirm");
+                    SceneManager.LoadScene("descentconfirm", 0.5f);
                 }
                 else if (name.ToString() == "QuitYesBtn")
                 {

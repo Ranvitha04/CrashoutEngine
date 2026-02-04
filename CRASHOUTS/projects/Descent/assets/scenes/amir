@@ -1065,7 +1065,7 @@
                         "fields": {
                             "layerName": "Music",
                             "fadeTime": 5.0,
-                            "stopLayer": false
+                            "stopLayer": true
                         }
                     }
                 ]
@@ -1113,7 +1113,7 @@
                         "fields": {
                             "layerName": "Ambiance",
                             "fadeTime": 5.0,
-                            "stopLayer": false
+                            "stopLayer": true
                         }
                     }
                 ]

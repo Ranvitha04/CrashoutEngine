@@ -177,7 +177,6 @@ namespace CrashoutsEngine
             // WEIGHT MECHANIC
             if (Input.IsKeyTriggered(Key.E) && IsGrounded && CurrentEnergy >= energyConsumption)
             {
-                HandleBookSound();
                 RemoveEnergy(energyConsumption);
                 isLight = !isLight;
                 AudioManager.GetInstance().PlayAttached("switchMassSound", Entity.ID);
