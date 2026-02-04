@@ -9775,26 +9775,30 @@
                     {
                         "className": "PlayerMovement",
                         "fields": {
-                            "maxRunSpeed": 100.0,
+                            "maxRunSpeed": 150.0,
                             "maxAirSpeed": 120.0,
                             "acceleration": 10.0,
                             "deceleration": 10.0,
                             "airAcceleration": 2.0,
-                            "jumpPower": 40000.0,
+                            "jumpPower": 20000.0,
                             "gravityScale": 2.5,
                             "gravityForceMultiplier": 10.0,
                             "footstepInterval": 0.07500000298023224,
                             "swapPause": 1.0,
                             "energyConsumption": 12.5,
-                            "normalMass": 3.0,
-                            "lightMass": 2.0,
+                            "normalMass": 7.0,
+                            "lightMass": 4.5,
                             "groundCheckDistance": 26.0,
                             "groundCheckWidth": 10.0,
-                            "CurrentEnergy": 100.0,
+                            "CurrentEnergy": 0.0,
                             "MaxEnergy": 100.0,
                             "alive": true,
                             "isPaused": false
                         }
+                    },
+                    {
+                        "className": "BookUIController",
+                        "fields": {}
                     }
                 ]
             },
@@ -9858,6 +9862,37 @@
                 "playing": true,
                 "clips": [
                     {
+                        "name": "playerFall",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
+                        "spriteCols": 2,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 140.0,
+                        "targetHeight": 100.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
                         "name": "playerWalk",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Run\\Run spritesheet.png",
@@ -9910,7 +9945,7 @@
                         ]
                     },
                     {
-                        "name": "playerFall",
+                        "name": "playerFallLight",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
                         "spriteCols": 2,
@@ -9924,14 +9959,14 @@
                                 "keys": [
                                     {
                                         "t": 0.0,
-                                        "v": 0.0,
+                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
                                         "t": 0.25,
-                                        "v": 0.0,
+                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -9984,37 +10019,6 @@
                                     {
                                         "t": 1.0,
                                         "v": 7.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "playerFallLight",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
-                        "spriteCols": 2,
-                        "spriteRows": 1,
-                        "useCustomSize": true,
-                        "targetWidth": 140.0,
-                        "targetHeight": 100.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 1.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -15849,8 +15853,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -0.2031707763671875,
-                    "y": 16.284406661987306,
+                    "x": 0.7142562866210938,
+                    "y": 184.58840942382813,
                     "z": 0.0
                 },
                 "size": {
@@ -15970,7 +15974,12 @@
                 }
             },
             "gui": {
-                "uiType": 6
+                "uiType": 14
+            },
+            "textinput": {
+                "isFocused": false,
+                "cursorPos": 0,
+                "maxCharacters": 255
             },
             "uilayout": {
                 "paddingXY": {
@@ -15982,8 +15991,8 @@
             "parent": {
                 "parentName": "ClosedBook",
                 "localPos": {
-                    "x": 0.12288174778223038,
-                    "y": 0.10321100056171417,
+                    "x": 0.12471659481525421,
+                    "y": 0.9447309970855713,
                     "z": 0.0
                 },
                 "localRot": 0.0,
@@ -16169,7 +16178,7 @@
                 }
             },
             "layer": {
-                "layerName": "Default",
+                "layerName": "UI",
                 "z": 0
             }
         },
@@ -16295,7 +16304,12 @@
                 }
             },
             "gui": {
-                "uiType": 6
+                "uiType": 14
+            },
+            "textinput": {
+                "isFocused": false,
+                "cursorPos": 0,
+                "maxCharacters": 255
             },
             "uilayout": {
                 "paddingXY": {
@@ -16330,7 +16344,7 @@
             }
         },
         {
-            "active": false,
+            "active": true,
             "name": "ClosedBook",
             "tag": {
                 "tagMask": 0
@@ -16381,17 +16395,6 @@
                     "z": 0.0
                 }
             },
-            "script": {
-                "scripts": [
-                    {
-                        "className": "BookUIController",
-                        "fields": {
-                            "shownAlpha": 1.0,
-                            "hiddenAlpha": 0.0
-                        }
-                    }
-                ]
-            },
             "gui": {
                 "uiType": 1
             },
@@ -16403,12 +16406,12 @@
                 "uiLayout": 4
             },
             "layer": {
-                "layerName": "UI",
+                "layerName": "",
                 "z": 0
             }
         },
         {
-            "active": true,
+            "active": false,
             "name": "OpenBook",
             "tag": {
                 "tagMask": 0
@@ -16510,10 +16513,10 @@
                     "y": 0.0
                 },
                 "color": {
-                    "x": 0.9116021990776062,
-                    "y": 0.2417508363723755,
-                    "z": 0.2417508363723755,
-                    "w": 0.0
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
                 },
                 "p1": {
                     "x": 0.0,
@@ -16535,10 +16538,10 @@
                     "y": 0.0
                 },
                 "color": {
-                    "x": 1.0,
-                    "y": 0.0,
-                    "z": 0.0,
-                    "w": 1.0
+                    "x": 0.30000001192092898,
+                    "y": 0.30000001192092898,
+                    "z": 0.30000001192092898,
+                    "w": 0.699999988079071
                 },
                 "centered": true,
                 "isworldspace": false,
@@ -16556,8 +16559,52 @@
                 "dialogueFilePath": "",
                 "dialogueID": ""
             },
+            "button": {
+                "buttonState": 0,
+                "shapeNormalColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "shapeHoveredColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.5
+                },
+                "shapePressedColor": {
+                    "x": 0.699999988079071,
+                    "y": 0.699999988079071,
+                    "z": 0.699999988079071,
+                    "w": 0.699999988079071
+                },
+                "textNormalColor": {
+                    "x": 0.30000001192092898,
+                    "y": 0.30000001192092898,
+                    "z": 0.30000001192092898,
+                    "w": 0.699999988079071
+                },
+                "textHoveredColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.0
+                },
+                "textPressedColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.5
+                }
+            },
             "gui": {
-                "uiType": 2
+                "uiType": 14
+            },
+            "textinput": {
+                "isFocused": false,
+                "cursorPos": 0,
+                "maxCharacters": 255
             },
             "uilayout": {
                 "paddingXY": {

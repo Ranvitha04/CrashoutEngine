@@ -19,7 +19,7 @@ namespace CrashoutsEngine
             if (btn.IsClicked())
             {
                 //Console.WriteLine("[C#] Name is " + name);
-
+                string n = InternalCalls.GetName((uint)Entity.ID);
                 string msg = "[C#] Name is " + name;
                 Debug.Log(msg);
 
@@ -59,7 +59,7 @@ namespace CrashoutsEngine
                
                     SceneManager.LoadScene("descentmenu"); 
                 }
-               
+               //ClosedBook
                 else if (name.ToString() == "PauseResumeBtn")
                 {
                     // Resume Game from pause menu
@@ -77,17 +77,33 @@ namespace CrashoutsEngine
                     
                     SceneManager.LoadScene("descentconfirm");
                 }
-                else if (name.ToString() == "SettingBtnGame")
+             
+
+                // --- CLOSED BOOK BUTTONS ---
+                if (n == "ResumeBtnGame")
                 {
+                    // close all book UI (resume game)
+                    if (BookUIController.Instance != null)
+                        BookUIController.Instance.HideAll();
+                }
+                else if (n == "SettingBtnGame")
+                {
+                    // go to open book UI
                     if (BookUIController.Instance != null)
                         BookUIController.Instance.ShowOpenBook();
                 }
-
-                else if (name.ToString() == "ResumeButtonGame")
+                else if (n == "ExitBtnGame")
                 {
-                    // whatever resume should do
+                    // whatever your exit flow is
+                    SceneManager.LoadScene("descentconfirm");
                 }
 
+                // --- OPEN BOOK BUTTONS ---
+                else if (n == "ClosedOpenBookBtn")
+                {
+                    if (BookUIController.Instance != null)
+                        BookUIController.Instance.ShowClosedBook();
+                }
 
 
 

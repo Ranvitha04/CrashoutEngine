@@ -1705,6 +1705,10 @@
             "path": "descentsettings"
         },
         {
+            "name": "GameOver",
+            "path": "GameOver"
+        },
+        {
             "name": "menu",
             "path": "menu"
         },
@@ -1735,6 +1739,10 @@
         {
             "name": "tutorial2",
             "path": "tutorial2"
+        },
+        {
+            "name": "Victory",
+            "path": "Victory"
         }
     ],
     "shaders": [

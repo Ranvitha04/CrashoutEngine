@@ -7,7 +7,7 @@ namespace CrashoutsEngine
     {
         public static BookUIController Instance;
 
-        // Must match your hierarchy names EXACTLY
+        // Must match your hierarchy names EXACTLY (UNIQUE NAMES ONLY)
         public string[] closedBookPieces =
         {
             "ClosedBook",
@@ -16,20 +16,35 @@ namespace CrashoutsEngine
             "ExitBtnGame"
         };
 
+        // Put EVERY OpenBook UI entity name here (including clones)
         public string[] openBookPieces =
         {
-            "OpenBook"
-            // Add OpenBook children here if you have them:
-            // "OpenBackBtn", "OpenSomething", ...
-        };
+            "OpenBook",
+            "ClosedOpenBookBtn",
+            "Instruction",
+            "Instruction2",
+            "Instruction3",
+            "Instruction4",
+            "Instruction5",
+            "Instruction6",
+            "Instruction7",
+            "Instruction8",
+            "Instruction9",
+            "Instruction10",
+            "Instruction11",
+            "Music",
+            "SFX",
+            "Slider",
+            "Slider_Clone2001",
 
-        public float shownAlpha = 1.0f;
-        public float hiddenAlpha = 0.0f; // 0.2f if you want dim instead of invisible
+   
+        };
 
         private uint[] closedIDs;
         private uint[] openIDs;
 
         private bool closedShown = false;
+        private bool openShown = false;
 
         public override void Start()
         {
@@ -39,37 +54,58 @@ namespace CrashoutsEngine
             openIDs = CacheIDs(openBookPieces);
 
             // Hide everything at start
-            SetAlphaList(closedIDs, hiddenAlpha);
-            SetAlphaList(openIDs, hiddenAlpha);
+            HideAll();
         }
 
         public override void Update()
         {
             if (Input.IsKeyTriggered(Key.P))
             {
+                // OPTION B:
+                // If OpenBook is open, P goes BACK to ClosedBook
+                if (openShown)
+                {
+                    ShowClosedBook();
+                    return;
+                }
+
+                // Otherwise P toggles ClosedBook
                 closedShown = !closedShown;
+                openShown = false;
 
-                // Toggle ClosedBook
-                SetAlphaList(closedIDs, closedShown ? shownAlpha : hiddenAlpha);
-
-                // When showing ClosedBook, keep OpenBook hidden
-                if (closedShown)
-                    SetAlphaList(openIDs, hiddenAlpha);
+                SetActiveList(closedIDs, closedShown);
+                SetActiveList(openIDs, false);
             }
         }
 
+        // ClosedBook -> OpenBook
         public void ShowOpenBook()
         {
             closedShown = false;
-            SetAlphaList(closedIDs, hiddenAlpha);
-            SetAlphaList(openIDs, shownAlpha);
+            openShown = true;
+
+            SetActiveList(closedIDs, false);
+            SetActiveList(openIDs, true);
         }
 
+        // OpenBook -> ClosedBook
         public void ShowClosedBook()
         {
             closedShown = true;
-            SetAlphaList(openIDs, hiddenAlpha);
-            SetAlphaList(closedIDs, shownAlpha);
+            openShown = false;
+
+            SetActiveList(openIDs, false);
+            SetActiveList(closedIDs, true);
+        }
+
+        // Hide everything (Resume)
+        public void HideAll()
+        {
+            closedShown = false;
+            openShown = false;
+
+            if (closedIDs != null) SetActiveList(closedIDs, false);
+            if (openIDs != null) SetActiveList(openIDs, false);
         }
 
         private uint[] CacheIDs(string[] names)
@@ -78,22 +114,17 @@ namespace CrashoutsEngine
             for (int i = 0; i < names.Length; i++)
             {
                 ids[i] = InternalCalls.FindEntityByName(names[i]);
-                Debug.Log(names[i] + " id = " + ids[i]);
+                Debug.Log("[BookUI] " + names[i] + " id = " + ids[i]);
             }
             return ids;
         }
 
-        private void SetAlphaList(uint[] ids, float a)
+        private void SetActiveList(uint[] ids, bool active)
         {
             for (int i = 0; i < ids.Length; i++)
             {
                 if (ids[i] == uint.MaxValue) continue;
-
-                Entity e = new Entity(ids[i]);
-                ShapeComponent sc = e.GetComponent<ShapeComponent>();
-                if (sc == null) continue;
-
-                sc.Alpha = a;
+                InternalCalls.SetActive(ids[i], active);
             }
         }
     }
