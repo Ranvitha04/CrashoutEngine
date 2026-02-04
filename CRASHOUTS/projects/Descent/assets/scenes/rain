@@ -1275,6 +1275,8 @@
                             "energyConsumption": 12.5,
                             "goalNoOfPlates": 1,
                             "currentGoalPlates": 0,
+                            "landingDustName": "LandingDust",
+                            "dustBurstDuration": 0.15000000596046449,
                             "normalMass": 4.0,
                             "lightMass": 3.0,
                             "groundCheckDistance": 26.0,

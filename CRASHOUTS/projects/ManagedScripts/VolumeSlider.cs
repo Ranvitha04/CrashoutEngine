@@ -41,15 +41,25 @@ namespace CrashoutsEngine
             string name = nameComp != null ? nameComp.ToString() : "";
             _isMusic = !name.Contains("SFX");
 
-            if (_tf != null)
-            {
-                _fullWidth = _tf.Size.x;
-                _leftEdgeX = _tf.Position.x - (_fullWidth / 2.0f);
-            }
-
+            // 1. GET VOLUME FIRST
             if (_isMusic) _currentT = AudioManager.playerMusVol;
             else _currentT = AudioManager.playerSFXVol;
 
+            // 2. CALCULATE FULL WIDTH (Reverse Engineering)
+            if (_tf != null)
+            {
+                // We calculate the Left Edge based on current position and width. 
+                // (Center Position - Half Width) is always the Left Edge, regardless of scale.
+                _leftEdgeX = _tf.Position.x - (_tf.Size.x / 2.0f);
+
+                // We assume _tf.Size.x represents the size at _currentT.
+                // Therefore, FullWidth = CurrentSize / CurrentT.
+                // We clamp _currentT to a tiny value to avoid division by zero if volume is 0.
+                float tCalc = _currentT < 0.01f ? 0.01f : _currentT;
+                _fullWidth = _tf.Size.x / tCalc;
+            }
+
+            // 3. Now apply visuals cleanly
             UpdateVisuals(_currentT);
         }
 

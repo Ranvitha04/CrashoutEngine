@@ -530,38 +530,40 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
     const float targetAspectRatio = 16.0f / 9.0f;
     float currentAspectRatio = (float)windowW / (float)windowH;
 
-    int vpX, vpY, vpW, vpH;
+    int vpX{ 0 }, vpY{ 0 }, vpW, vpH;
 
     // Calculate Viewport (Letterboxing)
-    if (currentAspectRatio > targetAspectRatio) {
-        // Window is too wide (Black bars on left/right)
+    //if (currentAspectRatio > targetAspectRatio) {
+    //    // Window is too wide (Black bars on left/right)
+    //    vpH = windowH;
+    //    vpW = static_cast<int>(windowH * targetAspectRatio);
+    //    vpX = (windowW - vpW);
+    //    vpY = 0;
+    //}
+    //else {
+    //    // Window is too tall (Black bars on top/bottom)
+    //    vpW = windowW;
+    //    vpH = static_cast<int>(windowW / targetAspectRatio);
+    //    vpX = 0;
+    //    vpY = (windowH - vpH);
+    //}
         vpH = windowH;
-        vpW = static_cast<int>(windowH * targetAspectRatio);
-        vpX = (windowW - vpW) / 2;
-        vpY = 0;
-    }
-    else {
-        // Window is too tall (Black bars on top/bottom)
         vpW = windowW;
-        vpH = static_cast<int>(windowW / targetAspectRatio);
-        vpX = 0;
-        vpY = (windowH - vpH) / 2;
-    }
 
     // 4. Clear the FULL window to black (The "Bars")
-    glViewport(0, 0, windowW, windowH);
+
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
     // 5. Set Viewport to the Game Area & Enable Scissor Test
     glViewport(vpX, vpY, vpW, vpH);
-    glEnable(GL_SCISSOR_TEST);
-    glScissor(vpX, vpY, vpW, vpH);
-
-    // 6. Clear Game Area to Default Grey
-    glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+    //glEnable(GL_SCISSOR_TEST);
+    //glScissor(vpX, vpY, vpW, vpH);
+    //
+    //// 6. Clear Game Area to Default Grey
+    //glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glDisable(GL_SCISSOR_TEST);
+    //glDisable(GL_SCISSOR_TEST);
 
     // 7. Update Camera Matrices to match the VIEWPORT size, not window size
     CrashoutsEngine::RenderCamera::gameCamera.UpdateMatrices(vpW, vpH);
