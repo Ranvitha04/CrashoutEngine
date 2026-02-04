@@ -1555,6 +1555,38 @@
             "path": "UI\\Resume game hover.png"
         },
         {
+            "name": "updated quit large",
+            "path": "UI\\settings\\updated quit large.png"
+        },
+        {
+            "name": "updated quit",
+            "path": "UI\\settings\\updated quit.png"
+        },
+        {
+            "name": "updated restart large",
+            "path": "UI\\settings\\updated restart large.png"
+        },
+        {
+            "name": "updated restart",
+            "path": "UI\\settings\\updated restart.png"
+        },
+        {
+            "name": "updated resume large",
+            "path": "UI\\settings\\updated resume large.png"
+        },
+        {
+            "name": "updated resume",
+            "path": "UI\\settings\\updated resume.png"
+        },
+        {
+            "name": "updated settings ",
+            "path": "UI\\settings\\updated settings .png"
+        },
+        {
+            "name": "updated settings large",
+            "path": "UI\\settings\\updated settings large.png"
+        },
+        {
             "name": "startmenu_BG",
             "path": "UI\\startmenu_BG.png"
         },
