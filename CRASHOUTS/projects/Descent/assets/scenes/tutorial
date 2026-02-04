@@ -20,7 +20,7 @@
             },
             "tilemap": {
                 "tileSize": 32,
-                "activeAsset": "tilemaps/Passthrough_Floor",
+                "activeAsset": "tilemaps/Rock",
                 "tileAssetNames": [
                     "Rock"
                 ],
@@ -2812,6 +2812,11 @@
                     },
                     {
                         "x": 5,
+                        "y": -8,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 5,
                         "y": -7,
                         "asset": "tilemaps/Rock"
                     },
@@ -2918,6 +2923,11 @@
                     {
                         "x": 6,
                         "y": -16,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 6,
+                        "y": -9,
                         "asset": "tilemaps/Rock"
                     },
                     {
@@ -3042,6 +3052,26 @@
                     },
                     {
                         "x": 7,
+                        "y": -9,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 7,
+                        "y": -8,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 7,
+                        "y": -7,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 7,
+                        "y": -6,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 7,
                         "y": -5,
                         "asset": "tilemaps/Rock"
                     },
@@ -3147,6 +3177,26 @@
                     },
                     {
                         "x": 8,
+                        "y": -9,
+                        "asset": ""
+                    },
+                    {
+                        "x": 8,
+                        "y": -8,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 8,
+                        "y": -7,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 8,
+                        "y": -6,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 8,
                         "y": -5,
                         "asset": "tilemaps/Rock"
                     },
@@ -3234,6 +3284,31 @@
                         "x": 9,
                         "y": -16,
                         "asset": ""
+                    },
+                    {
+                        "x": 9,
+                        "y": -9,
+                        "asset": ""
+                    },
+                    {
+                        "x": 9,
+                        "y": -8,
+                        "asset": ""
+                    },
+                    {
+                        "x": 9,
+                        "y": -7,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 9,
+                        "y": -6,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 9,
+                        "y": -5,
+                        "asset": "tilemaps/Rock"
                     },
                     {
                         "x": 9,
@@ -3347,13 +3422,28 @@
                     },
                     {
                         "x": 10,
-                        "y": -6,
+                        "y": -9,
                         "asset": ""
                     },
                     {
                         "x": 10,
-                        "y": -5,
+                        "y": -8,
                         "asset": ""
+                    },
+                    {
+                        "x": 10,
+                        "y": -7,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 10,
+                        "y": -6,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 10,
+                        "y": -5,
+                        "asset": "tilemaps/Rock"
                     },
                     {
                         "x": 10,
@@ -3487,13 +3577,28 @@
                     },
                     {
                         "x": 11,
-                        "y": -6,
+                        "y": -9,
                         "asset": ""
                     },
                     {
                         "x": 11,
-                        "y": -5,
+                        "y": -8,
                         "asset": ""
+                    },
+                    {
+                        "x": 11,
+                        "y": -7,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 11,
+                        "y": -6,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 11,
+                        "y": -5,
+                        "asset": "tilemaps/Rock"
                     },
                     {
                         "x": 11,
@@ -3622,13 +3727,18 @@
                     },
                     {
                         "x": 12,
+                        "y": -7,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 12,
                         "y": -6,
-                        "asset": ""
+                        "asset": "tilemaps/Rock"
                     },
                     {
                         "x": 12,
                         "y": -5,
-                        "asset": ""
+                        "asset": "tilemaps/Rock"
                     },
                     {
                         "x": 12,
@@ -3713,7 +3823,12 @@
                     {
                         "x": 13,
                         "y": -6,
-                        "asset": ""
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 13,
+                        "y": -5,
+                        "asset": "tilemaps/Rock"
                     },
                     {
                         "x": 13,
@@ -3814,6 +3929,11 @@
                         "x": 14,
                         "y": -16,
                         "asset": ""
+                    },
+                    {
+                        "x": 14,
+                        "y": -5,
+                        "asset": "tilemaps/Rock"
                     },
                     {
                         "x": 14,
@@ -13124,8 +13244,8 @@
                             "MoveRight": true,
                             "MovementDistance": 350.0,
                             "MoveSpeed": 50.0,
-                            "VerticalSpeed": 50.0,
-                            "maxDrop": 50.0
+                            "VerticalSpeed": 175.0,
+                            "maxDrop": 120.0
                         }
                     }
                 ]
