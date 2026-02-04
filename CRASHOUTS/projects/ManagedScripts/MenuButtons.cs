@@ -29,41 +29,40 @@ namespace CrashoutsEngine
                 string msg = "[C#] Name is " + name;
                 Debug.Log(msg);
 
-               
                 if (name.ToString() == "StartBtn")
                 {
                     //Scene.Manager.LoadScene("descentgame");
                     Debug.Log("[C#] Transitioning to Cutscene...");
                     SceneManager.LoadScene("Cutscene", 2f);
                 }
-             
                 else if (name.ToString() == "SettingsBtn")
                 {
                     //Console.WriteLine("[C#] Loading Scene...");
                     Debug.Log("[C#] Loading Scene...");
                     SceneManager.LoadScene("descentsettings", 0.5f);
                 }
-                
                 else if (name.ToString() == "CloseBtn")
                 {
-                    
                     Debug.Log("[C#] Loading Scene...");
                     SceneManager.LoadScene("descentmenu", 0.5f);
                 }
-                
                 else if (name.ToString() == "QuitBtn")
                 {
-                   
-                    SceneManager.LoadScene("descentconfirm", 0.5f);
+                    InternalCalls.SetActive(InternalCalls.FindEntityByName("QuitBtn"), false);
+                    InternalCalls.SetActive(InternalCalls.FindEntityByName("QuitCheck"), true);
+                    //SceneManager.LoadScene("descentconfirm", 0.5f);
                 }
-                else if (name.ToString() == "QuitYesBtn")
+                else if (name.ToString() == "Yes")
                 {
+                    Debug.Log("YES");
                     SceneManager.QuitGame();
                 }
-                else if (name.ToString() == "QuitNoBtn")
+                else if (name.ToString() == "No")
                 {
-               
-                    SceneManager.LoadScene("descentmenu", 0.5f); 
+                    Debug.Log("NO");
+                    InternalCalls.SetActive(InternalCalls.FindEntityByName("QuitBtn"), true);
+                    InternalCalls.SetActive(InternalCalls.FindEntityByName("QuitCheck"), false);
+                    //SceneManager.LoadScene("descentmenu", 0.5f); 
                 }
                //ClosedBook
                 else if (name.ToString() == "PauseResumeBtn")

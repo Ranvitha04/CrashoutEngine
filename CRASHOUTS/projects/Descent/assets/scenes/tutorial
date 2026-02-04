@@ -12823,6 +12823,67 @@
             "layer": {
                 "layerName": "Foreground",
                 "z": 10
+            },
+            "particle": {
+                "isEmitting": false,
+                "useWorldSpace": true,
+                "maxParticles": 1000,
+                "emitRate": 100.0,
+                "playOnStop": true,
+                "emissionShape": 1,
+                "radiusMin": -0.10000000149011612,
+                "radiusMax": 0.20000000298023225,
+                "lengthMin": 0.0,
+                "lengthMax": 5.0,
+                "areaMin": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "areaMax": {
+                    "x": 5.0,
+                    "y": 5.0
+                },
+                "startLifeMin": 1.0,
+                "startLifeMax": 1.0,
+                "startSpeedMin": 1.0,
+                "startSpeedMax": 1.0,
+                "uniformSize": true,
+                "startSizeXMin": 1.25,
+                "startSizeXMax": 3.25,
+                "startSizeYMin": 1.25,
+                "startSizeYMax": 3.25,
+                "sizeOverTime": 0.0,
+                "rotationOverTime": 0.0,
+                "startRotationMin": 0.0,
+                "startRotationMax": 0.0,
+                "startColor": {
+                    "x": 0.6117647290229797,
+                    "y": 0.4274510145187378,
+                    "z": 0.30588236451148989,
+                    "w": 1.0
+                },
+                "endColor": {
+                    "x": 0.3803921639919281,
+                    "y": 0.3607843220233917,
+                    "z": 0.3607843220233917,
+                    "w": 0.0
+                },
+                "gravity": {
+                    "x": 0.0,
+                    "y": -9.800000190734864,
+                    "z": 0.0
+                },
+                "startVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "useTexture": false,
+                "textureName": "",
+                "textureUV": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
             }
         },
         {
@@ -13039,6 +13100,67 @@
             "layer": {
                 "layerName": "Default",
                 "z": 0
+            },
+            "particle": {
+                "isEmitting": false,
+                "useWorldSpace": true,
+                "maxParticles": 1000,
+                "emitRate": 100.0,
+                "playOnStop": true,
+                "emissionShape": 1,
+                "radiusMin": -0.10000000149011612,
+                "radiusMax": 0.20000000298023225,
+                "lengthMin": 0.0,
+                "lengthMax": 5.0,
+                "areaMin": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "areaMax": {
+                    "x": 5.0,
+                    "y": 5.0
+                },
+                "startLifeMin": 1.0,
+                "startLifeMax": 1.0,
+                "startSpeedMin": 1.0,
+                "startSpeedMax": 1.0,
+                "uniformSize": true,
+                "startSizeXMin": 1.25,
+                "startSizeXMax": 3.25,
+                "startSizeYMin": 1.25,
+                "startSizeYMax": 3.25,
+                "sizeOverTime": 0.0,
+                "rotationOverTime": 0.0,
+                "startRotationMin": 0.0,
+                "startRotationMax": 0.0,
+                "startColor": {
+                    "x": 0.6117647290229797,
+                    "y": 0.4274510145187378,
+                    "z": 0.30588236451148989,
+                    "w": 1.0
+                },
+                "endColor": {
+                    "x": 0.3803921639919281,
+                    "y": 0.3607843220233917,
+                    "z": 0.3607843220233917,
+                    "w": 0.0
+                },
+                "gravity": {
+                    "x": 0.0,
+                    "y": -9.800000190734864,
+                    "z": 0.0
+                },
+                "startVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "useTexture": false,
+                "textureName": "",
+                "textureUV": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
             }
         },
         {
@@ -21142,6 +21264,110 @@
             }
         },
         {
+            "active": true,
+            "name": "LandingDust",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -95.71543884277344,
+                    "y": -76.66516876220703,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 140.97999572753907,
+                    "y": 101.0
+                }
+            },
+            "parent": {
+                "parentName": "Player",
+                "localPos": {
+                    "x": 0.016148703172802926,
+                    "y": -0.4811890125274658,
+                    "z": -50.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1.0069999694824219,
+                    "y": 1.0099999904632569
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "particle": {
+                "isEmitting": false,
+                "useWorldSpace": true,
+                "maxParticles": 1000,
+                "emitRate": 100.0,
+                "playOnStop": true,
+                "emissionShape": 1,
+                "radiusMin": -0.10000000149011612,
+                "radiusMax": 0.20000000298023225,
+                "lengthMin": 0.0,
+                "lengthMax": 5.0,
+                "areaMin": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "areaMax": {
+                    "x": 5.0,
+                    "y": 5.0
+                },
+                "startLifeMin": 1.0,
+                "startLifeMax": 1.0,
+                "startSpeedMin": 1.0,
+                "startSpeedMax": 1.0,
+                "uniformSize": true,
+                "startSizeXMin": 1.25,
+                "startSizeXMax": 3.25,
+                "startSizeYMin": 1.25,
+                "startSizeYMax": 3.25,
+                "sizeOverTime": 0.0,
+                "rotationOverTime": 0.0,
+                "startRotationMin": 0.0,
+                "startRotationMax": 0.0,
+                "startColor": {
+                    "x": 0.6117647290229797,
+                    "y": 0.4274510145187378,
+                    "z": 0.30588236451148989,
+                    "w": 1.0
+                },
+                "endColor": {
+                    "x": 0.3803921639919281,
+                    "y": 0.3607843220233917,
+                    "z": 0.3607843220233917,
+                    "w": 0.0
+                },
+                "gravity": {
+                    "x": 0.0,
+                    "y": -9.800000190734864,
+                    "z": 0.0
+                },
+                "startVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "useTexture": false,
+                "textureName": "",
+                "textureUV": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            }
+        },
+        {
             "active": false,
             "name": "GameOverScreen",
             "tag": {
@@ -21228,7 +21454,7 @@
                     {
                         "className": "GameOverUI",
                         "fields": {
-                            "currentSceneName": "descentgame",
+                            "currentSceneName": "tutorial",
                             "mainMenuScene": "descentmenu"
                         }
                     }
@@ -21241,7 +21467,7 @@
         },
         {
             "active": true,
-            "name": "RestartLevelButton",
+            "name": "RestartLevelButton2",
             "tag": {
                 "tagMask": 0
             },
@@ -21309,7 +21535,7 @@
                     "x": 0.0,
                     "y": 0.0,
                     "z": 0.0,
-                    "w": 0.699999988079071
+                    "w": 0.0
                 },
                 "textNormalColor": {
                     "x": 0.30000001192092898,
@@ -21321,13 +21547,13 @@
                     "x": 0.0,
                     "y": 0.0,
                     "z": 0.0,
-                    "w": 0.0
+                    "w": 0.5059760808944702
                 },
                 "textPressedColor": {
                     "x": 0.0,
                     "y": 0.0,
                     "z": 0.0,
-                    "w": 0.5
+                    "w": 0.0
                 },
                 "textureNormal": "UI/settings/updated restart large.png",
                 "textureHovered": "UI/settings/updated restart large.png",
@@ -21370,7 +21596,7 @@
         },
         {
             "active": true,
-            "name": "QuitButton",
+            "name": "QuitButton2",
             "tag": {
                 "tagMask": 0
             },

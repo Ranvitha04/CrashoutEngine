@@ -35,7 +35,7 @@ namespace CrashoutsEngine
 
         public override void Start()
         {
-            Console.WriteLine("[GameOverUI] Initializing...");
+            Debug.Log("[GameOverUI] Initializing...");
 
             // 1. FIND SCREENS
             gameOverScreen = Entity.Find("GameOverScreen");
@@ -47,14 +47,14 @@ namespace CrashoutsEngine
             restartCheckScreen = Entity.Find("RestartCheck2");
 
             // 2. FIND GAME OVER BUTTONS
-            btnGORestart = Entity.Find("RestartLevelButton");
-            btnGOQuit = Entity.Find("QuitButton");
+            btnGORestart = Entity.Find("RestartLevelButton2");
+            btnGOQuit = Entity.Find("QuitButton2");
             btnYes2 = Entity.Find("Yes2");
             btnNo2 = Entity.Find("No2");
 
             // 3. FIND WIN BUTTONS
             btnWinReturn = Entity.Find("ReturnBtn");
-            btnWinQuit = Entity.Find("QuitBtn");
+            btnWinQuit = Entity.Find("QuitButton3");
 
             // 4. INIT SUB-MENUS
             SetEntityActive(restartCheckScreen, false);
@@ -71,7 +71,7 @@ namespace CrashoutsEngine
 
             // --- 1. HANDLE GAME OVER SCREEN ---
             // We check Z > 0 because PlayerMovement shows it by moving Z, not SetActive
-            if (gameOverTf != null && gameOverTf.Position.z > 0.0f)
+            if (gameOverTf != null)
             {
                 if (isRestartCheckOpen)
                 {
@@ -84,7 +84,7 @@ namespace CrashoutsEngine
             }
 
             // --- 2. HANDLE WIN SCREEN ---
-            if (winTf != null && winTf.Position.z > 0.0f)
+            if (winTf != null)
             {
                 HandleWinMain();
             }
@@ -98,6 +98,7 @@ namespace CrashoutsEngine
         {
             if (CheckButtonClick(btnGORestart))
             {
+                Debug.Log("press");
                 OpenRestartCheck();
             }
             else if (CheckButtonClick(btnGOQuit))
@@ -112,8 +113,8 @@ namespace CrashoutsEngine
             if (CheckButtonClick(btnYes2))
             {
                 // RELOAD LEVEL
-                Console.WriteLine("[GameOverUI] Restarting...");
-                if (string.IsNullOrEmpty(currentSceneName)) currentSceneName = "Level1";
+                Debug.Log("[GameOverUI] Restarting...");
+                if (string.IsNullOrEmpty(currentSceneName)) currentSceneName = "tutorial";
                 SceneManager.LoadScene(currentSceneName, 1.0f);
             }
             else if (CheckButtonClick(btnNo2))
@@ -144,12 +145,12 @@ namespace CrashoutsEngine
         {
             if (CheckButtonClick(btnWinReturn))
             {
-                Console.WriteLine("[WinUI] Returning to Menu...");
+                Debug.Log("[WinUI] Returning to Menu...");
                 SceneManager.LoadScene(mainMenuScene);
             }
             else if (CheckButtonClick(btnWinQuit))
             {
-                Console.WriteLine("[WinUI] Quitting App...");
+                Debug.Log("[WinUI] Quitting App...");
                 SceneManager.QuitGame();
             }
         }
