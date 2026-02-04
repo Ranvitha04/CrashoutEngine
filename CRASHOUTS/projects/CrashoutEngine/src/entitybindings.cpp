@@ -20,6 +20,7 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 
 #include "collidercomponent.h"
 #include "entitybindings.h"
+#include "activecomponent.h"
 
 namespace CrashoutsEngine::Bindings
 {
@@ -67,6 +68,7 @@ namespace CrashoutsEngine::Bindings
 
         return std::numeric_limits<uint32_t>::max(); // Not found
     }
+   
 
 	// add component functions
     static void InternalAddTransform(uint32_t entityID)
@@ -144,6 +146,8 @@ namespace CrashoutsEngine::Bindings
         mono_add_internal_call("CrashoutsEngine.InternalCalls::RemoveTransform", (const void*)InternalRemoveTransform);
         mono_add_internal_call("CrashoutsEngine.InternalCalls::RemoveRigidBody", (const void*)InternalRemoveRigidBody);
         mono_add_internal_call("CrashoutsEngine.InternalCalls::RemoveCollider", (const void*)InternalRemoveCollider);
+        mono_add_internal_call("CrashoutsEngine.InternalCalls::SetActive", (const void*)InternalSetActive);
+        mono_add_internal_call("CrashoutsEngine.InternalCalls::GetActive", (const void*)InternalGetActive);
 
         mono_add_internal_call("CrashoutsEngine.InternalCalls::FindEntityByName", (const void*)InternalFindEntityByName);
 

@@ -90,7 +90,7 @@ namespace CrashoutsEngine
                 transform.Position = new CEVec3(transform.Position.x, newY, transform.Position.z);
                 Debug.Log("Stepped on Pressure Plate!");
 
-                AudioManager.GetInstance().Play("pressureplate");
+                AudioManager.GetInstance().PlayAttached("Switch", Entity.ID);
 
                 stepOn = true;
 

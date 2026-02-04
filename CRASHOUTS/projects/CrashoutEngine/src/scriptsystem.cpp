@@ -7,7 +7,6 @@
 All content � 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 */
-//#include "aibindings.h"
 #include "animatorbindings.h"
 #include "colliderbindings.h"
 #include "collidereventbindings.h"
@@ -28,6 +27,7 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 #include "shapebindings.h"
 #include "activecomponent.h"
 #include "videobindings.h"
+#include "particleComponent.h"
 #include <mono/metadata/attrdefs.h>
 #include "collidereventmanager.h"
 
@@ -235,6 +235,15 @@ namespace CrashoutsEngine
 		return nullptr;
 	}
 
+	static void InternalSetParticleEmitting(uint32_t entityID, bool emitting) {
+		auto* ecs = ECS::getInstance();
+		if (!ecs) return;
+		if (!ecs->HasComponent<Component::ParticleComponent>(entityID)) return;
+		auto* comp = ecs->GetComponent<Component::ParticleComponent>(entityID);
+		if (!comp) return;
+		comp->isEmitting = emitting;
+	}
+
 	void ScriptSystem::RegisterAllBindings()
 	{
         Bindings::RegisterTransformBindings();
@@ -256,6 +265,7 @@ namespace CrashoutsEngine
         Bindings::RegisterVideoBindings();
 
 		mono_add_internal_call("CrashoutsEngine.InternalCalls::GetScript", (const void*)InternalGetScript);
+		mono_add_internal_call("CrashoutsEngine.InternalCalls::Particle_SetEmitting", (const void*)InternalSetParticleEmitting);
 	}
 
 

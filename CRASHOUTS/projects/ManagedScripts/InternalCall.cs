@@ -29,7 +29,7 @@ namespace CrashoutsEngine
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal static extern void TransformGetSize(ulong entityID, out CEVec2 size);
-
+        
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal static extern void TransformSetSize(ulong entityID, ref CEVec2 size);
 
@@ -237,6 +237,8 @@ namespace CrashoutsEngine
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal static extern void Video_Load(uint entityID, string path);
 
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern void Particle_SetEmitting(uint entityID, bool emitting);
         // Active Component
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal static extern void SetActive(uint entityID, bool isActive);
