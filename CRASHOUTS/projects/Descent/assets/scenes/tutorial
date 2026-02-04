@@ -3622,6 +3622,16 @@
                     },
                     {
                         "x": 12,
+                        "y": -6,
+                        "asset": ""
+                    },
+                    {
+                        "x": 12,
+                        "y": -5,
+                        "asset": ""
+                    },
+                    {
+                        "x": 12,
                         "y": -4,
                         "asset": "tilemaps/Rock"
                     },
@@ -3703,12 +3713,7 @@
                     {
                         "x": 13,
                         "y": -6,
-                        "asset": "tilemaps/Rock"
-                    },
-                    {
-                        "x": 13,
-                        "y": -5,
-                        "asset": "tilemaps/Rock"
+                        "asset": ""
                     },
                     {
                         "x": 13,
@@ -3809,16 +3814,6 @@
                         "x": 14,
                         "y": -16,
                         "asset": ""
-                    },
-                    {
-                        "x": 14,
-                        "y": -6,
-                        "asset": "tilemaps/Rock"
-                    },
-                    {
-                        "x": 14,
-                        "y": -5,
-                        "asset": "tilemaps/Rock"
                     },
                     {
                         "x": 14,
@@ -3928,12 +3923,7 @@
                     {
                         "x": 15,
                         "y": -7,
-                        "asset": "tilemaps/Rock"
-                    },
-                    {
-                        "x": 15,
-                        "y": -6,
-                        "asset": "tilemaps/Rock"
+                        "asset": ""
                     },
                     {
                         "x": 15,
@@ -4048,12 +4038,7 @@
                     {
                         "x": 16,
                         "y": -7,
-                        "asset": "tilemaps/Rock"
-                    },
-                    {
-                        "x": 16,
-                        "y": -6,
-                        "asset": "tilemaps/Rock"
+                        "asset": ""
                     },
                     {
                         "x": 16,
@@ -4178,12 +4163,7 @@
                     {
                         "x": 17,
                         "y": -7,
-                        "asset": "tilemaps/Rock"
-                    },
-                    {
-                        "x": 17,
-                        "y": -6,
-                        "asset": "tilemaps/Rock"
+                        "asset": ""
                     },
                     {
                         "x": 17,
@@ -4303,12 +4283,7 @@
                     {
                         "x": 18,
                         "y": -7,
-                        "asset": "tilemaps/Rock"
-                    },
-                    {
-                        "x": 18,
-                        "y": -6,
-                        "asset": "tilemaps/Rock"
+                        "asset": ""
                     },
                     {
                         "x": 18,
@@ -4437,11 +4412,6 @@
                     },
                     {
                         "x": 19,
-                        "y": -6,
-                        "asset": "tilemaps/Rock"
-                    },
-                    {
-                        "x": 19,
                         "y": -5,
                         "asset": "tilemaps/Rock"
                     },
@@ -4564,11 +4534,6 @@
                         "x": 20,
                         "y": -16,
                         "asset": ""
-                    },
-                    {
-                        "x": 20,
-                        "y": -6,
-                        "asset": "tilemaps/Rock"
                     },
                     {
                         "x": 20,
@@ -4703,7 +4668,7 @@
                     {
                         "x": 21,
                         "y": -6,
-                        "asset": "tilemaps/Rock"
+                        "asset": ""
                     },
                     {
                         "x": 21,
@@ -4853,7 +4818,7 @@
                     {
                         "x": 22,
                         "y": -6,
-                        "asset": "tilemaps/Rock"
+                        "asset": ""
                     },
                     {
                         "x": 22,
@@ -4998,7 +4963,7 @@
                     {
                         "x": 23,
                         "y": -6,
-                        "asset": "tilemaps/Rock"
+                        "asset": ""
                     },
                     {
                         "x": 23,
@@ -5103,7 +5068,7 @@
                     {
                         "x": 24,
                         "y": -6,
-                        "asset": "tilemaps/Rock"
+                        "asset": ""
                     },
                     {
                         "x": 24,
@@ -9676,8 +9641,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -115.01436614990235,
-                    "y": 4.5588836669921879,
+                    "x": 733.9088745117188,
+                    "y": -336.6295166015625,
                     "z": 50.0
                 },
                 "size": {
@@ -9703,8 +9668,8 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": -115.01436614990235,
-                    "y": -0.4411163330078125,
+                    "x": 733.9088745117188,
+                    "y": -341.6295166015625,
                     "z": 50.0
                 },
                 "offset": {
@@ -9713,13 +9678,13 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": -133.81442260742188,
-                    "y": -30.941116333007814,
+                    "x": 715.1088256835938,
+                    "y": -372.1295166015625,
                     "z": 50.0
                 },
                 "max": {
-                    "x": -96.21430969238281,
-                    "y": 30.058883666992189,
+                    "x": 752.7089233398438,
+                    "y": -311.1295166015625,
                     "z": 50.0
                 }
             },
@@ -9786,7 +9751,7 @@
                             "footstepInterval": 0.07500000298023224,
                             "swapPause": 1.0,
                             "energyConsumption": 12.5,
-                            "goalNoOfPlates": 1.0,
+                            "goalNoOfPlates": 2.0,
                             "currentGoalPlates": 0,
                             "normalMass": 3.0,
                             "lightMass": 2.0,
@@ -9861,37 +9826,6 @@
                 "playing": true,
                 "clips": [
                     {
-                        "name": "playerFall",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
-                        "spriteCols": 2,
-                        "spriteRows": 1,
-                        "useCustomSize": true,
-                        "targetWidth": 140.0,
-                        "targetHeight": 100.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
                         "name": "playerWalk",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Run\\Run spritesheet.png",
@@ -9944,7 +9878,7 @@
                         ]
                     },
                     {
-                        "name": "playerFallLight",
+                        "name": "playerFall",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
                         "spriteCols": 2,
@@ -9958,14 +9892,14 @@
                                 "keys": [
                                     {
                                         "t": 0.0,
-                                        "v": 1.0,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
                                         "t": 0.25,
-                                        "v": 1.0,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -10018,6 +9952,37 @@
                                     {
                                         "t": 1.0,
                                         "v": 7.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "playerFallLight",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
+                        "spriteCols": 2,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 140.0,
+                        "targetHeight": 100.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 1.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -12504,7 +12469,7 @@
                         "className": "MovingWall",
                         "fields": {
                             "PlatesActive": 0,
-                            "PlatesRequired": 2,
+                            "PlatesRequired": 1,
                             "MoveRight": true,
                             "MoveDist": 300.0,
                             "MoveSpeed": 75.0
@@ -12711,7 +12676,7 @@
                         "className": "MovingWall",
                         "fields": {
                             "PlatesActive": 0,
-                            "PlatesRequired": 1,
+                            "PlatesRequired": 2,
                             "MoveRight": false,
                             "MoveDist": 250.0,
                             "MoveSpeed": 75.0
@@ -12849,7 +12814,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 894.6261596679688,
+                    "x": 1039.514404296875,
                     "y": -357.0424499511719,
                     "z": 0.0
                 },
@@ -12876,7 +12841,7 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 894.6261596679688,
+                    "x": 1039.514404296875,
                     "y": -357.0424499511719,
                     "z": 0.0
                 },
@@ -12886,12 +12851,12 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 844.6262817382813,
+                    "x": 989.5145263671875,
                     "y": -365.0424499511719,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 944.6260375976563,
+                    "x": 1089.5142822265626,
                     "y": -349.0424499511719,
                     "z": 0.0
                 }
@@ -12937,8 +12902,8 @@
                         "fields": {
                             "IsMoving": true,
                             "MoveRight": true,
-                            "MovementDistance": 100.0,
-                            "MoveSpeed": 20.0,
+                            "MovementDistance": -100.0,
+                            "MoveSpeed": 50.0,
                             "VerticalSpeed": 0.0,
                             "maxDrop": 0.0
                         }
@@ -13048,7 +13013,7 @@
                             "IsMoving": true,
                             "MoveRight": true,
                             "MovementDistance": 100.0,
-                            "MoveSpeed": 20.0,
+                            "MoveSpeed": 50.0,
                             "VerticalSpeed": 0.0,
                             "maxDrop": 0.0
                         }
@@ -13070,7 +13035,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": 237.3817138671875,
-                    "y": -324.79510498046877,
+                    "y": -317.8236083984375,
                     "z": 0.0
                 },
                 "size": {
@@ -13097,7 +13062,7 @@
                 "enabled": true,
                 "position": {
                     "x": 237.3817138671875,
-                    "y": -324.79510498046877,
+                    "y": -317.8236083984375,
                     "z": 0.0
                 },
                 "offset": {
@@ -13107,12 +13072,12 @@
                 },
                 "min": {
                     "x": 187.3817138671875,
-                    "y": -332.79510498046877,
+                    "y": -325.8236083984375,
                     "z": 0.0
                 },
                 "max": {
                     "x": 287.3817138671875,
-                    "y": -316.79510498046877,
+                    "y": -309.8236083984375,
                     "z": 0.0
                 }
             },
@@ -13157,8 +13122,8 @@
                         "fields": {
                             "IsMoving": true,
                             "MoveRight": true,
-                            "MovementDistance": 100.0,
-                            "MoveSpeed": 20.0,
+                            "MovementDistance": 350.0,
+                            "MoveSpeed": 50.0,
                             "VerticalSpeed": 50.0,
                             "maxDrop": 50.0
                         }
@@ -13879,8 +13844,8 @@
                             "MoveRight": true,
                             "MovementDistance": 100.0,
                             "MoveSpeed": 20.0,
-                            "VerticalSpeed": 0.0,
-                            "maxDrop": 0.0
+                            "VerticalSpeed": 50.0,
+                            "maxDrop": 50.0
                         }
                     }
                 ]
@@ -15476,8 +15441,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -115.01436614990235,
-                    "y": 62.928794860839847,
+                    "x": 733.9088745117188,
+                    "y": -278.2596130371094,
                     "z": 50.0
                 },
                 "size": {
@@ -15593,8 +15558,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -115.01436614990235,
-                    "y": 62.928794860839847,
+                    "x": 733.9088745117188,
+                    "y": -278.2596130371094,
                     "z": 50.0
                 },
                 "size": {
@@ -15710,8 +15675,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -115.01436614990235,
-                    "y": 62.928794860839847,
+                    "x": 733.9088745117188,
+                    "y": -278.2596130371094,
                     "z": 50.0
                 },
                 "size": {
@@ -15827,8 +15792,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -115.01436614990235,
-                    "y": 62.928794860839847,
+                    "x": 733.9088745117188,
+                    "y": -278.2596130371094,
                     "z": 50.0
                 },
                 "size": {
@@ -15944,8 +15909,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 170.7799072265625,
-                    "y": -194.7986602783203,
+                    "x": 1019.703125,
+                    "y": -535.987060546875,
                     "z": 50.0
                 },
                 "size": {
@@ -16072,7 +16037,7 @@
             },
             "text": {
                 "font": "AlegreyaSC-Medium",
-                "text": "Activated Pressure PLates: [0/1]",
+                "text": "Activated Pressure PLates: [0/2]",
                 "scale": 22.5,
                 "offset": {
                     "x": 0.0,
@@ -18156,7 +18121,7 @@
         },
         {
             "active": true,
-            "name": "PressurePlate1",
+            "name": "WinPressurePlate2",
             "tag": {
                 "tagMask": 2
             },
@@ -18228,9 +18193,9 @@
                     "y": 0.0
                 },
                 "color": {
-                    "x": 1.0,
-                    "y": 0.4274509847164154,
-                    "z": 0.9490196108818054,
+                    "x": 0.4274510145187378,
+                    "y": 0.7468010187149048,
+                    "z": 1.0,
                     "w": 1.0
                 },
                 "p1": {
@@ -18250,7 +18215,8 @@
                         "className": "PressurePlate",
                         "fields": {
                             "decrease": 5.0,
-                            "wallName": "wall"
+                            "goalTextName": "GoalText",
+                            "wallName": "wall2"
                         }
                     }
                 ]
@@ -18374,8 +18340,8 @@
                 },
                 "color": {
                     "x": 1.0,
-                    "y": 0.42629480361938479,
-                    "z": 0.9474294781684876,
+                    "y": 1.0,
+                    "z": 1.0,
                     "w": 1.0
                 },
                 "p1": {

@@ -20,7 +20,7 @@ namespace CrashoutsEngine
         public float footstepInterval = 0.075f;
         public float swapPause = 1f;
         public float energyConsumption = 12.5f;
-        public float goalNoOfPlates = 1;
+        public int goalNoOfPlates = 1;
         public int currentGoalPlates = 0;
 
         public float normalMass = 7.0f;
@@ -111,34 +111,34 @@ namespace CrashoutsEngine
             if (isPaused || !alive) return;
 
             // --- 2. DIALOGUE GATEKEEPER ---
-            if (!hasDialogueStarted)
-            {
-                // Wait for scene transition to finish (fade in complete)
-                if (!SceneManager.IsTransitioning())
-                {
-                    hasDialogueStarted = true;
-                    isDialogueActive = true;
-                    currentDialogueIndex = 0;
-                    dialogueTimer = 0.0f;
+            //if (!hasDialogueStarted)
+            //{
+            //    // Wait for scene transition to finish (fade in complete)
+            //    if (!SceneManager.IsTransitioning())
+            //    {
+            //        hasDialogueStarted = true;
+            //        isDialogueActive = true;
+            //        currentDialogueIndex = 0;
+            //        dialogueTimer = 0.0f;
 
-                    // Activate the first dialogue immediately
-                    if (dialogueEntities[0] != null)
-                    {
-                        InternalCalls.SetActive(dialogueEntities[0].ID, true);
-                    }
-                }
-            }
+            //        // Activate the first dialogue immediately
+            //        if (dialogueEntities[0] != null)
+            //        {
+            //            InternalCalls.SetActive(dialogueEntities[0].ID, true);
+            //        }
+            //    }
+            //}
 
             // If dialogue is playing, run the sequence and SKIP normal movement
-            if (isDialogueActive)
-            {
-                HandleDialogueSequence();
+            //if (isDialogueActive)
+            //{
+            //    HandleDialogueSequence();
 
-                // Force physics/anim to idle so player doesn't glide
-                horizontalInput = 0f;
-                UpdateAnimationState(false);
-                return; // STOP EXECUTION HERE
-            }
+            //    // Force physics/anim to idle so player doesn't glide
+            //    horizontalInput = 0f;
+            //    UpdateAnimationState(false);
+            //    return; // STOP EXECUTION HERE
+            //}
 
             // 1. HANDLE STATE SWITCH
             if (swapPauseTimer > 0.0f)

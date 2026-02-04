@@ -8,10 +8,13 @@ namespace CrashoutsEngine
     {
         [SerializeField]
         bool IsMoving = true;
+
         [SerializeField]
-        bool MoveRight = true; // TRUE = Horizontal + Weighted. FALSE = Vertical + Rigid.
+        bool MoveRight = true; // TRUE = Horizontal Mode. FALSE = Vertical Mode.
+
         [SerializeField]
-        float MovementDistance = 100.0f;
+        float MovementDistance = 100.0f; // Can now be negative (e.g. -100 to move Left/Down)
+
         [SerializeField]
         float MoveSpeed = 20.0f;
 
@@ -45,7 +48,7 @@ namespace CrashoutsEngine
                 startPos = transform.Position;
 
                 // ---------------------------------------------------------
-                // CHANGED: Determine End Position based on Mode
+                // Determine End Position (Works for negative distances now)
                 // ---------------------------------------------------------
                 if (MoveRight)
                 {
@@ -54,7 +57,7 @@ namespace CrashoutsEngine
                 }
                 else
                 {
-                    // Vertical Mode (Up/Down)
+                    // Vertical Mode
                     endPos = new CEVec3(startPos.x, startPos.y + MovementDistance, startPos.z);
                 }
             }
@@ -66,7 +69,6 @@ namespace CrashoutsEngine
 
         public void OnCollideStay(uint otherEntityID)
         {
-            Debug.Log("cock");
             Entity other = new Entity(otherEntityID);
             var Tag = other.GetComponent<TagComponent>();
 
@@ -93,58 +95,88 @@ namespace CrashoutsEngine
 
         public override void Update()
         {
-            if(playerScript != null && playerScript.isPaused) { return; }
+            if (playerScript != null && playerScript.isPaused) { return; }
             if (transform == null) return;
 
             float dt = (float)Time.DT;
             CEVec3 previousPlatformPos = transform.Position;
-            float step = MoveSpeed * dt;
 
-            // We calculate the "Next" positions relative to the start
+            // Get Direction (1 for Positive/Right/Up, -1 for Negative/Left/Down)
+            float dirSign = Math.Sign(MovementDistance);
+            if (dirSign == 0) dirSign = 1; // Safety
+
+            float step = MoveSpeed * dt * dirSign; // Step now includes direction!
+
+            // "Next" positions relative to start
             float nextX = transform.Position.x;
-            float nextY = transform.Position.y; // This will act as the "Base Y" for vertical movement
+            float nextY = transform.Position.y;
 
             // ---------------------------------------------------------
-            // 1. Movement Logic (Split by Type)
+            // 1. Movement Logic (Direction Aware)
             // ---------------------------------------------------------
             if (IsMoving)
             {
                 // TYPE A: Horizontal Movement (Left/Right)
                 if (MoveRight)
                 {
-                    // Keep Y at start (The sinking logic below will modify it later)
-                    nextY = startPos.y;
+                    nextY = startPos.y; // Reset to base Y (sink logic adds offset later)
 
                     if (movingForward)
                     {
-                        nextX += step;
-                        if (nextX >= endPos.x) movingForward = false;
+                        nextX += step; // Add step (which might be negative)
+
+                        // Check if we passed the End Position
+                        // If Dist > 0 (Right), check >=. If Dist < 0 (Left), check <=.
+                        if ((MovementDistance > 0 && nextX >= endPos.x) ||
+                            (MovementDistance < 0 && nextX <= endPos.x))
+                        {
+                            nextX = endPos.x;
+                            movingForward = false;
+                        }
                     }
                     else
                     {
-                        nextX -= step;
-                        if (nextX <= startPos.x) movingForward = true;
+                        nextX -= step; // Subtract step to return
+
+                        // Check if we passed Start Position
+                        // If Dist > 0 (Right), returning goes Left (<).
+                        // If Dist < 0 (Left), returning goes Right (>).
+                        if ((MovementDistance > 0 && nextX <= startPos.x) ||
+                            (MovementDistance < 0 && nextX >= startPos.x))
+                        {
+                            nextX = startPos.x;
+                            movingForward = true;
+                        }
                     }
                 }
                 // TYPE B: Vertical Movement (Up/Down)
                 else
                 {
-                    // Keep X at start
                     nextX = startPos.x;
 
                     if (movingForward)
                     {
                         nextY += step;
-                        // Check bounds (Handle both Upward and Downward movement distances)
-                        if (MovementDistance > 0 && nextY >= endPos.y) movingForward = false;
-                        else if (MovementDistance < 0 && nextY <= endPos.y) movingForward = false;
+
+                        // Check bounds (Handle Up vs Down)
+                        if ((MovementDistance > 0 && nextY >= endPos.y) ||
+                            (MovementDistance < 0 && nextY <= endPos.y))
+                        {
+                            nextY = endPos.y;
+                            movingForward = false;
+                        }
                     }
                     else
                     {
                         nextY -= step;
+
                         // Check bounds
-                        if (MovementDistance > 0 && nextY <= startPos.y) movingForward = true;
-                        else if (MovementDistance < 0 && nextY >= startPos.y) movingForward = true;
+                        if ((MovementDistance > 0 && nextY <= startPos.y) ||
+                            (MovementDistance < 0 && nextY >= startPos.y))
+                        {
+                            nextY = startPos.y;
+                            movingForward = true;
+                        }
                     }
                 }
             }
@@ -152,9 +184,6 @@ namespace CrashoutsEngine
             // ---------------------------------------------------------
             // 2. Weight Logic (Sinking)
             // ---------------------------------------------------------
-            // CHANGED: Only apply sinking if we are in Horizontal Mode (MoveRight == true).
-            // If moving Up/Down automatically, we ignore the player's mass.
-
             float totalY = nextY;
 
             if (MoveRight)
@@ -163,6 +192,7 @@ namespace CrashoutsEngine
 
                 if (playerOnBoard && playerRb != null && PlayerMovement.Instance != null)
                 {
+                    // Check if player is heavy enough
                     if (playerRb.Mass >= (PlayerMovement.Instance.normalMass - 0.1f))
                     {
                         targetYOffset = -maxDrop;
