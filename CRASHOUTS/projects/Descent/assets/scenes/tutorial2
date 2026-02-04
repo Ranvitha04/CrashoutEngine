@@ -2315,21 +2315,25 @@
                             "acceleration": 10.0,
                             "deceleration": 10.0,
                             "airAcceleration": 2.0,
-                            "jumpPower": 40000.0,
+                            "jumpPower": 20000.0,
                             "gravityScale": 2.5,
                             "gravityForceMultiplier": 10.0,
                             "footstepInterval": 0.07500000298023224,
                             "swapPause": 1.0,
                             "energyConsumption": 12.5,
-                            "normalMass": 3.0,
-                            "lightMass": 2.0,
+                            "normalMass": 7.0,
+                            "lightMass": 4.5,
                             "groundCheckDistance": 26.0,
                             "groundCheckWidth": 10.0,
-                            "CurrentEnergy": 100.0,
+                            "CurrentEnergy": 0.0,
                             "MaxEnergy": 100.0,
                             "alive": true,
                             "isPaused": false
                         }
+                    },
+                    {
+                        "className": "BookUIController",
+                        "fields": {}
                     }
                 ]
             },
@@ -3572,6 +3576,3580 @@
             "layer": {
                 "layerName": "",
                 "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "ResumeBtnGame",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -25.228269577026368,
+                    "y": 5.62193489074707,
+                    "z": 3.5999999046325685
+                },
+                "size": {
+                    "x": 0.36500105261802676,
+                    "y": 0.04500000178813934
+                }
+            },
+            "collider": {
+                "ColliderType": 1,
+                "isTrigger": false,
+                "enabled": true,
+                "position": {
+                    "x": -25.228269577026368,
+                    "y": 5.62193489074707,
+                    "z": 3.5999999046325685
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": -52.728271484375,
+                    "y": -3.3780651092529299,
+                    "z": 3.5999999046325685
+                },
+                "max": {
+                    "x": 2.271730422973633,
+                    "y": 14.62193489074707,
+                    "z": 3.5999999046325685
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.0,
+                    "y": 0.38823530077934267,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "text": {
+                "font": "AlegreyaSC-ExtraBold",
+                "text": "Resume",
+                "scale": 100.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.0,
+                    "y": 0.38823530077934267,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": false,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": false,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 0.0,
+                "lineSpacing": 0.0,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "MenuButtons",
+                        "fields": {}
+                    }
+                ]
+            },
+            "button": {
+                "buttonState": 0,
+                "shapeNormalColor": {
+                    "x": 0.0,
+                    "y": 0.38823530077934267,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "shapeHoveredColor": {
+                    "x": 0.0,
+                    "y": 0.38823530077934267,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "shapePressedColor": {
+                    "x": 0.0,
+                    "y": 0.38823530077934267,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "textNormalColor": {
+                    "x": 0.0,
+                    "y": 0.38823530077934267,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "textHoveredColor": {
+                    "x": 0.0,
+                    "y": 0.38823530077934267,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "textPressedColor": {
+                    "x": 0.0,
+                    "y": 0.38823530077934267,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "gui": {
+                "uiType": 14
+            },
+            "textinput": {
+                "isFocused": false,
+                "cursorPos": 0,
+                "maxCharacters": 255
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "uiLayout": 4
+            },
+            "layer": {
+                "layerName": "Player",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "ClosedBookprefab",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -30.755054473876954,
+                    "y": 15.995244979858399,
+                    "z": -0.8999999761581421
+                },
+                "size": {
+                    "x": 368.2608337402344,
+                    "y": 200.0
+                }
+            },
+            "collider": {
+                "ColliderType": 1,
+                "isTrigger": false,
+                "enabled": true,
+                "position": {
+                    "x": -30.755054473876954,
+                    "y": 15.995244979858399,
+                    "z": -0.8999999761581421
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": -214.88546752929688,
+                    "y": -84.00475311279297,
+                    "z": -0.8999999761581421
+                },
+                "max": {
+                    "x": 153.3753662109375,
+                    "y": 115.99524688720703,
+                    "z": -0.8999999761581421
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/Pause Menu Closed.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": -0.10000000149011612
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "button": {
+                "buttonState": 0,
+                "shapeNormalColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "shapeHoveredColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.5
+                },
+                "shapePressedColor": {
+                    "x": 0.699999988079071,
+                    "y": 0.699999988079071,
+                    "z": 0.699999988079071,
+                    "w": 0.699999988079071
+                },
+                "textNormalColor": {
+                    "x": 0.30000001192092898,
+                    "y": 0.30000001192092898,
+                    "z": 0.30000001192092898,
+                    "w": 0.699999988079071
+                },
+                "textHoveredColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.0
+                },
+                "textPressedColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.5
+                }
+            },
+            "layer": {
+                "layerName": "UI",
+                "z": 100
+            }
+        },
+        {
+            "active": false,
+            "name": "OpenBook",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 7.097816467285156,
+                    "y": 15.995244979858399,
+                    "z": 0.8999999761581421
+                },
+                "size": {
+                    "x": 368.2608337402344,
+                    "y": 200.0
+                }
+            },
+            "collider": {
+                "ColliderType": 1,
+                "isTrigger": false,
+                "enabled": true,
+                "position": {
+                    "x": 7.097816467285156,
+                    "y": 15.995244979858399,
+                    "z": 0.8999999761581421
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": -177.0325927734375,
+                    "y": -84.00475311279297,
+                    "z": 0.8999999761581421
+                },
+                "max": {
+                    "x": 191.22824096679688,
+                    "y": 115.99524688720703,
+                    "z": 0.8999999761581421
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/Pause Menu Open.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": -0.10000000149011612
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "button": {
+                "buttonState": 0,
+                "shapeNormalColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "shapeHoveredColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.5
+                },
+                "shapePressedColor": {
+                    "x": 0.699999988079071,
+                    "y": 0.699999988079071,
+                    "z": 0.699999988079071,
+                    "w": 0.699999988079071
+                },
+                "textNormalColor": {
+                    "x": 0.30000001192092898,
+                    "y": 0.30000001192092898,
+                    "z": 0.30000001192092898,
+                    "w": 0.699999988079071
+                },
+                "textHoveredColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.0
+                },
+                "textPressedColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.5
+                }
+            },
+            "layer": {
+                "layerName": "UI",
+                "z": 100
+            }
+        },
+        {
+            "active": true,
+            "name": "Instruction",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 35.92505645751953,
+                    "y": 17.94367218017578,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 54.999996185302737,
+                    "y": 18.0
+                }
+            },
+            "collider": {
+                "ColliderType": 1,
+                "isTrigger": false,
+                "enabled": true,
+                "position": {
+                    "x": 35.92505645751953,
+                    "y": 17.94367218017578,
+                    "z": 0.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": 8.425056457519532,
+                    "y": 8.943672180175782,
+                    "z": 0.0
+                },
+                "max": {
+                    "x": 63.42505645751953,
+                    "y": 26.94367218017578,
+                    "z": 0.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.0,
+                    "y": 0.38823530077934267,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "text": {
+                "font": "AlegreyaSC-ExtraBold",
+                "text": "Instruction",
+                "scale": 50.5,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.5359115600585938,
+                    "y": 0.21807141602039338,
+                    "z": 0.13915936648845673,
+                    "w": 0.699999988079071
+                },
+                "centered": true,
+                "isworldspace": false,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": false,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 0.0,
+                "lineSpacing": 0.0,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "MenuButtons",
+                        "fields": {}
+                    }
+                ]
+            },
+            "gui": {
+                "uiType": 2
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "uiLayout": 4
+            },
+            "parent": {
+                "parentName": "OpenBook",
+                "localPos": {
+                    "x": 0.07827940583229065,
+                    "y": 0.009742136113345623,
+                    "z": -0.8999999761581421
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.14935065805912019,
+                    "y": 0.09000000357627869
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UI",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "SFX",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -26.570003509521486,
+                    "y": -5.202655792236328,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 54.999996185302737,
+                    "y": 18.0
+                }
+            },
+            "collider": {
+                "ColliderType": 1,
+                "isTrigger": false,
+                "enabled": true,
+                "position": {
+                    "x": -26.570003509521486,
+                    "y": -5.202655792236328,
+                    "z": 0.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": -54.070003509521487,
+                    "y": -14.202655792236329,
+                    "z": 0.0
+                },
+                "max": {
+                    "x": 0.9299964904785156,
+                    "y": 3.797344207763672,
+                    "z": 0.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.0,
+                    "y": 0.38823530077934267,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "text": {
+                "font": "AlegreyaSC-ExtraBold",
+                "text": "SFX",
+                "scale": 50.5,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.5359115600585938,
+                    "y": 0.21807141602039338,
+                    "z": 0.13915936648845673,
+                    "w": 0.699999988079071
+                },
+                "centered": true,
+                "isworldspace": false,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": false,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 0.0,
+                "lineSpacing": 0.0,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "MenuButtons",
+                        "fields": {}
+                    }
+                ]
+            },
+            "gui": {
+                "uiType": 2
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "uiLayout": 4
+            },
+            "parent": {
+                "parentName": "OpenBook",
+                "localPos": {
+                    "x": -0.09142383933067322,
+                    "y": -0.1059895008802414,
+                    "z": -0.8999999761581421
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.14935065805912019,
+                    "y": 0.09000000357627869
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UI",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "Music",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -26.570003509521486,
+                    "y": 17.94367218017578,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 54.999996185302737,
+                    "y": 18.0
+                }
+            },
+            "collider": {
+                "ColliderType": 1,
+                "isTrigger": false,
+                "enabled": true,
+                "position": {
+                    "x": -26.570003509521486,
+                    "y": 17.94367218017578,
+                    "z": 0.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": -54.070003509521487,
+                    "y": 8.943672180175782,
+                    "z": 0.0
+                },
+                "max": {
+                    "x": 0.9299964904785156,
+                    "y": 26.94367218017578,
+                    "z": 0.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.0,
+                    "y": 0.38823530077934267,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "text": {
+                "font": "AlegreyaSC-ExtraBold",
+                "text": "Music",
+                "scale": 50.5,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.5359115600585938,
+                    "y": 0.21807141602039338,
+                    "z": 0.13915936648845673,
+                    "w": 0.699999988079071
+                },
+                "centered": true,
+                "isworldspace": false,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": false,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 0.0,
+                "lineSpacing": 0.0,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "MenuButtons",
+                        "fields": {}
+                    }
+                ]
+            },
+            "gui": {
+                "uiType": 2
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "uiLayout": 4
+            },
+            "parent": {
+                "parentName": "OpenBook",
+                "localPos": {
+                    "x": -0.09142383933067322,
+                    "y": 0.009742136113345623,
+                    "z": -0.8999999761581421
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.14935065805912019,
+                    "y": 0.09000000357627869
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UI",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "Instruction",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 23.194622039794923,
+                    "y": 9.842399597167969,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 54.999996185302737,
+                    "y": 18.0
+                }
+            },
+            "collider": {
+                "ColliderType": 1,
+                "isTrigger": false,
+                "enabled": true,
+                "position": {
+                    "x": 23.194622039794923,
+                    "y": 9.842399597167969,
+                    "z": 0.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": -4.305377960205078,
+                    "y": 0.8423995971679688,
+                    "z": 0.0
+                },
+                "max": {
+                    "x": 50.69462203979492,
+                    "y": 18.84239959716797,
+                    "z": 0.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.0,
+                    "y": 0.38823530077934267,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "text": {
+                "font": "AlegreyaSC-ExtraBold",
+                "text": "A & D: Left & Right",
+                "scale": 20.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.5359115600585938,
+                    "y": 0.21807141602039338,
+                    "z": 0.13915936648845673,
+                    "w": 0.699999988079071
+                },
+                "centered": true,
+                "isworldspace": false,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": false,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 0.0,
+                "lineSpacing": 0.0,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "MenuButtons",
+                        "fields": {}
+                    }
+                ]
+            },
+            "gui": {
+                "uiType": 2
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "uiLayout": 4
+            },
+            "parent": {
+                "parentName": "OpenBook",
+                "localPos": {
+                    "x": 0.043710339814424518,
+                    "y": -0.030764227733016015,
+                    "z": -0.8999999761581421
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.14935065805912019,
+                    "y": 0.09000000357627869
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UI",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "Instruction2",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 23.194622039794923,
+                    "y": 4.055908203125,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 54.999996185302737,
+                    "y": 18.0
+                }
+            },
+            "collider": {
+                "ColliderType": 1,
+                "isTrigger": false,
+                "enabled": true,
+                "position": {
+                    "x": 23.194622039794923,
+                    "y": 4.055908203125,
+                    "z": 0.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": -4.305377960205078,
+                    "y": -4.944091796875,
+                    "z": 0.0
+                },
+                "max": {
+                    "x": 50.69462203979492,
+                    "y": 13.055908203125,
+                    "z": 0.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.0,
+                    "y": 0.38823530077934267,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "text": {
+                "font": "AlegreyaSC-ExtraBold",
+                "text": "Q: Switch Modes",
+                "scale": 20.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.5359115600585938,
+                    "y": 0.21807141602039338,
+                    "z": 0.13915936648845673,
+                    "w": 0.699999988079071
+                },
+                "centered": true,
+                "isworldspace": false,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": false,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 0.0,
+                "lineSpacing": 0.0,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "MenuButtons",
+                        "fields": {}
+                    }
+                ]
+            },
+            "gui": {
+                "uiType": 2
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "uiLayout": 4
+            },
+            "parent": {
+                "parentName": "OpenBook",
+                "localPos": {
+                    "x": 0.043710339814424518,
+                    "y": -0.059696685522794726,
+                    "z": -0.8999999761581421
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.14935065805912019,
+                    "y": 0.09000000357627869
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UI",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "Instruction2",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 23.194622039794923,
+                    "y": -0.5734024047851563,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 54.999996185302737,
+                    "y": 18.0
+                }
+            },
+            "collider": {
+                "ColliderType": 1,
+                "isTrigger": false,
+                "enabled": true,
+                "position": {
+                    "x": 23.194622039794923,
+                    "y": -0.5734024047851563,
+                    "z": 0.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": -4.305377960205078,
+                    "y": -9.573402404785157,
+                    "z": 0.0
+                },
+                "max": {
+                    "x": 50.69462203979492,
+                    "y": 8.426597595214844,
+                    "z": 0.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.0,
+                    "y": 0.38823530077934267,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "text": {
+                "font": "AlegreyaSC-ExtraBold",
+                "text": "SPACE: Jump",
+                "scale": 20.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.5359115600585938,
+                    "y": 0.21807141602039338,
+                    "z": 0.13915936648845673,
+                    "w": 0.699999988079071
+                },
+                "centered": true,
+                "isworldspace": false,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": false,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 0.0,
+                "lineSpacing": 0.0,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "MenuButtons",
+                        "fields": {}
+                    }
+                ]
+            },
+            "gui": {
+                "uiType": 2
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "uiLayout": 4
+            },
+            "parent": {
+                "parentName": "OpenBook",
+                "localPos": {
+                    "x": 0.043710339814424518,
+                    "y": -0.08284323662519455,
+                    "z": -0.8999999761581421
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.14935065805912019,
+                    "y": 0.09000000357627869
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UI",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "Instruction2",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 31.295822143554689,
+                    "y": -4.045299530029297,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 54.999996185302737,
+                    "y": 18.0
+                }
+            },
+            "collider": {
+                "ColliderType": 1,
+                "isTrigger": false,
+                "enabled": true,
+                "position": {
+                    "x": 31.295822143554689,
+                    "y": -4.045299530029297,
+                    "z": 0.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": 3.7958221435546877,
+                    "y": -13.045299530029297,
+                    "z": 0.0
+                },
+                "max": {
+                    "x": 58.79582214355469,
+                    "y": 4.954700469970703,
+                    "z": 0.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.0,
+                    "y": 0.38823530077934267,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "text": {
+                "font": "AlegreyaSC-ExtraBold",
+                "text": "LEFT MOUSE: Move Enemies",
+                "scale": 20.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.5359115600585938,
+                    "y": 0.21807141602039338,
+                    "z": 0.13915936648845673,
+                    "w": 0.699999988079071
+                },
+                "centered": true,
+                "isworldspace": false,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": false,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 0.0,
+                "lineSpacing": 0.0,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "MenuButtons",
+                        "fields": {}
+                    }
+                ]
+            },
+            "gui": {
+                "uiType": 2
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "uiLayout": 4
+            },
+            "parent": {
+                "parentName": "OpenBook",
+                "localPos": {
+                    "x": 0.06570887565612793,
+                    "y": -0.10020272433757782,
+                    "z": -0.8999999761581421
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.14935065805912019,
+                    "y": 0.09000000357627869
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UI",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "Instruction2",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 37.08240509033203,
+                    "y": -8.674667358398438,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 54.999996185302737,
+                    "y": 18.0
+                }
+            },
+            "collider": {
+                "ColliderType": 1,
+                "isTrigger": false,
+                "enabled": true,
+                "position": {
+                    "x": 37.08240509033203,
+                    "y": -8.674667358398438,
+                    "z": 0.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": 9.582405090332032,
+                    "y": -17.674667358398439,
+                    "z": 0.0
+                },
+                "max": {
+                    "x": 64.58240509033203,
+                    "y": 0.3253326416015625,
+                    "z": 0.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.0,
+                    "y": 0.38823530077934267,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "text": {
+                "font": "AlegreyaSC-ExtraBold",
+                "text": "Switch between modes to explore",
+                "scale": 20.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.5359115600585938,
+                    "y": 0.21807141602039338,
+                    "z": 0.13915936648845673,
+                    "w": 0.699999988079071
+                },
+                "centered": true,
+                "isworldspace": false,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": false,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 0.0,
+                "lineSpacing": 0.0,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "MenuButtons",
+                        "fields": {}
+                    }
+                ]
+            },
+            "gui": {
+                "uiType": 2
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "uiLayout": 4
+            },
+            "parent": {
+                "parentName": "OpenBook",
+                "localPos": {
+                    "x": 0.08142215013504029,
+                    "y": -0.12334956228733063,
+                    "z": -0.8999999761581421
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.14935065805912019,
+                    "y": 0.09000000357627869
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UI",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "Instruction2",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 25.509239196777345,
+                    "y": -12.146673202514649,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 54.999996185302737,
+                    "y": 18.0
+                }
+            },
+            "collider": {
+                "ColliderType": 1,
+                "isTrigger": false,
+                "enabled": true,
+                "position": {
+                    "x": 25.509239196777345,
+                    "y": -12.146673202514649,
+                    "z": 0.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": -1.9907608032226563,
+                    "y": -21.14667320251465,
+                    "z": 0.0
+                },
+                "max": {
+                    "x": 53.009239196777347,
+                    "y": -3.1466732025146486,
+                    "z": 0.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.0,
+                    "y": 0.38823530077934267,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "text": {
+                "font": "AlegreyaSC-ExtraBold",
+                "text": "AND solve puzzles.",
+                "scale": 20.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.5359115600585938,
+                    "y": 0.21807141602039338,
+                    "z": 0.13915936648845673,
+                    "w": 0.699999988079071
+                },
+                "centered": true,
+                "isworldspace": false,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": false,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 0.0,
+                "lineSpacing": 0.0,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "MenuButtons",
+                        "fields": {}
+                    }
+                ]
+            },
+            "gui": {
+                "uiType": 2
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "uiLayout": 4
+            },
+            "parent": {
+                "parentName": "OpenBook",
+                "localPos": {
+                    "x": 0.049995604902505878,
+                    "y": -0.14070959389209748,
+                    "z": -0.8999999761581421
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.14935065805912019,
+                    "y": 0.09000000357627869
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UI",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "Instruction2",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 39.397003173828128,
+                    "y": -15.618667602539063,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 54.999996185302737,
+                    "y": 18.0
+                }
+            },
+            "collider": {
+                "ColliderType": 1,
+                "isTrigger": false,
+                "enabled": true,
+                "position": {
+                    "x": 39.397003173828128,
+                    "y": -15.618667602539063,
+                    "z": 0.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": 11.897003173828125,
+                    "y": -24.618667602539064,
+                    "z": 0.0
+                },
+                "max": {
+                    "x": 66.89700317382813,
+                    "y": -6.6186676025390629,
+                    "z": 0.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.0,
+                    "y": 0.38823530077934267,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "text": {
+                "font": "AlegreyaSC-ExtraBold",
+                "text": "USE ENEMIES TO YOUR ADVANTAGE",
+                "scale": 20.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.5359115600585938,
+                    "y": 0.21807141602039338,
+                    "z": 0.13915936648845673,
+                    "w": 0.699999988079071
+                },
+                "centered": true,
+                "isworldspace": false,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": false,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 0.0,
+                "lineSpacing": 0.0,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "MenuButtons",
+                        "fields": {}
+                    }
+                ]
+            },
+            "gui": {
+                "uiType": 2
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "uiLayout": 4
+            },
+            "parent": {
+                "parentName": "OpenBook",
+                "localPos": {
+                    "x": 0.08770736306905747,
+                    "y": -0.15806956589221955,
+                    "z": -0.8999999761581421
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.14935065805912019,
+                    "y": 0.09000000357627869
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UI",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "Instruction2",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 39.397003173828128,
+                    "y": -20.247743606567384,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 54.999996185302737,
+                    "y": 18.0
+                }
+            },
+            "collider": {
+                "ColliderType": 1,
+                "isTrigger": false,
+                "enabled": true,
+                "position": {
+                    "x": 39.397003173828128,
+                    "y": -20.247743606567384,
+                    "z": 0.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": 11.897003173828125,
+                    "y": -29.247743606567384,
+                    "z": 0.0
+                },
+                "max": {
+                    "x": 66.89700317382813,
+                    "y": -11.247743606567383,
+                    "z": 0.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.0,
+                    "y": 0.38823530077934267,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "text": {
+                "font": "AlegreyaSC-ExtraBold",
+                "text": "LAVA & ENEMIES KILL YOU INSTANTLY",
+                "scale": 20.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.5359115600585938,
+                    "y": 0.21807141602039338,
+                    "z": 0.13915936648845673,
+                    "w": 0.699999988079071
+                },
+                "centered": true,
+                "isworldspace": false,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": false,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 0.0,
+                "lineSpacing": 0.0,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "MenuButtons",
+                        "fields": {}
+                    }
+                ]
+            },
+            "gui": {
+                "uiType": 2
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "uiLayout": 4
+            },
+            "parent": {
+                "parentName": "OpenBook",
+                "localPos": {
+                    "x": 0.08770736306905747,
+                    "y": -0.18121494352817536,
+                    "z": -0.8999999761581421
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.14935065805912019,
+                    "y": 0.09000000357627869
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UI",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "Instruction2",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 23.194622039794923,
+                    "y": -26.0344181060791,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 54.999996185302737,
+                    "y": 18.0
+                }
+            },
+            "collider": {
+                "ColliderType": 1,
+                "isTrigger": false,
+                "enabled": true,
+                "position": {
+                    "x": 23.194622039794923,
+                    "y": -26.0344181060791,
+                    "z": 0.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": -4.305377960205078,
+                    "y": -35.03441619873047,
+                    "z": 0.0
+                },
+                "max": {
+                    "x": 50.69462203979492,
+                    "y": -17.034420013427736,
+                    "z": 0.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.0,
+                    "y": 0.38823530077934267,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "text": {
+                "font": "AlegreyaSC-ExtraBold",
+                "text": "SO BE CAREFUL! ",
+                "scale": 20.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.5359115600585938,
+                    "y": 0.21807141602039338,
+                    "z": 0.13915936648845673,
+                    "w": 0.699999988079071
+                },
+                "centered": true,
+                "isworldspace": false,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": false,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 0.0,
+                "lineSpacing": 0.0,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "MenuButtons",
+                        "fields": {}
+                    }
+                ]
+            },
+            "gui": {
+                "uiType": 2
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "uiLayout": 4
+            },
+            "parent": {
+                "parentName": "OpenBook",
+                "localPos": {
+                    "x": 0.043710339814424518,
+                    "y": -0.21014831960201264,
+                    "z": -0.8999999761581421
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.14935065805912019,
+                    "y": 0.09000000357627869
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UI",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "Instruction2",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 40.55436706542969,
+                    "y": -29.506471633911134,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 54.999996185302737,
+                    "y": 18.0
+                }
+            },
+            "collider": {
+                "ColliderType": 1,
+                "isTrigger": false,
+                "enabled": true,
+                "position": {
+                    "x": 40.55436706542969,
+                    "y": -29.506471633911134,
+                    "z": 0.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": 13.054367065429688,
+                    "y": -38.5064697265625,
+                    "z": 0.0
+                },
+                "max": {
+                    "x": 68.05436706542969,
+                    "y": -20.506473541259767,
+                    "z": 0.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.0,
+                    "y": 0.38823530077934267,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "text": {
+                "font": "AlegreyaSC-ExtraBold",
+                "text": "ACTIVATE ALL THE PRESSURE PLATES TO",
+                "scale": 20.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.5359115600585938,
+                    "y": 0.21807141602039338,
+                    "z": 0.13915936648845673,
+                    "w": 0.699999988079071
+                },
+                "centered": true,
+                "isworldspace": false,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": false,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 0.0,
+                "lineSpacing": 0.0,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "MenuButtons",
+                        "fields": {}
+                    }
+                ]
+            },
+            "gui": {
+                "uiType": 2
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "uiLayout": 4
+            },
+            "parent": {
+                "parentName": "OpenBook",
+                "localPos": {
+                    "x": 0.09085014462471008,
+                    "y": -0.22750858962535859,
+                    "z": -0.8999999761581421
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.14935065805912019,
+                    "y": 0.09000000357627869
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UI",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "Instruction2",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 33.610435485839847,
+                    "y": -36.45025634765625,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 54.999996185302737,
+                    "y": 18.0
+                }
+            },
+            "collider": {
+                "ColliderType": 1,
+                "isTrigger": false,
+                "enabled": true,
+                "position": {
+                    "x": 33.610435485839847,
+                    "y": -36.45025634765625,
+                    "z": 0.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": 6.110435485839844,
+                    "y": -45.45025634765625,
+                    "z": 0.0
+                },
+                "max": {
+                    "x": 61.110435485839847,
+                    "y": -27.45025634765625,
+                    "z": 0.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.0,
+                    "y": 0.38823530077934267,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "text": {
+                "font": "AlegreyaSC-ExtraBold",
+                "text": "OPEN THE DOOR AT THE END!",
+                "scale": 20.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.5359115600585938,
+                    "y": 0.21807141602039338,
+                    "z": 0.13915936648845673,
+                    "w": 0.699999988079071
+                },
+                "centered": true,
+                "isworldspace": false,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": false,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 0.0,
+                "lineSpacing": 0.0,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "MenuButtons",
+                        "fields": {}
+                    }
+                ]
+            },
+            "gui": {
+                "uiType": 2
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "uiLayout": 4
+            },
+            "parent": {
+                "parentName": "OpenBook",
+                "localPos": {
+                    "x": 0.07199413329362869,
+                    "y": -0.26222750544548037,
+                    "z": -0.8999999761581421
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.14935065805912019,
+                    "y": 0.09000000357627869
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UI",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "Bar",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -25.903518676757814,
+                    "y": 6.114627838134766,
+                    "z": 0.8999999761581421
+                },
+                "size": {
+                    "x": 30.0,
+                    "y": 10.0
+                }
+            },
+            "collider": {
+                "ColliderType": 1,
+                "isTrigger": false,
+                "enabled": true,
+                "position": {
+                    "x": -25.903518676757814,
+                    "y": 6.114627838134766,
+                    "z": 0.8999999761581421
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": -210.033935546875,
+                    "y": -93.8853759765625,
+                    "z": 0.8999999761581421
+                },
+                "max": {
+                    "x": 158.22689819335938,
+                    "y": 106.1146240234375,
+                    "z": 0.8999999761581421
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/Bar_Area.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": -0.10000000149011612
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "button": {
+                "buttonState": 0,
+                "shapeNormalColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "shapeHoveredColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.5
+                },
+                "shapePressedColor": {
+                    "x": 0.699999988079071,
+                    "y": 0.699999988079071,
+                    "z": 0.699999988079071,
+                    "w": 0.699999988079071
+                },
+                "textNormalColor": {
+                    "x": 0.30000001192092898,
+                    "y": 0.30000001192092898,
+                    "z": 0.30000001192092898,
+                    "w": 0.699999988079071
+                },
+                "textHoveredColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.0
+                },
+                "textPressedColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.5
+                }
+            },
+            "parent": {
+                "parentName": "OpenBook",
+                "localPos": {
+                    "x": -0.08961402624845505,
+                    "y": -0.04940308630466461,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.0814640000462532,
+                    "y": 0.05000000074505806
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UI",
+                "z": 130
+            }
+        },
+        {
+            "active": true,
+            "name": "Bar",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -25.903518676757814,
+                    "y": -18.586870193481447,
+                    "z": 0.8999999761581421
+                },
+                "size": {
+                    "x": 30.0,
+                    "y": 10.0
+                }
+            },
+            "collider": {
+                "ColliderType": 1,
+                "isTrigger": false,
+                "enabled": true,
+                "position": {
+                    "x": -25.903518676757814,
+                    "y": -18.586870193481447,
+                    "z": 0.8999999761581421
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": -210.033935546875,
+                    "y": -118.58686828613281,
+                    "z": 0.8999999761581421
+                },
+                "max": {
+                    "x": 158.22689819335938,
+                    "y": 81.41313171386719,
+                    "z": 0.8999999761581421
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/Bar_Area.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": -0.10000000149011612
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "button": {
+                "buttonState": 0,
+                "shapeNormalColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "shapeHoveredColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.5
+                },
+                "shapePressedColor": {
+                    "x": 0.699999988079071,
+                    "y": 0.699999988079071,
+                    "z": 0.699999988079071,
+                    "w": 0.699999988079071
+                },
+                "textNormalColor": {
+                    "x": 0.30000001192092898,
+                    "y": 0.30000001192092898,
+                    "z": 0.30000001192092898,
+                    "w": 0.699999988079071
+                },
+                "textHoveredColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.0
+                },
+                "textPressedColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.5
+                }
+            },
+            "parent": {
+                "parentName": "OpenBook",
+                "localPos": {
+                    "x": -0.08961402624845505,
+                    "y": -0.17291057109832765,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.0814640000462532,
+                    "y": 0.05000000074505806
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UI",
+                "z": 130
+            }
+        },
+        {
+            "active": true,
+            "name": "ClosedOpenBookBtn",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 64.26875305175781,
+                    "y": 32.4041862487793,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 16.0,
+                    "y": 16.299999237060548
+                }
+            },
+            "collider": {
+                "ColliderType": 1,
+                "isTrigger": false,
+                "enabled": true,
+                "position": {
+                    "x": 64.26875305175781,
+                    "y": 32.4041862487793,
+                    "z": 0.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": 36.76875305175781,
+                    "y": 23.404186248779298,
+                    "z": 0.0
+                },
+                "max": {
+                    "x": 91.76875305175781,
+                    "y": 41.4041862487793,
+                    "z": 0.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.0,
+                    "y": 0.38823530077934267,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "text": {
+                "font": "AlegreyaSC-ExtraBold",
+                "text": "X",
+                "scale": 49.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.0,
+                    "y": 0.38823530077934267,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": false,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": false,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 0.0,
+                "lineSpacing": 0.0,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "MenuButtons",
+                        "fields": {}
+                    }
+                ]
+            },
+            "button": {
+                "buttonState": 0,
+                "shapeNormalColor": {
+                    "x": 0.0,
+                    "y": 0.38823530077934267,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "shapeHoveredColor": {
+                    "x": 0.0,
+                    "y": 0.38823530077934267,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "shapePressedColor": {
+                    "x": 0.0,
+                    "y": 0.38823530077934267,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "textNormalColor": {
+                    "x": 0.0,
+                    "y": 0.38823530077934267,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "textHoveredColor": {
+                    "x": 0.0,
+                    "y": 0.38823530077934267,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "textPressedColor": {
+                    "x": 0.0,
+                    "y": 0.38823530077934267,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "gui": {
+                "uiType": 14
+            },
+            "textinput": {
+                "isFocused": false,
+                "cursorPos": 0,
+                "maxCharacters": 255
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "uiLayout": 4
+            },
+            "parent": {
+                "parentName": "OpenBook",
+                "localPos": {
+                    "x": 0.15524576604366303,
+                    "y": 0.08204470574855805,
+                    "z": -0.8999999761581421
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.04344746470451355,
+                    "y": 0.08149999380111695
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UI",
+                "z": 124
+            }
+        },
+        {
+            "active": true,
+            "name": "ExitBtnGame",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 85.4556884765625,
+                    "y": -84.17073822021485,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 42.79999923706055,
+                    "y": 13.799999237060547
+                }
+            },
+            "collider": {
+                "ColliderType": 1,
+                "isTrigger": false,
+                "enabled": true,
+                "position": {
+                    "x": 85.4556884765625,
+                    "y": -84.17073822021485,
+                    "z": 0.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": 57.9556884765625,
+                    "y": -93.17073822021485,
+                    "z": 0.0
+                },
+                "max": {
+                    "x": 112.9556884765625,
+                    "y": -75.17073822021485,
+                    "z": 0.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.0,
+                    "y": 0.2209947109222412,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "text": {
+                "font": "AlegreyaSC-ExtraBoldItalic",
+                "text": "Exit",
+                "scale": 50.0,
+                "offset": {
+                    "x": 29.399999618530275,
+                    "y": -25.5
+                },
+                "color": {
+                    "x": 0.0,
+                    "y": 0.2862745225429535,
+                    "z": 1.0,
+                    "w": 0.7019608020782471
+                },
+                "centered": true,
+                "isworldspace": true,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": false,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 0.0,
+                "lineSpacing": 0.0,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "MenuButtons",
+                        "fields": {}
+                    }
+                ]
+            },
+            "button": {
+                "buttonState": 0,
+                "shapeNormalColor": {
+                    "x": 0.0,
+                    "y": 0.2209947109222412,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "shapeHoveredColor": {
+                    "x": 0.0,
+                    "y": 0.21960784494876862,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "shapePressedColor": {
+                    "x": 0.699999988079071,
+                    "y": 0.699999988079071,
+                    "z": 0.699999988079071,
+                    "w": 0.699999988079071
+                },
+                "textNormalColor": {
+                    "x": 0.30000001192092898,
+                    "y": 0.30000001192092898,
+                    "z": 0.30000001192092898,
+                    "w": 0.699999988079071
+                },
+                "textHoveredColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.0
+                },
+                "textPressedColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.5
+                }
+            },
+            "gui": {
+                "uiType": 14
+            },
+            "textinput": {
+                "isFocused": false,
+                "cursorPos": 0,
+                "maxCharacters": 255
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "uiLayout": 4
+            },
+            "parent": {
+                "parentName": "ClosedBookprefab",
+                "localPos": {
+                    "x": 0.31556639075279238,
+                    "y": -0.5008299350738525,
+                    "z": 0.8999999761581421
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.11622197180986405,
+                    "y": 0.0689999982714653
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UI",
+                "z": 136
+            }
+        },
+        {
+            "active": true,
+            "name": "SettingBtnGame",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 85.4556884765625,
+                    "y": 9.735942840576172,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 42.79999923706055,
+                    "y": 13.799999237060547
+                }
+            },
+            "collider": {
+                "ColliderType": 1,
+                "isTrigger": false,
+                "enabled": true,
+                "position": {
+                    "x": 85.4556884765625,
+                    "y": 9.735942840576172,
+                    "z": 0.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": 57.9556884765625,
+                    "y": 0.7359428405761719,
+                    "z": 0.0
+                },
+                "max": {
+                    "x": 112.9556884765625,
+                    "y": 18.735942840576173,
+                    "z": 0.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.0,
+                    "y": 0.2209947109222412,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "text": {
+                "font": "AlegreyaSC-ExtraBoldItalic",
+                "text": "Setting",
+                "scale": 50.0,
+                "offset": {
+                    "x": 29.399999618530275,
+                    "y": -25.5
+                },
+                "color": {
+                    "x": 0.0,
+                    "y": 0.2862745225429535,
+                    "z": 1.0,
+                    "w": 0.7019608020782471
+                },
+                "centered": true,
+                "isworldspace": true,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": false,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 0.0,
+                "lineSpacing": 0.0,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "MenuButtons",
+                        "fields": {}
+                    }
+                ]
+            },
+            "button": {
+                "buttonState": 0,
+                "shapeNormalColor": {
+                    "x": 0.0,
+                    "y": 0.2209947109222412,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "shapeHoveredColor": {
+                    "x": 0.0,
+                    "y": 0.21960784494876862,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "shapePressedColor": {
+                    "x": 0.699999988079071,
+                    "y": 0.699999988079071,
+                    "z": 0.699999988079071,
+                    "w": 0.699999988079071
+                },
+                "textNormalColor": {
+                    "x": 0.30000001192092898,
+                    "y": 0.30000001192092898,
+                    "z": 0.30000001192092898,
+                    "w": 0.699999988079071
+                },
+                "textHoveredColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.0
+                },
+                "textPressedColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.5
+                }
+            },
+            "gui": {
+                "uiType": 14
+            },
+            "textinput": {
+                "isFocused": false,
+                "cursorPos": 0,
+                "maxCharacters": 255
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "uiLayout": 4
+            },
+            "parent": {
+                "parentName": "ClosedBookprefab",
+                "localPos": {
+                    "x": 0.31556639075279238,
+                    "y": -0.0312965102493763,
+                    "z": 0.8999999761581421
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.11622197180986405,
+                    "y": 0.0689999982714653
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UI",
+                "z": 136
+            }
+        },
+        {
+            "active": true,
+            "name": "ResumeBtnGame",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 85.4556884765625,
+                    "y": 122.01567077636719,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 42.79999923706055,
+                    "y": 13.799999237060547
+                }
+            },
+            "collider": {
+                "ColliderType": 1,
+                "isTrigger": false,
+                "enabled": true,
+                "position": {
+                    "x": 85.4556884765625,
+                    "y": 122.01567077636719,
+                    "z": 0.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": 57.9556884765625,
+                    "y": 113.01567077636719,
+                    "z": 0.0
+                },
+                "max": {
+                    "x": 112.9556884765625,
+                    "y": 131.0156707763672,
+                    "z": 0.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.0,
+                    "y": 0.2209947109222412,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "text": {
+                "font": "AlegreyaSC-ExtraBoldItalic",
+                "text": "Resume",
+                "scale": 50.0,
+                "offset": {
+                    "x": 29.399999618530275,
+                    "y": -25.5
+                },
+                "color": {
+                    "x": 0.0,
+                    "y": 0.2862745225429535,
+                    "z": 1.0,
+                    "w": 0.7019608020782471
+                },
+                "centered": true,
+                "isworldspace": true,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": false,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 0.0,
+                "lineSpacing": 0.0,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "MenuButtons",
+                        "fields": {}
+                    }
+                ]
+            },
+            "button": {
+                "buttonState": 0,
+                "shapeNormalColor": {
+                    "x": 0.0,
+                    "y": 0.2209947109222412,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "shapeHoveredColor": {
+                    "x": 0.0,
+                    "y": 0.21960784494876862,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "shapePressedColor": {
+                    "x": 0.699999988079071,
+                    "y": 0.699999988079071,
+                    "z": 0.699999988079071,
+                    "w": 0.699999988079071
+                },
+                "textNormalColor": {
+                    "x": 0.30000001192092898,
+                    "y": 0.30000001192092898,
+                    "z": 0.30000001192092898,
+                    "w": 0.699999988079071
+                },
+                "textHoveredColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.0
+                },
+                "textPressedColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.5
+                }
+            },
+            "gui": {
+                "uiType": 14
+            },
+            "textinput": {
+                "isFocused": false,
+                "cursorPos": 0,
+                "maxCharacters": 255
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "uiLayout": 4
+            },
+            "parent": {
+                "parentName": "ClosedBookprefab",
+                "localPos": {
+                    "x": 0.31556639075279238,
+                    "y": 0.5301021337509155,
+                    "z": 0.8999999761581421
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.11622197180986405,
+                    "y": 0.0689999982714653
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UI",
+                "z": 136
             }
         }
     ],

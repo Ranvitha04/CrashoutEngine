@@ -18564,7 +18564,9 @@
             },
             "layer": {
                 "layerName": "UI",
-                "z": 0  
+                "z": 0
+            }
+        }
     ],
     "layers": {
         "Background": 0,

@@ -1591,6 +1591,10 @@
             "path": "BlueBox.json"
         },
         {
+            "name": "ClosedBook",
+            "path": "ClosedBook.json"
+        },
+        {
             "name": "ClosedBookprefab",
             "path": "ClosedBookprefab.json"
         },
@@ -1601,6 +1605,10 @@
         {
             "name": "Entity",
             "path": "Entity.json"
+        },
+        {
+            "name": "ExitBtnGame",
+            "path": "ExitBtnGame.json"
         },
         {
             "name": "Instruction",
@@ -1649,6 +1657,14 @@
         {
             "name": "RedBox",
             "path": "RedBox.json"
+        },
+        {
+            "name": "ResumeBtnGame",
+            "path": "ResumeBtnGame.json"
+        },
+        {
+            "name": "SettingBtnGame",
+            "path": "SettingBtnGame.json"
         },
         {
             "name": "shitasswork",
