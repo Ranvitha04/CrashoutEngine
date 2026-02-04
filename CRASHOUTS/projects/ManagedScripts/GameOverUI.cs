@@ -18,6 +18,7 @@ namespace CrashoutsEngine
         private TransformComponent winTf;      // Needed to check Z position
 
         private Entity restartCheckScreen;     // "RestartCheck2"
+        private Entity winrestartCheckScreen;     // "RestartCheck2"
 
         // --- BUTTONS (Game Over) ---
         private Entity btnGORestart; // "RestartLevelButton"
@@ -26,8 +27,12 @@ namespace CrashoutsEngine
         private Entity btnNo2;       // "No2"
 
         // --- BUTTONS (Win Screen) ---
-        private Entity btnWinReturn; // "ReturnBtn"
-        private Entity btnWinQuit;   // "QuitBtn" (Assuming different name/entity than GO Quit)
+        //private Entity btnWinReturn; // "ReturnBtn"
+        //private Entity btnWinQuit;   // "QuitBtn" (Assuming different name/entity than GO Quit)
+        private Entity winbtnGORestart; // "RestartLevelButton"
+        private Entity winbtnGOQuit;    // "QuitButton"
+        private Entity winbtnYes;      // "Yes2"
+        private Entity winbtnNo;       // "No2"
 
         // --- STATE ---
         private bool isRestartCheckOpen = false;
@@ -45,6 +50,7 @@ namespace CrashoutsEngine
             if (winScreen != null) winTf = winScreen.GetComponent<TransformComponent>();
 
             restartCheckScreen = Entity.Find("RestartCheck2");
+            winrestartCheckScreen = Entity.Find("RestartCheck3");
 
             // 2. FIND GAME OVER BUTTONS
             btnGORestart = Entity.Find("RestartLevelButton2");
@@ -53,8 +59,10 @@ namespace CrashoutsEngine
             btnNo2 = Entity.Find("No2");
 
             // 3. FIND WIN BUTTONS
-            btnWinReturn = Entity.Find("ReturnBtn");
-            btnWinQuit = Entity.Find("QuitButton3");
+            winbtnGORestart = Entity.Find("RestartLevelButton3");
+            winbtnGOQuit = Entity.Find("QuitButton3");
+            winbtnYes = Entity.Find("Yes3");
+            winbtnNo = Entity.Find("No3");
 
             // 4. INIT SUB-MENUS
             SetEntityActive(restartCheckScreen, false);
@@ -86,7 +94,14 @@ namespace CrashoutsEngine
             // --- 2. HANDLE WIN SCREEN ---
             if (winTf != null)
             {
-                HandleWinMain();
+                if (isRestartCheckOpen)
+                {
+                    HandleRestartConfirmation();
+                }
+                else
+                {
+                    HandleWinMain();
+                }
             }
         }
 
@@ -121,6 +136,17 @@ namespace CrashoutsEngine
             {
                 CloseRestartCheck();
             }
+            else if (CheckButtonClick(winbtnNo))
+            {
+                WinCloseRestartCheck();
+            }
+            else if (CheckButtonClick(winbtnYes))
+            {
+                // RELOAD LEVEL
+                Debug.Log("[GameOverUI] Restarting...");
+                if (string.IsNullOrEmpty(currentSceneName)) currentSceneName = "tutorial";
+                SceneManager.LoadScene(currentSceneName, 1.0f);
+            }
         }
 
         private void OpenRestartCheck()
@@ -137,23 +163,51 @@ namespace CrashoutsEngine
             inputCooldown = 0.2f;
         }
 
+        private void WinOpenRestartCheck()
+        {
+            isRestartCheckOpen = true;
+            SetEntityActive(winrestartCheckScreen, true);
+            inputCooldown = 0.2f; // Safety delay
+        }
+
+        private void WinCloseRestartCheck()
+        {
+            isRestartCheckOpen = false;
+            SetEntityActive(winrestartCheckScreen, false);
+            inputCooldown = 0.2f;
+        }
+
         // =================================================================================
         //                                  WIN LOGIC
         // =================================================================================
 
         private void HandleWinMain()
         {
-            if (CheckButtonClick(btnWinReturn))
+            if (CheckButtonClick(winbtnGORestart))
             {
-                Debug.Log("[WinUI] Returning to Menu...");
-                SceneManager.LoadScene(mainMenuScene);
+                Debug.Log("press");
+                WinOpenRestartCheck();
             }
-            else if (CheckButtonClick(btnWinQuit))
+            else if (CheckButtonClick(winbtnGOQuit))
             {
-                Debug.Log("[WinUI] Quitting App...");
-                SceneManager.QuitGame();
+                // Quit to Menu (Matches PauseButtons logic)
+                SceneManager.LoadScene(mainMenuScene, 1.0f);
             }
         }
+
+        //private void HandleWinMain()
+        //{
+        //    if (CheckButtonClick(btnWinReturn))
+        //    {
+        //        Debug.Log("[WinUI] Returning to Menu...");
+        //        SceneManager.LoadScene(mainMenuScene);
+        //    }
+        //    else if (CheckButtonClick(btnWinQuit))
+        //    {
+        //        Debug.Log("[WinUI] Quitting App...");
+        //        SceneManager.QuitGame();
+        //    }
+        //}
 
         // =================================================================================
         //                                   HELPERS

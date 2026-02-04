@@ -65,11 +65,7 @@ namespace CrashoutsEngine
             Entity winScreen = Entity.Find(winScreenName);
             if (winScreen != null)
             {
-                Entity winScreen = Entity.Find(winScreenName);
-                if (winScreen != null)
-                {
-                    InternalCalls.SetActive(winScreen.ID, true);
-                }
+                InternalCalls.SetActive(winScreen.ID, true);
             }
             else
             {

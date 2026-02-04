@@ -26,9 +26,10 @@ namespace CrashoutsEngine
         [SerializeField] private float stunDuration = 1.0f;
 
         // Patrol Zone
-        [SerializeField] private float MaxDist = 200.0f;
+        //[SerializeField] private float MaxDist = 200.0f;
         [SerializeField] private float ledgeBuffer = 40.0f; // Distance from edge of collider to check
         [SerializeField] private float ledgeRayCastDistance = 50.0f;
+        [SerializeField] private float grabEnergyDrainRate = 5.0f;
 
         private RigidBodyComponent rb;
         private TransformComponent tf;
@@ -47,7 +48,7 @@ namespace CrashoutsEngine
         private bool isStunned = false;
         private float currentStunTime = 0.0f;
         private float flipCooldown = 0.0f;
-        private float stuckTimer = 0.0f;
+        //private float stuckTimer = 0.0f;
         private float ignoreHomeTimer = 0.0f;
 
         private CEVec3 startPos;
@@ -57,6 +58,8 @@ namespace CrashoutsEngine
         private List<CEVec3> activePath = new List<CEVec3>();
         private bool isFollowingPath = false;
         //private int pathIndex = 0;
+
+        bool STOP = false;
 
         private string currentAnimState = "";
 
@@ -111,8 +114,18 @@ namespace CrashoutsEngine
 
         public override void Update()
         {
-            if(playerScript != null && playerScript.isPaused) { return; } 
+
+            if (playerScript != null && playerScript.isPaused) { return; } 
             if (rb == null || tf == null) return;
+            if (STOP)
+            {
+                if (rb != null)
+                {
+                    rb.Mass = 0.0f;
+                    rb.LinearVelocity = new CEVec3(0.0f, 0.0f, 0.0f);
+                }
+                return;
+            }
 
             float dt = (float)Time.DT;
 
@@ -259,6 +272,8 @@ namespace CrashoutsEngine
 
         public override void FixedUpdate()
         {
+            if (STOP) return;
+            
             // 1. Safety Checks
             if (rb == null || isGrabbed || isStunned) return;
             if (playerScript != null && playerScript.isPaused) return;
@@ -326,6 +341,11 @@ namespace CrashoutsEngine
             wasGroundedLastFrame = isGrounded;
         }
 
+        public void RemoveEnergy(float amount)
+        {
+            PlayerMovement.Instance.CurrentEnergy = Math.Max(PlayerMovement.Instance.CurrentEnergy - amount, 0.0f);
+        }
+
         private void HandleGrabLogic()
         {
             bool isDown = Input.IsMouseButtonDown(0);
@@ -352,6 +372,7 @@ namespace CrashoutsEngine
 
                 if (isGrabbed && playerScript != null)
                 {
+                    RemoveEnergy(grabEnergyDrainRate * (float)Time.DT);
                     var playerTf = playerScript.Entity.GetComponent<TransformComponent>();
                     float offsetX = playerTf.Size.x < 0 ? -60.0f : 60.0f;
                     tf.Position = new CEVec3(playerTf.Position.x + offsetX, playerTf.Position.y - 5.0f, playerTf.Position.z);
@@ -428,6 +449,8 @@ namespace CrashoutsEngine
         {
             Entity other = new Entity(otherEntity);
             var Tag = other.GetComponent<TagComponent>();
+
+            if (Tag.HasTag("Player")) STOP = true;
 
             // Universal collision check for path cancellation
             // If we hit ANYTHING static (Ground, Wall, Platform), stop flying.

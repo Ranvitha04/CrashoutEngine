@@ -5,7 +5,6 @@ namespace CrashoutsEngine
     [ScriptBehaviour]
     public class NewScript : ScriptBase
     {
-        public Entity Entity;
 
         public override void Start() 
         { 
