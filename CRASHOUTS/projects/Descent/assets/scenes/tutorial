@@ -12078,7 +12078,7 @@
                 "clips": [
                     {
                         "name": "Pickup",
-                        "path": "portal sfx.wav",
+                        "path": "mana chime.wav",
                         "volume": 1.0,
                         "pitch": 1.0,
                         "spatial3D": false,
