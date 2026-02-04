@@ -7,7 +7,7 @@ namespace CrashoutsEngine
     {
         public static BookUIController Instance;
 
-        // Must match your hierarchy names EXACTLY (UNIQUE NAMES ONLY)
+       
         public string[] closedBookPieces =
         {
             "ClosedBook",
@@ -16,12 +16,16 @@ namespace CrashoutsEngine
             "ExitBtnGame"
         };
 
-        // Put EVERY OpenBook UI entity name here (including clones)
+       
         public string[] openBookPieces =
         {
             "OpenBook",
             "ClosedOpenBookBtn",
             "Instruction",
+             "Music",
+             "SFX",
+             "SFX_Clone1986",
+            "Instruction1",
             "Instruction2",
             "Instruction3",
             "Instruction4",
@@ -32,8 +36,6 @@ namespace CrashoutsEngine
             "Instruction9",
             "Instruction10",
             "Instruction11",
-            "Music",
-            "SFX",
             "Slider",
             "Slider_Clone2001",
 
@@ -53,7 +55,7 @@ namespace CrashoutsEngine
             closedIDs = CacheIDs(closedBookPieces);
             openIDs = CacheIDs(openBookPieces);
 
-            // Hide everything at start
+           
             HideAll();
         }
 
@@ -61,15 +63,14 @@ namespace CrashoutsEngine
         {
             if (Input.IsKeyTriggered(Key.P))
             {
-                // OPTION B:
-                // If OpenBook is open, P goes BACK to ClosedBook
+                
                 if (openShown)
                 {
                     ShowClosedBook();
                     return;
                 }
 
-                // Otherwise P toggles ClosedBook
+               
                 closedShown = !closedShown;
                 openShown = false;
 
@@ -78,7 +79,7 @@ namespace CrashoutsEngine
             }
         }
 
-        // ClosedBook -> OpenBook
+     
         public void ShowOpenBook()
         {
             closedShown = false;
@@ -88,7 +89,7 @@ namespace CrashoutsEngine
             SetActiveList(openIDs, true);
         }
 
-        // OpenBook -> ClosedBook
+        
         public void ShowClosedBook()
         {
             closedShown = true;
@@ -98,7 +99,7 @@ namespace CrashoutsEngine
             SetActiveList(closedIDs, true);
         }
 
-        // Hide everything (Resume)
+        
         public void HideAll()
         {
             closedShown = false;
@@ -114,7 +115,7 @@ namespace CrashoutsEngine
             for (int i = 0; i < names.Length; i++)
             {
                 ids[i] = InternalCalls.FindEntityByName(names[i]);
-                Debug.Log("[BookUI] " + names[i] + " id = " + ids[i]);
+                
             }
             return ids;
         }

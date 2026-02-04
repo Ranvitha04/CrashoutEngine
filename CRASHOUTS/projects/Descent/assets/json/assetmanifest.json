@@ -1743,6 +1743,10 @@
         {
             "name": "Victory",
             "path": "Victory"
+        },
+        {
+            "name": "tutorial2",
+            "path": "tutorial2"
         }
     ],
     "shaders": [
