@@ -1727,10 +1727,6 @@
         {
             "name": "assetmanifest",
             "path": "assetmanifest.json"
-        },
-        {
-            "name": "assetmanifest.json",
-            "path": "assetmanifest.json.bak"
         }
     ],
     "prefabs": [
@@ -1747,6 +1743,10 @@
             "path": "Ball.json"
         },
         {
+            "name": "BarGraphic",
+            "path": "BarGraphic.json"
+        },
+        {
             "name": "BGMManager",
             "path": "BGMManager.json"
         },
@@ -1759,12 +1759,28 @@
             "path": "BlueBox.json"
         },
         {
+            "name": "ClosedBook",
+            "path": "ClosedBook.json"
+        },
+        {
+            "name": "ClosedBookprefab",
+            "path": "ClosedBookprefab.json"
+        },
+        {
             "name": "EnergyBall",
             "path": "EnergyBall.json"
         },
         {
             "name": "Entity",
             "path": "Entity.json"
+        },
+        {
+            "name": "ExitBtnGame",
+            "path": "ExitBtnGame.json"
+        },
+        {
+            "name": "Instruction",
+            "path": "Instruction.json"
         },
         {
             "name": "movingplatform",
@@ -1809,6 +1825,14 @@
         {
             "name": "RedBox",
             "path": "RedBox.json"
+        },
+        {
+            "name": "ResumeBtnGame",
+            "path": "ResumeBtnGame.json"
+        },
+        {
+            "name": "SettingBtnGame",
+            "path": "SettingBtnGame.json"
         },
         {
             "name": "shitasswork",
@@ -1857,24 +1881,16 @@
             "path": "descentgame"
         },
         {
-            "name": "descentgame",
-            "path": "descentgame.bak"
-        },
-        {
             "name": "descentmenu",
             "path": "descentmenu"
-        },
-        {
-            "name": "descentmenu",
-            "path": "descentmenu.bak"
         },
         {
             "name": "descentsettings",
             "path": "descentsettings"
         },
         {
-            "name": "descentsettings",
-            "path": "descentsettings.bak"
+            "name": "GameOver",
+            "path": "GameOver"
         },
         {
             "name": "menu",
@@ -1907,6 +1923,10 @@
         {
             "name": "tutorial2",
             "path": "tutorial2"
+        },
+        {
+            "name": "Victory",
+            "path": "Victory"
         }
     ],
     "shaders": [

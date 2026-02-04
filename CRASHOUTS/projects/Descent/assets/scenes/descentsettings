@@ -231,7 +231,10 @@
                     "y": 1.0,
                     "z": 1.0,
                     "w": 0.8232043981552124
-                }
+                },
+                "textureNormal": "",
+                "textureHovered": "",
+                "texturePressed": ""
             },
             "gui": {
                 "uiType": 7
@@ -844,7 +847,10 @@
                     "y": 0.0,
                     "z": 0.0,
                     "w": 0.5
-                }
+                },
+                "textureNormal": "",
+                "textureHovered": "",
+                "texturePressed": ""
             },
             "gui": {
                 "uiType": 4
@@ -958,7 +964,10 @@
                     "y": 0.0,
                     "z": 0.0,
                     "w": 0.5
-                }
+                },
+                "textureNormal": "",
+                "textureHovered": "",
+                "texturePressed": ""
             },
             "gui": {
                 "uiType": 4
@@ -1300,7 +1309,10 @@
                     "y": 0.0,
                     "z": 0.0,
                     "w": 0.5
-                }
+                },
+                "textureNormal": "",
+                "textureHovered": "",
+                "texturePressed": ""
             },
             "layer": {
                 "layerName": "Default",
@@ -1412,7 +1424,10 @@
                     "y": 0.0,
                     "z": 0.0,
                     "w": 0.5
-                }
+                },
+                "textureNormal": "",
+                "textureHovered": "",
+                "texturePressed": ""
             },
             "layer": {
                 "layerName": "Default",
