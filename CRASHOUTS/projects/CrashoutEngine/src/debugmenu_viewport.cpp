@@ -1,4 +1,4 @@
-﻿#include "debugmenu_internals.h"
+#include "debugmenu_internals.h"
 #include "deleteentitycommand.h"
 
 using namespace CrashoutsEngine;
@@ -523,11 +523,23 @@ namespace UI {
             ImVec2 mouse = ImGui::GetMousePos();
             const bool over = (mouse.x >= imgMin.x && mouse.x <= imgMax.x && mouse.y >= imgMin.y && mouse.y <= imgMax.y);
 
+            // [NEW] Push Coordinate Override to InputManager
+            // We calculate 'local' mouse relative to the top-left of the viewport image
+            float gameMouseX = mouse.x - imgMin.x;
+            float gameMouseY = mouse.y - imgMin.y;
+            float gameWidth = imgMax.x - imgMin.x;
+            float gameHeight = imgMax.y - imgMin.y;
+
+            // Important: Handle aspect-ratio bars (click outside image should maybe clamp or ignore?)
+            // For now, raw local coords are fine, UI logic downstream handles bounds.
+            InputManager::SetGameViewMouse(gameMouseX, gameMouseY, gameWidth, gameHeight);
+
             float u = 0.f, v = 0.f;
             if (over) {
                 u = (mouse.x - imgMin.x) / (imgMax.x - imgMin.x);
                 v = 1.f - (mouse.y - imgMin.y) / (imgMax.y - imgMin.y);
             }
+
 
             if (gameWinHovered) {
 

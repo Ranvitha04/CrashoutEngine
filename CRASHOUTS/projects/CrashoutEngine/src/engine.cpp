@@ -459,7 +459,21 @@ void Update(double const& dt) {
 #ifdef USE_IMGUI_EDITOR
         RenderCamera::gameCamera.UpdateMatrices(Settings::GetScreenWidth(), Settings::GetScreenHeight());
 #else
-        RenderCamera::gameCamera.UpdateMatrices(GLApp::width, GLApp::height);
+        // RELEASE MODE: Use Letterboxed Dimensions for consistent Camera Aspect Ratio
+        int windowW = GLApp::width;
+        int windowH = GLApp::height;
+        const float targetAspectRatio = 16.0f / 9.0f;
+        float currentAspectRatio = (float)windowW / (float)windowH;
+        int vpW, vpH;
+
+        if (currentAspectRatio > targetAspectRatio) {
+            vpH = windowH;
+            vpW = static_cast<int>(windowH * targetAspectRatio);
+        } else {
+            vpW = windowW;
+            vpH = static_cast<int>(windowW / targetAspectRatio);
+        }
+        RenderCamera::gameCamera.UpdateMatrices(vpW, vpH);
 #endif
     }
 
@@ -535,12 +549,19 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
     }
 
     // 4. Clear the FULL window to black (The "Bars")
+    glViewport(0, 0, windowW, windowH);
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
 
     // 5. Set Viewport to the Game Area & Enable Scissor Test
-    // Scissor ensures we don't draw outside the calculated game area
-    //glEnable(GL_SCISSOR_TEST);
-    //glScissor(vpX, vpY, vpW, vpH);
     glViewport(vpX, vpY, vpW, vpH);
+    glEnable(GL_SCISSOR_TEST);
+    glScissor(vpX, vpY, vpW, vpH);
+
+    // 6. Clear Game Area to Default Grey
+    glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glDisable(GL_SCISSOR_TEST);
 
     // 7. Update Camera Matrices to match the VIEWPORT size, not window size
     CrashoutsEngine::RenderCamera::gameCamera.UpdateMatrices(vpW, vpH);
@@ -574,11 +595,11 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
 #else
 
     glViewport(0, 0, gameTextureWidth, gameTextureHeight);
+    glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 #endif
 
-    glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LEQUAL);
     glDepthMask(GL_TRUE);

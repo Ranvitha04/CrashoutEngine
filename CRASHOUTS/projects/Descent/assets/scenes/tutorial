@@ -9934,7 +9934,10 @@
                     "y": 0.0,
                     "z": 0.0,
                     "w": 0.5
-                }
+                },
+                "textureNormal": "",
+                "textureHovered": "",
+                "texturePressed": ""
             },
             "layer": {
                 "layerName": "Player",
@@ -9945,6 +9948,37 @@
                 "t": 6.300027370452881,
                 "playing": true,
                 "clips": [
+                    {
+                        "name": "playerFall",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
+                        "spriteCols": 2,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 140.0,
+                        "targetHeight": 100.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
                     {
                         "name": "playerWalk",
                         "wrap": 0,
@@ -9998,7 +10032,7 @@
                         ]
                     },
                     {
-                        "name": "playerFall",
+                        "name": "playerFallLight",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
                         "spriteCols": 2,
@@ -10012,14 +10046,14 @@
                                 "keys": [
                                     {
                                         "t": 0.0,
-                                        "v": 0.0,
+                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
                                         "t": 0.25,
-                                        "v": 0.0,
+                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -10072,37 +10106,6 @@
                                     {
                                         "t": 1.0,
                                         "v": 7.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "playerFallLight",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
-                        "spriteCols": 2,
-                        "spriteRows": 1,
-                        "useCustomSize": true,
-                        "targetWidth": 140.0,
-                        "targetHeight": 100.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 1.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -11852,7 +11855,10 @@
                     "y": 0.0,
                     "z": 0.0,
                     "w": 0.5
-                }
+                },
+                "textureNormal": "",
+                "textureHovered": "",
+                "texturePressed": ""
             },
             "layer": {
                 "layerName": "Default",
@@ -12104,7 +12110,10 @@
                     "y": 0.0,
                     "z": 0.0,
                     "w": 0.5
-                }
+                },
+                "textureNormal": "",
+                "textureHovered": "",
+                "texturePressed": ""
             },
             "layer": {
                 "layerName": "Default",
@@ -12361,7 +12370,10 @@
                     "y": 0.0,
                     "z": 0.0,
                     "w": 0.5
-                }
+                },
+                "textureNormal": "",
+                "textureHovered": "",
+                "texturePressed": ""
             },
             "layer": {
                 "layerName": "Default",
@@ -12499,7 +12511,10 @@
                     "y": 0.0,
                     "z": 0.0,
                     "w": 0.5
-                }
+                },
+                "textureNormal": "",
+                "textureHovered": "",
+                "texturePressed": ""
             },
             "layer": {
                 "layerName": "Default",
@@ -12634,7 +12649,10 @@
                     "y": 0.0,
                     "z": 0.0,
                     "w": 0.5
-                }
+                },
+                "textureNormal": "",
+                "textureHovered": "",
+                "texturePressed": ""
             },
             "tilemap": {
                 "tileSize": 32,
@@ -12841,7 +12859,10 @@
                     "y": 0.0,
                     "z": 0.0,
                     "w": 0.5
-                }
+                },
+                "textureNormal": "",
+                "textureHovered": "",
+                "texturePressed": ""
             },
             "tilemap": {
                 "tileSize": 32,
@@ -18378,7 +18399,10 @@
                     "y": 0.0,
                     "z": 0.0,
                     "w": 0.5
-                }
+                },
+                "textureNormal": "",
+                "textureHovered": "",
+                "texturePressed": ""
             },
             "layer": {
                 "layerName": "Default",
@@ -18523,7 +18547,10 @@
                     "y": 0.0,
                     "z": 0.0,
                     "w": 0.5
-                }
+                },
+                "textureNormal": "",
+                "textureHovered": "",
+                "texturePressed": ""
             },
             "layer": {
                 "layerName": "Default",
@@ -19458,113 +19485,10 @@
                     "y": 0.0,
                     "z": 0.0,
                     "w": 0.5
-                }
-            },
-            "gui": {
-                "uiType": 5
-            },
-            "uilayout": {
-                "paddingXY": {
-                    "x": 0.0,
-                    "y": 0.0
                 },
-                "uiLayout": 4
-            },
-            "layer": {
-                "layerName": "UIButtons",
-                "z": 10
-            }
-        },
-        {
-            "active": false,
-            "name": "ResumeButton_Big",
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 23.200000762939454,
-                    "y": 14.5,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 22.0,
-                    "y": 2.4000000953674318
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": false,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "UI/settings/updated resume.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "button": {
-                "buttonState": 0,
-                "shapeNormalColor": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "shapeHoveredColor": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 0.5
-                },
-                "shapePressedColor": {
-                    "x": 0.699999988079071,
-                    "y": 0.699999988079071,
-                    "z": 0.699999988079071,
-                    "w": 0.699999988079071
-                },
-                "textNormalColor": {
-                    "x": 0.30000001192092898,
-                    "y": 0.30000001192092898,
-                    "z": 0.30000001192092898,
-                    "w": 0.699999988079071
-                },
-                "textHoveredColor": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0,
-                    "w": 0.0
-                },
-                "textPressedColor": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0,
-                    "w": 0.5
-                }
+                "textureNormal": "UI/settings/updated resume.png",
+                "textureHovered": "UI/settings/updated resume large.png",
+                "texturePressed": "UI/settings/updated resume.png"
             },
             "gui": {
                 "uiType": 5
@@ -19670,7 +19594,10 @@
                     "y": 0.0,
                     "z": 0.0,
                     "w": 0.5
-                }
+                },
+                "textureNormal": "UI/settings/updated restart.png",
+                "textureHovered": "UI/settings/updated restart large.png",
+                "texturePressed": "UI/settings/updated restart.png"
             },
             "gui": {
                 "uiType": 5
@@ -19713,7 +19640,7 @@
                 "thickness": 1.0,
                 "preview": false,
                 "type": 0,
-                "textureName": "UI/settings/updated settings .png",
+                "textureName": "UI/settings/updated settings.png",
                 "uvSize": {
                     "x": 1.0,
                     "y": 1.0
@@ -19776,7 +19703,10 @@
                     "y": 0.0,
                     "z": 0.0,
                     "w": 0.5
-                }
+                },
+                "textureNormal": "UI/settings/updated settings.png",
+                "textureHovered": "UI/settings/updated settings large.png",
+                "texturePressed": "UI/settings/updated settings.png"
             },
             "gui": {
                 "uiType": 5
@@ -19882,7 +19812,10 @@
                     "y": 0.0,
                     "z": 0.0,
                     "w": 0.5
-                }
+                },
+                "textureNormal": "UI/settings/updated quit.png",
+                "textureHovered": "UI/settings/updated quit large.png",
+                "texturePressed": "UI/settings/updated quit.png"
             },
             "gui": {
                 "uiType": 5

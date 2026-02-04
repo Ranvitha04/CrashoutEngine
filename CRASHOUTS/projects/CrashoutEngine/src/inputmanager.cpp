@@ -6,7 +6,7 @@
 
 Handles keyboard mouse and scroll wheel input using GLFW
 
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 */
 #include "inputmanager.h"
@@ -40,8 +40,41 @@ std::string InputManager::s_typedChars;
 
 std::unordered_map<int, bool> InputManager::s_lastKeys;
 
+// Game View State
+bool InputManager::s_usingGameView = false;
+CEVec2 InputManager::s_gameMousePos{ 0.f, 0.f };
+CEVec2 InputManager::s_gameWindowSize{ 0.f, 0.f };
+
 CEVec2 InputManager::GetMouseWorldPos() {
     return g_mouseWorldPos;
+}
+
+void InputManager::SetGameViewMouse(float x, float y, float w, float h) {
+    s_usingGameView = true;
+    s_gameMousePos = { x, y };
+    s_gameWindowSize = { w, h };
+}
+
+CEVec2 InputManager::GetGameMousePos() {
+    // If Editor is driving this, return the overridden pos
+    if (s_usingGameView) return s_gameMousePos;
+    
+    // Fallback: Return raw window mouse pos (Release mode / Standalone)
+    return GetMousePosition();
+}
+
+CEVec2 InputManager::GetGameWindowSize() {
+    if (s_usingGameView && s_gameWindowSize.x > 0 && s_gameWindowSize.y > 0) 
+        return s_gameWindowSize;
+
+    // Fallback: Return actual window size from GLFW
+    int w, h;
+    if (Window) {
+        glfwGetWindowSize(Window, &w, &h);
+        return CEVec2{ (float)w, (float)h };
+    }
+
+    return CEVec2{ (float)Settings::GetScreenWidth(), (float)Settings::GetScreenHeight() };
 }
 
 /*!
@@ -61,9 +94,15 @@ void InputManager::Init(GLFWwindow* ptr_window) {
 Snapshots scroll delta resets accumulator and refreshes key and mouse button states
 */
 void InputManager::Update() {
+    // Reset game view state at start of frame. 
+    // The Editor must call SetGameViewMouse EVERY frame to keep it active.
+    // This handles the case where the user closes the viewport or minimizes it.
+    s_usingGameView = false; 
+
     // Clear typed chars and store last frame's key state
     s_typedChars.clear();
     s_lastKeys = Keys;
+
 
     // Snapshot scroll delta for this frame and reset accumulator
     ScrollYFrame = ScrollYAccum;

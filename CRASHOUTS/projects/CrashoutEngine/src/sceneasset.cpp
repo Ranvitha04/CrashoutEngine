@@ -497,6 +497,9 @@ namespace CrashoutsEngine {
 				WriteColor(val, "textNormalColor", c.textNormalColor, allocator);
 				WriteColor(val, "textHoveredColor", c.textHoveredColor, allocator);
 				WriteColor(val, "textPressedColor", c.textPressedColor, allocator);
+				val.AddMember("textureNormal", rapidjson::Value(c.textureNormal.c_str(), allocator), allocator);
+				val.AddMember("textureHovered", rapidjson::Value(c.textureHovered.c_str(), allocator), allocator);
+				val.AddMember("texturePressed", rapidjson::Value(c.texturePressed.c_str(), allocator), allocator);
 				entityValue.AddMember(rapidjson::StringRef(Keys::BUTTON_COMPONENT), val, allocator);
 			}
 
@@ -1008,6 +1011,9 @@ namespace CrashoutsEngine {
 				if (v.HasMember("textNormalColor")) b.textNormalColor = ReadColor(v["textNormalColor"]);
 				if (v.HasMember("textHoveredColor")) b.textHoveredColor = ReadColor(v["textHoveredColor"]);
 				if (v.HasMember("textPressedColor")) b.textPressedColor = ReadColor(v["textPressedColor"]);
+				if (v.HasMember("textureNormal")) b.textureNormal = GetString(v, "textureNormal");
+				if (v.HasMember("textureHovered")) b.textureHovered = GetString(v, "textureHovered");
+				if (v.HasMember("texturePressed")) b.texturePressed = GetString(v, "texturePressed");
 				//if (auto* s = gECS.GetComponent<ShapeComponent>(newEntity)) s->color = b.shapeNormalColor;
 				//if (auto* t = gECS.GetComponent<TextComponent>(newEntity)) t->color = b.textNormalColor;
 			}

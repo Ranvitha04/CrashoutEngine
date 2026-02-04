@@ -637,6 +637,13 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path) {
 			// 7. Text Pressed
 			if (b.HasMember("textPressedColor"))
 				btnD.c.textPressedColor = ReadColor(b["textPressedColor"]);
+
+			if (b.HasMember("textureNormal") && b["textureNormal"].IsString())
+				btnD.c.textureNormal = b["textureNormal"].GetString();
+			if (b.HasMember("textureHovered") && b["textureHovered"].IsString())
+				btnD.c.textureHovered = b["textureHovered"].GetString();
+			if (b.HasMember("texturePressed") && b["texturePressed"].IsString())
+				btnD.c.texturePressed = b["texturePressed"].GetString();
 		}
 
 		InputData inpD;
@@ -1298,10 +1305,13 @@ namespace CrashoutsEngine {
 			WriteColor("shapeNormalColor", btn->shapeNormalColor);
 			WriteColor("shapeHoveredColor", btn->shapeHoveredColor);
 			WriteColor("shapePressedColor", btn->shapePressedColor);
-
 			WriteColor("textNormalColor", btn->textNormalColor);
 			WriteColor("textHoveredColor", btn->textHoveredColor);
 			WriteColor("textPressedColor", btn->textPressedColor);
+
+			if (!btn->textureNormal.empty()) bObj.AddMember("textureNormal", Value(btn->textureNormal.c_str(), allocator), allocator);
+			if (!btn->textureHovered.empty()) bObj.AddMember("textureHovered", Value(btn->textureHovered.c_str(), allocator), allocator);
+			if (!btn->texturePressed.empty()) bObj.AddMember("texturePressed", Value(btn->texturePressed.c_str(), allocator), allocator);
 
 			obj.AddMember("button", bObj, allocator);
 		}

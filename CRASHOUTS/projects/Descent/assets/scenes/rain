@@ -1273,8 +1273,13 @@
                             "footstepInterval": 0.07500000298023224,
                             "swapPause": 1.0,
                             "energyConsumption": 12.5,
+                            "goalNoOfPlates": 1,
+                            "currentGoalPlates": 0,
                             "normalMass": 4.0,
                             "lightMass": 3.0,
+                            "groundCheckDistance": 26.0,
+                            "groundCheckWidth": 10.0,
+                            "dialogueCooldown": 1.0,
                             "CurrentEnergy": 100.0,
                             "MaxEnergy": 100.0,
                             "alive": true,
@@ -1331,7 +1336,10 @@
                     "y": 0.0,
                     "z": 0.0,
                     "w": 0.5
-                }
+                },
+                "textureNormal": "",
+                "textureHovered": "",
+                "texturePressed": ""
             },
             "layer": {
                 "layerName": "",
@@ -1489,7 +1497,10 @@
                     "y": 0.0,
                     "z": 0.0,
                     "w": 0.5
-                }
+                },
+                "textureNormal": "",
+                "textureHovered": "",
+                "texturePressed": ""
             },
             "layer": {
                 "layerName": "",
@@ -1647,7 +1658,10 @@
                     "y": 0.0,
                     "z": 0.0,
                     "w": 0.5
-                }
+                },
+                "textureNormal": "",
+                "textureHovered": "",
+                "texturePressed": ""
             },
             "layer": {
                 "layerName": "",
@@ -1805,7 +1819,10 @@
                     "y": 0.0,
                     "z": 0.0,
                     "w": 0.5
-                }
+                },
+                "textureNormal": "",
+                "textureHovered": "",
+                "texturePressed": ""
             },
             "layer": {
                 "layerName": "",

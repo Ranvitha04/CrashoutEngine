@@ -6,7 +6,7 @@
 
 Provides static functions to handle keyboard mouse and scroll wheel input using GLFW
 
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 */
 #pragma once
@@ -106,10 +106,25 @@ public:
 
     static void ClearInputs();
 
+    // --- EDITOR / GAME VIEWPORT SUPPORT ---
+    // Called by the Editor (DebugViewport) to override mouse pos relative to the game image
+    static void SetGameViewMouse(float x, float y, float w, float h);
+
+    // Returns mouse position relative to the Game View (Editor Panel or Full Window)
+    static CEVec2 GetGameMousePos();
+
+    // Returns the size of the Game View (Editor Panel or Full Window)
+    static CEVec2 GetGameWindowSize();
 
 private:
     /// Pointer to the GLFW window
     static GLFWwindow* Window;
+
+    // Game View State
+    static bool s_usingGameView;
+    static CEVec2 s_gameMousePos;
+    static CEVec2 s_gameWindowSize;
+
 
     /// Map of key states indexed by GLFW key code
     static std::unordered_map<int, bool> Keys;

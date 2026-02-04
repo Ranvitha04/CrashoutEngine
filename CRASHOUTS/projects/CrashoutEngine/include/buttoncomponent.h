@@ -47,6 +47,11 @@ namespace Component {
 		float hoverScale = 1.1f;
 		float pressedScale = 0.95f;
 		
+		// Textures for Shape Component (Optional overrides)
+		std::string textureNormal = "";
+		std::string textureHovered = "";
+		std::string texturePressed = "";
+
 		// Internal state to track original size
 		CEVec2 originalSize = { 0.f, 0.f };
 		float originalTextScale = 0.0f;

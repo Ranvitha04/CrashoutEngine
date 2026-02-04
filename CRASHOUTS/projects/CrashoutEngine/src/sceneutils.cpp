@@ -53,6 +53,8 @@ namespace Scene {
 	using namespace CrashoutsEngine;
 	using namespace CrashoutsEngine::Assets;
 
+	static std::unique_ptr<TextRenderer> gTextRenderer = nullptr;
+
 	CEVec3 GetMouseInWorld() {
 
 		double u, v;
@@ -154,7 +156,7 @@ namespace Scene {
 			renderer.shdr_pgm->SetUniform("uView", renderer.viewMatrix);
 			renderer.shdr_pgm->SetUniform("uProjection", renderer.projectionMatrix);
 
-			// 2. Reset Blending (The fix for your current issue)
+			// 2. Reset Blending
 			glEnable(GL_BLEND);
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 			// 3. Reset Culling (Text is often double-sided or winding order might vary)
@@ -162,22 +164,22 @@ namespace Scene {
 			glEnable(GL_DEPTH_TEST);
 
 			// --- DEFINE UI COORDINATE SYSTEM ---
-			// We define UI Space as: Center Origin (0,0), Fixed Height = 100.0f.
-			float winW = (float)GLApp::width;
-			float winH = (float)GLApp::height;
+			// [FIX] Use Game View dimensions for consistency with Input/Editor
+
+			CEVec2 gameSize = InputManager::GetGameWindowSize();
+			float winW = gameSize.x;
+			float winH = gameSize.y;
+
 			float aspect = winW / winH;
 			float uiHeight = 100.0f;
 			float uiWidth = uiHeight * aspect;
 
 			// Lambda to convert Center-Origin Units -> Bottom-Left Origin Pixels
 			auto UnitsToPixels = [&](float uX, float uY) -> CEVec2 {
-				// 1. Map -50..50 to 0..1 (Normalized)
 				float normX = (uX + (uiWidth * 0.5f)) / uiWidth;
 				float normY = (uY + (uiHeight * 0.5f)) / uiHeight;
-
-				// 2. Map 0..1 to Pixels
 				return { normX * winW, normY * winH };
-				};
+			};
 
 			// For Drawing Text Components
 			const ECS::ComponentArray<TextComponent>& textArray = globalECS.GetComponentArray<TextComponent>();
@@ -224,191 +226,90 @@ namespace Scene {
 						textToRender = tc->text.substr(0, tc->revealedCharCount);
 					}
 					else if (tc->isRevealing && engineState == EngineState::STOP) {
-						// In STOP mode, reset or show full? Usually preview full or reset.
-						// Let's reset to allow previewing "from start" when playing.
-						tc->revealTimer = 0.0f;
-						tc->revealedCharCount = 0;
-						// If you want to see text in editor, maybe show full?
-						// textToRender = tc->text; 
-						// Or show empty? 
-						// Let's show empty to respect the flag, or user can toggle flag off to see text.
-						textToRender = "";
+						textToRender = tc->text; // Show full text in editor so you can see it!
 					}
 
 					// --- COORDINATE SPACE CONVERSION ---
 					if (!tc->isWorldSpace) {
-						// Case: Screen Space UI
-						// We must convert our Unit Position to Pixel Position because FreeType/TextRenderer
-						// usually expects pixel coordinates starting from Bottom-Left.
 						CEVec2 pixelPos = UnitsToPixels(finalX, finalY);
 						finalX = pixelPos.x;
 						finalY = pixelPos.y;
 					}
 
 					// Render Text
-
 					if (tc->wrapText) {
-
 						float maxWidth = t->size.x;
-
 						float maxHeight = t->size.y;
 
-
-
 						if (!tc->isWorldSpace) {
-
-							// Convert dimensions from Units to Pixels (Full Size)
-
 							maxWidth = (t->size.x / uiWidth) * winW;
-
 							maxHeight = (t->size.y / uiHeight) * winH;
-
 						}
-
-
 
 						// Map UILayout to Text Alignment
-
 						int align = 1; // CENTER
-
 						int vAlign = 1; // MIDDLE
 
-
-
 						if (u) {
-
-							// Horizontal
-
 							if (static_cast<bool>(u->uiLayout & UILayout::LEFT)) align = 0;
-
 							else if (static_cast<bool>(u->uiLayout & UILayout::RIGHT)) align = 2;
-
-
-
-							// Vertical
-
 							if (static_cast<bool>(u->uiLayout & UILayout::TOP)) vAlign = 0;
-
 							else if (static_cast<bool>(u->uiLayout & UILayout::DOWN)) vAlign = 2;
-
 						}
 						else {
-
-							// Fallback to component internal values
-
 							align = (int)tc->alignment;
-
 							vAlign = (int)tc->verticalAlignment;
-
 						}
-
-
-
-						// Override finalX/Y for Bounded Text to use Shape Center
 
 						float boundedX = t->position.x + tc->offset.x;
-
 						float boundedY = t->position.y + tc->offset.y;
 
-
-
 						if (!tc->isWorldSpace) {
-
 							CEVec2 pixelPos = UnitsToPixels(boundedX, boundedY);
-
 							boundedX = pixelPos.x;
-
 							boundedY = pixelPos.y;
-
 						}
 
-
-
 						gTextRenderer->RenderTextBounded(
-
-
-
 							textToRender, boundedX, boundedY, depthZ,
-
-
-
 							maxWidth, maxHeight,
-
-
-
 							finalScale, tc->color, font, tc->isWorldSpace,
-
-
-
 							align, vAlign, tc->padding, tc->letterSpacing, tc->lineSpacing
-
-
-
 						);
-
-
-
 					}
-
-
-
 					else if (tc->centered)
-
-
-
 						gTextRenderer->RenderCenteredText(textToRender, finalX, finalY, depthZ, finalScale, tc->color, font, tc->isWorldSpace, tc->letterSpacing);
-
-
-
 					else
-
-
-
 						gTextRenderer->RenderText(textToRender, finalX, finalY, depthZ, finalScale, tc->color, font, tc->isWorldSpace, tc->letterSpacing);
 
 					// --- CURSOR LOGIC ---
 					TextInputComponent* input = globalECS.GetComponent<TextInputComponent>(id);
 					if (input && input->isFocused && engineState != EngineState::STOP) {
-
-						// Blink Logic
 						static float blinkTimer = 0.0f;
 						blinkTimer += (float)FrameRateController::GetInstance().DT();
 						bool showCursor = fmod(blinkTimer, 1.0f) < 0.5f;
 
 						if (showCursor) {
-							// For cursor calculation, we need the start X position.
-							// If text is Centered, logic differs, but assuming Left-Aligned for input boxes usually.
-
-							// We need the transform size in pixels if we are in Screen Mode to calculate line wrapping correctly,
-							// but for simple single-line input:
-							//float wrapWidth = (tc->isWorldSpace) ? t->size.x : (t->size.x / uiWidth * winW);
-
-							// Get Cursor Pos from Renderer
-							// Note: GetCursorPosition returns the offset relative to the text start.
 							CEVec2 cursorPos = gTextRenderer->GetCursorPosition(
 								tc->text,
 								input->cursorPos,
-								finalX, // The text starting X we calculated above
-								finalY, // The text starting Y we calculated above
-								1.0f,   // Scale handled inside GetCursorPosition usually, or pass finalScale
+								finalX,
+								finalY,
+								1.0f,
 								font
 							);
 
-							// Define Cursor Geometry
 							GLfloat cursorThickness = 0.25f;
-							GLfloat cursorHeight = gTextRenderer->GetLineHeight(font, finalScale); // Pass scale
+							GLfloat cursorHeight = gTextRenderer->GetLineHeight(font, finalScale);
 							CEColor cursorColor = { 0.f, 0.f, 0.f, 1.f };
 
 							Assets::FontAsset* fontAsset = Assets::AssetManager::GetInstance().Get<Assets::FontAsset>(font);
 							float ascender = cursorHeight * 0.75f;
 							if (fontAsset && fontAsset->characters.count('H')) {
-								// Rough estimate based on H
 								ascender = (float)fontAsset->characters.at('H').Bearing.y * finalScale;
-								// If isWorldSpace is false, we might need to scale this by pixel ratio
-								if (!tc->isWorldSpace) ascender *= (winH / uiHeight * 0.02f); // Tweak factor
+								if (!tc->isWorldSpace) ascender *= (winH / uiHeight * 0.02f);
 							}
 
-							// Draw
 							CEVec3 startPoint = { cursorPos.x, cursorPos.y + ascender * 0.5f, depthZ + 0.01f };
 							CEVec3 endPoint = { cursorPos.x, cursorPos.y - ascender * 0.5f, depthZ + 0.01f };
 
@@ -422,6 +323,7 @@ namespace Scene {
 			}
 		}
 
+
 		/*!
 		@brief      Updates button states (Hover, Pressed, Normal) and visual feedback.
 		@param      globalECS Reference to the ECS system.
@@ -432,14 +334,16 @@ namespace Scene {
 			CEVec2 mouseWorld = InputManager::GetMouseWorldPos();
 
 			// 2. Calculate MOUSE in UI Space (Center Origin, Fixed Height 100.0f)
-			// This matches the coordinate system used in RenderTextAndCursor logic (before pixel conversion)
-			float winW = (float)GLApp::width;
-			float winH = (float)GLApp::height;
+			// [FIX] Use Game View dimensions/mouse for Editor compatibility
+			CEVec2 gameSize = InputManager::GetGameWindowSize();
+			float winW = gameSize.x;
+			float winH = gameSize.y;
+			
 			float aspect = winW / winH;
 			float baseHeight = 100.0f;
 			float baseWidth = baseHeight * aspect;
 
-			CEVec2 rawMouse = InputManager::GetMousePosition(); // Top-Left Pixels
+			CEVec2 rawMouse = InputManager::GetGameMousePos(); // Top-Left Pixels (Relative to Game View)
 
 			// Normalize Mouse to -1..1
 			float ndcX = (rawMouse.x / winW) * 2.0f - 1.0f;
@@ -497,6 +401,11 @@ namespace Scene {
 
 				// Base Scale (assumes 1.0 is default/normal scale multiplier)
 				float targetScale = 1.0f;
+				std::string targetTexture = "";
+
+				// Resolve target texture logic
+				// 1. Start with Normal
+				targetTexture = b->textureNormal;
 
 				if (isHovering) {
 					if (InputManager::IsMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT)) {
@@ -504,12 +413,19 @@ namespace Scene {
 						if (s) s->color = b->shapePressedColor;
 						if (txt) txt->color = b->textPressedColor;
 						targetScale = b->pressedScale;
+						
+						// Use Pressed texture if available, else Hovered, else Normal
+						if (!b->texturePressed.empty()) targetTexture = b->texturePressed;
+						else if (!b->textureHovered.empty()) targetTexture = b->textureHovered;
 					}
 					else {
 						b->buttonState = ButtonState::HOVERED;
 						if (s) s->color = b->shapeHoveredColor;
 						if (txt) txt->color = b->textHoveredColor;
 						targetScale = b->hoverScale;
+
+						// Use Hovered texture if available, else Normal
+						if (!b->textureHovered.empty()) targetTexture = b->textureHovered;
 					}
 				}
 				else if (b->buttonState != ButtonState::NORMAL) {
@@ -517,6 +433,14 @@ namespace Scene {
 					if (s) s->color = b->shapeNormalColor;
 					if (txt) txt->color = b->textNormalColor;
 					targetScale = 1.0f;
+					// Revert to Normal texture
+					targetTexture = b->textureNormal;
+				}
+
+				// Apply Texture Swap if target is valid and different
+				if (s && !targetTexture.empty() && s->textureName != targetTexture) {
+					s->textureName = targetTexture;
+					s->enableTexture = true; // Ensure texture rendering is on
 				}
 
 				if (b->originalSize.x == 0.0f && b->originalSize.y == 0.0f) {
@@ -553,9 +477,14 @@ namespace Scene {
 			CEVec2 mouseWorld = InputManager::GetMouseWorldPos();
 
 			CEVec2 mouseUI;
-			CEVec2 rawMouse = InputManager::GetMousePosition();
-			float winW = (float)GLApp::width;
-			float winH = (float)GLApp::height;
+			
+			// [FIX] Use Game View dimensions/mouse for Editor compatibility
+			CEVec2 gameSize = InputManager::GetGameWindowSize();
+			float winW = gameSize.x;
+			float winH = gameSize.y;
+			
+			CEVec2 rawMouse = InputManager::GetGameMousePos(); // Top-Left Pixels (Relative to Game View)
+			
 			float ndcX = (rawMouse.x / winW) * 2.0f - 1.0f;
 			float ndcY = 1.0f - (rawMouse.y / winH) * 2.0f;
 
@@ -975,7 +904,12 @@ namespace Scene {
 		Rendering& renderer = Rendering::Get();
 		if (!renderer.shdr_pgm_instanced) return;
 
+		if (!gTextRenderer) {
+			gTextRenderer = std::make_unique<TextRenderer>();
+		}
+
 		const auto& shapeArray = globalECS.GetComponentArray<ShapeComponent>();
+		const auto& textArray = globalECS.GetComponentArray<TextComponent>();
 
 		// 1. Setup Camera & Culling Bounds
 		// ---------------------------------------------------------
@@ -994,17 +928,21 @@ namespace Scene {
 		float cullMaxY = camPos.y + (camHeight * 0.6f);
 		// ---------------------------------------------------------
 
+		enum class RenderType { Shape, Text };
+
 		struct RenderEntry {
 			Entity entity;
 			float depth;
+			RenderType type;
 		};
 
 		std::vector<RenderEntry> worldEntries;
 		std::vector<RenderEntry> screenEntries;
-		worldEntries.reserve(shapeArray.indexToEntity.size());
-		screenEntries.reserve(shapeArray.indexToEntity.size());
+		size_t reserveSize = shapeArray.indexToEntity.size() + textArray.indexToEntity.size();
+		worldEntries.reserve(reserveSize);
+		screenEntries.reserve(reserveSize);
 
-		// 2. PRE-SORT 
+		// 2. PRE-SORT SHAPES
 		for (const Entity& id : shapeArray.indexToEntity) {
 			if (!IsEntityActive(globalECS, id)) continue;
 			auto* tc = globalECS.GetComponent<TransformComponent>(id);
@@ -1029,12 +967,45 @@ namespace Scene {
 				depth = Component::Rendering::ComputeDepth(tc->position, defaultZ, nullptr);
 			}
 
-			if (sc->isWorldSpace) worldEntries.push_back({ id, depth });
-			else                  screenEntries.push_back({ id, depth });
+			if (sc->isWorldSpace) worldEntries.push_back({ id, depth, RenderType::Shape });
+			else                  screenEntries.push_back({ id, depth, RenderType::Shape });
+		}
+
+		// 2b. PRE-SORT TEXT
+		for (const Entity& id : textArray.indexToEntity) {
+			if (!IsEntityActive(globalECS, id)) continue;
+			auto* tc = globalECS.GetComponent<TransformComponent>(id);
+			if (!tc) continue;
+			auto* txt = globalECS.GetComponent<TextComponent>(id);
+
+			// Compute Depth
+			float depth = 0.0f;
+			if (globalECS.HasComponent<Component::LayerComponent>(id)) {
+				auto* z = globalECS.GetComponent<Component::LayerComponent>(id);
+				if (Component::LayerComponent::layerVisibility.count(z->layerName)) {
+					if (!Component::LayerComponent::layerVisibility[z->layerName]) continue;
+				}
+				DebugZOverride* dbg = globalECS.HasComponent<DebugZOverride>(id) ? globalECS.GetComponent<DebugZOverride>(id) : nullptr;
+				depth = Component::Rendering::ComputeDepth(tc->position, *z, dbg);
+			}
+			else {
+				Component::LayerComponent defaultZ{ "Default", 0 };
+				if (Component::LayerComponent::layerVisibility.count("Default")) {
+					if (!Component::LayerComponent::layerVisibility["Default"]) continue;
+				}
+				depth = Component::Rendering::ComputeDepth(tc->position, defaultZ, nullptr);
+			}
+
+			if (txt->isWorldSpace) worldEntries.push_back({ id, depth, RenderType::Text });
+			else                   screenEntries.push_back({ id, depth, RenderType::Text });
 		}
 
 		// 3. SORT
-		auto sortFunc = [](const RenderEntry& a, const RenderEntry& b) { return a.depth < b.depth; };
+		auto sortFunc = [](const RenderEntry& a, const RenderEntry& b) {
+			if (a.depth != b.depth) return a.depth < b.depth;
+			// If depth is equal, draw Shape BEFORE Text (so text is on top)
+			return a.type == RenderType::Shape && b.type == RenderType::Text;
+		};
 		std::sort(worldEntries.begin(), worldEntries.end(), sortFunc);
 		std::sort(screenEntries.begin(), screenEntries.end(), sortFunc);
 
@@ -1042,42 +1013,62 @@ namespace Scene {
 		static LinearBatcher batcher;
 		batcher.batch.Clear();
 
-		// Updated Processor: Now takes Culling Arguments
-		auto ProcessSortedList = [&](const std::vector<RenderEntry>& entries, bool useCulling) {
+		// Updated Processor
+		auto ProcessSortedList = [&](const std::vector<RenderEntry>& entries, bool useCulling, const glm::mat4& viewMat, const glm::mat4& projMat) {
+			// Ensure text renderer is ready if needed
+			if (!gTextRenderer) gTextRenderer = std::make_unique<TextRenderer>();
+
 			for (const auto& item : entries) {
-				auto* sc = globalECS.GetComponent<ShapeComponent>(item.entity);
 				auto* tc = globalECS.GetComponent<TransformComponent>(item.entity);
 
-				// --- RESTORED CULLING LOGIC ---
-				if (useCulling) {
-					float halfW = tc->size.x * 0.5f; // Approx radius/half-extents
+				// Cull check (only for Shapes currently, as Text bounds are complex)
+				// We can skip culling for text or implement it later if needed.
+				if (item.type == RenderType::Shape && useCulling) {
+					float halfW = tc->size.x * 0.5f;
 					float halfH = tc->size.y * 0.5f;
-
-					// Note: Your old code used 'tf->position.x + tf->size.x'. 
-					// Assuming size is full width/height and position is center:
 					float objMaxX = tc->position.x + halfW;
 					float objMinX = tc->position.x - halfW;
 					float objMaxY = tc->position.y + halfH;
 					float objMinY = tc->position.y - halfH;
 
-					// AABB vs AABB Intersection Check
 					if (objMaxX < cullMinX || objMinX > cullMaxX ||
 						objMaxY < cullMinY || objMinY > cullMaxY)
 					{
-						continue; // SKIP this entity
+						continue;
 					}
 				}
-				// -----------------------------
 
-				batcher.Submit(tc, sc);
+				if (item.type == RenderType::Shape) {
+					auto* sc = globalECS.GetComponent<ShapeComponent>(item.entity);
+					batcher.Submit(tc, sc);
+				}
+				else if (item.type == RenderType::Text) {
+					// 1. Flush any pending shapes so they draw BEHIND this text
+					batcher.Flush();
+
+					// 2. Draw the text immediately
+					//UI::RenderSingleText(globalECS, item.entity, gTextRenderer.get());
+					//UI::RenderTextAndCursor(globalECS);
+					// 3. Restore Instanced Shader & Uniforms for next shapes
+					renderer.shdr_pgm_instanced->Use();
+					renderer.shdr_pgm_instanced->SetUniform("uView", viewMat);
+					renderer.shdr_pgm_instanced->SetUniform("uProjection", projMat);
+				}
 			}
 			batcher.Flush();
-			};
+		};
 
 		// 4. DRAW WORLD SPACE (Culling ENABLED)
+		// Set uniforms for both shaders to be safe
 		renderer.shdr_pgm->Use();
 		renderer.shdr_pgm->SetUniform("uView", renderer.viewMatrix);
 		renderer.shdr_pgm->SetUniform("uProjection", renderer.projectionMatrix);
+
+		if (renderer.shdr_pgm_instanced && renderer.shdr_pgm_instanced != renderer.shdr_pgm) {
+			renderer.shdr_pgm_instanced->Use();
+			renderer.shdr_pgm_instanced->SetUniform("uView", renderer.viewMatrix);
+			renderer.shdr_pgm_instanced->SetUniform("uProjection", renderer.projectionMatrix);
+		}
 
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -1085,7 +1076,7 @@ namespace Scene {
 		glDisable(GL_CULL_FACE);
 
 		// Pass 'true' to enable culling for world objects
-		ProcessSortedList(worldEntries, true);
+		ProcessSortedList(worldEntries, true, renderer.viewMatrix, renderer.projectionMatrix);
 
 		Particles::RenderAllParticles(globalECS);
 
@@ -1095,20 +1086,27 @@ namespace Scene {
 		float h = 100.0f;
 		float w = h * aspect;
 		glm::mat4 uiProj = glm::ortho(-w * 0.5f, w * 0.5f, -h * 0.5f, h * 0.5f);
+		glm::mat4 uiView = glm::mat4(1.0f);
 
 		renderer.shdr_pgm->Use();
-		renderer.shdr_pgm->SetUniform("uView", glm::mat4(1.0f));
+		renderer.shdr_pgm->SetUniform("uView", uiView);
 		renderer.shdr_pgm->SetUniform("uProjection", uiProj);
 
+		if (renderer.shdr_pgm_instanced && renderer.shdr_pgm_instanced != renderer.shdr_pgm) {
+			renderer.shdr_pgm_instanced->Use();
+			renderer.shdr_pgm_instanced->SetUniform("uView", uiView);
+			renderer.shdr_pgm_instanced->SetUniform("uProjection", uiProj);
+		}
+
 		// Pass 'false' to disable culling for UI
-		ProcessSortedList(screenEntries, false);
+		ProcessSortedList(screenEntries, false, uiView, uiProj);
 
 		// Restore State
 		if (glIsEnabled(GL_DEPTH_TEST)) glEnable(GL_DEPTH_TEST);
 		if (glIsEnabled(GL_CULL_FACE)) glEnable(GL_CULL_FACE);
 		renderer.shdr_pgm_instanced->Use();
 
-		Scene::UI::RenderTextAndCursor(globalECS);
+		Scene::UI::RenderTextAndCursor(globalECS); 
 		Component::RenderSpriteAnimationsECS();
 	}
 

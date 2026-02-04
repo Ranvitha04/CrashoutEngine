@@ -195,7 +195,10 @@
                     "y": 1.0,
                     "z": 1.0,
                     "w": 1.0
-                }
+                },
+                "textureNormal": "",
+                "textureHovered": "",
+                "texturePressed": ""
             },
             "gui": {
                 "uiType": 7
@@ -339,7 +342,10 @@
                     "y": 1.0,
                     "z": 1.0,
                     "w": 1.0
-                }
+                },
+                "textureNormal": "",
+                "textureHovered": "",
+                "texturePressed": ""
             },
             "gui": {
                 "uiType": 7
@@ -483,7 +489,10 @@
                     "y": 1.0,
                     "z": 1.0,
                     "w": 1.0
-                }
+                },
+                "textureNormal": "",
+                "textureHovered": "",
+                "texturePressed": ""
             },
             "gui": {
                 "uiType": 7
@@ -621,7 +630,9 @@
         "Player": 1
     },
     "layer_visibility": {
-        "Default": true
+        "Default": true,
+        "Ground": false,
+        "Player": false
     },
     "tag_mapping": {
         "Default": 0,

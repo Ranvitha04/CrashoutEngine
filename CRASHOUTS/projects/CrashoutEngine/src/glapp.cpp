@@ -11,7 +11,7 @@ window and start up an OpenGL context and to extract function pointers
 to OpenGL implementations. It also includes new functions for ImGui
 integration.
 
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 *//*__________________________________________________________________________*/
 
@@ -675,6 +675,7 @@ void GLApp::fbsize_cb([[maybe_unused]] GLFWwindow* ptr_win, int fbWidth, int fbH
     // Update Camera with the CORRECTED aspect ratio dimensions
     using namespace CrashoutsEngine::RenderCamera;
     engineCamera.UpdateMatrices(vpW, vpH);
+    gameCamera.UpdateMatrices(vpW, vpH);
 
     // Force viewport Update immediately so the very next draw call is correct
     // (Optional, but helps with flicker on some drivers)

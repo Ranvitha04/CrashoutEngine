@@ -2176,6 +2176,12 @@ namespace CrashoutsEngine
 			ImGui::SeparatorText("Scale Factors");
 			UIHelpers::DrawUndoableFloat("Hover Scale", bc->hoverScale, 0.05f, 0.5f, 2.0f);
 			UIHelpers::DrawUndoableFloat("Pressed Scale", bc->pressedScale, 0.05f, 0.5f, 2.0f);
+
+			// --- State Textures (New) ---
+			ImGui::SeparatorText("State Textures (Swap)");
+			UIHelpers::DrawUndoableString("Normal Texture", bc->textureNormal);
+			UIHelpers::DrawUndoableString("Hovered Texture", bc->textureHovered);
+			UIHelpers::DrawUndoableString("Pressed Texture", bc->texturePressed);
 		}
 	};
 

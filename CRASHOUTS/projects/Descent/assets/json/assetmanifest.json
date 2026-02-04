@@ -1579,12 +1579,12 @@
             "path": "UI\\settings\\updated resume.png"
         },
         {
-            "name": "updated settings ",
-            "path": "UI\\settings\\updated settings .png"
-        },
-        {
             "name": "updated settings large",
             "path": "UI\\settings\\updated settings large.png"
+        },
+        {
+            "name": "updated settings",
+            "path": "UI\\settings\\updated settings.png"
         },
         {
             "name": "startmenu_BG",
