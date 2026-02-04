@@ -5,99 +5,183 @@ namespace CrashoutsEngine
     [ScriptBehaviour]
     public class PauseButtons : ScriptBase
     {
-        // Cache the ID so we don't search for "PauseScreen" every frame
-        private uint _pauseScreenID = 0;
-        private bool _isPaused = false;
+        [SerializeField] private string currentScene;
 
-        PlayerMovement PlayerMovement;
+        // --- CACHED ENTITIES ---
+        private Entity pauseScreen;
+        private Entity restartCheckScreen;
+        private Entity openedBookScreen;
+        private Entity closedBookScreen;
+
+        private Entity btnResume;
+        private Entity btnRestart;
+        private Entity btnSettings;
+        private Entity btnQuit;
+        private Entity btnYes;
+        private Entity btnNo;
+
+        // --- STATE ---
+        private PlayerMovement playerScript;
+        private bool isPaused = false;
+        private bool isRestartMenuOpen = false;
+        private bool isSettingsMenuOpen = false;
+
+        // --- FIX: INPUT COOLDOWN ---
+        private float inputCooldown = 0.0f;
 
         public override void Start()
         {
-            // 1. Find the screen ONCE at startup
-            Entity screen = Entity.Find("PauseScreen");
-            if (screen != null)
-            {
-                _pauseScreenID = screen.ID;
-                
-            }
-            else
-            {
-                Console.WriteLine("[Error] PauseButtons could not find 'PauseScreen' entity!");
-            }
+            if (PlayerMovement.Instance != null)
+                playerScript = PlayerMovement.Instance;
 
-            PlayerMovement = PlayerMovement.Instance;
+            // Find UI
+            pauseScreen = Entity.Find("Pause");
+            restartCheckScreen = Entity.Find("RestartCheck");
+            openedBookScreen = Entity.Find("OpenedBook");
+            closedBookScreen = Entity.Find("ClosedBook");
+
+            // Find Buttons
+            btnResume = Entity.Find("ResumeButton");
+            btnRestart = Entity.Find("RestartLevelButton");
+            btnSettings = Entity.Find("SettingsButton");
+            btnQuit = Entity.Find("QuitButton");
+            btnYes = Entity.Find("Yes");
+            btnNo = Entity.Find("No");
+
+            // Init State
+            SetEntityActive(pauseScreen, false);
+            SetEntityActive(restartCheckScreen, false);
+            SetEntityActive(openedBookScreen, false);
         }
 
         public override void Update()
         {
-            // 2. Use IsKeyTriggered (Runs once per press) instead of IsKeyPressed (Runs every frame while holding)
-            if (Input.IsKeyTriggered(Key.Escape))
+            // 1. INPUT HANDLING
+            if (Input.IsKeyTriggered(Key.Escape) || Input.IsKeyTriggered(Key.P))
             {
+                if (playerScript != null && playerScript.isDialogueActive) return;
+
                 TogglePause();
+                inputCooldown = 0.2f;
+                return;
             }
 
-            // 3. Handle Buttons
-            var btn = Entity.GetComponent<ButtonComponent>();
-            if (btn != null && btn.IsClicked())
+            // 2. COOLDOWN
+            if (inputCooldown > 0.0f)
             {
-                var nameComp = Entity.GetComponent<NameComponent>();
-                string name = nameComp != null ? nameComp.ToString() : "Unknown";
+                inputCooldown -= (float)Time.DT;
+                return;
+            }
 
-                Console.WriteLine("[C#] Clicked: " + name);
-                Entity screen = new Entity(_pauseScreenID);
-                var tf = screen.GetComponent<TransformComponent>();
-
-                if (tf.Position.z >= 0.0f)
+            // 3. UI STATE MACHINE
+            if (isPaused)
+            {
+                if (isRestartMenuOpen)
                 {
-                    if (name == "PauseResumeBtn")
-                    {
-                        SetPauseMenu(false);
-                    }
-                    else if (name == "SettingsBtn")
-                    {
-                        Console.WriteLine("Settings not implemented");
-                    }
-                    else if (name == "PauseQuitBtn")
-                    {
-                        SceneManager.QuitGame();
-                    }
+                    HandleRestartConfirmButtons();
                 }
-            }
-        }
-
-        void TogglePause()
-        {
-            SetPauseMenu(!_isPaused);
-        }
-
-        void SetPauseMenu(bool show)
-        {
-            if(PlayerMovement != null) PlayerMovement.isPaused = show;
-            // 4. Safety Check: Make sure we actually found the screen
-            if (_pauseScreenID == 0) return;
-
-            Entity screen = new Entity(_pauseScreenID);
-            var tf = screen.GetComponent<TransformComponent>();
-
-            if (tf != null)
-            {
-                _isPaused = show;
-
-                if (_isPaused)
+                else if (isSettingsMenuOpen)
                 {
-                    // Show: Bring to front (Z = 0.7f)
-                    tf.Position = new CEVec3(tf.Position.x, tf.Position.y, 0.7f);
-                    // Optional: Pause Physics/Time?
-                    // Time.TimeScale = 0.0f; 
+                    // FIX: Do NOT check btnSettings here. It is hidden and stale.
+                    // Only check for a specific "Back" or "Close" button inside the book.
+                    // For now, pressing ESC (handled above) is the correct way to close it.
+
+                    // If you have a specific close button in the book, check it here:
+                    // if (CheckButtonClick(btnCloseBook)) CloseSettings();
                 }
                 else
                 {
-                    // Hide: Send far away (Z = -100.0f)
-                    // Note: Using -100 matches your Resume button logic
-                    tf.Position = new CEVec3(tf.Position.x, tf.Position.y, -100.0f);
-                    // Time.TimeScale = 1.0f;
+                    HandleMainPauseButtons();
                 }
             }
+        }
+
+        private void TogglePause()
+        {
+            // Back out of menus first
+            if (isRestartMenuOpen) { CloseRestartMenu(); return; }
+            if (isSettingsMenuOpen) { CloseSettings(); return; }
+
+            isPaused = !isPaused;
+
+            // Sync with Player
+            if (playerScript != null) playerScript.SetPauseState(isPaused);
+
+            // Show/Hide Main Screen AND the Closed Book background
+            SetEntityActive(pauseScreen, isPaused);
+            SetEntityActive(closedBookScreen, isPaused); // <--- ADD THIS
+
+            // Force close sub-menus
+            isRestartMenuOpen = false;
+            isSettingsMenuOpen = false;
+            SetEntityActive(restartCheckScreen, false);
+            SetEntityActive(openedBookScreen, false);
+        }
+
+        private void ResumeGame()
+        {
+            // We just trigger TogglePause logic, which handles unpausing perfectly
+            if (isPaused) TogglePause();
+        }
+
+        private void HandleMainPauseButtons()
+        {
+            if (CheckButtonClick(btnResume)) ResumeGame();
+            else if (CheckButtonClick(btnRestart)) OpenRestartMenu();
+            else if (CheckButtonClick(btnSettings)) OpenSettings();
+            else if (CheckButtonClick(btnQuit)) SceneManager.LoadScene("descentmenu", 1.0f);
+        }
+
+        private void HandleRestartConfirmButtons()
+        {
+            if (CheckButtonClick(btnYes))
+            {
+                if (string.IsNullOrEmpty(currentScene)) currentScene = "Level1";
+                SceneManager.LoadScene(currentScene, 1.0f);
+            }
+            else if (CheckButtonClick(btnNo))
+            {
+                CloseRestartMenu();
+            }
+        }
+
+        // --- SUB MENUS ---
+        private void OpenRestartMenu()
+        {
+            isRestartMenuOpen = true;
+            SetEntityActive(restartCheckScreen, true);
+            SetEntityActive(btnRestart, false);
+        }
+        private void CloseRestartMenu()
+        {
+            isRestartMenuOpen = false;
+            SetEntityActive(restartCheckScreen, false);
+            SetEntityActive(btnRestart, true);
+        }
+        private void OpenSettings()
+        {
+            isSettingsMenuOpen = true;
+            SetEntityActive(openedBookScreen, true);
+            SetEntityActive(closedBookScreen, false);
+        }
+        private void CloseSettings()
+        {
+            isSettingsMenuOpen = false;
+            SetEntityActive(openedBookScreen, false);
+            SetEntityActive(closedBookScreen, true);
+        }
+
+        // --- UTILS ---
+        private bool CheckButtonClick(Entity btnEntity)
+        {
+            if (btnEntity == null) return false;
+            var btn = btnEntity.GetComponent<ButtonComponent>();
+            return (btn != null && btn.IsClicked());
+        }
+
+        private void SetEntityActive(Entity e, bool active)
+        {
+            if (e != null) InternalCalls.SetActive(e.ID, active);
         }
     }
 }
