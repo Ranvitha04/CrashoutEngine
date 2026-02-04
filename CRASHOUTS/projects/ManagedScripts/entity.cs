@@ -150,6 +150,15 @@ namespace CrashoutsEngine
             // 3. Cast and return
             return scriptObj as T;
         }
+        public void SetActive(bool active)
+        {
+            InternalCalls.SetActive(ID, active);
+        }
+
+        public bool IsActive()
+        {
+            return InternalCalls.GetActive(ID);
+        }
 
         ////name component
         //public bool HasName => InternalCalls.EntityHasName(ID);

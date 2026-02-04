@@ -1,0 +1,101 @@
+{
+    "prefabs": [
+        {
+            "type": "Box",
+            "name": "SettingBtnGame",
+            "active": {
+                "isActive": true
+            },
+            "transform": {
+                "position": {
+                    "x": 0.0000457763671875,
+                    "y": -0.573397159576416,
+                    "z": 0.0
+                },
+                "rotation": 0.0,
+                "size": {
+                    "x": 55.0,
+                    "y": 18.0
+                }
+            },
+            "tag": {
+                "tagMask": 0
+            },
+            "layer": {
+                "layerName": "UI",
+                "z": 0
+            },
+            "shape": {
+                "type": 0,
+                "color": {
+                    "r": 0.0,
+                    "g": 0.38823530077934267,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "enableTexture": false,
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "thickness": 1.0,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "MenuButtons"
+                    }
+                ]
+            },
+            "gui": {
+                "uiType": 14
+            },
+            "button": {
+                "buttonState": 0,
+                "shapeNormalColor": {
+                    "x": 0.0,
+                    "y": 0.38823530077934267,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "shapeHoveredColor": {
+                    "x": 0.0,
+                    "y": 0.38823530077934267,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "shapePressedColor": {
+                    "x": 0.0,
+                    "y": 0.38823530077934267,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "textNormalColor": {
+                    "x": 0.0,
+                    "y": 0.2872927188873291,
+                    "z": 1.0,
+                    "w": 0.699999988079071
+                },
+                "textHoveredColor": {
+                    "x": 0.0,
+                    "y": 0.38674044609069826,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "textPressedColor": {
+                    "x": 0.0,
+                    "y": 0.38823530077934267,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            }
+        }
+    ]
+}

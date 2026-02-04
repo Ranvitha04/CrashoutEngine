@@ -351,6 +351,26 @@
                 },
                 "uiLayout": 4
             },
+            "parent": {
+                "parentName": "QuitBtn",
+                "localPos": {
+                    "x": 0.0045587592758238319,
+                    "y": 2.7386362552642824,
+                    "z": -2.4000000953674318
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
             "layer": {
                 "layerName": "StaticBackground",
                 "z": 0
@@ -494,6 +514,26 @@
                     "y": 0.0
                 },
                 "uiLayout": 4
+            },
+            "parent": {
+                "parentName": "StartBtn",
+                "localPos": {
+                    "x": -0.00890315044671297,
+                    "y": -1.3576908111572266,
+                    "z": 3.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
             },
             "layer": {
                 "layerName": "StaticBackground",
