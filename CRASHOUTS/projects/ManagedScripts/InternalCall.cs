@@ -29,11 +29,7 @@ namespace CrashoutsEngine
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal static extern void TransformGetSize(ulong entityID, out CEVec2 size);
-        [MethodImpl(MethodImplOptions.InternalCall)]
-        internal static extern void SetActive(uint entityID, bool active);
-
-        [MethodImpl(MethodImplOptions.InternalCall)]
-        internal static extern bool GetActive(uint entityID);
+        
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal static extern void TransformSetSize(ulong entityID, ref CEVec2 size);
 

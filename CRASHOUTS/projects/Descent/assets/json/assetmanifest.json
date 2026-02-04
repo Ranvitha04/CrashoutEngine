@@ -1579,6 +1579,10 @@
             "path": "Ball.json"
         },
         {
+            "name": "BarGraphic",
+            "path": "BarGraphic.json"
+        },
+        {
             "name": "BigBox",
             "path": "BigBox.json"
         },
@@ -1587,12 +1591,20 @@
             "path": "BlueBox.json"
         },
         {
+            "name": "ClosedBookprefab",
+            "path": "ClosedBookprefab.json"
+        },
+        {
             "name": "EnergyBall",
             "path": "EnergyBall.json"
         },
         {
             "name": "Entity",
             "path": "Entity.json"
+        },
+        {
+            "name": "Instruction",
+            "path": "Instruction.json"
         },
         {
             "name": "movingplatform",

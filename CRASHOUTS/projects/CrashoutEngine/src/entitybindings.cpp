@@ -68,28 +68,7 @@ namespace CrashoutsEngine::Bindings
 
         return std::numeric_limits<uint32_t>::max(); // Not found
     }
-    static void InternalSetActive(uint32_t entityID, bool active)
-    {
-        auto* ecs = ECS::getInstance();
-
- 
-        if (!ecs->HasComponent<Component::ActiveComponent>(entityID))
-            ecs->AddComponent<Component::ActiveComponent>(entityID);
-
-        auto* ac = ecs->GetComponent<Component::ActiveComponent>(entityID);
-        ac->isActive = active;
-    }
-
-    static bool InternalGetActive(uint32_t entityID)
-    {
-        auto* ecs = ECS::getInstance();
-
-        if (!ecs->HasComponent<Component::ActiveComponent>(entityID))
-            return true; 
-
-        auto* ac = ecs->GetComponent<Component::ActiveComponent>(entityID);
-        return ac->isActive;
-    }
+   
 
 	// add component functions
     static void InternalAddTransform(uint32_t entityID)

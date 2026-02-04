@@ -1,6 +1,7 @@
 using System;
 using System.Runtime.CompilerServices;
 
+
 namespace CrashoutsEngine
 {
     [ScriptBehaviour]
@@ -65,6 +66,20 @@ namespace CrashoutsEngine
         private float jumpCooldown = 0.0f; // Prevents grounding immediately after jumping
         private bool isPassthrough = false;
         private bool canPassthrough = false;
+        // --- Book UI Toggle (P) ---
+        private Entity closedBookEnt = null;
+        private Entity openBookEnt = null;
+
+        private TransformComponent closedBookTf = null;
+        private TransformComponent openBookTf = null;
+
+        private bool closedBookVisible = false;
+
+        private const float UI_SHOW_Z = 0.8f;     // in front (visible)
+        private const float UI_HIDE_Z = -100.0f;  // far back (hidden)
+
+
+
 
         public override void Start()
         {
@@ -89,6 +104,42 @@ namespace CrashoutsEngine
 
         public override void Update()
         {
+            if (Input.IsKeyTriggered(Key.P))
+            {
+                if (closedBookEnt == null) closedBookEnt = Entity.Find("ClosedBook");
+                if (openBookEnt == null) openBookEnt = Entity.Find("OpenBook");
+
+                if (closedBookEnt != null && closedBookTf == null)
+                    closedBookTf = closedBookEnt.GetComponent<TransformComponent>();
+
+                if (openBookEnt != null && openBookTf == null)
+                    openBookTf = openBookEnt.GetComponent<TransformComponent>();
+
+                // Toggle
+                closedBookVisible = !closedBookVisible;
+
+                // Show/hide ClosedBook by Z
+                if (closedBookTf != null)
+                {
+                    closedBookTf.Position = new CEVec3(
+                        closedBookTf.Position.x,
+                        closedBookTf.Position.y,
+                        closedBookVisible ? UI_SHOW_Z : UI_HIDE_Z
+                    );
+                }
+
+                // Keep OpenBook hidden when pressing P (optional)
+                if (openBookTf != null)
+                {
+                    openBookTf.Position = new CEVec3(
+                        openBookTf.Position.x,
+                        openBookTf.Position.y,
+                        UI_HIDE_Z
+                    );
+                }
+            }
+
+
 
             if (isPaused || !alive) return;
 

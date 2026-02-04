@@ -1,5 +1,6 @@
 using System;
 
+
 namespace CrashoutsEngine
 {
     [ScriptBehaviour]
@@ -76,6 +77,18 @@ namespace CrashoutsEngine
                     
                     SceneManager.LoadScene("descentconfirm");
                 }
+                else if (name.ToString() == "SettingBtnGame")
+                {
+                    if (BookUIController.Instance != null)
+                        BookUIController.Instance.ShowOpenBook();
+                }
+
+                else if (name.ToString() == "ResumeButtonGame")
+                {
+                    // whatever resume should do
+                }
+
+
 
 
             }
