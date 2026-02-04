@@ -21,8 +21,7 @@ namespace CrashoutsEngine
         [SerializeField] public float footstepInterval = 0.075f;
         [SerializeField] public float swapPause = 1f;
         [SerializeField] public float energyConsumption = 12.5f;
-        private bool gameOverLoaded = false;
-        [SerializeField] public string gameOverScene = "GameOver";
+
         public float normalMass = 7.0f;
         public float lightMass = 4.5f;
 
@@ -437,13 +436,14 @@ namespace CrashoutsEngine
 
         private void HandleDeath()
         {
-            if (gameOverLoaded) return;
-            gameOverLoaded = true;
-
             Debug.Log("Player Died");
             alive = false;
-
-            Scene.LoadScene(gameOverScene); 
+            Entity gameOverEnt = Entity.Find("GameOverScreen");
+            if (gameOverEnt != null)
+            {
+                var gameOverT = gameOverEnt.GetComponent<TransformComponent>();
+                gameOverT.Position = new CEVec3(gameOverT.Position.x, gameOverT.Position.y, 0.8f);
+            }
         }
 
         // ... [Existing Energy/UI Helpers remain the same] ...
