@@ -20,13 +20,7 @@ namespace CrashoutsEngine
             Entity winScreen = Entity.Find(winScreenName);
             if (winScreen != null)
             {
-                var tf = winScreen.GetComponent<TransformComponent>();
-                if (tf != null)
-                {
-                    // Move it far away or set scale to 0 to hide
-                    // Assuming Z = -100 hides it behind camera
-                    tf.Position = new CEVec3(tf.Position.x, tf.Position.y, -100.0f);
-                }
+                InternalCalls.SetActive(winScreen.ID, true);
             }
         }
 
@@ -39,7 +33,7 @@ namespace CrashoutsEngine
             // Check if it's the player
             // Option A: Check Tag
             var Tag = other.GetComponent<TagComponent>();
-            bool isplayer = (Tag != null && Tag.HasTag("player"));
+            bool isplayer = (Tag != null && Tag.HasTag("Player"));
 
             // Option B: Check Name
             // var name = other.GetComponent<NameComponent>();

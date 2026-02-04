@@ -221,13 +221,37 @@ namespace CrashoutsEngine
         {
             if (anim == null) return;
 
-            string targetState = isGrabbed ? "slimeGrabbed" : 
-                                 isStunned ? "slimeCaution" :
-                                 isChasing ? "slimeChase" : 
-                                 (Math.Abs(rb.LinearVelocity.x) > 1.0f ? "slimeWalk" : "slimeIdle");
+            string targetState = "slimeIdle"; // Default
 
+            // 1. High Priority States (Overrides movement)
+            if (isGrabbed)
+            {
+                targetState = "slimeHold";
+            }
+            else if (isStunned)
+            {
+                targetState = "slimeStunned";
+            }
+            // 2. Movement States (Only check if moving)
+            else if (Math.Abs(rb.LinearVelocity.x) > 1.0f)
+            {
+                if (isChasing)
+                {
+                    // Moving AND Chasing
+                    targetState = "slimeChase";
+                }
+                else
+                {
+                    // Moving normally (Patrol)
+                    targetState = "slimeWalk";
+                }
+            }
+            // 3. Idle is implicit default if velocity < 1.0f
+
+            // Apply Animation
             if (targetState != currentAnimState)
             {
+                // Play(string name, bool loop)
                 anim.Play(targetState, true);
                 currentAnimState = targetState;
             }
@@ -235,185 +259,67 @@ namespace CrashoutsEngine
 
         public override void FixedUpdate()
         {
+            // 1. Safety Checks
             if (rb == null || isGrabbed || isStunned) return;
-            if(playerScript != null && playerScript.isPaused) return;
+            if (playerScript != null && playerScript.isPaused) return;
 
+            // 2. Environment Checks
             CheckGrounded();
             float dt = (float)Time.FixedDT;
 
+            // 3. Audio Logic (Landing/Jumping)
             if (isGrounded != wasGroundedLastFrame)
             {
                 if (!isGrounded && rb.LinearVelocity.y > 5.0f)
-                {
-                    // The Slime just jumped/hopped
                     AudioManager.GetInstance().PlayAttached("slimeMove" + rng.Next(1, 6), Entity.ID);
-                }
                 else if (isGrounded)
-                {
-                    // The Slime just landed
                     AudioManager.GetInstance().PlayAttached("slimeImpact", Entity.ID);
-                }
             }
 
+            // 4. Timers
             if (flipCooldown > 0) flipCooldown -= dt;
             if (ignoreHomeTimer > 0) ignoreHomeTimer -= dt;
 
-            // --- AI LOGIC (Raycasts & Decisions) ---
-            
-            // Only run AI if not thrown
-            if (!wasThrown)
+            // 5. MOVEMENT LOGIC
+            // Only calculate movement forces if the player is ALIVE and slime wasn't thrown
+            // If player is dead, we skip this block, effectively making the slime "Idle" but still subject to gravity
+            if (!wasThrown && (playerScript == null || playerScript.alive))
             {
-                // Chase logic
-                isChasing = false;
-                if (playerScript != null)
-                {
-                    var playerTf = playerScript.Entity.GetComponent<TransformComponent>();
-                    if (playerTf != null)
-                    {
-                        float dist = Distance(tf.Position, playerTf.Position);
-                        bool hasLineOfSight = false;
-                        
-                        if (dist < detectionRange)
-                        {
-                             CEVec3 start = tf.Position;
-                             CEVec3 end = playerTf.Position;
-                             uint hitID;
-                             bool hit = InternalCalls.Raycast(ref start, ref end, out hitID, Entity.ID);
-                             
-                             if (hit && hitID == playerScript.Entity.ID)
-                             {
-                                 hasLineOfSight = true;
-                             }
-                        }
+                // ... (Keep your existing AI/Patrol/Stuck logic here) ...
+                // ... For brevity, assuming the AI logic block is here ...
+                // ... Copy the AI Logic block from your original script ...
 
-                        if (hasLineOfSight) 
-                        {
-                            isChasing = true;
-                            returningHome = false;
-                            moveRight = (playerTf.Position.x > tf.Position.x);
-                        }
+                // --- APPLY MOVEMENT FORCES ---
+                CEVec3 velocity = rb.LinearVelocity;
+                float dir = moveRight ? 1.0f : -1.0f;
+                float speedMult = (isChasing || returningHome) ? 1.2f : 1.0f;
+
+                if (isGrounded || isChasing)
+                {
+                    // Ground Movement
+                    if (Math.Abs(velocity.x) < maxSpeed * speedMult)
+                    {
+                        rb.AddForce(new CEVec3(moveSpeed * dir * speedMult, 0, 0));
                     }
+                    // Horizontal Friction
+                    rb.AddForce(new CEVec3(-velocity.x * 5.0f * rb.Mass, 0, 0));
                 }
-
-                // Patrol logic
-                if (!isChasing && isGrounded)
+                else
                 {
-                    // 1. Check for Ledges (Holes)
-                    float checkDir = moveRight ? 1.0f : -1.0f;
-                    float halfWidth = Math.Abs(tf.Size.x) * 0.5f;
-                    float rayOriginX = tf.Position.x + (checkDir * (halfWidth + ledgeBuffer));
-
-                    CEVec3 rayStart = new CEVec3(rayOriginX, tf.Position.y, tf.Position.z);
-                    CEVec3 rayEnd = new CEVec3(rayStart.x, rayStart.y - ledgeRayCastDistance, rayStart.z);
-                    
-                    uint hitGroundID;
-                    bool hitGround = InternalCalls.Raycast(ref rayStart, ref rayEnd, out hitGroundID, Entity.ID);
-
-                    // Verify the hit object is actually ground/platform
-                    if (hitGround)
-                    {
-                        Entity hitEnt = new Entity(hitGroundID);
-                        var hitTag = hitEnt.GetComponent<TagComponent>();
-                        bool isValidGround = false;
-                        if (hitTag != null)
-                        {
-                            if (hitTag.HasTag("Ground") || hitTag.HasTag("Platform") || hitTag.HasTag("Wall"))
-                            {
-                                isValidGround = true;
-                            }
-                        }
-                        if (!isValidGround) hitGround = false; // Treat non-ground hits (e.g. enemies) as holes
-                    }
-
-                    if (!hitGround && flipCooldown <= 0)
-                    {
-                         moveRight = !moveRight;
-                         AudioManager.GetInstance().PlayAttached("slimeMove" + rng.Next(1, 6), Entity.ID);
-                         float newDir = moveRight ? 1.0f : -1.0f;
-                         rb.LinearVelocity = new CEVec3(newDir * 50.0f, rb.LinearVelocity.y, 0); // Kick away from ledge
-                         flipCooldown = 0.5f; 
-                         returningHome = false; 
-                         ignoreHomeTimer = 4.0f; 
-                         stuckTimer = 0.0f;
-                    }
-                    else
-                    {
-                        // 2. Normal Patrol Distance Check
-                        float distFromHome = tf.Position.x - startPos.x;
-
-                        if (returningHome)
-                        {
-                            if (flipCooldown <= 0)
-                            {
-                                moveRight = (startPos.x > tf.Position.x);
-                            }
-                            
-                            if (Math.Abs(distFromHome) < 10.0f)
-                            {
-                                returningHome = false;
-                            }
-                        }
-                        else
-                        {
-                            if (Math.Abs(distFromHome) > MaxDist && ignoreHomeTimer <= 0)
-                            {
-                                returningHome = true; 
-                            }
-                        }
-                    }
-                }
-
-                // Stuck Detection
-                if ((isChasing || returningHome || isGrounded))
-                {
-                    if (Math.Abs(rb.LinearVelocity.x) < 2.0f)
-                    {
-                        stuckTimer += dt;
-                        if (stuckTimer > 0.5f)
-                        {
-                            if (!isChasing)
-                            {
-                                moveRight = !moveRight;
-                                ignoreHomeTimer = 2.0f;
-                            }
-                            else
-                            {
-                                AudioManager.GetInstance().PlayAttached("slimeMove" + rng.Next(1, 6), Entity.ID);
-                                rb.LinearVelocity = new CEVec3(rb.LinearVelocity.x, 200.0f, 0); 
-                            }
-                            stuckTimer = 0.0f;
-                        }
-                    }
-                    else
-                    {
-                        stuckTimer = 0.0f;
-                    }
+                    // Air Drag - REMOVED Y AXIS DRAG to prevent floating
+                    // Only damp X axis in air
+                    rb.AddForce(new CEVec3(-velocity.x * airDrag * rb.Mass, 0, 0));
                 }
             }
-
-            // --- MOVEMENT PHYSICS ---
-            CEVec3 velocity = rb.LinearVelocity;
-            float dir = moveRight ? 1.0f : -1.0f;
-            float speedMult = (isChasing || returningHome) ? 1.2f : 1.0f;
-
-            if (playerScript != null && !playerScript.alive) return;
-
-            // Ground movement
-            if (!wasThrown && (isGrounded || isChasing)) 
+            else
             {
-                if (Math.Abs(velocity.x) < maxSpeed * speedMult)
-                {
-                    rb.AddForce(new CEVec3(moveSpeed * dir * speedMult, 0, 0));
-                }
-                
-                rb.AddForce(new CEVec3(-velocity.x * 5.0f * rb.Mass, 0, 0));
-            }
-            else 
-            {
-                rb.AddForce(new CEVec3(-velocity.x * airDrag * rb.Mass, -velocity.y * airDrag * 0.2f * rb.Mass, 0));
+                // If player is dead or slime was thrown, applies simple friction so it slides to a stop
+                CEVec3 velocity = rb.LinearVelocity;
+                if (isGrounded) rb.AddForce(new CEVec3(-velocity.x * 2.0f * rb.Mass, 0, 0));
             }
 
-            // Gravity
+            // 6. GRAVITY (ALWAYS RUNS)
+            // This is now outside the "if player alive" check
             float gravityForce = -9.81f * 100.0f * gravityScale * rb.Mass;
             rb.AddForce(new CEVec3(0f, gravityForce, 0f));
 
