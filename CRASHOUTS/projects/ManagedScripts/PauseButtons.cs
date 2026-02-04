@@ -20,13 +20,16 @@ namespace CrashoutsEngine
         private Entity btnYes;
         private Entity btnNo;
 
+        // NEW: Close Book Button
+        private Entity btnCloseBook;
+
         // --- STATE ---
         private PlayerMovement playerScript;
         private bool isPaused = false;
         private bool isRestartMenuOpen = false;
         private bool isSettingsMenuOpen = false;
 
-        // --- FIX: INPUT COOLDOWN ---
+        // --- INPUT COOLDOWN ---
         private float inputCooldown = 0.0f;
 
         public override void Start()
@@ -34,13 +37,13 @@ namespace CrashoutsEngine
             if (PlayerMovement.Instance != null)
                 playerScript = PlayerMovement.Instance;
 
-            // Find UI
+            // Find UI Containers
             pauseScreen = Entity.Find("Pause");
             restartCheckScreen = Entity.Find("RestartCheck");
             openedBookScreen = Entity.Find("OpenedBook");
             closedBookScreen = Entity.Find("ClosedBook");
 
-            // Find Buttons
+            // Find Main Buttons
             btnResume = Entity.Find("ResumeButton");
             btnRestart = Entity.Find("RestartLevelButton");
             btnSettings = Entity.Find("SettingsButton");
@@ -48,32 +51,37 @@ namespace CrashoutsEngine
             btnYes = Entity.Find("Yes");
             btnNo = Entity.Find("No");
 
-            // Init State
+            // NEW: Find Close Book Button
+            btnCloseBook = Entity.Find("CloseBookBtn");
+
+            // Init State: Hide everything except the game
             SetEntityActive(pauseScreen, false);
             SetEntityActive(restartCheckScreen, false);
             SetEntityActive(openedBookScreen, false);
+            // closedBookScreen is part of the pause menu, so hide it too
+            SetEntityActive(closedBookScreen, false);
         }
 
         public override void Update()
         {
-            // 1. INPUT HANDLING
+            // 1. INPUT HANDLING (Toggle)
             if (Input.IsKeyTriggered(Key.Escape) || Input.IsKeyTriggered(Key.P))
             {
                 if (playerScript != null && playerScript.isDialogueActive) return;
 
                 TogglePause();
-                inputCooldown = 0.2f;
+                inputCooldown = 0.2f; // Safety delay
                 return;
             }
 
-            // 2. COOLDOWN
+            // 2. COOLDOWN CHECK
             if (inputCooldown > 0.0f)
             {
                 inputCooldown -= (float)Time.DT;
                 return;
             }
 
-            // 3. UI STATE MACHINE
+            // 3. BUTTON LOGIC
             if (isPaused)
             {
                 if (isRestartMenuOpen)
@@ -82,12 +90,11 @@ namespace CrashoutsEngine
                 }
                 else if (isSettingsMenuOpen)
                 {
-                    // FIX: Do NOT check btnSettings here. It is hidden and stale.
-                    // Only check for a specific "Back" or "Close" button inside the book.
-                    // For now, pressing ESC (handled above) is the correct way to close it.
-
-                    // If you have a specific close button in the book, check it here:
-                    // if (CheckButtonClick(btnCloseBook)) CloseSettings();
+                    // FIX: Check the Close Book Button here
+                    if (CheckButtonClick(btnCloseBook))
+                    {
+                        CloseSettings();
+                    }
                 }
                 else
                 {
@@ -96,34 +103,7 @@ namespace CrashoutsEngine
             }
         }
 
-        private void TogglePause()
-        {
-            // Back out of menus first
-            if (isRestartMenuOpen) { CloseRestartMenu(); return; }
-            if (isSettingsMenuOpen) { CloseSettings(); return; }
-
-            isPaused = !isPaused;
-
-            // Sync with Player
-            if (playerScript != null) playerScript.SetPauseState(isPaused);
-
-            // Show/Hide Main Screen AND the Closed Book background
-            SetEntityActive(pauseScreen, isPaused);
-            SetEntityActive(closedBookScreen, isPaused); // <--- ADD THIS
-
-            // Force close sub-menus
-            isRestartMenuOpen = false;
-            isSettingsMenuOpen = false;
-            SetEntityActive(restartCheckScreen, false);
-            SetEntityActive(openedBookScreen, false);
-        }
-
-        private void ResumeGame()
-        {
-            // We just trigger TogglePause logic, which handles unpausing perfectly
-            if (isPaused) TogglePause();
-        }
-
+        // --- MAIN MENU HANDLER ---
         private void HandleMainPauseButtons()
         {
             if (CheckButtonClick(btnResume)) ResumeGame();
@@ -132,6 +112,7 @@ namespace CrashoutsEngine
             else if (CheckButtonClick(btnQuit)) SceneManager.LoadScene("descentmenu", 1.0f);
         }
 
+        // --- RESTART HANDLER ---
         private void HandleRestartConfirmButtons()
         {
             if (CheckButtonClick(btnYes))
@@ -145,30 +126,69 @@ namespace CrashoutsEngine
             }
         }
 
-        // --- SUB MENUS ---
+        // --- STATE HELPERS ---
+
+        private void TogglePause()
+        {
+            // Escape Key Back-Out Logic
+            if (isRestartMenuOpen) { CloseRestartMenu(); return; }
+            if (isSettingsMenuOpen) { CloseSettings(); return; }
+
+            isPaused = !isPaused;
+
+            // Sync with Player
+            if (playerScript != null) playerScript.SetPauseState(isPaused);
+
+            // Toggle Main Screens
+            SetEntityActive(pauseScreen, isPaused);
+            SetEntityActive(closedBookScreen, isPaused);
+
+            // Ensure Sub-menus are closed
+            isRestartMenuOpen = false;
+            isSettingsMenuOpen = false;
+            SetEntityActive(restartCheckScreen, false);
+            SetEntityActive(openedBookScreen, false);
+        }
+
+        private void ResumeGame()
+        {
+            if (isPaused) TogglePause();
+        }
+
+        // --- SUB MENU TRANSITIONS ---
+
         private void OpenRestartMenu()
         {
             isRestartMenuOpen = true;
             SetEntityActive(restartCheckScreen, true);
-            SetEntityActive(btnRestart, false);
+            inputCooldown = 0.2f; // Prevent accidental double clicks
         }
+
         private void CloseRestartMenu()
         {
             isRestartMenuOpen = false;
             SetEntityActive(restartCheckScreen, false);
-            SetEntityActive(btnRestart, true);
+            inputCooldown = 0.2f;
         }
+
         private void OpenSettings()
         {
             isSettingsMenuOpen = true;
             SetEntityActive(openedBookScreen, true);
-            SetEntityActive(closedBookScreen, false);
+            SetEntityActive(closedBookScreen, false); // Hide the main book background
+
+            // IMPORTANT: Add delay here so the click that opened settings
+            // doesn't immediately click "CloseBookBtn" if they overlap.
+            inputCooldown = 0.2f;
         }
+
         private void CloseSettings()
         {
             isSettingsMenuOpen = false;
             SetEntityActive(openedBookScreen, false);
-            SetEntityActive(closedBookScreen, true);
+            SetEntityActive(closedBookScreen, true); // Restore main book background
+
+            inputCooldown = 0.2f;
         }
 
         // --- UTILS ---

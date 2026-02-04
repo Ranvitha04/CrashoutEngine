@@ -6,22 +6,12 @@ namespace CrashoutsEngine
     [ScriptBehaviour]
     public class WeightedPlatform : ScriptBase
     {
-        [SerializeField]
-        bool IsMoving = true;
-
-        [SerializeField]
-        bool MoveRight = true; // TRUE = Horizontal Mode. FALSE = Vertical Mode.
-
-        [SerializeField]
-        float MovementDistance = 100.0f; // Can now be negative (e.g. -100 to move Left/Down)
-
-        [SerializeField]
-        float MoveSpeed = 20.0f;
-
-        [SerializeField]
-        float VerticalSpeed = 50.0f; // Sinking speed for Horizontal platforms
-        [SerializeField]
-        float maxDrop = 50.0f;       // Sink depth
+        [SerializeField] bool IsMoving = true;
+        [SerializeField] bool MoveRight = true;
+        [SerializeField] float MovementDistance = 100.0f;
+        [SerializeField] float MoveSpeed = 20.0f;
+        [SerializeField] float VerticalSpeed = 50.0f;
+        [SerializeField] float maxDrop = 50.0f;
 
         private TransformComponent transform;
         private TransformComponent playerTf;
@@ -46,20 +36,10 @@ namespace CrashoutsEngine
             if (transform != null)
             {
                 startPos = transform.Position;
-
-                // ---------------------------------------------------------
-                // Determine End Position (Works for negative distances now)
-                // ---------------------------------------------------------
                 if (MoveRight)
-                {
-                    // Horizontal Mode
                     endPos = new CEVec3(startPos.x + MovementDistance, startPos.y, startPos.z);
-                }
                 else
-                {
-                    // Vertical Mode
                     endPos = new CEVec3(startPos.x, startPos.y + MovementDistance, startPos.z);
-                }
             }
 
             playerOnBoard = false;
@@ -67,11 +47,11 @@ namespace CrashoutsEngine
             playerScript = PlayerMovement.Instance;
         }
 
+        // --- PHYSICS CALLBACKS ---
         public void OnCollideStay(uint otherEntityID)
         {
             Entity other = new Entity(otherEntityID);
             var Tag = other.GetComponent<TagComponent>();
-
             if (Tag != null && Tag.HasTag("Player"))
             {
                 playerTf = other.GetComponent<TransformComponent>();
@@ -84,7 +64,6 @@ namespace CrashoutsEngine
         {
             Entity other = new Entity(otherEntityID);
             var Tag = other.GetComponent<TagComponent>();
-
             if (Tag != null && Tag.HasTag("Player"))
             {
                 playerOnBoard = false;
@@ -93,42 +72,33 @@ namespace CrashoutsEngine
             }
         }
 
-        public override void Update()
+        // --- USE FIXED UPDATE FOR PHYSICS SYNC ---
+        public override void FixedUpdate()
         {
-            if (playerScript != null && playerScript.isPaused) { return; }
+            if (playerScript != null && playerScript.isPaused) return;
             if (transform == null) return;
 
-            float dt = (float)Time.DT;
+            // Use FixedDT for smoother physics interaction
+            float dt = (float)Time.FixedDT;
             CEVec3 previousPlatformPos = transform.Position;
 
-            // Get Direction (1 for Positive/Right/Up, -1 for Negative/Left/Down)
             float dirSign = Math.Sign(MovementDistance);
-            if (dirSign == 0) dirSign = 1; // Safety
+            if (dirSign == 0) dirSign = 1;
 
-            float step = MoveSpeed * dt * dirSign; // Step now includes direction!
-
-            // "Next" positions relative to start
+            float step = MoveSpeed * dt * dirSign;
             float nextX = transform.Position.x;
             float nextY = transform.Position.y;
 
-            // ---------------------------------------------------------
-            // 1. Movement Logic (Direction Aware)
-            // ---------------------------------------------------------
+            // 1. MOVEMENT LOGIC
             if (IsMoving)
             {
-                // TYPE A: Horizontal Movement (Left/Right)
-                if (MoveRight)
+                if (MoveRight) // Horizontal
                 {
-                    nextY = startPos.y; // Reset to base Y (sink logic adds offset later)
-
+                    nextY = startPos.y;
                     if (movingForward)
                     {
-                        nextX += step; // Add step (which might be negative)
-
-                        // Check if we passed the End Position
-                        // If Dist > 0 (Right), check >=. If Dist < 0 (Left), check <=.
-                        if ((MovementDistance > 0 && nextX >= endPos.x) ||
-                            (MovementDistance < 0 && nextX <= endPos.x))
+                        nextX += step;
+                        if ((MovementDistance > 0 && nextX >= endPos.x) || (MovementDistance < 0 && nextX <= endPos.x))
                         {
                             nextX = endPos.x;
                             movingForward = false;
@@ -136,31 +106,21 @@ namespace CrashoutsEngine
                     }
                     else
                     {
-                        nextX -= step; // Subtract step to return
-
-                        // Check if we passed Start Position
-                        // If Dist > 0 (Right), returning goes Left (<).
-                        // If Dist < 0 (Left), returning goes Right (>).
-                        if ((MovementDistance > 0 && nextX <= startPos.x) ||
-                            (MovementDistance < 0 && nextX >= startPos.x))
+                        nextX -= step;
+                        if ((MovementDistance > 0 && nextX <= startPos.x) || (MovementDistance < 0 && nextX >= startPos.x))
                         {
                             nextX = startPos.x;
                             movingForward = true;
                         }
                     }
                 }
-                // TYPE B: Vertical Movement (Up/Down)
-                else
+                else // Vertical
                 {
                     nextX = startPos.x;
-
                     if (movingForward)
                     {
                         nextY += step;
-
-                        // Check bounds (Handle Up vs Down)
-                        if ((MovementDistance > 0 && nextY >= endPos.y) ||
-                            (MovementDistance < 0 && nextY <= endPos.y))
+                        if ((MovementDistance > 0 && nextY >= endPos.y) || (MovementDistance < 0 && nextY <= endPos.y))
                         {
                             nextY = endPos.y;
                             movingForward = false;
@@ -169,10 +129,7 @@ namespace CrashoutsEngine
                     else
                     {
                         nextY -= step;
-
-                        // Check bounds
-                        if ((MovementDistance > 0 && nextY <= startPos.y) ||
-                            (MovementDistance < 0 && nextY >= startPos.y))
+                        if ((MovementDistance > 0 && nextY <= startPos.y) || (MovementDistance < 0 && nextY >= startPos.y))
                         {
                             nextY = startPos.y;
                             movingForward = true;
@@ -181,25 +138,17 @@ namespace CrashoutsEngine
                 }
             }
 
-            // ---------------------------------------------------------
-            // 2. Weight Logic (Sinking)
-            // ---------------------------------------------------------
+            // 2. WEIGHT LOGIC (SINKING)
             float totalY = nextY;
-
             if (MoveRight)
             {
                 float targetYOffset = 0.0f;
-
                 if (playerOnBoard && playerRb != null && PlayerMovement.Instance != null)
                 {
-                    // Check if player is heavy enough
                     if (playerRb.Mass >= (PlayerMovement.Instance.normalMass - 0.1f))
-                    {
                         targetYOffset = -maxDrop;
-                    }
                 }
 
-                // Smoothly move offset
                 if (currentYOffset > targetYOffset)
                 {
                     currentYOffset -= VerticalSpeed * dt;
@@ -210,27 +159,32 @@ namespace CrashoutsEngine
                     currentYOffset += VerticalSpeed * dt;
                     if (currentYOffset > targetYOffset) currentYOffset = targetYOffset;
                 }
-
-                // Apply offset to the base Y
                 totalY = startPos.y + currentYOffset;
             }
 
-            // ---------------------------------------------------------
-            // 3. Apply Final Position
-            // ---------------------------------------------------------
+            // 3. APPLY PLATFORM POSITION
             transform.Position = new CEVec3(nextX, totalY, transform.Position.z);
 
-            // ---------------------------------------------------------
-            // 4. Sync player Position
-            // ---------------------------------------------------------
+            // 4. SYNC PLAYER (THE FIX)
             if (playerOnBoard && playerTf != null)
             {
                 float deltaX = transform.Position.x - previousPlatformPos.x;
                 float deltaY = transform.Position.y - previousPlatformPos.y;
 
+                // --- KEY FIX: DETECT PLAYER INPUT ---
+                // If player is pressing A or D, they are controlling their own X velocity.
+                // We should NOT add the platform delta X, or they will fight against it.
+                bool isPlayerMovingInput = Input.IsKeyPressed(Key.A) || Input.IsKeyPressed(Key.D);
+
+                if (isPlayerMovingInput)
+                {
+                    deltaX = 0; // Don't carry them horizontally if they are running
+                }
+
+                // Apply changes
                 playerTf.Position = new CEVec3(
                     playerTf.Position.x + deltaX,
-                    playerTf.Position.y + deltaY,
+                    playerTf.Position.y + deltaY, // Always carry vertically
                     playerTf.Position.z
                 );
             }

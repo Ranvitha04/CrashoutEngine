@@ -2428,11 +2428,14 @@
                             "energyConsumption": 12.5,
                             "goalNoOfPlates": 1,
                             "currentGoalPlates": 0,
+                            "landingDustName": "LandingDust",
+                            "dustBurstDuration": 0.15000000596046449,
                             "normalMass": 3.0,
                             "lightMass": 2.0,
                             "groundCheckDistance": 26.0,
                             "groundCheckWidth": 10.0,
                             "dialogueCooldown": 1.0,
+                            "isDialogueActive": false,
                             "CurrentEnergy": 100.0,
                             "MaxEnergy": 100.0,
                             "alive": true,
@@ -2489,7 +2492,10 @@
                     "y": 0.0,
                     "z": 0.0,
                     "w": 0.5
-                }
+                },
+                "textureNormal": "",
+                "textureHovered": "",
+                "texturePressed": ""
             },
             "layer": {
                 "layerName": "Player",
@@ -2705,7 +2711,10 @@
                     "y": 0.0,
                     "z": 0.0,
                     "w": 0.5
-                }
+                },
+                "textureNormal": "",
+                "textureHovered": "",
+                "texturePressed": ""
             },
             "layer": {
                 "layerName": "Default",
@@ -2863,7 +2872,10 @@
                     "y": 0.0,
                     "z": 0.0,
                     "w": 0.5
-                }
+                },
+                "textureNormal": "",
+                "textureHovered": "",
+                "texturePressed": ""
             },
             "layer": {
                 "layerName": "Default",
@@ -3001,7 +3013,10 @@
                     "y": 0.0,
                     "z": 0.0,
                     "w": 0.5
-                }
+                },
+                "textureNormal": "",
+                "textureHovered": "",
+                "texturePressed": ""
             },
             "layer": {
                 "layerName": "Default",
@@ -3217,7 +3232,10 @@
                     "y": 0.0,
                     "z": 0.0,
                     "w": 0.5
-                }
+                },
+                "textureNormal": "",
+                "textureHovered": "",
+                "texturePressed": ""
             },
             "layer": {
                 "layerName": "Default",
@@ -3371,7 +3389,10 @@
                     "y": 0.0,
                     "z": 0.0,
                     "w": 0.5
-                }
+                },
+                "textureNormal": "",
+                "textureHovered": "",
+                "texturePressed": ""
             },
             "layer": {
                 "layerName": "Default",
@@ -3640,7 +3661,10 @@
                     "y": 0.0,
                     "z": 0.0,
                     "w": 0.5
-                }
+                },
+                "textureNormal": "",
+                "textureHovered": "",
+                "texturePressed": ""
             },
             "layer": {
                 "layerName": "Default",
@@ -3789,7 +3813,10 @@
                     "y": 0.0,
                     "z": 0.0,
                     "w": 0.5
-                }
+                },
+                "textureNormal": "",
+                "textureHovered": "",
+                "texturePressed": ""
             },
             "layer": {
                 "layerName": "",
@@ -3857,7 +3884,8 @@
                             "PlatesRequired": 1,
                             "MoveRight": false,
                             "MoveDist": 250.0,
-                            "MoveSpeed": 75.0
+                            "MoveSpeed": 75.0,
+                            "dustBurstDuration": 0.15000000596046449
                         }
                     }
                 ]
@@ -3899,7 +3927,10 @@
                     "y": 0.0,
                     "z": 0.0,
                     "w": 0.5
-                }
+                },
+                "textureNormal": "",
+                "textureHovered": "",
+                "texturePressed": ""
             },
             "tilemap": {
                 "tileSize": 32,
@@ -4059,7 +4090,8 @@
                             "PlatesRequired": 1,
                             "MoveRight": false,
                             "MoveDist": 250.0,
-                            "MoveSpeed": 75.0
+                            "MoveSpeed": 75.0,
+                            "dustBurstDuration": 0.15000000596046449
                         }
                     }
                 ]
@@ -4101,7 +4133,10 @@
                     "y": 0.0,
                     "z": 0.0,
                     "w": 0.5
-                }
+                },
+                "textureNormal": "",
+                "textureHovered": "",
+                "texturePressed": ""
             },
             "tilemap": {
                 "tileSize": 32,
@@ -4236,7 +4271,8 @@
                             "PlatesRequired": 1,
                             "MoveRight": false,
                             "MoveDist": 250.0,
-                            "MoveSpeed": 75.0
+                            "MoveSpeed": 75.0,
+                            "dustBurstDuration": 0.15000000596046449
                         }
                     }
                 ]
@@ -4278,7 +4314,10 @@
                     "y": 0.0,
                     "z": 0.0,
                     "w": 0.5
-                }
+                },
+                "textureNormal": "",
+                "textureHovered": "",
+                "texturePressed": ""
             },
             "tilemap": {
                 "tileSize": 32,
@@ -4593,7 +4632,10 @@
                     "y": 0.0,
                     "z": 0.0,
                     "w": 0.5
-                }
+                },
+                "textureNormal": "",
+                "textureHovered": "",
+                "texturePressed": ""
             },
             "layer": {
                 "layerName": "Default",

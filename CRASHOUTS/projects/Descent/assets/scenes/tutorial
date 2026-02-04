@@ -9845,8 +9845,98 @@
             "audio": {
                 "clips": [
                     {
-                        "name": "Main Clip",
-                        "path": "",
+                        "name": "footstep1",
+                        "path": "footsteps 1.wav",
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    },
+                    {
+                        "name": "footstep2",
+                        "path": "footsteps 2.wav",
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    },
+                    {
+                        "name": "footstep3",
+                        "path": "footsteps 3.wav",
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    },
+                    {
+                        "name": "footstep4",
+                        "path": "footsteps 4.wav",
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    },
+                    {
+                        "name": "footstep5",
+                        "path": "footsteps 5.wav",
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    },
+                    {
+                        "name": "footstep6",
+                        "path": "footsteps 6.wav",
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    },
+                    {
+                        "name": "footstep7",
+                        "path": "footsteps 7.wav",
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    },
+                    {
+                        "name": "footstep8",
+                        "path": "footsteps 8.wav",
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    },
+                    {
+                        "name": "jumpLand",
+                        "path": "jump landing.wav",
+                        "volume": 0.4000000059604645,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    },
+                    {
+                        "name": "jumpUp",
+                        "path": "jump.wav",
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    },
+                    {
+                        "name": "switchMassSound",
+                        "path": "switch state.wav",
                         "volume": 1.0,
                         "pitch": 1.0,
                         "spatial3D": false,
@@ -9952,37 +10042,6 @@
                 "playing": true,
                 "clips": [
                     {
-                        "name": "playerFall",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
-                        "spriteCols": 2,
-                        "spriteRows": 1,
-                        "useCustomSize": true,
-                        "targetWidth": 140.0,
-                        "targetHeight": 100.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
                         "name": "playerWalk",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Run\\Run spritesheet.png",
@@ -10035,7 +10094,7 @@
                         ]
                     },
                     {
-                        "name": "playerFallLight",
+                        "name": "playerFall",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
                         "spriteCols": 2,
@@ -10049,14 +10108,14 @@
                                 "keys": [
                                     {
                                         "t": 0.0,
-                                        "v": 1.0,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
                                         "t": 0.25,
-                                        "v": 1.0,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -10109,6 +10168,37 @@
                                     {
                                         "t": 1.0,
                                         "v": 7.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "playerFallLight",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
+                        "spriteCols": 2,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 140.0,
+                        "targetHeight": 100.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 1.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -11383,8 +11473,8 @@
                 ]
             },
             "layer": {
-                "layerName": "Default",
-                "z": -20
+                "layerName": "Foreground",
+                "z": 20
             }
         },
         {
@@ -11816,7 +11906,7 @@
                         "className": "EnergyBall",
                         "fields": {
                             "energyAmount": 25.0,
-                            "respawnTime": 5.0
+                            "respawnTime": 30.0
                         }
                     }
                 ]
@@ -12071,7 +12161,7 @@
                         "className": "EnergyBall",
                         "fields": {
                             "energyAmount": 25.0,
-                            "respawnTime": 5.0
+                            "respawnTime": 30.0
                         }
                     }
                 ]
@@ -12330,6 +12420,7 @@
                         "className": "PressurePlate",
                         "fields": {
                             "decrease": 5.0,
+                            "goalTextName": "GoalText",
                             "wallName": "wall2"
                         }
                     }
@@ -12607,9 +12698,9 @@
                         "fields": {
                             "PlatesActive": 0,
                             "PlatesRequired": 1,
-                            "MoveRight": false,
-                            "MoveDist": 10.0,
-                            "MoveSpeed": 5.0,
+                            "MoveRight": true,
+                            "MoveDist": 200.0,
+                            "MoveSpeed": 75.0,
                             "dustBurstDuration": 0.15000000596046449
                         }
                     }
@@ -12730,8 +12821,8 @@
                 ]
             },
             "layer": {
-                "layerName": "Default",
-                "z": 0
+                "layerName": "Foreground",
+                "z": 10
             }
         },
         {
@@ -12817,10 +12908,10 @@
                         "className": "MovingWall",
                         "fields": {
                             "PlatesActive": 0,
-                            "PlatesRequired": 1,
+                            "PlatesRequired": 2,
                             "MoveRight": false,
-                            "MoveDist": 10.0,
-                            "MoveSpeed": 5.0,
+                            "MoveDist": 250.0,
+                            "MoveSpeed": 75.0,
                             "dustBurstDuration": 0.15000000596046449
                         }
                     }
@@ -12946,8 +13037,8 @@
                 ]
             },
             "layer": {
-                "layerName": "Foreground",
-                "z": 100
+                "layerName": "Default",
+                "z": 0
             }
         },
         {
@@ -12959,7 +13050,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1104.856201171875,
+                    "x": 1061.1080322265626,
                     "y": -357.0424499511719,
                     "z": 0.0
                 },
@@ -12986,7 +13077,7 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 1104.856201171875,
+                    "x": 1061.1080322265626,
                     "y": -357.0424499511719,
                     "z": 0.0
                 },
@@ -12996,12 +13087,12 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 1054.8563232421876,
+                    "x": 1011.108154296875,
                     "y": -365.0424499511719,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 1154.8560791015626,
+                    "x": 1111.10791015625,
                     "y": -349.0424499511719,
                     "z": 0.0
                 }
@@ -13047,10 +13138,10 @@
                         "fields": {
                             "IsMoving": true,
                             "MoveRight": true,
-                            "MovementDistance": 100.0,
-                            "MoveSpeed": 20.0,
-                            "VerticalSpeed": 50.0,
-                            "maxDrop": 50.0
+                            "MovementDistance": -250.0,
+                            "MoveSpeed": 50.0,
+                            "VerticalSpeed": 0.0,
+                            "maxDrop": 0.0
                         }
                     }
                 ]
@@ -13069,7 +13160,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1232.266357421875,
+                    "x": 1171.990966796875,
                     "y": -410.2161865234375,
                     "z": 0.0
                 },
@@ -13096,7 +13187,7 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 1232.266357421875,
+                    "x": 1171.990966796875,
                     "y": -410.2161865234375,
                     "z": 0.0
                 },
@@ -13106,12 +13197,12 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 1182.266357421875,
+                    "x": 1121.990966796875,
                     "y": -418.2161865234375,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 1282.266357421875,
+                    "x": 1221.990966796875,
                     "y": -402.2161865234375,
                     "z": 0.0
                 }
@@ -13157,10 +13248,10 @@
                         "fields": {
                             "IsMoving": true,
                             "MoveRight": true,
-                            "MovementDistance": 100.0,
-                            "MoveSpeed": 20.0,
-                            "VerticalSpeed": 50.0,
-                            "maxDrop": 50.0
+                            "MovementDistance": 200.0,
+                            "MoveSpeed": 50.0,
+                            "VerticalSpeed": 0.0,
+                            "maxDrop": 0.0
                         }
                     }
                 ]
@@ -13267,10 +13358,10 @@
                         "fields": {
                             "IsMoving": true,
                             "MoveRight": true,
-                            "MovementDistance": 100.0,
-                            "MoveSpeed": 20.0,
-                            "VerticalSpeed": 50.0,
-                            "maxDrop": 50.0
+                            "MovementDistance": 350.0,
+                            "MoveSpeed": 50.0,
+                            "VerticalSpeed": 170.0,
+                            "maxDrop": 150.0
                         }
                     }
                 ]
@@ -13289,7 +13380,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 879.4225463867188,
+                    "x": 843.4519653320313,
                     "y": -754.411376953125,
                     "z": 0.0
                 },
@@ -13316,7 +13407,7 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 879.4225463867188,
+                    "x": 843.4519653320313,
                     "y": -754.411376953125,
                     "z": 0.0
                 },
@@ -13326,12 +13417,12 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 804.4225463867188,
+                    "x": 768.4519653320313,
                     "y": -762.411376953125,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 954.4225463867188,
+                    "x": 918.4519653320313,
                     "y": -746.411376953125,
                     "z": 0.0
                 }
@@ -13377,10 +13468,10 @@
                         "fields": {
                             "IsMoving": true,
                             "MoveRight": true,
-                            "MovementDistance": 100.0,
-                            "MoveSpeed": 20.0,
-                            "VerticalSpeed": 50.0,
-                            "maxDrop": 50.0
+                            "MovementDistance": 200.0,
+                            "MoveSpeed": 50.0,
+                            "VerticalSpeed": 90.0,
+                            "maxDrop": 75.0
                         }
                     }
                 ]
@@ -13987,10 +14078,10 @@
                         "fields": {
                             "IsMoving": true,
                             "MoveRight": true,
-                            "MovementDistance": 100.0,
-                            "MoveSpeed": 20.0,
-                            "VerticalSpeed": 50.0,
-                            "maxDrop": 50.0
+                            "MovementDistance": 250.0,
+                            "MoveSpeed": 50.0,
+                            "VerticalSpeed": 0.0,
+                            "maxDrop": 0.0
                         }
                     }
                 ]
@@ -18360,6 +18451,7 @@
                         "className": "PressurePlate",
                         "fields": {
                             "decrease": 5.0,
+                            "goalTextName": "GoalText",
                             "wallName": "wall2"
                         }
                     }
@@ -20041,13 +20133,13 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 29.600000381469728,
-                    "y": 6.830999851226807,
+                    "x": 30.332500457763673,
+                    "y": 6.556600093841553,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 6.0,
-                    "y": 2.999999761581421
+                    "x": 7.206199645996094,
+                    "y": 3.164400100708008
                 }
             },
             "shape": {
@@ -20139,14 +20231,14 @@
             "parent": {
                 "parentName": "RestartCheck",
                 "localPos": {
-                    "x": 0.2471482902765274,
-                    "y": 0.07981476932764054,
+                    "x": 0.2750000059604645,
+                    "y": 0.028999999165534974,
                     "z": 0.0
                 },
                 "localRot": 0.0,
                 "localScale": {
-                    "x": 0.22813688218593598,
-                    "y": 0.555555522441864
+                    "x": 0.27399998903274538,
+                    "y": 0.5860000252723694
                 },
                 "inheritColor": false,
                 "colorMul": {
@@ -20170,13 +20262,13 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 16.899999618530275,
-                    "y": 6.830999851226807,
+                    "x": 15.630800247192383,
+                    "y": 6.470200061798096,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 7.500000476837158,
-                    "y": 2.999999761581421
+                    "x": 7.837399959564209,
+                    "y": 2.7809998989105226
                 }
             },
             "shape": {
@@ -20268,14 +20360,14 @@
             "parent": {
                 "parentName": "RestartCheck",
                 "localPos": {
-                    "x": -0.2357414811849594,
-                    "y": 0.07981476932764054,
+                    "x": -0.2840000092983246,
+                    "y": 0.013000000268220902,
                     "z": 0.0
                 },
                 "localRot": 0.0,
                 "localScale": {
-                    "x": 0.28517112135887148,
-                    "y": 0.555555522441864
+                    "x": 0.2980000078678131,
+                    "y": 0.5149999856948853
                 },
                 "inheritColor": false,
                 "colorMul": {
@@ -21050,8 +21142,8 @@
             }
         },
         {
-            "active": true,
-            "name": "Settings",
+            "active": false,
+            "name": "GameOverScreen",
             "tag": {
                 "tagMask": 0
             },
@@ -21063,13 +21155,647 @@
                     "z": 0.0
                 },
                 "size": {
+                    "x": 192.0,
+                    "y": 108.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "",
+                "uvSize": {
                     "x": 1.0,
                     "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.2709163427352905,
+                    "y": 0.16190218925476075,
+                    "z": 0.16190218925476075,
+                    "w": 0.9163346290588379
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "text": {
+                "font": "AlegreyaSC-Italic",
+                "text": "Game over...",
+                "scale": 42.29999923706055,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": false,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": false,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 0.0,
+                "lineSpacing": 0.0,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "GameOverUI",
+                        "fields": {
+                            "currentSceneName": "descentgame",
+                            "mainMenuScene": "descentmenu"
+                        }
+                    }
+                ]
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "RestartLevelButton",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -19.136999130249025,
+                    "y": -13.600000381469727,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 27.599998474121095,
+                    "y": 4.900000095367432
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/settings/updated restart large.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "button": {
+                "buttonState": 0,
+                "shapeNormalColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 1.0
+                },
+                "shapeHoveredColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.5
+                },
+                "shapePressedColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.699999988079071
+                },
+                "textNormalColor": {
+                    "x": 0.30000001192092898,
+                    "y": 0.30000001192092898,
+                    "z": 0.30000001192092898,
+                    "w": 0.699999988079071
+                },
+                "textHoveredColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.0
+                },
+                "textPressedColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.5
+                },
+                "textureNormal": "UI/settings/updated restart large.png",
+                "textureHovered": "UI/settings/updated restart large.png",
+                "texturePressed": "UI/settings/updated restart large.png"
+            },
+            "gui": {
+                "uiType": 5
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "uiLayout": 4
+            },
+            "parent": {
+                "parentName": "GameOverScreen",
+                "localPos": {
+                    "x": -0.099671870470047,
+                    "y": -0.1259259283542633,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.14374999701976777,
+                    "y": 0.04537037014961243
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UIButtons",
+                "z": 10
+            }
+        },
+        {
+            "active": true,
+            "name": "QuitButton",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 15.433000564575196,
+                    "y": -13.600000381469727,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 16.899999618530275,
+                    "y": 4.900000095367432
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/settings/updated quit large.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "button": {
+                "buttonState": 0,
+                "shapeNormalColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 1.0
+                },
+                "shapeHoveredColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.5
+                },
+                "shapePressedColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.699999988079071
+                },
+                "textNormalColor": {
+                    "x": 0.30000001192092898,
+                    "y": 0.30000001192092898,
+                    "z": 0.30000001192092898,
+                    "w": 0.699999988079071
+                },
+                "textHoveredColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.0
+                },
+                "textPressedColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.5
+                },
+                "textureNormal": "UI/settings/updated quit large.png",
+                "textureHovered": "UI/settings/updated quit large.png",
+                "texturePressed": "UI/settings/updated quit large.png"
+            },
+            "gui": {
+                "uiType": 5
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "uiLayout": 4
+            },
+            "parent": {
+                "parentName": "GameOverScreen",
+                "localPos": {
+                    "x": 0.08038020879030228,
+                    "y": -0.1259259283542633,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.08802083134651184,
+                    "y": 0.04537037014961243
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UIButtons",
+                "z": 10
+            }
+        },
+        {
+            "active": false,
+            "name": "RestartCheck2",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 192.0,
+                    "y": 108.0
+                }
+            },
+            "parent": {
+                "parentName": "GameOverScreen",
+                "localPos": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
                 }
             },
             "layer": {
                 "layerName": "",
                 "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "Yes2",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -27.884002685546876,
+                    "y": -13.100000381469727,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 10.5,
+                    "y": 3.700000047683716
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/Yes.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "button": {
+                "buttonState": 0,
+                "shapeNormalColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 1.0
+                },
+                "shapeHoveredColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.5
+                },
+                "shapePressedColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.699999988079071
+                },
+                "textNormalColor": {
+                    "x": 0.30000001192092898,
+                    "y": 0.30000001192092898,
+                    "z": 0.30000001192092898,
+                    "w": 0.699999988079071
+                },
+                "textHoveredColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.0
+                },
+                "textPressedColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.5
+                },
+                "textureNormal": "UI/Yes.png",
+                "textureHovered": "UI/Yes.png",
+                "texturePressed": "UI/Yes.png"
+            },
+            "gui": {
+                "uiType": 5
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "uiLayout": 4
+            },
+            "parent": {
+                "parentName": "RestartCheck2",
+                "localPos": {
+                    "x": -0.14522917568683625,
+                    "y": -0.12129630148410797,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.0546875,
+                    "y": 0.034259259700775149
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UIButtons",
+                "z": 61
+            }
+        },
+        {
+            "active": true,
+            "name": "No2",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -10.461000442504883,
+                    "y": -13.100000381469727,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 8.199999809265137,
+                    "y": 3.700000047683716
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/No.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "button": {
+                "buttonState": 0,
+                "shapeNormalColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 1.0
+                },
+                "shapeHoveredColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.5
+                },
+                "shapePressedColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.699999988079071
+                },
+                "textNormalColor": {
+                    "x": 0.30000001192092898,
+                    "y": 0.30000001192092898,
+                    "z": 0.30000001192092898,
+                    "w": 0.699999988079071
+                },
+                "textHoveredColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.0
+                },
+                "textPressedColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.5
+                },
+                "textureNormal": "UI/No.png",
+                "textureHovered": "UI/No.png",
+                "texturePressed": "UI/No.png"
+            },
+            "gui": {
+                "uiType": 5
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "uiLayout": 4
+            },
+            "parent": {
+                "parentName": "RestartCheck2",
+                "localPos": {
+                    "x": -0.054484378546476367,
+                    "y": -0.12129630148410797,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.04270833358168602,
+                    "y": 0.034259259700775149
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UIButtons",
+                "z": 61
             }
         }
     ],

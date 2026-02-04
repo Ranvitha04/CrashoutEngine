@@ -520,12 +520,7 @@ namespace CrashoutsEngine
         {
             Debug.Log("Player Died");
             alive = false;
-            Entity gameOverEnt = Entity.Find("GameOverScreen");
-            if (gameOverEnt != null)
-            {
-                var gameOverT = gameOverEnt.GetComponent<TransformComponent>();
-                gameOverT.Position = new CEVec3(gameOverT.Position.x, gameOverT.Position.y, 0.8f);
-            }
+            InternalCalls.SetActive(InternalCalls.FindEntityByName("GameOverScreen"), true);
         }
 
         public void AddEnergy(float amount) { CurrentEnergy = Math.Min(CurrentEnergy + amount, MaxEnergy); }
