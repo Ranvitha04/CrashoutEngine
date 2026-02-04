@@ -20,7 +20,7 @@ namespace CrashoutsEngine
             Entity winScreen = Entity.Find(winScreenName);
             if (winScreen != null)
             {
-                InternalCalls.SetActive(winScreen.ID, true);
+                InternalCalls.SetActive(winScreen.ID, false);
             }
         }
 
@@ -65,11 +65,10 @@ namespace CrashoutsEngine
             Entity winScreen = Entity.Find(winScreenName);
             if (winScreen != null)
             {
-                var tf = winScreen.GetComponent<TransformComponent>();
-                if (tf != null)
+                Entity winScreen = Entity.Find(winScreenName);
+                if (winScreen != null)
                 {
-                    // Bring to front
-                    tf.Position = new CEVec3(tf.Position.x, tf.Position.y, 0.5f);
+                    InternalCalls.SetActive(winScreen.ID, true);
                 }
             }
             else

@@ -10686,7 +10686,7 @@
             }
         },
         {
-            "active": false,
+            "active": true,
             "name": "WinDoor",
             "tag": {
                 "tagMask": 0
