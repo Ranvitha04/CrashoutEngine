@@ -260,6 +260,8 @@ namespace CrashoutsEngine
             // Ensure we cannot jump if dialogue is active
             if (jumpRequested && !isDialogueActive)
             {
+                AudioManager.GetInstance().PlayAttached("JumpUp", Entity.ID);
+
                 rb.LinearVelocity = new CEVec3(rb.LinearVelocity.x, 0f, 0f);
                 rb.AddForce(new CEVec3(0f, jumpPower, 0f));
 

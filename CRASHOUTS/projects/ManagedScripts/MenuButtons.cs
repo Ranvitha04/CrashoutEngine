@@ -5,6 +5,8 @@ namespace CrashoutsEngine
     [ScriptBehaviour]
     public class MenuButtons : ScriptBase
     {
+        private bool _hasClicked = false;
+
         public override void Start()
         {
             //Debug.Log("Start");
@@ -15,9 +17,12 @@ namespace CrashoutsEngine
             //Debug.Log("TEST");
             var btn = Entity.GetComponent<ButtonComponent>();
             var name = Entity.GetComponent<NameComponent>();
-            if (btn.IsClicked())
+            if (btn.IsClicked() && !_hasClicked)
             {
+                _hasClicked = true;
+
                 //Console.WriteLine("[C#] Name is " + name);
+                AudioManager.GetInstance().PlayAttached("Click", Entity.ID);
 
                 string msg = "[C#] Name is " + name;
                 Debug.Log(msg);
@@ -56,7 +61,7 @@ namespace CrashoutsEngine
                 else if (name.ToString() == "QuitNoBtn")
                 {
                
-                    SceneManager.LoadScene("descentmenu"); 
+                    SceneManager.LoadScene("descentmenu", 0.5f); 
                 }
                
                 else if (name.ToString() == "PauseResumeBtn")
@@ -79,6 +84,12 @@ namespace CrashoutsEngine
 
 
             }
+
+            else if (!btn.IsClicked())
+            {
+                _hasClicked = false;
+            }
+
             if (btn.IsHovered())
             {
                 //Console.WriteLine("Hovered");

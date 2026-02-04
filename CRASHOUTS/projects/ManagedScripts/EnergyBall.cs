@@ -60,6 +60,8 @@ namespace CrashoutsEngine
                 PlayerMovement.Instance.AddEnergy(energyAmount);
             }
 
+            AudioManager.GetInstance().PlayAttached("Pickup", Entity.ID);
+
             // 2. Disable Interaction
             _isActive = false;
             _timer = respawnTime;

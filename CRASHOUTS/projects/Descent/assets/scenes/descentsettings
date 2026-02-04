@@ -173,6 +173,19 @@
                 "dialogueFilePath": "",
                 "dialogueID": ""
             },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "Click",
+                        "path": "button click.wav",
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    }
+                ]
+            },
             "script": {
                 "scripts": [
                     {

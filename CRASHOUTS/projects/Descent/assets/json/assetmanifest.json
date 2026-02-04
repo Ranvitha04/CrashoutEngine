@@ -29,6 +29,10 @@
             "path": "book interaction.wav"
         },
         {
+            "name": "button click",
+            "path": "button click.wav"
+        },
+        {
             "name": "footsteps 1",
             "path": "footsteps 1.wav"
         },
@@ -67,6 +71,10 @@
         {
             "name": "jump landing",
             "path": "jump landing.wav"
+        },
+        {
+            "name": "jump",
+            "path": "jump.wav"
         },
         {
             "name": "Lava-Volcano-Wind-Environment_LOOP",
@@ -139,6 +147,10 @@
         {
             "name": "Switch_StepOn",
             "path": "Switch_StepOn.wav"
+        },
+        {
+            "name": "temp opening cutscene",
+            "path": "temp opening cutscene.wav"
         }
     ],
     "dialogue": [
@@ -1683,12 +1695,20 @@
     ],
     "prefabs": [
         {
+            "name": "AmbianceManager",
+            "path": "AmbianceManager.json"
+        },
+        {
             "name": "AudioManagerPrefab",
             "path": "AudioManagerPrefab.json"
         },
         {
             "name": "Ball",
             "path": "Ball.json"
+        },
+        {
+            "name": "BGMManager",
+            "path": "BGMManager.json"
         },
         {
             "name": "BigBox",
