@@ -1835,6 +1835,10 @@
             "path": "SettingBtnGame.json"
         },
         {
+            "name": "SettingsBook",
+            "path": "SettingsBook.json"
+        },
+        {
             "name": "shitasswork",
             "path": "shitasswork.json"
         },

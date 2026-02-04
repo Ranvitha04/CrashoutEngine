@@ -246,6 +246,26 @@
                 },
                 "uiLayout": 4
             },
+            "parent": {
+                "parentName": "Settings",
+                "localPos": {
+                    "x": 227.24801635742188,
+                    "y": 145.3922119140625,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 26.600000381469728,
+                    "y": 90.30000305175781
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
             "layer": {
                 "layerName": "StaticBackground",
                 "z": 0
@@ -303,6 +323,26 @@
                     "z": 0.0
                 }
             },
+            "parent": {
+                "parentName": "Settings",
+                "localPos": {
+                    "x": 0.0,
+                    "y": -10.96399974822998,
+                    "z": -10.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1446.9000244140626,
+                    "y": 886.4000244140625
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
             "layer": {
                 "layerName": "StaticBackground",
                 "z": 0
@@ -356,6 +396,26 @@
                 "dialogueFilePath": "",
                 "dialogueID": ""
             },
+            "parent": {
+                "parentName": "Settings",
+                "localPos": {
+                    "x": 89.95561981201172,
+                    "y": 47.34700012207031,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
             "layer": {
                 "layerName": "StaticBackground",
                 "z": 0
@@ -381,7 +441,7 @@
             },
             "text": {
                 "font": "AlegreyaSC-Medium",
-                "text": "Q: Switch Modes",
+                "text": "E: Switch Modes",
                 "scale": 6.0,
                 "offset": {
                     "x": 0.0,
@@ -443,7 +503,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 69.77362060546875,
+                    "x": 65.54953002929688,
                     "y": 1.3470001220703126,
                     "z": 0.0
                 },
@@ -485,7 +545,7 @@
             "parent": {
                 "parentName": "Instructions",
                 "localPos": {
-                    "x": -20.18199920654297,
+                    "x": -24.406089782714845,
                     "y": -46.0,
                     "z": 0.0
                 },
@@ -516,7 +576,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 121.59162139892578,
+                    "x": 116.24109649658203,
                     "y": -20.25299835205078,
                     "z": 0.0
                 },
@@ -558,7 +618,7 @@
             "parent": {
                 "parentName": "Instructions",
                 "localPos": {
-                    "x": 31.63599967956543,
+                    "x": 26.285476684570314,
                     "y": -67.5999984741211,
                     "z": 0.0
                 },
@@ -745,6 +805,26 @@
                 "dialogueFilePath": "",
                 "dialogueID": ""
             },
+            "parent": {
+                "parentName": "Settings",
+                "localPos": {
+                    "x": -108.76655578613281,
+                    "y": -39.161659240722659,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
             "layer": {
                 "layerName": "StaticBackground",
                 "z": 0
@@ -778,6 +858,26 @@
                     }
                 ]
             },
+            "parent": {
+                "parentName": "Settings",
+                "localPos": {
+                    "x": -188.84193420410157,
+                    "y": -65.30364227294922,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 163.0,
+                    "y": 23.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
             "layer": {
                 "layerName": "StaticBackground",
                 "z": 0
@@ -810,6 +910,26 @@
                         }
                     }
                 ]
+            },
+            "parent": {
+                "parentName": "Settings",
+                "localPos": {
+                    "x": -188.78140258789063,
+                    "y": 44.794342041015628,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 163.0,
+                    "y": 23.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
             },
             "layer": {
                 "layerName": "StaticBackground",
@@ -864,6 +984,26 @@
                 "dialogueFilePath": "",
                 "dialogueID": ""
             },
+            "parent": {
+                "parentName": "Settings",
+                "localPos": {
+                    "x": -110.25675964355469,
+                    "y": 80.08920288085938,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
             "layer": {
                 "layerName": "StaticBackground",
                 "z": 0
@@ -916,6 +1056,26 @@
                 "revealSpeed": 10.0,
                 "dialogueFilePath": "",
                 "dialogueID": ""
+            },
+            "parent": {
+                "parentName": "Settings",
+                "localPos": {
+                    "x": 107.1853256225586,
+                    "y": 81.51038360595703,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
             },
             "layer": {
                 "layerName": "StaticBackground",
@@ -974,6 +1134,26 @@
                     "z": 0.0
                 }
             },
+            "parent": {
+                "parentName": "Settings",
+                "localPos": {
+                    "x": -107.7699966430664,
+                    "y": -65.30400085449219,
+                    "z": -1.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 163.0,
+                    "y": 23.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
             "layer": {
                 "layerName": "StaticBackground",
                 "z": 0
@@ -1029,6 +1209,26 @@
                     "x": 32.0,
                     "y": 0.0,
                     "z": 0.0
+                }
+            },
+            "parent": {
+                "parentName": "Settings",
+                "localPos": {
+                    "x": -107.53600311279297,
+                    "y": 44.069000244140628,
+                    "z": -1.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 163.0,
+                    "y": 23.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
                 }
             },
             "layer": {
@@ -1437,6 +1637,29 @@
             },
             "layer": {
                 "layerName": "StaticBackground",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "Settings",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "",
                 "z": 0
             }
         }
