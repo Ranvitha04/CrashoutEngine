@@ -1236,7 +1236,7 @@ namespace CrashoutsEngine {
 			}
 
 			// Cycle through sceneAsset sceneData (JSON document) for testing
-			std::string fullPath = Assets::rootPath + "/scenes/" + sceneName;
+			const std::filesystem::path fullPath = std::filesystem::absolute(std::filesystem::path(Assets::rootPath) / "scenes" / sceneName);
 
 			char logBuffer[256];
 			// Format the string into the buffer
@@ -1246,9 +1246,9 @@ namespace CrashoutsEngine {
 			// Pass the formatted string to the macro
 			LOGI(Core, logBuffer);
 
-			std::string jsonContent = ReadFileToString(fullPath);
+			std::string jsonContent = ReadFileToString(fullPath.string());
 			if (jsonContent.empty()) {
-				std::cout << "ERROR: Failed to read scene file: " << fullPath << std::endl;
+				std::cout << "ERROR: Failed to read scene file: " << fullPath.string() << std::endl;
 				return;
 			}
 
@@ -1586,18 +1586,18 @@ namespace CrashoutsEngine {
 
 			// Get the resulting JSON string
 			std::string content = buffer.GetString();
-			std::string fullPath = Assets::rootPath + "/scenes/" + sceneName;
+			const std::filesystem::path fullPath = std::filesystem::absolute(std::filesystem::path(Assets::rootPath) / "scenes" / sceneName);
 
 			// =========================================================
 			// 6. Write the string to the file directly
 			// (REPLACING sceneAsset->SaveSceneData(fullPath);)
 			// =========================================================
-			if (WriteTextToFile(fullPath, content)) {
+			if (WriteTextToFile(fullPath.string(), content)) {
 				std::cout << "Successfully saved " << entityCount
-					<< " entities to scene: " << fullPath << std::endl;
+					<< " entities to scene: " << fullPath.string() << std::endl;
 			}
 			else {
-				std::cout << "ERROR: Failed to write scene data to file: " << fullPath << std::endl;
+				std::cout << "ERROR: Failed to write scene data to file: " << fullPath.string() << std::endl;
 			}
 		}
 	}

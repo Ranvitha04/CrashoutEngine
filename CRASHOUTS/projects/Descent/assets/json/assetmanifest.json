@@ -1615,6 +1615,10 @@
         {
             "name": "assetmanifest",
             "path": "assetmanifest.json"
+        },
+        {
+            "name": "assetmanifest.json",
+            "path": "assetmanifest.json.bak"
         }
     ],
     "prefabs": [
@@ -1733,12 +1737,24 @@
             "path": "descentgame"
         },
         {
+            "name": "descentgame",
+            "path": "descentgame.bak"
+        },
+        {
             "name": "descentmenu",
             "path": "descentmenu"
         },
         {
+            "name": "descentmenu",
+            "path": "descentmenu.bak"
+        },
+        {
             "name": "descentsettings",
             "path": "descentsettings"
+        },
+        {
+            "name": "descentsettings",
+            "path": "descentsettings.bak"
         },
         {
             "name": "menu",

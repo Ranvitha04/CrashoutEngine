@@ -1074,29 +1074,29 @@ namespace Component {
 		renderList.reserve(zOrders.dense.size());
 
 		for (size_t i = 0; i < zOrders.dense.size(); ++i) {
+			const auto& z = *zOrders.dense[i];
 			CrashoutsEngine::Entity e = zOrders.indexToEntity[i];
 
-			const auto& z = *zOrders.dense[i];
-
-			// Check Layer Visibility (using name lookup)
-			// If layer exists in map and is set to false, skip
 			if (LayerComponent::layerVisibility.count(z.layerName)) {
-				if (!LayerComponent::layerVisibility[z.layerName]) continue;
+				if (!LayerComponent::layerVisibility[z.layerName]) {
+					continue;
+				}
 			}
 
-			// Optimized "HasComponent" check using the hoisted array
-			if (transforms.entityToIndex.find(e) == transforms.entityToIndex.end()) continue;
-
-			// Direct access (unsafe if index invalid, but we just checked map)
-			const auto& t = *transforms.dense[transforms.entityToIndex[e]];
-
-			// Check for optional debug override
-			const DebugZOverride* debug = nullptr;
-			if (registry.HasComponent<DebugZOverride>(e)) {
-				debug = registry.GetComponent<DebugZOverride>(e);
+			if (!registry.HasComponent<TransformComponent>(e)) {
+				continue;
 			}
 
-			float depth = ComputeDepth(t.position, z, debug);
+			TransformComponent* t = registry.GetComponent<TransformComponent>(e);
+			if (!t) {
+				continue;
+			}
+
+			DebugZOverride* dbg = registry.HasComponent<DebugZOverride>(e)
+				? registry.GetComponent<DebugZOverride>(e)
+				: nullptr;
+
+			float depth = ComputeDepth(t->position, z, dbg);
 			renderList.push_back({ e, depth });
 		}
 

@@ -3294,14 +3294,14 @@ namespace CrashoutsEngine
 						if (!s_scanned) {
 							s_scanned = true;
 							s_assets.clear();
-							const std::string assetRoot = "assets/images";
+							const fs::path assetRoot = fs::path(CrashoutsEngine::Assets::rootPath) / "images";
 							if (fs::exists(assetRoot)) {
 								for (auto& p : fs::recursive_directory_iterator(assetRoot)) {
 									if (!p.is_regular_file()) continue;
 									std::string ext = p.path().extension().string();
 									std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
 									if (ext == ".png" || ext == ".jpg" || ext == ".tga") {
-										s_assets.push_back(fs::relative(p.path(), assetRoot).string());
+										s_assets.push_back(fs::relative(p.path(), assetRoot).generic_string());
 									}
 								}
 								std::sort(s_assets.begin(), s_assets.end());
@@ -3311,8 +3311,9 @@ namespace CrashoutsEngine
 						ImGui::Separator();
 						ImGui::BeginChild("tex_list", ImVec2(300, 300), true);
 						for (const auto& f : s_assets) {
-							if (ImGui::Selectable(f.c_str(), pc->textureName == f)) {
-								pc->textureName = f;
+							const std::string fullRel = (fs::path("images") / fs::path(f)).generic_string();
+							if (ImGui::Selectable(fullRel.c_str(), pc->textureName == fullRel)) {
+								pc->textureName = fullRel;
 								ImGui::CloseCurrentPopup();
 							}
 						}

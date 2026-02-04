@@ -23,6 +23,9 @@ namespace CrashoutsEngine
         public float goalNoOfPlates = 1;
         public int currentGoalPlates = 0;
 
+        [SerializeField] private string landingDustName = "LandingDust";
+        [SerializeField] private float dustBurstDuration = 0.15f;
+
         public float normalMass = 7.0f;
         public float lightMass = 4.5f;
 
@@ -68,7 +71,13 @@ namespace CrashoutsEngine
         private bool isLight = false;
         private float swapPauseTimer = 0.0f;
 
-        private float jumpCooldown = 0.0f;
+        private uint landingDustID = 0;
+        private float landingDustTimer = 0.0f;
+        private bool landingDustArmed = false;
+
+        // NEW: Fall Through Logic
+        //private float fallThroughTimer = 0.0f;
+        private float jumpCooldown = 0.0f; // Prevents grounding immediately after jumping
         private bool isPassthrough = false;
         private bool canPassthrough = false;
 
@@ -78,6 +87,16 @@ namespace CrashoutsEngine
             rb = Entity.GetComponent<RigidBodyComponent>();
             tf = Entity.GetComponent<TransformComponent>();
             anim = Entity.GetComponent<Animator>();
+
+            if (!string.IsNullOrEmpty(landingDustName))
+            {
+                Entity e = Entity.Find(landingDustName);
+                if (e != null)
+                {
+                    landingDustID = e.ID;
+                    InternalCalls.Particle_SetEmitting(landingDustID, false);
+                }
+            }
 
             rb.Mass = normalMass;
             IsGrounded = false;
@@ -138,6 +157,15 @@ namespace CrashoutsEngine
                 horizontalInput = 0f;
                 UpdateAnimationState(false);
                 return; // STOP EXECUTION HERE
+            }
+
+            if (landingDustTimer > 0.0f)
+            {
+                landingDustTimer -= (float)Time.DT;
+                if (landingDustTimer <= 0.0f && landingDustID != 0)
+                {
+                    InternalCalls.Particle_SetEmitting(landingDustID, false);
+                }
             }
 
             // 1. HANDLE STATE SWITCH
@@ -249,7 +277,14 @@ namespace CrashoutsEngine
             if (jumpCooldown > 0.0f) jumpCooldown -= FIXED_TIMESTEP;
 
             // 1. GROUND CHECK (RAYCAST)
+            bool wasGrounded = IsGrounded;
             CheckGround();
+
+            if (!wasGrounded && IsGrounded && landingDustArmed)
+            {
+                TriggerLandingDust();
+                landingDustArmed = false;
+            }
 
             // 2. EXECUTE JUMP
             // Ensure we cannot jump if dialogue is active
@@ -261,6 +296,7 @@ namespace CrashoutsEngine
                 IsGrounded = false;
                 jumpRequested = false;
                 jumpCooldown = 0.1f;
+                landingDustArmed = true;
             }
 
             // 3. MOVEMENT PHYSICS
@@ -270,12 +306,34 @@ namespace CrashoutsEngine
             ApplyGravity();
         }
 
+        private void TriggerLandingDust()
+        {
+            if (landingDustID == 0) return;
+            if (tf == null) return;
+
+            Entity e = new Entity(landingDustID);
+            var dustTf = e.GetComponent<TransformComponent>();
+            if (dustTf != null)
+            {
+                float offsetY = -Math.Abs(tf.Size.y) * 0.5f;
+                dustTf.Position = new CEVec3(tf.Position.x, tf.Position.y + offsetY, dustTf.Position.z);
+            }
+
+            InternalCalls.Particle_SetEmitting(landingDustID, true);
+            landingDustTimer = dustBurstDuration;
+        }
+
+        // --- NEW: ROBUST GROUND CHECK ---
         private void CheckGround()
         {
             if (jumpCooldown > 0.0f) { IsGrounded = false; return; }
 
             float halfHeight = Math.Abs(tf.Size.y) * 0.5f;
+
+            // 2. Define a buffer distance (how far below feet to check)
+            // If this is too small, it might not detect; too large, and you jump before landing.
             float checkBuffer = 5.0f;
+
             float xOffset = groundCheckWidth * 0.5f;
             CEVec3 origin = tf.Position;
             float rayStartY = origin.y;
