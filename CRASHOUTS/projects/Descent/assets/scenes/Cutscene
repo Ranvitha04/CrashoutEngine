@@ -1618,8 +1618,8 @@
             "audio": {
                 "clips": [
                     {
-                        "name": "MenuMusic",
-                        "path": "main menu.wav",
+                        "name": "CutsceneMusic",
+                        "path": "temp opening cutscene.wav",
                         "volume": 1.0,
                         "pitch": 1.0,
                         "spatial3D": false,
