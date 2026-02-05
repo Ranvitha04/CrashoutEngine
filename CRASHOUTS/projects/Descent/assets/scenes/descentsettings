@@ -1287,7 +1287,7 @@
                         "volume": 1.0,
                         "pitch": 1.0,
                         "spatial3D": false,
-                        "looping": false,
+                        "looping": true,
                         "isMusic": false
                     }
                 ]
@@ -1297,7 +1297,7 @@
                     {
                         "className": "SceneMusic",
                         "fields": {
-                            "layerName": "Music",
+                            "layerName": "Ambiance",
                             "fadeTime": 2.0,
                             "stopLayer": false
                         }
