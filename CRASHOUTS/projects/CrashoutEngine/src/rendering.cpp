@@ -506,7 +506,7 @@ namespace Component {
 
 		if (!shaderAsset) {
 			std::cout << "FATAL ERROR: Failed to get 'CrashoutShader' from AssetManager." << std::endl;
-			//std::exit(EXIT_FAILURE);
+			std::exit(EXIT_FAILURE);
 		}
 
 		shdr_pgm = &(shaderAsset->shaderObject);
@@ -1066,7 +1066,6 @@ namespace Component {
 	*/
 	void Rendering::RenderAllSorted(CrashoutsEngine::ECS& registry, std::function<void(CrashoutsEngine::Entity)> drawCallback) {
 		auto& zOrders = registry.GetComponentArray<LayerComponent>();
-		auto& transforms = registry.GetComponentArray<TransformComponent>();
 
 		// Static to reuse capacity across frames (avoids realloc)
 		static std::vector<RenderItem> renderList;
