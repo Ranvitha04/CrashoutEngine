@@ -717,6 +717,7 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     // --- FPS Counter ---
+#if !USE_IMGUI_EDITOR && !defined(DEBUG)
     if (g_ShowFPS)
     {
         int fpsWindowW, fpsWindowH;
@@ -734,6 +735,7 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
 
         gTextRenderer->RenderText(fpsText, xPos, yPos, 1.0f, 10.0f, CEColor(0.0f, 1.0f, 0.0f, 1.0f), "AlegreyaSC-Regular", false, 0.0f);
     }
+#endif
 
     // render scene
     // GLApp::draw();

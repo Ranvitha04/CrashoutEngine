@@ -494,7 +494,9 @@ void GLApp::key_cb(GLFWwindow* pwin, int key, [[maybe_unused]] int scancode, int
     case GLFW_KEY_F11: ToggleFullscreen(); break;
     case GLFW_KEY_F10: ToggleMaximize(); break;
     case GLFW_KEY_F9:  Minimize(); break;
+#if !USE_IMGUI_EDITOR && !defined(DEBUG)
     case GLFW_KEY_F3:  g_ShowFPS = !g_ShowFPS; break;
+#endif
         // case GLFW_KEY_ESCAPE: glfwSetWindowShouldClose(pwin, GLFW_TRUE); break;
     default: break; // ignore all other keys
     }

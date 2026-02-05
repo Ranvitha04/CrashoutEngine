@@ -149,7 +149,7 @@ namespace CrashoutsEngine
                 if (playerTf != null)
                 {
                      float dist = Distance(tf.Position, playerTf.Position);
-                     if (dist <= grabRange || isGrabbed) HandleGrabLogic();
+                     if (dist <= grabRange || isGrabbed) HandleGrabInput();
                 }
                
                 if (isGrabbed)
@@ -273,9 +273,22 @@ namespace CrashoutsEngine
         public override void FixedUpdate()
         {
             if (STOP) return;
+
+            // 0. Grabbed Movement Sync (Fix for Jitter)
+            if (isGrabbed && playerScript != null)
+            {
+                var playerTf = playerScript.Entity.GetComponent<TransformComponent>();
+                if (playerTf != null)
+                {
+                    float offsetX = playerTf.Size.x < 0 ? -60.0f : 60.0f;
+                    tf.Position = new CEVec3(playerTf.Position.x + offsetX, playerTf.Position.y - 5.0f, playerTf.Position.z);
+                    rb.LinearVelocity = new CEVec3(0, 0, 0);
+                }
+                return; // Skip other physics logic while grabbed
+            }
             
             // 1. Safety Checks
-            if (rb == null || isGrabbed || isStunned) return;
+            if (rb == null || isStunned) return; // Removed isGrabbed check as it's handled above
             if (playerScript != null && playerScript.isPaused) return;
 
             // 2. Environment Checks
@@ -346,7 +359,7 @@ namespace CrashoutsEngine
             PlayerMovement.Instance.CurrentEnergy = Math.Max(PlayerMovement.Instance.CurrentEnergy - amount, 0.0f);
         }
 
-        private void HandleGrabLogic()
+        private void HandleGrabInput()
         {
             bool isDown = Input.IsMouseButtonDown(0);
             CEVec2 mousePos = Input.GetMouseWorldPosition();
@@ -373,11 +386,9 @@ namespace CrashoutsEngine
                 if (isGrabbed && playerScript != null)
                 {
                     RemoveEnergy(grabEnergyDrainRate * (float)Time.DT);
+                    // Position update moved to FixedUpdate to prevent jitter
+                    
                     var playerTf = playerScript.Entity.GetComponent<TransformComponent>();
-                    float offsetX = playerTf.Size.x < 0 ? -60.0f : 60.0f;
-                    tf.Position = new CEVec3(playerTf.Position.x + offsetX, playerTf.Position.y - 5.0f, playerTf.Position.z);
-                    rb.LinearVelocity = new CEVec3(0, 0, 0);
-
                     CEVec3 throwVel = CalculateThrowVelocity(mousePos, playerTf.Position);
                     SimulatePath(throwVel, tf.Position);
                 }
