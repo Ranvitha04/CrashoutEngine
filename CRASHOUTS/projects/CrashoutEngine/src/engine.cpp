@@ -49,6 +49,9 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 #include "collidereventmanager.h"
 #include "inputmanager.h"
 #include "debugreflection.h"
+#include "textrenderer.h"
+#include "rendererconnector.h"
+#include "CEColor.h"
 
 // ImGui headers for callbacks
 #include <imgui.h>
@@ -106,6 +109,7 @@ bool gameWinHovered{ false };
 
 std::string g_PendingSceneName = "";
 bool g_IsSceneLoadPending = false;
+bool g_ShowFPS = true;
 
 #if USE_IMGUI_EDITOR
 static EngineState previousState = EngineState::STOP;
@@ -527,8 +531,8 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
     int windowW, windowH;
     glfwGetFramebufferSize(GLApp::ptr_window, &windowW, &windowH);
 
-    const float targetAspectRatio = 16.0f / 9.0f;
-    float currentAspectRatio = (float)windowW / (float)windowH;
+    //const float targetAspectRatio = 16.0f / 9.0f;
+    //float currentAspectRatio = (float)windowW / (float)windowH;
 
     int vpX{ 0 }, vpY{ 0 }, vpW, vpH;
 
@@ -711,6 +715,25 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
 
     CrashoutsEngine::PostProcessing::RenderPP(gameTextureColorBuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+    // --- FPS Counter ---
+    if (g_ShowFPS)
+    {
+        int fpsWindowW, fpsWindowH;
+        glfwGetFramebufferSize(GLApp::ptr_window, &fpsWindowW, &fpsWindowH);
+        glViewport(0, 0, fpsWindowW, fpsWindowH);
+
+        if (!gTextRenderer) gTextRenderer = std::make_unique<TextRenderer>();
+
+        double fps = FrameRateController::GetInstance().FPS();
+        std::string fpsText = "FPS: " + std::to_string(static_cast<int>(fps));
+
+        // Render Green Text at Top Left
+        float xPos = 20.0f;
+        float yPos = (float)fpsWindowH - 150.0f;
+
+        gTextRenderer->RenderText(fpsText, xPos, yPos, 1.0f, 10.0f, CEColor(0.0f, 1.0f, 0.0f, 1.0f), "AlegreyaSC-Regular", false, 0.0f);
+    }
 
     // render scene
     // GLApp::draw();
