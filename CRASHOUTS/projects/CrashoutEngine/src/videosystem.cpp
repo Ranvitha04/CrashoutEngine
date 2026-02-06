@@ -1,15 +1,34 @@
+/*!
+@file		videosystem.cpp
+@author     m.biniswandi@digipen.edu
+@date       01/02/2026
+@brief		Definition of Video System to update Video Components.
+
+All content ? 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
+*/
 #include "videosystem.h"
 #include "videocomponent.h"
 #include "videoloader.h"
 #include "shapescomponent.h"
 #include "transformcomponent.h"
 #include "entitymanager.h"
-#include "timebindings.h" // For DT? Or glapp.h
+#include "timebindings.h"
 #include "glapp.h"
 #include <iostream>
 
 namespace CrashoutsEngine {
 
+    /**
+     * @brief Updates all VideoComponents in the ECS.
+     * 
+     * This method handles both FFmpeg-based video playback (via VideoLoader) 
+     * and image sequence playback. It also synchronizes the video frame 
+     * with the ShapeComponent's texture and optionally enforces aspect ratio 
+     * on the TransformComponent.
+     * 
+     * @param dt Delta time since the last frame.
+     */
     void VideoSystem::Update(float dt) {
         auto* ecs = ECS::getInstance();
         if (!ecs) return;
@@ -33,7 +52,7 @@ namespace CrashoutsEngine {
                 }
             }
 
-            // Priority: FFmpeg Loader -> Image Sequence
+            // Priority: FFmpeg Loader  Image Sequence
             if (vc->loader && vc->loader->IsValid()) {
                 if (vc->isPlaying) {
                     vc->loader->Play();

@@ -144,7 +144,7 @@ namespace CrashoutsEngine
 				MonoObject* object = mono_gchandle_get_target(inst.GCHandle);
 				if (!object) continue;
 
-				// Iterate fields (Same logic as your Inspector)
+				// Iterate fields
 				void* iter = nullptr;
 				while (MonoClassField* field = mono_class_get_fields(inst.Class, &iter)) {
 					uint32_t flags = mono_field_get_flags(field);

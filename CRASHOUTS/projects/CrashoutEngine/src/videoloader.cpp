@@ -1,3 +1,12 @@
+/*!
+@file		videoloader.cpp
+@author     m.biniswandi@digipen.edu
+@date       01/02/2026
+@brief		Definition of the VideoLoader class, responsible for loading and playing video files using FFmpeg and FMOD.
+
+All content ? 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
+*/
 #include "videoloader.h"
 #include "audioSystem.h"
 #include <iostream>
@@ -17,6 +26,10 @@ extern "C" {
 
 namespace CrashoutsEngine {
 
+	/**
+	 * @brief Constructor for VideoLoader.
+	 * @param path The relative path to the video file.
+	 */
 	VideoLoader::VideoLoader(const std::string& path) : filepath(path) {
 #ifdef USE_FFMPEG
 		frame = av_frame_alloc();
@@ -26,6 +39,9 @@ namespace CrashoutsEngine {
 #endif
 	}
 
+	/**
+	 * @brief Destructor for VideoLoader, ensures proper cleanup.
+	 */
 	VideoLoader::~VideoLoader() {
 		Cleanup();
 #ifdef USE_FFMPEG
@@ -36,6 +52,10 @@ namespace CrashoutsEngine {
 #endif
 	}
 
+	/**
+	 * @brief Loads the video file and initializes FFmpeg and FMOD resources.
+	 * @return True if loading was successful, false otherwise.
+	 */
 	bool VideoLoader::Load() {
 #ifdef USE_FFMPEG
 		std::string fullPath = Assets::rootPath + filepath;
@@ -171,6 +191,10 @@ namespace CrashoutsEngine {
 		return false;
 	}
 
+	/**
+	 * @brief Updates the video playback state and synchronizes with audio.
+	 * @param dt Delta time since the last frame.
+	 */
 	void VideoLoader::Update(float dt) {
 		if (!isValid || !isPlaying) {
 			if (audioChannel) audioChannel->setPaused(true);
@@ -214,6 +238,10 @@ namespace CrashoutsEngine {
 		}
 	}
 
+	/**
+	 * @brief Decodes the next video frame and uploads it to the GPU texture.
+	 * @return True if a frame was successfully read and uploaded, false otherwise.
+	 */
 	bool VideoLoader::ReadFrame() {
 #ifdef USE_FFMPEG
 		while (av_read_frame(formatCtx, packet) >= 0) {
@@ -246,6 +274,9 @@ namespace CrashoutsEngine {
 		return false;
 	}
 
+	/**
+	 * @brief Stops video playback and resets the playback position.
+	 */
 	void VideoLoader::Stop() {
 		isPlaying = false;
 		currentTime = 0;
@@ -261,12 +292,19 @@ namespace CrashoutsEngine {
 #endif
 	}
 
+	/**
+	 * @brief Sets the volume of the video's audio track.
+	 * @param vol The volume level (0.0 to 1.0).
+	 */
 	void VideoLoader::SetVolume(float vol) {
 		if (audioChannel) {
 			audioChannel->setVolume(vol);
 		}
 	}
 
+	/**
+	 * @brief Cleans up and releases all allocated video and audio resources.
+	 */
 	void VideoLoader::Cleanup() {
 		if (audioChannel) {
 			audioChannel->stop();

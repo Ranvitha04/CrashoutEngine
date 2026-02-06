@@ -1,3 +1,12 @@
+/*!
+@file       debugmenu_viewport.cpp
+@author     mohamadamirakmal.b@digipen.edu
+@date       25/12/2025
+@brief      File containing the implementation of the Debug Menu Viewport rendering functions.
+
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
+//__________________________________________________________________________*/
 #include "debugmenu_internals.h"
 #include "deleteentitycommand.h"
 

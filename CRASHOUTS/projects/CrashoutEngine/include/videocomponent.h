@@ -1,3 +1,12 @@
+/*!
+@file		videocomponent.h
+@author     m.biniswandi@digipen.edu
+@date       01/02/2026
+@brief		declaration of Video Component.
+
+All content ? 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
+*/
 #pragma once
 #include <vector>
 #include <string>
