@@ -12419,7 +12419,7 @@
                     {
                         "name": "Switch",
                         "path": "switch_stepon.wav",
-                        "volume": 1.0,
+                        "volume": 0.800000011920929,
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": false,
@@ -18585,7 +18585,7 @@
                     {
                         "name": "Switch",
                         "path": "switch_stepon.wav",
-                        "volume": 1.0,
+                        "volume": 0.800000011920929,
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": false,
@@ -18747,7 +18747,7 @@
                     {
                         "name": "Switch",
                         "path": "switch_stepon.wav",
-                        "volume": 1.0,
+                        "volume": 0.800000011920929,
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": false,
