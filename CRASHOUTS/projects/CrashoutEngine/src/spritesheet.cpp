@@ -3,7 +3,7 @@
 @author     b.mohamadafiq@digipen.edu
 @date       19/11/2025
 
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 */
 
@@ -24,8 +24,13 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserve
 
 #include <imgui.h>
 #include "stb_image.h"          
+
+#pragma warning(push)
+#pragma warning(disable: 26819)
 #define STB_IMAGE_WRITE_IMPLEMENTATION   
 #include "stb_image_write.h"   
+#pragma warning(pop)
+
 #include <vector>
 #include <cstring>
 #include <algorithm>
