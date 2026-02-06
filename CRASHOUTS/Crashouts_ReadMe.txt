@@ -11,7 +11,6 @@ Team: Crashouts
 [RTIS] Renfred  - Technical Lead  - Engine Champion
 [RTIS] Ranvitha - Programmer      - Graphics Champion
 [IMGD] Shahrin  - Project Manager - Level Editor Champion
-[IMGD] Tristan  - Programmer      - Collision Champion
 [IMGD] Amir     - Programmer      - Debugging Tools Champion
 [IMGD] Afiq     - Audio Lead      - Gameplay Champion
 [UXGD] Daphne   - Art Lead        - Story Champion, Secondary Designer
@@ -122,11 +121,27 @@ Cedric Guillemet.
 Licensed under the MIT License.
 https://github.com/CedricGuillemet/ImGuizmo
 
+------------------------------------------------------------
+Mono
+------------------------------------------------------------
+Copyright (c) 2001–2025 
+.NET Foundation and Contributors. 
+Licensed under the MIT License. 
+https://www.mono-project.com/
+
+------------------------------------------------------------
+FFmpeg
+------------------------------------------------------------
+Copyright (c) 2000–2025 
+The FFmpeg developers. 
+Licensed under the LGPL v2.1+ or GPL v2+. 
+https://ffmpeg.org/
+
 ============================================================
-                 TEAM ROSTER, LEADERSHIP & CHAMPIONING
+            TEAM ROSTER, LEADERSHIP & CHAMPIONING
 ============================================================
 
-Team Name: BuiltIncorrectly_F24
+Team Name: CRASHOUTS
 
 Team Leads
 ------------------------------------------------------------
@@ -152,17 +167,9 @@ Champions & Core Contributors
   • Develops in-engine debugging, logging, and inspection tools.
   • Champions workflows for profiling, diagnostics, and crash investigation.
 
-- Mira Tristan Dumlao (2401158)
-  Role: Programmer, Collision Champion , AI Champion  
-  • Owns collision detection and response systems.
-  • Ensures stable physics interactions for gameplay and level design.
-  • Implements enemy AI behaviours and decision-making.
-
 - Ranvitha (2402289)
   Role: Programmer, Graphics Champion  
   • Focuses on rendering features, visual quality, and graphics optimisation.
   • Works closely with the team to keep the game visually consistent.
 
 ------------------------------------------------------------
-
-
