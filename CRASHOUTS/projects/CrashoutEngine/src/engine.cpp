@@ -109,7 +109,7 @@ bool gameWinHovered{ false };
 
 std::string g_PendingSceneName = "";
 bool g_IsSceneLoadPending = false;
-bool g_ShowFPS = true;
+bool g_ShowFPS = false;
 
 #if USE_IMGUI_EDITOR
 static EngineState previousState = EngineState::STOP;
