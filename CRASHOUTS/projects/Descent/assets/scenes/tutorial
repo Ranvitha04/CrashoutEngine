@@ -9761,8 +9761,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -97.97625732421875,
-                    "y": -28.546266555786134,
+                    "x": -180.6522674560547,
+                    "y": -9.94857406616211,
                     "z": 50.0
                 },
                 "size": {
@@ -9788,8 +9788,8 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": -97.97625732421875,
-                    "y": -33.5462646484375,
+                    "x": -180.6522674560547,
+                    "y": -14.94857406616211,
                     "z": 50.0
                 },
                 "offset": {
@@ -9798,13 +9798,13 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": -116.77630615234375,
-                    "y": -64.0462646484375,
+                    "x": -199.4523162841797,
+                    "y": -45.44857406616211,
                     "z": 50.0
                 },
                 "max": {
-                    "x": -79.17620849609375,
-                    "y": -3.0462646484375,
+                    "x": -161.8522186279297,
+                    "y": 15.55142593383789,
                     "z": 50.0
                 }
             },
@@ -10042,37 +10042,6 @@
                 "playing": true,
                 "clips": [
                     {
-                        "name": "playerFall",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
-                        "spriteCols": 2,
-                        "spriteRows": 1,
-                        "useCustomSize": true,
-                        "targetWidth": 140.0,
-                        "targetHeight": 100.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
                         "name": "playerWalk",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Run\\Run spritesheet.png",
@@ -10125,7 +10094,7 @@
                         ]
                     },
                     {
-                        "name": "playerFallLight",
+                        "name": "playerFall",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
                         "spriteCols": 2,
@@ -10139,14 +10108,14 @@
                                 "keys": [
                                     {
                                         "t": 0.0,
-                                        "v": 1.0,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
                                         "t": 0.25,
-                                        "v": 1.0,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -10199,6 +10168,37 @@
                                     {
                                         "t": 1.0,
                                         "v": 7.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "playerFallLight",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
+                        "spriteCols": 2,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 140.0,
+                        "targetHeight": 100.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 1.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -12413,6 +12413,19 @@
                     "y": 0.0,
                     "z": 0.0
                 }
+            },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "Switch",
+                        "path": "switch_stepon.wav",
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    }
+                ]
             },
             "script": {
                 "scripts": [
@@ -15799,8 +15812,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -97.97625732421875,
-                    "y": 29.823644638061525,
+                    "x": -180.6522674560547,
+                    "y": 48.42133712768555,
                     "z": 50.0
                 },
                 "size": {
@@ -15916,8 +15929,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -97.97625732421875,
-                    "y": 29.823644638061525,
+                    "x": -180.6522674560547,
+                    "y": 48.42133712768555,
                     "z": 50.0
                 },
                 "size": {
@@ -16033,8 +16046,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -97.97625732421875,
-                    "y": 29.823644638061525,
+                    "x": -180.6522674560547,
+                    "y": 48.42133712768555,
                     "z": 50.0
                 },
                 "size": {
@@ -16150,8 +16163,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -97.97625732421875,
-                    "y": 29.823644638061525,
+                    "x": -180.6522674560547,
+                    "y": 48.42133712768555,
                     "z": 50.0
                 },
                 "size": {
@@ -16267,8 +16280,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -383.7705383300781,
-                    "y": -227.90380859375,
+                    "x": -466.446533203125,
+                    "y": -209.30612182617188,
                     "z": 50.0
                 },
                 "size": {
@@ -18567,6 +18580,19 @@
                     "z": 0.0
                 }
             },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "Switch",
+                        "path": "switch_stepon.wav",
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    }
+                ]
+            },
             "script": {
                 "scripts": [
                     {
@@ -18715,6 +18741,19 @@
                     "y": 0.0,
                     "z": 0.0
                 }
+            },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "Switch",
+                        "path": "switch_stepon.wav",
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    }
+                ]
             },
             "script": {
                 "scripts": [
@@ -21272,8 +21311,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -95.71543884277344,
-                    "y": -76.66516876220703,
+                    "x": -178.39144897460938,
+                    "y": -58.067474365234378,
                     "z": 0.0
                 },
                 "size": {
