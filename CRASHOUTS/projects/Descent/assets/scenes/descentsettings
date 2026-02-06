@@ -1284,10 +1284,10 @@
                     {
                         "name": "Ambiance",
                         "path": "lava-volcano-wind-environment_loop.wav",
-                        "volume": 1.0,
+                        "volume": 0.44999998807907107,
                         "pitch": 1.0,
                         "spatial3D": false,
-                        "looping": true,
+                        "looping": false,
                         "isMusic": false
                     }
                 ]

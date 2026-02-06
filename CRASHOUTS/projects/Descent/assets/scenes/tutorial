@@ -9847,7 +9847,7 @@
                     {
                         "name": "footstep1",
                         "path": "footsteps 1.wav",
-                        "volume": 1.0,
+                        "volume": 0.800000011920929,
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": false,
@@ -9856,7 +9856,7 @@
                     {
                         "name": "footstep2",
                         "path": "footsteps 2.wav",
-                        "volume": 1.0,
+                        "volume": 0.800000011920929,
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": false,
@@ -9865,7 +9865,7 @@
                     {
                         "name": "footstep3",
                         "path": "footsteps 3.wav",
-                        "volume": 1.0,
+                        "volume": 0.800000011920929,
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": false,
@@ -9874,7 +9874,7 @@
                     {
                         "name": "footstep4",
                         "path": "footsteps 4.wav",
-                        "volume": 1.0,
+                        "volume": 0.800000011920929,
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": false,
@@ -9883,7 +9883,7 @@
                     {
                         "name": "footstep5",
                         "path": "footsteps 5.wav",
-                        "volume": 1.0,
+                        "volume": 0.800000011920929,
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": false,
@@ -9892,7 +9892,7 @@
                     {
                         "name": "footstep6",
                         "path": "footsteps 6.wav",
-                        "volume": 1.0,
+                        "volume": 0.800000011920929,
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": false,
@@ -9901,7 +9901,7 @@
                     {
                         "name": "footstep7",
                         "path": "footsteps 7.wav",
-                        "volume": 1.0,
+                        "volume": 0.800000011920929,
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": false,
@@ -9910,7 +9910,7 @@
                     {
                         "name": "footstep8",
                         "path": "footsteps 8.wav",
-                        "volume": 1.0,
+                        "volume": 0.800000011920929,
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": false,
@@ -22111,7 +22111,7 @@
                     {
                         "name": "Lava_Ambience",
                         "path": "lava-volcano-wind-environment_loop.wav",
-                        "volume": 0.3499999940395355,
+                        "volume": 0.44999998807907107,
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": true,
